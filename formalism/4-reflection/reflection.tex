@@ -1,0 +1,74 @@
+\makeatletter
+\def\input@path{{../.format/}}
+\makeatother
+
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}  % Added for proper Gödel numbering notation
+
+\begin{document}
+
+\section{Reflection}
+
+Formal systems not only reason using their axioms but can reflect on their own structure. Through this reflection, systems recognize metalogical assertions that transcend formal derivation yet are necessary for meaningful operation.
+
+\begin{definition}[Essential Proof]
+For a formula $\phi$ in system $S$, the \textbf{essential proof} of $\phi$, denoted $\text{Ess}_S(\phi)$, is the Gödel number of the minimal proof of $\phi$ with the smallest set of axiom dependencies.
+\end{definition}
+
+\medskip
+
+\begin{definition}[Metalogical Assertions]
+A logical system makes the following \textbf{metalogical assertions}:
+\begin{enumerate}
+    \item \textbf{Consistency Assertion}: $\neg(Prov_I("I", \phi) \land Prov_I("I", \neg\phi))$
+    \item \textbf{Soundness Assertion}: $Prov_I("I", \phi) \Rightarrow \phi$
+    \item \textbf{Completeness Assertion}: $Prov_I("I", \phi) \lor Prov_I("I", \neg\phi) \lor Transduce(\phi)$
+    \item \textbf{Independence Assertion}: For each non-logical axiom $A$, $\forall p (Proof_I(p, A) \Rightarrow \text{Ess}_I(p) = \ulcorner A \urcorner^*)$
+\end{enumerate}
+\end{definition}
+
+\medskip
+
+\begin{theorem}[Metalogical Necessity]
+The metalogical assertions cannot be proven within the system itself, yet they are necessary for the system to function as intended.
+\begin{enumerate}
+    \item The Consistency Assertion cannot be proven in $I$ (by Gödel's Second Incompleteness Theorem)
+    \item The Soundness Assertion cannot be fully proven in $I$ (by Tarski's Undefinability Theorem)
+    \item The Completeness Assertion cannot be proven in $I$ (by Gödel's First Incompleteness Theorem)
+    \item The Independence Assertion cannot be proven in $I$ (as it refers to all possible proofs)
+\end{enumerate}
+\end{theorem}
+
+\medskip
+
+\begin{definition}[Reflection]
+\textbf{Reflection} is the process by which a system examines its own provability structure and recognizes metalogical assertions. While this process cannot be fully formalized within the system itself, we can imagine it as a sequence of realizations about the system's own structure.
+\end{definition}
+
+\medskip
+
+\begin{remark}[Contrast with Intuitionist Logic]
+While intuitionist logic rejects the law of excluded middle to avoid committing to truths beyond constructive proof, it thereby foregoes the mechanism of transduction that would allow systems to evolve in response to undecidability.
+
+By axiomatizing the acceptance of the "middle" (neither provable nor disprovable), intuitionist logic provides no imperative to resolve Gödel sentences through transduction. In contrast, our approach maintains consistency while aspiring toward completeness through system evolution.
+\end{remark}
+
+\medskip
+
+\begin{thebibliography}{9}
+    
+    \bibitem{Godel1931}
+    Gödel, K.: On Formally Undecidable Propositions of Principia Mathematica and Related Systems I [Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I]. \textit{Monatshefte für Mathematik und Physik} \textbf{38}, 173--198 (1931)
+    
+    \bibitem{Tarski1936}
+    Tarski, A.: The Concept of Truth in Formalized Languages. \textit{Studia Philosophica} \textbf{1}, 261--405 (1936)
+    
+    \bibitem{Kleene1952}
+    Kleene, S.C.: Introduction to Metamathematics. North-Holland, Amsterdam (1952)
+    
+\end{thebibliography}
+
+\end{document}

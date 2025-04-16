@@ -1,0 +1,5 @@
+PWD c:\Users\dougl\OneDrive\Source\DNA Platform\inexpliable-phenomena\formalism\2-expression
+INPUT C:\Users\dougl\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
+INPUT c:\Users\dougl\OneDrive\Source\DNA Platform\inexpliable-phenomena\formalism\2-expression\expression.tex
+OUTPUT expression.log
+INPUT C:\Program Files\MiKTeX\fonts\tfm\public\cm\cmbx10.tfm

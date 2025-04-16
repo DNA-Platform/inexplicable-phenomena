@@ -1,0 +1,84 @@
+\makeatletter
+\def\input@path{{../.format/}}
+\makeatother
+
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}  % Added for proper Gödel numbering notation
+
+\begin{document}
+	
+	\section{Description}
+	
+	Formal languages can encode any structured information. This foundational insight connects mathematics and empirical science. By using Gödel numbering to encode grammars, we show that our formal system $I$ can describe any sentence, and by extension, $I$ can describe anything \cite{Godel1931}.
+	
+	\begin{definition}[Gödel Numbering]
+		Let $\mathcal{L}$ be a formal language with alphabet $\Sigma$. A \textbf{Gödel numbering} assigns to each expression $\phi$ of $\mathcal{L}$ a unique natural number $\ulcorner\phi\urcorner$, defined recursively as follows \cite{Enderton2001}:
+		\begin{enumerate}
+			\item Each symbol $s \in \Sigma$ is assigned a unique number $c(s) \in N^+$
+			\item For any string $s_1 s_2 ... s_n$, its Gödel number is:
+			$\ulcorner s_1 s_2 ... s_n \urcorner = 2^{c(s_1)} \cdot 3^{c(s_2)} \cdot ... \cdot p_n^{c(s_n)}$
+			where $p_i$ is the $i$-th prime number
+			\item For structured expressions, the encoding extends hierarchically:
+			$\ulcorner (\alpha_1, \alpha_2, ..., \alpha_n) \urcorner = 2^{\ulcorner \alpha_1 \urcorner} \cdot 3^{\ulcorner \alpha_2 \urcorner} \cdot ... \cdot p_n^{\ulcorner \alpha_n \urcorner}$
+		\end{enumerate}
+	\end{definition}
+	
+	\medskip
+	
+	\begin{definition}[Formal Grammar]
+		A \textbf{formal grammar} is a 4-tuple $G = (V, \Sigma, P, S)$ where \cite{Enderton2001}:
+		\begin{enumerate}
+			\item $V$ is a finite set of non-terminal symbols
+			\item $\Sigma$ is a finite set of terminal symbols such that $V \cap \Sigma = \emptyset$
+			\item $P \subset ((V \cup \Sigma)^* \cdot V \cdot (V \cup \Sigma)^*) \times (V \cup \Sigma)^*$ is a finite set of production rules, written as $\alpha \rightarrow \beta$
+			\item $S \in V$ is the start symbol
+		\end{enumerate}
+	\end{definition}
+	
+	\medskip
+	
+	\begin{definition}[Universal Descriptor]
+		A formal theory $T$ is a \textbf{Universal Descriptor} if and only if for any formal grammar $G = (V, \Sigma, P, S)$, there exist formulas $\Phi_G(x)$ and $\text{String}_G(y)$ in the language of $T$ such that:
+		\begin{enumerate}
+			\item $T \vdash \Phi_G(\ulcorner G \urcorner)$ where $\ulcorner G \urcorner$ denotes the Gödel number of $G$
+			\item For all $n \in N$, if $n \neq \ulcorner G \urcorner$, then $T \vdash \neg\Phi_G(n)$
+			\item For any $w \in (V \cup \Sigma)^*$, $w$ is derivable from $G$ if and only if $T \vdash \text{String}_G(\ulcorner w \urcorner)$
+		\end{enumerate}
+	\end{definition}
+	
+	\medskip
+	
+	\begin{theorem}[Universal Description Theorem]
+		Robinson Arithmetic $(I)$ is a Universal Descriptor \cite{Godel1931}\cite{Enderton2001}. Specifically:
+		\begin{enumerate}
+			\item For any formal grammar $G$, there exists a formula $\Phi_G(x)$ in the language of $I$ such that:
+			$I \vdash \Phi_G(\ulcorner G \urcorner)$ and for all $n \neq \ulcorner G \urcorner$, $I \vdash \neg\Phi_G(n)$
+			\item For any string $w$ derivable from grammar $G$, there exists a formula $\text{String}_G(y)$ in $I$ such that:
+			$I \vdash \text{String}_G(\ulcorner w \urcorner)$
+		\end{enumerate}
+	\end{theorem}
+	
+	\medskip
+	
+	\begin{corollary}[I Can Describe Language]
+		The formal specification of grammars constitutes itself a grammar $G_{\text{spec}}$. As a Universal Descriptor, $I$ can describe $G_{\text{spec}}$.
+	\end{corollary}
+
+    \medskip
+
+    While language was used as a proxy for description, a description of all grammars suggests that I can describe language too
+	
+	\begin{thebibliography}{9}
+		
+		\bibitem{Godel1931}
+		Gödel, K.: On Formally Undecidable Propositions of Principia Mathematica and Related Systems I [Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I]. \textit{Monatshefte für Mathematik und Physik} \textbf{38}, 173--198 (1931)
+		
+		\bibitem{Enderton2001}
+        Enderton, H.B.: A Mathematical Introduction to Logic. 2nd edn. Academic Press, San Diego (2001)
+		
+	\end{thebibliography}
+	
+\end{document}

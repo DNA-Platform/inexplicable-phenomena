@@ -1,0 +1,109 @@
+\makeatletter
+\def\input@path{{../.format/}}
+\makeatother
+
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}  % Added for proper Gödel numbering notation
+
+\begin{document}
+
+\section{Provability}
+
+Formal systems not only express relations but reason about them. By encoding provability, our system $I$ can represent reasoning within any theory, establishing a foundation for metalogical operations \cite{Godel1931} \cite{Turing1936}.
+
+\begin{definition}[Arithmetic Provability]
+    The formula $\text{Prov}(\ulcorner\phi\urcorner)$ in the language of $I$ expresses that formula $\phi$ is provable in $I$, where $\ulcorner\phi\urcorner$ denotes the Gödel number of $\phi$ \cite{Godel1931}.
+\end{definition}
+
+\medskip
+
+\begin{definition}[Computational Provability]
+    The formula $\text{Prov}_{\text{TM}}([\phi])$ in the language of $I$ expresses that a Turing machine that verifies proofs halts and accepts on input $[\phi]$, where $[\phi]$ is the encoding of $\phi$ as machine input \cite{Turing1936}.
+\end{definition}
+
+\medskip
+
+\begin{definition}[Universal Provability]
+    The formula $\text{Prov}_I("T","\phi")$ in the language of $I$ expresses that formula $\phi$ is provable in theory $T$, where both the theory and formula are represented as strings \cite{TarskiMostowskiRobinson1953}.
+\end{definition}
+
+\medskip
+
+\begin{theorem}[Provability Equivalence Relationships]
+    The following equivalences hold:
+    \begin{enumerate}
+        \item $\text{Prov}(\ulcorner \phi \urcorner) \Leftrightarrow \text{Prov}_I("I","\phi")$
+        \item $\text{Prov}_{\text{TM}}([\phi]) \Leftrightarrow \text{Prov}_I("TM","\phi")$
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    The first equivalence follows from the definition of system-relative provability with $T = I$. The second follows from the Expression Theorem, as $I$ can express the halting of any Turing machine that verifies proofs.
+\end{proof}
+
+\medskip
+
+\begin{theorem}[Metalogical Universality]
+    Robinson Arithmetic $(I)$ can express provability in any recursively axiomatized theory. Specifically, for any such theory $T$ and formula $\phi$ in the language of $T$:
+    \begin{enumerate}
+        \item If $T \vdash \phi$, then $I \vdash \text{Prov}_I("T","\phi")$
+        \item If $T \vdash \neg \phi$, then $I \vdash \neg\text{Prov}_I("T","\phi")$
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    By the Expression Theorem, $I$ can express any recursively enumerable relation. The provability relation for any recursively axiomatized theory is recursively enumerable, thus $I$ can express provability in any such theory \cite{Kleene1952}.
+\end{proof}
+
+\medskip
+
+\begin{definition}[Descriptive Transformation]
+    For any theory $T$ and part $p$, the notation $"T" |=p> "T*"$ represents the transformation of theory $T$ into theory $T^*$ by adding a new part, which is defined as the \textit{description} a constant, function, relation, axiom, or axiom schema. This transformation is functional: for any $T$ and $p$, there exists a unique $T*$ such that:
+    \begin{equation}
+        \text{Transform}("T", p)
+    \end{equation}
+\end{definition}
+
+\medskip
+
+\begin{corollary}[I Can Transform Descriptions of Theories]
+    I can represent and reason about theory transformations. Through the transformation operator $|=\phi>$, I can express how the addition of propositions to theories affects their provability relation.
+\end{corollary}
+
+\medskip
+
+\begin{corollary}[I Can Transform]
+    I can transform myself. By applying the transformation operator to my own description, I can express how the addition of propositions affects my own provability relation: $"I" |=\phi> "I^*"$.
+\end{corollary}
+
+\medskip
+
+\begin{corollary}[I Can Explain Almost Anything]
+    I can express provability in any recursively axiomatized theory. By the Metalogical Universality theorem, I can determine what is provable in any precisely definable logical system.
+\end{corollary}
+
+\medskip
+
+\noindent
+The capacity of $I$ to both express and reason about provability reveals a profound form of metalogical self-reference—a capacity that lies at the heart of our subsequent theory of consciousness.
+
+\begin{thebibliography}{9}
+    
+    \bibitem{Godel1931}
+    Gödel, K.: On Formally Undecidable Propositions of Principia Mathematica and Related Systems I [Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I]. \textit{Monatshefte für Mathematik und Physik} \textbf{38}, 173--198 (1931)
+    
+    \bibitem{Turing1936}
+    Turing, A.M.: On Computable Numbers, with an Application to the Entscheidungsproblem. \textit{Proceedings of the London Mathematical Society} \textbf{s2-42}(1), 230--265 (1936)
+    
+    \bibitem{TarskiMostowskiRobinson1953}
+    Tarski, A., Mostowski, A., Robinson, R.M.: Undecidable Theories. North-Holland, Amsterdam (1953)
+    
+    \bibitem{Kleene1952}
+    Kleene, S.C.: Introduction to Metamathematics. North-Holland, Amsterdam (1952)
+    
+\end{thebibliography}
+
+\end{document}
