@@ -3,7 +3,7 @@ const path = require('path');
 const { format } = require('./format');
 
 // Configuration - Easy to modify
-const SKIP_DIRECTORIES = ['node_modules', 'release']; // Directories to skip by name
+const SKIP_DIRECTORIES = ['node_modules', 'release', '.release']; // Directories to skip by name
 const SKIP_FILES = ['README.md']; // Files to skip by name
 const DOT_REGEX = /^\./; // Regex to match files/directories starting with a dot
 
@@ -31,6 +31,78 @@ function removeEmptyDirectories(directory) {
     console.log(`Removing empty directory: ${directory}`);
     fs.rmdirSync(directory);
   }
+}
+
+// Function to recursively remove empty directories
+function removeEmptyDirectories(directory) {
+  // Skip if directory doesn't exist
+  if (!fs.existsSync(directory)) {
+    return;
+  }
+
+  // Get all items in the directory
+  let items = fs.readdirSync(directory);
+  
+  // Process all subdirectories first
+  for (const item of items) {
+    const fullPath = path.join(directory, item);
+    if (fs.statSync(fullPath).isDirectory()) {
+      removeEmptyDirectories(fullPath);
+    }
+  }
+  
+  // Check if directory is now empty (after processing subdirectories)
+  items = fs.readdirSync(directory);
+  if (items.length === 0) {
+    console.log(`Removing empty directory: ${directory}`);
+    fs.rmdirSync(directory);
+  }
+}
+
+// Helper function to check if a directory contains any non-draft markdown files
+async function directoryHasNonDraftFiles(dir) {
+  // Skip if directory doesn't exist or is in skip list
+  if (!fs.existsSync(dir) || SKIP_DIRECTORIES.includes(path.basename(dir))) {
+    return false;
+  }
+
+  const files = fs.readdirSync(dir);
+  
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const stats = fs.statSync(filePath);
+    
+    // Skip files and directories that start with a dot
+    if (DOT_REGEX.test(file)) {
+      continue;
+    }
+    
+    // Check subdirectories recursively
+    if (stats.isDirectory()) {
+      if (!SKIP_DIRECTORIES.includes(file)) {
+        if (await directoryHasNonDraftFiles(filePath)) {
+          return true;
+        }
+      }
+    } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
+      // Skip specific files by name
+      if (SKIP_FILES.includes(file)) {
+        continue;
+      }
+      
+      // Read the markdown file
+      const content = fs.readFileSync(filePath, 'utf8');
+      
+      // Check if the file is a draft
+      const lines = content.split('\n');
+      const firstLine = lines[0].trim().toLowerCase();
+      if (firstLine !== '[draft]') {
+        return true; // Found a non-draft markdown file
+      }
+    }
+  }
+  
+  return false; // No non-draft markdown files found
 }
 
 // Helper function to check if a directory contains any non-draft markdown files
