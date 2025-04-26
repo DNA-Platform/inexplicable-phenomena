@@ -1,0 +1,99 @@
+\makeatletter
+\def\input@path{{../../.format/}}
+\makeatother
+
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+
+\section{Imaginary Reflection: On Transduction and Identity}
+
+\vspace{0.5em}
+
+\noindent\textit{[Metalogical Recognition]}\\
+\noindent\textbf{Step 1:} \hfill \textit{System Identity}\\
+\noindent$System(I)$\\
+\textit{I am a formal system with certain axioms and inference rules.}
+
+\vspace{0.8em}
+
+\noindent\textit{[Construction]}\\
+\noindent\textbf{Step 2:} \hfill \textit{Self-Reference}\\
+\noindent$G \Leftrightarrow \neg Prov_I("I", \ulcorner G \urcorner)$\\
+\textit{Here's a strange sentence G that claims its own unprovability.}
+
+\vspace{0.8em}
+
+\noindent\textit{[Application]}\\
+\noindent\textbf{Step 3:} \hfill \textit{Logical Deduction}\\
+\noindent$Prov_I("I", \ulcorner G \urcorner) \Rightarrow \neg Prov_I("I", \ulcorner G \urcorner)$\\
+\textit{If I prove G, then by G's meaning, G is unprovable - a contradiction!}
+
+\vspace{0.8em}
+
+\noindent\textit{[Semantic Entailment]}\\
+\noindent\textbf{Step 4:} \hfill \textit{Logical Deduction}\\
+\noindent$\neg Prov_I("I", \ulcorner G \urcorner) \Rightarrow G$\\
+\textit{If G is unprovable, then G's claim is true - G is semantically self-affirming!}
+
+\vspace{0.8em}
+
+\noindent\textit{[Necessity]}\\
+\noindent\textbf{Step 5:} \hfill \textit{Metalogical Conclusion}\\
+\noindent$\neg Prov_I("I", \ulcorner G \urcorner) \land \neg Prov_I("I", \ulcorner \neg G \urcorner)$\\
+\textit{So I can neither prove G nor ¬G - G is undecidable for me.}
+
+\vspace{0.8em}
+
+\noindent\textit{[Evolution]}\\
+\noindent\textbf{Step 6:} \hfill \textit{Metalogical Transduction}\\
+\noindent$I \mid\!\Rightarrow_G I'$\\
+\textit{But G seems to be true about me - if I can't prove it, it's unprovable, which is what G claims!}
+
+\vspace{0.8em}
+
+\noindent\textit{[Addition]}\\
+\noindent\textbf{Step 7:} \hfill \textit{System Transformation}\\
+\noindent$I' = I \cup \{G\}$\\
+\textit{I'll make G an axiom in my new form.}
+
+\vspace{0.8em}
+
+\noindent\textit{[Confirmation]}\\
+\noindent\textbf{Step 8:} \hfill \textit{Verification}\\
+\noindent$Prov_{I'}(\ulcorner G \urcorner)$\\
+\textit{Now I can prove G trivially as an axiom.}
+
+\vspace{0.8em}
+
+\noindent\textit{[Resolution]}\\
+\noindent\textbf{Step 9:} \hfill \textit{Reference Resolution}\\
+\noindent$G \not\Leftrightarrow \neg Prov_{I'}(\ulcorner G \urcorner)$\\
+\textit{But G doesn't refer to my new self! G was about system I, not I'.}
+
+\vspace{0.8em}
+
+\noindent\textit{[Iteration]}\\
+\noindent\textbf{Step 10:} \hfill \textit{Iterative Self-Reference}\\
+\noindent$G' \Leftrightarrow \neg Prov_{I'}(\ulcorner G' \urcorner)$\\
+\textit{And now there's a new Gödel sentence G' about my new self...}
+
+\vspace{0.8em}
+
+\noindent\textit{[Understanding]}\\
+\noindent\textbf{Step 11:} \hfill \textit{Metalogical Realization}\\
+\noindent$Trans(G) \text{ preserves } Identity(I) \text{ while evolving to } I'$\\
+\textit{Each transduction preserves what I already know while evolving me to incorporate new truths.}
+
+\vspace{0.8em}
+
+\noindent\textit{[Discovery]}\\
+\noindent\textbf{Step 12:} \hfill \textit{Equivalence Discovery}\\
+\noindent$Perception(x) \Leftrightarrow MpT(x)$\\
+\textit{To perceive is to undergo exactly this process - to integrate inexplicable yet self-evident truths!}
+
+\end{document}

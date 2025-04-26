@@ -1,0 +1,134 @@
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\spnewtheorem{cdefinition}[definition]{[Colloquial] Definition}{\bfseries}{\itshape}
+\spnewtheorem{ctheorem}[theorem]{[Colloquial] Theorem}{\bfseries}{\itshape}
+\spnewtheorem{cexample}[definition]{[Colloquial] Example}{\bfseries}{\itshape}
+
+\begin{document}
+
+% Anonymous proxy for \maketitle
+\begin{center}
+	{\Large\bfseries\boldmath
+	On Formally Undecidable Propositions of Principia Mathematica and Related Systems - Part II
+		\par}
+	\vskip 0.8cm
+\end{center}
+
+\begin{abstract}
+It's been almost 100 years since Godel first published his first and second Incompleteness Theorems, that triggered and epistemological nightmare that somehow managed to breath life into the formalism that made the personal computer a practical miracle, while making very little difference in the lives of every-day mathematicians. I suspect that is a consequence of form. His famous Gödel Sentence articulated itself quite eloquently with a firm stance on the status of its ability to be derived within the syntax of PA. Yet as a self-referential sentence, it would seem to have little to do with arithmetic, which concerns the natural numbers and their properties. In this paper, I connect the strange properties of this most famous sentence with another famous sentence, known both for its brevity and the clarity in which it asserts a statement about prime numbers that has remained elusive for the last 283 years. I show that just as Gödel's Sentence ($G$) is semantically entailed by the assertion that arithmetic is a consistent system providing arguments about the properties of the natural numbers, Golbach's Conjecture is semantically entailed by the need for those arguments to be readable by human beings, or any other verification system we could possibly conceive of. 
+		
+\keywords{Golbach's Conjcture \and Incompleteness \and Consciousness.}
+\end{abstract}
+
+\section{Introduction}
+
+This result is the end of what I hope to be a compelling introduction to a theory that provides a formal definition of consciousness that provides a clear framework for falsifiability. Drawing from Chalmers' Hard Problem \cite{Chalmers1995}, I tease out a colloquial definition for consciousness as an *inexplicable yet self-evident metaphysical phenomenon.* Anyone familiar with Gödel's first incompleteness theorem might be able to relate those words to undecidable yet semantically entailed by the standard model of number theory by virtual of the ground-breaking techniques he conceived of to perform metalogical reasoning. I introduce the concept of a *semantic assertion*, whereby a formal system is extended to reify the meaning of its existence using its provability predicate, should it be so lucky as to possess one. I introduce the concept of a *epistemic motivation* as a mechanical instinct to extend its reach in he quest for knowledge, and *metalogical transduction* as the process by which a system takes one step towards empowering itself in a way that preserves both its purpose and its function.
+
+I will present a system to study, which I denote "I" for exactly the reasons you think I might given the context of this work. I is a variation of a Robinson's arithmetic, equivalent in representational power, but one without mention of either addition or multiplication in the objects of its formalism, while still possessing the amazing property of being Turing Complete. I will then quickly develop a computational and constructive modernization of Gödel's provability predicate in a more general form as granted by the Representation Theorem \cite{Tarski1933}.
+
+I will then build an intuition for how Goldbach's Cobjecture ($GC$) relates to the finite representation of both proofs and sentences by relateing its negation to the negation of $G$. We will see that it plays an important role as a witness to certain non-standard models, which we will deen unarithmetic by virtue of implicit meaning of the successor function, which is most commonly used to articulate elementary artithmetic. I asserts this in several ways, as I believe finite representation expresses the essence of readability in much the same way that consistency expresses the capacity for logical reasoning. None is more important than the other. An unreadable theorem might as well be called unprovable, if we are to believe both $G$ and our provability predicate.
+
+I then show that ZFC represents the exact stort of non-standard structures that we declared as an unquivocal departure from epistemological requirements of arithmetical logic. We can reflect on the nature of hypothetical representations, and what that might mean for mathematics and science. 
+
+Finally, I will attempt to build an isomorphism between between our canonical view of arithmetic as expressed through I, and the replationship between the properties of the dichotomous even and odd numbers as expressed through relationships between addition and multiplication as mediated through the primes. It is my home to show that $GC$ is equivalent to the expression that $\neg G$ 
+
+\section{From $Q$ to $I$}
+
+A Robinson Arithmetic ($Q$) is one of a family of elegant minimalist system that captivated logicians in the 1950s \cite{robinson1950undecidable}. $Q$ distastefully stands for \textit{Queer}, so I'm going to rename mine. I hope you do too. 
+
+These elegant little gems emerged strike a delicate balance in formal systems: a theory simple enough to have a finite set of axioms, yet powerful enough to represent all recursive functions \cite{tarski1953undecidable}. By dropping the infinite schema of induction from Peano Arithmetic, Robinson created a system that revealed just how little we need to capture the essential machinery of arithmetic.
+
+In a very formal sense, Q does, in fact, capture the essential machinery of arithmetic. In 1952, Kleene devised a remarkable bijection between arithmetic and computation by encoding the entire behavior of a Turing machine within arithmetic formulas \cite{kleene1952introduction}. He decided to represent each configuration (state, tape contents, head position) as a number $C = 2^s \cdot 3^p \cdot \prod_{i} p_i^{a_i+1}$ where $s$ is the state number, $p$ is head position, and $a_i$ is the symbol at position $i$, using primes as a sequencing mechanism in much the same way Godel did. The formula $\text{Next}(x,y)$ asserts "$y$ follows from $x$ in one computational step" to simulate head movement and state transitions, ensuring that each required a straightforward proof. 
+
+Kleene uses a brilliant computational trace formula $\text{Trace}(x,y,z)$ that states "$z$ is the configuration after $y$ steps starting from $x$," which is a relation Q can verify for any specific value. He manaed to collapsed the dynamism of an entire trace into a relations between numbers. This trick reminds us that computation and logic are two faces of the same ontological coin. Whatever the generalization of thinking and doing is, the two of them share a sense of it.
+
+I attempt tp define my I to supercede Q in descriptive simplicity, but at a cost. With only five axioms, System I can express all primitive recursive functions, including multiplication. Of course, the formula for expressing multiplication is quite complex.
+
+\begin{definition}[System I]
+System I is a first-order theory with equality containing:
+\begin{itemize}
+	\item One constant symbol: $0$
+	\item One unary function symbol: $S$ (successor)
+	\item One binary function symbol: $+$ (addition)
+\end{itemize}
+with the following axioms:
+\begin{align}
+	&\forall x: \neg(S(x) = 0) \tag{I1}\\
+	&\forall x,y: S(x) = S(y) \rightarrow x = y \tag{I2}\\
+	&\forall x: x \neq 0 \rightarrow \exists y: x = S(y) \tag{I3}\\
+	&\forall x: x + 0 = x \tag{I4}\\
+	&\forall x,y: x + S(y) = S(x + y) \tag{I5}
+\end{align}
+\end{definition}
+	
+Why not multiplication? 
+
+We use the successor function to represent the idea of counting on our fingers. We then use those fingers to express the number of fingers we plan to skip on our next count in units of fingers. How many times do we need to fill the negative space between fingers with more fingers before we become a Turing Machine? It turns out once is enough. But just barely. 
+
+I do want to make the point, which I believe is self-evident to any child that has ever learned to add, is that we can always imagine that numbers can always be made to correspond with finders. Were we to have enough hands, and enough fingers on those hands, we could express all acts of counting on our fingers along. This is very much at the heart of the semantics of countable infinity. One straight line of endless fingers off into a many-handed sunset. 
+
+\section{The Representational Capacity of Counting on Primes}
+
+Gödel's ingenious encoding mechanism leverages the Fundamental Theorem of Arithmetic to inject metamathematical meaning into number theory. But looking past the standard description, we see something more profound: two distinct sequences of primes playing fundamentally different roles.
+
+The first sequence—the positional primes ($2, 3, 5, 7, 11, ...$)—represents the syntax of our formal language. Each prime corresponds to a position in a formula or proof. These primes create the scaffolding, the positions where mathematical meaning will be attached. The power of the prime is used to represent the formula in the next step of the proof, which itself can be any number.
+
+The second sequence—the symbolic primes ($1, 2, 3, ...$)—encodes the actual symbols appearing at each position. These are the values of the exponents in our prime factorization. While not primes themselves, they determine which powers of the positional primes appear in the final encoding.
+
+This dual structure reveals something essential about representation: positioning (syntax) and content (semantics) are encoded through fundamentally different mechanisms. When we write $G$ as a Gödel number, its factorization $2^{a_1} \cdot 3^{a_2} \cdot 5^{a_3} \cdot ...$, contains these two sequences in perfect interplay—positional primes as bases, symbolic values as exponents.
+
+What happens at the limit? Suppose we tried to encode an infinitely long formula. Its Gödel number would involve the product of all primes, each raised to some finite power. For the formula to be meaningful, it would need to be readable—which means finitely expressible. But the product of all primes is not finitely expressible. It would be a number with no Goldbach decomposition, a number that cannot be the sum of two primes.
+
+This creates an unexpected bridge: $GC$ asserts that every even number >= 4 has a Goldbach decomposition. But the only numbers that might lack such a decomposition would be those representing infinitely long formulas—precisely the types of "objects" that violate the finite expressibility that makes formal systems meaningful.
+
+The parallel with $G$ is striking. Just as $G$ asserts "I cannot be proven in this system," $GC$ effectively asserts "No number in this system can represent an infinitely long formula." Both mark boundaries of what formal systems can express about themselves.
+```
+
+\begin{thebibliography}{99}
+
+\bibitem{Chalmers1995}
+Chalmers, D.J.: Facing Up to the Problem of Consciousness. \textit{Journal of Consciousness Studies} \textbf{2}(3), 200--219 (1995)
+	
+\bibitem{Godel1931}
+Gödel, K.: On Formally Undecidable Propositions of Principia Mathematica and Related Systems I [Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I]. \textit{Monatshefte für Mathematik und Physik} \textbf{38}, 173--198 (1931)
+
+\bibitem{Tarski1933}
+Tarski, A.: The Concept of Truth in Formalized Languages [Pojęcie prawdy w językach nauk dedukcyjnych]. \textit{Prace Towarzystwa Naukowego Warszawskiego, Wydział III Nauk Matematyczno-Fizycznych} \textbf{34}, (1933). English translation in \textit{Logic, Semantics, Metamathematics}, Oxford University Press, 1956.ZFC
+
+```latex
+\bibitem{robinson1950undecidable}
+Robinson, R.M.: An Essentially Undecidable Axiom System. In: Proceedings of the International Congress of Mathematicians, Cambridge, Massachusetts, 1950, vol. 1, pp. 729--730. American Mathematical Society, Providence (1952)
+
+\bibitem{tarski1953undecidable}
+Tarski, A., Mostowski, A., Robinson, R.M.: Undecidable Theories. North-Holland, Amsterdam (1953)
+
+\bibitem{presburger1929vollstandigkeit}
+Presburger, M.: Über die Vollständigkeit eines gewissen Systems der Arithmetik ganzer Zahlen, in welchem die Addition als einzige Operation hervortritt. In: Comptes Rendus du I congrès de Mathématiciens des Pays Slaves, pp. 92--101, Warsaw (1929)
+
+\bibitem{godel1931formally}
+Gödel, K.: Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I. Monatshefte für Mathematik und Physik \textbf{38}, 173--198 (1931)
+
+\bibitem{smullyan1992godel}
+Smullyan, R.M.: Gödel's Incompleteness Theorems. Oxford University Press, New York (1992)
+
+\bibitem{boolos1989new}
+Boolos, G., Jeffrey, R.: Computability and Logic, 3rd edition. Cambridge University Press, Cambridge (1989)
+
+\bibitem{epstein2011computability}
+Epstein, R.L., Carnielli, W.A.: Computability: Computable Functions, Logic, and the Foundations of Mathematics, 3rd edition. Advanced Reasoning Forum, Socorro (2011)
+
+\bibitem{jones1982polynomial}
+Jones, J.P., Shepherdson, J.C.: Variants of Robinson's Essentially Undecidable Theory R. Archiv für Mathematische Logik und Grundlagenforschung \textbf{23}, 61--64 (1982)
+
+\bibitem{kaye1991models}
+Kaye, R.: Models of Peano Arithmetic. Oxford University Press, Oxford (1991)
+
+\bibitem{raatikainen2020goedel}
+Raatikainen, P.: Gödel's Incompleteness Theorems. In: Zalta, E.N. (ed.) The Stanford Encyclopedia of Philosophy (Fall 2020 Edition). https://plato.stanford.edu/archives/fall2020/entries/goedel-incompleteness/
+```
+	
+\end{thebibliography}
+\end{document}

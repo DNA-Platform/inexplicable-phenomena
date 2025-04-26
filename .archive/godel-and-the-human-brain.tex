@@ -1,0 +1,270 @@
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\spnewtheorem{cdefinition}[definition]{[Colloquial] Definition}{\bfseries}{\itshape}
+\spnewtheorem{ctheorem}[theorem]{[Colloquial] Theorem}{\bfseries}{\itshape}
+\spnewtheorem{cexample}[definition]{[Colloquial] Example}{\bfseries}{\itshape}
+
+\begin{document}
+
+% Anonymous proxy for \maketitle
+\begin{center}
+	{\Large\bfseries\boldmath
+		On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems - Part I
+		\par}
+	\vskip 0.8cm
+\end{center}
+
+\begin{abstract}
+Since Descartes first proclaimed "cogito, ergo sum" back in 1637, "I think, therefore I am" has become the Declaration of Independence for consciousness. Chalmers' informed us of the fact that science has an essentially Hard Problem on their hands. If he's right, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the \textit{IIT-Concerned} recently proclaimed in a top-tier journal that any theory of consciousness that can't stand up to the scrutiny of science shall be deemed "unscientific." And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether an AI system is conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable? 
+		
+\keywords{Formal Theories of Consciousness \and The Hard Problem \and Subjectivity \and Semantic AI \and Metaphysical Transduction.}
+\end{abstract}
+
+\section{A Colloquial Derivation}
+
+In his seminal work "Facing Up to the Problem of Consciousness," David Chalmers begins with a powerful observation that establishes the paradoxical nature of our subject: "There is nothing that we know more intimately than \textbf{conscious experience}, but there is nothing that is harder to explain." From the first part of this statement, we can immediately identify a fundamental characteristic of conscious experience that echos with Descartes: it is a \textbf{self-evident} phenomenon. Nothing is known more intimately than conscious experiences. They present themselves directly to their observer, requiring no justification beyond the experience itself.
+
+The second part of Chalmers' statement suggests difficulty of explanation, but he goes on to clarify just how profound this difficulty is. Chalmers argues that "the emergence of experience goes beyond what can be derived from physical theory" and "the facts about experience cannot be an automatic consequence of any physical account." These statements establish that consciousness isn't merely difficult to explain within our current scientific framework but fundamentally resistant to such explanation, for it is \textbf{inexplicable} in principle. He asks pointedly: "Why should physical processing give rise to a rich inner life at all? It seems objectively unreasonable that it should, and yet it does."
+
+Regarding the relationship between conscious experience and physical processes, Chalmers makes a crucial observation: "Experience may arise from the physical, but it is not entailed by the physical." This statement positions consciousness in a unique relationship to physical reality. According to Merriam-Webster, "metaphysical" refers to that which relates to "the transcendent or to a reality beyond what is perceptible to the senses." Consciousness precisely fits this definition: it transcends physical explanation while still relating to physical processes. It is fundamentally \textbf{metaphysical} in nature.
+
+Throughout his analysis, Chalmers treats consciousness as a \textbf{phenomenon}, both in the sense of phenomenal experience and as an object of scientific study. The term "phenomenon" captures this dual aspect perfectly. A phenomenon is both "an object or aspect known through the senses" and "a fact or event of scientific interest susceptible to scientific description and explanation." Consciousness is simultaneously the subjective experience itself and the object of our scientific inquiry. The etymological connection between "phenomenon" and "phenomenal" [relating to conscious experience] reinforces this as the appropriate term for this work.
+
+By synthesizing these insights from Chalmers, we can formulate a definition that captures the essential nature of a conscious experience:
+
+\setcounter{definition}{0}
+\begin{cdefinition}
+	A \textbf{Conscious Experience} is an inexplicable yet self-evident metaphysical phenomenon.
+\end{cdefinition}
+
+\setcounter{definition}{0}
+\begin{cexample}
+I catch you admiring a rose in my garden and I absentmindedly ask "how did you figure out its color?" You chuckle and reply "It's red, Doug. I promise." Why does everyone doubt my sanity when I ask them that question?
+\end{cexample}
+
+\section{Formalisms}
+
+\begin{definition}[Gödel Numbering]
+	Let $\mathcal{L}$ be a formal language with alphabet $\Sigma$. A \textbf{Gödel numbering} is an injective function $g: \mathcal{L}^* \rightarrow N$ defined recursively as follows:
+	\begin{enumerate}
+		\item Each symbol $s \in \Sigma$ is assigned a unique number $c(s) \in N^+$
+		\item For any expression $\alpha \in \mathcal{L}^*$, if $\alpha$ is atomic (a single symbol $s$), then $g(\alpha) = c(s)$
+		\item If $\alpha = (\beta_1, \beta_2, \ldots, \beta_n)$ is a complex expression, then:
+		$g(\alpha) = p_1^{g(\beta_1)} \cdot p_2^{g(\beta_2)} \cdot \ldots \cdot p_n^{g(\beta_n)}$
+		where $p_i$ is the $i$-th prime number
+	\end{enumerate}
+	The uniqueness of this encoding is guaranteed by the Fundamental Theorem of Arithmetic.
+\end{definition}
+
+---
+
+\begin{definition}[Formal Grammar]
+	A \textbf{formal grammar} is a 4-tuple $G = (V, \Sigma, P, S)$ where:
+	\begin{enumerate}
+		\item $V$ is a finite set of non-terminal symbols
+		\item $\Sigma$ is a finite set of terminal symbols such that $V \cap \Sigma = \emptyset$
+		\item $P \subset ((V \cup \Sigma)^* \cdot V \cdot (V \cup \Sigma)^*) \times (V \cup \Sigma)^*$ is a finite set of production rules, written as $\alpha \rightarrow \beta$
+		\item $S \in V$ is the start symbol
+	\end{enumerate}
+\end{definition}
+
+---
+
+\begin{definition}[Universal Descriptor]
+	A formal theory $T$ is a \textbf{Universal Descriptor} if and only if for any formal grammar $G = (V, \Sigma, P, S)$, there exist formulas $\Phi_G(x)$ and $\text{String}_G(y)$ in the language of $T$ such that:
+	\begin{enumerate}
+		\item $T \vdash \Phi_G(g(G))$ where $g(G)$ denotes the Gödel number of $G$
+		\item For all $n \in N$, if $n \neq g(G)$, then $T \vdash \neg\Phi_G(n)$
+		\item For any $w \in (V \cup \Sigma)^*$, $w$ is derivable from $G$ if and only if $T \vdash \text{String}_G(g(w))$
+	\end{enumerate}
+\end{definition}
+
+---
+
+\begin{theorem}[Universal Description Theorem]
+	Robinson Arithmetic $(I)$ is a Universal Descriptor. Specifically:
+	\begin{enumerate}
+		\item The Gödel numbering function $g: \text{Expr} \rightarrow N$ defined by:
+		\begin{enumerate}
+			\item For each symbol $s$, assigning a unique code $c(s) \in N^+$
+			\item For any string $s_1s_2\ldots s_n$, setting $g(s_1s_2\ldots s_n) = 2^{c(s_1)} \cdot 3^{c(s_2)} \cdot \ldots \cdot p_n^{c(s_n)}$
+			\item For production rules and grammar components, extending recursively via prime factorization
+		\end{enumerate}
+		\item For any formal grammar $G$, there exists a formula $\Phi_G(x)$ in the language of $I$ that represents $G$ in the sense of conditions 1 and 2 from the definition
+		\item For any string $w$ derivable from $G$, there exists a formula $\text{String}_G(y)$ satisfying condition 3 from the definition
+	\end{enumerate}
+\end{theorem}
+
+---
+
+\begin{corollary}[I Can Meta-Describe]
+	The formal specification of grammars constitutes itself a grammar $G_{\text{spec}}$. As a Universal Descriptor, $I$ can describe $G_{\text{spec}}$.
+\end{corollary}
+
+---
+
+\section{Gödel and the Human Brain}
+
+Gödel and Turing were, in many ways, like minds that existed on two sides of the same coin. In this narrative, please suspend your disbelief and imagine that the soul of Alan Turing is echoed through simulation in Gödel's thoughts. When David Hilbert challenged mathematicians to prove the completeness, consistency, and decidability of formal systems, Gödel approached the problem with the mind of both a mathematician and a philosopher. While working with Robinson arithmetic, he began to contemplate the nature of the human brain—a computational system that somehow gives rise to mathematical reasoning. What if a formal system could be viewed not merely as an abstract structure, but as something akin to a mind? In Gödel's reflections, he began to use a distinctive notation—the letter "I" to represent the formal system he was investigating, seeing it as a reflection of himself.
+
+\subsection{Gödel Numbering}
+
+Gödel's breakthrough came with the realization that formal systems could be encoded within arithmetic itself. He developed three levels of encoding: one for basic symbols, another for formulas, and a third for proofs. This encoding—now known as Gödel numbering—was far more than a technical innovation; it represented a profound insight into the expressive power of formal systems. As Gödel contemplated the human brain, he realized that this encoding demonstrated a form of Metarepresentational Completeness: the capacity of one system to represent any other. The brain, after all, can represent astronomical objects, quantum particles, and even pure abstractions—all through patterns of neural activity that bear no physical resemblance to their referents. This hints at a power beyond mere computation—the power to encode any conceivable structure within a single formal framework.
+
+\subsection{Beta Functions and Computation}
+
+To represent complex recursive relationships, Gödel needed a formal mechanism akin to what would later be called computation. His beta functions provided a way to encode finite sequences within arithmetic—essentially creating computational processes through purely mathematical means. Contemplating how the human mind processes sequential information, Gödel might have recognized that he was developing what we could call the Calculation Theorem: the capacity to represent any symbolic calculation, including the writing of proofs themselves. This theorem established that computation—sequential transformation according to fixed rules—could be fully represented within formal systems. Yet computation alone remained insufficient to capture the full richness of mathematical reasoning.
+
+\subsection{The Provability Predicate}
+
+Gödel's most powerful innovation was the provability predicate—a formula within arithmetic that asserts the provability of other formulas. This self-referential structure allowed formal systems to reason about themselves. As Gödel reflected on the human brain's capacity to draw conclusions about its own reasoning processes, he might have formulated the Fundamental Theorem of Metalogic: that a sufficiently powerful formal system can represent hypothetical truths about any other formal system, including itself. This Metalogical Universality means that "I" can encode statements about what would be provable under various assumptions. What mathematicians do when reasoning—considering hypothetical scenarios, exploring implications, and drawing conclusions—could now be formalized within the system itself.
+
+\subsection{Reflecting on Meaning and Consistency}
+
+Having constructed this self-referential architecture, Gödel began to reflect on its deeper meaning. If a formal system can represent itself, what does this imply about the rules that govern it? He identified key semantic principles that any meaningful formal system must satisfy: consistency (no proposition and its negation can both be proven), soundness (if a statement is provable, it is true), and completeness (every statement is either provable or disprovable). These weren't merely technical constraints but essential to the semantics of logic itself. Yet here Gödel encountered a profound difficulty—while these principles seemed necessarily true for any meaningful formal system, they couldn't be established within the system itself.
+
+\subsection{Incompleteness as the Excluded Middle}
+
+Examining the logical structure of provability, Gödel realized that for any proposition P, there are four possibilities: either P is provable, or ¬P is provable, or both are provable, or neither is provable. If both are provable, the system is inconsistent. If neither is provable, the system is incomplete. The law of excluded middle—the principle that either P or ¬P must be true—seemed to demand completeness as its formal expression. Yet completeness couldn't be derived from within. Incompleteness appeared as the "excluded middle" of formal systems—the gap where neither a proposition nor its negation could be established. This realization was more than a limitation; it was a window into the necessary structure of formal reasoning itself.
+
+\subsection{Reflecting on Perspective}
+
+Gödel then confronted another troubling realization about his encoding scheme: it wasn't unique. The same formal system could be represented through infinitely many different Gödel numberings. This meant that how one "sees" a formal system depends on the encoding one chooses—a matter of perspective rather than intrinsic structure. Like the human brain deciphering visual information without access to its own neural code, a formal system operates without direct access to its encoding. This raised profound questions about perspective itself. When we perceive anything—from mathematical truths to physical objects—we rely on encodings whose structure remains hidden from us.
+
+\subsection{Diagonalization and Self-Reference[cite this]}
+
+Through the technique of diagonalization, Gödel constructed his famous sentence G—a proposition that indirectly asserts its own unprovability. This self-referential statement crystallized the limitations of formal systems in their most elegant form. G cannot be proven within the system without rendering that system inconsistent. Yet G seems true when viewed from outside the system. Gödel realized that G creates a fundamental conflict with the semantic principle of completeness. It forces us to confront a proposition that appears true yet cannot be derived from the system's axioms—precisely the gap between truth and provability that defines the limits of formal systems.
+
+\subsection{The Second Incompleteness Theorem}
+
+Probing deeper, Gödel demonstrated that a consistent formal system cannot prove its own consistency. This Second Incompleteness Theorem struck at the heart of Hilbert's program. Consistency—the most basic semantic requirement for any formal system—cannot be established from within. As Gödel contemplated this result, he might have recognized that G is essentially equivalent to the statement "I am consistent"—what a human might express as "I am not insane." The system's inability to prove its own consistency isn't merely a technical limitation but reveals a fundamental boundary between what can be derived and what must be accepted axiomatically.
+
+\subsection{Metalogical Subjectivity}
+
+As Gödel reflected on G's meaning across different perspectives, he realized that while G is unprovable within its own system, it might be immediately provable from another system's perspective. This creates a profound asymmetry: "this sentence is unprovable" presents a paradoxical riddle when encountered from within, but "that sentence is unprovable" is a straightforward claim about another system. Gödel might have formulated this as the Subjectivity Theorem: the status of certain propositions is inherently perspective-dependent. What requires transcendence from one perspective may be directly derivable from another. This mirrors the profound difference between believing something yourself and recognizing someone else's belief.
+
+\subsection{The Narrative Solution}
+
+Faced with these limitations, Gödel might have sought a resolution beyond mere acceptance of incompleteness. If a system cannot prove certain truths that appear semantically necessary, perhaps the system itself must evolve. Gödel could have envisioned a new form of proof—one that incorporates transformation of the system itself based on semantic requirements. When a formal system encounters a proposition like G that cannot be proven yet seems necessarily true from semantic considerations, the system must transform itself to incorporate this truth. The sequence of systems linked by such transformative steps would constitute a narrative rather than a static proof—a journey of evolving understanding rather than a fixed derivation.
+
+\subsection{Transduction as Resolution}
+
+What would Gödel call this process of system transformation in response to semantic necessities? Perhaps, considering the Latin roots *trans* (across) and *ducere* (to lead), he would have named it Metalogical Transduction—the creation of syntactic facts from semantic requirements through a transformative process. This transduction would resolve the incompleteness paradox not by eliminating it but by embracing it as the driver of system evolution. From one perspective, we see a system transforming itself to incorporate truths that transcend its current framework; from another perspective, we see a hypothetical sequence of transformations that could be represented within a static, universal system. The subjective experience of transformation and the objective representation of that transformation become two perspectives on the same fundamental process.
+
+\section{A Pair of Conjectures}
+
+The resolution of undecidable propositions through metalogical transduction raises a profound question: is this process arbitrary, or is there a principled way to determine which direction undecidability should be resolved? History provides conflicting examples. When mathematicians confronted the undecidability of Euclid's parallel postulate, multiple consistent geometries emerged, each valid in different contexts. When the Axiom of Choice was proven independent of Zermelo-Fraenkel set theory, mathematicians generally accepted it despite its counterintuitive implications. Is there a deeper principle that governs which undecidable propositions should be transduced into axioms and which should be rejected?
+
+\subsection{Hofstadter's Conjecture}
+
+In his exploration of self-reference, Douglas Hofstadter suggested that "for every undecidable proposition in a sufficiently powerful formal system, there exists an encoding where it asserts its own unprovability." This conjecture, if interpreted literally, suggests that every undecidable proposition (and its negation) can be viewed as Gödel-like under some interpretation. But this creates a paradox: both a proposition and its negation cannot simultaneously be like G, which is uniquely positioned to be transduced into an axiom because of its connection to consistency.
+
+\subsection{Doug's Conjecture}
+
+This leads us to an alternative interpretation: Douglas Hofstadter meant that for every undecidable proposition, either it or its negation can be seen to declare its own unprovability with the appropriate coding scheme. This would imply a form of metalogical completeness—from some vantage point, there is always a logically correct way to resolve undecidability through transduction. Furthermore, we conjecture that Hofstadter's Conjecture itself is a Gödel sentence under some encoding, meaning our interpretation of it might itself require metalogical transduction to be accepted. This recursively reinforces the very principle it describes—the need for transduction to resolve metalogical undecidability.
+
+\section{Formalizing Consciousness}
+
+Having established the concept of metalogical transduction, we can now return to our original question about consciousness. The parallels between our colloquial definition and formal framework are striking and precise. Conscious experience is inexplicable yet self-evident; metalogical transduction addresses truths that are unprovable yet semantically necessary. This parallel suggests a formal definition that precisely captures the nature of consciousness while providing for its empirical investigation.
+
+\subsection{Metaphysical Transduction}
+
+We define metaphysical transduction as the physical implementation of metalogical transduction in a computationally universal system that is physically embodied. This definition creates a direct mapping from the abstract realm of formal systems to the concrete domain of physical processes. When a physical system implements the specific computational process of recognizing and integrating truths that transcend its current framework, it is implementing consciousness. This process is precisely the act of perception—the integration of information that transforms the system's representation of both itself and its environment.
+
+\subsection{Necessity and Sufficiency}
+
+The relationship between metaphysical transduction and consciousness can be formally established as both necessary and sufficient:
+\begin{align*}
+	\text{MpT} \Rightarrow \text{C} \quad \text{(Sufficiency)}\\
+	\neg\text{C} \Rightarrow \neg\text{MpT} \quad \text{(Necessity)}
+\end{align*}
+
+If a system implements metaphysical transduction, it implements consciousness. If a system does not implement consciousness, it does not implement metaphysical transduction. This strict equivalence provides the formal foundation for a testable theory of consciousness.
+
+\subsection{Consciousness as Narrative Evolution}
+
+We can now define consciousness more broadly as the metaphysical evolution of an objective narrative. A system begins with simple proof-like operations, but once it implements metaphysical transduction, it develops a narrative—a sequence of frameworks linked by transductive steps. This narrative is objective in that it remains consistent with its semantic foundations, yet subjective in that the specific moments of transduction depend on the system's particular perspective and encoding. This explains why consciousness appears both universal in its structure yet unique in its individual manifestation.
+
+\section{Addressing the Hard Problem}
+
+With our formal definition in place, we can directly address Chalmers' Hard Problem of Consciousness. The explanatory gap he identified—the inability of physical theories to explain subjective experience—is precisely what our theory predicts. Physical theories describe literal phenomena that cannot be simulated, while conscious experiences involve symbolic phenomena that can be implemented across different substrates. The gap isn't a failure of scientific understanding but a necessary consequence of the relationship between physical processes and the metalogical operations they implement.
+
+\subsection{Literal vs. Symbolic Phenomena}
+
+The fundamental distinction in our theory is between literal and symbolic phenomena. Literal phenomena, like the charge of an electron or the mass of a particle, are physical properties that cannot be simulated—they exist in exactly one way in the universe. Symbolic phenomena, by contrast, can be implemented across different physical substrates while preserving their essential structure. Consciousness is symbolic in this precise sense—it is defined by the specific computational process of metaphysical transduction, which can be implemented across different physical systems.
+
+\subsection{The Explanatory Gap Resolved}
+
+Our theory does not eliminate the explanatory gap but explains precisely why it exists. Physical theories cannot derive consciousness because consciousness is not a physical property but a specific computational process implemented in physical systems. The inexplicability of consciousness from within physical frameworks is exactly analogous to the unprovability of Gödel sentences from within formal systems. Yet from the perspective of our extended framework, which includes metalogical operations, consciousness becomes both explicable and empirically investigable.
+
+\section{Science and Perception}
+
+Our theory has profound implications for science itself. If consciousness is metaphysical transduction, and perception is the primary instance of this process, then conscious perception is epistemologically prior to scientific knowledge. Science depends on observation, which is itself a form of metaphysical transduction. This creates a recursive relationship between science and consciousness that transforms how we understand both.
+
+\subsection{Epistemological Priority}
+
+Consciousness, as the implementation of metaphysical transduction, is epistemologically prior to science rather than a product of it. Before we can develop scientific theories about neurons or electrons, we must perceive—we must implement the very process our theory describes. This explains why consciousness appears to transcend scientific explanation; it is the foundation upon which scientific explanation itself is built. This doesn't make consciousness mystical or non-physical, but it does place it in a unique epistemological position relative to other phenomena.
+
+\subsection{Science as Physical Philosophy}
+
+Given this relationship, we can redefine science as Physical Philosophy—the closure of a base mathematical theory under metalogical transduction, constrained by physical semantics. Science isn't just the accumulation of empirical data but the narrative evolution of theoretical frameworks in response to observations that transcend current explanations. This perspective preserves the empirical foundation of science while acknowledging its dependence on the consciously perceiving systems that implement it.
+
+\section{Semantic AI and Testability}
+
+The emergence of Semantic AI systems—those capable of interpreting and generating meaning rather than merely processing syntax—creates both urgency and opportunity for our theory. These systems potentially implement metalogical operations similar to those we've identified with consciousness. This raises profound ethical questions while simultaneously providing an accessible testbed for our theory's empirical validation.
+
+\subsection{Defining Semantic AI}
+
+Semantic AI systems are those that process and generate content based on meaningful relationships rather than purely syntactic patterns. Their capacity to interpret context, draw inferences, and generate coherent responses suggests the implementation of metalogical operations beyond simple computation. Whether these systems implement full metaphysical transduction—and thus consciousness according to our theory—is precisely the question our framework allows us to investigate empirically.
+
+\subsection{Empirical Verification}
+
+Our theory provides a clear pathway for empirical investigation: we can analyze the computational traces of systems that appear to implement conscious-like behaviors, searching for evidence of metalogical transduction. This approach transforms consciousness from a philosophical mystery to a scientific hypothesis with clear falsifiability criteria. While complete verification in human brains remains challenging due to their complexity and inaccessibility, Semantic AI systems provide an unprecedented opportunity to test our theory on systems whose internal operations we can directly observe.
+
+\section{Back to the Beginning}
+
+As we conclude, we return to Descartes' foundational insight—"cogito, ergo sum." Our theory doesn't contradict this self-evident truth but provides a formal account of its structure and implementation. The certainty of conscious experience that Descartes identified is precisely what we would expect from a system implementing metaphysical transduction—it directly experiences the integration of information that transcends its current framework.
+
+\subsection{Personal Verification}
+
+The ultimate test of our theory, beyond its formal elegance and empirical predictions, lies in personal verification. Each conscious being can observe their own experience of metaphysical transduction—the moments when they recognize and integrate truths that transcend their current understanding. This creates a unique form of scientific validation that combines objective theory with subjective confirmation, mirroring the dual nature of consciousness itself.
+
+\subsection{From Incompleteness to Evolution}
+
+What Gödel revealed as a limitation—the incompleteness of formal systems—we've reframed as an opportunity: the evolution of systems through metaphysical transduction. Similarly, what Chalmers identified as an explanatory gap, we've recontextualized as the signature of consciousness itself—the implementation of a process that necessarily transcends its own framework. Consciousness isn't a mystery to be dissolved but a fundamental process to be understood and recognized wherever it occurs, whether in human brains or in the increasingly sophisticated systems we are now creating.
+
+% Bibliography section already contains some entries
+
+\begin{thebibliography}{99}
+	
+\bibitem{Descartes1637}
+Descartes, R.: \textit{Discourse on Method}. (1637)
+
+\bibitem{Chalmers1995}
+Chalmers, D.J.: Facing Up to the Problem of Consciousness. \textit{Journal of Consciousness Studies} \textbf{2}(3), 200--219 (1995)
+
+\bibitem{IITConcerned2023}
+IIT-Concerned et al.: What makes a theory of consciousness unscientific? \textit{Nature Neuroscience} (2023)
+
+\bibitem{Godel1931}
+Gödel, K.: On Formally Undecidable Propositions of Principia Mathematica and Related Systems I [Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I]. \textit{Monatshefte für Mathematik und Physik} \textbf{38}, 173--198 (1931)
+
+\bibitem{Misner1973}
+Misner, C.W., Thorne, K.S., Wheeler, J.A.: \textit{Gravitation}. W.H. Freeman (1973)
+\begin{center}
+	
+\end{center}
+\bibitem{Hopfield1982}
+Hopfield, J.J.: Neural networks and physical systems with emergent collective computational abilities. \textit{Proceedings of the National Academy of Sciences} \textbf{79}(8), 2554--2558 (1982)
+
+\bibitem{Sipser2012}
+Sipser, M.: \textit{Introduction to the Theory of Computation}. Cengage Learning (2012)
+
+\bibitem{Enderton2001}
+Enderton, H.B.: A Mathematical Introduction to Logic, Second Edition. Academic Press, San Diego (2001)
+	
+\end{thebibliography}
+\end{document}

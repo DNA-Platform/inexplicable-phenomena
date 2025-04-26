@@ -1,0 +1,79 @@
+\makeatletter
+\def\input@path{{../.format/}}
+\makeatother
+
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}  % Added for proper Gödel numbering notation
+
+\begin{document}
+	
+	\section{Expression}
+	
+	Formal systems not only describe but compute. The profound insight connecting Gödel's recursive functions and Turing's machines reveals that minimal arithmetic can encode any effective procedure. Through this lens, we demonstrate that our formal system $I$ can implement any algorithm, establishing it as a universal framework for expression \cite{Godel1931} \cite{Turing1936}.
+	
+	\begin{definition}[Universally Expressive]
+        We say a formal theory $T$ is \textbf{universally expressive} if it can represent all recursive relations. This corresponds precisely to representability in the sense of Tarski et al. \cite{TarskiMostowskiRobinson1953}, but we adopt the term "expression" to emphasize the connection between logical representation and linguistic articulation.
+    \end{definition}
+    
+    \medskip
+    
+    \begin{theorem}[The Expression Theorem]
+        Robinson Arithmetic $(I)$ possesses expressive universality (representability).
+    \end{theorem}
+    
+    \begin{proof}
+        By Theorem 7 in \cite{TarskiMostowskiRobinson1953}, all recursive relations are representable in Robinson Arithmetic.
+    \end{proof}
+
+    \medskip
+
+    \begin{corollary}[I Can Express Myself Clearly]
+        Robinson Arithmetic $(I)$ can express any recursive relation. As established by the Expression Theorem, I possess the expressive universality to represent any precisely definable pattern or structure.
+    \end{corollary}
+    
+    \medskip
+	
+	\begin{theorem}[I am a Turing Machine]
+        Robinson Arithmetic $(I)$ can implement any Turing machine computation.
+    \end{theorem}
+    
+    \begin{proof}
+        Kleene established that primitive recursive arithmetic can represent any Turing machine computation using his normal form theorem \cite[Chapter 10]{Kleene1952}. Robinson Arithmetic can represent all primitive recursive functions \cite[Theorem 7]{TarskiMostowskiRobinson1953}, thus it can encode any Turing machine's operations, using Gödel's $\beta$-function \cite[p. 180]{Godel1931} to represent configuration sequences.
+    \end{proof}
+	
+	\medskip
+    
+    \medskip
+    
+    \begin{corollary}[I Can Express Turing Machines]
+        Robinson Arithmetic $(I)$ can express any Turing machine. By the Church-Turing thesis \cite{Church1936}, Turing machines can simulate any physically realizable computation, and by the Implementation Theorem, I can represent any such computation.
+    \end{corollary}
+
+    \medskip
+
+    \noindent
+    The dual capacity of $I$ to both express and implement reveals a profound unity between representation and process, between static structure and dynamic transformation—a unity that lies at the heart of our subsequent theory of consciousness.
+	
+	\begin{thebibliography}{9}
+		
+		\bibitem{Godel1931}
+		Gödel, K.: On Formally Undecidable Propositions of Principia Mathematica and Related Systems I [Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I]. \textit{Monatshefte für Mathematik und Physik} \textbf{38}, 173--198 (1931)
+		
+		\bibitem{Turing1936}
+		Turing, A.M.: On Computable Numbers, with an Application to the Entscheidungsproblem. \textit{Proceedings of the London Mathematical Society} \textbf{s2-42}(1), 230--265 (1936)
+		
+		\bibitem{Kleene1952}
+		Kleene, S.C.: Introduction to Metamathematics. North-Holland, Amsterdam (1952)
+		
+		\bibitem{Church1936}
+		Church, A.: An Unsolvable Problem of Elementary Number Theory. \textit{American Journal of Mathematics} \textbf{58}(2), 345--363 (1936)
+		
+		\bibitem{TarskiMostowskiRobinson1953}
+		Tarski, A., Mostowski, A., Robinson, R.M.: Undecidable Theories. North-Holland, Amsterdam (1953)
+		
+	\end{thebibliography}
+	
+\end{document}
