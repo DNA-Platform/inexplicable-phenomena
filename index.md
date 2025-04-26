@@ -1,7 +1,7 @@
 # Formatting Reference Guide
 
 ## Introduction
-[Docs](docs/formatting.md)
+[Documents](docs/formatting.md)
 
 The Academic Markdown to HTML Converter is a specialized tool designed for academic and technical writing that requires professional-grade LaTeX and citation support. This document serves as a comprehensive reference for the converter's capabilities and usage.
 
