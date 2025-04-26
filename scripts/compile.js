@@ -7,6 +7,32 @@ const SKIP_DIRECTORIES = ['node_modules', 'release']; // Directories to skip by 
 const SKIP_FILES = ['README.md']; // Files to skip by name
 const DOT_REGEX = /^\./; // Regex to match files/directories starting with a dot
 
+// Function to recursively remove empty directories
+function removeEmptyDirectories(directory) {
+  // Skip if directory doesn't exist
+  if (!fs.existsSync(directory)) {
+    return;
+  }
+
+  // Get all items in the directory
+  let items = fs.readdirSync(directory);
+  
+  // Process all subdirectories first
+  for (const item of items) {
+    const fullPath = path.join(directory, item);
+    if (fs.statSync(fullPath).isDirectory()) {
+      removeEmptyDirectories(fullPath);
+    }
+  }
+  
+  // Check if directory is now empty (after processing subdirectories)
+  items = fs.readdirSync(directory);
+  if (items.length === 0) {
+    console.log(`Removing empty directory: ${directory}`);
+    fs.rmdirSync(directory);
+  }
+}
+
 // Helper function to check if a directory contains any non-draft markdown files
 async function directoryHasNonDraftFiles(dir) {
   // Skip if directory doesn't exist or is in skip list
@@ -139,6 +165,10 @@ async function main() {
     
     // If we get here, compilation was successful
     console.log('All files processed successfully');
+    
+    // Remove empty directories from the temporary release folder
+    console.log('Removing empty directories from temporary release folder...');
+    removeEmptyDirectories(tempReleaseFolder);
     
     // Replace the old release folder with the new one
     if (fs.existsSync(releaseFolder)) {
