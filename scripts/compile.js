@@ -1,9 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-const path = require('path');
 const { format } = require('./format.js');
 
-function compileMarkdownFiles(dir, outputDir, callback) {
+// Configuration - Easy to modify
+const SKIP_DIRECTORIES = ['node_modules', 'release']; // Directories to skip by name
+const DOT_DIR_REGEX = /^\./; // Regex to match directories starting with a dot
+
+// Define async compile function
+async function compileMarkdownFiles(dir, outputDir, callback) {
+  // Validate input
+  if (!dir || !outputDir) {
+    throw new Error('Both input and output directories must be specified');
+  }
+
   // Create output directory if it doesn't exist
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
@@ -12,14 +21,22 @@ function compileMarkdownFiles(dir, outputDir, callback) {
   // Read all files and directories in the current directory
   const files = fs.readdirSync(dir);
 
-  files.forEach((file) => {
+  // Process files with Promise.all for concurrent handling
+  await Promise.all(files.map(async (file) => {
     const filePath = path.join(dir, file);
     const stats = fs.statSync(filePath);
 
-    // Skip directories that begin with "."
-    if (stats.isDirectory() && !file.startsWith('.')) {
-      // Recursively compile markdown files in subdirectories
-      compileMarkdownFiles(filePath, path.join(outputDir, file));
+    // Directory handling with filter patterns
+    if (stats.isDirectory()) {
+      // Skip directories that match any of our filters
+      const shouldSkip = 
+        SKIP_DIRECTORIES.includes(file) || // Skip by name
+        DOT_DIR_REGEX.test(file);          // Skip directories starting with dot
+      
+      if (!shouldSkip) {
+        // Recursively compile markdown files in non-skipped subdirectories
+        await compileMarkdownFiles(filePath, path.join(outputDir, file), callback);
+      }
     } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
       // Read the markdown file
       const content = fs.readFileSync(filePath, 'utf8');
@@ -33,30 +50,59 @@ function compileMarkdownFiles(dir, outputDir, callback) {
         const outputFile = path.join(outputDir, file.replace(/\.md$/, '.html'));
         
         // Call the callback function with input and output file paths
-        callback(inputFile, outputFile);
+        await callback(inputFile, outputFile);
       }
     }
+  }));
+}
+
+// Main function to run everything
+async function main() {
+  try {
+    // Define release folder
+    const releaseFolder = './release';
+    
+    // Clear the release folder if it exists
+    if (fs.existsSync(releaseFolder)) {
+      fs.rmSync(releaseFolder, { recursive: true });
+    }
+
+    // Compile markdown files
+    await compileMarkdownFiles('.', releaseFolder, async (inputFile, outputFile) => {
+      console.log(`Processing: ${inputFile} → ${outputFile}`);
+      
+      // Read markdown content
+      const markdown = fs.readFileSync(inputFile, 'utf8');
+      
+      // Convert to HTML (await the promise)
+      const html = await format(markdown);
+      
+      // Create output directory if needed
+      const outputDir = path.dirname(outputFile);
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      
+      // Write HTML to file
+      fs.writeFileSync(outputFile, html, 'utf8');
+      
+      console.log(`Successfully converted ${inputFile} to ${outputFile}`);
+    });
+    
+    console.log('All files processed successfully');
+  } catch (error) {
+    console.error('Error during compilation:', error);
+    process.exit(1);
+  }
+}
+
+// Call main only if this script is being run directly
+if (require.main === module) {
+  main().catch(err => {
+    console.error('Fatal error:', err);
+    process.exit(1);
   });
 }
 
-// Clear the release folder
-const releaseFolder = './release';
-if (fs.existsSync(releaseFolder)) {
-  fs.rmSync(releaseFolder, { recursive: true });
-}
-
-// Compile markdown files
-compileMarkdownFiles('.', releaseFolder, (inputFile, outputFile) => {
-  // Convert markdown to HTML using format function
-  const markdown = fs.readFileSync(inputFile, 'utf8');
-  const html = format(markdown);
-  
-  // Ensure output directory exists
-  const outputDir = path.dirname(outputFile);
-  fs.mkdirSync(outputDir, { recursive: true });
-  
-  // Write the HTML file
-  fs.writeFileSync(outputFile, html, 'utf8');
-  
-  console.log(`Successfully converted ${inputFile} to ${outputFile}`);
-});
+// Export for use as a module
+module.exports = { compileMarkdownFiles };
