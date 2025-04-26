@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { format } = require('./format.js');
+const { format } = require('./format');
 
 // Configuration - Easy to modify
 const SKIP_DIRECTORIES = ['node_modules', 'release']; // Directories to skip by name
@@ -74,8 +74,8 @@ async function main() {
       // Read markdown content
       const markdown = fs.readFileSync(inputFile, 'utf8');
       
-      // Convert to HTML (await the promise)
-      const html = await format(markdown);
+      // Convert to HTML using the format function from format.js
+      await format(inputFile, outputFile);
       
       // Create output directory if needed
       const outputDir = path.dirname(outputFile);
