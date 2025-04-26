@@ -810,9 +810,8 @@ async function main() {
   await format(inputFile, outputFile);
 }
 
-// Execute the main function
-main();
-
-module.exports = {
-  format
-};
+if (require.main === module) {
+  main();
+} else {
+  module.exports = { format };
+}
