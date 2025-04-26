@@ -6,6 +6,7 @@
     "compile": "node scripts/compile.js"
   },
   "dependencies": {
+    "citation-js": "^0.6.7",
     "highlight.js": "^11.7.0",
     "marked": "^4.3.0"
   }
