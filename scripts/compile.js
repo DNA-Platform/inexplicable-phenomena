@@ -118,16 +118,17 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
 // Main function to run everything
 async function main() {
   try {
-    // Define release folder
+    // Define release folders
     const releaseFolder = './release';
+    const tempReleaseFolder = './.release';
     
-    // Clear the release folder if it exists
-    if (fs.existsSync(releaseFolder)) {
-      fs.rmSync(releaseFolder, { recursive: true });
+    // Clear the temp release folder if it exists
+    if (fs.existsSync(tempReleaseFolder)) {
+      fs.rmSync(tempReleaseFolder, { recursive: true });
     }
 
-    // Compile markdown files
-    await compileMarkdownFiles('.', releaseFolder, async (inputFile, outputFile) => {
+    // Compile markdown files to the temporary directory
+    await compileMarkdownFiles('.', tempReleaseFolder, async (inputFile, outputFile) => {
       console.log(`Processing: ${inputFile} → ${outputFile}`);
       
       // Use the format function directly with input and output file paths
@@ -136,9 +137,29 @@ async function main() {
       console.log(`Successfully converted ${inputFile} to ${outputFile}`);
     });
     
+    // If we get here, compilation was successful
     console.log('All files processed successfully');
+    
+    // Replace the old release folder with the new one
+    if (fs.existsSync(releaseFolder)) {
+      console.log('Removing old release folder...');
+      fs.rmSync(releaseFolder, { recursive: true });
+    }
+    
+    console.log('Moving temporary release folder to final location...');
+    fs.renameSync(tempReleaseFolder, releaseFolder);
+    
+    console.log('Release completed successfully');
   } catch (error) {
     console.error('Error during compilation:', error);
+    
+    // Clean up temp directory on error
+    const tempReleaseFolder = './.release';
+    if (fs.existsSync(tempReleaseFolder)) {
+      console.log('Cleaning up temporary release folder due to error...');
+      fs.rmSync(tempReleaseFolder, { recursive: true });
+    }
+    
     process.exit(1);
   }
 }
