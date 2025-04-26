@@ -805,7 +805,6 @@ async function main() {
   await createPage(inputFile, outputFile);
 }
 
-// Execute the main function
-main();module.exports = {
-  format
+module.exports = {
+  format: createPage
 };

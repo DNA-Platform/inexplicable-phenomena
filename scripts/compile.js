@@ -45,4 +45,47 @@ if (fs.existsSync(releaseFolder)) {
 }
 
 // Compile markdown files
-compileMarkdownFiles('.', releaseFolder);
+compileMarkdownFiles('.', releaseFolder, (inputFile, outputFile) => {
+  createPage(inputFile, outputFile);
+});
+
+/**
+ * Main function to convert a markdown file to HTML
+ * @param {string} inputFile - Path to input markdown file
+ * @param {string} outputFile - Path to output HTML file
+ */
+async function createPage(inputFile, outputFile) {
+  try {
+    logger.info(`Starting conversion of: ${inputFile}`);
+    
+    // Read the markdown file
+    logger.info(`Reading markdown file: ${inputFile}`);
+    const markdown = fs.readFileSync(inputFile, 'utf8');
+    logger.info(`Successfully read ${markdown.length} characters from the input file.`);
+    
+    // Convert markdown to HTML
+    const converter = new MarkdownConverter();
+    const htmlBody = await converter.convert(markdown);
+    
+    // Generate complete HTML document
+    const htmlGenerator = new HtmlDocumentGenerator();
+    const title = path.basename(inputFile, '.md');
+    const htmlDocument = htmlGenerator.generate(htmlBody, title);
+    
+    // Ensure output directory exists
+    const outputDir = path.dirname(outputFile);
+    logger.info(`Ensuring output directory exists: ${outputDir}`);
+    fs.mkdirSync(outputDir, { recursive: true });
+    
+    // Write the HTML file
+    logger.info(`Writing HTML file: ${outputFile}`);
+    fs.writeFileSync(outputFile, htmlDocument, 'utf8');
+    
+    logger.info(`Successfully converted ${inputFile} to ${outputFile}`);
+  } catch (err) {
+    logger.error(`Error converting markdown to HTML: ${err.message}`);
+    if (err.stack) {
+      logger.debug(`Stack trace: ${err.stack}`);
+    }
+  }
+}
