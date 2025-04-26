@@ -714,12 +714,15 @@ async function format(inputFile, outputFile) {
     
     logger.info(`Successfully converted ${inputFile} to ${outputFile}`);
     console.log(`\nSuccessfully wrote ${outputFile}`);
+    
+    return Promise.resolve(); // Explicitly return a resolved promise
   } catch (err) {
     logger.error(`Error converting markdown to HTML: ${err.message}`);
     console.error(`\nError: ${err.message}`);
     if (err.stack) {
       logger.debug(`Stack trace: ${err.stack}`);
     }
+    return Promise.reject(err); // Return a rejected promise on error
   }
 }
 
