@@ -4,7 +4,8 @@ const { format } = require('./format');
 
 // Configuration - Easy to modify
 const SKIP_DIRECTORIES = ['node_modules', 'release']; // Directories to skip by name
-const DOT_DIR_REGEX = /^\./; // Regex to match directories starting with a dot
+const SKIP_FILES = ['README.md']; // Files to skip by name
+const DOT_REGEX = /^\./; // Regex to match files/directories starting with a dot
 
 // Define async compile function
 async function compileMarkdownFiles(dir, outputDir, callback) {
@@ -26,18 +27,24 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
     const filePath = path.join(dir, file);
     const stats = fs.statSync(filePath);
 
+    // Skip files and directories that start with a dot
+    if (DOT_REGEX.test(file)) {
+      return; // Skip this file/directory
+    }
+
     // Directory handling with filter patterns
     if (stats.isDirectory()) {
-      // Skip directories that match any of our filters
-      const shouldSkip = 
-        SKIP_DIRECTORIES.includes(file) || // Skip by name
-        DOT_DIR_REGEX.test(file);          // Skip directories starting with dot
-      
-      if (!shouldSkip) {
+      // Skip directories in the skip list
+      if (!SKIP_DIRECTORIES.includes(file)) {
         // Recursively compile markdown files in non-skipped subdirectories
         await compileMarkdownFiles(filePath, path.join(outputDir, file), callback);
       }
     } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
+      // Skip specific files by name
+      if (SKIP_FILES.includes(file)) {
+        return; // Skip this file
+      }
+      
       // Read the markdown file
       const content = fs.readFileSync(filePath, 'utf8');
       
