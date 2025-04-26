@@ -11,16 +11,21 @@ const DOT_REGEX = /^\./; // Regex to match files/directories starting with a dot
 function removeEmptyDirectories(directory) {
   // Skip if directory doesn't exist
   if (!fs.existsSync(directory)) {
+    console.log(`Directory does not exist, skipping: ${directory}`);
     return;
   }
 
+  console.log(`Checking directory for emptiness: ${directory}`);
+  
   // Get all items in the directory
   let items = fs.readdirSync(directory);
+  console.log(`Directory ${directory} has ${items.length} items`);
   
   // Process all subdirectories first
   for (const item of items) {
     const fullPath = path.join(directory, item);
     if (fs.statSync(fullPath).isDirectory()) {
+      console.log(`Found subdirectory: ${fullPath}`);
       removeEmptyDirectories(fullPath);
     }
   }
@@ -30,6 +35,8 @@ function removeEmptyDirectories(directory) {
   if (items.length === 0) {
     console.log(`Removing empty directory: ${directory}`);
     fs.rmdirSync(directory);
+  } else {
+    console.log(`Directory not empty, keeping: ${directory} (${items.length} items)`);
   }
 }
 
@@ -177,7 +184,18 @@ async function main() {
     for (const item of tempItems) {
       const fullPath = path.join(tempReleaseFolder, item);
       if (fs.statSync(fullPath).isDirectory()) {
-        removeEmptyDirectories(fullPath);
+        // Check if this is the scripts directory
+        if (item === 'scripts') {
+          console.log(`Checking scripts directory: ${fullPath}`);
+          // If it's empty, remove it directly
+          const scriptItems = fs.readdirSync(fullPath);
+          if (scriptItems.length === 0) {
+            console.log(`Removing empty scripts directory: ${fullPath}`);
+            fs.rmdirSync(fullPath);
+          }
+        } else {
+          removeEmptyDirectories(fullPath);
+        }
       }
     }
     
