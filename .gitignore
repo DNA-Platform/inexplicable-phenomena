@@ -1,4 +1,3 @@
-.aider*
 # Node.js / npm
 node_modules/
 npm-debug.log
@@ -30,7 +29,6 @@ release/
 Thumbs.db
 
 # Aider
-.aider*
 .aider.chat.history.md
 .aider.input.history
 
