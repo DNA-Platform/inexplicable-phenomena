@@ -152,6 +152,10 @@ async function main() {
     if (fs.existsSync(tempReleaseFolder)) {
       fs.rmSync(tempReleaseFolder, { recursive: true });
     }
+    
+    // Create the temporary release folder
+    fs.mkdirSync(tempReleaseFolder, { recursive: true });
+    console.log(`Created temporary directory: ${tempReleaseFolder}`);
 
     // Compile markdown files to the temporary directory
     await compileMarkdownFiles('.', tempReleaseFolder, async (inputFile, outputFile) => {
