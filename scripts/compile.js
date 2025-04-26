@@ -7,6 +7,52 @@ const SKIP_DIRECTORIES = ['node_modules', 'release']; // Directories to skip by 
 const SKIP_FILES = ['README.md']; // Files to skip by name
 const DOT_REGEX = /^\./; // Regex to match files/directories starting with a dot
 
+// Helper function to check if a directory contains any non-draft markdown files
+async function directoryHasNonDraftFiles(dir) {
+  // Skip if directory doesn't exist or is in skip list
+  if (!fs.existsSync(dir) || SKIP_DIRECTORIES.includes(path.basename(dir))) {
+    return false;
+  }
+
+  const files = fs.readdirSync(dir);
+  
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const stats = fs.statSync(filePath);
+    
+    // Skip files and directories that start with a dot
+    if (DOT_REGEX.test(file)) {
+      continue;
+    }
+    
+    // Check subdirectories recursively
+    if (stats.isDirectory()) {
+      if (!SKIP_DIRECTORIES.includes(file)) {
+        if (await directoryHasNonDraftFiles(filePath)) {
+          return true;
+        }
+      }
+    } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
+      // Skip specific files by name
+      if (SKIP_FILES.includes(file)) {
+        continue;
+      }
+      
+      // Read the markdown file
+      const content = fs.readFileSync(filePath, 'utf8');
+      
+      // Check if the file is a draft
+      const lines = content.split('\n');
+      const firstLine = lines[0].trim().toLowerCase();
+      if (firstLine !== '[draft]') {
+        return true; // Found a non-draft markdown file
+      }
+    }
+  }
+  
+  return false; // No non-draft markdown files found
+}
+
 // Define async compile function
 async function compileMarkdownFiles(dir, outputDir, callback) {
   // Validate input
@@ -14,9 +60,15 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
     throw new Error('Both input and output directories must be specified');
   }
 
-  // Create output directory if it doesn't exist
-  if (!fs.existsSync(outputDir)) {
+  // Check if this directory contains any non-draft markdown files
+  // (either directly or in subdirectories)
+  const hasNonDraftFiles = await directoryHasNonDraftFiles(dir);
+  
+  // Only create output directory if there are non-draft files to process
+  if (hasNonDraftFiles && !fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
+  } else if (!hasNonDraftFiles) {
+    return; // Skip this directory entirely if it has no non-draft files
   }
 
   // Read all files and directories in the current directory
