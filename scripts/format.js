@@ -7,7 +7,6 @@
  * - Uses Citation.js for proper academic citation handling
  * - Properly handles inline and block math expressions
  * - Supports LaTeX environments (theorem, lemma, etc.)
- * - Transforms markdown links for web compatibility
  * - Avoids CSS validation errors with proper encoding
  * - Includes syntax highlighting for code blocks
  * 
@@ -331,60 +330,6 @@ class CitationHandler {
 }
 
 /**
- * Class to handle link transformations for web compatibility
- */
-class LinkTransformer {
-  /**
-   * Transform markdown links to be web-compatible while keeping everything relative
-   * @param {string} html - The HTML content with potentially web-incompatible links
-   * @return {string} - HTML with web-compatible links
-   */
-  transformLinks(html) {
-    logger.info('Transforming links for web compatibility...');
-    
-    let processedHtml = html;
-    
-    // 1. Convert .md links to .html for internal pages while preserving relativity
-    processedHtml = processedHtml.replace(
-      /href="([^"#:]+)\.md(#[^"]*)?"/g, 
-      'href="$1.html$2"'
-    );
-    
-    // 2. Ensure proper URL encoding for anchor links
-    processedHtml = processedHtml.replace(
-      /href="#([^"]*)"/g,
-      (match, anchor) => {
-        // Convert spaces and special characters in anchors to their URL-encoded versions
-        // GitHub Pages uses lowercase and replaces spaces with hyphens
-        const encodedAnchor = encodeURIComponent(
-          anchor
-            .toLowerCase()
-            .replace(/\s+/g, '-')
-            .replace(/[^\w-]/g, '')
-        );
-        return `href="#${encodedAnchor}"`;
-      }
-    );
-    
-    // 3. Make sure all relative links without .html or # are properly formed
-    // This handles cases like href="folder/page" to href="folder/page.html"
-    processedHtml = processedHtml.replace(
-      /href="([^"#:]+(?!\.[a-zA-Z0-9]+))"/g,
-      (match, path) => {
-        // If the path doesn't end with a file extension, add .html
-        if (!path.match(/\.[a-zA-Z0-9]+$/)) {
-          return `href="${path}.html"`;
-        }
-        return match;
-      }
-    );
-    
-    logger.info('Link transformation complete.');
-    return processedHtml;
-  }
-}
-
-/**
  * Class to handle HTML post-processing and fixes
  */
 class HtmlProcessor {
@@ -488,7 +433,7 @@ class MarkdownConverter {
     this.latexHandler = new LaTeXHandler();
     this.citationHandler = new CitationHandler();
     this.htmlProcessor = new HtmlProcessor();
-    this.linkTransformer = new LinkTransformer(); // Add the LinkTransformer
+    this.linkTransformer = new LinkTransformer();
   }
 
   /**
@@ -520,10 +465,10 @@ class MarkdownConverter {
     
     // Step 7: Apply HTML fixes
     const processedHtml = this.htmlProcessor.process(htmlWithCitations);
-    
+
     // Step 8: Transform links for web compatibility
     const htmlWithWebLinks = this.linkTransformer.transformLinks(processedHtml);
-    
+  
     // Step 9: Add bibliography section if needed
     let finalHtml = htmlWithWebLinks;
     if (Object.keys(citations).length > 0) {
@@ -740,7 +685,7 @@ function parseArguments() {
  * @param {string} inputFile - Path to input markdown file
  * @param {string} outputFile - Path to output HTML file
  */
-async function createPage(inputFile, outputFile) {
+async function format(inputFile, outputFile) {
   try {
     logger.info(`Starting conversion of: ${inputFile}`);
     
@@ -779,6 +724,60 @@ async function createPage(inputFile, outputFile) {
 }
 
 /**
+ * Class to handle link transformations for web compatibility
+ */
+class LinkTransformer {
+  /**
+   * Transform markdown links to be web-compatible while keeping everything relative
+   * @param {string} html - The HTML content with potentially web-incompatible links
+   * @return {string} - HTML with web-compatible links
+   */
+  transformLinks(html) {
+    logger.info('Transforming links for web compatibility...');
+    
+    let processedHtml = html;
+    
+    // 1. Convert .md links to .html for internal pages while preserving relativity
+    processedHtml = processedHtml.replace(
+      /href="([^"#:]+)\.md(#[^"]*)?"/g, 
+      'href="$1.html$2"'
+    );
+    
+    // 2. Ensure proper URL encoding for anchor links
+    processedHtml = processedHtml.replace(
+      /href="#([^"]*)"/g,
+      (match, anchor) => {
+        // Convert spaces and special characters in anchors to their URL-encoded versions
+        // GitHub Pages uses lowercase and replaces spaces with hyphens
+        const encodedAnchor = encodeURIComponent(
+          anchor
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w-]/g, '')
+        );
+        return `href="#${encodedAnchor}"`;
+      }
+    );
+    
+    // 3. Make sure all relative links without .html or # are properly formed
+    // This handles cases like href="folder/page" to href="folder/page.html"
+    processedHtml = processedHtml.replace(
+      /href="([^"#:]+(?!\.[a-zA-Z0-9]+))"/g,
+      (match, path) => {
+        // If the path doesn't end with a file extension, add .html
+        if (!path.match(/\.[a-zA-Z0-9]+$/)) {
+          return `href="${path}.html"`;
+        }
+        return match;
+      }
+    );
+    
+    logger.info('Link transformation complete.');
+    return processedHtml;
+  }
+}
+
+/**
  * Main entry point
  */
 async function main() {
@@ -798,13 +797,19 @@ async function main() {
     outputFile = args.outputFile;
   } else {
     // Default paths
-    logger.error('No input/output files specified. Please provide an input markdown file and output HTML file.');
-    process.exit(1);
+    // inputFile = path.join(__dirname, '..', '..', 'interpreter', 'new-page.md');
+    // outputFile = path.join(__dirname, '..', '..', 'interpretation', 'index.html');
+    logger.info('No input/output files specified, using defaults:');
+    logger.info(`Input: ${inputFile}`);
+    logger.info(`Output: ${outputFile}`);
   }
 
-  await createPage(inputFile, outputFile);
+  await format(inputFile, outputFile);
 }
 
+// Execute the main function
+main();
+
 module.exports = {
-  format: createPage
+  format
 };
