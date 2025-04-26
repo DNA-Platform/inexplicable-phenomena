@@ -71,20 +71,8 @@ async function main() {
     await compileMarkdownFiles('.', releaseFolder, async (inputFile, outputFile) => {
       console.log(`Processing: ${inputFile} → ${outputFile}`);
       
-      // Read markdown content
-      const markdown = fs.readFileSync(inputFile, 'utf8');
-      
-      // Convert to HTML using the format function from format.js
+      // Use the format function directly with input and output file paths
       await format(inputFile, outputFile);
-      
-      // Create output directory if needed
-      const outputDir = path.dirname(outputFile);
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-      }
-      
-      // Write HTML to file
-      fs.writeFileSync(outputFile, html, 'utf8');
       
       console.log(`Successfully converted ${inputFile} to ${outputFile}`);
     });
