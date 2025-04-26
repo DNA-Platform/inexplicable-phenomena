@@ -798,12 +798,8 @@ async function main() {
     outputFile = args.outputFile;
   } else {
     // Default paths
-    // inputFile = path.join(__dirname, '..', '..', 'interpreter', 'new-page.md');
-  
-    // outputFile = path.join(__dirname, '..', '..', 'interpretation', 'index.html');
-    logger.info('No input/output files specified, using defaults:');
-    logger.info(`Input: ${inputFile}`);
-    logger.info(`Output: ${outputFile}`);
+    logger.error('No input/output files specified. Please provide an input markdown file and output HTML file.');
+    process.exit(1);
   }
 
   await createPage(inputFile, outputFile);
