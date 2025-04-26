@@ -810,4 +810,6 @@ async function main() {
 }
 
 // Execute the main function
-main();
+main();module.exports = {
+  format
+};
