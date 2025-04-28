@@ -73,11 +73,15 @@ async function directoryHasNonDraftFiles(dir) {
       const lines = content.split('\n');
       const firstLine = lines[0].trim().toLowerCase();
       if (firstLine !== '[draft]') {
+        console.log(`Found non-draft file: ${filePath}`);
         return true; // Found a non-draft markdown file
+      } else {
+        console.log(`Skipping draft file: ${filePath}`);
       }
     }
   }
   
+  console.log(`No non-draft markdown files found in: ${dir}`);
   return false; // No non-draft markdown files found
 }
 
@@ -129,6 +133,7 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
       // Check if the file is a draft
       const lines = content.split('\n');
       const firstLine = lines[0].trim().toLowerCase();
+      console.log(`Checking if file is draft: ${filePath}, first line: "${firstLine}"`);
       if (firstLine !== '[draft]') {
         // Construct input and output file paths
         const inputFile = filePath;
@@ -138,8 +143,11 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
         const webFriendlyBaseName = transformToWebFriendlyName(baseName);
         const outputFile = path.join(outputDir, webFriendlyBaseName + '.html');
         
+        console.log(`Processing non-draft file: ${inputFile} -> ${outputFile}`);
         // Call the callback function with input and output file paths
         await callback(inputFile, outputFile);
+      } else {
+        console.log(`Skipping draft file: ${filePath}`);
       }
     }
   }));
@@ -216,6 +224,25 @@ async function main() {
     // If we get here, compilation was successful
     console.log('All files processed successfully');
     
+    // Debug: List all files in the temporary release folder
+    console.log('Files in temporary release folder:');
+    function listFilesRecursively(dir, indent = '') {
+      if (!fs.existsSync(dir)) return;
+      
+      const items = fs.readdirSync(dir);
+      for (const item of items) {
+        const fullPath = path.join(dir, item);
+        const stats = fs.statSync(fullPath);
+        if (stats.isDirectory()) {
+          console.log(`${indent}Directory: ${fullPath}`);
+          listFilesRecursively(fullPath, indent + '  ');
+        } else {
+          console.log(`${indent}File: ${fullPath}`);
+        }
+      }
+    }
+    listFilesRecursively(tempReleaseFolder);
+    
     // Remove empty directories from the temporary release folder
     console.log('Removing empty directories from temporary release folder...');
     // Make sure we're only removing empty directories within the temp folder, not the folder itself
@@ -246,6 +273,10 @@ async function main() {
     
     console.log('Moving temporary release folder to final location...');
     fs.renameSync(tempReleaseFolder, releaseFolder);
+    
+    // Verify the release folder contents
+    console.log('Files in final release folder:');
+    listFilesRecursively(releaseFolder);
     
     console.log('Release completed successfully');
   } catch (error) {
