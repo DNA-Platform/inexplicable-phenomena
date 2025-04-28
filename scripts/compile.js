@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const { format } = require('./format');
+const { format, transformToWebFriendlyName } = require('./format');
 
 // Configuration - Easy to modify
 const SKIP_DIRECTORIES = ['node_modules', 'release', '.release']; // Directories to skip by name
 const SKIP_FILES = ['README.md']; // Files to skip by name
-const DOT_DIR_REGEX = /^\./; // Regex to match directories starting with a dot
 const SOURCE_DIR = 'research'; // Only look for markdown in this directory
 
 // Function to recursively remove empty directories
@@ -53,11 +52,6 @@ async function directoryHasNonDraftFiles(dir) {
   for (const file of files) {
     const filePath = path.join(dir, file);
     const stats = fs.statSync(filePath);
-    
-    // Skip directories that start with a dot (but not files)
-    if (stats.isDirectory() && DOT_DIR_REGEX.test(file)) {
-      continue;
-    }
     
     // Check subdirectories recursively
     if (stats.isDirectory()) {
@@ -113,17 +107,15 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
     const filePath = path.join(dir, file);
     const stats = fs.statSync(filePath);
 
-    // Skip directories that start with a dot (but not files)
-    if (stats.isDirectory() && DOT_DIR_REGEX.test(file)) {
-      return; // Skip this directory
-    }
-
     // Directory handling with filter patterns
     if (stats.isDirectory()) {
       // Skip directories in the skip list
       if (!SKIP_DIRECTORIES.includes(file)) {
+        // Transform the directory name to be web-friendly
+        const webFriendlyDirName = transformToWebFriendlyName(file);
+        
         // Recursively compile markdown files in non-skipped subdirectories
-        await compileMarkdownFiles(filePath, path.join(outputDir, file), callback);
+        await compileMarkdownFiles(filePath, path.join(outputDir, webFriendlyDirName), callback);
       }
     } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
       // Skip specific files by name
@@ -140,7 +132,11 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
       if (firstLine !== '[draft]') {
         // Construct input and output file paths
         const inputFile = filePath;
-        const outputFile = path.join(outputDir, file.replace(/\.md$/, '.html'));
+        
+        // Transform the filename to be web-friendly
+        const baseName = path.basename(file, '.md');
+        const webFriendlyBaseName = transformToWebFriendlyName(baseName);
+        const outputFile = path.join(outputDir, webFriendlyBaseName + '.html');
         
         // Call the callback function with input and output file paths
         await callback(inputFile, outputFile);
@@ -157,13 +153,20 @@ function transformPath(inputPath) {
   // Split the path into segments
   const segments = outputPath.split(path.sep);
   
-  // Process each segment to strip non-alphabetic characters from the beginning
+  // Process each segment to make it web-friendly
   const processedSegments = segments.map(segment => {
     // Skip the 'release' segment itself
     if (segment === 'release') return segment;
     
-    // Strip non-alphabetic characters from the beginning of each segment
-    return segment.replace(/^[^a-zA-Z]+/, '');
+    // If it's a file with extension, process the basename and keep the extension
+    if (segment.includes('.')) {
+      const ext = path.extname(segment);
+      const base = path.basename(segment, ext);
+      return transformToWebFriendlyName(base) + ext;
+    }
+    
+    // Otherwise just transform the segment
+    return transformToWebFriendlyName(segment);
   });
   
   // Rejoin the segments

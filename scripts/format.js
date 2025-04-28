@@ -727,6 +727,24 @@ async function format(inputFile, outputFile) {
 }
 
 /**
+ * Transform a file or directory name to be web-friendly
+ * @param {string} name - The original file or directory name
+ * @return {string} - Web-friendly version of the name
+ */
+function transformToWebFriendlyName(name) {
+  // Remove any leading non-alphabetic characters
+  let webFriendlyName = name.replace(/^[^a-zA-Z]+/, '');
+  
+  // Replace all whitespace with dashes
+  webFriendlyName = webFriendlyName.replace(/\s+/g, '-');
+  
+  // Convert to lowercase
+  webFriendlyName = webFriendlyName.toLowerCase();
+  
+  return webFriendlyName;
+}
+
+/**
  * Class to handle link transformations for web compatibility
  */
 class LinkTransformer {
@@ -813,5 +831,5 @@ async function main() {
 if (require.main === module) {
   main();
 } else {
-  module.exports = { format };
+  module.exports = { format, transformToWebFriendlyName };
 }
