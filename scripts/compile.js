@@ -2,10 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { format, transformToWebFriendlyName } = require('./format');
 
-// Configuration - Easy to modify
-const SKIP_DIRECTORIES = ['node_modules', 'release', '.release']; // Directories to skip by name
-const SKIP_FILES = ['README.md']; // Files to skip by name
-const SOURCE_DIR = 'research'; // Only look for markdown in this directory
+// Only look for markdown in this directory
+const SOURCE_DIR = 'research'; 
 
 // Function to recursively remove empty directories
 function removeEmptyDirectories(directory) {
@@ -43,7 +41,7 @@ function removeEmptyDirectories(directory) {
 // Helper function to check if a directory contains any non-draft markdown files
 async function directoryHasNonDraftFiles(dir) {
   // Skip if directory doesn't exist or is in skip list
-  if (!fs.existsSync(dir) || SKIP_DIRECTORIES.includes(path.basename(dir))) {
+  if (!fs.existsSync(dir)) {
     return false;
   }
 
@@ -55,17 +53,10 @@ async function directoryHasNonDraftFiles(dir) {
     
     // Check subdirectories recursively
     if (stats.isDirectory()) {
-      if (!SKIP_DIRECTORIES.includes(file)) {
-        if (await directoryHasNonDraftFiles(filePath)) {
-          return true;
-        }
+      if (await directoryHasNonDraftFiles(filePath)) {
+        return true;
       }
     } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
-      // Skip specific files by name
-      if (SKIP_FILES.includes(file)) {
-        continue;
-      }
-      
       // Read the markdown file
       const content = fs.readFileSync(filePath, 'utf8');
       
@@ -113,20 +104,12 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
 
     // Directory handling with filter patterns
     if (stats.isDirectory()) {
-      // Skip directories in the skip list
-      if (!SKIP_DIRECTORIES.includes(file)) {
-        // Transform the directory name to be web-friendly
-        const webFriendlyDirName = transformToWebFriendlyName(file);
-        
-        // Recursively compile markdown files in non-skipped subdirectories
-        await compileMarkdownFiles(filePath, path.join(outputDir, webFriendlyDirName), callback);
-      }
-    } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
-      // Skip specific files by name
-      if (SKIP_FILES.includes(file)) {
-        return; // Skip this file
-      }
+      // Transform the directory name to be web-friendly
+      const webFriendlyDirName = transformToWebFriendlyName(file);
       
+      // Recursively compile markdown files in non-skipped subdirectories
+      await compileMarkdownFiles(filePath, path.join(outputDir, webFriendlyDirName), callback);
+    } else if (stats.isFile() && path.extname(file).toLowerCase() === '.md') {
       // Read the markdown file
       const content = fs.readFileSync(filePath, 'utf8');
       
@@ -186,7 +169,7 @@ async function main() {
   try {
     // Define release folders
     const releaseFolder = './release';
-    const tempReleaseFolder = './.release';
+    const tempReleaseFolder = './new-release';
     
     // Check if source directory exists
     if (!fs.existsSync(SOURCE_DIR)) {
@@ -216,6 +199,7 @@ async function main() {
       }
       
       // Use the format function directly with input and output file paths
+      console.log({ inputFile, transformedOutputFile });
       await format(inputFile, transformedOutputFile);
       
       // Verify the file was created
@@ -271,26 +255,25 @@ async function main() {
       }
     }
     
-    // COMMENTED OUT: Replace the old release folder with the new one
-    // if (fs.existsSync(releaseFolder)) {
-    //   console.log('Removing old release folder...');
-    //   fs.rmSync(releaseFolder, { recursive: true });
-    // }
+    if (fs.existsSync(releaseFolder)) {
+      console.log('Removing old release folder...');
+      fs.rmSync(releaseFolder, { recursive: true });
+    }
     
     console.log('SKIPPING: Moving temporary release folder to final location...');
-    // fs.renameSync(tempReleaseFolder, releaseFolder);
+    fs.renameSync(tempReleaseFolder, releaseFolder);
     console.log('Keeping temporary release folder for inspection at: ' + tempReleaseFolder);
     
     // Verify the release folder contents
     console.log('Files in final release folder:');
     listFilesRecursively(releaseFolder);
-    
+
     console.log('Release completed successfully');
   } catch (error) {
     console.error('Error during compilation:', error);
     
     // Clean up temp directory on error
-    const tempReleaseFolder = './.release';
+    const tempReleaseFolder = './new-release';
     if (fs.existsSync(tempReleaseFolder)) {
       console.log('Cleaning up temporary release folder due to error...');
       fs.rmSync(tempReleaseFolder, { recursive: true });

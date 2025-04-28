@@ -39,3 +39,4 @@ logs/
 # Aider
 
 .aider*
+.aider.tags.cache.v4/cache.db

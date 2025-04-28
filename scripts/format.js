@@ -732,16 +732,16 @@ async function format(inputFile, outputFile) {
  * @return {string} - Web-friendly version of the name
  */
 function transformToWebFriendlyName(name) {
-  // Remove any leading non-alphabetic characters
-  let webFriendlyName = name.replace(/^[^a-zA-Z]+/, '');
-  
-  // Replace all whitespace with dashes
-  webFriendlyName = webFriendlyName.replace(/\s+/g, '-');
-  
-  // Convert to lowercase
-  webFriendlyName = webFriendlyName.toLowerCase();
-  
-  return webFriendlyName;
+  return name
+    // Replace literal "." with empty string
+    .replace(/\./g, "")
+    // Replace whitespace with a single "-"
+    .replace(/\s+/g, "-")
+    // Replace anything between a slash (/ or \) and [a-zA-Z] with just the letter
+    // Using non-capturing group (?:/) for the slash alternatives
+    .replace(/(?:\/|\\)[^\/\\a-zA-Z]*([a-zA-Z])/g, "$1")
+    // Convert to lowercase
+    .toLowerCase();
 }
 
 /**
@@ -760,8 +760,10 @@ class LinkTransformer {
     
     // 1. Convert .md links to .html for internal pages while preserving relativity
     processedHtml = processedHtml.replace(
-      /href="([^"#:]+)\.md(#[^"]*)?"/g, 
-      'href="$1.html$2"'
+      /href="([^"#:]+)\.md(#[^"]*)?"/g,
+      function(match, p1, p2) {
+        return 'href="' + p1.replace(/\./g, "").replace(/\s+/g, "-").replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1") + '.html' + (p2 || '') + '"';
+      }
     );
     
     // 2. Ensure proper URL encoding for anchor links
