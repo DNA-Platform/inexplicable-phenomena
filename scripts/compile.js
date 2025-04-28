@@ -5,7 +5,7 @@ const { format } = require('./format');
 // Configuration - Easy to modify
 const SKIP_DIRECTORIES = ['node_modules', 'release', '.release']; // Directories to skip by name
 const SKIP_FILES = ['README.md']; // Files to skip by name
-const DOT_REGEX = /^\./; // Regex to match directories starting with a dot
+const DOT_DIR_REGEX = /^\./; // Regex to match directories starting with a dot
 
 // Function to recursively remove empty directories
 function removeEmptyDirectories(directory) {
@@ -53,8 +53,8 @@ async function directoryHasNonDraftFiles(dir) {
     const filePath = path.join(dir, file);
     const stats = fs.statSync(filePath);
     
-    // Skip files and directories that start with a dot
-    if (DOT_REGEX.test(file)) {
+    // Skip directories that start with a dot (but not files)
+    if (stats.isDirectory() && DOT_DIR_REGEX.test(file)) {
       continue;
     }
     
@@ -112,9 +112,9 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
     const filePath = path.join(dir, file);
     const stats = fs.statSync(filePath);
 
-    // Skip files and directories that start with a dot
-    if (DOT_REGEX.test(file)) {
-      return; // Skip this file/directory
+    // Skip directories that start with a dot (but not files)
+    if (stats.isDirectory() && DOT_DIR_REGEX.test(file)) {
+      return; // Skip this directory
     }
 
     // Directory handling with filter patterns
@@ -139,7 +139,14 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
       if (firstLine !== '[draft]') {
         // Construct input and output file paths
         const inputFile = filePath;
-        const outputFile = path.join(outputDir, file.replace(/\.md$/, '.html'));
+        
+        // For files that don't start with a-zA-Z, trim those characters for the HTML filename
+        let outputFileName = file;
+        if (!/^[a-zA-Z]/.test(file)) {
+          outputFileName = file.replace(/^[^a-zA-Z]+/, '');
+        }
+        
+        const outputFile = path.join(outputDir, outputFileName.replace(/\.md$/, '.html'));
         
         // Call the callback function with input and output file paths
         await callback(inputFile, outputFile);
