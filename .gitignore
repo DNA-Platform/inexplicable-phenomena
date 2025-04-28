@@ -30,7 +30,12 @@ Thumbs.db
 # Aider
 .aider.chat.history.md
 .aider.input.history
+.aider.tags.cache.v4/
 
 # Logs
 logs/
 *.log
+
+# Aider
+
+.aider*
