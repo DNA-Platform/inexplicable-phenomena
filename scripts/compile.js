@@ -6,6 +6,7 @@ const { format } = require('./format');
 const SKIP_DIRECTORIES = ['node_modules', 'release', '.release']; // Directories to skip by name
 const SKIP_FILES = ['README.md']; // Files to skip by name
 const DOT_DIR_REGEX = /^\./; // Regex to match directories starting with a dot
+const SOURCE_DIR = 'research'; // Only look for markdown in this directory
 
 // Function to recursively remove empty directories
 function removeEmptyDirectories(directory) {
@@ -139,14 +140,7 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
       if (firstLine !== '[draft]') {
         // Construct input and output file paths
         const inputFile = filePath;
-        
-        // For files that don't start with a-zA-Z, trim those characters for the HTML filename
-        let outputFileName = file;
-        if (!/^[a-zA-Z]/.test(file)) {
-          outputFileName = file.replace(/^[^a-zA-Z]+/, '');
-        }
-        
-        const outputFile = path.join(outputDir, outputFileName.replace(/\.md$/, '.html'));
+        const outputFile = path.join(outputDir, file.replace(/\.md$/, '.html'));
         
         // Call the callback function with input and output file paths
         await callback(inputFile, outputFile);
@@ -155,12 +149,39 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
   }));
 }
 
+// Function to transform paths from research to release
+function transformPath(inputPath) {
+  // Replace 'research' with 'release' in the path
+  let outputPath = inputPath.replace(/^research/, 'release');
+  
+  // Split the path into segments
+  const segments = outputPath.split(path.sep);
+  
+  // Process each segment to strip non-alphabetic characters from the beginning
+  const processedSegments = segments.map(segment => {
+    // Skip the 'release' segment itself
+    if (segment === 'release') return segment;
+    
+    // Strip non-alphabetic characters from the beginning of each segment
+    return segment.replace(/^[^a-zA-Z]+/, '');
+  });
+  
+  // Rejoin the segments
+  return processedSegments.join(path.sep);
+}
+
 // Main function to run everything
 async function main() {
   try {
     // Define release folders
     const releaseFolder = './release';
     const tempReleaseFolder = './.release';
+    
+    // Check if source directory exists
+    if (!fs.existsSync(SOURCE_DIR)) {
+      console.log(`Source directory '${SOURCE_DIR}' does not exist. Creating it...`);
+      fs.mkdirSync(SOURCE_DIR, { recursive: true });
+    }
     
     // Clear the temp release folder if it exists
     if (fs.existsSync(tempReleaseFolder)) {
@@ -171,14 +192,22 @@ async function main() {
     fs.mkdirSync(tempReleaseFolder, { recursive: true });
     console.log(`Created temporary directory: ${tempReleaseFolder}`);
 
-    // Compile markdown files to the temporary directory
-    await compileMarkdownFiles('.', tempReleaseFolder, async (inputFile, outputFile) => {
-      console.log(`Processing: ${inputFile} → ${outputFile}`);
+    // Compile markdown files to the temporary directory - only from the research folder
+    await compileMarkdownFiles(SOURCE_DIR, tempReleaseFolder, async (inputFile, outputFile) => {
+      // Transform the output path
+      const transformedOutputFile = transformPath(outputFile);
+      console.log(`Processing: ${inputFile} → ${transformedOutputFile}`);
+      
+      // Ensure the directory for the output file exists
+      const outputDir = path.dirname(transformedOutputFile);
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
       
       // Use the format function directly with input and output file paths
-      await format(inputFile, outputFile);
+      await format(inputFile, transformedOutputFile);
       
-      console.log(`Successfully converted ${inputFile} to ${outputFile}`);
+      console.log(`Successfully converted ${inputFile} to ${transformedOutputFile}`);
     });
     
     // If we get here, compilation was successful
