@@ -5,7 +5,7 @@ const { format } = require('./format');
 // Configuration - Easy to modify
 const SKIP_DIRECTORIES = ['node_modules', 'release', '.release']; // Directories to skip by name
 const SKIP_FILES = ['README.md']; // Files to skip by name
-const DOT_REGEX = /^\./; // Regex to match files/directories starting with a dot
+const DOT_REGEX = /^\./; // Regex to match directories starting with a dot
 
 // Function to recursively remove empty directories
 function removeEmptyDirectories(directory) {
