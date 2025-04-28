@@ -737,9 +737,11 @@ function transformToWebFriendlyName(name) {
     .replace(/\./g, "")
     // Replace whitespace with a single "-"
     .replace(/\s+/g, "-")
-    // Replace anything between a slash (/ or \) and [a-zA-Z] with just the letter
-    // Using non-capturing group (?:/) for the slash alternatives
-    .replace(/(?:\/|\\)[^\/\\a-zA-Z]*([a-zA-Z])/g, "$1")
+    // Replace anything between a slash (/ or \) and a letter with just the letter
+    // This will remove non-alphabetic characters (including digits and hyphens) after slashes
+    .replace(/(?:\/|\\)[^a-zA-Z]*([a-zA-Z])/g, "/$1")
+    // Remove leading numbers and hyphens (like "1-" prefix)
+    .replace(/^[0-9]+-/, "")
     // Convert to lowercase
     .toLowerCase();
 }
