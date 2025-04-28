@@ -218,7 +218,13 @@ async function main() {
       // Use the format function directly with input and output file paths
       await format(inputFile, transformedOutputFile);
       
-      console.log(`Successfully converted ${inputFile} to ${transformedOutputFile}`);
+      // Verify the file was created
+      if (fs.existsSync(transformedOutputFile)) {
+        console.log(`Successfully converted ${inputFile} to ${transformedOutputFile}`);
+        console.log(`File exists in temporary directory: ${transformedOutputFile}`);
+      } else {
+        console.log(`WARNING: File not found after conversion: ${transformedOutputFile}`);
+      }
     });
     
     // If we get here, compilation was successful
