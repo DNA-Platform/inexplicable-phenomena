@@ -265,14 +265,15 @@ async function main() {
       }
     }
     
-    // Replace the old release folder with the new one
-    if (fs.existsSync(releaseFolder)) {
-      console.log('Removing old release folder...');
-      fs.rmSync(releaseFolder, { recursive: true });
-    }
+    // COMMENTED OUT: Replace the old release folder with the new one
+    // if (fs.existsSync(releaseFolder)) {
+    //   console.log('Removing old release folder...');
+    //   fs.rmSync(releaseFolder, { recursive: true });
+    // }
     
-    console.log('Moving temporary release folder to final location...');
-    fs.renameSync(tempReleaseFolder, releaseFolder);
+    console.log('SKIPPING: Moving temporary release folder to final location...');
+    // fs.renameSync(tempReleaseFolder, releaseFolder);
+    console.log('Keeping temporary release folder for inspection at: ' + tempReleaseFolder);
     
     // Verify the release folder contents
     console.log('Files in final release folder:');
