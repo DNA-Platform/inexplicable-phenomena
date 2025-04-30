@@ -12,3 +12,9 @@ And then I would write more code.
 It might involve multiple paragraphs. Sometimes it would use Latex
 
 $\neg X \implies \neg Y$
+
+But mostly just to show that I changed it in SRT:
+
+`!x =|> !y`
+
+And that's how a reflection would go. 

@@ -1,7 +1,7 @@
-PWD c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\paper\0-latest
+PWD c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\.archive\paper\0-latest
 INPUT C:\Users\dougl\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\paper\0-latest\latest.tex
-OUTPUT latest.log
+INPUT c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\.archive\paper\0-latest\inexplicable-phenomena.tex
+OUTPUT inexplicable-phenomena.log
 INPUT C:\Program Files\MiKTeX\tex\latex\llncs\llncs.cls
 INPUT C:\Program Files\MiKTeX\tex\latex\llncs\llncs.cls
 INPUT C:\Program Files\MiKTeX\tex\latex\base\article.cls
@@ -99,10 +99,10 @@ INPUT C:\Program Files\MiKTeX\tex\generic\uniquecounter\uniquecounter.sty
 INPUT C:\Program Files\MiKTeX\tex\generic\uniquecounter\uniquecounter.sty
 INPUT C:\Program Files\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
 INPUT C:\Program Files\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
-INPUT .\latest.aux
-INPUT .\latest.aux
-INPUT latest.aux
-OUTPUT latest.aux
+INPUT .\inexplicable-phenomena.aux
+INPUT .\inexplicable-phenomena.aux
+INPUT inexplicable-phenomena.aux
+OUTPUT inexplicable-phenomena.aux
 INPUT C:\Program Files\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
 INPUT C:\Program Files\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
 INPUT C:\Program Files\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
@@ -111,14 +111,14 @@ INPUT C:\Program Files\MiKTeX\tex\latex\epstopdf-pkg\epstopdf-base.sty
 INPUT C:\Program Files\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Program Files\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Program Files\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
-INPUT .\latest.out
-INPUT .\latest.out
-INPUT latest.out
-INPUT latest.out
-INPUT .\latest.out
-INPUT .\latest.out
-OUTPUT latest.out
-OUTPUT latest.pdf
+INPUT .\inexplicable-phenomena.out
+INPUT .\inexplicable-phenomena.out
+INPUT inexplicable-phenomena.out
+INPUT inexplicable-phenomena.out
+INPUT .\inexplicable-phenomena.out
+INPUT .\inexplicable-phenomena.out
+OUTPUT inexplicable-phenomena.out
+OUTPUT inexplicable-phenomena.pdf
 INPUT C:\Program Files\MiKTeX\fonts\tfm\jknappen\ec\ecrm1440.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\jknappen\ec\ecbx1440.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\amsfonts\cmextra\cmex7.tfm
@@ -145,9 +145,9 @@ INPUT C:\Program Files\MiKTeX\fonts\tfm\public\cm\cmsy9.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\cm\cmsy6.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\amsfonts\cmextra\cmex9.tfm
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\amsfonts\cmextra\cmex7.tfm
-INPUT latest.aux
-INPUT .\latest.out
-INPUT .\latest.out
+INPUT inexplicable-phenomena.aux
+INPUT .\inexplicable-phenomena.out
+INPUT .\inexplicable-phenomena.out
 INPUT C:\Users\dougl\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt0900.pk
 INPUT C:\Users\dougl\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt0900.pk
 INPUT C:\Users\dougl\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbi1200.pk

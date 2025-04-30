@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1745632507.14628 "c:/Users/dougl/OneDrive/Source/DNA Platform/inexplicable-phenomena/paper/0-latest/latest.tex" "latest.pdf" "latest" 1745632508.73623 0
+["pdflatex"] 1745927441.11014 "c:/Users/dougl/OneDrive/Source/DNA Platform/inexplicable-phenomena/research/.introduction/inexplicable-phenomena.tex" "inexplicable-phenomena.pdf" "inexplicable-phenomena" 1745927442.24696 0
   "C:/Program Files/MiKTeX/fonts/tfm/jknappen/ec/ecbi1200.tfm" 993061910 2892 f5de7a62f7c1551b663588ecf7265280 ""
   "C:/Program Files/MiKTeX/fonts/tfm/jknappen/ec/ecbx0900.tfm" 993061954 3200 f959f56c26f697d341ba38dba18fe1f8 ""
   "C:/Program Files/MiKTeX/fonts/tfm/jknappen/ec/ecbx1000.tfm" 993061956 3200 328792ff19833a39406f06fa0555a6dc ""
@@ -87,13 +87,13 @@
   "C:/Users/dougl/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ectt0900.pk" 1743255289 17512 6240cabb30098d98ba93ecac30014949 ""
   "C:/Users/dougl/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm0900.pk" 1743255286 10472 34a47b00a78072d1d4b15c1b399d19ca ""
   "C:/Users/dougl/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1729719731 11938464 a51ac6f9ac6358af97f7dedfaa1bbebd ""
-  "c:/Users/dougl/OneDrive/Source/DNA Platform/inexplicable-phenomena/paper/0-latest/latest.tex" 1745632504 56829 d87be4843a2c665afb04e5f671e85b41 ""
-  "latest.aux" 1745632508 5533 c49b7f3e67d0ff2c3b17e49067f772bb "pdflatex"
-  "latest.out" 1745632508 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "latest.tex" 1745632504 56829 d87be4843a2c665afb04e5f671e85b41 ""
+  "c:/Users/dougl/OneDrive/Source/DNA Platform/inexplicable-phenomena/research/.introduction/inexplicable-phenomena.tex" 1745927277 56829 d87be4843a2c665afb04e5f671e85b41 ""
+  "inexplicable-phenomena.aux" 1745927441 5533 c49b7f3e67d0ff2c3b17e49067f772bb "pdflatex"
+  "inexplicable-phenomena.out" 1745927441 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "inexplicable-phenomena.tex" 1745927277 56829 d87be4843a2c665afb04e5f671e85b41 ""
   (generated)
-  "latest.aux"
-  "latest.log"
-  "latest.out"
-  "latest.pdf"
+  "inexplicable-phenomena.aux"
+  "inexplicable-phenomena.log"
+  "inexplicable-phenomena.out"
+  "inexplicable-phenomena.pdf"
   (rewritten before read)

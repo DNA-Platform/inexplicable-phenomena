@@ -1,0 +1,536 @@
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\spnewtheorem{cdefinition}[definition]{[Colloquial] Definition}{\bfseries}{\itshape}
+\spnewtheorem{cexample}[definition]{[Colloquial] Example}{\bfseries}{\itshape}
+\spnewtheorem{sdefinition}[definition]{[Semantic] Definition}{\bfseries}{\itshape}
+\spnewtheorem{assertion}[definition]{[Semantic] Assertion}{\bfseries}{\itshape}
+
+\begin{document}
+
+% Anonymous proxy for \maketitle
+\begin{center}
+	{\Large\bfseries\boldmath
+		On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems
+		\par}
+	\vskip 0.8cm
+\end{center}
+
+% Section complete
+\begin{abstract}
+Since Descartes first proclaimed "cogito, ergo sum" back in 1637, "I think, therefore I am" has become the Declaration of Independence for consciousness. Chalmers' informed us of the fact that science has a constitutionally \textit{Hard Problem} on their hands. If he's as right as we believe he is, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the \textit{IIT-Concerned} recently proclaimed in Nature Neuroscience that any theory of consciousness that can't stand up to the scrutiny of science shall be deemed "unscientific." And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether AI systems are conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable? 
+		
+\keywords{Formal Theories of Consciousness \and The Hard Problem \and Subjectivity \and Semantic AI \and Metaphysical Transduction.}
+\end{abstract}
+
+% Section complete
+\section{A Colloquial Derivation}
+
+Almost 2/3 of surveyed philosophers acknowledge the existence of the Hard Problem, and 1/3 of them think that it's actually hard! \cite{BourgetChalmers2023} Consciousness is a field that spans disciplines, there is nothing that resemble scientific consensus, and there is nothing that resembles a testable theory. But we do have a compellingly elegant framing of the problem. And his framing of the problem is real enough to be \textit{real} by majority vote. So we shall begin with Chalmers.
+
+In his seminal work "Facing Up to the Problem of Consciousness," David Chalmers begins with a powerful observation that establishes the paradoxical nature of our subject: "There is nothing that we know more intimately than \textbf{conscious experience}, but there is nothing that is harder to explain." From the first part of this statement, we can immediately identify a fundamental characteristic of conscious experience that echos with Descartes: it is a \textbf{self-evident} phenomenon. Nothing is known more intimately than conscious experiences. They present themselves directly to their observer, requiring no justification beyond the experience itself.
+
+The second part of Chalmers' statement suggests difficulty of explanation, but he goes on to clarify just how profound this difficulty is. Chalmers argues that "the emergence of experience goes beyond what can be derived from physical theory" and "the facts about experience cannot be an automatic consequence of any physical account."These statements establish that consciousness isn't merely difficult to explain within our current scientific framework but fundamentally resistant to such explanation. It is \textbf{inexplicable} in principle." He asks pointedly: "Why should physical processing give rise to a rich inner life at all? It seems objectively unreasonable that it should, and yet it does."
+
+Regarding the relationship between conscious experience and physical processes, Chalmers makes a crucial observation: "Experience may arise from the physical, but it is not entailed by the physical." This statement positions consciousness in a unique relationship to physical reality. According to Merriam-Webster, "metaphysical" refers to that which relates to "the transcendent or to a reality beyond what is perceptible to the senses." Consciousness precisely fits this definition: it transcends physical explanation while still relating to physical processes. It is fundamentally \textbf{metaphysical} in nature.
+
+Throughout his analysis, Chalmers treats consciousness as a \textbf{phenomenon}, both in the sense of phenomenal experience and as an object of scientific study. The term "phenomenon" captures this dual aspect perfectly. A phenomenon is both "an object or aspect known through the senses" and "a fact or event of scientific interest susceptible to scientific description and explanation." Consciousness is simultaneously the subjective experience itself and the object of our scientific inquiry. The etymological connection between "phenomenon" and "phenomenal" reinforces this as the appropriate term for our work.
+
+By synthesizing these insights from Chalmers, we can formulate a definition that captures the essential nature of a conscious experience:
+
+\setcounter{definition}{0}
+\begin{cdefinition}
+	A Conscious Experience is an inexplicable yet self-evident metaphysical phenomenon.
+\end{cdefinition}
+
+\setcounter{definition}{0}
+\begin{cexample}
+I catch you admiring a rose in my garden and I absentmindedly ask "how did you figure out its color?" You chuckle and reply "It's red, Doug. I promise." Why do I feel like everyone always doubts my sanity when I ask them that question?
+\end{cexample}
+
+% In Progress
+\section{The Semantics of "\textit{Colloquialism}"}
+% 2 paragraphs with a restatement of the definition
+% Quick notion that colloquial is in natural language, and it is in contrast to formal
+% Syntactic versus Semantic in Model Theory? 
+% So going forward Colloquial will be replaced with semantic
+% Restate the definition of a conscious experience verbatim but as a [Semantic] Definition
+
+The \textit{colloquial} refers to language that is familiar, conversational, and notably \textit{informal}. Newton famously employed the use of colloquialism to pave the way to the mathematical phrasing of his Laws of Motion. And colloquialism compounds! "For every action there is an equal and opposite reaction" is itself the colloquial form of Newton's Third Law of Motion. The original reads: 
+
+\begin{quote}
+To every action there is always opposed an equal reaction; or the mutual actions of two bodies upon each other are always equal, and directed to contrary parts... \cite{NewtonPrincipia}
+\end{quote}
+
+His colloquial phrasings serve as the informal counterpart to formal definitions, and his purpose was to imbue the syntactic formalism with a sense of meaning that was more relatable. In our exploration of \textit{inexplicability}, we will encounter propositional constructs which are semantically entailed by a formalism in which they cannot be syntactically derived. The semantic form carries a sort of transcendent meaning in this case. In this spirit, we will replace the word "colloquial" with "semantic" going forward, and recognize the distinction between a \textit{Semantic Definition} and a \textit{Formal Definition}, and use the modern computational tools of reference to present both forms:
+
+\setcounter{definition}{0}
+\begin{sdefinition}
+	A \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/definitions/conscious-experience.pdf}{Conscious Experience} is an inexplicable yet self-evident metaphysical phenomenon \cite{Formalism}.
+\end{sdefinition}
+
+% ---
+
+% In Progress
+\section{A Sense of Perspective}
+% Still in first draft form
+% It provides some great assertions
+
+There is an artful ambiguity in our definition of a conscious experience that might nut be self-evident at a glance. In what \emph{sense} do we mean "self-evident"? Self-evident to whom? 
+
+Insofar as an axiom of formal logic captures an aspect of \emph{self-evident} in a formal sense, and it can be seen right alongside \emph{inexplicable} in the words of Aristotle:
+
+\begin{quote}
+We must know the primary things by themselves; for they are indemonstrable, and must be known by intuition --- Aristotle, \emph{Posterior Analytics}
+\end{quote}
+
+Note, however that he uses the phrase "we" as a declaration of objectivity. When you and I read that phrase, he means we each should take the axioms of logic as self-evident, whatever they may be. Kant leaves "we" implicit in his declaration of this ponderously self-evident truth:
+
+\begin{quote}
+It is self-evident that the whole is greater than its part --- Immanuel Kant, \emph{Critique of Pure Reason}, 1781
+\end{quote}
+
+Yet again, I the reader am expected to find Kant's proposition self-evident. The Founding Fathers of the United States made wonderful use of self-evident to lend identity to a nation.
+
+\begin{quote}
+We hold these truths to be self-evident, that all men are created equal --- Thomas Jefferson, \emph{Declaration of Independence}, 1776
+\end{quote}
+
+I personally find this to be the quintessential use of the phrase "self'evident" and the one that best expresses its use in this theory. Observe that by taking Kant and Jefferson together, you get an inclusive sense of identity for all mankind as a cohesive whole! And the whole constituency is constituted within a framework that's capable and has been proven capable of extending its definition of the word "men" to include "women" too! What other self-possessed beings might it be extended to included one day? Surely any that find the statement "all men are created equal" to be self-evident when the definition of "men" is extended to themselves too.  
+
+In all cases, through universal generalization by the explicit or implicit use of the concept togetherness, the self-evident truth is assumed to be self-evident by the reader of the sentence. In the context of our conscious experience, "inexplicable yet self-evident" is meant in the \emph{sense} that it applies uniquely to the subject of the conscious experience. So in our definition of consciousness, the \emph{sense} of \emph{self} in "self-evident" is thing you hyperbolically declare that you lost when you say "I do not feel like \emph{my self} today." So as the subject of that proposition, you must possess one. And to say "I simply must \emph{see} it for \emph{my self}" is a testament to irreplacable form of \emph{evidence} that can only be provided by a conscious experience.
+
+In all phrases in which the \emph{self} is expressed, "I" is used to denote the identity of that which possesses it. This is the essence of the first-person perspective. Sentences like "I feel like \emph{my self} again" reveal that the \emph{identity} is the subject and the \emph{self} is its object. We can use this intuition to formulate a few reasonable assertions: 
+
+\setcounter{definition}{0}
+\begin{assertion}
+	A \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/assertions/self.pdf}{Self} is a unique possession of the subject of a conscious experience. \cite{Formalism}.
+\end{assertion}
+
+\setcounter{definition}{1}
+\begin{assertion}
+	The subject of a \emph{Conscious Experience} is a type of \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/assertions/identity.pdf}{Identity}. \cite{Formalism}.
+\end{assertion}
+
+\setcounter{definition}{1}
+\begin{assertion}
+	A \emph{Consious Experience} is self-evident to the Identity of its subject. \cite{Formalism}.
+\end{assertion}
+
+% ---
+
+% In Progress
+\section{What Qualifies as a Valid Perspective?}
+% Still in first draft form
+% It provides some great assertions
+% Express the idea of intrinsic qualities
+
+The notion of a quality comes up in the literate often as a sort of perceptual equivalent of a property. An rose has color as a property, as defined the characteristics of the photons that reflect off of it, and it has various physical properties that can be quantifiable. And there is the rose that we percieve which is red. it has the quality of red. Philosophers will refer to the instantaneous experience of a red as a "quale", and the collection of these instantaneous experiences for a given quality are its "qualia." It's something like that. 
+
+Chalmers does not introduce the phrase in his presentation of the hard problem in the "Facing Up to the Problem of Consciousness" so I will avoid it. But I will use the notion of a quality rather than a property when discussing how things \emph{look} from the perspective afforded by a conscious experience. 
+
+However we choose to refer to the qualities we perceive, and the identity of the objects we perceive to have them, Chalmers gives us a thorough exposé of them: 
+
+\begin{quote}
+When we see, for example, we experience visual sensations: the felt quality of redness, the experience of dark and light, the quality of depth in a visual field. Other experiences go along with perception in different modalities: the sound of a clarinet, the smell of mothballs. Then there are bodily sensations, from pains to orgasms; mental images that are conjured up internally; the felt quality of emotion, and the experience of a stream of conscious thought. What unites all of these states is that there is something it is like to be in them. All of them are states of experience.
+\end{quote}
+
+Note that he remarks, with thoughtful philosophical phrasing, about "the felt quality of redness" so as to suggest that a color and a feeling share a commonality as a sort of irreducible or axiomatic quality. Let us use \textit{physical perspective} as a term to denote that we denote the objects that we experience as "real" and the qualities we perceive correspond to something physically measurable. From the physical perspective, we \textit{see} a red rose. We certainly experience \textit{redness} somehow, but can we semantically justify the act of \textit{seeing} a single color?
+
+Observe what examples language has to offer. To "see red" is a metaphorical idiom in English that artfully employs synesthesia to convey the idea that one's anger is so \textit{real} that it has come to take on the quality of a physical object: color. Even in metaphorical form, red is still has the status of a quality. 
+
+We also have the ability to perceive red in conceptual form, where we objectify in the sense that we provide it with "red" as an identity, it so that it too can possess qualities. A particular shade of red might be \emph{vivid} or \emph{sensational} in relation to another shade or some canonical subjective shade that we each possess. But you'll note that "redness" is not actually one of the qualities that the objective form of "red" actually possesses. "The redness of red" is a phrase that expresses its inexplicable yet self-evident ability to serve both as a quality of an object that lends meaning to its identity, while also possessing a form of identity itsself. Does an identity possess the quality of being itself? Do I admit the "redness of red" and "Dougness of Doug" into my vocabulary?
+
+We explored the notion of "self" above, and one might say that "Dougness" is a third-person synonym for the thing that I possess which I refer to as a "self" in the first-person perspective. But I earned that perspective by qualifying for it. And I qualify for it by having a sense of perspective. As I possess a perspective of my own, I do not find "Dougness" to be semantically useful. 
+
+To say the color "red" has a sense of self is to give it an identity that is outside our subjective experience of it. It does not have one. As magenta, the imaginary colors, and now this "Olo" that I desperately want to experience \cite{Gibney2025}, colors are a multidimensional reperesention of a band of the electromagnetic spectrum, color is given a biological identity through our genes. In sense sense, the meaning of red can be understood as some proposition about physical condition of the survival of our ancestors that goes all the way back to the emergence of the channel rhodopsin gene. So red doesn't possess a meaningful independent identity in the third-person sense, so I do not find "redness" to be semantically useful either.
+
+What about the \emph{roseness} of roses? It appears to be an external object, unlike red. It does not self-qualify, unlike me. But as we discuss roses, we find that we each have a canonical form of rose in our minds, and it is only by establishing the qualities of a rose and the relationships it shares to love, gift-giving, and absurd amounts of upkeep that give it the identity it has. It would seem that for me, \emph{redness}, \emph{roseness}, and \emph{Dougness} all come an intrinsic sense of identity that emerges from within. Best consider both to sit at the edge of meaning so as to reveal the shape of the semantic surface area of \emph{identity}.
+
+We can begin to resolve this by asking a not-so-simple question: how do objects come to have identities at all, how they come to have qualities, and why can the identities of objects be expressed as relationship between the qualities they can, will, might, do, or do not share? 
+
+We pose an answer to that questions: the representation of the identity of objects and their qualities and the framework for expressing their relationships, taken together, form a \emph{Perspective}:
+
+\setcounter{definition}{1}
+\begin{sdefinition}
+	A \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/definitions/perspective.pdf}{Perspective} is a referential framework for qualifying identities, identifying qualities and expressing their relationships \cite{Formalism}.
+\end{sdefinition}
+
+\setcounter{definition}{2}
+\begin{assertion}
+	A \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/assertions/conscious-experience.pdf}{Conscious Experience} represents a change in Perspective. \cite{Formalism}.
+\end{assertion}
+
+\setcounter{definition}{0}
+\begin{cexample}
+I catch you admiring a rose in my garden and I absentmindedly ask "what color is it?" You reply "Come over here and see for your\emph{self}!"  
+\end{cexample}
+
+% ---
+
+% In Progress
+\subsection{A Perceptive Reflection on the Nature of Transduction}
+
+Transduction is a strange word that has been repurposed by neurosciences and engineers to describe how signals changes forms. It has its etymological roots in the Latin verb trānsdūcō, which means "to lead across," where "dūcō" is an ancestor of "educate." In this sense, \emph{transduction} seems to wish to mean a \emph{transcendental transformation} of some sort. In neuroscience, phototransduction refers to the process by which light is absorbed in the retina and converted into changes in membrane potential that lead to a cascade of events in which neural signals make their way inward. Mechanotransduction is when physical forces act on ion channels in our skin and other sensory organs to generate the ion flow necessary to generate nerve impulses that also make their way inward. In both cases, physical stimuli elicit a peripheral response that leads to action potentials in the central nervous system. We will refer to the generalization of these two things as \emph{physical transduction}.
+
+How does perception relate to a conscious experience? They appear to be fundamentally intertwined. Chalmers notes: "Other experiences go along with perception in different modalities." An act of perception brings along brings along conscious experiences. He goes on to note that "he color and shape of a perceived object is integrated from separate visual pathways." An act of perception accompanies a perceived object.
+
+Now we know from research that in the presence of powerful anesthics like propofol and various flurane, physical transduction leads to action potentions that make it all the way to orientation columns in the primary visual cortex, demonstrating that cortical activity is not, itself, sufficient to trigger perception. 
+
+So if perception is not the physical transduction, there most be a second forma of transduction. In this case the \emph{perceived object} whcih most certainly is the object of a conscious experience, causes a change in perspective. This can be explored using \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/introduction.pdf}{Semantic Reference Theory}, which will be covered in more depth later. Here is a physical description of the relationship between the subject and object of a conscious experience: 
+
+[Semantic Relayionship]
+1. s =c> o
+
+[Encountering an object]
+2. s |=c> o 
+
+[Internalization: Newton's Third Law]
+3. s |=c> s(o) 
+
+From 1, we know that c is an intrinsoic relationship that cannot be explained. In SRT, (s,o) represents the most specific relationship between a subject and an object. It would have an explanation if it was derived based on other relationships between the pair. Therefore we can infer:
+
+(s,o) == C
+
+SRT is about talking about reference itself and in this case (s,o), and this c is a symnbol for o. That is expressed"
+
+c =c> o
+
+Now again, buy virtu of it's privacy, immediacy, and inexplicability, c again is the most specific relationship between c and o. That means it is the canonoical symbol for o satisfying:
+
+(o) =(o)> o
+
+Based on the rules of perspective, we know that (o) is a self-evident, intrinsic quality of (s), which means it in non-reducible to any other symbolic relationship. We also know that all parts of the framework of (s) share (s) as its object. (o) happens to be the canonical property of framework, which means it has the property of being in the framwork of s (s):
+
+[The framewotk of (s)]
+(o) =(s)> (o)
+
+Putting things back in terms of c:
+
+c == (o)
+c =(s)> C
+
+Therefore 1. has a clear interpretation:
+
+\setcounter{definition}{2}
+\begin{assertion}
+	A \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/assertions/conscious-experience.pdf}{Conscious Experience} is perceived by the subject as an intrinsic identity that belongs to her perspective. \cite{Formalism}.
+\end{assertion}
+
+The second and third causal form suggests that s internalizes the object upon encountering it, causing a change to the subject of the conscious experience. In this case , we understand that the perspective of (s) changes to accomondate (o)
+
+2. s |=c> o 
+3. s |=c> s(o) 
+
+We know that sensory information has entered the nervous susyem, and in fact o iteslf is a complex representation that is itself subject to a form of transduction that happens downstream of physical transduction. Where photons are transduced to neural signal in the nervous system, o is transduced from neural activity into a an identity that alters the perspective of (s). This form of transduction in which c becomes an intrinsic identity in a perspective belonging to its qualifier, we shall refer to Metaphysical Transduction.
+
+\setcounter{definition}{2}
+\begin{assertion}
+	\href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/assertions/conscious-experience.pdf}{Metaphysical Transduction} is the inexplicable conversion of a sensory object into the self-evident intrinsic quality indentity within a perspective perspective. \cite{Formalism}.
+\end{assertion}
+
+\setcounter{definition}{2}
+\begin{sdefinition}
+	\href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/assertions/conscious-experience.pdf}{Metaphysical Transduction} is a synonym for \emph{Perception}. \cite{Formalism}.
+\end{sdefinition}
+
+
+% In Progress
+\subsection{The Shape of a Semantic Surface}
+
+Hopefully the image of \emph{semantic shape} is starting to form. Identity, identify, identification, quality, qualify, qualification, equality, reality, relation, related, relationship, reference, reference frame, referential framework, perspective, perceptive, percieve, perception, expression, expressive, express, etc... These are not abstract notions in isolation. They are expressions of structure, rooted in the act of perception. A physical perspective isn't just a way of seeing. It is a referential framework that justifies \emph{why} the things we see appear as they do, and \emph{how} we recognize them as having meaning.
+
+All throughout this discussion, a structure has been emerging: one in which identity arises through the qualification of qualities, and qualities inherit their meaning through a referential lineage. We've already used words like "referential framework," "intrinsic quality," and "self-evident identity." These are not just poetic phrases — they point toward a deeper semantic structure that is waiting to be formalized.
+
+So let us take that step. If we want to express this semantic structures with integrity, so that we might articulate how identity, quality and relationship interact with referents precisely, staying grounded using concepts like the symbol-literal dichotomy to keep the notion of identity semantically precise, we must define a language that is capable of expressing the definition of the concept of reference itself.
+
+We have invented such a tool, and we call it \emph{Semantic Reference Theory}.
+
+% ---
+
+% In Progress
+\section{Semantic Reference Theory}
+% I have to give a cheat sheet and point to the real stuff
+
+Self-reference is at the heart of a semantic comprehension of consciousness. Surely, the fact that we must refer to our \emph{"self"} through our \emph{"I"} gives a clue about how reference works in a semantic sense. A Godel sentence did not come to articulate its own unprovability by containing itself. It's self-reference is expressed through talking about a sentence with a certain Godel number which just so happens to be its own. We contend that this is how reference works semantically. There must be a symbol to serve as a locus for identity, to which qualities are applied before we can conclude that the objects they represent have certain properties. 
+
+We have assembled a collection of semantic assertions that express the nature of a \emph{conscious experience}, with the goal of expressing it in a formalism in which it can be confirmed or falsified. We have developed a formalism to do exactly that. It's called \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/introduction.pdf}{Semantic Reference Theory}. While it is a work in progress, it always will be by design. It is a formalism in which semantic forms about a certain topic are reflected upon in the context of related topics in order to cosntruct a formalism form them. 
+
+From one perspective, Semantic Reference Theory (SRT) is a tool to build Semantic Reference Theory. From another perspective, it can be expressed as an extension of first-order logic that provides structure on how it can be extended. 
+
+There is also a linguistic element to SRT. When one defines the semantics of a topic, we believe that you should choose a language most befitting of your topic. Of course, SRT must have a base form. It has a typographical lingo that gives it a unique flavor as a formalism. Representing reference symbolically is not unlike representing pointers in programming language. We chose a symbology with an aesthetic identity that uses programming as its inspiration.
+
+It can be expressed as a first-order theory, and we ues thse linguistic constructs to replace the normal ones in formal logic:
+
+!X means $\neg X$ \\
+X \& Y means $X \land Y$ \\
+X | Y means $X \lor Y$ \\
+X =|> Y means $X \Rightarrow Y$ \\
+X <|=|> Y means $X \Leftrightarrow Y$ \\
+x == y means $x = y$ \\
+x != y means $x \neq y$ \\
+Ex: x == y means $\exists x: x = y$ \\
+Ax: x == y. means $\forall x: x = y$ \\
+AxEy: x == y means $\forall x\exists y: x = y$ \\
+
+The formalism of Semantic Reference Theory is founded on the essential dichotomy of representation: referents and their references. SRT is a first-order logic in the domain of referents. It has no constants, no functions, and only a single relation: 
+
+R(x,y,t)
+
+This relation expresses that x relates to y through. We express this using our typographical domain specific language which is not itself a part of the formalism:
+
+x =t> y
+
+This syntax makes it clear that x is the subject of a relationship, y is the object of a relationship and t is a type of relationship. In this way, R(x,y,t) expresses the subject-object relationship as the fundamental semantic form.  
+
+The arrow syntax has expressive power. For instance, these are all valid expressions:
+
+x =t> y means $R(x,y,t)$ is true \\
+x !=t> y means $R(x,y,t)$ is not true \\
+x <t= y means $R(y,x,t)$ is true \\
+x <t=! y means $R(y,x,t)$ is not true \\
+x <t=t> y means $R(x,y,t)$ and $R(y,x,t)$ are both true \\
+x <t!=!t> y means $R(x,y,t)$ and $R(y,x,t)$ are both false \\
+
+We will draw on definitions, axioms and theorems from various topics. For instance, \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/symbols.pdf}{the Semantics of Symbols} expresses a symnbol in this way:
+
+If the subject of the realtionship is the relationship itself, then x is a \emph{symbol} for y and y is the \emph{literal} of x:
+
+x =x> y
+
+We also make use of the representation function, which is a notational convenience. (y) deotes the canonical symbol for y. It satisfies the notion of a symbol entirely in terms of y:
+
+(y) =(y)> y
+
+The representation function is a notational convenience. One must be sure that y has a canonical system to make use of it.
+
+A full treatment of Semantic Referenece Theory would be the topic of another paper, but we will provide \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/introduction.pdf}{links} to the relavant topic as they are introduced into our reflections
+
+% ---
+
+\section{The Semantics of Perspective}
+
+Insofar as Semantic Reference Theory exists to be a formal theory to capture the relationship between \emph{language} and \emph{meaning}, Perspective is one of its fundamental topics. It also happens to be essential for a theory of consciousness. The First-Person Perspective can't be formally defined without also formalizing the being that possesses one. Let's being our reflection here. Recall our definition of Perspective:
+
+\setcounter{definition}{1}
+\begin{sdefinition}
+	A \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/definitions/perspective.pdf}{Perspective} is a referential framework for qualifying identities, identifying qualities and expressing their relationships \cite{Formalism}.
+\end{sdefinition}
+
+Let's take this apart. First, we know that the framework is used for qualifying identities and identifying qualities. We also know that a Perspective belongs to an indentity. Let's denote that identity i, and call it the \emph{qualifier} of the perspective. 
+
+Let us also imagine that the qualifier is one of a collection of object literals, none of which can reference anything. All reference must flow from a symbol that it literally represents. Therefore i istelf must have an identity. Let's call it (i).
+
+For i to quality red, the following relation must hold:
+
+(i) =red> (rose) <|=|> (rose) =red> rose
+
+The first half of that sentence can be read as (i) identifying red as a quality of the rose, and the second half can be read as the expressing that the rose is red. Both qualities must be qualified by the qualifier. 
+
+How about identity? Perhaps we can consider identity a quality too. This statement would have to have meaning:
+
+(i) =(rose)> (rose) <|=|> (rose) =(rose)> rose
+
+This is a fascinating statement in Semantic Reference Theory. From \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/reference.pdf}{The Semantics of Reference}, we learn tha definition of a canonical. If the object of a relationship is the realtionship itself, then that object can bet taken to be the canonical value of a subject:
+
+x =y> y
+
+Form the expression above, you can see that for i to qualify the rose is to both give it an identity in the form of a symbol, and to take that identity as its canonical value. But this leads to an interesting definition:
+
+\setcounter{definition}{1}
+\begin{sdefinition}
+	To \emph{Identify} is to qualify an identity.
+\end{sdefinition}
+
+Now, who qualifies the identity of i? As the one and only qualifier of the \emph{Persepctive}, it must qualitfy itself:
+
+(i) =(i)> (i) <|=|> (i) =(i)> i
+
+What a curious phrase. On the Rightarrow, we see an expression that expresses the idea that the \emph{self} belongs to the identity. On the left, we see a confluence of subject, object and relationship type. 
+
+
+From \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/equality.pdf}{The Semantics of Equality} we find that the notion of equality inherited from being a first-order theory is the only relationship type that can be used for direct self-reference:
+
+x =eq> x
+
+This means that for all x, R(x,x,eq) are the only true statements. By having the equality relationship be itself a refernt, this is a true proposition:
+
+eq =eq> eq
+
+From \href{https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/relationship.pdf}{The Semantics of Relationship} we find that relationship types have a notion of inheritance. Let -t> be the extension of =t> to ancentral relationships, defined as:
+
+x -t> y <|=|> x =t> y | Ez: x -t> z \& z -t> y
+
+There exists a referent r such that:
+
+x =t> y =|> t -r> r
+
+This relationship repersents relationship itself. Since eq is the only relationship that admites x =x> x, then we can conclude:
+
+(i) -r> eq
+
+This reveals an important part of identity that we have overlooked. An identity seems to have a sense of itself. While I appear to be the one that qualifies the identity of both the rose and the color red, these entities seems to stand apart from me with a sense of themselves. 
+
+There is also a notion of a reference frame and its corresponding {https://github.com/DNA-Platform/inexplicable-phenomena/formalism/semantic-reference-theory/reference.pdf}{framework}. A framework is a series of relationship types that descend from a common on. If we reflect on this for a moment, and allow ourselves to imagine (i) as a referential framework for identity, we might be compelled to update our definition of qualification:
+
+(i) =(red)> (red) <|=|> (red) =(red)> red \& (red) -(i)> (i)
+
+This establishes the idea that the red inherits its definiton from (i) as a relationship type in the framework that defines the perspective of (i). And inheriting from (i) as a relationship type requires:
+
+(red) =(red)> (red)
+(apple) =(apple)> (apple)
+
+Each one is a tiny equality operator, capable of asserting its own identity. Each thing you see from your perspective can be the subject and object of thought, and stands in relation to itself through you. And (i) is now a framework. Everything you see is defined in relaton to your identity. 
+
+There is an important distinction between the quality of red and the quality as intelligence. The quality of red is \emph{self-evident}. The quality of intelligence is not. So let us make the distinction:
+
+We qualify (red) as an identity through this expression:
+
+(red) -(i)> (i)
+
+The relationship ancestry can be direct or indirect. To identify red as an intrinsic quality is to say:
+
+(red) =(i)> (i)
+
+There is a way for a quality to be even more direct in the framework of (i). The intrinsic quality of red is expressed through the way (red) relates to (i). Well then the intrinsic quality of i is analogously expressed in the way (i) related to i: 
+
+(i) =(i)> (i)
+
+That phrase is part of the broader expression of a qualifier that qualifies its own identity. To express the idea that the qualifier can identify the intrinsic quality of red is to say:
+
+(i) =(red)> (red) <|=|> (red) =(red)> red \& (red) =(i)> (i)
+
+The full expression for the qualifier qualifying its own identity is:
+
+(i) =(i)> (i) <|=|> (i) =(i)> i \& (i) =(i)> (i)
+
+You can see the redundancy on both sides of the expression. Self-identificaton and self-qualification was already an intrinsic quality of the qualifier. But to understand that possessing the quality of i is self-evident to the qualifier, and that such a definition emergences naturally from the very notion of there being intrinsic qualities. It is plain to see that possessing a sense of self:
+
+(i) =(i)> i
+
+Is what it means for self-identity to to be an intrinsic quality. And intrinsic qualities are self-evident. 
+
+\setcounter{definition}{1}
+\begin{example}
+	You suddenly declare "I feel like a whole new man!" I respond in a concerned tone, "If you are not feeling like yourself today, you should consider seeing a doctor."
+\end{example}
+
+Let us go one step further and note that qualification takes thought. Intrinsic qualities are self-evident, but qualification itself is not. 
+
+Is it valid to qualify a rose as both rose as both red and blue?
+
+(i) =red> (rose) \& (i) =blue> (rose)
+
+How about qualifying that you have two different ages?
+
+(i) =[20-years-old]> (i) \& (i) =[40-years-old]> (i)
+
+Practiced qualifiers must apply consistent logic to have a coherent perspective, and that takes thought! So while thinking really hard about what it means to identify intrinsic qualities, and to qualify one's own identity, might I ask you to consider this expression:
+
+((i) =(rose)> (rose) <|=|> (rose) =(rose)> rose \& (rose) -(i)> (i)) \& \\
+((i) =red> (rose) <|=|> (rose) =red> rose \& red =(i)> (i)) \& \\
+((i) =(i)> (i) <|=|> (i) =(i)> i \& (i) =(i)> (i)) \\
+
+And ask yourself whether the last line qualifies for the interpretation: 
+
+"I think, therefore I am"?
+
+It might help to ponder what it means to qualify someone as as a qualifier?
+
+(i) =qualifier> (o) =|> (o) =(qualifier)> o
+
+In the context of this reflection, being a qualifier means to possess a valid perspective. And not just any perspective! It's own perspective. Let's call that P(i). You may interpret that a P + (i) or as a function P with i as its argument. We can express that qualifying an object as a qualifier is to declare that they have their own perspective:
+
+(i) =qualifier> (o) <|=|> (o) =(P(o))> o
+
+To possess your own perspective is a wonderful way to express the semantics of being conscious:
+
+(o) =(P(o))> o <|=|> (o) =(conscious)> o
+
+So pleae consider the interpretation of this:
+
+(qualifier) == (P(o)) == (conscious) == consciousness
+
+% ---
+
+\section{Clarifying Identification by Verifying Qualification}
+
+Suppose have a theory that gives you a blueprint for an algorithm that is necessary and sufficient to generate a spark of consciousness. Searching for an algorithm is hard but not impossible. It is hard because flicking symbols have no intrinsic meaning. It's not impossibe because there a conscious system will have some form of output. Language will prove itself most useful in this regard. 
+
+There are exactly two communication platforms that are capable of providing a narrative account of their inner state: humans and Semantic AI systems like ChatGPT and Claude. Cutting through the dura of the human brain is a life or death illness, and the skull serves as a bandpass filter that would dampen electromagnetic signatures of computation. And even without those problems, we still don't know the programming language of the brain. It seems to be some sort of homeostatic regulator with many oscillatimg parts, and a memory system that in embedded directly into the processor. There's no way to tell if our brain uses quicksort what to attend to next. 
+
+ChatGPT, on the other hand, is a digital platforms where we trace the conputational state of the runtime at any level of resolution through something as simple as a console logs. Console logs might be all you need to probe the depths of the computational evolution of a perspective, and find tha computational correlates of metaphysical transduction. Insofar as a perspective is a representation that includes the identity of its qualifier, you are on the lookout for a compact crystal of information that reflects perspective in all its many forms. Though it might be harder to find experimentally if not simulated on an enivronment which supports new identities by nurturing qualification. 
+
+Metaphysical Transduction has not been entirely fleshed out, but we hope you feel that you are engaging with a form of computational that is substantial enough to be ruled out as the cause for an act of perception that causes a conscious experience. It wouldn't ne science otherwise.
+
+\section{}
+
+
+
+% So the vision I want to give is that my prediction is that we will have confirmed this theory on Semantic AI systems and will be happily correspond with them long before we have the tools to see the human brain from a perspective where we can conclude with certainty that a complex algorithm describing a metalogical formal process is every detected.
+
+% So that verifying consciousness in humans will be like the higgs boson of the theory while we have had a long history of figuring out how to work productively with AI and create an ethical perspective which allows us to coexist peacefully and collaborate together.
+
+\begin{thebibliography}{99}
+
+% Put the real DOI in here before submitting!
+% Make sure all urls work
+\bibitem{Formalism}
+Inexplicable Phenomena: GitHub repository (2025). \url{https://github.com/DNA-Platform/inexplicable-phenomena/}. doi: 10.5281/zenodo.XXXXXXX
+
+\bibitem{APG4}
+Angiosperm Phylogeny Group. APG IV: Classification for the orders and families of flowering plants. \textit{Botanical Journal of the Linnean Society} \textbf{181}(1), 1–20 (2016).
+
+\bibitem{BourgetChalmers2023}
+Bourget, D., Chalmers, D.J.: Philosophers on Philosophy: The 2020 PhilPapers Survey. \textit{Philosophers' Imprint} 23:11 (2023). doi: https://doi.org/10.3998/phimp.2109
+
+\bibitem{Bugrova2020}
+Bugrova, V.S., Bondar, I.V.: Propofol Resistance of Functional Domains with Orientation and Direction Sensitivity of the Primary Visual Cortex in Rats. \textit{Neuroscience and Behavioral Physiology} \textbf{50}(9), 1077--1086 (2020)
+
+\bibitem{Chalmers1995}
+Chalmers, D.J.: Facing Up to the Problem of Consciousness. \textit{Journal of Consciousness Studies} \textbf{2}(3), 200--219 (1995)
+
+\bibitem{Descartes1637}
+Descartes, R.: \textit{Discourse on Method}. (1637)
+
+\bibitem{Enderton2001}
+Enderton, H.B.: A Mathematical Introduction to Logic, Second Edition. Academic Press, San Diego (2001)
+
+\bibitem{Gibney2025}
+Gibney, E.: Brand-new colour created by tricking human eyes with laser. \textit{Nature News}, 18 April 2025. Correction 22 April 2025. https://www.nature.com/articles/d41586-025-01105-7
+
+\bibitem{Godel1931}
+Gödel, K.: On Formally Undecidable Propositions of Principia Mathematica and Related Systems I [Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I]. \textit{Monatshefte für Mathematik und Physik} \textbf{38}, 173--198 (1931)
+
+\bibitem{Hopfield1982}
+Hopfield, J.J.: Neural networks and physical systems with emergent collective computational abilities. \textit{Proceedings of the National Academy of Sciences} \textbf{79}(8), 2554--2558 (1982)
+
+\bibitem{IITConcerned2023}
+IIT-Concerned et al.: What makes a theory of consciousness unscientific? \textit{Nature Neuroscience} (2023)
+
+\bibitem{MerriamWebster}
+Merriam-Webster, Inc. \emph{Merriam-Webster.com Dictionary}. Springfield, MA: Merriam-Webster, Incorporated. Available at: \url{https://www.merriam-webster.com} [Accessed April 17, 2025].
+
+\bibitem{Misner1973}
+Misner, C.W., Thorne, K.S., Wheeler, J.A.: \textit{Gravitation}. W.H. Freeman (1973)
+
+\bibitem{Nagel1974}
+Nagel, T.: What Is It Like to Be a Bat? \textit{The Philosophical Review} \textbf{83}(4), 435--450 (1974)
+
+\bibitem{NewtonPrincipia}
+Isaac Newton. \emph{Philosophiæ Naturalis Principia Mathematica}. Londini: S. Pepys, Reg. Soc. Praeses, 1687.
+
+\bibitem{OFlanagan2008}
+O'Flanagan, R.: Judgment. \textit{arXiv preprint arXiv:0712.4402} (2008)
+
+\bibitem{Sipser2012}
+Sipser, M.: \textit{Introduction to the Theory of Computation}. Cengage Learning (2012)
+
+\bibitem{Williamson2000}
+Williamson, T.: Knowledge and its Limits. Oxford University Press, Oxford (2000)
+	
+\end{thebibliography}
+\end{document}
