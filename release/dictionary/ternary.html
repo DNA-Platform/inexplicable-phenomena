@@ -1,0 +1,218 @@
+<!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="css-lint" content="disabled">
+    <title>ternary</title>
+    
+    <!-- GitHub Markdown CSS for general markdown styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+    
+    <!-- highlight.js GitHub stylesheet for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    
+    <!-- KaTeX CSS and JS for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+      /* Definition list styling */
+      dl {
+        margin: 1em 0;
+      }
+      dt {
+        font-weight: bold;
+        margin-top: 1em;
+      }
+      dd {
+        margin-left: 2em;
+      }
+      
+      /* LaTeX environment styling */
+      .latex-env {
+        margin: 1.5em 0;
+        padding: 0.8em 1em;
+        border-left: 4px solid #4a4a4a;
+        background-color: #f8f8f8;
+      }
+      
+      .env-title {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+      }
+      
+      .env-content {
+        display: block;
+      }
+      
+      /* Specific environment styling */
+      .theorem { border-left-color: #4a4a4a; }
+      .lemma { border-left-color: #5a6268; }
+      .proof { border-left-color: #6c757d; }
+      .definition { border-left-color: #28a745; }
+      .example { border-left-color: #007bff; }
+      .remark { border-left-color: #fd7e14; }
+      .note { border-left-color: #17a2b8; }
+      .corollary { border-left-color: #6f42c1; }
+      
+      /* KaTeX rendering support */
+      .katex-display {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 1em 0;
+      }
+      
+      .math-display {
+        margin: 1em 0;
+      }
+      
+      .math-inline {
+        display: inline-block;
+      }
+      
+      .math-error {
+        color: red;
+        font-weight: bold;
+      }
+      
+      /* Bibliography and citation styling */
+      .bibliography {
+        margin-top: 2em;
+        padding-top: 1em;
+      }
+      
+      .citation-ref {
+        font-size: 0.8em;
+        position: relative;
+        top: -0.5em;
+        text-decoration: none;
+      }
+      
+      .citation-backref {
+        font-size: 0.8em;
+        text-decoration: none;
+        margin-left: 0.5em;
+      }
+      
+      .citation-entry {
+        margin-bottom: 1em;
+      }
+      
+      .bibliography ol {
+        padding-left: 1.5em;
+      }
+    </style>
+    
+    <!-- Script to initialize KaTeX rendering -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: "#cc0000",
+          strict: false
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <!-- The .markdown-body class is necessary for github-markdown-css -->
+    <article class="markdown-body" style="
+      max-width: 860px; 
+      margin: 2rem auto;
+      padding: 2rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.05);
+    ">
+      <!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<h1 id="header">Header</h1>
+<ul>
+<li>title: <a href="ternary.html">Ternary Relation</a></li>
+<li>book: <a href="dictionary.html">Dictionary</a></li>
+<li>previous: <a href="relationship.html">Relationship</a></li>
+<li>next: <a href="property.html">Property</a></li>
+</ul>
+<h2 id="ternary-relation">Ternary Relation</h2>
+<ol>
+<li><p>[SRT Primitive]: The <strong>ternary relation</strong> is the fundamental primitive of <a href="semantic-reference-theory.html">Semantic Reference Theory</a>, expressed as R(x,y,t) or in the shorthand notation <code>x =t&gt; y</code>. It represents that x is directly related to y through t.</p>
+</li>
+<li><p>[Formal Logic]: A <strong>ternary relation</strong> is a relation with three arguments, represented as R(x,y,t), where x, y, and t are all referents in a catalogue.</p>
+</li>
+<li><p>[Relational Theory]: The <strong>ternary relation</strong> in SRT differs from binary relations in traditional logic by incorporating the relationship type as a first-class element in the relation.</p>
+</li>
+<li><p>[Programmatic]: The <strong>ternary relation</strong> can be viewed as a directed, labeled graph edge where x is the source node, y is the target node, and t is the edge label.</p>
+</li>
+</ol>
+<h2 id="explanation">Explanation</h2>
+<p>In this relation:</p>
+<ul>
+<li>x is the <a href="subject.html">subject</a> (when x ≠ y)</li>
+<li>y is the <a href="object.html">object</a> (when x ≠ y)</li>
+<li>t is the relationship type</li>
+</ul>
+<p>The ternary relation serves as the only primitive in SRT, from which all other concepts are derived. When x and y are the same (x == y), t represents a <a href="property.html">property</a> rather than a relationship type.</p>
+<p>Various syntactic forms exist to express different aspects of the relation:</p>
+<ul>
+<li><code>x =&gt; y</code> := There exists some relationship between x and y</li>
+<li><code>x =t&gt; y</code> := x relates to y through t</li>
+<li><code>x &lt;t= y</code> := y relates to x through t</li>
+<li><code>x &lt;=t=&gt; y</code> := x and y relate to each other through t</li>
+<li><code>x.t</code> := x has property t (equivalent to x =t&gt; x)</li>
+</ul>
+<p>The ternary relation&#39;s fundamental role in SRT parallels the role of binary relations in set theory and first-order logic. However, by incorporating the relationship type as a first-class element, SRT provides a more expressive framework for representing semantic relationships.</p>
+<p>What makes this relation particularly powerful is that all three components (x, y, and t) can themselves be referents in the catalogue, allowing for rich, self-referential structures.</p>
+<h2 id="examples">Examples</h2>
+<p>Direct relationship:</p>
+<pre><code>Doug =owns&gt; book
+</code></pre>
+<p>Property (when subject equals object):</p>
+<pre><code>rose =red&gt; rose
+</code></pre>
+<p>Which can be written as:</p>
+<pre><code>rose.red
+</code></pre>
+<p>Multiple relationships forming a semantic network:</p>
+<pre><code>Alice =knows&gt; Bob
+Bob =works_with&gt; Charlie
+relationship =connects&gt; referents
+</code></pre>
+<p>Relationship describing itself:</p>
+<pre><code>R(x,y,t) =is_described_by&gt; ternary_relation
+</code></pre>
+<h2 id="footer">Footer</h2>
+<ul>
+<li>related: <ul>
+<li><a href="relationship.html">Relationship</a></li>
+<li><a href="subject.html">Subject</a></li>
+<li><a href="object.html">Object</a></li>
+<li><a href="property.html">Property</a></li>
+<li><a href="semantic-reference-theory.html">Semantic Reference Theory</a></li>
+<li><a href="referent.html">Referent</a></li>
+</ul>
+</li>
+<li>thoughts<ul>
+<li>Is the ternary relation R(x,y,t) truly primitive, or could it be derived from more basic constructs?</li>
+<li>How does the ternary relation compare to binary relations in traditional logic and set theory?</li>
+<li>What is gained and lost by making the relationship type a first-class element in the relation?</li>
+<li>Could SRT be extended to n-ary relations (R(x₁,x₂,...,xₙ)) while preserving its key properties?</li>
+<li>What is the significance of the fact that relationship types can themselves be referents?</li>
+</ul>
+</li>
+</ul>
+
+    </article>
+  </body>
+</html>

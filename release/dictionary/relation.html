@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="css-lint" content="disabled">
-    <title>1-reflection</title>
+    <title>relation</title>
     
     <!-- GitHub Markdown CSS for general markdown styling -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
@@ -138,17 +138,72 @@
       <!-- @css-disable -->
 <!-- css-lint-disable -->
 <!-- stylelint-disable -->
-<p><a href="semantic-reference-theory.html">Semantic Reference Theory</a> [Chapter 1]</p>
-<hr>
-<h2 id="a-semantic-reflection">A Semantic Reflection</h2>
-<p>I would say various narrative things. These things might be linked when I say [first-order logic]({wikipedia pahe}). And periodically I would list SRT formulas for consideration:</p>
-<p><code>x -is&gt; symbol &lt;|=|&gt; Ey: x != y &amp; x =x&gt; y</code></p>
-<p>And then I would write more code.</p>
-<p>It might involve multiple paragraphs. Sometimes it would use Latex</p>
-<p><span class="math math-inline">$\neg X \implies \neg Y$</span></p>
-<p>But mostly just to show that I changed it in SRT:</p>
-<p><code>!x =|&gt; !y</code></p>
-<p>And that&#39;s how a reflection would go. </p>
+<h1 id="header">Header</h1>
+<ul>
+<li>title: <a href="relation.html">Relation</a></li>
+<li>book: <a href="dictionary.html">Dictionary</a></li>
+<li>previous: <a href="reference.html">Reference</a></li>
+<li>next: <a href="relationship.html">Relationship</a></li>
+</ul>
+<h2 id="relation">Relation</h2>
+<ol>
+<li><p>[Linguistic]: <strong>Relation</strong> refers to the way in which two or more people, things, or ideas are connected or the state of being connected.</p>
+</li>
+<li><p>[Semantic]: In SRT, <strong>relation</strong> is the process by which a perspective establishes connections between referents. It is the third fundamental operation of a perspective, following <a href="identification.html">identification</a> and <a href="qualification.html">qualification</a>.</p>
+</li>
+<li><p>[Formal]: <code>(i) =(r)&gt; ((s,o)) |=relates&gt; ((s,o)) =(r)&gt; (s,o)</code></p>
+</li>
+</ol>
+<h2 id="explanation">Explanation</h2>
+<p>The formal expression represents how relation works:</p>
+<ul>
+<li><code>(i)</code> represents the qualifier of the perspective</li>
+<li><code>(r)</code> represents a relationship type</li>
+<li><code>((s,o))</code> represents the symbol for a relationship between subject s and object o</li>
+<li>The transduction operator <code>|=relates&gt;</code> shows the transformation</li>
+</ul>
+<p>Relation occurs when the qualifier <code>(i)</code> attributes a relationship type <code>r</code> to a relationship between subject and object, enabling the subject to stand in relation to the object through that relationship type.</p>
+<p>Several additional conditions define the nature of relation:</p>
+<ul>
+<li><code>(r) =(i)&gt; (i)</code> - The relationship type is an intrinsic quality of the qualifier</li>
+<li><code>((s,o)) -&gt; (r)</code> - The relationship symbol inherits from the relationship type</li>
+<li><code>((s,o)) == ((s),(o))</code> - The relationship symbol is defined by the subject and object symbols</li>
+<li><code>(s) =(r)&gt; (o)</code> - The subject relates to the object through the relationship type</li>
+</ul>
+<p>Relation establishes how referents connect to each other within a perspective. After <a href="identification.html">identification</a> establishes what things are and <a href="qualification.html">qualification</a> establishes their qualities, relation establishes how they interconnect.</p>
+<h2 id="examples">Examples</h2>
+<p>Basic relation:</p>
+<pre><code>(i) =(grows)&gt; ((plant,flower)) |=relates&gt; ((plant,flower)) =(grows)&gt; (plant,flower)
+</code></pre>
+<p>This expresses how a perspective relates a plant to a flower through the relationship of growing, enabling the plant to stand in the &quot;grows&quot; relation to the flower.</p>
+<p>Creating a network of relations:</p>
+<pre><code>(i) =(eats)&gt; ((animal,plant))
+(i) =(lives_in)&gt; ((animal,forest))
+(i) =(contains)&gt; ((forest,plant))
+|=relates&gt; 
+(animal) =(eats)&gt; (plant)
+(animal) =(lives_in)&gt; (forest)
+(forest) =(contains)&gt; (plant)
+</code></pre>
+<h2 id="footer">Footer</h2>
+<ul>
+<li>related: <ul>
+<li><a href="perspective.html">Perspective</a></li>
+<li><a href="identification.html">Identification</a></li>
+<li><a href="qualification.html">Qualification</a></li>
+<li><a href="relationship.html">Relationship</a></li>
+<li><a href="ternary.html">Ternary</a></li>
+</ul>
+</li>
+<li>thoughts:<ul>
+<li>How does relation interact with the basic ternary relation of SRT?</li>
+<li>Can relation establish connections between more than two referents?</li>
+<li>What constraints exist on which referents can be related to each other?</li>
+<li>How does the operation of relation differ from the static concept of relationship?</li>
+<li>Does relation require both identification and qualification to have occurred first?</li>
+</ul>
+</li>
+</ul>
 
     </article>
   </body>

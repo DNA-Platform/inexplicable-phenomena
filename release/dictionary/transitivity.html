@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="css-lint" content="disabled">
-    <title>1-reflection</title>
+    <title>transitivity</title>
     
     <!-- GitHub Markdown CSS for general markdown styling -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
@@ -138,17 +138,63 @@
       <!-- @css-disable -->
 <!-- css-lint-disable -->
 <!-- stylelint-disable -->
-<p><a href="semantic-reference-theory.html">Semantic Reference Theory</a> [Chapter 1]</p>
-<hr>
-<h2 id="a-semantic-reflection">A Semantic Reflection</h2>
-<p>I would say various narrative things. These things might be linked when I say [first-order logic]({wikipedia pahe}). And periodically I would list SRT formulas for consideration:</p>
-<p><code>x -is&gt; symbol &lt;|=|&gt; Ey: x != y &amp; x =x&gt; y</code></p>
-<p>And then I would write more code.</p>
-<p>It might involve multiple paragraphs. Sometimes it would use Latex</p>
-<p><span class="math math-inline">$\neg X \implies \neg Y$</span></p>
-<p>But mostly just to show that I changed it in SRT:</p>
-<p><code>!x =|&gt; !y</code></p>
-<p>And that&#39;s how a reflection would go. </p>
+<h1 id="header">Header</h1>
+<ul>
+<li>title: <a href="transitivity.html">Transitivity</a></li>
+<li>book: <a href="dictionary.html">Dictionary</a></li>
+<li>previous: <a href="transduction.html">Transduction</a></li>
+<li>next: <a href="first-order-logic.html">First-Order Logic</a></li>
+</ul>
+<h2 id="transitivity">Transitivity</h2>
+<ol>
+<li><p>[Logical]: <strong>Transitivity</strong> is a property of binary relations such that if a relation R holds between a and b, and also between b and c, then it necessarily holds between a and c.</p>
+</li>
+<li><p>[Semantic]: In SRT, <strong>transitivity</strong> is the property that allows relationships to extend through chains of connected referents, forming the basis for <a href="inheritance.html">inheritance</a> and ancestral relationships.</p>
+</li>
+<li><p>[Graph Theory]: <strong>Transitivity</strong> characterizes a directed graph where, if there are edges from vertex a to vertex b and from vertex b to vertex c, then there is also an edge from vertex a to vertex c.</p>
+</li>
+</ol>
+<h2 id="explanation">Explanation</h2>
+<p>Transitivity is a fundamental property in <a href="semantic-reference-theory.html">Semantic Reference Theory</a> that distinguishes direct relationships from inherited ones. While the basic ternary relation R(x,y,t) is not transitive by itself, SRT introduces the inheritance relationship <code>x -&gt; y</code> to capture transitivity.</p>
+<p>The inheritance relationship is defined as:</p>
+<pre><code>x -&gt; y := x == y || x =&gt; y || E[z]: x -&gt; z &amp; z -&gt; y
+</code></pre>
+<p>This definition embodies transitivity, allowing referents to inherit properties and relationships through chains of direct relationships. Unlike direct relationships, inheritance expresses connections that may involve multiple intermediate steps.</p>
+<p>Transitivity provides SRT with the ability to represent hierarchical structures, category systems, and logical implications. It transforms the basic relationships between individual referents into a rich network of inherited connections that mirror how human knowledge is structured in taxonomies and class hierarchies.</p>
+<h2 id="examples">Examples</h2>
+<p>Direct relationship (not transitive):</p>
+<pre><code>dog =is_pet_of&gt; human
+human =is_citizen_of&gt; country
+</code></pre>
+<p>These two statements alone do not imply that dog =is_citizen_of&gt; country.</p>
+<p>Inheritance (transitive):</p>
+<pre><code>poodle -&gt; dog -&gt; mammal -&gt; animal
+</code></pre>
+<p>This implies that poodle -&gt; animal (a poodle inherits all properties of animals).</p>
+<p>Property inheritance:</p>
+<pre><code>animal.living
+dog -&gt; animal
+</code></pre>
+<p>Therefore: dog.living (dogs inherit the property of being living from animals).</p>
+<h2 id="footer">Footer</h2>
+<ul>
+<li>related: <ul>
+<li><a href="inheritance.html">Inheritance</a></li>
+<li><a href="relationship.html">Relationship</a></li>
+<li><a href="relationship.html">Connection</a></li>
+<li><a href="relationship.html">Direct Relationship</a></li>
+<li><a href="relationship.html">Ancestral Relationship</a></li>
+</ul>
+</li>
+<li>thoughts:<ul>
+<li>How does transitivity in SRT relate to logical implication?</li>
+<li>What are the computational implications of transitivity for inference engines built on SRT?</li>
+<li>Can transitivity be applied selectively to certain relationship types but not others?</li>
+<li>How does the distinction between direct and transitive relationships map onto human cognitive processes?</li>
+<li>What role does transitivity play in the formalization of common-sense reasoning?</li>
+</ul>
+</li>
+</ul>
 
     </article>
   </body>

@@ -1,6 +1,6 @@
-PWD c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\.synopsis
+PWD c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\research\.synopsis
 INPUT C:\Users\dougl\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\.synopsis\inexplicable-phenomena.tex
+INPUT c:\Users\dougl\OneDrive\Source\DNA Platform\inexplicable-phenomena\research\.synopsis\inexplicable-phenomena.tex
 OUTPUT inexplicable-phenomena.log
 INPUT C:\Program Files\MiKTeX\tex\latex\llncs\llncs.cls
 INPUT C:\Program Files\MiKTeX\tex\latex\llncs\llncs.cls

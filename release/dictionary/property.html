@@ -1,0 +1,214 @@
+<!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="css-lint" content="disabled">
+    <title>property</title>
+    
+    <!-- GitHub Markdown CSS for general markdown styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+    
+    <!-- highlight.js GitHub stylesheet for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    
+    <!-- KaTeX CSS and JS for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+      /* Definition list styling */
+      dl {
+        margin: 1em 0;
+      }
+      dt {
+        font-weight: bold;
+        margin-top: 1em;
+      }
+      dd {
+        margin-left: 2em;
+      }
+      
+      /* LaTeX environment styling */
+      .latex-env {
+        margin: 1.5em 0;
+        padding: 0.8em 1em;
+        border-left: 4px solid #4a4a4a;
+        background-color: #f8f8f8;
+      }
+      
+      .env-title {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+      }
+      
+      .env-content {
+        display: block;
+      }
+      
+      /* Specific environment styling */
+      .theorem { border-left-color: #4a4a4a; }
+      .lemma { border-left-color: #5a6268; }
+      .proof { border-left-color: #6c757d; }
+      .definition { border-left-color: #28a745; }
+      .example { border-left-color: #007bff; }
+      .remark { border-left-color: #fd7e14; }
+      .note { border-left-color: #17a2b8; }
+      .corollary { border-left-color: #6f42c1; }
+      
+      /* KaTeX rendering support */
+      .katex-display {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 1em 0;
+      }
+      
+      .math-display {
+        margin: 1em 0;
+      }
+      
+      .math-inline {
+        display: inline-block;
+      }
+      
+      .math-error {
+        color: red;
+        font-weight: bold;
+      }
+      
+      /* Bibliography and citation styling */
+      .bibliography {
+        margin-top: 2em;
+        padding-top: 1em;
+      }
+      
+      .citation-ref {
+        font-size: 0.8em;
+        position: relative;
+        top: -0.5em;
+        text-decoration: none;
+      }
+      
+      .citation-backref {
+        font-size: 0.8em;
+        text-decoration: none;
+        margin-left: 0.5em;
+      }
+      
+      .citation-entry {
+        margin-bottom: 1em;
+      }
+      
+      .bibliography ol {
+        padding-left: 1.5em;
+      }
+    </style>
+    
+    <!-- Script to initialize KaTeX rendering -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: "#cc0000",
+          strict: false
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <!-- The .markdown-body class is necessary for github-markdown-css -->
+    <article class="markdown-body" style="
+      max-width: 860px; 
+      margin: 2rem auto;
+      padding: 2rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.05);
+    ">
+      <!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<h1 id="header">Header</h1>
+<ul>
+<li>title: <a href="property.html">Property</a></li>
+<li>book: <a href="dictionary.html">Dictionary</a></li>
+<li>previous: <a href="ternary.html">Ternary Relation</a></li>
+<li>next: <a href="inheritance.html">Inheritance</a></li>
+</ul>
+<h2 id="property">Property</h2>
+<ol>
+<li><p>[SRT]: A <strong>property</strong> is a special case of <a href="relationship.html">relationship</a> where the <a href="subject.html">subject</a> and <a href="object.html">object</a> are the same <a href="referent.html">referent</a>. In the <a href="ternary.html">ternary relation</a> R(x,x,t), t is the property of x.</p>
+</li>
+<li><p>[Formal]: A <strong>property</strong> is defined as <code>x.t := R(x,x,t)</code>, representing a self-referential relationship of a referent.</p>
+</li>
+<li><p>[Ontological]: A <strong>property</strong> represents a characteristic or attribute inherent to a referent rather than a connection to another referent.</p>
+</li>
+<li><p>[Philosophical]: <strong>Properties</strong> in SRT correspond to qualities or attributes in traditional ontology, but are formalized as special cases of relationships rather than as a fundamentally different category.</p>
+</li>
+</ol>
+<h2 id="explanation">Explanation</h2>
+<p>When a referent relates to itself through the ternary relation, the relationship type becomes a property of that referent. This is expressed using the dot notation <code>x.t</code>, which is a shorthand for <code>x =t&gt; x</code> or R(x,x,t).</p>
+<p>Properties differ from relationships between distinct referents in significant ways:</p>
+<ul>
+<li>They do not establish the referent as a <a href="subject.html">subject</a> in the technical sense</li>
+<li>They represent characteristics inherent to the referent rather than connections to other referents</li>
+<li>They form the basis for identity within the system</li>
+</ul>
+<p>All properties must inherit from the fundamental property P, which represents the basic notion that a referent exists within the <a href="catalogue.html">catalogue</a>. This creates a hierarchy of properties with P at the root.</p>
+<p>The formula <code>A[x]: E[P]: x.P</code> expresses that every referent x has the property P, which is the most general property in SRT. All other properties inherit from P, creating a structure similar to a type hierarchy in programming languages.</p>
+<p>Properties are crucial for qualification operations in SRT. While identification creates identity and relation creates connections between referents, qualification assigns properties to referents, enriching the semantic structure of the catalogue.</p>
+<h2 id="examples">Examples</h2>
+<p>Simple property:</p>
+<pre><code>rose.red
+</code></pre>
+<p>Which is equivalent to:</p>
+<pre><code>rose =red&gt; rose
+</code></pre>
+<p>Multiple properties:</p>
+<pre><code>rose.red
+rose.fragrant
+</code></pre>
+<p>Property hierarchy:</p>
+<pre><code>rose.flower
+flower.plant
+plant.living
+</code></pre>
+<p>Universal property P:</p>
+<pre><code>x.P  // true for all referents x
+</code></pre>
+<h2 id="footer">Footer</h2>
+<ul>
+<li>related: <ul>
+<li><a href="ternary.html">Ternary</a></li>
+<li><a href="referent.html">Referent</a></li>
+<li><a href="relationship.html">Relationship</a></li>
+<li><a href="subject.html">Subject</a></li>
+<li><a href="object.html">Object</a></li>
+<li><a href="qualification.html">Qualification</a></li>
+<li><a href="inheritance.html">Inheritance</a></li>
+</ul>
+</li>
+<li>thoughts<ul>
+<li>What is the relationship between properties in SRT and predicates in first-order logic?</li>
+<li>How do properties relate to the concept of identity in SRT?</li>
+<li>Is there a formal distinction between essential and accidental properties in SRT?</li>
+<li>What is the significance of all properties inheriting from the fundamental property P?</li>
+<li>How does the treatment of properties as special cases of relationships rather than a distinct category affect the expressiveness of SRT?</li>
+<li>Can properties themselves have properties?</li>
+</ul>
+</li>
+</ul>
+
+    </article>
+  </body>
+</html>

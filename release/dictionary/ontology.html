@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="css-lint" content="disabled">
-    <title>1-reflection</title>
+    <title>ontology</title>
     
     <!-- GitHub Markdown CSS for general markdown styling -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
@@ -138,17 +138,57 @@
       <!-- @css-disable -->
 <!-- css-lint-disable -->
 <!-- stylelint-disable -->
-<p><a href="semantic-reference-theory.html">Semantic Reference Theory</a> [Chapter 1]</p>
-<hr>
-<h2 id="a-semantic-reflection">A Semantic Reflection</h2>
-<p>I would say various narrative things. These things might be linked when I say [first-order logic]({wikipedia pahe}). And periodically I would list SRT formulas for consideration:</p>
-<p><code>x -is&gt; symbol &lt;|=|&gt; Ey: x != y &amp; x =x&gt; y</code></p>
-<p>And then I would write more code.</p>
-<p>It might involve multiple paragraphs. Sometimes it would use Latex</p>
-<p><span class="math math-inline">$\neg X \implies \neg Y$</span></p>
-<p>But mostly just to show that I changed it in SRT:</p>
-<p><code>!x =|&gt; !y</code></p>
-<p>And that&#39;s how a reflection would go. </p>
+<h1 id="header">Header</h1>
+<ul>
+<li>title: <a href="ontology.html">Ontology</a></li>
+<li>book: <a href="dictionary.html">Dictionary</a></li>
+<li>previous: <a href="object.html">Object</a></li>
+<li>next: <a href="perspective.html">Perspective</a></li>
+</ul>
+<h2 id="ontology">Ontology</h2>
+<ol>
+<li><p>[Linguistic]: <strong>Ontology</strong> is the branch of philosophy that studies the nature of being, existence, or reality, focusing on the categories of being and their relations.</p>
+</li>
+<li><p>[Semantic]: In <a href="semantic-reference-theory.html">Semantic Reference Theory</a>, <strong>ontology</strong> refers to the study of what exists within a theory. It concerns the specific constants, relationships, and their definitions in a <a href="catalogue.html">catalogue</a>.</p>
+</li>
+<li><p>[Computer Science]: <strong>Ontology</strong> is a formal representation of knowledge as a set of concepts within a domain, and the relationships between those concepts.</p>
+</li>
+</ol>
+<h2 id="explanation">Explanation</h2>
+<p>SRT serves as both an ontology and an <a href="epistemology.html">epistemology</a>, with <a href="transduction.html">transduction</a> allowing conversion between ontological statements (about specific constants and their relationships) and epistemological statements (general axioms about relations).</p>
+<p>The ontological dimension of SRT concerns the specific referents in a catalogue and how they relate to each other. These exist as constants within a particular theory or perspective. While epistemology in SRT deals with what can be known or inferred about relationships in general, ontology addresses what specifically exists within a given semantic framework.</p>
+<p>Transduction bridges these dimensions by allowing existential statements from epistemology to be realized as specific constants and relationships in an ontology. This process mirrors how abstract knowledge becomes instantiated in concrete instances.</p>
+<h2 id="examples">Examples</h2>
+<p>Epistemological statement:</p>
+<pre><code>E[x,y]: x =&gt; y
+</code></pre>
+<p>(There exist referents that are related to each other)</p>
+<p>Ontological realization through transduction:</p>
+<pre><code>a =loves&gt; b
+</code></pre>
+<p>(Specific constants a and b exist, with a specific relationship between them)</p>
+<p>Distinction between epistemology and ontology in SRT:</p>
+<pre><code>SRT |= E[x,y,t]: x =t&gt; y  // Epistemological axiom about the existence of relationships
+Catalog |= rose =red&gt; rose  // Ontological statement about specific referents
+</code></pre>
+<h2 id="footer">Footer</h2>
+<ul>
+<li>related: <ul>
+<li><a href="epistemology.html">Epistemology</a></li>
+<li><a href="catalogue.html">Catalogue</a></li>
+<li><a href="transduction.html">Transduction</a></li>
+<li><a href="referent.html">Referent</a></li>
+<li><a href="semantic-reference-theory.html">Semantic Reference Theory</a></li>
+</ul>
+</li>
+<li>thoughts:<ul>
+<li>How does the ontology of SRT compare to ontological commitments in other formal systems?</li>
+<li>What is the relationship between ontological categories in philosophy and relationship types in SRT?</li>
+<li>Can multiple inconsistent ontologies coexist within the framework of SRT?</li>
+<li>How does transduction change our understanding of the relationship between language and reality?</li>
+</ul>
+</li>
+</ul>
 
     </article>
   </body>

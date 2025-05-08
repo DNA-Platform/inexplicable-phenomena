@@ -1,0 +1,207 @@
+<!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="css-lint" content="disabled">
+    <title>semantic-reference-theory</title>
+    
+    <!-- GitHub Markdown CSS for general markdown styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+    
+    <!-- highlight.js GitHub stylesheet for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    
+    <!-- KaTeX CSS and JS for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+      /* Definition list styling */
+      dl {
+        margin: 1em 0;
+      }
+      dt {
+        font-weight: bold;
+        margin-top: 1em;
+      }
+      dd {
+        margin-left: 2em;
+      }
+      
+      /* LaTeX environment styling */
+      .latex-env {
+        margin: 1.5em 0;
+        padding: 0.8em 1em;
+        border-left: 4px solid #4a4a4a;
+        background-color: #f8f8f8;
+      }
+      
+      .env-title {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+      }
+      
+      .env-content {
+        display: block;
+      }
+      
+      /* Specific environment styling */
+      .theorem { border-left-color: #4a4a4a; }
+      .lemma { border-left-color: #5a6268; }
+      .proof { border-left-color: #6c757d; }
+      .definition { border-left-color: #28a745; }
+      .example { border-left-color: #007bff; }
+      .remark { border-left-color: #fd7e14; }
+      .note { border-left-color: #17a2b8; }
+      .corollary { border-left-color: #6f42c1; }
+      
+      /* KaTeX rendering support */
+      .katex-display {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 1em 0;
+      }
+      
+      .math-display {
+        margin: 1em 0;
+      }
+      
+      .math-inline {
+        display: inline-block;
+      }
+      
+      .math-error {
+        color: red;
+        font-weight: bold;
+      }
+      
+      /* Bibliography and citation styling */
+      .bibliography {
+        margin-top: 2em;
+        padding-top: 1em;
+      }
+      
+      .citation-ref {
+        font-size: 0.8em;
+        position: relative;
+        top: -0.5em;
+        text-decoration: none;
+      }
+      
+      .citation-backref {
+        font-size: 0.8em;
+        text-decoration: none;
+        margin-left: 0.5em;
+      }
+      
+      .citation-entry {
+        margin-bottom: 1em;
+      }
+      
+      .bibliography ol {
+        padding-left: 1.5em;
+      }
+    </style>
+    
+    <!-- Script to initialize KaTeX rendering -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: "#cc0000",
+          strict: false
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <!-- The .markdown-body class is necessary for github-markdown-css -->
+    <article class="markdown-body" style="
+      max-width: 860px; 
+      margin: 2rem auto;
+      padding: 2rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.05);
+    ">
+      <!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<h1 id="header">Header</h1>
+<ul>
+<li>title: <a href="semantic-reference-theory.html">Semantic Reference Theory</a></li>
+<li>book: <a href="dictionary.html">Dictionary</a></li>
+<li>previous: <a href="semantic-reference-frame.html">Semantic Reference Frame</a></li>
+<li>next: <a href="semantic-theory.html">Semantic Theory</a></li>
+</ul>
+<h2 id="semantic-reference-theory">Semantic Reference Theory</h2>
+<ol>
+<li><p>[Logical]: <strong>Semantic Reference Theory</strong> (SRT) is a formal logical system with a programmatic grammar built around the <a href="ternary.html">ternary relation</a> R(x,y,t), with no constants, no functions, and only one relationship type.</p>
+</li>
+<li><p>[Epistemological]: <strong>Semantic Reference Theory</strong> is a framework that connects epistemology to ontology through the formalization of reference relationships, serving as a theory of meaning and knowledge representation.</p>
+</li>
+<li><p>[Computational]: <strong>Semantic Reference Theory</strong> can be viewed as a Turing-complete symbolic system capable of representing any referential structure, including itself, through its ability to extend via transduction.</p>
+</li>
+</ol>
+<h2 id="explanation">Explanation</h2>
+<p>SRT begins with minimal assumptions - it has no constants, no functions, and only one relation R(x,y,t), expressed as <code>x =t&gt; y</code>. From this simple foundation, it builds a rich framework for representing meaning and reference.</p>
+<p>The key components of SRT include:</p>
+<ul>
+<li><a href="ternary.html">Ternary relation</a>: The fundamental primitive relation R(x,y,t)</li>
+<li><a href="catalogue.html">Catalogue</a>: The collection of referents that form the domain</li>
+<li><a href="referent.html">Referent</a>: The basic entity that can participate in relationships</li>
+<li><a href="transduction.html">Transduction</a>: The operation that extends the theory</li>
+</ul>
+<p>SRT is designed to be universal in its ability to represent referential structures - similar to how a Turing Machine can compute any computable function, SRT can represent any referential relationship.</p>
+<p>What makes SRT unique is its ability to represent itself and to formalize the process by which theories extend themselves. Through the <a href="transduction.html">transduction operator</a> <code>|=&gt;</code>, SRT creates a bridge between epistemology and ontology, formalizing how semantic systems evolve.</p>
+<p>SRT also provides a framework for understanding consciousness through the concept of <a href="perspective.html">perspective</a> and the insight that a <a href="conscious-experience.html">conscious experience</a> represents a change in perspective.</p>
+<h2 id="examples">Examples</h2>
+<p>A simple SRT catalogue:</p>
+<pre><code>{Doug, book, owns}
+R(Doug, book, owns)  // Doug =owns&gt; book
+</code></pre>
+<p>A transduction operation:</p>
+<pre><code>E[x]: x.red |=&gt; rose.red
+</code></pre>
+<p>Representing different relationship forms:</p>
+<pre><code>x =&gt; y := E[t]: R(x,y,t)      // Existential relationship
+x -&gt; y := x == y || x =&gt; y || E[z]: x -&gt; z &amp; z -&gt; y      // Inheritance
+x-y := x -&gt; y || x &lt;- y || E[z]: x-z &amp; z-y      // Connection
+</code></pre>
+<h2 id="footer">Footer</h2>
+<ul>
+<li>related: <ul>
+<li><a href="ternary.html">Ternary</a></li>
+<li><a href="catalogue.html">Catalogue</a></li>
+<li><a href="referent.html">Referent</a></li>
+<li><a href="transduction.html">Transduction</a></li>
+<li><a href="perspective.html">Perspective</a></li>
+<li><a href="semantic-theory.html">Semantic Theory</a></li>
+<li><a href="epistemology.html">Epistemology</a></li>
+<li><a href="ontology.html">Ontology</a></li>
+</ul>
+</li>
+<li>thoughts:<ul>
+<li>How does SRT relate to other logical frameworks like first-order logic?</li>
+<li>What are the fundamental axioms of SRT beyond the structure of the ternary relation?</li>
+<li>How does SRT formalize the notion of meaning?</li>
+<li>Can SRT represent paradoxes and self-reference problems that arise in other formal systems?</li>
+<li>What is the relationship between SRT and mathematical category theory?</li>
+</ul>
+</li>
+</ul>
+
+    </article>
+  </body>
+</html>

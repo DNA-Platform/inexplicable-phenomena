@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="css-lint" content="disabled">
-    <title>1-reflection</title>
+    <title>formal-logic</title>
     
     <!-- GitHub Markdown CSS for general markdown styling -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
@@ -138,17 +138,65 @@
       <!-- @css-disable -->
 <!-- css-lint-disable -->
 <!-- stylelint-disable -->
-<p><a href="semantic-reference-theory.html">Semantic Reference Theory</a> [Chapter 1]</p>
-<hr>
-<h2 id="a-semantic-reflection">A Semantic Reflection</h2>
-<p>I would say various narrative things. These things might be linked when I say [first-order logic]({wikipedia pahe}). And periodically I would list SRT formulas for consideration:</p>
-<p><code>x -is&gt; symbol &lt;|=|&gt; Ey: x != y &amp; x =x&gt; y</code></p>
-<p>And then I would write more code.</p>
-<p>It might involve multiple paragraphs. Sometimes it would use Latex</p>
-<p><span class="math math-inline">$\neg X \implies \neg Y$</span></p>
-<p>But mostly just to show that I changed it in SRT:</p>
-<p><code>!x =|&gt; !y</code></p>
-<p>And that&#39;s how a reflection would go. </p>
+<h1 id="header">Header</h1>
+<ul>
+<li>title: <a href="formal-logic.html">Formal Logic</a></li>
+<li>book: <a href="dictionary.html">Dictionary</a></li>
+<li>previous: <a href="first-order-logic.html">First-Order Logic</a></li>
+<li>next: <a href="identification.html">Identification</a></li>
+</ul>
+<h2 id="formal-logic">Formal Logic</h2>
+<ol>
+<li><p>[Linguistic]: <strong>Formal logic</strong> is a system of reasoning using symbolic notation and precise rules to determine the validity of arguments.</p>
+</li>
+<li><p>[Semantic]: <strong>Formal logic</strong> in SRT provides a framework for representing statements and their relationships mathematically, removing ambiguities found in natural language.</p>
+</li>
+<li></li>
+</ol>
+<h2 id="explanation">Explanation</h2>
+<p>Formal logic provides a framework for representing statements and their relationships mathematically, removing ambiguities found in natural language.</p>
+<p><a href="semantic-reference-theory.html">Semantic Reference Theory</a> builds upon formal logic traditions but adopts a more accessible programmatic grammar inspired by programming language syntax. It replaces the austere symbology of first-order logic with notation like <code>!X</code> (not X), <code>X &amp; Y</code> (X and Y), and <code>X =|&gt; Y</code> (X implies Y), while maintaining the same logical power.</p>
+<p>SRT uses a programmatic grammar that draws inspiration from programming language syntax:</p>
+<p>For propositional variables:</p>
+<ul>
+<li><code>!X</code> : not X  </li>
+<li><code>X &amp; Y</code> : X and Y  </li>
+<li><code>X | Y</code> : X xor Y  </li>
+<li><code>X || Y</code> : X or Y  </li>
+<li><code>X =|&gt; Y</code> : X implies Y  </li>
+<li><code>X !=|&gt; Y</code> : X does not imply Y  </li>
+<li><code>X &lt;|=|&gt; Y</code> : X if and only if Y</li>
+<li><code>X === Y</code> : X is logically equivalent to Y</li>
+</ul>
+<p>For non-logical variables:</p>
+<ul>
+<li><code>x == y</code> : x equals y  </li>
+<li><code>x != y</code> : x does not equal y</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<p>Logical implication in traditional logic and SRT:</p>
+<pre><code>Traditional: P → Q
+SRT: P =|&gt; Q
+
+Logical conjunction:
+</code></pre>
+<p>Traditional: P ∧ Q<br>SRT: P &amp; Q</p>
+<pre><code>
+## Footer
+- related:
+  - [Semantic Reference Theory](semantic-reference-theory.md)
+  - [First-Order Logic](first-order-logic.md)
+  - [Propositional Logic](propositional-logic.md)
+  - [Predicate Logic](predicate-logic.md)
+  - [Logic](logic.md)
+- thoughts:
+  - How does SRT&#x27;s programmatic grammar enhance expressivity compared to traditional notation?
+  - What are the trade-offs between traditional logic notation and SRT&#x27;s notation?
+- external:
+  - [Formal logic](https://en.wikipedia.org/wiki/Formal_logic) on Wikipedia
+  - [Mathematical logic](https://en.wikipedia.org/wiki/Mathematical_logic) on Wikipedia
+  - [First-order logic](https://en.wikipedia.org/wiki/First-order_logic) on Wikipedia
+</code></pre>
 
     </article>
   </body>
