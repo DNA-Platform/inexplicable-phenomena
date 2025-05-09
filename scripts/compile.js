@@ -3,7 +3,8 @@ const path = require('path');
 const { format, transformToWebFriendlyName } = require('./format');
 
 // Only look for markdown in this directory
-const SOURCE_DIR = 'research'; 
+const SOURCE_DIR = 'library'; 
+const TARGET_DIR = 'library/.public'; 
 
 // Function to recursively remove empty directories
 function removeEmptyDirectories(directory) {
@@ -40,8 +41,8 @@ function removeEmptyDirectories(directory) {
 
 // Helper function to check if a directory contains any non-draft markdown files
 async function directoryHasNonDraftFiles(dir) {
-  // Skip if directory doesn't exist or is in skip list
-  if (!fs.existsSync(dir)) {
+  // Skip if directory doesn't exist or is the TARGET_DIR
+  if (!fs.existsSync(dir) || dir === TARGET_DIR || dir.includes(path.basename(TARGET_DIR))) {
     return false;
   }
 
@@ -81,6 +82,12 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
   // Validate input
   if (!dir || !outputDir) {
     throw new Error('Both input and output directories must be specified');
+  }
+
+  // Skip processing if this is the TARGET_DIR
+  if (dir === TARGET_DIR || dir.includes(path.basename(TARGET_DIR))) {
+    console.log(`Skipping target directory: ${dir}`);
+    return;
   }
 
   // Check if this directory contains any non-draft markdown files
@@ -136,18 +143,18 @@ async function compileMarkdownFiles(dir, outputDir, callback) {
   }));
 }
 
-// Function to transform paths from research to release
+// Function to transform paths from SOURCE_DIR to TARGET_DIR
 function transformPath(inputPath) {
-  // Replace 'research' with 'release' in the path
-  let outputPath = inputPath.replace(/^research/, 'release');
+  // Replace SOURCE_DIR with TARGET_DIR in the path
+  let outputPath = inputPath.replace(new RegExp(`^${SOURCE_DIR}`), TARGET_DIR);
   
   // Split the path into segments
   const segments = outputPath.split(path.sep);
   
   // Process each segment to make it web-friendly
   const processedSegments = segments.map(segment => {
-    // Skip the 'release' segment itself
-    if (segment === 'release') return segment;
+    // Skip the target directory segment itself
+    if (segment === path.basename(TARGET_DIR)) return segment;
     
     // If it's a file with extension, process the basename and keep the extension
     if (segment.includes('.')) {
@@ -168,8 +175,8 @@ function transformPath(inputPath) {
 async function main() {
   try {
     // Define release folders
-    const releaseFolder = './release';
-    const tempReleaseFolder = './new-release';
+    const releaseFolder = `./${TARGET_DIR}`;
+    const tempReleaseFolder = './release';
     
     // Check if source directory exists
     if (!fs.existsSync(SOURCE_DIR)) {
