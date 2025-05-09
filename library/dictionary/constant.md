@@ -4,7 +4,7 @@
 - previous: [Referent](referent.md)
 - next: [Variable](variable.md)
 
-## Constant
+## Definition
 
 1. [SRT]: A **constant** in Semantic Reference Theory represents a specific value that can be assigned to a [referent](referent.md), introduced through the process of [transduction](transduction.md).
 

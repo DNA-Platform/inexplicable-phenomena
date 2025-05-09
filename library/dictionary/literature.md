@@ -4,7 +4,7 @@
 - previous: [Inheritance](inheritance.md)
 - next: [Logic](logic.md)
 
-## Literature
+## Definition
 
 1. [Linguistic]: **Literature** refers to written works, especially those considered of superior or lasting artistic merit.
 

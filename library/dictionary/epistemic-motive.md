@@ -4,7 +4,7 @@
 - previous: [Domain](domain.md)
 - next: [Epistemology](epistemology.md)
 
-## Epistemic Motive
+## Definition
 
 1. [SRT]: An **epistemic motive** is a drive or principle that guides a system's knowledge-seeking behavior, particularly what motivates a system to extend itself through [transduction](transduction.md).
 
@@ -40,7 +40,8 @@ Doug encounters NDPg and incorporates it into his perspective
   - [Completeness](completeness.md)
   - [Consistency](consistency.md)
   - [Semantic Assertion](semantic-assertion.md)
-- thoughts
+
+### Thoughts
   - What other epistemic motives besides completeness might drive transduction?
   - How do epistemic motives relate to the semantic assertions a system makes about itself?
   - Is there a formal hierarchy or priority system among different epistemic motives?

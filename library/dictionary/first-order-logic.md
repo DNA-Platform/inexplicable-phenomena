@@ -4,7 +4,7 @@
 - previous: [Epistemology](epistemology.md)
 - next: [Formal Logic](formal-logic.md)
 
-## First-Order Logic
+## Definition
 
 1. [Linguistic]: **First-order logic** (FOL) is a formal logical system used in mathematics, philosophy, linguistics, and computer science that extends propositional logic by allowing quantification over objects in a domain.
 

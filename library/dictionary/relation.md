@@ -4,7 +4,7 @@
 - previous: [Reference](reference.md)
 - next: [Relationship](relationship.md)
 
-## Relation
+## Definition
 
 1. [Linguistic]: **Relation** refers to the way in which two or more people, things, or ideas are connected or the state of being connected.
 

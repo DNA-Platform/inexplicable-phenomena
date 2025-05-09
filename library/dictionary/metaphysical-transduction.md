@@ -4,7 +4,7 @@
 - previous: [Metalogical Transduction](metalogical-transduction.md)
 - next: [Object](object.md)
 
-## Metaphysical Transduction
+## Definition
 
 1. [Linguistic]: **Metaphysical transduction** refers to the transformation of physical phenomena into mental or conscious experiences.
 

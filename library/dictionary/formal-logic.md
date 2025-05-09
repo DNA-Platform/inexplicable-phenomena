@@ -4,7 +4,7 @@
 - previous: [First-Order Logic](first-order-logic.md)
 - next: [Identification](identification.md)
 
-## Formal Logic
+## Definition
 
 1. [Linguistic]: **Formal logic** is a system of reasoning using symbolic notation and precise rules to determine the validity of arguments.
 

@@ -4,7 +4,7 @@
 - previous: [Semantic Reference Frame](semantic-reference-frame.md)
 - next: [Semantic Theory](semantic-theory.md)
 
-## Semantic Reference Theory
+##Definition
 
 1. [Logical]: **Semantic Reference Theory** (SRT) is a formal logical system with a programmatic grammar built around the [ternary relation](ternary.md) R(x,y,t), with no constants, no functions, and only one relationship type.
 

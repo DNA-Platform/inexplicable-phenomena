@@ -4,7 +4,7 @@
 - previous: [Subject](subject.md)
 - next: [Ternary](ternary.md)
 
-## Symbolism
+## Definition
 
 1. [Linguistic]: **Symbolism** refers to the use of symbols to represent ideas or qualities, particularly in art, literature, and communication.
 
@@ -50,7 +50,8 @@ x =sym> y =|> x -> sym
   - [Representation](reference.md)
   - [Subject](subject.md)
   - [Object](object.md)
-- thoughts:
+
+### Thoughts
   - What is the precise distinction between a symbol and other forms of representation?
   - How does symbolism in SRT relate to theories of semiotics?
   - Can a referent function as both a symbol and part of literature?

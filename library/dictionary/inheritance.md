@@ -4,7 +4,7 @@
 - previous: [Identity](identity.md)
 - next: [Literature](literature.md)
 
-## Inheritance
+## Definition
 
 1. [Linguistic]: **Inheritance** is the practice of passing on property, titles, debts, rights, and obligations upon the death of an individual.
 

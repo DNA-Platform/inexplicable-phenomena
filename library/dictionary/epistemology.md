@@ -4,7 +4,7 @@
 - previous: [Epistemic Motive](epistemic-motive.md)
 - next: [Existential Relationship](existential-relationship.md)
 
-## Epistemology
+## Definition
 
 1. [Philosophy]: **Epistemology** is the branch of philosophy concerned with the theory of knowledge, especially with regard to its methods, validity, scope, and the distinction between justified belief and opinion.
 

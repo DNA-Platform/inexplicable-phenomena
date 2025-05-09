@@ -4,7 +4,7 @@
 - previous: [Relationship](relationship.md)
 - next: [Property](property.md)
 
-## Ternary Relation
+## Definition
 
 1. [SRT Primitive]: The **ternary relation** is the fundamental primitive of [Semantic Reference Theory](semantic-reference-theory.md), expressed as R(x,y,t) or in the shorthand notation `x =t> y`. It represents that x is directly related to y through t.
 

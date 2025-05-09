@@ -4,7 +4,7 @@
 - previous: [Ternary](ternary.md)
 - next: [Transitivity](transitivity.md)
 
-## Transduction
+## Definition
 
 1. [Linguistic]: **Transduction** refers to the conversion of one form of energy or signal into another form.
 

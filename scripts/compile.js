@@ -177,7 +177,14 @@ async function main() {
     // Define release folders
     const releaseFolder = `./${TARGET_DIR}`;
     const tempReleaseFolder = './release';
-    
+
+    // Ensure templates directory exists for CSS and JS
+    const templatesDir = path.join(__dirname, 'html', 'templates');
+    if (!fs.existsSync(templatesDir)) {
+      fs.mkdirSync(templatesDir, { recursive: true });
+      console.log(`Created templates directory: ${templatesDir}`);
+    }
+
     // Check if source directory exists
     if (!fs.existsSync(SOURCE_DIR)) {
       console.log(`Source directory '${SOURCE_DIR}' does not exist. Creating it...`);

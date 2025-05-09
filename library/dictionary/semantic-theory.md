@@ -4,7 +4,7 @@
 - previous: [Semantic Reference Theory](semantic-reference-theory.md)
 - next: [Subject](subject.md)
 
-## Semantic Theory
+## Definition
 
 1. [Linguistic]: A **semantic theory** is an account of how meaning is constructed and interpreted in language.
 

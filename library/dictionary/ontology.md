@@ -4,7 +4,7 @@
 - previous: [Object](object.md)
 - next: [Perspective](perspective.md)
 
-## Ontology
+## Definition
 
 1. [Linguistic]: **Ontology** is the branch of philosophy that studies the nature of being, existence, or reality, focusing on the categories of being and their relations.
 

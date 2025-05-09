@@ -4,7 +4,7 @@
 - previous: [Semantic Theory](semantic-theory.md)
 - next: [Symbolism](symbolism.md)
 
-## Subject
+## Definition
 
 1. [Linguistic]: In grammar, a **subject** is the person or thing that performs the action expressed by a verb or about which something is stated.
 

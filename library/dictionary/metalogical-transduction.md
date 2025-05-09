@@ -4,7 +4,7 @@
 - previous: [Logic](logic.md)
 - next: [Metaphysical Transduction](metaphysical-transduction.md)
 
-## Metalogical Transduction
+## Definition
 
 1. [Linguistic]: **Metalogical transduction** refers to a transformation at the meta-level of logical systems.
 

@@ -4,7 +4,7 @@
 - previous: [Transduction](transduction.md)
 - next: [First-Order Logic](first-order-logic.md)
 
-## Transitivity
+## Definition
 
 1. [Logical]: **Transitivity** is a property of binary relations such that if a relation R holds between a and b, and also between b and c, then it necessarily holds between a and c.
 

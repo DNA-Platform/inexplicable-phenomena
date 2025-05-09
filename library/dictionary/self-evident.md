@@ -4,7 +4,7 @@
 - previous: [Semantic Theory](semantic-theory.md)
 - next: [Subject](subject.md)
 
-## Self-Evident
+## Definition
 
 1. [Linguistic]: **Self-evident** refers to something that is so obvious or true that it doesn't require proof or explanation to be believed or understood.
 

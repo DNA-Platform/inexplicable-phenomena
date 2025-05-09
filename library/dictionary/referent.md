@@ -4,7 +4,7 @@
 - previous: [Object](object.md)
 - next: [Catalogue](catalogue.md)
 
-## Referent
+## Definition
 
 1. [SRT]: A **referent** is an entity that can participate in the [ternary relation](ternary.md) R(x,y,t) as a subject, object, or relationship type. In the context of [Semantic Reference Theory](semantic-reference-theory.md), a referent is defined as an object which could be assigned to a constant.
 

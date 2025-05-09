@@ -4,7 +4,7 @@
 - previous: [Metalogical Transduction](metalogical-transduction.md)
 - next: [Ontology](ontology.md)
 
-## Object
+## Definition
 
 1. [Linguistic]: An **object** is an entity toward which action, thought, or emotion is directed, often functioning as the grammatical object in a sentence.
 

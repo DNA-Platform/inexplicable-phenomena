@@ -4,7 +4,7 @@
 - previous: [Qualification](qualification.md)
 - next: [Referent](referent.md)
 
-## Reference
+## Definition
 
 1. [Linguistic]: **Reference** is the relationship between a linguistic expression and the entity in the world that it identifies or denotes.
 

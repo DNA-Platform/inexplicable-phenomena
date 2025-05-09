@@ -4,7 +4,7 @@
 - previous: [Semantic Referent Frame](semantic-reference-frame.md)
 - next: [Conscious Experience](conscious-experience.md)
 
-## Perspective
+## Definition
 
 1. [Linguistic]: The first-person **[perspective](https://www.bu.edu/wcp/Papers/Lang/LangRosk.htm#:~:text=The%20'first%20person%20perspective'%20is,the%20personal%20pronoun%20'I'.)** is so-called after the grammatical form of its typical expression, the first person singular. In English this grammatical form involves the personal pronoun 'I'.
 

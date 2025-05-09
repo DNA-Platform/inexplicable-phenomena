@@ -4,7 +4,7 @@
 - previous: [Formal Logic](formal-logic.md)
 - next: [Identity](identity.md)
 
-## Identification
+## Definition
 
 1. [Linguistic]: **Identification** is the process of recognizing or establishing the identity of something.
 

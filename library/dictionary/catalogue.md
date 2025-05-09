@@ -4,7 +4,7 @@
 - previous: [Referent](referent.md)
 - next: [Relationship](relationship.md)
 
-## Catalogue
+## Definition
 
 1. [SRT]: A **catalogue** is a collection of [referents](referent.md) that are related to each other through the [ternary relation](ternary.md). It forms the domain of a semantic theory.
 

@@ -4,7 +4,7 @@
 - previous: [Property](property.md)
 - next: [Reference](reference.md)
 
-## Qualification
+## Definition
 
 1. [Linguistic]: **Qualification** is the act of attributing a quality or characteristic to something, modifying or restricting its meaning.
 

@@ -4,7 +4,7 @@
 - previous: [Literature](literature.md)
 - next: [Metalogical Transduction](metalogical-transduction.md)
 
-## Logic
+## Definition
 
 1. [Linguistic]: **Logic** is the systematic study of valid inference and reasoning.
 

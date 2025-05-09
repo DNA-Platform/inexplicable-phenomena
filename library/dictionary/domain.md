@@ -4,7 +4,7 @@
 - previous: [Dictionary](dictionary.md)
 - next: [Epistemic Motive](epistemic-motive.md)
 
-## Domain
+## Definition
 
 1. [SRT]: A **domain** in Semantic Reference Theory refers to the collection of all [referents](referent.md) within a [catalogue](catalogue.md), establishing the scope of entities that can participate in relationships.
 

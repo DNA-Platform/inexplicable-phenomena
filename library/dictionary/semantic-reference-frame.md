@@ -4,7 +4,7 @@
 - previous: [Semantic Theory](semantic-theory.md)
 - next: [Semantic Reference Theory](semantic-reference-theory.md)
 
-## Semantic Reference Frame
+## Definition
 
 1. [Linguistic]: A **semantic reference frame** provides a context or framework within which meaning and reference can be interpreted, similar to how a coordinate system provides a frame for interpreting spatial locations.
 

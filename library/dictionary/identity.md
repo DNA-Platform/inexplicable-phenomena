@@ -4,7 +4,7 @@
 - previous: [Identification](identification.md)
 - next: [Inheritance](inheritance.md)
 
-## Identity
+## Definition
 
 1. [Linguistic]: **Identity** is the fact of being who or what a person or thing is; the characteristics determining this.
 

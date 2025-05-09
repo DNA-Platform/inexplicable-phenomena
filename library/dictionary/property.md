@@ -4,7 +4,7 @@
 - previous: [Ternary Relation](ternary.md)
 - next: [Inheritance](inheritance.md)
 
-## Property
+## Definition
 
 1. [SRT]: A **property** is a special case of [relationship](relationship.md) where the [subject](subject.md) and [object](object.md) are the same [referent](referent.md). In the [ternary relation](ternary.md) R(x,x,t), t is the property of x.
 

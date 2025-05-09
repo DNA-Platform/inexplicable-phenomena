@@ -4,7 +4,7 @@
 - previous: [Catalogue](catalogue.md)
 - next: [Ternary](ternary.md)
 
-## Relationship
+## Definition
 
 1. [SRT]: A **relationship** is a connection between [referents](referent.md) established through the [ternary relation](ternary.md) R(x,y,t). When referents x and y are distinct, t specifies the relationship type that connects them.
 

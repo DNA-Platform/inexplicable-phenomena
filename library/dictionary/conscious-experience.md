@@ -4,7 +4,7 @@
 - previous: [Perspective](perspective.md)
 - next: [Metaphysical Transduction](metaphysical-transduction.md)
 
-## Conscious Experience
+## Definition
 
 1. [SRT]: A **conscious experience** represents a change in [perspective](perspective.md), occurring when a system undergoes a transformation in its semantic reference frame.
 
