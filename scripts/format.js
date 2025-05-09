@@ -280,9 +280,9 @@ class MarkdownParser {
   }
 
   /**
-   * Generate HTML for the header based on extracted metadata
-   * @return {string} - HTML for the header section
-   */
+ * Generate HTML for the header based on extracted metadata
+ * @return {string} - HTML for the header section
+ */
   generateHeaderHtml() {
     logger.info('Generating header HTML from metadata...');
 
@@ -317,10 +317,18 @@ class MarkdownParser {
 
     // Only add book/subject info if we have it
     if (sourceInfo) {
+      // Transform the link - strip dots and make web-friendly
+      const transformedLink = sourceInfo.link
+        .replace('.md', '.html')
+        .replace(/\./g, "")
+        .replace(/\s+/g, "-")
+        .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
+        .replace(/^\//, "");
+
       headerHtml += `
   <div class="book-info">
     <span class="book-label">${sourceLabel}</span>
-    <a href="${sourceInfo.link.replace('.md', '.html')}" class="book-link">${sourceInfo.text}</a>
+    <a href="${transformedLink}" class="book-link">${sourceInfo.text}</a>
   </div>`;
     }
 
@@ -328,16 +336,32 @@ class MarkdownParser {
   <div class="navigation-controls">`;
 
     if (this.metadata.previous) {
+      // Also apply proper link transformation to previous links
+      const transformedPrevLink = this.metadata.previous.link
+        .replace('.md', '.html')
+        .replace(/\./g, "")
+        .replace(/\s+/g, "-")
+        .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
+        .replace(/^\//, "");
+
       headerHtml += `
-    <a href="${this.metadata.previous.link.replace('.md', '.html')}" class="nav-link prev-link" title="${this.metadata.previous.text}">
+    <a href="${transformedPrevLink}" class="nav-link prev-link" title="${this.metadata.previous.text}">
       <span class="nav-arrow"></span>
       <span class="nav-text">Previous</span>
     </a>`;
     }
 
     if (this.metadata.next) {
+      // Also apply proper link transformation to next links
+      const transformedNextLink = this.metadata.next.link
+        .replace('.md', '.html')
+        .replace(/\./g, "")
+        .replace(/\s+/g, "-")
+        .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
+        .replace(/^\//, "");
+
       headerHtml += `
-    <a href="${this.metadata.next.link.replace('.md', '.html')}" class="nav-link next-link" title="${this.metadata.next.text}">
+    <a href="${transformedNextLink}" class="nav-link next-link" title="${this.metadata.next.text}">
       <span class="nav-text">Next</span>
       <span class="nav-arrow"></span>
     </a>`;
