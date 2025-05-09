@@ -23,7 +23,8 @@ const { Cite } = require('citation-js');
  * Class to parse markdown metadata from the header and footer
  */
 class MarkdownParser {
-  constructor() {
+  constructor(inputFilePath = null) {
+    this.inputFilePath = inputFilePath;
     this.metadata = {
       title: null,
       book: null,
@@ -255,6 +256,30 @@ class MarkdownParser {
   }
 
   /**
+ * Create a GitHub source URL from the input file path
+ * @param {string} inputFilePath - Path to the input markdown file
+ * @return {string} - GitHub repository URL for the file
+ */
+  createGitHubSourceUrl(inputFilePath) {
+    const baseGitHubUrl = 'https://github.com/DNA-Platform/inexplicable-phenomena/blob/main/';
+
+    if (!inputFilePath) {
+      return baseGitHubUrl;
+    }
+
+    // Extract the portion from 'library/' onwards
+    const libraryIndex = inputFilePath.indexOf('library/');
+    if (libraryIndex !== -1) {
+      // Get the path starting from 'library/'
+      const relativePath = inputFilePath.substring(libraryIndex);
+      return baseGitHubUrl + relativePath;
+    }
+
+    // If 'library/' not found, just return the base URL
+    return baseGitHubUrl;
+  }
+
+  /**
    * Generate HTML for the header based on extracted metadata
    * @return {string} - HTML for the header section
    */
@@ -283,9 +308,10 @@ class MarkdownParser {
       sourceLabel = 'Subject';
     }
 
-    // Create GitHub source URL for the title - moved outside header HTML
+    // Create GitHub source URL for the title
+    const githubUrl = this.createGitHubSourceUrl(this.inputFilePath);
     const titleLinkHtml = this.metadata.title ?
-      `<h1 class="entry-title"><a href="${this.metadata.title.link}" class="github-source-link">${this.metadata.title.text}</a></h1>` : '';
+      `<h1 class="entry-title"><a href="${githubUrl}" class="github-source-link">${this.metadata.title.text}</a></h1>` : '';
 
     let headerHtml = '<header class="academic-header">';
 
@@ -416,9 +442,9 @@ class MarkdownParser {
   }
 
   /**
- * Generate JavaScript for interactive elements
- * @return {string} - JavaScript code for header and footer interactions
- */
+  * Generate JavaScript for interactive elements
+  * @return {string} - JavaScript code for header and footer interactions
+  */
   generateInteractiveJs() {
     logger.info('Generating interactive JavaScript...');
 
@@ -879,7 +905,7 @@ ${html}`;
  * Class to handle Markdown to HTML conversion
  */
 class MarkdownConverter {
-  constructor() {
+  constructor(inputFilePath) {
     // Configure Marked to highlight code blocks
     marked.setOptions({
       highlight: (code, lang) => {
@@ -895,7 +921,7 @@ class MarkdownConverter {
     this.citationHandler = new CitationHandler();
     this.htmlProcessor = new HtmlProcessor();
     this.linkTransformer = new LinkTransformer();
-    this.markdownParser = new MarkdownParser();
+    this.markdownParser = new MarkdownParser(inputFilePath);
   }
 
   /**
@@ -1585,7 +1611,7 @@ async function format(inputFile, outputFile) {
     logger.info(`Successfully read ${markdown.length} characters from the input file.`);
 
     // Convert markdown to HTML with metadata parsing
-    const converter = new MarkdownConverter();
+    const converter = new MarkdownConverter(inputFile);
     const { html: htmlBody, metadata } = await converter.convert(markdown);
 
     // Generate complete HTML document
