@@ -280,9 +280,9 @@ class MarkdownParser {
   }
 
   /**
- * Generate HTML for the header based on extracted metadata
- * @return {string} - HTML for the header section
- */
+  * Generate HTML for the header based on extracted metadata
+  * @return {string} - HTML for the header section
+  */
   generateHeaderHtml() {
     logger.info('Generating header HTML from metadata...');
 
@@ -317,54 +317,98 @@ class MarkdownParser {
 
     // Only add book/subject info if we have it
     if (sourceInfo) {
-      // Transform the link - strip dots and make web-friendly
-      const transformedLink = sourceInfo.link
-        .replace('.md', '.html')
-        .replace(/\./g, "")
-        .replace(/\s+/g, "-")
-        .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
-        .replace(/^\//, "");
+      // First extract the base filename without extension
+      let linkPath = sourceInfo.link;
+      const mdExtIndex = linkPath.lastIndexOf('.md');
 
-      headerHtml += `
+      if (mdExtIndex !== -1) {
+        // Remove the .md extension
+        linkPath = linkPath.substring(0, mdExtIndex);
+
+        // Now apply the transformation to the path only (not the extension)
+        const transformedPath = linkPath
+          .replace(/\./g, "")
+          .replace(/\s+/g, "-")
+          .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
+          .replace(/^\//, "");
+
+        // Add .html extension
+        const transformedLink = transformedPath + '.html';
+
+        headerHtml += `
   <div class="book-info">
     <span class="book-label">${sourceLabel}</span>
     <a href="${transformedLink}" class="book-link">${sourceInfo.text}</a>
   </div>`;
+      } else {
+        // If no .md extension found, just use the original link
+        headerHtml += `
+  <div class="book-info">
+    <span class="book-label">${sourceLabel}</span>
+    <a href="${sourceInfo.link}" class="book-link">${sourceInfo.text}</a>
+  </div>`;
+      }
     }
 
     headerHtml += `
   <div class="navigation-controls">`;
 
     if (this.metadata.previous) {
-      // Also apply proper link transformation to previous links
-      const transformedPrevLink = this.metadata.previous.link
-        .replace('.md', '.html')
-        .replace(/\./g, "")
-        .replace(/\s+/g, "-")
-        .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
-        .replace(/^\//, "");
+      // Apply the same correct transformation to previous links
+      let prevLinkPath = this.metadata.previous.link;
+      const prevMdExtIndex = prevLinkPath.lastIndexOf('.md');
 
-      headerHtml += `
+      if (prevMdExtIndex !== -1) {
+        prevLinkPath = prevLinkPath.substring(0, prevMdExtIndex);
+        const transformedPrevPath = prevLinkPath
+          .replace(/\./g, "")
+          .replace(/\s+/g, "-")
+          .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
+          .replace(/^\//, "");
+
+        const transformedPrevLink = transformedPrevPath + '.html';
+
+        headerHtml += `
     <a href="${transformedPrevLink}" class="nav-link prev-link" title="${this.metadata.previous.text}">
       <span class="nav-arrow"></span>
       <span class="nav-text">Previous</span>
     </a>`;
+      } else {
+        headerHtml += `
+    <a href="${this.metadata.previous.link}" class="nav-link prev-link" title="${this.metadata.previous.text}">
+      <span class="nav-arrow"></span>
+      <span class="nav-text">Previous</span>
+    </a>`;
+      }
     }
 
     if (this.metadata.next) {
-      // Also apply proper link transformation to next links
-      const transformedNextLink = this.metadata.next.link
-        .replace('.md', '.html')
-        .replace(/\./g, "")
-        .replace(/\s+/g, "-")
-        .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
-        .replace(/^\//, "");
+      // Apply the same correct transformation to next links
+      let nextLinkPath = this.metadata.next.link;
+      const nextMdExtIndex = nextLinkPath.lastIndexOf('.md');
 
-      headerHtml += `
+      if (nextMdExtIndex !== -1) {
+        nextLinkPath = nextLinkPath.substring(0, nextMdExtIndex);
+        const transformedNextPath = nextLinkPath
+          .replace(/\./g, "")
+          .replace(/\s+/g, "-")
+          .replace(/\/[^\/a-zA-Z]*([a-zA-Z])/g, "/$1")
+          .replace(/^\//, "");
+
+        const transformedNextLink = transformedNextPath + '.html';
+
+        headerHtml += `
     <a href="${transformedNextLink}" class="nav-link next-link" title="${this.metadata.next.text}">
       <span class="nav-text">Next</span>
       <span class="nav-arrow"></span>
     </a>`;
+      } else {
+        headerHtml += `
+    <a href="${this.metadata.next.link}" class="nav-link next-link" title="${this.metadata.next.text}">
+      <span class="nav-text">Next</span>
+      <span class="nav-arrow"></span>
+    </a>`;
+      }
     }
 
     // Only show thoughts button if we have thoughts
