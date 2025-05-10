@@ -1,5 +1,5 @@
 # Header
-- title: [Inexplicable Phenomena](.synopsis/inexplicable-phenomena.md)
+- title: [Inexplicable Phenomena](synopsis/inexplicable-phenomena.md)
 - subject: [Meaning](encyclopedia/semantic-reference-theory.md)
 
 ## Index
@@ -13,5 +13,5 @@ This library contains resources exploring Semantic Reference Theory and consciou
 - [Encyclopedia](encyclopedia/.encyclopedia.md) - Detailed explanations of key frameworks and principles in Semantic Reference Theory
 
 ### Literature
-- [Inexplicable Phenomena](.synopsis/inexplicable-phenomena.tex) - An synopsis of our theory of consciousness
+- [Inexplicable Phenomena](synopsis/inexplicable-phenomena.tex) - An synopsis of our theory of consciousness
 - [A Novel Perspective on Vision](articles/a-novel-perspective-on-vision.md) - Mathematical exploration of visual perception using prime number factorization, connecting vision, consciousness, and self-reference through equivalence relations
