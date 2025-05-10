@@ -4,7 +4,7 @@
 
 # Entry
 
-In[Semantic Reference Theory](semantic-reference-theory.md) (SRT), relationships form the foundational structure upon which reference and meaning are built. A formal taxonomy of relationships classifies the various ways entities connect within semantic networks, providing a framework for understanding how meaning propagates through interconnected systems.
+In [Semantic Reference Theory](semantic-reference-theory.md) (SRT), relationships form the foundational structure upon which reference and meaning are built. A formal taxonomy of relationships classifies the various ways entities connect within semantic networks, providing a framework for understanding how meaning propagates through interconnected systems.
 
 ### Foundational Concepts
 
