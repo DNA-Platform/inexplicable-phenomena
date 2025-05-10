@@ -1,68 +1,83 @@
-/* Academic styling for Inexplicable Phenomena project */
+/* Academic styling for Inexplicable Phenomena project - GitHub Edition */
 
+/* BASE VARIABLES - minimal overrides needed for custom components */
 :root {
-  --primary-color: #2c3e50;
-  --secondary-color: #3498db;
-  --border-color: #e0e0e0;
-  --text-color: #333;
-  --background-color: #fff;
-  --link-color: #0645ad; /* Wikipedia link blue */
-  --link-hover-color: #0b0080; /* Wikipedia visited link color */
-  --header-bg: #f8f9fa; /* Wikipedia light gray */
+  --header-bg: #f8f9fa; /* Very slightly darker than GitHub's gray */
   --footer-bg: #f8f9fa;
-  --nav-hover-bg: #eaecf0;
-  --code-bg: #f6f8fa;
-  --quote-border: #dfe2e5;
-  --modal-overlay: rgba(27, 31, 35, 0.5); /* GitHub modal backdrop */
+  --border-color: #e1e4e8; /* GitHub's border color */
+  --link-color: #0366d6; /* GitHub's link color */
+  --text-color: #24292e; /* GitHub's text color */
+  --modal-overlay: rgba(27, 31, 35, 0.5);
+  --button-hover-bg: #f3f4f6;
+  --button-bg: #fafbfc;
+  --button-border: rgba(27, 31, 35, 0.15);
 }
 
-body {
-  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  background-color: var(--background-color);
-  margin: 0;
-  padding: 0;
-}
-
+/* LAYOUT STRUCTURE - containers GitHub doesn't provide */
 .container {
   max-width: 960px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0;
 }
 
-/* Entry Title (from header metadata) */
-.entry-title {
-  font-size: 1.8em;
-  margin: 0.5em 0 1em 0;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 600;
-  color: var(--primary-color);
-  padding-bottom: 0.3em;
+.article-container {
+  max-width: 860px; 
+  margin: 2rem auto;
+  padding: 0;
+}
+
+/* UNIFIED PAPER-LIKE CARD FOR ENTIRE DOCUMENT */
+.document-card {
+  max-width: 860px;
+  margin: 2rem auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.05);
+  overflow: hidden; /* Ensures the rounded corners work with the header */
+}
+
+/* Paper-like styling for the markdown content */
+.markdown-body {
+  padding: 2rem !important;
+  border: none !important; /* No border on content as it's on the whole card */
+  border-radius: 0 !important; /* No border radius as it's on the whole card */
+  box-shadow: none !important; /* No shadow as it's on the whole card */
+}
+
+/* HEADER COMPONENTS - styled as part of the paper */
+.academic-header {
+  background-color: var(--header-bg);
   border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 14px;
 }
 
-.github-source-link {
-  color: var(--primary-color);
+.book-info {
+  display: flex;
+  align-items: center;
+}
+
+.book-label {
+  font-size: 14px;
+  color: #586069; /* GitHub's secondary text color */
+  margin-right: 6px;
+}
+
+.book-link {
+  color: var(--link-color);
   text-decoration: none;
-  position: relative;
+  font-size: 14px;
 }
 
-.github-source-link:hover {
-  text-decoration: none;
-  color: var(--link-hover-color);
+.book-link:hover {
+  text-decoration: underline;
 }
 
-.github-source-link:hover::after {
-  content: "⧉";
-  font-size: 0.6em;
-  position: relative;
-  top: -0.6em;
-  margin-left: 0.3em;
-  color: var(--link-hover-color);
-}
-
-/* Navigation Elements - inspired by Wikipedia article navigation */
+/* Navigation elements */
 .navigation-controls {
   display: flex;
   align-items: center;
@@ -73,197 +88,164 @@ body {
   display: flex;
   align-items: center;
   text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 2px;
+  color: var(--text-color);
+  padding: 4px 8px;
+  border-radius: 3px;
   font-size: 13px;
-  font-weight: normal;
-  color: var(--link-color);
-  background-color: var(--header-bg);
-  border: 1px solid #a2a9b1; /* Wikipedia border color */
-  white-space: nowrap;
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
+  font-weight: 500;
 }
 
 .nav-link:hover {
-  background-color: var(--nav-hover-bg);
+  background-color: var(--button-hover-bg);
   text-decoration: none;
-  color: var(--link-hover-color);
 }
 
-.nav-link:active {
-  background-color: #c8ccd1;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+.nav-text {
+  display: inline;
 }
 
-/* Triangle arrows - substantial and directional */
+/* Navigation arrows */
 .nav-arrow {
   width: 0;
   height: 0;
   display: inline-block;
-  font-size: 0;
-  line-height: 0;
 }
 
 .prev-link .nav-arrow {
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  border-right: 5px solid #72777d;
+  border-right: 5px solid #586069;
   margin-right: 8px;
 }
 
 .next-link .nav-arrow {
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  border-left: 5px solid #72777d;
+  border-left: 5px solid #586069;
   margin-left: 8px;
 }
 
-.nav-text {
-  font-family: 'Liberation Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-/* Question mark button - Wikipedia style */
+/* Question mark button - GitHub style */
 .thoughts-button {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #c8ccd1;
-  color: #222;
-  border: 1px solid #a2a9b1;
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--button-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: help;
-  font-size: 13px;
+  cursor: pointer;
+  font-size: 14px;
   font-weight: bold;
-  margin-left: 4px;
-  font-family: 'Linux Libertine','Georgia','Times',serif;
-  line-height: 1;
-  padding: 0;
+  margin-left: 8px;
 }
 
 .thoughts-button:hover {
-  background-color: #eaecf0;
+  background-color: var(--button-hover-bg);
 }
 
-/* Academic Header Styling */
-.academic-header {
-  background-color: var(--header-bg);
-  border-bottom: 1px solid #c8ccd1;
-  padding: 10px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  font-family: sans-serif;
-}
-
-.book-info {
-  display: flex;
-  align-items: center;
-}
-
-.book-label {
-  font-size: 13px;
-  color: #54595d;
-  margin-right: 4px;
-}
-
-.book-link {
-  font-weight: normal;
-  color: var(--link-color);
-  text-decoration: none;
-  font-size: 13px;
-}
-
-.book-link:hover {
-  text-decoration: underline;
-}
-
-/* Academic Footer Styling - Wikipedia/GitHub hybrid style */
-.academic-footer {
-  border-top: 1px solid #c8ccd1;
-  padding: 16px;
-  margin-top: 30px;
-  background-color: var(--footer-bg);
-  font-family: sans-serif;
-}
-
-.footer-section {
-  margin-bottom: 16px;
-}
-
-.footer-heading {
-  font-size: 14px;
+/* TITLE STYLING */
+.entry-title {
+  font-size: 2em;
+  margin: 0.5em 0 1em 0;
   font-weight: 600;
-  color: #24292e; /* GitHub header color */
-  margin-top: 0;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #eaecef; /* GitHub separator */
-  padding-bottom: 4px;
+  color: var(--text-color);
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
-.related-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-/* Update only the related links to use GitHub-style boxes */
-.related-link {
-  display: inline-block;
-  padding: 6px 12px;
-  background-color: #f1f8ff;
-  border-radius: 3px;
-  color: var(--link-color);
+.github-source-link {
+  color: var(--text-color);
   text-decoration: none;
-  font-size: 13px;
-  border: 1px solid #c8e1ff;
-  transition: all 0.2s ease;
   position: relative;
 }
 
-.related-link:hover {
-  background-color: #dbedff;
-  border-color: #79b8ff;
+.github-source-link:hover {
   text-decoration: none;
+  color: var(--link-color);
 }
 
-/* Remove dot separators */
-.related-link:after {
-  content: "";
-  margin: 0;
+.github-source-link:hover::after {
+  content: "⧉";
+  font-size: 0.6em;
+  position: relative;
+  top: -0.6em;
+  margin-left: 0.3em;
+  color: var(--link-color);
 }
 
-.related-link:last-child:after,
-.last-related:after {
-  content: "";
+/* FOOTER COMPONENTS - integrated with content */
+.academic-footer {
+  padding: 0;
+  margin-top: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* Place the footer inside the markdown body */
+.markdown-body .academic-footer {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.footer-section {
+  margin-bottom: 1rem;
+}
+
+/* RELATED CONCEPTS - more subtle, integrated look */
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.related-link {
+  display: inline;
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 14px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.related-link:not(:last-child)::after {
+  content: "•";
+  margin-left: 0.75rem;
+  color: #586069;
+}
+
+.related-link:hover {
+  text-decoration: underline;
+  background: none;
 }
 
 /* GitHub repo link */
-.github-link-container {
-  margin-top: 20px;
-  text-align: center;
-}
-
 .github-repo-link {
   display: inline-flex;
   align-items: center;
   color: #6a737d;
   text-decoration: none;
   font-size: 12px;
-  transition: color 0.2s ease;
+  margin-top: 1rem;
 }
 
 .github-repo-link:hover {
-  color: var(--link-hover-color);
+  color: var(--link-color);
 }
 
 .github-icon {
   margin-right: 5px;
 }
 
-/* Thoughts Modal - GitHub style */
+/* MODAL ELEMENTS - styled consistently with GitHub's modals */
 .thoughts-modal {
   display: none;
   position: fixed;
@@ -282,22 +264,22 @@ body {
   border-radius: 6px;
   width: 80%;
   max-width: 600px;
-  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); /* GitHub shadow */
-  border: 1px solid #d1d5da;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2);
+  border: 1px solid var(--border-color);
 }
 
 .thoughts-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e1e4e8; /* GitHub separator */
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 8px;
   margin-bottom: 12px;
 }
 
 .thoughts-modal-header h3 {
   margin: 0;
-  color: #24292e;
+  color: var(--text-color);
   font-weight: 600;
   font-size: 16px;
 }
@@ -320,112 +302,22 @@ body {
 .thoughts-modal-body li {
   margin-bottom: 8px;
   line-height: 1.5;
-  color: #24292e;
+  color: var(--text-color);
   font-size: 14px;
 }
 
-/* Article Content Styling */
-.article-container {
-  max-width: 860px; 
-  margin: 0 auto;
-  padding: 0 20px 40px;
-}
+/* SPECIAL CONTENT STYLES - for elements GitHub CSS doesn't cover */
 
-.markdown-body {
-  font-family: 'Merriweather', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  background-color: white;
-  padding: 30px;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0,0,0,.05);
-}
-
-.markdown-body h1 {
-  font-size: 2.2em;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.3em;
-  margin-top: 0;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.markdown-body h2 {
-  font-size: 1.8em;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.3em;
-  margin-top: 1.5em;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.markdown-body h3 {
-  font-size: 1.5em;
-  margin-top: 1.3em;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.markdown-body p {
-  margin-bottom: 1.2em;
-  line-height: 1.7;
-}
-
-.markdown-body a {
-  color: var(--link-color);
-  text-decoration: none;
-}
-
-.markdown-body a:hover {
-  text-decoration: underline;
-  color: var(--link-hover-color);
-}
-
-.markdown-body pre {
-  background-color: var(--code-bg);
-  border-radius: 4px;
-  padding: 16px;
-  overflow: auto;
-}
-
-.markdown-body blockquote {
-  border-left: 4px solid var(--quote-border);
-  padding: 0 1em;
-  color: #6a737d;
-}
-
-.markdown-body ul, .markdown-body ol {
-  padding-left: 2em;
-}
-
-.markdown-body li {
-  margin-bottom: 0.5em;
-}
-
-/* Definition list styling */
-dl {
-  margin: 1em 0;
-}
-dt {
-  font-weight: bold;
-  margin-top: 1em;
-}
-dd {
-  margin-left: 2em;
-  margin-bottom: 1em;
-}
-
-/* LaTeX environment styling */
+/* LaTeX environments - specialized academic formatting */
 .latex-env {
   margin: 1.5em 0;
   padding: 0.8em 1em;
   border-left: 4px solid #4a4a4a;
-  background-color: #f8f8f8;
+  background-color: #f6f8fa; /* GitHub code background */
 }
 
 .env-title {
-  font-weight: bold;
+  font-weight: 600;
   display: block;
   margin-bottom: 0.5em;
 }
@@ -434,17 +326,17 @@ dd {
   display: block;
 }
 
-/* Specific environment styling */
+/* Environment-specific colors */
 .theorem { border-left-color: #4a4a4a; }
 .lemma { border-left-color: #5a6268; }
 .proof { border-left-color: #6c757d; }
-.definition { border-left-color: #28a745; }
-.example { border-left-color: #007bff; }
-.remark { border-left-color: #fd7e14; }
-.note { border-left-color: #17a2b8; }
-.corollary { border-left-color: #6f42c1; }
+.definition { border-left-color: #2ea44f; } /* GitHub green */
+.example { border-left-color: #0366d6; } /* GitHub blue */
+.remark { border-left-color: #f9826c; } /* GitHub orange */
+.note { border-left-color: #58a6ff; } /* GitHub light blue */
+.corollary { border-left-color: #8957e5; } /* GitHub purple */
 
-/* KaTeX rendering support */
+/* KaTeX support - math display */
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
@@ -460,62 +352,24 @@ dd {
 }
 
 .math-error {
-  color: red;
+  color: #cb2431; /* GitHub error red */
   font-weight: bold;
 }
 
-/* Bibliography and citation styling */
-.bibliography {
-  margin-top: 2em;
-  padding-top: 1em;
-}
-
-.citation-ref {
-  font-size: 0.8em;
-  position: relative;
-  top: -0.5em;
-  text-decoration: none;
-}
-
-.citation-backref {
-  font-size: 0.8em;
-  text-decoration: none;
-  margin-left: 0.5em;
-}
-
-.citation-entry {
-  margin-bottom: 1em;
-}
-
-.bibliography ol {
-  padding-left: 1.5em;
-}
-
-/* Definition syntax highlighting */
-[class^="SRT"], [class*=" SRT"] {
-  color: #005cc5; /* GitHub blue */
-  font-weight: 500;
-}
-
-[class^="Formal"], [class*=" Formal"] {
-  color: #6f42c1; /* GitHub purple */
-  font-weight: 500;
-}
-
-[class^="Cognitive"], [class*=" Cognitive"] {
-  color: #22863a; /* GitHub green */
-  font-weight: 500;
-}
-
-/* Responsive adjustments */
+/* RESPONSIVE ADJUSTMENTS */
 @media (max-width: 768px) {
   .container {
     padding: 0 15px;
   }
   
+  .document-card {
+    margin: 1rem auto;
+  }
+  
   .academic-header {
     flex-direction: column;
     align-items: flex-start;
+    padding: 15px;
   }
   
   .navigation-controls {
@@ -523,7 +377,7 @@ dd {
   }
   
   .markdown-body {
-    padding: 20px;
+    padding: 1.5rem !important;
   }
   
   .thoughts-modal-content {
