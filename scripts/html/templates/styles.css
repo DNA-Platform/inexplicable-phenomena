@@ -17,10 +17,6 @@
 }
 
 body {
-  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  background-color: var(--background-color);
   margin: 0;
   padding: 0;
 }
@@ -33,9 +29,8 @@ body {
 
 /* Entry Title (from header metadata) */
 .entry-title {
-  font-size: 1.8em;
-  margin: 0.5em 0 1em 0;
-  font-family: 'Open Sans', sans-serif;
+  font-size: 1.7em;
+  margin: 0.3em 0 0.8em 0; /* Reduced top and bottom margins */
   font-weight: 600;
   color: var(--primary-color);
   padding-bottom: 0.3em;
@@ -163,16 +158,14 @@ body {
 }
 
 .book-label {
-  font-size: 13px;
-  color: #54595d;
-  margin-right: 4px;
+  display: none; /* Hide the "From" label */
 }
 
 .book-link {
-  font-weight: normal;
-  color: var(--link-color);
+  font-weight: 600;
+  color: var(--primary-color);
   text-decoration: none;
-  font-size: 13px;
+  font-size: 15px; /* Larger font size for more prominence */
 }
 
 .book-link:hover {
@@ -331,89 +324,10 @@ body {
   padding: 0 20px 40px;
 }
 
+/* Let GitHub markdown CSS handle .markdown-body default styling */
 .markdown-body {
-  font-family: 'Merriweather', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  background-color: white;
-  padding: 30px;
+  padding: 20px 0; /* Reduced horizontal padding to 0 for less indent, kept some vertical padding */
   border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0,0,0,.05);
-}
-
-.markdown-body h1 {
-  font-size: 2.2em;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.3em;
-  margin-top: 0;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.markdown-body h2 {
-  font-size: 1.8em;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.3em;
-  margin-top: 1.5em;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.markdown-body h3 {
-  font-size: 1.5em;
-  margin-top: 1.3em;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.markdown-body p {
-  margin-bottom: 1.2em;
-  line-height: 1.7;
-}
-
-.markdown-body a {
-  color: var(--link-color);
-  text-decoration: none;
-}
-
-.markdown-body a:hover {
-  text-decoration: underline;
-  color: var(--link-hover-color);
-}
-
-.markdown-body pre {
-  background-color: var(--code-bg);
-  border-radius: 4px;
-  padding: 16px;
-  overflow: auto;
-}
-
-.markdown-body blockquote {
-  border-left: 4px solid var(--quote-border);
-  padding: 0 1em;
-  color: #6a737d;
-}
-
-.markdown-body ul, .markdown-body ol {
-  padding-left: 2em;
-}
-
-.markdown-body li {
-  margin-bottom: 0.5em;
-}
-
-/* Definition list styling */
-dl {
-  margin: 1em 0;
-}
-dt {
-  font-weight: bold;
-  margin-top: 1em;
-}
-dd {
-  margin-left: 2em;
-  margin-bottom: 1em;
 }
 
 /* LaTeX environment styling */
@@ -523,7 +437,7 @@ dd {
   }
   
   .markdown-body {
-    padding: 20px;
+    padding: 15px 0;
   }
   
   .thoughts-modal-content {
