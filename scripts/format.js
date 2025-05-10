@@ -482,7 +482,7 @@ class MarkdownParser {
     if (this.metadata.related && this.metadata.related.length > 0) {
       footerHtml += `
   <div class="footer-section">
-    <h2 id="related-concepts">Related Concepts</h2>
+    <h3 class="footer-heading">Related Concepts</h3>
     <div class="related-links">`;
 
       for (const related of this.metadata.related) {
@@ -519,36 +519,55 @@ class MarkdownParser {
     return `
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing interactive elements');
+    
     // Thoughts modal functionality
     const thoughtsButton = document.querySelector('.thoughts-button');
     const thoughtsModal = document.getElementById('thoughtsModal');
     const closeThoughts = document.querySelector('.close-thoughts');
-
+    
+    console.log('Thoughts button found:', thoughtsButton ? 'yes' : 'no');
+    console.log('Thoughts modal found:', thoughtsModal ? 'yes' : 'no');
+    
     if (thoughtsButton && thoughtsModal) {
       thoughtsButton.addEventListener('click', function() {
+        console.log('Thoughts button clicked');
         thoughtsModal.style.display = 'block';
       });
-
+      
       if (closeThoughts) {
         closeThoughts.addEventListener('click', function() {
           thoughtsModal.style.display = 'none';
         });
       }
-
+      
       window.addEventListener('click', function(event) {
         if (event.target === thoughtsModal) {
           thoughtsModal.style.display = 'none';
         }
       });
     }
-
-    // Add class to last related link for styling
+    
+    // Make sure related links don't have extra bullets
     const relatedLinks = document.querySelectorAll('.related-link');
     if (relatedLinks.length > 0) {
       const lastLink = relatedLinks[relatedLinks.length - 1];
       if (lastLink) {
         lastLink.classList.add('last-related');
       }
+    }
+    
+    // Initialize KaTeX rendering if available
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false,
+        errorColor: "#cc0000",
+        strict: false
+      });
     }
   });
 </script>`;
@@ -1054,8 +1073,30 @@ class HtmlDocumentGenerator {
     const footerHtml = parser ? parser.generateFooterHtml() : '';
     const interactiveJs = parser ? parser.generateInteractiveJs() : '';
 
-    // Path to our centralized CSS
+    // Get CSS styles from file
     const cssPath = path.join(__dirname, 'html', 'templates', 'styles.css');
+    let cssStyles = '';
+    try {
+      cssStyles = fs.readFileSync(cssPath, 'utf8');
+      logger.info('Loaded custom CSS from styles.css');
+    } catch (err) {
+      logger.warn(`Could not load styles.css: ${err.message}. Using default styles.`);
+      cssStyles = `:root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --border-color: #e0e0e0;
+        --text-color: #333;
+        --background-color: #fff;
+        --link-color: #2980b9;
+        --link-hover-color: #3498db;
+        --header-bg: #f8f9fa;
+        --footer-bg: #f8f9fa;
+        --nav-hover-bg: #eff3f6;
+        --code-bg: #f6f8fa;
+        --quote-border: #dfe2e5;
+        --modal-overlay: rgba(0, 0, 0, 0.5);
+      }`;
+    }
 
     return `<!-- @css-disable -->
 <!-- css-lint-disable -->
@@ -1079,8 +1120,483 @@ class HtmlDocumentGenerator {
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
-    <!-- Custom styles for header, footer and specialized elements -->
-    <link rel="stylesheet" href="../scripts/html/templates/styles.css">
+    <!-- Google Fonts - Academic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+${cssStyles}
+      /* Entry Title (from header metadata) */
+      .entry-title {
+        font-size: 1.8em;
+        margin: 0.5em 0 1em 0;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        color: var(--primary-color);
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .github-source-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        position: relative;
+      }
+
+      .github-source-link:hover {
+        text-decoration: none;
+        color: var(--link-hover-color);
+      }
+
+      .github-source-link:hover::after {
+        content: "⧉";
+        font-size: 0.6em;
+        position: relative;
+        top: -0.6em;
+        margin-left: 0.3em;
+        color: var(--link-hover-color);
+      }
+
+      /* GitHub repo link */
+      .github-link-container {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .github-repo-link {
+        display: inline-flex;
+        align-items: center;
+        color: #6a737d;
+        text-decoration: none;
+        font-size: 12px;
+        transition: color 0.2s ease;
+      }
+
+      .github-repo-link:hover {
+        color: var(--link-hover-color);
+      }
+
+      .github-icon {
+        margin-right: 5px;
+      }
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --border-color: #e0e0e0;
+        --text-color: #333;
+        --background-color: #fff;
+        --link-color: #2980b9;
+        --link-hover-color: #3498db;
+        --header-bg: #f8f9fa;
+        --footer-bg: #f8f9fa;
+        --nav-hover-bg: #eff3f6;
+        --code-bg: #f6f8fa;
+        --quote-border: #dfe2e5;
+        --modal-overlay: rgba(0, 0, 0, 0.5);
+      }
+
+      body {
+        font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Academic Header Styling */
+      .academic-header {
+        background-color: var(--header-bg);
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      .book-info {
+        display: flex;
+        align-items: center;
+      }
+
+      .book-label {
+        font-size: 14px;
+        color: #666;
+        margin-right: 6px;
+      }
+
+      .book-link {
+        font-weight: 600;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .book-link:hover {
+        text-decoration: underline;
+        color: var(--link-hover-color);
+      }
+
+      /* Updated Navigation Controls */
+      .navigation-controls {
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--link-color);
+        padding: 8px 12px;
+        margin: 0 5px;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: background-color 0.2s ease;
+        border: 1px solid var(--border-color);
+        background-color: white;
+      }
+
+      .nav-link:hover {
+        background-color: var(--nav-hover-bg);
+      }
+
+      .nav-arrow {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 4px;
+      }
+
+      .prev-link .nav-arrow {
+        margin-right: 6px;
+      }
+
+      .next-link .nav-arrow {
+        margin-left: 6px;
+      }
+
+      .nav-text {
+        /* Always visible now, not just on hover */
+        display: inline;
+        font-weight: 500;
+      }
+
+      .thoughts-button {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: background-color 0.2s ease;
+      }
+
+      .thoughts-button:hover {
+        background-color: var(--link-hover-color);
+      }
+
+      .thoughts-icon {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      /* Thoughts Modal */
+      .thoughts-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--modal-overlay);
+      }
+
+      .thoughts-modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 6px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .thoughts-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+      }
+
+      .thoughts-modal-header h3 {
+        margin: 0;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .close-thoughts {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .thoughts-modal-body ul {
+        padding-left: 20px;
+      }
+
+      .thoughts-modal-body li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+
+      /* Academic Footer Styling */
+      .academic-footer {
+        background-color: var(--footer-bg);
+        border-top: 1px solid var(--border-color);
+        padding: 20px;
+        margin-top: 40px;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      .related-container h3 {
+        margin-top: 0;
+        font-size: 18px;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .related-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .related-link {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #eef2f5;
+        border-radius: 4px;
+        color: var(--link-color);
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.2s ease;
+      }
+
+      .related-link:hover {
+        background-color: var(--nav-hover-bg);
+        color: var(--link-hover-color);
+      }
+
+      /* Article Content Styling */
+      .article-container {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 20px 40px;
+      }
+
+      .markdown-body {
+        font-family: 'Merriweather', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        background-color: white;
+        padding: 30px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.05);
+      }
+
+      .markdown-body h1 {
+        font-size: 2.2em;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.3em;
+        margin-top: 0;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .markdown-body h2 {
+        font-size: 1.8em;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.3em;
+        margin-top: 1.5em;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .markdown-body h3 {
+        font-size: 1.5em;
+        margin-top: 1.3em;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .markdown-body p {
+        margin-bottom: 1.2em;
+        line-height: 1.7;
+      }
+
+      .markdown-body a {
+        color: var(--link-color);
+        text-decoration: none;
+      }
+
+      .markdown-body a:hover {
+        text-decoration: underline;
+        color: var(--link-hover-color);
+      }
+
+      .markdown-body pre {
+        background-color: var(--code-bg);
+        border-radius: 4px;
+        padding: 16px;
+        overflow: auto;
+      }
+
+      .markdown-body blockquote {
+        border-left: 4px solid var(--quote-border);
+        padding: 0 1em;
+        color: #6a737d;
+      }
+
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 2em;
+      }
+
+      .markdown-body li {
+        margin-bottom: 0.5em;
+      }
+
+      /* Definition list styling */
+      dl {
+        margin: 1em 0;
+      }
+      dt {
+        font-weight: bold;
+        margin-top: 1em;
+      }
+      dd {
+        margin-left: 2em;
+        margin-bottom: 1em;
+      }
+
+      /* LaTeX environment styling */
+      .latex-env {
+        margin: 1.5em 0;
+        padding: 0.8em 1em;
+        border-left: 4px solid #4a4a4a;
+        background-color: #f8f8f8;
+      }
+
+      .env-title {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+      }
+
+      .env-content {
+        display: block;
+      }
+
+      /* Specific environment styling */
+      .theorem { border-left-color: #4a4a4a; }
+      .lemma { border-left-color: #5a6268; }
+      .proof { border-left-color: #6c757d; }
+      .definition { border-left-color: #28a745; }
+      .example { border-left-color: #007bff; }
+      .remark { border-left-color: #fd7e14; }
+      .note { border-left-color: #17a2b8; }
+      .corollary { border-left-color: #6f42c1; }
+
+      /* KaTeX rendering support */
+      .katex-display {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 1em 0;
+      }
+
+      .math-display {
+        margin: 1em 0;
+      }
+
+      .math-inline {
+        display: inline-block;
+      }
+
+      .math-error {
+        color: red;
+        font-weight: bold;
+      }
+
+      /* Bibliography and citation styling */
+      .bibliography {
+        margin-top: 2em;
+        padding-top: 1em;
+      }
+
+      .citation-ref {
+        font-size: 0.8em;
+        position: relative;
+        top: -0.5em;
+        text-decoration: none;
+      }
+
+      .citation-backref {
+        font-size: 0.8em;
+        text-decoration: none;
+        margin-left: 0.5em;
+      }
+
+      .citation-entry {
+        margin-bottom: 1em;
+      }
+
+      .bibliography ol {
+        padding-left: 1.5em;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 15px;
+        }
+
+        .academic-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .navigation-controls {
+          margin-top: 15px;
+        }
+
+        .markdown-body {
+          padding: 20px;
+        }
+
+        .thoughts-modal-content {
+          width: 90%;
+          margin: 20% auto;
+        }
+      }
+    </style>
 
     <!-- Script to initialize KaTeX rendering -->
     <script>
@@ -1101,16 +1617,16 @@ class HtmlDocumentGenerator {
   </head>
   <body>
     <div class="container">
-      <div class="document-card">
-        ${headerHtml}
-        <div class="article-container">
-          <!-- The .markdown-body class is necessary for github-markdown-css -->
-          <article class="markdown-body">
-            ${htmlBody}
-            ${footerHtml}
-          </article>
-        </div>
+      ${headerHtml}
+
+      <div class="article-container">
+        <!-- The .markdown-body class is necessary for github-markdown-css -->
+        <article class="markdown-body">
+          ${htmlBody}
+        </article>
       </div>
+
+      ${footerHtml}
     </div>
   </body>
 </html>`;
