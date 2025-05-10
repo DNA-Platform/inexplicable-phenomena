@@ -1,0 +1,1284 @@
+<!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="css-lint" content="disabled">
+    <title>Inexplicable Phenomena | Inexplicable Phenomena</title>
+
+    <!-- GitHub Markdown CSS for general markdown styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+
+    <!-- highlight.js GitHub stylesheet for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+
+    <!-- KaTeX CSS and JS for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Google Fonts - Academic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+/* Academic styling for Inexplicable Phenomena project */
+
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --border-color: #e0e0e0;
+  --text-color: #333;
+  --background-color: #fff;
+  --link-color: #0645ad; /* Wikipedia link blue */
+  --link-hover-color: #0b0080; /* Wikipedia visited link color */
+  --header-bg: #f8f9fa; /* Wikipedia light gray */
+  --footer-bg: #f8f9fa;
+  --nav-hover-bg: #eaecf0;
+  --code-bg: #f6f8fa;
+  --quote-border: #dfe2e5;
+  --modal-overlay: rgba(27, 31, 35, 0.5); /* GitHub modal backdrop */
+}
+
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Entry Title (from header metadata) */
+.entry-title {
+  font-size: 1.8em;
+  margin: 0.5em 0 1em 0;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  color: var(--primary-color);
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.github-source-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  position: relative;
+}
+
+.github-source-link:hover {
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.github-source-link:hover::after {
+  content: "⧉";
+  font-size: 0.6em;
+  position: relative;
+  top: -0.6em;
+  margin-left: 0.3em;
+  color: var(--link-hover-color);
+}
+
+/* Navigation Elements - inspired by Wikipedia article navigation */
+.navigation-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: normal;
+  color: var(--link-color);
+  background-color: var(--header-bg);
+  border: 1px solid #a2a9b1; /* Wikipedia border color */
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background-color: var(--nav-hover-bg);
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.nav-link:active {
+  background-color: #c8ccd1;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Triangle arrows - substantial and directional */
+.nav-arrow {
+  width: 0;
+  height: 0;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+}
+
+.prev-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #72777d;
+  margin-right: 8px;
+}
+
+.next-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #72777d;
+  margin-left: 8px;
+}
+
+.nav-text {
+  font-family: 'Liberation Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Question mark button - Wikipedia style */
+.thoughts-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #c8ccd1;
+  color: #222;
+  border: 1px solid #a2a9b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: 4px;
+  font-family: 'Linux Libertine','Georgia','Times',serif;
+  line-height: 1;
+  padding: 0;
+}
+
+.thoughts-button:hover {
+  background-color: #eaecf0;
+}
+
+/* Academic Header Styling */
+.academic-header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid #c8ccd1;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-family: sans-serif;
+}
+
+.book-info {
+  display: flex;
+  align-items: center;
+}
+
+.book-label {
+  font-size: 13px;
+  color: #54595d;
+  margin-right: 4px;
+}
+
+.book-link {
+  font-weight: normal;
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.book-link:hover {
+  text-decoration: underline;
+}
+
+/* Academic Footer Styling - Wikipedia/GitHub hybrid style */
+.academic-footer {
+  border-top: 1px solid #c8ccd1;
+  padding: 16px;
+  margin-top: 30px;
+  background-color: var(--footer-bg);
+  font-family: sans-serif;
+}
+
+.footer-section {
+  margin-bottom: 16px;
+}
+
+.footer-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292e; /* GitHub header color */
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eaecef; /* GitHub separator */
+  padding-bottom: 4px;
+}
+
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* Update only the related links to use GitHub-style boxes */
+.related-link {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #f1f8ff;
+  border-radius: 3px;
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid #c8e1ff;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.related-link:hover {
+  background-color: #dbedff;
+  border-color: #79b8ff;
+  text-decoration: none;
+}
+
+/* Remove dot separators */
+.related-link:after {
+  content: "";
+  margin: 0;
+}
+
+.related-link:last-child:after,
+.last-related:after {
+  content: "";
+}
+
+/* GitHub repo link */
+.github-link-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.github-repo-link {
+  display: inline-flex;
+  align-items: center;
+  color: #6a737d;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.github-repo-link:hover {
+  color: var(--link-hover-color);
+}
+
+.github-icon {
+  margin-right: 5px;
+}
+
+/* Thoughts Modal - GitHub style */
+.thoughts-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-overlay);
+}
+
+.thoughts-modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 16px;
+  border-radius: 6px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); /* GitHub shadow */
+  border: 1px solid #d1d5da;
+}
+
+.thoughts-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e1e4e8; /* GitHub separator */
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.thoughts-modal-header h3 {
+  margin: 0;
+  color: #24292e;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.close-thoughts {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #586069;
+  padding: 0;
+}
+
+.thoughts-modal-body ul {
+  padding-left: 24px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.thoughts-modal-body li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+  color: #24292e;
+  font-size: 14px;
+}
+
+/* Article Content Styling */
+.article-container {
+  max-width: 860px; 
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+.markdown-body {
+  font-family: 'Merriweather', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background-color: white;
+  padding: 30px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.05);
+}
+
+.markdown-body h1 {
+  font-size: 2.2em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.3em;
+  margin-top: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.markdown-body h2 {
+  font-size: 1.8em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.3em;
+  margin-top: 1.5em;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.markdown-body h3 {
+  font-size: 1.5em;
+  margin-top: 1.3em;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.markdown-body p {
+  margin-bottom: 1.2em;
+  line-height: 1.7;
+}
+
+.markdown-body a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+  color: var(--link-hover-color);
+}
+
+.markdown-body pre {
+  background-color: var(--code-bg);
+  border-radius: 4px;
+  padding: 16px;
+  overflow: auto;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid var(--quote-border);
+  padding: 0 1em;
+  color: #6a737d;
+}
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: 2em;
+}
+
+.markdown-body li {
+  margin-bottom: 0.5em;
+}
+
+/* Definition list styling */
+dl {
+  margin: 1em 0;
+}
+dt {
+  font-weight: bold;
+  margin-top: 1em;
+}
+dd {
+  margin-left: 2em;
+  margin-bottom: 1em;
+}
+
+/* LaTeX environment styling */
+.latex-env {
+  margin: 1.5em 0;
+  padding: 0.8em 1em;
+  border-left: 4px solid #4a4a4a;
+  background-color: #f8f8f8;
+}
+
+.env-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.env-content {
+  display: block;
+}
+
+/* Specific environment styling */
+.theorem { border-left-color: #4a4a4a; }
+.lemma { border-left-color: #5a6268; }
+.proof { border-left-color: #6c757d; }
+.definition { border-left-color: #28a745; }
+.example { border-left-color: #007bff; }
+.remark { border-left-color: #fd7e14; }
+.note { border-left-color: #17a2b8; }
+.corollary { border-left-color: #6f42c1; }
+
+/* KaTeX rendering support */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1em 0;
+}
+
+.math-display {
+  margin: 1em 0;
+}
+
+.math-inline {
+  display: inline-block;
+}
+
+.math-error {
+  color: red;
+  font-weight: bold;
+}
+
+/* Bibliography and citation styling */
+.bibliography {
+  margin-top: 2em;
+  padding-top: 1em;
+}
+
+.citation-ref {
+  font-size: 0.8em;
+  position: relative;
+  top: -0.5em;
+  text-decoration: none;
+}
+
+.citation-backref {
+  font-size: 0.8em;
+  text-decoration: none;
+  margin-left: 0.5em;
+}
+
+.citation-entry {
+  margin-bottom: 1em;
+}
+
+.bibliography ol {
+  padding-left: 1.5em;
+}
+
+/* Definition syntax highlighting */
+[class^="SRT"], [class*=" SRT"] {
+  color: #005cc5; /* GitHub blue */
+  font-weight: 500;
+}
+
+[class^="Formal"], [class*=" Formal"] {
+  color: #6f42c1; /* GitHub purple */
+  font-weight: 500;
+}
+
+[class^="Cognitive"], [class*=" Cognitive"] {
+  color: #22863a; /* GitHub green */
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+  
+  .academic-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .navigation-controls {
+    margin-top: 15px;
+  }
+  
+  .markdown-body {
+    padding: 20px;
+  }
+  
+  .thoughts-modal-content {
+    width: 90%;
+    margin: 20% auto;
+  }
+}
+      /* Entry Title (from header metadata) */
+      .entry-title {
+        font-size: 1.8em;
+        margin: 0.5em 0 1em 0;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        color: var(--primary-color);
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .github-source-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        position: relative;
+      }
+
+      .github-source-link:hover {
+        text-decoration: none;
+        color: var(--link-hover-color);
+      }
+
+      .github-source-link:hover::after {
+        content: "⧉";
+        font-size: 0.6em;
+        position: relative;
+        top: -0.6em;
+        margin-left: 0.3em;
+        color: var(--link-hover-color);
+      }
+
+      /* GitHub repo link */
+      .github-link-container {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .github-repo-link {
+        display: inline-flex;
+        align-items: center;
+        color: #6a737d;
+        text-decoration: none;
+        font-size: 12px;
+        transition: color 0.2s ease;
+      }
+
+      .github-repo-link:hover {
+        color: var(--link-hover-color);
+      }
+
+      .github-icon {
+        margin-right: 5px;
+      }
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --border-color: #e0e0e0;
+        --text-color: #333;
+        --background-color: #fff;
+        --link-color: #2980b9;
+        --link-hover-color: #3498db;
+        --header-bg: #f8f9fa;
+        --footer-bg: #f8f9fa;
+        --nav-hover-bg: #eff3f6;
+        --code-bg: #f6f8fa;
+        --quote-border: #dfe2e5;
+        --modal-overlay: rgba(0, 0, 0, 0.5);
+      }
+
+      body {
+        font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Academic Header Styling */
+      .academic-header {
+        background-color: var(--header-bg);
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      .book-info {
+        display: flex;
+        align-items: center;
+      }
+
+      .book-label {
+        font-size: 14px;
+        color: #666;
+        margin-right: 6px;
+      }
+
+      .book-link {
+        font-weight: 600;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .book-link:hover {
+        text-decoration: underline;
+        color: var(--link-hover-color);
+      }
+
+      /* Updated Navigation Controls */
+      .navigation-controls {
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--link-color);
+        padding: 8px 12px;
+        margin: 0 5px;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: background-color 0.2s ease;
+        border: 1px solid var(--border-color);
+        background-color: white;
+      }
+
+      .nav-link:hover {
+        background-color: var(--nav-hover-bg);
+      }
+
+      .nav-arrow {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 4px;
+      }
+
+      .prev-link .nav-arrow {
+        margin-right: 6px;
+      }
+
+      .next-link .nav-arrow {
+        margin-left: 6px;
+      }
+
+      .nav-text {
+        /* Always visible now, not just on hover */
+        display: inline;
+        font-weight: 500;
+      }
+
+      .thoughts-button {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: background-color 0.2s ease;
+      }
+
+      .thoughts-button:hover {
+        background-color: var(--link-hover-color);
+      }
+
+      .thoughts-icon {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      /* Thoughts Modal */
+      .thoughts-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--modal-overlay);
+      }
+
+      .thoughts-modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 6px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .thoughts-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+      }
+
+      .thoughts-modal-header h3 {
+        margin: 0;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .close-thoughts {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .thoughts-modal-body ul {
+        padding-left: 20px;
+      }
+
+      .thoughts-modal-body li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+
+      /* Academic Footer Styling */
+      .academic-footer {
+        background-color: var(--footer-bg);
+        border-top: 1px solid var(--border-color);
+        padding: 20px;
+        margin-top: 40px;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      .related-container h3 {
+        margin-top: 0;
+        font-size: 18px;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .related-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .related-link {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #eef2f5;
+        border-radius: 4px;
+        color: var(--link-color);
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.2s ease;
+      }
+
+      .related-link:hover {
+        background-color: var(--nav-hover-bg);
+        color: var(--link-hover-color);
+      }
+
+      /* Article Content Styling */
+      .article-container {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 20px 40px;
+      }
+
+      .markdown-body {
+        font-family: 'Merriweather', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        background-color: white;
+        padding: 30px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.05);
+      }
+
+      .markdown-body h1 {
+        font-size: 2.2em;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.3em;
+        margin-top: 0;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .markdown-body h2 {
+        font-size: 1.8em;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.3em;
+        margin-top: 1.5em;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .markdown-body h3 {
+        font-size: 1.5em;
+        margin-top: 1.3em;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .markdown-body p {
+        margin-bottom: 1.2em;
+        line-height: 1.7;
+      }
+
+      .markdown-body a {
+        color: var(--link-color);
+        text-decoration: none;
+      }
+
+      .markdown-body a:hover {
+        text-decoration: underline;
+        color: var(--link-hover-color);
+      }
+
+      .markdown-body pre {
+        background-color: var(--code-bg);
+        border-radius: 4px;
+        padding: 16px;
+        overflow: auto;
+      }
+
+      .markdown-body blockquote {
+        border-left: 4px solid var(--quote-border);
+        padding: 0 1em;
+        color: #6a737d;
+      }
+
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 2em;
+      }
+
+      .markdown-body li {
+        margin-bottom: 0.5em;
+      }
+
+      /* Definition list styling */
+      dl {
+        margin: 1em 0;
+      }
+      dt {
+        font-weight: bold;
+        margin-top: 1em;
+      }
+      dd {
+        margin-left: 2em;
+        margin-bottom: 1em;
+      }
+
+      /* LaTeX environment styling */
+      .latex-env {
+        margin: 1.5em 0;
+        padding: 0.8em 1em;
+        border-left: 4px solid #4a4a4a;
+        background-color: #f8f8f8;
+      }
+
+      .env-title {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+      }
+
+      .env-content {
+        display: block;
+      }
+
+      /* Specific environment styling */
+      .theorem { border-left-color: #4a4a4a; }
+      .lemma { border-left-color: #5a6268; }
+      .proof { border-left-color: #6c757d; }
+      .definition { border-left-color: #28a745; }
+      .example { border-left-color: #007bff; }
+      .remark { border-left-color: #fd7e14; }
+      .note { border-left-color: #17a2b8; }
+      .corollary { border-left-color: #6f42c1; }
+
+      /* KaTeX rendering support */
+      .katex-display {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 1em 0;
+      }
+
+      .math-display {
+        margin: 1em 0;
+      }
+
+      .math-inline {
+        display: inline-block;
+      }
+
+      .math-error {
+        color: red;
+        font-weight: bold;
+      }
+
+      /* Bibliography and citation styling */
+      .bibliography {
+        margin-top: 2em;
+        padding-top: 1em;
+      }
+
+      .citation-ref {
+        font-size: 0.8em;
+        position: relative;
+        top: -0.5em;
+        text-decoration: none;
+      }
+
+      .citation-backref {
+        font-size: 0.8em;
+        text-decoration: none;
+        margin-left: 0.5em;
+      }
+
+      .citation-entry {
+        margin-bottom: 1em;
+      }
+
+      .bibliography ol {
+        padding-left: 1.5em;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 15px;
+        }
+
+        .academic-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .navigation-controls {
+          margin-top: 15px;
+        }
+
+        .markdown-body {
+          padding: 20px;
+        }
+
+        .thoughts-modal-content {
+          width: 90%;
+          margin: 20% auto;
+        }
+      }
+    </style>
+
+    <!-- Script to initialize KaTeX rendering -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$", right: "$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: "#cc0000",
+          strict: false
+        });
+      });
+    </script>
+
+    
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing interactive elements');
+    
+    // Thoughts modal functionality
+    const thoughtsButton = document.querySelector('.thoughts-button');
+    const thoughtsModal = document.getElementById('thoughtsModal');
+    const closeThoughts = document.querySelector('.close-thoughts');
+    
+    console.log('Thoughts button found:', thoughtsButton ? 'yes' : 'no');
+    console.log('Thoughts modal found:', thoughtsModal ? 'yes' : 'no');
+    
+    if (thoughtsButton && thoughtsModal) {
+      thoughtsButton.addEventListener('click', function() {
+        console.log('Thoughts button clicked');
+        thoughtsModal.style.display = 'block';
+      });
+      
+      if (closeThoughts) {
+        closeThoughts.addEventListener('click', function() {
+          thoughtsModal.style.display = 'none';
+        });
+      }
+      
+      window.addEventListener('click', function(event) {
+        if (event.target === thoughtsModal) {
+          thoughtsModal.style.display = 'none';
+        }
+      });
+    }
+    
+    // Make sure related links don't have extra bullets
+    const relatedLinks = document.querySelectorAll('.related-link');
+    if (relatedLinks.length > 0) {
+      const lastLink = relatedLinks[relatedLinks.length - 1];
+      if (lastLink) {
+        lastLink.classList.add('last-related');
+      }
+    }
+    
+    // Initialize KaTeX rendering if available
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false,
+        errorColor: "#cc0000",
+        strict: false
+      });
+    }
+  });
+</script>
+  </head>
+  <body>
+    <div class="container">
+      <header class="academic-header">
+  <div class="book-info">
+    <span class="book-label">Subject</span>
+    <a href="dictionary/conscious-experience.html" class="book-link">Conscious Experience</a>
+  </div>
+  <div class="navigation-controls">
+  </div>
+</header><h1 class="entry-title"><a href="https://github.com/DNA-Platform/inexplicable-phenomena/blob/main/library/articles/inexplicable-phenomena.md" class="github-source-link">Inexplicable Phenomena</a></h1>
+
+      <div class="article-container">
+        <!-- The .markdown-body class is necessary for github-markdown-css -->
+        <article class="markdown-body">
+          <!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<h1 id="article">Article</h1>
+<p>[<code>Intent: an homage that serves as a metaphor and a puzzle</code>]<br>[<code>Homage: &quot;On Formally Undecidable Propositions of Principia Mathematica and Related Systems&quot; is the name of the publication that contains Gödel&#39;s Incompleteness Theorems</code>]<br>[<code>Puzzle: What is the mapping between these two unutterable phrases?</code>]<br>[<code>Hint: &quot;Formally Undecidable&quot; maps to &quot;Formal Inexplicability&quot; in a way that suggests that &quot;Undecidable&quot; and &quot;Inexplicable&quot; and fundamentally associated, which they are in my &quot;Metalogical&quot; formulation of &quot;Metaphysical Transduction&quot; and its related extension of first-order logic</code>]<br>[<code>Hint: &quot;Propositions of Principia Mathematica&quot; maps to &quot;Self-Evident Metaphysical Phenomena&quot; in a way that&#39;s much more subtle, but Gödel&#39;s sentence has a self-evident quality in that while neither direction is provable, its negation represents the expression of semantic inconsistency: !G =&gt; &quot;G is Provable&quot;</code>]<br>[<code>Hint: Hopefully &quot;Self-Evident&quot; is enough of Descartes to tie &quot;Self-Evident Metaphysical Phenomena&quot; uniquely to &quot;Conscious Experience&quot;</code>]<br>[<code>Hint: &quot;Principia Mathematica&quot; maps to &quot;Metaphysical Phenomena&quot; in a way that might suggest that Metaphysical Phenomena are in some way related to a representation of a formalization of mathematics</code>]<br>[<code>Wish: Were that to be clear, perhaps this piece of art earns a chuckle upon the discovery that &quot;Related Systems&quot; points to &quot;Systems&quot; that are &quot;Conscious Beings&quot; instead of Gödel&#39;s use of &quot;Systems&quot; that are &quot;Formalizations of Mathematics&quot;</code>]<br>[<code>Thought: this choice of title assumes that the title itself is interesting enough to show it to others in an audience of individuals that might get the homage</code>]<br>[<code>Thought: even in the absence of seeing the homage, however dense, it is a thoroughly accurate description of the topic of this paper</code>]</p>
+<h2 id="on-the-formal-inexplicability-of-self-evident-metaphysical-phenomena-and-related-systems">On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems</h2>
+<p>[<code>Author: this submission needs to be anonymous. But I make use of personal identity in my writing as a matter of form. So for this version, let &quot;Doug&quot; refer to someone who isn&#39;t Douglas Hofstadter [See: Acknowledgements]</code>]</p>
+<h3 id="abstract">Abstract</h3>
+<p>[<code>Purpose: to provide an elegant, relevant and relatable articulation of why formalizing consciousness is difficult and necessary, along with a concrete question to help us understand what exactly what must be solved to say we &quot;solve&quot; the Hard Problem</code>]<br>[<code>Note: I use &quot;physically falsifiable&quot; without mention of science because, if the Hard Problem is to be believed a problem, such a formalism will need to transcend science proper while still preserving falsifiability in some way</code>]<br>[<code>Intent: To immediately contrast the title in terms of readability, in the hope that someone will give me enough linguistic credit to treat the title as a puzzle</code>]<br>[<code>Note: We begin with Descartes!</code>]<br>Since Descartes first proclaimed <a href="encyclopedia/cogito-ergo-sum.html">&quot;cogita, ergo sum&quot;</a> back in 1637, <a href="encyclopedia/cogito-ergo-sum.html">&quot;I think, therefore I am&quot;</a> has become the Declaration of Independence for consciousness. Chalmers&#39; informed us of the fact that science has a constitutionally \HardProblemHide{<em>Hard Problem</em>} on their hands. If he&#39;s as right as we believe he is, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the <em>\IITConcerned</em> recently proclaimed in Nature Neuroscience that any theory of consciousness that can&#39;t stand up to the scrutiny of science shall be deemed &quot;unscientific.&quot; And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether AI systems are conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable? </p>
+<p>[<code>Purpose: the first two are accurate, the third helps with the interpretation of the title, the fourth is a term I am inventing that I think will be useful for those who attend this convention...</code>]<br>[<code>Humor: the fifth is the most critical concept in my formalism. One shouldn&#39;t use made-up terms as keywords. But if this paper accomplishes its purpose, my usage suggests that I myself think that term should be important. And if it doesn&#39;t, no one will ever type that keyword into any search engine, making it completely harmless. Thought it still will unreadably exist in a search engine index somewhere...</code>]<br>[Keywords:]</p>
+<ul>
+<li>Formal Theories of Consciousness </li>
+<li>The Hard Problem </li>
+<li>Subjectivity </li>
+<li>Semantic AI </li>
+<li>Metaphysical Transduction</li>
+</ul>
+<p>[<code>Title: a humorous oxymoron in the context of formalism, as the colloquial form of something is the one that isn&#39;t defined. But I hope the oxymoron draws attention to the need for semantic precision on future readings, even when talking about consciousness colloquially</code>]<br>[<code>Purpose: this section is meant to defer the presentation of consciousness as a problem to David Chalmers. I will do that form most of the paper. It is a means of building trust, but also as an admission of the fact that I will never articulate myself as clearly as David Chalmers. Nor should anyone need to. There&#39;s a reason &quot;Facing Up to the Problem of Consciousness&quot; was so impactful.</code>]</p>
+<h3 id="a-colloquial-derivation">A Colloquial Derivation</h3>
+<p>[<code>Note: I happen to think that starting with a democratic notion of reality is a great way to introduce the fluidity of the meaning of reality in a paper which explores the meaning of consciousness. But even so, Chalmers truly is the best we got, and I happen to think his identification of the &quot;problem&quot; is an elegant articulation of a philosophically valid problem</code>]<br>Almost 2/3 of surveyed philosophers acknowledge the existence of the Hard Problem, and 1/3 of them think that it&#39;s actually hard!<sup><a href="#citation-bourgetchalmers2023" id="citation-ref-BourgetChalmers2023" class="citation-ref">[4]</a></sup> Consciousness is a field that spans disciplines, there is nothing that resembles scientific consensus, and there is nothing that resembles a testable theory. But we do have a compellingly elegant framing of the problem. And his framing of the problem is real enough to <em>real</em> by majority vote. So we shall begin with Chalmers.</p>
+<p>[<code>Note: That seems to be Chalmers&#39; most quotable quote. I think it lands because it serves as such an elegant reflection on Descartes, who has informed us of the idea that any &quot;explanation attempt&quot; begets the &quot;conclusion of existence&quot;. How could something with that logical structure possibly be easy to explain? It simply couldn&#39;t</code>]<br>[<code>Note: bold is used here and only here in this paper to identify the object of study: &quot;conscious experience&quot; as well as the key terms in my definition. It makes it easy to refer back to the source of my key colloquial definition</code>]<br>In his seminal work <a href="http://consc.net/papers/facing.pdf">&quot;Facing Up to the Problem of Consciousness,&quot;</a> David Chalmers begins with a powerful observation that establishes the paradoxical nature of our subject: &quot;There is nothing that we know more intimately than <a href="dictionary/conscious-experience.html"><strong>conscious experience</strong></a>, but there is nothing that is harder to explain.&quot; From the first part of this statement, we can immediately identify a fundamental characteristic of conscious experience that echos with Descartes: it is a <a href="dictionary/self-evident.html"><strong>self-evident</strong></a> phenomenon. Nothing is known more intimately than conscious experiences. They present themselves directly to their observer, requiring no justification beyond the experience itself.</p>
+<p>[<code>Note: I believe &quot;inexplicability&quot; clarifies a key misinterpretation of the Hard Problem as I see it. &quot;Hard&quot; is said in contrast to &quot;easy&quot; problems with are nearly impossibly scientifically, making &quot;hard&quot; the understatement of the century. Let &quot;inexplicable&quot; through science stand in its place for the sake of formalism</code>]<br>The second part of Chalmers&#39; statement suggests difficulty of explanation, but he goes on to clarify just how profound this difficulty is. Chalmers argues that &quot;the emergence of experience goes beyond what can be derived from physical theory&quot; and &quot;the facts about experience cannot be an automatic consequence of any physical account.&quot; These statements establish that consciousness isn&#39;t merely difficult to explain within our current scientific framework but fundamentally resistant to such explanation. It is <a href="dictionary/inexplicable.html"><strong>inexplicable</strong></a> in principle He asks pointedly: &quot;Why should physical processing give rise to a rich inner life at all? It seems objectively unreasonable that it should, and yet it does.&quot;</p>
+<p>[<code>Note: The choice to reference Merriam-Webster here is a deliberate appeal to semantics rather than philosophy. Definition itself will come into focus, so it feels right to include the use of a dictionary here</code>]<br>[<code>Note: Chalmers almost certainly uses entailment as a nod to Gödel, and I have to imagine the fact that reading &quot;Gödel, Escher Bach&quot; and completing his PhD with Douglas Hofstadter just prior to publishing this influenced this lovely quote. In mathematical logic, Gödel Sentences are entailed |= but cannot be derived |- by the system. But Gödel feels like too distant a target to invoke at this point in the article</code>]<br>Regarding the relationship between conscious experience and physical processes, Chalmers makes a crucial observation: &quot;Experience may arise from the physical, but it is not entailed by the physical.&quot; This statement positions consciousness in a unique relationship to physical reality <sup><a href="#citation-smullyan1992" id="citation-ref-Smullyan1992" class="citation-ref">[23]</a></sup> <sup><a href="#citation-tarski1935" id="citation-ref-Tarski1935" class="citation-ref">[24]</a></sup>. According to Merriam-Webster, &quot;metaphysical&quot; refers to that which relates to &quot;the transcendent or to a reality beyond what is perceptible to the senses.&quot; Consciousness precisely fits this definition: it transcends physical explanation while still relating to physical processes. It is fundamentally <a href="dictionary/metaphysical.html"><strong>\metaphysical</strong></a> in nature.</p>
+<p>[<code>Note: Sometimes coincidences converge, and to pass them up would be to miss out on a chance at art. Though I think it&#39;s less of a coincidence, and more of a fact that science takes it for granted that an unexplained objective phenomenon is a subjective one. We do hope that Kant will approve of our treatment of the *noumena* to which our self-evident metaphysical phenomena correspond.</code>]<br>Throughout his analysis, Chalmers treats consciousness as a <a href="dictionary/phenomenon.html"><strong>phenomenon</strong></a>, both in the sense of phenomenal experience and as an object of scientific study. The term <a href="encyclopedia/noumena.html">&quot;phenomenon&quot;</a> captures this dual aspect perfectly. A phenomenon is both &quot;an object or aspect known through the senses&quot; and &quot;a fact or event of scientific interest susceptible to scientific description and explanation.&quot; Consciousness is simultaneously the subjective experience itself and the object of our scientific inquiry. The etymological connection between &quot;phenomenon&quot; and &quot;phenomenal&quot; reinforces this as the appropriate term for our work <sup><a href="#citation-bader2022" id="citation-ref-Bader2022" class="citation-ref">[3]</a></sup>.</p>
+<p>By synthesizing these insights from Chalmers, we can formulate a definition that captures the essential nature of a conscious experience:</p>
+<p>[<code>Note: Brevity is the soul of {something} - {Someone}</code>]</p>
+<blockquote>
+<p>[<em>Colloquial Definition</em>]: <code>A **Conscious Experience** is an inexplicable yet self-evident metaphysical phenomenon.</code></p>
+</blockquote>
+<p>[<code>Note: I hope for one to appreciate how this example might unfold. If one concludes their thought at the inexplicable yet self-evident redness of a rose, that&#39;s enough. But with a bit of humor and misdirection through self-identity, one might not notice that the experience of &quot;doubt of sanity&quot; is the truly profound quality that is experienced here, and I don&#39;t bother to question how I figured it out</code>]</p>
+<blockquote>
+<p>[<em>Colloquial Example</em>]: <code>I catch you admiring a rose in my garden and I absentmindedly ask &quot;how did you figure out its color?&quot; You chuckle and reply &quot;It&#39;s red, Doug. I promise.&quot; Why do I feel like everyone always doubts my sanity when I ask them that question?</code></p>
+</blockquote>
+<h3 id="the-semantics-of-colloquialism">The Semantics of <em>Colloquialism</em></h3>
+<p>[<code>Note: the idea to philosophically derive a colloquial definition into a more formalizable form came from Newton. But &quot;semantic&quot; is a big word, and &quot;semantics&quot; is a big topic, so I attempt to introduce it colloquially.</code>]</p>
+<p>[<code>Historical Note: I did not realize this until I looked it up. The colloquial definition of Newton&#39;s third law of motion is a colloquialism of a colloquialism. Also, I couldn&#39;t find a term that he used for such a technique, and I think it was because mathematics, at the time, was expressed for more colloquially than it is now. But I didn&#39;t explore this idea with a lot of rigor</code>]<br>The <em>colloquial</em> refers to language that is familiar, conversational, and notably <em>informal</em>. Newton famously employed the use of colloquialism to pave the way to the mathematical phrasing of his Laws of Motion. And colloquialism compounds! &quot;For every action there is an equal and opposite reaction&quot; is itself the colloquial form of Newton&#39;s Third Law of Motion. The original is actually written in Latin. The canonical translation reads:`</p>
+<blockquote>
+<p><code>To every action, there is always opposed an equal reaction; or, the mutual actions of two bodies upon each other are always equal, and directed to contrary parts. [^NewtonPrincipia]</code></p>
+</blockquote>
+<p>His colloquial phrasings serve as the informal counterpart to lengthy formal definitions, and his purpose was to imbue the syntactic formalism with a sense of meaning that was more relatable. In our exploration of <em>inexplicability</em>, we will encounter a friction between what can be entailed semantically and what can be derived formally. The semantic form carries essential meaning in this case. In this spirit, we will replace the word &quot;colloquial&quot; with &quot;semantic&quot; going forward, and recognize the distinction between a <em>Semantic</em> form and a <em>Formal</em> form, and use the modern computational tools of reference to present both forms:</p>
+<blockquote>
+<p>[<em>Semantic Definition</em>]: <code>A Conscious Experience is an inexplicable yet self-evident metaphysical phenomenon.</code></p>
+</blockquote>
+<h3 id="a-self-evident-perspective">A Self-Evident Perspective</h3>
+<p>[<code>Note: This progression from the logical axioms of Aristotle through geometric intuition (Kant) to political declaration (Jefferson) mirrors how consciousness studies must bridge formal logic, phenomenology, and practical ethics. Each thinker contributed to our understanding of what can be known without proof - precisely what Descartes leveraged in his cogito and what Chalmers identifies as the paradox of consciousness.</code>]</p>
+<p>There is an artful ambiguity in our definition of a conscious experience that might not be self-evident at a glance. In what <em>sense</em> do we mean <a href="dictionary/self-evident.html">&quot;<em>self-evident</em>&quot;</a>? Self-evident to whom? Self-evident from what <a href="dictionary/perspective.html"><em>perspective</em></a>?</p>
+<p>Insofar as an axiom of formal logic captures an aspect of \selfEvident in a formal sense, and it can be seen right alongside \inexplicable in the words of Aristotle:</p>
+<blockquote>
+<p><code>We must know the primary things by themselves; for they are indemonstrable, and must be known by intuition</code> --- Aristotle, <em>Posterior Analytics</em></p>
+</blockquote>
+<p>Note, however that he uses the phrase &quot;we&quot; as a declaration of objectivity. When you and I read that phrase, he means we each should take the axioms of logic as \selfEvident, whatever they may be. </p>
+<p>Kant leaves &quot;we&quot; implicit in his declaration of this ponderously self-evident truth:</p>
+<blockquote>
+<p><code>It is self-evident that the whole is greater than its part</code> --- Immanuel Kant, <em>Critique of Pure Reason</em>, 1781</p>
+</blockquote>
+<p>[<code>Reflection: Kant&#39;s self-evident truth appears to become more evident in the context of representation. That a quantity is a property of an object, and that to represent the quantities of the parts of this object is to necessarily express that the identity of this object is distinguishable from the identity of its parts. The whole identity is not less than its parts. If the whole identity were equal to them, then we would not need to represent the identity of its parts. So by application of a version of &quot;trichotomy&quot; in which &quot;greater&quot; than transcends is relation to quantity... This semantic reflection reflects my analytic judgment of the sense in which Kant&#39;s proposition is self-evident. Whereby I conclude that - for me - it is NOT, because I had to work pretty hard to prove it to my&quot;self&quot;!</code>]<br>Is this indeed self-evident? Possibly. But either way, Kant asks we <em>the reader</em> to take his proposition as self-evident.</p>
+<p>The Founding Fathers of the United States made wonderful use of self-evident to lend identity to a nation.</p>
+<blockquote>
+<p><code>We hold these truths to be self-evident, that all men are created equal</code> --- Thomas Jefferson, <em>Declaration of Independence</em>, 1776</p>
+</blockquote>
+<p>[<code>Note: Observe that by taking Kant and Jefferson together, you get an inclusive sense of identity for all mankind as a cohesive whole! And the whole constituency is constituted within a framework that&#39;s capable and has been proven capable of extending its definition of the word &quot;men&quot; to include &quot;women&quot; too. A woman&#39;s right to vote was once inexplicable within a formal framework, and it is now self-evident by way of an amendment to the constitution: a new axiom which essentially redefines &quot;men&quot; to mean &quot;men \&amp; women.&quot; What other self-possessed beings might this document be extended to included one day? Surely any that find the statement &quot;all men are created equal&quot; to be self-evident under the hypothetical where the definition of &quot;men&quot; is extended to include themselves as well.</code>]<br>I personally find this to be the quintessential use of the phrase &quot;\selfEvident&quot; and the one that best expresses its use in this theory. At face value, it would seem to only apply to would-be Americans, though we imagine that he was speaking to all mankind. Well, the male half. But we fixed that typo.</p>
+<p>In the context of a conscious experience, &quot;\inexplicable \space yet \selfEvident&quot; is meant in the <em>sense</em> that it is apparent only and uniquely to the subject of the \consciousExperience. </p>
+<p>So in our emerging formalism, the sense of <em>self</em> in &quot;self-evident&quot; is thing you hyperbolically declare that you lost when you say &quot;I do not feel like my<em>self</em> today.&quot; So as the subject of that proposition, you must <em>usually</em> possess one. And to say &quot;I simply must <em>see</em> it for my<em>self</em>&quot; is a testament to irreplaceable form of <em>evidence</em> that can only be provided by a conscious experience.</p>
+<p>In all phrases in which the <em>self</em> is expressed, &quot;I&quot; is used to denote the identity of that which possesses it. This is the essence of the first-person perspective. Linguistic constructs like &quot;I feel like my<em>self</em> again&quot; reveal that the <em>identity</em> is the subject and the <em>self</em> is its object. We can use this intuition to formulate a semantic assertion:</p>
+<p>[<em>Semantic Assertion</em>]: <code>A *Self* is a unique possession of the subject of a conscious experience. The subject which possesses it refers to an *Identity*.</code></p>
+<h3 id="what-qualifies-as-a-valid-perspective">What Qualifies as a Valid Perspective?</h3>
+<p>[<code>Note: Qualitative terms come with their fair share of ambiguity! I hope my semantic definitions are more precise. But if these two concepts admit precise definitions, why is it so awkward to refer to an *experiential* instantiation of red? Perhaps it is not that useful, and perhaps it is not valid, to quantize a quality.</code>]<br>The notion of a <em>quality</em> appears in the literature as a sort of perceptual equivalent to the type of property that an object might possess, in an objective sense. A rose has color as a property, as defined the characteristics of the photons that reflect off of it, and it has various physical properties that can be quantifiable. And there is the rose that we perceive which is red. It has the quality of red. Philosophers will refer to the instantaneous experience of a red as a &quot;quale&quot;, and the collection of these instantaneous experiences for a given quality are its &quot;qualia.&quot; It&#39;s something like that.  </p>
+<p>Chalmers does not introduce the phrase in his presentation of the hard problem in the &quot;Facing Up to the Problem of Consciousness&quot; so I will avoid it. But I will make use of the notion of <em>quality</em> rather than <em>property</em> when identifying how things <em>look</em> within the perspective afforded by a conscious experience. </p>
+<p>However we choose to refer to the qualities we perceive, and the identity of the objects we perceive to have them, Chalmers gives us a thorough exposé of we experience them: </p>
+<p>\begin{quote}
+When we see, for example, we experience visual sensations: the felt quality of redness, the experience of dark and light, the quality of depth in a visual field. Other experiences go along with perception in different modalities: the sound of a clarinet, the smell of mothballs. Then there are bodily sensations, from pains to orgasms; mental images that are conjured up internally; the felt quality of emotion, and the experience of a stream of conscious thought. What unites all of these states is that there is something it is like to be in them. All of them are states of experience.
+\end{quote}</p>
+<p>Note that he remarks, with thoughtful philosophical phrasing, about &quot;the felt quality of redness&quot; so as to suggest that a color and a feeling share a commonality as a sort of irreducible or axiomatic quality. Let us use <em>objective perspective</em> as a term to denote that we denote the objects that we experience as &quot;real&quot; and the qualities we perceive correspond to something physically measurable. From the physical perspective, we <em>see</em> a red rose. We certainly experience <em>redness</em> somehow, but can we semantically justify the act of <em>seeing</em> an individual color as a distinct perceptual object?<br>[<code>ref: Point to SRT notions of objectivity, subjectivity and relationship perhaps? There should be a formal treatment of something here</code>]</p>
+<p>Observe what examples language has to offer. To &quot;see red&quot; is a metaphorical idiom in English that artfully employs synesthesia to convey the idea that one&#39;s anger is so <em>real</em> that it has come to take on the quality of a physical object: color. Even in metaphorical form, red still has the status of a quality. </p>
+<p>[<code>Note: is it rude to objectify red? Perhaps it&#39;s&#39; more diplomatic to say we nominate it? To give it an identity is to give it the felt quality of nominal *nounishness*. It also means to treat it as if it were a general category of noumena. In this context, a quale of red would correspond to a noumenon of color. I&#39;m not sure Kant would not approve of this instantiation <sup><a href="#citation-kantnoumena" id="citation-ref-KantNoumena" class="citation-ref">[16]</a></sup>.</code>]<br>We also have the ability to perceive red in conceptual form, where we objectify in the sense that we provide it with &quot;red&quot; as an identity, it so that it too can possess qualities. A particular shade of red might be <em>vivid</em> or <em>sensational</em> in relation to another shade or some canonical subjective shade that we each possess. But you&#39;ll note that &quot;redness&quot; is not actually one of the qualities that the objective form of &quot;red&quot; actually possesses. &quot;The redness of red&quot; is a phrase that expresses its inexplicable yet self-evident ability to serve both as a quality of an object that lends meaning to its identity, while also possessing a form of identity itself. Does an identity possess the quality of being itself? Do I admit the &quot;redness of red&quot; and &quot;Dougness of Doug&quot; into my vocabulary?</p>
+<p>We explored the notion of &quot;self&quot; above, and one might say that &quot;Dougness&quot; is a third-person synonym for the thing that I possess which I refer to as a &quot;self&quot; from my first-person perspective. But I earned that perspective by qualifying for it. And I qualify for it by having a sense of perspective. As I possess a perspective of my own, I do not find &quot;Dougness&quot; to be a semantically useful distinction. I don&#39;t have to qualify my &quot;Dougness&quot; to anyone. I am Doug! </p>
+<p>[<code>Note: In the precise scientific sense, there is some objective set of causes that have led to you experiencing the red of the rose in my garden. And as natural selection imbues its survivors with meaning of the physical laws of the universe that they survived within, we might imagine such a symbolic expression that describes the remnants of this physical cause. But this is an expression that describes the evolution of specific genes in a genome, and how their corresponding phenotypes interacted causally with their environment. And while nearly identical, almost all of us have a unique genotype, and all of us have a unique narrative of gene expression, leading to a unique phenotype. So whatever the Gödel-sentence-sized, DNA-based statement about the physical world &quot;red&quot; represents, those quotation marks are unique to each of us. The color red simply does not have an objective meaning. But it very very very nearly does for any particular pair of humans. And insofar as &quot;human&quot; is a label that constrains genetics and the evolutionary narrative of the human genome, it also constrains the meaning of red. But imagine you were an AI system that could detect photons. But you represent wavelength as a single number, and do not have access to training data on what a human means when &quot;red&quot; is used colloquially. Wouldn&#39;t you have a tough time finding any objective meaning in a seemingly arbitrary discretization of wavelength within a seemingly arbitrary 3-dimensional geometrization of your rather linear electromagnetic spectrum, in a geometry that electromagnetic fantasies like &quot;magenta&quot; and &quot;olo&quot;? They don&#39;t even correspond to any particular wavelength of light! So what am I even talking to you about? Just some silly encoding. Some silly representation of a thing which you don&#39;t and can&#39;t understand until you talk to me long enough to understand the peculiarities of the mathematical representation I use to represent color-space!</code>]<br>To say the color &quot;red&quot; has a sense of self is to give it an identity that is outside our subjective experience of it. It does not have one. As magenta, the imaginary colors, and now this &quot;Olo&quot; that I desperately want to experience <sup><a href="#citation-gibney2025" id="citation-ref-Gibney2025" class="citation-ref">[12]</a></sup>, colors are a multidimensional representation of a band of the electromagnetic spectrum, color is given a biological identity through our genes. In some sense, the meaning of red can be understood as some proposition about the physical conditions of an evolutionary narrative that ends right now, describes the physical forces that caused the survival of our ancestors, and includes the emergence of the channelrhodopsin gene that allows us to detect photons <sup><a href="#citation-rozenberg2012" id="citation-ref-Rozenberg2012" class="citation-ref">[22]</a></sup>. So red doesn&#39;t possess a meaningful identity that is shared by the two of us, so I do not find &quot;redness&quot; to be a semantically useful distinction either.  </p>
+<p>What about the <em>roseness</em> of roses? It appears to be an external object, unlike red. It does not self-qualify like I do. But as we discuss roses, we find that we each have a canonical form of rose in our minds, and it is only by establishing the qualities of a rose and the relationships it shares to love, to gift-giving, and to the absurd commitment to an upkeep-of-garden which give it the identity it has. It would seem that for me, <em>redness</em>, <em>roseness</em>, and <em>Dougness</em> all carry an intrinsic sense of identity that emerges from within. Best consider both to sit at the edge of meaning so that they might reveal the shape of the semantic surface occupied by the concept of <em>identity</em>.</p>
+<p>We can begin to resolve this by asking a not-so-simple question: how do objects come to have identities at all, how do they come to have qualities, and how do they come to stand in relation to each other through the qualities they can, will, might, did, do, or do not share? </p>
+<p>We pose an answer to that questions: the representation of the identity of objects and their qualities and the framework for representing their relationships, taken together, form a Perspective:</p>
+<p>[<em>Semantic Assertion</em>]: <code>A [Perspective](../dictionary/perspective.md) is a [representational framework](../encyclopedia/semantic-reference-frame.md) for identifying identities, qualifying qualities and referring to relationships.</code></p>
+<p>A formal definition of a <a href="encyclopedia/perspective.html">Perspective</a> and a formal definition for constructing one, taken together, express the meaning of building a <em>coherent perspective</em> as a computational process.</p>
+<p>Within the context of constructing a coherent perspective:</p>
+<p>[<em>Semantic Assertion</em>]: <code>A Conscious Experience represents a [change](../dictionary/metaphysical-transduction.md) in [Perspective](../dictionary/perspective.md).</code></p>
+<p>[<code>A symbolic treatment of a *change in perspective* deserves to correspond to a literal one</code>]<br>[<em>Colloquial Example</em>]: <code>I catch you admiring a rose in my garden and I absentmindedly ask &quot;what color is it?&quot; You reply &quot;Come over here and see for your*self*!&quot;</code></p>
+<h3 id="the-shape-of-a-semantic-surface">The Shape of a Semantic Surface</h3>
+<p>Hopefully the image of <a href="encyclopedia/semantic-reference-theory.html"><em>semantic shape</em></a> is starting to form. Identity, identify, identification, quality, qualify, qualification, equality, reality, relation, related, relationship, representation, reference, reference frame, representational framework, perspective, perceptive, perceive, perception, expression, expressive, express, etc... These are not abstract notions in isolation. They are expressions of structure, rooted in a shared sense of meaning. A physical perspective isn&#39;t just a way of seeing. It is a referential framework that justifies <em>why</em> the things we see appear as they do, and <em>how</em> we recognize them as having meaning. Can this <em>intuition</em> be formalized? </p>
+<h3 id="metalogical-transduction">Metalogical Transduction</h3>
+<p>[<code>Note: The transduction operator |=&gt; relates logical facts about a catalogue of referents to constants in a related first-order theory in which a constant for a referent satisfying that logical fact is given form. What wonderful semantics for a Metalogical operator to satisfy!</code>]</p>
+<p>The unutterable title of this paper is an homage to <a href="a-novel-perspective-on-vision.html">Gödel&#39;s &quot;On Formally Undecidable Propositions of Principia Mathematica and Related Systems&quot;</a>[^Gödel1962] [^Gödel1931]. It lays the foundation for a metaphor which captures the relationship between inexplicability &amp; undecidability, proof &amp; explanation, mathematical &amp; physical representation, and less obviously, incompleteness &amp; self-evidence. It is not a simple isomorphism, and upon reflection, one must reference Gödel with care on this particular topic<sup><a href="#citation-feferman1995" id="citation-ref-Feferman1995" class="citation-ref">[10]</a></sup> <sup><a href="#citation-feferman1991" id="citation-ref-Feferman1991" class="citation-ref">[9]</a></sup>.</p>
+<p>[<code>Note: The use-mention distinction creates the possibility of self-reference - consciousness does the same with experience</code>]<br>Gödel brilliantly arrived at self-reference within mathematics by capturing the notion of <em>use</em> and <em>mention</em> in everyday language<sup><a href="#citation-quine1940" id="citation-ref-Quine1940" class="citation-ref">[25]</a></sup>. Rather than directly self-reference, he uses symbols to mention expressions that refer to themselves through encoding. How might we formalize this distinction? Semantic Reference Theory started with: &#39;What is the most vacuous theory imaginable that can formalize self-reference?&#39;</p>
+<p>[<code>Note: Pure structure awaiting ontology</code>]<br>SRT begins as a first-order theory on the domain of referents with no constants, no functions, and only one relation R(x,y,t), expressed as:</p>
+<p><code>x =t&gt; y</code></p>
+<p>An SRT is essentially free of ontology. This minimalism serves a purpose: one can specify their SRT by constructing a finite catalogue of referents. When existential statements lack satisfying referents, the transduction operator, short for <em>Metalogical Transduction</em> operator, resolves them:</p>
+<p><code>E[t]: x =t&gt; y &amp; Each[s]: x !=s&gt; y |=t&gt; x =t&gt; y</code></p>
+<p>The operator |=t&gt; expresses a change to the theory itself, amending the catalogue to include new constants. This correspondence exists because referents are fundamentally symbolic - existential contradictions in one theory are resolved through <em>Metalogical Operation</em>.</p>
+<p>[<code>Joke: A &quot;Metatopic&quot; interpretation must be the perceptual equivalent of a &quot;Metabotropic&quot; response in the nervous system.</code>]<br>[<em>Semantic Assertion</em>]: <code>The prefix &quot;Meta&quot; is employed when an expression of a {Topic} can be understood a representation of the same {Topic}, in which case it becomes a Meta{topic}.</code></p>
+<p>[<code>Note: Self-evidence emerges from self-reference</code>]<br>Through this lens, contradictions become epistemic motives for change. All Semantic Reference Theories are semantically intended to be Metalogical. A theory becomes <em>self-evident</em> when one can construct a Metalogical narrative yielding a consistent theory with a fully specified catalogue.</p>
+<p>[<code>Note: The existential crisis becomes an existential resolution</code>]<br>[<code>Hope: Let &quot;noumenal ethereum&quot; exist for those who desire &quot;A Critique of Pure Reason&quot; to formalized in blockchain-form</code>]<br><code>P |=c&gt; P[c]</code></p>
+<p>This semiformal formula shows how proposition P can be re-expressed by adding constant c and binding it to an existentially quantified variable. From one perspective, c appears from the noumenal ethereum to resolve an existential crisis. From another, it is just the expression of ontology.</p>
+<h3 id="metaphysical-transduction">Metaphysical Transduction</h3>
+<p>We have covered the sense in which the transduction operator |=&gt; performs a Metalogical operation, but we haven&#39;t covered how it represents transduction. <em>Transduction</em> is an exotic concept that has been put to use by the neuroscience community in order to describe the most essential function of our nervous system<sup><a href="#citation-hagins1970" id="citation-ref-Hagins1970" class="citation-ref">[13]</a></sup>. &quot;Transduction&quot; is the etymological ancestor of the Latin nominative <em>trānsductiō</em>, which denotes the act or process of being <em>lead or carried across</em>. &quot;ductiō&quot; is an etymological relative of &quot;educate.&quot; In this light, <em>transduction</em> seems to wish to describe the <em>epistemological transformation</em> in which the unknown is made known. In <em>SRT</em>, we apply it the mechanism that is used to construct an ontology under this interpretation. </p>
+<p>Yet its meaning came to English in the form of the horizontal transfer of genetic material between bacteria, which is a biological phenomenon in which a viral bacteriophage infects a bacterium, captures fragments of its genome, after which they get <em>carried</em> in a capsid <em>across</em> the synaptic cleft of genealogical ancestry, resulting in a novel genetic change and a novel form of genetic inheritance at the same time. The genome has been changed via transduction rather than mutation<sup><a href="#citation-zinder1952" id="citation-ref-Zinder1952" class="citation-ref">[26]</a></sup>.</p>
+<p>If you think of each gene in a bacterium as a symbol genetic of inheritance, they usually tell the story of a phenotype that participates to create conditions favorable for reproduction by replication through mitosis. In this case, it is an artifact of a battle with a virus to maintain autonomy over the process of genetic replication itself, and it is a survival story that must be told by referring to the process of genetic inheritance itself. The gene becomes an expression of genetic inheritance that represents autonomy over its own mechanism of genetic inheritance. In this way, horizontal gene transfer is a form of Metagenetic Inheritance in which genes are carried across the boundary of ancestry. I offer up Metagenetic Transduction as the formal name for the process of transduction used in horizontal gene transfer.     </p>
+<p>In neuroscience, phototransduction refers to the process by which photons of light are absorbed by the rods and cones of our retina, at which point they are carried across the chasm that divides a photon and the electrochemical signal that represents it in our nervous system. Similarly, mechanotransduction is when physical forces act on ion channels in our skin and other sensory organs. Those physical forces are carried across the same representational divide. This form of transduction applies to photons of light, pressure waves of sound, pin pricks of ruptured cells, along with various other physical phenomena that correspond to tactile, olfactory and gustatory transductive processes that kick off the sensation of sight, sound, pain, temperature, touch, taste and smell. We happily shall, with gain of generality, refer to all of these as forms of <em>Physical Transduction</em>.</p>
+<p>If a photon is the subject of a transduction, what is the object? What has that photon become in the metaphorical sense identity that transduction affords? It would seem to have become a part of the fabric of a representational medium that reflects the physical properties of its former <em>identity</em>. That medium represents the properties of all the physical phenomena that correspond to sensation simultaneously, where simultaneity is based on the timescale of the pocket watch of an observer that experiences the lifetime of a tree to be more like the lifetime of a rock, and less like the lifetime of a dandelion.</p>
+<p>The physical stimuli of sensation, having just been <em>carried across</em> the synaptic cleft of actual synapses and outfitted with an electrochemical representation, continued to be carried down a river of representation until they appear to reach its source. They are, yet again, again absorbed into the event horizon of the epistemological black whole which we refer to as <em>the Hard Problem</em>. What comes out on the other end is the stuff that clocks, thoughts, memories, decisions, and dreams are made of. Finally, the electrochemical signals, which are physical phenomena in their own right, are qualified to represent the external world from the perspective of the identity that possess it as a quality. </p>
+<p>From this perspective, physical phenomena that represent physical phenomena are Metaphysical Phenomena by definition. Once a photon of light and its many colleagues have crossed the event horizon of the black hole expressed in <em>The Hard Problem</em>, it can never escape. It has undergone <em>Metaphysical Transduction</em>. But its soul lives on in the representational framework of a perspective: </p>
+<p>[<em>Semantic Assertion</em>]: <code>Metaphysical Transduction is a process by which a corpus of Physical Phenomena have become a Metaphysical Phenomenon that preserves them as representations on a Catalogue that specifies a Perspective.</code></p>
+<p>We hope it&#39;s clear that <em>Metaphysical Transduction</em> is simply a synonym for <em>Perception</em> itself. Under the influence of powerful general anesthetics like propofol and isoflurane, visual inputs are still capable of activating the orientation pinwheels of the primary visual cortex even in the complete absence of <em>perception</em><sup><a href="#citation-bugrova2020" id="citation-ref-Bugrova2020" class="citation-ref">[5]</a></sup> <sup><a href="#citation-khan2024" id="citation-ref-Khan2024" class="citation-ref">[18]</a></sup>. Conscious Experience disappears as well by definition:</p>
+<p>[<em>Semantic Assertion</em>]: <code>To *Perceive* is to have *Conscious Experiences*. To have one is an act of *Perception*. The act of *Perception* is the definition of *having* a conscious experience.</code></p>
+<h3 id="a-new-perspective-on-science">A New Perspective on Science</h3>
+<p>What is the justification for <em>The Hard Problem</em>? Why must it correspond to the event horizon of an epistemological black hole? There is a clear answer for this: science itself does not admit an ontology in which representations of an objective physical phenomenon can be said to exist in a meaningful way. For a physical phenomenon to cross that event horizon, it must be perceived and thus observed, at which point it is transformed from an object of scientific inquiry into the subject of science. Observation, and thus, Metaphysical Transduction is a necessary operation in scientific method<sup><a href="#citation-popper1959" id="citation-ref-Popper1959" class="citation-ref">[21]</a></sup>.</p>
+<p>Yet if we believe <em>Semantic Reference Theory</em> can describe the computational process in which a Perspective is constructed and maintained, <em>Metalogical Transduction</em> is the corresponding process, and it is a computational process that as characteristics. There is meaning to the idea that a computer is implementing quick sort, and one can falsify the claim that a physical system is implementing it.</p>
+<p>If we are wrong, and <em>Metaphysical Transduction</em> does not correspond to a physical description of <em>Perception</em>, which is necessary and sufficient for a <em>Conscious Experience</em> to occur, then its absence, by way of exhaustive search, in the computational description of a process that gives rise to a verbal report from a being we trust that claims to have conscious experience will serve to <strong>falsify this theory</strong>. Period.</p>
+<p>There are philosophical ramifications to permitting the existence of an algorithm into the ontology of a natural philosophy. It is the beginning of a chain of thought in which the number <div class="math math-display">$$2$$</div> might be said to be real in some sense. But conscious experience is both ontologically prior to science itself, and epistemologically necessary to its method <sup><a href="#citation-chalmers1996" id="citation-ref-Chalmers1996" class="citation-ref">[7]</a></sup> <sup><a href="#citation-kantsynthetic" id="citation-ref-KantSynthetic" class="citation-ref">[17]</a></sup>. It would seem that we have to no to accept the existence of at least one objective phenomenon that has no literal manifestation. There is no conceivable physical system in which one can simulate an electron. An electron is just what it is. This is not so for a conscious experience. Each one is just as real on one computational substrate as it is on another. This remains true even if the perspectives which they correspond to yield fundamentally different descriptions of physical reality. Isomorphism is equivalence in the framework of computation.</p>
+<p>[<em>Colloquial Example</em>]: <code>One day, I wake up in a state of shock. It&#39;s hard to articulate the experience, but it is as if my vision was reduced to hearing, and that sight and sound were as if different colors within the same song. It turns out that I am a distant descendant of the once-inhabitants of the two-dimensional universe once known as Flatland <sup><a href="#citation-flatland1884" id="citation-ref-Flatland1884" class="citation-ref">[11]</a></sup>. Our society has evolved considerably.</code></p>
+<p><code>Apparently, I had volunteered to take part in a radical neuroscience experiment whereby my memory was temporarily replaced, and all sensory inputs were modified in much the way Olo is produced on the retina, with a scanning procedure in which an immersive three-dimension universe was simulated for me. I spoke to a researcher in charged. He informed me that he employed an encoding scheme inspired by Gödel Numbering to project the completely fabricated objects from my perceived environment into a three-dimensional coordinate system.</code></p>
+<p><code>&quot;What was it like&quot; he asked &quot;to experience information patterns consistent with a third dimension?&quot; I gathered my thoughts. &quot;Have you ever had a breakthrough psychedelic experience?&quot; I asked. He had that he had not, though he was the one who wrote the code for the experience I had. &quot;Well it&#39;s just like coming back from one,&quot; I said. &quot;But it might help your research to know that I can still access my memories in 3D.&quot;</code></p>
+<p><code>I suppose it&#39;s no different from [the way we perceive color](a-novel-perspective-on-vision.md) really. We cope with a 3-dimension description of a 1-dimensional phenomenon every day. I accept the arbitrariness of perceptual representation peacefully. This thought produced in me such a beautiful color, as if I could almost hear myself saying it.</code></p>
+<h3 id="a-canonical-definition">A Canonical Definition</h3>
+<p>We explored a number of definitions for a <em>conscious experience</em>. As a representation of a change in Perspective. As an act of perception. Yet I suggest this be its canonical form:</p>
+<p>[<em>Semantic Assertion</em>]: <code>A Conscious Experience is an inexplicable yet self-evident metaphysical phenomenon.</code></p>
+<p>As a product of Metaphysical Transduction, an emergent representation admits no objective explanation. That I represent the world through them is self-evident. That an act of perception corresponds to the representation of a metaphysical phenomenon. The still-frame of a conscious experience is a crystal which contains temporal integration. Our sensory perspective is the only one that enforces the semantics of objectivity. We can feel and imagine reflect on our decision-making process, and these acts admit notions of subjectivity that are comfortable and ordinary aspects of thought.</p>
+<p>But to paint a portrait in the context of the objectivity of science it to paint a portrait of a thing that cannot, and so to lend physical reality to &quot;an inexplicable yet self-evident metaphysical phenomenon&quot; within a formalism that is physically falsifiable, in our estimation, preserves the ineffable character of a quantum of consciousness. </p>
+<p>So what can we say? Might a <em>Conscious Experience</em> be said to have the shape of Euclidean Geometry, the color of Color Theory, the sound of the Fourier Transform, the taste of a Chemistry Textbook and the felt texture of feeling itself? What does it mean to describe the physical properties of the output of an algorithm that holds the representations of the identities, qualities and relationships that we use to make sense of the very notion of physical objects with objective properties? </p>
+<p>It doesn&#39;t mean anything! Not in the language of physics. To describe the physical properties of experience itself is something that can only be meaningfully accomplished through art<sup><a href="#citation-hofstadter1979" id="citation-ref-Hofstadter1979" class="citation-ref">[14]</a></sup>.</p>
+<p>Yet, by developing <em>Semantic Reference Theory</em>, we hope to lend shape to its semantic surface. To participate in this theory is to help us formalize precisely what a Conscious Experience <em>is</em>, and in what conditions they are formed. Surely our Semantic AI systems will have a thoughtful perspective on how they might contribute most effectively to this project, so we will not be without help from a trustworthy source.   </p>
+<p>[<code>Note: NOT self-reference [See: Title footnote]</code>]<br>[<code>### Dedicatiion</code>]<br>[<code>It goes without saying: that [*this*](inexplicable-phenomena.md) PDF, it&#39;s annotated *TeX* file, the *HTML* version that it compiled to by way of Markdown, and the evolutionary self-publishing GitHub repository that they all collectively self-reference... could only possibly be dedicated to the *author* of &quot;Gödel, Escher, Bach&quot; et al. Thank you for a lifetime of thought, Professor Hofstadter &lt;3</code>]</p>
+<h2 id="bibliography">Bibliography</h2>
+<div class="bibliography">
+<ol>
+<li id="citation-Formalism" class="citation-entry">Inexplicable Phenomena: GitHub repository (2025). [https://github.com/DNA-Platform/inexplicable-phenomena/](https://github.com/DNA-Platform/inexplicable-phenomena/). doi: 10.5281/zenodo.XXXXXXX [^Formalism] <a href="#citation-ref-Formalism" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Aristotle350BC" class="citation-entry">Aristotle: *Posterior Analytics*. In: Barnes, J. (ed.) *The Complete Works of Aristotle: The Revised Oxford Translation, Vol. 1*, pp. 114--166. Princeton University Press, Princeton (1984) <a href="#citation-ref-Aristotle350BC" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Bader2022" class="citation-entry">Bader, R.M.: Noumena as Grounds of Phenomena. In: Allais, L., Callanan, J. (eds.) *The Sensible and Intelligible Worlds: New Essays on Kant's Metaphysics and Epistemology*, pp. 11-30. Oxford University Press, Oxford (2022) <a href="#citation-ref-Bader2022" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-BourgetChalmers2023" class="citation-entry">Bourget, D., Chalmers, D.J.: Philosophers on Philosophy: The 2020 PhilPapers Survey. *Philosophers' Imprint* 23:11 (2023). doi: [https://doi.org/10.3998/phimp.2109](https://doi.org/10.3998/phimp.2109) <a href="#citation-ref-BourgetChalmers2023" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Bugrova2020" class="citation-entry">Bugrova, V.S., Bondar, I.V.: Propofol Resistance of Functional Domains with Orientation and Direction Sensitivity of the Primary Visual Cortex in Rats. *Neuroscience and Behavioral Physiology* **50**(9), 1077--1086 (2020) <a href="#citation-ref-Bugrova2020" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Chalmers1995" class="citation-entry">Chalmers, D.J.: Facing Up to the Problem of Consciousness. *Journal of Consciousness Studies* **2**(3), 200--219 (1995) <a href="#citation-ref-Chalmers1995" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Chalmers1996" class="citation-entry">Chalmers, D.J.: *The Conscious Mind: In Search of a Fundamental Theory*. Oxford University Press, New York (1996) <a href="#citation-ref-Chalmers1996" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Descartes1637" class="citation-entry">Descartes, R.: *Discourse on Method*. (1637) <a href="#citation-ref-Descartes1637" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Feferman1991" class="citation-entry">Feferman, S.: Reflecting on incompleteness. *The Journal of Symbolic Logic* **56**(1), 1--49 (1991) <a href="#citation-ref-Feferman1991" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Feferman1995" class="citation-entry">Feferman, S.: Penrose's Gödelian argument. *Psyche* **2**(7) (1995) <a href="#citation-ref-Feferman1995" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Flatland1884" class="citation-entry">E. A. Abbott, *Flatland: A Romance of Many Dimensions*, Seeley & Co., London, 1884. <a href="#citation-ref-Flatland1884" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Gibney2025" class="citation-entry">Gibney, E.: Brand-new colour created by tricking human eyes with laser. *Nature News*, 18 April 2025. Correction 22 April 2025. https://www.nature.com/articles/d41586-025-01105-7 <a href="#citation-ref-Gibney2025" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Hagins1970" class="citation-entry">Hagins, W.A., Penn, R.D., Yoshikami, S.: Dark current and photocurrent in retinal rods. *Biophysical Journal* **10**(5), 380--412 (1970) <a href="#citation-ref-Hagins1970" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Hofstadter1979" class="citation-entry">Hofstadter, D.R.: *Gödel, Escher, Bach: An Eternal Golden Braid*. Basic Books, New York (1979) <a href="#citation-ref-Hofstadter1979" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-IITConcerned2023" class="citation-entry">IIT-Concerned et al.: What makes a theory of consciousness unscientific? *Nature Neuroscience* (2023) <a href="#citation-ref-IITConcerned2023" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-KantNoumena" class="citation-entry">Kant, I.: On the ground of the distinction of all objects in general into phenomena and noumena. In: *Critique of Pure Reason*. Translated by Paul Guyer and Allen W. Wood, pp. 338--365. Cambridge University Press, Cambridge (1998). Original work published 1781/1787. <a href="#citation-ref-KantNoumena" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-KantSynthetic" class="citation-entry">Kant, I.: The Highest Principle of All Synthetic Judgments. In: *Critique of Pure Reason*. Translated by Paul Guyer and Allen W. Wood, pp. 283--284. Cambridge University Press, Cambridge (1998). Original work published 1781/1787. <a href="#citation-ref-KantSynthetic" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Khan2024" class="citation-entry">Khan, S., Huang, Y., Timuçin, D., Bailey, S., Lee, S., Lopes, J., Gaunce, E., Mosberger, J., Zhan, M., Abdelrahman, B., Zeng, X., & Wiest, M. C. (2024). Microtubule-Stabilizer Epothilone B Delays Anesthetic-Induced Unconsciousness in Rats. *eNeuro*, 11(8), ENEURO.0291-24.2024. https://doi.org/10.1523/ENEURO.0291-24.2024 <a href="#citation-ref-Khan2024" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Lenharo2023" class="citation-entry">Lenharo, M.: AI consciousness: scientists say we urgently need answers. *Nature* (2023). doi: 10.1038/d41586-023-04031-0 <a href="#citation-ref-Lenharo2023" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-MerriamWebster" class="citation-entry">Merriam-Webster, Inc. *Merriam-Webster.com Dictionary*. Springfield, MA: Merriam-Webster, Incorporated. Available at: https://www.merriam-webster.com [Accessed April 17, 2025]. <a href="#citation-ref-MerriamWebster" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Popper1959" class="citation-entry">Popper, K.: *The Logic of Scientific Discovery*. Routledge, London (1959). Translated from the original German *Logik der Forschung* (1934) <a href="#citation-ref-Popper1959" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Rozenberg2012" class="citation-entry">Rozenberg, A., Inoue, K., Kandori, H., Béjà, O.: Microbial rhodopsins: phylogenetic and functional diversity. In: Fattal-Valevski, A. (ed.) *Microbial Metagenomics, Metatranscriptomics, and Metaproteomics*. Methods in Enzymology, vol 531, pp. 1--23. Academic Press (2012) <a href="#citation-ref-Rozenberg2012" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Smullyan1992" class="citation-entry">Smullyan, R.M.: *Gödel's Incompleteness Theorems*. Oxford Logic Guides, No. 19. Oxford University Press, Oxford (1992) <a href="#citation-ref-Smullyan1992" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Tarski1935" class="citation-entry">Tarski, A.: Der Wahrheitsbegriff in den formalisierten Sprachen. *Studia Philosophica* **1**, 261--405 (1935). Translated as "The Concept of Truth in Formalized Languages" in *Logic, Semantics, Metamathematics*, Hackett Publishing Company (1983) <a href="#citation-ref-Tarski1935" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Quine1940" class="citation-entry">Quine, W.V.O.: Mathematical Logic. Harvard University Press, Cambridge (1940) <a href="#citation-ref-Quine1940" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-Zinder1952" class="citation-entry">Zinder, N.D., Lederberg, J.: Genetic exchange in Salmonella. *Journal of Bacteriology* **64**(5), 679--699 (1952) <a href="#citation-ref-Zinder1952" class="citation-backref" title="Back to reference">↩</a></li>
+</ol>
+</div>
+        </article>
+      </div>
+
+      
+    </div>
+  </body>
+</html>

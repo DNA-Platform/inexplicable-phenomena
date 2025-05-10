@@ -10,7 +10,9 @@
 
 2. [Semantic]: **Metaphysical transduction** is the physical implementation of [transduction](transduction.md) that corresponds to the process of perception and conscious experience. It is defined as "a process by which a corpus of Physical Phenomena become a Metaphysical Phenomenon that preserves them as representations on a Catalogue that specifies a Perspective."
 
-3. [Computational]: **Metaphysical transduction** describes how physically embodied systems implement symbolic transformations that bridge the gap between physical processes and representational states.
+3. [Semantic]: **Metaphysical Transduction** is the physical description of a computational process executing [Metalogical Transduction](metalogical-transduction.md) on a physically embedded system.
+
+4. [Computational]: **Metaphysical transduction** describes how physically embodied systems implement symbolic transformations that bridge the gap between physical processes and representational states.
 
 ## Explanation
 
@@ -38,10 +40,11 @@ Learning a new concept:
 ```
 
 ## Footer
-- related: 
+- related:
   - [Transduction](transduction.md)
   - [Metalogical Transduction](metalogical-transduction.md)
   - [Conscious Experience](conscious-experience.md)
+  - [Perception](perception.md)
   - [Perspective](perspective.md)
   - [Identity](identity.md)
 - thoughts:

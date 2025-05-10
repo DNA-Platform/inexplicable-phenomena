@@ -62,9 +62,10 @@ Self-reflective conscious experience:
 ```
 
 ## Footer
-- related: 
+- related:
   - [Perspective](perspective.md)
   - [Metaphysical Transduction](metaphysical-transduction.md)
+  - [Perception](perception.md)
   - [Identification](identification.md)
   - [Qualification](qualification.md)
   - [Relation](relation.md)
