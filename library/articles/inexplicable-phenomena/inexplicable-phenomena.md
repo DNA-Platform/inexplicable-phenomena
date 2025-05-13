@@ -327,8 +327,7 @@ It doesn't mean anything! Not in the language of physics. To describe the physic
 
 ## Bibliography
 
-<!-- [`Put the most recent DOI in here BEFORE SUBMITTING!`] -->
-[^Formalism]: Inexplicable Phenomena: GitHub repository (2025). [https://github.com/DNA-Platform/inexplicable-phenomena/](https://github.com/DNA-Platform/inexplicable-phenomena/). doi: 10.5281/zenodo.15389667/zenodo.15389666 [^Formalism]
+[^Formalism]: Inexplicable Phenomena: GitHub repository (2025). [https://github.com/DNA-Platform/inexplicable-phenomena/](https://github.com/DNA-Platform/inexplicable-phenomena/). doi: 10.5281/zenodo.15394962 [^Formalism] 
 
 [^Aristotle350BC]: Aristotle: *Posterior Analytics*. In: Barnes, J. (ed.) *The Complete Works of Aristotle: The Revised Oxford Translation, Vol. 1*, pp. 114--166. Princeton University Press, Princeton (1984)
 
