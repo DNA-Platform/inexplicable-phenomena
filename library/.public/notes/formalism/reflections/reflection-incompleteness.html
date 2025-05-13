@@ -1,0 +1,619 @@
+<!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="css-lint" content="disabled">
+    <title>[Imaginary] Reflection: On Incompleteness | Inexplicable Phenomena</title>
+
+    <!-- GitHub Markdown CSS for general markdown styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+
+    <!-- highlight.js GitHub stylesheet for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+
+    <!-- KaTeX CSS and JS for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Google Fonts - Academic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+/* Academic styling for Inexplicable Phenomena project */
+
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --border-color: #e0e0e0;
+  --text-color: #333;
+  --background-color: #fff;
+  --link-color: #0645ad; /* Wikipedia link blue */
+  --link-hover-color: #0b0080; /* Wikipedia visited link color */
+  --header-bg: #f8f9fa; /* Wikipedia light gray */
+  --footer-bg: #f8f9fa;
+  --nav-hover-bg: #eaecf0;
+  --code-bg: #f6f8fa;
+  --quote-border: #dfe2e5;
+  --modal-overlay: rgba(27, 31, 35, 0.5); /* GitHub modal backdrop */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Entry Title (from header metadata) */
+.entry-title {
+  font-size: 1.7em;
+  margin: 0.3em 0 0.8em 0; /* Reduced top and bottom margins */
+  font-weight: 600;
+  color: var(--primary-color);
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.github-source-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  position: relative;
+}
+
+.github-source-link:hover {
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.github-source-link:hover::after {
+  content: "⧉";
+  font-size: 0.6em;
+  position: relative;
+  top: -0.6em;
+  margin-left: 0.3em;
+  color: var(--link-hover-color);
+}
+
+/* Navigation Elements - inspired by Wikipedia article navigation */
+.navigation-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: normal;
+  color: var(--link-color);
+  background-color: var(--header-bg);
+  border: 1px solid #a2a9b1; /* Wikipedia border color */
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background-color: var(--nav-hover-bg);
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.nav-link:active {
+  background-color: #c8ccd1;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Triangle arrows - substantial and directional */
+.nav-arrow {
+  width: 0;
+  height: 0;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+}
+
+.prev-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #72777d;
+  margin-right: 8px;
+}
+
+.next-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #72777d;
+  margin-left: 8px;
+}
+
+.nav-text {
+  font-family: 'Liberation Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Question mark button - Wikipedia style */
+.thoughts-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #c8ccd1;
+  color: #222;
+  border: 1px solid #a2a9b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: 4px;
+  font-family: 'Linux Libertine','Georgia','Times',serif;
+  line-height: 1;
+  padding: 0;
+}
+
+.thoughts-button:hover {
+  background-color: #eaecf0;
+}
+
+/* Academic Header Styling */
+.academic-header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid #c8ccd1;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-family: sans-serif;
+}
+
+.book-info {
+  display: flex;
+  align-items: center;
+}
+
+.book-label {
+  display: none; /* Hide the "From" label */
+}
+
+.book-link {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 15px; /* Larger font size for more prominence */
+}
+
+.book-link:hover {
+  text-decoration: underline;
+}
+
+/* Academic Footer Styling - Wikipedia/GitHub hybrid style */
+.academic-footer {
+  border-top: 1px solid #c8ccd1;
+  padding: 16px;
+  margin-top: 30px;
+  background-color: var(--footer-bg);
+  font-family: sans-serif;
+}
+
+.footer-section {
+  margin-bottom: 16px;
+}
+
+.footer-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292e; /* GitHub header color */
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eaecef; /* GitHub separator */
+  padding-bottom: 4px;
+}
+
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* Update only the related links to use GitHub-style boxes */
+.related-link {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #f1f8ff;
+  border-radius: 3px;
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid #c8e1ff;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.related-link:hover {
+  background-color: #dbedff;
+  border-color: #79b8ff;
+  text-decoration: none;
+}
+
+/* Remove dot separators */
+.related-link:after {
+  content: "";
+  margin: 0;
+}
+
+.related-link:last-child:after,
+.last-related:after {
+  content: "";
+}
+
+/* GitHub repo link */
+.github-link-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.github-repo-link {
+  display: inline-flex;
+  align-items: center;
+  color: #6a737d;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.github-repo-link:hover {
+  color: var(--link-hover-color);
+}
+
+.github-icon {
+  margin-right: 5px;
+}
+
+/* Thoughts Modal - GitHub style */
+.thoughts-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-overlay);
+}
+
+.thoughts-modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 16px;
+  border-radius: 6px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); /* GitHub shadow */
+  border: 1px solid #d1d5da;
+}
+
+.thoughts-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e1e4e8; /* GitHub separator */
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.thoughts-modal-header h3 {
+  margin: 0;
+  color: #24292e;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.close-thoughts {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #586069;
+  padding: 0;
+}
+
+.thoughts-modal-body ul {
+  padding-left: 24px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.thoughts-modal-body li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+  color: #24292e;
+  font-size: 14px;
+}
+
+/* Article Content Styling */
+.article-container {
+  max-width: 860px; 
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* Let GitHub markdown CSS handle .markdown-body default styling */
+.markdown-body {
+  padding: 20px 0; /* Reduced horizontal padding to 0 for less indent, kept some vertical padding */
+  border-radius: 6px;
+}
+
+/* LaTeX environment styling */
+.latex-env {
+  margin: 1.5em 0;
+  padding: 0.8em 1em;
+  border-left: 4px solid #4a4a4a;
+  background-color: #f8f8f8;
+}
+
+.env-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.env-content {
+  display: block;
+}
+
+/* Specific environment styling */
+.theorem { border-left-color: #4a4a4a; }
+.lemma { border-left-color: #5a6268; }
+.proof { border-left-color: #6c757d; }
+.definition { border-left-color: #28a745; }
+.example { border-left-color: #007bff; }
+.remark { border-left-color: #fd7e14; }
+.note { border-left-color: #17a2b8; }
+.corollary { border-left-color: #6f42c1; }
+
+/* KaTeX rendering support */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1em 0;
+}
+
+.math-display {
+  margin: 1em 0;
+}
+
+.math-inline {
+  display: inline-block;
+}
+
+.math-error {
+  color: red;
+  font-weight: bold;
+}
+
+/* Bibliography and citation styling */
+.bibliography {
+  margin-top: 2em;
+  padding-top: 1em;
+}
+
+.citation-ref {
+  font-size: 0.8em;
+  position: relative;
+  top: -0.5em;
+  text-decoration: none;
+}
+
+.citation-backref {
+  font-size: 0.8em;
+  text-decoration: none;
+  margin-left: 0.5em;
+}
+
+.citation-entry {
+  margin-bottom: 1em;
+}
+
+.bibliography ol {
+  padding-left: 1.5em;
+}
+
+/* Definition syntax highlighting */
+[class^="SRT"], [class*=" SRT"] {
+  color: #005cc5; /* GitHub blue */
+  font-weight: 500;
+}
+
+[class^="Formal"], [class*=" Formal"] {
+  color: #6f42c1; /* GitHub purple */
+  font-weight: 500;
+}
+
+[class^="Cognitive"], [class*=" Cognitive"] {
+  color: #22863a; /* GitHub green */
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+  
+  .academic-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .navigation-controls {
+    margin-top: 15px;
+  }
+  
+  .markdown-body {
+    padding: 15px 0;
+  }
+  
+  .thoughts-modal-content {
+    width: 90%;
+    margin: 20% auto;
+  }
+}
+    </style>
+
+    <!-- Script to initialize KaTeX rendering -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$", right: "$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: "#cc0000",
+          strict: false
+        });
+      });
+    </script>
+
+    
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing interactive elements');
+    
+    // Thoughts modal functionality
+    const thoughtsButton = document.querySelector('.thoughts-button');
+    const thoughtsModal = document.getElementById('thoughtsModal');
+    const closeThoughts = document.querySelector('.close-thoughts');
+    
+    console.log('Thoughts button found:', thoughtsButton ? 'yes' : 'no');
+    console.log('Thoughts modal found:', thoughtsModal ? 'yes' : 'no');
+    
+    if (thoughtsButton && thoughtsModal) {
+      thoughtsButton.addEventListener('click', function() {
+        console.log('Thoughts button clicked');
+        thoughtsModal.style.display = 'block';
+      });
+      
+      if (closeThoughts) {
+        closeThoughts.addEventListener('click', function() {
+          thoughtsModal.style.display = 'none';
+        });
+      }
+      
+      window.addEventListener('click', function(event) {
+        if (event.target === thoughtsModal) {
+          thoughtsModal.style.display = 'none';
+        }
+      });
+    }
+    
+    // Make sure related links don't have extra bullets
+    const relatedLinks = document.querySelectorAll('.related-link');
+    if (relatedLinks.length > 0) {
+      const lastLink = relatedLinks[relatedLinks.length - 1];
+      if (lastLink) {
+        lastLink.classList.add('last-related');
+      }
+    }
+    
+    // Initialize KaTeX rendering if available
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false,
+        errorColor: "#cc0000",
+        strict: false
+      });
+    }
+  });
+</script>
+  </head>
+  <body>
+    <div class="container">
+      <header class="academic-header">
+  <div class="book-info">
+    <span class="book-label">From</span>
+    <a href="//notes.html" class="book-link">Notes</a>
+  </div>
+  <div class="navigation-controls">
+  </div>
+</header><h1 class="entry-title"><a href="https://github.com/DNA-Platform/inexplicable-phenomena/blob/main/library/notes/formalism/reflections/reflection-incompleteness.md" class="github-source-link">[Imaginary] Reflection: On Incompleteness</a></h1>
+
+      <div class="article-container">
+        <!-- The .markdown-body class is necessary for github-markdown-css -->
+        <article class="markdown-body">
+          <!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<h1 id="imaginary-reflection-on-incompleteness">[Imaginary] Reflection: On Incompleteness</h1>
+<h2 id="note">Note</h2>
+<p><strong>Step 1:</strong> [Realization] <em>Metalogical Realization</em></p>
+<p><span class="math math-inline">$Prov_I("I", \phi) ⇒ \phi$</span></p>
+<p><em>We are reflecting on the provability predicate, which captures the essence of proof. This is equivalent to the soundness principle.</em></p>
+<p><strong>Step 2:</strong> [Assertion] <em>Fundamental Assertion of Metalogic</em></p>
+<p><span class="math math-inline">$¬(Prov_I("I", \phi) \land Prov_I("I", ¬\phi))$</span></p>
+<p><em>Consistency is the essence of logic. To remain consistent in the harshest conditions is the very definition of being logical.</em></p>
+<p><strong>Step 3:</strong> [Introspection] <em>Metalogical Dichotomy</em></p>
+<p><span class="math math-inline">$(Prov_I("I", \phi) \land Prov_I("I", ¬\phi)) \oplus$</span></p>
+<p><span class="math math-inline">$(Prov_I("I", ¬\phi) \land Prov_I("I", \phi))$</span></p>
+<p><em>A consequence of completeness.</em></p>
+<p><em>[Possibility]</em></p>
+<p><strong>Step 4:</strong> [Introspection] <em>Metalogical Trichotomy</em></p>
+<p><span class="math math-inline">$(Prov_I("I", \phi) \land ¬ Prov_I("I", ¬\phi)) \oplus$</span></p>
+<p><span class="math math-inline">$(¬ Prov_I("I", \phi) \land ¬ Prov_I("I", ¬\phi)) \oplus$</span></p>
+<p><span class="math math-inline">$(¬ Prov_I("I", \phi) \land Prov_I("I", ¬\phi))$</span></p>
+<p><em>A consequence of incompleteness.</em></p>
+<p><em>[Possibility]</em></p>
+<p><strong>Step 5:</strong> [Consideration] <em>Metalogical Reflection</em></p>
+<p><span class="math math-inline">$[2] \oplus [4]$</span></p>
+<p><em>We must choose between consistency and the trichotomy.</em></p>
+<p><strong>Step 6:</strong> [Realization] <em>Metalogical Axiom</em></p>
+<p><span class="math math-inline">$Prov_I("I", "\phi \lor ¬\phi")$</span></p>
+<p><em>All axioms must be assertions and the &quot;Law of the Excluded Middle&quot; is important.</em></p>
+<p><strong>Step 7: [Semantic Contradiction]</strong> <em>Comparison</em></p>
+<p><span class="math math-inline">$[4] \text{ vs } [6]$</span></p>
+<p><em>[4] contains the &quot;Excluded Middle&quot;!</em></p>
+<p><strong>Step 8:</strong> [Realization] <em>Logical Consequence</em></p>
+<p><span class="math math-inline">$[2]$</span></p>
+<p><em>Which ends our consideration from step 5.</em></p>
+
+        </article>
+      </div>
+
+      
+<footer class="academic-footer">
+  <div class="footer-section">
+    <h3 class="footer-heading">Related Concepts</h3>
+    <div class="related-links">
+      <a href="//dictionary/formal-logic.html" class="related-link">Formalism</a>
+      <a href="//dictionary/logic.html" class="related-link">Logic</a>
+      <a href="//dictionary/metalogical-transduction.html" class="related-link">Metalogical Transduction</a>
+    </div>
+  </div>
+  <div class="footer-section">
+    <a href="https://github.com/DNA-Platform/inexplicable-phenomena" class="github-repo-link" target="_blank">
+      <svg class="github-icon" height="16" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+      <span>View on GitHub</span>
+    </a>
+  </div>
+</footer>
+    </div>
+  </body>
+</html>

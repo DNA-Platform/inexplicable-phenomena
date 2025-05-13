@@ -1,0 +1,712 @@
+<!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="css-lint" content="disabled">
+    <title>semantic-reference-theory | Inexplicable Phenomena</title>
+
+    <!-- GitHub Markdown CSS for general markdown styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+
+    <!-- highlight.js GitHub stylesheet for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+
+    <!-- KaTeX CSS and JS for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Google Fonts - Academic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+/* Academic styling for Inexplicable Phenomena project */
+
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --border-color: #e0e0e0;
+  --text-color: #333;
+  --background-color: #fff;
+  --link-color: #0645ad; /* Wikipedia link blue */
+  --link-hover-color: #0b0080; /* Wikipedia visited link color */
+  --header-bg: #f8f9fa; /* Wikipedia light gray */
+  --footer-bg: #f8f9fa;
+  --nav-hover-bg: #eaecf0;
+  --code-bg: #f6f8fa;
+  --quote-border: #dfe2e5;
+  --modal-overlay: rgba(27, 31, 35, 0.5); /* GitHub modal backdrop */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Entry Title (from header metadata) */
+.entry-title {
+  font-size: 1.7em;
+  margin: 0.3em 0 0.8em 0; /* Reduced top and bottom margins */
+  font-weight: 600;
+  color: var(--primary-color);
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.github-source-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  position: relative;
+}
+
+.github-source-link:hover {
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.github-source-link:hover::after {
+  content: "⧉";
+  font-size: 0.6em;
+  position: relative;
+  top: -0.6em;
+  margin-left: 0.3em;
+  color: var(--link-hover-color);
+}
+
+/* Navigation Elements - inspired by Wikipedia article navigation */
+.navigation-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: normal;
+  color: var(--link-color);
+  background-color: var(--header-bg);
+  border: 1px solid #a2a9b1; /* Wikipedia border color */
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background-color: var(--nav-hover-bg);
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.nav-link:active {
+  background-color: #c8ccd1;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Triangle arrows - substantial and directional */
+.nav-arrow {
+  width: 0;
+  height: 0;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+}
+
+.prev-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #72777d;
+  margin-right: 8px;
+}
+
+.next-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #72777d;
+  margin-left: 8px;
+}
+
+.nav-text {
+  font-family: 'Liberation Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Question mark button - Wikipedia style */
+.thoughts-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #c8ccd1;
+  color: #222;
+  border: 1px solid #a2a9b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: 4px;
+  font-family: 'Linux Libertine','Georgia','Times',serif;
+  line-height: 1;
+  padding: 0;
+}
+
+.thoughts-button:hover {
+  background-color: #eaecf0;
+}
+
+/* Academic Header Styling */
+.academic-header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid #c8ccd1;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-family: sans-serif;
+}
+
+.book-info {
+  display: flex;
+  align-items: center;
+}
+
+.book-label {
+  display: none; /* Hide the "From" label */
+}
+
+.book-link {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 15px; /* Larger font size for more prominence */
+}
+
+.book-link:hover {
+  text-decoration: underline;
+}
+
+/* Academic Footer Styling - Wikipedia/GitHub hybrid style */
+.academic-footer {
+  border-top: 1px solid #c8ccd1;
+  padding: 16px;
+  margin-top: 30px;
+  background-color: var(--footer-bg);
+  font-family: sans-serif;
+}
+
+.footer-section {
+  margin-bottom: 16px;
+}
+
+.footer-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292e; /* GitHub header color */
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eaecef; /* GitHub separator */
+  padding-bottom: 4px;
+}
+
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* Update only the related links to use GitHub-style boxes */
+.related-link {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #f1f8ff;
+  border-radius: 3px;
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid #c8e1ff;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.related-link:hover {
+  background-color: #dbedff;
+  border-color: #79b8ff;
+  text-decoration: none;
+}
+
+/* Remove dot separators */
+.related-link:after {
+  content: "";
+  margin: 0;
+}
+
+.related-link:last-child:after,
+.last-related:after {
+  content: "";
+}
+
+/* GitHub repo link */
+.github-link-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.github-repo-link {
+  display: inline-flex;
+  align-items: center;
+  color: #6a737d;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.github-repo-link:hover {
+  color: var(--link-hover-color);
+}
+
+.github-icon {
+  margin-right: 5px;
+}
+
+/* Thoughts Modal - GitHub style */
+.thoughts-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-overlay);
+}
+
+.thoughts-modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 16px;
+  border-radius: 6px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); /* GitHub shadow */
+  border: 1px solid #d1d5da;
+}
+
+.thoughts-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e1e4e8; /* GitHub separator */
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.thoughts-modal-header h3 {
+  margin: 0;
+  color: #24292e;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.close-thoughts {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #586069;
+  padding: 0;
+}
+
+.thoughts-modal-body ul {
+  padding-left: 24px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.thoughts-modal-body li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+  color: #24292e;
+  font-size: 14px;
+}
+
+/* Article Content Styling */
+.article-container {
+  max-width: 860px; 
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* Let GitHub markdown CSS handle .markdown-body default styling */
+.markdown-body {
+  padding: 20px 0; /* Reduced horizontal padding to 0 for less indent, kept some vertical padding */
+  border-radius: 6px;
+}
+
+/* LaTeX environment styling */
+.latex-env {
+  margin: 1.5em 0;
+  padding: 0.8em 1em;
+  border-left: 4px solid #4a4a4a;
+  background-color: #f8f8f8;
+}
+
+.env-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.env-content {
+  display: block;
+}
+
+/* Specific environment styling */
+.theorem { border-left-color: #4a4a4a; }
+.lemma { border-left-color: #5a6268; }
+.proof { border-left-color: #6c757d; }
+.definition { border-left-color: #28a745; }
+.example { border-left-color: #007bff; }
+.remark { border-left-color: #fd7e14; }
+.note { border-left-color: #17a2b8; }
+.corollary { border-left-color: #6f42c1; }
+
+/* KaTeX rendering support */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1em 0;
+}
+
+.math-display {
+  margin: 1em 0;
+}
+
+.math-inline {
+  display: inline-block;
+}
+
+.math-error {
+  color: red;
+  font-weight: bold;
+}
+
+/* Bibliography and citation styling */
+.bibliography {
+  margin-top: 2em;
+  padding-top: 1em;
+}
+
+.citation-ref {
+  font-size: 0.8em;
+  position: relative;
+  top: -0.5em;
+  text-decoration: none;
+}
+
+.citation-backref {
+  font-size: 0.8em;
+  text-decoration: none;
+  margin-left: 0.5em;
+}
+
+.citation-entry {
+  margin-bottom: 1em;
+}
+
+.bibliography ol {
+  padding-left: 1.5em;
+}
+
+/* Definition syntax highlighting */
+[class^="SRT"], [class*=" SRT"] {
+  color: #005cc5; /* GitHub blue */
+  font-weight: 500;
+}
+
+[class^="Formal"], [class*=" Formal"] {
+  color: #6f42c1; /* GitHub purple */
+  font-weight: 500;
+}
+
+[class^="Cognitive"], [class*=" Cognitive"] {
+  color: #22863a; /* GitHub green */
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+  
+  .academic-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .navigation-controls {
+    margin-top: 15px;
+  }
+  
+  .markdown-body {
+    padding: 15px 0;
+  }
+  
+  .thoughts-modal-content {
+    width: 90%;
+    margin: 20% auto;
+  }
+}
+    </style>
+
+    <!-- Script to initialize KaTeX rendering -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$", right: "$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: "#cc0000",
+          strict: false
+        });
+      });
+    </script>
+
+    
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing interactive elements');
+    
+    // Thoughts modal functionality
+    const thoughtsButton = document.querySelector('.thoughts-button');
+    const thoughtsModal = document.getElementById('thoughtsModal');
+    const closeThoughts = document.querySelector('.close-thoughts');
+    
+    console.log('Thoughts button found:', thoughtsButton ? 'yes' : 'no');
+    console.log('Thoughts modal found:', thoughtsModal ? 'yes' : 'no');
+    
+    if (thoughtsButton && thoughtsModal) {
+      thoughtsButton.addEventListener('click', function() {
+        console.log('Thoughts button clicked');
+        thoughtsModal.style.display = 'block';
+      });
+      
+      if (closeThoughts) {
+        closeThoughts.addEventListener('click', function() {
+          thoughtsModal.style.display = 'none';
+        });
+      }
+      
+      window.addEventListener('click', function(event) {
+        if (event.target === thoughtsModal) {
+          thoughtsModal.style.display = 'none';
+        }
+      });
+    }
+    
+    // Make sure related links don't have extra bullets
+    const relatedLinks = document.querySelectorAll('.related-link');
+    if (relatedLinks.length > 0) {
+      const lastLink = relatedLinks[relatedLinks.length - 1];
+      if (lastLink) {
+        lastLink.classList.add('last-related');
+      }
+    }
+    
+    // Initialize KaTeX rendering if available
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false,
+        errorColor: "#cc0000",
+        strict: false
+      });
+    }
+  });
+</script>
+  </head>
+  <body>
+    <div class="container">
+      
+
+      <div class="article-container">
+        <!-- The .markdown-body class is necessary for github-markdown-css -->
+        <article class="markdown-body">
+          <!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<h2 id="semantic-reference-theory">Semantic Reference Theory</h2>
+<p>There’s a typographical lingo to Semantic Reference Theory that gives it a unique flavor. Representing reference symbolically is akin to pointers in programming language. I choose a symbology that builds its aesthetic identity using programming as inspiration.</p>
+<p>There is also a touch of absurdism. When extending Semantic Reference Theory to create your own theory, it is expected that you build your own grammar. So my base grammar is vacuous in a way that emphasizes abstraction, and thus begs reinterpretation in any specific domain.</p>
+<hr>
+<h3 id="a-programmatic-grammar-for-formal-logic">A Programmatic Grammar for Formal Logic</h3>
+<p>Semantic Reference Theory uses an informal grammar to replace the more austere symbology of first order logic. It is meant to be more down to earth. Most importantly, it is meant to be expressible without a special typesetting language.</p>
+<p>For the propositional variables X and Y from first order logic, which represent expressions subject to truth and falsity:</p>
+<p><code>!X</code> : means: not X<br><code>X &amp; Y</code> : means: X and Y<br><code>X | Y</code> : means: X xor Y<br><code>X || Y</code> : means: X or Y<br><code>X =|&gt; Y</code> : means X implies Y<br><code>X !=|&gt; Y</code> : means X does not imply Y<br><code>X &lt;|=|&gt; Y</code> : means X if and only if Y<br><code>X === Y</code> : means X is logically equivalent to Y - synonym for if and only if Y  </p>
+<p>For the non-logical variables of first order logic, I adopt programmer semantics:</p>
+<p><code>x == y</code> : means: x equals y<br><code>x != y</code> : means: x does not equal y  </p>
+<p>Quantification is trickier. There’s nothing to draw on in programming. The closest thing I can think of is:</p>
+<p><code>Ex: x == y</code> : means: there exists x where x equals y<br><code>E[x]: x == y</code> : means: there exists x where x equals y, equivalent form<br><code>E[x,y]: x == y</code> : means: there exists x and y where x equals y, equivalent form<br><code>Ax: x == y</code> : means all x equal y<br><code>A[x]: x == y</code> : means all x equal y, equivalent form<br><code>Ax.Ey: x == y</code> : means for all x, there exists y where x equals y<br><code>A[x].E[y]: x == y</code> : means for all x, there exists y where x equals y  </p>
+<p>Definition is important in Semantic Reference Theory, though it is a metalogical construct. Formally, I use this syntax to express a grammatical convention:</p>
+<p><code>(x == y) := (x = y)</code></p>
+<p>That statement expresses that I use double equals to mean the thing that single equals means in first order logic. Note that <code>==</code> expresses a propositional form of equality and <code>:=</code> a definitional sense of equality. And regular equals <code>=</code> is unused, which leaves it free to be included, for instance, in a semantic theory of arithmetic. There will be a whole language to updating SRT, so in general we will have to find a syntax that looks like:</p>
+<p><code>T |=&gt; &quot;==&quot; &lt;=replaces=&gt; &quot;=&quot;</code></p>
+<p>This is the transduction operator, where it describes changes to <code>T</code>. In this case, notice that it is an invertible one. A linguistic change which yields an equivalent theory in the sense that one can map them back and forth. And those changes are expressed in SRT. But we will need to develop SRT more to understand the function of the transduction operator</p>
+<hr>
+<h3 id="the-grammar-of-semantic-reference-theory">The Grammar of Semantic Reference Theory</h3>
+<p>Semantic Reference Theory has a formal representation in first-order logic, and I appeal to that in foundational contexts, though it is intended as a theory which is capable of standing on its own, representing itself and representing first order logic, and it&#39;s mechanism of proof. Conceptually, we imagine it will be equivalent to a Robinson Arithmetic in its expressive power and ability to be Turing Complete by way of the transduction operator. But that is a proof in which we will already have to represent first order logic, and represent SRT and Q within it, so that we might make that correspondence. So it is a sophisticated proof. But let the power and finiteness of Q be the inspiration for the representational power of SRT. But also, imagine SRT as a theory that makes it relatively easy to represent SRT and Q in its actual syntax</p>
+<p>The central object of study is the tertiary relation that represents direct <code>relationship</code>, in the referential sense. It is not transitive. Much as if <code>x</code> were a pointer to <code>y</code> and <code>y</code> were a pointer to <code>z</code>, <code>z</code> would have to be dereferenced twice to get to <code>x</code>. They are not in a direct referential relationship.</p>
+<p>Direct relationship is the only relationship represented in the formalism of <code>SRT</code>. It is simply expressed as:</p>
+<p><code>R(x,y,t)</code></p>
+<p>This expresses the proposition that <code>x</code> is directly related to <code>y</code> through <code>t</code>. It is expressed with the linguistic synonym:</p>
+<p><code>x =t&gt; y</code></p>
+<p>The variables <code>x</code>, <code>y</code> and <code>t</code> represent the domain of the theory, in the first-order sense. Collectively, this domain is called a <code>catalogue</code> which is a collection of <code>referents</code> that are related to each other. Therefore: <code>x</code>, <code>y</code> and <code>t</code> are variables of <code>R</code> that refer to referents in a catalogue.  </p>
+<p>In the context of <code>SRT</code> as a first-order logic, a <code>referent</code> is defined to be an object which could be assigned to a constant. Therefore, referents are exactly that which can be substituted in for the variables of <code>SRT</code>. It this way, <code>SRT</code> is a theory that connects epistemology to ontology. Proof expresses how referents relate to each other. The results of proof correspond to existential and universal statements about referents in a catalogue. Which means that they, by the mechanism of transduction <code>|=&gt;</code> correspond to related theories in which variables are replaced with constants.</p>
+<p>If <code>x != y</code>, <code>t</code> is referred to as a relationship type, x is a subject and y is an object. IF <code>x == y</code>, <code>t</code> is called a property and the referent that x and y both refer to is called an object.</p>
+<h3 id="representing-relationships">Representing Relationships</h3>
+<p><code>R(x,y,t)</code> expresses the idea that <code>x</code> and <code>y</code> have a subject-object relationship of type <code>t</code>. Because <code>x</code> and <code>y</code> are both objects of reference, their relationship is specified through <code>t</code> as a type or relationship. I transduce grammatical conventions that make it clear that the subject of the theory is about expressing relationships through reference, even though reference will end up being a derived concept. These are the simplest expressions. There is a whimsical element to its symbology and its commitment to arrows, but these linguistic conventions will all be made formal through the transduction operator:</p>
+<p><code>x =&gt; y := E[t]: R(x,y,t) is true</code><br><code>x =t&gt; y := R(x,y,t) is true</code><br><code>x !=t&gt; y := R(x,y,t) is not true</code><br><code>x &lt;t= y := R(y,x,t) is true</code><br><code>x &lt;t=! y := R(y,x,t) is not true</code><br><code>x &lt;s=t&gt; y := R(x,y,t) and R(y,x,s) are both true</code><br><code>x &lt;=t=&gt; y := R(x,y,t) and R(y,x,t) are both true</code><br><code>x &lt;t&gt; y := R(x,y,t) and R(y,x,t) are both true</code><br><code>x &lt;s!=!t&gt; y := R(x,y,t) and R(y,x,t) are both false</code><br><code>x &lt;!=t=!&gt; y := R(x,y,t) and R(y,x,t) are both false</code><br><code>x &lt;!t!&gt; y := R(x,y,t) and R(y,x,t) are both false</code><br><code>x.t := R(x,x,t) is true</code><br><code>!x.t := R(x,x,t) is not true</code></p>
+<p>You might find that different forms best express what you are trying to say with the expression, so having many options allows you to communicate your semantic constraints most clearly.</p>
+<p>The rightmost referent is considered as the subject so that the above syntax can be composed, but with a mind for uniqueness:</p>
+<p><code>x =&gt; y =&gt; z := x =&gt; y &amp; y =&gt; z &amp; x != y != z</code></p>
+<p>Then there is the notion of inheritance. This is the concept of relationship that is consistent with ancestry. It expresses transitivity and requires recursion but from the definition, we mean it to draw a distinction between direct relationship and inheritance, and that as catalogues finite, we can imagine replacing each use of it as the expression of series of referents in a catalogue that relate to each other:</p>
+<p><code>x -&gt; y := x == y || x =&gt; y || E[z]: x -&gt; z &amp; z -&gt; y</code></p>
+<p>But we imagine it to be defined as a way of augmenting a proof whereby <code>x -&gt; y</code> is replaced with:</p>
+<p><code>x =&gt; ... =&gt; y</code></p>
+<p>If no such referents can be found, this will be a cause for transduction. </p>
+<p>In the case where either <code>x</code> inherits from <code>y</code> or vice versa, we can express a general form of relatedness from ancestral relationship: </p>
+<p><code>x-y := x -&gt; y || x &lt;- y || E[z]: x-z &amp; z-y </code></p>
+<p>Again, this is a linguistic relationship, and must be expressed in a proof as:</p>
+<p><code>x &lt;=&gt; ... &lt;=&gt; y</code></p>
+<p>If such a chain of relationships cannot be found, <code>x-y</code> expresses a need for transduction.</p>
+<p>It is an essential part of the definition of a catalogue that all referents within a catalogue must be related. If they are not, then the catalogue can be divided into parts, and they express two independent ontologies that cannot be articulated in the same language. This can be expressed epistemologically in <code>SRT</code> with the axiom:</p>
+<p><code>x =&gt; y =|&gt; A[p,q]: p-q</code></p>
+<hr>
+<h3 id="the-definition-of-a-semantic-reference-theory">The Definition of a Semantic Reference Theory</h3>
+<p>A <code>Semantic Reference Theory</code> has no constants, no functions, and only one relationship <code>R(x,y,t)</code>. A <code>Semantic Reference Theory</code> can be extended into another only by preserving this structure, which ensures that it is an epistemology. All axioms must be consistent with the concept of an empty catalogue. </p>
+<p>Referents exist to represent concrete objects of any theory, including all candidates for <code>SRT</code>. All axioms in SRT are expressed in generalized form, and must be consistent with an empty catalogue. For instance <code>R(x,y,t)</code> expressed as <code>x =t&gt; y</code> expresses that <code>R(x,y,t)</code> is true for all referents. It is vacuously true in a catalogue with no referents at all, but in a way that does not trigger logical implication. Because all candidates for <code>SRT</code> structurally express an empty catalogue, then <code>x =t&gt; y =|&gt; P</code> for any version of <code>SRT</code> as <code>!E[x,y,t]: R(x,y,t)</code> is implicitly true about the empty catalogue. Therefore, the empty catalogue is not subject to implication. Therefore, if we express axioms as <code>E[x,y,t]: x =t&gt; y =|&gt; P</code>, then any such axiom is consistent with the empty catalogue, and thus, consistent with <code>SRT</code>. </p>
+<p>To preserve the semantic neutrality of a candidate axiom for <code>SRT</code>, it must be expressed in the form: </p>
+<p><code>E[x,y,t]: x =t&gt; y =|&gt; P</code></p>
+<p>Eqivalently, one can express this as:</p>
+<p><code>E[x,y] x =&gt; y =|&gt; P</code></p>
+<p>We know from the definition of <code>x =&gt; y</code> that: </p>
+<p><code>E[x,y] x =&gt; y ===</code><br><code>E[x,y].E[t] x =t&gt; y ===</code><br><code>E[x,y,t]: x =t&gt; y</code></p>
+<p>So the two sentences are essentially the same in the sense that they are logically equivalent.</p>
+<p>In this way, anything that can be said about <code>R(x,y,t)</code> is a valid candidate for the epistemology of <code>SRT</code>. But only those that can be transduced into a valid ontology, whereby all quantifications of referents have been transduced via <code>|=&gt;</code> into a catalogue that has specific constants, along with definitions for those constants that are expressed as axioms consistent with the epistemology of the <code>Semantic Theory</code> there were transduced from, can be said to represent a valid <code>Semantic Theory</code>. In this way, <code>SRT</code> serves as a model for itself.     </p>
+<p>You might imagine that kicking off the process of constructing a <code>Semantic Theory</code> is extending a candidate for <code>SRT</code>, adding a single constant, and then letting a computational process of proof and transduction unfold. There is no one correct way for this process to unfold, but each time it does unfold to halt with a valid ontology, then the semantics specified by <code>SRT</code> are valid for that catalogue.</p>
+<p>We admit an axiom into <code>SRT</code> if and only if it should hold for any ontology. If an axiom is introduced to <code>SRT</code> which makes it specific to a particular domain, then that axiom is a non-semantic axiom, in the same way a non-logical in first-order logic is an axiom about the specific functions, constants and relations of your theory, and not a statement of logic itself. </p>
+<hr>
+<h3 id="a-narrative">A Narrative</h3>
+<p>A narrative is a sequence of statements in SRT both resembles a proof in the first-order logic sense. In fact, it is a sequence of proofs with transduction statements. To allow for this, you first start with a metalogical name for SRT as a theory so that you can express transductions. Subsequent statements can follow a proof structure in the new theory. Transuction can be introduced at any time, but you&#39;re find yourself wanting to perform them to resolve contradictions between your epistemology and your ontology. </p>
+<p>Let&#39;s also assume that SRT begins with an empty first order logic. We can then express the changes required to create SRT in SRT syntax, though some of this syntax will be defined later:</p>
+<p><code>|=&gt; (SRT) =(has)&gt; (R(x,y,t) =as&gt; (relation))</code></p>
+<p>This expresses the statement that the representation of SRT, denoted <code>(SRT)</code> is being given a relation represented by <code>(R(x,y,z))</code>. We might then say. But we can make this syntax more conventient as a linguistic convention:</p>
+<p><code>SRT |=has&gt; (R(x,y,t) =as&gt; (relation))</code></p>
+<p>We might then express our use of the ternary operator:</p>
+<p><code>SRT |=expresses&gt; (R(x,y,t)) &lt;as&gt; (x =t&gt; y)</code></p>
+<p>It is essential that expression be invertible as one expression is used to take the place of another. But the invertibility of the <code>as</code> expressed that <code>SRT</code> can always translate back to first-order logic notation if required.</p>
+<p>We might express changes to our logical operations as:</p>
+<p><code>SRT |=expresses&gt; (¬) &lt;as&gt; (!)</code><br><code>SRT |=expresses&gt; (∧) &lt;as&gt; (&amp;)</code><br><code>SRT |=expresses&gt; (∨x) &lt;as&gt; (A[x])</code><br><code>SRT |=defines&gt; (!(!P &amp; !Q)) &lt;as&gt; (P || Q)</code><br><code>SRT |=defines&gt; (P | Q) &lt;as&gt; ((P || Q) &amp; (!(P &amp; Q)))</code><br><code>SRT |=defines&gt; (P ⇒ Q) &lt;as&gt; (P =|&gt; Q)</code><br><code>SRT |=defines&gt; (Q ⇒ P) &lt;as&gt; (P &lt;|= Q)</code><br><code>SRT |=defines&gt; (P ⇔ Q) &lt;as&gt; (P === Q)</code></p>
+<p>You can get a feel for the representation language here. The <code>has</code> operator is used to express that <code>SRT</code> has some constraint. The one-directional <code>as</code> operator denotes that <code>R(x,y,t)</code> has the property os being a relation to <code>SRT</code>. <code>SRT</code> expresses the standard syntax of propositional logic differently, and <code>expresses</code> serves to indicate that the syntax has been replaced. Whereas <code>defines</code> is used to express the idea of a synonym where both forms are valid.</p>
+<p>We&#39;ll need a language for metalogical transduction that is rich enough to express modifications to a theory, but that is exactly the purpose of SRT. So we can imagine that we&#39;ll be able to develop this</p>
+<h3 id="candidate-axioms-for-semantic-reference-theory">Candidate Axioms for Semantic Reference Theory</h3>
+<p>There is not end to the process of considering axioms for <code>SRT</code> but this is okay. Each narative that you perform in <code>SRT</code> can be imagined as starting from an empty first-order logic and transducing your version of the theory. While <code>SRT</code> itself has metalogial constraints that it must need to follow, the metalogical transduction syntax can be thought of as being appended to first order logic itself. </p>
+<p>Therefore, introducing a candidate axiom for <code>SRT</code> must happen in existential form before any <code>referents</code> are added to the <code>catalogue</code> by way of transducing constants. This is what keeps it free of ontology. And as discussed, there is standard a convention for keeping axioms semantically neutral so that one can explore whether or not combinations of them can or do result in <code>catalogues</code> that are consistent. </p>
+<p>Here are some candidate axioms that I propose for SRT. I imaging they will be replaced with better ones over time, but even amidst a narrative, axioms can be replaced, as long as the change is consistent with the current form.</p>
+<h4 id="the-semantics-of-inheritance">The Semantics of Inheritance</h4>
+<p>The idea of inheritance can be expressed like this:</p>
+<p><code>SRT |=has&gt; ((E[x,y,t]: x =t&gt; y =|&gt; E[R] x =R&gt; y &amp; t -&gt; R) =as&gt; (axiom))</code></p>
+<p>Don&#39;t be confused by the name of <code>R</code> here. First, it is the name of a variable on the domain of referents, and syntactically, it can&#39;t be confused for a relation. But we also express <code>R(x,y,t)</code> as <code>x =t&gt; y</code> in the language, freeing up <code>R</code> as a symbol. </p>
+<p>Were we to imagine using both at once, it is clear to see how they are related: </p>
+<p><code>R(x,y,t) =&gt; R(x,y,R)</code></p>
+<p>The operator <code>R</code> expresses that <code>x</code> and <code>y</code> have a direct relationship. With the notion of a relationship that all referents inherit from, we can express the theroem that <code>x =&gt; y === x =R&gt; y</code> in a context where there exists such an <code>R</code>. </p>
+<p>There is another concern with inheritance, and it is related to the idea that a catalogue is a finite collection of referents. If <code>x</code> and <code>y</code> do have a direct relationship, we should be able to express the idea that they have a most specific one. It might not be unique. Perhaps there is more than one way to express it. But specificity can be expressed as another constraint on the opposite side of inheritance:</p>
+<p><code>SRT |=has&gt; ((E[x,y,t]: x =t&gt; y =|&gt; E[r] r -&gt; t &amp; x =r&gt; y) =as&gt; (axiom))</code></p>
+<p>We can see here why it&#39;s important that <code>r -&gt; t</code> include the possibility that <code>r</code> might equal <code>t</code>. This axiom expresses a statement that this theory is about reference. The catalogue represents direct relationship atomically, and that makes it structurally distinct from a data structure represented by a directed graph. <code>SRT</code> represents an ontology in which reference is specified.</p>
+<h4 id="the-semantics-of-representation">The Semantics of Representation</h4>
+<p>Representation is an important concept in <code>SRT</code> and to discuss it eloquently, one needs to have an idea of the representation function. A representation can be used to specify referents. In cases where they are unique, the representation function can express this. If we reflect on the relationship between <code>r</code>, <code>x</code> and <code>y</code>, we can see that it is unique to them. The representation function can therefore be a linguistic construct that points to it. We can denote the most specific relationship <code>(x,y)</code> and we can introduce dereferencing to tie it back to the thing it represents:</p>
+<p><code>*(x,y) == x</code><br><code>(x,y)* == y</code></p>
+<p>While we don&#39;t have the syntax for it yet, utilizing <code>(x,y)</code> in a proof means something appending this before it&#39;s usage:</p>
+<p><code>E[var]: x =var&gt; y &amp; A[t]: x =t&gt; y =|&gt; var -&gt; t</code></p>
+<p>The specific variable represented by <code>var</code> in the proof is defined to be unique and unbound. In all instances where <code>(x,y)</code> is used, it is replaced with the name of that variable, whatever it may be. This is a convenient linguistic trick for any value that can be uniquely specified. The representation function is not a member of theory, but as we build up a more powerful language that we can use to express transduction, we will find that it can be. </p>
+<p>Even so, permitting it as a metalogical description of a hypothetical proof, we can express inheritance far more succinctly within a single axiom:</p>
+<p><code>SRT |=has&gt; ((E[x,y,t]: x =t&gt; y =|&gt; E[(x,y),R] x =R&gt; y &amp; x =(x,y)&gt; y &amp; (x,y) -&gt; t -&gt; R) =as&gt; (axiom))</code></p>
+<p>This more elegantly expresses the idea that every referent that represents a relationship type lives within a heirarchy that respects the most specific and most general forms of inheritance. </p>
+<p>But there is another concept embedded within the syntax of the representation function. It represents the relationship. To comprehend how it does this, we need to express the concept of a symbol and a literal:</p>
+<p>First we need the concept of a representation. Representations exist to represent things. They are an object that expresses a relationship. A referent <code>x</code> is a representation of <code>y</code> if:</p>
+<p><code>x =x&gt; y =|&gt; x =rep&gt; y</code></p>
+<p>Furthermore, if <code>x</code> is a specific representation of <code>y</code>, then it is a symbol:</p>
+<p><code>x =x&gt; y &amp; x == (x,y) =|&gt; x =sym&gt; y</code></p>
+<p>We can see that inheritance becomes useful here. Since we know <code>x</code> is a specific relationship:</p>
+<p><code>x =sym&gt; y =|&gt; x -&gt; sym</code></p>
+<p>We can express this as two representation axioms. The first establishes representation in general:</p>
+<p><code>SRT |=has&gt; ((E[x,y]: x =x&gt; y &amp; x != y =|&gt; E[rep]: x =rep&gt; y) =as&gt; (axiom))</code></p>
+<p>The second expresses the idea of being a symbol:</p>
+<p><code>SRT |=has&gt; ((E[x,y]: x =x&gt; y &amp; x != y &amp; x == (x,y) =|&gt; E[sym]: x =sym&gt; y) =as&gt; (axiom))</code></p>
+<p>Therefore, we have expressed that a representation is in a direct relationship with all of its parts, and that its most specific parts are symbols. If we then reflect on the nature of <code>(x,y)</code>, the notion of a specific direct relationship compels us to imagine that it represents the thing it is directed towards:</p>
+<p><code>(x,y) =(x,y)&gt; y</code></p>
+<p>Now we can articulate the idea that if <code>x =t&gt; y</code> and <code>x</code> and <code>y</code> are unique, then <code>x</code> references <code>y</code> because it has a specific relationship <code>(x,y)</code> that is a symbol for <code>y</code>. So <code>x</code> participates in a direct relationship where <code>y</code> is symbolized by something related: <code>(x,y) =sym&gt; y &amp; (x,y) -&gt; t</code>. In some sense, a symbol is the purest form of relationship. When <code>x =sym&gt; y =|&gt; x == (x,y)</code>, meaning that being a symbol embodies reference itself. This is an important idea in <code>SRT</code>, and it will affect how we represent things. If <code>x</code> and <code>y</code> are distinct, they are in a symbolic relationship involing reference. And there is always a specific relationship that represents the pointer. <code>Semantic Reference Theory</code> is quite opinionated on the <code>semantics</code> of <code>reference</code> in the context of <code>referents</code>.</p>
+<p>We will build of syntax to represent representation more expressively</p>
+<h4 id="the-semantics-of-language">The Semantics of Language</h4>
+<p>% This is the section to write about P, which will turn out to be the equivalence operator formalized in first-order logic. What&#39;s interesting is that it ends up being the referent identity operator in <code>R</code>. <code>R(x,y,P)</code> means the same thing as <code>x == y</code>. While that may look like two different things being compared, those things are variables. For referents, <code>x == y</code> is only true on the diagonal: <code>R(x,x,P)</code>. While inheritance will not be fully fleshed out at this point, though it will work much like inheritance does in programming, in the same way that <code>x =t&gt; y</code> means <code>x =R&gt; y</code> because <code>r -&gt; y</code>, so too will <code>x =p&gt; x</code> which can be expressed as <code>x.p</code> imply that <code>p -&gt; P</code>. And that <code>p</code> can only be a way of specifying that a referent is the same as itself. But by not specifying that all referents are the same, it creates an equivalence class. We can formalize this as:</p>
+<p><code>SRT |=has&gt; (E[x,y,t]: x =t&gt; y =|&gt; E[P]: x == y === R(x,x,P) === x.P) =as&gt; (axiom))</code></p>
+<p>Here is a wonderful opportunity for a synonym, because when used propositionally with two variables <code>x =P&gt; y</code> doesn&#39;t express the essence of the equality operator. So let&#39;s introduce an interesting linguistic trick into SRT: Let <code>=</code> be a synonym for <code>P</code>. Now you can express:</p>
+<p><code>x ==&gt; y</code><br><code>x.P</code></p>
+<p>Which say equivalent things in different contexts. </p>
+<p>Now we get to define an interesting set of objects: the literals. Literals are <code>y</code> that themselves reference nothing. But as we have defined reference, it only happens when a referent doesn&#39;t reference itself. <code>y.p</code> does not count as a referentia; relationship. Observe that <code>(y,y)</code> does not describe a relationship between separate things. It is equivalent to <code>(y)</code> which is denoted as the canonical symbol for <code>y</code>. <code>(y) -&gt; p</code> for all <code>p</code> that describe properties of <code>y</code>, and it itself is not a literal. None of the properties can be literals. And y itself can point to nothing.</p>
+<p>% But to get at this, we need to express the fundamental semantic form, which is the object of study in <code>SRT</code>. The idea that x is the subject of a relationship can be expressed:</p>
+<p><code>E[x,y,t]: x =t&gt; y =|&gt; x != y =|&gt; E[S]: x.S</code></p>
+<p>As <code>x.S</code> implies <code>S -&gt; P</code>, we can see that being a subject is a property of certain referents.</p>
+<p>We can express that x is an object similarly:</p>
+<p><code>E[x,y]: x =&gt; y =|&gt; E[O]: y.O</code></p>
+<p>You&#39;ll note that having a property qualifies you as being an object. But you are not the subject of a relationship unless you have a distinct object, in which case you are in a referential relationship. Therefore the referents that are </p>
+<h4 id="the-semantics-of-language-1">The Semantics of Language</h4>
+<p>We also have the <code>=</code> relationship to contend with from first-order logic. It must belong in our theory:</p>
+<p><code>E[x,y,t]: x =t&gt; y =|&gt; E[P]: x == y === R(x,x,P) === x.P</code></p>
+<p>What does <code>P</code> mean then? <code>P</code> expresses the idea that <code>x</code> is a referent. It looks like an equality operator on variables, but as a relationship between referents, it represents the fundamental property. That axiom states that all properties, which you might think of as corresponding to equivalence classes, must inherit from <code>P</code> and must do so in the way that <code>x -t&gt; x</code>. By providing this notion of a property, we see that a direct self-relationship is not the meaning of self-reference in <code>SRT</code>.</p>
+<p>The idea that x is the subject of a relationship can be expressed:</p>
+<p><code>E[x,y,t]: x =t&gt; y =|&gt; x != y =|&gt; E[S]: x.S</code></p>
+<p>As <code>x.S</code> implies <code>S -&gt; P</code>, we can see that being a subject is a property of certain referents.</p>
+<p>We can express that x is an object similarly:</p>
+<p><code>E[x,y]: x =&gt; y =|&gt; E[O]: y.O</code></p>
+<p>You&#39;ll note that having a property qualifies you as being an object. But you are not the subject of a relationship unless you have a distinct object. A literal will be defined as those that aren&#39;t subjects or relationships. Now it might seem weird, but <code>R.P</code> is a true statement because <code>R =P&gt; R</code> which also means, <code>P -&gt; R</code> and this <code>R =R&gt; R</code>. This will turn out to mean that <code>R</code> is a property pf a referent. It happens to be the property of being a type of relationship. So <code>t -&gt; R</code> is a way of saying <code>t.R</code>. We can define the literals elegantly:  </p>
+<p><code>y.lit === !y.S &amp; !y.R</code></p>
+<p>It might seem like <code>y</code> would have to be an object, but here&#39;s a nice place tp introduce another important axiom that says somethimg important about language. We haven&#39;t expressed the notion of connectedness in a catalogue, but it can be expressed this way:</p>
+<p><code>SRT |=has&gt; (E[x,y]: x =&gt; y =|&gt; A[p,q]: p-q) =as&gt; (axiom))</code></p>
+<p>If <code>y</code> is not a subject or a relationship tpe, and it is still part of a catalogue, then it must be the object of something. In this case, it must be a literal.</p>
+<h4 id="the-semantics-of-inheritance-1">The Semantics of Inheritance</h4>
+<p>We know that <code>t -&gt; R</code> expresses some sort of inheritance. But what does it mean for a relationship type in inherent from another? Let&#39;s explore what it means to represent <code>R</code>:</p>
+<p>Imagine that each relationship type has a canonical relationship that defines it. We will make use of the canonical symbol for <code>R</code> to express this. Let us suppose that R is the most specific relationship type of some relationship:</p>
+<p><code>S =R&gt; O</code></p>
+<p><code>R</code> is the most specific relationship between a subject and an object. But what about <code>P</code>? We know <code>P -&gt; R</code>. So let us suppose that the most specific relationship type between <code>O</code> and itself is <code>P</code>:</p>
+<p><code>O =P&gt; O</code> </p>
+<p>In this context, <code>O =R&gt; O</code> is true as well, but it is not the most specific relationship. <code>R</code> can only be the most specific relationship of one pair or referents. Inheritance should preserve the properties of the referents in the direct relationship.</p>
+<p>``</p>
+
+        </article>
+      </div>
+
+      
+    </div>
+  </body>
+</html>

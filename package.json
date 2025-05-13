@@ -1,0 +1,19 @@
+{
+  "name": "inexplicable-phenomena",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "compile": "npm run compile-library & npm run compile-pdf",
+    "compile-library": "node scripts/compile-library.js",
+    "compile-tex": "node scripts/compile-tex.js library/articles/inexplicable-phenomena/inexplicable-phenomena.md",
+    "compile-pdf": "node scripts/compile-tex.js library/articles/inexplicable-phenomena/inexplicable-phenomena.md --pdf"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "citation-js": "^0.6.9",
+    "commander": "^13.1.0",
+    "fs-extra": "^11.3.0",
+    "highlight.js": "^11.7.0",
+    "marked": "^4.3.0"
+  }
+}
