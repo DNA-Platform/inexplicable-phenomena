@@ -6,7 +6,7 @@
 ## [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](./inexplicable-phenomena.md)
 ---
 
-## Abstract
+### Abstract
 
 Since Descartes first proclaimed ["cogito, ergo sum"](../../encyclopedia/cogito-ergo-sum.md) back in 1637, ["I think, therefore I am"](../../encyclopedia/cogito-ergo-sum.md) has become the Declaration of Independence for consciousness. Chalmers informed us of the fact that science has a constitutionally *Hard Problem* on their hands. If he's right, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the *IIT-Concerned* recently proclaimed in Nature Neuroscience that any theory of consciousness that can't stand up to the scrutiny of science shall be deemed "unscientific." And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether AI systems are conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable? 
 ---
@@ -234,8 +234,6 @@ Subjectivity can thus be precisely defined as "singular objectivity" - objectivi
 > `(i) =red> (rose) <|=|> (rose) =red> rose`
 
 The rose is objectively red within my perspective because `(i)` qualified it as such, but this objectivity is singular to `(i)`. 
-
-Hopefully this formalism provides some insight into the nature of consciousness. Symbolism and Meaning, take together, are the qualities of a perspective that create the conditions for conscious experience. When an objective entity demands symbolic representation and that representation is integrated into a self-referential perspective, consciousness emerges not as an additional property but as the natural consequence of this symbolic transformation. The Hard Problem remains, but now with precise formal expression through the algebra of perspective - we have not explained consciousness away, but given it a formal structure that preserves both its ineffability and its inevitability within a symbolic framework.
 ---
 
 ## Metalogical Transduction
