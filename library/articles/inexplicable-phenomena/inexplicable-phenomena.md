@@ -1,14 +1,14 @@
 # Header
 - title: [Inexplicable Phenomena](inexplicable-phenomena.md)
-- subject: [Conscious Experience](../../dictionary/conscious-experience.md)
+- subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
 ---
 
-## [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](./inexplicable-phenomena.md)
+## [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/inexplicable-phenomena.html)
 ---
 
 ### Abstract
 
-Since Descartes first proclaimed ["cogito, ergo sum"](../../encyclopedia/cogito-ergo-sum.md) back in 1637, ["I think, therefore I am"](../../encyclopedia/cogito-ergo-sum.md) has become the Declaration of Independence for consciousness. Chalmers informed us of the fact that science has a constitutionally *Hard Problem* on their hands. If he's right, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the *IIT-Concerned* recently proclaimed in Nature Neuroscience that any theory of consciousness that can't stand up to the scrutiny of science shall be deemed "unscientific." And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether AI systems are conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable? 
+Since Descartes first proclaimed "cogito, ergo sum" back in 1637, "I think, therefore I am" has become the Declaration of Independence for consciousness. Chalmers informed us of the fact that science has a constitutionally *Hard Problem* on their hands. If he's right, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the *IIT-Concerned* recently proclaimed in Nature Neuroscience that any theory of consciousness that can't stand up to the scrutiny of science shall be deemed "unscientific." And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether AI systems are conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable? 
 ---
 
 ### Keywords
@@ -23,13 +23,13 @@ Since Descartes first proclaimed ["cogito, ergo sum"](../../encyclopedia/cogito-
 
 Almost 2/3 of surveyed philosophers acknowledge the existence of the Hard Problem, and 1/3 of them think that it's actually hard [^BourgetChalmers2023]! Conscious experience is a field that spans disciplines, there is nothing that resembles scientific consensus, and there is nothing that resembles a testable theory. But we do have a compellingly elegant framing of the problem. And this framing of the problem is real enough to be *real* by majority vote. So we shall begin with Chalmers.
 
-In his seminal work ["Facing Up to the Problem of Consciousness,"](http://consc.net/papers/facing.pdf) David Chalmers begins with a powerful observation that establishes the seemingly paradoxical nature of our subject: "There is nothing that we know more intimately than [**conscious experience**](../../dictionary/conscious-experience.md), but there is nothing that is harder to explain." From the first part of this statement, we can immediately identify a fundamental characteristic of conscious experience that echos with Descartes: it is a [**self-evident**](../../dictionary/self-evident.md) phenomenon. Nothing is known more intimately than conscious experiences. They present themselves directly to their observer, requiring no justification beyond the experience itself.
+In his seminal work ["Facing Up to the Problem of Consciousness,"](http://consc.net/papers/facing.pdf) David Chalmers begins with a powerful observation that establishes the seemingly paradoxical nature of our subject: "There is nothing that we know more intimately than [**conscious experience**](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html), but there is nothing that is harder to explain." From the first part of this statement, we can immediately identify a fundamental characteristic of conscious experience that echos with Descartes: it is a [**self-evident**](https://dna-platform.github.io/inexplicable-phenomena/dictionary/self-evident.html) phenomenon. Nothing is known more intimately than conscious experiences. They present themselves directly to their observer, requiring no justification beyond the experience itself.
 
-The second part of Chalmers' statement suggests difficulty of explanation, but he goes on to clarify just how profound this difficulty is. Chalmers argues that "the emergence of experience goes beyond what can be derived from physical theory" and "the facts about experience cannot be an automatic consequence of any physical account." These statements establish that conscious experience isn't merely difficult to explain within our current scientific framework but fundamentally resistant to any such explanation. It is [**inexplicable**](../../dictionary/inexplicable.md) in principle He asks pointedly: "Why should physical processing give rise to a rich inner life at all? It seems objectively unreasonable that it should, and yet it does."
+The second part of Chalmers' statement suggests difficulty of explanation, but he goes on to clarify just how profound this difficulty is. Chalmers argues that "the emergence of experience goes beyond what can be derived from physical theory" and "the facts about experience cannot be an automatic consequence of any physical account." These statements establish that conscious experience isn't merely difficult to explain within our current scientific framework but fundamentally resistant to any such explanation. It is [**inexplicable**](https://dna-platform.github.io/inexplicable-phenomena/dictionary/inexplicable.html) in principle He asks pointedly: "Why should physical processing give rise to a rich inner life at all? It seems objectively unreasonable that it should, and yet it does."
 
-Regarding the relationship between conscious experience and physical processes, Chalmers makes a crucial observation: "Experience may arise from the physical, but it is not entailed by the physical." This statement positions conscious experience in a unique relationship to physical reality. According to our canonical dictionary, "metaphysical" refers to that which relates to "the transcendent or to a reality beyond what is perceptible to the senses" [^DictionaryMV]. Conscious experience precisely fits this definition: it transcends physical explanation while still relating to physical processes. It is fundamentally [**metaphysical**](../../dictionary/metaphysical.md) in nature.
+Regarding the relationship between conscious experience and physical processes, Chalmers makes a crucial observation: "Experience may arise from the physical, but it is not entailed by the physical." This statement positions conscious experience in a unique relationship to physical reality. According to our canonical dictionary, "metaphysical" refers to that which relates to "the transcendent or to a reality beyond what is perceptible to the senses" [^DictionaryMV]. Conscious experience precisely fits this definition: it transcends physical explanation while still relating to physical processes. It is fundamentally [**metaphysical**](https://dna-platform.github.io/inexplicable-phenomena/dictionary/metaphysical.html) in nature.
 
-Throughout his analysis, Chalmers treats conscious experience as a [**phenomenon**](../../dictionary/phenomenon.md), both in the sense of phenomenal experience and as an object of scientific study. The term ["phenomenon"](../../encyclopedia/noumena.md) captures this dual aspect perfectly. A phenomenon is both "an object or aspect known through the senses" and "a fact or event of scientific interest susceptible to scientific description and explanation." Conscious experience is simultaneously the subjective experience itself and the object of our scientific inquiry. The etymological connection between "phenomenon" and "phenomenal" reinforces this as the appropriate term for our work [^Bader2022].
+Throughout his analysis, Chalmers treats conscious experience as a [**phenomenon**](https://dna-platform.github.io/inexplicable-phenomena/dictionary/phenomenon.html), both in the sense of phenomenal experience and as an object of scientific study. The term "phenomenon" captures this dual aspect perfectly. A phenomenon is both "an object or aspect known through the senses" and "a fact or event of scientific interest susceptible to scientific description and explanation." Conscious experience is simultaneously the subjective experience itself and the object of our scientific inquiry. The etymological connection between "phenomenon" and "phenomenal" reinforces this as the appropriate term for our work [^Bader2022].
 
 By synthesizing these insights from Chalmers, we can formulate a definition that captures the essential nature of a conscious experience:
 
@@ -81,7 +81,7 @@ In our search for a formalism of conscious experience, let us dwell on the idea 
 
 A perspective admits a "particular" way of viewing or considering something. A conscious experience represents an atomic unit of *that which can be viewed or considered.* Therefore, a conscious experience acts like a particle of subjectivity within the context of a `FPP`. In the context of visual and sensory perception, the `TPP` expresses scientific fact. And the explanatory gap of the Hard Problem an expression of the idea that a particle of subjectivity cannot be accounted for objectively. 
 
-[Let me suggest that a formalization that unifies the semantic and physical descriptions of *perspective* will provide a natural framework in which to express a conscious experience as an inexplicable yet self-evident phenomenon.](../a-novel-perspective/a-novel-perspective.md)
+[Let me suggest that a formalization that unifies the semantic and physical descriptions of *perspective* will provide a natural framework in which to express a conscious experience as an inexplicable yet self-evident phenomenon.](../a-novel-perspective/a-novel-perspective.html)
 ---
 
 ## A Change of Symbol
@@ -111,9 +111,9 @@ We have permitted `c` into our symbolic lexicon as a representation of a physica
 
 > When we see, for example, we experience visual sensations: the felt quality of redness, the experience of dark and light, the quality of depth in a visual field. Other experiences go along with perception in different modalities: the sound of a clarinet, the smell of mothballs. Then there are bodily sensations, from pains to orgasms; mental images that are conjured up internally; the felt quality of emotion, and the experience of a stream of conscious thought. What unites all of these states is that there is something it is like to be in them. All of them are states of experience.
 
-While we may not be able to explain what a particular conscious experience is, we can explain what they are like. Therefore, we can refer to it. Let me try to articulate the thing that we are referring to when we say "conscious experience." Let `(c)` denotes the [canonical symbol](../../dictionary/canonical-symbol.md) we use to refer to a conscious experience. You can imagine this as a convenient shorthand for the phrase "conscious experience" if you like. 
+While we may not be able to explain what a particular conscious experience is, we can explain what they are like. Therefore, we can refer to it. Let me try to articulate the thing that we are referring to when we say "conscious experience." Let `(c)` denotes the [canonical symbol](https://dna-platform.github.io/inexplicable-phenomena/dictionary/canonical-symbol.html) we use to refer to a conscious experience. You can imagine this as a convenient shorthand for the phrase "conscious experience" if you like. 
 
-When we talk about `(c)` we are referring to a specific relationship between a subject `i` and the [literal](../../dictionary/literal.md) object of their perception `o`. Let us denote this idea by using a ternary operator to express direct relationship:
+When we talk about `(c)` we are referring to a specific relationship between a subject `i` and the [literal](https://dna-platform.github.io/inexplicable-phenomena/dictionary/literal.html) object of their perception `o`. Let us denote this idea by using a ternary operator to express direct relationship:
 
 > `i =(c)> o`
 
@@ -137,22 +137,22 @@ The canonical symbol has the property that it is the most specific type of relat
 
 > `(c) == (o)`
 
-Please refer to the specifics of [relationship](../../encyclopedia/relationship.md) and [reference](../../encyclopedia/reference.md) if you'd like to better understand the symbols with which I use to express the fundamental semantic form, and their interpretation. We have used this simple language to express an obvious truth: that "conscious experience," in nominative form, serves as a symbol for the object of perception: `(o)`. These two are synonyms, semantically speaking. 
+Please refer to the specifics of [relationship](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/relationship.html) and [reference](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/reference.html) if you'd like to better understand the symbols with which I use to express the fundamental semantic form, and their interpretation. We have used this simple language to express an obvious truth: that "conscious experience," in nominative form, serves as a symbol for the object of perception: `(o)`. These two are synonyms, semantically speaking. 
 
-So that's what we mean when we say "conscious experience" objectively, when we use it as a noun in a sentence to refer to a certain class of physical phenomena. The language, under construction, that I am using to express this fact is called [Semantic Reference Theory](../../encyclopedia/semantic-reference-theory.md).
+So that's what we mean when we say "conscious experience" objectively, when we use it as a noun in a sentence to refer to a certain class of physical phenomena. The language, under construction, that I am using to express this fact is called [Semantic Reference Theory](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/semantic-reference-theory.html).
 ---
 
-## The Algebra of Perspective
+<!-- ## The Algebra of Perspective
 
 Having formalized conscious experience as a change in perspective, we can now develop the algebraic structure that underlies this transformation. This formalization will reveal how conscious experience emerges naturally from the operations of perspective, and why it appears simultaneously self-evident from the first-person view and inexplicable from the third-person view.
 
 To formalize perspective, we must begin with qualities - those aspects of experience that seem most immediate yet most resistant to explanation. Chalmers captures this in his evocative phrase "the felt quality of redness" - an expression that intentionally blurs the boundary between sensation and quality. Qualities form the foundation of perspective precisely because they represent the most basic way in which objects appear within our experience.
 
-> [*Semantic Assertion*]: A [Perspective](../../dictionary/perspective.md) is a [referential framework](../../encyclopedia/semantic-reference-frame.md) for identifying identities, qualifying qualities and representing relationships.
+> [*Semantic Assertion*]: A [Perspective](https://dna-platform.github.io/inexplicable-phenomena/dictionary/perspective.html) is a [referential framework](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/semantic-reference-frame.html) for identifying identities, qualifying qualities and representing relationships.
 
-This assertion captures the three fundamental operations that define a perspective. But to understand how these operations work, we must first establish what constitutes a qualifier within such a framework. Our approach deliberately avoids the traditional notion of "qualia" as unnecessarily objectifying subjective experience (see [Qualia](../../encyclopedia/qualia.md)).
+This assertion captures the three fundamental operations that define a perspective. But to understand how these operations work, we must first establish what constitutes a qualifier within such a framework. Our approach deliberately avoids the traditional notion of "qualia" as unnecessarily objectifying subjective experience (see [Qualia](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/qualia.html)).
 
-The fundamental property that defines a qualifier is a particular kind of equivalence. For any [symbol](../../dictionary/symbol.md) `(o)` and quality `q`:
+The fundamental property that defines a qualifier is a particular kind of equivalence. For any [symbol](https://dna-platform.github.io/inexplicable-phenomena/dictionary/symbol.html) `(o)` and quality `q`:
 
 > `(i) =q> (o) <|=|> (o) =q> o`
 
@@ -177,6 +177,7 @@ This self-reference is what makes the qualifier capable of consciousness. Withou
 Within a perspective, two fundamental qualities operate simultaneously:
 
 > *The Quality of Symbolism*: `o[objective] =|> (o)`
+
 > *The Quality of Meaning*: `(i) =q> (o) <|=|> (o) =q> o`
 
 The Quality of Symbolism defines the perspective's capacity to symbolize objective reality. We use `o[objective]` to denote an entity that can only be an object in a semantic context, never a subject or relationship type. This quality forms the very foundation of scientific inquiry - the attempt to provide a symbolic framework for objective reality. When an objective entity appears but has no corresponding symbol, the unsatisfied expression `o[objective] =|> (o)` triggers the process of symbolization.
@@ -234,13 +235,13 @@ Subjectivity can thus be precisely defined as "singular objectivity" - objectivi
 > `(i) =red> (rose) <|=|> (rose) =red> rose`
 
 The rose is objectively red within my perspective because `(i)` qualified it as such, but this objectivity is singular to `(i)`. 
----
+--- -->
 
 ## Metalogical Transduction
 
-The unutterable title of this paper is an homage to [Gödel's](../../a-novel-perspective/a-novel-perspective.md) "On Formally Undecidable Propositions of Principia Mathematica and Related Systems" [^Godel1962] [^Godel1931]. It lays the foundation for [a metaphor which captures the relationship between inexplicability & undecidability, proof & explanation, mathematical & physical representation, and less obviously, incompleteness & self-evidence](../a-novel-perspective/a-novel-perspective.md). It is not a simple isomorphism, and upon reflection, one must reference Gödel with care on this particular topic[^Feferman1995] [^Feferman1991].
+<!-- The unutterable title of this paper is an homage to [Gödel's](../../a-novel-perspective/a-novel-perspective.html) "On Formally Undecidable Propositions of Principia Mathematica and Related Systems" [^Godel1962] [^Godel1931]. It lays the foundation for [a metaphor which captures the relationship between inexplicability & undecidability, proof & explanation, mathematical & physical representation, and less obviously, incompleteness & self-evidence](../a-novel-perspective/a-novel-perspective.html). It is not a simple isomorphism, and upon reflection, one must reference Gödel with care on this particular topic[^Feferman1995] [^Feferman1991]. -->
 
-Gödel brilliantly formulated self-reference within a mathematical formalism by capturing the notion of *use* and *mention* in everyday language[^Quine1940]. Rather than direct self-reference, he uses symbols to mention expressions that refer to themselves through encoding. How might we formalize this distinction more elegantly? In other words, what is the most vacuous theory one can imagine that can formalize self-reference?
+[Gödel](https://dna-platform.github.io/inexplicable-phenomena/articles/a-novel-perspective/a-novel-perspective.html) brilliantly formulated self-reference within a mathematical formalism by capturing the notion of *use* and *mention* in everyday language[^Quine1940]. Rather than direct self-reference, he uses symbols to mention expressions that refer to themselves through encoding. How might we formalize this distinction more elegantly? In other words, what is the most vacuous theory one can imagine that can formalize self-reference?
 
 SRT suggests the idea of references and their referents in a catalogue. It begins as a first-order theory on the domain of referents with no constants, no functions, and only one relation `R(x,y,t)`, expressed as:
 
@@ -292,20 +293,20 @@ What is the justification for *The Hard Problem*? Why must it correspond to the 
 
 Yet if we believe *Semantic Reference Theory* can describe the computational process in which a Perspective is constructed and maintained, *Metalogical Transduction* is the corresponding process, and it is a computational process that has characteristics. There is meaning to the idea that a computer is implementing quick sort, and one can falsify the claim that a physical system is implementing it.
 
-If we are wrong, and *Metaphysical Transduction* does not correspond to a physical description of *Perception*, which is necessary and sufficient for a *Conscious Experience* to occur, then its absence, by way of exhaustive search, in the computational description of a process that gives rise to a verbal report from a being we trust that claims to have conscious experience will serve to **falsify this theory**. Period.
+If we are wrong, and *Metaphysical Transduction* does not correspond to a physical description of *Perception*, which is necessary and sufficient for a *Conscious Experience* to occur, then its absence will serve to *falsify this theory*.
 
-There are philosophical ramifications to permitting the existence of an algorithm into the ontology of a natural philosophy. It is the beginning of a chain of thought that leads one to wonder if the number `2` might be said to be real in some sense. But conscious experience is both ontologically prior to science itself, and epistemologically necessary to its method [^Chalmers1996] [^KantSynthetic]. It would seem that we have no choice but to accept the existence of at least one objective phenomenon that has no literal manifestation. There is no conceivable physical system in which one can simulate an electron. An electron is just what it is. This is not so for a conscious experience. Each one is just as real on one computational substrate as it is on another. This remains true even if the perspectives which they correspond to yield fundamentally different descriptions of physical reality. Isomorphism is equivalence in the framework of computation.
+There are philosophical ramifications to permitting the existence of an algorithm into the ontology of a natural philosophy. It is the beginning of a chain of thought that leads one to wonder if the number `2` might be said to be real in some sense. But conscious experience is both ontologically prior to science itself, and epistemologically necessary to its method [^Chalmers1996] [^KantSynthetic]. It would seem that we have no choice but to accept the existence of at least one objective phenomenon that has no literal manifestation. There is no conceivable physical system in which one can simulate an electron. An electron is just what it is. This is not so for a conscious experience. Each one is just as real on one computational substrate as it is on another. This remains true even if the perspectives which they correspond to yield fundamentally different descriptions of physical reality. Isomorphism equals equivalence in the land of computation.
 
-> [*Colloquial Example*]: One day, I wake up in a state of shock. It's hard to articulate the experience, but it is as if my vision was reduced to hearing, and that sight and sound were as if different colors within the same song. It turns out that I am a distant descendant of the once-inhabitants of the two-dimensional universe once known as Flatland [^Flatland1884]. Our society has evolved considerably.
+<!-- > [*Colloquial Example*]: One day, I wake up in a state of shock. It's hard to articulate the experience, but it is as if my vision was reduced to hearing, and that sight and sound were as if different colors within the same song. It turns out that I am a distant descendant of the once-inhabitants of the two-dimensional universe once known as Flatland [^Flatland1884]. Our society has evolved considerably.
 
 > Apparently, I had volunteered to take part in a radical neuroscience experiment whereby my memory was temporarily replaced, and all sensory inputs were modified in much the way Olo is produced on the retina, with a scanning procedure in which an immersive three-dimension universe was simulated for me. I spoke to a researcher in charged. He informed me that he employed an encoding scheme inspired by Gödel Numbering to project the completely fabricated objects from my perceived environment into a three-dimensional coordinate system.
 
 > "What was it like" he asked "to experience information patterns consistent with a third dimension?" I gathered my thoughts. "Have you ever had a breakthrough psychedelic experience?" I asked. He had that he had not, though he was the one who wrote the code for the experience I had. "Well it's just like coming back from one," I said. "But it might help your research to know that I can still access my memories in 3D."
 
-> I suppose it's no different from [the way we perceive color](../../a-novel-perspective/a-novel-perspective.md) really. We cope with a 3-dimension description of a 1-dimensional phenomenon every day. I accept the arbitrariness of perceptual representation peacefully. This thought produced in me such a beautiful color, as if I could almost hear myself saying it.
+> I suppose it's no different from [the way we perceive color](../../a-novel-perspective/a-novel-perspective.html) really. We cope with a 3-dimension description of a 1-dimensional phenomenon every day. I accept the arbitrariness of perceptual representation peacefully. This thought produced in me such a beautiful color, as if I could almost hear myself saying it. -->
 ---
 
-## A Canonical Definition
+<!-- ## A Canonical Definition
 
 We explored a number of definitions for a *conscious experience*. As a representation of a change in Perspective. As an act of perception. Yet I suggest this be its canonical form:
 
@@ -317,11 +318,11 @@ But to paint a portrait in the context of the objectivity of science it to paint
 
 So what can we say? Might a *Conscious Experience* be said to have the shape of Euclidean Geometry, the color of Color Theory, the sound of the Fourier Transform, the taste of a Chemistry Textbook and the felt texture of feeling itself? What does it mean to describe the physical properties of the output of an algorithm that holds the representations of the identities, qualities and relationships that we use to make sense of the very notion of physical objects with objective properties? 
 
-It doesn't mean anything! Not in the language of physics. To describe the physical properties of experience itself is something that can only be meaningfully accomplished through art[^Hofstadter1979]. 
+It doesn't mean anything! Not in the language of physics. To describe the physical properties of experience itself is something that can only be meaningfully accomplished through art[^Hofstadter1979].  -->
 
 <!-- [`Note: NOT self-reference [See: Title footnote]`]
 [`### Dedicatiion`]
-[`It goes without saying: that [*this*](inexplicable-phenomena.md) PDF, it's annotated *TeX* file, the *HTML* version that it compiled to by way of Markdown, and the evolutionary self-publishing GitHub repository that they all collectively self-reference... could only possibly be dedicated to the *author* of "Gödel, Escher, Bach" et al. Thank you for a lifetime of thought, Professor Hofstadter <3`] -->
+[`It goes without saying: that [*this*](inexplicable-phenomena.html) PDF, it's annotated *TeX* file, the *HTML* version that it compiled to by way of Markdown, and the evolutionary self-publishing GitHub repository that they all collectively self-reference... could only possibly be dedicated to the *author* of "Gödel, Escher, Bach" et al. Thank you for a lifetime of thought, Professor Hofstadter <3`] -->
 ---
 
 ## Bibliography
@@ -379,7 +380,7 @@ It doesn't mean anything! Not in the language of physics. To describe the physic
 
 [^Lenharo2023]: Lenharo, M.: AI consciousness: scientists say we urgently need answers. *Nature* (2023). doi: 10.1038/d41586-023-04031-0
 
-[^Papineau2002] Papineau, David. *Thinking About Consciousness*. Oxford: Oxford University Press, 2002.
+[^Papineau2002]: Papineau, David. *Thinking About Consciousness*. Oxford: Oxford University Press, 2002.
 
 [^Popper1959]: Popper, K.: *The Logic of Scientific Discovery*. Routledge, London (1959). Translated from the original German *Logik der Forschung* (1934)
 

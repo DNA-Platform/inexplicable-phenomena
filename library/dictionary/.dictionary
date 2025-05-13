@@ -1,0 +1,51 @@
+# Dictionary
+
+This is a comprehensive collection of terms and definitions related to Semantic Reference Theory and related philosophical concepts.
+
+## Entries
+
+- [Canonical Symbol](canonical-symbol%20copy.md) - A representation that uniquely identifies a referent in Semantic Reference Theory.
+- [Catalogue](catalogue.md) - A collection of referents that are related to each other within Semantic Reference Theory.
+- [Conscious Experience](conscious-experience.md) - The subjective awareness of phenomena within a perspective, representing the result of metaphysical transduction.
+- [Constant](constant.md) - A fixed referent that does not change within a given semantic context or theory.
+- [Definition](definition.md) - A statement that establishes the meaning of a term by expressing its equivalence to a formal expression, often using the transduction operator in SRT.
+- [Domain](domain.md) - The set of all possible referents that can be used in a given semantic context or theory.
+- [Epistemic Motive](epistemic-motive.md) - The reasoning or motivation behind a knowledge claim or theory.
+- [Epistemology](epistemology.md) - The branch of philosophy concerned with the nature, origin, and limits of human knowledge.
+- [First-Order Logic](first-order-logic.md) - A formal logical system that extends propositional logic with quantified variables over non-logical objects.
+- [Formal Logic](formal-logic.md) - A system of reasoning using symbolic representations to determine the validity of arguments based on their structure.
+- [Hard Problem](hard-problem.md) - The philosophical challenge of explaining how physical processes in the brain give rise to subjective conscious experience.
+- [Identification](identification.md) - The process of recognizing or establishing the identity of a referent within a semantic framework.
+- [Identity](identity.md) - The relationship of a referent to itself, establishing what makes it the same entity across different contexts.
+- [Inexplicable](inexplicable.md) - Phenomena or concepts that cannot be fully explained or understood within current theoretical frameworks.
+- [Inheritance](inheritance.md) - A relationship between referents where one inherits properties or relationships from another, often expressed as x -> y in SRT.
+- [Literal](literal.md) - A referent that does not itself reference anything else, serving as an endpoint in referential relationships.
+- [Literature](literature.md) - Written works that contribute to the development and understanding of Semantic Reference Theory.
+- [Logic](logic.md) - The systematic study of valid inference and reasoning, providing frameworks for analyzing arguments based on structure.
+- [Metalogical Transduction](metalogical-transduction.md) - The process of transforming logical structures or theories while preserving their essential relationships.
+- [Metaphysical](metaphysical.md) - Relating to the fundamental nature of reality beyond physical or observable phenomena.
+- [Metaphysical Phenomena](metaphysical-phenomena.md) - The subjective experiences that emerge through metaphysical transduction within consciousness.
+- [Metaphysical Transduction](metaphysical-transduction.md) - The process by which physical phenomena are transformed into conscious experiences.
+- [Object](object.md) - A referent that is the target of a relationship within Semantic Reference Theory.
+- [Ontology](ontology.md) - The philosophical study of being, existence, and the categories of reality and their relationships.
+- [Perception](perception.md) - The process by which physical stimuli are transformed into conscious experiences through metaphysical transduction.
+- [Perspective](perspective.md) - A framework within which phenomena are experienced and interpreted, forming the basis of subjective consciousness.
+- [Phenomenon](phenomenon.md) - That which presents itself within a perspective, whether as a physical reality or a representation within consciousness.
+- [Physical Phenomena](physical-phenomena.md) - Events, objects, and processes that exist in physical reality and can be directly measured and observed.
+- [Property](property.md) - A characteristic or attribute of a referent, expressed as x.t in Semantic Reference Theory.
+- [Qualification](qualification.md) - The process of assigning qualities or properties to referents within a semantic framework.
+- [Reference](reference.md) - The relationship between a symbol and what it represents, a fundamental concept in Semantic Reference Theory.
+- [Referent](referent.md) - An entity that can be referenced or referred to within Semantic Reference Theory.
+- [Relation](relation.md) - A connection between referents, forming the basic structure of Semantic Reference Theory.
+- [Relationship](relationship.md) - A specific instance of a relation between referents, expressed as R(x,y,t) in SRT.
+- [Self](self.md) - The referent that constitutes the subject of conscious experience and the center of perspective.
+- [Self-Evident](self-evident.md) - Truths or principles that are immediately apparent without requiring external proof or justification.
+- [Semantic Reference Frame](semantic-reference-frame.md) - The context within which referential relationships are defined and interpreted.
+- [Semantic Reference Theory](semantic-reference-theory.md) - A formal framework for understanding meaning through referential relationships.
+- [Semantic Theory](semantic-theory.md) - A theoretical approach to understanding meaning that emphasizes relationships between signs and referents.
+- [Subject](subject.md) - A referent that initiates a relationship within Semantic Reference Theory.
+- [Symbol](symbol.md) - A representation that stands for or points to a referent within a system of meaning.
+- [Symbolism](symbolism.md) - The use of symbols to represent abstract concepts or relationships within a semantic framework.
+- [Ternary](ternary.md) - Relating to or consisting of three parts, particularly the three-part relation R(x,y,t) in Semantic Reference Theory.
+- [Transduction](transduction.md) - The transformation process that preserves structure while changing domain, a key concept in SRT.
+- [Transitivity](transitivity.md) - A property of relations where if a relates to b and b relates to c, then a relates to c.
