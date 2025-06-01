@@ -1,8 +1,8 @@
-# Header
-- title: [Referent](referent)
-- book: [Dictionary](.dictionary.md)
-- previous: [Object](object.md)
-- next: [Catalogue](catalogue.md)
+# [Referent](https://dna-platform.github.io/inexplicable-phenomena/dictionary/referent.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Object](./object.md)
+- Next: [Catalogue](./catalogue.md)
+---
 
 ## Definition
 

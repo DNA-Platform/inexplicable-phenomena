@@ -1,8 +1,8 @@
-# Header
-- title: [Inexplicable](inexplicable.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Inheritance](inheritance.md)
-- next: [Literature](literature.md)
+# [Inexplicable](https://dna-platform.github.io/inexplicable-phenomena/dictionary/inexplicable.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Inheritance](./inheritance.md)
+- Next: [Literature](./literature.md)
+---
 
 ## Definition
 

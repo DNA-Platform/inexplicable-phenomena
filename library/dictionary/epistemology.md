@@ -1,8 +1,8 @@
-# Header
-- title: [Epistemology](epistemology.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Epistemic Motive](epistemic-motive.md)
-- next: [Existential Relationship](existential-relationship.md)
+# [Epistemology](https://dna-platform.github.io/inexplicable-phenomena/dictionary/epistemology.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Epistemic Motive](./epistemic-motive.md)
+- Next: [Existential Relationship](./existential-relationship.md)
+---
 
 ## Definition
 

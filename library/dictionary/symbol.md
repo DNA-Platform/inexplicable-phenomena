@@ -1,8 +1,8 @@
-# Header
-- title: [Symbol](symbol.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Referent](referent.md)
-- next: [Canonical Symbol](canonical-symbol.md)
+# [Symbol](https://dna-platform.github.io/inexplicable-phenomena/dictionary/symbol.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Referent](./referent.md)
+- Next: [Canonical Symbol](./canonical-symbol.md)
+---
 
 ## Definition
 

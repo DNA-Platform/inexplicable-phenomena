@@ -178,6 +178,29 @@ body {
   margin-bottom: 20px;
   font-family: sans-serif;
 }
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dna-rose-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.dna-rose-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dna-rose-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
 
 .book-info {
   display: flex;
@@ -549,9 +572,15 @@ body {
     <div class="container">
       <header class="academic-header">
   <div class="book-info">
+  <div class="header-left">
+    <a href="../index.html" class="dna-rose-link" title="Return to Library Index">
+      <img src="https://www.dna.love/images/icons/dna-rose-g1-icon.png?v=2" alt="DNA Rose" class="dna-rose-icon">
+    </a>
+    <div class="book-info">
     <span class="book-label">From</span>
     <a href="dictionary.html" class="book-link">Dictionary</a>
-  </div>
+    </div>
+</div>
   <div class="navigation-controls">
     <a href="epistemology.html" class="nav-link prev-link" title="Epistemology">
       <span class="nav-arrow"></span>

@@ -1,8 +1,8 @@
-# Header
-- title: [Constant](constant)
-- book: [Dictionary](.dictionary.md)
-- previous: [Referent](referent.md)
-- next: [Variable](variable.md)
+# [Constant](https://dna-platform.github.io/inexplicable-phenomena/dictionary/constant.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Referent](./referent.md)
+- Next: [Variable](./variable.md)
+---
 
 ## Definition
 

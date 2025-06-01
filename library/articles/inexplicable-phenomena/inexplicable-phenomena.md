@@ -1,15 +1,9 @@
-# Header
-- title: [Inexplicable Phenomena](inexplicable-phenomena.md)
-- subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
----
+### [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/inexplicable-phenomena.html)
+- Subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
 
-## [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/inexplicable-phenomena.html)
----
-
-### Abstract
+#### Abstract
 
 Since Descartes first proclaimed "cogito, ergo sum" back in 1637, "I think, therefore I am" has become the Declaration of Independence for consciousness. Chalmers informed us of the fact that science has a constitutionally *Hard Problem* on their hands. If he's right, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the *IIT-Concerned* recently proclaimed in Nature Neuroscience that any theory of consciousness that can't stand up to the scrutiny of science shall be deemed "unscientific." And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether AI systems are conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable? 
----
 
 ### Keywords
 - Formal Theories of Consciousness 

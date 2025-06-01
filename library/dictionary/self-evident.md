@@ -1,8 +1,8 @@
-# Header
-- title: [Self-Evident](self-evident.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Semantic Theory](semantic-theory.md)
-- next: [Subject](subject.md)
+# [Self-Evident](https://dna-platform.github.io/inexplicable-phenomena/dictionary/self-evident.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Semantic Theory](./semantic-theory.md)
+- Next: [Subject](./subject.md)
+---
 
 ## Definition
 

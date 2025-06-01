@@ -1,8 +1,8 @@
-# Header
-- title: [Subject](subject.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Semantic Theory](semantic-theory.md)
-- next: [Symbolism](symbolism.md)
+# [Subject](https://dna-platform.github.io/inexplicable-phenomena/dictionary/subject.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Semantic Theory](./semantic-theory.md)
+- Next: [Symbolism](./symbolism.md)
+---
 
 ## Definition
 

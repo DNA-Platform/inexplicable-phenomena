@@ -1,8 +1,8 @@
-# Header
-- title: [Property](property)
-- book: [Dictionary](.dictionary.md)
-- previous: [Ternary Relation](ternary.md)
-- next: [Inheritance](inheritance.md)
+# [Property](https://dna-platform.github.io/inexplicable-phenomena/dictionary/property.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Ternary Relation](./ternary.md)
+- Next: [Inheritance](./inheritance.md)
+---
 
 ## Definition
 

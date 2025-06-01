@@ -1,8 +1,8 @@
-# Header
-- title: [Identity](identity.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Identification](identification.md)
-- next: [Inheritance](inheritance.md)
+# [Identity](https://dna-platform.github.io/inexplicable-phenomena/dictionary/identity.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Identification](./identification.md)
+- Next: [Inheritance](./inheritance.md)
+---
 
 ## Definition
 

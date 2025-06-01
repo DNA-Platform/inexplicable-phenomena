@@ -1,8 +1,8 @@
-# Header
-- title: [Metalogical Transduction](metalogical-transduction.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Logic](logic.md)
-- next: [Metaphysical Transduction](metaphysical-transduction.md)
+# [Metalogical Transduction](https://dna-platform.github.io/inexplicable-phenomena/dictionary/metalogical-transduction.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Logic](./logic.md)
+- Next: [Metaphysical Transduction](./metaphysical-transduction.md)
+---
 
 ## Definition
 

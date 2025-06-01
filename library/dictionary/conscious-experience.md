@@ -1,8 +1,8 @@
-# Header
-- title: [Conscious Experience](conscious-experience)
-- book: [Dictionary](.dictionary.md)
-- previous: [Perspective](perspective.md)
-- next: [Metaphysical Transduction](metaphysical-transduction.md)
+# [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Perspective](./perspective.md)
+- Next: [Metaphysical Transduction](./metaphysical-transduction.md)
+---
 
 ## Definition
 

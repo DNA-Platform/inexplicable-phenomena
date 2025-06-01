@@ -1,8 +1,8 @@
-# Header
-- title: [Self](self.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Self-Evident](self-evident.md)
-- next: [Subject](subject.md)
+# [Self](https://dna-platform.github.io/inexplicable-phenomena/dictionary/self.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Self-Evident](./self-evident.md)
+- Next: [Subject](./subject.md)
+---
 
 ## Definition
 

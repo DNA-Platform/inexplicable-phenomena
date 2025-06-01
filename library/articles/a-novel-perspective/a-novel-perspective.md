@@ -1,3 +1,7 @@
+# [A Novel Perspective](https://dna-platform.github.io/inexplicable-phenomena/articles/a-novel-perspective/a-novel-perspective.html)
+- Book: [Articles](../../.articles.md)
+---
+
 # A Novel Perspective
 
 ## 1. Introduction: Vision as Equivalence

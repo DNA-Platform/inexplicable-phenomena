@@ -1,8 +1,8 @@
-# Header
-- title: [Physical Phenomena](physical-phenomena.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Perspective](perspective.md)
-- next: [Property](property.md)
+# [Physical Phenomena](https://dna-platform.github.io/inexplicable-phenomena/dictionary/physical-phenomena.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Perspective](./perspective.md)
+- Next: [Property](./property.md)
+---
 
 ## Definition
 

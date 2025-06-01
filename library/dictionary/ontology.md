@@ -1,8 +1,8 @@
-# Header
-- title: [Ontology](ontology.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Object](object.md)
-- next: [Perspective](perspective.md)
+# [Ontology](https://dna-platform.github.io/inexplicable-phenomena/dictionary/ontology.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Object](./object.md)
+- Next: [Perspective](./perspective.md)
+---
 
 ## Definition
 

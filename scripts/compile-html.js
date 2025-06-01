@@ -302,6 +302,13 @@ class MarkdownParser {
 
     let headerHtml = '<header class="academic-header">';
 
+    // Add DNA rose icon linking to index
+    headerHtml += `
+  <div class="header-left">
+    <a href="index.html" class="dna-rose-link" title="Return to Library Index">
+      <img src="https://www.dna.love/images/icons/dna-rose-g1-icon.png?v=2" alt="DNA Rose" class="dna-rose-icon">
+    </a>`;
+
     // Only add book/subject info if we have it
     if (sourceInfo) {
       // Use ref.js to transform the link path properly
@@ -313,9 +320,13 @@ class MarkdownParser {
         : sourceLink;
 
       headerHtml += `
-  <div class="book-info">
-    <span class="book-label">${sourceLabel}</span>
-    <a href="${transformedLink}" class="book-link">${sourceInfo.text}</a>
+    <div class="book-info">
+      <span class="book-label">${sourceLabel}</span>
+      <a href="${transformedLink}" class="book-link">${sourceInfo.text}</a>
+    </div>`;
+    } else {
+      // Close the header-left div if no book info
+      headerHtml += `
   </div>`;
     }
 

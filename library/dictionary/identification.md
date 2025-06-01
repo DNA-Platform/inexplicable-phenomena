@@ -1,8 +1,8 @@
-# Header
-- title: [Identification](identification.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Formal Logic](formal-logic.md)
-- next: [Identity](identity.md)
+# [Identification](https://dna-platform.github.io/inexplicable-phenomena/dictionary/identification.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Formal Logic](./formal-logic.md)
+- Next: [Identity](./identity.md)
+---
 
 ## Definition
 

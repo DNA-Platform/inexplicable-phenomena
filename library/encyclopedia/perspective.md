@@ -1,6 +1,6 @@
-# Header
-- title: [Perspective](perspective.md)
-- book: [Encyclopedia](encyclopedia.md)
+# [Perspective](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/perspective.html)
+- Book: [Encyclopedia](./.encyclopedia.md)
+---
 
 # Entry
 

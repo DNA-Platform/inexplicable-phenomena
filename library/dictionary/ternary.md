@@ -1,8 +1,8 @@
-# Header
-- title: [Ternary Relation](ternary)
-- book: [Dictionary](.dictionary.md)
-- previous: [Relationship](relationship.md)
-- next: [Property](property.md)
+# [Ternary Relation](https://dna-platform.github.io/inexplicable-phenomena/dictionary/ternary.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Relationship](./relationship.md)
+- Next: [Property](./property.md)
+---
 
 ## Definition
 

@@ -1,8 +1,8 @@
-# Header
-- title: [Formal Logic](formal-logic.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [First-Order Logic](first-order-logic.md)
-- next: [Identification](identification.md)
+# [Formal Logic](https://dna-platform.github.io/inexplicable-phenomena/dictionary/formal-logic.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [First-Order Logic](./first-order-logic.md)
+- Next: [Identification](./identification.md)
+---
 
 ## Definition
 

@@ -1,8 +1,8 @@
-# Header
-- title: [Qualification](qualification.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Property](property.md)
-- next: [Reference](reference.md)
+# [Qualification](https://dna-platform.github.io/inexplicable-phenomena/dictionary/qualification.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Property](./property.md)
+- Next: [Reference](./reference.md)
+---
 
 ## Definition
 

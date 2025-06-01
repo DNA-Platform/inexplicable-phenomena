@@ -1,8 +1,8 @@
-# Header
-- title: [Phenomenon](phenomenon.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Perspective](perspective.md)
-- next: [Property](property.md)
+# [Phenomenon](https://dna-platform.github.io/inexplicable-phenomena/dictionary/phenomenon.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Perspective](./perspective.md)
+- Next: [Property](./property.md)
+---
 
 ## Definition
 

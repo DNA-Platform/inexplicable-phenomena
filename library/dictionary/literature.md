@@ -1,8 +1,8 @@
-# Header
-- title: [Literature](literature.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Inheritance](inheritance.md)
-- next: [Logic](logic.md)
+# [Literature](https://dna-platform.github.io/inexplicable-phenomena/dictionary/literature.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Inheritance](./inheritance.md)
+- Next: [Logic](./logic.md)
+---
 
 ## Definition
 

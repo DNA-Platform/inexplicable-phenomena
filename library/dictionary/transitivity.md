@@ -1,8 +1,8 @@
-# Header
-- title: [Transitivity](transitivity.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Transduction](transduction.md)
-- next: [First-Order Logic](first-order-logic.md)
+# [Transitivity](https://dna-platform.github.io/inexplicable-phenomena/dictionary/transitivity.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Transduction](./transduction.md)
+- Next: [First-Order Logic](./first-order-logic.md)
+---
 
 ## Definition
 

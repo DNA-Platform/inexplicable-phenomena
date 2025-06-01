@@ -1,6 +1,6 @@
-# Header
-- title: [Qualia](qualia.md)
-- book: [Encyclopedia](encyclopedia.md)
+# [Qualia](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/qualia.html)
+- Book: [Encyclopedia](./.encyclopedia.md)
+---
 
 # Entry
 

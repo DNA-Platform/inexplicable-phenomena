@@ -1,8 +1,8 @@
-# Header
-- title: [Definition](definition)
-- book: [Dictionary](.dictionary.md)
-- previous: [Constant](constant.md)
-- next: [Domain](domain.md)
+# [Definition](https://dna-platform.github.io/inexplicable-phenomena/dictionary/definition.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Constant](./constant.md)
+- Next: [Domain](./domain.md)
+---
 
 ## Definition
 
@@ -66,7 +66,7 @@ x -> y := x == y || x => y || E[z]: x -> z & z -> y
 
 Definition using the transduction operator:
 ```
-SRT |=defines> (P Ò Q) <as> (P =|> Q)
+SRT |=defines> (P ï¿½ Q) <as> (P =|> Q)
 ```
 
 ## Footer

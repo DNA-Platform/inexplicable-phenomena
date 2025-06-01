@@ -1,8 +1,8 @@
-# Header
-- title: [Hard Problem](hard-problem.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Formal Logic](formal-logic.md)
-- next: [Identification](identification.md)
+# [Hard Problem](https://dna-platform.github.io/inexplicable-phenomena/dictionary/hard-problem.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Formal Logic](./formal-logic.md)
+- Next: [Identification](./identification.md)
+---
 
 ## Definition
 

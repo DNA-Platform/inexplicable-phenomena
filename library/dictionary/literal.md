@@ -1,8 +1,8 @@
-# Header
-- title: [Literal](literal.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Symbol](symbol.md)
-- next: [Literature](literature.md)
+# [Literal](https://dna-platform.github.io/inexplicable-phenomena/dictionary/literal.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Symbol](./symbol.md)
+- Next: [Literature](./literature.md)
+---
 
 ## Definition
 

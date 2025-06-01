@@ -1,8 +1,8 @@
-# Header
-- title: [Metaphysical Phenomena](metaphysical-phenomena.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Metaphysical](metaphysical.md)
-- next: [Metaphysical Transduction](metaphysical-transduction.md)
+# [Metaphysical Phenomena](https://dna-platform.github.io/inexplicable-phenomena/dictionary/metaphysical-phenomena.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Metaphysical](./metaphysical.md)
+- Next: [Metaphysical Transduction](./metaphysical-transduction.md)
+---
 
 ## Definition
 

@@ -1,5 +1,5 @@
-# Header
-- title: [Semantic Reference Frame](semantic-reference-frame.md)
-- book: [Encyclopedia](.encyclopedia.md)
+# [Semantic Reference Frame](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/semantic-reference-frame.html)
+- Book: [Encyclopedia](./.encyclopedia.md)
+---
 
 # Entry

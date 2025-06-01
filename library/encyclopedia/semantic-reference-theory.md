@@ -1,3 +1,7 @@
+# [Semantic Reference Theory](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/semantic-reference-theory.html)
+- Book: [Encyclopedia](./.encyclopedia.md)
+---
+
 ## Semantic Reference Theory
 
 There’s a typographical lingo to Semantic Reference Theory that gives it a unique flavor. Representing reference symbolically is akin to pointers in programming language. I choose a symbology that builds its aesthetic identity using programming as inspiration.

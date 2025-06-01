@@ -1,8 +1,8 @@
-# Header
-- title: [Symbolism](symbolism.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Subject](subject.md)
-- next: [Ternary](ternary.md)
+# [Symbolism](https://dna-platform.github.io/inexplicable-phenomena/dictionary/symbolism.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Subject](./subject.md)
+- Next: [Ternary](./ternary.md)
+---
 
 ## Definition
 

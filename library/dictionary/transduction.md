@@ -1,8 +1,8 @@
-# Header
-- title: [Transduction](transduction.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Ternary](ternary.md)
-- next: [Transitivity](transitivity.md)
+# [Transduction](https://dna-platform.github.io/inexplicable-phenomena/dictionary/transduction.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Ternary](./ternary.md)
+- Next: [Transitivity](./transitivity.md)
+---
 
 ## Definition
 

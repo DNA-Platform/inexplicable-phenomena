@@ -1,6 +1,6 @@
-# Header
-- title: [Reference](reference.md)
-- book: [Encyclopedia](.encyclopedia.md)
+# [Reference](https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/reference.html)
+- Book: [Encyclopedia](./.encyclopedia.md)
+---
 
 # Entry
 

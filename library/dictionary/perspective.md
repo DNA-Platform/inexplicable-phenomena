@@ -1,8 +1,8 @@
-# Header
-- title: [Perspective](perspecive)
-- book: [Dictionary](.dictionary.md)
-- previous: [Semantic Referent Frame](semantic-reference-frame.md)
-- next: [Conscious Experience](conscious-experience.md)
+# [Perspective](https://dna-platform.github.io/inexplicable-phenomena/dictionary/perspective.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Semantic Referent Frame](./semantic-reference-frame.md)
+- Next: [Conscious Experience](./conscious-experience.md)
+---
 
 ## Definition
 

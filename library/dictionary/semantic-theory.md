@@ -1,8 +1,8 @@
-# Header
-- title: [Semantic Theory](semantic-theory.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Semantic Reference Theory](semantic-reference-theory.md)
-- next: [Subject](subject.md)
+# [Semantic Theory](https://dna-platform.github.io/inexplicable-phenomena/dictionary/semantic-theory.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Semantic Reference Theory](./semantic-reference-theory.md)
+- Next: [Subject](./subject.md)
+---
 
 ## Definition
 

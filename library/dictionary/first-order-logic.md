@@ -1,8 +1,8 @@
-# Header
-- title: [First-Order Logic](first-order-logic.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Epistemology](epistemology.md)
-- next: [Formal Logic](formal-logic.md)
+# [First-Order Logic](https://dna-platform.github.io/inexplicable-phenomena/dictionary/first-order-logic.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Epistemology](./epistemology.md)
+- Next: [Formal Logic](./formal-logic.md)
+---
 
 ## Definition
 

@@ -1,8 +1,8 @@
-# Header
-- title: [Object](object.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Metalogical Transduction](metalogical-transduction.md)
-- next: [Ontology](ontology.md)
+# [Object](https://dna-platform.github.io/inexplicable-phenomena/dictionary/object.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Metalogical Transduction](./metalogical-transduction.md)
+- Next: [Ontology](./ontology.md)
+---
 
 ## Definition
 

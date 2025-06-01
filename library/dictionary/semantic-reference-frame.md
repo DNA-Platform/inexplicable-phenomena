@@ -1,8 +1,8 @@
-# Header
-- title: [Semantic Reference Frame](semantic-reference-frame.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Semantic Theory](semantic-theory.md)
-- next: [Semantic Reference Theory](semantic-reference-theory.md)
+# [Semantic Reference Frame](https://dna-platform.github.io/inexplicable-phenomena/dictionary/semantic-reference-frame.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Semantic Theory](./semantic-theory.md)
+- Next: [Semantic Reference Theory](./semantic-reference-theory.md)
+---
 
 ## Definition
 

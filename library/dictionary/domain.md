@@ -1,8 +1,8 @@
-# Header
-- title: [Domain](domain)
-- book: [Dictionary](.dictionary.md)
-- previous: [Dictionary](dictionary.md)
-- next: [Epistemic Motive](epistemic-motive.md)
+# [Domain](https://dna-platform.github.io/inexplicable-phenomena/dictionary/domain.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Dictionary](./dictionary.md)
+- Next: [Epistemic Motive](./epistemic-motive.md)
+---
 
 ## Definition
 

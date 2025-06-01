@@ -1,8 +1,8 @@
-# Header
-- title: [Perception](perception.md)
-- book: [Dictionary](.dictionary.md)
-- previous: [Perspective](perspective.md)
-- next: [Transduction](transduction.md)
+# [Perception](https://dna-platform.github.io/inexplicable-phenomena/dictionary/perception.html)
+- Book: [Dictionary](./.dictionary.md)
+- Prev: [Perspective](./perspective.md)
+- Next: [Transduction](./transduction.md)
+---
 
 ## Definition
 

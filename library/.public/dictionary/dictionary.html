@@ -179,6 +179,30 @@ body {
   font-family: sans-serif;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dna-rose-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.dna-rose-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dna-rose-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
 .book-info {
   display: flex;
   align-items: center;
@@ -548,9 +572,14 @@ body {
   <body>
     <div class="container">
       <header class="academic-header">
-  <div class="book-info">
-    <span class="book-label">Subject</span>
-    <a href="/encyclopedia/semantic-reference-theory.html" class="book-link">Meaning</a>
+  <div class="header-left">
+    <a href="../index.html" class="dna-rose-link" title="Return to Library Index">
+      <img src="https://www.dna.love/images/icons/dna-rose-g1-icon.png?v=2" alt="DNA Rose" class="dna-rose-icon">
+    </a>
+    <div class="book-info">
+      <span class="book-label">Subject</span>
+      <a href="../encyclopedia/semantic-reference-theory.html" class="book-link">Meaning</a>
+    </div>
   </div>
   <div class="navigation-controls">
   </div>
@@ -564,125 +593,147 @@ body {
 <!-- stylelint-disable -->
 <h2 id="definition">Definition</h2>
 <ol>
-<li><p>[Colloquial] A <a href="dictionary.html"><strong>dictionary</strong></a> is a canonical source of <a href="canonical.html">canonical</a> <a href="definition.html">definitions</a>.</p>
-</li>
-<li><p>[Semantic] A <a href="dictionary.html"><strong>dictionary</strong></a> is a catalogue of definitions.</p>
-</li>
-<li><p>[Formal] {TBD}</p>
-</li>
+<li><p>[Colloquial] A <strong>dictionary</strong> is a canonical source of <a href="canonical.html">canonical</a> <a href="definition.html">definitions</a>.</p></li>
+<li><p>[Semantic] A <strong>dictionary</strong> is a <a href="catalogue.html">catalogue</a> of <a href="definition.html">definitions</a>.</p></li>
+<li><p>[Formal] {TBD}</p></li>
 </ol>
-<h2 id="explanation">Explanation</h2>
-<p>It is <a href="self-evident.html">self-evident</a> that a <a href="dictionary.html"><strong>dictionary</strong></a> is a catalogue of definitions:</p>
-<h3 id="definitions">Definitions</h3>
-<ul>
-<li><a href="catalogue.html">Catalogue</a> - The domain of referents in SRT</li>
-<li><a href="conscious-experience.html">Conscious Experience</a> - Change in perspective</li>
-<li><a href="constant.html">Constant</a> - A specific, fixed referent</li>
-<li><a href="definition.html">Definition</a> - Statement establishing meaning</li>
-<li><a href="dictionary.html">Dictionary</a> - Canonical source of definitions</li>
-<li><a href="domain.html">Domain</a> - The scope of variables in a theory</li>
-<li><a href="epistemic-motive.html">Epistemic Motive</a> - What drives systems to extend themselves</li>
-<li><a href="epistemology.html">Epistemology</a> - The study of knowledge and justification</li>
-<li><a href="first-order-logic.html">First-Order Logic</a> - Formal system of quantified predicates</li>
-<li><a href="formal-logic.html">Formal Logic</a> - Rigorous system of symbolic reasoning</li>
-<li><a href="identification.html">Identification</a> - Process of assigning identity</li>
-<li><a href="identity.html">Identity</a> - Intrinsic quality of self-reference</li>
-<li><a href="inheritance.html">Inheritance</a> - Transitive relationship chains</li>
-<li><a href="literature.html">Literature</a> - The collection of objects in a perspective</li>
-<li><a href="logic.html">Logic</a> - The study of valid reasoning</li>
-<li><a href="metalogical-transduction.html">Metalogical Transduction</a> - Abstract operation on formal systems</li>
-<li><a href="metaphysical-transduction.html">Metaphysical Transduction</a> - Physical implementation of transduction</li>
-<li><a href="object.html">Object</a> - The target of a relationship</li>
-<li><a href="ontology.html">Ontology</a> - The study of what exists</li>
-<li><a href="perception.html">Perception</a> - Process of having conscious experiences</li>
-<li><a href="perspective.html">Perspective</a> - Framework for identifying, qualifying, and relating</li>
-<li><a href="property.html">Property</a> - Self-referential relationship</li>
-<li><a href="qualification.html">Qualification</a> - Process of assigning qualities</li>
-<li><a href="reference.html">Reference</a> - Direction of attention from subject to object</li>
-<li><a href="referent.html">Referent</a> - The basic entity in SRT</li>
-<li><a href="relation.html">Relation</a> - Process of establishing connections</li>
-<li><a href="relationship.html">Relationship</a> - Connection between referents</li>
-<li><a href="semantic-reference-frame.html">Semantic Reference Frame</a> - Context for interpreting references</li>
-<li><a href="semantic-reference-theory.html">Semantic Reference Theory</a> - Formal logical system</li>
-<li><a href="semantic-theory.html">Semantic Theory</a> - Derived theory with specific constants</li>
-<li><a href="subject.html">Subject</a> - The source of a relationship</li>
-<li><a href="symbolism.html">Symbolism</a> - System of representation through symbols</li>
-<li><a href="ternary.html">Ternary</a> - The fundamental relation R(x,y,t)</li>
-<li><a href="transduction.html">Transduction</a> - Operation that transforms theories</li>
-<li><a href="transitivity.html">Transitivity</a> - Property of relationship chains</li>
-</ul>
-<h2 id="thematic-organization">Thematic Organization</h2>
-<h3 id="core-concepts">Core Concepts</h3>
-<ul>
-<li><a href="semantic-reference-theory.html">Semantic Reference Theory</a></li>
-<li><a href="ternary.html">Ternary</a></li>
-<li><a href="catalogue.html">Catalogue</a></li>
-<li><a href="referent.html">Referent</a></li>
-</ul>
-<h3 id="relational-structure">Relational Structure</h3>
-<ul>
-<li><a href="subject.html">Subject</a></li>
-<li><a href="object.html">Object</a></li>
-<li><a href="property.html">Property</a></li>
-<li><a href="relationship.html">Relationship</a></li>
-</ul>
-<h3 id="perspective-operations">Perspective Operations</h3>
-<ul>
-<li><a href="perspective.html">Perspective</a></li>
-<li><a href="identification.html">Identification</a></li>
-<li><a href="identity.html">Identity</a></li>
-<li><a href="qualification.html">Qualification</a></li>
-<li><a href="relation.html">Relation</a></li>
-</ul>
-<h3 id="transduction-concepts">Transduction Concepts</h3>
-<ul>
-<li><a href="transduction.html">Transduction</a></li>
-<li><a href="metalogical-transduction.html">Metalogical Transduction</a></li>
-<li><a href="metaphysical-transduction.html">Metaphysical Transduction</a></li>
-<li><a href="perception.html">Perception</a></li>
-<li><a href="epistemic-motive.html">Epistemic Motive</a></li>
-</ul>
-<h3 id="phenomenal-concepts">Phenomenal Concepts</h3>
-<ul>
-<li><a href="physical-phenomena.html">Physical Phenomena</a></li>
-<li><a href="metaphysical-phenomena.html">Metaphysical Phenomena</a></li>
-<li><a href="phenomenon.html">Phenomenon</a></li>
-</ul>
-<h3 id="consciousness-concepts">Consciousness Concepts</h3>
-<ul>
-<li><a href="conscious-experience.html">Conscious Experience</a></li>
-<li><a href="self.html">Self</a></li>
-<li><a href="inexplicable.html">Inexplicable</a></li>
-<li><a href="metaphysical.html">Metaphysical</a></li>
-<li><a href="hard-problem.html">Hard Problem</a></li>
-</ul>
-<h2 id="notes-structure">Notes Structure</h2>
-<p>The notes section contains mathematical formalisms and reflections:</p>
-<h3 id="formalism">Formalism</h3>
-<ul>
-<li><a href="notes/formalism/description/index.html">Description</a></li>
-<li><a href="notes/formalism/expression/index.html">Expression</a></li>
-<li><a href="notes/formalism/provability/index.html">Provability</a></li>
-<li><a href="notes/formalism/reflection/index.html">Reflection</a></li>
-<li><a href="notes/formalism/reflections/index.html">Reflections</a></li>
-</ul>
-<h3 id="golbachs">Golbachs</h3>
-<h2 id="under-development">Under Development</h2>
-<p>The following entries are currently being developed:</p>
-<h3 id="epistemological-concepts">Epistemological Concepts</h3>
-<ul>
-<li>Semantic Assertion - How systems express their semantics</li>
-<li>Completeness - Epistemic motive for extending systems</li>
-<li>Consistency - Maintaining coherence across extension</li>
-</ul>
-<h3 id="consciousness-components">Consciousness Components</h3>
-<ul>
-<li>Self-Evident - What requires no justification</li>
-</ul>
-<h3 id="structural-concepts">Structural Concepts</h3>
-<ul>
-<li>Self-Reference - How systems represent themselves</li>
-</ul>
+
+<h2 id="entries">Entries</h2>
+
+<h3 id="canonical-symbol"><a href="canonical-symbol.html">Canonical Symbol</a></h3>
+<p>The standard <a href="symbol.html">symbol</a> used to refer to a <a href="referent.html">referent</a>. Establishes the most commonly used reference for something within a semantic framework.</p>
+
+<h3 id="catalogue"><a href="catalogue.html">Catalogue</a></h3>
+<p>A collection of connected <a href="referent.html">referents</a> forming the <a href="domain.html">domain</a> of a <a href="semantic-theory.html">semantic theory</a>. All referents must be connected through <a href="relationship.html">relationships</a> either directly or via <a href="inheritance.html">inheritance</a>, with growth occurring through <a href="transduction.html">transduction</a>.</p>
+
+<h3 id="conscious-experience"><a href="conscious-experience.html">Conscious Experience</a></h3>
+<p>An <a href="inexplicable.html">inexplicable</a> yet <a href="self-evident.html">self-evident</a> <a href="metaphysical-phenomena.html">metaphysical phenomenon</a> representing a change in <a href="perspective.html">perspective</a>. Emerges through <a href="metaphysical-transduction.html">metaphysical transduction</a> of <a href="physical-phenomena.html">physical phenomena</a>.</p>
+
+<h3 id="constant"><a href="constant.html">Constant</a></h3>
+<p>A specific, fixed <a href="referent.html">referent</a> within a <a href="catalogue.html">catalogue</a> that maintains <a href="identity.html">identity</a> across the <a href="domain.html">domain</a> of a <a href="semantic-theory.html">semantic theory</a>.</p>
+
+<h3 id="definition"><a href="definition.html">Definition</a></h3>
+<p>A statement establishing meaning through equivalence to formal expressions using the <a href="transduction.html">transduction operator</a>. All <a href="semantic-reference-theory.html">SRT</a> definitions anchor ultimately in the primitive <a href="ternary.html">ternary relation</a>.</p>
+
+<h3 id="domain"><a href="domain.html">Domain</a></h3>
+<p>The collection of all <a href="referent.html">referents</a> within a <a href="catalogue.html">catalogue</a>, establishing the scope for <a href="semantic-theory.html">semantic theories</a>. Domains can expand through <a href="transduction.html">transduction</a> and must maintain connectedness through <a href="relationship.html">relationships</a>.</p>
+
+<h3 id="epistemic-motive"><a href="epistemic-motive.html">Epistemic Motive</a></h3>
+<p>The drive that compels systems to extend themselves through <a href="transduction.html">transduction</a> when encountering <a href="inexplicable.html">inexplicable</a> elements. Represents the fundamental tendency toward completeness in <a href="conscious-experience.html">consciousness</a> and formal systems.</p>
+
+<h3 id="epistemology"><a href="epistemology.html">Epistemology</a></h3>
+<p>The study of knowledge and justification, contrasted with <a href="ontology.html">ontology</a> in <a href="semantic-reference-theory.html">Semantic Reference Theory</a>. SRT bridges epistemology and ontology through <a href="transduction.html">transduction</a> operations.</p>
+
+<h3 id="first-order-logic"><a href="first-order-logic.html">First-Order Logic</a></h3>
+<p>A formal system that <a href="semantic-reference-theory.html">Semantic Reference Theory</a> draws inspiration from while replacing traditional symbology with programmatic notation. Extended by SRT's <a href="ternary.html">ternary relation</a> framework.</p>
+
+<h3 id="formal-logic"><a href="formal-logic.html">Formal Logic</a></h3>
+<p>A symbolic reasoning system that <a href="semantic-reference-theory.html">Semantic Reference Theory</a> builds upon while adopting programmatic grammar. SRT extends formal logic through <a href="ternary.html">ternary relations</a> and <a href="transduction.html">transduction</a>.</p>
+
+<h3 id="hard-problem"><a href="hard-problem.html">Hard Problem</a></h3>
+<p>The challenge of explaining how <a href="physical-phenomena.html">physical phenomena</a> give rise to <a href="conscious-experience.html">conscious experience</a>. In SRT, framed as the <a href="inexplicable.html">inexplicable</a> nature of <a href="metaphysical-transduction.html">metaphysical transduction</a>.</p>
+
+<h3 id="identification"><a href="identification.html">Identification</a></h3>
+<p>The first fundamental operation of a <a href="perspective.html">perspective</a> that assigns <a href="identity.html">identity</a> to <a href="referent.html">referents</a>, enabling them to possess intrinsic identity. Precedes <a href="qualification.html">qualification</a> and <a href="relation.html">relation</a>.</p>
+
+<h3 id="identity"><a href="identity.html">Identity</a></h3>
+<p>The intrinsic quality enabling a <a href="referent.html">referent</a> to be itself, established through <a href="identification.html">identification</a> within a <a href="perspective.html">perspective</a>. Expressed formally as self-reference: <code>(o) =(o)> o</code>.</p>
+
+<h3 id="inexplicable"><a href="inexplicable.html">Inexplicable</a></h3>
+<p>That which cannot be derived from the axioms of a system despite being recognized as real, similar to Gödel sentences. Core to understanding why <a href="conscious-experience.html">conscious experience</a> is <a href="metaphysical.html">metaphysical</a> rather than physical.</p>
+
+<h3 id="inheritance"><a href="inheritance.html">Inheritance</a></h3>
+<p>A <a href="transitivity.html">transitive</a> relationship enabling <a href="referent.html">referents</a> to connect through chains of <a href="relationship.html">direct relationships</a>. Creates hierarchical structures within <a href="catalogue.html">catalogues</a> and enables <a href="property.html">property</a> inheritance.</p>
+
+<h3 id="literal"><a href="literal.html">Literal</a></h3>
+<p>A <a href="referent.html">referent</a> that serves as an endpoint in <a href="reference.html">reference</a> chains, representing concrete <a href="object.html">objects</a> that are not themselves <a href="symbol.html">symbols</a> for other entities.</p>
+
+<h3 id="literature"><a href="literature.html">Literature</a></h3>
+<p>The collection of <a href="object.html">objects</a> in a <a href="perspective.html">perspective</a>, complementing <a href="symbolism.html">symbolism</a> to form complete representational systems. Represents what is symbolized rather than the symbolizing elements.</p>
+
+<h3 id="logic"><a href="logic.html">Logic</a></h3>
+<p>The study of valid reasoning that provides the foundation for <a href="formal-logic.html">formal logic</a> and <a href="semantic-reference-theory.html">Semantic Reference Theory</a>. SRT extends logical systems through <a href="transduction.html">transduction</a> operations.</p>
+
+<h3 id="metalogical-transduction"><a href="metalogical-transduction.html">Metalogical Transduction</a></h3>
+<p>The abstract operation on formal systems that transforms one theory into another while preserving structure. Manifests as theory extension in logic and corresponds to <a href="metaphysical-transduction.html">metaphysical transduction</a> in <a href="conscious-experience.html">consciousness</a>.</p>
+
+<h3 id="metaphysical"><a href="metaphysical.html">Metaphysical</a></h3>
+<p>Relating to phenomena that transcend physical explanation while still relating to physical processes. In SRT, <a href="conscious-experience.html">conscious experience</a> is metaphysical because it emerges from but cannot be reduced to <a href="physical-phenomena.html">physical phenomena</a>.</p>
+
+<h3 id="metaphysical-phenomena"><a href="metaphysical-phenomena.html">Metaphysical Phenomena</a></h3>
+<p>Representations of <a href="physical-phenomena.html">physical phenomena</a> that emerge through <a href="metaphysical-transduction.html">metaphysical transduction</a> and constitute <a href="conscious-experience.html">conscious experience</a>. Are <a href="self-evident.html">self-evident</a> yet <a href="inexplicable.html">inexplicable</a> within a <a href="perspective.html">perspective</a>.</p>
+
+<h3 id="metaphysical-transduction"><a href="metaphysical-transduction.html">Metaphysical Transduction</a></h3>
+<p>The physical implementation of <a href="transduction.html">transduction</a> that transforms <a href="physical-phenomena.html">physical phenomena</a> into <a href="metaphysical-phenomena.html">metaphysical phenomena</a>. Synonymous with <a href="perception.html">perception</a> and the basis of <a href="conscious-experience.html">conscious experience</a>.</p>
+
+<h3 id="object"><a href="object.html">Object</a></h3>
+<p>The target of a <a href="relationship.html">relationship</a> in the <a href="ternary.html">ternary relation</a> <code>x =t> y</code>, where y is the object. Can be the target of <a href="reference.html">reference</a> from a <a href="subject.html">subject</a> or possess <a href="property.html">properties</a>.</p>
+
+<h3 id="ontology"><a href="ontology.html">Ontology</a></h3>
+<p>The study of what exists, contrasted with <a href="epistemology.html">epistemology</a> in <a href="semantic-reference-theory.html">Semantic Reference Theory</a>. SRT creates concrete ontologies through <a href="transduction.html">transduction</a> from abstract epistemological frameworks.</p>
+
+<h3 id="perception"><a href="perception.html">Perception</a></h3>
+<p>Synonymous with <a href="metaphysical-transduction.html">metaphysical transduction</a> - the process of having <a href="conscious-experience.html">conscious experiences</a>. Transforms <a href="physical-phenomena.html">physical phenomena</a> into <a href="metaphysical-phenomena.html">metaphysical phenomena</a> within a <a href="perspective.html">perspective</a>.</p>
+
+<h3 id="perspective"><a href="perspective.html">Perspective</a></h3>
+<p>A <a href="semantic-reference-frame.html">semantic reference frame</a> with a single <a href="catalogue.html">catalogue</a> that enables <a href="identification.html">identification</a>, <a href="qualification.html">qualification</a>, and <a href="relation.html">relation</a>. Contains a qualifier that provides <a href="self.html">self-reference</a> and establishes first-person experience.</p>
+
+<h3 id="phenomenon"><a href="phenomenon.html">Phenomenon</a></h3>
+<p>An observable event or experience that serves as an object of study. In SRT, phenomena are categorized as either <a href="physical-phenomena.html">physical</a> or <a href="metaphysical-phenomena.html">metaphysical</a> based on their relationship to <a href="conscious-experience.html">consciousness</a>.</p>
+
+<h3 id="physical-phenomena"><a href="physical-phenomena.html">Physical Phenomena</a></h3>
+<p>Events and processes in objective reality that serve as inputs to <a href="metaphysical-transduction.html">metaphysical transduction</a>. Include measurable entities like photons and neural activity that exist independently of <a href="conscious-experience.html">consciousness</a>.</p>
+
+<h3 id="property"><a href="property.html">Property</a></h3>
+<p>A special case of <a href="relationship.html">relationship</a> where the <a href="subject.html">subject</a> and <a href="object.html">object</a> are identical (R(x,x,t)). Properties represent intrinsic characteristics established through <a href="qualification.html">qualification</a> within a <a href="perspective.html">perspective</a>.</p>
+
+<h3 id="qualification"><a href="qualification.html">Qualification</a></h3>
+<p>The second fundamental operation of a <a href="perspective.html">perspective</a> that assigns qualities to <a href="referent.html">referents</a> through <a href="property.html">properties</a>. Follows <a href="identification.html">identification</a> and precedes <a href="relation.html">relation</a>.</p>
+
+<h3 id="reference"><a href="reference.html">Reference</a></h3>
+<p>The directional act by which a <a href="subject.html">subject</a> relates to a distinct <a href="object.html">object</a> through specific <a href="relationship.html">relationship types</a>. Reference mediates meaning through <a href="symbol.html">symbols</a> and establishes the foundation for semantic content.</p>
+
+<h3 id="referent"><a href="referent.html">Referent</a></h3>
+<p>A basic entity that can participate in the <a href="ternary.html">ternary relation</a> as <a href="subject.html">subject</a>, <a href="object.html">object</a>, or relationship type. Referents correspond to <a href="constant.html">constants</a> and maintain <a href="identity.html">identity</a> through their <a href="relationship.html">relationships</a>.</p>
+
+<h3 id="relation"><a href="relation.html">Relation</a></h3>
+<p>The third fundamental operation of a <a href="perspective.html">perspective</a> that establishes connections between <a href="referent.html">referents</a> through <a href="relationship.html">relationships</a>. Follows <a href="identification.html">identification</a> and <a href="qualification.html">qualification</a>.</p>
+
+<h3 id="relationship"><a href="relationship.html">Relationship</a></h3>
+<p>A connection between <a href="referent.html">referents</a> through the <a href="ternary.html">ternary relation</a> R(x,y,t), taking various forms including direct relationships, <a href="property.html">properties</a>, <a href="inheritance.html">inheritance</a>, and <a href="reference.html">reference</a>. Creates semantic networks within <a href="catalogue.html">catalogues</a>.</p>
+
+<h3 id="self"><a href="self.html">Self</a></h3>
+<p>The unique possession of the <a href="subject.html">subject</a> of <a href="conscious-experience.html">conscious experience</a>, providing the first-person center of a <a href="perspective.html">perspective</a>. Enables <a href="self-evident.html">self-evidence</a> and distinguishes one consciousness from another.</p>
+
+<h3 id="self-evident"><a href="self-evident.html">Self-Evident</a></h3>
+<p>That which is apparent without justification from a given <a href="perspective.html">perspective</a>. <a href="conscious-experience.html">Conscious experiences</a> are self-evident to the <a href="self.html">self</a> experiencing them.</p>
+
+<h3 id="semantic-reference-frame"><a href="semantic-reference-frame.html">Semantic Reference Frame</a></h3>
+<p>The foundational framework within which <a href="reference.html">references</a> and <a href="relationship.html">relationships</a> can be interpreted and understood. Provides the context for meaning construction in <a href="semantic-reference-theory.html">Semantic Reference Theory</a>.</p>
+
+<h3 id="semantic-reference-theory"><a href="semantic-reference-theory.html">Semantic Reference Theory</a></h3>
+<p>A formal logical system built around the <a href="ternary.html">ternary relation</a> R(x,y,t) that bridges <a href="epistemology.html">epistemology</a> and <a href="ontology.html">ontology</a> through <a href="transduction.html">transduction</a>. SRT provides a universal framework for representing <a href="reference.html">referential relationships</a> using <a href="catalogue.html">catalogues</a> of interconnected <a href="referent.html">referents</a>.</p>
+
+<h3 id="semantic-theory"><a href="semantic-theory.html">Semantic Theory</a></h3>
+<p>A specific implementation of <a href="semantic-reference-theory.html">Semantic Reference Theory</a> with concrete <a href="constant.html">constants</a> and <a href="definition.html">definitions</a>. Derived from the general SRT framework through <a href="transduction.html">transduction</a> operations.</p>
+
+<h3 id="subject"><a href="subject.html">Subject</a></h3>
+<p>The source of a <a href="relationship.html">relationship</a> in the <a href="ternary.html">ternary relation</a> <code>x =t> y</code>, where x is the subject. Can initiate <a href="reference.html">reference</a> to <a href="object.html">objects</a> and possess <a href="property.html">properties</a>.</p>
+
+<h3 id="symbol"><a href="symbol.html">Symbol</a></h3>
+<p>A <a href="referent.html">referent</a> whose most specific <a href="relationship.html">relationship</a> is representing another <a href="referent.html">referent</a>. Distinguished from <a href="literature.html">literature</a> as the representing rather than represented elements in <a href="symbolism.html">symbolism</a>.</p>
+
+<h3 id="symbolism"><a href="symbolism.html">Symbolism</a></h3>
+<p>The collection of <a href="referent.html">referents</a> that function as <a href="symbol.html">symbols</a> within a <a href="catalogue.html">catalogue</a>, complementing <a href="literature.html">literature</a> to form complete representational systems.</p>
+
+<h3 id="ternary"><a href="ternary.html">Ternary</a></h3>
+<p>The fundamental primitive of <a href="semantic-reference-theory.html">Semantic Reference Theory</a>, expressed as R(x,y,t) or <code>x =t> y</code>, where x is the <a href="subject.html">subject</a>, y is the <a href="object.html">object</a>, and t is the <a href="relationship.html">relationship</a> type. When x equals y, t represents a <a href="property.html">property</a> rather than a relationship.</p>
+
+<h3 id="transduction"><a href="transduction.html">Transduction</a></h3>
+<p>The bridge operation between <a href="epistemology.html">epistemology</a> and <a href="ontology.html">ontology</a> that transforms one theory into another while preserving structure. Manifests as <a href="metalogical-transduction.html">metalogical transduction</a> in formal systems and <a href="metaphysical-transduction.html">metaphysical transduction</a> in consciousness.</p>
+
+<h3 id="transitivity"><a href="transitivity.html">Transitivity</a></h3>
+<p>The property that enables <a href="relationship.html">relationship</a> chains to compose, allowing <a href="inheritance.html">inheritance</a> to propagate through multiple connections. Essential for creating hierarchical structures in <a href="catalogue.html">catalogues</a>.</p>
 
         </article>
       </div>
