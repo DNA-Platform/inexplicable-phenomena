@@ -1,0 +1,901 @@
+<!-- @css-disable -->
+<!-- css-lint-disable -->
+<!-- stylelint-disable -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="css-lint" content="disabled">
+    <title>On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems (Second Draft) | Inexplicable Phenomena</title>
+
+    <!-- GitHub Markdown CSS for general markdown styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+
+    <!-- highlight.js GitHub stylesheet for code blocks -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+
+    <!-- KaTeX CSS and JS for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Google Fonts - Academic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom styles for academic elements -->
+    <style>/*! css-lint-disable */
+/* Academic styling for Inexplicable Phenomena project */
+
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --border-color: #e0e0e0;
+  --text-color: #333;
+  --background-color: #fff;
+  --link-color: #0645ad; /* Wikipedia link blue */
+  --link-hover-color: #0b0080; /* Wikipedia visited link color */
+  --header-bg: #f8f9fa; /* Wikipedia light gray */
+  --footer-bg: #f8f9fa;
+  --nav-hover-bg: #eaecf0;
+  --code-bg: #f6f8fa;
+  --quote-border: #dfe2e5;
+  --modal-overlay: rgba(27, 31, 35, 0.5); /* GitHub modal backdrop */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Entry Title (from header metadata) */
+.entry-title {
+  font-size: 1.7em;
+  margin: 0.3em 0 0.8em 0; /* Reduced top and bottom margins */
+  font-weight: 600;
+  color: var(--primary-color);
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.github-source-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  position: relative;
+}
+
+.github-source-link:hover {
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.github-source-link:hover::after {
+  content: "⧉";
+  font-size: 0.6em;
+  position: relative;
+  top: -0.6em;
+  margin-left: 0.3em;
+  color: var(--link-hover-color);
+}
+
+/* Navigation Elements - inspired by Wikipedia article navigation */
+.navigation-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: normal;
+  color: var(--link-color);
+  background-color: var(--header-bg);
+  border: 1px solid #a2a9b1; /* Wikipedia border color */
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background-color: var(--nav-hover-bg);
+  text-decoration: none;
+  color: var(--link-hover-color);
+}
+
+.nav-link:active {
+  background-color: #c8ccd1;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Triangle arrows - substantial and directional */
+.nav-arrow {
+  width: 0;
+  height: 0;
+  display: inline-block;
+  font-size: 0;
+  line-height: 0;
+}
+
+.prev-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #72777d;
+  margin-right: 8px;
+}
+
+.next-link .nav-arrow {
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #72777d;
+  margin-left: 8px;
+}
+
+.nav-text {
+  font-family: 'Liberation Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Question mark button - Wikipedia style */
+.thoughts-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #c8ccd1;
+  color: #222;
+  border: 1px solid #a2a9b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: 4px;
+  font-family: 'Linux Libertine','Georgia','Times',serif;
+  line-height: 1;
+  padding: 0;
+}
+
+.thoughts-button:hover {
+  background-color: #eaecf0;
+}
+
+/* Academic Header Styling */
+.academic-header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid #c8ccd1;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-family: sans-serif;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dna-rose-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.dna-rose-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dna-rose-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.book-info {
+  display: flex;
+  align-items: center;
+}
+
+.book-label {
+  display: none; /* Hide the "From" label */
+}
+
+.book-link {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 15px; /* Larger font size for more prominence */
+}
+
+.book-link:hover {
+  text-decoration: underline;
+}
+
+/* Academic Footer Styling - Wikipedia/GitHub hybrid style */
+.academic-footer {
+  border-top: 1px solid #c8ccd1;
+  padding: 16px;
+  margin-top: 30px;
+  background-color: var(--footer-bg);
+  font-family: sans-serif;
+}
+
+.footer-section {
+  margin-bottom: 16px;
+}
+
+.footer-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292e; /* GitHub header color */
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eaecef; /* GitHub separator */
+  padding-bottom: 4px;
+}
+
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* Update only the related links to use GitHub-style boxes */
+.related-link {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #f1f8ff;
+  border-radius: 3px;
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid #c8e1ff;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.related-link:hover {
+  background-color: #dbedff;
+  border-color: #79b8ff;
+  text-decoration: none;
+}
+
+/* Remove dot separators */
+.related-link:after {
+  content: "";
+  margin: 0;
+}
+
+.related-link:last-child:after,
+.last-related:after {
+  content: "";
+}
+
+/* GitHub repo link */
+.github-link-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.github-repo-link {
+  display: inline-flex;
+  align-items: center;
+  color: #6a737d;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.github-repo-link:hover {
+  color: var(--link-hover-color);
+}
+
+.github-icon {
+  margin-right: 5px;
+}
+
+/* Thoughts Modal - GitHub style */
+.thoughts-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-overlay);
+}
+
+.thoughts-modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 16px;
+  border-radius: 6px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2); /* GitHub shadow */
+  border: 1px solid #d1d5da;
+}
+
+.thoughts-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e1e4e8; /* GitHub separator */
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.thoughts-modal-header h3 {
+  margin: 0;
+  color: #24292e;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.close-thoughts {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #586069;
+  padding: 0;
+}
+
+.thoughts-modal-body ul {
+  padding-left: 24px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.thoughts-modal-body li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+  color: #24292e;
+  font-size: 14px;
+}
+
+/* Article Content Styling */
+.article-container {
+  max-width: 860px; 
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* Let GitHub markdown CSS handle .markdown-body default styling */
+.markdown-body {
+  padding: 20px 0; /* Reduced horizontal padding to 0 for less indent, kept some vertical padding */
+  border-radius: 6px;
+}
+
+/* LaTeX environment styling */
+.latex-env {
+  margin: 1.5em 0;
+  padding: 0.8em 1em;
+  border-left: 4px solid #4a4a4a;
+  background-color: #f8f8f8;
+}
+
+.env-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.env-content {
+  display: block;
+}
+
+/* Specific environment styling */
+.theorem { border-left-color: #4a4a4a; }
+.lemma { border-left-color: #5a6268; }
+.proof { border-left-color: #6c757d; }
+.definition { border-left-color: #28a745; }
+.example { border-left-color: #007bff; }
+.remark { border-left-color: #fd7e14; }
+.note { border-left-color: #17a2b8; }
+.corollary { border-left-color: #6f42c1; }
+
+/* KaTeX rendering support */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1em 0;
+}
+
+.math-display {
+  margin: 1em 0;
+}
+
+.math-inline {
+  display: inline-block;
+}
+
+.math-error {
+  color: red;
+  font-weight: bold;
+}
+
+/* Bibliography and citation styling */
+.bibliography {
+  margin-top: 2em;
+  padding-top: 1em;
+}
+
+.citation-ref {
+  font-size: 0.8em;
+  position: relative;
+  top: -0.5em;
+  text-decoration: none;
+}
+
+.citation-backref {
+  font-size: 0.8em;
+  text-decoration: none;
+  margin-left: 0.5em;
+}
+
+.citation-entry {
+  margin-bottom: 1em;
+}
+
+.bibliography ol {
+  padding-left: 1.5em;
+}
+
+/* Definition syntax highlighting */
+[class^="SRT"], [class*=" SRT"] {
+  color: #005cc5; /* GitHub blue */
+  font-weight: 500;
+}
+
+[class^="Formal"], [class*=" Formal"] {
+  color: #6f42c1; /* GitHub purple */
+  font-weight: 500;
+}
+
+[class^="Cognitive"], [class*=" Cognitive"] {
+  color: #22863a; /* GitHub green */
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+  
+  .academic-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .navigation-controls {
+    margin-top: 15px;
+  }
+  
+  .markdown-body {
+    padding: 15px 0;
+  }
+  
+  .thoughts-modal-content {
+    width: 90%;
+    margin: 20% auto;
+  }
+}
+    </style>
+
+    <!-- Script to initialize KaTeX rendering -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$", right: "$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: "#cc0000",
+          strict: false
+        });
+      });
+    </script>
+
+    
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing interactive elements');
+    
+    // Thoughts modal functionality
+    const thoughtsButton = document.querySelector('.thoughts-button');
+    const thoughtsModal = document.getElementById('thoughtsModal');
+    const closeThoughts = document.querySelector('.close-thoughts');
+    
+    console.log('Thoughts button found:', thoughtsButton ? 'yes' : 'no');
+    console.log('Thoughts modal found:', thoughtsModal ? 'yes' : 'no');
+    
+    if (thoughtsButton && thoughtsModal) {
+      thoughtsButton.addEventListener('click', function() {
+        console.log('Thoughts button clicked');
+        thoughtsModal.style.display = 'block';
+      });
+      
+      if (closeThoughts) {
+        closeThoughts.addEventListener('click', function() {
+          thoughtsModal.style.display = 'none';
+        });
+      }
+      
+      window.addEventListener('click', function(event) {
+        if (event.target === thoughtsModal) {
+          thoughtsModal.style.display = 'none';
+        }
+      });
+    }
+    
+    // Make sure related links don't have extra bullets
+    const relatedLinks = document.querySelectorAll('.related-link');
+    if (relatedLinks.length > 0) {
+      const lastLink = relatedLinks[relatedLinks.length - 1];
+      if (lastLink) {
+        lastLink.classList.add('last-related');
+      }
+    }
+    
+    // Initialize KaTeX rendering if available
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false,
+        errorColor: "#cc0000",
+        strict: false
+      });
+    }
+  });
+</script>
+  </head>
+  <body>
+    <div class="container">
+      <header class="academic-header">
+  <div class="header-left">
+    <a href="../../../index.html" class="dna-rose-link" title="Return to Library Index">
+      <img src="https://www.dna.love/images/icons/dna-rose-g1-icon.png?v=2" alt="DNA Rose" class="dna-rose-icon">
+    </a>
+    <div class="book-info">
+      <span class="book-label">Subject</span>
+      <a href="../../../encyclopedia/semantic-reference-theory.html" class="book-link">Meaning</a>
+    </div>
+  </div>
+  <div class="navigation-controls">
+    <a href="../first-draft/inexplicable-phenomena.html" class="nav-link prev-link" title="First Draft">
+      <span class="nav-arrow"></span>
+      <span class="nav-text">First Draft</span>
+    </a>
+    <a href="../inexplicable-phenomena.html" class="nav-link next-link" title="Current Version">
+      <span class="nav-text">Current Version</span>
+      <span class="nav-arrow"></span>
+    </a>
+  </div>
+</header><h1 class="entry-title"><a href="https://github.com/DNA-Platform/inexplicable-phenomena/blob/main/library/articles/inexplicable-phenomena/second-draft/inexplicable-phenomena.md" class="github-source-link">On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems (Second Draft)</a></h1>
+
+      <div class="article-container">
+        <!-- The .markdown-body class is necessary for github-markdown-css -->
+        <article class="markdown-body">
+          <h3><a href="https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/inexplicable-phenomena.html">On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems</a></h3>
+<ul>
+<li>Subject: <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html">Conscious Experience</a></li>
+</ul>
+
+<h4>Abstract</h4>
+
+<p>Since Descartes first proclaimed "cogito, ergo sum" back in 1637, "I think, therefore I am" has become the Declaration of Independence for consciousness. Chalmers informed us of the fact that science has a constitutionally <em>Hard Problem</em> on their hands. If he's right, conscious experience may forever elude our most powerful explanatory framework for physical phenomena. In other news, a group referring to themselves as the <em>IIT-Concerned</em> recently proclaimed in Nature Neuroscience that any theory of consciousness that can't stand up to the scrutiny of science shall be deemed "unscientific." And the emergence of Semantic AI has transformed this philosophical oddity into a practical concern with real ethical implications. We simply cannot know whether AI systems are conscious without first knowing the necessary and sufficient conditions for consciousness. How can we provide a formal definition of conscious experience that preserves the essence of its metaphysical character in a framework that is physically falsifiable?</p>
+
+<h3>Keywords</h3>
+<ul>
+<li>Formal Theories of Consciousness</li>
+<li>The Hard Problem</li>
+<li>Subjectivity</li>
+<li>Semantic AI</li>
+<li>Metaphysical Transduction</li>
+</ul>
+
+<h2>A Colloquial Derivation</h2>
+
+<p>Almost 2/3 of surveyed philosophers acknowledge the existence of the Hard Problem, and 1/3 of them think that it's actually hard <sup><a href="#citation-bourget-chalmers-2023" id="citation-ref-BourgetChalmers2023" class="citation-ref">[1]</a></sup>! Conscious experience is a field that spans disciplines, there is nothing that resembles scientific consensus, and there is nothing that resembles a testable theory. But we do have a compellingly elegant framing of the problem. And this framing of the problem is real enough to be <em>real</em> by majority vote. So we shall begin with Chalmers.</p>
+
+<p>In his seminal work <a href="http://consc.net/papers/facing.pdf">"Facing Up to the Problem of Consciousness,"</a> David Chalmers begins with a powerful observation that establishes the seemingly paradoxical nature of our subject: "There is nothing that we know more intimately than <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html"><strong>conscious experience</strong></a>, but there is nothing that is harder to explain." From the first part of this statement, we can immediately identify a fundamental characteristic of conscious experience that echos with Descartes: it is a <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/self-evident.html"><strong>self-evident</strong></a> phenomenon. Nothing is known more intimately than conscious experiences. They present themselves directly to their observer, requiring no justification beyond the experience itself.</p>
+
+<p>The second part of Chalmers' statement suggests difficulty of explanation, but he goes on to clarify just how profound this difficulty is. Chalmers argues that "the emergence of experience goes beyond what can be derived from physical theory" and "the facts about experience cannot be an automatic consequence of any physical account." These statements establish that conscious experience isn't merely difficult to explain within our current scientific framework but fundamentally resistant to any such explanation. It is <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/inexplicable.html"><strong>inexplicable</strong></a> in principle He asks pointedly: "Why should physical processing give rise to a rich inner life at all? It seems objectively unreasonable that it should, and yet it does."</p>
+
+<p>Regarding the relationship between conscious experience and physical processes, Chalmers makes a crucial observation: "Experience may arise from the physical, but it is not entailed by the physical." This statement positions conscious experience in a unique relationship to physical reality. According to our canonical dictionary, "metaphysical" refers to that which relates to "the transcendent or to a reality beyond what is perceptible to the senses" <sup><a href="#citation-dictionary-mv" id="citation-ref-DictionaryMV" class="citation-ref">[2]</a></sup>. Conscious experience precisely fits this definition: it transcends physical explanation while still relating to physical processes. It is fundamentally <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/metaphysical.html"><strong>metaphysical</strong></a> in nature.</p>
+
+<p>Throughout his analysis, Chalmers treats conscious experience as a <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/phenomenon.html"><strong>phenomenon</strong></a>, both in the sense of phenomenal experience and as an object of scientific study. The term "phenomenon" captures this dual aspect perfectly. A phenomenon is both "an object or aspect known through the senses" and "a fact or event of scientific interest susceptible to scientific description and explanation." Conscious experience is simultaneously the subjective experience itself and the object of our scientific inquiry. The etymological connection between "phenomenon" and "phenomenal" reinforces this as the appropriate term for our work <sup><a href="#citation-bader-2022" id="citation-ref-Bader2022" class="citation-ref">[3]</a></sup>.</p>
+
+<p>By synthesizing these insights from Chalmers, we can formulate a definition that captures the essential nature of a conscious experience:</p>
+
+<blockquote>
+<p><em>Colloquial Definition</em>: A <strong>conscious experience</strong> is an inexplicable yet self-evident metaphysical phenomenon.</p>
+</blockquote>
+
+<blockquote>
+<p><em>Colloquial Example</em>: I catch you admiring a rose in my garden and I absentmindedly ask "how did you figure out its color?" You chuckle and reply "It's red, Doug. I promise." Why do I feel like everyone always doubts my sanity when I ask them that question?</p>
+</blockquote>
+
+<h2>The Semantics of <em>Colloquialism</em></h2>
+
+<p>The <em>colloquial</em> refers to language that is familiar, conversational, and notably <em>informal</em>. Yet the value of informality, it would seem, is to preserve something about the <em>meaning</em> of a phrase. Formalizing the notion of meaning is a fundamental requirement for any would-be formalization of consciousness. Semantics is the academic discipline concerned with the study of meaning <sup><a href="#citation-grice-1957" id="citation-ref-Grice1957" class="citation-ref">[4]</a></sup>. If language captures the <em>symbolism</em> of meaning, then semantics capture <em>symbolism</em> itself. What does it <em>mean</em> to have symbols with no one nearby to interpret them - colloquially or formally? In what <em>sense</em> can they then be said to be symbolic of anything?</p>
+
+<p>Newton famously employed the use of colloquialism to pave the way to the mathematical phrasing of his Laws of Motion. And colloquialism compounds! "For every action there is an equal and opposite reaction" is itself the colloquial form of Newton's Third Law of Motion. The original is actually written in Latin, and its canonical translation reads:</p>
+
+<blockquote>
+<p>To every action, there is always opposed an equal reaction; or, the mutual actions of two bodies upon each other are always equal, and directed to contrary parts --- Newton, <em>Philosophiæ Naturalis Principia Mathematica</em>, 1687</p>
+</blockquote>
+
+<p>Newton intentionally utilized semantic form, albeit wrapped in Latin formalism, to articulate the beginnings of a formalism that has come to mean "physics." And the idea that a mathematical model of arithmetic can semantically entail |= something, despite the fact that its formalism cannot derive |- it syntactically, is fundamental to how logicians have come to grapple with the philosophical baggage of the Gödel Sentence <sup><a href="#citation-smullyan-1992" id="citation-ref-Smullyan1992" class="citation-ref">[5]</a></sup> <sup><a href="#citation-tarski-1935" id="citation-ref-Tarski1935" class="citation-ref">[6]</a></sup>.</p>
+
+<p>So in that spirit, let me suggest that this distillation of Chalmers' <em>Hard Problem</em> serves to capture the meaning of something:</p>
+
+<blockquote>
+<p><em>Semantic Definition</em>: A <em>conscious experience</em> is an inexplicable yet self-evident metaphysical phenomenon.</p>
+</blockquote>
+
+<h2>A Self-Evident Perspective</h2>
+
+<p>I'd like to make a point <sup><a href="#citation-reference" id="citation-ref-Reference" class="citation-ref">[7]</a></sup>. In what sense is our Semantic Definition a definition of something? Is "inexplicable yet self-evident" more like a property of something?</p>
+
+<p>The point I'd like to make <sup><a href="#citation-reference2" id="citation-ref-Reference2" class="citation-ref">[8]</a></sup> is that the unique way in which "self-evident" employs itself in our definition is the exact way in which a conscious experience requires a "self" to find it evident, along with some conceptualization of objectivism in which it is found to be inexplicable. The definition captures the idea of intrinsic meaning, but with the caveat that its meaning is bound, subjectively, to one particular perspective: the first-person subjective. And that its articulation shall forever escape another: the third-person objective.</p>
+
+<p>As both a concept and a phrase, "self-evident" is generally employed for the sake of generalization. Here are three notable examples:</p>
+
+<blockquote>
+<p>It is self-evident that the whole is greater than its part --- Immanuel Kant, Critique of Pure Reason, 1781</p>
+</blockquote>
+
+<blockquote>
+<p>We hold these truths to be self-evident, that all men are created equal --- Thomas Jefferson, Declaration of Independence, 1776</p>
+</blockquote>
+
+<blockquote>
+<p>We must know the primary things by themselves; for they [the self-evident things] are indemonstrable [inexplicable herein], and must be known by intuition --- Aristotle, Posterior Analytics, circa 350 BCE</p>
+</blockquote>
+
+<p>Aristotle's formulation of this notion of evidence, however indirect, is particularly fundamental. Through his turn of phrase, he expresses the idea of an axiom of logic. An axiom represents an assumption on the part of the thinker. And if you are to assume yourself to be a consistent thinker, you must believe your assumptions to be self-evident, at least to your current argument. The "axiom" of formal logic formalizes the very notion of a "self-evident" truth.</p>
+
+<p>Note that in all three examples, all men [finally feat: women circa 1972] are meant to hold these three truths self-evident. They each make an appeal to the third-person objective perspective. Our definition distinctly <em>doesn't</em> do that. It requires a singular perspective from which it is objective. And the notion of being <em>singularly objective</em> could be taken to be the semantic definition of "subjective." Conscious experience, as we have defined it, requires an emergence of a unique first-person subjective perspective.</p>
+
+<p>In our search for a formalism of conscious experience, let us dwell on the idea that a conscious experience is only made meaningful in the context of a perspective in which a proposition might qualify as self-evident. Colloquially, a perspective is defined in a visual sense as "a particular way of viewing" something. It is also defined more generally in a cognitive sense as "a particular way of considering something" <sup><a href="#citation-dictionary-c" id="citation-ref-DictionaryC" class="citation-ref">[9]</a></sup>. In literature, the first-person perspective is now more frequently referred to as the first person point-of-view, where "point of view" is defined as "a way of considering something" <sup><a href="#citation-dictionary-c2" id="citation-ref-DictionaryC2" class="citation-ref">[9]</a></sup>. Therefore, using "first-person perspective" in our formalization emphasizes that perspective applies to vision, but its domain is that which can be considered subjectively.</p>
+
+<p>"Third-person objective" is a perspective in which subjectivity has been factored out. Logic, mathematics, science, philosophy, and engineering all make use of knowledge as fact. A fact is fundamentally a third person objective construct. As an appeal to bijective analogy, I propose the following two semantic assertions:</p>
+
+<blockquote>
+<p><em>Semantic Assertion</em> The <em>First-Person Subjective Perspective</em> (<code>FPP</code>) is a semantic reference frame in which a particular conscious experience is self-evident.</p>
+</blockquote>
+
+<blockquote>
+<p><em>Semantic Assertion</em> The <em>Third-Person Objective Perspective</em> (<code>TPP</code>) is a semantic reference frame in which <em>conscious experience</em> is inexplicable.</p>
+</blockquote>
+
+<p>A perspective admits a "particular" way of viewing or considering something. A conscious experience represents an atomic unit of <em>that which can be viewed or considered.</em> Therefore, a conscious experience acts like a particle of subjectivity within the context of a <code>FPP</code>. In the context of visual and sensory perception, the <code>TPP</code> expresses scientific fact. And the explanatory gap of the Hard Problem an expression of the idea that a particle of subjectivity cannot be accounted for objectively.</p>
+
+<p><a href="../a-novel-perspective/a-novel-perspective.html">Let me suggest that a formalization that unifies the semantic and physical descriptions of <em>perspective</em> will provide a natural framework in which to express a conscious experience as an inexplicable yet self-evident phenomenon.</a></p>
+
+<h2>A Change of Symbol</h2>
+
+<p>Having established the <em>particular</em> nature of a perspective, and the <em>particulate</em> nature of a conscious experience with respect to one, we can express the way in which the two are related. If you imagine your perspective as a particular way of viewing or considering something, and that the particular of your perspective allow you to have thoughts about the objects of your perspective, and to write down symbols to express your point of view and explain your thoughts, we can easily imagine the role that having a conscious experience plays in this process. To see a red rose is to change the <em>particulars</em> of your perspective, by adding new <em>particles</em>. These particles are symbolic, but they also serve to expand the repertoire of objects or concepts that you have access to. There are new thoughts you can think and sentences you can symbolize to express the beauty of this <em>as yet unseen</em> red rose that you then saw:</p>
+
+<blockquote>
+<p><em>Semantic Assertion</em> A conscious experience represents a <em>change</em> in perspective.</p>
+</blockquote>
+
+<blockquote>
+<p><em>Colloquial Example</em>: I catch you admiring a rose in my garden and I absentmindedly ask "what does it look like?" You reply "Come over here and see for your<em>self</em>!"</p>
+</blockquote>
+
+<p>There is an elegance to this articulation of a conscious experience. It suggests that <em>consciousness</em> is an evolution of perspective that unfolds over time. Let us attempt to capture this elegance with a hint of formalism.</p>
+
+<p>Let <code>P</code> be the physical description of a particular perspective, and let <code>c</code> be the physical description of the physical phenomenon that corresponds to a particular conscious experience. Reductive, monist, materialist, and physicalist perspectives are grounded in "the causal closure of the physical" so we can admit such symbols into our formalism <sup><a href="#citation-papineau-2002" id="citation-ref-Papineau2002" class="citation-ref">[10]</a></sup> <sup><a href="#citation-davidson-1970" id="citation-ref-Davidson1970" class="citation-ref">[11]</a></sup>. I shall also introduce a new formal object, which I refer to as the transduction operator</p>
+
+<blockquote>
+<p><code>|=&gt;</code></p>
+</blockquote>
+
+<p>It inherits its <em>typography</em> from the symbol for semantic entailment <code>|=</code> composed with a symbol to represent the implication of physical cause <code>=&gt;</code>. We can express a change in perspective using is as an indexable operator:</p>
+
+<blockquote>
+<p><code>P |=c&gt; P[c]</code></p>
+</blockquote>
+
+<p>I intend this to read: the transduction of a conscious experience causes a perspective to change in order to accommodate it. <code>P[c]</code> expresses the realization of this change in some way. What exactly does a perspective to do accommodate a conscious experience? I will attempt to provide some insight into that in the sections that follow.</p>
+
+<h2>A Form of Semantics</h2>
+
+<p>We have permitted <code>c</code> into our symbolic lexicon as a representation of a physical phenomenon. We have characterized its inexplicable subjective quality as self-evident from exactly one perspective: <code>FPP</code>. For exactly that reason, it fundamentally lacks the characteristic of objectivity from another perspective: <code>TPP</code>. But what do we <em>mean</em> when we refer to one? Chalmers gives us a thorough exposé:</p>
+
+<blockquote>
+<p>When we see, for example, we experience visual sensations: the felt quality of redness, the experience of dark and light, the quality of depth in a visual field. Other experiences go along with perception in different modalities: the sound of a clarinet, the smell of mothballs. Then there are bodily sensations, from pains to orgasms; mental images that are conjured up internally; the felt quality of emotion, and the experience of a stream of conscious thought. What unites all of these states is that there is something it is like to be in them. All of them are states of experience.</p>
+</blockquote>
+
+<p>While we may not be able to explain what a particular conscious experience is, we can explain what they are like. Therefore, we can refer to it. Let me try to articulate the thing that we are referring to when we say "conscious experience." Let <code>(c)</code> denotes the <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/canonical-symbol.html">canonical symbol</a> we use to refer to a conscious experience. You can imagine this as a convenient shorthand for the phrase "conscious experience" if you like.</p>
+
+<p>When we talk about <code>(c)</code> we are referring to a specific relationship between a subject <code>i</code> and the <a href="https://dna-platform.github.io/inexplicable-phenomena/dictionary/literal.html">literal</a> object of their perception <code>o</code>. Let us denote this idea by using a ternary operator to express direct relationship:</p>
+
+<blockquote>
+<p><code>i =(c)&gt; o</code></p>
+</blockquote>
+
+<p>This ternary operator exists to express the fundamental semantic form: the subject-object relationship. In this expression, we use the symbol <code>(c)</code> as a type of relationship between <code>i</code> and <code>o</code>. We can refer to the most specific type of relationship between a subject and an object as <code>(i,o)</code>. A conscious experience <em>specifically</em> serves to relate the subject of perception with its object of perception. For there to be anything more specific would be for there to be a way to explain a conscious experience by reducing it to another type of relationship, and we cannot by definition. Therefore, the conscious experience that we refer to is the most specific relationship between our subject and object:</p>
+
+<blockquote>
+<p><code>(c) == (i,o)</code></p>
+</blockquote>
+
+<p>The most specific type of relationship between <code>i</code> and <code>o</code> is unique to them. It serves to reference or to point to the object. This can be expressed as follows:</p>
+
+<blockquote>
+<p><code>(i,o) =(i,o)&gt; o</code></p>
+</blockquote>
+
+<p>By substitution, we can conclude:</p>
+
+<blockquote>
+<p><code>(c) =(c)&gt; o</code></p>
+</blockquote>
+
+<p>By virtue of the fact that we can refer to <code>c</code> we must have a canonical representation for it: <code>(c)</code>. Likewise, as <code>c</code> is a representation for <code>o</code>, there must have a canonical symbol for it: <code>(o)</code> with the property that:</p>
+
+<blockquote>
+<p><code>(o) =(o)&gt; o</code></p>
+</blockquote>
+
+<p>The canonical symbol has the property that it is the most specific type of relationship between itself <code>(o)</code> and its literal <code>o</code>. Therefore, it must inherit its properties as a type of relationship from <code>(c)</code>. This is expressed by the statement: <code>(o) -&gt; (c)</code>. But we again find ourselves in the situation where if we can express <code>(c)</code> as a generalization of a more specific concept <code>(o)</code> we have some ability to articulate its character, and we do not, by definition. Therefore:</p>
+
+<blockquote>
+<p><code>(c) == (o)</code></p>
+</blockquote>
+
+<p>Please refer to the specifics of <a href="https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/relationship.html">relationship</a> and <a href="https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/reference.html">reference</a> if you'd like to better understand the symbols with which I use to express the fundamental semantic form, and their interpretation. We have used this simple language to express an obvious truth: that "conscious experience," in nominative form, serves as a symbol for the object of perception: <code>(o)</code>. These two are synonyms, semantically speaking.</p>
+
+<p>So that's what we mean when we say "conscious experience" objectively, when we use it as a noun in a sentence to refer to a certain class of physical phenomena. The language, under construction, that I am using to express this fact is called <a href="https://dna-platform.github.io/inexplicable-phenomena/encyclopedia/semantic-reference-theory.html">Semantic Reference Theory</a>.</p>
+
+<h2>Metalogical Transduction</h2>
+
+<p><a href="https://dna-platform.github.io/inexplicable-phenomena/articles/a-novel-perspective/a-novel-perspective.html">Gödel</a> brilliantly formulated self-reference within a mathematical formalism by capturing the notion of <em>use</em> and <em>mention</em> in everyday language<sup><a href="#citation-quine-1940" id="citation-ref-Quine1940" class="citation-ref">[12]</a></sup>. Rather than direct self-reference, he uses symbols to mention expressions that refer to themselves through encoding. How might we formalize this distinction more elegantly? In other words, what is the most vacuous theory one can imagine that can formalize self-reference?</p>
+
+<p>SRT suggests the idea of references and their referents in a catalogue. It begins as a first-order theory on the domain of referents with no constants, no functions, and only one relation <code>R(x,y,t)</code>, expressed as:</p>
+
+<blockquote>
+<p><code>x =t&gt; y</code></p>
+</blockquote>
+
+<p>An SRT is essentially free of ontology. This minimalism serves a purpose: one can specify their SRT by constructing a finite catalogue of referents. When existential statements lack satisfying referents, the transduction operator, short for <em>Metalogical Transduction</em> operator, resolves them. If one can prove that there exists a referent <code>t</code> such that <code>x</code> relates to <code>y</code> through it, and no such <code>t</code> is found in the catalogue of constants in the theory, then one such <code>t</code> can be transduced:</p>
+
+<blockquote>
+<p><code>E[t]: x =t&gt; y |=t&gt; x =t&gt; y</code></p>
+</blockquote>
+
+<p>The operator <code>|=t&gt;</code> expresses a change to the theory itself, amending the catalogue to include new constants. This correspondence exists because referents are fundamentally symbolic - existential contradictions in one theory are resolved through <em>Metalogical Operation</em>.</p>
+
+<blockquote>
+<p><em>Semantic Assertion</em>: The prefix "Meta" is employed when an expression of a {Topic} can be understood a representation of the same {Topic}, in which case it becomes a Meta{topic}.</p>
+</blockquote>
+
+<p>Through this lens, contradictions become epistemic motives for change. All Semantic Reference Theories are semantically intended to be Metalogical. A theory becomes <em>self-evident</em> when one can construct a Metalogical narrative yielding a consistent theory with a fully specified catalogue.</p>
+
+<p>Let <code>P</code> be a proposition of logic, and let <code>c</code> be a referent to be added as a constant to the theory. Let <code>P[c]</code> denote the idea of changing the proposition by satisfying the existential quantifier, and thus, removing it from the proposition. Modifying a proposition is a material change to the theory, so let us denote this operation with the transduction operator:</p>
+
+<blockquote>
+<p><code>P |=c&gt; P[c]</code></p>
+</blockquote>
+
+<p>From one perspective, <code>c</code> appears from the noumenal ethereum to resolve an existential crisis. From another, it is just the realization of an ontology.</p>
+
+<hr>
+
+<h2>Metaphysical Transduction</h2>
+
+<p>We have covered the sense in which the transduction operator |=&gt; performs a Metalogical operation, but we haven't covered how it represents transduction. <em>Transduction</em> is an exotic concept that has been put to use by the neuroscience community in order to describe the most essential function of our nervous system<sup><a href="#citation-hagins-1970" id="citation-ref-Hagins1970" class="citation-ref">[13]</a></sup>. "Transduction" is the etymological ancestor of the Latin nominative <em>trānsductiō</em>, which denotes the act or process of being <em>lead or carried across</em>. "ductiō" is an etymological relative of "educate." In this light, <em>transduction</em> seems to wish to describe the <em>epistemological transformation</em> in which the unknown is made known. In <em>SRT</em>, we apply it the mechanism that is used to construct an ontology under this interpretation.</p>
+
+<p>Yet its meaning came to English in the form of the horizontal transfer of genetic material between bacteria, which is a biological phenomenon in which a viral bacteriophage infects a bacterium, captures fragments of its genome, after which they get <em>carried</em> in a capsid <em>across</em> the synaptic cleft of genealogical ancestry, resulting in a novel genetic change and a novel form of genetic inheritance at the same time. The genome has been changed via transduction rather than mutation<sup><a href="#citation-zinder-1952" id="citation-ref-Zinder1952" class="citation-ref">[14]</a></sup>.</p>
+
+<p>If you think of each gene in a bacterium as a symbol genetic of inheritance, they usually tell the story of a phenotype that participates to create conditions favorable for reproduction by replication through mitosis. In this case, it is an artifact of a battle with a virus to maintain autonomy over the process of genetic replication itself, and it is a survival story that must be told by referring to the process of genetic inheritance itself. The gene becomes an expression of genetic inheritance that represents autonomy over its own mechanism of genetic inheritance. In this way, horizontal gene transfer is a form of Metagenetic Inheritance in which genes are carried across the boundary of ancestry. I offer up Metagenetic Transduction as the formal name for the process of transduction used in horizontal gene transfer.</p>
+
+<p>In neuroscience, phototransduction refers to the process by which photons of light are absorbed by the rods and cones of our retina, at which point they are carried across the chasm that divides a photon and the electrochemical signal that represents it in our nervous system. Similarly, mechanotransduction is when physical forces act on ion channels in our skin and other sensory organs. Those physical forces are carried across the same representational divide. This form of transduction applies to photons of light, pressure waves of sound, pin pricks of ruptured cells, along with various other physical phenomena that correspond to tactile, olfactory and gustatory transductive processes that kick off the sensation of sight, sound, pain, temperature, touch, taste and smell. We happily shall, with gain of generality, refer to all of these as forms of <em>Physical Transduction</em>.</p>
+
+<p>If a photon is the subject of a transduction, what is the object? What has that photon become in the metaphorical sense identity that transduction affords? It would seem to have become a part of the fabric of a representational medium that reflects the physical properties of its former <em>identity</em>. That medium represents the properties of all the physical phenomena that correspond to sensation simultaneously, where simultaneity is based on the timescale of the pocket watch of an observer that experiences the lifetime of a tree to be more like the lifetime of a rock, and less like the lifetime of a dandelion.</p>
+
+<p>The physical stimuli of sensation, having just been <em>carried across</em> the synaptic cleft of actual synapses and outfitted with an electrochemical representation, continue to be carried down a river of representation until they appear to reach its source. They are, yet again, again absorbed into the event horizon of the epistemological black hole which we refer to as the explanatory gap of <em>the Hard Problem</em>. What comes out on the other end is the stuff that clocks, thoughts, memories, decisions, and dreams are made of. Finally, the electrochemical signals, which are physical phenomena in their own right, are qualified to represent the external world from the perspective of the identity that possess it as a quality.</p>
+
+<p>From this perspective, physical phenomena that represent physical phenomena are Metaphysical Phenomena by definition. Once a photon of light and its many colleagues have crossed the event horizon of the black hole expressed in <em>The Hard Problem</em>, it can never escape. It has undergone <em>Metaphysical Transduction</em>. But its soul lives on in the representational framework of a perspective:</p>
+
+<blockquote>
+<p><em>Semantic Assertion</em>: Metaphysical Transduction is a process by which a corpus of Physical Phenomena have become a Metaphysical Phenomenon that preserves them as representations on a Catalogue that specifies a Perspective.</p>
+</blockquote>
+
+<p>We hope it's clear that <em>Metaphysical Transduction</em> is simply a synonym for <em>Perception</em> itself. Under the influence of powerful general anesthetics like propofol and isoflurane, visual inputs are still capable of activating the orientation pinwheels of the primary visual cortex even in the complete absence of <em>perception</em><sup><a href="#citation-bugrova-2020" id="citation-ref-Bugrova2020" class="citation-ref">[15]</a></sup> <sup><a href="#citation-khan-2024" id="citation-ref-Khan2024" class="citation-ref">[16]</a></sup>. Conscious Experience disappears as well by definition:</p>
+
+<blockquote>
+<p><em>Semantic Assertion</em>: To <em>Perceive</em> is to have <em>Conscious Experiences</em>. To have one is an act of <em>Perception</em>. The act of <em>Perception</em> is the definition of <em>having</em> a conscious experience.</p>
+</blockquote>
+
+<h2>A New Perspective on Science</h2>
+
+<p>What is the justification for <em>The Hard Problem</em>? Why must it correspond to the event horizon of an epistemological black hole? There is a clear answer for this: science itself does not admit an ontology in which representations of an objective physical phenomenon can be said to exist in a meaningful way. For a physical phenomenon to cross that event horizon, it must be perceived and thus observed, at which point it is transformed from an object of scientific inquiry into the subject of science. Observation, and thus, Metaphysical Transduction is a necessary operation in scientific method<sup><a href="#citation-popper-1959" id="citation-ref-Popper1959" class="citation-ref">[17]</a></sup>.</p>
+
+<p>Yet if we believe <em>Semantic Reference Theory</em> can describe the computational process in which a Perspective is constructed and maintained, <em>Metalogical Transduction</em> is the corresponding process, and it is a computational process that has characteristics. There is meaning to the idea that a computer is implementing quick sort, and one can falsify the claim that a physical system is implementing it.</p>
+
+<p>If we are wrong, and <em>Metaphysical Transduction</em> does not correspond to a physical description of <em>Perception</em>, which is necessary and sufficient for a <em>Conscious Experience</em> to occur, then its absence will serve to <em>falsify this theory</em>.</p>
+
+<p>There are philosophical ramifications to permitting the existence of an algorithm into the ontology of a natural philosophy. It is the beginning of a chain of thought that leads one to wonder if the number <code>2</code> might be said to be real in some sense. But conscious experience is both ontologically prior to science itself, and epistemologically necessary to its method <sup><a href="#citation-chalmers-1996" id="citation-ref-Chalmers1996" class="citation-ref">[18]</a></sup> <sup><a href="#citation-kant-synthetic" id="citation-ref-KantSynthetic" class="citation-ref">[19]</a></sup>. It would seem that we have no choice but to accept the existence of at least one objective phenomenon that has no literal manifestation. There is no conceivable physical system in which one can simulate an electron. An electron is just what it is. This is not so for a conscious experience. Each one is just as real on one computational substrate as it is on another. This remains true even if the perspectives which they correspond to yield fundamentally different descriptions of physical reality. Isomorphism equals equivalence in the land of computation.</p>
+
+<h2>Bibliography</h2>
+
+<div class="bibliography">
+<ol>
+<li id="citation-bourget-chalmers-2023" class="citation-entry">Bourget, D., Chalmers, D.J.: Philosophers on Philosophy: The 2020 PhilPapers Survey. <em>Philosophers' Imprint</em> 23:11 (2023). doi: <a href="https://doi.org/10.3998/phimp.2109">https://doi.org/10.3998/phimp.2109</a> <a href="#citation-ref-BourgetChalmers2023" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-dictionary-mv" class="citation-entry">Merriam-Webster, Inc. <em>Merriam-Webster.com Dictionary</em>. Springfield, MA: Merriam-Webster, Incorporated. Available at: https://www.merriam-webster.com [Accessed April 17, 2025]. <a href="#citation-ref-DictionaryMV" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-bader-2022" class="citation-entry">Bader, R.M.: Noumena as Grounds of Phenomena. In: Allais, L., Callanan, J. (eds.) <em>The Sensible and Intelligible Worlds: New Essays on Kant's Metaphysics and Epistemology</em>, pp. 11-30. Oxford University Press, Oxford (2022) <a href="#citation-ref-Bader2022" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-grice-1957" class="citation-entry">Grice, H.P. (1957). "Meaning." The Philosophical Review, 66(3), 377-388. <a href="#citation-ref-Grice1957" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-smullyan-1992" class="citation-entry">Smullyan, R.M.: <em>Gödel's Incompleteness Theorems</em>. Oxford Logic Guides, No. 19. Oxford University Press, Oxford (1992) <a href="#citation-ref-Smullyan1992" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-tarski-1935" class="citation-entry">Tarski, A.: Der Wahrheitsbegriff in den formalisierten Sprachen. <em>Studia Philosophica</em> <strong>1</strong>, 261--405 (1935). Translated as "The Concept of Truth in Formalized Languages" in <em>Logic, Semantics, Metamathematics</em>, Hackett Publishing Company (1983) <a href="#citation-ref-Tarski1935" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-reference" class="citation-entry">Anon, A.N.: <em>A Pointer to Self-Referece Humor</em>. Unpublished [Previously] (circa 2025) <a href="#citation-ref-Reference" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-reference2" class="citation-entry">Anon, A.N.: <em>A Pointer to Self-Referece Humor: Volume 2</em>. Unpublished [Currently] (circa 2025) <a href="#citation-ref-Reference2" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-dictionary-c" class="citation-entry">Cambridge University Press. <em>Cambridge Dictionary</em>. Cambridge: Cambridge University Press. Available at: https://dictionary.cambridge.org [Accessed April 17, 2025]. <a href="#citation-ref-DictionaryC" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-papineau-2002" class="citation-entry">Papineau, David. <em>Thinking About Consciousness</em>. Oxford: Oxford University Press, 2002. <a href="#citation-ref-Papineau2002" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-davidson-1970" class="citation-entry">Davidson, Donald. "Mental Events." In <em>Experience and Theory</em>, edited by Lawrence Foster and J.W. Swanson, 79–101. Amherst: University of Massachusetts Press, 1970. <a href="#citation-ref-Davidson1970" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-quine-1940" class="citation-entry">Quine, W.V.O.: Mathematical Logic. Harvard University Press, Cambridge (1940) <a href="#citation-ref-Quine1940" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-hagins-1970" class="citation-entry">Hagins, W.A., Penn, R.D., Yoshikami, S.: Dark current and photocurrent in retinal rods. <em>Biophysical Journal</em> <strong>10</strong>(5), 380--412 (1970) <a href="#citation-ref-Hagins1970" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-zinder-1952" class="citation-entry">Zinder, N.D., Lederberg, J.: Genetic exchange in Salmonella. <em>Journal of Bacteriology</em> <strong>64</strong>(5), 679--699 (1952) <a href="#citation-ref-Zinder1952" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-bugrova-2020" class="citation-entry">Bugrova, V.S., Bondar, I.V.: Propofol Resistance of Functional Domains with Orientation and Direction Sensitivity of the Primary Visual Cortex in Rats. <em>Neuroscience and Behavioral Physiology</em> <strong>50</strong>(9), 1077--1086 (2020) <a href="#citation-ref-Bugrova2020" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-khan-2024" class="citation-entry">Khan, S., Huang, Y., Timuçin, D., Bailey, S., Lee, S., Lopes, J., Gaunce, E., Mosberger, J., Zhan, M., Abdelrahman, B., Zeng, X., & Wiest, M. C. (2024). Microtubule-Stabilizer Epothilone B Delays Anesthetic-Induced Unconsciousness in Rats. <em>eNeuro</em>, 11(8), ENEURO.0291-24.2024. https://doi.org/10.1523/ENEURO.0291-24.2024 <a href="#citation-ref-Khan2024" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-popper-1959" class="citation-entry">Popper, K.: <em>The Logic of Scientific Discovery</em>. Routledge, London (1959). Translated from the original German <em>Logik der Forschung</em> (1934) <a href="#citation-ref-Popper1959" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-chalmers-1996" class="citation-entry">Chalmers, D.J.: <em>The Conscious Mind: In Search of a Fundamental Theory</em>. Oxford University Press, New York (1996) <a href="#citation-ref-Chalmers1996" class="citation-backref" title="Back to reference">↩</a></li>
+<li id="citation-kant-synthetic" class="citation-entry">Kant, I.: The Highest Principle of All Synthetic Judgments. In: <em>Critique of Pure Reason</em>. Translated by Paul Guyer and Allen W. Wood, pp. 283--284. Cambridge University Press, Cambridge (1998). Original work published 1781/1787. <a href="#citation-ref-KantSynthetic" class="citation-backref" title="Back to reference">↩</a></li>
+</ol>
+</div>
+
+        </article>
+      </div>
+
+      <footer class="academic-footer">
+  <div class="footer-section">
+    <h3 class="footer-heading">Article Versions</h3>
+    <div class="related-links">
+      <a href="../first-draft/inexplicable-phenomena.html" class="related-link">First Draft</a>
+      <a href="../inexplicable-phenomena.html" class="related-link">Current Version</a>
+      <a href="../synopsis.html" class="related-link">Synopsis</a>
+    </div>
+  </div>
+  <div class="footer-section">
+    <h3 class="footer-heading">Related Articles</h3>
+    <div class="related-links">
+      <a href="../../a-novel-perspective/a-novel-perspective.html" class="related-link">A Novel Perspective</a>
+      <a href="../../../dictionary/conscious-experience.html" class="related-link">Conscious Experience</a>
+      <a href="../../../encyclopedia/semantic-reference-theory.html" class="related-link">Semantic Reference Theory</a>
+      <a href="../../../dictionary/metaphysical-transduction.html" class="related-link">Metaphysical Transduction</a>
+    </div>
+  </div>
+  <div class="footer-section">
+    <a href="https://github.com/DNA-Platform/inexplicable-phenomena" class="github-repo-link" target="_blank">
+      <svg class="github-icon" height="16" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+      <span>View on GitHub</span>
+    </a>
+  </div>
+</footer>
+    </div>
+  </body>
+</html>
