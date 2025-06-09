@@ -1,5 +1,5 @@
 ### [# The Path Forward: A Bifurcation Analysis](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/inexplicable-phenomena.html)
-- Subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
+- Book: [Inexplicable Phenomena](./.synopsis.md)
 
 
 

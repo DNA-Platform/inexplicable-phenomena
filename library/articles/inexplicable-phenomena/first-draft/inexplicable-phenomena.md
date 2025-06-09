@@ -1,5 +1,5 @@
 ### [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/first-draft/inexplicable-phenomena.html)
-- Subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
+- Book: [Inexplicable Phenomena](./../.synopsis.md)
 
 #### Abstract
 
