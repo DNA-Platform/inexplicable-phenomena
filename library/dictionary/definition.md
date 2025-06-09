@@ -1,7 +1,7 @@
 # [Definition](https://dna-platform.github.io/inexplicable-phenomena/dictionary/definition.html)
 - Book: [Dictionary](./.dictionary.md)
 - Prev: [Constant](./constant.md)
-- Next: [Domain](./domain.md)
+- Next: [Canonical](./canonical.md)
 ---
 
 ## Definition

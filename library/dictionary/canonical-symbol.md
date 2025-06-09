@@ -1,6 +1,6 @@
 # [Canonical Symbol](https://dna-platform.github.io/inexplicable-phenomena/dictionary/canonical-symbol.html)
 - Book: [Dictionary](./.dictionary.md)
-- Prev: [Referent](./referent.md)
+- Prev: [Canonical](./canonical.md)
 - Next: [Symbolism](./symbolism.md)
 ---
 

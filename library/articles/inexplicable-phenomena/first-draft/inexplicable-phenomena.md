@@ -1,4 +1,4 @@
-### [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/inexplicable-phenomena.html)
+### [On the Formal Inexplicability of Self-Evident Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/first-draft/inexplicable-phenomena.html)
 - Subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
 
 #### Abstract
@@ -250,7 +250,6 @@ Let `P` be a proposition of logic, and let `c` be a referent to be added as a co
 > `P |=c> P[c]`
 
 From one perspective, `c` appears from the noumenal ethereum to resolve an existential crisis. From another, it is just the realization of an ontology.
----
 
 ## Metaphysical Transduction
 

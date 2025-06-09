@@ -1,4 +1,4 @@
-### [On Formally Inexplicable Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/inexplicable-phenomena.html)
+### [On Formally Inexplicable Metaphysical Phenomena and Related Systems](https://dna-platform.github.io/inexplicable-phenomena/articles/inexplicable-phenomena/second-draft/inexplicable-phenomena.html)
 - Subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
 
 #### Abstract
@@ -250,7 +250,6 @@ Let `P` be a proposition of logic, and let `c` be a referent to be added as a co
 > `P |=c> P[c]`
 
 From one perspective, `c` appears from the noumenal ethereum to resolve an existential crisis. From another, it is just the realization of an ontology.
----
 
 ## Metaphysical Transduction
 
@@ -286,11 +285,13 @@ There are philosophical ramifications to permitting the existence of an algorith
 
 <!-- > [*Colloquial Example*]: One day, I wake up in a state of shock. It's hard to articulate the experience, but it is as if my vision was reduced to hearing, and that sight and sound were as if different colors within the same song. It turns out that I am a distant descendant of the once-inhabitants of the two-dimensional universe once known as Flatland [^Flatland1884]. Our society has evolved considerably.
 
-> Apparently, I had volunteered to take part in a radical neuroscience experiment whereby my memory was temporarily replaced, and all sensory inputs were modified in much the way Olo is produced on the retina, with a scanning procedure in which an immersive three-dimension universe was simulated for me. I spoke to a researcher in charged. He informed me that he employed an encoding scheme inspired by Gödel Numbering to project the completely fabricated objects from my perceived environment into a three-dimensional coordinate system.
+> Apparently, I had volunteered to take part in a radical neuroscience experiment whereby my memory was temporarily replaced, and all sensory inputs were modified in much the way Olo is produced on the retina, with a scanning procedure in which an immersive three-dimension universe was simulated for me. I spoke to the researcher in charge. He informed me that he employed an encoding scheme inspired by Gödel Numbering to project the completely fabricated objects from my perceived environment into a three-dimensional coordinate system.
 
-> "What was it like" he asked "to experience information patterns consistent with a third dimension?" I gathered my thoughts. "Have you ever had a breakthrough psychedelic experience?" I asked. He had that he had not, though he was the one who wrote the code for the experience I had. "Well it's just like coming back from one," I said. "But it might help your research to know that I can still access my memories in 3D."
+> "What was it like" he asked "to experience information patterns consistent with a third dimension?" I gathered my thoughts. "Have you ever had a breakthrough psychedelic experience?" I asked. He said that he had not, though he was the one who wrote the code for the experience I had. "Well it's just like coming back from one," I said. "But it might help your research to know that I can still access my memories in 3D."
 
-> I suppose it's no different from [the way we perceive color](../../a-novel-perspective/a-novel-perspective.html) really. We cope with a 3-dimension description of a 1-dimensional phenomenon every day. I accept the arbitrariness of perceptual representation peacefully. This thought produced in me such a beautiful color, as if I could almost hear myself saying it. -->
+> I suppose it's no different from [the way we perceive color](../../a-novel-perspective/a-novel-perspective.html) really. We cope with a 3-dimensional description of a 1-dimensional phenomenon every day. I accept the arbitrariness of perceptual representation peacefully. 
+
+> This thought produces in me such a magical color, as if I could almost hear myself saying it. -->
 
 <!-- ## A Canonical Definition
 

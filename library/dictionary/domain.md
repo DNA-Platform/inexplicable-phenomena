@@ -1,6 +1,6 @@
 # [Domain](https://dna-platform.github.io/inexplicable-phenomena/dictionary/domain.html)
 - Book: [Dictionary](./.dictionary.md)
-- Prev: [Dictionary](./dictionary.md)
+- Prev: [Canonical Symbol](./canonical-symbol.md)
 - Next: [Epistemic Motive](./epistemic-motive.md)
 ---
 

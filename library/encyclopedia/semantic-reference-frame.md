@@ -18,10 +18,10 @@ Within the reference frame `F[t,c]`, the following formal rules apply:
 1. `F[t,c]: x => y =|> x =t> y`
    - In reference frame F[t,c], the relationship "x => y" is interpreted as "x =t> y"
 
-2. `F[t,c]: x => y =|> *x[c] == x & *y[c] == y`
+2. `F[t,c]: x => y =|> c[x]* == x & c[y]* == y`
    - In reference frame F[t,c], the canonicals of referents x and y are determined by c
 
-The notation `*x[c]` denotes the canonical of referent `x` in the canonical system defined by `c`.
+The notation `c[x]*` denotes the canonical of referent `x` in the canonical system defined by `c`.
 
 ## The Four Fundamental Reference Frames
 
@@ -29,22 +29,22 @@ Using this formal notation, we can precisely define four fundamental reference f
 
 1. **F[r,eq]**:
    - Relationship interpretation: `x => y =|> x =r> y`
-   - Canonical assignment: `*x[eq] == x & *y[eq] == y`
+   - Canonical assignment: `eq[x]* == x & eq[y]* == y`
    - In this frame, relationships are interpreted using the base relationship type `r`, and each referent is its own canonical
 
 2. **F[r,r]**:
    - Relationship interpretation: `x => y =|> x =r> y`
-   - Canonical assignment: `*x[r] == r & *y[r] == r`
+   - Canonical assignment: `r[x]* == r & r[y]* == r`
    - In this frame, relationships are interpreted using the base relationship type `r`, but all referents have `r` as their canonical
 
 3. **F[eq,eq]**:
    - Relationship interpretation: `x => y =|> x =eq> y`
-   - Canonical assignment: `*x[eq] == x & *y[eq] == y`
+   - Canonical assignment: `eq[x]* == x & eq[y]* == y`
    - In this frame, relationships are interpreted using the equality relationship type `eq`, and each referent is its own canonical
 
 4. **F[eq,r]**:
    - Relationship interpretation: `x => y =|> x =eq> y`
-   - Canonical assignment: `*x[r] == r & *y[r] == r`
+   - Canonical assignment: `r[x]* == r & r[y]* == r`
    - In this frame, relationships are interpreted using the equality relationship type `eq`, and all referents have `r` as their canonical
 
 ## The Structure of Relationship Types
@@ -65,10 +65,10 @@ This means that any relationship type `t` must inherit from the base relationshi
 
 For canonical assignments, SRT includes these fundamental axioms:
 
-1. `*x[r] == r`
+1. `r[x]* == r`
    - In the canonical system of relationship type `r`, the canonical of any referent `x` is `r` itself
 
-2. `*x[eq] == x`
+2. `eq[x]* == x`
    - In the canonical system of relationship type `eq`, the canonical of each referent is itself
 
 ## The Default Reference Frame
@@ -91,7 +91,7 @@ The formal structure might be something like `F[(i),o]`, where:
 
 The perspective would then satisfy specific properties such as:
 
-1. **The Quality of Symbolism**: `o[objective] =|> (o)`
+1. **The Quality of Symbolism**: `lit[o] =|> (o)`
 2. **The Quality of Meaning**: `(i) =q> (o) <|=|> (o) =q> o`
 3. **Reduction to Qualification**: All operations (identification, relation) reduce to qualification
 

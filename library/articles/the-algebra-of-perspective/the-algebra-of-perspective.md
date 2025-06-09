@@ -1,0 +1,2 @@
+### [The Algebra of Perspective](https://dna-platform.github.io/inexplicable-phenomena/articles/the-algebra-of-perspective/the-algebra-of-perspective.html)
+- Subject: [Conscious Experience](https://dna-platform.github.io/inexplicable-phenomena/dictionary/conscious-experience.html)
