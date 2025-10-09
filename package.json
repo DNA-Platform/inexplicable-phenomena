@@ -6,17 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "load": "npx serve library/.public-temp",
-    "lint": "next lint",
-    "export": "next build"
+    "static": "npm run build && npx serve library/.public-temp",
+    "lint": "next lint"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
     "katex": "^0.16.22",
     "marked": "^16.1.2",
     "next": "15.4.5",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "styled-components": "^6.1.19"
   },
   "devDependencies": {
