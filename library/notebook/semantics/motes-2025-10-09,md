@@ -1,0 +1,199 @@
+# Personal Notes on Semantic Reference Theory
+
+## On the Nature of Transpilation and Meaning
+
+### The Philosophical Point
+
+Some semantic distinctions only exist at higher levels of abstraction.
+
+When `x -> y` transpiles to FOL, in the special case where `x = y`, we get `x == x` (a tautology). The transpiler is not affecting what is true about the formalism, but there is a loss of information preventing us from knowing what `x == x` *means* in the context of the proof, if it came from `x -> y`.
+
+We can avoid this by having the transpiler state the whole inheritance relationship and then show that it concludes `x == x`.
+
+But that this creates a difference in meaning suggests that the transpiler is interpreting. And we can search for the definition of meaning in that which is absent from the set of things we can conclude in our interpretation.
+
+### Implications
+
+- The transpiler creates semantic sugar - notation that makes certain patterns visible at the SRT level even when they dissolve at the FOL level
+- Language conventions create semantic spaces that don't exist in the underlying logic
+- The gap between transpilation levels is where meaning lives
+- Meaning might be found in what is lost during interpretation - the semantic distinctions that vanish when we move to lower levels of abstraction
+
+---
+
+## On the Meaning of (x) in F[x]
+
+*Note: This is what the frame of perspective looks like. It is a subject that considers (i) in the context of F[i], so it is relevant to my theory of consciousness.*
+
+We interpret this in terms of the current reference frame:
+```
+((x),x) == x & @ =(x)> (x)
+```
+
+Because (x) is canonical in the frame:
+```
+(x) --> @
+```
+
+This shows that the frame represents (x):
+```
+@ =@> (x)
+```
+
+But what about (x) being the identity of x? Would we not require (x) to be a canonical in the frame of x?
+
+This would mean:
+```
+x =(x)> (x) & x --> (x)
+```
+
+That means x is inheriting its properties directly from (x):
+```
+((x),(x)) -> (p) =|> (x,x) -> (p)
+```
+
+But it is probably the case that in the frame of x, if (x) is canonical, p -> (p) so:
+```
+(x,x) -> p -> (p)
+```
+
+Thus preserving:
+```
+(x) =(p)> x =|> x =p> x
+```
+
+But (x) in the frame of x means something very different from (x) in any other frame, and that's interesting.
+
+---
+
+## On Frame Navigation and Zooming
+
+Frames were meant to have a zooming in effect, but this can't happen automatically. If we want that to be the default (and I think we do), then we need to have the idea of popping up a frame. I don't have syntax for it yet. But if we always start F[r] and frames are a stack through inheritance, and wandering through frames is exploring the relationship tree, we just need syntax for pop. Or we just make it a rule of inference that if F[x] is not bound already that it is assumed that x -> @. Otherwise, you can visit past frames in any order. That's more like how proofs work.
+
+---
+
+## On Empty Collections and Representation
+
+Empty collections are referents that "represent nothing" - see how that falls out of the semantics of containers? In the frame of x, any relation expressed about x is saying something that x represents. That is why F[x] is the subject of x. So yes, empty collections are referents that represent nothing.
+
+---
+
+## Theorem: Mutual Direct Inheritance Implies Identity
+
+**Claim**: If a --> b & b --> a, then a == b
+
+**Proof**:
+From a --> b:
+- (a,b) == b (by definition of direct inheritance)
+- a =b> b (a represents b through b)
+- b =b> a (b represents a through itself)
+
+From b --> a:
+- (b,a) == a (by definition of direct inheritance)
+- b =a> a (b represents a through a)
+- a =a> b (a represents b through itself)
+
+From the Axioms of Relationships (Expressing, Specifying, and Generalizing):
+- If (a,b) == b and (b,a) == a
+- Then the most specific relationship between a and b is both a and b
+- By Axiom 3 (Generalizing): distinct relationships cannot mutually imply each other
+- Therefore a == b ∎
+
+This theorem shows that bidirectional inheritance cannot exist between distinct referents - mutual inheritance forces equality. Two things that completely characterize each other must be the same thing.
+
+---
+
+## On the First-Person Perspective and F[i]
+
+In the first person perspective, F[r] might not exist. There are semantic theories that use semantic reference theory but are not semantic reference theory, so they do not need to start in F[r]. In the first person perspective, we are describing a semantic theory in which F[i] is on top. That's basically an expression that we cannot escape subjectivity!
+
+Consider the difference:
+In F[r], all versions of i with relation to space and time exist simultaneously. It's like the reference frame of a light beam, which has no sense of time or change - what is a velocity without time? F[i] is a perspective and perspectives change. In F[r], all of those changes exist simultaneously.
+
+---
+
+## On Representatives and Knowledge
+
+Do representatives know about their representation? The Senator of Delaware, as its representative, knows about Delaware. That checks out. And yes, I suppose we build representations to express meaning, and as those representations are forms, we learn things, so representations contain knowledge as expressed through their representatives.
+
+This suggests a semantics of knowledge: knowledge flows bidirectionally through inheritance chains. The child accumulates representations upward (a =b> b =c> c =d> d), while the parents accumulate knowledge downward (d =d> a, c =c> a, b =b> a). Representations contain knowledge as expressed through their representatives.
+
+---
+
+## On Dichotomies and Impossible Thoughts
+
+For dichotomies, F[m] makes sense as the frame - monotony is like the subject of the frame. The subject of the dichotomy is a single thing that describes the whole paradigm. There is no way to represent it in parts by definition! And so representing it in parts is impossible.
+
+But F[d|m] is also a valid frame for a dichotomy. That is like REALLY being in the dichotomy, where everything is either foreground or background, and the idea of the piece of paper that they are expressed on is simply a non-thought. Frames don't just organize meaning, they can make certain states literally unthinkable.
+
+---
+
+## The Formal Definition of Outside in a Perspective
+
+The most important relationships:
+```
+(x) =(p)> x =|> x =p> x
+(x) =(x)> x =|> {token for being identified}
+```
+
+The second relationship is crucial: when something has a canonical symbol that refers to it through itself, this IS the token for being identified. The formalism is subtle here (see: The Semantics of Identity).
+
+A frame is a representation with four essential components:
+- **Literature(L)** - The literals being represented (the outside)
+- **Catalogue(L)** - The symbols that reference the literals  
+- **Composition(L)** - The interacting characters that build symbols
+- **Specification(L)** - The rules governing representation
+
+The Literature exists in F[[L]] - the frame of literals, not in the representation frame F[L]. Elements in Literature are what is represented, not the representing machinery. This is dereferencing: accessing the literal content that a representation points to.
+
+```
+x =|in> Literature(L) =|> x =|in> F[[L]]
+```
+
+The Literature IS the outside of the Catalogue. The symbols in the Catalogue reference the literals in the Literature, but those literals don't inherit from L - they inherit from [L]. They are identified (have symbols) but cannot themselves symbolize.
+
+---
+
+## A Theorem about Fundamental Representational Roles
+
+We say that x represents y when:
+```
+x != y
+x =x> y
+```
+
+We say that x is a representative of y when:
+```
+x != y
+x =y> y
+```
+
+Note that inheritance binds them together:
+```
+x =x> y & x -> y =|> x =y> y
+```
+
+But notice that both expressions are about the relationship between x and y. That there is a most specific relationship is expressed as:
+```
+x =(x,y)> y
+```
+
+In the case where x is a symbol for y:
+```
+(x,y) == x
+```
+
+In the case where x is a canonical of y:
+```
+(x,y) == y
+```
+
+These two cases are mutually exclusive:
+```
+x =represents> y & x =representative> y =||>
+x =symbol> y | x =canonical> y =|>
+x =symbol> y || x =canonical> y
+```
+
+It's a bit of a weird theorem, because x doesn't have to play either role. But if is to play either, it can't play both!
+
