@@ -1,3 +1,11 @@
+# Local Archive
+.archive/*
+
+# Helpers
+.claude/
+.eirian/
+CLAUDE.md
+
 # Node.js / npm
 node_modules/
 npm-debug.log
@@ -48,14 +56,6 @@ logs/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
-
-# Local Archive
-.archive/*
-
-# Helpers
-.claude/
-PROJECT.md
-.cover.md
 
 # Next.js build outputs
 /.next/

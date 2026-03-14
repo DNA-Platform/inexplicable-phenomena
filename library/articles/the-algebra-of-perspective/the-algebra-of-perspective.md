@@ -1,2 +1,0 @@
-### [The Algebra of Perspective](https://dna-platform.github.io/inexplicable-phenomena/articles/the-algebra-of-perspective/the-algebra-of-perspective.html)
-- Book: [Inexplicable Phenomena](./.synopsis.md)
