@@ -1,0 +1,6 @@
+{
+  "name": "claude-host",
+  "version": "1.0.0",
+  "description": "Claude Code hosting tools — generic infrastructure for connecting to and managing collaborator identities",
+  "private": true
+}
