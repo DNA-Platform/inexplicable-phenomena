@@ -4,15 +4,19 @@
 Claude Desktop app (Electron). It is identity-agnostic and meant to be
 dot-sourced by identity-specific scripts.
 
-## Why UI automation?
+## How it works
 
-Claude Desktop is an Electron app. Its web content is opaque to Windows UI
-Automation (the accessibility tree only exposes the Chrome frame, not the
-DOM inside). And because it's a Windows Store app (MSIX packaged), it can't
-be relaunched with `--remote-debugging-port` for CDP access.
+Claude Desktop is an Electron 40.4.1 app (MSIX packaged). Two techniques:
 
-So we drive it the old-fashioned way: find the window, focus it, click
-coordinates, paste via clipboard, press keys.
+**Reading (non-destructive):** Uses Windows UI Automation (UIA) to read the
+accessibility tree. Chromium exposes a `TextPattern` on the main `Document`
+element (AutomationId=`RootWebArea`, Name=`Claude`). This returns all visible
+conversation text without focusing, activating, or touching the window.
+Requires the window to exist (taskbar or behind other windows — not tray-hidden).
+
+**Sending (requires brief focus):** Uses the old-fashioned way — find the window,
+focus it, click coordinates, paste via clipboard, press Enter. Sending still
+steals focus briefly, but reading does not.
 
 ## Available functions
 
@@ -37,8 +41,10 @@ coordinates, paste via clipboard, press keys.
 
 | Function | Description |
 |---|---|
+| `Read-ChatContentUIA` | Reads conversation text via UIA accessibility tree. **No focus steal.** Returns `@{ text; url; userHasFocus; wasMinimized }`. The `url` field exposes the current page URL (for chat verification). If minimized, silently restores behind all windows, reads, re-minimizes. |
+| `Navigate-ClaudeToChat $chatUrl` | Opens a specific chat URL in Claude Desktop. **Steals focus briefly.** Only call when the user is not actively using the window. |
 | `Take-ClaudeScreenshot $hwnd $outPath` | Focuses window, captures its exact rectangle, saves as PNG. |
-| `Copy-ChatContent $hwnd` | Clicks message area, Ctrl+A, Ctrl+C, returns clipboard text. Best-effort — gets whatever Claude Desktop puts in the clipboard. |
+| `Copy-ChatContent $hwnd` | **(Deprecated)** Clicks message area, Ctrl+A, Ctrl+C, returns clipboard text. Steals focus. Use `Read-ChatContentUIA` instead. |
 
 ## Usage from an identity script
 
@@ -61,15 +67,22 @@ $text = Copy-ChatContent $hwnd
 
 ## Limitations
 
-- **Requires focus**: Sending and reading both require the window to be
-  temporarily focused (restored if minimized). The scripts restore/minimize
-  around operations, but there will be brief flickers.
+- **Tray-hidden = unreachable**: If Claude Desktop is minimized to the
+  system tray, Electron destroys the BrowserWindow. No HWND exists, so
+  UIA cannot read it. The window must exist on the taskbar.
+- **Minimized = needs restore trick**: Chromium suspends its renderer when
+  minimized. `Read-ChatContentUIA` handles this by restoring the window
+  behind all other windows (`HWND_BOTTOM + SW_SHOWNOACTIVATE`), reading,
+  then re-minimizing. This is invisible to the user but adds ~1s latency.
+- **Flat text**: UIA returns flat text with no markdown or message boundaries.
+  Identity scripts must parse conversation turns using heuristics (e.g.,
+  looking for "Dad:" prefixes).
+- **Wrong chat**: Claude Desktop shows one conversation at a time. If the
+  user navigated away, `Read-ChatContentUIA` returns text from the wrong
+  chat. Callers should check the `.url` field against the expected chat UUID.
+- **Sending requires brief focus**: `Send-ChatMessage` still needs to focus
+  the window to click and paste. The scripts restore/minimize around the
+  operation, but there will be a brief flicker.
 - **Coordinate-based clicking**: The chat input position is estimated at
   bottom-center, 50px from the bottom edge. If Claude Desktop's layout
   changes significantly, this needs updating.
-- **Copy-ChatContent is coarse**: Ctrl+A selects the entire visible
-  conversation, not just the latest message. Identity scripts need to
-  parse out the relevant response.
-- **Focus stealing**: When run from VS Code's terminal, VS Code may
-  reclaim focus. Using `AppActivate("Claude")` with delays helps but
-  isn't perfect. Running scripts in background processes improves this.
