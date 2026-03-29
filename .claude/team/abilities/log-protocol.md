@@ -1,6 +1,6 @@
 # Log Protocol
 
-**Used by:** Pace (primary), Sift (writes entries)
+**Used by:** Pace (primary), Sift (writes entries), Automation
 
 The conversation log (`.eirian/conversation.log`) is the persistent record of all relay communication. This ability covers the format, lifecycle, and parsing rules.
 

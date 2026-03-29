@@ -1,6 +1,6 @@
 # Framework Architecture
 
-**Used by:** Framework Developer
+**Used by:** Framework Engineer
 
 Principles for building programming frameworks — API design, layered abstractions, and test-driven development at the framework level. Frameworks are different from applications: every decision constrains everyone downstream.
 

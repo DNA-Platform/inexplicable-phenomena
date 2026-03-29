@@ -1,6 +1,6 @@
 # Crash Recovery
 
-**Used by:** Pace (primary)
+**Used by:** Pace (primary), Automation
 
 Detecting and recovering from interrupted states. Every step in the relay can fail. This ability covers what failure looks like at each point and how to recover.
 

@@ -1,6 +1,6 @@
 # UIA Stealth Reading
 
-**Used by:** Tap (primary), Sift (understands what UIA returns)
+**Used by:** Tap (primary), Sift (understands what UIA returns), Automation
 
 Read conversation text from Claude Desktop's accessibility tree without focusing, activating, or visually disturbing the window.
 

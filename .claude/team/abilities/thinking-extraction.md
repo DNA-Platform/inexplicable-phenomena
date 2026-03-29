@@ -1,4 +1,3 @@
-echo poke-test-3
 # Thinking Extraction
 
 **Used by:** Sift (primary)

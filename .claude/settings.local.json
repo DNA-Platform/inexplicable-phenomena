@@ -15,7 +15,14 @@
       "Bash(cp \"C:/Source/dna-platform/chemistry/src/reflection.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/reflection.ts\")",
       "Bash(cp \"C:/Source/dna-platform/chemistry/tests/reflection.test.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/tests/reflection.test.ts\")",
       "Bash(npx vitest:*)",
-      "Bash(grep -n \"$view\" /c/Source/dna-platform/chemistry/src/archive/chemistry-new.ts)"
+      "Bash(grep -n \"$view\" /c/Source/dna-platform/chemistry/src/archive/chemistry-new.ts)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:direct.mit.edu)",
+      "WebFetch(domain:eval.16x.engineer)",
+      "Bash(mv framework-developer.md framework-engineer.md)",
+      "Bash(mv devops.md devops-engineer.md)",
+      "Bash(mv automation.md automation-engineer.md)"
     ]
   }
 }

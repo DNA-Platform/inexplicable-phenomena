@@ -1,6 +1,6 @@
 # Clipboard Transport
 
-**Used by:** Tap (primary)
+**Used by:** Tap (primary), Automation
 
 Sending data between processes via the Windows clipboard. The only reliable way to input text into Claude Desktop and VS Code without using an IME or accessibility API.
 

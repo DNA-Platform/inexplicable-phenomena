@@ -58,9 +58,11 @@ The project uses a structured team model for planning and executing work. The sy
 
 ### Roles ([roles directory])
 
-A role is a **context-loading strategy** — a lens that shapes what you notice and prioritize. Each role file defines: domain expertise, a diagnostic first question, specific anxieties (failure modes to watch for), a mantra (tiebreaker for competing approaches), abilities to load, and source files to read. Loading a role into context measurably changes your output by shaping attention, activating specific knowledge, and filtering priorities.
+A role is a **perspective on code** — a lens that shapes how an agent approaches a story that changes or extends the code they maintain. Most roles are **engineers**: they share a common structure (diagnostic first question, specific anxieties, a mantra, abilities to load, source files to read) and differ only in what they pay attention to. "Developer" and "engineer" are synonyms in this system — both mean someone who maintains code with a specific perspective.
 
-Existing roles: [Tap] (interface stealth), [Sift] (signal extraction), [Pace] (reliability/failure handling). Create new ones with `/role`.
+Roles are not operational procedures. Techniques for operating live systems belong at the ability level, loaded by the role that needs them. Each agent loads one role to avoid the quality degradation that comes from compound personas (Wang et al., NAACL 2024).
+
+Existing roles: [Architect] (workspace boundaries), [DevOps Engineer] (build pipelines), [Automation Engineer] (relay system), [Frontend Engineer] (component APIs), [Framework Engineer] (type systems), [Librarian] (documentation). Create new ones with `/role`.
 
 ### Abilities ([abilities directory])
 
@@ -162,9 +164,12 @@ Or from Claude Code: send a message, start listen as a background task, continue
 [desktop.ps1]: .claude/src/desktop.ps1
 [log format spec]: .claude/docs/log-format.md
 [roles directory]: .claude/team/roles/
-[Tap]: .claude/team/roles/tap.md
-[Sift]: .claude/team/roles/sift.md
-[Pace]: .claude/team/roles/pace.md
+[Architect]: .claude/team/roles/architect.md
+[DevOps Engineer]: .claude/team/roles/devops-engineer.md
+[Automation Engineer]: .claude/team/roles/automation-engineer.md
+[Frontend Engineer]: .claude/team/roles/frontend-engineer.md
+[Framework Engineer]: .claude/team/roles/framework-engineer.md
+[Librarian]: .claude/team/roles/librarian.md
 [abilities directory]: .claude/team/abilities/
 [agents directory]: .claude/team/agents/
 [agent registry]: .claude/team/agents/registry.json

@@ -1,6 +1,6 @@
 # Scheme and Self
 
-**Used by:** Framework Developer, Librarian
+**Used by:** Framework Engineer, Librarian
 
 The philosophical and technical foundations that $Chemistry draws from. Understanding these two languages is essential to understanding why $Chemistry is designed the way it is — not as a class-based component framework, but as a prototype-delegating, symbol-oriented, meta-circular system.
 

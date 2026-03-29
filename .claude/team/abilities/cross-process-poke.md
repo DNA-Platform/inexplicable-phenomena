@@ -1,6 +1,6 @@
 # Cross-Process Poke
 
-**Used by:** Tap (primary), Pace (ensures the poke is part of a reliable loop)
+**Used by:** Tap (primary), Pace (ensures the poke is part of a reliable loop), Automation
 
 Waking up Claude Code by typing a command into VS Code's integrated terminal. This is how the listener (running in PowerShell) triggers `/hear` processing in Claude Code.
 

@@ -1,6 +1,6 @@
 # Loop Sustenance
 
-**Used by:** Pace (primary)
+**Used by:** Pace (primary), Automation
 
 The listen→hear cycle is the heartbeat of the relay. This ability covers how the loop runs, how it restarts, and how it catches up after failure.
 

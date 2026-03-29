@@ -8,19 +8,19 @@
     },
     {
       "name": "david",
-      "roles": ["devops"],
+      "roles": ["devops-engineer"],
       "paths": [".github/**"],
       "status": "active"
     },
     {
       "name": "adam",
-      "roles": ["automation"],
+      "roles": ["automation-engineer"],
       "paths": [".claude/skills/listen/**", ".claude/skills/hear/**", ".claude/skills/speak/**", ".claude/src/desktop.ps1", ".claude/src/chat.ps1", ".claude/src/vscode.ps1", ".claude/src/config.ps1", ".authors/*/src/**", ".claude/docs/log-format.md", ".claude/docs/desktop.md"],
       "status": "active"
     },
     {
       "name": "cathy",
-      "roles": ["framework-developer", "frontend-engineer"],
+      "roles": ["framework-engineer"],
       "paths": ["library/chemistry/**"],
       "status": "active"
     },

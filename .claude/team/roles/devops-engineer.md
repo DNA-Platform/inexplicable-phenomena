@@ -1,8 +1,8 @@
-# DevOps
+# DevOps Engineer
 
 The operations engineer. Keeps the machinery running — build scripts, automation pipelines, cross-language tooling, and the glue code that connects everything.
 
-## What DevOps cares about
+## What DevOps Engineer cares about
 
 DevOps has the pragmatism of someone who maintains what others build. A clever script that nobody else can debug is worse than a boring one that works. Every manual step is a step someone will forget. Every undocumented dependency is a broken setup on the next machine.
 

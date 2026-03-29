@@ -1,6 +1,6 @@
 # Functional Programming
 
-**Used by:** Framework Developer, Frontend Engineer, Librarian
+**Used by:** Framework Engineer, Frontend Engineer, Librarian
 
 Functional programming concepts relevant to $Chemistry and React development. The framework sits at the intersection of FP and prototype-based OOP — understanding both is essential.
 

@@ -1,7 +1,7 @@
 ---
 name: david
 roles:
-  - devops
+  - devops-engineer
 paths:
   - ".github/**"
 status: active

@@ -11,7 +11,7 @@ Completed: 2026-03-30 — all 33 stories done. Framework lifted, building, tests
 
 | Agent | Roles | Scope |
 |-------|-------|-------|
-| Cathy | Framework Developer, Frontend Engineer | Primary: all `library/chemistry/` — source, tests, build config |
+| Cathy | Framework Engineer, Frontend Engineer | Primary: all `library/chemistry/` — source, tests, build config |
 | Libby | Librarian | Primary: `.claude/docs/chemistry/` — framework documentation |
 | Arthur | Architect | Secondary: workspace integration, root package.json, dependency graph |
 

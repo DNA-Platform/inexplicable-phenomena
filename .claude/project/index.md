@@ -25,16 +25,15 @@ Read the [role files][roles] and their [abilities] before executing as any teamm
 
 ### Roles
 
+Roles are **perspectives on code**, not operational procedures. Each role shapes how an agent approaches a story that changes or extends the code they maintain. The abilities a role loads encode the specific knowledge that makes that perspective effective.
+
 | Name | Lens | Mantra |
 |------|------|--------|
-| [Tap] | Interface engineer — reaches into live apps without disturbing the user | Leave no trace |
-| [Sift] | Signal engineer — extracts structure from noisy, undocumented UIA text | When in doubt, it's noise |
-| [Pace] | Reliability engineer — keeps the loop alive, designs for failure | Dead loops are silent |
 | [Architect] | Package architect — workspace boundaries, dependency graphs, monorepo structure | Every package earns its boundary |
-| [DevOps] | Operations engineer — scripts, build pipelines, cross-language tooling | Automate the obvious, document the rest |
-| [Automation] | Automation engineer — relay system, listener loop, message processing | Every message arrives exactly once |
+| [DevOps Engineer] | Operations engineer — scripts, build pipelines, cross-language tooling | Automate the obvious, document the rest |
+| [Automation Engineer] | Automation engineer — relay system, listener loop, message processing | Every message arrives exactly once |
 | [Frontend Engineer] | Component builder — React, view composition, component APIs | The component is the API |
-| [Framework Developer] | Language designer — type systems, metaprogramming, prototype delegation | The abstraction must be faithful to the concept |
+| [Framework Engineer] | Language designer — type systems, metaprogramming, prototype delegation | The abstraction must be faithful to the concept |
 | [Librarian] | Knowledge curator — documentation, reference materials, terminology | If they can't find it, it doesn't exist |
 
 ### Agents
@@ -42,9 +41,9 @@ Read the [role files][roles] and their [abilities] before executing as any teamm
 | Name | Roles | Territory |
 |------|-------|-----------|
 | [Arthur] | Architect | Catch-all owner (**), primary for workspaces, global structure, team system |
-| [David] | DevOps | .github/, CI/CD, build pipelines |
-| [Adam] | Automation | Relay scripts, listen/hear/speak skills, .authors/*/src/ |
-| [Cathy] | Framework Developer, Frontend Engineer | library/chemistry/**, primary developer for $Chemistry |
+| [David] | DevOps Engineer | .github/, CI/CD, build pipelines |
+| [Adam] | Automation Engineer | Relay scripts, listen/hear/speak skills, .authors/*/src/ |
+| [Cathy] | Framework Engineer | library/chemistry/**, primary developer for $Chemistry |
 | [Libby] | Librarian | .claude/docs/**, all documentation |
 
 See the [agent registry] for path patterns. Use `/responsible` to query ownership.
@@ -54,14 +53,11 @@ See the [agent registry] for path patterns. Use `/responsible` to query ownershi
 [sprint-4 plan]: sprint-4/plan.md
 [roles]: ../team/roles/
 [abilities]: ../team/abilities/
-[Tap]: ../team/roles/tap.md
-[Sift]: ../team/roles/sift.md
-[Pace]: ../team/roles/pace.md
 [Architect]: ../team/roles/architect.md
-[DevOps]: ../team/roles/devops.md
-[Automation]: ../team/roles/automation.md
+[DevOps Engineer]: ../team/roles/devops-engineer.md
+[Automation Engineer]: ../team/roles/automation-engineer.md
 [Frontend Engineer]: ../team/roles/frontend-engineer.md
-[Framework Developer]: ../team/roles/framework-developer.md
+[Framework Engineer]: ../team/roles/framework-engineer.md
 [Librarian]: ../team/roles/librarian.md
 [Arthur]: ../team/agents/arthur.md
 [David]: ../team/agents/david.md

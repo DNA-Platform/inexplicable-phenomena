@@ -1,6 +1,6 @@
 # OOP Patterns
 
-**Used by:** Framework Developer, Frontend Engineer, Librarian
+**Used by:** Framework Engineer, Frontend Engineer, Librarian
 
 Object-oriented design patterns relevant to framework development — with emphasis on the patterns that matter for $Chemistry's prototype-delegation model rather than classical inheritance.
 
