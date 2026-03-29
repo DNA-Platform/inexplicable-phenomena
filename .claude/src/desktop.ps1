@@ -65,9 +65,20 @@ function Focus-ClaudeWindow($hwnd) {
         Start-Sleep -Milliseconds 500
     }
 
-    [Microsoft.VisualBasic.Interaction]::AppActivate("Claude")
-    Start-Sleep -Milliseconds 500
+    # Try up to 3 times to gain foreground
+    for ($attempt = 0; $attempt -lt 3; $attempt++) {
+        [Microsoft.VisualBasic.Interaction]::AppActivate("Claude")
+        Start-Sleep -Milliseconds 500
 
+        # Verify we actually got foreground
+        if ([WinNative]::GetForegroundWindow() -eq $hwnd) {
+            return $wasMinimized
+        }
+        Start-Sleep -Milliseconds 300
+    }
+
+    # Failed to gain focus — return but warn
+    Write-Warning "Focus-ClaudeWindow: failed to gain foreground after 3 attempts"
     return $wasMinimized
 }
 
@@ -140,9 +151,35 @@ function Type-ViaClipboard($text) {
     }
 }
 
+# ─── Message size limits ─────────────────────────────────────────────────────
+# Claude Desktop's chat input accepts clipboard paste up to ~100KB reliably.
+# Beyond that, Electron/Chromium may truncate or hang. We use a conservative
+# limit and warn callers.
+
+$script:MaxMessageBytes = 80000   # ~80KB safe limit
+
+function Test-MessageSize($text) {
+    $bytes = [System.Text.Encoding]::UTF8.GetByteCount($text)
+    if ($bytes -gt $script:MaxMessageBytes) {
+        return @{
+            ok       = $false
+            bytes    = $bytes
+            limit    = $script:MaxMessageBytes
+            message  = "Message too large: $bytes bytes (limit: $($script:MaxMessageBytes)). Truncation likely."
+        }
+    }
+    return @{ ok = $true; bytes = $bytes; limit = $script:MaxMessageBytes }
+}
+
 # ─── Send a message (click input, paste, Enter) ─────────────────────────────
 
 function Send-ChatMessage($hwnd, $text) {
+    # Validate message size
+    $sizeCheck = Test-MessageSize $text
+    if (-not $sizeCheck.ok) {
+        Write-Warning $sizeCheck.message
+    }
+
     Click-ChatInput $hwnd
     Type-ViaClipboard $text
     [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
@@ -158,6 +195,13 @@ function Send-ChatMessage($hwnd, $text) {
 # Or $null on failure. Caller can check .url to verify the right chat is open.
 
 function Read-ChatContentUIA {
+    param(
+        # If true, skip reading when the window is minimized instead of doing
+        # the restore-behind-all-windows trick. Returns a "minimized" signal
+        # so the caller can decide what to do (e.g., idle and wait).
+        [switch]$SkipIfMinimized
+    )
+
     $uia = [System.Windows.Automation.AutomationElement]
 
     # Find Claude window by process
@@ -173,9 +217,23 @@ function Read-ChatContentUIA {
     $wasMinimized = [WinNative]::IsIconic($hwnd)
     $userHasFocus = ([WinNative]::GetForegroundWindow() -eq $hwnd)
 
+    # If caller wants non-intrusive behavior, don't touch minimized windows.
+    # Chromium suspends its renderer when minimized so UIA would be empty anyway.
+    # Return a signal so the caller can idle instead of burning cycles.
+    if ($wasMinimized -and $SkipIfMinimized) {
+        return @{
+            text         = $null
+            url          = $null
+            userHasFocus = $false
+            wasMinimized = $true
+            skippedMinimized = $true
+        }
+    }
+
     # Chromium suspends its renderer when minimized, so the UIA tree is empty.
-    # If minimized, restore behind all other windows (HWND_BOTTOM) so the
-    # renderer activates but the user never sees it. Then re-minimize after reading.
+    # If minimized (and caller didn't pass -SkipIfMinimized), restore behind
+    # all other windows (HWND_BOTTOM) so the renderer activates but the user
+    # never sees it. Then re-minimize after reading.
     if ($wasMinimized) {
         # SW_SHOWNOACTIVATE (4) restores without activating
         [WinNative]::ShowWindow($hwnd, 4) | Out-Null
@@ -264,23 +322,16 @@ function Read-ChatContentUIA {
 }
 
 # ─── Navigate Claude Desktop to a specific chat URL ─────────────────────────
-# Opens the given URL in Claude Desktop. This DOES steal focus briefly.
-# Only call when the user is NOT actively using the window.
+# DEPRECATED: Start-Process opens the URL in the default browser, not Claude
+# Desktop. Claude Desktop does not register as a URL handler for claude.ai.
+# This function never worked as intended. Do not use.
+#
+# The correct approach: the listener idles when the wrong chat is open and
+# resumes when the user navigates to the correct chat themselves.
 
 function Navigate-ClaudeToChat($chatUrl) {
-    $hwnd = Find-ClaudeWindow
-    if (-not $hwnd) { return $false }
-
-    $wasMinimized = Focus-ClaudeWindow $hwnd
-
-    # Ctrl+L focuses the address bar in Electron (if available),
-    # but Claude Desktop is a single-page app — use Ctrl+L or just open the URL.
-    # Safest: use the OS to open the URL, which Claude Desktop registers to handle.
-    Start-Process $chatUrl
-    Start-Sleep -Seconds 2
-
-    if ($wasMinimized) { Minimize-ClaudeWindow $hwnd }
-    return $true
+    Write-Warning "Navigate-ClaudeToChat is deprecated — it opens the browser, not Claude Desktop."
+    return $false
 }
 
 # ─── Legacy: Copy visible response text via Ctrl+A / Ctrl+C ─────────────────

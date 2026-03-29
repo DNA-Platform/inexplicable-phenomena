@@ -1,0 +1,6 @@
+{
+  "name": "@dna-platform/public-library",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Public-facing site — GitHub Pages for the repository"
+}

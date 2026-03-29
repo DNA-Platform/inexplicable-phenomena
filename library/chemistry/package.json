@@ -1,0 +1,47 @@
+{
+  "name": "@dna-platform/chemistry",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Objects that React!",
+  "license": "MIT",
+  "author": "Doug Rubino",
+  "main": "dist/chemistry.cjs",
+  "module": "dist/chemistry.js",
+  "types": "dist/chemistry.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/chemistry.d.ts",
+      "import": "./dist/chemistry.js",
+      "require": "./dist/chemistry.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "build:clean": "rimraf dist .rollup.cache && rollup -c",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "D": "^1.0.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.7.0",
+    "happy-dom": "^20.0.10",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.50.2",
+    "rollup-plugin-dts": "^6.2.3",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.6"
+  }
+}

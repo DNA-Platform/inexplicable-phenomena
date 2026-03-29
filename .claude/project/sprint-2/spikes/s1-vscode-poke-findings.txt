@@ -1,0 +1,45 @@
+﻿
+=== S1 Spike: VS Code Poke Reliability ===
+Timestamp: 2026-03-21 21:36:28
+VS Code initial state: VISIBLE
+
+--- Results ---
+Iterations:      10
+Successes:       10
+Failures:        0
+Success rate:    100%
+Failed attempts: (none)
+
+--- Timing ---
+Average: 2062.7ms
+Min:     2004ms
+Max:     2130ms
+
+--- Per-Attempt Detail ---
+  Attempt 1: OK 2130ms 
+  Attempt 2: OK 2088ms 
+  Attempt 3: OK 2105ms 
+  Attempt 4: OK 2053ms 
+  Attempt 5: OK 2052ms 
+  Attempt 6: OK 2004ms 
+  Attempt 7: OK 2038ms 
+  Attempt 8: OK 2021ms 
+  Attempt 9: OK 2068ms 
+  Attempt 10: OK 2068ms 
+
+--- Raw Data ---
+Attempt Command           Success ElapsedMs Error
+------- -------           ------- --------- -----
+      1 echo poke-test-1     True      2130      
+      2 echo poke-test-2     True      2088      
+      3 echo poke-test-3     True      2105      
+      4 echo poke-test-4     True      2053      
+      5 echo poke-test-5     True      2052      
+      6 echo poke-test-6     True      2004      
+      7 echo poke-test-7     True      2038      
+      8 echo poke-test-8     True      2021      
+      9 echo poke-test-9     True      2068      
+     10 echo poke-test-10    True      2068
+
+--- Assessment ---
+All 10 pokes succeeded. Send-ClaudeCodeCommand is reliable in this session.

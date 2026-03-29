@@ -1,6 +1,6 @@
 {
-  "name": "claude-host",
-  "version": "1.0.0",
-  "description": "Claude Code hosting tools — generic infrastructure for connecting to and managing collaborator identities",
-  "private": true
+  "name": "@dna-platform/claude",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Claude Code hosting infrastructure — skills, team system, automation"
 }

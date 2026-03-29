@@ -1,0 +1,34 @@
+{
+  "agents": [
+    {
+      "name": "arthur",
+      "roles": ["architect"],
+      "paths": ["**"],
+      "status": "active"
+    },
+    {
+      "name": "david",
+      "roles": ["devops"],
+      "paths": [".github/**"],
+      "status": "active"
+    },
+    {
+      "name": "adam",
+      "roles": ["automation"],
+      "paths": [".claude/skills/listen/**", ".claude/skills/hear/**", ".claude/skills/speak/**", ".claude/src/desktop.ps1", ".claude/src/chat.ps1", ".claude/src/vscode.ps1", ".claude/src/config.ps1", ".authors/*/src/**", ".claude/docs/log-format.md", ".claude/docs/desktop.md"],
+      "status": "active"
+    },
+    {
+      "name": "cathy",
+      "roles": ["framework-developer", "frontend-engineer"],
+      "paths": ["library/chemistry/**"],
+      "status": "active"
+    },
+    {
+      "name": "libby",
+      "roles": ["librarian"],
+      "paths": [".claude/docs/**"],
+      "status": "active"
+    }
+  ]
+}

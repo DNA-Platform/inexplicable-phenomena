@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(powershell -ExecutionPolicy Bypass *)",
+      "Bash(git log *)",
+      "Bash(npm *)",
+      "Bash(find /c/Source/dna-platform/chemistry/src -type f -name *.ts -o -name *.tsx)",
+      "Bash(find /c/Source/dna-platform/chemistry/tests -type f -name *.ts -o -name *.tsx)",
+      "Bash(wc:*)",
+      "Bash(find /c/Source/dna-platform/chemistry -maxdepth 1 -type f -name *.json -o -name *.ts -o -name .*rc*)",
+      "Bash(cp \"C:/Source/dna-platform/chemistry/src/archive/chemistry.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/archive/chemistry.ts\")",
+      "Bash(cp \"C:/Source/dna-platform/chemistry/src/archive/chemistry-new.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/archive/chemistry-new.ts\")",
+      "Bash(cp \"C:/Source/dna-platform/chemistry/src/archive/chemistry-web.tsx\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/archive/chemistry-web.tsx\")",
+      "Bash(cp \"C:/Source/dna-platform/chemistry/src/reflection.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/reflection.ts\")",
+      "Bash(cp \"C:/Source/dna-platform/chemistry/tests/reflection.test.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/tests/reflection.test.ts\")",
+      "Bash(npx vitest:*)",
+      "Bash(grep -n \"$view\" /c/Source/dna-platform/chemistry/src/archive/chemistry-new.ts)"
+    ]
+  }
+}

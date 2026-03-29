@@ -1,0 +1,29 @@
+﻿
+=== S3 Spike: Log Concurrency Test Results ===
+Timestamp: 2026-03-21 21:36:12
+Log file: C:\Users\dougl\AppData\Local\Temp\s3-log-spike-20260321-213605\test-log.md (14001 bytes)
+
+--- Entry Counts ---
+Background entries written (max): 55
+Background entries found:         49
+Foreground cycles:                50
+Foreground entries written:       50
+Foreground entries found:         50
+Total entries found:              99
+
+--- Integrity ---
+Terminator (---) count:     1 (expected: 99)
+Terminator match:           NO (diff: -98)
+Corruption (garbled lines): 0
+Contention events:          0
+
+--- Missing Entries ---
+Missing BG entries: (none)
+Missing FG entries: (none)
+
+--- Assessment ---
+PARTIAL: No corruption but some entries missing. Contention caused data loss.
+
+
+
+

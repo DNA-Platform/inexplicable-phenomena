@@ -35,14 +35,15 @@ steals focus briefly, but reading does not.
 |---|---|
 | `Click-ChatInput $hwnd` | Clicks the chat input area (bottom center of the window, 50px from bottom edge). |
 | `Type-ViaClipboard $text` | Saves clipboard, sets text, pastes with Ctrl+V, restores clipboard. |
-| `Send-ChatMessage $hwnd $text` | Combines Click-ChatInput + Type-ViaClipboard + Enter. |
+| `Send-ChatMessage $hwnd $text` | Combines Click-ChatInput + Type-ViaClipboard + Enter. Warns if message exceeds safe size limit (~80KB). |
+| `Test-MessageSize $text` | Returns `@{ ok; bytes; limit; message }`. Checks if text exceeds the safe clipboard paste limit. |
 
 ### Output
 
 | Function | Description |
 |---|---|
-| `Read-ChatContentUIA` | Reads conversation text via UIA accessibility tree. **No focus steal.** Returns `@{ text; url; userHasFocus; wasMinimized }`. The `url` field exposes the current page URL (for chat verification). If minimized, silently restores behind all windows, reads, re-minimizes. |
-| `Navigate-ClaudeToChat $chatUrl` | Opens a specific chat URL in Claude Desktop. **Steals focus briefly.** Only call when the user is not actively using the window. |
+| `Read-ChatContentUIA [-SkipIfMinimized]` | Reads conversation text via UIA accessibility tree. **No focus steal.** Returns `@{ text; url; userHasFocus; wasMinimized }`. With `-SkipIfMinimized`, returns a signal instead of restoring the window — the caller can idle. Without the flag, silently restores behind all windows, reads, re-minimizes. |
+| `Navigate-ClaudeToChat $chatUrl` | **(Deprecated)** Used `Start-Process` which opened the browser, not Claude Desktop. Do not use. |
 | `Take-ClaudeScreenshot $hwnd $outPath` | Focuses window, captures its exact rectangle, saves as PNG. |
 | `Copy-ChatContent $hwnd` | **(Deprecated)** Clicks message area, Ctrl+A, Ctrl+C, returns clipboard text. Steals focus. Use `Read-ChatContentUIA` instead. |
 
@@ -61,8 +62,9 @@ $wasMinimized = Focus-ClaudeWindow $hwnd
 Send-ChatMessage $hwnd "Hello from the relay"
 if ($wasMinimized) { Minimize-ClaudeWindow $hwnd }
 
-# Later: read the response
-$text = Copy-ChatContent $hwnd
+# Later: read the response (no focus steal)
+$result = Read-ChatContentUIA
+$text = $result.text
 ```
 
 ## Limitations
@@ -86,3 +88,6 @@ $text = Copy-ChatContent $hwnd
 - **Coordinate-based clicking**: The chat input position is estimated at
   bottom-center, 50px from the bottom edge. If Claude Desktop's layout
   changes significantly, this needs updating.
+- **Message size**: Clipboard paste is reliable up to ~80KB. Beyond that,
+  Electron/Chromium may truncate silently. `Test-MessageSize` checks this
+  and `Send-ChatMessage` warns on overflow.
