@@ -2,15 +2,21 @@
 export const $cid$ = Symbol("$Particle.cid");
 export const $symbol$ = Symbol("$Particle.symbol");
 export const $type$ = Symbol("$Particle.type");
-export const $prototype$ = Symbol("$Particle.cid");
+export const $prototype$ = Symbol("$Particle.prototype");
 export const $template$ = Symbol("$Particle.template");
 export const $isTemplate$ = Symbol("$Particle.isTemplate");
 export const $children$ = Symbol("$Particle.children");
 export const $apply$ = Symbol("$Particle.apply");
 export const $bond$ = Symbol("$Particle.bond");
-export const $derived$ = Symbol("$Particle.cid");
-export const $particlar$ = Symbol("$Particle.cid");
-export const $$template$$ = Symbol("$Particle.particlar");
+export const $derived$ = Symbol("$Particle.derived");
+export const $particular$ = Symbol("$Particle.particular");
+export const $phase$ = Symbol("$Particle.phase");
+export const $phases$ = Symbol("$Particle.phases");
+export const $resolve$ = Symbol("$Particle.resolve");
+export const $update$ = Symbol("$Particle.update");
+export const $viewCache$ = Symbol("$Particle.viewCache");
+export const $rendering$ = Symbol("$Particle.rendering");
+export const $$template$$ = Symbol("$Particle.static.template");
 export const $$getNextCid$$ = Symbol("$Particle.static.getNextCid");
 export const $$createSymbol$$ = Symbol("$Particle.static.createSymbol");
 export const $$isSymbol$$ = Symbol("$Particle.static.isSymbol");
@@ -33,6 +39,9 @@ export const $render$ = Symbol("$Chemical.render");
 export const $createComponent$ = Symbol("$Chemical.createComponent");
 export const $destroy$ = Symbol("$Chemical.destroy");
 export const $destroyed$ = Symbol("$Chemical.destroyed");
+
+export const $catalyst$ = Symbol("$Chemical.catalyst");
+export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");
 
 // $Atom symbols
 export const $formed$ = Symbol("$Atom.formed");

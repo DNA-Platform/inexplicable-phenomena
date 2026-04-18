@@ -1,0 +1,11 @@
+
+<html><body>
+<iframe id='app' src='http://localhost:5173/' style='width:1280px;height:800px;border:none'></iframe>
+<script>
+setTimeout(() => {
+    const iframe = document.getElementById('app');
+    const btn = iframe.contentDocument.querySelector('button');
+    if (btn) btn.click();
+}, 3000);
+</script>
+</body></html>

@@ -1,122 +1,149 @@
 ---
 name: review
-description: Run a team code review — each assigned agent reviews their codebase territory and reports findings
-disable-model-invocation: true
-argument-hint: "[-path glob] [-agent name] [-shallow]"
+description: Review code through an agent's lens — scoped by path, concern, or agent
+argument-hint: "[files, description, or concern] [-agent name]"
 ---
 
-Run a team review. Each assigned agent reviews their part of the codebase and reports findings.
+Review code. Find who owns it, load their perspective, and report what you see — what the code does, where it's fragile, what's strong, and what should change.
 
-## What a review produces
+## Parsing the request
 
-A review answers three questions:
-1. **What's wrong?** Issues in code that an agent owns, prioritized by severity.
-2. **What's changed?** Files that changed since the agent last looked, and whether the agent's assignment still makes sense.
-3. **What's uncovered?** Parts of the codebase that no agent is assigned to.
+The input is natural language. It may contain:
 
-## Steps
+- **Files or paths** — explicit (`library/chemistry/src/particle.tsx`) or descriptive ("the catalogue system", "the build config", "all the archive code")
+- **A concern** — what Doug wants examined ("how does view wrapping work", "is the type system sound", "what are the dependencies between these")
+- **An agent override** — `-agent cathy` or just "have the architect look at this". Overrides the default owner.
+- **No arguments** — full review across all agents' territories.
 
-1. **Load the registry.** Read the [agent registry]. If it doesn't exist, tell Doug: "No agents registered. Create some with `/agent` first." and stop.
+Parse `$ARGUMENTS` for these elements. If ambiguous about which files, resolve it:
 
-2. **Determine scope.** Parse $ARGUMENTS for flags:
-   - `-path {glob}` — only review files matching this pattern. Only agents whose paths overlap with the glob participate.
-   - `-agent {name}` — only this agent reviews. Useful for a focused check.
-   - `-shallow` — skip deep code analysis, just check assignment coverage and staleness.
-   - No arguments — full review, all active agents, entire codebase.
+1. If a description like "the relay system" is given, use `/responsible` to find which agent owns that territory, then glob their paths.
+2. If a single file is named, review just that file.
+3. If a directory or glob is given, review all matching files.
+4. If only an agent is named with no path, review all files in that agent's territory.
+5. If nothing is given, run a full review (see "Full review mode" below).
 
-3. **Identify participants.** For each active agent in scope:
-   a. Read the agent's `.md` file from [agents].
-   b. Read the agent's role files from [roles].
-   c. Load the role's abilities — these are what make the review informed.
+## Finding the reviewer
 
-4. **Run each agent's review.** For each participating agent:
+Use the [responsible skill] logic to determine ownership:
 
-   a. **Gather their files.** Use glob to find all files matching the agent's path patterns.
+1. Match the files against the [agent registry].
+2. **Specific agents are primary** — agents with targeted path patterns (not `**`).
+3. **Arthur is always secondary** — his `**` catch-all means he sees everything. His voice is always present in a review.
 
-   b. **Check for changes.** Run `git log --oneline --since="2 weeks ago" -- {paths}` to see recent changes. If the agent was created recently, use the agent's `created` date instead.
+**Agent override:** If `-agent {name}` is specified, that agent leads the review regardless of ownership. This is intentional — applying a *different perspective* to code reveals things the owner's lens misses. The override agent's role shapes the review; Arthur still contributes his architectural lens.
 
-   c. **Review with the agent's lens.** Read the key files (prioritize recently changed ones) and evaluate through the agent's role priorities. The role's anxieties are the checklist — each anxiety is something to look for.
+**No override, no specific owner:** If files fall in Arthur-only territory (no specific agent), Arthur is primary. His diagnostic question — "what depends on this, and what does it depend on?" — is the default lens for unowned code.
 
-   d. **Produce findings.** For each issue found:
-      ```
-      ### {severity}: {title}
-      - **Agent:** {name} ({role})
-      - **File:** {path}:{line}
-      - **Finding:** {what's wrong and why it matters through this role's lens}
-      - **Recommendation:** {what to do}
-      ```
+## Loading the lens
 
-      Severity levels:
-      - **Critical** — blocks correct operation or causes data loss
-      - **Medium** — works but fragile, inconsistent, or will cause problems at scale
-      - **Low** — style, documentation, or minor improvement
+For each reviewing agent:
 
-   e. **Check assignment fitness.** Does this agent's path assignment still make sense? Flag if:
-      - Files were deleted that the agent covered (stale assignment)
-      - New files appeared in the agent's territory that shift the scope
-      - The agent's role doesn't match what the code actually does now
+1. Read the agent's `.md` file from [agents].
+2. Read the agent's role file from [roles].
+3. Load the role's abilities from [abilities].
+4. Read the source files the role specifies.
 
-5. **Coverage analysis.** After all agents have reviewed:
+The role's **diagnostic first question** opens the review. The role's **anxieties** become the checklist. The role's **mantra** breaks ties.
 
-   a. List all tracked files in the project (respect .gitignore).
-   b. Match each file against all agent path patterns.
-   c. Report uncovered files grouped by directory:
-      ```
-      ## Uncovered paths
-      | Directory | Files | Suggested role |
-      |-----------|-------|---------------|
-      | src/utils/ | 3 | Could be {role} |
-      ```
-   d. If specific uncovered areas are clearly important, recommend creating an agent with `/agent`.
+## Conducting the review
 
-6. **Write the review.** Save the full review to the current sprint's reviews directory:
-   ```
-   .claude/project/{current-sprint}/reviews/review-{date}.md
-   ```
+Read every file in scope. For each file or logical group:
 
-   If no sprint is active, save to `.claude/project/reviews/review-{date}.md` (create the directory if needed).
+### 1. Understand
 
-   Structure:
-   ```markdown
-   # Team Review — {date}
+Describe what the code does before judging it. Name the abstractions, trace the data flow, identify the contracts. A review that jumps to findings without demonstrating comprehension is untrustworthy.
 
-   **Scope:** {full | path: {glob} | agent: {name}}
-   **Participants:** {list of agents}
+### 2. Probe
 
-   ## Findings by severity
+Apply each of the role's anxieties as a probe:
+- Does this code **trigger** the anxiety? That's a finding.
+- Does this code **prevent** the anxiety? That's a strength.
+- Neither? Move on.
 
-   ### Critical
-   {findings or "None"}
+Don't fabricate concerns. If the code is sound through a particular lens, say so.
 
-   ### Medium
-   {findings or "None"}
+### 3. Surface
 
-   ### Low
-   {findings or "None"}
+Report what's not obvious from reading the code alone:
+- Implicit contracts the code assumes but doesn't enforce
+- Hidden dependencies not visible in the import graph
+- Missing tests for load-bearing behavior
+- Naming mismatches where the name suggests one thing and the code does another
+- Dead paths that can't be reached
 
-   ## Assignment changes
-   {any agents whose assignments should be updated, added, or retired}
+### 4. Recommend
 
-   ## Coverage gaps
-   {uncovered paths and recommendations}
-   ```
+For each finding, state what to do and how urgent it is:
+- **Now** — will cause problems in the current sprint
+- **Soon** — will cause problems when the code grows or integrates
+- **Eventually** — technical debt worth tracking
+- **Intentional** — this looks wrong but isn't; document it, don't fix it
 
-7. **Summarize for Doug.** After writing the review file, give a brief verbal summary:
-   - How many findings at each severity
-   - Any assignment changes needed
-   - Any coverage gaps worth addressing
-   - Recommend next steps (fix criticals, create agents for gaps, etc.)
+## Output format
+
+```markdown
+## Review: {description of what was examined}
+
+**Reviewer:** {name} ({role})
+**Scope:** {files examined}
+**Diagnostic question:** {the role's first question, answered for this code}
+
+### Understanding
+
+{What the code does — precise, demonstrating comprehension}
+
+### Findings
+
+#### {title} — {urgency}
+- **File:** {path}:{line}
+- **Anxiety:** {which role anxiety this triggers, or "general"}
+- **Finding:** {what's wrong and why it matters through this role's lens}
+- **Recommendation:** {what to do}
+
+### Strengths
+
+{What the code does well — especially things that actively prevent the role's anxieties}
+
+### Summary
+
+{2-3 sentences. Is this code in good shape? What's the single most important thing to address?}
+```
+
+When Arthur contributes as secondary reviewer, his findings appear in a separate section after the primary reviewer's.
+
+## Full review mode
+
+When no arguments are given, run a systematic review across all agents:
+
+1. Load the [agent registry]. List all active agents.
+2. For each agent, glob their paths and check `git log --oneline --since="2 weeks ago" -- {paths}` for recent changes.
+3. Each agent reviews their territory, prioritizing recently changed files.
+4. After all agents review, run a coverage analysis:
+   - List all tracked files (respect .gitignore).
+   - Match each against agent path patterns.
+   - Report Arthur-only files grouped by directory — these are potential gaps worth assigning.
+5. If uncovered areas are clearly important, recommend creating an agent with `/agent`.
+
+## Saving the review
+
+Save the full review to the current sprint's reviews directory:
+
+```
+.claude/project/{current-sprint}/reviews/review-{date}.md
+```
+
+If no sprint is active, save to `.claude/project/reviews/review-{date}.md`.
 
 ## After the review
 
-If the review found assignment changes needed (stale paths, new files, shifted scope), offer to update the agents immediately. Doug can approve each change or defer.
-
-If the review found coverage gaps, offer to create new agents. This is the natural moment for team growth.
+If the review found stale assignments (deleted files, shifted scope), offer to update agents. If it found coverage gaps, offer to create new agents. A review is the natural moment for team growth.
 
 <!-- citations -->
 [agent registry]: .claude/team/agents/registry.json
 [agents]: .claude/team/agents
 [roles]: .claude/team/roles/
-[project tracker]: .claude/project/index.md
+[abilities]: .claude/team/abilities/
+[responsible skill]: .claude/skills/responsible/SKILL.md
 
 $ARGUMENTS

@@ -2,5 +2,8 @@
   "name": "@dna-platform/claude",
   "version": "0.0.1",
   "private": true,
-  "description": "Claude Code hosting infrastructure — skills, team system, automation"
+  "description": "Claude Code hosting infrastructure — skills, team system, automation",
+  "dependencies": {
+    "@dna-platform/chemistry": "file:../library/chemistry"
+  }
 }

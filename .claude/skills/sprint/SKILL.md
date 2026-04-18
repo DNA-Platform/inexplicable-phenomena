@@ -119,6 +119,9 @@ Epics group related stories. A sprint typically has 1-3 epics.
 |----|-------|-------|------------|--------|
 | E{n}-S{m} | {title} | {agent} | {deps or —} | NOT STARTED |
 
+<!-- Note: Story status lives on the board, not here. The plan is the design document.
+     Don't update story status in the plan — move items on the board instead. -->
+
 #### Story details
 
 ##### E{n}-S{m}: {title}

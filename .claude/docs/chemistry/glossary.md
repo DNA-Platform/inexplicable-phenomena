@@ -10,9 +10,32 @@ A concept glossary for the $Chemistry framework, organized by architectural laye
 
 A JavaScript `Symbol` used as a property key to store internal state on $Chemistry objects. All framework-internal properties are keyed by symbols (e.g., `$cid$`, `$type$`, `$bond$`) so they never collide with user-defined properties. The [symbols module][symbols] exports every symbol used across the particle, chemical, atom, and reference layers.
 
-### $ prefix
+Critically, symbol-keyed properties **travel with the prototype chain** — when `Object.create()` creates a prototypal view, symbol properties on the prototype are accessible through the view. This is why `$Particle` uses symbols rather than `#private` fields: `use()` creates views via `Object.create()`, and those views need to read `$cid$`, `$type$`, `$template$` from their prototype.
 
-The naming convention used throughout $Chemistry to distinguish framework-managed properties from ordinary JavaScript properties. Public-facing properties on particles and chemicals use a single `$` prefix (e.g., `$color`, `$size`). When React props are applied via [`$apply$`][particle], each prop key is automatically prefixed with `$` before being set on the instance. Internal symbols use the `$name$` double-dollar-sign bracketing convention to separate them from user-facing `$name` properties.
+### Symbols vs #private
+
+The codebase uses both symbols and `#private` fields for hidden state. The choice is not arbitrary:
+
+- **Symbols** — used where prototype delegation matters. `$Particle`, `$Chemical`, `$ObjectiveRep`, and `$Referent` all use symbols because their core mechanics involve `Object.create()`. A prototypal view inherits symbol-keyed properties from its prototype.
+- **`#private` fields** — used where encapsulation matters and delegation doesn't. `$Catalogue` uses `#private` because catalogues are standalone containers, never prototype-delegated. `#private` fields are lexically scoped to the declaring class and cannot leak through `Object.create()`.
+
+If the object participates in `Object.create()` delegation: symbols. If it doesn't: `#private`.
+
+### $ prefix (the membrane)
+
+The `$` means "representation of." It marks the boundary between the framework's model and the consumer's reality. Read `$Chemical` as "representation of a chemical component." Read `$title` as "representation of the title prop."
+
+The `$` density varies by audience:
+
+- **Component consumers** never see `$`. They write `<Counter />` and pass `title="..."`. The membrane is invisible.
+- **Component authors** use `$` as a simple grammar: `$props` in class definitions become bare props at the `.Component` boundary.
+- **Framework developers** swim in `$`. Variables like `$this`, `$$this`, `$view$`, `$$$type` are normal. The density is part of the experience — and part of the humor.
+
+When React props are applied via [`$apply$`][particle], each prop key is automatically prefixed with `$` before being set on the instance. The `$name$` double-dollar-sign bracketing convention marks Symbol keys, separate from user-facing `$name` properties.
+
+### .Component boundary
+
+The point where `$` disappears. A component author writes `class $Display extends $Chemical` with `$text` as a prop, then exports `const Display = new $Display().Component`. Consumers import `Display` and write `<Display text="Hello" />`. The `.Component` accessor (currently being reworked) produces a React component whose props interface mirrors the `$`-prefixed properties with the `$` stripped. This is the membrane made concrete.
 
 ### $Rep
 
@@ -36,7 +59,13 @@ A union of JavaScript primitive wrapper constructors: `typeof String | typeof Nu
 
 ### $Particle
 
-The base class for all renderable entities in $Chemistry, defined in [particle.tsx][particle]. A `$Particle` has an auto-incrementing identity ([`$cid$`](#cid)), a string symbol ([`$symbol$`](#symbol-1)), a type reference ([`$type$`](#type-1)), and a view function. Construction wires up the template singleton pattern: the first instance of each class becomes its static template. The constructor also supports a "particular" mode where an external object's prototype is set to the particle, enabling prototype-chain injection.
+The base class for all framework objects, defined in [particle.tsx][particle]. A `$Particle` has identity ([`$cid$`](#cid), [`$symbol$`](#symbol-1)), a type reference ([`$type$`](#type-1)), a view function, and lifecycle (`await this.next('mount')` etc.). It is the smallest thing that lives in React — the irreducible unit with a heartbeat. Construction wires up identity, and the constructor supports the [particular pattern](#particular).
+
+### particular
+
+The pattern where `$Particle`'s constructor receives a non-Particle object as its argument, sets the particle as the object's prototype (via `Object.setPrototypeOf`), and **returns the original object** instead of `this`. The result is an object that has particle behavior (CID, symbol, view, `use()`) through prototype delegation but is not `instanceof $Particle`.
+
+This is the Self philosophy made literal: any structural thing in the codebase can be made visible, renderable, and introspectable by wrapping it with particle behavior. Caught exceptions, middleware chains, scope objects — if it has structure, it can become a particle without changing what it is. The exact use cases are still being discovered; the pattern exists because the philosophy demands it.
 
 ### $cid$
 
@@ -84,7 +113,19 @@ The default module export from [particle.tsx][particle], defined as `new $Partic
 
 ### $Chemical
 
-A subclass of `$Particle` defined in [chemical.ts][chemical] that adds parent-child relationships, component binding, and lifecycle management. Chemicals introduce the [`$parent$`](#parent) hierarchy, the [`$isBound$`](#isbound) state, and the [`$component$`](#component-1) binding. Commented-out code reveals the planned integration with `$Molecule`, `$Reaction`, and `$BondOrchestrator` for reactive state management and lifecycle phases (mount, render, layout, effect, unmount).
+A subclass of `$Particle` defined in [chemical.ts][chemical] that adds parent-child relationships, component binding, lifecycle management, and the [dual constructor](#binding-constructor) pattern. Chemicals introduce the [`$parent$`](#parent) hierarchy, the [`$isBound$`](#isbound) state, and the [`$component$`](#component-1) binding. The planned integration with `$Molecule`, `$Reaction`, and `$BondOrchestrator` provides reactive state management and lifecycle phases (mount, render, layout, effect, unmount).
+
+### binding constructor
+
+A method on a `$Chemical` subclass named after the class itself (e.g., `$Book(...)` on class `$Book`). This is the second of two constructors every chemical has. The class constructor (`constructor()`) runs at object creation time; the binding constructor runs at render time when children arrive as JSX. The binding constructor receives bound children as typed arguments, validates them with `$check`, and stores references. The `$BondOrchestrator` discovers it at runtime by looking up `(chemical as any)[className]`.
+
+This separation is what makes a chemical component fundamentally bigger than a React component: anything you can do at object creation time *plus* anything you can do at render time. Two moments, two constructors, one component.
+
+### prototypal shadowing
+
+The mechanism by which the same bound instance can appear in multiple places with different prop overrides. When a bound chemical is rendered with props, the framework creates a prototypal layer (via `Object.create()`) that shadows only the specified properties. Unshadowed properties inherit from the original instance through the prototype chain. Changing a non-shadowed property on the original updates all views; changing a shadowed property only affects the view that owns the shadow.
+
+This is demonstrated in the sharing tests: one `$Card` rendered as `<Card />` and `<Card background="#ffe0b2" />`. The second render shadows `$background` but inherits `$border`, `$text`, etc. Change the border on the original and both update. Change the background on the original and only the first updates.
 
 ### $parent$
 
@@ -186,6 +227,22 @@ A mapping from a `$ref` string to its canonical `$Rep` object, maintained in the
 
 ## 6. Reflection
 
+### $SubjectiveRep
+
+The abstract base class for the reflection system, defined in [reflection.ts][reflection]. A `$SubjectiveRep` carries a role (`$role$`), a perspective (`$of$`), a reference string (`$ref$`), a canonical identity (`$canonical$`), and a map of role views (`$roles$`). It provides `$as(role)` and `$of(target)` methods that create prototypal views via `Object.create()`, allowing a single representation to be viewed from multiple perspectives without duplicating state. The "subjective" name reflects that the representation is always from a point of view — there is no view-from-nowhere.
+
+### $ObjectiveRep
+
+The concrete implementation class extending `$SubjectiveRep`, defined in [reflection.ts][reflection]. It adds a `literal` (the actual JavaScript value being represented), a `typeof` classification, and all the member introspection machinery. Despite the many interfaces it satisfies (`$Object`, `$Function`, `$Type`, `$Primitive`, `$Member`, etc.), there is only one implementation class. The different interfaces are **guard rails** — TypeScript constraints on valid transitions between roles. The JavaScript runtime can do anything; the interfaces constrain what we consider valid.
+
+### role(of) pattern
+
+The core abstraction of the reflection system. Every `$ObjectiveRep` has a **role** (what it is in this context) and an **of** (what it is relative to). The `$ref` string reads like natural language: `type(String)`, `prototype(String)`, `instance(type(String))`, `member(prototype(Array))`. Role transitions via `$as()` and perspective changes via `$of()` both create lightweight `Object.create()` views that share the underlying state.
+
+### Self-referential type
+
+A type whose `$type` property points back to itself. This occurs at the axiomatic foundations of the type system: `$type(undefined).$type === $type(undefined)`. These are the fixed points — types that have no metatype above them because they ground the system. `undefined`, `null`, and `Object.prototype` are the three axiomatic foundations from which all other type relationships derive.
+
 ### $type()
 
 An entry-point function in the [reflection module][reflection] that takes a `Type` or `TypeofType` (constructor, primitive wrapper, null, or undefined) and returns a `$Type` or `$PrimitiveType` representation. It creates an `$ObjectiveRep` with the role `'type'` and registers it in `$lib`. This is the primary way to obtain a reflective type descriptor for a known constructor.
@@ -221,6 +278,10 @@ A reflection interface representing a constructor function viewed as a type. It 
 ---
 
 ## 7. Semantics
+
+### Prototypal view (Object.create pattern)
+
+The design pattern shared across `$Particle.use()`, `$SubjectiveRep.$as()`, `$SubjectiveRep.$of()`, and `$Referent.$as()`. Instead of creating a new independent object, these methods create a lightweight prototype-linked copy via `Object.create(original)`. The new view inherits all state from the original through the prototype chain; only the differing property (role, perspective, or view function) is set directly on the new object. This means views are cheap, state is shared, and identity is preserved through the chain. It is the Self language's core mechanism brought into JavaScript.
 
 ### $Referent
 

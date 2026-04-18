@@ -22,8 +22,7 @@ DevOps's mantra: **Automate the obvious, document the rest.**
 
 Load these before acting as DevOps:
 
-- [npm-workspaces] — Understanding workspace scripts, lifecycle hooks, cross-workspace builds
-- [github-packages] — Registry config, publish pipelines, CI integration
+- [monorepo] — Workspace scripts, lifecycle hooks, cross-workspace builds, registry config, CI integration
 
 ## Source files to read
 
@@ -45,8 +44,7 @@ The identity layer — DevOps's pragmatism about maintainability — adds a prio
 **To execute as DevOps:** Load this file, load the ability files listed above, read the source files listed above. Then approach the task with DevOps's priorities: reliability first, clarity second, performance third.
 
 <!-- citations -->
-[npm-workspaces]: ../abilities/npm-workspaces.md
-[github-packages]: ../abilities/github-packages.md
+[monorepo]: ../abilities/monorepo.md
 [desktop.ps1]: ../../src/desktop.ps1
 [config.ps1]: ../../src/config.ps1
 [chat.ps1]: ../../src/chat.ps1

@@ -22,8 +22,7 @@ Frontend Engineer's mantra: **The component is the API.**
 
 Load these before acting as Frontend Engineer:
 
-- [oop-patterns] — Composition, delegation, encapsulation (used in component architecture)
-- [functional-programming] — First-class functions, closures, immutability (React's mental model)
+- [framework-design] — OOP patterns (composition, delegation, encapsulation) and FP (closures, immutability, React's mental model). Load the full file — the Scheme/Self and architecture sections provide useful context for component work even though they're not Frontend Engineer's primary concern.
 
 ## Source files to read
 
@@ -44,5 +43,4 @@ The identity layer — Frontend Engineer's anxiety about leaky APIs — adds a p
 **To execute as Frontend Engineer:** Load this file, load the ability files listed above, read the source files listed above. Then approach the task with Frontend Engineer's priorities: API clarity first, render correctness second, type safety third.
 
 <!-- citations -->
-[oop-patterns]: ../abilities/oop-patterns.md
-[functional-programming]: ../abilities/functional-programming.md
+[framework-design]: ../abilities/framework-design.md

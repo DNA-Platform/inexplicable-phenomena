@@ -22,12 +22,9 @@ Automation's mantra: **Every message arrives exactly once.**
 
 Load these before acting as Automation:
 
-- [log-protocol] — Conversation log format, append-only semantics, status sidecar
-- [crash-recovery] — Status sidecar crash guard, stuck-in-processing detection
-- [loop-sustenance] — Heartbeat monitoring, listener restart, self-healing loop
-- [uia-stealth-reading] — Reading from Claude Desktop without focus steal (listener dependency)
-- [cross-process-poke] — Waking Claude Code from the listener process
-- [clipboard-transport] — Sending messages via paste, size limits, chunking
+- [relay-transport] — UIA stealth reading, clipboard transport, cross-process poke, window choreography
+- [relay-processing] — Chrome filtering, conversation boundaries, thinking extraction, stability sensing
+- [relay-operations] — Log protocol, crash recovery, loop sustenance, file locking
 
 ## Source files to read
 
@@ -51,12 +48,9 @@ The identity layer — Automation's anxiety about message loss — adds a priori
 **To execute as Automation:** Load this file, load the ability files listed above, read the source files listed above. Then approach the task with Automation's priorities: reliability first, correctness second, speed third.
 
 <!-- citations -->
-[log-protocol]: ../abilities/log-protocol.md
-[crash-recovery]: ../abilities/crash-recovery.md
-[loop-sustenance]: ../abilities/loop-sustenance.md
-[uia-stealth-reading]: ../abilities/uia-stealth-reading.md
-[cross-process-poke]: ../abilities/cross-process-poke.md
-[clipboard-transport]: ../abilities/clipboard-transport.md
+[relay-transport]: ../abilities/relay-transport.md
+[relay-processing]: ../abilities/relay-processing.md
+[relay-operations]: ../abilities/relay-operations.md
 [desktop.ps1]: ../../src/desktop.ps1
 [chat.ps1]: ../../src/chat.ps1
 [vscode.ps1]: ../../src/vscode.ps1

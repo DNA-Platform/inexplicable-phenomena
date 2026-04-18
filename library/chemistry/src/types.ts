@@ -1,7 +1,6 @@
 import { JSX, ReactNode } from "react";
-import { $Function$, $Html$ } from "./archive/chemistry";
 import { $Particle } from "./chemistry/particle";
-import { $Chemical } from "./chemistry/chemical";
+import { $Function$, $Html$, $Chemical } from "./chemistry/chemical";
 
 export type Constructor<Result = any, Parameters extends any[] = any[]> = new (...args: Parameters) => Result;
 export type Type<T = any> = Constructor<T> & { name: string };

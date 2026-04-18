@@ -29,17 +29,17 @@ A role is effective when loading it into context *measurably changes what you ge
 
 3. **Design the role.** Build these components:
 
-   **Name** — Short, evocative. Not a job title. Tap, Sift, Pace are the existing pattern: verb-like, one syllable, describes the action. But if Doug wants a different naming style, follow his lead.
+   **Name** — Descriptive of the perspective. The existing pattern uses domain-qualified titles: Architect, Framework Engineer, Automation Engineer, Librarian. Follow this convention.
 
    **One-line identity** — "The {X} engineer." What lens does this role apply?
 
    **What {Name} cares about** — The domain. Written as a paragraph that establishes expertise and context. What does this role notice that others miss? What problems has this role seen before?
 
-   **First question** — The diagnostic question this role asks before any task. Sift asks "What's signal and what's noise?" Pace asks "What happens when this fails?" This shapes how you approach work under this role.
+   **First question** — The diagnostic question this role asks before any task. Architect asks "What depends on this, and what does it depend on?" Framework Engineer asks "What concept does this encode, and is the encoding faithful?" This shapes how you approach work under this role.
 
    **Anxieties** — 4-6 specific failure modes this role worries about. Not generic fears — concrete things that go wrong in this domain. These sit in context and make you check for them.
 
-   **Mantra** — 2-5 words. The tiebreaker when two valid approaches conflict. "When in doubt, it's noise." "Dead loops are silent." "Leave no trace."
+   **Mantra** — 2-5 words. The tiebreaker when two valid approaches conflict. "Every package earns its boundary." "The abstraction must be faithful to the concept." "If they can't find it, it doesn't exist."
 
    **Abilities** — Which [abilities] files should be loaded when acting as this role? If the role needs abilities that don't exist yet, note them as "TODO: create" and describe what they'd contain. Abilities are the knowledge layer — the role is the priority layer.
 
@@ -59,7 +59,7 @@ If Doug wants to modify an existing role (add an anxiety, change the mantra, upd
 
 ## Role file structure
 
-Follow the structure of existing roles ([Tap], [Sift], [Pace]). They all follow the same pattern:
+Follow the structure of existing roles ([Architect], [Framework Engineer], [Automation Engineer]). They all follow the same pattern:
 
 ```markdown
 # {Name}
@@ -96,9 +96,9 @@ Before doing {Name}'s work, ground yourself in the current implementation:
 
 <!-- citations -->
 [roles]: .claude/team/roles
-[Tap]: .claude/team/roles/tap.md
-[Sift]: .claude/team/roles/sift.md
-[Pace]: .claude/team/roles/pace.md
+[Architect]: .claude/team/roles/architect.md
+[Framework Engineer]: .claude/team/roles/framework-engineer.md
+[Automation Engineer]: .claude/team/roles/automation-engineer.md
 [abilities]: .claude/team/abilities/
 [project tracker]: .claude/project/index.md
 

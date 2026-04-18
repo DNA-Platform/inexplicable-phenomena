@@ -1,28 +1,18 @@
 {
   "permissions": {
     "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Bash",
+      "Glob",
+      "Grep",
       "WebSearch",
-      "Bash(powershell -ExecutionPolicy Bypass *)",
-      "Bash(git log *)",
-      "Bash(npm *)",
-      "Bash(find /c/Source/dna-platform/chemistry/src -type f -name *.ts -o -name *.tsx)",
-      "Bash(find /c/Source/dna-platform/chemistry/tests -type f -name *.ts -o -name *.tsx)",
-      "Bash(wc:*)",
-      "Bash(find /c/Source/dna-platform/chemistry -maxdepth 1 -type f -name *.json -o -name *.ts -o -name .*rc*)",
-      "Bash(cp \"C:/Source/dna-platform/chemistry/src/archive/chemistry.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/archive/chemistry.ts\")",
-      "Bash(cp \"C:/Source/dna-platform/chemistry/src/archive/chemistry-new.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/archive/chemistry-new.ts\")",
-      "Bash(cp \"C:/Source/dna-platform/chemistry/src/archive/chemistry-web.tsx\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/archive/chemistry-web.tsx\")",
-      "Bash(cp \"C:/Source/dna-platform/chemistry/src/reflection.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/src/reflection.ts\")",
-      "Bash(cp \"C:/Source/dna-platform/chemistry/tests/reflection.test.ts\" \"C:/Source/dna-platform/inexplicable-phenomena/library/chemistry/tests/reflection.test.ts\")",
-      "Bash(npx vitest:*)",
-      "Bash(grep -n \"$view\" /c/Source/dna-platform/chemistry/src/archive/chemistry-new.ts)",
-      "WebFetch(domain:www.anthropic.com)",
-      "WebFetch(domain:arxiv.org)",
-      "WebFetch(domain:direct.mit.edu)",
-      "WebFetch(domain:eval.16x.engineer)",
-      "Bash(mv framework-developer.md framework-engineer.md)",
-      "Bash(mv devops.md devops-engineer.md)",
-      "Bash(mv automation.md automation-engineer.md)"
+      "WebFetch",
+      "Agent",
+      "Bash(mv \"C:/Source/dna-platform/inexplicable-phenomena/.claude/perspective\" \"C:/Source/dna-platform/inexplicable-phenomena/.claude/team/perspective\")",
+      "Bash(mkdir -p \"C:/Source/dna-platform/inexplicable-phenomena/.claude/team/perspective/phillip\")",
+      "Bash(npx vitest:*)"
     ]
   }
 }

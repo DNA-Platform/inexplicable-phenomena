@@ -20,7 +20,7 @@
     },
     {
       "name": "cathy",
-      "roles": ["framework-engineer"],
+      "roles": ["framework-engineer", "frontend-engineer"],
       "paths": ["library/chemistry/**"],
       "status": "active"
     },
@@ -28,6 +28,18 @@
       "name": "libby",
       "roles": ["librarian"],
       "paths": [".claude/docs/**"],
+      "status": "active"
+    },
+    {
+      "name": "phillip",
+      "roles": ["frontend-engineer", "ux-designer"],
+      "paths": ["library/chemistry/app/**"],
+      "status": "active"
+    },
+    {
+      "name": "queenie",
+      "roles": ["qa-engineer"],
+      "paths": ["library/chemistry/tests/**", "library/chemistry/app/**"],
       "status": "active"
     }
   ]

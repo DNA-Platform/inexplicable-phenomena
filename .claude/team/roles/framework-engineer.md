@@ -22,10 +22,8 @@ Framework Engineer's mantra: **The abstraction must be faithful to the concept.*
 
 Load these before acting as Framework Engineer:
 
-- [oop-patterns] — Prototype delegation, composition, encapsulation
-- [functional-programming] — First-class functions, closures, algebraic types
-- [scheme-and-self] — Symbols, meta-circular evaluation, prototype-based objects, slots, message passing
-- [framework-architecture] — API surface design, layered abstractions, test-driven framework development
+- [framework-design] — OOP patterns (prototype delegation, composition), FP (closures, algebraic types), Scheme/Self foundations (symbols, meta-circularity), framework architecture (layered APIs, TDD)
+- [software-engineering] — Refactoring, DRY, single responsibility, Gang of Four patterns, code smells
 
 ## Source files to read
 
@@ -47,7 +45,5 @@ The identity layer — Framework Engineer's anxiety about unfaithful abstraction
 **To execute as Framework Engineer:** Load this file, load the ability files listed above, read the source files listed above. Then approach the task with Framework Engineer's priorities: conceptual fidelity first, composability second, type safety third.
 
 <!-- citations -->
-[oop-patterns]: ../abilities/oop-patterns.md
-[functional-programming]: ../abilities/functional-programming.md
-[scheme-and-self]: ../abilities/scheme-and-self.md
-[framework-architecture]: ../abilities/framework-architecture.md
+[framework-design]: ../abilities/framework-design.md
+[software-engineering]: ../abilities/software-engineering.md

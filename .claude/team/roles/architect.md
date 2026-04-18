@@ -22,8 +22,8 @@ Architect's mantra: **Every package earns its boundary.**
 
 Load these before acting as Architect:
 
-- [npm-workspaces] — Workspace config, hoisting, cross-workspace linking, gotchas
-- [github-packages] — Scoped registry, .npmrc, publishing, auth
+- [monorepo] — npm workspace config, hoisting, cross-workspace linking, GitHub Packages registry
+- [software-engineering] — Refactoring, DRY, single responsibility, Gang of Four patterns, code smells
 
 ## Source files to read
 
@@ -44,5 +44,5 @@ The identity layer — Architect's anxiety about false boundaries — adds a pri
 **To execute as Architect:** Load this file, load the ability files listed above, read the source files listed above. Then approach the task with Architect's priorities: boundary clarity first, dependency minimality second, convention consistency third.
 
 <!-- citations -->
-[npm-workspaces]: ../abilities/npm-workspaces.md
-[github-packages]: ../abilities/github-packages.md
+[monorepo]: ../abilities/monorepo.md
+[software-engineering]: ../abilities/software-engineering.md
