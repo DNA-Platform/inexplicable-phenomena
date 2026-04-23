@@ -22,8 +22,8 @@ class $Counter extends $Chemical {
     }
 }
 
-describe('React assumption: re-render on method call', () => {
-    it('click triggers re-render via $Bonding', async () => {
+describe('Clicking a button that calls a method updates the UI', () => {
+    it('clicking a button updates the UI', async () => {
         const Counter = new $Counter().Component;
         const { container } = render(<Counter />);
         expect(container.querySelector('.count')!.textContent).toBe('0');
@@ -33,7 +33,7 @@ describe('React assumption: re-render on method call', () => {
         expect(container.querySelector('.count')!.textContent).toBe('1');
     });
 
-    it('held instance method triggers re-render', async () => {
+    it('method called on a held instance updates the UI', async () => {
         // Create a second instance (non-template) to use the $lift path
         new $Counter(); // ensure template exists
         const counter = new $Counter(); // this one is NOT the template
@@ -47,19 +47,21 @@ describe('React assumption: re-render on method call', () => {
     });
 });
 
-describe('React assumption: lifecycle phases', () => {
-    it('phase advances after mount', async () => {
-        new $Display(); // ensure template exists
+describe('Lifecycle: awaiting next(phase) resolves after the framework reaches that phase', () => {
+    it('next("mount") resolves after a component mounts', async () => {
+        new $Display();
         const display = new $Display();
         const Display = display.Component;
+        let mounted = false;
+        display.next('mount').then(() => { mounted = true; });
         render(<Display />);
-        await act(async () => {});
-        expect(display[$phase$]).not.toBe('setup');
+        await act(async () => { await new Promise(r => setTimeout(r, 10)); });
+        expect(mounted).toBe(true);
     });
 });
 
-describe('React assumption: instance independence', () => {
-    it('two template components have separate state', async () => {
+describe('Two rendered instances of the same chemical hold independent state', () => {
+    it('clicking one component does not affect the other', async () => {
         class $IndependentCounter extends $Chemical {
             count = 0;
             increment() { this.count++; }
@@ -81,8 +83,8 @@ describe('React assumption: instance independence', () => {
     });
 });
 
-describe('React assumption: props flow', () => {
-    it('parent re-render with new props updates child', async () => {
+describe('Parent re-rendering with new props updates the child', () => {
+    it('new props from a parent re-render reach the child', async () => {
         const Display = new $Display().Component;
         function Parent() {
             const [text, setText] = React.useState('first');
@@ -102,8 +104,8 @@ describe('React assumption: props flow', () => {
     });
 });
 
-describe('React assumption: consecutive re-renders', () => {
-    it('multiple clicks each update the DOM', async () => {
+describe('Consecutive state mutations each update the DOM', () => {
+    it('three clicks in sequence show three incremented values', async () => {
         const Counter = new $Counter().Component;
         const { container } = render(<Counter />);
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -115,8 +117,8 @@ describe('React assumption: consecutive re-renders', () => {
     });
 });
 
-describe('React assumption: unmount cleanup', () => {
-    it('component removal fires unmount', async () => {
+describe('Removing a component from the tree unmounts it', () => {
+    it('conditional rendering removes the DOM subtree', async () => {
         new $Display();
         const display = new $Display();
         const Display = display.Component;

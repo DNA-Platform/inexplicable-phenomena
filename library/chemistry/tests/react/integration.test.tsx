@@ -27,7 +27,7 @@ describe('Integration: $Chemistry renders through React', () => {
         expect(container.querySelector('.pages')!.textContent).toBe('0 pages');
     });
 
-    it('renders a book via instance $use (stateful pattern)', () => {
+    it('renders a book via held instance Component (stateful pattern)', () => {
         const book = new $Book();
         book.$title = 'The Extended Phenotype';
         book.$author = 'Richard Dawkins';

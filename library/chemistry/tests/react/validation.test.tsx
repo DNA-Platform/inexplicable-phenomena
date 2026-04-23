@@ -40,7 +40,7 @@ describe('Binding constructor validation', () => {
         expect(container.textContent).toContain('2 items');
     });
 
-    it('$check returns the value for correct types (validation is batch-evaluated by the orchestrator)', () => {
+    it('$check returns the value for correct types', () => {
         const label = new $Label();
         const result = $check(label, $Label);
         expect(result).toBe(label);

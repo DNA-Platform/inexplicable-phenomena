@@ -6,6 +6,7 @@ import {
 } from "../symbols";
 import type { $$Component, $Props, $Phase } from "../types";
 import { diff } from "./reconcile";
+import { augment } from "./augment";
 
 export const $phaseOrder: $Phase[] = ['setup', 'mount', 'render', 'layout', 'effect', 'unmount'];
 
@@ -17,7 +18,7 @@ export class $Particle {
     [$particular$] = false;
     [$phase$]: $Phase = 'setup';
     [$phases$]: Map<$Phase, (() => void)[]>;
-    [$update$]?: React.Dispatch<React.SetStateAction<{}>>;
+    [$update$]?: () => void;
     [$viewCache$]?: ReactNode;
     [$rendering$] = false;
 
@@ -101,6 +102,7 @@ export class $Particle {
 // $lift — wrap a non-template particle as a function component
 export function $lift<T extends $Particle>(particle: T, view?: () => ReactNode): $$Component<T> {
     const $view = view || particle.view;
+    const react = () => particle[$update$]?.();
     const Component = (props?: $Props): ReactNode => {
         const [, setToken] = useState(0);
         particle[$update$] = () => setToken((t: number) => t + 1);
@@ -114,7 +116,7 @@ export function $lift<T extends $Particle>(particle: T, view?: () => ReactNode):
         useEffect(() => {
             particle[$resolve$]('effect');
             particle[$rendering$] = true;
-            const current = $view.call(particle);
+            const current = augment($view.call(particle), react);
             particle[$rendering$] = false;
             if (diff(current, particle[$viewCache$])) {
                 particle[$viewCache$] = current;
@@ -124,7 +126,7 @@ export function $lift<T extends $Particle>(particle: T, view?: () => ReactNode):
         particle[$rendering$] = true;
         particle[$apply$](props);
         particle[$bond$]();
-        const output = $view.call(particle);
+        const output = augment($view.call(particle), react);
         particle[$viewCache$] = output;
         particle[$rendering$] = false;
         return output;

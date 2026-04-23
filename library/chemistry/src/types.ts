@@ -41,7 +41,7 @@ export type $Properties<T> = {
         First extends Lowercase<First> ?
         (First extends '_' | '$' ? never :
             (K extends keyof $Chemical ? never :
-                (T[K] extends Function ? never : `${First}${Rest}`))) : never) : never]:
+                (T[K] extends Function ? never : `${First}${Rest}`))) : never) : never]?:
     T[K]
 } & {
     [K in keyof T as K extends `$${infer First}${infer Rest}` ?

@@ -18,14 +18,31 @@ export function walk(
     if (node == null) return node;
     if (typeof node !== 'object') return node;
     if (Array.isArray(node)) {
-        const paired = Array.isArray(pair) ? pair as ReactNode[] : undefined;
+        const paired = Array.isArray(pair) && pair.length === node.length
+            ? pair as ReactNode[]
+            : undefined;
+        if (paired) {
+            // Walk paired — if every element walks to its cached counterpart,
+            // return the cached array reference so outer visits treat it as
+            // unchanged. Only allocate a new array when something actually
+            // diverged.
+            let modified = false;
+            const result: ReactNode[] = new Array(node.length);
+            for (let i = 0; i < node.length; i++) {
+                const walked = walk(node[i], visit, paired[i], each);
+                result[i] = walked;
+                if (walked !== paired[i]) modified = true;
+            }
+            return modified ? result : paired;
+        }
+        // No paired array — standard lazy walk
         for (let i = 0; i < node.length; i++) {
-            const walked = walk(node[i], visit, paired?.[i], each);
+            const walked = walk(node[i], visit, undefined, each);
             if (walked !== node[i]) {
                 const result = node.slice(0, i);
                 result.push(walked);
                 for (let j = i + 1; j < node.length; j++)
-                    result.push(walk(node[j], visit, paired?.[j], each));
+                    result.push(walk(node[j], visit, undefined, each));
                 return result;
             }
         }

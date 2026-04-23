@@ -39,6 +39,7 @@ export const $render$ = Symbol("$Chemical.render");
 export const $createComponent$ = Symbol("$Chemical.createComponent");
 export const $destroy$ = Symbol("$Chemical.destroy");
 export const $destroyed$ = Symbol("$Chemical.destroyed");
+export const $backing$ = Symbol("$Chemical.backing");
 
 export const $catalyst$ = Symbol("$Chemical.catalyst");
 export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");

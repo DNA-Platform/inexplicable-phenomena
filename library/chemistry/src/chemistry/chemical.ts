@@ -3,13 +3,19 @@ import {
     $cid$, $symbol$, $type$, $molecule$, $reaction$, $template$, $isTemplate$, $derived$,
     $isBound$, $$parent$$, $parent$, $orchestrator$, $component$, $children$,
     $props$, $lastProps$, $apply$, $bond$, $createComponent$,
-    $destroy$, $destroyed$, $remove$, $catalyst$, $isCatalyst$,
+    $destroy$, $destroyed$, $remove$, $catalyst$, $isCatalyst$, $backing$,
     $$template$$, $$getNextCid$$, $$createSymbol$$, $$parseCid$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$
 } from "../symbols";
+import { $symbolize } from "./helpers";
 import type { $Component, $$Component, $Props, $ParameterType } from "../types";
 import { $Particle, $phaseOrder, $lift } from "./particle";
 import { diff } from "./reconcile";
+import { augment } from "./augment";
+import { Scope, currentScope, withScope } from "./scope";
+
+// Re-export scope machinery for consumers that import from chemical.ts.
+export { Scope, withScope } from "./scope";
 
 // ===========================================================================
 // $Reflection — property annotation system
@@ -128,6 +134,11 @@ export class $Bond<T = any, P = any> {
         this._formed = true;
         this._getter = this._descriptor.get;
         this._setter = this._descriptor.set;
+        // For plain fields (no user getter/setter, not a method), install an
+        // accessor that tracks reads/writes with the current scope.
+        if (!this._getter && !this._setter && !$Bond.isMethod(this._descriptor)) {
+            installReactiveAccessor(this._chemical, this._property, this._descriptor.value);
+        }
     }
 
     double(chemical: any): $Bond {
@@ -148,6 +159,45 @@ export class $Bond<T = any, P = any> {
     }
 }
 
+function ensureBacking(chemical: any): any {
+    if (!Object.prototype.hasOwnProperty.call(chemical, $backing$)) {
+        const parentBacking = Object.getPrototypeOf(chemical)?.[$backing$] ?? null;
+        Object.defineProperty(chemical, $backing$, {
+            value: Object.create(parentBacking),
+            writable: false,
+            enumerable: false,
+            configurable: false,
+        });
+    }
+    return chemical[$backing$];
+}
+
+function installReactiveAccessor(target: any, prop: string, initialValue: any) {
+    const backing = ensureBacking(target);
+    backing[prop] = initialValue;
+    Object.defineProperty(target, prop, {
+        get() {
+            const value = this[$backing$]?.[prop];
+            const scope = currentScope();
+            if (scope) scope.recordRead(this, prop, value);
+            return value;
+        },
+        set(value) {
+            const backing = ensureBacking(this);
+            backing[prop] = value;
+            if (this[$rendering$]) return;
+            const scope = currentScope();
+            if (scope) {
+                scope.recordWrite(this, prop);
+            } else {
+                this[$reaction$]?.react();
+            }
+        },
+        enumerable: true,
+        configurable: true,
+    });
+}
+
 // $Bonding — method wrapper that triggers re-render
 export class $Bonding extends $Bond {
     get action() { return this._action; }
@@ -165,14 +215,20 @@ export class $Bonding extends $Bond {
         this._action = this._descriptor.value;
         const action = this._action!;
         this._chemical[this._property] = function (this: any, ...args: any[]) {
-            const result = action.apply(this, args);
-            if (this[$rendering$] || this[$phase$] === 'setup') return result;
-            const trigger = this[$update$];
-            if (!trigger) return result;
+            // Inside render or setup, methods run without a scope — those
+            // contexts are already handled by the render pipeline.
+            if (this[$rendering$] || this[$phase$] === 'setup') {
+                return action.apply(this, args);
+            }
+            let result: any;
+            withScope(() => { result = action.apply(this, args); });
+            // For async methods, attach a continuation scope so post-await
+            // mutations are caught too.
             if (result instanceof Promise) {
-                result.then(() => { if (!this[$rendering$]) trigger(); });
-            } else {
-                trigger();
+                result.then(
+                    () => withScope(() => {}),
+                    () => withScope(() => {})
+                );
             }
             return result;
         };
@@ -276,6 +332,22 @@ export class $Molecule {
 // $Reaction — chemical identity registry
 // ===========================================================================
 
+/**
+ * $Reaction — the single semantic unit of reactivity for a chemical.
+ *
+ * Each chemical has exactly one $Reaction, created at construction, destroyed
+ * when the chemical is destroyed. The reaction is the sole entry point for
+ * requesting a re-render: `reaction.react()`.
+ *
+ * Everything that wants to cause a re-render calls `react()`:
+ *   - View-augmented event handlers (wrapped by the framework).
+ *   - The post-lifecycle view diff (when output changed).
+ *   - Programmatic callers (tests, lifecycle continuations).
+ *
+ * react() is idempotent within a React batch tick — multiple calls collapse
+ * into a single commit via React's automatic batching. No explicit dedup
+ * machinery is needed.
+ */
 export class $Reaction {
     private _reactions = new Map<number, $Reaction>();
     get chemical() { return this._chemical; }
@@ -288,6 +360,19 @@ export class $Reaction {
         this._system = system || this;
         this._system._reactions.set(chemical[$cid$], this);
         $Reaction._chemicals.set(chemical[$cid$], chemical);
+    }
+
+    /**
+     * Request a re-render of the bound chemical. No-op during unmount phase
+     * or if the chemical has been destroyed.
+     */
+    react(): void {
+        const chemical = this._chemical;
+        if (!chemical) return;
+        if (chemical[$destroyed$]) return;
+        if (chemical[$phase$] === 'unmount') return;
+        const update = chemical[$update$];
+        if (update) update();
     }
 
     add(chemical: $Chemical) {
@@ -946,10 +1031,11 @@ export class $Chemical extends $Particle {
             useLayoutEffect(() => {
                 chemical[$resolve$]('layout');
             });
+            const react = () => chemical[$reaction$]?.react();
             useEffect(() => {
                 chemical[$resolve$]('effect');
                 chemical[$rendering$] = true;
-                const current = chemical.view();
+                const current = augment(chemical.view(), react);
                 chemical[$rendering$] = false;
                 if (diff(current, chemical[$viewCache$])) {
                     chemical[$viewCache$] = current;
@@ -959,7 +1045,7 @@ export class $Chemical extends $Particle {
             chemical[$rendering$] = true;
             chemical[$apply$](props);
             chemical[$bond$]();
-            const output = chemical.view();
+            const output = augment(chemical.view(), react);
             chemical[$viewCache$] = output;
             chemical[$rendering$] = false;
             return output;
@@ -981,6 +1067,24 @@ export class $Chemical extends $Particle {
             throw new Error(`The ${className} class must have a constructor method named ${className} because child class has one`);
         this.assertViewConstructors(Object.getPrototypeOf(prototype), thisConstructor);
     }
+}
+
+/**
+ * react(chemical) — request a re-render of this chemical.
+ *
+ * This is the escape hatch for programmatic state mutations that don't flow
+ * through an event handler (augmented) or a reactive method (wrapped). Call
+ * it when you've mutated chemical state from a context the framework can't
+ * observe.
+ *
+ * Most code should not need this — mutations in handlers and methods
+ * auto-react. It's documented for:
+ *   - Tests that mutate chemical state directly for setup.
+ *   - External subscriptions whose callbacks mutate without calling a method.
+ *   - Advanced patterns where you want to coalesce updates manually.
+ */
+export function react(chemical: { [$reaction$]?: $Reaction }): void {
+    chemical[$reaction$]?.react();
 }
 
 // bind(chemical, parent?) — create a bound child instance of a chemical

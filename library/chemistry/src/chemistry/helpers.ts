@@ -72,12 +72,41 @@ export class $Represent {
             if (ctor && ctor !== 'Object' && ctor !== 'Array')
                 constructorName = ctor;
             if (!unique)
-                unique = `$${Date.now().toString(36)}`;
+                unique = `$r`;
             const ref = `${unique}.${counter++}`;
             seen.set(val, ref);
             if (!refs) refs = {};
             if (Array.isArray(val)) {
                 refs[ref] = val.map(item => process(item, replacer));
+            } else if (val instanceof Map) {
+                // Iteration order is insertion order in JS. For equivalence
+                // we need a deterministic order — sort by symbolized key so
+                // two Maps with the same entries in different insertion order
+                // produce the same serialization.
+                const entries: [any, any][] = [];
+                for (const [k, v] of val) entries.push([k, v]);
+                entries.sort((a, b) => {
+                    const ka = typeof a[0] === 'string' ? a[0] : JSON.stringify(a[0]);
+                    const kb = typeof b[0] === 'string' ? b[0] : JSON.stringify(b[0]);
+                    return ka < kb ? -1 : ka > kb ? 1 : 0;
+                });
+                refs[ref] = {
+                    $Map: entries.map(([k, v]) => [process(k, replacer), process(v, replacer)])
+                };
+            } else if (val instanceof Set) {
+                const members: any[] = [];
+                for (const m of val) members.push(m);
+                // Sort for deterministic ordering.
+                members.sort((a, b) => {
+                    const sa = typeof a === 'string' ? a : JSON.stringify(a);
+                    const sb = typeof b === 'string' ? b : JSON.stringify(b);
+                    return sa < sb ? -1 : sa > sb ? 1 : 0;
+                });
+                refs[ref] = { $Set: members.map(m => process(m, replacer)) };
+            } else if (val instanceof Date) {
+                refs[ref] = { $Date: val.getTime() };
+            } else if (val instanceof RegExp) {
+                refs[ref] = { $RegExp: val.source, flags: val.flags };
             } else {
                 const obj: Record<string, any> = {};
                 for (const key of Object.keys(val))

@@ -1,22 +1,31 @@
 import { describe, it, expect } from 'vitest';
 import { $Particle } from '@/chemistry/particle';
 import { $Chemical } from '@/chemistry/chemical';
-import { $phase$, $phases$, $resolve$ } from '@/symbols';
+import { $resolve$ } from '@/symbols';
 
-describe('Lifecycle: next() on $Particle', () => {
-    it('resolves immediately if already at the requested phase', async () => {
+// Lifecycle phases are the framework's coordination primitive for async work
+// aligned with React's commit cycle. A chemical (or particle) can `await
+// this.next(phase)` and the framework resolves when that phase is reached.
+//
+// These tests pin down the contract of next() — what it guarantees to
+// developers writing async lifecycle code.
+
+describe('next(phase) — when the requested phase has already been reached', () => {
+    it('resolves immediately if already at that phase', async () => {
         const particle = new $Particle();
         particle[$resolve$]('effect');
-        await particle.next('effect');
+        await particle.next('effect'); // must not hang
     });
 
-    it('resolves immediately if past the requested phase', async () => {
+    it('resolves immediately if the phase has been passed', async () => {
         const particle = new $Particle();
         particle[$resolve$]('effect');
-        await particle.next('mount');
+        await particle.next('mount'); // mount precedes effect in phase order
     });
+});
 
-    it('waits for a future phase', async () => {
+describe('next(phase) — when the requested phase is in the future', () => {
+    it('the returned promise stays pending until the framework resolves', async () => {
         const particle = new $Particle();
         let resolved = false;
         const promise = particle.next('mount').then(() => { resolved = true; });
@@ -26,7 +35,7 @@ describe('Lifecycle: next() on $Particle', () => {
         expect(resolved).toBe(true);
     });
 
-    it('multiple awaiters on the same phase all resolve', async () => {
+    it('all pending awaiters resolve together when the phase is reached', async () => {
         const particle = new $Particle();
         const results: number[] = [];
         particle.next('mount').then(() => results.push(1));
@@ -36,17 +45,10 @@ describe('Lifecycle: next() on $Particle', () => {
         await new Promise(r => setTimeout(r, 10));
         expect(results).toEqual([1, 2, 3]);
     });
+});
 
-    it('tracks the current phase', () => {
-        const particle = new $Particle();
-        expect(particle[$phase$]).toBe('setup');
-        particle[$resolve$]('mount');
-        expect(particle[$phase$]).toBe('mount');
-        particle[$resolve$]('effect');
-        expect(particle[$phase$]).toBe('effect');
-    });
-
-    it('unmount always waits even if past other phases', async () => {
+describe('next(phase) — special rules', () => {
+    it('unmount always waits even when later phases have been reached', async () => {
         const particle = new $Particle();
         particle[$resolve$]('effect');
         let resolved = false;
@@ -59,16 +61,8 @@ describe('Lifecycle: next() on $Particle', () => {
     });
 });
 
-describe('Lifecycle: next() on $Chemical', () => {
-    it('provides named method shortcuts', () => {
-        const chemical = new $Chemical();
-        expect(typeof chemical.mount).toBe('function');
-        expect(typeof chemical.layout).toBe('function');
-        expect(typeof chemical.effect).toBe('function');
-        expect(typeof chemical.unmount).toBe('function');
-    });
-
-    it('named methods delegate to next()', async () => {
+describe('Chemical lifecycle methods — named shortcuts for phases', () => {
+    it('chemical.mount() awaits the mount phase', async () => {
         const chemical = new $Chemical();
         let mounted = false;
         chemical.mount().then(() => { mounted = true; });
@@ -77,10 +71,8 @@ describe('Lifecycle: next() on $Chemical', () => {
         await new Promise(r => setTimeout(r, 10));
         expect(mounted).toBe(true);
     });
-});
 
-describe('Lifecycle: the await this.next() pattern', () => {
-    it('linear async lifecycle code works', async () => {
+    it('async code can sequence through phases with await this.next()', async () => {
         class $Worker extends $Chemical {
             result = '';
             async effect() {

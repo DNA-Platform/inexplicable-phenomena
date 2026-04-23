@@ -2,9 +2,25 @@
 
 Read this file first when resuming work. It tells you where we are.
 
-## Current sprint: sprint-17 (The Library Sprint) — NOT STARTED
+## Current sprint: sprint-21 (Performance Baseline and Targets) — NOT STARTED
 
-**Plan:** [sprint-17 plan] — every agent researches what they need to make durable, framework-level decisions. Seeds `.claude/team/library/` with cross-linked books. Blocks the post-lifecycle diff decision (needs Cathy's reactivity-models book first).
+**Plan:** [sprint-21 plan] — three tiers of benchmarks (micro, component-level, macro) to establish v1 ship gate and v2 static-analysis trigger. Measure first; optimize only if numbers demand.
+
+## Previous: sprint-20 (Test Suite as Specification) — COMPLETE
+
+**Plan:** [sprint-20 plan] — test-by-test audit and cleanup. 323 → 286 tests. Unrelated subsystems relocated; ~37 IMPLEMENTATION tests deleted or rewritten as BEHAVIOR. Test suite now reads as a specification.
+
+## Previous: sprint-19 (Scope-Tracked Reactivity) — IN PROGRESS (foundation complete)
+
+**Plan:** [sprint-19 plan] — scope tracking via getter/setter interception, $symbolize snapshots. Foundation landed with 323 tests green. R6, R8–R17 pending.
+
+## Previous: sprint-18 (Reactivity Rebuild) — PARTIAL (foundation landed)
+
+**Plan:** [sprint-18 plan] — built reactive methods + view augmentation + view diff. Foundation for sprint-19. Methods wrappers, handler augmentation, and equivalent() all in place. 281 tests green.
+
+## In-progress: sprint-17 (The Library Sprint)
+
+**Plan:** [sprint-17 plan] — every agent researches what they need to make durable, framework-level decisions. Cathy's books (reactivity-models, view-introspection) are written. Other agents' books in progress.
 
 ## Next: sprint-14 (The Showcase) — NOT STARTED
 
@@ -53,7 +69,11 @@ Read this file first when resuming work. It tells you where we are.
 | sprint-11 | [Unification][sprint-11 plan] | Complete — walk.ts centralizes traversal, performance optimized |
 | sprint-12 | [Books][sprint-12 plan] | Complete — .Component fix, $lift, instance management, book components |
 | sprint-13 | [Test Architecture][sprint-13 plan] | Complete — test restructure, React assumptions, app bugs fixed |
-| sprint-17 | [Library Sprint][sprint-17 plan] | NOT STARTED — every agent researches and writes books |
+| sprint-17 | [Library Sprint][sprint-17 plan] | In progress — Cathy's books written, others pending |
+| sprint-18 | [Reactivity Rebuild][sprint-18 plan] | Partial — foundation landed (augment + bond + diff); 281 tests green |
+| sprint-19 | [Scope-Tracked Reactivity][sprint-19 plan] | In progress — foundation landed (scope + accessor + $symbolize); 323 tests green |
+| sprint-20 | [Test Suite as Specification][sprint-20 plan] | Complete — 323 → 286 tests; implementation-heavy tests deleted or rewritten as behavior |
+| sprint-21 | [Performance Baseline and Targets][sprint-21 plan] | NOT STARTED — benchmark v1 viability and v2 trigger thresholds |
 
 ## Next considerations
 
@@ -110,6 +130,10 @@ See the [agent registry] for path patterns. Use `/responsible` to query ownershi
 [sprint-13 plan]: sprint-13/plan.md
 [sprint-14 plan]: sprint-14/plan.md
 [sprint-17 plan]: sprint-17/plan.md
+[sprint-18 plan]: sprint-18/plan.md
+[sprint-19 plan]: sprint-19/plan.md
+[sprint-20 plan]: sprint-20/plan.md
+[sprint-21 plan]: sprint-21/plan.md
 [roles]: ../team/roles/
 [abilities]: ../team/abilities/
 [Architect]: ../team/roles/architect.md
