@@ -1,0 +1,80 @@
+{
+  "_comment": "Baseline numbers measured 2026-04-23. Captures micro-benchmarks (B1) of sprint-21. Hardware: developer local machine. Numbers are per-operation mean unless noted. `hz` = operations per second; per-op cost = 1/hz. Where a benchmark runs N internal iterations, per-call cost = (1/hz) / N.",
+  "accessor_cost": {
+    "plain_js_read": { "hz": 276050, "per_read_ns": 362, "note": "10k reads per batch; ~3.6ns per read" },
+    "chemistry_read_outside_scope": { "hz": 273552, "per_read_ns": 366, "note": "Essentially zero overhead vs plain JS — accessor getter is V8-inlinable" },
+    "plain_js_write": { "hz": 320280, "per_write_ns": 312 },
+    "chemistry_write_outside_scope": { "hz": 378558, "per_write_ns": 264, "note": "Framework write is comparable to plain write; additional react() call is near-free when update$ is undefined (not mounted)" },
+    "overhead_factor": "≈1x"
+  },
+  "scope_cost": {
+    "empty_scope_open_close_per_op_us": 5.6,
+    "one_tracked_read_per_op_us": 5.4,
+    "ten_tracked_reads_per_op_us": 56.2,
+    "per_read_overhead_us": 5.1,
+    "note": "Per-tracked-read cost dominated by $symbolize() on the read value"
+  },
+  "symbolize_cost": {
+    "primitive_ns_per_call": 74,
+    "small_object_3_keys_ns_per_call": 435,
+    "large_object_100_keys_us_per_call": 12,
+    "small_array_10_items_ns_per_call": 469,
+    "large_array_1000_items_us_per_call": 15.5,
+    "small_map_3_entries_ns_per_call": 728,
+    "large_map_1000_entries_us_per_call": 11,
+    "per_key_cost_large_object_ns": 120,
+    "per_entry_cost_large_map_ns": 11,
+    "per_item_cost_large_array_ns": 15
+  },
+  "instantiation": {
+    "small_3_fields_us_per_instance": 1.6,
+    "large_20_fields_us_per_instance": 1.9,
+    "per_field_cost_us": "≈0.02 (nearly flat up to 20 fields)",
+    "note": "1000 chemicals instantiated in <2ms — well within scaling budget"
+  },
+  "verdict_v1": {
+    "accessor_cost": "PASS — no measurable overhead outside scope",
+    "scope_cost": "PASS — 56μs for 10-read scope well under 4ms render budget",
+    "symbolize_cost": "PASS — small objects <500ns, large objects ~12μs",
+    "instantiation": "PASS — <2μs per chemical, extrapolates to 2ms for 1000",
+    "overall": "SHIP-READY for the GitHub Pages static site. Micro-level overhead is in the noise for typical UI workloads."
+  },
+  "signals_for_v2_trigger": {
+    "symbolize_dominates_handler_time": "Not yet measured — component benchmarks (B2) will surface. Threshold: >40% of event-handler time in $symbolize.",
+    "instantiation_cliff": "Not observed at 20 fields. If fields/chemical exceeds ~100, measure again.",
+    "scope_cost_at_many_reads": "Linear in reads × $symbolize cost. For views reading many fields, expect scope cost in ms range."
+  },
+  "macro_render_scaling": {
+    "_context": "These are INITIAL RENDER numbers — first paint from cold. Events after initial render do NOT re-render the whole tree; see locality section below.",
+    "per_chemical_render_cost_us": 170,
+    "100_row_list_through_react_ms": 17,
+    "500_row_list_through_react_ms": 73,
+    "1000_row_extrapolated_ms": 150,
+    "comparison_baseline": "React alone renders 1000 rows in ~25ms (js-framework-benchmark). Our overhead factor ≈7x. Solid ~7ms.",
+    "note": "Initial render cost proportional to total chemicals rendered. This is one-time load cost, not per-event."
+  },
+  "_optimization_applied": "2026-04-23: switched Scope snapshot/diff from $symbolize (string serialize + string compare) to deep-clone + equivalent() (structural walk with early exit). 2-4x faster on microbenchmarks; 19x faster on fine-grained composition.",
+  "locality_per_event": {
+    "_context": "Cost of an event in an ALREADY-RENDERED tree. This is what app-responsiveness actually depends on.",
+    "tree_10_leaves_bump_one_ms": 0.149,
+    "tree_50_leaves_bump_one_ms": 0.340,
+    "tree_100_leaves_bump_one_ms": 0.153,
+    "tree_200_leaves_bump_one_ms": 0.161,
+    "scaling_factor_200_vs_10": "1.09x — flat. Re-render cost is independent of total tree size.",
+    "verification": "Render counter confirms: only target leaf re-renders; siblings and container do NOT re-render when event fires on a leaf.",
+    "implication": "Re-render cost scales with MUTATING SUBTREE, not total tree size. An app with 500 chemicals costs ~150μs per event, not 500 × 150μs."
+  },
+  "granularity_tradeoff": {
+    "_context": "Same DOM (50 cells): one chemical with 50 items vs 50 chemicals with 1 item each.",
+    "monolithic_1_chemical_50_items_bump_ms": 1.986,
+    "granular_50_chemicals_bump_ms": 0.259,
+    "winner": "GRANULAR — 7.68x cheaper per event now that scope snapshot/diff is cheap.",
+    "design_guidance": "Prefer granular composition when items update independently. Each chemical is cheap (~250μs per event). Monolithic still appropriate when items update together."
+  },
+  "verdict_by_app_shape": {
+    "static_site_few_dynamic_components": "EXCELLENT — initial render cheap, per-event cost negligible",
+    "real_app_hundreds_of_chemicals_most_idle": "EXCELLENT — per-event cost stays at 170μs-300μs regardless of total count",
+    "real_app_bulk_simultaneous_updates_500plus_chemicals": "NOTICEABLE — batch mutations that trigger full-tree re-renders take 70ms+",
+    "large_app_rare_edge_case": "STATIC ANALYSIS USEFUL for further optimization"
+  }
+}

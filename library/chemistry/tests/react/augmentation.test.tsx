@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/chemistry/chemical';
+import { $Chemical } from '@/abstraction/chemical';
 
 describe('View augmentation: handlers that mutate directly', () => {
     it('direct field mutation in onClick triggers re-render', async () => {

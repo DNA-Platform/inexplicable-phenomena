@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical, react } from '@/chemistry/chemical';
+import { $Chemical, react } from '@/abstraction/chemical';
 
 describe('Contract: the react() escape hatch', () => {
     it('react(chemical) triggers re-render for external direct writes', async () => {

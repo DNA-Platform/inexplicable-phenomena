@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical, react } from '@/chemistry/chemical';
+import { $Chemical, react } from '@/abstraction/chemical';
 
 describe('Patterns: common idioms work', () => {
     it('setInterval (started by a handler) calling a method updates view over time', async () => {

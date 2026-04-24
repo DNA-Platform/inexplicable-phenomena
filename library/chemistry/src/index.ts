@@ -1,14 +1,17 @@
-export { $Particle, Particle, $lift, $phaseOrder } from './chemistry/particle';
+export { $Particle, Particle, $lift, $phaseOrder } from './abstraction/particle';
 export {
     $Chemical, Chemical, bind, react,
     $Reflection, inert, reactive,
     $Bond, $Bonding, $Parent, $Molecule, $Reaction,
     $BondOrchestrator, $BondOrchestrationContext, $BondArguments,
     $ParamValidation, $paramValidation, $check, $is,
-    $Function$, $Html$, $Include, $Exclude, $List,
-    $wrap, $,
+    $Function$, $Html$, $Include,
+    $wrap,
     Scope, withScope
-} from './chemistry/chemical';
-export { $Atom, $Persistent, Atom } from './chemistry/atom';
-export { $Represent, $symbolize, $literalize, $promise, $await } from './chemistry/helpers';
-export * from './types';
+} from './abstraction/chemical';
+export { $List, $ } from './framework/list';
+export { $lookup, $load } from './framework/load';
+export { $Atom } from './abstraction/atom';
+export { $Represent, $symbolize, $literalize } from './implementation/representation';
+export { $promise, $await } from './implementation/promise';
+export * from './implementation/types';

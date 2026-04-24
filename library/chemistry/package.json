@@ -21,8 +21,12 @@
   "scripts": {
     "build": "rollup -c",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit && vitest run",
+    "test:fast": "vitest run",
+    "test:watch": "vitest",
+    "test:all": "tsc --noEmit && vitest run && rollup -c --silent",
+    "bench": "vitest bench --run"
   },
   "dependencies": {
     "D": "^1.0.0",

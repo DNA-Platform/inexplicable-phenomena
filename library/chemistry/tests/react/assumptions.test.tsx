@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/chemistry/chemical';
-import { $phase$, $resolve$ } from '@/symbols';
+import { $Chemical } from '@/abstraction/chemical';
+import { $phase$, $resolve$ } from '@/implementation/symbols';
 
 class $Display extends $Chemical {
     $text? = 'initial';

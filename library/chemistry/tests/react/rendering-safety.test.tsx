@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/chemistry/chemical';
+import { $Chemical } from '@/abstraction/chemical';
 
 // These tests pin down a critical framework guarantee: rendering a chemical
 // is SAFE even when its view reads computed values or calls methods. The

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $Chemical, $check } from '@/chemistry/chemical';
+import { $Chemical, $check } from '@/abstraction/chemical';
 
 class $Label extends $Chemical {
     $text? = 'label';
