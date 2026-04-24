@@ -39,7 +39,7 @@
     {
       "name": "queenie",
       "roles": ["qa-engineer"],
-      "paths": ["library/chemistry/tests/**", "library/chemistry/app/**"],
+      "paths": ["library/chemistry/tests/**", "library/chemistry/bench/**", "library/chemistry/app/**"],
       "status": "active"
     }
   ]

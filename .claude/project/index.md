@@ -2,9 +2,9 @@
 
 Read this file first when resuming work. It tells you where we are.
 
-## Current sprint: sprint-21 (Performance Baseline and Targets) — NOT STARTED
+## Current sprint: sprint-21 (Performance Baseline and Targets) — B1 COMPLETE, SHIP DECISION MADE
 
-**Plan:** [sprint-21 plan] — three tiers of benchmarks (micro, component-level, macro) to establish v1 ship gate and v2 static-analysis trigger. Measure first; optimize only if numbers demand.
+**Plan:** [sprint-21 plan] — three-tier benchmark plan. Micro-benchmarks (B1) landed and **v1 ship criteria all met**. Accessor overhead ~1x, scope cost ~5μs, $symbolize small state <500ns. Performance contract documented. Component-level and macro benchmarks (B2, B3) remain as follow-up; not v1-blocking.
 
 ## Previous: sprint-20 (Test Suite as Specification) — COMPLETE
 
@@ -73,7 +73,7 @@ Read this file first when resuming work. It tells you where we are.
 | sprint-18 | [Reactivity Rebuild][sprint-18 plan] | Partial — foundation landed (augment + bond + diff); 281 tests green |
 | sprint-19 | [Scope-Tracked Reactivity][sprint-19 plan] | In progress — foundation landed (scope + accessor + $symbolize); 323 tests green |
 | sprint-20 | [Test Suite as Specification][sprint-20 plan] | Complete — 323 → 286 tests; implementation-heavy tests deleted or rewritten as behavior |
-| sprint-21 | [Performance Baseline and Targets][sprint-21 plan] | NOT STARTED — benchmark v1 viability and v2 trigger thresholds |
+| sprint-21 | [Performance Baseline and Targets][sprint-21 plan] | B1 complete — v1 ship criteria met; accessor ~1x, scope ~5μs; contract doc written |
 
 ## Next considerations
 

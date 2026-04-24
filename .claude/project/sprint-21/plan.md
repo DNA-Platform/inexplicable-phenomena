@@ -6,7 +6,35 @@ The research (2026-04-22, summarized in [research notes](./research.md)) confirm
 
 ## Status
 
-NOT STARTED.
+B1 COMPLETE. Tools wired. V1 ship decision: **SHIP**.
+
+### Landed so far
+
+- **Added `tsc --noEmit` to the test pipeline.** `npm run test` now does type-check + vitest run. New script `npm run bench` runs vitest benchmark mode.
+- **B1 micro-benchmarks** at `library/chemistry/bench/micro.bench.ts`. 14 benchmarks covering accessor cost, scope open/close, $symbolize scaling (primitive/object/array/Map at small & large sizes), and chemical instantiation.
+- **Baseline numbers** at `library/chemistry/bench/baseline.json`.
+- **Performance contract** at `.claude/docs/chemistry/performance-contract.md`.
+
+### Key findings (micro-level)
+
+| Dimension | Measured | v1 Threshold | Status |
+|-----------|----------|--------------|--------|
+| Accessor overhead outside scope | ~1x plain JS | <5x | ✅ PASS |
+| Scope open/close | ~5μs | <10μs | ✅ PASS |
+| $symbolize small state | <500ns | <1μs | ✅ PASS |
+| $symbolize large state (100 keys) | 12μs | <50ms | ✅ PASS |
+| Chemical instantiation | ~2μs | <1ms | ✅ PASS |
+
+**All v1 ship criteria met.** The GitHub Pages site target is comfortably within budget.
+
+### Remaining (not v1-blocking)
+
+- B2: component-level benchmarks via React Profiler.
+- B3: macro-benchmarks (adapted js-framework-benchmark subset).
+- B4: real-world profiling of the static site (waits on site).
+- B5: performance.mark instrumentation (for diagnosing future issues).
+- B6: CI regression detection (not urgent at current PR volume).
+- B7, B8: synthesis docs (partially done via performance-contract.md).
 
 ## Framing
 
