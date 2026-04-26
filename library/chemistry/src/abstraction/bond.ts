@@ -140,7 +140,7 @@ export class $Bond<T = any, P = any> {
 
     static create(chemical: any, property: string, descriptor: PropertyDescriptor): $Bond {
         return $Bond.isMethod(descriptor) ?
-            new $Bonding(chemical, property, descriptor) :
+            new $Reagent(chemical, property, descriptor) :
             new $Bond(chemical, property, descriptor);
     }
 }
@@ -184,8 +184,10 @@ function installReactiveAccessor(target: any, prop: string, initialValue: any) {
     });
 }
 
-// $Bonding — method wrapper that triggers re-render
-export class $Bonding extends $Bond {
+// $Reagent — a reactive method. A reagent participates in / drives a reaction;
+// calling it runs user code in a scope, and any state changes it makes cause
+// bonds to be reformed (which is what a reaction does to a chemical).
+export class $Reagent extends $Bond {
     get action() { return this._action; }
     protected _action?: Function;
 
@@ -221,14 +223,3 @@ export class $Bonding extends $Bond {
     }
 }
 
-// $Parent — parent property bond
-export class $Parent extends $Bond {
-    constructor(chemical: any, property: string, descriptor: PropertyDescriptor) {
-        super(chemical, property, descriptor);
-    }
-
-    form(): void {
-        this._formed = true;
-        this._isProp = false;
-    }
-}

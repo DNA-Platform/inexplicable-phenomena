@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { createRoot } from 'react-dom/client';
 import { Highlight, themes } from 'prism-react-renderer';
-import { Cookbook, Recipe, VeganRecipe, Ingredient, Step } from '@books/recipe';
+import { Cookbook, Recipe, VeganRecipe, Ingredient, Step } from '@specimens/recipe';
 
 // ============================================================
 // Design system

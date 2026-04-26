@@ -13,7 +13,7 @@
         "skipLibCheck": true,
         "paths": {
             "@/*": ["../src/*"],
-            "@books/*": ["../tests/books/*"]
+            "@specimens/*": ["../tests/specimens/*"]
         }
     },
     "include": ["src/**/*.tsx", "src/**/*.ts"]

@@ -11,7 +11,7 @@ import {
 import { $symbolize } from "../implementation/representation";
 import type { $Component, $$Component, $Props, $ParameterType } from "../implementation/types";
 import { $Particle, $phaseOrder, $lift } from "./particle";
-import { $Bond, $Bonding, $Parent, $Reflection, inert, reactive } from "./bond";
+import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
 import { $Reaction } from "./reaction";
 import { diff } from "../implementation/reconcile";
@@ -19,7 +19,7 @@ import { augment } from "../implementation/augment";
 
 // Re-export bond / reflection / molecule / reaction / scope machinery for
 // consumers that import from chemical.ts.
-export { $Bond, $Bonding, $Parent, $Reflection, inert, reactive } from "./bond";
+export { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 export { $Molecule } from "./molecule";
 export { $Reaction } from "./reaction";
 export { Scope, withScope } from "../implementation/scope";

@@ -2,7 +2,7 @@ export { $Particle, Particle, $lift, $phaseOrder } from './abstraction/particle'
 export {
     $Chemical, Chemical, bind, react,
     $Reflection, inert, reactive,
-    $Bond, $Bonding, $Parent, $Molecule, $Reaction,
+    $Bond, $Reagent, $Molecule, $Reaction,
     $BondOrchestrator, $BondOrchestrationContext, $BondArguments,
     $ParamValidation, $paramValidation, $check, $is,
     $Function$, $Html$, $Include,
