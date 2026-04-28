@@ -1,5 +1,5 @@
 import { $cid$, $destroyed$, $phase$, $update$, $reaction$ } from "../implementation/symbols";
-import type { $Chemical } from "./chemical";
+import type { $Particle } from "./particle";
 
 // ===========================================================================
 // $Reaction — chemical identity registry
@@ -24,11 +24,11 @@ import type { $Chemical } from "./chemical";
 export class $Reaction {
     private _reactions = new Map<number, $Reaction>();
     get chemical() { return this._chemical; }
-    private _chemical: $Chemical;
+    private _chemical: $Particle;
     get system() { return this._system; }
     private _system: $Reaction;
 
-    constructor(chemical: $Chemical, system?: $Reaction) {
+    constructor(chemical: $Particle, system?: $Reaction) {
         this._chemical = chemical;
         this._system = system || this;
         this._system._reactions.set(chemical[$cid$], this);
@@ -48,7 +48,7 @@ export class $Reaction {
         if (update) update();
     }
 
-    add(chemical: $Chemical) {
+    add(chemical: $Particle) {
         chemical[$reaction$] = new $Reaction(chemical, this._system);
         this.system._reactions.set(chemical[$cid$], this);
     }
@@ -59,9 +59,9 @@ export class $Reaction {
         this._chemical = undefined as any;
     }
 
-    private static _chemicals = new Map<number, $Chemical>();
+    private static _chemicals = new Map<number, $Particle>();
 
-    static find(cid: number): $Chemical | undefined {
+    static find(cid: number): $Particle | undefined {
         return this._chemicals.get(cid);
     }
 }

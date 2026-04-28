@@ -1,6 +1,6 @@
 import React from 'react';
 import { $Chemical, $check } from '@/abstraction/chemical';
-import { $ } from '@/framework/list';
+import { $ } from '@/abstraction/chemical';
 import { $Page } from './page';
 
 export class $Chapter extends $Chemical {

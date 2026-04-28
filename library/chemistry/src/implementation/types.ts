@@ -13,7 +13,7 @@ export const typeofTypes = new Set<TypeofType>([String, Number, Boolean, BigInt,
 
 
 export type $SymbolFeature = 'fast' | 'slow' | 'self-contained' | 'referential';
-export type $Phase = 'setup' | 'mount' | 'render' | 'layout' | 'effect' | 'unmount';
+export type $Phase = 'setup' | 'construction' | 'mount' | 'render' | 'layout' | 'effect' | 'unmount';
 export type $Promise<T = any> = Promise<T> & {
     result: T,
     complete: boolean,
@@ -78,15 +78,18 @@ export type $$Properties<T> = {
 export type $MethodComponent<T, M extends (...args: any[]) => any> =
     (props: $$Properties<T> & { call: Parameters<M> }) => ReturnType<M>;
 
-export type $Component<T = any> = React.FC<$Properties<T>> & Component<T>;
-export type $$Component<T = any> = React.FC<$$Properties<T>> & Component<T>;
+// Element<T>, $Element<T>, Component<T>, $Component<T> moved to
+// `../abstraction/element.ts`. (Re-exported for convenience.)
+export type { Element, $Element, Component, $Component } from "../abstraction/element";
 
-export interface Component<T> {
+// $Bound<T> — the framework-attached surface a generated Component carries.
+// (Placeholder name; final name TBD.)
+export interface $Bound<T> {
     get $bound(): boolean;
     get $chemical(): T;
-    $?(): $$Component<T>;
-    $new(parent: $Chemical): $$Component<T>;
-    $bind(parent: $Chemical): $Component<T>;
+    $?(): import("../abstraction/element").$Component<T>;
+    $new(parent: $Chemical): import("../abstraction/element").$Component<T>;
+    $bind(parent: $Chemical): import("../abstraction/element").Component<T>;
 }
 
 export type $Function<T> = T extends React.FC<infer P>
@@ -102,10 +105,10 @@ export type $Html<T extends keyof JSX.IntrinsicElements = any> =
 
 export interface $Particular<T> {
     view(): ReactNode;
-    $view?: $Component<T>;
-    $$view?: $$Component<T>;
+    $view?: import("../abstraction/element").Component<T>;
+    $$view?: import("../abstraction/element").$Component<T>;
     frame($this: $Particular<T>): ReactNode;
-    $frame?: $Component<T & { $this: $Particular<T> }>;
+    $frame?: import("../abstraction/element").Component<T & { $this: $Particular<T> }>;
 }
 
 export type $ParameterType =

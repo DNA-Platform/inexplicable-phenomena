@@ -1,5 +1,5 @@
 import { bench, describe } from 'vitest';
-import { $Chemical, withScope, react } from '@/abstraction/chemical';
+import { $Chemical, withScope } from '@/abstraction/chemical';
 import { $symbolize } from '@/implementation/representation';
 
 // ===========================================================================

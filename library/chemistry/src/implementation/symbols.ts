@@ -44,6 +44,11 @@ export const $backing$ = Symbol("$Chemical.backing");
 export const $catalyst$ = Symbol("$Chemical.catalyst");
 export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");
 export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
+export const $lifted$ = Symbol("$Particle.lifted");
+export const $derivatives$ = Symbol("$Particle.derivatives");
+export const $construction$ = Symbol("$Particle.construction");
+export const $bondCtorRan$ = Symbol("$Chemical.bondCtorRan");
+export const $renderFilters$ = Symbol("$Particle.renderFilters");
 
 // $Atom symbols
 export const $formed$ = Symbol("$Atom.formed");

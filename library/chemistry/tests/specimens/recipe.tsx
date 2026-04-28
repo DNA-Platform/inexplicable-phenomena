@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { $Chemical, $check } from '@/abstraction/chemical';
-import { $ } from '@/framework/list';
+import { $ } from '@/abstraction/chemical';
 
 // ============================================================
 // Styled components — the visual vocabulary

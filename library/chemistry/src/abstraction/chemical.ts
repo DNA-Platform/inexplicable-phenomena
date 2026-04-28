@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect, useLayoutEffect } from "react";
+import React, { ReactNode, useState, useEffect, useLayoutEffect, JSX } from "react";
 import {
     $cid$, $symbol$, $type$, $molecule$, $reaction$, $template$, $isTemplate$, $derived$,
     $isBound$, $$parent$$, $parent$, $orchestrator$, $component$, $children$,
@@ -6,11 +6,11 @@ import {
     $destroy$, $destroyed$, $remove$, $catalyst$, $isCatalyst$,
     $$template$$, $$getNextCid$$, $$createSymbol$$, $$parseCid$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
-    $isChemicalBase$
+    $isChemicalBase$, $lifted$, $construction$, $bondCtorRan$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
-import type { $Component, $$Component, $Props, $ParameterType } from "../implementation/types";
-import { $Particle, $phaseOrder, $lift } from "./particle";
+import type { Component, $Component, Element, $Element, $Props, $ParameterType } from "../implementation/types";
+import { $Particle, $phaseOrder, $lift, applyRenderFilters } from "./particle";
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
 import { $Reaction } from "./reaction";
@@ -176,12 +176,39 @@ export class $BondOrchestrator<T extends $Chemical = $Chemical> {
 
         (chemical as any)[$children$] = props.children;
 
-        if (this._bondConstructor && context.argsValid && context.arguments.values.length > 0) {
+        const c = this._chemical as any;
+
+        // Bond ctor body runs ONCE per derivative — at mount. Subsequent
+        // re-renders refresh typed fields (already done above via the
+        // prop loop) but skip the body. Async ctors require this
+        // (otherwise they'd re-trigger every render-loop iteration).
+        // Run if a ctor is declared, regardless of arg count — async
+        // no-arg ctors are valid (e.g. `async $Loader() { await fetch }`).
+        if (this._bondConstructor && context.argsValid && !c[$bondCtorRan$]) {
+            c[$bondCtorRan$] = true;
             $paramValidation.reset();
             $paramValidation.chemical = this._chemical;
             $paramValidation.count = this._parameters.length;
-            this._bondConstructor!.apply(this._chemical, context.arguments.values);
+            const bondResult = this._bondConstructor!.apply(this._chemical, context.arguments.values);
             $paramValidation.evaluate();
+
+            // Construction promise: bundle this ctor's async result with
+            // our PROTOTYPE PARENT's construction (state-inheritance chain,
+            // not DOM/context parent), so `next('construction')` awaits
+            // the whole chain. allSettled — a failing ctor doesn't cascade.
+            // On settle, fire react() so the view re-renders with whatever
+            // post-await state was set.
+            const parentConstruction = Object.getPrototypeOf(c)?.[$construction$];
+            const promises: Promise<any>[] = [];
+            if (bondResult instanceof Promise) promises.push(bondResult);
+            if (parentConstruction) promises.push(parentConstruction);
+            if (promises.length > 0) {
+                c[$construction$] = Promise.allSettled(promises).then(() => {
+                    c[$reaction$]?.react();
+                });
+            } else {
+                c[$construction$] = Promise.resolve();
+            }
         }
 
         return props;
@@ -230,7 +257,7 @@ export class $BondOrchestrator<T extends $Chemical = $Chemical> {
                 const arrayContext = ctx.array();
                 this.processArray(React.Children.toArray(element.props?.children || []), arrayContext);
             } else if (typeof type === 'function') {
-                let component: $$Component = type as any;
+                let component: $Component = type as any;
                 if (!(component as any).$bind) component = $wrap(type as React.FC).$Component;
                 if ((component as any).$chemical?.[$parent$] !== parent) component = (component as any).$bind(parent);
                 const chemical = (component as any).$chemical;
@@ -528,7 +555,7 @@ export class $Chemical extends $Particle {
     [$molecule$]!: $Molecule;
     [$reaction$]!: $Reaction;
     [$orchestrator$]!: $BondOrchestrator<any>;
-    [$component$]?: $Component<this>;
+    [$component$]?: Component<this>;
     [$lastProps$]: any;
     static [$$template$$]: $Chemical;
     get [$isTemplate$]() { return this == (this as any)[$type$][$$template$$]; }
@@ -556,7 +583,7 @@ export class $Chemical extends $Particle {
 
     get children() { return this[$children$]; }
 
-    get Component(): $Component<this> {
+    get Component(): Component<this> {
         if (this[$component$]) return this[$component$];
         if (this[$isTemplate$]) {
             this[$component$] = this[$createComponent$]() as any;
@@ -566,7 +593,7 @@ export class $Chemical extends $Particle {
         return this[$component$]!;
     }
 
-    get $Component(): $$Component<this> {
+    get $Component(): $Component<this> {
         return this.Component as any;
     }
 
@@ -625,7 +652,7 @@ export class $Chemical extends $Particle {
         this[$destroyed$] = true;
     }
 
-    protected [$createComponent$](): $Component<this> {
+    protected [$createComponent$](): Component<this> {
         if (this[$component$])
             throw new Error(`The Component for ${this} has already been created`);
         this.assertViewConstructors();
@@ -674,6 +701,11 @@ export class $Chemical extends $Particle {
             });
             chemical[$rendering$] = true;
             chemical[$apply$](props);
+            const filtered = applyRenderFilters(chemical);
+            if (filtered !== undefined) {
+                chemical[$rendering$] = false;
+                return filtered;
+            }
             chemical[$bond$]();
             const output = augment(chemical.view(), react);
             chemical[$viewCache$] = output;
@@ -703,26 +735,8 @@ export class $Chemical extends $Particle {
 // walk at the framework boundary without importing $Chemical.
 ($Chemical.prototype as any)[$isChemicalBase$] = true;
 
-/**
- * react(chemical) — request a re-render of this chemical.
- *
- * This is the escape hatch for programmatic state mutations that don't flow
- * through an event handler (augmented) or a reactive method (wrapped). Call
- * it when you've mutated chemical state from a context the framework can't
- * observe.
- *
- * Most code should not need this — mutations in handlers and methods
- * auto-react. It's documented for:
- *   - Tests that mutate chemical state directly for setup.
- *   - External subscriptions whose callbacks mutate without calling a method.
- *   - Advanced patterns where you want to coalesce updates manually.
- */
-export function react(chemical: { [$reaction$]?: $Reaction }): void {
-    chemical[$reaction$]?.react();
-}
-
 // bind(chemical, parent?) — create a bound child instance of a chemical
-export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): $Component<T> {
+export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Component<T> {
     const template = chemical[$template$];
     const child = Object.create(template) as T;
     child[$cid$] = $Particle[$$getNextCid$$]();
@@ -789,3 +803,118 @@ export function $wrap<P>(Component: React.FC<P>): any {
 // ===========================================================================
 
 export const Chemical = new $Chemical().Component;
+
+
+// ===========================================================================
+// $Chemistry — the multi-shape callable type, exported as `$`.
+//
+// Overloads:
+//   $(props)              JSX:    <$>...</$> renders a fragment.
+//   $(chemical)           inst:   returns $Component<T>.
+//   $(particle)           inst:   returns $Element<T>.
+//   $($ChemicalClass)     class:  Component<T> if empty ctor; else
+//                                 (...args) => Component<T>.
+//   $($ParticleClass)     class:  Element<T> if empty ctor; else
+//                                 (...args) => Element<T>.
+//
+// Empty-vs-args is the JS constructor's arity, not the bond constructor.
+// `$` has no `.foo` members yet — namespace reserved.
+// ===========================================================================
+
+interface $Chemistry {
+    (props: { children?: ReactNode; key?: any }): ReactNode;
+    <T extends $Chemical>(chemical: T): $Component<T>;
+    <T extends $Particle>(particle: T): $Element<T>;
+    <T extends $Chemical>(klass: new () => T): Component<T>;
+    <T extends $Particle>(klass: new () => T): Element<T>;
+    <T extends $Chemical, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Component<T>;
+    <T extends $Particle, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Element<T>;
+    // HTML element catalogue — `$('div')` lazily creates a reactive $Html$
+    // chemical for the tag, caches its Component, returns it. `$('div', X)`
+    // registers `X` as the override for that tag — subsequent lookups
+    // return the override.
+    <K extends keyof JSX.IntrinsicElements>(tag: K): Component<$Html$<K>>;
+    <K extends keyof JSX.IntrinsicElements>(tag: K, override: any): any;
+}
+
+// HTML catalogue — lazy registry of Components per tag name. Populated on
+// first `$('div')`; overridable via `$('div', CoolDiv)`.
+const $catalogue = new Map<string, any>();
+
+// Chemistry — one class. Its view IS the dispatch. Typed `any` so the runtime
+// can be dynamic; call-site types come from `$Chemistry` wrapping `$`.
+class Chemistry extends $Chemical {
+    view(arg?: any): any {
+        // Fast path — JSX usage. null/undefined, or a plain object that is
+        // empty (<$ />) or has children (<$>...</$>).
+        if (arg == null ||
+            (Object.getPrototypeOf(arg) === Object.prototype &&
+            (Object.keys(arg).length === 0 || 'children' in arg))
+        ) {
+            const children = React.Children.toArray(arg?.children);
+            return React.createElement(React.Fragment, null,
+                ...children.map((child, i) => {
+                    if (React.isValidElement(child)) {
+                        // Auto-key by (chemical-symbol, position) so siblings
+                        // sharing the same template chemical don't collide.
+                        const chemical = (child.type as any)?.$chemical;
+                        const key = chemical
+                            ? `${chemical[$symbol$]}.${i}`
+                            : child.key || `${i}`;
+                        return React.cloneElement(child as React.ReactElement<any>, { key });
+                    }
+                    return child;
+                })
+            );
+        }
+
+        // Instance form — the particle/chemical was already constructed when
+        // handed to us. Reusing it means rendering its view with optionally
+        // overridden props; the bond constructor does NOT re-run. We route
+        // through $lift, which skips $bond() entirely. Result is cached per
+        // instance so React component identity is stable across $(x) calls.
+        if (arg instanceof $Particle) {
+            const inst = arg as any;
+            if (inst[$lifted$]) return inst[$lifted$];
+            return inst[$lifted$] = $lift(arg);
+        }
+
+        // String tag — HTML catalogue. `$('div')` looks up (or lazily
+        // creates) the cached Component for that tag. `$('div', X)`
+        // registers X as the override for that tag.
+        if (typeof arg === 'string') {
+            const override = arguments[1];
+            if (override !== undefined) {
+                $catalogue.set(arg, override);
+                return override;
+            }
+            let cached = $catalogue.get(arg);
+            if (!cached) {
+                cached = new $Html$(arg as any).Component;
+                $catalogue.set(arg, cached);
+            }
+            return cached;
+        }
+
+        // Class form — JS constructor arity picks the shape.
+        if (typeof arg === 'function') {
+            const cls = arg as any;
+            if (cls.length === 0) {
+                // Walk static prototype chain might find an ancestor's
+                // template — verify it's actually OF this class.
+                let template = cls[$$template$$];
+                if (!template || !(template instanceof cls)) {
+                    new cls();
+                    template = cls[$$template$$];
+                }
+                return template.Component;
+            }
+            return (...args: any[]) => new cls(...args).Component;
+        }
+
+        // Unrecognized arg — null is safer than re-entering JSX.
+        return null;
+    }
+}
+
+export const $ = new Chemistry().view as any as $Chemistry;

@@ -1,5 +1,5 @@
 import type { $Chemical } from "../abstraction/chemical";
-import type { Component } from "../implementation/types";
+import type { $Bound } from "../implementation/types";
 
 // ===========================================================================
 // $lookup / $load — discover $Chemical components across modules
@@ -148,7 +148,7 @@ export async function $load<T extends $Chemical>(
 }
 
 function extract(module: any, parent?: $Chemical): $Chemical | null {
-    let Component: Component<any> | null = null;
+    let Component: $Bound<any> | null = null;
 
     if (module?.default?.$bind) {
         Component = module.default;

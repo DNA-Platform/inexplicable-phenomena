@@ -1,5 +1,6 @@
 import {
-    $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$
+    $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$,
+    $derivatives$
 } from "../implementation/symbols";
 import { currentScope, withScope } from "../implementation/scope";
 
@@ -177,11 +178,21 @@ function installReactiveAccessor(target: any, prop: string, initialValue: any) {
                 scope.recordWrite(this, prop);
             } else {
                 this[$reaction$]?.react();
+                fanOutToDerivatives(this);
             }
         },
         enumerable: true,
         configurable: true,
     });
+}
+
+// fanOutToDerivatives — when a bond is written, wake every derivative of this
+// instance unconditionally. Shadowing is dynamic; React's reconciler short-
+// circuits redundant renders, so we don't gate fan-out on shadow checks.
+function fanOutToDerivatives(parent: any) {
+    const derivatives: Set<any> | undefined = parent[$derivatives$];
+    if (!derivatives) return;
+    for (const d of derivatives) d[$reaction$]?.react();
 }
 
 // $Reagent — a reactive method. A reagent participates in / drives a reaction;

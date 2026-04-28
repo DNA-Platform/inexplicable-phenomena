@@ -1,49 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical, react } from '@/abstraction/chemical';
-
-describe('Contract: the react() escape hatch', () => {
-    it('react(chemical) triggers re-render for external direct writes', async () => {
-        class $C extends $Chemical {
-            $value? = 'a';
-            view() { return <span>{this.$value}</span>; }
-        }
-        new $C();
-        const c = new $C();
-        const { container } = render(<c.Component />);
-        expect(container.querySelector('span')!.textContent).toBe('a');
-        // Mutate outside a handler/method; call react() explicitly.
-        await act(async () => {
-            c.$value = 'b';
-            // Setter fires react automatically on direct writes — but we verify
-            // that react() also works as an explicit escape hatch.
-            react(c);
-        });
-        expect(container.querySelector('span')!.textContent).toBe('b');
-    });
-});
+import { $Chemical } from '@/abstraction/chemical';
 
 describe('Contract: deep path mutation (Doug\'s this.x.y.z = 10 case)', () => {
-    it('mutating a deep-nested property triggers re-render of the visible value', async () => {
+    it('mutating a deep-nested property from an event-handler-driven method triggers re-render', async () => {
         class $C extends $Chemical {
             $data: { nested: { value: number } } = { nested: { value: 0 } };
-            view() { return <span>{this.$data.nested.value}</span>; }
+            setDeep() { this.$data.nested.value = 42; }
+            view() {
+                return <>
+                    <span>{this.$data.nested.value}</span>
+                    <button onClick={() => this.setDeep()}>set</button>
+                </>;
+            }
         }
-        new $C();
-        const c = new $C();
-        const { container } = render(<c.Component />);
+        const C = new $C().Component;
+        const { container } = render(<C />);
         expect(container.querySelector('span')!.textContent).toBe('0');
-        // Deep path mutation from handler scope via a method.
         await act(async () => {
-            (c as any).setDeep = function() { this.$data.nested.value = 42; };
-            (c as any).setDeep();
+            fireEvent.click(container.querySelector('button')!);
         });
-        // Since setDeep is added dynamically, the method wrapper isn't applied.
-        // But the setter for nested mutation IS caught via snapshot diff within scope.
-        // For this test, we trigger via explicit react.
-        react(c);
-        await act(async () => { /* let batch flush */ });
         expect(container.querySelector('span')!.textContent).toBe('42');
     });
 });

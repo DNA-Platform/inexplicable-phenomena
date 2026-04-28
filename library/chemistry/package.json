@@ -13,6 +13,11 @@
       "types": "./dist/chemistry.d.ts",
       "import": "./dist/chemistry.js",
       "require": "./dist/chemistry.cjs"
+    },
+    "./symbolic": {
+      "types": "./dist/symbolic.d.ts",
+      "import": "./dist/symbolic.js",
+      "require": "./dist/symbolic.cjs"
     }
   },
   "files": [

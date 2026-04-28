@@ -1,6 +1,6 @@
 import React from 'react';
 import { $Chemical, $check } from '@/abstraction/chemical';
-import { $ } from '@/framework/list';
+import { $ } from '@/abstraction/chemical';
 import { $Cover } from './cover';
 import { $TableOfContents } from './table-of-contents';
 import { $Chapter } from './chapter';

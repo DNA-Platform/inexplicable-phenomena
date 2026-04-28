@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical, react } from '@/abstraction/chemical';
+import { $Chemical } from '@/abstraction/chemical';
 
 describe('Patterns: common idioms work', () => {
     it('setInterval (started by a handler) calling a method updates view over time', async () => {
@@ -184,23 +184,22 @@ describe('Patterns: common idioms work', () => {
 });
 
 describe('Patterns: documented boundaries', () => {
-    it('Map.set OUTSIDE any method/handler does NOT trigger re-render without react()', async () => {
+    it('Map.set INSIDE a method triggers re-render via scope-tracked snapshot diff', async () => {
         class $M extends $Chemical {
             $map: Map<string, number> = new Map();
-            view() { return <span className="size">{this.$map.size}</span>; }
+            put(k: string, v: number) { this.$map.set(k, v); }
+            view() {
+                return <>
+                    <span className="size">{this.$map.size}</span>
+                    <button onClick={() => this.put('k', 1)}>put</button>
+                </>;
+            }
         }
-        new $M();
-        const m = new $M();
-        const { container } = render(<m.Component />);
+        const C = new $M().Component;
+        const { container } = render(<C />);
         expect(container.querySelector('.size')!.textContent).toBe('0');
-        // Mutate outside any scope. Map.set internal mutation doesn't hit our setter.
-        m.$map.set('k', 1);
-        // Without react(), stale.
-        await act(async () => { await new Promise(r => setTimeout(r, 5)); });
-        expect(container.querySelector('.size')!.textContent).toBe('0');
-        // With react(), updates.
         await act(async () => {
-            react(m);
+            fireEvent.click(container.querySelector('button')!);
         });
         expect(container.querySelector('.size')!.textContent).toBe('1');
     });
