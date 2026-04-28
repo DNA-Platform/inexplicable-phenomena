@@ -61,28 +61,8 @@ export type $Properties<T> = {
     children?: React.ReactNode;
 };
 
-export type $$Properties<T> = {
-    [K in keyof T as K extends `$${infer First}${infer Rest}` ?
-    (K extends '$parent' ? never :  // Add this check
-        First extends Lowercase<First> ?
-        (First extends '_' | '$' ? never :
-            (K extends keyof $Chemical ? never :
-                (T[K] extends Function ? never : `${First}${Rest}`))) : never) : never]?:
-    T[K]
-} & {
-    [K in keyof T as K extends `$${infer First}${infer Rest}` ?
-    (K extends '$parent' ? never :  // Add this check
-        First extends Lowercase<First> ?
-        (First extends '_' | '$' ? never :
-            (K extends keyof $Chemical ? never :
-                (T[K] extends Function ? `${First}${Rest}` : never))) : never) : never]?:
-    T[K]
-} & {
-    children?: React.ReactNode;
-};
-
 export type $MethodComponent<T, M extends (...args: any[]) => any> =
-    (props: $$Properties<T> & { call: Parameters<M> }) => ReturnType<M>;
+    (props: $Properties<T> & { call: Parameters<M> }) => ReturnType<M>;
 
 // Element<T>, $Element<T>, Component<T>, $Component<T> moved to
 // `../abstraction/element.ts`. (Re-exported for convenience.)

@@ -30,7 +30,7 @@ export const $$reaction$$ = Symbol("$Chemical.$reaction");
 export const $isBound$ = Symbol("$Chemical.bound");
 export const $$parent$$ = Symbol("$Chemical.parent");
 export const $parent$ = Symbol("$Chemical.$parent");
-export const $orchestrator$ = Symbol("$Chemical.orchestrator");
+export const $synthesis$ = Symbol("$Chemical.synthesis");
 export const $component$ = Symbol("$Chemical.component");
 export const $props$ = Symbol("$Chemical.props");
 export const $lastProps$ = Symbol("$Chemical.lastProps");
@@ -60,6 +60,11 @@ export const $transient$ = Symbol("$Component$.transient");
 
 // $promise symbols
 export const $cancelled$ = Symbol("$promise.cancelled");
+
+// $handler symbols — augment.ts wraps user event handlers (onClick etc.) and
+// tags each wrapper with a reference to the original. reconcile.ts reads the
+// tag so two wrappers of the same original compare equal across renders.
+export const $handlerOriginal$ = Symbol("$handler.original");
 
 // $Reference
 export const $ref$ = Symbol("$Referent.ref");

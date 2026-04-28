@@ -1,3 +1,9 @@
+---
+kind: reference
+title: Conversation Log Format
+status: stable
+---
+
 # Conversation Log Format
 
 The conversation log (`.{name}/conversation.log`) is the persistent record of

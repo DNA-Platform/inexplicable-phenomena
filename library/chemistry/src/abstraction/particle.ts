@@ -3,13 +3,15 @@ import {
     $cid$, $symbol$, $type$, $prototype$, $children$, $apply$, $bond$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $reaction$, $derivatives$, $destroyed$, $molecule$, $construction$,
+    $component$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$,
-    $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$
+    $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$
 } from "../implementation/symbols";
-import type { $Component, $Props, $Phase } from "../implementation/types";
+import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
 import { augment } from "../implementation/augment";
 import { $Reaction } from "./reaction";
+import { $Molecule } from "./molecule";
 
 export const $phaseOrder: $Phase[] = ['setup', 'mount', 'render', 'layout', 'effect', 'unmount'];
 
@@ -30,10 +32,15 @@ export class $Particle {
     [$update$]?: () => void;
     [$viewCache$]?: ReactNode;
     [$rendering$] = false;
-    [$reaction$]?: $Reaction;
+    [$reaction$]!: $Reaction;
+    [$molecule$]!: $Molecule;
+    [$template$]!: this;
     [$derivatives$]?: Set<$Particle>;
     [$destroyed$]?: boolean;
     [$construction$]?: Promise<any>;
+    [$component$]?: Component<this>;
+    get [$isTemplate$]() { return this == (this as any)[$type$][$$template$$]; }
+    get [$derived$]() { return this !== this[$template$]; }
 
     // Cross-cutting render-state props. Defaults: $show=true, $hide=false.
     // Hidden if $show is explicitly false or $hide is explicitly true.
@@ -41,6 +48,13 @@ export class $Particle {
     $hide?: boolean;
 
     get [$prototype$]() { return Object.getPrototypeOf(this); }
+
+    // Component — the React FC for this particle. Lift-path only at this
+    // layer; $Chemical overrides to handle template instances via $createComponent.
+    get Component(): Component<this> {
+        if (this[$component$]) return this[$component$];
+        return this[$component$] = $lift(this) as any;
+    }
 
     constructor(particular?: object) {
         // Particularizing an existing particle is a no-op: return it as-is.
@@ -54,15 +68,21 @@ export class $Particle {
         this[$symbol$] = $Particle[$$createSymbol$$](this);
         this[$phases$] = new Map($phaseOrder.map(p => [p, []]));
 
+        // Reactive machinery — every particle carries a molecule (its bond
+        // graph) and a reaction (its single re-render entry point).
+        this[$molecule$] = new $Molecule(this);
+        this[$reaction$] = new $Reaction(this);
+
+        // Template tracking — every instance is its own template by default.
+        // Derivatives via $lift inherit the parent's $template$ via prototype.
+        const $this = this as any;
+        if (!$this[$type$][$$template$$] || !($this[$type$][$$template$$] instanceof $this[$type$]))
+            $this[$type$][$$template$$] = this;
+        this[$template$] = this;
+
         if (particular === undefined) return;
 
-        // Particularization: lift everything from the prototype chain (up to
-        // but not including Object.prototype) onto `this` as own properties,
-        // then sever the chain by setting `particular` as the prototype. This
-        // leaves the carrier with a complete particle surface (methods,
-        // accessors, marker) while making the original object reachable via
-        // the prototype chain — so `instanceof` checks against the original
-        // type still pass and own data on `particular` is readable.
+        // see [docs/chemistry/books/particle/particularization.md].
         let proto = Object.getPrototypeOf(this);
         while (proto && proto !== Object.prototype) {
             for (const key of Reflect.ownKeys(proto)) {
@@ -80,6 +100,12 @@ export class $Particle {
     view(): ReactNode {
         return this.toString();
     }
+
+    async mount() { return this.next('mount'); }
+    async render() { return this.next('render'); }
+    async layout() { return this.next('layout'); }
+    async effect() { return this.next('effect'); }
+    async unmount() { return this.next('unmount'); }
 
     next(phase: $Phase): Promise<void> {
         // 'construction' is a side-channel lifecycle event, not a linear
@@ -103,10 +129,7 @@ export class $Particle {
         this[$phase$] = phase;
         const queue = this[$phases$].get(phase);
         if (queue) while (queue.length > 0) queue.shift()!();
-        // Propagate up the prototype chain so derivatives mounting also
-        // resolve their parent's lifecycle promises (the user holding the
-        // parent reference can `await parent.next('mount')` and have it
-        // resolve when the first derivative mounts).
+        // see [docs/chemistry/books/particle/lifecycle.md] — prototype-chain propagation.
         const proto = Object.getPrototypeOf(this);
         if (proto && Object.prototype.hasOwnProperty.call(proto, $phases$)) {
             proto[$resolve$](phase);
@@ -157,6 +180,11 @@ export class $Particle {
 // the marker copied as an own property when their prototype chain is severed.
 ($Particle.prototype as any)[$particleMarker$] = true;
 
+// $isChemicalBase$ stops the molecule's prototype walk at the framework base.
+// Set on $Particle.prototype (the actual framework root for reactive entities)
+// so subclasses inherit transitively — the walk halts at the user's class.
+($Particle.prototype as any)[$isChemicalBase$] = true;
+
 
 // ===========================================================================
 // Render filters — cross-cutting interception of view rendering.
@@ -197,21 +225,7 @@ export function applyRenderFilters(p: $Particle): ReactNode | undefined {
     return undefined;
 }
 
-// $lift — turn a parent particle/chemical into a component that, on each
-// React mount site, creates its own derivative via Object.create. The
-// derivative inherits the parent's prototype chain (so reads cascade and
-// bond accessors are inherited), gets its own identity (cid, symbol,
-// reaction, phases, update), and registers with the parent's $derivatives
-// set so parent writes can fan out. Skips $bond() — the parent was already
-// constructed; reuse means no re-construction.
-//
-// Two parent concepts compose here:
-//   - Prototype parent (the `parent` argument): state inheritance via
-//     prototype chain; bond accessors inherited; fan-out via $derivatives$.
-//   - Context parent (set via $bind(contextParent)): the chemical containing
-//     this one in the JSX tree; wires up the catalyst graph for the
-//     reaction system. The orchestrator calls $bind to set this when it
-//     processes child elements inside another chemical's bond.
+// see [docs/chemistry/books/particle/lift.md].
 export function $lift<T extends $Particle>(parent: T, contextParent?: any): $Component<T> {
     const Component = (props?: $Props): ReactNode => {
         const [cid, setCid] = useState(-1);
@@ -280,7 +294,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any): $Com
     };
     (Component as any).$chemical = parent;
     (Component as any).$bound = !!contextParent;
-    // The orchestrator may call $bind(contextParent) when it processes this
+    // The synthesis may call $bind(contextParent) when it processes this
     // Component as a JSX child of another chemical's bond. Returns a fresh
     // Component that, when mounted, sets up the catalyst graph correctly.
     (Component as any).$bind = (cp?: any) => $lift(parent, cp);

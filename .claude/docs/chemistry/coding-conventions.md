@@ -1,3 +1,9 @@
+---
+kind: reference
+title: $Chemistry coding conventions
+status: stable
+---
+
 # $Chemistry coding conventions
 
 This document describes Doug's coding style as observed across the `library/chemistry` source and the `../chemistry` app. These are not aspirational guidelines — they are patterns extracted from the existing code. When contributing to $Chemistry, match these conventions.
@@ -198,6 +204,14 @@ Without the `'key'` argument: `const Card = $use(this.card)` returns just the co
 - **Don't add error handling for impossible states.** Trust the framework's invariants internally. Validate at boundaries (`$check`, `assertViewConstructors`).
 - **Don't expose `$`-prefixed names in consumer-facing APIs.** The membrane is sacred.
 
+## See also
+
+- [coding style] — the naming register; `$` membrane; brevity and grammatical mood.
+- [chemistry overview][overview] — the architecture these conventions serve.
+- [chemistry glossary] — the canonical vocabulary.
+
 <!-- citations -->
+[coding style]: ../coding-style.md
+[chemistry glossary]: ./glossary.md
 [symbols]: ../../../library/chemistry/src/symbols.ts
 [overview]: ./overview.md

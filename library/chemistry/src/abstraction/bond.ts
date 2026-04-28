@@ -1,8 +1,7 @@
 import {
-    $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$,
-    $derivatives$
+    $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$
 } from "../implementation/symbols";
-import { currentScope, withScope } from "../implementation/scope";
+import { currentScope, withScope, diffuse } from "../implementation/scope";
 
 // ===========================================================================
 // $Reflection — property annotation system
@@ -13,21 +12,21 @@ import { currentScope, withScope } from "../implementation/scope";
 const inertDecorators = new Map<any, Set<string>>();
 const reactiveDecorators = new Map<any, Set<string>>();
 
-function inertSpecifically(chemical: any, property: string, reactiveGenerally: boolean): boolean | undefined {
-    if (!reactiveGenerally) return true;
+function inertOf(chemical: any, property: string, general: boolean): boolean | undefined {
+    if (!general) return true;
     if (chemical?.[$isChemicalBase$]) return undefined;
     const map = inertDecorators.get(chemical);
     return !map ?
-        inertSpecifically(Object.getPrototypeOf(chemical), property, reactiveGenerally) :
+        inertOf(Object.getPrototypeOf(chemical), property, general) :
         map.has(property);
 }
 
-function reactiveSpecifically(chemical: any, property: string, reactiveGenerally: boolean): boolean | undefined {
-    if (reactiveGenerally) return true;
+function reactiveOf(chemical: any, property: string, general: boolean): boolean | undefined {
+    if (general) return true;
     if (chemical?.[$isChemicalBase$]) return undefined;
     const map = reactiveDecorators.get(chemical);
     return !map ?
-        reactiveSpecifically(Object.getPrototypeOf(chemical), property, reactiveGenerally) :
+        reactiveOf(Object.getPrototypeOf(chemical), property, general) :
         map.has(property);
 }
 
@@ -36,10 +35,10 @@ export class $Reflection {
     property: string;
     get reactive(): boolean {
         if ($Reflection.isSpecial(this.property)) return true;
-        const reactiveGenerally = $Reflection.isReactive(this.property);
-        return reactiveGenerally ?
-            !inertSpecifically(this.chemical, this.property, reactiveGenerally) :
-            !!reactiveSpecifically(this.chemical, this.property, reactiveGenerally);
+        const general = $Reflection.isReactive(this.property);
+        return general ?
+            !inertOf(this.chemical, this.property, general) :
+            !!reactiveOf(this.chemical, this.property, general);
     }
     constructor(chemical: any, property: string) {
         this.chemical = chemical;
@@ -52,7 +51,10 @@ export class $Reflection {
         return this.isSpecial(property);
     }
     static isSpecial(property: string): boolean {
-        return property.length > 2 &&
+        // Minimum is two chars: `$` plus one identifier char. `>= 2` lets
+        // single-letter user props like `$v`, `$x` be reactive — `> 2`
+        // silently demoted them to inert.
+        return property.length >= 2 &&
             property[0] === '$' &&
             property[1] !== "$" &&
             property[1] !== "_" &&
@@ -93,14 +95,12 @@ export class $Bond<T = any, P = any> {
     protected _property: string;
     get descriptor() { return this._descriptor; }
     protected _descriptor: PropertyDescriptor;
-    protected _bid?: string;
-    get bid() {
-        if (!this._bid)
-            this._bid = `${this._chemical[$type$]?.name}[${this._chemical[$cid$]}].${this._property}`;
-        return this._bid;
+    protected _id?: string;
+    get id() {
+        if (!this._id)
+            this._id = `${this._chemical[$type$]?.name}[${this._chemical[$cid$]}].${this._property}`;
+        return this._id;
     }
-    get isProp() { return this._isProp; }
-    protected _isProp: boolean;
     get isMethod() { return this._isMethod; }
     protected _isMethod = false;
     get isField() { return !this.isProperty && !this.isMethod; }
@@ -112,7 +112,6 @@ export class $Bond<T = any, P = any> {
         this._property = property;
         this._chemical = chemical;
         this._descriptor = descriptor;
-        this._isProp = $Reflection.isSpecial(property);
     }
 
     form() {
@@ -120,17 +119,18 @@ export class $Bond<T = any, P = any> {
         this._formed = true;
         this._getter = this._descriptor.get;
         this._setter = this._descriptor.set;
-        // For plain fields (no user getter/setter, not a method), install an
-        // accessor that tracks reads/writes with the current scope.
+        // For plain fields (no user getter/setter, not a method), activate the
+        // property — install a get/set accessor that participates in scope
+        // tracking. An inert field becomes a reactive one.
         if (!this._getter && !this._setter && !$Bond.isMethod(this._descriptor)) {
-            installReactiveAccessor(this._chemical, this._property, this._descriptor.value);
+            activate(this._chemical, this._property, this._descriptor.value);
         }
     }
 
     double(chemical: any): $Bond {
         const bond = Object.create(this) as $Bond;
         bond._chemical = chemical;
-        bond._bid = undefined;
+        bond._id = undefined;
         return bond;
     }
 
@@ -145,11 +145,11 @@ export class $Bond<T = any, P = any> {
     }
 }
 
-function ensureBacking(chemical: any): any {
+function backing(chemical: any): any {
     if (!Object.prototype.hasOwnProperty.call(chemical, $backing$)) {
-        const parentBacking = Object.getPrototypeOf(chemical)?.[$backing$] ?? null;
+        const parent = Object.getPrototypeOf(chemical)?.[$backing$] ?? null;
         Object.defineProperty(chemical, $backing$, {
-            value: Object.create(parentBacking),
+            value: Object.create(parent),
             writable: false,
             enumerable: false,
             configurable: false,
@@ -158,26 +158,26 @@ function ensureBacking(chemical: any): any {
     return chemical[$backing$];
 }
 
-function installReactiveAccessor(target: any, prop: string, initialValue: any) {
-    const backing = ensureBacking(target);
-    backing[prop] = initialValue;
-    Object.defineProperty(target, prop, {
+function activate(chemical: any, property: string, initial: any) {
+    const store = backing(chemical);
+    store[property] = initial;
+    Object.defineProperty(chemical, property, {
         get() {
-            const value = this[$backing$]?.[prop];
+            const value = this[$backing$]?.[property];
             const scope = currentScope();
-            if (scope) scope.recordRead(this, prop, value);
+            if (scope) scope.recordRead(this, property, value);
             return value;
         },
         set(value) {
-            const backing = ensureBacking(this);
-            backing[prop] = value;
+            const store = backing(this);
+            store[property] = value;
             if (this[$rendering$]) return;
             const scope = currentScope();
             if (scope) {
-                scope.recordWrite(this, prop);
+                scope.recordWrite(this, property);
             } else {
                 this[$reaction$]?.react();
-                fanOutToDerivatives(this);
+                diffuse(this);
             }
         },
         enumerable: true,
@@ -185,14 +185,6 @@ function installReactiveAccessor(target: any, prop: string, initialValue: any) {
     });
 }
 
-// fanOutToDerivatives — when a bond is written, wake every derivative of this
-// instance unconditionally. Shadowing is dynamic; React's reconciler short-
-// circuits redundant renders, so we don't gate fan-out on shadow checks.
-function fanOutToDerivatives(parent: any) {
-    const derivatives: Set<any> | undefined = parent[$derivatives$];
-    if (!derivatives) return;
-    for (const d of derivatives) d[$reaction$]?.react();
-}
 
 // $Reagent — a reactive method. A reagent participates in / drives a reaction;
 // calling it runs user code in a scope, and any state changes it makes cause
@@ -203,7 +195,6 @@ export class $Reagent extends $Bond {
 
     constructor(chemical: any, method: string, descriptor: PropertyDescriptor) {
         super(chemical, method, descriptor);
-        this._isProp = false;
         this._isMethod = true;
     }
 

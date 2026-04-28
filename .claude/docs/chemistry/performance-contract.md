@@ -1,3 +1,9 @@
+---
+kind: reference
+title: $Chemistry Performance Contract
+status: stable
+---
+
 # $Chemistry Performance Contract
 
 What the framework costs at runtime, measured, with thresholds for scale.
@@ -101,3 +107,16 @@ The answer depends on what changes per event:
 - Concurrent mode under React transitions. Not exercised.
 
 These are good future measurement targets, not v1 blockers.
+
+## See also
+
+- [reactivity contract] — the behavioural promise this performance contract supports.
+- [reactive bonds (feature)][feat-reactive-bonds] — the per-write cost lives here.
+- [derivatives and fan-out (concept)][concept-derivatives] — what fans out, and how often.
+- [chemistry overview] — the architectural layers this measures.
+
+<!-- citations -->
+[reactivity contract]: ./reactivity-contract.md
+[feat-reactive-bonds]: ./features/reactive-bonds.md
+[concept-derivatives]: ./concepts/derivatives-and-fan-out.md
+[chemistry overview]: ./overview.md

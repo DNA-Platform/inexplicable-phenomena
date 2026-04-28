@@ -5,11 +5,11 @@
 // engine classes that component developers don't normally touch:
 //
 //   - Bond machinery: $Bond, $Reagent, $Reflection, $Molecule, $Reaction
-//   - Orchestration: $BondOrchestrator, $BondOrchestrationContext,
-//                    $BondArguments, $BondParameter
+//   - Orchestration: $Synthesis, $SynthesisContext,
+//                    $Reactants, $BondParameter
 //   - Validation: $ParamValidation
 //   - Wrappers: $Function$, $Html$, $Include, $wrap
-//   - Reactivity scope: Scope, withScope
+//   - Reactivity scope: $Scope, withScope
 //   - Lift / phase order (framework lifecycle internals)
 //   - Serialization implementation: $Represent
 //   - Render-filter extensibility: registerFilter, applyRenderFilters
@@ -26,7 +26,7 @@ export { $Reaction } from './abstraction/reaction';
 
 // Orchestration + validation
 export {
-    $BondOrchestrator, $BondOrchestrationContext, $BondArguments,
+    $Synthesis, $SynthesisContext, $Reactants,
     $ParamValidation, $paramValidation,
     $Function$, $Html$, $Include,
     $wrap
@@ -40,7 +40,7 @@ export { $lift, $phaseOrder, isParticle } from './abstraction/particle';
 export { $Represent } from './implementation/representation';
 
 // Reactivity scope
-export { Scope, withScope } from './implementation/scope';
+export { $Scope, withScope } from './implementation/scope';
 
 // Render-filter extensibility
 export {

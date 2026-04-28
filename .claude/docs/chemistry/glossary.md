@@ -1,3 +1,9 @@
+---
+kind: reference
+title: $Chemistry Glossary
+status: stable
+---
+
 # $Chemistry Glossary
 
 A concept glossary for the $Chemistry framework, organized by architectural layer.
@@ -311,7 +317,17 @@ A semantic relation class (extending `$Relation`) that wraps a single referent i
 
 A core concept in the semantics layer, represented by the exported `$role` referent. Every `$Referent` can be projected into multiple roles via `$as(role)`, which creates a prototype-derived copy stored in the referent's `$roles$` map. Roles enable a single referent to participate in different semantic contexts (e.g., as a subject, an object, or a relationship) without losing its canonical identity. The reflection layer uses a parallel concept -- `$ObjectiveRole` strings like `'type'`, `'instance'`, `'member'` -- to achieve the same multi-faceted representation of JavaScript values.
 
+## See also
+
+- [chemistry overview] — what the layers are and how they fit together.
+- [chemistry file map] — every source file and its role.
+- The per-concept pages under `features/` and `concepts/` — when a glossary entry deserves more than a paragraph.
+
+> Note: source-link paths below predate the sprint-23 module reshuffle. Stale-in-detail; on the L-3 carry-forward sweep.
+
 <!-- citations -->
+[chemistry overview]: ./overview.md
+[chemistry file map]: ./file-map.md
 [symbols]: ../../../library/chemistry/src/symbols.ts
 [types]: ../../../library/chemistry/src/types.ts
 [catalogue]: ../../../library/chemistry/src/catalogue.ts

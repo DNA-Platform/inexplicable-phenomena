@@ -1,6 +1,6 @@
 import type { ReactNode, ReactElement } from 'react';
 import { withScope } from './scope';
-import { markOriginal } from './handler';
+import { $handlerOriginal$ } from './symbols';
 
 /**
  * augment(node, react) — walk a view's output tree and wrap event handler
@@ -84,6 +84,6 @@ function wrapHandler(handler: Function, _react: () => void): Function {
         }
         return result;
     };
-    markOriginal(wrapper, handler);
+    (wrapper as any)[$handlerOriginal$] = handler;
     return wrapper;
 }

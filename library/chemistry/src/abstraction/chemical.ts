@@ -1,7 +1,7 @@
 import React, { ReactNode, useState, useEffect, useLayoutEffect, JSX } from "react";
 import {
     $cid$, $symbol$, $type$, $molecule$, $reaction$, $template$, $isTemplate$, $derived$,
-    $isBound$, $$parent$$, $parent$, $orchestrator$, $component$, $children$,
+    $isBound$, $$parent$$, $parent$, $synthesis$, $component$, $children$,
     $props$, $lastProps$, $apply$, $bond$, $createComponent$,
     $destroy$, $destroyed$, $remove$, $catalyst$, $isCatalyst$,
     $$template$$, $$getNextCid$$, $$createSymbol$$, $$parseCid$$,
@@ -22,7 +22,7 @@ import { augment } from "../implementation/augment";
 export { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 export { $Molecule } from "./molecule";
 export { $Reaction } from "./reaction";
-export { Scope, withScope } from "../implementation/scope";
+export { $Scope, withScope } from "../implementation/scope";
 
 
 // ===========================================================================
@@ -34,42 +34,39 @@ export interface $BondParameter {
     isSpread: boolean;
 }
 
-export class $BondArguments {
+// $Reactants — the information-hiding wrapper a bond ctor receives. Exposes
+// only `.values` (the array of arguments). Narrower than $SynthesisContext on
+// purpose: ctors should not be able to reach parent contexts, parameter
+// parsing state, or sibling child contexts.
+export class $Reactants {
     values: any[] = [];
-    parameters: $BondParameter[] = [];
-    parameterIndex = -1;
-
-    constructor(parameters: $BondParameter[]) {
-        this.parameters = parameters;
-    }
 }
 
-export class $BondOrchestrationContext {
+export class $SynthesisContext {
     private parameters: $BondParameter[];
     private parameterIndex = -1;
-    arguments: $BondArguments;
+    arguments: $Reactants;
     args: any[] = [];
     chemical: $Chemical;
     node: any = undefined;
     children: ReactNode[] = [];
-    childContexts: $BondOrchestrationContext[] = [];
+    childContexts: $SynthesisContext[] = [];
     singleton: boolean = false;
     parameter?: $BondParameter;
     argsValid?: boolean = true;
-    parent: $BondOrchestrationContext = this;
+    parent: $SynthesisContext = this;
     get isElement() { return React.isValidElement(this.node); }
 
     private _isModified = false;
     get isModified() { return this._isModified; }
     set isModified(value: boolean) {
         this._isModified = value;
-        if (value) this.parent?.isModified;
     }
 
     constructor(chemical: $Chemical, parameters: $BondParameter[] = []) {
         this.chemical = chemical;
         this.parameters = parameters;
-        this.arguments = new $BondArguments(parameters || []);
+        this.arguments = new $Reactants();
         this.args = this.arguments.values;
     }
 
@@ -117,7 +114,7 @@ export class $BondOrchestrationContext {
 
     child(chemical: $Chemical, props: any): any {
         if ((chemical as any)[$lastProps$] === props) return props;
-        props = (chemical as any)[$orchestrator$].bond(props, this);
+        props = (chemical as any)[$synthesis$].bond(props, this);
         (chemical as any)[$lastProps$] = props;
         return props;
     }
@@ -139,13 +136,17 @@ export class $BondOrchestrationContext {
 
 const $htmlInstances = new Map<string, $Html$>();
 
-export class $BondOrchestrator<T extends $Chemical = $Chemical> {
+export class $Synthesis<T extends $Chemical = $Chemical> {
     private _chemical: T;
     private _bondConstructor?: Function;
     private _parameters: { isArray: boolean; isSpread: boolean }[] = [];
 
-    get viewSymbol() { return `$${(this._chemical as any)[$symbol$]}`; }
-
+    // AUDIT: dead code — `isViewSymbol` checks for a `$$Chemistry.` prefix that
+    // is never produced anywhere in the codebase. The companion `viewSymbol`
+    // getter that would have produced it was unused and removed. The
+    // `process()` branch that calls `isViewSymbol(key)` is therefore unreachable
+    // unless an external consumer is constructing such keys. Verify and delete
+    // — see caveat: dead-view-symbol-branch (TBD).
     isViewSymbol(symbol: string): boolean {
         return symbol.startsWith('$$Chemistry.');
     }
@@ -157,10 +158,10 @@ export class $BondOrchestrator<T extends $Chemical = $Chemical> {
         this.parseBondConstructor();
     }
 
-    bond(props: any, parentContext?: $BondOrchestrationContext): any {
+    bond(props: any, parentContext?: $SynthesisContext): any {
         const chemical = this._chemical as any;
         let children: ReactNode = props.children;
-        const context = new $BondOrchestrationContext(chemical, this._parameters);
+        const context = new $SynthesisContext(chemical, this._parameters);
         parentContext?.childContexts.push(context);
 
         for (const prop in props) {
@@ -214,6 +215,12 @@ export class $BondOrchestrator<T extends $Chemical = $Chemical> {
         return props;
     }
 
+    // AUDIT: brittle — regex-parses the bond constructor's source string to
+    // discover parameter shape (spread vs. positional). Breaks under arrow-
+    // function ctors, default values, destructured params, multiline params,
+    // and TypeScript-emitted `__decorate` wrappers. A more robust approach:
+    // Function.prototype.length for arity + an explicit `@spread` decorator
+    // for spread params. See caveat: bond-ctor-source-parsing (TBD).
     private parseBondConstructor() {
         if (!this._bondConstructor) return;
 
@@ -231,7 +238,7 @@ export class $BondOrchestrator<T extends $Chemical = $Chemical> {
             }));
     }
 
-    private process(children: ReactNode, context: $BondOrchestrationContext) {
+    private process(children: ReactNode, context: $SynthesisContext) {
         const childArray = React.Children.toArray(children);
         context.singleton = !Array.isArray(children) && childArray.length === 1;
         const parent = this._chemical;
@@ -289,7 +296,7 @@ export class $BondOrchestrator<T extends $Chemical = $Chemical> {
         }
     }
 
-    private processArray(elements: any[], context: $BondOrchestrationContext) {
+    private processArray(elements: any[], context: $SynthesisContext) {
         for (const item of elements) {
             context.isModified = true;
             context = context.next(item);
@@ -549,17 +556,9 @@ export function $is<T>(ctor: abstract new (...args: any[]) => T): T {
 // ===========================================================================
 
 export class $Chemical extends $Particle {
-    [$template$]!: this;
     [$remove$] = false;
-    [$destroyed$] = false;
-    [$molecule$]!: $Molecule;
-    [$reaction$]!: $Reaction;
-    [$orchestrator$]!: $BondOrchestrator<any>;
-    [$component$]?: Component<this>;
+    [$synthesis$]!: $Synthesis<any>;
     [$lastProps$]: any;
-    static [$$template$$]: $Chemical;
-    get [$isTemplate$]() { return this == (this as any)[$type$][$$template$$]; }
-    get [$derived$]() { return this !== this[$template$]; }
 
     get [$isBound$]() { return this == this?.[$component$]?.$chemical; }
 
@@ -568,6 +567,11 @@ export class $Chemical extends $Particle {
 
     [$$parent$$]?: $Chemical;
     get [$parent$](): $Chemical | undefined { return this?.[$$parent$$]; }
+    // Joining a catalyst graph: replace this chemical's default $Particle
+    // reaction with one that shares the catalyst's reaction system, so writes
+    // here propagate through the parent's tree. The default reaction created
+    // in $Particle.constructor is correct for stand-alone chemicals; this
+    // setter rewires when the chemical becomes part of a composition.
     set [$parent$](parent: $Chemical) {
         parent = parent || this;
         const wasCatalyst = this[$isCatalyst$];
@@ -608,35 +612,18 @@ export class $Chemical extends $Particle {
 
     constructor() {
         super();
-        const $this = this as any;
-        if (!$this[$type$][$$template$$] || !($this[$type$][$$template$$] instanceof $this[$type$]))
-            $this[$type$][$$template$$] = this;
-        this[$template$] = this;
         this[$$parent$$] = this;
         this[$catalyst$] = this;
-        this[$molecule$] = new $Molecule(this);
-        this[$reaction$] = new $Reaction(this);
-        this[$orchestrator$] = new $BondOrchestrator(this);
+        this[$synthesis$] = new $Synthesis(this);
     }
 
     view(): ReactNode {
         return this.children;
     }
 
-    toString() {
-        if (this[$symbol$]) return this[$symbol$];
-        return $Particle[$$createSymbol$$](this);
-    }
-
-    async mount() { return this.next('mount'); }
-    async render() { return this.next('render'); }
-    async layout() { return this.next('layout'); }
-    async effect() { return this.next('effect'); }
-    async unmount() { return this.next('unmount'); }
-
     protected [$bond$]() {
         this[$molecule$].reactivate();
-        this[$orchestrator$].bond({ children: this[$children$] });
+        this[$synthesis$].bond({ children: this[$children$] });
         this[$molecule$].reactivate();
     }
 
@@ -646,7 +633,7 @@ export class $Chemical extends $Particle {
             { key: this[$symbol$], children: this.children } :
             { key: this[$symbol$] };
         for (const bond of this[$molecule$].bonds.values())
-            if (bond.isProp) {
+            if ($Reflection.isSpecial(bond.property)) {
                 const value = $this[bond.property];
                 if (value !== undefined) props[bond.property.slice(1)] = value;
             }
@@ -675,7 +662,7 @@ export class $Chemical extends $Particle {
                 chemical[$cid$] = $Particle[$$getNextCid$$]();
                 chemical[$symbol$] = $Particle[$$createSymbol$$](chemical);
                 chemical[$molecule$] = new $Molecule(chemical);
-                chemical[$orchestrator$] = new $BondOrchestrator(chemical);
+                chemical[$synthesis$] = new $Synthesis(chemical);
                 chemical[$phases$] = new Map($phaseOrder.map(p => [p, []]));
                 chemical[$phase$] = 'setup';
                 chemical[$reaction$] = new $Reaction(chemical);
@@ -742,7 +729,8 @@ export class $Chemical extends $Particle {
 
 // Sentinel: marks $Chemical.prototype so $Molecule can stop its prototype
 // walk at the framework boundary without importing $Chemical.
-($Chemical.prototype as any)[$isChemicalBase$] = true;
+// $isChemicalBase$ now lives on $Particle.prototype (the framework root for
+// reactive entities). Inherited transitively here.
 
 // bind(chemical, parent?) — create a bound child instance of a chemical
 export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Component<T> {
@@ -751,7 +739,7 @@ export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Comp
     child[$cid$] = $Particle[$$getNextCid$$]();
     child[$symbol$] = $Particle[$$createSymbol$$](child);
     child[$molecule$] = new $Molecule(child);
-    child[$orchestrator$] = new $BondOrchestrator(child);
+    child[$synthesis$] = new $Synthesis(child);
     child[$phases$] = new Map($phaseOrder.map(p => [p, []]));
     child[$phase$] = 'setup';
     if (parent) child[$parent$] = parent;

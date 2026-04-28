@@ -1,4 +1,4 @@
-import { $backing$, $reaction$, $rendering$ } from "./symbols";
+import { $backing$, $reaction$, $rendering$, $derivatives$ } from "./symbols";
 import { equivalent } from "./reconcile";
 
 /**
@@ -53,7 +53,7 @@ function snapshot(v: any): any {
  * external callbacks (setTimeout, fetch.then, websocket) that do direct
  * writes.
  */
-export class Scope {
+export class $Scope {
     private reads = new Map<any, Map<string, any>>();
     private writes = new Map<any, Set<string>>();
 
@@ -88,15 +88,32 @@ export class Scope {
                 }
             }
         }
+        // Symmetric with the no-scope path in bond.ts: a write must wake both
+        // the chemical and any $lift-mounted derivatives. Re-entrancy is safe —
+        // withScope clears $currentScope before calling finalize(), so any
+        // cascading reads/writes during react() fire as out-of-scope writes.
         for (const chem of dirty) {
             chem[$reaction$]?.react();
+            diffuse(chem);
         }
     }
 }
 
-let $currentScope: Scope | null = null;
+// diffuse — propagate a write outward through a chemical's mounted
+// derivatives. Concentration gradient: a write at the parent equilibrates to
+// each derivative. Only acts when the chemical OWNS its $derivatives$ set; an
+// inherited set means `chemical` is itself a derivative, and walking the
+// parent's set would leak the write to sibling derivatives.
+export function diffuse(chemical: any): void {
+    if (!Object.prototype.hasOwnProperty.call(chemical, $derivatives$)) return;
+    const derivatives: Set<any> | undefined = chemical[$derivatives$];
+    if (!derivatives) return;
+    for (const d of derivatives) d[$reaction$]?.react();
+}
 
-export function currentScope(): Scope | null {
+let $currentScope: $Scope | null = null;
+
+export function currentScope(): $Scope | null {
     return $currentScope;
 }
 
@@ -108,7 +125,7 @@ export function currentScope(): Scope | null {
  */
 export function withScope<T>(fn: () => T): T {
     if ($currentScope) return fn();
-    const scope = new Scope();
+    const scope = new $Scope();
     $currentScope = scope;
     try {
         return fn();

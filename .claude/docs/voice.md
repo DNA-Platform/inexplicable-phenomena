@@ -1,3 +1,9 @@
+---
+kind: reference
+title: Voice Spec
+status: stable
+---
+
 # Voice Spec
 
 `voice.md` is the single output file for a collaborator's responses. It lives

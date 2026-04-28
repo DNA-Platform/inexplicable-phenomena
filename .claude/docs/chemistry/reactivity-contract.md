@@ -1,3 +1,9 @@
+---
+kind: reference
+title: $Chemistry Reactivity Contract
+status: stable
+---
+
 # $Chemistry Reactivity Contract
 
 **One paragraph for the impatient:** Write a class. Put state in fields. Write methods. Wire events in TSX. The UI updates when state changes. You will never write `setState`, never spell out dependency arrays, never wrap components in `React.memo`. If you mutate state from a callback the framework doesn't already see (like a raw `setInterval`), either wrap the mutation in a method or call `react(chemical)`.
@@ -224,3 +230,16 @@ These limits are documented, not bugs. Work within them and everything else Just
 React externalized state. $Chemistry puts it back on the object where it belongs. React turned components into functions. $Chemistry makes them classes again. React decomposed lifecycle into hooks. $Chemistry gives you methods for each phase.
 
 The cost: you accept some framework magic (scope tracking, method wrapping, view augmentation) to eliminate the per-line ceremony (setState, memo, dep arrays). The trade is intentional.
+
+## See also
+
+- [reactive bonds (feature)][feat-reactive-bonds] — the surface this contract describes.
+- [derivatives and fan-out (concept)][concept-derivatives] — how parent writes propagate.
+- [cross-chemical handler fanout (caveat)][cav-cross-chemical] — the path that almost broke this contract.
+- [performance contract] — what this costs at runtime.
+
+<!-- citations -->
+[feat-reactive-bonds]: ./features/reactive-bonds.md
+[concept-derivatives]: ./concepts/derivatives-and-fan-out.md
+[cav-cross-chemical]: ./caveats/cross-chemical-handler-fanout.md
+[performance contract]: ./performance-contract.md

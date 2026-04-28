@@ -2,7 +2,23 @@
 
 Read this file first when resuming work. It tells you where we are.
 
-## Current sprint: sprint-21 (Performance Baseline and Targets) — B1 COMPLETE, SHIP DECISION MADE
+## Current sprint: sprint-27 (Crystallization — particle/chemical alignment + library books) — IN PROGRESS
+
+**Plan:** [sprint-27 plan] — two coupled motions. **Motion 1 (Cathy + Arthur):** realign `$Particle` and `$Chemical` — reactivity moves to `$Particle`, composition stays on `$Chemical`. Eliminate dynamic binding (the bond-ctor-by-class-name lookup is the canonical example). **Motion 2 (Cathy + Libby):** code becomes sparse — block comments migrate into per-class **books** under `docs/chemistry/books/{class}/` with chapters as separate files. Library structure mirrors source where it helps readers. Code → library pointers replace migrated comments. Sprint-26 deferred work (Distillation lenses) continues in parallel as discovered.
+
+## Previous sprint: sprint-26 (Distillation — code audit) — PARTIAL
+
+**Plan:** [sprint-26 plan] — three lenses on the codebase: duplication, brittleness, semantic confusion. Each lens has its own audit method and produces a triage decision (fix this sprint, or document as caveat). Absorbs sprint-25 deferred work — E-3 remainder, E-4 (methods), E-5, ER refactoring (`_reactivate`, `$Chemical` ctor, `$()` callable), L-2/L-4/L-5 — under the audit umbrella. New: Libby's wiki gains a navigation tier, with feature pages linking directly into source files. Methodology refinement: gate scales with blast radius (module-private = one voice; cross-module = three voices propose; public surface = three voices + Doug sign-off).
+
+## Previous: sprint-25 (Resonance — naming, structure, and the wiki brain) — COMPLETE
+
+**Plan:** [sprint-25 plan] — naming sprint. Methodology validated on bond.ts pilot. 14 renames + 1 structural extraction landed (`fanOutToDerivatives` → `diffuse`, `installReactiveAccessor` → `activate`, `$BondOrchestrator` family → `$Synthesis` family, `Scope` → `$Scope`, `$$Properties` collapsed into `$Properties`). Wiki gained alias index + coding-style page. Deferred work (E-3 remainder, E-4 methods, E-5 locals, ER refactoring, L-2/L-4/L-5) absorbed into sprint-26. 428 tests green throughout. Retro at [sprint-25 retro].
+
+## Previous: sprint-24 (Instance-Owned Bond Accessors + Library Docs Organization) — COMPLETE
+
+**Plan:** [sprint-24 plan] — two parallel tracks. Track A's planned refactor (move bond accessors off prototypes) was *cancelled* after SP-1 proved the architecture already installs accessors on the instance — Cathy, Queenie, and Arthur misremembered. Track A pivoted to pinning the invariant + fixing two real bugs found along the way: (1) `scope.finalize()` was missing derivative fan-out so cross-chemical writes inside event handlers didn't update held-instance DOM (gated fix with `hasOwnProperty($derivatives$)` to preserve lexical scoping); (2) `$Reflection.isSpecial` required `length > 2`, silently demoting single-letter `$<x>` props to inert (one-character `>` → `>=` fix). Track B built the `.claude/docs/` wiki-style docs system with Diátaxis-shaped taxonomy + caveats as first-class linkable files, captured sprints 22-23 history + particularization narrative, and documented the chemistry surface in 8 feature pages + 2 concept pages + 3 caveat pages. Final: 428 tests / 0 todos / 32 files green; benchmarks healthy.
+
+## Previous: sprint-21 (Performance Baseline and Targets) — B1 COMPLETE, SHIP DECISION MADE
 
 **Plan:** [sprint-21 plan] — three-tier benchmark plan. Micro-benchmarks (B1) landed and **v1 ship criteria all met**. Accessor overhead ~1x, scope cost ~5μs, $symbolize small state <500ns. Performance contract documented. Component-level and macro benchmarks (B2, B3) remain as follow-up; not v1-blocking.
 
@@ -74,6 +90,12 @@ Read this file first when resuming work. It tells you where we are.
 | sprint-19 | [Scope-Tracked Reactivity][sprint-19 plan] | In progress — foundation landed (scope + accessor + $symbolize); 323 tests green |
 | sprint-20 | [Test Suite as Specification][sprint-20 plan] | Complete — 323 → 286 tests; implementation-heavy tests deleted or rewritten as behavior |
 | sprint-21 | [Performance Baseline and Targets][sprint-21 plan] | B1 complete — v1 ship criteria met; accessor ~1x, scope ~5μs; contract doc written |
+| sprint-22 | [Lexical Scoping & The Beautiful API][sprint-22 history] | Complete — `$Particle` becomes leaf, `$Chemical` extends it, `$lift` per-site derivatives, `$()` dispatch surface, particularization redesign |
+| sprint-23 | [Audit Cleanup][sprint-23 history] | Complete — audience-2 surface tightened, public statics symbol-keyed, vocabulary pass, `$particular$` finished, `Component`/`$Component` getter collapse |
+| sprint-24 | [Instance-Owned Bond Accessors + Docs Organization][sprint-24 plan] | Complete — Track A refactor cancelled (SP-1 found it already done); 2 real bugs fixed (scope.finalize fan-out, single-letter prop reactivity); Track B docs system live with 13 pages + 3 caveats; 428 tests / 0 todos |
+| sprint-25 | [Resonance][sprint-25 plan] | Complete — methodology validated, 14 renames landed, 428 tests green; deferred work absorbed into sprint-26 |
+| sprint-26 | [Distillation][sprint-26 plan] | Partial — methodology validated, 6 fixes landed (3 dead-code deletions, $Bond cluster cleanup, `_reactivate` refactor, AUDIT comments); catalogue + see-also footers built; 428 tests green; remaining audit lenses carry forward to sprint-27 as discovered |
+| sprint-27 | [Crystallization][sprint-27 plan] | In progress — particle/chemical realignment + library books |
 
 ## Next considerations
 
@@ -134,6 +156,13 @@ See the [agent registry] for path patterns. Use `/responsible` to query ownershi
 [sprint-19 plan]: sprint-19/plan.md
 [sprint-20 plan]: sprint-20/plan.md
 [sprint-21 plan]: sprint-21/plan.md
+[sprint-22 history]: ../docs/history/sprint-22-lexical-scoping.md
+[sprint-23 history]: ../docs/history/sprint-23-audit-cleanup.md
+[sprint-24 plan]: sprint-24/plan.md
+[sprint-25 plan]: sprint-25/plan.md
+[sprint-25 retro]: sprint-25/reviews/retro.md
+[sprint-26 plan]: sprint-26/plan.md
+[sprint-27 plan]: sprint-27/plan.md
 [roles]: ../team/roles/
 [abilities]: ../team/abilities/
 [Architect]: ../team/roles/architect.md

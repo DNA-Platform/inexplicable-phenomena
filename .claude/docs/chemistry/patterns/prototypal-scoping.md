@@ -1,4 +1,12 @@
+---
+kind: concept
+title: Prototypal scoping
+status: historical
+---
+
 # Prototypal Scoping
+
+> This page predates the lexical-scoping concept page and the `chemistry/concepts/` directory. Its subject is now covered, in more depth and with current vocabulary, in [lexical scoping][concept-lexical-scoping] and [derivatives and fan-out][concept-derivatives]. Kept as institutional memory for the original framing.
 
 When a chemical is rendered multiple times in different contexts, each rendering needs independent `$`-prefixed properties (extrinsic) while sharing intrinsic state.
 
@@ -17,3 +25,12 @@ When a chemical is rendered multiple times in different contexts, each rendering
 - [The $ membrane](./../overview.md) — `$` marks extrinsic properties that are per-rendering
 - Template pattern — `.Component` creates instances via `Object.create(template)` in the FC
 - `$bind(parent)` — creates a shadow under a specific parent
+
+## See also
+
+- [lexical scoping (concept)][concept-lexical-scoping] — current name and current model.
+- [derivatives and fan-out (concept)][concept-derivatives] — the mechanism in detail.
+
+<!-- citations -->
+[concept-lexical-scoping]: ../concepts/lexical-scoping.md
+[concept-derivatives]: ../concepts/derivatives-and-fan-out.md

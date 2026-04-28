@@ -1,3 +1,9 @@
+---
+kind: guide
+title: Initialization
+status: stable
+---
+
 # Initialization
 
 This is the setup procedure for creating your own collaborator workspace.

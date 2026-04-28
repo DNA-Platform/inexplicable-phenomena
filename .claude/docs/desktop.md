@@ -1,3 +1,9 @@
+---
+kind: reference
+title: Claude Desktop Automation
+status: stable
+---
+
 # Claude Desktop Automation
 
 `.claude/src/desktop.ps1` provides generic Windows UI automation for the

@@ -1,3 +1,9 @@
+---
+kind: reference
+title: $Chemistry framework overview
+status: stable
+---
+
 # $Chemistry framework overview
 
 ## What it is
@@ -214,7 +220,24 @@ The design principle: structure is dynamic in JavaScript and always was. The typ
 
 The v1 archive (a monolithic implementation file) was the source for the current modular codebase, lifted in sprint 5. The archive has been deleted — the modular source in `library/chemistry/src/chemistry/` is the living code. The original `../chemistry` repo preserves the v1 source and a Next.js test app with visual component tests.
 
+## See also
+
+- [chemistry glossary] — every term, organized by layer.
+- [chemistry file map] — every source file, what depends on what.
+- [reactivity contract] — the one-paragraph behavioural promise.
+- [performance contract] — what the framework costs at runtime.
+- [coding conventions], [coding style] — the code-level register.
+- The eight per-concept feature pages under `features/` — start with [`$Particle`][feat-particle].
+
+> Note: some source-link paths in the citations below predate the sprint-23 module reshuffle (`src/reflection.ts` → `src/implementation/reflection.ts`, `src/chemistry/*` → `src/abstraction/*`). They are accurate-in-spirit, stale-in-detail. Sweep is on the L-3 carry-forward list.
+
 <!-- citations -->
+[chemistry glossary]: ./glossary.md
+[chemistry file map]: ./file-map.md
+[reactivity contract]: ./reactivity-contract.md
+[performance contract]: ./performance-contract.md
+[coding style]: ../coding-style.md
+[feat-particle]: ./features/particle.md
 [conventions]: ./coding-conventions.md
 [symbols]: ../../library/chemistry/src/symbols.ts
 [types]: ../../library/chemistry/src/types.ts

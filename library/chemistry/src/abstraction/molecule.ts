@@ -36,15 +36,22 @@ export class $Molecule {
         if (this._reactive && !refresh) return;
         const chemical = this._chemical;
         const template = chemical[$template$];
-        const properties = new Map<string, PropertyDescriptor>();
-        let templateBonds: $Bond[] = [];
         if (template !== chemical) {
             template[$molecule$]._reactivate(false);
-            templateBonds = Array.from(template[$molecule$].bonds.values());
-        } else if (!this.reactive) {
-            this.collectProperties().forEach((d, p) => properties.set(p, d));
+            this.formBonds(this.selectProperties(chemical));
+            this.inheritBonds(template[$molecule$].bonds);
+        } else {
+            const properties = new Map<string, PropertyDescriptor>();
+            if (!this.reactive)
+                this.collectProperties().forEach((d, p) => properties.set(p, d));
+            this.selectProperties(chemical).forEach((d, p) => properties.set(p, d));
+            this.formBonds(properties);
         }
-        this.selectProperties(chemical).forEach((d, p) => properties.set(p, d));
+        this._reactive = true;
+    }
+
+    private formBonds(properties: Map<string, PropertyDescriptor>): void {
+        const chemical = this._chemical;
         properties.forEach((descriptor, property) => {
             if (this._bonds.has(property)) return;
             if (this._inert.has(property)) return;
@@ -55,11 +62,14 @@ export class $Molecule {
             this._bonds.set(property, bond);
             bond.form();
         });
-        for (const bond of templateBonds) {
+    }
+
+    private inheritBonds(templateBonds: Map<string, $Bond>): void {
+        const chemical = this._chemical;
+        for (const bond of templateBonds.values()) {
             if (this._bonds.has(bond.property)) continue;
             this._bonds.set(bond.property, bond.double(chemical));
         }
-        this._reactive = true;
     }
 
     private collectProperties(): Map<string, PropertyDescriptor> {
