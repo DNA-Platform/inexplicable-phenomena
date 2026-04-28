@@ -3,7 +3,7 @@ import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
 import { $Chemical } from '@/abstraction/chemical';
 
-describe('Scope tracking: in-scope mutations trigger react', () => {
+describe('Mutations inside event handlers trigger re-render', () => {
     it('nested Map mutation inside handler triggers re-render', async () => {
         class $M extends $Chemical {
             $map: Map<string, number> = new Map();
@@ -125,7 +125,7 @@ describe('Scope tracking: in-scope mutations trigger react', () => {
     });
 });
 
-describe('Scope tracking: out-of-scope direct writes still react', () => {
+describe('Mutations outside any handler still trigger re-render (direct writes)', () => {
     it('direct write from a setTimeout triggers re-render (via held instance)', async () => {
         class $T extends $Chemical {
             $count? = 0;

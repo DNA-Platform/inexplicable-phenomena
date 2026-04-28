@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { $symbolize } from '@/implementation/representation';
 import { $Chemical } from '@/abstraction/chemical';
 
-describe('$symbolize audit for scope-tracking snapshots', () => {
+describe('$symbolize — deterministic serialization contract', () => {
     it('primitives: string', () => {
         expect($symbolize('hello')).toBe($symbolize('hello'));
         expect($symbolize('hello') === $symbolize('world')).toBe(false);

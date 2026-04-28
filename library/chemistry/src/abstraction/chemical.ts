@@ -10,7 +10,7 @@ import {
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType } from "../implementation/types";
-import { $Particle, $phaseOrder, $lift, applyRenderFilters } from "./particle";
+import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from "./particle";
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
 import { $Reaction } from "./reaction";
@@ -378,7 +378,7 @@ export class $ParamValidation {
         this.validated = false;
     }
 
-    static describeType(type: any): string {
+    private static describeType(type: any): string {
         if (Array.isArray(type)) {
             return `${$ParamValidation.describeType(type[0])}[]`;
         }
@@ -406,7 +406,7 @@ export class $ParamValidation {
         return 'unknown';
     }
 
-    static describeActual(arg: any, depth: number = 0): string {
+    private static describeActual(arg: any, depth: number = 0): string {
         if (arg === null) return 'null';
         if (arg === undefined) return 'undefined';
 
@@ -460,11 +460,11 @@ export class $ParamValidation {
         return typeof arg;
     }
 
-    static isPrimitiveType(type: string): boolean {
+    private static isPrimitiveType(type: string): boolean {
         return ['string', 'number', 'boolean', 'object', 'function', 'undefined', 'bigint', 'symbol'].includes(type);
     }
 
-    static isValidReactNode(arg: any): boolean {
+    private static isValidReactNode(arg: any): boolean {
         if (arg === null || arg === undefined) return true;
         if (typeof arg === 'string' || typeof arg === 'number') return true;
         if (typeof arg === 'boolean' || typeof arg === 'bigint') return true;
@@ -476,7 +476,7 @@ export class $ParamValidation {
         return false;
     }
 
-    static validateArgument(arg: any, type: any): boolean {
+    private static validateArgument(arg: any, type: any): boolean {
         if (Array.isArray(type)) {
             if (!Array.isArray(arg)) return false;
             const elementType = type[0];
@@ -524,7 +524,7 @@ export class $ParamValidation {
         return false;
     }
 
-    static validatePrimitive(arg: any, type: any): boolean {
+    private static validatePrimitive(arg: any, type: any): boolean {
         if (type === String) return typeof arg === 'string';
         if (type === Number) return typeof arg === 'number';
         if (type === Boolean) return typeof arg === 'boolean';
@@ -583,6 +583,19 @@ export class $Chemical extends $Particle {
 
     get children() { return this[$children$]; }
 
+    // Component getter — returns the chemical's React FC.
+    //
+    // Two caches exist on a chemical and they serve different paths:
+    //   [$component$] — set by this getter for templates (full
+    //                   $createComponent path: runs bond ctor at first
+    //                   mount, full chemical lifecycle), and by $lift for
+    //                   non-template instances (no bond ctor).
+    //   [$lifted$]    — separate cache used by `$()` dispatch's instance
+    //                   form. Always routes through $lift; never runs the
+    //                   bond ctor. Different from [$component$] because
+    //                   $(template) and template.Component should differ:
+    //                   the latter runs the bond ctor on mount; the former
+    //                   reuses an already-constructed instance.
     get Component(): Component<this> {
         if (this[$component$]) return this[$component$];
         if (this[$isTemplate$]) {
@@ -591,10 +604,6 @@ export class $Chemical extends $Particle {
         }
         this[$component$] = $lift(this) as any;
         return this[$component$]!;
-    }
-
-    get $Component(): $Component<this> {
-        return this.Component as any;
     }
 
     constructor() {
@@ -873,7 +882,7 @@ class Chemistry extends $Chemical {
         // overridden props; the bond constructor does NOT re-run. We route
         // through $lift, which skips $bond() entirely. Result is cached per
         // instance so React component identity is stable across $(x) calls.
-        if (arg instanceof $Particle) {
+        if (isParticle(arg)) {
             const inst = arg as any;
             if (inst[$lifted$]) return inst[$lifted$];
             return inst[$lifted$] = $lift(arg);

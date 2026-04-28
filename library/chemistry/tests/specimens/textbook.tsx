@@ -27,11 +27,11 @@ export class $TextbookChapter extends $Chapter {
                 </h3>
                 {this.expanded && <>
                     <$>{this.pages.map((page, i) => (
-                        <page.$Component />
+                        <page.Component />
                     ))}</$>
                     <div className="exercises">
                         <$>{this.exercises.map((ex, i) => (
-                            <ex.$Component />
+                            <ex.Component />
                         ))}</$>
                     </div>
                 </>}

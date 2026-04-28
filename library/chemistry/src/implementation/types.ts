@@ -2,6 +2,12 @@ import type { JSX, ReactNode } from "react";
 import type { $Particle } from "../abstraction/particle";
 import type { $Function$, $Html$, $Chemical } from "../abstraction/chemical";
 
+// I<T> — the interface of T: every member declared on T and its prototype
+// chain. TypeScript already collapses the chain into the instance type, so
+// I<T> is just T. Named separately so intersections like `I<$Error> & I<Error>`
+// read as "the union of these two surfaces."
+export type I<T> = T;
+
 export type Constructor<Result = any, Parameters extends any[] = any[]> = new (...args: Parameters) => Result;
 export type Type<T = any> = Constructor<T> & { name: string };
 export type Typeof = "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function";

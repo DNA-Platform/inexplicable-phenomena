@@ -9,7 +9,6 @@ export const $children$ = Symbol("$Particle.children");
 export const $apply$ = Symbol("$Particle.apply");
 export const $bond$ = Symbol("$Particle.bond");
 export const $derived$ = Symbol("$Particle.derived");
-export const $particular$ = Symbol("$Particle.particular");
 export const $phase$ = Symbol("$Particle.phase");
 export const $phases$ = Symbol("$Particle.phases");
 export const $resolve$ = Symbol("$Particle.resolve");
@@ -49,6 +48,7 @@ export const $derivatives$ = Symbol("$Particle.derivatives");
 export const $construction$ = Symbol("$Particle.construction");
 export const $bondCtorRan$ = Symbol("$Chemical.bondCtorRan");
 export const $renderFilters$ = Symbol("$Particle.renderFilters");
+export const $particleMarker$ = Symbol("$Particle.marker");
 
 // $Atom symbols
 export const $formed$ = Symbol("$Atom.formed");

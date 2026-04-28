@@ -10,7 +10,10 @@
 //   - Validation: $ParamValidation
 //   - Wrappers: $Function$, $Html$, $Include, $wrap
 //   - Reactivity scope: Scope, withScope
-//   - Framework extension: registerFilter, applyRenderFilters, $RenderFilter
+//   - Lift / phase order (framework lifecycle internals)
+//   - Serialization implementation: $Represent
+//   - Render-filter extensibility: registerFilter, applyRenderFilters
+//   - Internal types: $SymbolFeature, $Particular, $MethodComponent, $Bound, $ParameterType
 //   - Lifecycle and graph symbols (re-exported from implementation/symbols)
 //
 // Component developers should import from `@dna-platform/chemistry` (root).
@@ -30,6 +33,12 @@ export {
 } from './abstraction/chemical';
 export type { $BondParameter } from './abstraction/chemical';
 
+// Lifecycle internals
+export { $lift, $phaseOrder, isParticle } from './abstraction/particle';
+
+// Serialization implementation
+export { $Represent } from './implementation/representation';
+
 // Reactivity scope
 export { Scope, withScope } from './implementation/scope';
 
@@ -39,6 +48,13 @@ export {
     applyRenderFilters
 } from './abstraction/particle';
 export type { $RenderFilter } from './abstraction/particle';
+
+// Internal types
+export type {
+    $SymbolFeature, $Particular, $MethodComponent, $ParameterType,
+    primitives, primitiveTypes, typeofTypes,
+} from './implementation/types';
+export type { $Bound } from './implementation/types';
 
 // All framework-internal symbols. Framework devs use these to read/write the
 // machinery directly; component devs never touch them.

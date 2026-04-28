@@ -21,7 +21,7 @@ export class $Chapter extends $Chemical {
                     <span className="page-count">({this.pageCount} pages)</span>
                 </h3>
                 {this.expanded && <$>{this.pages.map((page, i) => (
-                    <page.$Component />
+                    <page.Component />
                 ))}</$>}
             </section>
         );

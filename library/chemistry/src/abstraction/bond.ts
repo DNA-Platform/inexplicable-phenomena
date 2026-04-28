@@ -8,6 +8,29 @@ import { currentScope, withScope } from "../implementation/scope";
 // $Reflection — property annotation system
 // ===========================================================================
 
+// Module-private decorator registries. Hidden from the public class surface
+// so they can't be mutated externally.
+const inertDecorators = new Map<any, Set<string>>();
+const reactiveDecorators = new Map<any, Set<string>>();
+
+function inertSpecifically(chemical: any, property: string, reactiveGenerally: boolean): boolean | undefined {
+    if (!reactiveGenerally) return true;
+    if (chemical?.[$isChemicalBase$]) return undefined;
+    const map = inertDecorators.get(chemical);
+    return !map ?
+        inertSpecifically(Object.getPrototypeOf(chemical), property, reactiveGenerally) :
+        map.has(property);
+}
+
+function reactiveSpecifically(chemical: any, property: string, reactiveGenerally: boolean): boolean | undefined {
+    if (reactiveGenerally) return true;
+    if (chemical?.[$isChemicalBase$]) return undefined;
+    const map = reactiveDecorators.get(chemical);
+    return !map ?
+        reactiveSpecifically(Object.getPrototypeOf(chemical), property, reactiveGenerally) :
+        map.has(property);
+}
+
 export class $Reflection {
     chemical: any;
     property: string;
@@ -15,30 +38,12 @@ export class $Reflection {
         if ($Reflection.isSpecial(this.property)) return true;
         const reactiveGenerally = $Reflection.isReactive(this.property);
         return reactiveGenerally ?
-            !$Reflection.inertSpecifically(this.chemical, this.property, reactiveGenerally) :
-            !!$Reflection.reactiveSpecifically(this.chemical, this.property, reactiveGenerally);
+            !inertSpecifically(this.chemical, this.property, reactiveGenerally) :
+            !!reactiveSpecifically(this.chemical, this.property, reactiveGenerally);
     }
     constructor(chemical: any, property: string) {
         this.chemical = chemical;
         this.property = property;
-    }
-    static inertDecorators: Map<any, Set<string>> = new Map();
-    static reactiveDecorators: Map<any, Set<string>> = new Map();
-    static inertSpecifically(chemical: any, property: string, reactiveGenerally: boolean): boolean | undefined {
-        if (!reactiveGenerally) return true;
-        if (chemical?.[$isChemicalBase$]) return undefined;
-        const map = this.inertDecorators.get(chemical);
-        return !map ?
-            this.inertSpecifically(Object.getPrototypeOf(chemical), property, reactiveGenerally) :
-            map.has(property);
-    }
-    static reactiveSpecifically(chemical: any, property: string, reactiveGenerally: boolean): boolean | undefined {
-        if (reactiveGenerally) return true;
-        if (chemical?.[$isChemicalBase$]) return undefined;
-        const map = this.reactiveDecorators.get(chemical);
-        return !map ?
-            this.reactiveSpecifically(Object.getPrototypeOf(chemical), property, reactiveGenerally) :
-            map.has(property);
     }
     static isReactive(property: string): boolean {
         if (property === "constructor") return false;
@@ -57,22 +62,16 @@ export class $Reflection {
 
 export function inert() {
     return function (prototype: any, property: string) {
-        let properties = $Reflection.inertDecorators.get(prototype)!;
-        if (!properties) {
-            properties = new Set();
-            $Reflection.inertDecorators.set(prototype, properties);
-        }
+        let properties = inertDecorators.get(prototype);
+        if (!properties) inertDecorators.set(prototype, properties = new Set());
         properties.add(property);
     };
 }
 
 export function reactive() {
     return function (prototype: any, property: string) {
-        let properties = $Reflection.reactiveDecorators.get(prototype)!;
-        if (!properties) {
-            properties = new Set();
-            $Reflection.reactiveDecorators.set(prototype, properties);
-        }
+        let properties = reactiveDecorators.get(prototype);
+        if (!properties) reactiveDecorators.set(prototype, properties = new Set());
         properties.add(property);
     };
 }

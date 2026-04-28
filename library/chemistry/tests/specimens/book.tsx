@@ -18,14 +18,14 @@ export class $Book extends $Chemical {
         this.chapters = chapters.map(c => $check(c, $Chapter));
     }
     view() {
-        const Cover = this.cover.$Component;
-        const TableOfContents = this.toc.$Component;
+        const Cover = this.cover.Component;
+        const TableOfContents = this.toc.Component;
         return (
             <article className="book">
                 <Cover />
                 <TableOfContents />
                 <$>
-                    {this.chapters.map(chapter => <chapter.$Component />)}
+                    {this.chapters.map(chapter => <chapter.Component />)}
                 </$>
                 <footer className="book-footer">
                     {this.chapters.length} chapters, {this.pageCount} pages

@@ -121,10 +121,10 @@ export class $Recipe extends $Chemical {
                 </Header>
                 {this.expanded && <>
                     <Ingredients>
-                        <$>{this.ingredients.map(ingredient => <ingredient.$Component />)}</$>
+                        <$>{this.ingredients.map(ingredient => <ingredient.Component />)}</$>
                     </Ingredients>
                     <Steps>
-                        <$>{this.steps.map(step => <step.$Component />)}</$>
+                        <$>{this.steps.map(step => <step.Component />)}</$>
                     </Steps>
                 </>}
             </Card>
@@ -191,7 +191,7 @@ export class $Cookbook extends $Chemical {
                     {this.$author && <h2>{this.$author}</h2>}
                     <p>{this.recipeCount} recipes · {this.totalPrepTime} minutes total</p>
                 </CookbookHeader>
-                <$>{this.recipes.map(recipe => <recipe.$Component />)}</$>
+                <$>{this.recipes.map(recipe => <recipe.Component />)}</$>
             </div>
         );
     }

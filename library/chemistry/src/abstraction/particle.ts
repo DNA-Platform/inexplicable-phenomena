@@ -1,8 +1,9 @@
 import React, { ReactNode, useState, useEffect, useLayoutEffect } from 'react';
 import {
-    $cid$, $symbol$, $type$, $prototype$, $particular$, $children$, $apply$, $bond$,
+    $cid$, $symbol$, $type$, $prototype$, $children$, $apply$, $bond$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $reaction$, $derivatives$, $destroyed$, $molecule$, $construction$,
+    $particleMarker$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$
 } from "../implementation/symbols";
 import type { $Component, $Props, $Phase } from "../implementation/types";
@@ -12,12 +13,18 @@ import { $Reaction } from "./reaction";
 
 export const $phaseOrder: $Phase[] = ['setup', 'mount', 'render', 'layout', 'effect', 'unmount'];
 
+// isParticle — checks the prototype-chain marker stamped on $Particle.prototype.
+// Particularized carriers have the marker stamped as an own property because
+// their prototype chain is severed to the original (non-particle) object.
+export function isParticle(x: any): boolean {
+    return x != null && typeof x === 'object' && x[$particleMarker$] === true;
+}
+
 export class $Particle {
     [$cid$]: number;
     [$type$]: typeof this;
     [$symbol$]: string;
     [$children$]: ReactNode;
-    [$particular$] = false;
     [$phase$]: $Phase = 'setup';
     [$phases$]: Map<$Phase, (() => void)[]>;
     [$update$]?: () => void;
@@ -36,17 +43,38 @@ export class $Particle {
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
     constructor(particular?: object) {
-        let $this: any = this;
+        // Particularizing an existing particle is a no-op: return it as-is.
+        // (JS uses an object returned from a constructor in place of `this`.)
+        if (particular !== undefined && isParticle(particular)) {
+            return particular as any;
+        }
+
         this[$cid$] = $Particle[$$getNextCid$$]();
         this[$type$] = this.constructor as any;
         this[$symbol$] = $Particle[$$createSymbol$$](this);
         this[$phases$] = new Map($phaseOrder.map(p => [p, []]));
-        if (particular && !(particular instanceof $Particle)) {
-            Object.setPrototypeOf(particular, this);
-            this[$particular$] = true;
-            $this = particular;
+
+        if (particular === undefined) return;
+
+        // Particularization: lift everything from the prototype chain (up to
+        // but not including Object.prototype) onto `this` as own properties,
+        // then sever the chain by setting `particular` as the prototype. This
+        // leaves the carrier with a complete particle surface (methods,
+        // accessors, marker) while making the original object reachable via
+        // the prototype chain — so `instanceof` checks against the original
+        // type still pass and own data on `particular` is readable.
+        let proto = Object.getPrototypeOf(this);
+        while (proto && proto !== Object.prototype) {
+            for (const key of Reflect.ownKeys(proto)) {
+                if (key === 'constructor') continue;
+                if (Object.prototype.hasOwnProperty.call(this, key)) continue;
+                const desc = Object.getOwnPropertyDescriptor(proto, key);
+                if (desc) Object.defineProperty(this, key, desc);
+            }
+            proto = Object.getPrototypeOf(proto);
         }
-        return $this;
+        (this as any)[$particleMarker$] = true;
+        Object.setPrototypeOf(this, particular);
     }
 
     view(): ReactNode {
@@ -123,6 +151,12 @@ export class $Particle {
 
     static #symbolPattern = /\[(\d+)\]$/;
 }
+
+// Stamp the marker on $Particle.prototype so every naturally-constructed
+// particle (and subclass instance) inherits it. Particularized carriers have
+// the marker copied as an own property when their prototype chain is severed.
+($Particle.prototype as any)[$particleMarker$] = true;
+
 
 // ===========================================================================
 // Render filters — cross-cutting interception of view rendering.
@@ -253,4 +287,3 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any): $Com
     return Component as any;
 }
 
-export const Particle = new $Particle();
