@@ -1,0 +1,17 @@
+import puppeteer from 'puppeteer';
+const browser = await puppeteer.launch({ headless: 'new' });
+const page = await browser.newPage();
+await page.setViewport({ width: 1440, height: 900 });
+const errors = [];
+page.on('pageerror', e => errors.push('pageerror: ' + e.message));
+page.on('console', msg => { if (msg.type() === 'error') errors.push('console.error: ' + msg.text()); });
+await page.goto('http://127.0.0.1:5173/', { waitUntil: 'networkidle2', timeout: 15000 });
+await new Promise(r => setTimeout(r, 1500));
+const html = await page.content();
+console.log('errors:', errors);
+console.log('---HTML head 800---');
+console.log(html.substring(0, 800));
+console.log('---root content head 600---');
+const rootContent = await page.evaluate(() => document.getElementById('root')?.innerHTML.substring(0, 600));
+console.log(rootContent);
+await browser.close();

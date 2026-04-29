@@ -41,6 +41,13 @@
       "roles": ["qa-engineer"],
       "paths": ["library/chemistry/tests/**", "library/chemistry/bench/**", "library/chemistry/app/**"],
       "status": "active"
+    },
+    {
+      "name": "gabby",
+      "roles": ["graphic-designer", "frontend-engineer"],
+      "paths": ["library/chemistry/app/**", ".claude/team/perspective/gabby/**"],
+      "status": "active",
+      "hired": "2026-04-30"
     }
   ]
 }

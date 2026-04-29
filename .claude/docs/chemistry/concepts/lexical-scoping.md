@@ -2,6 +2,7 @@
 kind: concept
 title: Lexical scoping
 status: stable
+catalogue-home: VI
 related:
   - derivatives-and-fan-out
   - reactive-bonds
@@ -10,6 +11,13 @@ related:
 ---
 
 # Lexical scoping
+
+> **Catalogue home:** the normative treatment of this concept now lives in [§ VI Lexical Scoping][s-VI] — see [§ VI.1 Per-mount derivatives][s-VI-1], [§ VI.2 The `$derivatives$` registry][s-VI-2], and [§ VI.3 The ownership gate][s-VI-3]. This page is preserved as the long-form companion.
+
+[s-VI]: ../sections/VI-lexical-scoping/
+[s-VI-1]: ../sections/VI-lexical-scoping/01-per-mount-derivatives.md
+[s-VI-2]: ../sections/VI-lexical-scoping/02-derivatives-registry.md
+[s-VI-3]: ../sections/VI-lexical-scoping/03-ownership-gate.md
 
 The model that makes multi-site rendering of a single chemical correct. Mounting one instance at two JSX sites produces two **derivatives** — fresh `Object.create(parent)` instances with their own backing, identity, and lifecycle — that share state via the prototype chain.
 

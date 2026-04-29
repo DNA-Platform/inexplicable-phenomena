@@ -1,15 +1,22 @@
 # Project documentation
 
-The wiki. Every durable piece of knowledge about this project lives under `.claude/docs/` as a small, cross-linked Markdown file.
+This is the **`$Chemistry` Reference Catalogue**. Start at [§ 0.1 — What `$Chemistry` is][s-0-1] for the framing, or jump to any section directly. The catalogue is the framework's source of truth.
 
-**If you don't know where to look, start with the [catalogue].** It groups every page by subject, kind, status, and audience — curated, not auto-generated. The rest of this index is a flat directory for when you already know what you want.
+The wiki itself lives under `.claude/docs/`. Every durable piece of knowledge about the project is a small, cross-linked Markdown file. Beyond the catalogue, there are alternate-view axes (ontology, epistemology, topical) and project-infrastructure docs.
+
+**Catalogue navigation:** [`catalogue.md`][catalogue] — the full Roman-numeral hierarchy (§ 0 through § XVI). Section pages live at [`chemistry/sections/`][sections].
+
+**Voice:** the catalogue is *normative*, not tutorial. Read it the way you would read the C++ standard or the Vue API reference.
 
 ## How this is organized
+
+The **catalogue** is the primary structure. Each numbered section (`§ III.3`) gets its own page under `chemistry/sections/` with a fixed shape: Definition / Rules / Cases / See also. The voice is normative.
 
 Pages have a **kind**, declared in YAML frontmatter:
 
 | Kind | Purpose | Template |
 |---|---|---|
+| `catalogue-section` | A numbered entry in the catalogue. **Primary kind.** | (use the existing sections as templates) |
 | `feature` | What a piece of the system does and how to use it | [_template-feature] |
 | `caveat` | A pitfall, gotcha, or hard-won lesson | [_template-caveat] |
 | `concept` | An idea or model the system is built on | (use feature template, set kind: concept) |
@@ -17,18 +24,30 @@ Pages have a **kind**, declared in YAML frontmatter:
 
 Each file is small. If it's growing past a few screens, split it. If two pages keep linking to each other, look for a third concept they're both expressing — and write *that* page.
 
-See the [readme] for full conventions, or the [SP-2 survey] for the reasoning behind the model.
+See the [readme] for full conventions, or the [SP-2 survey] for the reasoning behind the older alternate-view model.
 
 ## Index
 
-### Chemistry framework
+### Chemistry framework — the catalogue
 
-The framework that lives in `library/chemistry/`. Internal organization is layer-based; the docs entry points are:
+The framework lives in `library/chemistry/`. The catalogue is the reference manual.
 
-- [chemistry overview] — what `$Chemistry` is, why it exists, the layered architecture
+- **[`$Chemistry` Reference Catalogue][catalogue]** — the Roman-numeral index, § 0 through § XVI.
+- **[Sections][sections]** — the directory of full pages.
+- **Most-cited sections** for orientation:
+  - [§ 0.1 What `$Chemistry` is][s-0-1] — the framing.
+  - [§ I.2 The `$` membrane][s-I-2] — the grammar of `$`.
+  - [§ II.1 `$Particle` — the class][s-II-1] — the base class.
+  - [§ III.3 The binding constructor][s-III-3] — the surprising feature.
+  - [§ XVI Why `$Chemistry`][s-XVI] — the capstone.
+
+### Long-form companions
+
+- [chemistry overview] — what `$Chemistry` is, why it exists, the layered architecture (long-form)
 - [chemistry glossary] — every term, organized by layer
 - [chemistry file map] — every source file, what depends on what
 - [coding conventions], [reactivity contract], [performance contract]
+- [`$Particle` book][book-particle] — long-form reading complementary to § II.
 
 #### Features (per concept)
 
@@ -78,6 +97,13 @@ If you can't find what you're looking for, the page hasn't been written. Add it.
 
 <!-- citations -->
 [catalogue]: ./catalogue.md
+[sections]: ./chemistry/sections/index.md
+[s-0-1]: ./chemistry/sections/00-front-matter/01-what-chemistry-is.md
+[s-I-2]: ./chemistry/sections/I-foundation/02-the-dollar-membrane.md
+[s-II-1]: ./chemistry/sections/II-primitives/01-the-class.md
+[s-III-3]: ./chemistry/sections/III-composition/03-binding-constructor.md
+[s-XVI]: ./chemistry/sections/XVI-why-chemistry/index.md
+[book-particle]: ./chemistry/books/particle/index.md
 [readme]: ./readme.md
 [SP-2 survey]: ../project/sprint-24/spikes/doc-systems-survey.md
 [SP-22 plan]: ../project/sprint-22/plan.md

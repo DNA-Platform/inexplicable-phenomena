@@ -2,7 +2,19 @@
 
 Read this file first when resuming work. It tells you where we are.
 
-## Current sprint: sprint-27 (Crystallization — particle/chemical alignment + library books) — IN PROGRESS
+## Current sprint: sprint-30 (First Functional Sprint — Real Cases) — IN PROGRESS
+
+**Plan:** [sprint-30 plan] — pilot section § II.5 (particularization). Four real Cases as running chemicals. `?raw` source-loading pipeline + Code Panel rendering. Per-section data modules. Library prose imported as the single source of truth. Coverage matrix linking each Case to its unit test. Visual polish from Gabby (newly hired graphic designer + frontend engineer). styled-components migration progresses through `$Status` → `$Callout` → `$Header`/`$Sidebar`/`$Case` per Phillip's order. **Hard constraint: each Case exercises the framework feature it documents — the Lab is its own in-vivo test.**
+
+## Previous sprint: sprint-29 (The Apparatus — bootstrap the Lab) — IN PROGRESS (substantively complete; closes alongside sprint-30 kickoff)
+
+**Plan:** [sprint-29 plan] — bootstrap `$Chemistry Lab` end-to-end. **Built front-to-back with `$Chemistry`** (eat-our-own-dogfood). Class hierarchies: `$Lab → $Layout → $ThreePaneLayout`, `$Test → $Case → $PlannedCase`, `$Status → $Planned/$Pending/$Pass/$Fail/$Broken`, `$Callout` family, `$Sidebar/$SidebarGroup/$SidebarSection`, custom `$Router`. Visual language: restrained palette (`--ink, --paper, --rule, --accent`), serif body / mono code / sans sidebar, status pills with unambiguous color coding. Routes hash-based. All ~80 catalogue subsections navigable; each section is a placeholder with planned Case names. Premium code + premium visuals are deliverables, not byproducts. **Hard constraints:** testing application not tutorial; no raw React function components in content; placeholder Cases must support eventual interactive manual-confirmation tests with clear pass/fail/broken UI.
+
+## Previous sprint: sprint-28 (The Anatomy — design + catalogue + multi-sprint program) — COMPLETE
+
+**Plan:** [sprint-28 plan] — design-heavy sprint that produces three artifacts and zero shipped code: (1) a multi-sprint program covering sprints 29-36 that will deliver `$Chemistry Lab` end-to-end; (2) a comprehensive 26-stop tour curriculum (Welcome → Hello-particle → Bond ctor → Validation errors → Composition → Polymorphism → Lifecycle → Async ctors → Render filters → Two-cookbook independence → Cross-chemical writes → Particularization → `$()` three forms → Catalyst graph → Decorators → Templates/atoms → Error gallery → Collection mutation → Deep mutation → Component getter two paths → Synthesis → Reflection → `$promise`/`$await` → Test cross-link → Caveats → Open questions); (3) a site architecture for the Lab — three-pane layout, color/shape visual language for "framework behaving as expected vs not", source loading via Vite `?raw`, custom `$Router` (eat-our-own-dogfood), URL deep-linking. Constraint: the Lab is built front-to-back with `$Chemistry` itself. Web research surveyed: react.dev, vuejs.org, solidjs.com.
+
+## Previous sprint: sprint-27 (Crystallization — particle/chemical alignment + library books) — PARTIAL (carry-forward to library reorg in sprint-28 prep)
 
 **Plan:** [sprint-27 plan] — two coupled motions. **Motion 1 (Cathy + Arthur):** realign `$Particle` and `$Chemical` — reactivity moves to `$Particle`, composition stays on `$Chemical`. Eliminate dynamic binding (the bond-ctor-by-class-name lookup is the canonical example). **Motion 2 (Cathy + Libby):** code becomes sparse — block comments migrate into per-class **books** under `docs/chemistry/books/{class}/` with chapters as separate files. Library structure mirrors source where it helps readers. Code → library pointers replace migrated comments. Sprint-26 deferred work (Distillation lenses) continues in parallel as discovered.
 
@@ -95,7 +107,10 @@ Read this file first when resuming work. It tells you where we are.
 | sprint-24 | [Instance-Owned Bond Accessors + Docs Organization][sprint-24 plan] | Complete — Track A refactor cancelled (SP-1 found it already done); 2 real bugs fixed (scope.finalize fan-out, single-letter prop reactivity); Track B docs system live with 13 pages + 3 caveats; 428 tests / 0 todos |
 | sprint-25 | [Resonance][sprint-25 plan] | Complete — methodology validated, 14 renames landed, 428 tests green; deferred work absorbed into sprint-26 |
 | sprint-26 | [Distillation][sprint-26 plan] | Partial — methodology validated, 6 fixes landed (3 dead-code deletions, $Bond cluster cleanup, `_reactivate` refactor, AUDIT comments); catalogue + see-also footers built; 428 tests green; remaining audit lenses carry forward to sprint-27 as discovered |
-| sprint-27 | [Crystallization][sprint-27 plan] | In progress — particle/chemical realignment + library books |
+| sprint-27 | [Crystallization][sprint-27 plan] | Partial — particle/chemical alignment landed (A-1, A-2, A-3 done); library reorg + comment migration deferred; Libby's ontology spine landed in sprint-28 prep |
+| sprint-28 | [The Anatomy][sprint-28 plan] | Complete — catalogue spec landed (16 sections, normative voice), multi-sprint program for sprints 29-36, site architecture; library reorganized as catalogue backbone |
+| sprint-29 | [The Apparatus][sprint-29 plan] | Substantively complete — Lab bootstrap, ~80 navigable sections, periodic-element card chip, two-color theme system (theme=turquoise / brand=neon-green), styled-components ThemeProvider mounted, Phillip + Libby spike docs landed |
+| sprint-30 | [First Functional Sprint][sprint-30 plan] | In progress — pilot § II.5 with 4 real Cases; Gabby joins team; styled-components migration scales |
 
 ## Next considerations
 
@@ -163,6 +178,9 @@ See the [agent registry] for path patterns. Use `/responsible` to query ownershi
 [sprint-25 retro]: sprint-25/reviews/retro.md
 [sprint-26 plan]: sprint-26/plan.md
 [sprint-27 plan]: sprint-27/plan.md
+[sprint-28 plan]: sprint-28/plan.md
+[sprint-29 plan]: sprint-29/plan.md
+[sprint-30 plan]: sprint-30/plan.md
 [roles]: ../team/roles/
 [abilities]: ../team/abilities/
 [Architect]: ../team/roles/architect.md

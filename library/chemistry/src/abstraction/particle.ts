@@ -23,12 +23,12 @@ export function isParticle(x: any): boolean {
 }
 
 export class $Particle {
-    [$cid$]: number;
-    [$type$]: typeof this;
-    [$symbol$]: string;
+    [$cid$]!: number;
+    [$type$]!: typeof this;
+    [$symbol$]!: string;
     [$children$]: ReactNode;
     [$phase$]: $Phase = 'setup';
-    [$phases$]: Map<$Phase, (() => void)[]>;
+    [$phases$]!: Map<$Phase, (() => void)[]>;
     [$update$]?: () => void;
     [$viewCache$]?: ReactNode;
     [$rendering$] = false;

@@ -1,17 +1,28 @@
 # `.claude/docs/` — conventions
 
-This directory is the project's wiki. The model was chosen in [SP-2][sp-2-survey] (sprint-24): **Diátaxis-shaped taxonomy, mdBook-style filesystem, caveats as first-class linkable files.**
+This directory is the project's wiki. **The primary structure is the [`$Chemistry` Reference Catalogue][catalogue]** — a Roman-numeral hierarchy modeled on Vue's API Reference (granular, hierarchical, semantic grouping) with Rust Reference's normative voice. The catalogue is the framework's source of truth.
+
+The full pages of the catalogue live under `chemistry/sections/`, one file per section, organized by Roman-numeral directory (`00-front-matter/`, `I-foundation/`, `II-primitives/`, …, `XVI-why-chemistry/`). Each page follows a fixed shape: **Definition / Rules / Cases / See also**, with optional Notes. The voice is normative-reference, not tutorial.
+
+The older taxonomies (ontology / epistemology / topical / features / concepts / caveats) remain as **alternate views**. They exist to support cross-axis lookup but are no longer the primary navigation.
 
 ## Page kinds
 
 Every page is one of these. Mixing kinds in a single file is forbidden — split the file instead.
 
-- **`feature`** — what a piece of the system does and how to use it. Reference + brief explanation.
+- **`catalogue-section`** — a numbered entry in the `$Chemistry` Reference Catalogue. Lives under `chemistry/sections/`. Definition / Rules / Cases / See also. **Normative voice.**
+- **`feature`** — what a piece of the system does and how to use it. Reference + brief explanation. (Most existing feature pages are now alternate-view companions to a catalogue section.)
 - **`caveat`** — a pitfall, a gotcha, or a hard-won lesson. Linkable, durable, named. Has a URL because it gets cited.
 - **`concept`** — an idea or model the system is built on. Pure explanation; no API surface required.
 - **`guide`** — a how-to for a specific task. Step-by-step.
 
 Tutorials (Diátaxis sense — "learn by following along") are deferred until there's an external audience.
+
+## Catalogue voice
+
+A catalogue-section page is **normative**, not tutorial. *"`$Particle` instances carry `$cid$`, `$symbol$`, `$type$`."* Not *"You'll learn about `$cid$` next."* Imagine writing for the C++ standard or the Vue API reference.
+
+Cross-link sections in prose by their number: `§ III.3`, `§ VI.1`. Use reference-link form for the actual URL in the citations block.
 
 ## Frontmatter
 
@@ -89,6 +100,7 @@ Previewer behavior (verified in [SP-2][sp-2-source-links], sprint-26):
 .claude/docs/
   index.md                 wiki entry — read this first
   readme.md                this file — conventions
+  catalogue.md             the $Chemistry Reference Catalogue (the primary index)
   _template-feature.md     copy this for new features / concepts / guides
   _template-caveat.md      copy this for new caveats
   _backlog-l2.md           outline of sprint-history docs to be written
@@ -96,16 +108,72 @@ Previewer behavior (verified in [SP-2][sp-2-source-links], sprint-26):
 
   chemistry/               framework docs
     overview.md, glossary.md, file-map.md, ...
-    features/              one feature page per concept (L-3)
-    caveats/               one caveat page per pitfall (L-3)
-    concepts/              one concept page per deep idea (L-3)
+
+    sections/              THE CATALOGUE — primary structure
+      00-front-matter/      § 0 — what, conventions, dual constructor
+      I-foundation/         § I — symbols, $ membrane, types
+      II-primitives/        § II — $Particle and its surface
+      III-composition/      § III — $Chemical, binding constructor
+      IV-integration/       § IV — $Atom
+      V-reactivity/         § V — reactive properties, scope, diffuse
+      VI-lexical-scoping/   § VI — derivatives, registry, ownership gate
+      VII-particularization/ § VII — pattern, instanceof, I<T>
+      VIII-synthesis/       § VIII — synthesis, reactants, parsing
+      IX-reflection/        § IX — $Reflection, isReactive, isSpecial
+      X-lifecycle-internals/ § X — phase queue, resolve, render loop
+      XI-cross-cutting/     § XI — promise, await, symbolize
+      XII-errors/           § XII — check, validation, error gallery
+      XIII-caveats/         § XIII — resolved historical bugs
+      XIV-provisional/      § XIV — observed-but-not-confirmed behaviors
+      XV-implementation/    § XV — module-by-module orient
+      XVI-why-chemistry/    § XVI — capstone
+
+    ontology/              ALTERNATE VIEW: what $Chemistry IS
+      entities/             $Particle, $Chemical, $Atom, $Bond, ...
+      relationships/        the structural connections
+      concepts/             abstractions the entities instantiate
+      surprising/           corners that demand explicit teaching
+
+    epistemology/          ALTERNATE VIEW: how we KNOW it works
+      the-lab.md            the $Chemistry Lab
+      the-test-suite.md     the regression harness
+      caveats/              negative epistemology
+      open-questions/       unresolved uncertainties
+
+    topical/               ALTERNATE VIEW: a narrative arc
+      01-hello-particle.md … 10-the-catalyst-graph.md
+      advanced/
+
+    features/, concepts/, caveats/, patterns/
+                            ALTERNATE VIEW: per-page references
+                            Now: secondary; new content lands in sections/
+    books/                 per-class deep-dive directories
+                            $Particle book is a *complementary* long-form reading
 
   history/                 durable narratives from sprint folders (L-2)
 
   init.md, voice.md, ...   project infrastructure docs
 ```
 
-The split between **chemistry/features**, **chemistry/caveats**, and **chemistry/concepts** is the *only* hard subdivision under `chemistry/`. Existing flat files (`overview.md`, `glossary.md`, etc.) stay where they are — they predate this skeleton and serve as the entry-tier docs above the per-concept files.
+### The catalogue as primary structure
+
+The `$Chemistry` Reference Catalogue at `catalogue.md` indexes every section. Each section page lives at `chemistry/sections/{roman}-{name}/{NN}-{slug}.md`.
+
+A new entry on a framework concept lands in the catalogue first. If the concept also benefits from an alternate-view treatment (a tutorial-shaped narrative, a long-form per-class book), that companion lives under `topical/`, `ontology/`, `books/`, etc., and cross-links back to the catalogue section.
+
+### The three alternate-view axes
+
+The older organization remains useful for cross-axis lookup:
+
+- **[ontology][ontology-axis]** — what `$Chemistry` *is*. Static, flat, indexed.
+- **[epistemology][epistemology-axis]** — how we *know* it works.
+- **[topical][topical-axis]** — a narrative arc.
+
+Existing flat files (`overview.md`, `glossary.md`, `file-map.md`) stay where they are; they serve as long-form companions above the catalogue.
+
+### Migrating existing content
+
+Existing feature / concept / caveat pages that map cleanly to a catalogue section will, over the prose-writing sprints, gradually be folded into their catalogue homes. The originals remain as redirects with a single line pointing at the new home. The `$Particle` book (`chemistry/books/particle/`) stays as a *complementary* long-form reading; it is not the catalogue.
 
 ## How feature and caveat pages relate
 
@@ -128,6 +196,10 @@ When a feature changes (e.g., reactive bonds move from prototype to instance per
 - Not exhaustive auto-generated reference. Hand-written, hand-curated, hand-organized.
 
 <!-- citations -->
+[catalogue]: ./catalogue.md
 [sp-2-survey]: ../project/sprint-24/spikes/doc-systems-survey.md
 [sp-2-source-links]: ../project/sprint-26/spikes/wiki-source-links.md
 [sprint-24 plan]: ../project/sprint-24/plan.md
+[ontology-axis]: ./chemistry/ontology/index.md
+[epistemology-axis]: ./chemistry/epistemology/index.md
+[topical-axis]: ./chemistry/topical/index.md

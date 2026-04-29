@@ -6,6 +6,10 @@ status: evolving
 
 # `$Particle` — book
 
+> **Note:** this book is a *complementary* long-form reading to the [`$Chemistry` Reference Catalogue][catalogue]. The catalogue's § II is the normative reference for `$Particle`; this book is the narrative companion. Each chapter cross-links to the relevant catalogue section.
+>
+> [catalogue]: ../../../catalogue.md
+
 The `$Particle` book is a deep-dive on the leaf-with-reactivity base class. It covers what every renderable in chemistry inherits before the composition layer arrives: identity (printable, template, reactive-carrier), the construction sequence, the awaitable lifecycle, prototype-mixin particularization, per-mount-site derivation via `$lift`, the cross-cutting render-filter chain, the `view()` boundary, and the `Component` getter that JSX consumers actually touch. The corresponding source lives in [`particle.ts`][particle-src]; this book is the narrative that source no longer carries inline.
 
 Sprint-27 (Crystallization) widened the book's scope. The reactive machinery — `$Molecule`, `$Reaction`, the `Component` getter, the template-tracking slots (`$$template$$`, `$isTemplate$`, `$derived$`) — used to live one layer up in `$Chemical`. As of sprint-27 they all sit on `$Particle`, which means *every* particle is a fully-reactive carrier in its own right; `$Chemical` adds composition (children, synthesis, catalyst graph) on top of an already-reactive base. Several chapters here now cover surfaces that the chemical book used to own.

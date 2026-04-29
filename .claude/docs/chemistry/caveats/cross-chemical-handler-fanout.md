@@ -2,12 +2,18 @@
 kind: caveat
 title: Cross-chemical writes inside event handlers must fan out to derivatives
 status: stable
+catalogue-home: XIII.1
 related:
   - reactive-bonds
   - derivatives-and-fan-out
 ---
 
 # Cross-chemical writes inside event handlers must fan out to derivatives
+
+> **Catalogue home:** [§ XIII.1 Cross-chemical handler fan-out][s-XIII-1]. See also [§ V.3 Cross-chemical writes][s-V-3]. This page is preserved as the long-form companion.
+
+[s-XIII-1]: ../sections/XIII-caveats/01-cross-chemical-fanout.md
+[s-V-3]: ../sections/V-reactivity/03-cross-chemical-writes.md
 
 Writing a held instance's reactive prop from inside *another* chemical's wrapped event handler used to land the value but skip the repaint. The fix: the scope finalizer now fans out to derivatives the way the no-scope path always did.
 

@@ -26,6 +26,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
+    "dev": "vite app",
     "typecheck": "tsc --noEmit",
     "test": "tsc --noEmit && vitest run",
     "test:fast": "vitest run",
