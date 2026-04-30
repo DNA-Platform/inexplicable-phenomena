@@ -1,6 +1,5 @@
 import React from 'react';
-import { $Chemical, $check } from '@/abstraction/chemical';
-import { $ } from '@/abstraction/chemical';
+import { $, $Chemical, $check } from '@/abstraction/chemical';
 import { $Cover } from './cover';
 import { $TableOfContents } from './table-of-contents';
 import { $Chapter } from './chapter';
@@ -18,14 +17,17 @@ export class $Book extends $Chemical {
         this.chapters = chapters.map(c => $check(c, $Chapter));
     }
     view() {
-        const Cover = this.cover.Component;
-        const TableOfContents = this.toc.Component;
+        const Cover = $(this.cover);
+        const TableOfContents = $(this.toc);
         return (
             <article className="book">
                 <Cover />
                 <TableOfContents />
                 <$>
-                    {this.chapters.map(chapter => <chapter.Component />)}
+                    {this.chapters.map(chapter => {
+                        const Chapter = $(chapter);
+                        return <Chapter key={String((chapter as any).$cid$ ?? chapter)} />;
+                    })}
                 </$>
                 <footer className="book-footer">
                     {this.chapters.length} chapters, {this.pageCount} pages
@@ -35,4 +37,4 @@ export class $Book extends $Chemical {
     }
 }
 
-export const Book = new $Book().Component;
+export const Book = $($Book);

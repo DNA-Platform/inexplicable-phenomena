@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 class $Element extends $Chemical {
     number = 0;
@@ -27,7 +27,7 @@ class $Oxygen extends $Element {
 
 describe('Smoke: $Chemistry renders through React', () => {
     it('renders hydrogen', () => {
-        const Hydrogen = new $Hydrogen().Component;
+        const Hydrogen = $($Hydrogen);
         const { container } = render(<Hydrogen />);
         const span = container.querySelector('span');
         expect(span).not.toBeNull();
@@ -36,7 +36,7 @@ describe('Smoke: $Chemistry renders through React', () => {
     });
 
     it('renders oxygen', () => {
-        const Oxygen = new $Oxygen().Component;
+        const Oxygen = $($Oxygen);
         const { container } = render(<Oxygen />);
         const span = container.querySelector('span');
         expect(span).not.toBeNull();

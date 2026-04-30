@@ -34,13 +34,13 @@ On a component class, `$highlighted = false` is extrinsic — it flows in from t
 The framework has three audiences, and the `$` density changes at each layer:
 
 1. **Component consumers** — write JSX. `<Counter />`, `<Book title="..." />`. They never see a `$`. The membrane is invisible.
-2. **Component authors** — subclass `$Chemical`, declare `$props` with `$` prefixes, write `view()` methods. They see the `$` but it's a simple grammar: "put `$` on your props, write your view, export `.Component`."
+2. **Component authors** — subclass `$Chemical`, declare `$props` with `$` prefixes, write `view()` methods. They see the `$` but it's a simple grammar: "put `$` on your props, write your view, export `$($YourClass)`."
 3. **Framework developers** — work inside `$Particle`, `$ObjectiveRep`, `$Catalogue`. The `$` density is high, the patterns are strange, and the code is a piece of art. If this doesn't stretch your mind, you're not reading carefully enough.
 
 ### The grammar
 
 - **`$Name`** (capital after `$`): a representation type. `$Particle`, `$Chemical`, `$Catalogue`. These are the machinery behind the glass.
-- **`$name`** (lowercase after `$`): a representation of a prop. `$title` on a chemical becomes `title` on the component. The `$` appears in the class definition and vanishes at the `.Component` boundary.
+- **`$name`** (lowercase after `$`): a representation of a prop. `$title` on a chemical becomes `title` on the component. The `$` appears in the class definition and vanishes at the `$()` boundary.
 - **`$name$`** (trailing `$`): a Symbol key, defined in [symbols.ts][symbols]. Unforgeable identity tokens for internal slots — `$cid$`, `$type$`, `$template$`, `$bond$`. The double-dollar variants (`$$name$$`) mark static/class-level symbols.
 - **`$x$`** (used as a local variable): a compilation artifact. When you need `const y = x as any`, the convention is `$x$` — it names the relationship ("I am the representation of x, for TypeScript's benefit") and the trailing `$` marks it as internal mechanism.
 - **No `$` prefix**: the real thing. The component. The prop. What the consumer touches.

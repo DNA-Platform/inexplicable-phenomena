@@ -1,12 +1,8 @@
 import styled from 'styled-components';
 
-// SectionCard — periodic-element-style square. Sized as a chip, not a hero.
-// Inverted from v1: the TITLE is the symbol-equivalent (big, center); the
-// section ID is the atomic-number-style decorative corner. Group context
-// reads below the title like an element name.
-//
-// Card sized 168×168 — ptable's proportion at column scale. Floats top-left;
-// section prose flows alongside it on wider screens.
+// SectionCard — periodic-element-style square. The center is now a glyph
+// (like an element symbol: H, He, $, T) rather than the section title.
+// The full title sits below the symbol like an element's name.
 
 export const SectionCard = styled.div`
     width: 132px;
@@ -31,8 +27,7 @@ export const SectionCard = styled.div`
     }
 `;
 
-// Top row — atomic-number-style decoration. Section ID top-left, mono, small.
-// Roman numeral top-right as a counter-balance.
+// Top row — section ID top-left, Roman group top-right.
 export const TopRow = styled.div`
     display: flex;
     justify-content: space-between;
@@ -41,7 +36,6 @@ export const TopRow = styled.div`
     font-size: 10px;
     font-weight: 700;
     color: ${(p) => p.theme.color.themeText};
-    letter-spacing: 0;
     line-height: 1;
     font-variant-numeric: tabular-nums;
 `;
@@ -55,68 +49,36 @@ export const RomanCorner = styled.span`
     font-weight: 600;
 `;
 
-// Center — title is the SYMBOL position. Large, bold, dominant.
+// Center — the glyph position. Single bold character, dominant.
 export const Center = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
     overflow: hidden;
 `;
 
-type Tier = 'XL' | 'L' | 'M' | 'S';
-
-const tierFor = (length: number): Tier =>
-    length <= 8  ? 'XL' :
-    length <= 16 ? 'L'  :
-    length <= 24 ? 'M'  :
-    'S';
-
-const tierSizes: Record<Tier, string> = {
-    XL: '20px',
-    L:  '15px',
-    M:  '12px',
-    S:  '11px',
-};
-
-const bumpTierDown = (t: Tier): Tier =>
-    t === 'XL' ? 'L' : t === 'L' ? 'M' : 'S';
-
-export const titleTier = (title: string, mono: boolean): Tier => {
-    const baseTier = tierFor(title.length);
-    return mono ? bumpTierDown(baseTier) : baseTier;
-};
-
-// Title — center symbol position. Auto-tier sizing keyed on title length.
-// Renders as h1 so the section's title is the page's primary heading; the
-// card carries the semantic h1 even though it visually reads as a chip.
-export const Title = styled.h1<{ $mono?: boolean; $tier: Tier }>`
-    margin: 0;
-    font-family: ${(p) => p.$mono ? p.theme.font.mono : p.theme.font.sans};
-    font-size: ${(p) => tierSizes[p.$tier]};
-    font-weight: ${(p) => p.$mono ? 500 : 800};
+// Symbol — periodic-table-style glyph: 1–3 chars, big, centered.
+// Auto-shrinks slightly for two-char glyphs (e.g. He, Au, Pa) so they
+// still feel like a unit and don't crowd the card.
+export const Symbol = styled.span<{ $len: number }>`
+    font-family: ${(p) => p.theme.font.sans};
+    font-weight: 800;
+    font-size: ${(p) =>
+        p.$len === 1 ? '52px' :
+        p.$len === 2 ? '40px' :
+        '28px'};
     color: ${(p) => p.theme.color.ink};
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    width: 100%;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    word-break: break-word;
-    hyphens: none;
-    text-wrap: balance;
+    line-height: 1;
+    letter-spacing: -0.03em;
 `;
 
-// Bottom row — group context below the title. Like the element name on a
-// real card; reads as the title's contextual placement. Tracking is tight
-// to fit longer group names like "COMPOSITION — $CHEMICAL" without ellipsis.
+// Bottom row — section title under the symbol, like the element's name.
 export const BottomRow = styled.div`
     font-family: ${(p) => p.theme.font.sans};
     font-size: 8px;
     font-weight: 700;
     color: ${(p) => p.theme.color.themeText};
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     text-align: center;
     line-height: 1.2;
@@ -125,13 +87,7 @@ export const BottomRow = styled.div`
     white-space: nowrap;
 `;
 
-// Heuristic: does this title look like code (mono treatment)?
-export const isMonoTitle = (title: string): boolean => {
-    return title.includes('$') || title.includes('(') || title.includes('<');
-};
-
-// Layout for the card alongside the rest of the section content. The card
-// floats top-left; supporting prose flows to its right.
+// Layout for the card alongside the rest of the section content.
 export const SectionHeader = styled.div`
     display: flex;
     align-items: flex-start;
@@ -150,8 +106,6 @@ export const SectionHeaderAside = styled.div`
     line-height: 1.6;
 `;
 
-// Section lead — abstract paragraph that sits to the right of the card.
-// Carries the prose that introduces the section. NOT a repeat of the title.
 export const SectionLead = styled.p`
     font-family: ${(p) => p.theme.font.body};
     font-size: ${(p) => p.theme.type.lead};
@@ -167,8 +121,6 @@ export const SectionLeadEm = styled.span`
     font-weight: 600;
 `;
 
-// Body prose — the section's main reading content below the header. Comfortable
-// line-length for sans-serif body at content-max-width.
 export const SectionBody = styled.div`
     font-family: ${(p) => p.theme.font.body};
     font-size: ${(p) => p.theme.type.body};

@@ -11,9 +11,9 @@
 //   <Loader />
 
 import React from 'react';
-import { $Chemical } from '@dna-platform/chemistry';
+import { $, $Chemical } from '@dna-platform/chemistry';
 
-export class $Loader extends $Chemical {
+class $Loader extends $Chemical {
     items: string[] = [];
     $loading = true;
     $error?: string;
@@ -41,4 +41,4 @@ export class $Loader extends $Chemical {
     }
 }
 
-export const Loader = new $Loader().Component;
+export const Loader = $($Loader);

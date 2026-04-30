@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 class $Book extends $Chemical {
     $title? = 'Untitled';
@@ -21,7 +21,7 @@ class $Book extends $Chemical {
 
 describe('Integration: $Chemistry renders through React', () => {
     it('renders a book via template Component (reusable pattern)', () => {
-        const Book = new $Book().Component;
+        const Book = $($Book);
         const { container } = render(<Book title="The Selfish Gene" author="Richard Dawkins" />);
         expect(container.querySelector('h2')!.textContent).toBe('The Selfish Gene');
         expect(container.querySelector('.pages')!.textContent).toBe('0 pages');
@@ -31,7 +31,7 @@ describe('Integration: $Chemistry renders through React', () => {
         const book = new $Book();
         book.$title = 'The Extended Phenotype';
         book.$author = 'Richard Dawkins';
-        const Book = book.Component;
+        const Book = $(book);
         const { container } = render(<Book />);
         expect(container.querySelector('h2')!.textContent).toBe('The Extended Phenotype');
     });
@@ -39,7 +39,7 @@ describe('Integration: $Chemistry renders through React', () => {
     it('re-renders after method call on held instance', async () => {
         const book = new $Book();
         book.$title = 'The Extended Phenotype';
-        const Book = book.Component;
+        const Book = $(book);
         const { container } = render(<Book />);
         expect(container.querySelector('.pages')!.textContent).toBe('0 pages');
         await act(async () => {

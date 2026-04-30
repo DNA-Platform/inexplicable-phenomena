@@ -3,7 +3,7 @@
 import { bench, describe } from 'vitest';
 import React from 'react';
 import { render, act, fireEvent } from '@testing-library/react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 // ===========================================================================
 // B3 — Macro benchmarks
@@ -150,7 +150,7 @@ describe('macro: $Chemistry list RENDERED via React', () => {
         const container = document.createElement('div');
         document.body.appendChild(container);
         const root = (require('react-dom/client') as any).createRoot(container);
-        act(() => { root.render(React.createElement(list.Component as any)); });
+        act(() => { root.render(React.createElement($(list) as any)); });
         root.unmount();
         document.body.removeChild(container);
     });
@@ -161,7 +161,7 @@ describe('macro: $Chemistry list RENDERED via React', () => {
         const container = document.createElement('div');
         document.body.appendChild(container);
         const root = (require('react-dom/client') as any).createRoot(container);
-        act(() => { root.render(React.createElement(list.Component as any)); });
+        act(() => { root.render(React.createElement($(list) as any)); });
         root.unmount();
         document.body.removeChild(container);
     });

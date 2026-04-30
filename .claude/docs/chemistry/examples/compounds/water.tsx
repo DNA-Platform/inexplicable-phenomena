@@ -16,11 +16,11 @@
 //   </Water>
 
 import React from 'react';
-import { $Chemical, $check } from '@dna-platform/chemistry';
+import { $, $Chemical, $check } from '@dna-platform/chemistry';
 import { $Hydrogen } from '../elements/hydrogen';
 import { $Oxygen } from '../elements/oxygen';
 
-export class $Water extends $Chemical {
+class $Water extends $Chemical {
     hydrogen: [$Hydrogen, $Hydrogen] = [undefined!, undefined!];
     oxygen!: $Oxygen;
     $Water(h1: $Hydrogen, h2: $Hydrogen, o: $Oxygen) {
@@ -36,4 +36,4 @@ export class $Water extends $Chemical {
     }
 }
 
-export const Water = new $Water().Component;
+export const Water = $($Water);

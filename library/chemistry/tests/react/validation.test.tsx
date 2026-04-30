@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $Chemical, $check } from '@/abstraction/chemical';
+import { $, $Chemical, $check } from '@/abstraction/chemical';
 
 class $Label extends $Chemical {
     $text? = 'label';
@@ -23,9 +23,9 @@ class $Container extends $Chemical {
     view() { return <div>{this.label?.$text}: {this.items.length} items</div>; }
 }
 
-const Label = new $Label().Component;
-const Item = new $Item().Component;
-const Container = new $Container().Component;
+const Label = $($Label);
+const Item = $($Item);
+const Container = $($Container);
 
 describe('Binding constructor validation', () => {
     it('accepts correct typed children', () => {

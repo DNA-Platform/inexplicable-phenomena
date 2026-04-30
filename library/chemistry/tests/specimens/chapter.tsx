@@ -1,6 +1,5 @@
 import React from 'react';
-import { $Chemical, $check } from '@/abstraction/chemical';
-import { $ } from '@/abstraction/chemical';
+import { $, $Chemical, $check } from '@/abstraction/chemical';
 import { $Page } from './page';
 
 export class $Chapter extends $Chemical {
@@ -20,12 +19,13 @@ export class $Chapter extends $Chemical {
                     {this.$number}. {this.$title}
                     <span className="page-count">({this.pageCount} pages)</span>
                 </h3>
-                {this.expanded && <$>{this.pages.map((page, i) => (
-                    <page.Component />
-                ))}</$>}
+                {this.expanded && <$>{this.pages.map((page, i) => {
+                    const Page = $(page);
+                    return <Page key={i} />;
+                })}</$>}
             </section>
         );
     }
 }
 
-export const Chapter = new $Chapter().Component;
+export const Chapter = $($Chapter);

@@ -1,67 +1,96 @@
-import React, { ReactNode } from 'react';
-import { $Chemical } from '@/index';
-import { defaultSectionId } from '../data/catalogue';
-import { $Router } from './router';
-import { $Header } from './header';
-import { $Sidebar } from './sidebar';
-import { $SectionPage } from './section-page';
-import { $CodePanel } from './code-panel';
-import { $ThreePaneLayout, $ContentArea } from './layout';
-import type { $Case } from './case';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { defaultSectionId, catalogue, findSection } from '../data/catalogue';
+import { sectionModules } from '../sections';
+import { Header } from './header';
+import { CodePanel } from './code-panel';
+import { ThreePaneLayout, ContentArea } from './layout';
+import { LabRoot } from './lab.styled';
+import { ArticleFrame } from './section-page.styled';
+import {
+    SidebarNav, GroupHeader, GroupRoman, GroupTitle as SidebarGroupTitle,
+    SectionList, SectionItem, SectionLink, SectionId, SectionTitle,
+} from './sidebar.styled';
+import styled from 'styled-components';
 
-// $Lab — the root chemical. Owns:
-//   $activeSection — which catalogue section is being viewed
-//   $cases         — registry of every Case across the apparatus
-//   $router        — the URL ↔ activeSection translator (a child chemical)
-//
-// All the apparatus's reactive state lives here. The router writes
-// $activeSection from URL events; the sidebar reads it for highlighting; the
-// content panel reads it to switch which $SectionPage is rendered.
-export class $Lab extends $Chemical {
-    $activeSection = defaultSectionId;
-    $cases: Map<string, $Case> = new Map();
-    $router!: $Router;
+const PageTitle = styled.h2`
+    font-family: ${(p) => p.theme.font.sans};
+    font-size: ${(p) => p.theme.type.h3};
+    font-weight: 800;
+    color: ${(p) => p.theme.color.ink};
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+`;
 
-    constructor() {
-        super();
-        // Construct the router immediately so it's available before the view
-        // mounts. The router writes $activeSection during attach based on
-        // the current URL.
-        this.$router = new $Router();
-        this.$router.attach(this);
-    }
+const PageContext = styled.span`
+    font-weight: 500;
+    color: ${(p) => p.theme.color.muted};
+    font-size: ${(p) => p.theme.type.body};
+    margin-left: 12px;
+    letter-spacing: 0;
+`;
 
-    view(): ReactNode {
-        // Read $activeSection so this view depends on it. Without the read,
-        // the framework's post-render diff returns the cached output and
-        // children never re-evaluate. The data-section attribute is the
-        // marker that makes the rendered tree structurally differ when the
-        // active section changes.
-        const section = this.$activeSection;
-        return (
-            <div data-section={section} style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100vh',
-                width: '100vw',
-                overflow: 'hidden',
-            }}>
-                <Header lab={this} />
-                <ThreePaneLayout>
-                    <Sidebar lab={this} />
-                    <ContentArea>
-                        <SectionPage lab={this} />
-                    </ContentArea>
-                    <CodePanel />
-                </ThreePaneLayout>
-            </div>
-        );
-    }
+const NoTests = styled.p`
+    font-family: ${(p) => p.theme.font.sans};
+    font-size: ${(p) => p.theme.type.body};
+    color: ${(p) => p.theme.color.muted};
+    padding: 40px 0;
+`;
+
+const groups = catalogue
+    .map(g => ({ ...g, sections: g.sections.filter(s => sectionModules[s.id]) }))
+    .filter(g => g.sections.length > 0);
+
+export function Lab() {
+    const { section } = useParams<{ section?: string }>();
+    const active = section ?? defaultSectionId;
+    const found = findSection(active);
+    const group = found?.group;
+    const sec = found?.section;
+    const module = sec ? sectionModules[sec.id] : undefined;
+    const ModuleComponent = module?.Component;
+
+    return (
+        <LabRoot data-section={active}>
+            <Header />
+            <ThreePaneLayout>
+                <SidebarNav>
+                    {groups.map(g => (
+                        <div key={g.roman}>
+                            <GroupHeader>
+                                <GroupRoman>{g.roman}</GroupRoman>
+                                <SidebarGroupTitle>{g.title}</SidebarGroupTitle>
+                            </GroupHeader>
+                            <SectionList>
+                                {g.sections.map(s => (
+                                    <SectionItem key={s.id}>
+                                        <SectionLink to={`/${s.id}`} $active={active === s.id}>
+                                            <SectionId $active={active === s.id}>{s.id}</SectionId>
+                                            <SectionTitle $active={active === s.id}>{s.title}</SectionTitle>
+                                        </SectionLink>
+                                    </SectionItem>
+                                ))}
+                            </SectionList>
+                        </div>
+                    ))}
+                </SidebarNav>
+                <ContentArea>
+                    <ArticleFrame>
+                        {sec && group ? (
+                            <>
+                                <PageTitle>
+                                    {sec.title}
+                                    <PageContext>{group.title}</PageContext>
+                                </PageTitle>
+                                {ModuleComponent ? <ModuleComponent /> : <NoTests>No tests for this section yet.</NoTests>}
+                            </>
+                        ) : (
+                            <NoTests>Section not found.</NoTests>
+                        )}
+                    </ArticleFrame>
+                </ContentArea>
+                <CodePanel />
+            </ThreePaneLayout>
+        </LabRoot>
+    );
 }
-
-const Header = new $Header().Component;
-const ThreePaneLayout = new $ThreePaneLayout().Component;
-const ContentArea = new $ContentArea().Component;
-const Sidebar = new $Sidebar().Component;
-const SectionPage = new $SectionPage().Component;
-const CodePanel = new $CodePanel().Component;

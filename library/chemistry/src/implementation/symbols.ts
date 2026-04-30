@@ -36,6 +36,7 @@ export const $props$ = Symbol("$Chemical.props");
 export const $lastProps$ = Symbol("$Chemical.lastProps");
 export const $render$ = Symbol("$Chemical.render");
 export const $createComponent$ = Symbol("$Chemical.createComponent");
+export const $resolveComponent$ = Symbol("$Particle.resolveComponent");
 export const $destroy$ = Symbol("$Chemical.destroy");
 export const $destroyed$ = Symbol("$Chemical.destroyed");
 export const $backing$ = Symbol("$Chemical.backing");

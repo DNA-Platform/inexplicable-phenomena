@@ -1,12 +1,16 @@
-// $Element — the canonical $Chemical
+// $Element — the canonical $Chemical base class for elements
 //
-// Demonstrates: $Chemical subclass, intrinsic vs extrinsic properties,
-// the $ membrane, view as pure TSX.
+// Demonstrates: $Chemical subclass as a base class (intended to be extended,
+// not rendered directly), intrinsic vs extrinsic properties, the $ membrane.
 //
-// Concept: A chemical element has intrinsic identity (atomic number,
-// symbol, name, mass) and extrinsic context ($highlighted). The $
-// prefix marks the boundary. Intrinsic properties are set at construction.
-// Extrinsic properties flow in from the consumer via props.
+// $Element does NOT export a Component. It's a base class — its default
+// view would render "0 0 0", which isn't useful. Subclasses ($Carbon,
+// $Helium, etc.) override the intrinsic properties and export themselves
+// as Components via `export const Carbon = $($Carbon)`.
+//
+// This is the rule for base classes generally: if a chemical is meant to
+// be extended rather than rendered directly, do not export a Component
+// from its file.
 
 import React from 'react';
 import { $Chemical } from '@dna-platform/chemistry';
@@ -28,5 +32,3 @@ export class $Element extends $Chemical {
         );
     }
 }
-
-export const Element = new $Element().Component;

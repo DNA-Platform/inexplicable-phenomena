@@ -30,9 +30,11 @@ When a class is *about* an existing concept, the name mirrors it: `$Particle` re
 
 ### Prop fields: `$name`
 
-A lowercase `$`-prefixed property on a chemical is a representation of a prop. `$title`, `$color`, `$background`. When React props arrive, `$apply$` maps `title` → `$title`. The `$` is the boundary between external input (no `$`) and internal state (`$`). At the `.Component` boundary, the `$` is stripped — consumers write `<Display text="Hello" />`, not `<Display $text="Hello" />`.
+A lowercase `$`-prefixed property on a chemical is a representation of a prop. `$title`, `$color`, `$background`. When React props arrive, `$apply$` maps `title` → `$title`. The `$` is the boundary between external input (no `$`) and internal state (`$`). At the `$()` boundary, the `$` is stripped — consumers write `<Display text="Hello" />`, not `<Display $text="Hello" />`.
 
 Default values are set directly: `$text = 'initial'`. Optional props use `$name? = default`. Non-prop instance state has no `$`: `count = 0`, `id = Math.random()...`. This convention makes the prop/state boundary visible at a glance.
+
+**Watch for the `$` collision with styled-components.** styled-components has its own `$` convention — props starting with `$` are *transient* (not forwarded to the DOM). On a chemical, `$name` is the membrane (strips at the boundary). On a styled-component, `$name` is transient (skip DOM forwarding). Same character, unrelated systems, opposite directions. When you write `<StyledTag $color={x}>` inside a chemical's `view()`, the `$` is styled-components', not `$Chemistry`'s. Both conventions coexist; neither owns the prefix.
 
 ### Symbol keys: `$name$`
 
@@ -63,7 +65,7 @@ The `$` count *is* the documentation. If you see `$$$`, you know you are three l
 
 ### No `$`: reality
 
-Anything without a `$` is real. The component. The prop. The class constructor argument. What the consumer touches. `const Display = new $Display().Component` — `Display` is real. `$Display` was the representation. The framework's success is measured by how much `$` disappears at the boundary.
+Anything without a `$` is real. The component. The prop. The class constructor argument. What the consumer touches. `export const Display = $($Display)` — `Display` is real. `$Display` was the representation. The framework's success is measured by how much `$` disappears at the boundary.
 
 ## Structural patterns
 
@@ -72,7 +74,7 @@ Anything without a `$` is real. The component. The prop. The class constructor a
 A constructor may return a different object than `this`. This is not a hack — it is a design pattern. In $Chemistry:
 
 - `$Particle(particular)` — when passed a non-Particle object, sets the particle as the object's prototype and returns the original object. Any structural thing can become a particle without changing what it is.
-- `$Component$` — returns `this.Component`, a function. The `$Component$` instance itself is never exposed; only the callable React component escapes.
+- `[$resolveComponent$]` — the symbol-keyed internal method that resolves a chemical to its React FC. Called by the `$()` callable; never reached by author code.
 - `$Catalogue.constructor` — sets `this.$subject = this`, making the catalogue its own subject. Not a different-object return, but the same principle: construction establishes identity relationships that are not obvious from the `new` call.
 
 When reading $Chemistry code, never assume `new X()` returns an `X`.
@@ -140,20 +142,28 @@ The molecule/bond system intercepts property access and method calls to maintain
 
 ### Export pattern
 
-Components are exported as React components, never as `$Chemical` classes:
+If a `.tsx` file defines a usable Component, it exports that Component. The Component is named in capital-first React convention (`Book`, `Lab`); the chemical class behind it is named `$Book`, `$Lab`. Other files import the Component and use it directly — they never instantiate the class to obtain a Component.
 
 ```typescript
-// Inside the module:
-class $Book extends $Chemical { ... }
-const Book = new $Book().Component;
+// book.tsx
+import { $Chemical, $ } from '@dna-platform/chemistry';
 
-// Exported:
-export { Book };
-// or
-export default function Page() { return <Book>...</Book>; }
+class $Book extends $Chemical { ... }
+export const Book = $($Book);
 ```
 
-The `$` never escapes the module boundary. Consumers import `Book`, not `$Book`. The `.Component` accessor is the membrane.
+Consumers import `Book` and write `<Book>...</Book>`. They never see `$Book`. The `$()` callable is the membrane.
+
+Two forms exist:
+
+- **Class form** — `$($Book)`. Use this for stateless templates: every mount runs the bond constructor fresh. This is the default.
+- **Instance form** — `$(lab)`. Use this *only* when one held instance owns state that must persist across mounts (e.g. an app-level `lab` holding the active route). The instance form routes through `$lift` and reuses the held object. Lowercase `lab` for the instance, capital `Lab` for the exported Component.
+
+There is no `.Component` property on a chemical. The internal accessor is a symbol-keyed method (`[$resolveComponent$]`) the framework uses internally; it is not part of the public API and `chemical.Component` returns `undefined`. The only way to obtain a Component is the `$()` callable.
+
+Base classes do not get exported as Components. `$Particle` and `$Chemical` are extended by other classes; they do nothing as standalone Components. Only files that define a *usable* Component — a chemical the consumer would render in JSX — should export one.
+
+The `$` never escapes the module boundary. The Component is identity-stable — importing `Book` from many files all yields the same Component, so React reconciliation works as expected. There is no need to instantiate `$X` repeatedly to "get the same Component" — you wouldn't anyway, and `$()` makes the cache implicit.
 
 ### Children as typed constructor arguments
 
@@ -191,7 +201,7 @@ Without the `'key'` argument: `const Card = $use(this.card)` returns just the co
 - **Single-line getters for simple properties.** `get $name(): string { return this[$name$]; }` — the entire accessor on one line.
 - **Chained member access on one line.** `this[$of$] instanceof $ObjectiveRep ? this[$of$].isNullOfUndefined() : false` — ternaries stay inline unless they genuinely need wrapping.
 - **Import groups.** Symbol imports use structural comments: `import {// $SubjectiveRep ... } from './symbols'`. This labels the group without adding a separate comment line.
-- **JSX inline styles.** The app tests use inline `style={{}}` objects rather than CSS classes or styled-components. This keeps the examples self-contained.
+- **No inline styles for styling decisions.** Colors, spacing, typography, layout — all flow through styled-components co-located with the chemical: `header.tsx` next to `header.styled.ts`. Theme values come from the `ThemeProvider` via `(p) => p.theme.color.X`. The linter warns on inline `style={{}}` in app code; the warning is the rule. **Allowed exception:** truly dynamic per-element values that styled-components can't reasonably express — a CSS variable computed from runtime state, x/y from a drag, width tied to a resize observer. Even there, prefer the styled-component-with-`style`-override pattern. If the linter warns and the value really is dynamic, suppress with a comment that names *what* and *why*. (Tiny one-off framework specimens may use inline styles to stay self-contained, but apps must not.)
 
 ## What not to do
 

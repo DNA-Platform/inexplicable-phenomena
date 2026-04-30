@@ -2,9 +2,13 @@
 
 Read this file first when resuming work. It tells you where we are.
 
-## Current sprint: sprint-30 (First Functional Sprint — Real Cases) — IN PROGRESS
+## Current sprint: sprint-31 (The Test Harness) — IN PROGRESS
 
-**Plan:** [sprint-30 plan] — pilot section § II.5 (particularization). Four real Cases as running chemicals. `?raw` source-loading pipeline + Code Panel rendering. Per-section data modules. Library prose imported as the single source of truth. Coverage matrix linking each Case to its unit test. Visual polish from Gabby (newly hired graphic designer + frontend engineer). styled-components migration progresses through `$Status` → `$Callout` → `$Header`/`$Sidebar`/`$Case` per Phillip's order. **Hard constraint: each Case exercises the framework feature it documents — the Lab is its own in-vivo test.**
+**Plan:** [sprint-31 plan] — strip the Lab to its purpose: a test harness for `$Chemistry`. Every page has tests, every sidebar entry leads to something Doug can verify. Three-panel test template: Code (syntax-highlighted, always visible) → Live Result (interactive demo) → Verdict (automated ✓/✗ assertions). Queenie leads test organization. Sidebar shows only groups with tests, ordered simple-to-complex. Remove all documentation scaffolding (cards, lorem ipsum, planned pills, empty sections). prism-react-renderer for code highlighting. **Sprint lesson: sprint 30 built a docs browser and bolted tests on; sprint 31 is test-first — the app's only purpose is testing, and every pixel serves that.**
+
+## Previous sprint: sprint-30 (First Functional Sprint) — CLOSED
+
+**Delivered:** 20 live Cases across 8 sections (II.1, II.4, II.5, III.3, V.1, V.3, V.4, VI.1). Major cleanup: `.Component` getter removed from public API (symbol-keyed internal), `$()` as sole public surface + new inverse overload, all inline styles migrated to styled-components, react-router-dom replacing hand-rolled router, `Chemical` and `bind` removed from exports, `$Chemistry Developer` role + ability created, docs curriculum written. **Sprint lesson: the team wrote 6 sprints of framework without an app and lost sight of what they were building. The app surfaced every wrong pattern immediately.**
 
 ## Previous sprint: sprint-29 (The Apparatus — bootstrap the Lab) — IN PROGRESS (substantively complete; closes alongside sprint-30 kickoff)
 

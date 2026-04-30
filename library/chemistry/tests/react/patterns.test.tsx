@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 describe('Patterns: common idioms work', () => {
     it('setInterval (started by a handler) calling a method updates view over time', async () => {
@@ -22,7 +22,7 @@ describe('Patterns: common idioms work', () => {
         }
         new $Ticker();
         const t = new $Ticker();
-        const { container, unmount } = render(<t.Component />);
+        const { container, unmount } = render(React.createElement($(t)));
         await act(async () => {
             fireEvent.click(container.querySelector('button')!);
             await new Promise(r => setTimeout(r, 50));
@@ -50,7 +50,7 @@ describe('Patterns: common idioms work', () => {
         }
         new $Loader();
         const l = new $Loader();
-        const { container } = render(<l.Component />);
+        const { container } = render(React.createElement($(l)));
         expect(container.querySelector('.data')!.textContent).toBe('pending');
         await act(async () => {
             fireEvent.click(container.querySelector('button')!);
@@ -76,7 +76,7 @@ describe('Patterns: common idioms work', () => {
         }
         new $Fetcher();
         const f = new $Fetcher();
-        const { container } = render(<f.Component />);
+        const { container } = render(React.createElement($(f)));
         await act(async () => {
             fireEvent.click(container.querySelector('button')!);
             await new Promise(r => setTimeout(r, 20));
@@ -100,7 +100,7 @@ describe('Patterns: common idioms work', () => {
                 </>;
             }
         }
-        const C = new $Combined().Component;
+        const C = $($Combined);
         const { container } = render(<C />);
         expect(container.querySelector('.items')!.textContent).toBe('0');
         await act(async () => {
@@ -123,7 +123,7 @@ describe('Patterns: common idioms work', () => {
                 </>;
             }
         }
-        const C = new $Input().Component;
+        const C = $($Input);
         const { container } = render(<C />);
         const input = container.querySelector('input')! as HTMLInputElement;
         await act(async () => {
@@ -142,7 +142,7 @@ describe('Patterns: common idioms work', () => {
                 </>;
             }
         }
-        const C = new $Toggle().Component;
+        const C = $($Toggle);
         const { container } = render(<C />);
         expect(container.querySelector('.content')).toBeNull();
         await act(async () => {
@@ -169,7 +169,7 @@ describe('Patterns: common idioms work', () => {
                 </>;
             }
         }
-        const C = new $Cart().Component;
+        const C = $($Cart);
         const { container } = render(<C />);
         await act(async () => {
             fireEvent.click(container.querySelector('.add')!);
@@ -195,7 +195,7 @@ describe('Patterns: documented boundaries', () => {
                 </>;
             }
         }
-        const C = new $M().Component;
+        const C = $($M);
         const { container } = render(<C />);
         expect(container.querySelector('.size')!.textContent).toBe('0');
         await act(async () => {
@@ -211,7 +211,7 @@ describe('Patterns: documented boundaries', () => {
         }
         new $S();
         const s = new $S();
-        const { container } = render(<s.Component />);
+        const { container } = render(React.createElement($(s)));
         await act(async () => {
             // Direct scalar write. Setter fires react() on no-scope.
             s.$count = 42;

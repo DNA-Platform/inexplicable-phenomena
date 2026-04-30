@@ -1,5 +1,5 @@
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 export class $Cover extends $Chemical {
     $title = '';
@@ -16,4 +16,4 @@ export class $Cover extends $Chemical {
     }
 }
 
-export const Cover = new $Cover().Component;
+export const Cover = $($Cover);

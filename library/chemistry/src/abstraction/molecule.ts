@@ -76,7 +76,7 @@ export class $Molecule {
         const properties = new Map<string, PropertyDescriptor>();
         const prototypes: any[] = [];
         let prototype = Object.getPrototypeOf(this._chemical);
-        while (prototype && !prototype[$isChemicalBase$]) {
+        while (prototype && !Object.hasOwn(prototype, $isChemicalBase$)) {
             prototypes.unshift(prototype);
             prototype = Object.getPrototypeOf(prototype);
         }

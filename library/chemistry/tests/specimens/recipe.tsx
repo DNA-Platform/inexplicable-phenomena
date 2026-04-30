@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { $Chemical, $check } from '@/abstraction/chemical';
-import { $ } from '@/abstraction/chemical';
+import { $, $Chemical, $check } from '@/abstraction/chemical';
 
 // ============================================================
 // Styled components — the visual vocabulary
@@ -121,10 +120,16 @@ export class $Recipe extends $Chemical {
                 </Header>
                 {this.expanded && <>
                     <Ingredients>
-                        <$>{this.ingredients.map(ingredient => <ingredient.Component />)}</$>
+                        <$>{this.ingredients.map((ingredient, i) => {
+                            const Ingredient = $(ingredient);
+                            return <Ingredient key={i} />;
+                        })}</$>
                     </Ingredients>
                     <Steps>
-                        <$>{this.steps.map(step => <step.Component />)}</$>
+                        <$>{this.steps.map((step, i) => {
+                            const Step = $(step);
+                            return <Step key={i} />;
+                        })}</$>
                     </Steps>
                 </>}
             </Card>
@@ -191,7 +196,10 @@ export class $Cookbook extends $Chemical {
                     {this.$author && <h2>{this.$author}</h2>}
                     <p>{this.recipeCount} recipes · {this.totalPrepTime} minutes total</p>
                 </CookbookHeader>
-                <$>{this.recipes.map(recipe => <recipe.Component />)}</$>
+                <$>{this.recipes.map((recipe, i) => {
+                    const Recipe = $(recipe);
+                    return <Recipe key={i} />;
+                })}</$>
             </div>
         );
     }
@@ -201,8 +209,8 @@ export class $Cookbook extends $Chemical {
 // The membrane — $ disappears
 // ============================================================
 
-export const Cookbook = new $Cookbook().Component;
-export const Recipe = new $Recipe().Component;
-export const VeganRecipe = new $VeganRecipe().Component;
-export const Ingredient = new $Ingredient().Component;
-export const Step = new $Step().Component;
+export const Cookbook = $($Cookbook);
+export const Recipe = $($Recipe);
+export const VeganRecipe = $($VeganRecipe);
+export const Ingredient = $($Ingredient);
+export const Step = $($Step);

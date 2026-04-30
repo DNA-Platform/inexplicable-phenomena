@@ -49,6 +49,7 @@
     "happy-dom": "^20.0.10",
     "prism-react-renderer": "^2.4.1",
     "puppeteer": "^24.40.0",
+    "react-router-dom": "^7.14.2",
     "rimraf": "^6.0.1",
     "rollup": "^4.50.2",
     "rollup-plugin-dts": "^6.2.3",

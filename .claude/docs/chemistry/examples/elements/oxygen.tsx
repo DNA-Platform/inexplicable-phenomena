@@ -6,13 +6,14 @@
 // with almost everything. In $Chemistry, it participates in
 // compounds like $Water (H₂O).
 
+import { $ } from '@dna-platform/chemistry';
 import { $Element } from './element';
 
-export class $Oxygen extends $Element {
+class $Oxygen extends $Element {
     number = 8;
     symbol = 'O';
     name = 'Oxygen';
     mass = 15.999;
 }
 
-export const Oxygen = new $Oxygen().Component;
+export const Oxygen = $($Oxygen);

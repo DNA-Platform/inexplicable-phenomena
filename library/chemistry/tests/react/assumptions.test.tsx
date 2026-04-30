@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 import { $phase$, $resolve$ } from '@/implementation/symbols';
 
 class $Display extends $Chemical {
@@ -24,7 +24,7 @@ class $Counter extends $Chemical {
 
 describe('Clicking a button that calls a method updates the UI', () => {
     it('clicking a button updates the UI', async () => {
-        const Counter = new $Counter().Component;
+        const Counter = $($Counter);
         const { container } = render(<Counter />);
         expect(container.querySelector('.count')!.textContent).toBe('0');
         await act(async () => {
@@ -37,7 +37,7 @@ describe('Clicking a button that calls a method updates the UI', () => {
         // Create a second instance (non-template) to use the $lift path
         new $Counter(); // ensure template exists
         const counter = new $Counter(); // this one is NOT the template
-        const Counter = counter.Component;
+        const Counter = $(counter);
         const { container } = render(<Counter />);
         expect(container.querySelector('.count')!.textContent).toBe('0');
         await act(async () => {
@@ -51,7 +51,7 @@ describe('Lifecycle: awaiting next(phase) resolves after the framework reaches t
     it('next("mount") resolves after a component mounts', async () => {
         new $Display();
         const display = new $Display();
-        const Display = display.Component;
+        const Display = $(display);
         let mounted = false;
         display.next('mount').then(() => { mounted = true; });
         render(<Display />);
@@ -69,7 +69,7 @@ describe('Two rendered instances of the same chemical hold independent state', (
                 return <div className="counter"><span className="count">{this.count}</span><button onClick={() => this.increment()}>+</button></div>;
             }
         }
-        const Counter = new $IndependentCounter().Component;
+        const Counter = $($IndependentCounter);
         const { container } = render(
             <div><Counter /><Counter /></div>
         );
@@ -85,7 +85,7 @@ describe('Two rendered instances of the same chemical hold independent state', (
 
 describe('Parent re-rendering with new props updates the child', () => {
     it('new props from a parent re-render reach the child', async () => {
-        const Display = new $Display().Component;
+        const Display = $($Display);
         function Parent() {
             const [text, setText] = React.useState('first');
             return (
@@ -106,7 +106,7 @@ describe('Parent re-rendering with new props updates the child', () => {
 
 describe('Consecutive state mutations each update the DOM', () => {
     it('three clicks in sequence show three incremented values', async () => {
-        const Counter = new $Counter().Component;
+        const Counter = $($Counter);
         const { container } = render(<Counter />);
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
         expect(container.querySelector('.count')!.textContent).toBe('1');
@@ -121,7 +121,7 @@ describe('Removing a component from the tree unmounts it', () => {
     it('conditional rendering removes the DOM subtree', async () => {
         new $Display();
         const display = new $Display();
-        const Display = display.Component;
+        const Display = $(display);
         function Wrapper() {
             const [show, setShow] = React.useState(true);
             return (

@@ -8,9 +8,9 @@
 // No useEffect. No dependency arrays. Just await.
 
 import React from 'react';
-import { $Chemical } from '@dna-platform/chemistry';
+import { $, $Chemical } from '@dna-platform/chemistry';
 
-export class $Timer extends $Chemical {
+class $Timer extends $Chemical {
     seconds = 0;
     $running = true;
     async effect() {
@@ -25,4 +25,4 @@ export class $Timer extends $Chemical {
     }
 }
 
-export const Timer = new $Timer().Component;
+export const Timer = $($Timer);

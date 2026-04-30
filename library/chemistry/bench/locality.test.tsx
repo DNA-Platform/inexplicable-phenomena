@@ -4,7 +4,7 @@
 import { describe, it } from 'vitest';
 import React from 'react';
 import { act } from '@testing-library/react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 import { createRoot } from 'react-dom/client';
 
 const renderCounts = new WeakMap<any, number>();
@@ -37,7 +37,7 @@ class $Container extends $Chemical {
     view() {
         return React.createElement('div', null,
             this.$leaves.map((leaf, i) =>
-                React.createElement(leaf.Component as any, { key: i })
+                React.createElement($(leaf) as any, { key: i })
             )
         );
     }
@@ -53,7 +53,7 @@ function measureLocality(leafCount: number, bumpAt: number, bumpIterations: numb
     const dc = document.createElement('div');
     document.body.appendChild(dc);
     const root = createRoot(dc);
-    act(() => { root.render(React.createElement(container.Component as any)); });
+    act(() => { root.render(React.createElement($(container) as any)); });
 
     const target = container.$leaves[bumpAt];
     const sibling = container.$leaves[(bumpAt + 1) % leafCount];

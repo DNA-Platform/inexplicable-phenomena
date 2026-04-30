@@ -1,7 +1,7 @@
 import React, { ReactNode, useState, useEffect, useLayoutEffect, JSX } from "react";
 import {
     $cid$, $symbol$, $type$, $molecule$, $reaction$, $template$, $isTemplate$, $derived$,
-    $isBound$, $$parent$$, $parent$, $synthesis$, $component$, $children$,
+    $isBound$, $$parent$$, $parent$, $synthesis$, $component$, $resolveComponent$, $children$,
     $props$, $lastProps$, $apply$, $bond$, $createComponent$,
     $destroy$, $destroyed$, $remove$, $catalyst$, $isCatalyst$,
     $$template$$, $$getNextCid$$, $$createSymbol$$, $$parseCid$$,
@@ -283,7 +283,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                     html$Instance = new $Html$(type as any);
                     $htmlInstances.set(type, html$Instance);
                 }
-                const $type = (html$Instance.Component as any).$bind(parent);
+                const $type = (html$Instance[$resolveComponent$]() as any).$bind(parent);
                 const chemical = $type.$chemical;
                 const props = ctx.child(chemical, element.props);
                 ctx.isModified = true;
@@ -587,20 +587,21 @@ export class $Chemical extends $Particle {
 
     get children() { return this[$children$]; }
 
-    // Component getter — returns the chemical's React FC.
+    // [$resolveComponent$] — internal accessor. Returns the chemical's React FC.
+    // Author code never calls this; the public surface is the `$()` callable.
     //
     // Two caches exist on a chemical and they serve different paths:
-    //   [$component$] — set by this getter for templates (full
-    //                   $createComponent path: runs bond ctor at first
-    //                   mount, full chemical lifecycle), and by $lift for
-    //                   non-template instances (no bond ctor).
-    //   [$lifted$]    — separate cache used by `$()` dispatch's instance
-    //                   form. Always routes through $lift; never runs the
-    //                   bond ctor. Different from [$component$] because
-    //                   $(template) and template.Component should differ:
-    //                   the latter runs the bond ctor on mount; the former
-    //                   reuses an already-constructed instance.
-    get Component(): Component<this> {
+    //   [$component$] — set here for templates (full $createComponent path:
+    //                   runs bond ctor at first mount, full chemical
+    //                   lifecycle), and by $lift for non-template instances
+    //                   (no bond ctor).
+    //   [$lifted$]    — separate cache used by `$()` dispatch's instance form.
+    //                   Always routes through $lift; never runs the bond ctor.
+    //                   $(template) and the template's resolved component
+    //                   are intentionally different: the latter runs the
+    //                   bond ctor on mount; the former reuses an already-
+    //                   constructed instance.
+    [$resolveComponent$](): Component<this> {
         if (this[$component$]) return this[$component$];
         if (this[$isTemplate$]) {
             this[$component$] = this[$createComponent$]() as any;
@@ -796,13 +797,6 @@ export function $wrap<P>(Component: React.FC<P>): any {
 }
 
 // ===========================================================================
-// Singletons
-// ===========================================================================
-
-export const Chemical = new $Chemical().Component;
-
-
-// ===========================================================================
 // $Chemistry — the multi-shape callable type, exported as `$`.
 //
 // Overloads:
@@ -826,6 +820,8 @@ interface $Chemistry {
     <T extends $Particle>(klass: new () => T): Element<T>;
     <T extends $Chemical, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Component<T>;
     <T extends $Particle, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Element<T>;
+    // Inverse: Component → instance. $(Lab) returns the chemical Lab wraps.
+    <T extends $Particle>(component: Component<T> | Element<T>): T;
     // HTML element catalogue — `$('div')` lazily creates a reactive $Html$
     // chemical for the tag, caches its Component, returns it. `$('div', X)`
     // registers `X` as the override for that tag — subsequent lookups
@@ -876,6 +872,13 @@ class Chemistry extends $Chemical {
             return inst[$lifted$] = $lift(arg);
         }
 
+        // Inverse form — $(Component) returns the chemical instance it wraps.
+        // Components carry `.$chemical` (attached during $createComponent$ or
+        // $lift). This is the inverse of $(instance) → Component.
+        if (typeof arg === 'function' && (arg as any).$chemical) {
+            return (arg as any).$chemical;
+        }
+
         // String tag — HTML catalogue. `$('div')` looks up (or lazily
         // creates) the cached Component for that tag. `$('div', X)`
         // registers X as the override for that tag.
@@ -887,7 +890,7 @@ class Chemistry extends $Chemical {
             }
             let cached = $catalogue.get(arg);
             if (!cached) {
-                cached = new $Html$(arg as any).Component;
+                cached = new $Html$(arg as any)[$resolveComponent$]();
                 $catalogue.set(arg, cached);
             }
             return cached;
@@ -904,9 +907,9 @@ class Chemistry extends $Chemical {
                     new cls();
                     template = cls[$$template$$];
                 }
-                return template.Component;
+                return template[$resolveComponent$]();
             }
-            return (...args: any[]) => new cls(...args).Component;
+            return (...args: any[]) => new cls(...args)[$resolveComponent$]();
         }
 
         // Unrecognized arg — null is safer than re-entering JSX.

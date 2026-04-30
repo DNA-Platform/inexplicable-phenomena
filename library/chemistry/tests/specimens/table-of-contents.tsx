@@ -1,5 +1,5 @@
 import React from 'react';
-import { $Chemical, $check } from '@/abstraction/chemical';
+import { $, $Chemical, $check } from '@/abstraction/chemical';
 import { $Chapter } from './chapter';
 
 export class $TableOfContents extends $Chemical {
@@ -31,4 +31,4 @@ export class $TableOfContents extends $Chemical {
     }
 }
 
-export const TableOfContents = new $TableOfContents().Component;
+export const TableOfContents = $($TableOfContents);

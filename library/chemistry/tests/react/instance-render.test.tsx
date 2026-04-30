@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 class $Simple extends $Chemical {
     count = 0;
@@ -13,7 +13,7 @@ class $Simple extends $Chemical {
 
 describe('Instance rendering via .Component', () => {
     it('template .Component works', async () => {
-        const Counter = new $Simple().Component;
+        const Counter = $($Simple);
         const { container } = render(<Counter />);
         expect(container.querySelector('.v')!.textContent).toBe('0');
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -24,7 +24,7 @@ describe('Instance rendering via .Component', () => {
 
     it('held instance .Component works', async () => {
         const instance = new $Simple();
-        const Counter = instance.Component;
+        const Counter = $(instance);
         const { container } = render(<Counter />);
         expect(container.querySelector('.v')!.textContent).toBe('0');
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -33,7 +33,7 @@ describe('Instance rendering via .Component', () => {
 
     it('held instance method from outside works', async () => {
         const instance = new $Simple();
-        const Counter = instance.Component;
+        const Counter = $(instance);
         const { container } = render(<Counter />);
         expect(container.querySelector('.v')!.textContent).toBe('0');
         await act(async () => { instance.increment(); });

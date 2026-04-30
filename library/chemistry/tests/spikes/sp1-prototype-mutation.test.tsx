@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 // SP-1 quick verification: does reactive bond installation actually mutate
 // $Foo.prototype today? If not, Doug's concern is unfounded and the only
@@ -16,7 +16,7 @@ describe('SP-1 — prototype mutation check', () => {
         const beforeNames = Object.getOwnPropertyNames($Foo.prototype).slice().sort();
         const beforeSyms = Object.getOwnPropertySymbols($Foo.prototype).slice();
         const f = new $Foo();
-        const C = f.Component;
+        const C = $(f);
         render(<C />);
         const afterNames = Object.getOwnPropertyNames($Foo.prototype).slice().sort();
         const afterSyms = Object.getOwnPropertySymbols($Foo.prototype).slice();
@@ -32,7 +32,7 @@ describe('SP-1 — prototype mutation check', () => {
             view() { return <span>{this.$count}</span>; }
         }
         const b = new $Bar();
-        const C = b.Component;
+        const C = $(b);
         render(<C />);
         const desc = Object.getOwnPropertyDescriptor(b, '$count');
         expect(desc).toBeDefined();
@@ -47,8 +47,8 @@ describe('SP-1 — prototype mutation check', () => {
         }
         const a = new $Baz();
         const b = new $Baz();
-        const Ca = a.Component;
-        const Cb = b.Component;
+        const Ca = $(a);
+        const Cb = $(b);
         render(<Ca />);
         render(<Cb />);
         (a as any).$count = 7;

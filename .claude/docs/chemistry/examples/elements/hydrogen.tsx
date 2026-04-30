@@ -7,13 +7,14 @@
 // that can exist independently. In $Chemistry, the simplest
 // chemical that can render.
 
+import { $ } from '@dna-platform/chemistry';
 import { $Element } from './element';
 
-export class $Hydrogen extends $Element {
+class $Hydrogen extends $Element {
     number = 1;
     symbol = 'H';
     name = 'Hydrogen';
     mass = 1.008;
 }
 
-export const Hydrogen = new $Hydrogen().Component;
+export const Hydrogen = $($Hydrogen);

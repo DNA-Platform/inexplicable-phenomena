@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 describe('Mutations inside event handlers trigger re-render', () => {
     it('nested Map mutation inside handler triggers re-render', async () => {
@@ -16,7 +16,7 @@ describe('Mutations inside event handlers trigger re-render', () => {
                 );
             }
         }
-        const C = new $M().Component;
+        const C = $($M);
         const { container } = render(<C />);
         expect(container.querySelector('.size')!.textContent).toBe('0');
         await act(async () => {
@@ -41,7 +41,7 @@ describe('Mutations inside event handlers trigger re-render', () => {
                 );
             }
         }
-        const C = new $L().Component;
+        const C = $($L);
         const { container } = render(<C />);
         expect(container.querySelector('.len')!.textContent).toBe('0');
         await act(async () => {
@@ -62,7 +62,7 @@ describe('Mutations inside event handlers trigger re-render', () => {
                 );
             }
         }
-        const C = new $S().Component;
+        const C = $($S);
         const { container } = render(<C />);
         expect(container.querySelector('.size')!.textContent).toBe('0');
         await act(async () => {
@@ -83,7 +83,7 @@ describe('Mutations inside event handlers trigger re-render', () => {
                 );
             }
         }
-        const C = new $O().Component;
+        const C = $($O);
         const { container } = render(<C />);
         expect(container.querySelector('.mode')!.textContent).toBe('light');
         await act(async () => {
@@ -102,7 +102,7 @@ describe('Mutations inside event handlers trigger re-render', () => {
             view() {
                 return (
                     <div>
-                        {this.$inner.Component && <this.$inner.Component />}
+                        {this.$inner && (() => { const Inner = $(this.$inner); return <Inner />; })()}
                         <button onClick={() => { this.$inner.$v = (this.$inner.$v ?? 0) + 1; }}>inc</button>
                     </div>
                 );
@@ -113,7 +113,7 @@ describe('Mutations inside event handlers trigger re-render', () => {
         const inner = new $Inner();
         const outer = new $Outer();
         outer.$inner = inner;
-        const C = outer.Component;
+        const C = $(outer);
         const { container } = render(<C />);
         // outer hasn't rendered inner via Component yet — view just uses inner's state
         // Simplify: verify that writing to inner.$v from outer's handler triggers update
@@ -135,7 +135,7 @@ describe('Mutations outside any handler still trigger re-render (direct writes)'
         }
         new $T(); // create template
         const t = new $T(); // held instance, goes through $lift
-        const C = t.Component;
+        const C = $(t);
         const { container } = render(<C />);
         expect(container.querySelector('.count')!.textContent).toBe('0');
         await act(async () => {

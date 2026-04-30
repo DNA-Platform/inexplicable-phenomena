@@ -1,5 +1,5 @@
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 export class $Exercise extends $Chemical {
     $question = '';
@@ -19,4 +19,4 @@ export class $Exercise extends $Chemical {
     }
 }
 
-export const Exercise = new $Exercise().Component;
+export const Exercise = $($Exercise);

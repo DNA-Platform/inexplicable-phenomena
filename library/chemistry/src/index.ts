@@ -8,7 +8,7 @@
 
 // Renderable classes
 export { $Particle } from './abstraction/particle';
-export { $Chemical, Chemical, bind } from './abstraction/chemical';
+export { $Chemical } from './abstraction/chemical';
 export { $Atom } from './abstraction/atom';
 
 // The dollar callable

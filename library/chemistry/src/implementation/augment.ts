@@ -2,24 +2,6 @@ import type { ReactNode, ReactElement } from 'react';
 import { withScope } from './scope';
 import { $handlerOriginal$ } from './symbols';
 
-/**
- * augment(node, react) — walk a view's output tree and wrap event handler
- * props so that when a handler fires (sync or async), `react()` is called
- * afterward to request a re-render.
- *
- * This is the single mechanism by which user interactions trigger reactivity:
- * handlers written by the developer are transparently augmented to notify the
- * framework when they complete.
- *
- * Event handler props are identified by React's convention: prop name starts
- * with `on` followed by an uppercase letter (onClick, onChange, onMouseEnter,
- * etc.). Other function props are left alone.
- *
- * The wrapped handler carries a reference to the original via `__original` so
- * that equivalent() can compare handlers by their original source, treating
- * wrappers-of-same-original as equal even though the wrapper instances differ
- * per render.
- */
 export function augment(node: ReactNode, react: () => void): ReactNode {
     return augmentNode(node, react);
 }
@@ -74,8 +56,6 @@ function wrapHandler(handler: Function, _react: () => void): Function {
     const wrapper = function (this: any, ...args: any[]) {
         let result: any;
         withScope(() => { result = handler.apply(this, args); });
-        // Post-await continuations run in their own scope so in-place
-        // mutations there are also caught.
         if (result instanceof Promise) {
             result.then(
                 () => withScope(() => {}),

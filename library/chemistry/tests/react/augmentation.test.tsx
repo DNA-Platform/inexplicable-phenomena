@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 describe('View augmentation: handlers that mutate directly', () => {
     it('direct field mutation in onClick triggers re-render', async () => {
@@ -16,7 +16,7 @@ describe('View augmentation: handlers that mutate directly', () => {
                 );
             }
         }
-        const Counter = new $DirectCounter().Component;
+        const Counter = $($DirectCounter);
         const { container } = render(<Counter />);
         expect(container.querySelector('.count')!.textContent).toBe('0');
         await act(async () => {
@@ -37,7 +37,7 @@ describe('View augmentation: handlers that mutate directly', () => {
                 );
             }
         }
-        const M = new $ListMutator().Component;
+        const M = $($ListMutator);
         const { container } = render(<M />);
         expect(container.querySelector('.count')!.textContent).toBe('0');
         await act(async () => {
@@ -58,7 +58,7 @@ describe('View augmentation: handlers that mutate directly', () => {
                 );
             }
         }
-        const M = new $MapMutator().Component;
+        const M = $($MapMutator);
         const { container } = render(<M />);
         expect(container.querySelector('.count')!.textContent).toBe('0');
         await act(async () => {
@@ -86,7 +86,7 @@ describe('View augmentation: handlers that mutate directly', () => {
                 );
             }
         }
-        const M = new $AsyncMutator().Component;
+        const M = $($AsyncMutator);
         const { container } = render(<M />);
         expect(container.querySelector('.data')!.textContent).toBe('pending');
         await act(async () => {

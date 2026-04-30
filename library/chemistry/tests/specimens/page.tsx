@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 export class $Page extends $Chemical {
     $content: ReactNode = '';
@@ -8,4 +8,4 @@ export class $Page extends $Chemical {
     }
 }
 
-export const Page = new $Page().Component;
+export const Page = $($Page);

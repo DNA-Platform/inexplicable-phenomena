@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 describe('Contract: deep path mutation (Doug\'s this.x.y.z = 10 case)', () => {
     it('mutating a deep-nested property from an event-handler-driven method triggers re-render', async () => {
@@ -15,7 +15,7 @@ describe('Contract: deep path mutation (Doug\'s this.x.y.z = 10 case)', () => {
                 </>;
             }
         }
-        const C = new $C().Component;
+        const C = $($C);
         const { container } = render(<C />);
         expect(container.querySelector('span')!.textContent).toBe('0');
         await act(async () => {
@@ -36,7 +36,7 @@ describe('Contract: computed getters work without useMemo', () => {
                 <button onClick={() => { this.$quantity = (this.$quantity ?? 0) + 1 }}>+</button>
             </>; }
         }
-        const C = new $C().Component;
+        const C = $($C);
         const { container } = render(<C />);
         expect(container.querySelector('.total')!.textContent).toBe('20');
         await act(async () => {
@@ -61,7 +61,7 @@ describe('Contract: multiple mutations in a single handler batch to one render',
                 </div>;
             }
         }
-        const C = new $C().Component;
+        const C = $($C);
         const { container } = render(<C />);
         await act(async () => {
             fireEvent.click(container.querySelector('button')!);
@@ -88,7 +88,7 @@ describe('Contract: async method with pre- and post-await mutations', () => {
                 </>;
             }
         }
-        const C = new $C().Component;
+        const C = $($C);
         const { container } = render(<C />);
         expect(container.querySelector('.state')!.textContent).toBe('idle');
         await act(async () => {
@@ -114,7 +114,7 @@ describe('Contract: handler that throws still re-renders for mutations made befo
                 </>;
             }
         }
-        const C = new $C().Component;
+        const C = $($C);
         const { container } = render(<C />);
         try {
             await act(async () => {
@@ -139,7 +139,7 @@ describe('Contract: view reads are idempotent (no infinite loop)', () => {
                 </>;
             }
         }
-        const C = new $C().Component;
+        const C = $($C);
         const { container } = render(<C />);
         const initialRenders = renders;
         // Wait for post-lifecycle to settle.

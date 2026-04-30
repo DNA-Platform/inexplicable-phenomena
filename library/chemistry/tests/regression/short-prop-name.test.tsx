@@ -15,7 +15,7 @@ describe('regression — single-letter $-prefixed reactive props', () => {
         }
         new $Inner();
         const inner = new $Inner();
-        const C = inner.Component;
+        const C = $(inner);
         const { container } = render(<C />);
         expect(container.querySelector('.x')!.textContent).toBe('default');
         await act(async () => { inner.$v = 'next'; });

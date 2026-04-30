@@ -4,7 +4,7 @@
 import { describe, it } from 'vitest';
 import React from 'react';
 import { act } from '@testing-library/react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 import { createRoot } from 'react-dom/client';
 
 const renderCounts = new WeakMap<any, number>();
@@ -52,7 +52,7 @@ class $Grid extends $Chemical {
     view() {
         return React.createElement('div', null,
             this.$cells.map((c, i) =>
-                React.createElement(c.Component as any, { key: i })
+                React.createElement($(c) as any, { key: i })
             )
         );
     }
@@ -80,7 +80,7 @@ describe('Granularity — 1 chemical w/ 50 items vs 50 chemicals', () => {
             const mono = observe(new $Monolithic());
             const dc = document.createElement('div'); document.body.appendChild(dc);
             const root = createRoot(dc);
-            act(() => { root.render(React.createElement(mono.Component as any)); });
+            act(() => { root.render(React.createElement($(mono) as any)); });
             return { target: mono, bump: () => mono.bumpOne(), root, dc };
         }, 10);
         console.log(`  per-bump: ${monoResult.perBumpMs.toFixed(3)}ms`);
@@ -91,7 +91,7 @@ describe('Granularity — 1 chemical w/ 50 items vs 50 chemicals', () => {
             grid.initCells();
             const dc = document.createElement('div'); document.body.appendChild(dc);
             const root = createRoot(dc);
-            act(() => { root.render(React.createElement(grid.Component as any)); });
+            act(() => { root.render(React.createElement($(grid) as any)); });
             return { target: grid, bump: () => grid.bumpOne(), root, dc };
         }, 10);
         console.log(`  per-bump: ${gridResult.perBumpMs.toFixed(3)}ms`);

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 import { $lookup, $load } from '@/framework/load';
 
 // Helpers that build module-shaped fixtures. These mirror what Vite's
@@ -15,9 +15,9 @@ class $Apple extends $Chemical { $kind = 'apple'; }
 class $Banana extends $Chemical { $kind = 'banana'; }
 class $Cherry extends $Chemical { $kind = 'cherry'; }
 
-const AppleComponent = (new $Apple() as any).Component;
-const BananaComponent = (new $Banana() as any).Component;
-const CherryComponent = (new $Cherry() as any).Component;
+const AppleComponent = $($Apple);
+const BananaComponent = $($Banana);
+const CherryComponent = $($Cherry);
 
 function moduleWithDefault(Component: any): any {
     return { default: Component };

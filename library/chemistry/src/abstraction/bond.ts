@@ -203,24 +203,32 @@ export class $Reagent extends $Bond {
         this._formed = true;
         this._action = this._descriptor.value;
         const action = this._action!;
-        this._chemical[this._property] = function (this: any, ...args: any[]) {
-            // Inside render or setup, methods run without a scope — those
-            // contexts are already handled by the render pipeline.
-            if (this[$rendering$] || this[$phase$] === 'setup') {
-                return action.apply(this, args);
-            }
-            let result: any;
-            withScope(() => { result = action.apply(this, args); });
-            // For async methods, attach a continuation scope so post-await
-            // mutations are caught too.
-            if (result instanceof Promise) {
-                result.then(
-                    () => withScope(() => {}),
-                    () => withScope(() => {})
-                );
-            }
-            return result;
-        };
+        const cache = new WeakMap<any, Function>();
+        Object.defineProperty(this._chemical, this._property, {
+            get() {
+                let bound = cache.get(this);
+                if (bound) return bound;
+                const self = this;
+                bound = function (...args: any[]) {
+                    if (self[$rendering$] || self[$phase$] === 'setup') {
+                        return action.apply(self, args);
+                    }
+                    let result: any;
+                    withScope(() => { result = action.apply(self, args); });
+                    if (result instanceof Promise) {
+                        result.then(
+                            () => withScope(() => {}),
+                            () => withScope(() => {})
+                        );
+                    }
+                    return result;
+                };
+                cache.set(this, bound);
+                return bound;
+            },
+            configurable: true,
+            enumerable: false,
+        });
     }
 }
 

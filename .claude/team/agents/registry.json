@@ -20,9 +20,10 @@
     },
     {
       "name": "cathy",
-      "roles": ["framework-engineer", "frontend-engineer"],
-      "paths": ["library/chemistry/**"],
-      "status": "active"
+      "roles": ["framework-engineer"],
+      "paths": ["library/chemistry/src/**", "library/chemistry/tests/**", "library/chemistry/bench/**"],
+      "status": "active",
+      "notes": "Framework engineer for $Chemistry. The app at library/chemistry/app/ is OUT of Cathy's scope — she is a consultant on app questions (especially $Chemistry feature gaps) but does not own app code. App ownership is phillip + gabby (both $Chemistry Developers)."
     },
     {
       "name": "libby",
@@ -32,7 +33,7 @@
     },
     {
       "name": "phillip",
-      "roles": ["frontend-engineer", "ux-designer"],
+      "roles": ["chemistry-developer", "ux-designer"],
       "paths": ["library/chemistry/app/**"],
       "status": "active"
     },
@@ -44,7 +45,7 @@
     },
     {
       "name": "gabby",
-      "roles": ["graphic-designer", "frontend-engineer"],
+      "roles": ["graphic-designer", "chemistry-developer"],
       "paths": ["library/chemistry/app/**", ".claude/team/perspective/gabby/**"],
       "status": "active",
       "hired": "2026-04-30"

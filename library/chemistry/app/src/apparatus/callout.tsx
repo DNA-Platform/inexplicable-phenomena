@@ -1,68 +1,103 @@
 import React, { ReactNode } from 'react';
-import { $Chemical } from '@/index';
-import { tokens, fonts, type } from '../styles/tokens';
+import { $, $Chemical } from '@/index';
+import {
+    CalloutBody,
+    NoteFrame, NoteLabel,
+    DefinitionFrame, DefinitionLabel,
+    RulesFrame, RulesLabel,
+    PitfallFrame, PitfallLabel,
+    DeepDiveFrame, DeepDiveLabel,
+    InTheLabFrame, InTheLabLabel,
+    SeeAlsoFrame, SeeAlsoLabel,
+} from './callout.styled';
 
-// $Callout — left-bordered block with uppercase label header. Less chrome
-// than v1; reads as a typographic register shift, not a UI box.
-export class $Callout extends $Chemical {
-    label = 'NOTE';
-    accent = tokens.muted;
+// $Callout is the abstract base. Each variant chemical mounts its own
+// styled atoms; the styled-components read theme tokens directly. No
+// color/accent props are plumbed.
 
+export class $Callout extends $Chemical {}
+
+export class $Note extends $Callout {
     view(): ReactNode {
         return (
-            <section style={{
-                marginTop: '20px',
-                marginBottom: '20px',
-                padding: '14px 18px',
-                background: tokens.paperRaised,
-                borderLeft: `2px solid ${this.accent}`,
-                borderRadius: '0 3px 3px 0',
-            }}>
-                <header style={{
-                    fontFamily: fonts.sans,
-                    fontSize: '10px',
-                    fontWeight: 800,
-                    letterSpacing: '0.16em',
-                    color: this.accent,
-                    marginBottom: '8px',
-                    textTransform: 'uppercase',
-                }}>
-                    {this.label}
-                </header>
-                <div style={{ fontSize: type.body, color: tokens.inkSoft, lineHeight: 1.6 }}>
-                    {this.children}
-                </div>
-            </section>
+            <NoteFrame>
+                <NoteLabel>NOTE</NoteLabel>
+                <CalloutBody>{this.children}</CalloutBody>
+            </NoteFrame>
         );
     }
 }
 
 export class $Definition extends $Callout {
-    label = 'DEFINITION';
-    accent = tokens.theme;
+    view(): ReactNode {
+        return (
+            <DefinitionFrame>
+                <DefinitionLabel>DEFINITION</DefinitionLabel>
+                <CalloutBody>{this.children}</CalloutBody>
+            </DefinitionFrame>
+        );
+    }
 }
 
 export class $Rules extends $Callout {
-    label = 'RULES';
-    accent = tokens.ink;
+    view(): ReactNode {
+        return (
+            <RulesFrame>
+                <RulesLabel>RULES</RulesLabel>
+                <CalloutBody>{this.children}</CalloutBody>
+            </RulesFrame>
+        );
+    }
 }
 
 export class $Pitfall extends $Callout {
-    label = 'PITFALL';
-    accent = tokens.pending;
+    view(): ReactNode {
+        return (
+            <PitfallFrame>
+                <PitfallLabel>PITFALL</PitfallLabel>
+                <CalloutBody>{this.children}</CalloutBody>
+            </PitfallFrame>
+        );
+    }
 }
 
 export class $DeepDive extends $Callout {
-    label = 'DEEP DIVE';
-    accent = tokens.muted;
+    view(): ReactNode {
+        return (
+            <DeepDiveFrame>
+                <DeepDiveLabel>DEEP DIVE</DeepDiveLabel>
+                <CalloutBody>{this.children}</CalloutBody>
+            </DeepDiveFrame>
+        );
+    }
 }
 
 export class $InTheLab extends $Callout {
-    label = 'IN THE LAB';
-    accent = tokens.themeBright;
+    view(): ReactNode {
+        return (
+            <InTheLabFrame>
+                <InTheLabLabel>IN THE LAB</InTheLabLabel>
+                <CalloutBody>{this.children}</CalloutBody>
+            </InTheLabFrame>
+        );
+    }
 }
 
 export class $SeeAlso extends $Callout {
-    label = 'SEE ALSO';
-    accent = tokens.muted;
+    view(): ReactNode {
+        return (
+            <SeeAlsoFrame>
+                <SeeAlsoLabel>SEE ALSO</SeeAlsoLabel>
+                <CalloutBody>{this.children}</CalloutBody>
+            </SeeAlsoFrame>
+        );
+    }
 }
+
+export const Note = $($Note);
+export const Definition = $($Definition);
+export const Rules = $($Rules);
+export const Pitfall = $($Pitfall);
+export const DeepDive = $($DeepDive);
+export const InTheLab = $($InTheLab);
+export const SeeAlso = $($SeeAlso);

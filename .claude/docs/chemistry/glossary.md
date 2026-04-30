@@ -34,14 +34,21 @@ The `$` means "representation of." It marks the boundary between the framework's
 The `$` density varies by audience:
 
 - **Component consumers** never see `$`. They write `<Counter />` and pass `title="..."`. The membrane is invisible.
-- **Component authors** use `$` as a simple grammar: `$props` in class definitions become bare props at the `.Component` boundary.
+- **Component authors** use `$` as a simple grammar: `$props` in class definitions become bare props at the `$()` boundary.
 - **Framework developers** swim in `$`. Variables like `$this`, `$$this`, `$view$`, `$$$type` are normal. The density is part of the experience — and part of the humor.
 
 When React props are applied via [`$apply$`][particle], each prop key is automatically prefixed with `$` before being set on the instance. The `$name$` double-dollar-sign bracketing convention marks Symbol keys, separate from user-facing `$name` properties.
 
-### .Component boundary
+### `$()` boundary
 
-The point where `$` disappears. A component author writes `class $Display extends $Chemical` with `$text` as a prop, then exports `const Display = new $Display().Component`. Consumers import `Display` and write `<Display text="Hello" />`. The `.Component` accessor (currently being reworked) produces a React component whose props interface mirrors the `$`-prefixed properties with the `$` stripped. This is the membrane made concrete.
+The point where `$` disappears. A component author writes `class $Display extends $Chemical` with `$text` as a prop, then exports `const Display = $($Display)`. Consumers import `Display` and write `<Display text="Hello" />`. The `$()` callable produces a React component whose props interface mirrors the `$`-prefixed properties with the `$` stripped. This is the membrane made concrete.
+
+`$()` has two forms:
+
+- **Class form** — `$($Display)` for stateless templates. Each mount runs the bond constructor fresh.
+- **Instance form** — `$(display)` when a single held instance must persist state across mounts (e.g. an app shell holding the active route). The instance is named lowercase (`display`, `lab`); the exported Component is capital-first (`Display`, `Lab`). Routes through `$lift`.
+
+The internal mechanism — the `[$component$]` cache on each chemical and the `Component` getter on `$Chemical.prototype` — is framework plumbing. Author code never reaches for it; `$()` is the only public surface.
 
 ### $Rep
 

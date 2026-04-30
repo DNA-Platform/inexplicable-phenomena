@@ -3,7 +3,7 @@ import {
     $cid$, $symbol$, $type$, $prototype$, $children$, $apply$, $bond$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $reaction$, $derivatives$, $destroyed$, $molecule$, $construction$,
-    $component$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
+    $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$
 } from "../implementation/symbols";
@@ -49,9 +49,11 @@ export class $Particle {
 
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
-    // Component — the React FC for this particle. Lift-path only at this
-    // layer; $Chemical overrides to handle template instances via $createComponent.
-    get Component(): Component<this> {
+    // [$resolveComponent$] — internal accessor. The React FC for this particle.
+    // Lift-path only at this layer; $Chemical overrides to handle template
+    // instances via $createComponent. Author code never reaches for this; the
+    // public surface is the `$()` callable in chemical.ts.
+    [$resolveComponent$](): Component<this> {
         if (this[$component$]) return this[$component$];
         return this[$component$] = $lift(this) as any;
     }

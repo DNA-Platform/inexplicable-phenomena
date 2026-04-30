@@ -1,5 +1,5 @@
 import {
-    $type$, $molecule$, $component$, $template$, $isTemplate$,
+    $type$, $molecule$, $component$, $resolveComponent$, $template$, $isTemplate$,
     $formed$, $formation$, $remembered$,
     $$template$$
 } from "../implementation/symbols";
@@ -11,7 +11,7 @@ export class $Atom extends $Chemical {
         if (this[$isTemplate$]) {
             this[$molecule$].reactivate();
             if (!this[$component$])
-                this[$component$] = this.Component;
+                this[$component$] = this[$resolveComponent$]();
         }
         return (this as any)[$type$][$$template$$] as this;
     }

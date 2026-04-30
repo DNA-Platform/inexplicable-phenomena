@@ -14,11 +14,11 @@
 //   </Methane>
 
 import React from 'react';
-import { $Chemical, $check } from '@dna-platform/chemistry';
+import { $, $Chemical, $check } from '@dna-platform/chemistry';
 import { $Carbon } from '../elements/carbon';
 import { $Hydrogen } from '../elements/hydrogen';
 
-export class $Methane extends $Chemical {
+class $Methane extends $Chemical {
     carbon!: $Carbon;
     hydrogens: $Hydrogen[] = [];
     $Methane(c: $Carbon, ...hydrogens: $Hydrogen[]) {
@@ -34,4 +34,4 @@ export class $Methane extends $Chemical {
     }
 }
 
-export const Methane = new $Methane().Component;
+export const Methane = $($Methane);

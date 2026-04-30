@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $Chemical } from '@/abstraction/chemical';
+import { $, $Chemical } from '@/abstraction/chemical';
 
 // These tests pin down a critical framework guarantee: rendering a chemical
 // is SAFE even when its view reads computed values or calls methods. The
@@ -16,7 +16,7 @@ describe('Views can read computed getters without causing re-render loops', () =
                 return <div className="computed">{this.doubled}</div>;
             }
         }
-        const Component = new $ComputedView().Component;
+        const Component = $($ComputedView);
         const { container } = render(<Component />);
         expect(container.querySelector('.computed')!.textContent).toBe('0');
     });
@@ -31,7 +31,7 @@ describe('Views can call methods without causing re-render loops', () => {
                 return <div className="items">{this.getItems().join(', ')}</div>;
             }
         }
-        const Component = new $MethodInView().Component;
+        const Component = $($MethodInView);
         const { container } = render(<Component />);
         expect(container.querySelector('.items')!.textContent).toBe('a, b, c');
     });

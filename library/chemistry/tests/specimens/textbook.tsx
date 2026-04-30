@@ -1,6 +1,5 @@
 import React from 'react';
-import { $check } from '@/abstraction/chemical';
-import { $ } from '@/abstraction/chemical';
+import { $, $check } from '@/abstraction/chemical';
 import { $Page } from './page';
 import { $Chapter } from './chapter';
 import { $Cover } from './cover';
@@ -26,13 +25,15 @@ export class $TextbookChapter extends $Chapter {
                     </span>
                 </h3>
                 {this.expanded && <>
-                    <$>{this.pages.map((page, i) => (
-                        <page.Component />
-                    ))}</$>
+                    <$>{this.pages.map((page, i) => {
+                        const Page = $(page);
+                        return <Page key={i} />;
+                    })}</$>
                     <div className="exercises">
-                        <$>{this.exercises.map((ex, i) => (
-                            <ex.Component />
-                        ))}</$>
+                        <$>{this.exercises.map((ex, i) => {
+                            const Exercise = $(ex);
+                            return <Exercise key={i} />;
+                        })}</$>
                     </div>
                 </>}
             </section>
@@ -48,5 +49,5 @@ export class $Textbook extends $Book {
     }
 }
 
-export const TextbookChapter = new $TextbookChapter().Component;
-export const Textbook = new $Textbook().Component;
+export const TextbookChapter = $($TextbookChapter);
+export const Textbook = $($Textbook);

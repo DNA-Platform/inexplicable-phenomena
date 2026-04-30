@@ -40,6 +40,7 @@ import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
 import { $Chemical, $ } from '@/abstraction/chemical';
 import { $Particle } from '@/abstraction/particle';
+import { $$template$$ } from '@/implementation/symbols';
 
 
 // Per-write upper bound on view() calls in the current impl.
@@ -84,8 +85,8 @@ describe('regression — instance state isolation', () => {
         const a = new $Foo();
         const b = new $Foo();
 
-        const { container: ca } = render(<a.Component />);
-        const { container: cb } = render(<b.Component />);
+        const { container: ca } = render(React.createElement($(a)));
+        const { container: cb } = render(React.createElement($(b)));
 
         expect(ca.querySelector('.c')!.textContent).toBe('0');
         expect(cb.querySelector('.c')!.textContent).toBe('0');
@@ -124,8 +125,8 @@ describe('regression — instance state isolation', () => {
         new $Counter();
         const ai = new $Counter(); (ai as any)._isA = true;
         const bi = new $Counter(); (bi as any)._isA = false;
-        render(<ai.Component />);
-        render(<bi.Component />);
+        render(React.createElement($(ai)));
+        render(React.createElement($(bi)));
 
         const aBefore = aRenders;
         const bBefore = bRenders;
@@ -155,7 +156,7 @@ describe('regression — direct writes to reactive props', () => {
         }
         new $C();
         const c = new $C();
-        const { container } = render(<c.Component />);
+        const { container } = render(React.createElement($(c)));
         expect(container.querySelector('.v')!.textContent).toBe('a');
         const before = renderCount;
 
@@ -181,7 +182,7 @@ describe('regression — direct writes to reactive props', () => {
         }
         new $C();
         const c = new $C();
-        render(<c.Component />);
+        render(React.createElement($(c)));
         const before = renderCount;
 
         await act(async () => { c.$value = 'x'; });
@@ -200,7 +201,7 @@ describe('regression — direct writes to reactive props', () => {
         }
         new $C();
         const c = new $C();
-        const { container } = render(<c.Component />);
+        const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
         await act(async () => { c.$value = 1; });
@@ -240,7 +241,7 @@ describe('regression — nested-structure writes through reactive props', () => 
         }
         new $M();
         const m = new $M();
-        const { container } = render(<m.Component />);
+        const { container } = render(React.createElement($(m)));
         const before = renderCount;
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -270,7 +271,7 @@ describe('regression — nested-structure writes through reactive props', () => 
         }
         new $S();
         const s = new $S();
-        const { container } = render(<s.Component />);
+        const { container } = render(React.createElement($(s)));
         const before = renderCount;
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -296,7 +297,7 @@ describe('regression — nested-structure writes through reactive props', () => 
         }
         new $L();
         const l = new $L();
-        const { container } = render(<l.Component />);
+        const { container } = render(React.createElement($(l)));
         const before = renderCount;
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -322,7 +323,7 @@ describe('regression — nested-structure writes through reactive props', () => 
         }
         new $O();
         const o = new $O();
-        const { container } = render(<o.Component />);
+        const { container } = render(React.createElement($(o)));
         const before = renderCount;
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -348,7 +349,7 @@ describe('regression — nested-structure writes through reactive props', () => 
         }
         new $C();
         const c = new $C();
-        const { container } = render(<c.Component />);
+        const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -381,7 +382,7 @@ describe('regression — write source: handler, timeout, external', () => {
         }
         new $C();
         const c = new $C();
-        const { container } = render(<c.Component />);
+        const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -402,7 +403,7 @@ describe('regression — write source: handler, timeout, external', () => {
         }
         new $C();
         const c = new $C();
-        const { container } = render(<c.Component />);
+        const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
         await act(async () => {
@@ -431,7 +432,7 @@ describe('regression — write source: handler, timeout, external', () => {
         }
         new $C();
         const c = new $C();
-        const { container } = render(<c.Component />);
+        const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
         await act(async () => {
@@ -455,7 +456,7 @@ describe('regression — write source: handler, timeout, external', () => {
         }
         new $C();
         const c = new $C();
-        const { container } = render(<c.Component />);
+        const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
         await act(async () => { c.$value = 'b'; });
@@ -496,7 +497,7 @@ describe('regression — cross-chemical writes target the right component', () =
         const outer = new $Outer();
         outer.$inner = inner;
 
-        const { container } = render(<outer.Component />);
+        const { container } = render(React.createElement($(outer)));
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
 
@@ -530,7 +531,7 @@ describe('regression — cross-chemical writes target the right component', () =
         const outer = new $Outer();
         outer.$inner = inner;
 
-        const { container } = render(<outer.Component />);
+        const { container } = render(React.createElement($(outer)));
         const before = outerRenders;
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -572,7 +573,7 @@ describe('regression — cross-chemical writes target the right component', () =
         const outer = new $Outer();
         outer.$inner = inner;
 
-        const { container } = render(<outer.Component />);
+        const { container } = render(React.createElement($(outer)));
         expect(container.querySelector('.ot')!.textContent).toBe('init');
         const before = outerRenders;
 
@@ -831,7 +832,7 @@ describe('regression — held-instance, held-derivative, lifted-component combin
         }
         new $C();
         const held = new $C();
-        const { container } = render(<held.Component />);
+        const { container } = render(React.createElement($(held)));
         const before = renderCount;
 
         await act(async () => { held.$value = 'b'; });
@@ -910,7 +911,7 @@ describe('regression — held-instance, held-derivative, lifted-component combin
 
         const { container } = render(
             <div>
-                <held.Component />
+                {React.createElement($(held))}
                 <Lifted />
                 <Lifted />
             </div>
@@ -953,7 +954,7 @@ describe('regression — held-instance, held-derivative, lifted-component combin
 
         const { container } = render(
             <div>
-                <held.Component />
+                {React.createElement($(held))}
                 <Lifted key="a" />
                 <Lifted key="b" />
             </div>
@@ -1029,8 +1030,8 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
         // is NOT nested inside outer's render tree.
         const { container } = render(
             <div>
-                <inner.Component />
-                <outer.Component />
+                {React.createElement($(inner))}
+                {React.createElement($(outer))}
             </div>
         );
         expect(container.querySelector('.iv')!.textContent).toBe('0');
@@ -1075,7 +1076,7 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
 
         new $Foo(); // template instantiation
         const inst = new $Foo();
-        const C = inst.Component;
+        const C = $(inst);
         render(<C />);
 
         // After construction + render, the prototype's `bump` descriptor must
@@ -1089,18 +1090,12 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
         expect(protoDescAfter!.set).toBeUndefined();
         expect(protoDescAfter!.value).toBe(originalBump);
 
-        // If an own `bump` descriptor exists on the instance, it MUST NOT
-        // be the prototype's original — i.e. the only acceptable place for
-        // a reagent wrapper is the instance. (No own descriptor is also
-        // acceptable: that just means no wrapper was installed.)
-        const instDesc = Object.getOwnPropertyDescriptor(inst, 'bump');
-        if (instDesc !== undefined) {
-            expect(typeof instDesc.value).toBe('function');
-            expect(instDesc.value).not.toBe(originalBump);
-        }
-
-        // Either way, calling inst.bump() must still update $count via
-        // either prototype lookup or an own wrapper.
+        // The reagent installs a bound-method getter on the template after
+        // rendering triggers reactivation. For standalone held instances,
+        // calling bump() still works via prototype lookup (the raw method on
+        // $Foo.prototype). The bound getter on the template only matters for
+        // derivatives (Object.create(template)) where onClick={this.bump}
+        // needs to preserve `this`.
         (inst as any).bump();
         expect((inst as any).$count).toBe(1);
     });
@@ -1122,7 +1117,7 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
 
         for (let i = 0; i < 5; i++) {
             const x = new $Bar();
-            const C = x.Component;
+            const C = $(x);
             const { unmount } = render(<C />);
             unmount();
         }
