@@ -4,7 +4,11 @@ Read this file first when resuming work. It tells you where we are.
 
 ## Current sprint: sprint-31 (The Test Harness) — IN PROGRESS
 
-**Plan:** [sprint-31 plan] — strip the Lab to its purpose: a test harness for `$Chemistry`. Every page has tests, every sidebar entry leads to something Doug can verify. Three-panel test template: Code (syntax-highlighted, always visible) → Live Result (interactive demo) → Verdict (automated ✓/✗ assertions). Queenie leads test organization. Sidebar shows only groups with tests, ordered simple-to-complex. Remove all documentation scaffolding (cards, lorem ipsum, planned pills, empty sections). prism-react-renderer for code highlighting. **Sprint lesson: sprint 30 built a docs browser and bolted tests on; sprint 31 is test-first — the app's only purpose is testing, and every pixel serves that.**
+**Board:** [sprint-31 board] — 15 stories across three tracks. Track A: core infrastructure (fix II.1 CaseShell, unify layouts, code-first panel with prism, automated verdicts, pass/fail border colors). Track B: visual polish (V.1 text confusion, verbose criteria, label casing, sidebar IDs, per-test anchors). Track C: docs + gaps ($() inverse tests/docs, method binding docs, changelog). Queenie leads test design, Phillip builds UI, Gabby owns visual, Libby owns docs, Cathy consults. **Sprint goal: every test has visible code, a live demo, and automated verdicts that tell Doug whether it passed.**
+
+## Next sprint: sprint-32 (Framework Bugs) — PLANNED
+
+**Plan:** [sprint-32 plan] — three framework bugs surfaced by the Lab app. (1) `$symbolize(ReactNode)` produces unstable values → infinite re-render loops on chemicals with ReactNode props. (2) `effect()` may not fire on class-form chemicals. (3) FC children inside bond-ctor-less chemicals crash at synthesis. Cathy leads fixes; Queenie writes failing tests first (test-driven). **Sprint goal: all three bugs have failing tests that Cathy makes green. The Lab can use $CaseShell as a chemical again.**
 
 ## Previous sprint: sprint-30 (First Functional Sprint) — CLOSED
 
