@@ -3,8 +3,7 @@ name: Deploy public library to Pages
 on:
   push:
     branches: [main]
-    paths:
-      - 'library/.public/**'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -24,11 +23,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - name: Build chemistry
+        working-directory: library/chemistry
+        run: npm run build
+
+      - name: Build public library
+        working-directory: library/.public
+        run: npm run build
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: library/.public
+          path: library/.public/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
