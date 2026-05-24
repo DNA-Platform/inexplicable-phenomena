@@ -24,7 +24,7 @@ import { $Function$, $Html$ } from '@/abstraction/chemical';
 // =============================================================================
 
 describe('reactive HTML elements in bond constructors', () => {
-    it.fails('parent receives $Html$ instances for plain HTML children', () => {
+    it('parent receives $Html$ instances for plain HTML children', () => {
         let receivedTypes: string[] = [];
 
         class $Wrapper extends $Chemical {
@@ -65,7 +65,7 @@ describe('reactive HTML elements in bond constructors', () => {
         expect(container.querySelector('.inner-span')?.textContent).toBe('world');
     });
 
-    it.fails('HTML children render with their props and content', () => {
+    it('HTML children render with their props and content', () => {
         class $Card extends $Chemical {
             header: any;
             body: any;
@@ -338,7 +338,7 @@ describe('$check validation with wrapped types', () => {
 // =============================================================================
 
 describe('reactive HTML — props flow through synthesis', () => {
-    it.fails('HTML children receive props set via JSX', () => {
+    it('HTML children receive props set via JSX', () => {
         class $Styled extends $Chemical {
             items: any[] = [];
 

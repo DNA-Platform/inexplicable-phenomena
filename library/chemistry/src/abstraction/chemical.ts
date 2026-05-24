@@ -669,11 +669,19 @@ export class $Chemical extends $Particle {
         const props: Record<string, any> = this.children ?
             { key: this[$symbol$], children: this.children } :
             { key: this[$symbol$] };
+        const seen = new Set<string>();
         for (const bond of this[$molecule$].bonds.values())
             if ($Reflection.isSpecial(bond.property)) {
+                seen.add(bond.property);
                 const value = $this[bond.property];
                 if (value !== undefined) props[bond.property.slice(1)] = value;
             }
+        for (const key of Object.keys($this)) {
+            if (seen.has(key)) continue;
+            if (!$Reflection.isSpecial(key)) continue;
+            const value = $this[key];
+            if (value !== undefined) props[key.slice(1)] = value;
+        }
         return props;
     }
 

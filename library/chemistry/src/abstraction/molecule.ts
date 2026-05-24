@@ -55,7 +55,7 @@ export class $Molecule {
         properties.forEach((descriptor, property) => {
             if (this._bonds.has(property)) return;
             if (this._inert.has(property)) return;
-            if (property === 'view' || property === 'toString' || property === '$form') return;
+            if (property === 'view' || property === 'toString' || property === '$form' || property === '$new') return;
             const reflect = new $Reflection(chemical, property);
             if (!reflect.reactive) return this._inert.add(property);
             const bond = $Bond.create(chemical, property, descriptor);

@@ -152,7 +152,7 @@ export class $Particle {
     protected [$apply$](props?: $Props) {
         if (!props) return;
         const $this = this as any;
-        $this[$children$] = props.children;
+        if ('children' in (props as any)) $this[$children$] = props.children;
         for (const prop in props) {
             if (prop === 'children' || prop === 'key' || prop === 'ref') continue;
             $this['$' + prop] = props[prop];
@@ -317,6 +317,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         });
         p[$rendering$] = true;
         p[$apply$](props);
+        p[$molecule$]?.reactivate?.();
         const filtered = applyRenderFilters(p);
         if (filtered !== undefined) {
             p[$rendering$] = false;
