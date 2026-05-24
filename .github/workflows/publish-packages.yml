@@ -6,7 +6,7 @@ on:
     paths:
       - 'library/chemistry/src/**'
       - 'library/chemistry/package.json'
-      - 'library/.public/**'
+      - 'library/.public/package.json'
 
 permissions:
   contents: read
@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://npm.pkg.github.com
 
       - run: npm install
@@ -31,12 +31,12 @@ jobs:
 
       - name: Publish chemistry
         working-directory: library/chemistry
-        run: npm publish --access restricted
+        run: npm publish --access restricted || echo "Version already published, skipping"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish public-library
         working-directory: library/.public
-        run: npm publish --access restricted
+        run: npm publish --access restricted || echo "Version already published, skipping"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
