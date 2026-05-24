@@ -805,7 +805,7 @@ describe('regression — held-instance, held-derivative, lifted-component combin
         expect($(held)).toBe($(held));
     });
 
-    it('$new() clones are independent from source on external write', async () => {
+    it('$new() clones are independent from the source', async () => {
         class $C extends $Chemical {
             tag? = 'init';
             view() { return <span className="t">{this.tag}</span>; }

@@ -53,11 +53,11 @@ describe('lexical scoping — identity sanity', () => {
 
 
 // -----------------------------------------------------------------------------
-// 2. Parent write trickles to all unshadowed derivatives
+// 2. Template is hidden — writes do not propagate to derivatives
 // -----------------------------------------------------------------------------
 
-describe('lexical scoping — template → derivatives propagation', () => {
-    it('mutating template\'s bond wakes all derivatives that read via prototype', async () => {
+describe('lexical scoping — template isolation', () => {
+    it('mutating template does not wake derivatives', async () => {
         class $R extends $Chemical {
             tag = 'A';
             view() { return React.createElement('span', null, this.tag); }
@@ -75,8 +75,8 @@ describe('lexical scoping — template → derivatives propagation', () => {
             template.tag = 'B';
         });
         const spans = container.querySelectorAll('span');
-        expect(spans[0].textContent).toBe('B');
-        expect(spans[1].textContent).toBe('B');
+        expect(spans[0].textContent).toBe('A');
+        expect(spans[1].textContent).toBe('A');
     });
 });
 
@@ -117,11 +117,11 @@ describe('lexical scoping — derivative isolation on write', () => {
 
 
 // -----------------------------------------------------------------------------
-// 4. Parent write fans out unconditionally (even to shadowed derivatives)
+// 4. Template write does not affect derivatives (even unshadowed ones)
 // -----------------------------------------------------------------------------
 
-describe('lexical scoping — fan-out is unconditional', () => {
-    it('template\'s bond change wakes all derivatives, but each renders its own value', async () => {
+describe('lexical scoping — template write is silent', () => {
+    it('template write does not wake any derivative, shadowed or unshadowed', async () => {
         let renderCount = 0;
         class $R extends $Chemical {
             tag = 'parent';
@@ -144,19 +144,15 @@ describe('lexical scoping — fan-out is unconditional', () => {
             )
         );
         const buttons = container.querySelectorAll('button');
-        // Shadow derivative A.
         await act(async () => { fireEvent.click(buttons[0]); });
 
         const beforeParentWrite = renderCount;
-        // Now write template.
         await act(async () => { template.tag = 'parent-new'; });
-        // BOTH derivatives' views should run again (fan-out is unconditional).
-        // The shadowed one renders 'local', the unshadowed renders 'parent-new'.
-        expect(renderCount).toBeGreaterThan(beforeParentWrite);
+        expect(renderCount).toBe(beforeParentWrite);
 
         const tags = container.querySelectorAll('.tag');
-        expect(tags[0].textContent).toBe('local');         // shadow stays
-        expect(tags[1].textContent).toBe('parent-new');    // inherits new value
+        expect(tags[0].textContent).toBe('local');
+        expect(tags[1].textContent).toBe('parent');
     });
 });
 
@@ -226,7 +222,7 @@ describe('lexical scoping — three-level chain', () => {
 // -----------------------------------------------------------------------------
 
 describe('lexical scoping — template at three sites', () => {
-    it('template mutation wakes all three derivatives', async () => {
+    it('template mutation does not reach derivatives', async () => {
         class $Inner extends $Chemical {
             tag = 'leaf';
             view() { return React.createElement('span', { className: 'inner' }, this.tag); }
@@ -249,7 +245,7 @@ describe('lexical scoping — template at three sites', () => {
 
         await act(async () => { template.tag = 'leaf-updated'; });
         const updatedLeaves = container.querySelectorAll('.inner');
-        updatedLeaves.forEach(l => expect(l.textContent).toBe('leaf-updated'));
+        updatedLeaves.forEach(l => expect(l.textContent).toBe('leaf'));
     });
 });
 

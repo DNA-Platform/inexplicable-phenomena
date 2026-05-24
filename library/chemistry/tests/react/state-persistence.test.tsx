@@ -249,6 +249,25 @@ describe('state persistence — $new() clone isolation', () => {
         expect(container.querySelector('.c .count')!.textContent).toBe('0');
     });
 
+    it('writing to clone does not affect source', async () => {
+        const source = new $Counter();
+        const clone = source.$new();
+        const Source = $(source);
+        const Clone = $(clone);
+
+        const { container } = render(
+            <div>
+                <div className="s"><Source /></div>
+                <div className="c"><Clone /></div>
+            </div>
+        );
+
+        await act(async () => { clone.count = 42; });
+
+        expect(container.querySelector('.s .count')!.textContent).toBe('0');
+        expect(container.querySelector('.c .count')!.textContent).toBe('42');
+    });
+
     it('three clones are fully independent', async () => {
         const source = new $Counter();
         const a = source.$new();
@@ -442,7 +461,7 @@ describe('state persistence — template derivatives are isolated', () => {
         expect(container.querySelector('.b .count')!.textContent).toBe('0');
     });
 
-    it('template write propagates to derivatives that have not shadowed', async () => {
+    it('template write does not propagate to derivatives', async () => {
         class $Tag extends $Chemical {
             tag = 'default';
             view() { return <span className="tag">{this.tag}</span>; }
@@ -461,44 +480,9 @@ describe('state persistence — template derivatives are isolated', () => {
 
         await act(async () => { template.tag = 'global'; });
         const tags = container.querySelectorAll('.tag');
-        expect(tags[0].textContent).toBe('global');
-        expect(tags[1].textContent).toBe('global');
-        expect(tags[2].textContent).toBe('global');
-    });
-
-    it('derivative shadow survives template write', async () => {
-        class $Tag extends $Chemical {
-            tag = 'default';
-            localSet(v: string) { this.tag = v; }
-            view() {
-                return (
-                    <div className="item">
-                        <span className="tag">{this.tag}</span>
-                        <button className="local" onClick={() => this.localSet('mine')}>mine</button>
-                    </div>
-                );
-            }
-        }
-        new $Tag();
-
-        const Tag = $($Tag);
-        const template = (Tag as any).$chemical;
-        const { container } = render(
-            <div>
-                <Tag key="a" />
-                <Tag key="b" />
-            </div>
-        );
-
-        // Shadow derivative A
-        const buttons = container.querySelectorAll('.local');
-        await act(async () => { fireEvent.click(buttons[0]); });
-        expect(container.querySelectorAll('.tag')[0].textContent).toBe('mine');
-
-        // Template write — A keeps its shadow, B updates
-        await act(async () => { template.tag = 'global'; });
-        expect(container.querySelectorAll('.tag')[0].textContent).toBe('mine');
-        expect(container.querySelectorAll('.tag')[1].textContent).toBe('global');
+        expect(tags[0].textContent).toBe('default');
+        expect(tags[1].textContent).toBe('default');
+        expect(tags[2].textContent).toBe('default');
     });
 });
 

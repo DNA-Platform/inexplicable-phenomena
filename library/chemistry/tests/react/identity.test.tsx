@@ -138,16 +138,17 @@ describe('identity — $new() clones', () => {
         expect(clone).toBeInstanceOf($Counter);
     });
 
-    it('clone prototype chain includes the source', () => {
+    it('clone has no prototype relationship to the source', () => {
         const source = new $Counter();
         const clone = source.$new();
-        expect(Object.getPrototypeOf(clone)).toBe(source);
+        expect(Object.getPrototypeOf(clone)).not.toBe(source);
+        expect(Object.getPrototypeOf(clone)).toBe(Object.getPrototypeOf(source));
     });
 
-    it('clone template points to the source', () => {
+    it('clone is its own template', () => {
         const source = new $Counter();
         const clone = source.$new();
-        expect(clone[$template$]).toBe(source);
+        expect(clone[$template$]).toBe(clone);
     });
 
     it('multiple clones from same source are independent', () => {
@@ -164,14 +165,14 @@ describe('identity — $new() clones', () => {
         expect(source.count).toBe(0);
     });
 
-    it('clone of a clone creates a three-level prototype chain', () => {
+    it('clone of a clone copies values without prototype chain', () => {
         const root = new $Counter();
         root.count = 100;
         const child = root.$new();
         const grandchild = child.$new();
         expect(grandchild.count).toBe(100);
-        expect(Object.getPrototypeOf(grandchild)).toBe(child);
-        expect(Object.getPrototypeOf(child)).toBe(root);
+        expect(Object.getPrototypeOf(grandchild)).not.toBe(child);
+        expect(Object.getPrototypeOf(child)).not.toBe(root);
         expect(grandchild[$cid$]).not.toBe(child[$cid$]);
         expect(child[$cid$]).not.toBe(root[$cid$]);
     });

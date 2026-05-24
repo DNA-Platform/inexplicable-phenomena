@@ -36,7 +36,7 @@ describe('regression — single-letter $-prefixed reactive props', () => {
         expect(container.querySelector('.x')!.textContent).toBe('next');
     });
 
-    it('$($Class) + two mounts + template write', async () => {
+    it('$($Class) + two mounts + template write does not propagate', async () => {
         class $Inner extends $Chemical {
             v? = 'default';
             view() { return <span className="x">{this.v}</span>; }
@@ -50,8 +50,8 @@ describe('regression — single-letter $-prefixed reactive props', () => {
         expect(xs[1].textContent).toBe('default');
         await act(async () => { template.v = 'next'; });
         const after = container.querySelectorAll('.x');
-        expect(after[0].textContent).toBe('next');
-        expect(after[1].textContent).toBe('next');
+        expect(after[0].textContent).toBe('default');
+        expect(after[1].textContent).toBe('default');
     });
 
     it('control: long name $value still works (regression sentinel)', async () => {

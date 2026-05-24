@@ -1,4 +1,4 @@
-import { $backing$, $reaction$, $rendering$, $derivatives$, $$parent$$ } from "./symbols";
+import { $backing$, $reaction$, $rendering$, $$parent$$ } from "./symbols";
 import { equivalent } from "./reconcile";
 
 /**
@@ -100,27 +100,15 @@ export class $Scope {
                 parent = current[$$parent$$];
             }
         }
-        // Symmetric with the no-scope path in bond.ts: a write must wake both
-        // the chemical and any $lift-mounted derivatives. Re-entrancy is safe —
-        // withScope clears $currentScope before calling finalize(), so any
-        // cascading reads/writes during react() fire as out-of-scope writes.
         for (const chem of dirty) {
             chem[$reaction$]?.react();
-            diffuse(chem);
         }
     }
 }
 
-// diffuse — propagate a write outward through a chemical's composition tree.
-// Down: derivatives (children mounted via $lift) are re-rendered.
-// Up: parent chemicals are re-rendered so cross-chemical reads re-evaluate.
+// diffuse — propagate a write upward through a chemical's composition tree.
+// Parent chemicals are re-rendered so cross-chemical reads re-evaluate.
 export function diffuse(chemical: any): void {
-    if (Object.prototype.hasOwnProperty.call(chemical, $derivatives$)) {
-        const derivatives: Set<any> | undefined = chemical[$derivatives$];
-        if (derivatives) {
-            for (const d of derivatives) d[$reaction$]?.react();
-        }
-    }
     let current = chemical;
     let parent = current[$$parent$$];
     while (parent && parent !== current) {

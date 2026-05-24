@@ -30,6 +30,8 @@ import { sectionData as polyForm } from './poly-form-section';
 import { sectionData as tabs } from './tabs-section';
 import { sectionData as formLifecycle } from './form-lifecycle-section';
 import { sectionData as dynamicNest } from './dynamic-nest-section';
+import { sectionData as adapted } from './adapted-components';
+import { sectionData as cloning } from './cloning-components';
 
 export type SectionModule = {
     id: string;
@@ -69,6 +71,8 @@ const modules: SectionModule[] = [
     tabs,
     formLifecycle,
     dynamicNest,
+    adapted,
+    cloning,
 ];
 
 export const sectionModules: Record<string, SectionModule> = Object.fromEntries(

@@ -1,6 +1,12 @@
 import { $template$, $molecule$, $isChemicalBase$ } from "../implementation/symbols";
 import { $Bond, $Reflection } from "./bond";
 
+// Properties that apply to every particle regardless of where they sit in the
+// prototype chain. $show/$hide live on $Particle — above the $isChemicalBase$
+// ceiling that collectProperties() stops at — so normal discovery never finds
+// them. This list ensures they always get bonded.
+const universalProperties = ['$show', '$hide'];
+
 // $Molecule — structural description of a chemical.
 //
 // Walks a chemical's prototype chain and derives the set of reactive bonds
@@ -46,6 +52,14 @@ export class $Molecule {
                 this.collectProperties().forEach((d, p) => properties.set(p, d));
             this.selectProperties(chemical).forEach((d, p) => properties.set(p, d));
             this.formBonds(properties);
+        }
+        for (const prop of universalProperties) {
+            if (this._bonds.has(prop) || this._inert.has(prop)) continue;
+            const bond = $Bond.create(chemical, prop, {
+                value: chemical[prop], writable: true, enumerable: true, configurable: true
+            });
+            this._bonds.set(prop, bond);
+            bond.form();
         }
         this._reactive = true;
     }

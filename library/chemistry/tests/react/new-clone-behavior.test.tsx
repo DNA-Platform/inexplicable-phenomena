@@ -6,20 +6,13 @@ import { $Chemical, $ } from '@/abstraction/chemical';
 // =============================================================================
 // $new() — Clone Behavior
 //
-// $new() creates a new chemical via Object.create(source). The clone inherits
-// from the source through JavaScript's prototype chain:
-//   - READS that haven't been shadowed fall through to the source
-//   - WRITES create own properties on the clone, shadowing the source
-//   - Once shadowed, the clone and source are independent for that property
-//
-// The framework uses a backing-store pattern: reactive properties read/write
-// via this[$backing$][prop], where the backing store ALSO uses prototype
-// inheritance (Object.create(parent.$backing$)). This means source writes
-// are visible to unshadowed clones at the data level.
-//
-// The key question: does the clone RE-RENDER when the source changes?
-// Template derivatives ($lift of a template) use the $derivatives$ set for
-// broadcasting. $new() clones currently DON'T register in $derivatives$.
+// $new() creates a truly independent clone of a chemical. The clone starts
+// with the same bond values as the source but has no prototype relationship:
+//   - The clone is a fresh instance of the same class
+//   - All bond values are copied from the source at creation time
+//   - After creation, source and clone are fully independent
+//   - Source writes do NOT propagate to the clone
+//   - Clone writes do NOT affect the source
 // =============================================================================
 
 
@@ -192,17 +185,11 @@ describe('$new() — property shadowing', () => {
 
 
 // =============================================================================
-// 3. Broadcasting: source writes propagate to unshadowed clone properties
-//
-// This is the prototype inheritance at work. Source writes to its backing
-// store; clone's backing store inherits via Object.create, so the value
-// is visible. But the RENDERING needs to update too — currently $new()
-// clones are NOT in the source's $derivatives$ set, so they may not
-// re-render when the source changes.
+// 3. Independence: source and clone are fully isolated after creation
 // =============================================================================
 
-describe('$new() — prototype broadcasting (source changes reach unshadowed clones)', () => {
-    it.fails('clone re-renders when source changes an unshadowed property', async () => {
+describe('$new() — clone independence (source changes do not reach clone)', () => {
+    it('source write does not affect the clone', async () => {
         const source = new $ThemeCard();
         source.color = 'red';
         const clone = source.$new();
@@ -217,25 +204,18 @@ describe('$new() — prototype broadcasting (source changes reach unshadowed clo
             </div>
         );
 
-        // Both start red
         expect(container.querySelector('.s .color')!.textContent).toBe('red');
         expect(container.querySelector('.c .color')!.textContent).toBe('red');
 
-        // Source changes to green — clone should follow (unshadowed)
         await act(async () => { source.color = 'green'; });
         expect(container.querySelector('.s .color')!.textContent).toBe('green');
-        // This is the broadcasting gap: clone should re-render and show 'green'
-        expect(container.querySelector('.c .color')!.textContent).toBe('green');
+        expect(container.querySelector('.c .color')!.textContent).toBe('red');
     });
 
-    it.fails('source broadcast stops for a property once the clone shadows it', async () => {
+    it('clone write does not affect the source', async () => {
         const source = new $ThemeCard();
         source.color = 'red';
-        source.size = 'small';
         const clone = source.$new();
-
-        // Shadow ONLY color
-        clone.color = 'blue';
 
         const S = $(source);
         const C = $(clone);
@@ -247,18 +227,9 @@ describe('$new() — prototype broadcasting (source changes reach unshadowed clo
             </div>
         );
 
-        // Source changes both
-        await act(async () => {
-            source.color = 'yellow';
-            source.size = 'large';
-        });
-
-        expect(container.querySelector('.s .color')!.textContent).toBe('yellow');
-        expect(container.querySelector('.s .size')!.textContent).toBe('large');
-
-        // Clone's color is shadowed (stays blue), but size should follow
-        expect(container.querySelector('.c .color')!.textContent).toBe('blue');
-        expect(container.querySelector('.c .size')!.textContent).toBe('large');
+        await act(async () => { clone.color = 'purple'; });
+        expect(container.querySelector('.s .color')!.textContent).toBe('red');
+        expect(container.querySelector('.c .color')!.textContent).toBe('purple');
     });
 });
 

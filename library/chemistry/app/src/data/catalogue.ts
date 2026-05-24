@@ -447,6 +447,7 @@ export const catalogue: Group[] = [
             { id: 'prop-pass', title: 'Passing components', symbol: 'Pp', planned: [] },
             { id: 'deep-nest', title: 'Deep composition', symbol: 'Dn', planned: [] },
             { id: 'native-objects', title: 'Wrapping native objects', symbol: 'Pa', planned: [] },
+            { id: 'adapted', title: 'Adapted components', symbol: 'Ad', planned: [] },
         ],
     },
     {
@@ -499,6 +500,7 @@ export const catalogue: Group[] = [
         title: 'Dynamic composition',
         sections: [
             { id: 'dynamic-nest', title: 'Nested chemicals', symbol: 'Nk', planned: [] },
+            { id: 'cloning', title: 'Component cloning', symbol: 'Cl', planned: [] },
         ],
     },
     {

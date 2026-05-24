@@ -2,9 +2,9 @@ import React, { ReactNode, useState, useEffect, useLayoutEffect } from 'react';
 import {
     $cid$, $symbol$, $type$, $prototype$, $children$, $apply$, $bond$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
-    $reaction$, $derivatives$, $destroyed$, $molecule$, $construction$, $formRan$, $formPromise$,
+    $reaction$, $destroyed$, $molecule$, $construction$, $formRan$, $formPromise$,
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
-    $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$,
+    $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$
 } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
@@ -36,7 +36,6 @@ export class $Particle {
     [$reaction$]!: $Reaction;
     [$molecule$]!: $Molecule;
     [$template$]!: this;
-    [$derivatives$]?: Set<$Particle>;
     [$destroyed$]?: boolean;
     [$construction$]?: Promise<any>;
     [$component$]?: Component<this>;
@@ -104,15 +103,13 @@ export class $Particle {
     }
 
     $new(): this {
-        const clone = Object.create(this) as this;
-        const p = clone as any;
-        p[$cid$] = $Particle[$$getNextCid$$]();
-        p[$symbol$] = $Particle[$$createSymbol$$](p);
-        p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
-        p[$phase$] = 'setup';
-        p[$reaction$] = new $Reaction(p);
-        p[$molecule$] = new $Molecule(p);
-        p[$template$] = this;
+        const clone = new (this[$type$] as any)() as this;
+        this[$molecule$].reactivate();
+        for (const bond of this[$molecule$].bonds.values()) {
+            if (bond.isField) {
+                (clone as any)[bond.property] = (this as any)[bond.property];
+            }
+        }
         return clone;
     }
 
@@ -254,6 +251,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
                 p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
                 p[$phase$] = 'setup';
                 p[$reaction$] = new $Reaction(p);
+                if ($$parent$$ in p) p[$$parent$$] = p;
                 if (bond && typeof p[$deriveInit$] === 'function') {
                     p[$deriveInit$]();
                 } else {
@@ -262,8 +260,6 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
                 if (contextParent && $parent$ in p) {
                     p[$parent$] = contextParent;
                 }
-                const par = parent as any;
-                (par[$derivatives$] ??= new Set()).add(p);
             }
             setCid(p[$cid$]);
         } else {
@@ -298,7 +294,6 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
                     } else {
                         p[$destroyed$] = true;
                     }
-                    (parent as any)[$derivatives$]?.delete(p);
                 }
             };
         }, []);

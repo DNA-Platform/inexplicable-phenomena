@@ -311,7 +311,19 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                     html$Instance = new $Html$(type as any);
                     $htmlInstances.set(type, html$Instance);
                 }
-                const $type = (html$Instance[$resolveComponent$]() as any).$bind(parent);
+                let typeCache = this._boundChildren.get(type);
+                if (!typeCache) {
+                    typeCache = new Map();
+                    this._boundChildren.set(type, typeCache);
+                }
+                const cached = typeCache.get(elementKey);
+                let $type: any;
+                if (cached && (cached as any).$chemical?.[$parent$] === parent) {
+                    $type = cached;
+                } else {
+                    $type = (html$Instance[$resolveComponent$]() as any).$bind(parent);
+                    typeCache.set(elementKey, $type);
+                }
                 const chemical = $type.$chemical;
                 const props = ctx.child(chemical, element.props);
                 ctx.isModified = true;
@@ -687,10 +699,9 @@ export class $Chemical extends $Particle {
 
     $new(): this {
         const clone = super.$new();
-        const p = clone as any;
-        p[$synthesis$] = new $Synthesis(p);
-        p[$$parent$$] = clone;
-        p[$catalyst$] = clone;
+        if (this[$$parent$$] && this[$$parent$$] !== this) {
+            clone[$parent$] = this[$$parent$$]!;
+        }
         return clone;
     }
 

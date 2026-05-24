@@ -41,7 +41,6 @@ export const $catalyst$ = Symbol("$Chemical.catalyst");
 export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");
 export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
 export const $lifted$ = Symbol("$Particle.lifted");
-export const $derivatives$ = Symbol("$Particle.derivatives");
 export const $construction$ = Symbol("$Particle.construction");
 export const $formRan$ = Symbol("$Particle.formRan");
 export const $formPromise$ = Symbol("$Particle.formPromise");

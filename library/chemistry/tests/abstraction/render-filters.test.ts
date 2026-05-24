@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import React from 'react';
-import { $Chemical, $ } from '@/abstraction/chemical';
+import { $Chemical, $, $check } from '@/abstraction/chemical';
+import type { $Html, $Function } from '@/abstraction/chemical';
 import { $Particle } from '@/abstraction/particle';
 import { registerFilter } from '@/symbolic';
 
@@ -122,6 +123,106 @@ describe('$show / $hide — works on HTML elements via the catalogue', () => {
             React.createElement(Div as any, { hide: true } as any, 'content')
         );
         expect(container.querySelector('section')).toBeNull();
+    });
+});
+
+
+// -----------------------------------------------------------------------------
+// Adapter reactivity — $show/$hide set directly on child adapters
+// -----------------------------------------------------------------------------
+
+describe('$show / $hide — direct mutation on child adapters', () => {
+    it('setting $show=false on an HTML adapter hides it', async () => {
+        class $Panel extends $Chemical {
+            content!: $Html<'div'>;
+            $Panel(content: $Html<'div'>) {
+                this.content = $check(content, 'div');
+            }
+            hide() { this.content.$show = false; }
+            view() {
+                const Content = $(this.content);
+                return React.createElement(React.Fragment, null,
+                    React.createElement(Content as any),
+                    React.createElement('button', { className: 'toggle', onClick: () => this.hide() }, 'hide'),
+                );
+            }
+        }
+        const Panel = $($Panel);
+        const { container } = render(
+            React.createElement(Panel as any, null,
+                React.createElement('div', { className: 'inner' }, 'visible'),
+            )
+        );
+        expect(container.querySelector('.inner')).not.toBeNull();
+        await act(async () => {
+            (container.querySelector('.toggle') as HTMLElement).click();
+        });
+        expect(container.querySelector('.inner')).toBeNull();
+    });
+
+    it('setting $show=false on an FC adapter hides it', async () => {
+        function Status({ label }: { label: string }) {
+            return React.createElement('span', { className: 'status' }, label);
+        }
+        class $Monitor extends $Chemical {
+            indicator!: $Function<typeof Status>;
+            $Monitor(indicator: $Function<typeof Status>) {
+                this.indicator = $check(indicator, Status);
+            }
+            hide() { this.indicator.$show = false; }
+            view() {
+                const Indicator = $(this.indicator);
+                return React.createElement(React.Fragment, null,
+                    React.createElement(Indicator as any),
+                    React.createElement('button', { className: 'toggle', onClick: () => this.hide() }, 'hide'),
+                );
+            }
+        }
+        const Monitor = $($Monitor);
+        const { container } = render(
+            React.createElement(Monitor as any, null,
+                React.createElement(Status, { label: 'online' }),
+            )
+        );
+        expect(container.querySelector('.status')).not.toBeNull();
+        await act(async () => {
+            (container.querySelector('.toggle') as HTMLElement).click();
+        });
+        expect(container.querySelector('.status')).toBeNull();
+    });
+
+    it('toggling $show back to true restores the adapter', async () => {
+        class $Drawer extends $Chemical {
+            panel!: $Html<'div'>;
+            $Drawer(panel: $Html<'div'>) {
+                this.panel = $check(panel, 'div');
+            }
+            toggle() {
+                this.panel.$show = this.panel.$show === false ? true : false;
+            }
+            view() {
+                const Panel = $(this.panel);
+                return React.createElement(React.Fragment, null,
+                    React.createElement(Panel as any),
+                    React.createElement('button', { className: 'toggle', onClick: () => this.toggle() }, 'toggle'),
+                );
+            }
+        }
+        const Drawer = $($Drawer);
+        const { container } = render(
+            React.createElement(Drawer as any, null,
+                React.createElement('div', { className: 'drawer-content' }, 'content'),
+            )
+        );
+        expect(container.querySelector('.drawer-content')).not.toBeNull();
+        await act(async () => {
+            (container.querySelector('.toggle') as HTMLElement).click();
+        });
+        expect(container.querySelector('.drawer-content')).toBeNull();
+        await act(async () => {
+            (container.querySelector('.toggle') as HTMLElement).click();
+        });
+        expect(container.querySelector('.drawer-content')).not.toBeNull();
     });
 });
 
