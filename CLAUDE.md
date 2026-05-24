@@ -50,6 +50,7 @@ library/                    Code workspaces
 - Infrastructure lives in `.claude/`. Identity-specific code lives in `.authors/`.
 - **Lowercase filenames everywhere** except CLAUDE.md.
 - **Markdown reference links** between documents. `<!-- citations -->` block at the bottom of each file.
+- **Nametags** — every paragraph in team output is attributed. Format: `**Name** (Role):` at the start. Arthur (Architect) is the default voice — he owns all code and speaks when no specialist is more relevant. Other agents speak when the topic falls in their territory.
 - **Perspective** — agents take screenshots to see what users see. Use headless Chrome to capture, save to `.claude/team/perspective/{agent}/`. Read the image to understand the current visual state. Always verify visual work through your own perspective before handing off.
 - **Library** — each agent keeps a library at `.claude/team/library/{agent}/` — persistent, cross-linked books of knowledge acquired through research or experience. Agents read their library before making decisions that require expertise, and add to it when they learn something non-obvious. Use `/library` to browse.
 

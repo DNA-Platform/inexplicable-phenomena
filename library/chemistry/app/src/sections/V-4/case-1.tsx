@@ -1,47 +1,74 @@
 import React from 'react';
 import { $, $Chemical } from '@/index';
 import {
-    CollectionFrame, CollectionRow, CollectionLabel, CollectionDisplay,
-    Pill, Action, SizeBadge,
+    TagInputFrame, TagField, TagFieldRow, TagAddButton,
+    TagList, TagPill, TagRemove, TagCount,
 } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
-class $ArrayDemo extends $Chemical {
-    $items: string[] = [];
-    push() {
-        // In-place mutation — the $items reference does not change.
-        this.$items.push(`item-${this.$items.length + 1}`);
+class $TagInput extends $Chemical {
+    tags: string[] = [];
+    draft = '';
+
+    updateDraft(e: React.ChangeEvent<HTMLInputElement>) {
+        this.draft = e.target.value;
     }
-    pop() {
-        if (this.$items.length > 0) this.$items.pop();
+
+    submit() {
+        const tag = this.draft.trim();
+        if (tag && !this.tags.includes(tag)) {
+            this.tags.push(tag);
+            this.draft = '';
+        }
     }
-    clear() {
-        this.$items.length = 0;
+
+    onKey(e: React.KeyboardEvent) {
+        if (e.key === 'Enter') this.submit();
     }
+
+    remove(index: number) {
+        this.tags.splice(index, 1);
+    }
+
     view() {
+        const hasTags = this.tags.length > 0;
         return (
-            <CollectionFrame>
-                <CollectionRow>
-                    <CollectionLabel>$items.push</CollectionLabel>
-                    <CollectionDisplay>
-                        {this.$items.length === 0
-                            ? <span style={{ opacity: 0.5 }}>empty</span>
-                            : this.$items.map((it, i) => <Pill key={i}>{it}</Pill>)}
-                    </CollectionDisplay>
-                    <SizeBadge>length={this.$items.length}</SizeBadge>
-                </CollectionRow>
-                <CollectionRow>
-                    <CollectionLabel></CollectionLabel>
-                    <Action onClick={this.push}>.push()</Action>
-                    <Action onClick={this.pop}>.pop()</Action>
-                    <Action onClick={this.clear}>clear</Action>
-                </CollectionRow>
-            </CollectionFrame>
+            <>
+                <TagInputFrame>
+                    <TagFieldRow>
+                        <TagField
+                            placeholder="Type a tag..."
+                            value={this.draft}
+                            onChange={this.updateDraft}
+                            onKeyDown={this.onKey}
+                        />
+                        <TagAddButton onClick={this.submit}>Add</TagAddButton>
+                    </TagFieldRow>
+                    <TagList>
+                        {this.tags.map((tag, i) => (
+                            <TagPill key={`${tag}-${i}`}>
+                                {tag}
+                                <TagRemove onClick={() => this.remove(i)}>&times;</TagRemove>
+                            </TagPill>
+                        ))}
+                    </TagList>
+                    {hasTags && <TagCount>{this.tags.length} tag{this.tags.length > 1 ? 's' : ''}</TagCount>}
+                </TagInputFrame>
+                <VerdictSection>
+                    <VerdictRow $state={hasTags ? 'pass' : 'pending'}>
+                        <VerdictDot $state={hasTags ? 'pass' : 'pending'} />
+                        {hasTags
+                            ? `✓ ${this.tags.length} tag${this.tags.length > 1 ? 's' : ''} added via Array.push`
+                            : '○ type a tag and press Enter'}
+                    </VerdictRow>
+                </VerdictSection>
+            </>
         );
     }
 }
 
-const ArrayDemo = $($ArrayDemo);
+const TagInput = $($TagInput);
 
 export default function Case1Demo() {
-    return <ArrayDemo />;
+    return <TagInput />;
 }

@@ -1,40 +1,58 @@
 import React from 'react';
 import { $, $Chemical } from '@/index';
-import { LoaderFrame, LoadingText, DataList, DataItem, PhaseTag } from './case.styled';
+import {
+    WeatherFrame, WeatherTitle, WeatherLoading,
+    ForecastRow, ForecastDay, ForecastIcon, ForecastTemp,
+} from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
-class $AsyncLoader extends $Chemical {
-    $phase = 'setup';
-    $items: string[] = [];
+const forecast = [
+    { day: 'Mon', icon: '☀️', temp: '24°' },
+    { day: 'Tue', icon: '🌧️', temp: '18°' },
+    { day: 'Wed', icon: '⛅', temp: '21°' },
+];
 
-    async effect() {
-        this.$phase = 'waiting for mount';
+class $WeatherCard extends $Chemical {
+    loaded = false;
+
+    async $WeatherCard() {
         await this.next('mount');
-        this.$phase = 'mounted — fetching';
         await new Promise(r => setTimeout(r, 1200));
-        this.$items = ['Hydrogen', 'Helium', 'Lithium', 'Beryllium', 'Boron'];
-        this.$phase = 'loaded';
+        this.loaded = true;
     }
 
     view() {
         return (
-            <LoaderFrame>
-                <PhaseTag>{this.$phase}</PhaseTag>
-                {this.$items.length === 0 ? (
-                    <LoadingText>loading elements...</LoadingText>
+            <WeatherFrame>
+                <WeatherTitle>3-Day Forecast</WeatherTitle>
+                {!this.loaded ? (
+                    <WeatherLoading>Loading forecast...</WeatherLoading>
                 ) : (
-                    <DataList>
-                        {this.$items.map((el, i) => (
-                            <DataItem key={i}>{el}</DataItem>
+                    <ForecastRow>
+                        {forecast.map((f) => (
+                            <ForecastDay key={f.day}>
+                                <ForecastIcon>{f.icon}</ForecastIcon>
+                                <ForecastTemp>{f.temp}</ForecastTemp>
+                                {f.day}
+                            </ForecastDay>
                         ))}
-                    </DataList>
+                    </ForecastRow>
                 )}
-            </LoaderFrame>
+                <VerdictSection>
+                    <VerdictRow $state={this.loaded ? 'pass' : 'pending'}>
+                        <VerdictDot $state={this.loaded ? 'pass' : 'pending'} />
+                        {this.loaded
+                            ? '✓ forecast loaded via await next(\'mount\')'
+                            : '○ loading...'}
+                    </VerdictRow>
+                </VerdictSection>
+            </WeatherFrame>
         );
     }
 }
 
-const AsyncLoader = $($AsyncLoader);
+const WeatherCard = $($WeatherCard);
 
 export default function Case1Demo() {
-    return <AsyncLoader />;
+    return <WeatherCard />;
 }

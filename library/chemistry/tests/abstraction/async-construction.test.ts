@@ -21,17 +21,17 @@ import { $Chemical, $ } from '@/abstraction/chemical';
 describe('async bond ctor — sync prologue and async tail', () => {
     it('sync state set in prologue is visible at first render', async () => {
         class $Loader extends $Chemical {
-            $status = '';
-            $data = '';
+            status = '';
+            data = '';
             async $Loader(...args: number[]) {
-                this.$status = 'loading';            // sync prologue
+                this.status = 'loading';            // sync prologue
                 await new Promise(r => setTimeout(r, 5));
-                this.$data = 'loaded';                // post-await
+                this.data = 'loaded';                // post-await
             }
             view() {
                 return React.createElement('div', null,
-                    React.createElement('span', { className: 'status' }, this.$status),
-                    React.createElement('span', { className: 'data' }, this.$data),
+                    React.createElement('span', { className: 'status' }, this.status),
+                    React.createElement('span', { className: 'data' }, this.data),
                 );
             }
         }
@@ -53,12 +53,12 @@ describe('async bond ctor — sync prologue and async tail', () => {
 describe('chemical.next("construction") — awaitable from outside', () => {
     it('resolves after the async bond ctor settles', async () => {
         class $Slow extends $Chemical {
-            $value = 0;
+            value = 0;
             async $Slow(...args: number[]) {
                 await new Promise(r => setTimeout(r, 5));
-                this.$value = args[0];
+                this.value = args[0];
             }
-            view() { return React.createElement('span', null, String(this.$value)); }
+            view() { return React.createElement('span', null, String(this.value)); }
         }
         new $Slow();
         const { container } = render(React.createElement($($Slow) as any, null, 42));
@@ -72,8 +72,8 @@ describe('chemical.next("construction") — awaitable from outside', () => {
 
     it('resolves immediately for a sync bond ctor', async () => {
         class $Fast extends $Chemical {
-            $value = 0;
-            $Fast(...args: number[]) { this.$value = args[0]; }
+            value = 0;
+            $Fast(...args: number[]) { this.value = args[0]; }
             view() { return null; }
         }
         new $Fast();
@@ -119,11 +119,11 @@ describe('async bond ctor — sync prologue is visible to the next ctor', () => 
 
         class $Item extends $Chemical {
             $name = '';
-            $tag = 'initial';
+            tag = 'initial';
             async $Item() {
-                this.$tag = this.$name + '-prologue';   // sync prologue
+                this.tag = this.$name + '-prologue';   // sync prologue
                 await new Promise(r => setTimeout(r, 10));
-                this.$tag = this.$name + '-final';      // post-await
+                this.tag = this.$name + '-final';      // post-await
             }
             view() { return null; }
         }
@@ -134,7 +134,7 @@ describe('async bond ctor — sync prologue is visible to the next ctor', () => 
             items: $Item[] = [];
             $Container(...items: $Item[]) {
                 this.items = items;
-                if (items[0]) parentSawTag = items[0].$tag;
+                if (items[0]) parentSawTag = items[0].tag;
             }
             view() { return null; }
         }
@@ -152,20 +152,20 @@ describe('async bond ctor — sync prologue is visible to the next ctor', () => 
         // visible to a parent ctor reading them post-children-process.
 
         class $A extends $Chemical {
-            $value = 'A-default';
+            value = 'A-default';
             $A() {
-                this.$value = 'A-set';
+                this.value = 'A-set';
             }
             view() { return null; }
         }
         new $A();
 
         class $B extends $Chemical {
-            $value = 'B-default';
+            value = 'B-default';
             async $B() {
-                this.$value = 'B-prologue';
+                this.value = 'B-prologue';
                 await new Promise(r => setTimeout(r, 10));
-                this.$value = 'B-final';
+                this.value = 'B-final';
             }
             view() { return null; }
         }
@@ -175,8 +175,8 @@ describe('async bond ctor — sync prologue is visible to the next ctor', () => 
         let parentSawB = '';
         class $Mixer extends $Chemical {
             $Mixer(a: $A, b: $B) {
-                parentSawA = a.$value;
-                parentSawB = b.$value;
+                parentSawA = a.value;
+                parentSawB = b.value;
             }
             view() { return null; }
         }
@@ -196,13 +196,13 @@ describe('async bond ctor — sync prologue runs synchronously', () => {
     it('the prologue runs at orchestrator-call time, before the ctor returns', async () => {
         let prologueRan = false;
         class $X extends $Chemical {
-            $value = 0;
+            value = 0;
             async $X(...args: number[]) {
                 prologueRan = true;          // prologue
-                this.$value = args[0];        // sync state set
+                this.value = args[0];        // sync state set
                 await new Promise(r => setTimeout(r, 5));
             }
-            view() { return React.createElement('span', null, String(this.$value)); }
+            view() { return React.createElement('span', null, String(this.value)); }
         }
         new $X();
         const { container } = render(React.createElement($($X) as any, null, 7));
@@ -218,14 +218,14 @@ describe('async bond ctor — render after settle', () => {
     it('view re-renders when construction settles, not before', async () => {
         let renderCount = 0;
         class $Tracker extends $Chemical {
-            $loaded = false;
+            loaded = false;
             async $Tracker(...args: number[]) {
                 await new Promise(r => setTimeout(r, 5));
-                this.$loaded = true;
+                this.loaded = true;
             }
             view() {
                 renderCount++;
-                return React.createElement('span', null, this.$loaded ? 'YES' : 'NO');
+                return React.createElement('span', null, this.loaded ? 'YES' : 'NO');
             }
         }
         new $Tracker();

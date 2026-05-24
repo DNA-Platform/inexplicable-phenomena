@@ -23,10 +23,8 @@ export const $$parseCid$$ = Symbol("$Particle.static.parseCid");
 
 // $Chemical
 export const $remove$ = Symbol("$Chemical.remove");
-export const $decorators$ = Symbol("$Chemical.decorators");
 export const $molecule$ = Symbol("$Chemical.molecule");
 export const $reaction$ = Symbol("$Chemical.reaction");
-export const $$reaction$$ = Symbol("$Chemical.$reaction");
 export const $isBound$ = Symbol("$Chemical.bound");
 export const $$parent$$ = Symbol("$Chemical.parent");
 export const $parent$ = Symbol("$Chemical.$parent");
@@ -34,8 +32,6 @@ export const $synthesis$ = Symbol("$Chemical.synthesis");
 export const $component$ = Symbol("$Chemical.component");
 export const $props$ = Symbol("$Chemical.props");
 export const $lastProps$ = Symbol("$Chemical.lastProps");
-export const $render$ = Symbol("$Chemical.render");
-export const $createComponent$ = Symbol("$Chemical.createComponent");
 export const $resolveComponent$ = Symbol("$Particle.resolveComponent");
 export const $destroy$ = Symbol("$Chemical.destroy");
 export const $destroyed$ = Symbol("$Chemical.destroyed");
@@ -47,17 +43,17 @@ export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
 export const $lifted$ = Symbol("$Particle.lifted");
 export const $derivatives$ = Symbol("$Particle.derivatives");
 export const $construction$ = Symbol("$Particle.construction");
-export const $bondCtorRan$ = Symbol("$Chemical.bondCtorRan");
+export const $formRan$ = Symbol("$Particle.formRan");
+export const $formPromise$ = Symbol("$Particle.formPromise");
 export const $renderFilters$ = Symbol("$Particle.renderFilters");
+export const $deriveInit$ = Symbol("$Particle.deriveInit");
 export const $particleMarker$ = Symbol("$Particle.marker");
+export const $devError$ = Symbol("$Particle.devError");
 
 // $Atom symbols
 export const $formed$ = Symbol("$Atom.formed");
 export const $formation$ = Symbol("$Atom.formation");
 export const $remembered$ = Symbol("$Atom.remembered");
-
-// $Component$ symbols
-export const $transient$ = Symbol("$Component$.transient");
 
 // $promise symbols
 export const $cancelled$ = Symbol("$promise.cancelled");

@@ -7,15 +7,18 @@ export const SidebarNav = styled.nav`
     border-right: 1px solid ${(p) => p.theme.color.rule};
     overflow-y: auto;
     flex-shrink: 0;
-    padding-top: 4px;
-    padding-bottom: 24px;
+    padding: 12px 0 24px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 export const GroupHeader = styled.header`
     display: flex;
     align-items: baseline;
     gap: 10px;
-    padding: 14px 14px 6px 14px;
+    padding: 16px 16px 6px 20px;
 `;
 
 export const GroupRoman = styled.span`
@@ -29,10 +32,9 @@ export const GroupRoman = styled.span`
 
 export const GroupTitle = styled.span`
     font-family: ${(p) => p.theme.font.sans};
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: ${(p) => p.theme.color.muted};
 `;
 
@@ -50,6 +52,8 @@ export const SectionLink = styled(Link)<{ $active: boolean }>`
     height: 24px;
     font-family: ${(p) => p.theme.font.sans};
     border-left: 2px solid ${(p) => (p.$active ? p.theme.color.theme : 'transparent')};
+    padding-left: 18px;
+    padding-right: 12px;
     color: inherit;
     text-decoration: none;
     transition: background 100ms;
@@ -69,10 +73,10 @@ export const SectionLink = styled(Link)<{ $active: boolean }>`
 export const SectionId = styled.span<{ $active: boolean }>`
     display: inline-block;
     font-family: ${(p) => p.theme.font.mono};
-    font-weight: ${(p) => (p.$active ? 600 : 500)};
-    font-size: 11px;
+    font-weight: ${(p) => (p.$active ? 500 : 400)};
+    font-size: 10px;
     color: ${(p) => (p.$active ? p.theme.color.themeText : p.theme.color.mutedSoft)};
-    width: 60px;
+    width: 48px;
     padding-left: 14px;
     padding-right: 6px;
     flex-shrink: 0;

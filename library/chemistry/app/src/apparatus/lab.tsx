@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom';
 import { defaultSectionId, catalogue, findSection } from '../data/catalogue';
 import { sectionModules } from '../sections';
 import { Header } from './header';
-import { CodePanel } from './code-panel';
-import { ThreePaneLayout, ContentArea } from './layout';
 import { LabRoot } from './lab.styled';
 import { ArticleFrame } from './section-page.styled';
 import {
@@ -12,6 +10,23 @@ import {
     SectionList, SectionItem, SectionLink, SectionId, SectionTitle,
 } from './sidebar.styled';
 import styled from 'styled-components';
+
+// Layout atoms — pure visual containers, no state. Function of props only.
+const ThreePane = styled.div`
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: ${(p) => p.theme.color.paper};
+`;
+
+const ContentMain = styled.main`
+    flex: 1;
+    overflow-y: auto;
+    background: ${(p) => p.theme.color.paper};
+    display: flex;
+    justify-content: flex-start;
+`;
 
 const PageTitle = styled.h2`
     font-family: ${(p) => p.theme.font.sans};
@@ -37,10 +52,17 @@ const NoTests = styled.p`
     padding: 40px 0;
 `;
 
+// Sidebar data — filtered once at module scope.
 const groups = catalogue
+    .filter(g => g.roman === '·')
     .map(g => ({ ...g, sections: g.sections.filter(s => sectionModules[s.id]) }))
     .filter(g => g.sections.length > 0);
 
+// Lab — the root of the app. A function component at the react-router
+// boundary. Uses useParams() from react-router-dom to read the current
+// section from the URL. Everything below it is $Chemistry chemicals
+// or styled-components. This is the "unsafe" boundary — a plain React
+// function that bridges the ecosystem package into the chemical tree.
 export function Lab() {
     const { section } = useParams<{ section?: string }>();
     const active = section ?? defaultSectionId;
@@ -53,19 +75,18 @@ export function Lab() {
     return (
         <LabRoot data-section={active}>
             <Header />
-            <ThreePaneLayout>
+            <ThreePane>
                 <SidebarNav>
                     {groups.map(g => (
-                        <div key={g.roman}>
+                        <div key={g.roman + g.title}>
                             <GroupHeader>
-                                <GroupRoman>{g.roman}</GroupRoman>
+                                {g.roman !== '·' && <GroupRoman>{g.roman}</GroupRoman>}
                                 <SidebarGroupTitle>{g.title}</SidebarGroupTitle>
                             </GroupHeader>
                             <SectionList>
                                 {g.sections.map(s => (
                                     <SectionItem key={s.id}>
                                         <SectionLink to={`/${s.id}`} $active={active === s.id}>
-                                            <SectionId $active={active === s.id}>{s.id}</SectionId>
                                             <SectionTitle $active={active === s.id}>{s.title}</SectionTitle>
                                         </SectionLink>
                                     </SectionItem>
@@ -74,7 +95,7 @@ export function Lab() {
                         </div>
                     ))}
                 </SidebarNav>
-                <ContentArea>
+                <ContentMain key={active}>
                     <ArticleFrame>
                         {sec && group ? (
                             <>
@@ -88,9 +109,8 @@ export function Lab() {
                             <NoTests>Section not found.</NoTests>
                         )}
                     </ArticleFrame>
-                </ContentArea>
-                <CodePanel />
-            </ThreePaneLayout>
+                </ContentMain>
+            </ThreePane>
         </LabRoot>
     );
 }

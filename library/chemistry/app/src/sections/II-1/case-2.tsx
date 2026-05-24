@@ -1,30 +1,55 @@
 import React from 'react';
 import { $, $Chemical } from '@/index';
 import {
-    CounterFrame, CounterValue, CounterButton, CounterLabel, TwoCounters,
+    RatingFrame, RatingLabel, StarRow, Star, RatingValue, TwoRatings,
 } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
-class $IndependentCounter extends $Chemical {
-    $count = 0;
-    increment() { this.$count++; }
+class $StarRating extends $Chemical {
+    $label = 'Rating';
+    rating = 0;
+
+    setRating(value: number) { this.rating = value; }
+
     view() {
+        const rated = this.rating > 0;
         return (
-            <CounterFrame>
-                <CounterLabel>$count</CounterLabel>
-                <CounterValue>{this.$count}</CounterValue>
-                <CounterButton onClick={this.increment}>+</CounterButton>
-            </CounterFrame>
+            <>
+                <RatingFrame>
+                    <RatingLabel>{this.$label}</RatingLabel>
+                    <StarRow>
+                        {[1, 2, 3, 4, 5].map((n) => (
+                            <Star
+                                key={n}
+                                $filled={n <= this.rating}
+                                onClick={() => this.setRating(n)}
+                            >
+                                {n <= this.rating ? '★' : '☆'}
+                            </Star>
+                        ))}
+                    </StarRow>
+                    <RatingValue>{this.rating} / 5</RatingValue>
+                </RatingFrame>
+                <VerdictSection>
+                    <VerdictRow $state={rated ? 'pass' : 'pending'}>
+                        <VerdictDot $state={rated ? 'pass' : 'pending'} />
+                        {rated
+                            ? `✓ ${this.$label} set to ${this.rating} / 5`
+                            : '○ click a star to rate'}
+                    </VerdictRow>
+                </VerdictSection>
+            </>
         );
     }
 }
 
-const IndependentCounter = $($IndependentCounter);
+const StarRating = $($StarRating);
 
 export default function Case2Demo() {
     return (
-        <TwoCounters>
-            <IndependentCounter />
-            <IndependentCounter />
-        </TwoCounters>
+        <TwoRatings>
+            <StarRating label="Quality" />
+            <StarRating label="Difficulty" />
+        </TwoRatings>
     );
 }

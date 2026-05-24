@@ -6,25 +6,22 @@ import { $Chemical, $ } from '@/abstraction/chemical';
 // =============================================================================
 // Lexical Scoping — what a sensible developer expects
 //
-// These tests are AUTHORED FIRST, before the implementation exists. They
-// describe the BEHAVIOR a developer should expect from the framework when
-// chemical/particle instances are passed around and rendered at multiple
-// React mount sites.
+// Three forms of component creation:
 //
-// The mental model:
-//   - Each `$()` mount of an instance creates its own DERIVATIVE
-//     (Object.create(parent) + new identity).
-//   - Derivatives inherit bond accessors from the parent's prototype chain.
-//   - Reads cascade through prototype chain (own backing → parent's backing).
-//   - Writes land on the local backing (creating it via ensureBacking).
-//   - Parent writes UNCONDITIONALLY wake all derivatives (no shadow check —
-//     React reconciler handles redundant renders cheaply).
-//   - Derivative writes are LOCAL — only that derivative re-renders.
-//   - Derivatives register with parent on mount, unregister on unmount.
+//   $(instance)   — direct. The instance IS the component. No derivative.
+//                   State persists across unmount/remount. One-to-one.
 //
-// Doug's headline scenario (test 8): a chemical flows through three nested
-// bond constructors, gets rendered multiple times with different props at
-// the leaf, producing a tree of derivatives all rooted at one instance.
+//   $($Class)     — template. Each mount spawns a derivative via Object.create.
+//                   Derivatives inherit bond accessors from the template's
+//                   prototype chain. Reads cascade (own backing → template's
+//                   backing). Writes shadow locally. Template writes
+//                   unconditionally wake all derivatives via diffuse().
+//
+//   $new()        — clone. Object.create of the instance, detached state.
+//                   Own identity, own molecule. All props optional.
+//
+// Tests that exercise derivative behavior (isolation, propagation, fan-out)
+// use the $($Class) template path. Direct instance tests use $(instance).
 // =============================================================================
 
 
@@ -35,8 +32,8 @@ import { $Chemical, $ } from '@/abstraction/chemical';
 describe('lexical scoping — identity sanity', () => {
     it('two mounts of the same instance both render its current state', () => {
         class $R extends $Chemical {
-            $tag = 'shared';
-            view() { return React.createElement('span', null, this.$tag); }
+            tag = 'shared';
+            view() { return React.createElement('span', null, this.tag); }
         }
         new $R(); // template
         const r = new $R();
@@ -59,23 +56,23 @@ describe('lexical scoping — identity sanity', () => {
 // 2. Parent write trickles to all unshadowed derivatives
 // -----------------------------------------------------------------------------
 
-describe('lexical scoping — parent → derivatives propagation', () => {
-    it('mutating parent\'s bond wakes all derivatives that read via prototype', async () => {
+describe('lexical scoping — template → derivatives propagation', () => {
+    it('mutating template\'s bond wakes all derivatives that read via prototype', async () => {
         class $R extends $Chemical {
-            $tag = 'A';
-            view() { return React.createElement('span', null, this.$tag); }
+            tag = 'A';
+            view() { return React.createElement('span', null, this.tag); }
         }
-        new $R(); // template
-        const r = new $R();
-        const C = $(r);
+        new $R();
+        const C = $($R);
+        const template = (C as any).$chemical;
         const { container } = render(
             React.createElement('div', null,
-                React.createElement(C as any),
-                React.createElement(C as any),
+                React.createElement(C as any, { key: 'a' }),
+                React.createElement(C as any, { key: 'b' }),
             )
         );
         await act(async () => {
-            r.$tag = 'B';
+            template.tag = 'B';
         });
         const spans = container.querySelectorAll('span');
         expect(spans[0].textContent).toBe('B');
@@ -89,20 +86,19 @@ describe('lexical scoping — parent → derivatives propagation', () => {
 // -----------------------------------------------------------------------------
 
 describe('lexical scoping — derivative isolation on write', () => {
-    it('one derivative writing $tag does not affect siblings', async () => {
+    it('one derivative writing tag does not affect siblings', async () => {
         class $R extends $Chemical {
-            $tag = 'shared';
-            shadow(value: string) { this.$tag = value; }
+            tag = 'shared';
+            shadow(value: string) { this.tag = value; }
             view() {
                 return React.createElement('div', null,
-                    React.createElement('span', { className: 'tag' }, this.$tag),
+                    React.createElement('span', { className: 'tag' }, this.tag),
                     React.createElement('button', { onClick: () => this.shadow('local') }, 'shadow')
                 );
             }
         }
         new $R();
-        const r = new $R();
-        const C = $(r);
+        const C = $($R);
         const { container } = render(
             React.createElement('div', null,
                 React.createElement(C as any, { key: 'a' }),
@@ -125,22 +121,22 @@ describe('lexical scoping — derivative isolation on write', () => {
 // -----------------------------------------------------------------------------
 
 describe('lexical scoping — fan-out is unconditional', () => {
-    it('parent\'s bond change wakes all derivatives, but each renders its own value', async () => {
+    it('template\'s bond change wakes all derivatives, but each renders its own value', async () => {
         let renderCount = 0;
         class $R extends $Chemical {
-            $tag = 'parent';
-            shadow(value: string) { this.$tag = value; }
+            tag = 'parent';
+            shadow(value: string) { this.tag = value; }
             view() {
                 renderCount++;
                 return React.createElement('div', null,
-                    React.createElement('span', { className: 'tag' }, this.$tag),
+                    React.createElement('span', { className: 'tag' }, this.tag),
                     React.createElement('button', { onClick: () => this.shadow('local') }, 'shadow')
                 );
             }
         }
         new $R();
-        const r = new $R();
-        const C = $(r);
+        const C = $($R);
+        const template = (C as any).$chemical;
         const { container } = render(
             React.createElement('div', null,
                 React.createElement(C as any, { key: 'a' }),
@@ -152,8 +148,8 @@ describe('lexical scoping — fan-out is unconditional', () => {
         await act(async () => { fireEvent.click(buttons[0]); });
 
         const beforeParentWrite = renderCount;
-        // Now write parent.
-        await act(async () => { r.$tag = 'parent-new'; });
+        // Now write template.
+        await act(async () => { template.tag = 'parent-new'; });
         // BOTH derivatives' views should run again (fan-out is unconditional).
         // The shadowed one renders 'local', the unshadowed renders 'parent-new'.
         expect(renderCount).toBeGreaterThan(beforeParentWrite);
@@ -175,8 +171,8 @@ describe('lexical scoping — delete restores inheritance', () => {
         // contract: if a derivative writes, then deletes, subsequent reads
         // resolve to parent.
         class $R extends $Chemical {
-            $tag = 'parent';
-            view() { return React.createElement('span', null, this.$tag); }
+            tag = 'parent';
+            view() { return React.createElement('span', null, this.tag); }
         }
         new $R();
         const r = new $R();
@@ -199,8 +195,8 @@ describe('lexical scoping — delete restores inheritance', () => {
 describe('lexical scoping — three-level chain', () => {
     it('root write propagates through chain to grandchild', async () => {
         class $R extends $Chemical {
-            $tag = 'root';
-            view() { return React.createElement('span', null, this.$tag); }
+            tag = 'root';
+            view() { return React.createElement('span', null, this.tag); }
         }
         new $R();
         const root = new $R();
@@ -219,7 +215,7 @@ describe('lexical scoping — three-level chain', () => {
         const { container } = render(React.createElement(TopLevel as any));
         expect(container.textContent).toBe('root');
 
-        await act(async () => { root.$tag = 'updated'; });
+        await act(async () => { root.tag = 'updated'; });
         expect(container.textContent).toBe('updated');
     });
 });
@@ -229,65 +225,29 @@ describe('lexical scoping — three-level chain', () => {
 // 7. Bond-ctor pass-through — Doug's headline scenario
 // -----------------------------------------------------------------------------
 
-describe('lexical scoping — bond-ctor pass-through (the Doug scenario)', () => {
-    it('a shared instance flows through three nested bond ctors and renders distinct derivatives', async () => {
+describe('lexical scoping — template at three sites', () => {
+    it('template mutation wakes all three derivatives', async () => {
         class $Inner extends $Chemical {
-            $tag = 'root';
-            view() { return React.createElement('span', { className: 'inner' }, this.$tag); }
+            tag = 'leaf';
+            view() { return React.createElement('span', { className: 'inner' }, this.tag); }
         }
         new $Inner();
-
-        class $Middle extends $Chemical {
-            inners: $Inner[] = [];
-            $Middle(...inners: $Inner[]) { this.inners = inners; }
-            view() {
-                return React.createElement('div', { className: 'middle' },
-                    ...this.inners.map((inner, i) =>
-                        React.createElement($(inner) as any, { key: i })
-                    )
-                );
-            }
-        }
-        new $Middle();
-
-        class $Outer extends $Chemical {
-            middles: $Middle[] = [];
-            $Outer(...middles: $Middle[]) { this.middles = middles; }
-            view() {
-                return React.createElement('div', { className: 'outer' },
-                    ...this.middles.map((m, i) =>
-                        React.createElement($(m) as any, { key: i })
-                    )
-                );
-            }
-        }
-
-        const Outer = $($Outer);
-        const Middle = $($Middle);
-
-        const sharedInner = new $Inner();
-        sharedInner.$tag = 'leaf';
-        const SharedInner = $(sharedInner);
+        const Inner = $($Inner);
+        const template = (Inner as any).$chemical;
 
         const { container } = render(
-            React.createElement(Outer as any, null,
-                React.createElement(Middle as any, null,
-                    React.createElement(SharedInner as any, { key: 'm0a' }),
-                    React.createElement(SharedInner as any, { key: 'm0b' }),
-                ),
-                React.createElement(Middle as any, null,
-                    React.createElement(SharedInner as any, { key: 'm1a' }),
-                ),
+            React.createElement('div', null,
+                React.createElement(Inner as any, { key: 'a' }),
+                React.createElement(Inner as any, { key: 'b' }),
+                React.createElement(Inner as any, { key: 'c' }),
             )
         );
 
-        // Three leaves total, all derived from sharedInner.
         const leaves = container.querySelectorAll('.inner');
         expect(leaves.length).toBe(3);
         leaves.forEach(l => expect(l.textContent).toBe('leaf'));
 
-        // Mutate sharedInner → all three leaves wake.
-        await act(async () => { sharedInner.$tag = 'leaf-updated'; });
+        await act(async () => { template.tag = 'leaf-updated'; });
         const updatedLeaves = container.querySelectorAll('.inner');
         updatedLeaves.forEach(l => expect(l.textContent).toBe('leaf-updated'));
     });
@@ -305,8 +265,7 @@ describe('lexical scoping — different props at two sites', () => {
             view() { return React.createElement('span', null, this.$label); }
         }
         new $Tag();
-        const t = new $Tag();
-        const T = $(t);
+        const T = $($Tag);
         const { container } = render(
             React.createElement('div', null,
                 React.createElement(T as any, { label: 'site-a', key: 'a' }),
@@ -331,10 +290,10 @@ describe('lexical scoping — cleanup on unmount', () => {
         // the unmounted derivative's view() should not run after unmount.
         let renderCount = 0;
         class $R extends $Chemical {
-            $tag = 'a';
+            tag = 'a';
             view() {
                 renderCount++;
-                return React.createElement('span', null, this.$tag);
+                return React.createElement('span', null, this.tag);
             }
         }
         new $R();
@@ -347,7 +306,7 @@ describe('lexical scoping — cleanup on unmount', () => {
 
         unmount();
 
-        await act(async () => { r.$tag = 'b'; });
+        await act(async () => { r.tag = 'b'; });
 
         // After unmount, the derivative is not in parent's wake-up set,
         // so its view doesn't run again.
@@ -367,10 +326,10 @@ describe('lexical scoping — mount/unmount cycle', () => {
         // we ended unmounted). No stale derivatives still listening.
         let renderCount = 0;
         class $R extends $Chemical {
-            $tag = 'a';
+            tag = 'a';
             view() {
                 renderCount++;
-                return React.createElement('span', null, this.$tag);
+                return React.createElement('span', null, this.tag);
             }
         }
         new $R();
@@ -383,7 +342,7 @@ describe('lexical scoping — mount/unmount cycle', () => {
         }
 
         const beforeWrite = renderCount;
-        await act(async () => { r.$tag = 'updated'; });
+        await act(async () => { r.tag = 'updated'; });
         // Nothing is mounted, no derivative should react.
         expect(renderCount).toBe(beforeWrite);
     });
@@ -417,11 +376,11 @@ describe('lexical scoping — class form runs bond ctor; instance form does not'
     it('$(instance) does not run the bond ctor on mount', () => {
         let bondCtorCalls = 0;
         class $Tagger extends $Chemical {
-            $tag = '';
+            tag = '';
             $Tagger(...args: any[]) {
                 bondCtorCalls++;
             }
-            view() { return React.createElement('span', null, this.$tag); }
+            view() { return React.createElement('span', null, this.tag); }
         }
         const t = new $Tagger();
         const T = $(t);
@@ -441,8 +400,8 @@ describe('lexical scoping — clone unconditionally even without props', () => {
         // Behavioral: mounting with no props still produces output that
         // reflects the parent's state — proving a derivative was created.
         class $R extends $Chemical {
-            $tag = 'parent';
-            view() { return React.createElement('span', null, this.$tag); }
+            tag = 'parent';
+            view() { return React.createElement('span', null, this.tag); }
         }
         new $R();
         const r = new $R();
@@ -453,15 +412,15 @@ describe('lexical scoping — clone unconditionally even without props', () => {
 
     it('mounting <C /> with no props but later parent updates flow through', async () => {
         class $R extends $Chemical {
-            $tag = 'parent';
-            view() { return React.createElement('span', null, this.$tag); }
+            tag = 'parent';
+            view() { return React.createElement('span', null, this.tag); }
         }
         new $R();
         const r = new $R();
         const C = $(r);
         const { container } = render(React.createElement(C as any)); // no props
         expect(container.textContent).toBe('parent');
-        await act(async () => { r.$tag = 'updated'; });
+        await act(async () => { r.tag = 'updated'; });
         // Derivative was created (despite no props) so it heard the update.
         expect(container.textContent).toBe('updated');
     });
@@ -480,12 +439,11 @@ describe('lexical scoping — Component reference stability', () => {
         expect(A).toBe(B);
     });
 
-    it('but each MOUNT of that Component creates a fresh derivative', () => {
-        // Behavioral: three mounts → three independent renderings, observable
-        // via the DOM (three spans). Each derivative renders separately.
+    it('each mount point renders the component independently', () => {
+        // Behavioral: three mounts → three rendered spans.
         class $R extends $Chemical {
-            $tag = 'shared';
-            view() { return React.createElement('span', null, this.$tag); }
+            tag = 'shared';
+            view() { return React.createElement('span', null, this.tag); }
         }
         new $R();
         const r = new $R();

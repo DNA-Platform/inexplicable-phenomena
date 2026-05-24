@@ -1,12 +1,13 @@
-import React, { ReactNode, useState, useEffect, useLayoutEffect, JSX } from "react";
+import React, { ReactNode, JSX } from "react";
 import {
     $cid$, $symbol$, $type$, $molecule$, $reaction$, $template$, $isTemplate$, $derived$,
     $isBound$, $$parent$$, $parent$, $synthesis$, $component$, $resolveComponent$, $children$,
-    $props$, $lastProps$, $apply$, $bond$, $createComponent$,
+    $props$, $lastProps$, $apply$, $bond$,
     $destroy$, $destroyed$, $remove$, $catalyst$, $isCatalyst$,
-    $$template$$, $$getNextCid$$, $$createSymbol$$, $$parseCid$$,
+    $$template$$, $$getNextCid$$, $$createSymbol$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
-    $isChemicalBase$, $lifted$, $construction$, $bondCtorRan$
+    $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
+    $devError$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType } from "../implementation/types";
@@ -14,8 +15,7 @@ import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from ".
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
 import { $Reaction } from "./reaction";
-import { diff } from "../implementation/reconcile";
-import { augment } from "../implementation/augment";
+import { dev, warn } from "../implementation/dev";
 
 // Re-export bond / reflection / molecule / reaction / scope machinery for
 // consumers that import from chemical.ts.
@@ -140,16 +140,8 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
     private _chemical: T;
     private _bondConstructor?: Function;
     private _parameters: { isArray: boolean; isSpread: boolean }[] = [];
-
-    // AUDIT: dead code — `isViewSymbol` checks for a `$$Chemistry.` prefix that
-    // is never produced anywhere in the codebase. The companion `viewSymbol`
-    // getter that would have produced it was unused and removed. The
-    // `process()` branch that calls `isViewSymbol(key)` is therefore unreachable
-    // unless an external consumer is constructing such keys. Verify and delete
-    // — see caveat: dead-view-symbol-branch (TBD).
-    isViewSymbol(symbol: string): boolean {
-        return symbol.startsWith('$$Chemistry.');
-    }
+    private _boundChildren: Map<any, Map<string, any>> = new Map();
+    private _lastBondArgs?: any[];
 
     constructor(chemical: T) {
         this._chemical = chemical;
@@ -164,9 +156,12 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         const context = new $SynthesisContext(chemical, this._parameters);
         parentContext?.childContexts.push(context);
 
+        const lastProps = chemical[$lastProps$] || {};
         for (const prop in props) {
             if (prop === 'children' || prop === 'key' || prop === 'ref') continue;
-            chemical['$' + prop] = props[prop];
+            const value = props[prop];
+            if (prop in lastProps && lastProps[prop] == value) continue;
+            chemical['$' + prop] = value;
         }
 
         this.process(children, context);
@@ -179,40 +174,65 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
 
         const c = this._chemical as any;
 
-        // Bond ctor body runs ONCE per derivative — at mount. Subsequent
-        // re-renders refresh typed fields (already done above via the
-        // prop loop) but skip the body. Async ctors require this
-        // (otherwise they'd re-trigger every render-loop iteration).
-        // Run if a ctor is declared, regardless of arg count — async
-        // no-arg ctors are valid (e.g. `async $Loader() { await fetch }`).
-        if (this._bondConstructor && context.argsValid && !c[$bondCtorRan$]) {
-            c[$bondCtorRan$] = true;
-            $paramValidation.reset();
-            $paramValidation.chemical = this._chemical;
-            $paramValidation.count = this._parameters.length;
-            const bondResult = this._bondConstructor!.apply(this._chemical, context.arguments.values);
-            $paramValidation.evaluate();
-
-            // Construction promise: bundle this ctor's async result with
-            // our PROTOTYPE PARENT's construction (state-inheritance chain,
-            // not DOM/context parent), so `next('construction')` awaits
-            // the whole chain. allSettled — a failing ctor doesn't cascade.
-            // On settle, fire react() so the view re-renders with whatever
-            // post-await state was set.
-            const parentConstruction = Object.getPrototypeOf(c)?.[$construction$];
-            const promises: Promise<any>[] = [];
-            if (bondResult instanceof Promise) promises.push(bondResult);
-            if (parentConstruction) promises.push(parentConstruction);
-            if (promises.length > 0) {
-                c[$construction$] = Promise.allSettled(promises).then(() => {
-                    c[$reaction$]?.react();
-                });
+        if (this._bondConstructor && context.argsValid) {
+            const newArgs = context.arguments.values;
+            if (this._lastBondArgs && $Synthesis.sameArgs(newArgs, this._lastBondArgs)) {
+                // Children unchanged — skip bond constructor
             } else {
-                c[$construction$] = Promise.resolve();
+                this._lastBondArgs = $Synthesis.snapshotArgs(newArgs);
+                $paramValidation.reset();
+                $paramValidation.chemical = this._chemical;
+                $paramValidation.count = this._parameters.length;
+                let bondResult: any;
+                if (dev) {
+                    try {
+                        bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
+                        $paramValidation.evaluate();
+                        c[$devError$] = undefined;
+                    } catch (e: any) {
+                        c[$devError$] = e?.message || String(e);
+                    }
+                } else {
+                    bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
+                    $paramValidation.evaluate();
+                }
+
+                if (!c[$construction$]) {
+                    const parentConstruction = Object.getPrototypeOf(c)?.[$construction$];
+                    const promises: Promise<any>[] = [];
+                    if (bondResult instanceof Promise) promises.push(bondResult);
+                    if (parentConstruction) promises.push(parentConstruction);
+                    if (promises.length > 0) {
+                        c[$construction$] = Promise.allSettled(promises).then(() => {
+                            c[$reaction$]?.react();
+                        });
+                    } else {
+                        c[$construction$] = Promise.resolve();
+                    }
+                } else if (bondResult instanceof Promise) {
+                    bondResult.catch(() => {});
+                }
             }
         }
 
         return props;
+    }
+
+    private static sameArgs(a: any[], b: any[]): boolean {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i] === b[i]) continue;
+            if (Array.isArray(a[i]) && Array.isArray(b[i])) {
+                if (!$Synthesis.sameArgs(a[i], b[i])) return false;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static snapshotArgs(args: any[]): any[] {
+        return args.map(a => Array.isArray(a) ? $Synthesis.snapshotArgs(a) : a);
     }
 
     // AUDIT: brittle — regex-parses the bond constructor's source string to
@@ -243,6 +263,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         context.singleton = !Array.isArray(children) && childArray.length === 1;
         const parent = this._chemical;
         let ctx = context;
+        const typeCounts: Map<any, number> | undefined = dev ? new Map() : undefined;
         for (const child of childArray) {
             ctx = ctx.next(child);
             if (!React.isValidElement(child)) {
@@ -253,20 +274,27 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             }
             const element = child as React.ReactElement<any>;
             const type = element.type as any;
-            const key = element.key?.toString() || '';
-            if (this.isViewSymbol(key)) {
-                const cid = $Particle[$$parseCid$$](key.slice(1))!;
-                const chemical = $Reaction.find(cid)!;
-                ctx.args.push(chemical);
-                ctx.children.push(element);
-            } else if (type === $Include || (type as any)?.$chemical instanceof $Include) {
+            const elementKey = element.key?.toString() || '';
+            if (type === $Include || (type as any)?.$chemical instanceof $Include) {
                 ctx.isModified = true;
                 const arrayContext = ctx.array();
                 this.processArray(React.Children.toArray(element.props?.children || []), arrayContext);
             } else if (typeof type === 'function') {
                 let component: $Component = type as any;
-                if (!(component as any).$bind) component = $wrap(type as React.FC).$Component;
-                if ((component as any).$chemical?.[$parent$] !== parent) component = (component as any).$bind(parent);
+                if (!(component as any).$bind) component = $wrap(type as React.FC)[$resolveComponent$]();
+                if (typeCounts) typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
+                let typeCache = this._boundChildren.get(type);
+                if (!typeCache) {
+                    typeCache = new Map();
+                    this._boundChildren.set(type, typeCache);
+                }
+                const cached = typeCache.get(elementKey);
+                if (cached && (cached as any).$chemical?.[$parent$] === parent) {
+                    component = cached;
+                } else if ((component as any).$chemical?.[$parent$] !== parent) {
+                    component = (component as any).$bind(parent);
+                    typeCache.set(elementKey, component);
+                }
                 const chemical = (component as any).$chemical;
                 const props = ctx.child(chemical, element.props);
                 ctx.args.push(chemical);
@@ -292,6 +320,21 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             } else {
                 ctx.args.push(element.props);
                 ctx.children.push(element);
+            }
+        }
+        if (typeCounts) {
+            const parentName = (parent as any)[$type$]?.name || 'unknown';
+            for (const [type, count] of typeCounts) {
+                if (count < 2) continue;
+                const childName = type.$chemical?.[$type$]?.name
+                    || type.$chemical?.constructor?.name
+                    || type.name
+                    || 'unknown';
+                warn(
+                    `${parentName} has ${count} children of type ${childName} without explicit keys. ` +
+                    `Same-type siblings need unique key props to preserve identity across re-renders. ` +
+                    `Without keys, swapping or reordering children will swap their state.`
+                );
             }
         }
     }
@@ -587,28 +630,21 @@ export class $Chemical extends $Particle {
 
     get children() { return this[$children$]; }
 
-    // [$resolveComponent$] — internal accessor. Returns the chemical's React FC.
-    // Author code never calls this; the public surface is the `$()` callable.
-    //
-    // Two caches exist on a chemical and they serve different paths:
-    //   [$component$] — set here for templates (full $createComponent path:
-    //                   runs bond ctor at first mount, full chemical
-    //                   lifecycle), and by $lift for non-template instances
-    //                   (no bond ctor).
-    //   [$lifted$]    — separate cache used by `$()` dispatch's instance form.
-    //                   Always routes through $lift; never runs the bond ctor.
-    //                   $(template) and the template's resolved component
-    //                   are intentionally different: the latter runs the
-    //                   bond ctor on mount; the former reuses an already-
-    //                   constructed instance.
     [$resolveComponent$](): Component<this> {
-        if (this[$component$]) return this[$component$];
+        if (Object.prototype.hasOwnProperty.call(this, $component$)) return this[$component$]!;
         if (this[$isTemplate$]) {
-            this[$component$] = this[$createComponent$]() as any;
-            return this[$component$]!;
+            this.assertViewConstructors();
+            this[$template$][$molecule$].reactivate();
         }
-        this[$component$] = $lift(this) as any;
+        const component = $lift(this, undefined, true) as any;
+        component.$bind = (parent?: $Chemical) => bind(this, parent);
+        this[$component$] = component;
         return this[$component$]!;
+    }
+
+    [$deriveInit$]() {
+        this[$molecule$] = new $Molecule(this);
+        this[$synthesis$] = new $Synthesis(this);
     }
 
     constructor() {
@@ -641,78 +677,21 @@ export class $Chemical extends $Particle {
         return props;
     }
 
+    $new(): this {
+        const clone = super.$new();
+        const p = clone as any;
+        p[$synthesis$] = new $Synthesis(p);
+        p[$$parent$$] = clone;
+        p[$catalyst$] = clone;
+        return clone;
+    }
+
     [$destroy$]() {
         if (this[$isTemplate$] || this[$isBound$]) return;
         this[$$parent$$] = undefined as any;
         this[$molecule$]?.destroy();
         this[$reaction$]?.destroy();
         this[$destroyed$] = true;
-    }
-
-    protected [$createComponent$](): Component<this> {
-        if (this[$component$])
-            throw new Error(`The Component for ${this} has already been created`);
-        this.assertViewConstructors();
-        this[$template$][$molecule$].reactivate();
-        const template = this[$template$];
-        const Component = (props?: $Props): ReactNode => {
-            const [cid, setCid] = useState(-1);
-            let chemical: $Chemical;
-            if (cid === -1) {
-                chemical = Object.create(template) as $Chemical;
-                chemical[$cid$] = $Particle[$$getNextCid$$]();
-                chemical[$symbol$] = $Particle[$$createSymbol$$](chemical);
-                chemical[$molecule$] = new $Molecule(chemical);
-                chemical[$synthesis$] = new $Synthesis(chemical);
-                chemical[$phases$] = new Map($phaseOrder.map(p => [p, []]));
-                chemical[$phase$] = 'setup';
-                chemical[$reaction$] = new $Reaction(chemical);
-                setCid(chemical[$cid$]);
-            } else {
-                chemical = $Reaction.find(cid) as $Chemical;
-                if (!chemical) throw new Error(`$Chemical[${cid}] not found`);
-            }
-            const [, update] = useState(0);
-            chemical[$update$] = () => update((t: number) => t + 1);
-            useEffect(() => {
-                chemical[$resolve$]('mount');
-                return () => {
-                    chemical[$resolve$]('unmount');
-                    if (!chemical[$remove$]) chemical[$remove$] = true;
-                    else if (!chemical[$destroyed$]) chemical[$destroy$]();
-                };
-            }, [chemical]);
-            useLayoutEffect(() => {
-                chemical[$resolve$]('layout');
-            });
-            const react = () => chemical[$reaction$]?.react();
-            useEffect(() => {
-                chemical[$resolve$]('effect');
-                chemical[$rendering$] = true;
-                const current = augment(chemical.view(), react);
-                chemical[$rendering$] = false;
-                if (diff(current, chemical[$viewCache$])) {
-                    chemical[$viewCache$] = current;
-                    chemical[$update$]!();
-                }
-            });
-            chemical[$rendering$] = true;
-            chemical[$apply$](props);
-            const filtered = applyRenderFilters(chemical);
-            if (filtered !== undefined) {
-                chemical[$rendering$] = false;
-                return filtered;
-            }
-            chemical[$bond$]();
-            const output = augment(chemical.view(), react);
-            chemical[$viewCache$] = output;
-            chemical[$rendering$] = false;
-            return output;
-        };
-        (Component as any).$chemical = template;
-        (Component as any).$bound = false;
-        (Component as any).$bind = (parent?: $Chemical) => bind(this, parent);
-        return Component as any;
     }
 
     private assertViewConstructors(prototype?: any, childConstructor?: any) {
@@ -868,12 +847,12 @@ class Chemistry extends $Chemical {
         // instance so React component identity is stable across $(x) calls.
         if (isParticle(arg)) {
             const inst = arg as any;
-            if (inst[$lifted$]) return inst[$lifted$];
+            if (Object.prototype.hasOwnProperty.call(inst, $lifted$)) return inst[$lifted$];
             return inst[$lifted$] = $lift(arg);
         }
 
         // Inverse form — $(Component) returns the chemical instance it wraps.
-        // Components carry `.$chemical` (attached during $createComponent$ or
+        // Components carry `.$chemical` (attached during $lift or
         // $lift). This is the inverse of $(instance) → Component.
         if (typeof arg === 'function' && (arg as any).$chemical) {
             return (arg as any).$chemical;

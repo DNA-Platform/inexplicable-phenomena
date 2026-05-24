@@ -1,30 +1,44 @@
 import React from 'react';
 import { $, $Chemical } from '@/index';
-import { DerivativesRow, DerivativeCard, MountLabel } from './case.styled';
-import { CounterValue, CounterButton } from '../II-1/case.styled';
+import { DerivativesRow, ReactionCard, ReactionEmoji, ReactionCount } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
-class $Shared extends $Chemical {
-    $count = 0;
-    increment() { this.$count++; }
+class $Reaction extends $Chemical {
+    $emoji = '';
+    count = 0;
+    justClicked = false;
+
+    react() {
+        this.count++;
+        this.justClicked = true;
+        setTimeout(() => { this.justClicked = false; }, 200);
+    }
+
     view() {
+        const clicked = this.count > 0;
         return (
-            <DerivativeCard>
-                <MountLabel>mount</MountLabel>
-                <CounterValue>{this.$count}</CounterValue>
-                <CounterButton onClick={this.increment}>+</CounterButton>
-            </DerivativeCard>
+            <ReactionCard onClick={this.react}>
+                <ReactionEmoji $pop={this.justClicked}>{this.$emoji}</ReactionEmoji>
+                <ReactionCount $active={clicked}>{this.count}</ReactionCount>
+                <VerdictSection>
+                    <VerdictRow $state={clicked ? 'pass' : 'pending'}>
+                        <VerdictDot $state={clicked ? 'pass' : 'pending'} />
+                        {clicked ? `✓ ${this.count}` : '○'}
+                    </VerdictRow>
+                </VerdictSection>
+            </ReactionCard>
         );
     }
 }
 
-const Shared = $($Shared);
+const Reaction = $($Reaction);
 
 export default function Case1Demo() {
     return (
         <DerivativesRow>
-            <Shared />
-            <Shared />
-            <Shared />
+            <Reaction emoji="👍" />
+            <Reaction emoji="😂" />
+            <Reaction emoji="❤️" />
         </DerivativesRow>
     );
 }

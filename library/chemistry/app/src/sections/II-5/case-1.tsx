@@ -2,6 +2,7 @@ import React from 'react';
 import { $Particle } from '@/index';
 import { isParticle } from '@/symbolic';
 import { Caption, RenderBox, AssertionLine, Verdict } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
 class $Error extends $Particle {
     constructor(error: Error) {
@@ -16,6 +17,7 @@ class $Error extends $Particle {
 export default function Case1Demo() {
     const carrier: any = new $Error(new Error('something went wrong'));
     const isP = isParticle(carrier);
+    const state = isP ? 'pass' : 'fail';
     return (
         <div>
             <Caption>
@@ -27,6 +29,14 @@ export default function Case1Demo() {
                 {'  ·  '}
                 carrier.toString() → <code>{String(carrier.toString()).slice(0, 32)}</code>
             </AssertionLine>
+            <VerdictSection>
+                <VerdictRow $state={state}>
+                    <VerdictDot $state={state} />
+                    {isP
+                        ? '✓ isParticle(carrier) = true'
+                        : '✗ isParticle(carrier) = false'}
+                </VerdictRow>
+            </VerdictSection>
         </div>
     );
 }

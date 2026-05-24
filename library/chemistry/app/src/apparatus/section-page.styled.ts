@@ -3,10 +3,19 @@ import { Link } from 'react-router-dom';
 
 export const ArticleFrame = styled.article`
     max-width: ${(p) => p.theme.size.contentMaxWidth};
+    width: 100%;
     margin: 0 auto;
-    padding: 40px 40px 64px;
+    padding: 40px 48px 64px;
     font-size: ${(p) => p.theme.size.bodyText};
     color: ${(p) => p.theme.color.ink};
+
+    @media (min-width: 1600px) {
+        padding: 40px 64px 64px;
+    }
+
+    @media (max-width: 768px) {
+        padding: 20px 16px 40px;
+    }
 `;
 
 export const Breadcrumb = styled.div`

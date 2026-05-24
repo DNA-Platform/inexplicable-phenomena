@@ -11,9 +11,9 @@ import { $lookup, $load } from '@/framework/load';
 // subclass's template Component once, at module load time, and reuse it
 // across every describe() block.
 
-class $Apple extends $Chemical { $kind = 'apple'; }
-class $Banana extends $Chemical { $kind = 'banana'; }
-class $Cherry extends $Chemical { $kind = 'cherry'; }
+class $Apple extends $Chemical { kind = 'apple'; }
+class $Banana extends $Chemical { kind = 'banana'; }
+class $Cherry extends $Chemical { kind = 'cherry'; }
 
 const AppleComponent = $($Apple);
 const BananaComponent = $($Banana);
@@ -41,7 +41,7 @@ describe('$lookup with type "{}"', () => {
     it('extracts a chemical from a default export', () => {
         const chemical = $lookup<$Apple>(moduleWithDefault(AppleComponent), '{}');
         expect(chemical).toBeInstanceOf($Apple);
-        expect(chemical.$kind).toBe('apple');
+        expect(chemical.kind).toBe('apple');
     });
 
     it('extracts a chemical from a named export', () => {

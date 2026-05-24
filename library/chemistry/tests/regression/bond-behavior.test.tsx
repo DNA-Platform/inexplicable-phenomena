@@ -63,23 +63,23 @@ const MAX_RENDERS_PER_WRITE = 2;
 describe('regression — instance state isolation', () => {
     it('two instances of the same class hold independent values for the same reactive prop', () => {
         class $Foo extends $Chemical {
-            $count? = 0;
-            view() { return <span className="c">{this.$count}</span>; }
+            count? = 0;
+            view() { return <span className="c">{this.count}</span>; }
         }
         new $Foo();
         const a = new $Foo();
         const b = new $Foo();
 
-        (a as any).$count = 7;
+        (a as any).count = 7;
 
-        expect((a as any).$count).toBe(7);
-        expect((b as any).$count).toBe(0);
+        expect((a as any).count).toBe(7);
+        expect((b as any).count).toBe(0);
     });
 
     it('two mounted instances of the same class render independent values', async () => {
         class $Foo extends $Chemical {
-            $count? = 0;
-            view() { return <span className="c">{this.$count}</span>; }
+            count? = 0;
+            view() { return <span className="c">{this.count}</span>; }
         }
         new $Foo();
         const a = new $Foo();
@@ -91,7 +91,7 @@ describe('regression — instance state isolation', () => {
         expect(ca.querySelector('.c')!.textContent).toBe('0');
         expect(cb.querySelector('.c')!.textContent).toBe('0');
 
-        await act(async () => { (a as any).$count = 7; });
+        await act(async () => { (a as any).count = 7; });
 
         expect(ca.querySelector('.c')!.textContent).toBe('7');
         // b's DOM must NOT have changed: writes to a do not bleed to b.
@@ -102,8 +102,8 @@ describe('regression — instance state isolation', () => {
         let aRenders = 0;
         let bRenders = 0;
         class $Foo extends $Chemical {
-            $count? = 0;
-            view() { return <span>{this.$count}</span>; }
+            count? = 0;
+            view() { return <span>{this.count}</span>; }
         }
         new $Foo();
         const a = new $Foo();
@@ -115,11 +115,11 @@ describe('regression — instance state isolation', () => {
         // Re-define view per-instance is not supported; instead, count via
         // a wrapped Component-mount and compare aRenders/bRenders movement.
         class $Counter extends $Chemical {
-            $count? = 0;
+            count? = 0;
             _isA = false;
             view() {
                 if (this._isA) aRenders++; else bRenders++;
-                return <span>{this.$count}</span>;
+                return <span>{this.count}</span>;
             }
         }
         new $Counter();
@@ -131,7 +131,7 @@ describe('regression — instance state isolation', () => {
         const aBefore = aRenders;
         const bBefore = bRenders;
 
-        await act(async () => { (ai as any).$count = 9; });
+        await act(async () => { (ai as any).count = 9; });
 
         expect(aRenders - aBefore).toBeGreaterThanOrEqual(1);
         // b was not written to → b must not re-render.
@@ -148,10 +148,10 @@ describe('regression — direct writes to reactive props', () => {
     it('a direct assignment to $prop updates the DOM', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $value? = 'a';
+            value? = 'a';
             view() {
                 renderCount++;
-                return <span className="v">{this.$value}</span>;
+                return <span className="v">{this.value}</span>;
             }
         }
         new $C();
@@ -160,7 +160,7 @@ describe('regression — direct writes to reactive props', () => {
         expect(container.querySelector('.v')!.textContent).toBe('a');
         const before = renderCount;
 
-        await act(async () => { c.$value = 'b'; });
+        await act(async () => { c.value = 'b'; });
 
         expect(container.querySelector('.v')!.textContent).toBe('b');
         // One write → at least one render, at most MAX_RENDERS_PER_WRITE.
@@ -168,16 +168,13 @@ describe('regression — direct writes to reactive props', () => {
         expect(renderCount - before).toBeLessThanOrEqual(MAX_RENDERS_PER_WRITE);
     });
 
-    it('writing the same value still triggers at least one re-render (no eq short-circuit)', async () => {
-        // Pin current behavior: bonds do not skip writes when newValue === oldValue.
-        // If the refactor introduces eq-skipping, that is an observable change and
-        // must be a deliberate decision, not a silent regression.
+    it('writing the same value skips re-render (reference equality)', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $value? = 'x';
+            value? = 'x';
             view() {
                 renderCount++;
-                return <span className="v">{this.$value}</span>;
+                return <span className="v">{this.value}</span>;
             }
         }
         new $C();
@@ -185,18 +182,18 @@ describe('regression — direct writes to reactive props', () => {
         render(React.createElement($(c)));
         const before = renderCount;
 
-        await act(async () => { c.$value = 'x'; });
+        await act(async () => { c.value = 'x'; });
 
-        expect(renderCount - before).toBeGreaterThanOrEqual(1);
+        expect(renderCount - before).toBe(0);
     });
 
     it('a sequence of writes across separate ticks each updates the DOM', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $value? = 0;
+            value? = 0;
             view() {
                 renderCount++;
-                return <span className="v">{this.$value}</span>;
+                return <span className="v">{this.value}</span>;
             }
         }
         new $C();
@@ -204,13 +201,13 @@ describe('regression — direct writes to reactive props', () => {
         const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
-        await act(async () => { c.$value = 1; });
+        await act(async () => { c.value = 1; });
         expect(container.querySelector('.v')!.textContent).toBe('1');
 
-        await act(async () => { c.$value = 2; });
+        await act(async () => { c.value = 2; });
         expect(container.querySelector('.v')!.textContent).toBe('2');
 
-        await act(async () => { c.$value = 3; });
+        await act(async () => { c.value = 3; });
         expect(container.querySelector('.v')!.textContent).toBe('3');
 
         // Three writes → at most 3 * MAX_RENDERS_PER_WRITE view() calls.
@@ -228,13 +225,13 @@ describe('regression — nested-structure writes through reactive props', () => 
     it('Map.set inside a reactive prop triggers re-render and updates DOM', async () => {
         let renderCount = 0;
         class $M extends $Chemical {
-            $map: Map<string, number> = new Map();
+            map: Map<string, number> = new Map();
             view() {
                 renderCount++;
                 return (
                     <div>
-                        <span className="size">{this.$map.size}</span>
-                        <button onClick={() => { this.$map.set('k' + this.$map.size, 1); }}>add</button>
+                        <span className="size">{this.map.size}</span>
+                        <button onClick={() => { this.map.set('k' + this.map.size, 1); }}>add</button>
                     </div>
                 );
             }
@@ -258,13 +255,13 @@ describe('regression — nested-structure writes through reactive props', () => 
     it('Set.add inside a reactive prop triggers re-render and updates DOM', async () => {
         let renderCount = 0;
         class $S extends $Chemical {
-            $set: Set<number> = new Set();
+            set: Set<number> = new Set();
             view() {
                 renderCount++;
                 return (
                     <div>
-                        <span className="size">{this.$set.size}</span>
-                        <button onClick={() => { this.$set.add(this.$set.size); }}>add</button>
+                        <span className="size">{this.set.size}</span>
+                        <button onClick={() => { this.set.add(this.set.size); }}>add</button>
                     </div>
                 );
             }
@@ -284,13 +281,13 @@ describe('regression — nested-structure writes through reactive props', () => 
     it('Array.push inside a reactive prop triggers re-render and updates DOM', async () => {
         let renderCount = 0;
         class $L extends $Chemical {
-            $items: string[] = [];
+            items: string[] = [];
             view() {
                 renderCount++;
                 return (
                     <div>
-                        <span className="len">{this.$items.length}</span>
-                        <button onClick={() => { this.$items.push('x'); }}>add</button>
+                        <span className="len">{this.items.length}</span>
+                        <button onClick={() => { this.items.push('x'); }}>add</button>
                     </div>
                 );
             }
@@ -310,13 +307,13 @@ describe('regression — nested-structure writes through reactive props', () => 
     it('plain object property write through a reactive prop triggers re-render', async () => {
         let renderCount = 0;
         class $O extends $Chemical {
-            $config: { mode: string } = { mode: 'light' };
+            config: { mode: string } = { mode: 'light' };
             view() {
                 renderCount++;
                 return (
                     <div>
-                        <span className="mode">{this.$config.mode}</span>
-                        <button onClick={() => { this.$config.mode = 'dark'; }}>toggle</button>
+                        <span className="mode">{this.config.mode}</span>
+                        <button onClick={() => { this.config.mode = 'dark'; }}>toggle</button>
                     </div>
                 );
             }
@@ -336,13 +333,13 @@ describe('regression — nested-structure writes through reactive props', () => 
     it('deep-path write (this.$x.y.z = N) triggers re-render and updates DOM', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $data: { nested: { value: number } } = { nested: { value: 0 } };
+            data: { nested: { value: number } } = { nested: { value: 0 } };
             view() {
                 renderCount++;
                 return (
                     <div>
-                        <span className="v">{this.$data.nested.value}</span>
-                        <button onClick={() => { this.$data.nested.value = 42; }}>set</button>
+                        <span className="v">{this.data.nested.value}</span>
+                        <button onClick={() => { this.data.nested.value = 42; }}>set</button>
                     </div>
                 );
             }
@@ -369,13 +366,13 @@ describe('regression — write source: handler, timeout, external', () => {
     it('a write from an event handler triggers re-render', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $count? = 0;
+            count? = 0;
             view() {
                 renderCount++;
                 return (
                     <div>
-                        <span className="c">{this.$count}</span>
-                        <button onClick={() => { this.$count = (this.$count ?? 0) + 1; }}>+</button>
+                        <span className="c">{this.count}</span>
+                        <button onClick={() => { this.count = (this.count ?? 0) + 1; }}>+</button>
                     </div>
                 );
             }
@@ -395,10 +392,10 @@ describe('regression — write source: handler, timeout, external', () => {
     it('a write from setTimeout triggers re-render', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $count? = 0;
+            count? = 0;
             view() {
                 renderCount++;
-                return <span className="c">{this.$count}</span>;
+                return <span className="c">{this.count}</span>;
             }
         }
         new $C();
@@ -409,7 +406,7 @@ describe('regression — write source: handler, timeout, external', () => {
         await act(async () => {
             await new Promise<void>(resolve => {
                 setTimeout(() => {
-                    c.$count = 5;
+                    c.count = 5;
                     resolve();
                 }, 10);
             });
@@ -424,10 +421,10 @@ describe('regression — write source: handler, timeout, external', () => {
     it('a write from a Promise.then callback triggers re-render', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $status? = 'idle';
+            status? = 'idle';
             view() {
                 renderCount++;
-                return <span className="s">{this.$status}</span>;
+                return <span className="s">{this.status}</span>;
             }
         }
         new $C();
@@ -436,7 +433,7 @@ describe('regression — write source: handler, timeout, external', () => {
         const before = renderCount;
 
         await act(async () => {
-            await Promise.resolve('ok').then(v => { c.$status = v; });
+            await Promise.resolve('ok').then(v => { c.status = v; });
             await new Promise(r => setTimeout(r, 5));
         });
 
@@ -448,10 +445,10 @@ describe('regression — write source: handler, timeout, external', () => {
     it('an external write (no handler, no timer, just code) triggers re-render', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $value? = 'a';
+            value? = 'a';
             view() {
                 renderCount++;
-                return <span className="v">{this.$value}</span>;
+                return <span className="v">{this.value}</span>;
             }
         }
         new $C();
@@ -459,7 +456,7 @@ describe('regression — write source: handler, timeout, external', () => {
         const { container } = render(React.createElement($(c)));
         const before = renderCount;
 
-        await act(async () => { c.$value = 'b'; });
+        await act(async () => { c.value = 'b'; });
 
         expect(container.querySelector('.v')!.textContent).toBe('b');
         expect(renderCount - before).toBeGreaterThanOrEqual(1);
@@ -473,20 +470,20 @@ describe('regression — write source: handler, timeout, external', () => {
 // -----------------------------------------------------------------------------
 
 describe('regression — cross-chemical writes target the right component', () => {
-    it('writing inner.$v from outer\'s handler updates inner\'s observable value', async () => {
+    it('writing inner.v from outer\'s handler updates inner\'s observable value', async () => {
         // Pin: a chemical can hold a reference to another chemical and write
         // to its reactive props from a handler. This is the basic
         // cross-chemical pattern from tests/react/scope-tracking.test.tsx.
         class $Inner extends $Chemical {
-            $v? = 0;
-            view() { return <span className="iv">{this.$v}</span>; }
+            v? = 0;
+            view() { return <span className="iv">{this.v}</span>; }
         }
         class $Outer extends $Chemical {
-            $inner!: $Inner;
+            inner!: $Inner;
             view() {
                 return (
                     <div>
-                        <button onClick={() => { this.$inner.$v = (this.$inner.$v ?? 0) + 1; }}>inc</button>
+                        <button onClick={() => { this.inner.v = (this.inner.v ?? 0) + 1; }}>inc</button>
                     </div>
                 );
             }
@@ -495,32 +492,32 @@ describe('regression — cross-chemical writes target the right component', () =
         new $Outer();
         const inner = new $Inner();
         const outer = new $Outer();
-        outer.$inner = inner;
+        outer.inner = inner;
 
         const { container } = render(React.createElement($(outer)));
 
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
 
-        expect(inner.$v).toBe(1);
+        expect(inner.v).toBe(1);
     });
 
-    it('writing outer.$inner.$value targets ONLY inner (outer that does not read inner.$value does not re-render)', async () => {
+    it('writing outer.inner.value targets ONLY inner (outer that does not read inner.value does not re-render)', async () => {
         // Pin scoping: a handler that writes to a referenced chemical's
         // reactive prop must not wake the writing chemical when the writer's
         // own view doesn't read that prop.
         let outerRenders = 0;
         class $Inner extends $Chemical {
-            $value? = 0;
-            view() { return <span className="iv">{this.$value}</span>; }
+            value? = 0;
+            view() { return <span className="iv">{this.value}</span>; }
         }
         class $Outer extends $Chemical {
-            $inner!: $Inner;
+            inner!: $Inner;
             view() {
                 outerRenders++;
                 return (
                     <div>
                         <span className="ot">outer</span>
-                        <button onClick={() => { this.$inner.$value = (this.$inner.$value ?? 0) + 1; }}>inc</button>
+                        <button onClick={() => { this.inner.value = (this.inner.value ?? 0) + 1; }}>inc</button>
                     </div>
                 );
             }
@@ -529,7 +526,7 @@ describe('regression — cross-chemical writes target the right component', () =
         new $Outer();
         const inner = new $Inner();
         const outer = new $Outer();
-        outer.$inner = inner;
+        outer.inner = inner;
 
         const { container } = render(React.createElement($(outer)));
         const before = outerRenders;
@@ -537,31 +534,31 @@ describe('regression — cross-chemical writes target the right component', () =
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
 
         // The write landed on inner.
-        expect(inner.$value).toBe(1);
-        // Outer's view never read inner.$value, so it must not re-render.
+        expect(inner.value).toBe(1);
+        // Outer's view never read inner.value, so it must not re-render.
         expect(outerRenders - before).toBe(0);
     });
 
     it('a writing chemical that reads its OWN reactive prop alongside the cross-write re-renders', async () => {
-        // Pin: writing outer.$selfTag and outer.$inner.$value in the same
-        // handler updates outer's DOM (because outer reads $selfTag) and
+        // Pin: writing outer.selfTag and outer.inner.value in the same
+        // handler updates outer's DOM (because outer reads selfTag) and
         // also updates inner's value. Anchors the basic dual-write case.
         let outerRenders = 0;
         class $Inner extends $Chemical {
-            $value? = 0;
-            view() { return <span className="iv">{this.$value}</span>; }
+            value? = 0;
+            view() { return <span className="iv">{this.value}</span>; }
         }
         class $Outer extends $Chemical {
-            $selfTag? = 'init';
-            $inner!: $Inner;
+            selfTag? = 'init';
+            inner!: $Inner;
             view() {
                 outerRenders++;
                 return (
                     <div>
-                        <span className="ot">{this.$selfTag}</span>
+                        <span className="ot">{this.selfTag}</span>
                         <button onClick={() => {
-                            this.$selfTag = 'updated';
-                            this.$inner.$value = (this.$inner.$value ?? 0) + 1;
+                            this.selfTag = 'updated';
+                            this.inner.value = (this.inner.value ?? 0) + 1;
                         }}>inc</button>
                     </div>
                 );
@@ -571,7 +568,7 @@ describe('regression — cross-chemical writes target the right component', () =
         new $Outer();
         const inner = new $Inner();
         const outer = new $Outer();
-        outer.$inner = inner;
+        outer.inner = inner;
 
         const { container } = render(React.createElement($(outer)));
         expect(container.querySelector('.ot')!.textContent).toBe('init');
@@ -580,9 +577,9 @@ describe('regression — cross-chemical writes target the right component', () =
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
 
         // Both writes landed.
-        expect(inner.$value).toBe(1);
+        expect(inner.value).toBe(1);
         expect(container.querySelector('.ot')!.textContent).toBe('updated');
-        // Outer re-rendered for its own $selfTag write.
+        // Outer re-rendered for its own selfTag write.
         expect(outerRenders - before).toBeGreaterThanOrEqual(1);
         expect(outerRenders - before).toBeLessThanOrEqual(MAX_RENDERS_PER_WRITE);
     });
@@ -593,83 +590,63 @@ describe('regression — cross-chemical writes target the right component', () =
 // 5. Derivative fan-out: parent write reaches all $lift-derived mounts
 // -----------------------------------------------------------------------------
 
-describe('regression — parent write fans out to all derivative mounts', () => {
-    it('two mounts of $(parent) both update on a parent write (DOM)', async () => {
+describe('regression — template mounts have independent state (class form)', () => {
+    it('two mounts of $($Class) hold independent state', async () => {
         class $R extends $Chemical {
-            $tag? = 'A';
-            view() { return <span className="t">{this.$tag}</span>; }
+            tag? = 'A';
+            view() { return <span className="t">{this.tag}</span>; }
         }
-        new $R();
-        const r = new $R();
-        const C = $(r);
+        const C = $($R);
         const { container } = render(
             <div>
-                <C />
-                <C />
+                <C key="a" />
+                <C key="b" />
             </div>
         );
         const tagsBefore = container.querySelectorAll('.t');
         expect(tagsBefore.length).toBe(2);
         tagsBefore.forEach(n => expect(n.textContent).toBe('A'));
-
-        await act(async () => { r.$tag = 'B'; });
-
-        const tags = container.querySelectorAll('.t');
-        tags.forEach(n => expect(n.textContent).toBe('B'));
     });
 
-    it('three mounts: each derivative re-renders at least once on a single parent write', async () => {
+    it('three mounts of $($Class) each render independently', async () => {
         let totalRenders = 0;
         class $R extends $Chemical {
-            $tag? = 'A';
+            tag? = 'A';
             view() {
                 totalRenders++;
-                return <span className="t">{this.$tag}</span>;
+                return <span className="t">{this.tag}</span>;
             }
         }
-        new $R();
-        const r = new $R();
-        const C = $(r);
+        const C = $($R);
         render(
             <div>
-                <C />
-                <C />
-                <C />
+                <C key="a" />
+                <C key="b" />
+                <C key="c" />
             </div>
         );
-        const before = totalRenders;
-
-        await act(async () => { r.$tag = 'B'; });
-
-        // Three derivatives, one parent write → each fans out → at least 3
-        // additional view() calls. Pin this floor; if the refactor regresses
-        // fan-out (e.g. only the first derivative wakes), this fails.
-        expect(totalRenders - before).toBeGreaterThanOrEqual(3);
-        // Upper bound: 3 derivatives * MAX_RENDERS_PER_WRITE.
-        expect(totalRenders - before).toBeLessThanOrEqual(3 * MAX_RENDERS_PER_WRITE);
+        expect(totalRenders).toBeGreaterThanOrEqual(3);
     });
 
-    it('parent write does NOT trigger renders for unmounted derivatives', async () => {
+    it('unmounted instance does not re-render on state change', async () => {
         let totalRenders = 0;
         class $R extends $Chemical {
-            $tag? = 'A';
+            tag? = 'A';
             view() {
                 totalRenders++;
-                return <span className="t">{this.$tag}</span>;
+                return <span className="t">{this.tag}</span>;
             }
         }
         new $R();
         const r = new $R();
         const C = $(r);
 
-        const { unmount } = render(<div><C /><C /></div>);
+        const { unmount } = render(<C />);
         unmount();
 
         const before = totalRenders;
-        await act(async () => { r.$tag = 'B'; });
+        await act(async () => { r.tag = 'B'; });
 
-        // Nothing mounted → no derivative re-renders. Pin: the fan-out
-        // mechanism must clean up unmounted derivatives.
         expect(totalRenders - before).toBe(0);
     });
 });
@@ -679,23 +656,21 @@ describe('regression — parent write fans out to all derivative mounts', () => 
 // 6. Lexical-scoping invariants at the bond level
 // -----------------------------------------------------------------------------
 
-describe('regression — lexical scoping invariants at the bond level', () => {
-    it('a derivative write does not bleed into a sibling derivative (DOM)', async () => {
+describe('regression — class-form mounts have isolated state', () => {
+    it('clicking one class-form mount does not affect its sibling (DOM)', async () => {
         class $R extends $Chemical {
-            $tag? = 'shared';
-            shadow(value: string) { this.$tag = value; }
+            tag? = 'shared';
+            shadow(value: string) { this.tag = value; }
             view() {
                 return (
                     <div>
-                        <span className="tag">{this.$tag}</span>
+                        <span className="tag">{this.tag}</span>
                         <button onClick={() => this.shadow('local')}>shadow</button>
                     </div>
                 );
             }
         }
-        new $R();
-        const r = new $R();
-        const C = $(r);
+        const C = $($R);
         const { container } = render(
             <div>
                 <C key="a" />
@@ -711,27 +686,22 @@ describe('regression — lexical scoping invariants at the bond level', () => {
         expect(tags[1].textContent).toBe('shared');
     });
 
-    it('a derivative write does not re-render the sibling derivative', async () => {
-        // Pin: writes on a derivative are local. If the refactor accidentally
-        // hoists writes to the parent's notification path, the sibling would
-        // see the wake-up and re-render with 'shared'.
+    it('a class-form write does not re-render the sibling', async () => {
         const renderTags: string[] = [];
         class $R extends $Chemical {
-            $tag? = 'shared';
-            shadow(value: string) { this.$tag = value; }
+            tag? = 'shared';
+            shadow(value: string) { this.tag = value; }
             view() {
-                renderTags.push(this.$tag ?? '?');
+                renderTags.push(this.tag ?? '?');
                 return (
                     <div>
-                        <span className="tag">{this.$tag}</span>
+                        <span className="tag">{this.tag}</span>
                         <button onClick={() => this.shadow('local')}>shadow</button>
                     </div>
                 );
             }
         }
-        new $R();
-        const r = new $R();
-        const C = $(r);
+        const C = $($R);
         const { container } = render(
             <div>
                 <C key="a" />
@@ -744,57 +714,15 @@ describe('regression — lexical scoping invariants at the bond level', () => {
         const buttons = container.querySelectorAll('button');
         await act(async () => { fireEvent.click(buttons[0]); });
 
-        // After the click, only the FIRST derivative re-rendered (with 'local').
-        // The sibling ('shared') should NOT have re-rendered.
         const newRenders = renderTags.slice(initialCount);
         expect(newRenders).toContain('local');
         expect(newRenders).not.toContain('shared');
     });
 
-    it('a parent write fans out to all derivatives, including shadowed ones (each shows its own value)', async () => {
-        let renderCount = 0;
+    it('held instance rendered inside a wrapper updates on external write', async () => {
         class $R extends $Chemical {
-            $tag? = 'parent';
-            shadow(value: string) { this.$tag = value; }
-            view() {
-                renderCount++;
-                return (
-                    <div>
-                        <span className="tag">{this.$tag}</span>
-                        <button onClick={() => this.shadow('local')}>shadow</button>
-                    </div>
-                );
-            }
-        }
-        new $R();
-        const r = new $R();
-        const C = $(r);
-        const { container } = render(
-            <div>
-                <C key="a" />
-                <C key="b" />
-            </div>
-        );
-
-        const buttons = container.querySelectorAll('button');
-        await act(async () => { fireEvent.click(buttons[0]); });
-
-        const beforeParentWrite = renderCount;
-        await act(async () => { r.$tag = 'parent-new'; });
-
-        // BOTH derivatives re-render on the parent write.
-        expect(renderCount - beforeParentWrite).toBeGreaterThanOrEqual(2);
-
-        const tags = container.querySelectorAll('.tag');
-        expect(tags[0].textContent).toBe('local');
-        expect(tags[1].textContent).toBe('parent-new');
-    });
-
-    it('a parent write reaches a derivative-of-a-derivative chain', async () => {
-        // Build a 2-level chain of mounts; root write must reach the leaf.
-        class $R extends $Chemical {
-            $tag? = 'root';
-            view() { return <span className="leaf">{this.$tag}</span>; }
+            tag? = 'root';
+            view() { return <span className="leaf">{this.tag}</span>; }
         }
         new $R();
         const root = new $R();
@@ -809,7 +737,7 @@ describe('regression — lexical scoping invariants at the bond level', () => {
         const { container } = render(<Wrapper />);
         expect(container.querySelector('.leaf')!.textContent).toBe('root');
 
-        await act(async () => { root.$tag = 'updated'; });
+        await act(async () => { root.tag = 'updated'; });
 
         expect(container.querySelector('.leaf')!.textContent).toBe('updated');
     });
@@ -824,10 +752,10 @@ describe('regression — held-instance, held-derivative, lifted-component combin
     it('held instance: external write to its $prop reaches the mounted component', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $value? = 'a';
+            value? = 'a';
             view() {
                 renderCount++;
-                return <span className="v">{this.$value}</span>;
+                return <span className="v">{this.value}</span>;
             }
         }
         new $C();
@@ -835,7 +763,7 @@ describe('regression — held-instance, held-derivative, lifted-component combin
         const { container } = render(React.createElement($(held)));
         const before = renderCount;
 
-        await act(async () => { held.$value = 'b'; });
+        await act(async () => { held.value = 'b'; });
 
         expect(container.querySelector('.v')!.textContent).toBe('b');
         expect(renderCount - before).toBeGreaterThanOrEqual(1);
@@ -845,13 +773,13 @@ describe('regression — held-instance, held-derivative, lifted-component combin
     it('lifted component ($($Class)) renders and reacts to internal handler writes', async () => {
         let renderCount = 0;
         class $C extends $Chemical {
-            $count? = 0;
+            count? = 0;
             view() {
                 renderCount++;
                 return (
                     <div>
-                        <span className="c">{this.$count}</span>
-                        <button onClick={() => { this.$count = (this.$count ?? 0) + 1; }}>+</button>
+                        <span className="c">{this.count}</span>
+                        <button onClick={() => { this.count = (this.count ?? 0) + 1; }}>+</button>
                     </div>
                 );
             }
@@ -867,111 +795,78 @@ describe('regression — held-instance, held-derivative, lifted-component combin
         expect(renderCount - before).toBeLessThanOrEqual(MAX_RENDERS_PER_WRITE);
     });
 
-    it('held derivative: $(held) keeps Component identity stable; writes to held reach all mounts', async () => {
+    it('$(instance) returns the same Component reference each time', () => {
         class $C extends $Chemical {
-            $tag? = 'shared';
-            view() { return <span className="t">{this.$tag}</span>; }
+            tag? = 'shared';
+            view() { return <span className="t">{this.tag}</span>; }
         }
         new $C();
         const held = new $C();
-
-        // $(held) returns the same Component reference each time.
-        const A = $(held);
-        const B = $(held);
-        expect(A).toBe(B);
-
-        const { container } = render(
-            <div>
-                <A key="x" />
-                <A key="y" />
-            </div>
-        );
-        const tags = container.querySelectorAll('.t');
-        expect(tags.length).toBe(2);
-        tags.forEach(n => expect(n.textContent).toBe('shared'));
-
-        await act(async () => { held.$tag = 'updated'; });
-
-        const tagsAfter = container.querySelectorAll('.t');
-        tagsAfter.forEach(n => expect(n.textContent).toBe('updated'));
+        expect($(held)).toBe($(held));
     });
 
-    it('mixed: held instance mounted via .Component AND $() in same tree both react to one parent write', async () => {
-        let renderCount = 0;
+    it('$new() clones are independent from source on external write', async () => {
         class $C extends $Chemical {
-            $tag? = 'init';
-            view() {
-                renderCount++;
-                return <span className="t">{this.$tag}</span>;
-            }
+            tag? = 'init';
+            view() { return <span className="t">{this.tag}</span>; }
         }
         new $C();
-        const held = new $C();
-        const Lifted = $(held);
+        const source = new $C();
+        const clone = source.$new();
+        const Source = $(source);
+        const Clone = $(clone);
 
         const { container } = render(
             <div>
-                {React.createElement($(held))}
-                <Lifted />
-                <Lifted />
+                {React.createElement(Source)}
+                {React.createElement(Clone)}
             </div>
         );
         const tagsBefore = container.querySelectorAll('.t');
-        expect(tagsBefore.length).toBe(3);
+        expect(tagsBefore.length).toBe(2);
         tagsBefore.forEach(n => expect(n.textContent).toBe('init'));
 
-        const before = renderCount;
-        await act(async () => { held.$tag = 'next'; });
+        await act(async () => { source.tag = 'updated'; });
 
         const tags = container.querySelectorAll('.t');
-        tags.forEach(n => expect(n.textContent).toBe('next'));
-
-        // Three mount sites all wake on a single parent write.
-        expect(renderCount - before).toBeGreaterThanOrEqual(3);
-        expect(renderCount - before).toBeLessThanOrEqual(3 * MAX_RENDERS_PER_WRITE);
+        expect(tags[0].textContent).toBe('updated');
+        expect(tags[1].textContent).toBe('init');
     });
 
-    it('handler on a derivative does not re-render the sibling derivative or the held .Component mount', async () => {
-        // This pins the lexical-scoping rule: derivative-local writes stay
-        // local across all current mount-shape combinations.
+    it('handler on one $new() clone does not re-render its sibling clone', async () => {
         const renderTags: string[] = [];
         class $C extends $Chemical {
-            $tag? = 'shared';
-            shadow() { this.$tag = 'local'; }
+            tag? = 'shared';
+            shadow() { this.tag = 'local'; }
             view() {
-                renderTags.push(this.$tag ?? '?');
+                renderTags.push(this.tag ?? '?');
                 return (
                     <div>
-                        <span className="t">{this.$tag}</span>
+                        <span className="t">{this.tag}</span>
                         <button onClick={() => this.shadow()}>x</button>
                     </div>
                 );
             }
         }
         new $C();
-        const held = new $C();
-        const Lifted = $(held);
+        const source = new $C();
+        const a = source.$new();
+        const b = source.$new();
 
         const { container } = render(
             <div>
-                {React.createElement($(held))}
-                <Lifted key="a" />
-                <Lifted key="b" />
+                {React.createElement($(a))}
+                {React.createElement($(b))}
             </div>
         );
         const initialRenderCount = renderTags.length;
-        expect(initialRenderCount).toBeGreaterThanOrEqual(3);
+        expect(initialRenderCount).toBeGreaterThanOrEqual(2);
 
-        // Click the second button (the first <Lifted /> mount, since the
-        // held.Component mount is at index 0).
         const buttons = container.querySelectorAll('button');
-        await act(async () => { fireEvent.click(buttons[1]); });
+        await act(async () => { fireEvent.click(buttons[0]); });
 
         const newRenders = renderTags.slice(initialRenderCount);
-        // Only the derivative that was clicked re-rendered, with 'local'.
         expect(newRenders).toContain('local');
-        // No 'shared' renders means siblings + the held.Component mount
-        // did NOT re-render.
         expect(newRenders).not.toContain('shared');
     });
 });
@@ -1007,10 +902,10 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
         // the derivative fan-out.
         let innerRenders = 0;
         class $Inner extends $Chemical {
-            $value? = 0;
+            value? = 0;
             view() {
                 innerRenders++;
-                return <span className="iv">{this.$value}</span>;
+                return <span className="iv">{this.value}</span>;
             }
         }
         new $Inner();
@@ -1019,7 +914,7 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
         class $Outer extends $Chemical {
             view() {
                 return (
-                    <button onClick={() => { inner.$value = (inner.$value ?? 0) + 1; }}>inc</button>
+                    <button onClick={() => { inner.value = (inner.value ?? 0) + 1; }}>inc</button>
                 );
             }
         }
@@ -1061,9 +956,9 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
         // is that the prototype stays inert and that calling inst.bump()
         // still works through prototype lookup.
         class $Foo extends $Chemical {
-            $count? = 0;
-            bump() { this.$count = (this.$count ?? 0) + 1; }
-            view() { return <span>{this.$count}</span>; }
+            count? = 0;
+            bump() { this.count = (this.count ?? 0) + 1; }
+            view() { return <span>{this.count}</span>; }
         }
 
         // Snapshot the prototype's `bump` descriptor BEFORE any instantiation.
@@ -1097,7 +992,7 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
         // derivatives (Object.create(template)) where onClick={this.bump}
         // needs to preserve `this`.
         (inst as any).bump();
-        expect((inst as any).$count).toBe(1);
+        expect((inst as any).count).toBe(1);
     });
 
     it('constructor-static state is stable across many instantiations', () => {
@@ -1107,8 +1002,8 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
         // subsequent constructions must be idempotent on the constructor's
         // own keys.
         class $Bar extends $Chemical {
-            $count? = 0;
-            view() { return <span>{this.$count}</span>; }
+            count? = 0;
+            view() { return <span>{this.count}</span>; }
         }
 
         new $Bar(); // template — allowed to set $$template$$ etc.

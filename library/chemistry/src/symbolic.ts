@@ -56,6 +56,10 @@ export type {
 } from './implementation/types';
 export type { $Bound } from './implementation/types';
 
+// Developer mode — warnings, diagnostics, future visual error rendering.
+// Tree-shaken in production builds via process.env.NODE_ENV guard.
+export { dev, warn, error } from './implementation/dev';
+
 // All framework-internal symbols. Framework devs use these to read/write the
 // machinery directly; component devs never touch them.
 export * from './implementation/symbols';

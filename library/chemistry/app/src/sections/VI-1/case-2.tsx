@@ -1,46 +1,91 @@
 import React from 'react';
-import { $, $Chemical } from '@/index';
-import { DerivativesRow, DerivativeCard, MountLabel } from './case.styled';
-import { CounterValue, CounterButton } from '../II-1/case.styled';
-import { ActionButton } from '../V-1/case.styled';
+import { $, $Chemical, $check } from '@/index';
+import {
+    ThemeSwitcherFrame, ThemeToggleRow, ThemeToggleBtn,
+    PreviewCardFrame, PreviewText, FontSliderRow, FontSliderLabel,
+    DerivativesRow,
+} from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
-class $HeldCounter extends $Chemical {
-    $count = 0;
-    increment() { this.$count++; }
+class $PreviewCard extends $Chemical {
+    dark = false;
+    fontSize = 14;
+
+    updateFontSize(e: React.ChangeEvent<HTMLInputElement>) {
+        this.fontSize = Number(e.target.value);
+    }
+
     view() {
         return (
-            <DerivativeCard>
-                <MountLabel>derivative</MountLabel>
-                <CounterValue>{this.$count}</CounterValue>
-                <CounterButton onClick={this.increment}>+</CounterButton>
-            </DerivativeCard>
+            <PreviewCardFrame $dark={this.dark}>
+                <PreviewText $dark={this.dark} $size={this.fontSize}>
+                    The quick brown fox jumps over the lazy dog.
+                </PreviewText>
+                <FontSliderRow>
+                    <FontSliderLabel $dark={this.dark}>size: {this.fontSize}px</FontSliderLabel>
+                    <input
+                        type="range"
+                        min="10"
+                        max="24"
+                        value={this.fontSize}
+                        onChange={this.updateFontSize}
+                        aria-label="Font size"
+                    />
+                </FontSliderRow>
+            </PreviewCardFrame>
         );
     }
 }
 
-class $Host extends $Chemical {
-    counter = new $HeldCounter();
-    writeFromOutside() { this.counter.$count += 10; }
+class $ThemeSwitcher extends $Chemical {
+    dark = false;
+    cards: $PreviewCard[] = [];
+
+    $ThemeSwitcher(...cards: $PreviewCard[]) {
+        this.cards = cards.map(c => $check(c, $PreviewCard));
+    }
+
+    toggleDark() {
+        this.dark = !this.dark;
+        for (const card of this.cards) card.dark = this.dark;
+    }
+
     view() {
-        const Counter = $(this.counter);
+        const tested = this.dark;
         return (
-            <div>
+            <ThemeSwitcherFrame>
+                <ThemeToggleRow>
+                    <ThemeToggleBtn $on={this.dark} onClick={this.toggleDark}>
+                        {this.dark ? 'dark' : 'light'}
+                    </ThemeToggleBtn>
+                </ThemeToggleRow>
                 <DerivativesRow>
-                    <Counter />
-                    <Counter />
+                    {this.cards.map((card, i) => {
+                        const Card = $(card);
+                        return <Card key={i} />;
+                    })}
                 </DerivativesRow>
-                <div style={{ marginTop: '10px' }}>
-                    <ActionButton onClick={this.writeFromOutside}>
-                        write counter.$count += 10 from host
-                    </ActionButton>
-                </div>
-            </div>
+                <VerdictSection>
+                    <VerdictRow $state={tested ? 'pass' : 'pending'}>
+                        <VerdictDot $state={tested ? 'pass' : 'pending'} />
+                        {tested
+                            ? '✓ dark mode toggled — both cards updated via host write'
+                            : '○ toggle dark mode to verify'}
+                    </VerdictRow>
+                </VerdictSection>
+            </ThemeSwitcherFrame>
         );
     }
 }
 
-const Host = $($Host);
+const PreviewCard = $($PreviewCard);
+const ThemeSwitcher = $($ThemeSwitcher);
 
 export default function Case2Demo() {
-    return <Host />;
+    return (
+        <ThemeSwitcher>
+            <PreviewCard />
+            <PreviewCard />
+        </ThemeSwitcher>
+    );
 }

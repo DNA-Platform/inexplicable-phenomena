@@ -1,29 +1,56 @@
 import React from 'react';
 import { $, $Chemical } from '@/index';
-import {
-    PropertyFrame, PropertyLabel, TextValue, TextInput,
-} from './case.styled';
+import { TextInput } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
+import styled from 'styled-components';
 
-class $TextDemo extends $Chemical {
-    $text = 'hello';
-    setText(value: string) { this.$text = value; }
+const GreetingFrame = styled.div`
+    padding: 16px 18px;
+    background: ${(p) => p.theme.color.paperRaised};
+    border: 1px solid ${(p) => p.theme.color.rule};
+    border-radius: 6px;
+`;
+
+const Greeting = styled.div`
+    font-family: ${(p) => p.theme.font.heading};
+    font-size: ${(p) => p.theme.type.h3};
+    color: ${(p) => p.theme.color.ink};
+    margin-bottom: 12px;
+    min-height: 32px;
+`;
+
+class $GreetingDemo extends $Chemical {
+    name = '';
+    setName(value: string) { this.name = value; }
     view() {
+        const hasName = this.name.length > 0;
         return (
-            <PropertyFrame>
-                <PropertyLabel>$text</PropertyLabel>
-                <TextValue>{this.$text}</TextValue>
-                <TextInput
-                    value={this.$text}
-                    onChange={(e) => this.setText(e.currentTarget.value)}
-                    placeholder="type to update $text"
-                />
-            </PropertyFrame>
+            <>
+                <GreetingFrame>
+                    <Greeting>
+                        {hasName ? `Hello, ${this.name}!` : 'Type your name below...'}
+                    </Greeting>
+                    <TextInput
+                        value={this.name}
+                        onChange={(e) => this.setName(e.currentTarget.value)}
+                        placeholder="Your name"
+                    />
+                </GreetingFrame>
+                <VerdictSection>
+                    <VerdictRow $state={hasName ? 'pass' : 'pending'}>
+                        <VerdictDot $state={hasName ? 'pass' : 'pending'} />
+                        {hasName
+                            ? `✓ greeting updates live as you type`
+                            : '○ type a name to see the greeting change'}
+                    </VerdictRow>
+                </VerdictSection>
+            </>
         );
     }
 }
 
-const TextDemo = $($TextDemo);
+const GreetingDemo = $($GreetingDemo);
 
 export default function Case2Demo() {
-    return <TextDemo />;
+    return <GreetingDemo />;
 }

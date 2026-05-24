@@ -61,11 +61,11 @@ describe('next(phase) — special rules', () => {
     });
 });
 
-describe('Chemical lifecycle methods — named shortcuts for phases', () => {
-    it('chemical.mount() awaits the mount phase', async () => {
+describe('next() — the single lifecycle API', () => {
+    it('next(phase) awaits the named phase', async () => {
         const chemical = new $Chemical();
         let mounted = false;
-        chemical.mount().then(() => { mounted = true; });
+        chemical.next('mount').then(() => { mounted = true; });
         expect(mounted).toBe(false);
         chemical[$resolve$]('mount');
         await new Promise(r => setTimeout(r, 10));
@@ -75,13 +75,13 @@ describe('Chemical lifecycle methods — named shortcuts for phases', () => {
     it('async code can sequence through phases with await this.next()', async () => {
         class $Worker extends $Chemical {
             result = '';
-            async effect() {
+            async doWork() {
                 await this.next('mount');
                 this.result = 'mounted';
             }
         }
         const worker = new $Worker();
-        worker.effect();
+        worker.doWork();
         expect(worker.result).toBe('');
         worker[$resolve$]('mount');
         await new Promise(r => setTimeout(r, 10));

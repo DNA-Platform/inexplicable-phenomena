@@ -14,9 +14,19 @@ import styled from 'styled-components';
 export const CaseFrame = styled.section`
     background: ${(p) => p.theme.color.paperRaised};
     border: 1px solid ${(p) => p.theme.color.rule};
+    border-left: 4px solid ${(p) => p.theme.color.mutedFaint};
     border-radius: 6px;
     padding: 20px 22px;
     margin-bottom: 20px;
+    overflow: hidden;
+    transition: border-left-color 200ms;
+
+    &:has([data-verdict="pass"]):not(:has([data-verdict="fail"])):not(:has([data-verdict="pending"])) {
+        border-left-color: ${(p) => p.theme.color.ok};
+    }
+    &:has([data-verdict="fail"]) {
+        border-left-color: ${(p) => p.theme.color.fail};
+    }
 `;
 
 export const CaseHeader = styled.header`
@@ -68,6 +78,7 @@ export const DemoFrame = styled.div`
     border-radius: 4px;
     padding: 18px 20px;
     margin-bottom: 14px;
+    overflow-x: auto;
 `;
 
 export const Criteria = styled.div`

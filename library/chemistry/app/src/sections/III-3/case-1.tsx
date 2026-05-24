@@ -3,6 +3,7 @@ import { $, $Chemical, $check } from '@/index';
 import {
     BookFrame, BookTitle, ChapterList, ChapterItem, SummaryRow,
 } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
 class $Chapter extends $Chemical {
     $title?: string;
@@ -22,6 +23,8 @@ class $Book extends $Chemical {
     }
 
     view() {
+        const correctCount = this.chapters.length === 4;
+        const state = correctCount ? 'pass' : 'fail';
         return (
             <BookFrame>
                 <BookTitle>{this.$title}</BookTitle>
@@ -34,6 +37,14 @@ class $Book extends $Chemical {
                 <SummaryRow>
                     {this.chapters.length} chapter{this.chapters.length === 1 ? '' : 's'}
                 </SummaryRow>
+                <VerdictSection>
+                    <VerdictRow $state={state}>
+                        <VerdictDot $state={state} />
+                        {correctCount
+                            ? '✓ 4 chapters bound via $Book(...chapters)'
+                            : `✗ wrong count: ${this.chapters.length}`}
+                    </VerdictRow>
+                </VerdictSection>
             </BookFrame>
         );
     }

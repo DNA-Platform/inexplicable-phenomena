@@ -417,10 +417,105 @@ export const catalogue: Group[] = [
             { id: 'XVI.2', title: 'When to reach for it', symbol: 'Wh', planned: [] },
         ],
     },
+    {
+        roman: '·',
+        title: 'State',
+        sections: [
+            { id: 'properties', title: 'Properties', symbol: 'R', planned: [] },
+            { id: 'collections', title: 'Collections', symbol: 'Mu', planned: [] },
+            { id: 'propchange', title: 'Changing props', symbol: 'Pc', planned: [] },
+            { id: 'stress', title: 'Async stress', symbol: 'Rf', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Events',
+        sections: [
+            { id: 'handlers', title: 'Handlers and methods', symbol: 'P', planned: [] },
+            { id: 'method-fc', title: 'Passing handlers to React', symbol: 'Mf', planned: [] },
+            { id: 'async-bind', title: 'Async callbacks', symbol: 'Ab', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Components',
+        sections: [
+            { id: 'typed-children', title: 'Typed children', symbol: 'B', planned: [] },
+            { id: 'parent-child', title: 'Parent-child communication', symbol: 'Xw', planned: [] },
+            { id: 'reusable', title: 'Reusable components', symbol: 'D', planned: [] },
+            { id: 'nested', title: 'Nested structure', symbol: 'Nc', planned: [] },
+            { id: 'prop-pass', title: 'Passing components', symbol: 'Pp', planned: [] },
+            { id: 'deep-nest', title: 'Deep composition', symbol: 'Dn', planned: [] },
+            { id: 'native-objects', title: 'Wrapping native objects', symbol: 'Pa', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Lists',
+        sections: [
+            { id: 'todo', title: 'Add, remove, toggle', symbol: 'Td', planned: [] },
+            { id: 'dynamic', title: 'Dynamic items', symbol: 'Dy', planned: [] },
+            { id: 'rekey', title: 'Reordering', symbol: 'Rk', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Forms',
+        sections: [
+            { id: 'form', title: 'Validation', symbol: 'Fm', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Async',
+        sections: [
+            { id: 'data-loading', title: 'Data loading', symbol: 'L', planned: [] },
+            { id: 'notif', title: 'Timed operations', symbol: 'Nt', planned: [] },
+            { id: 'form-lifecycle', title: '$form lifecycle', symbol: 'Fl', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Rendering',
+        sections: [
+            { id: 'mount', title: 'Conditional display', symbol: 'Mt', planned: [] },
+            { id: 'cond-swap', title: 'Switching views', symbol: 'Cs', planned: [] },
+            { id: 'error-recover', title: 'Error boundaries', symbol: 'Er', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Polymorphism',
+        sections: [
+            { id: 'polymorphism', title: 'Polymorphic rendering', symbol: 'Po', planned: [] },
+            { id: 'override', title: 'Subclass overrides', symbol: 'Ov', planned: [] },
+            { id: 'evolve', title: 'Evolving children', symbol: 'Ev', planned: [] },
+            { id: 'dashboard', title: 'Widget dashboard', symbol: 'Dw', planned: [] },
+            { id: 'poly-form', title: 'Polymorphic form', symbol: 'Pf', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Dynamic composition',
+        sections: [
+            { id: 'dynamic-nest', title: 'Nested chemicals', symbol: 'Nk', planned: [] },
+        ],
+    },
+    {
+        roman: '·',
+        title: 'Interaction',
+        sections: [
+            { id: 'tabs', title: 'Tabbed interface', symbol: 'Tb', planned: [] },
+        ],
+    },
 ];
 
 export function findSection(id: string): { group: Group; section: Section } | undefined {
-    for (const group of catalogue) {
+    // Only search · groups — the roman-numeral groups are reference data
+    // for the spec/planned count, not routable pages.
+    for (let i = catalogue.length - 1; i >= 0; i--) {
+        const group = catalogue[i];
+        if (group.roman !== '·') continue;
         const section = group.sections.find(s => s.id === id);
         if (section) return { group, section };
     }
@@ -428,10 +523,12 @@ export function findSection(id: string): { group: Group; section: Section } | un
 }
 
 export function neighbors(id: string): { prev?: Section; next?: Section } {
-    const flat: Section[] = catalogue.flatMap(g => g.sections);
+    const flat: Section[] = catalogue
+        .filter(g => g.roman === '·')
+        .flatMap(g => g.sections);
     const i = flat.findIndex(s => s.id === id);
     if (i < 0) return {};
     return { prev: flat[i - 1], next: flat[i + 1] };
 }
 
-export const defaultSectionId = 'II.1';
+export const defaultSectionId = 'properties';

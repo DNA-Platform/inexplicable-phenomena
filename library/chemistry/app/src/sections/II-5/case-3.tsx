@@ -2,6 +2,7 @@ import React from 'react';
 import { $Particle } from '@/index';
 import { isParticle } from '@/symbolic';
 import { CaptionSpaced, AssertionGrid, Verdict } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
 class $Error extends $Particle {
     constructor(error: Error) {
@@ -21,6 +22,8 @@ export default function Case3Demo() {
     const sameProto = beforeProto === afterProto;
     const isStillJustError = original instanceof Error && !isParticle(original);
     const isOriginalParticle = isParticle(original);
+    const protoState = sameProto ? 'pass' : 'fail';
+    const originalState = !isOriginalParticle ? 'pass' : 'fail';
     return (
         <div>
             <CaptionSpaced>
@@ -34,6 +37,20 @@ export default function Case3Demo() {
                 <span>isParticle(original)</span>
                 <Verdict $pass={!isOriginalParticle}>→ {String(isOriginalParticle)}</Verdict>
             </AssertionGrid>
+            <VerdictSection>
+                <VerdictRow $state={protoState}>
+                    <VerdictDot $state={protoState} />
+                    {sameProto
+                        ? '✓ prototype preserved'
+                        : '✗ prototype changed'}
+                </VerdictRow>
+                <VerdictRow $state={originalState}>
+                    <VerdictDot $state={originalState} />
+                    {!isOriginalParticle
+                        ? '✓ original is not a particle'
+                        : '✗ original became a particle'}
+                </VerdictRow>
+            </VerdictSection>
         </div>
     );
 }

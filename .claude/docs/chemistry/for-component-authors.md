@@ -62,6 +62,15 @@ export const Lab = $(lab);           // Component routes through $lift
 
 If you find yourself reaching for the instance form, ask: *does this chemical genuinely own state that must persist between mounts of the same Component?* If no, use class form.
 
+- **Inverse form** — `$(Component)`. Pass a Component (the thing returned by class or instance form), get back the chemical instance it wraps. Useful when the instance was created inside the module (not exported) and you need it from outside — e.g., for debugging or framework-level inspection.
+
+```typescript
+// recovering the held instance from the exported Component
+const lab = $(Lab);   // returns the $Lab instance that backs the Lab Component
+```
+
+The inverse is the escape hatch for the rare case where you need behind the membrane.
+
 ## What goes in `view()`
 
 `view()` returns a `ReactNode`. JSX, arrays of JSX, a string, `null` — all valid. The chemical's `$`-prefixed properties are reactive: reading them inside `view()` registers a dependency, writing them triggers a re-render.
@@ -76,23 +85,31 @@ class $Counter extends $Chemical {
 }
 ```
 
-Method binding works automatically. `onClick={this.increment}` does not lose `this` — the framework's molecule/bond system intercepts. This is one of the framework's biggest usability wins; it's why $Chemistry exists.
+Method binding works automatically — no `.bind()`, no arrow wrapper. The molecule's `$Reagent` installs a getter on the class template that returns a bound function per instance, so `onClick={this.increment}` just works. This is one of the framework's biggest usability wins; it's why $Chemistry exists.
 
-## Bond constructors — typed JSX children
+## Bond constructors — rendering IS construction
 
-When a Component takes children, declare a *binding constructor* — a method named after the class — with typed parameters. The framework parses the JSX child tree and matches it against the parameter types.
+A chemical doesn't exist as a meaningful object until it has been rendered through its Component. Rendering `<Speaker />` in JSX IS calling its constructor — the framework creates the template, forms reactive bonds, runs the bond constructor. **You never write `new $Speaker()` in app code.** That creates a raw, unprocessed instance with no reactive bonds and no lifecycle. The Component IS the only legitimate way to bring a chemical into existence.
+
+When a Component takes children, declare a *binding constructor* — a method named after the class — with typed parameters. The framework parses the JSX child tree and matches children to typed parameters. This is how chemicals compose.
 
 ```typescript
 class $Book extends $Chemical {
     chapters: $Chapter[] = [];
     $Book(...chapters: $Chapter[]) {
-        this.chapters = chapters;
+        this.chapters = chapters.map(c => $check(c, $Chapter));
     }
-    view() { return <article>{this.chapters.map(c => c.view())}</article>; }
+    view() { /* the Book controls how Chapters display */ }
 }
 ```
 
-In JSX: `<Book><Chapter /><Chapter /></Book>`. The framework validates child types via `$check()` at bind time. No `React.Children.toArray()`, no type-guessing.
+In JSX: `<Book><Chapter /><Chapter /></Book>`. The framework renders each `<Chapter />` — bringing it into existence — then passes the resulting typed instances to `$Book(...)`. The Book receives real, framework-processed chapters with reactive bonds formed and lifecycle active.
+
+This is not `props.children`. React's `props.children` is an opaque `ReactNode` blob — you get whatever the consumer passes and hope it's right. The bond constructor is a typed contract: "this component accepts exactly these kinds of children." `$check()` validates at bind time. The parent controls how children participate in its structure.
+
+**Polymorphism follows naturally.** `$IllustratedChapter extends $Chapter` overrides `view()` to add images. The Book's bond constructor accepts `$Chapter`, so both types work — the parent's code doesn't change. React has no simple equivalent; the usual workarounds are render props, compound components with context, or `as` prop patterns. In $Chemistry, it's just inheritance.
+
+**Dynamic creation works through the view.** To create N items dynamically: increment a count, render N Components in `view()`, receive them through the bond constructor on re-render. The view IS the factory. `new $X()` is never the answer.
 
 ## Styling — co-located styled-components
 
@@ -156,6 +173,16 @@ $Chemistry is a *component framework*. It is not a routing framework, a state-ma
 
 A chemical can render any of these inside its `view()` and the framework will compose with them cleanly. See [composing-with-react.md][composing] for the principle and worked examples.
 
+### How the two integrate
+
+The interface is `$()` and `view()`:
+
+- **Chemical → React:** A chemical's `view()` can render any React component directly. Styled-components, react-router `<Link>`, third-party widgets — just put them in the JSX. No wrapping needed.
+- **React → Chemical:** Import the Component (`import { Counter } from './counter'`) and render it (`<Counter count={5} />`). The `$()` callable produces a standard React FC. React reconciliation handles it normally.
+- **React hooks in `view()`:** Ecosystem hooks like `useParams()` or `useNavigate()` work inside a chemical's `view()` because the view runs inside React's render cycle. This is legitimate composition — the chemical owns the state, the hook reads from a React-ecosystem package.
+
+No adapter layer, no wrapping mechanism. The boundaries are already clean. See [react-integration.md][react-integration] for the full analysis.
+
 ## What goes where in the file
 
 Inside a single chemical file, the order is:
@@ -204,3 +231,4 @@ The team's last attempt to write $Chemistry from a partial reading produced exte
 [when-chemical]: ./when-to-reach-for-a-chemical.md
 [glossary]: ./glossary.md
 [counter]: ./examples/use/counter.tsx
+[react-integration]: ./react-integration.md

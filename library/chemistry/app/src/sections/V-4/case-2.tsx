@@ -1,50 +1,80 @@
 import React from 'react';
 import { $, $Chemical } from '@/index';
 import {
-    CollectionFrame, CollectionRow, CollectionLabel, CollectionDisplay,
-    Pill, Action, SizeBadge,
+    SettingsPanel, SettingsRow, SettingsKey, SettingsValue,
+    SettingsDeleteBtn, SettingsInputRow, SettingsField, SettingsSetBtn,
 } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
-class $MapDemo extends $Chemical {
-    $tags: Map<string, number> = new Map();
-    addTag() {
-        // Map.set() — in-place mutation. The Map reference does not change.
-        const key = `k${this.$tags.size + 1}`;
-        this.$tags.set(key, this.$tags.size + 1);
+class $SettingsEditor extends $Chemical {
+    config: Map<string, string> = new Map();
+    key = '';
+    value = '';
+
+    updateKey(e: React.ChangeEvent<HTMLInputElement>) {
+        this.key = e.target.value;
     }
-    deleteFirst() {
-        const first = this.$tags.keys().next().value;
-        if (first) this.$tags.delete(first);
+
+    updateValue(e: React.ChangeEvent<HTMLInputElement>) {
+        this.value = e.target.value;
     }
-    clear() {
-        this.$tags.clear();
+
+    set() {
+        const k = this.key.trim();
+        const v = this.value.trim();
+        if (k) {
+            this.config.set(k, v);
+            this.key = '';
+            this.value = '';
+        }
     }
+
+    remove(key: string) {
+        this.config.delete(key);
+    }
+
     view() {
-        const entries = Array.from(this.$tags.entries());
+        const entries = Array.from(this.config.entries());
+        const hasConfig = this.config.size > 0;
         return (
-            <CollectionFrame>
-                <CollectionRow>
-                    <CollectionLabel>$tags.set</CollectionLabel>
-                    <CollectionDisplay>
-                        {entries.length === 0
-                            ? <span style={{ opacity: 0.5 }}>empty</span>
-                            : entries.map(([k, v]) => <Pill key={k}>{k}={v}</Pill>)}
-                    </CollectionDisplay>
-                    <SizeBadge>size={this.$tags.size}</SizeBadge>
-                </CollectionRow>
-                <CollectionRow>
-                    <CollectionLabel></CollectionLabel>
-                    <Action onClick={this.addTag}>.set()</Action>
-                    <Action onClick={this.deleteFirst}>.delete()</Action>
-                    <Action onClick={this.clear}>.clear()</Action>
-                </CollectionRow>
-            </CollectionFrame>
+            <>
+                <SettingsPanel>
+                    <SettingsInputRow>
+                        <SettingsField
+                            placeholder="key"
+                            value={this.key}
+                            onChange={this.updateKey}
+                        />
+                        <SettingsField
+                            placeholder="value"
+                            value={this.value}
+                            onChange={this.updateValue}
+                        />
+                        <SettingsSetBtn onClick={this.set}>Set</SettingsSetBtn>
+                    </SettingsInputRow>
+                    {entries.map(([k, v]) => (
+                        <SettingsRow key={k}>
+                            <SettingsKey>{k}</SettingsKey>
+                            <SettingsValue>{v}</SettingsValue>
+                            <SettingsDeleteBtn onClick={() => this.remove(k)}>&times;</SettingsDeleteBtn>
+                        </SettingsRow>
+                    ))}
+                </SettingsPanel>
+                <VerdictSection>
+                    <VerdictRow $state={hasConfig ? 'pass' : 'pending'}>
+                        <VerdictDot $state={hasConfig ? 'pass' : 'pending'} />
+                        {hasConfig
+                            ? `✓ ${this.config.size} key${this.config.size > 1 ? 's' : ''} in config — Map.set in place`
+                            : '○ add a key-value pair'}
+                    </VerdictRow>
+                </VerdictSection>
+            </>
         );
     }
 }
 
-const MapDemo = $($MapDemo);
+const SettingsEditor = $($SettingsEditor);
 
 export default function Case2Demo() {
-    return <MapDemo />;
+    return <SettingsEditor />;
 }

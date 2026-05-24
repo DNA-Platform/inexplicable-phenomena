@@ -59,3 +59,16 @@ export const SuccessBox = styled.div`
     font-size: ${(p) => p.theme.type.caption};
     line-height: 1.6;
 `;
+
+export const ToggleRow = styled.div`
+    margin-bottom: 12px;
+`;
+
+export const ToggleButton = styled.button`
+    padding: 6px 12px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+`;

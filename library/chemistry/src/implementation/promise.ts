@@ -25,9 +25,11 @@ export function $promise<T = any>(executor: (resolve: (value?: T) => void) => vo
     promise.complete = false;
     promise.cancel = (action?: () => any) => { reject?.($cancelled$); action?.(); };
     promise.then = (<U>(fulfilled?: (value: T) => U, rejected?: any) => {
+        let cancelled = false;
         const next = $promise<U>(resolve => {
             then(
                 value => {
+                    if (cancelled) return;
                     if (!fulfilled) return resolve(value as any);
                     const result = fulfilled(value);
                     Promise.resolve(result).then(resolve);
@@ -41,6 +43,7 @@ export function $promise<T = any>(executor: (resolve: (value?: T) => void) => vo
         });
         const cancel = next.cancel;
         next.cancel = (action?: () => any) => {
+            cancelled = true;
             cancel(action);
             promise.cancel(action);
         };

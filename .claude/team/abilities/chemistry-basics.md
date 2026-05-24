@@ -26,6 +26,7 @@ If any rule below is unclear, the linked doc is the source of truth. Do not inve
 6. **Compose, don't replace.** Routing → `react-router-dom`. Server state → `react-query`. Animation → `framer-motion`. UI primitives → `radix-ui` / `react-aria`. Markdown → `react-markdown`. Syntax highlighting → `prism-react-renderer`. `$Chemistry` is a component framework; reaching for the React-ecosystem package is correct, not a defeat.
 7. **The two `$` conventions.** On a chemical, `$name` is the membrane (strip at the JSX boundary — consumer writes `name="x"`). On a styled-component, `$name` is styled-components' transient-prop convention (don't forward to DOM). Same character, unrelated systems. Watch for the collision.
 8. **Doc-first.** If a pattern needed isn't documented, write the doc first, then the code. Discovering you need to extend the rules is a doc bug, not a code freedom.
+9. **Never `new $X()` for composition.** A chemical is not a sensible object until it has been rendered through its Component. Rendering `<Speaker />` in JSX IS calling its constructor — the framework creates the template, forms reactive bonds, and runs the bond constructor. Writing `new $Speaker()` bypasses all of this and produces a raw, unprocessed instance with no reactive bonds. To compose chemicals: render children in JSX, receive them through the bond constructor (`$Parent(...speakers: $Speaker[]) { this.speakers = speakers; }`). To create chemicals dynamically: increment a count, render N Components in view, receive them through the bond constructor on re-render. `new` is for framework-internal testing only.
 
 ## Decision questions (ask these before writing)
 
@@ -88,6 +89,9 @@ The `?raw` import of each Case file's source feeds the source-toggle. Therefore:
 | Custom router / event bus / focus trap / markdown parser | Reinventing React-ecosystem packages | Use the package |
 | Hand-rolled keyboard shortcut listener | Same | Use a small package or `useHotkeys` (in a thin chemical wrapper) |
 | `React.Children.toArray` | The framework parses typed JSX children for you | Bond ctor with typed parameters |
+| `onClick={() => this.method()}` | unnecessary arrow wrapper | `onClick={this.method}` — the framework binds automatically |
+| `this.inner = new $Inner()` | raw instance, no reactive bonds, no bond ctor | Render `<Inner />` as a JSX child; receive it through the bond constructor |
+| `this.$items.push(new $X())` | dynamic creation via `new` bypasses the framework | Increment `$count`; render N `<X />` in view; receive through bond ctor |
 
 ## When something can't be done in $Chemistry
 

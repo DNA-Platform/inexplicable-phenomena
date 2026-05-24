@@ -1,42 +1,80 @@
 import React from 'react';
-import { $, $Chemical } from '@/index';
-import { CrossFrame, ChemicalBox, BoxLabel, ValueDisplay, Arrow } from './case.styled';
-import { ActionButton } from '../V-1/case.styled';
+import { $, $Chemical, $check } from '@/index';
+import {
+    VolumeFrame, SliderBox, SliderLabel, RangeInput, LevelReadout,
+    SpeakerBox, SpeakerIcon, SpeakerLabel,
+} from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
-class $Inner extends $Chemical {
-    $value = 0;
+class $Speaker extends $Chemical {
+    $level = 0;
     view() {
+        const icon = this.$level === 0 ? '🔇' : this.$level < 34 ? '🔈' : this.$level < 67 ? '🔉' : '🔊';
         return (
-            <ChemicalBox>
-                <BoxLabel>$Inner</BoxLabel>
-                <ValueDisplay>{this.$value}</ValueDisplay>
-            </ChemicalBox>
+            <SpeakerBox>
+                <SpeakerLabel>$Speaker</SpeakerLabel>
+                <SpeakerIcon>{icon}</SpeakerIcon>
+                <LevelReadout>{this.$level}%</LevelReadout>
+            </SpeakerBox>
         );
     }
 }
 
-class $Outer extends $Chemical {
-    inner = new $Inner();
-    increment() { this.inner.$value++; }
-    reset() { this.inner.$value = 0; }
+class $VolumeSlider extends $Chemical {
+    volume = 0;
+    speakers: $Speaker[] = [];
+
+    $VolumeSlider(...speakers: $Speaker[]) {
+        this.speakers = speakers.map(s => $check(s, $Speaker));
+    }
+
+    setVolume(e: React.ChangeEvent<HTMLInputElement>) {
+        this.volume = Number(e.target.value);
+        for (const s of this.speakers) s.$level = this.volume;
+    }
+
     view() {
-        const Inner = $(this.inner);
+        const tested = this.volume > 0;
         return (
-            <CrossFrame>
-                <ChemicalBox>
-                    <BoxLabel>$Outer</BoxLabel>
-                    <ActionButton onClick={this.increment}>write inner.$value++</ActionButton>
-                    <ActionButton onClick={this.reset}>reset to 0</ActionButton>
-                </ChemicalBox>
-                <Arrow>→</Arrow>
-                <Inner />
-            </CrossFrame>
+            <>
+                <VolumeFrame>
+                    <SliderBox>
+                        <SliderLabel>$VolumeSlider</SliderLabel>
+                        <RangeInput
+                            type="range"
+                            min={0}
+                            max={100}
+                            value={this.volume}
+                            onChange={this.setVolume}
+                        />
+                        <LevelReadout>Volume: {this.volume}%</LevelReadout>
+                    </SliderBox>
+                    {this.speakers.map((s, i) => {
+                        const S = $(s);
+                        return <S key={i} />;
+                    })}
+                </VolumeFrame>
+                <VerdictSection>
+                    <VerdictRow $state={tested ? 'pass' : 'pending'}>
+                        <VerdictDot $state={tested ? 'pass' : 'pending'} />
+                        {tested
+                            ? `✓ slider → ${this.speakers.length} speakers at ${this.volume}%`
+                            : '○ drag the slider to set volume'}
+                    </VerdictRow>
+                </VerdictSection>
+            </>
         );
     }
 }
 
-const Outer = $($Outer);
+const Speaker = $($Speaker);
+const VolumeSlider = $($VolumeSlider);
 
 export default function Case1Demo() {
-    return <Outer />;
+    return (
+        <VolumeSlider>
+            <Speaker />
+            <Speaker />
+        </VolumeSlider>
+    );
 }

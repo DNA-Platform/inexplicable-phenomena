@@ -2,8 +2,9 @@ import React from 'react';
 import { $, $Chemical, $check } from '@/index';
 import {
     BookFrame, BookTitle, ChapterList,
-    ErrorBox, SuccessBox,
+    ErrorBox, SuccessBox, ToggleRow, ToggleButton,
 } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
 class $Chapter extends $Chemical {
     $title?: string;
@@ -64,28 +65,19 @@ class CatchBoundary extends React.Component<
 // $BadGoodToggle — owns the toggle's reactive state. The button click writes
 // $bad; the view reads it. Pure $Chemistry — no useState, no setter callbacks.
 class $BadGoodToggle extends $Chemical {
-    $bad = false;
-    toggle() { this.$bad = !this.$bad; }
+    bad = false;
+    toggle() { this.bad = !this.bad; }
 
     view() {
-        const bad = this.$bad;
+        const bad = this.bad;
+        const state = bad ? 'pass' : 'pending';
         return (
             <div>
-                <div style={{ marginBottom: '12px' }}>
-                    <button
-                        onClick={this.toggle}
-                        style={{
-                            padding: '6px 12px',
-                            border: '1px solid currentColor',
-                            borderRadius: '4px',
-                            background: 'transparent',
-                            cursor: 'pointer',
-                            fontFamily: 'inherit',
-                        }}
-                    >
+                <ToggleRow>
+                    <ToggleButton onClick={this.toggle}>
                         {bad ? 'reset to valid children' : 'pass an invalid child ($Page instead of $Chapter)'}
-                    </button>
-                </div>
+                    </ToggleButton>
+                </ToggleRow>
                 <CatchBoundary resetKey={bad}>
                     {bad ? (
                         <StrictBook key="bad">
@@ -98,6 +90,14 @@ class $BadGoodToggle extends $Chemical {
                         </SuccessBox>
                     )}
                 </CatchBoundary>
+                <VerdictSection>
+                    <VerdictRow $state={state}>
+                        <VerdictDot $state={state} />
+                        {bad
+                            ? '✓ $check threw — type validation works'
+                            : '○ click to inject invalid child'}
+                    </VerdictRow>
+                </VerdictSection>
             </div>
         );
     }

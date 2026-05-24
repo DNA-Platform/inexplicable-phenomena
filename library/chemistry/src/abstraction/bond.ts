@@ -170,6 +170,7 @@ function activate(chemical: any, property: string, initial: any) {
         },
         set(value) {
             const store = backing(this);
+            if (store[property] === value) return;
             store[property] = value;
             if (this[$rendering$]) return;
             const scope = currentScope();
@@ -192,10 +193,13 @@ function activate(chemical: any, property: string, initial: any) {
 export class $Reagent extends $Bond {
     get action() { return this._action; }
     protected _action?: Function;
+    get isPure() { return this._isPure; }
+    protected _isPure: boolean;
 
     constructor(chemical: any, method: string, descriptor: PropertyDescriptor) {
         super(chemical, method, descriptor);
         this._isMethod = true;
+        this._isPure = $Reflection.isSpecial(method);
     }
 
     form() {
@@ -203,21 +207,45 @@ export class $Reagent extends $Bond {
         this._formed = true;
         this._action = this._descriptor.value;
         const action = this._action!;
+        const isPure = this._isPure;
         const cache = new WeakMap<any, Function>();
         Object.defineProperty(this._chemical, this._property, {
             get() {
                 let bound = cache.get(this);
                 if (bound) return bound;
                 const self = this;
+                let lastArgs: any[] | undefined;
+                let lastResult: any;
+                let hasRun = false;
                 bound = function (...args: any[]) {
+                    if (isPure && hasRun && argsMatch(lastArgs!, args)) {
+                        return lastResult;
+                    }
                     if (self[$rendering$] || self[$phase$] === 'setup') {
-                        return action.apply(self, args);
+                        const result = action.apply(self, args);
+                        if (isPure) {
+                            hasRun = true;
+                            lastArgs = args;
+                            lastResult = result;
+                            if (result instanceof Promise) {
+                                result.then(
+                                    () => { self[$reaction$]?.react(); },
+                                    () => {}
+                                );
+                            }
+                        }
+                        return result;
                     }
                     let result: any;
                     withScope(() => { result = action.apply(self, args); });
+                    if (isPure) {
+                        hasRun = true;
+                        lastArgs = args;
+                        lastResult = result;
+                    }
                     if (result instanceof Promise) {
                         result.then(
-                            () => withScope(() => {}),
+                            () => { withScope(() => {}); if (isPure) self[$reaction$]?.react(); },
                             () => withScope(() => {})
                         );
                     }
@@ -230,5 +258,11 @@ export class $Reagent extends $Bond {
             enumerable: false,
         });
     }
+}
+
+function argsMatch(a: any[], b: any[]): boolean {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+    return true;
 }
 

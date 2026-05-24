@@ -12,7 +12,8 @@ This is the entry point. If you are about to write $Chemistry code, read these d
 
 | # | Document | What you learn | Time |
 |---|----------|----------------|------|
-| 1 | [overview.md] | What $Chemistry is, the three audiences, the bet against The Good Parts. The *why*. | 5 min |
+| 0 | [why-chemistry.md] | Why $Chemistry exists. What it gives a developer that React alone doesn't. The bond constructor, polymorphism, the chemical metaphor, the integration story. **Read this first.** | 10 min |
+| 1 | [overview.md] | What $Chemistry is, the three audiences, the bet against The Good Parts. | 5 min |
 | 2 | [for-component-authors.md] | The daily-author shape: declare a chemical, write `view()`, export with `$()`. Where styled-components fit. When *not* to use a chemical. | 15 min |
 | 3 | [coding-conventions.md] | The `$` grammar, the export pattern, formatting rules, what *not* to do. | 10 min |
 | 4 | [composing-with-react.md] | $Chemistry composes with the React ecosystem — react-router, react-query, styled-components — it does not replace them. The principle behind every "don't roll your own" rule. | 5 min |

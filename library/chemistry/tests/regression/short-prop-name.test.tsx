@@ -10,45 +10,45 @@ import { $Chemical, $ } from '@/abstraction/chemical';
 describe('regression — single-letter $-prefixed reactive props', () => {
     it('held .Component + single mount + external write', async () => {
         class $Inner extends $Chemical {
-            $v? = 'default';
-            view() { return <span className="x">{this.$v}</span>; }
+            v? = 'default';
+            view() { return <span className="x">{this.v}</span>; }
         }
         new $Inner();
         const inner = new $Inner();
         const C = $(inner);
         const { container } = render(<C />);
         expect(container.querySelector('.x')!.textContent).toBe('default');
-        await act(async () => { inner.$v = 'next'; });
+        await act(async () => { inner.v = 'next'; });
         expect(container.querySelector('.x')!.textContent).toBe('next');
     });
 
     it('$() dispatch + single mount + external write', async () => {
         class $Inner extends $Chemical {
-            $v? = 'default';
-            view() { return <span className="x">{this.$v}</span>; }
+            v? = 'default';
+            view() { return <span className="x">{this.v}</span>; }
         }
         new $Inner();
         const inner = new $Inner();
         const C = $(inner) as any;
         const { container } = render(<C />);
         expect(container.querySelector('.x')!.textContent).toBe('default');
-        await act(async () => { inner.$v = 'next'; });
+        await act(async () => { inner.v = 'next'; });
         expect(container.querySelector('.x')!.textContent).toBe('next');
     });
 
-    it('$() dispatch + two mounts + external write', async () => {
+    it('$($Class) + two mounts + template write', async () => {
         class $Inner extends $Chemical {
-            $v? = 'default';
-            view() { return <span className="x">{this.$v}</span>; }
+            v? = 'default';
+            view() { return <span className="x">{this.v}</span>; }
         }
         new $Inner();
-        const inner = new $Inner();
-        const C = $(inner) as any;
+        const C = $($Inner) as any;
+        const template = C.$chemical;
         const { container } = render(<div><C key="a" /><C key="b" /></div>);
         const xs = container.querySelectorAll('.x');
         expect(xs[0].textContent).toBe('default');
         expect(xs[1].textContent).toBe('default');
-        await act(async () => { inner.$v = 'next'; });
+        await act(async () => { template.v = 'next'; });
         const after = container.querySelectorAll('.x');
         expect(after[0].textContent).toBe('next');
         expect(after[1].textContent).toBe('next');
@@ -56,15 +56,15 @@ describe('regression — single-letter $-prefixed reactive props', () => {
 
     it('control: long name $value still works (regression sentinel)', async () => {
         class $Inner extends $Chemical {
-            $value? = 'default';
-            view() { return <span className="x">{this.$value}</span>; }
+            value? = 'default';
+            view() { return <span className="x">{this.value}</span>; }
         }
         new $Inner();
         const inner = new $Inner();
         const C = $(inner) as any;
         const { container } = render(<C />);
         expect(container.querySelector('.x')!.textContent).toBe('default');
-        await act(async () => { inner.$value = 'next'; });
+        await act(async () => { inner.value = 'next'; });
         expect(container.querySelector('.x')!.textContent).toBe('next');
     });
 });

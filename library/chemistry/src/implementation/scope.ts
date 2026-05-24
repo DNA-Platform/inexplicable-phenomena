@@ -1,4 +1,4 @@
-import { $backing$, $reaction$, $rendering$, $derivatives$ } from "./symbols";
+import { $backing$, $reaction$, $rendering$, $derivatives$, $$parent$$ } from "./symbols";
 import { equivalent } from "./reconcile";
 
 /**
@@ -88,6 +88,18 @@ export class $Scope {
                 }
             }
         }
+        // Propagate up the composition tree: if a child chemical was written,
+        // its parent may read that child's state in its view. Walk up through
+        // $$parent$$ so the parent re-evaluates its view.
+        for (const chem of [...dirty]) {
+            let current = chem;
+            let parent = current[$$parent$$];
+            while (parent && parent !== current) {
+                dirty.add(parent);
+                current = parent;
+                parent = current[$$parent$$];
+            }
+        }
         // Symmetric with the no-scope path in bond.ts: a write must wake both
         // the chemical and any $lift-mounted derivatives. Re-entrancy is safe —
         // withScope clears $currentScope before calling finalize(), so any
@@ -99,16 +111,23 @@ export class $Scope {
     }
 }
 
-// diffuse — propagate a write outward through a chemical's mounted
-// derivatives. Concentration gradient: a write at the parent equilibrates to
-// each derivative. Only acts when the chemical OWNS its $derivatives$ set; an
-// inherited set means `chemical` is itself a derivative, and walking the
-// parent's set would leak the write to sibling derivatives.
+// diffuse — propagate a write outward through a chemical's composition tree.
+// Down: derivatives (children mounted via $lift) are re-rendered.
+// Up: parent chemicals are re-rendered so cross-chemical reads re-evaluate.
 export function diffuse(chemical: any): void {
-    if (!Object.prototype.hasOwnProperty.call(chemical, $derivatives$)) return;
-    const derivatives: Set<any> | undefined = chemical[$derivatives$];
-    if (!derivatives) return;
-    for (const d of derivatives) d[$reaction$]?.react();
+    if (Object.prototype.hasOwnProperty.call(chemical, $derivatives$)) {
+        const derivatives: Set<any> | undefined = chemical[$derivatives$];
+        if (derivatives) {
+            for (const d of derivatives) d[$reaction$]?.react();
+        }
+    }
+    let current = chemical;
+    let parent = current[$$parent$$];
+    while (parent && parent !== current) {
+        parent[$reaction$]?.react();
+        current = parent;
+        parent = current[$$parent$$];
+    }
 }
 
 let $currentScope: $Scope | null = null;

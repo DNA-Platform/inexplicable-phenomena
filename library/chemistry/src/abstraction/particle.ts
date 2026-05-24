@@ -2,14 +2,15 @@ import React, { ReactNode, useState, useEffect, useLayoutEffect } from 'react';
 import {
     $cid$, $symbol$, $type$, $prototype$, $children$, $apply$, $bond$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
-    $reaction$, $derivatives$, $destroyed$, $molecule$, $construction$,
+    $reaction$, $derivatives$, $destroyed$, $molecule$, $construction$, $formRan$, $formPromise$,
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
-    $particleMarker$,
+    $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$
 } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
 import { augment } from "../implementation/augment";
+import { dev, renderError } from "../implementation/dev";
 import { $Reaction } from "./reaction";
 import { $Molecule } from "./molecule";
 
@@ -50,11 +51,10 @@ export class $Particle {
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
     // [$resolveComponent$] — internal accessor. The React FC for this particle.
-    // Lift-path only at this layer; $Chemical overrides to handle template
-    // instances via $createComponent. Author code never reaches for this; the
-    // public surface is the `$()` callable in chemical.ts.
+    // $Chemical overrides to add bond-constructor wiring. Author code never
+    // reaches for this; the public surface is the `$()` callable.
     [$resolveComponent$](): Component<this> {
-        if (this[$component$]) return this[$component$];
+        if (Object.prototype.hasOwnProperty.call(this, $component$)) return this[$component$]!;
         return this[$component$] = $lift(this) as any;
     }
 
@@ -103,19 +103,25 @@ export class $Particle {
         return this.toString();
     }
 
-    async mount() { return this.next('mount'); }
-    async render() { return this.next('render'); }
-    async layout() { return this.next('layout'); }
-    async effect() { return this.next('effect'); }
-    async unmount() { return this.next('unmount'); }
+    $new(): this {
+        const clone = Object.create(this) as this;
+        const p = clone as any;
+        p[$cid$] = $Particle[$$getNextCid$$]();
+        p[$symbol$] = $Particle[$$createSymbol$$](p);
+        p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
+        p[$phase$] = 'setup';
+        p[$reaction$] = new $Reaction(p);
+        p[$molecule$] = new $Molecule(p);
+        p[$template$] = this;
+        return clone;
+    }
 
     next(phase: $Phase): Promise<void> {
-        // 'construction' is a side-channel lifecycle event, not a linear
-        // phase. It resolves when the bond ctor's async work has settled
-        // (along with any context-parent's construction). If no bond ctor
-        // ran or it was sync, the construction promise is `resolve()`.
         if (phase === 'construction') {
             return (this[$construction$] || Promise.resolve()) as Promise<void>;
+        }
+        if (phase === 'formation') {
+            return (this[$formPromise$] || Promise.resolve()) as Promise<void>;
         }
         if (this[$phase$] === 'unmount' && phase !== 'unmount') return Promise.reject();
         if (phase === this[$phase$]) return Promise.resolve();
@@ -152,8 +158,6 @@ export class $Particle {
             $this['$' + prop] = props[prop];
         }
     }
-
-    protected [$bond$]() {}
 
     static [$$getNextCid$$](): number { return $Particle.#nextCid++; }
     static #nextCid = 1;
@@ -227,46 +231,75 @@ export function applyRenderFilters(p: $Particle): ReactNode | undefined {
     return undefined;
 }
 
-// see [docs/chemistry/books/particle/lift.md].
-export function $lift<T extends $Particle>(parent: T, contextParent?: any): $Component<T> {
+// $lift — the single FC factory for both particles and chemicals.
+//
+// Two paths based on whether parent is a template:
+//   Template:     Object.create → derivative with own cid, reaction, molecule.
+//                 Per-mount isolation. Destroyed on unmount.
+//   Non-template: Instance IS the component. No clone, no derivative.
+//                 State persists across unmount/remount. Caller owns lifecycle.
+export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?: boolean): $Component<T> {
+    const direct = !(parent as any)[$isTemplate$];
     const Component = (props?: $Props): ReactNode => {
         const [cid, setCid] = useState(-1);
         let p: any;
         if (cid === -1) {
-            // Bond accessors live on the parent's prototype after molecule
-            // reactivation. Derivatives inherit them via the prototype chain.
-            // Reactivate now (idempotent) so reads cascade and writes fan out.
-            (parent as any)[$molecule$]?.reactivate?.();
-            p = Object.create(parent);
-            p[$cid$] = $Particle[$$getNextCid$$]();
-            p[$symbol$] = $Particle[$$createSymbol$$](p);
-            p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
-            p[$phase$] = 'setup';
-            p[$reaction$] = new $Reaction(p);
-            // Wire context parent for the catalyst graph (separate from the
-            // prototype parent which lives in the prototype chain itself).
-            if (contextParent && (p as any)[Symbol.for('$Chemical.$parent')]) {
-                // Chemical layer — assign through the $parent setter which
-                // handles catalyst threading.
-                try { (p as any).$parent = contextParent; } catch { /* particle layer; ignore */ }
+            if (direct) {
+                p = parent;
+                p[$molecule$]?.reactivate?.();
+            } else {
+                p = Object.create(parent);
+                p[$cid$] = $Particle[$$getNextCid$$]();
+                p[$symbol$] = $Particle[$$createSymbol$$](p);
+                p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
+                p[$phase$] = 'setup';
+                p[$reaction$] = new $Reaction(p);
+                if (bond && typeof p[$deriveInit$] === 'function') {
+                    p[$deriveInit$]();
+                } else {
+                    (parent as any)[$molecule$]?.reactivate?.();
+                }
+                if (contextParent && $parent$ in p) {
+                    p[$parent$] = contextParent;
+                }
+                const par = parent as any;
+                (par[$derivatives$] ??= new Set()).add(p);
             }
-            // Register with prototype parent's derivatives set so parent
-            // bond writes can fan out to this site.
-            const par = parent as any;
-            (par[$derivatives$] ??= new Set()).add(p);
             setCid(p[$cid$]);
         } else {
             p = $Reaction.find(cid)!;
         }
         const [, setToken] = useState(0);
         p[$update$] = () => setToken((t: number) => t + 1);
-        const react = () => p[$update$]?.();
+        const react = () => p[$reaction$]?.react();
         useEffect(() => {
+            if (direct && p[$phase$] === 'unmount') {
+                p[$phase$] = 'setup';
+                p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
+            }
             p[$resolve$]('mount');
+            if (typeof p.$form === 'function' && !p[$formRan$]) {
+                p[$formRan$] = true;
+                const result = p.$form();
+                if (result instanceof Promise) {
+                    p[$formPromise$] = result.then(() => {
+                        p[$reaction$]?.react();
+                    });
+                }
+            }
             return () => {
                 p[$resolve$]('unmount');
-                p[$destroyed$] = true;
-                (parent as any)[$derivatives$]?.delete(p);
+                if (direct) {
+                    p[$update$] = undefined;
+                } else {
+                    if (typeof p[$destroy$] === 'function') {
+                        if (!p[$remove$]) p[$remove$] = true;
+                        else if (!p[$destroyed$]) p[$destroy$]();
+                    } else {
+                        p[$destroyed$] = true;
+                    }
+                    (parent as any)[$derivatives$]?.delete(p);
+                }
             };
         }, []);
         useLayoutEffect(() => {
@@ -289,6 +322,11 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any): $Com
             p[$rendering$] = false;
             return filtered;
         }
+        if (bond && typeof p[$bond$] === 'function') p[$bond$]();
+        if (dev && p[$devError$]) {
+            p[$rendering$] = false;
+            return renderError('Bond Constructor Failed', p[$devError$]);
+        }
         const output = augment(p.view(), react);
         p[$viewCache$] = output;
         p[$rendering$] = false;
@@ -296,10 +334,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any): $Com
     };
     (Component as any).$chemical = parent;
     (Component as any).$bound = !!contextParent;
-    // The synthesis may call $bind(contextParent) when it processes this
-    // Component as a JSX child of another chemical's bond. Returns a fresh
-    // Component that, when mounted, sets up the catalyst graph correctly.
-    (Component as any).$bind = (cp?: any) => $lift(parent, cp);
+    (Component as any).$bind = (cp?: any) => $lift(parent, cp, bond);
     return Component as any;
 }
 

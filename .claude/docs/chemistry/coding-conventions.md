@@ -138,7 +138,7 @@ class $Counter extends $Chemical {
 }
 ```
 
-The molecule/bond system intercepts property access and method calls to maintain correct `this` binding and trigger reactivity. This is one of the framework's strongest usability wins — component authors write natural OO code and it just works in React.
+The molecule's `$Reagent` installs a getter on the class template that returns a bound+scoped function per instance (cached via WeakMap). When a derivative reads `this.increment`, it gets a function already bound to itself. No `.bind()`, no arrow wrapper needed. This is one of the framework's strongest usability wins — component authors write natural OO code and it just works in React.
 
 ### Export pattern
 
@@ -160,6 +160,8 @@ Two forms exist:
 - **Instance form** — `$(lab)`. Use this *only* when one held instance owns state that must persist across mounts (e.g. an app-level `lab` holding the active route). The instance form routes through `$lift` and reuses the held object. Lowercase `lab` for the instance, capital `Lab` for the exported Component.
 
 There is no `.Component` property on a chemical. The internal accessor is a symbol-keyed method (`[$resolveComponent$]`) the framework uses internally; it is not part of the public API and `chemical.Component` returns `undefined`. The only way to obtain a Component is the `$()` callable.
+
+An **inverse form** also exists: `$(Component)` takes a Component and returns the chemical instance it wraps. This is for the rare case where the instance was created inside the module and you need it from outside — debugging, framework-level inspection, or test harnesses.
 
 Base classes do not get exported as Components. `$Particle` and `$Chemical` are extended by other classes; they do nothing as standalone Components. Only files that define a *usable* Component — a chemical the consumer would render in JSX — should export one.
 

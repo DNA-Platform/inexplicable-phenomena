@@ -132,16 +132,16 @@ describe('$show / $hide — works on HTML elements via the catalogue', () => {
 
 describe('$Particle.filter — registering custom filters', () => {
     it('a custom filter can intercept rendering for arbitrary criteria', () => {
-        // A "feature flag" style filter: if the chemical has a $featureFlag
+        // A "feature flag" style filter: if the chemical has a featureFlag
         // field set to false, render a placeholder instead of the view.
         registerFilter((p: any) =>
-            p.$featureFlag === false
+            p.featureFlag === false
                 ? React.createElement('span', { className: 'flag-off' }, 'feature off')
                 : undefined
         );
 
         class $WithFlag extends $Chemical {
-            $featureFlag? = false;
+            featureFlag? = false;
             view() { return React.createElement('span', { className: 'on' }, 'enabled'); }
         }
         new $WithFlag();

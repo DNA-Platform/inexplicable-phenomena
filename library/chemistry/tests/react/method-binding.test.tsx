@@ -7,11 +7,11 @@ import { $$template$$, $molecule$ } from '@/implementation/symbols';
 describe('Method binding: onClick={this.method}', () => {
     it('bare method reference works as onClick handler (class form)', async () => {
         class $Counter extends $Chemical {
-            $count = 0;
-            increment() { this.$count++; }
+            count = 0;
+            increment() { this.count++; }
             view() {
                 return <div>
-                    <span className="v">{this.$count}</span>
+                    <span className="v">{this.count}</span>
                     <button onClick={this.increment}>+</button>
                 </div>;
             }
@@ -31,11 +31,11 @@ describe('Method binding: onClick={this.method}', () => {
 
     it('bare method reference works as onClick handler (held instance)', async () => {
         class $Counter extends $Chemical {
-            $count = 0;
-            increment() { this.$count++; }
+            count = 0;
+            increment() { this.count++; }
             view() {
                 return <div>
-                    <span className="v">{this.$count}</span>
+                    <span className="v">{this.count}</span>
                     <button onClick={this.increment}>+</button>
                 </div>;
             }

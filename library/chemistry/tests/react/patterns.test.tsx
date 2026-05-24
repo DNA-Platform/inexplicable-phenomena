@@ -6,16 +6,16 @@ import { $, $Chemical } from '@/abstraction/chemical';
 describe('Patterns: common idioms work', () => {
     it('setInterval (started by a handler) calling a method updates view over time', async () => {
         class $Ticker extends $Chemical {
-            $tick? = 0;
+            tick? = 0;
             _timer?: ReturnType<typeof setInterval>;
             startTicking() {
-                if (!this._timer) this._timer = setInterval(() => this.tick(), 10);
+                if (!this._timer) this._timer = setInterval(() => this.doTick(), 10);
             }
-            tick() { this.$tick = (this.$tick ?? 0) + 1; }
+            doTick() { this.tick = (this.tick ?? 0) + 1; }
             stopTicking() { if (this._timer) { clearInterval(this._timer); this._timer = undefined; } }
             view() {
                 return <>
-                    <span className="tick">{this.$tick}</span>
+                    <span className="tick">{this.tick}</span>
                     <button onClick={() => this.startTicking()}>start</button>
                 </>;
             }
@@ -36,14 +36,14 @@ describe('Patterns: common idioms work', () => {
     it('async method called from a handler does data loading', async () => {
         class $Loader extends $Chemical {
             // Must have an initializer for the reactive accessor to install.
-            $data? = 'pending';
+            data? = 'pending';
             async load() {
                 await new Promise(r => setTimeout(r, 5));
-                this.$data = 'loaded';
+                this.data = 'loaded';
             }
             view() {
                 return <>
-                    <span className="data">{this.$data}</span>
+                    <span className="data">{this.data}</span>
                     <button onClick={() => this.load()}>go</button>
                 </>;
             }
@@ -63,13 +63,13 @@ describe('Patterns: common idioms work', () => {
 
     it('Promise.then callback triggers re-render via direct write', async () => {
         class $Fetcher extends $Chemical {
-            $status? = 'idle';
+            status? = 'idle';
             _fetch() {
-                return Promise.resolve('ok').then(val => { this.$status = val; });
+                return Promise.resolve('ok').then(val => { this.status = val; });
             }
             view() {
                 return <>
-                    <span className="status">{this.$status}</span>
+                    <span className="status">{this.status}</span>
                     <button onClick={() => this._fetch()}>go</button>
                 </>;
             }
@@ -86,16 +86,16 @@ describe('Patterns: common idioms work', () => {
 
     it('Map and array in the same chemical both reactive', async () => {
         class $Combined extends $Chemical {
-            $items: string[] = [];
-            $counts: Map<string, number> = new Map();
+            items: string[] = [];
+            counts: Map<string, number> = new Map();
             addItem(item: string) {
-                this.$items.push(item);
-                this.$counts.set(item, (this.$counts.get(item) ?? 0) + 1);
+                this.items.push(item);
+                this.counts.set(item, (this.counts.get(item) ?? 0) + 1);
             }
             view() {
                 return <>
-                    <span className="items">{this.$items.length}</span>
-                    <span className="keys">{this.$counts.size}</span>
+                    <span className="items">{this.items.length}</span>
+                    <span className="keys">{this.counts.size}</span>
                     <button onClick={() => this.addItem('x')}>add</button>
                 </>;
             }
@@ -134,11 +134,11 @@ describe('Patterns: common idioms work', () => {
 
     it('conditional render based on reactive state', async () => {
         class $Toggle extends $Chemical {
-            $open? = false;
+            open? = false;
             view() {
                 return <>
-                    <button onClick={() => { this.$open = !this.$open; }}>toggle</button>
-                    {this.$open && <div className="content">shown</div>}
+                    <button onClick={() => { this.open = !this.open; }}>toggle</button>
+                    {this.open && <div className="content">shown</div>}
                 </>;
             }
         }
@@ -157,13 +157,13 @@ describe('Patterns: common idioms work', () => {
 
     it('nested mutation inside a method triggers re-render', async () => {
         class $Cart extends $Chemical {
-            $items: { name: string; qty: number }[] = [];
-            add(name: string) { this.$items.push({ name, qty: 1 }); }
-            incrementFirst() { if (this.$items[0]) this.$items[0].qty++; }
+            items: { name: string; qty: number }[] = [];
+            add(name: string) { this.items.push({ name, qty: 1 }); }
+            incrementFirst() { if (this.items[0]) this.items[0].qty++; }
             view() {
                 return <>
-                    <span className="count">{this.$items.length}</span>
-                    <span className="first-qty">{this.$items[0]?.qty ?? 0}</span>
+                    <span className="count">{this.items.length}</span>
+                    <span className="first-qty">{this.items[0]?.qty ?? 0}</span>
                     <button className="add" onClick={() => this.add('item')}>add</button>
                     <button className="inc" onClick={() => this.incrementFirst()}>inc</button>
                 </>;
@@ -186,11 +186,11 @@ describe('Patterns: common idioms work', () => {
 describe('Patterns: documented boundaries', () => {
     it('Map.set INSIDE a method triggers re-render via scope-tracked snapshot diff', async () => {
         class $M extends $Chemical {
-            $map: Map<string, number> = new Map();
-            put(k: string, v: number) { this.$map.set(k, v); }
+            map: Map<string, number> = new Map();
+            put(k: string, v: number) { this.map.set(k, v); }
             view() {
                 return <>
-                    <span className="size">{this.$map.size}</span>
+                    <span className="size">{this.map.size}</span>
                     <button onClick={() => this.put('k', 1)}>put</button>
                 </>;
             }
@@ -206,15 +206,15 @@ describe('Patterns: documented boundaries', () => {
 
     it('direct scalar write outside any method/handler TRIGGERS re-render automatically', async () => {
         class $S extends $Chemical {
-            $count? = 0;
-            view() { return <span className="n">{this.$count}</span>; }
+            count? = 0;
+            view() { return <span className="n">{this.count}</span>; }
         }
         new $S();
         const s = new $S();
         const { container } = render(React.createElement($(s)));
         await act(async () => {
             // Direct scalar write. Setter fires react() on no-scope.
-            s.$count = 42;
+            s.count = 42;
             await new Promise(r => setTimeout(r, 5));
         });
         expect(container.querySelector('.n')!.textContent).toBe('42');

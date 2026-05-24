@@ -2,6 +2,7 @@ import React from 'react';
 import { $Particle } from '@/index';
 import { isParticle } from '@/symbolic';
 import { CaptionSpaced, AssertionGrid, Verdict } from './case.styled';
+import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
 
 export default function Case4Demo() {
     class $Foo extends $Particle {}
@@ -9,6 +10,7 @@ export default function Case4Demo() {
     const b: any = new $Particle(a as any);
     const isSame = b === a;
     const isP = isParticle(a);
+    const state = isSame ? 'pass' : 'fail';
     return (
         <div>
             <CaptionSpaced>
@@ -24,6 +26,14 @@ export default function Case4Demo() {
                 <span>a.toString().slice(0, 30)</span>
                 <strong>→ "{a.toString().slice(0, 30)}"</strong>
             </AssertionGrid>
+            <VerdictSection>
+                <VerdictRow $state={state}>
+                    <VerdictDot $state={state} />
+                    {isSame
+                        ? '✓ b === a — no double wrap'
+                        : '✗ b !== a'}
+                </VerdictRow>
+            </VerdictSection>
         </div>
     );
 }

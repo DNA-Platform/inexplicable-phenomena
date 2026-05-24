@@ -6,12 +6,12 @@ import { $, $Chemical } from '@/abstraction/chemical';
 describe('Mutations inside event handlers trigger re-render', () => {
     it('nested Map mutation inside handler triggers re-render', async () => {
         class $M extends $Chemical {
-            $map: Map<string, number> = new Map();
+            map: Map<string, number> = new Map();
             view() {
                 return (
                     <div>
-                        <span className="size">{this.$map.size}</span>
-                        <button onClick={() => { this.$map.set(`k${this.$map.size}`, 1); }}>add</button>
+                        <span className="size">{this.map.size}</span>
+                        <button onClick={() => { this.map.set(`k${this.map.size}`, 1); }}>add</button>
                     </div>
                 );
             }
@@ -31,12 +31,12 @@ describe('Mutations inside event handlers trigger re-render', () => {
 
     it('nested array push inside handler triggers re-render', async () => {
         class $L extends $Chemical {
-            $items: string[] = [];
+            items: string[] = [];
             view() {
                 return (
                     <div>
-                        <span className="len">{this.$items.length}</span>
-                        <button onClick={() => { this.$items.push('x'); }}>add</button>
+                        <span className="len">{this.items.length}</span>
+                        <button onClick={() => { this.items.push('x'); }}>add</button>
                     </div>
                 );
             }
@@ -52,12 +52,12 @@ describe('Mutations inside event handlers trigger re-render', () => {
 
     it('Set add inside handler triggers re-render', async () => {
         class $S extends $Chemical {
-            $set: Set<number> = new Set();
+            set: Set<number> = new Set();
             view() {
                 return (
                     <div>
-                        <span className="size">{this.$set.size}</span>
-                        <button onClick={() => { this.$set.add(this.$set.size); }}>add</button>
+                        <span className="size">{this.set.size}</span>
+                        <button onClick={() => { this.set.add(this.set.size); }}>add</button>
                     </div>
                 );
             }
@@ -73,12 +73,12 @@ describe('Mutations inside event handlers trigger re-render', () => {
 
     it('nested object property write inside handler triggers re-render', async () => {
         class $O extends $Chemical {
-            $config: { mode: string } = { mode: 'light' };
+            config: { mode: string } = { mode: 'light' };
             view() {
                 return (
                     <div>
-                        <span className="mode">{this.$config.mode}</span>
-                        <button onClick={() => { this.$config.mode = 'dark'; }}>toggle</button>
+                        <span className="mode">{this.config.mode}</span>
+                        <button onClick={() => { this.config.mode = 'dark'; }}>toggle</button>
                     </div>
                 );
             }
@@ -94,16 +94,16 @@ describe('Mutations inside event handlers trigger re-render', () => {
 
     it('cross-chemical write inside handler triggers re-render on target', async () => {
         class $Inner extends $Chemical {
-            $v? = 0;
-            view() { return <span className="v">{this.$v}</span>; }
+            v? = 0;
+            view() { return <span className="v">{this.v}</span>; }
         }
         class $Outer extends $Chemical {
-            $inner!: $Inner;
+            inner!: $Inner;
             view() {
                 return (
                     <div>
-                        {this.$inner && (() => { const Inner = $(this.$inner); return <Inner />; })()}
-                        <button onClick={() => { this.$inner.$v = (this.$inner.$v ?? 0) + 1; }}>inc</button>
+                        {this.inner && (() => { const Inner = $(this.inner); return <Inner />; })()}
+                        <button onClick={() => { this.inner.v = (this.inner.v ?? 0) + 1; }}>inc</button>
                     </div>
                 );
             }
@@ -112,7 +112,7 @@ describe('Mutations inside event handlers trigger re-render', () => {
         new $Outer();
         const inner = new $Inner();
         const outer = new $Outer();
-        outer.$inner = inner;
+        outer.inner = inner;
         const C = $(outer);
         const { container } = render(<C />);
         // outer hasn't rendered inner via Component yet — view just uses inner's state
@@ -121,16 +121,16 @@ describe('Mutations inside event handlers trigger re-render', () => {
         await act(async () => {
             fireEvent.click(container.querySelector('button')!);
         });
-        expect(inner.$v).toBe(1);
+        expect(inner.v).toBe(1);
     });
 });
 
 describe('Mutations outside any handler still trigger re-render (direct writes)', () => {
     it('direct write from a setTimeout triggers re-render (via held instance)', async () => {
         class $T extends $Chemical {
-            $count? = 0;
+            count? = 0;
             view() {
-                return <span className="count">{this.$count}</span>;
+                return <span className="count">{this.count}</span>;
             }
         }
         new $T(); // create template
@@ -141,7 +141,7 @@ describe('Mutations outside any handler still trigger re-render (direct writes)'
         await act(async () => {
             await new Promise<void>(resolve => {
                 setTimeout(() => {
-                    t.$count = 5;
+                    t.count = 5;
                     resolve();
                 }, 10);
             });

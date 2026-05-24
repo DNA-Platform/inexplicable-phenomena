@@ -43,10 +43,11 @@ When React props are applied via [`$apply$`][particle], each prop key is automat
 
 The point where `$` disappears. A component author writes `class $Display extends $Chemical` with `$text` as a prop, then exports `const Display = $($Display)`. Consumers import `Display` and write `<Display text="Hello" />`. The `$()` callable produces a React component whose props interface mirrors the `$`-prefixed properties with the `$` stripped. This is the membrane made concrete.
 
-`$()` has two forms:
+`$()` has three forms:
 
 - **Class form** — `$($Display)` for stateless templates. Each mount runs the bond constructor fresh.
 - **Instance form** — `$(display)` when a single held instance must persist state across mounts (e.g. an app shell holding the active route). The instance is named lowercase (`display`, `lab`); the exported Component is capital-first (`Display`, `Lab`). Routes through `$lift`.
+- **Inverse form** — `$(Display)` where `Display` is an already-created Component. Returns the chemical instance it wraps. Useful when the instance was created inside a module and you need it from outside — e.g., debugging or framework-level inspection.
 
 The internal mechanism — the `[$component$]` cache on each chemical and the `Component` getter on `$Chemical.prototype` — is framework plumbing. Author code never reaches for it; `$()` is the only public surface.
 
