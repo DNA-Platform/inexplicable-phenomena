@@ -47,6 +47,12 @@ const Page = styled.div`
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    @media (max-width: 768px) {
+        justify-content: flex-start;
+        padding-top: 28vh;
+        padding-left: 5vw;
+        padding-right: 5vw;
+    }
 `;
 
 const Orb = styled.div<{ $x: number; $y: number; $size: number; $hue: number; $delay: number }>`
@@ -80,6 +86,11 @@ const Title = styled.h1`
     animation: ${fadeIn} 2s ease-out both, ${strokeIn} 1.5s ease-out 2.5s both;
     position: relative;
     z-index: 1;
+
+    @media (max-width: 768px) {
+        font-size: 10.5vw;
+        max-width: 90vw;
+    }
 `;
 
 const SubtitleWrap = styled.p`
@@ -95,6 +106,11 @@ const SubtitleWrap = styled.p`
     animation: ${fadeIn} 2s ease-out 0.6s both;
     position: relative;
     z-index: 1;
+
+    @media (max-width: 768px) {
+        font-size: 5.5vw;
+        margin-top: 3vw;
+    }
 `;
 
 const OpalLetter = styled.span<{ $i: number; $rev: boolean }>`
@@ -121,6 +137,11 @@ const Rule = styled.div`
     animation: ${fadeIn} 2s ease-out 1.2s both;
     position: relative;
     z-index: 1;
+
+    @media (max-width: 768px) {
+        width: 18vw;
+        margin-top: 2.5vw;
+    }
 `;
 
 const orbs = [
