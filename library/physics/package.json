@@ -1,0 +1,9 @@
+{
+  "name": "@dna-platform/physics",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Physics — documented with $Chemistry",
+  "dependencies": {
+    "@dna-platform/public-library": "*"
+  }
+}

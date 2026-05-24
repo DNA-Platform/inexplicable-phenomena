@@ -1,0 +1,9 @@
+{
+  "name": "@dna-platform/mathematics",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Mathematics — documented with $Chemistry",
+  "dependencies": {
+    "@dna-platform/public-library": "*"
+  }
+}

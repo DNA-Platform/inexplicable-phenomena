@@ -1,0 +1,9 @@
+{
+  "name": "@dna-platform/encyclopedia",
+  "version": "0.0.1",
+  "private": true,
+  "description": "The Encyclopedia — documented with $Chemistry",
+  "dependencies": {
+    "@dna-platform/public-library": "*"
+  }
+}

@@ -1,10 +1,14 @@
 {
   "name": "@dna-platform/chemistry",
   "version": "0.1.0",
-  "private": true,
   "description": "Objects that React!",
   "license": "MIT",
   "author": "Doug Rubino",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
+    "directory": "library/chemistry"
+  },
   "main": "dist/chemistry.cjs",
   "module": "dist/chemistry.js",
   "types": "dist/chemistry.d.ts",

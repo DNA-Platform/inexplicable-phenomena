@@ -5,6 +5,14 @@
     ".claude",
     ".authors/.*",
     "library/.public",
-    "library/chemistry"
+    "library/chemistry",
+    "library/catalogue",
+    "library/consciousness",
+    "library/cryptography",
+    "library/dictionary",
+    "library/encyclopedia",
+    "library/mathematics",
+    "library/physics",
+    "library/proof"
   ]
 }

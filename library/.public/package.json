@@ -1,6 +1,13 @@
 {
   "name": "@dna-platform/public-library",
   "version": "0.0.1",
-  "private": true,
-  "description": "Public-facing site — GitHub Pages for the repository"
+  "description": "Public-facing site — GitHub Pages for the repository",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
+    "directory": "library/.public"
+  },
+  "dependencies": {
+    "@dna-platform/chemistry": "*"
+  }
 }

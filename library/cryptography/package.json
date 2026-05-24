@@ -1,0 +1,9 @@
+{
+  "name": "@dna-platform/cryptography",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Cryptography — documented with $Chemistry",
+  "dependencies": {
+    "@dna-platform/public-library": "*"
+  }
+}

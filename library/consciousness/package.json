@@ -1,0 +1,9 @@
+{
+  "name": "@dna-platform/consciousness",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Consciousness — documented with $Chemistry",
+  "dependencies": {
+    "@dna-platform/public-library": "*"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@dna-platform/dictionary",
+  "version": "0.0.1",
+  "private": true,
+  "description": "The Dictionary — documented with $Chemistry",
+  "dependencies": {
+    "@dna-platform/public-library": "*"
+  }
+}
