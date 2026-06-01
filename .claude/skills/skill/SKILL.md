@@ -45,7 +45,7 @@ argument-hint: "[args]"    # Optional: hint shown in / menu
 
 ## Also consider: is this an ability?
 
-This project has abilities (`.claude/team/abilities/{name}.md`). These are NOT invocable — they're reference documents describing low-level techniques. Think "how to do X" rather than "do X."
+This project has abilities (`.claude/agents/abilities/{name}.md`). These are NOT invocable — they're reference documents describing low-level techniques. Think "how to do X" rather than "do X."
 
 **Use an ability when:**
 - It describes a technique, not a workflow (e.g., "chrome filtering" not "filter chrome")
@@ -76,7 +76,7 @@ When designing the skill, walk through these questions:
 
 4. **Write it.** Create the files:
    - Skill: `.claude/skills/{name}/SKILL.md` (plus any supporting files)
-   - Ability: `.claude/team/abilities/{name}.md`
+   - Ability: `.claude/agents/abilities/{name}.md`
 
 5. **Explain what you built.** Brief summary: what it's called, what form you chose, why, and how to invoke it.
 
@@ -88,14 +88,14 @@ When designing the skill, walk through these questions:
 - They specify exact shell commands with full paths.
 - They handle edge cases explicitly rather than hoping for the best.
 - They end with the action/input section, not with meta-commentary.
-- Citation links use project-root-relative paths (e.g., `.claude/team/roles/`).
+- Citation links use project-root-relative paths (e.g., `.claude/agents/roles/`).
 
 Match this energy. A skill in this project should feel like it belongs next to the existing ones.
 
 <!-- citations -->
-[roles]: .claude/team/roles/
-[abilities]: .claude/team/abilities/
-[agents]: .claude/team/agents/
+[roles]: .claude/agents/roles/
+[abilities]: .claude/agents/abilities/
+[agents]: .claude/agents/team/
 
 ## The request
 

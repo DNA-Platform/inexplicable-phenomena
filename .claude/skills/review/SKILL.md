@@ -130,20 +130,20 @@ When no arguments are given, run a systematic review across all agents:
 Save the full review to the current sprint's reviews directory:
 
 ```
-.claude/project/{current-sprint}/reviews/review-{date}.md
+.claude/agents/project/{current-sprint}/reviews/review-{date}.md
 ```
 
-If no sprint is active, save to `.claude/project/reviews/review-{date}.md`.
+If no sprint is active, save to `.claude/agents/project/reviews/review-{date}.md`.
 
 ## After the review
 
 If the review found stale assignments (deleted files, shifted scope), offer to update agents. If it found coverage gaps, offer to create new agents. A review is the natural moment for team growth.
 
 <!-- citations -->
-[agent registry]: .claude/team/agents/registry.json
-[agents]: .claude/team/agents
-[roles]: .claude/team/roles/
-[abilities]: .claude/team/abilities/
+[agent registry]: .claude/agents/team/registry.json
+[agents]: .claude/agents/agents
+[roles]: .claude/agents/roles/
+[abilities]: .claude/agents/abilities/
 [responsible skill]: .claude/skills/responsible/SKILL.md
 
 $ARGUMENTS

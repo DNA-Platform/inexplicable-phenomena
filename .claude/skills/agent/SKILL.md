@@ -120,9 +120,9 @@ When any command or workflow modifies files, it should check whether an assigned
 This is advisory, not blocking. The point is awareness, not gatekeeping.
 
 <!-- citations -->
-[roles]: .claude/team/roles/
-[agents]: .claude/team/agents
-[agent registry]: .claude/team/agents/registry.json
-[project tracker]: .claude/project/index.md
+[roles]: .claude/agents/roles/
+[agents]: .claude/agents/agents
+[agent registry]: .claude/agents/team/registry.json
+[project tracker]: .claude/agents/project/index.md
 
 $ARGUMENTS

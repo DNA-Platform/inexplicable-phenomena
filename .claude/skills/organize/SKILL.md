@@ -51,7 +51,7 @@ Six concerns, distributed across agents:
    d. **Agent registry health.** For each agent:
       - Verify the `.md` file exists
       - Verify path patterns match at least one existing file
-      - Verify referenced roles exist in `.claude/team/roles/`
+      - Verify referenced roles exist in `.claude/agents/roles/`
       - Flag orphaned `.md` files not in registry
 
    e. **Workspace consistency.** For each workspace in root `package.json`:
@@ -75,7 +75,7 @@ Six concerns, distributed across agents:
 
    b. **Script-skill alignment.** Commands in skills should match what the scripts actually accept (flags, parameters).
 
-   c. **Doc currency.** Check `.claude/docs/log-format.md` and `.claude/docs/desktop.md` describe current behavior.
+   c. **Doc currency.** Check `.claude/agents/docs/log-format.md` and `.claude/agents/docs/desktop.md` describe current behavior.
 
    d. **Cross-reference integrity.** Skills reference source files, docs reference functions — verify the chain is unbroken.
 
@@ -97,13 +97,13 @@ Six concerns, distributed across agents:
 
 5. **Audit roles and abilities** (Arthur — these are global structure):
 
-   a. **Roles.** For each file in `.claude/team/roles/`:
+   a. **Roles.** For each file in `.claude/agents/roles/`:
       - Check required sections: domain paragraph, diagnostic question, anxieties, mantra, abilities list, source files list
-      - Verify referenced abilities exist in `.claude/team/abilities/`
+      - Verify referenced abilities exist in `.claude/agents/abilities/`
       - Verify referenced source files exist on disk
       - Check if the role is used by at least one agent
 
-   b. **Abilities.** For each file in `.claude/team/abilities/`:
+   b. **Abilities.** For each file in `.claude/agents/abilities/`:
       - Check it's loaded by at least one role
       - Flag orphaned abilities no role references
 
@@ -113,13 +113,13 @@ Six concerns, distributed across agents:
    ## Arthur (global + arthur-only)
 
    ### Broken references
-   - CLAUDE.md:42 — [init guide] points to .claude/docs/init.md (missing)
+   - CLAUDE.md:42 — [init guide] points to .claude/agents/docs/init.md (missing)
 
    ### Stale permissions
    - Bash(mkdir *) — no skill uses mkdir
 
    ### Arthur-only clusters
-   - .claude/team/** — significant area, consider specific agent
+   - .claude/agents/** — significant area, consider specific agent
    - README.md, LICENSE.md — root docs, fine as Arthur-only
 
    ## Adam (automation)
@@ -150,11 +150,11 @@ Six concerns, distributed across agents:
 - Content quality — organize checks structure and references, not whether instructions are well-written
 
 <!-- citations -->
-[agent registry]: .claude/team/agents/registry.json
-[agents]: .claude/team/agents/
-[roles]: .claude/team/roles/
-[abilities]: .claude/team/abilities/
-[project tracker]: .claude/project/index.md
+[agent registry]: .claude/agents/team/registry.json
+[agents]: .claude/agents/team/
+[roles]: .claude/agents/roles/
+[abilities]: .claude/agents/abilities/
+[project tracker]: .claude/agents/project/index.md
 
 ## The request
 

@@ -66,11 +66,11 @@ When multiple agents match a file:
    - README.md
    - LICENSE.md
    - .claude/skills/organize/**
-   - .claude/team/**
-   - .claude/project/**
+   - .claude/agents/**
+   - .claude/agents/project/**
    ```
 
 <!-- citations -->
-[agent registry]: .claude/team/agents/registry.json
+[agent registry]: .claude/agents/team/registry.json
 
 $ARGUMENTS

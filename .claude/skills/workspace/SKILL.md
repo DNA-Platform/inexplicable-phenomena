@@ -74,6 +74,6 @@ If the path already has a `package.json`, offer to:
 - Don't modify other workspaces' package.json files (unless adding a cross-dep that was requested)
 
 <!-- citations -->
-[agent registry]: .claude/team/agents/registry.json
+[agent registry]: .claude/agents/team/registry.json
 
 $ARGUMENTS

@@ -4,13 +4,13 @@ description: Browse an agent's library — list books with summaries, or show th
 argument-hint: "[agent] [book-slug]"
 ---
 
-Browse an agent's library. Libraries live at `.claude/team/library/{agent}/`. Each agent folder contains book subdirectories. Each book has a `README.md` with frontmatter (title, author, summary) and chapters as `NN-slug.md` files.
+Browse an agent's library. Libraries live at `.claude/agents/library/..team/{agent}/`. Each agent folder contains book subdirectories. Each book has a `.cover.md` with frontmatter (title, author, summary) and chapters as `NN-slug.md` files.
 
 ## Modes
 
 **No arguments** — list all agent libraries with book counts.
 
-**One argument (`{agent}`)** — list that agent's books with title and summary from the book's README frontmatter.
+**One argument (`{agent}`)** — list that agent's books with title and summary from the book's `.cover.md` frontmatter.
 
 **Two arguments (`{agent} {book-slug}`)** — show the book's chapter list (the table of contents) and the summary from frontmatter.
 
@@ -20,7 +20,7 @@ Browse an agent's library. Libraries live at `.claude/team/library/{agent}/`. Ea
 
 2. **Zero args — all libraries.**
 
-   List every directory under `.claude/team/library/` excluding the top-level `README.md`. For each agent, count the number of book subdirectories (directories that contain a `README.md`). Output:
+   List every directory under `.claude/agents/library/..team/` excluding any top-level files. For each agent, count the number of book subdirectories (directories that contain a `.cover.md`). Output:
 
    ```
    ## Libraries
@@ -35,7 +35,7 @@ Browse an agent's library. Libraries live at `.claude/team/library/{agent}/`. Ea
 
 3. **One arg — agent's books.**
 
-   Look in `.claude/team/library/{agent}/`. For each subdirectory that contains a `README.md`, parse the frontmatter of that `README.md`. Extract `title`, `summary`, and (if present) `author`. Output:
+   Look in `.claude/agents/library/..team/{agent}/`. For each subdirectory that contains a `.cover.md`, parse the frontmatter of that `.cover.md`. Extract `title`, `summary`, and (if present) `author`. Output:
 
    ```
    ## {agent}'s library
@@ -52,9 +52,9 @@ Browse an agent's library. Libraries live at `.claude/team/library/{agent}/`. Ea
 
 4. **Two args — book chapters.**
 
-   Read `.claude/team/library/{agent}/{book-slug}/README.md`. If missing, say: "No book `{book-slug}` in {agent}'s library. Available books: {list or 'none'}."
+   Read `.claude/agents/library/..team/{agent}/{book-slug}/.cover.md`. If missing, say: "No book `{book-slug}` in {agent}'s library. Available books: {list or 'none'}."
 
-   Parse frontmatter (title, summary, author, links). List all `.md` files in the book directory except `README.md`, sorted alphabetically (the `NN-` numeric prefix orders them). For each chapter file, parse its frontmatter for `title`. Output:
+   Parse frontmatter (title, summary, author, links). List all `.md` files in the book directory except `.cover.md`, sorted alphabetically (the `NN-` numeric prefix orders them). For each chapter file, parse its frontmatter for `title`. Output:
 
    ```
    ## {book title}
@@ -81,6 +81,6 @@ Browse an agent's library. Libraries live at `.claude/team/library/{agent}/`. Ea
 - Use `Read`, `Glob`, `Bash` (for `ls`). Read-only skill; do not modify files.
 
 <!-- citations -->
-[library]: ../../team/library/
+[library]: ../../agents/library/..team/
 
 $ARGUMENTS

@@ -62,7 +62,7 @@ Marks [status:processing], executes DNA commands, marks [status:processed]
 
 ## Conversation log
 
-The listener writes to `.authors/.eirian/conversation.log` (not voice.md). The log is **append-only** — never rewritten. Status tracking lives in `.authors/.eirian/conversation.status.json` (a sidecar file that `/hear` manages). See `.claude/docs/log-format.md` for the full format spec.
+The listener writes to `.authors/.eirian/conversation.log` (not voice.md). The log is **append-only** — never rewritten. Status tracking lives in `.authors/.eirian/conversation.status.json` (a sidecar file that `/hear` manages). See `.claude/agents/docs/log-format.md` for the full format spec.
 
 ## Catch-up
 
