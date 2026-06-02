@@ -1,8 +1,9 @@
 # Local Archive
 .archive/*
 
-# Helpers
-# .claude/*
+# Team identity (private, lives in its own repo)
+.claude/
+CLAUDE.md
 .authors/*
 
 # Node.js / npm
