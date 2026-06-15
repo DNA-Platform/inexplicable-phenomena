@@ -6,6 +6,9 @@
 CLAUDE.md
 .authors/*
 
+# Library branches (live in identity repo, not project repo)
+**/.lib/
+
 # Node.js / npm
 node_modules/
 npm-debug.log
