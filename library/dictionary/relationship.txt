@@ -1,31 +1,61 @@
-Definition of the ternary operator
+:: Definition of the ternary operator
 def x =t> y:
-R(x,y,t)
+    R(x,y,t)
 
-Defintion of inheritance
+:: Defintion of inheritance
 def x -> t: x =t> x
 
-// Definition of the canonical object
-// Individuality is source of the referent if x is not symbolic
-// We have problems with uniqueness if there is more than one
+:: Definition of the canonical object
+:: Individuality is source of the referent if x is not symbolic
+:: We have problems with uniqueness if there is more than one
 def [x]: E[x'=[x]]: (x,[x]) == [x] 
 
-// Definition of a Frame
-// F will likely be a synonym for (r) and [F] will be r
-// It will have to be true that a property of frames is that [F] whill have to equal the current frame!
+:: Definition of a Frame
+:: F will likely be a synonym for (r) and [F] will be r
+:: It will have to be true that a property of frames is that [F] whill have to equal the current frame!
 E[F]: x =[F]> [F]
 
-// Definition of a symbol
-// Consider removing the uniqueness constraint or start doing x(y) is (x,y) == x
+:: Definition of a symbol
+:: Consider removing the uniqueness constraint or start doing x(y) is (x,y) == x
 def (x): 
-E[x']: (x',x) == x' & x' =[F]> [F]
-E[y' != x']: y' !=[F]> [F]
+    E[x']: (x',x) == x' & x' =[F]> [F]
+    E[y' != x']: y' !=[F]> [F]
+
+:: Definition of a specific relationship
+def x =t=(x,y)> y :
+    t == (x,y)
 
 def (x:t): (x) > x -> t
 
 E[r,s,o]:
-s =r> r
-o =r> r
-(r) =r> r
+    s =r> r
+    o =r> r
+    (r) =r> r
 
 s =r> o
+
+---
+
+:: The subject-object relationship
+E[subject, object, relationship]: 
+    subject =relationship> object
+    relationship == (subject, object)
+
+:: The representative aspects of a representation
+E[representative, representation]: 
+    representative =representation> representation
+    representation == (representative, representation)
+
+:: The reference of a referent
+E[reference, referent]: 
+    reference =reference> referent
+    reference == (reference, referent)
+
+:: The identification of an identity
+E[identification, identity]: 
+    identify =identification> identity 
+
+:: The individuality of an identification
+E[individuality]: 
+    individual =individual> individual
+    individual == (individual, individual)
