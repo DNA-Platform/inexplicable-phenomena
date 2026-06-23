@@ -67,6 +67,7 @@ E[individuality]:
 :: The subject of dichotomy
 E[dichotomy, canonical, indexical]:
     subject: { 
+        dichotomy,
         canonical, 
         indexical, 
     }: [
