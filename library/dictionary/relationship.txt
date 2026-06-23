@@ -45,12 +45,14 @@ E[subject, object, relationship]:
 E[representative, representation]: 
     representative =representation> representation
     representation == (representative, representation)
+    representation -> object & relationship
     representative -> representation
 
 :: The reference of a referent
 E[reference, referent]: 
     reference =reference> referent
     reference == (reference, referent)
+    reference -> subject & relationship
 
 :: The identification of an identity
 E[identification, identity]: 
@@ -60,6 +62,7 @@ E[identification, identity]:
 E[individuality]: 
     individual =individual> individual
     individual == (individual, individual)
+    individual -> identity
 
 :: The subject of dichotomy
 E[dichotomy, canonical, indexical]:
