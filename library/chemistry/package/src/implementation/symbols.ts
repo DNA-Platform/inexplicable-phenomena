@@ -40,6 +40,16 @@ export const $backing$ = Symbol("$Chemical.backing");
 export const $catalyst$ = Symbol("$Chemical.catalyst");
 export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");
 export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
+
+// Perspectives — alternative named views onto a chemical.
+// $perspective$  — the chemical's currently-active Perspective (per instance).
+// $perspectives$ — the static registry array of revealed perspectives, filed
+//                  on the host chemical class (own property, not inherited).
+// $isPerspective$ — static marker stamped on Perspective classes so the host
+//                  walk can skip them (read via hasOwnProperty; not inherited).
+export const $perspective$ = Symbol("$Chemical.perspective");
+export const $perspectives$ = Symbol("$Chemical.perspectives");
+export const $isPerspective$ = Symbol("$Perspective.isPerspective");
 export const $lifted$ = Symbol("$Particle.lifted");
 export const $construction$ = Symbol("$Particle.construction");
 export const $formRan$ = Symbol("$Particle.formRan");

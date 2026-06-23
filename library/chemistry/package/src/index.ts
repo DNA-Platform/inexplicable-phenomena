@@ -11,6 +11,9 @@ export { $Particle } from './abstraction/particle';
 export { $Chemical } from './abstraction/chemical';
 export { $Atom } from './abstraction/atom';
 
+// Perspectives — named, switchable views on a chemical
+export { Perspective } from './abstraction/perspective';
+
 // The dollar callable
 export { $ } from './abstraction/chemical';
 

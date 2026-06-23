@@ -3,7 +3,7 @@ def x =t> y:
     R(x,y,t)
 
 :: Defintion of inheritance
-def x -> t: x =t> x
+def x -> t: x =t> x & x =t> t
 
 :: Definition of the canonical object
 :: Individuality is source of the referent if x is not symbolic
@@ -40,25 +40,36 @@ s =r> o
 E[subject, object, relationship]: 
     subject =relationship> object
     relationship == (subject, object)
+    x =t> y & x !=eq> y =|> 
+        x -> subject
+        y -> object 
+        t -> relationship
 
 :: The representative aspects of a representation
 E[representative, representation]: 
     representative =representation> representation
     representation == (representative, representation)
-    representation -> object & relationship
     representative -> representation
+    x =y> y & x !=eq> y =|> 
+        x -> representative
+        y -> representation 
 
 :: The reference of a referent
 E[reference, referent]: 
     reference =reference> referent
     reference == (reference, referent)
-    reference -> subject & relationship
+    x =x> y & x !=eq> y =|> 
+        x -> reference
+        y -> referent 
 
 :: The identification of an identity
 E[identification, identity]: 
-    identify =identification> identity 
+    identity =identification> identity 
+    x =y> x & x !=eq> y =|> 
+        x -> identity
+        y -> identification 
 
-:: The individuality of an identification
+:: The individuality of an individual
 E[individuality]: 
     individual =individual> individual
     individual == (individual, individual)

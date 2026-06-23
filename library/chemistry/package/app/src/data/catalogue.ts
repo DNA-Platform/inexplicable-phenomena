@@ -510,6 +510,13 @@ export const catalogue: Group[] = [
             { id: 'tabs', title: 'Tabbed interface', symbol: 'Tb', planned: [] },
         ],
     },
+    {
+        roman: '·',
+        title: 'Perspectives',
+        sections: [
+            { id: 'perspectives', title: 'Perspectives', symbol: 'Pv', planned: [] },
+        ],
+    },
 ];
 
 export function findSection(id: string): { group: Group; section: Section } | undefined {

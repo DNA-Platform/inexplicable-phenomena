@@ -4,7 +4,7 @@ import { $Bond, $Reflection } from "./bond";
 // Properties that apply to every particle regardless of where they sit in the
 // prototype chain. $show/$hide live on $Particle — above the $isChemicalBase$
 // ceiling that collectProperties() stops at — so normal discovery never finds
-// them. This list ensures they always get bonded.
+// them. This list ensures they get bonded.
 const universalProperties = ['$show', '$hide'];
 
 // $Molecule — structural description of a chemical.
@@ -70,6 +70,10 @@ export class $Molecule {
             if (this._bonds.has(property)) return;
             if (this._inert.has(property)) return;
             if (property === 'view' || property === 'toString' || property === '$form' || property === '$new') return;
+            // Perspective machinery — framework methods on $Chemical, not user
+            // reactive state. Skipped like view/$form/$new so they form no
+            // bonds and (for the special-named $reveal) never leak into $props.
+            if (property === '$reveal' || property === 'change' || property === 'perspectives') return;
             const reflect = new $Reflection(chemical, property);
             if (!reflect.reactive) return this._inert.add(property);
             const bond = $Bond.create(chemical, property, descriptor);

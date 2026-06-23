@@ -32,6 +32,7 @@ import { sectionData as formLifecycle } from './form-lifecycle-section';
 import { sectionData as dynamicNest } from './dynamic-nest-section';
 import { sectionData as adapted } from './adapted-components';
 import { sectionData as cloning } from './cloning-components';
+import { sectionData as perspectives } from './perspectives-section';
 
 export type SectionModule = {
     id: string;
@@ -73,6 +74,7 @@ const modules: SectionModule[] = [
     dynamicNest,
     adapted,
     cloning,
+    perspectives,
 ];
 
 export const sectionModules: Record<string, SectionModule> = Object.fromEntries(

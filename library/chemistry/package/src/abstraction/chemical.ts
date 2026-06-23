@@ -7,11 +7,12 @@ import {
     $$template$$, $$getNextCid$$, $$createSymbol$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
-    $devError$
+    $devError$, $perspectives$, $isPerspective$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType } from "../implementation/types";
 import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from "./particle";
+import { Perspective } from "./perspective";
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
 import { $Reaction } from "./reaction";
@@ -670,6 +671,42 @@ export class $Chemical extends $Particle {
         return this.children;
     }
 
+    // ── Perspectives ────────────────────────────────────────────────────────
+    // A perspective is a SUBCLASS of this chemical that overrides `view`. It
+    // reveals itself from its (template) constructor: `reveal` POPS that
+    // subclass's `view` off onto a Perspective and files it on the base class.
+    // Reading `perspectives` then BINDS: the instance clones each lens and stores
+    // ITSELF on the clone (cached per instance), so each perspective is "this
+    // object, seen this way" — `perspective.render()` draws the live instance
+    // through that lens. The thing rendering a lens never has to pass it the object.
+
+    get perspectives(): Perspective[] {
+        let bound = perspectiveCache.get(this);
+        if (bound) return bound;
+        let base: any = this.constructor;
+        while (base && Object.prototype.hasOwnProperty.call(base, $isPerspective$)) base = Object.getPrototypeOf(base);
+        const raw: Perspective[] = base && Object.prototype.hasOwnProperty.call(base, $perspectives$) ? base[$perspectives$] : [];
+        bound = raw.map(p => {
+            const lens = new Perspective((p as any).name, (p as any).default);
+            (lens as any).view = (p as any).view;       // the popped subclass view
+            (lens as any).instance = this;              // bind THIS instance into the lens
+            return lens;
+        });
+        perspectiveCache.set(this, bound);
+        return bound;
+    }
+
+    protected reveal(perspective: Perspective): void {
+        const lens: any = this.constructor;
+        if (Object.prototype.hasOwnProperty.call(lens, $isPerspective$)) return; // idempotent: once per subclass
+        (perspective as any).view = (this as any).view;     // pop this subclass's view off onto the perspective
+        lens[$isPerspective$] = true;                        // untyped static mark: this class is perspectival
+        let base: any = Object.getPrototypeOf(lens);
+        while (base && Object.prototype.hasOwnProperty.call(base, $isPerspective$)) base = Object.getPrototypeOf(base);
+        if (!Object.prototype.hasOwnProperty.call(base, $perspectives$)) base[$perspectives$] = [];
+        base[$perspectives$].push(perspective);
+    }
+
     protected [$bond$]() {
         this[$molecule$].reactivate();
         this[$synthesis$].bond({ children: this[$children$] });
@@ -730,6 +767,10 @@ export class $Chemical extends $Particle {
 // walk at the framework boundary without importing $Chemical.
 // $isChemicalBase$ now lives on $Particle.prototype (the framework root for
 // reactive entities). Inherited transitively here.
+
+// Per-instance cache of bound perspectives: reading `perspectives` returns the
+// same cloned, instance-bound lenses each time (stable identity for menus).
+const perspectiveCache = new WeakMap<any, Perspective[]>();
 
 // bind(chemical, parent?) — create a bound child instance of a chemical
 export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Component<T> {
