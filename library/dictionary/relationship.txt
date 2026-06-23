@@ -75,3 +75,14 @@ E[dichotomy, canonical, indexical]:
         subject:{ t } =|> canonical:{ t } || indexical:{ t }
     ]
 
+:: The fundamental dichotomy of SRT
+E[relational]:
+    subject: {
+        relationship,
+        identification,
+    }: [
+        relational -> dichotomy
+        relationship -> canonical
+        identification -> indexical
+        relationship =relational:dichotomy> identification
+    ]
