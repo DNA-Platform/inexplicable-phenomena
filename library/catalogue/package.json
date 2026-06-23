@@ -1,9 +1,0 @@
-{
-  "name": "@dna-platform/catalogue",
-  "version": "0.0.1",
-  "private": true,
-  "description": "The Catalogue — documented with $Chemistry",
-  "dependencies": {
-    "@dna-platform/public-library": "*"
-  }
-}

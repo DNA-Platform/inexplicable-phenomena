@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'library/chemistry/src/**'
-      - 'library/chemistry/package.json'
+      - 'library/chemistry/package/src/**'
+      - 'library/chemistry/package/package.json'
       - 'library/.public/package.json'
 
 permissions:
@@ -26,11 +26,11 @@ jobs:
       - run: npm install
 
       - name: Build chemistry
-        working-directory: library/chemistry
+        working-directory: library/chemistry/package
         run: npm run build
 
       - name: Publish chemistry
-        working-directory: library/chemistry
+        working-directory: library/chemistry/package
         run: npm publish --access restricted || echo "Version already published, skipping"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

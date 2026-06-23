@@ -13,7 +13,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dna-platform/chemistry": "*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
     "styled-components": "^6.1.0"

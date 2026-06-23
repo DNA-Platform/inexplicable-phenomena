@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
-    "directory": "library/chemistry"
+    "directory": "library/chemistry/package"
   },
   "main": "dist/chemistry.cjs",
   "module": "dist/chemistry.js",
