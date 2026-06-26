@@ -40,34 +40,22 @@ s =r> o
 E[subject, object, relationship]: 
     subject =relationship> object
     relationship == (subject, object)
-    x =t> y & x !=eq> y =|> 
-        x -> subject
-        y -> object 
-        t -> relationship
-
-:: The representative aspects of a representation
-E[representative, representation]: 
-    representative =representation> representation
-    representation == (representative, representation)
-    representative -> representation
-    x =y> y & x !=eq> y =|> 
-        x -> representative
-        y -> representation 
 
 :: The reference of a referent
 E[reference, referent]: 
     reference =reference> referent
     reference == (reference, referent)
-    x =x> y & x !=eq> y =|> 
-        x -> reference
-        y -> referent 
+    reference -> relationship
+
+:: The representative aspects of a representation
+E[representative, representation]: 
+    representative =representation> representation
+    representation == (representative, representation)
+    representative -> representation -> reference
 
 :: The identification of an identity
 E[identification, identity]: 
     identity =identification> identity 
-    x =y> x & x !=eq> y =|> 
-        x -> identity
-        y -> identification 
 
 :: The individuality of an individual
 E[individuality]: 
@@ -97,3 +85,19 @@ E[relational]:
         identification -> indexical
         relationship =relational:dichotomy> identification
     ]
+
+---
+
+:: The reference conundrum
+:: The representation refers to the referent through its representative for it
+:: We can infer that the representative is a representation of the referent
+:: We can infer that the representation is representative of the referent
+:: Let us suppose that the most specific way the reprsentative relates to the referent is through the representation
+:: One perspective is that a reference refers to a referent because it is a type of representative in a representation
+:: Another perspective is that the reference refers to the referent in the most fundamental way
+:: It will be the subject of the reference frame that determines which of these is taken as the fundamental perspective 
+representative -> represenntation -> reference
+represenntation =representative> referent
+representative =represenntation> referent
+representative =represenntation> referent
+(representative, referent) == represenntation
