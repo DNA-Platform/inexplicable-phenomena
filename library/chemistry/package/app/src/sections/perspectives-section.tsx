@@ -5,6 +5,8 @@ import ColorPerspectivesDemo from './perspectives-color/case-1';
 import colorSource from './perspectives-color/case-1.tsx?raw';
 import BookPerspectivesDemo from './perspectives-book/case-1';
 import bookSource from './perspectives-book/case-1.tsx?raw';
+import LookPerspectivesDemo from './perspectives-look/case-1';
+import lookSource from './perspectives-look/case-1.tsx?raw';
 
 export function PerspectivesCases() {
     return (
@@ -25,12 +27,20 @@ export function PerspectivesCases() {
                 source={bookSource}
                 demo={<BookPerspectivesDemo />}
             />
+            <CaseShell
+                caseId="the element"
+                subject="The vertical axis — one live $PeriodicCell walked up and down its own inheritance with look('up'/'down'); ▲ reverts toward the bare symbol, ▼ specializes back"
+                pass="▲/▼ walk cell · named · symbol and back; the breadcrumb tracks and the ends grey at the clamps; one live instance, never re-created"
+                fail="a tier is blank, the stage jumps, or reaching a tier needed a menu or reveal"
+                source={lookSource}
+                demo={<LookPerspectivesDemo />}
+            />
         </>
     );
 }
 
 export const sectionData = {
     id: 'perspectives',
-    cases: 2,
+    cases: 3,
     Component: PerspectivesCases,
 };

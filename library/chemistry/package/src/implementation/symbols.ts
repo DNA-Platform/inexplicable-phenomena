@@ -50,6 +50,27 @@ export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
 export const $perspective$ = Symbol("$Chemical.perspective");
 export const $perspectives$ = Symbol("$Chemical.perspectives");
 export const $isPerspective$ = Symbol("$Perspective.isPerspective");
+
+// Vertical perspective — `look` walks an instance up/down its OWN prototype
+// chain, rendering it through any ancestor's `view`.
+// $activeView$ — the view FUNCTION this instance currently renders through
+//                (undefined = render through its own most-derived class).
+// $renderView$ — internal render entry: $lift calls this instead of view(),
+//                so the active view is consulted without disturbing user
+//                view() overrides.
+export const $activeView$ = Symbol("$Particle.activeView");
+export const $renderView$ = Symbol("$Particle.renderView");
+// $viewLevel$ — cursor into the instance's chain of user view-levels (0 =
+// most-derived). Symbol-keyed, not #private: the template render path mounts
+// derivatives via Object.create(template), which never run the constructor —
+// a #private field would be unbranded there and throw. Symbols ride through.
+export const $viewLevel$ = Symbol("$Particle.viewLevel");
+// $isViewBase$ — OWN-property marker stamped on each framework class whose
+// `view` is structural (renders toString/children) rather than a semantic
+// perspective: $Particle and $Chemical. `look` skips these so it bottoms out
+// at the highest USER view-level. Own-property (not inherited) so user
+// subclasses don't match.
+export const $isViewBase$ = Symbol("$Particle.isViewBase");
 export const $lifted$ = Symbol("$Particle.lifted");
 export const $construction$ = Symbol("$Particle.construction");
 export const $formRan$ = Symbol("$Particle.formRan");
