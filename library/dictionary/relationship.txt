@@ -1,38 +1,13 @@
+:: # Semantic Reference Theory
+:: - A Foundational Sketch
+
 :: Definition of the ternary operator
 def x =t> y:
     R(x,y,t)
 
 :: Defintion of inheritance
-def x -> t: x =t> x & x =t> t
-
-:: Definition of the canonical object
-:: Individuality is source of the referent if x is not symbolic
-:: We have problems with uniqueness if there is more than one
-def [x]: E[x'=[x]]: (x,[x]) == [x] 
-
-:: Definition of a Frame
-:: F will likely be a synonym for (r) and [F] will be r
-:: It will have to be true that a property of frames is that [F] whill have to equal the current frame!
-E[F]: x =[F]> [F]
-
-:: Definition of a symbol
-:: Consider removing the uniqueness constraint or start doing x(y) is (x,y) == x
-def (x): 
-    E[x']: (x',x) == x' & x' =[F]> [F]
-    E[y' != x']: y' !=[F]> [F]
-
-:: Definition of a specific relationship
-def x =t=(x,y)> y :
-    t == (x,y)
-
-def (x:t): (x) > x -> t
-
-E[r,s,o]:
-    s =r> r
-    o =r> r
-    (r) =r> r
-
-s =r> o
+def s -> t: E[x,y]: x =s> y =|> x =t> y
+def s -(x,y)> t: x =s> y =|> x =t> y
 
 ---
 
@@ -96,8 +71,8 @@ E[relational]:
 :: One perspective is that a reference refers to a referent because it is a type of representative in a representation
 :: Another perspective is that the reference refers to the referent in the most fundamental way
 :: It will be the subject of the reference frame that determines which of these is taken as the fundamental perspective 
-representative -> represenntation -> reference
-represenntation =representative> referent
-representative =represenntation> referent
-representative =represenntation> referent
-(representative, referent) == represenntation
+representative -> representation -> reference
+representation =representative> referent
+representative =representation> referent
+representative =representation> referent
+(representative, referent) == representation
