@@ -12,6 +12,8 @@ How issues work here — one read and you're set.
 
 Big things get a `[ ]` checklist and can split into their own issues.
 
+When an issue is done, flip it to `status:done` and add a **Solved:** line — one sentence on how it was solved, linking the commit that did it — so the issue keeps its own answer.
+
 **Links** — always real markdown links, `[title](url)`; a bare `#7` or commit SHA does *not* render inside a file, so spell it out:
 
 - **author** → your cover on `main` (always current, so it tracks who you are now):
