@@ -2,9 +2,9 @@
 .archive/*
 
 # Team identity (private, lives in its own repo)
+.me/
 .claude/
 CLAUDE.md
-.authors/*
 
 # Library branches (live in identity repo, not project repo)
 **/.lib/

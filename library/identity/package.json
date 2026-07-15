@@ -1,9 +1,0 @@
-{
-  "name": "@dna-platform/proof",
-  "version": "0.0.1",
-  "private": true,
-  "description": "Proof — documented with $Chemistry",
-  "dependencies": {
-    "@dna-platform/public-library": "*"
-  }
-}
