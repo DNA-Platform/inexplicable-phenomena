@@ -1,7 +1,7 @@
 {
-  "name": "@dna-platform/public-library",
+  "name": "@dna-platform/lib",
   "version": "0.0.1",
-  "description": "Public-facing site — GitHub Pages for the repository",
+  "description": "The canonical code library for creating libraries — the public view of what a library is, and how one interfaces with this one",
   "repository": {
     "type": "git",
     "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
