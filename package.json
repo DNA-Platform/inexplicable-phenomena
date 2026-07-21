@@ -3,17 +3,13 @@
   "private": true,
   "workspaces": [
     ".claude",
-    ".authors/.*",
-    "library/.public",
+    ".me/*",
+    "library/.public/app",
+    "library/.public/package",
     "library/chemistry/package",
-    "library/catalogue/package",
-    "library/consciousness",
-    "library/cryptography",
-    "library/dictionary",
-    "library/encyclopedia",
-    "library/mathematics",
-    "library/physics",
-    "library/proof"
+    "library/pharmacology",
+    "library/philosophy",
+    "library/physics"
   ],
   "dependencies": {
     "commonmark": "^0.31.2"

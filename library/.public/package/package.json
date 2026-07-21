@@ -1,0 +1,49 @@
+{
+  "name": "@dna-platform/lib",
+  "version": "0.0.1",
+  "description": "The canonical code library for creating libraries — the base classes a library instantiates against, built on @dna-platform/chemistry",
+  "license": "MIT",
+  "author": "Doug Rubino",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
+    "directory": "library/.public/package"
+  },
+  "main": "dist/lib.cjs",
+  "module": "dist/lib.js",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/lib.d.ts",
+      "import": "./dist/lib.js",
+      "require": "./dist/lib.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "build:clean": "rimraf dist .rollup.cache && rollup -c",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit && vitest run",
+    "test:fast": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@dna-platform/chemistry": "*",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.50.2",
+    "rollup-plugin-dts": "^6.2.3",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.6"
+  }
+}

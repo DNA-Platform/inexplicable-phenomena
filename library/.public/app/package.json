@@ -1,11 +1,12 @@
 {
-  "name": "@dna-platform/lib",
+  "name": "@dna-platform/public-library",
   "version": "0.0.1",
-  "description": "The canonical code library for creating libraries — the public view of what a library is, and how one interfaces with this one",
+  "private": true,
+  "description": "The public view onto the repository — the app that renders the library, built to GitHub Pages. Depends on @dna-platform/lib.",
   "repository": {
     "type": "git",
     "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
-    "directory": "library/.public"
+    "directory": "library/.public/app"
   },
   "scripts": {
     "dev": "vite",
@@ -13,6 +14,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dna-platform/lib": "*",
+    "@dna-platform/chemistry": "*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
     "styled-components": "^6.1.0"

@@ -108,6 +108,18 @@ export class $Particle {
         return this.toString();
     }
 
+    // frame — the render template method. The framework's render entry
+    // ([$renderView$], invoked by $lift) calls frame(), not view() directly, and
+    // frame() renders the ACTIVE view (so look()/perspectives are respected). The
+    // default is a transparent pass-through — existing render is byte-identical.
+    // Override frame() to WRAP the rendered content — e.g. put it in a clickable
+    // link — while the content it wraps still EVOLVES through view(). Wrap
+    // `super.frame()` (not `this.view()`) to keep the active-view behaviour.
+    // (Doug: "frame wraps the view; the framework calls frame which calls view.")
+    frame(): ReactNode {
+        return (this[$activeView$] ?? (this as any).view).call(this);
+    }
+
     // ── Vertical perspective: look up/down the instance's own ancestry ───────
     // The horizontal axis (`perspectives`/`reveal`, below) is sibling lenses
     // filed on a base. The vertical axis is ONE instance seen at any altitude
@@ -136,7 +148,7 @@ export class $Particle {
     // view() (which user subclasses freely override). Defaults to the
     // instance's own-class view when no vertical lens is active.
     [$renderView$](): ReactNode {
-        return (this[$activeView$] ?? (this as any).view).call(this);
+        return this.frame();
     }
 
     // $viewLevels — the ordered chain of USER view-levels for this instance,

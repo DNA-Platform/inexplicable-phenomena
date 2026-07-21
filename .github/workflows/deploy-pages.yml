@@ -33,15 +33,19 @@ jobs:
         working-directory: library/chemistry/package
         run: npm run build
 
-      - name: Build public library
-        working-directory: library/.public
+      - name: Build lib
+        working-directory: library/.public/package
+        run: npm run build
+
+      - name: Build public library app
+        working-directory: library/.public/app
         run: npm run build
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: library/.public/dist
+          path: library/.public/app/dist
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -6,7 +6,8 @@ on:
     paths:
       - 'library/chemistry/package/src/**'
       - 'library/chemistry/package/package.json'
-      - 'library/.public/package.json'
+      - 'library/.public/package/src/**'
+      - 'library/.public/package/package.json'
 
 permissions:
   contents: read
@@ -35,8 +36,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build lib
+        working-directory: library/.public/package
+        run: npm run build
+
       - name: Publish lib
-        working-directory: library/.public
+        working-directory: library/.public/package
         run: npm publish --access restricted || echo "Version already published, skipping"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

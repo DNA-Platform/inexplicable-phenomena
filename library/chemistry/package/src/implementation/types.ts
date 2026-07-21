@@ -93,7 +93,7 @@ export interface $Particular<T> {
     view(): ReactNode;
     $view?: import("../abstraction/element").Component<T>;
     $$view?: import("../abstraction/element").$Component<T>;
-    frame($this: $Particular<T>): ReactNode;
+    frame(): ReactNode;
     $frame?: import("../abstraction/element").Component<T & { $this: $Particular<T> }>;
 }
 
