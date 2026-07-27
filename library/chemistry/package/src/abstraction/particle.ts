@@ -53,6 +53,10 @@ export class $Particle {
     $show?: boolean;
     $hide?: boolean;
 
+    // Inline vs block: a class declares itself inline (flows within a text block)
+    // in its constructor; block is the default. Read from the template, frozen.
+    inline = false;
+
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
     // [$resolveComponent$] — internal accessor. The React FC for this particle.

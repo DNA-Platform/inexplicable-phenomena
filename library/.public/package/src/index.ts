@@ -1,12 +1,9 @@
-// =============================================================================
-// @dna-platform/lib
-//
-// The canonical code library for creating libraries. It exposes the base classes
-// a dependent library instantiates against — Book first, and its specializations
-// (Cover, Subject, Library, ConversationBook, Author) as they are written. Built
-// on @dna-platform/chemistry: every class here is a $Chemical, so a library
-// renders itself.
-// =============================================================================
-
-export { $Book } from './Book';
-export { $Reference } from './Reference';
+export { $Referent, Referent } from './ref/Referent';
+export { $Reference, Reference } from './ref/Reference';
+export { $Name, Name } from './ref/Name';
+export { $Link, Link } from './ref/Link';
+export { $Book, Book } from './book/Book';
+export type { $Writing } from './text/Composition';
+export {
+    $Composition, $Character, $Word, $Sentence, $Paragraph, $Section, $Document,
+} from './text/Composition';

@@ -89,6 +89,19 @@ export type $Html<T extends keyof JSX.IntrinsicElements = any> =
         [K in keyof JSX.IntrinsicElements[T]as K extends 'children' ? never : `$${string & K}`]?: JSX.IntrinsicElements[T][K];
     }
 
+// The content-node kinds are declared as intrinsic elements so they lift through
+// the SAME path as real tags: the mapping above then gives $Html<'string'> a
+// `$value` and $Html<'block'> its `$elements` for free — no extra classes.
+declare module 'react' {
+    namespace JSX {
+        interface IntrinsicElements {
+            string: { value?: string };
+            number: { value?: number };
+            block: { elements?: $Chemical[] };
+        }
+    }
+}
+
 export interface $Particular<T> {
     view(): ReactNode;
     $view?: import("../abstraction/element").Component<T>;

@@ -53,15 +53,16 @@ describe('async bond ctor — sync prologue and async tail', () => {
 describe('chemical.next("construction") — awaitable from outside', () => {
     it('resolves after the async bond ctor settles', async () => {
         class $Slow extends $Chemical {
+            $num = 0;
             value = 0;
-            async $Slow(...args: number[]) {
+            async $Slow() {
                 await new Promise(r => setTimeout(r, 5));
-                this.value = args[0];
+                this.value = this.$num;      // scalar travels as a prop, not a content child
             }
             view() { return React.createElement('span', null, String(this.value)); }
         }
         new $Slow();
-        const { container } = render(React.createElement($($Slow) as any, null, 42));
+        const { container } = render(React.createElement($($Slow) as any, { num: 42 }));
         // Prologue ran but no value set; view shows initial 0.
         expect(container.textContent).toBe('0');
 
@@ -196,16 +197,17 @@ describe('async bond ctor — sync prologue runs synchronously', () => {
     it('the prologue runs at orchestrator-call time, before the ctor returns', async () => {
         let prologueRan = false;
         class $X extends $Chemical {
+            $num = 0;
             value = 0;
-            async $X(...args: number[]) {
+            async $X() {
                 prologueRan = true;          // prologue
-                this.value = args[0];        // sync state set
+                this.value = this.$num;      // sync state set from a prop
                 await new Promise(r => setTimeout(r, 5));
             }
             view() { return React.createElement('span', null, String(this.value)); }
         }
         new $X();
-        const { container } = render(React.createElement($($X) as any, null, 7));
+        const { container } = render(React.createElement($($X) as any, { num: 7 }));
         // Prologue ran synchronously during render — both the boolean and
         // the prop-setting are visible at first render.
         expect(prologueRan).toBe(true);

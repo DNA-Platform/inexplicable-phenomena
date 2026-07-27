@@ -60,7 +60,7 @@ describe('reactive HTML elements in bond constructors', () => {
             </Wrapper>
         );
 
-        expect(receivedTypes).toEqual(['html:div', 'html:span']);
+        expect(receivedTypes).toEqual(['html:div', 'html:block']);   // the inline <span> becomes a block
         expect(container.querySelector('.inner-div')?.textContent).toBe('hello');
         expect(container.querySelector('.inner-span')?.textContent).toBe('world');
     });

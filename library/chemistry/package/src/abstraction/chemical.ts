@@ -258,8 +258,53 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             }));
     }
 
+    // Is this child inline (flows within a text block)? Read from the type: a tag in
+    // the inline set, or a chemical whose template declares itself inline. Raw text
+    // and numbers are inline. This is the only signal grouping has at runtime.
+    private isInline(child: any): boolean {
+        if (child == null || typeof child === 'boolean') return false;
+        if (typeof child === 'string' || typeof child === 'number') return true;
+        if (!React.isValidElement(child)) return false;
+        const type = (child as any).type;
+        if (typeof type === 'string') return $inlineTypes.has(type);
+        if (typeof type === 'function') return !!(type as any).$chemical?.inline;
+        return false;
+    }
+
+    // Raw runs become intrinsic content-nodes so they lift through the same path.
+    private asElement(child: any): any {
+        if (typeof child === 'string') return React.createElement('string' as any, { value: child });
+        if (typeof child === 'number') return React.createElement('number' as any, { value: child });
+        return child;
+    }
+
+    // Each maximal run of consecutive inline children becomes one <block>; block
+    // children pass through. A lone inline still gets its block. No-op if nothing
+    // is inline, so block-only bond constructors are untouched.
+    private groupInline(childArray: any[]): any[] {
+        if (!childArray.some(c => this.isInline(c))) return childArray;
+        const out: any[] = [];
+        let run: any[] = [];
+        const flush = () => {
+            if (!run.length) return;
+            const els = run.map(c => $(this.asElement(c)));   // lift each inline node to an instance, once
+            out.push(React.createElement('block' as any, { key: `$b${out.length}`, elements: els }));
+            run = [];
+        };
+        for (const child of childArray) {
+            if (this.isInline(child)) run.push(child);
+            else { flush(); out.push(child); }
+        }
+        flush();
+        return out;
+    }
+
     private process(children: ReactNode, context: $SynthesisContext) {
-        const childArray = React.Children.toArray(children);
+        // Grouping runs only inside a bond constructor's own child interpretation —
+        // which also keeps a block's run and a tag's text from being re-grouped.
+        const raw = React.Children.toArray(children);
+        const grouping = this._bondConstructor && !(this._chemical instanceof $Eval);
+        const childArray = grouping ? this.groupInline(raw) : raw;
         context.singleton = !Array.isArray(children) && childArray.length === 1;
         const parent = this._chemical;
         let ctx = context;
@@ -382,6 +427,12 @@ export class $ParamValidation {
 
     check<T>(arg: T, ...types: $ParameterType[]): T {
         const paramNumber = this.index++;
+        // An empty inline run produces no block. A 'block' parameter materializes an
+        // empty $Html<'block'> so callers can write $check(x, 'block') without a null
+        // guard — the block is simply empty, and renders nothing.
+        if (arg === undefined && types.some(t => t === 'block')) {
+            arg = new $Html$('block') as any;
+        }
         const typeDescription = types.map(type => {
             if (Array.isArray(type))
                 return `${$ParamValidation.describeType(type[0])}[]`;
@@ -775,6 +826,16 @@ export class $Function$<P = any> extends $Chemical {
     }
 }
 
+// The types that flow inline within a text block: the two content-node kinds and
+// the inline HTML tags. Anything not here is a block. A type here reads as inline.
+const $inlineTypes = new Set<string>(['string', 'number',
+    'a', 'abbr', 'b', 'bdi', 'bdo', 'cite', 'code', 'data', 'dfn', 'em', 'i',
+    'kbd', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
+    'time', 'u', 'var', 'wbr']);
+
+// One class, discriminated by its type. Real tags wrap their content in the
+// element; the content-node kinds ('string', 'number', 'block') ARE their content
+// and render it directly — a text run, a number, or a grouped run of inline nodes.
 export class $Html$<T extends keyof React.JSX.IntrinsicElements = any> extends $Chemical {
     get type() { return this._type; }
     protected _type: T;
@@ -782,10 +843,17 @@ export class $Html$<T extends keyof React.JSX.IntrinsicElements = any> extends $
     constructor(type: T) {
         super();
         this._type = type;
+        this.inline = $inlineTypes.has(type as string);
     }
 
-    view() {
-        return React.createElement(this._type, (this as any)[$props$]());
+    view(): ReactNode {
+        const t = this._type as string;
+        if (t === 'string' || t === 'number') return (this as any).$value;
+        if (t === 'block') {
+            const els = ((this as any).$elements ?? []) as $Chemical[];
+            return els.map((e, i) => React.createElement($(e) as any, { key: i }));
+        }
+        return React.createElement(this._type as any, (this as any)[$props$]());
     }
 }
 
@@ -800,6 +868,22 @@ export function $wrap<P>(Component: React.FC<P>): any {
     if (typeof Component !== "function")
         throw new Error(`Expected a function component, got ${Component}`);
     return new $Function$(Component);
+}
+
+// $Eval — a throwaway host whose bond constructor captures the single child handed
+// to it. `$(<Word/>)` runs the real synthesis over the element and takes the
+// materialized instance back — reusing process()'s exact dispatch (chemical, HTML,
+// function component, text), never a parallel binding path.
+class $Eval extends $Chemical {
+    result: any;
+    $Eval(...parts: any[]) { this.result = parts.length === 1 ? parts[0] : parts; }
+    view(): ReactNode { return null; }
+}
+
+function evalElement(element: React.ReactElement): any {
+    const host = new $Eval();
+    (host as any)[$synthesis$].bond({ children: element });
+    return host.result;
 }
 
 // ===========================================================================
@@ -819,6 +903,11 @@ export function $wrap<P>(Component: React.FC<P>): any {
 // ===========================================================================
 
 interface $Chemistry {
+    // Eval: $(<Word/>) → the live instance. Defaults to `any` — the honest type,
+    // since JSX erased the real one and the result lands in an already-typed slot;
+    // $<$Word>(<Word/>) narrows it. Must precede the props overload, which an
+    // element structurally matches.
+    <T = any>(element: React.ReactElement): T;
     (props: { children?: ReactNode; key?: any }): ReactNode;
     <T extends $Chemical>(chemical: T): $Component<T>;
     <T extends $Particle>(particle: T): $Element<T>;
@@ -865,6 +954,13 @@ class Chemistry extends $Chemical {
                     return child;
                 })
             );
+        }
+
+        // Eval form — $(<Word>hello</Word>) evaluates a description (an element)
+        // into a live instance, through the same synthesis that binds a bond
+        // constructor's children. Erased type is $Chemical; $<$Word>(...) narrows.
+        if (React.isValidElement(arg)) {
+            return evalElement(arg as React.ReactElement);
         }
 
         // Instance form — the particle/chemical was already constructed when

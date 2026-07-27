@@ -28,12 +28,16 @@
     "typecheck": "tsc --noEmit",
     "test": "tsc --noEmit && vitest run",
     "test:fast": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:all": "tsc --noEmit && vitest run && rollup -c --silent"
   },
   "dependencies": {
     "@dna-platform/chemistry": "*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "react-router-dom": ">=7.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.0",
