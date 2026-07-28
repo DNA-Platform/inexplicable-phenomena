@@ -10,7 +10,7 @@ import {
     $devError$, $isViewBase$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
-import type { Component, $Component, Element, $Element, $Props, $ParameterType } from "../implementation/types";
+import type { Component, $Component, Element, $Element, $Props, $ParameterType, $HtmlTag } from "../implementation/types";
 import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from "./particle";
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
@@ -836,7 +836,7 @@ const $inlineTypes = new Set<string>(['string', 'number',
 // One class, discriminated by its type. Real tags wrap their content in the
 // element; the content-node kinds ('string', 'number', 'block') ARE their content
 // and render it directly — a text run, a number, or a grouped run of inline nodes.
-export class $Html$<T extends keyof React.JSX.IntrinsicElements = any> extends $Chemical {
+export class $Html$<T extends $HtmlTag = any> extends $Chemical {
     get type() { return this._type; }
     protected _type: T;
 

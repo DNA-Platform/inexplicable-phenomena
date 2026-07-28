@@ -41,5 +41,5 @@ export type {
     I,
     Constructor, Type, Typeof, PrimitiveType, TypeofType,
     $Phase, $Promise, $Props, $Properties,
-    $Function, $Html, $Rep,
+    $Function, $Html, $HtmlTag, $Rep,
 } from './implementation/types';

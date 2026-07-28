@@ -3,25 +3,21 @@ import { render, act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 
-// Characterization probes — these assert what $Chemistry TRULY does when a
-// composition mints its own parts on demand ($Sentence → $Word) and tries to
-// render/cache them. If a probe fails, that failure is the truth we design to.
-
-// A leaf a composition would create programmatically (like a $Word from a split).
 class $Leaf extends $Chemical {
     $label = '';
-    view() { return <span className="leaf">{this.$label}</span>; }
+
+    view() {
+        return <span className="leaf">{this.$label}</span>;
+    }
 }
 
 describe('research: minting renderable instances on demand', () => {
-    // SKIPPED ON PURPOSE — running this OOMs the vitest worker, and that crash IS
-    // the finding: minting fresh instances every render runs away. Caching is not
-    // an optimization here, it is required. PROBE 2/3 show the shape that works.
-    it.skip('PROBE 1 — uncached minting at render is FATAL (heap OOM)', () => {
+    it.skip('PROBE 1 — uncached minting at render is FATAL (OOMs the worker; the crash is the finding)', () => {
         class $Owner extends $Chemical {
             get leaves(): $Leaf[] {
                 return ['a', 'b', 'c'].map(l => { const x = new $Leaf(); x.$label = l; return x; });
             }
+
             view() {
                 return <div>{this.leaves.map((x, i) => { const X = $(x); return <X key={i} />; })}</div>;
             }
@@ -36,7 +32,11 @@ describe('research: minting renderable instances on demand', () => {
         class $Cached extends $Chemical {
             _leaves?: $Leaf[];
             tick = 0;
-            bump() { this.tick++; }
+
+            bump() {
+                this.tick++;
+            }
+
             get leaves(): $Leaf[] {
                 if (!this._leaves) {
                     created++;
@@ -44,6 +44,7 @@ describe('research: minting renderable instances on demand', () => {
                 }
                 return this._leaves;
             }
+
             view() {
                 return (
                     <div>
@@ -63,20 +64,31 @@ describe('research: minting renderable instances on demand', () => {
 
         expect(container.querySelector('.tick')!.textContent).toBe('1');
         expect([...container.querySelectorAll('.leaf')].map(n => n.textContent)).toEqual(['x', 'y']);
-        expect(created).toBe(1); // cached: minted once, reused across the re-render
+        expect(created).toBe(1);
     });
 
     it('PROBE 3 — a minted child keeps its OWN reactive state across a parent re-render', async () => {
         class $Counter extends $Chemical {
             n = 0;
-            inc() { this.n++; }
-            view() { return <button className="ctr" onClick={this.inc}>{String(this.n)}</button>; }
+
+            inc() {
+                this.n++;
+            }
+
+            view() {
+                return <button className="ctr" onClick={this.inc}>{String(this.n)}</button>;
+            }
         }
         class $Holder extends $Chemical {
             _child?: $Counter;
             tick = 0;
-            bump() { this.tick++; }
+
             get child(): $Counter { return this._child ??= new $Counter(); }
+
+            bump() {
+                this.tick++;
+            }
+
             view() {
                 const C = $(this.child);
                 return (
@@ -97,17 +109,25 @@ describe('research: minting renderable instances on demand', () => {
         await act(async () => { fireEvent.click(container.querySelector('.bump')!); });
 
         expect(container.querySelector('.tick')!.textContent).toBe('1');
-        expect(container.querySelector('.ctr')!.textContent).toBe('2'); // child state survived parent re-render
+        expect(container.querySelector('.ctr')!.textContent).toBe('2');
     });
 
     it('PROBE 8 — uncached fresh minting is fine when you QUERY, not mount (the "just don\'t cache" case)', async () => {
-        class $W extends $Chemical { $label = ''; view() { return <span>{this.$label}</span>; } }
+        class $W extends $Chemical {
+            $label = '';
+
+            view() {
+                return <span>{this.$label}</span>;
+            }
+        }
         class $Line extends $Chemical {
             $text = 'a b';
-            get words(): $W[] {                                  // fresh every call — NO cache
+
+            get words(): $W[] {
                 return this.$text.split(' ').map(l => { const w = new $W(); w.$label = l; return w; });
             }
-            view() {                                              // render the TEXT + a query, never mount a word
+
+            view() {
                 return (
                     <div>
                         <span className="copy">{this.$text}</span>

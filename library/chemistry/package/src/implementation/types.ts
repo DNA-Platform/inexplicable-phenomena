@@ -84,14 +84,29 @@ export type $Function<T> = T extends React.FC<infer P>
     }
     : never;
 
-export type $Html<T extends keyof JSX.IntrinsicElements = any> =
+// The content-node kinds — $Chemistry's own additions to the intrinsic tag set: a text run,
+// a number, and a grouped inline block. They live HERE, in the computed type, so the html enum
+// travels to every consumer. A `declare module 'react'` augmentation (below) does NOT survive a
+// consumer's build, which is why $Html<'block'> and $check(x, 'block') used to fail off-package.
+// This is the enum $Html<T>, $Parameter, and $check all read from.
+export interface $Content {
+    string: { value?: string };
+    number: { value?: number };
+    block: { elements?: $Chemical[] };
+}
+export type $HtmlTag = keyof JSX.IntrinsicElements | keyof $Content;
+type $HtmlProps<T extends $HtmlTag> =
+    T extends keyof $Content ? $Content[T]
+    : T extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[T]
+    : {};
+
+export type $Html<T extends $HtmlTag = any> =
     $Html$<T> & {
-        [K in keyof JSX.IntrinsicElements[T]as K extends 'children' ? never : `$${string & K}`]?: JSX.IntrinsicElements[T][K];
+        [K in keyof $HtmlProps<T>as K extends 'children' ? never : `$${string & K}`]?: $HtmlProps<T>[K];
     }
 
-// The content-node kinds are declared as intrinsic elements so they lift through
-// the SAME path as real tags: the mapping above then gives $Html<'string'> a
-// `$value` and $Html<'block'> its `$elements` for free — no extra classes.
+// Also declared as react intrinsics so `<string value>` / `<block>` type-check as JSX inside
+// this package's own authoring and tests. Consumers rely on the computed type above, not this.
 declare module 'react' {
     namespace JSX {
         interface IntrinsicElements {
@@ -121,7 +136,7 @@ export type $ParameterType =
     | ObjectConstructor
     | null
     | undefined
-    | keyof JSX.IntrinsicElements
+    | $HtmlTag
     | 'any'
     | [$ParameterType]
     | [[$ParameterType]]
@@ -136,6 +151,6 @@ export type $Parameter<T = $ParameterType> =
     T extends BooleanConstructor ? boolean :
     T extends FunctionConstructor ? Function :
     T extends ObjectConstructor ? object :
-    T extends keyof JSX.IntrinsicElements ? $Html<T> :
+    T extends $HtmlTag ? $Html<T> :
     T extends 'any' ? any :
     T;

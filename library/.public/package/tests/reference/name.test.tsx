@@ -11,8 +11,14 @@ test('$Name renders its content and frames it as a link', () => {
 
 class $Holder extends $Chemical {
     named!: $Name;
-    $Holder(named: $Name) { this.named = $check(named, $Name); }
-    view() { return <div className="out">{this.named.symbol}</div>; }
+
+    $Holder(named: $Name) {
+        this.named = $check(named, $Name);
+    }
+
+    view() {
+        return <div className="out">{this.named.symbol}</div>;
+    }
 }
 const Holder = $($Holder);
 

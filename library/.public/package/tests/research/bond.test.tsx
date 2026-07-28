@@ -4,42 +4,42 @@ import React from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { text } from '@/tools/html';
 
-// The fork: if a composition is built from its bond constructor (live children,
-// including HTML) instead of from `children`, what does the bond constructor
-// actually receive — and does raw free text survive? These probes decide it.
-// Assertions encode the hypothesis (free-text runs are dropped, live children
-// kept); a red diff would be the correction.
-
 describe('research: what a bond constructor receives', () => {
-    it('PROBE 9 — mixed free text + HTML: the text runs are dropped, the live child stays', () => {
+    it('PROBE 9 — a mixed inline run (free text + HTML) is grouped into ONE block, all text kept', () => {
         let kinds: string[] = [];
         let texts: string[] = [];
         class $Host extends $Chemical {
             $Host(...parts: any[]) {
                 kinds = parts.map(p => p?.constructor?.name ?? typeof p);
-                texts = parts.map(p => {
-                    if (p && typeof p === 'object' && 'copy' in p) return 'copy:' + p.copy;
-                    if (p && typeof p === 'object' && 'children' in p) return 'html:' + text((p as any).children);
-                    return 'raw:' + String(p);
-                });
+                texts = parts.map(p => text(p));
             }
-            view() { return <div className="host" />; }
+
+            view() {
+                return <div className="host" />;
+            }
         }
         const Host = $($Host);
         render(<Host>Call me <b>Ishmael</b> today</Host>);
-
-        expect(kinds).toEqual(['$Html$']);            // only the <b> survived; "Call me " and " today" dropped
-        expect(texts).toEqual(['html:Ishmael']);       // a live HTML child yields its text via its content
+        expect(kinds).toEqual(['$Html$']);
+        expect(texts).toEqual(['Call me Ishmael today']);
     });
 
-    it('PROBE 10 — a single raw string child: the bond constructor receives nothing', () => {
+    it('PROBE 10 — a single raw string child is grouped into ONE block, and reaches the bond constructor', () => {
         let count = -1;
+        let copy = '';
         class $Line extends $Chemical {
-            $Line(...parts: any[]) { count = parts.length; }
-            view() { return <div className="line" />; }
+            $Line(...parts: any[]) {
+                count = parts.length;
+                copy = text(parts[0]);
+            }
+
+            view() {
+                return <div className="line" />;
+            }
         }
         const Line = $($Line);
         render(<Line>Call me Ishmael</Line>);
-        expect(count).toBe(0);                          // the free-text string never reaches the bond constructor
+        expect(count).toBe(1);
+        expect(copy).toBe('Call me Ishmael');
     });
 });
