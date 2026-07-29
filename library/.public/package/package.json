@@ -23,6 +23,7 @@
     "dist"
   ],
   "scripts": {
+    "dev": "vite app",
     "build": "rollup -c",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
     "typecheck": "tsc --noEmit",
@@ -33,6 +34,9 @@
   },
   "dependencies": {
     "@dna-platform/chemistry": "*",
+    "@types/katex": "^0.16.8",
+    "katex": "^0.18.1",
+    "marked": "^18.0.7",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },
