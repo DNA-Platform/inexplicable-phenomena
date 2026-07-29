@@ -41,6 +41,9 @@ class Github extends $Sheet {
     view(): ReactNode {
         return (
             <GithubSkin data-skin="github">
+                <Masthead>
+                    <Kicker>the-library-lab / README.md</Kicker>
+                </Masthead>
                 <Markdown source={this.$source} readings />
             </GithubSkin>
         );

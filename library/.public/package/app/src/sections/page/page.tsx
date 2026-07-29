@@ -205,17 +205,25 @@ export const BookSkin = styled.article`
 `;
 
 export const GithubSkin = styled.article`
-    width: min(920px, 100%);
+    width: min(780px, 100%);
     background: #ffffff;
     border: 1px solid #d1d9e0;
     border-radius: 8px;
     box-shadow: 0 34px 90px -24px rgba(0, 0, 0, 0.55);
-    padding: 64px 88px 48px;
+    padding: 68px 76px 56px;
     font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
     color: #1f2328;
 
     @media (max-width: 720px) {
-        padding: 36px 24px 28px;
+        padding: 40px 26px 36px;
+    }
+
+    header div {
+        color: #59636e;
+    }
+
+    header div::after {
+        background: #d1d9e0;
     }
 
     .markdown h1 {
