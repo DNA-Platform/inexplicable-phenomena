@@ -9,7 +9,14 @@ import { $Word, Word } from './Word';
 export class $Sentence extends $Referent implements $Composition<$Word> {
     block?: $Html<'block'>;
 
+    $index?: number = undefined;
+    $parenthetical? = false;
+
     get copy(): string { return text(this.block); }
+    get index(): number { return this.$index ?? 0; }
+    set index(value: number) { this.$index = value; }
+    get parenthetical(): boolean { return !!this.$parenthetical; }
+    set parenthetical(value: boolean) { this.$parenthetical = value; }
     get canonical(): $Word { return this.parts[0]; }
     get words(): $Word[] { return this.parts; }
     get characters(): $Character[] { return [...this.copy].map(g => $<$Character>(<Character>{g}</Character>)); }

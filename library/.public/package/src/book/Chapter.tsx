@@ -10,7 +10,14 @@ import { $Word } from '../text/Word';
 export class $Chapter extends $Referent implements $Composition<$Section> {
     sections: $Section[] = [];
 
+    $index?: number = undefined;
+    $parenthetical? = false;
+
     get copy(): string { return this.parts.map(s => s.copy).join('\n\n'); }
+    get index(): number { return this.$index ?? 0; }
+    set index(value: number) { this.$index = value; }
+    get parenthetical(): boolean { return !!this.$parenthetical; }
+    set parenthetical(value: boolean) { this.$parenthetical = value; }
     get parts(): $Section[] { return this.sections; }
     get canonical(): $Section { return this.parts[0]; }
     get title(): string { return this.canonical ? text(this.canonical.title) : ''; }

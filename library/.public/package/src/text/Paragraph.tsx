@@ -9,7 +9,14 @@ import { $Word } from './Word';
 export class $Paragraph extends $Referent implements $Composition<$Sentence> {
     block?: $Html<'block'>;
 
+    $index?: number = undefined;
+    $parenthetical? = false;
+
     get copy(): string { return text(this.block); }
+    get index(): number { return this.$index ?? 0; }
+    set index(value: number) { this.$index = value; }
+    get parenthetical(): boolean { return !!this.$parenthetical; }
+    set parenthetical(value: boolean) { this.$parenthetical = value; }
     get canonical(): $Sentence { return this.parts[0]; }
     get sentences(): $Sentence[] { return this.parts; }
     get words(): $Word[] { return this.parts.flatMap(s => s.words); }

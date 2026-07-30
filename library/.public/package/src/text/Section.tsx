@@ -10,7 +10,14 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
     block?: $Html<'block'>;
     title?: $Html<'block'>;
 
+    $index?: number = undefined;
+    $parenthetical? = false;
+
     get copy(): string { return text(this.block); }
+    get index(): number { return this.$index ?? 0; }
+    set index(value: number) { this.$index = value; }
+    get parenthetical(): boolean { return !!this.$parenthetical; }
+    set parenthetical(value: boolean) { this.$parenthetical = value; }
     get paragraphs(): $Paragraph[] { return this.parts; }
     get sentences(): $Sentence[] { return this.parts.flatMap(p => p.sentences); }
 

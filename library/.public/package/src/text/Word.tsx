@@ -8,7 +8,14 @@ import { $Character, Character } from './Character';
 export class $Word extends $Referent implements $Composition<$Character> {
     block?: $Html<'block'>;
 
+    $index?: number = undefined;
+    $parenthetical? = false;
+
     get copy(): string { return text(this.block); }
+    get index(): number { return this.$index ?? 0; }
+    set index(value: number) { this.$index = value; }
+    get parenthetical(): boolean { return !!this.$parenthetical; }
+    set parenthetical(value: boolean) { this.$parenthetical = value; }
     get parts(): $Character[] { return [...this.copy].filter(g => $Character.valid(g)).map(g => $<$Character>(<Character>{g}</Character>)); }
     get canonical(): $Character { return this.parts[0]; }
     get characters(): $Character[] { return this.parts; }
