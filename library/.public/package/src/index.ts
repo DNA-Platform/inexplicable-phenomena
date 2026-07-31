@@ -13,7 +13,7 @@ export { $Book, Book } from './book/Book';
 export { $Writing, Writing } from './writing/Writing';
 export type { $Composition } from './writing/Composition';
 export { text } from './tools/html';
-export { $Character, Character } from './writing/Character';
+export { $Letter, Letter } from './writing/Letter';
 export { $Word, Word } from './writing/Word';
 export { $Sentence, Sentence } from './writing/Sentence';
 export { $Paragraph, Paragraph } from './writing/Paragraph';

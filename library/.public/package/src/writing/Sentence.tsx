@@ -2,13 +2,13 @@ import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
 import { $Writing } from './Writing';
-import { $Character, Character } from './Character';
+import { $Letter, Letter } from './Letter';
 import { $Word, Word } from './Word';
 
 export class $Sentence extends $Writing implements $Composition<$Word> {
     get canonical(): $Word { return this.parts()[0]; }
     get words(): $Word[] { return this.parts(); }
-    get characters(): $Character[] { return [...this.copy].map(g => $(<Character>{g}</Character>)); }
+    get letters(): $Letter[] { return [...this.copy].map(g => $(<Letter>{g}</Letter>)); }
 
     where(match: (part: $Word) => boolean): $Word[] {
         return this.parts().filter(match);

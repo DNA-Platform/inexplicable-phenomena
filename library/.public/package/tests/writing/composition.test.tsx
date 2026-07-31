@@ -45,7 +45,7 @@ describe('$Composition — implemented by the composition levels, born through t
         const s: $Sentence = $(<Sentence>I don't know ' yet</Sentence>);
         expect(s.words.map(w => w.copy)).toEqual(['I', "don't", 'know', 'yet']);
         expect(s.copy).toBe("I don't know ' yet");
-        expect(s.characters.map(c => c.copy).join('')).toBe("I don't know ' yet");
+        expect(s.letters.map(c => c.copy).join('')).toBe("I don't know ' yet");
     });
 
     it('an authored inline run arrives as ONE live block, markup preserved through it', () => {
@@ -62,10 +62,10 @@ describe('$Composition — implemented by the composition levels, born through t
         expect(fresh.words.map(x => x.copy)).toEqual(['hello', 'world']);
     });
 
-    it('characters tile losslessly, words are a lossy parse — the space is a character no word claims', () => {
+    it('letters tile losslessly, words are a lossy parse — the space is a letter no word claims', () => {
         const s: $Sentence = $(<Sentence>hi yo</Sentence>);
-        expect(s.characters.map(c => c.copy)).toEqual(['h', 'i', ' ', 'y', 'o']);
-        expect(s.characters.map(c => c.copy).join('')).toBe('hi yo');
+        expect(s.letters.map(c => c.copy)).toEqual(['h', 'i', ' ', 'y', 'o']);
+        expect(s.letters.map(c => c.copy).join('')).toBe('hi yo');
         expect(s.words.map(w => w.copy)).toEqual(['hi', 'yo']);
         expect(s.words.map(w => w.copy).join('')).toBe('hiyo');
         expect(s.copy).toBe('hi yo');

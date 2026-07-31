@@ -2,28 +2,28 @@ import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
 import { $Writing } from './Writing';
-import { $Character, Character } from './Character';
+import { $Letter, Letter } from './Letter';
 
-export class $Word extends $Writing implements $Composition<$Character> {
-    get canonical(): $Character { return this.parts()[0]; }
-    get characters(): $Character[] { return this.parts(); }
+export class $Word extends $Writing implements $Composition<$Letter> {
+    get canonical(): $Letter { return this.parts()[0]; }
+    get letters(): $Letter[] { return this.parts(); }
 
-    where(match: (part: $Character) => boolean): $Character[] {
+    where(match: (part: $Letter) => boolean): $Letter[] {
         return this.parts().filter(match);
     }
 
-    select<U>(pick: (part: $Character) => U): U[] {
+    select<U>(pick: (part: $Letter) => U): U[] {
         return this.parts().map(pick);
     }
 
-    single(match?: (part: $Character) => boolean): $Character | undefined {
+    single(match?: (part: $Letter) => boolean): $Letter | undefined {
         const found = match ? this.parts().filter(match) : this.parts();
         return found.length === 1 ? found[0] : undefined;
     }
 
-    parts(): $Character[] {
-        const characters: $Character[] = [...this.copy].map(g => $(<Character>{g}</Character>));
-        return characters.filter(c => c.valid()).map((c, i) => {
+    parts(): $Letter[] {
+        const letters: $Letter[] = [...this.copy].map(g => $(<Letter>{g}</Letter>));
+        return letters.filter(c => c.valid()).map((c, i) => {
             c.index = i + 1;
             if (this.ref) c.ref = this.ref.compose(c.index);
             return c;
