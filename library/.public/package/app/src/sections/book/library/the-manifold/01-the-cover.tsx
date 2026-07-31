@@ -5,10 +5,6 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
 export class $ManifoldCover extends $Cover {
-    $ManifoldCover() {
-        this.$Cover();
-    }
-
     view(): ReactNode {
         return (
             <Section>

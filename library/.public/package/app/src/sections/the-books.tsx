@@ -74,7 +74,7 @@ type Row = {
     copy: string;
     words: number;
     source: string;
-    Page: (props: { b: Shelved; r: Row; mode: string; jump: (page: number) => void }) => ReactNode;
+    Opening: (props: { b: Shelved; r: Row; mode: string; jump: (page: number) => void }) => ReactNode;
 };
 
 type Shelved = {
@@ -108,7 +108,7 @@ const row = (c: $Chapter, i: number): Row => ({
     copy: c.copy,
     words: c.words.length,
     source: '',
-    Page: pageFor(c),
+    Opening: openingFor(c),
 });
 
 const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => {
@@ -143,12 +143,13 @@ function rich(p: string): ReactNode {
     ));
 }
 
-// The generalization, proven: every kind of chapter maps to a page — declared
-// once, dispatched on the class chain. A new kind of chapter is a new page,
-// never a new branch.
-type PageProps = { b: Shelved; r: Row; mode: string; jump: (page: number) => void };
+// The generalization, proven: every kind of chapter maps to an opening — the
+// bookmaker's word for what the reader meets when the book opens to it —
+// declared once, dispatched on the class chain. A new kind of chapter is a new
+// opening, never a new branch.
+type OpeningProps = { b: Shelved; r: Row; mode: string; jump: (page: number) => void };
 
-function ModelPage({ r }: PageProps) {
+function ModelOpening({ r }: OpeningProps) {
     return (
         <div>
             <ChapterNumber>{r.index} · the model, unadorned · {r.sections.length || '0'} sections · {r.words} words</ChapterNumber>
@@ -157,7 +158,7 @@ function ModelPage({ r }: PageProps) {
     );
 }
 
-function CoverPage({ r }: PageProps) {
+function CoverOpening({ r }: OpeningProps) {
     return (
         <div style={{ textAlign: 'center', paddingTop: 70 }}>
             <ChapterTitle style={{ fontSize: 34 }}>{r.heading}</ChapterTitle>
@@ -168,7 +169,7 @@ function CoverPage({ r }: PageProps) {
     );
 }
 
-function ContentsPage({ b, r, jump }: PageProps) {
+function ContentsOpening({ b, r, jump }: OpeningProps) {
     return (
         <div className="table-of-contents">
             <ChapterNumber style={{ textAlign: 'center' }}>{r.index} · apparatus</ChapterNumber>
@@ -178,7 +179,7 @@ function ContentsPage({ b, r, jump }: PageProps) {
                     <span className="toc-leader" />
                     <span className="toc-folio">{r.index}</span>
                 </TocLine>
-                {b.rows.map((e, j) => (e.Page !== ChapterPage ? null : (
+                {b.rows.map((e, j) => (e.Opening !== ChapterOpening ? null : (
                     <div key={j} className="entry-summary">
                         <TocLine onClick={() => jump(j)}>
                             <span className="toc-title">{e.heading}</span>
@@ -193,7 +194,7 @@ function ContentsPage({ b, r, jump }: PageProps) {
     );
 }
 
-function ChapterPage({ r, mode }: PageProps) {
+function ChapterOpening({ r, mode }: OpeningProps) {
     if (mode === 'skim') {
         return (
             <div>
@@ -222,14 +223,14 @@ function ChapterPage({ r, mode }: PageProps) {
     );
 }
 
-function pageFor(c: $Chapter) {
-    return c instanceof $Cover ? CoverPage :
-        c instanceof $TableOfContents ? ContentsPage :
-        ChapterPage;
+function openingFor(c: $Chapter) {
+    return c instanceof $Cover ? CoverOpening :
+        c instanceof $TableOfContents ? ContentsOpening :
+        ChapterOpening;
 }
 
 function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => void): ReactNode {
-    const Kind = mode === 'model' ? ModelPage : r.Page;
+    const Kind = mode === 'model' ? ModelOpening : r.Opening;
     return <Kind b={b} r={r} mode={mode} jump={jump} />;
 }
 

@@ -5,10 +5,6 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
 export class $Coordinates extends $Chapter {
-    $Coordinates() {
-        this.$Chapter();
-    }
-
     view(): ReactNode {
         return (
             <>

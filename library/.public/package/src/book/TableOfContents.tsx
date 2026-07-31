@@ -26,20 +26,25 @@ export class $TableOfContents extends $Chapter {
         this.parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
     }
 
+    heading(c: $Chapter): string {
+        const t = text(c.canonical?.title);
+        if (t) {
+            const colon = t.indexOf(':');
+            return colon < 0 ? t : t.slice(0, colon).trim();
+        }
+        return c instanceof $TableOfContents ? 'Table of Contents' : '';
+    }
+
+    row(c: $Chapter): ReactNode {
+        return <li key={c.index}>{this.heading(c)}</li>;
+    }
+
     view(): ReactNode {
-        const heading = (c: $Chapter): string => {
-            const t = text(c.canonical?.title);
-            if (t) {
-                const colon = t.indexOf(':');
-                return colon < 0 ? t : t.slice(0, colon).trim();
-            }
-            return c instanceof $TableOfContents ? 'Table of Contents' : '';
-        };
         return (
             <div className="table-of-contents">
-                <div className="contents-title">{heading(this)}</div>
+                <div className="contents-title">{this.heading(this)}</div>
                 <ol>
-                    {this.chapters.map((c, i) => <li key={i}>{heading(c)}</li>)}
+                    {this.chapters.map(c => this.row(c))}
                 </ol>
             </div>
         );

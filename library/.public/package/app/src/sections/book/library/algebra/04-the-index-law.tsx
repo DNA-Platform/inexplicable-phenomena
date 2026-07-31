@@ -5,10 +5,6 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
 export class $TheIndexLaw extends $Chapter {
-    $TheIndexLaw() {
-        this.$Chapter();
-    }
-
     view(): ReactNode {
         return (
             <>

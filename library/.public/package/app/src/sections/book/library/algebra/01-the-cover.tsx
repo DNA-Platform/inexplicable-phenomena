@@ -5,10 +5,6 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
 export class $AlgebraCover extends $Cover {
-    $AlgebraCover() {
-        this.$Cover();
-    }
-
     view(): ReactNode {
         return (
             <Section>

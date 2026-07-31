@@ -10,6 +10,8 @@ import { $Synopsis, Synopsis } from '@/book/Synopsis';
 import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { $Book, Book } from '@/book/Book';
 import { Title } from '@/writing/Title';
+import { $Reference } from '@/ref/Reference';
+import { $Link, Link } from '@/ref/Link';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>
@@ -146,12 +148,18 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.tableOfContents.tagline?.copy).toBe('A book about reading.');
     });
 
+    it('every referent carries a ref — a link can stand in for a chapter now', () => {
+        const b: $Book = $(book());
+        const c = b.chapters[3];
+        expect(c.ref).toBeUndefined();
+        const link: $Link = $(<Link />);
+        c.ref = link;
+        expect(c.ref).toBe(link);
+        expect(c.ref).toBeInstanceOf($Reference);
+    });
+
     it('writing a chapter is writing a view — the sections are declared in the writing', () => {
         class $Written extends $Chapter {
-            $Written() {
-                this.$Chapter();
-            }
-
             view(): ReactNode {
                 return (
                     <>

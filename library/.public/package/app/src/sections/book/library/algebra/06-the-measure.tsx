@@ -5,10 +5,6 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
 export class $TheMeasure extends $Chapter {
-    $TheMeasure() {
-        this.$Chapter();
-    }
-
     view(): ReactNode {
         return (
             <>

@@ -145,8 +145,11 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
 
     constructor(chemical: T) {
         this._chemical = chemical;
-        const name = (chemical as any)[$type$].name;
-        this._bondConstructor = (chemical as any)[name];
+        let cls: any = (chemical as any)[$type$];
+        while (cls && cls.name && !this._bondConstructor) {
+            this._bondConstructor = (chemical as any)[cls.name];
+            cls = Object.getPrototypeOf(cls);
+        }
         this.parseBondConstructor();
     }
 
@@ -662,9 +665,6 @@ export function $is<T>(ctor: abstract new (...args: any[]) => T): T {
     return ctor as any;
 }
 
-// The specification law: at the end of every bond constructor, the instance
-// must be valid. `valid()` accrues down the hierarchy — override, call super.
-// Templates are not judged: they are blank molds, not bound instances.
 function assertValid(chemical: any) {
     if (chemical[$isTemplate$]) return;
     if (typeof chemical.valid === 'function' && !chemical.valid()) {
@@ -785,16 +785,14 @@ export class $Chemical extends $Particle {
         this[$destroyed$] = true;
     }
 
-    private assertViewConstructors(prototype?: any, childConstructor?: any) {
+    private assertViewConstructors(prototype?: any) {
         if (!prototype) prototype = Object.getPrototypeOf(this[$template$]);
         if (!prototype || prototype === $Chemical.prototype) return;
         const className = prototype.constructor.name;
         const thisConstructor = prototype[className];
         if (thisConstructor && typeof thisConstructor !== 'function')
             throw new Error(`The ${className} class has property ${className} but it's not a function`);
-        if (childConstructor && !thisConstructor)
-            throw new Error(`The ${className} class must have a constructor method named ${className} because child class has one`);
-        this.assertViewConstructors(Object.getPrototypeOf(prototype), thisConstructor);
+        this.assertViewConstructors(Object.getPrototypeOf(prototype));
     }
 }
 
@@ -891,9 +889,7 @@ export function $wrap<P>(Component: React.FC<P>): any {
 // $Eval — a throwaway host whose bond constructor captures the single child handed
 // to it. `$(<Word/>)` runs the real synthesis over the element and takes the
 // materialized instance back — reusing process()'s exact dispatch (chemical, HTML,
-// function component, text), never a parallel binding path. `parentFor` lets
-// `$(<Toc/>, book)` evaluate the element as if authored inside `book`: the child
-// binds to that parent BEFORE its bond constructor runs, same as DI children.
+// function component, text), never a parallel binding path.
 class $Eval extends $Chemical {
     result: any;
     parentFor?: $Chemical;
@@ -982,8 +978,6 @@ class Chemistry extends $Chemical {
         // Eval form — $(<Word>hello</Word>) evaluates a description (an element)
         // into a live instance, through the same synthesis that binds a bond
         // constructor's children. Erased type is $Chemical; $<$Word>(...) narrows.
-        // An optional second argument evaluates the element as if authored inside
-        // that parent — bound to it before its bond constructor runs.
         if (React.isValidElement(arg)) {
             const parent = arguments[1];
             return evalElement(arg as React.ReactElement, parent && isParticle(parent) ? parent : undefined);

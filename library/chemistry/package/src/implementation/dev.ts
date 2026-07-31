@@ -69,8 +69,6 @@ export function renderError(title: string, detail: string): ReactNode {
 
 export type $ExceptionMode = 'render' | 'silent' | 'throw';
 
-// Mode defaults follow developer expectation: loud in dev; caught, logged, and
-// rendered as nothing in production. 'throw' restores the uncaught behavior.
 export const $exceptions: {
     mode: $ExceptionMode;
     render?: (error: Error) => { view(): ReactNode };

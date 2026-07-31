@@ -5,10 +5,6 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
 export class $AlgebraSynopsis extends $Synopsis {
-    $AlgebraSynopsis() {
-        this.$Synopsis();
-    }
-
     view(): ReactNode {
         return (
             <>

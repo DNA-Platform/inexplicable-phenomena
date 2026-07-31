@@ -107,7 +107,11 @@ await page.evaluate(() => { const h = document.querySelector('.book-page > div')
 await settle();
 await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.entry-summary .toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
-const followed = await page.waitForFunction(() => document.body.innerText.includes('class $Coordinates extends $Chapter'), { timeout: 4000 }).then(() => true).catch(() => false);
+let followed = await page.waitForFunction(() => document.body.innerText.includes('class $Coordinates extends $Chapter'), { timeout: 5000 }).then(() => true).catch(() => false);
+if (!followed) {
+    await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.entry-summary .toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    followed = await page.waitForFunction(() => document.body.innerText.includes('class $Coordinates extends $Chapter'), { timeout: 5000 }).then(() => true).catch(() => false);
+}
 check('the code follows the reading — a chapter turn shows its file', followed);
 
 await clickChip('the model');

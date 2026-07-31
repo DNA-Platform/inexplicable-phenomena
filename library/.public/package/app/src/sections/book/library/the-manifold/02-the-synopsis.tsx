@@ -5,10 +5,6 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
 export class $ManifoldSynopsis extends $Synopsis {
-    $ManifoldSynopsis() {
-        this.$Synopsis();
-    }
-
     view(): ReactNode {
         return (
             <>
