@@ -19,11 +19,6 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
         });
     }
 
-    constructor() {
-        super();
-        this.inline = true;
-    }
-
     valid(): boolean {
         return super.valid() && /[\p{L}\p{N}]/u.test(this.copy);
     }

@@ -19,11 +19,6 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
         });
     }
 
-    constructor() {
-        super();
-        this.inline = true;
-    }
-
     valid(): boolean {
         return super.valid() && /[\p{L}\p{N}]/u.test(this.copy);
     }

@@ -17,11 +17,6 @@ export class $Word extends $Writing implements $Composition<$Character> {
         });
     }
 
-    constructor() {
-        super();
-        this.inline = true;
-    }
-
     valid(): boolean {
         return super.valid() && /^[\p{L}\p{N}']+$/u.test(this.copy) && /[\p{L}\p{N}]/u.test(this.copy);
     }

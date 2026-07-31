@@ -15,17 +15,18 @@ export class $Writing extends $Referent {
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
 
+    constructor() {
+        super();
+        this.inline = true;
+    }
+
     $Writing(block?: $Html<'block'>) {
         this.block = $check(block, 'block');
     }
 
-    protected display(): ReactNode {
+    view(): ReactNode {
         if (!this.block) return null;
         return React.createElement($(this.block) as any);
-    }
-
-    view(): ReactNode {
-        return this.display();
     }
 }
 

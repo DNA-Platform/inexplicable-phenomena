@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
-import { $Writing } from '../writing/Writing';
+import { $Referent } from '../ref/Referent';
 import { type $Composition } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { $Cover } from './Cover';
@@ -12,8 +12,16 @@ import { type $Subtitle } from '../writing/Subtitle';
 import { $Paragraph } from '../writing/Paragraph';
 import { $Word } from '../writing/Word';
 
-export class $Book extends $Writing implements $Composition<$Chapter> {
+export class $Book extends $Referent implements $Composition<$Chapter> {
     parts: $Chapter[] = [];
+
+    $index?: number = undefined;
+    $parenthetical? = false;
+
+    get index(): number { return this.$index ?? 0; }
+    set index(value: number) { this.$index = value; }
+    get parenthetical(): boolean { return !!this.$parenthetical; }
+    set parenthetical(value: boolean) { this.$parenthetical = value; }
 
     get copy(): string { return this.parts.map(c => c.copy).join('\n\n'); }
     get chapters(): $Chapter[] { return this.parts; }

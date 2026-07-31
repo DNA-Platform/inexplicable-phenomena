@@ -13,6 +13,11 @@ import { $Sentence } from './Sentence';
 export class $Section extends $Writing implements $Composition<$Paragraph> {
     title?: $Html<'block'>;
 
+    constructor() {
+        super();
+        this.inline = false;
+    }
+
     get paragraphs(): $Paragraph[] { return this.parts; }
     get sentences(): $Sentence[] { return this.parts.flatMap(p => p.sentences); }
 
@@ -63,11 +68,11 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
             }
         }
         const first = this.block?.$elements?.[0];
-        this.title = first instanceof $Title ? first.block : $check(first, 'block') as $Html<'block'>;
+        this.title = first instanceof $Title ? first.block : first as $Html<'block'> | undefined;
     }
 
     view(): ReactNode {
-        return this.parenthetical ? null : this.display();
+        return this.parenthetical ? null : super.view();
     }
 
     valid(): boolean {
