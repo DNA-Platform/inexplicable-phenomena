@@ -14,6 +14,8 @@ import { $Reference, Reference } from '@/reference/Reference';
 import { $Link, Link } from '@/reference/Link';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
 import { $Highlight, Highlight } from '@/reference/Highlight';
+import { $Name, Name } from '@/reference/Name';
+import { $Word, Word } from '@/writing/Word';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>
@@ -36,6 +38,65 @@ const rejection = (b: any): string | undefined => {
     const s = Object.getOwnPropertySymbols(b).find(x => x.description === '$Particle.devError');
     return s ? b[s] : undefined;
 };
+
+describe('referential integrity — the three laws', () => {
+    it('unit: the null reference is absence, and the letter has only itself — its name is its copy', () => {
+        const w: $Word = $(<Word>frame</Word>);
+        expect(w.ref).toBeUndefined();
+        w.ref = $(<Link for="#2">frame</Link>) as $Link;
+        const letter = w.parts()[0];
+        expect(letter.$ref?.for).toBe('#2.1');
+        expect(letter.$ref).not.toBeUndefined();
+        const n: $Name = $(<Name>f</Name>);
+        expect(n.for).toBe('f');
+        expect(n.copy).toBe('f');
+    });
+
+    it('generation: every reference is a composition of names; for is the serialized path', () => {
+        const base: $Reference = $(<Reference for="/books/algebra">The Algebra of Perspective</Reference>);
+        const composed = base.compose(3).compose(2);
+        expect(composed.for).toBe('/books/algebra#3.2');
+    });
+
+    it('action: wrapping preserves the referent — the wrapped and the bare reference are equal', () => {
+        const b: $Book = $(book());
+        const bare: $Bookmark = $(<Bookmark for="#3">the chapter</Bookmark>, b);
+        const wrapped: $Section = $(<Section><Title>About the chapter</Title>{'\n\nA summary of it, standing for it. '}<Bookmark for="#3">the chapter</Bookmark></Section>, b);
+        const carried = wrapped.$ref as $Bookmark;
+        expect(carried).toBeInstanceOf($Bookmark);
+        expect(carried.equals(bare)).toBe(true);
+        expect(bare.equals(carried)).toBe(true);
+    });
+
+    it('equality refuses across contexts — the holder of the referential context judges', () => {
+        const one: $Book = $(book());
+        const other: $Book = $(book());
+        const here: $Bookmark = $(<Bookmark for="#3">the chapter</Bookmark>, one);
+        const there: $Bookmark = $(<Bookmark for="#3">the chapter</Bookmark>, other);
+        expect(here.lookup()).not.toBe(there.lookup());
+        expect(here.equals(there)).toBe(true);
+    });
+
+    it('a name resolves in its nearest scope, climbing outward — the titled register', () => {
+        const b: $Book = $(book());
+        const n: $Name = $(<Name>Coordinates</Name>, b);
+        expect(n.lookup()).toBe(b.chapters[3]);
+        const numeric: $Name = $(<Name>3</Name>, b);
+        expect(numeric.lookup()).toBe(b.chapters[3]);
+    });
+
+    it('the chapter wraps at its canonical — a written reference in the first section speaks for the chapter', () => {
+        const b: $Book = $(book());
+        const about: $Chapter = $(
+            <Chapter>
+                <Section><Title>On Coordinates</Title>{'\n\nA chapter about another chapter. '}<Bookmark for="#3">it</Bookmark></Section>
+                {summary('In brief.')}
+            </Chapter>
+        , b);
+        expect(about.ref).toBeInstanceOf($Bookmark);
+        expect((about.ref as $Bookmark).lookup()).toBe(b.chapters[3]);
+    });
+});
 
 describe('$Book — a composition of chapters, of which cover, synopsis, index, and table of contents are four', () => {
     it('a chapter receives its sections DI-style — authored nested, bound as typed arguments', () => {

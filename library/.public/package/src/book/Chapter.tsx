@@ -3,6 +3,7 @@ import { $, $check } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
 import { text } from '../tools/html';
 import { type $Composition } from '../writing/Composition';
+import { type $Reference } from '../reference/Reference';
 import { type $Book } from './Book';
 import { $Section } from '../writing/Section';
 import { $Title, Title } from '../writing/Title';
@@ -39,10 +40,18 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
 
     get subtitle(): $Subtitle | undefined { return this.canonical?.subtitle; }
 
+    get ref(): $Reference | undefined {
+        return super.ref ?? this.canonical?.$ref;
+    }
+
+    set ref(reference: $Reference | undefined) {
+        this.$ref = reference;
+    }
+
     $Chapter(...sections: $Section[]) {
         this.$parts = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
         this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$parts.forEach(s => { if (this.ref) s.ref = this.ref.compose(s.index); });
+        this.$parts.forEach(s => { if (this.$ref) s.ref = this.$ref.compose(s.index); });
         if (!this.valid()) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 

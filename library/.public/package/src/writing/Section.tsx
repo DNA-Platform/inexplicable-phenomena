@@ -80,6 +80,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
             if (written) {
                 els.splice(els.indexOf(written), 1);
                 this.$ref = written as $Reference;
+                (written as $Reference).parent = this;
             }
         }
         const first = this.block?.$elements?.[0];

@@ -21,17 +21,17 @@ class $Holder extends $Chemical {
     }
 
     view() {
-        return <div className="out">{this.named?.symbol}</div>;
+        return <div className="out">{this.named?.for}</div>;
     }
 }
 const Holder = $($Holder);
 
-test('$Name.symbol is the text of a bare-string name', () => {
+test('a name’s for is the name — surface and target coincide', () => {
     const html = renderToStaticMarkup(<Holder><Name>Moby-Dick</Name></Holder>);
     expect(html).toContain('>Moby-Dick<');
 });
 
-test('$Name.symbol flattens nested markup, stripping the tags', () => {
+test('a name’s copy flattens nested markup, stripping the tags', () => {
     const html = renderToStaticMarkup(
         <Holder><Name><span>The <b>Whale</b></span></Name></Holder>
     );
