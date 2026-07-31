@@ -145,8 +145,9 @@ export const Page = styled.div`
     border-left: 6px double #b7c8b9;
     border-radius: 3px 10px 10px 3px;
     box-shadow: -8px 0 0 -3px #e2eadf, -14px 0 0 -6px #d3dfd2, 0 24px 48px -20px rgba(8, 20, 13, 0.55);
-    width: min(640px, 94vw);
+    width: min(calc((100vh - 128px) * 0.72), 94vw);
     height: calc(100vh - 128px);
+    font-size: 13.5px;
     min-height: 0;
     margin: 4px auto 12px;
     padding: 28px 52px 22px;
@@ -186,14 +187,14 @@ export const Quote = styled.blockquote`
     border-left: 2px solid #4e7d5b;
     font-style: italic;
     color: #33443a;
-    font-size: 15px;
+    font-size: 13px;
 `;
 
 export const FootNotes = styled.div`
     margin-top: 26px;
     padding-top: 10px;
     border-top: 1px solid #b7c8b9;
-    font-size: 12.5px;
+    font-size: 11px;
     color: #465548;
     line-height: 1.55;
 
@@ -377,7 +378,7 @@ export const PageTurns = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-top: 14px;
+    margin-top: 10px;
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11.5px;
     letter-spacing: 0.06em;
@@ -488,9 +489,9 @@ export const CodeTab = styled.button<{ $active?: boolean }>`
 `;
 
 export const CodeBlock = styled.div`
-    padding: 16px 20px 20px;
+    padding: 12px 14px 14px;
     overflow-x: auto;
-    font-size: 12.5px;
+    font-size: 10.5px;
     line-height: 1.55;
 
     pre {
@@ -509,12 +510,12 @@ export const CodeBlock = styled.div`
 
 export const RunningHead = styled.div`
     font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 10px;
-    letter-spacing: 0.3em;
+    font-size: 9px;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
     color: #6f8b77;
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 11px;
 
     &::after {
         content: '';
@@ -528,14 +529,14 @@ export const RunningHead = styled.div`
 
 export const ChapterNumber = styled.div`
     font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 11px;
-    letter-spacing: 0.22em;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
     color: #7d977f;
     margin-bottom: 3px;
 `;
 
 export const ChapterTitle = styled.h2`
-    font-size: 23px;
+    font-size: 19px;
     font-weight: 600;
     margin: 0 0 2px;
 `;
@@ -547,7 +548,7 @@ export const ChapterSubtitle = styled.div`
 `;
 
 export const Prose = styled.p<{ $drop?: boolean }>`
-    margin: 12px 0;
+    margin: 9px 0;
 
     ${(p) => p.$drop && `
         &::first-letter {
