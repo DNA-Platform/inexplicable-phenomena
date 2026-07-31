@@ -10,10 +10,10 @@ import { $Synopsis, Synopsis } from '@/book/Synopsis';
 import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { $Book, Book } from '@/book/Book';
 import { Title } from '@/writing/Title';
-import { $Reference, Reference } from '@/ref/Reference';
-import { $Link, Link } from '@/ref/Link';
+import { $Reference, Reference } from '@/reference/Reference';
+import { $Link, Link } from '@/reference/Link';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
-import { $Highlight, Highlight } from '@/ref/Highlight';
+import { $Highlight, Highlight } from '@/reference/Highlight';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>

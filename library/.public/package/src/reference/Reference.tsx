@@ -8,7 +8,7 @@ export class $Reference<T extends $Referent = $Referent> extends $Sentence {
 
     compose(key: number | string): $Reference {
         const base = this.$for ?? '';
-        const composed: $Reference = $(<Reference for={base.includes('#') ? `${base}.${key}` : `${base}#${key}`}>{this.copy}</Reference>);
+        const composed: $Reference = $(<Reference for={base.includes('#') ? `${base}.${key}` : `${base}#${key}`}>{this.copy || `${key}`}</Reference>);
         return composed;
     }
 

@@ -26,16 +26,12 @@ export class $TableOfContents extends $Chapter {
     }
 
     heading(c: $Chapter): string {
-        const t = text(c.canonical?.title);
-        if (t) {
-            const colon = t.indexOf(':');
-            return colon < 0 ? t : t.slice(0, colon).trim();
-        }
-        return c instanceof $TableOfContents ? 'Table of Contents' : '';
+        return c.title?.copy ?? '';
     }
 
     row(c: $Chapter): ReactNode {
-        return <li key={c.index}>{this.heading(c)}</li>;
+        const reference = c.$ref;
+        return <li key={c.index}>{reference ? React.createElement($(reference) as any) : this.heading(c)}</li>;
     }
 
     view(): ReactNode {

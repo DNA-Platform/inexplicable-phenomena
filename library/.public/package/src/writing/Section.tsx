@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
-import { $Reference } from '../ref/Reference';
+import { $Reference } from '../reference/Reference';
 import { text } from '../tools/html';
 import { type $Composition } from './Composition';
 import { $Writing } from './Writing';
@@ -33,6 +33,12 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
             if (this.ref) p.ref = this.ref.compose(p.index);
             return p;
         });
+    }
+
+    get heading(): string {
+        const t = text(this.title);
+        const colon = t.indexOf(':');
+        return colon < 0 ? t : t.slice(0, colon).trim();
     }
 
     get subtitle(): $Subtitle | undefined {

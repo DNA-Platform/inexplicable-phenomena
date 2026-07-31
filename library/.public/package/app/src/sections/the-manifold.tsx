@@ -24,7 +24,7 @@ import synopsisSource from '@/book/Synopsis.tsx?raw';
 import tableOfContentsSource from '@/book/TableOfContents.tsx?raw';
 import sectionSource from '@/writing/Section.tsx?raw';
 import titleSource from '@/writing/Title.tsx?raw';
-import referenceSource from '@/ref/Reference.tsx?raw';
+import referenceSource from '@/reference/Reference.tsx?raw';
 import bookmarkSource from '@/book/Bookmark.tsx?raw';
 import {
     DayBackdrop, DayBar, DayChip, DayRule,

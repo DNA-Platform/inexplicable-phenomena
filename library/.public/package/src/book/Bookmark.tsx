@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Reference } from '../ref/Reference';
-import { $Referent } from '../ref/Referent';
+import { $Reference } from '../reference/Reference';
+import { $Referent } from '../reference/Referent';
 
 export class $Bookmark<T extends $Referent = $Referent> extends $Reference<T> {
     lookup(): T | undefined {

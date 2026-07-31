@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
-import { $Referent } from '../ref/Referent';
+import { $Referent } from '../reference/Referent';
 import { type $Composition } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { $Cover } from './Cover';

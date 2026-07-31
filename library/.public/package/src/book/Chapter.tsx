@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
-import { $Referent } from '../ref/Referent';
+import { $Referent } from '../reference/Referent';
 import { text } from '../tools/html';
 import { type $Composition } from '../writing/Composition';
 import { type $Book } from './Book';
@@ -31,10 +31,9 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     get words(): $Word[] { return this.paragraphs.flatMap(p => p.words); }
 
     get title(): $Title | undefined {
-        const t = this.canonical ? text(this.canonical.title) : '';
+        const t = this.canonical?.heading ?? '';
         if (!t) return undefined;
-        const colon = t.indexOf(':');
-        const title: $Title = $(<Title>{colon < 0 ? t : t.slice(0, colon).trim()}</Title>);
+        const title: $Title = $(<Title>{t}</Title>);
         return title;
     }
 

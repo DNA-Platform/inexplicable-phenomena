@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
-import { $Referent } from '../ref/Referent';
+import { $Referent } from '../reference/Referent';
 import { text } from '../tools/html';
 
 export class $Writing extends $Referent {

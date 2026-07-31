@@ -1,9 +1,9 @@
-export { $Referent, Referent } from './ref/Referent';
-export { $Reference, Reference } from './ref/Reference';
-export { $Name, Name } from './ref/Name';
-export { $Link, Link } from './ref/Link';
+export { $Referent, Referent } from './reference/Referent';
+export { $Reference, Reference } from './reference/Reference';
+export { $Name, Name } from './reference/Name';
+export { $Link, Link } from './reference/Link';
 export { $Bookmark, Bookmark } from './book/Bookmark';
-export { $Highlight, Highlight } from './ref/Highlight';
+export { $Highlight, Highlight } from './reference/Highlight';
 export { $Chapter, Chapter } from './book/Chapter';
 export { $Cover, Cover } from './book/Cover';
 export { $Synopsis, Synopsis } from './book/Synopsis';

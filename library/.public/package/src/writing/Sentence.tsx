@@ -8,7 +8,13 @@ import { $Word, Word } from './Word';
 export class $Sentence extends $Writing implements $Composition<$Word> {
     get canonical(): $Word { return this.parts()[0]; }
     get words(): $Word[] { return this.parts(); }
-    get letters(): $Letter[] { return [...this.copy].map(g => $(<Letter>{g}</Letter>)); }
+    get letters(): $Letter[] {
+        return [...this.copy].map((g, i) => {
+            const letter: $Letter = $(<Letter>{g}</Letter>);
+            letter.index = i + 1;
+            return letter;
+        });
+    }
 
     where(match: (part: $Word) => boolean): $Word[] {
         return this.parts().filter(match);
