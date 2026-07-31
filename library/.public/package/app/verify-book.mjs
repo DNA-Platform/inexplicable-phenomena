@@ -61,6 +61,8 @@ t = await text();
 check('a contents line turns to its chapter', t.includes('chapter 3') && t.includes('Every act of reading'));
 check('the sections show their own structure', t.includes('The Frame'));
 check('the summary stays out of the reading', !t.includes('The book rotates the frame page by page.'));
+check('a quote sets itself apart on the page', await has('.book-page blockquote'));
+check('a footnote lands at the page foot', t.includes('coordinate crime'));
 if (shots) await page.screenshot({ path: 'shot-chapter.png' });
 
 await clickChip('next →');
@@ -77,6 +79,8 @@ await clickChip('the model');
 await settle();
 t = await text();
 check('the model page corroborates', t.toUpperCase().includes('THE MODEL, UNADORNED') && t.includes('slides a latecomer'));
+check('the model is formatted — addresses at every grain', t.includes('#4.1') && t.includes('¶ 1.1'));
+if (shots) await page.screenshot({ path: 'shot-model.png' });
 
 await clickChip('read');
 await clickHead();
@@ -111,6 +115,10 @@ await settle();
 t = await text();
 check('the new chapter reads — a reference is a sentence that stands for', t.includes('chapter 7') && t.includes('A Sentence That Stands For'));
 check('the ribbon hangs over other pages while it lies in the book', await has('[data-ribbon]'));
+await page.click('.book-link');
+await settle();
+t = await text();
+check('a reference in the prose travels the book', t.includes('chapter 3') && t.includes('Every act of reading'));
 await page.click('[data-ribbon]');
 await settle();
 t = await text();
@@ -149,6 +157,28 @@ if (!followed) {
 check('the manuscript follows the reading — every page turns over to its own file', followed);
 await page.click('[data-dogear]');
 await settle();
+
+await clickChip('the manuscript');
+await settle();
+t = await text();
+check('the manuscript reads as a book of code — with its own contents', t.toLowerCase().includes('the book of code') && t.includes('03-coordinates.tsx'));
+await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === '03-coordinates.tsx'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+t = await text();
+check('a page of the book of code is a file', t.includes('class $Coordinates extends $Chapter'));
+await clickChip('next →');
+await settle();
+t = await text();
+check('the book of code turns pages', t.includes('class $TheIndexLaw extends $Chapter'));
+await clickHead();
+await settle();
+t = await text();
+check('the running head returns to the code contents', t.toLowerCase().includes('the book of code'));
+if (shots) await page.screenshot({ path: 'shot-code-book.png' });
+await clickChip('read');
+await settle();
+t = await text();
+check('the reading resumes where it stood', t.includes('chapter 3'));
 
 await clickChip('← the shelf');
 await settle();

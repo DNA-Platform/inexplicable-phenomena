@@ -152,6 +152,90 @@ export const Page = styled.div`
     line-height: 1.7;
     display: flex;
     flex-direction: column;
+
+    .book-link {
+        color: #7a2a22;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-underline-offset: 3px;
+        cursor: pointer;
+    }
+
+    sup.note-mark {
+        font-size: 0.68em;
+        color: #7a2a22;
+        margin-left: 1px;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+`;
+
+export const Quote = styled.blockquote`
+    margin: 14px 6px 14px 10px;
+    padding: 2px 0 2px 16px;
+    border-left: 2px solid #b98f3e;
+    font-style: italic;
+    color: #4d4130;
+    font-size: 15px;
+`;
+
+export const FootNotes = styled.div`
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid #d9cdb0;
+    font-size: 12.5px;
+    color: #5f533b;
+    line-height: 1.55;
+
+    .foot-note {
+        margin: 5px 0;
+    }
+
+    .note-index {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        color: #7a2a22;
+        margin-right: 7px;
+        font-size: 11px;
+    }
+`;
+
+export const ModelMeta = styled.div`
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: #a3906a;
+    margin: 2px 0 14px;
+`;
+
+export const ModelSection = styled.div`
+    border-left: 1px solid #e3d8bc;
+    padding-left: 14px;
+    margin: 14px 0;
+`;
+
+export const ModelAddress = styled.span`
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 10.5px;
+    color: #b98f3e;
+    letter-spacing: 0.06em;
+
+    &.dim {
+        color: #c9bc98;
+        flex-shrink: 0;
+    }
+`;
+
+export const ModelHead = styled.div`
+    font-weight: 600;
+    font-size: 14.5px;
+    margin: 2px 0 6px;
+`;
+
+export const ModelPara = styled.div`
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 13px;
+    margin: 6px 0;
+    white-space: pre-line;
 `;
 
 export const DogEar = styled.button`

@@ -8,7 +8,6 @@ import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
-import { type $Link, Link } from '@/ref/Link';
 import { text } from '@/tools/html';
 import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
@@ -35,9 +34,10 @@ import {
     DayBackdrop, DayBar, DayChip, DayRule,
     ShelfBoard, Spine, CoverFace, CoverTitle, CoverSubtitle, CoverRule, CoverBlurb, CoverInvitation,
     Page, RunningHead, PageBody, PageTurns, PageTurn, Folio,
-    ChapterNumber, ChapterTitle, ChapterSubtitle, Prose, EntryIndex,
+    ChapterNumber, ChapterTitle, ChapterSubtitle, Prose,
     SectionHead, SectionSub, TocPage, TocLine, TocTag,
     CodeTabs, CodeTab, CodeBlock, Ribbon, DogEar,
+    Quote, FootNotes, ModelMeta, ModelSection, ModelAddress, ModelHead, ModelPara,
 } from './book/books.styled';
 
 const modelSources: Record<string, string> = {
@@ -82,10 +82,10 @@ type Row = {
     copy: string;
     words: number;
     source: string;
-    Opening: (props: { b: Shelved; r: Row; mode: string; jump: (page: number) => void }) => ReactNode;
+    Opening: (props: OpeningProps) => ReactNode;
 };
 
-type Shelved = {
+type Held = {
     key: string;
     ink: string;
     tall: number;
@@ -120,8 +120,7 @@ const row = (c: $Chapter, i: number): Row => ({
     Opening: openingFor(c),
 });
 
-const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => {
-    b.ref = $(<Link for={`/books/${key}`}>{b.title?.copy ?? key}</Link>) as $Link;
+const hold = (key: string, ink: string, tall: number, b: $Book): Held => {
     const rows = b.chapters.map(row);
     const names = Object.keys(manuscripts[key]);
     rows.forEach((r, i) => {
@@ -139,32 +138,106 @@ const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => {
     };
 };
 
-const shelf: Shelved[] = [
-    shelve('algebra', '#5a2320', 540, algebra),
-    shelve('manifold', '#274a3a', 450, manifold),
+const shelf: Held[] = [
+    hold('algebra', '#5a2320', 540, algebra),
+    hold('manifold', '#274a3a', 450, manifold),
 ];
 
-function rich(p: string): ReactNode {
-    if (!p.includes('$')) return p;
+// The typesetting of prose: inline mathematics ($..$), references that travel
+// ([text](#index-path)), emphasis (**..**, *..*), and footnotes (^[..]) collected
+// to the page foot — markdown's own forms, honored by the page.
+function spans(s: string, go: (anchor: string) => void, notes?: string[]): ReactNode[] {
+    const out: ReactNode[] = [];
+    const re = /\^\[([^\]]+)\]|\[([^\]]+)\]\(#([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
+    let last = 0;
+    let m;
+    let k = 0;
+    while ((m = re.exec(s))) {
+        if (m.index > last) out.push(s.slice(last, m.index));
+        if (m[1] !== undefined) {
+            if (notes) {
+                notes.push(m[1]);
+                out.push(<sup key={`n${k++}`} className="note-mark">{notes.length}</sup>);
+            }
+        } else if (m[2] !== undefined) {
+            const anchor = m[3];
+            out.push(
+                <a key={`a${k++}`} className="book-link" href={`#${anchor}`} onClick={(e) => { e.preventDefault(); go(anchor); }}>
+                    {m[2]}
+                </a>
+            );
+        } else if (m[4] !== undefined) {
+            out.push(<strong key={`b${k++}`}>{m[4]}</strong>);
+        } else {
+            out.push(<em key={`i${k++}`}>{m[5]}</em>);
+        }
+        last = re.lastIndex;
+    }
+    if (last < s.length) out.push(s.slice(last));
+    return out;
+}
+
+function rich(p: string, go: (anchor: string) => void = () => {}, notes?: string[]): ReactNode {
     const bits = p.split(/\$([^$]+)\$/g);
     return bits.map((b, i) => (
         i % 2
             ? <span key={i} className="math" dangerouslySetInnerHTML={{ __html: katex.renderToString(b, { throwOnError: false }) }} />
-            : b
+            : <React.Fragment key={i}>{spans(b, go, notes)}</React.Fragment>
     ));
+}
+
+function inked(source: string): ReactNode {
+    return (
+        <CodeBlock>
+            <Highlight code={source.trim()} language="tsx" theme={themes.github}>
+                {({ tokens, getLineProps, getTokenProps }) => (
+                    <pre>
+                        {tokens.map((line, i) => (
+                            <div key={i} {...getLineProps({ line })}>
+                                <span className="line-number">{i + 1}</span>
+                                {line.map((token, j) => (
+                                    <span key={j} {...getTokenProps({ token })} />
+                                ))}
+                            </div>
+                        ))}
+                    </pre>
+                )}
+            </Highlight>
+        </CodeBlock>
+    );
 }
 
 // The generalization, proven: every kind of chapter maps to an opening — the
 // bookmaker's word for what the reader meets when the book opens to it —
 // declared once, dispatched on the class chain. A new kind of chapter is a new
 // opening, never a new branch.
-type OpeningProps = { b: Shelved; r: Row; mode: string; jump: (page: number) => void };
+type OpeningProps = { b: Held; r: Row; mode: string; jump: (page: number) => void; go: (anchor: string) => void };
 
 function ModelOpening({ r }: OpeningProps) {
     return (
         <div>
-            <ChapterNumber>{r.index} · the model, unadorned · {r.sections.length || '0'} sections · {r.words} words</ChapterNumber>
-            <div style={{ whiteSpace: 'pre-line', marginTop: 14, fontSize: 15 }}>{r.copy}</div>
+            <ChapterNumber>{r.index} · the model, unadorned</ChapterNumber>
+            <ChapterTitle style={{ fontSize: 20 }}>{r.heading || 'apparatus'}</ChapterTitle>
+            <ModelMeta>{r.sections.length} sections · {r.words} words</ModelMeta>
+            {r.sections.map((sec, si) => (
+                <ModelSection key={si}>
+                    <ModelAddress>#{r.index}.{si + 1}</ModelAddress>
+                    <ModelHead>{sec.head}{sec.sub ? ` — ${sec.sub}` : ''}</ModelHead>
+                    {sec.paragraphs.map((p, k) => (
+                        <ModelPara key={k}>
+                            <ModelAddress className="dim">¶ {si + 1}.{k + 1}</ModelAddress>
+                            <span>{p}</span>
+                        </ModelPara>
+                    ))}
+                </ModelSection>
+            ))}
+            {r.summary && (
+                <ModelSection>
+                    <ModelAddress>( parenthetical )</ModelAddress>
+                    <ModelHead>Summary</ModelHead>
+                    <ModelPara><span>{r.summary}</span></ModelPara>
+                </ModelSection>
+            )}
         </div>
     );
 }
@@ -180,7 +253,7 @@ function CoverOpening({ r }: OpeningProps) {
     );
 }
 
-function ContentsOpening({ b, r, jump }: OpeningProps) {
+function ContentsOpening({ b, r, jump, go }: OpeningProps) {
     return (
         <div className="table-of-contents">
             <ChapterNumber style={{ textAlign: 'center' }}>{r.index} · apparatus</ChapterNumber>
@@ -197,7 +270,7 @@ function ContentsOpening({ b, r, jump }: OpeningProps) {
                             <span className="toc-leader" />
                             <span className="toc-folio">{e.index}</span>
                         </TocLine>
-                        {e.tagline && <TocTag>{rich(e.tagline)}</TocTag>}
+                        {e.tagline && <TocTag>{rich(e.tagline, go)}</TocTag>}
                     </div>
                 )))}
             </TocPage>
@@ -205,31 +278,48 @@ function ContentsOpening({ b, r, jump }: OpeningProps) {
     );
 }
 
-function ChapterOpening({ r, mode }: OpeningProps) {
+function ChapterOpening({ r, mode, go }: OpeningProps) {
     if (mode === 'skim') {
         return (
             <div>
                 <ChapterNumber>chapter {r.index} · the skim</ChapterNumber>
                 <ChapterTitle>{r.heading}</ChapterTitle>
                 {r.subtitle && <ChapterSubtitle>{r.subtitle}</ChapterSubtitle>}
-                {r.summary && <Prose style={{ marginTop: 16 }}>{rich(r.summary)}</Prose>}
+                {r.summary && <Prose style={{ marginTop: 16 }}>{rich(r.summary, go)}</Prose>}
             </div>
         );
     }
+    const notes: string[] = [];
     return (
-        <div>
+        <div id={`${r.index}`}>
             <ChapterNumber>chapter {r.index}</ChapterNumber>
             <ChapterTitle>{r.heading}</ChapterTitle>
             {r.subtitle && <ChapterSubtitle>{r.subtitle}</ChapterSubtitle>}
-            {r.sections.map((sec, si) => (
-                <div key={si}>
-                    {si > 0 && <SectionHead>{sec.head}</SectionHead>}
-                    {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
-                    {sec.paragraphs.map((p, k) => (
-                        <Prose key={k} $drop={si === 0 && k === 0} style={{ marginTop: si === 0 && k === 0 ? 16 : undefined }}>{rich(p)}</Prose>
+            {r.sections.map((sec, si) => {
+                const firstProse = sec.paragraphs.findIndex(q => !q.startsWith('> '));
+                return (
+                    <div key={si} id={`${r.index}.${si + 1}`}>
+                        {si > 0 && <SectionHead>{sec.head}</SectionHead>}
+                        {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
+                        {sec.paragraphs.map((p, k) => (
+                            p.startsWith('> ')
+                                ? <Quote key={k}>{rich(p.slice(2), go, notes)}</Quote>
+                                : (
+                                    <Prose key={k} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }}>
+                                        {rich(p, go, notes)}
+                                    </Prose>
+                                )
+                        ))}
+                    </div>
+                );
+            })}
+            {notes.length > 0 && (
+                <FootNotes>
+                    {notes.map((n, i) => (
+                        <div key={i} className="foot-note"><span className="note-index">{i + 1}</span>{rich(n, go)}</div>
                     ))}
-                </div>
-            ))}
+                </FootNotes>
+            )}
         </div>
     );
 }
@@ -240,9 +330,9 @@ function openingFor(c: $Chapter) {
         ChapterOpening;
 }
 
-function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => void): ReactNode {
+function rightPage(b: Held, r: Row, mode: string, jump: (page: number) => void, go: (anchor: string) => void): ReactNode {
     const Kind = mode === 'model' ? ModelOpening : r.Opening;
-    return <Kind b={b} r={r} mode={mode} jump={jump} />;
+    return <Kind b={b} r={r} mode={mode} jump={jump} go={go} />;
 }
 
 class $TheBooks extends $Chemical {
@@ -263,6 +353,17 @@ class $TheBooks extends $Chemical {
         this.tab = held.rows[this.page].source;
     }
 
+    go(anchor: string) {
+        const held = shelf.find(b => b.key === this.opened);
+        if (!held) return;
+        const chapter = Number(anchor.split('.')[0]);
+        const p = held.rows.findIndex(r => r.index === chapter);
+        if (p < 0) return;
+        this.mode = 'read';
+        this.turn(p);
+        setTimeout(() => { document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+    }
+
     leave(r: Row) {
         this.marked = `#${r.index}`;
         this.ribbon = r.heading;
@@ -274,6 +375,7 @@ class $TheBooks extends $Chemical {
         const bookmark: $Bookmark = $(<Bookmark for={this.marked}>{this.ribbon || 'the ribbon'}</Bookmark>, held.book);
         const part = bookmark.lookup();
         if (!(part instanceof $Chapter)) return;
+        this.mode = 'read';
         this.turn(held.rows.findIndex(r => r.index === part.index));
     }
 
@@ -309,7 +411,8 @@ class $TheBooks extends $Chemical {
                             <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
                             <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>
                             <DayChip $active={this.mode === 'model'} onClick={() => { this.mode = 'model'; }}>the model</DayChip>
-                            {current && current.Opening === ChapterOpening && (
+                            <DayChip $active={this.mode === 'manuscript'} onClick={() => { this.mode = 'manuscript'; this.tab = ''; }}>the manuscript</DayChip>
+                            {current && current.Opening === ChapterOpening && this.mode !== 'manuscript' && (
                                 <>
                                     <DayRule />
                                     <DayChip
@@ -342,7 +445,54 @@ class $TheBooks extends $Chemical {
                         <CoverInvitation>open the book →</CoverInvitation>
                     </CoverFace>
                 )}
-                {held && this.open && current && (() => {
+                {held && this.open && current && this.mode === 'manuscript' && (() => {
+                    const files = [...Object.keys(manuscripts[held.key]), ...Object.keys(modelSources)];
+                    const at = files.indexOf(this.tab);
+                    return (
+                        <Page className="book-page manuscript-book" style={{ background: '#fbf5e6' }}>
+                            {this.marked && (
+                                <Ribbon data-ribbon $ink={held.ink} title={`the bookmark — ${this.ribbon}`} onClick={() => this.follow()} />
+                            )}
+                            <RunningHead
+                                style={{ cursor: 'pointer' }}
+                                title={at < 0 ? 'to the reading' : 'to the manuscript contents'}
+                                onClick={() => { if (at < 0) { this.mode = 'read'; this.turn(this.page); } else this.tab = ''; }}
+                            >
+                                {at < 0 ? `${held.title} — the manuscript` : files[at]}
+                            </RunningHead>
+                            {at < 0 && (
+                                <PageBody className="page-body">
+                                    <ChapterNumber style={{ textAlign: 'center' }}>the book of code</ChapterNumber>
+                                    <TocPage>
+                                        {files.map((f, j) => (
+                                            <TocLine key={f} onClick={() => { this.tab = f; }}>
+                                                <span className="toc-title">{f}</span>
+                                                <span className="toc-leader" />
+                                                <span className="toc-folio">{j + 1}</span>
+                                            </TocLine>
+                                        ))}
+                                    </TocPage>
+                                </PageBody>
+                            )}
+                            {at >= 0 && (
+                                <PageBody className="page-body manuscript">
+                                    {inked(manuscripts[held.key][files[at]] ?? modelSources[files[at]])}
+                                </PageBody>
+                            )}
+                            <PageTurns>
+                                <PageTurn disabled={at < 0} onClick={() => { if (at <= 0) this.tab = ''; else this.tab = files[at - 1]; }}>
+                                    ← previous
+                                </PageTurn>
+                                <Folio>{at < 0 ? '·' : at + 1}</Folio>
+                                <PageTurn disabled={at >= files.length - 1} onClick={() => { this.tab = at < 0 ? files[0] : files[at + 1]; }}>
+                                    next →
+                                </PageTurn>
+                            </PageTurns>
+                            <DogEar data-dogear title="turn back to the reading" onClick={() => { this.mode = 'read'; this.turn(this.page); }} />
+                        </Page>
+                    );
+                })()}
+                {held && this.open && current && this.mode !== 'manuscript' && (() => {
                     const sources = { ...modelSources, ...manuscripts[held.key] };
                     const names = [current.source, ...Object.keys(modelSources).filter(n => n !== current.source)];
                     const leaf = names.includes(this.tab) ? this.tab : current.source;
@@ -367,7 +517,7 @@ class $TheBooks extends $Chemical {
                             >
                                 {this.over ? `${leaf} — the manuscript` : held.title}
                             </RunningHead>
-                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p))}</PageBody>}
+                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.go(a))}</PageBody>}
                             {this.over && (
                                 <PageBody className="page-body manuscript">
                                     <CodeTabs>
@@ -377,22 +527,7 @@ class $TheBooks extends $Chemical {
                                             </CodeTab>
                                         ))}
                                     </CodeTabs>
-                                    <CodeBlock>
-                                        <Highlight code={sources[leaf].trim()} language="tsx" theme={themes.github}>
-                                            {({ tokens, getLineProps, getTokenProps }) => (
-                                                <pre>
-                                                    {tokens.map((line, i) => (
-                                                        <div key={i} {...getLineProps({ line })}>
-                                                            <span className="line-number">{i + 1}</span>
-                                                            {line.map((token, j) => (
-                                                                <span key={j} {...getTokenProps({ token })} />
-                                                            ))}
-                                                        </div>
-                                                    ))}
-                                                </pre>
-                                            )}
-                                        </Highlight>
-                                    </CodeBlock>
+                                    {inked(sources[leaf])}
                                 </PageBody>
                             )}
                             <PageTurns>
