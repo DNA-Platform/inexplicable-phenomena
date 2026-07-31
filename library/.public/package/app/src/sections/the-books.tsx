@@ -143,9 +143,6 @@ const shelf: Held[] = [
     hold('manifold', '#274a3a', 450, manifold),
 ];
 
-// The typesetting of prose: inline mathematics ($..$), references that travel
-// ([text](#index-path)), emphasis (**..**, *..*), and footnotes (^[..]) collected
-// to the page foot — markdown's own forms, honored by the page.
 function spans(s: string, follow: (address: string) => void, notes?: string[]): ReactNode[] {
     const out: ReactNode[] = [];
     const re = /\^\[([^\]]+)\]|\[([^\]]+)\]\(#([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
@@ -207,10 +204,6 @@ function inked(source: string): ReactNode {
     );
 }
 
-// The generalization, proven: every kind of chapter maps to an opening — the
-// bookmaker's word for what the reader meets when the book opens to it —
-// declared once, dispatched on the class chain. A new kind of chapter is a new
-// opening, never a new branch.
 type OpeningProps = { b: Held; r: Row; mode: string; jump: (page: number) => void; follow: (address: string) => void };
 
 function ModelOpening({ r }: OpeningProps) {

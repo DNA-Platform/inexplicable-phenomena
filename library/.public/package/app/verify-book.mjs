@@ -1,4 +1,3 @@
-// verify-book.mjs — drives The Books reader end to end and reports what was SEEN.
 import puppeteer from 'puppeteer';
 
 const PORT = process.env.PORT || 5199;
