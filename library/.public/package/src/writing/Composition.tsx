@@ -1,6 +1,6 @@
 export interface $Composition<T extends { copy: string; index: number; parenthetical: boolean }> {
-    parts: T[];
     canonical: T;
+    parts(): T[];
     where(match: (part: T) => boolean): T[];
     select<U>(pick: (part: T) => U): U[];
     single(match?: (part: T) => boolean): T | undefined;

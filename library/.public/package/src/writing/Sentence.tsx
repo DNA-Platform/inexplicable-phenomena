@@ -6,24 +6,24 @@ import { $Character, Character } from './Character';
 import { $Word, Word } from './Word';
 
 export class $Sentence extends $Writing implements $Composition<$Word> {
-    get canonical(): $Word { return this.parts[0]; }
-    get words(): $Word[] { return this.parts; }
+    get canonical(): $Word { return this.parts()[0]; }
+    get words(): $Word[] { return this.parts(); }
     get characters(): $Character[] { return [...this.copy].map(g => $(<Character>{g}</Character>)); }
 
     where(match: (part: $Word) => boolean): $Word[] {
-        return this.parts.filter(match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $Word) => U): U[] {
-        return this.parts.map(pick);
+        return this.parts().map(pick);
     }
 
     single(match?: (part: $Word) => boolean): $Word | undefined {
-        const found = match ? this.parts.filter(match) : this.parts;
+        const found = match ? this.parts().filter(match) : this.parts();
         return found.length === 1 ? found[0] : undefined;
     }
 
-    get parts(): $Word[] {
+    parts(): $Word[] {
         const words: $Word[] = (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).map(w => $(<Word>{w}</Word>));
         return words.filter(w => w.valid()).map((w, i) => {
             w.index = i + 1;

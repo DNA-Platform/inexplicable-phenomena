@@ -21,8 +21,8 @@ export class $TableOfContents extends $Chapter {
     }
 
     $TableOfContents(...sections: $Section[]) {
-        this.parts = sections.map(s => $check(s, $Section));
-        this.parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+        this.$parts = sections.map(s => $check(s, $Section));
+        this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
     }
 
     heading(c: $Chapter): string {

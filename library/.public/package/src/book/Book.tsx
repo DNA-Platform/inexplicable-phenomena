@@ -13,7 +13,7 @@ import { $Paragraph } from '../writing/Paragraph';
 import { $Word } from '../writing/Word';
 
 export class $Book extends $Referent implements $Composition<$Chapter> {
-    parts: $Chapter[] = [];
+    $parts: $Chapter[] = [];
 
     $index?: number = undefined;
     $parenthetical? = false;
@@ -23,27 +23,31 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
 
-    get copy(): string { return this.parts.map(c => c.copy).join('\n\n'); }
-    get chapters(): $Chapter[] { return this.parts; }
+    get copy(): string { return this.parts().map(c => c.copy).join('\n\n'); }
+    get chapters(): $Chapter[] { return this.parts(); }
     get canonical(): $Cover { return this.cover; }
     get cover(): $Cover { return this.chapters[0] as $Cover; }
     get synopsis(): $Synopsis { return this.chapters.find(c => c instanceof $Synopsis) as $Synopsis; }
     get title(): $Title | undefined { return this.cover instanceof $Cover ? this.cover.title : undefined; }
     get subtitle(): $Subtitle | undefined { return this.cover instanceof $Cover ? this.cover.subtitle : undefined; }
-    get sections(): $Section[] { return this.parts.flatMap(c => c.parts); }
-    get paragraphs(): $Paragraph[] { return this.parts.flatMap(c => c.paragraphs); }
+    get sections(): $Section[] { return this.parts().flatMap(c => c.parts()); }
+    get paragraphs(): $Paragraph[] { return this.parts().flatMap(c => c.paragraphs); }
     get words(): $Word[] { return this.paragraphs.flatMap(p => p.words); }
 
+    parts(): $Chapter[] {
+        return this.$parts;
+    }
+
     where(match: (part: $Chapter) => boolean): $Chapter[] {
-        return this.parts.filter(match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $Chapter) => U): U[] {
-        return this.parts.map(pick);
+        return this.parts().map(pick);
     }
 
     single(match?: (part: $Chapter) => boolean): $Chapter | undefined {
-        const found = match ? this.parts.filter(match) : this.parts;
+        const found = match ? this.parts().filter(match) : this.parts();
         return found.length === 1 ? found[0] : undefined;
     }
 
@@ -52,17 +56,17 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     }
 
     $Book(...chapters: $Chapter[]) {
-        this.parts = chapters.map(c => $check(c, $Chapter));
+        this.$parts = chapters.map(c => $check(c, $Chapter));
         if (!this.valid()) throw new Error('A book requires exactly one cover at position zero — its canonical chapter — a synopsis, and at most one table of contents.');
-        if (!this.parts.some(c => c instanceof $TableOfContents)) {
-            this.parts.splice(1, 0, $(<TableOfContents />, this));
+        if (!this.$parts.some(c => c instanceof $TableOfContents)) {
+            this.$parts.splice(1, 0, $(<TableOfContents />, this));
         }
-        this.parts.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
-        this.parts.forEach(c => { if (this.ref) c.ref = this.ref.compose(c.index); });
+        this.$parts.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
+        this.$parts.forEach(c => { if (this.ref) c.ref = this.ref.compose(c.index); });
     }
 
     view(): ReactNode {
-        return this.parts.map((c, i) => {
+        return this.parts().map((c, i) => {
             const C = $(c) as any;
             return <div className="chapter" key={i}><C /></div>;
         });

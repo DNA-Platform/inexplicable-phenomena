@@ -18,15 +18,15 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         this.inline = false;
     }
 
-    get paragraphs(): $Paragraph[] { return this.parts; }
-    get sentences(): $Sentence[] { return this.parts.flatMap(p => p.sentences); }
+    get paragraphs(): $Paragraph[] { return this.parts(); }
+    get sentences(): $Sentence[] { return this.parts().flatMap(p => p.sentences); }
 
     get canonical(): $Paragraph {
         const T = $(this.title as any);
         return $(<Paragraph><T /></Paragraph>);
     }
 
-    get parts(): $Paragraph[] {
+    parts(): $Paragraph[] {
         const paragraphs: $Paragraph[] = this.copy.split(/\n{2,}/).map(p => $(<Paragraph>{p.trim()}</Paragraph>));
         return paragraphs.filter(p => p.valid()).map((p, i) => {
             p.index = i;
@@ -44,7 +44,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
     }
 
     get tagline(): $Tagline | undefined {
-        const body = this.parts.slice(1).flatMap(p => p.sentences);
+        const body = this.parts().slice(1).flatMap(p => p.sentences);
         if (!body.length) return undefined;
         const copy = body.length === 1 ? body[0].copy : body[0].copy.replace(/[.!?]+$/, '') + '…';
         const tagline: $Tagline = $(<Tagline>{copy}</Tagline>);
@@ -52,15 +52,15 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
     }
 
     where(match: (part: $Paragraph) => boolean): $Paragraph[] {
-        return this.parts.filter(match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $Paragraph) => U): U[] {
-        return this.parts.map(pick);
+        return this.parts().map(pick);
     }
 
     single(match?: (part: $Paragraph) => boolean): $Paragraph | undefined {
-        const found = match ? this.parts.filter(match) : this.parts;
+        const found = match ? this.parts().filter(match) : this.parts();
         return found.length === 1 ? found[0] : undefined;
     }
 

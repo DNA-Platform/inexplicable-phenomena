@@ -41,8 +41,8 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     it('a chapter receives its sections DI-style — authored nested, bound as typed arguments', () => {
         const c: $Chapter = $(<Chapter>{section('Coordinates', 'Every act of reading is a change of coordinates.')}{summary('In brief.')}</Chapter>);
         expect(c).toBeInstanceOf($Chapter);
-        expect(c.parts.length).toBe(2);
-        expect(c.parts[0]).toBeInstanceOf($Section);
+        expect(c.parts().length).toBe(2);
+        expect(c.parts()[0]).toBeInstanceOf($Section);
         expect(c.title?.copy).toBe('Coordinates');
     });
 
@@ -174,9 +174,9 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     it('the composition assigns the reference with the parts', () => {
         const s: $Section = $(<Section><Title>Grounded</Title>{'\n\nOne paragraph stands here. It carries two sentences.'}</Section>);
         s.ref = $(<Link for="/books/algebra#3.2">The Frame</Link>) as $Link;
-        const p = s.parts[1];
+        const p = s.parts()[1];
         expect(p.$ref?.$for).toBe('/books/algebra#3.2.1');
-        expect(p.parts[0].$ref?.$for).toBe('/books/algebra#3.2.1.1');
+        expect(p.parts()[0].$ref?.$for).toBe('/books/algebra#3.2.1.1');
     });
 
     it('a reference written into the block is stripped and assigned', () => {
@@ -209,7 +209,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.where(c => c.parenthetical).length).toBe(0);
         const s = b.chapters[3].sections[0];
         expect(s.single(x => x.index === 1)?.index).toBe(1);
-        expect(s.select(x => x.index)).toEqual(s.parts.map(x => x.index));
+        expect(s.select(x => x.index)).toEqual(s.parts().map(x => x.index));
     });
 
     it('where, select, and single answer at every grain of the composition', () => {
@@ -219,11 +219,11 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(chapter.single(x => x.parenthetical)).toBe(chapter.summary);
         const paragraph = chapter.sections[0].single(x => x.index === 1)!;
         const sentence = paragraph.single(x => x.index === 1)!;
-        expect(sentence.copy).toBe(paragraph.parts[0].copy);
-        expect(paragraph.select(x => x.copy)).toEqual(paragraph.parts.map(x => x.copy));
+        expect(sentence.copy).toBe(paragraph.parts()[0].copy);
+        expect(paragraph.select(x => x.copy)).toEqual(paragraph.parts().map(x => x.copy));
         const word = sentence.single(x => x.index === 1)!;
-        expect(word.copy).toBe(sentence.parts[0].copy);
-        expect(word.where(c => c.valid()).length).toBe(word.parts.length);
+        expect(word.copy).toBe(sentence.parts()[0].copy);
+        expect(word.where(c => c.valid()).length).toBe(word.parts().length);
         expect(word.single(c => c.index === 1)?.copy).toBe([...word.copy][0]);
     });
 
@@ -258,7 +258,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         }
         const c: $Chapter = $(React.createElement($($Written) as any));
         expect(c).toBeInstanceOf($Written);
-        expect(c.parts.length).toBe(2);
+        expect(c.parts().length).toBe(2);
         expect(c.title?.copy).toBe('The Written Chapter');
         expect(c.subtitle?.copy).toBe('A Test');
         expect(c.summary?.copy).toContain('Written, marked, hidden.');
@@ -322,17 +322,17 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.chapters[2].index).toBe(2);
         expect(b.chapters[3].index).toBe(3);
         const c = b.chapters[3];
-        expect(c.parts[0].index).toBe(1);
-        expect(c.parts[1].index).toBe(2);
-        const s = c.parts[0];
-        expect(s.parts[0].index).toBe(0);
-        expect(s.parts[1].index).toBe(1);
+        expect(c.parts()[0].index).toBe(1);
+        expect(c.parts()[1].index).toBe(2);
+        const s = c.parts()[0];
+        expect(s.parts()[0].index).toBe(0);
+        expect(s.parts()[1].index).toBe(1);
     });
 
     it('an authored index survives the binding — the composition fills only what was not assigned', () => {
         const c: $Chapter = $(<Chapter>{section('Coordinates', 'Prose.')}<Section index={9} parenthetical><Title>Summary</Title></Section></Chapter>);
-        expect(c.parts[0].index).toBe(1);
-        expect(c.parts[1].index).toBe(9);
+        expect(c.parts()[0].index).toBe(1);
+        expect(c.parts()[1].index).toBe(9);
     });
 
     it('every piece of writing carries an assignable index — decimals allowed', () => {
@@ -340,14 +340,14 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(c.index).toBe(0);
         c.index = 1.5;
         expect(c.index).toBe(1.5);
-        const s = c.parts[0];
+        const s = c.parts()[0];
         s.index = 2.25;
         expect(s.index).toBe(2.25);
     });
 
     it('every piece of writing carries parenthetical — assignable and authorable', () => {
         const c: $Chapter = $(<Chapter><Section parenthetical><Title>Summary</Title></Section></Chapter>);
-        expect(c.parts[0].parenthetical).toBe(true);
+        expect(c.parts()[0].parenthetical).toBe(true);
         const p: $Paragraph = $(<Paragraph>Plain prose.</Paragraph>);
         expect(p.parenthetical).toBe(false);
         p.parenthetical = true;
