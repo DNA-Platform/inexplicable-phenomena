@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { $, type $Html } from '@dna-platform/chemistry';
+import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
 import { type $Writing, $WritingExtensions } from './Writing';
 
@@ -21,7 +21,7 @@ export class $Subtitle extends $Referent implements $Writing {
     }
 
     $Subtitle(block?: $Html<'block'>) {
-        $WritingExtensions.bind(this, block);
+        this.block = $check(block, 'block');
     }
 
     view(): ReactNode {

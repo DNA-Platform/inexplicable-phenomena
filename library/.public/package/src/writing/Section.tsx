@@ -1,6 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
+import { $Reference } from '../ref/Reference';
 import { text } from '../tools/html';
 import { $WritingExtensions } from './Writing';
 import { type $Composition } from './Composition';
@@ -60,7 +61,17 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
     }
 
     $Section(block?: $Html<'block'>) {
-        $WritingExtensions.bind(this, block);
+        this.block = $check(block, 'block');
+        const els = (this.block as any)?.$elements as unknown[] | undefined;
+        if (els?.length) {
+            const top = els[0] instanceof $Reference ? els[0] : undefined;
+            const bottom = !top && els[els.length - 1] instanceof $Reference ? els[els.length - 1] : undefined;
+            const written = top ?? bottom;
+            if (written) {
+                els.splice(els.indexOf(written), 1);
+                this.$ref = written as $Reference;
+            }
+        }
         const first = this.block?.$elements?.[0];
         this.title = first instanceof $Title ? first.block : $check(first, 'block') as $Html<'block'>;
     }

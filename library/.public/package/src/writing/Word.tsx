@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { $, type $Html } from '@dna-platform/chemistry';
+import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
 import { type $Composition } from './Composition';
 import { $WritingExtensions } from './Writing';
@@ -30,7 +30,7 @@ export class $Word extends $Referent implements $Composition<$Character> {
     }
 
     $Word(block?: $Html<'block'>) {
-        $WritingExtensions.bind(this, block);
+        this.block = $check(block, 'block');
     }
 
     view(): ReactNode {
