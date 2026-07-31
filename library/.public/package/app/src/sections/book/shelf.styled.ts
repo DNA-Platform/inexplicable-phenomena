@@ -7,21 +7,13 @@ export const Room = styled.div`
     background:
         radial-gradient(1100px 640px at 50% 58%, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0) 70%),
         linear-gradient(180deg, #17191d 0%, #101216 55%, #0c0e11 100%);
-`;
 
-export const PageLink = styled.a`
-    position: absolute;
-    top: 20px;
-    left: 24px;
-    font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: rgba(200, 204, 208, 0.38);
-    text-decoration: none;
-    transition: color 140ms;
-
-    &:hover {
-        color: rgba(224, 227, 230, 0.85);
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(90deg, rgba(12, 14, 17, 0.82) 0%, rgba(12, 14, 17, 0) 16%, rgba(12, 14, 17, 0) 84%, rgba(12, 14, 17, 0.82) 100%);
     }
 `;
 
@@ -49,10 +41,9 @@ export const Caption = styled.div`
 
 export const Board = styled.div`
     position: absolute;
-    left: 50%;
+    left: 0;
     bottom: 12vh;
-    transform: translateX(-50%);
-    width: min(760px, 92vw);
+    width: 100vw;
 `;
 
 export const Row = styled.div`
@@ -60,7 +51,8 @@ export const Row = styled.div`
     align-items: flex-end;
     justify-content: center;
     gap: 8px;
-    padding: 0 26px;
+    width: 100vw;
+    overflow: hidden;
 `;
 
 export const BoardTop = styled.div`
