@@ -1,4 +1,6 @@
 import React, { type ReactNode } from 'react';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 import { Highlight, themes } from 'prism-react-renderer';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { $Book } from '@/book/Book';
@@ -12,6 +14,7 @@ import algebraSynopsisSource from './book/library/algebra/02-the-synopsis.tsx?ra
 import coordinatesSource from './book/library/algebra/03-coordinates.tsx?raw';
 import indexLawSource from './book/library/algebra/04-the-index-law.tsx?raw';
 import summaryLawSource from './book/library/algebra/05-the-summary-law.tsx?raw';
+import measureSource from './book/library/algebra/06-the-measure.tsx?raw';
 import manifoldCoverSource from './book/library/the-manifold/01-the-cover.tsx?raw';
 import manifoldSynopsisSource from './book/library/the-manifold/02-the-synopsis.tsx?raw';
 import foldSource from './book/library/the-manifold/03-the-fold.tsx?raw';
@@ -48,6 +51,7 @@ const writingSources: Record<string, Record<string, string>> = {
         '03-coordinates.tsx': coordinatesSource,
         '04-the-index-law.tsx': indexLawSource,
         '05-the-summary-law.tsx': summaryLawSource,
+        '06-the-measure.tsx': measureSource,
     },
     manifold: {
         '01-the-cover.tsx': manifoldCoverSource,
@@ -117,6 +121,16 @@ const shelf: Shelved[] = [
     shelve('manifold', '#274a3a', 450, manifold),
 ];
 
+function rich(p: string): ReactNode {
+    if (!p.includes('$')) return p;
+    const bits = p.split(/\$([^$]+)\$/g);
+    return bits.map((b, i) => (
+        i % 2
+            ? <span key={i} className="math" dangerouslySetInnerHTML={{ __html: katex.renderToString(b, { throwOnError: false }) }} />
+            : b
+    ));
+}
+
 function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => void): ReactNode {
     if (mode === 'model') {
         return (
@@ -149,7 +163,7 @@ function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => voi
                                 <span className="toc-leader" />
                                 <span className="toc-folio">{e.index}</span>
                             </TocLine>
-                            {e.tagline && <TocTag>{e.tagline}</TocTag>}
+                            {e.tagline && <TocTag>{rich(e.tagline)}</TocTag>}
                         </div>
                     ))}
                 </TocPage>
@@ -162,7 +176,7 @@ function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => voi
                 <ChapterNumber>chapter {r.index} · the skim</ChapterNumber>
                 <ChapterTitle>{r.heading}</ChapterTitle>
                 {r.subtitle && <ChapterSubtitle>{r.subtitle}</ChapterSubtitle>}
-                {r.summary && <Prose style={{ marginTop: 16 }}>{r.summary}</Prose>}
+                {r.summary && <Prose style={{ marginTop: 16 }}>{rich(r.summary)}</Prose>}
             </div>
         );
     }
@@ -176,7 +190,7 @@ function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => voi
                     {si > 0 && <SectionHead>{sec.head}</SectionHead>}
                     {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
                     {sec.paragraphs.map((p, k) => (
-                        <Prose key={k} $drop={si === 0 && k === 0} style={{ marginTop: si === 0 && k === 0 ? 16 : undefined }}>{p}</Prose>
+                        <Prose key={k} $drop={si === 0 && k === 0} style={{ marginTop: si === 0 && k === 0 ? 16 : undefined }}>{rich(p)}</Prose>
                     ))}
                 </div>
             ))}

@@ -49,7 +49,7 @@ if (shots) await page.screenshot({ path: 'shot-title-page.png' });
 await clickChip('next →');
 await settle();
 t = await text();
-check('the second page is the contents', t.includes('apparatus') && (await page.evaluate(() => document.querySelectorAll('.toc-title').length)) === 6);
+check('the second page is the contents', t.includes('apparatus') && (await page.evaluate(() => document.querySelectorAll('.toc-title').length)) === 7);
 await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
 t = await text();
@@ -83,6 +83,19 @@ await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc
 await settle();
 t = await text();
 check('the contents turns to the chapter it names', t.includes('chapter 5') && t.includes('The Second Book'));
+
+await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === 'The Measure of Reading'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+check('mathematics renders in the prose', await page.evaluate(() => document.querySelectorAll('.page-body .katex').length >= 2));
+
+await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === 'Table of Contents'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+t = await text();
+check('the contents entry for the contents is a self link', t.includes('apparatus') && (t.match(/Table of Contents/g) || []).length >= 2);
 
 await clickChip('the writing');
 await settle();
