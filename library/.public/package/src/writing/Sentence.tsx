@@ -1,22 +1,11 @@
-import React, { type ReactNode } from 'react';
-import { $, $check, type $Html } from '@dna-platform/chemistry';
-import { $Referent } from '../ref/Referent';
+import React from 'react';
+import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
-import { $WritingExtensions } from './Writing';
+import { $Writing } from './Writing';
 import { $Character, Character } from './Character';
 import { $Word, Word } from './Word';
 
-export class $Sentence extends $Referent implements $Composition<$Word> {
-    block?: $Html<'block'>;
-
-    $index?: number = undefined;
-    $parenthetical? = false;
-
-    get copy(): string { return $WritingExtensions.copy(this); }
-    get index(): number { return this.$index ?? 0; }
-    set index(value: number) { this.$index = value; }
-    get parenthetical(): boolean { return !!this.$parenthetical; }
-    set parenthetical(value: boolean) { this.$parenthetical = value; }
+export class $Sentence extends $Writing implements $Composition<$Word> {
     get canonical(): $Word { return this.parts[0]; }
     get words(): $Word[] { return this.parts; }
     get characters(): $Character[] { return [...this.copy].map(g => $(<Character>{g}</Character>)); }
@@ -33,14 +22,6 @@ export class $Sentence extends $Referent implements $Composition<$Word> {
     constructor() {
         super();
         this.inline = true;
-    }
-
-    $Sentence(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
-    }
-
-    view(): ReactNode {
-        return $WritingExtensions.display(this);
     }
 
     valid(): boolean {

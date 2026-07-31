@@ -1,28 +1,18 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
-import { $Referent } from '../ref/Referent';
 import { $Reference } from '../ref/Reference';
 import { text } from '../tools/html';
-import { $WritingExtensions } from './Writing';
 import { type $Composition } from './Composition';
+import { $Writing } from './Writing';
 import { $Paragraph, Paragraph } from './Paragraph';
 import { $Title } from './Title';
 import { $Subtitle, Subtitle } from './Subtitle';
 import { $Tagline, Tagline } from './Tagline';
 import { $Sentence } from './Sentence';
 
-export class $Section extends $Referent implements $Composition<$Paragraph> {
-    block?: $Html<'block'>;
+export class $Section extends $Writing implements $Composition<$Paragraph> {
     title?: $Html<'block'>;
 
-    $index?: number = undefined;
-    $parenthetical? = false;
-
-    get copy(): string { return $WritingExtensions.copy(this); }
-    get index(): number { return this.$index ?? 0; }
-    set index(value: number) { this.$index = value; }
-    get parenthetical(): boolean { return !!this.$parenthetical; }
-    set parenthetical(value: boolean) { this.$parenthetical = value; }
     get paragraphs(): $Paragraph[] { return this.parts; }
     get sentences(): $Sentence[] { return this.parts.flatMap(p => p.sentences); }
 
@@ -77,7 +67,7 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
     }
 
     view(): ReactNode {
-        return this.parenthetical ? null : $WritingExtensions.display(this);
+        return this.parenthetical ? null : this.display();
     }
 
     valid(): boolean {

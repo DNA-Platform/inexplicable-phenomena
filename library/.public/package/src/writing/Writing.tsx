@@ -1,20 +1,32 @@
 import React, { type ReactNode } from 'react';
-import { $, type $Html } from '@dna-platform/chemistry';
+import { $, $check, type $Html } from '@dna-platform/chemistry';
+import { $Referent } from '../ref/Referent';
 import { text } from '../tools/html';
 
-export interface $Writing {
-    copy: string;
-    index: number;
-    parenthetical: boolean;
-}
+export class $Writing extends $Referent {
+    block?: $Html<'block'>;
 
-export class $WritingExtensions {
-    static copy(writing: { block?: $Html<'block'> }): string {
-        return text(writing.block);
+    $index?: number = undefined;
+    $parenthetical? = false;
+
+    get copy(): string { return text(this.block); }
+    get index(): number { return this.$index ?? 0; }
+    set index(value: number) { this.$index = value; }
+    get parenthetical(): boolean { return !!this.$parenthetical; }
+    set parenthetical(value: boolean) { this.$parenthetical = value; }
+
+    $Writing(block?: $Html<'block'>) {
+        this.block = $check(block, 'block');
     }
 
-    static display(writing: { block?: $Html<'block'> }): ReactNode {
-        if (!writing.block) return null;
-        return React.createElement($(writing.block) as any);
+    protected display(): ReactNode {
+        if (!this.block) return null;
+        return React.createElement($(this.block) as any);
+    }
+
+    view(): ReactNode {
+        return this.display();
     }
 }
+
+export const Writing = $($Writing);

@@ -10,7 +10,7 @@ export { $Synopsis, Synopsis } from './book/Synopsis';
 export { $Index, Index } from './book/Index';
 export { $TableOfContents, TableOfContents } from './book/TableOfContents';
 export { $Book, Book } from './book/Book';
-export type { $Writing } from './writing/Writing';
+export { $Writing, Writing } from './writing/Writing';
 export type { $Composition } from './writing/Composition';
 export { text } from './tools/html';
 export { $Character, Character } from './writing/Character';

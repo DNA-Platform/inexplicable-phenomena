@@ -136,7 +136,7 @@ check('the model files sit as tabs on the turned page', await page.evaluate(() =
 await page.evaluate(() => { Array.from(document.querySelectorAll('button')).find(b => b.textContent?.trim() === 'Book.tsx')?.click(); });
 await settle();
 t = await text();
-check('the model reads on the page back', t.includes('class $Book extends $Referent'));
+check('the model reads on the page back', t.includes('class $Book extends $Writing'));
 if (shots) await page.screenshot({ path: 'shot-manuscript.png' });
 await clickHead();
 await settle();

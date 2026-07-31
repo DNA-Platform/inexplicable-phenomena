@@ -1,40 +1,25 @@
-import React, { type ReactNode } from 'react';
-import { $, $check, type $Html } from '@dna-platform/chemistry';
-import { $Referent } from '../ref/Referent';
+import React from 'react';
+import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
-import { $WritingExtensions } from './Writing';
+import { $Writing } from './Writing';
 import { $Character, Character } from './Character';
 
-export class $Word extends $Referent implements $Composition<$Character> {
-    block?: $Html<'block'>;
-
-    $index?: number = undefined;
-    $parenthetical? = false;
-
-    get copy(): string { return $WritingExtensions.copy(this); }
-    get index(): number { return this.$index ?? 0; }
-    set index(value: number) { this.$index = value; }
-    get parenthetical(): boolean { return !!this.$parenthetical; }
-    set parenthetical(value: boolean) { this.$parenthetical = value; }
+export class $Word extends $Writing implements $Composition<$Character> {
     get canonical(): $Character { return this.parts[0]; }
     get characters(): $Character[] { return this.parts; }
 
     get parts(): $Character[] {
         const characters: $Character[] = [...this.copy].map(g => $(<Character>{g}</Character>));
-        return characters.filter(c => c.valid()).map((c, i) => { c.index = i + 1; return c; });
+        return characters.filter(c => c.valid()).map((c, i) => {
+            c.index = i + 1;
+            if (this.ref) c.ref = this.ref.compose(c.index);
+            return c;
+        });
     }
 
     constructor() {
         super();
         this.inline = true;
-    }
-
-    $Word(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
-    }
-
-    view(): ReactNode {
-        return $WritingExtensions.display(this);
     }
 
     valid(): boolean {
