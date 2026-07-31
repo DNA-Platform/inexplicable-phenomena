@@ -65,10 +65,10 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
         if (els?.length) {
             const top = els[0] instanceof $Reference ? els[0] : undefined;
             const bottom = !top && els[els.length - 1] instanceof $Reference ? els[els.length - 1] : undefined;
-            const endogenous = top ?? bottom;
-            if (endogenous) {
-                els.splice(els.indexOf(endogenous), 1);
-                this.$ref = endogenous as $Reference;
+            const written = top ?? bottom;
+            if (written) {
+                els.splice(els.indexOf(written), 1);
+                this.$ref = written as $Reference;
             }
         }
         const first = this.block?.$elements?.[0];

@@ -5,11 +5,6 @@ import { $Sentence } from '../writing/Sentence';
 
 export class $Reference<T extends $Referent = $Referent> extends $Sentence {
     $for?: string;
-    $start?: number;
-    $end?: number;
-
-    get start(): number | undefined { return this.$start; }
-    get end(): number | undefined { return this.$end; }
 
     compose(key: number | string): $Reference {
         const base = this.$for ?? '';
