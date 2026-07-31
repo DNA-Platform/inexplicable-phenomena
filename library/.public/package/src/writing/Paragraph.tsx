@@ -23,7 +23,11 @@ export class $Paragraph extends $Referent implements $Composition<$Sentence> {
 
     get parts(): $Sentence[] {
         const sentences: $Sentence[] = (this.copy.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => $(<Sentence>{s.trim()}</Sentence>));
-        return sentences.filter(s => s.valid()).map((s, i) => { s.index = i + 1; return s; });
+        return sentences.filter(s => s.valid()).map((s, i) => {
+            s.index = i + 1;
+            if (this.ref) s.ref = this.ref.compose(s.index);
+            return s;
+        });
     }
 
     constructor() {

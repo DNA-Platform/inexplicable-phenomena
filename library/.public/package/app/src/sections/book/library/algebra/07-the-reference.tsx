@@ -12,7 +12,7 @@ export class $TheReference extends $Chapter {
                     <Title>The Reference: A Sentence That Stands For</Title>
                     {'\n\nA reference is not a new kind of thing. It is a sentence — the kind that stands for something. “See the chapter on coordinates” is grammatical anywhere a sentence is; what it adds is not structure but posture. It points.'}
                     {'\n\nThis settles an old regress. If every reference needed a reference of its own, the tower would never ground. But the reference of a reference is the reference of a sentence — its place in the writing, derived like anyone else’s. The tower grounds because references live on the very spine they point along.'}
-                    {'\n\nThis page can prove it. The claim that reading changes coordinates was made in [the chapter on coordinates](#3); the frame itself was built in [its second section](#3.2). Both of those are sentences standing in this paragraph — grammatical here, pointing there.'}
+                    {'\n\nThis page can prove it. The claim that reading changes coordinates was made in [the chapter on coordinates](#3); the frame itself was built in [its second section](#3.2). Both of those are sentences standing in this paragraph — grammatical here, pointing there. And a reference below the paragraph is a *highlighting*: follow [this very paragraph](#7.1.3) and watch it light and fade, the span between a start and an end.'}
                 </Section>
                 <Section>
                     <Title>Composition and Selection</Title>

@@ -167,6 +167,15 @@ export const Page = styled.div`
         margin-left: 1px;
         font-family: ui-monospace, Menlo, Consolas, monospace;
     }
+
+    .lit {
+        animation: lit-fade 2.2s ease-out;
+    }
+
+    @keyframes lit-fade {
+        0% { background: rgba(185, 143, 62, 0.32); }
+        100% { background: transparent; }
+    }
 `;
 
 export const Quote = styled.blockquote`

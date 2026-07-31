@@ -48,6 +48,7 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
             this.parts.splice(1, 0, $(<TableOfContents />, this));
         }
         this.parts.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
+        this.parts.forEach(c => { if (this.ref) c.ref = this.ref.compose(c.index); });
     }
 
     view(): ReactNode {

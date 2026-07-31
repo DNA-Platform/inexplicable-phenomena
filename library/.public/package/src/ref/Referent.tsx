@@ -5,9 +5,11 @@ export class $Referent extends $Chemical {
     $ref?: $Reference;
 
     get ref(): $Reference | undefined {
-        if (this.$ref) return this.$ref;
         const parent = this.parent;
-        return parent instanceof $Referent ? parent.ref?.compose((this as any).index ?? 0) : undefined;
+        const derived = parent instanceof $Referent && parent !== this
+            ? parent.ref?.compose((this as any).index ?? 0)
+            : undefined;
+        return derived ?? this.$ref;
     }
 
     set ref(reference: $Reference | undefined) {

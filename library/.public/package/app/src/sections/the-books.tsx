@@ -303,9 +303,9 @@ function ChapterOpening({ r, mode, go }: OpeningProps) {
                         {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
                         {sec.paragraphs.map((p, k) => (
                             p.startsWith('> ')
-                                ? <Quote key={k}>{rich(p.slice(2), go, notes)}</Quote>
+                                ? <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`}>{rich(p.slice(2), go, notes)}</Quote>
                                 : (
-                                    <Prose key={k} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }}>
+                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }}>
                                         {rich(p, go, notes)}
                                     </Prose>
                                 )
@@ -361,7 +361,12 @@ class $TheBooks extends $Chemical {
         if (p < 0) return;
         this.mode = 'read';
         this.turn(p);
-        setTimeout(() => { document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+        setTimeout(() => {
+            const part = document.getElementById(anchor);
+            part?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            part?.classList.add('lit');
+            setTimeout(() => part?.classList.remove('lit'), 2400);
+        }, 80);
     }
 
     leave(r: Row) {

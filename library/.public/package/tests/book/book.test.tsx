@@ -10,7 +10,7 @@ import { $Synopsis, Synopsis } from '@/book/Synopsis';
 import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { $Book, Book } from '@/book/Book';
 import { Title } from '@/writing/Title';
-import { $Reference } from '@/ref/Reference';
+import { $Reference, Reference } from '@/ref/Reference';
 import { $Link, Link } from '@/ref/Link';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
 
@@ -168,6 +168,34 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.select(3)).toBe(c);
         const s = c.sections[0];
         expect(s.ref?.$for).toBe('/books/algebra#3.1');
+    });
+
+    it('the composition assigns the reference with the parts', () => {
+        const s: $Section = $(<Section><Title>Grounded</Title>{'\n\nOne paragraph stands here. It carries two sentences.'}</Section>);
+        s.ref = $(<Link for="/books/algebra#3.2">The Frame</Link>) as $Link;
+        const p = s.parts[1];
+        expect(p.$ref?.$for).toBe('/books/algebra#3.2.1');
+        expect(p.parts[0].$ref?.$for).toBe('/books/algebra#3.2.1.1');
+    });
+
+    it('an endogenous reference at the foot of the block is stripped and assigned', () => {
+        const s: $Section = $(<Section><Title>Marked</Title>{'\n\nProse of the section stands alone. '}<Reference for="#9.9">a mark in the writing</Reference></Section>);
+        expect(s.$ref?.$for).toBe('#9.9');
+        expect(s.copy).not.toContain('a mark in the writing');
+    });
+
+    it('the holder of the referential context overwrites an endogenous reference', () => {
+        const holder: $Section = $(<Section><Title>Holder</Title>{'\n\nContext lives here.'}</Section>);
+        holder.ref = $(<Link for="/held">Holder</Link>) as $Link;
+        const inner: $Section = $(<Section><Title>Inner</Title>{'\n\nProse stands here. '}<Reference for="#permalink">m</Reference></Section>, holder);
+        expect(inner.$ref?.$for).toBe('#permalink');
+        expect(inner.ref?.$for).toBe('/held#0');
+    });
+
+    it('below the paragraph a reference is a span — start and end in the text', () => {
+        const r: $Reference = $(<Reference for="#3.2.1" start={4} end={19}>the highlighted span</Reference>);
+        expect(r.start).toBe(4);
+        expect(r.end).toBe(19);
     });
 
     it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {

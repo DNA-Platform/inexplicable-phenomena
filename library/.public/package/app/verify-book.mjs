@@ -63,6 +63,7 @@ check('the sections show their own structure', t.includes('The Frame'));
 check('the summary stays out of the reading', !t.includes('The book rotates the frame page by page.'));
 check('a quote sets itself apart on the page', await has('.book-page blockquote'));
 check('a footnote lands at the page foot', t.includes('coordinate crime'));
+check('mathematics lives in the chapter', await page.evaluate(() => document.querySelectorAll('.page-body .katex').length >= 2));
 if (shots) await page.screenshot({ path: 'shot-chapter.png' });
 
 await clickChip('next →');
@@ -115,6 +116,9 @@ await settle();
 t = await text();
 check('the new chapter reads — a reference is a sentence that stands for', t.includes('chapter 7') && t.includes('A Sentence That Stands For'));
 check('the ribbon hangs over other pages while it lies in the book', await has('[data-ribbon]'));
+await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.book-link')).find(e => e.textContent === 'this very paragraph'); l?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+check('below the paragraph, following a reference lights the span and fades', await page.evaluate(() => !!document.getElementById('7.1.3')?.classList.contains('lit')));
 await page.click('.book-link');
 await settle();
 t = await text();

@@ -1,6 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
+import { $Reference } from '../ref/Reference';
 import { text, display } from '../tools/html';
 import { type $Composition } from './Composition';
 import { $Paragraph, Paragraph } from './Paragraph';
@@ -31,7 +32,11 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
 
     get parts(): $Paragraph[] {
         const paragraphs: $Paragraph[] = this.copy.split(/\n{2,}/).map(p => $(<Paragraph>{p.trim()}</Paragraph>));
-        return paragraphs.filter(p => p.valid()).map((p, i) => { p.index = i; return p; });
+        return paragraphs.filter(p => p.valid()).map((p, i) => {
+            p.index = i;
+            if (this.ref) p.ref = this.ref.compose(p.index);
+            return p;
+        });
     }
 
     get subtitle(): $Subtitle | undefined {
@@ -56,6 +61,16 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
 
     $Section(block?: $Html<'block'>) {
         this.block = $check(block, 'block');
+        const els = (this.block as any)?.$elements as unknown[] | undefined;
+        if (els?.length) {
+            const top = els[0] instanceof $Reference ? els[0] : undefined;
+            const bottom = !top && els[els.length - 1] instanceof $Reference ? els[els.length - 1] : undefined;
+            const endogenous = top ?? bottom;
+            if (endogenous) {
+                els.splice(els.indexOf(endogenous), 1);
+                this.$ref = endogenous as $Reference;
+            }
+        }
         const first = this.block?.$elements?.[0];
         this.title = first instanceof $Title ? first.block : $check(first, 'block') as $Html<'block'>;
     }

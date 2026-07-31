@@ -23,7 +23,11 @@ export class $Sentence extends $Referent implements $Composition<$Word> {
 
     get parts(): $Word[] {
         const words: $Word[] = (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).map(w => $(<Word>{w}</Word>));
-        return words.filter(w => w.valid()).map((w, i) => { w.index = i + 1; return w; });
+        return words.filter(w => w.valid()).map((w, i) => {
+            w.index = i + 1;
+            if (this.ref) w.ref = this.ref.compose(w.index);
+            return w;
+        });
     }
 
     constructor() {
