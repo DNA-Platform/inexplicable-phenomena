@@ -212,6 +212,21 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(s.select(x => x.index)).toEqual(s.parts.map(x => x.index));
     });
 
+    it('where, select, and single answer at every grain of the composition', () => {
+        const b: $Book = $(book());
+        const chapter = b.chapters[3];
+        expect(chapter.where(x => !x.parenthetical).length).toBe(1);
+        expect(chapter.single(x => x.parenthetical)).toBe(chapter.summary);
+        const paragraph = chapter.sections[0].single(x => x.index === 1)!;
+        const sentence = paragraph.single(x => x.index === 1)!;
+        expect(sentence.copy).toBe(paragraph.parts[0].copy);
+        expect(paragraph.select(x => x.copy)).toEqual(paragraph.parts.map(x => x.copy));
+        const word = sentence.single(x => x.index === 1)!;
+        expect(word.copy).toBe(sentence.parts[0].copy);
+        expect(word.where(c => c.valid()).length).toBe(word.parts.length);
+        expect(word.single(c => c.index === 1)?.copy).toBe([...word.copy][0]);
+    });
+
     it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {
         const b: $Book = $(book());
         const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
