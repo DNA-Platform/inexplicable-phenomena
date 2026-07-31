@@ -2,7 +2,6 @@ import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
-import { TheAlgebra } from './the-algebra';
 import { TheManifold } from './the-manifold';
 import { DayBackdrop, DayBar, DayChip, DayRule, ShelfBoard, Spine } from './book/algebra.styled';
 
@@ -15,7 +14,6 @@ class $TheBooks extends $Chemical {
     opened = '';
 
     view(): ReactNode {
-        if (this.opened === 'algebra') return <TheAlgebra />;
         if (this.opened === 'manifold') return <TheManifold />;
         return (
             <DayBackdrop>
@@ -26,9 +24,13 @@ class $TheBooks extends $Chemical {
                 </DayBar>
                 <ShelfBoard className="shelf">
                     {spines.map(b => (
-                        <Spine key={b.key} className="shelf-card" data-book={b.key} $ink={b.ink} $tall={b.tall} onClick={() => { this.opened = b.key; }}>
-                            {b.title}
-                        </Spine>
+                        b.key === 'algebra'
+                            ? <Spine key={b.key} as="a" href="/page" style={{ textDecoration: 'none' }} className="shelf-card" data-book={b.key} $ink={b.ink} $tall={b.tall}>
+                                {b.title}
+                            </Spine>
+                            : <Spine key={b.key} className="shelf-card" data-book={b.key} $ink={b.ink} $tall={b.tall} onClick={() => { this.opened = b.key; }}>
+                                {b.title}
+                            </Spine>
                     ))}
                 </ShelfBoard>
             </DayBackdrop>

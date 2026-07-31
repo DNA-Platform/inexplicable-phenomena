@@ -7,7 +7,7 @@ export const DayBackdrop = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 56px 20px 96px;
+    padding: 22px 20px 22px;
 `;
 
 export const DayBar = styled.div`
@@ -16,7 +16,7 @@ export const DayBar = styled.div`
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-bottom: 30px;
+    margin-bottom: 14px;
 `;
 
 export const DayChip = styled.button<{ $active?: boolean }>`
@@ -146,11 +146,12 @@ export const Page = styled.div`
     border-radius: 3px 10px 10px 3px;
     box-shadow: -8px 0 0 -3px #e2eadf, -14px 0 0 -6px #d3dfd2, 0 24px 48px -20px rgba(8, 20, 13, 0.55);
     width: min(640px, 94vw);
-    min-height: 780px;
-    margin: 10px auto 46px;
-    padding: 46px 58px 40px;
+    height: calc(100vh - 128px);
+    min-height: 0;
+    margin: 4px auto 12px;
+    padding: 28px 52px 22px;
     font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.7;
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
 
@@ -367,13 +368,16 @@ export const ContentsEntry = styled.div<{ $open?: boolean }>`
 
 export const PageBody = styled.div`
     flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
 `;
 
 export const PageTurns = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-top: 34px;
+    margin-top: 14px;
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11.5px;
     letter-spacing: 0.06em;
@@ -510,7 +514,7 @@ export const RunningHead = styled.div`
     text-transform: uppercase;
     color: #6f8b77;
     text-align: center;
-    margin-bottom: 34px;
+    margin-bottom: 16px;
 
     &::after {
         content: '';
