@@ -17,8 +17,7 @@ export class $TableOfContents extends $Chapter {
     get summary(): $Section | undefined { return this.book?.cover?.summary; }
 
     get chapters(): $Chapter[] {
-        const chapters = this.book?.chapters ?? [];
-        return chapters.filter(c => c !== this && !(c instanceof $Cover));
+        return this.book?.where(c => c !== this && !(c instanceof $Cover)) ?? [];
     }
 
     $TableOfContents(...sections: $Section[]) {

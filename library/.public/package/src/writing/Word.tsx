@@ -8,8 +8,17 @@ export class $Word extends $Writing implements $Composition<$Character> {
     get canonical(): $Character { return this.parts[0]; }
     get characters(): $Character[] { return this.parts; }
 
-    select(key: number): $Character | undefined {
-        return this.parts.find(c => c.index === key);
+    where(match: (part: $Character) => boolean): $Character[] {
+        return this.parts.filter(match);
+    }
+
+    select<U>(pick: (part: $Character) => U): U[] {
+        return this.parts.map(pick);
+    }
+
+    single(match?: (part: $Character) => boolean): $Character | undefined {
+        const found = match ? this.parts.filter(match) : this.parts;
+        return found.length === 1 ? found[0] : undefined;
     }
 
     get parts(): $Character[] {

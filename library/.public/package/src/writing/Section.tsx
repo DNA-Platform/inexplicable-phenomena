@@ -51,8 +51,17 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         return tagline;
     }
 
-    select(key: number): $Paragraph | undefined {
-        return this.parts.find(p => p.index === key);
+    where(match: (part: $Paragraph) => boolean): $Paragraph[] {
+        return this.parts.filter(match);
+    }
+
+    select<U>(pick: (part: $Paragraph) => U): U[] {
+        return this.parts.map(pick);
+    }
+
+    single(match?: (part: $Paragraph) => boolean): $Paragraph | undefined {
+        const found = match ? this.parts.filter(match) : this.parts;
+        return found.length === 1 ? found[0] : undefined;
     }
 
     $Section(block?: $Html<'block'>) {

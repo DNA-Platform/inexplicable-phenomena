@@ -166,7 +166,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const c = b.chapters[3];
         expect(c.ref?.$for).toBe('/books/algebra#3');
         expect(c.ref?.copy).toBe('The Algebra of Perspective');
-        expect(b.select(3)).toBe(c);
+        expect(b.single(x => x.index === 3)).toBe(c);
         const s = c.sections[0];
         expect(s.ref?.$for).toBe('/books/algebra#3.1');
     });
@@ -202,14 +202,14 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(p.copy.slice(h.first, (h.last ?? 0) + 1)).toBe('frame');
     });
 
-    it('select answers at every grain — one address segment finds one part', () => {
+    it('the composition is list-like — where filters, select projects, single insists on one', () => {
         const b: $Book = $(book());
+        expect(b.single(c => c.index === 3)).toBe(b.chapters[3]);
+        expect(b.single()).toBeUndefined();
+        expect(b.where(c => c.parenthetical).length).toBe(0);
         const s = b.chapters[3].sections[0];
-        const p = s.select(1)!;
-        expect(p.index).toBe(1);
-        const sentence = p.select(1)!;
-        expect(sentence.index).toBe(1);
-        expect(sentence.select(1)?.copy).toBe(sentence.parts[0].copy);
+        expect(s.single(x => x.index === 1)?.index).toBe(1);
+        expect(s.select(x => x.index)).toEqual(s.parts.map(x => x.index));
     });
 
     it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {

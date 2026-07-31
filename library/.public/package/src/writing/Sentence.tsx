@@ -10,8 +10,17 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
     get words(): $Word[] { return this.parts; }
     get characters(): $Character[] { return [...this.copy].map(g => $(<Character>{g}</Character>)); }
 
-    select(key: number): $Word | undefined {
-        return this.parts.find(w => w.index === key);
+    where(match: (part: $Word) => boolean): $Word[] {
+        return this.parts.filter(match);
+    }
+
+    select<U>(pick: (part: $Word) => U): U[] {
+        return this.parts.map(pick);
+    }
+
+    single(match?: (part: $Word) => boolean): $Word | undefined {
+        const found = match ? this.parts.filter(match) : this.parts;
+        return found.length === 1 ? found[0] : undefined;
     }
 
     get parts(): $Word[] {

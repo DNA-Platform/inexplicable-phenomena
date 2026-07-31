@@ -34,8 +34,17 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     get paragraphs(): $Paragraph[] { return this.parts.flatMap(c => c.paragraphs); }
     get words(): $Word[] { return this.paragraphs.flatMap(p => p.words); }
 
-    select(key: number): $Chapter | undefined {
-        return this.parts.find(c => c.index === key);
+    where(match: (part: $Chapter) => boolean): $Chapter[] {
+        return this.parts.filter(match);
+    }
+
+    select<U>(pick: (part: $Chapter) => U): U[] {
+        return this.parts.map(pick);
+    }
+
+    single(match?: (part: $Chapter) => boolean): $Chapter | undefined {
+        const found = match ? this.parts.filter(match) : this.parts;
+        return found.length === 1 ? found[0] : undefined;
     }
 
     get tableOfContents(): $TableOfContents {
