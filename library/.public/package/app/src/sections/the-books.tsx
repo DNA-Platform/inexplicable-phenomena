@@ -37,7 +37,7 @@ import {
     Page, RunningHead, PageBody, PageTurns, PageTurn, Folio,
     ChapterNumber, ChapterTitle, ChapterSubtitle, Prose, EntryIndex,
     SectionHead, SectionSub, TocPage, TocLine, TocTag,
-    CodeDrawer, CodeTabs, CodeTab, CodeBlock, Ribbon,
+    CodeTabs, CodeTab, CodeBlock, Ribbon, DogEar,
 } from './book/books.styled';
 
 const modelSources: Record<string, string> = {
@@ -52,7 +52,7 @@ const modelSources: Record<string, string> = {
     'Bookmark.tsx': bookmarkSource,
 };
 
-const writingSources: Record<string, Record<string, string>> = {
+const manuscripts: Record<string, Record<string, string>> = {
     algebra: {
         '01-the-cover.tsx': algebraCoverSource,
         '02-the-synopsis.tsx': algebraSynopsisSource,
@@ -123,7 +123,7 @@ const row = (c: $Chapter, i: number): Row => ({
 const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => {
     b.ref = $(<Link for={`/books/${key}`}>{b.title?.copy ?? key}</Link>) as $Link;
     const rows = b.chapters.map(row);
-    const names = Object.keys(writingSources[key]);
+    const names = Object.keys(manuscripts[key]);
     rows.forEach((r, i) => {
         r.source = r.contents ? 'TableOfContents.tsx' : i === 0 ? names[0] : names[i - 1];
     });
@@ -248,9 +248,9 @@ function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => voi
 class $TheBooks extends $Chemical {
     opened = '';
     open = false;
-    page = 0;
+    page = 1;
     mode = 'read';
-    writing = false;
+    over = false;
     tab = '';
     marked = '';
     ribbon = '';
@@ -258,7 +258,8 @@ class $TheBooks extends $Chemical {
     turn(p: number) {
         const held = shelf.find(b => b.key === this.opened);
         if (!held) return;
-        this.page = Math.max(0, Math.min(held.rows.length - 1, p));
+        this.over = false;
+        this.page = Math.max(1, Math.min(held.rows.length - 1, p));
         this.tab = held.rows[this.page].source;
     }
 
@@ -277,14 +278,14 @@ class $TheBooks extends $Chemical {
     }
 
     close() {
-        this.writing = false;
+        this.over = false;
         this.tab = '';
         this.marked = '';
         this.ribbon = '';
         setTimeout(() => {
             this.opened = '';
             this.open = false;
-            this.page = 0;
+            this.page = 1;
             this.mode = 'read';
         }, 0);
     }
@@ -306,10 +307,8 @@ class $TheBooks extends $Chemical {
                             <DayChip onClick={() => this.close()}>← the shelf</DayChip>
                             <DayRule />
                             <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
-                            <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; this.tab = 'Chapter.tsx'; }}>skim</DayChip>
-                            <DayChip $active={this.mode === 'model'} onClick={() => { this.mode = 'model'; this.tab = 'Book.tsx'; }}>the model</DayChip>
-                            <DayRule />
-                            <DayChip $active={this.writing} onClick={() => { this.writing = !this.writing; }}>the writing</DayChip>
+                            <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>
+                            <DayChip $active={this.mode === 'model'} onClick={() => { this.mode = 'model'; }}>the model</DayChip>
                             {current && current.Opening === ChapterOpening && (
                                 <>
                                     <DayRule />
@@ -335,7 +334,7 @@ class $TheBooks extends $Chemical {
                     </ShelfBoard>
                 )}
                 {held && !this.open && (
-                    <CoverFace $ink={held.ink} data-cover onClick={() => { this.open = true; this.turn(0); }}>
+                    <CoverFace $ink={held.ink} data-cover onClick={() => { this.open = true; this.turn(1); }}>
                         <CoverTitle>{held.title}</CoverTitle>
                         {held.subtitle && <CoverSubtitle>{held.subtitle}</CoverSubtitle>}
                         <CoverRule />
@@ -343,66 +342,74 @@ class $TheBooks extends $Chemical {
                         <CoverInvitation>open the book →</CoverInvitation>
                     </CoverFace>
                 )}
-                {held && this.open && current && (
-                    <Page className="book-page">
-                        {this.marked && (
-                            <Ribbon
-                                data-ribbon
-                                $ink={held.ink}
-                                title={`the bookmark — ${this.ribbon}`}
-                                onClick={() => this.follow()}
-                            />
-                        )}
-                        <RunningHead
-                            style={{ cursor: 'pointer' }}
-                            title={current.contents ? 'to the cover' : 'to the contents'}
-                            onClick={() => this.turn(current.contents ? 0 : held.rows.findIndex(r => r.contents))}
-                        >
-                            {held.title}
-                        </RunningHead>
-                        <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p))}</PageBody>
-                        <PageTurns>
-                            <PageTurn disabled={this.page === 0} onClick={() => { this.page = Math.max(0, this.page - 1); }}>
-                                ← previous
-                            </PageTurn>
-                            <Folio>{current.index}</Folio>
-                            <PageTurn disabled={this.page === held.rows.length - 1} onClick={() => { this.page = Math.min(held.rows.length - 1, this.page + 1); }}>
-                                next →
-                            </PageTurn>
-                        </PageTurns>
-                    </Page>
-                )}
-                {held && this.open && this.writing && (() => {
-                    const sources = { ...modelSources, ...writingSources[held.key] };
-                    const names = Object.keys(sources);
-                    const writingNames = Object.keys(writingSources[held.key]);
-                    const tab = names.includes(this.tab) ? this.tab : writingNames[Math.min(this.page, writingNames.length - 1)] ?? names[0];
+                {held && this.open && current && (() => {
+                    const sources = { ...modelSources, ...manuscripts[held.key] };
+                    const names = [current.source, ...Object.keys(modelSources).filter(n => n !== current.source)];
+                    const leaf = names.includes(this.tab) ? this.tab : current.source;
                     return (
-                        <CodeDrawer className="writing-drawer">
-                            <CodeTabs>
-                                {names.map(name => (
-                                    <CodeTab key={name} $active={tab === name} onClick={() => { this.tab = name; }}>
-                                        {name}
-                                    </CodeTab>
-                                ))}
-                            </CodeTabs>
-                            <CodeBlock>
-                                <Highlight code={sources[tab].trim()} language="tsx" theme={themes.github}>
-                                    {({ tokens, getLineProps, getTokenProps }) => (
-                                        <pre>
-                                            {tokens.map((line, i) => (
-                                                <div key={i} {...getLineProps({ line })}>
-                                                    <span className="line-number">{i + 1}</span>
-                                                    {line.map((token, j) => (
-                                                        <span key={j} {...getTokenProps({ token })} />
+                        <Page className={this.over ? 'book-page verso' : 'book-page'} style={this.over ? { background: '#fbf5e6' } : undefined}>
+                            {this.marked && (
+                                <Ribbon
+                                    data-ribbon
+                                    $ink={held.ink}
+                                    title={`the bookmark — ${this.ribbon}`}
+                                    onClick={() => this.follow()}
+                                />
+                            )}
+                            <RunningHead
+                                style={{ cursor: 'pointer' }}
+                                title={this.over ? 'turn back to the page' : current.contents ? 'to the cover' : 'to the contents'}
+                                onClick={() => {
+                                    if (this.over) this.over = false;
+                                    else if (current.contents) this.open = false;
+                                    else this.turn(held.rows.findIndex(r => r.contents));
+                                }}
+                            >
+                                {this.over ? `${leaf} — the manuscript` : held.title}
+                            </RunningHead>
+                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p))}</PageBody>}
+                            {this.over && (
+                                <PageBody className="page-body manuscript">
+                                    <CodeTabs>
+                                        {names.map(name => (
+                                            <CodeTab key={name} $active={leaf === name} onClick={() => { this.tab = name; }}>
+                                                {name}
+                                            </CodeTab>
+                                        ))}
+                                    </CodeTabs>
+                                    <CodeBlock>
+                                        <Highlight code={sources[leaf].trim()} language="tsx" theme={themes.github}>
+                                            {({ tokens, getLineProps, getTokenProps }) => (
+                                                <pre>
+                                                    {tokens.map((line, i) => (
+                                                        <div key={i} {...getLineProps({ line })}>
+                                                            <span className="line-number">{i + 1}</span>
+                                                            {line.map((token, j) => (
+                                                                <span key={j} {...getTokenProps({ token })} />
+                                                            ))}
+                                                        </div>
                                                     ))}
-                                                </div>
-                                            ))}
-                                        </pre>
-                                    )}
-                                </Highlight>
-                            </CodeBlock>
-                        </CodeDrawer>
+                                                </pre>
+                                            )}
+                                        </Highlight>
+                                    </CodeBlock>
+                                </PageBody>
+                            )}
+                            <PageTurns>
+                                <PageTurn onClick={() => { if (this.page <= 1) this.open = false; else this.turn(this.page - 1); }}>
+                                    {this.page <= 1 ? '← the cover' : '← previous'}
+                                </PageTurn>
+                                <Folio>{current.index}</Folio>
+                                <PageTurn disabled={this.page === held.rows.length - 1} onClick={() => this.turn(this.page + 1)}>
+                                    next →
+                                </PageTurn>
+                            </PageTurns>
+                            <DogEar
+                                data-dogear
+                                title={this.over ? 'turn back to the page' : 'turn the page over — the manuscript'}
+                                onClick={() => { if (this.over) { this.over = false; } else { this.over = true; this.tab = current.source; } }}
+                            />
+                        </Page>
                     );
                 })()}
             </DayBackdrop>

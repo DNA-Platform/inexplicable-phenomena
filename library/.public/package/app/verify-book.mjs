@@ -20,10 +20,11 @@ const clickChip = (label) => page.evaluate(l => {
     if (el) el.click();
     return !!el;
 }, label);
+const clickHead = () => page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 const clickEntry = (heading) => page.evaluate(h => {
-    const el = Array.from(document.querySelectorAll('.contents-entry')).find(e => e.textContent?.includes(h));
-    if (el) el.click();
-    return !!el;
+    const l = Array.from(document.querySelectorAll('.entry-summary .toc-title')).find(e => e.textContent === h);
+    (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    return !!l;
 }, heading);
 const settle = () => new Promise(r => setTimeout(r, 550));
 
@@ -37,20 +38,24 @@ if (shots) await page.screenshot({ path: 'shot-shelf.png' });
 
 await page.click('[data-book="algebra"]');
 await settle();
-check('the cover face invites', (await text()).includes('open the book'));
+check('pulling a book shows its cover — the one cover', (await text()).includes('open the book'));
+if (shots) await page.screenshot({ path: 'shot-cover.png' });
 
 await page.click('[data-cover]');
 await settle();
 let t = await text();
+check('opening the cover lands inside — on the contents, folio 1', t.includes('apparatus') && (await page.evaluate(() => document.querySelectorAll('.toc-title').length)) === 7);
 check('the open book is a single page, sized like a book', await has('.book-page') && !(await has('.spread')));
-check('it opens at the title page, folio 0', t.includes('A Study in Reading'));
-if (shots) await page.screenshot({ path: 'shot-title-page.png' });
+if (shots) await page.screenshot({ path: 'shot-contents.png' });
 
-await clickChip('next →');
+await clickChip('← the cover');
 await settle();
 t = await text();
-check('the second page is the contents', t.includes('apparatus') && (await page.evaluate(() => document.querySelectorAll('.toc-title').length)) === 7);
-await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+check('leafing back past the contents closes the book to its cover', t.includes('open the book') && !(await has('.book-page')));
+await page.click('[data-cover]');
+await settle();
+
+await clickEntry('Coordinates');
 await settle();
 t = await text();
 check('a contents line turns to its chapter', t.includes('chapter 3') && t.includes('Every act of reading'));
@@ -74,18 +79,26 @@ t = await text();
 check('the model page corroborates', t.toUpperCase().includes('THE MODEL, UNADORNED') && t.includes('slides a latecomer'));
 
 await clickChip('read');
-await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await clickHead();
 await settle();
 t = await text();
 check('the running head returns to the contents', t.includes('apparatus'));
-await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === 'The Summary Law'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+
+await clickHead();
+await settle();
+t = await text();
+check('on the contents, the running head closes the book to its cover', t.includes('open the book') && !(await has('.book-page')));
+await page.click('[data-cover]');
+await settle();
+
+await clickEntry('The Summary Law');
 await settle();
 t = await text();
 check('the contents turns to the chapter it names', t.includes('chapter 5') && t.includes('The Second Book'));
 
-await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await clickHead();
 await settle();
-await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === 'The Measure of Reading'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await clickEntry('The Measure of Reading');
 await settle();
 check('mathematics renders in the prose', await page.evaluate(() => document.querySelectorAll('.page-body .katex').length >= 2));
 
@@ -104,46 +117,38 @@ t = await text();
 check('the bookmark knows the way back — resolved through the book it is rendered inside', t.includes('chapter 6') && t.includes('The Measure of Reading'));
 if (shots) await page.screenshot({ path: 'shot-ribbon.png' });
 
-await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
-await settle();
-await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await page.click('[data-dogear]');
 await settle();
 t = await text();
-check('on the contents, the running head goes to the cover', t.includes('A Study in Reading'));
-await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
-await settle();
-
-await clickChip('the writing');
+check('the dog-ear turns the page over — the manuscript of this very page', t.toLowerCase().includes('the manuscript') && t.includes('class $TheMeasure extends $Chapter'));
+check('the model files sit as tabs on the turned page', await page.evaluate(() => Array.from(document.querySelectorAll('button')).some(b => b.textContent?.trim() === 'Book.tsx')));
+await page.evaluate(() => { Array.from(document.querySelectorAll('button')).find(b => b.textContent?.trim() === 'Book.tsx')?.click(); });
 await settle();
 t = await text();
-check('the writing drawer shows the chapter file as written', await has('.writing-drawer') && t.includes('class $') && t.includes('view()'));
+check('the model reads on the page back', t.includes('class $Book extends $Referent'));
+if (shots) await page.screenshot({ path: 'shot-manuscript.png' });
+await clickHead();
+await settle();
+t = await text();
+check('the running head turns the page back to the reading', t.includes('chapter 6') && t.includes('The Measure of Reading'));
 
-await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await clickHead();
 await settle();
 if (!(await text()).includes('apparatus')) {
-    await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    await page.click('[data-cover]');
     await settle();
 }
-await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.entry-summary .toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await clickEntry('Coordinates');
 await settle();
+await page.click('[data-dogear]');
 let followed = await page.waitForFunction(() => document.body.innerText.includes('class $Coordinates extends $Chapter'), { timeout: 5000 }).then(() => true).catch(() => false);
 if (!followed) {
-    await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.entry-summary .toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    await page.click('[data-dogear]');
     followed = await page.waitForFunction(() => document.body.innerText.includes('class $Coordinates extends $Chapter'), { timeout: 5000 }).then(() => true).catch(() => false);
 }
-check('the code follows the reading — a chapter turn shows its file', followed);
-
-await clickChip('the model');
+check('the manuscript follows the reading — every page turns over to its own file', followed);
+await page.click('[data-dogear]');
 await settle();
-t = await text();
-check('the code follows the mode — the model shows Book.tsx', t.includes('class $Book extends $Referent'));
-await clickChip('read');
-await settle();
-await page.evaluate(() => { Array.from(document.querySelectorAll('button')).find(b => b.textContent?.trim() === 'Chapter.tsx')?.click(); });
-await settle();
-t = await text();
-check('the key code of the model is in the drawer', t.includes('class $Chapter extends $Referent') && t.includes('written()'));
-if (shots) await page.screenshot({ path: 'shot-writing.png' });
 
 await clickChip('← the shelf');
 await settle();

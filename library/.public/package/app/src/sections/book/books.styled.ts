@@ -154,6 +154,26 @@ export const Page = styled.div`
     flex-direction: column;
 `;
 
+export const DogEar = styled.button`
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(315deg, #e2d4ae 0%, #efe5cb 46%, rgba(0, 0, 0, 0.06) 49%, transparent 50%);
+    border-radius: 0 0 9px 0;
+    filter: drop-shadow(-2px -2px 3px rgba(70, 50, 20, 0.2));
+    transition: width 140ms ease, height 140ms ease;
+
+    &:hover {
+        width: 58px;
+        height: 58px;
+    }
+`;
+
 export const Ribbon = styled.button<{ $ink: string }>`
     position: absolute;
     top: -5px;
