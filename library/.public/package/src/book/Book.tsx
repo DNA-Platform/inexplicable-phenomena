@@ -33,6 +33,10 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     get paragraphs(): $Paragraph[] { return this.parts.flatMap(c => c.paragraphs); }
     get words(): $Word[] { return this.paragraphs.flatMap(p => p.words); }
 
+    select(key: number): $Chapter | undefined {
+        return this.parts.find(c => c.index === key);
+    }
+
     get tableOfContents(): $TableOfContents {
         return this.chapters.find(c => c instanceof $TableOfContents) as $TableOfContents;
     }

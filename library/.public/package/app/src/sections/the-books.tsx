@@ -7,6 +7,8 @@ import { $Book } from '@/book/Book';
 import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
+import { $Bookmark, Bookmark } from '@/book/Bookmark';
+import { type $Link, Link } from '@/ref/Link';
 import { text } from '@/tools/html';
 import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
@@ -16,6 +18,7 @@ import coordinatesSource from './book/library/algebra/03-coordinates.tsx?raw';
 import indexLawSource from './book/library/algebra/04-the-index-law.tsx?raw';
 import summaryLawSource from './book/library/algebra/05-the-summary-law.tsx?raw';
 import measureSource from './book/library/algebra/06-the-measure.tsx?raw';
+import referenceChapterSource from './book/library/algebra/07-the-reference.tsx?raw';
 import manifoldCoverSource from './book/library/the-manifold/01-the-cover.tsx?raw';
 import manifoldSynopsisSource from './book/library/the-manifold/02-the-synopsis.tsx?raw';
 import foldSource from './book/library/the-manifold/03-the-fold.tsx?raw';
@@ -26,13 +29,15 @@ import synopsisSource from '@/book/Synopsis.tsx?raw';
 import tableOfContentsSource from '@/book/TableOfContents.tsx?raw';
 import sectionSource from '@/writing/Section.tsx?raw';
 import titleSource from '@/writing/Title.tsx?raw';
+import referenceSource from '@/ref/Reference.tsx?raw';
+import bookmarkSource from '@/book/Bookmark.tsx?raw';
 import {
     DayBackdrop, DayBar, DayChip, DayRule,
     ShelfBoard, Spine, CoverFace, CoverTitle, CoverSubtitle, CoverRule, CoverBlurb, CoverInvitation,
     Page, RunningHead, PageBody, PageTurns, PageTurn, Folio,
     ChapterNumber, ChapterTitle, ChapterSubtitle, Prose, EntryIndex,
     SectionHead, SectionSub, TocPage, TocLine, TocTag,
-    CodeDrawer, CodeTabs, CodeTab, CodeBlock,
+    CodeDrawer, CodeTabs, CodeTab, CodeBlock, Ribbon,
 } from './book/books.styled';
 
 const modelSources: Record<string, string> = {
@@ -43,6 +48,8 @@ const modelSources: Record<string, string> = {
     'TableOfContents.tsx': tableOfContentsSource,
     'Section.tsx': sectionSource,
     'Title.tsx': titleSource,
+    'Reference.tsx': referenceSource,
+    'Bookmark.tsx': bookmarkSource,
 };
 
 const writingSources: Record<string, Record<string, string>> = {
@@ -53,6 +60,7 @@ const writingSources: Record<string, Record<string, string>> = {
         '04-the-index-law.tsx': indexLawSource,
         '05-the-summary-law.tsx': summaryLawSource,
         '06-the-measure.tsx': measureSource,
+        '07-the-reference.tsx': referenceChapterSource,
     },
     manifold: {
         '01-the-cover.tsx': manifoldCoverSource,
@@ -84,6 +92,7 @@ type Shelved = {
     title: string;
     subtitle: string;
     blurb: string;
+    book: $Book;
     rows: Row[];
 };
 
@@ -112,6 +121,7 @@ const row = (c: $Chapter, i: number): Row => ({
 });
 
 const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => {
+    b.ref = $(<Link for={`/books/${key}`}>{b.title?.copy ?? key}</Link>) as $Link;
     const rows = b.chapters.map(row);
     const names = Object.keys(writingSources[key]);
     rows.forEach((r, i) => {
@@ -124,6 +134,7 @@ const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => {
         title: b.title?.copy ?? '',
         subtitle: b.subtitle?.copy ?? '',
         blurb: b.synopsis?.tagline?.copy ?? '',
+        book: b,
         rows,
     };
 };
@@ -241,6 +252,8 @@ class $TheBooks extends $Chemical {
     mode = 'read';
     writing = false;
     tab = '';
+    marked = '';
+    ribbon = '';
 
     turn(p: number) {
         const held = shelf.find(b => b.key === this.opened);
@@ -249,9 +262,25 @@ class $TheBooks extends $Chemical {
         this.tab = held.rows[this.page].source;
     }
 
+    leave(r: Row) {
+        this.marked = `#${r.index}`;
+        this.ribbon = r.heading;
+    }
+
+    follow() {
+        const held = shelf.find(b => b.key === this.opened);
+        if (!held || !this.marked) return;
+        const bookmark: $Bookmark = $(<Bookmark for={this.marked}>{this.ribbon || 'the ribbon'}</Bookmark>, held.book);
+        const part = bookmark.lookup();
+        if (!(part instanceof $Chapter)) return;
+        this.turn(held.rows.findIndex(r => r.index === part.index));
+    }
+
     close() {
         this.writing = false;
         this.tab = '';
+        this.marked = '';
+        this.ribbon = '';
         setTimeout(() => {
             this.opened = '';
             this.open = false;
@@ -281,6 +310,18 @@ class $TheBooks extends $Chemical {
                             <DayChip $active={this.mode === 'model'} onClick={() => { this.mode = 'model'; this.tab = 'Book.tsx'; }}>the model</DayChip>
                             <DayRule />
                             <DayChip $active={this.writing} onClick={() => { this.writing = !this.writing; }}>the writing</DayChip>
+                            {current && current.Opening === ChapterOpening && (
+                                <>
+                                    <DayRule />
+                                    <DayChip
+                                        data-leave
+                                        $active={this.marked === `#${current.index}`}
+                                        onClick={() => this.leave(current)}
+                                    >
+                                        {this.marked === `#${current.index}` ? 'the ribbon lies here' : 'leave the ribbon'}
+                                    </DayChip>
+                                </>
+                            )}
                         </>
                     )}
                 </DayBar>
@@ -304,6 +345,14 @@ class $TheBooks extends $Chemical {
                 )}
                 {held && this.open && current && (
                     <Page className="book-page">
+                        {this.marked && (
+                            <Ribbon
+                                data-ribbon
+                                $ink={held.ink}
+                                title={`the bookmark — ${this.ribbon}`}
+                                onClick={() => this.follow()}
+                            />
+                        )}
                         <RunningHead
                             style={{ cursor: 'pointer' }}
                             title={current.contents ? 'to the cover' : 'to the contents'}

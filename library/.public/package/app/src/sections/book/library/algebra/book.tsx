@@ -7,6 +7,7 @@ import { Coordinates } from './03-coordinates';
 import { TheIndexLaw } from './04-the-index-law';
 import { TheSummaryLaw } from './05-the-summary-law';
 import { TheMeasure } from './06-the-measure';
+import { TheReference } from './07-the-reference';
 
 export const algebra: $Book = $(
     <Book>
@@ -16,5 +17,6 @@ export const algebra: $Book = $(
         <TheIndexLaw />
         <TheSummaryLaw />
         <TheMeasure />
+        <TheReference />
     </Book>
 );

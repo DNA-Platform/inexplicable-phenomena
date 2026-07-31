@@ -137,6 +137,7 @@ export const CoverBlurb = styled.div`
 `;
 
 export const Page = styled.div`
+    position: relative;
     background: #fdfaf2;
     color: #241e12;
     border: 1px solid #d9cdb0;
@@ -151,6 +152,27 @@ export const Page = styled.div`
     line-height: 1.7;
     display: flex;
     flex-direction: column;
+`;
+
+export const Ribbon = styled.button<{ $ink: string }>`
+    position: absolute;
+    top: -5px;
+    right: 44px;
+    width: 25px;
+    height: 76px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(175deg, ${(p) => p.$ink} 0%, ${(p) => p.$ink} 62%, rgba(0, 0, 0, 0.22) 100%), ${(p) => p.$ink};
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
+    box-shadow: 0 4px 9px rgba(43, 36, 22, 0.35);
+    opacity: 0.92;
+    transition: height 140ms ease, opacity 140ms ease;
+
+    &:hover {
+        height: 90px;
+        opacity: 1;
+    }
 `;
 
 export const Spread = styled.div`

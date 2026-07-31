@@ -50,6 +50,10 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
         return tagline;
     }
 
+    select(key: number): $Paragraph | undefined {
+        return this.parts.find(p => p.index === key);
+    }
+
     $Section(block?: $Html<'block'>) {
         this.block = $check(block, 'block');
         const first = this.block?.$elements?.[0];

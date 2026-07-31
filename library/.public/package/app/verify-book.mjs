@@ -49,7 +49,7 @@ if (shots) await page.screenshot({ path: 'shot-title-page.png' });
 await clickChip('next →');
 await settle();
 t = await text();
-check('the second page is the contents', t.includes('apparatus') && (await page.evaluate(() => document.querySelectorAll('.toc-title').length)) === 6);
+check('the second page is the contents', t.includes('apparatus') && (await page.evaluate(() => document.querySelectorAll('.toc-title').length)) === 7);
 await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
 t = await text();
@@ -89,6 +89,21 @@ await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.toc
 await settle();
 check('mathematics renders in the prose', await page.evaluate(() => document.querySelectorAll('.page-body .katex').length >= 2));
 
+await clickChip('leave the ribbon');
+await settle();
+t = await text();
+check('the ribbon is left on the page', await has('[data-ribbon]') && t.includes('the ribbon lies here'));
+await clickChip('next →');
+await settle();
+t = await text();
+check('the new chapter reads — a reference is a sentence that stands for', t.includes('chapter 7') && t.includes('A Sentence That Stands For'));
+check('the ribbon hangs over other pages while it lies in the book', await has('[data-ribbon]'));
+await page.click('[data-ribbon]');
+await settle();
+t = await text();
+check('the bookmark knows the way back — resolved through the book it is rendered inside', t.includes('chapter 6') && t.includes('The Measure of Reading'));
+if (shots) await page.screenshot({ path: 'shot-ribbon.png' });
+
 await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
 await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
@@ -105,6 +120,10 @@ check('the writing drawer shows the chapter file as written', await has('.writin
 
 await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
+if (!(await text()).includes('apparatus')) {
+    await page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    await settle();
+}
 await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.entry-summary .toc-title')).find(e => e.textContent === 'Coordinates'); (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
 let followed = await page.waitForFunction(() => document.body.innerText.includes('class $Coordinates extends $Chapter'), { timeout: 5000 }).then(() => true).catch(() => false);

@@ -46,6 +46,10 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
         if (!this.valid()) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 
+    select(key: number): $Section | undefined {
+        return this.parts.find(s => s.index === key);
+    }
+
     written(): $Section[] {
         if (this.view === $Chapter.prototype.view) return [];
         const node = this.view();

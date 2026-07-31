@@ -2,6 +2,7 @@ export { $Referent, Referent } from './ref/Referent';
 export { $Reference, Reference } from './ref/Reference';
 export { $Name, Name } from './ref/Name';
 export { $Link, Link } from './ref/Link';
+export { $Bookmark, Bookmark } from './book/Bookmark';
 export { $Chapter, Chapter } from './book/Chapter';
 export { $Cover, Cover } from './book/Cover';
 export { $Synopsis, Synopsis } from './book/Synopsis';

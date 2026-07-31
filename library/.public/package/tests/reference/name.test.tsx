@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
-import { $, $Chemical, $check } from '@dna-platform/chemistry';
+import { $, $Chemical, $check, type $Html } from '@dna-platform/chemistry';
 import { $Name, Name } from '@/index';
 import { test, expect } from 'vitest';
 
@@ -10,14 +10,18 @@ test('$Name renders its content and frames it as a link', () => {
 });
 
 class $Holder extends $Chemical {
-    named!: $Name;
+    block?: $Html<'block'>;
 
-    $Holder(named: $Name) {
-        this.named = $check(named, $Name);
+    get named(): $Name | undefined {
+        return this.block?.$elements?.find(e => e instanceof $Name) as $Name | undefined;
+    }
+
+    $Holder(block?: $Html<'block'>) {
+        this.block = $check(block, 'block');
     }
 
     view() {
-        return <div className="out">{this.named.symbol}</div>;
+        return <div className="out">{this.named?.symbol}</div>;
     }
 }
 const Holder = $($Holder);

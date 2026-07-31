@@ -12,6 +12,7 @@ import { $Book, Book } from '@/book/Book';
 import { Title } from '@/writing/Title';
 import { $Reference } from '@/ref/Reference';
 import { $Link, Link } from '@/ref/Link';
+import { $Bookmark, Bookmark } from '@/book/Bookmark';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>
@@ -152,10 +153,33 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const b: $Book = $(book());
         const c = b.chapters[3];
         expect(c.ref).toBeUndefined();
-        const link: $Link = $(<Link />);
+        const link: $Link = $(<Link for="/books/algebra">The Algebra of Perspective</Link>);
         c.ref = link;
         expect(c.ref).toBe(link);
         expect(c.ref).toBeInstanceOf($Reference);
+    });
+
+    it('a reference is a sentence that stands for something — compose and select are inverses', () => {
+        const b: $Book = $(book());
+        b.ref = $(<Link for="/books/algebra">The Algebra of Perspective</Link>) as $Link;
+        const c = b.chapters[3];
+        expect(c.ref?.$for).toBe('/books/algebra#3');
+        expect(c.ref?.copy).toBe('The Algebra of Perspective');
+        expect(b.select(3)).toBe(c);
+        const s = c.sections[0];
+        expect(s.ref?.$for).toBe('/books/algebra#3.1');
+    });
+
+    it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {
+        const b: $Book = $(book());
+        const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
+        expect(bm.lookup()).toBe(b.chapters[3]);
+        expect(bm.copy).toBe('the chapter on coordinates');
+    });
+
+    it('references derive lazily — an ungrounded book gives its chapters no ref', () => {
+        const b: $Book = $(book());
+        expect(b.chapters[3].ref).toBeUndefined();
     });
 
     it('writing a chapter is writing a view — the sections are declared in the writing', () => {
