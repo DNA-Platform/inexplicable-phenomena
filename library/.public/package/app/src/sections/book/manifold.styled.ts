@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 export const DayBackdrop = styled.div`
     min-height: 100vh;
-    background: radial-gradient(1100px 650px at 50% -8%, #faf5e9 0%, #f1e8d2 48%, #e4d7ba 100%);
-    color: #2b2416;
+    background: radial-gradient(1100px 650px at 50% -8%, #213528 0%, #16261b 48%, #0e1a12 100%);
+    color: #d9e3d6;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -22,9 +22,9 @@ export const DayBar = styled.div`
 export const DayChip = styled.button<{ $active?: boolean }>`
     padding: 7px 15px;
     border-radius: 999px;
-    border: 1px solid ${(p) => (p.$active ? 'rgba(122, 42, 34, 0.65)' : 'rgba(90, 74, 44, 0.3)')};
-    background: ${(p) => (p.$active ? 'rgba(122, 42, 34, 0.09)' : 'rgba(255, 252, 244, 0.65)')};
-    color: ${(p) => (p.$active ? '#7a2a22' : '#5a4a2c')};
+    border: 1px solid ${(p) => (p.$active ? 'rgba(127, 212, 165, 0.6)' : 'rgba(157, 184, 164, 0.3)')};
+    background: ${(p) => (p.$active ? 'rgba(127, 212, 165, 0.12)' : 'rgba(20, 30, 23, 0.65)')};
+    color: ${(p) => (p.$active ? '#a8e0bc' : '#9db8a4')};
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 12px;
     letter-spacing: 0.05em;
@@ -33,15 +33,15 @@ export const DayChip = styled.button<{ $active?: boolean }>`
     transition: color 120ms, border-color 120ms, background 120ms;
 
     &:hover {
-        color: #2b2416;
-        border-color: rgba(90, 74, 44, 0.7);
+        color: #d9e3d6;
+        border-color: rgba(157, 184, 164, 0.7);
     }
 `;
 
 export const DayRule = styled.span`
     width: 1px;
     height: 20px;
-    background: rgba(90, 74, 44, 0.3);
+    background: rgba(157, 184, 164, 0.3);
     margin: 0 6px;
 `;
 
@@ -52,7 +52,7 @@ export const ShelfBoard = styled.div`
     padding: 30px 64px 0;
     border-bottom: 20px solid #8a6238;
     border-radius: 0 0 4px 4px;
-    box-shadow: 0 16px 26px -14px rgba(70, 50, 20, 0.55);
+    box-shadow: 0 16px 26px -14px rgba(8, 20, 13, 0.55);
     margin-top: 72px;
 `;
 
@@ -83,11 +83,12 @@ export const CoverFace = styled.div<{ $ink: string }>`
     width: 380px;
     min-height: 540px;
     margin: 30px auto 0;
-    background: #fdfaf2;
-    border: 1px solid #d5c9ad;
+    background: #f1f5ee;
+    color: #22352a;
+    border: 1px solid #b7c8b9;
     border-top: 12px solid ${(p) => p.$ink};
     border-radius: 4px;
-    box-shadow: 0 18px 40px -18px rgba(70, 50, 20, 0.55);
+    box-shadow: 0 18px 40px -18px rgba(8, 20, 13, 0.55);
     padding: 72px 40px 44px;
     display: flex;
     flex-direction: column;
@@ -98,7 +99,7 @@ export const CoverFace = styled.div<{ $ink: string }>`
 
     &:hover {
         transform: translateY(-6px);
-        box-shadow: 0 26px 52px -20px rgba(70, 50, 20, 0.6);
+        box-shadow: 0 26px 52px -20px rgba(8, 20, 13, 0.6);
     }
 `;
 
@@ -106,7 +107,7 @@ export const CoverInvitation = styled.div`
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: #7a2a22;
+    color: #1f5c40;
     margin-top: 22px;
 `;
 
@@ -125,7 +126,7 @@ export const CoverSubtitle = styled.div`
 export const CoverRule = styled.div`
     width: 64px;
     height: 1px;
-    background: #b3a37f;
+    background: #8aa78f;
     margin: 26px auto;
 `;
 
@@ -138,12 +139,12 @@ export const CoverBlurb = styled.div`
 
 export const Page = styled.div`
     position: relative;
-    background: #fdfaf2;
-    color: #241e12;
-    border: 1px solid #d9cdb0;
-    border-left: 6px double #d9cdb0;
+    background: #f1f5ee;
+    color: #1d251f;
+    border: 1px solid #b7c8b9;
+    border-left: 6px double #b7c8b9;
     border-radius: 3px 10px 10px 3px;
-    box-shadow: -8px 0 0 -3px #efe7d2, -14px 0 0 -6px #e6dcc2, 0 24px 48px -20px rgba(70, 50, 20, 0.55);
+    box-shadow: -8px 0 0 -3px #e2eadf, -14px 0 0 -6px #d3dfd2, 0 24px 48px -20px rgba(8, 20, 13, 0.55);
     width: min(640px, 94vw);
     min-height: 780px;
     margin: 10px auto 46px;
@@ -154,7 +155,7 @@ export const Page = styled.div`
     flex-direction: column;
 
     .book-link {
-        color: #7a2a22;
+        color: #1f5c40;
         text-decoration: underline;
         text-decoration-style: dotted;
         text-underline-offset: 3px;
@@ -163,7 +164,7 @@ export const Page = styled.div`
 
     sup.note-mark {
         font-size: 0.68em;
-        color: #7a2a22;
+        color: #1f5c40;
         margin-left: 1px;
         font-family: ui-monospace, Menlo, Consolas, monospace;
     }
@@ -173,7 +174,7 @@ export const Page = styled.div`
     }
 
     @keyframes lit-fade {
-        0% { background: rgba(185, 143, 62, 0.32); }
+        0% { background: rgba(78, 125, 91, 0.32); }
         100% { background: transparent; }
     }
 `;
@@ -181,18 +182,18 @@ export const Page = styled.div`
 export const Quote = styled.blockquote`
     margin: 14px 6px 14px 10px;
     padding: 2px 0 2px 16px;
-    border-left: 2px solid #b98f3e;
+    border-left: 2px solid #4e7d5b;
     font-style: italic;
-    color: #4d4130;
+    color: #33443a;
     font-size: 15px;
 `;
 
 export const FootNotes = styled.div`
     margin-top: 26px;
     padding-top: 10px;
-    border-top: 1px solid #d9cdb0;
+    border-top: 1px solid #b7c8b9;
     font-size: 12.5px;
-    color: #5f533b;
+    color: #465548;
     line-height: 1.55;
 
     .foot-note {
@@ -201,7 +202,7 @@ export const FootNotes = styled.div`
 
     .note-index {
         font-family: ui-monospace, Menlo, Consolas, monospace;
-        color: #7a2a22;
+        color: #1f5c40;
         margin-right: 7px;
         font-size: 11px;
     }
@@ -210,12 +211,12 @@ export const FootNotes = styled.div`
 export const ModelMeta = styled.div`
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11px;
-    color: #a3906a;
+    color: #7d977f;
     margin: 2px 0 14px;
 `;
 
 export const ModelSection = styled.div`
-    border-left: 1px solid #e3d8bc;
+    border-left: 1px solid #c2d2c3;
     padding-left: 14px;
     margin: 14px 0;
 `;
@@ -223,11 +224,11 @@ export const ModelSection = styled.div`
 export const ModelAddress = styled.span`
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 10.5px;
-    color: #b98f3e;
+    color: #4e7d5b;
     letter-spacing: 0.06em;
 
     &.dim {
-        color: #c9bc98;
+        color: #a3b7a5;
         flex-shrink: 0;
     }
 `;
@@ -256,9 +257,9 @@ export const DogEar = styled.button`
     padding: 0;
     border: none;
     cursor: pointer;
-    background: linear-gradient(315deg, #e2d4ae 0%, #efe5cb 46%, rgba(0, 0, 0, 0.06) 49%, transparent 50%);
+    background: linear-gradient(315deg, #ccd8c7 0%, #dfe8da 46%, rgba(0, 0, 0, 0.06) 49%, transparent 50%);
     border-radius: 0 0 9px 0;
-    filter: drop-shadow(-2px -2px 3px rgba(70, 50, 20, 0.2));
+    filter: drop-shadow(-2px -2px 3px rgba(8, 20, 13, 0.2));
     transition: width 140ms ease, height 140ms ease;
 
     &:hover {
@@ -278,7 +279,7 @@ export const Ribbon = styled.button<{ $ink: string }>`
     cursor: pointer;
     background: linear-gradient(175deg, ${(p) => p.$ink} 0%, ${(p) => p.$ink} 62%, rgba(0, 0, 0, 0.22) 100%), ${(p) => p.$ink};
     clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
-    box-shadow: 0 4px 9px rgba(43, 36, 22, 0.35);
+    box-shadow: 0 4px 9px rgba(8, 20, 13, 0.35);
     opacity: 0.92;
     transition: height 140ms ease, opacity 140ms ease;
 
@@ -294,11 +295,11 @@ export const Spread = styled.div`
     width: min(1060px, 100%);
     min-height: 640px;
     margin: 4px auto 44px;
-    background: #fdfaf2;
-    color: #241e12;
-    border: 1px solid #d9cdb0;
+    background: #f1f5ee;
+    color: #1d251f;
+    border: 1px solid #b7c8b9;
     border-radius: 6px;
-    box-shadow: 0 26px 54px -22px rgba(70, 50, 20, 0.55);
+    box-shadow: 0 26px 54px -22px rgba(8, 20, 13, 0.55);
     font-family: Georgia, 'Times New Roman', serif;
     line-height: 1.65;
     overflow: hidden;
@@ -310,14 +311,14 @@ export const Spread = styled.div`
 
 export const LeftPage = styled.div`
     padding: 38px 30px 44px 40px;
-    background: linear-gradient(to left, #f3ecda 0%, #faf6ea 7%, #fdfaf2 100%);
-    border-right: 1px solid #e3d8bc;
-    box-shadow: inset -14px 0 22px -18px rgba(70, 50, 20, 0.45);
+    background: linear-gradient(to left, #f3ecda 0%, #faf6ea 7%, #f1f5ee 100%);
+    border-right: 1px solid #c2d2c3;
+    box-shadow: inset -14px 0 22px -18px rgba(8, 20, 13, 0.45);
 `;
 
 export const RightPage = styled.div`
     padding: 38px 48px 44px 44px;
-    background: linear-gradient(to right, #f3ecda 0%, #faf6ea 6%, #fdfaf2 100%);
+    background: linear-gradient(to right, #f3ecda 0%, #faf6ea 6%, #f1f5ee 100%);
     display: flex;
     flex-direction: column;
 `;
@@ -345,12 +346,12 @@ export const ContentsEntry = styled.div<{ $open?: boolean }>`
     margin: 2px -10px;
     border-radius: 4px;
     cursor: pointer;
-    background: ${(p) => (p.$open ? 'rgba(122, 42, 34, 0.08)' : 'transparent')};
-    border-left: 3px solid ${(p) => (p.$open ? '#7a2a22' : 'transparent')};
+    background: ${(p) => (p.$open ? 'rgba(31, 92, 64, 0.08)' : 'transparent')};
+    border-left: 3px solid ${(p) => (p.$open ? '#1f5c40' : 'transparent')};
     transition: background 120ms;
 
     &:hover {
-        background: rgba(122, 42, 34, 0.06);
+        background: rgba(31, 92, 64, 0.06);
     }
 
     .entry-heading {
@@ -381,7 +382,7 @@ export const PageTurns = styled.div`
 export const PageTurn = styled.button`
     border: none;
     background: none;
-    color: #7a2a22;
+    color: #1f5c40;
     font-family: inherit;
     font-size: inherit;
     letter-spacing: inherit;
@@ -399,7 +400,7 @@ export const PageTurn = styled.button`
 `;
 
 export const Folio = styled.div`
-    color: #a3906a;
+    color: #7d977f;
 `;
 
 export const SectionHead = styled.h3`
@@ -428,19 +429,19 @@ export const TocLine = styled.div`
     cursor: pointer;
 
     &:hover .toc-title {
-        color: #7a2a22;
+        color: #1f5c40;
     }
 
     .toc-leader {
         flex: 1;
-        border-bottom: 1px dotted #b3a37f;
+        border-bottom: 1px dotted #8aa78f;
         transform: translateY(-4px);
     }
 
     .toc-folio {
         font-family: ui-monospace, Menlo, Consolas, monospace;
         font-size: 12px;
-        color: #a3906a;
+        color: #7d977f;
     }
 `;
 
@@ -455,9 +456,9 @@ export const CodeDrawer = styled.div`
     width: min(1060px, 100%);
     margin: -14px auto 46px;
     background: #faf6ea;
-    border: 1px solid #d9cdb0;
+    border: 1px solid #b7c8b9;
     border-radius: 6px;
-    box-shadow: 0 18px 40px -22px rgba(70, 50, 20, 0.5);
+    box-shadow: 0 18px 40px -22px rgba(8, 20, 13, 0.5);
     overflow: hidden;
 `;
 
@@ -466,15 +467,15 @@ export const CodeTabs = styled.div`
     flex-wrap: wrap;
     gap: 2px;
     padding: 10px 14px 0;
-    border-bottom: 1px solid #e3d8bc;
+    border-bottom: 1px solid #c2d2c3;
 `;
 
 export const CodeTab = styled.button<{ $active?: boolean }>`
-    border: 1px solid ${(p) => (p.$active ? '#d9cdb0' : 'transparent')};
+    border: 1px solid ${(p) => (p.$active ? '#b7c8b9' : 'transparent')};
     border-bottom: none;
     border-radius: 6px 6px 0 0;
-    background: ${(p) => (p.$active ? '#fdfaf2' : 'transparent')};
-    color: ${(p) => (p.$active ? '#7a2a22' : '#5a4a2c')};
+    background: ${(p) => (p.$active ? '#f1f5ee' : 'transparent')};
+    color: ${(p) => (p.$active ? '#1f5c40' : '#9db8a4')};
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11.5px;
     letter-spacing: 0.03em;
@@ -507,7 +508,7 @@ export const RunningHead = styled.div`
     font-size: 10px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: #9a8a62;
+    color: #6f8b77;
     text-align: center;
     margin-bottom: 34px;
 
@@ -516,7 +517,7 @@ export const RunningHead = styled.div`
         display: block;
         width: 52px;
         height: 1px;
-        background: #c9b98a;
+        background: #8aa78f;
         margin: 12px auto 0;
     }
 `;
@@ -525,7 +526,7 @@ export const ChapterNumber = styled.div`
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11px;
     letter-spacing: 0.22em;
-    color: #a3906a;
+    color: #7d977f;
     margin-bottom: 3px;
 `;
 
@@ -550,14 +551,14 @@ export const Prose = styled.p<{ $drop?: boolean }>`
             float: left;
             line-height: 0.82;
             padding: 4px 8px 0 0;
-            color: #7a2a22;
+            color: #1f5c40;
         }
     `}
 `;
 
 export const RevealedSummary = styled.p`
-    background: #f4ecd7;
-    border-left: 3px solid #b98f3e;
+    background: #e2ecdf;
+    border-left: 3px solid #4e7d5b;
     padding: 10px 14px;
     font-size: 14.5px;
 `;
@@ -575,7 +576,7 @@ export const ContentsList = styled.ol`
 export const EntryIndex = styled.span`
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11px;
-    color: #a3906a;
+    color: #7d977f;
     margin-right: 9px;
 `;
 

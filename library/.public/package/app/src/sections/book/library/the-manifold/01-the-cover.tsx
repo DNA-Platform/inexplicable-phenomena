@@ -8,8 +8,9 @@ export class $ManifoldCover extends $Cover {
     view(): ReactNode {
         return (
             <Section>
-                <Title>The Manifold of Sentences</Title>
-                {'\n\nA short book, for the shelf to have a neighbour.'}
+                <Title>The Manifold of Sentences: A Geometry of Prose</Title>
+                {'\n\nWriting is a curved surface that pretends, everywhere you stand, to be flat.'}
+                {'\n\nThis book walks the surface: the fold, the chart, the curvature, the straightest path through.'}
             </Section>
         );
     }

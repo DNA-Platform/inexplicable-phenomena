@@ -17,7 +17,6 @@ export class $TheMeasure extends $Chapter {
                     <Title>The Rotation, Written Small</Title>
                     {'\n\nThe first chapter said reading changes coordinates; mathematics says it smaller. Let $F_k$ be the frame after $k$ chapters and $c_k$ the turning the $k$-th chapter works on its reader. Then $F_{k+1} = c_k \\circ F_k$ — composition, not addition, because turnings do not commute.'}
                     {'\n\nRead the chapters out of order and you compose the same turnings in a different order; the algebra is honest about what every rereader knows — you do not land in the same place.'}
-                    {'\n\nThe subscripts are honest work, too: $k$ is the index the composition assigned — the same number [the index law](#4) defends — so the mathematics of reading leans on the numbering of writing.'}
                 </Section>
                 <Section parenthetical>
                     <Title>Summary</Title>
