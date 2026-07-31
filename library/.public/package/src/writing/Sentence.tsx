@@ -10,6 +10,10 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
     get words(): $Word[] { return this.parts; }
     get characters(): $Character[] { return [...this.copy].map(g => $(<Character>{g}</Character>)); }
 
+    select(key: number): $Word | undefined {
+        return this.parts.find(w => w.index === key);
+    }
+
     get parts(): $Word[] {
         const words: $Word[] = (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).map(w => $(<Word>{w}</Word>));
         return words.filter(w => w.valid()).map((w, i) => {

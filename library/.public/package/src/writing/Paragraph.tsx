@@ -10,6 +10,10 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
     get sentences(): $Sentence[] { return this.parts; }
     get words(): $Word[] { return this.parts.flatMap(s => s.words); }
 
+    select(key: number): $Sentence | undefined {
+        return this.parts.find(s => s.index === key);
+    }
+
     get parts(): $Sentence[] {
         const sentences: $Sentence[] = (this.copy.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => $(<Sentence>{s.trim()}</Sentence>));
         return sentences.filter(s => s.valid()).map((s, i) => {

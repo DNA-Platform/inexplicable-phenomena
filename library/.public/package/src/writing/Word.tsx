@@ -8,6 +8,10 @@ export class $Word extends $Writing implements $Composition<$Character> {
     get canonical(): $Character { return this.parts[0]; }
     get characters(): $Character[] { return this.parts; }
 
+    select(key: number): $Character | undefined {
+        return this.parts.find(c => c.index === key);
+    }
+
     get parts(): $Character[] {
         const characters: $Character[] = [...this.copy].map(g => $(<Character>{g}</Character>));
         return characters.filter(c => c.valid()).map((c, i) => {

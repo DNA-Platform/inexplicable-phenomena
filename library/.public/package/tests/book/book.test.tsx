@@ -202,6 +202,16 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(p.copy.slice(h.first, (h.last ?? 0) + 1)).toBe('frame');
     });
 
+    it('select answers at every grain — one address segment finds one part', () => {
+        const b: $Book = $(book());
+        const s = b.chapters[3].sections[0];
+        const p = s.select(1)!;
+        expect(p.index).toBe(1);
+        const sentence = p.select(1)!;
+        expect(sentence.index).toBe(1);
+        expect(sentence.select(1)?.copy).toBe(sentence.parts[0].copy);
+    });
+
     it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {
         const b: $Book = $(book());
         const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
