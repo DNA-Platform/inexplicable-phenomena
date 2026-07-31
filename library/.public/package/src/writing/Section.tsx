@@ -1,8 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
-import { $Reference } from '../ref/Reference';
-import { text, display } from '../tools/html';
+import { text } from '../tools/html';
+import { $WritingExtensions } from './Writing';
 import { type $Composition } from './Composition';
 import { $Paragraph, Paragraph } from './Paragraph';
 import { $Title } from './Title';
@@ -17,7 +17,7 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
     $index?: number = undefined;
     $parenthetical? = false;
 
-    get copy(): string { return text(this.block); }
+    get copy(): string { return $WritingExtensions.copy(this); }
     get index(): number { return this.$index ?? 0; }
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
@@ -60,23 +60,13 @@ export class $Section extends $Referent implements $Composition<$Paragraph> {
     }
 
     $Section(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
-        const els = (this.block as any)?.$elements as unknown[] | undefined;
-        if (els?.length) {
-            const top = els[0] instanceof $Reference ? els[0] : undefined;
-            const bottom = !top && els[els.length - 1] instanceof $Reference ? els[els.length - 1] : undefined;
-            const written = top ?? bottom;
-            if (written) {
-                els.splice(els.indexOf(written), 1);
-                this.$ref = written as $Reference;
-            }
-        }
+        $WritingExtensions.bind(this, block);
         const first = this.block?.$elements?.[0];
         this.title = first instanceof $Title ? first.block : $check(first, 'block') as $Html<'block'>;
     }
 
     view(): ReactNode {
-        return this.parenthetical ? null : display(this);
+        return this.parenthetical ? null : $WritingExtensions.display(this);
     }
 
     valid(): boolean {

@@ -1,8 +1,8 @@
 import React, { type ReactNode } from 'react';
-import { $, $check, type $Html } from '@dna-platform/chemistry';
+import { $, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
-import { text, display } from '../tools/html';
 import { type $Composition } from './Composition';
+import { $WritingExtensions } from './Writing';
 import { $Sentence, Sentence } from './Sentence';
 import { $Word } from './Word';
 
@@ -12,7 +12,7 @@ export class $Paragraph extends $Referent implements $Composition<$Sentence> {
     $index?: number = undefined;
     $parenthetical? = false;
 
-    get copy(): string { return text(this.block); }
+    get copy(): string { return $WritingExtensions.copy(this); }
     get index(): number { return this.$index ?? 0; }
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
@@ -36,11 +36,11 @@ export class $Paragraph extends $Referent implements $Composition<$Sentence> {
     }
 
     $Paragraph(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
+        $WritingExtensions.bind(this, block);
     }
 
     view(): ReactNode {
-        return display(this);
+        return $WritingExtensions.display(this);
     }
 
     valid(): boolean {

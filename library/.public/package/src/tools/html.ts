@@ -1,5 +1,4 @@
-import React, { isValidElement, type ReactNode } from 'react';
-import { $, type $Html } from '@dna-platform/chemistry';
+import { isValidElement } from 'react';
 
 export function text(node: any): string {
     if (node == null || typeof node === 'boolean') return '';
@@ -11,9 +10,4 @@ export function text(node: any): string {
     if (isValidElement(node)) return text((node as any).props?.children);
     if (typeof node === 'object' && 'children' in node) return text((node as any).children);
     return '';
-}
-
-export function display(x: { block?: $Html<'block'> }): ReactNode {
-    if (x.block) return React.createElement($(x.block) as any);
-    return null;
 }

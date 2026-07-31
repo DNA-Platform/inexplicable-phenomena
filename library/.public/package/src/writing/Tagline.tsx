@@ -1,8 +1,7 @@
 import { type ReactNode } from 'react';
-import { $, $check, type $Html } from '@dna-platform/chemistry';
+import { $, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
-import { text, display } from '../tools/html';
-import { type $Writing } from './Writing';
+import { type $Writing, $WritingExtensions } from './Writing';
 
 export class $Tagline extends $Referent implements $Writing {
     block?: $Html<'block'>;
@@ -10,7 +9,7 @@ export class $Tagline extends $Referent implements $Writing {
     $index?: number = undefined;
     $parenthetical? = false;
 
-    get copy(): string { return text(this.block); }
+    get copy(): string { return $WritingExtensions.copy(this); }
     get index(): number { return this.$index ?? 0; }
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
@@ -22,11 +21,11 @@ export class $Tagline extends $Referent implements $Writing {
     }
 
     $Tagline(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
+        $WritingExtensions.bind(this, block);
     }
 
     view(): ReactNode {
-        return display(this);
+        return $WritingExtensions.display(this);
     }
 
     valid(): boolean {

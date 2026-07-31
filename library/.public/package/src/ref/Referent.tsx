@@ -1,5 +1,6 @@
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { type $Reference } from './Reference';
+import { type $Writing } from '../writing/Writing';
 
 export class $Referent extends $Chemical {
     $ref?: $Reference;
@@ -7,7 +8,7 @@ export class $Referent extends $Chemical {
     get ref(): $Reference | undefined {
         const parent = this.parent;
         const derived = parent instanceof $Referent && parent !== this
-            ? parent.ref?.compose((this as any).index ?? 0)
+            ? parent.ref?.compose((this as unknown as Partial<$Writing>).index ?? 0)
             : undefined;
         return derived ?? this.$ref;
     }
