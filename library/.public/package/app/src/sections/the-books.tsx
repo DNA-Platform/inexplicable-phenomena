@@ -146,7 +146,7 @@ const shelf: Held[] = [
 // The typesetting of prose: inline mathematics ($..$), references that travel
 // ([text](#index-path)), emphasis (**..**, *..*), and footnotes (^[..]) collected
 // to the page foot — markdown's own forms, honored by the page.
-function spans(s: string, go: (anchor: string) => void, notes?: string[]): ReactNode[] {
+function spans(s: string, follow: (address: string) => void, notes?: string[]): ReactNode[] {
     const out: ReactNode[] = [];
     const re = /\^\[([^\]]+)\]|\[([^\]]+)\]\(#([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
     let last = 0;
@@ -162,7 +162,7 @@ function spans(s: string, go: (anchor: string) => void, notes?: string[]): React
         } else if (m[2] !== undefined) {
             const anchor = m[3];
             out.push(
-                <a key={`a${k++}`} className="book-link" href={`#${anchor}`} onClick={(e) => { e.preventDefault(); go(anchor); }}>
+                <a key={`a${k++}`} className="book-link" href={`#${anchor}`} onClick={(e) => { e.preventDefault(); follow(anchor); }}>
                     {m[2]}
                 </a>
             );
@@ -177,12 +177,12 @@ function spans(s: string, go: (anchor: string) => void, notes?: string[]): React
     return out;
 }
 
-function rich(p: string, go: (anchor: string) => void = () => {}, notes?: string[]): ReactNode {
+function rich(p: string, follow: (address: string) => void = () => {}, notes?: string[]): ReactNode {
     const bits = p.split(/\$([^$]+)\$/g);
     return bits.map((b, i) => (
         i % 2
             ? <span key={i} className="math" dangerouslySetInnerHTML={{ __html: katex.renderToString(b, { throwOnError: false }) }} />
-            : <React.Fragment key={i}>{spans(b, go, notes)}</React.Fragment>
+            : <React.Fragment key={i}>{spans(b, follow, notes)}</React.Fragment>
     ));
 }
 
@@ -211,7 +211,7 @@ function inked(source: string): ReactNode {
 // bookmaker's word for what the reader meets when the book opens to it —
 // declared once, dispatched on the class chain. A new kind of chapter is a new
 // opening, never a new branch.
-type OpeningProps = { b: Held; r: Row; mode: string; jump: (page: number) => void; go: (anchor: string) => void };
+type OpeningProps = { b: Held; r: Row; mode: string; jump: (page: number) => void; follow: (address: string) => void };
 
 function ModelOpening({ r }: OpeningProps) {
     return (
@@ -253,7 +253,7 @@ function CoverOpening({ r }: OpeningProps) {
     );
 }
 
-function ContentsOpening({ b, r, jump, go }: OpeningProps) {
+function ContentsOpening({ b, r, jump, follow }: OpeningProps) {
     return (
         <div className="table-of-contents">
             <ChapterNumber style={{ textAlign: 'center' }}>{r.index} · apparatus</ChapterNumber>
@@ -270,7 +270,7 @@ function ContentsOpening({ b, r, jump, go }: OpeningProps) {
                             <span className="toc-leader" />
                             <span className="toc-folio">{e.index}</span>
                         </TocLine>
-                        {e.tagline && <TocTag>{rich(e.tagline, go)}</TocTag>}
+                        {e.tagline && <TocTag>{rich(e.tagline, follow)}</TocTag>}
                     </div>
                 )))}
             </TocPage>
@@ -278,14 +278,14 @@ function ContentsOpening({ b, r, jump, go }: OpeningProps) {
     );
 }
 
-function ChapterOpening({ r, mode, go }: OpeningProps) {
+function ChapterOpening({ r, mode, follow }: OpeningProps) {
     if (mode === 'skim') {
         return (
             <div>
                 <ChapterNumber>chapter {r.index} · the skim</ChapterNumber>
                 <ChapterTitle>{r.heading}</ChapterTitle>
                 {r.subtitle && <ChapterSubtitle>{r.subtitle}</ChapterSubtitle>}
-                {r.summary && <Prose style={{ marginTop: 16 }}>{rich(r.summary, go)}</Prose>}
+                {r.summary && <Prose style={{ marginTop: 16 }}>{rich(r.summary, follow)}</Prose>}
             </div>
         );
     }
@@ -303,10 +303,10 @@ function ChapterOpening({ r, mode, go }: OpeningProps) {
                         {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
                         {sec.paragraphs.map((p, k) => (
                             p.startsWith('> ')
-                                ? <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`}>{rich(p.slice(2), go, notes)}</Quote>
+                                ? <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`}>{rich(p.slice(2), follow, notes)}</Quote>
                                 : (
                                     <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }}>
-                                        {rich(p, go, notes)}
+                                        {rich(p, follow, notes)}
                                     </Prose>
                                 )
                         ))}
@@ -316,7 +316,7 @@ function ChapterOpening({ r, mode, go }: OpeningProps) {
             {notes.length > 0 && (
                 <FootNotes>
                     {notes.map((n, i) => (
-                        <div key={i} className="foot-note"><span className="note-index">{i + 1}</span>{rich(n, go)}</div>
+                        <div key={i} className="foot-note"><span className="note-index">{i + 1}</span>{rich(n, follow)}</div>
                     ))}
                 </FootNotes>
             )}
@@ -330,9 +330,9 @@ function openingFor(c: $Chapter) {
         ChapterOpening;
 }
 
-function rightPage(b: Held, r: Row, mode: string, jump: (page: number) => void, go: (anchor: string) => void): ReactNode {
+function rightPage(b: Held, r: Row, mode: string, jump: (page: number) => void, follow: (address: string) => void): ReactNode {
     const Kind = mode === 'model' ? ModelOpening : r.Opening;
-    return <Kind b={b} r={r} mode={mode} jump={jump} go={go} />;
+    return <Kind b={b} r={r} mode={mode} jump={jump} follow={follow} />;
 }
 
 class $TheBooks extends $Chemical {
@@ -353,35 +353,28 @@ class $TheBooks extends $Chemical {
         this.tab = held.rows[this.page].source;
     }
 
-    go(anchor: string) {
-        const held = shelf.find(b => b.key === this.opened);
-        if (!held) return;
-        const chapter = Number(anchor.split('.')[0]);
-        const p = held.rows.findIndex(r => r.index === chapter);
-        if (p < 0) return;
-        this.mode = 'read';
-        this.turn(p);
-        setTimeout(() => {
-            const part = document.getElementById(anchor);
-            part?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            part?.classList.add('lit');
-            setTimeout(() => part?.classList.remove('lit'), 2400);
-        }, 80);
-    }
-
     leave(r: Row) {
         this.marked = `#${r.index}`;
         this.ribbon = r.heading;
     }
 
-    follow() {
+    follow(address = this.marked) {
         const held = shelf.find(b => b.key === this.opened);
-        if (!held || !this.marked) return;
-        const bookmark: $Bookmark = $(<Bookmark for={this.marked}>{this.ribbon || 'the ribbon'}</Bookmark>, held.book);
-        const part = bookmark.lookup();
-        if (!(part instanceof $Chapter)) return;
+        if (!held || !address) return;
+        const path = address.replace(/^#/, '');
+        const reference: $Bookmark = $(<Bookmark for={address}>{this.ribbon || address}</Bookmark>, held.book);
+        const part = reference.lookup();
+        if (!part) return;
+        const p = held.rows.findIndex(r => r.index === Number(path.split('.')[0]));
+        if (p < 0) return;
         this.mode = 'read';
-        this.turn(held.rows.findIndex(r => r.index === part.index));
+        this.turn(p);
+        setTimeout(() => {
+            const lit = document.getElementById(path);
+            lit?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            lit?.classList.add('lit');
+            setTimeout(() => lit?.classList.remove('lit'), 2400);
+        }, 80);
     }
 
     close() {
@@ -522,7 +515,7 @@ class $TheBooks extends $Chemical {
                             >
                                 {this.over ? `${leaf} — the manuscript` : held.title}
                             </RunningHead>
-                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.go(a))}</PageBody>}
+                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a))}</PageBody>}
                             {this.over && (
                                 <PageBody className="page-body manuscript">
                                     <CodeTabs>

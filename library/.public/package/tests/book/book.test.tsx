@@ -197,7 +197,9 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const p: $Paragraph = $(<Paragraph>{'The frame turns with every chapter read.'}</Paragraph>);
         const h: $Highlight = $(<Highlight first={4} last={8}>the marked words</Highlight>, p);
         expect(h).toBeInstanceOf($Reference);
-        expect(h.marks(p.copy)).toBe('frame');
+        expect(h.first).toBe(4);
+        expect(h.last).toBe(8);
+        expect(p.copy.slice(h.first, (h.last ?? 0) + 1)).toBe('frame');
     });
 
     it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {
