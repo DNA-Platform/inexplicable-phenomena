@@ -5,6 +5,7 @@ import { Highlight, themes } from 'prism-react-renderer';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { $Book } from '@/book/Book';
 import { $Chapter } from '@/book/Chapter';
+import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
 import { text } from '@/tools/html';
 import { algebra } from './book/library/algebra/book';
@@ -72,6 +73,8 @@ type Row = {
     cover: boolean;
     copy: string;
     words: number;
+    source: string;
+    Page: (props: { b: Shelved; r: Row; mode: string; jump: (page: number) => void }) => ReactNode;
 };
 
 type Shelved = {
@@ -104,17 +107,26 @@ const row = (c: $Chapter, i: number): Row => ({
     cover: i === 0,
     copy: c.copy,
     words: c.words.length,
+    source: '',
+    Page: pageFor(c),
 });
 
-const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => ({
-    key,
-    ink,
-    tall,
-    title: b.title?.copy ?? '',
-    subtitle: b.subtitle?.copy ?? '',
-    blurb: b.synopsis?.tagline?.copy ?? '',
-    rows: b.parts.map(row),
-});
+const shelve = (key: string, ink: string, tall: number, b: $Book): Shelved => {
+    const rows = b.chapters.map(row);
+    const names = Object.keys(writingSources[key]);
+    rows.forEach((r, i) => {
+        r.source = r.contents ? 'TableOfContents.tsx' : i === 0 ? names[0] : names[i - 1];
+    });
+    return {
+        key,
+        ink,
+        tall,
+        title: b.title?.copy ?? '',
+        subtitle: b.subtitle?.copy ?? '',
+        blurb: b.synopsis?.tagline?.copy ?? '',
+        rows,
+    };
+};
 
 const shelf: Shelved[] = [
     shelve('algebra', '#5a2320', 540, algebra),
@@ -131,45 +143,57 @@ function rich(p: string): ReactNode {
     ));
 }
 
-function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => void): ReactNode {
-    if (mode === 'model') {
-        return (
-            <div>
-                <ChapterNumber>{r.index} · the model, unadorned · {r.sections.length || '0'} sections · {r.words} words</ChapterNumber>
-                <div style={{ whiteSpace: 'pre-line', marginTop: 14, fontSize: 15 }}>{r.copy}</div>
-            </div>
-        );
-    }
-    if (r.cover) {
-        return (
-            <div style={{ textAlign: 'center', paddingTop: 70 }}>
-                <ChapterTitle style={{ fontSize: 34 }}>{r.heading}</ChapterTitle>
-                {r.subtitle && <ChapterSubtitle style={{ fontSize: 17, marginTop: 8 }}>{r.subtitle}</ChapterSubtitle>}
-                <div style={{ width: 60, height: 1, background: '#b3a37f', margin: '30px auto' }} />
-                {r.body.map((p, k) => <Prose key={k} style={{ fontStyle: 'italic', opacity: 0.78 }}>{p}</Prose>)}
-            </div>
-        );
-    }
-    if (r.contents) {
-        return (
-            <div className="table-of-contents">
-                <ChapterNumber style={{ textAlign: 'center' }}>{r.index} · apparatus</ChapterNumber>
-                <ChapterTitle style={{ textAlign: 'center', marginTop: 4 }}>{r.heading}</ChapterTitle>
-                <TocPage>
-                    {b.rows.map((e, j) => (
-                        <div key={j} className="entry-summary">
-                            <TocLine onClick={() => jump(j)}>
-                                <span className="toc-title">{e.heading}</span>
-                                <span className="toc-leader" />
-                                <span className="toc-folio">{e.index}</span>
-                            </TocLine>
-                            {e.tagline && <TocTag>{rich(e.tagline)}</TocTag>}
-                        </div>
-                    ))}
-                </TocPage>
-            </div>
-        );
-    }
+// The generalization, proven: every kind of chapter maps to a page — declared
+// once, dispatched on the class chain. A new kind of chapter is a new page,
+// never a new branch.
+type PageProps = { b: Shelved; r: Row; mode: string; jump: (page: number) => void };
+
+function ModelPage({ r }: PageProps) {
+    return (
+        <div>
+            <ChapterNumber>{r.index} · the model, unadorned · {r.sections.length || '0'} sections · {r.words} words</ChapterNumber>
+            <div style={{ whiteSpace: 'pre-line', marginTop: 14, fontSize: 15 }}>{r.copy}</div>
+        </div>
+    );
+}
+
+function CoverPage({ r }: PageProps) {
+    return (
+        <div style={{ textAlign: 'center', paddingTop: 70 }}>
+            <ChapterTitle style={{ fontSize: 34 }}>{r.heading}</ChapterTitle>
+            {r.subtitle && <ChapterSubtitle style={{ fontSize: 17, marginTop: 8 }}>{r.subtitle}</ChapterSubtitle>}
+            <div style={{ width: 60, height: 1, background: '#b3a37f', margin: '30px auto' }} />
+            {r.body.map((p, k) => <Prose key={k} style={{ fontStyle: 'italic', opacity: 0.78 }}>{p}</Prose>)}
+        </div>
+    );
+}
+
+function ContentsPage({ b, r, jump }: PageProps) {
+    return (
+        <div className="table-of-contents">
+            <ChapterNumber style={{ textAlign: 'center' }}>{r.index} · apparatus</ChapterNumber>
+            <TocPage>
+                <TocLine className="toc-self" onClick={() => jump(b.rows.indexOf(r))} style={{ fontSize: 21, fontWeight: 600, marginBottom: 18 }}>
+                    <span className="toc-title">{r.heading}</span>
+                    <span className="toc-leader" />
+                    <span className="toc-folio">{r.index}</span>
+                </TocLine>
+                {b.rows.map((e, j) => (e.Page !== ChapterPage ? null : (
+                    <div key={j} className="entry-summary">
+                        <TocLine onClick={() => jump(j)}>
+                            <span className="toc-title">{e.heading}</span>
+                            <span className="toc-leader" />
+                            <span className="toc-folio">{e.index}</span>
+                        </TocLine>
+                        {e.tagline && <TocTag>{rich(e.tagline)}</TocTag>}
+                    </div>
+                )))}
+            </TocPage>
+        </div>
+    );
+}
+
+function ChapterPage({ r, mode }: PageProps) {
     if (mode === 'skim') {
         return (
             <div>
@@ -198,6 +222,17 @@ function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => voi
     );
 }
 
+function pageFor(c: $Chapter) {
+    return c instanceof $Cover ? CoverPage :
+        c instanceof $TableOfContents ? ContentsPage :
+        ChapterPage;
+}
+
+function rightPage(b: Shelved, r: Row, mode: string, jump: (page: number) => void): ReactNode {
+    const Kind = mode === 'model' ? ModelPage : r.Page;
+    return <Kind b={b} r={r} mode={mode} jump={jump} />;
+}
+
 class $TheBooks extends $Chemical {
     opened = '';
     open = false;
@@ -205,6 +240,13 @@ class $TheBooks extends $Chemical {
     mode = 'read';
     writing = false;
     tab = '';
+
+    turn(p: number) {
+        const held = shelf.find(b => b.key === this.opened);
+        if (!held) return;
+        this.page = Math.max(0, Math.min(held.rows.length - 1, p));
+        this.tab = held.rows[this.page].source;
+    }
 
     close() {
         this.writing = false;
@@ -233,9 +275,9 @@ class $TheBooks extends $Chemical {
                         <>
                             <DayChip onClick={() => this.close()}>← the shelf</DayChip>
                             <DayRule />
-                            <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; }}>read</DayChip>
-                            <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>
-                            <DayChip $active={this.mode === 'model'} onClick={() => { this.mode = 'model'; }}>the model</DayChip>
+                            <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
+                            <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; this.tab = 'Chapter.tsx'; }}>skim</DayChip>
+                            <DayChip $active={this.mode === 'model'} onClick={() => { this.mode = 'model'; this.tab = 'Book.tsx'; }}>the model</DayChip>
                             <DayRule />
                             <DayChip $active={this.writing} onClick={() => { this.writing = !this.writing; }}>the writing</DayChip>
                         </>
@@ -251,7 +293,7 @@ class $TheBooks extends $Chemical {
                     </ShelfBoard>
                 )}
                 {held && !this.open && (
-                    <CoverFace $ink={held.ink} data-cover onClick={() => { this.open = true; this.page = 0; }}>
+                    <CoverFace $ink={held.ink} data-cover onClick={() => { this.open = true; this.turn(0); }}>
                         <CoverTitle>{held.title}</CoverTitle>
                         {held.subtitle && <CoverSubtitle>{held.subtitle}</CoverSubtitle>}
                         <CoverRule />
@@ -263,12 +305,12 @@ class $TheBooks extends $Chemical {
                     <Page className="book-page">
                         <RunningHead
                             style={{ cursor: 'pointer' }}
-                            title="to the contents"
-                            onClick={() => { this.page = Math.min(1, held.rows.length - 1); }}
+                            title={current.contents ? 'to the cover' : 'to the contents'}
+                            onClick={() => this.turn(current.contents ? 0 : held.rows.findIndex(r => r.contents))}
                         >
                             {held.title}
                         </RunningHead>
-                        <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => { this.page = p; })}</PageBody>
+                        <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p))}</PageBody>
                         <PageTurns>
                             <PageTurn disabled={this.page === 0} onClick={() => { this.page = Math.max(0, this.page - 1); }}>
                                 ← previous

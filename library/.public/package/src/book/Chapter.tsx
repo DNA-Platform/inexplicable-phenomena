@@ -12,7 +12,7 @@ import { $Paragraph } from '../writing/Paragraph';
 import { $Word } from '../writing/Word';
 
 export class $Chapter extends $Referent implements $Composition<$Section> {
-    sections: $Section[] = [];
+    parts: $Section[] = [];
 
     $index?: number = undefined;
     $parenthetical? = false;
@@ -23,7 +23,7 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
-    get parts(): $Section[] { return this.sections; }
+    get sections(): $Section[] { return this.parts; }
     get canonical(): $Section { return this.parts.find(s => !s.parenthetical) ?? this.parts[0]; }
     get summary(): $Section | undefined { return this.parts.find(s => s.parenthetical); }
     get tagline(): $Tagline | undefined { return this.summary?.tagline; }
@@ -41,8 +41,8 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     get subtitle(): $Subtitle | undefined { return this.canonical?.subtitle; }
 
     $Chapter(...sections: $Section[]) {
-        this.sections = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
-        this.sections.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+        this.parts = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
+        this.parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
         if (!this.valid()) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 

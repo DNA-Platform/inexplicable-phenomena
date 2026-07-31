@@ -16,16 +16,14 @@ export class $TableOfContents extends $Chapter {
 
     get summary(): $Section | undefined { return this.book?.cover?.summary; }
 
-    get entries(): $Chapter[] {
-        const chapters = this.book?.parts ?? [];
-        if (chapters.includes(this)) return chapters;
-        const afterCover = chapters.findIndex(c => c instanceof $Cover) + 1;
-        return [...chapters.slice(0, afterCover), this, ...chapters.slice(afterCover)];
+    get chapters(): $Chapter[] {
+        const chapters = this.book?.chapters ?? [];
+        return chapters.filter(c => c !== this && !(c instanceof $Cover));
     }
 
     $TableOfContents(...sections: $Section[]) {
-        this.sections = sections.map(s => $check(s, $Section));
-        this.sections.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+        this.parts = sections.map(s => $check(s, $Section));
+        this.parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
     }
 
     view(): ReactNode {
@@ -38,9 +36,12 @@ export class $TableOfContents extends $Chapter {
             return c instanceof $TableOfContents ? 'Table of Contents' : '';
         };
         return (
-            <ol className="table-of-contents">
-                {this.entries.map((c, i) => <li key={i}>{heading(c)}</li>)}
-            </ol>
+            <div className="table-of-contents">
+                <div className="contents-title">{heading(this)}</div>
+                <ol>
+                    {this.chapters.map((c, i) => <li key={i}>{heading(c)}</li>)}
+                </ol>
+            </div>
         );
     }
 

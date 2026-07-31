@@ -13,7 +13,7 @@ import { $Paragraph } from '../writing/Paragraph';
 import { $Word } from '../writing/Word';
 
 export class $Book extends $Referent implements $Composition<$Chapter> {
-    chapters: $Chapter[] = [];
+    parts: $Chapter[] = [];
 
     $index?: number = undefined;
     $parenthetical? = false;
@@ -23,7 +23,7 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
-    get parts(): $Chapter[] { return this.chapters; }
+    get chapters(): $Chapter[] { return this.parts; }
     get canonical(): $Cover { return this.cover; }
     get cover(): $Cover { return this.chapters[0] as $Cover; }
     get synopsis(): $Synopsis { return this.chapters.find(c => c instanceof $Synopsis) as $Synopsis; }
@@ -38,12 +38,12 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     }
 
     $Book(...chapters: $Chapter[]) {
-        this.chapters = chapters.map(c => $check(c, $Chapter));
+        this.parts = chapters.map(c => $check(c, $Chapter));
         if (!this.valid()) throw new Error('A book requires exactly one cover at position zero — its canonical chapter — a synopsis, and at most one table of contents.');
-        if (!this.chapters.some(c => c instanceof $TableOfContents)) {
-            this.chapters.splice(1, 0, $(<TableOfContents />, this));
+        if (!this.parts.some(c => c instanceof $TableOfContents)) {
+            this.parts.splice(1, 0, $(<TableOfContents />, this));
         }
-        this.chapters.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
+        this.parts.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
     }
 
     view(): ReactNode {

@@ -45,14 +45,14 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     it('a book receives its chapters DI-style; cover and synopsis are chapters among them', () => {
         const b: $Book = $(book());
         expect(b).toBeInstanceOf($Book);
-        expect(b.parts.length).toBe(4);
+        expect(b.chapters.length).toBe(4);
         expect(b.cover).toBeInstanceOf($Cover);
         expect(b.synopsis).toBeInstanceOf($Synopsis);
     });
 
     it('the cover is the canonical, and it sits at position zero', () => {
         const b: $Book = $(book());
-        expect(b.canonical).toBe(b.parts[0]);
+        expect(b.canonical).toBe(b.chapters[0]);
         expect(b.canonical).toBeInstanceOf($Cover);
         expect(b.title?.copy).toBe('The Algebra of Perspective');
     });
@@ -91,7 +91,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('a chapter knows its book — the parent, one channel, things point up', () => {
         const b: $Book = $(book());
-        expect(b.parts[2].book).toBe(b);
+        expect(b.chapters[2].book).toBe(b);
         expect(b.cover.book).toBe(b);
         expect(b.tableOfContents.book).toBe(b);
     });
@@ -115,7 +115,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const b: $Book = $(book());
         expect(b.valid()).toBe(true);
         expect(b.cover.valid()).toBe(true);
-        expect(b.parts[2].valid()).toBe(true);
+        expect(b.chapters[2].valid()).toBe(true);
         expect(b.tableOfContents.valid()).toBe(true);
         const rejected: $Chapter = $(<Chapter>{section('Coordinates', 'Prose.')}</Chapter>);
         expect(rejected.valid()).toBe(false);
@@ -194,20 +194,19 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         expect(toc).toBeInstanceOf($TableOfContents);
-        expect(b.parts[1]).toBe(toc);
+        expect(b.chapters[1]).toBe(toc);
         expect(toc.book).toBe(b);
         expect(toc.index).toBe(1);
         expect(b.tableOfContents).toBe(toc);
     });
 
-    it('the table of contents lists every chapter — itself among them: the entries are the parts', () => {
+    it('the contents lists only the chapters — the cover is the running head, itself is the title', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
-        expect(toc.entries).toBe(b.parts);
-        expect(toc.entries.length).toBe(4);
-        expect(toc.entries[0]).toBe(b.cover);
-        expect(toc.entries[1]).toBe(toc);
-        expect(toc.entries).toContain(b.synopsis);
+        expect(toc.chapters.length).toBe(2);
+        expect(toc.chapters[0]).toBe(b.synopsis);
+        expect(toc.chapters).not.toContain(toc);
+        expect(toc.chapters).not.toContain(b.cover);
         expect(toc.title.copy).toBe('Table of Contents');
     });
 
@@ -221,19 +220,19 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
             </Book>
         );
         const toc = b.tableOfContents;
-        expect(b.parts).toContain(toc);
+        expect(b.chapters).toContain(toc);
         expect(b.tableOfContents).toBe(toc);
-        expect(toc.entries.length).toBe(4);
-        expect(toc.entries[1]).toBe(toc);
+        expect(toc.chapters.length).toBe(2);
+        expect(toc.chapters).not.toContain(toc);
     });
 
     it('the composition assigns the index — one-indexed, the special first at zero', () => {
         const b: $Book = $(book());
         expect(b.cover.index).toBe(0);
-        expect(b.parts[1].index).toBe(1);
-        expect(b.parts[2].index).toBe(2);
-        expect(b.parts[3].index).toBe(3);
-        const c = b.parts[3];
+        expect(b.chapters[1].index).toBe(1);
+        expect(b.chapters[2].index).toBe(2);
+        expect(b.chapters[3].index).toBe(3);
+        const c = b.chapters[3];
         expect(c.parts[0].index).toBe(1);
         expect(c.parts[1].index).toBe(2);
         const s = c.parts[0];
@@ -273,15 +272,15 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.words.length).toBeGreaterThan(0);
     });
 
-    it('a book renders itself through its table of contents — the contents page seated after the cover, listing itself', () => {
+    it('a book renders itself through its table of contents — the title of the contents is its own reference', () => {
         const b: $Book = $(book());
         const B = $(b as any);
         const { container } = render(<B />);
         const toc = container.querySelector('.table-of-contents');
         expect(toc).not.toBeNull();
-        expect(toc!.textContent).toContain('The Algebra of Perspective');
         expect(toc!.textContent).toContain('Table of Contents');
         expect(toc!.textContent).toContain('Coordinates');
+        expect(toc!.textContent).not.toContain('The Algebra of Perspective');
     });
 
     it('a rejection renders as the exception view — the error is part of the view', () => {
