@@ -9,6 +9,8 @@
 // Renderable classes
 export { $Particle } from './abstraction/particle';
 export { $Chemical } from './abstraction/chemical';
+export { $Exception } from './abstraction/exception';
+export { $exceptions } from './implementation/dev';
 export { $Atom } from './abstraction/atom';
 
 // Perspectives — named, switchable views on a chemical

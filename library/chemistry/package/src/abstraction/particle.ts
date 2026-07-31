@@ -4,7 +4,7 @@ import {
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $reaction$, $destroyed$, $molecule$, $construction$, $formRan$, $formPromise$,
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
-    $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $$parent$$,
+    $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
     $perspectives$, $isPerspective$, $activeView$, $renderView$, $isViewBase$, $viewLevel$
 } from "../implementation/symbols";
@@ -12,7 +12,7 @@ import { $backing$ } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
 import { augment } from "../implementation/augment";
-import { dev, renderError } from "../implementation/dev";
+import { dev, renderError, renderException } from "../implementation/dev";
 import { currentScope, diffuse } from "../implementation/scope";
 import { $Reaction } from "./reaction";
 import { $Molecule } from "./molecule";
@@ -519,9 +519,9 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             return filtered;
         }
         if (bond && typeof p[$bond$] === 'function') p[$bond$]();
-        if (dev && p[$devError$]) {
+        if (p[$devError$]) {
             p[$rendering$] = false;
-            return renderError('Bond Constructor Failed', p[$devError$]);
+            return renderException(p[$devException$] ?? new Error(p[$devError$]));
         }
         const output = augment(p[$renderView$](), react);
         p[$viewCache$] = output;

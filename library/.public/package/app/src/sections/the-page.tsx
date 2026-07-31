@@ -46,6 +46,10 @@ class $ThePage extends $Chemical {
                     <ControlChip $active={this.classes} onClick={() => { this.classes = !this.classes; }}>
                         the classes
                     </ControlChip>
+                    <ControlRule />
+                    <ControlChip as="a" href="/books" style={{ textDecoration: 'none' }}>
+                        the books →
+                    </ControlChip>
                 </ControlBar>
                 <Stage $editing={this.editing}>
                     {this.editing && (

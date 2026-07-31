@@ -7,7 +7,7 @@ import {
     $$template$$, $$getNextCid$$, $$createSymbol$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
-    $devError$, $isViewBase$
+    $devError$, $devException$, $isViewBase$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType, $HtmlTag } from "../implementation/types";
@@ -15,7 +15,7 @@ import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from ".
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
 import { $Reaction } from "./reaction";
-import { dev, warn } from "../implementation/dev";
+import { dev, warn, $exceptions } from "../implementation/dev";
 
 // Re-export bond / reflection / molecule / reaction / scope machinery for
 // consumers that import from chemical.ts.
@@ -184,17 +184,22 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                 $paramValidation.chemical = this._chemical;
                 $paramValidation.count = this._parameters.length;
                 let bondResult: any;
-                if (dev) {
+                if (!dev && $exceptions.mode === 'throw') {
+                    bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
+                    $paramValidation.evaluate();
+                    assertValid(c);
+                } else {
                     try {
                         bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
                         $paramValidation.evaluate();
+                        assertValid(c);
                         c[$devError$] = undefined;
+                        c[$devException$] = undefined;
                     } catch (e: any) {
                         c[$devError$] = e?.message || String(e);
+                        c[$devException$] = e instanceof Error ? e : new Error(String(e));
+                        if (!dev) console.error('$Chemistry: Bond Constructor Failed —', e);
                     }
-                } else {
-                    bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
-                    $paramValidation.evaluate();
                 }
 
                 if (!c[$construction$]) {
@@ -306,7 +311,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         const grouping = this._bondConstructor && !(this._chemical instanceof $Eval);
         const childArray = grouping ? this.groupInline(raw) : raw;
         context.singleton = !Array.isArray(children) && childArray.length === 1;
-        const parent = this._chemical;
+        const parent = (this._chemical instanceof $Eval && this._chemical.parentFor) || this._chemical;
         let ctx = context;
         const typeCounts: Map<any, number> | undefined = dev ? new Map() : undefined;
         for (const child of childArray) {
@@ -657,6 +662,16 @@ export function $is<T>(ctor: abstract new (...args: any[]) => T): T {
     return ctor as any;
 }
 
+// The specification law: at the end of every bond constructor, the instance
+// must be valid. `valid()` accrues down the hierarchy — override, call super.
+// Templates are not judged: they are blank molds, not bound instances.
+function assertValid(chemical: any) {
+    if (chemical[$isTemplate$]) return;
+    if (typeof chemical.valid === 'function' && !chemical.valid()) {
+        throw new Error(`${chemical.constructor.name} is not valid after its bond constructor.`);
+    }
+}
+
 // ===========================================================================
 // $Chemical
 // ===========================================================================
@@ -692,6 +707,9 @@ export class $Chemical extends $Particle {
     }
 
     get children() { return this[$children$]; }
+
+    get parent(): $Chemical | undefined { return this[$parent$]; }
+    set parent(parent: $Chemical) { this[$parent$] = parent; }
 
     [$resolveComponent$](): Component<this> {
         if (Object.prototype.hasOwnProperty.call(this, $component$)) return this[$component$]!;
@@ -873,15 +891,19 @@ export function $wrap<P>(Component: React.FC<P>): any {
 // $Eval — a throwaway host whose bond constructor captures the single child handed
 // to it. `$(<Word/>)` runs the real synthesis over the element and takes the
 // materialized instance back — reusing process()'s exact dispatch (chemical, HTML,
-// function component, text), never a parallel binding path.
+// function component, text), never a parallel binding path. `parentFor` lets
+// `$(<Toc/>, book)` evaluate the element as if authored inside `book`: the child
+// binds to that parent BEFORE its bond constructor runs, same as DI children.
 class $Eval extends $Chemical {
     result: any;
+    parentFor?: $Chemical;
     $Eval(...parts: any[]) { this.result = parts.length === 1 ? parts[0] : parts; }
     view(): ReactNode { return null; }
 }
 
-function evalElement(element: React.ReactElement): any {
+function evalElement(element: React.ReactElement, parent?: $Chemical): any {
     const host = new $Eval();
+    host.parentFor = parent;
     (host as any)[$synthesis$].bond({ children: element });
     return host.result;
 }
@@ -906,8 +928,9 @@ interface $Chemistry {
     // Eval: $(<Word/>) → the live instance. Defaults to `any` — the honest type,
     // since JSX erased the real one and the result lands in an already-typed slot;
     // $<$Word>(<Word/>) narrows it. Must precede the props overload, which an
-    // element structurally matches.
-    <T = any>(element: React.ReactElement): T;
+    // element structurally matches. The optional second argument assigns the
+    // evaluated instance's parent — $(<Toc/>, book) adopts it into book's graph.
+    <T = any>(element: React.ReactElement, parent?: $Chemical): T;
     (props: { children?: ReactNode; key?: any }): ReactNode;
     <T extends $Chemical>(chemical: T): $Component<T>;
     <T extends $Particle>(particle: T): $Element<T>;
@@ -959,8 +982,11 @@ class Chemistry extends $Chemical {
         // Eval form — $(<Word>hello</Word>) evaluates a description (an element)
         // into a live instance, through the same synthesis that binds a bond
         // constructor's children. Erased type is $Chemical; $<$Word>(...) narrows.
+        // An optional second argument evaluates the element as if authored inside
+        // that parent — bound to it before its bond constructor runs.
         if (React.isValidElement(arg)) {
-            return evalElement(arg as React.ReactElement);
+            const parent = arguments[1];
+            return evalElement(arg as React.ReactElement, parent && isParticle(parent) ? parent : undefined);
         }
 
         // Instance form — the particle/chemical was already constructed when

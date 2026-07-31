@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical, Perspective } from '@dna-platform/chemistry';
-import { $Paragraph } from '@/text/Paragraph';
+import { $Paragraph } from '@/writing/Paragraph';
 import { Markdown, parse } from './markdown';
 import { $Latex } from './latex';
 import { documentSource } from './document';

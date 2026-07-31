@@ -55,12 +55,31 @@ const warnTitleStyle: React.CSSProperties = {
     color: '#b45309',
 };
 
-export function renderError(title: string, detail: string): ReactNode {
-    if (!dev) return null;
+export function renderPanel(title: string, detail: string): ReactNode {
     return React.createElement('div', { style: panelStyle },
         React.createElement('div', { style: titleStyle }, `$Chemistry: ${title}`),
         React.createElement('pre', { style: detailStyle }, detail)
     );
+}
+
+export function renderError(title: string, detail: string): ReactNode {
+    if (!dev) return null;
+    return renderPanel(title, detail);
+}
+
+export type $ExceptionMode = 'render' | 'silent' | 'throw';
+
+// Mode defaults follow developer expectation: loud in dev; caught, logged, and
+// rendered as nothing in production. 'throw' restores the uncaught behavior.
+export const $exceptions: {
+    mode: $ExceptionMode;
+    render?: (error: Error) => { view(): ReactNode };
+} = { mode: dev ? 'render' : 'silent' };
+
+export function renderException(error: Error): ReactNode {
+    if ($exceptions.mode === 'silent') return null;
+    const view = $exceptions.render?.(error).view();
+    return view !== undefined ? view : renderPanel('Bond Constructor Failed', error.message);
 }
 
 export function renderWarning(title: string, detail: string): ReactNode {

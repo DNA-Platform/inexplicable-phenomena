@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { marked } from 'marked';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { $Paragraph, Paragraph } from '@/text/Paragraph';
+import { $Paragraph, Paragraph } from '@/writing/Paragraph';
 import { $Latex, Latex } from './latex';
 import { ReadingsBar, Chip, ChipValue } from './page';
 

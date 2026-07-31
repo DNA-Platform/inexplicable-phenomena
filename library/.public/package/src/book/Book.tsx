@@ -1,16 +1,18 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
-import { type $Composition } from '../text/Composition';
-import { type $Indexable } from './Indexable';
+import { type $Composition } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { $Cover } from './Cover';
 import { $Synopsis } from './Synopsis';
-import { $Section } from '../text/Section';
-import { $Paragraph } from '../text/Paragraph';
-import { $Word } from '../text/Word';
+import { $TableOfContents, TableOfContents } from './TableOfContents';
+import { $Section } from '../writing/Section';
+import { type $Title } from '../writing/Title';
+import { type $Subtitle } from '../writing/Subtitle';
+import { $Paragraph } from '../writing/Paragraph';
+import { $Word } from '../writing/Word';
 
-export class $Book extends $Referent implements $Composition<$Chapter>, $Indexable {
+export class $Book extends $Referent implements $Composition<$Chapter> {
     chapters: $Chapter[] = [];
 
     $index?: number = undefined;
@@ -25,19 +27,38 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Indexab
     get canonical(): $Cover { return this.cover; }
     get cover(): $Cover { return this.chapters[0] as $Cover; }
     get synopsis(): $Synopsis { return this.chapters.find(c => c instanceof $Synopsis) as $Synopsis; }
-    get title(): string { return this.cover instanceof $Cover ? this.cover.title : ''; }
+    get title(): $Title | undefined { return this.cover instanceof $Cover ? this.cover.title : undefined; }
+    get subtitle(): $Subtitle | undefined { return this.cover instanceof $Cover ? this.cover.subtitle : undefined; }
     get sections(): $Section[] { return this.parts.flatMap(c => c.parts); }
     get paragraphs(): $Paragraph[] { return this.parts.flatMap(c => c.paragraphs); }
     get words(): $Word[] { return this.paragraphs.flatMap(p => p.words); }
 
+    get tableOfContents(): $TableOfContents {
+        return this.chapters.find(c => c instanceof $TableOfContents) as $TableOfContents;
+    }
+
     $Book(...chapters: $Chapter[]) {
         this.chapters = chapters.map(c => $check(c, $Chapter));
-        if (!(this.chapters[0] instanceof $Cover)) throw new Error('A book requires a cover at position zero — its canonical chapter.');
-        if (!this.chapters.some(c => c instanceof $Synopsis)) throw new Error('A book requires a synopsis — a book is indexable.');
+        if (!this.valid()) throw new Error('A book requires exactly one cover at position zero — its canonical chapter — a synopsis, and at most one table of contents.');
+        if (!this.chapters.some(c => c instanceof $TableOfContents)) {
+            this.chapters.splice(1, 0, $(<TableOfContents />, this));
+        }
+        this.chapters.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
     }
 
     view(): ReactNode {
-        return this.parts.map((c, i) => React.createElement($(c as any) as any, { key: i }));
+        return this.parts.map((c, i) => {
+            const C = $(c) as any;
+            return <div className="chapter" key={i}><C /></div>;
+        });
+    }
+
+    valid(): boolean {
+        return super.valid()
+            && this.chapters[0] instanceof $Cover
+            && !this.chapters.some((c, i) => i > 0 && c instanceof $Cover)
+            && this.chapters.some(c => c instanceof $Synopsis)
+            && this.chapters.filter(c => c instanceof $TableOfContents).length <= 1;
     }
 }
 

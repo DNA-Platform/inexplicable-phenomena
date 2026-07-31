@@ -1,10 +1,10 @@
-import { $, $check } from '@dna-platform/chemistry';
+import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from './Chapter';
-import { $Section } from '../text/Section';
+import { $Section } from '../writing/Section';
 
 export class $Index extends $Chapter {
     $Index(...sections: $Section[]) {
-        this.sections = sections.map(s => $check(s, $Section));
+        this.$Chapter(...sections);
     }
 }
 

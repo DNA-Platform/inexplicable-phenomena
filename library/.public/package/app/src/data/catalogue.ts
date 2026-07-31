@@ -17,11 +17,12 @@ export const catalogue: Group[] = [
         title: 'Demonstrations',
         sections: [
             { id: 'page', title: 'The Page', symbol: 'Pg', planned: [] },
+            { id: 'books', title: 'The Books', symbol: 'Bk', planned: [] },
         ],
     },
 ];
 
-export const defaultSectionId = 'page';
+export const defaultSectionId = 'books';
 
 export function findSection(id: string): { group: Group; section: Section } | undefined {
     for (const group of catalogue) {

@@ -79,6 +79,7 @@ export const $renderFilters$ = Symbol("$Particle.renderFilters");
 export const $deriveInit$ = Symbol("$Particle.deriveInit");
 export const $particleMarker$ = Symbol("$Particle.marker");
 export const $devError$ = Symbol("$Particle.devError");
+export const $devException$ = Symbol("$Particle.devException");
 
 // $Atom symbols
 export const $formed$ = Symbol("$Atom.formed");

@@ -1,5 +1,5 @@
 import React, { isValidElement, type ReactNode } from 'react';
-import { $, type $Chemical, type $Html } from '@dna-platform/chemistry';
+import { $, type $Html } from '@dna-platform/chemistry';
 
 export function text(node: any): string {
     if (node == null || typeof node === 'boolean') return '';
@@ -11,10 +11,6 @@ export function text(node: any): string {
     if (isValidElement(node)) return text((node as any).props?.children);
     if (typeof node === 'object' && 'children' in node) return text((node as any).children);
     return '';
-}
-
-export function enclose(elements: $Chemical[]): $Html<'block'> {
-    return $(React.createElement('block', { elements }));
 }
 
 export function display(x: { block?: $Html<'block'> }): ReactNode {

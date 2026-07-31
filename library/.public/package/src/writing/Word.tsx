@@ -4,9 +4,8 @@ import { $Referent } from '../ref/Referent';
 import { text, display } from '../tools/html';
 import { type $Composition } from './Composition';
 import { $Character, Character } from './Character';
-import { $Word, Word } from './Word';
 
-export class $Sentence extends $Referent implements $Composition<$Word> {
+export class $Word extends $Referent implements $Composition<$Character> {
     block?: $Html<'block'>;
 
     $index?: number = undefined;
@@ -17,12 +16,12 @@ export class $Sentence extends $Referent implements $Composition<$Word> {
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
-    get canonical(): $Word { return this.parts[0]; }
-    get words(): $Word[] { return this.parts; }
-    get characters(): $Character[] { return [...this.copy].map(g => $<$Character>(<Character>{g}</Character>)); }
+    get canonical(): $Character { return this.parts[0]; }
+    get characters(): $Character[] { return this.parts; }
 
-    get parts(): $Word[] {
-        return (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).filter(w => $Word.valid(w)).map(w => $<$Word>(<Word>{w}</Word>));
+    get parts(): $Character[] {
+        const characters: $Character[] = [...this.copy].map(g => $(<Character>{g}</Character>));
+        return characters.filter(c => c.valid()).map((c, i) => { c.index = i + 1; return c; });
     }
 
     constructor() {
@@ -30,7 +29,7 @@ export class $Sentence extends $Referent implements $Composition<$Word> {
         this.inline = true;
     }
 
-    $Sentence(block?: $Html<'block'>) {
+    $Word(block?: $Html<'block'>) {
         this.block = $check(block, 'block');
     }
 
@@ -38,9 +37,9 @@ export class $Sentence extends $Referent implements $Composition<$Word> {
         return display(this);
     }
 
-    static valid(copy: string): boolean {
-        return /[\p{L}\p{N}]/u.test(copy);
+    valid(): boolean {
+        return super.valid() && /^[\p{L}\p{N}']+$/u.test(this.copy) && /[\p{L}\p{N}]/u.test(this.copy);
     }
 }
 
-export const Sentence = $($Sentence);
+export const Word = $($Word);

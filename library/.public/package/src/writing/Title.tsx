@@ -2,9 +2,9 @@ import { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../ref/Referent';
 import { text, display } from '../tools/html';
-import { type $Writing } from './Composition';
+import { type $Writing } from './Writing';
 
-export class $Character extends $Referent implements $Writing {
+export class $Title extends $Referent implements $Writing {
     block?: $Html<'block'>;
 
     $index?: number = undefined;
@@ -21,7 +21,7 @@ export class $Character extends $Referent implements $Writing {
         this.inline = true;
     }
 
-    $Character(block?: $Html<'block'>) {
+    $Title(block?: $Html<'block'>) {
         this.block = $check(block, 'block');
     }
 
@@ -29,9 +29,9 @@ export class $Character extends $Referent implements $Writing {
         return display(this);
     }
 
-    static valid(copy: string): boolean {
-        return [...copy].length === 1;
+    valid(): boolean {
+        return super.valid() && this.copy !== '';
     }
 }
 
-export const Character = $($Character);
+export const Title = $($Title);
