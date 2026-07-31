@@ -32,7 +32,8 @@ const check = (name, ok) => { checks.push([name, ok]); };
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle0', timeout: 30000 });
 await settle();
 
-check('the root is the shelf — two spines', await page.evaluate(() => document.querySelectorAll('.shelf-card').length === 2));
+check('the root is the shelf — two titled spines among the row', await page.evaluate(() => document.querySelectorAll('.shelf-card').length === 2));
+check('the shelf is a room, not a scroll — pinned to the view', await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 2));
 if (shots) await page.screenshot({ path: 'shot-shelf.png' });
 
 await page.click('[data-book="algebra"]');
