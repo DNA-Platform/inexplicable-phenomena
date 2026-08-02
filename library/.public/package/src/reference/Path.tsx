@@ -1,4 +1,5 @@
-import { type $Reference, same, home } from './Reference';
+import { type $Reference } from './Reference';
+import { same, from } from '../utilities/reference';
 
 export class $Path<M = unknown, U = unknown> implements $Reference<U> {
     index = 0;
@@ -8,19 +9,19 @@ export class $Path<M = unknown, U = unknown> implements $Reference<U> {
 
     get copy(): string { return `${this.first.copy}.${this.next.copy}`; }
 
-    find(): U | undefined {
-        const mid = this.first.find();
+    read(): U | undefined {
+        const mid = this.first.read();
         if (mid === undefined) return undefined;
-        if (!same(mid, home(this.next))) return undefined;
-        return this.next.find();
+        if (!same(mid, from(this.next))) return undefined;
+        return this.next.read();
     }
 
     valid(): boolean {
-        return this.find() !== undefined;
+        return this.read() !== undefined;
     }
 
     equals(ref: $Reference<U>): boolean {
-        return same(this.find(), ref.find());
+        return same(this.read(), ref.read());
     }
 
     then<V>(next: $Reference<V>): $Reference<V> {

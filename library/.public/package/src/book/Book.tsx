@@ -43,6 +43,8 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
 
     get ref(): $Cover { return this.cover; }
 
+    set ref(reference: $Reference | undefined) { this.location = reference; }
+
     at(index: number): $Location<$Chapter> {
         return Composible.at(this, index);
     }
@@ -70,7 +72,7 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
             this.$contents.splice(1, 0, $(<TableOfContents />, this));
         }
         this.$contents.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
-        this.$contents.forEach(c => { c.place = this.at(c.index); });
+        this.$contents.forEach(c => { c.ref = this.at(c.index); });
     }
 
     view(): ReactNode {

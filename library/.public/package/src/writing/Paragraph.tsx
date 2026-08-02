@@ -1,7 +1,8 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
-import { type $Reference, same } from '../reference/Reference';
+import { type $Reference } from '../reference/Reference';
+import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -16,6 +17,8 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
     get sentences(): $Sentence[] { return this.contents(); }
 
     get ref(): $$Paragraph { return new $$Paragraph(this); }
+
+    set ref(reference: $Reference | undefined) { this.location = reference; }
 
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
@@ -36,7 +39,7 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
         const sentences: $Sentence[] = (this.copy.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => $(<Sentence>{s.trim()}</Sentence>));
         return sentences.filter(s => s.valid()).map((s, i) => {
             s.index = i + 1;
-            s.place = this.at(s.index);
+            s.ref = this.at(s.index);
             return s;
         });
     }
@@ -54,8 +57,6 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
 
     get copy(): string { return this.contents().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Sentence> { return Composible.canonical(this); }
-    get words(): $Reference<$Word>[] { return Composible.extend(this.contents(), s => s.ref); }
-    get letters(): $Reference<$Letter>[] { return Composible.extend(this.words, w => w.ref); }
 
     contents(): $Reference<$Sentence>[] {
         return this.of.contents().map((sentence, slot) => {
@@ -77,11 +78,11 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
         return Composible.at(this, index);
     }
 
-    follow(): $Composition<$Sentence> {
+    follow(): $Composition<$Sentence> & { follow(): $Composition<any> } {
         return Composible.follow(this);
     }
 
-    find(): $Paragraph {
+    read(): $Paragraph {
         return this.of;
     }
 
@@ -90,7 +91,7 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
     }
 
     equals(ref: $Reference<$Paragraph>): boolean {
-        const found = ref.find();
+        const found = ref.read();
         return this.of === found || same(this.of, found);
     }
 

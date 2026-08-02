@@ -1,7 +1,8 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
-import { type $Reference, same } from '../reference/Reference';
+import { type $Reference } from '../reference/Reference';
+import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -14,6 +15,8 @@ export class $Word extends $Writing implements $Composition<$Letter> {
     get letters(): $Letter[] { return this.contents(); }
 
     get ref(): $$Word { return new $$Word(this); }
+
+    set ref(reference: $Reference | undefined) { this.location = reference; }
 
     at(index: number): $Location<$Letter> {
         return Composible.at(this, index);
@@ -31,7 +34,7 @@ export class $Word extends $Writing implements $Composition<$Letter> {
         const letters: $Letter[] = [...this.copy].map(g => $(<Letter>{g}</Letter>));
         return letters.filter(c => c.valid()).map((c, i) => {
             c.index = i + 1;
-            c.place = this.at(c.index);
+            c.ref = this.at(c.index);
             return c;
         });
     }
@@ -70,11 +73,11 @@ export class $$Word implements $Catalogue<$Letter>, $Reference<$Word> {
         return Composible.at(this, index);
     }
 
-    follow(): $Composition<$Letter> {
+    follow(): $Composition<$Letter> & { follow(): $Composition<any> } {
         return Composible.follow(this);
     }
 
-    find(): $Word {
+    read(): $Word {
         return this.of;
     }
 
@@ -83,7 +86,7 @@ export class $$Word implements $Catalogue<$Letter>, $Reference<$Word> {
     }
 
     equals(ref: $Reference<$Word>): boolean {
-        const found = ref.find();
+        const found = ref.read();
         return this.of === found || same(this.of, found);
     }
 

@@ -15,7 +15,7 @@ test('$Link stores a url — its view is an anchor carrying the text', () => {
 
 test('a link finds the destination in the router\'s notation — the router does the travelling', () => {
     const l: $Link = $(<Link url="/books/moby">Moby-Dick</Link>);
-    expect(l.find()).toBe('/books/moby');
+    expect(l.read()).toBe('/books/moby');
     expect(l.valid()).toBe(true);
     const twin: $Link = $(<Link url="/books/moby">the whale book</Link>);
     expect(l.equals(twin)).toBe(true);

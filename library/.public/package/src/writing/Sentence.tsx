@@ -1,7 +1,8 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
-import { type $Reference, same } from '../reference/Reference';
+import { type $Reference } from '../reference/Reference';
+import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -15,6 +16,8 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
     get words(): $Word[] { return this.contents(); }
 
     get ref(): $$Sentence { return new $$Sentence(this); }
+
+    set ref(reference: $Reference | undefined) { this.location = reference; }
 
     get letters(): $Letter[] {
         return [...this.copy].map((g, i) => {
@@ -40,7 +43,7 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
         const words: $Word[] = (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).map(w => $(<Word>{w}</Word>));
         return words.filter(w => w.valid()).map((w, i) => {
             w.index = i + 1;
-            w.place = this.at(w.index);
+            w.ref = this.at(w.index);
             return w;
         });
     }
@@ -58,7 +61,6 @@ export class $$Sentence implements $Catalogue<$Word>, $Reference<$Sentence> {
 
     get copy(): string { return this.contents().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Word> { return Composible.canonical(this); }
-    get letters(): $Reference<$Letter>[] { return Composible.extend(this.contents(), w => w.ref); }
 
     contents(): $Reference<$Word>[] {
         return this.of.contents().map((word, slot) => {
@@ -80,11 +82,11 @@ export class $$Sentence implements $Catalogue<$Word>, $Reference<$Sentence> {
         return Composible.at(this, index);
     }
 
-    follow(): $Composition<$Word> {
+    follow(): $Composition<$Word> & { follow(): $Composition<any> } {
         return Composible.follow(this);
     }
 
-    find(): $Sentence {
+    read(): $Sentence {
         return this.of;
     }
 
@@ -93,7 +95,7 @@ export class $$Sentence implements $Catalogue<$Word>, $Reference<$Sentence> {
     }
 
     equals(ref: $Reference<$Sentence>): boolean {
-        const found = ref.find();
+        const found = ref.read();
         return this.of === found || same(this.of, found);
     }
 

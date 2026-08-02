@@ -23,13 +23,13 @@ describe('Composible — contents() is enough; the rest are extension methods', 
         const r = Composible.at(s, 2);
         expect(r).toBeInstanceOf($Location);
         expect(r.of).toBe(s);
-        expect((r.find() as $Word).copy).toBe('frame');
+        expect((r.read() as $Word).copy).toBe('frame');
     });
 
-    it('extend chains references through a level — paths from here to below', () => {
+    it('follow goes on following — from the drawer of words to their letters', () => {
         const s = sentence();
-        const letters = Composible.extend(s.ref.contents(), w => w.ref);
-        expect(letters.map(r => r.find()!.copy).join('')).toBe('theframeturns');
+        const letters = s.ref.follow().follow();
+        expect(letters.contents().map((l: { copy: string }) => l.copy).join('')).toBe('theframeturns');
     });
 
     it('follow dereferences the drawer — the catalogue becomes the composition of what its entries find', () => {
@@ -37,7 +37,7 @@ describe('Composible — contents() is enough; the rest are extension methods', 
         const words = s.ref.follow();
         expect(words.contents().map(w => w.copy)).toEqual(['the', 'frame', 'turns']);
         expect(words.canonical.copy).toBe('the');
-        expect((words.at(2).find() as $Word).copy).toBe('frame');
+        expect((words.at(2).read() as $Word).copy).toBe('frame');
     });
 
     it('the class methods delegate — the same answers either way', () => {

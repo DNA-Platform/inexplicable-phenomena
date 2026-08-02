@@ -1,24 +1,25 @@
 import { $ } from '@dna-platform/chemistry';
-import { type $Reference, same } from '../reference/Reference';
+import { type $Reference } from '../reference/Reference';
+import { same } from '../utilities/reference';
 import { $Path } from '../reference/Path';
 import { $Section } from '../writing/Section';
 import { type $Chapter } from './Chapter';
 
 export class $Row extends $Section implements $Reference<$Chapter> {
-    to!: $Reference<$Chapter>;
+    path!: $Reference<$Chapter>;
 
-    get copy(): string { return this.to.find()?.canonical.heading ?? ''; }
+    get copy(): string { return this.path.read()?.canonical.heading ?? ''; }
 
     get heading(): string { return this.copy; }
 
-    get chapter(): $Chapter | undefined { return this.find(); }
+    get chapter(): $Chapter | undefined { return this.read(); }
 
-    find(): $Chapter | undefined {
-        return this.to.find();
+    read(): $Chapter | undefined {
+        return this.path.read();
     }
 
     equals(ref: $Reference<$Chapter>): boolean {
-        return same(this.find(), ref.find());
+        return same(this.read(), ref.read());
     }
 
     then<U>(next: $Reference<U>): $Reference<U> {
@@ -26,7 +27,7 @@ export class $Row extends $Section implements $Reference<$Chapter> {
     }
 
     valid(): boolean {
-        return this.to !== undefined && this.to.valid();
+        return this.path !== undefined && this.path.valid();
     }
 }
 

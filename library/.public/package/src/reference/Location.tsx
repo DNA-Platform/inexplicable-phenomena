@@ -1,5 +1,6 @@
 import { type $Composition } from '../writing/Composition';
-import { type $Reference, same } from './Reference';
+import { type $Reference } from './Reference';
+import { same } from '../utilities/reference';
 import { $Path } from './Path';
 
 export class $Location<T = unknown> implements $Reference<T> {
@@ -10,17 +11,17 @@ export class $Location<T = unknown> implements $Reference<T> {
 
     get copy(): string { return `${this.i}`; }
 
-    find(): T | undefined {
+    read(): T | undefined {
         const found = this.of.contents().filter((p: { index: number }) => p.index === this.i);
         return found.length === 1 ? found[0] as T : undefined;
     }
 
     valid(): boolean {
-        return this.find() !== undefined;
+        return this.read() !== undefined;
     }
 
     equals(ref: $Reference<T>): boolean {
-        return same(this.find(), ref.find());
+        return same(this.read(), ref.read());
     }
 
     then<U>(next: $Reference<U>): $Reference<U> {

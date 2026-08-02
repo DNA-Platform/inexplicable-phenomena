@@ -1,7 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
-import { type $Reference, same } from '../reference/Reference';
+import { type $Reference } from '../reference/Reference';
+import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -12,10 +13,6 @@ import { $Row } from './Row';
 import { $Title, Title } from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
-import { type $Paragraph } from '../writing/Paragraph';
-import { type $Sentence } from '../writing/Sentence';
-import { type $Word } from '../writing/Word';
-import { type $Letter } from '../writing/Letter';
 import { type $Book } from './Book';
 
 export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
@@ -31,8 +28,10 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
 
     get canonical(): $Row { return Composible.canonical(this); }
 
+    get sections(): $Section[] { return this.follow().contents().flatMap(c => c.sections); }
+
     get chapters(): $Chapter[] {
-        return this.contents().map(r => r.find()).filter((c): c is $Chapter => c !== undefined);
+        return this.contents().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
     }
 
     contents(): $Row[] {
@@ -40,9 +39,9 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
             .filter(c => c !== this && !(c instanceof $Cover))
             .map(c => {
                 const row = new $Row();
-                row.to = this.book.at(c.index);
+                row.path = this.book.at(c.index);
                 row.index = c.index;
-                row.place = this.at(row.index);
+                row.ref = this.at(row.index);
                 return row;
             });
     }
@@ -59,33 +58,16 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
         return Composible.at(this, index);
     }
 
-    get telescope(): {
-        sections: $Reference<$Section>[];
-        paragraphs: $Reference<$Paragraph>[];
-        sentences: $Reference<$Sentence>[];
-        words: $Reference<$Word>[];
-        letters: $Reference<$Letter>[];
-    } {
-        const contents = this;
-        return {
-            get sections() { return Composible.extend(contents.contents(), c => c.ref); },
-            get paragraphs() { return Composible.extend(this.sections, s => s.ref); },
-            get sentences() { return Composible.extend(this.paragraphs, p => p.ref); },
-            get words() { return Composible.extend(this.sentences, s => s.ref); },
-            get letters() { return Composible.extend(this.words, w => w.ref); },
-        };
-    }
-
-    follow(): $Composition<$Chapter> {
+    follow(): $Composition<$Chapter> & { follow(): $Composition<any> } {
         return Composible.follow(this);
     }
 
-    find(): $Book | undefined {
-        return this.cover.find();
+    read(): $Book | undefined {
+        return this.cover.read();
     }
 
     equals(ref: $Reference<$Composition<$Chapter>>): boolean {
-        const found = ref.find();
+        const found = ref.read();
         return this.book === found || same(this.book, found);
     }
 
@@ -96,7 +78,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     $TableOfContents(...sections: $Section[]) {
         this.$contents = sections.map(s => $check(s, $Section));
         this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$contents.forEach(s => { s.place = this.at(s.index); });
+        this.$contents.forEach(s => { s.ref = this.at(s.index); });
     }
 
     row(row: $Row): ReactNode {

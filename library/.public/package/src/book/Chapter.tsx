@@ -1,7 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
-import { type $Reference, same } from '../reference/Reference';
+import { type $Reference } from '../reference/Reference';
+import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -51,11 +52,13 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     $Chapter(...sections: $Section[]) {
         this.$contents = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
         this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$contents.forEach(s => { s.place = this.at(s.index); });
+        this.$contents.forEach(s => { s.ref = this.at(s.index); });
         if (!this.valid()) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 
     get ref(): $$Chapter { return new $$Chapter(this); }
+
+    set ref(reference: $Reference | undefined) { this.location = reference; }
 
     at(index: number): $Location<$Section> {
         return Composible.at(this, index);
@@ -108,10 +111,6 @@ export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
 
     get copy(): string { return this.contents().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Section> { return Composible.canonical(this); }
-    get paragraphs(): $Reference<$Paragraph>[] { return Composible.extend(this.contents(), s => s.ref); }
-    get sentences(): $Reference<$Sentence>[] { return Composible.extend(this.paragraphs, p => p.ref); }
-    get words(): $Reference<$Word>[] { return Composible.extend(this.sentences, s => s.ref); }
-    get letters(): $Reference<$Letter>[] { return Composible.extend(this.words, w => w.ref); }
 
     contents(): $Reference<$Section>[] {
         return this.of.contents().map((section, slot) => {
@@ -133,11 +132,11 @@ export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
         return Composible.at(this, index);
     }
 
-    follow(): $Composition<$Section> {
+    follow(): $Composition<$Section> & { follow(): $Composition<any> } {
         return Composible.follow(this);
     }
 
-    find(): $Chapter {
+    read(): $Chapter {
         return this.of;
     }
 
@@ -146,7 +145,7 @@ export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
     }
 
     equals(ref: $Reference<$Chapter>): boolean {
-        const found = ref.find();
+        const found = ref.read();
         return this.of === found || same(this.of, found);
     }
 

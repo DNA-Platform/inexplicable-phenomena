@@ -19,16 +19,9 @@ export class Composible {
         return new $Location<T>(index, of as any);
     }
 
-    static extend<M, T>(refs: $Reference<M>[], open: (mid: M) => { contents(): $Reference<T>[] }): $Reference<T>[] {
-        return refs.flatMap(r => {
-            const mid = r.find();
-            return mid === undefined ? [] : open(mid).contents().map(inner => r.then(inner));
-        });
-    }
-
-    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { contents(): $Reference<T>[] }): $Composition<T> {
-        const found = (): T[] => of.contents().map(r => r.find()).filter((t): t is T => t !== undefined);
-        const followed: $Composition<T> = {
+    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { contents(): $Reference<T>[] }): $Composition<T> & { follow(): $Composition<any> } {
+        const found = (): T[] => of.contents().map(r => r.read()).filter((t): t is T => t !== undefined);
+        const followed: $Composition<T> & { follow(): $Composition<any> } = {
             get canonical() { return found()[0]; },
             contents: found,
             where: (match) => found().filter(match),
@@ -37,6 +30,7 @@ export class Composible {
             get copy() { return found().map(t => t.copy).join(' '); },
             index: 0,
             parenthetical: false,
+            follow: () => Composible.follow({ contents: () => found().flatMap(t => ((t as { ref?: { contents?(): $Reference<any>[] } }).ref?.contents?.() ?? [])) }),
         };
         return followed;
     }

@@ -12,12 +12,12 @@ export class $Link extends $Sentence implements $Reference<string> {
         return this.$url ?? this.copy;
     }
 
-    find(): string {
+    read(): string {
         return this.url;
     }
 
     equals(ref: $Reference<string>): boolean {
-        return this.find() === ref.find();
+        return this.read() === ref.read();
     }
 
     then<U>(next: $Reference<U>): $Reference<U> {
