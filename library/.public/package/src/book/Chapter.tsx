@@ -5,7 +5,7 @@ import { type $Reference } from '../reference/Reference';
 import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { Composible } from '../utilities/Composible';
+import { Composible, type Following } from '../utilities/Composible';
 import { $Path } from '../reference/Path';
 import { text } from '../utilities/html';
 import { type $Composition } from '../writing/Composition';
@@ -132,7 +132,7 @@ export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
         return Composible.at(this, index);
     }
 
-    follow(): $Composition<$Section> & { follow(): $Composition<any> } {
+    follow(): Following<$Section> {
         return Composible.follow(this);
     }
 

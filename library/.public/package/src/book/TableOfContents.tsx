@@ -5,7 +5,7 @@ import { type $Reference } from '../reference/Reference';
 import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { Composible } from '../utilities/Composible';
+import { Composible, type Following } from '../utilities/Composible';
 import { $Path } from '../reference/Path';
 import { type $Composition } from '../writing/Composition';
 import { $Chapter } from './Chapter';
@@ -28,7 +28,6 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
 
     get canonical(): $Row { return Composible.canonical(this); }
 
-    get sections(): $Section[] { return this.follow().contents().flatMap(c => c.sections); }
 
     get chapters(): $Chapter[] {
         return this.contents().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
@@ -58,7 +57,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
         return Composible.at(this, index);
     }
 
-    follow(): $Composition<$Chapter> & { follow(): $Composition<any> } {
+    follow(): Following<$Chapter> {
         return Composible.follow(this);
     }
 

@@ -5,7 +5,7 @@ import { type $Reference } from '../reference/Reference';
 import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { Composible } from '../utilities/Composible';
+import { Composible, type Following } from '../utilities/Composible';
 import { $Path } from '../reference/Path';
 import { $Writing } from './Writing';
 import { $Letter, Letter } from './Letter';
@@ -82,7 +82,7 @@ export class $$Sentence implements $Catalogue<$Word>, $Reference<$Sentence> {
         return Composible.at(this, index);
     }
 
-    follow(): $Composition<$Word> & { follow(): $Composition<any> } {
+    follow(): Following<$Word> {
         return Composible.follow(this);
     }
 

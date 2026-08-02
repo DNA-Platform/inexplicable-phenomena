@@ -1,5 +1,7 @@
 import { type $Reference } from '../reference/Reference';
 import { type $Composition } from '../writing/Composition';
+
+export type Following<T extends { copy: string; index: number; parenthetical: boolean }> = $Composition<T> & { follow(): Following<any> };
 import { $Location } from '../reference/Location';
 
 export class Composible {
@@ -19,9 +21,9 @@ export class Composible {
         return new $Location<T>(index, of as any);
     }
 
-    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { contents(): $Reference<T>[] }): $Composition<T> & { follow(): $Composition<any> } {
+    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { contents(): $Reference<T>[] }): Following<T> {
         const found = (): T[] => of.contents().map(r => r.read()).filter((t): t is T => t !== undefined);
-        const followed: $Composition<T> & { follow(): $Composition<any> } = {
+        const followed: Following<T> = {
             get canonical() { return found()[0]; },
             contents: found,
             where: (match) => found().filter(match),

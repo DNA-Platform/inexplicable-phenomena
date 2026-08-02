@@ -223,13 +223,14 @@ describe('the essential questions — complex references, equality across levels
         expect(deep.equals(section.at(0))).toBe(false);
     });
 
-    it('the contents page speaks for the book — its grades re-root at the chapters it lists', () => {
+    it('the contents page speaks for the book by following — grade after grade down to the words', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         const listed = toc.chapters;
-        expect(toc.sections.every((s, k) => s === listed.flatMap(c => c.sections)[k])).toBe(true);
-        expect(toc.words.map(w => w.copy)).toEqual(listed.flatMap(c => c.words).map(w => w.copy));
-        expect(toc.letters.length).toBe(listed.flatMap(c => c.letters).length);
+        const sections = toc.follow().follow();
+        expect(sections.contents().every((s, k) => s === listed.flatMap(c => c.sections)[k])).toBe(true);
+        const words = toc.follow().follow().follow().follow().follow().contents() as $Word[];
+        expect(words.map(w => w.copy)).toEqual(listed.flatMap(c => c.words).map(w => w.copy));
     });
 
     it('composition obeys reference equality — grouping does not matter, and independent buildings agree', () => {
@@ -245,7 +246,8 @@ describe('the essential questions — complex references, equality across levels
         expect(once).not.toBe(again);
         expect(once.equals(again)).toBe(true);
         const offset = b.chapters[2].words.length;
-        expect(same(b.tableOfContents.words[offset + 1], c.words[1])).toBe(true);
+        const spoken = b.tableOfContents.follow().follow().follow().follow().follow().contents() as $Word[];
+        expect(same(spoken[offset + 1], c.words[1])).toBe(true);
     });
 
     it('a bookmark is a kept path — it holds to, finds through it, and obeys reference equality', () => {
@@ -262,7 +264,7 @@ describe('the essential questions — complex references, equality across levels
         const b: $Book = $(book());
         const chapters = b.tableOfContents.follow();
         const sections = chapters.follow();
-        expect(sections.contents().length).toBe(b.tableOfContents.sections.length);
+        expect(sections.contents().length).toBe(b.tableOfContents.chapters.flatMap(c => c.sections).length);
     });
 
     it('natural chaining — a catalogue of references that are catalogues descends level by level', () => {
@@ -576,7 +578,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(p.parenthetical).toBe(true);
     });
 
-    it('readings flatten through what each chapter literally holds — rows count once, as themselves', () => {
+    it('readings flatten through one contents level — a chapter IS a composition of sections, rows among them', () => {
         const b: $Book = $(book());
         expect(b.sections.length).toBe(7);
         expect(b.paragraphs.length).toBeGreaterThan(0);
