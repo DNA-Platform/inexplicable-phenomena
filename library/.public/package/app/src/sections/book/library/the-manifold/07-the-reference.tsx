@@ -22,7 +22,7 @@ export class $TheReference extends $Chapter {
                 </Section>
                 <Section>
                     <Title>The Ribbon</Title>
-                    {'\n\nA bookmark is the reference a reader leaves. It resolves to a part of this book, and it belongs to this book for the plainest of reasons: it is rendered inside it. Leave the ribbon on this page and walk any path you like across the surface — the bookmark is the one geodesic that always leads home^[The chip in the bar leaves it; the ribbon will hang over every page of this book until you click it home.].'}
+                    {'\n\nA bookmark is the reference a reader leaves. It resolves to a part of this book, and it belongs to this book for the plainest of reasons: it is rendered inside it. Leave the ribbon on this page and walk any path you like across the surface — the bookmark is the one geodesic that always leads home^[The chip in the bar leaves it; the ribbon will hang over every page of this book until you click it home.]. The ribbons multiply now — the reader keeps [a whole atlas of them](#8.2).'}
                 </Section>
                 <Section parenthetical>
                     <Title>Summary</Title>

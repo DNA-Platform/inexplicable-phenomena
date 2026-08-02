@@ -270,23 +270,47 @@ export const DogEar = styled.button`
     }
 `;
 
-export const Ribbon = styled.button<{ $ink: string }>`
+export const Ribbon = styled.button<{ $ink: string; $slot?: number; $deep?: boolean }>`
     position: absolute;
     top: -5px;
-    right: 44px;
-    width: 25px;
-    height: 76px;
+    right: ${(p) => 44 + (p.$slot ?? 0) * 34}px;
+    width: ${(p) => (p.$deep ? 18 : 25)}px;
+    height: ${(p) => (p.$deep ? 56 : 76)}px;
     padding: 0;
     border: none;
     cursor: pointer;
     background: linear-gradient(175deg, ${(p) => p.$ink} 0%, ${(p) => p.$ink} 62%, rgba(0, 0, 0, 0.22) 100%), ${(p) => p.$ink};
     clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
     box-shadow: 0 4px 9px rgba(8, 20, 13, 0.35);
-    opacity: 0.92;
+    opacity: ${(p) => (p.$deep ? 0.82 : 0.92)};
     transition: height 140ms ease, opacity 140ms ease;
 
     &:hover {
-        height: 90px;
+        height: ${(p) => (p.$deep ? 70 : 90)}px;
+        opacity: 1;
+    }
+`;
+
+export const ReturnMark = styled.button`
+    position: absolute;
+    left: -15px;
+    top: 84px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid #b7c8b9;
+    background: #f3ecda;
+    color: #1f5c40;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: -4px 4px 10px -5px rgba(8, 20, 13, 0.45);
+    opacity: 0.85;
+    transition: transform 140ms ease, opacity 140ms ease;
+
+    &:hover {
+        transform: translateX(-3px);
         opacity: 1;
     }
 `;
@@ -372,6 +396,12 @@ export const PageBody = styled.div`
     min-height: 0;
     overflow-y: auto;
     padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(138, 167, 143, 0.25) transparent;
+
+    &:hover {
+        scrollbar-color: rgba(138, 167, 143, 0.55) transparent;
+    }
 `;
 
 export const PageTurns = styled.div`
@@ -493,6 +523,8 @@ export const CodeBlock = styled.div`
     overflow-x: auto;
     font-size: 10.5px;
     line-height: 1.55;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(138, 167, 143, 0.35) transparent;
 
     pre {
         margin: 0;

@@ -8,6 +8,7 @@ import { TheChart } from './04-the-chart';
 import { Curvature } from './05-curvature';
 import { TheGeodesic } from './06-the-geodesic';
 import { TheReference } from './07-the-reference';
+import { TheAtlas } from './08-the-atlas';
 
 export const manifold: $Book = $(
     <Book>
@@ -18,5 +19,6 @@ export const manifold: $Book = $(
         <Curvature />
         <TheGeodesic />
         <TheReference />
+        <TheAtlas />
     </Book>
 );

@@ -10,6 +10,7 @@ import { $TableOfContents } from '@/book/TableOfContents';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
 import { text } from '@/utilities/html';
 import { manifold } from './book/library/the-manifold/book';
+import { $RibbonMark, RibbonMark, $Return, Return } from './book/library/the-manifold/marks';
 import manifoldCoverSource from './book/library/the-manifold/01-the-cover.tsx?raw';
 import manifoldSynopsisSource from './book/library/the-manifold/02-the-synopsis.tsx?raw';
 import foldSource from './book/library/the-manifold/03-the-fold.tsx?raw';
@@ -17,14 +18,22 @@ import chartSource from './book/library/the-manifold/04-the-chart.tsx?raw';
 import curvatureSource from './book/library/the-manifold/05-curvature.tsx?raw';
 import geodesicSource from './book/library/the-manifold/06-the-geodesic.tsx?raw';
 import manifoldReferenceSource from './book/library/the-manifold/07-the-reference.tsx?raw';
+import theAtlasSource from './book/library/the-manifold/08-the-atlas.tsx?raw';
+import marksSource from './book/library/the-manifold/marks.tsx?raw';
 import bookSource from '@/book/Book.tsx?raw';
 import chapterSource from '@/book/Chapter.tsx?raw';
 import coverSource from '@/book/Cover.tsx?raw';
 import synopsisSource from '@/book/Synopsis.tsx?raw';
 import tableOfContentsSource from '@/book/TableOfContents.tsx?raw';
+import rowSource from '@/book/Row.tsx?raw';
 import sectionSource from '@/writing/Section.tsx?raw';
 import titleSource from '@/writing/Title.tsx?raw';
 import referenceSource from '@/reference/Reference.tsx?raw';
+import referentSource from '@/reference/Referent.tsx?raw';
+import catalogueSource from '@/reference/Catalogue.tsx?raw';
+import locationSource from '@/reference/Location.tsx?raw';
+import pathSource from '@/reference/Path.tsx?raw';
+import linkSource from '@/reference/Link.tsx?raw';
 import bookmarkSource from '@/book/Bookmark.tsx?raw';
 import {
     DayBackdrop, DayBar, DayChip, DayRule,
@@ -32,7 +41,7 @@ import {
     Page, RunningHead, PageBody, PageTurns, PageTurn, Folio,
     ChapterNumber, ChapterTitle, ChapterSubtitle, Prose,
     SectionHead, SectionSub, TocPage, TocLine, TocTag,
-    CodeTabs, CodeTab, CodeBlock, Ribbon, DogEar,
+    CodeTabs, CodeTab, CodeBlock, DogEar,
     Quote, FootNotes, ModelMeta, ModelSection, ModelAddress, ModelHead, ModelPara,
 } from './book/manifold.styled';
 
@@ -42,10 +51,16 @@ const modelSources: Record<string, string> = {
     'Cover.tsx': coverSource,
     'Synopsis.tsx': synopsisSource,
     'TableOfContents.tsx': tableOfContentsSource,
+    'Row.tsx': rowSource,
     'Section.tsx': sectionSource,
     'Title.tsx': titleSource,
     'Reference.tsx': referenceSource,
+    'Referent.tsx': referentSource,
+    'Catalogue.tsx': catalogueSource,
+    'Location.tsx': locationSource,
+    'Path.tsx': pathSource,
     'Bookmark.tsx': bookmarkSource,
+    'Link.tsx': linkSource,
 };
 
 const manuscripts: Record<string, Record<string, string>> = {
@@ -57,6 +72,8 @@ const manuscripts: Record<string, Record<string, string>> = {
         '05-curvature.tsx': curvatureSource,
         '06-the-geodesic.tsx': geodesicSource,
         '07-the-reference.tsx': manifoldReferenceSource,
+        '08-the-atlas.tsx': theAtlasSource,
+        'marks.tsx': marksSource,
     },
 };
 
@@ -192,7 +209,7 @@ function inked(source: string): ReactNode {
     );
 }
 
-type OpeningProps = { b: Held; r: Row; mode: string; jump: (page: number) => void; follow: (address: string) => void };
+type OpeningProps = { b: Held; r: Row; mode: string; jump: (page: number) => void; follow: (address: string) => void; press: (address: string, label: string) => void };
 
 function ModelOpening({ r }: OpeningProps) {
     return (
@@ -259,7 +276,7 @@ function ContentsOpening({ b, r, jump, follow }: OpeningProps) {
     );
 }
 
-function ChapterOpening({ r, mode, follow }: OpeningProps) {
+function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
     if (mode === 'skim') {
         return (
             <div>
@@ -284,9 +301,13 @@ function ChapterOpening({ r, mode, follow }: OpeningProps) {
                         {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
                         {sec.paragraphs.map((p, k) => (
                             p.startsWith('> ')
-                                ? <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`}>{rich(p.slice(2), follow, notes)}</Quote>
+                                ? (
+                                    <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`} onDoubleClick={() => press(`#${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
+                                        {rich(p.slice(2), follow, notes)}
+                                    </Quote>
+                                )
                                 : (
-                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }}>
+                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`#${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
                                         {rich(p, follow, notes)}
                                     </Prose>
                                 )
@@ -311,9 +332,9 @@ function openingFor(c: $Chapter) {
         ChapterOpening;
 }
 
-function rightPage(b: Held, r: Row, mode: string, jump: (page: number) => void, follow: (address: string) => void): ReactNode {
+function rightPage(b: Held, r: Row, mode: string, jump: (page: number) => void, follow: (address: string) => void, press: (address: string, label: string) => void): ReactNode {
     const Kind = mode === 'model' ? ModelOpening : r.Opening;
-    return <Kind b={b} r={r} mode={mode} jump={jump} follow={follow} />;
+    return <Kind b={b} r={r} mode={mode} jump={jump} follow={follow} press={press} />;
 }
 
 class $TheManifold extends $Chemical {
@@ -322,8 +343,8 @@ class $TheManifold extends $Chemical {
     mode = 'read';
     over = false;
     tab = '';
-    marked = '';
-    ribbon = '';
+    ribbons: $RibbonMark[] = [];
+    trail: $Return | null = null;
 
     turn(p: number) {
         this.over = false;
@@ -332,26 +353,57 @@ class $TheManifold extends $Chemical {
     }
 
     leave(r: Row) {
-        this.marked = `#${r.index}`;
-        this.ribbon = r.heading;
+        this.press(`#${r.index}`, r.heading);
     }
 
-    follow(address = this.marked) {
+    press(address: string, label: string) {
+        const kept = this.ribbons.filter(m => m.for !== address);
+        if (kept.length < this.ribbons.length) {
+            kept.forEach((m, i) => { m.index = i; });
+            this.ribbons = kept;
+            return;
+        }
+        const mark: $RibbonMark = $(<RibbonMark for={address}>{label}</RibbonMark>, held.book);
+        mark.index = this.ribbons.length;
+        this.ribbons = [...this.ribbons, mark];
+    }
+
+    follow(address: string) {
         if (!address) return;
         const path = address.replace(/^#/, '');
-        const reference: $Bookmark = $(<Bookmark for={address}>{this.ribbon || address}</Bookmark>, held.book);
+        const reference: $Bookmark = $(<Bookmark for={address}>{path}</Bookmark>, held.book);
         const part = reference.read();
         if (!part) return;
         const p = held.rows.findIndex(r => r.index === Number(path.split('.')[0]));
         if (p < 0) return;
+        const standing = held.rows[this.page];
+        if (this.open && standing && p !== this.page) {
+            this.trail = $(<Return for={`#${standing.index}`}>{standing.heading || `folio ${standing.index}`}</Return>, held.book);
+        }
         this.mode = 'read';
         this.turn(p);
         setTimeout(() => {
-            const lit = document.getElementById(path);
+            const lit = document.getElementById(path) ?? document.getElementById(path.split('.').slice(0, 3).join('.'));
             lit?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             lit?.classList.add('lit');
             setTimeout(() => lit?.classList.remove('lit'), 2400);
         }, 80);
+    }
+
+    marks(): ReactNode {
+        const back = this.trail;
+        return (
+            <>
+                {this.ribbons.map(m => {
+                    const M = $(m) as any;
+                    return <span key={m.for} onClick={() => this.follow(m.for)}><M /></span>;
+                })}
+                {back && (() => {
+                    const R = $(back) as any;
+                    return <span onClick={() => this.follow(back.for)}><R /></span>;
+                })()}
+            </>
+        );
     }
 
     view(): ReactNode {
@@ -377,10 +429,10 @@ class $TheManifold extends $Chemical {
                                     <DayRule />
                                     <DayChip
                                         data-leave
-                                        $active={this.marked === `#${current.index}`}
+                                        $active={this.ribbons.some(m => m.for === `#${current.index}`)}
                                         onClick={() => this.leave(current)}
                                     >
-                                        {this.marked === `#${current.index}` ? 'the ribbon lies here' : 'leave the ribbon'}
+                                        {this.ribbons.some(m => m.for === `#${current.index}`) ? 'the ribbon lies here' : 'leave the ribbon'}
                                     </DayChip>
                                 </>
                             )}
@@ -401,9 +453,7 @@ class $TheManifold extends $Chemical {
                     const at = files.indexOf(this.tab);
                     return (
                         <Page className="book-page manuscript-book" style={{ background: '#eef3ea' }}>
-                            {this.marked && (
-                                <Ribbon data-ribbon $ink={held.ink} title={`the bookmark — ${this.ribbon}`} onClick={() => this.follow()} />
-                            )}
+                            {this.marks()}
                             <RunningHead
                                 style={{ cursor: 'pointer' }}
                                 title={at < 0 ? 'to the reading' : 'to the manuscript contents'}
@@ -449,14 +499,7 @@ class $TheManifold extends $Chemical {
                     const leaf = names.includes(this.tab) ? this.tab : current.source;
                     return (
                         <Page className={this.over ? 'book-page verso' : 'book-page'} style={this.over ? { background: '#eef3ea' } : undefined}>
-                            {this.marked && (
-                                <Ribbon
-                                    data-ribbon
-                                    $ink={held.ink}
-                                    title={`the bookmark — ${this.ribbon}`}
-                                    onClick={() => this.follow()}
-                                />
-                            )}
+                            {this.marks()}
                             <RunningHead
                                 style={{ cursor: 'pointer' }}
                                 title={this.over ? 'turn back to the page' : current.contents ? 'to the cover' : 'to the contents'}
@@ -468,7 +511,7 @@ class $TheManifold extends $Chemical {
                             >
                                 {this.over ? `${leaf} — the manuscript` : held.title}
                             </RunningHead>
-                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a))}</PageBody>}
+                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a), (a, l) => this.press(a, l))}</PageBody>}
                             {this.over && (
                                 <PageBody className="page-body manuscript">
                                     <CodeTabs>
