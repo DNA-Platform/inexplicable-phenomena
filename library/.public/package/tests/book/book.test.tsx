@@ -56,7 +56,7 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(b.at(99).read()).toBeUndefined();
     });
 
-    it('every found part carries the reference that found it — stamping, unconditional', () => {
+    it('every found part carries the reference that found it — assigned by the reading, always', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
         expect(placed(c).i).toBe(3);
@@ -100,14 +100,6 @@ describe('referential integrity — at, then, and sameness', () => {
         const second: $Book = $(book());
         const elsewhere = second.chapters[3].contents()[0].at(1).read()!;
         expect(same(once, elsewhere)).toBe(false);
-    });
-
-    it('validation checks the reference for the right type — at the specialized class, by reading it', () => {
-        const b: $Book = $(book());
-        const word = b.chapters[3].sections[0].at(1).read()!.at(1).read()!.at(1).read()!;
-        expect(word.valid()).toBe(true);
-        (word as unknown as { location: unknown }).location = b.at(3);
-        expect(word.valid()).toBe(false);
     });
 
     it('a duplicated index finds nothing — the uniqueness law lives in find', () => {
@@ -397,7 +389,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.tableOfContents.tagline?.copy).toBe('A book about reading.');
     });
 
-    it('the stamp and the reverse connection split — place holds the placement, ref answers as the catalogue', () => {
+    it('what the reading assigned stays behind — ref answers with its own kind', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
         expect(c.ref).toBeInstanceOf($$Chapter);
@@ -415,7 +407,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(placed(s).read()).toBe(s);
     });
 
-    it('the composition assigns the reference with the parts — fresh readings, fresh stampings', () => {
+    it('the composition assigns the reference with the parts — fresh readings, fresh assignments', () => {
         const s: $Section = $(<Section><Title>Grounded</Title>{'\n\nOne paragraph stands here. It carries two sentences.'}</Section>);
         const p = s.contents()[1];
         expect(placed(p).i).toBe(1);
@@ -465,7 +457,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(bm.copy).toBe('the chapter on coordinates');
     });
 
-    it('references are stamped, never derived — every chapter stands referenced at its book', () => {
+    it('references are assigned, never derived — every chapter stands referenced at its book', () => {
         const b: $Book = $(book());
         expect(b.chapters.every(c => placed(c).of === b)).toBe(true);
     });

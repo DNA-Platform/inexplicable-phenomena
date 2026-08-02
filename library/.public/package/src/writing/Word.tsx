@@ -40,7 +40,7 @@ export class $Word extends $Writing implements $Composition<$Letter> {
     }
 
     valid(): boolean {
-        return super.valid() && /^[\p{L}\p{N}']+$/u.test(this.copy) && /[\p{L}\p{N}]/u.test(this.copy) && (this.location === undefined || this.location.read() instanceof $Word);
+        return super.valid() && /^[\p{L}\p{N}']+$/u.test(this.copy) && /[\p{L}\p{N}]/u.test(this.copy);
     }
 }
 

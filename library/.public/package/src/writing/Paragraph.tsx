@@ -45,7 +45,7 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
     }
 
     valid(): boolean {
-        return super.valid() && /[\p{L}\p{N}]/u.test(this.copy) && (this.location === undefined || this.location.read() instanceof $Paragraph);
+        return super.valid() && /[\p{L}\p{N}]/u.test(this.copy);
     }
 }
 

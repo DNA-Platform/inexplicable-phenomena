@@ -100,7 +100,7 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     }
 
     valid(): boolean {
-        return super.valid() && this.summary !== undefined && (this.location === undefined || this.location.read() instanceof $Chapter);
+        return super.valid() && this.summary !== undefined;
     }
 }
 

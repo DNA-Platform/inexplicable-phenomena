@@ -23,7 +23,7 @@ export class $Letter extends $Writing implements $Reference<$Letter> {
     }
 
     valid(): boolean {
-        return super.valid() && [...this.copy].length === 1 && (this.location === undefined || this.location.read() instanceof $Letter);
+        return super.valid() && [...this.copy].length === 1;
     }
 }
 

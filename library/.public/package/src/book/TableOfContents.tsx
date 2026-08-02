@@ -95,9 +95,6 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
         );
     }
 
-    valid(): boolean {
-        return super.valid() && this.contents().every(s => s instanceof $Row);
-    }
 }
 
 export const TableOfContents = $($TableOfContents);

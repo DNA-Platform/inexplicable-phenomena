@@ -7,19 +7,14 @@ export const from = (reference: $Reference<any>): unknown =>
         : reference instanceof $Location ? reference.of
             : undefined;
 
-export const last = (reference: $Reference<any>): { i: number; of?: unknown } | undefined =>
-    reference instanceof $Path ? last(reference.next)
-        : reference instanceof $Location ? { i: reference.i, of: reference.of }
-            : undefined;
-
 export const same = (x?: unknown, y?: unknown): boolean => {
     if (!x || !y) return false;
     if (x === y) return true;
-    const a = (x as { location?: $Reference }).location;
-    const b = (y as { location?: $Reference }).location;
+    let a = (x as { location?: $Reference }).location;
+    let b = (y as { location?: $Reference }).location;
     if (!a || !b) return false;
-    const here = last(a);
-    const there = last(b);
-    if (!here || !there) return false;
-    return here.i === there.i && same(here.of, there.of);
+    while (a instanceof $Path) a = a.next;
+    while (b instanceof $Path) b = b.next;
+    if (!(a instanceof $Location) || !(b instanceof $Location)) return false;
+    return a.i === b.i && same(a.of, b.of);
 };

@@ -1,6 +1,6 @@
 export { $Referent, Referent } from './reference/Referent';
 export { type $Reference } from './reference/Reference';
-export { same, from, last } from './utilities/reference';
+export { same, from } from './utilities/reference';
 export { type $Catalogue } from './reference/Catalogue';
 export { $Location } from './reference/Location';
 export { $Path } from './reference/Path';

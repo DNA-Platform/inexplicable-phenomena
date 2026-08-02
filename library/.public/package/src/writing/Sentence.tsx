@@ -50,7 +50,7 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
     }
 
     valid(): boolean {
-        return super.valid() && /[\p{L}\p{N}]/u.test(this.copy) && (this.location === undefined || this.location.read() instanceof $Sentence);
+        return super.valid() && /[\p{L}\p{N}]/u.test(this.copy);
     }
 }
 
