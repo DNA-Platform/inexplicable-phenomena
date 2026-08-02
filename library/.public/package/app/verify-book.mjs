@@ -206,6 +206,18 @@ await page.evaluate(() => { const r = document.querySelectorAll('[data-ribbon]')
 await settle();
 check('MANIFOLD: the deep ribbon opens to the very paragraph, lit', await page.evaluate(() => !!document.getElementById('8.2.1')?.classList.contains('lit')));
 
+await page.evaluate(() => { const b = document.querySelector('.page-body'); if (b) b.scrollTop = 300; });
+await clickChip('← previous');
+await settle();
+check('MANIFOLD: a turned page opens at its head', (await text()).includes('chapter 7') && (await page.evaluate(() => document.querySelector('.page-body')?.scrollTop === 0)));
+
+await page.evaluate(() => { document.querySelector('sup.note-mark')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+check('MANIFOLD: the citation mark walks down to its note, lit', await page.evaluate(() => !!document.getElementById('note-1')?.classList.contains('lit')));
+await page.evaluate(() => { document.querySelector('.note-index')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+await settle();
+check('MANIFOLD: the note walks back up to its mark — the loop at its smallest', await page.evaluate(() => !!document.getElementById('mark-1')?.classList.contains('lit')));
+
 await clickChip('← the shelf');
 await page.waitForSelector('.shelf-card', { timeout: 10000 });
 await settle();

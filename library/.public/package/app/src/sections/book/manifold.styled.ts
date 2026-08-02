@@ -169,6 +169,12 @@ export const Page = styled.div`
         color: #1f5c40;
         margin-left: 1px;
         font-family: ui-monospace, Menlo, Consolas, monospace;
+        cursor: pointer;
+        padding: 0 1px;
+    }
+
+    sup.note-mark:hover {
+        text-decoration: underline;
     }
 
     .math {
@@ -212,6 +218,11 @@ export const FootNotes = styled.div`
         color: #1f5c40;
         margin-right: 7px;
         font-size: 11px;
+        cursor: pointer;
+    }
+
+    .note-index:hover {
+        text-decoration: underline;
     }
 `;
 

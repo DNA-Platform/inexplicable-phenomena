@@ -148,6 +148,14 @@ const hold = (key: string, ink: string, tall: number, b: $Book): Held => {
 
 const held: Held = hold('manifold', '#274a3a', 560, manifold);
 
+function light(id: string, block: ScrollLogicalPosition = 'center') {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block });
+    el.classList.add('lit');
+    setTimeout(() => el.classList.remove('lit'), 2400);
+}
+
 function spans(s: string, follow: (address: string) => void, notes?: string[]): ReactNode[] {
     const out: ReactNode[] = [];
     const re = /\^\[([^\]]+)\]|\[([^\]]+)\]\(#([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
@@ -159,7 +167,12 @@ function spans(s: string, follow: (address: string) => void, notes?: string[]): 
         if (m[1] !== undefined) {
             if (notes) {
                 notes.push(m[1]);
-                out.push(<sup key={`n${k++}`} className="note-mark">{notes.length}</sup>);
+                const n = notes.length;
+                out.push(
+                    <sup key={`n${k++}`} id={`mark-${n}`} className="note-mark" onClick={() => light(`note-${n}`)}>
+                        {n}
+                    </sup>
+                );
             }
         } else if (m[2] !== undefined) {
             const anchor = m[3];
@@ -318,7 +331,10 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
             {notes.length > 0 && (
                 <FootNotes>
                     {notes.map((n, i) => (
-                        <div key={i} className="foot-note"><span className="note-index">{i + 1}</span>{rich(n, follow)}</div>
+                        <div key={i} id={`note-${i + 1}`} className="foot-note">
+                            <span className="note-index" onClick={() => light(`mark-${i + 1}`)}>{i + 1}</span>
+                            {rich(n, follow)}
+                        </div>
                     ))}
                 </FootNotes>
             )}
@@ -350,6 +366,11 @@ class $TheManifold extends $Chemical {
         this.over = false;
         this.page = Math.max(1, Math.min(held.rows.length - 1, p));
         this.tab = held.rows[this.page].source;
+        this.head();
+    }
+
+    head() {
+        setTimeout(() => document.querySelector('.page-body')?.scrollTo({ top: 0 }), 0);
     }
 
     leave(r: Row) {
@@ -383,10 +404,8 @@ class $TheManifold extends $Chemical {
         this.mode = 'read';
         this.turn(p);
         setTimeout(() => {
-            const lit = document.getElementById(path) ?? document.getElementById(path.split('.').slice(0, 3).join('.'));
-            lit?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            lit?.classList.add('lit');
-            setTimeout(() => lit?.classList.remove('lit'), 2400);
+            const target = document.getElementById(path) ? path : path.split('.').slice(0, 3).join('.');
+            light(target, 'start');
         }, 80);
     }
 
@@ -473,7 +492,7 @@ class $TheManifold extends $Chemical {
                                     <ChapterNumber style={{ textAlign: 'center' }}>the book of code</ChapterNumber>
                                     <TocPage>
                                         {files.map((f, j) => (
-                                            <TocLine key={f} onClick={() => { this.tab = f; }}>
+                                            <TocLine key={f} onClick={() => { this.tab = f; this.head(); }}>
                                                 <span className="toc-title">{f}</span>
                                                 <span className="toc-leader" />
                                                 <span className="toc-folio">{j + 1}</span>
@@ -488,11 +507,11 @@ class $TheManifold extends $Chemical {
                                 </PageBody>
                             )}
                             <PageTurns>
-                                <PageTurn disabled={at < 0} onClick={() => { if (at <= 0) this.tab = ''; else this.tab = files[at - 1]; }}>
+                                <PageTurn disabled={at < 0} onClick={() => { if (at <= 0) this.tab = ''; else this.tab = files[at - 1]; this.head(); }}>
                                     ← previous
                                 </PageTurn>
                                 <Folio>{at < 0 ? '·' : at + 1}</Folio>
-                                <PageTurn disabled={at >= files.length - 1} onClick={() => { this.tab = at < 0 ? files[0] : files[at + 1]; }}>
+                                <PageTurn disabled={at >= files.length - 1} onClick={() => { this.tab = at < 0 ? files[0] : files[at + 1]; this.head(); }}>
                                     next →
                                 </PageTurn>
                             </PageTurns>
@@ -527,7 +546,7 @@ class $TheManifold extends $Chemical {
                                 <PageBody className="page-body manuscript" onScroll={(e) => this.slide(e)}>
                                     <CodeTabs>
                                         {names.map(name => (
-                                            <CodeTab key={name} $active={leaf === name} onClick={() => { this.tab = name; }}>
+                                            <CodeTab key={name} $active={leaf === name} onClick={() => { this.tab = name; this.head(); }}>
                                                 {name}
                                             </CodeTab>
                                         ))}
