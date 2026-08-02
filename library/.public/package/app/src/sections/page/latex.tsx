@@ -4,14 +4,14 @@ import { $, $check, $Chemical, type $Html } from '@dna-platform/chemistry';
 import { text } from '@/utilities/html';
 
 export class $Latex extends $Chemical {
-    block?: $Html<'block'>;
+    text?: $Html<'block'>;
     inline = true;
     $display? = false;
 
     get copy(): string { return text(this.text); }
 
-    $Latex(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
+    $Latex(source?: $Html<'block'>) {
+        this.text = $check(source, 'block');
     }
 
     view(): ReactNode {

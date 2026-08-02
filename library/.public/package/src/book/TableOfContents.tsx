@@ -28,7 +28,6 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
 
     get canonical(): $Row { return Composible.canonical(this); }
 
-
     get chapters(): $Chapter[] {
         return this.contents().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
     }
@@ -94,7 +93,6 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
             </div>
         );
     }
-
 }
 
 export const TableOfContents = $($TableOfContents);

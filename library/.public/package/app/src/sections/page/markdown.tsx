@@ -65,8 +65,8 @@ export class $Markdown extends $Chemical {
     _key?: string;
     _entries?: Entry[];
 
-    // Keyed mint (research PROBE 7): the key is the live source, so readings never go stale;
-    // the minted parts keep stable identity so mounting them cannot run away (PROBE 1).
+    // Keyed parse (research PROBE 7): the key is the live source, so readings never go stale;
+    // the parsed parts keep stable identity so mounting them cannot run away (PROBE 1).
     get entries(): Entry[] {
         if (this._key !== this.$source) {
             this._key = this.$source;

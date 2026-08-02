@@ -171,13 +171,18 @@ export const Page = styled.div`
         font-family: ui-monospace, Menlo, Consolas, monospace;
     }
 
+    .math {
+        white-space: nowrap;
+    }
+
     .lit {
         animation: lit-fade 2.2s ease-out;
+        border-radius: 8px;
     }
 
     @keyframes lit-fade {
-        0% { background: rgba(78, 125, 91, 0.32); }
-        100% { background: transparent; }
+        0% { background: rgba(78, 125, 91, 0.22); box-shadow: 0 0 0 6px rgba(78, 125, 91, 0.22); }
+        100% { background: transparent; box-shadow: 0 0 0 6px transparent; }
     }
 `;
 
