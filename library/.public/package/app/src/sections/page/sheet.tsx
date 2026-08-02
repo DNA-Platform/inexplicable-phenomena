@@ -122,7 +122,7 @@ class Anatomy extends $Sheet {
                         <AnatomyRow key={i}>
                             <AnatomyTag $kind="p">¶{paragraph}</AnatomyTag>
                             <AnatomyPreview>{p.copy}</AnatomyPreview>
-                            <AnatomyStats>{p.parts().length} sentences · {p.words.length} words{math ? ` · ${math} math` : ''}</AnatomyStats>
+                            <AnatomyStats>{p.contents().length} sentences · {p.words.length} words{math ? ` · ${math} math` : ''}</AnatomyStats>
                         </AnatomyRow>
                     );
                 })}

@@ -8,7 +8,7 @@ import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
-import { text } from '@/tools/html';
+import { text } from '@/utilities/html';
 import { manifold } from './book/library/the-manifold/book';
 import manifoldCoverSource from './book/library/the-manifold/01-the-cover.tsx?raw';
 import manifoldSynopsisSource from './book/library/the-manifold/02-the-synopsis.tsx?raw';
@@ -92,15 +92,15 @@ const row = (c: $Chapter, i: number): Row => ({
     heading: c.title?.copy ?? (c instanceof $TableOfContents ? 'Table of Contents' : ''),
     subtitle: c.subtitle?.copy ?? '',
     tagline: c.tagline?.copy ?? '',
-    summary: c.summary?.parts().slice(1).map(p => p.copy).join(' ') ?? '',
-    body: c.parts().filter(s => !s.parenthetical).flatMap(s => s.parts().slice(1).map(p => p.copy)),
-    sections: c.parts().filter(s => !s.parenthetical).map(s => {
+    summary: c.summary?.contents().slice(1).map(p => p.copy).join(' ') ?? '',
+    body: c.contents().filter(s => !s.parenthetical).flatMap(s => s.contents().slice(1).map(p => p.copy)),
+    sections: c.contents().filter(s => !s.parenthetical).map(s => {
         const full = text(s.title);
         const colon = full.indexOf(':');
         return {
             head: colon < 0 ? full : full.slice(0, colon).trim(),
             sub: colon < 0 ? '' : full.slice(colon + 1).trim(),
-            paragraphs: s.parts().slice(1).map(p => p.copy),
+            paragraphs: s.contents().slice(1).map(p => p.copy),
         };
     }),
     contents: c instanceof $TableOfContents,

@@ -12,19 +12,23 @@ class $Leaf extends $Chemical {
 }
 
 describe('research: minting renderable instances on demand', () => {
-    it.skip('PROBE 1 — uncached minting at render is FATAL (OOMs the worker; the crash is the finding)', () => {
+    it('PROBE 1 — uncached minting at mount never settles; the loop is the finding, bounded here to observe it', () => {
+        let views = 0;
         class $Owner extends $Chemical {
             get leaves(): $Leaf[] {
                 return ['a', 'b', 'c'].map(l => { const x = new $Leaf(); x.$label = l; return x; });
             }
 
             view() {
+                views++;
+                if (views > 25) return <div className="bailed" />;
                 return <div>{this.leaves.map((x, i) => { const X = $(x); return <X key={i} />; })}</div>;
             }
         }
         const Owner = $($Owner);
         const { container } = render(<Owner />);
-        expect([...container.querySelectorAll('.leaf')].map(n => n.textContent)).toEqual(['a', 'b', 'c']);
+        expect(views).toBeGreaterThan(25);
+        expect(container.querySelector('.bailed')).not.toBeNull();
     });
 
     it('PROBE 2 — memoized children are created once and survive a parent re-render', async () => {

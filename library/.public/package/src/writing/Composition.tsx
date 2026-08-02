@@ -1,9 +1,13 @@
-export interface $Composition<T extends { copy: string; index: number; parenthetical: boolean }> {
+import { type $Location } from '../reference/Location';
+
+export type $Part = { copy: string; index: number; parenthetical: boolean };
+
+export interface $Composition<T extends $Part> {
     canonical: T;
-    parts(): T[];
+    contents(): T[];
     where(match: (part: T) => boolean): T[];
     select<U>(pick: (part: T) => U): U[];
-    single(match?: (part: T) => boolean): T | undefined;
+    at(index: number): $Location<T>;
     copy: string;
     index: number;
     parenthetical: boolean;

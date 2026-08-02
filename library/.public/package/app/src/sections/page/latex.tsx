@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import katex from 'katex';
 import { $, $check, $Chemical, type $Html } from '@dna-platform/chemistry';
-import { text } from '@/tools/html';
+import { text } from '@/utilities/html';
 
 export class $Latex extends $Chemical {
     block?: $Html<'block'>;

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { text } from '@/tools/html';
+import { text } from '@/utilities/html';
 import { $Word, Word } from '@/writing/Word';
 import { $Sentence, Sentence } from '@/writing/Sentence';
 import { $Paragraph, Paragraph } from '@/writing/Paragraph';
@@ -56,8 +56,8 @@ describe('$Composition — implemented by the composition levels, born through t
 
     it('readings are fresh, never cached — each read parses anew', () => {
         const w: $Word = $(<Word>hi</Word>);
-        expect(w.parts()).not.toBe(w.parts());
-        expect(w.parts().map(c => c.copy)).toEqual(['h', 'i']);
+        expect(w.contents()).not.toBe(w.contents());
+        expect(w.contents().map(c => c.copy)).toEqual(['h', 'i']);
         const fresh: $Sentence = $(<Sentence>hello world</Sentence>);
         expect(fresh.words.map(x => x.copy)).toEqual(['hello', 'world']);
     });
@@ -88,7 +88,7 @@ describe('$Composition — implemented by the composition levels, born through t
 
     it('a sentence read from a paragraph is renderable on its own', () => {
         const p: $Paragraph = $(<Paragraph>Call me Ishmael. Some years ago.</Paragraph>);
-        const S = $(p.parts()[0]) as any;
+        const S = $(p.contents()[0]) as any;
         const { container } = render(<S />);
         expect(container.textContent).toBe('Call me Ishmael.');
     });

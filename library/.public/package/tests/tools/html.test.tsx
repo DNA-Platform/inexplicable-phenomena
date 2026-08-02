@@ -1,4 +1,4 @@
-import { text } from '@/tools/html';
+import { text } from '@/utilities/html';
 import { test, expect } from 'vitest';
 
 test('text pulls a bare string', () => {

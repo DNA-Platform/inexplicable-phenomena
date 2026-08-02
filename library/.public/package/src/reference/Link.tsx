@@ -1,12 +1,21 @@
 import { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { Link as RouterLink } from 'react-router-dom';
-import { $Reference } from './Reference';
-import { $Referent } from './Referent';
+import { $Sentence } from '../writing/Sentence';
 
-export class $Link<T extends $Referent = $Referent> extends $Reference<T> {
+export class $Link extends $Sentence {
+    $for?: string;
+
+    get for(): string {
+        return this.$for ?? this.copy;
+    }
+
     protected anchor(surface: ReactNode): ReactNode {
         return <RouterLink to={this.$for ?? ''}>{surface}</RouterLink>;
+    }
+
+    frame(): ReactNode {
+        return this.anchor(super.frame());
     }
 }
 

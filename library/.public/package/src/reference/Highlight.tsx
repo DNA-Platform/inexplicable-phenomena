@@ -1,8 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Reference } from './Reference';
-import { $Referent } from './Referent';
+import { $Sentence } from '../writing/Sentence';
 
-export class $Highlight<T extends $Referent = $Referent> extends $Reference<T> {
+export class $Highlight extends $Sentence {
     $first?: number | string;
     $last?: number | string;
 

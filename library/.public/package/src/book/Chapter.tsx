@@ -1,19 +1,25 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
-import { text } from '../tools/html';
+import { type $Reference, same } from '../reference/Reference';
+import { type $Catalogue } from '../reference/Catalogue';
+import { $Location } from '../reference/Location';
+import { Composible } from '../utilities/Composible';
+import { $Path } from '../reference/Path';
+import { text } from '../utilities/html';
 import { type $Composition } from '../writing/Composition';
-import { type $Reference } from '../reference/Reference';
 import { type $Book } from './Book';
 import { $Section } from '../writing/Section';
 import { $Title, Title } from '../writing/Title';
 import { type $Subtitle } from '../writing/Subtitle';
 import { type $Tagline } from '../writing/Tagline';
 import { $Paragraph } from '../writing/Paragraph';
+import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';
+import { $Letter } from '../writing/Letter';
 
 export class $Chapter extends $Referent implements $Composition<$Section> {
-    $parts: $Section[] = [];
+    $contents: $Section[] = [];
 
     $index?: number = undefined;
     $parenthetical? = false;
@@ -23,13 +29,15 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
     get book(): $Book { return this.parent as $Book; }
-    get copy(): string { return this.parts().map(s => s.copy).join('\n\n'); }
-    get sections(): $Section[] { return this.parts(); }
-    get canonical(): $Section { return this.parts().find(s => !s.parenthetical) ?? this.parts()[0]; }
-    get summary(): $Section | undefined { return this.parts().find(s => s.parenthetical); }
+    get copy(): string { return this.contents().map(s => s.copy).join('\n\n'); }
+    get sections(): $Section[] { return this.contents(); }
+    get canonical(): $Section { return this.contents().find(s => !s.parenthetical) ?? this.contents()[0]; }
+    get summary(): $Section | undefined { return this.contents().find(s => s.parenthetical); }
     get tagline(): $Tagline | undefined { return this.summary?.tagline; }
-    get paragraphs(): $Paragraph[] { return this.parts().flatMap(s => s.paragraphs); }
-    get words(): $Word[] { return this.paragraphs.flatMap(p => p.words); }
+    get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
+    get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
+    get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
+    get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
     get title(): $Title | undefined {
         const t = this.canonical?.heading ?? '';
@@ -40,36 +48,29 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
 
     get subtitle(): $Subtitle | undefined { return this.canonical?.subtitle; }
 
-    get ref(): $Reference | undefined {
-        return super.ref ?? this.canonical?.$ref;
-    }
-
-    set ref(reference: $Reference | undefined) {
-        this.$ref = reference;
-    }
-
     $Chapter(...sections: $Section[]) {
-        this.$parts = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
-        this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$parts.forEach(s => { if (this.$ref) s.ref = this.$ref.compose(s.index); });
+        this.$contents = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
+        this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+        this.$contents.forEach(s => { s.place = this.at(s.index); });
         if (!this.valid()) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 
-    parts(): $Section[] {
-        return this.$parts;
+    get ref(): $$Chapter { return new $$Chapter(this); }
+
+    at(index: number): $Location<$Section> {
+        return Composible.at(this, index);
+    }
+
+    contents(): $Section[] {
+        return this.$contents;
     }
 
     where(match: (part: $Section) => boolean): $Section[] {
-        return this.parts().filter(match);
+        return Composible.where(this, match);
     }
 
     select<U>(pick: (part: $Section) => U): U[] {
-        return this.parts().map(pick);
-    }
-
-    single(match?: (part: $Section) => boolean): $Section | undefined {
-        const found = match ? this.parts().filter(match) : this.parts();
-        return found.length === 1 ? found[0] : undefined;
+        return Composible.select(this, pick);
     }
 
     written(): $Section[] {
@@ -88,7 +89,7 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     }
 
     view(): ReactNode {
-        return this.parts().map((s, i) => {
+        return this.contents().map((s, i) => {
             const S = $(s) as any;
             return <div className="section" key={i}><S /></div>;
         });
@@ -96,6 +97,57 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
 
     valid(): boolean {
         return super.valid() && this.summary !== undefined;
+    }
+}
+
+export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
+    index = 0;
+    parenthetical = false;
+
+    constructor(public of: $Chapter) { }
+
+    get copy(): string { return this.contents().map(r => r.copy).join(' '); }
+    get canonical(): $Reference<$Section> { return Composible.canonical(this); }
+    get paragraphs(): $Reference<$Paragraph>[] { return Composible.down(this.contents(), s => s.ref); }
+    get sentences(): $Reference<$Sentence>[] { return Composible.down(this.paragraphs, p => p.ref); }
+    get words(): $Reference<$Word>[] { return Composible.down(this.sentences, s => s.ref); }
+    get letters(): $Reference<$Letter>[] { return Composible.down(this.words, w => w.ref); }
+
+    contents(): $Reference<$Section>[] {
+        return this.of.contents().map((section, slot) => {
+            const reference = this.of.at(section.index);
+            reference.index = slot + 1;
+            return reference;
+        });
+    }
+
+    where(match: (reference: $Reference<$Section>) => boolean): $Reference<$Section>[] {
+        return Composible.where(this, match);
+    }
+
+    select<U>(pick: (reference: $Reference<$Section>) => U): U[] {
+        return Composible.select(this, pick);
+    }
+
+    at(index: number): $Location<$Reference<$Section>> {
+        return Composible.at(this, index);
+    }
+
+    find(): $Chapter {
+        return this.of;
+    }
+
+    valid(): boolean {
+        return this.of.valid();
+    }
+
+    equals(ref: $Reference<$Chapter>): boolean {
+        const found = ref.find();
+        return this.of === found || same(this.of, found);
+    }
+
+    then<U>(next: $Reference<U>): $Reference<U> {
+        return new $Path<$Chapter, U>(this, next);
     }
 }
 

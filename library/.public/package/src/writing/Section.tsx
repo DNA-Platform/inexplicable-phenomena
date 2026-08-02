@@ -1,36 +1,50 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
-import { $Reference } from '../reference/Reference';
-import { text } from '../tools/html';
+import { text } from '../utilities/html';
 import { type $Composition } from './Composition';
+import { type $Reference, same } from '../reference/Reference';
+import { type $Catalogue } from '../reference/Catalogue';
+import { $Location } from '../reference/Location';
+import { Composible } from '../utilities/Composible';
+import { $Path } from '../reference/Path';
 import { $Writing } from './Writing';
+import { $Letter } from './Letter';
 import { $Paragraph, Paragraph } from './Paragraph';
 import { $Title } from './Title';
 import { $Subtitle, Subtitle } from './Subtitle';
 import { $Tagline, Tagline } from './Tagline';
 import { $Sentence } from './Sentence';
+import { $Word } from './Word';
 
 export class $Section extends $Writing implements $Composition<$Paragraph> {
-    title?: $Html<'block'>;
+    title!: $Html<'block'>;
 
     constructor() {
         super();
         this.inline = false;
     }
 
-    get paragraphs(): $Paragraph[] { return this.parts(); }
-    get sentences(): $Sentence[] { return this.parts().flatMap(p => p.sentences); }
+    get paragraphs(): $Paragraph[] { return this.contents(); }
+    get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
+    get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
+    get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
     get canonical(): $Paragraph {
         const T = $(this.title as any);
         return $(<Paragraph><T /></Paragraph>);
     }
 
-    parts(): $Paragraph[] {
+    get ref(): $$Section { return new $$Section(this); }
+
+    at(index: number): $Location<$Paragraph> {
+        return Composible.at(this, index);
+    }
+
+    contents(): $Paragraph[] {
         const paragraphs: $Paragraph[] = this.copy.split(/\n{2,}/).map(p => $(<Paragraph>{p.trim()}</Paragraph>));
         return paragraphs.filter(p => p.valid()).map((p, i) => {
             p.index = i;
-            if (this.ref) p.ref = this.ref.compose(p.index);
+            p.place = this.at(p.index);
             return p;
         });
     }
@@ -50,7 +64,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
     }
 
     get tagline(): $Tagline | undefined {
-        const body = this.parts().slice(1).flatMap(p => p.sentences);
+        const body = this.contents().slice(1).flatMap(p => p.sentences);
         if (!body.length) return undefined;
         const copy = body.length === 1 ? body[0].copy : body[0].copy.replace(/[.!?]+$/, '') + '…';
         const tagline: $Tagline = $(<Tagline>{copy}</Tagline>);
@@ -58,33 +72,17 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
     }
 
     where(match: (part: $Paragraph) => boolean): $Paragraph[] {
-        return this.parts().filter(match);
+        return Composible.where(this, match);
     }
 
     select<U>(pick: (part: $Paragraph) => U): U[] {
-        return this.parts().map(pick);
-    }
-
-    single(match?: (part: $Paragraph) => boolean): $Paragraph | undefined {
-        const found = match ? this.parts().filter(match) : this.parts();
-        return found.length === 1 ? found[0] : undefined;
+        return Composible.select(this, pick);
     }
 
     $Section(block?: $Html<'block'>) {
         this.block = $check(block, 'block');
-        const els = (this.block as any)?.$elements as unknown[] | undefined;
-        if (els?.length) {
-            const top = els[0] instanceof $Reference ? els[0] : undefined;
-            const bottom = !top && els[els.length - 1] instanceof $Reference ? els[els.length - 1] : undefined;
-            const written = top ?? bottom;
-            if (written) {
-                els.splice(els.indexOf(written), 1);
-                this.$ref = written as $Reference;
-                (written as $Reference).parent = this;
-            }
-        }
         const first = this.block?.$elements?.[0];
-        this.title = first instanceof $Title ? first.block : first as $Html<'block'> | undefined;
+        this.title = (first instanceof $Title ? first.block : first) as $Html<'block'>;
     }
 
     view(): ReactNode {
@@ -93,6 +91,56 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
 
     valid(): boolean {
         return super.valid() && text(this.title) !== '';
+    }
+}
+
+export class $$Section implements $Catalogue<$Paragraph>, $Reference<$Section> {
+    index = 0;
+    parenthetical = false;
+
+    constructor(public of: $Section) { }
+
+    get copy(): string { return this.contents().map(r => r.copy).join(' '); }
+    get canonical(): $Reference<$Paragraph> { return Composible.canonical(this); }
+    get sentences(): $Reference<$Sentence>[] { return Composible.down(this.contents(), p => p.ref); }
+    get words(): $Reference<$Word>[] { return Composible.down(this.sentences, s => s.ref); }
+    get letters(): $Reference<$Letter>[] { return Composible.down(this.words, w => w.ref); }
+
+    contents(): $Reference<$Paragraph>[] {
+        return this.of.contents().map((paragraph, slot) => {
+            const reference = this.of.at(paragraph.index);
+            reference.index = slot + 1;
+            return reference;
+        });
+    }
+
+    where(match: (reference: $Reference<$Paragraph>) => boolean): $Reference<$Paragraph>[] {
+        return Composible.where(this, match);
+    }
+
+    select<U>(pick: (reference: $Reference<$Paragraph>) => U): U[] {
+        return Composible.select(this, pick);
+    }
+
+    at(index: number): $Location<$Reference<$Paragraph>> {
+        return Composible.at(this, index);
+    }
+
+    find(): $Section {
+        return this.of;
+    }
+
+    valid(): boolean {
+        return this.of.valid();
+    }
+
+    equals(ref: $Reference<$Section>): boolean {
+        const found = ref.find();
+        return this.of === found || same(this.of, found);
+    }
+
+    then<U>(next: $Reference<U>): $Reference<U> {
+        return new $Path<$Section, U>(this, next);
     }
 }
 

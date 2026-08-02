@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
-import { text } from '../tools/html';
+import { text } from '../utilities/html';
 
 export class $Writing extends $Referent {
     block?: $Html<'block'>;

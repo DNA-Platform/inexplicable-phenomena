@@ -1,42 +1,33 @@
-import { type ReactNode } from 'react';
-import { $ } from '@dna-platform/chemistry';
-import { $Referent } from './Referent';
-import { $Sentence } from '../writing/Sentence';
+import { $Location } from './Location';
+import { $Path } from './Path';
 
-export class $Reference<T extends $Referent = $Referent> extends $Sentence {
-    $for?: string;
-
-    get for(): string {
-        return this.$for ?? this.copy;
-    }
-
-    compose(key: number | string): $Reference {
-        const base = this.for;
-        const composed: $Reference = $(<Reference for={base.includes('#') ? `${base}.${key}` : `${base}#${key}`}>{this.copy || `${key}`}</Reference>);
-        return composed;
-    }
-
-    lookup(): T | undefined {
-        return undefined;
-    }
-
-    equals(other: $Reference): boolean {
-        const a = this.lookup();
-        const b = other.lookup();
-        if (a === undefined || b === undefined) return false;
-        if (a === b) return true;
-        return a.constructor === b.constructor
-            && (a as { copy?: string }).copy === (b as { copy?: string }).copy
-            && (a as { index?: number }).index === (b as { index?: number }).index;
-    }
-
-    protected anchor(surface: ReactNode): ReactNode {
-        return <a href={`#${this.for}`}>{surface}</a>;
-    }
-
-    frame(): ReactNode {
-        return this.anchor(super.frame());
-    }
+export interface $Reference<T = unknown> {
+    copy: string;
+    index: number;
+    parenthetical: boolean;
+    find(): T | undefined;
+    valid(): boolean;
+    equals(ref: $Reference<T>): boolean;
+    then<U>(next: $Reference<U>): $Reference<U>;
 }
 
-export const Reference = $($Reference);
+export const home = (reference: $Reference<any>): unknown =>
+    reference instanceof $Path ? home(reference.first)
+        : (reference as { of?: unknown }).of;
+
+export const last = (reference: $Reference<any>): { i: number; place?: unknown } | undefined =>
+    reference instanceof $Path ? last(reference.next)
+        : reference instanceof $Location ? { i: reference.i, place: reference.of }
+            : undefined;
+
+export const same = (x?: unknown, y?: unknown): boolean => {
+    if (!x || !y) return false;
+    if (x === y) return true;
+    const a = (x as { place?: $Reference }).place;
+    const b = (y as { place?: $Reference }).place;
+    if (!a || !b) return false;
+    const from = last(a);
+    const to = last(b);
+    if (!from || !to) return false;
+    return from.i === to.i && same(from.place, to.place);
+};

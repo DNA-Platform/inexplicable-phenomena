@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { text } from '@/tools/html';
+import { text } from '@/utilities/html';
 
 describe('research: what a bond constructor receives', () => {
     it('PROBE 9 — a mixed inline run (free text + HTML) is grouped into ONE block, all text kept', () => {
