@@ -13,11 +13,8 @@ import { $Word, Word } from './Word';
 
 export class $Sentence extends $Writing implements $Composition<$Word> {
     get canonical(): $Word { return Composible.canonical(this); }
+
     get words(): $Word[] { return this.contents(); }
-
-    get ref(): $$Sentence { return new $$Sentence(this); }
-
-    set ref(reference: $Reference | undefined) { this.location = reference; }
 
     get letters(): $Letter[] {
         return [...this.copy].map((g, i) => {
@@ -26,6 +23,10 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
             return letter;
         });
     }
+
+    get ref(): $$Sentence { return new $$Sentence(this); }
+
+    set ref(reference: $Reference | undefined) { this.location = reference; }
 
     at(index: number): $Location<$Word> {
         return Composible.at(this, index);

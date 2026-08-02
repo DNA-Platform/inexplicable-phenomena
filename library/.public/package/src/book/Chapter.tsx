@@ -31,10 +31,11 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     set parenthetical(value: boolean) { this.$parenthetical = value; }
     get book(): $Book { return this.parent as $Book; }
     get copy(): string { return this.contents().map(s => s.copy).join('\n\n'); }
-    get sections(): $Section[] { return this.contents(); }
     get canonical(): $Section { return this.contents().find(s => !s.parenthetical) ?? this.contents()[0]; }
     get summary(): $Section | undefined { return this.contents().find(s => s.parenthetical); }
     get tagline(): $Tagline | undefined { return this.summary?.tagline; }
+
+    get sections(): $Section[] { return this.contents(); }
     get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }

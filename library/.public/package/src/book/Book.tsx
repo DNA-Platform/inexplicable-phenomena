@@ -29,12 +29,13 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     set parenthetical(value: boolean) { this.$parenthetical = value; }
 
     get copy(): string { return this.contents().map(c => c.copy).join('\n\n'); }
-    get chapters(): $Chapter[] { return this.contents(); }
     get canonical(): $Cover { return this.cover; }
     get cover(): $Cover { return this.chapters[0] as $Cover; }
     get synopsis(): $Synopsis { return this.chapters.find(c => c instanceof $Synopsis) as $Synopsis; }
     get title(): $Title | undefined { return this.cover instanceof $Cover ? this.cover.title : undefined; }
     get subtitle(): $Subtitle | undefined { return this.cover instanceof $Cover ? this.cover.subtitle : undefined; }
+
+    get chapters(): $Chapter[] { return this.contents(); }
     get sections(): $Section[] { return this.contents().flatMap(c => c.sections); }
     get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }

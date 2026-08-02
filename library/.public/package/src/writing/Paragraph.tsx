@@ -14,14 +14,14 @@ import { $Word } from './Word';
 
 export class $Paragraph extends $Writing implements $Composition<$Sentence> {
     get canonical(): $Sentence { return Composible.canonical(this); }
+
     get sentences(): $Sentence[] { return this.contents(); }
+    get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
+    get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
     get ref(): $$Paragraph { return new $$Paragraph(this); }
 
     set ref(reference: $Reference | undefined) { this.location = reference; }
-
-    get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
-    get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
     at(index: number): $Location<$Sentence> {
         return Composible.at(this, index);
