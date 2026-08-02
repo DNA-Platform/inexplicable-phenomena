@@ -76,6 +76,10 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
         };
     }
 
+    follow(): $Composition<$Chapter> {
+        return Composible.follow(this);
+    }
+
     find(): $Book | undefined {
         return this.cover.find();
     }

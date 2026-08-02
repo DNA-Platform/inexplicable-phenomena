@@ -133,6 +133,10 @@ export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
         return Composible.at(this, index);
     }
 
+    follow(): $Composition<$Section> {
+        return Composible.follow(this);
+    }
+
     find(): $Chapter {
         return this.of;
     }

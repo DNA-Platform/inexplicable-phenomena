@@ -80,6 +80,10 @@ export class $$Sentence implements $Catalogue<$Word>, $Reference<$Sentence> {
         return Composible.at(this, index);
     }
 
+    follow(): $Composition<$Word> {
+        return Composible.follow(this);
+    }
+
     find(): $Sentence {
         return this.of;
     }

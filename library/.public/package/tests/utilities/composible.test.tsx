@@ -32,6 +32,14 @@ describe('Composible — contents() is enough; the rest are extension methods', 
         expect(letters.map(r => r.find()!.copy).join('')).toBe('theframeturns');
     });
 
+    it('follow dereferences the drawer — the catalogue becomes the composition of what its entries find', () => {
+        const s = sentence();
+        const words = s.ref.follow();
+        expect(words.contents().map(w => w.copy)).toEqual(['the', 'frame', 'turns']);
+        expect(words.canonical.copy).toBe('the');
+        expect((words.at(2).find() as $Word).copy).toBe('frame');
+    });
+
     it('the class methods delegate — the same answers either way', () => {
         const s = sentence();
         expect(s.where(w => w.index > 1).map(w => w.copy)).toEqual(Composible.where(s, w => w.index > 1).map(w => w.copy));

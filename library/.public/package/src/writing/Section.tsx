@@ -126,6 +126,10 @@ export class $$Section implements $Catalogue<$Paragraph>, $Reference<$Section> {
         return Composible.at(this, index);
     }
 
+    follow(): $Composition<$Paragraph> {
+        return Composible.follow(this);
+    }
+
     find(): $Section {
         return this.of;
     }

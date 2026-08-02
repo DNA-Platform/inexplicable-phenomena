@@ -1,4 +1,5 @@
 import { type $Reference } from '../reference/Reference';
+import { type $Composition } from '../writing/Composition';
 import { $Location } from '../reference/Location';
 
 export class Composible {
@@ -23,5 +24,20 @@ export class Composible {
             const mid = r.find();
             return mid === undefined ? [] : open(mid).contents().map(inner => r.then(inner));
         });
+    }
+
+    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { contents(): $Reference<T>[] }): $Composition<T> {
+        const found = (): T[] => of.contents().map(r => r.find()).filter((t): t is T => t !== undefined);
+        const followed: $Composition<T> = {
+            get canonical() { return found()[0]; },
+            contents: found,
+            where: (match) => found().filter(match),
+            select: (pick) => found().map(pick),
+            at(index: number) { return new $Location<T>(index, followed); },
+            get copy() { return found().map(t => t.copy).join(' '); },
+            index: 0,
+            parenthetical: false,
+        };
+        return followed;
     }
 }

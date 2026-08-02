@@ -70,6 +70,10 @@ export class $$Word implements $Catalogue<$Letter>, $Reference<$Word> {
         return Composible.at(this, index);
     }
 
+    follow(): $Composition<$Letter> {
+        return Composible.follow(this);
+    }
+
     find(): $Word {
         return this.of;
     }

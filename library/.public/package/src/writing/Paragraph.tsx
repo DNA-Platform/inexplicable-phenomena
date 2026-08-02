@@ -77,6 +77,10 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
         return Composible.at(this, index);
     }
 
+    follow(): $Composition<$Sentence> {
+        return Composible.follow(this);
+    }
+
     find(): $Paragraph {
         return this.of;
     }

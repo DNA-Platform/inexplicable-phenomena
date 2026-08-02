@@ -162,6 +162,15 @@ describe('the two connections — find goes forward, ref comes back', () => {
         expect((sentence.ref.then(sentence.at(2)).find() as $Word).copy).toBe('is');
     });
 
+    it('follow turns the contents page into its chapters — the literature the drawer holds', () => {
+        const b: $Book = $(book());
+        const followed = b.tableOfContents.follow();
+        const chapters = b.tableOfContents.chapters;
+        expect(followed.contents().length).toBe(chapters.length);
+        expect(followed.contents().every((c, k) => c === chapters[k])).toBe(true);
+        expect(followed.canonical).toBe(b.synopsis);
+    });
+
     it('the table of contents IS a catalogue of chapters — its contents are rows, and rows are references', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
