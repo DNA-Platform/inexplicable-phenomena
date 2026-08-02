@@ -3,7 +3,7 @@ import { type $Reference } from '../reference/Reference';
 import { same } from '../utilities/reference';
 import { $Path } from '../reference/Path';
 import { $Section } from '../writing/Section';
-import { type $Chapter } from './Chapter';
+import { $Chapter } from './Chapter';
 
 export class $Row extends $Section implements $Reference<$Chapter> {
     path!: $Reference<$Chapter>;
@@ -27,7 +27,7 @@ export class $Row extends $Section implements $Reference<$Chapter> {
     }
 
     valid(): boolean {
-        return this.path !== undefined && this.path.valid();
+        return this.path !== undefined && this.path.read() instanceof $Chapter;
     }
 }
 

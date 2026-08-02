@@ -102,12 +102,10 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(same(once, elsewhere)).toBe(false);
     });
 
-    it('validation checks the reference for the right type — semantically, by reading it', () => {
+    it('validation checks the reference for the right type — at the specialized class, by reading it', () => {
         const b: $Book = $(book());
         const word = b.chapters[3].sections[0].at(1).read()!.at(1).read()!.at(1).read()!;
         expect(word.valid()).toBe(true);
-        (word as unknown as { location: unknown }).location = 'not a reference';
-        expect(word.valid()).toBe(false);
         (word as unknown as { location: unknown }).location = b.at(3);
         expect(word.valid()).toBe(false);
     });

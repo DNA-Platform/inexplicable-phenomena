@@ -93,7 +93,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
     }
 
     valid(): boolean {
-        return super.valid() && text(this.title) !== '';
+        return super.valid() && text(this.title) !== '' && (this.location === undefined || this.location.read() instanceof $Section);
     }
 }
 
