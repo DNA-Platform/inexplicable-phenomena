@@ -576,9 +576,9 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(p.parenthetical).toBe(true);
     });
 
-    it('readings flatten through one parts level — and the contents page, speaking for the book, makes its listed sections count again (flagged for ruling)', () => {
+    it('readings flatten through what each chapter literally holds — rows count once, as themselves', () => {
         const b: $Book = $(book());
-        expect(b.sections.length).toBe(9);
+        expect(b.sections.length).toBe(7);
         expect(b.paragraphs.length).toBeGreaterThan(0);
         expect(b.words.length).toBeGreaterThan(0);
     });
