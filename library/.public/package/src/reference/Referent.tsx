@@ -14,7 +14,10 @@ export class $Referent extends $Chemical {
     }
 
     valid(): boolean {
-        return this.location === undefined || this.location instanceof $Location;
+        if (this.location === undefined) return true;
+        if (!(this.location instanceof $Location)) return false;
+        const arrival = this.location.read();
+        return arrival !== undefined && arrival instanceof (this.constructor as new () => unknown);
     }
 }
 
