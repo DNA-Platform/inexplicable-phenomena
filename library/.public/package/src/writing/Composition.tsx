@@ -1,8 +1,6 @@
 import { type $Location } from '../reference/Location';
 
-export type $Part = { copy: string; index: number; parenthetical: boolean };
-
-export interface $Composition<T extends $Part> {
+export interface $Composition<T extends { copy: string; index: number; parenthetical: boolean }> {
     canonical: T;
     contents(): T[];
     where(match: (part: T) => boolean): T[];

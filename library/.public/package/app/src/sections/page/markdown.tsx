@@ -86,7 +86,7 @@ export class $Markdown extends $Chemical {
     get formulas(): number {
         const display = this.entries.filter(e => e.kind === 'math').length;
         const inline = this.paragraphs.reduce((n, p) => {
-            const elements = ((p.block as any)?.$elements ?? []) as unknown[];
+            const elements = ((p.text as any)?.$elements ?? []) as unknown[];
             return n + elements.filter(el => el instanceof $Latex).length;
         }, 0);
         return display + inline;

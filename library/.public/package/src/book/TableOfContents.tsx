@@ -68,11 +68,11 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     } {
         const contents = this;
         return {
-            get sections() { return Composible.down(contents.contents(), c => c.ref); },
-            get paragraphs() { return Composible.down(this.sections, s => s.ref); },
-            get sentences() { return Composible.down(this.paragraphs, p => p.ref); },
-            get words() { return Composible.down(this.sentences, s => s.ref); },
-            get letters() { return Composible.down(this.words, w => w.ref); },
+            get sections() { return Composible.extend(contents.contents(), c => c.ref); },
+            get paragraphs() { return Composible.extend(this.sections, s => s.ref); },
+            get sentences() { return Composible.extend(this.paragraphs, p => p.ref); },
+            get words() { return Composible.extend(this.sentences, s => s.ref); },
+            get letters() { return Composible.extend(this.words, w => w.ref); },
         };
     }
 
@@ -96,13 +96,13 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     }
 
     row(row: $Row): ReactNode {
-        return <li key={row.index}>{row.copy} {row.folio}</li>;
+        return <li key={row.index}>{row.copy} {row.index}</li>;
     }
 
     view(): ReactNode {
         return (
             <div className="table-of-contents">
-                <div className="contents-title">{text(this.title.block)}</div>
+                <div className="contents-title">{text(this.title.text)}</div>
                 <ol>
                     {this.contents().map(r => this.row(r))}
                 </ol>

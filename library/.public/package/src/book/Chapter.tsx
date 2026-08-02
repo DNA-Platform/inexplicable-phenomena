@@ -108,10 +108,10 @@ export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
 
     get copy(): string { return this.contents().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Section> { return Composible.canonical(this); }
-    get paragraphs(): $Reference<$Paragraph>[] { return Composible.down(this.contents(), s => s.ref); }
-    get sentences(): $Reference<$Sentence>[] { return Composible.down(this.paragraphs, p => p.ref); }
-    get words(): $Reference<$Word>[] { return Composible.down(this.sentences, s => s.ref); }
-    get letters(): $Reference<$Letter>[] { return Composible.down(this.words, w => w.ref); }
+    get paragraphs(): $Reference<$Paragraph>[] { return Composible.extend(this.contents(), s => s.ref); }
+    get sentences(): $Reference<$Sentence>[] { return Composible.extend(this.paragraphs, p => p.ref); }
+    get words(): $Reference<$Word>[] { return Composible.extend(this.sentences, s => s.ref); }
+    get letters(): $Reference<$Letter>[] { return Composible.extend(this.words, w => w.ref); }
 
     contents(): $Reference<$Section>[] {
         return this.of.contents().map((section, slot) => {

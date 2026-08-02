@@ -14,7 +14,7 @@ describe('$Composition — implemented by the composition levels, born through t
         const w: $Word = $(<Word>hello</Word>);
         expect(w).toBeInstanceOf($Word);
         expect(w.copy).toBe('hello');
-        expect((w.block as any).$elements.length).toBeGreaterThan(0);
+        expect((w.text as any).$elements.length).toBeGreaterThan(0);
     });
 
     it('copy reads the block — one word, or a sentence of many', () => {

@@ -443,7 +443,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {
         const b: $Book = $(book());
         const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
-        expect(bm.lookup()).toBe(b.chapters[3]);
+        expect(bm.find()).toBe(b.chapters[3]);
         expect(bm.copy).toBe('the chapter on coordinates');
     });
 

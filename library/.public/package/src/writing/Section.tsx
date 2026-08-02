@@ -79,10 +79,10 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         return Composible.select(this, pick);
     }
 
-    $Section(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
-        const first = this.block?.$elements?.[0];
-        this.title = (first instanceof $Title ? first.block : first) as $Html<'block'>;
+    $Section(text?: $Html<'block'>) {
+        this.text = $check(text, 'block');
+        const first = this.text?.$elements?.[0];
+        this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
     }
 
     view(): ReactNode {
@@ -102,9 +102,9 @@ export class $$Section implements $Catalogue<$Paragraph>, $Reference<$Section> {
 
     get copy(): string { return this.contents().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Paragraph> { return Composible.canonical(this); }
-    get sentences(): $Reference<$Sentence>[] { return Composible.down(this.contents(), p => p.ref); }
-    get words(): $Reference<$Word>[] { return Composible.down(this.sentences, s => s.ref); }
-    get letters(): $Reference<$Letter>[] { return Composible.down(this.words, w => w.ref); }
+    get sentences(): $Reference<$Sentence>[] { return Composible.extend(this.contents(), p => p.ref); }
+    get words(): $Reference<$Word>[] { return Composible.extend(this.sentences, s => s.ref); }
+    get letters(): $Reference<$Letter>[] { return Composible.extend(this.words, w => w.ref); }
 
     contents(): $Reference<$Paragraph>[] {
         return this.of.contents().map((paragraph, slot) => {

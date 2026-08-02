@@ -26,9 +26,9 @@ describe('Composible — contents() is enough; the rest are extension methods', 
         expect((r.find() as $Word).copy).toBe('frame');
     });
 
-    it('down chains references through a level — paths from here to below', () => {
+    it('extend chains references through a level — paths from here to below', () => {
         const s = sentence();
-        const letters = Composible.down(s.ref.contents(), w => w.ref);
+        const letters = Composible.extend(s.ref.contents(), w => w.ref);
         expect(letters.map(r => r.find()!.copy).join('')).toBe('theframeturns');
     });
 

@@ -35,10 +35,6 @@ export class $Bookmark<T extends $Referent = $Referent> extends $Sentence implem
         return this.to?.find();
     }
 
-    lookup(): T | undefined {
-        return this.find();
-    }
-
     equals(ref: $Reference<T>): boolean {
         return same(this.find(), ref.find());
     }

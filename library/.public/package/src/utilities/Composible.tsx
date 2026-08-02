@@ -18,7 +18,7 @@ export class Composible {
         return new $Location<T>(index, of as any);
     }
 
-    static down<M, T>(refs: $Reference<M>[], open: (mid: M) => { contents(): $Reference<T>[] }): $Reference<T>[] {
+    static extend<M, T>(refs: $Reference<M>[], open: (mid: M) => { contents(): $Reference<T>[] }): $Reference<T>[] {
         return refs.flatMap(r => {
             const mid = r.find();
             return mid === undefined ? [] : open(mid).contents().map(inner => r.then(inner));

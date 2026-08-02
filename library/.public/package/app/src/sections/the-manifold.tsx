@@ -340,7 +340,7 @@ class $TheManifold extends $Chemical {
         if (!address) return;
         const path = address.replace(/^#/, '');
         const reference: $Bookmark = $(<Bookmark for={address}>{this.ribbon || address}</Bookmark>, held.book);
-        const part = reference.lookup();
+        const part = reference.find();
         if (!part) return;
         const p = held.rows.findIndex(r => r.index === Number(path.split('.')[0]));
         if (p < 0) return;

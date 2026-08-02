@@ -8,7 +8,7 @@ export class $Latex extends $Chemical {
     inline = true;
     $display? = false;
 
-    get copy(): string { return text(this.block); }
+    get copy(): string { return text(this.text); }
 
     $Latex(block?: $Html<'block'>) {
         this.block = $check(block, 'block');

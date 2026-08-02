@@ -80,7 +80,7 @@ class Anatomy extends $Sheet {
         const words = paragraphs.reduce((n, p) => n + p.words.length, 0);
         const displayMath = entries.filter(e => e.kind === 'math').length;
         const inlineMath = paragraphs.reduce((n, p) => {
-            const elements = ((p.block as any)?.$elements ?? []) as unknown[];
+            const elements = ((p.text as any)?.$elements ?? []) as unknown[];
             return n + elements.filter(el => el instanceof $Latex).length;
         }, 0);
         let paragraph = 0;
@@ -117,7 +117,7 @@ class Anatomy extends $Sheet {
                     }
                     const p = (e as any).chemical as $Paragraph;
                     paragraph += 1;
-                    const math = (((p.block as any)?.$elements ?? []) as unknown[]).filter(el => el instanceof $Latex).length;
+                    const math = (((p.text as any)?.$elements ?? []) as unknown[]).filter(el => el instanceof $Latex).length;
                     return (
                         <AnatomyRow key={i}>
                             <AnatomyTag $kind="p">¶{paragraph}</AnatomyTag>

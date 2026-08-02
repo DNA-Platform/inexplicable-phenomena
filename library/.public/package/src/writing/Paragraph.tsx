@@ -54,8 +54,8 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
 
     get copy(): string { return this.contents().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Sentence> { return Composible.canonical(this); }
-    get words(): $Reference<$Word>[] { return Composible.down(this.contents(), s => s.ref); }
-    get letters(): $Reference<$Letter>[] { return Composible.down(this.words, w => w.ref); }
+    get words(): $Reference<$Word>[] { return Composible.extend(this.contents(), s => s.ref); }
+    get letters(): $Reference<$Letter>[] { return Composible.extend(this.words, w => w.ref); }
 
     contents(): $Reference<$Sentence>[] {
         return this.of.contents().map((sentence, slot) => {

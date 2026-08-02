@@ -11,7 +11,7 @@ export class $Row extends $Section implements $Reference<$Chapter> {
 
     get heading(): string { return this.copy; }
 
-    get folio(): string { return `${this.index}`; }
+    get chapter(): $Chapter | undefined { return this.find(); }
 
     find(): $Chapter | undefined {
         return this.to.find();

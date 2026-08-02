@@ -4,12 +4,12 @@ import { $Referent } from '../reference/Referent';
 import { text } from '../utilities/html';
 
 export class $Writing extends $Referent {
-    block?: $Html<'block'>;
+    text?: $Html<'block'>;
 
     $index?: number = undefined;
     $parenthetical? = false;
 
-    get copy(): string { return text(this.block); }
+    get copy(): string { return text(this.text); }
     get index(): number { return this.$index ?? 0; }
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
@@ -20,13 +20,13 @@ export class $Writing extends $Referent {
         this.inline = true;
     }
 
-    $Writing(block?: $Html<'block'>) {
-        this.block = $check(block, 'block');
+    $Writing(text?: $Html<'block'>) {
+        this.text = $check(text, 'block');
     }
 
     view(): ReactNode {
-        if (!this.block) return null;
-        return React.createElement($(this.block) as any);
+        if (!this.text) return null;
+        return React.createElement($(this.text) as any);
     }
 }
 
