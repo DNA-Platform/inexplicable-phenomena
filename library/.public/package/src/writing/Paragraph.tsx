@@ -21,8 +21,6 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
 
     get ref(): $$Paragraph { return new $$Paragraph(this); }
 
-    set ref(reference: $Reference | undefined) { this.location = reference; }
-
     at(index: number): $Location<$Sentence> {
         return Composible.at(this, index);
     }
@@ -39,7 +37,7 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
         const sentences: $Sentence[] = (this.copy.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => $(<Sentence>{s.trim()}</Sentence>));
         return sentences.filter(s => s.valid()).map((s, i) => {
             s.index = i + 1;
-            s.ref = this.at(s.index);
+            s.catalogue = this;
             return s;
         });
     }

@@ -7,8 +7,6 @@ import { $Writing } from './Writing';
 export class $Letter extends $Writing implements $Reference<$Letter> {
     get ref(): $Letter { return this; }
 
-    set ref(reference: $Reference | undefined) { this.location = reference; }
-
     read(): $Letter {
         return this;
     }

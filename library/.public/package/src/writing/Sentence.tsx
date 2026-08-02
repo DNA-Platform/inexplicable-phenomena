@@ -26,8 +26,6 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
 
     get ref(): $$Sentence { return new $$Sentence(this); }
 
-    set ref(reference: $Reference | undefined) { this.location = reference; }
-
     at(index: number): $Location<$Word> {
         return Composible.at(this, index);
     }
@@ -44,7 +42,7 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
         const words: $Word[] = (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).map(w => $(<Word>{w}</Word>));
         return words.filter(w => w.valid()).map((w, i) => {
             w.index = i + 1;
-            w.ref = this.at(w.index);
+            w.catalogue = this;
             return w;
         });
     }

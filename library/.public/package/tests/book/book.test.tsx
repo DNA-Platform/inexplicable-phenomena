@@ -37,8 +37,6 @@ const synopsis = (): ReactElement => <Synopsis>{section('Synopsis', 'One object,
 
 const book = (): ReactElement => <Book>{cover()}{synopsis()}{chapter('Coordinates', 'Reading is a change of coordinates.')}</Book>;
 
-const placed = (x: unknown): $Location => (x as { location: $Location }).location;
-
 const rejection = (b: any): string | undefined => {
     const s = Object.getOwnPropertySymbols(b).find(x => x.description === '$Particle.devError');
     return s ? b[s] : undefined;
@@ -56,15 +54,15 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(b.at(99).read()).toBeUndefined();
     });
 
-    it('every found part carries the reference that found it — assigned by the reading, always', () => {
+    it('every found part knows its canonical catalogue — assigned by the reading, always', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        expect(placed(c).i).toBe(3);
-        expect(placed(c).of).toBe(b);
+        expect(c.catalogue).toBe(b);
+        expect(c.index).toBe(3);
         const s = c.contents()[0];
-        expect(placed(s).of).toBe(c);
+        expect(s.catalogue).toBe(c);
         const p = s.contents()[1];
-        expect(placed(p).i).toBe(p.index);
+        expect(p.catalogue).toBe(s);
     });
 
     it('then chains bound references — the walk crosses levels in one find', () => {
@@ -120,7 +118,7 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(sentence.letters.map(l => l.copy).join('')).toBe(sentence.copy);
         const claimed = sentence.words.flatMap(w => w.letters);
         expect(claimed.map(l => l.copy).join('')).toBe('Readingisachangeofcoordinates');
-        expect(placed(claimed[0])).toBeInstanceOf($Location);
+        expect(claimed[0].catalogue).toBeInstanceOf($Word);
         expect(section.words.length).toBe(7);
         expect(section.letters.length).toBeGreaterThan(0);
         expect(b.sentences.length).toBeGreaterThan(0);
@@ -389,13 +387,13 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.tableOfContents.tagline?.copy).toBe('A book about reading.');
     });
 
-    it('what the reading assigned stays behind — ref answers with its own kind', () => {
+    it('the catalogue is known, and ref answers with its own kind', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
         expect(c.ref).toBeInstanceOf($$Chapter);
         expect(c.ref.read()).toBe(c);
-        expect(placed(c).of).toBe(b);
-        expect(placed(c).read()).toBe(c);
+        expect(c.catalogue).toBe(b);
+        expect(c.catalogue!.at(c.index).read()).toBe(c);
     });
 
     it('at and find are inverses — the minted reference finds the part it was minted for', () => {
@@ -404,17 +402,17 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.at(c.index).read()).toBe(c);
         const s = c.sections[0];
         expect(c.at(s.index).read()).toBe(s);
-        expect(placed(s).read()).toBe(s);
+        expect(s.catalogue!.at(s.index).read()).toBe(s);
     });
 
     it('the composition assigns the reference with the parts — fresh readings, fresh assignments', () => {
         const s: $Section = $(<Section><Title>Grounded</Title>{'\n\nOne paragraph stands here. It carries two sentences.'}</Section>);
         const p = s.contents()[1];
-        expect(placed(p).i).toBe(1);
-        expect(placed(p).of).toBe(s);
+        expect(p.index).toBe(1);
+        expect(p.catalogue).toBe(s);
         const sentence = p.contents()[0];
-        expect(placed(sentence).i).toBe(1);
-        expect(placed(sentence).of).toBe(p);
+        expect(sentence.index).toBe(1);
+        expect(sentence.catalogue).toBe(p);
     });
 
     it('a highlight is the reference a highlighter leaves — first and last letter of its parent', () => {
@@ -459,7 +457,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('references are assigned, never derived — every chapter stands referenced at its book', () => {
         const b: $Book = $(book());
-        expect(b.chapters.every(c => placed(c).of === b)).toBe(true);
+        expect(b.chapters.every(c => c.catalogue === b)).toBe(true);
     });
 
     it('writing a chapter is writing a view — the sections are declared in the writing', () => {

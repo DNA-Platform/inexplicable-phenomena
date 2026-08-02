@@ -37,8 +37,6 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
 
     get ref(): $$Section { return new $$Section(this); }
 
-    set ref(reference: $Reference | undefined) { this.location = reference; }
-
     at(index: number): $Location<$Paragraph> {
         return Composible.at(this, index);
     }
@@ -47,7 +45,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         const paragraphs: $Paragraph[] = this.copy.split(/\n{2,}/).map(p => $(<Paragraph>{p.trim()}</Paragraph>));
         return paragraphs.filter(p => p.valid()).map((p, i) => {
             p.index = i;
-            p.ref = this.at(p.index);
+            p.catalogue = this;
             return p;
         });
     }

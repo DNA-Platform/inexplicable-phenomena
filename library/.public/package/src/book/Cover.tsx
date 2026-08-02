@@ -28,7 +28,7 @@ export class $Cover extends $Chapter implements $Reference<$Book> {
     $Cover(...sections: $Section[]) {
         this.$contents = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
         this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$contents.forEach(s => { s.ref = this.at(s.index); });
+        this.$contents.forEach(s => { s.catalogue = this; });
         if (!this.valid()) throw new Error('A cover requires a title.');
     }
 }

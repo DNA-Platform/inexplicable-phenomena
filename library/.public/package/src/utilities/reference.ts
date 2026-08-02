@@ -10,11 +10,8 @@ export const from = (reference: $Reference<any>): unknown =>
 export const same = (x?: unknown, y?: unknown): boolean => {
     if (!x || !y) return false;
     if (x === y) return true;
-    let a = (x as { location?: $Reference }).location;
-    let b = (y as { location?: $Reference }).location;
-    if (!a || !b) return false;
-    while (a instanceof $Path) a = a.next;
-    while (b instanceof $Path) b = b.next;
-    if (!(a instanceof $Location) || !(b instanceof $Location)) return false;
-    return a.i === b.i && same(a.of, b.of);
+    const a = x as { index?: number; catalogue?: unknown };
+    const b = y as { index?: number; catalogue?: unknown };
+    if (a.catalogue === undefined || b.catalogue === undefined) return false;
+    return a.index === b.index && same(a.catalogue, b.catalogue);
 };

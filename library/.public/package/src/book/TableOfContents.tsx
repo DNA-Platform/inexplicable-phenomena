@@ -40,7 +40,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
                 const row = new $Row();
                 row.path = this.book.at(c.index);
                 row.index = c.index;
-                row.ref = this.at(row.index);
+                row.catalogue = this;
                 return row;
             });
     }
@@ -77,7 +77,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     $TableOfContents(...sections: $Section[]) {
         this.$contents = sections.map(s => $check(s, $Section));
         this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$contents.forEach(s => { s.ref = this.at(s.index); });
+        this.$contents.forEach(s => { s.catalogue = this; });
     }
 
     row(row: $Row): ReactNode {

@@ -53,13 +53,11 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     $Chapter(...sections: $Section[]) {
         this.$contents = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
         this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$contents.forEach(s => { s.ref = this.at(s.index); });
+        this.$contents.forEach(s => { s.catalogue = this; });
         if (!this.valid()) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 
     get ref(): $$Chapter { return new $$Chapter(this); }
-
-    set ref(reference: $Reference | undefined) { this.location = reference; }
 
     at(index: number): $Location<$Section> {
         return Composible.at(this, index);
