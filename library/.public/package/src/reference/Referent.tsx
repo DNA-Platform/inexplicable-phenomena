@@ -1,5 +1,6 @@
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { type $Reference } from './Reference';
+import { $Location } from './Location';
 
 export class $Referent extends $Chemical {
     protected location?: $Reference;
@@ -13,7 +14,7 @@ export class $Referent extends $Chemical {
     }
 
     valid(): boolean {
-        return true;
+        return this.location === undefined || this.location instanceof $Location;
     }
 }
 

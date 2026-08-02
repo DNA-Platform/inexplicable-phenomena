@@ -102,6 +102,14 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(same(once, elsewhere)).toBe(false);
     });
 
+    it('validation checks the reference for the right type — a stamp must be a location', () => {
+        const b: $Book = $(book());
+        const word = b.chapters[3].sections[0].at(1).read()!.at(1).read()!.at(1).read()!;
+        expect(word.valid()).toBe(true);
+        (word as unknown as { location: unknown }).location = 'not a reference';
+        expect(word.valid()).toBe(false);
+    });
+
     it('a duplicated index finds nothing — the uniqueness law lives in find', () => {
         const c: $Chapter = $(
             <Chapter>
