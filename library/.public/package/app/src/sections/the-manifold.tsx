@@ -390,6 +390,13 @@ class $TheManifold extends $Chemical {
         }, 80);
     }
 
+    slide(e: React.UIEvent<HTMLDivElement>) {
+        const body = e.currentTarget as HTMLDivElement & { slideTimer?: number };
+        body.classList.add('sliding');
+        clearTimeout(body.slideTimer);
+        body.slideTimer = window.setTimeout(() => body.classList.remove('sliding'), 900);
+    }
+
     marks(): ReactNode {
         const back = this.trail;
         return (
@@ -462,7 +469,7 @@ class $TheManifold extends $Chemical {
                                 {at < 0 ? `${held.title} — the manuscript` : files[at]}
                             </RunningHead>
                             {at < 0 && (
-                                <PageBody className="page-body">
+                                <PageBody className="page-body" onScroll={(e) => this.slide(e)}>
                                     <ChapterNumber style={{ textAlign: 'center' }}>the book of code</ChapterNumber>
                                     <TocPage>
                                         {files.map((f, j) => (
@@ -476,7 +483,7 @@ class $TheManifold extends $Chemical {
                                 </PageBody>
                             )}
                             {at >= 0 && (
-                                <PageBody className="page-body manuscript">
+                                <PageBody className="page-body manuscript" onScroll={(e) => this.slide(e)}>
                                     {inked(manuscripts[held.key][files[at]] ?? modelSources[files[at]])}
                                 </PageBody>
                             )}
@@ -511,9 +518,13 @@ class $TheManifold extends $Chemical {
                             >
                                 {this.over ? `${leaf} — the manuscript` : held.title}
                             </RunningHead>
-                            {!this.over && <PageBody className="page-body">{rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a), (a, l) => this.press(a, l))}</PageBody>}
+                            {!this.over && (
+                                <PageBody className="page-body" onScroll={(e) => this.slide(e)}>
+                                    {rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a), (a, l) => this.press(a, l))}
+                                </PageBody>
+                            )}
                             {this.over && (
-                                <PageBody className="page-body manuscript">
+                                <PageBody className="page-body manuscript" onScroll={(e) => this.slide(e)}>
                                     <CodeTabs>
                                         {names.map(name => (
                                             <CodeTab key={name} $active={leaf === name} onClick={() => { this.tab = name; }}>

@@ -400,12 +400,14 @@ export const PageBody = styled.div`
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding-right: 6px;
+    margin-right: -38px;
+    padding-right: 44px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(138, 167, 143, 0.25) transparent;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 320ms ease;
 
-    &:hover {
-        scrollbar-color: rgba(138, 167, 143, 0.55) transparent;
+    &.sliding {
+        scrollbar-color: rgba(138, 167, 143, 0.5) transparent;
     }
 `;
 
