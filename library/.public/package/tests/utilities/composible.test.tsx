@@ -26,10 +26,11 @@ describe('Composible — contents() is enough; the rest are extension methods', 
         expect((r.read() as $Word).copy).toBe('frame');
     });
 
-    it('follow goes on following — from the drawer of words to their letters', () => {
+    it('follow reaches on — the followed words, followed again through their own drawers, are the letters', () => {
         const s = sentence();
-        const letters = s.ref.follow().follow();
-        expect(letters.contents().map((l: { copy: string }) => l.copy).join('')).toBe('theframeturns');
+        const words = s.ref.follow();
+        const letters = Composible.follow({ contents: () => words.contents().flatMap(w => w.ref.contents()) });
+        expect(letters.contents().map(l => l.copy).join('')).toBe('theframeturns');
     });
 
     it('follow dereferences the drawer — the catalogue becomes the composition of what its entries find', () => {

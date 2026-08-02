@@ -11,6 +11,7 @@ import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { $Book, Book } from '@/book/Book';
 import { Title } from '@/writing/Title';
 import { same } from '@/utilities/reference';
+import { Composible } from '@/utilities/Composible';
 import { $Location } from '@/reference/Location';
 import { $Path } from '@/reference/Path';
 import { $Sentence } from '@/writing/Sentence';
@@ -38,6 +39,8 @@ const synopsis = (): ReactElement => <Synopsis>{section('Synopsis', 'One object,
 const book = (): ReactElement => <Book>{cover()}{synopsis()}{chapter('Coordinates', 'Reading is a change of coordinates.')}</Book>;
 
 const placed = (x: unknown): $Location => (x as { location: $Location }).location;
+
+const followOn = (c: { contents(): unknown[] }) => Composible.follow({ contents: () => c.contents().flatMap(t => (t as { ref: { contents(): never[] } }).ref.contents()) });
 
 const rejection = (b: any): string | undefined => {
     const s = Object.getOwnPropertySymbols(b).find(x => x.description === '$Particle.devError');
@@ -227,9 +230,9 @@ describe('the essential questions — complex references, equality across levels
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         const listed = toc.chapters;
-        const sections = toc.follow().follow();
+        const sections = followOn(toc.follow());
         expect(sections.contents().every((s, k) => s === listed.flatMap(c => c.sections)[k])).toBe(true);
-        const words = toc.follow().follow().follow().follow().follow().contents() as $Word[];
+        const words = followOn(followOn(followOn(sections))).contents() as $Word[];
         expect(words.map(w => w.copy)).toEqual(listed.flatMap(c => c.words).map(w => w.copy));
     });
 
@@ -246,7 +249,7 @@ describe('the essential questions — complex references, equality across levels
         expect(once).not.toBe(again);
         expect(once.equals(again)).toBe(true);
         const offset = b.chapters[2].words.length;
-        const spoken = b.tableOfContents.follow().follow().follow().follow().follow().contents() as $Word[];
+        const spoken = followOn(followOn(followOn(followOn(b.tableOfContents.follow())))).contents() as $Word[];
         expect(same(spoken[offset + 1], c.words[1])).toBe(true);
     });
 
@@ -263,7 +266,7 @@ describe('the essential questions — complex references, equality across levels
     it('follow goes on following — the returned composition is followable to the next grade', () => {
         const b: $Book = $(book());
         const chapters = b.tableOfContents.follow();
-        const sections = chapters.follow();
+        const sections = followOn(chapters);
         expect(sections.contents().length).toBe(b.tableOfContents.chapters.flatMap(c => c.sections).length);
     });
 
