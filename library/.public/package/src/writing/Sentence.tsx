@@ -14,7 +14,7 @@ import { $Word, Word } from './Word';
 export class $Sentence extends $Writing implements $Composition<$Word> {
     get canonical(): $Word { return Composible.canonical(this); }
 
-    get words(): $Word[] { return this.contents(); }
+    get words(): $Word[] { return this.parts(); }
 
     get letters(): $Letter[] {
         return [...this.copy].map((g, i) => {
@@ -38,7 +38,7 @@ export class $Sentence extends $Writing implements $Composition<$Word> {
         return Composible.select(this, pick);
     }
 
-    contents(): $Word[] {
+    parts(): $Word[] {
         const words: $Word[] = (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).map(w => $(<Word>{w}</Word>));
         return words.filter(w => w.valid()).map((w, i) => {
             w.index = i + 1;
@@ -58,11 +58,11 @@ export class $$Sentence implements $Catalogue<$Word>, $Reference<$Sentence> {
 
     constructor(public of: $Sentence) { }
 
-    get copy(): string { return this.contents().map(r => r.copy).join(' '); }
+    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Word> { return Composible.canonical(this); }
 
-    contents(): $Reference<$Word>[] {
-        return this.of.contents().map((word, slot) => {
+    parts(): $Reference<$Word>[] {
+        return this.of.parts().map((word, slot) => {
             const reference = this.of.at(word.index);
             reference.index = slot + 1;
             return reference;

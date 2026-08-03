@@ -3,27 +3,27 @@ import { type $Composition } from '../writing/Composition';
 import { $Location } from '../reference/Location';
 
 export class Composible {
-    static canonical<T>(of: { contents(): T[] }): T {
-        return of.contents()[0];
+    static canonical<T>(of: { parts(): T[] }): T {
+        return of.parts()[0];
     }
 
-    static where<T>(of: { contents(): T[] }, match: (part: T) => boolean): T[] {
-        return of.contents().filter(match);
+    static where<T>(of: { parts(): T[] }, match: (part: T) => boolean): T[] {
+        return of.parts().filter(match);
     }
 
-    static select<T, U>(of: { contents(): T[] }, pick: (part: T) => U): U[] {
-        return of.contents().map(pick);
+    static select<T, U>(of: { parts(): T[] }, pick: (part: T) => U): U[] {
+        return of.parts().map(pick);
     }
 
-    static at<T>(of: { contents(): T[] }, index: number): $Location<T> {
+    static at<T>(of: { parts(): T[] }, index: number): $Location<T> {
         return new $Location<T>(index, of as any);
     }
 
-    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { contents(): $Reference<T>[] }): $Composition<T> {
-        const found = (): T[] => of.contents().map(r => r.read()).filter((t): t is T => t !== undefined);
+    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { parts(): $Reference<T>[] }): $Composition<T> {
+        const found = (): T[] => of.parts().map(r => r.read()).filter((t): t is T => t !== undefined);
         const followed: $Composition<T> = {
             get canonical() { return found()[0]; },
-            contents: found,
+            parts: found,
             where: (match) => found().filter(match),
             select: (pick) => found().map(pick),
             at(index: number) { return new $Location<T>(index, followed); },

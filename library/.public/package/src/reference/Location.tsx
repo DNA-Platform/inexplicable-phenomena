@@ -12,7 +12,7 @@ export class $Location<T = unknown> implements $Reference<T> {
     get copy(): string { return `${this.i}`; }
 
     read(): T | undefined {
-        const found = this.of.contents().filter((p: { index: number }) => p.index === this.i);
+        const found = this.of.parts().filter((p: { index: number }) => p.index === this.i);
         return found.length === 1 ? found[0] as T : undefined;
     }
 

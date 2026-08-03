@@ -20,7 +20,7 @@ import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
 
 export class $Chapter extends $Referent implements $Composition<$Section> {
-    $contents: $Section[] = [];
+    $parts: $Section[] = [];
 
     $index?: number = undefined;
     $parenthetical? = false;
@@ -30,12 +30,12 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
     get book(): $Book { return this.parent as $Book; }
-    get copy(): string { return this.contents().map(s => s.copy).join('\n\n'); }
-    get canonical(): $Section { return this.contents().find(s => !s.parenthetical) ?? this.contents()[0]; }
-    get summary(): $Section | undefined { return this.contents().find(s => s.parenthetical); }
+    get copy(): string { return this.parts().map(s => s.copy).join('\n\n'); }
+    get canonical(): $Section { return this.parts().find(s => !s.parenthetical) ?? this.parts()[0]; }
+    get summary(): $Section | undefined { return this.parts().find(s => s.parenthetical); }
     get tagline(): $Tagline | undefined { return this.summary?.tagline; }
 
-    get sections(): $Section[] { return this.contents(); }
+    get sections(): $Section[] { return this.parts(); }
     get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
@@ -51,9 +51,9 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     get subtitle(): $Subtitle | undefined { return this.canonical?.subtitle; }
 
     $Chapter(...sections: $Section[]) {
-        this.$contents = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
-        this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$contents.forEach(s => { s.catalogue = this; });
+        this.$parts = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
+        this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+        this.$parts.forEach(s => { s.catalogue = this; });
         if (!this.valid()) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 
@@ -63,8 +63,8 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
         return Composible.at(this, index);
     }
 
-    contents(): $Section[] {
-        return this.$contents;
+    parts(): $Section[] {
+        return this.$parts;
     }
 
     where(match: (part: $Section) => boolean): $Section[] {
@@ -91,7 +91,7 @@ export class $Chapter extends $Referent implements $Composition<$Section> {
     }
 
     view(): ReactNode {
-        return this.contents().map((s, i) => {
+        return this.parts().map((s, i) => {
             const S = $(s) as any;
             return <div className="section" key={i}><S /></div>;
         });
@@ -108,11 +108,11 @@ export class $$Chapter implements $Catalogue<$Section>, $Reference<$Chapter> {
 
     constructor(public of: $Chapter) { }
 
-    get copy(): string { return this.contents().map(r => r.copy).join(' '); }
+    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Section> { return Composible.canonical(this); }
 
-    contents(): $Reference<$Section>[] {
-        return this.of.contents().map((section, slot) => {
+    parts(): $Reference<$Section>[] {
+        return this.of.parts().map((section, slot) => {
             const reference = this.of.at(section.index);
             reference.index = slot + 1;
             return reference;

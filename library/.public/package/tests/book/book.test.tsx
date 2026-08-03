@@ -59,15 +59,15 @@ describe('referential integrity — at, then, and sameness', () => {
         const c = b.chapters[3];
         expect(c.catalogue).toBe(b);
         expect(c.index).toBe(3);
-        const s = c.contents()[0];
+        const s = c.parts()[0];
         expect(s.catalogue).toBe(c);
-        const p = s.contents()[1];
+        const p = s.parts()[1];
         expect(p.catalogue).toBe(s);
     });
 
     it('then chains bound references — the walk crosses levels in one find', () => {
         const b: $Book = $(book());
-        const section = b.chapters[3].contents()[0];
+        const section = b.chapters[3].parts()[0];
         const paragraph = section.at(1).read()!;
         const sentence = paragraph.at(1).read()!;
         const r = section.at(1).then(paragraph.at(1)).then(sentence.at(2));
@@ -79,8 +79,8 @@ describe('referential integrity — at, then, and sameness', () => {
     it('a reference standing at another book finds nothing — composition never throws', () => {
         const one: $Book = $(book());
         const other: $Book = $(book());
-        const here = one.chapters[3].contents()[0];
-        const there = other.chapters[3].contents()[0];
+        const here = one.chapters[3].parts()[0];
+        const there = other.chapters[3].parts()[0];
         const away = there.at(1).read()!;
         const r = here.at(1).then(away.at(1));
         expect(r.read()).toBeUndefined();
@@ -89,14 +89,14 @@ describe('referential integrity — at, then, and sameness', () => {
 
     it('sameness is not JS equality — fresh readings of one place are the same; a second book with the same text is another place', () => {
         const b: $Book = $(book());
-        const s = b.chapters[3].contents()[0];
+        const s = b.chapters[3].parts()[0];
         const once = s.at(1).read()!;
         const again = s.at(1).read()!;
         expect(once).not.toBe(again);
         expect(same(once, again)).toBe(true);
         expect(s.at(1).equals(s.at(1))).toBe(true);
         const second: $Book = $(book());
-        const elsewhere = second.chapters[3].contents()[0].at(1).read()!;
+        const elsewhere = second.chapters[3].parts()[0].at(1).read()!;
         expect(same(once, elsewhere)).toBe(false);
     });
 
@@ -149,10 +149,10 @@ describe('the two connections — find goes forward, ref comes back', () => {
 
     it('a catalogue is a composition of references — entries dereference to the contents', () => {
         const b: $Book = $(book());
-        const entries = b.chapters[3].ref.contents();
-        expect(entries.length).toBe(b.chapters[3].contents().length);
+        const entries = b.chapters[3].ref.parts();
+        expect(entries.length).toBe(b.chapters[3].parts().length);
         expect(entries.every(e => e instanceof $Location)).toBe(true);
-        expect(entries[0].read()).toBe(b.chapters[3].contents()[0]);
+        expect(entries[0].read()).toBe(b.chapters[3].parts()[0]);
     });
 
     it('a reference for a sentence is also a catalogue for its words — ref then location', () => {
@@ -166,15 +166,15 @@ describe('the two connections — find goes forward, ref comes back', () => {
         const b: $Book = $(book());
         const followed = b.tableOfContents.follow();
         const chapters = b.tableOfContents.chapters;
-        expect(followed.contents().length).toBe(chapters.length);
-        expect(followed.contents().every((c, k) => c === chapters[k])).toBe(true);
+        expect(followed.parts().length).toBe(chapters.length);
+        expect(followed.parts().every((c, k) => c === chapters[k])).toBe(true);
         expect(followed.canonical).toBe(b.synopsis);
     });
 
     it('the table of contents IS a catalogue of chapters — its contents are rows, and rows are references', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
-        const rows = toc.contents();
+        const rows = toc.parts();
         expect(rows.every(s => s instanceof $Section && s instanceof $Row)).toBe(true);
         expect(rows.every(r => r.read() !== undefined)).toBe(true);
         expect(rows[0].read()).toBe(b.synopsis);
@@ -226,8 +226,8 @@ describe('the essential questions — complex references, equality across levels
         const toc = b.tableOfContents;
         const listed = toc.chapters;
         const chapters = toc.follow();
-        expect(chapters.contents().every((c, k) => c === listed[k])).toBe(true);
-        const sections = chapters.contents().flatMap(c => c.ref.follow().contents());
+        expect(chapters.parts().every((c, k) => c === listed[k])).toBe(true);
+        const sections = chapters.parts().flatMap(c => c.ref.follow().parts());
         expect(sections.every((s, k) => s === listed.flatMap(c => c.sections)[k])).toBe(true);
     });
 
@@ -243,7 +243,7 @@ describe('the essential questions — complex references, equality across levels
         const again = c.at(1).then(section.at(1));
         expect(once).not.toBe(again);
         expect(once.equals(again)).toBe(true);
-        const spoken = b.tableOfContents.follow().contents()[1];
+        const spoken = b.tableOfContents.follow().parts()[1];
         expect(same(spoken.words[1], c.words[1])).toBe(true);
     });
 
@@ -253,22 +253,22 @@ describe('the essential questions — complex references, equality across levels
         expect(bm.read()).toBe(b.chapters[3]);
         expect(bm.equals(b.at(3))).toBe(true);
         const deep: $Bookmark = $(<Bookmark for="#3.1">its first section</Bookmark>, b);
-        expect(deep.read()).toBe(b.chapters[3].contents()[0]);
+        expect(deep.read()).toBe(b.chapters[3].parts()[0]);
         expect(deep.equals(b.chapters[3].at(1))).toBe(true);
     });
 
     it('follow goes on following — the returned composition is followable to the next grade', () => {
         const b: $Book = $(book());
         const chapters = b.tableOfContents.follow();
-        const sections = chapters.contents().flatMap(c => c.ref.follow().contents());
+        const sections = chapters.parts().flatMap(c => c.ref.follow().parts());
         expect(sections.length).toBe(b.tableOfContents.chapters.flatMap(c => c.sections).length);
     });
 
     it('natural chaining — a catalogue of references that are catalogues descends level by level', () => {
         const b: $Book = $(book());
-        const chapter = b.tableOfContents.contents()[1].read()!;
-        const section = chapter.ref.contents()[0].read()!;
-        const paragraph = section.ref.contents()[1].read()!;
+        const chapter = b.tableOfContents.parts()[1].read()!;
+        const section = chapter.ref.parts()[0].read()!;
+        const paragraph = section.ref.parts()[1].read()!;
         expect(paragraph).toBeInstanceOf($Paragraph);
         expect(paragraph.copy).toBe('Reading is a change of coordinates.');
     });
@@ -278,8 +278,8 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     it('a chapter receives its sections DI-style — authored nested, bound as typed arguments', () => {
         const c: $Chapter = $(<Chapter>{section('Coordinates', 'Every act of reading is a change of coordinates.')}{summary('In brief.')}</Chapter>);
         expect(c).toBeInstanceOf($Chapter);
-        expect(c.contents().length).toBe(2);
-        expect(c.contents()[0]).toBeInstanceOf($Section);
+        expect(c.parts().length).toBe(2);
+        expect(c.parts()[0]).toBeInstanceOf($Section);
         expect(c.title?.copy).toBe('Coordinates');
     });
 
@@ -407,10 +407,10 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('the composition assigns the reference with the parts — fresh readings, fresh assignments', () => {
         const s: $Section = $(<Section><Title>Grounded</Title>{'\n\nOne paragraph stands here. It carries two sentences.'}</Section>);
-        const p = s.contents()[1];
+        const p = s.parts()[1];
         expect(p.index).toBe(1);
         expect(p.catalogue).toBe(s);
-        const sentence = p.contents()[0];
+        const sentence = p.parts()[0];
         expect(sentence.index).toBe(1);
         expect(sentence.catalogue).toBe(p);
     });
@@ -429,22 +429,22 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.where(c => c.parenthetical).length).toBe(0);
         const s = b.chapters[3].sections[0];
         expect(s.at(1).read()?.index).toBe(1);
-        expect(s.select(x => x.index)).toEqual(s.contents().map(x => x.index));
+        expect(s.select(x => x.index)).toEqual(s.parts().map(x => x.index));
     });
 
     it('where, select, and find answer at every grain of the composition', () => {
         const b: $Book = $(book());
         const chapter = b.chapters[3];
         expect(chapter.where(x => !x.parenthetical).length).toBe(1);
-        expect(chapter.contents().find(x => x.parenthetical)).toBe(chapter.summary);
+        expect(chapter.parts().find(x => x.parenthetical)).toBe(chapter.summary);
         const section = chapter.sections[0];
         const paragraph = section.at(1).read()!;
         const sentence = paragraph.at(1).read()!;
-        expect(sentence.copy).toBe(paragraph.contents()[0].copy);
-        expect(paragraph.select(x => x.copy)).toEqual(paragraph.contents().map(x => x.copy));
+        expect(sentence.copy).toBe(paragraph.parts()[0].copy);
+        expect(paragraph.select(x => x.copy)).toEqual(paragraph.parts().map(x => x.copy));
         const word = sentence.at(1).read()!;
-        expect(word.copy).toBe(sentence.contents()[0].copy);
-        expect(word.where(c => c.valid()).length).toBe(word.contents().length);
+        expect(word.copy).toBe(sentence.parts()[0].copy);
+        expect(word.where(c => c.valid()).length).toBe(word.parts().length);
         expect(word.at(1).read()?.copy).toBe([...word.copy][0]);
     });
 
@@ -479,7 +479,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         }
         const c: $Chapter = $(React.createElement($($Written) as any));
         expect(c).toBeInstanceOf($Written);
-        expect(c.contents().length).toBe(2);
+        expect(c.parts().length).toBe(2);
         expect(c.title?.copy).toBe('The Written Chapter');
         expect(c.subtitle?.copy).toBe('A Test');
         expect(c.summary?.copy).toContain('Written, marked, hidden.');
@@ -543,17 +543,17 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.chapters[2].index).toBe(2);
         expect(b.chapters[3].index).toBe(3);
         const c = b.chapters[3];
-        expect(c.contents()[0].index).toBe(1);
-        expect(c.contents()[1].index).toBe(2);
-        const s = c.contents()[0];
-        expect(s.contents()[0].index).toBe(0);
-        expect(s.contents()[1].index).toBe(1);
+        expect(c.parts()[0].index).toBe(1);
+        expect(c.parts()[1].index).toBe(2);
+        const s = c.parts()[0];
+        expect(s.parts()[0].index).toBe(0);
+        expect(s.parts()[1].index).toBe(1);
     });
 
     it('an authored index survives the binding — the composition fills only what was not assigned', () => {
         const c: $Chapter = $(<Chapter>{section('Coordinates', 'Prose.')}<Section index={9} parenthetical><Title>Summary</Title></Section></Chapter>);
-        expect(c.contents()[0].index).toBe(1);
-        expect(c.contents()[1].index).toBe(9);
+        expect(c.parts()[0].index).toBe(1);
+        expect(c.parts()[1].index).toBe(9);
     });
 
     it('every piece of writing carries an assignable index — decimals allowed', () => {
@@ -561,14 +561,14 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(c.index).toBe(0);
         c.index = 1.5;
         expect(c.index).toBe(1.5);
-        const s = c.contents()[0];
+        const s = c.parts()[0];
         s.index = 2.25;
         expect(s.index).toBe(2.25);
     });
 
     it('every piece of writing carries parenthetical — assignable and authorable', () => {
         const c: $Chapter = $(<Chapter><Section parenthetical><Title>Summary</Title></Section></Chapter>);
-        expect(c.contents()[0].parenthetical).toBe(true);
+        expect(c.parts()[0].parenthetical).toBe(true);
         const p: $Paragraph = $(<Paragraph>Plain prose.</Paragraph>);
         expect(p.parenthetical).toBe(false);
         p.parenthetical = true;

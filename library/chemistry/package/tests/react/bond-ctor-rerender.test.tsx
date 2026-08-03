@@ -55,7 +55,7 @@ describe('Bond constructor re-runs when children change', () => {
         expect(lastCount).toBe(2);
 
         await act(async () => {
-            container.querySelector('.add')!.click();
+            container.querySelector<HTMLElement>('.add')!.click();
         });
 
         expect(container.querySelectorAll('.item').length).toBe(3);
@@ -108,11 +108,11 @@ describe('Bond constructor re-runs when children change', () => {
         expect(lastLabels).toEqual(['A', 'B', 'C']);
         expect(container.querySelectorAll('.tag').length).toBe(3);
 
-        await act(async () => { container.querySelector('.remove')!.click(); });
+        await act(async () => { container.querySelector<HTMLElement>('.remove')!.click(); });
         expect(lastLabels).toEqual(['A', 'B']);
         expect(container.querySelectorAll('.tag').length).toBe(2);
 
-        await act(async () => { container.querySelector('.remove')!.click(); });
+        await act(async () => { container.querySelector<HTMLElement>('.remove')!.click(); });
         expect(lastLabels).toEqual(['A']);
         expect(container.querySelectorAll('.tag').length).toBe(1);
     });
@@ -138,7 +138,7 @@ describe('Bond constructor re-runs when children change', () => {
         const { container } = render(<Harness />);
         expect(container.querySelector('.card')!.textContent).toBe('first');
 
-        await act(async () => { container.querySelector('.swap')!.click(); });
+        await act(async () => { container.querySelector<HTMLElement>('.swap')!.click(); });
         expect(container.querySelector('.card')!.textContent).toBe('second');
     });
 
@@ -190,7 +190,7 @@ describe('Bond constructor re-runs when children change', () => {
         expect(lastTotal).toBe(30);
         expect(container.querySelectorAll('.score').length).toBe(2);
 
-        await act(async () => { container.querySelector('.update')!.click(); });
+        await act(async () => { container.querySelector<HTMLElement>('.update')!.click(); });
         expect(lastTotal).toBe(60);
         expect(container.querySelectorAll('.score').length).toBe(3);
         expect(ctorCalls).toBeGreaterThan(1);

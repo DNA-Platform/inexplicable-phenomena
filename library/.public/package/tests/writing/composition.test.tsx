@@ -56,8 +56,8 @@ describe('$Composition — implemented by the composition levels, born through t
 
     it('readings are fresh, never cached — each read parses anew', () => {
         const w: $Word = $(<Word>hi</Word>);
-        expect(w.contents()).not.toBe(w.contents());
-        expect(w.contents().map(c => c.copy)).toEqual(['h', 'i']);
+        expect(w.parts()).not.toBe(w.parts());
+        expect(w.parts().map(c => c.copy)).toEqual(['h', 'i']);
         const fresh: $Sentence = $(<Sentence>hello world</Sentence>);
         expect(fresh.words.map(x => x.copy)).toEqual(['hello', 'world']);
     });
@@ -88,7 +88,7 @@ describe('$Composition — implemented by the composition levels, born through t
 
     it('a sentence read from a paragraph is renderable on its own', () => {
         const p: $Paragraph = $(<Paragraph>Call me Ishmael. Some years ago.</Paragraph>);
-        const S = $(p.contents()[0]) as any;
+        const S = $(p.parts()[0]) as any;
         const { container } = render(<S />);
         expect(container.textContent).toBe('Call me Ishmael.');
     });

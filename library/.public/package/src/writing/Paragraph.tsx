@@ -15,7 +15,7 @@ import { $Word } from './Word';
 export class $Paragraph extends $Writing implements $Composition<$Sentence> {
     get canonical(): $Sentence { return Composible.canonical(this); }
 
-    get sentences(): $Sentence[] { return this.contents(); }
+    get sentences(): $Sentence[] { return this.parts(); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
@@ -33,7 +33,7 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
         return Composible.select(this, pick);
     }
 
-    contents(): $Sentence[] {
+    parts(): $Sentence[] {
         const sentences: $Sentence[] = (this.copy.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => $(<Sentence>{s.trim()}</Sentence>));
         return sentences.filter(s => s.valid()).map((s, i) => {
             s.index = i + 1;
@@ -53,11 +53,11 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
 
     constructor(public of: $Paragraph) { }
 
-    get copy(): string { return this.contents().map(r => r.copy).join(' '); }
+    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Sentence> { return Composible.canonical(this); }
 
-    contents(): $Reference<$Sentence>[] {
-        return this.of.contents().map((sentence, slot) => {
+    parts(): $Reference<$Sentence>[] {
+        return this.of.parts().map((sentence, slot) => {
             const reference = this.of.at(sentence.index);
             reference.index = slot + 1;
             return reference;

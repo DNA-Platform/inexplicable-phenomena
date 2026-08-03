@@ -295,7 +295,9 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         let run: any[] = [];
         const flush = () => {
             if (!run.length) return;
-            const els = run.map(c => $(this.asElement(c)));   // lift each inline node to an instance, once
+            // Lift each inline node to an instance, once — parented to the chemical whose
+            // bond is interpreting it: an element in a block reaches outside the block.
+            const els = run.map(c => $(this.asElement(c), this._chemical));
             out.push(React.createElement('block' as any, { key: `$b${out.length}`, elements: els }));
             run = [];
         };

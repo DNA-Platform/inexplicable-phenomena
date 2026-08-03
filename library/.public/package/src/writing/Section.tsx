@@ -25,7 +25,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         this.inline = false;
     }
 
-    get paragraphs(): $Paragraph[] { return this.contents(); }
+    get paragraphs(): $Paragraph[] { return this.parts(); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
@@ -41,7 +41,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         return Composible.at(this, index);
     }
 
-    contents(): $Paragraph[] {
+    parts(): $Paragraph[] {
         const paragraphs: $Paragraph[] = this.copy.split(/\n{2,}/).map(p => $(<Paragraph>{p.trim()}</Paragraph>));
         return paragraphs.filter(p => p.valid()).map((p, i) => {
             p.index = i;
@@ -65,7 +65,7 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
     }
 
     get tagline(): $Tagline | undefined {
-        const body = this.contents().slice(1).flatMap(p => p.sentences);
+        const body = this.parts().slice(1).flatMap(p => p.sentences);
         if (!body.length) return undefined;
         const copy = body.length === 1 ? body[0].copy : body[0].copy.replace(/[.!?]+$/, '') + '…';
         const tagline: $Tagline = $(<Tagline>{copy}</Tagline>);
@@ -101,11 +101,11 @@ export class $$Section implements $Catalogue<$Paragraph>, $Reference<$Section> {
 
     constructor(public of: $Section) { }
 
-    get copy(): string { return this.contents().map(r => r.copy).join(' '); }
+    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Paragraph> { return Composible.canonical(this); }
 
-    contents(): $Reference<$Paragraph>[] {
-        return this.of.contents().map((paragraph, slot) => {
+    parts(): $Reference<$Paragraph>[] {
+        return this.of.parts().map((paragraph, slot) => {
             const reference = this.of.at(paragraph.index);
             reference.index = slot + 1;
             return reference;

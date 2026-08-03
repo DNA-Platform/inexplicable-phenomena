@@ -44,6 +44,7 @@ export class $Particle {
     [$template$]!: this;
     [$destroyed$]?: boolean;
     [$construction$]?: Promise<any>;
+    [$formPromise$]?: Promise<any>;
     [$component$]?: Component<this>;
     get [$isTemplate$]() { return this == (this as any)[$type$][$$template$$]; }
     get [$derived$]() { return this !== this[$template$]; }

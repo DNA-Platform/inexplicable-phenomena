@@ -20,12 +20,12 @@ export const typeofTypes = new Set<TypeofType>([String, Number, Boolean, BigInt,
 
 export type $SymbolFeature = 'fast' | 'slow' | 'self-contained' | 'referential';
 export type $Phase = 'setup' | 'construction' | 'formation' | 'mount' | 'render' | 'layout' | 'effect' | 'unmount';
-export type $Promise<T = any> = Promise<T> & {
+export type $Promise<T = any> = {
     result: T,
     complete: boolean,
     then: <U>(action: (value: T) => U) => $Promise<U>,
     cancel: (action?: () => any) => any
-}
+} & Promise<T>
 
 export interface $Rep<T = any> {
     $ref: string;

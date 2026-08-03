@@ -15,7 +15,10 @@ export class $Bookmark<T extends $Referent = $Referent> extends $Sentence implem
 
     get book(): $Book | undefined {
         let scope: unknown = this.parent;
-        while (scope && !(scope instanceof $Book)) scope = (scope as { parent?: unknown }).parent;
+        while (scope && !(scope instanceof $Book)) {
+            const above = (scope as { parent?: unknown }).parent;
+            scope = above === scope ? undefined : above;
+        }
         return scope as $Book | undefined;
     }
 

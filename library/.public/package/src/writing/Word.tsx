@@ -12,7 +12,7 @@ import { $Letter, Letter } from './Letter';
 
 export class $Word extends $Writing implements $Composition<$Letter> {
     get canonical(): $Letter { return Composible.canonical(this); }
-    get letters(): $Letter[] { return this.contents(); }
+    get letters(): $Letter[] { return this.parts(); }
 
     get ref(): $$Word { return new $$Word(this); }
 
@@ -28,7 +28,7 @@ export class $Word extends $Writing implements $Composition<$Letter> {
         return Composible.select(this, pick);
     }
 
-    contents(): $Letter[] {
+    parts(): $Letter[] {
         const letters: $Letter[] = [...this.copy].map(g => $(<Letter>{g}</Letter>));
         return letters.filter(c => c.valid()).map((c, i) => {
             c.index = i + 1;
@@ -48,11 +48,11 @@ export class $$Word implements $Catalogue<$Letter>, $Reference<$Word> {
 
     constructor(public of: $Word) { }
 
-    get copy(): string { return this.contents().map(r => r.copy).join(' '); }
+    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
     get canonical(): $Reference<$Letter> { return Composible.canonical(this); }
 
-    contents(): $Reference<$Letter>[] {
-        return this.of.contents().map((letter, slot) => {
+    parts(): $Reference<$Letter>[] {
+        return this.of.parts().map((letter, slot) => {
             const reference = this.of.at(letter.index);
             reference.index = slot + 1;
             return reference;

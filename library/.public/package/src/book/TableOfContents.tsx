@@ -17,7 +17,7 @@ import { type $Book } from './Book';
 
 export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     get title(): $Title {
-        const authored = this.$contents.find(s => !s.parenthetical)?.heading ?? '';
+        const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
         const title: $Title = $(<Title>{authored || 'Table of Contents'}</Title>);
         return title;
     }
@@ -29,11 +29,11 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     get canonical(): $Row { return Composible.canonical(this); }
 
     get chapters(): $Chapter[] {
-        return this.contents().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
+        return this.parts().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
     }
 
-    contents(): $Row[] {
-        return this.book.contents()
+    parts(): $Row[] {
+        return this.book.parts()
             .filter(c => c !== this && !(c instanceof $Cover))
             .map(c => {
                 const row = new $Row();
@@ -74,9 +74,9 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     }
 
     $TableOfContents(...sections: $Section[]) {
-        this.$contents = sections.map(s => $check(s, $Section));
-        this.$contents.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$contents.forEach(s => { s.catalogue = this; });
+        this.$parts = sections.map(s => $check(s, $Section));
+        this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+        this.$parts.forEach(s => { s.catalogue = this; });
     }
 
     row(row: $Row): ReactNode {
@@ -88,7 +88,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
             <div className="table-of-contents">
                 <div className="contents-title">{text(this.title.text)}</div>
                 <ol>
-                    {this.contents().map(r => this.row(r))}
+                    {this.parts().map(r => this.row(r))}
                 </ol>
             </div>
         );

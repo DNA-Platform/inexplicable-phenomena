@@ -6,14 +6,14 @@ import { $Word } from '@/writing/Word';
 import { $Location } from '@/reference/Location';
 import { Composible } from '@/utilities/Composible';
 
-describe('Composible — contents() is enough; the rest are extension methods', () => {
+describe('Composible — parts() is enough; the rest are extension methods', () => {
     const sentence = (): $Sentence => $(<Sentence>the frame turns</Sentence>);
 
-    it('canonical is the first content', () => {
+    it('canonical is the first part', () => {
         expect(Composible.canonical(sentence()).copy).toBe('the');
     });
 
-    it('where filters and select projects, over anything with contents', () => {
+    it('where filters and select projects, over anything with parts', () => {
         expect(Composible.where(sentence(), w => w.index === 2)[0].copy).toBe('frame');
         expect(Composible.select(sentence(), w => w.copy)).toEqual(['the', 'frame', 'turns']);
     });
@@ -29,14 +29,14 @@ describe('Composible — contents() is enough; the rest are extension methods', 
     it('follow reaches on — the followed words, followed again through their own drawers, are the letters', () => {
         const s = sentence();
         const words = s.ref.follow();
-        const letters = Composible.follow({ contents: () => words.contents().flatMap(w => w.ref.contents()) });
-        expect(letters.contents().map(l => l.copy).join('')).toBe('theframeturns');
+        const letters = Composible.follow({ parts: () => words.parts().flatMap(w => w.ref.parts()) });
+        expect(letters.parts().map(l => l.copy).join('')).toBe('theframeturns');
     });
 
     it('follow dereferences the drawer — the catalogue becomes the composition of what its entries find', () => {
         const s = sentence();
         const words = s.ref.follow();
-        expect(words.contents().map(w => w.copy)).toEqual(['the', 'frame', 'turns']);
+        expect(words.parts().map(w => w.copy)).toEqual(['the', 'frame', 'turns']);
         expect(words.canonical.copy).toBe('the');
         expect((words.at(2).read() as $Word).copy).toBe('frame');
     });
