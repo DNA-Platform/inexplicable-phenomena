@@ -93,6 +93,12 @@ describe('The document — the general unit above sections, and its reference ap
         expect(legend.keys[0].read()).toBe(footer.entries[0]);
     });
 
+    it('a denote is parenthetical — counted by the reading, absent from the flattened prose', () => {
+        const d = noted();
+        expect(d.sections[0].copy).not.toContain('seam');
+        expect(d.sections[0].copy).toContain('Fold a sheet and the crease remembers.');
+    });
+
     it('a denote is written inline as a command — its key is its copy, and it reads its note through the document', () => {
         const d = noted();
         const [seam, found] = denotes(d);

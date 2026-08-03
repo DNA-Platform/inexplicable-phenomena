@@ -8,6 +8,7 @@ import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
+import { $Footer } from '@/document/Footer';
 import { text } from '@/utilities/html';
 import { manifold } from './book/library/the-manifold/book';
 import { $RibbonMark, RibbonMark, $Return, Return } from './book/library/the-manifold/marks';
@@ -85,6 +86,7 @@ type Row = {
     summary: string;
     body: string[];
     sections: { head: string; sub: string; paragraphs: string[] }[];
+    notes: { key: string; note: string; index: number }[];
     contents: boolean;
     cover: boolean;
     copy: string;
@@ -110,8 +112,8 @@ const row = (c: $Chapter, i: number): Row => ({
     subtitle: c.subtitle?.copy ?? '',
     tagline: c.tagline?.copy ?? '',
     summary: c.summary?.parts().slice(1).map(p => p.copy).join(' ') ?? '',
-    body: c.parts().filter(s => !s.parenthetical).flatMap(s => s.parts().slice(1).map(p => p.copy)),
-    sections: c.parts().filter(s => !s.parenthetical).map(s => {
+    body: c.parts().filter(s => !s.parenthetical && !(s instanceof $Footer)).flatMap(s => s.parts().slice(1).map(p => p.copy)),
+    sections: c.parts().filter(s => !s.parenthetical && !(s instanceof $Footer)).map(s => {
         const full = text(s.title);
         const colon = full.indexOf(':');
         return {
@@ -120,6 +122,7 @@ const row = (c: $Chapter, i: number): Row => ({
             paragraphs: s.parts().slice(1).map(p => p.copy),
         };
     }),
+    notes: (c.footer?.entries ?? []).map(e => ({ key: e.key, note: e.note, index: e.index })),
     contents: c instanceof $TableOfContents,
     cover: i === 0,
     copy: c.copy,
@@ -156,7 +159,7 @@ function light(id: string, block: ScrollLogicalPosition = 'center') {
     setTimeout(() => el.classList.remove('lit'), 2400);
 }
 
-function spans(s: string, follow: (address: string) => void, notes?: string[]): ReactNode[] {
+function spans(s: string, follow: (address: string) => void, notes?: { key: string; note: string; index: number }[]): ReactNode[] {
     const out: ReactNode[] = [];
     const re = /\^\[([^\]]+)\]|\[([^\]]+)\]\(#([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
     let last = 0;
@@ -165,12 +168,11 @@ function spans(s: string, follow: (address: string) => void, notes?: string[]): 
     while ((m = re.exec(s))) {
         if (m.index > last) out.push(s.slice(last, m.index));
         if (m[1] !== undefined) {
-            if (notes) {
-                notes.push(m[1]);
-                const n = notes.length;
+            const filed = notes?.find(n => n.key === m![1]);
+            if (filed) {
                 out.push(
-                    <sup key={`n${k++}`} id={`mark-${n}`} className="note-mark" onClick={() => light(`note-${n}`)}>
-                        {n}
+                    <sup key={`n${k++}`} id={`mark-${filed.key}`} className="note-mark" onClick={() => light(`note-${filed.key}`)}>
+                        {filed.index}
                     </sup>
                 );
             }
@@ -192,7 +194,7 @@ function spans(s: string, follow: (address: string) => void, notes?: string[]): 
     return out;
 }
 
-function rich(p: string, follow: (address: string) => void = () => {}, notes?: string[]): ReactNode {
+function rich(p: string, follow: (address: string) => void = () => {}, notes?: { key: string; note: string; index: number }[]): ReactNode {
     const bits = p.split(/\$([^$]+)\$/g);
     return bits.map((b, i) => (
         i % 2
@@ -242,6 +244,18 @@ function ModelOpening({ r }: OpeningProps) {
                     ))}
                 </ModelSection>
             ))}
+            {r.notes.length > 0 && (
+                <ModelSection>
+                    <ModelAddress>( footer )</ModelAddress>
+                    <ModelHead>Notes</ModelHead>
+                    {r.notes.map(n => (
+                        <ModelPara key={n.key}>
+                            <ModelAddress className="dim">{n.index} · {n.key}</ModelAddress>
+                            <span>{n.note}</span>
+                        </ModelPara>
+                    ))}
+                </ModelSection>
+            )}
             {r.summary && (
                 <ModelSection>
                     <ModelAddress>( parenthetical )</ModelAddress>
@@ -300,7 +314,6 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
             </div>
         );
     }
-    const notes: string[] = [];
     return (
         <div id={`${r.index}`}>
             <ChapterNumber>chapter {r.index}</ChapterNumber>
@@ -316,24 +329,24 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
                             p.startsWith('> ')
                                 ? (
                                     <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`} onDoubleClick={() => press(`#${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
-                                        {rich(p.slice(2), follow, notes)}
+                                        {rich(p.slice(2), follow, r.notes)}
                                     </Quote>
                                 )
                                 : (
                                     <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`#${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
-                                        {rich(p, follow, notes)}
+                                        {rich(p, follow, r.notes)}
                                     </Prose>
                                 )
                         ))}
                     </div>
                 );
             })}
-            {notes.length > 0 && (
+            {r.notes.length > 0 && (
                 <FootNotes>
-                    {notes.map((n, i) => (
-                        <div key={i} id={`note-${i + 1}`} className="foot-note">
-                            <span className="note-index" onClick={() => light(`mark-${i + 1}`)}>{i + 1}</span>
-                            {rich(n, follow)}
+                    {r.notes.map(n => (
+                        <div key={n.key} id={`note-${n.key}`} className="foot-note">
+                            <span className="note-index" onClick={() => light(`mark-${n.key}`)}>{n.index}</span>
+                            {rich(n.note, follow)}
                         </div>
                     ))}
                 </FootNotes>

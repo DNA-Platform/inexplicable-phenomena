@@ -3,6 +3,8 @@ import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
+import { Footer } from '@/document/Footer';
+import { Footnote } from '@/document/Footnote';
 
 export class $TheReference extends $Chapter {
     view(): ReactNode {
@@ -22,8 +24,12 @@ export class $TheReference extends $Chapter {
                 </Section>
                 <Section>
                     <Title>The Ribbon</Title>
-                    {'\n\nA bookmark is the reference a reader leaves. It resolves to a part of this book, and it belongs to this book for the plainest of reasons: it is rendered inside it. Leave the ribbon on this page and walk any path you like across the surface — the bookmark is the one geodesic that always leads home^[The chip in the bar leaves it; the ribbon will hang over every page of this book until you click it home.]. The ribbons multiply now — the reader keeps [a whole atlas of them](#8.2).'}
+                    {'\n\nA bookmark is the reference a reader leaves. It resolves to a part of this book, and it belongs to this book for the plainest of reasons: it is rendered inside it. Leave the ribbon on this page and walk any path you like across the surface — the bookmark is the one geodesic that always leads home^[ribbon]. The ribbons multiply now — the reader keeps [a whole atlas of them](#8.2).'}
                 </Section>
+                <Footer>
+                    <Title>Notes</Title>
+                    <Footnote>{'ribbon: The chip in the bar leaves it; the ribbon will hang over every page of this book until you click it home.'}</Footnote>
+                </Footer>
                 <Section parenthetical>
                     <Title>Summary</Title>
                     {'\n\nA reference is a sentence that stands for something; it transports the reader along a declared path; a bookmark belongs to the book it is rendered inside.'}

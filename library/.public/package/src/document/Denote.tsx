@@ -9,6 +9,11 @@ import { $Footer } from './Footer';
 import { $Footnote } from './Footnote';
 
 export class $Denote extends $Writing implements $Reference<$Footnote> {
+    constructor() {
+        super();
+        this.$parenthetical = true;
+    }
+
     get key(): string {
         return this.copy.trim();
     }
