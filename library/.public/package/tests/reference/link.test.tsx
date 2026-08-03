@@ -13,10 +13,8 @@ test('$Link stores a url — its view is an anchor carrying the text', () => {
     expect(html).toContain('href="/books/moby"');
 });
 
-test('a link finds the destination in the router\'s notation — the router does the travelling', () => {
+test('a link holds the destination in the router\'s notation — the router does the travelling', () => {
     const l: $Link = $(<Link url="/books/moby">Moby-Dick</Link>);
-    expect(l.read()).toBe('/books/moby');
+    expect(l.url).toBe('/books/moby');
     expect(l.valid()).toBe(true);
-    const twin: $Link = $(<Link url="/books/moby">the whale book</Link>);
-    expect(l.equals(twin)).toBe(true);
 });

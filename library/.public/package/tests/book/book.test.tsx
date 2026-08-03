@@ -10,7 +10,6 @@ import { $Synopsis, Synopsis } from '@/book/Synopsis';
 import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { $Book, Book } from '@/book/Book';
 import { Title } from '@/writing/Title';
-import { same } from '@/utilities/reference';
 import { $Location } from '@/reference/Location';
 import { $Path } from '@/reference/Path';
 import { $Sentence } from '@/writing/Sentence';
@@ -42,8 +41,8 @@ const rejection = (b: any): string | undefined => {
     return s ? b[s] : undefined;
 };
 
-describe('referential integrity — at, then, and sameness', () => {
-    it('the catalogue mints its references — at stands where it was minted, find answers by index', () => {
+describe('referential integrity — at, then, and the reading', () => {
+    it('at writes a location standing at the composition — read answers by index, and a missing index throws', () => {
         const b: $Book = $(book());
         const r = b.at(3);
         expect(r).toBeInstanceOf($Location);
@@ -51,18 +50,15 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(r.read()).toBe(b.chapters[3]);
         expect(r.valid()).toBe(true);
         expect(b.at(0).read()).toBe(b.cover);
-        expect(b.at(99).read()).toBeUndefined();
+        expect(() => b.at(99).read()).toThrow();
+        expect(b.at(99).valid()).toBe(false);
     });
 
-    it('every found part knows its canonical catalogue — assigned by the reading, always', () => {
+    it('referents are memoryless — a part carries its index and nothing about who read it', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        expect(c.catalogue).toBe(b);
         expect(c.index).toBe(3);
-        const s = c.parts()[0];
-        expect(s.catalogue).toBe(c);
-        const p = s.parts()[1];
-        expect(p.catalogue).toBe(s);
+        expect('catalogue' in c).toBe(false);
     });
 
     it('then chains bound references — the walk crosses levels in one find', () => {
@@ -76,38 +72,34 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(r.valid()).toBe(true);
     });
 
-    it('a reference standing at another book finds nothing — composition never throws', () => {
+    it('a path trusts its construction — each leg reads at its own ground, and the walk is the guard', () => {
         const one: $Book = $(book());
         const other: $Book = $(book());
         const here = one.chapters[3].parts()[0];
         const there = other.chapters[3].parts()[0];
-        const away = there.at(1).read()!;
+        const away = there.at(1).read();
         const r = here.at(1).then(away.at(1));
-        expect(r.read()).toBeUndefined();
-        expect(r.valid()).toBe(false);
+        expect(r.read().copy).toBe(away.at(1).read().copy);
     });
 
-    it('sameness is not JS equality — fresh readings of one place are the same; a second book with the same text is another place', () => {
+    it('equality left the interface — fresh readings of one place are distinct values, and no member claims otherwise', () => {
         const b: $Book = $(book());
         const s = b.chapters[3].parts()[0];
-        const once = s.at(1).read()!;
-        const again = s.at(1).read()!;
+        const once = s.at(1).read();
+        const again = s.at(1).read();
         expect(once).not.toBe(again);
-        expect(same(once, again)).toBe(true);
-        expect(s.at(1).equals(s.at(1))).toBe(true);
-        const second: $Book = $(book());
-        const elsewhere = second.chapters[3].parts()[0].at(1).read()!;
-        expect(same(once, elsewhere)).toBe(false);
+        expect(once.copy).toBe(again.copy);
+        expect('equals' in s.at(1)).toBe(false);
     });
 
-    it('a duplicated index finds nothing — the uniqueness law lives in find', () => {
+    it('a duplicated index reads nothing — single insists on exactly one, and throws', () => {
         const c: $Chapter = $(
             <Chapter>
                 <Section index={9}><Title>One</Title>{'\n\nProse stands here.'}</Section>
                 <Section index={9} parenthetical><Title>Summary</Title>{'\n\nIn brief.'}</Section>
             </Chapter>
         );
-        expect(c.at(9).read()).toBeUndefined();
+        expect(() => c.at(9).read()).toThrow();
         expect(c.at(9).valid()).toBe(false);
     });
 
@@ -118,7 +110,6 @@ describe('referential integrity — at, then, and sameness', () => {
         expect(sentence.letters.map(l => l.copy).join('')).toBe(sentence.copy);
         const claimed = sentence.words.flatMap(w => w.letters);
         expect(claimed.map(l => l.copy).join('')).toBe('Readingisachangeofcoordinates');
-        expect(claimed[0].catalogue).toBeInstanceOf($Word);
         expect(section.words.length).toBe(7);
         expect(section.letters.length).toBeGreaterThan(0);
         expect(b.sentences.length).toBeGreaterThan(0);
@@ -212,13 +203,12 @@ describe('the essential questions — complex references, equality across levels
         expect((r.read() as $Paragraph).copy).toBe('Reading is a change of coordinates.');
     });
 
-    it('equality survives added levels — deep and shallow arrive at the same place', () => {
+    it('arrivals agree at the held grades — deep and shallow read the very same section', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        const section = c.at(1).read()!;
-        const deep = c.at(1).then(section.at(1));
-        expect(deep.equals(section.at(1))).toBe(true);
-        expect(deep.equals(section.at(0))).toBe(false);
+        const section = c.at(1).read();
+        const deep = b.at(3).then(c.at(1));
+        expect(deep.read()).toBe(section);
     });
 
     it('the contents page speaks for the book by following — the chapters, then each of their own drawers', () => {
@@ -231,30 +221,25 @@ describe('the essential questions — complex references, equality across levels
         expect(sections.every((s, k) => s === listed.flatMap(c => c.sections)[k])).toBe(true);
     });
 
-    it('composition obeys reference equality — grouping does not matter, and independent buildings agree', () => {
+    it('grouping does not matter to the reading — both associations arrive at the same copy', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        const section = c.at(1).read()!;
-        const paragraph = section.at(1).read()!;
+        const section = c.at(1).read();
+        const paragraph = section.at(1).read();
         const left = c.at(1).then(section.at(1)).then(paragraph.at(1));
         const right = c.at(1).then(section.at(1).then(paragraph.at(1)));
-        expect(left.equals(right)).toBe(true);
-        const once = c.at(1).then(section.at(1));
-        const again = c.at(1).then(section.at(1));
-        expect(once).not.toBe(again);
-        expect(once.equals(again)).toBe(true);
+        expect(left.read().copy).toBe(right.read().copy);
         const spoken = b.tableOfContents.follow().parts()[1];
-        expect(same(spoken.words[1], c.words[1])).toBe(true);
+        expect(spoken.words[1].copy).toBe(c.words[1].copy);
     });
 
-    it('a bookmark is a kept path — it holds to, finds through it, and obeys reference equality', () => {
+    it('a bookmark builds its path fresh — it reads through the book it is rendered inside', () => {
         const b: $Book = $(book());
         const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
         expect(bm.read()).toBe(b.chapters[3]);
-        expect(bm.equals(b.at(3))).toBe(true);
         const deep: $Bookmark = $(<Bookmark for="#3.1">its first section</Bookmark>, b);
         expect(deep.read()).toBe(b.chapters[3].parts()[0]);
-        expect(deep.equals(b.chapters[3].at(1))).toBe(true);
+        expect(deep.valid()).toBe(true);
     });
 
     it('follow goes on following — the returned composition is followable to the next grade', () => {
@@ -387,32 +372,28 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.tableOfContents.tagline?.copy).toBe('A book about reading.');
     });
 
-    it('the catalogue is known, and ref answers with its own kind', () => {
+    it('ref answers with its own kind, and reads back to its literal', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
         expect(c.ref).toBeInstanceOf($$Chapter);
         expect(c.ref.read()).toBe(c);
-        expect(c.catalogue).toBe(b);
-        expect(c.catalogue!.at(c.index).read()).toBe(c);
+        expect(b.at(c.index).read()).toBe(c);
     });
 
-    it('at and find are inverses — the minted reference finds the part it was minted for', () => {
+    it('at and read are inverses — the written location reads the part it stands for', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
         expect(b.at(c.index).read()).toBe(c);
         const s = c.sections[0];
         expect(c.at(s.index).read()).toBe(s);
-        expect(s.catalogue!.at(s.index).read()).toBe(s);
     });
 
-    it('the composition assigns the reference with the parts — fresh readings, fresh assignments', () => {
+    it('the composition assigns the index with the parts — fresh readings, fresh assignments', () => {
         const s: $Section = $(<Section><Title>Grounded</Title>{'\n\nOne paragraph stands here. It carries two sentences.'}</Section>);
         const p = s.parts()[1];
         expect(p.index).toBe(1);
-        expect(p.catalogue).toBe(s);
         const sentence = p.parts()[0];
         expect(sentence.index).toBe(1);
-        expect(sentence.catalogue).toBe(p);
     });
 
     it('a highlight is the reference a highlighter leaves — first and last letter of its parent', () => {
@@ -453,11 +434,6 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
         expect(bm.read()).toBe(b.chapters[3]);
         expect(bm.copy).toBe('the chapter on coordinates');
-    });
-
-    it('references are assigned, never derived — every chapter stands referenced at its book', () => {
-        const b: $Book = $(book());
-        expect(b.chapters.every(c => c.catalogue === b)).toBe(true);
     });
 
     it('writing a chapter is writing a view — the sections are declared in the writing', () => {

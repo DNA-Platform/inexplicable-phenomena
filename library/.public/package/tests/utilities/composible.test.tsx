@@ -44,6 +44,6 @@ describe('Composible — parts() is enough; the rest are extension methods', () 
     it('the class methods delegate — the same answers either way', () => {
         const s = sentence();
         expect(s.where(w => w.index > 1).map(w => w.copy)).toEqual(Composible.where(s, w => w.index > 1).map(w => w.copy));
-        expect(s.at(2).equals(Composible.at(s, 2))).toBe(true);
+        expect(s.at(2).read().copy).toBe(Composible.at(s, 2).read().copy);
     });
 });

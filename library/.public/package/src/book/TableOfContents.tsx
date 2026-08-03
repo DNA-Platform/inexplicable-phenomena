@@ -1,8 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
+import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
-import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -39,7 +39,6 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
                 const row = new $Row();
                 row.path = this.book.at(c.index);
                 row.index = c.index;
-                row.catalogue = this;
                 return row;
             });
     }
@@ -52,6 +51,10 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
         return Composible.select(this, pick);
     }
 
+    single(match: (part: $Row) => boolean): $Row {
+        return Composible.single(this, match);
+    }
+
     at(index: number): $Location<$Row> {
         return Composible.at(this, index);
     }
@@ -60,23 +63,17 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
         return Composible.follow(this);
     }
 
-    read(): $Book | undefined {
+    read(): $Book {
         return this.cover.read();
     }
 
-    equals(ref: $Reference<$Composition<$Chapter>>): boolean {
-        const found = ref.read();
-        return this.book === found || same(this.book, found);
-    }
-
-    then<U>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return new $Path<$Book, U>(this, next);
     }
 
     $TableOfContents(...sections: $Section[]) {
         this.$parts = sections.map(s => $check(s, $Section));
         this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$parts.forEach(s => { s.catalogue = this; });
     }
 
     row(row: $Row): ReactNode {

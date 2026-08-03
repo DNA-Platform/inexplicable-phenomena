@@ -1,8 +1,8 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Composition } from './Composition';
+import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
-import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -33,11 +33,14 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
         return Composible.select(this, pick);
     }
 
+    single(match: (part: $Sentence) => boolean): $Sentence {
+        return Composible.single(this, match);
+    }
+
     parts(): $Sentence[] {
         const sentences: $Sentence[] = (this.copy.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => $(<Sentence>{s.trim()}</Sentence>));
         return sentences.filter(s => s.valid()).map((s, i) => {
             s.index = i + 1;
-            s.catalogue = this;
             return s;
         });
     }
@@ -72,6 +75,10 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
         return Composible.select(this, pick);
     }
 
+    single(match: (reference: $Reference<$Sentence>) => boolean): $Reference<$Sentence> {
+        return Composible.single(this, match);
+    }
+
     at(index: number): $Location<$Reference<$Sentence>> {
         return Composible.at(this, index);
     }
@@ -88,12 +95,7 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
         return this.of.valid();
     }
 
-    equals(ref: $Reference<$Paragraph>): boolean {
-        const found = ref.read();
-        return this.of === found || same(this.of, found);
-    }
-
-    then<U>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return new $Path<$Paragraph, U>(this, next);
     }
 }

@@ -1,3 +1,4 @@
+import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
 import { type $Composition } from '../writing/Composition';
 import { $Location } from '../reference/Location';
@@ -15,19 +16,31 @@ export class Composible {
         return of.parts().map(pick);
     }
 
-    static at<T>(of: { parts(): T[] }, index: number): $Location<T> {
+    static single<T>(of: { parts(): T[] }, match: (part: T) => boolean): T {
+        const found = of.parts().filter(match);
+        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
+        return found[0];
+    }
+
+    static at<T extends $Referent>(of: { parts(): T[] }, index: number): $Location<T> {
         return new $Location<T>(index, of as any);
     }
 
-    static follow<T extends { copy: string; index: number; parenthetical: boolean }>(of: { parts(): $Reference<T>[] }): $Composition<T> {
-        const found = (): T[] => of.parts().map(r => r.read()).filter((t): t is T => t !== undefined);
+    static follow<T extends $Referent & { copy: string; index: number; parenthetical: boolean }>(of: { parts(): $Reference<T>[] }): $Composition<T> {
+        const found = (): T[] => of.parts().map(r => r.read());
         const followed: $Composition<T> = {
             get canonical() { return found()[0]; },
             parts: found,
             where: (match) => found().filter(match),
             select: (pick) => found().map(pick),
+            single: (match) => {
+                const kept = found().filter(match);
+                if (kept.length !== 1) throw new Error(`single expected exactly one part and found ${kept.length}.`);
+                return kept[0];
+            },
             at(index: number) { return new $Location<T>(index, followed); },
             get copy() { return found().map(t => t.copy).join(' '); },
+            valid: () => true,
             index: 0,
             parenthetical: false,
         };

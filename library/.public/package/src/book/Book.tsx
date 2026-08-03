@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
-import { $, $check } from '@dna-platform/chemistry';
-import { $Referent } from '../reference/Referent';
+import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -17,7 +17,7 @@ import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
 
-export class $Book extends $Referent implements $Composition<$Chapter> {
+export class $Book extends $Chemical implements $Referent, $Composition<$Chapter> {
     $parts: $Chapter[] = [];
 
     $index?: number = undefined;
@@ -60,6 +60,10 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
         return Composible.select(this, pick);
     }
 
+    single(match: (part: $Chapter) => boolean): $Chapter {
+        return Composible.single(this, match);
+    }
+
     get tableOfContents(): $TableOfContents {
         return this.chapters.find(c => c instanceof $TableOfContents) as $TableOfContents;
     }
@@ -71,7 +75,6 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
             this.$parts.splice(1, 0, $(<TableOfContents />, this));
         }
         this.$parts.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
-        this.$parts.forEach(c => { c.catalogue = this; });
     }
 
     view(): ReactNode {
@@ -82,8 +85,7 @@ export class $Book extends $Referent implements $Composition<$Chapter> {
     }
 
     valid(): boolean {
-        return super.valid()
-            && this.chapters[0] instanceof $Cover
+        return this.chapters[0] instanceof $Cover
             && !this.chapters.some((c, i) => i > 0 && c instanceof $Cover)
             && this.chapters.some(c => c instanceof $Synopsis)
             && this.chapters.filter(c => c instanceof $TableOfContents).length <= 1;

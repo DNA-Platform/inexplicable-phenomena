@@ -1,6 +1,6 @@
 import { $, $check } from '@dna-platform/chemistry';
+import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
-import { same } from '../utilities/reference';
 import { $Path } from '../reference/Path';
 import { $Chapter } from './Chapter';
 import { type $Title } from '../writing/Title';
@@ -12,23 +12,18 @@ export class $Cover extends $Chapter implements $Reference<$Book> {
 
     get title(): $Title { return super.title!; }
 
-    read(): $Book | undefined {
+    read(): $Book {
+        if (!this.book) throw new Error('The cover stands outside any book.');
         return this.book;
     }
 
-    equals(ref: $Reference<$Book>): boolean {
-        const found = ref.read();
-        return (this.book !== undefined && this.book === found) || same(this.book, found);
-    }
-
-    then<U>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return new $Path<$Book, U>(this, next);
     }
 
     $Cover(...sections: $Section[]) {
         this.$parts = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
         this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
-        this.$parts.forEach(s => { s.catalogue = this; });
         if (!this.valid()) throw new Error('A cover requires a title.');
     }
 }

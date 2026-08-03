@@ -147,7 +147,7 @@ check('MANIFOLD: the dog-ear turns the page over — the manuscript of this very
 await page.evaluate(() => { Array.from(document.querySelectorAll('button')).find(b => b.textContent?.trim() === 'Book.tsx')?.click(); });
 await settle();
 t = await text();
-check('MANIFOLD: the model reads on the page back', t.includes('class $Book extends $Referent'));
+check('MANIFOLD: the model reads on the page back', t.includes('class $Book extends $Chemical'));
 if (shots) await page.screenshot({ path: 'shot-manifold-manuscript.png' });
 await clickHead();
 await settle();

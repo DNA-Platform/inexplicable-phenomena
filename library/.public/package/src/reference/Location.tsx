@@ -1,9 +1,9 @@
 import { type $Composition } from '../writing/Composition';
+import { type $Referent } from './Referent';
 import { type $Reference } from './Reference';
-import { same } from '../utilities/reference';
 import { $Path } from './Path';
 
-export class $Location<T = unknown> implements $Reference<T> {
+export class $Location<T extends $Referent = any> implements $Reference<T> {
     index = 0;
     parenthetical = false;
 
@@ -11,20 +11,15 @@ export class $Location<T = unknown> implements $Reference<T> {
 
     get copy(): string { return `${this.i}`; }
 
-    read(): T | undefined {
-        const found = this.of.parts().filter((p: { index: number }) => p.index === this.i);
-        return found.length === 1 ? found[0] as T : undefined;
+    read(): T {
+        return this.of.single((part: { index: number }) => part.index === this.i) as T;
     }
 
     valid(): boolean {
-        return this.read() !== undefined;
+        return this.of.parts().filter((part: { index: number }) => part.index === this.i).length === 1;
     }
 
-    equals(ref: $Reference<T>): boolean {
-        return same(this.read(), ref.read());
-    }
-
-    then<U>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return new $Path<T, U>(this, next);
     }
 }

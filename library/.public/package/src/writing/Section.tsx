@@ -2,8 +2,8 @@ import React, { type ReactNode } from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
 import { type $Composition } from './Composition';
+import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
-import { same } from '../utilities/reference';
 import { type $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { Composible } from '../utilities/Composible';
@@ -16,6 +16,7 @@ import { $Subtitle, Subtitle } from './Subtitle';
 import { $Tagline, Tagline } from './Tagline';
 import { $Sentence } from './Sentence';
 import { $Word } from './Word';
+import { type $Document } from '../document/Document';
 
 export class $Section extends $Writing implements $Composition<$Paragraph> {
     title!: $Html<'block'>;
@@ -37,6 +38,10 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
 
     get ref(): $$Section { return new $$Section(this); }
 
+    get document(): $Document {
+        return this.parent as $Document;
+    }
+
     at(index: number): $Location<$Paragraph> {
         return Composible.at(this, index);
     }
@@ -45,7 +50,6 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         const paragraphs: $Paragraph[] = this.copy.split(/\n{2,}/).map(p => $(<Paragraph>{p.trim()}</Paragraph>));
         return paragraphs.filter(p => p.valid()).map((p, i) => {
             p.index = i;
-            p.catalogue = this;
             return p;
         });
     }
@@ -78,6 +82,10 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
 
     select<U>(pick: (part: $Paragraph) => U): U[] {
         return Composible.select(this, pick);
+    }
+
+    single(match: (part: $Paragraph) => boolean): $Paragraph {
+        return Composible.single(this, match);
     }
 
     $Section(text?: $Html<'block'>) {
@@ -120,6 +128,10 @@ export class $$Section implements $Catalogue<$Paragraph>, $Reference<$Section> {
         return Composible.select(this, pick);
     }
 
+    single(match: (reference: $Reference<$Paragraph>) => boolean): $Reference<$Paragraph> {
+        return Composible.single(this, match);
+    }
+
     at(index: number): $Location<$Reference<$Paragraph>> {
         return Composible.at(this, index);
     }
@@ -136,12 +148,7 @@ export class $$Section implements $Catalogue<$Paragraph>, $Reference<$Section> {
         return this.of.valid();
     }
 
-    equals(ref: $Reference<$Section>): boolean {
-        const found = ref.read();
-        return this.of === found || same(this.of, found);
-    }
-
-    then<U>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return new $Path<$Section, U>(this, next);
     }
 }

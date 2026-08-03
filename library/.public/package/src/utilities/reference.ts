@@ -1,17 +1,16 @@
 import { type $Reference } from '../reference/Reference';
-import { $Location } from '../reference/Location';
-import { $Path } from '../reference/Path';
+import { type $Composition } from '../writing/Composition';
 
-export const from = (reference: $Reference<any>): unknown =>
-    reference instanceof $Path ? from(reference.first)
-        : reference instanceof $Location ? reference.of
-            : undefined;
-
-export const same = (x?: unknown, y?: unknown): boolean => {
-    if (!x || !y) return false;
-    if (x === y) return true;
-    const a = x as { index?: number; catalogue?: unknown };
-    const b = y as { index?: number; catalogue?: unknown };
-    if (a.catalogue === undefined || b.catalogue === undefined) return false;
-    return a.index === b.index && same(a.catalogue, b.catalogue);
+// Resolve a dotted address at a composition — each key one hop of at(),
+// each hop after the first standing at the previous hop's arrival.
+export const path = (at: $Composition<any>, address: string): $Reference<any> | undefined => {
+    const keys = address.replace(/^.*#/, '').split('.').filter(Boolean).map(Number);
+    if (!keys.length) return undefined;
+    let reference: $Reference<any> = at.at(keys[0]);
+    for (const key of keys.slice(1)) {
+        const mid = reference.read() as { at?: (index: number) => $Reference<any> };
+        if (!mid?.at) return undefined;
+        reference = reference.then(mid.at(key));
+    }
+    return reference;
 };

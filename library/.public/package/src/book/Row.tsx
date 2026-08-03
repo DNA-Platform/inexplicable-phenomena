@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
+import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
-import { same } from '../utilities/reference';
 import { $Path } from '../reference/Path';
 import { $Section } from '../writing/Section';
 import { $Chapter } from './Chapter';
@@ -8,26 +8,26 @@ import { $Chapter } from './Chapter';
 export class $Row extends $Section implements $Reference<$Chapter> {
     path!: $Reference<$Chapter>;
 
-    get copy(): string { return this.path.read()?.canonical.heading ?? ''; }
+    get copy(): string { return this.valid() ? this.read().canonical.heading : ''; }
 
     get heading(): string { return this.copy; }
 
-    get chapter(): $Chapter | undefined { return this.read(); }
+    get chapter(): $Chapter { return this.read(); }
 
-    read(): $Chapter | undefined {
+    read(): $Chapter {
         return this.path.read();
     }
 
-    equals(ref: $Reference<$Chapter>): boolean {
-        return same(this.read(), ref.read());
-    }
-
-    then<U>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return new $Path<$Chapter, U>(this, next);
     }
 
     valid(): boolean {
-        return this.path !== undefined && this.path.read() instanceof $Chapter;
+        try {
+            return this.path !== undefined && this.path.read() instanceof $Chapter;
+        } catch {
+            return false;
+        }
     }
 }
 

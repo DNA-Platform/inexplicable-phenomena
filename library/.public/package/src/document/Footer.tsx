@@ -1,16 +1,25 @@
+import React from 'react';
 import { $, $check, type $Html } from '@dna-platform/chemistry';
 import { $Section } from '../writing/Section';
 import { $Title } from '../writing/Title';
 import { $Footnote } from './Footnote';
+import { $Legend, Legend } from './Legend';
+import { $Key } from './Key';
 
 export class $Footer extends $Section {
+    $legend?: $Legend;
+
     get entries(): $Footnote[] {
         return (this.text?.$elements ?? []).filter((e): e is $Footnote => e instanceof $Footnote);
     }
 
-    entry(label: string): $Footnote | undefined {
-        const found = this.entries.filter(e => e.label === label);
-        return found.length === 1 ? found[0] : undefined;
+    get legend(): $Legend {
+        if (!this.$legend) {
+            const legend: $Legend = $(<Legend />, this);
+            legend.$keys = this.entries.map(e => new $Key(e.key, e));
+            this.$legend = legend;
+        }
+        return this.$legend;
     }
 
     $Footer(text?: $Html<'block'>) {

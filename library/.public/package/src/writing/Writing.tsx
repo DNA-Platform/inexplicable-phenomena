@@ -1,9 +1,9 @@
 import React, { type ReactNode } from 'react';
-import { $, $check, type $Html } from '@dna-platform/chemistry';
-import { $Referent } from '../reference/Referent';
+import { $, $check, $Chemical, type $Html } from '@dna-platform/chemistry';
+import { type $Referent } from '../reference/Referent';
 import { text } from '../utilities/html';
 
-export class $Writing extends $Referent {
+export class $Writing extends $Chemical implements $Referent {
     text?: $Html<'block'>;
 
     $index?: number = undefined;
@@ -27,6 +27,10 @@ export class $Writing extends $Referent {
     view(): ReactNode {
         if (!this.text) return null;
         return React.createElement($(this.text) as any);
+    }
+
+    valid(): boolean {
+        return true;
     }
 }
 
