@@ -1,45 +1,19 @@
 import { $ } from '@dna-platform/chemistry';
 import { type $Referent } from '../reference/Referent';
 import { type $Reference } from '../reference/Reference';
-import { path } from '../utilities/reference';
 import { $Path } from '../reference/Path';
 import { $Sentence } from '../writing/Sentence';
-import { $Book } from './Book';
 
 export class $Bookmark<T extends $Referent = $Referent> extends $Sentence implements $Reference<T> {
-    $for?: string;
-
-    get for(): string {
-        return this.$for ?? this.copy;
-    }
-
-    get book(): $Book | undefined {
-        let scope: unknown = this.parent;
-        while (scope && !(scope instanceof $Book)) {
-            const above = (scope as { parent?: unknown }).parent;
-            scope = above === scope ? undefined : above;
-        }
-        return scope as $Book | undefined;
-    }
-
-    protected get path(): $Reference<T> | undefined {
-        const book = this.book;
-        return book && path(book, this.for) as $Reference<T> | undefined;
-    }
+    $for?: $Reference<T>;
 
     read(): T {
-        const reference = this.path;
-        if (!reference) throw new Error(`The bookmark cannot read ${this.for} — no book holds it.`);
-        return reference.read();
+        if (!this.$for) throw new Error('The bookmark stands for nothing.');
+        return this.$for.read();
     }
 
     valid(): boolean {
-        try {
-            this.read();
-            return true;
-        } catch {
-            return false;
-        }
+        return this.$for !== undefined && this.$for.valid();
     }
 
     then<U extends $Referent>(next: $Reference<U>): $Reference<U> {

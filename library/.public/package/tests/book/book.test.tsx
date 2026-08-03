@@ -233,11 +233,11 @@ describe('the essential questions — complex references, equality across levels
         expect(spoken.words[1].copy).toBe(c.words[1].copy);
     });
 
-    it('a bookmark builds its path fresh — it reads through the book it is rendered inside', () => {
+    it('a bookmark holds a reference — passed as a reference, never a string', () => {
         const b: $Book = $(book());
-        const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
+        const bm: $Bookmark = $(<Bookmark for={b.at(3)}>the chapter on coordinates</Bookmark>);
         expect(bm.read()).toBe(b.chapters[3]);
-        const deep: $Bookmark = $(<Bookmark for="#3.1">its first section</Bookmark>, b);
+        const deep: $Bookmark = $(<Bookmark for={b.at(3).then(b.chapters[3].at(1))}>its first section</Bookmark>);
         expect(deep.read()).toBe(b.chapters[3].parts()[0]);
         expect(deep.valid()).toBe(true);
     });
@@ -429,11 +429,14 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(word.at(1).read()?.copy).toBe([...word.copy][0]);
     });
 
-    it('a bookmark resolves to a part of its book — associated because it is rendered inside it', () => {
+    it('a bookmark wears its prose and reads its reference — the surface and the standing-for, one sentence', () => {
         const b: $Book = $(book());
-        const bm: $Bookmark = $(<Bookmark for="#3">the chapter on coordinates</Bookmark>, b);
+        const bm: $Bookmark = $(<Bookmark for={b.at(3)}>the chapter on coordinates</Bookmark>);
         expect(bm.read()).toBe(b.chapters[3]);
         expect(bm.copy).toBe('the chapter on coordinates');
+        const blank: $Bookmark = $(<Bookmark>nowhere</Bookmark>);
+        expect(blank.valid()).toBe(false);
+        expect(() => blank.read()).toThrow(/stands for nothing/);
     });
 
     it('writing a chapter is writing a view — the sections are declared in the writing', () => {

@@ -29,7 +29,7 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
     get canonical(): $Section { return this.parts().find(s => !s.parenthetical) ?? this.parts()[0]; }
     get summary(): $Section | undefined { return this.parts().find(s => s.parenthetical); }
     get tagline(): $Tagline | undefined { return this.summary?.tagline; }
-    get footer(): $Footer | undefined { return this.parts().find(s => s instanceof $Footer) as $Footer | undefined; }
+    get footer(): $Footer | undefined { return this.parts().find(s => s instanceof $Footer && !(s instanceof $Bibliography)) as $Footer | undefined; }
     get bibliography(): $Bibliography | undefined { return this.parts().find(s => s instanceof $Bibliography) as $Bibliography | undefined; }
 
     get keys(): string[] {

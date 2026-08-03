@@ -1,7 +1,6 @@
 export { type $Referent } from './reference/Referent';
 export { type $Reference } from './reference/Reference';
 export { type $Catalogue } from './reference/Catalogue';
-export { path } from './utilities/reference';
 export { $Location } from './reference/Location';
 export { $Path } from './reference/Path';
 export { $Link, Link } from './reference/Link';

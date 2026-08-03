@@ -7,7 +7,7 @@ import { $Book } from '@/book/Book';
 import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
-import { $Bookmark, Bookmark } from '@/book/Bookmark';
+import { type $Reference } from '@/reference/Reference';
 import { $Footer } from '@/document/Footer';
 import { text } from '@/utilities/html';
 import { manifold } from './book/library/the-manifold/book';
@@ -334,12 +334,12 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
                         {sec.paragraphs.map((p, k) => (
                             p.startsWith('> ')
                                 ? (
-                                    <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`} onDoubleClick={() => press(`#${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
+                                    <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
                                         {rich(p.slice(2), follow, r.notes)}
                                     </Quote>
                                 )
                                 : (
-                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`#${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
+                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
                                         {rich(p, follow, r.notes)}
                                     </Prose>
                                 )
@@ -393,31 +393,42 @@ class $TheManifold extends $Chemical {
     }
 
     leave(r: Row) {
-        this.press(`#${r.index}`, r.heading);
+        this.press(`${r.index}`, r.heading);
     }
 
-    press(address: string, label: string) {
-        const kept = this.ribbons.filter(m => m.for !== address);
+    press(spot: string, label: string) {
+        const kept = this.ribbons.filter(m => m.$spot !== spot);
         if (kept.length < this.ribbons.length) {
             kept.forEach((m, i) => { m.index = i; });
             this.ribbons = kept;
             return;
         }
-        const mark: $RibbonMark = $(<RibbonMark for={address}>{label}</RibbonMark>, held.book);
+        const mark: $RibbonMark = $(<RibbonMark spot={spot}>{label}</RibbonMark>);
         mark.index = this.ribbons.length;
         this.ribbons = [...this.ribbons, mark];
     }
 
-    follow(address: string) {
-        if (!address) return;
-        const path = address.replace(/^#/, '');
-        const reference: $Bookmark = $(<Bookmark for={address}>{path}</Bookmark>, held.book);
-        if (!reference.valid()) return;
+    reference(spot: string): $Reference<any> | undefined {
+        const keys = spot.split('.').filter(Boolean).map(Number);
+        if (!keys.length) return undefined;
+        let built: $Reference<any> = held.book.at(keys[0]);
+        for (const key of keys.slice(1)) {
+            const mid = built.valid() ? built.read() as { at?: (index: number) => $Reference<any> } : undefined;
+            if (!mid?.at) return undefined;
+            built = built.then(mid.at(key));
+        }
+        return built;
+    }
+
+    follow(spot: string) {
+        const path = spot.replace(/^#/, '');
+        const reference = this.reference(path);
+        if (!reference || !reference.valid()) return;
         const p = held.rows.findIndex(r => r.index === Number(path.split('.')[0]));
         if (p < 0) return;
         const standing = held.rows[this.page];
         if (this.open && standing && p !== this.page) {
-            this.trail = $(<Return for={`#${standing.index}`}>{standing.heading || `folio ${standing.index}`}</Return>, held.book);
+            this.trail = $(<Return spot={`${standing.index}`}>{standing.heading || `folio ${standing.index}`}</Return>);
         }
         this.mode = 'read';
         this.turn(p);
@@ -440,11 +451,11 @@ class $TheManifold extends $Chemical {
             <>
                 {this.ribbons.map(m => {
                     const M = $(m) as any;
-                    return <span key={m.for} onClick={() => this.follow(m.for)}><M /></span>;
+                    return <span key={m.$spot} onClick={() => this.follow(m.$spot)}><M /></span>;
                 })}
                 {back && (() => {
                     const R = $(back) as any;
-                    return <span onClick={() => this.follow(back.for)}><R /></span>;
+                    return <span onClick={() => this.follow(back.$spot)}><R /></span>;
                 })()}
             </>
         );
@@ -473,10 +484,10 @@ class $TheManifold extends $Chemical {
                                     <DayRule />
                                     <DayChip
                                         data-leave
-                                        $active={this.ribbons.some(m => m.for === `#${current.index}`)}
+                                        $active={this.ribbons.some(m => m.$spot === `${current.index}`)}
                                         onClick={() => this.leave(current)}
                                     >
-                                        {this.ribbons.some(m => m.for === `#${current.index}`) ? 'the ribbon lies here' : 'leave the ribbon'}
+                                        {this.ribbons.some(m => m.$spot === `${current.index}`) ? 'the ribbon lies here' : 'leave the ribbon'}
                                     </DayChip>
                                 </>
                             )}

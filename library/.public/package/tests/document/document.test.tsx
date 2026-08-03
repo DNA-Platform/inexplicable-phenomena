@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Document, Document } from '@/document/Document';
@@ -162,6 +163,75 @@ describe('The document — the general unit above sections, and its reference ap
             </Document>
         );
         expect(rejection(broken)).toMatch(/rejects "missing"/);
+    });
+
+    it('the legend affords a face — parenthetical and undisplayed today, rendering its keys when shown', () => {
+        const footer = noted().footer!;
+        const legend = footer.legend;
+        expect(legend.parenthetical).toBe(true);
+        legend.parenthetical = false;
+        const L = $(legend as any);
+        const { container } = render(<L />);
+        expect(container.textContent).toContain('seam');
+    });
+
+    it('a footer and a bibliography coexist — each answers its own marks, each counts its own numbers', () => {
+        const d: $Document = $(
+            <Document>
+                <Section>
+                    <Title>Both</Title>
+                    {'\n\nA note'}
+                    <Denote>seam</Denote>
+                    {' and a citation'}
+                    <Cite>euler</Cite>
+                    {' stand in one document.'}
+                </Section>
+                <Footer>
+                    <Title>Notes</Title>
+                    <Footnote for="seam">The note at the foot.</Footnote>
+                </Footer>
+                <Bibliography>
+                    <Title>References</Title>
+                    <Citation for="euler">Euler, the identity, 1748.</Citation>
+                </Bibliography>
+                <Section parenthetical>
+                    <Title>Summary</Title>
+                    {'\n\nBoth apparatuses.'}
+                </Section>
+            </Document>
+        );
+        expect(d.footer).not.toBeInstanceOf($Bibliography);
+        expect(d.bibliography).toBeInstanceOf($Bibliography);
+        const [seam, euler] = denotes(d) as [$Denote, $Cite];
+        expect(seam.read()).toBe(d.footer!.footnotes[0]);
+        expect(euler.read()).toBe(d.bibliography!.citations[0]);
+        expect(seam.number).toBe(1);
+        expect(euler.number).toBe(1);
+    });
+
+    it('a bibliography stands alone — the document answers no footer, and footnote marks fail honestly', () => {
+        const d: $Document = $(
+            <Document>
+                <Section>
+                    <Title>Cited Only</Title>
+                    {'\n\nOne citation'}
+                    <Cite>euler</Cite>
+                    {' and nothing at the foot.'}
+                </Section>
+                <Bibliography>
+                    <Title>References</Title>
+                    <Citation for="euler">Euler, the identity, 1748.</Citation>
+                </Bibliography>
+                <Section parenthetical>
+                    <Title>Summary</Title>
+                    {'\n\nIndependent.'}
+                </Section>
+            </Document>
+        );
+        expect(d.footer).toBeUndefined();
+        const [euler] = denotes(d) as [$Cite];
+        expect(euler.number).toBe(1);
+        expect(euler.valid()).toBe(true);
     });
 
     it('a bibliography is a footer whose entries are citations — and says so in valid', () => {

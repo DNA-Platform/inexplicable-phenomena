@@ -7,7 +7,8 @@ export class $Footnote extends $Sentence {
 
     get number(): number {
         const footer = this.parent as $Footer;
-        return footer.document.keys.indexOf(this.$for) + 1;
+        const mine = footer.legend.keys.map(k => k.name);
+        return footer.document.keys.filter(k => mine.includes(k)).indexOf(this.$for) + 1;
     }
 
     valid(): boolean {
