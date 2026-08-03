@@ -57,6 +57,11 @@ const cited = (): $Document => $(
 const denotes = (d: $Document): $Denote[] =>
     (d.sections[0].text?.$elements ?? []).filter(e => e instanceof $Denote) as $Denote[];
 
+const rejection = (b: any): string | undefined => {
+    const s = Object.getOwnPropertySymbols(b).find(x => x.description === '$Particle.devError');
+    return s ? b[s] : undefined;
+};
+
 describe('The document — the general unit above sections, and its reference apparatus', () => {
     it('a chapter is a kind of document — the bond, the summary law, and the title come from the base', () => {
         const c: $Chapter = $(
@@ -143,6 +148,24 @@ describe('The document — the general unit above sections, and its reference ap
         expect(() => wrong.read()).toThrow(/entries carry this key/);
         const uncited: $Cite = $(<Cite>euler</Cite>, d.sections[0]);
         expect(() => uncited.read()).toThrow(/no bibliography/);
+    });
+
+    it('the binding validates the apparatus — a mark citing nothing is rejected at the document\'s bond', () => {
+        const broken: $Document = $(
+            <Document>
+                <Section>
+                    <Title>Broken</Title>
+                    {'\n\nA mark'}
+                    <Denote>missing</Denote>
+                    {' cites nothing.'}
+                </Section>
+                <Section parenthetical>
+                    <Title>Summary</Title>
+                    {'\n\nIn brief.'}
+                </Section>
+            </Document>
+        );
+        expect(rejection(broken)).toMatch(/no footer/);
     });
 
     it('a bibliography is a footer whose entries are citations — and says so in valid', () => {

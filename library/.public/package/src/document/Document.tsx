@@ -51,6 +51,14 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
         this.$parts = sections.length ? sections.map(s => $check(s, $Section)) : this.written();
         this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
         if (!this.valid()) throw new Error('A document requires a summary — a parenthetical section.');
+        for (const section of this.$parts) {
+            for (const element of section.text?.$elements ?? []) {
+                const writing = element as { valid?: () => boolean; copy?: string };
+                if (typeof writing.valid === 'function' && writing.valid() === false) {
+                    throw new Error(`The binding rejects ${JSON.stringify(writing.copy ?? '')} — invalid writing in ${section.heading}.`);
+                }
+            }
+        }
     }
 
     at(index: number): $Location<$Section> {
