@@ -36,6 +36,15 @@ import locationSource from '@/reference/Location.tsx?raw';
 import pathSource from '@/reference/Path.tsx?raw';
 import linkSource from '@/reference/Link.tsx?raw';
 import bookmarkSource from '@/book/Bookmark.tsx?raw';
+import documentSource from '@/document/Document.tsx?raw';
+import footerSource from '@/document/Footer.tsx?raw';
+import footnoteSource from '@/document/Footnote.tsx?raw';
+import denoteSource from '@/document/Denote.tsx?raw';
+import bibliographySource from '@/document/Bibliography.tsx?raw';
+import citationSource from '@/document/Citation.tsx?raw';
+import citeSource from '@/document/Cite.tsx?raw';
+import legendSource from '@/document/Legend.tsx?raw';
+import keySource from '@/document/Key.tsx?raw';
 import {
     DayBackdrop, DayBar, DayChip, DayRule,
     ShelfBoard, Spine, CoverFace, CoverTitle, CoverSubtitle, CoverRule, CoverBlurb, CoverInvitation,
@@ -53,6 +62,15 @@ const modelSources: Record<string, string> = {
     'Synopsis.tsx': synopsisSource,
     'TableOfContents.tsx': tableOfContentsSource,
     'Row.tsx': rowSource,
+    'Document.tsx': documentSource,
+    'Footer.tsx': footerSource,
+    'Footnote.tsx': footnoteSource,
+    'Denote.tsx': denoteSource,
+    'Bibliography.tsx': bibliographySource,
+    'Citation.tsx': citationSource,
+    'Cite.tsx': citeSource,
+    'Legend.tsx': legendSource,
+    'Key.tsx': keySource,
     'Section.tsx': sectionSource,
     'Title.tsx': titleSource,
     'Reference.tsx': referenceSource,
