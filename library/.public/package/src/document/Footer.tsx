@@ -10,7 +10,7 @@ export class $Footer extends $Section {
     $legend?: $Legend;
 
     get footnotes(): $Footnote[] {
-        return (this.text?.$elements ?? []).filter((e): e is $Footnote => e instanceof $Footnote);
+        return this.elements.filter((e): e is $Footnote => e instanceof $Footnote);
     }
 
     get legend(): $Legend {
@@ -22,9 +22,9 @@ export class $Footer extends $Section {
         return this.$legend;
     }
 
-    $Footer(text?: $Html<'block'>) {
+    $Footer(text: $Html<'block'>) {
         this.text = $check(text, 'block');
-        const first = this.text?.$elements?.[0];
+        const first = this.elements[0];
         this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
     }
 }

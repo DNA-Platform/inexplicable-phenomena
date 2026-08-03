@@ -81,13 +81,23 @@ describe('The document — the general unit above sections, and its reference ap
         expect(d.sections[0].document).toBe(d);
     });
 
-    it('the footer holds its footnotes — for exposes the key, and numbers are linear — first citation first', () => {
+    it('the footer holds its footnotes — for exposes the key, and the numbers are 1-indexed in order', () => {
         const footer = noted().footer!;
         expect(footer.footnotes.length).toBe(2);
         expect(footer.footnotes[0].$for).toBe('seam');
         expect(footer.footnotes[0].copy).toBe('Editors call this a seam.');
         expect(footer.footnotes[0].number).toBe(1);
         expect(footer.footnotes[1].number).toBe(2);
+    });
+
+    it('an uncited note still wears its number — the count starts at one, never zero', () => {
+        const footer: $Footer = $(
+            <Footer>
+                <Title>Notes</Title>
+                <Footnote for="lonely">A note nothing points at.</Footnote>
+            </Footer>
+        );
+        expect(footer.footnotes[0].number).toBe(1);
     });
 
     it('the legend is implicit — asked of the footer once, kept after, its keys standing for the footnotes', () => {

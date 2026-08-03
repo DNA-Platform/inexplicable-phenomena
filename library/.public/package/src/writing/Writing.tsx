@@ -4,12 +4,13 @@ import { type $Referent } from '../reference/Referent';
 import { text } from '../utilities/html';
 
 export class $Writing extends $Chemical implements $Referent {
-    text?: $Html<'block'>;
+    text!: $Html<'block'>;
 
     $index?: number = undefined;
     $parenthetical? = false;
 
     get copy(): string { return text(this.text); }
+    get elements(): $Chemical[] { return this.text.$elements ?? []; }
     get index(): number { return this.$index ?? 0; }
     set index(value: number) { this.$index = value; }
     get parenthetical(): boolean { return !!this.$parenthetical; }
@@ -20,12 +21,11 @@ export class $Writing extends $Chemical implements $Referent {
         this.inline = true;
     }
 
-    $Writing(text?: $Html<'block'>) {
+    $Writing(text: $Html<'block'>) {
         this.text = $check(text, 'block');
     }
 
     view(): ReactNode {
-        if (!this.text) return null;
         return React.createElement($(this.text) as any);
     }
 

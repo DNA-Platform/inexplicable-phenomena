@@ -32,18 +32,6 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
     get footer(): $Footer | undefined { return this.parts().find(s => s instanceof $Footer && !(s instanceof $Bibliography)) as $Footer | undefined; }
     get bibliography(): $Bibliography | undefined { return this.parts().find(s => s instanceof $Bibliography) as $Bibliography | undefined; }
 
-    get keys(): string[] {
-        const keys: string[] = [];
-        for (const section of this.parts()) {
-            if (section instanceof $Footer) continue;
-            for (const element of section.text?.$elements ?? []) {
-                const mark = element as { for?: string };
-                if (typeof mark.for === 'string' && mark.for && !keys.includes(mark.for)) keys.push(mark.for);
-            }
-        }
-        return keys;
-    }
-
     get sections(): $Section[] { return this.parts(); }
     get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
@@ -64,7 +52,7 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
         this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
         if (!this.valid()) throw new Error('A document requires a summary — a parenthetical section.');
         for (const section of this.$parts) {
-            for (const element of section.text?.$elements ?? []) {
+            for (const element of section.elements) {
                 const writing = element as { valid?: () => boolean; copy?: string };
                 if (typeof writing.valid === 'function' && writing.valid() === false) {
                     throw new Error(`The binding rejects ${JSON.stringify(writing.copy ?? '')} — invalid writing in ${section.heading}.`);

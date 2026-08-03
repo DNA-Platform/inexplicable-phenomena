@@ -88,9 +88,9 @@ export class $Section extends $Writing implements $Composition<$Paragraph> {
         return Composible.single(this, match);
     }
 
-    $Section(text?: $Html<'block'>) {
+    $Section(text: $Html<'block'>) {
         this.text = $check(text, 'block');
-        const first = this.text?.$elements?.[0];
+        const first = this.elements[0];
         this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
     }
 
