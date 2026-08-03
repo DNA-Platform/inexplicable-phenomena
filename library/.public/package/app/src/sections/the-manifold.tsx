@@ -122,7 +122,7 @@ const row = (c: $Chapter, i: number): Row => ({
             paragraphs: s.parts().slice(1).map(p => p.copy),
         };
     }),
-    notes: (c.footer?.footnotes ?? []).map(e => ({ key: e.key, note: e.note, index: e.index })),
+    notes: (c.footer?.footnotes ?? []).map(e => ({ key: e.key, note: e.copy, index: e.index })),
     contents: c instanceof $TableOfContents,
     cover: i === 0,
     copy: c.copy,

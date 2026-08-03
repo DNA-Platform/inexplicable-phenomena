@@ -24,8 +24,8 @@ const noted = (): $Document => $(
         </Section>
         <Footer>
             <Title>Notes</Title>
-            <Footnote>seam: Editors call this a seam.</Footnote>
-            <Footnote>found: The crease is felt before it is found.</Footnote>
+            <Footnote for="seam">Editors call this a seam.</Footnote>
+            <Footnote for="found">The crease is felt before it is found.</Footnote>
         </Footer>
         <Section parenthetical>
             <Title>Summary</Title>
@@ -44,8 +44,8 @@ const cited = (): $Document => $(
         </Section>
         <Bibliography>
             <Title>References</Title>
-            <Citation>euler: Euler, the identity, 1748.</Citation>
-            <Citation>srt: The SRT source.</Citation>
+            <Citation for="euler">Euler, the identity, 1748.</Citation>
+            <Citation for="srt">The SRT source.</Citation>
         </Bibliography>
         <Section parenthetical>
             <Title>Summary</Title>
@@ -80,11 +80,11 @@ describe('The document — the general unit above sections, and its reference ap
         expect(d.sections[0].document).toBe(d);
     });
 
-    it('the footer holds its footnotes — the key stands before the colon, and the bond numbers them', () => {
+    it('the footer holds its footnotes — for exposes the key, and the bond numbers them', () => {
         const footer = noted().footer!;
         expect(footer.footnotes.length).toBe(2);
         expect(footer.footnotes[0].key).toBe('seam');
-        expect(footer.footnotes[0].note).toBe('Editors call this a seam.');
+        expect(footer.footnotes[0].copy).toBe('Editors call this a seam.');
         expect(footer.footnotes[0].index).toBe(1);
         expect(footer.footnotes[1].index).toBe(2);
     });
@@ -123,14 +123,17 @@ describe('The document — the general unit above sections, and its reference ap
         expect(euler.citation).toBe(d.bibliography!.citations[0]);
         expect(euler.number).toBe(1);
         expect(euler.valid()).toBe(true);
+        const echoed: $Cite = $(<Cite for="euler" />, d.sections[0]);
+        expect(echoed.key).toBe('euler');
+        expect(echoed.number).toBe(1);
     });
 
-    it('a citation is a keyed entry that auto-numbers — nothing more is stored', () => {
+    it('a citation is for its key — for exposes it, the copy is the note, and it auto-numbers', () => {
         const d = cited();
         const local = d.bibliography!.citations[0];
         expect(local.key).toBe('euler');
         expect(local.index).toBe(1);
-        expect(local.note).toContain('Euler, the identity');
+        expect(local.copy).toContain('Euler, the identity');
     });
 
     it('the chain guards where the design placed them — a stray mark is invalid; a missing filing section or key throws on read', () => {
@@ -168,7 +171,7 @@ describe('The document — the general unit above sections, and its reference ap
         const mixed: $Bibliography = $(
             <Bibliography>
                 <Title>References</Title>
-                <Footnote>plain: A note where a citation belongs.</Footnote>
+                <Footnote for="plain">A note where a citation belongs.</Footnote>
             </Bibliography>
         );
         expect(mixed.valid()).toBe(false);

@@ -23,7 +23,7 @@ export class $Curvature extends $Chapter {
                 </Section>
                 <Footer>
                     <Title>Notes</Title>
-                    <Footnote>{'care: The care is the point. Curvature is not a failure of attention; it is what the surface does to perfect attention.'}</Footnote>
+                    <Footnote for="care">{'The care is the point. Curvature is not a failure of attention; it is what the surface does to perfect attention.'}</Footnote>
                 </Footer>
                 <Section parenthetical>
                     <Title>Summary</Title>

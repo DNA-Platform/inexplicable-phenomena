@@ -23,7 +23,7 @@ export class $TheChart extends $Chapter {
                 </Section>
                 <Footer>
                     <Title>Notes</Title>
-                    <Footnote>{'map: Which is why no honest page ever claims to be the whole book, and why a summary — a very small map of a very large country — always lies a little.'}</Footnote>
+                    <Footnote for="map">{'Which is why no honest page ever claims to be the whole book, and why a summary — a very small map of a very large country — always lies a little.'}</Footnote>
                 </Footer>
                 <Section parenthetical>
                     <Title>Summary</Title>

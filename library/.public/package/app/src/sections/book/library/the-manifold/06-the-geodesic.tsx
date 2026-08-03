@@ -22,7 +22,7 @@ export class $TheGeodesic extends $Chapter {
                 </Section>
                 <Footer>
                     <Title>Notes</Title>
-                    <Footnote>{'pass: This is not a moral claim. Timetables should be tunnelled into. But a book with curvature worth having deserves one geodesic pass before any shortcut.'}</Footnote>
+                    <Footnote for="pass">{'This is not a moral claim. Timetables should be tunnelled into. But a book with curvature worth having deserves one geodesic pass before any shortcut.'}</Footnote>
                 </Footer>
                 <Section parenthetical>
                     <Title>Summary</Title>

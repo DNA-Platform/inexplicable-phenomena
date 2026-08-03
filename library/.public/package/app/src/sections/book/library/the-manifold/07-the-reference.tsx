@@ -28,7 +28,7 @@ export class $TheReference extends $Chapter {
                 </Section>
                 <Footer>
                     <Title>Notes</Title>
-                    <Footnote>{'ribbon: The chip in the bar leaves it; the ribbon will hang over every page of this book until you click it home.'}</Footnote>
+                    <Footnote for="ribbon">{'The chip in the bar leaves it; the ribbon will hang over every page of this book until you click it home.'}</Footnote>
                 </Footer>
                 <Section parenthetical>
                     <Title>Summary</Title>

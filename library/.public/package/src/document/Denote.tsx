@@ -9,13 +9,15 @@ import { $Footer } from './Footer';
 import { $Footnote } from './Footnote';
 
 export class $Denote extends $Writing implements $Reference<$Footnote> {
+    $for?: string;
+
     constructor() {
         super();
         this.$parenthetical = true;
     }
 
     get key(): string {
-        return this.copy.trim();
+        return this.$for ?? this.copy.trim();
     }
 
     get document(): $Document {

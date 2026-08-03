@@ -27,7 +27,7 @@ export class $TheFold extends $Chapter {
                 </Section>
                 <Footer>
                     <Title>Notes</Title>
-                    <Footnote>{'seam: Editors call this a seam; readers just call it *hard to follow*. The crease is felt before it is found.'}</Footnote>
+                    <Footnote for="seam">{'Editors call this a seam; readers just call it *hard to follow*. The crease is felt before it is found.'}</Footnote>
                 </Footer>
                 <Section parenthetical>
                     <Title>Summary</Title>

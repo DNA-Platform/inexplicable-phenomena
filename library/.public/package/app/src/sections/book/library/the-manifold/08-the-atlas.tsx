@@ -31,9 +31,9 @@ export class $TheAtlas extends $Chapter {
                 </Section>
                 <Footer>
                     <Title>Notes</Title>
-                    <Footnote>{'shelf: So a shelf is an atlas of covers: each spine a card for a book you are not holding.'}</Footnote>
-                    <Footnote>{'press: Double-click a paragraph and a narrower ribbon hangs for it; double-click the same fold again and it is taken home.'}</Footnote>
-                    <Footnote>{'arrow: One arrow, one standing place: wherever you last travelled from. Following it makes the place you left the new way back — the loop, walkable in both directions.'}</Footnote>
+                    <Footnote for="shelf">{'So a shelf is an atlas of covers: each spine a card for a book you are not holding.'}</Footnote>
+                    <Footnote for="press">{'Double-click a paragraph and a narrower ribbon hangs for it; double-click the same fold again and it is taken home.'}</Footnote>
+                    <Footnote for="arrow">{'One arrow, one standing place: wherever you last travelled from. Following it makes the place you left the new way back — the loop, walkable in both directions.'}</Footnote>
                 </Footer>
                 <Section parenthetical>
                     <Title>Summary</Title>
