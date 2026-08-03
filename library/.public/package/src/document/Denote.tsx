@@ -18,19 +18,14 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
         return this.copy.trim();
     }
 
-    protected get above(): $Document | undefined {
+    get document(): $Document {
         let scope: unknown = this.parent;
         while (scope && !(scope instanceof $Document)) {
             const parent = (scope as { parent?: unknown }).parent;
             scope = parent === scope ? undefined : parent;
         }
-        return scope as $Document | undefined;
-    }
-
-    get document(): $Document {
-        const found = this.above;
-        if (!found) throw new Error(`Denote ${this.key}: it stands outside any document.`);
-        return found;
+        if (!scope) throw new Error(`Denote ${this.key}: it stands outside any document.`);
+        return scope as $Document;
     }
 
     get footer(): $Footer {
@@ -41,7 +36,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
 
     get footnote(): $Footnote {
         const found = this.footer.legend.keys.filter(k => k.name === this.key);
-        if (found.length !== 1) throw new Error(`Denote ${this.key}: ${found.length} entries carry this key.`);
+        if (found.length !== 1) throw new Error(`Denote ${this.key}: ${found.length} notes carry this key.`);
         return found[0].read();
     }
 
@@ -66,8 +61,11 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
     }
 
     valid(): boolean {
-        if (!this.above) return false;
-        return this.footnote.valid();
+        try {
+            return this.footnote.valid();
+        } catch {
+            return false;
+        }
     }
 }
 

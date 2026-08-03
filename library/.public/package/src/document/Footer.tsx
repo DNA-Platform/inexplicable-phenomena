@@ -9,14 +9,14 @@ import { $Key } from './Key';
 export class $Footer extends $Section {
     $legend?: $Legend;
 
-    get entries(): $Footnote[] {
+    get footnotes(): $Footnote[] {
         return (this.text?.$elements ?? []).filter((e): e is $Footnote => e instanceof $Footnote);
     }
 
     get legend(): $Legend {
         if (!this.$legend) {
             const legend: $Legend = $(<Legend />, this);
-            legend.$keys = this.entries.map(e => new $Key(e.key, e));
+            legend.$keys = this.footnotes.map(e => new $Key(e.key, e));
             this.$legend = legend;
         }
         return this.$legend;
@@ -26,7 +26,7 @@ export class $Footer extends $Section {
         this.text = $check(text, 'block');
         const first = this.text?.$elements?.[0];
         this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
-        this.entries.forEach((e, i) => { e.index = i + 1; });
+        this.footnotes.forEach((e, i) => { e.index = i + 1; });
     }
 }
 

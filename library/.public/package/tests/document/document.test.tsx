@@ -44,8 +44,8 @@ const cited = (): $Document => $(
         </Section>
         <Bibliography>
             <Title>References</Title>
-            <Citation for="#1.1">euler: Euler, the identity, 1748.</Citation>
-            <Citation for="ixp#3.2">srt: The SRT source, in another document.</Citation>
+            <Citation>euler: Euler, the identity, 1748.</Citation>
+            <Citation>srt: The SRT source.</Citation>
         </Bibliography>
         <Section parenthetical>
             <Title>Summary</Title>
@@ -80,22 +80,22 @@ describe('The document — the general unit above sections, and its reference ap
         expect(d.sections[0].document).toBe(d);
     });
 
-    it('the footer files keyed notes — the key stands before the colon, and the bond numbers the entries', () => {
+    it('the footer holds its footnotes — the key stands before the colon, and the bond numbers them', () => {
         const footer = noted().footer!;
-        expect(footer.entries.length).toBe(2);
-        expect(footer.entries[0].key).toBe('seam');
-        expect(footer.entries[0].note).toBe('Editors call this a seam.');
-        expect(footer.entries[0].index).toBe(1);
-        expect(footer.entries[1].index).toBe(2);
+        expect(footer.footnotes.length).toBe(2);
+        expect(footer.footnotes[0].key).toBe('seam');
+        expect(footer.footnotes[0].note).toBe('Editors call this a seam.');
+        expect(footer.footnotes[0].index).toBe(1);
+        expect(footer.footnotes[1].index).toBe(2);
     });
 
-    it('the legend is implicit — asked of the footer once, kept after, its keys standing for the entries', () => {
+    it('the legend is implicit — asked of the footer once, kept after, its keys standing for the footnotes', () => {
         const footer = noted().footer!;
         const legend = footer.legend;
         expect(footer.legend).toBe(legend);
         expect(legend.keys.length).toBe(2);
         expect(legend.keys[0].name).toBe('seam');
-        expect(legend.keys[0].read()).toBe(footer.entries[0]);
+        expect(legend.keys[0].read()).toBe(footer.footnotes[0]);
     });
 
     it('a denote is parenthetical — counted by the reading, absent from the flattened prose', () => {
@@ -109,7 +109,7 @@ describe('The document — the general unit above sections, and its reference ap
         const [seam, found] = denotes(d);
         expect(seam.key).toBe('seam');
         expect(seam.document).toBe(d);
-        expect(seam.read()).toBe(d.footer!.entries[0]);
+        expect(seam.read()).toBe(d.footer!.footnotes[0]);
         expect(seam.number).toBe(1);
         expect(found.number).toBe(2);
         expect(seam.valid()).toBe(true);
@@ -125,27 +125,20 @@ describe('The document — the general unit above sections, and its reference ap
         expect(euler.valid()).toBe(true);
     });
 
-    it('a citation carries the path reference for its spot — resolved at its own document', () => {
+    it('a citation is a keyed entry that auto-numbers — nothing more is stored', () => {
         const d = cited();
         const local = d.bibliography!.citations[0];
-        expect(local.reference).toBeDefined();
-        expect(local.reference!.read().copy).toBe(d.sections[0].parts()[1].copy);
+        expect(local.key).toBe('euler');
+        expect(local.index).toBe(1);
+        expect(local.note).toContain('Euler, the identity');
     });
 
-    it('a citation naming another document declines to resolve locally', () => {
-        const d = cited();
-        const away = d.bibliography!.citations[1];
-        expect(away.source).toBe('ixp');
-        expect(away.reference).toBeUndefined();
-        expect(away.copy).toContain('another document');
-    });
-
-    it('the chain guards where the design placed them — no document is false; no filing section throws; no key throws', () => {
+    it('the chain guards where the design placed them — a stray mark is invalid; a missing filing section or key throws on read', () => {
         const stray: $Denote = $(<Denote>missing</Denote>);
         expect(stray.valid()).toBe(false);
         const d = noted();
         const wrong: $Denote = $(<Denote>absent</Denote>, d.sections[0]);
-        expect(() => wrong.read()).toThrow(/entries carry this key/);
+        expect(() => wrong.read()).toThrow(/notes carry this key/);
         const uncited: $Cite = $(<Cite>euler</Cite>, d.sections[0]);
         expect(() => uncited.read()).toThrow(/no bibliography/);
     });
@@ -165,7 +158,7 @@ describe('The document — the general unit above sections, and its reference ap
                 </Section>
             </Document>
         );
-        expect(rejection(broken)).toMatch(/no footer/);
+        expect(rejection(broken)).toMatch(/rejects "missing"/);
     });
 
     it('a bibliography is a footer whose entries are citations — and says so in valid', () => {

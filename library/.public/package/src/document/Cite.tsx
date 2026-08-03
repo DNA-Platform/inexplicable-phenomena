@@ -20,7 +20,11 @@ export class $Cite extends $Denote {
     }
 
     valid(): boolean {
-        return super.valid() && this.footer instanceof $Bibliography && this.footnote instanceof $Citation;
+        try {
+            return this.footer instanceof $Bibliography && this.footnote instanceof $Citation && this.footnote.valid();
+        } catch {
+            return false;
+        }
     }
 }
 
