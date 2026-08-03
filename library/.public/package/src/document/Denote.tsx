@@ -9,7 +9,7 @@ import { $Footer } from './Footer';
 import { $Footnote } from './Footnote';
 
 export class $Denote extends $Writing implements $Reference<$Footnote> {
-    $for?: string;
+    $for = '';
 
     constructor() {
         super();
@@ -17,7 +17,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
     }
 
     get key(): string {
-        return this.$for ?? this.copy.trim();
+        return this.$for || this.copy.trim();
     }
 
     get document(): $Document {
@@ -43,7 +43,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
     }
 
     get number(): number {
-        return this.footnote.index;
+        return this.document.keys.indexOf(this.key) + 1;
     }
 
     read(): $Footnote {

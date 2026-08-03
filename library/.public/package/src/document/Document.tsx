@@ -32,6 +32,18 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
     get footer(): $Footer | undefined { return this.parts().find(s => s instanceof $Footer) as $Footer | undefined; }
     get bibliography(): $Bibliography | undefined { return this.parts().find(s => s instanceof $Bibliography) as $Bibliography | undefined; }
 
+    get keys(): string[] {
+        const keys: string[] = [];
+        for (const section of this.parts()) {
+            if (section instanceof $Footer) continue;
+            for (const element of section.text?.$elements ?? []) {
+                const mark = element as { key?: string };
+                if (typeof mark.key === 'string' && mark.key && !keys.includes(mark.key)) keys.push(mark.key);
+            }
+        }
+        return keys;
+    }
+
     get sections(): $Section[] { return this.parts(); }
     get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }

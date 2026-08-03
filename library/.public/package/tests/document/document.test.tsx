@@ -80,13 +80,13 @@ describe('The document — the general unit above sections, and its reference ap
         expect(d.sections[0].document).toBe(d);
     });
 
-    it('the footer holds its footnotes — for exposes the key, and the bond numbers them', () => {
+    it('the footer holds its footnotes — for exposes the key, and numbers are linear — first citation first', () => {
         const footer = noted().footer!;
         expect(footer.footnotes.length).toBe(2);
-        expect(footer.footnotes[0].key).toBe('seam');
+        expect(footer.footnotes[0].$for).toBe('seam');
         expect(footer.footnotes[0].copy).toBe('Editors call this a seam.');
-        expect(footer.footnotes[0].index).toBe(1);
-        expect(footer.footnotes[1].index).toBe(2);
+        expect(footer.footnotes[0].number).toBe(1);
+        expect(footer.footnotes[1].number).toBe(2);
     });
 
     it('the legend is implicit — asked of the footer once, kept after, its keys standing for the footnotes', () => {
@@ -131,8 +131,8 @@ describe('The document — the general unit above sections, and its reference ap
     it('a citation is for its key — for exposes it, the copy is the note, and it auto-numbers', () => {
         const d = cited();
         const local = d.bibliography!.citations[0];
-        expect(local.key).toBe('euler');
-        expect(local.index).toBe(1);
+        expect(local.$for).toBe('euler');
+        expect(local.number).toBe(1);
         expect(local.copy).toContain('Euler, the identity');
     });
 

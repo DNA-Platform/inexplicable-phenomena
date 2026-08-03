@@ -86,7 +86,7 @@ type Row = {
     summary: string;
     body: string[];
     sections: { head: string; sub: string; paragraphs: string[] }[];
-    notes: { key: string; note: string; index: number }[];
+    notes: { key: string; note: string; number: number }[];
     contents: boolean;
     cover: boolean;
     copy: string;
@@ -106,30 +106,36 @@ type Held = {
     rows: Row[];
 };
 
-const row = (c: $Chapter, i: number): Row => ({
-    index: c.index,
-    heading: c.title?.copy ?? (c instanceof $TableOfContents ? 'Table of Contents' : ''),
-    subtitle: c.subtitle?.copy ?? '',
-    tagline: c.tagline?.copy ?? '',
-    summary: c.summary?.parts().slice(1).map(p => p.copy).join(' ') ?? '',
-    body: c.parts().filter(s => !s.parenthetical && !(s instanceof $Footer)).flatMap(s => s.parts().slice(1).map(p => p.copy)),
-    sections: c.parts().filter(s => !s.parenthetical && !(s instanceof $Footer)).map(s => {
-        const full = text(s.title);
-        const colon = full.indexOf(':');
-        return {
-            head: colon < 0 ? full : full.slice(0, colon).trim(),
-            sub: colon < 0 ? '' : full.slice(colon + 1).trim(),
-            paragraphs: s.parts().slice(1).map(p => p.copy),
-        };
-    }),
-    notes: (c.footer?.footnotes ?? []).map(e => ({ key: e.key, note: e.copy, index: e.index })),
-    contents: c instanceof $TableOfContents,
-    cover: i === 0,
-    copy: c.copy,
-    words: c.words.length,
-    source: '',
-    Opening: openingFor(c),
-});
+const row = (c: $Chapter, i: number): Row => {
+    const footer = c.footer;
+    const prose = c.parts().filter(s => !s.parenthetical && !(s instanceof $Footer));
+    return {
+        index: c.index,
+        heading: c.title?.copy ?? (c instanceof $TableOfContents ? 'Table of Contents' : ''),
+        subtitle: c.subtitle?.copy ?? '',
+        tagline: c.tagline?.copy ?? '',
+        summary: c.summary?.parts().slice(1).map(p => p.copy).join(' ') ?? '',
+        body: prose.flatMap(s => s.parts().slice(1).map(p => p.copy)),
+        sections: prose.map(s => {
+            const full = text(s.title);
+            const colon = full.indexOf(':');
+            return {
+                head: colon < 0 ? full : full.slice(0, colon).trim(),
+                sub: colon < 0 ? '' : full.slice(colon + 1).trim(),
+                paragraphs: s.parts().slice(1).map(p => p.copy),
+            };
+        }),
+        notes: footer
+            ? footer.footnotes.map(e => ({ key: e.$for, note: e.copy, number: e.number })).sort((a, b) => a.number - b.number)
+            : [],
+        contents: c instanceof $TableOfContents,
+        cover: i === 0,
+        copy: c.copy,
+        words: c.words.length,
+        source: '',
+        Opening: openingFor(c),
+    };
+};
 
 const hold = (key: string, ink: string, tall: number, b: $Book): Held => {
     const rows = b.chapters.map(row);
@@ -159,7 +165,7 @@ function light(id: string, block: ScrollLogicalPosition = 'center') {
     setTimeout(() => el.classList.remove('lit'), 2400);
 }
 
-function spans(s: string, follow: (address: string) => void, notes?: { key: string; note: string; index: number }[]): ReactNode[] {
+function spans(s: string, follow: (address: string) => void, notes?: { key: string; note: string; number: number }[]): ReactNode[] {
     const out: ReactNode[] = [];
     const re = /\^\[([^\]]+)\]|\[([^\]]+)\]\(#([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
     let last = 0;
@@ -172,7 +178,7 @@ function spans(s: string, follow: (address: string) => void, notes?: { key: stri
             if (filed) {
                 out.push(
                     <sup key={`n${k++}`} id={`mark-${filed.key}`} className="note-mark" onClick={() => light(`note-${filed.key}`)}>
-                        {filed.index}
+                        {filed.number}
                     </sup>
                 );
             }
@@ -194,7 +200,7 @@ function spans(s: string, follow: (address: string) => void, notes?: { key: stri
     return out;
 }
 
-function rich(p: string, follow: (address: string) => void = () => {}, notes?: { key: string; note: string; index: number }[]): ReactNode {
+function rich(p: string, follow: (address: string) => void = () => {}, notes?: { key: string; note: string; number: number }[]): ReactNode {
     const bits = p.split(/\$([^$]+)\$/g);
     return bits.map((b, i) => (
         i % 2
@@ -250,7 +256,7 @@ function ModelOpening({ r }: OpeningProps) {
                     <ModelHead>Notes</ModelHead>
                     {r.notes.map(n => (
                         <ModelPara key={n.key}>
-                            <ModelAddress className="dim">{n.index} · {n.key}</ModelAddress>
+                            <ModelAddress className="dim">{n.number} · {n.key}</ModelAddress>
                             <span>{n.note}</span>
                         </ModelPara>
                     ))}
@@ -345,7 +351,7 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
                 <FootNotes>
                     {r.notes.map(n => (
                         <div key={n.key} id={`note-${n.key}`} className="foot-note">
-                            <span className="note-index" onClick={() => light(`mark-${n.key}`)}>{n.index}</span>
+                            <span className="note-index" onClick={() => light(`mark-${n.key}`)}>{n.number}</span>
                             {rich(n.note, follow)}
                         </div>
                     ))}

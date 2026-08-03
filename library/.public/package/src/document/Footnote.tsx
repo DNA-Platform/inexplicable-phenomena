@@ -1,15 +1,17 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Sentence } from '../writing/Sentence';
+import { type $Footer } from './Footer';
 
 export class $Footnote extends $Sentence {
-    $for?: string;
+    $for = '';
 
-    get key(): string {
-        return this.$for ?? '';
+    get number(): number {
+        const footer = this.parent as $Footer;
+        return footer.document.keys.indexOf(this.$for) + 1;
     }
 
     valid(): boolean {
-        return super.valid() && this.key !== '';
+        return super.valid() && this.$for !== '';
     }
 }
 

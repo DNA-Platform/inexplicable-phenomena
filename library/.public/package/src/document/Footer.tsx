@@ -16,7 +16,7 @@ export class $Footer extends $Section {
     get legend(): $Legend {
         if (!this.$legend) {
             const legend: $Legend = $(<Legend />, this);
-            legend.$keys = this.footnotes.map(e => new $Key(e.key, e));
+            legend.$keys = this.footnotes.map(e => new $Key(e.$for, e));
             this.$legend = legend;
         }
         return this.$legend;
@@ -26,7 +26,6 @@ export class $Footer extends $Section {
         this.text = $check(text, 'block');
         const first = this.text?.$elements?.[0];
         this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
-        this.footnotes.forEach((e, i) => { e.index = i + 1; });
     }
 }
 
