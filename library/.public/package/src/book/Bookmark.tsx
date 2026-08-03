@@ -5,10 +5,10 @@ import { $Path } from '../reference/Path';
 import { $Sentence } from '../writing/Sentence';
 
 export class $Bookmark<T extends $Referent = $Referent> extends $Sentence implements $Reference<T> {
-    $for?: $Reference<T>;
+    $for!: $Reference<T>;
 
     read(): T {
-        if (!this.$for) throw new Error('The bookmark stands for nothing.');
+        if (!this.$for) throw new Error('The bookmark stands for nothing — it never pointed.');
         return this.$for.read();
     }
 

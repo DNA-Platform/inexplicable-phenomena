@@ -43,8 +43,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
     }
 
     get number(): number {
-        const mine = this.footer.legend.keys.map(k => k.name);
-        return this.document.keys.filter(k => mine.includes(k)).indexOf(this.for) + 1;
+        return this.footnote.number;
     }
 
     read(): $Footnote {

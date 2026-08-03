@@ -129,12 +129,40 @@ describe('The document — the general unit above sections, and its reference ap
         expect(echoed.number).toBe(1);
     });
 
-    it('a citation is for its key — for exposes it, the copy is the note, and it auto-numbers', () => {
+    it('a citation is for its key — the copy is the note, and the bibliography numbers alphabetically', () => {
         const d = cited();
         const local = d.bibliography!.citations[0];
         expect(local.$for).toBe('euler');
         expect(local.number).toBe(1);
         expect(local.copy).toContain('Euler, the identity');
+        expect(d.bibliography!.citations[1].number).toBe(2);
+    });
+
+    it('bibliographies alphabetize, footers go in order — different because they are not in order', () => {
+        const d: $Document = $(
+            <Document>
+                <Section>
+                    <Title>Ordered</Title>
+                    {'\n\nCiting'}
+                    <Cite>zeno</Cite>
+                    {' before'}
+                    <Cite>euler</Cite>
+                    {' changes nothing alphabetical.'}
+                </Section>
+                <Bibliography>
+                    <Title>References</Title>
+                    <Citation for="zeno">Zeno, the paradox.</Citation>
+                    <Citation for="euler">Euler, the identity, 1748.</Citation>
+                </Bibliography>
+                <Section parenthetical>
+                    <Title>Summary</Title>
+                    {'\n\nAlphabetical.'}
+                </Section>
+            </Document>
+        );
+        const [zeno, euler] = denotes(d) as [$Cite, $Cite];
+        expect(euler.number).toBe(1);
+        expect(zeno.number).toBe(2);
     });
 
     it('the chain guards where the design placed them — a stray mark is invalid; a missing filing section or key throws on read', () => {
