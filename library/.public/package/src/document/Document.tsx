@@ -37,8 +37,8 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
         for (const section of this.parts()) {
             if (section instanceof $Footer) continue;
             for (const element of section.text?.$elements ?? []) {
-                const mark = element as { key?: string };
-                if (typeof mark.key === 'string' && mark.key && !keys.includes(mark.key)) keys.push(mark.key);
+                const mark = element as { for?: string };
+                if (typeof mark.for === 'string' && mark.for && !keys.includes(mark.for)) keys.push(mark.for);
             }
         }
         return keys;

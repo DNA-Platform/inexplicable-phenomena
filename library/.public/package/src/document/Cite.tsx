@@ -7,7 +7,7 @@ import { $Citation } from './Citation';
 export class $Cite extends $Denote {
     get footer(): $Footer {
         const found = this.document.bibliography;
-        if (!found) throw new Error(`Cite ${this.key}: the document has no bibliography.`);
+        if (!found) throw new Error(`Cite ${this.for}: the document has no bibliography.`);
         return found;
     }
 

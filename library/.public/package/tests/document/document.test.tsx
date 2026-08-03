@@ -107,7 +107,7 @@ describe('The document — the general unit above sections, and its reference ap
     it('a denote is written inline as a command — its key is its copy, and it reads its note through the document', () => {
         const d = noted();
         const [seam, found] = denotes(d);
-        expect(seam.key).toBe('seam');
+        expect(seam.for).toBe('seam');
         expect(seam.document).toBe(d);
         expect(seam.read()).toBe(d.footer!.footnotes[0]);
         expect(seam.number).toBe(1);
@@ -124,7 +124,7 @@ describe('The document — the general unit above sections, and its reference ap
         expect(euler.number).toBe(1);
         expect(euler.valid()).toBe(true);
         const echoed: $Cite = $(<Cite for="euler" />, d.sections[0]);
-        expect(echoed.key).toBe('euler');
+        expect(echoed.for).toBe('euler');
         expect(echoed.number).toBe(1);
     });
 

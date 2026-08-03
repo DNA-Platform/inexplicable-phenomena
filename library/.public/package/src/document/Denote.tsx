@@ -16,7 +16,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
         this.$parenthetical = true;
     }
 
-    get key(): string {
+    get for(): string {
         return this.$for || this.copy.trim();
     }
 
@@ -26,24 +26,24 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
             const parent = (scope as { parent?: unknown }).parent;
             scope = parent === scope ? undefined : parent;
         }
-        if (!scope) throw new Error(`Denote ${this.key}: it stands outside any document.`);
+        if (!scope) throw new Error(`Denote ${this.for}: it stands outside any document.`);
         return scope as $Document;
     }
 
     get footer(): $Footer {
         const found = this.document.footer;
-        if (!found) throw new Error(`Denote ${this.key}: the document has no footer.`);
+        if (!found) throw new Error(`Denote ${this.for}: the document has no footer.`);
         return found;
     }
 
     get footnote(): $Footnote {
-        const found = this.footer.legend.keys.filter(k => k.name === this.key);
-        if (found.length !== 1) throw new Error(`Denote ${this.key}: ${found.length} notes carry this key.`);
+        const found = this.footer.legend.keys.filter(k => k.name === this.for);
+        if (found.length !== 1) throw new Error(`Denote ${this.for}: ${found.length} notes carry this key.`);
         return found[0].read();
     }
 
     get number(): number {
-        return this.document.keys.indexOf(this.key) + 1;
+        return this.document.keys.indexOf(this.for) + 1;
     }
 
     read(): $Footnote {
@@ -58,7 +58,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
         try {
             return <sup className="mark">{this.number}</sup>;
         } catch {
-            return <sup className="mark">{this.key}</sup>;
+            return <sup className="mark">{this.for}</sup>;
         }
     }
 
