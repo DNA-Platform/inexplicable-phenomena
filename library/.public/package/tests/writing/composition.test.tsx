@@ -9,7 +9,7 @@ import { $Paragraph, Paragraph } from '@/writing/Paragraph';
 import { $Section, Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 
-describe('$Composition — implemented by the composition levels, born through the framework, read fresh from the block', () => {
+describe('$Composition$ — implemented by the composition levels, born through the framework, read fresh from the block', () => {
     it('$(<Word>hello</Word>) is a live $Word whose content is a real block', () => {
         const w: $Word = $(<Word>hello</Word>);
         expect(w).toBeInstanceOf($Word);

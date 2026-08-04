@@ -1,3 +1,3 @@
-export interface $Referent {
+export interface $Referent$ {
     valid(): boolean;
 }

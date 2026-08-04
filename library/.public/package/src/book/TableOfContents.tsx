@@ -1,13 +1,13 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
-import { type $Referent } from '../reference/Referent';
-import { type $Reference } from '../reference/Reference';
-import { type $Catalogue } from '../reference/Catalogue';
+import { type $Referent$ } from '../reference/Referent';
+import { type $Reference$ } from '../reference/Reference';
+import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { Composible } from '../utilities/Composible';
+import { $Composible$ } from '../utilities/Composible';
 import { $Path } from '../reference/Path';
-import { type $Composition } from '../writing/Composition';
+import { type $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { $Row } from './Row';
 import { $Title, Title } from '../writing/Title';
@@ -15,7 +15,7 @@ import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
 import { type $Book } from './Book';
 
-export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
+export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
     get title(): $Title {
         const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
         const title: $Title = $(<Title>{authored || 'Table of Contents'}</Title>);
@@ -26,7 +26,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
 
     get cover(): $Cover { return this.book.cover; }
 
-    get canonical(): $Row { return Composible.canonical(this); }
+    get canonical(): $Row { return $Composible$.canonical(this); }
 
     get chapters(): $Chapter[] {
         return this.parts().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
@@ -44,30 +44,30 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     }
 
     where(match: (part: $Row) => boolean): $Row[] {
-        return Composible.where(this, match);
+        return $Composible$.where(this, match);
     }
 
     select<U>(pick: (part: $Row) => U): U[] {
-        return Composible.select(this, pick);
+        return $Composible$.select(this, pick);
     }
 
     single(match: (part: $Row) => boolean): $Row {
-        return Composible.single(this, match);
+        return $Composible$.single(this, match);
     }
 
     at(index: number): $Location<$Row> {
-        return Composible.at(this, index);
+        return $Composible$.at(this, index);
     }
 
-    follow(): $Composition<$Chapter> {
-        return Composible.follow(this);
+    follow(): $Composition$<$Chapter> {
+        return $Composible$.follow(this);
     }
 
     read(): $Book {
         return this.cover.read();
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
         return new $Path<$Book, U>(this, next);
     }
 

@@ -1,9 +1,9 @@
-import { type $Referent } from '../reference/Referent';
-import { type $Reference } from '../reference/Reference';
+import { type $Referent$ } from '../reference/Referent';
+import { type $Reference$ } from '../reference/Reference';
 import { $Path } from '../reference/Path';
 import { type $Footnote } from './Footnote';
 
-export class $Key implements $Reference<$Footnote> {
+export class $Key implements $Reference$<$Footnote> {
     index = 0;
     parenthetical = false;
 
@@ -19,7 +19,7 @@ export class $Key implements $Reference<$Footnote> {
         return this.footnote.valid();
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
         return new $Path<$Footnote, U>(this, next);
     }
 }

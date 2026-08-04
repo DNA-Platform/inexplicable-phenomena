@@ -1,6 +1,6 @@
-export { type $Referent } from './reference/Referent';
-export { type $Reference } from './reference/Reference';
-export { type $Catalogue } from './reference/Catalogue';
+export { type $Referent$ } from './reference/Referent';
+export { type $Reference$ } from './reference/Reference';
+export { type $Catalogue$ } from './reference/Catalogue';
 export { $Location } from './reference/Location';
 export { $Path } from './reference/Path';
 export { $Link, Link } from './reference/Link';
@@ -23,7 +23,7 @@ export { $TableOfContents, TableOfContents } from './book/TableOfContents';
 export { $Row, Row } from './book/Row';
 export { $Book, Book } from './book/Book';
 export { $Writing, Writing } from './writing/Writing';
-export type { $Composition } from './writing/Composition';
+export type { $Composition$ } from './writing/Composition';
 export { text } from './utilities/html';
 export { $Letter, Letter } from './writing/Letter';
 export { $Word, $$Word, Word } from './writing/Word';

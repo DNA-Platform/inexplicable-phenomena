@@ -1,9 +1,9 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, $Chemical, type $Html } from '@dna-platform/chemistry';
-import { type $Referent } from '../reference/Referent';
+import { type $Referent$ } from '../reference/Referent';
 import { text } from '../utilities/html';
 
-export class $Writing extends $Chemical implements $Referent {
+export class $Writing extends $Chemical implements $Referent$ {
     text!: $Html<'block'>;
 
     $index?: number = undefined;

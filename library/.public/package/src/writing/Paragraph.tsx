@@ -1,19 +1,19 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { type $Composition } from './Composition';
-import { type $Referent } from '../reference/Referent';
-import { type $Reference } from '../reference/Reference';
-import { type $Catalogue } from '../reference/Catalogue';
+import { type $Composition$ } from './Composition';
+import { type $Referent$ } from '../reference/Referent';
+import { type $Reference$ } from '../reference/Reference';
+import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { Composible } from '../utilities/Composible';
+import { $Composible$ } from '../utilities/Composible';
 import { $Path } from '../reference/Path';
 import { $Writing } from './Writing';
 import { $Letter } from './Letter';
 import { $Sentence, Sentence } from './Sentence';
 import { $Word } from './Word';
 
-export class $Paragraph extends $Writing implements $Composition<$Sentence> {
-    get canonical(): $Sentence { return Composible.canonical(this); }
+export class $Paragraph extends $Writing implements $Composition$<$Sentence> {
+    get canonical(): $Sentence { return $Composible$.canonical(this); }
 
     get sentences(): $Sentence[] { return this.parts(); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
@@ -22,19 +22,19 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
     get ref(): $$Paragraph { return new $$Paragraph(this); }
 
     at(index: number): $Location<$Sentence> {
-        return Composible.at(this, index);
+        return $Composible$.at(this, index);
     }
 
     where(match: (part: $Sentence) => boolean): $Sentence[] {
-        return Composible.where(this, match);
+        return $Composible$.where(this, match);
     }
 
     select<U>(pick: (part: $Sentence) => U): U[] {
-        return Composible.select(this, pick);
+        return $Composible$.select(this, pick);
     }
 
     single(match: (part: $Sentence) => boolean): $Sentence {
-        return Composible.single(this, match);
+        return $Composible$.single(this, match);
     }
 
     parts(): $Sentence[] {
@@ -50,16 +50,16 @@ export class $Paragraph extends $Writing implements $Composition<$Sentence> {
     }
 }
 
-export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph> {
+export class $$Paragraph implements $Catalogue$<$Sentence>, $Reference$<$Paragraph> {
     index = 0;
     parenthetical = false;
 
     constructor(public of: $Paragraph) { }
 
     get copy(): string { return this.parts().map(r => r.copy).join(' '); }
-    get canonical(): $Reference<$Sentence> { return Composible.canonical(this); }
+    get canonical(): $Reference$<$Sentence> { return $Composible$.canonical(this); }
 
-    parts(): $Reference<$Sentence>[] {
+    parts(): $Reference$<$Sentence>[] {
         return this.of.parts().map((sentence, slot) => {
             const reference = this.of.at(sentence.index);
             reference.index = slot + 1;
@@ -67,24 +67,24 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
         });
     }
 
-    where(match: (reference: $Reference<$Sentence>) => boolean): $Reference<$Sentence>[] {
-        return Composible.where(this, match);
+    where(match: (reference: $Reference$<$Sentence>) => boolean): $Reference$<$Sentence>[] {
+        return $Composible$.where(this, match);
     }
 
-    select<U>(pick: (reference: $Reference<$Sentence>) => U): U[] {
-        return Composible.select(this, pick);
+    select<U>(pick: (reference: $Reference$<$Sentence>) => U): U[] {
+        return $Composible$.select(this, pick);
     }
 
-    single(match: (reference: $Reference<$Sentence>) => boolean): $Reference<$Sentence> {
-        return Composible.single(this, match);
+    single(match: (reference: $Reference$<$Sentence>) => boolean): $Reference$<$Sentence> {
+        return $Composible$.single(this, match);
     }
 
-    at(index: number): $Location<$Reference<$Sentence>> {
-        return Composible.at(this, index);
+    at(index: number): $Location<$Reference$<$Sentence>> {
+        return $Composible$.at(this, index);
     }
 
-    follow(): $Composition<$Sentence> {
-        return Composible.follow(this);
+    follow(): $Composition$<$Sentence> {
+        return $Composible$.follow(this);
     }
 
     read(): $Paragraph {
@@ -95,7 +95,7 @@ export class $$Paragraph implements $Catalogue<$Sentence>, $Reference<$Paragraph
         return this.of.valid();
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
         return new $Path<$Paragraph, U>(this, next);
     }
 }

@@ -1,13 +1,13 @@
 import { $, $check } from '@dna-platform/chemistry';
-import { type $Referent } from '../reference/Referent';
-import { type $Reference } from '../reference/Reference';
+import { type $Referent$ } from '../reference/Referent';
+import { type $Reference$ } from '../reference/Reference';
 import { $Path } from '../reference/Path';
 import { $Chapter } from './Chapter';
 import { type $Title } from '../writing/Title';
 import { type $Book } from './Book';
 import { $Section } from '../writing/Section';
 
-export class $Cover extends $Chapter implements $Reference<$Book> {
+export class $Cover extends $Chapter implements $Reference$<$Book> {
     get summary(): $Section { return this.canonical; }
 
     get title(): $Title { return super.title!; }
@@ -17,7 +17,7 @@ export class $Cover extends $Chapter implements $Reference<$Book> {
         return this.book;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
         return new $Path<$Book, U>(this, next);
     }
 

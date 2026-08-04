@@ -1,9 +1,9 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { type $Referent } from '../reference/Referent';
+import { type $Referent$ } from '../reference/Referent';
 import { $Location } from '../reference/Location';
-import { Composible } from '../utilities/Composible';
-import { type $Composition } from '../writing/Composition';
+import { $Composible$ } from '../utilities/Composible';
+import { type $Composition$ } from '../writing/Composition';
 import { $Section } from '../writing/Section';
 import { $Title, Title } from '../writing/Title';
 import { type $Subtitle } from '../writing/Subtitle';
@@ -15,7 +15,7 @@ import { $Letter } from '../writing/Letter';
 import { $Footer } from './Footer';
 import { $Bibliography } from './Bibliography';
 
-export class $Document extends $Chemical implements $Referent, $Composition<$Section> {
+export class $Document extends $Chemical implements $Referent$, $Composition$<$Section> {
     $parts: $Section[] = [];
 
     $index?: number = undefined;
@@ -62,7 +62,7 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
     }
 
     at(index: number): $Location<$Section> {
-        return Composible.at(this, index);
+        return $Composible$.at(this, index);
     }
 
     parts(): $Section[] {
@@ -70,15 +70,15 @@ export class $Document extends $Chemical implements $Referent, $Composition<$Sec
     }
 
     where(match: (part: $Section) => boolean): $Section[] {
-        return Composible.where(this, match);
+        return $Composible$.where(this, match);
     }
 
     select<U>(pick: (part: $Section) => U): U[] {
-        return Composible.select(this, pick);
+        return $Composible$.select(this, pick);
     }
 
     single(match: (part: $Section) => boolean): $Section {
-        return Composible.single(this, match);
+        return $Composible$.single(this, match);
     }
 
     written(): $Section[] {

@@ -1,14 +1,14 @@
 import { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { type $Referent } from '../reference/Referent';
-import { type $Reference } from '../reference/Reference';
+import { type $Referent$ } from '../reference/Referent';
+import { type $Reference$ } from '../reference/Reference';
 import { $Path } from '../reference/Path';
 import { $Writing } from '../writing/Writing';
 import { $Document } from './Document';
 import { $Footer } from './Footer';
 import { $Footnote } from './Footnote';
 
-export class $Denote extends $Writing implements $Reference<$Footnote> {
+export class $Denote extends $Writing implements $Reference$<$Footnote> {
     $for = '';
 
     constructor() {
@@ -50,7 +50,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
         return this.footnote;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
         return new $Path<$Footnote, U>(this, next);
     }
 

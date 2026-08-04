@@ -1,9 +1,9 @@
-import { type $Referent } from '../reference/Referent';
-import { type $Reference } from '../reference/Reference';
-import { type $Composition } from '../writing/Composition';
+import { type $Referent$ } from '../reference/Referent';
+import { type $Reference$ } from '../reference/Reference';
+import { type $Composition$ } from '../writing/Composition';
 import { $Location } from '../reference/Location';
 
-export class Composible {
+export class $Composible$ {
     static canonical<T>(of: { parts(): T[] }): T {
         return of.parts()[0];
     }
@@ -22,13 +22,13 @@ export class Composible {
         return found[0];
     }
 
-    static at<T extends $Referent>(of: { parts(): T[] }, index: number): $Location<T> {
+    static at<T extends $Referent$>(of: { parts(): T[] }, index: number): $Location<T> {
         return new $Location<T>(index, of as any);
     }
 
-    static follow<T extends $Referent & { copy: string; index: number; parenthetical: boolean }>(of: { parts(): $Reference<T>[] }): $Composition<T> {
+    static follow<T extends $Referent$ & { copy: string; index: number; parenthetical: boolean }>(of: { parts(): $Reference$<T>[] }): $Composition$<T> {
         const found = (): T[] => of.parts().map(r => r.read());
-        const followed: $Composition<T> = {
+        const followed: $Composition$<T> = {
             get canonical() { return found()[0]; },
             parts: found,
             where: (match) => found().filter(match),

@@ -7,7 +7,7 @@ import { $Book } from '@/book/Book';
 import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
-import { type $Reference } from '@/reference/Reference';
+import { type $Reference$ } from '@/reference/Reference';
 import { $Footer } from '@/document/Footer';
 import { text } from '@/utilities/html';
 import { manifold } from './book/library/the-manifold/book';
@@ -426,12 +426,12 @@ class $TheManifold extends $Chemical {
         this.ribbons = [...this.ribbons, mark];
     }
 
-    reference(spot: string): $Reference<any> | undefined {
+    reference(spot: string): $Reference$<any> | undefined {
         const keys = spot.split('.').filter(Boolean).map(Number);
         if (!keys.length) return undefined;
-        let built: $Reference<any> = held.book.at(keys[0]);
+        let built: $Reference$<any> = held.book.at(keys[0]);
         for (const key of keys.slice(1)) {
-            const mid = built.valid() ? built.read() as { at?: (index: number) => $Reference<any> } : undefined;
+            const mid = built.valid() ? built.read() as { at?: (index: number) => $Reference$<any> } : undefined;
             if (!mid?.at) return undefined;
             built = built.then(mid.at(key));
         }

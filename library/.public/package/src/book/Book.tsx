@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { type $Referent } from '../reference/Referent';
-import { type $Reference } from '../reference/Reference';
+import { type $Referent$ } from '../reference/Referent';
+import { type $Reference$ } from '../reference/Reference';
 import { $Location } from '../reference/Location';
-import { Composible } from '../utilities/Composible';
-import { type $Composition } from '../writing/Composition';
+import { $Composible$ } from '../utilities/Composible';
+import { type $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { $Cover } from './Cover';
 import { $Synopsis } from './Synopsis';
@@ -17,7 +17,7 @@ import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
 
-export class $Book extends $Chemical implements $Referent, $Composition<$Chapter> {
+export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapter> {
     $parts: $Chapter[] = [];
 
     $index?: number = undefined;
@@ -45,7 +45,7 @@ export class $Book extends $Chemical implements $Referent, $Composition<$Chapter
     get ref(): $Cover { return this.cover; }
 
     at(index: number): $Location<$Chapter> {
-        return Composible.at(this, index);
+        return $Composible$.at(this, index);
     }
 
     parts(): $Chapter[] {
@@ -53,15 +53,15 @@ export class $Book extends $Chemical implements $Referent, $Composition<$Chapter
     }
 
     where(match: (part: $Chapter) => boolean): $Chapter[] {
-        return Composible.where(this, match);
+        return $Composible$.where(this, match);
     }
 
     select<U>(pick: (part: $Chapter) => U): U[] {
-        return Composible.select(this, pick);
+        return $Composible$.select(this, pick);
     }
 
     single(match: (part: $Chapter) => boolean): $Chapter {
-        return Composible.single(this, match);
+        return $Composible$.single(this, match);
     }
 
     get tableOfContents(): $TableOfContents {

@@ -1,7 +1,7 @@
-import { type $Referent } from '../reference/Referent';
+import { type $Referent$ } from '../reference/Referent';
 import { type $Location } from '../reference/Location';
 
-export interface $Composition<T extends $Referent & { copy: string; index: number; parenthetical: boolean }> extends $Referent {
+export interface $Composition$<T extends $Referent$ & { copy: string; index: number; parenthetical: boolean }> extends $Referent$ {
     canonical: T;
     parts(): T[];
     where(match: (part: T) => boolean): T[];
