@@ -22,7 +22,7 @@ describe('$Composible$ — parts() is enough; the rest are extension methods', (
         const s = sentence();
         const r = $Composible$.at(s, 2);
         expect(r).toBeInstanceOf($Location);
-        expect(r.of).toBe(s);
+        expect(r.$of).toBe(s);
         expect((r.read() as $Word).copy).toBe('frame');
     });
 

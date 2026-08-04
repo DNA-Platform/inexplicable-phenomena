@@ -1,7 +1,8 @@
+import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
 import { type $Composition$ } from '../writing/Composition';
-import { $Location } from '../reference/Location';
+import { $Location, Location } from '../reference/Location';
 
 export class $Composible$ {
     static canonical<T>(of: { parts(): T[] }): T {
@@ -23,7 +24,8 @@ export class $Composible$ {
     }
 
     static at<T extends $Referent$>(of: { parts(): T[] }, index: number): $Location<T> {
-        return new $Location<T>(index, of as any);
+        const location: $Location<T> = $(<Location i={index} of={of as any} />);
+        return location;
     }
 
     static follow<T extends $Referent$ & { copy: string; index: number; parenthetical: boolean }>(of: { parts(): $Reference$<T>[] }): $Composition$<T> {
@@ -38,7 +40,7 @@ export class $Composible$ {
                 if (kept.length !== 1) throw new Error(`single expected exactly one part and found ${kept.length}.`);
                 return kept[0];
             },
-            at(index: number) { return new $Location<T>(index, followed); },
+            at(index: number) { return $Composible$.at(followed, index); },
             get copy() { return found().map(t => t.copy).join(' '); },
             valid: () => true,
             index: 0,

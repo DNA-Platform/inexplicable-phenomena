@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path } from '../reference/Path';
+import { $Path, Path } from '../reference/Path';
 import { $Writing } from '../writing/Writing';
 import { $Document } from './Document';
 import { $Footer } from './Footer';
@@ -37,7 +37,7 @@ export class $Denote extends $Writing implements $Reference$<$Footnote> {
     }
 
     get footnote(): $Footnote {
-        const found = this.footer.legend.keys.filter(k => k.name === this.for);
+        const found = this.footer.legend.keys.filter(k => k.$name === this.for);
         if (found.length !== 1) throw new Error(`Denote ${this.for}: ${found.length} notes carry this key.`);
         return found[0].read();
     }
@@ -51,7 +51,8 @@ export class $Denote extends $Writing implements $Reference$<$Footnote> {
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        return new $Path<$Footnote, U>(this, next);
+        const path: $Path<$Footnote, U> = $(<Path first={this} onward={next} />);
+        return path;
     }
 
     view(): ReactNode {

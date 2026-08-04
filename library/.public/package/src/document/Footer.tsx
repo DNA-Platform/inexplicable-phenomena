@@ -4,7 +4,7 @@ import { $Section } from '../writing/Section';
 import { $Title } from '../writing/Title';
 import { $Footnote } from './Footnote';
 import { $Legend, Legend } from './Legend';
-import { $Key } from './Key';
+import { $Key, Key } from './Key';
 
 export class $Footer extends $Section {
     $legend?: $Legend;
@@ -16,7 +16,7 @@ export class $Footer extends $Section {
     get legend(): $Legend {
         if (!this.$legend) {
             const legend: $Legend = $(<Legend />, this);
-            legend.$keys = this.footnotes.map(e => new $Key(e.$for, e));
+            legend.$keys = this.footnotes.map(e => $(<Key name={e.$for} footnote={e} />) as $Key);
             this.$legend = legend;
         }
         return this.$legend;

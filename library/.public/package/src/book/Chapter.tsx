@@ -4,7 +4,7 @@ import { type $Reference$ } from '../reference/Reference';
 import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
-import { $Path } from '../reference/Path';
+import { $Path, Path } from '../reference/Path';
 import { type $Composition$ } from '../writing/Composition';
 import { $Document } from '../document/Document';
 import { $Section } from '../writing/Section';
@@ -62,7 +62,8 @@ export class $$Chapter implements $Catalogue$<$Section>, $Reference$<$Chapter> {
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        return new $Path<$Chapter, U>(this, next);
+        const path: $Path<$Chapter, U> = $(<Path first={this} onward={next} />);
+        return path;
     }
 }
 

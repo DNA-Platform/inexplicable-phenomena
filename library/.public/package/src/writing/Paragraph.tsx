@@ -6,7 +6,7 @@ import { type $Reference$ } from '../reference/Reference';
 import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
-import { $Path } from '../reference/Path';
+import { $Path, Path } from '../reference/Path';
 import { $Writing } from './Writing';
 import { $Letter } from './Letter';
 import { $Sentence, Sentence } from './Sentence';
@@ -96,7 +96,8 @@ export class $$Paragraph implements $Catalogue$<$Sentence>, $Reference$<$Paragra
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        return new $Path<$Paragraph, U>(this, next);
+        const path: $Path<$Paragraph, U> = $(<Path first={this} onward={next} />);
+        return path;
     }
 }
 

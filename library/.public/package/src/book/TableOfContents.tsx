@@ -6,10 +6,10 @@ import { type $Reference$ } from '../reference/Reference';
 import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
-import { $Path } from '../reference/Path';
+import { $Path, Path } from '../reference/Path';
 import { type $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
-import { $Row } from './Row';
+import { $Row, Row } from './Row';
 import { $Title, Title } from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
@@ -36,8 +36,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return this.book.parts()
             .filter(c => c !== this && !(c instanceof $Cover))
             .map(c => {
-                const row = new $Row();
-                row.path = this.book.at(c.index);
+                const row: $Row = $(<Row path={this.book.at(c.index)} />);
                 row.index = c.index;
                 return row;
             });
@@ -68,7 +67,8 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        return new $Path<$Book, U>(this, next);
+        const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
+        return path;
     }
 
     $TableOfContents(...sections: $Section[]) {

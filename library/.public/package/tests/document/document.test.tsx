@@ -105,7 +105,7 @@ describe('The document — the general unit above sections, and its reference ap
         const legend = footer.legend;
         expect(footer.legend).toBe(legend);
         expect(legend.keys.length).toBe(2);
-        expect(legend.keys[0].name).toBe('seam');
+        expect(legend.keys[0].$name).toBe('seam');
         expect(legend.keys[0].read()).toBe(footer.footnotes[0]);
     });
 

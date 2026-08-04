@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path } from '../reference/Path';
+import { $Path, Path } from '../reference/Path';
 import { $Sentence } from '../writing/Sentence';
 
 export class $Bookmark<T extends $Referent$ = $Referent$> extends $Sentence implements $Reference$<T> {
@@ -17,7 +17,8 @@ export class $Bookmark<T extends $Referent$ = $Referent$> extends $Sentence impl
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        return new $Path<T, U>(this, next);
+        const path: $Path<T, U> = $(<Path first={this} onward={next} />);
+        return path;
     }
 }
 

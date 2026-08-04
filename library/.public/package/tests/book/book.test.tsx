@@ -46,7 +46,7 @@ describe('referential integrity — at, then, and the reading', () => {
         const b: $Book = $(book());
         const r = b.at(3);
         expect(r).toBeInstanceOf($Location);
-        expect(r.of).toBe(b);
+        expect(r.$of).toBe(b);
         expect(r.read()).toBe(b.chapters[3]);
         expect(r.valid()).toBe(true);
         expect(b.at(0).read()).toBe(b.cover);
