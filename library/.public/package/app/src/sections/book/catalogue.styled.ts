@@ -146,3 +146,18 @@ export const Colophon = styled.p`
     animation: ${settle} 700ms 1200ms ease-out both;
 `;
 
+
+export const Byline = styled.span`
+    display: inline-block;
+    margin-top: 9px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(52, 55, 60, 0.62);
+    cursor: pointer;
+    transition: color 220ms ease;
+
+    &:hover {
+        color: #8c3b1e;
+    }
+`;

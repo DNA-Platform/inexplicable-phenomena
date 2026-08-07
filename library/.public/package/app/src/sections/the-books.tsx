@@ -8,12 +8,13 @@ import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
 import { shelf } from './book/library/the-shelf/book';
 import { team } from './book/library/the-team/book';
+import { theAlgebra, theManifold, theTeam } from './book/library/the-team/card';
 import { TheManifold } from './the-manifold';
 import { TheTeam } from './the-team';
 import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle } from './book/shelf.styled';
 import {
     Field, Stage, Face, Reverse, Leaf, Column, Turnable, Standing, Preamble,
-    Entries, Entry, EntryTitle, EntryNote, Colophon,
+    Entries, Entry, EntryTitle, EntryNote, Byline, Colophon,
 } from './book/catalogue.styled';
 
 // The shelf is UI. A spine does not need a book behind it, and a book does not
@@ -33,9 +34,9 @@ const graphite: SpineData[] = [
 const filler = (n: number, offset = 0): SpineData[] => Array.from({ length: n }, (_, i) => graphite[(i + offset) % graphite.length]);
 
 const catalogued = [
-    { key: 'algebra', ink: '#5b2f2a', href: '/page' },
-    { key: 'manifold', ink: '#2c4a3c' },
-    { key: 'team', ink: '#8c3b1e' },
+    { key: 'algebra', ink: '#5b2f2a', href: '/page', card: theAlgebra },
+    { key: 'manifold', ink: '#2c4a3c', card: theManifold },
+    { key: 'team', ink: '#8c3b1e', card: theTeam },
 ];
 
 const spines: SpineData[] = [
@@ -97,6 +98,9 @@ class $TheBooks extends $Chemical {
                             <Entry key={i} $ink={catalogued[i]?.ink ?? '#2c3036'} $i={i} data-entry={catalogued[i]?.key}>
                                 <EntryTitle onClick={() => this.open(i)}>{entry.title?.copy ?? ''}</EntryTitle>
                                 <EntryNote>{prose(entry.summary)}</EntryNote>
+                                <Byline data-author onClick={() => { this.opened = 'team'; }}>
+                                    {catalogued[i]?.card?.written('author') ?? ''}
+                                </Byline>
                             </Entry>
                         ))}
                     </Entries>
