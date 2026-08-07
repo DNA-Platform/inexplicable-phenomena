@@ -50,17 +50,7 @@ export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing impl
     }
 
     view(): ReactNode {
-        return (
-            <dl className="card">
-                <dt className="card-heading">{this.name}</dt>
-                {this.properties().filter(name => name !== 'name').map(name => (
-                    <dd className="card-property" key={name} data-property={name}>
-                        <span className="card-property-name">{name}</span>
-                        <span className="card-property-value">{this.written(name)}</span>
-                    </dd>
-                ))}
-            </dl>
-        );
+        return this.copy;
     }
 
     valid(): boolean {

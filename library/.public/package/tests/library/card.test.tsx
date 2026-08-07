@@ -56,13 +56,13 @@ describe('$IndexCard — a card that prints what is on it', () => {
         expect(card.written('author')).toBe('The Team');
     });
 
-    it('shows itself as a card — a heading and its entries, each named', () => {
+    it('shows what is on it, and nothing a subclass would have to undo', () => {
         const card: $ShelvedCard = $(<ShelvedCard name="The Manifold" synopsis="Read rather than described." />);
         const C = $(card) as any;
         const { container } = render(<C />);
 
-        expect(container.querySelector('.card-heading')?.textContent).toBe('The Manifold');
-        expect(container.querySelector('[data-property="synopsis"]')?.textContent).toContain('Read rather than described.');
+        expect(container.textContent).toContain('name: The Manifold');
+        expect(container.textContent).toContain('synopsis: Read rather than described.');
     });
 
     it('reads to the thing it stands for', () => {
