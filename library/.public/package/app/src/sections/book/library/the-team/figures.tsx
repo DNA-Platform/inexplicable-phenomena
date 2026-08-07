@@ -1,9 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Paragraph } from '@/writing/Paragraph';
+import { $Sentence } from '@/writing/Sentence';
 import { $Title } from '@/writing/Title';
-import { $IndexCard } from '@/library/IndexCard';
-import { Heading, Plate, PlateCaption, Slip, SlipName, SlipBody, Listing, ListingName, Loop, LoopBook, LoopArrow, LoopSelf, Rule } from '../../../the-team.styled';
+import { Heading, Plate, PlateCaption, Rule } from '../../../the-team.styled';
 
 export class $Heading extends $Title {
     view(): ReactNode {
@@ -11,15 +10,11 @@ export class $Heading extends $Title {
     }
 }
 
-export class $Figure extends $Paragraph {
-    $name = '';
-
-    get name(): string { return this.$name; }
-
+export class $Figure extends $Sentence {
     view(): ReactNode {
         return (
             <Plate>
-                <PlateCaption>{this.name}</PlateCaption>
+                <PlateCaption>{this.copy}</PlateCaption>
                 {this.drawn()}
             </Plate>
         );
@@ -28,76 +23,7 @@ export class $Figure extends $Paragraph {
     drawn(): ReactNode {
         return <Rule />;
     }
-
-    parts(): never[] {
-        return [];
-    }
-
-    valid(): boolean {
-        return this.name !== '';
-    }
-}
-
-export class $TheLoop extends $Figure {
-    $books: string[] = [];
-    $home = '';
-
-    get books(): string[] { return this.$books; }
-    get home(): string { return this.$home; }
-
-    drawn(): ReactNode {
-        return (
-            <Loop>
-                {this.books.map(title => (
-                    <LoopBook key={title} $home={title === this.home}>
-                        {title}
-                        {title === this.home ? <LoopSelf>↺</LoopSelf> : <LoopArrow>→</LoopArrow>}
-                    </LoopBook>
-                ))}
-            </Loop>
-        );
-    }
-}
-
-export class $TheCard extends $Figure {
-    $card?: $IndexCard = undefined;
-
-    get card(): $IndexCard | undefined { return this.$card; }
-
-    drawn(): ReactNode {
-        const card = this.card;
-        if (!card) return <Rule />;
-        return (
-            <Slip>
-                <SlipName>{card.name}</SlipName>
-                {card.properties().filter(property => property !== 'name').map(property => (
-                    <SlipBody key={property}>
-                        <em>{property}</em>
-                        <span>{card.written(property)}</span>
-                    </SlipBody>
-                ))}
-            </Slip>
-        );
-    }
-}
-
-export class $TheCode extends $Figure {
-    $source = '';
-
-    get source(): string { return this.$source; }
-
-    drawn(): ReactNode {
-        return (
-            <Listing>
-                <ListingName>{this.name}</ListingName>
-                <pre>{this.source.trim()}</pre>
-            </Listing>
-        );
-    }
 }
 
 export const ChapterHeading = $($Heading);
 export const Figure = $($Figure);
-export const TheLoop = $($TheLoop);
-export const TheCard = $($TheCard);
-export const TheCode = $($TheCode);

@@ -3,10 +3,7 @@ import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
 import { Title as PlainTitle } from '@/writing/Title';
-import { ChapterHeading as Title } from './figures';
-import { TheLoop } from './figures';
-
-const shelved = ['The Algebra of Perspective', 'The Manifold', 'The Shelf', 'The Team'];
+import { ChapterHeading as Title, Figure } from './figures';
 
 export class $TheDecision extends $Chapter {
     view(): ReactNode {
@@ -21,6 +18,7 @@ export class $TheDecision extends $Chapter {
                     {'\n\nThe card is what got us out, and it got us out by being smaller. A card is minted independently of the thing it stands for. So the fourth book\'s author link does not point at the fourth book. It points at the fourth book\'s card, and the card was already on the table before a word of the book was written.'}
                     {'\n\nNothing new had to be invented for that arrow to come home. That is worth saying plainly, because we expected to invent something, and the design was better than we were: the surrogate we built for cataloguing turned out to be exactly the thing a self-reference needs, for the same reason in both cases — you can carry a card, and you cannot carry a book.'}
                     {'\n\nSo this is the passage where the book records the decision to be written. It is not a memoir about one. The link that makes it the canonical account of this library is one of the four in the figure above, and it is the one pointing at itself. If you follow it, you arrive here.'}
+                    <Figure>Four books, four author links, one destination — and the fourth is the one that points at itself.</Figure>
                 </Section>
                 <Section parenthetical>
                     <PlainTitle>Summary</PlainTitle>
