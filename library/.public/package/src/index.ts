@@ -17,6 +17,7 @@ export { $Legend, Legend } from './document/Legend';
 export { $Key, Key } from './document/Key';
 export { $Chapter, $$Chapter, Chapter } from './book/Chapter';
 export { $Cover, Cover } from './book/Cover';
+export { $Author, Author } from './book/Author';
 export { $Synopsis, Synopsis } from './book/Synopsis';
 export { $Index, Index } from './book/Index';
 export { $TableOfContents, TableOfContents } from './book/TableOfContents';

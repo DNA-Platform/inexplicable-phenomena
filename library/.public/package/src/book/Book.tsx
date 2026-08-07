@@ -6,6 +6,7 @@ import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { type $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
+import { type $Author } from './Author';
 import { $Cover } from './Cover';
 import { $Synopsis } from './Synopsis';
 import { $TableOfContents, TableOfContents } from './TableOfContents';
@@ -33,6 +34,7 @@ export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapt
     get cover(): $Cover { return this.chapters[0] as $Cover; }
     get synopsis(): $Synopsis { return this.chapters.find(c => c instanceof $Synopsis) as $Synopsis; }
     get title(): $Title | undefined { return this.cover instanceof $Cover ? this.cover.title : undefined; }
+    get author(): $Author | undefined { return this.cover instanceof $Cover ? this.cover.author : undefined; }
     get subtitle(): $Subtitle | undefined { return this.cover instanceof $Cover ? this.cover.subtitle : undefined; }
 
     get chapters(): $Chapter[] { return this.parts(); }

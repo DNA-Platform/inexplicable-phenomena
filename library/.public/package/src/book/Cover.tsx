@@ -6,11 +6,16 @@ import { $Chapter } from './Chapter';
 import { type $Title } from '../writing/Title';
 import { type $Book } from './Book';
 import { $Section } from '../writing/Section';
+import { $Author } from './Author';
 
 export class $Cover extends $Chapter implements $Reference$<$Book> {
     get summary(): $Section { return this.canonical; }
 
     get title(): $Title { return super.title!; }
+
+    get author(): $Author | undefined {
+        return this.sections.flatMap(s => s.elements).find(e => e instanceof $Author) as $Author | undefined;
+    }
 
     read(): $Book {
         if (!this.book) throw new Error('The cover stands outside any book.');
