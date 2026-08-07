@@ -34,7 +34,15 @@ export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing impl
         const value = (this as any)[property];
         if (value === undefined || value === null) return '';
         if (value instanceof $IndexCard) return value.name;
-        if (Array.isArray(value)) return value.map(part => (part instanceof $IndexCard ? part.name : String(part))).join(', ');
+        if (value instanceof $Writing) return value.copy;
+        if (Array.isArray(value)) return value.map(part => this.printed(part)).join(', ');
+        return this.printed(value);
+    }
+
+    printed(value: unknown): string {
+        if (value instanceof $IndexCard) return value.name;
+        if (value instanceof $Writing) return value.copy;
+        if (value && typeof value === 'object' && 'name' in value) return String((value as { name: unknown }).name);
         return String(value);
     }
 
