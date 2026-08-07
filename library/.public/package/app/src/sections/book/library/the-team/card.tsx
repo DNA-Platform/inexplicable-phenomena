@@ -54,3 +54,7 @@ export const theManifold: $LibraryCard = libraryCatalogue.card('The Manifold');
 export const theShelf: $LibraryCard = libraryCatalogue.card('The Shelf');
 
 for (const card of libraryCatalogue.cards) card.$author = theTeam;
+
+for (const book of [algebra, manifold, shelf]) {
+    if (book.author) book.author.$for = theTeam;
+}

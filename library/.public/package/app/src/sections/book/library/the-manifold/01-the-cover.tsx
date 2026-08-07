@@ -3,6 +3,7 @@ import { $ } from '@dna-platform/chemistry';
 import { $Cover } from '@/book/Cover';
 import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
+import { Author } from '@/book/Author';
 
 export class $ManifoldCover extends $Cover {
     view(): ReactNode {
@@ -11,6 +12,7 @@ export class $ManifoldCover extends $Cover {
                 <Title>The Manifold of Sentences: A Geometry of Prose</Title>
                 {'\n\nWriting is a curved surface that pretends, everywhere you stand, to be flat.'}
                 {'\n\nThis book walks the surface: the fold, the chart, the curvature, the straightest path through.'}
+                {'\n\n'}<Author>The Team</Author>
             </Section>
         );
     }
