@@ -143,13 +143,17 @@ export const Prose = styled.div`
     font-family: ${serif};
     font-size: 17px;
     line-height: 1.78;
+    white-space: pre-line;
 
-    p { margin: 0 0 1.35em; }
-    p:first-of-type::first-letter {
+    .section { margin: 0 0 1.2em; }
+    figure, div, pre { white-space: normal; }
+
+    & > .section:first-child::first-letter {
         float: left;
         font-size: 3.4em;
         line-height: 0.82;
-        padding: 0.06em 0.09em 0 0;
+        padding: 0.06em 0.1em 0 0;
+        font-weight: 400;
         color: ${rust};
     }
 `;

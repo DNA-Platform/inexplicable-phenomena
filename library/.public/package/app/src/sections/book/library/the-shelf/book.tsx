@@ -5,6 +5,7 @@ import { ShelfCover } from './01-the-cover';
 import { ShelfSynopsis } from './02-the-synopsis';
 import { TheAlgebraEntry } from './03-the-algebra';
 import { TheManifoldEntry } from './04-the-manifold';
+import { TheTeamEntry } from './05-the-team';
 
 export const shelf: $Book = $(
     <Book>
@@ -12,5 +13,6 @@ export const shelf: $Book = $(
         <ShelfSynopsis />
         <TheAlgebraEntry />
         <TheManifoldEntry />
+        <TheTeamEntry />
     </Book>
 );

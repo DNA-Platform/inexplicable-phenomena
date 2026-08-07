@@ -7,7 +7,9 @@ import { $TableOfContents } from '@/book/TableOfContents';
 import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
 import { shelf } from './book/library/the-shelf/book';
+import { team } from './book/library/the-team/book';
 import { TheManifold } from './the-manifold';
+import { TheTeam } from './the-team';
 import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle } from './book/shelf.styled';
 import {
     Field, Stage, Face, Reverse, Leaf, Column, Turnable, Standing, Preamble,
@@ -33,12 +35,14 @@ const filler = (n: number, offset = 0): SpineData[] => Array.from({ length: n },
 const catalogued = [
     { key: 'algebra', ink: '#5b2f2a', href: '/page' },
     { key: 'manifold', ink: '#2c4a3c' },
+    { key: 'team', ink: '#8c3b1e' },
 ];
 
 const spines: SpineData[] = [
     ...filler(14),
     { key: 'algebra', href: '/page', title: algebra.title?.copy ?? '', ink: catalogued[0].ink, tall: 52, wide: 50 },
     { key: 'manifold', title: manifold.title?.copy ?? '', ink: catalogued[1].ink, tall: 52, wide: 50 },
+    { key: 'team', title: team.title?.copy ?? '', ink: catalogued[2].ink, tall: 54, wide: 46 },
     ...filler(14, 2),
 ];
 
@@ -111,6 +115,7 @@ class $TheBooks extends $Chemical {
 
     view(): ReactNode {
         if (this.opened === 'manifold') return <TheManifold />;
+        if (this.opened === 'team') return <TheTeam />;
         return (
             <Field>
                 <Stage $turned={this.turned}>
