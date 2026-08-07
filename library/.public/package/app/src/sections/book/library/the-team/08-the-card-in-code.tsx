@@ -4,8 +4,6 @@ import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
 import { Title as PlainTitle } from '@/writing/Title';
 import { ChapterHeading as Title } from './figures';
-import { TheCard, TheCode } from './figures';
-import { theTeam } from './card';
 
 const transform = `
 type Composed = 'sections' | 'paragraphs' | 'sentences' | 'words' | 'letters' | 'copy';

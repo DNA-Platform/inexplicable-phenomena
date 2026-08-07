@@ -4,7 +4,6 @@ import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
 import { Title as PlainTitle } from '@/writing/Title';
 import { ChapterHeading as Title } from './figures';
-import { TheCode } from './figures';
 
 const author = `
 export class $Author extends $Sentence implements $Reference$<$Book> {

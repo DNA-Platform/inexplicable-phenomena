@@ -4,8 +4,6 @@ import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
 import { Title as PlainTitle } from '@/writing/Title';
 import { ChapterHeading as Title } from './figures';
-import { TheCard } from './figures';
-import { theShelf } from './card';
 
 export class $TheShelfChapter extends $Chapter {
     view(): ReactNode {
