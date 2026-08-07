@@ -16,26 +16,22 @@ export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing impl
     get copy(): string { return this.entries().map(e => `${e.name}: ${e.value}`).join('\n'); }
 
     entries(): $Entry[] {
-        const machinery = $IndexCard.machinery();
         const carried: string[] = [];
-        for (const key in this) {
-            if (!key.startsWith('$') || machinery.has(key) || carried.includes(key)) continue;
-            carried.push(key);
+        let proto = Object.getPrototypeOf(this);
+        let reached = false;
+        while (proto && !reached) {
+            const keys = Object.getOwnPropertyNames(proto);
+            const accessor = (key: string) => Object.getOwnPropertyDescriptor(proto, key)?.get !== undefined;
+            const lifted = keys.some(key => key.startsWith('$') && accessor(key));
+            if (!lifted) {
+                reached = Object.prototype.hasOwnProperty.call(proto, 'entries');
+                const declared = keys.filter(key => accessor(key) && !key.startsWith('$') && key !== 'copy' && !carried.includes(key));
+                carried.unshift(...declared);
+            }
+            proto = Object.getPrototypeOf(proto);
         }
-        return ['name', ...carried.map(key => key.slice(1))].map(name => ({ name, value: this.written((this as any)[name]) }));
+        return carried.map(name => ({ name, value: this.written((this as any)[name]) }));
     }
-
-    static machinery(): Set<string> {
-        if (!$IndexCard.$machinery$) {
-            const bare: $IndexCard = $(<IndexCard name="" />);
-            const names = new Set<string>();
-            for (const key in bare) if (key.startsWith('$')) names.add(key);
-            $IndexCard.$machinery$ = names;
-        }
-        return $IndexCard.$machinery$;
-    }
-
-    static $machinery$?: Set<string> = undefined;
 
     written(value: unknown): string {
         if (value === undefined || value === null) return '';
