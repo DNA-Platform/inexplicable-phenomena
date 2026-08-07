@@ -7,7 +7,7 @@ import { team } from './book/library/the-team/book';
 import { theTeam } from './book/library/the-team/card';
 import {
     Manuscript, Masthead, Standing, Imprint, Spread, Body, Margin, MarginName,
-    Heading, Folio, Prose, Turn, Leaf, Contents, Entry, Slip, SlipName, SlipBody,
+    Folio, Prose, Turn, Leaf, Contents, Entry, Slip, SlipName, SlipBody,
 } from './the-team.styled';
 
 const numeral = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
@@ -73,7 +73,6 @@ export class $TheTeamBook extends $Chemical {
                 </Masthead>
                 <Spread>
                     <Body>
-                        <Heading>{chapter.title?.copy ?? ''}</Heading>
                         <Folio>{cover ? 'The Team' : `${this.at - 1} of ${this.readable.length - 2}`}</Folio>
                         <Prose><C /></Prose>
                         <Turn>

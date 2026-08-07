@@ -1,16 +1,18 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Paragraph } from '@/writing/Paragraph';
+import { $Title } from '@/writing/Title';
 import { $IndexCard } from '@/library/IndexCard';
-import { Plate, PlateCaption, Slip, SlipName, SlipBody, Listing, ListingName, Loop, LoopBook, LoopArrow, LoopSelf, Rule } from '../../the-team.styled';
+import { Heading, Plate, PlateCaption, Slip, SlipName, SlipBody, Listing, ListingName, Loop, LoopBook, LoopArrow, LoopSelf, Rule } from '../../../the-team.styled';
+
+export class $Heading extends $Title {
+    view(): ReactNode {
+        return <Heading>{this.copy}</Heading>;
+    }
+}
 
 export class $Figure extends $Paragraph {
     $name = '';
-
-    constructor() {
-        super();
-        this.inline = false;
-    }
 
     get name(): string { return this.$name; }
 
@@ -25,6 +27,14 @@ export class $Figure extends $Paragraph {
 
     drawn(): ReactNode {
         return <Rule />;
+    }
+
+    parts(): never[] {
+        return [];
+    }
+
+    valid(): boolean {
+        return this.name !== '';
     }
 }
 
@@ -86,6 +96,7 @@ export class $TheCode extends $Figure {
     }
 }
 
+export const ChapterHeading = $($Heading);
 export const Figure = $($Figure);
 export const TheLoop = $($TheLoop);
 export const TheCard = $($TheCard);

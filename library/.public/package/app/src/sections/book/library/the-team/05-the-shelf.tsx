@@ -2,7 +2,8 @@ import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
-import { Title } from '@/writing/Title';
+import { Title as PlainTitle } from '@/writing/Title';
+import { ChapterHeading as Title } from './figures';
 import { TheCard } from './figures';
 import { theShelf } from './card';
 
@@ -16,11 +17,10 @@ export class $TheShelfChapter extends $Chapter {
                     {'\n\nThen someone turned it over. On the back of the spines was the same row written out: each book named, each name a way in. And the sentence that arrived with it was the one that reorganised everything above it. A shelf is already a catalogue. Ordered references, standing in a row, each spine a name that stands for a book without being one.'}
                     {'\n\nWhich meant the shelf was not furniture holding books. It was a book, whose chapters were references to other books, and the only reason it had not looked like one is that we had been writing its entries by hand. A hand-written catalogue drifts. It drifts the instant a book it lists is edited, and nothing tells you, because prose does not know what it is about.'}
                     {'\n\nSo the entries had to stop being prose. What replaces them is smaller than what it replaces, which is how we now recognise a correct move around here: the shelf holds cards, and a card is the book present without the book. You consult it instead of handling the thing.'}
-                    <TheCard name="Figure — the card for The Shelf, as the catalogue holds it" card={theShelf} />
                     {'\n\nThat card is not a picture of a card. It is the card, printing what is on it, and the reason its property names match the book they describe is that nobody typed them twice.'}
                 </Section>
                 <Section parenthetical>
-                    <Title>Summary</Title>
+                    <PlainTitle>Summary</PlainTitle>
                     {'\n\nThe shelf turned over and was a catalogue, and its hand-written entries became cards.'}
                 </Section>
             </>

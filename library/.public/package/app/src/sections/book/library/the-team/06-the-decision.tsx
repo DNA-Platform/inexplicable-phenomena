@@ -2,8 +2,11 @@ import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
-import { Title } from '@/writing/Title';
+import { Title as PlainTitle } from '@/writing/Title';
+import { ChapterHeading as Title } from './figures';
 import { TheLoop } from './figures';
+
+const shelved = ['The Algebra of Perspective', 'The Manifold', 'The Shelf', 'The Team'];
 
 export class $TheDecision extends $Chapter {
     view(): ReactNode {
@@ -16,16 +19,11 @@ export class $TheDecision extends $Chapter {
                     {'\n\nWhich is when the proposal arrived, and it arrived as a joke before it was a plan: write a fourth book about the three being made, and let all four point their authorship at it. The joke was that it would then have to point at itself.'}
                     {'\n\nWe did not know that could be built. The problem states itself in one line — the book must exist before its own author reference can resolve — and there is no ordering of construction that gets you out of it. You cannot hand a book to a reference inside the book being handed over.'}
                     {'\n\nThe card is what got us out, and it got us out by being smaller. A card is minted independently of the thing it stands for. So the fourth book\'s author link does not point at the fourth book. It points at the fourth book\'s card, and the card was already on the table before a word of the book was written.'}
-                    <TheLoop
-                        name="Figure — four books, four author links, one destination"
-                        books={['The Algebra of Perspective', 'The Manifold', 'The Shelf', 'The Team']}
-                        home="The Team"
-                    />
                     {'\n\nNothing new had to be invented for that arrow to come home. That is worth saying plainly, because we expected to invent something, and the design was better than we were: the surrogate we built for cataloguing turned out to be exactly the thing a self-reference needs, for the same reason in both cases — you can carry a card, and you cannot carry a book.'}
                     {'\n\nSo this is the passage where the book records the decision to be written. It is not a memoir about one. The link that makes it the canonical account of this library is one of the four in the figure above, and it is the one pointing at itself. If you follow it, you arrive here.'}
                 </Section>
                 <Section parenthetical>
-                    <Title>Summary</Title>
+                    <PlainTitle>Summary</PlainTitle>
                     {'\n\nThe fourth book decided on, and the loop closed by pointing at a card rather than at a book.'}
                 </Section>
             </>

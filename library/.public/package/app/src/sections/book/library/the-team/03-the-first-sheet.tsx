@@ -2,7 +2,8 @@ import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
-import { Title } from '@/writing/Title';
+import { Title as PlainTitle } from '@/writing/Title';
+import { ChapterHeading as Title } from './figures';
 
 export class $TheFirstSheet extends $Chapter {
     view(): ReactNode {
@@ -16,7 +17,7 @@ export class $TheFirstSheet extends $Chapter {
                     {'\n\nWhat the page proved, and it proved it by being boring afterward: the same book, met four ways, is still the same book. Nobody had to enforce that. It was true because there was only ever one of it.'}
                 </Section>
                 <Section parenthetical>
-                    <Title>Summary</Title>
+                    <PlainTitle>Summary</PlainTitle>
                     {'\n\nOne sheet, four readings, and the discovery that a view is an approach rather than a copy.'}
                 </Section>
             </>

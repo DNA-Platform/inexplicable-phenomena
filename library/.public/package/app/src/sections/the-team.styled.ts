@@ -168,6 +168,7 @@ export const Marked = styled.mark`
 `;
 
 export const Plate = styled.figure`
+    display: block;
     margin: 2.6em 0;
     padding: 20px 22px 18px;
     background: rgba(255, 253, 247, 0.8);

@@ -2,7 +2,8 @@ import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
-import { Title } from '@/writing/Title';
+import { Title as PlainTitle } from '@/writing/Title';
+import { ChapterHeading as Title } from './figures';
 
 export class $NightWork extends $Chapter {
     view(): ReactNode {
@@ -17,7 +18,7 @@ export class $NightWork extends $Chapter {
                     {'\n\nThat is not a UI opinion. It is the same claim as the sheet: the reference is not something applied to a name. It is what the name already was, and every affordance we added was an apology for not believing it.'}
                 </Section>
                 <Section parenthetical>
-                    <Title>Summary</Title>
+                    <PlainTitle>Summary</PlainTitle>
                     {'\n\nAddresses died, references stayed, and a name turned out to need nothing bolted to it.'}
                 </Section>
             </>
