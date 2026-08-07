@@ -43,9 +43,7 @@ export class $TextbookChapter extends $Chapter {
 
 export class $Textbook extends $Book {
     $Textbook(cover: $Cover, toc: $TableOfContents, ...chapters: $TextbookChapter[]) {
-        this.cover = $check(cover, $Cover);
-        this.toc = $check(toc, $TableOfContents);
-        this.chapters = chapters.map(c => $check(c, $TextbookChapter));
+        super.$Book(cover, toc, ...chapters.map(c => $check(c, $TextbookChapter)));
     }
 }
 

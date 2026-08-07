@@ -22,11 +22,6 @@ export class $Footer extends $Section {
         return this.$legend;
     }
 
-    $Footer(text: $Html<'block'>) {
-        this.text = $check(text, 'block');
-        const first = this.elements[0];
-        this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
-    }
 }
 
 export const Footer = $($Footer);

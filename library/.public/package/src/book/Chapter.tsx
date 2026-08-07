@@ -14,6 +14,11 @@ export class $Chapter extends $Document {
     get book(): $Book { return this.parent as $Book; }
 
     get ref(): $$Chapter { return new $$Chapter(this); }
+
+    $Chapter(...sections: $Section[]) {
+        super.$Document(...sections);
+        if (!this.summary) throw new Error('A chapter requires a summary — a parenthetical section.');
+    }
 }
 
 export class $$Chapter implements $Catalogue$<$Section>, $Reference$<$Chapter> {

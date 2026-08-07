@@ -36,6 +36,7 @@ export const $resolveComponent$ = Symbol("$Particle.resolveComponent");
 export const $destroy$ = Symbol("$Chemical.destroy");
 export const $destroyed$ = Symbol("$Chemical.destroyed");
 export const $backing$ = Symbol("$Chemical.backing");
+export const $watched$ = Symbol("$Chemical.watched");
 
 export const $catalyst$ = Symbol("$Chemical.catalyst");
 export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");

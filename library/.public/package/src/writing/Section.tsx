@@ -89,7 +89,7 @@ export class $Section extends $Writing implements $Composition$<$Paragraph> {
     }
 
     $Section(text: $Html<'block'>) {
-        this.text = $check(text, 'block');
+        super.$Writing(text);
         const first = this.elements[0];
         this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
     }

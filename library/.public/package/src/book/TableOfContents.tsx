@@ -72,8 +72,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     $TableOfContents(...sections: $Section[]) {
-        this.$parts = sections.map(s => $check(s, $Section));
-        this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+        super.$Chapter(...sections);
     }
 
     row(row: $Row): ReactNode {

@@ -7,7 +7,7 @@ import {
     $$template$$, $$getNextCid$$, $$createSymbol$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
-    $devError$, $devException$, $isViewBase$
+    $devError$, $devException$, $isViewBase$, $watched$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType, $HtmlTag } from "../implementation/types";
@@ -136,9 +136,12 @@ export class $SynthesisContext {
 
 const $htmlInstances = new Map<string, $Html$>();
 
+const $chainReached = new WeakMap<object, Set<string>>();
+
 export class $Synthesis<T extends $Chemical = $Chemical> {
     private _chemical: T;
     private _bondConstructor?: Function;
+    private _declared: string[] = [];
     private _parameters: { isArray: boolean; isSpread: boolean }[] = [];
     private _boundChildren: Map<any, Map<string, any>> = new Map();
     private _lastBondArgs?: any[];
@@ -146,11 +149,45 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
     constructor(chemical: T) {
         this._chemical = chemical;
         let cls: any = (chemical as any)[$type$];
-        while (cls && cls.name && !this._bondConstructor) {
-            this._bondConstructor = (chemical as any)[cls.name];
+        while (cls && cls.name) {
+            if (cls.prototype && Object.prototype.hasOwnProperty.call(cls.prototype, cls.name)) this._declared.push(cls.name);
+            if (!this._bondConstructor) this._bondConstructor = (chemical as any)[cls.name];
             cls = Object.getPrototypeOf(cls);
         }
         this.parseBondConstructor();
+    }
+
+    // The wrapper sits on the prototype: `super.$Ancestor()` resolves there and never sees an instance property.
+    private watchChain(): { reached: Set<string>; restore: () => void } | undefined {
+        if (this._declared.length < 2) return undefined;
+        const chemical = this._chemical as any;
+        let cls: any = chemical[$type$];
+        while (cls && cls.name) {
+            if (cls.prototype && Object.prototype.hasOwnProperty.call(cls.prototype, cls.name)) $Synthesis.watch(cls);
+            cls = Object.getPrototypeOf(cls);
+        }
+        const reached = new Set<string>([this._declared[0]]);
+        $chainReached.set(chemical, reached);
+        return { reached, restore: () => { $chainReached.delete(chemical); } };
+    }
+
+    private static watch(cls: any) {
+        const existing = Object.getOwnPropertyDescriptor(cls.prototype, cls.name);
+        if (!existing || typeof existing.value !== 'function' || existing.value[$watched$]) return;
+        const inner = existing.value;
+        const name: string = cls.name;
+        const wrapper = function (this: any, ...args: any[]) {
+            $chainReached.get(this)?.add(name);
+            return inner.apply(this, args);
+        };
+        (wrapper as any)[$watched$] = true;
+        Object.defineProperty(cls.prototype, name, { ...existing, value: wrapper });
+    }
+
+    private assertChainReached(watch?: { reached: Set<string> }) {
+        if (!watch) return;
+        const missed = this._declared.filter(name => !watch.reached.has(name));
+        if (missed.length) throw new Error(`${this._declared[0]} did not call ${missed.join(', ')} — every declared bond constructor on the chain must be called.`);
     }
 
     bond(props: any, parentContext?: $SynthesisContext): any {
@@ -187,14 +224,21 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                 $paramValidation.chemical = this._chemical;
                 $paramValidation.count = this._parameters.length;
                 let bondResult: any;
+                const watch = this.watchChain();
                 if (!dev && $exceptions.mode === 'throw') {
-                    bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
-                    $paramValidation.evaluate();
-                    assertValid(c);
+                    try {
+                        bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
+                        $paramValidation.evaluate();
+                        if (!(bondResult instanceof Promise)) this.assertChainReached(watch);
+                        assertValid(c);
+                    } finally {
+                        watch?.restore();
+                    }
                 } else {
                     try {
                         bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
                         $paramValidation.evaluate();
+                        if (!(bondResult instanceof Promise)) this.assertChainReached(watch);
                         assertValid(c);
                         c[$devError$] = undefined;
                         c[$devException$] = undefined;
@@ -202,6 +246,8 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                         c[$devError$] = e?.message || String(e);
                         c[$devException$] = e instanceof Error ? e : new Error(String(e));
                         if (!dev) console.error('$Chemistry: Bond Constructor Failed —', e);
+                    } finally {
+                        watch?.restore();
                     }
                 }
 
