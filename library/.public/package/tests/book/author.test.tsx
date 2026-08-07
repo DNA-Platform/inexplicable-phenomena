@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
 import React, { type ReactElement, type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
@@ -9,6 +9,8 @@ import { Cover } from '@/book/Cover';
 import { Synopsis } from '@/book/Synopsis';
 import { $Book, Book } from '@/book/Book';
 import { $Author, Author } from '@/book/Author';
+import { LibraryCard } from '@/library/LibraryCard';
+import { $LibraryCatalogue, LibraryCatalogue } from '@/library/LibraryCatalogue';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>
@@ -23,89 +25,132 @@ const chapter = (title: string, prose: string): ReactElement => <Chapter>{sectio
 
 const synopsis = (): ReactElement => <Synopsis>{section('Synopsis', 'One object, many renderings.')}{summary('In brief.')}</Synopsis>;
 
-const book = (title: string): $Book => $(
+const authored = (title: string, by?: string): $Book => $(
     <Book>
-        <Cover>{section(title, 'A book about reading.')}</Cover>
+        <Cover>
+            <Section>
+                <Title>{title}</Title>
+                {'\n\nA book about reading. '}{by ? <Author>{by}</Author> : null}
+            </Section>
+        </Cover>
         {synopsis()}
         {chapter('Coordinates', 'Reading is a change of coordinates.')}
     </Book>
 );
 
-const rejection = (c: any): string | undefined => {
-    const s = Object.getOwnPropertySymbols(c).find(x => x.description === '$Particle.devError');
-    return s ? c[s] : undefined;
-};
-
 const shown = (node: ReactElement): string => render(node).container.textContent ?? '';
 
-describe('$Author — a book reference that carries a display name', () => {
-    it('reads to its book', () => {
-        const life = book('The Making of the Shelf');
-        const author: $Author = $(<Author for={life.cover}>Inexplicable Press</Author>);
+describe('$Author — a book reference that resolves through the catalogue', () => {
+    let team: $Book;
 
-        expect(author.read()).toBe(life);
+    beforeEach(() => {
+        team = authored('The Team');
+        $(<LibraryCatalogue>
+            <LibraryCard name="The Team" of={() => team} title="The Team" />
+        </LibraryCatalogue>);
     });
 
-    it('carries the written name as its display name', () => {
-        const life = book('The Making of the Shelf');
-        const author: $Author = $(<Author for={life.cover}>Inexplicable Press</Author>);
+    it('reads to its book through the catalogue, holding no book itself', () => {
+        const shelf = authored('The Shelf', 'The Team');
 
-        expect(author.name).toBe('Inexplicable Press');
+        expect(shelf.author!.read()).toBe(team);
+    });
+
+    it('finds its card by the name it prints, which is the name the card is filed under', () => {
+        const shelf = authored('The Shelf', 'The Team');
+
+        expect(shelf.author!.name).toBe('The Team');
+        expect(shelf.author!.card!.name).toBe('The Team');
     });
 
     it('renders the name and nothing announcing that it is a reference', () => {
-        const life = book('The Making of the Shelf');
-        const author: $Author = $(<Author for={life.cover}>Inexplicable Press</Author>);
-        const A = $(author) as any;
+        const shelf = authored('The Shelf', 'The Team');
+        const A = $(shelf.author!) as any;
 
-        expect(shown(<A />)).toBe('Inexplicable Press');
+        expect(shown(<A />)).toBe('The Team');
     });
 
-    it('still renders the name when it has no reference to read', () => {
-        const author: $Author = $(<Author>Inexplicable Press</Author>);
-        const A = $(author) as any;
+    it('still renders its name when the catalogue holds no card for it', () => {
+        const orphan: $Author = $(<Author>Nobody At All</Author>);
+        const A = $(orphan) as any;
 
-        expect(author.valid()).toBe(true);
-        expect(shown(<A />)).toBe('Inexplicable Press');
+        expect(orphan.valid()).toBe(true);
+        expect(shown(<A />)).toBe('Nobody At All');
     });
 
-    it('refuses to read when it never pointed', () => {
-        const author: $Author = $(<Author>Inexplicable Press</Author>);
+    it('refuses to read when the catalogue holds no card for it, and says whose', () => {
+        const orphan: $Author = $(<Author>Nobody At All</Author>);
 
-        expect(() => author.read()).toThrow(/never pointed/);
+        expect(() => orphan.read()).toThrow(/Nobody At All/);
     });
 
-    it('is refused when it carries neither a name nor a reference', () => {
-        const author: $Author = $(<Author>{'   '}</Author>);
+    it('is refused when it carries neither a name nor a card', () => {
+        const empty: $Author = $(<Author>{'   '}</Author>);
 
-        expect(author.valid()).toBe(false);
+        expect(empty.valid()).toBe(false);
     });
 });
 
 describe('a book reaches its author through its cover', () => {
     it('answers the author standing in its cover', () => {
-        const life = book('The Making of the Shelf');
-        const shelf: $Book = $(
-            <Book>
-                <Cover>
-                    <Section>
-                        <Title>The Shelf</Title>
-                        {'\n\nA shelf is already a catalogue. '}<Author for={life.cover}>Inexplicable Press</Author>
-                    </Section>
-                </Cover>
-                {synopsis()}
-                {chapter('Spines', 'A spine is a reference seen edge-on.')}
-            </Book>
-        );
+        const shelf = authored('The Shelf', 'The Team');
 
         expect(shelf.author).toBeDefined();
-        expect(shelf.author!.name).toBe('Inexplicable Press');
-        expect(shelf.author!.read()).toBe(life);
+        expect(shelf.author!.name).toBe('The Team');
     });
 
     it('answers undefined when no author stands in the cover', () => {
-        const plain = book('The Algebra of Perspective');
+        const plain = authored('The Algebra of Perspective');
 
         expect(plain.author).toBeUndefined();
+    });
+});
+
+describe('the loop — a book whose author is itself', () => {
+    it('closes: the autobiography authors itself, and every other book arrives at it', () => {
+        const team = authored('The Team', 'The Team');
+        const shelf = authored('The Shelf', 'The Team');
+        const algebra = authored('The Algebra of Perspective', 'The Team');
+
+        $(<LibraryCatalogue>
+            <LibraryCard name="The Team" of={() => team} title="The Team" />
+            <LibraryCard name="The Shelf" of={() => shelf} title="The Shelf" />
+            <LibraryCard name="The Algebra of Perspective" of={() => algebra} title="The Algebra of Perspective" />
+        </LibraryCatalogue>);
+
+        expect(team.author!.read()).toBe(team);
+        expect(shelf.author!.read()).toBe(team);
+        expect(algebra.author!.read()).toBe(team);
+    });
+
+    it('is closed in the model — following the destination and then its author arrives back', () => {
+        const team = authored('The Team', 'The Team');
+
+        $(<LibraryCatalogue>
+            <LibraryCard name="The Team" of={() => team} title="The Team" />
+        </LibraryCatalogue>);
+
+        expect(team.author!.read().author!.read()).toBe(team);
+    });
+});
+
+describe('$LibraryCatalogue', () => {
+    it('holds a card for each book and answers it by name', () => {
+        const team = authored('The Team');
+        const catalogue: $LibraryCatalogue = $(
+            <LibraryCatalogue>
+                <LibraryCard name="The Team" of={() => team} title="The Team" />
+            </LibraryCatalogue>
+        );
+
+        expect(catalogue.holds('The Team')).toBe(true);
+        expect(catalogue.card('The Team').read()).toBe(team);
+        expect(catalogue.parts()).toHaveLength(1);
+    });
+
+    it('refuses a lookup it has no card for, naming what was asked', () => {
+        const catalogue: $LibraryCatalogue = $(<LibraryCatalogue>{null}</LibraryCatalogue>);
+
+        expect(() => catalogue.card('The Manifold')).toThrow(/The Manifold/);
     });
 });

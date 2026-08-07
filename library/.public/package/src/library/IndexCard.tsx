@@ -9,6 +9,11 @@ export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing impl
     $name = '';
     $of?: () => T = undefined;
 
+    constructor() {
+        super();
+        this.inline = false;
+    }
+
     get name(): string { return this.$name; }
 
     get copy(): string { return this.properties().map(name => `${name}: ${this.written(name)}`).join('\n'); }
