@@ -45,7 +45,7 @@ describe('$IndexCard — a card that prints what is on it', () => {
     it('enumerates its own properties and prints them, without being told what they are', () => {
         const card: $ShelvedCard = $(<ShelvedCard name="The Manifold" synopsis="The reference system, read rather than described." />);
 
-        expect(card.entries().map(e => e.name)).toEqual(['name', 'synopsis', 'author']);
+        expect(card.properties()).toEqual(['name', 'synopsis', 'author']);
         expect(card.copy).toContain('synopsis: The reference system, read rather than described.');
     });
 
@@ -53,7 +53,7 @@ describe('$IndexCard — a card that prints what is on it', () => {
         const life: $ShelvedCard = $(<ShelvedCard name="The Team" synopsis="How these books came to be." />);
         const card: $ShelvedCard = $(<ShelvedCard name="The Manifold" synopsis="Read rather than described." author={life} />);
 
-        expect(card.entries().find(e => e.name === 'author')?.value).toBe('The Team');
+        expect(card.written('author')).toBe('The Team');
     });
 
     it('shows itself as a card — a heading and its entries, each named', () => {
@@ -62,7 +62,7 @@ describe('$IndexCard — a card that prints what is on it', () => {
         const { container } = render(<C />);
 
         expect(container.querySelector('.card-heading')?.textContent).toBe('The Manifold');
-        expect(container.querySelector('[data-entry="synopsis"]')?.textContent).toContain('Read rather than described.');
+        expect(container.querySelector('[data-property="synopsis"]')?.textContent).toContain('Read rather than described.');
     });
 
     it('reads to the thing it stands for', () => {

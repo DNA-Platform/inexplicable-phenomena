@@ -5,17 +5,15 @@ import { type $Reference$ } from '../reference/Reference';
 import { $Path, Path } from '../reference/Path';
 import { $Writing } from '../writing/Writing';
 
-export type $Entry = { name: string; value: string };
-
 export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing implements $Reference$<T> {
     $name = '';
     $of?: () => T = undefined;
 
     get name(): string { return this.$name; }
 
-    get copy(): string { return this.entries().map(e => `${e.name}: ${e.value}`).join('\n'); }
+    get copy(): string { return this.properties().map(name => `${name}: ${this.written(name)}`).join('\n'); }
 
-    entries(): $Entry[] {
+    properties(): string[] {
         const carried: string[] = [];
         let proto = Object.getPrototypeOf(this);
         let reached = false;
@@ -24,19 +22,19 @@ export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing impl
             const accessor = (key: string) => Object.getOwnPropertyDescriptor(proto, key)?.get !== undefined;
             const lifted = keys.some(key => key.startsWith('$') && accessor(key));
             if (!lifted) {
-                reached = Object.prototype.hasOwnProperty.call(proto, 'entries');
-                const declared = keys.filter(key => accessor(key) && !key.startsWith('$') && key !== 'copy' && !carried.includes(key));
-                carried.unshift(...declared);
+                reached = Object.prototype.hasOwnProperty.call(proto, 'properties');
+                carried.unshift(...keys.filter(key => accessor(key) && !key.startsWith('$') && key !== 'copy' && !carried.includes(key)));
             }
             proto = Object.getPrototypeOf(proto);
         }
-        return carried.map(name => ({ name, value: this.written((this as any)[name]) }));
+        return carried;
     }
 
-    written(value: unknown): string {
+    written(property: string): string {
+        const value = (this as any)[property];
         if (value === undefined || value === null) return '';
         if (value instanceof $IndexCard) return value.name;
-        if (Array.isArray(value)) return value.map(v => this.written(v)).join(', ');
+        if (Array.isArray(value)) return value.map(part => (part instanceof $IndexCard ? part.name : String(part))).join(', ');
         return String(value);
     }
 
@@ -55,10 +53,10 @@ export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing impl
         return (
             <dl className="card">
                 <dt className="card-heading">{this.name}</dt>
-                {this.entries().filter(e => e.name !== 'name').map(entry => (
-                    <dd className="card-entry" key={entry.name} data-entry={entry.name}>
-                        <span className="card-entry-name">{entry.name}</span>
-                        <span className="card-entry-value">{entry.value}</span>
+                {this.properties().filter(name => name !== 'name').map(name => (
+                    <dd className="card-property" key={name} data-property={name}>
+                        <span className="card-property-name">{name}</span>
+                        <span className="card-property-value">{this.written(name)}</span>
                     </dd>
                 ))}
             </dl>
