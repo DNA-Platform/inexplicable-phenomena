@@ -488,11 +488,11 @@ class $TheManifold extends $Chemical {
                     <DayChip as="a" href="/page">← the page</DayChip>
                     <DayRule />
                     {!this.open && (
-                        <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.name ?? 'the shelf'}</DayChip>
+                        <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.card?.title ?? 'the shelf'}</DayChip>
                     )}
                     {this.open && (
                         <>
-                            <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.name ?? 'the shelf'}</DayChip>
+                            <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.card?.title ?? 'the shelf'}</DayChip>
                             <DayRule />
                             <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
                             <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>

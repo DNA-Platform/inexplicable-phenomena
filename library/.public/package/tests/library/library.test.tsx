@@ -109,7 +109,7 @@ describe('the table of contents, extended with the subject\'s books', () => {
 
         expect(contents.textContent).toContain('The Algebra of Perspective');
         expect(contents.textContent).toContain('The Team');
-        expect(contents.querySelectorAll('li').length).toBe(3);
+        expect(contents.querySelectorAll('li').length).toBe(2);
     });
 
     it('an authored chapter overrides the inferred entry — inferred only if absent', () => {
@@ -124,7 +124,7 @@ describe('the table of contents, extended with the subject\'s books', () => {
         const { container } = render(<B />);
         const contents = container.querySelector('.table-of-contents')!;
 
-        expect(contents.querySelectorAll('li').length).toBe(3);
+        expect(contents.querySelectorAll('li').length).toBe(2);
         expect(contents.textContent).toContain('The Algebra of Perspective');
     });
 

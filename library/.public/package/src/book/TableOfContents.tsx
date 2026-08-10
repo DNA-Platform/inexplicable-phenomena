@@ -12,6 +12,7 @@ import { $Chapter } from './Chapter';
 import { $Row, Row } from './Row';
 import { $Title, Title } from '../writing/Title';
 import { $Cover } from './Cover';
+import { $Synopsis } from './Synopsis';
 import { $Section } from '../writing/Section';
 import { type $Book } from './Book';
 import { type $LibraryCard } from '../library/LibraryCard';
@@ -42,7 +43,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
 
     parts(): $Row[] {
         return this.book.parts()
-            .filter(c => c !== this && !(c instanceof $Cover))
+            .filter(c => c !== this && !(c instanceof $Cover) && !(c instanceof $Synopsis))
             .map(c => {
                 const row: $Row = $(<Row path={this.book.at(c.index)} />);
                 row.index = c.index;

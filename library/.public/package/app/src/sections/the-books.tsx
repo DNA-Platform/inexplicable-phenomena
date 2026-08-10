@@ -1,154 +1,50 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { $Chapter } from '@/book/Chapter';
-import { $Cover } from '@/book/Cover';
-import { $Synopsis } from '@/book/Synopsis';
-import { $TableOfContents } from '@/book/TableOfContents';
+import { type $LibraryCard } from '@/library/LibraryCard';
+import { shelf, contents } from './book/library/the-shelf/book';
+import { team } from './book/library/the-team/book';
 import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
-import { shelf } from './book/library/the-shelf/book';
-import { team } from './book/library/the-team/book';
-import { theAlgebra, theManifold, theTeam } from './book/library/the-team/card';
 import { TheManifold } from './the-manifold';
-import { TheTeam } from './the-team';
-import { type $Book } from '@/book/Book';
-import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle, SpineMark } from './book/shelf.styled';
-import {
-    Field, Stage, Face, Reverse, Leaf, Column, Turnable, Standing, Preamble,
-    Entries, Entry, EntryTitle, EntryNote, Byline, Colophon,
-} from './book/catalogue.styled';
 
-// The shelf is UI. A spine does not need a book behind it, and a book does not
-// need a spine — the shelf's own catalogue has none. To give a new book a
-// spine, add it to `catalogued` with its ink and how it opens; the filler below
-// stays exactly what it is, furniture.
-type SpineData = { key?: string; href?: string; title?: string; ink: string; tall: number; wide: number };
-
-const graphite: SpineData[] = [
-    { ink: '#24272c', tall: 48, wide: 42 },
-    { ink: '#282c31', tall: 50, wide: 44 },
-    { ink: '#2c3036', tall: 49, wide: 40 },
-    { ink: '#22252a', tall: 51, wide: 46 },
-    { ink: '#2f333a', tall: 50, wide: 44 },
-];
-
-const filler = (n: number, offset = 0): SpineData[] => Array.from({ length: n }, (_, i) => graphite[(i + offset) % graphite.length]);
-
-const catalogued = [
-    { key: 'algebra', ink: '#5b2f2a', href: '/page', card: theAlgebra },
-    { key: 'manifold', ink: '#2c4a3c', card: theManifold },
-    { key: 'team', ink: '#8c3b1e', card: theTeam },
-];
-
-const spines: SpineData[] = [
-    ...filler(14),
-    { key: 'algebra', href: '/page', title: algebra.title?.copy ?? '', ink: catalogued[0].ink, tall: 52, wide: 50 },
-    { key: 'manifold', title: manifold.title?.copy ?? '', ink: catalogued[1].ink, tall: 52, wide: 50 },
-    { key: 'team', title: team.title?.copy ?? '', ink: catalogued[2].ink, tall: 54, wide: 46 },
-    ...filler(14, 2),
-];
-
-const apparatus = (c: $Chapter) => c instanceof $Cover || c instanceof $Synopsis || c instanceof $TableOfContents;
-
-const shelved: Record<string, $Book> = { algebra, manifold, team };
-
-const prose = (section?: { paragraphs: { copy: string }[] }) => section?.paragraphs.slice(1).map(p => p.copy).join(' ') ?? '';
+// The route is glue: the shelf book views itself, the team book views itself,
+// and travelling between them is following a card — the router does the
+// travelling, the model does the pointing. The route registers itself in its
+// view, so the travel slots always speak to the instance actually rendered.
+let route: $TheBooks | undefined;
 
 class $TheBooks extends $Chemical {
-    opened = '';
-    turned = false;
-    marked = false;
+    $opened?: $LibraryCard = undefined;
 
-    // The call mark IS the subject reference's face on a spine. Following it
-    // reads the reference — and because every book here is in Demonstration,
-    // the destination is this shelf's own catalogue face: the shelf turns.
-    mark(e: React.MouseEvent, key: string) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (this.marked) return;
-        shelved[key]?.subject?.read();
-        this.marked = true;
-        setTimeout(() => { this.turned = true; this.marked = false; }, 650);
+    pull(card: $LibraryCard) {
+        const book = card.read();
+        if (book === algebra) { window.location.href = '/page'; return; }
+        this.$opened = card;
     }
 
-    entries(): $Chapter[] {
-        return shelf.chapters.filter(c => !apparatus(c));
-    }
-
-    inSpines(): ReactNode {
-        return (
-            <Room>
-                <Caption>
-                    <Turnable onClick={() => { this.turned = true; }}>the shelf</Turnable>
-                    <em>pull a book</em>
-                </Caption>
-                <Board>
-                    <Row>
-                        {spines.map((b, i) => (
-                            b.key === 'algebra'
-                                ? <Spine key={i} as="a" href={b.href} style={{ textDecoration: 'none' }} className="shelf-card" data-book={b.key} $ink={b.ink} $tall={b.tall} $wide={b.wide} $held>
-                                    <SpineTitle>{b.title}</SpineTitle>
-                                    <SpineMark $lit={this.marked} data-subject onClick={(e) => this.mark(e, b.key!)}>{shelved[b.key]?.subject?.name ?? ''}</SpineMark>
-                                </Spine>
-                                : b.key
-                                    ? <Spine key={i} className="shelf-card" data-book={b.key} $ink={b.ink} $tall={b.tall} $wide={b.wide} $held onClick={() => { this.opened = b.key!; }}>
-                                        <SpineTitle>{b.title}</SpineTitle>
-                                        <SpineMark $lit={this.marked} data-subject onClick={(e) => this.mark(e, b.key!)}>{shelved[b.key]?.subject?.name ?? ''}</SpineMark>
-                                    </Spine>
-                                    : <Spine key={i} $ink={b.ink} $tall={b.tall} $wide={b.wide} />
-                        ))}
-                    </Row>
-                    <BoardTop />
-                    <BoardShadow />
-                </Board>
-            </Room>
-        );
-    }
-
-    inWriting(): ReactNode {
-        return (
-            <Leaf>
-                <Column>
-                    <Standing onClick={() => { this.turned = false; }}>{shelf.title?.copy ?? ''}</Standing>
-                    <Preamble>{prose(shelf.cover.canonical)}</Preamble>
-                    <Entries>
-                        {this.entries().map((entry, i) => (
-                            <Entry key={i} $ink={catalogued[i]?.ink ?? '#2c3036'} $i={i} data-entry={catalogued[i]?.key}>
-                                <EntryTitle onClick={() => this.open(i)}>{entry.title?.copy ?? ''}</EntryTitle>
-                                <EntryNote>{prose(entry.summary)}</EntryNote>
-                                <Byline data-author onClick={() => { this.opened = 'team'; }}>
-                                    {catalogued[i]?.card?.written('author') ?? ''}
-                                </Byline>
-                            </Entry>
-                        ))}
-                    </Entries>
-                    <Colophon>{prose(shelf.synopsis.summary)}</Colophon>
-                </Column>
-            </Leaf>
-        );
-    }
-
-    open(i: number) {
-        const entry = catalogued[i];
-        if (!entry) return;
-        if (entry.href) window.location.href = entry.href;
-        else this.opened = entry.key;
+    home() {
+        this.$opened = undefined;
+        contents.turned = true;
     }
 
     view(): ReactNode {
-        const M = TheManifold as any;
-        if (this.opened === 'manifold') return <M shelf={() => { this.opened = ''; this.turned = true; }} />;
-        if (this.opened === 'team') return <TheTeam shelf={() => { this.opened = ''; this.turned = true; }} />;
-        return (
-            <Field>
-                <Stage $turned={this.turned}>
-                    <Face>{this.inSpines()}</Face>
-                    <Reverse>{this.inWriting()}</Reverse>
-                </Stage>
-            </Field>
-        );
+        route = this;
+        if (this.$opened) {
+            const book = this.$opened.read();
+            if (book === manifold) {
+                const M = TheManifold as any;
+                return <M shelf={() => this.home()} />;
+            }
+            const B = $(book) as any;
+            return <B />;
+        }
+        const S = $(shelf) as any;
+        return <S />;
     }
 }
+
+shelf.$travel = card => route?.pull(card);
+team.$travel = () => route?.home();
 
 const TheBooks = $($TheBooks);
 

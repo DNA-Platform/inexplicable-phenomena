@@ -161,3 +161,82 @@ export const Byline = styled.span`
         color: #8c3b1e;
     }
 `;
+
+export const Reading = styled.div`
+    animation: ${settle} 520ms ease-out both;
+
+    .section {
+        margin: 1.5rem 0;
+        white-space: pre-wrap;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 15.5px;
+        line-height: 1.78;
+        color: #2c2f34;
+    }
+`;
+
+export const ReadingReturn = styled.div`
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #5b2f2a;
+    cursor: pointer;
+    margin-bottom: 26px;
+    transition: color 200ms ease;
+
+    &:hover { color: #23262a; }
+`;
+
+export const Drawer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px;
+    margin: 30px 0 10px;
+    animation: ${settle} 600ms 160ms ease-out both;
+`;
+
+export const DrawerCard = styled.div`
+    background: #f6f1e6;
+    border: 1px solid #cfc4ab;
+    border-top: 3px solid #8a6238;
+    border-radius: 3px;
+    padding: 14px 16px 12px;
+    box-shadow: 0 12px 24px -16px rgba(20, 16, 8, 0.55);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 32px -16px rgba(20, 16, 8, 0.6);
+    }
+`;
+
+export const DrawerName = styled.div`
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    color: #23262a;
+    border-bottom: 1px solid #cfc4ab;
+    padding-bottom: 6px;
+    margin-bottom: 9px;
+`;
+
+export const DrawerRow = styled.div`
+    display: flex;
+    gap: 10px;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: #46413a;
+    margin-bottom: 3px;
+
+    em {
+        font-style: normal;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 9.5px;
+        color: #8a7c5f;
+        min-width: 64px;
+        padding-top: 2px;
+    }
+
+    span { flex: 1; }
+`;

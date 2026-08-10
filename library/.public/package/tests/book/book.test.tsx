@@ -169,19 +169,20 @@ describe('the two connections — find goes forward, ref comes back', () => {
         const chapters = b.tableOfContents.chapters;
         expect(followed.parts().length).toBe(chapters.length);
         expect(followed.parts().every((c, k) => c === chapters[k])).toBe(true);
-        expect(followed.canonical).toBe(b.synopsis);
+        expect(followed.canonical).toBe(b.chapters[3]);
     });
 
-    it('the table of contents IS a catalogue of chapters — its contents are rows, and rows are references', () => {
+    it('the table of contents IS a catalogue of the numbered chapters — no cover, no synopsis, not itself', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         const rows = toc.parts();
         expect(rows.every(s => s instanceof $Section && s instanceof $Row)).toBe(true);
         expect(rows.every(r => r.read() !== undefined)).toBe(true);
-        expect(rows[0].read()).toBe(b.synopsis);
-        expect(rows[0].copy).toBe('Synopsis');
-        expect(toc.chapters[0]).toBe(b.synopsis);
+        expect(rows[0].read()).toBe(b.chapters[3]);
+        expect(rows[0].copy).toBe('Coordinates');
+        expect(toc.chapters[0]).toBe(b.chapters[3]);
         expect(toc.chapters).not.toContain(b.cover);
+        expect(toc.chapters).not.toContain(b.synopsis);
     });
 
     it('the beautiful path — the table of contents gets the cover, and the cover finds the book', () => {
@@ -239,7 +240,7 @@ describe('the essential questions — complex references, equality across levels
         const left = c.at(1).then(section.at(1)).then(paragraph.at(1));
         const right = c.at(1).then(section.at(1).then(paragraph.at(1)));
         expect(left.read().copy).toBe(right.read().copy);
-        const spoken = b.tableOfContents.follow().parts()[1];
+        const spoken = b.tableOfContents.follow().parts()[0];
         expect(spoken.words[1].copy).toBe(c.words[1].copy);
     });
 
@@ -261,7 +262,7 @@ describe('the essential questions — complex references, equality across levels
 
     it('natural chaining — a catalogue of references that are catalogues descends level by level', () => {
         const b: $Book = $(book());
-        const chapter = b.tableOfContents.parts()[1].read()!;
+        const chapter = b.tableOfContents.parts()[0].read()!;
         const section = chapter.ref.parts()[0].read()!;
         const paragraph = section.ref.parts()[1].read()!;
         expect(paragraph).toBeInstanceOf($Paragraph);
@@ -504,13 +505,14 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.tableOfContents).toBe(toc);
     });
 
-    it('the contents lists only the chapters — the cover is the running head, itself is the title', () => {
+    it('the contents lists only the numbered chapters — the cover, the synopsis and itself are apparatus', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
-        expect(toc.chapters.length).toBe(2);
-        expect(toc.chapters[0]).toBe(b.synopsis);
+        expect(toc.chapters.length).toBe(1);
+        expect(toc.chapters[0]).toBe(b.chapters[3]);
         expect(toc.chapters).not.toContain(toc);
         expect(toc.chapters).not.toContain(b.cover);
+        expect(toc.chapters).not.toContain(b.synopsis);
         expect(toc.title.copy).toBe('Table of Contents');
     });
 
@@ -526,7 +528,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const toc = b.tableOfContents;
         expect(b.chapters).toContain(toc);
         expect(b.tableOfContents).toBe(toc);
-        expect(toc.chapters.length).toBe(2);
+        expect(toc.chapters.length).toBe(1);
         expect(toc.chapters).not.toContain(toc);
     });
 
@@ -571,7 +573,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('readings flatten through one contents level — a chapter IS a composition of sections, rows among them', () => {
         const b: $Book = $(book());
-        expect(b.sections.length).toBe(7);
+        expect(b.sections.length).toBe(6);
         expect(b.paragraphs.length).toBeGreaterThan(0);
         expect(b.words.length).toBeGreaterThan(0);
     });

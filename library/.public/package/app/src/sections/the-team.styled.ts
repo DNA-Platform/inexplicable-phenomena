@@ -151,6 +151,7 @@ export const Prose = styled.div`
     font-size: 17px;
     line-height: 1.78;
     white-space: pre-line;
+    animation: ${rise} 460ms ease-out both;
 
     .section { margin: 0 0 1.2em; }
     figure, div, pre { white-space: normal; }
@@ -233,6 +234,13 @@ export const Slip = styled.div`
     box-shadow: 2px 3px 0 rgba(36, 31, 26, 0.07);
     padding: 14px 16px;
     max-width: 26rem;
+    transform: rotate(-0.4deg);
+    transition: transform 220ms ease, box-shadow 220ms ease;
+
+    &:hover {
+        transform: rotate(0deg) translateY(-2px);
+        box-shadow: 3px 6px 0 rgba(36, 31, 26, 0.09);
+    }
 `;
 
 export const SlipName = styled.div`
