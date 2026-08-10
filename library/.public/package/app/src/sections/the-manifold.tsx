@@ -47,7 +47,7 @@ import legendSource from '@/document/Legend.tsx?raw';
 import keySource from '@/document/Key.tsx?raw';
 import {
     DayBackdrop, DayBar, DayChip, DayRule,
-    ShelfBoard, Spine, CoverFace, CoverTitle, CoverSubtitle, CoverRule, CoverBlurb, CoverInvitation,
+    ShelfBoard, Spine, CoverFace, CoverTitle, CoverSubtitle, CoverRule, CoverBlurb, CoverInvitation, CoverImprint,
     Page, RunningHead, PageBody, PageTurns, PageTurn, Folio,
     ChapterNumber, ChapterTitle, ChapterSubtitle, Prose,
     SectionHead, SectionSub, TocPage, TocLine, TocTag,
@@ -394,6 +394,7 @@ class $TheManifold extends $Chemical {
     open = false;
     page = 1;
     mode = 'read';
+    $shelf?: () => void = undefined;
     over = false;
     tab = '';
     ribbons: $RibbonMark[] = [];
@@ -487,11 +488,11 @@ class $TheManifold extends $Chemical {
                     <DayChip as="a" href="/page">← the page</DayChip>
                     <DayRule />
                     {!this.open && (
-                        <DayChip as="a" href="/books">← the shelf</DayChip>
+                        <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.name ?? 'the shelf'}</DayChip>
                     )}
                     {this.open && (
                         <>
-                            <DayChip as="a" href="/books">← the shelf</DayChip>
+                            <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.name ?? 'the shelf'}</DayChip>
                             <DayRule />
                             <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
                             <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>
@@ -519,6 +520,9 @@ class $TheManifold extends $Chemical {
                         <CoverRule />
                         <CoverBlurb>{held.blurb}</CoverBlurb>
                         <CoverInvitation>open the book →</CoverInvitation>
+                        <CoverImprint data-subject onClick={(e) => { e.stopPropagation(); manifold.subject?.read(); this.$shelf?.(); }}>
+                            {manifold.subject?.name ?? ''}
+                        </CoverImprint>
                     </CoverFace>
                 )}
                 {this.open && current && this.mode === 'manuscript' && (() => {

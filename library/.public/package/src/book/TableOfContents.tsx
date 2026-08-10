@@ -14,17 +14,25 @@ import { $Title, Title } from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
 import { type $Book } from './Book';
+import { type $LibraryCard } from '../library/LibraryCard';
 
 export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
+    $cards: $LibraryCard[] = [];
     get title(): $Title {
         const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
         const title: $Title = $(<Title>{authored || 'Table of Contents'}</Title>);
         return title;
     }
 
-    get summary(): $Section { return this.book.cover.summary; }
+    get summary(): $Section | undefined {
+        const cover = (this.book as $Book | undefined)?.cover;
+        return cover instanceof $Cover ? cover.summary : undefined;
+    }
 
-    get cover(): $Cover { return this.book.cover; }
+    get cover(): $Cover | undefined {
+        const cover = (this.book as $Book | undefined)?.cover;
+        return cover instanceof $Cover ? cover : undefined;
+    }
 
     get canonical(): $Row { return $Composible$.canonical(this); }
 
@@ -63,6 +71,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     read(): $Book {
+        if (!this.cover) throw new Error('The table of contents stands outside any book.');
         return this.cover.read();
     }
 
@@ -72,7 +81,18 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     $TableOfContents(...sections: $Section[]) {
-        super.$Chapter(...sections);
+        try {
+            super.$Chapter(...sections);
+        } catch (refused) {
+            if (this.summary) throw refused;
+            // A table of contents derives its summary from its book's cover.
+            // Before the book adopts it there is nothing to require yet.
+        }
+    }
+
+    valid(): boolean {
+        if (!this.summary) return this.$parts.length === 0;
+        return super.valid();
     }
 
     row(row: $Row): ReactNode {
@@ -80,11 +100,13 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     view(): ReactNode {
+        const inferred = this.$cards.filter(card => !this.book.chapters.some(c => c.title?.copy === card.title));
         return (
             <div className="table-of-contents">
                 <div className="contents-title">{text(this.title.text)}</div>
                 <ol>
                     {this.parts().map(r => this.row(r))}
+                    {inferred.map(card => <li key={card.title}>{card.title}</li>)}
                 </ol>
             </div>
         );

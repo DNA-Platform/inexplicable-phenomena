@@ -7,9 +7,12 @@ import { $Composible$ } from '../utilities/Composible';
 import { type $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { type $Author } from './Author';
+import { type $Subject } from './Subject';
+import { $Canonical } from './Canonical';
+import { type $LibraryCard } from '../library/LibraryCard';
 import { $Cover } from './Cover';
 import { $Synopsis } from './Synopsis';
-import { $TableOfContents, TableOfContents } from './TableOfContents';
+import { $TableOfContents } from './TableOfContents';
 import { $Section } from '../writing/Section';
 import { type $Title } from '../writing/Title';
 import { type $Subtitle } from '../writing/Subtitle';
@@ -35,6 +38,8 @@ export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapt
     get synopsis(): $Synopsis { return this.chapters.find(c => c instanceof $Synopsis) as $Synopsis; }
     get title(): $Title | undefined { return this.cover instanceof $Cover ? this.cover.title : undefined; }
     get author(): $Author | undefined { return this.cover instanceof $Cover ? this.cover.author : undefined; }
+    get subject(): $Subject | undefined { return this.cover instanceof $Cover ? this.cover.subject : undefined; }
+    get library(): $LibraryCard | undefined { return this.subject?.card?.library; }
     get subtitle(): $Subtitle | undefined { return this.cover instanceof $Cover ? this.cover.subtitle : undefined; }
 
     get chapters(): $Chapter[] { return this.parts(); }
@@ -72,10 +77,13 @@ export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapt
 
     $Book(...chapters: $Chapter[]) {
         this.$parts = chapters.map(c => $check(c, $Chapter));
-        if (!this.valid()) throw new Error('A book requires exactly one cover at position zero — its canonical chapter — a synopsis, and at most one table of contents.');
-        if (!this.$parts.some(c => c instanceof $TableOfContents)) {
-            this.$parts.splice(1, 0, $(<TableOfContents />, this));
-        }
+        if (!(this.chapters[0] instanceof $Cover)) throw new Error('A book requires its cover at position zero — its canonical chapter.');
+        if (this.chapters.some((c, i) => i > 0 && c instanceof $Cover)) throw new Error('A book requires exactly one cover.');
+        if (!this.chapters.some(c => c instanceof $Synopsis)) throw new Error('A book requires a synopsis.');
+        if (this.chapters.filter(c => c instanceof $TableOfContents).length !== 1) throw new Error('A book declares exactly one table of contents.');
+        if (!this.author) throw new Error('A book carries its author on its cover, and this cover names none.');
+        if (!this.subject) throw new Error('A book carries its subject on its cover, and this cover names none.');
+        if (this.cover.sections.flatMap(s => s.elements).filter(e => e instanceof $Canonical).length > 1) throw new Error('A subject declares exactly one canonical, and this cover carries more.');
         this.$parts.forEach((c, i) => { if (c.$index === undefined) c.index = i; });
     }
 
@@ -90,7 +98,9 @@ export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapt
         return this.chapters[0] instanceof $Cover
             && !this.chapters.some((c, i) => i > 0 && c instanceof $Cover)
             && this.chapters.some(c => c instanceof $Synopsis)
-            && this.chapters.filter(c => c instanceof $TableOfContents).length <= 1;
+            && this.chapters.filter(c => c instanceof $TableOfContents).length === 1
+            && this.author !== undefined
+            && this.subject !== undefined;
     }
 }
 

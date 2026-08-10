@@ -1,6 +1,7 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Book, Book } from '@/book/Book';
+import { TableOfContents } from '@/book/TableOfContents';
 import { shelve } from './card';
 import { TeamCover } from './01-the-cover';
 import { TeamSynopsis } from './02-the-synopsis';
@@ -14,6 +15,7 @@ import { TheCardInCode } from './08-the-card-in-code';
 export const team: $Book = $(
     <Book>
         <TeamCover />
+        <TableOfContents />
         <TeamSynopsis />
         <TheFirstSheet />
         <NightWork />

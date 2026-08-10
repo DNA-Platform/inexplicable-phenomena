@@ -9,6 +9,8 @@ import { Cover } from '@/book/Cover';
 import { Synopsis } from '@/book/Synopsis';
 import { $Book, Book } from '@/book/Book';
 import { $Author, Author } from '@/book/Author';
+import { Subject } from '@/book/Subject';
+import { TableOfContents } from '@/book/TableOfContents';
 import { type $LibraryCard, LibraryCard } from '@/library/LibraryCard';
 import { $LibraryCatalogue, LibraryCatalogue } from '@/library/LibraryCatalogue';
 
@@ -30,13 +32,19 @@ const authored = (title: string, by?: $LibraryCard): $Book => $(
         <Cover>
             <Section>
                 <Title>{title}</Title>
-                {'\n\nA book about reading. '}{by ? <Author for={by}>The Team</Author> : null}
+                {'\n\nA book about reading. '}{by ? <Author for={by}>The Team</Author> : <Author>The Team</Author>}{' '}<Subject>Demonstration</Subject>
             </Section>
         </Cover>
+        <TableOfContents />
         {synopsis()}
         {chapter('Coordinates', 'Reading is a change of coordinates.')}
     </Book>
 );
+
+const rejection = (b: any): string | undefined => {
+    const s = Object.getOwnPropertySymbols(b).find(x => x.description === '$Particle.devError');
+    return s ? b[s] : undefined;
+};
 
 const shown = (node: ReactElement): string => render(node).container.textContent ?? '';
 
@@ -90,10 +98,22 @@ describe('a book reaches its author through its cover', () => {
         expect(team.author!.name).toBe('The Team');
     });
 
-    it('answers undefined when no author stands in the cover', () => {
-        const plain = authored('The Algebra of Perspective');
+    it('refuses a book whose cover names no author, and the refusal says so', () => {
+        const plain: $Book = $(
+            <Book>
+                <Cover>
+                    <Section>
+                        <Title>The Algebra of Perspective</Title>
+                        {'\n\nA book about reading. '}<Subject>Demonstration</Subject>
+                    </Section>
+                </Cover>
+                <TableOfContents />
+                {synopsis()}
+                {chapter('Coordinates', 'Prose.')}
+            </Book>
+        );
 
-        expect(plain.author).toBeUndefined();
+        expect(rejection(plain)).toMatch(/author/);
     });
 });
 

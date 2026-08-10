@@ -11,7 +11,8 @@ import { team } from './book/library/the-team/book';
 import { theAlgebra, theManifold, theTeam } from './book/library/the-team/card';
 import { TheManifold } from './the-manifold';
 import { TheTeam } from './the-team';
-import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle } from './book/shelf.styled';
+import { type $Book } from '@/book/Book';
+import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle, SpineMark } from './book/shelf.styled';
 import {
     Field, Stage, Face, Reverse, Leaf, Column, Turnable, Standing, Preamble,
     Entries, Entry, EntryTitle, EntryNote, Byline, Colophon,
@@ -49,11 +50,26 @@ const spines: SpineData[] = [
 
 const apparatus = (c: $Chapter) => c instanceof $Cover || c instanceof $Synopsis || c instanceof $TableOfContents;
 
+const shelved: Record<string, $Book> = { algebra, manifold, team };
+
 const prose = (section?: { paragraphs: { copy: string }[] }) => section?.paragraphs.slice(1).map(p => p.copy).join(' ') ?? '';
 
 class $TheBooks extends $Chemical {
     opened = '';
     turned = false;
+    marked = false;
+
+    // The call mark IS the subject reference's face on a spine. Following it
+    // reads the reference — and because every book here is in Demonstration,
+    // the destination is this shelf's own catalogue face: the shelf turns.
+    mark(e: React.MouseEvent, key: string) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (this.marked) return;
+        shelved[key]?.subject?.read();
+        this.marked = true;
+        setTimeout(() => { this.turned = true; this.marked = false; }, 650);
+    }
 
     entries(): $Chapter[] {
         return shelf.chapters.filter(c => !apparatus(c));
@@ -72,10 +88,12 @@ class $TheBooks extends $Chemical {
                             b.key === 'algebra'
                                 ? <Spine key={i} as="a" href={b.href} style={{ textDecoration: 'none' }} className="shelf-card" data-book={b.key} $ink={b.ink} $tall={b.tall} $wide={b.wide} $held>
                                     <SpineTitle>{b.title}</SpineTitle>
+                                    <SpineMark $lit={this.marked} data-subject onClick={(e) => this.mark(e, b.key!)}>{shelved[b.key]?.subject?.name ?? ''}</SpineMark>
                                 </Spine>
                                 : b.key
                                     ? <Spine key={i} className="shelf-card" data-book={b.key} $ink={b.ink} $tall={b.tall} $wide={b.wide} $held onClick={() => { this.opened = b.key!; }}>
                                         <SpineTitle>{b.title}</SpineTitle>
+                                        <SpineMark $lit={this.marked} data-subject onClick={(e) => this.mark(e, b.key!)}>{shelved[b.key]?.subject?.name ?? ''}</SpineMark>
                                     </Spine>
                                     : <Spine key={i} $ink={b.ink} $tall={b.tall} $wide={b.wide} />
                         ))}
@@ -118,8 +136,9 @@ class $TheBooks extends $Chemical {
     }
 
     view(): ReactNode {
-        if (this.opened === 'manifold') return <TheManifold />;
-        if (this.opened === 'team') return <TheTeam />;
+        const M = TheManifold as any;
+        if (this.opened === 'manifold') return <M shelf={() => { this.opened = ''; this.turned = true; }} />;
+        if (this.opened === 'team') return <TheTeam shelf={() => { this.opened = ''; this.turned = true; }} />;
         return (
             <Field>
                 <Stage $turned={this.turned}>

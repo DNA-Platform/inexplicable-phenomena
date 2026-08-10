@@ -3,10 +3,10 @@ import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
 import { $Path, Path } from '../reference/Path';
 import { $Sentence } from '../writing/Sentence';
-import { type $Book } from './Book';
+import { $Book } from './Book';
 import { type $LibraryCard } from '../library/LibraryCard';
 
-export class $Subject extends $Sentence implements $Reference$<$Book> {
+export class $Canonical extends $Sentence implements $Reference$<$Book> {
     $for?: $LibraryCard = undefined;
 
     constructor() {
@@ -19,7 +19,17 @@ export class $Subject extends $Sentence implements $Reference$<$Book> {
     get card(): $LibraryCard | undefined { return this.$for; }
 
     read(): $Book {
-        if (!this.$for) throw new Error(`The subject ${JSON.stringify(this.name)} holds no card, so it stands for nothing.`);
+        if (!this.$for) throw new Error(`The canonical ${JSON.stringify(this.name)} holds no card, so it stands for nothing.`);
+        let up: unknown = this.parent;
+        let hops = 0;
+        while (up && !(up instanceof $Book) && hops < 12) {
+            const next = (up as { parent?: unknown }).parent;
+            if (next === up) break;
+            up = next;
+            hops++;
+        }
+        const home = up instanceof $Book ? up.subject?.card : undefined;
+        if (home && this.$for.subject !== home) throw new Error(`The canonical ${JSON.stringify(this.name)} does not have this subject in its subject.`);
         return this.$for.read();
     }
 
@@ -33,4 +43,4 @@ export class $Subject extends $Sentence implements $Reference$<$Book> {
     }
 }
 
-export const Subject = $($Subject);
+export const Canonical = $($Canonical);

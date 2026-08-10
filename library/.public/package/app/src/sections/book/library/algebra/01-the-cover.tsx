@@ -4,6 +4,7 @@ import { $Cover } from '@/book/Cover';
 import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 import { Author } from '@/book/Author';
+import { Subject } from '@/book/Subject';
 
 export class $AlgebraCover extends $Cover {
     view(): ReactNode {
@@ -12,6 +13,7 @@ export class $AlgebraCover extends $Cover {
                 <Title>The Algebra of Perspective: A Study in Reading</Title>
                 {'\n\nReading is an act with coordinates. This book changes them slowly, and on purpose.'}
                 {'\n\n'}<Author>The Team</Author>
+                {'\n\n'}<Subject>Demonstration</Subject>
             </Section>
         );
     }

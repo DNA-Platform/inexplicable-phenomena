@@ -18,6 +18,8 @@ export { $Key, Key } from './document/Key';
 export { $Chapter, $$Chapter, Chapter } from './book/Chapter';
 export { $Cover, Cover } from './book/Cover';
 export { $Author, Author } from './book/Author';
+export { $Subject, Subject } from './book/Subject';
+export { $Canonical, Canonical } from './book/Canonical';
 export { $IndexCard, IndexCard } from './library/IndexCard';
 export { $CardCatalogue, CardCatalogue } from './library/CardCatalogue';
 export { $LibraryCard$, LibraryCard, type $LibraryCard } from './library/LibraryCard';

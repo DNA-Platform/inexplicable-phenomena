@@ -54,6 +54,13 @@ export const Imprint = styled.span`
     color: ${faded};
 `;
 
+export const ImprintMark = styled.span`
+    cursor: pointer;
+    transition: color 200ms ease;
+
+    &:hover { color: ${rust}; }
+`;
+
 export const Spread = styled.article`
     display: grid;
     grid-template-columns: minmax(0, 34rem) minmax(0, 15rem);

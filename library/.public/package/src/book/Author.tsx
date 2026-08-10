@@ -9,6 +9,11 @@ import { type $LibraryCard } from '../library/LibraryCard';
 export class $Author extends $Sentence implements $Reference$<$Book> {
     $for?: $LibraryCard = undefined;
 
+    constructor() {
+        super();
+        this.parenthetical = true;
+    }
+
     get name(): string { return this.copy; }
 
     get card(): $LibraryCard | undefined { return this.$for; }

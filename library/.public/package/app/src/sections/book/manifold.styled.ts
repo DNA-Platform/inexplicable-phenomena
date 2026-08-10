@@ -111,6 +111,19 @@ export const CoverInvitation = styled.div`
     margin-top: 22px;
 `;
 
+export const CoverImprint = styled.div`
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #4a6b57;
+    margin-top: 12px;
+    cursor: pointer;
+    transition: color 200ms ease;
+
+    &:hover { color: #1f5c40; }
+`;
+
 export const CoverTitle = styled.div`
     font-size: 30px;
     line-height: 1.2;

@@ -7,6 +7,7 @@ import { type $Title } from '../writing/Title';
 import { type $Book } from './Book';
 import { $Section } from '../writing/Section';
 import { $Author } from './Author';
+import { $Subject } from './Subject';
 
 export class $Cover extends $Chapter implements $Reference$<$Book> {
     get summary(): $Section { return this.canonical; }
@@ -15,6 +16,10 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
 
     get author(): $Author | undefined {
         return this.sections.flatMap(s => s.elements).find(e => e instanceof $Author) as $Author | undefined;
+    }
+
+    get subject(): $Subject | undefined {
+        return this.sections.flatMap(s => s.elements).find(e => e instanceof $Subject) as $Subject | undefined;
     }
 
     read(): $Book {

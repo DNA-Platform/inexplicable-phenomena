@@ -8,6 +8,9 @@ import { Chapter } from '@/book/Chapter';
 import { Cover } from '@/book/Cover';
 import { Synopsis } from '@/book/Synopsis';
 import { $Book, Book } from '@/book/Book';
+import { Author } from '@/book/Author';
+import { Subject } from '@/book/Subject';
+import { TableOfContents } from '@/book/TableOfContents';
 import { $IndexCard, IndexCard } from '@/library/IndexCard';
 import { $Path } from '@/reference/Path';
 
@@ -24,7 +27,14 @@ const chapter = (title: string, prose: string): ReactElement => <Chapter>{sectio
 
 const book = (title: string): $Book => $(
     <Book>
-        <Cover>{section(title, 'A book about reading.')}</Cover>
+        <Cover>
+            <Section>
+                <Title>{title}</Title>
+                {'\n\nA book about reading. '}
+                <Author>The Team</Author>{' '}<Subject>Demonstration</Subject>
+            </Section>
+        </Cover>
+        <TableOfContents />
         <Synopsis>{section('Synopsis', 'One object, many renderings.')}{summary('In brief.')}</Synopsis>
         {chapter('Coordinates', 'Reading is a change of coordinates.')}
     </Book>

@@ -6,7 +6,7 @@ import { $TableOfContents } from '@/book/TableOfContents';
 import { team } from './book/library/the-team/book';
 import { theTeam } from './book/library/the-team/card';
 import {
-    Manuscript, Masthead, Standing, Imprint, Spread, Body, Margin, MarginName,
+    Manuscript, Masthead, Standing, Imprint, ImprintMark, Spread, Body, Margin, MarginName,
     Folio, Prose, Turn, Leaf, Contents, Entry, Slip, SlipName, SlipBody,
 } from './the-team.styled';
 
@@ -15,6 +15,7 @@ const numeral = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'
 export class $TheTeamBook extends $Chemical {
     at = 2;
     closed = false;
+    $shelf?: () => void = undefined;
 
     get readable(): $Chapter[] {
         return team.chapters.filter(c => !(c instanceof $TableOfContents));
@@ -61,6 +62,7 @@ export class $TheTeamBook extends $Chemical {
         const C = $(chapter) as any;
         const cover = chapter instanceof $Cover;
         const author = team.author;
+        const subject = team.subject;
 
         return (
             <Manuscript>
@@ -68,6 +70,8 @@ export class $TheTeamBook extends $Chemical {
                     <Standing onClick={() => { this.at = 0; }}>{team.title?.copy ?? ''}</Standing>
                     <Imprint>
                         {author ? `${author.name} · ` : ''}
+                        {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$shelf?.(); }}>{subject.name}</ImprintMark> : null}
+                        {subject ? ' · ' : ''}
                         {cover ? 'Cover' : `Chapter ${numeral[this.at - 1] ?? this.at - 1}`}
                     </Imprint>
                 </Masthead>
@@ -91,8 +95,8 @@ export class $TheTeamBook extends $Chemical {
     }
 }
 
-const TheTeamBook = $($TheTeamBook);
+const TheTeamBook = $($TheTeamBook) as any;
 
-export function TheTeam() {
-    return <TheTeamBook />;
+export function TheTeam({ shelf }: { shelf?: () => void }) {
+    return <TheTeamBook shelf={shelf} />;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Book } from '@/book/Book';
+import { $Canonical } from '@/book/Canonical';
 import { type $LibraryCard, LibraryCard } from '@/library/LibraryCard';
 import { $LibraryCatalogue, LibraryCatalogue } from '@/library/LibraryCatalogue';
 import { algebra } from '../algebra/book';
@@ -34,7 +35,8 @@ export const libraryCatalogue: $LibraryCatalogue = $(
         <LibraryCard
             name="The Manifold"
             of={() => manifold}
-            title="The Manifold"
+            title="The Manifold of Sentences"
+            subtitle="A Geometry of Prose"
             synopsis="Synopsis"
             chapters={titles(manifold)}
         />
@@ -54,7 +56,15 @@ export const theManifold: $LibraryCard = libraryCatalogue.card('The Manifold');
 export const theShelf: $LibraryCard = libraryCatalogue.card('The Shelf');
 
 for (const card of libraryCatalogue.cards) card.$author = theTeam;
+for (const card of libraryCatalogue.cards) card.$subject = theShelf;
 
 for (const book of [algebra, manifold, shelf]) {
     if (book.author) book.author.$for = theTeam;
+    if (book.subject) book.subject.$for = theShelf;
 }
+
+const canonical = shelf.cover.sections.flatMap(s => s.elements).find(e => e instanceof $Canonical) as $Canonical | undefined;
+if (canonical) canonical.$for = theTeam;
+
+libraryCatalogue.file('author', 'The Team', theTeam);
+libraryCatalogue.file('subject', 'Demonstration', theShelf);

@@ -104,3 +104,25 @@ export const SpineTitle = styled.span`
     color: #cfc7b8;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
 `;
+
+export const SpineMark = styled.span<{ $lit?: boolean }>`
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    bottom: 6px;
+    padding: 3px 2px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: ${(p) => (p.$lit ? '#f4e9c8' : 'rgba(207, 199, 184, 0.75)')};
+    background: ${(p) => (p.$lit ? 'rgba(244, 233, 200, 0.18)' : 'rgba(255, 255, 255, 0.06)')};
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0 0 2px 2px;
+    cursor: pointer;
+    transition: color 320ms ease, background 320ms ease, box-shadow 320ms ease;
+    ${(p) => p.$lit && 'box-shadow: 0 0 14px rgba(244, 233, 200, 0.4);'}
+`;

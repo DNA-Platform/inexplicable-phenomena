@@ -18,6 +18,8 @@ import { $Row } from '@/book/Row';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
 import { $Highlight, Highlight } from '@/reference/Highlight';
 import { $Word } from '@/writing/Word';
+import { Author } from '@/book/Author';
+import { Subject } from '@/book/Subject';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>
@@ -30,11 +32,19 @@ const summary = (gist: string): ReactNode => section('Summary', gist, true);
 
 const chapter = (title: string, prose: string): ReactElement => <Chapter>{section(title, prose)}{summary('In brief.')}</Chapter>;
 
-const cover = (): ReactElement => <Cover>{section('The Algebra of Perspective', 'A book about reading.')}</Cover>;
+const cover = (): ReactElement => (
+    <Cover>
+        <Section>
+            <Title>The Algebra of Perspective</Title>
+            {'\n\nA book about reading. '}
+            <Author>The Team</Author>{' '}<Subject>Demonstration</Subject>
+        </Section>
+    </Cover>
+);
 
 const synopsis = (): ReactElement => <Synopsis>{section('Synopsis', 'One object, many renderings.')}{summary('In brief.')}</Synopsis>;
 
-const book = (): ReactElement => <Book>{cover()}{synopsis()}{chapter('Coordinates', 'Reading is a change of coordinates.')}</Book>;
+const book = (): ReactElement => <Book>{cover()}<TableOfContents />{synopsis()}{chapter('Coordinates', 'Reading is a change of coordinates.')}</Book>;
 
 const rejection = (b: any): string | undefined => {
     const s = Object.getOwnPropertySymbols(b).find(x => x.description === '$Particle.devError');
@@ -178,7 +188,7 @@ describe('the two connections — find goes forward, ref comes back', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         expect(toc.cover).toBe(b.cover);
-        expect(toc.cover.read()).toBe(b);
+        expect(toc.cover!.read()).toBe(b);
         expect(toc.read()).toBe(b);
         expect(toc.valid()).toBe(true);
     });
@@ -312,7 +322,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
                 {synopsis()}
             </Book>
         );
-        expect(rejection(b)).toMatch(/at most one table of contents/);
+        expect(rejection(b)).toMatch(/exactly one table of contents/);
     });
 
     it('a chapter knows its book — the parent, one channel, things point up', () => {
@@ -479,7 +489,12 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(container.textContent).not.toContain('In brief: hidden.');
     });
 
-    it('with no authored table of contents, the bond constructor renders one into the chapters — a part of the book, parent assigned', () => {
+    it('a book without a declared table of contents is refused — it does not appear from nowhere', () => {
+        const b: $Book = $(<Book>{cover()}{synopsis()}{chapter('Coordinates', 'Prose.')}</Book>);
+        expect(rejection(b)).toMatch(/table of contents/);
+    });
+
+    it('a declared table of contents is a part of the book, parent assigned', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         expect(toc).toBeInstanceOf($TableOfContents);
