@@ -41,7 +41,7 @@ describe('the finder — find answers a library card, three ways and extensible'
         expect(catalogue.find('subject: Demonstration')).toBe(shelf);
     });
 
-    it('refuses a query it files nothing under, naming the query', () => {
+    it('throws for a query it files nothing under, naming the query', () => {
         const { catalogue } = catalogued();
 
         expect(() => catalogue.find('title: The Missing Book')).toThrow(/title: The Missing Book/);

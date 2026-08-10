@@ -519,9 +519,9 @@ class $TheManifold extends $Chemical {
                         {held.subtitle && <CoverSubtitle>{held.subtitle}</CoverSubtitle>}
                         <CoverRule />
                         <CoverBlurb>{held.blurb}</CoverBlurb>
-                        <CoverInvitation>open the book →</CoverInvitation>
+                        <CoverInvitation>read the book →</CoverInvitation>
                         <CoverImprint data-subject onClick={(e) => { e.stopPropagation(); manifold.subject?.read(); this.$shelf?.(); }}>
-                            {manifold.subject?.name ?? ''}
+                            {`← ${manifold.subject?.card?.title ?? 'the shelf'}`}
                         </CoverImprint>
                     </CoverFace>
                 )}

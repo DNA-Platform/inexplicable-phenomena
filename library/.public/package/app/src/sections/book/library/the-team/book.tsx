@@ -3,7 +3,6 @@ import { $ } from '@dna-platform/chemistry';
 import { $Book, Book } from '@/book/Book';
 import { type $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
-import { $Synopsis } from '@/book/Synopsis';
 import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { shelve, theTeam } from './card';
 import { TeamCover } from './01-the-cover';
@@ -25,11 +24,13 @@ const numeral = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'
 // the book's own view, its contents margin is its own table of contents read
 // off the model, and the card in its margin is its card in the catalogue.
 export class $TheTeam extends $Book {
-    at = 2;
+    at = 1;
     $travel?: () => void = undefined;
 
+    // The reading flow: the cover, then the numbered chapters — the contents
+    // and the parenthetical chapters stand aside, the model's own distinction.
     get readable(): $Chapter[] {
-        return this.chapters.filter(c => !(c instanceof $TableOfContents));
+        return this.chapters.filter(c => !(c instanceof $TableOfContents) && !c.parenthetical);
     }
 
     get chapter(): $Chapter {
@@ -44,7 +45,7 @@ export class $TheTeam extends $Book {
 
     margin(): ReactNode {
         const card = theTeam;
-        const listed = this.chapters.filter(c => !(c instanceof $TableOfContents) && !(c instanceof $Cover) && !(c instanceof $Synopsis));
+        const listed = this.chapters.filter(c => !(c instanceof $TableOfContents) && !(c instanceof $Cover) && !c.parenthetical);
         return (
             <Margin>
                 <MarginName>Contents</MarginName>
@@ -86,14 +87,14 @@ export class $TheTeam extends $Book {
                     <Standing onClick={() => { this.at = 0; }}>{this.title?.copy ?? ''}</Standing>
                     <Imprint>
                         {author ? `${author.name} · ` : ''}
-                        {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$travel?.(); }}>{subject.card?.title ?? subject.name}</ImprintMark> : null}
+                        {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$travel?.(); }}>{`← ${subject.card?.title ?? subject.name}`}</ImprintMark> : null}
                         {subject ? ' · ' : ''}
-                        {cover ? 'Cover' : `Chapter ${numeral[this.at - 1] ?? this.at - 1}`}
+                        {cover ? 'Cover' : `Chapter ${numeral[this.at] ?? this.at}`}
                     </Imprint>
                 </Masthead>
                 <Spread>
                     <Body>
-                        <Folio>{cover ? (this.title?.copy ?? '') : `${this.at - 1} of ${this.readable.length - 2}`}</Folio>
+                        <Folio>{cover ? (this.title?.copy ?? '') : `${this.at} of ${this.readable.length - 1}`}</Folio>
                         <Prose key={this.at}><C /></Prose>
                         <Turn>
                             <Leaf $back disabled={this.at === 0} onClick={() => this.turn(-1)}>

@@ -35,8 +35,8 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
     $Cover(...sections: $Section[]) {
         try {
             super.$Chapter(...sections);
-        } catch (refused) {
-            if (this.title) throw refused;
+        } catch (error) {
+            if (this.title) throw error;
         }
         if (!this.title) throw new Error('A cover requires a title.');
     }

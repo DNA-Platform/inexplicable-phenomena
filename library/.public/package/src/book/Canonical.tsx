@@ -20,6 +20,16 @@ export class $Canonical extends $Sentence implements $Reference$<$Book> {
 
     read(): $Book {
         if (!this.$for) throw new Error(`The canonical ${JSON.stringify(this.name)} holds no card, so it stands for nothing.`);
+        return this.$for.read();
+    }
+
+    // The subject that declares a canonical can check it: the canonical book's
+    // subject must be this same subject. valid() answers that check without
+    // throwing, whenever the cards are in place to answer it — where the check
+    // runs (books loading their subjects, or build-time in .public) is open.
+    valid(): boolean {
+        if (!(super.valid() || this.$for !== undefined)) return false;
+        if (!this.$for) return true;
         let up: unknown = this.parent;
         let hops = 0;
         while (up && !(up instanceof $Book) && hops < 12) {
@@ -29,17 +39,12 @@ export class $Canonical extends $Sentence implements $Reference$<$Book> {
             hops++;
         }
         const home = up instanceof $Book ? up.subject?.card : undefined;
-        if (home && this.$for.subject !== home) throw new Error(`The canonical ${JSON.stringify(this.name)} does not have this subject in its subject.`);
-        return this.$for.read();
+        return home === undefined || this.$for.subject === home;
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
         const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
         return path;
-    }
-
-    valid(): boolean {
-        return super.valid() || this.$for !== undefined;
     }
 }
 

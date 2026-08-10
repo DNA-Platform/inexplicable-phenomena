@@ -98,7 +98,7 @@ describe('$IndexCard — a card that prints what is on it', () => {
         expect(card.valid()).toBe(true);
     });
 
-    it('refuses to read when it never pointed, and names itself in the refusal', () => {
+    it('throws when it never pointed, and names itself', () => {
         const card: $IndexCard<$Book> = $(<Card name="The Manifold" />);
 
         expect(() => card.read()).toThrow(/The Manifold/);

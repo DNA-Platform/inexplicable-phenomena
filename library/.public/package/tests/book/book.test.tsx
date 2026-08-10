@@ -418,7 +418,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     it('the composition is list-like — where filters, select projects, find insists on one', () => {
         const b: $Book = $(book());
         expect(b.at(3).read()).toBe(b.chapters[3]);
-        expect(b.where(c => c.parenthetical).length).toBe(0);
+        expect(b.where(c => c.parenthetical).length).toBe(1);
         const s = b.chapters[3].sections[0];
         expect(s.at(1).read()?.index).toBe(1);
         expect(s.select(x => x.index)).toEqual(s.parts().map(x => x.index));

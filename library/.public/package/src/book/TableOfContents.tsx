@@ -12,7 +12,6 @@ import { $Chapter } from './Chapter';
 import { $Row, Row } from './Row';
 import { $Title, Title } from '../writing/Title';
 import { $Cover } from './Cover';
-import { $Synopsis } from './Synopsis';
 import { $Section } from '../writing/Section';
 import { type $Book } from './Book';
 import { type $LibraryCard } from '../library/LibraryCard';
@@ -42,8 +41,10 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     parts(): $Row[] {
+        // The numbered chapters: not the canonical, not parenthetical, not
+        // the contents itself — one law, by what a chapter is.
         return this.book.parts()
-            .filter(c => c !== this && !(c instanceof $Cover) && !(c instanceof $Synopsis))
+            .filter(c => c !== this && !(c instanceof $Cover) && !c.parenthetical)
             .map(c => {
                 const row: $Row = $(<Row path={this.book.at(c.index)} />);
                 row.index = c.index;
@@ -84,15 +85,16 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     $TableOfContents(...sections: $Section[]) {
         try {
             super.$Chapter(...sections);
-        } catch (refused) {
-            if (this.summary) throw refused;
-            // A table of contents derives its summary from its book's cover.
-            // Before the book adopts it there is nothing to require yet.
+        } catch (error) {
+            if (this.summary) throw error;
+            // A table of contents pulls itself together from its book — its
+            // summary is the cover's, its rows are the chapters'. Standing
+            // outside a book it has nothing to pull together yet.
         }
     }
 
     valid(): boolean {
-        if (!this.summary) return this.$parts.length === 0;
+        if (!this.cover) return this.$parts.length === 0;
         return super.valid();
     }
 

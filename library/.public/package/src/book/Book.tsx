@@ -32,7 +32,7 @@ export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapt
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
 
-    get copy(): string { return this.parts().map(c => c.copy).join('\n\n'); }
+    get copy(): string { return this.parts().filter(c => !c.parenthetical).map(c => c.copy).join('\n\n'); }
     get canonical(): $Cover { return this.cover; }
     get cover(): $Cover { return this.chapters[0] as $Cover; }
     get synopsis(): $Synopsis { return this.chapters.find(c => c instanceof $Synopsis) as $Synopsis; }
@@ -88,7 +88,7 @@ export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapt
     }
 
     view(): ReactNode {
-        return this.parts().map((c, i) => {
+        return this.parts().filter(c => !c.parenthetical).map((c, i) => {
             const C = $(c) as any;
             return <div className="chapter" key={i}><C /></div>;
         });

@@ -75,13 +75,13 @@ describe('$Author — a book reference that holds a library card', () => {
         expect(shown(<A />)).toBe('Nobody At All');
     });
 
-    it('refuses to read when it holds no card, and says whose', () => {
+    it('throws when it holds no card, and names whose', () => {
         const orphan: $Author = $(<Author>Nobody At All</Author>);
 
         expect(() => orphan.read()).toThrow(/Nobody At All/);
     });
 
-    it('is refused when it carries neither a name nor a card', () => {
+    it('is not valid when it carries neither a name nor a card', () => {
         const empty: $Author = $(<Author>{'   '}</Author>);
 
         expect(empty.valid()).toBe(false);
@@ -98,7 +98,7 @@ describe('a book reaches its author through its cover', () => {
         expect(team.author!.name).toBe('The Team');
     });
 
-    it('refuses a book whose cover names no author, and the refusal says so', () => {
+    it('a book whose cover names no author does not bind, and the error says so', () => {
         const plain: $Book = $(
             <Book>
                 <Cover>
@@ -139,7 +139,7 @@ describe('the loop — a book whose author is itself', () => {
         expect(team.author!.read().author!.read()).toBe(team);
     });
 
-    it('closes because the card is minted before the book, which is what the loop needed', () => {
+    it('closes because the card is made before the book, which is what the loop needed', () => {
         let team: $Book | undefined = undefined;
         const card: $LibraryCard = $(<LibraryCard name="The Team" of={() => team!} title="The Team" />);
 
@@ -167,7 +167,7 @@ describe('$LibraryCatalogue — a catalogue of books, through library cards', ()
         expect(catalogue.parts()).toHaveLength(1);
     });
 
-    it('refuses a lookup it has no card for, naming what was asked', () => {
+    it('throws for a lookup it has no card for, naming what was asked', () => {
         const catalogue: $LibraryCatalogue = $(<LibraryCatalogue>{null}</LibraryCatalogue>);
 
         expect(() => catalogue.card('The Manifold')).toThrow(/The Manifold/);

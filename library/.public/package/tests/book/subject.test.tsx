@@ -81,14 +81,14 @@ describe('$Subject — a book reference that holds a library card', () => {
         expect(shown(<S />)).toBe('Demonstration');
     });
 
-    it('refuses to read when it holds no card, and says whose', () => {
+    it('throws when it holds no card, and names whose', () => {
         const orphan: $Subject = $(<Subject>Demonstration</Subject>);
 
         expect(() => orphan.read()).toThrow(/Demonstration/);
         expect(() => orphan.read()).toThrow(/stands for nothing/);
     });
 
-    it('is refused when it carries neither a name nor a card', () => {
+    it('is not valid when it carries neither a name nor a card', () => {
         const empty: $Subject = $(<Subject>{'   '}</Subject>);
 
         expect(empty.valid()).toBe(false);
@@ -105,7 +105,7 @@ describe('the cover carries three, and the book receives them', () => {
         expect(b.valid()).toBe(true);
     });
 
-    it('refuses a book whose cover names no subject, and the refusal says so', () => {
+    it('a book whose cover names no subject does not bind, and the error says so', () => {
         const plain: $Book = $(
             <Book>
                 <Cover>
@@ -136,9 +136,10 @@ describe('$Canonical — one, declared, reciprocal', () => {
         teamBook = declared('The Team', theShelf);
 
         expect(canonicalOf(shelfBook)!.read()).toBe(teamBook);
+        expect(canonicalOf(shelfBook)!.valid()).toBe(true);
     });
 
-    it('refuses a canonical whose subject is elsewhere', () => {
+    it('a canonical whose subject is elsewhere is invalid — the subject can check its canonical', () => {
         let shelfBook: $Book | undefined = undefined;
         const theShelf: $LibraryCard$ = $(<LibraryCard name="The Shelf" of={() => shelfBook!} title="The Shelf" />);
         const elsewhere: $LibraryCard$ = $(<LibraryCard name="Elsewhere" title="Elsewhere" />);
@@ -148,10 +149,10 @@ describe('$Canonical — one, declared, reciprocal', () => {
         theTeam.$subject = elsewhere;
         shelfBook = declared('The Shelf', theShelf, theTeam);
 
-        expect(() => canonicalOf(shelfBook!)!.read()).toThrow(/does not have this subject/);
+        expect(canonicalOf(shelfBook!)!.valid()).toBe(false);
     });
 
-    it('refuses a cover declaring two canonicals — exactly one', () => {
+    it('a cover declaring two canonicals does not bind — exactly one', () => {
         const theTeam: $LibraryCard$ = $(<LibraryCard name="The Team" title="The Team" />);
         const b: $Book = $(
             <Book>

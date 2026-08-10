@@ -240,3 +240,13 @@ export const DrawerRow = styled.div`
 
     span { flex: 1; }
 `;
+
+export const Imprint = styled.div`
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(52, 55, 60, 0.55);
+    margin-top: 10px;
+    animation: ${settle} 700ms 540ms ease-out both;
+`;

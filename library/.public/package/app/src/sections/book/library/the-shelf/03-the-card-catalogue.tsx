@@ -16,6 +16,7 @@ export class $TheCardCatalogue extends $Chapter {
                     <ChapterHeading>The Card Catalogue</ChapterHeading>
                     {'\n\nA catalogue is not the books it stands for. It is the drawer of cards — one per book, each carrying enough to answer for its book without the book being opened. Title, author, subject, library: what is printed on a card is what the catalogue knows.'}
                     {'\n\nFour cards are filed in this drawer, and one of them is this book’s own. A drawer that files its own card is how a shelf gets to be a library: the catalogue belongs to the collection it catalogues, and says so on its card like everything else.'}
+                    {'\n\nA catalogue does not usually show its cards — it answers questions with them. They are laid out on this page so they can be seen, which is this chapter’s reason for existing.'}
                 </Section>
                 <Section parenthetical>
                     <Title>Summary</Title>

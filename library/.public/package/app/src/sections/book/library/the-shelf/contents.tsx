@@ -4,9 +4,9 @@ import { $TableOfContents } from '@/book/TableOfContents';
 import { $Book } from '@/book/Book';
 import { type $LibraryCard } from '@/library/LibraryCard';
 import { type $TheShelf } from './book';
-import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle, SpineMark } from '../../shelf.styled';
+import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle } from '../../shelf.styled';
 import {
-    Field, Stage, Face, Reverse, Leaf, Column, Turnable, Standing, Preamble,
+    Field, Stage, Face, Reverse, Leaf, Column, Turnable, Standing, Preamble, Imprint,
     Entries, Entry, EntryTitle, EntryNote, Byline, Colophon,
 } from '../../catalogue.styled';
 
@@ -34,7 +34,6 @@ const inks: Record<string, string> = {
 
 export class $ShelfContents extends $TableOfContents {
     turned = false;
-    marked = false;
 
     // Rendering the contents as an element re-parents it to whatever rendered
     // it, so the one-hop parent is not always the book. The climb is the same
@@ -57,18 +56,6 @@ export class $ShelfContents extends $TableOfContents {
         return this.$cards.filter(card => card !== this.book.subject?.card);
     }
 
-    mark(e: React.MouseEvent, card: $LibraryCard) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (this.marked) return;
-        const home = card.read().subject?.read();
-        this.marked = true;
-        setTimeout(() => {
-            if (home === this.book) this.turned = true;
-            this.marked = false;
-        }, 650);
-    }
-
     inSpines(): ReactNode {
         const shelved = this.shelved();
         return (
@@ -83,7 +70,6 @@ export class $ShelfContents extends $TableOfContents {
                         {shelved.map((card, i) => (
                             <Spine key={card.name} className="shelf-card" data-book={card.name} $ink={inks[card.name] ?? '#2c3036'} $tall={52 + (i % 2) * 2} $wide={50 - (i % 3) * 2} $held onClick={() => this.shelf.$travel?.(card)}>
                                 <SpineTitle>{card.title}</SpineTitle>
-                                <SpineMark $lit={this.marked} data-subject onClick={(e) => this.mark(e, card)}>{card.read().subject?.name ?? ''}</SpineMark>
                             </Spine>
                         ))}
                         {filler(14, 2).map((b, i) => <Spine key={'b' + i} $ink={b.ink} $tall={b.tall} $wide={b.wide} />)}
@@ -102,6 +88,7 @@ export class $ShelfContents extends $TableOfContents {
             <Leaf>
                 <Column>
                     <Standing onClick={() => { this.turned = false; }}>{this.book.title?.copy ?? ''}</Standing>
+                    <Imprint>{this.book.subject?.name ?? ''}</Imprint>
                     <Preamble>{this.book.cover.canonical.paragraphs.slice(1).map(p => p.copy).join(' ')}</Preamble>
                     <Entries>
                         {rows.map((row, i) => {
