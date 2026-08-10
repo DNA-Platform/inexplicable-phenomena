@@ -4,6 +4,7 @@ import { $Book, Book } from '@/book/Book';
 import { type $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
+import { $Figure } from '@/writing/Figure';
 import { shelve, theTeam } from './card';
 import { TeamCover } from './01-the-cover';
 import { TeamSynopsis } from './02-the-synopsis';
@@ -43,6 +44,38 @@ export class $TheTeam extends $Book {
         this.page = next;
     }
 
+    // What the open chapter is made of, asked of the model rather than typed.
+    // A written part stands at the position it was written at, the prose either
+    // side of it is parsed around it and keeps counting, and the words are the
+    // used ones — a figure's content is not prose and is not counted as any.
+    parse(): ReactNode {
+        const section = this.chapter.canonical;
+        if (!section) return null;
+        const parts = section.parts();
+        const words = section.words.length;
+        const mentioned = section.paragraphs
+            .flatMap(p => p.sentences)
+            .flatMap(s => s.parts())
+            .filter(w => w.role === 'mention').length;
+        return (
+            <>
+                <MarginName style={{ marginTop: '2.4rem' }}>What this chapter is made of</MarginName>
+                <Slip>
+                    {parts.map(part => (
+                        <SlipBody key={part.index}>
+                            <em>{`${part.index}  ${part instanceof $Figure ? 'figure' : part.level}`}</em>
+                            <span>{(part.copy || '—').slice(0, 46)}</span>
+                        </SlipBody>
+                    ))}
+                    <SlipBody>
+                        <em>counted</em>
+                        <span>{`${parts.length} parts · ${words} words used · ${mentioned} mentioned`}</span>
+                    </SlipBody>
+                </Slip>
+            </>
+        );
+    }
+
     margin(): ReactNode {
         const card = theTeam;
         const listed = this.tableOfContents.chapters;
@@ -60,6 +93,7 @@ export class $TheTeam extends $Book {
                         );
                     })}
                 </Contents>
+                {this.parse()}
                 <MarginName style={{ marginTop: '2.4rem' }}>Its card, in the library catalogue</MarginName>
                 <Slip>
                     <SlipName>{card.name}</SlipName>

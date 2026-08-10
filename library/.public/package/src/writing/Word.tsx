@@ -7,37 +7,22 @@ import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
-import { $Writing } from './Writing';
+import { $Writing, type Level } from './Writing';
 import { $Letter, Letter } from './Letter';
 
-export class $Word extends $Writing implements $Composition$<$Letter> {
-    get canonical(): $Letter { return $Composible$.canonical(this); }
+export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
+    get level(): Level { return 'word'; }
     get letters(): $Letter[] { return this.parts(); }
 
     get ref(): $$Word { return new $$Word(this); }
 
-    at(index: number): $Location<$Letter> {
-        return $Composible$.at(this, index);
+    // A word is divided into its graphemes, one letter each.
+    divide(prose: string): string[] {
+        return [...prose];
     }
 
-    where(match: (part: $Letter) => boolean): $Letter[] {
-        return $Composible$.where(this, match);
-    }
-
-    select<U>(pick: (part: $Letter) => U): U[] {
-        return $Composible$.select(this, pick);
-    }
-
-    single(match: (part: $Letter) => boolean): $Letter {
-        return $Composible$.single(this, match);
-    }
-
-    parts(): $Letter[] {
-        const letters: $Letter[] = [...this.copy].map(g => $(<Letter>{g}</Letter>));
-        return letters.filter(c => c.valid()).map((c, i) => {
-            c.index = i + 1;
-            return c;
-        });
+    compose(prose: string): $Letter {
+        return $(<Letter>{prose}</Letter>);
     }
 
     valid(): boolean {

@@ -7,13 +7,13 @@ import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
-import { $Writing } from './Writing';
+import { $Writing, type Level } from './Writing';
 import { $Letter } from './Letter';
 import { $Sentence, Sentence } from './Sentence';
 import { $Word } from './Word';
 
-export class $Paragraph extends $Writing implements $Composition$<$Sentence> {
-    get canonical(): $Sentence { return $Composible$.canonical(this); }
+export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Sentence> {
+    get level(): Level { return 'paragraph'; }
 
     get sentences(): $Sentence[] { return this.parts(); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
@@ -21,28 +21,13 @@ export class $Paragraph extends $Writing implements $Composition$<$Sentence> {
 
     get ref(): $$Paragraph { return new $$Paragraph(this); }
 
-    at(index: number): $Location<$Sentence> {
-        return $Composible$.at(this, index);
+    // A paragraph is divided at its stops.
+    divide(prose: string): string[] {
+        return (prose.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => s.trim());
     }
 
-    where(match: (part: $Sentence) => boolean): $Sentence[] {
-        return $Composible$.where(this, match);
-    }
-
-    select<U>(pick: (part: $Sentence) => U): U[] {
-        return $Composible$.select(this, pick);
-    }
-
-    single(match: (part: $Sentence) => boolean): $Sentence {
-        return $Composible$.single(this, match);
-    }
-
-    parts(): $Sentence[] {
-        const sentences: $Sentence[] = (this.copy.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => $(<Sentence>{s.trim()}</Sentence>));
-        return sentences.filter(s => s.valid()).map((s, i) => {
-            s.index = i + 1;
-            return s;
-        });
+    compose(prose: string): $Sentence {
+        return $(<Sentence>{prose}</Sentence>);
     }
 
     valid(): boolean {

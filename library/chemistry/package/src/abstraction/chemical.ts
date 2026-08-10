@@ -196,12 +196,25 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         const context = new $SynthesisContext(chemical, this._parameters);
         parentContext?.childContexts.push(context);
 
+        // Props are construction, not mutation. A chemical written inside
+        // another chemical's writing is BUILT during that chemical's render and
+        // handed its props here; recording those writes as changes marks the
+        // running scope dirty, so the render runs again, the child is built
+        // again, and nothing settles — the host loops and the child never
+        // renders once. The rendering flag is the framework's own way of saying
+        // "this write is not news", raised for exactly the assignment.
         const lastProps = chemical[$lastProps$] || {};
-        for (const prop in props) {
-            if (prop === 'children' || prop === 'key' || prop === 'ref') continue;
-            const value = props[prop];
-            if (prop in lastProps && lastProps[prop] == value) continue;
-            chemical['$' + prop] = value;
+        const rendering = chemical[$rendering$];
+        chemical[$rendering$] = true;
+        try {
+            for (const prop in props) {
+                if (prop === 'children' || prop === 'key' || prop === 'ref') continue;
+                const value = props[prop];
+                if (prop in lastProps && lastProps[prop] == value) continue;
+                chemical['$' + prop] = value;
+            }
+        } finally {
+            chemical[$rendering$] = rendering;
         }
 
         this.process(children, context);

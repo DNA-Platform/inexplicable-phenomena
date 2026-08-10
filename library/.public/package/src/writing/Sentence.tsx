@@ -7,14 +7,18 @@ import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
-import { $Writing } from './Writing';
+import { $Writing, type Level } from './Writing';
 import { $Letter, Letter } from './Letter';
 import { $Word, Word } from './Word';
+import { Punctuation } from './Punctuation';
 
-export class $Sentence extends $Writing implements $Composition$<$Word> {
-    get canonical(): $Word { return $Composible$.canonical(this); }
+export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
+    get level(): Level { return 'sentence'; }
 
-    get words(): $Word[] { return this.parts(); }
+    // The words of a sentence are the USED ones. Its syntax is there among its
+    // parts — mentioned, standing for itself — and the reading passes over it,
+    // the way a book's copy passes over its parenthetical chapters.
+    get words(): $Word[] { return this.parts().filter(word => word.role === 'use'); }
 
     get letters(): $Letter[] {
         return [...this.copy].map((g, i) => {
@@ -26,28 +30,16 @@ export class $Sentence extends $Writing implements $Composition$<$Word> {
 
     get ref(): $$Sentence { return new $$Sentence(this); }
 
-    at(index: number): $Location<$Word> {
-        return $Composible$.at(this, index);
+    // A sentence is divided into its words AND the syntax between them. The
+    // words are used; the spaces, commas and stops are mentioned — present in
+    // the writing, passed over by the reading, exactly as a book's copy passes
+    // over its parenthetical chapters.
+    divide(prose: string): string[] {
+        return prose.match(/[\p{L}\p{N}']+|[^\p{L}\p{N}']+/gu) ?? [];
     }
 
-    where(match: (part: $Word) => boolean): $Word[] {
-        return $Composible$.where(this, match);
-    }
-
-    select<U>(pick: (part: $Word) => U): U[] {
-        return $Composible$.select(this, pick);
-    }
-
-    single(match: (part: $Word) => boolean): $Word {
-        return $Composible$.single(this, match);
-    }
-
-    parts(): $Word[] {
-        const words: $Word[] = (this.copy.match(/[\p{L}\p{N}']+/gu) ?? []).map(w => $(<Word>{w}</Word>));
-        return words.filter(w => w.valid()).map((w, i) => {
-            w.index = i + 1;
-            return w;
-        });
+    compose(prose: string): $Word {
+        return /[\p{L}\p{N}]/u.test(prose) ? $(<Word>{prose}</Word>) : $(<Punctuation>{prose}</Punctuation>);
     }
 
     valid(): boolean {

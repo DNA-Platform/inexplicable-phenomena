@@ -3,7 +3,8 @@ import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
 import { Title as PlainTitle } from '@/writing/Title';
-import { ChapterHeading as Title, Figure } from './figures';
+import { ChapterHeading as Title, Circuit, Slipped } from './figures';
+import { theTeam } from './card';
 
 export class $TheDecision extends $Chapter {
     view(): ReactNode {
@@ -17,7 +18,9 @@ export class $TheDecision extends $Chapter {
                     {'\n\nWhich is when the proposal arrived, and it arrived as a joke before it was a plan: write a fourth book about the three being made, and let all four point their authorship at it. The joke was that it would then have to point at itself.'}
                     {'\n\nWe did not know that could be built. The problem states itself in one line — the book must exist before its own author reference can resolve — and there is no ordering of construction that gets you out of it. You cannot hand a book to a reference inside the book being handed over.'}
                     {'\n\nThe card is what got us out, and it got us out by being smaller. A card is minted independently of the thing it stands for. So the fourth book’s author link does not point at the fourth book. It points at the fourth book’s card, and the card was already on the table before a word of the book was written.'}
-                    <Figure>Four books, four author links, one destination — and the fourth is the one that points at itself.</Figure>
+                    <Circuit books={['The Algebra of Perspective', 'The Manifold of Sentences', 'The Shelf', 'The Team']} home="The Team">Four books, four author links, one destination — and the fourth is the one that points at itself.</Circuit>
+                    {'\n\n'}
+                    <Slipped card={theTeam}>This book’s own card, printing what is on it — and its author line is the card itself.</Slipped>
                     {'\n\nNothing new had to be invented for that arrow to come home. That is worth saying plainly, because we expected to invent something and the design turned out to be better than we were: the card built for cataloguing is exactly what a self-reference needs, for the same reason in both cases — you can carry a card, and you cannot carry a book.'}
                     {'\n\nSo this is the passage where the book records the decision to be written. It is not a memoir about one. The link that makes it the canonical account of this library is one of the four above, and it is the one pointing at itself. If you follow it, you arrive here.'}
                 </Section>

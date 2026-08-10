@@ -8,7 +8,7 @@ import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
-import { $Writing } from './Writing';
+import { $Writing, type Level } from './Writing';
 import { $Letter } from './Letter';
 import { $Paragraph, Paragraph } from './Paragraph';
 import { $Title } from './Title';
@@ -18,7 +18,7 @@ import { $Sentence } from './Sentence';
 import { $Word } from './Word';
 import { type $Document } from '../document/Document';
 
-export class $Section extends $Writing implements $Composition$<$Paragraph> {
+export class $Section extends $Writing<$Paragraph> implements $Composition$<$Paragraph> {
     title!: $Html<'block'>;
 
     constructor() {
@@ -31,6 +31,12 @@ export class $Section extends $Writing implements $Composition$<$Paragraph> {
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
+    get level(): Level { return 'section'; }
+
+    // A section's first paragraph is its title, and it wears 0 — the canonical
+    // at every level is the special first. The levels beneath count from 1.
+    get first(): number { return 0; }
+
     get canonical(): $Paragraph {
         const T = $(this.title as any);
         return $(<Paragraph><T /></Paragraph>);
@@ -42,16 +48,13 @@ export class $Section extends $Writing implements $Composition$<$Paragraph> {
         return this.parent as $Document;
     }
 
-    at(index: number): $Location<$Paragraph> {
-        return $Composible$.at(this, index);
+    // A section is divided at its blank lines.
+    divide(prose: string): string[] {
+        return prose.split(/\n{2,}/).map(p => p.trim());
     }
 
-    parts(): $Paragraph[] {
-        const paragraphs: $Paragraph[] = this.copy.split(/\n{2,}/).map(p => $(<Paragraph>{p.trim()}</Paragraph>));
-        return paragraphs.filter(p => p.valid()).map((p, i) => {
-            p.index = i;
-            return p;
-        });
+    compose(prose: string): $Paragraph {
+        return $(<Paragraph>{prose}</Paragraph>);
     }
 
     get heading(): string {
@@ -76,20 +79,8 @@ export class $Section extends $Writing implements $Composition$<$Paragraph> {
         return tagline;
     }
 
-    where(match: (part: $Paragraph) => boolean): $Paragraph[] {
-        return $Composible$.where(this, match);
-    }
-
-    select<U>(pick: (part: $Paragraph) => U): U[] {
-        return $Composible$.select(this, pick);
-    }
-
-    single(match: (part: $Paragraph) => boolean): $Paragraph {
-        return $Composible$.single(this, match);
-    }
-
-    $Section(text: $Html<'block'>) {
-        super.$Writing(text);
+    $Section(...writing: unknown[]) {
+        super.$Writing(...writing);
         const first = this.elements[0];
         this.title = (first instanceof $Title ? first.text : first) as $Html<'block'>;
     }

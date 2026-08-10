@@ -76,7 +76,10 @@ describe('referential integrity — at, then, and the reading', () => {
         const section = b.chapters[3].parts()[0];
         const paragraph = section.at(1).read()!;
         const sentence = paragraph.at(1).read()!;
-        const r = section.at(1).then(paragraph.at(1)).then(sentence.at(2));
+        // A sentence's parts are everything written in it, syntax included, so
+        // position 2 is the space after the first word and the second used word
+        // stands at 3.
+        const r = section.at(1).then(paragraph.at(1)).then(sentence.at(3));
         expect(r).toBeInstanceOf($Path);
         expect((r.read() as $Word).copy).toBe('is');
         expect(r.valid()).toBe(true);
@@ -121,6 +124,9 @@ describe('referential integrity — at, then, and the reading', () => {
         const claimed = sentence.words.flatMap(w => w.letters);
         expect(claimed.map(l => l.copy).join('')).toBe('Readingisachangeofcoordinates');
         expect(section.words.length).toBe(7);
+        // The syntax is among the sentence's parts and outside its words.
+        expect(sentence.parts().length).toBeGreaterThan(sentence.words.length);
+        expect(sentence.parts().some(p => p.role === 'mention')).toBe(true);
         expect(section.letters.length).toBeGreaterThan(0);
         expect(b.sentences.length).toBeGreaterThan(0);
         expect(b.letters.length).toBeGreaterThan(0);
@@ -160,7 +166,7 @@ describe('the two connections — find goes forward, ref comes back', () => {
         const b: $Book = $(book());
         const paragraph = b.chapters[3].sections[0].at(1).read()!;
         const sentence = paragraph.at(1).read()!;
-        expect((sentence.ref.then(sentence.at(2)).read() as $Word).copy).toBe('is');
+        expect((sentence.ref.then(sentence.at(3)).read() as $Word).copy).toBe('is');
     });
 
     it('follow turns the contents page into its chapters — the literature the drawer holds', () => {
