@@ -10,7 +10,6 @@ import { $TableOfContents } from '@/book/TableOfContents';
 import { type $Reference$ } from '@/reference/Reference';
 import { $Footer } from '@/document/Footer';
 import { text } from '@/utilities/html';
-import { manifold } from './book/library/the-manifold/book';
 import { $RibbonMark, RibbonMark, $Return, Return } from './book/library/the-manifold/marks';
 import manifoldCoverSource from './book/library/the-manifold/01-the-cover.tsx?raw';
 import manifoldSynopsisSource from './book/library/the-manifold/02-the-synopsis.tsx?raw';
@@ -173,7 +172,16 @@ const hold = (key: string, ink: string, tall: number, b: $Book): Held => {
     };
 };
 
-const held: Held = hold('manifold', '#274a3a', 560, manifold);
+const holdings = new WeakMap<$Book, Held>();
+
+const heldFor = (b: $Book): Held => {
+    let h = holdings.get(b);
+    if (!h) {
+        h = hold('manifold', '#274a3a', 560, b);
+        holdings.set(b, h);
+    }
+    return h;
+};
 
 function light(id: string, block: ScrollLogicalPosition = 'center') {
     const el = document.getElementById(id);
@@ -390,11 +398,13 @@ function rightPage(b: Held, r: Row, mode: string, jump: (page: number) => void, 
     return <Kind b={b} r={r} mode={mode} jump={jump} follow={follow} press={press} />;
 }
 
-class $TheManifold extends $Chemical {
+export class $TheManifold extends $Book {
+    get held(): Held { return heldFor(this); }
+
     open = false;
     page = 1;
     mode = 'read';
-    $shelf?: () => void = undefined;
+    $travel?: () => void = undefined;
     over = false;
     tab = '';
     ribbons: $RibbonMark[] = [];
@@ -402,8 +412,8 @@ class $TheManifold extends $Chemical {
 
     turn(p: number) {
         this.over = false;
-        this.page = Math.max(1, Math.min(held.rows.length - 1, p));
-        this.tab = held.rows[this.page].source;
+        this.page = Math.max(1, Math.min(this.held.rows.length - 1, p));
+        this.tab = this.held.rows[this.page].source;
         this.head();
     }
 
@@ -430,7 +440,7 @@ class $TheManifold extends $Chemical {
     reference(spot: string): $Reference$<any> | undefined {
         const keys = spot.split('.').filter(Boolean).map(Number);
         if (!keys.length) return undefined;
-        let built: $Reference$<any> = held.book.at(keys[0]);
+        let built: $Reference$<any> = this.held.book.at(keys[0]);
         for (const key of keys.slice(1)) {
             const mid = built.valid() ? built.read() as { at?: (index: number) => $Reference$<any> } : undefined;
             if (!mid?.at) return undefined;
@@ -443,9 +453,9 @@ class $TheManifold extends $Chemical {
         const path = spot.replace(/^#/, '');
         const reference = this.reference(path);
         if (!reference || !reference.valid()) return;
-        const p = held.rows.findIndex(r => r.index === Number(path.split('.')[0]));
+        const p = this.held.rows.findIndex(r => r.index === Number(path.split('.')[0]));
         if (p < 0) return;
-        const standing = held.rows[this.page];
+        const standing = this.held.rows[this.page];
         if (this.open && standing && p !== this.page) {
             this.trail = $(<Return spot={`${standing.index}`}>{standing.heading || `folio ${standing.index}`}</Return>);
         }
@@ -481,18 +491,18 @@ class $TheManifold extends $Chemical {
     }
 
     view(): ReactNode {
-        const current = held.rows[this.page];
+        const current = this.held.rows[this.page];
         return (
             <DayBackdrop>
                 <DayBar>
                     <DayChip as="a" href="/page">← the page</DayChip>
                     <DayRule />
                     {!this.open && (
-                        <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.card?.title ?? 'the shelf'}</DayChip>
+                        <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {this.subject?.card?.title ?? 'the shelf'}</DayChip>
                     )}
                     {this.open && (
                         <>
-                            <DayChip as="a" href="/books" data-subject onClick={() => { manifold.subject?.read(); }}>← {manifold.subject?.card?.title ?? 'the shelf'}</DayChip>
+                            <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {this.subject?.card?.title ?? 'the shelf'}</DayChip>
                             <DayRule />
                             <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
                             <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>
@@ -514,19 +524,19 @@ class $TheManifold extends $Chemical {
                     )}
                 </DayBar>
                 {!this.open && (
-                    <CoverFace $ink={held.ink} data-cover onClick={() => { this.open = true; this.turn(1); }}>
-                        <CoverTitle>{held.title}</CoverTitle>
-                        {held.subtitle && <CoverSubtitle>{held.subtitle}</CoverSubtitle>}
+                    <CoverFace $ink={this.held.ink} data-cover onClick={() => { this.open = true; this.turn(1); }}>
+                        <CoverTitle>{this.held.title}</CoverTitle>
+                        {this.held.subtitle && <CoverSubtitle>{this.held.subtitle}</CoverSubtitle>}
                         <CoverRule />
-                        <CoverBlurb>{held.blurb}</CoverBlurb>
+                        <CoverBlurb>{this.held.blurb}</CoverBlurb>
                         <CoverInvitation>read the book →</CoverInvitation>
-                        <CoverImprint data-subject onClick={(e) => { e.stopPropagation(); manifold.subject?.read(); this.$shelf?.(); }}>
-                            {`← ${manifold.subject?.card?.title ?? 'the shelf'}`}
+                        <CoverImprint data-subject onClick={(e) => { e.stopPropagation(); this.subject?.read(); this.$travel?.(); }}>
+                            {`← ${this.subject?.card?.title ?? 'the shelf'}`}
                         </CoverImprint>
                     </CoverFace>
                 )}
                 {this.open && current && this.mode === 'manuscript' && (() => {
-                    const files = [...Object.keys(manuscripts[held.key]), ...Object.keys(modelSources)];
+                    const files = [...Object.keys(manuscripts[this.held.key]), ...Object.keys(modelSources)];
                     const at = files.indexOf(this.tab);
                     return (
                         <Page className="book-page manuscript-book" style={{ background: '#eef3ea' }}>
@@ -536,7 +546,7 @@ class $TheManifold extends $Chemical {
                                 title={at < 0 ? 'to the reading' : 'to the manuscript contents'}
                                 onClick={() => { if (at < 0) { this.mode = 'read'; this.turn(this.page); } else this.tab = ''; }}
                             >
-                                {at < 0 ? `${held.title} — the manuscript` : files[at]}
+                                {at < 0 ? `${this.held.title} — the manuscript` : files[at]}
                             </RunningHead>
                             {at < 0 && (
                                 <PageBody className="page-body" onScroll={(e) => this.slide(e)}>
@@ -554,7 +564,7 @@ class $TheManifold extends $Chemical {
                             )}
                             {at >= 0 && (
                                 <PageBody className="page-body manuscript" onScroll={(e) => this.slide(e)}>
-                                    {inked(manuscripts[held.key][files[at]] ?? modelSources[files[at]])}
+                                    {inked(manuscripts[this.held.key][files[at]] ?? modelSources[files[at]])}
                                 </PageBody>
                             )}
                             <PageTurns>
@@ -571,7 +581,7 @@ class $TheManifold extends $Chemical {
                     );
                 })()}
                 {this.open && current && this.mode !== 'manuscript' && (() => {
-                    const sources = { ...modelSources, ...manuscripts[held.key] };
+                    const sources = { ...modelSources, ...manuscripts[this.held.key] };
                     const names = [current.source, ...Object.keys(modelSources).filter(n => n !== current.source)];
                     const leaf = names.includes(this.tab) ? this.tab : current.source;
                     return (
@@ -583,10 +593,10 @@ class $TheManifold extends $Chemical {
                                 onClick={() => {
                                     if (this.over) this.over = false;
                                     else if (current.contents) this.open = false;
-                                    else this.turn(held.rows.findIndex(r => r.contents));
+                                    else this.turn(this.held.rows.findIndex(r => r.contents));
                                 }}
                             >
-                                {this.over ? `${leaf} — the manuscript` : held.title}
+                                {this.over ? `${leaf} — the manuscript` : this.held.title}
                             </RunningHead>
                             {!this.over && (
                                 <PageBody className="page-body" onScroll={(e) => this.slide(e)}>
@@ -610,7 +620,7 @@ class $TheManifold extends $Chemical {
                                     {this.page <= 1 ? '← the cover' : '← previous'}
                                 </PageTurn>
                                 <Folio>{current.index}</Folio>
-                                <PageTurn disabled={this.page === held.rows.length - 1} onClick={() => this.turn(this.page + 1)}>
+                                <PageTurn disabled={this.page === this.held.rows.length - 1} onClick={() => this.turn(this.page + 1)}>
                                     next →
                                 </PageTurn>
                             </PageTurns>
@@ -627,4 +637,4 @@ class $TheManifold extends $Chemical {
     }
 }
 
-export const TheManifold = $($TheManifold);
+

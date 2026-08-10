@@ -24,7 +24,7 @@ const numeral = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'
 // the book's own view, its contents margin is its own table of contents read
 // off the model, and the card in its margin is its card in the catalogue.
 export class $TheTeam extends $Book {
-    at = 1;
+    page = 1;
     $travel?: () => void = undefined;
 
     // The reading flow: the cover, then the numbered chapters — the contents
@@ -34,18 +34,18 @@ export class $TheTeam extends $Book {
     }
 
     get chapter(): $Chapter {
-        return this.readable[Math.min(this.at, this.readable.length - 1)];
+        return this.readable[Math.min(this.page, this.readable.length - 1)];
     }
 
     turn(by: number) {
-        const next = this.at + by;
+        const next = this.page + by;
         if (next < 0 || next >= this.readable.length) return;
-        this.at = next;
+        this.page = next;
     }
 
     margin(): ReactNode {
         const card = theTeam;
-        const listed = this.chapters.filter(c => !(c instanceof $TableOfContents) && !(c instanceof $Cover) && !c.parenthetical);
+        const listed = this.tableOfContents.chapters;
         return (
             <Margin>
                 <MarginName>Contents</MarginName>
@@ -53,7 +53,7 @@ export class $TheTeam extends $Book {
                     {listed.map((chapter, i) => {
                         const spot = this.readable.indexOf(chapter);
                         return (
-                            <Entry key={i} $at={spot === this.at} onClick={() => { this.at = spot; }}>
+                            <Entry key={i} $at={spot === this.page} onClick={() => { this.page = spot; }}>
                                 <span style={{ opacity: 0.55, fontSize: '0.85em', marginRight: 8 }}>{numeral[i + 1]}</span>
                                 {chapter.title?.copy ?? ''}
                             </Entry>
@@ -84,24 +84,24 @@ export class $TheTeam extends $Book {
         return (
             <Manuscript>
                 <Masthead>
-                    <Standing onClick={() => { this.at = 0; }}>{this.title?.copy ?? ''}</Standing>
+                    <Standing onClick={() => { this.page = 0; }}>{this.title?.copy ?? ''}</Standing>
                     <Imprint>
                         {author ? `${author.name} · ` : ''}
                         {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$travel?.(); }}>{`← ${subject.card?.title ?? subject.name}`}</ImprintMark> : null}
                         {subject ? ' · ' : ''}
-                        {cover ? 'Cover' : `Chapter ${numeral[this.at] ?? this.at}`}
+                        {cover ? 'Cover' : `Chapter ${numeral[this.page] ?? this.page}`}
                     </Imprint>
                 </Masthead>
                 <Spread>
                     <Body>
-                        <Folio>{cover ? (this.title?.copy ?? '') : `${this.at} of ${this.readable.length - 1}`}</Folio>
-                        <Prose key={this.at}><C /></Prose>
+                        <Folio>{cover ? (this.title?.copy ?? '') : `${this.page} of ${this.readable.length - 1}`}</Folio>
+                        <Prose key={this.page}><C /></Prose>
                         <Turn>
-                            <Leaf $back disabled={this.at === 0} onClick={() => this.turn(-1)}>
-                                {this.at === 0 ? '' : `← ${this.readable[this.at - 1].title?.copy ?? ''}`}
+                            <Leaf $back disabled={this.page === 0} onClick={() => this.turn(-1)}>
+                                {this.page === 0 ? '' : `← ${this.readable[this.page - 1].title?.copy ?? ''}`}
                             </Leaf>
-                            <Leaf disabled={this.at >= this.readable.length - 1} onClick={() => this.turn(1)}>
-                                {this.at >= this.readable.length - 1 ? '' : `${this.readable[this.at + 1].title?.copy ?? ''} →`}
+                            <Leaf disabled={this.page >= this.readable.length - 1} onClick={() => this.turn(1)}>
+                                {this.page >= this.readable.length - 1 ? '' : `${this.readable[this.page + 1].title?.copy ?? ''} →`}
                             </Leaf>
                         </Turn>
                     </Body>

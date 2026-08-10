@@ -5,7 +5,6 @@ import { shelf, contents } from './book/library/the-shelf/book';
 import { team } from './book/library/the-team/book';
 import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
-import { TheManifold } from './the-manifold';
 
 // The route is glue: the shelf book views itself, the team book views itself,
 // and travelling between them is following a card — the router does the
@@ -30,12 +29,7 @@ class $TheBooks extends $Chemical {
     view(): ReactNode {
         route = this;
         if (this.$opened) {
-            const book = this.$opened.read();
-            if (book === manifold) {
-                const M = TheManifold as any;
-                return <M shelf={() => this.home()} />;
-            }
-            const B = $(book) as any;
+            const B = $(this.$opened.read()) as any;
             return <B />;
         }
         const S = $(shelf) as any;
@@ -45,6 +39,7 @@ class $TheBooks extends $Chemical {
 
 shelf.$travel = card => route?.pull(card);
 team.$travel = () => route?.home();
+manifold.$travel = () => route?.home();
 
 const TheBooks = $($TheBooks);
 

@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $TableOfContents } from '@/book/TableOfContents';
-import { $Book } from '@/book/Book';
+
 import { type $LibraryCard } from '@/library/LibraryCard';
 import { type $TheShelf } from './book';
 import { Room, Caption, Board, Row, BoardTop, BoardShadow, Spine, SpineTitle } from '../../shelf.styled';
@@ -34,21 +34,6 @@ const inks: Record<string, string> = {
 
 export class $ShelfContents extends $TableOfContents {
     turned = false;
-
-    // Rendering the contents as an element re-parents it to whatever rendered
-    // it, so the one-hop parent is not always the book. The climb is the same
-    // guarded walk the canonical uses: up to the nearest $Book.
-    get book(): $Book {
-        let up: unknown = this.parent;
-        let hops = 0;
-        while (up && !(up instanceof $Book) && hops < 8) {
-            const next = (up as { parent?: unknown }).parent;
-            if (next === up) break;
-            up = next;
-            hops++;
-        }
-        return up as $Book;
-    }
 
     get shelf(): $TheShelf { return this.book as $TheShelf; }
 

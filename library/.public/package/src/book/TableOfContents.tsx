@@ -13,11 +13,26 @@ import { $Row, Row } from './Row';
 import { $Title, Title } from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
-import { type $Book } from './Book';
+import { $Book } from './Book';
 import { type $LibraryCard } from '../library/LibraryCard';
 
 export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
     $cards: $LibraryCard[] = [];
+
+    // The contents belongs to a book, but the parent one hop up is whatever
+    // interpreted it last — on screen, that can be the thing drawing it. The
+    // book is found by climbing to the nearest $Book, the canonical's own walk.
+    get book(): $Book {
+        let up: unknown = this.parent;
+        let hops = 0;
+        while (up && !(up instanceof $Book) && hops < 8) {
+            const next = (up as { parent?: unknown }).parent;
+            if (next === up) break;
+            up = next;
+            hops++;
+        }
+        return up as $Book;
+    }
     get title(): $Title {
         const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
         const title: $Title = $(<Title>{authored || 'Table of Contents'}</Title>);
@@ -41,6 +56,8 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     parts(): $Row[] {
+        const book = this.book;
+        if (!(book instanceof $Book)) throw new Error(`The table of contents stands under ${String((book as { constructor?: { name?: string } })?.constructor?.name)} instead of a book, with parent ${String((this.parent as { constructor?: { name?: string } })?.constructor?.name)}.`);
         // The numbered chapters: not the canonical, not parenthetical, not
         // the contents itself — one law, by what a chapter is.
         return this.book.parts()
