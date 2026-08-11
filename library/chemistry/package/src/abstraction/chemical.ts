@@ -377,7 +377,12 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         context.singleton = !Array.isArray(children) && childArray.length === 1;
         const parent = (this._chemical instanceof $Eval && this._chemical.parentFor) || this._chemical;
         let ctx = context;
-        const typeCounts: Map<any, number> | undefined = dev ? new Map() : undefined;
+        // Same-type siblings need keys only where the AUTHOR is building the
+        // list — a `.map()` inside view(). Children the bond constructor
+        // interprets are keyed by chemistry itself, from the chemical's own
+        // identity, and their order is preserved by the bond; asking an author
+        // to key those is asking for what the framework already supplies.
+        const typeCounts: Map<any, number> | undefined = (dev && !this._bondConstructor) ? new Map() : undefined;
         for (const child of childArray) {
             ctx = ctx.next(child);
             if (!React.isValidElement(child)) {

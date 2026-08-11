@@ -27,7 +27,8 @@
     "build": "rollup -c",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
     "typecheck": "tsc --noEmit",
-    "test": "tsc --noEmit && vitest run",
+    "test": "tsc --noEmit && node app/typecheck.mjs && vitest run",
+    "typecheck:app": "node app/typecheck.mjs",
     "test:fast": "vitest run",
     "test:watch": "vitest",
     "test:all": "tsc --noEmit && vitest run && rollup -c --silent"

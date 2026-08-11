@@ -496,7 +496,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(container.textContent).not.toContain('In brief: hidden.');
     });
 
-    it('a book without a declared table of contents is refused — it does not appear from nowhere', () => {
+    it('a book without a declared table of contents is invalid — it does not appear from nowhere', () => {
         const b: $Book = $(<Book>{cover()}{synopsis()}{chapter('Coordinates', 'Prose.')}</Book>);
         expect(rejection(b)).toMatch(/table of contents/);
     });

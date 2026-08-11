@@ -68,9 +68,6 @@ export class $Writing<P extends $Writing = $Writing<any>> extends $Chemical impl
     // author's name is a sentence, but it sits INSIDE a sentence, so its level
     // alone would make it a part of the paragraph holding it.
     parts(): P[] {
-        // Mentioned writing is not parsed. It stands for itself, so there is
-        // nothing beneath it to find — the parse stops where the mention starts.
-        if (this.role === 'mention') return [];
         const below = beneath(this.level);
         if (!below) return [];
         const found: P[] = [];
@@ -96,6 +93,8 @@ export class $Writing<P extends $Writing = $Writing<any>> extends $Chemical impl
         divided();
         return found.map((part, slot) => {
             part.index = slot + this.first;
+            // Mentioning propagates: what stands inside a mention is mentioned.
+            if (this.role === 'mention') part.$role = 'mention';
             return part;
         });
     }

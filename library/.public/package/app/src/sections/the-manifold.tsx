@@ -183,13 +183,20 @@ const heldFor = (b: $Book): Held => {
     return h;
 };
 
+// The manifold whose view is running, registered in view() so the slot always
+// names the instance actually on screen.
+let reading: { lit: string } | undefined;
+
+// Attention is state, handed down and rendered. Scrolling stays imperative
+// because scrolling is not a way of saying what is attended.
 function light(id: string, block: ScrollLogicalPosition = 'center') {
+    if (reading) reading.lit = id;
     const el = document.getElementById(id);
     if (!el) return;
     el.scrollIntoView({ behavior: 'smooth', block });
-    el.classList.add('lit');
-    setTimeout(() => el.classList.remove('lit'), 2400);
 }
+
+const attending = (id: string): string => (reading?.lit === id ? ' lit' : '');
 
 function spans(s: string, follow: (address: string) => void, notes?: { key: string; note: string; number: number }[]): ReactNode[] {
     const out: ReactNode[] = [];
@@ -203,7 +210,7 @@ function spans(s: string, follow: (address: string) => void, notes?: { key: stri
             const filed = notes?.find(n => n.key === m![1]);
             if (filed) {
                 out.push(
-                    <sup key={`n${k++}`} id={`mark-${filed.key}`} className="note-mark" onClick={() => light(`note-${filed.key}`)}>
+                    <sup key={`n${k++}`} id={`mark-${filed.key}`} className={`note-mark${attending(`mark-${filed.key}`)}`} onClick={() => light(`note-${filed.key}`)}>
                         {filed.number}
                     </sup>
                 );
@@ -347,25 +354,25 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
         );
     }
     return (
-        <div id={`${r.index}`}>
+        <div id={`${r.index}`} className={attending(`${r.index}`).trim()}>
             <ChapterNumber>chapter {r.index}</ChapterNumber>
             <ChapterTitle>{r.heading}</ChapterTitle>
             {r.subtitle && <ChapterSubtitle>{r.subtitle}</ChapterSubtitle>}
             {r.sections.map((sec, si) => {
                 const firstProse = sec.paragraphs.findIndex(q => !q.startsWith('> '));
                 return (
-                    <div key={si} id={`${r.index}.${si + 1}`}>
+                    <div key={si} id={`${r.index}.${si + 1}`} className={attending(`${r.index}.${si + 1}`).trim()}>
                         {si > 0 && <SectionHead>{sec.head}</SectionHead>}
                         {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
                         {sec.paragraphs.map((p, k) => (
                             p.startsWith('> ')
                                 ? (
-                                    <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
+                                    <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`} className={attending(`${r.index}.${si + 1}.${k + 1}`).trim()} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
                                         {rich(p.slice(2), follow, r.notes)}
                                     </Quote>
                                 )
                                 : (
-                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
+                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} className={attending(`${r.index}.${si + 1}.${k + 1}`).trim()} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
                                         {rich(p, follow, r.notes)}
                                     </Prose>
                                 )
@@ -376,7 +383,7 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
             {r.notes.length > 0 && (
                 <FootNotes>
                     {r.notes.map(n => (
-                        <div key={n.key} id={`note-${n.key}`} className="foot-note">
+                        <div key={n.key} id={`note-${n.key}`} className={`foot-note${attending(`note-${n.key}`)}`}>
                             <span className="note-index" onClick={() => light(`mark-${n.key}`)}>{n.number}</span>
                             {rich(n.note, follow)}
                         </div>
@@ -406,6 +413,7 @@ export class $TheManifold extends $Book {
     mode = 'read';
     $travel?: () => void = undefined;
     over = false;
+    lit = '';
     tab = '';
     ribbons: $RibbonMark[] = [];
     trail: $Return | null = null;
@@ -491,6 +499,10 @@ export class $TheManifold extends $Book {
     }
 
     view(): ReactNode {
+        // Registered in view() so the slot names the instance actually on
+        // screen, and read here so a change to it re-renders.
+        reading = this;
+        void this.lit;
         const current = this.held.rows[this.page];
         return (
             <DayBackdrop>
@@ -600,7 +612,7 @@ export class $TheManifold extends $Book {
                             </RunningHead>
                             {!this.over && (
                                 <PageBody className="page-body" onScroll={(e) => this.slide(e)}>
-                                    {rightPage(held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a), (a, l) => this.press(a, l))}
+                                    {rightPage(this.held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a), (a, l) => this.press(a, l))}
                                 </PageBody>
                             )}
                             {this.over && (

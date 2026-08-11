@@ -77,15 +77,22 @@ describe('writing: only the right kind of part is read', () => {
         expect(section.parts()[1].parts()[0].parts().map(w => w.index)).toEqual([1, 2, 3, 4]);
     });
 
-    it('a mention is not parsed — its syntax stands for itself and has no letters', () => {
+    it('mentioning propagates — a mention keeps its letters, and they are mentioned too', () => {
         const section: $Section = $(
             <Section><Title>Heading</Title>{'\n\nOne two.'}</Section>
         );
         const sentence = section.parts()[1].parts()[0];
         const mentioned = sentence.parts().filter(w => w.role === 'mention');
         expect(mentioned.length).toBeGreaterThan(0);
-        expect(mentioned.every(m => m.parts().length === 0)).toBe(true);
+        // A quoted word still has its letters; quoting does not dissolve them.
+        // Every grapheme in the writing stays addressable, which is what the
+        // letter floor promises.
+        const stop = mentioned.find(m => m.copy === '.')!;
+        expect(stop.parts().length).toBe(1);
+        expect(stop.parts().every(l => l.role === 'mention')).toBe(true);
+        // And the reading is untouched: the words are the used ones.
         expect(sentence.words.every(w => w.role === 'use')).toBe(true);
+        expect(sentence.words.map(w => w.copy)).toEqual(['One', 'two']);
     });
 });
 

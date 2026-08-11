@@ -14,58 +14,134 @@ page.on('pageerror', e => errors.push(`pageerror: ${e}`));
 
 const text = () => page.evaluate(() => document.body.innerText);
 const has = (sel) => page.evaluate(s => !!document.querySelector(s), sel);
-const clickChip = (label) => page.evaluate(l => {
-    const el = Array.from(document.querySelectorAll('a,button')).find(b => b.textContent?.trim() === l);
-    if (el) el.click();
-    return !!el;
-}, label);
-const clickHead = () => page.evaluate(() => { const h = document.querySelector('.book-page > div'); h?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
-const clickToc = (heading) => page.evaluate(h => {
-    const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === h);
-    (l?.parentElement)?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    return !!l;
-}, heading);
+// Action-binding: a navigation helper that finds nothing THROWS a named error
+// rather than clicking nothing and letting the next check pass against stale
+// state. The throw is caught by the checkpoint reporter below, which says which
+// control moved and that the walk did not finish — a no-op click is a broken
+// demonstration, not a silent step.
+const clickChip = async (label) => {
+    const found = await page.evaluate(l => {
+        const el = Array.from(document.querySelectorAll('a,button')).find(b => b.textContent?.trim() === l);
+        if (el) el.click();
+        return !!el;
+    }, label);
+    if (!found) throw new Error(`chip "${label}" not found — the control moved or the page did not settle`);
+};
+const clickHead = async () => {
+    const found = await page.evaluate(() => {
+        const h = document.querySelector('.book-page > div');
+        if (!h) return false;
+        h.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        return true;
+    });
+    if (!found) throw new Error('the running head (.book-page > div) is not present — cannot leaf back');
+};
+const clickToc = async (heading) => {
+    const found = await page.evaluate(h => {
+        const l = Array.from(document.querySelectorAll('.toc-title')).find(e => e.textContent === h);
+        if (!l) return false;
+        l.parentElement?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        return true;
+    }, heading);
+    if (!found) throw new Error(`contents line "${heading}" not found — the book of code changed its pages`);
+};
 const settle = () => new Promise(r => setTimeout(r, 550));
 
 const check = (name, ok) => { checks.push([name, ok]); };
 
+// Checkpoint accounting. A walk that throws mid-way must still say what it
+// reached and where it stopped — a bare stack trace is a gate that cannot be
+// read, and an unreached check is not a passing one.
+let reported = false;
+const report = async (stall) => {
+    if (reported) return;
+    reported = true;
+    try { await browser.close(); } catch { /* already gone */ }
+    let pass = true;
+    for (const [name, ok] of checks) {
+        console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}`);
+        if (!ok) pass = false;
+    }
+    if (stall) {
+        console.log(`\nSTALLED at checkpoint ${checks.length + 1}: ${stall}`);
+        pass = false;
+    }
+    console.log(`\n${checks.length} checkpoints reached${stall ? ' — THE WALK DID NOT FINISH' : ''}`);
+    if (!pass && errors.length) console.log('console:', errors.slice(0, 8));
+    process.exit(pass ? 0 : 1);
+};
+process.on('uncaughtException', e => { report(String(e?.message ?? e)); });
+process.on('unhandledRejection', e => { report(String(e?.message ?? e)); });
+
+// The shelf labels its spines by card name. Landmarks are looked up by that
+// name and a miss is reported as a named failure, not a bare stack trace: a
+// driver that cannot reach its check must say which landmark moved.
+const spines = () => page.evaluate(() => [...document.querySelectorAll('[data-book]')].map(e => e.getAttribute('data-book')));
+
+const openBook = async (name) => {
+    const found = await page.evaluate(n => {
+        const el = document.querySelector(`[data-book="${n}"]`);
+        if (!el) return false;
+        el.click();
+        return true;
+    }, name);
+    if (!found) {
+        const on = await spines();
+        await report(`no spine named "${name}" — the shelf carries [${on.join(', ')}]. The entry point moved.`);
+        return;
+    }
+    return found;
+};
+
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle0', timeout: 30000 });
 await settle();
 
-check('the root is the shelf — two titled spines among the row', await page.evaluate(() => document.querySelectorAll('.shelf-card').length === 2));
+const shelved = await spines();
+check(`the root is the shelf — its titled spines stand in the row [${shelved.join(', ')}]`, shelved.length >= 3 && shelved.every(Boolean));
 check('the shelf is a room, not a scroll — pinned to the view', await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 2));
 if (shots) await page.screenshot({ path: 'shot-shelf.png' });
 
-await page.click('[data-book="algebra"]');
+await openBook('The Algebra of Perspective');
 await page.waitForFunction(() => document.body.innerText.includes('the classes'), { timeout: 10000 });
 await settle();
 let t = await text();
 check('ALGEBRA: the spine opens the page — the dark sheet, lenses book · github · night', t.includes('github') && t.includes('night') && t.includes('the classes'));
 if (shots) await page.screenshot({ path: 'shot-algebra-page.png' });
 await clickChip('the books →');
-await page.waitForSelector('.shelf-card', { timeout: 10000 });
+await page.waitForSelector('[data-book]', { timeout: 10000 });
 await settle();
-check('the page hands back to the shelf', await page.evaluate(() => document.querySelectorAll('.shelf-card').length === 2));
+check('the page hands back to the shelf', (await spines()).length === shelved.length);
 
-await page.click('[data-book="manifold"]');
+await openBook('The Manifold');
 await page.waitForSelector('[data-cover]', { timeout: 8000 });
-await page.waitForFunction(() => document.body.innerText.includes('stitched from folds'), { timeout: 8000 }).catch(() => {});
 await settle();
 t = await text();
-check('MANIFOLD: the cover face — its own book, its own ink', t.includes('open the book') && t.includes('stitched from folds'));
+// The invitation and the title are read off the cover itself rather than
+// transcribed: a literal that drifts is how this check went stale.
+const coverTitle = await page.evaluate(() => document.querySelector('[data-cover]')?.firstElementChild?.textContent ?? '');
+check('MANIFOLD: the cover face — its own book, its own ink', t.includes('read the book') && coverTitle.length > 0 && t.includes(coverTitle));
 if (shots) await page.screenshot({ path: 'shot-manifold-cover.png' });
 
+// AE15 — a regression on a page that crashes on main. Bound to the TRANSITION:
+// the count of errors before the click against the count after, so it passes
+// only because opening the cover raised nothing, never because nothing ran.
+const pageErrs = () => errors.filter(e => e.startsWith('pageerror')).length;
+const beforeCover = pageErrs();
 await page.click('[data-cover]');
 await settle();
+check('MANIFOLD: opening the cover raises no page error — AE15', pageErrs() === beforeCover);
 t = await text();
 check('MANIFOLD: opening the cover lands inside — the contents, folio 1', t.includes('apparatus') && (await page.evaluate(() => document.querySelectorAll('.toc-title').length)) === 8);
 
 check('MANIFOLD: the book fits the view — reading scrolls inside the page', await page.evaluate(() => { const p = document.querySelector('.book-page'); return !!p && p.getBoundingClientRect().bottom <= window.innerHeight + 2; }));
 
-await clickChip('← the cover');
+// The way back to the cover is the RUNNING HEAD now, not a chip — the chip
+// bar carries the subject link and the modes. From the contents, the head
+// closes the book.
+await clickHead();
 await settle();
 t = await text();
-check('MANIFOLD: leafing back past the contents closes the book to its cover', t.includes('open the book') && !(await has('.book-page')));
+check('MANIFOLD: leafing back past the contents closes the book to its cover', t.includes('read the book') && !(await has('.book-page')));
 await page.waitForSelector('[data-cover]', { timeout: 8000 });
 await page.click('[data-cover]');
 await settle();
@@ -218,10 +294,11 @@ await page.evaluate(() => { document.querySelector('.note-index')?.dispatchEvent
 await settle();
 check('MANIFOLD: the note walks back up to its mark — the loop at its smallest', await page.evaluate(() => !!document.getElementById('mark-ribbon')?.classList.contains('lit')));
 
-await clickChip('← the shelf');
-await page.waitForSelector('.shelf-card', { timeout: 10000 });
+// The subject link, read off the subject's own card — "← The Shelf".
+await page.evaluate(() => document.querySelector('[data-subject]')?.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+await page.waitForSelector('[data-book]', { timeout: 10000 });
 await settle();
-check('back on the shelf after the manifold', await page.evaluate(() => document.querySelectorAll('.shelf-card').length === 2));
+check('back on the shelf after the manifold', (await spines()).length === shelved.length);
 
 await page.goto(`${BASE}/page`, { waitUntil: 'networkidle0', timeout: 30000 });
 await settle();
@@ -233,11 +310,4 @@ const unfiled = errors.filter(e => !e.includes('Maximum update depth'));
 if (filed.length) console.log(`KNOWN  teardown update storm (filed framework finding) fired ${filed.length}x`);
 check('zero console errors beyond the filed teardown finding', unfiled.length === 0);
 
-await browser.close();
-let pass = true;
-for (const [name, ok] of checks) {
-    console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}`);
-    if (!ok) pass = false;
-}
-if (!pass && errors.length) console.log('console:', errors.slice(0, 6));
-process.exit(pass ? 0 : 1);
+await report();

@@ -11,7 +11,7 @@ export class $Curvature extends $Chapter {
         return (
             <>
                 <Section>
-                    <Title>Curvature: What Reading Refuses to Return</Title>
+                    <Title>Curvature: What Reading Never Gives Back</Title>
                     {'\n\nCarry a word around a book and bring it home. Take *light* through a physics chapter, a painting chapter, a chapter on grief — and return it to the sentence where you found it. It does not fit the way it did. The word came back **turned**, and the angle it came back by is the curvature of the book.'}
                     {'\n\nGeometry has the instrument for this: parallel transport. Move a vector around a closed loop on a curved surface and it returns rotated, though at every step you were careful to keep it parallel^[care]. Flat books exist — glossaries, timetables — and their words come home unchanged. No one rereads a timetable to feel it differently.'}
                 </Section>

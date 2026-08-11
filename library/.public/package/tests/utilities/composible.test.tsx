@@ -27,11 +27,15 @@ describe('$Composible$ — parts() is enough; the rest are extension methods', (
         expect((r.read() as $Word).copy).toBe('frame');
     });
 
-    it('follow reaches on — the followed words, followed again through their own drawers, are the letters', () => {
+    it('follow reaches on — every part followed to its letters gives the writing back', () => {
         const s = sentence();
         const words = s.ref.follow();
         const letters = $Composible$.follow({ parts: () => words.parts().flatMap(w => w.ref.parts()) });
-        expect(letters.parts().map(l => l.copy).join('')).toBe('theframeturns');
+        // Mentioning propagates, so the syntax between the words keeps its
+        // letters too — and the floor returns the WRITING rather than a
+        // mashed-together reading of it.
+        expect(letters.parts().map(l => l.copy).join('')).toBe(s.copy);
+        expect(letters.parts().map(l => l.copy).join('')).toBe('the frame turns');
     });
 
     it('follow dereferences the drawer — the catalogue becomes the composition of what its entries find', () => {

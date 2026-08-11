@@ -3,17 +3,20 @@ import 'katex/dist/katex.min.css';
 import { Highlight, themes } from 'prism-react-renderer';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { $Sheet, Sheet } from './page/sheet';
+import { SourceDrawer } from './page/faces/drawer';
 import {
     Backdrop, ControlBar, ControlChip, ControlRule,
     Stage, SheetPane, SourcePane, ClassesDrawer, ClassTabs, ClassTab, ClassCode,
 } from './page/page';
 import latexSource from './page/latex.tsx?raw';
-import markdownSource from './page/markdown.tsx?raw';
+import sentenceSource from '../markdown/sentence.tsx?raw';
+import sectionSource from '../markdown/section.tsx?raw';
 import sheetSource from './page/sheet.tsx?raw';
 
 const classSources: Record<string, string> = {
     '$Latex': latexSource,
-    '$Markdown': markdownSource,
+    '$MarkdownSentence': sentenceSource,
+    '$MarkdownSection': sectionSource,
     '$Sheet': sheetSource,
 };
 
@@ -61,33 +64,7 @@ class $ThePage extends $Chemical {
                     )}
                     <SheetPane>{active.render()}</SheetPane>
                 </Stage>
-                {this.classes && (
-                    <ClassesDrawer>
-                        <ClassTabs>
-                            {Object.keys(classSources).map(name => (
-                                <ClassTab key={name} $active={this.tab === name} onClick={() => { this.tab = name; }}>
-                                    {name}
-                                </ClassTab>
-                            ))}
-                        </ClassTabs>
-                        <ClassCode>
-                            <Highlight code={classSources[this.tab].trim()} language="tsx" theme={themes.nightOwl}>
-                                {({ tokens, getLineProps, getTokenProps }) => (
-                                    <pre>
-                                        {tokens.map((line, i) => (
-                                            <div key={i} {...getLineProps({ line })}>
-                                                <span className="line-number">{i + 1}</span>
-                                                {line.map((token, j) => (
-                                                    <span key={j} {...getTokenProps({ token })} />
-                                                ))}
-                                            </div>
-                                        ))}
-                                    </pre>
-                                )}
-                            </Highlight>
-                        </ClassCode>
-                    </ClassesDrawer>
-                )}
+                {this.classes && <SourceDrawer />}
             </Backdrop>
         );
     }

@@ -119,80 +119,15 @@ export const BookSkin = styled.article`
         padding: 40px 26px 36px;
     }
 
-    .markdown h1 {
-        font-family: ${serif};
-        font-size: 40px;
-        line-height: 1.15;
-        font-weight: 700;
-        letter-spacing: -0.015em;
-        text-align: center;
-        margin: 0 0 30px;
-        color: #1f1b14;
-    }
 
-    .markdown h2,
-    .markdown h3,
-    .markdown h4 {
-        font-family: ${serif};
-        font-size: 22px;
-        font-weight: 700;
-        margin: 34px 0 12px;
-        color: #241f17;
-    }
 
-    .markdown p {
-        font-size: 17.5px;
-        line-height: 1.78;
-        margin: 0 0 18px;
-        text-align: justify;
-        hyphens: auto;
-    }
 
-    .markdown > p:first-of-type::first-letter {
-        float: left;
-        font-size: 58px;
-        line-height: 0.85;
-        padding: 6px 10px 0 0;
-        color: #6d6146;
-    }
 
-    .markdown b {
-        color: #14100a;
-    }
 
-    .markdown i {
-        color: #3c352a;
-    }
 
-    .markdown code {
-        font-family: ui-monospace, Menlo, Consolas, monospace;
-        font-size: 0.86em;
-        background: #f0ebdd;
-        border: 1px solid #e2dbc6;
-        border-radius: 4px;
-        padding: 1px 5px;
-    }
 
-    .markdown a {
-        color: #705f38;
-        text-decoration: underline;
-        text-underline-offset: 2px;
-    }
 
-    .markdown hr {
-        border: none;
-        margin: 36px auto;
-        width: 72px;
-        height: 1px;
-        background: #cfc7ae;
-    }
 
-    .markdown .display-math {
-        margin: 28px 0 30px;
-        text-align: center;
-        font-size: 1.12em;
-        overflow-x: auto;
-    }
 
     footer {
         border-top-color: #e4ddc9;
@@ -226,59 +161,13 @@ export const GithubSkin = styled.article`
         background: #d1d9e0;
     }
 
-    .markdown h1 {
-        font-size: 2em;
-        font-weight: 600;
-        line-height: 1.25;
-        margin: 0 0 20px;
-        padding-bottom: 0.35em;
-        border-bottom: 1px solid #d1d9e0;
-    }
 
-    .markdown h2,
-    .markdown h3,
-    .markdown h4 {
-        font-weight: 600;
-        margin: 28px 0 16px;
-        padding-bottom: 0.3em;
-        border-bottom: 1px solid #d1d9e0;
-    }
 
-    .markdown p {
-        font-size: 16px;
-        line-height: 1.65;
-        margin: 0 0 18px;
-    }
 
-    .markdown code {
-        font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
-        font-size: 85%;
-        background: #f6f8fa;
-        border-radius: 6px;
-        padding: 0.2em 0.4em;
-    }
 
-    .markdown a {
-        color: #0969da;
-        text-decoration: none;
-    }
 
-    .markdown a:hover {
-        text-decoration: underline;
-    }
 
-    .markdown hr {
-        border: none;
-        height: 0.25em;
-        background: #d1d9e0;
-        margin: 32px 0;
-    }
 
-    .markdown .display-math {
-        margin: 26px 0;
-        text-align: center;
-        overflow-x: auto;
-    }
 
     footer {
         margin-top: 40px;
@@ -308,85 +197,16 @@ export const NightSkin = styled.article`
         padding: 36px 24px;
     }
 
-    .markdown h1 {
-        font-family: ${serif};
-        font-size: 38px;
-        line-height: 1.15;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        text-align: center;
-        margin: 0 0 30px;
-        color: #f2ecd9;
-    }
 
-    .markdown h2,
-    .markdown h3,
-    .markdown h4 {
-        font-family: ${serif};
-        font-size: 21px;
-        margin: 32px 0 12px;
-        color: #e8e2cc;
-    }
 
-    .markdown p {
-        font-size: 17px;
-        line-height: 1.82;
-        margin: 0 0 18px;
-        text-align: justify;
-        hyphens: auto;
-    }
 
-    .markdown > p:first-of-type::first-letter {
-        float: left;
-        font-size: 56px;
-        line-height: 0.85;
-        padding: 6px 10px 0 0;
-        color: #ffd27a;
-    }
 
-    .markdown b {
-        color: #ffd27a;
-    }
 
-    .markdown i {
-        color: #9fd0ff;
-    }
 
-    .markdown code {
-        font-family: ui-monospace, Menlo, Consolas, monospace;
-        font-size: 0.86em;
-        background: #1e2440;
-        border: 1px solid #32396a;
-        border-radius: 4px;
-        padding: 1px 5px;
-        color: #cdd5f5;
-    }
 
-    .markdown a {
-        color: #7cf0c8;
-        text-decoration: underline;
-        text-underline-offset: 2px;
-    }
 
-    .markdown hr {
-        border: none;
-        margin: 36px auto;
-        width: 72px;
-        height: 1px;
-        background: #3a4272;
-    }
 
-    .markdown .display-math {
-        margin: 28px 0 30px;
-        text-align: center;
-        font-size: 1.12em;
-        overflow-x: auto;
-        color: #e8ebff;
-    }
 
-    .markdown .katex {
-        color: #e8ebff;
-    }
 
     footer {
         border-top-color: #2a3055;
