@@ -244,18 +244,18 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                 if (!dev && $exceptions.mode === 'throw') {
                     try {
                         bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
-                        $paramValidation.evaluate();
                         if (!(bondResult instanceof Promise)) this.assertChainReached(watch);
                         assertValid(c);
+                        $paramValidation.evaluate();
                     } finally {
                         watch?.restore();
                     }
                 } else {
                     try {
                         bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
-                        $paramValidation.evaluate();
                         if (!(bondResult instanceof Promise)) this.assertChainReached(watch);
                         assertValid(c);
+                        $paramValidation.evaluate();
                         c[$devError$] = undefined;
                         c[$devException$] = undefined;
                     } catch (e: any) {
@@ -499,8 +499,17 @@ export class $ParamValidation {
     count = -1;
     types: string[] = [];
     errors: string[] = [];
+    // Why the INSTANCE is not valid, stated by the classes themselves as the
+    // bond constructor runs. A parameter mismatch and a validity failure are
+    // collected in one place and raised once, so a reader can see whether they
+    // are related rather than learning one and then the other.
+    reasons: string[] = [];
     chemical: $Chemical | null = null;
     validated = false;
+
+    reason(text: string) {
+        this.reasons.push(text);
+    }
 
     check<T>(arg: T, ...types: $ParameterType[]): T {
         const paramNumber = this.index++;
@@ -540,20 +549,26 @@ export class $ParamValidation {
 
     evaluate() {
         if (this.validated) return;
-        if (this.errors.length === 0) {
-            this.validated = true;
-            return;
-        }
+        // Nothing to say yet — and NOT marked done, because a class states its
+        // validity reasons after the parameters have already been checked.
+        if (this.errors.length === 0 && this.reasons.length === 0) return;
 
         const className = this.chemical ? this.chemical.constructor.name : 'Unknown';
         let message = `\n$Chemistry Constructor Validation Failed: ${className}\n\n`;
-        message += `Expected signature:\n`;
-        message += `  ${className}(\n`;
-        this.types.forEach((type, i) => {
-            message += `    ${type}${i < this.types.length - 1 ? ',' : ''}\n`;
-        });
-        message += `  )\n\n`;
-        message += this.errors.join('\n');
+        if (this.types.length) {
+            message += `Expected signature:\n`;
+            message += `  ${className}(\n`;
+            this.types.forEach((type, i) => {
+                message += `    ${type}${i < this.types.length - 1 ? ',' : ''}\n`;
+            });
+            message += `  )\n\n`;
+        }
+        if (this.errors.length) message += this.errors.join('\n');
+        // Both kinds, in one raise, so a reader can see whether they are related.
+        if (this.reasons.length) {
+            if (this.errors.length) message += `\n`;
+            message += `\nNot valid because:\n  ${this.reasons.join('\n  ')}`;
+        }
 
         this.validated = true;
         throw new Error(message);
@@ -564,6 +579,7 @@ export class $ParamValidation {
         this.count = -1;
         this.types = [];
         this.errors = [];
+        this.reasons = [];
         this.chemical = null;
         this.validated = false;
     }
@@ -730,14 +746,32 @@ export function $check<T>(arg: T, ...types: $ParameterType[]): T {
     return $paramValidation.check(arg, ...types);
 }
 
+// The validity sibling of $check, and it works the same way: it RETURNS its
+// condition and records the reason when the condition is false, so a valid()
+// reads as a list of the things that must hold and reports every one that does
+// not. Never short-circuit with && before calling it — a swallowed call is a
+// reason nobody hears.
+//
+// PROXY NAME, flagged: built from the framework's own word, standing beside
+// $check, and Doug's to correct.
+export function $valid(condition: boolean, reason: string): boolean {
+    if (!condition) $paramValidation.reason(reason);
+    return condition;
+}
+
 export function $is<T>(ctor: abstract new (...args: any[]) => T): T {
     return ctor as any;
 }
 
+// Ask the instance whether it is valid, and let it STATE why while it answers.
+// It does not throw: the reasons go where $check's parameter errors already go,
+// and evaluate() raises once with both.
 function assertValid(chemical: any) {
     if (chemical[$isTemplate$]) return;
     if (typeof chemical.valid === 'function' && !chemical.valid()) {
-        throw new Error(`${chemical.constructor.name} is not valid after its bond constructor.`);
+        if ($paramValidation.reasons.length === 0) {
+            $paramValidation.reason(`${chemical.constructor.name} is not valid after its bond constructor.`);
+        }
     }
 }
 

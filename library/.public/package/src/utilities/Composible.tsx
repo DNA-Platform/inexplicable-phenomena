@@ -24,13 +24,13 @@ export class $Composible$ {
         return found[0];
     }
 
-    static at<T extends $Referent$>(of: { parts(): T[] }, index: number): $Location<T> {
+    static at<T extends $Referent$>(of: { parts(): T[] }, position: number): $Location<T> {
         const Location = $(locations.Location);
-        const location: $Location<T> = $(<Location i={index} of={of as any} />);
+        const location: $Location<T> = $(<Location i={position} of={of as any} />);
         return location;
     }
 
-    static follow<T extends $Referent$ & { copy: string; index: number; parenthetical: boolean }>(of: { parts(): $Reference$<T>[] }): $Composition$<T> {
+    static follow<T extends $Referent$ & { copy: string; parenthetical: boolean }>(of: { parts(): $Reference$<T>[] }): $Composition$<T> {
         const found = (): T[] => of.parts().map(r => r.read());
         const followed: $Composition$<T> = {
             get canonical() { return found()[0]; },
@@ -42,10 +42,9 @@ export class $Composible$ {
                 if (kept.length !== 1) throw new Error(`single expected exactly one part and found ${kept.length}.`);
                 return kept[0];
             },
-            at(index: number) { return $Composible$.at(followed, index); },
+            at(position: number) { return $Composible$.at(followed, position); },
             get copy() { return found().map(t => t.copy).join(' '); },
             valid: () => true,
-            index: 0,
             parenthetical: false,
         };
         return followed;

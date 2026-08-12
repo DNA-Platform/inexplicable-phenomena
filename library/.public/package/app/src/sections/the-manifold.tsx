@@ -4,11 +4,14 @@ import 'katex/dist/katex.min.css';
 import { Highlight, themes } from 'prism-react-renderer';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { $Book } from '@/book/Book';
+import { type $LibraryCard } from './book/library/the-team/librarycard';
 import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
 import { type $Reference$ } from '@/reference/Reference';
 import { $Footer } from '@/document/Footer';
+import { $Paragraph } from '@/writing/Paragraph';
+import { $Quotation } from '@/writing/Quotation';
 import { text } from '@/utilities/html';
 import { $RibbonMark, RibbonMark, $Return, Return } from './book/library/the-manifold/marks';
 import manifoldCoverSource from './book/library/the-manifold/01-the-cover.tsx?raw';
@@ -51,7 +54,7 @@ import {
     ChapterNumber, ChapterTitle, ChapterSubtitle, Prose,
     SectionHead, SectionSub, TocPage, TocLine, TocTag,
     CodeTabs, CodeTab, CodeBlock, DogEar,
-    Quote, FootNotes, ModelMeta, ModelSection, ModelAddress, ModelHead, ModelPara,
+    Quote, FootNotes, ModelMeta, ModelSection, ModelAddress, ModelHead, ModelPara, ModelAltitude,
 } from './book/manifold.styled';
 
 const modelSources: Record<string, string> = {
@@ -102,13 +105,14 @@ type Row = {
     tagline: string;
     summary: string;
     body: string[];
-    sections: { head: string; sub: string; paragraphs: string[] }[];
+    sections: { head: string; sub: string; paragraphs: { copy: string; quoted: boolean }[] }[];
     notes: { key: string; note: string; number: number }[];
     contents: boolean;
     cover: boolean;
     copy: string;
     words: number;
     source: string;
+    chapter: $Chapter;
     Opening: (props: OpeningProps) => ReactNode;
 };
 
@@ -127,7 +131,7 @@ const row = (c: $Chapter, i: number): Row => {
     const footer = c.footer;
     const prose = c.parts().filter(s => !s.parenthetical && !(s instanceof $Footer));
     return {
-        index: c.index,
+        index: i,
         heading: c.title?.copy ?? (c instanceof $TableOfContents ? 'Table of Contents' : ''),
         subtitle: c.subtitle?.copy ?? '',
         tagline: c.tagline?.copy ?? '',
@@ -139,7 +143,7 @@ const row = (c: $Chapter, i: number): Row => {
             return {
                 head: colon < 0 ? full : full.slice(0, colon).trim(),
                 sub: colon < 0 ? '' : full.slice(colon + 1).trim(),
-                paragraphs: s.parts().slice(1).map(p => p.copy),
+                paragraphs: s.parts().slice(1).map(p => ({ copy: p.copy, quoted: p instanceof $Quotation })),
             };
         }),
         notes: footer
@@ -150,6 +154,7 @@ const row = (c: $Chapter, i: number): Row => {
         copy: c.copy,
         words: c.words.length,
         source: '',
+        chapter: c,
         Opening: openingFor(c),
     };
 };
@@ -265,23 +270,58 @@ function inked(source: string): ReactNode {
 
 type OpeningProps = { b: Held; r: Row; mode: string; jump: (page: number) => void; follow: (address: string) => void; press: (address: string, label: string) => void };
 
+type Altitude = 'sections' | 'paragraphs' | 'sentences' | 'words';
+const altitudes: Altitude[] = ['sections', 'paragraphs', 'sentences', 'words'];
+
+// THE ADDRESS IS THE POSITION. Every entry names where its part stands, and the
+// same string is what `reference()` walks — so following one lands on the very
+// part that was drawn, rather than on something with the same text.
+function rowsAt(c: $Chapter, altitude: Altitude): { at: string; copy: string }[] {
+    const out: { at: string; copy: string }[] = [];
+    c.parts().forEach((section, si) => {
+        if (altitude === 'sections') { out.push({ at: `${si}`, copy: section.heading }); return; }
+        section.parts().forEach((paragraph, pi) => {
+            if (altitude === 'paragraphs') { out.push({ at: `${si}.${pi}`, copy: paragraph.copy }); return; }
+            (paragraph as $Paragraph).parts?.().forEach((sentence, ni) => {
+                if (altitude === 'sentences') { out.push({ at: `${si}.${pi}.${ni}`, copy: sentence.copy }); return; }
+                sentence.parts().forEach((word, wi) => {
+                    if (word.role !== 'use') return;
+                    out.push({ at: `${si}.${pi}.${ni}.${wi}`, copy: word.copy });
+                });
+            });
+        });
+    });
+    return out;
+}
+
+// THE COUNT IS WALKED AT THE ALTITUDE BEING READ, four genuinely different ways
+// down through the model. Rendering one getter beside four different lists would
+// prove that a getter is stable, which is not the claim — the claim is that the
+// readings agree, and it only means something if each altitude counts for itself.
+function wordsAt(c: $Chapter, altitude: Altitude): number {
+    if (altitude === 'sections') return c.parts().flatMap(s => s.words).length;
+    if (altitude === 'paragraphs') return c.paragraphs.flatMap(p => p.words).length;
+    if (altitude === 'sentences') return c.paragraphs.flatMap(p => p.sentences).flatMap(n => n.words).length;
+    return rowsAt(c, 'words').length;
+}
+
 function ModelOpening({ r }: OpeningProps) {
+    const [altitude, setAltitude] = React.useState<Altitude>('paragraphs');
     return (
         <div>
             <ChapterNumber>{r.index} · the model, unadorned</ChapterNumber>
             <ChapterTitle style={{ fontSize: 20 }}>{r.heading || 'apparatus'}</ChapterTitle>
-            <ModelMeta>{r.sections.length} sections · {r.words} words</ModelMeta>
-            {r.sections.map((sec, si) => (
-                <ModelSection key={si}>
-                    <ModelAddress>#{r.index}.{si + 1}</ModelAddress>
-                    <ModelHead>{sec.head}{sec.sub ? ` — ${sec.sub}` : ''}</ModelHead>
-                    {sec.paragraphs.map((p, k) => (
-                        <ModelPara key={k}>
-                            <ModelAddress className="dim">¶ {si + 1}.{k + 1}</ModelAddress>
-                            <span>{p}</span>
-                        </ModelPara>
-                    ))}
-                </ModelSection>
+            <ModelMeta>
+                {altitudes.map(a => (
+                    <ModelAltitude key={a} $on={a === altitude} onClick={() => setAltitude(a)}>{a}</ModelAltitude>
+                ))}
+                <span style={{ marginLeft: 10 }}>{`${wordsAt(r.chapter, altitude)} words · ${rowsAt(r.chapter, altitude).length} read as ${altitude}`}</span>
+            </ModelMeta>
+            {rowsAt(r.chapter, altitude).map(entry => (
+                <ModelPara key={entry.at}>
+                    <ModelAddress className="dim">{entry.at}</ModelAddress>
+                    <span>{entry.copy || '—'}</span>
+                </ModelPara>
             ))}
             {r.notes.length > 0 && (
                 <ModelSection>
@@ -359,21 +399,21 @@ function ChapterOpening({ r, mode, follow, press }: OpeningProps) {
             <ChapterTitle>{r.heading}</ChapterTitle>
             {r.subtitle && <ChapterSubtitle>{r.subtitle}</ChapterSubtitle>}
             {r.sections.map((sec, si) => {
-                const firstProse = sec.paragraphs.findIndex(q => !q.startsWith('> '));
+                const firstProse = sec.paragraphs.findIndex(q => !q.quoted);
                 return (
-                    <div key={si} id={`${r.index}.${si + 1}`} className={attending(`${r.index}.${si + 1}`).trim()}>
+                    <div key={si} id={`${r.index}.${si}`} className={attending(`${r.index}.${si}`).trim()}>
                         {si > 0 && <SectionHead>{sec.head}</SectionHead>}
                         {si > 0 && sec.sub && <SectionSub>{sec.sub}</SectionSub>}
                         {sec.paragraphs.map((p, k) => (
-                            p.startsWith('> ')
+                            p.quoted
                                 ? (
-                                    <Quote key={k} id={`${r.index}.${si + 1}.${k + 1}`} className={attending(`${r.index}.${si + 1}.${k + 1}`).trim()} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
-                                        {rich(p.slice(2), follow, r.notes)}
+                                    <Quote key={k} id={`${r.index}.${si}.${k + 1}`} className={attending(`${r.index}.${si}.${k + 1}`).trim()} onDoubleClick={() => press(`${r.index}.${si}.${k + 1}`, `${r.heading} · ¶ ${si}.${k + 1}`)}>
+                                        {rich(p.copy, follow, r.notes)}
                                     </Quote>
                                 )
                                 : (
-                                    <Prose key={k} id={`${r.index}.${si + 1}.${k + 1}`} className={attending(`${r.index}.${si + 1}.${k + 1}`).trim()} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`${r.index}.${si + 1}.${k + 1}`, `${r.heading} · ¶ ${si + 1}.${k + 1}`)}>
-                                        {rich(p, follow, r.notes)}
+                                    <Prose key={k} id={`${r.index}.${si}.${k + 1}`} className={attending(`${r.index}.${si}.${k + 1}`).trim()} $drop={si === 0 && k === firstProse} style={{ marginTop: si === 0 && k === firstProse ? 16 : undefined }} onDoubleClick={() => press(`${r.index}.${si}.${k + 1}`, `${r.heading} · ¶ ${si}.${k + 1}`)}>
+                                        {rich(p.copy, follow, r.notes)}
                                     </Prose>
                                 )
                         ))}
@@ -436,28 +476,37 @@ export class $TheManifold extends $Book {
     press(spot: string, label: string) {
         const kept = this.ribbons.filter(m => m.$spot !== spot);
         if (kept.length < this.ribbons.length) {
-            kept.forEach((m, i) => { m.index = i; });
+            kept.forEach((m, i) => { m.$slot = i; });
             this.ribbons = kept;
             return;
         }
         const mark: $RibbonMark = $(<RibbonMark spot={spot}>{label}</RibbonMark>);
-        mark.index = this.ribbons.length;
+        mark.$slot = this.ribbons.length;
         this.ribbons = [...this.ribbons, mark];
     }
 
+    // A PRINTED ADDRESS IS ONE-BASED, because that is how a book prints a folio
+    // — chapter 3, section 2, the first paragraph. A POSITION is zero-based,
+    // because that is what a place in a list is. The two meet here and nowhere
+    // else: the page converts at its own edge.
+    //
+    // The chapter is the exception and it is not one: a book's canonical is its
+    // cover, standing at zero, so a chapter's printed folio already IS its
+    // position. Everything below counts from the title at zero, so the first
+    // printed paragraph is position one.
     reference(spot: string): $Reference$<any> | undefined {
         const keys = spot.split('.').filter(Boolean).map(Number);
         if (!keys.length) return undefined;
         let built: $Reference$<any> = this.held.book.at(keys[0]);
         for (const key of keys.slice(1)) {
-            const mid = built.valid() ? built.read() as { at?: (index: number) => $Reference$<any> } : undefined;
+            const mid = built.valid() ? built.read() as { at?: (position: number) => $Reference$<any> } : undefined;
             if (!mid?.at) return undefined;
             built = built.then(mid.at(key));
         }
         return built;
     }
 
-    follow(spot: string) {
+    openAt(spot: string) {
         const path = spot.replace(/^#/, '');
         const reference = this.reference(path);
         if (!reference || !reference.valid()) return;
@@ -488,11 +537,11 @@ export class $TheManifold extends $Book {
             <>
                 {this.ribbons.map(m => {
                     const M = $(m) as any;
-                    return <span key={m.$spot} onClick={() => this.follow(m.$spot)}><M /></span>;
+                    return <span key={m.$spot} onClick={() => this.openAt(m.$spot)}><M /></span>;
                 })}
                 {back && (() => {
                     const R = $(back) as any;
-                    return <span onClick={() => this.follow(back.$spot)}><R /></span>;
+                    return <span onClick={() => this.openAt(back.$spot)}><R /></span>;
                 })()}
             </>
         );
@@ -510,11 +559,11 @@ export class $TheManifold extends $Book {
                     <DayChip as="a" href="/page">← the page</DayChip>
                     <DayRule />
                     {!this.open && (
-                        <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {this.subject?.card?.title ?? 'the shelf'}</DayChip>
+                        <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {(this.subject?.card as $LibraryCard | undefined)?.title ?? 'the shelf'}</DayChip>
                     )}
                     {this.open && (
                         <>
-                            <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {this.subject?.card?.title ?? 'the shelf'}</DayChip>
+                            <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {(this.subject?.card as $LibraryCard | undefined)?.title ?? 'the shelf'}</DayChip>
                             <DayRule />
                             <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
                             <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>
@@ -543,7 +592,7 @@ export class $TheManifold extends $Book {
                         <CoverBlurb>{this.held.blurb}</CoverBlurb>
                         <CoverInvitation>read the book →</CoverInvitation>
                         <CoverImprint data-subject onClick={(e) => { e.stopPropagation(); this.subject?.read(); this.$travel?.(); }}>
-                            {`← ${this.subject?.card?.title ?? 'the shelf'}`}
+                            {`← ${(this.subject?.card as $LibraryCard | undefined)?.title ?? 'the shelf'}`}
                         </CoverImprint>
                     </CoverFace>
                 )}
@@ -612,7 +661,7 @@ export class $TheManifold extends $Book {
                             </RunningHead>
                             {!this.over && (
                                 <PageBody className="page-body" onScroll={(e) => this.slide(e)}>
-                                    {rightPage(this.held, current, this.mode, (p) => this.turn(p), (a) => this.follow(a), (a, l) => this.press(a, l))}
+                                    {rightPage(this.held, current, this.mode, (p) => this.turn(p), (a) => this.openAt(a), (a, l) => this.press(a, l))}
                                 </PageBody>
                             )}
                             {this.over && (

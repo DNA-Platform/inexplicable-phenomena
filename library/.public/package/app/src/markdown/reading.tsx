@@ -8,8 +8,12 @@ import { $Sentence } from '@/writing/Sentence';
 import { $Word } from '@/writing/Word';
 import { $Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
-import { $MarkdownSection, MarkdownSection, $Fenced, $Displayed, $Attending } from './section';
-import { $Pointing, $Inline } from './sentence';
+import { $MarkdownSection, MarkdownSection } from './section';
+import { $Code } from '@/writing/Code';
+import { $Displayed } from '@/writing/Displayed';
+import { $Link } from '@/reference/Link';
+import { $Formula } from '@/writing/Formula';
+import { $Snippet } from '@/writing/Snippet';
 import { dress, type Dress, type DressSpec } from '../sections/page/faces/faces';
 
 // The port. The page stops running its own parse and reads the model instead —
@@ -67,7 +71,8 @@ export class Readings {
     }
 
     get paragraphs(): $Paragraph[] {
-        return this.parts.flatMap(s => s.parts()).filter(p => !(p instanceof $Fenced));
+        // A section may hold sections now, so the flat list reaches through them.
+        return this.parts.flatMap(s => s.paragraphs).filter(p => !(p instanceof $Code));
     }
 
     get words(): $Word[] {
@@ -82,7 +87,7 @@ export class Readings {
         const within = this.paragraphs
             .flatMap(p => p.sentences)
             .flatMap(s => s.parts())
-            .filter(w => w instanceof $Inline && (w as $Inline).kind === 'math').length;
+            .filter(w => w instanceof $Formula).length;
         return shown + within;
     }
 }
@@ -120,15 +125,17 @@ function drawSentence(sentence: $Sentence, spec: DressSpec, key: React.Key): Rea
     let italic = false;
     const drawn: ReactNode[] = [];
     sentence.parts().forEach((part, i) => {
-        if (part instanceof $Pointing) {
+        if (part instanceof $Link) {
             const external = /^[a-z]+:\/\//i.test(part.url);
             drawn.push(<F.Link key={i} palette={palette} href={part.url} external={external}>{part.copy}</F.Link>);
             return;
         }
-        if (part instanceof $Inline) {
-            const it = part as $Inline;
-            if (it.kind === 'math') { drawn.push(<Formula key={i} tex={it.content} />); return; }
-            drawn.push(<F.InlineCode key={i} palette={palette}>{it.content}</F.InlineCode>);
+        if (part instanceof $Formula) {
+            drawn.push(<Formula key={i} tex={part.copy} />);
+            return;
+        }
+        if (part instanceof $Snippet) {
+            drawn.push(<F.InlineCode key={i} palette={palette}>{part.copy}</F.InlineCode>);
             return;
         }
         const copy = part.copy;
@@ -148,42 +155,61 @@ function drawSentence(sentence: $Sentence, spec: DressSpec, key: React.Key): Rea
     return <React.Fragment key={key}>{drawn}</React.Fragment>;
 }
 
+// A fence whose info string is `parts` draws NOT text but the section's own
+// parts, and the reader can act on it. Content that is not writing, that
+// responds. It stopped needing a class of its own the moment the notation moved
+// into the framework: a fence carries its info string, and what draws a fence is
+// the demo's business, which is exactly where this belongs.
+const attends = (part: unknown): boolean =>
+    part instanceof $Code && (part as $Code).language === 'parts';
+
 // The figure that responds. It holds REFERENCES to the section's parts, not the
 // parts themselves — reading one forward lands on the very part the prose
 // renders, and that shared identity is what makes it a check rather than a
 // claim. Acting on it sets what the SECTION is attending to; the section hands
 // that down to both surfaces. Nothing announces that it can be clicked.
 const Attend: React.FC<{ section: $MarkdownSection; spec: DressSpec; at: number; attend: (i: number) => void }> = ({ section, spec, at, attend }) => {
-    const marks = section.parts().filter(p => !(p instanceof $Attending));
+    // The address is the position, read off the section's own walk — the figure
+    // and the prose agree because they count the same list, not because a number
+    // was written onto each part.
     return (
         <PartsFigure $ink={spec.palette.ink}>
-            {marks.map(part => (
+            {section.parts().map((part, position) => attends(part) ? null : (
                 <PartRow
-                    key={part.index}
+                    key={position}
                     $ink={spec.palette.ink}
-                    $lit={at === part.index}
-                    onClick={() => attend(part.index)}
+                    $lit={at === position}
+                    onClick={() => attend(position)}
                 >
-                    <span>{part.index}</span>
-                    <span>{part instanceof $Fenced ? (part as $Fenced).kind : part.level}</span>
-                    <span>{((part.copy || (part as $Fenced).content) || '—').slice(0, 52)}</span>
+                    <span>{position}</span>
+                    <span>{part instanceof $Code ? (part as $Code).language : part.level}</span>
+                    <span>{((part.copy || (part as $Code).source) || '—').slice(0, 52)}</span>
                 </PartRow>
             ))}
         </PartsFigure>
     );
 };
 
-function drawPart(part: $Paragraph, spec: DressSpec, key: React.Key, opening: boolean, lit = false): ReactNode {
+function drawPart(part: $Paragraph | $Section, spec: DressSpec, key: React.Key, opening: boolean, lit = false): ReactNode {
     const { faces: F, palette } = spec;
     if (lit) {
         return <Lit key={key} $ink={palette.initialInk}>{drawPart(part, spec, `${key}-in`, opening)}</Lit>;
     }
-    if (part instanceof $Displayed) {
-        return <F.DisplayMath key={key} palette={palette}><Shown tex={(part as $Displayed).content} /></F.DisplayMath>;
+    // A subsection draws its own parts in place — nothing is dropped because the
+    // notation has not learned to nest yet.
+    if (part instanceof $Section) {
+        return (
+            <React.Fragment key={key}>
+                {part.parts().map((inner, k) => drawPart(inner, spec, `${key}-${k}`, false))}
+            </React.Fragment>
+        );
     }
-    if (part instanceof $Fenced) {
-        const fence = part as $Fenced;
-        return <F.Fence key={key} palette={palette} language={fence.kind} label={fence.kind} code={fence.content} />;
+    if (part instanceof $Displayed) {
+        return <F.DisplayMath key={key} palette={palette}><Shown tex={(part as $Displayed).mathematics} /></F.DisplayMath>;
+    }
+    if (part instanceof $Code) {
+        const fence = part as $Code;
+        return <F.Fence key={key} palette={palette} language={fence.language} label={fence.language} code={fence.source} />;
     }
     return (
         <F.Body key={key} palette={palette} opening={opening}>
@@ -207,12 +233,14 @@ export function Reading({ source, as, at = -1, attend = () => { } }: { source: s
                     <React.Fragment key={i}>
                         {c?.title ? <F.Heading palette={palette} level={c.depth}>{c.title}</F.Heading> : null}
                         {body.map((part, j) => {
-                            const first = !opened && !(part instanceof $Fenced);
+                            // body is parts().slice(1) — the title stands at 0.
+                            const position = j + 1;
+                            const first = !opened && !(part instanceof $Code);
                             if (first) opened = true;
-                            if (part instanceof $Attending) {
+                            if (attends(part)) {
                                 return <Attend key={`${i}-${j}`} section={section as $MarkdownSection} spec={spec} at={at} attend={attend} />;
                             }
-                            return drawPart(part, spec, `${i}-${j}`, first, at === part.index);
+                            return drawPart(part, spec, `${i}-${j}`, first, at === position);
                         })}
                     </React.Fragment>
                 );

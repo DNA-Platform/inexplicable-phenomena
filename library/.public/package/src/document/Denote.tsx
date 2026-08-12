@@ -11,10 +11,7 @@ import { $Footnote } from './Footnote';
 export class $Denote extends $Writing implements $Reference$<$Footnote> {
     $for = '';
 
-    constructor() {
-        super();
-        this.$parenthetical = true;
-    }
+    $parenthetical? = true;
 
     get for(): string {
         return this.$for || this.copy.trim();

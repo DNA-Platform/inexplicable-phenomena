@@ -1,59 +1,11 @@
-import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { $Referent$ } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import { $Catalogue$ } from '../reference/Catalogue';
-import { $Location } from '../reference/Location';
-import { $Composible$ } from '../utilities/Composible';
-import * as paths from '../reference/Path';
-import { $Composition$ } from '../writing/Composition';
 import { $IndexCard } from './IndexCard';
 
-export class $CardCatalogue<T extends $Referent$ & { copy: string; index: number; parenthetical: boolean } = any> extends $Chemical implements $Catalogue$<T> {
-    $parts: $IndexCard<T>[] = [];
+export class $CardCatalogue<T extends $Referent$ = $Referent$> {
+    readonly cards: $IndexCard<T>[];
 
-    $index?: number = undefined;
-    $parenthetical? = false;
-
-    get index(): number { return this.$index ?? 0; }
-    set index(value: number) { this.$index = value; }
-    get parenthetical(): boolean { return !!this.$parenthetical; }
-    set parenthetical(value: boolean) { this.$parenthetical = value; }
-
-    get copy(): string { return this.cards.map(c => c.copy).join('\n\n'); }
-    get canonical(): $Reference$<T> { return $Composible$.canonical(this); }
-    get cards(): $IndexCard<T>[] { return this.$parts; }
-
-    parts(): $IndexCard<T>[] {
-        return this.$parts;
-    }
-
-    where(match: (reference: $Reference$<T>) => boolean): $Reference$<T>[] {
-        return $Composible$.where(this, match);
-    }
-
-    select<U>(pick: (reference: $Reference$<T>) => U): U[] {
-        return $Composible$.select(this, pick);
-    }
-
-    single(match: (reference: $Reference$<T>) => boolean): $Reference$<T> {
-        return $Composible$.single(this, match);
-    }
-
-    at(index: number): $Location<$Reference$<T>> {
-        return $Composible$.at(this, index);
-    }
-
-    follow(): $Composition$<T> {
-        return $Composible$.follow(this);
-    }
-
-    read(): $Composition$<T> {
-        return this.follow();
-    }
-
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const Path = $(paths.Path);
-        return $(<Path first={this} onward={next} />);
+    constructor(...cards: $IndexCard<T>[]) {
+        this.cards = cards;
     }
 
     card(name: string): $IndexCard<T> {
@@ -66,14 +18,19 @@ export class $CardCatalogue<T extends $Referent$ & { copy: string; index: number
         return this.cards.some(c => c.name === name);
     }
 
-    $CardCatalogue(...cards: $IndexCard<T>[]) {
-        this.$parts = cards.map(c => $check(c, $IndexCard));
-        this.$parts.forEach((c, i) => { if (c.$index === undefined) c.index = i + 1; });
+    file(key: string, keyword: string, card: $IndexCard<T>): void {
+        const filed = this.filings[key] ?? (this.filings[key] = {});
+        filed[keyword] = card;
     }
 
-    valid(): boolean {
-        return true;
+    find(query: string): $IndexCard<T> {
+        const at = query.indexOf(':');
+        const key = at < 0 ? query.trim() : query.slice(0, at).trim();
+        const keyword = at < 0 ? '' : query.slice(at + 1).trim();
+        const filed = this.filings[key]?.[keyword];
+        if (!filed) throw new Error(`The catalogue files nothing under ${JSON.stringify(query)}.`);
+        return filed;
     }
+
+    private readonly filings: Record<string, Record<string, $IndexCard<T>>> = {};
 }
-
-export const CardCatalogue = $($CardCatalogue);

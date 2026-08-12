@@ -11,8 +11,8 @@ import { $Book, Book } from '@/book/Book';
 import { $Author, Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
 import { TableOfContents } from '@/book/TableOfContents';
-import { type $LibraryCard, LibraryCard } from '@/library/LibraryCard';
-import { $LibraryCatalogue, LibraryCatalogue } from '@/library/LibraryCatalogue';
+import { type $LibraryCard, LibraryCard } from '@/../app/src/sections/book/library/the-team/librarycard';
+import { $CardCatalogue } from '@/library/CardCatalogue';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>
@@ -152,36 +152,36 @@ describe('the loop — a book whose author is itself', () => {
     });
 });
 
-describe('$LibraryCatalogue — a catalogue of books, through library cards', () => {
+describe('$CardCatalogue<$Book> — a catalogue of books, through library cards', () => {
     it('holds a card for each book and answers it by name', () => {
         let team: $Book | undefined = undefined;
-        const catalogue: $LibraryCatalogue = $(
-            <LibraryCatalogue>
-                <LibraryCard name="The Team" of={() => team!} title="The Team" />
-            </LibraryCatalogue>
+        const catalogue = new $CardCatalogue<$Book>(
+            $(<LibraryCard name="The Team" of={() => team!} title="The Team" />) as $LibraryCard,
         );
         team = authored('The Team');
 
         expect(catalogue.holds('The Team')).toBe(true);
         expect(catalogue.card('The Team').read()).toBe(team);
-        expect(catalogue.parts()).toHaveLength(1);
+        expect(catalogue.cards).toHaveLength(1);
     });
 
     it('throws for a lookup it has no card for, naming what was asked', () => {
-        const catalogue: $LibraryCatalogue = $(<LibraryCatalogue>{null}</LibraryCatalogue>);
+        const catalogue = new $CardCatalogue<$Book>();
 
         expect(() => catalogue.card('The Manifold')).toThrow(/The Manifold/);
     });
 
-    it('follows to the books its cards stand for', () => {
+    // A CARD CATALOGUE IS NOT WRITING and no longer implements $Catalogue$ —
+    // catalogues in this library are books. It holds cards, and following what a
+    // card stands for is the card's own job.
+    it('a card stands for its book, and the holder holds rather than catalogues', () => {
         let team: $Book | undefined = undefined;
-        const catalogue: $LibraryCatalogue = $(
-            <LibraryCatalogue>
-                <LibraryCard name="The Team" of={() => team!} title="The Team" />
-            </LibraryCatalogue>
+        const catalogue = new $CardCatalogue<$Book>(
+            $(<LibraryCard name="The Team" of={() => team!} title="The Team" />) as $LibraryCard,
         );
         team = authored('The Team');
 
-        expect(catalogue.follow().parts()).toEqual([team]);
+        expect(catalogue.cards.map(c => c.read())).toEqual([team]);
+        expect('follow' in catalogue).toBe(false);
     });
 });

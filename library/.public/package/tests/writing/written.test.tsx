@@ -55,7 +55,7 @@ describe('writing things INTO a regular section', () => {
         const parts = s.parts();
         const at = parts.findIndex(p => p instanceof $Figure);
         expect(at).toBe(2);
-        expect(parts[at].index).toBe(2);
+        expect(s.at(at).read()).toBe(parts[at]);
         expect(parts[3].copy).toContain('After it');
     });
 });

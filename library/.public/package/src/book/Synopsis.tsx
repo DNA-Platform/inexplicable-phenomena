@@ -1,15 +1,17 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter } from './Chapter';
-import { $Section } from '../writing/Section';
+import { $Book } from './Book';
+import { $IndexCard } from '../library/IndexCard';
 
-// A synopsis is a parenthetical chapter carried on the book — the summary's
-// pattern one grade up. It is essential (a book cannot be catalogued without
-// one) and undisplayed by default; an author who wants it on the page writes
-// parenthetical={false}.
 export class $Synopsis extends $Chapter {
-    constructor() {
-        super();
-        this.parenthetical = true;
+    $parenthetical? = false;
+
+    $for?: $IndexCard<$Book> = undefined;
+
+    get card(): $IndexCard<$Book> | undefined { return this.$for; }
+
+    read(): $Book {
+        return this.$for ? this.$for.read() : super.read();
     }
 }
 

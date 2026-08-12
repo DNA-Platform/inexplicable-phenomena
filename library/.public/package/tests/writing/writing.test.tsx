@@ -9,7 +9,6 @@ import { Title } from '@/writing/Title';
 import { $Author, Author } from '@/book/Author';
 
 class $Plate extends $Paragraph {
-    constructor() { super(); this.inline = false; }
     view(): React.ReactNode { return <div className="plate">plate</div>; }
     valid(): boolean { return true; }
 }
@@ -68,13 +67,19 @@ describe('writing: only the right kind of part is read', () => {
         expect(kinds).toEqual(['prose', 'prose', 'plate', 'prose']);
     });
 
-    it('a section counts its paragraphs from zero; every level below counts from one', () => {
+    it('every level counts from zero, because position is the only numbering', () => {
         const section: $Section = $(
             <Section><Title>Heading</Title>{'\n\nOne two.'}{'\n\nThree.'}</Section>
         );
-        expect(section.parts().map(p => p.index)).toEqual([0, 1, 2]);
-        expect(section.parts()[1].parts().map(s => s.index)).toEqual([1]);
-        expect(section.parts()[1].parts()[0].parts().map(w => w.index)).toEqual([1, 2, 3, 4]);
+        // Composed parts are built fresh by each reading, so a location stands for
+        // the same WRITING at that position rather than the same object.
+        const paragraphs = section.parts();
+        paragraphs.forEach((p, at) => expect(section.at(at).read().copy).toBe(p.copy));
+        const sentences = paragraphs[1].parts();
+        sentences.forEach((s, at) => expect(paragraphs[1].at(at).read().copy).toBe(s.copy));
+        const words = sentences[0].parts();
+        expect(words.length).toBe(4);
+        words.forEach((w, at) => expect(sentences[0].at(at).read().copy).toBe(w.copy));
     });
 
     it('mentioning propagates — a mention keeps its letters, and they are mentioned too', () => {

@@ -8,7 +8,6 @@ export class $Path<M extends $Referent$ = any, U extends $Referent$ = any> exten
     $first!: $Reference$<M>;
     $onward!: $Reference$<U>;
 
-    index = 0;
     parenthetical = false;
 
     get copy(): string { return `${this.$first.copy}.${this.$onward.copy}`; }

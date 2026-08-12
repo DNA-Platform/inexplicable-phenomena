@@ -22,7 +22,7 @@ class $Plated extends $Figure {
         return (
             <Plate>
                 {this.drawn()}
-                <PlateCaption>{this.caption}</PlateCaption>
+                <PlateCaption>{this.caption.copy}</PlateCaption>
             </Plate>
         );
     }
@@ -96,7 +96,7 @@ export class $Listed extends $Figure {
     view(): ReactNode {
         return (
             <Listing>
-                <ListingName>{this.of || this.caption}</ListingName>
+                <ListingName>{this.of || this.caption.copy}</ListingName>
                 <pre>{this.source.trim()}</pre>
             </Listing>
         );
@@ -107,7 +107,7 @@ export class $Listed extends $Figure {
     }
 
     valid(): boolean {
-        return this.source !== '' || this.caption !== '';
+        return this.source !== '' || this.caption.copy !== '';
     }
 }
 

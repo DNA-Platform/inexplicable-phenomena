@@ -9,13 +9,18 @@ export class $Location<T extends $Referent$ = any> extends $Chemical implements 
     $i = 0;
     $of!: $Composition$<any>;
 
-    index = 0;
     parenthetical = false;
 
     get copy(): string { return `${this.$i}`; }
 
+    // A location is the one thing that holds a number, because a number is what
+    // it IS — the position it points at. Nothing it points at carries one.
     read(): T {
-        return this.$of.single((part: { index: number }) => part.index === this.$i) as T;
+        const parts = this.$of.parts();
+        if (this.$i < 0 || this.$i >= parts.length) {
+            throw new Error(`Nothing stands at position ${this.$i} — the composition holds ${parts.length}.`);
+        }
+        return parts[this.$i] as T;
     }
 
     then<U extends $Referent$>(onward: $Reference$<U>): $Reference$<U> {
@@ -28,7 +33,7 @@ export class $Location<T extends $Referent$ = any> extends $Chemical implements 
     }
 
     valid(): boolean {
-        return this.$of.parts().filter((part: { index: number }) => part.index === this.$i).length === 1;
+        return this.$i >= 0 && this.$i < this.$of.parts().length;
     }
 }
 

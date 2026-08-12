@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import { $ } from '@dna-platform/chemistry';
+import { $, $valid } from '@dna-platform/chemistry';
 import { Link as RouterLink } from 'react-router-dom';
-import { $Sentence } from '../writing/Sentence';
+import { $Word } from '../writing/Word';
 
-export class $Link extends $Sentence {
+export class $Link extends $Word {
     $url?: string;
 
     get url(): string {
@@ -19,7 +19,7 @@ export class $Link extends $Sentence {
     }
 
     valid(): boolean {
-        return super.valid() && this.url !== '';
+        return $valid(this.copy !== '', 'a link is a word that points, and this one has nothing to show');
     }
 }
 

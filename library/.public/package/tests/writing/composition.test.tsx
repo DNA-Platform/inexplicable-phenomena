@@ -26,11 +26,14 @@ describe('$Composition$ — implemented by the composition levels, born through 
 
     const titled = (): $Section => $(<Section><Title>Introduction</Title></Section>);
 
-    it('the inline levels declare themselves — character through paragraph, section unmarked', () => {
+    it('everything below a document is inline — the block holds it all, and level alone says what stands', () => {
         expect($(<Word>hi</Word>).inline).toBe(true);
         expect($(<Sentence>hi</Sentence>).inline).toBe(true);
         expect($(<Paragraph>hi</Paragraph>).inline).toBe(true);
-        expect(titled().inline).toBe(false);
+        // A section too, now. `inline` means only what chemistry means by it —
+        // this arrives inside the block — and no longer carries the parse's
+        // standing test, which is the LEVEL.
+        expect(titled().inline).toBe(true);
     });
 
     it('a section requires a title — the first element of its block, itself a block', () => {

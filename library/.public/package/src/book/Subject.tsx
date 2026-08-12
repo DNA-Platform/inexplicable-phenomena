@@ -2,21 +2,18 @@ import { $ } from '@dna-platform/chemistry';
 import { $Referent$ } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
-import { $Sentence } from '../writing/Sentence';
+import { $Phrase } from '../writing/Phrase';
 import { $Book } from './Book';
-import { $LibraryCard } from '../library/LibraryCard';
+import { $IndexCard } from '../library/IndexCard';
 
-export class $Subject extends $Sentence implements $Reference$<$Book> {
-    $for?: $LibraryCard = undefined;
+export class $Subject extends $Phrase implements $Reference$<$Book> {
+    $for?: $IndexCard<$Book> = undefined;
 
-    constructor() {
-        super();
-        this.parenthetical = true;
-    }
+    $parenthetical? = true;
 
     get name(): string { return this.copy; }
 
-    get card(): $LibraryCard | undefined { return this.$for; }
+    get card(): $IndexCard<$Book> | undefined { return this.$for; }
 
     read(): $Book {
         if (!this.$for) throw new Error(`The subject ${JSON.stringify(this.name)} holds no card, so it stands for nothing.`);

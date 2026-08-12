@@ -9,14 +9,14 @@ import {
     Stage, SheetPane, SourcePane, ClassesDrawer, ClassTabs, ClassTab, ClassCode,
 } from './page/page';
 import latexSource from './page/latex.tsx?raw';
-import sentenceSource from '../markdown/sentence.tsx?raw';
-import sectionSource from '../markdown/section.tsx?raw';
+import sentenceSource from '@/writing/Sentence.tsx?raw';
+import sectionSource from '@/writing/Section.tsx?raw';
 import sheetSource from './page/sheet.tsx?raw';
 
 const classSources: Record<string, string> = {
     '$Latex': latexSource,
-    '$MarkdownSentence': sentenceSource,
-    '$MarkdownSection': sectionSource,
+    '$Sentence': sentenceSource,
+    '$Section': sectionSource,
     '$Sheet': sheetSource,
 };
 

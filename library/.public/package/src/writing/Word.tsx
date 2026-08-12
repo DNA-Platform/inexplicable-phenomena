@@ -1,5 +1,5 @@
 import React from 'react';
-import { $ } from '@dna-platform/chemistry';
+import { $, $valid } from '@dna-platform/chemistry';
 import { $Composition$ } from './Composition';
 import { $Referent$ } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
@@ -27,13 +27,21 @@ export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
         return $(<Letter>{prose}</Letter>);
     }
 
+    // A word is one unbroken run carrying at least one letter or number. It used
+    // to admit letters, numbers and apostrophes ONLY, so `33A3a-112and-skjdfh`
+    // was invalid and vanished through the parse's old filter — the word laws
+    // must admit what a person actually writes, not a tidier subset of it.
     valid(): boolean {
-        return super.valid() && /^[\p{L}\p{N}']+$/u.test(this.copy) && /[\p{L}\p{N}]/u.test(this.copy);
+        // Every condition is asked, so every failing one is heard. Short-circuit
+        // with && before a $valid call and the second reason is swallowed.
+        const base = super.valid();
+        const whole = $valid(!/\s/.test(this.copy), 'a word is one unbroken run, and this one carries whitespace');
+        const said = $valid(/[\p{L}\p{N}]/u.test(this.copy), 'a word has at least one letter or number, and this one has none');
+        return base && whole && said;
     }
 }
 
 export class $$Word implements $Catalogue$<$Letter>, $Reference$<$Word> {
-    index = 0;
     parenthetical = false;
 
     constructor(public of: $Word) { }
@@ -42,11 +50,7 @@ export class $$Word implements $Catalogue$<$Letter>, $Reference$<$Word> {
     get canonical(): $Reference$<$Letter> { return $Composible$.canonical(this); }
 
     parts(): $Reference$<$Letter>[] {
-        return this.of.parts().map((letter, slot) => {
-            const reference = this.of.at(letter.index);
-            reference.index = slot + 1;
-            return reference;
-        });
+        return this.of.parts().map((_, position) => this.of.at(position));
     }
 
     where(match: (reference: $Reference$<$Letter>) => boolean): $Reference$<$Letter>[] {
@@ -61,8 +65,8 @@ export class $$Word implements $Catalogue$<$Letter>, $Reference$<$Word> {
         return $Composible$.single(this, match);
     }
 
-    at(index: number): $Location<$Reference$<$Letter>> {
-        return $Composible$.at(this, index);
+    at(position: number): $Location<$Reference$<$Letter>> {
+        return $Composible$.at(this, position);
     }
 
     follow(): $Composition$<$Letter> {

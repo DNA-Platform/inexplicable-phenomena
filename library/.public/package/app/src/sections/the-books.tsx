@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { type $LibraryCard } from '@/library/LibraryCard';
+import { type $LibraryCard } from './book/library/the-team/librarycard';
 import { shelf, contents } from './book/library/the-shelf/book';
 import { team } from './book/library/the-team/book';
 import { algebra } from './book/library/algebra/book';

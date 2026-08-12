@@ -1,7 +1,10 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical, Perspective } from '@dna-platform/chemistry';
-import { $Fenced, $Displayed } from '../../markdown/section';
-import { $Inline, $Pointing } from '../../markdown/sentence';
+import { $Code } from '@/writing/Code';
+import { $Displayed } from '@/writing/Displayed';
+import { $Formula } from '@/writing/Formula';
+import { $Snippet } from '@/writing/Snippet';
+import { $Link } from '@/reference/Link';
 import { Reading, read } from '../../markdown/reading';
 import { Parallel } from '../../markdown/parallel';
 import { documentSource } from './document';
@@ -109,7 +112,7 @@ class Anatomy extends $Sheet {
                 {r.parts.map((section, i) => (
                     <React.Fragment key={i}>
                         {section.parts().map((part, j) => {
-                            const fence = part instanceof $Fenced;
+                            const fence = part instanceof $Code;
                             const shown = part instanceof $Displayed;
                             if (!fence) counted += 1;
                             const marks = part.sentences
@@ -117,14 +120,14 @@ class Anatomy extends $Sheet {
                                 .filter(w => w.role === 'mention').length;
                             const points = part.sentences
                                 .flatMap(s => s.parts())
-                                .filter(w => w instanceof $Pointing || w instanceof $Inline).length;
+                                .filter(w => w instanceof $Link || w instanceof $Formula || w instanceof $Snippet).length;
                             return (
                                 <AnatomyRow key={`${i}-${j}`}>
                                     <AnatomyTag $kind={shown ? 'math' : fence ? '' : j === 0 ? 'h' : 'p'}>
-                                        {shown ? '∫' : fence ? (part as $Fenced).kind : j === 0 ? 'title' : `¶${counted}`}
+                                        {shown ? '∫' : fence ? (part as $Code).language : j === 0 ? 'title' : `¶${counted}`}
                                     </AnatomyTag>
                                     <AnatomyPreview>
-                                        {fence ? (part as $Fenced).content.split('\n')[0] : part.copy}
+                                        {fence ? (part as $Code).source.split('\n')[0] : part.copy}
                                     </AnatomyPreview>
                                     <AnatomyStats>
                                         {fence

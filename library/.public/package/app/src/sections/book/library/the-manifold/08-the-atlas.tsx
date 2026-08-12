@@ -21,11 +21,11 @@ export class $TheAtlas extends $Chapter {
                     <Title>Ribbons, Plural: The Reader’s Atlas</Title>
                     {'\n\nThe ribbons are the reader’s own cartography. Each one pressed into the book files a card in a private catalogue — *my places* — and it belongs to this book for the plainest of reasons: it is rendered inside it. Press the chip in the bar and the ribbon keeps the whole chapter; press it again and the ribbon comes home.'}
                     {'\n\nPress closer — twice, on any paragraph — and the reference deepens^[press]. A ribbon that keeps a paragraph is cut narrower than one that keeps a chapter, the way a fine bookmark keeps a line.'}
-                    {'\n\nAnd below the paragraph? The page answers plainly: the paragraph is the finest fold a page can open to, so a reference that reaches [a word](#3.2.1.2.4) opens the paragraph that holds it. The model, asked the same question, reads the very word. The page rounds; the book does not.'}
+                    {'\n\nAnd below the paragraph? The page answers plainly: the paragraph is the finest fold a page can open to, so a reference that reaches [a word](#3.1.1.1.3) opens the paragraph that holds it. The model, asked the same question, reads the very word. The page rounds; the book does not.'}
                 </Section>
                 <Section>
                     <Title>The Way Back</Title>
-                    {'\n\nEvery following is [transport](#7.2), and transport declared a loop: *go there, then come back changed*. The book now keeps its half of the bargain. Travel by any reference — a line of the contents, a link in the prose, a ribbon — and a small arrow surfaces at the spine’s edge: the way back, kept as a bookmark you did not have to leave.'}
+                    {'\n\nEvery following is [transport](#7.1), and transport declared a loop: *go there, then come back changed*. The book now keeps its half of the bargain. Travel by any reference — a line of the contents, a link in the prose, a ribbon — and a small arrow surfaces at the spine’s edge: the way back, kept as a bookmark you did not have to leave.'}
                     {'\n\nThe arrow is not a history^[arrow]. It is the plainest reference there is — the page you stood on when you left it — and like the ribbon it is a sentence that stands for a place, wearing its own face.'}
                     {'\n\n> The reference goes forward; the ribbon comes back; the arrow is the crease between them.'}
                 </Section>

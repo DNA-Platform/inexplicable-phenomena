@@ -12,7 +12,7 @@ import { Author } from '@/book/Author';
 import { $Subject, Subject } from '@/book/Subject';
 import { $Canonical, Canonical } from '@/book/Canonical';
 import { TableOfContents } from '@/book/TableOfContents';
-import { type $LibraryCard, $LibraryCard$, LibraryCard } from '@/library/LibraryCard';
+import { $LibraryCard, LibraryCard } from '@/../app/src/sections/book/library/the-team/librarycard';
 
 const section = (title: string, prose: string, parenthetical = false): ReactNode => (
     <Section parenthetical={parenthetical}>
@@ -57,7 +57,7 @@ const canonicalOf = (b: $Book): $Canonical | undefined =>
 describe('$Subject — a book reference that holds a library card', () => {
     it('reads to the subject book through the card it holds', () => {
         let shelfBook: $Book | undefined = undefined;
-        const theShelf: $LibraryCard$ = $(<LibraryCard name="The Shelf" of={() => shelfBook!} title="The Shelf" />);
+        const theShelf: $LibraryCard = $(<LibraryCard name="The Shelf" of={() => shelfBook!} title="The Shelf" />);
         shelfBook = declared('The Shelf', theShelf);
         const member = declared('The Algebra of Perspective', theShelf);
 
@@ -65,7 +65,7 @@ describe('$Subject — a book reference that holds a library card', () => {
     });
 
     it('prints the name it was written with — the writer chooses the representational form', () => {
-        const theShelf: $LibraryCard$ = $(<LibraryCard name="The Shelf" title="The Shelf" />);
+        const theShelf: $LibraryCard = $(<LibraryCard name="The Shelf" title="The Shelf" />);
         const member = declared('The Algebra of Perspective', theShelf);
         const S = $(member.subject!) as any;
 
@@ -128,8 +128,8 @@ describe('$Canonical — one, declared, reciprocal', () => {
     it('reads to the canonical book when the canonical has this subject in its subject', () => {
         let shelfBook: $Book | undefined = undefined;
         let teamBook: $Book | undefined = undefined;
-        const theShelf: $LibraryCard$ = $(<LibraryCard name="The Shelf" of={() => shelfBook!} title="The Shelf" />);
-        const theTeam: $LibraryCard$ = $(<LibraryCard name="The Team" of={() => teamBook!} title="The Team" />);
+        const theShelf: $LibraryCard = $(<LibraryCard name="The Shelf" of={() => shelfBook!} title="The Shelf" />);
+        const theTeam: $LibraryCard = $(<LibraryCard name="The Team" of={() => teamBook!} title="The Team" />);
         theShelf.$subject = theShelf;
         theTeam.$subject = theShelf;
         shelfBook = declared('The Shelf', theShelf, theTeam);
@@ -139,21 +139,12 @@ describe('$Canonical — one, declared, reciprocal', () => {
         expect(canonicalOf(shelfBook)!.valid()).toBe(true);
     });
 
-    it('a canonical whose subject is elsewhere is invalid — the subject can check its canonical', () => {
-        let shelfBook: $Book | undefined = undefined;
-        const theShelf: $LibraryCard$ = $(<LibraryCard name="The Shelf" of={() => shelfBook!} title="The Shelf" />);
-        const elsewhere: $LibraryCard$ = $(<LibraryCard name="Elsewhere" title="Elsewhere" />);
-        const theTeam: $LibraryCard$ = $(<LibraryCard name="The Team" title="The Team" />);
-        theShelf.$subject = theShelf;
-        elsewhere.$subject = elsewhere;
-        theTeam.$subject = elsewhere;
-        shelfBook = declared('The Shelf', theShelf, theTeam);
-
-        expect(canonicalOf(shelfBook!)!.valid()).toBe(false);
-    });
-
+    // The canonical's twelve-hop reciprocity check LEFT THE FRAMEWORK: a
+    // canonical is a reference and reciprocity is a library's law, not a
+    // reference's. Doug: do not confuse what the framework needs with what
+    // books need.
     it('a cover declaring two canonicals does not bind — exactly one', () => {
-        const theTeam: $LibraryCard$ = $(<LibraryCard name="The Team" title="The Team" />);
+        const theTeam: $LibraryCard = $(<LibraryCard name="The Team" title="The Team" />);
         const b: $Book = $(
             <Book>
                 <Cover>

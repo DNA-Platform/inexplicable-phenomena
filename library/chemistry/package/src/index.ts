@@ -26,7 +26,7 @@ export { $lookup, $load } from './framework/load';
 export { inert, reactive } from './abstraction/bond';
 
 // Bond-constructor validation helpers (used inside user bond ctors)
-export { $check, $is } from './abstraction/chemical';
+export { $check, $valid, $is } from './abstraction/chemical';
 
 // Serialization helpers (function form; the $Represent class is in /symbolic)
 export { $symbolize, $literalize } from './implementation/representation';

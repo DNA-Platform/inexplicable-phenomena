@@ -6,8 +6,11 @@ import { Title } from '@/writing/Title';
 import { $Figure, Figure } from '@/writing/Figure';
 import { Link } from '@/reference/Link';
 import { $Paragraph } from '@/writing/Paragraph';
-import { $MarkdownSection, MarkdownSection, $Fenced } from './section';
-import { $Pointing, $Inline } from './sentence';
+import { $MarkdownSection, MarkdownSection } from './section';
+import { $Code } from '@/writing/Code';
+import { $Link } from '@/reference/Link';
+import { $Formula } from '@/writing/Formula';
+import { $Snippet } from '@/writing/Snippet';
 
 // A PARALLEL TEXT — one text, two settings, side by side so the readings
 // can be compared. The facing-page edition is an old book, and this is that
@@ -57,27 +60,30 @@ export const found = (): $MarkdownSection => $(
     </MarkdownSection>
 ) as $MarkdownSection;
 
-const kindOf = (part: $Paragraph): string => {
-    if (part instanceof $Fenced) return 'figure';
+const kindOf = (part: $Paragraph | $Section): string => {
+    if (part instanceof $Code) return 'figure';
     if (part instanceof $Figure) return 'figure';
+    if (part instanceof $Section) return 'section';
     return 'paragraph';
 };
 
+// An address is where a part STANDS — its position in what composes it. Nothing
+// carries a number, so the address is read off the walk rather than off the part.
 const rows = (section: $Section): ReactNode =>
-    section.parts().map(part => (
-        <React.Fragment key={part.index}>
+    section.parts().map((part, at) => (
+        <React.Fragment key={at}>
             <Row>
-                <At>{part.index}</At>
+                <At>{at}</At>
                 <Kind>{kindOf(part)}</Kind>
-                <Copy>{(part.copy || (part as $Fenced).content || '—').slice(0, 40)}</Copy>
+                <Copy>{(part.copy || (part as $Code).source || '—').slice(0, 40)}</Copy>
             </Row>
-            {kindOf(part) === 'figure' ? null : part.sentences.map(s => {
-                const points = s.parts().filter(w => w instanceof $Pointing || w instanceof $Inline);
+            {kindOf(part) !== 'paragraph' ? null : (part as $Paragraph).sentences.map((s, si) => {
+                const points = s.parts().filter(w => w instanceof $Link || w instanceof $Formula || w instanceof $Snippet);
                 if (!points.length) return null;
                 return points.map((w, k) => (
-                    <Row key={`${part.index}-${s.index}-${k}`} $under>
-                        <At>{`${part.index}.${s.index}`}</At>
-                        <Kind>{w instanceof $Pointing ? 'reference' : 'drawn'}</Kind>
+                    <Row key={`${at}-${si}-${k}`} $under>
+                        <At>{`${at}.${si}`}</At>
+                        <Kind>{w instanceof $Link ? 'reference' : 'drawn'}</Kind>
                         <Copy>{w.copy.slice(0, 40)}</Copy>
                     </Row>
                 ));

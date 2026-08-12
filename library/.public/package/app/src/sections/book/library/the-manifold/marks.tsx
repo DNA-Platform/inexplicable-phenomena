@@ -7,6 +7,9 @@ const ink = '#274a3a';
 
 export class $RibbonMark extends $Sentence {
     $spot = '';
+    // Where this ribbon hangs among the others. The demo's own business — it used
+    // to borrow the model's index, which was app state kept in the writing.
+    $slot = 0;
 
     get deep(): boolean {
         return this.$spot.split('.').length > 1;
@@ -17,7 +20,7 @@ export class $RibbonMark extends $Sentence {
             <Ribbon
                 data-ribbon
                 $ink={ink}
-                $slot={this.index}
+                $slot={this.$slot}
                 $deep={this.deep}
                 title={`the ribbon — ${this.copy}`}
             />

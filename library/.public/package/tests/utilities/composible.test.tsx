@@ -14,14 +14,15 @@ describe('$Composible$ — parts() is enough; the rest are extension methods', (
     });
 
     it('where filters and select projects, over anything with parts', () => {
-        // Parts count the syntax: 1 the, 2 space, 3 frame, 4 space, 5 turns.
-        expect($Composible$.where(sentence(), w => w.index === 3)[0].copy).toBe('frame');
+        // Parts count the syntax: 0 the, 1 space, 2 frame, 3 space, 4 turns.
+        expect($Composible$.at(sentence(), 2).read().copy).toBe('frame');
+        expect($Composible$.where(sentence(), w => w.copy === 'frame')[0].copy).toBe('frame');
         expect($Composible$.select(sentence(), w => w.copy)).toEqual(['the', ' ', 'frame', ' ', 'turns']);
     });
 
     it('at writes a location standing at the composible', () => {
         const s = sentence();
-        const r = $Composible$.at(s, 3);
+        const r = $Composible$.at(s, 2);
         expect(r).toBeInstanceOf($Location);
         expect(r.$of).toBe(s);
         expect((r.read() as $Word).copy).toBe('frame');
@@ -43,12 +44,12 @@ describe('$Composible$ — parts() is enough; the rest are extension methods', (
         const words = s.ref.follow();
         expect(words.parts().map(w => w.copy)).toEqual(['the', ' ', 'frame', ' ', 'turns']);
         expect(words.canonical.copy).toBe('the');
-        expect((words.at(3).read() as $Word).copy).toBe('frame');
+        expect((words.at(2).read() as $Word).copy).toBe('frame');
     });
 
     it('the class methods delegate — the same answers either way', () => {
         const s = sentence();
-        expect(s.where(w => w.index > 1).map(w => w.copy)).toEqual($Composible$.where(s, w => w.index > 1).map(w => w.copy));
+        expect(s.where(w => w.role === 'use').map(w => w.copy)).toEqual($Composible$.where(s, w => w.role === 'use').map(w => w.copy));
         expect(s.at(2).read().copy).toBe($Composible$.at(s, 2).read().copy);
     });
 });

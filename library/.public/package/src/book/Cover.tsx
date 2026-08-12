@@ -32,9 +32,9 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
         return $(<Path first={this} onward={next} />);
     }
 
-    $Cover(...sections: $Section[]) {
+    $Cover(...writing: unknown[]) {
         try {
-            super.$Chapter(...sections);
+            super.$Chapter(...writing);
         } catch (error) {
             if (this.title) throw error;
         }

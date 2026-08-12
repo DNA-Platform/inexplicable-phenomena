@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Highlight, themes } from 'prism-react-renderer';
 import latexSource from '../latex.tsx?raw';
-import sentenceSource from '../../../markdown/sentence.tsx?raw';
-import sectionSource from '../../../markdown/section.tsx?raw';
+import sentenceSource from '@/writing/Sentence.tsx?raw';
+import sectionSource from '@/writing/Section.tsx?raw';
 import sheetSource from '../sheet.tsx?raw';
 
 // The page shows its own source the way it shows everything else: as a specimen
@@ -16,14 +16,14 @@ import sheetSource from '../sheet.tsx?raw';
 // drawer that opens BENEATH the sheet, dark and instrument-like, the sibling of
 // the anatomy x-ray. Keep the two apart deliberately.
 //
-// The sharp point lands at the port: it passes in the mini framework's OWN
-// classes — the code-block kind among them — so the drawer shows the source of
-// the very kind that renders code. The code block displaying the code that
-// implements code blocks. Until the port, this stands on the page's classes.
+// The sharp point: it passes in the FRAMEWORK'S OWN classes — the ones that
+// speak the notation, the code-block kind among them — so the drawer shows the
+// source of the very kind that renders code. The code block displaying the code
+// that implements code blocks, read at build from the package itself.
 export const pageSources: Record<string, string> = {
     '$Latex': latexSource,
-    '$MarkdownSentence': sentenceSource,
-    '$MarkdownSection': sectionSource,
+    '$Sentence': sentenceSource,
+    '$Section': sectionSource,
     '$Sheet': sheetSource,
 };
 

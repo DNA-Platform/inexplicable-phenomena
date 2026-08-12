@@ -6,6 +6,7 @@ import { $Cover } from '@/book/Cover';
 import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { $Figure } from '@/writing/Figure';
 import { shelve, theTeam } from './card';
+import { type $LibraryCard } from './librarycard';
 import { TeamCover } from './01-the-cover';
 import { TeamSynopsis } from './02-the-synopsis';
 import { TheFirstSheet } from './03-the-first-sheet';
@@ -61,9 +62,9 @@ export class $TheTeam extends $Book {
             <>
                 <MarginName style={{ marginTop: '2.4rem' }}>What this chapter is made of</MarginName>
                 <Slip>
-                    {parts.map(part => (
-                        <SlipBody key={part.index}>
-                            <em>{`${part.index}  ${part instanceof $Figure ? 'figure' : part.level}`}</em>
+                    {parts.map((part, at) => (
+                        <SlipBody key={at}>
+                            <em>{`${at}  ${part instanceof $Figure ? 'figure' : part.level}`}</em>
                             <span>{(part.copy || '—').slice(0, 46)}</span>
                         </SlipBody>
                     ))}
@@ -121,7 +122,7 @@ export class $TheTeam extends $Book {
                     <Standing onClick={() => { this.page = 0; }}>{this.title?.copy ?? ''}</Standing>
                     <Imprint>
                         {author ? `${author.name} · ` : ''}
-                        {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$travel?.(); }}>{`← ${subject.card?.title ?? subject.name}`}</ImprintMark> : null}
+                        {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$travel?.(); }}>{`← ${(subject.card as $LibraryCard | undefined)?.title ?? subject.name}`}</ImprintMark> : null}
                         {subject ? ' · ' : ''}
                         {cover ? 'Cover' : `Chapter ${numeral[this.page] ?? this.page}`}
                     </Imprint>

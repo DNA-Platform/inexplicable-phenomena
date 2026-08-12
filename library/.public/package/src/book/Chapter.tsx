@@ -10,13 +10,26 @@ import { $Document } from '../document/Document';
 import { $Section } from '../writing/Section';
 import { $Book } from './Book';
 
-export class $Chapter extends $Document {
-    get book(): $Book { return this.parent as $Book; }
+export class $Chapter extends $Document implements $Reference$<$Book> {
+    $in?: $Book = undefined;
+
+    get book(): $Book { return this.$in as $Book; }
 
     get ref(): $$Chapter { return new $$Chapter(this); }
 
-    $Chapter(...sections: $Section[]) {
-        super.$Document(...sections);
+    read(): $Book {
+        const book = this.book;
+        if (!book) throw new Error(`The chapter ${JSON.stringify(this.title?.copy ?? '')} stands outside any book.`);
+        return book;
+    }
+
+    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
+        const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
+        return path;
+    }
+
+    $Chapter(...writing: unknown[]) {
+        super.$Document(...writing);
         if (!this.summary) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 }
@@ -30,12 +43,10 @@ export class $$Chapter implements $Catalogue$<$Section>, $Reference$<$Chapter> {
     get copy(): string { return this.parts().map(r => r.copy).join(' '); }
     get canonical(): $Reference$<$Section> { return $Composible$.canonical(this); }
 
+    // A reference per part, standing where the part stands. Position is the
+    // whole of the correspondence — nothing is written to anything.
     parts(): $Reference$<$Section>[] {
-        return this.of.parts().map((section, slot) => {
-            const reference = this.of.at(section.index);
-            reference.index = slot + 1;
-            return reference;
-        });
+        return this.of.parts().map((_, position) => this.of.at(position));
     }
 
     where(match: (reference: $Reference$<$Section>) => boolean): $Reference$<$Section>[] {

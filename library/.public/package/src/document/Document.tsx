@@ -50,12 +50,13 @@ export class $Document extends $Writing<$Section> implements $Referent$, $Compos
 
     get subtitle(): $Subtitle | undefined { return this.canonical?.subtitle; }
 
-    $Document(...sections: $Section[]) {
-        // A document is writing, so its own sequence goes up the chain — its
-        // sections are block-level parts and arrive as the writing it holds.
-        super.$Writing(...sections);
-        this.$parts = sections.length ? sections.map(s => $check(s, $Section)) : this.declaration();
-        this.$parts.forEach((s, i) => { if (s.$index === undefined) s.index = i + 1; });
+    $Document(...writing: unknown[]) {
+        // Everything below a document is inline, so a document's sections arrive
+        // grouped into its block rather than as arguments of their own. They are
+        // read off the block by level, which is the parse's own rule one grade up.
+        super.$Writing(...writing);
+        const written = this.elements.filter(s => s instanceof $Section) as $Section[];
+        this.$parts = written.length ? written : this.declaration();
         for (const section of this.$parts) {
             for (const element of section.elements) {
                 const writing = element as { valid?: () => boolean; copy?: string };

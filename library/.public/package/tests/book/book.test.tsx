@@ -42,7 +42,13 @@ const cover = (): ReactElement => (
     </Cover>
 );
 
-const synopsis = (): ReactElement => <Synopsis>{section('Synopsis', 'One object, many renderings.')}{summary('In brief.')}</Synopsis>;
+// A synopsis is SHOWN by default, so a book that would rather not list its own
+// says so where it places it. These fixtures are about which chapters the
+// contents numbers, so they keep their synopsis out of the way; the default
+// itself is asserted on its own, below.
+const synopsis = (hidden = true): ReactElement => (
+    <Synopsis parenthetical={hidden}>{section('Synopsis', 'One object, many renderings.')}{summary('In brief.')}</Synopsis>
+);
 
 const book = (): ReactElement => <Book>{cover()}<TableOfContents />{synopsis()}{chapter('Coordinates', 'Reading is a change of coordinates.')}</Book>;
 
@@ -64,22 +70,24 @@ describe('referential integrity — at, then, and the reading', () => {
         expect(b.at(99).valid()).toBe(false);
     });
 
-    it('referents are memoryless — a part carries its index and nothing about who read it', () => {
+    it('referents are memoryless — a part carries no number and nothing about who read it', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        expect(c.index).toBe(3);
+        expect('index' in c).toBe(false);
         expect('catalogue' in c).toBe(false);
+        // Its place is the composition's answer, never a property of its own.
+        expect(b.at(3).read()).toBe(c);
     });
 
     it('then chains bound references — the walk crosses levels in one find', () => {
         const b: $Book = $(book());
         const section = b.chapters[3].parts()[0];
-        const paragraph = section.at(1).read()!;
-        const sentence = paragraph.at(1).read()!;
+        const paragraph = section.at(1).read()! as $Paragraph;
+        const sentence = paragraph.at(0).read()!;
         // A sentence's parts are everything written in it, syntax included, so
-        // position 2 is the space after the first word and the second used word
-        // stands at 3.
-        const r = section.at(1).then(paragraph.at(1)).then(sentence.at(3));
+        // position 1 is the space after the first word and the second used word
+        // stands at 2.
+        const r = section.at(1).then(paragraph.at(0)).then(sentence.at(2));
         expect(r).toBeInstanceOf($Path);
         expect((r.read() as $Word).copy).toBe('is');
         expect(r.valid()).toBe(true);
@@ -90,9 +98,9 @@ describe('referential integrity — at, then, and the reading', () => {
         const other: $Book = $(book());
         const here = one.chapters[3].parts()[0];
         const there = other.chapters[3].parts()[0];
-        const away = there.at(1).read();
-        const r = here.at(1).then(away.at(1));
-        expect(r.read().copy).toBe(away.at(1).read().copy);
+        const away = there.at(1).read() as $Paragraph;
+        const r = here.at(1).then(away.at(0));
+        expect(r.read().copy).toBe(away.at(0).read().copy);
     });
 
     it('equality left the interface — fresh readings of one place are distinct values, and no member claims otherwise', () => {
@@ -105,16 +113,10 @@ describe('referential integrity — at, then, and the reading', () => {
         expect('equals' in s.at(1)).toBe(false);
     });
 
-    it('a duplicated index reads nothing — single insists on exactly one, and throws', () => {
-        const c: $Chapter = $(
-            <Chapter>
-                <Section index={9}><Title>One</Title>{'\n\nProse stands here.'}</Section>
-                <Section index={9} parenthetical><Title>Summary</Title>{'\n\nIn brief.'}</Section>
-            </Chapter>
-        );
-        expect(() => c.at(9).read()).toThrow();
-        expect(c.at(9).valid()).toBe(false);
-    });
+    // DELETED: 'a duplicated index reads nothing'. Two parts could once claim one
+    // number, and the promise guarded against it. Nothing carries a number now, so
+    // the defect cannot be written — and a test for an unrepresentable failure is
+    // a test for nothing. The out-of-range law it shared is kept above, at at(99).
 
     it('the aspects read lazily at every level — tiling is lossless, and only words claim their letters', () => {
         const b: $Book = $(book());
@@ -148,8 +150,8 @@ describe('the two connections — find goes forward, ref comes back', () => {
 
     it('a letter is its own reference — the literal floor', () => {
         const b: $Book = $(book());
-        const word = b.chapters[3].sections[0].paragraphs[1].sentences[0].at(1).read()!;
-        const letter = word.at(1).read()!;
+        const word = b.chapters[3].sections[0].paragraphs[1].sentences[0].at(0).read()!;
+        const letter = word.at(0).read()!;
         expect(letter.ref).toBe(letter);
         expect(letter.read()).toBe(letter);
     });
@@ -164,9 +166,9 @@ describe('the two connections — find goes forward, ref comes back', () => {
 
     it('a reference for a sentence is also a catalogue for its words — ref then location', () => {
         const b: $Book = $(book());
-        const paragraph = b.chapters[3].sections[0].at(1).read()!;
-        const sentence = paragraph.at(1).read()!;
-        expect((sentence.ref.then(sentence.at(3)).read() as $Word).copy).toBe('is');
+        const paragraph = b.chapters[3].sections[0].at(1).read()! as $Paragraph;
+        const sentence = paragraph.at(0).read()!;
+        expect((sentence.ref.then(sentence.at(2)).read() as $Word).copy).toBe('is');
     });
 
     it('follow turns the contents page into its chapters — the literature the drawer holds', () => {
@@ -205,17 +207,17 @@ describe('the essential questions — complex references, equality across levels
     it('the sentence of a chapter — a path through the levels', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        const section = c.at(1).read()!;
-        const paragraph = section.at(1).read()!;
-        const r = c.at(1).then(section.at(1)).then(paragraph.at(1));
+        const section = c.at(0).read()!;
+        const paragraph = section.at(1).read()! as $Paragraph;
+        const r = c.at(0).then(section.at(1)).then(paragraph.at(0));
         expect((r.read() as $Sentence).copy).toBe('Reading is a change of coordinates.');
     });
 
     it('the paragraph of a book — one level higher, the same composition', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        const section = c.at(1).read()!;
-        const r = b.at(3).then(c.at(1)).then(section.at(1));
+        const section = c.at(0).read()!;
+        const r = b.at(3).then(c.at(0)).then(section.at(1));
         expect(r.read()).toBeInstanceOf($Paragraph);
         expect((r.read() as $Paragraph).copy).toBe('Reading is a change of coordinates.');
     });
@@ -223,8 +225,8 @@ describe('the essential questions — complex references, equality across levels
     it('arrivals agree at the held grades — deep and shallow read the very same section', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        const section = c.at(1).read();
-        const deep = b.at(3).then(c.at(1));
+        const section = c.at(0).read();
+        const deep = b.at(3).then(c.at(0));
         expect(deep.read()).toBe(section);
     });
 
@@ -241,10 +243,10 @@ describe('the essential questions — complex references, equality across levels
     it('grouping does not matter to the reading — both associations arrive at the same copy', () => {
         const b: $Book = $(book());
         const c = b.chapters[3];
-        const section = c.at(1).read();
-        const paragraph = section.at(1).read();
-        const left = c.at(1).then(section.at(1)).then(paragraph.at(1));
-        const right = c.at(1).then(section.at(1).then(paragraph.at(1)));
+        const section = c.at(0).read();
+        const paragraph = section.at(1).read() as $Paragraph;
+        const left = c.at(0).then(section.at(1)).then(paragraph.at(0));
+        const right = c.at(0).then(section.at(1).then(paragraph.at(0)));
         expect(left.read().copy).toBe(right.read().copy);
         const spoken = b.tableOfContents.follow().parts()[0];
         expect(spoken.words[1].copy).toBe(c.words[1].copy);
@@ -254,7 +256,7 @@ describe('the essential questions — complex references, equality across levels
         const b: $Book = $(book());
         const bm: $Bookmark = $(<Bookmark for={b.at(3)}>the chapter on coordinates</Bookmark>);
         expect(bm.read()).toBe(b.chapters[3]);
-        const deep: $Bookmark = $(<Bookmark for={b.at(3).then(b.chapters[3].at(1))}>its first section</Bookmark>);
+        const deep: $Bookmark = $(<Bookmark for={b.at(3).then(b.chapters[3].at(0))}>its first section</Bookmark>);
         expect(deep.read()).toBe(b.chapters[3].parts()[0]);
         expect(deep.valid()).toBe(true);
     });
@@ -394,23 +396,25 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const c = b.chapters[3];
         expect(c.ref).toBeInstanceOf($$Chapter);
         expect(c.ref.read()).toBe(c);
-        expect(b.at(c.index).read()).toBe(c);
+        expect(b.at(3).read()).toBe(c);
     });
 
-    it('at and read are inverses — the written location reads the part it stands for', () => {
+    it('at and read are inverses — a location reads the part standing at its position', () => {
         const b: $Book = $(book());
+        b.parts().forEach((c, at) => expect(b.at(at).read()).toBe(c));
         const c = b.chapters[3];
-        expect(b.at(c.index).read()).toBe(c);
-        const s = c.sections[0];
-        expect(c.at(s.index).read()).toBe(s);
+        c.parts().forEach((s, at) => expect(c.at(at).read()).toBe(s));
     });
 
-    it('the composition assigns the index with the parts — fresh readings, fresh assignments', () => {
+    it('a part has no number to be given — the composition answers where it stands', () => {
         const s: $Section = $(<Section><Title>Grounded</Title>{'\n\nOne paragraph stands here. It carries two sentences.'}</Section>);
         const p = s.parts()[1];
-        expect(p.index).toBe(1);
-        const sentence = p.parts()[0];
-        expect(sentence.index).toBe(1);
+        expect('index' in p).toBe(false);
+        // Composed parts are built fresh on every reading, so a location at their
+        // position stands for the same WRITING and not the same object — which is
+        // the law two promises above, said here about position.
+        expect(s.at(1).read().copy).toBe(p.copy);
+        expect(p.at(0).read().copy).toBe(p.parts()[0].copy);
     });
 
     it('a highlight is the reference a highlighter leaves — first and last letter of its parent', () => {
@@ -426,8 +430,8 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.at(3).read()).toBe(b.chapters[3]);
         expect(b.where(c => c.parenthetical).length).toBe(1);
         const s = b.chapters[3].sections[0];
-        expect(s.at(1).read()?.index).toBe(1);
-        expect(s.select(x => x.index)).toEqual(s.parts().map(x => x.index));
+        expect(s.at(1).read().copy).toBe(s.parts()[1].copy);
+        expect(s.select(x => x.copy)).toEqual(s.parts().map(x => x.copy));
     });
 
     it('where, select, and find answer at every grain of the composition', () => {
@@ -436,14 +440,14 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(chapter.where(x => !x.parenthetical).length).toBe(1);
         expect(chapter.parts().find(x => x.parenthetical)).toBe(chapter.summary);
         const section = chapter.sections[0];
-        const paragraph = section.at(1).read()!;
-        const sentence = paragraph.at(1).read()!;
+        const paragraph = section.at(1).read()! as $Paragraph;
+        const sentence = paragraph.at(0).read()!;
         expect(sentence.copy).toBe(paragraph.parts()[0].copy);
         expect(paragraph.select(x => x.copy)).toEqual(paragraph.parts().map(x => x.copy));
-        const word = sentence.at(1).read()!;
+        const word = sentence.at(0).read()!;
         expect(word.copy).toBe(sentence.parts()[0].copy);
         expect(word.where(c => c.valid()).length).toBe(word.parts().length);
-        expect(word.at(1).read()?.copy).toBe([...word.copy][0]);
+        expect(word.at(0).read()?.copy).toBe([...word.copy][0]);
     });
 
     it('a bookmark wears its prose and reads its reference — the surface and the standing-for, one sentence', () => {
@@ -507,19 +511,36 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(toc).toBeInstanceOf($TableOfContents);
         expect(b.chapters[1]).toBe(toc);
         expect(toc.book).toBe(b);
-        expect(toc.index).toBe(1);
+        expect(b.at(1).read()).toBe(toc);
         expect(b.tableOfContents).toBe(toc);
     });
 
-    it('the contents lists only the numbered chapters — the cover, the synopsis and itself are apparatus', () => {
+    it('the contents lists the numbered chapters — the cover and itself are never among them', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         expect(toc.chapters.length).toBe(1);
         expect(toc.chapters[0]).toBe(b.chapters[3]);
         expect(toc.chapters).not.toContain(toc);
         expect(toc.chapters).not.toContain(b.cover);
-        expect(toc.chapters).not.toContain(b.synopsis);
         expect(toc.title.copy).toBe('Table of Contents');
+    });
+
+    // The synopsis is SHOWN by default and a book decides otherwise where it
+    // places it — a declared default overridden by a prop, which a constructor
+    // assignment could not offer. Both halves are asserted, because a default
+    // nobody can override is not a default.
+    it('a synopsis is listed by default — it is writing, not apparatus', () => {
+        const b: $Book = $(
+            <Book>{cover()}<TableOfContents />{synopsis(false)}{chapter('Coordinates', 'Prose.')}</Book>
+        );
+        expect(b.synopsis.parenthetical).toBe(false);
+        expect(b.tableOfContents.chapters).toContain(b.synopsis);
+    });
+
+    it('a book that marks its own synopsis parenthetical keeps it out of the contents', () => {
+        const b: $Book = $(book());
+        expect(b.synopsis.parenthetical).toBe(true);
+        expect(b.tableOfContents.chapters).not.toContain(b.synopsis);
     });
 
     it('an authored table of contents is the one the book reads — a chapter among chapters', () => {
@@ -538,35 +559,30 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(toc.chapters).not.toContain(toc);
     });
 
-    it('the composition assigns the index — one-indexed, the special first at zero', () => {
+    it('position is the only numbering — at(n) reads the part standing at n, at every level', () => {
         const b: $Book = $(book());
-        expect(b.cover.index).toBe(0);
-        expect(b.chapters[1].index).toBe(1);
-        expect(b.chapters[2].index).toBe(2);
-        expect(b.chapters[3].index).toBe(3);
+        expect(b.at(0).read()).toBe(b.cover);
+        // Held parts by identity: a book keeps its chapters and a document its sections.
+        b.parts().forEach((c, at) => expect(b.at(at).read()).toBe(c));
         const c = b.chapters[3];
-        expect(c.parts()[0].index).toBe(1);
-        expect(c.parts()[1].index).toBe(2);
-        const s = c.parts()[0];
-        expect(s.parts()[0].index).toBe(0);
-        expect(s.parts()[1].index).toBe(1);
+        c.parts().forEach((s, at) => expect(c.at(at).read()).toBe(s));
+        // Composed parts by their writing, because a reading builds them fresh.
+        const p = c.parts()[0].parts()[1];
+        p.parts().forEach((w, at) => expect(p.at(at).read().copy).toBe(w.copy));
     });
 
-    it('an authored index survives the binding — the composition fills only what was not assigned', () => {
-        const c: $Chapter = $(<Chapter>{section('Coordinates', 'Prose.')}<Section index={9} parenthetical><Title>Summary</Title></Section></Chapter>);
-        expect(c.parts()[0].index).toBe(1);
-        expect(c.parts()[1].index).toBe(9);
+    it('the canonical is the part standing at zero, and it is not a number it was given', () => {
+        const b: $Book = $(book());
+        expect(b.canonical).toBe(b.parts()[0]);
+        const p = b.chapters[3].parts()[0].parts()[1];
+        expect(p.canonical.copy).toBe(p.parts()[0].copy);
+        expect('index' in p).toBe(false);
     });
 
-    it('every piece of writing carries an assignable index — decimals allowed', () => {
-        const c: $Chapter = $(<Chapter>{section('Coordinates', 'Prose.')}{summary('In brief.')}</Chapter>);
-        expect(c.index).toBe(0);
-        c.index = 1.5;
-        expect(c.index).toBe(1.5);
-        const s = c.parts()[0];
-        s.index = 2.25;
-        expect(s.index).toBe(2.25);
-    });
+    // DELETED, two of them. 'An authored index survives the binding' and 'every
+    // piece of writing carries an assignable index' both described a number a part
+    // could be given. Nothing carries one, so neither describes anything that can
+    // happen — and no author had ever written index= outside these two tests.
 
     it('every piece of writing carries parenthetical — assignable and authorable', () => {
         const c: $Chapter = $(<Chapter><Section parenthetical><Title>Summary</Title></Section></Chapter>);

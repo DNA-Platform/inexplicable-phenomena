@@ -6,13 +6,10 @@ import { $Key } from './Key';
 export class $Legend extends $Paragraph {
     $keys: $Key[] = [];
 
+    $parenthetical? = true;
+
     get keys(): $Key[] { return this.$keys; }
     get copy(): string { return this.keys.map(k => k.copy).join(' '); }
-
-    constructor() {
-        super();
-        this.$parenthetical = true;
-    }
 
     view(): ReactNode {
         if (this.parenthetical) return null;

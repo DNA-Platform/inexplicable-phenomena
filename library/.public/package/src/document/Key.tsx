@@ -9,7 +9,6 @@ export class $Key extends $Chemical implements $Reference$<$Footnote> {
     $name = '';
     $footnote!: $Footnote;
 
-    index = 0;
     parenthetical = false;
 
     get copy(): string { return this.$name; }

@@ -4,7 +4,7 @@ import { $Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 import { ChapterHeading } from '../the-team/figures';
-import { type $LibraryCard } from '@/library/LibraryCard';
+import { type $LibraryCard } from '../the-team/librarycard';
 
 export class $TheCardCatalogue extends $Chapter {
     $cards: $LibraryCard[] = [];

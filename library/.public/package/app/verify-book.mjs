@@ -169,7 +169,38 @@ check('MANIFOLD: the skim page is the summary', t.includes('A page is a chart of
 await clickChip('the model');
 await settle();
 t = await text();
-check('MANIFOLD: the model page corroborates, formatted', t.toUpperCase().includes('THE MODEL, UNADORNED') && t.includes('the overlaps are the whole trick') && t.includes('#4.1') && t.includes('¶ 1.1'));
+check('MANIFOLD: the model page corroborates, formatted', t.toUpperCase().includes('THE MODEL, UNADORNED') && t.includes('the overlaps are the whole trick') && /\d+ read as paragraphs/.test(t));
+
+// THE PARSE IS PROVED BY BEING READ AT EVERY LEVEL. One piece of writing, four
+// altitudes, and the SAME WORD COUNT walked four genuinely different ways down
+// through the model — while the number of ROWS is different at every altitude,
+// because a chapter has few sections, more paragraphs, and many words.
+const words = (s) => Number((s.match(/(\d+) words ·/) ?? [])[1] ?? -1);
+const rows = (s) => Number((s.match(/· (\d+) read as/) ?? [])[1] ?? -1);
+const atAltitude = async (name) => {
+    await page.evaluate((n) => Array.from(document.querySelectorAll('button')).find(b => b.textContent === n)?.click(), name);
+    await settle();
+    const seen = await text();
+    return { words: words(seen), rows: rows(seen), named: seen.includes(`read as ${name}`) };
+};
+const asSections = await atAltitude('sections');
+const asParagraphs = await atAltitude('paragraphs');
+const asSentences = await atAltitude('sentences');
+const asWords = await atAltitude('words');
+const every = [asSections, asParagraphs, asSentences, asWords];
+check(
+    `MANIFOLD: one writing read four ways — ${asSections.words} words through ${asSections.rows} sections, ${asParagraphs.rows} paragraphs, ${asSentences.rows} sentences, ${asWords.rows} words`,
+    asSections.words > 0 && every.every(a => a.named && a.words === asSections.words)
+);
+check(
+    'MANIFOLD: and the ROWS differ at every altitude — a chapter has fewer sections than paragraphs, fewer paragraphs than sentences, fewer sentences than words',
+    asSections.rows < asParagraphs.rows && asParagraphs.rows < asSentences.rows && asSentences.rows < asWords.rows
+);
+check(
+    `MANIFOLD: the word altitude prints one row per word — ${asWords.rows} rows for ${asWords.words} words`,
+    asWords.rows === asWords.words
+);
+await atAltitude('paragraphs');
 
 await clickChip('read');
 await clickHead();
@@ -200,7 +231,7 @@ t = await text();
 check('MANIFOLD: the reference chapter reads', t.includes('chapter 7') && t.includes('A Sentence That Stands For'));
 await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.book-link')).find(e => e.textContent === 'this very paragraph'); l?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
-check('MANIFOLD: following a reference lights the span and fades', await page.evaluate(() => !!document.getElementById('7.1.3')?.classList.contains('lit')));
+check('MANIFOLD: following a reference lights the span and fades', await page.evaluate(() => !!document.getElementById('7.0.3')?.classList.contains('lit')));
 await page.click('.book-link');
 await settle();
 t = await text();
@@ -260,7 +291,7 @@ check('MANIFOLD: the atlas — a new chapter, a catalogue of charts', t.includes
 await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.book-link')).find(e => e.textContent === 'a word'); l?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
 t = await text();
-check('MANIFOLD: a reference below the paragraph — the page opens to the fold that holds the word', t.includes('chapter 3') && (await page.evaluate(() => !!document.getElementById('3.2.1')?.classList.contains('lit'))));
+check('MANIFOLD: a reference below the paragraph — the page opens to the fold that holds the word', t.includes('chapter 3') && (await page.evaluate(() => !!document.getElementById('3.1.1')?.classList.contains('lit'))));
 await page.click('[data-return]');
 await settle();
 t = await text();
@@ -268,7 +299,7 @@ check('MANIFOLD: the arrow leads back to the atlas', t.includes('chapter 8'));
 await page.evaluate(() => { const l = Array.from(document.querySelectorAll('.book-link')).find(e => e.textContent === 'transport'); l?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
 await settle();
 t = await text();
-check('MANIFOLD: a link within the book lights the section it names', t.includes('chapter 7') && (await page.evaluate(() => !!document.getElementById('7.2')?.classList.contains('lit'))));
+check('MANIFOLD: a link within the book lights the section it names', t.includes('chapter 7') && (await page.evaluate(() => !!document.getElementById('7.1')?.classList.contains('lit'))));
 await page.click('[data-return]');
 await settle();
 await page.evaluate(() => { document.getElementById('8.2.1')?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true })); });

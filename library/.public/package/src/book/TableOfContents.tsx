@@ -16,25 +16,9 @@ import * as titles from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
 import { $Book } from './Book';
-import { $LibraryCard } from '../library/LibraryCard';
+import { $IndexCard } from '../library/IndexCard';
 
 export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
-    $cards: $LibraryCard[] = [];
-
-    // The contents belongs to a book, but the parent one hop up is whatever
-    // interpreted it last — on screen, that can be the thing drawing it. The
-    // book is found by climbing to the nearest $Book, the canonical's own walk.
-    get book(): $Book {
-        let up: unknown = this.parent;
-        let hops = 0;
-        while (up && !(up instanceof $Book) && hops < 8) {
-            const next = (up as { parent?: unknown }).parent;
-            if (next === up) break;
-            up = next;
-            hops++;
-        }
-        return up as $Book;
-    }
     get title(): $Title {
         const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
         const Title = $(titles.Title);
@@ -62,15 +46,14 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         const book = this.book;
         if (!(book instanceof $Book)) throw new Error(`The table of contents stands under ${String((book as { constructor?: { name?: string } })?.constructor?.name)} instead of a book, with parent ${String((this.parent as { constructor?: { name?: string } })?.constructor?.name)}.`);
         // The numbered chapters: not the canonical, not parenthetical, not
-        // the contents itself — one law, by what a chapter is.
+        // the contents itself — one law, by what a chapter is. The position is
+        // carried through the filter because it is what the row points AT; a
+        // row holds no number of its own.
         const Row = $(rows.Row);
-        return this.book.parts()
-            .filter(c => c !== this && !(c instanceof $Cover) && !c.parenthetical)
-            .map(c => {
-                const row: $Row = $(<Row path={this.book.at(c.index)} />);
-                row.index = c.index;
-                return row;
-            });
+        return book.parts()
+            .map((chapter, position) => ({ chapter, position }))
+            .filter(({ chapter }) => chapter !== this && !(chapter instanceof $Cover) && !chapter.parenthetical)
+            .map(({ position }) => $(<Row path={book.at(position)} />) as $Row);
     }
 
     where(match: (part: $Row) => boolean): $Row[] {
@@ -85,8 +68,8 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return $Composible$.single(this, match);
     }
 
-    at(index: number): $Location<$Row> {
-        return $Composible$.at(this, index);
+    at(position: number): $Location<$Row> {
+        return $Composible$.at(this, position);
     }
 
     follow(): $Composition$<$Chapter> {
@@ -103,9 +86,9 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return $(<Path first={this} onward={next} />);
     }
 
-    $TableOfContents(...sections: $Section[]) {
+    $TableOfContents(...writing: unknown[]) {
         try {
-            super.$Chapter(...sections);
+            super.$Chapter(...writing);
         } catch (error) {
             if (this.summary) throw error;
             // A table of contents pulls itself together from its book — its
@@ -120,17 +103,15 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     row(row: $Row): ReactNode {
-        return <li key={row.index}>{row.copy} {row.index}</li>;
+        return row.copy;
     }
 
     view(): ReactNode {
-        const inferred = this.$cards.filter(card => !this.book.chapters.some(c => c.title?.copy === card.title));
         return (
             <div className="table-of-contents">
                 <div className="contents-title">{text(this.title.text)}</div>
                 <ol>
-                    {this.parts().map(r => this.row(r))}
-                    {inferred.map(card => <li key={card.title}>{card.title}</li>)}
+                    {this.parts().map((r, at) => <li key={at}>{this.row(r)}</li>)}
                 </ol>
             </div>
         );

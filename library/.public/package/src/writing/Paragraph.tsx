@@ -1,5 +1,5 @@
 import React from 'react';
-import { $ } from '@dna-platform/chemistry';
+import { $, $valid } from '@dna-platform/chemistry';
 import { $Composition$ } from './Composition';
 import { $Referent$ } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
@@ -22,9 +22,16 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
 
     get ref(): $$Paragraph { return new $$Paragraph(this); }
 
-    // A paragraph is divided at its stops.
+    // A paragraph is divided at its stops — and a stop inside a code span or
+    // inside a link's target is not the end of a sentence, so "call `x.y()`
+    // now." is one sentence and not three.
     divide(prose: string): string[] {
-        return (prose.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => s.trim());
+        const holds: string[] = [];
+        const held = prose
+            .replace(/`[^`\n]+`/g, m => ` ${holds.push(m) - 1} `)
+            .replace(/\([^)\s]*\)/g, m => ` ${holds.push(m) - 1} `);
+        const restore = (s: string) => s.replace(/ (\d+) /g, (_, i) => holds[Number(i)]);
+        return (held.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => restore(s.trim()));
     }
 
     compose(prose: string): $Sentence {
@@ -32,13 +39,18 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
         return $(<Sentence>{prose}</Sentence>);
     }
 
+    $mark? = '';
+
+    get mark(): string { return this.$mark ?? ''; }
+
     valid(): boolean {
-        return super.valid() && /[\p{L}\p{N}]/u.test(this.copy);
+        const base = super.valid();
+        const said = $valid(/[\p{L}\p{N}]/u.test(this.copy), 'a paragraph has at least one letter or number, and this one has none');
+        return base && said;
     }
 }
 
 export class $$Paragraph implements $Catalogue$<$Sentence>, $Reference$<$Paragraph> {
-    index = 0;
     parenthetical = false;
 
     constructor(public of: $Paragraph) { }
@@ -47,11 +59,7 @@ export class $$Paragraph implements $Catalogue$<$Sentence>, $Reference$<$Paragra
     get canonical(): $Reference$<$Sentence> { return $Composible$.canonical(this); }
 
     parts(): $Reference$<$Sentence>[] {
-        return this.of.parts().map((sentence, slot) => {
-            const reference = this.of.at(sentence.index);
-            reference.index = slot + 1;
-            return reference;
-        });
+        return this.of.parts().map((_, position) => this.of.at(position));
     }
 
     where(match: (reference: $Reference$<$Sentence>) => boolean): $Reference$<$Sentence>[] {
@@ -66,8 +74,8 @@ export class $$Paragraph implements $Catalogue$<$Sentence>, $Reference$<$Paragra
         return $Composible$.single(this, match);
     }
 
-    at(index: number): $Location<$Reference$<$Sentence>> {
-        return $Composible$.at(this, index);
+    at(position: number): $Location<$Reference$<$Sentence>> {
+        return $Composible$.at(this, position);
     }
 
     follow(): $Composition$<$Sentence> {

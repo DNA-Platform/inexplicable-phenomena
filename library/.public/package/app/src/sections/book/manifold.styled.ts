@@ -658,3 +658,20 @@ export const EntrySummary = styled.div`
     opacity: 0.82;
     margin: 3px 0 0 2px;
 `;
+
+// The altitude a model view is read at. A chip, not a control panel: the reading
+// is the thing, and choosing the grade is one word.
+export const ModelAltitude = styled.button<{ $on: boolean }>`
+    appearance: none;
+    border: 1px solid ${(p) => (p.$on ? '#274a3a' : '#0000001f')};
+    background: ${(p) => (p.$on ? '#274a3a' : 'transparent')};
+    color: ${(p) => (p.$on ? '#f6f3ea' : '#274a3ab0')};
+    font: inherit;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    margin-right: 6px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 200ms ease, color 200ms ease;
+`;

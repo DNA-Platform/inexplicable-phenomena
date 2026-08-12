@@ -19,11 +19,11 @@ const project = resolve(here, 'tsconfig.json');
 // Known type debt, carried deliberately. Types is a sprint of its own.
 // Each entry is `file(line,col): code` normalised — position-free, so a
 // harmless line shift does not read as a new error.
+// Three card.tsx TS2551s left the baseline when $LibraryCard collapsed into
+// $IndexCard<$Book>: they were $-backed access on a computed type, and there is
+// no computed type any more.
 const baseline = [
     'src/sections/book/library/the-team/06-the-decision.tsx TS2322',
-    'src/sections/book/library/the-team/card.tsx TS2551',
-    'src/sections/book/library/the-team/card.tsx TS2551',
-    'src/sections/book/library/the-team/card.tsx TS2551',
 ];
 
 const run = (args) => {
@@ -53,7 +53,7 @@ for (const e of found) {
     else remaining.splice(at, 1);
 }
 
-const named = '$LibraryCard·$IndexCard<$Referent$>; 3× $-backed access on computed type';
+const named = '$LibraryCard·$IndexCard<$Referent$>';
 console.log(
     `app tsc (app/tsconfig.json): ${files} files typechecked — ` +
     `${baseline.length - remaining.length}/${baseline.length} baselined type-debt errors [${named}], ` +
