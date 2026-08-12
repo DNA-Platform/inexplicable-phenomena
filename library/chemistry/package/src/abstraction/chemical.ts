@@ -7,9 +7,12 @@ import {
     $$template$$, $$getNextCid$$, $$createSymbol$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
-    $devError$, $devException$, $isViewBase$, $watched$
+    $devError$, $devException$, $isViewBase$, $watched$,
+    $registry$, $reference$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
+import { $subject } from "../implementation/catalogue";
+import { currentAsker, drawing } from "../implementation/scope";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType, $HtmlTag } from "../implementation/types";
 import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from "./particle";
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
@@ -848,6 +851,10 @@ export class $Chemical extends $Particle {
         this[$$parent$$] = undefined as any;
         this[$molecule$]?.destroy();
         this[$reaction$]?.destroy();
+        // A scope lets go with the chemical that held it. `$deref` is the only
+        // release this design has, and a published component holding its
+        // children forever is the leak it exists to prevent.
+        if (Object.prototype.hasOwnProperty.call(this, $registry$)) (this as any)[$registry$]?.$deref?.();
         this[$destroyed$] = true;
     }
 
@@ -885,6 +892,7 @@ export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Comp
     if (parent) child[$parent$] = parent;
     const component = $lift(child) as any;
     component.$bind = (p?: $Chemical) => bind(child, p);
+    Object.defineProperty(component, '$', { get: () => child, configurable: true });
     child[$component$] = component;
     return component;
 }
@@ -986,6 +994,13 @@ function evalElement(element: React.ReactElement, parent?: $Chemical): any {
 // `$` has no `.foo` members yet — namespace reserved.
 // ===========================================================================
 
+// What narrows a registration: how far it reaches, and whose asks it answers.
+// The plain form is the one that projects downward.
+export interface $Narrowing {
+    reach?: 'self' | 'progeny';
+    asker?: abstract new (...args: any[]) => any;
+}
+
 interface $Chemistry {
     // Eval: $(<Word/>) → the live instance. Defaults to `any` — the honest type,
     // since JSX erased the real one and the result lands in an already-typed slot;
@@ -1000,8 +1015,32 @@ interface $Chemistry {
     <T extends $Particle>(klass: new () => T): Element<T>;
     <T extends $Chemical, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Component<T>;
     <T extends $Particle, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Element<T>;
-    // Inverse: Component → instance. $(Lab) returns the chemical Lab wraps.
-    <T extends $Particle>(component: Component<T> | Element<T>): T;
+    // The representative FIRST — a new component derived from the one given,
+    // whose scope falls back to it. `$` cannot be an element, a chemical or a
+    // constructor, so this cannot shadow anything above it.
+    <T extends $Particle>(representative: $Chemistry, component: Component<T>): Component<T>;
+    <T extends $Particle>(representative: $Chemistry, element: Element<T>): Element<T>;
+    // Resolve — the component to render HERE. Type-preserving, which is what
+    // makes a substitution invisible to the caller and impossible to make with
+    // anything that is not a subclass.
+    <T extends $Particle>(component: Component<T>): Component<T>;
+    <T extends $Particle>(element: Element<T>): Element<T>;
+    // A plain function component is wrapped on the way in, memoised, so it can
+    // be asked for and stood in for like any other. It carries no chemical of
+    // its own, so what comes back is typed loosely — honestly.
+    <P>(fc: React.FC<P>): Component<any>;
+    // The representative LAST — what stands behind a component. Rare: this is
+    // the debugging and test-harness form, and it has no callers in consumer code.
+    <T extends $Particle>(component: Component<T> | Element<T>, representative: $Chemistry): T;
+    // Register — `$(A,B)(C)` reads "for A, a B is a C". There is no form that
+    // registers without naming a scope.
+    <A extends $Particle, B extends $Particle>(
+        scope: Component<A> | Element<A>,
+        requested: Component<B> | Element<B>
+    ): (replacement: Component<B> | Element<B>, options?: $Narrowing) => Component<B> | Element<B>;
+    // …and the same, for scopes or parts that are plain function components.
+    (scope: Component<any> | Element<any> | React.FC<any>, requested: React.FC<any>):
+        (replacement: React.FC<any> | Component<any> | Element<any>, options?: $Narrowing) => any;
     // HTML element catalogue — `$('div')` lazily creates a reactive $Html$
     // chemical for the tag, caches its Component, returns it. `$('div', X)`
     // registers `X` as the override for that tag — subsequent lookups
@@ -1014,10 +1053,182 @@ interface $Chemistry {
 // first `$('div')`; overridable via `$('div', CoolDiv)`.
 const $catalogue = new Map<string, any>();
 
+// ===========================================================================
+// The representative — `$` as an argument, and the scoping it selects.
+//
+// A component is a scope. What it registers lives on the chemical it wraps,
+// in a catalogue, so a per-mount derivative reads its template's through the
+// prototype chain and a derived scope's catalogue is the parent's `$new()` —
+// which makes falling back the catalogue's own recursive `$find` rather than
+// a walk we write. The only walk here is the composition lineage, because
+// that one is dynamic.
+// ===========================================================================
+
+// The chemical a chemical derived from, or undefined for a template. A class's
+// `.prototype` owns `constructor`; a chemical never does.
+function derivedFrom(chemical: any): any {
+    const proto = Object.getPrototypeOf(chemical);
+    if (!proto || Object.prototype.hasOwnProperty.call(proto, 'constructor')) return undefined;
+    return proto;
+}
+
+const $wrappers = new WeakMap<Function, any>();
+
+function wrapped(fn: any): any {
+    if (!fn || typeof fn !== 'function') return fn;
+    if (fn.$chemical) return fn;
+    if (typeof fn.prototype?.view === 'function') return fn;
+    let made = $wrappers.get(fn);
+    if (!made) {
+        made = ($wrap(fn) as any)[$resolveComponent$]();
+        $wrappers.set(fn, made);
+    }
+    return made;
+}
+
+function reference(component: any): any {
+    if (!component[$reference$])
+        component[$reference$] = { $ref: `$Chemistry.component[${$Particle[$$getNextCid$$]()}]` };
+    return component[$reference$];
+}
+
+function registry(chemical: any): any {
+    if (Object.prototype.hasOwnProperty.call(chemical, $registry$)) return chemical[$registry$];
+    const from = derivedFrom(chemical);
+    const held = from ? registry(from).$new() : $subject(String(chemical[$symbol$]));
+    Object.defineProperty(chemical, $registry$, { value: held, configurable: true });
+    return held;
+}
+
+// A scope's entries are stamped with the catalogue that owns them. `$find`
+// walks the topics chain, so without the stamp a registration would append to
+// what a PARENT answered and copy it down — turning shadowing into merging,
+// which is the opposite of what a derived scope promises.
+function entriesOf(held: any, key: any, own: boolean): any[] {
+    const record = held?.$find(key);
+    if (!record) return [];
+    if (own && record.owner !== held) return [];
+    return record.entries;
+}
+
+// More specific wins, and specificity is stated rather than emergent: naming
+// who asks beats not naming them, and a narrowed reach beats a projected one.
+// Among equals the later registration wins.
+function chosen(entries: any[], asker: any, depth: number): any {
+    let best: any;
+    let rank = -1;
+    for (const entry of entries) {
+        if (entry.reach === 'self' && depth > 0) continue;
+        if (entry.asker && !(asker instanceof entry.asker)) continue;
+        const score = (entry.asker ? 2 : 0) + (entry.reach === 'self' ? 1 : 0);
+        if (score >= rank) { rank = score; best = entry; }
+    }
+    return best?.replacement;
+}
+
+// One chemical's answer: its own catalogue (which falls through its derivation
+// chain by itself), then the class chain — a superclass's template scope, so a
+// subclass inherits what was registered for what it extends.
+function registered(chemical: any, key: any, asker: any, depth: number): any {
+    const own = chosen(entriesOf(chemical[$registry$], key, false), asker, depth);
+    if (own !== undefined) return own;
+    let cls = Object.getPrototypeOf(chemical[$type$]);
+    while (cls && cls.name) {
+        const template = cls[$$template$$];
+        const found = chosen(entriesOf(template?.[$registry$], key, false), asker, depth);
+        if (found !== undefined) return found;
+        cls = Object.getPrototypeOf(cls);
+    }
+    return undefined;
+}
+
+// The asker first, then outward through the composition lineage, then the
+// argument itself — because the default was never in the catalogue.
+function askedFor(component: any): any {
+    const asker = currentAsker();
+    if (!asker) return component;
+    const key = component[$reference$];
+    if (!key) return component;
+    let chemical: any = asker;
+    let depth = 0;
+    const seen = new Set<any>();
+    while (chemical && !seen.has(chemical)) {
+        seen.add(chemical);
+        const found = registered(chemical, key, asker, depth);
+        if (found !== undefined) return found;
+        const up = chemical[$parent$];
+        chemical = up === chemical ? undefined : up;
+        depth++;
+    }
+    return component;
+}
+
+// Configuration is refused while DRAWING — inside a bond constructor or a
+// view. A handler carries an asker so it can resolve, and runs after the
+// paint, so it may configure: a scope that changed mid-paint would mean one
+// component resolving two ways in a single frame.
+function configuring(act: string) {
+    if (!drawing()) return;
+    const asker = currentAsker();
+    const name = asker?.[$type$]?.name || 'a chemical';
+    throw new Error(
+        `\n$Chemistry: ${act} during a render.\n\n` +
+        `  ${name} was being drawn when this ran.\n` +
+        `  Configuration belongs before anything renders — in a configuration\n` +
+        `  module, not inside a view, a bond constructor or a handler.\n`
+    );
+}
+
+// `$(A,B)(C)` — for A, a B is a C. `(C, {reach: 'self'})` narrows it to A's
+// own asks rather than its progeny; `(C, {asker: $Class})` answers only that
+// class's asks. The plain form is the one that projects downward, because the
+// alternative would mean naming every class between a book and a sentence.
+function registrar(scope: any, requested: any) {
+    return (replacement: any, options?: { reach?: 'self' | 'progeny'; asker?: any }) => {
+        configuring('a registration arrived');
+        const held = registry(scope.$chemical);
+        const key = reference(wrapped(requested));
+        replacement = wrapped(replacement);
+        const entries = entriesOf(held, key, true).slice();
+        entries.push({ replacement, reach: options?.reach ?? 'progeny', asker: options?.asker });
+        held.$index(key, { owner: held, entries });
+        return replacement;
+    };
+}
+
+// $($,Component) — a new component derived from the one given, whose scope
+// falls back to it. The chemical is derived so it inherits state the same way,
+// and made its own template so it still derives per mount.
+function derive(component: any): any {
+    configuring('a scope was created');
+    const from = component.$chemical;
+    registry(from);
+    const child = Object.create(from);
+    child[$cid$] = $Particle[$$getNextCid$$]();
+    child[$symbol$] = $Particle[$$createSymbol$$](child);
+    child[$template$] = child;
+    child[$molecule$] = new $Molecule(child);
+    child[$synthesis$] = new $Synthesis(child);
+    child[$phases$] = new Map($phaseOrder.map(p => [p, []]));
+    child[$phase$] = 'setup';
+    child[$$parent$$] = child;
+    child[$catalyst$] = child;
+    child[$reaction$] = new $Reaction(child);
+    const derived = $lift(child, undefined, true) as any;
+    derived.$bind = (p?: $Chemical) => bind(child, p);
+    child[$component$] = derived;
+    return derived;
+}
+
 // Chemistry — one class. Its view IS the dispatch. Typed `any` so the runtime
 // can be dynamic; call-site types come from `$Chemistry` wrapping `$`.
 class Chemistry extends $Chemical {
     view(arg?: any): any {
+        // The representative in the FIRST position — `$($,Component)`. `$` is
+        // one unmistakable object carrying no `$chemical`, so identity is a
+        // discriminator nothing else can satisfy.
+        if (arg === ($ as any)) return derive(arguments[1]);
+
         // Fast path — JSX usage. null/undefined, or a plain object that is
         // empty (<$ />) or has children (<$>...</$>).
         if (arg == null ||
@@ -1060,11 +1271,23 @@ class Chemistry extends $Chemical {
             return inst[$lifted$] = $lift(arg);
         }
 
-        // Inverse form — $(Component) returns the chemical instance it wraps.
-        // Components carry `.$chemical` (attached during $lift or
-        // $lift). This is the inverse of $(instance) → Component.
+        // A plain function component is still a component: it is a function
+        // whose props are its parameters, and it may be side-effecting rather
+        // than visual. Wrap it once, memoised, so it can be asked for,
+        // registered, and stood in for exactly as any other component is.
+        if (typeof arg === 'function' && !(arg as any).$chemical && typeof (arg as any).prototype?.view !== 'function') {
+            arg = wrapped(arg);
+        }
+
+        // A component was handed in. What comes back depends on the second
+        // argument: nothing resolves it in the scope being rendered, the
+        // representative answers what stands behind it, and another component
+        // opens a registration — `$(A,B)(C)`.
         if (typeof arg === 'function' && (arg as any).$chemical) {
-            return (arg as any).$chemical;
+            const second = arguments[1];
+            if (second === undefined) return askedFor(arg);
+            if (second === ($ as any)) return (arg as any).$chemical;
+            return registrar(arg, second);
         }
 
         // String tag — HTML catalogue. `$('div')` looks up (or lazily

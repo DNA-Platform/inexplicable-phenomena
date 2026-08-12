@@ -195,6 +195,72 @@ const interactions = [
             Array.from(document.querySelectorAll('button')).find(b => b.textContent === '→')?.click();
         });
     }},
+    { section: 'representative', name: 'Three houses', action: async (p) => {
+        // The claim before anything is touched: one $Note class, three houses,
+        // three different marks. If the registrations did not reach the notes
+        // the houses draw alike — so this fails HERE rather than passing on a
+        // verdict that only proves a click happened.
+        const houses = await p.evaluate(() => {
+            const found = Array.from(document.querySelectorAll('div'))
+                .filter(d => /^(draft|review|press)$/.test(d.firstElementChild?.textContent || ''));
+            return found.map(h => ({
+                name: h.firstElementChild.textContent,
+                marks: Array.from(h.querySelectorAll('span'))
+                    .map(s => s.textContent)
+                    .filter(t => t === '•' || t === '★' || /^\d\d$/.test(t))
+                    .join(''),
+            }));
+        });
+        if (houses.length < 3) throw new Error(`expected three houses, found ${houses.length} — the demo did not draw`);
+        const distinct = new Set(houses.map(h => h.marks.replace(/\d/g, '#'))).size;
+        if (distinct < 3) throw new Error(`the three houses drew the same marks (${houses.map(h => h.name + ':' + h.marks).join(' ')}) — a registration did not reach the notes it was made for`);
+
+        await p.evaluate(() => {
+            const input = document.querySelector('input');
+            if (!input) throw new Error('the text control is missing — the write row moved');
+            input.focus();
+        });
+        await p.keyboard.type(' — typed');
+        await p.evaluate(() => {
+            const button = Array.from(document.querySelectorAll('button')).find(b => b.textContent?.trim() === 'press');
+            if (!button) throw new Error('the "press" house control is missing — the travel row moved');
+            button.click();
+        });
+    }},
+    { section: 'representative', name: 'The theme, live', action: async (p) => {
+        // A theme registered from a HANDLER repaints the leaves that asked for
+        // it — none of which was subclassed, told, or passed anything. And the
+        // second half is the honest one: a registration that touches nothing
+        // reactive changes the registry and repaints NOTHING, because the
+        // registry is deliberately not reactive.
+        const leaves = () => p.evaluate(() => [...document.querySelectorAll('div')]
+            .filter(d => /^(plain|dawn|dusk|sea)$/.test(d.textContent?.trim() || '') && d.children.length === 0)
+            .map(d => d.textContent.trim()));
+        const press = (label) => p.evaluate(l => {
+            const b = [...document.querySelectorAll('button')].find(x => x.textContent?.trim() === l);
+            if (!b) throw new Error(`the "${l}" control is missing — the theme row moved`);
+            b.click();
+        }, label);
+
+        const before = await leaves();
+        if (before.length < 2) throw new Error(`expected two themed leaves, found ${before.length} — the reading did not draw`);
+        if (!before.every(n => n === 'plain')) throw new Error(`the leaves did not start plain: ${before.join(',')}`);
+
+        await press('dusk');
+        await new Promise(r => setTimeout(r, 300));
+        const after = await leaves();
+        if (!after.every(n => n === 'dusk')) throw new Error(`re-registering the theme did not reach the leaves: ${after.join(',')}`);
+
+        await press('register dawn, change nothing else');
+        await new Promise(r => setTimeout(r, 300));
+        const quiet = await leaves();
+        if (!quiet.every(n => n === 'dusk')) throw new Error(`a registration that touched nothing reactive repainted anyway: ${quiet.join(',')} — the registry is not supposed to be reactive`);
+
+        await press('now repaint');
+        await new Promise(r => setTimeout(r, 300));
+        const woken = await leaves();
+        if (!woken.every(n => n === 'dawn')) throw new Error(`the registration made silently did not take effect once something asked again: ${woken.join(',')}`);
+    }},
 ];
 
 async function run() {

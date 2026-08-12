@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { $Writing } from '../writing/Writing';
 
 export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing implements $Reference$<T> {
@@ -58,8 +58,8 @@ export class $IndexCard<T extends $Referent$ = $Referent$> extends $Writing impl
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<T, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     view(): ReactNode {

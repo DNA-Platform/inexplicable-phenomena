@@ -73,7 +73,10 @@ export type { Element, $Element, Component, $Component } from "../abstraction/el
 export interface $Bound<T> {
     get $bound(): boolean;
     get $chemical(): T;
-    $?(): import("../abstraction/element").$Component<T>;
+    // The model behind the face. `$(Theme).$` reads left to right: resolve in
+    // this scope, then the chemical the answer wears. Declared here and
+    // attached by $lift, so every component carries it.
+    get $(): T;
     $new(parent: $Chemical): import("../abstraction/element").$Component<T>;
     $bind(parent: $Chemical): import("../abstraction/element").Component<T>;
 }

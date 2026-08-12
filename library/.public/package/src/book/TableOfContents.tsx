@@ -6,11 +6,13 @@ import { type $Reference$ } from '../reference/Reference';
 import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { type $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
-import { $Row, Row } from './Row';
-import { $Title, Title } from '../writing/Title';
+import { $Row } from './Row';
+import * as rows from './Row';
+import { $Title } from '../writing/Title';
+import * as titles from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
 import { $Book } from './Book';
@@ -35,6 +37,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
     get title(): $Title {
         const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
+        const Title = $(titles.Title);
         const title: $Title = $(<Title>{authored || 'Table of Contents'}</Title>);
         return title;
     }
@@ -60,6 +63,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         if (!(book instanceof $Book)) throw new Error(`The table of contents stands under ${String((book as { constructor?: { name?: string } })?.constructor?.name)} instead of a book, with parent ${String((this.parent as { constructor?: { name?: string } })?.constructor?.name)}.`);
         // The numbered chapters: not the canonical, not parenthetical, not
         // the contents itself — one law, by what a chapter is.
+        const Row = $(rows.Row);
         return this.book.parts()
             .filter(c => c !== this && !(c instanceof $Cover) && !c.parenthetical)
             .map(c => {
@@ -95,8 +99,8 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     $TableOfContents(...sections: $Section[]) {

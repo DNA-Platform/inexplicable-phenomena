@@ -13,7 +13,7 @@ import type { Component, $Component, $Props, $Phase } from "../implementation/ty
 import { diff } from "../implementation/reconcile";
 import { augment } from "../implementation/augment";
 import { dev, renderError, renderException } from "../implementation/dev";
-import { currentScope, diffuse } from "../implementation/scope";
+import { currentScope, diffuse, withAsker } from "../implementation/scope";
 import { $Reaction } from "./reaction";
 import { $Molecule } from "./molecule";
 import { Perspective } from "./perspective";
@@ -441,30 +441,44 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
     const Component = (props?: $Props): ReactNode => {
         const [cid, setCid] = useState(-1);
         let p: any;
-        if (cid === -1) {
+        const derive = () => {
             if (direct) {
-                p = parent;
-                p[$molecule$]?.reactivate?.();
-            } else {
-                p = Object.create(parent);
-                p[$cid$] = $Particle[$$getNextCid$$]();
-                p[$symbol$] = $Particle[$$createSymbol$$](p);
-                p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
-                p[$phase$] = 'setup';
-                p[$reaction$] = new $Reaction(p);
-                if ($$parent$$ in p) p[$$parent$$] = p;
-                if (bond && typeof p[$deriveInit$] === 'function') {
-                    p[$deriveInit$]();
-                } else {
-                    (parent as any)[$molecule$]?.reactivate?.();
-                }
-                if (contextParent && $parent$ in p) {
-                    p[$parent$] = contextParent;
-                }
+                const made = parent as any;
+                made[$molecule$]?.reactivate?.();
+                return made;
             }
+            const made: any = Object.create(parent);
+            made[$cid$] = $Particle[$$getNextCid$$]();
+            made[$symbol$] = $Particle[$$createSymbol$$](made);
+            made[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
+            made[$phase$] = 'setup';
+            made[$reaction$] = new $Reaction(made);
+            if ($$parent$$ in made) made[$$parent$$] = made;
+            if (bond && typeof made[$deriveInit$] === 'function') {
+                made[$deriveInit$]();
+            } else {
+                (parent as any)[$molecule$]?.reactivate?.();
+            }
+            if (contextParent && $parent$ in made) {
+                made[$parent$] = contextParent;
+            }
+            return made;
+        };
+        if (cid === -1) {
+            p = derive();
             setCid(p[$cid$]);
         } else {
-            p = $Reaction.find(cid)!;
+            // The registry forgets a cid when its reaction is destroyed, and
+            // React can re-render a component whose instance has been torn
+            // down — the state still remembers a cid the registry no longer
+            // has. Rebuilding is the honest answer. The `!` that used to stand
+            // here turned that into "Cannot set properties of undefined",
+            // nondeterministically and far from its cause.
+            p = $Reaction.find(cid);
+            if (!p) {
+                p = derive();
+                setCid(p[$cid$]);
+            }
         }
         const [, setToken] = useState(0);
         p[$update$] = () => setToken((t: number) => t + 1);
@@ -504,7 +518,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         useEffect(() => {
             p[$resolve$]('effect');
             p[$rendering$] = true;
-            const current = augment(p[$renderView$](), react);
+            const current = augment(withAsker(p, () => p[$renderView$](), true), react, p);
             p[$rendering$] = false;
             if (diff(current, p[$viewCache$])) {
                 p[$viewCache$] = current;
@@ -519,17 +533,18 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             p[$rendering$] = false;
             return filtered;
         }
-        if (bond && typeof p[$bond$] === 'function') p[$bond$]();
+        if (bond && typeof p[$bond$] === 'function') withAsker(p, () => p[$bond$](), true);
         if (p[$devError$]) {
             p[$rendering$] = false;
             return renderException(p[$devException$] ?? new Error(p[$devError$]));
         }
-        const output = augment(p[$renderView$](), react);
+        const output = augment(withAsker(p, () => p[$renderView$](), true), react, p);
         p[$viewCache$] = output;
         p[$rendering$] = false;
         return output;
     };
     (Component as any).$chemical = parent;
+    Object.defineProperty(Component, '$', { get: () => parent, configurable: true });
     (Component as any).$bound = !!contextParent;
     (Component as any).$bind = (cp?: any) => $lift(parent, cp, bond);
     return Component as any;

@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { $Writing } from '../writing/Writing';
 import { $Document } from './Document';
 import { $Footer } from './Footer';
@@ -51,8 +51,8 @@ export class $Denote extends $Writing implements $Reference$<$Footnote> {
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Footnote, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     view(): ReactNode {

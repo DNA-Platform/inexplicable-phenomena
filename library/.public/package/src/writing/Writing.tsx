@@ -77,7 +77,21 @@ export class $Writing<P extends $Writing = $Writing<any>> extends $Chemical impl
             const prose = run.map(part => text(part)).join('');
             for (const piece of this.divide(prose)) {
                 const made = this.compose(piece);
-                if (made && made.valid()) found.push(made);
+                if (made && made.valid()) { found.push(made); continue; }
+                // The filter is load-bearing: dividing leaves debris — an empty
+                // run composes to something invalid, and dropping it is how the
+                // parse tolerates that without special-casing it. But it was
+                // answering two questions at once, and only one of them is the
+                // parse's business. A piece with WRITING in it that composes to
+                // something invalid is a validation failure, not debris, and
+                // swallowing it silently deletes text from the reading.
+                if (piece && piece.trim() && typeof console !== 'undefined') {
+                    console.warn(
+                        `$Writing: ${(this as any).constructor?.name} dropped a part while reading — ` +
+                        `"${piece.trim().slice(0, 40)}" composed to something its own valid() refuses. ` +
+                        `The reading is shorter than the writing.`
+                    );
+                }
             }
             run = [];
         };

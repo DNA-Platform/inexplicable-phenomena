@@ -473,22 +473,21 @@ describe('identity — bond-constructor children survive parent re-render', () =
 // 6. Inverse: $(Component) recovers the chemical
 // =============================================================================
 
-describe('identity — $ inverse', () => {
-    it('$($(instance)) returns the instance', () => {
+describe('identity — a component does not lose the instance it was made from', () => {
+    it('lifting an instance to a component keeps that instance reachable', () => {
         const inst = new $Counter();
-        const Comp = $(inst);
-        expect($(Comp)).toBe(inst);
+        expect($($(inst), $)).toBe(inst);
     });
 
-    it('$($(clone)) returns the clone', () => {
+    it('two instances of one class lift to components that stand for DIFFERENT things', () => {
         const clone = new $Counter().$new();
-        const Comp = $(clone);
-        expect($(Comp)).toBe(clone);
+        const other = new $Counter();
+        expect($($(clone), $)).toBe(clone);
+        expect($($(clone), $)).not.toBe($($(other), $));
     });
 
-    it('$($Class) inverse returns the template', () => {
-        const Comp = $($Counter);
-        const template = $(Comp);
+    it('a component made from a CLASS stands for that class s template', () => {
+        const template = $($($Counter), $);
         expect(template).toBeInstanceOf($Counter);
         expect(template[$isTemplate$]).toBe(true);
     });

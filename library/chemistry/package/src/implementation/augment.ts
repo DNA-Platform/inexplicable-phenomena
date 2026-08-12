@@ -1,19 +1,19 @@
 import type { ReactNode, ReactElement } from 'react';
-import { withScope } from './scope';
+import { withScope, withAsker } from './scope';
 import { $handlerOriginal$ } from './symbols';
 
-export function augment(node: ReactNode, react: () => void): ReactNode {
-    return augmentNode(node, react);
+export function augment(node: ReactNode, react: () => void, asker?: any): ReactNode {
+    return augmentNode(node, react, asker);
 }
 
-function augmentNode(node: ReactNode, react: () => void): ReactNode {
+function augmentNode(node: ReactNode, react: () => void, asker?: any): ReactNode {
     if (node == null) return node;
     if (typeof node !== 'object') return node;
     if (Array.isArray(node)) {
         let modified = false;
         const result: ReactNode[] = new Array(node.length);
         for (let i = 0; i < node.length; i++) {
-            const augmented = augmentNode(node[i], react);
+            const augmented = augmentNode(node[i], react, asker);
             result[i] = augmented;
             if (augmented !== node[i]) modified = true;
         }
@@ -24,7 +24,7 @@ function augmentNode(node: ReactNode, react: () => void): ReactNode {
     if (!props) return element;
 
     const newChildren = props.children !== undefined
-        ? augmentNode(props.children, react)
+        ? augmentNode(props.children, react, asker)
         : undefined;
 
     let newProps: Record<string, any> | null = null;
@@ -33,7 +33,7 @@ function augmentNode(node: ReactNode, react: () => void): ReactNode {
         const value = props[key];
         if (typeof value === 'function' && isEventHandlerProp(key)) {
             if (!newProps) newProps = { ...props };
-            (newProps as Record<string, any>)[key] = wrapHandler(value as Function, react);
+            (newProps as Record<string, any>)[key] = wrapHandler(value as Function, react, asker);
         }
     }
 
@@ -52,10 +52,12 @@ function isEventHandlerProp(key: string): boolean {
         && key[2] !== key[2].toLowerCase();
 }
 
-function wrapHandler(handler: Function, _react: () => void): Function {
+function wrapHandler(handler: Function, _react: () => void, asker?: any): Function {
     const wrapper = function (this: any, ...args: any[]) {
         let result: any;
-        withScope(() => { result = handler.apply(this, args); });
+        // The handler runs with an asker, so `$(X)` resolves in the graph the
+        // handler belongs to — but not DRAWING, so it may also configure.
+        withScope(() => { result = withAsker(asker, () => handler.apply(this, args)); });
         if (result instanceof Promise) {
             result.then(
                 () => withScope(() => {}),

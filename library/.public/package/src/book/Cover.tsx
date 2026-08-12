@@ -1,7 +1,7 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { $Chapter } from './Chapter';
 import { type $Title } from '../writing/Title';
 import { type $Book } from './Book';
@@ -28,8 +28,8 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     $Cover(...sections: $Section[]) {

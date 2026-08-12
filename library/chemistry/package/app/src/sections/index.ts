@@ -33,6 +33,7 @@ import { sectionData as dynamicNest } from './dynamic-nest-section';
 import { sectionData as adapted } from './adapted-components';
 import { sectionData as cloning } from './cloning-components';
 import { sectionData as perspectives } from './perspectives-section';
+import { sectionData as representative } from './representative-section';
 import { sectionData as frames } from './frames-showcase';
 import { sectionData as blocks } from './blocks-showcase';
 
@@ -77,6 +78,7 @@ const modules: SectionModule[] = [
     adapted,
     cloning,
     perspectives,
+    representative,
     frames,
     blocks,
 ];

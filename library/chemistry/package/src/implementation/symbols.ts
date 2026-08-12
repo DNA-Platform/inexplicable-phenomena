@@ -82,6 +82,14 @@ export const $particleMarker$ = Symbol("$Particle.marker");
 export const $devError$ = Symbol("$Particle.devError");
 export const $devException$ = Symbol("$Particle.devException");
 
+// The representative — `$` as an argument, and the scoping it selects.
+// $registry$  — the catalogue a chemical holds as a scope. Read through the
+//               prototype chain, so a per-mount derivative sees its template's.
+// $reference$ — a component's own key, unique per component, so two components
+//               of one class are distinct entries in a catalogue.
+export const $registry$ = Symbol("$Chemical.registry");
+export const $reference$ = Symbol("$Component.reference");
+
 // $Atom symbols
 export const $formed$ = Symbol("$Atom.formed");
 export const $formation$ = Symbol("$Atom.formation");

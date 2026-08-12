@@ -141,3 +141,36 @@ export function withScope<T>(fn: () => T): T {
         scope.finalize();
     }
 }
+
+// The asker — which chemical's code is running. Unrelated to the reactivity
+// scope above; it answers "who is asking" so `$(Component)` can resolve
+// against the graph the asker stands in. The framework raises it around the
+// three calls it makes into user code: the bond constructor, the view, and an
+// augmented handler. Outside those there is no asker, and `$` answers its
+// argument.
+let $currentAsker: any = null;
+let $drawing = false;
+
+export function currentAsker(): any {
+    return $currentAsker;
+}
+
+// Whether user code is being DRAWN — inside a bond constructor or a view.
+// Configuration is refused there and only there: a handler has an asker so it
+// can resolve, but it runs after the paint, so it may also configure.
+export function drawing(): boolean {
+    return $drawing;
+}
+
+export function withAsker<T>(asker: any, fn: () => T, draws = false): T {
+    const wasAsker = $currentAsker;
+    const wasDrawing = $drawing;
+    $currentAsker = asker;
+    if (draws) $drawing = true;
+    try {
+        return fn();
+    } finally {
+        $currentAsker = wasAsker;
+        $drawing = wasDrawing;
+    }
+}

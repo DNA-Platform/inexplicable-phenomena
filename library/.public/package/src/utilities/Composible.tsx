@@ -2,7 +2,8 @@ import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
 import { type $Composition$ } from '../writing/Composition';
-import { $Location, Location } from '../reference/Location';
+import { $Location } from '../reference/Location';
+import * as locations from '../reference/Location';
 
 export class $Composible$ {
     static canonical<T>(of: { parts(): T[] }): T {
@@ -24,6 +25,7 @@ export class $Composible$ {
     }
 
     static at<T extends $Referent$>(of: { parts(): T[] }, index: number): $Location<T> {
+        const Location = $(locations.Location);
         const location: $Location<T> = $(<Location i={index} of={of as any} />);
         return location;
     }

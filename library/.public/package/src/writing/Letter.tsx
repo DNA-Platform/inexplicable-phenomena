@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { $Writing, type Level } from './Writing';
 
 export class $Letter extends $Writing implements $Reference$<$Letter> {
@@ -13,8 +13,8 @@ export class $Letter extends $Writing implements $Reference$<$Letter> {
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Letter, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     valid(): boolean {

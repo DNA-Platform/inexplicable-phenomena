@@ -8,7 +8,8 @@ import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
 import { $Writing, type Level } from './Writing';
-import { $Letter, Letter } from './Letter';
+import { $Letter } from './Letter';
+import * as letters from './Letter';
 
 export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
     get level(): Level { return 'word'; }
@@ -22,6 +23,7 @@ export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
     }
 
     compose(prose: string): $Letter {
+        const Letter = $(letters.Letter);
         return $(<Letter>{prose}</Letter>);
     }
 

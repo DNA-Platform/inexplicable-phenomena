@@ -9,7 +9,8 @@ import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
 import { $Writing, type Level } from './Writing';
 import { $Letter } from './Letter';
-import { $Sentence, Sentence } from './Sentence';
+import { $Sentence } from './Sentence';
+import * as sentences from './Sentence';
 import { $Word } from './Word';
 
 export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Sentence> {
@@ -27,6 +28,7 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
     }
 
     compose(prose: string): $Sentence {
+        const Sentence = $(sentences.Sentence);
         return $(<Sentence>{prose}</Sentence>);
     }
 

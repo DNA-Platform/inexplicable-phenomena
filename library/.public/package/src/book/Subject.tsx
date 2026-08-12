@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { $Sentence } from '../writing/Sentence';
 import { type $Book } from './Book';
 import { type $LibraryCard } from '../library/LibraryCard';
@@ -24,8 +24,8 @@ export class $Subject extends $Sentence implements $Reference$<$Book> {
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     valid(): boolean {

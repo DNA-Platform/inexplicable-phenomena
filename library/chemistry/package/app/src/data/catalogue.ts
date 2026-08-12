@@ -519,6 +519,13 @@ export const catalogue: Group[] = [
             { id: 'perspectives', title: 'Perspectives', symbol: 'Pv', planned: [] },
         ],
     },
+    {
+        roman: '·',
+        title: 'The representative',
+        sections: [
+            { id: 'representative', title: 'The representative', symbol: 'Rp', planned: [] },
+        ],
+    },
 ];
 
 export function findSection(id: string): { group: Group; section: Section } | undefined {

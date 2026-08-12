@@ -4,7 +4,7 @@ import { type $Reference$ } from '../reference/Reference';
 import { type $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { type $Composition$ } from '../writing/Composition';
 import { $IndexCard } from './IndexCard';
 
@@ -52,8 +52,8 @@ export class $CardCatalogue<T extends $Referent$ & { copy: string; index: number
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Composition$<T>, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     card(name: string): $IndexCard<T> {

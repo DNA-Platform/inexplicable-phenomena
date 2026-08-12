@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
-import { $, $Chemical } from '@dna-platform/chemistry';
+import { $, $Chemical, type Component } from '@dna-platform/chemistry';
 import { type $Referent$ } from './Referent';
 import { type $Reference$ } from './Reference';
+import * as paths from './Path';
 
 export class $Path<M extends $Referent$ = any, U extends $Referent$ = any> extends $Chemical implements $Reference$<U> {
     $first!: $Reference$<M>;
@@ -18,8 +19,8 @@ export class $Path<M extends $Referent$ = any, U extends $Referent$ = any> exten
     }
 
     then<V extends $Referent$>(onward: $Reference$<V>): $Reference$<V> {
-        const path: $Path<U, V> = $(<Path first={this} onward={onward} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={onward} />);
     }
 
     view(): ReactNode {
@@ -31,4 +32,4 @@ export class $Path<M extends $Referent$ = any, U extends $Referent$ = any> exten
     }
 }
 
-export const Path = $($Path) as any as (props: { first: $Reference$<any>; onward: $Reference$<any> }) => any;
+export const Path = $($Path) as any as Component<$Path> & ((props: { first: $Reference$<any>; onward: $Reference$<any> }) => any);

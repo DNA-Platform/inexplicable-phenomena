@@ -10,10 +10,13 @@ import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
 import { $Writing, type Level } from './Writing';
 import { $Letter } from './Letter';
-import { $Paragraph, Paragraph } from './Paragraph';
+import { $Paragraph } from './Paragraph';
+import * as paragraphs from './Paragraph';
 import { $Title } from './Title';
-import { $Subtitle, Subtitle } from './Subtitle';
-import { $Tagline, Tagline } from './Tagline';
+import { $Subtitle } from './Subtitle';
+import * as subtitles from './Subtitle';
+import { $Tagline } from './Tagline';
+import * as taglines from './Tagline';
 import { $Sentence } from './Sentence';
 import { $Word } from './Word';
 import { type $Document } from '../document/Document';
@@ -39,6 +42,7 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
 
     get canonical(): $Paragraph {
         const T = $(this.title as any);
+        const Paragraph = $(paragraphs.Paragraph);
         return $(<Paragraph><T /></Paragraph>);
     }
 
@@ -54,6 +58,7 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
     }
 
     compose(prose: string): $Paragraph {
+        const Paragraph = $(paragraphs.Paragraph);
         return $(<Paragraph>{prose}</Paragraph>);
     }
 
@@ -67,6 +72,7 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
         const t = text(this.title);
         const colon = t.indexOf(':');
         if (colon < 0) return undefined;
+        const Subtitle = $(subtitles.Subtitle);
         const subtitle: $Subtitle = $(<Subtitle>{t.slice(colon + 1).trim()}</Subtitle>);
         return subtitle;
     }
@@ -75,6 +81,7 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
         const body = this.parts().slice(1).flatMap(p => p.sentences);
         if (!body.length) return undefined;
         const copy = body.length === 1 ? body[0].copy : body[0].copy.replace(/[.!?]+$/, '') + '…';
+        const Tagline = $(taglines.Tagline);
         const tagline: $Tagline = $(<Tagline>{copy}</Tagline>);
         return tagline;
     }

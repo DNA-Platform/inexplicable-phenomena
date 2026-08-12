@@ -8,9 +8,11 @@ import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
 import { $Writing, type Level } from './Writing';
-import { $Letter, Letter } from './Letter';
-import { $Word, Word } from './Word';
-import { Punctuation } from './Punctuation';
+import { $Letter } from './Letter';
+import * as letters from './Letter';
+import { $Word } from './Word';
+import * as words from './Word';
+import * as punctuation from './Punctuation';
 
 export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
     get level(): Level { return 'sentence'; }
@@ -21,6 +23,7 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
     get words(): $Word[] { return this.parts().filter(word => word.role === 'use'); }
 
     get letters(): $Letter[] {
+        const Letter = $(letters.Letter);
         return [...this.copy].map((g, i) => {
             const letter: $Letter = $(<Letter>{g}</Letter>);
             letter.index = i + 1;
@@ -39,6 +42,8 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
     }
 
     compose(prose: string): $Word {
+        const Word = $(words.Word);
+        const Punctuation = $(punctuation.Punctuation);
         return /[\p{L}\p{N}]/u.test(prose) ? $(<Word>{prose}</Word>) : $(<Punctuation>{prose}</Punctuation>);
     }
 

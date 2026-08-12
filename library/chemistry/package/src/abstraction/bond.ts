@@ -1,7 +1,7 @@
 import {
     $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$
 } from "../implementation/symbols";
-import { currentScope, withScope, diffuse } from "../implementation/scope";
+import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
 
 // ===========================================================================
 // $Reflection — property annotation system
@@ -222,7 +222,7 @@ export class $Reagent extends $Bond {
                         return lastResult;
                     }
                     if (self[$rendering$] || self[$phase$] === 'setup') {
-                        const result = action.apply(self, args);
+                        const result = withAsker(self, () => action.apply(self, args));
                         if (isPure) {
                             hasRun = true;
                             lastArgs = args;
@@ -237,7 +237,10 @@ export class $Reagent extends $Bond {
                         return result;
                     }
                     let result: any;
-                    withScope(() => { result = action.apply(self, args); });
+                    // A method resolves as the chemical it belongs to, so a
+                    // reading answers the same whether or not a paint is in
+                    // flight. Not DRAWING — a method may still configure.
+                    withScope(() => { result = withAsker(self, () => action.apply(self, args)); });
                     if (isPure) {
                         hasRun = true;
                         lastArgs = args;

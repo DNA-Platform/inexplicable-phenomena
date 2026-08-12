@@ -1,7 +1,7 @@
-import { $ } from '@dna-platform/chemistry';
+import { $, type Component } from '@dna-platform/chemistry';
 import { type $Referent$ } from '../reference/Referent';
 import { type $Reference$ } from '../reference/Reference';
-import { $Path, Path } from '../reference/Path';
+import * as paths from '../reference/Path';
 import { $Section } from '../writing/Section';
 import { $Chapter } from './Chapter';
 
@@ -19,8 +19,8 @@ export class $Row extends $Section implements $Reference$<$Chapter> {
     }
 
     then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Chapter, U> = $(<Path first={this} onward={next} />);
-        return path;
+        const Path = $(paths.Path);
+        return $(<Path first={this} onward={next} />);
     }
 
     valid(): boolean {
@@ -32,4 +32,4 @@ export class $Row extends $Section implements $Reference$<$Chapter> {
     }
 }
 
-export const Row = $($Row) as any as (props: { path: $Reference$<$Chapter> }) => any;
+export const Row = $($Row) as any as Component<$Row> & ((props: { path: $Reference$<$Chapter> }) => any);
