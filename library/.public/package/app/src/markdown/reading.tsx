@@ -10,7 +10,8 @@ import { $Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 import { $MarkdownSection, MarkdownSection } from './section';
 import { $Code } from '@/writing/Code';
-import { $Displayed } from '@/writing/Displayed';
+import { $Figure } from '@/writing/Figure';
+
 import { $Link } from '@/reference/Link';
 import { $Formula } from '@/writing/Formula';
 import { $Snippet } from '@/writing/Snippet';
@@ -83,7 +84,7 @@ export class Readings {
     // figure, inline math a part of its sentence. Nothing scans `$elements`
     // looking for instances of a class, which is what the old getter did.
     get formulas(): number {
-        const shown = this.parts.flatMap(s => s.parts()).filter(p => p instanceof $Displayed).length;
+        const shown = this.parts.flatMap(s => s.parts()).filter(p => p instanceof $Figure).length;
         const within = this.paragraphs
             .flatMap(p => p.sentences)
             .flatMap(s => s.parts())
@@ -204,8 +205,8 @@ function drawPart(part: $Paragraph | $Section, spec: DressSpec, key: React.Key, 
             </React.Fragment>
         );
     }
-    if (part instanceof $Displayed) {
-        return <F.DisplayMath key={key} palette={palette}><Shown tex={(part as $Displayed).mathematics} /></F.DisplayMath>;
+    if (part instanceof $Figure) {
+        return <F.DisplayMath key={key} palette={palette}><Shown tex={(part as $Figure).caption.copy} /></F.DisplayMath>;
     }
     if (part instanceof $Code) {
         const fence = part as $Code;

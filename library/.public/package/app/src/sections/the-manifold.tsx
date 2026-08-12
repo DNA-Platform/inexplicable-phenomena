@@ -11,7 +11,7 @@ import { $TableOfContents } from '@/book/TableOfContents';
 import { type $Reference$ } from '@/reference/Reference';
 import { $Footer } from '@/document/Footer';
 import { $Paragraph } from '@/writing/Paragraph';
-import { $Quotation } from '@/writing/Quotation';
+
 import { text } from '@/utilities/html';
 import { $RibbonMark, RibbonMark, $Return, Return } from './book/library/the-manifold/marks';
 import manifoldCoverSource from './book/library/the-manifold/01-the-cover.tsx?raw';
@@ -143,7 +143,7 @@ const row = (c: $Chapter, i: number): Row => {
             return {
                 head: colon < 0 ? full : full.slice(0, colon).trim(),
                 sub: colon < 0 ? '' : full.slice(colon + 1).trim(),
-                paragraphs: s.parts().slice(1).map(p => ({ copy: p.copy, quoted: p instanceof $Quotation })),
+                paragraphs: s.parts().slice(1).map(p => ({ copy: p.copy, quoted: p instanceof $Paragraph })),
             };
         }),
         notes: footer

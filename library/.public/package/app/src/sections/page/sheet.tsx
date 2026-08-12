@@ -1,7 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical, Perspective } from '@dna-platform/chemistry';
 import { $Code } from '@/writing/Code';
-import { $Displayed } from '@/writing/Displayed';
+import { $Figure } from '@/writing/Figure';
+
 import { $Formula } from '@/writing/Formula';
 import { $Snippet } from '@/writing/Snippet';
 import { $Link } from '@/reference/Link';
@@ -113,7 +114,7 @@ class Anatomy extends $Sheet {
                     <React.Fragment key={i}>
                         {section.parts().map((part, j) => {
                             const fence = part instanceof $Code;
-                            const shown = part instanceof $Displayed;
+                            const shown = part instanceof $Figure;
                             if (!fence) counted += 1;
                             const marks = part.sentences
                                 .flatMap(s => s.parts())

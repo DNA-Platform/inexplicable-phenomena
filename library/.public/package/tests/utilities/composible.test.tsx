@@ -4,7 +4,7 @@ import { $ } from '@dna-platform/chemistry';
 import { $Sentence, Sentence } from '@/writing/Sentence';
 import { $Word } from '@/writing/Word';
 import { $Location } from '@/reference/Location';
-import { $Composible$ } from '@/utilities/Composible';
+import { $Composible$ } from '@/writing/Composition';
 
 describe('$Composible$ — parts() is enough; the rest are extension methods', () => {
     const sentence = (): $Sentence => $(<Sentence>the frame turns</Sentence>);

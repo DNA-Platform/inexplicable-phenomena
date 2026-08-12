@@ -28,8 +28,20 @@ export class $Document extends $Writing<$Section> implements $Referent$, $Compos
 
     get level(): Level { return 'document'; }
     get copy(): string { return this.parts().map(s => s.copy).join('\n\n'); }
-    get canonical(): $Section { return this.parts().find(s => !s.parenthetical) ?? this.parts()[0]; }
+    // A SECTION ADDS A TITLE TO PARAGRAPHS; A DOCUMENT ADDS A SUMMARY TO SECTIONS.
+    // The canonical is the section carrying BOTH — the one a reader meets first —
+    // so a document invents neither: it reads its title and its summary off it.
+    get canonical(): $Section {
+        return this.parts().find(s => !s.parenthetical && this.summarised(s)) ?? this.parts().find(s => !s.parenthetical) ?? this.parts()[0];
+    }
+
+    // The summary stands inside the canonical section when it is written there,
+    // and as a parenthetical section beside it when it is not.
     get summary(): $Section | undefined { return this.parts().find(s => s.parenthetical); }
+
+    summarised(section: $Section): boolean {
+        return section.parts().some((p, at) => at > 0 && p.parenthetical);
+    }
     get tagline(): $Tagline | undefined { return this.summary?.tagline; }
     get footer(): $Footer | undefined { return this.parts().find(s => s instanceof $Footer && !(s instanceof $Bibliography)) as $Footer | undefined; }
     get bibliography(): $Bibliography | undefined { return this.parts().find(s => s instanceof $Bibliography) as $Bibliography | undefined; }

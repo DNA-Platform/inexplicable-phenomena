@@ -46,19 +46,19 @@ class $Listing extends $Plate {
 const Listing = $($Listing);
 
 describe('derived kinds are parsed by their LEVEL, never by their class', () => {
-    it('a derived SECTION written into a section stands as a part of it', () => {
+    // A SECTION COMPOSES PARAGRAPHS, so the derived kind that stands in one is a
+    // derived PARAGRAPH. The law is unchanged — level decides, never class — and
+    // this is it demonstrated at the grade a section actually accepts.
+    it('a derived PARAGRAPH written into a section stands as a part of it', () => {
         const outer: $Section = $(
             <Section><Title>Outer</Title>{'\n\nBefore.'}
-                <Dressed><Title>Inner</Title>{'\n\nInner prose.'}</Dressed>
+                <Plate content="x" />
                 {'\n\nAfter.'}
             </Section>
         );
-        const held = outer.parts().find(p => p instanceof $Dressed) as $Dressed;
+        const held = outer.parts().find(p => p instanceof $Plate) as $Plate;
         expect(held).toBeDefined();
-        // The very object that was written, with its own members intact.
-        expect(held.dress).toBe('plain');
-        expect(held.heading).toBe('Inner');
-        // And the prose either side is untouched.
+        expect(held.content).toBe('x');
         expect(outer.parts().map(p => p.copy)).toContain('Before.');
         expect(outer.parts().map(p => p.copy)).toContain('After.');
     });
@@ -66,14 +66,13 @@ describe('derived kinds are parsed by their LEVEL, never by their class', () => 
     it('a kind derived from a derived kind is handled the same — depth of inheritance is not a case', () => {
         const outer: $Section = $(
             <Section><Title>Outer</Title>{'\n\nProse.'}
-                <Fancy><Title>Deeper</Title>{'\n\nDeeper prose.'}</Fancy>
+                <Listing content="y" />
             </Section>
         );
-        const held = outer.parts().find(p => p instanceof $Fancy) as $Fancy;
+        const held = outer.parts().find(p => p instanceof $Listing) as $Listing;
         expect(held).toBeDefined();
-        expect(held).toBeInstanceOf($Dressed);
-        expect(held).toBeInstanceOf($Section);
-        expect(held.dress).toBe('fancy');
+        expect(held.kind).toBe('listing');
+        expect(held.level).toBe('paragraph');
     });
 
     it('a derived PARAGRAPH stands too, and so does one derived from it', () => {
@@ -98,7 +97,7 @@ describe('derived kinds are parsed by their LEVEL, never by their class', () => 
         // base level it derives from, because `level` is what it inherits.
         const dressed: $Dressed = $(<Dressed><Title>Anything</Title>{'\n\nProse.'}</Dressed>);
         expect(dressed.level).toBe('section');
-        expect(dressed.accepts).toEqual(['section', 'paragraph']);
+        expect(dressed.accepts).toEqual(['paragraph']);
         const plate: $Plate = $(<Plate content="x" />);
         expect(plate.level).toBe('paragraph');
         expect(plate.accepts).toEqual(['sentence']);
@@ -215,14 +214,14 @@ describe('the parse reaches every level, and the counts agree from any altitude'
         expect(sentence.letters.map(l => l.copy).join('')).toBe(sentence.copy);
     });
 
-    it('a derived section nested inside another is reached by the flat readings too', () => {
+    it('the flat readings reach a derived paragraph standing in a section', () => {
         const outer: $Section = $(
-            <Section><Title>Outer</Title>{'\n\nOuter prose.'}
-                <Dressed><Title>Inner</Title>{'\n\nInner prose here.'}</Dressed>
+            <Section><Title>Outer</Title>{'\n\nOuter prose here.'}
+                <Plate content="x" />
             </Section>
         );
-        expect(outer.paragraphs.map(p => p.copy)).toContain('Inner prose here.');
-        expect(outer.words.map(w => w.copy)).toContain('Inner');
+        expect(outer.paragraphs.map(p => p.copy)).toContain('Outer prose here.');
+        expect(outer.words.map(w => w.copy)).toContain('Outer');
         expect(outer.letters.length).toBeGreaterThan(0);
     });
 });

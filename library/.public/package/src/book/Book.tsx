@@ -5,7 +5,7 @@ import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import * as paths from '../reference/Path';
-import { $Composible$ } from '../utilities/Composible';
+import { $Composible$ } from '../writing/Composition';
 import { $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { $Author } from './Author';

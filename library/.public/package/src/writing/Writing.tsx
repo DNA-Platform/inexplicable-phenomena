@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import { $, $check, $Chemical, $Html } from '@dna-platform/chemistry';
 import { $Referent$ } from '../reference/Referent';
 import { $Location } from '../reference/Location';
-import { $Composible$ } from '../utilities/Composible';
+import { $Composible$ } from '../writing/Composition';
 import { block, text } from '../utilities/html';
 
 // The six levels of writing. A level composes the level below it; a letter

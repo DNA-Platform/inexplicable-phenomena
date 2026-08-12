@@ -7,7 +7,7 @@ import { $Referent$ } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { $Composible$ } from '../utilities/Composible';
+import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
 import { $Writing, Level } from './Writing';
 import { $Letter } from './Letter';
@@ -16,11 +16,7 @@ import * as paragraphs from './Paragraph';
 import { $Title } from './Title';
 import * as titles from './Title';
 import * as codes from './Code';
-import * as plates from './Plate';
-import * as breaks from './Break';
-import * as displays from './Displayed';
-import * as quotations from './Quotation';
-import * as items from './Item';
+import * as figures from './Figure';
 import * as sections from './Section';
 import { $Subtitle } from './Subtitle';
 import * as subtitles from './Subtitle';
@@ -60,16 +56,11 @@ const blocks = (prose: string): string[] => {
         const at = tokens[i];
         if (at.type === 'space') { i++; continue; }
         if (at.type === 'heading') {
-            let raw = at.raw;
-            const rank = at.depth ?? 1;
+            pieces.push(at.raw);
             i++;
-            while (i < tokens.length && !(tokens[i].type === 'heading' && (tokens[i].depth ?? 1) <= rank)) {
-                raw += tokens[i].raw;
-                i++;
-            }
-            pieces.push(raw);
             continue;
         }
+
         // A LIST is many parts and a QUOTE is one. An item is a paragraph in its
         // own right, because the notation marks each one; a quotation broken over
         // several lines is a single paragraph, because ONLY A BLANK LINE divides
@@ -100,7 +91,7 @@ export class $Section extends $Writing<$Paragraph | $Section> implements $Compos
     // the cover-and-synopsis shape one grade down.
     get title(): $Paragraph { return this.parts()[0] as $Paragraph; }
 
-    get accepts(): Level[] { return ['section', 'paragraph']; }
+    get accepts(): Level[] { return ['paragraph']; }
 
     // The subsections a section holds, in the order they were written.
     get sections(): $Section[] { return this.parts().filter(p => p instanceof $Section) as $Section[]; }
@@ -144,43 +135,41 @@ export class $Section extends $Writing<$Paragraph | $Section> implements $Compos
     compose(prose: string): $Paragraph | $Section {
         const asDisplay = displayed.exec(prose.trim());
         if (asDisplay) {
-            const Displayed = $(displays.Displayed);
-            return $(<Displayed mathematics={asDisplay[1].trim()} caption={asDisplay[1].trim()} parenthetical />) as $Paragraph;
+            const Figure = $(figures.Figure);
+            return $(<Figure caption={asDisplay[1].trim()} />) as $Paragraph;
         }
 
         // A HEADING IS NOT A PART — it opens a section, and that section holds
         // everything written under it until a heading of equal or higher rank.
         const asHeading = heading.exec(prose);
         if (asHeading) {
-            const Section = $(sections.Section);
             const Title = $(titles.Title);
-            const body = prose.slice(asHeading[0].length);
-            return $(<Section><Title>{asHeading[2].trim()}</Title>{body}</Section>) as $Section;
+            return $(<Title>{asHeading[2].trim()}</Title>) as $Paragraph;
         }
 
         if (rule.test(prose.trim())) {
-            const Break = $(breaks.Break);
-            return $(<Break caption={prose.trim()} parenthetical />) as $Paragraph;
+            const Figure = $(figures.Figure);
+            return $(<Figure caption={prose.trim()} parenthetical />) as $Paragraph;
         }
 
         const asPicture = picture.exec(prose.trim());
         if (asPicture) {
-            const Plate = $(plates.Plate);
-            return $(<Plate caption={asPicture[1]} source={asPicture[2]} />) as $Paragraph;
+            const Figure = $(figures.Figure);
+            return $(<Figure caption={asPicture[1] || asPicture[2]} />) as $Paragraph;
         }
 
         if (quote.test(prose)) {
-            const Quotation = $(quotations.Quotation);
+            const Paragraph = $(paragraphs.Paragraph);
             // Every line loses its angle, and the lines stay together: the mark is
             // syntax on each of them, and the quotation is one paragraph.
             const said = prose.split('\n').map(line => line.replace(/^\s*>\s?/, '')).join('\n').trim();
-            return $(<Quotation mark=">">{said}</Quotation>) as $Paragraph;
+            return $(<Paragraph mark=">">{said}</Paragraph>) as $Paragraph;
         }
 
         const asBullet = bullet.exec(prose);
         if (asBullet) {
-            const Item = $(items.Item);
-            return $(<Item mark={asBullet[1]} ordered={/\d/.test(asBullet[1])}>{asBullet[2]}</Item>) as $Paragraph;
+            const Paragraph = $(paragraphs.Paragraph);
+            return $(<Paragraph mark={asBullet[1]}>{asBullet[2]}</Paragraph>) as $Paragraph;
         }
 
         const asFence = opens.exec(prose.trim());

@@ -106,30 +106,11 @@ describe('the parse — one walk, three answers by level', () => {
 
     it('the accepted levels are the walk\'s only knob — the one below by default, and a section widens it', () => {
         const section: $Section = $(<Section><Title>Levels</Title>{'\n\nOne. Two.'}</Section>);
-        // A section may hold sections, the way a subject may hold subjects.
-        expect(section.accepts).toEqual(['section', 'paragraph']);
+        // A section composes PARAGRAPHS. Depth is a later layer, not the parse's.
+        expect(section.accepts).toEqual(['paragraph']);
         const paragraph = section.parts()[1] as $Paragraph;
         expect(paragraph.accepts).toEqual(['sentence']);
         expect(paragraph.parts()[0]).toBeInstanceOf($Sentence);
-    });
-
-    it('a section holds a subsection as a part AND answers the flat paragraph list', () => {
-        const section: $Section = $(
-            <Section><Title>Outer</Title>{'\n\nOuter prose.'}
-                <Section><Title>Inner</Title>{'\n\nInner prose.'}</Section>
-                {'\n\nAfter the inner one.'}
-            </Section>
-        );
-        const inner = section.parts().find(p => p instanceof $Section) as $Section;
-        expect(inner).toBeDefined();
-        expect(inner.heading).toBe('Inner');
-        // The tree is kept — nothing is flattened in the parse.
-        expect(section.sections.length).toBe(1);
-        // And the flat reading reaches through it.
-        const flat = section.paragraphs.map(p => p.copy);
-        expect(flat).toContain('Outer prose.');
-        expect(flat).toContain('Inner prose.');
-        expect(flat).toContain('After the inner one.');
     });
 
     it('with nothing accepted there are no parts — the floor composes nothing', () => {

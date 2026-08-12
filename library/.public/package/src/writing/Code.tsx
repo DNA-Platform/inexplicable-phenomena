@@ -3,14 +3,14 @@ import { $, $valid } from '@dna-platform/chemistry';
 import { $Figure } from './Figure';
 
 export class $Code extends $Figure {
-    $source? = '';
     $language? = '';
+    $source? = '';
 
     $parenthetical? = true;
 
-    get source(): string { return this.$source ?? ''; }
-
     get language(): string { return this.$language || 'text'; }
+
+    get source(): string { return this.$source ?? ''; }
 
     drawn(): ReactNode {
         return this.source ? <pre className={`code ${this.language}`}>{this.source}</pre> : null;

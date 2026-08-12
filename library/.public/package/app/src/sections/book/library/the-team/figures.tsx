@@ -97,17 +97,21 @@ export class $Listed extends $Figure {
         return (
             <Listing>
                 <ListingName>{this.of || this.caption.copy}</ListingName>
-                <pre>{this.source.trim()}</pre>
+                <pre>{this.content.trim()}</pre>
             </Listing>
         );
     }
 
+    $content = '';
+
+    get content(): string { return this.$content; }
+
     drawn(): ReactNode {
-        return this.source ? <pre>{this.source.trim()}</pre> : null;
+        return this.content ? <pre>{this.content.trim()}</pre> : null;
     }
 
     valid(): boolean {
-        return this.source !== '' || this.caption.copy !== '';
+        return this.content !== '' || this.caption.copy !== '';
     }
 }
 
