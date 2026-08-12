@@ -1,8 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { type $Book } from '../book/Book';
+import { $Book } from '../book/Book';
 import { $CardCatalogue } from './CardCatalogue';
 import { $IndexCard } from './IndexCard';
-import { type $LibraryCard } from './LibraryCard';
+import { $LibraryCard } from './LibraryCard';
 
 export class $LibraryCatalogue extends $CardCatalogue<$Book> {
     $indexings: Record<string, Record<string, $LibraryCard>> = {};

@@ -1,4 +1,4 @@
-import { type $Referent$ } from './Referent';
+import { $Referent$ } from './Referent';
 
 export interface $Reference$<T extends $Referent$ = any> extends $Referent$ {
     copy: string;

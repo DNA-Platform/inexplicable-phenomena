@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Paragraph } from '../writing/Paragraph';
 import { $Key } from './Key';

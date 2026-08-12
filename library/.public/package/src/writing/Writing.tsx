@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
-import { $, $check, $Chemical, type $Html } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
+import { $, $check, $Chemical, $Html } from '@dna-platform/chemistry';
+import { $Referent$ } from '../reference/Referent';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { block, gathered, text } from '../utilities/html';

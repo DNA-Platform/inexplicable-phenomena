@@ -1,10 +1,10 @@
 import { $, $check } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Chapter } from './Chapter';
-import { type $Title } from '../writing/Title';
-import { type $Book } from './Book';
+import { $Title } from '../writing/Title';
+import { $Book } from './Book';
 import { $Section } from '../writing/Section';
 import { $Author } from './Author';
 import { $Subject } from './Subject';

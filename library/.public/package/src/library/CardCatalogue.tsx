@@ -1,11 +1,11 @@
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
-import { type $Catalogue$ } from '../reference/Catalogue';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
+import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import * as paths from '../reference/Path';
-import { type $Composition$ } from '../writing/Composition';
+import { $Composition$ } from '../writing/Composition';
 import { $IndexCard } from './IndexCard';
 
 export class $CardCatalogue<T extends $Referent$ & { copy: string; index: number; parenthetical: boolean } = any> extends $Chemical implements $Catalogue$<T> {

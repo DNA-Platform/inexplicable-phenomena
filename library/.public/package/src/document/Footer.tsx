@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $check, type $Html } from '@dna-platform/chemistry';
+import { $, $check, $Html } from '@dna-platform/chemistry';
 import { $Section } from '../writing/Section';
 import { $Title } from '../writing/Title';
 import { $Footnote } from './Footnote';

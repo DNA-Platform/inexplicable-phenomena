@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Sentence } from '../writing/Sentence';
-import { type $Footer } from './Footer';
+import { $Footer } from './Footer';
 
 export class $Footnote extends $Sentence {
     $for = '';

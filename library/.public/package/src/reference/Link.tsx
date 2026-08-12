@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { Link as RouterLink } from 'react-router-dom';
 import { $Sentence } from '../writing/Sentence';

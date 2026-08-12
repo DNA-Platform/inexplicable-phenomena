@@ -1,7 +1,7 @@
-import { type ReactNode } from 'react';
-import { $, $Chemical, type Component } from '@dna-platform/chemistry';
-import { type $Referent$ } from './Referent';
-import { type $Reference$ } from './Reference';
+import { ReactNode } from 'react';
+import { $, $Chemical, Component } from '@dna-platform/chemistry';
+import { $Referent$ } from './Referent';
+import { $Reference$ } from './Reference';
 import * as paths from './Path';
 
 export class $Path<M extends $Referent$ = any, U extends $Referent$ = any> extends $Chemical implements $Reference$<U> {

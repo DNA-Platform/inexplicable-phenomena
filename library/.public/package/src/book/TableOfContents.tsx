@@ -1,13 +1,13 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
-import { type $Catalogue$ } from '../reference/Catalogue';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
+import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import * as paths from '../reference/Path';
-import { type $Composition$ } from '../writing/Composition';
+import { $Composition$ } from '../writing/Composition';
 import { $Chapter } from './Chapter';
 import { $Row } from './Row';
 import * as rows from './Row';
@@ -16,7 +16,7 @@ import * as titles from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
 import { $Book } from './Book';
-import { type $LibraryCard } from '../library/LibraryCard';
+import { $LibraryCard } from '../library/LibraryCard';
 
 export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
     $cards: $LibraryCard[] = [];

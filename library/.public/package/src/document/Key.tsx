@@ -1,9 +1,9 @@
-import { type ReactNode } from 'react';
-import { $, $Chemical, type Component } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
+import { ReactNode } from 'react';
+import { $, $Chemical, Component } from '@dna-platform/chemistry';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
-import { type $Footnote } from './Footnote';
+import { $Footnote } from './Footnote';
 
 export class $Key extends $Chemical implements $Reference$<$Footnote> {
     $name = '';

@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Footnote } from './Footnote';
-import { type $Bibliography } from './Bibliography';
+import { $Bibliography } from './Bibliography';
 
 export class $Citation extends $Footnote {
     get number(): number {

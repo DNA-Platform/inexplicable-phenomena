@@ -1,14 +1,14 @@
 import { $ } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
-import { type $Catalogue$ } from '../reference/Catalogue';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
+import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
-import { type $Composition$ } from '../writing/Composition';
+import { $Composition$ } from '../writing/Composition';
 import { $Document } from '../document/Document';
 import { $Section } from '../writing/Section';
-import { type $Book } from './Book';
+import { $Book } from './Book';
 
 export class $Chapter extends $Document {
     get book(): $Book { return this.parent as $Book; }

@@ -1,13 +1,13 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { type $Composition$ } from './Composition';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
-import { type $Catalogue$ } from '../reference/Catalogue';
+import { $Composition$ } from './Composition';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
+import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../utilities/Composible';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, type Level } from './Writing';
+import { $Writing, Level } from './Writing';
 import { $Letter } from './Letter';
 import * as letters from './Letter';
 

@@ -1,8 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
-import { $Writing, type Level } from './Writing';
+import { $Writing, Level } from './Writing';
 
 export class $Letter extends $Writing implements $Reference$<$Letter> {
     get level(): Level { return 'letter'; }

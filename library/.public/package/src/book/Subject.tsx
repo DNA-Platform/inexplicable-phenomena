@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Sentence } from '../writing/Sentence';
-import { type $Book } from './Book';
-import { type $LibraryCard } from '../library/LibraryCard';
+import { $Book } from './Book';
+import { $LibraryCard } from '../library/LibraryCard';
 
 export class $Subject extends $Sentence implements $Reference$<$Book> {
     $for?: $LibraryCard = undefined;

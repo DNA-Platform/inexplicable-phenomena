@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Writing } from '../writing/Writing';
 

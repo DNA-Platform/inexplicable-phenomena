@@ -1,7 +1,7 @@
-import { $, type $Chemical } from '@dna-platform/chemistry';
-import { type $Book } from '../book/Book';
-import { type $Chapter } from '../book/Chapter';
-import { type $Reference$ } from '../reference/Reference';
+import { $, $Chemical } from '@dna-platform/chemistry';
+import { $Book } from '../book/Book';
+import { $Chapter } from '../book/Chapter';
+import { $Reference$ } from '../reference/Reference';
 import { $IndexCard } from './IndexCard';
 
 type Composed = 'sections' | 'paragraphs' | 'sentences' | 'words' | 'letters' | 'copy';

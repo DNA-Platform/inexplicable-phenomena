@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Reference$ } from '../reference/Reference';
-import { type $Composition$ } from '../writing/Composition';
+import { $Referent$ } from '../reference/Referent';
+import { $Reference$ } from '../reference/Reference';
+import { $Composition$ } from '../writing/Composition';
 import { $Location } from '../reference/Location';
 import * as locations from '../reference/Location';
 

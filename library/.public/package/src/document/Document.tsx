@@ -1,13 +1,13 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
-import { type $Referent$ } from '../reference/Referent';
-import { type $Composition$ } from '../writing/Composition';
-import { $Writing, type Level } from '../writing/Writing';
+import { $Referent$ } from '../reference/Referent';
+import { $Composition$ } from '../writing/Composition';
+import { $Writing, Level } from '../writing/Writing';
 import { $Section } from '../writing/Section';
 import { $Title } from '../writing/Title';
 import * as titles from '../writing/Title';
-import { type $Subtitle } from '../writing/Subtitle';
-import { type $Tagline } from '../writing/Tagline';
+import { $Subtitle } from '../writing/Subtitle';
+import { $Tagline } from '../writing/Tagline';
 import { $Paragraph } from '../writing/Paragraph';
 import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';

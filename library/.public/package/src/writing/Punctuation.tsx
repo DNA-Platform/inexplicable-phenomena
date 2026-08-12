@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Word } from './Word';
-import { type Role } from './Writing';
+import { Role } from './Writing';
 
 // Punctuation is a word that is mentioned rather than used: the mark is in the
 // sentence and stands for itself. It is present in the writing and passed over
