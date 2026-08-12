@@ -11,10 +11,11 @@ import { $TableOfContents, TableOfContents } from '@/book/TableOfContents';
 import { $Book, Book } from '@/book/Book';
 import { Title } from '@/writing/Title';
 import { $Location } from '@/reference/Location';
+import { $Referent } from '@/reference/Referent';
+import { $$Section } from '@/writing/Section';
 import { $Path } from '@/reference/Path';
 import { $Sentence } from '@/writing/Sentence';
 import { $$Sentence, $$Chapter } from '@/index';
-import { $Row } from '@/book/Row';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
 import { $Highlight, Highlight } from '@/reference/Highlight';
 import { $Word } from '@/writing/Word';
@@ -152,15 +153,17 @@ describe('the two connections — find goes forward, ref comes back', () => {
         const b: $Book = $(book());
         const word = b.chapters[3].sections[0].paragraphs[1].sentences[0].at(0).read()!;
         const letter = word.at(0).read()!;
+        // A LETTER IS WRITING, and its own reference — but it no longer answers
+        // read(), because a reference form must be free to read ELSEWHERE and the
+        // floor was the one place that forbade it.
         expect(letter.ref).toBe(letter);
-        expect(letter.read()).toBe(letter);
     });
 
     it('a catalogue is a composition of references — entries dereference to the contents', () => {
         const b: $Book = $(book());
         const entries = b.chapters[3].ref.parts();
         expect(entries.length).toBe(b.chapters[3].parts().length);
-        expect(entries.every(e => e instanceof $Location)).toBe(true);
+        expect(entries.every(e => e instanceof $$Section)).toBe(true);
         expect(entries[0].read()).toBe(b.chapters[3].parts()[0]);
     });
 
@@ -184,7 +187,7 @@ describe('the two connections — find goes forward, ref comes back', () => {
         const b: $Book = $(book());
         const toc = b.tableOfContents;
         const rows = toc.parts();
-        expect(rows.every(s => s instanceof $Section && s instanceof $Row)).toBe(true);
+        expect(rows.every(s => s instanceof $Section && s instanceof $$Chapter)).toBe(true);
         expect(rows.every(r => r.read() !== undefined)).toBe(true);
         expect(rows[0].read()).toBe(b.chapters[3]);
         expect(rows[0].copy).toBe('Coordinates');
@@ -626,5 +629,25 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(container.textContent).toContain('The Algebra of Perspective');
         expect(container.textContent).toContain('change of coordinates');
         expect(container.textContent).not.toContain('In brief.');
+    });
+});
+
+// A REFERENT IS A CHEMICAL. Doug's ruling, queued since sprint 47 and unblocked
+// only once every reference form became writing. The one thing it cannot cover
+// is a READING — what follow() builds out of dereferenced entries — so the
+// catalogue equation spells its reference half out rather than inheriting it.
+describe('$Referent is a class, and a reading is the one thing that is not one', () => {
+    it('a book is a referent, and so is each of its chapters and contents entries', () => {
+        const b: $Book = $(book());
+        expect(b).toBeInstanceOf($Referent);
+        expect(b.chapters[0]).toBeInstanceOf($Referent);
+        expect(b.tableOfContents.parts()[0]).toBeInstanceOf($Referent);
+    });
+
+    it('but a READING is not — follow() answers a composition that is no chemical', () => {
+        const b: $Book = $(book());
+        const reading = b.follow();
+        expect(reading).not.toBeInstanceOf($Referent);
+        expect(reading.valid()).toBe(true);
     });
 });

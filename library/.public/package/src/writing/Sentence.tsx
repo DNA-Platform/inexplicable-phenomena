@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Composition$ } from './Composition';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, Level } from './Writing';
+import { $Writing, Level, Role } from './Writing';
 import { $Letter } from './Letter';
 import * as letters from './Letter';
-import { $Word } from './Word';
+import { $Word, $$Word } from './Word';
 import * as words from './Word';
 import * as punctuation from './Punctuation';
 import * as links from '../reference/Link';
@@ -40,7 +40,7 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
         return [...this.copy].map(g => $(<Letter>{g}</Letter>) as $Letter);
     }
 
-    get ref(): $$Sentence { return new $$Sentence(this); }
+    get ref(): $$Sentence { const Entry = $($$Sentence); return $(<Entry of={this} />) as $$Sentence; }
 
     // A sentence is divided into its words AND the syntax between them. The
     // words are used; the spaces, commas and stops are mentioned — present in
@@ -88,49 +88,52 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
     }
 }
 
-export class $$Sentence implements $Catalogue$<$Word>, $Reference$<$Sentence> {
-    parenthetical = false;
+export class $$Sentence extends $Word implements $Reference$<$Sentence>, $Catalogue$<$Word> {
+    $of!: $Sentence;
 
-    constructor(public of: $Sentence) { }
+    $role?: Role = 'mention';
 
-    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
-    get canonical(): $Reference$<$Word> { return $Composible$.canonical(this); }
+    view(): ReactNode { return <>{`“${this.copy}”`}</>; }
 
-    parts(): $Reference$<$Word>[] {
-        return this.of.parts().map((_, position) => this.of.at(position));
+    get of(): $Sentence { return this.$of; }
+    get copy(): string { return this.of.copy; }
+    get canonical(): $$Word { return $Composible$.canonical(this); }
+
+    parts(): $$Word[] {
+        const Entry = $($$Word);
+        return this.of.parts().map(part => $(<Entry of={part} />) as $$Word);
     }
 
-    where(match: (reference: $Reference$<$Word>) => boolean): $Reference$<$Word>[] {
+    where(match: (part: $$Word) => boolean): $$Word[] {
         return $Composible$.where(this, match);
     }
 
-    select<U>(pick: (reference: $Reference$<$Word>) => U): U[] {
+    select<U>(pick: (part: $$Word) => U): U[] {
         return $Composible$.select(this, pick);
     }
 
-    single(match: (reference: $Reference$<$Word>) => boolean): $Reference$<$Word> {
+    single(match: (part: $$Word) => boolean): $$Word {
         return $Composible$.single(this, match);
     }
 
-    at(position: number): $Location<$Reference$<$Word>> {
+    at(position: number): $Location<$$Word> {
         return $Composible$.at(this, position);
     }
 
     follow(): $Composition$<$Word> {
-        return $Composible$.follow(this);
+        return $Composible$.follow(this as never);
     }
 
     read(): $Sentence {
         return this.of;
     }
 
-    valid(): boolean {
-        return this.of.valid();
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+        return $(<Path first={this} onward={next} />);
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Sentence, U> = $(<Path first={this} onward={next} />);
-        return path;
+    valid(): boolean {
+        return this.$of !== undefined;
     }
 }
 

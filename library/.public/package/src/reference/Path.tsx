@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { $, $Chemical, Component } from '@dna-platform/chemistry';
-import { $Referent$ } from './Referent';
+import { $Referent } from './Referent';
 import { $Reference$ } from './Reference';
 import * as paths from './Path';
 
-export class $Path<M extends $Referent$ = any, U extends $Referent$ = any> extends $Chemical implements $Reference$<U> {
+export class $Path<M extends $Referent = any, U extends $Referent = any> extends $Referent implements $Reference$<U> {
     $first!: $Reference$<M>;
     $onward!: $Reference$<U>;
 
@@ -17,7 +17,7 @@ export class $Path<M extends $Referent$ = any, U extends $Referent$ = any> exten
         return this.$onward.read();
     }
 
-    then<V extends $Referent$>(onward: $Reference$<V>): $Reference$<V> {
+    then<V extends $Referent>(onward: $Reference$<V>): $Reference$<V> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }

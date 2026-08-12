@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
+import { text } from '@/utilities/html';
 import { $Writing } from '@/writing/Writing';
 import { $Section, Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
@@ -183,8 +184,8 @@ describe('the parse reaches every level, and the counts agree from any altitude'
     it('document to section to paragraph to sentence to word to letter — each level composes the one below', () => {
         const c = chapter();
         expect(c.parts().every(s => s instanceof $Section)).toBe(true);
-        expect(c.sections[0].parts().every(p => p instanceof $Paragraph || p instanceof $Section)).toBe(true);
-        const paragraph = c.sections[0].paragraphs[1];
+        expect(c.parts()[0].parts().every(p => p instanceof $Paragraph)).toBe(true);
+        const paragraph = c.parts()[0].paragraphs[1];
         expect(paragraph.parts().every(s => s instanceof $Sentence)).toBe(true);
         const sentence = paragraph.parts()[0];
         expect(sentence.parts().every(w => w instanceof $Word)).toBe(true);
@@ -249,5 +250,44 @@ describe('the parse threads lineage, and a scope can reach through it', () => {
         expect(stop.parts().every(l => l.$role === undefined)).toBe(true);
         // And the used words are untouched.
         expect(sentence.words.every(w => w.role === 'use')).toBe(true);
+    });
+});
+
+// A REFERENCE MENTIONS ITS REFERENT. Doug, 2026-08-13: "The sentence reference
+// is literal. Maybe you display the sentence as the reference in quotes?" So a
+// reference is writing that draws what it stands for — named where the referent
+// has a name, quoted where it has none, and MENTIONED in every case, because a
+// reference presents its referent rather than saying what it says.
+describe('a reference is writing, and what it draws is its referent mentioned', () => {
+    const section = (prose: string): $Section =>
+        $(<Section><Title>A Section</Title>{`\n\n${prose}`}</Section>);
+
+    it('every reference form is writing one grade below what it stands for', () => {
+        const s = section('One sentence here. And another.');
+        const paragraph = s.parts()[1];
+        expect(s.ref).toBeInstanceOf($Paragraph);
+        expect(paragraph.ref).toBeInstanceOf($Sentence);
+        expect(paragraph.parts()[0].ref).toBeInstanceOf($Word);
+        expect(paragraph.parts()[0].parts()[0].ref).toBeInstanceOf($Letter);
+    });
+
+    it('a reference MENTIONS — it does not use', () => {
+        const s = section('One sentence here.');
+        expect(s.ref.role).toBe('mention');
+        expect(s.parts()[1].ref.role).toBe('mention');
+        expect(s.parts()[1].parts()[0].ref.role).toBe('mention');
+    });
+
+    it('a sentence reference draws the sentence IN QUOTES, because a sentence has no name', () => {
+        const s = section('One sentence here.');
+        const sentence = s.parts()[1].parts()[0];
+        expect(text(sentence.ref.view())).toBe('\u201cOne sentence here.\u201d');
+        expect(sentence.ref.copy).toBe('One sentence here.');
+    });
+
+    it('a section reference draws its HEADING, because a section has a name', () => {
+        const s = section('Prose beneath.');
+        expect(text(s.ref.view())).toBe(s.copy);
+        expect(text(s.ref.view())).not.toContain('\u201c');
     });
 });

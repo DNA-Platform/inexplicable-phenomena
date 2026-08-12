@@ -28,7 +28,6 @@ import chapterSource from '@/book/Chapter.tsx?raw';
 import coverSource from '@/book/Cover.tsx?raw';
 import synopsisSource from '@/book/Synopsis.tsx?raw';
 import tableOfContentsSource from '@/book/TableOfContents.tsx?raw';
-import rowSource from '@/book/Row.tsx?raw';
 import sectionSource from '@/writing/Section.tsx?raw';
 import titleSource from '@/writing/Title.tsx?raw';
 import referenceSource from '@/reference/Reference.tsx?raw';
@@ -63,7 +62,6 @@ const modelSources: Record<string, string> = {
     'Cover.tsx': coverSource,
     'Synopsis.tsx': synopsisSource,
     'TableOfContents.tsx': tableOfContentsSource,
-    'Row.tsx': rowSource,
     'Document.tsx': documentSource,
     'Footer.tsx': footerSource,
     'Footnote.tsx': footnoteSource,
@@ -465,8 +463,14 @@ export class $TheManifold extends $Book {
         this.head();
     }
 
+    // A turned page opens at its head, and the reset must WIN. A 0ms timeout
+    // could land before the turn had painted, and `light()` leaves a smooth
+    // scroll animating that would carry the new page a few pixels down after
+    // it — so this waits for the paint and then jumps rather than glides.
     head() {
-        setTimeout(() => document.querySelector('.page-body')?.scrollTo({ top: 0 }), 0);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.querySelector('.page-body')?.scrollTo({ top: 0, behavior: 'auto' });
+        }));
     }
 
     leave(r: Row) {

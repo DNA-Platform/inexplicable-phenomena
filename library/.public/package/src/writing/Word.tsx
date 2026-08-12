@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { $, $valid } from '@dna-platform/chemistry';
 import { $Composition$ } from './Composition';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, Level } from './Writing';
+import { $Writing, Level, Role } from './Writing';
 import { $Letter } from './Letter';
 import * as letters from './Letter';
 
@@ -15,7 +15,7 @@ export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
     get level(): Level { return 'word'; }
     get letters(): $Letter[] { return this.parts(); }
 
-    get ref(): $$Word { return new $$Word(this); }
+    get ref(): $$Word { const Entry = $($$Word); return $(<Entry of={this} />) as $$Word; }
 
     // A word is divided into its graphemes, one letter each.
     divide(prose: string): string[] {
@@ -41,49 +41,25 @@ export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
     }
 }
 
-export class $$Word implements $Catalogue$<$Letter>, $Reference$<$Word> {
-    parenthetical = false;
+export class $$Word extends $Letter implements $Reference$<$Word> {
+    $of!: $Word;
 
-    constructor(public of: $Word) { }
+    $role?: Role = 'mention';
 
-    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
-    get canonical(): $Reference$<$Letter> { return $Composible$.canonical(this); }
+    view(): ReactNode { return <>{`“${this.copy}”`}</>; }
 
-    parts(): $Reference$<$Letter>[] {
-        return this.of.parts().map((_, position) => this.of.at(position));
-    }
-
-    where(match: (reference: $Reference$<$Letter>) => boolean): $Reference$<$Letter>[] {
-        return $Composible$.where(this, match);
-    }
-
-    select<U>(pick: (reference: $Reference$<$Letter>) => U): U[] {
-        return $Composible$.select(this, pick);
-    }
-
-    single(match: (reference: $Reference$<$Letter>) => boolean): $Reference$<$Letter> {
-        return $Composible$.single(this, match);
-    }
-
-    at(position: number): $Location<$Reference$<$Letter>> {
-        return $Composible$.at(this, position);
-    }
-
-    follow(): $Composition$<$Letter> {
-        return $Composible$.follow(this);
-    }
-
+    get of(): $Word { return this.$of; }
+    get copy(): string { return this.of.copy; }
     read(): $Word {
         return this.of;
     }
 
-    valid(): boolean {
-        return this.of.valid();
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+        return $(<Path first={this} onward={next} />);
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Word, U> = $(<Path first={this} onward={next} />);
-        return path;
+    valid(): boolean {
+        return this.$of !== undefined;
     }
 }
 

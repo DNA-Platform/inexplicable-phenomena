@@ -1,5 +1,6 @@
+import { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
@@ -7,7 +8,9 @@ import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
 import { $Composition$ } from '../writing/Composition';
 import { $Document } from '../document/Document';
+import { Role } from '../writing/Writing';
 import { $Section } from '../writing/Section';
+import { $$Section } from '../writing/Section';
 import { $Book } from './Book';
 
 export class $Chapter extends $Document implements $Reference$<$Book> {
@@ -15,7 +18,7 @@ export class $Chapter extends $Document implements $Reference$<$Book> {
 
     get book(): $Book { return this.$in as $Book; }
 
-    get ref(): $$Chapter { return new $$Chapter(this); }
+    get ref(): $$Chapter { const Entry = $($$Chapter); return $(<Entry of={this} />) as $$Chapter; }
 
     read(): $Book {
         const book = this.book;
@@ -23,7 +26,7 @@ export class $Chapter extends $Document implements $Reference$<$Book> {
         return book;
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
         const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
         return path;
     }
@@ -34,52 +37,54 @@ export class $Chapter extends $Document implements $Reference$<$Book> {
     }
 }
 
-export class $$Chapter implements $Catalogue$<$Section>, $Reference$<$Chapter> {
-    index = 0;
-    parenthetical = false;
+export class $$Chapter extends $Section implements $Reference$<$Chapter>, $Catalogue$<$Section> {
+    $of!: $Chapter;
 
-    constructor(public of: $Chapter) { }
+    $role?: Role = 'mention';
 
-    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
-    get canonical(): $Reference$<$Section> { return $Composible$.canonical(this); }
+    view(): ReactNode { return <>{this.copy}</>; }
 
-    // A reference per part, standing where the part stands. Position is the
-    // whole of the correspondence — nothing is written to anything.
-    parts(): $Reference$<$Section>[] {
-        return this.of.parts().map((_, position) => this.of.at(position));
+    get of(): $Chapter { return this.$of; }
+    get copy(): string { return this.valid() ? this.of.canonical.heading : ''; }
+    get heading(): string { return this.copy; }
+    get chapter(): $Chapter { return this.of; }
+    get canonical(): $$Section { return $Composible$.canonical(this); }
+
+    parts(): $$Section[] {
+        const Entry = $($$Section);
+        return this.of.parts().map(part => $(<Entry of={part} />) as $$Section);
     }
 
-    where(match: (reference: $Reference$<$Section>) => boolean): $Reference$<$Section>[] {
+    where(match: (part: $$Section) => boolean): $$Section[] {
         return $Composible$.where(this, match);
     }
 
-    select<U>(pick: (reference: $Reference$<$Section>) => U): U[] {
+    select<U>(pick: (part: $$Section) => U): U[] {
         return $Composible$.select(this, pick);
     }
 
-    single(match: (reference: $Reference$<$Section>) => boolean): $Reference$<$Section> {
+    single(match: (part: $$Section) => boolean): $$Section {
         return $Composible$.single(this, match);
     }
 
-    at(index: number): $Location<$Reference$<$Section>> {
-        return $Composible$.at(this, index);
+    at(position: number): $Location<$$Section> {
+        return $Composible$.at(this, position);
     }
 
     follow(): $Composition$<$Section> {
-        return $Composible$.follow(this);
+        return $Composible$.follow(this as never);
     }
 
     read(): $Chapter {
         return this.of;
     }
 
-    valid(): boolean {
-        return this.of.valid();
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+        return $(<Path first={this} onward={next} />);
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Chapter, U> = $(<Path first={this} onward={next} />);
-        return path;
+    valid(): boolean {
+        return this.$of !== undefined;
     }
 }
 

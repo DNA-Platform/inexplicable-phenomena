@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import { $, $Chemical, Component } from '@dna-platform/chemistry';
 import { $Composition$ } from '../writing/Composition';
-import { $Referent$ } from './Referent';
+import { $Referent } from './Referent';
 import { $Reference$ } from './Reference';
 import * as paths from './Path';
 
-export class $Location<T extends $Referent$ = any> extends $Chemical implements $Reference$<T> {
+export class $Location<T extends $Referent = any> extends $Referent implements $Reference$<T> {
     $i = 0;
     $of!: $Composition$<any>;
 
@@ -23,7 +23,7 @@ export class $Location<T extends $Referent$ = any> extends $Chemical implements 
         return parts[this.$i] as T;
     }
 
-    then<U extends $Referent$>(onward: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(onward: $Reference$<U>): $Reference$<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }

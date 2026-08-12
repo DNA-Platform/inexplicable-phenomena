@@ -1,7 +1,7 @@
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $IndexCard } from './IndexCard';
 
-export class $CardCatalogue<T extends $Referent$ = $Referent$> {
+export class $CardCatalogue<T extends $Referent = $Referent> {
     readonly cards: $IndexCard<T>[];
 
     constructor(...cards: $IndexCard<T>[]) {

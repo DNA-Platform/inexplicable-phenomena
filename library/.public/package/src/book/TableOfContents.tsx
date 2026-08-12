@@ -1,16 +1,14 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import * as paths from '../reference/Path';
 import { $Composition$ } from '../writing/Composition';
-import { $Chapter } from './Chapter';
-import { $Row } from './Row';
-import * as rows from './Row';
+import { $Chapter, $$Chapter } from './Chapter';
 import { $Title } from '../writing/Title';
 import * as titles from '../writing/Title';
 import { $Cover } from './Cover';
@@ -36,39 +34,36 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return cover instanceof $Cover ? cover : undefined;
     }
 
-    get canonical(): $Row { return $Composible$.canonical(this); }
+    get canonical(): $$Chapter { return $Composible$.canonical(this); }
 
     get chapters(): $Chapter[] {
         return this.parts().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
     }
 
-    parts(): $Row[] {
+    parts(): $$Chapter[] {
         const book = this.book;
         if (!(book instanceof $Book)) throw new Error(`The table of contents stands under ${String((book as { constructor?: { name?: string } })?.constructor?.name)} instead of a book, with parent ${String((this.parent as { constructor?: { name?: string } })?.constructor?.name)}.`);
         // The numbered chapters: not the canonical, not parenthetical, not
-        // the contents itself — one law, by what a chapter is. The position is
-        // carried through the filter because it is what the row points AT; a
-        // row holds no number of its own.
-        const Row = $(rows.Row);
+        // the contents itself — one law, by what a chapter is.
+        const Entry = $($$Chapter);
         return book.parts()
-            .map((chapter, position) => ({ chapter, position }))
-            .filter(({ chapter }) => chapter !== this && !(chapter instanceof $Cover) && !chapter.parenthetical)
-            .map(({ position }) => $(<Row path={book.at(position)} />) as $Row);
+            .filter(chapter => chapter !== this && !(chapter instanceof $Cover) && !chapter.parenthetical)
+            .map(chapter => $(<Entry of={chapter} />) as $$Chapter);
     }
 
-    where(match: (part: $Row) => boolean): $Row[] {
+    where(match: (part: $$Chapter) => boolean): $$Chapter[] {
         return $Composible$.where(this, match);
     }
 
-    select<U>(pick: (part: $Row) => U): U[] {
+    select<U>(pick: (part: $$Chapter) => U): U[] {
         return $Composible$.select(this, pick);
     }
 
-    single(match: (part: $Row) => boolean): $Row {
+    single(match: (part: $$Chapter) => boolean): $$Chapter {
         return $Composible$.single(this, match);
     }
 
-    at(position: number): $Location<$Row> {
+    at(position: number): $Location<$$Chapter> {
         return $Composible$.at(this, position);
     }
 
@@ -81,7 +76,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return this.cover.read();
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }
@@ -102,7 +97,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return super.valid();
     }
 
-    row(row: $Row): ReactNode {
+    row(row: $$Chapter): ReactNode {
         return row.copy;
     }
 

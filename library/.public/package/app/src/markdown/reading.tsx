@@ -8,7 +8,7 @@ import { $Sentence } from '@/writing/Sentence';
 import { $Word } from '@/writing/Word';
 import { $Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
-import { $MarkdownSection, MarkdownSection } from './section';
+import { $MarkdownSection, MarkdownSection, $Equation, $Rule } from './section';
 import { $Code } from '@/writing/Code';
 import { $Figure } from '@/writing/Figure';
 
@@ -205,8 +205,15 @@ function drawPart(part: $Paragraph | $Section, spec: DressSpec, key: React.Key, 
             </React.Fragment>
         );
     }
+    if (part instanceof $Equation) {
+        return <F.DisplayMath key={key} palette={palette}><Shown tex={part.mathematics} /></F.DisplayMath>;
+    }
+    if (part instanceof $Rule) {
+        return <hr key={key} />;
+    }
     if (part instanceof $Figure) {
-        return <F.DisplayMath key={key} palette={palette}><Shown tex={(part as $Figure).caption.copy} /></F.DisplayMath>;
+        const Drawn = $(part) as any;
+        return <Drawn key={key} />;
     }
     if (part instanceof $Code) {
         const fence = part as $Code;

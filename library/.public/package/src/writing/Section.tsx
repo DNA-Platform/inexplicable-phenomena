@@ -3,15 +3,15 @@ import { lexer } from 'marked';
 import { $, $check, $Html } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
 import { $Composition$ } from './Composition';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, Level } from './Writing';
+import { $Writing, Level, Role } from './Writing';
 import { $Letter } from './Letter';
-import { $Paragraph } from './Paragraph';
+import { $Paragraph, $$Paragraph } from './Paragraph';
 import * as paragraphs from './Paragraph';
 import { $Title } from './Title';
 import * as titles from './Title';
@@ -45,9 +45,7 @@ const quote = /^\s*>/;
 const picture = /^!\[([^\]\n]*)\]\(([^)\s]*)\)$/;
 const rule = /^(-{3,}|\*{3,}|_{3,})$/;
 
-// One run of prose, cut into the pieces a section holds. A heading ABSORBS
-// everything under it until a heading of equal or higher rank, because a
-// heading is not a part — it opens a section.
+// One run of prose, cut into the pieces a section holds.
 const blocks = (prose: string): string[] => {
     if (!prose.trim()) return [];
     const pieces: string[] = [];
@@ -79,13 +77,10 @@ const blocks = (prose: string): string[] => {
     return pieces;
 };
 
-// A section composes SECTIONS OR PARAGRAPHS. A section is like a subject, which
-// can have other subjects inside it — so nesting is structural, held rather than
-// flattened, and the flat list is a reading of the tree.
-//
-// The union splits along a line that is already real: prose can only ever divide
-// into paragraphs, so a WRITTEN part may be a section and a COMPOSED one never is.
-export class $Section extends $Writing<$Paragraph | $Section> implements $Composition$<$Paragraph | $Section> {
+// A SECTION COMPOSES PARAGRAPHS, flat. A heading of any depth opens a new
+// section, so depth is a containment to bolt on later rather than a tree the
+// parse carries.
+export class $Section extends $Writing<$Paragraph> implements $Composition$<$Paragraph> {
     // THE TITLE IS PART ZERO. It is not lifted out into a member of its own — it
     // stands where it was written, as the canonical part of the section, which is
     // the cover-and-synopsis shape one grade down.
@@ -93,13 +88,8 @@ export class $Section extends $Writing<$Paragraph | $Section> implements $Compos
 
     get accepts(): Level[] { return ['paragraph']; }
 
-    // The subsections a section holds, in the order they were written.
-    get sections(): $Section[] { return this.parts().filter(p => p instanceof $Section) as $Section[]; }
-
-    // And the flat reading, which reaches through them. Nothing is flattened in
-    // the parse — the tree is kept and this walks it, exactly as $Book does.
     get paragraphs(): $Paragraph[] {
-        return this.parts().flatMap(p => p instanceof $Section ? p.paragraphs : [p as $Paragraph]);
+        return this.parts();
     }
 
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
@@ -110,7 +100,7 @@ export class $Section extends $Writing<$Paragraph | $Section> implements $Compos
 
     get canonical(): $Paragraph { return this.parts()[0] as $Paragraph; }
 
-    get ref(): $$Section { return new $$Section(this); }
+    get ref(): $$Section { const Entry = $($$Section); return $(<Entry of={this} />) as $$Section; }
 
     get document(): $Document {
         return this.parent as $Document;
@@ -132,15 +122,13 @@ export class $Section extends $Writing<$Paragraph | $Section> implements $Compos
     }
 
     // What each piece IS. The notation named it; this answers with the kind.
-    compose(prose: string): $Paragraph | $Section {
+    compose(prose: string): $Paragraph {
         const asDisplay = displayed.exec(prose.trim());
         if (asDisplay) {
             const Figure = $(figures.Figure);
             return $(<Figure caption={asDisplay[1].trim()} />) as $Paragraph;
         }
 
-        // A HEADING IS NOT A PART — it opens a section, and that section holds
-        // everything written under it until a heading of equal or higher rank.
         const asHeading = heading.exec(prose);
         if (asHeading) {
             const Title = $(titles.Title);
@@ -219,49 +207,52 @@ export class $Section extends $Writing<$Paragraph | $Section> implements $Compos
     }
 }
 
-export class $$Section implements $Catalogue$<$Paragraph | $Section>, $Reference$<$Section> {
-    parenthetical = false;
+export class $$Section extends $Paragraph implements $Reference$<$Section>, $Catalogue$<$Paragraph> {
+    $of!: $Section;
 
-    constructor(public of: $Section) { }
+    $role?: Role = 'mention';
 
-    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
-    get canonical(): $Reference$<$Paragraph | $Section> { return $Composible$.canonical(this); }
+    view(): ReactNode { return <>{this.copy}</>; }
 
-    parts(): $Reference$<$Paragraph | $Section>[] {
-        return this.of.parts().map((_, position) => this.of.at(position));
+    get of(): $Section { return this.$of; }
+    get copy(): string { return this.of.copy; }
+    get canonical(): $$Paragraph { return $Composible$.canonical(this); }
+
+    parts(): $$Paragraph[] {
+        const Entry = $($$Paragraph);
+        return this.of.parts().map(part => $(<Entry of={part} />) as $$Paragraph);
     }
 
-    where(match: (reference: $Reference$<$Paragraph | $Section>) => boolean): $Reference$<$Paragraph | $Section>[] {
+    where(match: (part: $$Paragraph) => boolean): $$Paragraph[] {
         return $Composible$.where(this, match);
     }
 
-    select<U>(pick: (reference: $Reference$<$Paragraph | $Section>) => U): U[] {
+    select<U>(pick: (part: $$Paragraph) => U): U[] {
         return $Composible$.select(this, pick);
     }
 
-    single(match: (reference: $Reference$<$Paragraph | $Section>) => boolean): $Reference$<$Paragraph | $Section> {
+    single(match: (part: $$Paragraph) => boolean): $$Paragraph {
         return $Composible$.single(this, match);
     }
 
-    at(position: number): $Location<$Reference$<$Paragraph | $Section>> {
+    at(position: number): $Location<$$Paragraph> {
         return $Composible$.at(this, position);
     }
 
-    follow(): $Composition$<$Paragraph | $Section> {
-        return $Composible$.follow(this);
+    follow(): $Composition$<$Paragraph> {
+        return $Composible$.follow(this as never);
     }
 
     read(): $Section {
         return this.of;
     }
 
-    valid(): boolean {
-        return this.of.valid();
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+        return $(<Path first={this} onward={next} />);
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Section, U> = $(<Path first={this} onward={next} />);
-        return path;
+    valid(): boolean {
+        return this.$of !== undefined;
     }
 }
 

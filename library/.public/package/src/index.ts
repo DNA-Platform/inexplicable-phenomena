@@ -1,4 +1,4 @@
-export { type $Referent$ } from './reference/Referent';
+export { type $Referent } from './reference/Referent';
 export { type $Reference$ } from './reference/Reference';
 export { type $Catalogue$ } from './reference/Catalogue';
 export { $Location, Location } from './reference/Location';
@@ -25,7 +25,6 @@ export { $CardCatalogue } from './library/CardCatalogue';
 export { $Synopsis, Synopsis } from './book/Synopsis';
 export { $Index, Index } from './book/Index';
 export { $TableOfContents, TableOfContents } from './book/TableOfContents';
-export { $Row, Row } from './book/Row';
 
 export { $Book, Book } from './book/Book';
 export { $Writing, Writing, beneath } from './writing/Writing';

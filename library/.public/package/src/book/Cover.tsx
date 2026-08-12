@@ -1,5 +1,5 @@
 import { $, $check } from '@dna-platform/chemistry';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Chapter } from './Chapter';
@@ -27,7 +27,7 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
         return this.book;
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }

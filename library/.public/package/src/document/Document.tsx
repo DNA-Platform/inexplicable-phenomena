@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Composition$ } from '../writing/Composition';
 import { $Writing, Level } from '../writing/Writing';
 import { $Section } from '../writing/Section';
@@ -18,7 +18,7 @@ import { $Bibliography } from './Bibliography';
 // A document is the sixth level of writing — letter, word, sentence, paragraph,
 // section, document. Chapter, book, subject and library are things done WITH a
 // document; the document itself is writing, and composes sections.
-export class $Document extends $Writing<$Section> implements $Referent$, $Composition$<$Section> {
+export class $Document extends $Writing<$Section> implements $Referent, $Composition$<$Section> {
     $parts: $Section[] = [];
 
     constructor() {

@@ -53,7 +53,7 @@ for (const e of found) {
     else remaining.splice(at, 1);
 }
 
-const named = '$LibraryCard·$IndexCard<$Referent$>';
+const named = '$LibraryCard·$IndexCard<$Referent>';
 console.log(
     `app tsc (app/tsconfig.json): ${files} files typechecked — ` +
     `${baseline.length - remaining.length}/${baseline.length} baselined type-debt errors [${named}], ` +

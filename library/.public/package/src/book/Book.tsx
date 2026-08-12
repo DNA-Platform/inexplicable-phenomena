@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $check, $valid, $Chemical } from '@dna-platform/chemistry';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
@@ -23,7 +23,7 @@ import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
 
-export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapter>, $Catalogue$<$Book> {
+export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalogue$<$Book> {
     $parts: $Chapter[] = [];
 
     $parenthetical? = false;
@@ -68,7 +68,7 @@ export class $Book extends $Chemical implements $Referent$, $Composition$<$Chapt
         return this.follow();
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }

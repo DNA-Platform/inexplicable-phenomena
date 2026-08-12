@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $check, $Chemical, $Html } from '@dna-platform/chemistry';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { block, text } from '../utilities/html';
@@ -95,7 +95,7 @@ export function parse<P extends $Writing>(
 
 // Writing at a level, composing the writing one level below it. A letter
 // composes nothing and takes the default.
-export class $Writing<P extends $Writing = $Writing<any>> extends $Chemical implements $Referent$ {
+export class $Writing<P extends $Writing = $Writing<any>> extends $Referent {
     text!: $Html<'block'>;
 
     $parenthetical? = false;

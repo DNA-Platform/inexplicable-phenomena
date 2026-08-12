@@ -5,6 +5,8 @@ import { $Sentence, Sentence } from '@/writing/Sentence';
 import { $Word } from '@/writing/Word';
 import { $Location } from '@/reference/Location';
 import { $Composible$ } from '@/writing/Composition';
+import { $Referent } from '@/reference/Referent';
+import { $Chemical } from '@dna-platform/chemistry';
 
 describe('$Composible$ — parts() is enough; the rest are extension methods', () => {
     const sentence = (): $Sentence => $(<Sentence>the frame turns</Sentence>);
@@ -31,12 +33,15 @@ describe('$Composible$ — parts() is enough; the rest are extension methods', (
     it('follow reaches on — every part followed to its letters gives the writing back', () => {
         const s = sentence();
         const words = s.ref.follow();
-        const letters = $Composible$.follow({ parts: () => words.parts().flatMap(w => w.ref.parts()) });
+        // follow() already dereferenced the entries, so these ARE the words; and a
+        // letter is writing that no longer answers read(), so the floor is walked
+        // rather than followed.
+        const letters = words.parts().flatMap(w => w.parts());
         // Mentioning propagates, so the syntax between the words keeps its
         // letters too — and the floor returns the WRITING rather than a
         // mashed-together reading of it.
-        expect(letters.parts().map(l => l.copy).join('')).toBe(s.copy);
-        expect(letters.parts().map(l => l.copy).join('')).toBe('the frame turns');
+        expect(letters.map(l => l.copy).join('')).toBe(s.copy);
+        expect(letters.map(l => l.copy).join('')).toBe('the frame turns');
     });
 
     it('follow dereferences the drawer — the catalogue becomes the composition of what its entries find', () => {
@@ -53,3 +58,22 @@ describe('$Composible$ — parts() is enough; the rest are extension methods', (
         expect(s.at(2).read().copy).toBe($Composible$.at(s, 2).read().copy);
     });
 });
+
+// A REFERENT IS A CHEMICAL. Doug's ruling, queued since sprint 47 and unblocked
+// only once every reference form became writing. The one thing it cannot cover
+// is a READING — what follow() builds out of dereferenced entries — so the
+// catalogue equation spells its reference half out rather than inheriting it.
+describe('$Referent is a class, and a reading is the one thing that is not one', () => {
+    const written = (): $Sentence => $(<Sentence>the frame turns</Sentence>);
+
+    it('everything written is a referent, and a referent is a chemical', () => {
+        const s = written();
+        expect(s).toBeInstanceOf($Referent);
+        expect(s).toBeInstanceOf($Chemical);
+        expect(s.ref).toBeInstanceOf($Referent);
+        expect(s.parts()[0]).toBeInstanceOf($Referent);
+        expect($Composible$.at(s, 0)).toBeInstanceOf($Referent);
+    });
+
+});
+

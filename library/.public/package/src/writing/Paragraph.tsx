@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { $, $valid } from '@dna-platform/chemistry';
 import { $Composition$ } from './Composition';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, Level } from './Writing';
+import { $Writing, Level, Role } from './Writing';
 import { $Letter } from './Letter';
-import { $Sentence } from './Sentence';
+import { $Sentence, $$Sentence } from './Sentence';
 import * as sentences from './Sentence';
 import { $Word } from './Word';
 
@@ -20,7 +20,7 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
-    get ref(): $$Paragraph { return new $$Paragraph(this); }
+    get ref(): $$Paragraph { const Entry = $($$Paragraph); return $(<Entry of={this} />) as $$Paragraph; }
 
     // A paragraph is divided at its stops — and a stop inside a code span or
     // inside a link's target is not the end of a sentence, so "call `x.y()`
@@ -50,49 +50,52 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
     }
 }
 
-export class $$Paragraph implements $Catalogue$<$Sentence>, $Reference$<$Paragraph> {
-    parenthetical = false;
+export class $$Paragraph extends $Sentence implements $Reference$<$Paragraph>, $Catalogue$<$Sentence> {
+    $of!: $Paragraph;
 
-    constructor(public of: $Paragraph) { }
+    $role?: Role = 'mention';
 
-    get copy(): string { return this.parts().map(r => r.copy).join(' '); }
-    get canonical(): $Reference$<$Sentence> { return $Composible$.canonical(this); }
+    view(): ReactNode { return <>{`“${this.copy}”`}</>; }
 
-    parts(): $Reference$<$Sentence>[] {
-        return this.of.parts().map((_, position) => this.of.at(position));
+    get of(): $Paragraph { return this.$of; }
+    get copy(): string { return this.of.copy; }
+    get canonical(): $$Sentence { return $Composible$.canonical(this); }
+
+    parts(): $$Sentence[] {
+        const Entry = $($$Sentence);
+        return this.of.parts().map(part => $(<Entry of={part} />) as $$Sentence);
     }
 
-    where(match: (reference: $Reference$<$Sentence>) => boolean): $Reference$<$Sentence>[] {
+    where(match: (part: $$Sentence) => boolean): $$Sentence[] {
         return $Composible$.where(this, match);
     }
 
-    select<U>(pick: (reference: $Reference$<$Sentence>) => U): U[] {
+    select<U>(pick: (part: $$Sentence) => U): U[] {
         return $Composible$.select(this, pick);
     }
 
-    single(match: (reference: $Reference$<$Sentence>) => boolean): $Reference$<$Sentence> {
+    single(match: (part: $$Sentence) => boolean): $$Sentence {
         return $Composible$.single(this, match);
     }
 
-    at(position: number): $Location<$Reference$<$Sentence>> {
+    at(position: number): $Location<$$Sentence> {
         return $Composible$.at(this, position);
     }
 
     follow(): $Composition$<$Sentence> {
-        return $Composible$.follow(this);
+        return $Composible$.follow(this as never);
     }
 
     read(): $Paragraph {
         return this.of;
     }
 
-    valid(): boolean {
-        return this.of.valid();
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+        return $(<Path first={this} onward={next} />);
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
-        const path: $Path<$Paragraph, U> = $(<Path first={this} onward={next} />);
-        return path;
+    valid(): boolean {
+        return this.$of !== undefined;
     }
 }
 

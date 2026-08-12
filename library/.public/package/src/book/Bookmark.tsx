@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Referent$ } from '../reference/Referent';
+import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Sentence } from '../writing/Sentence';
 
-export class $Bookmark<T extends $Referent$ = $Referent$> extends $Sentence implements $Reference$<T> {
+export class $Bookmark<T extends $Referent = $Referent> extends $Sentence implements $Reference$<T> {
     $for!: $Reference$<T>;
 
     read(): T {
@@ -16,7 +16,7 @@ export class $Bookmark<T extends $Referent$ = $Referent$> extends $Sentence impl
         return this.$for !== undefined && this.$for.valid();
     }
 
-    then<U extends $Referent$>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }
