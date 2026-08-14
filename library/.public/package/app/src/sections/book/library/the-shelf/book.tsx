@@ -11,6 +11,7 @@ import { $ShelfContents, ShelfContents } from './contents';
 import { AlgebraSynopsis } from '../algebra/02-the-synopsis';
 import { ManifoldSynopsis } from '../the-manifold/02-the-synopsis';
 import { TeamSynopsis } from '../the-team/02-the-synopsis';
+import { BuildSynopsis } from '../the-build/02-the-synopsis';
 import { Leaf, Column, Reading, ReadingReturn, Drawer, DrawerCard, DrawerName, DrawerRow } from '../../catalogue.styled';
 
 // The shelf IS a book, and this is that book viewing itself. Its contents page
@@ -68,6 +69,7 @@ export const shelf: $TheShelf = $(
         <AlgebraSynopsis />
         <ManifoldSynopsis />
         <TeamSynopsis />
+        <BuildSynopsis />
         <TheCardCatalogue />
     </TheShelf>
 ) as $TheShelf;

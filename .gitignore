@@ -1,3 +1,8 @@
+# Build sandbox (uncommitted — corpora for seeing what the compiler generates)
+library/.test-library/
+library/.test/
+**/test-books/
+
 # Local Archive
 .archive/*
 
@@ -32,6 +37,8 @@ build/
 # Editor directories and files
 .idea/
 .vscode/
+!.vscode/
+!.vscode/sort-order.json
 *.swp
 *.swo
 .DS_Store

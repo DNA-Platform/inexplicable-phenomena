@@ -31,6 +31,7 @@ const inks: Record<string, string> = {
     'The Algebra of Perspective': '#5b2f2a',
     'The Manifold': '#2c4a3c',
     'The Team': '#8c3b1e',
+    'The Build': '#1e3a4a',
 };
 
 export class $ShelfContents extends $TableOfContents {

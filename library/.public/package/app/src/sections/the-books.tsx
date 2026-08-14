@@ -5,6 +5,7 @@ import { shelf, contents } from './book/library/the-shelf/book';
 import { team } from './book/library/the-team/book';
 import { algebra } from './book/library/algebra/book';
 import { manifold } from './book/library/the-manifold/book';
+import { build } from './book/library/the-build/book';
 
 // The route is glue: the shelf book views itself, the team book views itself,
 // and travelling between them is following a card — the router does the
@@ -40,6 +41,7 @@ class $TheBooks extends $Chemical {
 shelf.$travel = card => route?.pull(card);
 team.$travel = () => route?.home();
 manifold.$travel = () => route?.home();
+build.$travel = () => route?.home();
 
 const TheBooks = $($TheBooks);
 

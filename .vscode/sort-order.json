@@ -1,0 +1,37 @@
+{
+  ".": [
+    ".i",
+    ".me",
+    ".claude",
+    ".archive",
+    ".github",
+    ".git",
+    "issues",
+    "library",
+    "node_modules",
+    ".gitignore",
+    ".env",
+    ".npmrc",
+    "README.md",
+    "LICENSE.md",
+    "CLAUDE.md",
+    "package.json",
+    "package-lock.json",
+    ".vscode"
+  ],
+  "library": [
+    ".id",
+    ".spec",
+    ".public",
+    ".specification",
+    "identity",
+    "chemistry",
+    "philosophy",
+    "psychology",
+    "pharmacology",
+    "physics"
+  ],
+  ".claude": [
+    ".i"
+  ]
+}
