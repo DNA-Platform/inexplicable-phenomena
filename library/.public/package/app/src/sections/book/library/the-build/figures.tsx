@@ -297,6 +297,65 @@ export class $Description extends $Drawn {
 
 const last = (p: string) => p.slice(p.lastIndexOf('/') + 1);
 
+export type Declared = { path: string; author?: string; subject?: string; canonical?: string };
+
+export type Resolved = { path: string; author: string; subject: string; canonical: string; supplied: string[] };
+
+// RESOLVING, RUN. A name on a cover is a word until something makes it
+// followable. Position answers what a book belongs to; the cover answers what a
+// subject speaks with; and a silence is filled from where the book sits rather
+// than from what it says. Nothing here is written back to anybody's file — the
+// library is a resolution, and a resolution is not an edit.
+export const resolve = (books: Declared[]): Resolved[] => {
+    const above = (path: string): string => (path.lastIndexOf('/') > 0 ? path.slice(0, path.lastIndexOf('/')) : '/');
+    const holds = (path: string): string[] => books.filter(b => b.path !== path && above(b.path) === path).map(b => b.path);
+    const itself = books.find(b => b.author !== undefined && b.author === b.path);
+    return books.map(book => {
+        const supplied: string[] = [];
+        let subject = book.subject;
+        if (subject === undefined) { subject = above(book.path); supplied.push('subject'); }
+        let author = book.author;
+        if (author === undefined) { author = itself ? itself.path : 'nobody — this library names no author of its own'; supplied.push('author'); }
+        const held = holds(book.path);
+        let canonical = book.canonical;
+        if (canonical === undefined) { canonical = held.length ? held[0] : ''; if (held.length) supplied.push('canonical'); }
+        return { path: book.path, author, subject, canonical, supplied };
+    });
+};
+
+export class $Resolving extends $Drawn {
+    $books: Declared[] = [];
+
+    get books(): Declared[] { return this.$books; }
+
+    drawn(): ReactNode {
+        const rows = resolve(this.books);
+        const filled = rows.reduce((n, r) => n + r.supplied.length, 0);
+        const missing = rows.some(r => r.author.startsWith('nobody'));
+        return (
+            <>
+                <Tree>
+                    {rows.map(row => (
+                        <Branch key={row.path} $depth={row.path.split('/').length - 1} $role={row.supplied.length ? 'supplied' : 'declared'} data-resolved={row.path}>
+                            {row.path}
+                            {'  '}
+                            <Role>
+                                {`by ${row.author} · in ${row.subject}${row.canonical ? ` · spoken for by ${row.canonical}` : ''}`}
+                                {row.supplied.length ? ` · supplied: ${row.supplied.join(', ')}` : ' · all declared'}
+                            </Role>
+                        </Branch>
+                    ))}
+                </Tree>
+                <Verdict $holds={!missing} data-supplied={String(filled)}>
+                    {missing
+                        ? `${filled} links supplied — but this library holds no book that is its own author, so every author it supplies stands for nobody. A corpus that never leaves the author unsaid never tests the rule that fills it.`
+                        : `${filled} links supplied from where each book sits; the rest were declared. No authored file was touched to do it.`}
+                </Verdict>
+            </>
+        );
+    }
+}
+
 export type Shown = { path: string; holds: string[] };
 
 // THE SHOWING, RUN. A book is consulted when it catalogues anything and read
