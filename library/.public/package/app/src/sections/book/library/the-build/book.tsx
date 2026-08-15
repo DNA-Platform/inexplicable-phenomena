@@ -12,6 +12,7 @@ import { TheCanonicalHierarchy } from './04-the-canonical-hierarchy';
 import { TheProcess } from './05-the-process';
 import { TheDispatch } from './06-the-dispatch';
 import { TheDescription } from './07-the-description';
+import { TheShowing } from './08-the-showing';
 import { Sheet, Header, Running, Stamp, Back, Plate, Turn, Leaf } from '../../../the-build.styled';
 
 export class $TheBuild extends $Book {
@@ -78,5 +79,6 @@ export const build: $TheBuild = $(
         <TheProcess />
         <TheDispatch />
         <TheDescription />
+        <TheShowing />
     </TheBuild>
 ) as $TheBuild;

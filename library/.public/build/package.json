@@ -1,0 +1,16 @@
+{
+  "name": "@dna-platform/build",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "The compiler for the public library \u2014 it lifts what is written in library/, carries it into the app, assembles it into books, judges them, and catalogues what survives. Node-side only; nothing here ever reaches a browser bundle.",
+  "scripts": {
+    "walk": "npx tsx see.ts ../../.test-library",
+    "verify": "npx tsx verify-walk.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@dna-platform/lib": "*",
+    "ts-morph": "^28.0.0"
+  }
+}

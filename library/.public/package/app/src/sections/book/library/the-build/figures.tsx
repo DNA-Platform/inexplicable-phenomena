@@ -297,6 +297,46 @@ export class $Description extends $Drawn {
 
 const last = (p: string) => p.slice(p.lastIndexOf('/') + 1);
 
+export type Shown = { path: string; holds: string[] };
+
+// THE SHOWING, RUN. A book is consulted when it catalogues anything and read
+// when it does not, and the test is HAVING a card rather than following one —
+// following would open every book on the shelf to decide how to draw one page,
+// which is the thing a catalogue exists to prevent. What a visit costs falls
+// out of the same answer rather than being imposed on it.
+export const shown = (book: Shown): { kind: string; loads: string } => {
+    const held = book.holds.length;
+    if (!held) return { kind: 'read', loads: 'its own module, and nothing else' };
+    return { kind: 'consulted', loads: `its own module, and ${held} ${held === 1 ? 'card' : 'cards'}` };
+};
+
+export class $Showing extends $Drawn {
+    $books: Shown[] = [];
+
+    get books(): Shown[] { return this.$books; }
+
+    drawn(): ReactNode {
+        const rows = this.books.map(book => ({ book, ...shown(book) }));
+        const consulted = rows.filter(r => r.kind === 'consulted').length;
+        return (
+            <>
+                <Tree>
+                    {rows.map(({ book, kind, loads }) => (
+                        <Branch key={book.path} $depth={book.path.split('/').length - 1} $role={kind} data-shown={book.path}>
+                            {book.path}
+                            {'  '}
+                            <Role>{`${kind} · ${loads}`}</Role>
+                        </Branch>
+                    ))}
+                </Tree>
+                <Verdict $holds data-consulted={String(consulted)}>
+                    {`${consulted} of ${rows.length} catalogue something and are drawn as catalogues; the rest are read. No page loads a book it does not show.`}
+                </Verdict>
+            </>
+        );
+    }
+}
+
 export class $Listed extends $Figure {
     $source = '';
 
@@ -336,4 +376,5 @@ export const Stages = $($Stages);
 export const Handoffs = $($Handoffs);
 export const Description = $($Description);
 export const Order = $($Order);
+export const Showing = $($Showing);
 export const Listed = $($Listed);

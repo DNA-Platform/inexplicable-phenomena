@@ -25,6 +25,7 @@ package-lock.json
 # Build outputs
 dist/
 build/
+!library/.public/build/
 .release/
 
 # Environment variables

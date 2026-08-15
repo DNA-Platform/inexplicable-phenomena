@@ -1,8 +1,11 @@
 name: Deploy public library to Pages
 
+# THE PUSH TRIGGER IS OFF WHILE THE APPLICATION IS BUILT — Doug, 2026-08-14:
+# "No deploy. Leave the teaser." This workflow builds library/.public/app, which
+# is the folder F is rebuilding, so a push to main would publish a building site
+# over the teaser. Restoring `push: branches: [main]` is G's, alongside the
+# deep-link fallback. See library/.public/.lib/projection/15-the-build.md.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

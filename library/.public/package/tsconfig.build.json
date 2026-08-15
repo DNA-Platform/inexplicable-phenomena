@@ -9,7 +9,7 @@
     "rootDir": "./src",
     "module": "esnext",
     "target": "es2020",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "incremental": false
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

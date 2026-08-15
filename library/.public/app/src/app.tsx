@@ -1,198 +1,242 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import styled, { createGlobalStyle, keyframes } from 'styled-components';
+import { $Book, $Synopsis, $Cover, $TableOfContents } from '@dna-platform/lib';
+import styled from 'styled-components';
+import { $Card, at, fetch, catalogue } from './catalogue';
+import { keep, kept, topOf, slug } from './bookmark';
+import { GlobalStyle, ink, faint, rule, ground, mark } from './theme';
 
-const drift = keyframes`
-    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.12; }
-    25% { transform: translate(30px, -20px) scale(1.1); opacity: 0.18; }
-    50% { transform: translate(-10px, 15px) scale(0.95); opacity: 0.1; }
-    75% { transform: translate(20px, 10px) scale(1.05); opacity: 0.16; }
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+export const here = (): string => {
+    const path = window.location.pathname.slice(base.length);
+    return path === '' || path === '/' ? '/' : path.replace(/\/$/, '');
+};
+
+const go = (path: string): void => {
+    window.history.pushState({}, '', base + (path === '/' ? '/' : path));
+    window.dispatchEvent(new PopStateEvent('popstate'));
+};
+
+// A BOOK IS CONSULTED WHEN IT CATALOGUES ANYTHING AND READ WHEN IT DOES NOT.
+// The test is having a card, never following one: a catalogue must answer this
+// with none of the books it holds present.
+export const catalogued = (book: $Book): $Synopsis[] =>
+    book.chapters.filter((c): c is $Synopsis => c instanceof $Synopsis && c !== book.synopsis && c.card !== undefined);
+
+const Sheet = styled.div`
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 8rem;
 `;
 
-const fadeIn = keyframes`
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-`;
-
-const strokeIn = keyframes`
-    from { -webkit-text-stroke-color: transparent; }
-    to { -webkit-text-stroke-color: rgba(100, 210, 210, 0.35); }
-`;
-
-const opalWave = keyframes`
-    0%   { color: #C8F4FB; }
-    12%  { color: #B8EEE8; }
-    24%  { color: #C1F5E8; }
-    36%  { color: #D4EEF8; }
-    48%  { color: #E2D7FD; }
-    60%  { color: #F2D4F0; }
-    72%  { color: #FEEFC9; }
-    84%  { color: #D0F0F0; }
-    100% { color: #C8F4FB; }
-`;
-
-const GlobalStyle = createGlobalStyle`
-    body {
-        background: #0c1b1f;
-        color: #e8e4df;
-    }
-`;
-
-const Page = styled.div`
-    position: relative;
-    width: 100%;
-    height: 100%;
+const Running = styled.div`
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: ${faint};
+    border-bottom: 1px solid ${rule};
+    padding-bottom: 0.6rem;
+    margin-bottom: 2.5rem;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    @media (max-width: 768px) {
-        justify-content: flex-start;
-        padding-top: 28vh;
-        padding-left: 5vw;
-        padding-right: 5vw;
-    }
+    gap: 0.5rem;
 `;
 
-const Orb = styled.div<{ $x: number; $y: number; $size: number; $hue: number; $delay: number }>`
-    position: absolute;
-    width: ${p => p.$size}px;
-    height: ${p => p.$size}px;
-    left: ${p => p.$x}%;
-    top: ${p => p.$y}%;
-    border-radius: 50%;
-    background: radial-gradient(
-        circle at 30% 30%,
-        hsla(${p => p.$hue}, 60%, 65%, 0.2),
-        hsla(${p => p.$hue}, 50%, 40%, 0.05) 60%,
-        transparent 70%
-    );
-    filter: blur(${p => p.$size * 0.3}px);
-    animation: ${drift} ${p => 12 + p.$delay * 3}s ease-in-out infinite;
-    animation-delay: ${p => -p.$delay * 2}s;
-    pointer-events: none;
+const Step = styled.span`
+    cursor: pointer;
+    &:hover { color: ${mark}; }
 `;
 
-const Title = styled.h1`
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    text-align: center;
-    color: #e8e4df;
-    paint-order: stroke fill;
-    -webkit-text-stroke: 3px transparent;
-    animation: ${fadeIn} 2s ease-out both, ${strokeIn} 1.5s ease-out 2.5s both;
-    position: relative;
-    z-index: 1;
-
-    @media (max-width: 768px) {
-        font-size: 10.5vw;
-        max-width: 90vw;
-    }
+const Prose = styled.div`
+    font-size: 1.15rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    .chapter { margin-bottom: 2.5rem; }
+    h1, h2, h3 { font-weight: 400; letter-spacing: 0.01em; margin-bottom: 0.8rem; }
 `;
 
-const SubtitleWrap = styled.p`
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(1.53rem, 3.19vw, 2.55rem);
-    font-weight: 400;
+const Entries = styled.ul`
+    list-style: none;
+    margin-top: 2.5rem;
+`;
+
+const Entry = styled.li`
+    border-top: 1px solid ${rule};
+    padding: 1.1rem 0;
+`;
+
+const Name = styled.div`
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: ${mark};
+`;
+
+const Note = styled.div`
+    color: ${faint};
     font-style: italic;
-    letter-spacing: 0.18em;
-    text-transform: lowercase;
-    margin-top: 28px;
-    display: flex;
-    justify-content: center;
-    animation: ${fadeIn} 2s ease-out 0.6s both;
-    position: relative;
-    z-index: 1;
-
-    @media (max-width: 768px) {
-        font-size: 5.5vw;
-        margin-top: 3vw;
-    }
+    margin-top: 0.2rem;
 `;
 
-const OpalLetter = styled.span<{ $i: number; $rev: boolean }>`
-    display: inline-block;
-    animation: ${opalWave} 6.25s ease-in-out infinite;
-    animation-delay: ${p => (p.$rev ? (10 - p.$i) : p.$i) * 0.19}s;
-    animation-direction: ${p => p.$rev ? 'reverse' : 'normal'};
-    color: #C8F4FB;
-    text-shadow:
-        0 0 1px currentColor,
-        0 0 3px currentColor;
+const Refusal = styled.div`
+    color: ${mark};
+    background: ${ground};
+    border: 1px solid ${rule};
+    padding: 1.5rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.9rem;
 `;
 
-const Rule = styled.div`
-    width: clamp(80px, 12vw, 160px);
-    height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        hsla(180, 30%, 60%, 0.35),
-        transparent
-    );
-    margin-top: 20px;
-    animation: ${fadeIn} 2s ease-out 1.2s both;
-    position: relative;
-    z-index: 1;
+class $App extends $Chemical {
+    path = '/';
+    book?: $Book = undefined;
+    refused = '';
+    started = false;
 
-    @media (max-width: 768px) {
-        width: 18vw;
-        margin-top: 2.5vw;
-    }
-`;
+    place = 0;
 
-const orbs = [
-    { x: 20, y: 25, size: 300, hue: 250, delay: 0 },
-    { x: 70, y: 60, size: 250, hue: 30, delay: 1.5 },
-    { x: 45, y: 40, size: 200, hue: 340, delay: 3 },
-    { x: 15, y: 70, size: 180, hue: 200, delay: 4.5 },
-    { x: 80, y: 20, size: 220, hue: 160, delay: 2 },
-];
-
-const letters = 'coming soon'.split('');
-
-class $Teaser extends $Chemical {
-    reversed = false;
-    _started = false;
-
-    _scheduleFlip() {
-        const delay = 3000 + Math.random() * 4000;
-        setTimeout(() => {
-            this.reversed = !this.reversed;
-            this._scheduleFlip();
-        }, delay);
+    open(path: string) {
+        this.path = path;
+        this.book = undefined;
+        this.refused = '';
+        fetch(path)
+            .then(holder => {
+                if (this.path !== path) return;
+                this.book = holder.book;
+                if (catalogued(holder.book).length) { window.scrollTo(0, 0); this.place = 0; }
+                else this.arrive();
+            })
+            .catch(error => { if (this.path === path) this.refused = String(error.message ?? error); });
     }
 
-    view() {
-        if (!this._started) {
-            this._started = true;
-            this._scheduleFlip();
+    // Waiting for the chapter to EXIST rather than for a moment that ought to be
+    // late enough. A guess about ordering wins until the day it does not, which
+    // is already filed against this branch.
+    arrive(tries = 24) {
+        const drawn = document.querySelectorAll('[data-chapter]').length;
+        const found = this.place ? document.querySelector(`[data-chapter="${this.place}"]`) : undefined;
+        if (!drawn || (this.place && !found)) {
+            if (tries) requestAnimationFrame(() => this.arrive(tries - 1));
+            return;
         }
+        if (found) { found.scrollIntoView(); this.place = 0; } else window.scrollTo(0, 0);
+        this.passing();
+    }
+
+    // THE ADDRESS FOLLOWS THE READER. Whichever chapter stands at the top of the
+    // page is the one the fragment names, and it is the place the bookmark keeps.
+    passing() {
+        const chapters = Array.from(document.querySelectorAll('[data-chapter]'));
+        if (!chapters.length) return;
+        // A reader at the foot of the page is reading the last chapter, however
+        // little of it there was to scroll. A short book can never bring its
+        // final chapter to the top of the screen, and the rule has to say so.
+        const foot = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+        const reached = chapters.filter(c => c.getBoundingClientRect().top <= 80);
+        const open = (foot ? chapters[chapters.length - 1] : reached.length ? reached[reached.length - 1] : chapters[0]) as HTMLElement;
+        const name = open.id;
+        const seen = Number(open.dataset.chapter ?? 0);
+        const want = base + this.path + (name ? `#${name}` : '');
+        if (window.location.pathname + window.location.hash !== want) window.history.replaceState({}, '', want);
+        keep(this.path, seen);
+    }
+
+    listen() {
+        this.started = true;
+        window.addEventListener('popstate', () => this.open(here()));
+        window.addEventListener('scroll', () => this.passing(), { passive: true });
+        const start = here();
+        const back = topOf(start) === start ? kept(start) : undefined;
+        if (back) {
+            this.place = back.at;
+            go(back.path);
+            return;
+        }
+        this.open(start);
+    }
+
+    trail(): ReactNode {
+        const card = at(this.path);
+        const chain: $Card[] = [];
+        for (let up = card; up; up = up.subject === up ? undefined : up.subject) chain.unshift(up);
         return (
-            <Page>
-                <GlobalStyle />
-                {orbs.map((o, i) => (
-                    <Orb key={i} $x={o.x} $y={o.y} $size={o.size} $hue={o.hue} $delay={o.delay} />
+            <Running data-trail={chain.length}>
+                {chain.map((step, i) => (
+                    <Step key={step.path} data-step={step.path} onClick={() => go(step.path)}>
+                        {(i ? '/ ' : '') + step.title}
+                    </Step>
                 ))}
-                <Title>Inexplicable Phenomena</Title>
-                <SubtitleWrap aria-label="coming soon">
-                    {letters.map((ch, i) => (
-                        <OpalLetter key={i} $i={i} $rev={this.reversed} aria-hidden>
-                            {ch === ' ' ? ' ' : ch}
-                        </OpalLetter>
-                    ))}
-                </SubtitleWrap>
-                <Rule />
-            </Page>
+            </Running>
+        );
+    }
+
+    // A SUBJECT IS BOTH THINGS AT ONCE — its own chapters, and the books it
+    // catalogues as entries, through the same members. Its own writing is what
+    // is left when the standing synopses are taken away.
+    consulted(book: $Book): ReactNode {
+        const entries = catalogued(book);
+        const away = new Set<unknown>(entries);
+        const own = book.chapters.filter(c => !c.parenthetical && !away.has(c) && !(c instanceof $TableOfContents));
+        return (
+            <>
+                <Prose data-own={own.length}>
+                    {own.map((chapter, at) => {
+                        const C = $(chapter) as any;
+                        return <div className="chapter" key={at}><C /></div>;
+                    })}
+                </Prose>
+                <Entries data-entries={entries.length}>
+                    {entries.map(entry => {
+                        const card = entry.card as $Card;
+                        return (
+                            <Entry key={card.path} data-entry={card.path}>
+                                <Name onClick={() => go(card.path)}>{card.title}</Name>
+                                <Note>{card.synopsis}</Note>
+                            </Entry>
+                        );
+                    })}
+                </Entries>
+            </>
+        );
+    }
+
+    // A CHAPTER HAS AN ADDRESS, and it is a fragment rather than a route — the
+    // route is the book, and the book is what loads. The address follows the
+    // reader down the page instead of being clicked.
+    read(book: $Book): ReactNode {
+        const readable = book.chapters.filter(c => !c.parenthetical);
+        return (
+            <Prose data-reader={readable.length}>
+                {readable.map((chapter, place) => {
+                    const C = $(chapter) as any;
+                    const name = slug(chapter);
+                    return (
+                        <div className="chapter" key={place} id={name || undefined} data-chapter={place}>
+                            <C />
+                        </div>
+                    );
+                })}
+            </Prose>
+        );
+    }
+
+    view(): ReactNode {
+        if (!this.started) this.listen();
+        const book = this.book;
+        return (
+            <Sheet>
+                <GlobalStyle />
+                {this.trail()}
+                {this.refused ? <Refusal data-refusal>{this.refused}</Refusal> : null}
+                {book ? (catalogued(book).length ? this.consulted(book) : this.read(book)) : null}
+            </Sheet>
         );
     }
 }
 
-const Teaser = $($Teaser);
+const App = $($App);
 
-export function App() {
-    return <Teaser />;
+export function Library() {
+    return <App />;
 }
+
+export { catalogue, $Cover };

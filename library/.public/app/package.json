@@ -11,13 +11,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "node typecheck.mjs",
+    "valid": "tsx valid.mts",
+    "drive": "node verify-library.mjs",
+    "test": "node typecheck.mjs && tsx valid.mts && node verify-library.mjs"
   },
   "dependencies": {
     "@dna-platform/lib": "*",
     "@dna-platform/chemistry": "*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
+    "react-router-dom": ">=7.0.0",
     "styled-components": "^6.1.0"
   },
   "devDependencies": {
