@@ -90,6 +90,30 @@ export const Plate = styled.article`
     border-radius: 2px;
     animation: ${settle} 420ms ease-out both;
 
+    /* A section arrives as ONE run of text — the framework renders writing, not
+       markup, so there is no heading element to style and no paragraph element
+       either. Preserving the breaks the author wrote is what makes it a page
+       instead of a wall, and it costs one property. */
+    .section {
+        white-space: pre-wrap;
+        line-height: 1.72;
+        color: ${ink};
+    }
+
+    /* And the title is the first line, because in this book it always is. Set it
+       the way a book sets an opening line rather than the way a document sets a
+       heading — there is nothing to hang a heading on. A title long enough to
+       wrap would only take this on its first visual line, which is a limit worth
+       knowing and not worth a framework change. */
+    .section::first-line {
+        font-family: ${text};
+        font-size: 1.34rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        line-height: 2.4;
+        color: #eef6fa;
+    }
+
     h1, h2, h3 {
         font-family: ${text};
         font-weight: 500;
@@ -131,9 +155,27 @@ export const Tree = styled.div`
     line-height: 1.9;
 `;
 
+// THE ONE WARM MARK ON A COOL PAGE. Everything in this book is cyan on navy,
+// which is what makes a single warm colour mean something rather than decorate.
+// It is spent on exactly one distinction: what a person wrote against what the
+// machine put there. A reader should see which is which before reading a word.
+const supplied = '#e0a458';
+
+// Roles are STRUCTURE, CONTENT or SUPPLIED, and nothing else gets a colour.
+// A fourth category would make the first three stop meaning anything.
+const inks: Record<string, string> = {
+    subject: cyan,
+    consulted: cyan,
+    chapter: ink,
+    book: ink,
+    read: ink,
+    declared: ink,
+    supplied,
+};
+
 export const Branch = styled.div<{ $depth: number; $role: string }>`
     padding-left: ${p => p.$depth * 26}px;
-    color: ${p => p.$role === 'chapter' ? ink : p.$role === 'subject' ? cyan : faded};
+    color: ${p => inks[p.$role] ?? faded};
     white-space: pre;
 
     &::before {
@@ -142,12 +184,15 @@ export const Branch = styled.div<{ $depth: number; $role: string }>`
     }
 `;
 
+// The role takes its branch's colour rather than being told one. Nothing has to
+// thread a prop, and a role can never disagree with the line it belongs to.
 export const Role = styled.span`
     margin-left: 14px;
     font-size: 0.72rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(95, 212, 196, 0.62);
+    color: currentColor;
+    opacity: 0.62;
 `;
 
 export const Pair = styled.div`

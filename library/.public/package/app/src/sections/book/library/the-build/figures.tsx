@@ -435,5 +435,6 @@ export const Stages = $($Stages);
 export const Handoffs = $($Handoffs);
 export const Description = $($Description);
 export const Order = $($Order);
+export const Resolving = $($Resolving);
 export const Showing = $($Showing);
 export const Listed = $($Listed);

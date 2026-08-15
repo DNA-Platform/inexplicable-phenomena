@@ -7,10 +7,6 @@ import { $Book, $IndexCard, IndexCard, $CardCatalogue, $Synopsis } from '@dna-pl
 // business, so this declares them. Identity is the PATH, because a path is what
 // a route arrives holding. The title is writing and may change without breaking
 // a link.
-//
-// NO `canonical` FIELD, and that is not an omission: $Writing already declares
-// `canonical`, which every card inherits, so the card contract's field of that
-// name cannot be added without shadowing it. Flagged rather than renamed.
 export class $Card extends $IndexCard<$Book> {
     $title = '';
     $subtitle = '';
@@ -30,6 +26,11 @@ export class $Card extends $IndexCard<$Book> {
 
     get subject(): $Card | undefined { return this.$subject; }
 
+    // NO CANONICAL LINK, and the reason is not the name it would have shadowed.
+    // A canonical link is a SUBJECT'S — it says which of the books a subject
+    // holds speaks for it — and a card catalogues nothing. It is a surrogate you
+    // consult so the item need not be handled, so a question about what a
+    // subject holds is not a question a card can answer.
     get library(): $Card | undefined {
         return this.$subject === this ? this : this.$subject?.library;
     }
@@ -66,8 +67,12 @@ of('/philosophy/the-hard-problem').$subject = of('/philosophy');
 
 // WHAT A SUBJECT HOLDS, in the order its book stands their synopses in. The
 // catalogue knows this without opening anything, which is what lets a subject
-// page draw its entries with no book but its own present. The first entry is
-// the book that speaks for the subject unless its cover declares another.
+// page draw its entries with no book but its own present.
+//
+// AND THIS IS WHERE THE CANONICAL LINK LIVES, because it is a subject's and not
+// a card's: the first book a subject holds speaks for it unless its cover names
+// another. Asking a card which book speaks for a subject would be asking the
+// surrogate a question about the thing it stands in for.
 export const held: Record<string, string[]> = {
     '/': ['/physics', '/philosophy'],
     '/physics': ['/physics/the-standard-model', '/physics/gauge-theory'],

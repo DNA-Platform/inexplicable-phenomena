@@ -97,7 +97,11 @@ await page.goto(`${BASE}/`, { waitUntil: 'networkidle0', timeout: 30000 });
 await settle();
 
 const shelved = await spines();
-check(`the root is the shelf — its titled spines stand in the row [${shelved.join(', ')}]`, shelved.length >= 3 && shelved.every(Boolean));
+// EXACTLY, not at least. `>= 3` passed a fourth book without noticing it, which
+// is how a new spine arrived unremarked; a count that cannot go wrong upward is
+// not a count.
+check(`the root is the shelf — its titled spines stand in the row [${shelved.join(', ')}]`, shelved.length === 4 && shelved.every(Boolean));
+check('the shelf catalogues the books and not itself', !shelved.includes('The Shelf') && shelved.includes('The Build'));
 check('the shelf is a room, not a scroll — pinned to the view', await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 2));
 if (shots) await page.screenshot({ path: 'shot-shelf.png' });
 
@@ -330,6 +334,63 @@ await page.evaluate(() => document.querySelector('[data-subject]')?.dispatchEven
 await page.waitForSelector('[data-book]', { timeout: 10000 });
 await settle();
 check('back on the shelf after the manifold', (await spines()).length === shelved.length);
+
+// THE BUILD — the fifth book, and the one whose figures COMPUTE. Every claim
+// checked below is derived by the same rule the chapter states, so a wrong rule
+// draws a wrong figure and this walk goes red rather than a reader being misled.
+await openBook('The Build');
+await settle();
+t = await text();
+check('BUILD: the spine opens the book — its cover, its own surface', t.includes('How a Folder Becomes a Library') && t.includes('The Team'));
+
+const turn = async () => {
+    const moved = await page.evaluate(() => {
+        const next = [...document.querySelectorAll('button')].find(b => b.textContent.trim().endsWith('→') && !b.disabled);
+        if (!next) return false;
+        next.click();
+        return true;
+    });
+    await settle();
+    return moved;
+};
+
+// MATCHED ON BODY TEXT, NEVER ON A TITLE. The turn buttons carry the titles of
+// the neighbouring chapters, so looking for a title lands one chapter early and
+// every check after it reads the wrong page.
+const reach = async (title, tries = 12) => {
+    for (let i = 0; i < tries; i++) {
+        if ((await text()).includes(title)) return true;
+        if (!(await turn())) break;
+    }
+    await report(`never reached "${title}" while turning The Build — a chapter moved or the turn stopped.`);
+    return false;
+};
+
+await reach('That is the whole of the arrangement');
+check('BUILD: the folder tree labels every role, computed not typed', await page.evaluate(() => {
+    const roles = [...document.querySelectorAll('[data-answer], .role, span')].map(n => n.textContent);
+    return roles.some(r => /A SUBJECT|a subject/i.test(r ?? ''));
+}));
+
+await reach('There is a collision hiding in the word');
+check('BUILD: the refusal computes itself — a subject naming a book it does not hold', (await text()).includes('NOT reciprocal'));
+
+await reach('It is a flat list, not a tree');
+check('BUILD: the description derives eight folders and no complaints', (await text()).includes('no complaints — 8 folders described'));
+
+await reach('Turning the one into the other is a phase of its own');
+check('BUILD: the resolution marks what was supplied', await page.evaluate(() => !!document.querySelector('[data-supplied]')));
+check('BUILD: and it reports the corpus has no author of its own', (await text()).includes('stands for nobody'));
+
+await reach('Four phases turn folders into a program');
+check('BUILD: three of six books are drawn as catalogues, computed by the rule', await page.evaluate(() =>
+    document.querySelector('[data-consulted]')?.getAttribute('data-consulted') === '3'));
+check('BUILD: every book in the figure is accounted for', await page.evaluate(() => document.querySelectorAll('[data-shown]').length === 6));
+
+await page.evaluate(() => document.querySelector('[data-subject]')?.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+await page.waitForSelector('[data-book]', { timeout: 10000 });
+await settle();
+check('back on the shelf after the build', (await spines()).length === shelved.length);
 
 await page.goto(`${BASE}/page`, { waitUntil: 'networkidle0', timeout: 30000 });
 await settle();

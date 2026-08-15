@@ -13,6 +13,7 @@ import { TheProcess } from './05-the-process';
 import { TheDispatch } from './06-the-dispatch';
 import { TheDescription } from './07-the-description';
 import { TheShowing } from './08-the-showing';
+import { TheLibrary } from './09-the-library';
 import { Sheet, Header, Running, Stamp, Back, Plate, Turn, Leaf } from '../../../the-build.styled';
 
 export class $TheBuild extends $Book {
@@ -79,6 +80,7 @@ export const build: $TheBuild = $(
         <TheProcess />
         <TheDispatch />
         <TheDescription />
+        <TheLibrary />
         <TheShowing />
     </TheBuild>
 ) as $TheBuild;
