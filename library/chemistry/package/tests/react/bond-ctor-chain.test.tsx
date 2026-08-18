@@ -10,7 +10,7 @@ import { $, $Chemical } from '@/abstraction/chemical';
 // chain. Every ancestor that declares one is reached by the author calling
 // upward, the way a C# constructor calls another, and arguments may be
 // adapted on the way. A chain that fails to reach a declared ancestor is
-// refused, naming the ancestor never reached.
+// invalid, naming the ancestor never reached.
 //
 // A subclass that declares NO bond constructor still binds through its
 // ancestor's, unchanged — the standing ban on ceremonial constructors
@@ -132,7 +132,7 @@ describe('U1 — the chain is callable, and the author calls upward', () => {
         expect(container.querySelector('.ledger')?.textContent).toBe('n=2');
     });
 
-    it('lets the continuing part state its own refusal, in its own words', () => {
+    it('lets the continuing part state its own reason, in its own words', () => {
         class $Ledger extends $Chemical {
             parts: $Item[] = [];
             $Ledger(...items: $Item[]) { this.parts = items; }
@@ -153,8 +153,8 @@ describe('U1 — the chain is callable, and the author calls upward', () => {
     });
 });
 
-describe('U2 — a chain that does not reach a declared ancestor is refused', () => {
-    it('refuses when a subclass declares a constructor and never calls upward, naming the ancestor', () => {
+describe('U2 — a chain that does not reach a declared ancestor is invalid', () => {
+    it('fails validation when a subclass declares a constructor and never calls upward, naming the ancestor', () => {
         class $Governed extends $Chemical {
             parts: $Item[] = [];
             $Governed(...items: $Item[]) { this.parts = items; }
@@ -172,7 +172,7 @@ describe('U2 — a chain that does not reach a declared ancestor is refused', ()
         expect(container.querySelector('.governed')).toBeNull();
     });
 
-    it('does not refuse when the only declared constructor is the one the framework called', () => {
+    it('stands when the only declared constructor is the one the framework called', () => {
         class $Alone extends $Chemical {
             parts: $Item[] = [];
             $Alone(...items: $Item[]) { this.parts = items; }

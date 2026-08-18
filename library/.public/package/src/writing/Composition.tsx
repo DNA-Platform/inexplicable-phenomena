@@ -16,6 +16,7 @@ export interface $Composition$<T extends $Referent & { copy: string; parenthetic
     parts(): T[];
     where(match: (part: T) => boolean): T[];
     select<U>(pick: (part: T) => U): U[];
+    selectMany<U>(pick: (part: T) => U[]): U[];
     single(match: (part: T) => boolean): T;
     at(position: number): $Location<T>;
     copy: string;
@@ -33,6 +34,13 @@ export class $Composible$ {
 
     static select<T, U>(of: { parts(): T[] }, pick: (part: T) => U): U[] {
         return of.parts().map(pick);
+    }
+
+    // SELECT MANY, the list monad's bind. `select` picks one thing from each
+    // part; this picks a list from each and joins them, which is what every
+    // level-flattening getter in this library is doing by hand.
+    static selectMany<T, U>(of: { parts(): T[] }, pick: (part: T) => U[]): U[] {
+        return of.parts().flatMap(pick);
     }
 
     static single<T>(of: { parts(): T[] }, match: (part: T) => boolean): T {
@@ -54,6 +62,7 @@ export class $Composible$ {
             parts: found,
             where: (match) => found().filter(match),
             select: (pick) => found().map(pick),
+            selectMany: (pick) => found().flatMap(pick),
             single: (match) => {
                 const kept = found().filter(match);
                 if (kept.length !== 1) throw new Error(`single expected exactly one part and found ${kept.length}.`);

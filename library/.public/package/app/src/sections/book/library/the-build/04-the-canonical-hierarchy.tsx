@@ -36,7 +36,7 @@ export class $TheCanonicalHierarchy extends $Chapter {
                         subject="physics"
                         books={held}
                         declared="the-nature-of-consciousness"
-                        caption="And here it does not. The same figure, given a book physics does not hold, computes the refusal — a guard nobody has watched fail is not a guard."
+                        caption="And here it does not. The same figure, given a book physics does not hold, computes the failure — a guard nobody has watched fail is not a guard."
                     />
                     {'\n\nWhich leaves the check small enough to state in a sentence. A subject’s canonical book must be one of the books it holds. Everything else the reciprocity used to require is supplied by the arrangement, and a check that only has one thing left to test is a check that will still be true after the next change.'}
                     <Listed

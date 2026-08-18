@@ -23,7 +23,7 @@ export const remember = <T,>(key: string, value: T): void => {
     try {
         kept.setItem(`${shelf}:${key}`, JSON.stringify(value));
     } catch {
-        // A full or refused store is not an error a reader should meet.
+        // A full or unavailable store is not an error a reader should meet.
     }
 };
 

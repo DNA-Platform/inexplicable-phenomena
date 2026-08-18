@@ -27,7 +27,7 @@ describe('writing: the bond keeps the whole sequence', () => {
         const section: $Section = $(
             <Section><Title>Heading</Title>{'\n\nBefore.'}{'\n\n'}<Plate>a</Plate>{'\n\nAfter.'}</Section>
         );
-        expect(section.elements.some(e => e instanceof $Plate)).toBe(true);
+        expect(section.parts().some(e => e instanceof $Plate)).toBe(true);
     });
 
     it('a section of prose alone is unchanged', () => {

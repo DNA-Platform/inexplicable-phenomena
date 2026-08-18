@@ -27,7 +27,7 @@ const checks = [
     ['check type mismatch renders the exception view', result.checkType.includes('Bond Constructor Failed')],
     ['check message carries the formatted signature', result.checkType.includes('Validation Failed') && result.checkType.includes('$Strict')],
     ['door throw renders the exception view', result.doorThrow.includes('Bond Constructor Failed')],
-    ['door prose reaches the view', result.doorThrow.includes('An empty refuses at the door.')],
+    ['door prose reaches the view', result.doorThrow.includes('An empty fails validation at the door.')],
     ['no uncaught page errors', errors.length === 0],
 ];
 

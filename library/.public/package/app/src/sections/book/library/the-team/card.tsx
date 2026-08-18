@@ -50,7 +50,7 @@ for (const book of [algebra, manifold, shelf, build]) {
     if (book.subject) book.subject.$for = theShelf;
 }
 
-const canonical = shelf.cover.sections.flatMap(s => s.elements).find(e => e instanceof $Canonical) as $Canonical | undefined;
+const canonical = shelf.cover.words.find(w => w instanceof $Canonical) as $Canonical | undefined;
 if (canonical) canonical.$for = theTeam;
 
 libraryCatalogue.file('author', 'The Team', theTeam);

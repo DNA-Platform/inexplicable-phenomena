@@ -93,6 +93,9 @@ describe('$Composition$ — implemented by the composition levels, born through 
         const p: $Paragraph = $(<Paragraph>Call me Ishmael. Some years ago.</Paragraph>);
         const S = $(p.parts()[0]) as any;
         const { container } = render(<S />);
-        expect(container.textContent).toBe('Call me Ishmael.');
+        // CHANGED 2026-08-18: a parse throws nothing out. A sentence runs to its
+        // stop AND the whitespace after it, which goes to the sentence whose stop
+        // it follows — so the writing is recoverable from the model.
+        expect(container.textContent).toBe('Call me Ishmael. ');
     });
 });

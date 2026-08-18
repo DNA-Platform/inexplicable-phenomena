@@ -220,7 +220,12 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             chemical[$rendering$] = rendering;
         }
 
-        this.process(children, context);
+        // WRITTEN ARGUMENTS REPLACE CHILDREN. A bond constructor can be handed
+        // what it composes directly — prose, numbers and chemicals already
+        // built — without any of it having to survive React's own child
+        // handling, which refuses an instance outright.
+        const written = (props as any)?.[$written$] as any[] | undefined;
+        this.process(written ?? children, context, !!written);
         if (context.isModified) {
             children = context.build();
             props = { ...props, children: children || [] };
@@ -334,18 +339,13 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
     private isInline(child: any): boolean {
         if (child == null || typeof child === 'boolean') return false;
         if (typeof child === 'string' || typeof child === 'number') return true;
+        // An already-built chemical answers for itself.
+        if (child instanceof $Chemical) return child.inline;
         if (!React.isValidElement(child)) return false;
         const type = (child as any).type;
         if (typeof type === 'string') return $inlineTypes.has(type);
         if (typeof type === 'function') return !!(type as any).$chemical?.inline;
         return false;
-    }
-
-    // Raw runs become intrinsic content-nodes so they lift through the same path.
-    private asElement(child: any): any {
-        if (typeof child === 'string') return React.createElement('string' as any, { value: child });
-        if (typeof child === 'number') return React.createElement('number' as any, { value: child });
-        return child;
     }
 
     // Each maximal run of consecutive inline children becomes one <block>; block
@@ -359,7 +359,16 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             if (!run.length) return;
             // Lift each inline node to an instance, once — parented to the chemical whose
             // bond is interpreting it: an element in a block reaches outside the block.
-            const els = run.map(c => $(this.asElement(c), this._chemical));
+            // $BLOCK TAKES THEM AS THEY ARE: a raw string, a raw number, and a
+            // chemical — in written order. Wrapping the raw ones is what made
+            // prose indistinguishable from a written element.
+            // $Block takes them as they are: a raw string, a raw number, and a
+            // chemical — a built one whole, because rebuilding it would re-run
+            // its bond constructor with nothing and empty it.
+            const els = run.map(c =>
+                (typeof c === 'string' || typeof c === 'number' || c instanceof $Chemical)
+                    ? c
+                    : evalElement(c, this._chemical));
             out.push(React.createElement('block' as any, { key: `$b${out.length}`, elements: els }));
             run = [];
         };
@@ -371,10 +380,25 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         return out;
     }
 
-    private process(children: ReactNode, context: $SynthesisContext) {
+    // React refuses a chemical as a child — `Children.toArray` throws on any
+    // object that is not an element. Written arguments are flattened here
+    // instead, keeping an already-built chemical whole. The JSX path is
+    // untouched and still goes through React exactly as it did.
+    private flatten(written: any): any[] {
+        const out: any[] = [];
+        const walk = (child: any): void => {
+            if (child === null || child === undefined || typeof child === 'boolean') return;
+            if (Array.isArray(child)) { child.forEach(walk); return; }
+            out.push(child);
+        };
+        walk(written);
+        return out;
+    }
+
+    private process(children: ReactNode, context: $SynthesisContext, written = false) {
         // Grouping runs only inside a bond constructor's own child interpretation —
         // which also keeps a block's run and a tag's text from being re-grouped.
-        const raw = React.Children.toArray(children);
+        const raw = written ? this.flatten(children) : React.Children.toArray(children);
         const grouping = this._bondConstructor && !(this._chemical instanceof $Eval);
         const childArray = grouping ? this.groupInline(raw) : raw;
         context.singleton = !Array.isArray(children) && childArray.length === 1;
@@ -950,16 +974,17 @@ export class $Function$<P = any> extends $Chemical {
     }
 }
 
-// The types that flow inline within a text block: the two content-node kinds and
-// the inline HTML tags. Anything not here is a block. A type here reads as inline.
-const $inlineTypes = new Set<string>(['string', 'number',
+// The tags that flow inline within a text block. Anything not here is a block.
+// Raw strings and numbers flow inline too and are answered directly by isInline —
+// $Block takes them as they are, so they are not types.
+const $inlineTypes = new Set<string>([
     'a', 'abbr', 'b', 'bdi', 'bdo', 'cite', 'code', 'data', 'dfn', 'em', 'i',
     'kbd', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
     'time', 'u', 'var', 'wbr']);
 
 // One class, discriminated by its type. Real tags wrap their content in the
-// element; the content-node kinds ('string', 'number', 'block') ARE their content
-// and render it directly — a text run, a number, or a grouped run of inline nodes.
+// element; $Block IS its content and renders it directly — the run of inline
+// things an author wrote, raw strings and numbers among them.
 export class $Html$<T extends $HtmlTag = any> extends $Chemical {
     get type() { return this._type; }
     protected _type: T;
@@ -972,10 +997,9 @@ export class $Html$<T extends $HtmlTag = any> extends $Chemical {
 
     view(): ReactNode {
         const t = this._type as string;
-        if (t === 'string' || t === 'number') return (this as any).$value;
         if (t === 'block') {
-            const els = ((this as any).$elements ?? []) as $Chemical[];
-            return els.map((e, i) => React.createElement($(e) as any, { key: i }));
+            const els = ((this as any).$elements ?? []) as (string | number | $Chemical)[];
+            return els.map((e, i) => (typeof e === 'object' ? React.createElement($(e) as any, { key: i }) : e));
         }
         return React.createElement(this._type as any, (this as any)[$props$]());
     }
@@ -998,6 +1022,11 @@ export function $wrap<P>(Component: React.FC<P>): any {
 // to it. `$(<Word/>)` runs the real synthesis over the element and takes the
 // materialized instance back — reusing process()'s exact dispatch (chemical, HTML,
 // function component, text), never a parallel binding path.
+// WHAT WAS WRITTEN, handed straight to a bond constructor. It travels as a
+// symbol prop so it cannot collide with an author's, and `for...in` does not
+// enumerate it, so it is never assigned onto the chemical as one.
+const $written$ = Symbol('$Chemistry.written');
+
 class $Eval extends $Chemical {
     result: any;
     parentFor?: $Chemical;
@@ -1005,10 +1034,16 @@ class $Eval extends $Chemical {
     view(): ReactNode { return null; }
 }
 
-function evalElement(element: React.ReactElement, parent?: $Chemical): any {
+function evalElement(element: React.ReactElement, parent?: $Chemical, written?: any[]): any {
     const host = new $Eval();
     host.parentFor = parent;
-    (host as any)[$synthesis$].bond({ children: element });
+    // The element keeps its own props; the written arguments ride beside them.
+    // NOT cloneElement — it copies props with `for...in`, which does not
+    // enumerate a symbol, so the mark was silently dropped.
+    const described = written?.length
+        ? { ...element, props: { ...(element.props as object), [$written$]: written } } as React.ReactElement
+        : element;
+    (host as any)[$synthesis$].bond({ children: described });
     return host.result;
 }
 
@@ -1041,7 +1076,14 @@ interface $Chemistry {
     // $<$Word>(<Word/>) narrows it. Must precede the props overload, which an
     // element structurally matches. The optional second argument assigns the
     // evaluated instance's parent — $(<Toc/>, book) adopts it into book's graph.
-    <T = any>(element: React.ReactElement, parent?: $Chemical): T;
+    // $(<Word/>) evaluates a description into a live instance. The rest of the
+    // arguments are handed to its BOND CONSTRUCTOR — `$(<Sentence prop="x"/>,
+    // ...written)` keeps its props and composes what it was given, which is how
+    // a composition is built from the literal things that were written rather
+    // than from their text. The position used to mean a PARENT; it had two
+    // callers, both of which say it another way now, and a composition needing
+    // its contents is the commoner thing by far.
+    <T = any>(element: React.ReactElement, ...written: (string | number | $Chemical)[]): T;
     (props: { children?: ReactNode; key?: any }): ReactNode;
     <T extends $Chemical>(chemical: T): $Component<T>;
     <T extends $Particle>(particle: T): $Element<T>;
@@ -1290,8 +1332,8 @@ class Chemistry extends $Chemical {
         // into a live instance, through the same synthesis that binds a bond
         // constructor's children. Erased type is $Chemical; $<$Word>(...) narrows.
         if (React.isValidElement(arg)) {
-            const parent = arguments[1];
-            return evalElement(arg as React.ReactElement, parent && isParticle(parent) ? parent : undefined);
+            const written = Array.prototype.slice.call(arguments, 1);
+            return evalElement(arg as React.ReactElement, undefined, written);
         }
 
         // Instance form — the particle/chemical was already constructed when

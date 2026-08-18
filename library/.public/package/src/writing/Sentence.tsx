@@ -7,7 +7,7 @@ import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, Level, Role } from './Writing';
+import { $Writing, Role } from './Writing';
 import { $Letter } from './Letter';
 import * as letters from './Letter';
 import { $Word, $$Word } from './Word';
@@ -17,18 +17,25 @@ import * as links from '../reference/Link';
 import * as formulas from './Formula';
 import * as snippets from './Snippet';
 
-// The marks a sentence is written in. A composite is one token — the whole of a
+// The marks a sentence is written in. A composite is ONE mark — the whole of a
 // link, a code span, a formula, an escape — so nothing inside one ever reaches
 // the word parse.
-const token = /\\.|\[[^\]\n]*\]\([^)\s]*\)|`[^`\n]+`|\$[^$\n]+\$|\*\*|__|~~|\*|_|[\p{L}\p{N}'-]+|[^\p{L}\p{N}'*_`[\]()$\\]+|./gu;
+const marks = /\\.|\[[^\]\n]*\]\([^)\s]*\)|`[^`\n]+`|\$[^$\n]+\$|\*\*|__|~~|\*|_|[\p{L}\p{N}'-]+|[^\p{L}\p{N}'*_`[\]()$\\]+|./gu;
 
 const link = /^\[([^\]\n]*)\]\(([^)\s]*)\)$/;
 const code = /^`([^`\n]+)`$/;
 const math = /^\$([^$\n]+)\$$/;
 const escaped = /^\\(.)$/;
 
+// SOMETHING IS WRITTEN IN IT — asked of what it HOLDS rather than of what it
+// READS. A parenthetical part is passed over by the reading, so a paragraph
+// carrying only an author or a subject reads as nothing and is not empty: the
+// author is written there. This became visible the day written elements stopped
+// dissolving into text, which is the model gaining them rather than changing.
+const written = (part: { copy: string; parts?: () => any[] }): boolean =>
+    /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
+
 export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
-    get level(): Level { return 'sentence'; }
 
     // The words of a sentence are the USED ones. Its syntax is there among its
     // parts — mentioned, standing for itself — and the reading passes over it,
@@ -51,11 +58,28 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
     // are counted as prose, and mathematics must keep its underscores. Order
     // matters: escape, link, code span, math, then the emphasis marks, then
     // words, then everything else.
-    divide(prose: string): string[] {
-        return prose.match(token) ?? [];
+    // A SENTENCE READS ITS OWN CONTENTS: prose and written elements, in
+    // written order. A word written here IS one of this sentence's words —
+    // whatever kind of word it is — which is the whole of being able to write
+    // one. Every mark a sentence finds is a finished word, so an element between
+    // two of them stands on its own rather than joining either.
+    parts(): $Word[] {
+        const found: $Word[] = [];
+        const stand = (word: $Word) => {
+            if (word.parent !== this) word.parent = this as never;
+            found.push(word);
+        };
+        for (const written of (this.text.$elements ?? []) as (string | number | $Word)[]) {
+            if (typeof written === 'object') { stand(written); continue; }
+            for (const mark of String(written).match(marks) ?? []) {
+                const made = this.wordFor(mark);
+                if (made) stand(made);
+            }
+        }
+        return found;
     }
 
-    compose(prose: string): $Word {
+    wordFor(prose: string): $Word {
         const Word = $(words.Word);
         const Punctuation = $(punctuation.Punctuation);
 
@@ -84,7 +108,7 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
     }
 
     valid(): boolean {
-        return super.valid() && /[\p{L}\p{N}]/u.test(this.copy);
+        return super.valid() && this.parts().some(written);
     }
 }
 
@@ -110,6 +134,10 @@ export class $$Sentence extends $Word implements $Reference$<$Sentence>, $Catalo
 
     select<U>(pick: (part: $$Word) => U): U[] {
         return $Composible$.select(this, pick);
+    }
+
+    selectMany<U>(pick: (part: $$Word) => U[]): U[] {
+        return $Composible$.selectMany(this, pick);
     }
 
     single(match: (part: $$Word) => boolean): $$Word {

@@ -93,7 +93,7 @@ describe('a synopsis is a chapter that points at the book it is OF', () => {
         expect(shelf.synopsis.read()).toBe(shelf);
     });
 
-    it('a book carrying only OTHER books accounts for nothing of itself, and is refused by name', () => {
+    it('a book carrying only OTHER books accounts for nothing of itself, and fails validation by name', () => {
         const b: $Book = $(
             <Book>
                 {cover('The Shelf')}

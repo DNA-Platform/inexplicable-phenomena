@@ -77,7 +77,7 @@ const Note = styled.div`
     margin-top: 0.2rem;
 `;
 
-const Refusal = styled.div`
+const Failure = styled.div`
     color: ${mark};
     background: ${ground};
     border: 1px solid ${rule};
@@ -89,7 +89,7 @@ const Refusal = styled.div`
 class $App extends $Chemical {
     path = '/';
     book?: $Book = undefined;
-    refused = '';
+    failed = '';
     started = false;
 
     place = 0;
@@ -97,7 +97,7 @@ class $App extends $Chemical {
     open(path: string) {
         this.path = path;
         this.book = undefined;
-        this.refused = '';
+        this.failed = '';
         fetch(path)
             .then(holder => {
                 if (this.path !== path) return;
@@ -105,7 +105,7 @@ class $App extends $Chemical {
                 if (catalogued(holder.book).length) { window.scrollTo(0, 0); this.place = 0; }
                 else this.arrive();
             })
-            .catch(error => { if (this.path === path) this.refused = String(error.message ?? error); });
+            .catch(error => { if (this.path === path) this.failed = String(error.message ?? error); });
     }
 
     // Waiting for the chapter to EXIST rather than for a moment that ought to be
@@ -226,7 +226,7 @@ class $App extends $Chemical {
             <Sheet>
                 <GlobalStyle />
                 {this.trail()}
-                {this.refused ? <Refusal data-refusal>{this.refused}</Refusal> : null}
+                {this.failed ? <Failure data-failure>{this.failed}</Failure> : null}
                 {book ? (catalogued(book).length ? this.consulted(book) : this.read(book)) : null}
             </Sheet>
         );

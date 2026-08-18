@@ -63,6 +63,10 @@ export class $$Chapter extends $Section implements $Reference$<$Chapter>, $Catal
         return $Composible$.select(this, pick);
     }
 
+    selectMany<U>(pick: (part: $$Section) => U[]): U[] {
+        return $Composible$.selectMany(this, pick);
+    }
+
     single(match: (part: $$Section) => boolean): $$Section {
         return $Composible$.single(this, match);
     }

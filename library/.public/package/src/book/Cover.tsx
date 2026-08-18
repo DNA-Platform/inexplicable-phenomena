@@ -15,11 +15,11 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
     get title(): $Title { return super.title!; }
 
     get author(): $Author | undefined {
-        return this.sections.flatMap(s => s.elements).find(e => e instanceof $Author) as $Author | undefined;
+        return this.words.find(w => w instanceof $Author) as $Author | undefined;
     }
 
     get subject(): $Subject | undefined {
-        return this.sections.flatMap(s => s.elements).find(e => e instanceof $Subject) as $Subject | undefined;
+        return this.words.find(w => w instanceof $Subject) as $Subject | undefined;
     }
 
     read(): $Book {

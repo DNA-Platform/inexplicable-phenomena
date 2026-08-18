@@ -91,10 +91,19 @@ const rows = (section: $Section): ReactNode =>
         </React.Fragment>
     ));
 
+// THE TITLES LABEL THE SIDES and are deliberately different text — "Written by
+// hand" against "Found in the notation" — so the claim is about the BODY.
+//
+// It used to count everything and agree by COINCIDENCE: the titles differ by one
+// word, and the written side's link was dissolving into two plain words, which
+// cancelled it exactly. A written element survives the parse now, so the accident
+// is visible, and the comparison says what it always meant.
+const body = (section: $Section) => section.parts().slice(1);
+
 const reading = (section: $Section) => ({
-    parts: section.parts().length,
-    words: section.words.length,
-    mentioned: section.paragraphs.flatMap(p => p.sentences).flatMap(s => s.parts()).filter(w => w.role === 'mention').length,
+    parts: body(section).length,
+    words: body(section).flatMap(p => p.sentences).flatMap(s => s.words).length,
+    mentioned: body(section).flatMap(p => p.sentences).flatMap(s => s.parts()).filter(w => w.role === 'mention').length,
 });
 
 export function Parallel(): React.ReactElement {

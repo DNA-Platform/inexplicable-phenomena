@@ -64,7 +64,7 @@ export class $TheTeam extends $Book {
                 <Slip>
                     {parts.map((part, at) => (
                         <SlipBody key={at}>
-                            <em>{`${at}  ${part instanceof $Figure ? 'figure' : part.level}`}</em>
+                            <em>{`${at}  ${part instanceof $Figure ? 'figure' : part.constructor.name.replace(/^\$/, '').toLowerCase()}`}</em>
                             <span>{(part.copy || '—').slice(0, 46)}</span>
                         </SlipBody>
                     ))}

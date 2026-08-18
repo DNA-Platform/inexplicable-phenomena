@@ -134,7 +134,10 @@ describe('The document — the general unit above sections, and its reference ap
         expect(euler.citation).toBe(d.bibliography!.citations[0]);
         expect(euler.number).toBe(1);
         expect(euler.valid()).toBe(true);
-        const echoed: $Cite = $(<Cite for="euler" />, d.sections[0]);
+        // CHANGED 2026-08-18: $'s second position is what a bond constructor
+        // COMPOSES now, not a parent. A mark is adopted after it is built.
+        const echoed: $Cite = $(<Cite for="euler" />);
+        echoed.parent = d.sections[0] as never;
         expect(echoed.for).toBe('euler');
         expect(echoed.number).toBe(1);
     });
@@ -179,9 +182,11 @@ describe('The document — the general unit above sections, and its reference ap
         const stray: $Denote = $(<Denote>missing</Denote>);
         expect(stray.valid()).toBe(false);
         const d = noted();
-        const wrong: $Denote = $(<Denote>absent</Denote>, d.sections[0]);
+        const wrong: $Denote = $(<Denote>absent</Denote>);
+        wrong.parent = d.sections[0] as never;
         expect(() => wrong.read()).toThrow(/notes carry this key/);
-        const uncited: $Cite = $(<Cite>euler</Cite>, d.sections[0]);
+        const uncited: $Cite = $(<Cite>euler</Cite>);
+        uncited.parent = d.sections[0] as never;
         expect(() => uncited.read()).toThrow(/no bibliography/);
     });
 

@@ -23,6 +23,25 @@ import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
 
+// The $Canonical a subject declares is a WORD in its cover's own writing, and it
+// has no accessor of its own because `canonical` is already the framework's word
+// for the first part of a composition — a book's cover, a chapter's summary — at
+// every level. Asked of the model rather than of a bag of raw children, which is
+// possible now that a written element survives the parse.
+const canonicals = (cover: $Cover): $Canonical[] =>
+    cover.words.filter(w => w instanceof $Canonical) as $Canonical[];
+
+// A card that never pointed stands for nothing yet, and a book asked to judge
+// itself before its cards are filled must answer rather than throw. Validity is
+// asked at construction, when nothing points anywhere.
+const pointed = (reference?: { card?: $IndexCard<$Book> }): $Book | undefined => {
+    try {
+        return reference?.card?.read();
+    } catch {
+        return undefined;
+    }
+};
+
 export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalogue$<$Book> {
     $parts: $Chapter[] = [];
 
@@ -40,8 +59,21 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
     get subject(): $Subject | undefined { return this.cover instanceof $Cover ? this.cover.subject : undefined; }
     get subtitle(): $Subtitle | undefined { return this.cover instanceof $Cover ? this.cover.subtitle : undefined; }
 
+    get library(): $Book | undefined {
+        const seen = new Set<$Book>();
+        let at: $Book | undefined = this;
+        while (at && !seen.has(at)) {
+            seen.add(at);
+            const of: $Book | undefined = pointed(at.subject);
+            if (!of) return undefined;
+            if (of === at) return at;
+            at = of;
+        }
+        return undefined;
+    }
+
     get chapters(): $Chapter[] { return this.parts(); }
-    get sections(): $Section[] { return this.parts().flatMap(c => c.sections); }
+    get sections(): $Section[] { return this.selectMany(c => c.sections); }
     get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
@@ -81,6 +113,10 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         return $Composible$.select(this, pick);
     }
 
+    selectMany<U>(pick: (part: $Chapter) => U[]): U[] {
+        return $Composible$.selectMany(this, pick);
+    }
+
     single(match: (part: $Chapter) => boolean): $Chapter {
         return $Composible$.single(this, match);
     }
@@ -107,7 +143,7 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         if (this.chapters.filter(c => c instanceof $TableOfContents).length !== 1) throw new Error('A book declares exactly one table of contents.');
         if (!this.author) throw new Error('A book carries its author on its cover, and this cover names none.');
         if (!this.subject) throw new Error('A book carries its subject on its cover, and this cover names none.');
-        if (this.cover.sections.flatMap(s => s.elements).filter(e => e instanceof $Canonical).length > 1) throw new Error('A subject declares exactly one canonical, and this cover carries more.');
+        if (canonicals(this.cover).length > 1) throw new Error('A subject declares exactly one canonical, and this cover carries more.');
     }
 
     view(): ReactNode {
@@ -124,7 +160,24 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         const listed = $valid(this.chapters.filter(c => c instanceof $TableOfContents).length === 1, 'a book declares exactly one table of contents');
         const authored = $valid(this.author !== undefined, 'a book carries its author on its cover, and this cover names none');
         const filed = $valid(this.subject !== undefined, 'a book carries its subject on its cover, and this cover names none');
-        return covered && once && accounted && listed && authored && filed;
+
+        // WHAT A LINK POINTS AT is a question only something holding every book can
+        // ask, so these hold where a card has been given its book and are passed
+        // over where it has not — which is every book at construction.
+        const of = pointed(this.author);
+        const about = pointed(this.subject);
+
+        const wrote = $valid(!of || pointed(of.author) === of, 'a book names an author that authors itself, and this one names a book somebody else wrote');
+        const holds = $valid(!about || about.read().parts().length > 0, 'a book names a subject that catalogues other books, and this one names a book that catalogues nothing');
+
+        // THE CANONICAL IS NOT ASKED HERE, and that is the model answering rather
+        // than a rule going missing. A book IS a catalogue of books, its catalogue
+        // reading is a composition, and a composition's canonical is its first
+        // part — so `read().canonical` IS the subject's canonical book, held by
+        // definition. What a cover DECLARES only decides which entry stands first,
+        // and a declaration naming a book the subject does not hold is answered
+        // where the entries are built.
+        return covered && once && accounted && listed && authored && filed && wrote && holds;
     }
 }
 

@@ -52,7 +52,7 @@ const rejection = (b: any): string | undefined => {
 };
 
 const canonicalOf = (b: $Book): $Canonical | undefined =>
-    b.cover.sections.flatMap(s => s.elements).find(e => e instanceof $Canonical) as $Canonical | undefined;
+    b.cover.words.find(w => w instanceof $Canonical) as $Canonical | undefined;
 
 describe('$Subject — a book reference that holds a library card', () => {
     it('reads to the subject book through the card it holds', () => {

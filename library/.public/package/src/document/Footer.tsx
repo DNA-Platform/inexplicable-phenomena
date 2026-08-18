@@ -12,7 +12,7 @@ export class $Footer extends $Section {
     $legend?: $Legend;
 
     get footnotes(): $Footnote[] {
-        return this.elements.filter((e): e is $Footnote => e instanceof $Footnote);
+        return this.sentences.filter((e): e is $Footnote => e instanceof $Footnote);
     }
 
     get legend(): $Legend {

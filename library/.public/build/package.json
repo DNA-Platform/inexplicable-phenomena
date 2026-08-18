@@ -5,12 +5,20 @@
   "type": "module",
   "description": "The compiler for the public library \u2014 it lifts what is written in library/, carries it into the app, assembles it into books, judges them, and catalogues what survives. Node-side only; nothing here ever reaches a browser bundle.",
   "scripts": {
-    "walk": "npx tsx see.ts ../../.test-library",
-    "verify": "npx tsx verify-walk.ts",
-    "typecheck": "tsc --noEmit"
+    "compile": "tsx index.ts ../../.test-library",
+    "see": "tsx see.ts ../../.test-library",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit && vitest run && tsx verify-walk.ts && tsx verify-build.ts && tsx check.ts ../../.test-library",
+    "check": "tsx check.ts ../../.test-library",
+    "suite": "vitest run"
   },
   "dependencies": {
     "@dna-platform/lib": "*",
     "ts-morph": "^28.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.0"
   }
 }

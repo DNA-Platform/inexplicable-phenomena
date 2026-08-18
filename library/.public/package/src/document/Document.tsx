@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
 import { $Composition$ } from '../writing/Composition';
-import { $Writing, Level } from '../writing/Writing';
+import { $Writing } from '../writing/Writing';
 import { $Section } from '../writing/Section';
 import { $Title } from '../writing/Title';
 import * as titles from '../writing/Title';
@@ -26,7 +26,6 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         this.inline = false;
     }
 
-    get level(): Level { return 'document'; }
     get copy(): string { return this.parts().map(s => s.copy).join('\n\n'); }
     // A SECTION ADDS A TITLE TO PARAGRAPHS; A DOCUMENT ADDS A SUMMARY TO SECTIONS.
     // The canonical is the section carrying BOTH — the one a reader meets first —
@@ -67,10 +66,13 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         // grouped into its block rather than as arguments of their own. They are
         // read off the block by level, which is the parse's own rule one grade up.
         super.$Writing(...writing);
-        const written = this.elements.filter(s => s instanceof $Section) as $Section[];
+        const written = (this.text.$elements ?? []).filter(s => s instanceof $Section) as $Section[];
         this.$parts = written.length ? written : this.declaration();
         for (const section of this.$parts) {
-            for (const element of section.elements) {
+            // A MARK IS WORD GRADE and a figure is paragraph grade, so the
+            // apparatus is judged at both — the raw children used to carry them
+            // side by side, and the model carries them at the levels they are.
+            for (const element of [...section.parts(), ...section.words]) {
                 const writing = element as { valid?: () => boolean; copy?: string };
                 if (typeof writing.valid === 'function' && writing.valid() === false) {
                     throw new Error(`The binding rejects ${JSON.stringify(writing.copy ?? '')} — invalid writing in ${section.heading}.`);
@@ -100,7 +102,11 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         const sections: $Section[] = [];
         for (const child of children) {
             if (!React.isValidElement(child)) continue;
-            const evaluated = $(child as any, this);
+            // The second position is what a bond constructor composes now, not a
+            // parent — so the section is adopted after it is built rather than
+            // during, which is what every composed part already does.
+            const evaluated = $(child as any);
+            if (evaluated instanceof $Section && evaluated.parent !== this) evaluated.parent = this as never;
             if (evaluated instanceof $Section) sections.push(evaluated);
         }
         if (sections.length) this.$view = $Document.prototype.view;

@@ -373,7 +373,7 @@ check('BUILD: the folder tree labels every role, computed not typed', await page
 }));
 
 await reach('There is a collision hiding in the word');
-check('BUILD: the refusal computes itself — a subject naming a book it does not hold', (await text()).includes('NOT reciprocal'));
+check('BUILD: the failure computes itself — a subject naming a book it does not hold', (await text()).includes('NOT reciprocal'));
 
 await reach('It is a flat list, not a tree');
 check('BUILD: the description derives eight folders and no complaints', (await text()).includes('no complaints — 8 folders described'));

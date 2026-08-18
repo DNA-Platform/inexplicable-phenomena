@@ -183,7 +183,7 @@ const Attend: React.FC<{ section: $MarkdownSection; spec: DressSpec; at: number;
                     onClick={() => attend(position)}
                 >
                     <span>{position}</span>
-                    <span>{part instanceof $Code ? (part as $Code).language : part.level}</span>
+                    <span>{part instanceof $Code ? (part as $Code).language : grade(part)}</span>
                     <span>{((part.copy || (part as $Code).source) || '—').slice(0, 52)}</span>
                 </PartRow>
             ))}
@@ -265,6 +265,11 @@ const PartsFigure = styled.figure<{ $ink: string }>`
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 11.5px;
 `;
+
+// THE GRADE IS THE CLASS. `level` was a string every class carried beside its
+// type, saying the same thing twice; the type is the only answer now.
+const grade = (part: { constructor: { name: string } }): string =>
+    part.constructor.name.replace(/^\$/, '').toLowerCase();
 
 const PartRow = styled.div<{ $ink: string; $lit: boolean }>`
     display: grid;

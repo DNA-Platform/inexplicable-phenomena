@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { lexer } from 'marked';
-import { $, $check, $Html } from '@dna-platform/chemistry';
+import { $, $check, $Html, $Chemical } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
 import { $Composition$ } from './Composition';
 import { $Referent } from '../reference/Referent';
@@ -9,7 +9,7 @@ import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, Level, Role } from './Writing';
+import { $Writing, Role } from './Writing';
 import { $Letter } from './Letter';
 import { $Paragraph, $$Paragraph } from './Paragraph';
 import * as paragraphs from './Paragraph';
@@ -30,9 +30,9 @@ import { $Document } from '../document/Document';
 // writing is written, so it lives here rather than in a class of its own, and
 // the word for it appears nowhere in this package.
 //
-// `marked`'s lexer answers where the boundaries are; the classes below answer
+// `marked` answers where the boundaries are; the classes below answer
 // what each piece is. A section still divides at blank lines, because that is
-// what the lexer does with prose — what it adds is everything else a person
+// what `marked` does with prose — what it adds is everything else a person
 // actually writes.
 // Built fresh on every call, never hoisted: a global regex carries `lastIndex`
 // between calls, so a shared one would start the second section mid-string.
@@ -45,13 +45,21 @@ const quote = /^\s*>/;
 const picture = /^!\[([^\]\n]*)\]\(([^)\s]*)\)$/;
 const rule = /^(-{3,}|\*{3,}|_{3,})$/;
 
-// One run of prose, cut into the pieces a section holds.
+// One stretch of prose, cut into the pieces a section holds.
 const blocks = (prose: string): string[] => {
     if (!prose.trim()) return [];
     const pieces: string[] = [];
-    const tokens = lexer(prose) as { type: string; raw: string; depth?: number }[];
-    for (let i = 0; i < tokens.length;) {
-        const at = tokens[i];
+    const found = lexer(prose) as { type: string; raw: string; depth?: number }[];
+    for (let i = 0; i < found.length;) {
+        const at = found[i];
+        // OWED: a blank line between paragraphs is still dropped here, and the
+        // ruling is that nothing a parse meets is thrown out. Attaching it to the
+        // paragraph it ends was tried and cascades: `marked` already folds a
+        // trailing newline into a heading's and a fence's own `raw`, so appending
+        // its space token double-counts and three promises go red — a heading
+        // stops being a title, a fence stops choosing its figure, and the flat
+        // reading loses a level. It wants the whole divider rewritten off
+        // `marked`'s positions rather than its trimmed text.
         if (at.type === 'space') { i++; continue; }
         if (at.type === 'heading') {
             pieces.push(at.raw);
@@ -78,15 +86,19 @@ const blocks = (prose: string): string[] => {
 };
 
 // A SECTION COMPOSES PARAGRAPHS, flat. A heading of any depth opens a new
-// section, so depth is a containment to bolt on later rather than a tree the
+// section, so depth is a containment to bolt on later rather than a nesting the
 // parse carries.
+
+// A blank line divides prose. One at the START of a stretch closes whatever was
+// open before it; one at the END closes what that stretch just built.
+const blankFirst = /^\s*\n\s*\n/;
+const blankLast = /\n\s*\n\s*$/;
+
 export class $Section extends $Writing<$Paragraph> implements $Composition$<$Paragraph> {
     // THE TITLE IS PART ZERO. It is not lifted out into a member of its own — it
     // stands where it was written, as the canonical part of the section, which is
     // the cover-and-synopsis shape one grade down.
     get title(): $Paragraph { return this.parts()[0] as $Paragraph; }
-
-    get accepts(): Level[] { return ['paragraph']; }
 
     get paragraphs(): $Paragraph[] {
         return this.parts();
@@ -96,7 +108,6 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
-    get level(): Level { return 'section'; }
 
     get canonical(): $Paragraph { return this.parts()[0] as $Paragraph; }
 
@@ -107,7 +118,51 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
     }
 
     // Display mathematics is not this notation's, so it is pulled whole before
-    // the lexer sees anything — otherwise a formula's underscores are emphasis.
+    // `marked` sees anything — otherwise a formula's underscores are emphasis.
+    // A SECTION READS ITS OWN CONTENTS, accumulating until a blank line closes a
+    // paragraph. A written element joins the paragraph it was written into, and
+    // ITS OWN TEXT IS NEVER READ FOR BOUNDARIES — a part cannot be split, so
+    // nothing inside one may divide what holds it.
+    parts(): $Paragraph[] {
+        const Paragraph = $(paragraphs.Paragraph);
+        const found: $Paragraph[] = [];
+        let held: (string | $Chemical)[] = [];
+
+        const close = () => {
+            if (!held.length) return;
+            const alone = held.length === 1 && typeof held[0] === 'string' ? held[0] as string : undefined;
+            if (alone !== undefined && !alone.trim()) { held = []; return; }
+            // Pure prose still forks the way it always did — a display becomes a
+            // figure, a heading a title. Contents carrying a written element are
+            // handed to the paragraph as they stand.
+            const made = alone !== undefined
+                ? this.compose(alone)
+                : $(<Paragraph />, ...held) as $Paragraph;
+            if (made) {
+                if (made.parent !== this) made.parent = this as never;
+                found.push(made);
+            }
+            held = [];
+        };
+
+        for (const written of (this.text.$elements ?? []) as (string | number | $Chemical)[]) {
+            if (typeof written === 'object') {
+                if (written instanceof $Paragraph) { close(); found.push(written); continue; }
+                held.push(written);
+                continue;
+            }
+            const prose = String(written);
+            if (blankFirst.test(prose)) close();
+            const pieces = this.divide(prose);
+            pieces.forEach((piece, at) => {
+                held.push(piece);
+                if (at !== pieces.length - 1 || blankLast.test(prose)) close();
+            });
+        }
+        close();
+        return found;
+    }
+
     divide(prose: string): string[] {
         const pieces: string[] = [];
         const whole = display();
@@ -186,9 +241,17 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
     }
 
     get tagline(): $Tagline | undefined {
-        const body = this.parts().slice(1).flatMap(p => p.sentences);
+        // A SENTENCE THAT READS AS NOTHING IS NOT PART OF THE READING. A cover's
+        // author and subject are parenthetical — mentioned, passed over — and
+        // they became visible here the day written elements stopped dissolving.
+        // Counting one would put an ellipsis after a summary with no more to say.
+        const body = this.parts().slice(1).flatMap(p => p.sentences).filter(s => s.copy.trim() !== '');
         if (!body.length) return undefined;
-        const copy = body.length === 1 ? body[0].copy : body[0].copy.replace(/[.!?]+$/, '') + '…';
+        // A TAGLINE IS A READING, so it does not carry the separator the sentence
+        // keeps. A sentence runs to its stop and the whitespace after it — that
+        // space is written and is held, and a tagline still reads without it.
+        const said = body[0].copy.trimEnd();
+        const copy = body.length === 1 ? said : said.replace(/[.!?]+$/, '') + '…';
         const Tagline = $(taglines.Tagline);
         const tagline: $Tagline = $(<Tagline>{copy}</Tagline>);
         return tagline;
@@ -229,6 +292,10 @@ export class $$Section extends $Paragraph implements $Reference$<$Section>, $Cat
 
     select<U>(pick: (part: $$Paragraph) => U): U[] {
         return $Composible$.select(this, pick);
+    }
+
+    selectMany<U>(pick: (part: $$Paragraph) => U[]): U[] {
+        return $Composible$.selectMany(this, pick);
     }
 
     single(match: (part: $$Paragraph) => boolean): $$Paragraph {

@@ -48,7 +48,9 @@ try {
     // therefore a book that catalogues — so the front door is the library's own
     // book drawn as a catalogue, and not a special screen.
     await open('/');
-    check('front door draws entries', await attr('[data-entries]', 'data-entries'), '2');
+    // MOVED 2026-08-17: the corpus gained `the-team`, the book that authors
+    // itself, so the library catalogues three where it catalogued two.
+    check('front door draws entries', await attr('[data-entries]', 'data-entries'), '3');
     check('front door is not a reader', await count('[data-reader]'), 0);
     check('front door names the library', (await text()).includes('A Test Library'), true);
     check('the trail is one step deep', await attr('[data-trail]', 'data-trail'), '1');
@@ -89,12 +91,12 @@ try {
     await open('/philosophy');
     check('philosophy catalogues one book', await attr('[data-entries]', 'data-entries'), '1');
 
-    // A PATH THE CATALOGUE DOES NOT HOLD. A refusal that names what was asked
+    // A PATH THE CATALOGUE DOES NOT HOLD. A failure that names what was asked
     // for, never a blank page.
     await open('/physics/nothing-here');
-    check('an unknown path is refused', await count('[data-refusal]'), 1);
-    check('the refusal names the path', (await text()).includes('/physics/nothing-here'), true);
-    check('nothing is drawn beside the refusal', await count('[data-reader]'), 0);
+    check('an unknown path fails, and says so', await count('[data-failure]'), 1);
+    check('the failure names the path', (await text()).includes('/physics/nothing-here'), true);
+    check('nothing is drawn beside the failure', await count('[data-reader]'), 0);
 
     // A CHAPTER HAS AN ADDRESS, and the address follows the reader rather than
     // being clicked. The route stays the book; the fragment moves.

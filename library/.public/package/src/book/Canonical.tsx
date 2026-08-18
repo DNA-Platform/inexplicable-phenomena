@@ -24,6 +24,10 @@ export class $Canonical extends $Phrase implements $Reference$<$Book> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }
+
+    valid(): boolean {
+        return super.valid() || this.$for !== undefined;
+    }
 }
 
 export const Canonical = $($Canonical);

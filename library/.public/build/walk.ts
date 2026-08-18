@@ -75,6 +75,7 @@ export const walk = (root: string, workspace = process.cwd()): Library => {
     const manifest = manifestAt(workspace);
     const entries: Entry[] = [];
     const complaints: Complaint[] = [];
+    let speaks = '';
 
     const listedFor = (dir: string): string[] => {
         const key = forward(relative(workspace, dir)) || '.';
@@ -98,10 +99,14 @@ export const walk = (root: string, workspace = process.cwd()): Library => {
         // is the container's own book, which is why position outranks the dots.
         const kind: Kind = spoken ? 'book' : dotsOf(basename(dir)) || folders.length ? 'subject' : 'book';
 
+        // `declares` is left empty here on purpose: the walk looks at names and
+        // arrangement and never opens a file. What a file exports is read from
+        // the source, which is refer.ts's business.
         const files: File[] = filenames.map((name, at) => ({
             name,
             role: roleOf(name),
             order: at,
+            declares: '',
         }));
 
         if (path) {
@@ -126,11 +131,14 @@ export const walk = (root: string, workspace = process.cwd()): Library => {
         // The root is a parameter rather than an entry, so the convention never
         // judges its name — but it is still a container, and a library with
         // nothing speaking for it has no book of its own.
-        if (!path && folders.length && !own) complaints.push({ at: '.', says: 'no single folder speaks for the library' });
+        if (!path) {
+            if (folders.length && !own) complaints.push({ at: '.', says: 'no single folder speaks for the library' });
+            speaks = own ? forward(relative(root, join(dir, own))) : '';
+        }
 
         folders.forEach((f, at) => visit(join(dir, f), at));
     };
 
     visit(root, 0);
-    return { root, entries, complaints };
+    return { root, speaks, entries, complaints };
 };

@@ -46,6 +46,10 @@ export type File = {
     role: Role;
     /** position among its siblings, resolved once by the walk and never again */
     order: number;
+    /** the name the file exports, read from the source and NOT derivable from the
+     *  filename — `.cover.tsx` exports `TestLibraryCover` in one book and
+     *  `HardProblemCover` in another. Anything that composes a book needs it. */
+    declares: string;
 };
 
 export type Entry = {
@@ -83,6 +87,60 @@ export type Library = {
     /** the absolute path the walk was pointed at. The root is a parameter, not an
      *  entry, so the convention never judges it. */
     root: string;
+    /** the folder that speaks for the library itself — the root's own book. The
+     *  root is a parameter rather than an entry, so this is where its one
+     *  structural fact is kept. */
+    speaks: Path;
     entries: Entry[];
+    complaints: Complaint[];
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RESOLVING — the second seam.
+//
+// A description says what is THERE. A library says what it MEANS: who wrote a
+// book, what it is about, which of a subject's books speaks for it, and which
+// books a subject holds. Every answer below is a PATH rather than a word,
+// because a word cannot be followed.
+//
+// The unit here is the BOOK, not the folder. A subject is a folder whose book
+// lives inside it, so `.physics` and `.physics/.subject` are one book with one
+// route, and this is where the two collapse into one thing.
+
+/** Where an answer came from. A supplied answer was never written by the author,
+ *  and it is filled HERE and never in the file they left. */
+export type Source = 'declared' | 'supplied' | 'unresolved';
+
+export type Link = {
+    /** the book this points at, by path. Empty when unresolved. */
+    book: Path;
+    /** what a reader is shown — the alias the author wrote, or the supplied name */
+    display: string;
+    from: Source;
+};
+
+export type Book = {
+    /** the folder holding the book's files — `.physics/.subject`, never `.physics` */
+    path: Path;
+    /** the route a reader arrives holding — `/physics` */
+    route: string;
+    /** the folder a reader would call this, which for a subject is its container */
+    at: Path;
+    cover: File;
+    synopsis: File;
+    /** the book's own chapters, in resolved order — cover and synopsis excluded */
+    chapters: File[];
+    author?: Link;
+    subject?: Link;
+    /** subjects only: which of the books it holds speaks for it */
+    canonical?: Link;
+    /** the books this one catalogues, in resolved order. EMPTY for an ordinary
+     *  book, which is subjecthood as a count rather than as a declaration. */
+    entries: Path[];
+};
+
+export type Resolved = {
+    root: string;
+    books: Book[];
     complaints: Complaint[];
 };

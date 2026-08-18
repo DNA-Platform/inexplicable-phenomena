@@ -92,10 +92,15 @@ export type $Function<T> = T extends React.FC<infer P>
 // travels to every consumer. A `declare module 'react'` augmentation (below) does NOT survive a
 // consumer's build, which is why $Html<'block'> and $check(x, 'block') used to fail off-package.
 // This is the enum $Html<T>, $Parameter, and $check all read from.
+// $BLOCK IS THE ONE CONTENT KIND, and it works with what an author actually
+// writes inline: raw strings, raw numbers, and chemicals — in written order.
+//
+// It used to have two siblings, a 'string' kind and a 'number' kind, that wrapped
+// raw text so it would lift through the same path. The wrapping is what made
+// prose and written elements indistinguishable downstream. The block carries them
+// as they are instead.
 export interface $Content {
-    string: { value?: string };
-    number: { value?: number };
-    block: { elements?: $Chemical[] };
+    block: { elements?: (string | number | $Chemical)[] };
 }
 export type $HtmlTag = keyof JSX.IntrinsicElements | keyof $Content;
 type $HtmlProps<T extends $HtmlTag> =
@@ -113,9 +118,7 @@ export type $Html<T extends $HtmlTag = any> =
 declare module 'react' {
     namespace JSX {
         interface IntrinsicElements {
-            string: { value?: string };
-            number: { value?: number };
-            block: { elements?: $Chemical[] };
+            block: { elements?: (string | number | $Chemical)[] };
         }
     }
 }

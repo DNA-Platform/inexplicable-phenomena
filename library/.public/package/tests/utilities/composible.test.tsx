@@ -77,3 +77,23 @@ describe('$Referent is a class, and a reading is the one thing that is not one',
 
 });
 
+
+describe('selectMany — the list monad member the interface was missing', () => {
+    const sentence = (): $Sentence => $(<Sentence>the frame turns</Sentence>);
+
+    it('picks a list from each part and joins them', () => {
+        const of = { parts: () => [[1, 2], [3], []] };
+        expect($Composible$.selectMany(of, p => p)).toEqual([1, 2, 3]);
+    });
+
+    it('is select and then a join, which is what every hand-written flatMap was', () => {
+        const of = { parts: () => ['ab', 'c'] };
+        expect($Composible$.selectMany(of, w => [...w])).toEqual(['a', 'b', 'c']);
+        expect($Composible$.select(of, w => [...w])).toEqual([['a', 'b'], ['c']]);
+    });
+
+    it('and a composition answers it about its own parts', () => {
+        const s = sentence();
+        expect(s.selectMany(w => [w.copy])).toEqual(s.select(w => w.copy));
+    });
+});

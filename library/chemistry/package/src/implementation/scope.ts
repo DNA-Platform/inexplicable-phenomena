@@ -156,7 +156,7 @@ export function currentAsker(): any {
 }
 
 // Whether user code is being DRAWN — inside a bond constructor or a view.
-// Configuration is refused there and only there: a handler has an asker so it
+// Configuration is invalid there and only there: a handler has an asker so it
 // can resolve, but it runs after the paint, so it may also configure.
 export function drawing(): boolean {
     return $drawing;

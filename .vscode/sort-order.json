@@ -33,5 +33,11 @@
   ],
   ".claude": [
     ".i"
+  ],
+  "library/.test-library/..the-library": [
+    ".cover.tsx",
+    ".synopsis.tsx",
+    "what-this-library-is.tsx",
+    "what-this-library-exercises.tsx"
   ]
 }

@@ -29,7 +29,7 @@ class $Empty extends $Chemical {
 
     $Empty(...words: string[]) {
         this.words = words.map(w => $check(w, String));
-        if (this.words.length === 0) throw new Error('An empty refuses at the door.');
+        if (this.words.length === 0) throw new Error('An empty fails validation at the door.');
     }
 
     view() {

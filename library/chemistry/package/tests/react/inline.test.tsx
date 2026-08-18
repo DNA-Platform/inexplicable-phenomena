@@ -9,9 +9,10 @@ import { $, $Chemical, $Html$, $check } from '@/abstraction/chemical';
 // path, one level deep) is the next, separate stage.
 
 describe('inline / block on the $Html$ abstraction', () => {
-    it('inline is read from the type: string/number/inline-tags inline; block/div block', () => {
-        expect(new $Html$('string').inline).toBe(true);
-        expect(new $Html$('number').inline).toBe(true);
+    // CHANGED 2026-08-18: $Block takes raw strings and numbers as they are, so
+    // they are no longer content-node TYPES of their own. They are still inline —
+    // isInline answers for them directly.
+    it('inline is read from the type: inline tags inline; block and div block', () => {
         expect(new $Html$('block').inline).toBe(false);
         expect(new $Html$('span').inline).toBe(true);
         expect(new $Html$('em').inline).toBe(true);
@@ -19,21 +20,32 @@ describe('inline / block on the $Html$ abstraction', () => {
         expect(new $Html$('p').inline).toBe(false);
     });
 
-    it('a string node lifts through the HTML path and renders its $value', () => {
-        const s = $(<string value="hi" />);
-        expect(s).toBeInstanceOf($Html$);
-        expect(s.inline).toBe(true);
-        expect(s.$value).toBe('hi');
-        const S = $(s);
-        const { container } = render(<S />);
-        expect(container.textContent).toBe('hi');
+    // CHANGED 2026-08-18: there is no string node and no number node. $Block
+    // carries a raw value as itself, and draws it.
+    it('$Block carries a raw string as itself, and draws it', () => {
+        let block: any;
+        class $Host extends $Chemical {
+            $Host(...p: any[]) { block = p[0]; }
+            view() { return <div />; }
+        }
+        const Host = $($Host);
+        render(<Host>hi</Host>);
+        expect(block.$elements).toEqual(['hi']);
+        const B = $(block);
+        expect(render(<B />).container.textContent).toBe('hi');
     });
 
-    it('a number node renders its $value', () => {
-        const n = $(<number value={5} />);
-        const N = $(n);
-        const { container } = render(<N />);
-        expect(container.textContent).toBe('5');
+    it('and a raw number the same way, still a number', () => {
+        let block: any;
+        class $Host extends $Chemical {
+            $Host(...p: any[]) { block = p[0]; }
+            view() { return <div />; }
+        }
+        const Host = $($Host);
+        render(<Host>{5}</Host>);
+        expect(block.$elements).toEqual([5]);
+        const B = $(block);
+        expect(render(<B />).container.textContent).toBe('5');
     });
 
     it('an inline HTML element lifts to an inline $Html$ and renders its content', () => {
@@ -66,7 +78,7 @@ describe('inline / block on the $Html$ abstraction', () => {
         expect(new $Thing().inline).toBe(false);
     });
 
-    it('a block exposes its inline members as readable $Html nodes (text + tags)', () => {
+    it('$Block exposes its members: raw prose as itself, tags as $Html nodes', () => {
         let block: any;
         class $Host extends $Chemical {
             $Host(...p: any[]) { block = p[0]; }
@@ -76,11 +88,11 @@ describe('inline / block on the $Html$ abstraction', () => {
         render(<Host>Call me <b>Ishmael</b>!</Host>);
         const els = block.$elements;
         expect(els.length).toBe(3);
-        expect(els[0].type).toBe('string');
-        expect(els[0].$value).toBe('Call me ');
+        // CHANGED 2026-08-18: prose is prose. $Block holds it as itself.
+        expect(els[0]).toBe('Call me ');
         expect(els[1].type).toBe('b');
         expect(els[1].children).toBe('Ishmael');   // a tag exposes its content as children
-        expect(els[2].$value).toBe('!');
+        expect(els[2]).toBe('!');
     });
 
     it('a caller can render a received block elsewhere — wrapped in a span for styling', () => {

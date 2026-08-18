@@ -73,7 +73,9 @@ describe('derived kinds are parsed by their LEVEL, never by their class', () => 
         const held = outer.parts().find(p => p instanceof $Listing) as $Listing;
         expect(held).toBeDefined();
         expect(held.kind).toBe('listing');
-        expect(held.level).toBe('paragraph');
+        // CHANGED 2026-08-18: a derived kind stands because it IS one of the
+        // section's parts, by type. There is no `level` string to ask.
+        expect(held).toBeInstanceOf($Paragraph);
     });
 
     it('a derived PARAGRAPH stands too, and so does one derived from it', () => {
@@ -93,38 +95,39 @@ describe('derived kinds are parsed by their LEVEL, never by their class', () => 
         expect(kinds).toEqual(['prose', 'prose', 'plate', 'listing', 'prose']);
     });
 
-    it('the walk names no class — level is the only question it asks', () => {
-        // A kind the walk has never been told about behaves exactly like the
-        // base level it derives from, because `level` is what it inherits.
+    it('A KIND THE PARSE HAS NEVER HEARD OF BEHAVES AS WHAT IT DERIVES FROM', () => {
+        // CHANGED 2026-08-18: `level` used to be the only question the walk
+        // asked, and a stringly level is a second encoding of the class
+        // hierarchy that can drift from it. The type IS the answer now.
         const dressed: $Dressed = $(<Dressed><Title>Anything</Title>{'\n\nProse.'}</Dressed>);
-        expect(dressed.level).toBe('section');
-        expect(dressed.accepts).toEqual(['paragraph']);
+        expect(dressed).toBeInstanceOf($Section);
+        expect(dressed.parts().every(p => p instanceof $Paragraph)).toBe(true);
+
         const plate: $Plate = $(<Plate content="x" />);
-        expect(plate.level).toBe('paragraph');
-        expect(plate.accepts).toEqual(['sentence']);
+        expect(plate).toBeInstanceOf($Paragraph);
     });
 });
 
 describe('the parse does not judge what it composes', () => {
-    // A section whose every composed part refuses to be valid. Before, the parse
+    // A section whose every composed part fails validation. Before, the parse
     // dropped these and logged a warning nobody read, so the parts were shorter
     // than the writing and the model quietly disagreed with the page.
-    class $Refusing extends $Section {
+    class $Failing extends $Section {
         compose(prose: string): $Paragraph {
             class $Never extends $Paragraph { valid(): boolean { return false; } }
             const Never = $($Never);
             return $(<Never>{prose}</Never>);
         }
     }
-    const Refusing = $($Refusing);
+    const Failing = $($Failing);
 
     it('a part that will not validate STAYS in the parts — it is a validation failure, not debris', () => {
-        const s: $Refusing = $(<Refusing><Title>Refusing</Title>{'\n\nOne.'}{'\n\nTwo.'}</Refusing>);
+        const s: $Failing = $(<Failing><Title>Failing</Title>{'\n\nOne.'}{'\n\nTwo.'}</Failing>);
         const parts = s.parts();
         // Three pieces were written; three parts are held, none silently gone.
         expect(parts.length).toBe(3);
         // The title was WRITTEN, so it stands as itself and is valid. The two
-        // composed parts refuse — and they are still here, carrying that refusal.
+        // composed parts fail — and they are still here, carrying that failure.
         expect(parts[0].valid()).toBe(true);
         expect(parts.slice(1).every(p => !p.valid())).toBe(true);
     });
@@ -161,13 +164,13 @@ describe('a name is a phrase, not a sentence', () => {
 
     it('a phrase is word grade and admits what a name contains', () => {
         const name: $Author = $(<Author>Doug Rubino</Author>);
-        expect(name.level).toBe('word');
+        // CHANGED 2026-08-18: the type IS the grade; there is no level string.
         expect(name).toBeInstanceOf($Phrase);
         expect(name).toBeInstanceOf($Word);
         // One word, with a space in it — the fallback Doug named, and it needs
         // no machinery a part that flattens into several would need.
         expect(name.valid()).toBe(true);
-        // A plain word still refuses a space, so the widening is the phrase's.
+        // A plain word still admits no space, so the widening is the phrase's.
         expect(($(<Word>{'two words'}</Word>) as $Word).valid()).toBe(false);
     });
 });

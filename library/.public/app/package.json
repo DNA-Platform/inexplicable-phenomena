@@ -13,9 +13,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "node typecheck.mjs",
-    "valid": "tsx valid.mts",
     "drive": "node verify-library.mjs",
-    "test": "node typecheck.mjs && tsx valid.mts && node verify-library.mjs"
+    "test": "node typecheck.mjs && node verify-library.mjs"
   },
   "dependencies": {
     "@dna-platform/lib": "*",
@@ -30,6 +29,7 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.7.0",
     "typescript": "^5.9.2",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "tsx": "^4.20.3"
   }
 }

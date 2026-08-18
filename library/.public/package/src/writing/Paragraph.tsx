@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { $, $valid } from '@dna-platform/chemistry';
+import { $, $valid, $Chemical } from '@dna-platform/chemistry';
 import { $Composition$ } from './Composition';
 import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
@@ -7,14 +7,29 @@ import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Writing, Level, Role } from './Writing';
+import { $Writing, Role } from './Writing';
 import { $Letter } from './Letter';
 import { $Sentence, $$Sentence } from './Sentence';
 import * as sentences from './Sentence';
 import { $Word } from './Word';
 
+
+// A sentence runs to its stop AND THE WHITESPACE THAT FOLLOWS IT. Nothing is
+// thrown out by a parse, and the separator belongs to the sentence it ends.
+const sentence = /[^.!?]+[.!?]*\s*/g;
+const stopped = /[.!?]["')\]]*\s*$/;
+const code = /`[^`\n]+`/g;
+const target = /\([^)\s]*\)/g;
+
+// SOMETHING IS WRITTEN IN IT — asked of what it HOLDS rather than of what it
+// READS. A parenthetical part is passed over by the reading, so a paragraph
+// carrying only an author or a subject reads as nothing and is not empty: the
+// author is written there. This became visible the day written elements stopped
+// dissolving into text, which is the model gaining them rather than changing.
+const written = (part: { copy: string; parts?: () => any[] }): boolean =>
+    /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
+
 export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Sentence> {
-    get level(): Level { return 'paragraph'; }
 
     get sentences(): $Sentence[] { return this.parts(); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
@@ -22,22 +37,56 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
 
     get ref(): $$Paragraph { const Entry = $($$Paragraph); return $(<Entry of={this} />) as $$Paragraph; }
 
-    // A paragraph is divided at its stops — and a stop inside a code span or
-    // inside a link's target is not the end of a sentence, so "call `x.y()`
-    // now." is one sentence and not three.
-    divide(prose: string): string[] {
-        const holds: string[] = [];
-        const held = prose
-            .replace(/`[^`\n]+`/g, m => ` ${holds.push(m) - 1} `)
-            .replace(/\([^)\s]*\)/g, m => ` ${holds.push(m) - 1} `);
-        const restore = (s: string) => s.replace(/ (\d+) /g, (_, i) => holds[Number(i)]);
-        return (held.match(/\s*[^.!?]+[.!?]*/g) ?? []).map(s => restore(s.trim()));
+
+    // A PARAGRAPH READS ITS OWN CONTENTS, accumulating until a stop closes a
+    // sentence. "Blah blah " carries no stop, so an element written after it
+    // JOINS that sentence rather than starting another — which is why writing a
+    // word into the middle of a sentence gives one sentence.
+    //
+    // THE NEW SENTENCE IS HANDED THE LITERAL CONTENTS OF ITS SPAN: the prose and
+    // the written elements, in written order, straight to its bond constructor.
+    // Nothing is flattened to text, which is the whole defect this replaces.
+    parts(): $Sentence[] {
+        const Sentence = $(sentences.Sentence);
+        const found: $Sentence[] = [];
+        let held: (string | $Chemical)[] = [];
+
+        const close = () => {
+            if (!held.length) return;
+            const made = $(<Sentence />, ...held) as $Sentence;
+            if (made.parent !== this) made.parent = this as never;
+            found.push(made);
+            held = [];
+        };
+
+        for (const written of (this.text.$elements ?? []) as (string | number | $Chemical)[]) {
+            if (typeof written === 'object') {
+                if (written instanceof $Sentence) { close(); found.push(written); continue; }
+                held.push(written);
+                continue;
+            }
+            for (const piece of this.stops(String(written))) {
+                held.push(piece);
+                if (stopped.test(piece)) close();
+            }
+        }
+        close();
+        return found;
     }
 
-    compose(prose: string): $Sentence {
-        const Sentence = $(sentences.Sentence);
-        return $(<Sentence>{prose}</Sentence>);
+    // Where a paragraph's sentences end, LOSING NOTHING — the whitespace after a
+    // stop goes to the sentence whose stop it follows, and is picked up among
+    // that sentence's own parts. A stop inside a code span or a link's target is
+    // not the end of a sentence.
+    stops(prose: string): string[] {
+        const holds: string[] = [];
+        const kept = prose
+            .replace(code, m => ` ${holds.push(m) - 1} `)
+            .replace(target, m => ` ${holds.push(m) - 1} `);
+        const restore = (piece: string) => piece.replace(/ (\d+) /g, (_, i) => holds[Number(i)]);
+        return (kept.match(sentence) ?? []).map(restore);
     }
+
 
     $mark? = '';
 
@@ -45,7 +94,7 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
 
     valid(): boolean {
         const base = super.valid();
-        const said = $valid(/[\p{L}\p{N}]/u.test(this.copy), 'a paragraph has at least one letter or number, and this one has none');
+        const said = $valid(this.parts().some(written), 'a paragraph has something written in it, and nothing is written in this one');
         return base && said;
     }
 }
@@ -72,6 +121,10 @@ export class $$Paragraph extends $Sentence implements $Reference$<$Paragraph>, $
 
     select<U>(pick: (part: $$Sentence) => U): U[] {
         return $Composible$.select(this, pick);
+    }
+
+    selectMany<U>(pick: (part: $$Sentence) => U[]): U[] {
+        return $Composible$.selectMany(this, pick);
     }
 
     single(match: (part: $$Sentence) => boolean): $$Sentence {

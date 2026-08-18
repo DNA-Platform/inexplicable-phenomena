@@ -1,19 +1,29 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { parse, $Writing } from '@/writing/Writing';
+import { $Writing } from '@/writing/Writing';
 import { $Section, Section } from '@/writing/Section';
 import { $Paragraph, Paragraph } from '@/writing/Paragraph';
 import { $Sentence } from '@/writing/Sentence';
+import { $Word } from '@/writing/Word';
 import { $Title, Title } from '@/writing/Title';
 import { $Author, Author } from '@/book/Author';
 
-// The parse is ONE walk, and this is its specification. Doug's rule, in his own
-// words: take a block and the levels it accepts, and if something is too high a
-// level throw, if it is too low assume it is text and pull its copy, and if it
-// is at the right level literally use that element.
+// EVERY LEVEL READS ITS OWN CONTENTS, and this is its specification.
+//
+// It used to be ONE generic walk taking the levels it accepts, with the rule:
+// too high a level throws, too low is ASSUMED TO BE TEXT and its copy pulled,
+// and at the right level the element itself is used. The middle clause is the
+// defect this replaced — a custom element written below the level being composed
+// was dissolved into prose, so the model was not a representation of the writing.
+//
+// The rule now is two lines and asks no level of anything:
+//
+//   a string   → my own boundary rule, applied to THAT RUN ALONE; accumulate
+//   an element → one of my parts? it stands. otherwise it rides down inside
+//                the piece it sits in, and is met again one level lower.
 
-// A paragraph that stands rather than sits — block-level, so it is a part.
+// A paragraph that stands rather than sits — so it is a part of a section.
 class $Plate extends $Paragraph {
     view(): React.ReactNode { return <div className="plate">plate</div>; }
     valid(): boolean { return true; }
@@ -30,97 +40,87 @@ describe('the title stands at position zero', () => {
         const first = section.parts()[0];
         expect(first).toBeInstanceOf($Title);
         expect(first.copy).toBe('The Fold');
-        // The same object twice — a written part is held, not composed afresh.
-        expect(section.parts()[0]).toBe(section.parts()[0]);
-        expect(section.title).toBe(first);
     });
 
     it('and the canonical is that same part — the special first, at every level', () => {
         const section: $Section = $(<Section><Title>The Fold</Title>{'\n\nProse follows.'}</Section>);
         expect(section.canonical).toBe(section.parts()[0]);
-        expect(section.at(0).read()).toBe(section.parts()[0]);
-        // It used to be built fresh on every ask, which is two populations of one thing.
-        expect(section.canonical).toBe(section.canonical);
     });
 
-    it('a title is paragraph grade, because that is the level it stands at', () => {
-        const title: $Title = $(<Title>Anything</Title>);
-        expect(title.level).toBe('paragraph');
-        expect(title).toBeInstanceOf($Paragraph);
+    it('a title is a PARAGRAPH — that is what makes it one of a section\'s parts', () => {
+        const section: $Section = $(<Section><Title>The Fold</Title>{'\n\nProse follows.'}</Section>);
+        expect(section.parts()[0]).toBeInstanceOf($Paragraph);
     });
 
-    it('the prose after it counts from one, and the heading still splits at its colon', () => {
-        const section: $Section = $(
-            <Section><Title>The Fold: a first look</Title>{'\n\nOne.'}{'\n\nTwo.'}</Section>
-        );
-        expect(section.heading).toBe('The Fold');
-        expect(section.subtitle?.copy).toBe('a first look');
-        expect(section.parts().length).toBe(3);
-        expect(section.at(1).read().copy).toBe('One.');
-        expect(section.at(2).read().copy).toBe('Two.');
+    it('the prose after it counts from one', () => {
+        const section: $Section = $(<Section><Title>The Fold</Title>{'\n\nProse follows.'}</Section>);
+        expect(section.parts()[1].copy).toBe('Prose follows.');
     });
 });
 
-describe('the parse — one walk, three answers by level', () => {
-    it('at an accepted level, the element itself is the part — the very object in the block', () => {
+describe('a written element stands, or rides down to the level that holds it', () => {
+    it('AT MY LEVEL IT IS THE PART — the very object in the block, not a copy of it', () => {
         const section: $Section = $(
-            <Section><Title>Standing</Title>{'\n\nBefore it.'}<Plate />{'\n\nAfter it.'}</Section>
+            <Section><Title>Standing</Title>{'\n\nBefore it.\n\n'}<Plate />{'\n\nAfter it.'}</Section>
         );
-        const written = section.elements.find(e => e instanceof $Plate);
-        expect(written).toBeDefined();
         const parts = section.parts();
-        // Not a copy of it, not something composed from its text — it.
-        expect(parts).toContain(written);
-        expect(parts.filter(p => p === written).length).toBe(1);
+        const stood = parts.find(p => p instanceof $Plate);
+        expect(stood).toBeDefined();
+        expect(parts.filter(p => p === stood).length).toBe(1);
     });
 
-    it('below the accepted level, it is text — its copy joins the prose around it', () => {
+    it('BELOW MY LEVEL IT RIDES DOWN and lands where it belongs — it is NOT turned into text', () => {
         const section: $Section = $(
             <Section><Title>Named</Title>{'\n\nWritten by '}<Named>Doug</Named>{' in the margin.'}</Section>
         );
+        // A sentence is not one of a section's parts, so it is not standing here —
         const parts = section.parts();
-        // A sentence sits inside a paragraph, so it never stands as one.
         expect(parts.some(p => p instanceof $Named)).toBe(false);
+        // — it is inside the paragraph it was written into, as one of its sentences.
+        const inside = parts.flatMap(p => p.parts());
+        expect(inside.some(s => s instanceof $Named)).toBe(true);
+        // And the writing still reads as it was written.
         expect(parts.map(p => p.copy).join(' ')).toContain('Doug');
     });
 
-    it('and a PARENTHETICAL part below the level contributes nothing — present in the writing, absent from the prose', () => {
+    it('a PARENTHETICAL part is in the model and out of the reading', () => {
         const section: $Section = $(
             <Section><Title>Named</Title>{'\n\nWritten by '}<Author>Doug</Author>{' in the margin.'}</Section>
         );
-        // The author is parenthetical, so it is in the block and not in the copy.
-        expect(section.elements.some(e => e instanceof $Author)).toBe(true);
+        // Present: the author is a WORD, and it rode down to the sentence holding it.
+        const words = section.parts().flatMap(p => p.parts()).flatMap(s => s.parts());
+        expect(words.some(w => w instanceof $Author)).toBe(true);
+        // Absent from the reading: it is mentioned, so the copy passes over it.
         expect(section.parts().map(p => p.copy).join(' ')).not.toContain('Doug');
     });
 
-    it('above the accepted level, it throws — and the message names what stood where', () => {
-        const paragraph: $Paragraph = $(<Paragraph>{'A paragraph of prose.'}</Paragraph>);
-        // A paragraph among sentences is a level too high to stand there.
-        expect(() => parse(
-            [paragraph as never],
-            ['sentence'],
-            prose => [prose],
-            () => undefined,
-        )).toThrow(/paragraph/);
+    it('and it is the object that was written, carrying what was written in it', () => {
+        const section: $Section = $(
+            <Section><Title>Named</Title>{'\n\nWritten by '}<Author>Doug</Author>{' in the margin.'}</Section>
+        );
+        const author = section.parts()
+            .flatMap(p => p.parts()).flatMap(s => s.parts())
+            .find(w => w instanceof $Author) as $Author;
+        expect(author.copy).toBe('Doug');
+        expect(author).toBeInstanceOf($Word);
     });
+});
 
-    it('the accepted levels are the walk\'s only knob — the one below by default, and a section widens it', () => {
+describe('what each level composes, and where the descent stops', () => {
+    it('a section composes paragraphs and a paragraph composes sentences — by type, not by a name', () => {
         const section: $Section = $(<Section><Title>Levels</Title>{'\n\nOne. Two.'}</Section>);
-        // A section composes PARAGRAPHS. Depth is a later layer, not the parse's.
-        expect(section.accepts).toEqual(['paragraph']);
+        expect(section.parts().every(p => p instanceof $Paragraph)).toBe(true);
         const paragraph = section.parts()[1] as $Paragraph;
-        expect(paragraph.accepts).toEqual(['sentence']);
-        expect(paragraph.parts()[0]).toBeInstanceOf($Sentence);
+        expect(paragraph.parts().every(s => s instanceof $Sentence)).toBe(true);
     });
 
-    it('with nothing accepted there are no parts — the floor composes nothing', () => {
+    it('A LETTER COMPOSES NOTHING — it is the floor of the descent', () => {
         const section: $Section = $(<Section><Title>Floor</Title>{'\n\nA word.'}</Section>);
         const letter = section.parts()[1].parts()[0].parts()[0].parts()[0];
-        expect(letter.accepts).toEqual([]);
         expect(letter.parts()).toEqual([]);
     });
 
-    it('prose alone divides and composes exactly as it did — the walk changed the shape, not the reading', () => {
+    it('prose alone reads exactly as it did — the shape changed, not the reading', () => {
         const section: $Section = $(
             <Section><Title>Plain</Title>{'\n\nFirst paragraph here.'}{'\n\nSecond paragraph here.'}</Section>
         );

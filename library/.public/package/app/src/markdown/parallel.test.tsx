@@ -12,8 +12,18 @@ describe('a parallel text — a written part and a found part are the same thing
         expect(written().parts().length).toBe(found().parts().length);
     });
 
+    // THE TITLES LABEL THE SIDES and are deliberately different text — "Written
+    // by hand" against "Found in the notation" — so the claim is about the body.
+    //
+    // This used to compare everything and passed by COINCIDENCE: the titles
+    // differ by one word, and the written side's <Link> was dissolving into two
+    // plain words, which cancelled it exactly. The link survives now, so the
+    // accident shows. The oracle is still each side for the other.
+    const body = (of: { parts(): { sentences: { words: unknown[] }[] }[] }) =>
+        of.parts().slice(1).flatMap(p => p.sentences).flatMap(s => s.words);
+
     it('both sides read to the same words', () => {
-        expect(written().words.length).toBe(found().words.length);
+        expect(body(written()).length).toBe(body(found()).length);
     });
 
     it('both sides stand a figure at the same position', () => {

@@ -59,6 +59,10 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return $Composible$.select(this, pick);
     }
 
+    selectMany<U>(pick: (part: $$Chapter) => U[]): U[] {
+        return $Composible$.selectMany(this, pick);
+    }
+
     single(match: (part: $$Chapter) => boolean): $$Chapter {
         return $Composible$.single(this, match);
     }
