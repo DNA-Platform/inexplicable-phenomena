@@ -27,6 +27,8 @@ export { $Index, Index } from './book/Index';
 export { $TableOfContents, TableOfContents } from './book/TableOfContents';
 
 export { $Book, Book } from './book/Book';
+export { $Theme, Theme } from './writing/Theme';
+export type { Lay, Composed, Laid } from './writing/Theme';
 export { $Writing, Writing } from './writing/Writing';
 export type { Role } from './writing/Writing';
 export type { $Composition$ } from './writing/Composition';

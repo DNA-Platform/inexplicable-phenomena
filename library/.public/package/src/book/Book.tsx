@@ -22,6 +22,9 @@ import { $Paragraph } from '../writing/Paragraph';
 import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
+import { $Theme } from '../writing/Theme';
+import { shown } from '../writing/Writing';
+import * as themes from '../writing/Theme';
 
 // The $Canonical a subject declares is a WORD in its cover's own writing, and it
 // has no accessor of its own because `canonical` is already the framework's word
@@ -46,6 +49,9 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
     $parts: $Chapter[] = [];
 
     $parenthetical? = false;
+
+    /** Which chapter a book opens to when a theme lays one at a time. */
+    page = 0;
 
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
@@ -78,6 +84,10 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
+
+    // A book is a composition of chapters rather than a piece of writing, and
+    // it draws — so it answers the same question its chapters answer.
+    get theme(): $Theme { return $(themes.Theme).$ as $Theme; }
 
     get ref(): $Cover { return this.cover; }
 
@@ -146,11 +156,25 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         if (canonicals(this.cover).length > 1) throw new Error('A subject declares exactly one canonical, and this cover carries more.');
     }
 
+    // A BOOK KEEPS ITS OWN LOOP for the same reason a document does — and it is
+    // the one place a measure and a leading belong, because they are decisions
+    // about a whole reading rather than about any part of one.
     view(): ReactNode {
-        return this.parts().filter(c => !c.parenthetical).map((c, i) => {
-            const C = $(c) as any;
-            return <div className="chapter" key={i}><C /></div>;
-        });
+        const theme = this.theme;
+        const drawn = this.parts().filter(c => theme.draws(c));
+        // A BOOK ASKS HOW ITS CHAPTERS ARE LAID through the same decision every
+        // composition asks through. Its parts always differ in kind — a cover,
+        // a contents, an account, chapters — so it is never one run, and a
+        // theme answering `one` is a book turned rather than scrolled.
+        const laid = shown(theme, this, drawn, false, this.page) ?? drawn;
+        return (
+            <article style={{ maxWidth: theme.measure, lineHeight: theme.leading, color: theme.ink }}>
+                {laid.map((c, i) => {
+                    const C = $(c) as any;
+                    return <div key={i} style={{ marginBottom: theme.rhythm }}><C /></div>;
+                })}
+            </article>
+        );
     }
 
     valid(): boolean {

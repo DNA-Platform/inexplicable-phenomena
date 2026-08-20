@@ -7,6 +7,7 @@ import { $Catalogue$ } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
+import { $Theme } from './Theme';
 import { $Writing, Role } from './Writing';
 import { $Letter } from './Letter';
 import { $Sentence, $$Sentence } from './Sentence';
@@ -30,6 +31,13 @@ const written = (part: { copy: string; parts?: () => any[] }): boolean =>
     /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
 
 export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Sentence> {
+    // A PARAGRAPH IS THE CANONICAL BLOCK, and it draws as one. Found by driving:
+    // once a section drew its parts, nothing separated one paragraph from the
+    // next and a cover's prose, author and subject ran into one line.
+    override emit(contents: ReactNode, theme: $Theme): ReactNode {
+        return <p style={{ margin: `0 0 ${theme.step(0)}` }}>{contents}</p>;
+    }
+
 
     get sentences(): $Sentence[] { return this.parts(); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }

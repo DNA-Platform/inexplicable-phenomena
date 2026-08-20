@@ -54,9 +54,9 @@ export class $Denote extends $Writing implements $Reference$<$Footnote> {
 
     view(): ReactNode {
         try {
-            return <sup className="mark">{this.number}</sup>;
+            return <sup>{this.number}</sup>;
         } catch {
-            return <sup className="mark">{this.for}</sup>;
+            return <sup>{this.for}</sup>;
         }
     }
 

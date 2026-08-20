@@ -19,7 +19,7 @@ export class $Figure extends $Paragraph {
 
     view(): ReactNode {
         return (
-            <figure className="figure">
+            <figure>
                 {this.drawn()}
                 {this.parenthetical ? null : <figcaption>{this.caption.copy}</figcaption>}
             </figure>

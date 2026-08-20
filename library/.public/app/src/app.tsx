@@ -4,7 +4,7 @@ import { $Book, $Synopsis, $Cover, $TableOfContents } from '@dna-platform/lib';
 import styled from 'styled-components';
 import { $Card, at, fetch, catalogue } from './catalogue';
 import { keep, kept, topOf, slug } from './bookmark';
-import { GlobalStyle, ink, faint, rule, ground, mark } from './theme';
+import { GlobalStyle, ink, faint, rule, ground, mark, measure, leading, rhythm } from './theme';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -24,8 +24,11 @@ const go = (path: string): void => {
 export const catalogued = (book: $Book): $Synopsis[] =>
     book.chapters.filter((c): c is $Synopsis => c instanceof $Synopsis && c !== book.synopsis && c.card !== undefined);
 
+// THE MEASURE IS THE THEME'S, not this stylesheet's. It was 42rem here and
+// 42rem there, agreeing by coincidence — so narrowing the theme narrowed
+// nothing, which is how a duplicated decision announces itself.
 const Sheet = styled.div`
-    max-width: 42rem;
+    max-width: ${measure};
     margin: 0 auto;
     padding: 4rem 1.5rem 8rem;
 `;
@@ -47,11 +50,16 @@ const Step = styled.span`
     &:hover { color: ${mark}; }
 `;
 
+// THE LEADING AND THE RHYTHM ARE THE THEME'S TOO. This application draws the
+// chapters itself rather than rendering the book — see the finding in the
+// sprint chapter — so the book's own wrapper never runs, and these are the
+// values it would have applied. Read rather than repeated, so one object still
+// governs them.
 const Prose = styled.div`
     font-size: 1.15rem;
-    line-height: 1.7;
+    line-height: ${leading};
     white-space: pre-wrap;
-    .chapter { margin-bottom: 2.5rem; }
+    .chapter { margin-bottom: ${rhythm}; }
     h1, h2, h3 { font-weight: 400; letter-spacing: 0.01em; margin-bottom: 0.8rem; }
 `;
 

@@ -1,10 +1,18 @@
 import { createGlobalStyle } from 'styled-components';
+import { dressing } from './dressing';
 
-export const ink = '#1d2327';
-export const faint = '#6b7680';
-export const rule = '#d8d3ca';
-export const ground = '#f4f1ea';
-export const mark = '#1e3a4a';
+// THE APPLICATION READS THE SAME OBJECT THE BOOKS DO. These were five literals
+// beside a stylesheet; they are the theme's own answers now, so changing the
+// theme moves the chrome and the books together rather than one of them.
+
+export const ink = dressing.ink;
+export const faint = dressing.faint;
+export const rule = dressing.rule;
+export const ground = dressing.ground;
+export const mark = dressing.mark;
+export const measure = dressing.measure;
+export const leading = dressing.leading;
+export const rhythm = dressing.rhythm;
 
 export const GlobalStyle = createGlobalStyle`
     body {

@@ -607,7 +607,11 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const b: $Book = $(book());
         const B = $(b as any);
         const { container } = render(<B />);
-        const toc = container.querySelector('.table-of-contents');
+        // MOVED, and the reason is the sprint's: a class name on the object was
+        // markup the framework has stopped writing, so the contents is selected
+        // by what it IS. The claim is unchanged — the same three assertions
+        // about the same element — only the way it is reached.
+        const toc = container.querySelector('nav');
         expect(toc).not.toBeNull();
         expect(toc!.textContent).toContain('Table of Contents');
         expect(toc!.textContent).toContain('Coordinates');

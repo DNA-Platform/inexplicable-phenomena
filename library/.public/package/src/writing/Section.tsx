@@ -10,6 +10,7 @@ import { $Location } from '../reference/Location';
 import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
 import { $Writing, Role } from './Writing';
+
 import { $Letter } from './Letter';
 import { $Paragraph, $$Paragraph } from './Paragraph';
 import * as paragraphs from './Paragraph';
@@ -261,8 +262,20 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
         super.$Writing(...writing);
     }
 
+    // A SECTION'S PARTS DIFFER IN KIND BY CONSTRUCTION — a title stands at
+    // position zero, and a figure, a fence or a quote may stand among the
+    // paragraphs. So they are never one run, and this is the level where the
+    // parse finally reaches the page.
+    override uniform(): boolean {
+        return false;
+    }
+
+    // A PARENTHETICAL SECTION IS NOT DRAWN, and a theme may say otherwise.
+    // The guard lives here rather than on $Writing because `parenthetical`
+    // means two different things at two grades: a summary is not shown, while
+    // an author's name is parenthetical and IS shown — it is simply not prose.
     view(): ReactNode {
-        return this.parenthetical ? null : super.view();
+        return this.theme.draws(this) ? super.view() : null;
     }
 
     valid(): boolean {

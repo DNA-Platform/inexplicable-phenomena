@@ -107,12 +107,12 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
 
     view(): ReactNode {
         return (
-            <div className="table-of-contents">
-                <div className="contents-title">{text(this.title.text)}</div>
+            <nav>
+                <div>{text(this.title.text)}</div>
                 <ol>
                     {this.parts().map((r, at) => <li key={at}>{this.row(r)}</li>)}
                 </ol>
-            </div>
+            </nav>
         );
     }
 }

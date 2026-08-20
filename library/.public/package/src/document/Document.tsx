@@ -4,6 +4,9 @@ import { $Referent } from '../reference/Referent';
 import { $Composition$ } from '../writing/Composition';
 import { $Writing } from '../writing/Writing';
 import { $Section } from '../writing/Section';
+import { $Theme } from '../writing/Theme';
+import { shown } from '../writing/Writing';
+import * as themes from '../writing/Theme';
 import { $Title } from '../writing/Title';
 import * as titles from '../writing/Title';
 import { $Subtitle } from '../writing/Subtitle';
@@ -113,11 +116,24 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         return sections;
     }
 
+    // A DOCUMENT KEEPS ITS OWN LOOP rather than taking $Writing's template, and
+    // the reason is `declaration()` above: it harvests sections by calling this
+    // method and then points `$view` at THIS function, so it has to exist here.
+    // What it gained is the theme — it asks whether a part is drawn instead of
+    // reading the flag, and it hands what it gathered to `emit`.
     view(): ReactNode {
-        return this.parts().map((s, i) => {
+        const theme = this.theme;
+        const held = this.parts().filter(section => theme.draws(section));
+        const laid = shown(theme, this, held, false, this.page) ?? held;
+        const drawn = laid.map((s, i) => {
             const S = $(s) as any;
-            return <div className="section" key={i}><S /></div>;
+            return <div key={i} style={{ marginBottom: theme.rhythm }}><S /></div>;
         });
+        return this.emit(drawn, theme);
+    }
+
+    override emit(contents: ReactNode, theme: $Theme): ReactNode {
+        return <section>{contents}</section>;
     }
 
     valid(): boolean {

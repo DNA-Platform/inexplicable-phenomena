@@ -1,4 +1,6 @@
+import React, { type ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
+import { $Theme } from '../writing/Theme';
 import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
 import * as paths from '../reference/Path';
@@ -30,6 +32,10 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
     then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
+    }
+
+    override emit(contents: ReactNode, theme: $Theme): ReactNode {
+        return <header style={{ borderBottom: `1px solid ${theme.rule}` }}>{contents}</header>;
     }
 
     $Cover(...writing: unknown[]) {

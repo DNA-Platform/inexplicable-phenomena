@@ -13,7 +13,7 @@ export class $Legend extends $Paragraph {
 
     view(): ReactNode {
         if (this.parenthetical) return null;
-        return <span className="legend">{this.keys.map(k => k.$name).join(' · ')}</span>;
+        return <span>{this.keys.map(k => k.$name).join(' · ')}</span>;
     }
 
     valid(): boolean {
