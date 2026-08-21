@@ -101,7 +101,7 @@ export class $Writing<P extends $Writing = $Writing<any>> extends $Referent {
     }
 
     gathered(theme: $Theme): ReactNode {
-        const laid = shown(theme, this, reading(this), this.uniform(), this.page);
+        const laid = shown(theme, this, reading(this), this.uniform(), 0);
         if (laid === null) return React.createElement($(this.text) as any);
         return laid.map((part, at) => React.createElement($(part) as any, { key: at }));
     }

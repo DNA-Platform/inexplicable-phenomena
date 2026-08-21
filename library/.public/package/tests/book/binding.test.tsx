@@ -101,18 +101,20 @@ describe('a book draws itself, and the base draws a reading that is on record', 
 
 describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
     // EXACTLY ONE, ON EVERY PAGE, WITHOUT EXCEPTION. Doug had to say this
-    // more times than he should have, so the promise is written to be
-    // unmistakable: one block stands, whatever page a book is opened at, and
-    // the book's own account rides INSIDE the title page rather than beside it.
-    it('exactly one chapter stands, on every page of every book', () => {
+    // EXACTLY ONE CHAPTER STANDS, whatever a book is opened at. Doug had to say
+    // this more times than he should have, so the promise is written to be
+    // unmistakable — and THERE IS NO PAGE: a book asks its catalogue which
+    // chapter is open, and the catalogue holds a chapter rather than a number.
+    it('exactly one chapter stands, wherever a book is opened', () => {
         const held = built();
-        for (const at of [0, 1, 2, 99]) {
-            held.page = at;
+        for (const chapter of held.reading) {
+            held.contents.turn(chapter);
             expect(held.stands(held.theme).length).toBe(1);
+            expect(held.stands(held.theme)[0]).toBe(chapter);
         }
-        for (const at of [0, 3]) {
+        for (const at of [0, held.reading.length - 1]) {
             const b = built();
-            b.page = at;
+            b.contents.turn(b.reading[at]);
             expect(drawn(b).querySelectorAll('[data-chapter]').length).toBe(1);
         }
     });
@@ -126,7 +128,7 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
         const container = drawn(b);
         expect(b.synopsis.parenthetical).toBe(true);
         expect(container.textContent).not.toContain('One book, two layouts.');
-        b.page = b.contents;
+        b.contents.turn(b.contents);
         expect(drawn(b).querySelector('[data-contents]')!.textContent).not.toContain('Synopsis');
     });
 
@@ -136,13 +138,13 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
     it('the contents is a chapter with a page of its own, not a bar on every page', () => {
         const b = built();
         expect(drawn(b).querySelector('[data-contents]')).toBeNull();
-        b.page = b.contents;
+        b.contents.turn(b.contents);
         expect(drawn(b).querySelector('[data-contents]')).not.toBeNull();
     });
 
     it('and a reader can always move — previous and next', () => {
         const b = built();
-        b.page = 1;
+        b.contents.turn(b.reading[Math.min(1, b.reading.length - 1)]);
         const turning = drawn(b).querySelector('[data-turning]');
         expect(turning).not.toBeNull();
         expect(turning!.textContent).toContain('previous');
@@ -151,7 +153,7 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
 
     it('the running head goes to the contents rather than to the cover', () => {
         const b = built();
-        b.page = 2;
+        b.contents.turn(b.reading[Math.min(2, b.reading.length - 1)]);
         expect(drawn(b).querySelector('[data-running]')!.getAttribute('href')).toBe('#contents');
     });
 
@@ -163,7 +165,7 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
 
     it('and turning to another shows that one and no other', () => {
         const b = built();
-        b.page = 3;
+        b.contents.turn(b.reading[Math.min(3, b.reading.length - 1)]);
         const text = drawn(b).textContent ?? '';
         expect(text).toContain('A reader carries a place with them.');
         expect(text).not.toContain('Reading is a change of coordinates.');
@@ -171,7 +173,7 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
 
     it('a page past the end shows the last chapter rather than nothing', () => {
         const b = built();
-        b.page = 99;
+        b.contents.turn(b.reading[Math.min(99, b.reading.length - 1)]);
         expect(drawn(b).textContent ?? '').toContain('A reader carries a place with them.');
     });
 });
@@ -182,7 +184,7 @@ describe('WHERE THE READER IS IS REACTIVE, and declared once', () => {
         const B = $(b as never) as any;
         const { container } = render(<B />);
         expect(container.textContent).toContain('A Book That Turns');
-        act(() => { b.page = 2; });
+        act(() => { b.contents.turn(b.reading[2]); });
         expect(container.textContent).toContain('Reading is a change of coordinates.');
     });
 
@@ -192,7 +194,7 @@ describe('WHERE THE READER IS IS REACTIVE, and declared once', () => {
         const referent = readFileSync(join(__dirname, '../../src/reference/Referent.tsx'), 'utf-8');
         expect(writing).not.toMatch(/^\s{4}\$?page\s*=/m);
         expect(book).not.toMatch(/^\s{4}\$?page\s*=/m);
-        expect(referent).toMatch(/^\s{4}\$page\s*=/m);
+        expect(referent).not.toMatch(/page/);
     });
 });
 
@@ -231,7 +233,7 @@ describe('a cover is a title page', () => {
 describe('a chapter carries its own address', () => {
     it('and the anchor drawn is the one a reference that resolves there produces', () => {
         const b = built();
-        b.page = 3;
+        b.contents.turn(b.reading[Math.min(3, b.reading.length - 1)]);
         const placed = drawn(b).querySelector('[data-chapter]');
         expect(placed?.getAttribute('id')).toBe(b.reading[3].address);
     });

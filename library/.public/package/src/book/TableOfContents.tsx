@@ -49,6 +49,8 @@ export const Row = styled.a<{ $open: boolean }>`
 `;
 
 export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
+    $open?: $Chapter = undefined;
+
     Contents = Contents;
     Heading = Heading;
     Row = Row;
@@ -79,11 +81,9 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     parts(): $$Chapter[] {
         const book = this.book;
         if (!(book instanceof $Book)) throw new Error(`The table of contents stands under ${String((book as { constructor?: { name?: string } })?.constructor?.name)} instead of a book, with parent ${String((this.parent as { constructor?: { name?: string } })?.constructor?.name)}.`);
-        const Entry = $($$Chapter);
-        const shelved = new Set<unknown>(book.entries);
         return book.parts()
-            .filter(chapter => chapter !== this && !(chapter instanceof $Cover) && !chapter.parenthetical && !shelved.has(chapter))
-            .map(chapter => $(<Entry of={chapter} />) as $$Chapter);
+            .filter(chapter => chapter !== this && !(chapter instanceof $Cover) && !chapter.parenthetical)
+            .map(chapter => chapter.ref);
     }
 
     where(match: (part: $$Chapter) => boolean): $$Chapter[] {
@@ -133,29 +133,41 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return super.valid();
     }
 
-    turns(entry: $$Chapter): number {
+    get open(): $Chapter | undefined {
         const book = this.book as $Book | undefined;
-        if (!book) return 0;
-        const at = book.reading.indexOf(entry.of);
-        return at < 0 ? 0 : at;
+        if (!book) return undefined;
+        const reading = book.reading;
+        return this.$open && reading.includes(this.$open) ? this.$open : reading[0];
+    }
+
+    turn(to: $Chapter): void {
+        this.$open = to;
     }
 
     row(entry: $$Chapter, at: number, theme: $Theme): ReactNode {
-        const book = this.book as $Book | undefined;
-        const to = this.turns(entry);
-        const open = !!book && book.page === to;
         const Turn = this.Row;
+        const chapter = entry.of;
+        const open = this.open === chapter;
+        const held = chapter as $Chapter & { card?: $IndexCard<$Book>; standsFor?: boolean };
+        const named = entry.copy;
         return (
-            <Turn
-                theme={theme as never}
-                href={`#${entry.of.address}`}
-                data-turn={to}
-                $open={open}
-                aria-current={open ? 'true' : undefined}
-                onClick={event => { event.preventDefault(); if (book) book.page = to; }}
-            >
-                {entry.copy}
-            </Turn>
+            <>
+                <Turn
+                    theme={theme as never}
+                    href={`#${chapter.address}`}
+                    data-turn={at}
+                    $open={open}
+                    aria-current={open ? 'true' : undefined}
+                    onClick={event => { event.preventDefault(); this.turn(chapter); }}
+                >
+                    {named}
+                </Turn>
+                {held.standsFor && held.card ? (
+                    <Turn theme={theme as never} href={held.card.name} data-entry={held.card.name} data-link={held.card.name} $open={false}>
+                        {'→'}
+                    </Turn>
+                ) : null}
+            </>
         );
     }
 

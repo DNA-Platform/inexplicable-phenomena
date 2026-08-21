@@ -93,7 +93,7 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
     view(): ReactNode {
         const theme = this.theme;
         const held = this.parts().filter(section => theme.draws(section));
-        const laid = shown(theme, this, held, false, this.page) ?? held;
+        const laid = shown(theme, this, held, false, 0) ?? held;
         const drawn = laid.map((s, i) => {
             const S = $(s) as any;
             return <div key={i} style={{ marginBottom: theme.rhythm }}><S /></div>;

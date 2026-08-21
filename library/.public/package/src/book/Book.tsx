@@ -216,15 +216,13 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         return this.chapters.filter(c => this.theme.draws(c));
     }
 
-    get contents(): number {
-        return this.reading.findIndex(c => c instanceof $TableOfContents);
+    get contents(): $TableOfContents {
+        return this.tableOfContents;
     }
 
     stands(theme: $Theme): $Chapter[] {
-        const reading = this.reading;
-        if (!reading.length) return [];
-        const at = Math.min(Math.max(this.page, 0), reading.length - 1);
-        return [reading[at]];
+        const open = this.contents?.open ?? this.reading[0];
+        return open ? [open] : [];
     }
 
     Sheet = Sheet;
@@ -232,7 +230,6 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
     Running = Running;
     Turning = Turning;
     Step = Step;
-    Shelf = Shelf;
 
     environment(contents: ReactNode, theme: $Theme): ReactNode {
         const Bound = this.Sheet;
@@ -250,13 +247,13 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
     }
 
     head(theme: $Theme): ReactNode {
-        if (this.page === 0) return null;
+        const listed = this.contents;
+        if (!listed || this.stands(theme)[0] === this.cover) return null;
         const title = this.title?.copy ?? '';
         if (!title) return null;
-        const to = this.contents;
         const Head = this.Running;
         return (
-            <Head theme={theme as never} data-running href="#contents" onClick={event => { event.preventDefault(); this.page = to < 0 ? 0 : to; }}>
+            <Head theme={theme as never} data-running href="#contents" onClick={event => { event.preventDefault(); listed.turn(listed as never); }}>
                 {title}
             </Head>
         );
@@ -264,7 +261,8 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
 
     turning(theme: $Theme): ReactNode {
         const reading = this.reading;
-        const at = Math.min(Math.max(this.page, 0), reading.length - 1);
+        const listed = this.contents;
+        const at = Math.max(0, reading.indexOf(this.stands(theme)[0]));
         const named = (chapter: $Chapter | undefined) => chapter?.title?.copy ?? '';
         const Moving = this.Step;
         const step = (to: number, mark: string, side: 'left' | 'right') => (
@@ -273,7 +271,7 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
                 data-turn-to={to}
                 $side={side}
                 href={`#${reading[to]?.address ?? ''}`}
-                onClick={event => { event.preventDefault(); this.page = to; }}
+                onClick={event => { event.preventDefault(); if (listed) listed.turn(reading[to]); }}
             >
                 <small>{mark}</small>
                 <span>{named(reading[to])}</span>
@@ -289,20 +287,6 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         );
     }
 
-    shelf(theme: $Theme): ReactNode {
-        const held = this.entries;
-        if (!held.length) return null;
-        const Held = this.Shelf;
-        return (
-            <Held theme={theme as never} data-entries={held.length}>
-                {held.map((entry, at) => {
-                    const Standing = $(entry) as any;
-                    return <Standing key={at} />;
-                })}
-            </Held>
-        );
-    }
-
     view(): ReactNode {
         const theme = this.theme;
         const reading = this.reading;
@@ -311,7 +295,6 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
             <>
                 {this.head(theme)}
                 {standing}
-                {this.page === 0 ? this.shelf(theme) : null}
                 {this.turning(theme)}
             </>,
             theme

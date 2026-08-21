@@ -532,12 +532,20 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     // places it — a declared default overridden by a prop, which a constructor
     // assignment could not offer. Both halves are asserted, because a default
     // nobody can override is not a default.
-    it('a synopsis is listed by default — it is writing, not apparatus', () => {
+    // CHANGED by Doug's ruling, 2026-08-21: "a synopsis is mostly parenthetical
+    // by default — it will be in the canonical subject catalogue, so having it
+    // be invisible in the book is not such a problem." A book's own account
+    // represents the book WHERE THE BOOK IS NOT, so it stands as a row on its
+    // subject's contents rather than as a chapter of its own book.
+    //
+    // A synopsis STANDING FOR ANOTHER BOOK is the opposite: it is the catalogue,
+    // so it is not parenthetical and it is listed.
+    it('a book s own account is parenthetical; one standing for another book is not', () => {
         const b: $Book = $(
             <Book>{cover()}<TableOfContents />{synopsis(false)}{chapter('Coordinates', 'Prose.')}</Book>
         );
-        expect(b.synopsis.parenthetical).toBe(false);
-        expect(b.tableOfContents.chapters).toContain(b.synopsis);
+        expect(b.synopsis.parenthetical).toBe(true);
+        expect(b.tableOfContents.chapters).not.toContain(b.synopsis);
     });
 
     it('a book that marks its own synopsis parenthetical keeps it out of the contents', () => {
@@ -612,7 +620,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         // by what it IS. The claim is unchanged — the same three assertions
         // about the same element — only the way it is reached.
         expect(b.tableOfContents.title.copy).toBe('Table of Contents');
-        b.page = b.contents;
+        b.contents.turn(b.contents);
         const turned = render(<B />).container;
         const toc = turned.querySelector('[data-contents]');
         expect(toc).not.toBeNull();
@@ -640,7 +648,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('and turning to a chapter brings its prose, which the title page never carried', () => {
         const b: $Book = $(book());
-        b.page = 2;
+        b.contents.turn(b.reading[2]);
         const B = $(b as any);
         const { container } = render(<B />);
         const standing = [...container.querySelectorAll('[data-chapter]')].map(c => c.textContent ?? '').join(' ');

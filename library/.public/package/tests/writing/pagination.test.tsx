@@ -105,7 +105,7 @@ describe('one book, two themes, and the second one PAGINATES', () => {
 
     it('and turning the page shows the OTHER chapter, with nothing else changed', () => {
         const b = built();
-        b.page = 1;
+        b.contents.turn(b.reading[1]);
         const stood = standing(drawn(b, Paged));
         expect(stood).toContain('Coordinates');
         expect(stood).not.toContain('A Book That Turns');
