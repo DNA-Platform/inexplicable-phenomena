@@ -5,7 +5,7 @@ const tsPlugin = () => typescript({ tsconfig: './tsconfig.build.json' });
 
 // @dna-platform/chemistry is the engine lib is built on — a peer runtime, kept
 // external so lib does not carry a copy of it.
-const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/chemistry'];
+const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/chemistry', 'styled-components', 'katex', 'marked'];
 
 module.exports = [
     // @dna-platform/lib — the base classes a dependent library instantiates against.

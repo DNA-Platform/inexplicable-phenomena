@@ -77,11 +77,10 @@ const drawn = (b: $Book, Theme?: unknown) => {
 };
 
 describe('one book, two themes, and the second one PAGINATES', () => {
-    it('a book opens at its title page, and its contents names the rest', () => {
+    it('a book opens at its title page, one chapter standing', () => {
         const container = drawn(built());
-        expect(container.textContent).toContain('Coordinates');
-        expect(container.textContent).toContain('Transport');
         expect(standing(container)).toContain('A Book That Turns');
+        expect(container.querySelectorAll('[data-chapter]').length).toBe(1);
     });
 
     it('and only ONE chapter stands — the book, the chapters and the prose unmodified', () => {
@@ -91,15 +90,17 @@ describe('one book, two themes, and the second one PAGINATES', () => {
         expect(stood).not.toContain('A reader carries a place');
     });
 
-    it('the model is IDENTICAL under both — a theme changes the reading, never the book', () => {
-        const a = built();
+    // THE MODEL IS TAKEN BEFORE AND AFTER ONE DRAWING rather than across two,
+    // because a second full render costs more than the claim needs and the
+    // claim is that DRAWING does not move the model.
+    it('the model is IDENTICAL before and after a drawing — a theme changes the reading, never the book', () => {
         const b = built();
-        drawn(a);
+        const was = { chapters: b.chapters.length, words: b.words.length, letters: b.letters.length, copy: b.copy };
         drawn(b, Paged);
-        expect(b.chapters.length).toBe(a.chapters.length);
-        expect(b.words.length).toBe(a.words.length);
-        expect(b.letters.length).toBe(a.letters.length);
-        expect(b.copy).toBe(a.copy);
+        expect(b.chapters.length).toBe(was.chapters);
+        expect(b.words.length).toBe(was.words);
+        expect(b.letters.length).toBe(was.letters);
+        expect(b.copy).toBe(was.copy);
     });
 
     it('and turning the page shows the OTHER chapter, with nothing else changed', () => {

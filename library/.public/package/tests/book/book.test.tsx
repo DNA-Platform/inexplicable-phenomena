@@ -611,9 +611,11 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         // markup the framework has stopped writing, so the contents is selected
         // by what it IS. The claim is unchanged — the same three assertions
         // about the same element — only the way it is reached.
-        const toc = container.querySelector('nav');
-        expect(toc).not.toBeNull();
         expect(b.tableOfContents.title.copy).toBe('Table of Contents');
+        b.page = b.contents;
+        const turned = render(<B />).container;
+        const toc = turned.querySelector('[data-contents]');
+        expect(toc).not.toBeNull();
         expect(toc!.textContent).toContain('Coordinates');
         expect(toc!.textContent).not.toContain('The Algebra of Perspective');
     });
@@ -638,7 +640,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('and turning to a chapter brings its prose, which the title page never carried', () => {
         const b: $Book = $(book());
-        b.page = 1;
+        b.page = 2;
         const B = $(b as any);
         const { container } = render(<B />);
         const standing = [...container.querySelectorAll('[data-chapter]')].map(c => c.textContent ?? '').join(' ');

@@ -27,8 +27,22 @@ export class $Canonical extends $Phrase implements $Reference$<$Book> {
         return $(<Path first={this} onward={next} />);
     }
 
-    override set(contents: ReactNode, theme: $Theme): ReactNode {
-        return <span style={{ color: theme.mark }}>{contents}</span>;
+    override set(): ReactNode {
+        return null;
+    }
+
+    named(theme: $Theme): ReactNode {
+        const card = this.card;
+        if (!card) return <span style={{ color: theme.faint }}>{this.copy}</span>;
+        return (
+            <a
+                href={card.name}
+                data-link={card.name}
+                style={{ color: theme.mark, textDecoration: 'none', borderBottom: `1px solid ${theme.rule}` }}
+            >
+                {this.copy}
+            </a>
+        );
     }
 
     valid(): boolean {

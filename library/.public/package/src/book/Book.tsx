@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+import { styled } from 'styled-components';
 import { $, $check, $valid, $Chemical } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
@@ -24,6 +25,70 @@ import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
 import { $Theme } from '../writing/Theme';
 import * as themes from '../writing/Theme';
+import '../writing/dressing';
+
+export const Sheet = styled.article`
+    max-width: ${p => p.theme.measure};
+    margin: 0 auto;
+    line-height: ${p => p.theme.leading};
+    color: ${p => p.theme.ink};
+    background: ${p => p.theme.ground};
+    font-family: ${p => p.theme.face};
+    font-size: ${p => p.theme.step(0)};
+`;
+
+export const Leaf = styled.div`
+    margin-bottom: ${p => p.theme.rhythm};
+`;
+
+export const Running = styled.a`
+    display: block;
+    margin-bottom: ${p => p.theme.rhythm};
+    font-size: ${p => p.theme.step(-2)};
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: ${p => p.theme.faint};
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover { color: ${p => p.theme.mark}; }
+`;
+
+export const Turning = styled.nav`
+    display: flex;
+    justify-content: space-between;
+    gap: ${p => p.theme.step(1)};
+    margin-top: ${p => p.theme.rhythm};
+    padding-top: ${p => p.theme.step(0)};
+    border-top: 1px solid ${p => p.theme.rule};
+
+    @media print { display: none; }
+`;
+
+export const Step = styled.a<{ $side: 'left' | 'right' }>`
+    max-width: 45%;
+    text-align: ${p => p.$side};
+    color: ${p => p.theme.mark};
+    text-decoration: none;
+    cursor: pointer;
+
+    small {
+        display: block;
+        font-size: ${p => p.theme.step(-2)};
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: ${p => p.theme.faint};
+    }
+
+    span { font-size: ${p => p.theme.step(-1)}; }
+
+    &:hover span { text-decoration: underline; text-underline-offset: 0.15em; }
+`;
+
+export const Shelf = styled.ul`
+    margin: ${p => p.theme.rhythm} 0 0;
+    padding: 0;
+`;
 
 const canonicals = (cover: $Cover): $Canonical[] =>
     cover.words.filter(w => w instanceof $Canonical) as $Canonical[];
@@ -148,7 +213,11 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
     }
 
     get reading(): $Chapter[] {
-        return this.chapters.filter(c => !(c instanceof $TableOfContents) && !this.accounts(c) && !c.parenthetical);
+        return this.chapters.filter(c => this.theme.draws(c));
+    }
+
+    get contents(): number {
+        return this.reading.findIndex(c => c instanceof $TableOfContents);
     }
 
     stands(theme: $Theme): $Chapter[] {
@@ -158,20 +227,25 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         return [reading[at]];
     }
 
+    Sheet = Sheet;
+    Leaf = Leaf;
+    Running = Running;
+    Turning = Turning;
+    Step = Step;
+    Shelf = Shelf;
+
     environment(contents: ReactNode, theme: $Theme): ReactNode {
-        return (
-            <article style={{ maxWidth: theme.measure, margin: '0 auto', lineHeight: theme.leading, color: theme.ink, background: theme.ground, fontFamily: theme.face, fontSize: theme.step(0) }}>
-                {contents}
-            </article>
-        );
+        const Bound = this.Sheet;
+        return <Bound theme={theme as never} data-book>{contents}</Bound>;
     }
 
     place(chapter: $Chapter, at: number, theme: $Theme): ReactNode {
         const Standing = $(chapter) as any;
+        const Placed = this.Leaf;
         return (
-            <div key={at} id={chapter.address || undefined} data-chapter={at} style={{ marginBottom: theme.rhythm }}>
+            <Placed key={at} theme={theme as never} id={chapter.address || undefined} data-chapter={at}>
                 <Standing />
-            </div>
+            </Placed>
         );
     }
 
@@ -179,42 +253,67 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         if (this.page === 0) return null;
         const title = this.title?.copy ?? '';
         if (!title) return null;
+        const to = this.contents;
+        const Head = this.Running;
         return (
-            <a
-                data-running
-                href="#"
-                onClick={event => { event.preventDefault(); this.page = 0; }}
-                style={{ display: 'block', fontSize: theme.step(-2), letterSpacing: '0.14em', textTransform: 'uppercase', color: theme.faint, textDecoration: 'none', marginBottom: theme.step(0), cursor: 'pointer' }}
-            >
+            <Head theme={theme as never} data-running href="#contents" onClick={event => { event.preventDefault(); this.page = to < 0 ? 0 : to; }}>
                 {title}
-            </a>
+            </Head>
+        );
+    }
+
+    turning(theme: $Theme): ReactNode {
+        const reading = this.reading;
+        const at = Math.min(Math.max(this.page, 0), reading.length - 1);
+        const named = (chapter: $Chapter | undefined) => chapter?.title?.copy ?? '';
+        const Moving = this.Step;
+        const step = (to: number, mark: string, side: 'left' | 'right') => (
+            <Moving
+                theme={theme as never}
+                data-turn-to={to}
+                $side={side}
+                href={`#${reading[to]?.address ?? ''}`}
+                onClick={event => { event.preventDefault(); this.page = to; }}
+            >
+                <small>{mark}</small>
+                <span>{named(reading[to])}</span>
+            </Moving>
+        );
+        if (reading.length < 2) return null;
+        const Between = this.Turning;
+        return (
+            <Between theme={theme as never} data-turning>
+                {at > 0 ? step(at - 1, 'previous', 'left') : <span />}
+                {at < reading.length - 1 ? step(at + 1, 'next', 'right') : <span />}
+            </Between>
         );
     }
 
     shelf(theme: $Theme): ReactNode {
         const held = this.entries;
         if (!held.length) return null;
+        const Held = this.Shelf;
         return (
-            <ul data-entries={held.length} style={{ margin: `${theme.rhythm} 0 0`, padding: 0 }}>
+            <Held theme={theme as never} data-entries={held.length}>
                 {held.map((entry, at) => {
-                    const Held = $(entry) as any;
-                    return <Held key={at} />;
+                    const Standing = $(entry) as any;
+                    return <Standing key={at} />;
                 })}
-            </ul>
+            </Held>
         );
     }
 
     view(): ReactNode {
         const theme = this.theme;
         const reading = this.reading;
-        const contents = this.tableOfContents;
-        const Contents = contents ? ($(contents) as any) : undefined;
-        const listed = Contents ? <div data-contents style={{ margin: `${theme.rhythm} 0` }}><Contents /></div> : null;
         const standing = this.stands(theme).map(c => this.place(c, reading.indexOf(c), theme));
         return this.environment(
-            this.page === 0
-                ? <>{standing}{listed}{this.shelf(theme)}</>
-                : <>{this.head(theme)}{listed}{standing}</>,
+            <>
+                {this.head(theme)}
+                {standing}
+                {this.page === 0 ? this.shelf(theme) : null}
+                {this.turning(theme)}
+            </>,
             theme
         );
     }

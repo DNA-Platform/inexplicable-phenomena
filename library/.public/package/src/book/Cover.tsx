@@ -10,9 +10,29 @@ import { $Book } from './Book';
 import { $Section } from '../writing/Section';
 import { $Author } from './Author';
 import { $Subject } from './Subject';
+import { styled } from 'styled-components';
+import '../writing/dressing';
+
+
+export const TitlePage = styled.header`
+    margin-bottom: ${p => p.theme.rhythm};
+    padding-bottom: ${p => p.theme.rhythm};
+    border-bottom: 1px solid ${p => p.theme.rule};
+`;
+
+export const Byline = styled.p`
+    margin: ${p => p.theme.step(-1)} 0 0;
+    font-size: ${p => p.theme.step(-1)};
+    color: ${p => p.theme.faint};
+
+    b { padding: 0 0.55em; color: ${p => p.theme.rule}; font-weight: 400; }
+`;
 
 export class $Cover extends $Chapter implements $Reference$<$Book> {
     readonly isCover = true;
+
+    TitlePage = TitlePage;
+    Byline = Byline;
 
     get summary(): $Section { return this.canonical; }
 
@@ -37,11 +57,12 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
     }
 
     override set(contents: ReactNode, theme: $Theme): ReactNode {
+        const Page = this.TitlePage;
         return (
-            <header data-cover-page style={{ borderBottom: `1px solid ${theme.rule}`, paddingBottom: theme.rhythm, marginBottom: theme.rhythm }}>
+            <Page theme={theme as never} data-cover-page>
                 {contents}
                 {this.byline(theme)}
-            </header>
+            </Page>
         );
     }
 
@@ -49,14 +70,13 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
         const author = this.author;
         const subject = this.subject;
         if (!author && !subject) return null;
-        const Wrote = author ? ($(author) as any) : undefined;
-        const About = subject ? ($(subject) as any) : undefined;
+        const Said = this.Byline;
         return (
-            <p data-byline style={{ margin: `${theme.step(-1)} 0 0`, fontSize: theme.step(-1), color: theme.faint }}>
-                {Wrote ? <>{'by '}<Wrote /></> : null}
-                {Wrote && About ? <span style={{ padding: '0 0.55em', color: theme.rule }}>·</span> : null}
-                {About ? <>{'in '}<About /></> : null}
-            </p>
+            <Said theme={theme as never} data-byline>
+                {author ? <>{'by '}{author.named(theme)}</> : null}
+                {author && subject ? <b>·</b> : null}
+                {subject ? <>{'in '}{subject.named(theme)}</> : null}
+            </Said>
         );
     }
 

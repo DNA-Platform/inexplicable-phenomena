@@ -40,8 +40,13 @@ jobs:
         working-directory: library/.public/package
         run: npm run build
 
+      # THE DOMAIN IS THE LIBRARY, and it sits at a root. A project Pages site
+      # cannot serve one, so the base is set here and nowhere else; pointing a
+      # custom domain at this repository is what deletes these two lines.
       - name: Build public library app
         working-directory: library/.public/app
+        env:
+          PUBLIC_BASE: /inexplicable-phenomena/
         run: npm run build
 
       - uses: actions/configure-pages@v5

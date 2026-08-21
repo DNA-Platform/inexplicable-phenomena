@@ -67,18 +67,17 @@ describe('$Subject — a book reference that holds a library card', () => {
     it('prints the name it was written with — the writer chooses the representational form', () => {
         const theShelf: $LibraryCard = $(<LibraryCard name="The Shelf" title="The Shelf" />);
         const member = declared('The Algebra of Perspective', theShelf);
-        const S = $(member.subject!) as any;
+        const said = member.subject!;
 
         expect(member.subject!.name).toBe('Demonstration');
-        expect(shown(<S />)).toBe('Demonstration');
+        expect(shown(<>{said.named(said.theme)}</>)).toBe('Demonstration');
     });
 
     it('still renders its name when it holds no card', () => {
         const orphan: $Subject = $(<Subject>Demonstration</Subject>);
-        const S = $(orphan) as any;
 
         expect(orphan.valid()).toBe(true);
-        expect(shown(<S />)).toBe('Demonstration');
+        expect(shown(<>{orphan.named(orphan.theme)}</>)).toBe('Demonstration');
     });
 
     it('throws when it holds no card, and names whose', () => {

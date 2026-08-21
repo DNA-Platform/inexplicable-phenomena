@@ -16,8 +16,43 @@ import { $Section } from '../writing/Section';
 import { $Book } from './Book';
 import { $IndexCard } from '../library/IndexCard';
 import { $Theme } from '../writing/Theme';
+import { styled } from 'styled-components';
+import '../writing/dressing';
+
+
+export const Contents = styled.nav`
+    padding: ${p => p.theme.step(-1)} 0;
+    border-top: 1px solid ${p => p.theme.rule};
+    border-bottom: 1px solid ${p => p.theme.rule};
+    font-size: ${p => p.theme.step(-1)};
+
+    ol { list-style: none; margin: 0; padding: 0; }
+    li { display: flex; gap: 0.6em; padding: 0.3em 0; }
+    li > span { color: ${p => p.theme.faint}; min-width: 1.2em; }
+`;
+
+export const Heading = styled.h2`
+    margin: 0 0 ${p => p.theme.step(-1)};
+    font-size: ${p => p.theme.step(1)};
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: ${p => p.theme.ink};
+`;
+
+export const Row = styled.a<{ $open: boolean }>`
+    color: ${p => (p.$open ? p.theme.ink : p.theme.mark)};
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: ${p => (p.$open ? `1px solid ${p.theme.rule}` : 'none')};
+
+    &:hover { text-decoration: underline; text-underline-offset: 0.15em; }
+`;
 
 export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
+    Contents = Contents;
+    Heading = Heading;
+    Row = Row;
+
     get title(): $Title {
         const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
         const Title = $(titles.Title);
@@ -109,37 +144,39 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         const book = this.book as $Book | undefined;
         const to = this.turns(entry);
         const open = !!book && book.page === to;
+        const Turn = this.Row;
         return (
-            <a
+            <Turn
+                theme={theme as never}
                 href={`#${entry.of.address}`}
                 data-turn={to}
+                $open={open}
                 aria-current={open ? 'true' : undefined}
                 onClick={event => { event.preventDefault(); if (book) book.page = to; }}
-                style={{
-                    color: open ? theme.ink : theme.mark,
-                    textDecoration: 'none',
-                    borderBottom: open ? `1px solid ${theme.rule}` : 'none',
-                    cursor: 'pointer',
-                }}
             >
                 {entry.copy}
-            </a>
+            </Turn>
         );
     }
 
     view(): ReactNode {
         const theme = this.theme;
+        const Named = this.Heading;
+        const Listed = this.Contents;
         return (
-            <nav style={{ fontSize: theme.step(-1), borderTop: `1px solid ${theme.rule}`, borderBottom: `1px solid ${theme.rule}`, padding: `${theme.step(-1)} 0` }}>
-                <ol style={{ listStyle: 'none', display: 'flex', flexWrap: 'wrap', gap: `0 ${theme.step(1)}`, margin: 0, padding: 0 }}>
+            <>
+            <Named theme={theme as never}>{text(this.title.text)}</Named>
+            <Listed theme={theme as never} data-contents>
+                <ol>
                     {this.parts().map((entry, at) => (
-                        <li key={at} style={{ display: 'flex', gap: '0.5em' }}>
-                            <span style={{ color: theme.faint }}>{at + 1}</span>
+                        <li key={at}>
+                            <span>{at + 1}</span>
                             {this.row(entry, at, theme)}
                         </li>
                     ))}
                 </ol>
-            </nav>
+            </Listed>
+            </>
         );
     }
 }

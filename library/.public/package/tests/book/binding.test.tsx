@@ -105,10 +105,14 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
     // unmistakable: one block stands, whatever page a book is opened at, and
     // the book's own account rides INSIDE the title page rather than beside it.
     it('exactly one chapter stands, on every page of every book', () => {
-        const b = built();
+        const held = built();
         for (const at of [0, 1, 2, 99]) {
+            held.page = at;
+            expect(held.stands(held.theme).length).toBe(1);
+        }
+        for (const at of [0, 3]) {
+            const b = built();
             b.page = at;
-            expect(b.stands(b.theme).length).toBe(1);
             expect(drawn(b).querySelectorAll('[data-chapter]').length).toBe(1);
         }
     });
@@ -122,11 +126,33 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
         const container = drawn(b);
         expect(b.synopsis.parenthetical).toBe(true);
         expect(container.textContent).not.toContain('One book, two layouts.');
-        expect(container.querySelector('[data-contents]')!.textContent).not.toContain('Synopsis');
+        b.page = b.contents;
+        expect(drawn(b).querySelector('[data-contents]')!.textContent).not.toContain('Synopsis');
     });
 
-    it('and the contents is always there, because it is the way between them', () => {
-        expect(drawn(built()).querySelector('[data-contents]')).not.toBeNull();
+    // ONE PAGE PER CHAPTER, AND THE CONTENTS IS A CHAPTER — Doug, 2026-08-21:
+    // "the cover is a chapter, it is its own page." So is the contents, and it
+    // is reached rather than carried on every page.
+    it('the contents is a chapter with a page of its own, not a bar on every page', () => {
+        const b = built();
+        expect(drawn(b).querySelector('[data-contents]')).toBeNull();
+        b.page = b.contents;
+        expect(drawn(b).querySelector('[data-contents]')).not.toBeNull();
+    });
+
+    it('and a reader can always move — previous and next', () => {
+        const b = built();
+        b.page = 1;
+        const turning = drawn(b).querySelector('[data-turning]');
+        expect(turning).not.toBeNull();
+        expect(turning!.textContent).toContain('previous');
+        expect(turning!.textContent).toContain('next');
+    });
+
+    it('the running head goes to the contents rather than to the cover', () => {
+        const b = built();
+        b.page = 2;
+        expect(drawn(b).querySelector('[data-running]')!.getAttribute('href')).toBe('#contents');
     });
 
     it('a book opens at its title page', () => {
@@ -137,7 +163,7 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
 
     it('and turning to another shows that one and no other', () => {
         const b = built();
-        b.page = 2;
+        b.page = 3;
         const text = drawn(b).textContent ?? '';
         expect(text).toContain('A reader carries a place with them.');
         expect(text).not.toContain('Reading is a change of coordinates.');
@@ -156,7 +182,7 @@ describe('WHERE THE READER IS IS REACTIVE, and declared once', () => {
         const B = $(b as never) as any;
         const { container } = render(<B />);
         expect(container.textContent).toContain('A Book That Turns');
-        act(() => { b.page = 1; });
+        act(() => { b.page = 2; });
         expect(container.textContent).toContain('Reading is a change of coordinates.');
     });
 
@@ -181,7 +207,7 @@ describe('a book answers what the reading sits in', () => {
 describe('a book answers which chapters stand, and where', () => {
     it('so a scroll is one override away, and no chapter class knows', () => {
         const container = drawn(built(Slipcase));
-        expect(container.querySelectorAll('[data-placed]').length).toBe(3);
+        expect(container.querySelectorAll('[data-placed]').length).toBe(4);
         const text = container.textContent ?? '';
         expect(text.indexOf('A reader carries a place')).toBeLessThan(text.indexOf('Reading is a change'));
     });
@@ -205,9 +231,9 @@ describe('a cover is a title page', () => {
 describe('a chapter carries its own address', () => {
     it('and the anchor drawn is the one a reference that resolves there produces', () => {
         const b = built();
-        b.page = 2;
+        b.page = 3;
         const placed = drawn(b).querySelector('[data-chapter]');
-        expect(placed?.getAttribute('id')).toBe(b.reading[2].address);
+        expect(placed?.getAttribute('id')).toBe(b.reading[3].address);
     });
 
     it('a chapter with no title has no address, and the page still draws', () => {

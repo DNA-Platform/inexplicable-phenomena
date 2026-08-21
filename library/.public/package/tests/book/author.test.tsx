@@ -61,18 +61,17 @@ describe('$Author — a book reference that holds a library card', () => {
         let team: $Book | undefined = undefined;
         const card: $LibraryCard = $(<LibraryCard name="The Team" of={() => team!} title="The Team" />);
         team = authored('The Team', card);
-        const A = $(team.author!) as any;
+        const said = team.author!;
 
         expect(team.author!.name).toBe('The Team');
-        expect(shown(<A />)).toBe('The Team');
+        expect(shown(<>{said.named(said.theme)}</>)).toBe('The Team');
     });
 
     it('still renders its name when it holds no card', () => {
         const orphan: $Author = $(<Author>Nobody At All</Author>);
-        const A = $(orphan) as any;
 
         expect(orphan.valid()).toBe(true);
-        expect(shown(<A />)).toBe('Nobody At All');
+        expect(shown(<>{orphan.named(orphan.theme)}</>)).toBe('Nobody At All');
     });
 
     it('throws when it holds no card, and names whose', () => {

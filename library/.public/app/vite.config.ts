@@ -20,7 +20,11 @@ const deepLinks = () => ({
 // @dna-platform/lib (the library core, in ./package) to render the library.
 export default defineConfig({
     plugins: [react(), deepLinks()],
-    base: '/inexplicable-phenomena/',
+    // THE DOMAIN IS THE LIBRARY. Its top book's subject is itself, so it sits at
+    // the root and its subjects are the folders below it. A project Pages site
+    // cannot serve at a root, so the deploy sets PUBLIC_BASE to the repository
+    // name until a domain is pointed here; nothing else in the tree knows.
+    base: process.env.PUBLIC_BASE ?? '/',
     // A BOND CONSTRUCTOR IS FOUND BY THE CLASS'S NAME — $Book declares a method
     // called $Book — so a minifier that renames the class makes the constructor
     // unreachable, and every chemical comes back undefined with nothing thrown.

@@ -7,7 +7,7 @@
 // size limit, and nothing needlessly attached to every request. Doug said
 // cookies; this is that instruction with a better drawer behind the same door.
 
-const shelf = `inexplicable-phenomena${import.meta.env.BASE_URL}`;
+const shelf = `library${import.meta.env.BASE_URL}`;
 
 const store = (): Storage | undefined => {
     try {

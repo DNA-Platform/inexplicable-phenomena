@@ -13,6 +13,8 @@ import { $Letter } from './Letter';
 import { $Sentence, $$Sentence } from './Sentence';
 import * as sentences from './Sentence';
 import { $Word } from './Word';
+import { styled } from 'styled-components';
+import './dressing';
 
 const sentence = /[^.!?]+[.!?]*\s*/g;
 const stopped = /[.!?]["')\]]*\s*$/;
@@ -21,6 +23,34 @@ const target = /\([^)\s]*\)/g;
 
 const written = (part: { copy: string; parts?: () => any[] }): boolean =>
     /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
+
+
+export const Prose = styled.p`
+    margin: 0 0 ${p => p.theme.step(0)};
+`;
+
+export const Quotation = styled.blockquote`
+    margin: ${p => p.theme.step(0)} 0;
+    padding-left: ${p => p.theme.step(0)};
+    border-left: 2px solid ${p => p.theme.rule};
+    color: ${p => p.theme.faint};
+    font-style: italic;
+`;
+
+export const Item = styled.div`
+    display: flex;
+    gap: 0.6em;
+    margin: 0 0 ${p => p.theme.step(-2)};
+    padding-left: ${p => p.theme.step(-1)};
+
+    span:first-child { color: ${p => p.theme.faint}; flex: 0 0 auto; }
+`;
+
+export const Displayed = styled.div`
+    margin: ${p => p.theme.rhythm} 0;
+    text-align: center;
+    overflow-x: auto;
+`;
 
 export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Sentence> {
     matter(): boolean {
@@ -38,6 +68,11 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
         return held;
     }
 
+    Prose = Prose;
+    Quotation = Quotation;
+    Item = Item;
+    Displayed = Displayed;
+
     get quoted(): boolean { return this.mark === '>'; }
 
     get listed(): boolean { return /^([-*+]|\d+[.)])$/.test(this.mark); }
@@ -47,24 +82,24 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
     override set(contents: ReactNode, theme: $Theme): ReactNode {
         if (this.matter()) return null;
         if (this.set0) {
-            return <div data-display style={{ margin: `${theme.rhythm} 0`, textAlign: 'center', overflowX: 'auto' }}>{contents}</div>;
+            const Shown = this.Displayed;
+            return <Shown theme={theme as never} data-display>{contents}</Shown>;
         }
         if (this.quoted) {
-            return (
-                <blockquote style={{ margin: `${theme.step(0)} 0`, paddingLeft: theme.step(0), borderLeft: `2px solid ${theme.rule}`, color: theme.faint, fontStyle: 'italic' }}>
-                    {contents}
-                </blockquote>
-            );
+            const Quoted = this.Quotation;
+            return <Quoted theme={theme as never}>{contents}</Quoted>;
         }
         if (this.listed) {
+            const Listed = this.Item;
             return (
-                <div style={{ display: 'flex', gap: '0.6em', margin: `0 0 ${theme.step(-2)}`, paddingLeft: theme.step(-1) }}>
-                    <span aria-hidden style={{ color: theme.faint, flex: '0 0 auto' }}>{/^[0-9]/.test(this.mark) ? this.mark : '·'}</span>
+                <Listed theme={theme as never}>
+                    <span aria-hidden>{/^[0-9]/.test(this.mark) ? this.mark : '·'}</span>
                     <span>{contents}</span>
-                </div>
+                </Listed>
             );
         }
-        return <p style={{ margin: `0 0 ${theme.step(0)}` }}>{contents}</p>;
+        const Said = this.Prose;
+        return <Said theme={theme as never}>{contents}</Said>;
     }
 
     get sentences(): $Sentence[] { return this.parts(); }
