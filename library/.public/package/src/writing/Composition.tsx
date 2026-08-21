@@ -4,12 +4,6 @@ import { $Reference$ } from '../reference/Reference';
 import { $Location } from '../reference/Location';
 import * as locations from '../reference/Location';
 
-// A composition holds its parts in order, and order is the only numbering there
-// is: `at(n)` means the part standing at position n. Nothing carries a number —
-// a number is something a REFERENCE holds, never a property of a part.
-// A composition is a SHAPE and not a chemical. Everything anyone writes that
-// has parts is one and is a chemical besides — but `follow()` answers a reading
-// of a catalogue's entries, and a reading is not a thing in the library.
 export interface $Composition$<T extends $Referent & { copy: string; parenthetical: boolean }> {
     valid(): boolean;
     canonical: T;
@@ -36,9 +30,6 @@ export class $Composible$ {
         return of.parts().map(pick);
     }
 
-    // SELECT MANY, the list monad's bind. `select` picks one thing from each
-    // part; this picks a list from each and joins them, which is what every
-    // level-flattening getter in this library is doing by hand.
     static selectMany<T, U>(of: { parts(): T[] }, pick: (part: T) => U[]): U[] {
         return of.parts().flatMap(pick);
     }

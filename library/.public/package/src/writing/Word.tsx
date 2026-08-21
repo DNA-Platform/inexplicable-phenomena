@@ -16,11 +16,6 @@ export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
 
     get ref(): $$Word { const Entry = $($$Word); return $(<Entry of={this} />) as $$Word; }
 
-    // A WORD READS ITS OWN CONTENTS: graphemes, and any element written among
-    // them. A letter holds nothing, so an element written into a word has
-    // nowhere lower to go and STANDS HERE — which is how a custom word written
-    // inside a custom word survives, and it needs no ranking of grades to know
-    // it: it is simply the floor of the descent.
     parts(): $Letter[] {
         const found: $Letter[] = [];
         const stand = (part: $Letter) => {
@@ -37,19 +32,12 @@ export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
         return found;
     }
 
-
     letterFor(prose: string): $Letter {
         const Letter = $(letters.Letter);
         return $(<Letter>{prose}</Letter>);
     }
 
-    // A word is one unbroken stretch carrying at least one letter or number. It used
-    // to admit letters, numbers and apostrophes ONLY, so `33A3a-112and-skjdfh`
-    // was invalid and vanished through the parse's old filter — the word laws
-    // must admit what a person actually writes, not a tidier subset of it.
     valid(): boolean {
-        // Every condition is asked, so every failing one is heard. Short-circuit
-        // with && before a $valid call and the second reason is swallowed.
         const base = super.valid();
         const whole = $valid(!/\s/.test(this.copy), 'a word is one unbroken stretch, and this one carries whitespace');
         const said = $valid(/[\p{L}\p{N}]/u.test(this.copy), 'a word has at least one letter or number, and this one has none');

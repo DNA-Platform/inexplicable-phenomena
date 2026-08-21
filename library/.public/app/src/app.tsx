@@ -1,10 +1,10 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { $Book, $Synopsis, $Cover, $TableOfContents } from '@dna-platform/lib';
+import { $Book, $Synopsis, $Cover } from '@dna-platform/lib';
 import styled from 'styled-components';
 import { $Card, at, fetch, catalogue } from './catalogue';
-import { keep, kept, topOf, slug } from './bookmark';
-import { GlobalStyle, ink, faint, rule, ground, mark, measure, leading, rhythm } from './theme';
+import { keep, kept, topOf } from './bookmark';
+import { GlobalStyle, faint, rule, ground, mark, measure } from './theme';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -55,36 +55,6 @@ const Step = styled.span`
 // sprint chapter — so the book's own wrapper never runs, and these are the
 // values it would have applied. Read rather than repeated, so one object still
 // governs them.
-const Prose = styled.div`
-    font-size: 1.15rem;
-    line-height: ${leading};
-    white-space: pre-wrap;
-    .chapter { margin-bottom: ${rhythm}; }
-    h1, h2, h3 { font-weight: 400; letter-spacing: 0.01em; margin-bottom: 0.8rem; }
-`;
-
-const Entries = styled.ul`
-    list-style: none;
-    margin-top: 2.5rem;
-`;
-
-const Entry = styled.li`
-    border-top: 1px solid ${rule};
-    padding: 1.1rem 0;
-`;
-
-const Name = styled.div`
-    font-size: 1.3rem;
-    cursor: pointer;
-    color: ${mark};
-`;
-
-const Note = styled.div`
-    color: ${faint};
-    font-style: italic;
-    margin-top: 0.2rem;
-`;
-
 const Failure = styled.div`
     color: ${mark};
     background: ${ground};
@@ -151,6 +121,14 @@ class $App extends $Chemical {
     listen() {
         this.started = true;
         window.addEventListener('popstate', () => this.open(here()));
+        window.addEventListener('click', event => {
+            const found = (event.target as HTMLElement | null)?.closest?.('a[data-link]') as HTMLAnchorElement | null;
+            if (!found || event.defaultPrevented || event.metaKey || event.ctrlKey || event.button !== 0) return;
+            const to = found.getAttribute('data-link') ?? '';
+            if (!to.startsWith('/')) return;
+            event.preventDefault();
+            go(to);
+        });
         window.addEventListener('scroll', () => this.passing(), { passive: true });
         const start = here();
         const back = topOf(start) === start ? kept(start) : undefined;
@@ -177,53 +155,12 @@ class $App extends $Chemical {
         );
     }
 
-    // A SUBJECT IS BOTH THINGS AT ONCE — its own chapters, and the books it
-    // catalogues as entries, through the same members. Its own writing is what
-    // is left when the standing synopses are taken away.
-    consulted(book: $Book): ReactNode {
-        const entries = catalogued(book);
-        const away = new Set<unknown>(entries);
-        const own = book.chapters.filter(c => !c.parenthetical && !away.has(c) && !(c instanceof $TableOfContents));
-        return (
-            <>
-                <Prose data-own={own.length}>
-                    {own.map((chapter, at) => {
-                        const C = $(chapter) as any;
-                        return <div className="chapter" key={at}><C /></div>;
-                    })}
-                </Prose>
-                <Entries data-entries={entries.length}>
-                    {entries.map(entry => {
-                        const card = entry.card as $Card;
-                        return (
-                            <Entry key={card.path} data-entry={card.path}>
-                                <Name onClick={() => go(card.path)}>{card.title}</Name>
-                                <Note>{card.synopsis}</Note>
-                            </Entry>
-                        );
-                    })}
-                </Entries>
-            </>
-        );
-    }
-
-    // A CHAPTER HAS AN ADDRESS, and it is a fragment rather than a route — the
-    // route is the book, and the book is what loads. The address follows the
-    // reader down the page instead of being clicked.
     read(book: $Book): ReactNode {
-        const readable = book.chapters.filter(c => !c.parenthetical);
+        const Reading = $(book) as any;
         return (
-            <Prose data-reader={readable.length}>
-                {readable.map((chapter, place) => {
-                    const C = $(chapter) as any;
-                    const name = slug(chapter);
-                    return (
-                        <div className="chapter" key={place} id={name || undefined} data-chapter={place}>
-                            <C />
-                        </div>
-                    );
-                })}
-            </Prose>
+            <div data-reader={catalogued(book).length ? undefined : book.chapters.filter(c => !c.parenthetical).length}>
+                <Reading />
+            </div>
         );
     }
 
@@ -235,7 +172,7 @@ class $App extends $Chemical {
                 <GlobalStyle />
                 {this.trail()}
                 {this.failed ? <Failure data-failure>{this.failed}</Failure> : null}
-                {book ? (catalogued(book).length ? this.consulted(book) : this.read(book)) : null}
+                {book ? this.read(book) : null}
             </Sheet>
         );
     }

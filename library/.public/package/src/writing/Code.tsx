@@ -13,7 +13,26 @@ export class $Code extends $Figure {
     get source(): string { return this.$source ?? ''; }
 
     drawn(): ReactNode {
-        return this.source ? <pre className={`code ${this.language}`}>{this.source}</pre> : null;
+        if (!this.source) return null;
+        const theme = this.theme;
+        return (
+            <pre
+                data-language={this.language}
+                style={{
+                    fontFamily: theme.mono,
+                    fontSize: theme.step(-1),
+                    lineHeight: 1.55,
+                    background: theme.ground === '#ffffff' ? '#f6f7f9' : theme.rule,
+                    border: `1px solid ${theme.rule}`,
+                    borderRadius: '4px',
+                    padding: `${theme.step(-1)} ${theme.step(0)}`,
+                    overflowX: 'auto',
+                    margin: 0,
+                }}
+            >
+                <code>{this.source}</code>
+            </pre>
+        );
     }
 
     valid(): boolean {

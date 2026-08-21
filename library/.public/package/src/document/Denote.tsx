@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
 import { $Reference$ } from '../reference/Reference';
@@ -53,10 +53,12 @@ export class $Denote extends $Writing implements $Reference$<$Footnote> {
     }
 
     view(): ReactNode {
+        const theme = this.theme;
+        const mark = { color: theme.mark, fontSize: '0.7em', verticalAlign: 'super', lineHeight: 0, paddingLeft: '0.1em' };
         try {
-            return <sup>{this.number}</sup>;
+            return <sup style={mark}>{this.number}</sup>;
         } catch {
-            return <sup>{this.for}</sup>;
+            return <sup style={mark}>{this.for}</sup>;
         }
     }
 

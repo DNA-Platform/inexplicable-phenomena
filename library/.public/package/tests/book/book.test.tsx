@@ -613,7 +613,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         // about the same element — only the way it is reached.
         const toc = container.querySelector('nav');
         expect(toc).not.toBeNull();
-        expect(toc!.textContent).toContain('Table of Contents');
+        expect(b.tableOfContents.title.copy).toBe('Table of Contents');
         expect(toc!.textContent).toContain('Coordinates');
         expect(toc!.textContent).not.toContain('The Algebra of Perspective');
     });
@@ -626,13 +626,23 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(container.textContent).toContain('synopsis');
     });
 
-    it('a book renders whole — its chapters in order, summaries parenthetical and unseen', () => {
+    it('a book renders A CHAPTER AT A TIME, opening at its title page, summaries unseen', () => {
         const b: $Book = $(book());
         const B = $(b as any);
         const { container } = render(<B />);
         expect(container.textContent).toContain('The Algebra of Perspective');
-        expect(container.textContent).toContain('change of coordinates');
         expect(container.textContent).not.toContain('In brief.');
+        const standing = [...container.querySelectorAll('[data-chapter]')].map(c => c.textContent ?? '').join(' ');
+        expect(standing).not.toContain('change of coordinates');
+    });
+
+    it('and turning to a chapter brings its prose, which the title page never carried', () => {
+        const b: $Book = $(book());
+        b.page = 1;
+        const B = $(b as any);
+        const { container } = render(<B />);
+        const standing = [...container.querySelectorAll('[data-chapter]')].map(c => c.textContent ?? '').join(' ');
+        expect(standing).toContain('change of coordinates');
     });
 });
 

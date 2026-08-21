@@ -3,12 +3,44 @@ import { $, $valid } from '@dna-platform/chemistry';
 import { $Theme } from './Theme';
 import { $Paragraph } from './Paragraph';
 
-// A title is PARAGRAPH GRADE, because it is the canonical part of its section —
-// the special first, at position zero. It carried no level at all while it was
-// lifted out into a member of its own, which is why the walk could not place it.
 export class $Title extends $Paragraph {
-    override emit(contents: ReactNode, theme: $Theme): ReactNode {
-        return <h2 style={{ fontSize: theme.step(1), color: theme.ink, fontWeight: 400 }}>{contents}</h2>;
+    get heading(): string {
+        const colon = this.copy.indexOf(':');
+        return colon < 0 ? this.copy : this.copy.slice(0, colon).trim();
+    }
+
+    get rest(): string {
+        const colon = this.copy.indexOf(':');
+        return colon < 0 ? '' : this.copy.slice(colon + 1).trim();
+    }
+    get opening(): boolean {
+        const section = this.parent as { parent?: unknown } | undefined;
+        const held = section?.parent as { constructor?: { name?: string } } | undefined;
+        let at: unknown = held;
+        for (let step = 0; at && step < 8; step++) {
+            if ((at as { isCover?: boolean }).isCover) return true;
+            const up = (at as { parent?: unknown }).parent;
+            if (up === at) return false;
+            at = up;
+        }
+        return false;
+    }
+
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
+        const opening = this.opening;
+        const rest = this.rest;
+        const size = opening ? theme.step(3) : theme.step(1);
+        const body = rest ? this.heading : contents;
+        const head = opening
+            ? <h1 style={{ fontSize: size, color: theme.ink, fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.15, margin: 0 }}>{body}</h1>
+            : <h2 style={{ fontSize: size, color: theme.ink, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.25, margin: `0 0 ${theme.step(-1)}` }}>{body}</h2>;
+        if (!rest) return head;
+        return (
+            <>
+                {head}
+                <p data-subtitle style={{ fontSize: opening ? theme.step(1) : theme.step(0), color: theme.faint, fontWeight: 400, margin: `${theme.step(-2)} 0 ${theme.step(0)}` }}>{rest}</p>
+            </>
+        );
     }
 
     valid(): boolean {

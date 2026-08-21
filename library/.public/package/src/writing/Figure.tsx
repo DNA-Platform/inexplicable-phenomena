@@ -1,5 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $valid } from '@dna-platform/chemistry';
+import { $Theme } from './Theme';
 import { $Paragraph } from './Paragraph';
 import { $Caption } from './Caption';
 import * as captions from './Caption';
@@ -18,10 +19,18 @@ export class $Figure extends $Paragraph {
     }
 
     view(): ReactNode {
+        const theme = this.theme;
+        const body = this.drawn();
+        const caption = this.parenthetical ? null : this.caption.copy;
+        if (!body && !caption) return null;
         return (
-            <figure>
-                {this.drawn()}
-                {this.parenthetical ? null : <figcaption>{this.caption.copy}</figcaption>}
+            <figure style={{ margin: `${theme.rhythm} 0` }}>
+                {body}
+                {caption ? (
+                    <figcaption style={{ fontSize: theme.step(-1), color: theme.faint, marginTop: theme.step(-2), lineHeight: 1.5 }}>
+                        {caption}
+                    </figcaption>
+                ) : null}
             </figure>
         );
     }

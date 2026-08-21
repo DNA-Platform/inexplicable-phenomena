@@ -4,7 +4,7 @@ import { $Theme } from './Theme';
 import { $Writing } from './Writing';
 
 export class $Tagline extends $Writing {
-    override emit(contents: ReactNode, theme: $Theme): ReactNode {
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
         return <p style={{ fontSize: theme.step(-1), color: theme.faint, fontStyle: 'italic' }}>{contents}</p>;
     }
 

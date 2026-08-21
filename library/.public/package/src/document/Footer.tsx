@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { $, $check, $Html } from '@dna-platform/chemistry';
 import { $Section } from '../writing/Section';
 import { $Title } from '../writing/Title';
@@ -7,8 +7,17 @@ import { $Legend } from './Legend';
 import * as legends from './Legend';
 import { $Key } from './Key';
 import * as keys from './Key';
+import { $Theme } from '../writing/Theme';
 
 export class $Footer extends $Section {
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
+        return (
+            <footer style={{ borderTop: `1px solid ${theme.rule}`, marginTop: theme.rhythm, paddingTop: theme.step(0) }}>
+                <ol style={{ listStyle: 'decimal', paddingLeft: '1.4em', margin: 0 }}>{contents}</ol>
+            </footer>
+        );
+    }
+
     $legend?: $Legend;
 
     get footnotes(): $Footnote[] {
@@ -25,7 +34,6 @@ export class $Footer extends $Section {
         }
         return this.$legend;
     }
-
 }
 
 export const Footer = $($Footer);

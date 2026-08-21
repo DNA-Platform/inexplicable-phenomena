@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { $, $valid } from '@dna-platform/chemistry';
-import { Link as RouterLink } from 'react-router-dom';
+import { $Theme } from '../writing/Theme';
 import { $Word } from '../writing/Word';
 
 export class $Link extends $Word {
@@ -10,12 +10,20 @@ export class $Link extends $Word {
         return this.$url ?? this.copy;
     }
 
-    protected anchor(surface: ReactNode): ReactNode {
-        return <RouterLink to={this.url}>{surface}</RouterLink>;
+    protected anchor(surface: ReactNode, theme: $Theme): ReactNode {
+        return (
+            <a
+                href={this.url}
+                data-link={this.url}
+                style={{ color: theme.mark, textDecoration: 'underline', textUnderlineOffset: '0.15em', textDecorationThickness: '1px' }}
+            >
+                {surface}
+            </a>
+        );
     }
 
     frame(): ReactNode {
-        return this.anchor(super.frame());
+        return this.anchor(super.frame(), this.theme);
     }
 
     valid(): boolean {

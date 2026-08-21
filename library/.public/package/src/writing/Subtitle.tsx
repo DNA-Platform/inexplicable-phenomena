@@ -4,7 +4,7 @@ import { $Theme } from './Theme';
 import { $Writing } from './Writing';
 
 export class $Subtitle extends $Writing {
-    override emit(contents: ReactNode, theme: $Theme): ReactNode {
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
         return <p style={{ fontSize: theme.step(0), color: theme.faint }}>{contents}</p>;
     }
 

@@ -12,6 +12,8 @@ import { $Author } from './Author';
 import { $Subject } from './Subject';
 
 export class $Cover extends $Chapter implements $Reference$<$Book> {
+    readonly isCover = true;
+
     get summary(): $Section { return this.canonical; }
 
     get title(): $Title { return super.title!; }
@@ -34,8 +36,28 @@ export class $Cover extends $Chapter implements $Reference$<$Book> {
         return $(<Path first={this} onward={next} />);
     }
 
-    override emit(contents: ReactNode, theme: $Theme): ReactNode {
-        return <header style={{ borderBottom: `1px solid ${theme.rule}` }}>{contents}</header>;
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
+        return (
+            <header data-cover-page style={{ borderBottom: `1px solid ${theme.rule}`, paddingBottom: theme.rhythm, marginBottom: theme.rhythm }}>
+                {contents}
+                {this.byline(theme)}
+            </header>
+        );
+    }
+
+    byline(theme: $Theme): ReactNode {
+        const author = this.author;
+        const subject = this.subject;
+        if (!author && !subject) return null;
+        const Wrote = author ? ($(author) as any) : undefined;
+        const About = subject ? ($(subject) as any) : undefined;
+        return (
+            <p data-byline style={{ margin: `${theme.step(-1)} 0 0`, fontSize: theme.step(-1), color: theme.faint }}>
+                {Wrote ? <>{'by '}<Wrote /></> : null}
+                {Wrote && About ? <span style={{ padding: '0 0.55em', color: theme.rule }}>·</span> : null}
+                {About ? <>{'in '}<About /></> : null}
+            </p>
+        );
     }
 
     $Cover(...writing: unknown[]) {

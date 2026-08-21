@@ -46,5 +46,6 @@ export { $Tagline, Tagline } from './writing/Tagline';
 export { $Caption, Caption } from './writing/Caption';
 export { $Code, Code } from './writing/Code';
 export { $Formula, Formula } from './writing/Formula';
+export { $Emphasis, Emphasis } from './writing/Emphasis';
 export { $Snippet, Snippet } from './writing/Snippet';
 export { $Phrase, Phrase } from './writing/Phrase';

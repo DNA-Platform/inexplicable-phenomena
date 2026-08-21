@@ -93,12 +93,16 @@ describe('every kind the notation names, and each is a part at its own level', (
         expect(s.parts().filter(p => p instanceof $Paragraph && p.mark !== '').length).toBe(3);
     });
 
-    it('display mathematics is a figure at paragraph grade', () => {
+    // CHANGED, and the reason is a defect seen on a page rather than a
+    // preference: display mathematics composed to a bare figure whose CAPTION
+    // was the LaTeX, so a formula reached the screen as its own source set in
+    // small grey type. Mathematics is a formula at every grade; what changes
+    // between them is whether it is set inline or on its own line.
+    it('display mathematics is a FORMULA at paragraph grade, set on its own line', () => {
         const s = section('Before.\n\n$$e^{i\\pi} + 1 = 0$$\n\nAfter.');
-        const shown = s.parts().find(p => p instanceof $Figure) as $Figure;
-        expect(shown).toBeDefined();
-        // A FIGURE IS ITS CAPTION; what it draws belongs to a subclass's view.
-        expect(shown.caption.copy).toContain('e^{i\\pi}');
+        const stood = s.parts().find(p => p.mark === '$$');
+        expect(stood).toBeDefined();
+        expect(stood!.copy).toContain('e^{i\\pi}');
     });
 });
 

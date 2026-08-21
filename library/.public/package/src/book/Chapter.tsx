@@ -18,6 +18,13 @@ export class $Chapter extends $Document implements $Reference$<$Book> {
 
     get book(): $Book { return this.$in as $Book; }
 
+    get address(): string {
+        return (this.title?.copy ?? '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+    }
+
     get ref(): $$Chapter { const Entry = $($$Chapter); return $(<Entry of={this} />) as $$Chapter; }
 
     read(): $Book {

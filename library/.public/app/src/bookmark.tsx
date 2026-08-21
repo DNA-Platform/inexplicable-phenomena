@@ -38,8 +38,6 @@ export const keep = (path: string, place: number): void => {
 
 export const kept = (subject: string): Kept | undefined => recall<Kept>(`bookmark${subject}`);
 
-export const slug = (chapter: $Chapter): string =>
-    (chapter.title?.copy ?? '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
+// `slug` lived here and computed a chapter's anchor off its title — a view
+// inventing an address. It is `$Chapter.address` now, asked of the chapter, so
+// the anchor drawn and the position a reference resolves cannot disagree.

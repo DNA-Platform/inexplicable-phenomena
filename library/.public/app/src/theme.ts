@@ -13,12 +13,15 @@ export const mark = dressing.mark;
 export const measure = dressing.measure;
 export const leading = dressing.leading;
 export const rhythm = dressing.rhythm;
+export const face = dressing.face;
+export const mono = dressing.mono;
 
 export const GlobalStyle = createGlobalStyle`
     body {
         background: ${ground};
         color: ${ink};
-        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-family: ${face};
+        -webkit-font-smoothing: antialiased;
         overflow: auto;
     }
 `;

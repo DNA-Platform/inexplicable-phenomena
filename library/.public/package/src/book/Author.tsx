@@ -27,7 +27,7 @@ export class $Author extends $Phrase implements $Reference$<$Book> {
         return $(<Path first={this} onward={next} />);
     }
 
-    override emit(contents: ReactNode, theme: $Theme): ReactNode {
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
         return <span style={{ color: theme.mark }}>{contents}</span>;
     }
 

@@ -51,7 +51,7 @@ const inkOf = (c: HTMLElement) => c.querySelector('span')?.getAttribute('data-in
 describe('a theme is resolved, and its default is the argument', () => {
     it('answers its base when nothing is registered', () => {
         const { container } = render(<Host />);
-        expect(inkOf(container)).toBe('#1d2327');
+        expect(inkOf(container)).toBe('#14181d');
     });
 
     it('answers the registered one beneath the scope it was registered on', () => {
@@ -66,7 +66,7 @@ describe('a theme is resolved, and its default is the argument', () => {
         $(Shelf, themes.Theme)(Loud);
         render(<Shelf />);
         const { container } = render(<Host />);
-        expect(inkOf(container)).toBe('#1d2327');
+        expect(inkOf(container)).toBe('#14181d');
     });
 
     it('answers rather than throwing when nothing has established a scope', () => {
@@ -78,15 +78,15 @@ describe('a subclass redeclaring ONE member inherits every other', () => {
     it('keeps the base values it did not touch', () => {
         const loud = $(<Loud />) as $Theme;
         expect(loud.ink).toBe('red');
-        expect(loud.ground).toBe('#f4f1ea');
-        expect(loud.rule).toBe('#d8d3ca');
-        expect(loud.measure).toBe('38rem');
+        expect(loud.ground).toBe('#ffffff');
+        expect(loud.rule).toBe('#e2e6ea');
+        expect(loud.measure).toBe('40rem');
     });
 
     it('keeps the base answers it did not touch', () => {
         const paged = $(<Paged />) as $Theme;
         expect(paged.lay(composed(), true)).toBe('one');
-        expect(paged.ink).toBe('#1d2327');
+        expect(paged.ink).toBe('#14181d');
     });
 });
 

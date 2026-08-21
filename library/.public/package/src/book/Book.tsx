@@ -23,20 +23,11 @@ import { $Sentence } from '../writing/Sentence';
 import { $Word } from '../writing/Word';
 import { $Letter } from '../writing/Letter';
 import { $Theme } from '../writing/Theme';
-import { shown } from '../writing/Writing';
 import * as themes from '../writing/Theme';
 
-// The $Canonical a subject declares is a WORD in its cover's own writing, and it
-// has no accessor of its own because `canonical` is already the framework's word
-// for the first part of a composition — a book's cover, a chapter's summary — at
-// every level. Asked of the model rather than of a bag of raw children, which is
-// possible now that a written element survives the parse.
 const canonicals = (cover: $Cover): $Canonical[] =>
     cover.words.filter(w => w instanceof $Canonical) as $Canonical[];
 
-// A card that never pointed stands for nothing yet, and a book asked to judge
-// itself before its cards are filled must answer rather than throw. Validity is
-// asked at construction, when nothing points anywhere.
 const pointed = (reference?: { card?: $IndexCard<$Book> }): $Book | undefined => {
     try {
         return reference?.card?.read();
@@ -50,15 +41,13 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
 
     $parenthetical? = false;
 
-    /** Which chapter a book opens to when a theme lays one at a time. */
-    page = 0;
-
     get parenthetical(): boolean { return !!this.$parenthetical; }
     set parenthetical(value: boolean) { this.$parenthetical = value; }
 
     get copy(): string { return this.parts().filter(c => !c.parenthetical).map(c => c.copy).join('\n\n'); }
     get canonical(): $Cover { return this.cover; }
     get cover(): $Cover { return this.chapters[0] as $Cover; }
+
     get synopsis(): $Synopsis { return this.chapters.find(c => this.accounts(c)) as $Synopsis; }
     get title(): $Title | undefined { return this.cover instanceof $Cover ? this.cover.title : undefined; }
     get author(): $Author | undefined { return this.cover instanceof $Cover ? this.cover.author : undefined; }
@@ -85,8 +74,6 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
     get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
 
-    // A book is a composition of chapters rather than a piece of writing, and
-    // it draws — so it answers the same question its chapters answer.
     get theme(): $Theme { return $(themes.Theme).$ as $Theme; }
 
     get ref(): $Cover { return this.cover; }
@@ -99,11 +86,15 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         return this.$parts;
     }
 
-    follow(): $Composition$<$Book> {
-        const elsewhere = (): $Reference$<$Book>[] => this.chapters.filter(c => {
+    get entries(): $Reference$<$Book>[] {
+        return this.chapters.filter(c => {
+            if (c instanceof $Synopsis && c.card !== undefined) return !this.accounts(c);
             try { return c.read() !== this; } catch { return false; }
         });
-        return $Composible$.follow({ parts: elsewhere });
+    }
+
+    follow(): $Composition$<$Book> {
+        return $Composible$.follow({ parts: () => this.entries });
     }
 
     read(): $Composition$<$Book> {
@@ -156,24 +147,75 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         if (canonicals(this.cover).length > 1) throw new Error('A subject declares exactly one canonical, and this cover carries more.');
     }
 
-    // A BOOK KEEPS ITS OWN LOOP for the same reason a document does — and it is
-    // the one place a measure and a leading belong, because they are decisions
-    // about a whole reading rather than about any part of one.
+    get reading(): $Chapter[] {
+        return this.chapters.filter(c => !(c instanceof $TableOfContents) && !this.accounts(c) && !c.parenthetical);
+    }
+
+    stands(theme: $Theme): $Chapter[] {
+        const reading = this.reading;
+        if (!reading.length) return [];
+        const at = Math.min(Math.max(this.page, 0), reading.length - 1);
+        return [reading[at]];
+    }
+
+    environment(contents: ReactNode, theme: $Theme): ReactNode {
+        return (
+            <article style={{ maxWidth: theme.measure, margin: '0 auto', lineHeight: theme.leading, color: theme.ink, background: theme.ground, fontFamily: theme.face, fontSize: theme.step(0) }}>
+                {contents}
+            </article>
+        );
+    }
+
+    place(chapter: $Chapter, at: number, theme: $Theme): ReactNode {
+        const Standing = $(chapter) as any;
+        return (
+            <div key={at} id={chapter.address || undefined} data-chapter={at} style={{ marginBottom: theme.rhythm }}>
+                <Standing />
+            </div>
+        );
+    }
+
+    head(theme: $Theme): ReactNode {
+        if (this.page === 0) return null;
+        const title = this.title?.copy ?? '';
+        if (!title) return null;
+        return (
+            <a
+                data-running
+                href="#"
+                onClick={event => { event.preventDefault(); this.page = 0; }}
+                style={{ display: 'block', fontSize: theme.step(-2), letterSpacing: '0.14em', textTransform: 'uppercase', color: theme.faint, textDecoration: 'none', marginBottom: theme.step(0), cursor: 'pointer' }}
+            >
+                {title}
+            </a>
+        );
+    }
+
+    shelf(theme: $Theme): ReactNode {
+        const held = this.entries;
+        if (!held.length) return null;
+        return (
+            <ul data-entries={held.length} style={{ margin: `${theme.rhythm} 0 0`, padding: 0 }}>
+                {held.map((entry, at) => {
+                    const Held = $(entry) as any;
+                    return <Held key={at} />;
+                })}
+            </ul>
+        );
+    }
+
     view(): ReactNode {
         const theme = this.theme;
-        const drawn = this.parts().filter(c => theme.draws(c));
-        // A BOOK ASKS HOW ITS CHAPTERS ARE LAID through the same decision every
-        // composition asks through. Its parts always differ in kind — a cover,
-        // a contents, an account, chapters — so it is never one run, and a
-        // theme answering `one` is a book turned rather than scrolled.
-        const laid = shown(theme, this, drawn, false, this.page) ?? drawn;
-        return (
-            <article style={{ maxWidth: theme.measure, lineHeight: theme.leading, color: theme.ink }}>
-                {laid.map((c, i) => {
-                    const C = $(c) as any;
-                    return <div key={i} style={{ marginBottom: theme.rhythm }}><C /></div>;
-                })}
-            </article>
+        const reading = this.reading;
+        const contents = this.tableOfContents;
+        const Contents = contents ? ($(contents) as any) : undefined;
+        const listed = Contents ? <div data-contents style={{ margin: `${theme.rhythm} 0` }}><Contents /></div> : null;
+        const standing = this.stands(theme).map(c => this.place(c, reading.indexOf(c), theme));
+        return this.environment(
+            this.page === 0
+                ? <>{standing}{listed}{this.shelf(theme)}</>
+                : <>{this.head(theme)}{listed}{standing}</>,
+            theme
         );
     }
 
@@ -185,22 +227,13 @@ export class $Book extends $Referent implements $Composition$<$Chapter>, $Catalo
         const authored = $valid(this.author !== undefined, 'a book carries its author on its cover, and this cover names none');
         const filed = $valid(this.subject !== undefined, 'a book carries its subject on its cover, and this cover names none');
 
-        // WHAT A LINK POINTS AT is a question only something holding every book can
-        // ask, so these hold where a card has been given its book and are passed
-        // over where it has not — which is every book at construction.
         const of = pointed(this.author);
         const about = pointed(this.subject);
 
         const wrote = $valid(!of || pointed(of.author) === of, 'a book names an author that authors itself, and this one names a book somebody else wrote');
-        const holds = $valid(!about || about.read().parts().length > 0, 'a book names a subject that catalogues other books, and this one names a book that catalogues nothing');
 
-        // THE CANONICAL IS NOT ASKED HERE, and that is the model answering rather
-        // than a rule going missing. A book IS a catalogue of books, its catalogue
-        // reading is a composition, and a composition's canonical is its first
-        // part — so `read().canonical` IS the subject's canonical book, held by
-        // definition. What a cover DECLARES only decides which entry stands first,
-        // and a declaration naming a book the subject does not hold is answered
-        // where the entries are built.
+        const holds = $valid(!about || about.entries.length > 0, 'a book names a subject that catalogues other books, and this one names a book that catalogues nothing');
+
         return covered && once && accounted && listed && authored && filed && wrote && holds;
     }
 }

@@ -14,30 +14,58 @@ import { $Sentence, $$Sentence } from './Sentence';
 import * as sentences from './Sentence';
 import { $Word } from './Word';
 
-
-// A sentence runs to its stop AND THE WHITESPACE THAT FOLLOWS IT. Nothing is
-// thrown out by a parse, and the separator belongs to the sentence it ends.
 const sentence = /[^.!?]+[.!?]*\s*/g;
 const stopped = /[.!?]["')\]]*\s*$/;
 const code = /`[^`\n]+`/g;
 const target = /\([^)\s]*\)/g;
 
-// SOMETHING IS WRITTEN IN IT — asked of what it HOLDS rather than of what it
-// READS. A parenthetical part is passed over by the reading, so a paragraph
-// carrying only an author or a subject reads as nothing and is not empty: the
-// author is written there. This became visible the day written elements stopped
-// dissolving into text, which is the model gaining them rather than changing.
 const written = (part: { copy: string; parts?: () => any[] }): boolean =>
     /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
 
 export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Sentence> {
-    // A PARAGRAPH IS THE CANONICAL BLOCK, and it draws as one. Found by driving:
-    // once a section drew its parts, nothing separated one paragraph from the
-    // next and a cover's prose, author and subject ran into one line.
-    override emit(contents: ReactNode, theme: $Theme): ReactNode {
-        return <p style={{ margin: `0 0 ${theme.step(0)}` }}>{contents}</p>;
+    matter(): boolean {
+        const written = (this.text?.$elements ?? []) as unknown[];
+        let held = false;
+        for (const one of written) {
+            if (one === null || one === undefined) continue;
+            if (typeof one === 'object') {
+                held = true;
+                if (!(one as { parenthetical?: boolean }).parenthetical) return false;
+                continue;
+            }
+            if (String(one).trim() !== '') return false;
+        }
+        return held;
     }
 
+    get quoted(): boolean { return this.mark === '>'; }
+
+    get listed(): boolean { return /^([-*+]|\d+[.)])$/.test(this.mark); }
+
+    get set0(): boolean { return this.mark === '$$'; }
+
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
+        if (this.matter()) return null;
+        if (this.set0) {
+            return <div data-display style={{ margin: `${theme.rhythm} 0`, textAlign: 'center', overflowX: 'auto' }}>{contents}</div>;
+        }
+        if (this.quoted) {
+            return (
+                <blockquote style={{ margin: `${theme.step(0)} 0`, paddingLeft: theme.step(0), borderLeft: `2px solid ${theme.rule}`, color: theme.faint, fontStyle: 'italic' }}>
+                    {contents}
+                </blockquote>
+            );
+        }
+        if (this.listed) {
+            return (
+                <div style={{ display: 'flex', gap: '0.6em', margin: `0 0 ${theme.step(-2)}`, paddingLeft: theme.step(-1) }}>
+                    <span aria-hidden style={{ color: theme.faint, flex: '0 0 auto' }}>{/^[0-9]/.test(this.mark) ? this.mark : '·'}</span>
+                    <span>{contents}</span>
+                </div>
+            );
+        }
+        return <p style={{ margin: `0 0 ${theme.step(0)}` }}>{contents}</p>;
+    }
 
     get sentences(): $Sentence[] { return this.parts(); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
@@ -45,15 +73,6 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
 
     get ref(): $$Paragraph { const Entry = $($$Paragraph); return $(<Entry of={this} />) as $$Paragraph; }
 
-
-    // A PARAGRAPH READS ITS OWN CONTENTS, accumulating until a stop closes a
-    // sentence. "Blah blah " carries no stop, so an element written after it
-    // JOINS that sentence rather than starting another — which is why writing a
-    // word into the middle of a sentence gives one sentence.
-    //
-    // THE NEW SENTENCE IS HANDED THE LITERAL CONTENTS OF ITS SPAN: the prose and
-    // the written elements, in written order, straight to its bond constructor.
-    // Nothing is flattened to text, which is the whole defect this replaces.
     parts(): $Sentence[] {
         const Sentence = $(sentences.Sentence);
         const found: $Sentence[] = [];
@@ -82,10 +101,6 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
         return found;
     }
 
-    // Where a paragraph's sentences end, LOSING NOTHING — the whitespace after a
-    // stop goes to the sentence whose stop it follows, and is picked up among
-    // that sentence's own parts. A stop inside a code span or a link's target is
-    // not the end of a sentence.
     stops(prose: string): string[] {
         const holds: string[] = [];
         const kept = prose
@@ -94,7 +109,6 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
         const restore = (piece: string) => piece.replace(/ (\d+) /g, (_, i) => holds[Number(i)]);
         return (kept.match(sentence) ?? []).map(restore);
     }
-
 
     $mark? = '';
 

@@ -15,6 +15,7 @@ import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
 import { $Book } from './Book';
 import { $IndexCard } from '../library/IndexCard';
+import { $Theme } from '../writing/Theme';
 
 export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
     get title(): $Title {
@@ -43,11 +44,10 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     parts(): $$Chapter[] {
         const book = this.book;
         if (!(book instanceof $Book)) throw new Error(`The table of contents stands under ${String((book as { constructor?: { name?: string } })?.constructor?.name)} instead of a book, with parent ${String((this.parent as { constructor?: { name?: string } })?.constructor?.name)}.`);
-        // The numbered chapters: not the canonical, not parenthetical, not
-        // the contents itself — one law, by what a chapter is.
         const Entry = $($$Chapter);
+        const shelved = new Set<unknown>(book.entries);
         return book.parts()
-            .filter(chapter => chapter !== this && !(chapter instanceof $Cover) && !chapter.parenthetical)
+            .filter(chapter => chapter !== this && !(chapter instanceof $Cover) && !chapter.parenthetical && !shelved.has(chapter))
             .map(chapter => $(<Entry of={chapter} />) as $$Chapter);
     }
 
@@ -90,9 +90,6 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
             super.$Chapter(...writing);
         } catch (error) {
             if (this.summary) throw error;
-            // A table of contents pulls itself together from its book — its
-            // summary is the cover's, its rows are the chapters'. Standing
-            // outside a book it has nothing to pull together yet.
         }
     }
 
@@ -101,16 +98,46 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return super.valid();
     }
 
-    row(row: $$Chapter): ReactNode {
-        return row.copy;
+    turns(entry: $$Chapter): number {
+        const book = this.book as $Book | undefined;
+        if (!book) return 0;
+        const at = book.reading.indexOf(entry.of);
+        return at < 0 ? 0 : at;
+    }
+
+    row(entry: $$Chapter, at: number, theme: $Theme): ReactNode {
+        const book = this.book as $Book | undefined;
+        const to = this.turns(entry);
+        const open = !!book && book.page === to;
+        return (
+            <a
+                href={`#${entry.of.address}`}
+                data-turn={to}
+                aria-current={open ? 'true' : undefined}
+                onClick={event => { event.preventDefault(); if (book) book.page = to; }}
+                style={{
+                    color: open ? theme.ink : theme.mark,
+                    textDecoration: 'none',
+                    borderBottom: open ? `1px solid ${theme.rule}` : 'none',
+                    cursor: 'pointer',
+                }}
+            >
+                {entry.copy}
+            </a>
+        );
     }
 
     view(): ReactNode {
+        const theme = this.theme;
         return (
-            <nav>
-                <div>{text(this.title.text)}</div>
-                <ol>
-                    {this.parts().map((r, at) => <li key={at}>{this.row(r)}</li>)}
+            <nav style={{ fontSize: theme.step(-1), borderTop: `1px solid ${theme.rule}`, borderBottom: `1px solid ${theme.rule}`, padding: `${theme.step(-1)} 0` }}>
+                <ol style={{ listStyle: 'none', display: 'flex', flexWrap: 'wrap', gap: `0 ${theme.step(1)}`, margin: 0, padding: 0 }}>
+                    {this.parts().map((entry, at) => (
+                        <li key={at} style={{ display: 'flex', gap: '0.5em' }}>
+                            <span style={{ color: theme.faint }}>{at + 1}</span>
+                            {this.row(entry, at, theme)}
+                        </li>
+                    ))}
                 </ol>
             </nav>
         );

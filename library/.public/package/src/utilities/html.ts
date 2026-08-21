@@ -1,6 +1,5 @@
 import { isValidElement } from 'react';
 
-// 'block' is chemistry's own kind for the inline things an author wrote.
 export function block(node: any): boolean {
     return !!node && typeof node === 'object' && (node as { type?: string }).type === 'block';
 }

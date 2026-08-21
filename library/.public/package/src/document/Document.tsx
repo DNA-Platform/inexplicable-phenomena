@@ -18,9 +18,6 @@ import { $Letter } from '../writing/Letter';
 import { $Footer } from './Footer';
 import { $Bibliography } from './Bibliography';
 
-// A document is the sixth level of writing — letter, word, sentence, paragraph,
-// section, document. Chapter, book, subject and library are things done WITH a
-// document; the document itself is writing, and composes sections.
 export class $Document extends $Writing<$Section> implements $Referent, $Composition$<$Section> {
     $parts: $Section[] = [];
 
@@ -30,15 +27,10 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
     }
 
     get copy(): string { return this.parts().map(s => s.copy).join('\n\n'); }
-    // A SECTION ADDS A TITLE TO PARAGRAPHS; A DOCUMENT ADDS A SUMMARY TO SECTIONS.
-    // The canonical is the section carrying BOTH — the one a reader meets first —
-    // so a document invents neither: it reads its title and its summary off it.
     get canonical(): $Section {
         return this.parts().find(s => !s.parenthetical && this.summarised(s)) ?? this.parts().find(s => !s.parenthetical) ?? this.parts()[0];
     }
 
-    // The summary stands inside the canonical section when it is written there,
-    // and as a parenthetical section beside it when it is not.
     get summary(): $Section | undefined { return this.parts().find(s => s.parenthetical); }
 
     summarised(section: $Section): boolean {
@@ -65,16 +57,10 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
     get subtitle(): $Subtitle | undefined { return this.canonical?.subtitle; }
 
     $Document(...writing: unknown[]) {
-        // Everything below a document is inline, so a document's sections arrive
-        // grouped into its block rather than as arguments of their own. They are
-        // read off the block by level, which is the parse's own rule one grade up.
         super.$Writing(...writing);
         const written = (this.text.$elements ?? []).filter(s => s instanceof $Section) as $Section[];
         this.$parts = written.length ? written : this.declaration();
         for (const section of this.$parts) {
-            // A MARK IS WORD GRADE and a figure is paragraph grade, so the
-            // apparatus is judged at both — the raw children used to carry them
-            // side by side, and the model carries them at the levels they are.
             for (const element of [...section.parts(), ...section.words]) {
                 const writing = element as { valid?: () => boolean; copy?: string };
                 if (typeof writing.valid === 'function' && writing.valid() === false) {
@@ -84,19 +70,10 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         }
     }
 
-    // A document's sections are handed to it or written in its view — never
-    // divided out of prose, which is what every level below does.
     parts(): $Section[] {
         return this.$parts;
     }
 
-    // A document may write its sections in its own view instead of being handed
-    // them. Those instances ARE its parts, and once they are read the document
-    // draws what it holds: evaluating the same writing a second time would leave
-    // the model carrying one set of sections and the reader looking at another.
-    // A document that writes none falls through with nothing — the base view
-    // renders parts that are not there yet and yields no sections, so no check
-    // against the base is needed and none is made.
     declaration(): $Section[] {
         const node = this.view();
         const children = React.Children.toArray(
@@ -105,9 +82,6 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         const sections: $Section[] = [];
         for (const child of children) {
             if (!React.isValidElement(child)) continue;
-            // The second position is what a bond constructor composes now, not a
-            // parent — so the section is adopted after it is built rather than
-            // during, which is what every composed part already does.
             const evaluated = $(child as any);
             if (evaluated instanceof $Section && evaluated.parent !== this) evaluated.parent = this as never;
             if (evaluated instanceof $Section) sections.push(evaluated);
@@ -116,11 +90,6 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         return sections;
     }
 
-    // A DOCUMENT KEEPS ITS OWN LOOP rather than taking $Writing's template, and
-    // the reason is `declaration()` above: it harvests sections by calling this
-    // method and then points `$view` at THIS function, so it has to exist here.
-    // What it gained is the theme — it asks whether a part is drawn instead of
-    // reading the flag, and it hands what it gathered to `emit`.
     view(): ReactNode {
         const theme = this.theme;
         const held = this.parts().filter(section => theme.draws(section));
@@ -129,10 +98,10 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
             const S = $(s) as any;
             return <div key={i} style={{ marginBottom: theme.rhythm }}><S /></div>;
         });
-        return this.emit(drawn, theme);
+        return this.set(drawn, theme);
     }
 
-    override emit(contents: ReactNode, theme: $Theme): ReactNode {
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
         return <section>{contents}</section>;
     }
 

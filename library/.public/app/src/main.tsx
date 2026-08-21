@@ -1,4 +1,5 @@
 import React from 'react';
+import 'katex/dist/katex.min.css';
 import { createRoot } from 'react-dom/client';
 import { Library } from './app';
 import { dress } from './dressing';

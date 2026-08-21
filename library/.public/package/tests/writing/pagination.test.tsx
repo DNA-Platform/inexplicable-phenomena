@@ -64,6 +64,12 @@ const built = (): $Book => $(
 // THE SCOPE IS THE BOOK'S OWN COMPONENT. Registering on a DERIVED Book and
 // nesting the instance inside it re-runs the bond constructor with a book as
 // its child, which a book correctly refuses — found by driving this promise.
+// WHAT STANDS ON THE PAGE, as against what the contents merely LISTS. The
+// contents names every chapter, so reading the whole body cannot tell a chapter
+// that is open from one that is only reachable.
+const standing = (c: HTMLElement): string =>
+    [...c.querySelectorAll('[data-chapter]')].map(e => e.textContent ?? '').join(' ');
+
 const drawn = (b: $Book, Theme?: unknown) => {
     const B = $(b as never) as any;
     if (Theme) $(B, themes.Theme)(Theme as never);
@@ -71,19 +77,18 @@ const drawn = (b: $Book, Theme?: unknown) => {
 };
 
 describe('one book, two themes, and the second one PAGINATES', () => {
-    it('the base theme lays every chapter out, one after another', () => {
+    it('a book opens at its title page, and its contents names the rest', () => {
         const container = drawn(built());
-        const text = container.textContent ?? '';
-        expect(text).toContain('Coordinates');
-        expect(text).toContain('Transport');
+        expect(container.textContent).toContain('Coordinates');
+        expect(container.textContent).toContain('Transport');
+        expect(standing(container)).toContain('A Book That Turns');
     });
 
-    it('and a paginating theme shows ONE — the book, the chapters and the prose unmodified', () => {
-        const b = built();
-        const container = drawn(b, Paged);
-        const text = container.textContent ?? '';
-        expect(text).toContain('A Book That Turns');
-        expect(text).not.toContain('Transport');
+    it('and only ONE chapter stands — the book, the chapters and the prose unmodified', () => {
+        const container = drawn(built(), Paged);
+        const stood = standing(container);
+        expect(stood).toContain('A Book That Turns');
+        expect(stood).not.toContain('A reader carries a place');
     });
 
     it('the model is IDENTICAL under both — a theme changes the reading, never the book', () => {
@@ -100,8 +105,9 @@ describe('one book, two themes, and the second one PAGINATES', () => {
     it('and turning the page shows the OTHER chapter, with nothing else changed', () => {
         const b = built();
         b.page = 1;
-        const text = drawn(b, Paged).textContent ?? '';
-        expect(text).not.toContain('A Book That Turns');
+        const stood = standing(drawn(b, Paged));
+        expect(stood).toContain('Coordinates');
+        expect(stood).not.toContain('A Book That Turns');
     });
 });
 

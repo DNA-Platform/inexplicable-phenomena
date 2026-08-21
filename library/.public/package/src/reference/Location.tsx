@@ -13,8 +13,6 @@ export class $Location<T extends $Referent = any> extends $Referent implements $
 
     get copy(): string { return `${this.$i}`; }
 
-    // A location is the one thing that holds a number, because a number is what
-    // it IS — the position it points at. Nothing it points at carries one.
     read(): T {
         const parts = this.$of.parts();
         if (this.$i < 0 || this.$i >= parts.length) {

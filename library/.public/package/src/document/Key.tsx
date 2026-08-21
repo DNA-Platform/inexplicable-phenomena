@@ -26,6 +26,7 @@ export class $Key extends $Referent implements $Reference$<$Footnote> {
         return this.copy;
     }
 
+
     valid(): boolean {
         return this.$footnote.valid();
     }

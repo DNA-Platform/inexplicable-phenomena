@@ -1,11 +1,14 @@
-// The real answer is one $Code with an `inline` boolean whose LEVEL moves
-// between paragraph and phrase. That needs dynamic layering, which the framework
-// does not have yet.
 import { $, $valid } from '@dna-platform/chemistry';
 import { $Phrase } from './Phrase';
 import { type Role } from './Writing';
+import React, { type ReactNode } from 'react';
+import { $Theme } from './Theme';
 
 export class $Snippet extends $Phrase {
+    override set(contents: ReactNode, theme: $Theme): ReactNode {
+        return <code style={{ fontFamily: theme.mono, fontSize: '0.88em', background: theme.rule, borderRadius: '3px', padding: '0.1em 0.35em' }}>{contents}</code>;
+    }
+
     get role(): Role { return 'mention'; }
 
     valid(): boolean {

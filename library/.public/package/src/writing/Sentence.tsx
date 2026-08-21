@@ -16,30 +16,20 @@ import * as punctuation from './Punctuation';
 import * as links from '../reference/Link';
 import * as formulas from './Formula';
 import * as snippets from './Snippet';
+import * as stresses from './Emphasis';
 
-// The marks a sentence is written in. A composite is ONE mark — the whole of a
-// link, a code span, a formula, an escape — so nothing inside one ever reaches
-// the word parse.
 const marks = /\\.|\[[^\]\n]*\]\([^)\s]*\)|`[^`\n]+`|\$[^$\n]+\$|\*\*|__|~~|\*|_|[\p{L}\p{N}'-]+|[^\p{L}\p{N}'*_`[\]()$\\]+|./gu;
 
 const link = /^\[([^\]\n]*)\]\(([^)\s]*)\)$/;
+const stress = /^(\*\*|__|\*|_)$/;
 const code = /^`([^`\n]+)`$/;
 const math = /^\$([^$\n]+)\$$/;
 const escaped = /^\\(.)$/;
 
-// SOMETHING IS WRITTEN IN IT — asked of what it HOLDS rather than of what it
-// READS. A parenthetical part is passed over by the reading, so a paragraph
-// carrying only an author or a subject reads as nothing and is not empty: the
-// author is written there. This became visible the day written elements stopped
-// dissolving into text, which is the model gaining them rather than changing.
 const written = (part: { copy: string; parts?: () => any[] }): boolean =>
     /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
 
 export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
-
-    // The words of a sentence are the USED ones. Its syntax is there among its
-    // parts — mentioned, standing for itself — and the reading passes over it,
-    // the way a book's copy passes over its parenthetical chapters.
     get words(): $Word[] { return this.parts().filter(word => word.role === 'use'); }
 
     get letters(): $Letter[] {
@@ -49,20 +39,6 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
 
     get ref(): $$Sentence { const Entry = $($$Sentence); return $(<Entry of={this} />) as $$Sentence; }
 
-    // A sentence is divided into its words AND the syntax between them. The
-    // words are used; the spaces, commas and stops are mentioned — present in
-    // the writing, passed over by the reading, exactly as a book's copy passes
-    // over its parenthetical chapters.
-    // Composite tokens are pulled out WHOLE, before anything is split into words
-    // — a link's target must never reach the word parse, or `https` and `com`
-    // are counted as prose, and mathematics must keep its underscores. Order
-    // matters: escape, link, code span, math, then the emphasis marks, then
-    // words, then everything else.
-    // A SENTENCE READS ITS OWN CONTENTS: prose and written elements, in
-    // written order. A word written here IS one of this sentence's words —
-    // whatever kind of word it is — which is the whole of being able to write
-    // one. Every mark a sentence finds is a finished word, so an element between
-    // two of them stands on its own rather than joining either.
     parts(): $Word[] {
         const found: $Word[] = [];
         const stand = (word: $Word) => {
@@ -71,12 +47,29 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
         };
         for (const written of (this.text.$elements ?? []) as (string | number | $Word)[]) {
             if (typeof written === 'object') { stand(written); continue; }
-            for (const mark of String(written).match(marks) ?? []) {
-                const made = this.wordFor(mark);
+            for (const piece of this.stressed(String(written).match(marks) ?? [])) {
+                if (typeof piece !== 'string') { stand(piece); continue; }
+                const made = this.wordFor(piece);
                 if (made) stand(made);
             }
         }
         return found;
+    }
+
+    stressed(pieces: string[]): (string | $Word)[] {
+        const Emphasis = $(stresses.Emphasis);
+        const out: (string | $Word)[] = [];
+        for (let at = 0; at < pieces.length; at++) {
+            const open = pieces[at];
+            if (!stress.test(open)) { out.push(open); continue; }
+            const shut = pieces.indexOf(open, at + 1);
+            if (shut < 0) { out.push(open); continue; }
+            const said = pieces.slice(at + 1, shut).join('').trim();
+            if (!said) { out.push(open); continue; }
+            out.push($(<Emphasis strong={open.length > 1}>{said}</Emphasis>) as $Word);
+            at = shut;
+        }
+        return out;
     }
 
     wordFor(prose: string): $Word {
@@ -95,15 +88,8 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
         const asCode = code.exec(prose);
         if (asCode) { const Snippet = $(snippets.Snippet); return $(<Snippet>{asCode[1]}</Snippet>); }
 
-        // An escape and the mark it escapes are ONE mentioned part. Splitting
-        // them would put a mark in the writing that the author wrote in order
-        // to prevent one.
         if (escaped.test(prose)) return $(<Punctuation>{prose}</Punctuation>);
 
-        // Everything else forks the way it always did: letters make a word, and
-        // a mark stands for itself. An unpaired asterisk lands here, which is
-        // why it needs no case — pairing is a fact about two marks, never a
-        // property of one.
         return /[\p{L}\p{N}]/u.test(prose) ? $(<Word>{prose}</Word>) : $(<Punctuation>{prose}</Punctuation>);
     }
 

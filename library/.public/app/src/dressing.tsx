@@ -15,15 +15,10 @@ import * as lib from '@dna-platform/lib';
 // yet true of the entries themselves; see the note at the foot of this file.
 
 export class $Library extends $Theme {
-    override $ink? = '#1d2327';
-    override $ground? = '#f4f1ea';
-    override $rule? = '#d8d3ca';
-    override $faint? = '#6b7680';
-    override $mark? = '#1e3a4a';
     override $measure? = '42rem';
-    override $leading? = 1.7;
-    override $rhythm? = '2.5rem';
-    override $size? = 1.15;
+    override $leading? = 1.65;
+    override $rhythm? = '2.75rem';
+    override $size? = 1.05;
 }
 
 const Dressing = $($Library);
