@@ -1,19 +1,17 @@
 import { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import { $Catalogue$ } from '../reference/Catalogue';
+import { $Reference } from '../reference/Reference';
+import { $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { $Composible$ } from '../writing/Composition';
 import { $Path, Path } from '../reference/Path';
-import { $Composition$ } from '../writing/Composition';
 import { $Document } from '../document/Document';
 import { Role } from '../writing/Writing';
 import { $Section } from '../writing/Section';
 import { $$Section } from '../writing/Section';
 import { $Book } from './Book';
 
-export class $Chapter extends $Document implements $Reference$<$Book> {
+export class $Chapter extends $Document implements $Reference<$Book> {
     $in?: $Book = undefined;
 
     get book(): $Book { return this.$in as $Book; }
@@ -33,18 +31,25 @@ export class $Chapter extends $Document implements $Reference$<$Book> {
         return book;
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
         return path;
     }
 
     $Chapter(...writing: unknown[]) {
         super.$Document(...writing);
+        this.requires();
+    }
+
+    // WHAT THIS KIND OF CHAPTER REQUIRES. A cover and a contents require
+    // something else, and they say so by overriding rather than by catching
+    // this one and rethrowing it only sometimes.
+    protected requires(): void {
         if (!this.summary) throw new Error('A chapter requires a summary — a parenthetical section.');
     }
 }
 
-export class $$Chapter extends $Section implements $Reference$<$Chapter>, $Catalogue$<$Section> {
+export class $$Chapter extends $Section implements $Reference<$Chapter>, $Catalogue<$Section> {
     $of!: $Chapter;
 
     $role?: Role = 'mention';
@@ -55,7 +60,7 @@ export class $$Chapter extends $Section implements $Reference$<$Chapter>, $Catal
     get copy(): string { return this.valid() ? this.of.canonical.heading : ''; }
     get heading(): string { return this.copy; }
     get chapter(): $Chapter { return this.of; }
-    get canonical(): $$Section { return $Composible$.canonical(this); }
+    get canonical(): $$Section { return this.parts()[0]; }
 
     parts(): $$Section[] {
         const Entry = $($$Section);
@@ -63,34 +68,32 @@ export class $$Chapter extends $Section implements $Reference$<$Chapter>, $Catal
     }
 
     where(match: (part: $$Section) => boolean): $$Section[] {
-        return $Composible$.where(this, match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $$Section) => U): U[] {
-        return $Composible$.select(this, pick);
+        return this.parts().map(pick);
     }
 
     selectMany<U>(pick: (part: $$Section) => U[]): U[] {
-        return $Composible$.selectMany(this, pick);
+        return this.parts().flatMap(pick);
     }
 
     single(match: (part: $$Section) => boolean): $$Section {
-        return $Composible$.single(this, match);
+        const found = this.parts().filter(match);
+        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
+        return found[0];
     }
 
     at(position: number): $Location<$$Section> {
-        return $Composible$.at(this, position);
-    }
-
-    follow(): $Composition$<$Section> {
-        return $Composible$.follow(this as never);
+        return this.located<$$Section>(position);
     }
 
     read(): $Chapter {
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

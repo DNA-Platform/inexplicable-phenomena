@@ -8,7 +8,7 @@ import { type $LibraryCard } from './book/library/the-team/librarycard';
 import { $Chapter } from '@/book/Chapter';
 import { $Cover } from '@/book/Cover';
 import { $TableOfContents } from '@/book/TableOfContents';
-import { type $Reference$ } from '@/reference/Reference';
+import { type $Reference } from '@/reference/Reference';
 import { $Footer } from '@/document/Footer';
 import { $Paragraph } from '@/writing/Paragraph';
 
@@ -145,7 +145,7 @@ const row = (c: $Chapter, i: number): Row => {
             };
         }),
         notes: footer
-            ? footer.footnotes.map(e => ({ key: e.$for, note: e.copy, number: e.number })).sort((a, b) => a.number - b.number)
+            ? footer.footnotes.map(e => ({ key: e.$name, note: e.copy, number: e.number })).sort((a, b) => a.number - b.number)
             : [],
         contents: c instanceof $TableOfContents,
         cover: i === 0,
@@ -460,14 +460,16 @@ export class $TheManifold extends $Book {
         this.over = false;
         this.page = Math.max(1, Math.min(this.held.rows.length - 1, p));
         this.tab = this.held.rows[this.page].source;
-        this.head();
+        this.turned();
     }
 
-    // A turned page opens at its head, and the reset must WIN. A 0ms timeout
+    // A TURNED PAGE OPENS AT ITS HEAD, and the reset must WIN. This was head()
+    // until $Book grew a head(theme) that draws one — the framework member wins
+    // and the demonstration yields the name. A 0ms timeout
     // could land before the turn had painted, and `light()` leaves a smooth
     // scroll animating that would carry the new page a few pixels down after
     // it — so this waits for the paint and then jumps rather than glides.
-    head() {
+    turned() {
         requestAnimationFrame(() => requestAnimationFrame(() => {
             document.querySelector('.page-body')?.scrollTo({ top: 0, behavior: 'auto' });
         }));
@@ -498,12 +500,12 @@ export class $TheManifold extends $Book {
     // cover, standing at zero, so a chapter's printed folio already IS its
     // position. Everything below counts from the title at zero, so the first
     // printed paragraph is position one.
-    reference(spot: string): $Reference$<any> | undefined {
+    reference(spot: string): $Reference<any> | undefined {
         const keys = spot.split('.').filter(Boolean).map(Number);
         if (!keys.length) return undefined;
-        let built: $Reference$<any> = this.held.book.at(keys[0]);
+        let built: $Reference<any> = this.held.book.at(keys[0]);
         for (const key of keys.slice(1)) {
-            const mid = built.valid() ? built.read() as { at?: (position: number) => $Reference$<any> } : undefined;
+            const mid = built.valid() ? built.read() as { at?: (position: number) => $Reference<any> } : undefined;
             if (!mid?.at) return undefined;
             built = built.then(mid.at(key));
         }
@@ -618,7 +620,7 @@ export class $TheManifold extends $Book {
                                     <ChapterNumber style={{ textAlign: 'center' }}>the book of code</ChapterNumber>
                                     <TocPage>
                                         {files.map((f, j) => (
-                                            <TocLine key={f} onClick={() => { this.tab = f; this.head(); }}>
+                                            <TocLine key={f} onClick={() => { this.tab = f; this.turned(); }}>
                                                 <span className="toc-title">{f}</span>
                                                 <span className="toc-leader" />
                                                 <span className="toc-folio">{j + 1}</span>
@@ -633,11 +635,11 @@ export class $TheManifold extends $Book {
                                 </PageBody>
                             )}
                             <PageTurns>
-                                <PageTurn disabled={at < 0} onClick={() => { if (at <= 0) this.tab = ''; else this.tab = files[at - 1]; this.head(); }}>
+                                <PageTurn disabled={at < 0} onClick={() => { if (at <= 0) this.tab = ''; else this.tab = files[at - 1]; this.turned(); }}>
                                     ← previous
                                 </PageTurn>
                                 <Folio>{at < 0 ? '·' : at + 1}</Folio>
-                                <PageTurn disabled={at >= files.length - 1} onClick={() => { this.tab = at < 0 ? files[0] : files[at + 1]; this.head(); }}>
+                                <PageTurn disabled={at >= files.length - 1} onClick={() => { this.tab = at < 0 ? files[0] : files[at + 1]; this.turned(); }}>
                                     next →
                                 </PageTurn>
                             </PageTurns>
@@ -672,7 +674,7 @@ export class $TheManifold extends $Book {
                                 <PageBody className="page-body manuscript" onScroll={(e) => this.slide(e)}>
                                     <CodeTabs>
                                         {names.map(name => (
-                                            <CodeTab key={name} $active={leaf === name} onClick={() => { this.tab = name; this.head(); }}>
+                                            <CodeTab key={name} $active={leaf === name} onClick={() => { this.tab = name; this.turned(); }}>
                                                 {name}
                                             </CodeTab>
                                         ))}

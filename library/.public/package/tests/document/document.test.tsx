@@ -11,6 +11,7 @@ import { $Citation, Citation } from '@/document/Citation';
 import { $Cite, Cite } from '@/document/Cite';
 import { $Chapter, Chapter } from '@/book/Chapter';
 import { $Section, Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { Title } from '@/writing/Title';
 
 const noted = (): $Document => $(
@@ -25,13 +26,13 @@ const noted = (): $Document => $(
         </Section>
         <Footer>
             <Title>Notes</Title>
-            <Footnote for="seam">Editors call this a seam.</Footnote>
-            <Footnote for="found">The crease is felt before it is found.</Footnote>
+            <Footnote name="seam">Editors call this a seam.</Footnote>
+            <Footnote name="found">The crease is felt before it is found.</Footnote>
         </Footer>
-        <Section parenthetical>
+        <Summary>
             <Title>Summary</Title>
             {'\n\nThe footer files the notes.'}
-        </Section>
+        </Summary>
     </Document>
 );
 
@@ -45,13 +46,13 @@ const cited = (): $Document => $(
         </Section>
         <Bibliography>
             <Title>References</Title>
-            <Citation for="euler">Euler, the identity, 1748.</Citation>
-            <Citation for="srt">The SRT source.</Citation>
+            <Citation name="euler">Euler, the identity, 1748.</Citation>
+            <Citation name="srt">The SRT source.</Citation>
         </Bibliography>
-        <Section parenthetical>
+        <Summary>
             <Title>Summary</Title>
             {'\n\nThe document cites.'}
-        </Section>
+        </Summary>
     </Document>
 );
 
@@ -68,7 +69,7 @@ describe('The document — the general unit above sections, and its reference ap
         const c: $Chapter = $(
             <Chapter>
                 <Section><Title>Coordinates</Title>{'\n\nProse stands here.'}</Section>
-                <Section parenthetical><Title>Summary</Title>{'\n\nIn brief.'}</Section>
+                <Summary><Title>Summary</Title>{'\n\nIn brief.'}</Summary>
             </Chapter>
         );
         expect(c).toBeInstanceOf($Document);
@@ -81,10 +82,10 @@ describe('The document — the general unit above sections, and its reference ap
         expect(d.sections[0].document).toBe(d);
     });
 
-    it('the footer holds its footnotes — for exposes the key, and the numbers are 1-indexed in order', () => {
+    it('the footer holds its footnotes — key exposes the key, and the numbers are 1-indexed in order', () => {
         const footer = noted().footer!;
         expect(footer.footnotes.length).toBe(2);
-        expect(footer.footnotes[0].$for).toBe('seam');
+        expect(footer.footnotes[0].$name).toBe('seam');
         expect(footer.footnotes[0].copy).toBe('Editors call this a seam.');
         expect(footer.footnotes[0].number).toBe(1);
         expect(footer.footnotes[1].number).toBe(2);
@@ -94,7 +95,7 @@ describe('The document — the general unit above sections, and its reference ap
         const footer: $Footer = $(
             <Footer>
                 <Title>Notes</Title>
-                <Footnote for="lonely">A note nothing points at.</Footnote>
+                <Footnote name="lonely">A note nothing points at.</Footnote>
             </Footer>
         );
         expect(footer.footnotes[0].number).toBe(1);
@@ -136,7 +137,7 @@ describe('The document — the general unit above sections, and its reference ap
         expect(euler.valid()).toBe(true);
         // CHANGED 2026-08-18: $'s second position is what a bond constructor
         // COMPOSES now, not a parent. A mark is adopted after it is built.
-        const echoed: $Cite = $(<Cite for="euler" />);
+        const echoed: $Cite = $(<Cite name="euler" />);
         echoed.parent = d.sections[0] as never;
         expect(echoed.for).toBe('euler');
         expect(echoed.number).toBe(1);
@@ -145,7 +146,7 @@ describe('The document — the general unit above sections, and its reference ap
     it('a citation is for its key — the copy is the note, and the bibliography numbers alphabetically', () => {
         const d = cited();
         const local = d.bibliography!.citations[0];
-        expect(local.$for).toBe('euler');
+        expect(local.$name).toBe('euler');
         expect(local.number).toBe(1);
         expect(local.copy).toContain('Euler, the identity');
         expect(d.bibliography!.citations[1].number).toBe(2);
@@ -164,13 +165,13 @@ describe('The document — the general unit above sections, and its reference ap
                 </Section>
                 <Bibliography>
                     <Title>References</Title>
-                    <Citation for="zeno">Zeno, the paradox.</Citation>
-                    <Citation for="euler">Euler, the identity, 1748.</Citation>
+                    <Citation name="zeno">Zeno, the paradox.</Citation>
+                    <Citation name="euler">Euler, the identity, 1748.</Citation>
                 </Bibliography>
-                <Section parenthetical>
+                <Summary>
                     <Title>Summary</Title>
                     {'\n\nAlphabetical.'}
-                </Section>
+                </Summary>
             </Document>
         );
         const [zeno, euler] = denotes(d) as [$Cite, $Cite];
@@ -199,10 +200,10 @@ describe('The document — the general unit above sections, and its reference ap
                     <Denote>missing</Denote>
                     {' cites nothing.'}
                 </Section>
-                <Section parenthetical>
+                <Summary>
                     <Title>Summary</Title>
                     {'\n\nIn brief.'}
-                </Section>
+                </Summary>
             </Document>
         );
         expect(rejection(broken)).toMatch(/rejects "missing"/);
@@ -231,16 +232,16 @@ describe('The document — the general unit above sections, and its reference ap
                 </Section>
                 <Footer>
                     <Title>Notes</Title>
-                    <Footnote for="seam">The note at the foot.</Footnote>
+                    <Footnote name="seam">The note at the foot.</Footnote>
                 </Footer>
                 <Bibliography>
                     <Title>References</Title>
-                    <Citation for="euler">Euler, the identity, 1748.</Citation>
+                    <Citation name="euler">Euler, the identity, 1748.</Citation>
                 </Bibliography>
-                <Section parenthetical>
+                <Summary>
                     <Title>Summary</Title>
                     {'\n\nBoth apparatuses.'}
-                </Section>
+                </Summary>
             </Document>
         );
         expect(d.footer).not.toBeInstanceOf($Bibliography);
@@ -263,12 +264,12 @@ describe('The document — the general unit above sections, and its reference ap
                 </Section>
                 <Bibliography>
                     <Title>References</Title>
-                    <Citation for="euler">Euler, the identity, 1748.</Citation>
+                    <Citation name="euler">Euler, the identity, 1748.</Citation>
                 </Bibliography>
-                <Section parenthetical>
+                <Summary>
                     <Title>Summary</Title>
                     {'\n\nIndependent.'}
-                </Section>
+                </Summary>
             </Document>
         );
         expect(d.footer).toBeUndefined();
@@ -284,7 +285,7 @@ describe('The document — the general unit above sections, and its reference ap
         const mixed: $Bibliography = $(
             <Bibliography>
                 <Title>References</Title>
-                <Footnote for="plain">A note where a citation belongs.</Footnote>
+                <Footnote name="plain">A note where a citation belongs.</Footnote>
             </Bibliography>
         );
         expect(mixed.valid()).toBe(false);

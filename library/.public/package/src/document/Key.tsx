@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
-import { $, $Chemical, Component } from '@dna-platform/chemistry';
+import { $, Component } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
+import { $Reference } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Footnote } from './Footnote';
 
-export class $Key extends $Referent implements $Reference$<$Footnote> {
+export class $Key extends $Referent implements $Reference<$Footnote> {
     $name = '';
     $footnote!: $Footnote;
 
@@ -17,7 +17,7 @@ export class $Key extends $Referent implements $Reference$<$Footnote> {
         return this.$footnote;
     }
 
-    then<U extends $Referent>(onward: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(onward: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }

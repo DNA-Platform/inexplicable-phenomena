@@ -1,7 +1,7 @@
-import { walk } from './walk.ts';
-import { refer } from './refer.ts';
-import { resolve } from './resolve.ts';
-import { root } from './where.ts';
+import { walk } from '../stages/walk.ts';
+import { refer } from '../stages/refer.ts';
+import { resolve } from '../stages/resolve.ts';
+import { root } from '../utilities/where.ts';
 
 // THE COMPILER HAS NO SCREEN. It has this: what the folders say, and what that
 // turns out to mean. Reading first, then resolving, each printed as it stands.

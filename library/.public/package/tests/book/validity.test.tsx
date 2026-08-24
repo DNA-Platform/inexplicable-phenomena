@@ -7,59 +7,73 @@ import { Cover } from '@/book/Cover';
 import { Synopsis } from '@/book/Synopsis';
 import { TableOfContents } from '@/book/TableOfContents';
 import { Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { Title } from '@/writing/Title';
 import { Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
 import { Canonical } from '@/book/Canonical';
-import { $IndexCard, IndexCard } from '@/library/IndexCard';
+import { $$Book, Card } from '@/book/Book';
 
-const card = (): $IndexCard<any> => $(<IndexCard name="/somewhere" />) as $IndexCard<any>;
+const card = (): $$Book => $(<Card name="/somewhere" />) as $$Book;
 
-const section = (heading: string, prose: string, aside = false): ReactNode => (
-    <Section parenthetical={aside}><Title>{heading}</Title>{'\n\n' + prose}</Section>
+const section = (heading: string, prose: string, aside = false): ReactNode => {
+    const Kind = aside ? Summary : Section;
+    return (
+    <Kind><Title>{heading}</Title>{'\n\n' + prose}</Kind>
 );
+};
 
 const summary = (gist: string): ReactNode => section('Summary', gist, true);
 
 const chapter = (title: string): ReactElement => <Chapter>{section(title, 'Prose.')}{summary('In brief.')}</Chapter>;
 
-const account = (of?: $IndexCard<$Book>): ReactElement => (
+const account = (of?: $$Book): ReactElement => (
     <Synopsis for={of}>{section('Synopsis', 'An account.')}{summary('In brief.')}</Synopsis>
 );
 
-const pointing = (name: string, at: () => $Book): $IndexCard<$Book> =>
-    $(<IndexCard name={name} of={at} />) as $IndexCard<$Book>;
+const pointing = (name: string, at: () => $Book): $$Book =>
+    $(<Card name={name} of={at} />) as $$Book;
 
-describe('a book reference is valid when it names somebody or points at them', () => {
-    it('holds for an author', () => {
+describe('the three annotations differ BY VALIDATION, which is the whole of the difference', () => {
+    // They were byte-identical under name substitution — one class copied twice
+    // in a sitting — and the promise that used to live here asserted they must
+    // stay that way. The design always said otherwise.
+
+    it('all three name without pointing, and that much they share', () => {
         expect($(<Author>The Team</Author>).valid()).toBe(true);
-        expect($(<Author for={card()} />).valid()).toBe(true);
-        expect($(<Author />).valid()).toBe(false);
-    });
-
-    it('holds for a subject', () => {
         expect($(<Subject>Physics</Subject>).valid()).toBe(true);
-        expect($(<Subject for={card()} />).valid()).toBe(true);
-        expect($(<Subject />).valid()).toBe(false);
+        expect($(<Canonical>The Standard Model</Canonical>).valid()).toBe(true);
     });
 
-    it('holds for a canonical, which is the one it did not hold for', () => {
-        expect($(<Canonical>The Standard Model</Canonical>).valid()).toBe(true);
-        expect($(<Canonical for={card()} />).valid()).toBe(true);
+    it('and none of them stands for nothing', () => {
+        expect($(<Author />).valid()).toBe(false);
+        expect($(<Subject />).valid()).toBe(false);
         expect($(<Canonical />).valid()).toBe(false);
     });
 
-    it('answers the same way for all three, which is what makes them one rule', () => {
-        const matrix = [Author, Subject, Canonical].map(Kind => [
-            $(<Kind>A Name</Kind>).valid(),
-            $(<Kind for={card()} />).valid(),
-            $(<Kind />).valid(),
-        ]);
-        expect(matrix).toEqual([
-            [true, true, false],
-            [true, true, false],
-            [true, true, false],
-        ]);
+    // "THE CANONICAL AUTOBIOGRAPHY OF THE LIBRARY" — an author names a book that
+    // authors ITSELF, and a card that names somebody else does not qualify.
+    it('AN AUTHOR asks whether the book it names authors itself', () => {
+        const stranger = card();
+        expect($(<Author for={stranger} />).valid()).toBe(false);
+
+        const itself = card();
+        itself.$author = itself;
+        expect($(<Author for={itself} />).valid()).toBe(true);
+    });
+
+    // "THE BOOK SHOULD BE IN ITS OWN SUBJECT" and "you are among what I hold" are
+    // questions about the book the annotation STANDS IN, so outside one they ask
+    // nothing — which is why an annotation with no book falls back to naming.
+    it('A SUBJECT and A CANONICAL ask about the book they stand in, and outside one they do not judge', () => {
+        expect($(<Subject for={card()} />).valid()).toBe(true);
+        expect($(<Canonical for={card()} />).valid()).toBe(true);
+    });
+
+    it('so the three no longer answer alike — which is the fault this closed', () => {
+        const stranger = card();
+        const answers = [Author, Subject, Canonical].map(Kind => $(<Kind for={stranger} />).valid());
+        expect(answers).toEqual([false, true, true]);
     });
 });
 
@@ -75,7 +89,7 @@ const teamCard = pointing('/team', () => team);
 const physicsCard = pointing('/physics', () => physics);
 const modelCard = pointing('/physics/model', () => model);
 
-const cover = (author?: $IndexCard<$Book>, subject?: $IndexCard<$Book>, canonical?: $IndexCard<$Book>): ReactElement => (
+const cover = (author?: $$Book, subject?: $$Book, canonical?: $$Book): ReactElement => (
     <Cover>
         <Section>
             <Title>A Book</Title>
@@ -96,6 +110,13 @@ let leaf: $Book;
 const rootCard = pointing('/', () => root);
 const shelfCard = pointing('/shelf', () => shelf);
 const leafCard = pointing('/shelf/leaf', () => leaf);
+
+// THE SUBJECT LINKS, CARD TO CARD — exactly what the emitted catalogue writes:
+// `library.$subject = library` is the fixed point a well-ordered library is
+// forced to have, and it is what lets the climb arrive without opening a book.
+rootCard.$subject = rootCard;
+shelfCard.$subject = rootCard;
+leafCard.$subject = shelfCard;
 
 root = $(<Book>{cover(teamCard, rootCard)}<TableOfContents />{account()}{account(shelfCard)}</Book>);
 shelf = $(<Book>{cover(teamCard, rootCard)}<TableOfContents />{account()}{account(leafCard)}</Book>);
@@ -158,7 +179,7 @@ describe('a link is valid by WHAT IT POINTS AT, and only the build can ask', () 
     });
 
     it('A CARD THAT NEVER POINTED IS NOT JUDGED, and validity answers rather than throwing', () => {
-        const nowhere = $(<IndexCard name="/nowhere" />) as $IndexCard<$Book>;
+        const nowhere = $(<Card name="/nowhere" />) as $$Book;
         const loose: $Book = $(<Book>{cover(nowhere, nowhere)}<TableOfContents />{account()}{chapter('Loose')}</Book>);
         expect(() => loose.valid()).not.toThrow();
         expect(loose.valid()).toBe(true);

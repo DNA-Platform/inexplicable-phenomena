@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { type $LibraryCard } from './book/library/the-team/librarycard';
+import { type $$Book } from '@/book/Book';
 import { shelf, contents } from './book/library/the-shelf/book';
 import { team } from './book/library/the-team/book';
 import { algebra } from './book/library/algebra/book';
@@ -14,9 +14,9 @@ import { build } from './book/library/the-build/book';
 let route: $TheBooks | undefined;
 
 class $TheBooks extends $Chemical {
-    $opened?: $LibraryCard = undefined;
+    $opened?: $$Book = undefined;
 
-    pull(card: $LibraryCard) {
+    pull(card: $$Book) {
         const book = card.read();
         if (book === algebra) { window.location.href = '/page'; return; }
         this.$opened = card;

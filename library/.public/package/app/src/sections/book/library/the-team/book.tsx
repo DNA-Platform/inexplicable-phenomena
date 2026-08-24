@@ -79,7 +79,7 @@ export class $TheTeam extends $Book {
 
     margin(): ReactNode {
         const card = theTeam;
-        const listed = this.tableOfContents.chapters;
+        const listed = this.contents.chapters;
         return (
             <Margin>
                 <MarginName>Contents</MarginName>

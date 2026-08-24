@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
-import { $, $check, $Html } from '@dna-platform/chemistry';
+import { styled } from 'styled-components';
+import { $ } from '@dna-platform/chemistry';
 import { $Section } from '../writing/Section';
-import { $Title } from '../writing/Title';
 import { $Footnote } from './Footnote';
 import { $Legend } from './Legend';
 import * as legends from './Legend';
@@ -9,12 +9,29 @@ import { $Key } from './Key';
 import * as keys from './Key';
 import { $Theme } from '../writing/Theme';
 
+export const Foot = styled.footer<{ $theme: $Theme }>`
+    border-top: 1px solid ${p => p.$theme.rule};
+    margin-top: ${p => p.$theme.rhythm};
+    padding-top: ${p => p.$theme.step(0)};
+`;
+
+export const Notes = styled.ol`
+    list-style: decimal;
+    padding-left: 1.4em;
+    margin: 0;
+`;
+
 export class $Footer extends $Section {
+    $foot = Foot;
+    $notes = Notes;
+
     override set(contents: ReactNode, theme: $Theme): ReactNode {
+        const Under = this.$foot;
+        const Listed = this.$notes;
         return (
-            <footer style={{ borderTop: `1px solid ${theme.rule}`, marginTop: theme.rhythm, paddingTop: theme.step(0) }}>
-                <ol style={{ listStyle: 'decimal', paddingLeft: '1.4em', margin: 0 }}>{contents}</ol>
-            </footer>
+            <Under $theme={theme}>
+                <Listed>{contents}</Listed>
+            </Under>
         );
     }
 
@@ -29,7 +46,7 @@ export class $Footer extends $Section {
             const Legend = $(legends.Legend);
             const Key = $(keys.Key);
             const legend: $Legend = $(<Legend />, this);
-            legend.$keys = this.footnotes.map(e => $(<Key name={e.$for} footnote={e} />) as $Key);
+            legend.$names = this.footnotes.map(e => $(<Key name={e.$name} footnote={e} />) as $Key);
             this.$legend = legend;
         }
         return this.$legend;

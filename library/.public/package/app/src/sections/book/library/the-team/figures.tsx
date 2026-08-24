@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Figure } from '@/writing/Figure';
 import { $Title } from '@/writing/Title';
-import { type $IndexCard } from '@/library/IndexCard';
+import { type $$Book } from '@/book/Book';
 import {
     Plate, PlateCaption, Slip, SlipName, SlipBody,
     Listing, ListingName, Loop, LoopBook, LoopArrow, LoopSelf, Rule, Heading,
@@ -58,9 +58,9 @@ export class $Circuit extends $Plated {
 // A card printing its own fields — the card is the content, and what is drawn
 // is whatever the card says it carries.
 export class $Slipped extends $Plated {
-    $card?: $IndexCard = undefined;
+    $card?: $$Book = undefined;
 
-    get card(): $IndexCard | undefined { return this.$card; }
+    get card(): $$Book | undefined { return this.$card; }
 
     drawn(): ReactNode {
         const card = this.card;

@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Cover } from '@/book/Cover';
 import { Section } from '@/writing/Section';
+import { Paragraph } from '@/writing/Paragraph';
 import { Title } from '@/writing/Title';
 import { Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
@@ -11,9 +12,9 @@ export class $AlgebraCover extends $Cover {
         return (
             <Section>
                 <Title>The Algebra of Perspective: A Study in Reading</Title>
-                {'\n\nReading is an act with coordinates. This book changes them slowly, and on purpose.'}
-                {'\n\n'}<Author>The Team</Author>
-                {'\n\n'}<Subject>Demonstration</Subject>
+                <Paragraph>{'Reading is an act with coordinates. This book changes them slowly, and on purpose.'}</Paragraph>
+                {''}<Author>The Team</Author>
+                {''}<Subject>Demonstration</Subject>
             </Section>
         );
     }

@@ -114,10 +114,19 @@ describe('what each level composes, and where the descent stops', () => {
         expect(paragraph.parts().every(s => s instanceof $Sentence)).toBe(true);
     });
 
-    it('A LETTER COMPOSES NOTHING — it is the floor of the descent', () => {
+    // THE FLOOR IS A FIXED POINT, not an emptiness. Doug: "Letter needs to
+    // implement composition. I think it should be a composition of letter and
+    // return itself." A letter's REFERENCE form is already itself, and its
+    // composition closes the same way — so the structure of meaning repeats
+    // all the way down and stops by pointing at itself rather than running out.
+    it('A LETTER COMPOSES ITSELF — the floor of the descent is a fixed point', () => {
         const section: $Section = $(<Section><Title>Floor</Title>{'\n\nA word.'}</Section>);
         const letter = section.parts()[1].parts()[0].parts()[0].parts()[0];
-        expect(letter.parts()).toEqual([]);
+        expect(letter.parts()).toEqual([letter]);
+        expect(letter.parts()[0]).toBe(letter);
+        expect(letter.canonical).toBe(letter);
+        // and the reference arm of the dyad closes identically
+        expect(letter.ref).toBe(letter);
     });
 
     it('prose alone reads exactly as it did — the shape changed, not the reading', () => {

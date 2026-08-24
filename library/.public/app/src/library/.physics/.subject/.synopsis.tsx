@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Synopsis, Section, Title } from '@dna-platform/lib';
+import { $Synopsis, Section, Title, Summary, Paragraph } from '@dna-platform/lib';
 
 export class $PhysicsSynopsis extends $Synopsis {
     view(): ReactNode {
@@ -8,12 +8,12 @@ export class $PhysicsSynopsis extends $Synopsis {
             <>
                 <Section>
                     <Title>Synopsis</Title>
-                    {'\n\nPhysics catalogues two books here and declares one of them canonical — which a compiler must check is a book it actually holds.'}
+                    <Paragraph>{'Physics catalogues two books here and declares one of them canonical — which a compiler must check is a book it actually holds.'}</Paragraph>
                 </Section>
-                <Section parenthetical>
+                <Summary>
                     <Title>Summary</Title>
-                    {'\n\nTwo books, one of them canonical.'}
-                </Section>
+                    <Paragraph>{'Two books, one of them canonical.'}</Paragraph>
+                </Summary>
             </>
         );
     }

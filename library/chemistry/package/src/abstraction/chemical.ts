@@ -1296,9 +1296,9 @@ function derive(component: any): any {
     return derived;
 }
 
-// Chemistry — one class. Its view IS the dispatch. Typed `any` so the runtime
+// $Chemistry$ — one class. Its view IS the dispatch. Typed `any` so the runtime
 // can be dynamic; call-site types come from `$Chemistry` wrapping `$`.
-class Chemistry extends $Chemical {
+class $Chemistry$ extends $Chemical {
     view(arg?: any): any {
         // The representative in the FIRST position — `$($,Component)`. `$` is
         // one unmistakable object carrying no `$chemical`, so identity is a
@@ -1404,4 +1404,4 @@ class Chemistry extends $Chemical {
     }
 }
 
-export const $ = new Chemistry().view as any as $Chemistry;
+export const $ = new $Chemistry$().view as any as $Chemistry;

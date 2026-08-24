@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Section, Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { $Paragraph } from '@/writing/Paragraph';
 import { $Chapter, Chapter } from '@/book/Chapter';
 import { Title } from '@/writing/Title';
@@ -111,12 +112,16 @@ describe('writing: a document writes its sections once', () => {
             }
         }
         const Counted = $($Counted);
+        // A DERIVED SUMMARY, which is what a summary now is: a kind rather than
+        // a flag. The counter is inherited, so both sides still count.
+        class $CountedSummary extends $Counted { parenthetical = true; }
+        const CountedSummary = $($CountedSummary);
         class $Written extends $Chapter {
             view(): React.ReactNode {
                 return (
                     <>
                         <Counted><Title>A Chapter</Title>{'\n\nProse.'}</Counted>
-                        <Counted parenthetical><Title>Summary</Title>{'\n\nA line.'}</Counted>
+                        <CountedSummary><Title>Summary</Title>{'\n\nA line.'}</CountedSummary>
                     </>
                 );
             }
@@ -137,7 +142,7 @@ describe('writing: a document writes its sections once', () => {
         const chapter: $Chapter = $(
             <Chapter>
                 <Section><Title>Given</Title>{'\n\nProse.'}</Section>
-                <Section parenthetical><Title>Summary</Title>{'\n\nA line.'}</Section>
+                <Summary><Title>Summary</Title>{'\n\nA line.'}</Summary>
             </Chapter>
         );
         expect(chapter.parts().length).toBe(2);

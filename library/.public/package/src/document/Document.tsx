@@ -1,12 +1,11 @@
 import React, { type ReactNode } from 'react';
-import { $, $check } from '@dna-platform/chemistry';
+import { $ } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
-import { $Composition$ } from '../writing/Composition';
+import { $Composition } from '../writing/Composition';
 import { $Writing } from '../writing/Writing';
 import { $Section } from '../writing/Section';
 import { $Theme } from '../writing/Theme';
-import { shown } from '../writing/Writing';
-import * as themes from '../writing/Theme';
+import { styled } from 'styled-components';
 import { $Title } from '../writing/Title';
 import * as titles from '../writing/Title';
 import { $Subtitle } from '../writing/Subtitle';
@@ -18,7 +17,16 @@ import { $Letter } from '../writing/Letter';
 import { $Footer } from './Footer';
 import { $Bibliography } from './Bibliography';
 
-export class $Document extends $Writing<$Section> implements $Referent, $Composition$<$Section> {
+export const Placed = styled.div<{ $theme: $Theme }>`
+    margin-bottom: ${p => p.$theme.rhythm};
+`;
+
+export const Body = styled.section``;
+
+export class $Document extends $Writing<$Section> implements $Referent, $Composition<$Section> {
+    $placed = Placed;
+    $body = Body;
+
     $parts: $Section[] = [];
 
     constructor() {
@@ -26,14 +34,14 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         this.inline = false;
     }
 
-    get copy(): string { return this.parts().map(s => s.copy).join('\n\n'); }
+    get copy(): string { return this.parts().filter(s => !s.parenthetical).map(s => s.copy).join(' '); }
     get canonical(): $Section {
-        return this.parts().find(s => !s.parenthetical && this.summarised(s)) ?? this.parts().find(s => !s.parenthetical) ?? this.parts()[0];
+        return this.parts().find(s => !s.parenthetical && this.carriesSummary(s)) ?? this.parts().find(s => !s.parenthetical) ?? this.parts()[0];
     }
 
     get summary(): $Section | undefined { return this.parts().find(s => s.parenthetical); }
 
-    summarised(section: $Section): boolean {
+    carriesSummary(section: $Section): boolean {
         return section.parts().some((p, at) => at > 0 && p.parenthetical);
     }
     get tagline(): $Tagline | undefined { return this.summary?.tagline; }
@@ -44,7 +52,7 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
     get paragraphs(): $Paragraph[] { return this.sections.flatMap(s => s.paragraphs); }
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
-    get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
+    get letters(): $Letter[] { return this.sections.flatMap(s => s.letters); }
 
     get title(): $Title | undefined {
         const t = this.canonical?.heading ?? '';
@@ -90,19 +98,21 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
         return sections;
     }
 
-    view(): ReactNode {
-        const theme = this.theme;
-        const held = this.parts().filter(section => theme.draws(section));
-        const laid = shown(theme, this, held, false, 0) ?? held;
-        const drawn = laid.map((s, i) => {
-            const S = $(s) as any;
-            return <div key={i} style={{ marginBottom: theme.rhythm }}><S /></div>;
+    // JOINED TO THE TEMPLATE. It used to override view() outright and
+    // re-implement gathered() inline, twelve lines below the one it inherits.
+    override gathered(theme: $Theme): ReactNode {
+        const held = this.parts().filter(section => !section.parenthetical);
+        const laid = this.shown(theme, this, held, false) ?? held;
+        const Standing = this.$placed;
+        return laid.map((s, i) => {
+            const S = $(s) as never as React.ComponentType;
+            return <Standing key={i} $theme={theme}><S /></Standing>;
         });
-        return this.set(drawn, theme);
     }
 
     override set(contents: ReactNode, theme: $Theme): ReactNode {
-        return <section>{contents}</section>;
+        const Held = this.$body;
+        return <Held>{contents}</Held>;
     }
 
     valid(): boolean {

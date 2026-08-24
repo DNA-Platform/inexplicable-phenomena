@@ -1,4 +1,4 @@
-import type { Book, Complaint, Entry, Library, Link, Path, Resolved } from './library.ts';
+import type { Book, Complaint, Library, Link, Path } from '../library.ts';
 
 // RESOLVING. A description says what is there; a library says what it means.
 //
@@ -17,7 +17,7 @@ const containerOf = (path: Path): Path => {
     return at === -1 ? '' : path.slice(0, at);
 };
 
-export const resolve = (library: Library): Resolved => {
+export const resolve = (library: Library): Library => {
     const complaints: Complaint[] = [...library.complaints];
     const byPath = new Map(library.entries.map(e => [e.path, e]));
 
@@ -56,21 +56,24 @@ export const resolve = (library: Library): Resolved => {
         const declaredSubject = said('subject');
         const home = speaks ? bookAt(speakerFor(containerOf(container))) || entry.path : bookAt(container);
         const subject: Link | undefined = declaredSubject?.book
-            ? { book: declaredSubject.book, display: declaredSubject.display, from: 'declared' }
+            ? { book: declaredSubject.book, display: declaredSubject.display }
             : declaredSubject
-                ? { book: home, display: declaredSubject.display, from: home ? 'declared' : 'unresolved' }
+                ? { book: home, display: declaredSubject.display }
                 : home
-                    ? { book: home, display: '', from: 'supplied' }
+                    ? { book: home, display: '' }
                     : undefined;
 
         // WHO WROTE IT is declared or supplied from the library's own author, and
         // a supplied author that stands for nobody is still stated rather than
         // quietly dropped — the display is what a reader sees either way.
+        // A LINK WITH NO BOOK IS NOT A FAULT. A cover may name its author as a
+        // NAME rather than as an import — `<Author>The Team</Author>` — and the
+        // corpus does exactly that. It stands for a name; nothing is wrong.
         const declaredAuthor = said('author');
         const author: Link | undefined = declaredAuthor
-            ? { book: declaredAuthor.book, display: declaredAuthor.display, from: declaredAuthor.book ? 'declared' : 'unresolved' }
+            ? { book: declaredAuthor.book, display: declaredAuthor.display }
             : houseAuthor
-                ? { book: houseAuthor.book, display: houseAuthor.display, from: 'supplied' }
+                ? { book: houseAuthor.book, display: houseAuthor.display }
                 : undefined;
 
         return { path: entry.path, route: entry.route, at: speaks ? container : entry.path, cover, synopsis, chapters, author, subject, entries: [] };
@@ -95,7 +98,7 @@ export const resolve = (library: Library): Resolved => {
         const shortest = [...held].sort((a, b) => byBook.get(a)!.route.length - byBook.get(b)!.route.length || a.localeCompare(b))[0];
         const chosen = said?.book || shortest;
         if (chosen) {
-            book.canonical = { book: chosen, display: said?.display ?? '', from: said?.book ? 'declared' : 'supplied' };
+            book.canonical = { book: chosen, display: said?.display ?? '' };
             if (said?.book && !held.includes(said.book)) {
                 complaints.push({ at: book.path, says: `names ${JSON.stringify(said.display)} canonical, and does not hold it` });
             }
@@ -110,5 +113,5 @@ export const resolve = (library: Library): Resolved => {
             : alphabetical;
     }
 
-    return { root: library.root, books, complaints };
+    return { ...library, books, complaints };
 };

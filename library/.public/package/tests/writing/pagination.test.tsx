@@ -5,6 +5,7 @@ import { $ } from '@dna-platform/chemistry';
 import { $Theme } from '@/writing/Theme';
 import * as themes from '@/writing/Theme';
 import { Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { Title } from '@/writing/Title';
 import { Chapter } from '@/book/Chapter';
 import { Cover } from '@/book/Cover';
@@ -33,12 +34,15 @@ class $Paged extends $Theme {
 
 const Paged = $($Paged);
 
-const section = (title: string, prose: string, parenthetical = false): ReactNode => (
-    <Section parenthetical={parenthetical}>
+const section = (title: string, prose: string, parenthetical = false): ReactNode => {
+    const Kind = parenthetical ? Summary : Section;
+    return (
+    <Kind>
         <Title>{title}</Title>
         {'\n\n' + prose}
-    </Section>
+    </Kind>
 );
+};
 
 const summary = (gist: string): ReactNode => section('Summary', gist, true);
 

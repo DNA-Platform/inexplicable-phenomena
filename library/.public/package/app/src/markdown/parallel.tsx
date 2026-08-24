@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { $ } from '@dna-platform/chemistry';
 import { $Section, Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
-import { $Figure, Figure } from '@/writing/Figure';
+import { $Figure } from '@/writing/Figure';
 import { Link } from '@/reference/Link';
-import { $Paragraph } from '@/writing/Paragraph';
+import { $Paragraph, Paragraph } from '@/writing/Paragraph';
 import { $MarkdownSection, MarkdownSection } from './section';
-import { $Code } from '@/writing/Code';
+import { $Code, Code } from '@/writing/Code';
 import { $Link } from '@/reference/Link';
 import { $Formula } from '@/writing/Formula';
 import { $Snippet } from '@/writing/Snippet';
@@ -30,24 +30,26 @@ import { $Snippet } from '@/writing/Snippet';
 
 const sample = 'The value 2 * 3 stands unchanged. A fence follows, and after it a link.';
 
-class $Plate extends $Figure {
-    drawn(): ReactNode { return <Rule />; }
-}
-const Plate = $($Plate);
+// A DERIVED KIND, which is what parenthetical now asks for: it is set as part of
+// the component rather than passed as a prop, so the aside is a class.
+class $Aside extends $Code { parenthetical = true; }
+const Aside = $($Aside);
 
 // The regular side: nothing is found, everything is written in by hand.
-// The plate carries NO caption. A caption is writing and would be counted; a
-// fence's content is not writing and is not. Giving one side a caption made the
-// two sides different texts, and the twin said so on screen before anyone read
-// it — which is what a corroborating view is for.
+// THE WRITTEN TWIN OF A FENCE IS A CODE BLOCK. It used to be a $Figure subclass,
+// which only paralleled because $Code was a $Figure — and Doug ruled that code is
+// WRITING, so the two sides now stand the same kind for the same reason rather
+// than by an inheritance accident.
 export const written = (): $Section => $(
     <Section>
         <Title>Written by hand</Title>
-        {`\n\n${sample.split(' A fence')[0]}`}
-        <Plate />
-        {'\n\nA fence stood above. After it a '}
-        <Link url="/somewhere">a link</Link>
-        {' inside this sentence.'}
+        <Paragraph>{sample.split(' A fence')[0]}</Paragraph>
+        <Aside language="text" source="a plate, drawn from a fence" />
+        <Paragraph>
+            {'A fence stood above. After it a '}
+            <Link url="/somewhere">a link</Link>
+            {' inside this sentence.'}
+        </Paragraph>
     </Section>
 );
 
@@ -61,7 +63,7 @@ export const found = (): $MarkdownSection => $(
 ) as $MarkdownSection;
 
 const kindOf = (part: $Paragraph | $Section): string => {
-    if (part instanceof $Code) return 'figure';
+    if (part instanceof $Code) return 'code';
     if (part instanceof $Figure) return 'figure';
     if (part instanceof $Section) return 'section';
     return 'paragraph';
@@ -221,10 +223,4 @@ const Note = styled.div`
     font-size: 11.5px;
     line-height: 1.7;
     color: #9fd0ff;
-`;
-
-const Rule = styled.hr`
-    border: 0;
-    border-top: 1px solid rgba(205, 213, 245, 0.35);
-    margin: 0;
 `;

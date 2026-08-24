@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Synopsis, Section, Title } from '@dna-platform/lib';
+import { $Synopsis, Section, Title, Summary, Paragraph } from '@dna-platform/lib';
 
 export class $StandardModelSynopsis extends $Synopsis {
     view(): ReactNode {
@@ -8,12 +8,12 @@ export class $StandardModelSynopsis extends $Synopsis {
             <>
                 <Section>
                     <Title>Synopsis</Title>
-                    {'\n\nTwelve fermions, four forces, and one field that gives the rest their mass. The book is short because the table is short.'}
+                    <Paragraph>{'Twelve fermions, four forces, and one field that gives the rest their mass. The book is short because the table is short.'}</Paragraph>
                 </Section>
-                <Section parenthetical>
+                <Summary>
                     <Title>Summary</Title>
-                    {'\n\nTwelve fermions, four forces, one field.'}
-                </Section>
+                    <Paragraph>{'Twelve fermions, four forces, one field.'}</Paragraph>
+                </Summary>
             </>
         );
     }

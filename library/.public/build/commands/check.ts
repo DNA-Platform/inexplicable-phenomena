@@ -1,9 +1,9 @@
 import { join } from 'node:path';
-import { walk } from './walk.ts';
-import { refer } from './refer.ts';
-import { resolve } from './resolve.ts';
-import { validate } from './validate.ts';
-import { root } from './where.ts';
+import { walk } from '../stages/walk.ts';
+import { refer } from '../stages/refer.ts';
+import { resolve } from '../stages/resolve.ts';
+import { validate } from '../stages/validate.ts';
+import { root } from '../utilities/where.ts';
 
 // CHECKING, as a command. The phase itself is validate.ts; this is the script
 // that runs it, which is the folder's own convention — see.ts reports, the

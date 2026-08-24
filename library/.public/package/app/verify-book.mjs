@@ -47,6 +47,30 @@ const clickToc = async (heading) => {
 };
 const settle = () => new Promise(r => setTimeout(r, 550));
 
+// REACHING A LANDMARK ACROSS A PAGE LOAD. Opening the algebra book and following
+// a subject link are FULL browser navigations, and puppeteer's waitForSelector
+// is bound to an execution context that a navigation destroys — so the wait dies
+// on the very steps it exists for, and reports a missing selector rather than a
+// swapped context. This polls instead, which is what the chemistry harness's
+// settle amounts to, said once and named.
+const landmark = async (selector, why, ms = 15000) => {
+    const stop = Date.now() + ms;
+    for (;;) {
+        try { if (await page.$(selector)) return true; } catch { /* context swapped mid-navigation */ }
+        if (Date.now() > stop) throw new Error(`${selector} never arrived — ${why}`);
+        await new Promise(r => setTimeout(r, 250));
+    }
+};
+
+const landmarked = async (fn, why, ms = 15000) => {
+    const stop = Date.now() + ms;
+    for (;;) {
+        try { if (await page.evaluate(fn)) return true; } catch { /* context swapped mid-navigation */ }
+        if (Date.now() > stop) throw new Error(`never true — ${why}`);
+        await new Promise(r => setTimeout(r, 250));
+    }
+};
+
 const check = (name, ok) => { checks.push([name, ok]); };
 
 // Checkpoint accounting. A walk that throws mid-way must still say what it
@@ -93,7 +117,8 @@ const openBook = async (name) => {
     return found;
 };
 
-await page.goto(`${BASE}/`, { waitUntil: 'networkidle0', timeout: 30000 });
+await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+await settle();
 await settle();
 
 const shelved = await spines();
@@ -106,18 +131,18 @@ check('the shelf is a room, not a scroll — pinned to the view', await page.eva
 if (shots) await page.screenshot({ path: 'shot-shelf.png' });
 
 await openBook('The Algebra of Perspective');
-await page.waitForFunction(() => document.body.innerText.includes('the classes'), { timeout: 10000 });
+await landmarked(() => document.body.innerText.includes('the classes'), 'the algebra book opens the page demo, which is a full page load');
 await settle();
 let t = await text();
 check('ALGEBRA: the spine opens the page — the dark sheet, lenses book · github · night', t.includes('github') && t.includes('night') && t.includes('the classes'));
 if (shots) await page.screenshot({ path: 'shot-algebra-page.png' });
 await clickChip('the books →');
-await page.waitForSelector('[data-book]', { timeout: 10000 });
+await landmark('[data-book]', 'the shelf draws its spines again');
 await settle();
 check('the page hands back to the shelf', (await spines()).length === shelved.length);
 
 await openBook('The Manifold');
-await page.waitForSelector('[data-cover]', { timeout: 8000 });
+await landmark('[data-cover]', 'the book opens at its cover');
 await settle();
 t = await text();
 // The invitation and the title are read off the cover itself rather than
@@ -146,7 +171,7 @@ await clickHead();
 await settle();
 t = await text();
 check('MANIFOLD: leafing back past the contents closes the book to its cover', t.includes('read the book') && !(await has('.book-page')));
-await page.waitForSelector('[data-cover]', { timeout: 8000 });
+await landmark('[data-cover]', 'the book opens at its cover');
 await page.click('[data-cover]');
 await settle();
 
@@ -331,7 +356,7 @@ check('MANIFOLD: the note walks back up to its mark — the loop at its smallest
 
 // The subject link, read off the subject's own card — "← The Shelf".
 await page.evaluate(() => document.querySelector('[data-subject]')?.dispatchEvent(new MouseEvent('click', { bubbles: true })));
-await page.waitForSelector('[data-book]', { timeout: 10000 });
+await landmark('[data-book]', 'the shelf draws its spines again');
 await settle();
 check('back on the shelf after the manifold', (await spines()).length === shelved.length);
 
@@ -388,11 +413,12 @@ check('BUILD: three of six books are drawn as catalogues, computed by the rule',
 check('BUILD: every book in the figure is accounted for', await page.evaluate(() => document.querySelectorAll('[data-shown]').length === 6));
 
 await page.evaluate(() => document.querySelector('[data-subject]')?.dispatchEvent(new MouseEvent('click', { bubbles: true })));
-await page.waitForSelector('[data-book]', { timeout: 10000 });
+await landmark('[data-book]', 'the shelf draws its spines again');
 await settle();
 check('back on the shelf after the build', (await spines()).length === shelved.length);
 
-await page.goto(`${BASE}/page`, { waitUntil: 'networkidle0', timeout: 30000 });
+await page.goto(`${BASE}/page`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+await settle();
 await settle();
 t = await text();
 check('the page demo still stands and links back', t.length > 50 && t.includes('the books'));

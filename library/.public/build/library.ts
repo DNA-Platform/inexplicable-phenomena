@@ -83,6 +83,10 @@ export type Complaint = {
     says: string;
 };
 
+/** THE ONE SEAM, and every stage both takes it and returns it. There is no
+ *  second, narrower seam and therefore no tense to name: the walk fills the
+ *  entries, refer fills their references, resolve fills the books, and what
+ *  arrives at emitting is the same shape that left the walk. */
 export type Library = {
     /** the absolute path the walk was pointed at. The root is a parameter, not an
      *  entry, so the convention never judges it. */
@@ -92,6 +96,8 @@ export type Library = {
      *  structural fact is kept. */
     speaks: Path;
     entries: Entry[];
+    /** what the entries MEAN, filled by resolving. Empty until then. */
+    books: Book[];
     complaints: Complaint[];
 };
 
@@ -107,16 +113,15 @@ export type Library = {
 // lives inside it, so `.physics` and `.physics/.subject` are one book with one
 // route, and this is where the two collapse into one thing.
 
-/** Where an answer came from. A supplied answer was never written by the author,
- *  and it is filled HERE and never in the file they left. */
-export type Source = 'declared' | 'supplied' | 'unresolved';
-
+/** One answer, followable. HOW it was arrived at is deliberately not here: the
+ *  emitter writes what a cover does not carry and leaves what it does, so
+ *  nothing downstream needs to know whether an author wrote it. A link that
+ *  points at nothing is a Complaint instead. */
 export type Link = {
-    /** the book this points at, by path. Empty when unresolved. */
+    /** the book this points at, by path */
     book: Path;
     /** what a reader is shown — the alias the author wrote, or the supplied name */
     display: string;
-    from: Source;
 };
 
 export type Book = {
@@ -139,8 +144,4 @@ export type Book = {
     entries: Path[];
 };
 
-export type Resolved = {
-    root: string;
-    books: Book[];
-    complaints: Complaint[];
-};
+

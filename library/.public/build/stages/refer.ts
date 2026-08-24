@@ -1,7 +1,7 @@
 import { join, relative, dirname, sep } from 'node:path';
 import { Project, SyntaxKind } from 'ts-morph';
 import type { Node, SourceFile } from 'ts-morph';
-import type { Complaint, Entry, Library, Reference } from './library.ts';
+import type { Complaint, Entry, Library, Reference } from '../library.ts';
 
 // THE REFERENCES. One book names another by importing its cover under whatever
 // alias reads well and writing that alias as a child — so the ALIAS is the

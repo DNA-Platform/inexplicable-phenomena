@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
-import { $, $Chemical, Component } from '@dna-platform/chemistry';
-import { $Composition$ } from '../writing/Composition';
+import { $, Component } from '@dna-platform/chemistry';
+import { $Composition } from '../writing/Composition';
 import { $Referent } from './Referent';
-import { $Reference$ } from './Reference';
+import { $Reference } from './Reference';
 import * as paths from './Path';
 
-export class $Location<T extends $Referent = any> extends $Referent implements $Reference$<T> {
+export class $Location<T extends $Referent = any> extends $Referent implements $Reference<T> {
     $i = 0;
-    $of!: $Composition$<any>;
+    $of!: $Composition<any>;
 
     parenthetical = false;
 
@@ -21,7 +21,7 @@ export class $Location<T extends $Referent = any> extends $Referent implements $
         return parts[this.$i] as T;
     }
 
-    then<U extends $Referent>(onward: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(onward: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }
@@ -35,4 +35,4 @@ export class $Location<T extends $Referent = any> extends $Referent implements $
     }
 }
 
-export const Location = $($Location) as any as Component<$Location> & ((props: { i: number; of: $Composition$<any> }) => any);
+export const Location = $($Location) as any as Component<$Location> & ((props: { i: number; of: $Composition<any> }) => any);

@@ -4,6 +4,7 @@ import { $ } from '@dna-platform/chemistry';
 import { text } from '@/utilities/html';
 import { $Writing } from '@/writing/Writing';
 import { $Section, Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { Title } from '@/writing/Title';
 import { $Paragraph } from '@/writing/Paragraph';
 import { $Figure } from '@/writing/Figure';
@@ -180,7 +181,7 @@ describe('the parse reaches every level, and the counts agree from any altitude'
         <Chapter>
             <Section><Title>One</Title>{'\n\nFirst sentence here. Second one follows.'}</Section>
             <Section><Title>Two</Title>{'\n\nA third sentence stands alone.'}</Section>
-            <Section parenthetical><Title>Summary</Title>{'\n\nIn brief.'}</Section>
+            <Summary><Title>Summary</Title>{'\n\nIn brief.'}</Summary>
         </Chapter>
     );
 
@@ -194,7 +195,10 @@ describe('the parse reaches every level, and the counts agree from any altitude'
         expect(sentence.parts().every(w => w instanceof $Word)).toBe(true);
         const word = sentence.words[0];
         expect(word.parts().every(l => l instanceof $Letter)).toBe(true);
-        expect(word.parts()[0].parts()).toEqual([]);
+        // THE DESCENT STOPS BY CLOSING, not by running out: a letter is a
+        // composition of one letter and that letter is itself.
+        const letter = word.parts()[0];
+        expect(letter.parts()).toEqual([letter]);
     });
 
     it('one count, whichever altitude it is reached from — the reading cannot disagree with itself', () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $Book } from '@/book/Book';
-import { $CardCatalogue } from '@/library/CardCatalogue';
+import { $CardCatalogue, CardCatalogue } from '@/library/CardCatalogue';
 import { $Canonical } from '@/book/Canonical';
 import { type $LibraryCard, LibraryCard } from './librarycard';
 import { algebra } from '../algebra/book';
@@ -22,7 +22,7 @@ const titles = (book: $Book): string[] => book.chapters.map(c => c.title?.copy ?
 
 const line = (book: $Book): string => book.synopsis?.tagline?.copy ?? '';
 
-export const libraryCatalogue = new $CardCatalogue<$Book>(
+export const libraryCatalogue = $(<CardCatalogue cards={[
     $(<LibraryCard
         name="The Team"
         of={() => written!}
@@ -34,7 +34,7 @@ export const libraryCatalogue = new $CardCatalogue<$Book>(
     $(<LibraryCard name="The Manifold" of={() => manifold} title="The Manifold of Sentences" subtitle="A Geometry of Prose" synopsis={line(manifold)} chapters={titles(manifold)} />) as $LibraryCard,
     $(<LibraryCard name="The Shelf" of={() => shelf} title="The Shelf" synopsis={line(shelf)} chapters={titles(shelf)} />) as $LibraryCard,
     $(<LibraryCard name="The Build" of={() => build} title="The Build" subtitle="How a Folder Becomes a Library" synopsis={line(build)} chapters={titles(build)} />) as $LibraryCard,
-);
+]} />) as $CardCatalogue;
 
 export const theTeam: $LibraryCard = libraryCatalogue.card('The Team') as $LibraryCard;
 export const theAlgebra: $LibraryCard = libraryCatalogue.card('The Algebra of Perspective') as $LibraryCard;

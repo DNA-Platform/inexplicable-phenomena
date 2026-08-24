@@ -1,11 +1,11 @@
 import { join } from 'node:path';
-import { walk } from './walk.ts';
-import { refer } from './refer.ts';
-import { resolve } from './resolve.ts';
-import { emit } from './emit.ts';
+import { walk } from './stages/walk.ts';
+import { refer } from './stages/refer.ts';
+import { resolve } from './stages/resolve.ts';
+import { emit } from './stages/emit.ts';
 import { spawnSync } from 'node:child_process';
-import { read as cardsOf, cards as catalogue, books } from './catalogue.ts';
-import { root } from './where.ts';
+import { read as cardsOf, cards as catalogue, books } from './stages/catalogue.ts';
+import { root } from './utilities/where.ts';
 
 // THE COMPILER, one command. Reading, resolving, emitting — and checking, which
 // runs the program it just made and is invoked by the app that holds it.
@@ -27,9 +27,9 @@ const read = refer(walk(at, workspace));
 console.log(`READ      ${read.entries.length} folders · ${read.entries.reduce((n, e) => n + e.files.length, 0)} files · ${read.entries.reduce((n, e) => n + e.references.length, 0)} references · ${read.complaints.length} complaints`);
 
 const resolved = resolve(read);
-const from = (kind: string) => resolved.books.reduce((n, b) => n + [b.subject, b.author, b.canonical].filter(l => l?.from === kind).length, 0);
+const links = resolved.books.reduce((n, b) => n + [b.subject, b.author, b.canonical].filter(Boolean).length, 0);
 const invalid = resolved.complaints.length - read.complaints.length;
-console.log(`RESOLVE   ${resolved.books.length} books · ${from('declared')} declared · ${from('supplied')} supplied · ${from('unresolved')} standing for nobody · ${invalid} invalid`);
+console.log(`RESOLVE   ${resolved.books.length} books · ${links} links · ${invalid} invalid`);
 
 for (const complaint of resolved.complaints) console.error(`  INVALID ${complaint.at} — ${complaint.says}`);
 if (resolved.complaints.length) process.exit(1);
@@ -63,5 +63,5 @@ if (loose.length) for (const n of loose) console.error(`  THIN CARD ${n.book.rou
 // the pass-one copies — and a validator running here would judge writing that
 // is no longer on disk. The program is checked by something that did not write
 // it, which is the whole reason this is a spawn and not a call.
-const check = spawnSync(process.execPath, [...process.execArgv, join(import.meta.dirname, 'check.ts'), at, into], { stdio: 'inherit' });
+const check = spawnSync(process.execPath, [...process.execArgv, join(import.meta.dirname, 'commands', 'check.ts'), at, into], { stdio: 'inherit' });
 if (check.status !== 0) process.exit(check.status ?? 1);

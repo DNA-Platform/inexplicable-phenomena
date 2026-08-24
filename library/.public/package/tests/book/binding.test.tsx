@@ -6,6 +6,7 @@ import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
 import { $Theme } from '@/writing/Theme';
 import { Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { Title } from '@/writing/Title';
 import { $Chapter, Chapter } from '@/book/Chapter';
 import { Cover } from '@/book/Cover';
@@ -14,7 +15,7 @@ import { $Book, Book } from '@/book/Book';
 import { Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
 import { TableOfContents } from '@/book/TableOfContents';
-import { $IndexCard, IndexCard } from '@/library/IndexCard';
+import { $$Book, Card } from '@/book/Book';
 
 // A BOOK IS IN CHARGE OF THE LAYOUT AND THE READING ENVIRONMENT — Doug's, and a
 // reversal of a draft that had put this on the cover. Four methods answer it:
@@ -24,12 +25,15 @@ import { $IndexCard, IndexCard } from '@/library/IndexCard';
 // The promises below are written so each FAILS if a book ignored its own
 // methods and drew a fixed arrangement instead.
 
-const section = (title: string, prose: string, parenthetical = false): ReactNode => (
-    <Section parenthetical={parenthetical}>
+const section = (title: string, prose: string, parenthetical = false): ReactNode => {
+    const Kind = parenthetical ? Summary : Section;
+    return (
+    <Kind>
         <Title>{title}</Title>
         {'\n\n' + prose}
-    </Section>
+    </Kind>
 );
+};
 
 const summary = (gist: string): ReactNode => section('Summary', gist, true);
 
@@ -64,7 +68,7 @@ class $Slipcase extends $Book {
         return <main data-slipcase style={{ maxWidth: theme.measure }}>{contents}</main>;
     }
 
-    override stands(theme: $Theme): $Chapter[] {
+    override stands(): $Chapter[] {
         return this.reading.slice().reverse();
     }
 
@@ -109,8 +113,8 @@ describe('A BOOK IS READ A CHAPTER AT A TIME', () => {
         const held = built();
         for (const chapter of held.reading) {
             held.contents.turn(chapter);
-            expect(held.stands(held.theme).length).toBe(1);
-            expect(held.stands(held.theme)[0]).toBe(chapter);
+            expect(held.stands().length).toBe(1);
+            expect(held.stands()[0]).toBe(chapter);
         }
         for (const at of [0, held.reading.length - 1]) {
             const b = built();
@@ -251,7 +255,7 @@ describe('a chapter carries its own address', () => {
 // were fetched — and a book naming that subject was valid or invalid depending
 // on what else happened to be loaded.
 describe('a catalogue answers what it holds without opening a volume', () => {
-    const unpointed = (name: string) => $(<IndexCard name={name} />) as $IndexCard<$Book>;
+    const unpointed = (name: string) => $(<Card name={name} />) as $$Book;
 
     const subject = (): $Book => $(
         <Book>

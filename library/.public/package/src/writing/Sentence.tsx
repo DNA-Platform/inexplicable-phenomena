@@ -1,12 +1,11 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Composition$ } from './Composition';
+import { $Composition } from './Composition';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import { $Catalogue$ } from '../reference/Catalogue';
+import { $Reference } from '../reference/Reference';
+import { $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { $Composible$ } from '../writing/Composition';
-import { $Path, Path } from '../reference/Path';
+import { Path } from '../reference/Path';
 import { $Writing, Role } from './Writing';
 import { $Letter } from './Letter';
 import * as letters from './Letter';
@@ -26,16 +25,10 @@ const code = /^`([^`\n]+)`$/;
 const math = /^\$([^$\n]+)\$$/;
 const escaped = /^\\(.)$/;
 
-const written = (part: { copy: string; parts?: () => any[] }): boolean =>
-    /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
-
-export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
+export class $Sentence extends $Writing<$Word> implements $Composition<$Word> {
     get words(): $Word[] { return this.parts().filter(word => word.role === 'use'); }
 
-    get letters(): $Letter[] {
-        const Letter = $(letters.Letter);
-        return [...this.copy].map(g => $(<Letter>{g}</Letter>) as $Letter);
-    }
+    get letters(): $Letter[] { return this.parts().flatMap(w => w.letters); }
 
     get ref(): $$Sentence { const Entry = $($$Sentence); return $(<Entry of={this} />) as $$Sentence; }
 
@@ -93,12 +86,19 @@ export class $Sentence extends $Writing<$Word> implements $Composition$<$Word> {
         return /[\p{L}\p{N}]/u.test(prose) ? $(<Word>{prose}</Word>) : $(<Punctuation>{prose}</Punctuation>);
     }
 
+    protected written(part: { copy: string; parts?: () => unknown[] }): boolean {
+        if (/[\p{L}\p{N}]/u.test(part.copy)) return true;
+        // A part that composes ITSELF is the floor, and descending through it
+        // would never arrive anywhere.
+        return (part.parts?.() ?? []).filter(p => p !== part).some(p => this.written(p as { copy: string }));
+    }
+
     valid(): boolean {
-        return super.valid() && this.parts().some(written);
+        return super.valid() && this.parts().some(p => this.written(p));
     }
 }
 
-export class $$Sentence extends $Word implements $Reference$<$Sentence>, $Catalogue$<$Word> {
+export class $$Sentence extends $Word implements $Reference<$Sentence>, $Catalogue<$Word> {
     $of!: $Sentence;
 
     $role?: Role = 'mention';
@@ -107,7 +107,7 @@ export class $$Sentence extends $Word implements $Reference$<$Sentence>, $Catalo
 
     get of(): $Sentence { return this.$of; }
     get copy(): string { return this.of.copy; }
-    get canonical(): $$Word { return $Composible$.canonical(this); }
+    get canonical(): $$Word { return this.parts()[0]; }
 
     parts(): $$Word[] {
         const Entry = $($$Word);
@@ -115,34 +115,32 @@ export class $$Sentence extends $Word implements $Reference$<$Sentence>, $Catalo
     }
 
     where(match: (part: $$Word) => boolean): $$Word[] {
-        return $Composible$.where(this, match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $$Word) => U): U[] {
-        return $Composible$.select(this, pick);
+        return this.parts().map(pick);
     }
 
     selectMany<U>(pick: (part: $$Word) => U[]): U[] {
-        return $Composible$.selectMany(this, pick);
+        return this.parts().flatMap(pick);
     }
 
     single(match: (part: $$Word) => boolean): $$Word {
-        return $Composible$.single(this, match);
+        const found = this.parts().filter(match);
+        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
+        return found[0];
     }
 
     at(position: number): $Location<$$Word> {
-        return $Composible$.at(this, position);
-    }
-
-    follow(): $Composition$<$Word> {
-        return $Composible$.follow(this as never);
+        return this.located<$$Word>(position);
     }
 
     read(): $Sentence {
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

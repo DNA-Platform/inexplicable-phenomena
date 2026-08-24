@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { join } from 'node:path';
-import { walk } from '../walk.ts';
-import { refer } from '../refer.ts';
-import { resolve } from '../resolve.ts';
-import { validate } from '../validate.ts';
-import { root } from '../where.ts';
+import { walk } from '../stages/walk.ts';
+import { refer } from '../stages/refer.ts';
+import { resolve } from '../stages/resolve.ts';
+import { validate } from '../stages/validate.ts';
+import { root } from '../utilities/where.ts';
 
 // VALIDATING is the one phase that must open the program, so its promises run
 // against the emitted library rather than a synthetic one. What they promise is
@@ -58,7 +58,7 @@ describe('THE CARDS ARE FILLED BEFORE ANYTHING IS ASKED, and that is what makes 
     it('and a book whose links point nowhere would be judged on nothing rather than crash', async () => {
         // Pointed at a folder holding no program: the import fails, and the
         // phase says so instead of taking the process down.
-        await expect(validate({ root: corpus, books: [], complaints: [] }, join(workspace, 'nowhere')))
+        await expect(validate({ root: corpus, speaks: '', entries: [], books: [], complaints: [] }, join(workspace, 'nowhere')))
             .rejects.toBeTruthy();
     });
 });

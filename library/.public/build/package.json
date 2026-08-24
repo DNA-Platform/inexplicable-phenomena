@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "The compiler for the public library \u2014 it lifts what is written in library/, carries it into the app, assembles it into books, judges them, and catalogues what survives. Node-side only; nothing here ever reaches a browser bundle.",
+  "description": "The compiler for the public library — it lifts what is written in library/, carries it into the app, assembles it into books, judges them, and catalogues what survives. Node-side only; nothing here ever reaches a browser bundle.",
   "scripts": {
     "compile": "tsx index.ts ../../.test-library",
-    "see": "tsx see.ts ../../.test-library",
+    "see": "tsx commands/see.ts ../../.test-library",
     "typecheck": "tsc --noEmit",
-    "test": "tsc --noEmit && vitest run && tsx verify-walk.ts && tsx verify-build.ts && tsx check.ts ../../.test-library",
-    "check": "tsx check.ts ../../.test-library",
+    "test": "tsc --noEmit && vitest run && tsx commands/verify-walk.ts && tsx commands/verify-build.ts && tsx commands/check.ts ../../.test-library",
+    "check": "tsx commands/check.ts ../../.test-library",
     "suite": "vitest run"
   },
   "dependencies": {

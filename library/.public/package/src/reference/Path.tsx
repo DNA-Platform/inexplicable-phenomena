@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
-import { $, $Chemical, Component } from '@dna-platform/chemistry';
+import { $, Component } from '@dna-platform/chemistry';
 import { $Referent } from './Referent';
-import { $Reference$ } from './Reference';
+import { $Reference } from './Reference';
 import * as paths from './Path';
 
-export class $Path<M extends $Referent = any, U extends $Referent = any> extends $Referent implements $Reference$<U> {
-    $first!: $Reference$<M>;
-    $onward!: $Reference$<U>;
+export class $Path<M extends $Referent = any, U extends $Referent = any> extends $Referent implements $Reference<U> {
+    $first!: $Reference<M>;
+    $onward!: $Reference<U>;
 
     parenthetical = false;
 
@@ -17,7 +17,7 @@ export class $Path<M extends $Referent = any, U extends $Referent = any> extends
         return this.$onward.read();
     }
 
-    then<V extends $Referent>(onward: $Reference$<V>): $Reference$<V> {
+    then<V extends $Referent>(onward: $Reference<V>): $Reference<V> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }
@@ -31,4 +31,4 @@ export class $Path<M extends $Referent = any, U extends $Referent = any> extends
     }
 }
 
-export const Path = $($Path) as any as Component<$Path> & ((props: { first: $Reference$<any>; onward: $Reference$<any> }) => any);
+export const Path = $($Path) as any as Component<$Path> & ((props: { first: $Reference<any>; onward: $Reference<any> }) => any);

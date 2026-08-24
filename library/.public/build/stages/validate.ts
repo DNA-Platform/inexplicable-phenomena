@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Resolved } from './library.ts';
+import type { Library } from '../library.ts';
 
 // VALIDATING. A program becomes a verdict.
 //
@@ -49,7 +49,7 @@ export type Validation = {
 
 const empty = (): Levels => ({ chapters: 0, sections: 0, paragraphs: 0, sentences: 0, words: 0, letters: 0 });
 
-const asked = (part: unknown): boolean => {
+const valid = (part: unknown): boolean => {
     const held = part as { valid?: () => boolean };
     if (typeof held?.valid !== 'function') return true;
     try {
@@ -76,7 +76,7 @@ const walked = (live: any): { levels: Levels; faults: string[] } => {
         const parts: unknown[] = live?.[key] ?? [];
         levels[key] = parts.length;
         parts.forEach((part, at) => {
-            if (!asked(part) && faults.length < 6) {
+            if (!valid(part) && faults.length < 6) {
                 faults.push(`${grade} ${at} is invalid — ${(part as any)?.constructor?.name ?? 'unknown'}`);
             }
         });
@@ -84,8 +84,11 @@ const walked = (live: any): { levels: Levels; faults: string[] } => {
     return { levels, faults };
 };
 
-export const validate = async (resolved: Resolved, into: string): Promise<Validation> => {
-    const cards = (await import(/* @vite-ignore */ url(join(into, 'cards.tsx')))) as { at(path: string): { $of?: () => unknown } | undefined };
+export const validate = async (resolved: Library, into: string): Promise<Validation> => {
+    const cards = (await import(/* @vite-ignore */ url(join(into, 'cards.tsx')))) as { at(path: string): { $of?: () => unknown } | undefined};
+    // THE SCOPE IS NOT GIVEN ITS CATALOGUE HERE, and it cannot be: $(Book,
+    // CardCatalogue)(TheCatalogue) needs a React render context and throws under
+    // Node. So the emitted cover carries its card instead — see emit.ts.
 
     // TWO PASSES, and the order is forced. Every card holds its book before any
     // book is asked, because one book's validity is a question about another —
@@ -111,7 +114,7 @@ export const validate = async (resolved: Resolved, into: string): Promise<Valida
         // one number a walk reports while having asked nothing.
         if (!own.chapters) says.push('constructed no chapters at all');
 
-        const stands = asked(held) && own.chapters > 0 && !faults.length;
+        const stands = valid(held) && own.chapters > 0 && !faults.length;
         if (!stands && !says.length) says.push('a cover names something it should not — an author that does not author itself, a subject that catalogues nothing, or a canonical that belongs elsewhere');
 
         verdicts.push({ route: book.route, at: `${book.path}/${book.cover.name}`, stands, says, levels: own });

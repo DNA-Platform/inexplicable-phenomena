@@ -35,6 +35,11 @@ page.on('console', m => {
 const check = (name, ok) => { checks.push([name, ok]); };
 const settle = (ms = 550) => new Promise(r => setTimeout(r, ms));
 
+// NAVIGATION IS `domcontentloaded` AND THEN A SETTLE, never `networkidle`. A cold
+// vite compiles a hundred and seventy modules on the first hit and network idle
+// is never reached inside the timeout — so this driver's FIRST checkpoint stalls
+// on a warm app's cold server, and says nothing about the app at all.
+
 const skin = () => page.evaluate(() => document.querySelector('[data-skin]')?.getAttribute('data-skin') ?? null);
 
 // Checkpoint accounting, the same spine verify-book carries: a walk that throws
@@ -137,11 +142,13 @@ const parallel = () => page.evaluate(() => {
     return { sums, verdict };
 });
 
-await page.goto(`${BASE}/`, { waitUntil: 'networkidle2', timeout: 20000 });
+await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+await settle(1500);
 await settle(1000);
 check('the root is a full page — no nav chrome around the shelf', await page.evaluate(() => !document.querySelector('nav')));
 
-await page.goto(`${BASE}/page`, { waitUntil: 'networkidle2', timeout: 20000 });
+await page.goto(`${BASE}/page`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+await settle(1500);
 await settle(800);
 visited.add('book');
 check('PAGE: the book lens renders — data-skin "book"', (await skin()) === 'book');
@@ -293,9 +300,43 @@ await page.goForward();
 await settle(800);
 check('PAGE: browser forward returns to the page demo', page.url().endsWith('/page'));
 
-await page.goto(`${BASE}/nonsense`, { waitUntil: 'networkidle2', timeout: 20000 });
+await page.goto(`${BASE}/nonsense`, { waitUntil: 'domcontentloaded', timeout: 20000 });
 await settle(600);
 check('PAGE: an unknown route renders a fallback, not a blank', (await page.evaluate(() => document.body.innerText.trim().length)) > 0);
+
+// ─── THE TITLE ───────────────────────────────────────────────────────────────
+//
+// ONE CLASS, DRAWN THREE WAYS, WITH A FOURTH LEFT ALONE. The three ways are the
+// framework's three injection points — a component handed in at the call site, a
+// subclass reassigning the held property, and a subclass registered in a scope —
+// and the fourth is the default, which is what makes the other three legible.
+//
+// MEASURED ON THE SCREEN AND NOT IN THE MARKUP. Four distinct generated class
+// names would pass while all four drew identically; the computed styles are what
+// a reader actually meets, so the check is that they DIFFER.
+
+await page.goto(`${BASE}/title`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+await settle(1500);
+
+const titles = await page.evaluate(() => {
+    const h = [...document.querySelectorAll('h2')].filter(e => e.textContent === 'The Change That Changes Nothing');
+    const seen = e => getComputedStyle(e);
+    return {
+        drawn: h.length,
+        looks: h.map(e => e.className.split(' ')[0]),
+        sizes: h.map(e => seen(e).fontSize),
+        cases: h.map(e => seen(e).textTransform),
+        styled: h.filter(e => e.getAttribute('style')).length,
+        scoped: document.body.innerText.includes('found by the parse, drawn by the scope'),
+    };
+});
+
+check(`TITLE: one class draws four times — ${titles.drawn} headings, one wording`, titles.drawn === 4);
+check(`TITLE: each is a DIFFERENT component — [${titles.looks.join(' · ')}]`, new Set(titles.looks).size === 4);
+check(`TITLE: and they differ ON THE SCREEN, not only in class — [${titles.sizes.join(' · ')}]`, new Set(titles.sizes).size > 1);
+check(`TITLE: the one handed a component at the call site is drawn by it — text-transform ${titles.cases[0]}`, titles.cases[0] === 'uppercase');
+check('TITLE: the scope substitutes where the PARSE builds a title, not where one is written', titles.scoped);
+check('TITLE: not one of the four carries a style attribute', titles.styled === 0);
 
 const filed = errors.filter(e => e.includes('Maximum update depth'));
 const unfiled = errors.filter(e => !e.includes('Maximum update depth'));

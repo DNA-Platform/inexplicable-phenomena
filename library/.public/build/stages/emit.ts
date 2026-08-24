@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync, readdirSync, statSync, rmSync } from 'node:fs';
 import { join, relative, dirname, sep } from 'node:path';
 import { Project, SyntaxKind } from 'ts-morph';
-import type { Book, Path, Resolved } from './library.ts';
+import type { Book, Path, Library } from '../library.ts';
 
 // EMITTING. A library becomes a program: the writing carried to where it is
 // served, a module per book composing it, and a catalogue of cards importing no
@@ -57,13 +57,27 @@ const rewritten = (source: string, path: string, book: Book, project: Project, c
         return named ?? '';
     };
 
+    const carried = new Set<string>();
     for (const element of file.getDescendantsOfKind(SyntaxKind.JsxElement)) {
         const as = element.getOpeningElement().getTagNameNode().getText();
         if (!kinds.has(as)) continue;
+        carried.add(as);
 
-        // A REFERENCE IS GIVEN ITS CARD, which is what makes it followable with
-        // nothing loaded. Without this the emitted cover carries a name, and a
-        // name has to be repaired into a link after the book arrives.
+        // A REFERENCE IS GIVEN ITS CARD — and this is the ONE THING P16 asked to
+        // remove, still here, for a reason worth writing down.
+        //
+        // An annotation CAN now find its own card: $Annotation asks its scope for
+        // the catalogue, exactly as a writing asks for its theme, and the emitted
+        // catalogue is a class a scope can hold. That works in a browser.
+        //
+        // IT CANNOT WORK HERE. $(Book, CardCatalogue)(TheCatalogue) — the scope
+        // registration — needs a React render context and throws `useState` of
+        // null under Node, whether it is called at module scope or from inside
+        // validate(). So the CHECK phase cannot register a catalogue, and a
+        // checker judging without one judges a library nobody opened.
+        //
+        // Until a scope can be given a catalogue outside a renderer, the emitted
+        // cover carries the card and the authored one does not have to.
         const card = held(as.toLowerCase());
         if (card) {
             const open = element.getOpeningElement();
@@ -97,12 +111,21 @@ const rewritten = (source: string, path: string, book: Book, project: Project, c
     // A SILENCE IS FILLED HERE AND NEVER IN THE FILE ITS AUTHOR LEFT. What gains
     // the answer is this copy, which is generated code and not their writing.
     const carries = (as: string) => { const c = held(as); return c ? ` for={${c}}` : ''; };
-    const supplied: string[] = [];
-    // A SUPPLIED DISPLAY IS AN ALIAS TOO. It was read off the library's own cover,
+    // IDEMPOTENT: write what the cover does not carry, leave what it does. This
+    // used to ask whether the link had been SUPPLIED, which was the only thing
+    // in the compiler that needed to know how an answer was arrived at.
+    //
+    // A supplied display is an alias too — read off the library's own cover,
     // where an author is named by importing a book — so it arrives spelled as an
-    // identifier and has to be split exactly as an authored one is.
-    if (book.author?.from === 'supplied') supplied.push(`<Author${carries('author')}>${spaced(book.author.display)}</Author>`);
-    if (book.subject?.from === 'supplied') supplied.push(`<Subject${carries('subject')}>${titled(book.subject.book.split('/')[0])}</Subject>`);
+    // identifier and is split exactly as an authored one is.
+    const supplied: string[] = [];
+    // AN ANNOTATION IS A PHRASE, AND A PHRASE STANDS IN A PARAGRAPH. This used
+    // to be separated by a literal {'\n\n'} — the one thing the framework
+    // purged — and the authored corpus separated the same elements with {''},
+    // which the parse discards outright. So the two disagreed about how many
+    // paragraphs a cover has, and neither said what it meant.
+    if (book.author && !carried.has('Author')) supplied.push(`<Paragraph><Author${carries('author')}>${spaced(book.author.display)}</Author></Paragraph>`);
+    if (book.subject && !carried.has('Subject')) supplied.push(`<Paragraph><Subject${carries('subject')}>${titled(book.subject.book.split('/')[0])}</Subject></Paragraph>`);
     if (supplied.length) {
         const section = file.getDescendantsOfKind(SyntaxKind.JsxElement)
             .find(e => e.getOpeningElement().getTagNameNode().getText() === 'Section');
@@ -111,7 +134,7 @@ const rewritten = (source: string, path: string, book: Book, project: Project, c
             const line = source.lastIndexOf('\n', last.getStart()) + 1;
             const indent = source.slice(line).match(/^[ \t]*/)?.[0] ?? '';
             const eol = source.includes('\r\n') ? '\r\n' : '\n';
-            const written = supplied.map(s => `${eol}${indent}{'\\n\\n'}${s}`).join('');
+            const written = supplied.map(s => `${eol}${indent}${s}`).join('');
             edits.push({ at: last.getEnd(), to: last.getEnd(), text: written });
         }
     }
@@ -143,7 +166,9 @@ const assemble = (book: Book, held: Book[], cards?: Cards): string => {
     // that is what makes it read ELSEWHERE — which is in turn what makes this
     // book a catalogue rather than a reader. The same class stands in two books
     // with an honest parent each; only one of them carries a card.
-    const carried = held.map(b => (cards?.get(b.path) ?? '')).filter(Boolean);
+    const own = cards?.get(book.path);
+    // The book's OWN card is imported too, because the book is told it.
+    const carried = [...new Set([...held.map(b => cards?.get(b.path) ?? ''), own ?? ''])].filter(Boolean);
     const imports = [
         `import React from 'react';`,
         `import { $ } from '@dna-platform/chemistry';`,
@@ -165,7 +190,11 @@ const assemble = (book: Book, held: Book[], cards?: Cards): string => {
     const entries = held.length
         ? `\n\nexport const entries: $Synopsis[] = book.chapters.filter(\n    (c): c is $Synopsis => c instanceof $Synopsis && c !== book.synopsis,\n);`
         : '';
-    return `${imports.join('\n')}\n\nexport const book: $Book = $(\n    <Book>\n${children.map(c => '        ' + c).join('\n')}\n    </Book>\n) as $Book;${entries}\n`;
+    // A BOOK IS TOLD ITS OWN CARD, because the one thing that knows which card
+    // goes with which book is this. An annotation validates against cards and
+    // opens no book, so it has to reach its own book's card to ask anything.
+    const carries = own ? ` card={${own}}` : '';
+    return `${imports.join('\n')}\n\nexport const book: $Book = $(\n    <Book${carries}>\n${children.map(c => '        ' + c).join('\n')}\n    </Book>\n) as $Book;${entries}\n`;
 };
 
 // ─── THE RUN ─────────────────────────────────────────────────────────────────
@@ -185,7 +214,7 @@ export type Cards = Map<string, string>;
 
 export type Emitted = { carried: number; generated: number; removed: string[] };
 
-export const emit = (resolved: Resolved, into: string, cards?: Cards, extra: Record<string, string> = {}): Emitted => {
+export const emit = (resolved: Library, into: string, cards?: Cards, extra: Record<string, string> = {}): Emitted => {
     const project = new Project({
         compilerOptions: { jsx: 4, target: 99, module: 99, moduleResolution: 100, noEmit: true, allowJs: true },
         skipAddingFilesFromTsConfig: true,

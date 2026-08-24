@@ -1,13 +1,13 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Book, Book, $Synopsis, TableOfContents } from '@dna-platform/lib';
-import { philosophyTheHardProblem } from '../../cards';
+import { philosophyTheHardProblem, philosophy } from '../../cards';
 import { PhilosophyCover } from './.cover';
 import { PhilosophySynopsis } from './.synopsis';
 import { HardProblemSynopsis } from '../the-hard-problem/.synopsis';
 
 export const book: $Book = $(
-    <Book>
+    <Book card={philosophy}>
         <PhilosophyCover />
         <TableOfContents />
         <PhilosophySynopsis />

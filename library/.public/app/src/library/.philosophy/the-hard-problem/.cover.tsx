@@ -1,16 +1,16 @@
 import { philosophy } from '../../cards';
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Cover, Section, Title, Author, Subject, Canonical } from '@dna-platform/lib';
+import { $Cover, Section, Title, Author, Subject, Canonical, Paragraph } from '@dna-platform/lib';
 
 export class $HardProblemCover extends $Cover {
     view(): ReactNode {
         return (
             <Section>
                 <Title>The Hard Problem: Why There Is Something It Is Like</Title>
-                {'\n\nThe question that survives every explanation of the machinery.'}
-                {'\n\n'}<Author>The Team</Author>
-                {'\n\n'}<Subject for={philosophy}>Philosophy</Subject>
+                <Paragraph>{'The question that survives every explanation of the machinery.'}</Paragraph>
+                <Paragraph><Author>The Team</Author></Paragraph>
+                <Paragraph><Subject for={philosophy}>Philosophy</Subject></Paragraph>
             </Section>
         );
     }

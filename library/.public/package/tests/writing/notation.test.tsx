@@ -58,7 +58,7 @@ describe('a heading is a title, and a section is a flat run of paragraphs', () =
 });
 
 describe('every kind the notation names, and each is a part at its own level', () => {
-    it('a fence is a figure whose INFO STRING chooses what draws it', () => {
+    it('a fence is a PARAGRAPH whose INFO STRING chooses what draws it — code is writing', () => {
         const s = section('Before.\n\n```tsx\nconst a = 1;\n```\n\nAfter.');
         const fence = s.parts().find(p => p instanceof $Code) as $Code;
         expect(fence).toBeDefined();

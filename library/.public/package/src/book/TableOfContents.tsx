@@ -1,65 +1,74 @@
 import React, { type ReactNode } from 'react';
-import { $, $check } from '@dna-platform/chemistry';
+import { $ } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import { $Catalogue$ } from '../reference/Catalogue';
+import { $Reference } from '../reference/Reference';
+import { $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { $Composible$ } from '../writing/Composition';
 import * as paths from '../reference/Path';
-import { $Composition$ } from '../writing/Composition';
 import { $Chapter, $$Chapter } from './Chapter';
 import { $Title } from '../writing/Title';
 import * as titles from '../writing/Title';
 import { $Cover } from './Cover';
 import { $Section } from '../writing/Section';
 import { $Book } from './Book';
-import { $IndexCard } from '../library/IndexCard';
+import { $$Book } from './Book';
 import { $Theme } from '../writing/Theme';
 import { styled } from 'styled-components';
-import '../writing/dressing';
 
 
-export const Contents = styled.nav`
-    padding: ${p => p.theme.step(-1)} 0;
-    border-top: 1px solid ${p => p.theme.rule};
-    border-bottom: 1px solid ${p => p.theme.rule};
-    font-size: ${p => p.theme.step(-1)};
+export const Contents = styled.nav<{ $theme: $Theme }>`
+    padding: ${p => p.$theme.step(-1)} 0;
+    border-top: 1px solid ${p => p.$theme.rule};
+    border-bottom: 1px solid ${p => p.$theme.rule};
+    font-size: ${p => p.$theme.step(-1)};
 
     ol { list-style: none; margin: 0; padding: 0; }
     li { display: flex; gap: 0.6em; padding: 0.3em 0; }
-    li > span { color: ${p => p.theme.faint}; min-width: 1.2em; }
+    li > span { color: ${p => p.$theme.faint}; min-width: 1.2em; }
 `;
 
-export const Heading = styled.h2`
-    margin: 0 0 ${p => p.theme.step(-1)};
-    font-size: ${p => p.theme.step(1)};
+export const Heading = styled.h2<{ $theme: $Theme }>`
+    margin: 0 0 ${p => p.$theme.step(-1)};
+    font-size: ${p => p.$theme.step(1)};
     font-weight: 600;
     letter-spacing: -0.01em;
-    color: ${p => p.theme.ink};
+    color: ${p => p.$theme.ink};
 `;
 
-export const Row = styled.a<{ $open: boolean }>`
-    color: ${p => (p.$open ? p.theme.ink : p.theme.mark)};
+export const Row = styled.a<{ $open: boolean; $theme: $Theme }>`
+    color: ${p => (p.$open ? p.$theme.ink : p.$theme.accent)};
     text-decoration: none;
     cursor: pointer;
-    border-bottom: ${p => (p.$open ? `1px solid ${p.theme.rule}` : 'none')};
+    border-bottom: ${p => (p.$open ? `1px solid ${p.$theme.rule}` : 'none')};
 
     &:hover { text-decoration: underline; text-underline-offset: 0.15em; }
 `;
 
-export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> {
+export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
     $open?: $Chapter = undefined;
 
-    Contents = Contents;
-    Heading = Heading;
-    Row = Row;
+    $contents = Contents;
+    $heading = Heading;
+    $row = Row;
 
+    // THE FRAMEWORK DOES NOT SPEAK ENGLISH. A contents with no section naming
+    // it falls back to this, and a book that wants another word overrides it.
+    get names(): string {
+        return 'Table of Contents';
+    }
+
+    // IT CANNOT DELEGATE TO canonical, AND THAT IS THE FINDING. A contents
+    // overrides parts() to mean its ENTRIES rather than its sections, so every
+    // member it inherits from $Document reads the wrong composition —
+    // $Document.canonical picks the first SECTION and on a contents it picks the
+    // first chapter reference, which titles the contents after its first
+    // chapter. So this reads its own sections, and the duplication stands until
+    // the contents stops being a chapter whose parts are of another kind.
     get title(): $Title {
         const authored = this.$parts.find(s => !s.parenthetical)?.heading ?? '';
         const Title = $(titles.Title);
-        const title: $Title = $(<Title>{authored || 'Table of Contents'}</Title>);
-        return title;
+        return $(<Title>{authored || this.names}</Title>) as $Title;
     }
 
     get summary(): $Section | undefined {
@@ -72,7 +81,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return cover instanceof $Cover ? cover : undefined;
     }
 
-    get canonical(): $$Chapter { return $Composible$.canonical(this); }
+    get canonical(): $$Chapter { return this.parts()[0]; }
 
     get chapters(): $Chapter[] {
         return this.parts().map(r => r.read()).filter((c): c is $Chapter => c !== undefined);
@@ -87,27 +96,25 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     where(match: (part: $$Chapter) => boolean): $$Chapter[] {
-        return $Composible$.where(this, match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $$Chapter) => U): U[] {
-        return $Composible$.select(this, pick);
+        return this.parts().map(pick);
     }
 
     selectMany<U>(pick: (part: $$Chapter) => U[]): U[] {
-        return $Composible$.selectMany(this, pick);
+        return this.parts().flatMap(pick);
     }
 
     single(match: (part: $$Chapter) => boolean): $$Chapter {
-        return $Composible$.single(this, match);
+        const found = this.parts().filter(match);
+        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
+        return found[0];
     }
 
     at(position: number): $Location<$$Chapter> {
-        return $Composible$.at(this, position);
-    }
-
-    follow(): $Composition$<$Chapter> {
-        return $Composible$.follow(this);
+        return this.located<$$Chapter>(position);
     }
 
     read(): $Book {
@@ -115,18 +122,20 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
         return this.cover.read();
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }
 
-    $TableOfContents(...writing: unknown[]) {
-        try {
-            super.$Chapter(...writing);
-        } catch (error) {
-            if (this.summary) throw error;
-        }
-    }
+    // A CONTENTS DECLARES NO SECTIONS OF ITS OWN, so it is not harvested for
+    // any. $Document harvests by CALLING view() at bond time, and a contents'
+    // view asks its book for chapters — which it does not have yet. That is what
+    // the try/catch here was really swallowing; the summary it named was never
+    // the reason.
+    override declaration(): $Section[] { return []; }
+
+    // And it requires nothing of its own: its summary is its book's cover's.
+    protected override requires(): void {}
 
     valid(): boolean {
         if (!this.cover) return this.$parts.length === 0;
@@ -145,15 +154,15 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
     }
 
     row(entry: $$Chapter, at: number, theme: $Theme): ReactNode {
-        const Turn = this.Row;
+        const Turn = this.$row;
         const chapter = entry.of;
         const open = this.open === chapter;
-        const held = chapter as $Chapter & { card?: $IndexCard<$Book>; standsFor?: boolean };
+        const held = chapter as $Chapter & { card?: $$Book; standsFor?: boolean };
         const named = entry.copy;
         return (
             <>
                 <Turn
-                    theme={theme as never}
+                    $theme={theme}
                     href={`#${chapter.address}`}
                     data-turn={at}
                     $open={open}
@@ -163,7 +172,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
                     {named}
                 </Turn>
                 {held.standsFor && held.card ? (
-                    <Turn theme={theme as never} href={held.card.name} data-entry={held.card.name} data-link={held.card.name} $open={false}>
+                    <Turn $theme={theme} href={held.card.name} data-entry={held.card.name} data-link={held.card.name} $open={false}>
                         {'→'}
                     </Turn>
                 ) : null}
@@ -173,12 +182,12 @@ export class $TableOfContents extends $Chapter implements $Catalogue$<$Chapter> 
 
     view(): ReactNode {
         const theme = this.theme;
-        const Named = this.Heading;
-        const Listed = this.Contents;
+        const Named = this.$heading;
+        const Listed = this.$contents;
         return (
             <>
-            <Named theme={theme as never}>{text(this.title.text)}</Named>
-            <Listed theme={theme as never} data-contents>
+            <Named $theme={theme}>{text(this.title.text)}</Named>
+            <Listed $theme={theme} data-contents>
                 <ol>
                     {this.parts().map((entry, at) => (
                         <li key={at}>

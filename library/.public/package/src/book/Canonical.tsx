@@ -1,52 +1,17 @@
-import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Theme } from '../writing/Theme';
-import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import * as paths from '../reference/Path';
-import { $Phrase } from '../writing/Phrase';
-import { $Book } from './Book';
-import { $IndexCard } from '../library/IndexCard';
+import { $valid } from '@dna-platform/chemistry';
+import { $Annotation } from './Annotation';
 
-export class $Canonical extends $Phrase implements $Reference$<$Book> {
-    $for?: $IndexCard<$Book> = undefined;
+export class $Canonical extends $Annotation {
+    protected override get kind(): string { return 'canonical'; }
 
-    $parenthetical? = true;
-
-    get name(): string { return this.copy; }
-
-    get card(): $IndexCard<$Book> | undefined { return this.$for; }
-
-    read(): $Book {
-        if (!this.$for) throw new Error(`The canonical ${JSON.stringify(this.name)} holds no card, so it stands for nothing.`);
-        return this.$for.read();
-    }
-
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
-        const Path = $(paths.Path);
-        return $(<Path first={this} onward={next} />);
-    }
-
-    override set(): ReactNode {
-        return null;
-    }
-
-    named(theme: $Theme): ReactNode {
-        const card = this.card;
-        if (!card) return <span style={{ color: theme.faint }}>{this.copy}</span>;
-        return (
-            <a
-                href={card.name}
-                data-link={card.name}
-                style={{ color: theme.mark, textDecoration: 'none', borderBottom: `1px solid ${theme.rule}` }}
-            >
-                {this.copy}
-            </a>
-        );
-    }
-
-    valid(): boolean {
-        return super.valid() || this.$for !== undefined;
+    // "YOU ARE AMONG WHAT I HOLD" — a canonical says which of the books a subject
+    // holds speaks for it, so the one it names has to be one of them.
+    override valid(): boolean {
+        const mine = this.book?.card;
+        const yours = this.card;
+        if (!mine || !yours) return super.valid();
+        return $valid(mine.entries.includes(yours), 'a canonical names one of the books its subject holds, and this one names a book it does not hold');
     }
 }
 

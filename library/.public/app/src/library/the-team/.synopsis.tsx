@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Synopsis, Section, Title } from '@dna-platform/lib';
+import { $Synopsis, Section, Title, Summary, Paragraph } from '@dna-platform/lib';
 
 export class $TheTeamSynopsis extends $Synopsis {
     view(): ReactNode {
@@ -8,12 +8,12 @@ export class $TheTeamSynopsis extends $Synopsis {
             <>
                 <Section>
                     <Title>Synopsis</Title>
-                    {'\n\nAn author is a book, and the book that authors itself is the one an author link may point at. This book exists so that rule has something true to be true of.'}
+                    <Paragraph>{'An author is a book, and the book that authors itself is the one an author link may point at. This book exists so that rule has something true to be true of.'}</Paragraph>
                 </Section>
-                <Section parenthetical>
+                <Summary>
                     <Title>Summary</Title>
-                    {'\n\nThe book that wrote itself, so the others have somebody to name.'}
-                </Section>
+                    <Paragraph>{'The book that wrote itself, so the others have somebody to name.'}</Paragraph>
+                </Summary>
             </>
         );
     }

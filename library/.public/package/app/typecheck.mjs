@@ -22,9 +22,10 @@ const project = resolve(here, 'tsconfig.json');
 // Three card.tsx TS2551s left the baseline when $LibraryCard collapsed into
 // $IndexCard<$Book>: they were $-backed access on a computed type, and there is
 // no computed type any more.
-const baseline = [
-    'src/sections/book/library/the-team/06-the-decision.tsx TS2322',
-];
+// EMPTIED 2026-08-24. The last entry was a variance error between the computed
+// $LibraryCard and a GENERIC card; $$Book is not generic, so there is nothing
+// left to be variant about. The debt is paid rather than re-baselined.
+const baseline = [];
 
 const run = (args) => {
     try {

@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { spaced, emit } from '../emit.ts';
-import { identifier } from '../catalogue.ts';
-import { root } from '../where.ts';
-import type { Book, File, Resolved } from '../library.ts';
+import { spaced, emit } from '../stages/emit.ts';
+import { identifier } from '../stages/catalogue.ts';
+import { root } from '../utilities/where.ts';
+import type { Book, File, Library } from '../library.ts';
 
 describe('a display name must be SPLIT, and it is forced rather than chosen', () => {
     it('because an alias is an identifier and can never hold a space', () => {
@@ -42,7 +42,7 @@ describe('the workspace is CLIMBED for, never written down', () => {
 
 // A LIBRARY OF ONE BOOK, on disk, because emitting reads source and ts-morph
 // opens files by path. Two files is enough to promise carrying and sweeping.
-const corpus = (): { at: string; resolved: Resolved } => {
+const corpus = (): { at: string; resolved: Library } => {
     const at = mkdtempSync(join(tmpdir(), 'emit-unit-'));
     mkdirSync(join(at, 'alone'), { recursive: true });
     writeFileSync(join(at, 'alone', '.cover.tsx'),
@@ -60,7 +60,7 @@ const corpus = (): { at: string; resolved: Resolved } => {
         chapters: [f('one.tsx', 'chapter', 'One', 2)],
         entries: [],
     };
-    return { at, resolved: { root: at, books: [book], complaints: [] } };
+    return { at, resolved: { root: at, speaks: '', entries: [], books: [book], complaints: [] } };
 };
 
 describe('emitting carries the writing and generates the one line a folder cannot say', () => {

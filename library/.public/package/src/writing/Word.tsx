@@ -1,17 +1,14 @@
 import React, { type ReactNode } from 'react';
 import { $, $valid } from '@dna-platform/chemistry';
-import { $Composition$ } from './Composition';
+import { $Composition } from './Composition';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import { $Catalogue$ } from '../reference/Catalogue';
-import { $Location } from '../reference/Location';
-import { $Composible$ } from '../writing/Composition';
-import { $Path, Path } from '../reference/Path';
+import { $Reference } from '../reference/Reference';
+import { Path } from '../reference/Path';
 import { $Writing, Role } from './Writing';
 import { $Letter } from './Letter';
 import * as letters from './Letter';
 
-export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
+export class $Word extends $Writing<$Letter> implements $Composition<$Letter> {
     get letters(): $Letter[] { return this.parts(); }
 
     get ref(): $$Word { const Entry = $($$Word); return $(<Entry of={this} />) as $$Word; }
@@ -37,15 +34,23 @@ export class $Word extends $Writing<$Letter> implements $Composition$<$Letter> {
         return $(<Letter>{prose}</Letter>);
     }
 
+    protected whole(): boolean {
+        return $valid(!/\s/.test(this.copy), 'a word is one unbroken stretch, and this one carries whitespace');
+    }
+
+    protected said(): boolean {
+        return $valid(/[\p{L}\p{N}]/u.test(this.copy), 'a word has at least one letter or number, and this one has none');
+    }
+
     valid(): boolean {
         const base = super.valid();
-        const whole = $valid(!/\s/.test(this.copy), 'a word is one unbroken stretch, and this one carries whitespace');
-        const said = $valid(/[\p{L}\p{N}]/u.test(this.copy), 'a word has at least one letter or number, and this one has none');
+        const whole = this.whole();
+        const said = this.said();
         return base && whole && said;
     }
 }
 
-export class $$Word extends $Letter implements $Reference$<$Word> {
+export class $$Word extends $Letter implements $Reference<$Word> {
     $of!: $Word;
 
     $role?: Role = 'mention';
@@ -58,7 +63,7 @@ export class $$Word extends $Letter implements $Reference$<$Word> {
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

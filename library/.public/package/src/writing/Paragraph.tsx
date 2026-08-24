@@ -1,12 +1,11 @@
 import React, { type ReactNode } from 'react';
 import { $, $valid, $Chemical } from '@dna-platform/chemistry';
-import { $Composition$ } from './Composition';
+import { $Composition } from './Composition';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import { $Catalogue$ } from '../reference/Catalogue';
+import { $Reference } from '../reference/Reference';
+import { $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { $Composible$ } from '../writing/Composition';
-import { $Path, Path } from '../reference/Path';
+import { Path } from '../reference/Path';
 import { $Theme } from './Theme';
 import { $Writing, Role } from './Writing';
 import { $Letter } from './Letter';
@@ -14,97 +13,96 @@ import { $Sentence, $$Sentence } from './Sentence';
 import * as sentences from './Sentence';
 import { $Word } from './Word';
 import { styled } from 'styled-components';
-import './dressing';
 
 const sentence = /[^.!?]+[.!?]*\s*/g;
 const stopped = /[.!?]["')\]]*\s*$/;
 const code = /`[^`\n]+`/g;
 const target = /\([^)\s]*\)/g;
 
-const written = (part: { copy: string; parts?: () => any[] }): boolean =>
-    /[\p{L}\p{N}]/u.test(part.copy) || (part.parts?.() ?? []).some(written);
 
-
-export const Prose = styled.p`
-    margin: 0 0 ${p => p.theme.step(0)};
+export const Prose = styled.p<{ $theme: $Theme }>`
+    margin: 0 0 ${p => p.$theme.step(0)};
 `;
 
-export const Quotation = styled.blockquote`
-    margin: ${p => p.theme.step(0)} 0;
-    padding-left: ${p => p.theme.step(0)};
-    border-left: 2px solid ${p => p.theme.rule};
-    color: ${p => p.theme.faint};
+export const Quotation = styled.blockquote<{ $theme: $Theme }>`
+    margin: ${p => p.$theme.step(0)} 0;
+    padding-left: ${p => p.$theme.step(0)};
+    border-left: 2px solid ${p => p.$theme.rule};
+    color: ${p => p.$theme.faint};
     font-style: italic;
 `;
 
-export const Item = styled.div`
+export const Item = styled.div<{ $theme: $Theme }>`
     display: flex;
     gap: 0.6em;
-    margin: 0 0 ${p => p.theme.step(-2)};
-    padding-left: ${p => p.theme.step(-1)};
+    margin: 0 0 ${p => p.$theme.step(-2)};
+    padding-left: ${p => p.$theme.step(-1)};
 
-    span:first-child { color: ${p => p.theme.faint}; flex: 0 0 auto; }
+    span:first-child { color: ${p => p.$theme.faint}; flex: 0 0 auto; }
 `;
 
-export const Displayed = styled.div`
-    margin: ${p => p.theme.rhythm} 0;
+export const Displayed = styled.div<{ $theme: $Theme }>`
+    margin: ${p => p.$theme.rhythm} 0;
     text-align: center;
     overflow-x: auto;
 `;
 
-export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Sentence> {
-    matter(): boolean {
-        const written = (this.text?.$elements ?? []) as unknown[];
-        let held = false;
-        for (const one of written) {
-            if (one === null || one === undefined) continue;
-            if (typeof one === 'object') {
-                held = true;
-                if (!(one as { parenthetical?: boolean }).parenthetical) return false;
-                continue;
-            }
-            if (String(one).trim() !== '') return false;
-        }
-        return held;
-    }
-
-    Prose = Prose;
-    Quotation = Quotation;
-    Item = Item;
-    Displayed = Displayed;
+export class $Paragraph extends $Writing<$Sentence> implements $Composition<$Sentence> {
+    $prose = Prose;
+    $quotation = Quotation;
+    $item = Item;
+    $displayed = Displayed;
 
     get quoted(): boolean { return this.mark === '>'; }
 
     get listed(): boolean { return /^([-*+]|\d+[.)])$/.test(this.mark); }
 
-    get set0(): boolean { return this.mark === '$$'; }
+    // Display mathematics — mathematics set on its own line rather than inline.
+    // It was `set0`, which is not a word and is the one name in the package a
+    // reader could not guess.
+    get displayed(): boolean { return this.mark === '$$'; }
 
     override set(contents: ReactNode, theme: $Theme): ReactNode {
-        if (this.matter()) return null;
-        if (this.set0) {
-            const Shown = this.Displayed;
-            return <Shown theme={theme as never} data-display>{contents}</Shown>;
+        // A paragraph of nothing but parenthetical objects draws nothing. This
+        // is computed here rather than being a public predicate: it has one
+        // caller and it is this line.
+        const written = (this.text?.$elements ?? []) as unknown[];
+        let held = false;
+        let only = true;
+        for (const one of written) {
+            if (one === null || one === undefined) continue;
+            if (typeof one === 'object') {
+                held = true;
+                if (!(one as { parenthetical?: boolean }).parenthetical) { only = false; break; }
+                continue;
+            }
+            if (String(one).trim() !== '') { only = false; break; }
+        }
+        if (held && only) return null;
+        if (this.displayed) {
+            const Shown = this.$displayed;
+            return <Shown $theme={theme} data-display>{contents}</Shown>;
         }
         if (this.quoted) {
-            const Quoted = this.Quotation;
-            return <Quoted theme={theme as never}>{contents}</Quoted>;
+            const Quoted = this.$quotation;
+            return <Quoted $theme={theme}>{contents}</Quoted>;
         }
         if (this.listed) {
-            const Listed = this.Item;
+            const Listed = this.$item;
             return (
-                <Listed theme={theme as never}>
+                <Listed $theme={theme}>
                     <span aria-hidden>{/^[0-9]/.test(this.mark) ? this.mark : '·'}</span>
                     <span>{contents}</span>
                 </Listed>
             );
         }
-        const Said = this.Prose;
-        return <Said theme={theme as never}>{contents}</Said>;
+        const Said = this.$prose;
+        return <Said $theme={theme}>{contents}</Said>;
     }
 
     get sentences(): $Sentence[] { return this.parts(); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
-    get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
+    get letters(): $Letter[] { return this.sentences.flatMap(s => s.letters); }
 
     get ref(): $$Paragraph { const Entry = $($$Paragraph); return $(<Entry of={this} />) as $$Paragraph; }
 
@@ -149,14 +147,21 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition$<$Se
 
     get mark(): string { return this.$mark ?? ''; }
 
+    protected written(part: { copy: string; parts?: () => unknown[] }): boolean {
+        if (/[\p{L}\p{N}]/u.test(part.copy)) return true;
+        // A part that composes ITSELF is the floor, and descending through it
+        // would never arrive anywhere.
+        return (part.parts?.() ?? []).filter(p => p !== part).some(p => this.written(p as { copy: string }));
+    }
+
     valid(): boolean {
         const base = super.valid();
-        const said = $valid(this.parts().some(written), 'a paragraph has something written in it, and nothing is written in this one');
+        const said = $valid(this.parts().some(p => this.written(p)), 'a paragraph has something written in it, and nothing is written in this one');
         return base && said;
     }
 }
 
-export class $$Paragraph extends $Sentence implements $Reference$<$Paragraph>, $Catalogue$<$Sentence> {
+export class $$Paragraph extends $Sentence implements $Reference<$Paragraph>, $Catalogue<$Sentence> {
     $of!: $Paragraph;
 
     $role?: Role = 'mention';
@@ -165,7 +170,7 @@ export class $$Paragraph extends $Sentence implements $Reference$<$Paragraph>, $
 
     get of(): $Paragraph { return this.$of; }
     get copy(): string { return this.of.copy; }
-    get canonical(): $$Sentence { return $Composible$.canonical(this); }
+    get canonical(): $$Sentence { return this.parts()[0]; }
 
     parts(): $$Sentence[] {
         const Entry = $($$Sentence);
@@ -173,34 +178,32 @@ export class $$Paragraph extends $Sentence implements $Reference$<$Paragraph>, $
     }
 
     where(match: (part: $$Sentence) => boolean): $$Sentence[] {
-        return $Composible$.where(this, match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $$Sentence) => U): U[] {
-        return $Composible$.select(this, pick);
+        return this.parts().map(pick);
     }
 
     selectMany<U>(pick: (part: $$Sentence) => U[]): U[] {
-        return $Composible$.selectMany(this, pick);
+        return this.parts().flatMap(pick);
     }
 
     single(match: (part: $$Sentence) => boolean): $$Sentence {
-        return $Composible$.single(this, match);
+        const found = this.parts().filter(match);
+        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
+        return found[0];
     }
 
     at(position: number): $Location<$$Sentence> {
-        return $Composible$.at(this, position);
-    }
-
-    follow(): $Composition$<$Sentence> {
-        return $Composible$.follow(this as never);
+        return this.located<$$Sentence>(position);
     }
 
     read(): $Paragraph {
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

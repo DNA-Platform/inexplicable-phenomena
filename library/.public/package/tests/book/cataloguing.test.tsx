@@ -7,14 +7,18 @@ import { Cover } from '@/book/Cover';
 import { $Synopsis, Synopsis } from '@/book/Synopsis';
 import { TableOfContents } from '@/book/TableOfContents';
 import { Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { Title } from '@/writing/Title';
 import { Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
 import { $LibraryCard, LibraryCard } from '@/../app/src/sections/book/library/the-team/librarycard';
 
-const section = (heading: string, prose: string, aside = false): ReactNode => (
-    <Section parenthetical={aside}><Title>{heading}</Title>{'\n\n' + prose}</Section>
+const section = (heading: string, prose: string, aside = false): ReactNode => {
+    const Kind = aside ? Summary : Section;
+    return (
+    <Kind><Title>{heading}</Title>{'\n\n' + prose}</Kind>
 );
+};
 
 const summary = (gist: string): ReactNode => section('Summary', gist, true);
 
@@ -32,8 +36,8 @@ const cover = (title: string): ReactElement => (
 
 // A synopsis OF a book: it carries that book's card, and standing in another
 // book it is a catalogue entry rather than that book's own account of itself.
-const synopsisOf = (of?: $LibraryCard, hidden = false): ReactElement => (
-    <Synopsis for={of} parenthetical={hidden}>
+const synopsisOf = (of?: $LibraryCard): ReactElement => (
+    <Synopsis for={of}>
         {section('Synopsis', 'One object, many renderings.')}
         {summary('In brief.')}
     </Synopsis>
@@ -53,7 +57,7 @@ describe('a chapter is a reference to the book it stands in', () => {
         // What a parent answers is whoever interpreted it last. Standing the
         // chapter under a different chemical is exactly the case that used to
         // send the contents on an eight-hop walk.
-        (held as unknown as { parent: unknown }).parent = b.tableOfContents;
+        (held as unknown as { parent: unknown }).parent = b.contents;
         expect(held.parent).not.toBe(b);
         expect(held.book).toBe(b);
         expect(held.read()).toBe(b);
@@ -67,7 +71,7 @@ describe('a chapter is a reference to the book it stands in', () => {
 
     it('the contents finds its book by asking, with no walk left in it', () => {
         const b: $Book = $(<Book>{cover('The Shelf')}<TableOfContents />{synopsisOf()}{chapter('Coordinates', 'Prose.')}</Book>);
-        expect(b.tableOfContents.book).toBe(b);
+        expect(b.contents.book).toBe(b);
     });
 });
 
@@ -109,7 +113,7 @@ describe('a synopsis is a chapter that points at the book it is OF', () => {
 describe('subjecthood is a count, not a class', () => {
     it('a book that catalogues nothing is an ordinary book', () => {
         const b: $Book = $(<Book>{cover('The Manifold')}<TableOfContents />{synopsisOf()}{chapter('The Fold', 'Prose.')}</Book>);
-        expect(b.follow().parts()).toEqual([]);
+        expect(b.read().parts()).toEqual([]);
     });
 
     it('a book that catalogues some IS a subject — no class distinguishes them', () => {
@@ -126,12 +130,12 @@ describe('subjecthood is a count, not a class', () => {
             </Book>
         );
         const ordinary: $Book = $(<Book>{cover('X')}<TableOfContents />{synopsisOf()}</Book>);
-        expect(shelf.follow().parts()).toEqual([manifold]);
-        expect(ordinary.follow().parts()).toEqual([]);
+        expect(shelf.read().parts()).toEqual([manifold]);
+        expect(ordinary.read().parts()).toEqual([]);
         expect(shelf.constructor).toBe(ordinary.constructor);
     });
 
-    it('a book FOLLOWS to the books it catalogues, and to nothing that points home', () => {
+    it('a book READS to the books it catalogues, and to nothing that points home', () => {
         let manifold: $Book | undefined = undefined;
         const theManifold = $(<LibraryCard name="The Manifold" title="The Manifold" of={() => manifold!} />) as $LibraryCard;
         manifold = $(<Book>{cover('The Manifold')}<TableOfContents />{synopsisOf()}{chapter('The Fold', 'Prose.')}</Book>);
@@ -145,17 +149,16 @@ describe('subjecthood is a count, not a class', () => {
                 {synopsisOf(theManifold as unknown as $LibraryCard)}
             </Book>
         );
-        const followed = shelf.follow().parts();
-        expect(followed).toEqual([manifold]);
-        expect(followed).not.toContain(shelf);
-        expect(shelf.read().parts()).toEqual([manifold]);
+        const read = shelf.read().parts();
+        expect(read).toEqual([manifold]);
+        expect(read).not.toContain(shelf);
     });
 
     it('the same members answer both interfaces — chapters composed, books catalogued', () => {
         const b: $Book = $(<Book>{cover('The Manifold')}<TableOfContents />{synopsisOf()}{chapter('The Fold', 'Prose.')}</Book>);
         expect(b.parts()).toBe(b.chapters);
         expect(b.canonical).toBe(b.cover);
-        expect(b.follow().parts()).toEqual([]);
+        expect(b.read().parts()).toEqual([]);
     });
 
     it('a synopsis of ANOTHER book reads to that book, and never opens it', () => {

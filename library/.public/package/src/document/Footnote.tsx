@@ -1,15 +1,26 @@
+import React, { type ReactNode } from 'react';
+import { styled } from 'styled-components';
 import { $ } from '@dna-platform/chemistry';
 import { $Sentence } from '../writing/Sentence';
 import { $Footer } from './Footer';
-import React, { type ReactNode } from 'react';
 import { $Theme } from '../writing/Theme';
 
+export const Note = styled.li<{ $theme: $Theme }>`
+    font-size: ${p => p.$theme.step(-1)};
+    color: ${p => p.$theme.faint};
+    margin-bottom: 0.45em;
+    line-height: ${p => p.$theme.leading(-1)};
+`;
+
 export class $Footnote extends $Sentence {
+    $note = Note;
+
     override set(contents: ReactNode, theme: $Theme): ReactNode {
-        return <li style={{ fontSize: theme.step(-1), color: theme.faint, marginBottom: '0.45em', lineHeight: 1.5 }}>{contents}</li>;
+        const Said = this.$note;
+        return <Said $theme={theme}>{contents}</Said>;
     }
 
-    $for = '';
+    $name = '';
 
     get number(): number {
         const footer = this.parent as $Footer;
@@ -17,7 +28,7 @@ export class $Footnote extends $Sentence {
     }
 
     valid(): boolean {
-        return super.valid() && this.$for !== '';
+        return super.valid() && this.$name !== '';
     }
 }
 

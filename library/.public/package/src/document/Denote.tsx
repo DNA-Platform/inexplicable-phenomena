@@ -1,30 +1,33 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
+import { $Reference } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Writing } from '../writing/Writing';
 import { $Document } from './Document';
 import { $Footer } from './Footer';
 import { $Footnote } from './Footnote';
 
-export class $Denote extends $Writing implements $Reference$<$Footnote> {
-    $for = '';
+export class $Denote extends $Writing implements $Reference<$Footnote> {
+    // THE KEY OF A LEGEND, and a person writes it: <Footnote name="arrow">. It
+    // was `$for`, which also meant a card and a reference on other classes — one
+    // prop name, three types, four meanings.
+    //
+    // NOT `$key`, and the reason is the platform rather than the word: React
+    // reserves `key` and [$apply$] skips it, so no JSX attribute could ever set
+    // it. $Key — the legend's own class — already holds this string as $name.
+    $name = '';
 
-    $parenthetical? = true;
+    parenthetical = true;
 
     get for(): string {
-        return this.$for || this.copy.trim();
+        return this.$name || this.copy.trim();
     }
 
     get document(): $Document {
-        let scope: unknown = this.parent;
-        while (scope && !(scope instanceof $Document)) {
-            const parent = (scope as { parent?: unknown }).parent;
-            scope = parent === scope ? undefined : parent;
-        }
-        if (!scope) throw new Error(`Denote ${this.for}: it stands outside any document.`);
-        return scope as $Document;
+        const held = this.standing($Document);
+        if (!held) throw new Error(`Denote ${this.for}: it stands outside any document.`);
+        return held;
     }
 
     get footer(): $Footer {
@@ -47,14 +50,14 @@ export class $Denote extends $Writing implements $Reference$<$Footnote> {
         return this.footnote;
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }
 
     view(): ReactNode {
         const theme = this.theme;
-        const mark = { color: theme.mark, fontSize: '0.7em', verticalAlign: 'super', lineHeight: 0, paddingLeft: '0.1em' };
+        const mark = { color: theme.accent, fontSize: '0.7em', verticalAlign: 'super', lineHeight: 0, paddingLeft: '0.1em' };
         try {
             return <sup style={mark}>{this.number}</sup>;
         } catch {

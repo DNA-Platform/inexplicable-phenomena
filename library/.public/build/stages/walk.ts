@@ -1,6 +1,6 @@
 import { readdirSync, statSync, existsSync, readFileSync } from 'node:fs';
 import { join, relative, dirname, basename, sep } from 'node:path';
-import type { Complaint, Entry, File, Kind, Library, Path, Role } from './library.ts';
+import type { Complaint, Entry, File, Kind, Library, Path, Role } from '../library.ts';
 
 // THE WALK. It turns a folder of writing into a description of a library, and it
 // is the only stage that ever looks at the filesystem.
@@ -140,5 +140,5 @@ export const walk = (root: string, workspace = process.cwd()): Library => {
     };
 
     visit(root, 0);
-    return { root, speaks, entries, complaints };
+    return { root, speaks, entries, books: [], complaints };
 };

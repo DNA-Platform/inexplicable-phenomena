@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import React, { type ReactElement, type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { Title } from '@/writing/Title';
 import { Chapter } from '@/book/Chapter';
 import { Cover } from '@/book/Cover';
@@ -12,14 +13,24 @@ import { $Author, Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
 import { TableOfContents } from '@/book/TableOfContents';
 import { type $LibraryCard, LibraryCard } from '@/../app/src/sections/book/library/the-team/librarycard';
-import { $CardCatalogue } from '@/library/CardCatalogue';
+import { $CardCatalogue, CardCatalogue } from '@/library/CardCatalogue';
+import { $$Book } from '@/book/Book';
 
-const section = (title: string, prose: string, parenthetical = false): ReactNode => (
-    <Section parenthetical={parenthetical}>
+// A catalogue is a chemical now, so it is bound rather than constructed — which
+// is what lets a scope hold one and an annotation ask its scope for it.
+const catalogueOf = (...cards: $$Book[]): $CardCatalogue =>
+    $(<CardCatalogue cards={cards} />) as $CardCatalogue;
+
+
+const section = (title: string, prose: string, parenthetical = false): ReactNode => {
+    const Kind = parenthetical ? Summary : Section;
+    return (
+    <Kind>
         <Title>{title}</Title>
         {'\n\n' + prose}
-    </Section>
+    </Kind>
 );
+};
 
 const summary = (gist: string): ReactNode => section('Summary', gist, true);
 
@@ -151,10 +162,10 @@ describe('the loop — a book whose author is itself', () => {
     });
 });
 
-describe('$CardCatalogue<$Book> — a catalogue of books, through library cards', () => {
+describe('$CardCatalogue — a catalogue of books, through library cards', () => {
     it('holds a card for each book and answers it by name', () => {
         let team: $Book | undefined = undefined;
-        const catalogue = new $CardCatalogue<$Book>(
+        const catalogue = catalogueOf(
             $(<LibraryCard name="The Team" of={() => team!} title="The Team" />) as $LibraryCard,
         );
         team = authored('The Team');
@@ -165,17 +176,17 @@ describe('$CardCatalogue<$Book> — a catalogue of books, through library cards'
     });
 
     it('throws for a lookup it has no card for, naming what was asked', () => {
-        const catalogue = new $CardCatalogue<$Book>();
+        const catalogue = catalogueOf();
 
         expect(() => catalogue.card('The Manifold')).toThrow(/The Manifold/);
     });
 
-    // A CARD CATALOGUE IS NOT WRITING and no longer implements $Catalogue$ —
+    // A CARD CATALOGUE IS NOT WRITING and no longer implements $Catalogue —
     // catalogues in this library are books. It holds cards, and following what a
     // card stands for is the card's own job.
     it('a card stands for its book, and the holder holds rather than catalogues', () => {
         let team: $Book | undefined = undefined;
-        const catalogue = new $CardCatalogue<$Book>(
+        const catalogue = catalogueOf(
             $(<LibraryCard name="The Team" of={() => team!} title="The Team" />) as $LibraryCard,
         );
         team = authored('The Team');

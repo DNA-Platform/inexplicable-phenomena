@@ -1,16 +1,17 @@
 import React, { type ReactNode } from 'react';
 import { lexer } from 'marked';
-import { $, $check, $Html, $Chemical } from '@dna-platform/chemistry';
+import { $, $Chemical } from '@dna-platform/chemistry';
 import { text } from '../utilities/html';
-import { $Composition$ } from './Composition';
+import { $Composition } from './Composition';
 import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import { $Catalogue$ } from '../reference/Catalogue';
+import { $Reference } from '../reference/Reference';
+import { $Catalogue } from '../reference/Catalogue';
 import { $Location } from '../reference/Location';
-import { $Composible$ } from '../writing/Composition';
-import { $Path, Path } from '../reference/Path';
+import { Path } from '../reference/Path';
 import { $Writing, Role } from './Writing';
+import type { $Document } from '../document/Document';
 import { $Theme } from './Theme';
+import { styled } from 'styled-components';
 
 import { $Letter } from './Letter';
 import { $Paragraph, $$Paragraph } from './Paragraph';
@@ -18,18 +19,15 @@ import * as paragraphs from './Paragraph';
 import { $Title } from './Title';
 import * as titles from './Title';
 import * as codes from './Code';
+import { $Figure } from './Figure';
 import * as figures from './Figure';
-import * as formulas from './Formula';
-import * as sections from './Section';
 import { $Subtitle } from './Subtitle';
 import * as subtitles from './Subtitle';
 import { $Tagline } from './Tagline';
 import * as taglines from './Tagline';
 import { $Sentence } from './Sentence';
 import { $Word } from './Word';
-import { $Document } from '../document/Document';
 
-const display = () => /\$\$[\s\S]+?\$\$/g;
 const displayed = /^\$\$([\s\S]+?)\$\$$/;
 const heading = /^[ \t]*(#{1,6})[ \t]+(.+)(?:\n|$)/;
 const opens = /^```([^\n]*)\n([\s\S]*?)(?:\n```)?$/;
@@ -38,37 +36,17 @@ const quote = /^\s*>/;
 const picture = /^!\[([^\]\n]*)\]\(([^)\s]*)\)$/;
 const rule = /^(-{3,}|\*{3,}|_{3,})$/;
 
-const blocks = (prose: string): string[] => {
-    if (!prose.trim()) return [];
-    const pieces: string[] = [];
-    const found = lexer(prose) as { type: string; raw: string; depth?: number }[];
-    for (let i = 0; i < found.length;) {
-        const at = found[i];
-        if (at.type === 'space') { i++; continue; }
-        if (at.type === 'heading') {
-            pieces.push(at.raw);
-            i++;
-            continue;
-        }
-
-        if (at.type === 'list') {
-            for (const item of ((at as { items?: { raw: string }[] }).items ?? [])) {
-                if (item.raw.trim()) pieces.push(item.raw.trim());
-            }
-            i++;
-            continue;
-        }
-        const piece = at.raw.trim();
-        if (piece) pieces.push(at.type === 'code' ? at.raw.trim() : piece);
-        i++;
-    }
-    return pieces;
-};
 
 const blankFirst = /^\s*\n\s*\n/;
 const blankLast = /\n\s*\n\s*$/;
 
-export class $Section extends $Writing<$Paragraph> implements $Composition$<$Paragraph> {
+export const Passage = styled.section<{ $theme: $Theme }>`
+    margin-bottom: ${p => p.$theme.rhythm};
+`;
+
+export class $Section extends $Writing<$Paragraph> implements $Composition<$Paragraph> {
+    $passage = Passage;
+
     get title(): $Paragraph { return this.parts()[0] as $Paragraph; }
 
     get paragraphs(): $Paragraph[] {
@@ -77,12 +55,18 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
 
     get sentences(): $Sentence[] { return this.paragraphs.flatMap(p => p.sentences); }
     get words(): $Word[] { return this.sentences.flatMap(s => s.words); }
-    get letters(): $Letter[] { return this.words.flatMap(w => w.letters); }
+    get letters(): $Letter[] { return this.paragraphs.flatMap(p => p.letters); }
 
     get canonical(): $Paragraph { return this.parts()[0] as $Paragraph; }
 
     get ref(): $$Section { const Entry = $($$Section); return $(<Entry of={this} />) as $$Section; }
 
+    // THE WALK CANNOT REACH HERE. `standing($Document)` is the one answer to
+    // this question and it needs $Document as a VALUE — which closes
+    // Section -> Document -> Footer -> Section and leaves $Section undefined at
+    // evaluation. A section is at writing grade and does not name a document;
+    // the two that genuinely ask — $Denote and $Cite — are both in document/
+    // and use the walk. Recorded rather than routed around.
     get document(): $Document {
         return this.parent as $Document;
     }
@@ -124,16 +108,49 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
         return found;
     }
 
+    // A block is what the notation divides prose into before any of it is a part.
+    protected blocks(prose: string): string[] {
+        if (!prose.trim()) return [];
+        const pieces: string[] = [];
+        const found = lexer(prose) as { type: string; raw: string; depth?: number }[];
+        for (let i = 0; i < found.length;) {
+            const at = found[i];
+            if (at.type === 'space') { i++; continue; }
+            if (at.type === 'heading') {
+                pieces.push(at.raw);
+                i++;
+                continue;
+            }
+
+            if (at.type === 'list') {
+                for (const item of ((at as { items?: { raw: string }[] }).items ?? [])) {
+                    if (item.raw.trim()) pieces.push(item.raw.trim());
+                }
+                i++;
+                continue;
+            }
+            const piece = at.raw.trim();
+            if (piece) pieces.push(at.type === 'code' ? at.raw.trim() : piece);
+            i++;
+        }
+        return pieces;
+    }
+
+    // A fresh regex every time, because a `g` regex carries its own position.
+    protected displayed(): RegExp {
+        return /\$\$[\s\S]+?\$\$/g;
+    }
+
     divide(prose: string): string[] {
         const pieces: string[] = [];
-        const whole = display();
+        const whole = this.displayed();
         let last = 0;
         for (let m = whole.exec(prose); m; m = whole.exec(prose)) {
-            pieces.push(...blocks(prose.slice(last, m.index)));
+            pieces.push(...this.blocks(prose.slice(last, m.index)));
             pieces.push(m[0]);
             last = m.index + m[0].length;
         }
-        pieces.push(...blocks(prose.slice(last)));
+        pieces.push(...this.blocks(prose.slice(last)));
         return pieces;
     }
 
@@ -152,7 +169,9 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
 
         if (rule.test(prose.trim())) {
             const Figure = $(figures.Figure);
-            return $(<Figure caption={prose.trim()} parenthetical />) as $Paragraph;
+            const drawn = $(<Figure caption={prose.trim()} />) as $Figure;
+            drawn.parenthetical = true;
+            return drawn as $Paragraph;
         }
 
         const asPicture = picture.exec(prose.trim());
@@ -176,7 +195,7 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
         const asFence = opens.exec(prose.trim());
         if (asFence) {
             const Code = $(codes.Code);
-            return $(<Code language={asFence[1].trim()} source={asFence[2]} caption={asFence[1].trim() || 'code'} parenthetical />) as $Paragraph;
+            return $(<Code language={asFence[1].trim()} source={asFence[2]} />) as $Paragraph;
         }
 
         const Paragraph = $(paragraphs.Paragraph);
@@ -210,16 +229,13 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
         super.$Writing(...writing);
     }
 
-    override uniform(): boolean {
+    protected override uniform(): boolean {
         return false;
     }
 
-    view(): ReactNode {
-        return this.theme.draws(this) ? super.view() : null;
-    }
-
     override set(contents: ReactNode, theme: $Theme): ReactNode {
-        return <section style={{ marginBottom: theme.rhythm }}>{contents}</section>;
+        const Standing = this.$passage;
+        return <Standing $theme={theme}>{contents}</Standing>;
     }
 
     valid(): boolean {
@@ -227,7 +243,7 @@ export class $Section extends $Writing<$Paragraph> implements $Composition$<$Par
     }
 }
 
-export class $$Section extends $Paragraph implements $Reference$<$Section>, $Catalogue$<$Paragraph> {
+export class $$Section extends $Paragraph implements $Reference<$Section>, $Catalogue<$Paragraph> {
     $of!: $Section;
 
     $role?: Role = 'mention';
@@ -236,7 +252,7 @@ export class $$Section extends $Paragraph implements $Reference$<$Section>, $Cat
 
     get of(): $Section { return this.$of; }
     get copy(): string { return this.of.copy; }
-    get canonical(): $$Paragraph { return $Composible$.canonical(this); }
+    get canonical(): $$Paragraph { return this.parts()[0]; }
 
     parts(): $$Paragraph[] {
         const Entry = $($$Paragraph);
@@ -244,34 +260,32 @@ export class $$Section extends $Paragraph implements $Reference$<$Section>, $Cat
     }
 
     where(match: (part: $$Paragraph) => boolean): $$Paragraph[] {
-        return $Composible$.where(this, match);
+        return this.parts().filter(match);
     }
 
     select<U>(pick: (part: $$Paragraph) => U): U[] {
-        return $Composible$.select(this, pick);
+        return this.parts().map(pick);
     }
 
     selectMany<U>(pick: (part: $$Paragraph) => U[]): U[] {
-        return $Composible$.selectMany(this, pick);
+        return this.parts().flatMap(pick);
     }
 
     single(match: (part: $$Paragraph) => boolean): $$Paragraph {
-        return $Composible$.single(this, match);
+        const found = this.parts().filter(match);
+        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
+        return found[0];
     }
 
     at(position: number): $Location<$$Paragraph> {
-        return $Composible$.at(this, position);
-    }
-
-    follow(): $Composition$<$Paragraph> {
-        return $Composible$.follow(this as never);
+        return this.located<$$Paragraph>(position);
     }
 
     read(): $Section {
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
+    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

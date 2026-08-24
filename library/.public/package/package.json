@@ -29,6 +29,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsc --noEmit && node app/typecheck.mjs && vitest run",
     "typecheck:app": "node app/typecheck.mjs",
+    "verify": "node app/verify-demo.mjs && node app/verify-book.mjs",
     "test:fast": "vitest run",
     "test:watch": "vitest",
     "test:all": "tsc --noEmit && vitest run && rollup -c --silent"

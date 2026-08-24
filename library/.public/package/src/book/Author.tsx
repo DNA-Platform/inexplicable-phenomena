@@ -1,52 +1,20 @@
-import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Theme } from '../writing/Theme';
-import { $Referent } from '../reference/Referent';
-import { $Reference$ } from '../reference/Reference';
-import * as paths from '../reference/Path';
-import { $Phrase } from '../writing/Phrase';
-import { $Book } from './Book';
-import { $IndexCard } from '../library/IndexCard';
+import { $valid } from '@dna-platform/chemistry';
+import { $Annotation } from './Annotation';
 
-export class $Author extends $Phrase implements $Reference$<$Book> {
-    $for?: $IndexCard<$Book> = undefined;
+export class $Author extends $Annotation {
+    protected override get kind(): string { return 'author'; }
 
-    $parenthetical? = true;
-
-    get name(): string { return this.copy; }
-
-    get card(): $IndexCard<$Book> | undefined { return this.$for; }
-
-    read(): $Book {
-        if (!this.$for) throw new Error(`The author ${JSON.stringify(this.name)} holds no card, so it stands for nothing.`);
-        return this.$for.read();
-    }
-
-    then<U extends $Referent>(next: $Reference$<U>): $Reference$<U> {
-        const Path = $(paths.Path);
-        return $(<Path first={this} onward={next} />);
-    }
-
-    override set(): ReactNode {
-        return null;
-    }
-
-    named(theme: $Theme): ReactNode {
-        const card = this.card;
-        if (!card) return <span style={{ color: theme.faint }}>{this.copy}</span>;
-        return (
-            <a
-                href={card.name}
-                data-link={card.name}
-                style={{ color: theme.mark, textDecoration: 'none', borderBottom: `1px solid ${theme.rule}` }}
-            >
-                {this.copy}
-            </a>
-        );
-    }
-
-    valid(): boolean {
-        return super.valid() || this.$for !== undefined;
+    // "THE CANONICAL AUTOBIOGRAPHY OF THE LIBRARY" — and BOTH halves are the
+    // structure. Doug: "The author of a book should be a book that is of type
+    // autobiography AND its author link should point to itself. That is
+    // structural." A book that closes the loop and carries no type is not an
+    // autobiography by name; one that carries the type and does not close it is
+    // invalid. Both are readable off cards and neither opens a book.
+    override valid(): boolean {
+        const yours = this.card;
+        if (!yours) return super.valid();
+        return $valid(yours.author === yours, 'an author names a book that authors itself, and this one names a book somebody else wrote');
     }
 }
 

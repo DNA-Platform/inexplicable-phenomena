@@ -1,10 +1,10 @@
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { walk } from './walk.ts';
-import { refer } from './refer.ts';
-import { root } from './where.ts';
-import type { Library } from './library.ts';
+import { walk } from '../stages/walk.ts';
+import { refer } from '../stages/refer.ts';
+import { root } from '../utilities/where.ts';
+import type { Library } from '../library.ts';
 
 // THE WALK'S PROMISES. A gate that cannot fail is not evidence, so every check
 // here is an assertion and a miss exits non-zero — and the report states its

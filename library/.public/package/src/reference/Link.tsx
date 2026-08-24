@@ -1,33 +1,36 @@
 import React, { type ReactNode } from 'react';
-import { $, $valid } from '@dna-platform/chemistry';
+import { styled } from 'styled-components';
+import { $ } from '@dna-platform/chemistry';
 import { $Theme } from '../writing/Theme';
-import { $Word } from '../writing/Word';
+import { $Phrase } from '../writing/Phrase';
 
-export class $Link extends $Word {
+export const Anchor = styled.a<{ $theme: $Theme }>`
+    color: ${p => p.$theme.accent};
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    text-decoration-thickness: 1px;
+`;
+
+export class $Link extends $Phrase {
     $url?: string;
+
+    $anchor = Anchor;
 
     get url(): string {
         return this.$url ?? this.copy;
     }
 
     protected anchor(surface: ReactNode, theme: $Theme): ReactNode {
+        const Pointing = this.$anchor;
         return (
-            <a
-                href={this.url}
-                data-link={this.url}
-                style={{ color: theme.mark, textDecoration: 'underline', textUnderlineOffset: '0.15em', textDecorationThickness: '1px' }}
-            >
+            <Pointing $theme={theme} href={this.url} data-link={this.url}>
                 {surface}
-            </a>
+            </Pointing>
         );
     }
 
     frame(): ReactNode {
         return this.anchor(super.frame(), this.theme);
-    }
-
-    valid(): boolean {
-        return $valid(this.copy !== '', 'a link is a word that points, and this one has nothing to show');
     }
 }
 

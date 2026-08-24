@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { $Figure } from '@/writing/Figure';
+import { $Code } from '@/writing/Code';
 import { written, found } from './parallel';
 import { $Link } from '@/reference/Link';
 
@@ -26,12 +26,12 @@ describe('a parallel text — a written part and a found part are the same thing
         expect(body(written()).length).toBe(body(found()).length);
     });
 
-    it('both sides stand a figure at the same position', () => {
+    it('both sides stand a code block at the same position', () => {
         const at = (parts: unknown[], is: (p: unknown) => boolean) =>
             parts.findIndex(is as never);
         const left = written().parts();
         const right = found().parts();
-        expect(at(left, p => p instanceof $Figure)).toBe(at(right, p => p instanceof $Figure));
+        expect(at(left, p => p instanceof $Code)).toBe(at(right, p => p instanceof $Code));
     });
 
     it('the notation surfaces its reference as a part; the hand-written side carries it in the block', () => {

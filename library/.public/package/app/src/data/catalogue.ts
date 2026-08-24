@@ -18,6 +18,7 @@ export const catalogue: Group[] = [
         sections: [
             { id: 'page', title: 'The Page', symbol: 'Pg', planned: [] },
             { id: 'books', title: 'The Books', symbol: 'Bk', planned: [] },
+            { id: 'title', title: 'The Title', symbol: 'Ti', planned: [] },
         ],
     },
 ];

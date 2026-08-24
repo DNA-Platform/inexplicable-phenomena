@@ -123,12 +123,15 @@ describe('what is laid, and what is drawn', () => {
         expect(theme.lay(composed(), false)).toBe('each');
     });
 
-    it('leaves parenthetical writing out until a theme says otherwise', () => {
+    // SHOWING AND HIDING IS NOT A THEME'S JOB. Doug: "showing / hiding
+    // parentheticals isn't part of a theme. Remove it. Hide parentheticals."
+    // $Particle already carries $show and $hide on every chemical, and what a
+    // theme decides is how parts are LAID, never whether they appear.
+    it('decides how parts are laid and says nothing about whether they appear', () => {
         const theme = $(<themes.Theme />) as $Theme;
-        expect(theme.draws({ parenthetical: false })).toBe(true);
-        expect(theme.draws({ parenthetical: true })).toBe(false);
-        theme.$reads = true;
-        expect(theme.draws({ parenthetical: true })).toBe(true);
+        expect('draws' in (theme as object)).toBe(false);
+        expect('reads' in (theme as object)).toBe(false);
+        expect(Object.keys(theme).some(k => k === '$reads')).toBe(false);
     });
 });
 

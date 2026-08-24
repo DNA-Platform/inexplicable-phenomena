@@ -1,12 +1,12 @@
 import { mkdtempSync, readFileSync, existsSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { walk } from './walk.ts';
-import { refer } from './refer.ts';
-import { resolve } from './resolve.ts';
-import { emit } from './emit.ts';
-import { root } from './where.ts';
-import type { Library } from './library.ts';
+import { walk } from '../stages/walk.ts';
+import { refer } from '../stages/refer.ts';
+import { resolve } from '../stages/resolve.ts';
+import { emit } from '../stages/emit.ts';
+import { root } from '../utilities/where.ts';
+import type { Library } from '../library.ts';
 
 // THE GATE FOR RESOLVING AND EMITTING. It states its scope, it counts, and every
 // claim below can go red — the ones that could not be broken were not written.
@@ -27,29 +27,35 @@ const at = (path: string) => resolved.books.find(b => b.path === path);
 // --- what position answers, and what a cover answers ------------------------
 
 check('a book with a silent cover is given the subject it sits in',
-    at('.physics/gauge-theory')?.subject?.book === '.physics/.subject' && at('.physics/gauge-theory')?.subject?.from === 'supplied',
-    String(at('.physics/gauge-theory')?.subject?.from));
+    at('.physics/gauge-theory')?.subject?.book === '.physics/.subject',
+    String(at('.physics/gauge-theory')?.subject?.book));
 // MOVED 2026-08-17, and the reason is that the corpus gained a book that authors
 // itself. The library's own author used to be a bare name, so the supplied
 // display was already prose; it is now an IMPORT ALIAS, and splitting it is
 // emitting's job. The claim worth asserting is where the link points.
 check('a book with a silent cover is given the library\'s own author',
-    at('.physics/gauge-theory')?.author?.book === 'the-team' && at('.physics/gauge-theory')?.author?.from === 'supplied',
+    at('.physics/gauge-theory')?.author?.book === 'the-team',
     at('.physics/gauge-theory')?.author?.book);
 check('and that author is a book that authors ITSELF, which is what the rule requires',
-    at('the-team')?.author?.book === 'the-team' && at('the-team')?.author?.from === 'declared',
+    at('the-team')?.author?.book === 'the-team',
     at('the-team')?.author?.book);
 check('a declared subject keeps what its author wrote',
-    at('.physics/the-standard-model')?.subject?.from === 'declared' && at('.physics/the-standard-model')?.subject?.book === '.physics/.subject');
-check('an author naming nobody stands for nobody, and says so',
-    at('.physics/.subject')?.author?.from === 'unresolved');
+    at('.physics/the-standard-model')?.subject?.book === '.physics/.subject'
+    && at('.physics/the-standard-model')?.subject?.display === 'Physics');
+// A LINK WITH NO BOOK IS NOT A FAULT. A cover may name its author as a NAME
+// rather than as an import, and this corpus does. What used to be recorded as
+// `from: 'unresolved'` is an empty book with a display, and nothing complains.
+check('an author named rather than imported stands for a name, and nothing complains',
+    at('.physics/.subject')?.author?.book === ''
+    && at('.physics/.subject')?.author?.display === 'The Team'
+    && !resolved.complaints.some(c => c.at === '.physics/.subject'));
 
 // --- which book speaks, and in what order -----------------------------------
 
 check('a subject that declares a canonical keeps it',
-    at('.physics/.subject')?.canonical?.book === '.physics/the-standard-model' && at('.physics/.subject')?.canonical?.from === 'declared');
+    at('.physics/.subject')?.canonical?.book === '.physics/the-standard-model');
 check('a subject that declares none takes the shortest title',
-    at('..the-library')?.canonical?.book === '.physics/.subject' && at('..the-library')?.canonical?.from === 'supplied',
+    at('..the-library')?.canonical?.book === '.physics/.subject',
     at('..the-library')?.canonical?.book);
 check('the canonical stands first among the entries',
     at('.physics/.subject')?.entries[0] === '.physics/the-standard-model',
@@ -144,8 +150,11 @@ check('a card carries a title split from its subtitle at the colon',
     cardsModule.includes('"Physics", "The Study of What There Is"'));
 check('a card carries the tagline off its book\'s summary',
     cardsModule.includes('"Two books, one of them canonical."'));
+// THIS GATE USED TO PIN THE DEFECT. It expected "Synopsis" among the chapters,
+// which is exactly the chapter a book's own contents excludes — the card was
+// counting by position where the book answers, and the gate had learned it.
 check('a card carries the book\'s own chapters and none it catalogues',
-    cardsModule.includes('["Synopsis", "What Physics Is"]'));
+    cardsModule.includes('["What Physics Is"]'));
 check('every book has a card', resolved.books.every(b => cardsModule.includes(`"${b.route}"`)));
 check('the subject links are card to card', cardsModule.includes('physics.$subject = library;'));
 

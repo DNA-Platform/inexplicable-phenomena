@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, Book } from '@/book/Book';
+import { $Book, $$Book, Book } from '@/book/Book';
 import { type $Chapter } from '@/book/Chapter';
 import { $Synopsis } from '@/book/Synopsis';
 import { type $LibraryCard } from '../the-team/librarycard';
@@ -19,7 +19,7 @@ import { Leaf, Column, Reading, ReadingReturn, Drawer, DrawerCard, DrawerName, D
 // in the library arrives here, at this view, because the view of the book is
 // what a reference reads to.
 export class $TheShelf extends $Book {
-    $travel?: (card: $LibraryCard) => void = undefined;
+    $travel?: (card: $$Book) => void = undefined;
     $reading?: $Chapter = undefined;
 
     view(): ReactNode {
@@ -48,7 +48,7 @@ export class $TheShelf extends $Book {
                 </Leaf>
             );
         }
-        const T = $(this.tableOfContents) as any;
+        const T = $(this.contents) as any;
         return <T />;
     }
 }
@@ -80,4 +80,4 @@ export const entries: $Synopsis[] = shelf.chapters.filter(
 
 export const drawer: $TheCardCatalogue = shelf.chapters.find(c => c instanceof $TheCardCatalogue) as $TheCardCatalogue;
 
-export const contents: $ShelfContents = shelf.tableOfContents as $ShelfContents;
+export const contents: $ShelfContents = shelf.contents as $ShelfContents;

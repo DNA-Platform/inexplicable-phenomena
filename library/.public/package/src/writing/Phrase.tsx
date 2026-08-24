@@ -1,9 +1,9 @@
-import { $ } from '@dna-platform/chemistry';
+import { $, $valid } from '@dna-platform/chemistry';
 import { $Word } from './Word';
 
 export class $Phrase extends $Word {
-    valid(): boolean {
-        return this.copy !== '' && /[\p{L}\p{N}]/u.test(this.copy);
+    protected override whole(): boolean {
+        return $valid(this.copy !== '', 'a phrase is a name, and a name may carry spaces but not be empty');
     }
 }
 

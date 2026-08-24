@@ -27,7 +27,7 @@ export const topOf = (path: string): string | undefined => {
 export const mark = (book: $Book, place: number): $Bookmark<$Chapter> => {
     const where = $(<Location i={place} of={book} />) as $Location<$Chapter>;
     const left = $(<Bookmark />) as $Bookmark<$Chapter>;
-    left.$for = where;
+    left.place = where;
     return left;
 };
 

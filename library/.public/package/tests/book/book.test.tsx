@@ -4,6 +4,7 @@ import React, { type ReactElement, type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Paragraph, Paragraph } from '@/writing/Paragraph';
 import { $Section, Section } from '@/writing/Section';
+import { Summary } from '@/writing/Summary';
 import { $Chapter, Chapter } from '@/book/Chapter';
 import { $Cover, Cover } from '@/book/Cover';
 import { $Synopsis, Synopsis } from '@/book/Synopsis';
@@ -22,12 +23,15 @@ import { $Word } from '@/writing/Word';
 import { Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
 
-const section = (title: string, prose: string, parenthetical = false): ReactNode => (
-    <Section parenthetical={parenthetical}>
+const section = (title: string, prose: string, parenthetical = false): ReactNode => {
+    const Kind = parenthetical ? Summary : Section;
+    return (
+    <Kind>
         <Title>{title}</Title>
         {'\n\n' + prose}
-    </Section>
+    </Kind>
 );
+};
 
 const summary = (gist: string): ReactNode => section('Summary', gist, true);
 
@@ -43,12 +47,12 @@ const cover = (): ReactElement => (
     </Cover>
 );
 
-// A synopsis is SHOWN by default, so a book that would rather not list its own
-// says so where it places it. These fixtures are about which chapters the
-// contents numbers, so they keep their synopsis out of the way; the default
-// itself is asserted on its own, below.
-const synopsis = (hidden = true): ReactElement => (
-    <Synopsis parenthetical={hidden}>{section('Synopsis', 'One object, many renderings.')}{summary('In brief.')}</Synopsis>
+// A SYNOPSIS IS NOT TOLD WHETHER IT IS AN ASIDE. It accounts for its own book,
+// which is what makes it parenthetical, and a synopsis carrying ANOTHER book's
+// card is a catalogue entry instead. The book settles which when it binds them,
+// so there is nothing here to declare.
+const synopsis = (): ReactElement => (
+    <Synopsis>{section('Synopsis', 'One object, many renderings.')}{summary('In brief.')}</Synopsis>
 );
 
 const book = (): ReactElement => <Book>{cover()}<TableOfContents />{synopsis()}{chapter('Coordinates', 'Reading is a change of coordinates.')}</Book>;
@@ -174,18 +178,19 @@ describe('the two connections — find goes forward, ref comes back', () => {
         expect((sentence.ref.then(sentence.at(2)).read() as $Word).copy).toBe('is');
     });
 
-    it('follow turns the contents page into its chapters — the literature the drawer holds', () => {
+    it('reading the contents page gives its chapters — the literature the drawer holds', () => {
         const b: $Book = $(book());
-        const followed = b.tableOfContents.follow();
-        const chapters = b.tableOfContents.chapters;
-        expect(followed.parts().length).toBe(chapters.length);
-        expect(followed.parts().every((c, k) => c === chapters[k])).toBe(true);
-        expect(followed.canonical).toBe(b.chapters[3]);
+        const toc = b.contents;
+        const read = toc.parts().map(entry => entry.read());
+        const chapters = toc.chapters;
+        expect(read.length).toBe(chapters.length);
+        expect(read.every((c, k) => c === chapters[k])).toBe(true);
+        expect(toc.canonical.read()).toBe(b.chapters[3]);
     });
 
     it('the table of contents IS a catalogue of the numbered chapters — no cover, no synopsis, not itself', () => {
         const b: $Book = $(book());
-        const toc = b.tableOfContents;
+        const toc = b.contents;
         const rows = toc.parts();
         expect(rows.every(s => s instanceof $Section && s instanceof $$Chapter)).toBe(true);
         expect(rows.every(r => r.read() !== undefined)).toBe(true);
@@ -198,7 +203,7 @@ describe('the two connections — find goes forward, ref comes back', () => {
 
     it('the beautiful path — the table of contents gets the cover, and the cover finds the book', () => {
         const b: $Book = $(book());
-        const toc = b.tableOfContents;
+        const toc = b.contents;
         expect(toc.cover).toBe(b.cover);
         expect(toc.cover!.read()).toBe(b);
         expect(toc.read()).toBe(b);
@@ -235,11 +240,11 @@ describe('the essential questions — complex references, equality across levels
 
     it('the contents page speaks for the book by following — the chapters, then each of their own drawers', () => {
         const b: $Book = $(book());
-        const toc = b.tableOfContents;
+        const toc = b.contents;
         const listed = toc.chapters;
-        const chapters = toc.follow();
-        expect(chapters.parts().every((c, k) => c === listed[k])).toBe(true);
-        const sections = chapters.parts().flatMap(c => c.ref.follow().parts());
+        const chapters = toc.parts().map(entry => entry.read());
+        expect(chapters.every((c, k) => c === listed[k])).toBe(true);
+        const sections = chapters.flatMap(c => c.ref.read().parts());
         expect(sections.every((s, k) => s === listed.flatMap(c => c.sections)[k])).toBe(true);
     });
 
@@ -251,29 +256,34 @@ describe('the essential questions — complex references, equality across levels
         const left = c.at(0).then(section.at(1)).then(paragraph.at(0));
         const right = c.at(0).then(section.at(1).then(paragraph.at(0)));
         expect(left.read().copy).toBe(right.read().copy);
-        const spoken = b.tableOfContents.follow().parts()[0];
+        const spoken = b.contents.canonical.read();
         expect(spoken.words[1].copy).toBe(c.words[1].copy);
     });
 
-    it('a bookmark holds a reference — passed as a reference, never a string', () => {
+    // AND NOBODY AUTHORS ONE. `place` is not a prop, so a bookmark is built and
+    // then pointed — which is the whole of "don't make anything a prop unless it
+    // needs to be". A reader leaves a bookmark; a writer never writes one.
+    it('a bookmark holds a reference — set in code, never authored, never a string', () => {
         const b: $Book = $(book());
-        const bm: $Bookmark = $(<Bookmark for={b.at(3)}>the chapter on coordinates</Bookmark>);
+        const bm: $Bookmark = $(<Bookmark>the chapter on coordinates</Bookmark>);
+        bm.place = b.at(3);
         expect(bm.read()).toBe(b.chapters[3]);
-        const deep: $Bookmark = $(<Bookmark for={b.at(3).then(b.chapters[3].at(0))}>its first section</Bookmark>);
+        const deep: $Bookmark = $(<Bookmark>its first section</Bookmark>);
+        deep.place = b.at(3).then(b.chapters[3].at(0));
         expect(deep.read()).toBe(b.chapters[3].parts()[0]);
         expect(deep.valid()).toBe(true);
     });
 
-    it('follow goes on following — the returned composition is followable to the next grade', () => {
+    it('reading goes on reading — what a reference reads to is itself a composition', () => {
         const b: $Book = $(book());
-        const chapters = b.tableOfContents.follow();
-        const sections = chapters.parts().flatMap(c => c.ref.follow().parts());
-        expect(sections.length).toBe(b.tableOfContents.chapters.flatMap(c => c.sections).length);
+        const chapters = b.contents.parts().map(entry => entry.read());
+        const sections = chapters.flatMap(c => c.ref.read().parts());
+        expect(sections.length).toBe(b.contents.chapters.flatMap(c => c.sections).length);
     });
 
     it('natural chaining — a catalogue of references that are catalogues descends level by level', () => {
         const b: $Book = $(book());
-        const chapter = b.tableOfContents.parts()[0].read()!;
+        const chapter = b.contents.parts()[0].read()!;
         const section = chapter.ref.parts()[0].read()!;
         const paragraph = section.ref.parts()[1].read()!;
         expect(paragraph).toBeInstanceOf($Paragraph);
@@ -341,7 +351,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const b: $Book = $(book());
         expect(b.chapters[2].book).toBe(b);
         expect(b.cover.book).toBe(b);
-        expect(b.tableOfContents.book).toBe(b);
+        expect(b.contents.book).toBe(b);
     });
 
     it('the book holds its own synopsis as readable writing', () => {
@@ -364,9 +374,24 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(b.valid()).toBe(true);
         expect(b.cover.valid()).toBe(true);
         expect(b.chapters[2].valid()).toBe(true);
-        expect(b.tableOfContents.valid()).toBe(true);
+        expect(b.contents.valid()).toBe(true);
         const rejected: $Chapter = $(<Chapter>{section('Coordinates', 'Prose.')}</Chapter>);
         expect(rejected.valid()).toBe(false);
+    });
+
+    // PARENTHETICAL IS THE WHOLE OF IT. Doug: "Parenthetical false means it's
+    // visible. Parenthetical isn't a constant." So a book's reading excludes
+    // parenthetical chapters, and revealing one is a write rather than a theme.
+    it('a book reads its chapters and passes over the parenthetical ones', () => {
+        const b: $Book = $(book());
+        expect(b.reading.every(c => !c.parenthetical)).toBe(true);
+        // A chapter is hidden by BEING parenthetical and revealed by stopping,
+        // which is a write on the writing rather than a flag on a theme.
+        const shown = b.reading.find(c => !(c instanceof $Synopsis))!;
+        shown.parenthetical = true;
+        expect(b.reading).not.toContain(shown);
+        shown.parenthetical = false;
+        expect(b.reading).toContain(shown);
     });
 
     it('the summary of a chapter is its parenthetical section; the canonical is not it', () => {
@@ -391,7 +416,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         const short: $Chapter = $(<Chapter>{section('Coordinates', 'Prose.')}{summary('One sentence only.')}</Chapter>);
         expect(short.tagline?.copy).toBe('One sentence only.');
         const b: $Book = $(book());
-        expect(b.tableOfContents.tagline?.copy).toBe('A book about reading.');
+        expect(b.contents.tagline?.copy).toBe('A book about reading.');
     });
 
     it('ref answers with its own kind, and reads back to its literal', () => {
@@ -420,12 +445,12 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         expect(p.at(0).read().copy).toBe(p.parts()[0].copy);
     });
 
-    it('a highlight is the reference a highlighter leaves — first and last letter of its parent', () => {
+    it('a highlight is the reference a highlighter leaves — FROM one letter of its parent TO another', () => {
         const p: $Paragraph = $(<Paragraph>{'The frame turns with every chapter read.'}</Paragraph>);
-        const h: $Highlight = $(<Highlight first={4} last={8}>the marked words</Highlight>, p);
-        expect(h.first).toBe(4);
-        expect(h.last).toBe(8);
-        expect(p.copy.slice(h.first, (h.last ?? 0) + 1)).toBe('frame');
+        const h: $Highlight = $(<Highlight from={4} to={8}>the marked words</Highlight>, p);
+        expect(h.from).toBe(4);
+        expect(h.to).toBe(8);
+        expect(p.copy.slice(h.from, (h.to ?? 0) + 1)).toBe('frame');
     });
 
     it('the composition is list-like — where filters, select projects, find insists on one', () => {
@@ -455,7 +480,8 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('a bookmark wears its prose and reads its reference — the surface and the standing-for, one sentence', () => {
         const b: $Book = $(book());
-        const bm: $Bookmark = $(<Bookmark for={b.at(3)}>the chapter on coordinates</Bookmark>);
+        const bm: $Bookmark = $(<Bookmark>the chapter on coordinates</Bookmark>);
+        bm.place = b.at(3);
         expect(bm.read()).toBe(b.chapters[3]);
         expect(bm.copy).toBe('the chapter on coordinates');
         const blank: $Bookmark = $(<Bookmark>nowhere</Bookmark>);
@@ -472,10 +498,10 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
                             <Title>The Written Chapter: A Test</Title>
                             {'\n\nProse written in the view, as writing should be.'}
                         </Section>
-                        <Section parenthetical>
+                        <Summary>
                             <Title>Summary</Title>
                             {'\n\nWritten, marked, hidden.'}
-                        </Section>
+                        </Summary>
                     </>
                 );
             }
@@ -510,17 +536,17 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
 
     it('a declared table of contents is a part of the book, parent assigned', () => {
         const b: $Book = $(book());
-        const toc = b.tableOfContents;
+        const toc = b.contents;
         expect(toc).toBeInstanceOf($TableOfContents);
         expect(b.chapters[1]).toBe(toc);
         expect(toc.book).toBe(b);
         expect(b.at(1).read()).toBe(toc);
-        expect(b.tableOfContents).toBe(toc);
+        expect(b.contents).toBe(toc);
     });
 
     it('the contents lists the numbered chapters — the cover and itself are never among them', () => {
         const b: $Book = $(book());
-        const toc = b.tableOfContents;
+        const toc = b.contents;
         expect(toc.chapters.length).toBe(1);
         expect(toc.chapters[0]).toBe(b.chapters[3]);
         expect(toc.chapters).not.toContain(toc);
@@ -542,16 +568,16 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     // so it is not parenthetical and it is listed.
     it('a book s own account is parenthetical; one standing for another book is not', () => {
         const b: $Book = $(
-            <Book>{cover()}<TableOfContents />{synopsis(false)}{chapter('Coordinates', 'Prose.')}</Book>
+            <Book>{cover()}<TableOfContents />{synopsis()}{chapter('Coordinates', 'Prose.')}</Book>
         );
         expect(b.synopsis.parenthetical).toBe(true);
-        expect(b.tableOfContents.chapters).not.toContain(b.synopsis);
+        expect(b.contents.chapters).not.toContain(b.synopsis);
     });
 
     it('a book that marks its own synopsis parenthetical keeps it out of the contents', () => {
         const b: $Book = $(book());
         expect(b.synopsis.parenthetical).toBe(true);
-        expect(b.tableOfContents.chapters).not.toContain(b.synopsis);
+        expect(b.contents.chapters).not.toContain(b.synopsis);
     });
 
     it('an authored table of contents is the one the book reads — a chapter among chapters', () => {
@@ -563,9 +589,9 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
                 {chapter('Coordinates', 'Prose.')}
             </Book>
         );
-        const toc = b.tableOfContents;
+        const toc = b.contents;
         expect(b.chapters).toContain(toc);
-        expect(b.tableOfContents).toBe(toc);
+        expect(b.contents).toBe(toc);
         expect(toc.chapters.length).toBe(1);
         expect(toc.chapters).not.toContain(toc);
     });
@@ -596,7 +622,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
     // happen — and no author had ever written index= outside these two tests.
 
     it('every piece of writing carries parenthetical — assignable and authorable', () => {
-        const c: $Chapter = $(<Chapter><Section parenthetical><Title>Summary</Title></Section></Chapter>);
+        const c: $Chapter = $(<Chapter><Summary><Title>Summary</Title></Summary></Chapter>);
         expect(c.parts()[0].parenthetical).toBe(true);
         const p: $Paragraph = $(<Paragraph>Plain prose.</Paragraph>);
         expect(p.parenthetical).toBe(false);
@@ -619,7 +645,7 @@ describe('$Book — a composition of chapters, of which cover, synopsis, index, 
         // markup the framework has stopped writing, so the contents is selected
         // by what it IS. The claim is unchanged — the same three assertions
         // about the same element — only the way it is reached.
-        expect(b.tableOfContents.title.copy).toBe('Table of Contents');
+        expect(b.contents.title.copy).toBe('Table of Contents');
         b.contents.turn(b.contents);
         const turned = render(<B />).container;
         const toc = turned.querySelector('[data-contents]');
@@ -665,12 +691,12 @@ describe('$Referent is a class, and a reading is the one thing that is not one',
         const b: $Book = $(book());
         expect(b).toBeInstanceOf($Referent);
         expect(b.chapters[0]).toBeInstanceOf($Referent);
-        expect(b.tableOfContents.parts()[0]).toBeInstanceOf($Referent);
+        expect(b.contents.parts()[0]).toBeInstanceOf($Referent);
     });
 
-    it('but a READING is not — follow() answers a composition that is no chemical', () => {
+    it('but a READING is not — read() answers a composition that is no chemical', () => {
         const b: $Book = $(book());
-        const reading = b.follow();
+        const reading = b.read();
         expect(reading).not.toBeInstanceOf($Referent);
         expect(reading.valid()).toBe(true);
     });

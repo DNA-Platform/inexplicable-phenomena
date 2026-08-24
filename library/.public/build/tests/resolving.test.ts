@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolve } from '../resolve.ts';
+import { resolve } from '../stages/resolve.ts';
 import type { Entry, File, Library, Reference } from '../library.ts';
 
 // A LIBRARY BUILT BY HAND, because resolving never touches a filesystem. The
@@ -33,7 +33,7 @@ const named = (as: string, display: string): Reference => ({ as, display, at: ''
 const library = (over: Partial<Record<string, Reference[]>> = {}): Library => ({
     root: '/nowhere',
     speaks: '..own',
-    complaints: [],
+    complaints: [], books: [],
     entries: [
         { ...book('..own', '/', over['..own'] ?? [points('author', 'TheTeam', 'the-team')]), route: '/' },
         subject('.physics', '/physics', '.physics/.subject', ['.physics/.subject', '.physics/deep', '.physics/a']),
@@ -50,12 +50,12 @@ describe('what a book BELONGS to is answered by position, and a declaration only
     it('a silent cover is given the subject it sits in', () => {
         const b = of(library(), '.physics/deep');
         expect(b?.subject?.book).toBe('.physics/.subject');
-        expect(b?.subject?.from).toBe('supplied');
     });
 
     it('a declared subject keeps what its author wrote', () => {
         const b = of(library({ '.physics/deep': [points('subject', 'Physics', '.physics/.subject')] }), '.physics/deep');
-        expect(b?.subject?.from).toBe('declared');
+        expect(b?.subject?.book).toBe('.physics/.subject');
+        expect(b?.subject?.display).toBe('Physics');
     });
 
     it('AND NOTHING IS WRITTEN BACK — the entry the author left is untouched', () => {
@@ -66,17 +66,22 @@ describe('what a book BELONGS to is answered by position, and a declaration only
     });
 });
 
-describe('who WROTE it is declared, or supplied from the library own author', () => {
+describe('who WROTE it is the author declared, or the one the library names', () => {
     it('a silent cover is given the author the library names', () => {
         const b = of(library(), '.physics/deep');
         expect(b?.author?.book).toBe('the-team');
-        expect(b?.author?.from).toBe('supplied');
     });
 
-    it('an author naming somebody who is not a book stands for nobody, and says so', () => {
-        const b = of(library({ '.physics/deep': [named('author', 'A Stranger')] }), '.physics/deep');
-        expect(b?.author?.from).toBe('unresolved');
+    // A LINK WITH NO BOOK IS NOT A FAULT, and the corpus depends on it: a cover
+    // may name its author as a NAME rather than as an import. What used to be
+    // recorded as `from: 'unresolved'` is simply an empty book with a display.
+    it('an author named rather than imported stands for a name, and that is not a fault', () => {
+        const l = library({ '.physics/deep': [named('author', 'A Stranger')] });
+        const said = resolve(l);
+        const b = said.books.find(x => x.path === '.physics/deep');
         expect(b?.author?.display).toBe('A Stranger');
+        expect(b?.author?.book).toBe('');
+        expect(said.complaints.some(c => c.at === '.physics/deep')).toBe(false);
     });
 });
 
@@ -84,13 +89,12 @@ describe('which book SPEAKS for a subject cannot be answered by position', () =>
     it('with nothing declared, the shortest title takes it', () => {
         const b = of(library(), '.physics/.subject');
         expect(b?.canonical?.book).toBe('.physics/a');
-        expect(b?.canonical?.from).toBe('supplied');
     });
 
     it('a declared canonical beats the default', () => {
         const b = of(library({ '.physics/.subject': [points('canonical', 'Deep', '.physics/deep')] }), '.physics/.subject');
         expect(b?.canonical?.book).toBe('.physics/deep');
-        expect(b?.canonical?.from).toBe('declared');
+        expect(b?.canonical?.display).toBe('Deep');
     });
 
     it('AND A SUBJECT NAMING A BOOK IT DOES NOT HOLD IS INVALID, by name', () => {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { dotsOf, bare, roleOf, routeOf, ordering, walk } from '../walk.ts';
+import { dotsOf, bare, roleOf, routeOf, ordering, walk } from '../stages/walk.ts';
 
 describe('dots rank, and they rank nothing but folders', () => {
     it('counts only a leading run', () => {
