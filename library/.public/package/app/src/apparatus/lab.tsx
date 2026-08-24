@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import { defaultSectionId, catalogue, findSection } from '../data/catalogue';
 import { sectionModules } from '../sections';
@@ -80,8 +80,11 @@ export function Lab() {
     const module = sec ? sectionModules[sec.id] : undefined;
     const ModuleComponent = module?.Component;
 
+    // A SECTION ARRIVES WHEN IT IS ASKED FOR, so both places that draw one wait
+    // for it. The fallback is deliberately bare: a spinner for a module that
+    // takes one round trip is more motion than the wait it describes.
     if (module?.fullPage && ModuleComponent) {
-        return <ModuleComponent />;
+        return <Suspense fallback={null}><ModuleComponent /></Suspense>;
     }
 
     return (
@@ -115,7 +118,7 @@ export function Lab() {
                                     {sec.title}
                                     <PageContext>{group.title}</PageContext>
                                 </PageTitle>
-                                {ModuleComponent ? <ModuleComponent /> : <NoTests>No tests for this section yet.</NoTests>}
+                                {ModuleComponent ? <Suspense fallback={null}><ModuleComponent /></Suspense> : <NoTests>No tests for this section yet.</NoTests>}
                             </>
                         ) : (
                             <NoTests>Section not found.</NoTests>

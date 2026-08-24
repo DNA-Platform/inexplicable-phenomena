@@ -191,9 +191,3 @@ export function TheTitleDemo(): React.ReactElement {
     return <TheTitle />;
 }
 
-export const sectionData = {
-    id: 'title',
-    cases: 1,
-    Component: TheTitleDemo,
-    fullPage: false,
-};

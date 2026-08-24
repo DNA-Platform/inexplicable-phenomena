@@ -118,7 +118,9 @@ const openBook = async (name) => {
 };
 
 await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-await settle();
+// THE SECTION ARRIVES, it is not present. Sections are fetched on demand now,
+// so a fixed settle races the fetch — the shelf's own spines are the landmark.
+await landmark('[data-book]', 'the shelf arrives; the section is fetched on demand');
 await settle();
 
 const shelved = await spines();
@@ -418,6 +420,7 @@ await settle();
 check('back on the shelf after the build', (await spines()).length === shelved.length);
 
 await page.goto(`${BASE}/page`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+await landmark('[data-skin]', 'the page demonstration arrives; the section is fetched on demand');
 await settle();
 await settle();
 t = await text();

@@ -80,9 +80,3 @@ export function ThePageDemo() {
     );
 }
 
-export const sectionData = {
-    id: 'page',
-    cases: 1,
-    Component: ThePageDemo,
-    fullPage: true,
-};

@@ -35,6 +35,18 @@ page.on('console', m => {
 const check = (name, ok) => { checks.push([name, ok]); };
 const settle = (ms = 550) => new Promise(r => setTimeout(r, ms));
 
+// WAITING FOR A LANDMARK RATHER THAN A CLOCK. A section is fetched on demand
+// now, so it ARRIVES — and it arrives across a navigation, which is the one
+// thing puppeteer's own waitForSelector cannot survive.
+const landmark = async (selector, why, ms = 20000) => {
+    const stop = Date.now() + ms;
+    for (;;) {
+        try { if (await page.$(selector)) return true; } catch { /* context swapped mid-navigation */ }
+        if (Date.now() > stop) throw new Error(`${selector} never arrived — ${why}`);
+        await settle(250);
+    }
+};
+
 // NAVIGATION IS `domcontentloaded` AND THEN A SETTLE, never `networkidle`. A cold
 // vite compiles a hundred and seventy modules on the first hit and network idle
 // is never reached inside the timeout — so this driver's FIRST checkpoint stalls
@@ -143,12 +155,14 @@ const parallel = () => page.evaluate(() => {
 });
 
 await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 });
-await settle(1500);
+await landmark('[data-book]', 'the shelf arrives; the section is fetched on demand');
+await settle(600);
 await settle(1000);
 check('the root is a full page — no nav chrome around the shelf', await page.evaluate(() => !document.querySelector('nav')));
 
 await page.goto(`${BASE}/page`, { waitUntil: 'domcontentloaded', timeout: 20000 });
-await settle(1500);
+await landmark('[data-skin]', 'the page demonstration arrives; the section is fetched on demand');
+await settle(600);
 await settle(800);
 visited.add('book');
 check('PAGE: the book lens renders — data-skin "book"', (await skin()) === 'book');
@@ -301,6 +315,9 @@ await settle(800);
 check('PAGE: browser forward returns to the page demo', page.url().endsWith('/page'));
 
 await page.goto(`${BASE}/nonsense`, { waitUntil: 'domcontentloaded', timeout: 20000 });
+// The fallback is a SECTION too, so it arrives rather than being present.
+// The fallback IS the books section, so the shelf's spines are its landmark.
+await landmark('[data-book]', 'the fallback section arrives for an unknown route');
 await settle(600);
 check('PAGE: an unknown route renders a fallback, not a blank', (await page.evaluate(() => document.body.innerText.trim().length)) > 0);
 
@@ -316,7 +333,8 @@ check('PAGE: an unknown route renders a fallback, not a blank', (await page.eval
 // a reader actually meets, so the check is that they DIFFER.
 
 await page.goto(`${BASE}/title`, { waitUntil: 'domcontentloaded', timeout: 20000 });
-await settle(1500);
+await landmark('h2', 'the title demonstration arrives; the section is fetched on demand');
+await settle(600);
 
 const titles = await page.evaluate(() => {
     const h = [...document.querySelectorAll('h2')].filter(e => e.textContent === 'The Change That Changes Nothing');
