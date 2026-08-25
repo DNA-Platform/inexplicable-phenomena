@@ -3,27 +3,19 @@ import { $, $Chemical } from '@dna-platform/chemistry';
 import { type $$Book } from '@/book/Book';
 import { shelf, contents } from './book/library/the-shelf/book';
 import { team } from './book/library/the-team/book';
-import { algebra } from './book/library/algebra/book';
-import { manifold } from './book/library/the-manifold/book';
-import { build } from './book/library/the-build/book';
+import { follow, theAlgebra } from './book/library/the-team/card';
+import { type $LibraryCard } from './book/library/the-team/librarycard';
 
-// A NOTE ON WHAT IS EAGER HERE, because it was tried and reverted.
+// WHAT IS EAGER HERE, and what is not.
 //
-// These four imports are why the shelf — the landing page — waits on 156
-// modules before it draws a spine. Making them dynamic drops that to 84 AND
-// REMOVES EVERY SPINE, because the demonstration's cards are READ OFF LIVING
-// BOOKS at runtime: `the-team/card.tsx` builds each one with `line(algebra)`
-// and `titles(manifold)`, so a card cannot exist until its book does.
+// Three of the four books are behind doors in `the-team/card.tsx` and arrive
+// when a card is followed. This was tried once in the other order — the imports
+// made dynamic while the cards were still BUILT by reading their living books —
+// and every spine vanished with them, because a card could not exist until its
+// book did. The literals had to come first; they have.
 //
-// That is precisely the thing the compiler's generated catalogue refuses in its
-// own words — "NOTHING HERE IMPORTS A BOOK. A card is a book present without
-// the book" — and the compiler avoids it by reading the cards off living books
-// at BUILD time and emitting literals. The demonstration has no build step, so
-// it does the same reading at load time and pays for it on every visit.
-//
-// The fix is a design change and it is named rather than half-done: the demo's
-// cards carry their own text and their `of` becomes a loader, which is what
-// `The Team`'s card already does in that same file.
+// The shelf stays because the landing page IS the shelf, and The Team stays
+// because its card is completed by its book rather than carrying its own line.
 
 // The route is glue: the shelf book views itself, the team book views itself,
 // and travelling between them is following a card — the router does the
@@ -34,9 +26,13 @@ let route: $TheBooks | undefined;
 class $TheBooks extends $Chemical {
     $opened?: $$Book = undefined;
 
-    pull(card: $$Book) {
-        const book = card.read();
-        if (book === algebra) { window.location.href = '/page'; return; }
+    // FOLLOWING A CARD IS WHAT FETCHES THE BOOK. The card is compared, never the
+    // book — comparing books would mean holding one to find out.
+    async pull(card: $$Book) {
+        if (card === theAlgebra) { window.location.href = '/page'; return; }
+        await follow(card as $LibraryCard);
+        const opened = card.read();
+        (opened as { $travel?: () => void }).$travel = () => route?.home();
         this.$opened = card;
     }
 
@@ -56,10 +52,8 @@ class $TheBooks extends $Chemical {
     }
 }
 
-shelf.$travel = card => route?.pull(card);
+shelf.$travel = card => { void route?.pull(card); };
 team.$travel = () => route?.home();
-manifold.$travel = () => route?.home();
-build.$travel = () => route?.home();
 
 const TheBooks = $($TheBooks);
 

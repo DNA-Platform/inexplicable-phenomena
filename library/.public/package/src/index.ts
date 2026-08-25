@@ -23,9 +23,9 @@ export { $Author, Author } from './book/Author';
 export { $Subject, Subject } from './book/Subject';
 export { $Canonical, Canonical } from './book/Canonical';
 export { $$Book, Card } from './book/Book';
-export { $CardCatalogue, CardCatalogue } from './library/CardCatalogue';
+export { $IndexCard, IndexCard } from './reference/IndexCard';
+export { $CardCatalogue, CardCatalogue } from './reference/CardCatalogue';
 export { $Synopsis, Synopsis } from './book/Synopsis';
-export { $Index, Index } from './book/Index';
 export { $TableOfContents, TableOfContents } from './book/TableOfContents';
 
 export { $Book, Book } from './book/Book';

@@ -18,6 +18,8 @@
     },
     "include": [
         "*.ts",
+        "stages/*.ts",
+        "utilities/*.ts",
         "tests/*.ts"
     ]
 }

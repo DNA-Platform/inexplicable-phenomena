@@ -6,11 +6,11 @@ import { $Referent } from '../reference/Referent';
 import { $Reference } from '../reference/Reference';
 import * as paths from '../reference/Path';
 import { $Phrase } from '../writing/Phrase';
-import { $CardCatalogue } from '../library/CardCatalogue';
-import * as catalogues from '../library/CardCatalogue';
+import { $CardCatalogue } from '../reference/CardCatalogue';
+import * as catalogues from '../reference/CardCatalogue';
 import type { $Book } from './Book';
 import { $Chapter } from './Chapter';
-import type { $$Book } from './Book';
+import type { $IndexCard } from '../reference/IndexCard';
 
 export const Faint = styled.span<{ $theme: $Theme }>`
     color: ${p => p.$theme.faint};
@@ -31,7 +31,7 @@ export const Pointing = styled.a<{ $theme: $Theme }>`
 // parenthetical because it is metadata: present in the writing, absent from the
 // reading.
 export class $Annotation extends $Phrase implements $Reference<$Book> {
-    $for?: $$Book = undefined;
+    $for?: $IndexCard<$Book> = undefined;
 
     parenthetical = true;
 
@@ -51,15 +51,15 @@ export class $Annotation extends $Phrase implements $Reference<$Book> {
     //
     // (And `catalogue` on a referent meant something else entirely — which
     // catalogue it belonged to — struck in sprint 47 with reference equality.)
-    get catalogue(): $CardCatalogue {
-        return $(catalogues.CardCatalogue).$ as $CardCatalogue;
+    get catalogue(): $CardCatalogue<$Book> {
+        return $(catalogues.CardCatalogue).$ as $CardCatalogue<$Book>;
     }
 
     // AN ANNOTATION FINDS ITS OWN CARD. Doug: "<Author>The Team</Author> is what
     // we want author to be, so I don't think we need `for` there." The compiler
     // used to insert one into an element a person wrote, precisely because this
     // could not be answered.
-    get card(): $$Book | undefined {
+    get card(): $IndexCard<$Book> | undefined {
         return this.$for ?? this.catalogue?.find('title', this.copy);
     }
 
@@ -75,7 +75,7 @@ export class $Annotation extends $Phrase implements $Reference<$Book> {
         return this.$for.read();
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }

@@ -60,7 +60,7 @@ const corpus = (): { at: string; resolved: Library } => {
         chapters: [f('one.tsx', 'chapter', 'One', 2)],
         entries: [],
     };
-    return { at, resolved: { root: at, speaks: '', entries: [], books: [book], complaints: [] } };
+    return { at, resolved: { root: at, speaks: '', entries: [], books: [book], diagnostics: [] } };
 };
 
 describe('emitting carries the writing and generates the one line a folder cannot say', () => {

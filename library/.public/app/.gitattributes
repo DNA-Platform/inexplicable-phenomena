@@ -1,0 +1,8 @@
+# THE COMPILER WRITES LF, so the repository stores LF and stops asking to convert.
+#
+# Without this, an idempotent compile marked all thirty emitted files modified —
+# `git diff` empty, `git status` full — which means a real regeneration was
+# invisible among thirty phantom ones. The declaration belongs HERE rather than
+# inside src/library, because the emitter deletes every file in that folder it
+# did not write, and it does not write this one.
+src/library/** text eol=lf

@@ -92,7 +92,7 @@ describe('referential integrity — at, then, and the reading', () => {
         // A sentence's parts are everything written in it, syntax included, so
         // position 1 is the space after the first word and the second used word
         // stands at 2.
-        const r = section.at(1).then(paragraph.at(0)).then(sentence.at(2));
+        const r = section.at(1).follow(paragraph.at(0)).follow(sentence.at(2));
         expect(r).toBeInstanceOf($Path);
         expect((r.read() as $Word).copy).toBe('is');
         expect(r.valid()).toBe(true);
@@ -104,7 +104,7 @@ describe('referential integrity — at, then, and the reading', () => {
         const here = one.chapters[3].parts()[0];
         const there = other.chapters[3].parts()[0];
         const away = there.at(1).read() as $Paragraph;
-        const r = here.at(1).then(away.at(0));
+        const r = here.at(1).follow(away.at(0));
         expect(r.read().copy).toBe(away.at(0).read().copy);
     });
 
@@ -175,7 +175,7 @@ describe('the two connections — find goes forward, ref comes back', () => {
         const b: $Book = $(book());
         const paragraph = b.chapters[3].sections[0].at(1).read()! as $Paragraph;
         const sentence = paragraph.at(0).read()!;
-        expect((sentence.ref.then(sentence.at(2)).read() as $Word).copy).toBe('is');
+        expect((sentence.ref.follow(sentence.at(2)).read() as $Word).copy).toBe('is');
     });
 
     it('reading the contents page gives its chapters — the literature the drawer holds', () => {
@@ -217,7 +217,7 @@ describe('the essential questions — complex references, equality across levels
         const c = b.chapters[3];
         const section = c.at(0).read()!;
         const paragraph = section.at(1).read()! as $Paragraph;
-        const r = c.at(0).then(section.at(1)).then(paragraph.at(0));
+        const r = c.at(0).follow(section.at(1)).follow(paragraph.at(0));
         expect((r.read() as $Sentence).copy).toBe('Reading is a change of coordinates.');
     });
 
@@ -225,7 +225,7 @@ describe('the essential questions — complex references, equality across levels
         const b: $Book = $(book());
         const c = b.chapters[3];
         const section = c.at(0).read()!;
-        const r = b.at(3).then(c.at(0)).then(section.at(1));
+        const r = b.at(3).follow(c.at(0)).follow(section.at(1));
         expect(r.read()).toBeInstanceOf($Paragraph);
         expect((r.read() as $Paragraph).copy).toBe('Reading is a change of coordinates.');
     });
@@ -234,7 +234,7 @@ describe('the essential questions — complex references, equality across levels
         const b: $Book = $(book());
         const c = b.chapters[3];
         const section = c.at(0).read();
-        const deep = b.at(3).then(c.at(0));
+        const deep = b.at(3).follow(c.at(0));
         expect(deep.read()).toBe(section);
     });
 
@@ -253,8 +253,8 @@ describe('the essential questions — complex references, equality across levels
         const c = b.chapters[3];
         const section = c.at(0).read();
         const paragraph = section.at(1).read() as $Paragraph;
-        const left = c.at(0).then(section.at(1)).then(paragraph.at(0));
-        const right = c.at(0).then(section.at(1).then(paragraph.at(0)));
+        const left = c.at(0).follow(section.at(1)).follow(paragraph.at(0));
+        const right = c.at(0).follow(section.at(1).follow(paragraph.at(0)));
         expect(left.read().copy).toBe(right.read().copy);
         const spoken = b.contents.canonical.read();
         expect(spoken.words[1].copy).toBe(c.words[1].copy);
@@ -269,7 +269,7 @@ describe('the essential questions — complex references, equality across levels
         bm.place = b.at(3);
         expect(bm.read()).toBe(b.chapters[3]);
         const deep: $Bookmark = $(<Bookmark>its first section</Bookmark>);
-        deep.place = b.at(3).then(b.chapters[3].at(0));
+        deep.place = b.at(3).follow(b.chapters[3].at(0));
         expect(deep.read()).toBe(b.chapters[3].parts()[0]);
         expect(deep.valid()).toBe(true);
     });

@@ -1,4 +1,4 @@
-import type { Book, Complaint, Library, Link, Path } from '../library.ts';
+import type { Book, Diagnostic, Library, Link, Path } from '../library.ts';
 
 // RESOLVING. A description says what is there; a library says what it means.
 //
@@ -18,7 +18,7 @@ const containerOf = (path: Path): Path => {
 };
 
 export const resolve = (library: Library): Library => {
-    const complaints: Complaint[] = [...library.complaints];
+    const diagnostics: Diagnostic[] = [...library.diagnostics];
     const byPath = new Map(library.entries.map(e => [e.path, e]));
 
     // The folder that speaks for a container, and the root is a container too.
@@ -41,11 +41,13 @@ export const resolve = (library: Library): Library => {
     const ownBook = byPath.get(library.speaks);
     const houseAuthor = ownBook?.references.find(r => r.as === 'author');
 
-    const books: Book[] = authored.map(entry => {
+    const books: Book[] = authored.flatMap(entry => {
         const container = containerOf(entry.path);
         const speaks = speakerFor(container) === entry.path;
-        const cover = entry.files.find(f => f.role === 'cover')!;
-        const synopsis = entry.files.find(f => f.role === 'synopsis')!;
+        // than present and broken — which is how a missing synopsis used to
+        const cover = entry.files.find(f => f.role === 'cover');
+        const synopsis = entry.files.find(f => f.role === 'synopsis');
+        if (!cover || !synopsis) return [];
         const chapters = entry.files.filter(f => f.role === 'chapter');
 
         const said = (as: string) => entry.references.find(r => r.as === as);
@@ -76,7 +78,7 @@ export const resolve = (library: Library): Library => {
                 ? { book: houseAuthor.book, display: houseAuthor.display }
                 : undefined;
 
-        return { path: entry.path, route: entry.route, at: speaks ? container : entry.path, cover, synopsis, chapters, author, subject, entries: [] };
+        return [{ path: entry.path, route: entry.route, at: speaks ? container : entry.path, cover, synopsis, chapters, author, subject, entries: [] }];
     });
 
     const byBook = new Map(books.map(b => [b.path, b]));
@@ -100,7 +102,7 @@ export const resolve = (library: Library): Library => {
         if (chosen) {
             book.canonical = { book: chosen, display: said?.display ?? '' };
             if (said?.book && !held.includes(said.book)) {
-                complaints.push({ at: book.path, says: `names ${JSON.stringify(said.display)} canonical, and does not hold it` });
+                diagnostics.push({ at: book.path, says: `names ${JSON.stringify(said.display)} canonical, and does not hold it` });
             }
         }
 
@@ -113,5 +115,5 @@ export const resolve = (library: Library): Library => {
             : alphabetical;
     }
 
-    return { ...library, books, complaints };
+    return { ...library, books, diagnostics };
 };

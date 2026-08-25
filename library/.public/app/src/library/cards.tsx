@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, $$Book, $CardCatalogue, Book, CardCatalogue } from '@dna-platform/lib';
+import { $Book, $$Book } from '@dna-platform/lib';
 
 // THE CARDS OF THIS LIBRARY, GENERATED. A card in the framework is an
 // $$Book and nothing more; which fields a library's cards carry is
@@ -12,33 +12,11 @@ import { $Book, $$Book, $CardCatalogue, Book, CardCatalogue } from '@dna-platfor
 // NOTHING HERE IMPORTS A BOOK. A card is a book present without the book, and a
 // module that reached for one would be handling the item it stands in for.
 export class $Card extends $$Book {
-    $title = '';
-    $subtitle = '';
-    $synopsis = '';
-    $chapters: string[] = [];
-
     get path(): string { return this.name; }
 
-    get title(): string { return this.$title; }
-
-    get subtitle(): string { return this.$subtitle; }
-
-    get synopsis(): string { return this.$synopsis; }
-
-    get chapters(): string[] { return this.$chapters; }
-
-    // NARROWED, because every card in THIS library is a $Card. The base promises
-    // a $$Book; a generated catalogue knows better and says so.
     override get subject(): $Card | undefined { return this.$subject as $Card | undefined; }
 
     override get library(): $Card | undefined { return super.library as $Card | undefined; }
-
-    // NO CANONICAL LINK. A canonical link is a SUBJECT'S — it says which of the
-    // books a subject holds speaks for it — and a card catalogues nothing.
-    //
-    // AND NO LIBRARY CLIMB. It used to live here, and a rule about books that
-    // lives in generated code is a rule with two homes that can disagree. It is
-    // $Book.library now, in the framework, asked of a book rather than a card.
 }
 
 const Card = $($Card);
@@ -75,30 +53,16 @@ library.$entries = [physics, philosophy, theTeam];
 philosophy.$entries = [philosophyTheHardProblem];
 physics.$entries = [physicsTheStandardModel, physicsGaugeTheory];
 
-// A CLASS, so a SCOPE CAN HOLD ONE. An annotation asks its scope for the
-// catalogue and finds its own card there, which is why nothing has to be inserted
-// into <Author>The Team</Author>. The composition root registers this.
-export class $TheCatalogue extends $CardCatalogue {
-    override $cards: $$Book[] = [
-        library,
-        philosophy,
-        philosophyTheHardProblem,
-        physics,
-        physicsGaugeTheory,
-        physicsTheStandardModel,
-        theTeam,
-    ];
-}
+export const cards: $Card[] = [
+    library,
+    philosophy,
+    philosophyTheHardProblem,
+    physics,
+    physicsGaugeTheory,
+    physicsTheStandardModel,
+    theTeam,
+];
 
-export const TheCatalogue = $($TheCatalogue);
+const held = new Map<string, $Card>(cards.map(c => [c.path, c]));
 
-export const catalogue = $(<TheCatalogue />) as $TheCatalogue;
-
-// AND THE SCOPE IS GIVEN IT. An annotation asks its scope for the catalogue and
-// finds its own card there — which is why nothing is inserted into an element a
-// person wrote. A library declaring its own catalogue is content, not
-// configuration, so it is declared here rather than in the application.
-export const file = (): void => { $(Book, CardCatalogue)(TheCatalogue); };
-
-export const at = (path: string): $Card | undefined =>
-    catalogue.holds(path) ? catalogue.card(path) as $Card : undefined;
+export const at = (path: string): $Card | undefined => held.get(path);

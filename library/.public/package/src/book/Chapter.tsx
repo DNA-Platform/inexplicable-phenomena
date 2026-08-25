@@ -31,7 +31,7 @@ export class $Chapter extends $Document implements $Reference<$Book> {
         return book;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const path: $Path<$Book, U> = $(<Path first={this} onward={next} />);
         return path;
     }
@@ -57,7 +57,7 @@ export class $$Chapter extends $Section implements $Reference<$Chapter>, $Catalo
     view(): ReactNode { return <>{this.copy}</>; }
 
     get of(): $Chapter { return this.$of; }
-    get copy(): string { return this.valid() ? this.of.canonical.heading : ''; }
+    get copy(): string { return this.valid() ? (this.of.title?.copy || this.of.canonical.heading) : ''; }
     get heading(): string { return this.copy; }
     get chapter(): $Chapter { return this.of; }
     get canonical(): $$Section { return this.parts()[0]; }
@@ -93,7 +93,7 @@ export class $$Chapter extends $Section implements $Reference<$Chapter>, $Catalo
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

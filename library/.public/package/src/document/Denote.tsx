@@ -50,7 +50,7 @@ export class $Denote extends $Writing implements $Reference<$Footnote> {
         return this.footnote;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }

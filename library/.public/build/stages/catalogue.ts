@@ -1,4 +1,6 @@
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import type { $Book } from '@dna-platform/lib';
 import type { Book, Library } from '../library.ts';
 
 // THE CARDS, READ OFF LIVING BOOKS — never parsed out of the source that made
@@ -33,7 +35,7 @@ export const read = async (resolved: Library, into: string): Promise<Card[]> => 
     const named: Card[] = [];
     for (const book of resolved.books) {
         const at = join(into, book.path, 'book.tsx');
-        const loaded = (await import(/* @vite-ignore */ `file:///${at.replace(/\\/g, '/')}`)) as { book: any };
+        const loaded = (await import(/* @vite-ignore */ pathToFileURL(at).href)) as { book: $Book };
         const live = loaded.book;
         // A book is ASKED what it lists. Its own contents already excludes the
         // cover, itself, and everything parenthetical, so the card and the
@@ -45,7 +47,7 @@ export const read = async (resolved: Library, into: string): Promise<Card[]> => 
             title: live.title?.copy ?? '',
             subtitle: live.subtitle?.copy ?? '',
             synopsis: tagline(live.synopsis?.summary),
-            chapters: own.map((c: { title?: { copy: string } }) => c.title?.copy ?? ''),
+            chapters: own.map(c => c.title?.copy ?? ''),
         });
     }
     return named;
@@ -63,12 +65,17 @@ export const cards = (named: Card[]): string => {
         `export const ${n.as}: $Card = card(${quoted(n.book.route)}, ${quoted(n.title)}, ${quoted(n.subtitle)}, ${quoted(n.synopsis)}, [${n.chapters.map(quoted).join(', ')}]);`);
 
     const by = new Map(named.map(n => [n.book.path, n]));
-    const authors = named
+
+    // same eight lines under a different field name — the same fault $Author,
+    const linked = (as: 'author' | 'subject'): string[] => named
         .map(n => {
-            const to = n.book.author?.book ? by.get(n.book.author.book) : undefined;
-            return to ? `${n.as}.$author = ${to.as};` : '';
+            const link = n.book[as];
+            const to = link?.book ? by.get(link.book) : undefined;
+            return to ? `${n.as}.$${as} = ${to.as};` : '';
         })
         .filter(Boolean);
+
+    const authors = linked('author');
 
     const entries = named
         .map(n => {
@@ -77,16 +84,11 @@ export const cards = (named: Card[]): string => {
         })
         .filter(Boolean);
 
-    const subjects = named
-        .map(n => {
-            const to = n.book.subject?.book ? by.get(n.book.subject.book) : undefined;
-            return to ? `${n.as}.$subject = ${to.as};` : '';
-        })
-        .filter(Boolean);
+    const subjects = linked('subject');
 
     return `import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, $$Book, $CardCatalogue, Book, CardCatalogue } from '@dna-platform/lib';
+import { $Book, $$Book } from '@dna-platform/lib';
 
 // THE CARDS OF THIS LIBRARY, GENERATED. A card in the framework is an
 // $$Book and nothing more; which fields a library's cards carry is
@@ -98,33 +100,11 @@ import { $Book, $$Book, $CardCatalogue, Book, CardCatalogue } from '@dna-platfor
 // NOTHING HERE IMPORTS A BOOK. A card is a book present without the book, and a
 // module that reached for one would be handling the item it stands in for.
 export class $Card extends $$Book {
-    $title = '';
-    $subtitle = '';
-    $synopsis = '';
-    $chapters: string[] = [];
-
     get path(): string { return this.name; }
 
-    get title(): string { return this.$title; }
-
-    get subtitle(): string { return this.$subtitle; }
-
-    get synopsis(): string { return this.$synopsis; }
-
-    get chapters(): string[] { return this.$chapters; }
-
-    // NARROWED, because every card in THIS library is a $Card. The base promises
-    // a $$Book; a generated catalogue knows better and says so.
     override get subject(): $Card | undefined { return this.$subject as $Card | undefined; }
 
     override get library(): $Card | undefined { return super.library as $Card | undefined; }
-
-    // NO CANONICAL LINK. A canonical link is a SUBJECT'S — it says which of the
-    // books a subject holds speaks for it — and a card catalogues nothing.
-    //
-    // AND NO LIBRARY CLIMB. It used to live here, and a rule about books that
-    // lives in generated code is a rule with two homes that can disagree. It is
-    // $Book.library now, in the framework, asked of a book rather than a card.
 }
 
 const Card = $($Card);
@@ -145,27 +125,13 @@ ${subjects.join('\n')}
 ${authors.join('\n')}
 ${entries.join('\n')}
 
-// A CLASS, so a SCOPE CAN HOLD ONE. An annotation asks its scope for the
-// catalogue and finds its own card there, which is why nothing has to be inserted
-// into <Author>The Team</Author>. The composition root registers this.
-export class $TheCatalogue extends $CardCatalogue {
-    override $cards: $$Book[] = [
-${named.map(n => `        ${n.as},`).join('\n')}
-    ];
-}
+export const cards: $Card[] = [
+${named.map(n => `    ${n.as},`).join('\n')}
+];
 
-export const TheCatalogue = $($TheCatalogue);
+const held = new Map<string, $Card>(cards.map(c => [c.path, c]));
 
-export const catalogue = $(<TheCatalogue />) as $TheCatalogue;
-
-// AND THE SCOPE IS GIVEN IT. An annotation asks its scope for the catalogue and
-// finds its own card there — which is why nothing is inserted into an element a
-// person wrote. A library declaring its own catalogue is content, not
-// configuration, so it is declared here rather than in the application.
-export const file = (): void => { $(Book, CardCatalogue)(TheCatalogue); };
-
-export const at = (path: string): $Card | undefined =>
-    catalogue.holds(path) ? catalogue.card(path) as $Card : undefined;
+export const at = (path: string): $Card | undefined => held.get(path);
 `;
 };
 

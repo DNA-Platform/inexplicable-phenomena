@@ -58,7 +58,7 @@ describe('THE CARDS ARE FILLED BEFORE ANYTHING IS ASKED, and that is what makes 
     it('and a book whose links point nowhere would be judged on nothing rather than crash', async () => {
         // Pointed at a folder holding no program: the import fails, and the
         // phase says so instead of taking the process down.
-        await expect(validate({ root: corpus, speaks: '', entries: [], books: [], complaints: [] }, join(workspace, 'nowhere')))
+        await expect(validate({ root: corpus, speaks: '', entries: [], books: [], diagnostics: [] }, join(workspace, 'nowhere')))
             .rejects.toBeTruthy();
     });
 });

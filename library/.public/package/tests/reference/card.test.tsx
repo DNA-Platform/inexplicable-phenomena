@@ -46,10 +46,8 @@ const book = (title: string): $Book => $(
 
 class $ShelvedCard extends $$Book {
     $synopsis = '';
-    $author?: $$Book = undefined;
 
     get synopsis(): string { return this.$synopsis; }
-    get author(): $$Book | undefined { return this.$author; }
 }
 
 const ShelvedCard = $($ShelvedCard);
@@ -60,27 +58,41 @@ describe('$$Book — a card that prints what is on it', () => {
     // because a book has them, and `synopsis` is the only thing THIS library
     // adds. A card that had to know every property in advance would be a card
     // for one kind of book, which is not a catalogue.
-    it('enumerates its own properties and prints them, without being told what they are', () => {
-        const card: $ShelvedCard = $(<ShelvedCard name="The Manifold" synopsis="The reference system, read rather than described." />);
+    // A CARD WRITES ITSELF. This promised a REFLECTION — a card enumerating its
+    // own fields and printing them as `name: value` — and that mechanism is
+    // deliberately gone: a card is a chapter now, one grade below the book it
+    // stands for, so what it says is writing rather than a record of fields.
+    it('writes a title and an account of the thing it stands for', () => {
+        const card: $ShelvedCard = $(<ShelvedCard name="/the-manifold" title="The Manifold" synopsis="The reference system, read rather than described." />);
 
-        expect(card.properties()).toEqual(['subject', 'name', 'title', 'subtitle', 'chapters', 'synopsis', 'author']);
-        expect(card.copy).toContain('synopsis: The reference system, read rather than described.');
+        expect(card.title?.copy).toBe('The Manifold');
+        // THE ACCOUNT IS PARENTHETICAL, which is what a summary is — present in
+        // the writing, absent from the reading. So the card's copy is its title
+        // and the account is asked for by name.
+        expect(card.summary?.copy).toContain('The reference system, read rather than described.');
+        expect(card.copy).toBe('The Manifold');
     });
 
-    it('prints a card-valued property as that card, never reaching the thing it stands for', () => {
-        const life: $ShelvedCard = $(<ShelvedCard name="The Team" synopsis="How these books came to be." />);
-        const card: $ShelvedCard = $(<ShelvedCard name="The Manifold" synopsis="Read rather than described." author={life} />);
+    it('names its author as a card, never reaching the thing that card stands for', () => {
+        const life: $ShelvedCard = $(<ShelvedCard name="/the-team" title="The Team" synopsis="How these books came to be." />);
+        const card: $ShelvedCard = $(<ShelvedCard name="/the-manifold" title="The Manifold" synopsis="Read rather than described." />);
+        card.$author = life;
 
-        expect(card.written('author')).toBe('The Team');
+        expect(card.author?.title?.copy).toBe('The Team');
+        expect(() => card.author!.read()).toThrow();
     });
 
-    it('shows what is on it, and nothing a subclass would have to undo', () => {
-        const card: $ShelvedCard = $(<ShelvedCard name="The Manifold" synopsis="Read rather than described." />);
+    it('draws as writing rather than as a record of its fields', () => {
+        const card: $ShelvedCard = $(<ShelvedCard name="/the-manifold" title="The Manifold" synopsis="Read rather than described." />);
         const C = $(card) as any;
         const { container } = render(<C />);
 
-        expect(container.textContent).toContain('name: The Manifold');
-        expect(container.textContent).toContain('synopsis: Read rather than described.');
+        expect(container.textContent).toContain('The Manifold');
+        // AND NOTHING PRINTS ITS OWN FIELD NAMES. A card used to draw
+        // `name: The Manifold` by reflecting over how the class happened to be
+        // written; it is a chapter now and says what a chapter says.
+        expect(container.textContent).not.toContain('name:');
+        expect(container.textContent).not.toContain('synopsis:');
     });
 
     it('reads to the thing it stands for', () => {
@@ -117,6 +129,6 @@ describe('$$Book — a card that prints what is on it', () => {
         const algebra = book('The Algebra of Perspective');
         const card: $$Book = $(<CardOf name="The Algebra of Perspective" of={() => algebra} />);
 
-        expect(card.then(algebra.cover)).toBeInstanceOf($Path);
+        expect(card.follow(algebra.cover)).toBeInstanceOf($Path);
     });
 });

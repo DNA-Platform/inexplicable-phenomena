@@ -1,3 +1,4 @@
+import { type $LibraryCard } from './librarycard';
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Figure } from '@/writing/Figure';
@@ -68,10 +69,10 @@ export class $Slipped extends $Plated {
         return (
             <Slip>
                 <SlipName>{card.name}</SlipName>
-                {card.properties().filter(property => property !== 'name').map(property => (
+                {(card as $LibraryCard).properties().filter(property => property !== 'name').map(property => (
                     <SlipBody key={property}>
                         <em>{property}</em>
-                        <span>{card.written(property)}</span>
+                        <span>{(card as $LibraryCard).written(property)}</span>
                     </SlipBody>
                 ))}
             </Slip>

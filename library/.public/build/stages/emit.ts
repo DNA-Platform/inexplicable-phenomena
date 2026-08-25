@@ -1,6 +1,8 @@
 import { mkdirSync, readFileSync, writeFileSync, readdirSync, statSync, rmSync } from 'node:fs';
-import { join, relative, dirname, sep } from 'node:path';
+import { join, relative, dirname } from 'node:path';
 import { Project, SyntaxKind } from 'ts-morph';
+import { annotation } from '../library.ts';
+import { forward } from '../utilities/where.ts';
 import type { Book, Path, Library } from '../library.ts';
 
 // EMITTING. A library becomes a program: the writing carried to where it is
@@ -9,8 +11,6 @@ import type { Book, Path, Library } from '../library.ts';
 //
 // WHERE any of it lands is a POLICY of this phase and not a phase of its own.
 // Move the output and a decision here changes; nobody's work does.
-
-const forward = (p: string): string => p.split(sep).join('/');
 
 // An alias cannot hold a space, so a display name taken verbatim could never be
 // more than one word — which makes splitting it FORCED rather than chosen.
@@ -43,7 +43,6 @@ const rewritten = (source: string, path: string, book: Book, project: Project, c
     const file = project.getSourceFile(path);
     if (!file) return source;
     const edits: Edit[] = [];
-    const kinds = new Set(['Author', 'Subject', 'Canonical']);
     const linked = new Set<string>();
     const wanted = new Set<string>();
 
@@ -52,16 +51,18 @@ const rewritten = (source: string, path: string, book: Book, project: Project, c
     // looked up by that and never by the word a reader sees.
     const held = (as: string): string => {
         const to = as === 'author' ? book.author : as === 'subject' ? book.subject : book.canonical;
-        const named = to?.book ? cards?.get(to.book) : undefined;
+        const named = (to?.book ? cards?.at.get(to.book) : undefined)
+            ?? (to?.display ? cards?.titled.get(to.display) : undefined);
         if (named) wanted.add(named);
         return named ?? '';
     };
 
     const carried = new Set<string>();
     for (const element of file.getDescendantsOfKind(SyntaxKind.JsxElement)) {
-        const as = element.getOpeningElement().getTagNameNode().getText();
-        if (!kinds.has(as)) continue;
-        carried.add(as);
+        const tag = element.getOpeningElement().getTagNameNode().getText();
+        const as = annotation(tag);
+        if (!as) continue;
+        carried.add(tag);
 
         // A REFERENCE IS GIVEN ITS CARD — and this is the ONE THING P16 asked to
         // remove, still here, for a reason worth writing down.
@@ -78,7 +79,7 @@ const rewritten = (source: string, path: string, book: Book, project: Project, c
         //
         // Until a scope can be given a catalogue outside a renderer, the emitted
         // cover carries the card and the authored one does not have to.
-        const card = held(as.toLowerCase());
+        const card = held(as);
         if (card) {
             const open = element.getOpeningElement();
             edits.push({ at: open.getEnd() - 1, to: open.getEnd() - 1, text: ` for={${card}}` });
@@ -166,9 +167,9 @@ const assemble = (book: Book, held: Book[], cards?: Cards): string => {
     // that is what makes it read ELSEWHERE — which is in turn what makes this
     // book a catalogue rather than a reader. The same class stands in two books
     // with an honest parent each; only one of them carries a card.
-    const own = cards?.get(book.path);
+    const own = cards?.at.get(book.path);
     // The book's OWN card is imported too, because the book is told it.
-    const carried = [...new Set([...held.map(b => cards?.get(b.path) ?? ''), own ?? ''])].filter(Boolean);
+    const carried = [...new Set([...held.map(b => cards?.at.get(b.path) ?? ''), own ?? ''])].filter(Boolean);
     const imports = [
         `import React from 'react';`,
         `import { $ } from '@dna-platform/chemistry';`,
@@ -183,7 +184,7 @@ const assemble = (book: Book, held: Book[], cards?: Cards): string => {
         `<TableOfContents />`,
         ...parts.map(f => `<${f.declares} />`),
         ...held.map(b => {
-            const card = cards?.get(b.path);
+            const card = cards?.at.get(b.path);
             return `<${b.synopsis.declares}${card ? ` for={${card}}` : ''} />`;
         }),
     ];
@@ -199,18 +200,19 @@ const assemble = (book: Book, held: Book[], cards?: Cards): string => {
 
 // ─── THE RUN ─────────────────────────────────────────────────────────────────
 
-const sweep = (dir: string, keep: Set<string>): void => {
-    if (!statSync(dir, { throwIfNoEntry: false })?.isDirectory()) return;
-    for (const name of readdirSync(dir)) {
+/** Every file under a folder, forward-slashed. */
+const gather = (dir: string): string[] => {
+    if (!statSync(dir, { throwIfNoEntry: false })?.isDirectory()) return [];
+    return readdirSync(dir).flatMap(name => {
         const at = join(dir, name);
-        if (statSync(at).isDirectory()) { sweep(at, keep); continue; }
-        if (!keep.has(forward(at))) rmSync(at);
-    }
+        return statSync(at).isDirectory() ? gather(at) : [forward(at)];
+    });
 };
 
-/** A book's path to the identifier its card is exported under. Absent on the
- *  first pass, because the cards are read off books that do not exist yet. */
-export type Cards = Map<string, string>;
+/** How a card is reached: by the path of the book it stands for, and by the
+ *  title printed on it. Absent on the first pass, because the cards are read
+ *  off books that do not exist yet. */
+export type Cards = { at: Map<Path, string>; titled: Map<string, string> };
 
 export type Emitted = { carried: number; generated: number; removed: string[] };
 
@@ -257,17 +259,9 @@ export const emit = (resolved: Library, into: string, cards?: Cards, extra: Reco
     // A FILE THE RUN DID NOT WRITE HAS NO SOURCE, so it goes. This is what makes
     // the output regenerated rather than accumulated — a chapter deleted from the
     // corpus leaves, and nobody has to remember to delete it.
-    const before = new Set<string>();
-    const gather = (dir: string) => {
-        if (!statSync(dir, { throwIfNoEntry: false })?.isDirectory()) return;
-        for (const name of readdirSync(dir)) {
-            const at = join(dir, name);
-            statSync(at).isDirectory() ? gather(at) : before.add(forward(at));
-        }
-    };
-    gather(into);
-    const removed = [...before].filter(f => !written.has(f)).map(f => forward(relative(into, f)));
-    sweep(into, written);
+    const stale = gather(into).filter(f => !written.has(f));
+    for (const at of stale) rmSync(at);
+    const removed = stale.map(f => forward(relative(into, f)));
 
     return { carried, generated, removed };
 };

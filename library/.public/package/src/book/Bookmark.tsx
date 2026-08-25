@@ -20,7 +20,7 @@ export class $Bookmark<T extends $Referent = $Referent> extends $Writing impleme
         return this.place !== undefined && this.place.valid();
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }

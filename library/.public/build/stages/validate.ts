@@ -1,4 +1,6 @@
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import type { $Book } from '@dna-platform/lib';
 import type { Library } from '../library.ts';
 
 // VALIDATING. A program becomes a verdict.
@@ -22,16 +24,21 @@ import type { Library } from '../library.ts';
 // for nothing, so a link through it cannot be followed and every rule about
 // where links point is skipped in silence.
 
-const url = (at: string): string => 'file:///' + at.split('\\').join('/');
+// split-and-join here and a regex replace in catalogue.ts — same job, same phase
+// of the same compile, two spellings — and neither handled a drive letter, a UNC
+const url = (at: string): string => pathToFileURL(at).href;
 
-export type Levels = {
-    chapters: number;
-    sections: number;
-    paragraphs: number;
-    sentences: number;
-    words: number;
-    letters: number;
-};
+// later, the same six as data paired by hand with each singular — so a seventh
+export const grades = [
+    ['chapters', 'chapter'],
+    ['sections', 'section'],
+    ['paragraphs', 'paragraph'],
+    ['sentences', 'sentence'],
+    ['words', 'word'],
+    ['letters', 'letter'],
+] as const;
+
+export type Levels = Record<(typeof grades)[number][0], number>;
 
 export type Verdict = {
     route: string;
@@ -47,7 +54,7 @@ export type Validation = {
     levels: Levels;
 };
 
-const empty = (): Levels => ({ chapters: 0, sections: 0, paragraphs: 0, sentences: 0, words: 0, letters: 0 });
+const empty = (): Levels => Object.fromEntries(grades.map(([key]) => [key, 0])) as Levels;
 
 const valid = (part: unknown): boolean => {
     const held = part as { valid?: () => boolean };
@@ -61,17 +68,9 @@ const valid = (part: unknown): boolean => {
 
 // EVERY LEVEL IS ASKED, not only counted. A book whose letters were constructed
 // and never questioned is a number with a silent scope.
-const walked = (live: any): { levels: Levels; faults: string[] } => {
+const walked = (live: $Book | undefined): { levels: Levels; faults: string[] } => {
     const levels = empty();
     const faults: string[] = [];
-    const grades: [keyof Levels, string][] = [
-        ['chapters', 'chapter'],
-        ['sections', 'section'],
-        ['paragraphs', 'paragraph'],
-        ['sentences', 'sentence'],
-        ['words', 'word'],
-        ['letters', 'letter'],
-    ];
     for (const [key, grade] of grades) {
         const parts: unknown[] = live?.[key] ?? [];
         levels[key] = parts.length;
@@ -93,9 +92,9 @@ export const validate = async (resolved: Library, into: string): Promise<Validat
     // TWO PASSES, and the order is forced. Every card holds its book before any
     // book is asked, because one book's validity is a question about another —
     // an author that authors itself lives somewhere else.
-    const live = new Map<string, any>();
+    const live = new Map<string, $Book>();
     for (const book of resolved.books) {
-        const loaded = (await import(/* @vite-ignore */ url(join(into, book.path, 'book.tsx')))) as { book: unknown };
+        const loaded = (await import(/* @vite-ignore */ url(join(into, book.path, 'book.tsx')))) as { book: $Book };
         live.set(book.path, loaded.book);
         const card = cards.at(book.route);
         if (card) card.$of = () => loaded.book;

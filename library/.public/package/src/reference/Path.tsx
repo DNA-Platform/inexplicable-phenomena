@@ -17,7 +17,7 @@ export class $Path<M extends $Referent = any, U extends $Referent = any> extends
         return this.$onward.read();
     }
 
-    then<V extends $Referent>(onward: $Reference<V>): $Reference<V> {
+    follow<V extends $Referent>(onward: $Reference<V>): $Reference<V> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }

@@ -1,19 +1,16 @@
 import { join } from 'node:path';
-import { walk } from '../stages/walk.ts';
-import { refer } from '../stages/refer.ts';
-import { resolve } from '../stages/resolve.ts';
-import { validate } from '../stages/validate.ts';
-import { root } from '../utilities/where.ts';
+import { walk } from './stages/walk.ts';
+import { refer } from './stages/refer.ts';
+import { resolve } from './stages/resolve.ts';
+import { validate } from './stages/validate.ts';
+import { root } from './utilities/where.ts';
 
-// CHECKING, as a command. The phase itself is validate.ts; this is the script
-// that runs it, which is the folder's own convention — see.ts reports, the
-// verify-* scripts gate, index.ts compiles, and none of them is also a module.
+// It sits at the root beside index.ts because that is what it is — a driver.
 //
-//   npx tsx check.ts ../../.test-library [emitted-folder]
 
 const corpus = process.argv[2];
 if (!corpus) {
-    console.error('check.ts <library-folder> [emitted-folder]');
+    console.error('verify.ts <library-folder> [emitted-folder]');
     process.exit(1);
 }
 

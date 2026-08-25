@@ -37,9 +37,11 @@ export class $TheShelf extends $Book {
                                 {cards.map((card: $LibraryCard) => (
                                     <DrawerCard key={card.name}>
                                         <DrawerName>{card.name}</DrawerName>
-                                        {card.properties().filter(p => p !== 'name' && p !== 'chapters').map(p => (
-                                            <DrawerRow key={p}><em>{p}</em><span>{card.written(p)}</span></DrawerRow>
-                                        ))}
+                                        <DrawerRow><em>title</em><span>{card.canonical?.heading ?? ''}</span></DrawerRow>
+                                        <DrawerRow><em>subtitle</em><span>{card.subtitle?.copy ?? ''}</span></DrawerRow>
+                                        <DrawerRow><em>synopsis</em><span>{card.synopsis}</span></DrawerRow>
+                                        <DrawerRow><em>author</em><span>{card.author?.name ?? ''}</span></DrawerRow>
+                                        <DrawerRow><em>subject</em><span>{card.subject?.name ?? ''}</span></DrawerRow>
                                     </DrawerCard>
                                 ))}
                             </Drawer>

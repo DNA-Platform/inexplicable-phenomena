@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { resolve } from '../stages/resolve.ts';
-import type { Entry, File, Library, Reference } from '../library.ts';
+import type { Entry, File, Library, Reference, As } from '../library.ts';
 
 // A LIBRARY BUILT BY HAND, because resolving never touches a filesystem. The
 // seam is a type, so a promise about resolving can be written without a folder.
@@ -23,17 +23,17 @@ const book = (path: string, route: string, references: Reference[] = []): Entry 
 const subject = (path: string, route: string, own: string, holds: string[], references: Reference[] = []): Entry =>
     ({ ...book(path, route, references), kind: 'subject', own, holds, files: [] });
 
-const points = (as: string, display: string, to: string): Reference =>
+const points = (as: As, display: string, to: string): Reference =>
     ({ as, display, at: `${to}/.cover.tsx`, book: to });
 
-const named = (as: string, display: string): Reference => ({ as, display, at: '', book: '' });
+const named = (as: As, display: string): Reference => ({ as, display, at: '', book: '' });
 
 // The shape the corpus has: a library book, a subject with two books beneath it,
 // and a book that authors itself.
 const library = (over: Partial<Record<string, Reference[]>> = {}): Library => ({
     root: '/nowhere',
     speaks: '..own',
-    complaints: [], books: [],
+    diagnostics: [], books: [],
     entries: [
         { ...book('..own', '/', over['..own'] ?? [points('author', 'TheTeam', 'the-team')]), route: '/' },
         subject('.physics', '/physics', '.physics/.subject', ['.physics/.subject', '.physics/deep', '.physics/a']),
@@ -81,7 +81,7 @@ describe('who WROTE it is the author declared, or the one the library names', ()
         const b = said.books.find(x => x.path === '.physics/deep');
         expect(b?.author?.display).toBe('A Stranger');
         expect(b?.author?.book).toBe('');
-        expect(said.complaints.some(c => c.at === '.physics/deep')).toBe(false);
+        expect(said.diagnostics.some(c => c.at === '.physics/deep')).toBe(false);
     });
 });
 
@@ -99,8 +99,8 @@ describe('which book SPEAKS for a subject cannot be answered by position', () =>
 
     it('AND A SUBJECT NAMING A BOOK IT DOES NOT HOLD IS INVALID, by name', () => {
         const l = library({ '.physics/.subject': [points('canonical', 'The Team', 'the-team')] });
-        const complaints = resolve(l).complaints;
-        expect(complaints.some(c => c.at === '.physics/.subject' && c.says.includes('does not hold it'))).toBe(true);
+        const diagnostics = resolve(l).diagnostics;
+        expect(diagnostics.some(c => c.at === '.physics/.subject' && c.says.includes('does not hold it'))).toBe(true);
     });
 });
 

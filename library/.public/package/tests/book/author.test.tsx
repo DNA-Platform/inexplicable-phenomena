@@ -13,7 +13,7 @@ import { $Author, Author } from '@/book/Author';
 import { Subject } from '@/book/Subject';
 import { TableOfContents } from '@/book/TableOfContents';
 import { type $LibraryCard, LibraryCard } from '@/../app/src/sections/book/library/the-team/librarycard';
-import { $CardCatalogue, CardCatalogue } from '@/library/CardCatalogue';
+import { $CardCatalogue, CardCatalogue } from '@/reference/CardCatalogue';
 import { $$Book } from '@/book/Book';
 
 // A catalogue is a chemical now, so it is bound rather than constructed — which

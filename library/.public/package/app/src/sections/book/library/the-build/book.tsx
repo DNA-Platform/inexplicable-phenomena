@@ -33,6 +33,20 @@ export class $TheBuild extends $Book {
         const next = this.page + by;
         if (next < 0 || next >= this.readable.length) return;
         this.page = next;
+        requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }));
+    }
+
+    turning(): ReactNode {
+        return (
+            <Turn>
+                <Leaf $back disabled={this.page === 0} onClick={() => this.turn(-1)}>
+                    {this.page === 0 ? '' : `← ${this.readable[this.page - 1].title?.copy ?? ''}`}
+                </Leaf>
+                <Leaf disabled={this.page >= this.readable.length - 1} onClick={() => this.turn(1)}>
+                    {this.page >= this.readable.length - 1 ? '' : `${this.readable[this.page + 1].title?.copy ?? ''} →`}
+                </Leaf>
+            </Turn>
+        );
     }
 
     view(): ReactNode {
@@ -54,15 +68,9 @@ export class $TheBuild extends $Book {
                         </Back>
                     ) : null}
                 </Header>
+                {this.turning()}
                 <Plate key={this.page}><C /></Plate>
-                <Turn>
-                    <Leaf $back disabled={this.page === 0} onClick={() => this.turn(-1)}>
-                        {this.page === 0 ? '' : `← ${this.readable[this.page - 1].title?.copy ?? ''}`}
-                    </Leaf>
-                    <Leaf disabled={this.page >= this.readable.length - 1} onClick={() => this.turn(1)}>
-                        {this.page >= this.readable.length - 1 ? '' : `${this.readable[this.page + 1].title?.copy ?? ''} →`}
-                    </Leaf>
-                </Turn>
+                {this.turning()}
             </Sheet>
         );
     }

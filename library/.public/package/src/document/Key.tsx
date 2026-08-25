@@ -17,7 +17,7 @@ export class $Key extends $Referent implements $Reference<$Footnote> {
         return this.$footnote;
     }
 
-    then<U extends $Referent>(onward: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(onward: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }

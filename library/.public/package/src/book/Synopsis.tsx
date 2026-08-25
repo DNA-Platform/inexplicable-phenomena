@@ -60,8 +60,8 @@ export class $Synopsis extends $Chapter {
     $account = Account;
 
     entry(card: $$Book, contents: ReactNode, theme: $Theme): ReactNode {
-        const named = card.written('title') || card.name;
-        const under = card.written('subtitle');
+        const named = card.title?.copy || card.name;
+        const under = card.subtitle?.copy ?? '';
         const Standing = this.$entry;
         const Title = this.$named;
         const Sub = this.$under;
@@ -87,7 +87,7 @@ export class $Synopsis extends $Chapter {
     // the book, and an account is not a shelf label — so drawing the contents
     // here showed a heading and nothing under it.
     said(card: $$Book, contents: ReactNode, theme: $Theme): ReactNode {
-        const line = card.written('synopsis');
+        const line = card.synopsis;
         if (!line) return contents;
         const Said = this.$account;
         return <Said $theme={theme} data-account>{line}</Said>;
@@ -120,7 +120,7 @@ export class $$Synopsis extends $$Chapter {
     override get copy(): string {
         const of = this.of as $Synopsis;
         const card = of?.card;
-        if (card) return card.written('title') || card.name;
+        if (card) return card.title?.copy || card.name;
         return super.copy;
     }
 }

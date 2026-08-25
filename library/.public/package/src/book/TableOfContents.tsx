@@ -122,7 +122,7 @@ export class $TableOfContents extends $Chapter implements $Catalogue<$Chapter> {
         return this.cover.read();
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }

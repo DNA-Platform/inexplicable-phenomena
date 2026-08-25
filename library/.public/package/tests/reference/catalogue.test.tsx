@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { type $LibraryCard, LibraryCard } from '@/../app/src/sections/book/library/the-team/librarycard';
-import { $CardCatalogue, CardCatalogue } from '@/library/CardCatalogue';
+import { $CardCatalogue, CardCatalogue } from '@/reference/CardCatalogue';
 import { $$Book } from '@/book/Book';
 import { type $Book } from '@/book/Book';
 
@@ -18,7 +18,7 @@ const catalogued = (): { catalogue: $CardCatalogue; shelf: $LibraryCard; team: $
         $(<LibraryCard name="The Team" title="The Team" />) as $LibraryCard,
         $(<LibraryCard name="The Manifold" title="The Manifold" />) as $LibraryCard,
     );
-    for (const card of catalogue.cards as $LibraryCard[]) catalogue.file('title', card.title, card);
+    for (const card of catalogue.cards as $LibraryCard[]) catalogue.file('title', card.title?.copy ?? card.name, card);
     return {
         catalogue,
         shelf: catalogue.card('The Shelf') as $LibraryCard,

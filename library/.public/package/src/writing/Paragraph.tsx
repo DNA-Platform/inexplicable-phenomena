@@ -203,7 +203,7 @@ export class $$Paragraph extends $Sentence implements $Reference<$Paragraph>, $C
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

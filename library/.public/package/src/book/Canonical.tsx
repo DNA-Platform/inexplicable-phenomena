@@ -11,7 +11,7 @@ export class $Canonical extends $Annotation {
         const mine = this.book?.card;
         const yours = this.card;
         if (!mine || !yours) return super.valid();
-        return $valid(mine.entries.includes(yours), 'a canonical names one of the books its subject holds, and this one names a book it does not hold');
+        return $valid(mine.entries.some(held => held === yours), 'a canonical names one of the books its subject holds, and this one names a book it does not hold');
     }
 }
 

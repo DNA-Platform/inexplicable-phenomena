@@ -1,6 +1,7 @@
 import { readdirSync, statSync, existsSync, readFileSync } from 'node:fs';
-import { join, relative, dirname, basename, sep } from 'node:path';
-import type { Complaint, Entry, File, Kind, Library, Path, Role } from '../library.ts';
+import { join, relative, dirname, basename } from 'node:path';
+import { forward } from '../utilities/where.ts';
+import type { Diagnostic, Entry, File, Kind, Library, Path, Role } from '../library.ts';
 
 // THE WALK. It turns a folder of writing into a description of a library, and it
 // is the only stage that ever looks at the filesystem.
@@ -9,8 +10,6 @@ import type { Complaint, Entry, File, Kind, Library, Path, Role } from '../libra
 // dot-prefixed name, and this bit three times before it was written down: tsc's
 // `include` saw one file of three, ts-morph's `addSourceFilesAtPaths` loaded
 // nothing at all, and only an explicit path found them.
-
-const forward = (p: string): Path => p.split(sep).join('/');
 
 export const dotsOf = (name: string): number => (name.match(/^\.+/)?.[0].length ?? 0);
 
@@ -74,7 +73,7 @@ const speaker = (folders: string[]): string => {
 export const walk = (root: string, workspace = process.cwd()): Library => {
     const manifest = manifestAt(workspace);
     const entries: Entry[] = [];
-    const complaints: Complaint[] = [];
+    const diagnostics: Diagnostic[] = [];
     let speaks = '';
 
     const listedFor = (dir: string): string[] => {
@@ -99,14 +98,12 @@ export const walk = (root: string, workspace = process.cwd()): Library => {
         // is the container's own book, which is why position outranks the dots.
         const kind: Kind = spoken ? 'book' : dotsOf(basename(dir)) || folders.length ? 'subject' : 'book';
 
-        // `declares` is left empty here on purpose: the walk looks at names and
         // arrangement and never opens a file. What a file exports is read from
-        // the source, which is refer.ts's business.
+        // the source, which is refer.ts's business — so before that runs the
         const files: File[] = filenames.map((name, at) => ({
             name,
             role: roleOf(name),
             order: at,
-            declares: '',
         }));
 
         if (path) {
@@ -122,17 +119,18 @@ export const walk = (root: string, workspace = process.cwd()): Library => {
                 order,
             });
 
-            if (kind === 'subject' && !folders.length) complaints.push({ at: path, says: 'marked a subject and holds nothing' });
-            if (folders.length && !own) complaints.push({ at: path, says: 'no single folder speaks for it' });
-            if (kind === 'book' && files.length && !files.some(f => f.role === 'cover')) complaints.push({ at: path, says: 'a book with no cover' });
-            if (kind === 'book' && !files.length && !folders.length) complaints.push({ at: path, says: 'holds nothing at all' });
+            if (kind === 'subject' && !folders.length) diagnostics.push({ at: path, says: 'marked a subject and holds nothing' });
+            if (folders.length && !own) diagnostics.push({ at: path, says: 'no single folder speaks for it' });
+            if (kind === 'book' && files.length && !files.some(f => f.role === 'cover')) diagnostics.push({ at: path, says: 'a book with no cover' });
+            if (kind === 'book' && files.length && !files.some(f => f.role === 'synopsis')) diagnostics.push({ at: path, says: 'a book with no synopsis — a book gives an account of itself' });
+            if (kind === 'book' && !files.length && !folders.length) diagnostics.push({ at: path, says: 'holds nothing at all' });
         }
 
         // The root is a parameter rather than an entry, so the convention never
         // judges its name — but it is still a container, and a library with
         // nothing speaking for it has no book of its own.
         if (!path) {
-            if (folders.length && !own) complaints.push({ at: '.', says: 'no single folder speaks for the library' });
+            if (folders.length && !own) diagnostics.push({ at: '.', says: 'no single folder speaks for the library' });
             speaks = own ? forward(relative(root, join(dir, own))) : '';
         }
 
@@ -140,5 +138,5 @@ export const walk = (root: string, workspace = process.cwd()): Library => {
     };
 
     visit(root, 0);
-    return { root, speaks, entries, books: [], complaints };
+    return { root, speaks, entries, books: [], diagnostics };
 };

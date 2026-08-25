@@ -122,7 +122,7 @@ export class $TheTeam extends $Book {
                     <Standing onClick={() => { this.page = 0; }}>{this.title?.copy ?? ''}</Standing>
                     <Imprint>
                         {author ? `${author.name} · ` : ''}
-                        {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$travel?.(); }}>{`← ${(subject.card as $LibraryCard | undefined)?.title ?? subject.name}`}</ImprintMark> : null}
+                        {subject ? <ImprintMark data-subject onClick={() => { subject.read(); this.$travel?.(); }}>{`← ${(subject.card as $LibraryCard | undefined)?.canonical?.heading ?? subject.name}`}</ImprintMark> : null}
                         {subject ? ' · ' : ''}
                         {cover ? 'Cover' : `Chapter ${numeral[this.page] ?? this.page}`}
                     </Imprint>

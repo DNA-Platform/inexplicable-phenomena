@@ -48,7 +48,7 @@ check('a declared subject keeps what its author wrote',
 check('an author named rather than imported stands for a name, and nothing complains',
     at('.physics/.subject')?.author?.book === ''
     && at('.physics/.subject')?.author?.display === 'The Team'
-    && !resolved.complaints.some(c => c.at === '.physics/.subject'));
+    && !resolved.diagnostics.some(c => c.at === '.physics/.subject'));
 
 // --- which book speaks, and in what order -----------------------------------
 
@@ -72,7 +72,7 @@ check('a subject holds the BOOKS of the subjects beneath it, never their folders
     at('..the-library')?.entries.join() === '.physics/.subject,.philosophy/.subject,the-team',
     at('..the-library')?.entries.join());
 
-// --- the one complaint, driven against a tree built to break ----------------
+// --- the one diagnostic, driven against a tree built to break ----------------
 
 const broken: Library = JSON.parse(JSON.stringify(read));
 const physics = broken.entries.find(e => e.path === '.physics/.subject')!;
@@ -80,8 +80,8 @@ physics.references = physics.references.map(r =>
     r.as === 'canonical' ? { ...r, book: '.philosophy/the-hard-problem', display: 'The Hard Problem' } : r);
 const judged = resolve(broken);
 check('a subject naming a book it does not hold is INVALID, and says which',
-    judged.complaints.some(c => c.at === '.physics/.subject' && c.says.includes('does not hold it')),
-    String(judged.complaints.length));
+    judged.diagnostics.some(c => c.at === '.physics/.subject' && c.says.includes('does not hold it')),
+    String(judged.diagnostics.length));
 
 // --- emitting ---------------------------------------------------------------
 

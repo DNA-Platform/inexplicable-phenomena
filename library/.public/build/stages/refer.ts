@@ -1,22 +1,19 @@
-import { join, relative, dirname, sep } from 'node:path';
+import { join, relative, dirname } from 'node:path';
 import { Project, SyntaxKind } from 'ts-morph';
+import { forward } from '../utilities/where.ts';
 import type { Node, SourceFile } from 'ts-morph';
-import type { Complaint, Entry, Library, Reference } from '../library.ts';
+import { annotation } from '../library.ts';
+import type { Diagnostic, Entry, Library, Reference } from '../library.ts';
 
 // THE REFERENCES. One book names another by importing its cover under whatever
 // alias reads well and writing that alias as a child — so the ALIAS is the
 // display name and the IMPORT is the link, and one construct does both jobs.
-//
 //     import { Cover as Math } from '../.mathematics/.subject/.cover';
 //     <Subject>{Math}</Subject>          both forms are read
 //     <Subject><Math /></Subject>
 //
 // A cover's location is its book's location, so resolving the import to a file
 // and dropping the filename gives the book that was named.
-
-const forward = (p: string): string => p.split(sep).join('/');
-
-const kinds = new Set(['Author', 'Subject', 'Canonical']);
 
 // Files are added BY COMPUTED PATH. ts-morph's own glob does not match a
 // dot-prefixed name and silently loads nothing at all.
@@ -40,14 +37,23 @@ const declared = (id: Node): string => {
     return at?.getSourceFile?.().getFilePath() ?? '';
 };
 
+// and it used to be reported as the second — which sends a reader looking for a
+const unparsed = (source: SourceFile): boolean =>
+    source.getProject().getProgram().compilerObject.getSyntacticDiagnostics(source.compilerNode).length > 0;
+
 // WHAT A FILE EXPORTS, and it is not derivable from the filename: `.cover.tsx`
 // exports `TestLibraryCover` in one book and `HardProblemCover` in another.
 // Anything that composes a book needs the name, so it is read once, here.
+//
 const declaredBy = (source: SourceFile): string => {
     for (const statement of source.getVariableStatements()) {
         if (!statement.isExported()) continue;
-        const named = statement.getDeclarations()[0]?.getName();
-        if (named) return named;
+        const declaration = statement.getDeclarations()[0];
+        const named = declaration?.getName();
+        if (!named) continue;
+        const call = declaration.getInitializer()?.asKind(SyntaxKind.CallExpression);
+        if (call?.getExpression().getText() !== '$') continue;
+        return named;
     }
     return '';
 };
@@ -63,7 +69,7 @@ export const refer = (library: Library): Library => {
     // subject or an author is a book's claim about itself and belongs on its
     // face, so a `<Subject>` written inside a chapter is deliberately not a link.
     const project = open(every.map(f => f.at));
-    const complaints: Complaint[] = [...library.complaints];
+    const diagnostics: Diagnostic[] = [...library.diagnostics];
     const entries: Entry[] = library.entries.map(e => ({ ...e, references: [], files: e.files.map(f => ({ ...f })) }));
     const byPath = new Map(entries.map(e => [e.path, e]));
 
@@ -71,8 +77,13 @@ export const refer = (library: Library): Library => {
         const source = project.getSourceFile(at);
         if (!source) continue;
         const held = byPath.get(entry.path)!.files.find(f => f.name === file.name)!;
+        if (unparsed(source)) {
+            held.declares = '';
+            diagnostics.push({ at: entry.path, says: `${file.name} would not parse` });
+            continue;
+        }
         held.declares = declaredBy(source);
-        if (!held.declares) complaints.push({ at: entry.path, says: `${file.name} exports nothing a book can compose` });
+        if (!held.declares) diagnostics.push({ at: entry.path, says: `${file.name} exports nothing a book can compose` });
     }
 
     for (const cover of covers) {
@@ -85,8 +96,8 @@ export const refer = (library: Library): Library => {
         // what the author said, and resolving is what turns one into the other —
         // so both are read here and told apart by whether `at` is empty.
         for (const element of source.getDescendantsOfKind(SyntaxKind.JsxElement)) {
-            const as = element.getOpeningElement().getTagNameNode().getText();
-            if (!kinds.has(as)) continue;
+            const as = annotation(element.getOpeningElement().getTagNameNode().getText());
+            if (!as) continue;
 
             const braced = element.getJsxChildren().find(c => c.getKind() === SyntaxKind.JsxExpression);
             const inner = braced?.asKind(SyntaxKind.JsxExpression)?.getExpression();
@@ -100,25 +111,25 @@ export const refer = (library: Library): Library => {
                 const said = element.getJsxChildren()
                     .filter(c => c.getKind() === SyntaxKind.JsxText)
                     .map(c => c.getText().trim()).join('').trim();
-                if (said) entry.references.push({ as: as.toLowerCase(), display: said, at: '', book: '' });
+                if (said) entry.references.push({ as, display: said, at: '', book: '' });
                 continue;
             }
 
             const display = id.getText();
             const file = declared(id);
             if (!file) {
-                complaints.push({ at: entry.path, says: `the ${as.toLowerCase()} ${JSON.stringify(display)} names nothing that resolves` });
+                diagnostics.push({ at: entry.path, says: `the ${as.toLowerCase()} ${JSON.stringify(display)} names nothing that resolves` });
                 continue;
             }
             const at = forward(relative(library.root, file));
             const book = forward(dirname(at));
-            const reference: Reference = { as: as.toLowerCase(), display, at, book };
+            const reference: Reference = { as, display, at, book };
             entry.references.push(reference);
             if (!byPath.has(book)) {
-                complaints.push({ at: entry.path, says: `the ${reference.as} ${JSON.stringify(display)} points outside the library, at ${at}` });
+                diagnostics.push({ at: entry.path, says: `the ${reference.as} ${JSON.stringify(display)} points outside the library, at ${at}` });
             }
         }
     }
 
-    return { ...library, entries, complaints };
+    return { ...library, entries, diagnostics };
 };

@@ -4,6 +4,7 @@ import { $, $check, $valid } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
 import { $Reference } from '../reference/Reference';
 import { $Catalogue } from '../reference/Catalogue';
+import { $IndexCard } from '../reference/IndexCard';
 import { $Location } from '../reference/Location';
 import * as locations from '../reference/Location';
 import * as paths from '../reference/Path';
@@ -86,15 +87,19 @@ export const Step = styled.a<{ $side: 'left' | 'right'; $theme: $Theme }>`
     &:hover span { text-decoration: underline; text-underline-offset: 0.15em; }
 `;
 
-// THE SHELF, which was here the whole time with nothing drawing it. Its method
-// was deleted one commit ago as a drawing that never reached the page, and the
-// reason it never reached it is that a subject's entries became CHAPTERS — so a
-// subject could show at most one of the books it catalogues, because a book is
-// read a chapter at a time. A catalogue is CONSULTED rather than read.
+// THE SHELF — the books a subject catalogues, drawn as their own synopses.
 export const Shelf = styled.ul<{ $theme: $Theme }>`
     margin: ${p => p.$theme.rhythm} 0 0;
     padding: 0;
     list-style: none;
+`;
+
+// THE FOLIO — where the reader is, printed between the turns. A book prints a
+export const Folio = styled.span<{ $theme: $Theme }>`
+    align-self: center;
+    font-size: ${p => p.$theme.step(-2)};
+    letter-spacing: 0.1em;
+    color: ${p => p.$theme.faint};
 `;
 
 export class $Book extends $Referent implements $Composition<$Chapter>, $Catalogue<$Book> {
@@ -121,7 +126,6 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
     // the DEFAULT answer rather than the reason. Doug: "Listing annotations from
     // one's canonical might be a standard way, but obviously that isn't always
     // true. The cover represents the book."
-    //
     // AND REPRESENTATION IS NOT IN THE FRAMEWORK YET. $Cover implements
     // $Reference<$Book> — it POINTS AT the book — and nothing says it STANDS FOR
     // it. In the derivation a representation is a reference whose third term is
@@ -158,7 +162,7 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
         return cover.words.filter(w => w instanceof $Canonical) as $Canonical[];
     }
 
-    protected pointed(reference?: { card?: $$Book }): $Book | undefined {
+    protected pointed(reference?: { card?: $IndexCard<$Book> }): $Book | undefined {
         try {
             return reference?.card?.read();
         } catch {
@@ -221,7 +225,7 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
         return reading;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }
@@ -244,13 +248,13 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
         return found[0];
     }
 
+    /** Whether a synopsis gives an account of THIS book. Asked of the cards, so
+     *  nothing is opened: one that carries no card accounts for the book it
+     *  stands in, and one that carries a card accounts only when it is this
+     *  book's own. */
     accounts(chapter: $Chapter): boolean {
         if (!(chapter instanceof $Synopsis)) return false;
-        try {
-            return chapter.read() === this;
-        } catch {
-            return false;
-        }
+        return chapter.card === undefined || chapter.card === this.card;
     }
 
     $Book(...chapters: $Chapter[]) {
@@ -297,6 +301,7 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
 
     $sheet = Sheet;
     $shelf = Shelf;
+    $folio = Folio;
     $leaf = Leaf;
     $running = Running;
     $turning = Turning;
@@ -310,11 +315,29 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
     place(chapter: $Chapter, at: number, theme: $Theme): ReactNode {
         const Standing = $(chapter) as any;
         const Placed = this.$leaf;
+        const opens = this.opening(chapter);
         return (
-            <Placed key={at} $theme={theme} id={chapter.address || undefined} data-chapter={at}>
+            <Placed
+                key={at}
+                $theme={theme}
+                id={chapter.address || undefined}
+                data-chapter={at}
+                data-opens={opens ? '' : undefined}
+                style={opens ? { cursor: 'pointer' } : undefined}
+                onClick={opens}
+            >
                 <Standing />
             </Placed>
         );
+    }
+
+    // A COVER IS A DOOR. Clicking anywhere on it opens the book — which is what
+    opening(chapter: $Chapter): (() => void) | undefined {
+        if (chapter !== this.cover) return undefined;
+        const listed = this.contents;
+        const next = this.reading[1];
+        if (!listed || !next) return undefined;
+        return () => listed.turn(next);
     }
 
     head(theme: $Theme): ReactNode {
@@ -330,6 +353,27 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
         );
     }
 
+    //
+    shelf(theme: $Theme): ReactNode {
+        if (this.stands()[0] !== this.cover) return null;
+        const held = this.entries;
+        if (!held.length) return null;
+        const Held = this.$shelf;
+        return (
+            <Held $theme={theme} data-entries={held.length}>
+                {held.map((entry, at) => {
+                    const Standing = $(entry) as never as React.ComponentType;
+                    return <Standing key={at} />;
+                })}
+            </Held>
+        );
+    }
+
+    folio(at: number, theme: $Theme): ReactNode {
+        const Printed = this.$folio;
+        return <Printed $theme={theme} data-folio={at}>{at}</Printed>;
+    }
+
     // The two words a turning speaks. `mark` was a parameter holding a WORD and
     // saying nothing about it; these say what they are and a book may replace them.
     get backward(): string { return 'previous'; }
@@ -340,7 +384,9 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
         const reading = this.reading;
         const listed = this.contents;
         const at = Math.max(0, reading.indexOf(this.stands()[0]));
-        const named = (chapter: $Chapter | undefined) => chapter?.title?.copy ?? '';
+        // form already answers that — which is what the contents asks. Asking
+        // `title` here said "next → Synopsis" above a page headed "The Standard
+        const named = (chapter: $Chapter | undefined) => chapter?.ref?.copy || chapter?.title?.copy || '';
         const Moving = this.$step;
         const step = (to: number, said: string, side: 'left' | 'right') => (
             <Moving
@@ -359,25 +405,9 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
         return (
             <Between $theme={theme} data-turning>
                 {at > 0 ? step(at - 1, this.backward, 'left') : <span />}
+                {this.folio(at, theme)}
                 {at < reading.length - 1 ? step(at + 1, this.forward, 'right') : <span />}
             </Between>
-        );
-    }
-
-    // A CATALOGUE IS CONSULTED, NOT READ, so the books this one catalogues are
-    // all out at once and none of them waits its turn in the reading. A book
-    // that catalogues nothing draws no shelf, which is how a reader says so.
-    shelf(theme: $Theme): ReactNode {
-        const held = this.entries;
-        if (!held.length) return null;
-        const Held = this.$shelf;
-        return (
-            <Held $theme={theme} data-entries={held.length}>
-                {held.map((entry, at) => {
-                    const Standing = $(entry) as never as React.ComponentType;
-                    return <Standing key={at} />;
-                })}
-            </Held>
         );
     }
 
@@ -410,153 +440,22 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
     }
 }
 
-export class $$Book extends $Referent implements $Reference<$Book>, $Catalogue<$Book> {
-    $name = '';
-    $of?: () => $Book = undefined;
-
-    parenthetical = false;
-
-    // THE CATALOGUE HALF. What this card lists is what the book it stands for
-    // catalogues — and a card's entries are other CARDS, which is why the
-    // recursion opens nothing.
+export class $$Book extends $IndexCard<$Book> {
+    /** What the book this card stands for catalogues, AS CARDS — a plain list
+     *  rather than this card's parts, because a card's parts are its writing. */
     $entries: $$Book[] = [];
 
-    /** The card of the subject this one is filed under. A card's subject is
-     *  another CARD, which is what lets the library be computed without opening
-     *  anything. */
-    $subject?: $$Book = undefined;
-
-    get subject(): $$Book | undefined { return this.$subject; }
-
-    // THE LIBRARY, COMPUTED CARD TO CARD. Itself where it is filed under itself,
-    // otherwise its subject's — and the emitted catalogue writes the fixed point
-    // (`library.$subject = library`), so the walk arrives rather than running on.
-    // The seen-set is cycle detection rather than a bound: a hand-made catalogue
-    // that loops answers `undefined` instead of hanging.
-    get library(): $$Book | undefined {
-        const seen = new Set<$$Book>();
-        let at: $$Book | undefined = this;
-        while (at && !seen.has(at)) {
-            seen.add(at);
-            const of: $$Book | undefined = at.subject;
-            if (!of) return undefined;
-            if (of === at) return at;
-            at = of;
-        }
-        return undefined;
-    }
-
-    parts(): $$Book[] { return this.$entries; }
-
-    get canonical(): $$Book { return this.parts()[0]; }
-
-    where(match: (part: $$Book) => boolean): $$Book[] { return this.parts().filter(match); }
-
-    select<U>(pick: (part: $$Book) => U): U[] { return this.parts().map(pick); }
-
-    selectMany<U>(pick: (part: $$Book) => U[]): U[] { return this.parts().flatMap(pick); }
-
-    single(match: (part: $$Book) => boolean): $$Book {
-        const found = this.parts().filter(match);
-        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
-        return found[0];
-    }
-
-    at(position: number): $Location<$$Book> {
-        const Location = $(locations.Location);
-        return $(<Location i={position} of={this as never} />);
-    }
-
-
-    constructor() {
-        super();
-        this.inline = false;
-    }
-
-    get name(): string { return this.$name; }
-
-    // THE BOOK'S INTERFACE, REFLECTED. The same property names, with references
-    // replaced by cards — which is what makes a card a book present without the
-    // book rather than a hand-picked subset of one. A generated catalogue fills
-    // these; the framework says which they are.
-    $title = '';
-    $subtitle = '';
-    $author?: $$Book = undefined;
     $chapters: string[] = [];
 
-    get title(): string { return this.$title; }
+    override get subject(): $$Book | undefined { return this.$subject as $$Book | undefined; }
 
-    get subtitle(): string { return this.$subtitle; }
+    override get author(): $$Book | undefined { return this.$author as $$Book | undefined; }
 
-    get author(): $$Book | undefined { return this.$author; }
+    override get library(): $$Book | undefined { return super.library as $$Book | undefined; }
 
     get chapters(): string[] { return this.$chapters; }
 
-    /** What this book catalogues, as cards. A book answers this with the chapters
-     *  that read away; a card carries the answer so nothing is opened. */
     get entries(): $$Book[] { return this.$entries; }
-
-    get copy(): string { return this.properties().map(name => `${name}: ${this.written(name)}`).join(' '); }
-
-    // WHAT A CARD IS, rather than what it CARRIES. A card gained a composition
-    // when it became a reference form, and reflection cannot tell a structural
-    // member from a field — so the structure is named here.
-    protected get structure(): Set<string> {
-        return new Set(['copy', 'canonical', 'structure', 'library', 'entries']);
-    }
-
-    properties(): string[] {
-        const carried: string[] = [];
-        const structure = this.structure;
-        let proto = Object.getPrototypeOf(this);
-        let reached = false;
-        while (proto && !reached) {
-            const keys = Object.getOwnPropertyNames(proto);
-            const accessor = (key: string) => Object.getOwnPropertyDescriptor(proto, key)?.get !== undefined;
-            const lifted = keys.some(key => key.startsWith('$') && accessor(key));
-            if (!lifted) {
-                reached = Object.prototype.hasOwnProperty.call(proto, 'properties');
-                carried.unshift(...keys.filter(key => accessor(key) && !key.startsWith('$') && !structure.has(key) && !carried.includes(key)));
-            }
-            proto = Object.getPrototypeOf(proto);
-        }
-        return carried;
-    }
-
-    written(property: string): string {
-        const value = (this as any)[property];
-        if (value === undefined || value === null) return '';
-        if (value instanceof $$Book) return value.name;
-        if (value instanceof $Writing) return value.copy;
-        if (Array.isArray(value)) return value.map(part => this.printed(part)).join(', ');
-        return this.printed(value);
-    }
-
-    printed(value: unknown): string {
-        if (value instanceof $$Book) return value.name;
-        if (value instanceof $Writing) return value.copy;
-        if (value && typeof value === 'object' && 'name' in value) return String((value as { name: unknown }).name);
-        return String(value);
-    }
-
-    read(): $Book {
-        const of = this.$of?.();
-        if (!of) throw new Error(`The card for ${JSON.stringify(this.name)} stands for nothing — it never pointed.`);
-        return of;
-    }
-
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
-        const Path = $(paths.Path);
-        return $(<Path first={this} onward={next} />);
-    }
-
-    view(): ReactNode {
-        return this.copy;
-    }
-
-    valid(): boolean {
-        return this.name !== '';
-    }
 }
 
 export const Book = $($Book);

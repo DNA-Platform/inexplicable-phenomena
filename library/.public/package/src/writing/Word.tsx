@@ -63,7 +63,7 @@ export class $$Word extends $Letter implements $Reference<$Word> {
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

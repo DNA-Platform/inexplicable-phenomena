@@ -2,7 +2,6 @@ import React from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Theme, Book } from '@dna-platform/lib';
 import * as lib from '@dna-platform/lib';
-import { file } from './library/cards';
 
 // THE COMPOSITION ROOT'S ONE JOB — the theme, the component, the registration.
 //
@@ -31,7 +30,6 @@ export const dress = (): void => {
     // AND THE LIBRARY'S OWN CATALOGUE, so an annotation asking its scope for its
     // card finds one. The compiler cannot do this — scope registration needs a
     // render context — so the composition root does it.
-    file();
     $(Book, lib.Theme)(Dressing);
 };
 

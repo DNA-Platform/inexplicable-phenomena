@@ -63,7 +63,6 @@ describe('order is the arrangement a person made, and unlisted names fall to the
     });
 });
 
-// A TREE BUILT TO BE WRONG. Each fault is its own arrangement, so a complaint
 // that stops firing is traced to one rule rather than to "the fixture".
 const tree = (build: (at: string) => void): string => {
     const at = mkdtempSync(join(tmpdir(), 'walk-unit-'));
@@ -97,7 +96,7 @@ describe('position decides a kind and the dots only rank', () => {
             folder(root, '.empty');
         });
         const read = walk(at, at);
-        expect(read.complaints.some(c => c.at === '.empty' && c.says.includes('holds nothing'))).toBe(true);
+        expect(read.diagnostics.some(c => c.at === '.empty' && c.says.includes('holds nothing'))).toBe(true);
         rmSync(at, { recursive: true, force: true });
     });
 
@@ -108,7 +107,7 @@ describe('position decides a kind and the dots only rank', () => {
             folder(root, '.geology/.two', ['.cover.tsx']);
         });
         const read = walk(at, at);
-        expect(read.complaints.some(c => c.at === '.geology' && c.says.includes('no single folder speaks'))).toBe(true);
+        expect(read.diagnostics.some(c => c.at === '.geology' && c.says.includes('no single folder speaks'))).toBe(true);
         rmSync(at, { recursive: true, force: true });
     });
 
@@ -119,7 +118,7 @@ describe('position decides a kind and the dots only rank', () => {
             folder(root, 'nothing');
         });
         const read = walk(at, at);
-        expect(read.complaints.length).toBeGreaterThanOrEqual(3);
+        expect(read.diagnostics.length).toBeGreaterThanOrEqual(3);
         rmSync(at, { recursive: true, force: true });
     });
 });

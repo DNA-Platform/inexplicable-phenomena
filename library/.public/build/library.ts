@@ -21,6 +21,15 @@ export type Kind = 'subject' | 'book';
  *  file and explained by nothing is an orphan, whatever it is called. */
 export type Role = 'cover' | 'synopsis' | 'chapter';
 
+export const annotates = ['author', 'subject', 'canonical'] as const;
+
+/** What a reference stood in. Derived from the list, never restated. */
+export type As = typeof annotates[number];
+
+/** The annotation a JSX tag names, or nothing if the tag names none. */
+export const annotation = (tag: string): As | undefined =>
+    annotates.find(a => a === tag.toLowerCase());
+
 /** One reference from a cover to another book's cover.
  *
  *  Authored as an import whose ALIAS is the display name and whose TARGET is the
@@ -30,8 +39,8 @@ export type Role = 'cover' | 'synopsis' | 'chapter';
  *  `at` is the cover the import points to; the folder holding it IS the book,
  *  because a cover's location is its book's location. */
 export type Reference = {
-    /** 'author' | 'subject' | 'canonical' — the element the reference stood in. */
-    as: string;
+    /** the element the reference stood in */
+    as: As;
     /** the import alias, which is what a reader sees */
     display: string;
     /** the cover file the import resolves to, relative to the library root */
@@ -48,8 +57,11 @@ export type File = {
     order: number;
     /** the name the file exports, read from the source and NOT derivable from the
      *  filename — `.cover.tsx` exports `TestLibraryCover` in one book and
-     *  `HardProblemCover` in another. Anything that composes a book needs it. */
-    declares: string;
+     *  `HardProblemCover` in another. Anything that composes a book needs it.
+     *
+     *  Undefined until the source is read; empty means read and exporting
+     *  nothing a book can compose. */
+    declares?: string;
 };
 
 export type Entry = {
@@ -75,10 +87,10 @@ export type Entry = {
     order: number;
 };
 
-/** Something wrong with the arrangement. Complaints TRAVEL rather than stop the
+/** Something wrong with the arrangement. Diagnostics TRAVEL rather than stop the
  *  walk: one pass tells an author everything that is wrong, because a build that
  *  reports one fault at a time is a build somebody runs many times. */
-export type Complaint = {
+export type Diagnostic = {
     at: Path;
     says: string;
 };
@@ -98,7 +110,7 @@ export type Library = {
     entries: Entry[];
     /** what the entries MEAN, filled by resolving. Empty until then. */
     books: Book[];
-    complaints: Complaint[];
+    diagnostics: Diagnostic[];
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

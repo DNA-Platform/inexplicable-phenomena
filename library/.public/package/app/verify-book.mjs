@@ -114,6 +114,15 @@ const openBook = async (name) => {
         await report(`no spine named "${name}" — the shelf carries [${on.join(', ')}]. The entry point moved.`);
         return;
     }
+    // THE BOOK ARRIVES, IT IS NOT ALREADY HERE. Three of the four are behind
+    // dynamic imports now, so a fixed settle races the fetch — the same reason
+    // the shelf's own spines became a landmark above. The spine leaving the DOM
+    // is what says the book replaced it.
+    await page.waitForFunction(
+        n => !document.querySelector(`[data-book="${n}"]`),
+        { timeout: 15000 },
+        name,
+    ).catch(() => {});
     return found;
 };
 

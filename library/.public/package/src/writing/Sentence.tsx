@@ -140,7 +140,7 @@ export class $$Sentence extends $Word implements $Reference<$Sentence>, $Catalog
         return this.of;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         return $(<Path first={this} onward={next} />);
     }
 

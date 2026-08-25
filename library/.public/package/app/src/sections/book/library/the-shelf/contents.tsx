@@ -65,7 +65,7 @@ export class $ShelfContents extends $TableOfContents {
                         {filler(14).map((b, i) => <Spine key={'a' + i} $ink={b.ink} $tall={b.tall} $wide={b.wide} />)}
                         {shelved.map((card, i) => (
                             <Spine key={card.name} className="shelf-card" data-book={card.name} $ink={inks[card.name] ?? '#2c3036'} $tall={52 + (i % 2) * 2} $wide={50 - (i % 3) * 2} $held onClick={() => this.shelf.$travel?.(card)}>
-                                <SpineTitle>{card.title}</SpineTitle>
+                                <SpineTitle>{card.canonical?.heading ?? card.name}</SpineTitle>
                             </Spine>
                         ))}
                         {filler(14, 2).map((b, i) => <Spine key={'b' + i} $ink={b.ink} $tall={b.tall} $wide={b.wide} />)}
@@ -93,7 +93,7 @@ export class $ShelfContents extends $TableOfContents {
                             // is titled "Synopsis" inside its own book, which is
                             // right there and wrong here — so the title, the note
                             // and the byline are all read through the card.
-                            const title = card?.title ?? row.copy;
+                            const title = card?.canonical?.heading ?? row.copy;
                             const note = card ? card.synopsis : (chapter?.tagline?.copy ?? '');
                             return (
                                 <Entry key={'row-' + i} $ink={card ? (inks[card.name] ?? '#2c3036') : '#8a6238'} $i={i} data-entry={title}>

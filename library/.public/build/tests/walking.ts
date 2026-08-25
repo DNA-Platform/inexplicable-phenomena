@@ -28,13 +28,13 @@ const check = (says: string, held: boolean | undefined, saw = ''): void => {
 
 const of = (library: Library, path: string) => library.entries.find(e => e.path === path);
 const complained = (library: Library, at: string, about: string) =>
-    library.complaints.some(c => c.at === at && c.says.includes(about));
+    library.diagnostics.some(c => c.at === at && c.says.includes(about));
 
 // --- a real library, read whole -------------------------------------------
 
 const read = refer(walk(fixture, workspace));
 
-check('the fixture describes without complaint', read.complaints.length === 0, String(read.complaints.length));
+check('the fixture describes without diagnostic', read.diagnostics.length === 0, String(read.diagnostics.length));
 // MOVED 2026-08-17: the corpus gained `the-team`, the book that authors itself,
 // so the walk describes nine folders where it described eight.
 check('every folder is described, including those holding only folders', read.entries.length === 9, String(read.entries.length));
@@ -103,7 +103,7 @@ check('a book with no cover is invalid', complained(faulty, '.chemistry/the-bond
 check('a container with two claimants and no single speaker is invalid', complained(faulty, '.geology', 'no single folder speaks'));
 check('the library itself is judged, not only its contents', complained(faulty, '.', 'speaks for the library'));
 check('a folder holding nothing at all is invalid', complained(faulty, 'nothing', 'holds nothing at all'));
-check('every fault is reported in ONE pass', faulty.complaints.length >= 5, String(faulty.complaints.length));
+check('every fault is reported in ONE pass', faulty.diagnostics.length >= 5, String(faulty.diagnostics.length));
 
 rmSync(bad, { recursive: true, force: true });
 

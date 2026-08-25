@@ -9,6 +9,7 @@ const rule = 'rgba(126, 168, 190, 0.18)';
 const ink = '#d7e3ec';
 const faded = 'rgba(215, 227, 236, 0.52)';
 const cyan = '#5fd4c4';
+const selected = '#0078d7';
 
 const settle = keyframes`
     from { opacity: 0; transform: translateY(10px); }
@@ -119,6 +120,7 @@ export const Plate = styled.article`
         font-weight: 500;
         letter-spacing: -0.01em;
         margin: 0 0 22px;
+        color: ${selected};
     }
 
     p {

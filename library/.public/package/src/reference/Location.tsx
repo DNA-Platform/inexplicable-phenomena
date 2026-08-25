@@ -21,7 +21,7 @@ export class $Location<T extends $Referent = any> extends $Referent implements $
         return parts[this.$i] as T;
     }
 
-    then<U extends $Referent>(onward: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(onward: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={onward} />);
     }

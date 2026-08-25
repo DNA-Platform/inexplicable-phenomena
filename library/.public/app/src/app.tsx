@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { $Book, $Synopsis, $Cover } from '@dna-platform/lib';
 import styled from 'styled-components';
-import { $Card, at, fetch, catalogue } from './catalogue';
+import { $Card, at, fetch } from './catalogue';
 import { keep, kept, topOf } from './bookmark';
 import { GlobalStyle, faint, rule, ground, mark, measure } from './theme';
 
@@ -77,10 +77,10 @@ class $App extends $Chemical {
         this.book = undefined;
         this.failed = '';
         fetch(path)
-            .then(holder => {
+            .then(book => {
                 if (this.path !== path) return;
-                this.book = holder.book;
-                if (catalogued(holder.book).length) { window.scrollTo(0, 0); this.place = 0; }
+                this.book = book;
+                if (catalogued(book).length) { window.scrollTo(0, 0); this.place = 0; }
                 else this.arrive();
             })
             .catch(error => { if (this.path === path) this.failed = String(error.message ?? error); });
@@ -148,7 +148,7 @@ class $App extends $Chemical {
             <Running data-trail={chain.length}>
                 {chain.map((step, i) => (
                     <Step key={step.path} data-step={step.path} onClick={() => go(step.path)}>
-                        {(i ? '/ ' : '') + step.title}
+                        {(i ? '/ ' : '') + (step.canonical?.heading ?? step.name)}
                     </Step>
                 ))}
             </Running>
@@ -184,4 +184,4 @@ export function Library() {
     return <App />;
 }
 
-export { catalogue, $Cover };
+export { $Cover };

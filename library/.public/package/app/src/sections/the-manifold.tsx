@@ -507,7 +507,7 @@ export class $TheManifold extends $Book {
         for (const key of keys.slice(1)) {
             const mid = built.valid() ? built.read() as { at?: (position: number) => $Reference<any> } : undefined;
             if (!mid?.at) return undefined;
-            built = built.then(mid.at(key));
+            built = built.follow(mid.at(key));
         }
         return built;
     }
@@ -565,11 +565,11 @@ export class $TheManifold extends $Book {
                     <DayChip as="a" href="/page">← the page</DayChip>
                     <DayRule />
                     {!this.open && (
-                        <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {(this.subject?.card as $LibraryCard | undefined)?.title ?? 'the shelf'}</DayChip>
+                        <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {(this.subject?.card as $LibraryCard | undefined)?.canonical?.heading ?? 'the shelf'}</DayChip>
                     )}
                     {this.open && (
                         <>
-                            <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {(this.subject?.card as $LibraryCard | undefined)?.title ?? 'the shelf'}</DayChip>
+                            <DayChip as="a" href="/books" data-subject onClick={() => { this.subject?.read(); }}>← {(this.subject?.card as $LibraryCard | undefined)?.canonical?.heading ?? 'the shelf'}</DayChip>
                             <DayRule />
                             <DayChip $active={this.mode === 'read'} onClick={() => { this.mode = 'read'; this.turn(this.page); }}>read</DayChip>
                             <DayChip $active={this.mode === 'skim'} onClick={() => { this.mode = 'skim'; }}>skim</DayChip>
@@ -598,7 +598,7 @@ export class $TheManifold extends $Book {
                         <CoverBlurb>{this.held.blurb}</CoverBlurb>
                         <CoverInvitation>read the book →</CoverInvitation>
                         <CoverImprint data-subject onClick={(e) => { e.stopPropagation(); this.subject?.read(); this.$travel?.(); }}>
-                            {`← ${(this.subject?.card as $LibraryCard | undefined)?.title ?? 'the shelf'}`}
+                            {`← ${(this.subject?.card as $LibraryCard | undefined)?.canonical?.heading ?? 'the shelf'}`}
                         </CoverImprint>
                     </CoverFace>
                 )}

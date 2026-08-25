@@ -24,15 +24,15 @@ const workspace = root();
 const into = flag === -1 ? join(workspace, 'library/.public/app/src/library') : process.argv[flag + 1];
 
 const read = refer(walk(at, workspace));
-console.log(`READ      ${read.entries.length} folders · ${read.entries.reduce((n, e) => n + e.files.length, 0)} files · ${read.entries.reduce((n, e) => n + e.references.length, 0)} references · ${read.complaints.length} complaints`);
+console.log(`READ      ${read.entries.length} folders · ${read.entries.reduce((n, e) => n + e.files.length, 0)} files · ${read.entries.reduce((n, e) => n + e.references.length, 0)} references · ${read.diagnostics.length} diagnostics`);
 
 const resolved = resolve(read);
 const links = resolved.books.reduce((n, b) => n + [b.subject, b.author, b.canonical].filter(Boolean).length, 0);
-const invalid = resolved.complaints.length - read.complaints.length;
+const invalid = resolved.diagnostics.length - read.diagnostics.length;
 console.log(`RESOLVE   ${resolved.books.length} books · ${links} links · ${invalid} invalid`);
 
-for (const complaint of resolved.complaints) console.error(`  INVALID ${complaint.at} — ${complaint.says}`);
-if (resolved.complaints.length) process.exit(1);
+for (const diagnostic of resolved.diagnostics) console.error(`  INVALID ${diagnostic.at} — ${diagnostic.says}`);
+if (resolved.diagnostics.length) process.exit(1);
 
 // EMITTING RUNS TWICE, and the reason is a real ordering rather than a hedge.
 // Cards are READ OFF LIVING BOOKS — a title split at its colon, a summary, the
@@ -49,7 +49,10 @@ const named = await cardsOf(resolved, into).catch((error: Error) => {
     console.error(`  ${error.message.split('\n')[0]}`);
     process.exit(1);
 });
-const cards = new Map(named.map(n => [n.book.path, n.as]));
+const cards = {
+    at: new Map(named.map(n => [n.book.path, n.as])),
+    titled: new Map(named.map(n => [n.title, n.as])),
+};
 const written = emit(resolved, into, cards, { 'cards.tsx': catalogue(named), 'books.tsx': books(named) });
 
 console.log(`EMIT      ${written.carried} carried · ${written.generated} generated · ${named.length} cards · → ${into}${written.removed.length ? ` · ${written.removed.length} removed` : ''}`);
@@ -63,5 +66,5 @@ if (loose.length) for (const n of loose) console.error(`  THIN CARD ${n.book.rou
 // the pass-one copies — and a validator running here would judge writing that
 // is no longer on disk. The program is checked by something that did not write
 // it, which is the whole reason this is a spawn and not a call.
-const check = spawnSync(process.execPath, [...process.execArgv, join(import.meta.dirname, 'commands', 'check.ts'), at, into], { stdio: 'inherit' });
+const check = spawnSync(process.execPath, [...process.execArgv, join(import.meta.dirname, 'verify.ts'), at, into], { stdio: 'inherit' });
 if (check.status !== 0) process.exit(check.status ?? 1);

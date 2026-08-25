@@ -50,7 +50,7 @@ export class $Cover extends $Chapter implements $Reference<$Book> {
         return this.book;
     }
 
-    then<U extends $Referent>(next: $Reference<U>): $Reference<U> {
+    follow<U extends $Referent>(next: $Reference<U>): $Reference<U> {
         const Path = $(paths.Path);
         return $(<Path first={this} onward={next} />);
     }
