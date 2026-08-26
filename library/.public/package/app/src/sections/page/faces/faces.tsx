@@ -15,7 +15,7 @@ import { Highlight, themes } from 'prism-react-renderer';
 // `.markdown <tag>` selector anywhere — the colours live on the part.
 //
 // Standalone and renderable. NOT wired: the port maps the sheet's existing
-// Perspective('book' | 'github' | 'night') onto `dress(...)` and calls these
+// the look name ('book' | 'github' | 'night') onto `dress(...)` and calls these
 // faces from each markdown part's `view()`. Until then these stand alone.
 
 export type Dress = 'book' | 'github' | 'night';
@@ -441,7 +441,7 @@ export interface DressSpec {
 
 // Book and Night share `letterpress` and differ only in palette; Github is
 // `readme`. This is the one function the port calls with the sheet's current
-// Perspective name.
+// look name.
 export function dress(d: Dress): DressSpec {
     if (d === 'github') return { faces: readme, palette: githubPalette };
     return { faces: letterpress, palette: d === 'night' ? nightPalette : bookPalette };

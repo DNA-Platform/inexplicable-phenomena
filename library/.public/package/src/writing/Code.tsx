@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { styled } from 'styled-components';
-import { $, $valid } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { $Theme } from './Theme';
 import { $Paragraph } from './Paragraph';
 import { $Sentence } from './Sentence';
@@ -53,7 +53,7 @@ export class $Code extends $Paragraph {
     }
 
     valid(): boolean {
-        return $valid(this.source !== '', 'code is the source it carries, and this block carries none');
+        return $check(this.source !== '', 'code is the source it carries, and this block carries none');
     }
 }
 

@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { styled } from 'styled-components';
-import { $, $valid } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { $Phrase } from './Phrase';
 import { type Role } from './Writing';
 import { $Theme } from './Theme';
@@ -24,7 +24,7 @@ export class $Snippet extends $Phrase {
     get role(): Role { return 'mention'; }
 
     valid(): boolean {
-        return $valid(this.copy.trim() !== '', 'code inside a sentence is the source it carries, and this one carries none');
+        return $check(this.copy.trim() !== '', 'code inside a sentence is the source it carries, and this one carries none');
     }
 }
 

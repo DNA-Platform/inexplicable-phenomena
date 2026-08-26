@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import 'katex/dist/katex.min.css';
 import { Highlight, themes } from 'prism-react-renderer';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { $Sheet, Sheet } from './page/sheet';
+import { $Sheet, Sheet, type $SheetViews } from './page/sheet';
 import { SourceDrawer } from './page/faces/drawer';
 import {
     Backdrop, ControlBar, ControlChip, ControlRule,
@@ -22,7 +22,8 @@ const classSources: Record<string, string> = {
 
 class $ThePage extends $Chemical {
     sheet!: $Sheet;
-    showing = 'book';
+
+    showing: $SheetViews = 'book';
     editing = false;
     classes = false;
     tab = '$Latex';
@@ -31,15 +32,26 @@ class $ThePage extends $Chemical {
         this.sheet = $check(sheet, $Sheet);
     }
 
+    // The bar's own list, in the order the chips have always read. The names are
+    // the ones @look gives the sheet's five views; keeping them here is what
+    // Doug asked for — the menu is the demonstration's business, not the
+    // framework's, and the sheet answers to any one of them by name.
+    protected looks: $SheetViews[] = ['book', 'github', 'night', 'reading', 'compare'];
+
+    // WHICH LOOK IS SHOWING IS THE SHEET'S STATE, not the page's, so there is
+    // one sheet behind every chip and the source you type survives switching.
+    // Writing it in a handler re-reacts the sheet, and because the sheet is a
+    // bonded child, finalize walks the composition tree up and repaints the bar.
     view(): ReactNode {
-        const lenses = this.sheet.perspectives;
-        const active = lenses.find(p => p.name === this.showing) ?? lenses.find(p => p.default)!;
+        const looks = this.looks;
+        const showing = this.showing;
+        const Standing = $(this.sheet);
         return (
             <Backdrop>
                 <ControlBar>
-                    {lenses.map(p => (
-                        <ControlChip key={p.name} $active={this.showing === p.name} onClick={() => { this.showing = p.name; }}>
-                            {p.name}
+                    {looks.map(name => (
+                        <ControlChip key={name} $active={showing === name} onClick={() => { this.showing = name; }}>
+                            {name}
                         </ControlChip>
                     ))}
                     <ControlRule />
@@ -62,7 +74,7 @@ class $ThePage extends $Chemical {
                             onChange={e => { this.sheet.$source = e.target.value; }}
                         />
                     )}
-                    <SheetPane>{active.render()}</SheetPane>
+                    <SheetPane><Standing look={showing} /></SheetPane>
                 </Stage>
                 {this.classes && <SourceDrawer />}
             </Backdrop>

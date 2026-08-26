@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
-import { $, $valid } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { $Paragraph, Paragraph } from '@/writing/Paragraph';
 import { $Section, Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
@@ -33,11 +33,11 @@ describe('a class states WHY it is not valid', () => {
     it('EVERY failing condition is heard — not the first one only', () => {
         // A word that is neither unbroken nor lettered fails twice, and says so
         // twice. This is the promise that breaks the moment someone writes an &&
-        // chain in front of a $valid call.
+        // chain in front of a $check call.
         class $Twice extends $Paragraph {
             valid(): boolean {
-                const one = $valid(false, 'the first thing that is wrong');
-                const two = $valid(false, 'the second thing that is wrong');
+                const one = $check(false, 'the first thing that is wrong');
+                const two = $check(false, 'the second thing that is wrong');
                 return one && two;
             }
         }

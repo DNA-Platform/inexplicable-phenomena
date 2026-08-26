@@ -9,12 +9,10 @@
 // Renderable classes
 export { $Particle } from './abstraction/particle';
 export { $Chemical } from './abstraction/chemical';
+export { $Formula } from './abstraction/formula';
 export { $Exception } from './abstraction/exception';
 export { $exceptions } from './implementation/dev';
 export { $Atom } from './abstraction/atom';
-
-// Perspectives — named, switchable views on a chemical
-export { Perspective } from './abstraction/perspective';
 
 // The dollar callable
 export { $ } from './abstraction/chemical';
@@ -22,11 +20,11 @@ export { $ } from './abstraction/chemical';
 // Module-discovery utilities
 export { $lookup, $load } from './framework/load';
 
-// Reactive-property decorators
-export { inert, reactive } from './abstraction/bond';
+// Property and view attributes
+export { inert, reactive, look } from './abstraction/bond';
 
 // Bond-constructor validation helpers (used inside user bond ctors)
-export { $check, $valid, $is } from './abstraction/chemical';
+export { $check, $is } from './abstraction/chemical';
 
 // Serialization helpers (function form; the $Represent class is in /symbolic)
 export { $symbolize, $literalize } from './implementation/representation';

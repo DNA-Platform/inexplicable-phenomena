@@ -1,5 +1,5 @@
 import {
-    $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$
+    $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$, looks
 } from "../implementation/symbols";
 import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
 
@@ -11,6 +11,7 @@ import { currentScope, withScope, diffuse, withAsker } from "../implementation/s
 // so they can't be mutated externally.
 const inertDecorators = new Map<any, Set<string>>();
 const reactiveDecorators = new Map<any, Set<string>>();
+const lookDecorators = new Map<any, Map<string, string>>();
 
 function inertOf(chemical: any, property: string, general: boolean): boolean | undefined {
     if (!general) return true;
@@ -76,6 +77,39 @@ export function reactive() {
         if (!properties) reactiveDecorators.set(prototype, properties = new Set());
         properties.add(property);
     };
+}
+
+// @look('github') — names a look, so `look="github"` reaches the same drawing
+// `look={1}` does. Registered by prototype and read back up the chain, which
+// is how a subclass names the look it adds without disturbing the base's.
+export function look(name: string) {
+    return function (prototype: any, member: string) {
+        if (!looks.test(member))
+            throw new Error(`@look names a look, and ${member} is not one — a look is view, $view, $$view, and onward.`);
+
+        let named = lookDecorators.get(prototype);
+        if (!named) lookDecorators.set(prototype, named = new Map());
+
+        for (const [held, taken] of named)
+            if (taken === name && held !== member)
+                throw new Error(`${held} is already the look called ${name}, so ${member} cannot be.`);
+
+        named.set(member, name);
+    };
+}
+
+// The name @look gave a member, found from an instance by walking what it
+// inherits from — the same fallback inertOf and reactiveOf use.
+export function lookName(chemical: any, member: string): string | undefined {
+    let held = chemical;
+
+    while (held) {
+        const found = lookDecorators.get(held)?.get(member);
+        if (found !== undefined) return found;
+        held = Object.getPrototypeOf(held);
+    }
+
+    return undefined;
 }
 
 // ===========================================================================

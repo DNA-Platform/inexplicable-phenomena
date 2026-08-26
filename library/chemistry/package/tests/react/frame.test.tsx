@@ -215,20 +215,18 @@ describe('frame — reorganizes already-bound children freely', () => {
 
 
 // =============================================================================
-// 6. frame renders the ACTIVE view under look()
+// 6. frame renders whichever look $look selects
 // =============================================================================
 
-describe('frame — renders the active view under look()', () => {
+describe('frame — renders the selected look', () => {
     class Base extends $Chemical {
         label = 'x';
         view() { return <span className="v">base:{this.label}</span>; }
+        $view() { return <span className="v">mid:{this.label}</span>; }
         frame() { return <div className="fr">{super.frame()}</div>; }
     }
-    class Mid extends Base {
-        view() { return <span className="v">mid:{this.label}</span>; }
-    }
-    class Leaf extends Mid {
-        view() { return <span className="v">leaf:{this.label}</span>; }
+    class Leaf extends Base {
+        $$view() { return <span className="v">leaf:{this.label}</span>; }
     }
 
     function paint(inst: any) {
@@ -237,17 +235,17 @@ describe('frame — renders the active view under look()', () => {
         return container;
     }
 
-    it('the frame wraps whichever ancestor view look() selects', () => {
+    it('the frame wraps whichever look $look selects, and a subclass extends the series', () => {
+        const base = new Leaf();
+        expect(paint(base).querySelector('.fr .v')?.textContent).toBe('base:x');
+
+        const mid = new Leaf();
+        mid.$look = 1;
+        expect(paint(mid).querySelector('.fr .v')?.textContent).toBe('mid:x');
+
         const leaf = new Leaf();
+        leaf.$look = 2;
         expect(paint(leaf).querySelector('.fr .v')?.textContent).toBe('leaf:x');
-
-        const up = new Leaf();
-        up.look('up');
-        expect(paint(up).querySelector('.fr .v')?.textContent).toBe('mid:x');
-
-        const top = new Leaf();
-        top.look('up'); top.look('up');
-        expect(paint(top).querySelector('.fr .v')?.textContent).toBe('base:x');
     });
 });
 

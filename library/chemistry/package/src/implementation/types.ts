@@ -36,14 +36,17 @@ export type $Props = {
     children?: ReactNode;
 }
 
-export type $View<T> = ((props?: $Props) => React.ReactNode) & {
-    $view: $View<T>;
-    $this: T;
+// The attributes EVERY particle answers whatever it declares. They are fields
+// on $Particle, above the ceiling the mapped types below stop at, so they are
+// named here rather than discovered. `look` chooses which of a chemical's
+// views draws it — a position, or a name `@look` gave one.
+export type $Attributes = {
+    look?: number | string;
 };
 
 export type $Properties<T> = {
     [K in keyof T as K extends `$${infer First}${infer Rest}` ?
-    (K extends '$parent' ? never :  // Add this check
+    (K extends '$parent' | '$view' ? never :
         First extends Lowercase<First> ?
         (First extends '_' | '$' ? never :
             (K extends keyof $Chemical ? never :
@@ -51,13 +54,13 @@ export type $Properties<T> = {
     T[K]
 } & {
     [K in keyof T as K extends `$${infer First}${infer Rest}` ?
-    (K extends '$parent' ? never :  // Add this check
+    (K extends '$parent' | '$view' ? never :
         First extends Lowercase<First> ?
         (First extends '_' | '$' ? never :
             (K extends keyof $Chemical ? never :
                 (T[K] extends Function ? `${First}${Rest}` : never))) : never) : never]?:
     T[K]
-} & {
+} & $Attributes & {
     children?: React.ReactNode;
 };
 
@@ -123,12 +126,16 @@ declare module 'react' {
     }
 }
 
-export interface $Particular<T> {
+// A particle draws through a series of views wrapped by frame(), and `look`
+// chooses which one. THE SERIES IS OPEN: `view` is 0 and every further `$`
+// prefixed to it is the next, for as many as a class cares to declare. Nothing
+// enumerates them — the dictionary is built from what is actually on the
+// prototype chain — so this interface names the surface that is fixed and
+// deliberately does not list the members that are not.
+export interface $Particular {
     view(): ReactNode;
-    $view?: import("../abstraction/element").Component<T>;
-    $$view?: import("../abstraction/element").$Component<T>;
     frame(): ReactNode;
-    $frame?: import("../abstraction/element").Component<T & { $this: $Particular<T> }>;
+    $look?: number | string;
 }
 
 export type $ParameterType =

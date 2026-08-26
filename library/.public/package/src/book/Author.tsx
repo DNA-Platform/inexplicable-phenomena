@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { $valid } from '@dna-platform/chemistry';
+import { $check } from '@dna-platform/chemistry';
 import { $Annotation } from './Annotation';
 
 export class $Author extends $Annotation {
@@ -14,7 +14,7 @@ export class $Author extends $Annotation {
     override valid(): boolean {
         const yours = this.card;
         if (!yours) return super.valid();
-        return $valid(yours.author === yours, 'an author names a book that authors itself, and this one names a book somebody else wrote');
+        return $check(yours.author === yours, 'an author names a book that authors itself, and this one names a book somebody else wrote');
     }
 }
 

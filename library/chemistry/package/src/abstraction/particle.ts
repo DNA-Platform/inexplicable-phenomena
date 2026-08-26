@@ -6,17 +6,16 @@ import {
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
-    $perspectives$, $isPerspective$, $activeView$, $renderView$, $isViewBase$, $viewLevel$
+    $renderView$, $views$, looks
 } from "../implementation/symbols";
-import { $backing$ } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
 import { augment } from "../implementation/augment";
 import { dev, renderError, renderException } from "../implementation/dev";
-import { currentScope, diffuse, withAsker } from "../implementation/scope";
+import { withAsker } from "../implementation/scope";
 import { $Reaction } from "./reaction";
 import { $Molecule } from "./molecule";
-import { Perspective } from "./perspective";
+import { lookName } from "./bond";
 
 export const $phaseOrder: $Phase[] = ['setup', 'mount', 'render', 'layout', 'effect', 'unmount'];
 
@@ -36,8 +35,6 @@ export class $Particle {
     [$phases$]!: Map<$Phase, (() => void)[]>;
     [$update$]?: () => void;
     [$viewCache$]?: ReactNode;
-    [$activeView$]?: (this: any) => ReactNode;   // active view fn (vertical axis); unset = own-class view
-    [$viewLevel$]?: number;                       // cursor into the user view-level chain; own-or-0 = most-derived
     [$rendering$] = false;
     [$reaction$]!: $Reaction;
     [$molecule$]!: $Molecule;
@@ -53,6 +50,10 @@ export class $Particle {
     // Hidden if $show is explicitly false or $hide is explicitly true.
     $show?: boolean;
     $hide?: boolean;
+
+    // Which look this instance draws — a position in its series, or a name
+    // `@look` gave one. Reactive like any other $-field, so writing it repaints.
+    $look: number | string = 0;
 
     // Inline vs block: a class declares itself inline (flows within a text block)
     // in its constructor; block is the default. Read from the template, frozen.
@@ -113,164 +114,52 @@ export class $Particle {
         return this.toString();
     }
 
-    // frame — the render template method. The framework's render entry
-    // ([$renderView$], invoked by $lift) calls frame(), not view() directly, and
-    // frame() renders the ACTIVE view (so look()/perspectives are respected). The
-    // default is a transparent pass-through — existing render is byte-identical.
-    // Override frame() to WRAP the rendered content — e.g. put it in a clickable
-    // link — while the content it wraps still EVOLVES through view(). Wrap
-    // `super.frame()` (not `this.view()`) to keep the active-view behaviour.
-    // (Doug: "frame wraps the view; the framework calls frame which calls view.")
+    // frame — the render template method. $lift's render entry calls
+    // [$renderView$], which calls frame(), never view() directly. Override
+    // frame() to WRAP what is drawn, and wrap `super.frame()` so the content
+    // inside the wrapper still evolves with the view.
     frame(): ReactNode {
-        return (this[$activeView$] ?? (this as any).view).call(this);
+        const table = this[$views$];
+        const drawn = table.get(this.$look ?? 0);
+
+        if (!drawn) throw new Error(missingLook(this, table, this.$look));
+
+        return drawn.call(this);
     }
 
-    // ── Vertical perspective: look up/down the instance's own ancestry ───────
-    // The horizontal axis (`perspectives`/`reveal`, below) is sibling lenses
-    // filed on a base. The vertical axis is ONE instance seen at any altitude
-    // of its OWN inheritance: walk the prototype chain and render through an
-    // ancestor's `view` — "revert to base view". Single inheritance ⇒ one
-    // parent per step ⇒ unambiguous. `$view` is the internal write-point for
-    // the active view function; `look` is the public verb that moves a cursor
-    // along the chain of user-defined view levels and sets `$view`.
-
-    // $view — the view FUNCTION this instance currently renders through. Get
-    // returns the active view (or the own-class view when unset); set swaps it
-    // and invalidates the view cache so the instance repaints. Internal — the
-    // public surface is `look`. (Doug: "$view gets/sets from this.view.view".)
-    // The active view is keyed to the cursor, so it is set via writeCursor —
-    // $view's setter only stores the function + invalidates the cache.
-    protected get $view(): (this: any) => ReactNode {
-        return this[$activeView$] ?? (this as any).view;
-    }
-    protected set $view(fn: (this: any) => ReactNode) {
-        this[$activeView$] = fn;
-        this[$viewCache$] = undefined;   // invalidate the rendered output
-    }
-
-    // [$renderView$] — internal render entry. $lift calls THIS instead of
-    // view(), so the active view is consulted without putting logic inside
-    // view() (which user subclasses freely override). Defaults to the
-    // instance's own-class view when no vertical lens is active.
     [$renderView$](): ReactNode {
         return this.frame();
     }
 
-    // $viewLevels — the ordered chain of USER view-levels for this instance,
-    // most-derived first, base last. A "level" is an ancestor class whose
-    // prototype owns a `view` METHOD (an explicit override), EXCLUDING the
-    // framework bases $Particle/$Chemical (their `view` renders toString/
-    // children — not a semantic perspective, marked by $isViewBase$). A class
-    // that does not override `view` is simply not a selectable level. `look`
-    // indexes the cursor into this list, so both clamps are trivial (index 0 =
-    // most specific, last = the base view). The descriptor-value test takes the
-    // real function and skips accessor `get view()` forms.
-    private get $viewLevels(): { ctor: any; view: (this: any) => ReactNode }[] {
-        const levels: { ctor: any; view: (this: any) => ReactNode }[] = [];
-        let proto = Object.getPrototypeOf(this);
-        while (proto && proto !== Object.prototype) {
-            if (!Object.prototype.hasOwnProperty.call(proto, $isViewBase$)) {
-                const desc = Object.getOwnPropertyDescriptor(proto, 'view');
-                if (desc && typeof desc.value === 'function') {
-                    levels.push({ ctor: proto.constructor, view: desc.value });
-                }
+    // The view dictionary — every look this instance can draw, held under its
+    // position and under any name `@look` gave it. `view` is 0, `$view` is 1,
+    // `$$view` is 2; a subclass extends the series by declaring the next one
+    // and replaces a look by overriding its name.
+    get [$views$](): Map<number | string, () => ReactNode> {
+        const held = viewTables.get(this);
+        if (held) return held;
+
+        const table = new Map<number | string, () => ReactNode>();
+        const highest = deepestLook(this);
+
+        for (let at = 0; at <= highest; at++) {
+            const member = '$'.repeat(at) + 'view';
+            const drawn = (this as any)[member];
+
+            if (typeof drawn !== 'function') {
+                throw new Error(
+                    `${(this as any)[$type$]?.name ?? 'a chemical'} declares ${'$'.repeat(highest)}view ` +
+                    `but nothing at ${member} — a series of looks has no gaps.`
+                );
             }
-            proto = Object.getPrototypeOf(proto);
+
+            table.set(at, drawn);
+            const named = lookName(this, member);
+            if (named !== undefined) table.set(named, drawn);
         }
-        return levels;
-    }
 
-    // The cursor — a SCOPE-TRACKED reactive read. Reading it (in look/viewLevel/
-    // canLook, and so transitively in any consumer's render or breadcrumb)
-    // records a scope read, exactly as a reactive property field does. That is
-    // what makes a once-mounted consumer that reads viewLevel repaint when look
-    // moves the cursor — the consumer subscribed to it by reading it. Value is
-    // mirrored into $backing$ under a string key so the scope's read-snapshot
-    // diff sees the change; the symbol field is the own-or-0 default source.
-    private get $viewCursor(): number {
-        const value = Object.prototype.hasOwnProperty.call(this, $viewLevel$) ? this[$viewLevel$]! : 0;
-        currentScope()?.recordRead(this, $viewCursorProp, value);
-        return value;
-    }
-    // Write the cursor through the SAME channel a reactive property setter uses:
-    // store + mirror into $backing$, then record a scope write (so finalize
-    // re-reacts every consumer that read it) or — outside any scope — fire the
-    // reaction and diffuse up the composition tree immediately.
-    private writeCursor(next: number): void {
-        this[$viewLevel$] = next;
-        viewCursorBacking(this)[$viewCursorProp] = next;
-        const scope = currentScope();
-        if (scope) {
-            scope.recordWrite(this, $viewCursorProp);
-        } else {
-            this[$reaction$]?.react();
-            diffuse(this);
-        }
-    }
-
-    // look — walk this instance's own ancestry. 'up' = toward the base view
-    // (more general), 'down' = toward the actual class (more specific); both
-    // clamps are silent no-ops ('up' stops at the highest user view-level, never
-    // the framework base; 'down' at the instance's actual class). The '?' forms
-    // — 'up?' / 'down?' — DON'T move: they RETURN whether that move is possible,
-    // so a UI greys the ends with no separate canLook, and `look` is called twice
-    // (query in the render, act in the handler). Reading a '?' form in a render
-    // also subscribes the consumer to the cursor, so the clamp is live. The two
-    // overloads give each form its exact return type.
-    look(direction: 'up' | 'down'): void;
-    look(direction: 'up?' | 'down?'): boolean;
-    look(direction: 'up' | 'down' | 'up?' | 'down?'): void | boolean {
-        const levels = this.$viewLevels;
-        const next = (direction.startsWith('up') ? this.$viewCursor + 1 : this.$viewCursor - 1);
-        const canMove = levels.length > 0 && next >= 0 && next < levels.length;
-        if (direction.endsWith('?')) return canMove;
-        if (!canMove) return;                                // clamp — silent no-op
-        this.writeCursor(next);
-        this.$view = levels[next].view;
-    }
-
-    // viewLevel — the constructor name of the class the active view came from
-    // (the current altitude). For a breadcrumb / clamp UI.
-    get viewLevel(): string {
-        const levels = this.$viewLevels;
-        if (levels.length === 0) return (this[$type$] as any)?.name ?? this.constructor.name;
-        return levels[this.$viewCursor].ctor.name;
-    }
-
-    // ── Perspectives ────────────────────────────────────────────────────────
-    // A perspective is a SUBCLASS of this particle that overrides `view`. It
-    // reveals itself from its (template) constructor: `reveal` POPS that
-    // subclass's `view` off onto a Perspective and files it on the base class.
-    // Reading `perspectives` then BINDS: the instance clones each lens and stores
-    // ITSELF on the clone (cached per instance), so each perspective is "this
-    // object, seen this way" — `perspective.render()` draws the live instance
-    // through that lens. The thing rendering a lens never has to pass it the object.
-
-    get perspectives(): Perspective[] {
-        let bound = perspectiveCache.get(this);
-        if (bound) return bound;
-        let base: any = this.constructor;
-        while (base && Object.prototype.hasOwnProperty.call(base, $isPerspective$)) base = Object.getPrototypeOf(base);
-        const raw: Perspective[] = base && Object.prototype.hasOwnProperty.call(base, $perspectives$) ? base[$perspectives$] : [];
-        bound = raw.map(p => {
-            const lens = new Perspective((p as any).name, (p as any).default);
-            (lens as any).view = (p as any).view;       // the popped subclass view
-            (lens as any).instance = this;              // bind THIS instance into the lens
-            return lens;
-        });
-        perspectiveCache.set(this, bound);
-        return bound;
-    }
-
-    protected reveal(perspective: Perspective): void {
-        const lens: any = this.constructor;
-        if (Object.prototype.hasOwnProperty.call(lens, $isPerspective$)) return; // idempotent: once per subclass
-        (perspective as any).view = (this as any).view;     // pop this subclass's view off onto the perspective
-        lens[$isPerspective$] = true;                        // untyped static mark: this class is perspectival
-        let base: any = Object.getPrototypeOf(lens);
-        while (base && Object.prototype.hasOwnProperty.call(base, $isPerspective$)) base = Object.getPrototypeOf(base);
-        if (!Object.prototype.hasOwnProperty.call(base, $perspectives$)) base[$perspectives$] = [];
-        base[$perspectives$].push(perspective);
+        viewTables.set(this, table);
+        return table;
     }
 
     $new(): this {
@@ -323,6 +212,13 @@ export class $Particle {
         if ('children' in (props as any)) $this[$children$] = props.children;
         for (const prop in props) {
             if (prop === 'children' || prop === 'key' || prop === 'ref') continue;
+
+            if (looks.test('$' + prop))
+                throw new Error(
+                    `${$this[$type$]?.name ?? 'a chemical'} was given a ${prop} prop, which would land on ` +
+                    `$${prop} and overwrite a view. Choose which view draws with look.`
+                );
+
             $this['$' + prop] = props[prop];
         }
     }
@@ -359,36 +255,43 @@ export class $Particle {
 // so subclasses inherit transitively — the walk halts at the user's class.
 ($Particle.prototype as any)[$isChemicalBase$] = true;
 
-// $isViewBase$ — $Particle.view renders toString(), a structural fallback, not
-// a semantic perspective. `look` skips it so the vertical walk bottoms out at
-// the highest user-defined view. $Chemical.prototype is stamped likewise in
-// chemical.ts. Own-property so user subclasses don't inherit-match.
-($Particle.prototype as any)[$isViewBase$] = true;
+// Every look an instance can draw, built once and held by instance. The
+// content is decided by the prototype chain, and a derivative reads the same
+// chain its template does.
+const viewTables = new WeakMap<object, Map<number | string, () => ReactNode>>();
 
-// Per-instance cache of bound perspectives: reading `perspectives` returns the
-// same cloned, instance-bound lenses each time (stable identity for menus).
-const perspectiveCache = new WeakMap<any, Perspective[]>();
+// The position of the furthest look declared anywhere on an instance's chain.
+// The descriptor-value test takes the real function and skips an accessor.
+function deepestLook(particle: any): number {
+    let deepest = 0;
+    let proto = Object.getPrototypeOf(particle);
 
-// The reserved string key the view cursor is tracked under. Special-prefixed
-// ($ + lowercase) so it reads as reactive; mirrored into $backing$ so the
-// scope's read-snapshot diff in finalize() can detect the cursor's movement.
-const $viewCursorProp = '$viewLevel';
-
-// viewCursorBacking — lazily create (and inherit) the $backing$ store on a
-// particle, mirroring the reactive-field machinery in bond.ts so the cursor
-// participates in the SAME scope diffing. A particle that already carries a
-// $backing$ (any reactive field) reuses it; otherwise one is created.
-function viewCursorBacking(particle: any): any {
-    if (!Object.prototype.hasOwnProperty.call(particle, $backing$)) {
-        const parent = Object.getPrototypeOf(particle)?.[$backing$] ?? null;
-        Object.defineProperty(particle, $backing$, {
-            value: Object.create(parent),
-            writable: false, enumerable: false, configurable: false,
-        });
+    while (proto && proto !== Object.prototype) {
+        for (const member of Object.getOwnPropertyNames(proto)) {
+            if (!looks.test(member)) continue;
+            const descriptor = Object.getOwnPropertyDescriptor(proto, member);
+            if (typeof descriptor?.value !== 'function') continue;
+            deepest = Math.max(deepest, member.length - 'view'.length);
+        }
+        proto = Object.getPrototypeOf(proto);
     }
-    return particle[$backing$];
+
+    return deepest;
 }
 
+function missingLook(particle: any, table: Map<number | string, unknown>, asked: number | string): string {
+    const held = [...table.keys()];
+    const drawn = held.filter(key => typeof key === 'number').length;
+    const named = held.filter(key => typeof key === 'string');
+    const whose = particle[$type$]?.name ?? 'a chemical';
+
+    if (typeof asked === 'number')
+        return `Nothing stands at look ${asked} — ${whose} draws ${drawn}.`;
+
+    return named.length
+        ? `${whose} has no look called ${asked} — it draws ${named.join(', ')}.`
+        : `${whose} has no look called ${asked} — none of its ${drawn} looks is named.`;
+}
 
 // ===========================================================================
 // Render filters — cross-cutting interception of view rendering.

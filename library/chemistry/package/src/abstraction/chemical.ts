@@ -7,12 +7,12 @@ import {
     $$template$$, $$getNextCid$$, $$createSymbol$$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
-    $devError$, $devException$, $isViewBase$, $watched$,
-    $registry$, $reference$
+    $devError$, $devException$, $watched$,
+    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
-import { currentAsker, drawing } from "../implementation/scope";
+import { currentAsker, drawing, withAsker } from "../implementation/scope";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType, $HtmlTag } from "../implementation/types";
 import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from "./particle";
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
@@ -766,21 +766,15 @@ export class $ParamValidation {
 
 export const $paramValidation = new $ParamValidation();
 
-export function $check<T>(arg: T, ...types: $ParameterType[]): T {
-    return $paramValidation.check(arg, ...types);
-}
+export function $check<T>(arg: T, ...types: $ParameterType[]): T;
+export function $check(held: boolean, reason: string): boolean;
 
-// The validity sibling of $check, and it works the same way: it RETURNS its
-// condition and records the reason when the condition is false, so a valid()
-// reads as a list of the things that must hold and reports every one that does
-// not. Never short-circuit with && before calling it — a swallowed call is a
-// reason nobody hears.
-//
-// PROXY NAME, flagged: built from the framework's own word, standing beside
-// $check, and Doug's to correct.
-export function $valid(condition: boolean, reason: string): boolean {
-    if (!condition) $paramValidation.reason(reason);
-    return condition;
+export function $check(arg: any, ...rest: any[]): any {
+    if (typeof arg === 'boolean' && rest.length === 1 && typeof rest[0] === 'string') {
+        if (!arg) $paramValidation.reason(rest[0]);
+        return arg;
+    }
+    return $paramValidation.check(arg, ...rest);
 }
 
 export function $is<T>(ctor: abstract new (...args: any[]) => T): T {
@@ -803,7 +797,96 @@ function assertValid(chemical: any) {
 // $Chemical
 // ===========================================================================
 
+const standing = { $ref: ' standing' };
+const kept = { $ref: ' kept' };
+const seeding = new Set<any>();
+
+function isFormula(cls: any): boolean {
+    return !!cls?.prototype?.formula;
+}
+
+function branch(cls: any): any[] {
+    const chain: any[] = [];
+    let at = cls;
+    while (at && isFormula(at) && !Object.prototype.hasOwnProperty.call(at, $isFormulaBase$)) {
+        chain.push(at);
+        at = Object.getPrototypeOf(at);
+    }
+    return chain;
+}
+
+function catalogueOf(cls: any): any {
+    if (Object.prototype.hasOwnProperty.call(cls, $cache$)) return cls[$cache$];
+    const held = $subject(`$Formula.${cls?.name ?? 'anonymous'}`);
+    Object.defineProperty(cls, $cache$, { value: held, configurable: true });
+    return held;
+}
+
+function seed(cls: any): void {
+    for (const ancestor of branch(cls).slice(1).reverse()) {
+        if (seeding.has(ancestor)) continue;
+        if (Object.prototype.hasOwnProperty.call(ancestor, $$template$$)) continue;
+        seeding.add(ancestor);
+        try { new ancestor(); } finally { seeding.delete(ancestor); }
+    }
+}
+
+function said(node: unknown): string {
+    if (node == null || node === true || node === false) return '';
+    if (typeof node === 'string') return node;
+    if (typeof node === 'number') return String(node);
+    if (Array.isArray(node)) return node.map(said).join('');
+    const props = (node as any)?.props;
+    return props && 'children' in props ? said(props.children) : '';
+}
+
+function missing(formula: any, asked: string, names: string[]): string {
+    const whose = formula[$type$]?.name ?? 'a formula';
+    return `${whose} stands for nothing called ${JSON.stringify(asked)} — it stands for ${names.join(', ')}.`;
+}
+
 export class $Chemical extends $Particle {
+    resolve = true;
+
+    get formula(): boolean { return false; }
+
+    get [$cache$]() { return catalogueOf((this as any)[$type$]); }
+
+    [$keyOf$](written: unknown): string | undefined {
+        const read = said(written).trim();
+        return read === '' ? undefined : read;
+    }
+
+    protected cache(key?: string): void {
+        const chain = branch((this as any)[$type$]);
+        const ref = key === undefined ? standing : { $ref: key };
+        if (key !== undefined && chain.slice(1).some(cls => catalogueOf(cls).$find(ref) !== undefined)) return;
+        Object.defineProperty(this, $isTemplate$, { value: true, configurable: true });
+        for (const cls of chain) {
+            const held = catalogueOf(cls);
+            if (held.$find(ref) !== undefined) continue;
+            held.$index(ref, this);
+            if (key === undefined) continue;
+            const names: string[] = held.$find(kept) ?? [];
+            names.push(key);
+            held.$index(kept, names);
+        }
+    }
+
+    [$formula$](element: React.ReactElement, asker?: any): any {
+        if (!this.formula || !this.resolve) return undefined;
+        const key = (this as any)[$keyOf$]((element.props as any)?.children);
+        if (key === undefined) return undefined;
+        const held = catalogueOf((this as any)[$type$]);
+        const found = held.$find({ $ref: key }) ?? held.$find(standing);
+        if (found) {
+            const component = found[$resolveComponent$]();
+            return asker ? withAsker(asker, () => $(component)) : component;
+        }
+        const names: string[] = held.$find(kept) ?? [];
+        if (names.length === 0) return undefined;
+        throw new Error(missing(this, key, names));
+    }
     [$remove$] = false;
     [$synthesis$]!: $Synthesis<any>;
     [$lastProps$]: any;
@@ -860,14 +943,12 @@ export class $Chemical extends $Particle {
         this[$$parent$$] = this;
         this[$catalyst$] = this;
         this[$synthesis$] = new $Synthesis(this);
+        if (this.formula) seed((this as any)[$type$]);
     }
 
     view(): ReactNode {
         return this.children;
     }
-
-    // Perspectives — `reveal` / `get perspectives` now live on $Particle (the
-    // framework root where views live). $Chemical inherits them unchanged.
 
     protected [$bond$]() {
         this[$molecule$].reactivate();
@@ -931,11 +1012,6 @@ export class $Chemical extends $Particle {
 // walk at the framework boundary without importing $Chemical.
 // $isChemicalBase$ now lives on $Particle.prototype (the framework root for
 // reactive entities). Inherited transitively here.
-
-// $isViewBase$ — $Chemical.view renders children, a structural fallback, not a
-// semantic perspective. Stamped own-property here (matching $Particle.prototype)
-// so the vertical `look` walk skips it and bottoms out at the highest USER view.
-($Chemical.prototype as any)[$isViewBase$] = true;
 
 // bind(chemical, parent?) — create a bound child instance of a chemical
 export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Component<T> {

@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { $, $valid } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { $Composition } from './Composition';
 import { $Referent } from '../reference/Referent';
 import { $Reference } from '../reference/Reference';
@@ -35,11 +35,11 @@ export class $Word extends $Writing<$Letter> implements $Composition<$Letter> {
     }
 
     protected whole(): boolean {
-        return $valid(!/\s/.test(this.copy), 'a word is one unbroken stretch, and this one carries whitespace');
+        return $check(!/\s/.test(this.copy), 'a word is one unbroken stretch, and this one carries whitespace');
     }
 
     protected said(): boolean {
-        return $valid(/[\p{L}\p{N}]/u.test(this.copy), 'a word has at least one letter or number, and this one has none');
+        return $check(/[\p{L}\p{N}]/u.test(this.copy), 'a word has at least one letter or number, and this one has none');
     }
 
     valid(): boolean {

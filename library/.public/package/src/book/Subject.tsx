@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { $valid } from '@dna-platform/chemistry';
+import { $check } from '@dna-platform/chemistry';
 import { $Annotation } from './Annotation';
 
 export class $Subject extends $Annotation {
@@ -11,7 +11,7 @@ export class $Subject extends $Annotation {
         const mine = this.book?.card;
         const yours = this.card;
         if (!mine || !yours) return super.valid();
-        return $valid(mine.subject === yours, 'a subject names the book its own card is filed under, and this one names another');
+        return $check(mine.subject === yours, 'a subject names the book its own card is filed under, and this one names another');
     }
 }
 

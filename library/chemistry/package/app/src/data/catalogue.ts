@@ -495,6 +495,7 @@ export const catalogue: Group[] = [
             { id: 'evolve', title: 'Evolving children', symbol: 'Ev', planned: [] },
             { id: 'dashboard', title: 'Widget dashboard', symbol: 'Dw', planned: [] },
             { id: 'poly-form', title: 'Polymorphic form', symbol: 'Pf', planned: [] },
+            { id: 'formula', title: 'Formulas', symbol: 'Fo', planned: [] },
         ],
     },
     {

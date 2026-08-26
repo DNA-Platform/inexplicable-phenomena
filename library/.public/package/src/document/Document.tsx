@@ -94,8 +94,17 @@ export class $Document extends $Writing<$Section> implements $Referent, $Composi
             if (evaluated instanceof $Section && evaluated.parent !== this) evaluated.parent = this as never;
             if (evaluated instanceof $Section) sections.push(evaluated);
         }
-        if (sections.length) this.$view = $Document.prototype.view;
+        if (sections.length) this.$look = 1;
         return sections;
+    }
+
+    // THE SECOND LOOK IS THE DRAWING. A subclass may DECLARE its sections in
+    // view() — code written in a chapter — and once declaration() has harvested
+    // them the document must stop re-emitting that declaration and draw them
+    // instead. That is what $look = 1 selects: the inherited rendering, held
+    // here as a look of its own so a declaring subclass can be switched onto it.
+    $view(): ReactNode {
+        return super.view();
     }
 
     // JOINED TO THE TEMPLATE. It used to override view() outright and

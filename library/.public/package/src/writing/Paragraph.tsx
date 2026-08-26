@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { $, $valid, $Chemical } from '@dna-platform/chemistry';
+import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { $Composition } from './Composition';
 import { $Referent } from '../reference/Referent';
 import { $Reference } from '../reference/Reference';
@@ -156,7 +156,7 @@ export class $Paragraph extends $Writing<$Sentence> implements $Composition<$Sen
 
     valid(): boolean {
         const base = super.valid();
-        const said = $valid(this.parts().some(p => this.written(p)), 'a paragraph has something written in it, and nothing is written in this one');
+        const said = $check(this.parts().some(p => this.written(p)), 'a paragraph has something written in it, and nothing is written in this one');
         return base && said;
     }
 }

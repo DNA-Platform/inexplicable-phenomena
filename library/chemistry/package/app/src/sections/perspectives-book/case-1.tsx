@@ -1,14 +1,19 @@
 import React from 'react';
-import { $, $Chemical, $check, Perspective } from '@/index';
+import { $, $Chemical, $check, look } from '@/index';
 import {
     Frame, PreviewRow, PreviewTile, PreviewScale, PreviewName, Stage,
     CoverCard, CoverTitle, CoverAuthor, SynopsisText,
     ReadingList, ReadingRow, ReadingNum, LinksWrap, LinkEdges, LinkNode,
 } from './faces';
 
-// $Book — data, and a default view (the cover), in the class. The lenses below
-// override only `view`, each reading the book's own data through `this`.
+// $Book — data, and a SERIES OF LOOKS, in the one class. Each look reads the
+// book's own data through `this` and draws it a different way: the cover, the
+// synopsis, the reading order, the network of who meets whom.
+export type $BookViews = 'cover' | 'synopsis' | 'reading' | 'links';
+
 class $Book extends $Chemical {
+    $look: $BookViews | number = 'cover';
+
     title = 'Moby-Dick';
     author = 'Herman Melville';
     tint = 'hsl(202, 44%, 36%)';
@@ -24,31 +29,23 @@ class $Book extends $Chemical {
     ];
     edges: [number, number][] = [[0, 4], [1, 4], [2, 4], [3, 4], [0, 1], [2, 3]];
 
-    view() {
+    @look('cover') view() {
         return <CoverCard $tint={this.tint}><CoverTitle>{this.title}</CoverTitle><CoverAuthor>{this.author}</CoverAuthor></CoverCard>;
     }
-}
 
-class Cover extends $Book {              // overrides nothing → the cover transfers; the default
-    constructor() { super(); if (new.target === Cover) this.reveal(new Perspective('cover', true)); }
-}
-class Synopsis extends $Book {
-    constructor() { super(); if (new.target === Synopsis) this.reveal(new Perspective('synopsis')); }
-    view() { return <SynopsisText>{this.synopsis}</SynopsisText>; }
-}
-class Reading extends $Book {
-    constructor() { super(); if (new.target === Reading) this.reveal(new Perspective('reading')); }
-    view() {
+    @look('synopsis') $view() {
+        return <SynopsisText>{this.synopsis}</SynopsisText>;
+    }
+
+    @look('reading') $$view() {
         return (
             <ReadingList>
                 {this.chapters.map((c, i) => <ReadingRow key={c}><ReadingNum>{i + 1}</ReadingNum><span>{c}</span></ReadingRow>)}
             </ReadingList>
         );
     }
-}
-class Links extends $Book {
-    constructor() { super(); if (new.target === Links) this.reveal(new Perspective('links')); }
-    view() {
+
+    @look('links') $$$view() {
         return (
             <LinksWrap>
                 <LinkEdges>
@@ -65,32 +62,30 @@ class Links extends $Book {
     }
 }
 
-new Cover();
-new Synopsis();
-new Reading();
-new Links();
-
-// A viewer: one LIVE $Book (bonded), and a menu of its lenses — each bound to the
-// book, rendering it its own way. Picking one shows it on the stage.
+// A viewer: one LIVE $Book (bonded), and a menu of its looks — every tile is
+// THAT book asked for a different look, and picking one puts it on the stage.
 class $Shelf extends $Chemical {
     book!: $Book;
-    showing = 'cover';
+
+    showing: $BookViews = 'cover';
+
+    looks: $BookViews[] = ['cover', 'synopsis', 'reading', 'links'];
+
     $Shelf(book: $Book) { this.book = $check(book, $Book); }
 
     view() {
-        const lenses = this.book.perspectives;
-        const active = lenses.find(p => p.name === this.showing)!;
+        const Book = $(this.book);
         return (
             <Frame>
                 <PreviewRow>
-                    {lenses.map(p => (
-                        <PreviewTile key={p.name} $active={this.showing === p.name} onClick={() => { this.showing = p.name; }}>
-                            <PreviewScale>{p.render()}</PreviewScale>
-                            <PreviewName>{p.name}</PreviewName>
+                    {this.looks.map(name => (
+                        <PreviewTile key={name} $active={this.showing === name} onClick={() => { this.showing = name; }}>
+                            <PreviewScale><Book look={name} /></PreviewScale>
+                            <PreviewName>{name}</PreviewName>
                         </PreviewTile>
                     ))}
                 </PreviewRow>
-                <Stage>{active.render()}</Stage>
+                <Stage><Book look={this.showing} /></Stage>
             </Frame>
         );
     }

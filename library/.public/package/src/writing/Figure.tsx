@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { styled } from 'styled-components';
-import { $, $valid } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { $Theme } from './Theme';
 import { $Paragraph } from './Paragraph';
 import { $Caption } from './Caption';
@@ -58,7 +58,7 @@ export class $Figure extends $Paragraph {
     }
 
     valid(): boolean {
-        return $valid(this.caption.valid(), 'a figure carries a caption, possibly parenthetical but never absent, and this one has none');
+        return $check(this.caption.valid(), 'a figure carries a caption, possibly parenthetical but never absent, and this one has none');
     }
 }
 

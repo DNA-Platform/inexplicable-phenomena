@@ -36,6 +36,7 @@ import { sectionData as perspectives } from './perspectives-section';
 import { sectionData as representative } from './representative-section';
 import { sectionData as frames } from './frames-showcase';
 import { sectionData as blocks } from './blocks-showcase';
+import { sectionData as formula } from './formula-section';
 
 export type SectionModule = {
     id: string;
@@ -81,6 +82,7 @@ const modules: SectionModule[] = [
     representative,
     frames,
     blocks,
+    formula,
 ];
 
 export const sectionModules: Record<string, SectionModule> = Object.fromEntries(

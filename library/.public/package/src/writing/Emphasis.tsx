@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { styled } from 'styled-components';
-import { $, $valid } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { $Theme } from './Theme';
 import { $Phrase } from './Phrase';
 
@@ -31,7 +31,7 @@ export class $Emphasis extends $Phrase {
     }
 
     valid(): boolean {
-        return $valid(this.copy.trim() !== '', 'a stressed phrase says something, and this one says nothing');
+        return $check(this.copy.trim() !== '', 'a stressed phrase says something, and this one says nothing');
     }
 }
 

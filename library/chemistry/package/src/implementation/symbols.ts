@@ -42,36 +42,31 @@ export const $catalyst$ = Symbol("$Chemical.catalyst");
 export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");
 export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
 
-// Perspectives — alternative named views onto a chemical.
-// $perspective$  — the chemical's currently-active Perspective (per instance).
-// $perspectives$ — the static registry array of revealed perspectives, filed
-//                  on the host chemical class (own property, not inherited).
-// $isPerspective$ — static marker stamped on Perspective classes so the host
-//                  walk can skip them (read via hasOwnProperty; not inherited).
-export const $perspective$ = Symbol("$Chemical.perspective");
-export const $perspectives$ = Symbol("$Chemical.perspectives");
-export const $isPerspective$ = Symbol("$Perspective.isPerspective");
-
-// Vertical perspective — `look` walks an instance up/down its OWN prototype
-// chain, rendering it through any ancestor's `view`.
-// $activeView$ — the view FUNCTION this instance currently renders through
-//                (undefined = render through its own most-derived class).
 // $renderView$ — internal render entry: $lift calls this instead of view(),
-//                so the active view is consulted without disturbing user
-//                view() overrides.
-export const $activeView$ = Symbol("$Particle.activeView");
+// so the drawing goes through frame() without disturbing user view() overrides.
 export const $renderView$ = Symbol("$Particle.renderView");
-// $viewLevel$ — cursor into the instance's chain of user view-levels (0 =
-// most-derived). Symbol-keyed, not #private: the template render path mounts
-// derivatives via Object.create(template), which never run the constructor —
-// a #private field would be unbranded there and throw. Symbols ride through.
-export const $viewLevel$ = Symbol("$Particle.viewLevel");
-// $isViewBase$ — OWN-property marker stamped on each framework class whose
-// `view` is structural (renders toString/children) rather than a semantic
-// perspective: $Particle and $Chemical. `look` skips these so it bottoms out
-// at the highest USER view-level. Own-property (not inherited) so user
-// subclasses don't match.
-export const $isViewBase$ = Symbol("$Particle.isViewBase");
+
+// $views$ — the instance's view dictionary, keyed by position AND by name.
+export const $views$ = Symbol("$Particle.views");
+
+// A look is `view` with a run of `$` in front of it: `view` is 0, `$view` is 1,
+// `$$view` is 2. The molecule reads this too, so no member of the series is
+// ever bonded over.
+export const looks = /^\$*view$/;
+
+// $Formula — a formula stands for something else, and the framework replaces it
+// with what it symbolizes.
+// $cache$   — the catalogue of specimens a formula branch stands for. Held per
+//             class, reached from any instance, so nothing is allocated per
+//             instance and every instance of a class consults the same cache.
+// $formula$ — the marker AND the resolver in one member. The render walk reads
+//             it off a component's chemical: a property lookup for anything that
+//             is not a formula, and the substitution itself for anything that is.
+//             It is a member rather than an import so the walk needs no module.
+export const $cache$ = Symbol("$Formula.cache");
+export const $formula$ = Symbol("$Formula.formula");
+export const $keyOf$ = Symbol("$Formula.keyOf");
+export const $isFormulaBase$ = Symbol("$Formula.base");
 export const $lifted$ = Symbol("$Particle.lifted");
 export const $construction$ = Symbol("$Particle.construction");
 export const $formRan$ = Symbol("$Particle.formRan");

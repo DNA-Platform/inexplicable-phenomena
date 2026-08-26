@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { styled } from 'styled-components';
-import { $, $check, $valid } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { $Referent } from '../reference/Referent';
 import { $Reference } from '../reference/Reference';
 import { $Catalogue } from '../reference/Catalogue';
@@ -427,14 +427,14 @@ export class $Book extends $Referent implements $Composition<$Chapter>, $Catalog
     }
 
     valid(): boolean {
-        // Every one is evaluated: a short-circuit in front of a $valid call is a
+        // Every one is evaluated: a short-circuit in front of a $check call is a
         // reason nobody hears.
-        const structural = this.structure().map(said => $valid(said.holds, said.says));
+        const structural = this.structure().map(said => $check(said.holds, said.says));
 
         const of = this.pointed(this.author);
         const about = this.pointed(this.subject);
-        const wrote = $valid(!of || this.pointed(of.author) === of, 'a book names an author that authors itself, and this one names a book somebody else wrote');
-        const holds = $valid(!about || about.entries.length > 0, 'a book names a subject that catalogues other books, and this one names a book that catalogues nothing');
+        const wrote = $check(!of || this.pointed(of.author) === of, 'a book names an author that authors itself, and this one names a book somebody else wrote');
+        const holds = $check(!about || about.entries.length > 0, 'a book names a subject that catalogues other books, and this one names a book that catalogues nothing');
 
         return structural.every(Boolean) && wrote && holds;
     }

@@ -13,25 +13,25 @@ export function PerspectivesCases() {
         <>
             <CaseShell
                 caseId="one color"
-                subject="One color, four lenses — $Color augmented from outside by four subclasses; the menu previews each, the stage shows the picked one"
-                pass="swatch · hex · rgb · hsl each preview live and open full on click; $Color was never edited"
-                fail="a lens is blank, the page jumps, or a lens required changing $Color"
+                subject="One color, four looks — $Color declares view, $view, $$view and $$$view, each named by @look; the menu previews every one of them live and the stage shows the picked one"
+                pass="swatch · hex · rgb · hsl each preview live and open full on click; dragging hue moves all four at once, because they draw ONE object"
+                fail="a look is blank, the page jumps, or the tiles disagree with the stage"
                 source={colorSource}
                 demo={<ColorPerspectivesDemo />}
             />
             <CaseShell
                 caseId="the book"
-                subject="Perspectival augmentation — a $Book gains four ways of being seen, added from outside by subclassing; the menu previews each face live"
-                pass="cover · synopsis · reading · links each preview live and open full on click; the stage is fixed, so nothing jumps; $Book was never edited"
-                fail="a preview is blank, the page jumps when switching, or a perspective required editing $Book"
+                subject="Four looks on one book — the cover, the synopsis, the reading order and the network, each a member of the series and each named by @look"
+                pass="cover · synopsis · reading · links each preview live and open full on click; the stage is fixed, so nothing jumps"
+                fail="a preview is blank, or the page jumps when switching"
                 source={bookSource}
                 demo={<BookPerspectivesDemo />}
             />
             <CaseShell
                 caseId="the element"
-                subject="The vertical axis — one live $PeriodicCell walked up and down its own inheritance with look('up'/'down'); ▲ reverts toward the bare symbol, ▼ specializes back"
-                pass="▲/▼ walk cell · named · symbol and back; the breadcrumb tracks and the ends grey at the clamps; one live instance, never re-created"
-                fail="a tier is blank, the stage jumps, or reaching a tier needed a menu or reveal"
+                subject="Looks as GRADES rather than alternatives — one live $PeriodicCell whose series runs from the full cell to a bare symbol; ▲ steps toward the barest, ▼ back toward the fullest"
+                pass="▲/▼ walk cell · named · symbol and back; the breadcrumb tracks $look and the ends grey at the bounds; one live instance, never re-created — and the panel repaints because the cell is a bonded child"
+                fail="a grade is blank, the stage jumps, or the breadcrumb disagrees with what is drawn"
                 source={lookSource}
                 demo={<LookPerspectivesDemo />}
             />

@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { $, $Chemical, Perspective } from '@dna-platform/chemistry';
+import { $, $Chemical, look } from '@dna-platform/chemistry';
 import { $Code } from '@/writing/Code';
 import { $Figure } from '@/writing/Figure';
 
@@ -17,10 +17,20 @@ import {
 
 // The sheet reads the MODEL. There is no second parse here and no `Entry[]`
 // union: title, paragraphs, words and formulas are readings, computed fresh,
-// and the three dresses differ by what their PARTS draw rather than by CSS
-// reaching into generic markup.
+// and the dresses differ by what their PARTS draw rather than by CSS reaching
+// into generic markup.
+//
+// FIVE LOOKS, ONE OBJECT. `view` is the book, and each further `$` is the next
+// look — github, night, the reading, the parallel text. They were five sibling
+// subclasses and they are one class now; every drawing is the drawing it was.
+// The five names this sheet answers to, as a type — so the page that offers
+// them cannot offer one the sheet does not have.
+export type $SheetViews = 'book' | 'github' | 'night' | 'reading' | 'compare';
+
 export class $Sheet extends $Chemical {
     $source? = documentSource;
+
+    $look: $SheetViews | number = 'book';
 
     // What the reader is attending to. It lives HERE because the sheet is the
     // chemical whose view is tracked — and it is handed DOWN to both the prose
@@ -43,7 +53,7 @@ export class $Sheet extends $Chemical {
         );
     }
 
-    view(): ReactNode {
+    @look('book') view(): ReactNode {
         return (
             <BookSkin data-skin="book">
                 <Masthead><Kicker>The Library Lab · A Composition, Typeset</Kicker></Masthead>
@@ -52,22 +62,8 @@ export class $Sheet extends $Chemical {
             </BookSkin>
         );
     }
-}
 
-class Book extends $Sheet {
-    constructor() {
-        super();
-        if (new.target === Book) this.reveal(new Perspective('book', true));
-    }
-}
-
-class Github extends $Sheet {
-    constructor() {
-        super();
-        if (new.target === Github) this.reveal(new Perspective('github'));
-    }
-
-    view(): ReactNode {
+    @look('github') $view(): ReactNode {
         return (
             <GithubSkin data-skin="github">
                 <Masthead><Kicker>the-library-lab / README.md</Kicker></Masthead>
@@ -76,15 +72,8 @@ class Github extends $Sheet {
             </GithubSkin>
         );
     }
-}
 
-class Night extends $Sheet {
-    constructor() {
-        super();
-        if (new.target === Night) this.reveal(new Perspective('night'));
-    }
-
-    view(): ReactNode {
+    @look('night') $$view(): ReactNode {
         return (
             <NightSkin data-skin="night">
                 <Masthead><Kicker>The Library Lab · After Dark</Kicker></Masthead>
@@ -93,18 +82,11 @@ class Night extends $Sheet {
             </NightSkin>
         );
     }
-}
 
-// The reading lens — a READING RENDERED rather than a dress: the model's own
-// parts, at their grade, with the marks counted as mentions. It reads
-// `parts()`; it does not parse anything a second time.
-class Anatomy extends $Sheet {
-    constructor() {
-        super();
-        if (new.target === Anatomy) this.reveal(new Perspective('reading'));
-    }
-
-    view(): ReactNode {
+    // The reading look — a READING RENDERED rather than a dress: the model's
+    // own parts, at their grade, with the marks counted as mentions. It reads
+    // `parts()`; it does not parse anything a second time.
+    @look('reading') $$$view(): ReactNode {
         const r = this.readings;
         let counted = 0;
         return (
@@ -149,16 +131,10 @@ class Anatomy extends $Sheet {
             </AnatomySkin>
         );
     }
-}
 
-// A parallel text — one text set two ways, the sprint's own claim on one screen.
-class Compare extends $Sheet {
-    constructor() {
-        super();
-        if (new.target === Compare) this.reveal(new Perspective('compare'));
-    }
-
-    view(): ReactNode {
+    // A parallel text — one text set two ways, the sprint's own claim on one
+    // screen.
+    @look('compare') $$$$view(): ReactNode {
         return (
             <AnatomySkin data-skin="compare" style={{ width: 'min(1180px, 100%)' }}>
                 <Parallel />
@@ -166,11 +142,5 @@ class Compare extends $Sheet {
         );
     }
 }
-
-new Book();
-new Github();
-new Night();
-new Anatomy();
-new Compare();
 
 export const Sheet = $($Sheet);

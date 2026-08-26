@@ -1,6 +1,6 @@
 import type { ReactNode, ReactElement } from 'react';
 import { withScope, withAsker } from './scope';
-import { $handlerOriginal$ } from './symbols';
+import { $handlerOriginal$, $formula$ } from './symbols';
 
 export function augment(node: ReactNode, react: () => void, asker?: any): ReactNode {
     return augmentNode(node, react, asker);
@@ -37,12 +37,28 @@ function augmentNode(node: ReactNode, react: () => void, asker?: any): ReactNode
         }
     }
 
-    if (newProps || newChildren !== props.children) {
-        const finalProps = newProps || { ...props };
-        if (newChildren !== props.children) finalProps.children = newChildren;
-        return { ...element, props: finalProps };
+    // A formula stands for something else, and this replaces it with what it
+    // symbolizes — the component only, so the text and props cross unchanged.
+    const stands = substitute(element, asker);
+
+    if (stands || newProps || newChildren !== props.children) {
+        let finalProps: any = props;
+        if (newProps || newChildren !== props.children) {
+            finalProps = newProps || { ...props };
+            if (newChildren !== props.children) finalProps.children = newChildren;
+        }
+        if (finalProps === props) return stands ? { ...element, type: stands } : element;
+        return stands ? { ...element, type: stands, props: finalProps } : { ...element, props: finalProps };
     }
     return element;
+}
+
+function substitute(element: ReactElement<any>, asker?: any): any {
+    const chemical = (element.type as any)?.$chemical;
+    const stands = chemical?.[$formula$];
+    if (typeof stands !== 'function') return undefined;
+    const replacement = stands.call(chemical, element, asker);
+    return replacement && replacement !== element.type ? replacement : undefined;
 }
 
 function isEventHandlerProp(key: string): boolean {

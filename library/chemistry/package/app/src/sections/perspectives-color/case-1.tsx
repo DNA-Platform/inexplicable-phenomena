@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical, $check, Perspective } from '@/index';
+import { $, $Chemical, $check, look } from '@/index';
 import {
     Frame, PreviewRow, PreviewTile, PreviewScale, PreviewName, Stage,
     HueRow, HueLabel, HueInput,
@@ -8,10 +8,19 @@ import {
 } from './faces';
 
 // $Color — properties (h/s/l), protected utilities, a protected template method,
-// and a default view, all IN the class. The lenses below override only `view`,
-// using these same `this` helpers — which is the point of the pattern.
+// and a SERIES OF LOOKS, all in the one class. Each look draws the same state a
+// different way using these same `this` helpers — which is the point of the
+// pattern. `view` is the swatch, `$view` the hex, `$$view` the channels.
+// THE NAMES ARE A TYPE. The class declares what its looks are called and
+// retypes $look to it, so a container asking for a look that does not exist is
+// a compile error rather than a throw at render. Nothing about this lives in
+// the framework — $Particle keeps `number | string`, and each consumer narrows.
+export type $ColorViews = 'swatch' | 'hex' | 'rgb' | 'hsl';
+
 class $Color extends $Chemical {
     h = 28; s = 80; l = 56;
+
+    $look: $ColorViews | number = 'swatch';
 
     protected get css() { return `hsl(${Math.round(this.h)}, ${this.s}%, ${this.l}%)`; }
     protected get rgb(): [number, number, number] {
@@ -38,46 +47,39 @@ class $Color extends $Chemical {
         );
     }
 
-    view() {
+    @look('swatch') view() {
         return <SwatchBox><SwatchTile $color={this.css} /><SwatchValue>{this.css}</SwatchValue></SwatchBox>;
     }
-}
 
-class Swatch extends $Color {            // overrides nothing → the swatch transfers; the default
-    constructor() { super(); if (new.target === Swatch) this.reveal(new Perspective('swatch', true)); }
-}
-class Hex extends $Color {
-    constructor() { super(); if (new.target === Hex) this.reveal(new Perspective('hex')); }
-    view() { return <BigReadout><ReadoutChip $color={this.css} />{this.hex}</BigReadout>; }
-}
-class Rgb extends $Color {
-    constructor() { super(); if (new.target === Rgb) this.reveal(new Perspective('rgb')); }
-    view() {
+    @look('hex') $view() {
+        return <BigReadout><ReadoutChip $color={this.css} />{this.hex}</BigReadout>;
+    }
+
+    @look('rgb') $$view() {
         const [r, g, b] = this.rgb;
         return this.channels([['R', r, 255, 'hsl(0,72%,52%)'], ['G', g, 255, 'hsl(140,70%,42%)'], ['B', b, 255, 'hsl(220,75%,55%)']]);
     }
-}
-class Hsl extends $Color {
-    constructor() { super(); if (new.target === Hsl) this.reveal(new Perspective('hsl')); }
-    view() { return this.channels([['H', this.h, 360, this.css], ['S', this.s, 100, this.css], ['L', this.l, 100, this.css]]); }
+
+    @look('hsl') $$$view() {
+        return this.channels([['H', this.h, 360, this.css], ['S', this.s, 100, this.css], ['L', this.l, 100, this.css]]);
+    }
 }
 
-new Swatch();
-new Hex();
-new Rgb();
-new Hsl();
-
-// A palette: one LIVE $Color (bonded as a child), a hue slider, and a menu of its
-// lenses. Each lens is already bound to the color, so it renders that one object
-// its own way; dragging hue mutates the color and every lens re-expresses live.
+// A palette: one LIVE $Color (bonded as a child), a hue slider, and a menu of
+// its looks. Every tile is THE SAME OBJECT asked for a different look — nothing
+// here reaches into the framework; it just hands `look` the name it wants — so
+// dragging hue mutates one color and all four tiles re-express live.
 class $Palette extends $Chemical {
     color!: $Color;
-    showing = 'swatch';
+
+    showing: $ColorViews = 'swatch';
+
+    looks: $ColorViews[] = ['swatch', 'hex', 'rgb', 'hsl'];
+
     $Palette(color: $Color) { this.color = $check(color, $Color); }
 
     view() {
-        const lenses = this.color.perspectives;
-        const active = lenses.find(p => p.name === this.showing)!;
+        const Color = $(this.color);
         return (
             <Frame>
                 <HueRow>
@@ -86,14 +88,14 @@ class $Palette extends $Chemical {
                         onChange={e => { this.color.h = Number(e.target.value); }} />
                 </HueRow>
                 <PreviewRow>
-                    {lenses.map(p => (
-                        <PreviewTile key={p.name} $active={this.showing === p.name} onClick={() => { this.showing = p.name; }}>
-                            <PreviewScale>{p.render()}</PreviewScale>
-                            <PreviewName>{p.name}</PreviewName>
+                    {this.looks.map(name => (
+                        <PreviewTile key={name} $active={this.showing === name} onClick={() => { this.showing = name; }}>
+                            <PreviewScale><Color look={name} /></PreviewScale>
+                            <PreviewName>{name}</PreviewName>
                         </PreviewTile>
                     ))}
                 </PreviewRow>
-                <Stage>{active.render()}</Stage>
+                <Stage><Color look={this.showing} /></Stage>
             </Frame>
         );
     }
