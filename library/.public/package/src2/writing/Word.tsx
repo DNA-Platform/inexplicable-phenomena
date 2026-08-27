@@ -1,5 +1,10 @@
-import { $Composition$ } from './Composition';
-import { $Letter$ } from './Letter';
+import { $Type } from '@/notation/Type';
 
-export interface $Word$ extends $Composition$<$Letter$> {
+export class $Word extends $Type {
+    resolve = false;
+
+    constructor() {
+        super();
+        this.cache('Word');
+    }
 }

@@ -1,8 +1,7 @@
-import { $Formula } from '@dna-platform/chemistry';
+import { $Writing } from '@/writing/Writing';
 
-export class $Annotation extends $Formula {
-    constructor() {
-        super();
-        this.cache();
-    }
+export class $Annotation extends $Writing {
+    parenthetical = true;
+
+    override get annotation(): boolean { return true; }
 }

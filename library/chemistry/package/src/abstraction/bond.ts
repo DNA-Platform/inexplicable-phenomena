@@ -2,6 +2,7 @@ import {
     $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$, looks
 } from "../implementation/symbols";
 import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
+import { equivalent } from '../implementation/reconcile';
 
 // ===========================================================================
 // $Reflection — property annotation system
@@ -204,7 +205,10 @@ function activate(chemical: any, property: string, initial: any) {
         },
         set(value) {
             const store = backing(this);
-            if (store[property] === value) return;
+            // BY VALUE, NOT BY REFERENCE. equivalent() opens with ===, so a
+            // scalar costs what it always did; a fresh array or plain object
+            // holding what the old one held is not news.
+            if (equivalent(store[property], value)) return;
             store[property] = value;
             if (this[$rendering$]) return;
             const scope = currentScope();

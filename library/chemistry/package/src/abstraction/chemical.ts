@@ -246,6 +246,13 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                 $paramValidation.count = this._parameters.length;
                 let bondResult: any;
                 const watch = this.watchChain();
+                // A CHEMICAL'S OWN CONSTRUCTION IS NOT NEWS. Applying props is
+                // already wrapped this way; the bond constructor was not, so a
+                // field written here woke the composition tree and re-ran the
+                // very bond that wrote it. Writes to OTHER chemicals still react.
+                const bonding = c[$rendering$];
+                c[$rendering$] = true;
+                try {
                 if (!dev && $exceptions.mode === 'throw') {
                     try {
                         bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
@@ -270,6 +277,9 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                     } finally {
                         watch?.restore();
                     }
+                }
+                } finally {
+                    c[$rendering$] = bonding;
                 }
 
                 if (!c[$construction$]) {

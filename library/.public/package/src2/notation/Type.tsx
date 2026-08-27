@@ -1,16 +1,17 @@
 import { $Referent$ } from '@/reference/Referent';
-import { $Writing$ } from '@/writing/Writing';
+import { $Writing } from '@/writing/Writing';
 import { $Annotation } from './Annotation';
 
 export class $Type extends $Annotation {
-    get instance(): $Writing$ { return this.parent?.parent as $Writing$; }
+    instance?: $Writing = undefined;
 
-    constructor() {
-        super();
-        this.cache('<Type>');
-    }
+    override get formula(): boolean { return true; }
 
-    specify(): void {
+    override get copy(): string { return this.instance ? this.instance.copy : ''; }
+
+    bind(writing: $Writing): this {
+        this.instance = writing;
+        return this;
     }
 
     static is(instance: $Referent$, type: $Type): boolean {
