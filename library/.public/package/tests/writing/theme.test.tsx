@@ -14,7 +14,7 @@ import * as themes from '@/writing/Theme';
 // would pass against a global map if it were written the other way round, so
 // each is written to fail if it were.
 
-const source = readFileSync(join(__dirname, '../../src/writing/Theme.tsx'), 'utf-8');
+const source = readFileSync(join(__dirname, '../../archive/writing/Theme.tsx'), 'utf-8');
 
 const composed = (parts: { parenthetical: boolean }[] = []) => ({
     parts: () => parts,

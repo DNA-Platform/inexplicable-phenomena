@@ -1,15 +1,6 @@
-import { $Referent } from '../reference/Referent';
-import { $Location } from '../reference/Location';
+import { $Writing } from './Writing';
 
-export interface $Composition<T extends $Referent & { copy: string; parenthetical: boolean }> {
-    valid(): boolean;
-    canonical: T;
+export interface $Composition$<T extends $Writing> {
     parts(): T[];
-    where(match: (part: T) => boolean): T[];
-    select<U>(pick: (part: T) => U): U[];
-    selectMany<U>(pick: (part: T) => U[]): U[];
-    single(match: (part: T) => boolean): T;
-    at(position: number): $Location<T>;
-    copy: string;
-    parenthetical: boolean;
+    canonical: T;
 }

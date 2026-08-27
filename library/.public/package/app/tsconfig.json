@@ -12,7 +12,7 @@
         "experimentalDecorators": true,
         "skipLibCheck": true,
         "paths": {
-            "@/*": ["../src/*"]
+            "@/*": ["../archive/*"]
         }
     },
     "include": ["src/**/*.tsx", "src/**/*.ts"]

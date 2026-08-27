@@ -1,22 +1,32 @@
-import { $ } from '@dna-platform/chemistry';
-import { $Writing } from './Writing';
+import { ReactNode } from 'react';
+import { $, $check } from '@dna-platform/chemistry';
+import { $Composition$ } from './Composition';
+import { $Type } from '@/notation/Type';
 
-// THE COMPOSITION ARM CLOSES ON ITSELF. A letter is a composition of one letter
-// and that letter is this one, so the descent stops by pointing at itself rather
-// than by running out.
-//
-// THE REFERENCE ARM DOES NOT CLOSE YET. `ref` answers a reference with something
-// that implements no reference interface, and nothing catches it because `ref` is
-// a getter. Making $Letter a $Reference<$Letter> costs 40 type errors in one
-// cascade — see "The floor's two arms" in the sprint chapter.
-export class $Letter extends $Writing<$Letter> {
-    parts(): $Letter[] { return [this]; }
+export class $Letter extends $Type implements $Composition$<$Letter> {
+    resolve = false;
 
-    get ref(): $Letter { return this; }
+    constructor() {
+        super();
+        this.cache('Letter');
+    }
 
-    valid(): boolean {
-        return super.valid() && [...this.copy].length === 1;
+    override view(): ReactNode {
+        if (!this.instance) return null;
+        const Instance = $(this.instance);
+        return <Instance />;
+    }
+
+    parts(): $Letter[] {
+        return [this];
+    }
+
+    get canonical(): $Letter {
+        return this;
+    }
+
+    override specify(): void {
+        super.specify();
+        $check([...this.copy].length === 1, 'a letter is one grapheme, and this one is not');
     }
 }
-
-export const Letter = $($Letter);

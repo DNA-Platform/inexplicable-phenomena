@@ -10,7 +10,7 @@ const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/
 module.exports = [
     // @dna-platform/lib — the base classes a dependent library instantiates against.
     {
-        input: 'src/index.ts',
+        input: 'archive/index.ts',
         output: [
             { file: 'dist/lib.js',  format: 'es',  sourcemap: true },
             { file: 'dist/lib.cjs', format: 'cjs', sourcemap: true }
@@ -19,7 +19,7 @@ module.exports = [
         external: externalDeps
     },
     {
-        input: 'src/index.ts',
+        input: 'archive/index.ts',
         output: { file: 'dist/lib.d.ts', format: 'es' },
         plugins: [dts()]
     }
