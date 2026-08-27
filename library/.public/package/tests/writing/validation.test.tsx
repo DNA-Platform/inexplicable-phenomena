@@ -18,7 +18,7 @@ const failure = (chemical: unknown): string | undefined => {
 describe('a class states WHY it is not valid', () => {
     it('the reason reaches the failure, and it is the class\'s own sentence', () => {
         const p: $Paragraph = $(<Paragraph>{'   '}</Paragraph>);
-        expect(p.valid()).toBe(false);
+        expect(() => p.valid()).toThrow();
         // CHANGED 2026-08-18: the rule asks what is WRITTEN rather than what is
         // read, so a paragraph carrying only a parenthetical author is not empty.
         expect(failure(p)).toContain('nothing is written in this one');

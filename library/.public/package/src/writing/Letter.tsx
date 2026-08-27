@@ -1,17 +1,19 @@
 import { $check } from '@dna-platform/chemistry';
 import { $Type } from '@/notation/Type';
+import { $Composition$ } from './Composition';
+import { $Writing, $Written } from './Writing';
 
-export class $Letter extends $Type<$Letter> {
+export class $Letter extends $Type<$Letter> implements $Composition$<$Letter> {
     resolve = false;
+    override parts(): $Letter[] { return [this]; }
+
+    $Letter(...writing: $Written[]) {
+        super.$Writing(...writing);
+    }
 
     constructor() {
         super();
         this.cache('Letter');
-    }
-
-    // THE FLOOR. A letter composes itself, and a descent through it terminates.
-    override parts(): $Letter[] {
-        return [this];
     }
 
     override specify(): void {

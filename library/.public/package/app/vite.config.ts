@@ -25,7 +25,7 @@ export default defineConfig({
     preview: { port: 5199, strictPort: true },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, '../archive'),
+            '@': path.resolve(__dirname, '../.archive'),
         }
     },
     // A BOND CONSTRUCTOR IS FOUND BY THE CLASS'S NAME — $Book declares a method

@@ -20,13 +20,13 @@
     "experimentalDecorators": true,
     "paths": {
       "@/*": [
-        "./archive/*"
+        "./.archive/*"
       ]
     }
   },
   "include": [
-    "archive/**/*.ts",
-    "archive/**/*.tsx",
+    ".archive/**/*.ts",
+    ".archive/**/*.tsx",
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],

@@ -261,6 +261,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                         $paramValidation.evaluate();
                     } finally {
                         watch?.restore();
+                        $paramValidation.chemical = null;
                     }
                 } else {
                     try {
@@ -276,6 +277,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                         if (!dev) console.error('$Chemistry: Bond Constructor Failed —', e);
                     } finally {
                         watch?.restore();
+                        $paramValidation.chemical = null;
                     }
                 }
                 } finally {
@@ -545,6 +547,22 @@ export class $ParamValidation {
         this.reasons.push(text);
     }
 
+    // IS A BOND IN FLIGHT. Set when one starts, cleared when it ends, so a reason
+    // knows whether anybody is listening for it.
+    get bonding(): boolean {
+        return this.chemical !== null;
+    }
+
+    // A REASON STATED OUTSIDE A BOND IS RAISED WHERE IT IS STATED. Inside one it is
+    // collected, because a bond that raised on the first reason could never build an
+    // INVALID PART — and an invalid part is still a part, carrying its failure where
+    // it stands, rather than absent. Outside a bond nobody is collecting: the reason
+    // used to sit in this object until the next reset() discarded it, unheard.
+    raise(text: string) {
+        this.reason(text);
+        if (!this.bonding) throw new Error(text);
+    }
+
     check<T>(arg: T, ...types: $ParameterType[]): T {
         const paramNumber = this.index++;
         // An empty inline run produces no block. A 'block' parameter materializes an
@@ -781,7 +799,7 @@ export function $check(held: boolean, reason: string): boolean;
 
 export function $check(arg: any, ...rest: any[]): any {
     if (typeof arg === 'boolean' && rest.length === 1 && typeof rest[0] === 'string') {
-        if (!arg) $paramValidation.reason(rest[0]);
+        if (!arg) $paramValidation.raise(rest[0]);
         return arg;
     }
     return $paramValidation.check(arg, ...rest);
@@ -792,8 +810,8 @@ export function $is<T>(ctor: abstract new (...args: any[]) => T): T {
 }
 
 // Ask the instance whether it is valid, and let it STATE why while it answers.
-// It does not throw: the reasons go where $check's parameter errors already go,
-// and evaluate() raises once with both.
+// A class that states its reason through $check raises THERE; one that simply
+// answers false is given a reason here and raised by evaluate().
 function assertValid(chemical: any) {
     if (chemical[$isTemplate$]) return;
     if (typeof chemical.valid === 'function' && !chemical.valid()) {

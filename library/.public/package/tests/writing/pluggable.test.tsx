@@ -88,7 +88,7 @@ describe('PLUGGABLE — a new subclass of content is part of the model', () => {
 describe('REJECTING — writing that does not stand is named', () => {
     it('a word carrying whitespace is not one word, and says so', () => {
         const broken: $Broken = $(<Broken>two words</Broken>);
-        expect(broken.valid()).toBe(false);
+        expect(() => broken.valid()).toThrow();
     });
 
     it('a letter is one grapheme, and more than one is not a letter', () => {

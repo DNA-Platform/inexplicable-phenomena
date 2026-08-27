@@ -46,16 +46,16 @@ describe('the three annotations differ BY VALIDATION, which is the whole of the 
     });
 
     it('and none of them stands for nothing', () => {
-        expect($(<Author />).valid()).toBe(false);
-        expect($(<Subject />).valid()).toBe(false);
-        expect($(<Canonical />).valid()).toBe(false);
+        expect(() => $(<Author />).valid()).toThrow();
+        expect(() => $(<Subject />).valid()).toThrow();
+        expect(() => $(<Canonical />).valid()).toThrow();
     });
 
     // "THE CANONICAL AUTOBIOGRAPHY OF THE LIBRARY" — an author names a book that
     // authors ITSELF, and a card that names somebody else does not qualify.
     it('AN AUTHOR asks whether the book it names authors itself', () => {
         const stranger = card();
-        expect($(<Author for={stranger} />).valid()).toBe(false);
+        expect(() => $(<Author for={stranger} />).valid()).toThrow();
 
         const itself = card();
         itself.$author = itself;
@@ -136,13 +136,13 @@ describe('a link is valid by WHAT IT POINTS AT, and only the build can ask', () 
     it('an author must point at a book that authors itself', () => {
         expect(model.valid()).toBe(true);
         const wrong: $Book = $(<Book>{cover(modelCard, physicsCard)}<TableOfContents />{account()}{chapter('Astray')}</Book>);
-        expect(wrong.valid()).toBe(false);
+        expect(() => wrong.valid()).toThrow();
     });
 
     it('a subject must point at a book that catalogues', () => {
         expect(team.valid()).toBe(true);
         const wrong: $Book = $(<Book>{cover(teamCard, modelCard)}<TableOfContents />{account()}{chapter('Astray')}</Book>);
-        expect(wrong.valid()).toBe(false);
+        expect(() => wrong.valid()).toThrow();
     });
 
     it('A SUBJECT IS A CATALOGUE OF BOOKS, and its catalogue answers its canonical', () => {

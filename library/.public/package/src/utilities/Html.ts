@@ -1,7 +1,7 @@
 import { isValidElement } from 'react';
 
 export class HtmlUtilities {
-    block(node: any): boolean {
+    block(node: unknown): boolean {
         return !!node && typeof node === 'object' && (node as { type?: string }).type === 'block';
     }
 

@@ -1,7 +1,7 @@
-import { $Type } from '@/notation/Type';
 import { $Chemical } from '@dna-platform/chemistry';
+import { $Writing } from '@/writing/Writing';
 
 export interface $Referent$ extends $Chemical {
     specify(): void;
-    specification: $Type[];
+    get specification(): $Writing<any>[];
 }

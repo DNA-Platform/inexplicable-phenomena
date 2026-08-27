@@ -94,7 +94,7 @@ describe('$Author — a book reference that holds a library card', () => {
     it('is not valid when it carries neither a name nor a card', () => {
         const empty: $Author = $(<Author>{'   '}</Author>);
 
-        expect(empty.valid()).toBe(false);
+        expect(() => empty.valid()).toThrow();
     });
 });
 

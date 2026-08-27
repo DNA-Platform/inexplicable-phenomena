@@ -172,7 +172,7 @@ describe('a name is a phrase, not a sentence', () => {
         // no machinery a part that flattens into several would need.
         expect(name.valid()).toBe(true);
         // A plain word still admits no space, so the widening is the phrase's.
-        expect(($(<Word>{'two words'}</Word>) as $Word).valid()).toBe(false);
+        expect(() => ($(<Word>{'two words'}</Word>) as $Word).valid()).toThrow();
     });
 });
 

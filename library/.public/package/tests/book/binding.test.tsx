@@ -193,9 +193,9 @@ describe('WHERE THE READER IS IS REACTIVE, and declared once', () => {
     });
 
     it('and it is declared on ONE class', () => {
-        const writing = readFileSync(join(__dirname, '../../archive/writing/Writing.tsx'), 'utf-8');
-        const book = readFileSync(join(__dirname, '../../archive/book/Book.tsx'), 'utf-8');
-        const referent = readFileSync(join(__dirname, '../../archive/reference/Referent.tsx'), 'utf-8');
+        const writing = readFileSync(join(__dirname, '../../.archive/writing/Writing.tsx'), 'utf-8');
+        const book = readFileSync(join(__dirname, '../../.archive/book/Book.tsx'), 'utf-8');
+        const referent = readFileSync(join(__dirname, '../../.archive/reference/Referent.tsx'), 'utf-8');
         expect(writing).not.toMatch(/^\s{4}\$?page\s*=/m);
         expect(book).not.toMatch(/^\s{4}\$?page\s*=/m);
         expect(referent).not.toMatch(/page/);
