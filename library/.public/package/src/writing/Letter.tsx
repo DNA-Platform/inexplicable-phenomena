@@ -1,9 +1,7 @@
-import { ReactNode } from 'react';
-import { $, $check } from '@dna-platform/chemistry';
-import { $Composition$ } from './Composition';
+import { $check } from '@dna-platform/chemistry';
 import { $Type } from '@/notation/Type';
 
-export class $Letter extends $Type implements $Composition$<$Letter> {
+export class $Letter extends $Type<$Letter> {
     resolve = false;
 
     constructor() {
@@ -11,18 +9,9 @@ export class $Letter extends $Type implements $Composition$<$Letter> {
         this.cache('Letter');
     }
 
-    override view(): ReactNode {
-        if (!this.instance) return null;
-        const Instance = $(this.instance);
-        return <Instance />;
-    }
-
-    parts(): $Letter[] {
+    // THE FLOOR. A letter composes itself, and a descent through it terminates.
+    override parts(): $Letter[] {
         return [this];
-    }
-
-    get canonical(): $Letter {
-        return this;
     }
 
     override specify(): void {
