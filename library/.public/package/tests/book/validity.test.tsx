@@ -72,8 +72,9 @@ describe('the three annotations differ BY VALIDATION, which is the whole of the 
 
     it('so the three no longer answer alike — which is the fault this closed', () => {
         const stranger = card();
-        const answers = [Author, Subject, Canonical].map(Kind => $(<Kind for={stranger} />).valid());
-        expect(answers).toEqual([false, true, true]);
+        expect(() => $(<Author for={stranger} />).valid()).toThrow(/authors itself/);
+        expect($(<Subject for={stranger} />).valid()).toBe(true);
+        expect($(<Canonical for={stranger} />).valid()).toBe(true);
     });
 });
 

@@ -15,9 +15,7 @@ export class $Lib {
             $check(false, said);
             throw new Error(said);
         }
-        found.bind(of);
-        found.specify();
-        return found;
+        return found.bind(of);
     }
 }
 

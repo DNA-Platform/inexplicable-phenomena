@@ -99,7 +99,7 @@ export class $Annotation extends $Phrase implements $Reference<$Book> {
     }
 
     valid(): boolean {
-        return super.valid() || this.$for !== undefined;
+        return this.$for !== undefined || super.valid();
     }
 }
 

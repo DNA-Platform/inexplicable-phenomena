@@ -11,6 +11,7 @@ export class $Type<T extends $Writing = $Writing<any>> extends $Annotation<T> {
 
     bind(writing: $Writing): this {
         this.instance = writing;
+        this.specify();
         return this;
     }
 
