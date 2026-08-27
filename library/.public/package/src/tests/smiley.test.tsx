@@ -76,7 +76,7 @@ describe('<Writing>{something}<Type>Letter</Type></Writing>', () => {
 
     it('is a letter in the sense of $$, and the whole thing is the provider', () => {
         const { writing } = drawn(<Smiley />);
-        const letter = $$($Letter, writing);
+        const letter = $$(writing, $Letter);
         expect(letter.instance).toBe(writing);
         expect(letter.copy).toBe('\u{1F642}');
         expect([...letter.copy].length).toBe(1);
@@ -107,7 +107,7 @@ describe('<Writing>{something}<Type>Letter</Type></Writing>', () => {
     // the writing's block still holds the bonded smiley.
     it('does NOT carry the click back into the model', () => {
         const { host, writing } = drawn(<Smiley />);
-        const letter = $$($Letter, writing);
+        const letter = $$(writing, $Letter);
         click(host);
         expect(host.textContent).toBe('\u{1F600}');
         expect(letter.copy).toBe('\u{1F642}');

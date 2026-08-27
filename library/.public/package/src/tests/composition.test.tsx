@@ -40,7 +40,7 @@ const built = (element: ReactNode) => $(element as never) as $Writing;
 
 describe('the ladder, written by hand', () => {
     it('a word composes its letters, in the order they were written', () => {
-        const it$ = $$($Word, built(word(letter('a'), letter('b'), letter('c'))));
+        const it$ = $$(built(word(letter('a'), letter('b'), letter('c'))), $Word);
         expect(it$.parts().map(l => l.copy)).toEqual(['a', 'b', 'c']);
     });
 
@@ -48,7 +48,7 @@ describe('the ladder, written by hand', () => {
         const whole = built(file(document(section(paragraph(sentence(word(letter('h'), letter('i'))))))));
 
         // parts() ANSWERS BOUND TYPES, so the ladder is walked by parts() alone.
-        const asFile = $$($File, whole);
+        const asFile = $$(whole, $File);
         const asDocument = asFile.parts()[0];
         const asSection = asDocument.parts()[0];
         const asParagraph = asSection.parts()[0];
@@ -65,13 +65,13 @@ describe('the ladder, written by hand', () => {
     });
 
     it('answers canonical as part zero at every rung', () => {
-        const asWord = $$($Word, built(word(letter('a'), letter('b'))));
+        const asWord = $$(built(word(letter('a'), letter('b'))), $Word);
         expect(asWord.canonical().copy).toBe('a');
     });
 });
 
 describe('the five that are written once', () => {
-    const asWord = () => $$($Word, built(word(letter('a'), letter('b'), letter('c'))));
+    const asWord = () => $$(built(word(letter('a'), letter('b'), letter('c'))), $Word);
 
     it('where filters the parts', () => {
         expect(asWord().where(l => l.copy !== 'b').map(l => l.copy)).toEqual(['a', 'c']);
@@ -106,7 +106,7 @@ describe('a word whose letters are a MIX', () => {
             <Writing><Smiley /><Letter /></Writing>,
             letter('i')
         ));
-        const asWord = $$($Word, mixed);
+        const asWord = $$(mixed, $Word);
 
         expect(asWord.parts().length).toBe(3);
         expect(asWord.parts().map(l => l.copy)).toEqual(['h', '\u{1F642}', 'i']);
@@ -114,7 +114,7 @@ describe('a word whose letters are a MIX', () => {
     });
 
     it('and each part is a BOUND proxy for its own writing, not a shared one', () => {
-        const asWord = $$($Word, built(word(letter('a'), letter('b'))));
+        const asWord = $$(built(word(letter('a'), letter('b'))), $Word);
         const [first, second] = asWord.parts();
         expect(first).not.toBe(second);
         expect(first.instance).not.toBe(second.instance);

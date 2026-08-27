@@ -37,8 +37,8 @@ export class $Type<T extends $Writing = $Writing> extends $Annotation implements
         if (!this.instance) return [];
         return this.instance.written()
             .filter((one): one is $Writing => one instanceof $Writing)
-            .filter(one => $Type.is(one, type))
-            .map(one => $$(type, one));
+            .filter(one => $$(one)(type))
+            .map(one => $$(one, type));
     }
 
     canonical(): T {
@@ -65,7 +65,4 @@ export class $Type<T extends $Writing = $Writing> extends $Annotation implements
         return found[0];
     }
 
-    static is(writing: $Writing, type: new () => $Type): boolean {
-        return writing.specification.some(one => one instanceof type);
-    }
 }
