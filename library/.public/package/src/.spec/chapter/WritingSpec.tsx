@@ -1,0 +1,44 @@
+import { ReactNode } from 'react';
+import { $, $Chemical } from '@dna-platform/chemistry';
+import { Writing } from '@/writing/Writing';
+import { Section } from '@/writing/Section';
+import { Title } from '@/writing/Title';
+import { Paragraph } from '@/writing/Paragraph';
+import { Type } from '@/notation/Type';
+
+// Writing told it is a Chapter carries $TypeOfChapter alone, and is therefore a Document.
+// The writing is the SAME writing as SectionsSpec's, so the only difference between
+// the two examples is that one IS a Chapter and this one merely SAYS it is.
+export class $WritingSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>
+                <Section>
+                    <Title>
+                        What a chapter promises
+                    </Title>
+                    <Paragraph>
+                        A chapter is a document, so everything a document promises it promises too.
+                    </Paragraph>
+                    <Paragraph>
+                        It is written as sections, and a section is written as paragraphs.
+                    </Paragraph>
+                </Section>
+                <Section>
+                    <Title>
+                        What a second section knows
+                    </Title>
+                    <Paragraph>
+                        A second section sits beside the first and knows nothing about it.
+                    </Paragraph>
+                    <Paragraph>
+                        Their order is the order they were written in.
+                    </Paragraph>
+                </Section>
+                <Type>Chapter</Type>
+            </Writing>
+        );
+    }
+}
+
+export const WritingSpec = $($WritingSpec);

@@ -1,13 +1,22 @@
-import { $Document } from '@/writing/Document';
-import { $Written } from '@/writing/Writing';
+import { $, $Html, cache } from '@dna-platform/chemistry';
+import { $Writing } from '@/writing/Writing';
+import { $Document, $TypeOfDocument } from '@/writing/Document';
 
 export class $Chapter extends $Document {
-    $Chapter(...writing: $Written[]) {
-        super.$Document(...writing);
+    $Chapter(block: $Html<'block'>) {
+        super.$Document(block);
+        this.type = $(<TypeOfChapter />) as $TypeOfChapter;
     }
+}
+
+export class $TypeOfChapter extends $TypeOfDocument {
+    override get canonicalForm(): typeof $Writing { return $Chapter; }
 
     constructor() {
         super();
-        this.cache('Chapter');
+        this[cache]('Chapter');
     }
 }
+
+export const Chapter = $($Chapter);
+export const TypeOfChapter = $($TypeOfChapter);

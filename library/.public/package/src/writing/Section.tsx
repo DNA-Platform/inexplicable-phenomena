@@ -1,20 +1,67 @@
-import { $Type } from '@/notation/Type';
+import { $, $check, $Html, cache } from '@dna-platform/chemistry';
+import { $Type, $TypedSpecification } from '@/notation/Type';
+import { $Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
-import { $Written } from './Writing';
-import { $Paragraph } from './Paragraph';
+import { $Writing } from './Writing';
+import { $Paragraph, Paragraph } from './Paragraph';
+import { $TypeOfTitle } from './Title';
 import { $$ } from '@/utilities/Lib';
+import { parser } from '@/utilities/Parser';
 
-export class $Section extends $Type<$Paragraph> implements $Composition$<$Paragraph> {
-    inline = false;
-    resolve = false;
-    override parts(): $Paragraph[] { return this.source.written.filter(one => $$(one)($Paragraph)).map(one => $$(one, $Paragraph)); }
-
-    $Section(...writing: $Written[]) {
-        super.$Writing(...writing);
+export class $Section extends $Writing implements $Composition$<$Paragraph> {
+    parts(): $Paragraph[] {
+        const from = this.bound ? this.inside! : this;
+        return parser.parse(from,
+            token => $$(token)($Paragraph) ? $$(token, $Paragraph) : undefined,
+            held => [$(<Paragraph>{parser.elements(held)}</Paragraph>) as $Paragraph]);
     }
+
+    $Section(block: $Html<'block'>) {
+        super.$Writing($check(block, 'block'));
+        this.type = $(<TypeOfSection />) as $TypeOfSection;
+    }
+
+    where(match: (part: $Paragraph) => boolean): $Paragraph[] { return this.parts().filter(match); }
+    select<U>(pick: (part: $Paragraph) => U): U[] { return this.parts().map(pick); }
+    selectMany<U>(pick: (part: $Paragraph) => U[]): U[] { return this.parts().flatMap(pick); }
+    single(match: (part: $Paragraph) => boolean): $Paragraph {
+        const found = this.parts().filter(match);
+        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
+        return found[0];
+    }
+}
+
+class $SectionSpecification extends $TypedSpecification<$Writing> {
+    @specify('a section is written as paragraphs')
+    $paragraphs(writing: $Writing): void {
+        const inside = ((writing.block?.$elements ?? []) as unknown[])
+            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(inside.every(one => $$(one)($Paragraph)), 'a section is written as paragraphs, and something in this one is not one');
+    }
+
+    @specify('a section opens with its title')
+    $titled(writing: $Writing): void {
+        const inside = ((writing.block?.$elements ?? []) as unknown[])
+            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(inside.length > 0 && inside[0].type instanceof $TypeOfTitle,
+            'a section opens with its title, and this one opens without one');
+    }
+}
+
+export class $TypeOfSection extends $Type {
+    resolve = false;
+
+    override get canonicalForm(): typeof $Writing { return $Section; }
 
     constructor() {
         super();
-        this.cache('Section');
+        this[cache]('Section');
+    }
+
+    override getSpecification(): $Specification<$Writing> {
+        return new $SectionSpecification();
     }
 }
+
+export const Section = $($Section);
+export const TypeOfSection = $($TypeOfSection);

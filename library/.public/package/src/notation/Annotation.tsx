@@ -1,5 +1,6 @@
 import { $Writing } from '@/writing/Writing';
 
-export class $Annotation<P extends $Writing = $Writing<any>> extends $Writing<P> {
-    parenthetical = true;
+export class $Annotation extends $Writing {
+    override parenthetical = true;
+    override annotation = true;
 }

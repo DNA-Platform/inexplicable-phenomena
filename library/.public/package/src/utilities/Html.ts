@@ -1,4 +1,5 @@
 import { isValidElement } from 'react';
+import { children } from '@dna-platform/chemistry';
 
 export class HtmlUtilities {
     block(node: unknown): boolean {
@@ -14,7 +15,7 @@ export class HtmlUtilities {
         if (typeof node === 'object' && Array.isArray(node.$elements)) return node.$elements.map((one: unknown) => this.text(one)).join('');
         if (typeof node === 'object' && node.$value != null) return String(node.$value);
         if (isValidElement(node)) return this.text((node as any).props?.children);
-        if (typeof node === 'object' && 'children' in node) return this.text((node as any).children);
+        if (typeof node === 'object' && children in node) return this.text((node as any)[children]);
         return '';
     }
 }
