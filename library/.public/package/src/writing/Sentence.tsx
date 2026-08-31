@@ -16,7 +16,7 @@ export class $Sentence extends $Writing implements $Composition$<$Word> {
     }
 
     $Sentence(block: $Html<'block'>) {
-        super.$Writing($check(block, 'block'));
+        super.$Writing(block);
         this.type = $(<TypeOfSentence />) as $TypeOfSentence;
     }
 

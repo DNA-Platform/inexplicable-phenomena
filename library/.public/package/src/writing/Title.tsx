@@ -8,7 +8,7 @@ export class $Title extends $Paragraph {
     override get canonical(): boolean { return false; }
 
     $Title(block: $Html<'block'>) {
-        super.$Paragraph($check(block, 'block'));
+        super.$Paragraph(block);
         this.type = $(<TypeOfTitle />) as $TypeOfTitle;
     }
 

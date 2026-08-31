@@ -16,7 +16,7 @@ export class $Paragraph extends $Writing implements $Composition$<$Sentence> {
     }
 
     $Paragraph(block: $Html<'block'>) {
-        super.$Writing($check(block, 'block'));
+        super.$Writing(block);
         this.type = $(<TypeOfParagraph />) as $TypeOfParagraph;
     }
 

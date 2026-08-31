@@ -19,7 +19,7 @@ export class $Letter extends $Writing implements $Composition$<$Letter> {
     override get canonical(): boolean { return this.kind === 'alphabetical'; }
 
     $Letter(block: $Html<'block'>) {
-        super.$Writing($check(block, 'block'));
+        super.$Writing(block);
         this.build();
         this.type = $(<TypeOfLetter />) as $TypeOfLetter;
     }

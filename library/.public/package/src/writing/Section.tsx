@@ -17,7 +17,7 @@ export class $Section extends $Writing implements $Composition$<$Paragraph> {
     }
 
     $Section(block: $Html<'block'>) {
-        super.$Writing($check(block, 'block'));
+        super.$Writing(block);
         this.type = $(<TypeOfSection />) as $TypeOfSection;
     }
 

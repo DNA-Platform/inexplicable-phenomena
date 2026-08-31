@@ -14,13 +14,13 @@ export class $Writing extends $Chemical implements $Referent$ {
     
     get copy(): string { return this.bound ? this.inside!.copy : html.text(this.block); }
     get canonical(): boolean { return true; }
-    get annotations(): $Writing[] { return this.block.$elements!.filter((one): one is $Writing => one instanceof $Writing && one.annotation); }
+    get annotations(): $Writing[] { return (this.block.$elements ?? []).filter((one): one is $Writing => one instanceof $Writing && one.annotation); }
     
     protected inside?: $Writing = undefined;
     protected get bound() { return !!this.inside; }
 
     $Writing(block: $Html<'block'>) {
-        this.block = $check(block, 'block');
+        this.block = block ?? this.block;
         this.type = this.annotations.at(0) as unknown as $Type;
     }
 

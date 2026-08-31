@@ -24,7 +24,7 @@ export class $Word extends $Writing implements $Composition$<$Letter> {
     }
 
     $Word(block: $Html<'block'>) {
-        super.$Writing($check(block, 'block'));
+        super.$Writing(block);
         this.type = $(<TypeOfWord />) as $TypeOfWord;
     }
 
@@ -35,17 +35,6 @@ export class $Word extends $Writing implements $Composition$<$Letter> {
         const found = this.parts().filter(match);
         if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
         return found[0];
-    }
-}
-
-class WordSpecification extends TypedSpecification<$Writing> {
-    protected patterns = {
-        broken: /\s/u
-    };
-
-    @specify('a word is one unbroken stretch')
-    $noWhitespace(writing: $Writing): void {
-        $check(!this.patterns.broken.test(writing.copy), 'a word is one unbroken stretch, and this one carries whitespace');
     }
 }
 
@@ -61,6 +50,18 @@ export class $TypeOfWord extends $Type {
 
     protected override specification: Specification<$Writing> = new WordSpecification();
 }
+
+class WordSpecification extends TypedSpecification<$Writing> {
+    protected patterns = {
+        broken: /\s/u
+    };
+
+    @specify('a word is one unbroken stretch')
+    $noWhitespace(writing: $Writing): void {
+        $check(!this.patterns.broken.test(writing.copy), 'a word is one unbroken stretch, and this one carries whitespace');
+    }
+}
+
 
 export const Word = $($Word);
 export const TypeOfWord = $($TypeOfWord);

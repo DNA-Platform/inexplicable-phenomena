@@ -17,7 +17,7 @@ export class $Document extends $Writing implements $Composition$<$Section> {
     }
 
     $Document(block: $Html<'block'>) {
-        super.$Writing($check(block, 'block'));
+        super.$Writing(block);
         this.type = $(<TypeOfDocument />) as $TypeOfDocument;
     }
 
