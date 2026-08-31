@@ -31,7 +31,6 @@ export class $File extends $Writing implements $Composition$<$Document> {
 
 export class $TypeOfFile extends $Type {
     resolve = false;
-    override code = 'F';
 
     override get canonicalForm(): typeof $Writing { return $File; }
 

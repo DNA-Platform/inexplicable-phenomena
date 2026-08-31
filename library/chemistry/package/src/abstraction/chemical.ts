@@ -154,11 +154,37 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         this._chemical = chemical;
         let cls: any = (chemical as any)[$type$];
         while (cls && cls.name) {
-            if (cls.prototype && Object.prototype.hasOwnProperty.call(cls.prototype, cls.name)) this._declared.push(cls.name);
-            if (!this._bondConstructor) this._bondConstructor = (chemical as any)[cls.name];
+            const named = $Synthesis.bondName(cls);
+            if (named) this._declared.push(named);
+            if (!this._bondConstructor && named) this._bondConstructor = (chemical as any)[named];
             cls = Object.getPrototypeOf(cls);
         }
         this.parseBondConstructor();
+    }
+
+    // A class names its bond constructor after itself, and the RUNTIME class
+    // name cannot be trusted to find it. A decorator on any member makes the
+    // emit wrap the class and rename its binding — `$Writing` becomes
+    // `_$Writing` — while the method keeps the name it was written with. The
+    // lookup then missed, no bond constructor was found, and a chemical
+    // silently stopped grouping its own prose into a block.
+    private static bondName(cls: any): string | undefined {
+        const proto = cls.prototype;
+        if (!proto) return undefined;
+        if (Object.prototype.hasOwnProperty.call(proto, cls.name)) return cls.name;
+
+        const authored = $Synthesis.authored(cls.name);
+        for (const name of Object.getOwnPropertyNames(proto)) {
+            if (name === 'constructor' || $Synthesis.authored(name) !== authored) continue;
+            if (typeof Object.getOwnPropertyDescriptor(proto, name)?.value === 'function') return name;
+        }
+        return undefined;
+    }
+
+    // What a name was written as, with a build's decoration taken off: esbuild
+    // prefixes an underscore and suffixes a digit when it has to rename.
+    private static authored(name: string): string {
+        return name.replace(/^_+/, '').replace(/\d+$/, '');
     }
 
     // The wrapper sits on the prototype: `super.$Ancestor()` resolves there and never sees an instance property.
@@ -167,7 +193,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         const chemical = this._chemical as any;
         let cls: any = chemical[$type$];
         while (cls && cls.name) {
-            if (cls.prototype && Object.prototype.hasOwnProperty.call(cls.prototype, cls.name)) $Synthesis.watch(cls);
+            $Synthesis.watch(cls);
             cls = Object.getPrototypeOf(cls);
         }
         const reached = new Set<string>([this._declared[0]]);
@@ -176,15 +202,21 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
     }
 
     private static watch(cls: any) {
-        const existing = Object.getOwnPropertyDescriptor(cls.prototype, cls.name);
+        const name = $Synthesis.bondName(cls);
+        if (!name) return;
+        const existing = Object.getOwnPropertyDescriptor(cls.prototype, name);
         if (!existing || typeof existing.value !== 'function' || existing.value[$watched$]) return;
         const inner = existing.value;
-        const name: string = cls.name;
         const wrapper = function (this: any, ...args: any[]) {
             $chainReached.get(this)?.add(name);
             return inner.apply(this, args);
         };
-        (wrapper as any)[$watched$] = true;
+        // The wrapper HOLDS what it wraps rather than a flag. Its own signature
+        // is `(...args)`, and parseBondConstructor reads a signature to learn
+        // how many arguments a bond takes — so a synthesis built after a class
+        // was watched would have read the wrapper's shape instead of the one
+        // that was written.
+        (wrapper as any)[$watched$] = inner;
         Object.defineProperty(cls.prototype, name, { ...existing, value: wrapper });
     }
 
@@ -332,7 +364,8 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
     private parseBondConstructor() {
         if (!this._bondConstructor) return;
 
-        const match = this._bondConstructor.toString().match(/\(([^)]*)\)/);
+        const written: Function = (this._bondConstructor as any)[$watched$] || this._bondConstructor;
+        const match = written.toString().match(/\(([^)]*)\)/);
         if (!match) throw new Error(`Cannot parse constructor for ${(this._chemical as any)[$type$].name}`);
 
         const paramString = match[1].trim();

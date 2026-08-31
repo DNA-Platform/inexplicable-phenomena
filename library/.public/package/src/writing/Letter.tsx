@@ -55,7 +55,6 @@ export class $Letter extends $Writing implements $Composition$<$Letter> {
 
 export class $TypeOfLetter extends $Type {
     resolve = false;
-    override code = 'Le';
 
     override get canonicalForm(): typeof $Writing { return $Letter; }
 

@@ -32,7 +32,6 @@ export class $Document extends $Writing implements $Composition$<$Section> {
 
 export class $TypeOfDocument extends $Type {
     resolve = false;
-    override code = 'D';
 
     override get canonicalForm(): typeof $Writing { return $Document; }
 

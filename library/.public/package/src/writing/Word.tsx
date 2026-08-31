@@ -39,7 +39,6 @@ export class $Word extends $Writing implements $Composition$<$Letter> {
 
 export class $TypeOfWord extends $Type {
     resolve = false;
-    override code = 'Wo';
 
     override get canonicalForm(): typeof $Writing { return $Word; }
 

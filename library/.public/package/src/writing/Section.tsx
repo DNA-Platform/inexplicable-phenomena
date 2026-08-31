@@ -32,7 +32,6 @@ export class $Section extends $Writing implements $Composition$<$Paragraph> {
 
 export class $TypeOfSection extends $Type {
     resolve = false;
-    override code = 'S';
 
     override get canonicalForm(): typeof $Writing { return $Section; }
 
