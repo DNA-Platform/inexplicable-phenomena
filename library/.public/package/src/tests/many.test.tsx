@@ -5,7 +5,7 @@ import { $File } from '@/writing/File';
 import { $Book, $TypeOfBook, TypeOfBook } from '@/book/Book';
 import { $Chapter, $TypeOfChapter, TypeOfChapter } from '@/book/Chapter';
 import { $$ } from '@/utilities/Lib';
-import { built, chain, shown } from './written';
+import { built, chain, shown, specificationOf } from './written';
 
 // Two classes that are books and are related to NOTHING — not to $Book, not to
 // $File, not to each other. Each one's bond names the type, and that is all.
@@ -64,8 +64,8 @@ describe('one type, many implementations, related only through writing', () => {
     it('and it is the TYPE that holds it — the classes share no base to put it on', () => {
         expect(Object.getPrototypeOf($Bound)).toBe($Writing);
         expect(Object.getPrototypeOf($Paperback)).toBe($Writing);
-        expect(new $TypeOfBook().getSpecification().rules().map((pair: [string, unknown]) => pair[0]))
-            .toContain('$documents');
+        expect(specificationOf(new $TypeOfBook()).rules().map((pair: [string, unknown]) => pair[0]))
+            .toContain('$writtenAsDocuments');
     });
 });
 

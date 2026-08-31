@@ -1,6 +1,6 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, $TypedSpecification } from '@/notation/Type';
-import { $Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification } from '@/notation/Type';
+import { Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
 import { $Writing } from './Writing';
 import { $Letter, Letter } from './Letter';
@@ -11,10 +11,10 @@ export class $Word extends $Writing implements $Composition$<$Letter> {
     protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
     protected patterns = {
-        said: /[\p{L}\p{N}]/u
+        letterOrNumber: /[\p{L}\p{N}]/u
     };
 
-    override get canonical(): boolean { return this.patterns.said.test(this.copy); }
+    override get canonical(): boolean { return this.patterns.letterOrNumber.test(this.copy); }
 
     parts(): $Letter[] {
         const from = this.bound ? this.inside! : this;
@@ -38,13 +38,13 @@ export class $Word extends $Writing implements $Composition$<$Letter> {
     }
 }
 
-class $WordSpecification extends $TypedSpecification<$Writing> {
+class WordSpecification extends TypedSpecification<$Writing> {
     protected patterns = {
         broken: /\s/u
     };
 
     @specify('a word is one unbroken stretch')
-    $unbroken(writing: $Writing): void {
+    $noWhitespace(writing: $Writing): void {
         $check(!this.patterns.broken.test(writing.copy), 'a word is one unbroken stretch, and this one carries whitespace');
     }
 }
@@ -59,7 +59,7 @@ export class $TypeOfWord extends $Type {
         this[cache]('Word');
     }
 
-    override specification: $Specification<$Writing> = new $WordSpecification();
+    protected override specification: Specification<$Writing> = new WordSpecification();
 }
 
 export const Word = $($Word);

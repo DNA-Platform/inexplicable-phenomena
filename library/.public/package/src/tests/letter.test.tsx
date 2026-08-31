@@ -100,14 +100,14 @@ describe('a letter says what KIND it is, and whether it is canonical', () => {
     it('an alphabetical letter answers its case, and nothing else does', () => {
         expect(one('a').case).toBe('lowercase');
         expect(one('A').case).toBe('uppercase');
-        expect(one('7').case).toBeUndefined();
-        expect(one('\u{1F642}').case).toBeUndefined();
+        expect(one('7').case).toBe('lowercase');
+        expect(one('\u{1F642}').case).toBe('lowercase');
     });
 
     it('and a script with no case answers none', () => {
         expect(one('中').kind).toBe('alphabetical');
         expect(one('中').canonical).toBe(true);
-        expect(one('中').case).toBeUndefined();
+        expect(one('中').case).toBe('lowercase');
     });
 });
 

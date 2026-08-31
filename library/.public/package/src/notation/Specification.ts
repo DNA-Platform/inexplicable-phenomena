@@ -2,23 +2,23 @@ import { $check } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Type } from './Type';
 
-export function specify(said: string) {
+export function specify(description: string) {
     return (target: object, key: string, descriptor: PropertyDescriptor): void => {
-        Object.defineProperty(descriptor.value, 'said', { value: said, configurable: true });
+        Object.defineProperty(descriptor.value, 'description', { value: description, configurable: true });
     };
 }
 
-export class $Specification<T extends $Writing> {
-    parent?: $Specification<T> = undefined;
+export class Specification<T extends $Writing> {
+    parent?: Specification<T> = undefined;
     for?: $Type = undefined;
 
-    private found?: [string, (writing: T) => boolean | void][] = undefined;
+    private cached?: [string, (writing: T) => boolean | void][] = undefined;
 
     rules(): [string, (writing: T) => boolean | void][] {
-        return this.found ??= this.discover();
+        return this.cached ??= this.collect();
     }
 
-    private discover(): [string, (writing: T) => boolean | void][] {
+    private collect(): [string, (writing: T) => boolean | void][] {
         const found = new Map<string, (writing: T) => boolean | void>();
         const within = this.parent;
         for (const [name, rule] of within?.rules() ?? [])
@@ -39,16 +39,16 @@ export class $Specification<T extends $Writing> {
     }
 
     check(writing: T): string[] {
-        const said: string[] = [];
+        const failures: string[] = [];
         const ran: string[] = [];
         for (const [name, rule] of this.rules())
             try {
                 if (rule.call(this, writing) !== false)
-                    ran.push((rule as { said?: string }).said ?? name);
+                    ran.push((rule as { description?: string }).description ?? name);
             } catch (raised) {
-                said.push((raised as Error).message);
+                failures.push((raised as Error).message);
             }
-        $check(said.length === 0, said.join(' · '));
+        $check(failures.length === 0, failures.join(' · '));
         return ran;
     }
 }

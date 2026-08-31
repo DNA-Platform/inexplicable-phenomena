@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Block, cache } from '@dna-platform/chemistry';
-import { $Specification } from '@/notation/Specification';
+import { Specification } from '@/notation/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Document } from '@/writing/Document';
 import { $Book } from '@/book/Book';
 import { $Chapter, $TypeOfChapter, TypeOfChapter } from '@/book/Chapter';
 import { $$ } from '@/utilities/Lib';
-import { built, chain } from './written';
+import { built, chain, specificationOf } from './written';
 
 // A chapter implementation that reuses NOTHING from $Chapter.
 class $Preface extends $Writing {
@@ -16,7 +16,7 @@ class $Preface extends $Writing {
     }
 }
 
-class $CoverSpecification extends $Specification<$Writing> {
+class CoverSpecification extends Specification<$Writing> {
     $opens(writing: $Writing): void { }
 }
 
@@ -25,7 +25,7 @@ class $CoverSpecification extends $Specification<$Writing> {
 class $TypeOfCover extends $TypeOfChapter {
     override get canonicalForm(): typeof $Writing { return $Cover; }
     constructor() { super(); this[cache]('Cover'); }
-    override getSpecification(): $Specification<$Writing> { return new $CoverSpecification(); }
+    protected override specification: Specification<$Writing> = new CoverSpecification();
 }
 
 // THE CANONICAL cover, anchored in the framework's own chapter.
@@ -87,7 +87,7 @@ describe('a cover crosses the class hierarchy without leaving its type', () => {
     });
 
     it('and the cover contract runs on both, from the type neither class shares', () => {
-        const spec = new $TypeOfCover().getSpecification();
+        const spec = specificationOf(new $TypeOfCover());
         expect(spec.rules().map((pair: [string, unknown]) => pair[0])).toContain('$opens');
         expect(spec.check(built<$CoverOfPreface>(<CoverOfPreface>{[inside('b')]}</CoverOfPreface>))).toContain('$opens');
     });

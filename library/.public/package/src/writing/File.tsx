@@ -1,6 +1,6 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, $TypedSpecification } from '@/notation/Type';
-import { $Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification } from '@/notation/Type';
+import { Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
 import { $Writing } from './Writing';
 import { $Document } from './Document';
@@ -30,15 +30,6 @@ export class $File extends $Writing implements $Composition$<$Document> {
     }
 }
 
-class $FileSpecification extends $TypedSpecification<$Writing> {
-    @specify('a file is written as documents')
-    $documents(writing: $Writing): void {
-        const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => $$(one)($Document)), 'a file is written as documents, and something in this one is not one');
-    }
-}
-
 export class $TypeOfFile extends $Type {
     resolve = false;
 
@@ -49,7 +40,16 @@ export class $TypeOfFile extends $Type {
         this[cache]('File');
     }
 
-    override specification: $Specification<$Writing> = new $FileSpecification();
+    protected override specification: Specification<$Writing> = new FileSpecification();
+}
+
+class FileSpecification extends TypedSpecification<$Writing> {
+    @specify('a file is written as documents')
+    $writtenAsDocuments(writing: $Writing): void {
+        const inside = ((writing.block?.$elements ?? []) as unknown[])
+            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(inside.every(one => $$(one)($Document)), 'a file is written as documents, and something in this one is not one');
+    }
 }
 
 export const File = $($File);

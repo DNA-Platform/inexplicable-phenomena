@@ -1,12 +1,12 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, $TypedSpecification } from '@/notation/Type';
-import { $Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification } from '@/notation/Type';
+import { Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
 import { $Writing } from './Writing';
 
 export class $Letter extends $Writing implements $Composition$<$Letter> {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
-    case?: 'uppercase' | 'lowercase' = undefined;
+    case: 'uppercase' | 'lowercase' = 'lowercase';
 
     protected patterns = {
         alphabetical: /^\p{L}\p{M}*$/u,
@@ -50,22 +50,7 @@ export class $Letter extends $Writing implements $Composition$<$Letter> {
         else if (this.patterns.punctuation.test(copy))
             this.kind = 'punctuation';
 
-        this.case = undefined;
-        if (this.kind !== 'alphabetical') return;
-        if (copy !== copy.toLowerCase())
-            this.case = 'uppercase';
-        else if (copy !== copy.toUpperCase())
-            this.case = 'lowercase';
-    }
-}
-
-class $LetterSpecification extends $TypedSpecification<$Writing> {
-    protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
-
-    @specify('a letter is one grapheme')
-    $grapheme(writing: $Writing): void {
-        const copy = writing.copy;
-        $check(this.graphemes.segment(copy).containing(0)?.segment === copy, 'a letter is one grapheme, and this one is not');
+        this.case = copy !== copy.toLowerCase() ? 'uppercase' : 'lowercase';
     }
 }
 
@@ -79,7 +64,17 @@ export class $TypeOfLetter extends $Type {
         this[cache]('Letter');
     }
 
-    override specification: $Specification<$Writing> = new $LetterSpecification();
+    protected override specification: Specification<$Writing> = new LetterSpecification();
+}
+
+class LetterSpecification extends TypedSpecification<$Writing> {
+    protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+
+    @specify('a letter is one grapheme')
+    $oneCharacter(writing: $Writing): void {
+        const copy = writing.copy;
+        $check(this.graphemes.segment(copy).containing(0)?.segment === copy, 'a letter is one grapheme, and this one is not');
+    }
 }
 
 export const Letter = $($Letter);

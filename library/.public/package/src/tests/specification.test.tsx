@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { $, $check, cache } from '@dna-platform/chemistry';
-import { $Specification } from '@/notation/Specification';
+import { Specification } from '@/notation/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Letter, $TypeOfLetter } from '@/writing/Letter';
-import { $Type, $TypedSpecification, Type } from '@/notation/Type';
+import { $Type, TypedSpecification, Type } from '@/notation/Type';
 import { $$ } from '@/utilities/Lib';
-import { built, drawn, letter } from './written';
+import { built, drawn, letter, specificationOf } from './written';
 
 const one = () => drawn('a', <Type>Letter</Type>).writing;
 
-class $Two extends $Specification<$Writing> {
+class $Two extends Specification<$Writing> {
     $first(writing: $Writing): void { }
     $second(writing: $Writing): void { }
 }
@@ -28,18 +28,18 @@ class $Louder extends $Two {
     }
 }
 
-class $Failing extends $Specification<$Writing> {
+class $Failing extends Specification<$Writing> {
     $one(writing: $Writing): void { $check(false, 'the first reason'); }
     $two(writing: $Writing): void { $check(false, 'the second reason'); }
     $three(writing: $Writing): void { }
 }
 
-class $Counting extends $TypedSpecification<$Writing> {
+class $Counting extends TypedSpecification<$Writing> {
     $mine(writing: $Writing): void { }
 }
 
-class $Decorated extends $Specification<$Writing> {
-    constructor(within: $Specification<$Writing>) {
+class $Decorated extends Specification<$Writing> {
+    constructor(within: Specification<$Writing>) {
         super();
         this.parent = within;
     }
@@ -54,7 +54,7 @@ describe('a specification is a list of rules, and running it says which ran', ()
 
     it('and a base class’s rules come first, because it is the parent class', () => {
         expect(new $Counting().check(one()).slice(-1)).toEqual(['$mine']);
-        expect(new $Counting().check(one()).length).toBe(4);
+        expect(new $Counting().check(one()).length).toBe(7);
     });
 });
 
@@ -128,10 +128,10 @@ describe('there is ONE specification, and it is the type’s', () => {
     it('a rule inherited from the base runs EXACTLY once', () => {
         let ran = 0;
 
-        class $Counted extends $TypedSpecification<$Writing> {
-            override $type(writing: $Writing): void {
+        class $Counted extends TypedSpecification<$Writing> {
+            override $hasType(writing: $Writing): void {
                 ran++;
-                super.$type(writing);
+                super.$hasType(writing);
             }
         }
 
@@ -139,7 +139,7 @@ describe('there is ONE specification, and it is the type’s', () => {
             resolve = false;
             override get canonicalForm(): typeof $Writing { return $Writing; }
             constructor() { super(); this[cache]('Counted'); }
-            override getSpecification(): $Specification<$Writing> { return new $Counted(); }
+            protected override specification: Specification<$Writing> = new $Counted();
         }
 
         $($TypeOfCounted);
@@ -148,8 +148,8 @@ describe('there is ONE specification, and it is the type’s', () => {
     });
 
     it('and a level names each of its rules once', () => {
-        const names = new $TypeOfLetter().getSpecification().rules().map((pair: [string, unknown]) => pair[0]);
-        expect(names).toEqual(['$characters', '$type', '$kind', '$grapheme']);
+        const names = specificationOf(new $TypeOfLetter()).rules().map((pair: [string, unknown]) => pair[0]);
+        expect(names).toEqual(['$hasBlock', '$mustHaveText', '$hasType', '$typedOnce', '$hasWriting', '$oneKind', '$oneCharacter']);
         expect(new Set(names).size).toBe(names.length);
     });
 });
@@ -157,9 +157,12 @@ describe('there is ONE specification, and it is the type’s', () => {
 describe('the TYPE specifies, and a writing asks its type', () => {
     it('a level asks the type it carries, and gets that type’s rules', () => {
         const type = built<$Letter>(letter('a')).type as $Type;
-        expect(type.getSpecification().check(built<$Letter>(letter('a')))).toEqual([
+        expect(specificationOf(type).check(built<$Letter>(letter('a')))).toEqual([
+            'a piece of writing has a block',
             'a piece of writing has characters',
             'a piece of writing has a type',
+            'a piece of writing is typed once',
+            'a piece of writing has something written in it',
             'a piece of writing is one kind of writing',
             'a letter is one grapheme'
         ]);
@@ -167,9 +170,12 @@ describe('the TYPE specifies, and a writing asks its type', () => {
 
     it('writing told what it is asks the same type', () => {
         const writing = drawn('a', <Type>Letter</Type>).writing;
-        expect((writing.type as $Type).getSpecification().check(writing)).toEqual([
+        expect(specificationOf(writing.type).check(writing)).toEqual([
+            'a piece of writing has a block',
             'a piece of writing has characters',
             'a piece of writing has a type',
+            'a piece of writing is typed once',
+            'a piece of writing has something written in it',
             'a piece of writing is one kind of writing',
             'a letter is one grapheme'
         ]);
@@ -182,10 +188,13 @@ describe('the TYPE specifies, and a writing asks its type', () => {
 
 describe('a rule is LABELLED by @specify, and the label is what comes back', () => {
     it('the run names the rules in the words the library uses', () => {
-        expect(new $TypedSpecification<$Writing>().check(one()))
+        expect(new TypedSpecification<$Writing>().check(one()))
             .toEqual([
+                'a piece of writing has a block',
                 'a piece of writing has characters',
                 'a piece of writing has a type',
+                'a piece of writing is typed once',
+                'a piece of writing has something written in it',
                 'a piece of writing is one kind of writing'
             ]);
     });

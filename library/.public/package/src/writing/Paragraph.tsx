@@ -1,6 +1,6 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, $TypedSpecification } from '@/notation/Type';
-import { $Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification } from '@/notation/Type';
+import { Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
 import { $Writing } from './Writing';
 import { $Sentence } from './Sentence';
@@ -30,17 +30,6 @@ export class $Paragraph extends $Writing implements $Composition$<$Sentence> {
     }
 }
 
-export class $ParagraphSpecification extends $TypedSpecification<$Writing> {
-    protected patterns = {
-        divided: /\n[^\S\n]*\n/u
-    };
-
-    @specify('a paragraph is unbroken by a blank line')
-    $unbroken(writing: $Writing): void {
-        $check(!this.patterns.divided.test(writing.copy), 'a paragraph is unbroken by a blank line, and this one carries one');
-    }
-}
-
 export class $TypeOfParagraph extends $Type {
     resolve = false;
 
@@ -51,7 +40,18 @@ export class $TypeOfParagraph extends $Type {
         this[cache]('Paragraph');
     }
 
-    override specification: $Specification<$Writing> = new $ParagraphSpecification();
+    protected override specification: Specification<$Writing> = new ParagraphSpecification();
+}
+
+export class ParagraphSpecification extends TypedSpecification<$Writing> {
+    protected patterns = {
+        divided: /\n[^\S\n]*\n/u
+    };
+
+    @specify('a paragraph is unbroken by a blank line')
+    $noBlankLine(writing: $Writing): void {
+        $check(!this.patterns.divided.test(writing.copy), 'a paragraph is unbroken by a blank line, and this one carries one');
+    }
 }
 
 export const Paragraph = $($Paragraph);

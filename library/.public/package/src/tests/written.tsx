@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { act } from 'react';
 import { $, $Block, $Chemical } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
+import type { $Type } from '@/notation/Type';
+import type { Specification } from '@/notation/Specification';
 import { $Letter } from '@/writing/Letter';
 import { $Word } from '@/writing/Word';
 import { $Sentence } from '@/writing/Sentence';
@@ -73,3 +75,10 @@ export const chain: Record<string, (copy: string) => ReactNode> = {
     Section: copy => section(paragraph(sentence(word(letter(copy))))),
     Document: copy => document(section(paragraph(sentence(word(letter(copy))))))
 };
+
+// A type's specification is PROTECTED — nothing outside a type consults one, and
+// the framework never does. A test still has to see it to promise that a type
+// holds ONE, so the reach past `protected` happens here, once, named, rather
+// than as a cast at seven call sites.
+export const specificationOf = (type: unknown): Specification<$Writing> =>
+    (type as { specification: Specification<$Writing> }).specification;

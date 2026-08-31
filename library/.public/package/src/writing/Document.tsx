@@ -1,6 +1,6 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, $TypedSpecification } from '@/notation/Type';
-import { $Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification } from '@/notation/Type';
+import { Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
 import { $Writing } from './Writing';
 import { $Section, Section } from './Section';
@@ -31,16 +31,6 @@ export class $Document extends $Writing implements $Composition$<$Section> {
     }
 }
 
-class $DocumentSpecification extends $TypedSpecification<$Writing> {
-    @specify('a document is written as sections')
-    $sections(writing: $Writing): void {
-        const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => $$(one)($Section) || $$(one)($Paragraph)),
-            'a document is written as sections, or as a title and paragraphs, and something in this one is neither');
-    }
-}
-
 export class $TypeOfDocument extends $Type {
     resolve = false;
 
@@ -51,7 +41,17 @@ export class $TypeOfDocument extends $Type {
         this[cache]('Document');
     }
 
-    override specification: $Specification<$Writing> = new $DocumentSpecification();
+    protected override specification: Specification<$Writing> = new DocumentSpecification();
+}
+
+class DocumentSpecification extends TypedSpecification<$Writing> {
+    @specify('a document is written as sections')
+    $writtenAsSections(writing: $Writing): void {
+        const inside = ((writing.block?.$elements ?? []) as unknown[])
+            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(inside.every(one => $$(one)($Section) || $$(one)($Paragraph)),
+            'a document is written as sections, or as a title and paragraphs, and something in this one is neither');
+    }
 }
 
 export const Document = $($Document);

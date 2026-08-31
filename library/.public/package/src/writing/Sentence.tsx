@@ -1,6 +1,6 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, $TypedSpecification } from '@/notation/Type';
-import { $Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification } from '@/notation/Type';
+import { Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
 import { $Writing } from './Writing';
 import { $Word } from './Word';
@@ -30,17 +30,6 @@ export class $Sentence extends $Writing implements $Composition$<$Word> {
     }
 }
 
-class $SentenceSpecification extends $TypedSpecification<$Writing> {
-    protected patterns = {
-        stopped: /[.!?][^\S\n]*\S/u
-    };
-
-    @specify('a sentence stops once, at its end')
-    $stops(writing: $Writing): void {
-        $check(!this.patterns.stopped.test(writing.copy), 'a sentence stops once, at its end, and this one stops before it');
-    }
-}
-
 export class $TypeOfSentence extends $Type {
     resolve = false;
 
@@ -51,7 +40,18 @@ export class $TypeOfSentence extends $Type {
         this[cache]('Sentence');
     }
 
-    override specification: $Specification<$Writing> = new $SentenceSpecification();
+    protected override specification: Specification<$Writing> = new SentenceSpecification();
+}
+
+class SentenceSpecification extends TypedSpecification<$Writing> {
+    protected patterns = {
+        stopped: /[.!?][^\S\n]*\S/u
+    };
+
+    @specify('a sentence stops once, at its end')
+    $stopsAtItsEnd(writing: $Writing): void {
+        $check(!this.patterns.stopped.test(writing.copy), 'a sentence stops once, at its end, and this one stops before it');
+    }
 }
 
 export const Sentence = $($Sentence);

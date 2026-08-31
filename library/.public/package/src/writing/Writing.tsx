@@ -7,15 +7,16 @@ import { html } from '@/utilities/Html';
 export class $Writing extends $Chemical implements $Referent$ {
     inline = true;
     index = 0;
+    type!: $Type;
     parenthetical = false;
     annotation = false;
     block: $Html<'block'> = new $Block();
-    type!: $Type;
-    protected inside?: $Writing = undefined;
-
+    
     get copy(): string { return this.bound ? this.inside!.copy : html.text(this.block); }
     get canonical(): boolean { return true; }
     get annotations(): $Writing[] { return this.block.$elements!.filter((one): one is $Writing => one instanceof $Writing && one.annotation); }
+    
+    protected inside?: $Writing = undefined;
     protected get bound() { return !!this.inside; }
 
     $Writing(block: $Html<'block'>) {
@@ -38,6 +39,7 @@ export class $Writing extends $Chemical implements $Referent$ {
     }
 
     bind(writing: $Writing) {
+        this.type?.specifically(writing);
         this.inside = writing;
     }
 }

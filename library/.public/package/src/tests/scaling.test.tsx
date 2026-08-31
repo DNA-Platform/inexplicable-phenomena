@@ -4,7 +4,7 @@ import { $Letter } from '@/writing/Letter';
 import { $Document } from '@/writing/Document';
 import { $Paragraph } from '@/writing/Paragraph';
 import { $TypeOfLetter } from '@/writing/Letter';
-import { built, chain, document, paragraph, section, sentence, title, word, letter } from './written';
+import { built, chain, document, paragraph, section, sentence, title, word, letter, specificationOf } from './written';
 
 // A PERFORMANCE TEST, kept apart from the ones that say what writing IS.
 // Doug, 2026-08-30: "Maybe run tests one level at a time. Don't test a huge tree
@@ -67,14 +67,13 @@ describe('specifying is cheap because the specification is held, not remade', ()
     it('a type answers the SAME specification every time it is asked', () => {
         const one = built<$Letter>(letter('a'));
         const type = one.type as unknown as $TypeOfLetter;
-        expect(type.getSpecification()).toBe(type.getSpecification());
+        expect(specificationOf(type)).toBe(specificationOf(type));
     });
 
     it('and every letter of a kind shares one specification, so one segmenter serves all', () => {
         const a = built<$Letter>(letter('a'));
         const b = built<$Letter>(letter('b'));
-        expect((a.type as unknown as $TypeOfLetter).getSpecification())
-            .toBe((b.type as unknown as $TypeOfLetter).getSpecification());
+        expect(specificationOf(a.type)).toBe(specificationOf(b.type));
     });
 
     it('so specifying two thousand letters stays flat', () => {

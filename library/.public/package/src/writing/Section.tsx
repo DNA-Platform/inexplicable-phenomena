@@ -1,6 +1,6 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, $TypedSpecification } from '@/notation/Type';
-import { $Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification } from '@/notation/Type';
+import { Specification, specify } from '@/notation/Specification';
 import { $Composition$ } from './Composition';
 import { $Writing } from './Writing';
 import { $Paragraph, Paragraph } from './Paragraph';
@@ -31,23 +31,6 @@ export class $Section extends $Writing implements $Composition$<$Paragraph> {
     }
 }
 
-class $SectionSpecification extends $TypedSpecification<$Writing> {
-    @specify('a section is written as paragraphs')
-    $paragraphs(writing: $Writing): void {
-        const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => $$(one)($Paragraph)), 'a section is written as paragraphs, and something in this one is not one');
-    }
-
-    @specify('a section opens with its title')
-    $titled(writing: $Writing): void {
-        const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.length > 0 && inside[0].type instanceof $TypeOfTitle,
-            'a section opens with its title, and this one opens without one');
-    }
-}
-
 export class $TypeOfSection extends $Type {
     resolve = false;
 
@@ -58,7 +41,24 @@ export class $TypeOfSection extends $Type {
         this[cache]('Section');
     }
 
-    override specification: $Specification<$Writing> = new $SectionSpecification();
+    protected override specification: Specification<$Writing> = new SectionSpecification();
+}
+
+class SectionSpecification extends TypedSpecification<$Writing> {
+    @specify('a section is written as paragraphs')
+    $writtenAsParagraphs(writing: $Writing): void {
+        const inside = ((writing.block?.$elements ?? []) as unknown[])
+            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(inside.every(one => $$(one)($Paragraph)), 'a section is written as paragraphs, and something in this one is not one');
+    }
+
+    @specify('a section opens with its title')
+    $opensWithTitle(writing: $Writing): void {
+        const inside = ((writing.block?.$elements ?? []) as unknown[])
+            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(inside.length > 0 && inside[0].type instanceof $TypeOfTitle,
+            'a section opens with its title, and this one opens without one');
+    }
 }
 
 export const Section = $($Section);
