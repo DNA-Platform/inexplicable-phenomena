@@ -64,16 +64,16 @@ describe('a composition narrows all the way down', () => {
     });
 });
 
-describe('a writing carrying two types at one level', () => {
-    it('reads as the level asked for, through the MOST specific type it carries', () => {
-        const { writing } = drawn(chain.Section('a'), <Type>Document</Type>, <Type>Chapter</Type>);
+describe('a writing carrying ONE type reads as every level above it', () => {
+    it('reads as the level asked for, through the type it carries', () => {
+        const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfChapter);
         expect($$(writing)($Document)).toBe(true);
         expect($$(writing, $Document)).toBeInstanceOf($Chapter);
     });
 
-    it('and written order does not decide it', () => {
+    it('and a second type at one level is refused, however it is ordered', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>, <Type>Document</Type>);
-        expect($$(writing, $Document)).toBeInstanceOf($Chapter);
+        expect(() => writing.specify()).toThrow(/typed once/);
     });
 });

@@ -82,10 +82,10 @@ describe('a piece of writing is ONE kind of writing', () => {
         expect(() => writing.specify()).toThrow(/one kind of writing/);
     });
 
-    it('and the type it answers with is the most derived one it carries', () => {
+    it('nor a document and a chapter, though the most derived is still what it answers', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Document</Type>, <Type>Chapter</Type>);
-        expect(() => writing.specify()).not.toThrow();
         expect(writing.type).toBeInstanceOf($TypeOfChapter);
+        expect(() => writing.specify()).toThrow(/typed once/);
     });
 });
 

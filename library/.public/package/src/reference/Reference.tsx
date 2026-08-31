@@ -1,8 +1,10 @@
+import { ReactNode } from 'react';
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Phrase, $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
 import { $Path } from './Path';
+import { parser } from '@/utilities/Parser';
 
 export interface $Reference$ {
     get path(): $Path | undefined;
@@ -18,6 +20,12 @@ export class $Reference extends $Phrase implements $Reference$ {
     $Reference(block: $Html<'block'>) {
         super.$Phrase(block);
         this.type = $(<TypeOfReference />) as $TypeOfReference;
+    }
+
+    override view(): ReactNode {
+        const said = ((this.block?.$elements ?? []) as unknown[])
+            .filter((one): one is string | $Writing => typeof one === 'string' || (one instanceof $Writing && !one.parenthetical));
+        return <a href={this.path?.copy} onClick={() => { this.$active = true; }}>{parser.elements(said)}</a>;
     }
 }
 

@@ -18,6 +18,13 @@ export class $Writing extends $Chemical implements $Referent$ {
     get annotations(): $Writing[] { return (this.block?.$elements ?? []).filter((one): one is $Writing => one instanceof $Writing && one.annotation); }
     get attributes(): $Attribute[] { return this.annotations.filter((one): one is $Attribute => one instanceof $Attribute); }
     get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && (one as $Reference).path !== undefined); }
+    get slug(): string { return this.copy.toLowerCase().match(/[\p{L}\p{N}]+/gu)?.slice(0, 5).join('-') ?? ''; }
+    get ref(): string {
+        const steps: string[] = [];
+        for (let at: $Writing | undefined = this; at instanceof $Writing; at = at.parent as $Writing | undefined)
+            steps.unshift(`${at.type?.code ?? ''}:${at.index}`);
+        return steps.join('>');
+    }
 
     protected inside?: $Writing = undefined;
     protected get bound() { return !!this.inside; }
@@ -31,8 +38,7 @@ export class $Writing extends $Chemical implements $Referent$ {
     }
 
     view(): ReactNode {
-        const drawn = this.bound ? this.inside!.view() : this.block?.view() ?? null;
-        return this.means ? <a href={this.means.path?.copy}>{drawn}</a> : drawn;
+        return this.bound ? this.inside!.view() : this.block?.view() ?? null;
     }
 
     @look('back')
@@ -60,6 +66,7 @@ export class $Annotation extends $Writing {
 
 export class $Type extends $Annotation {
     formula = true;
+    code = '';
     protected specification: Specification<$Writing> = new TypedSpecification<$Writing>();
 
     get canonicalForm(): typeof $Writing { return $Writing; }

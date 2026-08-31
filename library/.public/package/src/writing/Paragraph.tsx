@@ -31,6 +31,7 @@ export class $Paragraph extends $Writing implements $Composition$<$Sentence> {
 
 export class $TypeOfParagraph extends $Type {
     resolve = false;
+    override code = 'Pa';
 
     override get canonicalForm(): typeof $Writing { return $Paragraph; }
 

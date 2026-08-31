@@ -8,7 +8,7 @@ export class $Title extends $Paragraph {
 
     $Title(block: $Html<'block'>) {
         super.$Paragraph(block);
-        this.type = $(<TypeOfTitle />) as $TypeOfTitle;
+        this.type = $(<TypeOfTitle />);
     }
 
     override view(): ReactNode {

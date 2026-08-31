@@ -31,6 +31,7 @@ export class $Sentence extends $Writing implements $Composition$<$Word> {
 
 export class $TypeOfSentence extends $Type {
     resolve = false;
+    override code = 'Se';
 
     override get canonicalForm(): typeof $Writing { return $Sentence; }
 
