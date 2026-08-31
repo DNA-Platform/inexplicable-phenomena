@@ -9,9 +9,9 @@ export class $Type extends $Annotation {
 
     get canonicalForm(): typeof $Writing { return $Writing; }
 
-    getSpecification(): $Specification<$Writing> {
-        return new $TypedSpecification<$Writing>();
-    }
+    specification: $Specification<$Writing> = new $TypedSpecification<$Writing>();
+
+    getSpecification(): $Specification<$Writing> { return this.specification; }
 
     specifically(writing: $Writing): void {
         this.getSpecification().check(writing);

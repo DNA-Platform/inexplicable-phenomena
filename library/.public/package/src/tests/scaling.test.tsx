@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { $Section } from '@/writing/Section';
+import { $Letter } from '@/writing/Letter';
 import { $Document } from '@/writing/Document';
 import { $Paragraph } from '@/writing/Paragraph';
+import { $TypeOfLetter } from '@/writing/Letter';
 import { built, chain, document, paragraph, section, sentence, title, word, letter } from './written';
 
 // A PERFORMANCE TEST, kept apart from the ones that say what writing IS.
@@ -58,5 +60,27 @@ describe('asking for parts goes ONE level, and the cost is flat in the depth bel
         const sentences = took(() => (one.parts()[0].parts()[1] as $Paragraph).parts());
         for (const step of [sections, paragraphs, sentences])
             expect(step).toBeLessThan(400);
+    });
+});
+
+describe('specifying is cheap because the specification is held, not remade', () => {
+    it('a type answers the SAME specification every time it is asked', () => {
+        const one = built<$Letter>(letter('a'));
+        const type = one.type as unknown as $TypeOfLetter;
+        expect(type.getSpecification()).toBe(type.getSpecification());
+    });
+
+    it('and every letter of a kind shares one specification, so one segmenter serves all', () => {
+        const a = built<$Letter>(letter('a'));
+        const b = built<$Letter>(letter('b'));
+        expect((a.type as unknown as $TypeOfLetter).getSpecification())
+            .toBe((b.type as unknown as $TypeOfLetter).getSpecification());
+    });
+
+    it('so specifying two thousand letters stays flat', () => {
+        const many = Array.from({ length: 2000 }, (_, i) =>
+            built<$Letter>(letter(String.fromCharCode(97 + (i % 26)))));
+        const spent = took(() => { for (const one of many) one.specify(); });
+        expect(spent).toBeLessThan(2000);
     });
 });

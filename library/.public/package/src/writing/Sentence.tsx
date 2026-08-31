@@ -51,9 +51,7 @@ export class $TypeOfSentence extends $Type {
         this[cache]('Sentence');
     }
 
-    override getSpecification(): $Specification<$Writing> {
-        return new $SentenceSpecification();
-    }
+    override specification: $Specification<$Writing> = new $SentenceSpecification();
 }
 
 export const Sentence = $($Sentence);

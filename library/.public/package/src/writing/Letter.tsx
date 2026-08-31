@@ -79,9 +79,7 @@ export class $TypeOfLetter extends $Type {
         this[cache]('Letter');
     }
 
-    override getSpecification(): $Specification<$Writing> {
-        return new $LetterSpecification();
-    }
+    override specification: $Specification<$Writing> = new $LetterSpecification();
 }
 
 export const Letter = $($Letter);

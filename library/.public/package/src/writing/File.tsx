@@ -49,9 +49,7 @@ export class $TypeOfFile extends $Type {
         this[cache]('File');
     }
 
-    override getSpecification(): $Specification<$Writing> {
-        return new $FileSpecification();
-    }
+    override specification: $Specification<$Writing> = new $FileSpecification();
 }
 
 export const File = $($File);

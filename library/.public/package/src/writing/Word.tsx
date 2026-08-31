@@ -59,9 +59,7 @@ export class $TypeOfWord extends $Type {
         this[cache]('Word');
     }
 
-    override getSpecification(): $Specification<$Writing> {
-        return new $WordSpecification();
-    }
+    override specification: $Specification<$Writing> = new $WordSpecification();
 }
 
 export const Word = $($Word);

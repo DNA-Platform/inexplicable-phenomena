@@ -58,9 +58,7 @@ export class $TypeOfSection extends $Type {
         this[cache]('Section');
     }
 
-    override getSpecification(): $Specification<$Writing> {
-        return new $SectionSpecification();
-    }
+    override specification: $Specification<$Writing> = new $SectionSpecification();
 }
 
 export const Section = $($Section);

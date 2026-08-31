@@ -12,7 +12,13 @@ export class $Specification<T extends $Writing> {
     parent?: $Specification<T> = undefined;
     for?: $Type = undefined;
 
+    private found?: [string, (writing: T) => boolean | void][] = undefined;
+
     rules(): [string, (writing: T) => boolean | void][] {
+        return this.found ??= this.discover();
+    }
+
+    private discover(): [string, (writing: T) => boolean | void][] {
         const found = new Map<string, (writing: T) => boolean | void>();
         const within = this.parent;
         for (const [name, rule] of within?.rules() ?? [])

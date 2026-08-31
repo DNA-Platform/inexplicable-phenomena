@@ -51,9 +51,7 @@ export class $TypeOfDocument extends $Type {
         this[cache]('Document');
     }
 
-    override getSpecification(): $Specification<$Writing> {
-        return new $DocumentSpecification();
-    }
+    override specification: $Specification<$Writing> = new $DocumentSpecification();
 }
 
 export const Document = $($Document);

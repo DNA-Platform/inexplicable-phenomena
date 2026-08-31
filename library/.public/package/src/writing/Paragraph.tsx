@@ -51,9 +51,7 @@ export class $TypeOfParagraph extends $Type {
         this[cache]('Paragraph');
     }
 
-    override getSpecification(): $Specification<$Writing> {
-        return new $ParagraphSpecification();
-    }
+    override specification: $Specification<$Writing> = new $ParagraphSpecification();
 }
 
 export const Paragraph = $($Paragraph);
