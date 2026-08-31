@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { $, $Chemical, $Formula, $check } from '@/index';
+import { $, $Chemical, $Formula, $check, cache } from '@/index';
 import {
     Bench, Row, Legend, Written, Card, CardTitle, Meta,
     Verdict, Kind, Demand, Faults, Parts, Chip, Label,
@@ -98,28 +98,28 @@ export class $Label extends $Type {
 export class $Cover extends $Label {
     constructor() {
         super();
-        this.cache('Cover');
+        this[cache]('Cover');
     }
 }
 
 export class $Chapter extends $Label {
     constructor() {
         super();
-        this.cache('Chapter');
+        this[cache]('Chapter');
     }
 }
 
 export class $Entry extends $Label {
     constructor() {
         super();
-        this.cache('Entry');
+        this[cache]('Entry');
     }
 }
 
 export class $Book extends $Type {
     constructor() {
         super();
-        this.cache('Book');
+        this[cache]('Book');
     }
 
     override demands() {
@@ -145,7 +145,7 @@ export class $Book extends $Type {
 export class $Biography extends $Book {
     constructor() {
         super();
-        this.cache('Biography');
+        this[cache]('Biography');
     }
 
     override demands() {
@@ -162,8 +162,8 @@ export class $Biography extends $Book {
 export class $Autobiography extends $Biography {
     constructor() {
         super();
-        this.cache('Autobiography');
-        this.cache('Auto-biography');
+        this[cache]('Autobiography');
+        this[cache]('Auto-biography');
     }
 
     override demands() {
@@ -183,7 +183,7 @@ export class $Autobiography extends $Biography {
 export class $Dictionary extends $Book {
     constructor() {
         super();
-        this.cache('Dictionary');
+        this[cache]('Dictionary');
     }
 
     override demands() {

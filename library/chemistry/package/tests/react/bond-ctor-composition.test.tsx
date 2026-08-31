@@ -3,6 +3,7 @@ import { render, act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical, $check } from '@/abstraction/chemical';
 import { $Function$, $Html$ } from '@/abstraction/chemical';
+import { children } from '@/index';
 
 // =============================================================================
 // Bond Constructor Composition

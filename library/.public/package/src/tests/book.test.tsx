@@ -1,12 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Type } from '@/notation/Type';
+import { Type } from '@/writing/Writing';
 import { $Document } from '@/writing/Document';
 import { $File } from '@/writing/File';
-import { $Chapter } from '@/book/Chapter';
+import { $Chapter, $TypeOfChapter } from '@/book/Chapter';
 import { $Book, $TypeOfBook } from '@/book/Book';
-import { $TypeOfChapter } from '@/book/Chapter';
 import { $$ } from '@/utilities/Lib';
 import { built, chain, drawn, letter, paragraph, section, sentence, shown, title, word } from './written';
 

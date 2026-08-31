@@ -1,9 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { $, $check, cache } from '@dna-platform/chemistry';
-import { Specification } from '@/notation/Specification';
-import { $Writing } from '@/writing/Writing';
+import { Specification } from '@/utilities/Specification';
+import { $Writing, $Type, TypedSpecification, Type } from '@/writing/Writing';
 import { $Letter, $TypeOfLetter } from '@/writing/Letter';
-import { $Type, TypedSpecification, Type } from '@/notation/Type';
 import { $$ } from '@/utilities/Lib';
 import { built, drawn, letter, specificationOf } from './written';
 

@@ -5,6 +5,7 @@ import {
     LikesDisplay, TotalDisplay, HeartButton,
 } from './case.styled';
 import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
+import { children } from '@dna-platform/chemistry';
 
 class $Card extends $Chemical {
     likes = 0;
@@ -30,7 +31,7 @@ class $Section extends $Chemical {
         return (
             <LevelCard $depth={2}>
                 <LevelLabel>$Section · {this.$title}</LevelLabel>
-                {this.children}
+                {this[children]}
             </LevelCard>
         );
     }
@@ -42,7 +43,7 @@ class $Page extends $Chemical {
         return (
             <LevelCard $depth={1}>
                 <LevelLabel>$Page · {this.$title}</LevelLabel>
-                {this.children}
+                {this[children]}
             </LevelCard>
         );
     }
@@ -54,7 +55,7 @@ class $App extends $Chemical {
         return (
             <LevelCard $depth={0}>
                 <LevelLabel>$App · {this.$title}</LevelLabel>
-                {this.children}
+                {this[children]}
             </LevelCard>
         );
     }

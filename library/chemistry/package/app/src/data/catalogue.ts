@@ -496,6 +496,8 @@ export const catalogue: Group[] = [
             { id: 'dashboard', title: 'Widget dashboard', symbol: 'Dw', planned: [] },
             { id: 'poly-form', title: 'Polymorphic form', symbol: 'Pf', planned: [] },
             { id: 'formula', title: 'Formulas', symbol: 'Fo', planned: [] },
+            { id: 'facades', title: 'Facades', symbol: 'Fc', planned: [] },
+            { id: 'assigned', title: 'Assigned properties', symbol: 'As', planned: [] },
         ],
     },
     {

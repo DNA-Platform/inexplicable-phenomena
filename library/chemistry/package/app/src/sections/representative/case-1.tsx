@@ -7,6 +7,7 @@ import {
     TravelRow, TravelLabel, TravelPick, Sameness,
 } from './faces';
 import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
+import { children } from '@dna-platform/chemistry';
 
 // ─── The framework ───────────────────────────────────────────────────────────
 // $Note is written ONCE and never subclassed below. It asks `$` for the parts
@@ -34,7 +35,7 @@ class $Note extends $Chemical {
 // resolves the way the sheet was configured, and the notes never learn of it.
 //
 // The bond constructor is load-bearing here rather than ceremonial. A chemical
-// that merely returns `this.children` never PARENTS them — the catalyst graph
+// that merely returns `this[children]` never PARENTS them — the catalyst graph
 // is threaded by the bond, and without it a note standing inside a sheet has
 // no lineage to resolve through. Binding is what makes a scope reach.
 class $Sheet extends $Chemical {

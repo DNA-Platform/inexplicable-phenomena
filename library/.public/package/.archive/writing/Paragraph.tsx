@@ -19,7 +19,6 @@ const stopped = /[.!?]["')\]]*\s*$/;
 const code = /`[^`\n]+`/g;
 const target = /\([^)\s]*\)/g;
 
-
 export const Prose = styled.p<{ $theme: $Theme }>`
     margin: 0 0 ${p => p.$theme.step(0)};
 `;

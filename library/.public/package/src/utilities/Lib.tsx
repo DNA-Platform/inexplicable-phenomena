@@ -1,6 +1,5 @@
 import { $, $check } from '@dna-platform/chemistry';
-import { $Type } from '@/notation/Type';
-import { $Writing } from '@/writing/Writing';
+import { $Type, $Writing } from '@/writing/Writing';
 
 export class $Lib {
     $$(of: $Writing): (kind: new () => $Writing) => boolean;

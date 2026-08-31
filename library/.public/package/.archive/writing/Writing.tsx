@@ -127,7 +127,6 @@ export class $Writing<P extends $Writing = $Writing<any>> extends $Referent {
         return $(themes.Theme).$ as $Theme;
     }
 
-
     view(): ReactNode {
         return this.set(this.gathered(this.theme), this.theme);
     }

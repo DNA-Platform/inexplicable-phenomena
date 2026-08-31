@@ -1062,3 +1062,21 @@ function createParams(count: number, rest: boolean): { rest: boolean }[] {
     if (rest) result[result.length - 1].rest = true;
     return result;
 }
+
+// THE MEMBER PATH AN ARROW READS — the second half of what `() => this.type` is.
+// The expression carries two artefacts at once: its TYPE says what may be
+// assigned into the target, and its SOURCE says which member the target is. The
+// compiler reads the first; this reads the second.
+//
+// Rooted at `this`, and that is a property rather than a restriction: a minifier
+// renames locals and leaves member names alone, so a path from `this` survives a
+// production build where one from a name in scope would not.
+const reads = /^\s*(?:\{\s*return\s+)?this((?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)+)\s*;?\s*\}?\s*$/;
+
+export function pathOf(func: Function): string[] | undefined {
+    const source = func.toString();
+    const signature = getFunctionPattern().exec(source);
+    if (!signature?.groups?.arrow && !signature?.groups?.arrowSingle) return undefined;
+    const read = reads.exec(source.slice(signature[0].length));
+    return read ? read[1].slice(1).split('.') : undefined;
+}

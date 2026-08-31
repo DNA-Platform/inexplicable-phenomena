@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Block, cache } from '@dna-platform/chemistry';
-import { Specification } from '@/notation/Specification';
+import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Document } from '@/writing/Document';
 import { $Book } from '@/book/Book';

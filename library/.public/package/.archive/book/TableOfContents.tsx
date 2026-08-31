@@ -16,7 +16,6 @@ import { $$Book } from './Book';
 import { $Theme } from '../writing/Theme';
 import { styled } from 'styled-components';
 
-
 export const Contents = styled.nav<{ $theme: $Theme }>`
     padding: ${p => p.$theme.step(-1)} 0;
     border-top: 1px solid ${p => p.$theme.rule};

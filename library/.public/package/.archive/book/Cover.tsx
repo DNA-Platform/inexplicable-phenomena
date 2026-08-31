@@ -12,7 +12,6 @@ import { $Author } from './Author';
 import { $Subject } from './Subject';
 import { styled } from 'styled-components';
 
-
 export const TitlePage = styled.header<{ $theme: $Theme }>`
     margin-bottom: ${p => p.$theme.rhythm};
     padding-bottom: ${p => p.$theme.rhythm};

@@ -169,8 +169,11 @@ export class $Bond<T = any, P = any> {
         return bond;
     }
 
+    // A CHEMICAL COMPONENT HELD IN A MEMBER IS A VALUE, NOT A METHOD. Binding it
+    // as a reagent would hand back a callable wrapper in place of the component,
+    // which is meaningless — nobody calls a component like a method.
     static isMethod(descriptor: PropertyDescriptor) {
-        return typeof descriptor.value === 'function';
+        return typeof descriptor.value === 'function' && !(descriptor.value as any).$chemical;
     }
 
     static create(chemical: any, property: string, descriptor: PropertyDescriptor): $Bond {

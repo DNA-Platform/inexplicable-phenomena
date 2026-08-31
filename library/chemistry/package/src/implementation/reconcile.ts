@@ -1,6 +1,6 @@
 import React, { type ReactNode, type ReactElement } from 'react';
 import { walk } from './walk';
-import { $handlerOriginal$ } from './symbols';
+import { $original$ } from './symbols';
 
 export function diff(node: ReactNode, cached: ReactNode): boolean {
     return reconcile(node, cached) !== cached;
@@ -73,12 +73,11 @@ export function equivalent(a: any, b: any): boolean {
     const ta = typeof a, tb = typeof b;
     if (ta !== tb) return false;
     if (ta === 'function') {
-        // Compare by original source — wrappers installed by augment() carry
-        // a reference to the original handler via $handlerOriginal$. Two
-        // wrappers of the same original are equivalent even though they're
-        // different instances.
-        const aOrig = (a as any)[$handlerOriginal$] || a;
-        const bOrig = (b as any)[$handlerOriginal$] || b;
+        // Compare by original source — a wrapper augment() installed carries the
+        // user's own function via $original$. Two wrappers standing for one
+        // original are equivalent even though they are different instances.
+        const aOrig = (a as any)[$original$] || a;
+        const bOrig = (b as any)[$original$] || b;
         if (aOrig === bOrig) return true;
         return aOrig.toString() === bOrig.toString();
     }

@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from "react";
 import type { $Particle } from "../abstraction/particle";
-import type { $Function$, $Html$, $Chemical } from "../abstraction/chemical";
+import type { $Function$, $Html$, $Block, $Written, $Chemical } from "../abstraction/chemical";
 
 // I<T> — the interface of T: every member declared on T and its prototype
 // chain. TypeScript already collapses the chain into the instance type, so
@@ -61,6 +61,15 @@ export type $Properties<T> = {
                 (T[K] extends Function ? `${First}${Rest}` : never))) : never) : never]?:
     T[K]
 } & $Attributes & {
+    // WHERE THIS BELONGS, written as a reading of the member that will hold it.
+    // The arrow is checked here — a member that cannot hold a T will not compile —
+    // and read for its own source at runtime, which is how one expression both
+    // proves the assignment and names its target. A member holding a list
+    // collects, in written order; a member holding one is assigned.
+    // ONE THING CAN BELONG IN MORE THAN ONE PLACE, so this is one arrow or a
+    // list of them — every member named holds the SAME instance, which is what
+    // makes two owners two views of one thing rather than two copies.
+    on?: (() => T | T[] | undefined) | (() => T | T[] | undefined)[];
     children?: React.ReactNode;
 };
 
@@ -103,7 +112,7 @@ export type $Function<T> = T extends React.FC<infer P>
 // prose and written elements indistinguishable downstream. The block carries them
 // as they are instead.
 export interface $Content {
-    block: { elements?: (string | number | $Chemical)[] };
+    block: { elements?: $Written[] };
 }
 export type $HtmlTag = keyof JSX.IntrinsicElements | keyof $Content;
 type $HtmlProps<T extends $HtmlTag> =
@@ -111,7 +120,12 @@ type $HtmlProps<T extends $HtmlTag> =
     : T extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[T]
     : {};
 
+// THE TAG POINTS AT THE CLASS. `block` is the one content kind with behaviour of
+// its own, so $Html<'block'> resolves to $Block itself rather than to a computed
+// shape — which retires the computed form without a single call site moving, and
+// hands every existing `$Html<'block'>` the operator set for free.
 export type $Html<T extends $HtmlTag = any> =
+    T extends 'block' ? $Block :
     $Html$<T> & {
         [K in keyof $HtmlProps<T>as K extends 'children' ? never : `$${string & K}`]?: $HtmlProps<T>[K];
     }
@@ -121,7 +135,7 @@ export type $Html<T extends $HtmlTag = any> =
 declare module 'react' {
     namespace JSX {
         interface IntrinsicElements {
-            block: { elements?: (string | number | $Chemical)[] };
+            block: { elements?: $Written[] };
         }
     }
 }

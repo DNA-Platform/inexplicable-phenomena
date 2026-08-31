@@ -1,8 +1,7 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, TypedSpecification } from '@/notation/Type';
-import { Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification, $Writing } from './Writing';
+import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$ } from './Composition';
-import { $Writing } from './Writing';
 import { $Paragraph, Paragraph } from './Paragraph';
 import { $TypeOfTitle } from './Title';
 import { $$ } from '@/utilities/Lib';

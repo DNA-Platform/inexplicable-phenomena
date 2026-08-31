@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Type } from '@/notation/Type';
+import { Type } from '@/writing/Writing';
 import { $Word } from '@/writing/Word';
 import { $Document } from '@/writing/Document';
 import { $File, $TypeOfFile } from '@/writing/File';

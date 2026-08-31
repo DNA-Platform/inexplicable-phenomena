@@ -20,7 +20,7 @@ describe('research: what a bond constructor receives', () => {
         }
         const Host = $($Host);
         render(<Host>Call me <b>Ishmael</b> today</Host>);
-        expect(kinds).toEqual(['$Html$']);
+        expect(kinds).toEqual(['$Block']);
         expect(texts).toEqual(['Call me Ishmael today']);
     });
 

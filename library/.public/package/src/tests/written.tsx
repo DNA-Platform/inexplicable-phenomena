@@ -1,10 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { act } from 'react';
 import { $, $Block, $Chemical } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
-import type { $Type } from '@/notation/Type';
-import type { Specification } from '@/notation/Specification';
+import type { $Type } from '@/writing/Writing';
+import type { Specification } from '@/utilities/Specification';
 import { $Letter } from '@/writing/Letter';
 import { $Word } from '@/writing/Word';
 import { $Sentence } from '@/writing/Sentence';

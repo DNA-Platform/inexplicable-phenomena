@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React, { type ReactNode } from 'react';
-import { $, $check, $Chemical, type $Html } from '../../src/index';
+import { $, $Block, $check, $Chemical } from '../../src/index';
 
 // Props are construction, not mutation.
 //
@@ -18,7 +18,7 @@ import { $, $check, $Chemical, type $Html } from '../../src/index';
 class $Host extends $Chemical {
     written: unknown[] = [];
     $Host(...parts: unknown[]) {
-        $check(parts[0] as $Html<'block'>, 'block');
+        $check(parts[0] as $Block, 'block');
         this.written = parts;
     }
     view(): ReactNode {

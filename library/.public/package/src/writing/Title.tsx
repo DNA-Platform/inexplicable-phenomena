@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { Type } from '@/notation/Type';
-import { $Writing, Writing } from './Writing';
+import { Type, $Writing, Writing } from './Writing';
 import { $Paragraph, $TypeOfParagraph } from './Paragraph';
 
 export class $Title extends $Paragraph {
@@ -13,13 +12,11 @@ export class $Title extends $Paragraph {
     }
 
     override view(): ReactNode {
+        if (!this.block) return null;
         const Block = $(this.block as never);
-        return (
-            <Writing>
-                <Block />
-                <Type>Sentence</Type>
-            </Writing>
-        );
+        return <>
+            <Block />
+        </>
     }
 }
 

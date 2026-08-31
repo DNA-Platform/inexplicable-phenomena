@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical, $Html$, $check } from '@/abstraction/chemical';
+import { children } from '@/index';
 
 // The block/inline content model, framework level. `string`, `number`, `block` are
 // intrinsic elements that lift through the SAME HTML path as real tags — no extra
@@ -91,7 +92,7 @@ describe('inline / block on the $Html$ abstraction', () => {
         // CHANGED 2026-08-18: prose is prose. $Block holds it as itself.
         expect(els[0]).toBe('Call me ');
         expect(els[1].type).toBe('b');
-        expect(els[1].children).toBe('Ishmael');   // a tag exposes its content as children
+        expect(els[1][children]).toBe('Ishmael');   // a tag exposes its content as children
         expect(els[2]).toBe('!');
     });
 

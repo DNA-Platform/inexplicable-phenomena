@@ -1,38 +1,22 @@
 import { describe, it, expect } from 'vitest';
 import { Children, ComponentType, Fragment, ReactElement, ReactNode, createElement, isValidElement } from 'react';
 import { $Chemical } from '@dna-platform/chemistry';
-import { $Writing } from '@/writing/Writing';
-import { $Type } from '@/notation/Type';
+import { $Writing, $Type } from '@/writing/Writing';
 import { $$ } from '@/utilities/Lib';
-import { ChaptersSpec as BookChaptersSpec, $ChaptersSpec as $BookChaptersSpec } from './.spec/book/ChaptersSpec';
-import { WritingSpec as BookWritingSpec, $WritingSpec as $BookWritingSpec } from './.spec/book/WritingSpec';
-import { SectionsSpec as ChapterSectionsSpec, $SectionsSpec as $ChapterSectionsSpec } from './.spec/chapter/SectionsSpec';
-import { WritingSpec as ChapterWritingSpec, $WritingSpec as $ChapterWritingSpec } from './.spec/chapter/WritingSpec';
-import { ParagraphsSpec as DocumentParagraphsSpec, $ParagraphsSpec as $DocumentParagraphsSpec } from './.spec/document/ParagraphsSpec';
-import { SectionsSpec as DocumentSectionsSpec, $SectionsSpec as $DocumentSectionsSpec } from './.spec/document/SectionsSpec';
-import { WritingSpec as DocumentWritingSpec, $WritingSpec as $DocumentWritingSpec } from './.spec/document/WritingSpec';
-import { DocumentsSpec as FileDocumentsSpec, $DocumentsSpec as $FileDocumentsSpec } from './.spec/file/DocumentsSpec';
-import { WritingSpec as FileWritingSpec, $WritingSpec as $FileWritingSpec } from './.spec/file/WritingSpec';
-import { DerivedSpecSmiley as LetterDerivedSpecSmiley, $DerivedSpecSmiley as $LetterDerivedSpecSmiley } from './.spec/letter/DerivedSpec-Smiley';
-import { GraphemeSpec as LetterGraphemeSpec, $GraphemeSpec as $LetterGraphemeSpec } from './.spec/letter/GraphemeSpec';
-import { KindSpec as LetterKindSpec, $KindSpec as $LetterKindSpec } from './.spec/letter/KindSpec';
-import { TextSpec as LetterTextSpec, $TextSpec as $LetterTextSpec } from './.spec/letter/TextSpec';
-import { WritingSpec as LetterWritingSpec, $WritingSpec as $LetterWritingSpec } from './.spec/letter/WritingSpec';
-import { DerivedSpecTitle as ParagraphDerivedSpecTitle, $DerivedSpecTitle as $ParagraphDerivedSpecTitle } from './.spec/paragraph/DerivedSpec-Title';
-import { SentencesSpec as ParagraphSentencesSpec, $SentencesSpec as $ParagraphSentencesSpec } from './.spec/paragraph/SentencesSpec';
-import { TextSpec as ParagraphTextSpec, $TextSpec as $ParagraphTextSpec } from './.spec/paragraph/TextSpec';
-import { WritingSpec as ParagraphWritingSpec, $WritingSpec as $ParagraphWritingSpec } from './.spec/paragraph/WritingSpec';
-import { ParagraphsSpec as SectionParagraphsSpec, $ParagraphsSpec as $SectionParagraphsSpec } from './.spec/section/ParagraphsSpec';
-import { TextSpec as SectionTextSpec, $TextSpec as $SectionTextSpec } from './.spec/section/TextSpec';
-import { WritingSpec as SectionWritingSpec, $WritingSpec as $SectionWritingSpec } from './.spec/section/WritingSpec';
-import { StopSpec as SentenceStopSpec, $StopSpec as $SentenceStopSpec } from './.spec/sentence/StopSpec';
-import { WordsSpec as SentenceWordsSpec, $WordsSpec as $SentenceWordsSpec } from './.spec/sentence/WordsSpec';
-import { WritingSpec as SentenceWritingSpec, $WritingSpec as $SentenceWritingSpec } from './.spec/sentence/WritingSpec';
-import { KindSpec as WordKindSpec, $KindSpec as $WordKindSpec } from './.spec/word/KindSpec';
-import { LettersSpec as WordLettersSpec, $LettersSpec as $WordLettersSpec } from './.spec/word/LettersSpec';
-import { MixedSpec as WordMixedSpec, $MixedSpec as $WordMixedSpec } from './.spec/word/MixedSpec';
-import { TextSpec as WordTextSpec, $TextSpec as $WordTextSpec } from './.spec/word/TextSpec';
-import { WritingSpec as WordWritingSpec, $WritingSpec as $WordWritingSpec } from './.spec/word/WritingSpec';
+import { BookChaptersSpec, $BookChaptersSpec, BookWritingSpec, $BookWritingSpec } from './.spec/book/Book';
+import { ChapterSectionsSpec, $ChapterSectionsSpec, ChapterWritingSpec, $ChapterWritingSpec } from './.spec/book/Chapter';
+import { PathLettersSpec, $PathLettersSpec, PathTextSpec, $PathTextSpec, PathWritingSpec, $PathWritingSpec } from './.spec/reference/Path';
+import { ReferenceLettersSpec, $ReferenceLettersSpec, ReferencePathSpec, $ReferencePathSpec, ReferenceWritingSpec, $ReferenceWritingSpec } from './.spec/reference/Reference';
+import { AttributeDeclaredSpecFriend, $AttributeDeclaredSpecFriend } from './.spec/writing/Attribute';
+import { DocumentParagraphsSpec, $DocumentParagraphsSpec, DocumentSectionsSpec, $DocumentSectionsSpec, DocumentWritingSpec, $DocumentWritingSpec } from './.spec/writing/Document';
+import { FileDocumentsSpec, $FileDocumentsSpec, FileWritingSpec, $FileWritingSpec } from './.spec/writing/File';
+import { LetterDerivedSpecSmiley, $LetterDerivedSpecSmiley, LetterGraphemeSpec, $LetterGraphemeSpec, LetterKindSpec, $LetterKindSpec, LetterTextSpec, $LetterTextSpec, LetterWritingSpec, $LetterWritingSpec } from './.spec/writing/Letter';
+import { ParagraphDerivedSpecTitle, $ParagraphDerivedSpecTitle, ParagraphSentencesSpec, $ParagraphSentencesSpec, ParagraphTextSpec, $ParagraphTextSpec, ParagraphWritingSpec, $ParagraphWritingSpec } from './.spec/writing/Paragraph';
+import { PhraseLettersSpec, $PhraseLettersSpec, PhraseTextSpec, $PhraseTextSpec, PhraseWordsSpec, $PhraseWordsSpec, PhraseWritingSpec, $PhraseWritingSpec } from './.spec/writing/Phrase';
+import { SectionParagraphsSpec, $SectionParagraphsSpec, SectionTextSpec, $SectionTextSpec, SectionWritingSpec, $SectionWritingSpec } from './.spec/writing/Section';
+import { SentenceStopSpec, $SentenceStopSpec, SentenceWordsSpec, $SentenceWordsSpec, SentenceWritingSpec, $SentenceWritingSpec } from './.spec/writing/Sentence';
+import { WordKindSpec, $WordKindSpec, WordLettersSpec, $WordLettersSpec, WordMixedSpec, $WordMixedSpec, WordTextSpec, $WordTextSpec, WordWritingSpec, $WordWritingSpec } from './.spec/writing/Word';
+import { WritingMeansSpec, $WritingMeansSpec, WritingPlainSpec, $WritingPlainSpec } from './.spec/writing/Writing';
 import { Writing, built, drawn, shown } from './written';
 
 // EVERY SPEC IS DRAWN, SPECIFIED AND COMPOSED.
@@ -45,35 +29,48 @@ import { Writing, built, drawn, shown } from './written';
 // the example is writing the library would accept rather than merely writing it can
 // render. Composing it proves the example has parts to read.
 const specs: [string, ComponentType, new () => $Chemical][] = [
-    ['book/ChaptersSpec', BookChaptersSpec, $BookChaptersSpec],
-    ['book/WritingSpec', BookWritingSpec, $BookWritingSpec],
-    ['chapter/SectionsSpec', ChapterSectionsSpec, $ChapterSectionsSpec],
-    ['chapter/WritingSpec', ChapterWritingSpec, $ChapterWritingSpec],
-    ['document/ParagraphsSpec', DocumentParagraphsSpec, $DocumentParagraphsSpec],
-    ['document/SectionsSpec', DocumentSectionsSpec, $DocumentSectionsSpec],
-    ['document/WritingSpec', DocumentWritingSpec, $DocumentWritingSpec],
-    ['file/DocumentsSpec', FileDocumentsSpec, $FileDocumentsSpec],
-    ['file/WritingSpec', FileWritingSpec, $FileWritingSpec],
-    ['letter/DerivedSpec-Smiley', LetterDerivedSpecSmiley, $LetterDerivedSpecSmiley],
-    ['letter/GraphemeSpec', LetterGraphemeSpec, $LetterGraphemeSpec],
-    ['letter/KindSpec', LetterKindSpec, $LetterKindSpec],
-    ['letter/TextSpec', LetterTextSpec, $LetterTextSpec],
-    ['letter/WritingSpec', LetterWritingSpec, $LetterWritingSpec],
-    ['paragraph/DerivedSpec-Title', ParagraphDerivedSpecTitle, $ParagraphDerivedSpecTitle],
-    ['paragraph/SentencesSpec', ParagraphSentencesSpec, $ParagraphSentencesSpec],
-    ['paragraph/TextSpec', ParagraphTextSpec, $ParagraphTextSpec],
-    ['paragraph/WritingSpec', ParagraphWritingSpec, $ParagraphWritingSpec],
-    ['section/ParagraphsSpec', SectionParagraphsSpec, $SectionParagraphsSpec],
-    ['section/TextSpec', SectionTextSpec, $SectionTextSpec],
-    ['section/WritingSpec', SectionWritingSpec, $SectionWritingSpec],
-    ['sentence/StopSpec', SentenceStopSpec, $SentenceStopSpec],
-    ['sentence/WordsSpec', SentenceWordsSpec, $SentenceWordsSpec],
-    ['sentence/WritingSpec', SentenceWritingSpec, $SentenceWritingSpec],
-    ['word/KindSpec', WordKindSpec, $WordKindSpec],
-    ['word/LettersSpec', WordLettersSpec, $WordLettersSpec],
-    ['word/MixedSpec', WordMixedSpec, $WordMixedSpec],
-    ['word/TextSpec', WordTextSpec, $WordTextSpec],
-    ['word/WritingSpec', WordWritingSpec, $WordWritingSpec]
+    ['book/Book.ChaptersSpec', BookChaptersSpec, $BookChaptersSpec],
+    ['book/Book.WritingSpec', BookWritingSpec, $BookWritingSpec],
+    ['book/Chapter.SectionsSpec', ChapterSectionsSpec, $ChapterSectionsSpec],
+    ['book/Chapter.WritingSpec', ChapterWritingSpec, $ChapterWritingSpec],
+    ['reference/Path.LettersSpec', PathLettersSpec, $PathLettersSpec],
+    ['reference/Path.TextSpec', PathTextSpec, $PathTextSpec],
+    ['reference/Path.WritingSpec', PathWritingSpec, $PathWritingSpec],
+    ['reference/Reference.LettersSpec', ReferenceLettersSpec, $ReferenceLettersSpec],
+    ['reference/Reference.PathSpec', ReferencePathSpec, $ReferencePathSpec],
+    ['reference/Reference.WritingSpec', ReferenceWritingSpec, $ReferenceWritingSpec],
+    ['writing/Attribute.DeclaredSpecFriend', AttributeDeclaredSpecFriend, $AttributeDeclaredSpecFriend],
+    ['writing/Document.ParagraphsSpec', DocumentParagraphsSpec, $DocumentParagraphsSpec],
+    ['writing/Document.SectionsSpec', DocumentSectionsSpec, $DocumentSectionsSpec],
+    ['writing/Document.WritingSpec', DocumentWritingSpec, $DocumentWritingSpec],
+    ['writing/File.DocumentsSpec', FileDocumentsSpec, $FileDocumentsSpec],
+    ['writing/File.WritingSpec', FileWritingSpec, $FileWritingSpec],
+    ['writing/Letter.DerivedSpecSmiley', LetterDerivedSpecSmiley, $LetterDerivedSpecSmiley],
+    ['writing/Letter.GraphemeSpec', LetterGraphemeSpec, $LetterGraphemeSpec],
+    ['writing/Letter.KindSpec', LetterKindSpec, $LetterKindSpec],
+    ['writing/Letter.TextSpec', LetterTextSpec, $LetterTextSpec],
+    ['writing/Letter.WritingSpec', LetterWritingSpec, $LetterWritingSpec],
+    ['writing/Paragraph.DerivedSpecTitle', ParagraphDerivedSpecTitle, $ParagraphDerivedSpecTitle],
+    ['writing/Paragraph.SentencesSpec', ParagraphSentencesSpec, $ParagraphSentencesSpec],
+    ['writing/Paragraph.TextSpec', ParagraphTextSpec, $ParagraphTextSpec],
+    ['writing/Paragraph.WritingSpec', ParagraphWritingSpec, $ParagraphWritingSpec],
+    ['writing/Phrase.LettersSpec', PhraseLettersSpec, $PhraseLettersSpec],
+    ['writing/Phrase.TextSpec', PhraseTextSpec, $PhraseTextSpec],
+    ['writing/Phrase.WordsSpec', PhraseWordsSpec, $PhraseWordsSpec],
+    ['writing/Phrase.WritingSpec', PhraseWritingSpec, $PhraseWritingSpec],
+    ['writing/Section.ParagraphsSpec', SectionParagraphsSpec, $SectionParagraphsSpec],
+    ['writing/Section.TextSpec', SectionTextSpec, $SectionTextSpec],
+    ['writing/Section.WritingSpec', SectionWritingSpec, $SectionWritingSpec],
+    ['writing/Sentence.StopSpec', SentenceStopSpec, $SentenceStopSpec],
+    ['writing/Sentence.WordsSpec', SentenceWordsSpec, $SentenceWordsSpec],
+    ['writing/Sentence.WritingSpec', SentenceWritingSpec, $SentenceWritingSpec],
+    ['writing/Word.KindSpec', WordKindSpec, $WordKindSpec],
+    ['writing/Word.LettersSpec', WordLettersSpec, $WordLettersSpec],
+    ['writing/Word.MixedSpec', WordMixedSpec, $WordMixedSpec],
+    ['writing/Word.TextSpec', WordTextSpec, $WordTextSpec],
+    ['writing/Word.WritingSpec', WordWritingSpec, $WordWritingSpec],
+    ['writing/Writing.MeansSpec', WritingMeansSpec, $WritingMeansSpec],
+    ['writing/Writing.PlainSpec', WritingPlainSpec, $WritingPlainSpec]
 ];
 
 const roots = (Spec: new () => $Chemical): ReactElement[] => {
@@ -112,7 +109,7 @@ describe('every specification draws', () => {
         });
 
     it('and there are as many as the folders hold', () => {
-        expect(specs.length).toBe(29);
+        expect(specs.length).toBe(42);
     });
 });
 

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $, $Chemical, $Formula } from '@/index';
+import { $, $Chemical, $Formula, cache, children } from '@/index';
 import { $formula$, $keyOf$ } from '@/implementation/symbols';
 
 // =============================================================================
@@ -22,32 +22,32 @@ const stood: any[] = [];
 
 function mark(f: any) {
     stood.push(f);
-    return <span data-kind={f.constructor.name}>{f.children}</span>;
+    return <span data-kind={f.constructor.name}>{f[children]}</span>;
 }
 
 // Doug's specimen hierarchy, exactly:
 //     $Type > $Book > $Biography > $Autobiography
 //     $Type > $Book > $Dictionary
 class $Type extends $Formula {
-    constructor() { super(); this.cache(); }
+    constructor() { super(); this[cache](); }
 
     view() { return mark(this); }
 }
 
 class $Book extends $Type {
-    constructor() { super(); this.cache('Book'); }
+    constructor() { super(); this[cache]('Book'); }
 }
 
 class $Biography extends $Book {
-    constructor() { super(); this.cache('Biography'); }
+    constructor() { super(); this[cache]('Biography'); }
 }
 
 class $Autobiography extends $Biography {
-    constructor() { super(); this.cache('Autobiography'); this.cache('Auto-biography'); }
+    constructor() { super(); this[cache]('Autobiography'); this[cache]('Auto-biography'); }
 }
 
 class $Dictionary extends $Book {
-    constructor() { super(); this.cache('Dictionary'); }
+    constructor() { super(); this[cache]('Dictionary'); }
 }
 
 const Type = $($Type);
@@ -108,7 +108,7 @@ describe('the climb', () => {
 
     it('an unrelated branch never sees another branch, so $Formula holds nothing', () => {
         class $Note extends $Formula {
-            constructor() { super(); this.cache(); }
+            constructor() { super(); this[cache](); }
 
             view() { return mark(this); }
         }
@@ -124,12 +124,12 @@ describe('the climb', () => {
 describe('first one wins', () => {
     it('a second claim on a taken name does not displace the first', () => {
         class $Root extends $Formula {
-            constructor() { super(); this.cache('shared'); }
+            constructor() { super(); this[cache]('shared'); }
 
             view() { return mark(this); }
         }
         class $Leaf extends $Root {
-            constructor() { super(); this.cache('leaf'); }
+            constructor() { super(); this[cache]('leaf'); }
         }
         const Root = $($Root);
         const Leaf = $($Leaf);
@@ -139,15 +139,15 @@ describe('first one wins', () => {
 
     it('CONSTRUCTING THE DEEPEST CLASS FIRST GIVES THE SAME TABLE', () => {
         class $Up extends $Formula {
-            constructor() { super(); this.cache('up'); }
+            constructor() { super(); this[cache]('up'); }
 
             view() { return mark(this); }
         }
         class $Mid extends $Up {
-            constructor() { super(); this.cache('mid'); }
+            constructor() { super(); this[cache]('mid'); }
         }
         class $Low extends $Mid {
-            constructor() { super(); this.cache('low'); }
+            constructor() { super(); this[cache]('low'); }
         }
         // the deepest is asked for first — its super-chain re-runs 'up' and 'mid'
         const Low = $($Low);
@@ -169,11 +169,11 @@ describe('several specimens of one class', () => {
 
         file(hue: number, key: string) {
             this.$hue = hue;
-            this.cache(key);
+            this[cache](key);
             return this;
         }
 
-        view() { return <span data-hue={String(this.$hue)}>{this.children}</span>; }
+        view() { return <span data-hue={String(this.$hue)}>{this[children]}</span>; }
     }
     const Pigment = $($Pigment);
     const rose = new $Pigment().file(10, 'rose');
@@ -216,7 +216,7 @@ describe('a miss', () => {
             view() { return mark(this); }
         }
         class $Iron extends $Metal {
-            constructor() { super(); this.cache('Iron'); }
+            constructor() { super(); this[cache]('Iron'); }
         }
         $($Iron);
         const Metal = $($Metal);
@@ -245,7 +245,7 @@ describe('the reading', () => {
 
     it('a formula that reads its content otherwise is asked, and its answer is used', () => {
         class $Cite extends $Formula {
-            constructor() { super(); this.cache(); }
+            constructor() { super(); this[cache](); }
 
             override [$keyOf$](written: unknown) {
                 const said = String((written as any) ?? '');
@@ -255,7 +255,7 @@ describe('the reading', () => {
             view() { return mark(this); }
         }
         class $Long extends $Cite {
-            constructor() { super(); this.cache('long'); }
+            constructor() { super(); this[cache]('long'); }
         }
         const Cite = $($Cite);
         const Long = $($Long);
@@ -264,7 +264,7 @@ describe('the reading', () => {
 
     it('and one that declines to answer is not swapped', () => {
         class $Quiet extends $Formula {
-            constructor() { super(); this.cache('quiet'); }
+            constructor() { super(); this[cache]('quiet'); }
 
             override [$keyOf$]() { return undefined; }
 
@@ -299,12 +299,12 @@ describe('the swap', () => {
         class $Shape extends $Formula {
             $weight = 0;
 
-            constructor() { super(); this.cache(); }
+            constructor() { super(); this[cache](); }
 
-            view() { return <span data-weight={String(this.$weight)}>{this.children}</span>; }
+            view() { return <span data-weight={String(this.$weight)}>{this[children]}</span>; }
         }
         class $Round extends $Shape {
-            constructor() { super(); this.cache('Round'); }
+            constructor() { super(); this[cache]('Round'); }
         }
         const Shape = $($Shape) as any;
         $($Round);
@@ -358,15 +358,15 @@ describe('the surface', () => {
     // it without touching the catalogue.
     it('A SCOPE MAY RE-DRESS WHAT A NAME RESOLVED TO, with no catalogue change', () => {
         class $Plain extends $Formula {
-            constructor() { super(); this.cache(); }
+            constructor() { super(); this[cache](); }
 
-            view() { return <span data-kind={this.constructor.name}>{this.children}</span>; }
+            view() { return <span data-kind={this.constructor.name}>{this[children]}</span>; }
         }
         class $Fancy extends $Plain {
-            constructor() { super(); this.cache('Fancy'); }
+            constructor() { super(); this[cache]('Fancy'); }
         }
         class $Dressed extends $Plain {
-            view() { return <span data-kind="dressed">{this.children}</span>; }
+            view() { return <span data-kind="dressed">{this[children]}</span>; }
         }
         const Plain = $($Plain) as any;
         const Fancy = $($Fancy) as any;
@@ -442,17 +442,17 @@ describe('what a parent binds', () => {
 
 describe('resolve', () => {
     class $Root extends $Formula {
-        constructor() { super(); this.cache(); }
+        constructor() { super(); this[cache](); }
 
         view() { return mark(this); }
     }
     class $Named extends $Root {
         override resolve = false;
 
-        constructor() { super(); this.cache('Letter'); }
+        constructor() { super(); this[cache]('Letter'); }
     }
     class $Deeper extends $Named {
-        constructor() { super(); this.cache('Deep'); }
+        constructor() { super(); this[cache]('Deep'); }
     }
 
     const Root = $($Root);
@@ -484,12 +484,12 @@ describe('base classes back', () => {
         view() { return mark(this); }
     }
     class $Kind extends $Middle {
-        override get formula() { return true; }
+        override formula = true;
 
-        constructor() { super(); this.cache(); }
+        constructor() { super(); this[cache](); }
     }
     class $Special extends $Kind {
-        constructor() { super(); this.cache('Special'); }
+        constructor() { super(); this[cache]('Special'); }
     }
 
     const Middle = $($Middle);

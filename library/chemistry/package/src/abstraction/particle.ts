@@ -10,7 +10,8 @@ import {
 } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
-import { augment } from "../implementation/augment";
+import { augment, assigned, unassign } from "../implementation/augment";
+import { $assigned$, $facade$ } from "../implementation/symbols";
 import { dev, renderError, renderException } from "../implementation/dev";
 import { withAsker } from "../implementation/scope";
 import { $Reaction } from "./reaction";
@@ -42,7 +43,11 @@ export class $Particle {
     [$destroyed$]?: boolean;
     [$construction$]?: Promise<any>;
     [$formPromise$]?: Promise<any>;
-    [$component$]?: Component<this>;
+    // HELD LOOSELY ON PURPOSE. $resolveComponent$ states the precise type; this
+    // slot only has to hold one. Pinning it to Component<this> makes every public
+    // prop that mentions the chemical's own type turn Component<T> contravariant,
+    // and a derived chemical stops being assignable to the base it extends.
+    [$component$]?: Component<any>;
     get [$isTemplate$]() { return this == (this as any)[$type$][$$template$$]; }
     get [$derived$]() { return this !== this[$template$]; }
 
@@ -55,6 +60,12 @@ export class $Particle {
     // `@look` gave one. Reactive like any other $-field, so writing it repaints.
     $look: number | string = 0;
 
+    // Where this belongs, said by the chemical that draws it: `on={() =>
+    // this.member}`. The render walk resolves it against that chemical, and the
+    // instance completes it on mount — a member cannot be given something that
+    // does not exist yet, and at the moment the walk runs, this does not.
+    $on?: Function | Function[];
+
     // Inline vs block: a class declares itself inline (flows within a text block)
     // in its constructor; block is the default. Read from the template, frozen.
     inline = false;
@@ -64,7 +75,7 @@ export class $Particle {
     // [$resolveComponent$] — internal accessor. The React FC for this particle.
     // $Chemical overrides to add bond-constructor wiring. Author code never
     // reaches for this; the public surface is the `$()` callable.
-    [$resolveComponent$](): Component<this> {
+    [$resolveComponent$](): Component<any> {
         if (Object.prototype.hasOwnProperty.call(this, $component$)) return this[$component$]!;
         return this[$component$] = $lift(this) as any;
     }
@@ -392,6 +403,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
                 p[$phases$] = new Map($phaseOrder.map(ph => [ph, []]));
             }
             p[$resolve$]('mount');
+            belong(p);
             if (typeof p.$form === 'function' && !p[$formRan$]) {
                 p[$formRan$] = true;
                 const result = p.$form();
@@ -403,6 +415,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             }
             return () => {
                 p[$resolve$]('unmount');
+                if (p[$facade$] === undefined) unassign(p.$on, p);
                 if (direct) {
                     p[$update$] = undefined;
                 } else {
@@ -421,7 +434,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         useEffect(() => {
             p[$resolve$]('effect');
             p[$rendering$] = true;
-            const current = augment(withAsker(p, () => p[$renderView$](), true), react, p);
+            const current = augment(withAsker(p, () => p[$renderView$](), true), react, p, false);
             p[$rendering$] = false;
             if (diff(current, p[$viewCache$])) {
                 p[$viewCache$] = current;
@@ -453,3 +466,47 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
     return Component as any;
 }
 
+// A CHEMICAL SAYS WHERE IT BELONGS ON MOUNT, not while it is being drawn. The
+// resolution was made in the render walk, where the chemical that wrote it was
+// known; the instance it names arrives only here. Doing it in an effect is also
+// what keeps the write legal — a member of another chemical written mid-render
+// is a state change in the middle of somebody else's drawing.
+function belong(particle: any): void {
+    // A CHEMICAL WEARING A FACADE DOES NOT ASSIGN ITSELF — its facade does, and
+    // frame() has already handed the assignment on. That is what a facade is for:
+    // callers hold it rather than what it stands for.
+    if (particle[$facade$] !== undefined) return;
+    const assign = particle.$on;
+    if (assign == null) return;
+    if (typeof assign !== 'function') {
+        if (!Array.isArray(assign)) return;
+        throw new Error(
+            `${particle[$type$]?.name ?? 'a chemical'} was told where it belongs by nothing that draws it. ` +
+            `An assignment is resolved against the chemical whose view writes it, so it has to be written in one.`
+        );
+    }
+    if (!assigned(assign))
+        throw new Error(
+            `${particle[$type$]?.name ?? 'a chemical'} was told where it belongs by nothing that draws it. ` +
+            `An assignment is resolved against the chemical whose view writes it, so it has to be written in one.`
+        );
+    assign(particle);
+    belongs(particle, assign);
+}
+
+// AND IT BELONGS THERE, which is a fact about the graph and not only about a
+// member. A chemical written in a view is its own parent, so nothing carries its
+// writes to whoever holds it and nothing resolves outward from it. Saying where
+// it belongs is the one moment that answer is known — so the lineage is threaded
+// here, to the chemical whose view wrote it.
+//
+// Only when it has none of its own: a bonded child already has a parent, and
+// this must never move one that composition established.
+function belongs(particle: any, assign: any): void {
+    const places = assign?.[$assigned$] as { receiver: any }[] | undefined;
+    const receiver = places?.[0]?.receiver;
+    if (!receiver || receiver === particle) return;
+    if (!($parent$ in particle) || !($parent$ in receiver)) return;
+    if (particle[$parent$] && particle[$parent$] !== particle) return;
+    particle[$parent$] = receiver;
+}

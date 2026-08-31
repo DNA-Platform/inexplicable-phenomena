@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical, $Formula, look } from '@/index';
+import { $, $Chemical, $Formula, look, cache } from '@/index';
 import {
     Frame, Dials, Dial, Slide, Switch, Body,
     PreviewRow, PreviewTile, PreviewScale, PreviewName, Stage, Said,
@@ -45,7 +45,7 @@ export class $Figure extends $Formula {
 
 // ── stars ── a blue band, plotted like a chart rather than a sky.
 export class $Constellation extends $Figure {
-    constructor() { super(); this.cache('stars'); }
+    constructor() { super(); this[cache]('stars'); }
 
     private get stars() {
         const k = this.$shape / 100;
@@ -109,7 +109,7 @@ export class $Constellation extends $Figure {
 // `shape` is the injected current I, and it walks the cell through the whole
 // physiology: quiescent, then bursts of two, three, four spikes, then tonic.
 export class $Neuron extends $Figure {
-    constructor() { super(); this.cache('neuron'); }
+    constructor() { super(); this[cache]('neuron'); }
 
     protected override get shift() { return 175; }
 
@@ -211,7 +211,7 @@ export class $Neuron extends $Figure {
 // ── rings ── a crimson band, two families of circles interfering: shape sets
 // their spacing, so the moire reorganises completely as the dial moves.
 export class $Rings extends $Figure {
-    constructor() { super(); this.cache('rings'); }
+    constructor() { super(); this[cache]('rings'); }
 
     protected override get shift() { return 140; }
 
@@ -252,7 +252,7 @@ export class $Rings extends $Figure {
 
 // ── pulse ── a teal band read as a DUOTONE, and `shape` moves its lightness.
 export class $Pulse extends $Figure {
-    constructor() { super(); this.cache('pulse'); }
+    constructor() { super(); this[cache]('pulse'); }
 
     protected override get shift() { return 320; }
 
@@ -296,7 +296,7 @@ export class $Pulse extends $Figure {
 
 // ── weave ── a violet band read as a TRIAD, with `shape` on the saturation.
 export class $Weave extends $Figure {
-    constructor() { super(); this.cache('weave'); }
+    constructor() { super(); this[cache]('weave'); }
 
     protected override get shift() { return 75; }
 
@@ -343,7 +343,7 @@ export class $Weave extends $Figure {
 
 // ── orbit ── a green band.
 export class $Orbit extends $Figure {
-    constructor() { super(); this.cache('orbit'); }
+    constructor() { super(); this[cache]('orbit'); }
 
     protected override get shift() { return 250; }
 

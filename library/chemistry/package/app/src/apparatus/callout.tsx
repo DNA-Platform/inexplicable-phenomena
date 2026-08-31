@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { $, $Chemical } from '@/index';
 import {
+import { children } from '@dna-platform/chemistry';
     CalloutBody,
     NoteFrame, NoteLabel,
     DefinitionFrame, DefinitionLabel,
@@ -22,7 +23,7 @@ export class $Note extends $Callout {
         return (
             <NoteFrame>
                 <NoteLabel>NOTE</NoteLabel>
-                <CalloutBody>{this.children}</CalloutBody>
+                <CalloutBody>{this[children]}</CalloutBody>
             </NoteFrame>
         );
     }
@@ -33,7 +34,7 @@ export class $Definition extends $Callout {
         return (
             <DefinitionFrame>
                 <DefinitionLabel>DEFINITION</DefinitionLabel>
-                <CalloutBody>{this.children}</CalloutBody>
+                <CalloutBody>{this[children]}</CalloutBody>
             </DefinitionFrame>
         );
     }
@@ -44,7 +45,7 @@ export class $Rules extends $Callout {
         return (
             <RulesFrame>
                 <RulesLabel>RULES</RulesLabel>
-                <CalloutBody>{this.children}</CalloutBody>
+                <CalloutBody>{this[children]}</CalloutBody>
             </RulesFrame>
         );
     }
@@ -55,7 +56,7 @@ export class $Pitfall extends $Callout {
         return (
             <PitfallFrame>
                 <PitfallLabel>PITFALL</PitfallLabel>
-                <CalloutBody>{this.children}</CalloutBody>
+                <CalloutBody>{this[children]}</CalloutBody>
             </PitfallFrame>
         );
     }
@@ -66,7 +67,7 @@ export class $DeepDive extends $Callout {
         return (
             <DeepDiveFrame>
                 <DeepDiveLabel>DEEP DIVE</DeepDiveLabel>
-                <CalloutBody>{this.children}</CalloutBody>
+                <CalloutBody>{this[children]}</CalloutBody>
             </DeepDiveFrame>
         );
     }
@@ -77,7 +78,7 @@ export class $InTheLab extends $Callout {
         return (
             <InTheLabFrame>
                 <InTheLabLabel>IN THE LAB</InTheLabLabel>
-                <CalloutBody>{this.children}</CalloutBody>
+                <CalloutBody>{this[children]}</CalloutBody>
             </InTheLabFrame>
         );
     }
@@ -88,7 +89,7 @@ export class $SeeAlso extends $Callout {
         return (
             <SeeAlsoFrame>
                 <SeeAlsoLabel>SEE ALSO</SeeAlsoLabel>
-                <CalloutBody>{this.children}</CalloutBody>
+                <CalloutBody>{this[children]}</CalloutBody>
             </SeeAlsoFrame>
         );
     }

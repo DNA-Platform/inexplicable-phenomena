@@ -1,10 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { ReactNode } from 'react';
-import { act } from 'react';
+import { ReactNode, act } from 'react';
 import { $, $Block } from '@dna-platform/chemistry';
-import { $Writing } from '@/writing/Writing';
+import { $Writing, Type } from '@/writing/Writing';
 import { $Letter } from '@/writing/Letter';
-import { Type } from '@/notation/Type';
 import { $$ } from '@/utilities/Lib';
 import { drawn } from './written';
 

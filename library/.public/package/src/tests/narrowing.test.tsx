@@ -3,11 +3,10 @@ import { $, $Block, cache } from '@dna-platform/chemistry';
 import { $Composition$ } from '@/writing/Composition';
 import { $Document, $TypeOfDocument } from '@/writing/Document';
 import { $File } from '@/writing/File';
-import { $Writing } from '@/writing/Writing';
+import { $Writing, Type } from '@/writing/Writing';
 import { $Chapter, $TypeOfChapter } from '@/book/Chapter';
 import { $Book } from '@/book/Book';
 import { $$ } from '@/utilities/Lib';
-import { Type } from '@/notation/Type';
 import { built, chain, drawn } from './written';
 
 class $MyChapter extends $Chapter {

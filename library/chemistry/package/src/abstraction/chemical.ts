@@ -8,7 +8,7 @@ import {
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
     $devError$, $devException$, $watched$,
-    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$
+    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
@@ -19,6 +19,7 @@ import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 import { $Molecule } from "./molecule";
 import { $Reaction } from "./reaction";
 import { dev, warn, $exceptions } from "../implementation/dev";
+import { asking } from "../implementation/augment";
 
 // Re-export bond / reflection / molecule / reaction / scope machinery for
 // consumers that import from chemical.ts.
@@ -466,7 +467,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             } else if (typeof type === 'string') {
                 let html$Instance = $htmlInstances.get(type);
                 if (!html$Instance) {
-                    html$Instance = new $Html$(type as any);
+                    html$Instance = htmlFor(type);
                     $htmlInstances.set(type, html$Instance);
                 }
                 let typeCache = this._boundChildren.get(type);
@@ -568,8 +569,8 @@ export class $ParamValidation {
         // An empty inline run produces no block. A 'block' parameter materializes an
         // empty $Html<'block'> so callers can write $check(x, 'block') without a null
         // guard — the block is simply empty, and renders nothing.
-        if (arg === undefined && types.some(t => t === 'block')) {
-            arg = new $Html$('block') as any;
+        if (arg === undefined && types.some(t => t === 'block' || t === ($Block as any))) {
+            arg = new $Block() as any;
         }
         const typeDescription = types.map(type => {
             if (Array.isArray(type))
@@ -653,10 +654,11 @@ export class $ParamValidation {
             if ($ParamValidation.isPrimitiveType(type)) {
                 return type;
             } else {
-                return `$${type}'`;
+                return `$${type}`;
             }
         }
 
+        if (type === $Block) return "$Block";
         if (type?.prototype instanceof $Html$) return "$Html";
         if (type?.prototype instanceof $Function$) return "$Function";
         if (type?.prototype && typeof type.prototype.view === 'function') return type.name;
@@ -693,6 +695,7 @@ export class $ParamValidation {
             }
         }
 
+        if (arg instanceof $Block) return "$Block";
         if (arg instanceof $Html$) return `$${arg.type}`;
         if (arg instanceof $Function$) return `${(arg as any).__$Function?.name || '[Function]'}>`;
         if (arg && typeof arg.view === 'function' && $symbol$ in arg) return arg.constructor.name;
@@ -829,8 +832,16 @@ const standing = { $ref: ' standing' };
 const kept = { $ref: ' kept' };
 const seeding = new Set<any>();
 
+function templateOf(cls: any): any {
+    if (Object.prototype.hasOwnProperty.call(cls, $$template$$)) return cls[$$template$$];
+    if (typeof cls !== 'function' || seeding.has(cls)) return undefined;
+    seeding.add(cls);
+    try { new cls(); } finally { seeding.delete(cls); }
+    return Object.prototype.hasOwnProperty.call(cls, $$template$$) ? cls[$$template$$] : undefined;
+}
+
 function isFormula(cls: any): boolean {
-    return !!cls?.prototype?.formula;
+    return !!templateOf(cls)?.formula;
 }
 
 function branch(cls: any): any[] {
@@ -841,6 +852,56 @@ function branch(cls: any): any[] {
         at = Object.getPrototypeOf(at);
     }
     return chain;
+}
+
+const noFacades: any[] = [];
+
+// KEPT OFF THE CLASS OBJECT. A lazy stamp on the constructor would pile a symbol
+// onto it at first render, which is exactly what the constructor-static
+// invariant forbids.
+const worn = new WeakMap<any, any[]>();
+
+
+// A FACADE IS A MEMBER HOLDING A COMPONENT. `facade = Card` says this chemical is
+// DRAWN AS a Card; nothing is asked of Card in return. The declaration is read off
+// the class, because the walk decides before any instance of it exists.
+function facadesOf(chemical: any): any[] {
+    const cls = chemical?.[$type$];
+    if (!cls) return noFacades;
+    const known = worn.get(cls);
+    if (known) return known;
+    // READ THE TEMPLATE, NEVER THE DERIVATIVE. A per-mount derivative is
+    // Object.create(template) and owns almost nothing; the declaration lives on
+    // the template, which is the one instance of a class that has its fields.
+    const declared = templateOf(cls) ?? chemical;
+    const found: any[] = [];
+    for (const name of Object.getOwnPropertyNames(declared)) {
+        // A $-PREFIXED MEMBER IS A PROP — extrinsic context handed in from
+        // outside. An assignment says what this thing IS, so it is never one.
+        if (name.charCodeAt(0) === 36) continue;
+        const value = (declared as any)[name];
+        const held = typeof value === 'function' ? (value as any).$chemical : undefined;
+        if (held) found.push(value);
+    }
+    worn.set(cls, found);
+    return found;
+}
+
+// ONE FACADE PER CHEMICAL PER DECLARATION, kept rather than remade. It is bound
+// to the chemical it stands for, so it is a real part of the graph, and it holds
+// that chemical as `of` — which is what makes it addressable in its place.
+const dressed = new WeakMap<any, Map<any, { component: any; chemical: any }>>();
+
+function dress(chemical: any, declared: any): { component: any; chemical: any } {
+    let held = dressed.get(chemical);
+    if (!held) dressed.set(chemical, held = new Map());
+    let made = held.get(declared);
+    if (!made) {
+        const component = bind(declared.$chemical, chemical) as any;
+        made = { component, chemical: component.$chemical };
+        held.set(declared, made);
+    }
+    return made;
 }
 
 function catalogueOf(cls: any): any {
@@ -875,8 +936,7 @@ function missing(formula: any, asked: string, names: string[]): string {
 
 export class $Chemical extends $Particle {
     resolve = true;
-
-    get formula(): boolean { return false; }
+    formula = false;
 
     get [$cache$]() { return catalogueOf((this as any)[$type$]); }
 
@@ -885,7 +945,7 @@ export class $Chemical extends $Particle {
         return read === '' ? undefined : read;
     }
 
-    protected cache(key?: string): void {
+    protected [cache](key?: string): void {
         const chain = branch((this as any)[$type$]);
         const ref = key === undefined ? standing : { $ref: key };
         if (key !== undefined && chain.slice(1).some(cls => catalogueOf(cls).$find(ref) !== undefined)) return;
@@ -903,6 +963,7 @@ export class $Chemical extends $Particle {
 
     [$formula$](element: React.ReactElement, asker?: any): any {
         if (!this.formula || !this.resolve) return undefined;
+        seed((this as any)[$type$]);
         const key = (this as any)[$keyOf$]((element.props as any)?.children);
         if (key === undefined) return undefined;
         const held = catalogueOf((this as any)[$type$]);
@@ -916,6 +977,13 @@ export class $Chemical extends $Particle {
         throw new Error(missing(this, key, names));
     }
     [$remove$] = false;
+
+    // WHAT THIS SCOPE ANSWERED. `facade` is what the class declares; `$facade` is
+    // what the walk resolved it to where the element was written, and it is a
+    // prop for exactly the reason every `$` member is one — it is extrinsic.
+    $facade?: any;
+    [$facade$]?: $Chemical;
+    [$facades$]() { return facadesOf(this); }
     [$synthesis$]!: $Synthesis<any>;
     [$lastProps$]: any;
 
@@ -944,12 +1012,12 @@ export class $Chemical extends $Particle {
         }
     }
 
-    get children() { return this[$children$]; }
+    declare [children]: ReactNode;
 
     get parent(): $Chemical | undefined { return this[$parent$]; }
     set parent(parent: $Chemical) { this[$parent$] = parent; }
 
-    [$resolveComponent$](): Component<this> {
+    [$resolveComponent$](): Component<any> {
         if (Object.prototype.hasOwnProperty.call(this, $component$)) return this[$component$]!;
         if (this[$isTemplate$]) {
             this.assertViewConstructors();
@@ -971,11 +1039,47 @@ export class $Chemical extends $Particle {
         this[$$parent$$] = this;
         this[$catalyst$] = this;
         this[$synthesis$] = new $Synthesis(this);
-        if (this.formula) seed((this as any)[$type$]);
     }
 
     view(): ReactNode {
-        return this.children;
+        return this[$children$];
+    }
+
+    // WRAPPING HAPPENS BY INSTANCE, AND frame() IS WHERE A PARTICLE WRAPS WHAT
+    // IT DRAWS. A chemical that declares a facade is drawn inside it — here, on
+    // the per-mount derivative, so every mount site decides for itself and
+    // nothing has to be stamped onto an element.
+    //
+    // THE FACADE IS HANDED THIS INSTANCE as `of`, and this instance's own
+    // drawing as its children — so there is one object, and what the interface
+    // reads and writes is what the screen shows. It arrives as an ordinary prop
+    // because React's createElement copies its config with for...in, which does
+    // not see symbol keys, so the written-arguments channel cannot be reached
+    // from here.
+    //
+    // Nothing re-enters the view, so a stack of facades terminates on its own and
+    // every one of them is handed the chemical rather than the one beneath.
+    override frame(): ReactNode {
+        if (this[$isTemplate$]) return super.frame();
+        // What the scope answered stands in for what the class declared.
+        // null is the walk saying it is ALREADY inside one; undefined is the walk
+        // having nothing to say, so the declaration stands.
+        const wearing = this.$facade === null ? noFacades
+            : this.$facade ? [this.$facade] : facadesOf(this);
+        if (wearing.length === 0) return super.frame();
+        let out: ReactNode = super.frame();
+        const outermost = dress(this, wearing[0]);
+        for (let at = wearing.length - 1; at >= 0; at--) {
+            const held = at === 0 ? outermost : dress(this, wearing[at]);
+            // AND THE ASSIGNMENT MOVES WITH IT. A facade exists so callers hold IT
+            // rather than what it stands for, so the outermost one carries the
+            // `on` and assigns itself — which is why nothing downstream needs a
+            // case for "unless it wears a facade".
+            const carries = at === 0 ? { of: this, on: this.$on, children: out } : { of: this, children: out };
+            out = React.createElement(held.component, carries as any);
+        }
+        this[$facade$] = outermost.chemical;
+        return out;
     }
 
     protected [$bond$]() {
@@ -986,8 +1090,8 @@ export class $Chemical extends $Particle {
 
     [$props$](): any {
         const $this = this as any;
-        const props: Record<string, any> = this.children ?
-            { key: this[$symbol$], children: this.children } :
+        const props: Record<string, any> = this[$children$] ?
+            { key: this[$symbol$], children: this[$children$] } :
             { key: this[$symbol$] };
         const seen = new Set<string>();
         for (const bond of this[$molecule$].bonds.values())
@@ -1086,9 +1190,7 @@ const $inlineTypes = new Set<string>([
     'kbd', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
     'time', 'u', 'var', 'wbr']);
 
-// One class, discriminated by its type. Real tags wrap their content in the
-// element; $Block IS its content and renders it directly — the run of inline
-// things an author wrote, raw strings and numbers among them.
+// A tag, wrapping its content in the element it names.
 export class $Html$<T extends $HtmlTag = any> extends $Chemical {
     get type() { return this._type; }
     protected _type: T;
@@ -1100,18 +1202,82 @@ export class $Html$<T extends $HtmlTag = any> extends $Chemical {
     }
 
     view(): ReactNode {
-        const t = this._type as string;
-        if (t === 'block') {
-            const els = ((this as any).$elements ?? []) as (string | number | $Chemical)[];
-            return els.map((e, i) => (typeof e === 'object' ? React.createElement($(e) as any, { key: i }) : e));
-        }
         return React.createElement(this._type as any, (this as any)[$props$]());
     }
 }
 
+// $Block — the one content kind, and the only thing a bond constructor is ever
+// handed for prose: a maximal run of inline writing gathered into one argument.
+//
+// A block IS its contents rather than a wrapper around them, which is why it
+// draws them directly. It carries what was written AS IT WAS WRITTEN — a raw
+// string, a raw number, a chemical whole — because wrapping the raw ones is what
+// made prose and a written element indistinguishable downstream.
+//
+// EVERY READING OF A BLOCK IS A BLOCK, and that is the point of the operator set
+// below: a reading can be read again, so a caller composes readings instead of
+// falling out into an array on the first one and hand-building a block to get
+// back in.
+export class $Block extends $Html$<'block'> {
+    $elements?: $Written[];
+    get elements(): $Written[] { return this.$elements ?? []; }
+    get length(): number { return this.elements.length; }
+
+    constructor() {
+        super('block');
+    }
+
+    [Symbol.iterator](): IterableIterator<$Written> {
+        return this.elements[Symbol.iterator]();
+    }
+
+    where(match: (piece: $Written, at: number) => boolean): $Block {
+        return block(this.elements.filter(match));
+    }
+
+    select(pick: (piece: $Written, at: number) => $Written): $Block {
+        return block(this.elements.map(pick));
+    }
+
+    selectMany(pick: (piece: $Written, at: number) => $Written[]): $Block {
+        return block(this.elements.flatMap(pick));
+    }
+
+    // THE ONE MEMBER THAT ANSWERS A PIECE RATHER THAN A BLOCK, and it is a
+    // reading of the instruction rather than the instruction: a block of one and
+    // the one are different things, and a caller who wanted the block wrote
+    // `where`. Reversible in a line if the reading is wrong.
+    single(match: (piece: $Written, at: number) => boolean): $Written {
+        const found = this.elements.filter(match);
+        if (found.length !== 1)
+            throw new Error(`single expected exactly one piece of the block and found ${found.length}.`);
+        return found[0];
+    }
+
+    override view(): ReactNode {
+        return this.elements.map((piece, at) =>
+            typeof piece === 'object' ? React.createElement($(piece) as any, { key: at }) : piece);
+    }
+}
+
+// What a block holds, named once so the union is stated in one place.
+export type $Written = string | number | $Chemical;
+
+function block(elements: $Written[]): $Block {
+    const made = new $Block();
+    made.$elements = elements;
+    return made;
+}
+
+// The chemical for a tag. `block` is the one kind with behaviour of its own, so
+// it is a class rather than a branch inside one.
+function htmlFor(type: string): $Html$ {
+    return type === 'block' ? new $Block() : new $Html$(type as any);
+}
+
 export class $Include extends $Chemical {
     view(): ReactNode {
-        return this.children;
+        return this[$children$];
     }
 }
 
@@ -1481,7 +1647,7 @@ class $Chemistry$ extends $Chemical {
             }
             let cached = $catalogue.get(arg);
             if (!cached) {
-                cached = new $Html$(arg as any)[$resolveComponent$]();
+                cached = htmlFor(arg)[$resolveComponent$]();
                 $catalogue.set(arg, cached);
             }
             return cached;
@@ -1509,3 +1675,8 @@ class $Chemistry$ extends $Chemical {
 }
 
 export const $ = new $Chemistry$().view as any as $Chemistry;
+
+// The walk resolves a facade in the scope of whoever wrote the element, and it
+// does that through `$` like everything else — handed over here so the walk
+// names nothing from this layer.
+asking((component: any) => ($ as any)(component));

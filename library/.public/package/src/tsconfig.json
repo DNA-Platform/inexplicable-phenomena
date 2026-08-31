@@ -11,6 +11,6 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".spec/**/*.tsx"
+    "tests/.spec/**/*.tsx"
   ]
 }

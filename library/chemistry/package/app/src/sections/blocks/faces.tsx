@@ -60,3 +60,28 @@ export const Count = styled.span`
     text-align: right;
     font-variant-numeric: tabular-nums;
 `;
+
+export const Panel = styled.div`
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #12162a;
+    border: 1px solid #242a4a;
+    color: #cfd6ff;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 34px;
+
+    b, strong { color: #ffd27a; }
+    i, em { color: #9fd0ff; }
+`;
+
+export const Label = styled.div`
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #6f7aad;
+    margin-bottom: 6px;
+`;

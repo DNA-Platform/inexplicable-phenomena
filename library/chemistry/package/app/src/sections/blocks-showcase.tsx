@@ -9,10 +9,10 @@ import case1Source from './blocks/case-1.tsx?raw';
 export function BlocksShowcaseCases() {
     return (
         <CaseShell
-            caseId="prose highlighter"
-            subject="a run of prose with inline markup becomes one $Html<'block'>; $Highlighter iterates its elements and re-renders them, lighting up every match of the live search query"
-            pass="the passage renders with its bold/italics intact and never moves; typing highlights every occurrence — in text and inside tags — with an exact match count"
-            fail="a match is missed, the count is wrong, highlighting reflows the passage, or the block isn't read from $elements"
+            caseId="every reading of a block is a block"
+            subject="a run of prose with inline markup becomes one $Block; $Reader iterates it and derives three more blocks from it with where and select — and the framework DRAWS each derived block, because a reading of a block is a block"
+            pass="the passage renders with its bold/italics intact and never moves; typing highlights every occurrence and the matched panel redraws itself as a block; the written-elements panel shows only what was written as an element; the shouted panel upper-cases the prose and leaves the elements alone"
+            fail="a derived panel is empty or hand-assembled, a match is missed, the counts disagree with the panels, or highlighting reflows the passage"
             source={case1Source}
             demo={<Case1Demo />}
         />

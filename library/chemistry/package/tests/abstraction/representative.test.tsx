@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { $Chemical, $ } from '@/abstraction/chemical';
 import { $reaction$ } from '@/implementation/symbols';
+import { children } from '@/index';
 
 // =============================================================================
 // THE `$` SURFACE
@@ -313,14 +314,14 @@ describe('the asker — whose asks a registration answers', () => {
 // ─── What a scope reaches, and in what order ─────────────────────────────────
 
 describe('a scope reaches what it BINDS', () => {
-    // A chemical that merely returns `this.children` never parents them, so a
+    // A chemical that merely returns `this[children]` never parents them, so a
     // part standing "inside" it has no lineage to walk. The catalyst graph is
     // threaded by the bond constructor — the bond is what makes a scope reach.
     it('does not reach a child it never bound', () => {
         const Plain = $($Plain);
         const Fancy = $($Fancy);
         class $Loose extends $Chemical {
-            view() { return <div>{this.children}</div>; }
+            view() { return <div>{this[children]}</div>; }
         }
         const Loose = $($Loose);
         $(Loose, Plain)(Fancy);

@@ -155,5 +155,3 @@ export type Book = {
      *  book, which is subjecthood as a count rather than as a declaration. */
     entries: Path[];
 };
-
-

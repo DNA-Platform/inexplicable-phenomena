@@ -7,6 +7,13 @@ import { $Bond, $Reflection } from "./bond";
 // them. This list ensures they get bonded.
 const universalProperties = ['$show', '$hide', '$look'];
 
+// Members the framework owns, which are never state. Each of these holds a
+// function the framework calls itself, and a function-valued member would
+// otherwise be bonded as a REAGENT — cached at the moment it is formed and
+// answered as a bound wrapper, so what the framework got back would be neither
+// the function it was handed nor the one it was handed later.
+const framework = new Set(['toString', '$form', '$new', '$on']);
+
 // $Molecule — structural description of a chemical.
 //
 // Walks a chemical's prototype chain and derives the set of reactive bonds
@@ -69,7 +76,7 @@ export class $Molecule {
         properties.forEach((descriptor, property) => {
             if (this._bonds.has(property)) return;
             if (this._inert.has(property)) return;
-            if (looks.test(property) || property === 'toString' || property === '$form' || property === '$new') return;
+            if (looks.test(property) || framework.has(property)) return;
             const reflect = new $Reflection(chemical, property);
             if (!reflect.reactive) return this._inert.add(property);
             const bond = $Bond.create(chemical, property, descriptor);

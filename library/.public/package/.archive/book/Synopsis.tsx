@@ -6,7 +6,6 @@ import { $Chapter, $$Chapter } from './Chapter';
 import { $Book } from './Book';
 import { $$Book } from './Book';
 
-
 export const Entry = styled.section``;
 
 export const Named = styled.h1<{ $theme: $Theme }>`

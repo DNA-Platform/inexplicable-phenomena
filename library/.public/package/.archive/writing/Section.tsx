@@ -36,7 +36,6 @@ const quote = /^\s*>/;
 const picture = /^!\[([^\]\n]*)\]\(([^)\s]*)\)$/;
 const rule = /^(-{3,}|\*{3,}|_{3,})$/;
 
-
 const blankFirst = /^\s*\n\s*\n/;
 const blankLast = /\n\s*\n\s*$/;
 

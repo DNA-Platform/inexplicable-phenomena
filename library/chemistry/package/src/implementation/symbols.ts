@@ -22,6 +22,14 @@ export const $$isSymbol$$ = Symbol("$Particle.static.isSymbol");
 export const $$parseCid$$ = Symbol("$Particle.static.parseCid");
 
 // $Chemical
+// Members a USER writes, carried as symbols so they cost no name in the user's
+// own vocabulary. A plain name is spent only on what every chemical has.
+export const cache = Symbol("$Chemical.cache");
+
+// The children a chemical was given. A SYMBOL rather than a property, so that a view
+// reaches for its BLOCK and never for the raw children it happens to have been handed.
+export const children = $children$;
+
 export const $remove$ = Symbol("$Chemical.remove");
 export const $molecule$ = Symbol("$Chemical.molecule");
 export const $reaction$ = Symbol("$Chemical.reaction");
@@ -37,6 +45,16 @@ export const $destroy$ = Symbol("$Chemical.destroy");
 export const $destroyed$ = Symbol("$Chemical.destroyed");
 export const $backing$ = Symbol("$Chemical.backing");
 export const $watched$ = Symbol("$Chemical.watched");
+
+// THE FACADE A CHEMICAL IS WEARING, held on the instance rather than remade per
+// render — because a facade that exists only inside an element cannot be handed
+// to anybody, and the whole point of one is that callers hold IT rather than
+// what it stands for.
+export const $facade$ = Symbol("$Chemical.facade");
+
+// WHAT A CLASS DECLARES, asked of the class rather than imported — so the render
+// walk can read a chemical's facades without naming the abstraction layer.
+export const $facades$ = Symbol("$Chemical.facades");
 
 export const $catalyst$ = Symbol("$Chemical.catalyst");
 export const $isCatalyst$ = Symbol("$Chemical.isCatalyst");
@@ -93,10 +111,16 @@ export const $remembered$ = Symbol("$Atom.remembered");
 // $promise symbols
 export const $cancelled$ = Symbol("$promise.cancelled");
 
-// $handler symbols — augment.ts wraps user event handlers (onClick etc.) and
-// tags each wrapper with a reference to the original. reconcile.ts reads the
-// tag so two wrappers of the same original compare equal across renders.
-export const $handlerOriginal$ = Symbol("$handler.original");
+// The user's own function behind a wrapper augment.ts installed — an event
+// handler, or an assignment. reconcile.ts reads it so two wrappers standing for
+// one original compare equal across renders, which they never would by identity
+// because a view builds its closures fresh every time.
+export const $original$ = Symbol("$augment.original");
+
+// What an assignment was resolved against: the chemical whose view wrote it, and
+// the member path read out of the arrow's own source. Carried on the wrapper so
+// the child can tell a resolved assignment from an arrow nobody rewrote.
+export const $assigned$ = Symbol("$augment.assigned");
 
 // $Reference
 export const $ref$ = Symbol("$Referent.ref");

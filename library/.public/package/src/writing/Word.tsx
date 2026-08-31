@@ -1,8 +1,7 @@
 import { $, $check, $Html, cache } from '@dna-platform/chemistry';
-import { $Type, TypedSpecification } from '@/notation/Type';
-import { Specification, specify } from '@/notation/Specification';
+import { $Type, TypedSpecification, $Writing } from './Writing';
+import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$ } from './Composition';
-import { $Writing } from './Writing';
 import { $Letter, Letter } from './Letter';
 import { $$ } from '@/utilities/Lib';
 import { parser } from '@/utilities/Parser';
@@ -11,10 +10,10 @@ export class $Word extends $Writing implements $Composition$<$Letter> {
     protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
     protected patterns = {
-        letterOrNumber: /[\p{L}\p{N}]/u
+        alphanumeric: /[\p{L}\p{N}]/u
     };
 
-    override get canonical(): boolean { return this.patterns.letterOrNumber.test(this.copy); }
+    override get canonical(): boolean { return this.patterns.alphanumeric.test(this.copy); }
 
     parts(): $Letter[] {
         const from = this.bound ? this.inside! : this;
@@ -51,7 +50,7 @@ export class $TypeOfWord extends $Type {
     protected override specification: Specification<$Writing> = new WordSpecification();
 }
 
-class WordSpecification extends TypedSpecification<$Writing> {
+export class WordSpecification extends TypedSpecification<$Writing> {
     protected patterns = {
         broken: /\s/u
     };
