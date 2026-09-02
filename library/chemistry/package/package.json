@@ -36,7 +36,8 @@
     "test:fast": "vitest run",
     "test:watch": "vitest",
     "test:all": "tsc --noEmit && vitest run && rollup -c --silent",
-    "bench": "vitest bench --run"
+    "bench": "vitest bench --run",
+    "verify:persistence": "node app/verify-persistence.mjs"
   },
   "dependencies": {
     "D": "^1.0.0",

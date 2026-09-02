@@ -482,7 +482,7 @@ export const catalogue: Group[] = [
             { id: 'mount', title: 'Conditional display', symbol: 'Mt', planned: [] },
             { id: 'cond-swap', title: 'Switching views', symbol: 'Cs', planned: [] },
             { id: 'frames', title: 'frame function', symbol: 'Fr', planned: [] },
-            { id: 'hydration', title: 'The hydration cache', symbol: 'Hy', planned: [] },
+            { id: 'persistence', title: 'Persistence', symbol: 'Ps', planned: [] },
             { id: 'blocks', title: 'HTML Blocks', symbol: 'Bl', planned: [] },
             { id: 'error-recover', title: 'Error boundaries', symbol: 'Er', planned: [] },
         ],

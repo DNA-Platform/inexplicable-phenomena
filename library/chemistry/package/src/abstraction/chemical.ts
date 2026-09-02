@@ -976,14 +976,14 @@ function missing(formula: any, asked: string, names: string[]): string {
 export class $Chemical extends $Particle {
     resolve = true;
     formula = false;
-    $aid?: string;
-    protected _atomic = false;
+    $pid?: string;
+    protected _persist = false;
 
-    get atomic(): boolean { return this._atomic; }
-    set atomic(atomic: boolean) {
-        if (this._atomic && !atomic) hydration.clear(this);
-        this._atomic = atomic;
-        if (atomic) hydration.changed(this);
+    get persist(): boolean { return this._persist; }
+    set persist(persist: boolean) {
+        if (this._persist && !persist) hydration.clear(this);
+        this._persist = persist;
+        if (persist) hydration.changed(this);
     }
 
     get [$cache$]() { return catalogueOf((this as any)[$type$]); }

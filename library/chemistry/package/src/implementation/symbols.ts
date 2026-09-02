@@ -107,6 +107,7 @@ export const $reference$ = Symbol("$Component.reference");
 export const $formed$ = Symbol("$Atom.formed");
 export const $formation$ = Symbol("$Atom.formation");
 export const $remembered$ = Symbol("$Atom.remembered");
+export const $reinit$ = Symbol("$Atom.reinit");
 
 // $promise symbols
 export const $cancelled$ = Symbol("$promise.cancelled");

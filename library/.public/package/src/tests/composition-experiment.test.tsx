@@ -321,6 +321,8 @@ describe("the book's anatomy — roles by position, no flags", () => {
 });
 
 describe('a page fold — the folded corner, a reference to a chapter, modeling the view', () => {
+    beforeEach(() => { hydration.forget(); localStorage.clear(); });
+
     it('a fold is a reference whose path lands on a chapter, and its location models the view', () => {
         const one = built<$PageFold>(<PageFold>two<Path>Cr:1</Path></PageFold>);
         expect(one).toBeInstanceOf($Reference);
@@ -356,6 +358,8 @@ describe('the book specifies — written as chapters', () => {
 });
 
 describe('the bookmark — inserted somewhere, it finds its chapter', () => {
+    beforeEach(() => { hydration.forget(); localStorage.clear(); });
+
     const marked = () => {
         const book = built<$Book>(
             <Book>
@@ -647,15 +651,15 @@ describe('links persist on active — surviving different pages', () => {
         localStorage.clear();
         const first = built<$Sentence>(sentence(word(letter('a')), <Reference>alpha<Path>/books/x</Path></Reference>));
         const link = first.annotations.find((one): one is $Reference => one instanceof $Reference)!;
-        expect(link.$active).toBe(false);
+        expect(link.$focused).toBe(false);
         link.focus();
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('/books/x');
         const again = built<$Sentence>(sentence(word(letter('a')), <Reference>alpha<Path>/books/x</Path></Reference>));
         const reborn = again.annotations.find((one): one is $Reference => one instanceof $Reference)!;
         expect(reborn).not.toBe(link);
-        expect(reborn.$active).toBe(true);
-        expect(reborn.atomic).toBe(true);
+        expect(reborn.$focused).toBe(true);
+        expect(reborn.persist).toBe(true);
     });
 
     it('the recall does not echo — a reprint writes nothing back to the store', async () => {
@@ -718,23 +722,23 @@ describe('links persist on active — surviving different pages', () => {
         links[1].focus();
         links[0].unfocus();
         expect(one.references.stack).toEqual(['/books/q']);
-        expect(links[0].$active).toBe(false);
+        expect(links[0].$focused).toBe(false);
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration') ?? '{}').not.toContain('/books/p"');
     });
 
-    it('atomic withdrawn forgets the link, and its reprint is ordinary', async () => {
+    it('persist withdrawn forgets the link, and its reprint is ordinary', async () => {
         hydration.forget();
         localStorage.clear();
         const first = built<$Sentence>(sentence(word(letter('a')), <Reference>alpha<Path>/books/y</Path></Reference>));
         const link = first.annotations.find((one): one is $Reference => one instanceof $Reference)!;
         link.focus();
         await settled();
-        link.atomic = false;
+        link.persist = false;
         expect(localStorage.getItem('$Chemistry.hydration') ?? '{}').not.toContain('/books/y');
         const again = built<$Sentence>(sentence(word(letter('a')), <Reference>alpha<Path>/books/y</Path></Reference>));
         const reborn = again.annotations.find((one): one is $Reference => one instanceof $Reference)!;
-        expect(reborn.$active).toBe(false);
+        expect(reborn.$focused).toBe(false);
     });
 });
 
@@ -772,7 +776,7 @@ describe('the index — a type of References with a strong type', () => {
     it('an index is a references section under its own aid, and it persists the same way', async () => {
         const one = built<$Index>(<Index><Reference>alpha<Path>/books/i</Path></Reference></Index>);
         expect(one).toBeInstanceOf($References);
-        expect(one.$aid).toBe('Index');
+        expect(one.$pid).toBe('Index');
         const link = built<$Reference>(<Reference>beta<Path>/books/j</Path></Reference>);
         one.append(link);
         expect(one.stack).toEqual(['/books/j']);

@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
-import { $, $Chemical } from '@/index';
+import { $, $Chemical, children } from '@/index';
 import {
-import { children } from '@dna-platform/chemistry';
     CalloutBody,
     NoteFrame, NoteLabel,
     DefinitionFrame, DefinitionLabel,

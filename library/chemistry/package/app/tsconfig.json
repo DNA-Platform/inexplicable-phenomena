@@ -1,20 +1,32 @@
 {
-    "compilerOptions": {
-        "target": "ES2020",
-        "jsx": "react-jsx",
-        "module": "esnext",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "strict": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "moduleResolution": "bundler",
-        "isolatedModules": true,
-        "experimentalDecorators": true,
-        "skipLibCheck": true,
-        "paths": {
-            "@/*": ["../src/*"],
-            "@specimens/*": ["../tests/specimens/*"]
-        }
+  "compilerOptions": {
+    "target": "ES2020",
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": [
+        "../src/*"
+      ],
+      "@specimens/*": [
+        "../tests/specimens/*"
+      ]
     },
-    "include": ["src/**/*.tsx", "src/**/*.ts"]
+    "useDefineForClassFields": false
+  },
+  "include": [
+    "src/**/*.tsx",
+    "src/**/*.ts"
+  ]
 }

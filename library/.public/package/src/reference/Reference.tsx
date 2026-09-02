@@ -12,7 +12,7 @@ export interface $Reference$<T extends $Writing = $Writing> extends $Writing {
 }
 
 export class $Reference extends $Annotation implements $Reference$ {
-    $active = false;
+    $focused = false;
 
     override get canonical(): boolean { return false; }
 
@@ -21,7 +21,7 @@ export class $Reference extends $Annotation implements $Reference$ {
     $Reference(block: $Block) {
         super.$Writing(block);
         this._type = $(<TypeOfReference />);
-        this.$aid ??= this.path?.copy;
+        this.$pid ??= this.path?.copy;
     }
 
     override view(): ReactNode {
@@ -29,15 +29,15 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     focus(): void {
-        this.$aid ??= this.path?.copy;
-        this.$active = true;
-        this.atomic = true;
+        this.$pid ??= this.path?.copy;
+        this.$focused = true;
+        this.persist = true;
         (this.book() as { references?: $References }).references?.append(this);
     }
 
     unfocus(): void {
-        this.$active = false;
-        this.atomic = false;
+        this.$focused = false;
+        this.persist = false;
         (this.book() as { references?: $References }).references?.remove(this);
     }
 

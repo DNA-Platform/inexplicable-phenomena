@@ -14,6 +14,7 @@ import { augment, assigned, unassign } from "../implementation/augment";
 import { $assigned$, $facade$ } from "../implementation/symbols";
 import { dev, renderError, renderException } from "../implementation/dev";
 import { withAsker } from "../implementation/scope";
+import { hydration } from "../implementation/hydration";
 import { $Reaction } from "./reaction";
 import { $Molecule } from "./molecule";
 import { lookName } from "./bond";
@@ -375,6 +376,12 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             }
             if (contextParent && $parent$ in made) {
                 made[$parent$] = contextParent;
+            }
+            if ((made as any)._persist) {
+                const was = made[$rendering$];
+                made[$rendering$] = true;
+                hydration.overwrite(made);
+                made[$rendering$] = was;
             }
             return made;
         };

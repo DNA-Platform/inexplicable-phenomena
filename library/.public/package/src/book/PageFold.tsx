@@ -8,6 +8,7 @@ export class $PageFold extends $$Chapter {
     $PageFold(block: $Block) {
         super.$$Chapter(block);
         this._type = $(<TypeOfPageFold />);
+        this.persist = true;
     }
 }
 

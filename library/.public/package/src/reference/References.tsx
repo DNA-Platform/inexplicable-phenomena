@@ -17,8 +17,8 @@ export class $References extends $Section {
     $References(block: $Block) {
         super.$Section(block);
         this._type = $(<TypeOfReferences />);
-        this.$aid ??= 'References';
-        this.atomic = true;
+        this.$pid ??= 'References';
+        this.persist = true;
     }
 
     append(one: $Reference): void {

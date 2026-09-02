@@ -3,7 +3,7 @@ import { $Chemical } from '@/abstraction/chemical';
 import { $molecule$ } from '@/implementation/symbols';
 
 // The atomic alert sits in the ONE setter every reactive write commits
-// through, so its cost on a NON-atomic chemical is the number that matters:
+// through, so its cost on a NON-persistent chemical is the number that matters:
 // a raw backing-field read and a branch, nothing allocated. Run: npm run bench
 
 class $Plain extends $Chemical {
@@ -19,15 +19,15 @@ class $Hot extends $Chemical {
 
 const hot = new $Hot();
 (hot as any)[$molecule$].reactivate();
-(hot as any)._atomic = true;
-(hot as any).$aid = 'bench';
+(hot as any)._persist = true;
+(hot as any).$pid = 'bench';
 
-describe('the atomic alert on the write path', () => {
-    bench('non-atomic chemical: 10,000 reactive writes (the branch answers no)', () => {
+describe('the persistence alert on the write path', () => {
+    bench('non-persistent chemical: 10,000 reactive writes (the branch answers no)', () => {
         for (let i = 0; i < 10000; i++) (one as any).count = i;
     });
 
-    bench('atomic chemical: 10,000 reactive writes (alert + debounced flush)', () => {
+    bench('persistent chemical: 10,000 reactive writes (alert + debounced flush)', () => {
         for (let i = 0; i < 10000; i++) (hot as any).count = i;
     });
 });

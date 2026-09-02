@@ -4,7 +4,7 @@ import { $References, $TypeOfReferences } from './References';
 
 export class $Index extends $References {
     $Index(block: $Block) {
-        this.$aid ??= 'Index';
+        this.$pid ??= 'Index';
         super.$References(block);
         this._type = $(<TypeOfIndex />);
     }

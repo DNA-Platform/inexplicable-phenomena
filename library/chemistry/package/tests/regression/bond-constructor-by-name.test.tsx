@@ -43,7 +43,7 @@ describe('a bond constructor is found by the name it was WRITTEN with', () => {
         expect(Object.getOwnPropertyNames($Renamed.prototype)).toContain('$Renamed');
         // The lookup that used to be made, shown missing rather than described:
         // resolving through the runtime class name asks for a member nothing declares.
-        expect(($Renamed.prototype as Record<string, unknown>)['_$Renamed']).toBeUndefined();
+        expect(($Renamed.prototype as unknown as Record<string, unknown>)['_$Renamed']).toBeUndefined();
         const one = $(<Renamed>hi</Renamed>) as $Renamed;
         expect(one.held).toBeDefined();
     });

@@ -35,7 +35,7 @@ import { sectionData as cloning } from './cloning-components';
 import { sectionData as perspectives } from './perspectives-section';
 import { sectionData as representative } from './representative-section';
 import { sectionData as frames } from './frames-showcase';
-import { sectionData as hydration } from './hydration-section';
+import { sectionData as persistence } from './persistence-section';
 import { sectionData as blocks } from './blocks-showcase';
 import { sectionData as formula } from './formula-section';
 import { sectionData as facesSection } from './facades-section';
@@ -84,7 +84,7 @@ const modules: SectionModule[] = [
     perspectives,
     representative,
     frames,
-    hydration,
+    persistence,
     blocks,
     formula,
     facesSection,

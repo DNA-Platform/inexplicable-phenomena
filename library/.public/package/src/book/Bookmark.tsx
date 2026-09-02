@@ -18,6 +18,7 @@ export class $Bookmark extends $$Chapter {
     $Bookmark(block: $Block) {
         super.$$Chapter(block);
         this._type = $(<TypeOfBookmark />);
+        this.persist = true;
     }
 
     override async read(): Promise<$Chapter> {

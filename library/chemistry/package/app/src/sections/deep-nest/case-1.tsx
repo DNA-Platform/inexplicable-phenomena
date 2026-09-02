@@ -5,7 +5,7 @@ import {
     LikesDisplay, TotalDisplay, HeartButton,
 } from './case.styled';
 import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
-import { children } from '@dna-platform/chemistry';
+import { children } from '@/index';
 
 class $Card extends $Chemical {
     likes = 0;

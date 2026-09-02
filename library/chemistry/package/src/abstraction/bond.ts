@@ -3,6 +3,7 @@ import {
 } from "../implementation/symbols";
 import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
 import { hydration } from "../implementation/hydration";
+import { $reinit$ } from "../implementation/symbols";
 import { equivalent } from '../implementation/reconcile';
 
 // ===========================================================================
@@ -202,12 +203,14 @@ function activate(chemical: any, property: string, initial: any) {
     store[property] = initial;
     Object.defineProperty(chemical, property, {
         get() {
+            if ((this as any)._persist && (this as any)[$reinit$]) (this as any)[$reinit$] = false;
             const value = this[$backing$]?.[property];
             const scope = currentScope();
             if (scope) scope.recordRead(this, property, value);
             return value;
         },
         set(value) {
+            if ((this as any)._persist && (this as any)[$reinit$]) return;
             const store = backing(this);
             // BY VALUE, NOT BY REFERENCE. equivalent() opens with ===, so a
             // scalar costs what it always did; a fresh array or plain object
@@ -215,7 +218,7 @@ function activate(chemical: any, property: string, initial: any) {
             if (equivalent(store[property], value)) return;
             store[property] = value;
             if (this[$rendering$]) return;
-            if ((this as any)._atomic) hydration.changed(this);
+            if ((this as any)._persist) hydration.changed(this);
             const scope = currentScope();
             if (scope) {
                 scope.recordWrite(this, property);

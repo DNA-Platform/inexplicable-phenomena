@@ -7,7 +7,7 @@ import {
     TravelRow, TravelLabel, TravelPick, Sameness,
 } from './faces';
 import { VerdictSection, VerdictRow, VerdictDot } from '../../apparatus/verdict.styled';
-import { children } from '@dna-platform/chemistry';
+import { children } from '@/index';
 
 // ─── The framework ───────────────────────────────────────────────────────────
 // $Note is written ONCE and never subclassed below. It asks `$` for the parts

@@ -1,13 +1,13 @@
 import {
     $type$, $molecule$, $component$, $resolveComponent$, $template$, $isTemplate$,
-    $formed$,
+    $formed$, $reinit$,
     $$template$$
 } from "../implementation/symbols";
 import { hydration } from "../implementation/hydration";
 import { $Chemical } from "./chemical";
 
 // $Atom — the singleton chemical: every construction answers the class's one
-// template, and it is atomic — keyless, the class its aid — so using an atom
+// template, and it persists — keyless, the class its aid — so using an atom
 // means it simply appears with what the hydration cache remembers. Derived
 // field initializers re-run on the template at every construction (the
 // return-override makes the template `this` in derived constructors), so the
@@ -21,10 +21,14 @@ export class $Atom extends $Chemical {
                 this[$component$] = this[$resolveComponent$]();
         }
         const target = ((this as any)[$type$][$$template$$] ?? this) as this;
+        if ((target as any)[$formed$]) {
+            (target as any)[$molecule$].reactivate();
+            (target as any)[$reinit$] = true;
+        }
         if (!(target as any)[$formed$]) {
             (target as any)[$formed$] = true;
-            target.$aid ??= (target as any)[$type$].name;
-            (target as any)._atomic = true;
+            target.$pid ??= (target as any)[$type$].name;
+            (target as any)._persist = true;
             hydration.overwrite(target);
             queueMicrotask(() => {
                 (target as any)[$molecule$].reactivate();
