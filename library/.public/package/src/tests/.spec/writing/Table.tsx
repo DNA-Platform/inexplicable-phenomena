@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { Table, TableTrait } from '@/writing/Table';
-import { Cell } from '@/writing/Cell';
+import { Table, TableTrait, Cell } from '@/writing/Table';
 import { Sentence } from '@/writing/Sentence';
 import { TypeOfParagraph } from '@/writing/Paragraph';
 import { Word } from '@/writing/Word';

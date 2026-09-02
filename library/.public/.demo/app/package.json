@@ -1,0 +1,9 @@
+{
+  "name": "demo",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite --port 5199",
+    "verify": "node verify-demo.mjs"
+  }
+}

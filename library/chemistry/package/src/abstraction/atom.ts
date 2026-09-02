@@ -6,12 +6,6 @@ import {
 import { hydration } from "../implementation/hydration";
 import { $Chemical } from "./chemical";
 
-// $Atom — the singleton chemical: every construction answers the class's one
-// template, and it persists — keyless, the class its aid — so using an atom
-// means it simply appears with what the hydration cache remembers. Derived
-// field initializers re-run on the template at every construction (the
-// return-override makes the template `this` in derived constructors), so the
-// overwrite lands again a microtask later.
 export class $Atom extends $Chemical {
     constructor() {
         super();

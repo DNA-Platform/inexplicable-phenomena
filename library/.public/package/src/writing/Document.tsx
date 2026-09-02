@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Output } from '@/encyclopedia/Output';
-import { $Type, TypedSpecification, $Writing } from './Writing';
+import { $Type, TypedSpecification, $Writing, Dress } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
 import { $Section, Section } from './Section';
@@ -28,9 +28,7 @@ export class $Document extends $Composition<$Section> implements $Composition$<$
         this._type = $(<TypeOfDocument />);
     }
 
-    override frame(): ReactNode {
-        return <Output>{super.frame()}</Output>;
-    }
+    override get dress(): Dress { return Output; }
 
 
     protected override reduce(held: (string | $Writing)[]): $Section[] {
@@ -51,6 +49,8 @@ export class $$Document extends $Reference implements $Reference$<$Document> {
 
 export class $TypeOfDocument extends $Type {
     override flows = false;
+
+    override get shell(): typeof $Writing { return $Document; }
     resolve = false;
     override code = 'Dt';
     override get writtenAs(): new () => $Writing { return $Section; }

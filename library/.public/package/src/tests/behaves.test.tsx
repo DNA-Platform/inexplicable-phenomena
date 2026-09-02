@@ -23,7 +23,7 @@ describe('a piece of writing that carries a type BEHAVES as that type', () => {
     it('and read as one, it composes the documents written inside it', () => {
         const { writing } = drawn(chain.Document('a'), chain.Document('b'), <Type>File</Type>);
         const asFile = $$(writing, $File);
-        expect(asFile).toBeInstanceOf($File);
+        expect($$(asFile)($File)).toBe(true);
         expect(asFile.parts().length).toBe(2);
     });
 

@@ -1,13 +1,16 @@
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
+import { html } from '@/utilities/Html';
 import { $Writing } from './Writing';
-import { $Sentence, $TypeOfSentence, SentenceSpecification } from './Sentence';
+import { $Composition } from './Composition';
+import { $Word } from './Word';
+import { $TypeOfSentence, SentenceSpecification } from './Sentence';
 
-export class $Phrase extends $Sentence {
+export class $Phrase extends $Composition<$Word> {
     override get canonical(): boolean { return false; }
 
     $Phrase(block: $Block) {
-        super.$Sentence(block);
+        super.$Composition(block);
         this._type = $(<TypeOfPhrase />);
     }
 }
@@ -30,7 +33,7 @@ export class PhraseSpecification extends SentenceSpecification {
 
     @specify('a phrase is written on one line')
     $onOneLine(writing: $Writing): void {
-        $check(!this.lines.broken.test(writing.copy), 'a phrase is written on one line, and this one breaks across lines');
+        $check(!this.lines.broken.test(html.surface(writing.block)), 'a phrase is written on one line, and this one breaks across lines');
     }
 }
 

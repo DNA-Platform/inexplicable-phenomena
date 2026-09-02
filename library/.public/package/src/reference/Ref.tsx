@@ -5,7 +5,8 @@ import { Link, useInRouterContext } from 'react-router-dom';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Word, Word } from '@/writing/Word';
-import { $Phrase, $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
+import { $Composition } from '@/writing/Composition';
+import { $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
 import { $$ } from '@/utilities/Lib';
 import type { $Reference$ } from './Reference';
 import { $Path, Path } from './Path';
@@ -16,7 +17,7 @@ const Routed = ({ to, children }: { to: string; children: ReactNode }) => useInR
     ? <Link to={to}>{children}</Link>
     : <Anchor href={to}>{children}</Anchor>;
 
-export class $Ref extends $Phrase implements $Reference$<$Writing> {
+export class $Ref extends $Composition<$Word> implements $Reference$<$Writing> {
     $path?: string;
 
     get path(): $Path | undefined { return (this.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path); }
@@ -24,7 +25,7 @@ export class $Ref extends $Phrase implements $Reference$<$Writing> {
     get written(): string { return this.link?.text ?? this.copy; }
 
     $Ref(block: $Block) {
-        super.$Phrase(block);
+        super.$Composition(block);
         this._type = $(<TypeOfRef />);
     }
 

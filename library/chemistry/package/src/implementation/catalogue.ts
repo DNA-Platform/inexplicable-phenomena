@@ -15,7 +15,6 @@ class $Catalogue implements $Rep {
     readonly $subject: $Subject;
 
     constructor(name: string) {
-        // The elegant self-reference - this IS its own subject
         this.#name = name;
         this.$subject = this;
         this.#subjects.add(this);
@@ -41,7 +40,6 @@ class $Catalogue implements $Rep {
         if (this.#dereferenced) return undefined as any;
         const catalogue = new $Catalogue(`$${this.#name}[${this.#topics.map(topic => topic.toString())},$${this.#name}]`);
 
-        // Only add valid catalogues as topics
         for (const topic of topics) {
             if (topic instanceof $Catalogue) {
                 catalogue.#topics.push(topic);
@@ -58,7 +56,6 @@ class $Catalogue implements $Rep {
     $find<T = any>(ref: $Rep<T>, subject?: $Subject): T | undefined {
         if (this.#dereferenced) return undefined;
 
-        // The instanceof check - the internal handshake
         if (subject && subject instanceof $Catalogue && subject !== this) {
             if (this.#subjects.has(subject)) {
                 return subject.$find(ref);
@@ -66,14 +63,12 @@ class $Catalogue implements $Rep {
             return undefined;
         }
 
-        // Check own literature
         const canonical = this.#references.get(ref.$ref);
         if (canonical) {
             const value = this.#literature.get(canonical);
             if (value !== undefined) return value;
         }
 
-        // Walk the topics chain
         for (const topic of this.#topics) {
             if (topic instanceof $Catalogue) {
                 const value = topic.$find(ref);
@@ -92,7 +87,6 @@ class $Catalogue implements $Rep {
         if (literal === undefined)
             literal = ref as any;
 
-        // The instanceof check - validate the subject
         if (subject && subject instanceof $Catalogue && subject !== this) {
             if (this.#subjects.has(subject)) {
                 subject.$index(ref, literal);
@@ -101,7 +95,6 @@ class $Catalogue implements $Rep {
             return;
         }
 
-        // Index locally
         let canonical = this.#references.get(ref.$ref);
         if (!canonical) {
             canonical = ref;
@@ -126,7 +119,6 @@ class $Catalogue implements $Rep {
             return;
         }
 
-        // Check if it's a catalogue to remove from topics
         if (arg1 instanceof $Catalogue) {
             this.#subjects.delete(arg1)
             const index = this.#topics.indexOf(arg1);
@@ -140,13 +132,11 @@ class $Catalogue implements $Rep {
             const ref: $Rep = arg1;
             const subject: $Subject = arg2;
 
-            // Delegate to subject if provided and valid
             if (subject && subject instanceof $Catalogue) {
                 subject.$deref(ref);
                 return;
             }
 
-            // Remove from own literature
             const canonical = this.#references.get(ref.$ref);
             if (canonical) {
                 this.#literature.delete(canonical);

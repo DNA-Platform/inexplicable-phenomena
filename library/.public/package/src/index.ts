@@ -12,7 +12,6 @@ export * from './writing/List';
 export * from './writing/Title';
 export * from './writing/Section';
 export * from './writing/Table';
-export * from './writing/Cell';
 export * from './writing/Document';
 export * from './writing/File';
 

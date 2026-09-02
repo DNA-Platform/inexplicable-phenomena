@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { $Writing, Trait, Type } from '@/writing/Writing';
-import { $Table, Table, TableTrait, $TableTrait, $TypeOfTable } from '@/writing/Table';
-import { Cell } from '@/writing/Cell';
+import { $Table, Table, TableTrait, $TableTrait, $TypeOfTable, Cell } from '@/writing/Table';
 import { $Paragraph, $TypeOfParagraph, TypeOfParagraph } from '@/writing/Paragraph';
 import { $Sentence } from '@/writing/Sentence';
 import { $Word } from '@/writing/Word';
 import { $$ } from '@/utilities/Lib';
-import { built, drawn, letter, word, Sentence, Writing } from './written';
+import { built, drawn, letter, word, sentence, paragraph, section, title, Document, Writing as W, Sentence, Writing } from './written';
 
 describe('a table is an arrangement, and its type gives it a level', () => {
     it('a table of cells composes each cell one down — a paragraph by default', () => {
@@ -61,5 +60,19 @@ describe('a table is an arrangement, and its type gives it a level', () => {
         const inner = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.annotation)!;
         expect(inner.type).toBeInstanceOf($TypeOfTable);
         expect(inner.type).not.toBeInstanceOf($TableTrait);
+    });
+});
+
+describe('an arrangement can be addressed', () => {
+    it('a table carries its own code, and the address follows back to it', () => {
+        const outer = built<$Writing & { catalogue(): { address(of: $Writing): string; follow(at: string): $Writing } }>(
+            <Document>
+                {section(title(sentence(word(letter('t')))), paragraph(sentence(word(letter('a')))))}
+                <Table>{'first row\n\nsecond row'}</Table>
+            </Document>);
+        const table = (outer as unknown as { parts(): $Writing[] }).parts().find(one => one instanceof $Table)!;
+        const address = outer.catalogue().address(table);
+        expect(address.startsWith('Tb:')).toBe(true);
+        expect(outer.catalogue().follow(address)).toBe(table);
     });
 });

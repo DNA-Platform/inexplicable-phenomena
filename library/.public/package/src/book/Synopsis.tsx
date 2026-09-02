@@ -1,10 +1,12 @@
 import { $Block, $, cache } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
-import { $Chapter, $TypeOfChapter } from './Chapter';
+import { $Composition } from '@/writing/Composition';
+import { $Section } from '@/writing/Section';
+import { $TypeOfChapter } from './Chapter';
 
-export class $Synopsis extends $Chapter {
+export class $Synopsis extends $Composition<$Section> {
     $Synopsis(block: $Block) {
-        super.$Chapter(block);
+        super.$Composition(block);
         this._type = $(<TypeOfSynopsis />);
     }
 }

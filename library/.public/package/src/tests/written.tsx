@@ -1,3 +1,4 @@
+import { afterEach } from 'vitest';
 import { ReactNode, act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $, $Block, $Chemical } from '@dna-platform/chemistry';
@@ -34,6 +35,20 @@ export const file = (...inside: ReactNode[]) => <File>{inside}</File>;
 
 export const built = <T,>(element: ReactNode): T => $(element as never) as T;
 
+const roots: { unmount(): void }[] = [];
+
+afterEach(() => {
+    for (const root of roots.splice(0)) act(() => { root.unmount(); });
+});
+
+export const mounted = (node: ReactNode): HTMLElement => {
+    const host = window.document.createElement('div');
+    const root = createRoot(host);
+    roots.push(root);
+    act(() => { root.render(node); });
+    return host;
+};
+
 export const drawn = (...inside: ReactNode[]): { writing: $Writing; host: HTMLElement } => {
     let kept: $Writing | undefined;
     class $Kept extends $Writing {
@@ -49,18 +64,13 @@ export const drawn = (...inside: ReactNode[]): { writing: $Writing; host: HTMLEl
         view(): ReactNode { return <Kept>{inside}</Kept>; }
     }
     const Page = $($Page);
-    const host = window.document.createElement('div');
-    act(() => { createRoot(host).render(<Page />); });
+    const host = mounted(<Page />);
     if (!kept)
         throw new Error('nothing was drawn');
     return { writing: kept, host };
 };
 
-export const shown = (node: ReactNode): string => {
-    const host = window.document.createElement('div');
-    act(() => { createRoot(host).render(node); });
-    return host.textContent ?? '';
-};
+export const shown = (node: ReactNode): string => mounted(node).textContent ?? '';
 
 export const declares = (kind: { prototype: object }, member: string): boolean =>
     Object.getOwnPropertyNames(kind.prototype).includes(member);

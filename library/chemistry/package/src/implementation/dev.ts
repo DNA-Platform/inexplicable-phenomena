@@ -20,9 +20,6 @@ export function error(message: string) {
     console.error(`$Chemistry: ${message}`);
 }
 
-// $Chemistry goes with styled components — the panels carry no style attribute
-// on HTML. The default import differs between ESM and CJS builds of
-// styled-components v6, so the callable is resolved through both shapes.
 const styled = ((styledImport as any).div ? styledImport : (styledImport as any).default) as typeof styledImport;
 
 const Title = styled.div`

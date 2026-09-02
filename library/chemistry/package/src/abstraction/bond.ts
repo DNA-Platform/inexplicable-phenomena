@@ -6,12 +6,6 @@ import { hydration } from "../implementation/hydration";
 import { $reinit$ } from "../implementation/symbols";
 import { equivalent } from '../implementation/reconcile';
 
-// ===========================================================================
-// $Reflection — property annotation system
-// ===========================================================================
-
-// Module-private decorator registries. Hidden from the public class surface
-// so they can't be mutated externally.
 const inertDecorators = new Map<any, Set<string>>();
 const reactiveDecorators = new Map<any, Set<string>>();
 const lookDecorators = new Map<any, Map<string, string>>();
@@ -55,9 +49,6 @@ export class $Reflection {
         return this.isSpecial(property);
     }
     static isSpecial(property: string): boolean {
-        // Minimum is two chars: `$` plus one identifier char. `>= 2` lets
-        // single-letter user props like `$v`, `$x` be reactive — `> 2`
-        // silently demoted them to inert.
         return property.length >= 2 &&
             property[0] === '$' &&
             property[1] !== "$" &&
@@ -82,9 +73,6 @@ export function reactive() {
     };
 }
 
-// @look('github') — names a look, so `look="github"` reaches the same drawing
-// `look={1}` does. Registered by prototype and read back up the chain, which
-// is how a subclass names the look it adds without disturbing the base's.
 export function look(name: string) {
     return function (prototype: any, member: string) {
         if (!looks.test(member))
@@ -101,8 +89,6 @@ export function look(name: string) {
     };
 }
 
-// The name @look gave a member, found from an instance by walking what it
-// inherits from — the same fallback inertOf and reactiveOf use.
 export function lookName(chemical: any, member: string): string | undefined {
     let held = chemical;
 
@@ -114,10 +100,6 @@ export function lookName(chemical: any, member: string): string | undefined {
 
     return undefined;
 }
-
-// ===========================================================================
-// $Bond — structural metadata for a property
-// ===========================================================================
 
 export class $Bond<T = any, P = any> {
     get formed() { return this._formed; }
@@ -156,9 +138,6 @@ export class $Bond<T = any, P = any> {
         this._formed = true;
         this._getter = this._descriptor.get;
         this._setter = this._descriptor.set;
-        // For plain fields (no user getter/setter, not a method), activate the
-        // property — install a get/set accessor that participates in scope
-        // tracking. An inert field becomes a reactive one.
         if (!this._getter && !this._setter && !$Bond.isMethod(this._descriptor)) {
             activate(this._chemical, this._property, this._descriptor.value);
         }
@@ -171,9 +150,6 @@ export class $Bond<T = any, P = any> {
         return bond;
     }
 
-    // A CHEMICAL COMPONENT HELD IN A MEMBER IS A VALUE, NOT A METHOD. Binding it
-    // as a reagent would hand back a callable wrapper in place of the component,
-    // which is meaningless — nobody calls a component like a method.
     static isMethod(descriptor: PropertyDescriptor) {
         return typeof descriptor.value === 'function' && !(descriptor.value as any).$chemical;
     }
@@ -212,9 +188,6 @@ function activate(chemical: any, property: string, initial: any) {
         set(value) {
             if ((this as any)._persist && (this as any)[$reinit$]) return;
             const store = backing(this);
-            // BY VALUE, NOT BY REFERENCE. equivalent() opens with ===, so a
-            // scalar costs what it always did; a fresh array or plain object
-            // holding what the old one held is not news.
             if (equivalent(store[property], value)) return;
             store[property] = value;
             if (this[$rendering$]) return;
@@ -232,10 +205,6 @@ function activate(chemical: any, property: string, initial: any) {
     });
 }
 
-
-// $Reagent — a reactive method. A reagent participates in / drives a reaction;
-// calling it runs user code in a scope, and any state changes it makes cause
-// bonds to be reformed (which is what a reaction does to a chemical).
 export class $Reagent extends $Bond {
     get action() { return this._action; }
     protected _action?: Function;
@@ -283,9 +252,6 @@ export class $Reagent extends $Bond {
                         return result;
                     }
                     let result: any;
-                    // A method resolves as the chemical it belongs to, so a
-                    // reading answers the same whether or not a paint is in
-                    // flight. Not DRAWING — a method may still configure.
                     withScope(() => { result = withAsker(self, () => action.apply(self, args)); });
                     if (isPure) {
                         hasRun = true;
@@ -314,4 +280,3 @@ function argsMatch(a: any[], b: any[]): boolean {
     for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
     return true;
 }
-

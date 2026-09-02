@@ -28,7 +28,7 @@ export class $Composition<T extends $Writing = $Writing> extends $Writing implem
             token => {
                 if (token !== from && token.type?.seated) return this.seat(token, writtenAs);
                 if (kind !== undefined && token !== from && $$(token)(kind)) return $$(token, kind).parts();
-                return $$(token)(writtenAs) ? $$(token, writtenAs) : undefined;
+                return $$(token)(writtenAs) ? token as unknown as T : undefined;
             },
             held => former.reduce(held),
             this.constructor !== $Composition);
@@ -63,7 +63,8 @@ export class $Composition<T extends $Writing = $Writing> extends $Writing implem
     }
 
     protected former(from: $Writing, type?: $Type): $Composition<T> {
-        const shape = type?.canonicalForm;
+        if (from instanceof $Composition && Object.prototype.hasOwnProperty.call(from.constructor.prototype, 'reduce')) return from as $Composition<T>;
+        const shape = type?.shell;
         if (shape === undefined || !(shape.prototype instanceof $Composition)) return this;
         if (from instanceof shape && from instanceof $Composition) return from as $Composition<T>;
         if (this instanceof shape) return this;

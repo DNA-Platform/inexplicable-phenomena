@@ -43,9 +43,9 @@ $($TypeOfMyChapter);
 describe('a composition narrows all the way down', () => {
     it('$Book is a composition of $Chapter though $File composes $Document', () => {
         const one = built<$Book>(<MyBook>{[<MyChapter key="a">{chain.Section('a')}</MyChapter>]}</MyBook>);
-        expect(one).toBeInstanceOf($File);
+        expect($$(one)($File)).toBe(true);
         expect(one.parts()[0]).toBeInstanceOf($Chapter);
-        expect(one.parts()[0]).toBeInstanceOf($Document);
+        expect($$(one.parts()[0])($Document)).toBe(true);
     });
 
     it('and MY book is a composition of MY chapters, two levels on', () => {
@@ -69,7 +69,7 @@ describe('a writing carrying ONE type reads as every level above it', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfChapter);
         expect($$(writing)($Document)).toBe(true);
-        expect($$(writing, $Document)).toBeInstanceOf($Chapter);
+        expect($$(writing, $Document)).toBeInstanceOf($Document);
     });
 
     it('and a second type at one level is refused, however it is ordered', () => {

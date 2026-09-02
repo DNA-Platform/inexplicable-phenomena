@@ -11,13 +11,9 @@ import { $Ref, Ref } from '@/reference/Ref';
 import { Path } from '@/reference/Path';
 import { Reference } from '@/reference/Reference';
 import { Type } from '@/writing/Writing';
-import { built, drawn, letter, word, sentence, paragraph, title, Sentence, Section, Writing } from './written';
+import { built, drawn, letter, mounted, word, sentence, paragraph, title, Sentence, Section, Writing } from './written';
 
-const routed = (node: ReactNode, at = '/'): HTMLElement => {
-    const host = window.document.createElement('div');
-    act(() => { createRoot(host).render(<MemoryRouter initialEntries={[at]}>{node}</MemoryRouter>); });
-    return host;
-};
+const routed = (node: ReactNode, at = '/'): HTMLElement => mounted(<MemoryRouter initialEntries={[at]}>{node}</MemoryRouter>);
 
 describe('a ref assembles its own reference and knows where it points', () => {
     it('the snappy form — markdown in, an external anchor out', () => {

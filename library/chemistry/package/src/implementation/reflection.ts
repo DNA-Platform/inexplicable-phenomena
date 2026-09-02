@@ -935,15 +935,12 @@ export function parseFunctionInfo(func: Function): $FunctionInfo {
     const str = func.toString();
     let name = func.name || '';
 
-    // Check for native code (but don't early return!)
     const hasNativeCode = str.includes('[native code]');
 
-    // Single main pattern match
     const pattern = getFunctionPattern();
     const match = pattern.exec(str);
 
     if (!match?.groups) {
-        // Can't parse - return unknown with undefined properties
         return {
             form: 'unknown',
             name,
@@ -956,14 +953,12 @@ export function parseFunctionInfo(func: Function): $FunctionInfo {
 
     const g = match.groups;
 
-    // Check ALL async groups
     const async = !!g.async || !!g.asyncArrow || !!g.async2;
     const generator = !!g.funcStar || !!g.methodStar;
 
     let form: $FunctionInfo['form'];
     if (g.arrow) {
         form = 'lambda';
-        // Clear computed names for anonymous arrows (like '0' from array wrapping)
         if (name && /^\d+$/.test(name)) name = '';
     }
     else if (g.class) form = 'class';
@@ -979,25 +974,21 @@ export function parseFunctionInfo(func: Function): $FunctionInfo {
     else if (g.methodName) form = 'method';
     else form = 'unknown';
 
-    // Extract ALL parameter groups
     const paramStr = g.arrowParams || g.arrowSingle || g.params || g.params2 || '';
 
     if (!paramStr && form !== 'lambda') {
         return { form, name, async, generator, native: hasNativeCode, params: [] };
     }
 
-    // For single arrow param without parens
     if (g.arrowSingle) {
         return { form, name, async, generator, native: hasNativeCode, params: createParams(1, false) };
     }
 
-    // Parse parameter list
     const trimmed = paramStr.trim();
     if (!trimmed) {
         return { form, name, async, generator, native: hasNativeCode, params: [] };
     }
 
-    // Simple comma split (fast, handles 99% of cases correctly)
     const parts = trimmed.split(',').map(p => p.trim());
     const last = parts[parts.length - 1];
     const rest = last.startsWith('...');
@@ -1015,9 +1006,6 @@ function getFunctionPattern(): RegExp {
     const id = '[a-zA-Z_$][a-zA-Z0-9_$]*';
     const paramContent = '[^)]*';
 
-    // Build pattern with arrow functions FIRST in the alternation
-
-    // Arrow function patterns (must come before method pattern!)
     const arrowBranch =
         `(?:` +
         `(?<asyncArrow>async${ws})?` +
@@ -1027,7 +1015,6 @@ function getFunctionPattern(): RegExp {
         `)` +
         `)`;
 
-    // Traditional patterns
     const traditionalBranch =
         `(?:` +
         `(?<async>async${ws})?` +
@@ -1040,7 +1027,6 @@ function getFunctionPattern(): RegExp {
         `(?:\\((?<params>${paramContent})\\))?` +  // Optional params for class
         `)`;
 
-    // Method pattern (must come AFTER arrow check!)
     const methodBranch =
         `(?:` +
         `(?<async2>async${ws})?` +
@@ -1049,7 +1035,6 @@ function getFunctionPattern(): RegExp {
         `\\((?<params2>${paramContent})\\)` +
         `)`;
 
-    // Combine all branches - arrows first!
     $pattern = new RegExp(
         `^(?:${arrowBranch}|${traditionalBranch}|${methodBranch})`
     );
@@ -1063,14 +1048,6 @@ function createParams(count: number, rest: boolean): { rest: boolean }[] {
     return result;
 }
 
-// THE MEMBER PATH AN ARROW READS — the second half of what `() => this.type` is.
-// The expression carries two artefacts at once: its TYPE says what may be
-// assigned into the target, and its SOURCE says which member the target is. The
-// compiler reads the first; this reads the second.
-//
-// Rooted at `this`, and that is a property rather than a restriction: a minifier
-// renames locals and leaves member names alone, so a path from `this` survives a
-// production build where one from a name in scope would not.
 const reads = /^\s*(?:\{\s*return\s+)?this((?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)+)\s*;?\s*\}?\s*$/;
 
 export function pathOf(func: Function): string[] | undefined {

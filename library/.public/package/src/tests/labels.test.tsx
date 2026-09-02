@@ -34,7 +34,7 @@ describe('the genome is projected into the labels', () => {
 
     it('the type picks the container — a div for a paragraph, a span for a word', () => {
         const paragraph = drawn(<Paragraph>block prose.</Paragraph>);
-        expect(paragraph.host.querySelector('div.pd-paragraph')).not.toBeNull();
+        expect(paragraph.host.querySelector('p.pd-paragraph')).not.toBeNull();
         const inline = drawn(<Word>hi</Word>);
         expect(inline.host.querySelector('span.pd-word')).not.toBeNull();
         expect(inline.host.querySelector('div.pd-word')).toBeNull();

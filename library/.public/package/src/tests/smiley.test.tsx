@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { ReactNode, act } from 'react';
-import { createRoot } from 'react-dom/client';
+
 import { $, $Block } from '@dna-platform/chemistry';
+import { mounted } from './written';
 import { $Writing } from '@/writing/Writing';
 import { $Letter, TypeOfLetter } from '@/writing/Letter';
 import { $$ } from '@/utilities/Lib';
@@ -39,9 +40,7 @@ const Cats = $($Cats);
 
 const shown = (element: ReactNode): { writing: $Writing; host: HTMLElement } => {
     const writing = $(element as never) as $Writing;
-    const host = window.document.createElement('div');
-    act(() => { createRoot(host).render(element); });
-    return { writing, host };
+    return { writing, host: mounted(element) };
 };
 
 const click = (host: HTMLElement) => {

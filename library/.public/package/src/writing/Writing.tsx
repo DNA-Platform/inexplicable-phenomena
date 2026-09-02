@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ComponentType, ReactNode } from 'react';
 import { $, $Block, $check, $Chemical, look } from '@dna-platform/chemistry';
 import { $Referent$ } from '@/reference/Referent';
 import { Specification, specify } from '@/utilities/Specification';
@@ -16,13 +16,14 @@ export class $Writing extends $Chemical implements $Referent$ {
 
     get copy(): string { return this.bound ? this.inside!.copy : html.text(this.block); }
     get canonical(): boolean { return true; }
+    get dress(): Dress | undefined { return undefined; }
     get labels(): string[] {
         return [...(this.type?.names ?? []), ...this.traits.flatMap(one => one.names ?? (one.copy === '' ? [] : [one.copy]))]
             .filter(name => !name.includes('$'))
             .map(name => 'pd-' + name.toLowerCase());
     }
     get traits(): $Trait[] { return this.annotations.filter((one): one is $Trait => one instanceof $Trait); }
-    get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && (one as $Reference).url !== undefined); }
+    get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && one.annotation && (one as $Reference).url !== undefined); }
     get $print(): boolean { return !this.parenthetical; }
     set $print(print: boolean) { this.parenthetical = !print; }
     get type(): $Type { return this._type as $Type; }
@@ -40,8 +41,11 @@ export class $Writing extends $Chemical implements $Referent$ {
     }
 
     override frame(): ReactNode {
+        if (this.annotation) return super.frame();
         const labels = this.labels;
-        if (this.annotation || labels.length === 0) return super.frame();
+        const Dress = this.dress;
+        if (Dress !== undefined) return <Dress className={labels.join(' ')}>{super.frame()}</Dress>;
+        if (labels.length === 0) return super.frame();
         return this.type?.flows ?? true
             ? <span className={labels.join(' ')}>{super.frame()}</span>
             : <div className={labels.join(' ')}>{super.frame()}</div>;
@@ -99,8 +103,10 @@ export class $Type extends $Annotation {
     nests = false;
     seated = false;
     flows = true;
+    kin?: $Type;
     get writtenAs(): (new () => $Writing) | undefined { return undefined; }
     get canonicalForm(): typeof $Writing { return $Writing; }
+    get shell(): typeof $Writing { return this.canonicalForm; }
     protected specification: Specification<$Writing> = new TypedSpecification<$Writing>();
 
     specifically(writing: $Writing): void {
@@ -124,7 +130,8 @@ export class TypedSpecification<T extends $Writing> extends Specification<T> {
 
     @specify('a piece of writing has characters')
     $mustHaveText(writing: T): void {
-        $check(writing.copy !== '', 'a piece of writing has characters, and this one is empty');
+        const held = (writing.block?.$elements ?? []) as unknown[];
+        $check(held.some(one => (typeof one === 'string' && one !== '') || (typeof one === 'number') || (one instanceof $Writing && !one.parenthetical)), 'a piece of writing has characters, and this one is empty');
     }
 
     @specify('a piece of writing has a type')
@@ -149,7 +156,7 @@ export class TypedSpecification<T extends $Writing> extends Specification<T> {
 
     @specify('a piece of writing descends from a chain that terminates')
     $terminates(writing: T): void {
-        void writing.book;
+        writing.book();
     }
 
     @specify('a piece of writing is one kind of writing')
@@ -164,6 +171,8 @@ export class TypedSpecification<T extends $Writing> extends Specification<T> {
 
 }
 
+
+export type Dress = ComponentType<{ className?: string; children?: ReactNode }>;
 
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);

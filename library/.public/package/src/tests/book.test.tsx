@@ -17,11 +17,11 @@ const book = (...inside: ReactNode[]) => <Book>{inside}</Book>;
 
 describe('a chapter is a document, and a book is a file of them', () => {
     it('a chapter IS a document', () => {
-        expect(built<$Chapter>(chapter('a'))).toBeInstanceOf($Document);
+        expect($$(built<$Chapter>(chapter('a')))($Document)).toBe(true);
     });
 
     it('a book IS a file', () => {
-        expect(built<$Book>(book(chapter('a')))).toBeInstanceOf($File);
+        expect($$(built<$Book>(book(chapter('a'))))($File)).toBe(true);
     });
 
     it('a book composes its chapters', () => {
@@ -37,7 +37,7 @@ describe('a chapter is a document, and a book is a file of them', () => {
     it('a chapter answers to Document, because a chapter IS one', () => {
         const one = built<$Chapter>(chapter('a'));
         expect($$(one)($Document)).toBe(true);
-        expect($$(one, $Document)).toBe(one);
+        expect($$(one, $Document)).toBeInstanceOf($Document);
     });
 
     it('AND A PIECE OF WRITING BEHAVES AS A BOOK when it carries the type', () => {
@@ -111,7 +111,7 @@ describe('a book carries only its own type, and still keeps a file’s constrain
         const one = built<$Book>(book(chapter('a'), chapter('b')));
         expect(one.parts().length).toBe(2);
         expect(one.parts().every(part => part instanceof $Chapter)).toBe(true);
-        expect(one.parts().every(part => part instanceof $Document)).toBe(true);
+        expect(one.parts().every(part => $$(part)($Document))).toBe(true);
     });
 });
 
@@ -119,15 +119,15 @@ describe('a book is a composition of chapters, and satisfies being a composition
     it('read AS A FILE it composes documents, and they are the very chapters', () => {
         const one = built<$Book>(book(chapter('a'), chapter('b')));
         const asFile = $$(one, $File);
-        expect(asFile).toBe(one);
+        expect(asFile).toBeInstanceOf($File);
         expect(asFile.parts().length).toBe(2);
-        expect(asFile.parts().every(part => part instanceof $Document)).toBe(true);
+        expect(asFile.parts().every(part => $$(part)($Document))).toBe(true);
         expect(asFile.parts()[0]).toBe(one.parts()[0]);
     });
 
     it('and a piece of writing told it is a Book answers the same way as a file', () => {
         const { writing } = drawn(chapter('a'), chapter('b'), <Type>Book</Type>);
         expect($$(writing)($File)).toBe(true);
-        expect($$(writing, $File).parts().every(part => part instanceof $Document)).toBe(true);
+        expect($$(writing, $File).parts().every(part => $$(part)($Document))).toBe(true);
     });
 });

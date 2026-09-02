@@ -1,9 +1,5 @@
 import type { $SymbolFeature } from './types';
 
-// ===========================================================================
-// $Represent — serialization
-// ===========================================================================
-
 export class $Represent {
     static symbolize(value: any, ...features: $SymbolFeature[]): string {
         const mode = features.find(f => f === 'fast') ? 'fast' : 'safe';
@@ -78,10 +74,6 @@ export class $Represent {
             if (Array.isArray(val)) {
                 refs[ref] = val.map(item => process(item, replacer));
             } else if (val instanceof Map) {
-                // Iteration order is insertion order in JS. For equivalence
-                // we need a deterministic order — sort by symbolized key so
-                // two Maps with the same entries in different insertion order
-                // produce the same serialization.
                 const entries: [any, any][] = [];
                 for (const [k, v] of val) entries.push([k, v]);
                 entries.sort((a, b) => {
@@ -95,7 +87,6 @@ export class $Represent {
             } else if (val instanceof Set) {
                 const members: any[] = [];
                 for (const m of val) members.push(m);
-                // Sort for deterministic ordering.
                 members.sort((a, b) => {
                     const sa = typeof a === 'string' ? a : JSON.stringify(a);
                     const sb = typeof b === 'string' ? b : JSON.stringify(b);

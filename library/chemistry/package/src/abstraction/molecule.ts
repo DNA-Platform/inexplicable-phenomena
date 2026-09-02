@@ -1,25 +1,10 @@
 import { $template$, $molecule$, $isChemicalBase$, looks } from "../implementation/symbols";
 import { $Bond, $Reflection } from "./bond";
 
-// Properties that apply to every particle regardless of where they sit in the
-// prototype chain. $show/$hide live on $Particle — above the $isChemicalBase$
-// ceiling that collectProperties() stops at — so normal discovery never finds
-// them. This list ensures they get bonded.
 const universalProperties = ['$show', '$hide', '$look'];
 
-// Members the framework owns, which are never state. Each of these holds a
-// function the framework calls itself, and a function-valued member would
-// otherwise be bonded as a REAGENT — cached at the moment it is formed and
-// answered as a bound wrapper, so what the framework got back would be neither
-// the function it was handed nor the one it was handed later.
 const framework = new Set(['toString', '$form', '$new', '$on']);
 
-// $Molecule — structural description of a chemical.
-//
-// Walks a chemical's prototype chain and derives the set of reactive bonds
-// for it. The walk stops when it finds a prototype tagged with the
-// $isChemicalBase$ sentinel — that's how we avoid importing $Chemical here
-// (which would create a chemical ↔ molecule cycle).
 export class $Molecule {
     get reactive() { return this._reactive; }
     private _reactive = false;

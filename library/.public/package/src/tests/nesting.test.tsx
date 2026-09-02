@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { $Writing, Writing } from '@/writing/Writing';
+import { $$ } from '@/utilities/Lib';
 import { $Letter } from '@/writing/Letter';
 import { $Word } from '@/writing/Word';
 import { $Sentence, TypeOfSentence } from '@/writing/Sentence';
@@ -59,7 +60,7 @@ describe('nesting means the nested contributes its parts to the parts', () => {
         const parts = outer.parts();
         expect(parts).toHaveLength(4);
         expect(parts.filter(part => part instanceof $Title)).toHaveLength(2);
-        expect(parts.every(part => part instanceof $Paragraph)).toBe(true);
+        expect(parts.every(part => $$(part)($Paragraph))).toBe(true);
     });
 
     it('a list in a list contributes its lines', () => {
@@ -74,7 +75,7 @@ describe('nesting means the nested contributes its parts to the parts', () => {
         const outer = built<$Table>(<Table>{'outer row'}<Table>{'inner row'}</Table></Table>);
         const parts = outer.parts();
         expect(parts).toHaveLength(2);
-        expect(parts.every(part => part instanceof $Paragraph)).toBe(true);
+        expect(parts.every(part => $$(part)($Paragraph))).toBe(true);
     });
 });
 
@@ -100,7 +101,7 @@ describe('all writing is polymorphic', () => {
             </List>);
         const parts = typed.parts();
         expect(parts).toHaveLength(3);
-        expect(parts.every(part => part instanceof $Paragraph)).toBe(true);
+        expect(parts.every(part => $$(part)($Paragraph))).toBe(true);
         expect(parts[0]).toBeInstanceOf($Title);
     });
 });

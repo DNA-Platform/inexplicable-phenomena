@@ -288,7 +288,7 @@ describe("the book's anatomy — roles by position, no flags", () => {
 
     it('the four kinds arrive by the standard type pattern and stand as chapters', () => {
         const kind = built<$Cover>(<Cover>{page('hi')}</Cover>);
-        expect(kind).toBeInstanceOf($Chapter);
+        expect(kind).toBeInstanceOf($Composition);
         expect($$(kind)($Chapter)).toBe(true);
         expect(() => kind.specify()).not.toThrow();
     });
@@ -403,7 +403,7 @@ describe('the bookmark — inserted somewhere, it finds its chapter', () => {
 
     it('the writing is untouched by its bookmark', () => {
         const { book } = marked();
-        expect(book.parts()[1].letters.parts().map(part => part.copy)).toEqual(['y', 'o']);
+        expect($$(book.parts()[1], $Document).letters.parts().map(part => part.copy)).toEqual(['y', 'o']);
     });
 
     it('a bookmark holds a piece of content, and specifies clean where it stands', () => {
@@ -523,7 +523,8 @@ describe('newlines are optional separators, and a newline-stopped sentence is no
 describe('the list and the table — a paragraph of bullets, a section of rows', () => {
     it('a list behaves exactly like a paragraph and draws its sentences as bullets', () => {
         const one = built<$List>(<List>{'alpha\nbeta\ngamma'}</List>);
-        expect(one).toBeInstanceOf($Paragraph);
+        expect(one).toBeInstanceOf($Composition);
+        expect($$(one)($Paragraph)).toBe(true);
         expect(one.parts()).toHaveLength(3);
         const { host } = drawn(<List>{'alpha\nbeta\ngamma'}</List>);
         expect(host.querySelectorAll('li')).toHaveLength(3);
@@ -532,7 +533,8 @@ describe('the list and the table — a paragraph of bullets, a section of rows',
 
     it('a table is a section whose paragraphs are its rows', () => {
         const one = built<$Table>(<Table>{'first row\n\nsecond row'}</Table>);
-        expect(one).toBeInstanceOf($Section);
+        expect(one).toBeInstanceOf($Composition);
+        expect($$(one)($Section)).toBe(true);
         expect(one.parts()).toHaveLength(2);
         const { host } = drawn(<Table>{'first row\n\nsecond row'}</Table>);
         expect(host.querySelectorAll('tr')).toHaveLength(2);
@@ -831,7 +833,7 @@ describe('the references persist as one, and the index takes them', () => {
 
     it('the index is a chapter that takes the references — pulled in, visible, persisting nothing itself', async () => {
         const one = built<$Index>(<Index><Reference>alpha<Path>Se:0</Path></Reference></Index>);
-        expect(one).toBeInstanceOf($Chapter);
+        expect($$(one)($Chapter)).toBe(true);
         expect(one.$pid).toBeUndefined();
         expect(one.persist).toBe(false);
         const pulled = (one.block?.$elements ?? []).find((it): it is $References => it instanceof $References);

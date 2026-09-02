@@ -11,7 +11,7 @@ const three = () => built<$File>(file(chain.Document('a'), chain.Document('b'), 
 describe('$File composes $Document', () => {
     it('composes the level below, in the order written', () => {
         expect(three().parts().map(one => one.copy)).toEqual(['a', 'b', 'c']);
-        expect(three().parts().every(one => one instanceof $Document)).toBe(true);
+        expect(three().parts().every(one => $$(one)($Document))).toBe(true);
     });
 
     it('answers part zero', () => {

@@ -11,7 +11,7 @@ const three = () => built<$Section>(section(title('t'), chain.Paragraph('a'), ch
 describe('$Section composes $Paragraph', () => {
     it('composes the level below, in the order written', () => {
         expect(three().parts().map(one => one.copy)).toEqual(['t', 'a', 'b', 'c']);
-        expect(three().parts().every(one => one instanceof $Paragraph)).toBe(true);
+        expect(three().parts().every(one => $$(one)($Paragraph))).toBe(true);
     });
 
     it('answers part zero', () => {
