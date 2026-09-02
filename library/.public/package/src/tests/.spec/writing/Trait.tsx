@@ -1,11 +1,14 @@
 import { ReactNode } from 'react';
 import { $, $Chemical, $check, cache } from '@dna-platform/chemistry';
 import { $Trait, $Writing, Writing, Type, Trait } from '@/writing/Writing';
+import { Sentence } from '@/writing/Sentence';
+import { Word } from '@/writing/Word';
+import { Letter } from '@/writing/Letter';
 import { Specification, specify } from '@/utilities/Specification';
 
-// An ATTRIBUTE is named and resolved the way a type is, and it specifies — but
+// A trait is named and resolved the way a type is, and it specifies — but
 // nothing is bound through it, so a piece of writing keeps the one type it has
-// and may carry as many attributes as it likes.
+// and may wear as many traits as it likes.
 export class TraitFriendSpecification extends Specification<$Writing> {
     @specify('a friend is named')
     $mustBeNamed(writing: $Writing): void {
@@ -24,6 +27,8 @@ export class $TraitFriend extends $Trait {
 
 $($TraitFriend);
 
+// A declared trait carries laws: this writing is specified by its type AND by
+// the friend it wears.
 export class $TraitDeclaredSpecFriend extends $Chemical {
     view(): ReactNode {
         return (
@@ -33,3 +38,21 @@ export class $TraitDeclaredSpecFriend extends $Chemical {
 }
 
 export const TraitDeclaredSpecFriend = $($TraitDeclaredSpecFriend);
+
+// A pure trait needs no class at all. The written word is the label, the frame
+// wears it, and a stylesheet may dress it — glowing is not in the framework,
+// which is the point.
+export class $TraitPureSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Sentence>
+                <Word><Letter>i</Letter><Letter>t</Letter></Word>
+                {' '}
+                <Word><Letter>s</Letter><Letter>h</Letter><Letter>i</Letter><Letter>n</Letter><Letter>e</Letter><Letter>s</Letter></Word>
+                <Trait>Glowing</Trait>
+            </Sentence>
+        );
+    }
+}
+
+export const TraitPureSpec = $($TraitPureSpec);

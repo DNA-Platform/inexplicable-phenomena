@@ -10,7 +10,7 @@ import { $Sentence } from './Sentence';
 import { $Word } from './Word';
 import { $Letter } from './Letter';
 import { $$ } from '@/utilities/Lib';
-import { $References, References } from '@/reference/References';
+import { $References, $References$, References } from '@/reference/References';
 import { parser } from '@/utilities/Parser';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
@@ -21,7 +21,7 @@ export class $Document extends $Composition<$Section> implements $Composition$<$
     get sentences(): $Composition<$Sentence> { return this.paragraphs.catalogue().comprehend(); }
     get words(): $Composition<$Word> { return this.sentences.catalogue().comprehend(); }
     get letters(): $Composition<$Letter> { return this.words.catalogue().comprehend(); }
-    get references(): $References { return (this.block?.$elements ?? []).find((one): one is $References => one instanceof $References) as $References; }
+    get references(): $References$ | undefined { return (this.block?.$elements ?? []).find((one): one is $References => one instanceof $References); }
 
     $Document(block: $Block) {
         super.$Composition(block);
@@ -50,6 +50,7 @@ export class $$Document extends $Reference implements $Reference$<$Document> {
 }
 
 export class $TypeOfDocument extends $Type {
+    override flows = false;
     resolve = false;
     override code = 'Dt';
     override get writtenAs(): new () => $Writing { return $Section; }

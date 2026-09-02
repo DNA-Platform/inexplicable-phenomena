@@ -27,6 +27,12 @@ import { $ReferenceCard, ReferenceCard } from '@/reference/ReferenceCard';
 import { $References, References } from '@/reference/References';
 import { $Index, Index } from '@/book/Index';
 
+const referencesOf = (of: $Document): $References => {
+    const held = of.references;
+    if (!(held instanceof $References)) throw new Error('the document holds no references section');
+    return held;
+};
+
 describe('a composition can be configured with a type to make the thing you need', () => {
     it('configured as a sentence, it composes the words written in it', () => {
         const composed = built<$Composition>(
@@ -635,7 +641,7 @@ describe('a document keeps its references — the section at its end', () => {
     });
 
     it('$print flips the margin', () => {
-        const refs = built<$Document>(document(section(paragraph(sentence(word(letter('a'))))))).references;
+        const refs = referencesOf(built<$Document>(document(section(paragraph(sentence(word(letter('a'))))))));
         expect(refs.$print).toBe(false);
         refs.$print = true;
         expect(refs.parenthetical).toBe(false);
@@ -699,13 +705,13 @@ describe('links persist on active — surviving different pages', () => {
             .filter((mark): mark is $Reference => mark instanceof $Reference);
         links[0].focus();
         links[1].focus();
-        expect(one.references.stack).toEqual(['/books/p', '/books/q']);
+        expect(referencesOf(one).stack).toEqual(['/books/p', '/books/q']);
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('/books/p');
 
         const reloaded = built<$Document>(document(section(paragraph(sentence(word(letter('c')))))));
-        expect(reloaded.references.stack).toContain('/books/p');
-        expect(reloaded.references.stack).toContain('/books/q');
+        expect(referencesOf(reloaded).stack).toContain('/books/p');
+        expect(referencesOf(reloaded).stack).toContain('/books/q');
     });
 
     it('unfocus removes from the stack and forgets the link, without moving its neighbors', async () => {
@@ -721,7 +727,7 @@ describe('links persist on active — surviving different pages', () => {
         links[0].focus();
         links[1].focus();
         links[0].unfocus();
-        expect(one.references.stack).toEqual(['/books/q']);
+        expect(referencesOf(one).stack).toEqual(['/books/q']);
         expect(links[0].$focused).toBe(false);
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration') ?? '{}').not.toContain('/books/p"');

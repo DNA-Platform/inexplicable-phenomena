@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
-import { $Block, $, cache } from '@dna-platform/chemistry';
-import { $Writing } from './Writing';
+import { $Block, $, $check, cache } from '@dna-platform/chemistry';
+import { $Trait, $Writing } from './Writing';
+import { Specification, specify } from '@/utilities/Specification';
+import { $Composition } from './Composition';
 import { $Paragraph, $TypeOfParagraph } from './Paragraph';
 import { html } from '@/utilities/Html';
 import { Bullets } from '@/encyclopedia/Bullets';
@@ -8,7 +10,7 @@ import { Bullets } from '@/encyclopedia/Bullets';
 export class $List extends $Paragraph {
     $List(block: $Block) {
         super.$Paragraph(block);
-        this._type = $(<TypeOfList />);
+        this._type = this.carried ?? $(<TypeOfList />);
     }
 
     override view(): ReactNode {
@@ -30,5 +32,24 @@ export class $TypeOfList extends $TypeOfParagraph {
     }
 }
 
+export class $ListTrait extends $Trait {
+    override get canonicalForm(): typeof $Writing { return $List; }
+
+    constructor() {
+        super();
+        this[cache]('List');
+    }
+
+    protected override specification: Specification<$Writing> = new ListTraitSpecification();
+}
+
+export class ListTraitSpecification extends Specification<$Writing> {
+    @specify('a list arranges a composition')
+    $arrangesComposition(writing: $Writing): void {
+        $check(writing instanceof $Composition, 'a list arranges a composition, and this writing is not one');
+    }
+}
+
 export const List = $($List);
 export const TypeOfList = $($TypeOfList);
+export const ListTrait = $($ListTrait);

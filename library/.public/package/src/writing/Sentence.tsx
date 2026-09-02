@@ -58,7 +58,7 @@ export class $TypeOf$Sentence extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new $SentenceSpecification();
 }
 
-class SentenceSpecification extends TypedSpecification<$Writing> {
+export class SentenceSpecification extends TypedSpecification<$Writing> {
     protected patterns = {
         stopped: /[.!?][^\S\n]*\S/u
     };

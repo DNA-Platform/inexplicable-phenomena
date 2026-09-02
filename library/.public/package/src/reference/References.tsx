@@ -8,7 +8,13 @@ import { $Path, Path } from './Path';
 import { Heading } from '@/encyclopedia/Heading';
 import { Cited } from '@/encyclopedia/Cited';
 
-export class $References extends $Section {
+export interface $References$ extends $Writing {
+    recollection: $Reference[];
+    append(one: $Reference): void;
+    remove(one: $Reference): void;
+}
+
+export class $References extends $Section implements $References$ {
     override parenthetical = true;
     serialized = '[]';
     recollection: $Reference[] = [];

@@ -6,7 +6,8 @@ import { Paragraph } from '@/writing/Paragraph';
 import { Writing, Type } from '@/writing/Writing';
 import { Path } from '@/reference/Path';
 
-// A section is written as paragraphs, delineated explicitly. Nothing is parsed at this level.
+// A section is written as paragraphs, delineated explicitly. Nothing is parsed
+// at this level.
 export class $SectionParagraphsSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -27,7 +28,35 @@ export class $SectionParagraphsSpec extends $Chemical {
 
 export const SectionParagraphsSpec = $($SectionParagraphsSpec);
 
-// A section may be written as a title and a string of text. That text is one paragraph and is not divided further.
+// A section inside a section contributes its parts to the parts, its title
+// among them.
+export class $SectionNestedSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Section>
+                <Title>
+                    The outer section
+                </Title>
+                <Section>
+                    <Title>
+                        The inner section
+                    </Title>
+                    <Paragraph>
+                        The nested contributes its parts to the parts, its title among them.
+                    </Paragraph>
+                </Section>
+                <Paragraph>
+                    The outer keeps its own paragraphs beside what the inner contributed.
+                </Paragraph>
+            </Section>
+        );
+    }
+}
+
+export const SectionNestedSpec = $($SectionNestedSpec);
+
+// A section may be written as a title and a string of text. That text is one
+// paragraph and is not divided further.
 export class $SectionTextSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -65,8 +94,8 @@ export class $SectionWritingSpec extends $Chemical {
 
 export const SectionWritingSpec = $($SectionWritingSpec);
 
-// A reference to a section stands one meta-level up: writing carrying
-// <Type>$Section</Type> whose path must land on a section.
+// A reference to a section stands one meta-level up: writing carrying the
+// $Section type whose path must land on a section.
 export class $SectionReferenceSpec extends $Chemical {
     view(): ReactNode {
         return (

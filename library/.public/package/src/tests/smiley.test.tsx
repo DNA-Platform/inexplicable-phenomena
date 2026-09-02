@@ -67,25 +67,25 @@ describe('a leaf that is not composed, and provides its own type of Letter', () 
 
     it('scrolls through the faces on the page when clicked', () => {
         const { host } = shown(<Smiley>{face}</Smiley>);
-        click(host);
+        click(host.firstElementChild as HTMLElement);
         expect(host.textContent).toBe('\u{1F600}');
-        click(host);
+        click(host.firstElementChild as HTMLElement);
         expect(host.textContent).toBe('\u{1F60E}');
-        click(host);
+        click(host.firstElementChild as HTMLElement);
         expect(host.textContent).toBe('\u{1F642}');
     });
 
     it('lets a subclass replace the faces and nothing else', () => {
         const { host } = shown(<Cats>{cat}</Cats>);
         expect(host.textContent).toBe('\u{1F63A}');
-        click(host);
+        click(host.firstElementChild as HTMLElement);
         expect(host.textContent).toBe('\u{1F63C}');
     });
 
     it('does NOT carry the click back into the model', () => {
         const { host, writing } = shown(<Smiley>{face}</Smiley>);
         const one = $$(writing, $Letter);
-        click(host);
+        click(host.firstElementChild as HTMLElement);
         expect(host.textContent).toBe('\u{1F600}');
         expect(one.copy).toBe('\u{1F642}');
     });

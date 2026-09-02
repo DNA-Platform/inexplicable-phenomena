@@ -34,6 +34,7 @@ export class $$File extends $Reference implements $Reference$<$File> {
 }
 
 export class $TypeOfFile extends $Type {
+    override flows = false;
     resolve = false;
     override code = 'Fe';
     override get writtenAs(): new () => $Writing { return $Document; }

@@ -6,12 +6,17 @@
     "declaration": true,
     "declarationDir": "./dist",
     "outDir": "./dist",
-    "rootDir": "./.archive",
+    "rootDir": "./src",
     "module": "esnext",
     "target": "es2020",
     "jsx": "react-jsx",
-    "incremental": false
+    "incremental": false,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
-  "include": [".archive/**/*.ts", ".archive/**/*.tsx"],
-  "exclude": ["node_modules", "tests", "**/*.test.ts", "**/*.test.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "src/tests", "**/*.test.ts", "**/*.test.tsx"]
 }

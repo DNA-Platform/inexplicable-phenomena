@@ -9,7 +9,7 @@ import { $TypeOfDocument, $Document } from '@/writing/Document';
 import { $Sentence } from '@/writing/Sentence';
 import { Sentence, built, chain, drawn, letter, word } from './written';
 
-describe('a phrase is a word that may carry spaces', () => {
+describe('a phrase is a sentence that may stand inside one', () => {
     it('a phrase carries spaces where a word may not', () => {
         expect(() => built<$Phrase>(<Phrase>the semantics of books</Phrase>).specify()).not.toThrow();
     });
@@ -24,10 +24,14 @@ describe('a phrase is a word that may carry spaces', () => {
         expect(() => one.specify()).not.toThrow();
     });
 
-    it('and its parts are its letters, because it is a word', () => {
-        const one = built<$Phrase>(<Phrase>at last</Phrase>);
-        expect(one.parts().every(part => part instanceof $Letter)).toBe(true);
-        expect(one.parts().map(part => part.copy).join('')).toBe('at last');
+    it('and its parts are its words, because it is a sentence', () => {
+        const one = built<$Phrase>(<Phrase>{word(letter('a'))} {word(letter('b'))}</Phrase>);
+        expect(one.parts().every(part => part instanceof $Word)).toBe(true);
+        expect(one.parts().map(part => part.copy)).toEqual(['a', 'b']);
+    });
+
+    it('and a phrase written as prose composes no words, because the parse above word is not built', () => {
+        expect(built<$Phrase>(<Phrase>at last</Phrase>).parts()).toHaveLength(0);
     });
 });
 

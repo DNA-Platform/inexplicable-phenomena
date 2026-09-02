@@ -7,8 +7,8 @@ import { html } from '@/utilities/Html';
 import { Anchor } from '@/encyclopedia/Anchor';
 
 export class $Writing extends $Chemical implements $Referent$ {
-    inline = true;
     parenthetical = false;
+    override inline = true;
     annotation = false;
     block: $Block = undefined as any;
     protected inside?: $Writing = undefined;
@@ -16,8 +16,13 @@ export class $Writing extends $Chemical implements $Referent$ {
 
     get copy(): string { return this.bound ? this.inside!.copy : html.text(this.block); }
     get canonical(): boolean { return true; }
+    get labels(): string[] {
+        return [...(this.type?.names ?? []), ...this.traits.flatMap(one => one.names ?? (one.copy === '' ? [] : [one.copy]))]
+            .filter(name => !name.includes('$'))
+            .map(name => 'pd-' + name.toLowerCase());
+    }
     get traits(): $Trait[] { return this.annotations.filter((one): one is $Trait => one instanceof $Trait); }
-    get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && (one as $Reference).path !== undefined); }
+    get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && (one as $Reference).url !== undefined); }
     get $print(): boolean { return !this.parenthetical; }
     set $print(print: boolean) { this.parenthetical = !print; }
     get type(): $Type { return this._type as $Type; }
@@ -31,17 +36,22 @@ export class $Writing extends $Chemical implements $Referent$ {
 
     $Writing(block: $Block) {
         this.block = block ?? this.block;
-        this._type = this.annotations
-            .filter((one): one is $Type => one instanceof $Type && !(one instanceof $Trait))
-            .reduce((most: $Type | undefined, one) => most === undefined || one instanceof (most.constructor as new () => $Type) ? one : most,
-                undefined) as $Type;
+        this._type = this.carried;
+    }
+
+    override frame(): ReactNode {
+        const labels = this.labels;
+        if (this.annotation || labels.length === 0) return super.frame();
+        return this.type?.flows ?? true
+            ? <span className={labels.join(' ')}>{super.frame()}</span>
+            : <div className={labels.join(' ')}>{super.frame()}</div>;
     }
 
     view(): ReactNode {
         const Writing = this.bound ? $(this.inside!) : this.block ? $(this.block) : null;
         const means = this.means;
-        if (means?.path !== undefined)
-            return <Anchor href={means.path.copy}>{Writing && <Writing />}</Anchor>;
+        if (means?.url !== undefined)
+            return <Anchor href={means.url}>{Writing && <Writing />}</Anchor>;
         return <>
             {Writing && <Writing />}
         </>;
@@ -70,6 +80,12 @@ export class $Writing extends $Chemical implements $Referent$ {
     }
 
     protected get bound() { return !!this.inside; }
+
+    protected get carried(): $Type | undefined {
+        return this.annotations
+            .filter((one): one is $Type => one instanceof $Type && !(one instanceof $Trait))
+            .reduce((most: $Type | undefined, one) => most === undefined || one instanceof (most.constructor as new () => $Type) ? one : most, undefined);
+    }
 }
 
 export class $Annotation extends $Writing {
@@ -81,6 +97,8 @@ export class $Type extends $Annotation {
     formula = true;
     code = '';
     nests = false;
+    seated = false;
+    flows = true;
     get writtenAs(): (new () => $Writing) | undefined { return undefined; }
     get canonicalForm(): typeof $Writing { return $Writing; }
     protected specification: Specification<$Writing> = new TypedSpecification<$Writing>();
@@ -94,7 +112,9 @@ export class $Type extends $Annotation {
     }
 }
 
-export class $Trait extends $Type { }
+export class $Trait extends $Type {
+    override strict = false;
+}
 
 export class TypedSpecification<T extends $Writing> extends Specification<T> {
     @specify('a piece of writing has a block')

@@ -56,6 +56,7 @@ export class $$Paragraph extends $Reference implements $Reference$<$Paragraph> {
 
 export class $TypeOfParagraph extends $Type {
     resolve = false;
+    override flows = false;
     override nests = true;
     override code = 'Ph';
     override get writtenAs(): new () => $Writing { return $Sentence; }

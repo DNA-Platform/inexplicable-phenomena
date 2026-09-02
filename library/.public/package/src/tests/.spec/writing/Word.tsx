@@ -5,7 +5,8 @@ import { Letter } from '@/writing/Letter';
 import { Writing, Type } from '@/writing/Writing';
 import { Path } from '@/reference/Path';
 
-// A canonical word carries a letter or a number; punctuation and whitespace are its residue.
+// A canonical word carries a letter or a number; punctuation and whitespace are
+// its residue.
 export class $WordKindSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -33,6 +34,20 @@ export class $WordLettersSpec extends $Chemical {
 }
 
 export const WordLettersSpec = $($WordLettersSpec);
+
+// A word inside a word contributes its letters.
+export class $WordNestedSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Word>
+                <Word>in</Word>
+                <Word>side</Word>
+            </Word>
+        );
+    }
+}
+
+export const WordNestedSpec = $($WordNestedSpec);
 
 // A written letter stands among divided ones, in written order.
 export class $WordMixedSpec extends $Chemical {
@@ -67,8 +82,8 @@ export class $WordWritingSpec extends $Chemical {
 
 export const WordWritingSpec = $($WordWritingSpec);
 
-// A reference to a word stands one meta-level up: writing carrying
-// <Type>$Word</Type> whose path must land on a word.
+// A reference to a word stands one meta-level up: writing carrying the $Word
+// type whose path must land on a word.
 export class $WordReferenceSpec extends $Chemical {
     view(): ReactNode {
         return (

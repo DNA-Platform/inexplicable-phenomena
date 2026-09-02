@@ -976,6 +976,8 @@ function missing(formula: any, asked: string, names: string[]): string {
 export class $Chemical extends $Particle {
     resolve = true;
     formula = false;
+    strict = true;
+    names?: string[];
     $pid?: string;
     protected _persist = false;
 
@@ -1004,7 +1006,7 @@ export class $Chemical extends $Particle {
     protected [cache](key?: string): void {
         const chain = branch((this as any)[$type$]);
         const ref = key === undefined ? standing : { $ref: key };
-        if (key !== undefined && chain.slice(1).some(cls => catalogueOf(cls).$find(ref) !== undefined)) return;
+        if (key !== undefined) (this.names ??= []).push(key);
         Object.defineProperty(this, $isTemplate$, { value: true, configurable: true });
         for (const cls of chain) {
             const held = catalogueOf(cls);
@@ -1029,7 +1031,7 @@ export class $Chemical extends $Particle {
             return asker ? withAsker(asker, () => $(component)) : component;
         }
         const names: string[] = held.$find(kept) ?? [];
-        if (names.length === 0) return undefined;
+        if (names.length === 0 || !this.strict) return undefined;
         throw new Error(missing(this, key, names));
     }
     [$remove$] = false;

@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { Phrase } from '@/writing/Phrase';
+import { Sentence } from '@/writing/Sentence';
 import { Word } from '@/writing/Word';
-import { Letter } from '@/writing/Letter';
 import { Writing, Type } from '@/writing/Writing';
 
-// A phrase written as text carries the spaces a word may not, and divides into
-// its letters because a phrase IS a word.
+// A phrase written as prose carries the spaces a word may not. Its words await
+// the parse above word, which is not built.
 export class $PhraseTextSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -17,7 +17,7 @@ export class $PhraseTextSpec extends $Chemical {
 
 export const PhraseTextSpec = $($PhraseTextSpec);
 
-// A phrase takes WORDS as input and flattens them into one unbroken stretch.
+// A phrase takes words and composes them, staying on one unbroken line.
 export class $PhraseWordsSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -30,25 +30,34 @@ export class $PhraseWordsSpec extends $Chemical {
 
 export const PhraseWordsSpec = $($PhraseWordsSpec);
 
-// And written as letters, like any word.
-export class $PhraseLettersSpec extends $Chemical {
+// A phrase is a sentence standing inside one: it lends its words to the sentence
+// holding it, and is never itself a part.
+export class $PhraseSentenceSpec extends $Chemical {
     view(): ReactNode {
         return (
-            <Phrase>
-                <Letter>a</Letter>
-                <Letter>t</Letter>
-            </Phrase>
+            <Sentence>
+                <Word>see</Word>
+                {' '}
+                <Phrase>
+                    <Word>gauge</Word> <Word>theory</Word>
+                </Phrase>
+                {' '}
+                <Word>today</Word>
+            </Sentence>
         );
     }
 }
 
-export const PhraseLettersSpec = $($PhraseLettersSpec);
+export const PhraseSentenceSpec = $($PhraseSentenceSpec);
 
-// Writing told it is a Phrase carries the spaces a Word may not.
+// Writing told it is a Phrase composes its words at sentence grade.
 export class $PhraseWritingSpec extends $Chemical {
     view(): ReactNode {
         return (
-            <Writing>the semantics of books<Type>Phrase</Type></Writing>
+            <Writing>
+                <Word>at</Word> <Word>last</Word>
+                <Type>Phrase</Type>
+            </Writing>
         );
     }
 }

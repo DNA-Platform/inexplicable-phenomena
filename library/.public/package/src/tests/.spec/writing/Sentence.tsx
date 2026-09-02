@@ -3,10 +3,9 @@ import { $, $Chemical } from '@dna-platform/chemistry';
 import { Writing, Type } from '@/writing/Writing';
 import { Word } from '@/writing/Word';
 import { Sentence } from '@/writing/Sentence';
-import { Letter } from '@/writing/Letter';
 import { Path } from '@/reference/Path';
 
-// A sentence stops once, at its end. Prose that stops before its end is two sentences and is refused.
+// A sentence stops once, at its end.
 export class $SentenceStopSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -31,6 +30,24 @@ export class $SentenceWordsSpec extends $Chemical {
 
 export const SentenceWordsSpec = $($SentenceWordsSpec);
 
+// Nesting means the nested contributes its parts to the parts: the outer reads
+// a through g while the inner still answers a through e.
+export class $SentenceNestedSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Sentence>
+                <Sentence>
+                    <Word>a</Word> <Word>b</Word> <Word>c</Word> <Word>d</Word> <Word>e</Word>
+                </Sentence>
+                {' '}
+                <Word>f</Word> <Word>g</Word>
+            </Sentence>
+        );
+    }
+}
+
+export const SentenceNestedSpec = $($SentenceNestedSpec);
+
 // Writing told it is a Sentence composes the words written inside it.
 export class $SentenceWritingSpec extends $Chemical {
     view(): ReactNode {
@@ -46,8 +63,8 @@ export class $SentenceWritingSpec extends $Chemical {
 
 export const SentenceWritingSpec = $($SentenceWritingSpec);
 
-// A reference to a sentence stands one meta-level up: writing carrying
-// <Type>$Sentence</Type> whose path must land on a sentence.
+// A reference to a sentence stands one meta-level up: writing carrying the
+// $Sentence type whose path must land on a sentence.
 export class $SentenceReferenceSpec extends $Chemical {
     view(): ReactNode {
         return (

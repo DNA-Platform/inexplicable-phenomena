@@ -8,13 +8,6 @@ import { Sentence } from '@/writing/Sentence';
 import { Word } from '@/writing/Word';
 import { Path } from '@/reference/Path';
 
-// ROUTE ONE — SUBCLASS the specification. The framework's own $Title is the worked
-// instance: $TitleSpecification extends ParagraphSpecification and adds one rule,
-// so $unbroken runs without $Title naming it and nothing can be repealed by
-// forgetting to call up. See writing/Title.tsx.
-
-// ROUTE TWO — DECORATE one. A quoted kind adapts ANY specification by holding it
-// as its parent, without inheriting from it. The same paragraph rules run.
 export class ParagraphQuotedSpecification extends Specification<$Writing> {
     constructor(within: Specification<$Writing>) {
         super();
@@ -60,7 +53,6 @@ export class $ParagraphDerivedSpecTitle extends $Chemical {
 
 export const ParagraphDerivedSpecTitle = $($ParagraphDerivedSpecTitle);
 
-// A paragraph is written as sentences.
 export class $ParagraphSentencesSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -86,7 +78,31 @@ export class $ParagraphSentencesSpec extends $Chemical {
 
 export const ParagraphSentencesSpec = $($ParagraphSentencesSpec);
 
-// A paragraph may hold text where a section may not. Dividing it into sentences is not built.
+export class $ParagraphNestedSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Paragraph>
+                <Paragraph>
+                    <Sentence>
+                        <Word>The</Word>
+                        <Word>nested</Word>
+                        <Word>contributes</Word>
+                    </Sentence>
+                </Paragraph>
+                <Sentence>
+                    <Word>its</Word>
+                    <Word>parts</Word>
+                    <Word>to</Word>
+                    <Word>the</Word>
+                    <Word>parts</Word>
+                </Sentence>
+            </Paragraph>
+        );
+    }
+}
+
+export const ParagraphNestedSpec = $($ParagraphNestedSpec);
+
 export class $ParagraphTextSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -97,7 +113,6 @@ export class $ParagraphTextSpec extends $Chemical {
 
 export const ParagraphTextSpec = $($ParagraphTextSpec);
 
-// Writing told it is a Paragraph reads as one.
 export class $ParagraphWritingSpec extends $Chemical {
     view(): ReactNode {
         return (
@@ -108,8 +123,6 @@ export class $ParagraphWritingSpec extends $Chemical {
 
 export const ParagraphWritingSpec = $($ParagraphWritingSpec);
 
-// A reference to a paragraph stands one meta-level up: writing carrying
-// <Type>$Paragraph</Type> whose path must land on a paragraph.
 export class $ParagraphReferenceSpec extends $Chemical {
     view(): ReactNode {
         return (

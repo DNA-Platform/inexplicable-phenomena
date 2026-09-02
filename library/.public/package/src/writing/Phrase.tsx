@@ -1,18 +1,18 @@
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from './Writing';
-import { $Word, $TypeOfWord, WordSpecification } from './Word';
+import { $Sentence, $TypeOfSentence, SentenceSpecification } from './Sentence';
 
-export class $Phrase extends $Word {
+export class $Phrase extends $Sentence {
     override get canonical(): boolean { return false; }
 
     $Phrase(block: $Block) {
-        super.$Word(block);
+        super.$Sentence(block);
         this._type = $(<TypeOfPhrase />);
     }
 }
 
-export class $TypeOfPhrase extends $TypeOfWord {
+export class $TypeOfPhrase extends $TypeOfSentence {
     override get canonicalForm(): typeof $Writing { return $Phrase; }
 
     constructor() {
@@ -23,13 +23,10 @@ export class $TypeOfPhrase extends $TypeOfWord {
     protected override specification: Specification<$Writing> = new PhraseSpecification();
 }
 
-export class PhraseSpecification extends WordSpecification {
+export class PhraseSpecification extends SentenceSpecification {
     protected lines = {
         broken: /[\r\n]/u
     };
-
-    @specify('a phrase may carry spaces')
-    override $noWhitespace(writing: $Writing): boolean { return false; }
 
     @specify('a phrase is written on one line')
     $onOneLine(writing: $Writing): void {
