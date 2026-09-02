@@ -1,4 +1,4 @@
-import { $, $check, $Html, cache } from '@dna-platform/chemistry';
+import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from './Writing';
 import { $Word, $TypeOfWord, WordSpecification } from './Word';
@@ -6,9 +6,9 @@ import { $Word, $TypeOfWord, WordSpecification } from './Word';
 export class $Phrase extends $Word {
     override get canonical(): boolean { return false; }
 
-    $Phrase(block: $Html<'block'>) {
+    $Phrase(block: $Block) {
         super.$Word(block);
-        this.type = $(<TypeOfPhrase />) as $TypeOfPhrase;
+        this._type = $(<TypeOfPhrase />);
     }
 }
 

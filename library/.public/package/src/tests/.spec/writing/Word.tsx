@@ -3,6 +3,7 @@ import { $, $Chemical } from '@dna-platform/chemistry';
 import { Word } from '@/writing/Word';
 import { Letter } from '@/writing/Letter';
 import { Writing, Type } from '@/writing/Writing';
+import { Path } from '@/reference/Path';
 
 // A canonical word carries a letter or a number; punctuation and whitespace are its residue.
 export class $WordKindSpec extends $Chemical {
@@ -65,3 +66,15 @@ export class $WordWritingSpec extends $Chemical {
 }
 
 export const WordWritingSpec = $($WordWritingSpec);
+
+// A reference to a word stands one meta-level up: writing carrying
+// <Type>$Word</Type> whose path must land on a word.
+export class $WordReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>word<Type>$Word</Type><Path>Wd:0</Path></Writing>
+        );
+    }
+}
+
+export const WordReferenceSpec = $($WordReferenceSpec);

@@ -6,8 +6,29 @@ import { $$ } from '@/utilities/Lib';
 import { BookChaptersSpec, $BookChaptersSpec, BookWritingSpec, $BookWritingSpec } from './.spec/book/Book';
 import { ChapterSectionsSpec, $ChapterSectionsSpec, ChapterWritingSpec, $ChapterWritingSpec } from './.spec/book/Chapter';
 import { PathLettersSpec, $PathLettersSpec, PathTextSpec, $PathTextSpec, PathWritingSpec, $PathWritingSpec } from './.spec/reference/Path';
-import { ReferenceLettersSpec, $ReferenceLettersSpec, ReferencePathSpec, $ReferencePathSpec, ReferenceWritingSpec, $ReferenceWritingSpec } from './.spec/reference/Reference';
-import { AttributeDeclaredSpecFriend, $AttributeDeclaredSpecFriend } from './.spec/writing/Attribute';
+import { ReferenceHoldsSpec, $ReferenceHoldsSpec, ReferenceLettersSpec, $ReferenceLettersSpec, ReferencePathSpec, $ReferencePathSpec, ReferenceWritingSpec, $ReferenceWritingSpec } from './.spec/reference/Reference';
+import { TraitDeclaredSpecFriend, $TraitDeclaredSpecFriend } from './.spec/writing/Trait';
+import { ReferenceCardListSpec, $ReferenceCardListSpec, ReferenceCardTraitSpec, $ReferenceCardTraitSpec } from './.spec/reference/ReferenceCard';
+import { ListLinesSpec, $ListLinesSpec, ListWritingSpec, $ListWritingSpec } from './.spec/writing/List';
+import { TableRowsSpec, $TableRowsSpec, TableWritingSpec, $TableWritingSpec } from './.spec/writing/Table';
+import { LetterReferenceSpec, $LetterReferenceSpec } from './.spec/writing/Letter';
+import { WordReferenceSpec, $WordReferenceSpec } from './.spec/writing/Word';
+import { SentenceReferenceSpec, $SentenceReferenceSpec } from './.spec/writing/Sentence';
+import { ParagraphReferenceSpec, $ParagraphReferenceSpec } from './.spec/writing/Paragraph';
+import { SectionReferenceSpec, $SectionReferenceSpec } from './.spec/writing/Section';
+import { DocumentReferenceSpec, $DocumentReferenceSpec } from './.spec/writing/Document';
+import { FileReferenceSpec, $FileReferenceSpec } from './.spec/writing/File';
+import { ChapterReferenceSpec, $ChapterReferenceSpec } from './.spec/book/Chapter';
+import { BookReferenceSpec, $BookReferenceSpec } from './.spec/book/Book';
+import { CoverKindSpec, $CoverKindSpec } from './.spec/book/Cover';
+import { SynopsisKindSpec, $SynopsisKindSpec } from './.spec/book/Synopsis';
+import { TableOfContentsKindSpec, $TableOfContentsKindSpec } from './.spec/book/TableOfContents';
+import { IndexSectionSpec, $IndexSectionSpec } from './.spec/reference/Index';
+import { PageFoldReferenceSpec, $PageFoldReferenceSpec } from './.spec/book/PageFold';
+import { BookmarkReferenceSpec, $BookmarkReferenceSpec } from './.spec/book/Bookmark';
+import { HighlightPairSpec, $HighlightPairSpec } from './.spec/book/Highlight';
+import { ReferencesSectionSpec, $ReferencesSectionSpec } from './.spec/reference/References';
+import { CompositionConfiguredSpec, $CompositionConfiguredSpec } from './.spec/writing/Composition';
 import { DocumentParagraphsSpec, $DocumentParagraphsSpec, DocumentSectionsSpec, $DocumentSectionsSpec, DocumentWritingSpec, $DocumentWritingSpec } from './.spec/writing/Document';
 import { FileDocumentsSpec, $FileDocumentsSpec, FileWritingSpec, $FileWritingSpec } from './.spec/writing/File';
 import { LetterDerivedSpecSmiley, $LetterDerivedSpecSmiley, LetterGraphemeSpec, $LetterGraphemeSpec, LetterKindSpec, $LetterKindSpec, LetterTextSpec, $LetterTextSpec, LetterWritingSpec, $LetterWritingSpec } from './.spec/writing/Letter';
@@ -36,10 +57,12 @@ const specs: [string, ComponentType, new () => $Chemical][] = [
     ['reference/Path.LettersSpec', PathLettersSpec, $PathLettersSpec],
     ['reference/Path.TextSpec', PathTextSpec, $PathTextSpec],
     ['reference/Path.WritingSpec', PathWritingSpec, $PathWritingSpec],
+    ['reference/Reference.HoldsSpec', ReferenceHoldsSpec, $ReferenceHoldsSpec],
     ['reference/Reference.LettersSpec', ReferenceLettersSpec, $ReferenceLettersSpec],
     ['reference/Reference.PathSpec', ReferencePathSpec, $ReferencePathSpec],
     ['reference/Reference.WritingSpec', ReferenceWritingSpec, $ReferenceWritingSpec],
-    ['writing/Attribute.DeclaredSpecFriend', AttributeDeclaredSpecFriend, $AttributeDeclaredSpecFriend],
+    ['writing/Trait.DeclaredSpecFriend', TraitDeclaredSpecFriend, $TraitDeclaredSpecFriend],
+    ['writing/Composition.ConfiguredSpec', CompositionConfiguredSpec, $CompositionConfiguredSpec],
     ['writing/Document.ParagraphsSpec', DocumentParagraphsSpec, $DocumentParagraphsSpec],
     ['writing/Document.SectionsSpec', DocumentSectionsSpec, $DocumentSectionsSpec],
     ['writing/Document.WritingSpec', DocumentWritingSpec, $DocumentWritingSpec],
@@ -70,7 +93,30 @@ const specs: [string, ComponentType, new () => $Chemical][] = [
     ['writing/Word.TextSpec', WordTextSpec, $WordTextSpec],
     ['writing/Word.WritingSpec', WordWritingSpec, $WordWritingSpec],
     ['writing/Writing.MeansSpec', WritingMeansSpec, $WritingMeansSpec],
-    ['writing/Writing.PlainSpec', WritingPlainSpec, $WritingPlainSpec]
+    ['writing/Writing.PlainSpec', WritingPlainSpec, $WritingPlainSpec],
+    ['reference/ReferenceCard.ListSpec', ReferenceCardListSpec, $ReferenceCardListSpec],
+    ['reference/ReferenceCard.TraitSpec', ReferenceCardTraitSpec, $ReferenceCardTraitSpec],
+    ['writing/List.LinesSpec', ListLinesSpec, $ListLinesSpec],
+    ['writing/List.WritingSpec', ListWritingSpec, $ListWritingSpec],
+    ['writing/Table.RowsSpec', TableRowsSpec, $TableRowsSpec],
+    ['writing/Table.WritingSpec', TableWritingSpec, $TableWritingSpec],
+    ['writing/Letter.ReferenceSpec', LetterReferenceSpec, $LetterReferenceSpec],
+    ['writing/Word.ReferenceSpec', WordReferenceSpec, $WordReferenceSpec],
+    ['writing/Sentence.ReferenceSpec', SentenceReferenceSpec, $SentenceReferenceSpec],
+    ['writing/Paragraph.ReferenceSpec', ParagraphReferenceSpec, $ParagraphReferenceSpec],
+    ['writing/Section.ReferenceSpec', SectionReferenceSpec, $SectionReferenceSpec],
+    ['writing/Document.ReferenceSpec', DocumentReferenceSpec, $DocumentReferenceSpec],
+    ['writing/File.ReferenceSpec', FileReferenceSpec, $FileReferenceSpec],
+    ['book/Chapter.ReferenceSpec', ChapterReferenceSpec, $ChapterReferenceSpec],
+    ['book/Book.ReferenceSpec', BookReferenceSpec, $BookReferenceSpec],
+    ['book/Cover.KindSpec', CoverKindSpec, $CoverKindSpec],
+    ['book/Synopsis.KindSpec', SynopsisKindSpec, $SynopsisKindSpec],
+    ['book/TableOfContents.KindSpec', TableOfContentsKindSpec, $TableOfContentsKindSpec],
+    ['reference/Index.SectionSpec', IndexSectionSpec, $IndexSectionSpec],
+    ['book/PageFold.ReferenceSpec', PageFoldReferenceSpec, $PageFoldReferenceSpec],
+    ['book/Bookmark.ReferenceSpec', BookmarkReferenceSpec, $BookmarkReferenceSpec],
+    ['book/Highlight.PairSpec', HighlightPairSpec, $HighlightPairSpec],
+    ['reference/References.SectionSpec', ReferencesSectionSpec, $ReferencesSectionSpec]
 ];
 
 const roots = (Spec: new () => $Chemical): ReactElement[] => {
@@ -109,7 +155,7 @@ describe('every specification draws', () => {
         });
 
     it('and there are as many as the folders hold', () => {
-        expect(specs.length).toBe(42);
+        expect(specs.length).toBe(67);
     });
 });
 

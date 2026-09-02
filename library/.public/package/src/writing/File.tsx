@@ -1,36 +1,42 @@
-import { $, $check, $Html, cache } from '@dna-platform/chemistry';
+import { ReactNode } from 'react';
+import { $Block, $, $check, cache } from '@dna-platform/chemistry';
+import { Columns } from '@/encyclopedia/Columns';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Composition$ } from './Composition';
+import { $Composition$, $Composition } from './Composition';
 import { $Document } from './Document';
 import { $$ } from '@/utilities/Lib';
-import { parser } from '@/utilities/Parser';
+import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
+import { $Path } from '@/reference/Path';
 
-export class $File extends $Writing implements $Composition$<$Document> {
-    parts(): $Document[] {
-        const from = this.bound ? this.inside! : this;
-        return parser.parse(from,
-            token => $$(token)($Document) ? $$(token, $Document) : undefined,
-            () => []);
+export class $File extends $Composition<$Document> implements $Composition$<$Document> {
+
+    $File(block: $Block) {
+        super.$Composition(block);
+        this._type = $(<TypeOfFile />);
     }
 
-    $File(block: $Html<'block'>) {
-        super.$Writing(block);
-        this.type = $(<TypeOfFile />) as $TypeOfFile;
+    override frame(): ReactNode {
+        const undressed = super.frame();
+        return this.constructor === $File ? <Columns>{undressed}</Columns> : undressed;
+    }
+}
+
+export class $$File extends $Reference implements $Reference$<$File> {
+    $$File(block: $Block) {
+        super.$Reference(block);
+        this._type = $(<TypeOf$File />);
     }
 
-    where(match: (part: $Document) => boolean): $Document[] { return this.parts().filter(match); }
-    select<U>(pick: (part: $Document) => U): U[] { return this.parts().map(pick); }
-    selectMany<U>(pick: (part: $Document) => U[]): U[] { return this.parts().flatMap(pick); }
-    single(match: (part: $Document) => boolean): $Document {
-        const found = this.parts().filter(match);
-        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
-        return found[0];
+    override async read(): Promise<$File> {
+        return $$(await super.read(), $File);
     }
 }
 
 export class $TypeOfFile extends $Type {
     resolve = false;
+    override code = 'Fe';
+    override get writtenAs(): new () => $Writing { return $Document; }
 
     override get canonicalForm(): typeof $Writing { return $File; }
 
@@ -42,7 +48,18 @@ export class $TypeOfFile extends $Type {
     protected override specification: Specification<$Writing> = new FileSpecification();
 }
 
-class FileSpecification extends TypedSpecification<$Writing> {
+export class $TypeOf$File extends $TypeOfReference {
+    override get canonicalForm(): typeof $Writing { return $$File; }
+
+    constructor() {
+        super();
+        this[cache]('$File');
+    }
+
+    protected override specification: Specification<$Writing> = new $FileSpecification();
+}
+
+export class FileSpecification extends TypedSpecification<$Writing> {
     @specify('a file is written as documents')
     $writtenAsDocuments(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
@@ -51,5 +68,20 @@ class FileSpecification extends TypedSpecification<$Writing> {
     }
 }
 
+export class $FileSpecification extends ReferenceSpecification {
+    @specify('a reference to a file lands on one')
+    $landsOnIt(writing: $Writing): void {
+        const path = (writing.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path);
+        const step = path?.copy.split('/').pop();
+        $check(!!step && step.startsWith('Fe:'),
+            'a reference to a file lands on one, and this path lands on something else');
+        const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(held === undefined || $$(held)($File),
+            'a reference to a file lands on one, and what it holds is not one');
+    }
+}
+
 export const File = $($File);
 export const TypeOfFile = $($TypeOfFile);
+export const TypeOf$File = $($TypeOf$File);
+prints.set('Fe', $$File);

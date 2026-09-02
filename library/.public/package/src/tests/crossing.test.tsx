@@ -12,7 +12,7 @@ import { built, chain, specificationOf } from './written';
 class $Preface extends $Writing {
     $Preface(block: $Block) {
         super.$Writing(block);
-        this.type = $(<TypeOfChapter />) as $TypeOfChapter;
+        this._type = $(<TypeOfChapter />);
     }
 }
 
@@ -32,7 +32,7 @@ class $TypeOfCover extends $TypeOfChapter {
 class $Cover extends $Chapter {
     $Cover(block: $Block) {
         super.$Chapter(block);
-        this.type = $(<TypeOfCover />) as $TypeOfCover;
+        this._type = $(<TypeOfCover />);
     }
 }
 
@@ -40,7 +40,7 @@ class $Cover extends $Chapter {
 class $CoverOfPreface extends $Preface {
     $CoverOfPreface(block: $Block) {
         super.$Preface(block);
-        this.type = $(<TypeOfCover />) as $TypeOfCover;
+        this._type = $(<TypeOfCover />);
     }
 }
 

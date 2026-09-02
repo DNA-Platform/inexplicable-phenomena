@@ -12,14 +12,14 @@ import { built, chain, shown, specificationOf } from './written';
 class $Bound extends $Writing {
     $Bound(block: $Block) {
         super.$Writing(block);
-        this.type = $(<TypeOfBook />) as $TypeOfBook;
+        this._type = $(<TypeOfBook />);
     }
 }
 
 class $Paperback extends $Writing {
     $Paperback(block: $Block) {
         super.$Writing(block);
-        this.type = $(<TypeOfBook />) as $TypeOfBook;
+        this._type = $(<TypeOfBook />);
     }
 }
 
@@ -72,14 +72,14 @@ describe('one type, many implementations, related only through writing', () => {
 class $Preface extends $Writing {
     $Preface(block: $Block) {
         super.$Writing(block);
-        this.type = $(<TypeOfChapter />) as $TypeOfChapter;
+        this._type = $(<TypeOfChapter />);
     }
 }
 
 class $Appendix extends $Writing {
     $Appendix(block: $Block) {
         super.$Writing(block);
-        this.type = $(<TypeOfChapter />) as $TypeOfChapter;
+        this._type = $(<TypeOfChapter />);
     }
 }
 

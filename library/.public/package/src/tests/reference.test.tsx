@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { $Type, Type, $Attribute, Attribute } from '@/writing/Writing';
+import { $Type, Type, $Trait, Trait } from '@/writing/Writing';
 import { $Letter } from '@/writing/Letter';
 import { $Word, Word } from '@/writing/Word';
 import { $Phrase, Phrase } from '@/writing/Phrase';
@@ -41,17 +41,17 @@ describe('a path is a phrase that reads as a url', () => {
     });
 });
 
-describe('a reference is a phrase carrying a parenthetical path', () => {
+describe('a reference is writing carrying a parenthetical path', () => {
     it('a reference answers its path', () => {
         const one = built<$Reference>(<Reference>Algebra<Path>/books/algebra</Path></Reference>);
         expect(one.path).toBeInstanceOf($Path);
         expect(one.path?.copy).toBe('/books/algebra');
     });
 
-    it('and the path is NOT one of its parts, so the two halves stay apart', () => {
+    it('and the path is parenthetical, so the two halves stay apart', () => {
         const one = built<$Reference>(<Reference>Algebra<Path>/books/algebra</Path></Reference>);
         expect(one.copy).toBe('Algebra');
-        expect(one.parts().map(part => part.copy).join('')).toBe('Algebra');
+        expect(one.path?.parenthetical).toBe(true);
     });
 
     it('and a reference with no path is refused, naming what is missing', () => {
@@ -112,12 +112,12 @@ describe('canonical marks an ORDINARY member of a kind, and these are not', () =
 
 describe('an attribute specifies but names no level', () => {
     it('an attribute is a kind of type, and the difference is how writing treats it', () => {
-        expect(new $Attribute()).toBeInstanceOf($Type);
+        expect(new $Trait()).toBeInstanceOf($Type);
     });
 
     it('and an attribute written BEFORE the type is not bound through', () => {
-        const { writing } = drawn(chain.Section('a'), <Attribute />, <Type>Document</Type>);
+        const { writing } = drawn(chain.Section('a'), <Trait />, <Type>Document</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfDocument);
-        expect(writing.attributes.length).toBe(1);
+        expect(writing.traits.length).toBe(1);
     });
 });

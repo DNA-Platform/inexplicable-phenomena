@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Type } from '@/writing/Writing';
 import { $Section, $TypeOfSection } from '@/writing/Section';
+import { $Composition } from '@/writing/Composition';
 import { $Paragraph } from '@/writing/Paragraph';
 import { $$ } from '@/utilities/Lib';
 import { built, chain, declares, drawn, section, shown, word, letter, title, Section } from './written';
@@ -27,9 +28,11 @@ describe('$Section composes $Paragraph', () => {
         expect(one.block).toBeDefined();
     });
 
-    it('declares the four itself, and answers all of them', () => {
-        for (const member of ['where', 'select', 'selectMany', 'single'])
-            expect(!declares($Section, member)).toBe(false);
+    it('affords the four from composition, narrowed, and answers all of them', () => {
+        for (const member of ['where', 'select', 'selectMany', 'single']) {
+            expect(declares($Composition, member)).toBe(true);
+            expect(declares($Section, member)).toBe(false);
+        }
         const one = three();
         expect(one.where(part => part.copy !== 'b').map(part => part.copy)).toEqual(['t', 'a', 'c']);
         expect(one.select(part => part.copy)).toEqual(['t', 'a', 'b', 'c']);

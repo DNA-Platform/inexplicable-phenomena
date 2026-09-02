@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { $, $Block, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, Writing, Type } from '@/writing/Writing';
 import { Letter } from '@/writing/Letter';
+import { Path } from '@/reference/Path';
 
 // A derived kind that is NOT composed and holds no text of its own, told it is a
 // Letter. It declares its own bond, because a bond constructor is found by class
@@ -104,3 +105,15 @@ export class $LetterWritingSpec extends $Chemical {
 }
 
 export const LetterWritingSpec = $($LetterWritingSpec);
+
+// A reference to a letter stands one meta-level up: writing carrying
+// <Type>$Letter</Type> whose path must land on a letter.
+export class $LetterReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>letter<Type>$Letter</Type><Path>Lr:0</Path></Writing>
+        );
+    }
+}
+
+export const LetterReferenceSpec = $($LetterReferenceSpec);

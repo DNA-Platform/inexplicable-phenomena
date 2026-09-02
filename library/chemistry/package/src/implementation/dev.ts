@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ReactNode } from 'react';
+import styledImport from 'styled-components';
 
 export const dev = process.env.NODE_ENV !== 'production';
 
@@ -19,46 +20,49 @@ export function error(message: string) {
     console.error(`$Chemistry: ${message}`);
 }
 
-const panelStyle: React.CSSProperties = {
-    padding: '12px 16px',
-    margin: '4px 0',
-    background: '#fff0f0',
-    border: '2px solid #dc3545',
-    borderRadius: '4px',
-    fontFamily: 'monospace',
-    fontSize: '12px',
-    lineHeight: '1.5',
-    color: '#333',
-};
+// $Chemistry goes with styled components — the panels carry no style attribute
+// on HTML. The default import differs between ESM and CJS builds of
+// styled-components v6, so the callable is resolved through both shapes.
+const styled = ((styledImport as any).div ? styledImport : (styledImport as any).default) as typeof styledImport;
 
-const titleStyle: React.CSSProperties = {
-    fontWeight: 'bold',
-    color: '#dc3545',
-    marginBottom: '8px',
-    fontSize: '13px',
-};
+const Title = styled.div`
+    font-weight: bold;
+    color: #dc3545;
+    margin-bottom: 8px;
+    font-size: 13px;
+`;
 
-const detailStyle: React.CSSProperties = {
-    whiteSpace: 'pre-wrap',
-    margin: '4px 0',
-    color: '#555',
-};
+const Detail = styled.pre`
+    white-space: pre-wrap;
+    margin: 4px 0;
+    color: #555;
+`;
 
-const warnPanelStyle: React.CSSProperties = {
-    ...panelStyle,
-    background: '#fffbeb',
-    border: '2px solid #f59e0b',
-};
+const Panel = styled.div`
+    padding: 12px 16px;
+    margin: 4px 0;
+    background: #fff0f0;
+    border: 2px solid #dc3545;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #333;
+`;
 
-const warnTitleStyle: React.CSSProperties = {
-    ...titleStyle,
-    color: '#b45309',
-};
+const Warning = styled(Panel)`
+    background: #fffbeb;
+    border-color: #f59e0b;
+
+    ${Title} {
+        color: #b45309;
+    }
+`;
 
 export function renderPanel(title: string, detail: string): ReactNode {
-    return React.createElement('div', { style: panelStyle },
-        React.createElement('div', { style: titleStyle }, `$Chemistry: ${title}`),
-        React.createElement('pre', { style: detailStyle }, detail)
+    return React.createElement(Panel, null,
+        React.createElement(Title, null, `$Chemistry: ${title}`),
+        React.createElement(Detail, null, detail)
     );
 }
 
@@ -82,8 +86,8 @@ export function renderException(error: Error): ReactNode {
 
 export function renderWarning(title: string, detail: string): ReactNode {
     if (!dev) return null;
-    return React.createElement('div', { style: warnPanelStyle },
-        React.createElement('div', { style: warnTitleStyle }, `$Chemistry: ${title}`),
-        React.createElement('pre', { style: detailStyle }, detail)
+    return React.createElement(Warning, null,
+        React.createElement(Title, null, `$Chemistry: ${title}`),
+        React.createElement(Detail, null, detail)
     );
 }

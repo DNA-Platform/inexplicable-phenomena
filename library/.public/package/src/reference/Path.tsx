@@ -1,20 +1,21 @@
-import { $, $check, $Html, cache } from '@dna-platform/chemistry';
+import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Writing } from '@/writing/Writing';
-import { $Phrase, $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
+import { $Writing, $Type, TypedSpecification } from '@/writing/Writing';
 
-export class $Path extends $Phrase {
+export class $Path extends $Writing {
     override parenthetical = true;
 
     override get canonical(): boolean { return false; }
 
-    $Path(block: $Html<'block'>) {
-        super.$Phrase(block);
-        this.type = $(<TypeOfPath />) as $TypeOfPath;
+    $Path(block: $Block) {
+        super.$Writing(block);
+        this._type = $(<TypeOfPath />);
     }
 }
 
-export class $TypeOfPath extends $TypeOfPhrase {
+export class $TypeOfPath extends $Type {
+    resolve = false;
+
     override get canonicalForm(): typeof $Writing { return $Path; }
 
     constructor() {
@@ -25,7 +26,11 @@ export class $TypeOfPath extends $TypeOfPhrase {
     protected override specification: Specification<$Writing> = new PathSpecification();
 }
 
-export class PathSpecification extends PhraseSpecification {
+export class PathSpecification extends TypedSpecification<$Writing> {
+    protected patterns = {
+        broken: /\s/u
+    };
+
     @specify('a path reads as a url')
     $readsAsUrl(writing: $Writing): void {
         const copy = writing.copy;

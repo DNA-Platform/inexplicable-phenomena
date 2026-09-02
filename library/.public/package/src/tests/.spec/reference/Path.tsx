@@ -18,7 +18,7 @@ export class $PathTextSpec extends $Chemical {
 
 export const PathTextSpec = $($PathTextSpec);
 
-// A path is a phrase, so it composes letters and may be written as them.
+// A path is writing; its letters here are written, and its copy still reads as a url.
 export class $PathLettersSpec extends $Chemical {
     view(): ReactNode {
         return (

@@ -8,11 +8,12 @@ import {
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
     $devError$, $devException$, $watched$,
-    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children
+    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, $formed$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
 import { currentAsker, drawing, withAsker } from "../implementation/scope";
+import { hydration } from "../implementation/hydration";
 import type { Component, $Component, Element, $Element, $Props, $ParameterType, $HtmlTag } from "../implementation/types";
 import { $Particle, $phaseOrder, $lift, applyRenderFilters, isParticle } from "./particle";
 import { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
@@ -288,20 +289,25 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                 try {
                 if (!dev && $exceptions.mode === 'throw') {
                     try {
-                        bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
+                        // The asker is raised HERE, at the invocation, not only in
+                        // $lift's wrapper — the eval path reaches this without $lift,
+                        // and a bond constructor is user code of this chemical.
+                        bondResult = withAsker(c, () => this._bondConstructor!.apply(this._chemical, newArgs), true);
                         if (!(bondResult instanceof Promise)) this.assertChainReached(watch);
                         assertValid(c);
                         $paramValidation.evaluate();
+                        if (!c[$formed$]) { c[$formed$] = true; hydration.overwrite(c); }
                     } finally {
                         watch?.restore();
                         $paramValidation.chemical = null;
                     }
                 } else {
                     try {
-                        bondResult = this._bondConstructor!.apply(this._chemical, newArgs);
+                        bondResult = withAsker(c, () => this._bondConstructor!.apply(this._chemical, newArgs), true);
                         if (!(bondResult instanceof Promise)) this.assertChainReached(watch);
                         assertValid(c);
                         $paramValidation.evaluate();
+                        if (!c[$formed$]) { c[$formed$] = true; hydration.overwrite(c); }
                         c[$devError$] = undefined;
                         c[$devException$] = undefined;
                     } catch (e: any) {
@@ -970,6 +976,15 @@ function missing(formula: any, asked: string, names: string[]): string {
 export class $Chemical extends $Particle {
     resolve = true;
     formula = false;
+    $aid?: string;
+    protected _atomic = false;
+
+    get atomic(): boolean { return this._atomic; }
+    set atomic(atomic: boolean) {
+        if (this._atomic && !atomic) hydration.clear(this);
+        this._atomic = atomic;
+        if (atomic) hydration.changed(this);
+    }
 
     get [$cache$]() { return catalogueOf((this as any)[$type$]); }
 
@@ -1634,9 +1649,14 @@ class $Chemistry$ extends $Chemical {
         // Eval form — $(<Word>hello</Word>) evaluates a description (an element)
         // into a live instance, through the same synthesis that binds a bond
         // constructor's children. Erased type is $Chemical; $<$Word>(...) narrows.
+        // Created in an <X>, a child of X: the asker — raised around the bond
+        // constructor, the view, and an augmented handler — is the element `$`
+        // is operating in now, and what is evaluated here is parented to it.
+        // Outside those windows there is no asker and the instance is a root.
         if (React.isValidElement(arg)) {
             const written = Array.prototype.slice.call(arguments, 1);
-            return evalElement(arg as React.ReactElement, undefined, written);
+            const asker = currentAsker();
+            return evalElement(arg as React.ReactElement, asker instanceof $Chemical ? asker : undefined, written);
         }
 
         // Instance form — the particle/chemical was already constructed when

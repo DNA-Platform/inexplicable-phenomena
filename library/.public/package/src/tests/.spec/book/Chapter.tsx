@@ -5,6 +5,7 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 import { Paragraph } from '@/writing/Paragraph';
 import { Writing, Type } from '@/writing/Writing';
+import { Path } from '@/reference/Path';
 
 // A chapter IS a document, so it is written as sections and answers every document constraint.
 export class $ChapterSectionsSpec extends $Chemical {
@@ -76,3 +77,15 @@ export class $ChapterWritingSpec extends $Chemical {
 }
 
 export const ChapterWritingSpec = $($ChapterWritingSpec);
+
+// A reference to a chapter stands one meta-level up: writing carrying
+// <Type>$Chapter</Type> whose path must land on a chapter.
+export class $ChapterReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>chapter<Type>$Chapter</Type><Path>Cr:0</Path></Writing>
+        );
+    }
+}
+
+export const ChapterReferenceSpec = $($ChapterReferenceSpec);

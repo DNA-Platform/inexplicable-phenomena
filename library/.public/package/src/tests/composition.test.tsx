@@ -7,6 +7,8 @@ import { $Section } from '@/writing/Section';
 import { $Document } from '@/writing/Document';
 import { $File } from '@/writing/File';
 import { built, declares, document, file, letter, paragraph, section, sentence, word } from './written';
+import { $Composition } from '@/writing/Composition';
+import { $Writing } from '@/writing/Writing';
 
 const ladder = [$Letter, $Word, $Sentence, $Paragraph, $Section, $Document, $File];
 
@@ -46,11 +48,12 @@ describe('one bond shape, one block', () => {
     });
 });
 
-describe('every level implements the composition interface itself', () => {
-    it('each of the seven declares all six, because writing implements none of them', () => {
-        for (const Kind of ladder)
-            for (const member of ['parts', 'where', 'select', 'selectMany', 'single'])
-                expect(declares(Kind, member)).toBe(true);
+describe('the composition surface is declared once and afforded everywhere', () => {
+    it('composition declares the surface, and writing implements none of it', () => {
+        for (const member of ['parts', 'where', 'select', 'selectMany', 'single']) {
+            expect(declares($Composition, member)).toBe(true);
+            expect(declares($Writing, member)).toBe(false);
+        }
         for (const Kind of ladder) {
             const one = new Kind();
             expect(typeof one.where).toBe('function');

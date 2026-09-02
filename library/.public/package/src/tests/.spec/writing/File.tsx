@@ -6,6 +6,7 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 import { Paragraph } from '@/writing/Paragraph';
 import { Writing, Type } from '@/writing/Writing';
+import { Path } from '@/reference/Path';
 
 // A file is written as documents.
 export class $FileDocumentsSpec extends $Chemical {
@@ -95,3 +96,15 @@ export class $FileWritingSpec extends $Chemical {
 }
 
 export const FileWritingSpec = $($FileWritingSpec);
+
+// A reference to a file stands one meta-level up: writing carrying
+// <Type>$File</Type> whose path must land on a file.
+export class $FileReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>file<Type>$File</Type><Path>Fe:0</Path></Writing>
+        );
+    }
+}
+
+export const FileReferenceSpec = $($FileReferenceSpec);

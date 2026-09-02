@@ -1,9 +1,12 @@
-import { $, $check, $Html, cache } from '@dna-platform/chemistry';
+import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Composition$ } from './Composition';
+import { $Composition$, $Composition } from './Composition';
+import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
+import { $Path } from '@/reference/Path';
+import { $$ } from '@/utilities/Lib';
 
-export class $Letter extends $Writing implements $Composition$<$Letter> {
+export class $Letter extends $Composition<$Letter> implements $Composition$<$Letter> {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
     case: 'uppercase' | 'lowercase' = 'lowercase';
 
@@ -14,22 +17,13 @@ export class $Letter extends $Writing implements $Composition$<$Letter> {
         punctuation: /^\p{P}\p{M}*$/u
     };
 
-    parts(): $Letter[] { return [this]; }
+    override parts(): $Letter[] { return [this]; }
     override get canonical(): boolean { return this.kind === 'alphabetical'; }
 
-    $Letter(block: $Html<'block'>) {
-        super.$Writing(block);
+    $Letter(block: $Block) {
+        super.$Composition(block);
         this.build();
-        this.type = $(<TypeOfLetter />) as $TypeOfLetter;
-    }
-
-    where(match: (part: $Letter) => boolean): $Letter[] { return this.parts().filter(match); }
-    select<U>(pick: (part: $Letter) => U): U[] { return this.parts().map(pick); }
-    selectMany<U>(pick: (part: $Letter) => U[]): U[] { return this.parts().flatMap(pick); }
-    single(match: (part: $Letter) => boolean): $Letter {
-        const found = this.parts().filter(match);
-        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
-        return found[0];
+        this._type = $(<TypeOfLetter />);
     }
 
     override bind(writing: $Writing) {
@@ -53,8 +47,20 @@ export class $Letter extends $Writing implements $Composition$<$Letter> {
     }
 }
 
+export class $$Letter extends $Reference implements $Reference$<$Letter> {
+    $$Letter(block: $Block) {
+        super.$Reference(block);
+        this._type = $(<TypeOf$Letter />);
+    }
+
+    override async read(): Promise<$Letter> {
+        return $$(await super.read(), $Letter);
+    }
+}
+
 export class $TypeOfLetter extends $Type {
     resolve = false;
+    override code = 'Lr';
 
     override get canonicalForm(): typeof $Writing { return $Letter; }
 
@@ -64,6 +70,17 @@ export class $TypeOfLetter extends $Type {
     }
 
     protected override specification: Specification<$Writing> = new LetterSpecification();
+}
+
+export class $TypeOf$Letter extends $TypeOfReference {
+    override get canonicalForm(): typeof $Writing { return $$Letter; }
+
+    constructor() {
+        super();
+        this[cache]('$Letter');
+    }
+
+    protected override specification: Specification<$Writing> = new $LetterSpecification();
 }
 
 class LetterSpecification extends TypedSpecification<$Writing> {
@@ -76,5 +93,20 @@ class LetterSpecification extends TypedSpecification<$Writing> {
     }
 }
 
+export class $LetterSpecification extends ReferenceSpecification {
+    @specify('a reference to a letter lands on one')
+    $landsOnIt(writing: $Writing): void {
+        const path = (writing.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path);
+        const step = path?.copy.split('/').pop();
+        $check(!!step && step.startsWith('Lr:'),
+            'a reference to a letter lands on one, and this path lands on something else');
+        const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(held === undefined || $$(held)($Letter),
+            'a reference to a letter lands on one, and what it holds is not one');
+    }
+}
+
 export const Letter = $($Letter);
 export const TypeOfLetter = $($TypeOfLetter);
+export const TypeOf$Letter = $($TypeOf$Letter);
+prints.set('Lr', $$Letter);

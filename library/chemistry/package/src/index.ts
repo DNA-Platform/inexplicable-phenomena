@@ -30,6 +30,7 @@ export { inert, reactive, look } from './abstraction/bond';
 
 // Members a chemical implements, carried as symbols so they cost no name
 export { cache, children } from './implementation/symbols';
+export { hydration } from './implementation/hydration';
 
 // Bond-constructor validation helpers (used inside user bond ctors)
 export { $check, $is } from './abstraction/chemical';

@@ -8,10 +8,11 @@ export class $Lib {
         const carried = of.type;
         const stands = (one: $Type | undefined, asked: new () => $Writing) =>
             one !== undefined && (one.canonicalForm === asked || one.canonicalForm.prototype instanceof asked);
+        const worn = (asked: new () => $Writing) => of.traits.find(one => stands(one, asked));
         if (kind === undefined)
-            return (asked: new () => $Writing) => of instanceof asked || stands(carried as $Type, asked);
+            return (asked: new () => $Writing) => of instanceof asked || stands(carried as $Type, asked) || worn(asked) !== undefined;
         if (of instanceof kind) return of;
-        const named = stands(carried as $Type, kind) ? carried as $Type : undefined;
+        const named = stands(carried as $Type, kind) ? carried as $Type : worn(kind);
         if (!named) {
             const said = `This writing is not a ${kind.name} — it carries ${carried?.constructor.name ?? 'no type at all'}.`;
             $check(false, said);

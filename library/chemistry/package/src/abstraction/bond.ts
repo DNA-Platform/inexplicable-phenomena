@@ -2,6 +2,7 @@ import {
     $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$, looks
 } from "../implementation/symbols";
 import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
+import { hydration } from "../implementation/hydration";
 import { equivalent } from '../implementation/reconcile';
 
 // ===========================================================================
@@ -214,6 +215,7 @@ function activate(chemical: any, property: string, initial: any) {
             if (equivalent(store[property], value)) return;
             store[property] = value;
             if (this[$rendering$]) return;
+            if ((this as any)._atomic) hydration.changed(this);
             const scope = currentScope();
             if (scope) {
                 scope.recordWrite(this, property);

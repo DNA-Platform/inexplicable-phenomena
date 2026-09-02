@@ -2,6 +2,8 @@ import { ReactNode, createElement } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
 
+const numbered = (part: $Writing): part is $Writing & { index: number } => 'index' in part;
+
 export class Parser {
     private parsed = new WeakMap<$Writing, $Writing[]>();
 
@@ -14,8 +16,9 @@ export class Parser {
 
     parse<T extends $Writing>(
         of: $Writing,
-        accept: (token: $Writing) => T | undefined,
-        reduce: (held: (string | $Writing)[]) => T[]
+        accept: (token: $Writing) => T | T[] | undefined,
+        reduce: (held: (string | $Writing)[]) => T[],
+        numbering = true
     ): T[] {
         const kept = this.parsed.get(of);
         if (kept !== undefined) return kept as T[];
@@ -31,13 +34,17 @@ export class Parser {
             const accepted = typeof token === 'string' ? undefined : accept(token);
             if (accepted !== undefined) {
                 reducing();
-                parsed.push(accepted);
+                parsed.push(...(Array.isArray(accepted) ? accepted : [accepted]));
                 continue;
             }
             held.push(token);
         }
         reducing();
-        parsed.forEach((part, at) => part.index = at);
+        if (numbering) parsed.forEach((part, at) => {
+            if (numbered(part)) part.index = at;
+        });
+        for (const part of parsed)
+            if (!(part.parent instanceof $Writing)) part.parent = of;
         this.parsed.set(of, parsed);
         return parsed;
     }

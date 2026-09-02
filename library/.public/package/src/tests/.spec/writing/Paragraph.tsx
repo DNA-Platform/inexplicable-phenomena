@@ -6,6 +6,7 @@ import { Title } from '@/writing/Title';
 import { Specification } from '@/utilities/Specification';
 import { Sentence } from '@/writing/Sentence';
 import { Word } from '@/writing/Word';
+import { Path } from '@/reference/Path';
 
 // ROUTE ONE — SUBCLASS the specification. The framework's own $Title is the worked
 // instance: $TitleSpecification extends ParagraphSpecification and adds one rule,
@@ -106,3 +107,15 @@ export class $ParagraphWritingSpec extends $Chemical {
 }
 
 export const ParagraphWritingSpec = $($ParagraphWritingSpec);
+
+// A reference to a paragraph stands one meta-level up: writing carrying
+// <Type>$Paragraph</Type> whose path must land on a paragraph.
+export class $ParagraphReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>paragraph<Type>$Paragraph</Type><Path>Ph:0</Path></Writing>
+        );
+    }
+}
+
+export const ParagraphReferenceSpec = $($ParagraphReferenceSpec);

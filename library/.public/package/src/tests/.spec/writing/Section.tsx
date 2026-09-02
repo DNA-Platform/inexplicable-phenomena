@@ -4,6 +4,7 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 import { Paragraph } from '@/writing/Paragraph';
 import { Writing, Type } from '@/writing/Writing';
+import { Path } from '@/reference/Path';
 
 // A section is written as paragraphs, delineated explicitly. Nothing is parsed at this level.
 export class $SectionParagraphsSpec extends $Chemical {
@@ -63,3 +64,15 @@ export class $SectionWritingSpec extends $Chemical {
 }
 
 export const SectionWritingSpec = $($SectionWritingSpec);
+
+// A reference to a section stands one meta-level up: writing carrying
+// <Type>$Section</Type> whose path must land on a section.
+export class $SectionReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>section<Type>$Section</Type><Path>Sn:0</Path></Writing>
+        );
+    }
+}
+
+export const SectionReferenceSpec = $($SectionReferenceSpec);

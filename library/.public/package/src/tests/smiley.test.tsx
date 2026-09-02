@@ -14,7 +14,7 @@ class $Smiley extends $Writing {
 
     $Smiley(block: $Block) {
         super.$Writing(block);
-        this.type = $(<TypeOfLetter />);
+        this._type = $(<TypeOfLetter />);
     }
 
     turn(): void {

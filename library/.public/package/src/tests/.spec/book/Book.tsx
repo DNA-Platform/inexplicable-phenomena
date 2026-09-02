@@ -6,6 +6,7 @@ import { Section } from '@/writing/Section';
 import { Title } from '@/writing/Title';
 import { Paragraph } from '@/writing/Paragraph';
 import { Writing, Type } from '@/writing/Writing';
+import { Path } from '@/reference/Path';
 
 // A book is a composition of chapters, and as such it satisfies being a composition of documents.
 export class $BookChaptersSpec extends $Chemical {
@@ -101,3 +102,15 @@ export class $BookWritingSpec extends $Chemical {
 }
 
 export const BookWritingSpec = $($BookWritingSpec);
+
+// A reference to a book stands one meta-level up: writing carrying
+// <Type>$Book</Type> whose path must land on a book.
+export class $BookReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>book<Type>$Book</Type><Path>Bk:0</Path></Writing>
+        );
+    }
+}
+
+export const BookReferenceSpec = $($BookReferenceSpec);

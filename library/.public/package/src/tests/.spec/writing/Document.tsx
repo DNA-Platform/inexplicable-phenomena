@@ -5,6 +5,7 @@ import { Title } from '@/writing/Title';
 import { Paragraph } from '@/writing/Paragraph';
 import { Section } from '@/writing/Section';
 import { Writing, Type } from '@/writing/Writing';
+import { Path } from '@/reference/Path';
 
 // A document written as a title and paragraphs wraps them in ONE section. No attempt is made to parse sections.
 export class $DocumentParagraphsSpec extends $Chemical {
@@ -94,3 +95,15 @@ export class $DocumentWritingSpec extends $Chemical {
 }
 
 export const DocumentWritingSpec = $($DocumentWritingSpec);
+
+// A reference to a document stands one meta-level up: writing carrying
+// <Type>$Document</Type> whose path must land on a document.
+export class $DocumentReferenceSpec extends $Chemical {
+    view(): ReactNode {
+        return (
+            <Writing>document<Type>$Document</Type><Path>Dt:0</Path></Writing>
+        );
+    }
+}
+
+export const DocumentReferenceSpec = $($DocumentReferenceSpec);
