@@ -26,13 +26,13 @@ export class $Index extends $Chapter {
         if (!references) return super.view();
         const written = (references.block?.$elements ?? [])
             .filter((one): one is $Reference => one instanceof $Reference);
-        const remembered = [...references.remembered].reverse();
+        const recollection = [...references.recollection].reverse();
         return <>
             <Heading>Index</Heading>
             <Cited>{written.map((one, at) => {
                 const Cite = $(one);
                 return <li key={at}><Cite /></li>;
-            })}{remembered.map(one => {
+            })}{recollection.map(one => {
                 const Cite = $(one);
                 return <li key={one.path?.copy ?? ''}><Cite /></li>;
             })}</Cited>
