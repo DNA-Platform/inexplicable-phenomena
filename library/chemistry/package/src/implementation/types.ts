@@ -85,7 +85,7 @@ export type { Element, $Element, Component, $Component } from "../abstraction/el
 export interface $Bound<T> {
     get $bound(): boolean;
     get $chemical(): T;
-    // The model behind the face. `$(Theme).$` reads left to right: resolve in
+    // The model behind the facade. `$(Theme).$` reads left to right: resolve in
     // this scope, then the chemical the answer wears. Declared here and
     // attached by $lift, so every component carries it.
     get $(): T;
