@@ -1,5 +1,5 @@
-import React from 'react';
-import { $, $Atom, look } from '@/index';
+import React, { ReactNode } from 'react';
+import { $, $Atom, $Chemical, look } from '@/index';
 import {
     Desk, Hint,
     BookFace, Spread, PageHalf, ChapterTitle, TextLine, PageNumber, Ribbon, Tallies, Tally,
@@ -82,18 +82,24 @@ class $Reading extends $Atom {
 
 const Reading = $($Reading);
 
-export default function Case1Demo() {
-    return (
-        <div>
-            <Desk>
-                <Reading look="book" />
-                <Reading look="card" />
-                <Reading look="spine" />
-            </Desk>
-            <Controls style={{ paddingTop: 12 }}>
-                <QuietBtn data-act="return" onClick={() => { new $Reading().persist = false; }}>return the book — the desk forgets</QuietBtn>
-            </Controls>
-            <Hint>one reading, three faces · refresh the page — the desk keeps your place</Hint>
-        </div>
-    );
+class $ReadingRoom extends $Chemical {
+    retire() { new $Reading().persist = false; }
+
+    override view(): ReactNode {
+        return (
+            <div>
+                <Desk>
+                    <Reading look="book" />
+                    <Reading look="card" />
+                    <Reading look="spine" />
+                </Desk>
+                <Controls style={{ paddingTop: 12 }}>
+                    <QuietBtn data-act="return" onClick={() => this.retire()}>return the book — the desk forgets</QuietBtn>
+                </Controls>
+                <Hint>one reading, three faces · refresh the page — the desk keeps your place</Hint>
+            </div>
+        );
+    }
 }
+
+export default $($ReadingRoom);

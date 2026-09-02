@@ -69,6 +69,17 @@ export const hydration = {
         return state;
     },
 
+    recollect(pid: string): any {
+        const members = enrolled.get(pid);
+        if (!members) return undefined;
+        for (const ref of members) {
+            const one = ref.deref();
+            if (one === undefined) { members.delete(ref); continue; }
+            return one;
+        }
+        return undefined;
+    },
+
     changed(chemical: any): void {
         if (recalling || !chemical.persist) return;
         const pid = this.pidOf(chemical);

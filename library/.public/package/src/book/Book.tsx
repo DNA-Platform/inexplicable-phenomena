@@ -17,6 +17,8 @@ import { $Synopsis } from './Synopsis';
 import { $TableOfContents } from './TableOfContents';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
+import { $Index, Index } from './Index';
+import { $References, References } from '@/reference/References';
 
 export class $Book extends $File implements $Composition$<$Chapter> {
     get chapters(): $Composition$<$Chapter> { return this; }
@@ -73,6 +75,14 @@ export class $TypeOfBook extends $TypeOfFile {
 
     override get canonicalForm(): typeof $Writing { return $Book; }
 
+    override specifically(writing: $Writing): void {
+        if (writing.block && !(writing.block.$elements ?? []).some(one => one instanceof $Index)) {
+            const index = $<$Index>(<Index />, $<$References>(<References />));
+            writing.block.$elements = [...(writing.block.$elements ?? []), index];
+        }
+        super.specifically(writing);
+    }
+
     constructor() {
         super();
         this[cache]('Book');
@@ -93,6 +103,14 @@ export class $TypeOf$Book extends $TypeOfReference {
 }
 
 export class BookSpecification extends FileSpecification {
+    @specify('a book ends with its index')
+    $endsWithIndex(writing: $Writing): void {
+        const elements = (writing.block?.$elements ?? []);
+        const at = elements.findIndex(one => one instanceof $Index);
+        $check(at >= 0 && at === elements.length - 1,
+            'a book ends with its index, and this one does not');
+    }
+
     @specify('a book is written as chapters')
     $writtenAsChapters(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])

@@ -99,6 +99,55 @@ export const CardValue = styled.span`
     color: ${p => p.theme.color.themeText};
 `;
 
+// ── Case 2: the study ──
+export const StudyRoom = styled.div`
+    display: flex; align-items: flex-start; justify-content: center; gap: 22px; flex-wrap: wrap;
+    padding: 22px;
+    background: ${p => p.theme.color.paper};
+    border: 1px solid ${p => p.theme.color.rule};
+    border-radius: 12px;
+`;
+export const Sheet = styled.div`
+    display: flex; flex-direction: column; gap: 10px;
+    width: 250px; padding: 20px 22px; box-sizing: border-box;
+    border-radius: 6px;
+    background: ${p => p.theme.color.paperRaised};
+    border: 1px solid ${p => p.theme.color.rule};
+    box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+`;
+export const SheetTitle = styled.div`
+    font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-weight: 700;
+    color: ${p => p.theme.color.ink};
+`;
+export const SheetMeta = styled.div`
+    font-family: ${p => p.theme.font.mono}; font-size: 11px;
+    color: ${p => p.theme.color.muted}; font-variant-numeric: tabular-nums;
+`;
+export const Notes = styled.div`display: flex; flex-direction: column; gap: 16px;`;
+export const Note = styled.div<{ $kept?: boolean }>`
+    position: relative; width: 168px; min-height: 96px; padding: 14px 14px 10px; box-sizing: border-box;
+    border-radius: 4px;
+    background: ${p => p.theme.color.paperRecessed};
+    border: 1px solid ${p => p.theme.color.rule};
+    box-shadow: 0 5px 14px rgba(0,0,0,0.10);
+    transform: rotate(${p => (p.$kept ? '-1.2deg' : '1.4deg')});
+    display: flex; flex-direction: column; gap: 8px;
+`;
+export const Pin = styled.div`
+    position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+    width: 14px; height: 14px; border-radius: 50%;
+    background: hsl(354 62% 48%);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3), inset 0 -2px 3px rgba(0,0,0,0.25);
+`;
+export const Chip = styled.span<{ $kept?: boolean }>`
+    align-self: flex-start;
+    font-family: ${p => p.theme.font.mono}; font-size: 10px; letter-spacing: 0.08em;
+    padding: 2px 7px; border-radius: 999px;
+    color: ${p => (p.$kept ? 'hsl(354 62% 48%)' : p.theme.color.muted)};
+    border: 1px solid ${p => (p.$kept ? 'hsl(354 62% 48% / 0.5)' : p.theme.color.rule)};
+`;
+export const Strokes = styled.div`display: flex; gap: 3px; min-height: 14px; flex-wrap: wrap;`;
+
 // ── Face: the spine ──
 export const Spine = styled.div`
     align-self: center; position: relative; width: 44px; height: 224px; overflow: hidden;

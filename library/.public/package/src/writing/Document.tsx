@@ -81,7 +81,7 @@ export class $TypeOf$Document extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new $DocumentSpecification();
 }
 
-class DocumentSpecification extends TypedSpecification<$Writing> {
+export class DocumentSpecification extends TypedSpecification<$Writing> {
     @specify('a document ends with its references')
     $endsWithReferences(writing: $Writing): void {
         const elements = (writing.block?.$elements ?? []);

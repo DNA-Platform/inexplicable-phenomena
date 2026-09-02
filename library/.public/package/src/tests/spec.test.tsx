@@ -23,7 +23,7 @@ import { BookReferenceSpec, $BookReferenceSpec } from './.spec/book/Book';
 import { CoverKindSpec, $CoverKindSpec } from './.spec/book/Cover';
 import { SynopsisKindSpec, $SynopsisKindSpec } from './.spec/book/Synopsis';
 import { TableOfContentsKindSpec, $TableOfContentsKindSpec } from './.spec/book/TableOfContents';
-import { IndexSectionSpec, $IndexSectionSpec } from './.spec/reference/Index';
+import { IndexSectionSpec, $IndexSectionSpec } from './.spec/book/Index';
 import { PageFoldReferenceSpec, $PageFoldReferenceSpec } from './.spec/book/PageFold';
 import { BookmarkReferenceSpec, $BookmarkReferenceSpec } from './.spec/book/Bookmark';
 import { HighlightPairSpec, $HighlightPairSpec } from './.spec/book/Highlight';

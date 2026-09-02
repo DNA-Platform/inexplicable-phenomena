@@ -66,6 +66,35 @@ seen = await state(page);
 check('the book returned + refresh: the desk opens fresh again',
     seen && seen.page === '1' && seen.ribbon === '0' && seen.notes === '0' && seen.cardText.includes('Loomings'), seen);
 
+// ── Case 2: the bare flag — no base class ──
+const study = (page) => page.evaluate(() => {
+    const face = (name) => document.querySelector(`[data-face="${name}"]`);
+    const manuscript = face('manuscript'), kept = face('kept'), loose = face('loose');
+    if (!manuscript || !kept || !loose) return null;
+    return {
+        drafts: manuscript.dataset.drafts, kept: kept.dataset.strokes, loose: loose.dataset.strokes,
+        sheetText: manuscript.textContent,
+    };
+});
+
+let saw = await study(page);
+check('the study opens fresh: Draft 1, both notes blank',
+    saw && saw.drafts === '1' && saw.kept === '0' && saw.loose === '0' && saw.sheetText.includes('Draft 1'), saw);
+
+await act(page, 'stamp');
+await act(page, 'stamp');
+await act(page, 'revise');
+await settle();
+saw = await study(page);
+check('cross-chemical stamps land on BOTH notes and the sheet reads them: Draft 2, kept 2, loose 2',
+    saw && saw.drafts === '2' && saw.kept === '2' && saw.loose === '2' && saw.sheetText.includes('kept 2 · loose 2'), saw);
+
+await page.reload({ waitUntil: 'networkidle0' });
+await settle();
+saw = await study(page);
+check('AFTER REFRESH the flag decides: Draft 2 and kept 2 stand, the loose note forgets',
+    saw && saw.drafts === '2' && saw.kept === '2' && saw.loose === '0' && saw.sheetText.includes('Draft 2'), saw);
+
 await browser.close();
 console.log(failed === 0 ? 'ALL SEEN — the reading survived the refresh.' : failed + ' FAILED');
 process.exit(failed === 0 ? 0 : 1);

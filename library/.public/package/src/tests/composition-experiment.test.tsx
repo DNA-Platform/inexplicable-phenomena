@@ -25,7 +25,7 @@ import { $List, List } from '@/writing/List';
 import { $Table, Table } from '@/writing/Table';
 import { $ReferenceCard, ReferenceCard } from '@/reference/ReferenceCard';
 import { $References, References } from '@/reference/References';
-import { $Index, Index } from '@/reference/Index';
+import { $Index, Index } from '@/book/Index';
 
 describe('a composition can be configured with a type to make the thing you need', () => {
     it('configured as a sentence, it composes the words written in it', () => {
@@ -770,19 +770,87 @@ describe('an X nests in an X — up to section, and the outer collects its parts
     });
 });
 
-describe('the index — a type of References with a strong type', () => {
+describe('the references persist as one, and the index takes them', () => {
     beforeEach(() => { hydration.forget(); localStorage.clear(); });
+    const settled = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
 
-    it('an index is a references section under its own aid, and it persists the same way', async () => {
-        const one = built<$Index>(<Index><Reference>alpha<Path>/books/i</Path></Reference></Index>);
-        expect(one).toBeInstanceOf($References);
-        expect(one.$pid).toBe('Index');
+    it('the type grants the power — a references section persists under the one shared key', async () => {
+        const one = built<$References>(<References />);
+        expect(one.$pid).toBe('$references$');
+        expect(one.persist).toBe(true);
         const link = built<$Reference>(<Reference>beta<Path>/books/j</Path></Reference>);
         one.append(link);
-        expect(one.stack).toEqual(['/books/j']);
-        const settled = async () => { await Promise.resolve(); await Promise.resolve(); };
         await settled();
-        expect(localStorage.getItem('$Chemistry.hydration')).toContain('"Index"');
+        expect(localStorage.getItem('$Chemistry.hydration')).toContain('"$references$"');
+    });
+
+    it('the references reassembles its remembered links — fetch, name, adopt, recall', async () => {
+        const one = built<$References>(<References />);
+        const link = built<$Reference>(<Reference>alpha<Path>/books/reassembled</Path></Reference>);
+        link.focus();
+        one.append(link);
+        await settled();
+        const reborn = built<$References>(<References />);
+        await settled();
+        expect(reborn.stack).toEqual(['/books/reassembled']);
+        expect(reborn.reprinted).toHaveLength(1);
+        const print = reborn.reprinted[0];
+        expect(print.path?.copy).toBe('/books/reassembled');
+        expect(print.parent).toBe(reborn);
+        expect(print.$focused).toBe(true);
+    });
+
+    it('a remembered typed path reprints through its print — a chapter path re-forms as a chapter reference', async () => {
+        const one = built<$References>(<References />);
+        const link = built<$Reference>(<Reference>two<Path>Cr:1</Path></Reference>);
+        one.append(link);
+        await settled();
+        const reborn = built<$References>(<References />);
+        await settled();
+        expect(reborn.reprinted).toHaveLength(1);
+        expect(reborn.reprinted[0]).toBeInstanceOf($$Chapter);
+    });
+
+    it('unfocus removes the reprint with the path', async () => {
+        const one = built<$References>(<References />);
+        const link = built<$Reference>(<Reference>alpha<Path>/books/unpinned</Path></Reference>);
+        one.append(link);
+        await settled();
+        one.reassemble();
+        expect(one.reprinted).toHaveLength(1);
+        one.remove(link);
+        expect(one.stack).toEqual([]);
+        expect(one.reprinted).toHaveLength(0);
+    });
+
+    it('the index is a chapter that takes the references — pulled in, visible, persisting nothing itself', async () => {
+        const one = built<$Index>(<Index><Reference>alpha<Path>Se:0</Path></Reference></Index>);
+        expect(one).toBeInstanceOf($Chapter);
+        expect(one.$pid).toBeUndefined();
+        expect(one.persist).toBe(false);
+        const pulled = (one.block?.$elements ?? []).find((it): it is $References => it instanceof $References);
+        expect(pulled).toBeDefined();
+        expect(pulled!.parenthetical).toBe(true);
+        expect(pulled!.$pid).toBe('$references$');
+        expect(pulled!.persist).toBe(true);
+    });
+
+    it('every book has at least a parenthetical index, and it fetches the persisted references', async () => {
+        const kept = built<$References>(<References />);
+        const link = built<$Reference>(<Reference>alpha<Path>/books/shelved</Path></Reference>);
+        kept.append(link);
+        await settled();
+        const book = built<$Book>(
+            <Book>
+                <Chapter>{section(paragraph(sentence(word(letter('a')))))}</Chapter>
+            </Book>);
+        await settled();
+        const index = (book.block?.$elements ?? []).find((it): it is $Index => it instanceof $Index);
+        expect(index).toBeDefined();
+        expect(index!.parenthetical).toBe(true);
+        const pulled = (index!.block?.$elements ?? []).find((it): it is $References => it instanceof $References);
+        expect(pulled).toBeDefined();
+        expect(pulled!.stack).toContain('/books/shelved');
     });
 });
 

@@ -983,7 +983,15 @@ export class $Chemical extends $Particle {
     set persist(persist: boolean) {
         if (this._persist && !persist) hydration.clear(this);
         this._persist = persist;
-        if (persist) hydration.changed(this);
+        if (persist) {
+            if (!(this as any)[$formed$]) {
+                (this as any)[$formed$] = true;
+                const was = (this as any)[$rendering$];
+                (this as any)[$rendering$] = true;
+                try { hydration.overwrite(this); } finally { (this as any)[$rendering$] = was; }
+            }
+            hydration.changed(this);
+        }
     }
 
     get [$cache$]() { return catalogueOf((this as any)[$type$]); }
@@ -1441,6 +1449,11 @@ interface $Chemistry {
     // return the override.
     <K extends keyof JSX.IntrinsicElements>(tag: K): Component<$Html$<K>>;
     <K extends keyof JSX.IntrinsicElements>(tag: K, override: any): any;
+    // Hydration — `$('{pid}')` answers the LIVE chemical enrolled under that
+    // persistence id, or undefined if none is alive. Checked before the HTML
+    // catalogue, so a pid that shadows a real tag name wins: name pids like
+    // names, not like tags.
+    (pid: string): any;
 }
 
 // HTML catalogue — lazy registry of Components per tag name. Populated on
@@ -1689,15 +1702,19 @@ class $Chemistry$ extends $Chemical {
             return registrar(arg, second);
         }
 
-        // String tag — HTML catalogue. `$('div')` looks up (or lazily
-        // creates) the cached Component for that tag. `$('div', X)`
-        // registers X as the override for that tag.
+        // String tag — a pid first, then the HTML catalogue. `$('{pid}')`
+        // answers the live chemical enrolled under that persistence id.
+        // `$('div')` looks up (or lazily creates) the cached Component for
+        // that tag. `$('div', X)` registers X as the override for that tag.
         if (typeof arg === 'string') {
             const override = arguments[1];
             if (override !== undefined) {
                 $catalogue.set(arg, override);
                 return override;
             }
+            const recalled = hydration.recollect(arg);
+            if (recalled !== undefined) return recalled;
+            if (!/^[a-z][a-z0-9-]*$/.test(arg)) return undefined;
             let cached = $catalogue.get(arg);
             if (!cached) {
                 cached = htmlFor(arg)[$resolveComponent$]();

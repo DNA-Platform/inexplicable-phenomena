@@ -123,6 +123,59 @@ describe('the hydration cache — the edges', () => {
     });
 });
 
+describe('the bare flag — persist works on an ordinary chemical, no base class', () => {
+    beforeEach(() => { hydration.forget(); localStorage.clear(); });
+
+    it('set a pid and persist=true on a plain $Chemical — writes remember themselves', async () => {
+        const { $Chemical } = await import('@/abstraction/chemical');
+        class $Plain extends $Chemical {
+            count = 0;
+        }
+        const one = new $Plain() as any;
+        one.$pid = 'Plain.one';
+        one.persist = true;
+        one.count = 4;
+        await settled();
+        expect(localStorage.getItem('$Chemistry.hydration')).toContain('"count":4');
+    });
+
+    it('the bare flag RECALLS — a fresh chemical given a known pid stands up with the record, before its own flush can stomp it', async () => {
+        const { $Chemical } = await import('@/abstraction/chemical');
+        class $Plain extends $Chemical {
+            count = 0;
+        }
+        const one = new $Plain() as any;
+        one.$pid = 'Plain.two';
+        one.persist = true;
+        one.count = 9;
+        await settled();
+
+        class $Later extends $Chemical {
+            count = 0;
+        }
+        const later = new $Later() as any;
+        later.$pid = 'Plain.two';
+        later.persist = true;
+        expect(later.count).toBe(9);
+        await settled();
+        expect(localStorage.getItem('$Chemistry.hydration')).toContain('"count":9');
+    });
+
+    it("$('{pid}') answers the live chemical enrolled under that pid, and undefined for a stranger", async () => {
+        const { $Chemical, $ } = await import('@/abstraction/chemical');
+        class $Plain extends $Chemical {
+            count = 0;
+        }
+        const one = new $Plain() as any;
+        one.$pid = 'Plain.door';
+        one.persist = true;
+        one.count = 2;
+        await settled();
+        expect($('Plain.door')).toBe(one);
+        expect($('Plain.nobody')).toBeUndefined();
+    });
+});
+
 describe('joint syncing — one pid, many live chemicals', () => {
     beforeEach(() => { hydration.forget(); localStorage.clear(); });
 
