@@ -1449,7 +1449,7 @@ interface $Chemistry {
     // return the override.
     <K extends keyof JSX.IntrinsicElements>(tag: K): Component<$Html$<K>>;
     <K extends keyof JSX.IntrinsicElements>(tag: K, override: any): any;
-    // Hydration — `$('{pid}')` answers the LIVE chemical enrolled under that
+    // Hydration — `$(pid)` answers the LIVE chemical enrolled under that
     // persistence id, or undefined if none is alive. Checked before the HTML
     // catalogue, so a pid that shadows a real tag name wins: name pids like
     // names, not like tags.
@@ -1702,7 +1702,7 @@ class $Chemistry$ extends $Chemical {
             return registrar(arg, second);
         }
 
-        // String tag — a pid first, then the HTML catalogue. `$('{pid}')`
+        // String tag — a pid first, then the HTML catalogue. `$(pid)`
         // answers the live chemical enrolled under that persistence id.
         // `$('div')` looks up (or lazily creates) the cached Component for
         // that tag. `$('div', X)` registers X as the override for that tag.

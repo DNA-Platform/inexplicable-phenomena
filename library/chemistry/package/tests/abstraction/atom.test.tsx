@@ -161,7 +161,7 @@ describe('the bare flag — persist works on an ordinary chemical, no base class
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('"count":9');
     });
 
-    it("$('{pid}') answers the live chemical enrolled under that pid, and undefined for a stranger", async () => {
+    it("$(pid) answers the live rehydrated chemical under that pid, and undefined for a stranger", async () => {
         const { $Chemical, $ } = await import('@/abstraction/chemical');
         class $Plain extends $Chemical {
             count = 0;
@@ -171,7 +171,8 @@ describe('the bare flag — persist works on an ordinary chemical, no base class
         one.persist = true;
         one.count = 2;
         await settled();
-        expect($('Plain.door')).toBe(one);
+        const pid = 'Plain.door';
+        expect($(pid)).toBe(one);
         expect($('Plain.nobody')).toBeUndefined();
     });
 });
