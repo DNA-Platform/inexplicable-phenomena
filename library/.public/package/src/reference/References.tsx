@@ -11,7 +11,7 @@ import { Cited } from '@/encyclopedia/Cited';
 export class $References extends $Section {
     override parenthetical = true;
     serialized = '[]';
-    reprinted: $Reference[] = [];
+    remembered: $Reference[] = [];
 
     get stack(): string[] { return JSON.parse(this.serialized); }
 
@@ -34,14 +34,14 @@ export class $References extends $Section {
     remove(one: $Reference): void {
         const path = one.path?.copy;
         this.serialized = JSON.stringify(this.stack.filter(kept => kept !== path));
-        this.reprinted = this.reprinted.filter(kept => kept.path?.copy !== path);
+        this.remembered = this.remembered.filter(kept => kept.path?.copy !== path);
     }
 
     reassemble(): void {
         const written = new Set((this.block?.$elements ?? [])
             .filter((one): one is $Reference => one instanceof $Reference)
             .map(one => one.path?.copy));
-        const held = new Set(this.reprinted.map(one => one.path?.copy));
+        const held = new Set(this.remembered.map(one => one.path?.copy));
         const made: $Reference[] = [];
         for (const path of this.stack) {
             if (written.has(path) || held.has(path)) continue;
@@ -54,20 +54,20 @@ export class $References extends $Section {
             hydration.overwrite(printed);
             made.push(printed);
         }
-        if (made.length > 0) this.reprinted = [...this.reprinted, ...made];
+        if (made.length > 0) this.remembered = [...this.remembered, ...made];
     }
 
     override view(): ReactNode {
         if (this.parenthetical) return null;
         const written = (this.block?.$elements ?? [])
             .filter((one): one is $Reference => one instanceof $Reference);
-        const reprinted = [...this.reprinted].reverse();
+        const remembered = [...this.remembered].reverse();
         return <>
             <Heading>References</Heading>
             <Cited>{written.map((one, at) => {
                 const Cite = $(one);
                 return <li key={at}><Cite /></li>;
-            })}{reprinted.map(one => {
+            })}{remembered.map(one => {
                 const Cite = $(one);
                 return <li key={one.path?.copy ?? ''}><Cite /></li>;
             })}</Cited>

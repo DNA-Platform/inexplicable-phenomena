@@ -793,8 +793,8 @@ describe('the references persist as one, and the index takes them', () => {
         const reborn = built<$References>(<References />);
         await settled();
         expect(reborn.stack).toEqual(['/books/reassembled']);
-        expect(reborn.reprinted).toHaveLength(1);
-        const print = reborn.reprinted[0];
+        expect(reborn.remembered).toHaveLength(1);
+        const print = reborn.remembered[0];
         expect(print.path?.copy).toBe('/books/reassembled');
         expect(print.parent).toBe(reborn);
         expect(print.$focused).toBe(true);
@@ -807,8 +807,8 @@ describe('the references persist as one, and the index takes them', () => {
         await settled();
         const reborn = built<$References>(<References />);
         await settled();
-        expect(reborn.reprinted).toHaveLength(1);
-        expect(reborn.reprinted[0]).toBeInstanceOf($$Chapter);
+        expect(reborn.remembered).toHaveLength(1);
+        expect(reborn.remembered[0]).toBeInstanceOf($$Chapter);
     });
 
     it('unfocus removes the reprint with the path', async () => {
@@ -817,10 +817,10 @@ describe('the references persist as one, and the index takes them', () => {
         one.append(link);
         await settled();
         one.reassemble();
-        expect(one.reprinted).toHaveLength(1);
+        expect(one.remembered).toHaveLength(1);
         one.remove(link);
         expect(one.stack).toEqual([]);
-        expect(one.reprinted).toHaveLength(0);
+        expect(one.remembered).toHaveLength(0);
     });
 
     it('the index is a chapter that takes the references — pulled in, visible, persisting nothing itself', async () => {
