@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { $, $Block, $check, $Chemical, look } from '@dna-platform/chemistry';
 import { $Referent$ } from '@/reference/Referent';
 import { Specification, specify } from '@/utilities/Specification';
@@ -7,8 +7,8 @@ import { html } from '@/utilities/Html';
 import { Anchor } from '@/encyclopedia/Anchor';
 
 export class $Writing extends $Chemical implements $Referent$ {
+    inline = true;
     parenthetical = false;
-    override inline = true;
     annotation = false;
     block: $Block = undefined as any;
     protected inside?: $Writing = undefined;
@@ -16,14 +16,8 @@ export class $Writing extends $Chemical implements $Referent$ {
 
     get copy(): string { return this.bound ? this.inside!.copy : html.text(this.block); }
     get canonical(): boolean { return true; }
-    get dress(): Dress | undefined { return undefined; }
-    get labels(): string[] {
-        return [...(this.type?.names ?? []), ...this.traits.flatMap(one => one.names ?? (one.copy === '' ? [] : [one.copy]))]
-            .filter(name => !name.includes('$'))
-            .map(name => 'pd-' + name.toLowerCase());
-    }
     get traits(): $Trait[] { return this.annotations.filter((one): one is $Trait => one instanceof $Trait); }
-    get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && one.annotation && (one as $Reference).url !== undefined); }
+    get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && (one as $Reference).path !== undefined); }
     get $print(): boolean { return !this.parenthetical; }
     set $print(print: boolean) { this.parenthetical = !print; }
     get type(): $Type { return this._type as $Type; }
@@ -37,25 +31,17 @@ export class $Writing extends $Chemical implements $Referent$ {
 
     $Writing(block: $Block) {
         this.block = block ?? this.block;
-        this._type = this.carried;
-    }
-
-    override frame(): ReactNode {
-        if (this.annotation) return super.frame();
-        const labels = this.labels;
-        const Dress = this.dress;
-        if (Dress !== undefined) return <Dress className={labels.join(' ')}>{super.frame()}</Dress>;
-        if (labels.length === 0) return super.frame();
-        return this.type?.flows ?? true
-            ? <span className={labels.join(' ')}>{super.frame()}</span>
-            : <div className={labels.join(' ')}>{super.frame()}</div>;
+        this._type = this.annotations
+            .filter((one): one is $Type => one instanceof $Type && !(one instanceof $Trait))
+            .reduce((most: $Type | undefined, one) => most === undefined || one instanceof (most.constructor as new () => $Type) ? one : most,
+                undefined) as $Type;
     }
 
     view(): ReactNode {
         const Writing = this.bound ? $(this.inside!) : this.block ? $(this.block) : null;
         const means = this.means;
-        if (means?.url !== undefined)
-            return <Anchor href={means.url}>{Writing && <Writing />}</Anchor>;
+        if (means?.path !== undefined)
+            return <Anchor href={means.path.copy}>{Writing && <Writing />}</Anchor>;
         return <>
             {Writing && <Writing />}
         </>;
@@ -84,12 +70,6 @@ export class $Writing extends $Chemical implements $Referent$ {
     }
 
     protected get bound() { return !!this.inside; }
-
-    protected get carried(): $Type | undefined {
-        return this.annotations
-            .filter((one): one is $Type => one instanceof $Type && !(one instanceof $Trait))
-            .reduce((most: $Type | undefined, one) => most === undefined || one instanceof (most.constructor as new () => $Type) ? one : most, undefined);
-    }
 }
 
 export class $Annotation extends $Writing {
@@ -101,12 +81,8 @@ export class $Type extends $Annotation {
     formula = true;
     code = '';
     nests = false;
-    seated = false;
-    flows = true;
-    kin?: $Type;
     get writtenAs(): (new () => $Writing) | undefined { return undefined; }
     get canonicalForm(): typeof $Writing { return $Writing; }
-    get shell(): typeof $Writing { return this.canonicalForm; }
     protected specification: Specification<$Writing> = new TypedSpecification<$Writing>();
 
     specifically(writing: $Writing): void {
@@ -118,9 +94,7 @@ export class $Type extends $Annotation {
     }
 }
 
-export class $Trait extends $Type {
-    override strict = false;
-}
+export class $Trait extends $Type { }
 
 export class TypedSpecification<T extends $Writing> extends Specification<T> {
     @specify('a piece of writing has a block')
@@ -130,8 +104,7 @@ export class TypedSpecification<T extends $Writing> extends Specification<T> {
 
     @specify('a piece of writing has characters')
     $mustHaveText(writing: T): void {
-        const held = (writing.block?.$elements ?? []) as unknown[];
-        $check(held.some(one => (typeof one === 'string' && one !== '') || (typeof one === 'number') || (one instanceof $Writing && !one.parenthetical)), 'a piece of writing has characters, and this one is empty');
+        $check(writing.copy !== '', 'a piece of writing has characters, and this one is empty');
     }
 
     @specify('a piece of writing has a type')
@@ -156,7 +129,7 @@ export class TypedSpecification<T extends $Writing> extends Specification<T> {
 
     @specify('a piece of writing descends from a chain that terminates')
     $terminates(writing: T): void {
-        writing.book();
+        void writing.book;
     }
 
     @specify('a piece of writing is one kind of writing')
@@ -171,8 +144,6 @@ export class TypedSpecification<T extends $Writing> extends Specification<T> {
 
 }
 
-
-export type Dress = ComponentType<{ className?: string; children?: ReactNode }>;
 
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);

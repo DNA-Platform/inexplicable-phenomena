@@ -1,12 +1,10 @@
 import { $Block, $, cache } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
-import { $Section } from '@/writing/Section';
-import { $TypeOfChapter } from './Chapter';
+import { $Chapter, $TypeOfChapter } from './Chapter';
 
-export class $Cover extends $Composition<$Section> {
+export class $Cover extends $Chapter {
     $Cover(block: $Block) {
-        super.$Composition(block);
+        super.$Chapter(block);
         this._type = $(<TypeOfCover />);
     }
 }

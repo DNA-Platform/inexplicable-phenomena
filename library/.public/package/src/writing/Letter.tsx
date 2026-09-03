@@ -6,8 +6,6 @@ import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Ref
 import { $Path } from '@/reference/Path';
 import { $$ } from '@/utilities/Lib';
 
-export const graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
-
 export class $Letter extends $Composition<$Letter> implements $Composition$<$Letter> {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
     case: 'uppercase' | 'lowercase' = 'lowercase';
@@ -62,8 +60,6 @@ export class $$Letter extends $Reference implements $Reference$<$Letter> {
 
 export class $TypeOfLetter extends $Type {
     resolve = false;
-
-    override get shell(): typeof $Writing { return $Letter; }
     override code = 'Lr';
 
     override get canonicalForm(): typeof $Writing { return $Letter; }
@@ -88,10 +84,12 @@ export class $TypeOf$Letter extends $TypeOfReference {
 }
 
 class LetterSpecification extends TypedSpecification<$Writing> {
+    protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+
     @specify('a letter is one grapheme')
     $oneCharacter(writing: $Writing): void {
         const copy = writing.copy;
-        $check(graphemes.segment(copy).containing(0)?.segment === copy, 'a letter is one grapheme, and this one is not');
+        $check(this.graphemes.segment(copy).containing(0)?.segment === copy, 'a letter is one grapheme, and this one is not');
     }
 }
 

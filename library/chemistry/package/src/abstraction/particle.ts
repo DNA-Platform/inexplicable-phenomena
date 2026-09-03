@@ -21,6 +21,9 @@ import { lookName } from "./bond";
 
 export const $phaseOrder: $Phase[] = ['setup', 'mount', 'render', 'layout', 'effect', 'unmount'];
 
+// isParticle — checks the prototype-chain marker stamped on $Particle.prototype.
+// Particularized carriers have the marker stamped as an own property because
+// their prototype chain is severed to the original (non-particle) object.
 export function isParticle(x: any): boolean {
     return x != null && typeof x === 'object' && x[$particleMarker$] === true;
 }
@@ -41,27 +44,46 @@ export class $Particle {
     [$destroyed$]?: boolean;
     [$construction$]?: Promise<any>;
     [$formPromise$]?: Promise<any>;
+    // HELD LOOSELY ON PURPOSE. $resolveComponent$ states the precise type; this
+    // slot only has to hold one. Pinning it to Component<this> makes every public
+    // prop that mentions the chemical's own type turn Component<T> contravariant,
+    // and a derived chemical stops being assignable to the base it extends.
     [$component$]?: Component<any>;
     get [$isTemplate$]() { return this == (this as any)[$type$][$$template$$]; }
     get [$derived$]() { return this !== this[$template$]; }
 
+    // Cross-cutting render-state props. Defaults: $show=true, $hide=false.
+    // Hidden if $show is explicitly false or $hide is explicitly true.
     $show?: boolean;
     $hide?: boolean;
 
+    // Which look this instance draws — a position in its series, or a name
+    // `@look` gave one. Reactive like any other $-field, so writing it repaints.
     $look: number | string = 0;
 
+    // Where this belongs, said by the chemical that draws it: `on={() =>
+    // this.member}`. The render walk resolves it against that chemical, and the
+    // instance completes it on mount — a member cannot be given something that
+    // does not exist yet, and at the moment the walk runs, this does not.
     $on?: Function | Function[];
 
+    // Inline vs block: a class declares itself inline (flows within a text block)
+    // in its constructor; block is the default. Read from the template, frozen.
     inline = false;
 
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
+    // [$resolveComponent$] — internal accessor. The React FC for this particle.
+    // $Chemical overrides to add bond-constructor wiring. Author code never
+    // reaches for this; the public surface is the `$()` callable.
     [$resolveComponent$](): Component<any> {
         if (Object.prototype.hasOwnProperty.call(this, $component$)) return this[$component$]!;
         return this[$component$] = $lift(this) as any;
     }
 
     constructor(particular?: object) {
+        // Particularizing an existing particle is a no-op: return it as-is.
+        // (JS uses an object returned from a constructor in place of `this`.)
         if (particular !== undefined && isParticle(particular)) {
             return particular as any;
         }
@@ -71,9 +93,13 @@ export class $Particle {
         this[$symbol$] = $Particle[$$createSymbol$$](this);
         this[$phases$] = new Map($phaseOrder.map(p => [p, []]));
 
+        // Reactive machinery — every particle carries a molecule (its bond
+        // graph) and a reaction (its single re-render entry point).
         this[$molecule$] = new $Molecule(this);
         this[$reaction$] = new $Reaction(this);
 
+        // Template tracking — every instance is its own template by default.
+        // Derivatives via $lift inherit the parent's $template$ via prototype.
         const $this = this as any;
         if (!$this[$type$][$$template$$] || !($this[$type$][$$template$$] instanceof $this[$type$]))
             $this[$type$][$$template$$] = this;
@@ -81,6 +107,7 @@ export class $Particle {
 
         if (particular === undefined) return;
 
+        // see [docs/chemistry/books/particle/particularization.md].
         let proto = Object.getPrototypeOf(this);
         while (proto && proto !== Object.prototype) {
             for (const key of Reflect.ownKeys(proto)) {
@@ -99,6 +126,10 @@ export class $Particle {
         return this.toString();
     }
 
+    // frame — the render template method. $lift's render entry calls
+    // [$renderView$], which calls frame(), never view() directly. Override
+    // frame() to WRAP what is drawn, and wrap `super.frame()` so the content
+    // inside the wrapper still evolves with the view.
     frame(): ReactNode {
         const table = this[$views$];
         const drawn = table.get(this.$look ?? 0);
@@ -112,6 +143,10 @@ export class $Particle {
         return this.frame();
     }
 
+    // The view dictionary — every look this instance can draw, held under its
+    // position and under any name `@look` gave it. `view` is 0, `$view` is 1,
+    // `$$view` is 2; a subclass extends the series by declaring the next one
+    // and replaces a look by overriding its name.
     get [$views$](): Map<number | string, () => ReactNode> {
         const held = viewTables.get(this);
         if (held) return held;
@@ -171,6 +206,7 @@ export class $Particle {
         this[$phase$] = phase;
         const queue = this[$phases$].get(phase);
         if (queue) while (queue.length > 0) queue.shift()!();
+        // see [docs/chemistry/books/particle/lifecycle.md] — prototype-chain propagation.
         const proto = Object.getPrototypeOf(this);
         if (proto && Object.prototype.hasOwnProperty.call(proto, $phases$)) {
             proto[$resolve$](phase);
@@ -221,12 +257,23 @@ export class $Particle {
     static #symbolPattern = /\[(\d+)\]$/;
 }
 
+// Stamp the marker on $Particle.prototype so every naturally-constructed
+// particle (and subclass instance) inherits it. Particularized carriers have
+// the marker copied as an own property when their prototype chain is severed.
 ($Particle.prototype as any)[$particleMarker$] = true;
 
+// $isChemicalBase$ stops the molecule's prototype walk at the framework base.
+// Set on $Particle.prototype (the actual framework root for reactive entities)
+// so subclasses inherit transitively — the walk halts at the user's class.
 ($Particle.prototype as any)[$isChemicalBase$] = true;
 
+// Every look an instance can draw, built once and held by instance. The
+// content is decided by the prototype chain, and a derivative reads the same
+// chain its template does.
 const viewTables = new WeakMap<object, Map<number | string, () => ReactNode>>();
 
+// The position of the furthest look declared anywhere on an instance's chain.
+// The descriptor-value test takes the real function and skips an accessor.
 function deepestLook(particle: any): number {
     let deepest = 0;
     let proto = Object.getPrototypeOf(particle);
@@ -258,16 +305,37 @@ function missingLook(particle: any, table: Map<number | string, unknown>, asked:
         : `${whose} has no look called ${asked} — none of its ${drawn} looks is named.`;
 }
 
+// ===========================================================================
+// Render filters — cross-cutting interception of view rendering.
+//
+// Each filter is consulted right after $apply(props), before $bond() and
+// view(). Returning `undefined` means "no opinion, continue normally."
+// Returning anything else (including null) means "this is the rendered
+// output; skip view." First non-undefined wins.
+//
+// Used internally for $show/$hide. Users can register their own filters via
+// `$Particle.filter(fn)` for cross-cutting concerns (loading, error, A/B
+// gating, feature flags). The registry lives at module scope so the class
+// itself stays clean.
+// ===========================================================================
+
 export type $RenderFilter = (particle: $Particle) => ReactNode | undefined;
 
 const $$filters: $RenderFilter[] = [
+    // Default filter: $show/$hide visibility.
     (p: any) => (p.$show === false || p.$hide === true) ? null : undefined,
 ];
 
+// registerFilter — framework-developer API to add a render filter. Lives in
+// `@dna-platform/chemistry/symbolic` (audience-1 surface) — component
+// developers never see this; framework extenders import it deliberately.
 export function registerFilter(fn: $RenderFilter): void {
     $$filters.push(fn);
 }
 
+// applyRenderFilters — consult the filter chain for a particle. Returns the
+// short-circuit ReactNode if any filter intercepts, or `undefined` if all
+// pass and normal rendering should proceed.
 export function applyRenderFilters(p: $Particle): ReactNode | undefined {
     for (const filter of $$filters) {
         const result = filter(p);
@@ -276,6 +344,13 @@ export function applyRenderFilters(p: $Particle): ReactNode | undefined {
     return undefined;
 }
 
+// $lift — the single FC factory for both particles and chemicals.
+//
+// Two paths based on whether parent is a template:
+//   Template:     Object.create → derivative with own cid, reaction, molecule.
+//                 Per-mount isolation. Destroyed on unmount.
+//   Non-template: Instance IS the component. No clone, no derivative.
+//                 State persists across unmount/remount. Caller owns lifecycle.
 export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?: boolean): $Component<T> {
     const direct = !(parent as any)[$isTemplate$];
     const Component = (props?: $Props): ReactNode => {
@@ -314,6 +389,12 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             p = derive();
             setCid(p[$cid$]);
         } else {
+            // The registry forgets a cid when its reaction is destroyed, and
+            // React can re-render a component whose instance has been torn
+            // down — the state still remembers a cid the registry no longer
+            // has. Rebuilding is the honest answer. The `!` that used to stand
+            // here turned that into "Cannot set properties of undefined",
+            // nondeterministically and far from its cause.
             p = $Reaction.find(cid);
             if (!p) {
                 p = derive();
@@ -392,7 +473,15 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
     return Component as any;
 }
 
+// A CHEMICAL SAYS WHERE IT BELONGS ON MOUNT, not while it is being drawn. The
+// resolution was made in the render walk, where the chemical that wrote it was
+// known; the instance it names arrives only here. Doing it in an effect is also
+// what keeps the write legal — a member of another chemical written mid-render
+// is a state change in the middle of somebody else's drawing.
 function belong(particle: any): void {
+    // A CHEMICAL WEARING A FACADE DOES NOT ASSIGN ITSELF — its facade does, and
+    // frame() has already handed the assignment on. That is what a facade is for:
+    // callers hold it rather than what it stands for.
     if (particle[$facade$] !== undefined) return;
     const assign = particle.$on;
     if (assign == null) return;
@@ -412,6 +501,14 @@ function belong(particle: any): void {
     belongs(particle, assign);
 }
 
+// AND IT BELONGS THERE, which is a fact about the graph and not only about a
+// member. A chemical written in a view is its own parent, so nothing carries its
+// writes to whoever holds it and nothing resolves outward from it. Saying where
+// it belongs is the one moment that answer is known — so the lineage is threaded
+// here, to the chemical whose view wrote it.
+//
+// Only when it has none of its own: a bonded child already has a parent, and
+// this must never move one that composition established.
 function belongs(particle: any, assign: any): void {
     const places = assign?.[$assigned$] as { receiver: any }[] | undefined;
     const receiver = places?.[0]?.receiver;

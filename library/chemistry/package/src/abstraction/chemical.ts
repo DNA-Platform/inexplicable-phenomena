@@ -22,16 +22,27 @@ import { $Reaction } from "./reaction";
 import { dev, warn, $exceptions } from "../implementation/dev";
 import { asking } from "../implementation/augment";
 
+// Re-export bond / reflection / molecule / reaction / scope machinery for
+// consumers that import from chemical.ts.
 export { $Bond, $Reagent, $Reflection, inert, reactive } from "./bond";
 export { $Molecule } from "./molecule";
 export { $Reaction } from "./reaction";
 export { $Scope, withScope } from "../implementation/scope";
+
+
+// ===========================================================================
+// Bond orchestration
+// ===========================================================================
 
 export interface $BondParameter {
     isArray: boolean;
     isSpread: boolean;
 }
 
+// $Reactants — the information-hiding wrapper a bond ctor receives. Exposes
+// only `.values` (the array of arguments). Narrower than $SynthesisContext on
+// purpose: ctors should not be able to reach parent contexts, parameter
+// parsing state, or sibling child contexts.
 export class $Reactants {
     values: any[] = [];
 }
@@ -152,6 +163,12 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         this.parseBondConstructor();
     }
 
+    // A class names its bond constructor after itself, and the RUNTIME class
+    // name cannot be trusted to find it. A decorator on any member makes the
+    // emit wrap the class and rename its binding — `$Writing` becomes
+    // `_$Writing` — while the method keeps the name it was written with. The
+    // lookup then missed, no bond constructor was found, and a chemical
+    // silently stopped grouping its own prose into a block.
     private static bondName(cls: any): string | undefined {
         const proto = cls.prototype;
         if (!proto) return undefined;
@@ -165,10 +182,13 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         return undefined;
     }
 
+    // What a name was written as, with a build's decoration taken off: esbuild
+    // prefixes an underscore and suffixes a digit when it has to rename.
     private static authored(name: string): string {
         return name.replace(/^_+/, '').replace(/\d+$/, '');
     }
 
+    // The wrapper sits on the prototype: `super.$Ancestor()` resolves there and never sees an instance property.
     private watchChain(): { reached: Set<string>; restore: () => void } | undefined {
         if (this._declared.length < 2) return undefined;
         const chemical = this._chemical as any;
@@ -192,6 +212,11 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             $chainReached.get(this)?.add(name);
             return inner.apply(this, args);
         };
+        // The wrapper HOLDS what it wraps rather than a flag. Its own signature
+        // is `(...args)`, and parseBondConstructor reads a signature to learn
+        // how many arguments a bond takes — so a synthesis built after a class
+        // was watched would have read the wrapper's shape instead of the one
+        // that was written.
         (wrapper as any)[$watched$] = inner;
         Object.defineProperty(cls.prototype, name, { ...existing, value: wrapper });
     }
@@ -208,6 +233,13 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         const context = new $SynthesisContext(chemical, this._parameters);
         parentContext?.childContexts.push(context);
 
+        // Props are construction, not mutation. A chemical written inside
+        // another chemical's writing is BUILT during that chemical's render and
+        // handed its props here; recording those writes as changes marks the
+        // running scope dirty, so the render runs again, the child is built
+        // again, and nothing settles — the host loops and the child never
+        // renders once. The rendering flag is the framework's own way of saying
+        // "this write is not news", raised for exactly the assignment.
         const lastProps = chemical[$lastProps$] || {};
         const rendering = chemical[$rendering$];
         chemical[$rendering$] = true;
@@ -222,6 +254,10 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             chemical[$rendering$] = rendering;
         }
 
+        // WRITTEN ARGUMENTS REPLACE CHILDREN. A bond constructor can be handed
+        // what it composes directly — prose, numbers and chemicals already
+        // built — without any of it having to survive React's own child
+        // handling, which refuses an instance outright.
         const written = (props as any)?.[$written$] as any[] | undefined;
         this.process(written ?? children, context, !!written);
         if (context.isModified) {
@@ -236,6 +272,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         if (this._bondConstructor && context.argsValid) {
             const newArgs = context.arguments.values;
             if (this._lastBondArgs && $Synthesis.sameArgs(newArgs, this._lastBondArgs)) {
+                // Children unchanged — skip bond constructor
             } else {
                 this._lastBondArgs = $Synthesis.snapshotArgs(newArgs);
                 $paramValidation.reset();
@@ -243,11 +280,18 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                 $paramValidation.count = this._parameters.length;
                 let bondResult: any;
                 const watch = this.watchChain();
+                // A CHEMICAL'S OWN CONSTRUCTION IS NOT NEWS. Applying props is
+                // already wrapped this way; the bond constructor was not, so a
+                // field written here woke the composition tree and re-ran the
+                // very bond that wrote it. Writes to OTHER chemicals still react.
                 const bonding = c[$rendering$];
                 c[$rendering$] = true;
                 try {
                 if (!dev && $exceptions.mode === 'throw') {
                     try {
+                        // The asker is raised HERE, at the invocation, not only in
+                        // $lift's wrapper — the eval path reaches this without $lift,
+                        // and a bond constructor is user code of this chemical.
                         bondResult = withAsker(c, () => this._bondConstructor!.apply(this._chemical, newArgs), true);
                         if (!(bondResult instanceof Promise)) this.assertChainReached(watch);
                         assertValid(c);
@@ -317,6 +361,12 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         return args.map(a => Array.isArray(a) ? $Synthesis.snapshotArgs(a) : a);
     }
 
+    // AUDIT: brittle — regex-parses the bond constructor's source string to
+    // discover parameter shape (spread vs. positional). Breaks under arrow-
+    // function ctors, default values, destructured params, multiline params,
+    // and TypeScript-emitted `__decorate` wrappers. A more robust approach:
+    // Function.prototype.length for arity + an explicit `@spread` decorator
+    // for spread params. See caveat: bond-ctor-source-parsing (TBD).
     private parseBondConstructor() {
         if (!this._bondConstructor) return;
 
@@ -335,9 +385,13 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
             }));
     }
 
+    // Is this child inline (flows within a text block)? Read from the type: a tag in
+    // the inline set, or a chemical whose template declares itself inline. Raw text
+    // and numbers are inline. This is the only signal grouping has at runtime.
     private isInline(child: any): boolean {
         if (child == null || typeof child === 'boolean') return false;
         if (typeof child === 'string' || typeof child === 'number') return true;
+        // An already-built chemical answers for itself.
         if (child instanceof $Chemical) return child.inline;
         if (!React.isValidElement(child)) return false;
         const type = (child as any).type;
@@ -346,12 +400,23 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         return false;
     }
 
+    // Each maximal run of consecutive inline children becomes one <block>; block
+    // children pass through. A lone inline still gets its block. No-op if nothing
+    // is inline, so block-only bond constructors are untouched.
     private groupInline(childArray: any[]): any[] {
         if (!childArray.some(c => this.isInline(c))) return childArray;
         const out: any[] = [];
         let run: any[] = [];
         const flush = () => {
             if (!run.length) return;
+            // Lift each inline node to an instance, once — parented to the chemical whose
+            // bond is interpreting it: an element in a block reaches outside the block.
+            // $BLOCK TAKES THEM AS THEY ARE: a raw string, a raw number, and a
+            // chemical — in written order. Wrapping the raw ones is what made
+            // prose indistinguishable from a written element.
+            // $Block takes them as they are: a raw string, a raw number, and a
+            // chemical — a built one whole, because rebuilding it would re-run
+            // its bond constructor with nothing and empty it.
             const els = run.map(c =>
                 (typeof c === 'string' || typeof c === 'number' || c instanceof $Chemical)
                     ? c
@@ -367,6 +432,10 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         return out;
     }
 
+    // React refuses a chemical as a child — `Children.toArray` throws on any
+    // object that is not an element. Written arguments are flattened here
+    // instead, keeping an already-built chemical whole. The JSX path is
+    // untouched and still goes through React exactly as it did.
     private flatten(written: any): any[] {
         const out: any[] = [];
         const walk = (child: any): void => {
@@ -379,12 +448,19 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
     }
 
     private process(children: ReactNode, context: $SynthesisContext, written = false) {
+        // Grouping runs only inside a bond constructor's own child interpretation —
+        // which also keeps a block's run and a tag's text from being re-grouped.
         const raw = written ? this.flatten(children) : React.Children.toArray(children);
         const grouping = this._bondConstructor && !(this._chemical instanceof $Eval);
         const childArray = grouping ? this.groupInline(raw) : raw;
         context.singleton = !Array.isArray(children) && childArray.length === 1;
         const parent = (this._chemical instanceof $Eval && this._chemical.parentFor) || this._chemical;
         let ctx = context;
+        // Same-type siblings need keys only where the AUTHOR is building the
+        // list — a `.map()` inside view(). Children the bond constructor
+        // interprets are keyed by chemistry itself, from the chemical's own
+        // identity, and their order is preserved by the bond; asking an author
+        // to key those is asking for what the framework already supplies.
         const typeCounts: Map<any, number> | undefined = (dev && !this._bondConstructor) ? new Map() : undefined;
         for (const child of childArray) {
             ctx = ctx.next(child);
@@ -490,11 +566,19 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
     }
 }
 
+// ===========================================================================
+// $ParamValidation — runtime parameter type checking
+// ===========================================================================
+
 export class $ParamValidation {
     index = 0;
     count = -1;
     types: string[] = [];
     errors: string[] = [];
+    // Why the INSTANCE is not valid, stated by the classes themselves as the
+    // bond constructor runs. A parameter mismatch and a validity failure are
+    // collected in one place and raised once, so a reader can see whether they
+    // are related rather than learning one and then the other.
     reasons: string[] = [];
     chemical: $Chemical | null = null;
     validated = false;
@@ -503,10 +587,17 @@ export class $ParamValidation {
         this.reasons.push(text);
     }
 
+    // IS A BOND IN FLIGHT. Set when one starts, cleared when it ends, so a reason
+    // knows whether anybody is listening for it.
     get bonding(): boolean {
         return this.chemical !== null;
     }
 
+    // A REASON STATED OUTSIDE A BOND IS RAISED WHERE IT IS STATED. Inside one it is
+    // collected, because a bond that raised on the first reason could never build an
+    // INVALID PART — and an invalid part is still a part, carrying its failure where
+    // it stands, rather than absent. Outside a bond nobody is collecting: the reason
+    // used to sit in this object until the next reset() discarded it, unheard.
     raise(text: string) {
         this.reason(text);
         if (!this.bonding) throw new Error(text);
@@ -514,6 +605,9 @@ export class $ParamValidation {
 
     check<T>(arg: T, ...types: $ParameterType[]): T {
         const paramNumber = this.index++;
+        // An empty inline run produces no block. A 'block' parameter materializes an
+        // empty $Html<'block'> so callers can write $check(x, 'block') without a null
+        // guard — the block is simply empty, and renders nothing.
         if (arg === undefined && types.some(t => t === 'block' || t === ($Block as any))) {
             arg = new $Block() as any;
         }
@@ -547,6 +641,8 @@ export class $ParamValidation {
 
     evaluate() {
         if (this.validated) return;
+        // Nothing to say yet — and NOT marked done, because a class states its
+        // validity reasons after the parameters have already been checked.
         if (this.errors.length === 0 && this.reasons.length === 0) return;
 
         const className = this.chemical ? this.chemical.constructor.name : 'Unknown';
@@ -560,6 +656,7 @@ export class $ParamValidation {
             message += `  )\n\n`;
         }
         if (this.errors.length) message += this.errors.join('\n');
+        // Both kinds, in one raise, so a reader can see whether they are related.
         if (this.reasons.length) {
             if (this.errors.length) message += `\n`;
             message += `\nNot valid because:\n  ${this.reasons.join('\n  ')}`;
@@ -754,6 +851,9 @@ export function $is<T>(ctor: abstract new (...args: any[]) => T): T {
     return ctor as any;
 }
 
+// Ask the instance whether it is valid, and let it STATE why while it answers.
+// A class that states its reason through $check raises THERE; one that simply
+// answers false is given a reason here and raised by evaluate().
 function assertValid(chemical: any) {
     if (chemical[$isTemplate$]) return;
     if (typeof chemical.valid === 'function' && !chemical.valid()) {
@@ -762,6 +862,10 @@ function assertValid(chemical: any) {
         }
     }
 }
+
+// ===========================================================================
+// $Chemical
+// ===========================================================================
 
 const standing = { $ref: ' standing' };
 const kept = { $ref: ' kept' };
@@ -791,16 +895,28 @@ function branch(cls: any): any[] {
 
 const noFacades: any[] = [];
 
+// KEPT OFF THE CLASS OBJECT. A lazy stamp on the constructor would pile a symbol
+// onto it at first render, which is exactly what the constructor-static
+// invariant forbids.
 const worn = new WeakMap<any, any[]>();
 
+
+// A FACADE IS A MEMBER HOLDING A COMPONENT. `facade = Card` says this chemical is
+// DRAWN AS a Card; nothing is asked of Card in return. The declaration is read off
+// the class, because the walk decides before any instance of it exists.
 function facadesOf(chemical: any): any[] {
     const cls = chemical?.[$type$];
     if (!cls) return noFacades;
     const known = worn.get(cls);
     if (known) return known;
+    // READ THE TEMPLATE, NEVER THE DERIVATIVE. A per-mount derivative is
+    // Object.create(template) and owns almost nothing; the declaration lives on
+    // the template, which is the one instance of a class that has its fields.
     const declared = templateOf(cls) ?? chemical;
     const found: any[] = [];
     for (const name of Object.getOwnPropertyNames(declared)) {
+        // A $-PREFIXED MEMBER IS A PROP — extrinsic context handed in from
+        // outside. An assignment says what this thing IS, so it is never one.
         if (name.charCodeAt(0) === 36) continue;
         const value = (declared as any)[name];
         const held = typeof value === 'function' ? (value as any).$chemical : undefined;
@@ -810,6 +926,9 @@ function facadesOf(chemical: any): any[] {
     return found;
 }
 
+// ONE FACADE PER CHEMICAL PER DECLARATION, kept rather than remade. It is bound
+// to the chemical it stands for, so it is a real part of the graph, and it holds
+// that chemical as `of` — which is what makes it addressable in its place.
 const dressed = new WeakMap<any, Map<any, { component: any; chemical: any }>>();
 
 function dress(chemical: any, declared: any): { component: any; chemical: any } {
@@ -857,8 +976,6 @@ function missing(formula: any, asked: string, names: string[]): string {
 export class $Chemical extends $Particle {
     resolve = true;
     formula = false;
-    strict = true;
-    names?: string[];
     $pid?: string;
     protected _persist = false;
 
@@ -887,7 +1004,7 @@ export class $Chemical extends $Particle {
     protected [cache](key?: string): void {
         const chain = branch((this as any)[$type$]);
         const ref = key === undefined ? standing : { $ref: key };
-        if (key !== undefined) (this.names ??= []).push(key);
+        if (key !== undefined && chain.slice(1).some(cls => catalogueOf(cls).$find(ref) !== undefined)) return;
         Object.defineProperty(this, $isTemplate$, { value: true, configurable: true });
         for (const cls of chain) {
             const held = catalogueOf(cls);
@@ -912,11 +1029,14 @@ export class $Chemical extends $Particle {
             return asker ? withAsker(asker, () => $(component)) : component;
         }
         const names: string[] = held.$find(kept) ?? [];
-        if (names.length === 0 || !this.strict) return undefined;
+        if (names.length === 0) return undefined;
         throw new Error(missing(this, key, names));
     }
     [$remove$] = false;
 
+    // WHAT THIS SCOPE ANSWERED. `facade` is what the class declares; `$facade` is
+    // what the walk resolved it to where the element was written, and it is a
+    // prop for exactly the reason every `$` member is one — it is extrinsic.
     $facade?: any;
     [$facade$]?: $Chemical;
     [$facades$]() { return facadesOf(this); }
@@ -930,6 +1050,11 @@ export class $Chemical extends $Particle {
 
     [$$parent$$]?: $Chemical;
     get [$parent$](): $Chemical | undefined { return this?.[$$parent$$]; }
+    // Joining a catalyst graph: replace this chemical's default $Particle
+    // reaction with one that shares the catalyst's reaction system, so writes
+    // here propagate through the parent's tree. The default reaction created
+    // in $Particle.constructor is correct for stand-alone chemicals; this
+    // setter rewires when the chemical becomes part of a composition.
     set [$parent$](parent: $Chemical) {
         parent = parent || this;
         const wasCatalyst = this[$isCatalyst$];
@@ -976,8 +1101,25 @@ export class $Chemical extends $Particle {
         return this[$children$];
     }
 
+    // WRAPPING HAPPENS BY INSTANCE, AND frame() IS WHERE A PARTICLE WRAPS WHAT
+    // IT DRAWS. A chemical that declares a facade is drawn inside it — here, on
+    // the per-mount derivative, so every mount site decides for itself and
+    // nothing has to be stamped onto an element.
+    //
+    // THE FACADE IS HANDED THIS INSTANCE as `of`, and this instance's own
+    // drawing as its children — so there is one object, and what the interface
+    // reads and writes is what the screen shows. It arrives as an ordinary prop
+    // because React's createElement copies its config with for...in, which does
+    // not see symbol keys, so the written-arguments channel cannot be reached
+    // from here.
+    //
+    // Nothing re-enters the view, so a stack of facades terminates on its own and
+    // every one of them is handed the chemical rather than the one beneath.
     override frame(): ReactNode {
         if (this[$isTemplate$]) return super.frame();
+        // What the scope answered stands in for what the class declared.
+        // null is the walk saying it is ALREADY inside one; undefined is the walk
+        // having nothing to say, so the declaration stands.
         const wearing = this.$facade === null ? noFacades
             : this.$facade ? [this.$facade] : facadesOf(this);
         if (wearing.length === 0) return super.frame();
@@ -985,6 +1127,10 @@ export class $Chemical extends $Particle {
         const outermost = dress(this, wearing[0]);
         for (let at = wearing.length - 1; at >= 0; at--) {
             const held = at === 0 ? outermost : dress(this, wearing[at]);
+            // AND THE ASSIGNMENT MOVES WITH IT. A facade exists so callers hold IT
+            // rather than what it stands for, so the outermost one carries the
+            // `on` and assigns itself — which is why nothing downstream needs a
+            // case for "unless it wears a facade".
             const carries = at === 0 ? { of: this, on: this.$on, children: out } : { of: this, children: out };
             out = React.createElement(held.component, carries as any);
         }
@@ -1032,6 +1178,9 @@ export class $Chemical extends $Particle {
         this[$$parent$$] = undefined as any;
         this[$molecule$]?.destroy();
         this[$reaction$]?.destroy();
+        // A scope lets go with the chemical that held it. `$deref` is the only
+        // release this design has, and a published component holding its
+        // children forever is the leak it exists to prevent.
         if (Object.prototype.hasOwnProperty.call(this, $registry$)) (this as any)[$registry$]?.$deref?.();
         this[$destroyed$] = true;
     }
@@ -1047,6 +1196,12 @@ export class $Chemical extends $Particle {
     }
 }
 
+// Sentinel: marks $Chemical.prototype so $Molecule can stop its prototype
+// walk at the framework boundary without importing $Chemical.
+// $isChemicalBase$ now lives on $Particle.prototype (the framework root for
+// reactive entities). Inherited transitively here.
+
+// bind(chemical, parent?) — create a bound child instance of a chemical
 export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Component<T> {
     const template = chemical[$template$];
     const child = Object.create(template) as T;
@@ -1064,6 +1219,10 @@ export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Comp
     return component;
 }
 
+// ===========================================================================
+// Wrapped chemicals — $Function$, $Html$, $Include
+// ===========================================================================
+
 export class $Function$<P = any> extends $Chemical {
     private _component: React.FC<P>;
     get __$Function() { return this._component; }
@@ -1079,11 +1238,15 @@ export class $Function$<P = any> extends $Chemical {
     }
 }
 
+// The tags that flow inline within a text block. Anything not here is a block.
+// Raw strings and numbers flow inline too and are answered directly by isInline —
+// $Block takes them as they are, so they are not types.
 const $inlineTypes = new Set<string>([
     'a', 'abbr', 'b', 'bdi', 'bdo', 'cite', 'code', 'data', 'dfn', 'em', 'i',
     'kbd', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
     'time', 'u', 'var', 'wbr']);
 
+// A tag, wrapping its content in the element it names.
 export class $Html$<T extends $HtmlTag = any> extends $Chemical {
     get type() { return this._type; }
     protected _type: T;
@@ -1099,6 +1262,18 @@ export class $Html$<T extends $HtmlTag = any> extends $Chemical {
     }
 }
 
+// $Block — the one content kind, and the only thing a bond constructor is ever
+// handed for prose: a maximal run of inline writing gathered into one argument.
+//
+// A block IS its contents rather than a wrapper around them, which is why it
+// draws them directly. It carries what was written AS IT WAS WRITTEN — a raw
+// string, a raw number, a chemical whole — because wrapping the raw ones is what
+// made prose and a written element indistinguishable downstream.
+//
+// EVERY READING OF A BLOCK IS A BLOCK, and that is the point of the operator set
+// below: a reading can be read again, so a caller composes readings instead of
+// falling out into an array on the first one and hand-building a block to get
+// back in.
 export class $Block extends $Html$<'block'> {
     $elements?: $Written[];
     get elements(): $Written[] { return this.$elements ?? []; }
@@ -1124,6 +1299,10 @@ export class $Block extends $Html$<'block'> {
         return block(this.elements.flatMap(pick));
     }
 
+    // THE ONE MEMBER THAT ANSWERS A PIECE RATHER THAN A BLOCK, and it is a
+    // reading of the instruction rather than the instruction: a block of one and
+    // the one are different things, and a caller who wanted the block wrote
+    // `where`. Reversible in a line if the reading is wrong.
     single(match: (piece: $Written, at: number) => boolean): $Written {
         const found = this.elements.filter(match);
         if (found.length !== 1)
@@ -1137,6 +1316,7 @@ export class $Block extends $Html$<'block'> {
     }
 }
 
+// What a block holds, named once so the union is stated in one place.
 export type $Written = string | number | $Chemical;
 
 function block(elements: $Written[]): $Block {
@@ -1145,6 +1325,8 @@ function block(elements: $Written[]): $Block {
     return made;
 }
 
+// The chemical for a tag. `block` is the one kind with behaviour of its own, so
+// it is a class rather than a branch inside one.
 function htmlFor(type: string): $Html$ {
     return type === 'block' ? new $Block() : new $Html$(type as any);
 }
@@ -1155,12 +1337,20 @@ export class $Include extends $Chemical {
     }
 }
 
+
 export function $wrap<P>(Component: React.FC<P>): any {
     if (typeof Component !== "function")
         throw new Error(`Expected a function component, got ${Component}`);
     return new $Function$(Component);
 }
 
+// $Eval — a throwaway host whose bond constructor captures the single child handed
+// to it. `$(<Word/>)` runs the real synthesis over the element and takes the
+// materialized instance back — reusing process()'s exact dispatch (chemical, HTML,
+// function component, text), never a parallel binding path.
+// WHAT WAS WRITTEN, handed straight to a bond constructor. It travels as a
+// symbol prop so it cannot collide with an author's, and `for...in` does not
+// enumerate it, so it is never assigned onto the chemical as one.
 const $written$ = Symbol('$Chemistry.written');
 
 class $Eval extends $Chemical {
@@ -1173,6 +1363,9 @@ class $Eval extends $Chemical {
 function evalElement(element: React.ReactElement, parent?: $Chemical, written?: any[]): any {
     const host = new $Eval();
     host.parentFor = parent;
+    // The element keeps its own props; the written arguments ride beside them.
+    // NOT cloneElement — it copies props with `for...in`, which does not
+    // enumerate a symbol, so the mark was silently dropped.
     const described = written?.length
         ? { ...element, props: { ...(element.props as object), [$written$]: written } } as React.ReactElement
         : element;
@@ -1180,12 +1373,42 @@ function evalElement(element: React.ReactElement, parent?: $Chemical, written?: 
     return host.result;
 }
 
+// ===========================================================================
+// $Chemistry — the multi-shape callable type, exported as `$`.
+//
+// Overloads:
+//   $(props)              JSX:    <$>...</$> renders a fragment.
+//   $(chemical)           inst:   returns $Component<T>.
+//   $(particle)           inst:   returns $Element<T>.
+//   $($ChemicalClass)     class:  Component<T> if empty ctor; else
+//                                 (...args) => Component<T>.
+//   $($ParticleClass)     class:  Element<T> if empty ctor; else
+//                                 (...args) => Element<T>.
+//
+// Empty-vs-args is the JS constructor's arity, not the bond constructor.
+// `$` has no `.foo` members yet — namespace reserved.
+// ===========================================================================
+
+// What narrows a registration: how far it reaches, and whose asks it answers.
+// The plain form is the one that projects downward.
 export interface $Narrowing {
     reach?: 'self' | 'progeny';
     asker?: abstract new (...args: any[]) => any;
 }
 
 interface $Chemistry {
+    // Eval: $(<Word/>) → the live instance. Defaults to `any` — the honest type,
+    // since JSX erased the real one and the result lands in an already-typed slot;
+    // $<$Word>(<Word/>) narrows it. Must precede the props overload, which an
+    // element structurally matches. The optional second argument assigns the
+    // evaluated instance's parent — $(<Toc/>, book) adopts it into book's graph.
+    // $(<Word/>) evaluates a description into a live instance. The rest of the
+    // arguments are handed to its BOND CONSTRUCTOR — `$(<Sentence prop="x"/>,
+    // ...written)` keeps its props and composes what it was given, which is how
+    // a composition is built from the literal things that were written rather
+    // than from their text. The position used to mean a PARENT; it had two
+    // callers, both of which say it another way now, and a composition needing
+    // its contents is the commoner thing by far.
     <T = any>(element: React.ReactElement, ...written: (string | number | $Chemical)[]): T;
     (props: { children?: ReactNode; key?: any }): ReactNode;
     <T extends $Chemical>(chemical: T): $Component<T>;
@@ -1194,25 +1417,62 @@ interface $Chemistry {
     <T extends $Particle>(klass: new () => T): Element<T>;
     <T extends $Chemical, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Component<T>;
     <T extends $Particle, A extends any[]>(klass: new (...args: A) => T): (...args: A) => Element<T>;
+    // The representative FIRST — a new component derived from the one given,
+    // whose scope falls back to it. `$` cannot be an element, a chemical or a
+    // constructor, so this cannot shadow anything above it.
     <T extends $Particle>(representative: $Chemistry, component: Component<T>): Component<T>;
     <T extends $Particle>(representative: $Chemistry, element: Element<T>): Element<T>;
+    // Resolve — the component to render HERE. Type-preserving, which is what
+    // makes a substitution invisible to the caller and impossible to make with
+    // anything that is not a subclass.
     <T extends $Particle>(component: Component<T>): Component<T>;
     <T extends $Particle>(element: Element<T>): Element<T>;
+    // A plain function component is wrapped on the way in, memoised, so it can
+    // be asked for and stood in for like any other. It carries no chemical of
+    // its own, so what comes back is typed loosely — honestly.
     <P>(fc: React.FC<P>): Component<any>;
+    // The representative LAST — what stands behind a component. Rare: this is
+    // the debugging and test-harness form, and it has no callers in consumer code.
     <T extends $Particle>(component: Component<T> | Element<T>, representative: $Chemistry): T;
+    // Register — `$(A,B)(C)` reads "for A, a B is a C". There is no form that
+    // registers without naming a scope.
     <A extends $Particle, B extends $Particle>(
         scope: Component<A> | Element<A>,
         requested: Component<B> | Element<B>
     ): (replacement: Component<B> | Element<B>, options?: $Narrowing) => Component<B> | Element<B>;
+    // …and the same, for scopes or parts that are plain function components.
     (scope: Component<any> | Element<any> | React.FC<any>, requested: React.FC<any>):
         (replacement: React.FC<any> | Component<any> | Element<any>, options?: $Narrowing) => any;
+    // HTML element catalogue — `$('div')` lazily creates a reactive $Html$
+    // chemical for the tag, caches its Component, returns it. `$('div', X)`
+    // registers `X` as the override for that tag — subsequent lookups
+    // return the override.
     <K extends keyof JSX.IntrinsicElements>(tag: K): Component<$Html$<K>>;
     <K extends keyof JSX.IntrinsicElements>(tag: K, override: any): any;
+    // Hydration — `$(pid)` answers the LIVE chemical enrolled under that
+    // persistence id, or undefined if none is alive. Checked before the HTML
+    // catalogue, so a pid that shadows a real tag name wins: name pids like
+    // names, not like tags.
     (pid: string): any;
 }
 
+// HTML catalogue — lazy registry of Components per tag name. Populated on
+// first `$('div')`; overridable via `$('div', CoolDiv)`.
 const $catalogue = new Map<string, any>();
 
+// ===========================================================================
+// The representative — `$` as an argument, and the scoping it selects.
+//
+// A component is a scope. What it registers lives on the chemical it wraps,
+// in a catalogue, so a per-mount derivative reads its template's through the
+// prototype chain and a derived scope's catalogue is the parent's `$new()` —
+// which makes falling back the catalogue's own recursive `$find` rather than
+// a walk we write. The only walk here is the composition lineage, because
+// that one is dynamic.
+// ===========================================================================
+
+// The chemical a chemical derived from, or undefined for a template. A class's
+// `.prototype` owns `constructor`; a chemical never does.
 function derivedFrom(chemical: any): any {
     const proto = Object.getPrototypeOf(chemical);
     if (!proto || Object.prototype.hasOwnProperty.call(proto, 'constructor')) return undefined;
@@ -1247,6 +1507,10 @@ function registry(chemical: any): any {
     return held;
 }
 
+// A scope's entries are stamped with the catalogue that owns them. `$find`
+// walks the topics chain, so without the stamp a registration would append to
+// what a PARENT answered and copy it down — turning shadowing into merging,
+// which is the opposite of what a derived scope promises.
 function entriesOf(held: any, key: any, own: boolean): any[] {
     const record = held?.$find(key);
     if (!record) return [];
@@ -1254,6 +1518,9 @@ function entriesOf(held: any, key: any, own: boolean): any[] {
     return record.entries;
 }
 
+// More specific wins, and specificity is stated rather than emergent: naming
+// who asks beats not naming them, and a narrowed reach beats a projected one.
+// Among equals the later registration wins.
 function chosen(entries: any[], asker: any, depth: number): any {
     let best: any;
     let rank = -1;
@@ -1266,6 +1533,9 @@ function chosen(entries: any[], asker: any, depth: number): any {
     return best?.replacement;
 }
 
+// One chemical's answer: its own catalogue (which falls through its derivation
+// chain by itself), then the class chain — a superclass's template scope, so a
+// subclass inherits what was registered for what it extends.
 function registered(chemical: any, key: any, asker: any, depth: number): any {
     const own = chosen(entriesOf(chemical[$registry$], key, false), asker, depth);
     if (own !== undefined) return own;
@@ -1279,6 +1549,8 @@ function registered(chemical: any, key: any, asker: any, depth: number): any {
     return undefined;
 }
 
+// The asker first, then outward through the composition lineage, then the
+// argument itself — because the default was never in the catalogue.
 function askedFor(component: any): any {
     const asker = currentAsker();
     if (!asker) return component;
@@ -1298,6 +1570,10 @@ function askedFor(component: any): any {
     return component;
 }
 
+// Configuration is refused while DRAWING — inside a bond constructor or a
+// view. A handler carries an asker so it can resolve, and runs after the
+// paint, so it may configure: a scope that changed mid-paint would mean one
+// component resolving two ways in a single frame.
 function configuring(act: string) {
     if (!drawing()) return;
     const asker = currentAsker();
@@ -1310,6 +1586,10 @@ function configuring(act: string) {
     );
 }
 
+// `$(A,B)(C)` — for A, a B is a C. `(C, {reach: 'self'})` narrows it to A's
+// own asks rather than its progeny; `(C, {asker: $Class})` answers only that
+// class's asks. The plain form is the one that projects downward, because the
+// alternative would mean naming every class between a book and a sentence.
 function registrar(scope: any, requested: any) {
     return (replacement: any, options?: { reach?: 'self' | 'progeny'; asker?: any }) => {
         configuring('a registration arrived');
@@ -1323,6 +1603,9 @@ function registrar(scope: any, requested: any) {
     };
 }
 
+// $($,Component) — a new component derived from the one given, whose scope
+// falls back to it. The chemical is derived so it inherits state the same way,
+// and made its own template so it still derives per mount.
 function derive(component: any): any {
     configuring('a scope was created');
     const from = component.$chemical;
@@ -1344,10 +1627,17 @@ function derive(component: any): any {
     return derived;
 }
 
+// $Chemistry$ — one class. Its view IS the dispatch. Typed `any` so the runtime
+// can be dynamic; call-site types come from `$Chemistry` wrapping `$`.
 class $Chemistry$ extends $Chemical {
     view(arg?: any): any {
+        // The representative in the FIRST position — `$($,Component)`. `$` is
+        // one unmistakable object carrying no `$chemical`, so identity is a
+        // discriminator nothing else can satisfy.
         if (arg === ($ as any)) return derive(arguments[1]);
 
+        // Fast path — JSX usage. null/undefined, or a plain object that is
+        // empty (<$ />) or has children (<$>...</$>).
         if (arg == null ||
             (Object.getPrototypeOf(arg) === Object.prototype &&
             (Object.keys(arg).length === 0 || 'children' in arg))
@@ -1356,6 +1646,8 @@ class $Chemistry$ extends $Chemical {
             return React.createElement(React.Fragment, null,
                 ...children.map((child, i) => {
                     if (React.isValidElement(child)) {
+                        // Auto-key by (chemical-symbol, position) so siblings
+                        // sharing the same template chemical don't collide.
                         const chemical = (child.type as any)?.$chemical;
                         const key = chemical
                             ? `${chemical[$symbol$]}.${i}`
@@ -1367,22 +1659,42 @@ class $Chemistry$ extends $Chemical {
             );
         }
 
+        // Eval form — $(<Word>hello</Word>) evaluates a description (an element)
+        // into a live instance, through the same synthesis that binds a bond
+        // constructor's children. Erased type is $Chemical; $<$Word>(...) narrows.
+        // Created in an <X>, a child of X: the asker — raised around the bond
+        // constructor, the view, and an augmented handler — is the element `$`
+        // is operating in now, and what is evaluated here is parented to it.
+        // Outside those windows there is no asker and the instance is a root.
         if (React.isValidElement(arg)) {
             const written = Array.prototype.slice.call(arguments, 1);
             const asker = currentAsker();
             return evalElement(arg as React.ReactElement, asker instanceof $Chemical ? asker : undefined, written);
         }
 
+        // Instance form — the particle/chemical was already constructed when
+        // handed to us. Reusing it means rendering its view with optionally
+        // overridden props; the bond constructor does NOT re-run. We route
+        // through $lift, which skips $bond() entirely. Result is cached per
+        // instance so React component identity is stable across $(x) calls.
         if (isParticle(arg)) {
             const inst = arg as any;
             if (Object.prototype.hasOwnProperty.call(inst, $lifted$)) return inst[$lifted$];
             return inst[$lifted$] = $lift(arg);
         }
 
+        // A plain function component is still a component: it is a function
+        // whose props are its parameters, and it may be side-effecting rather
+        // than visual. Wrap it once, memoised, so it can be asked for,
+        // registered, and stood in for exactly as any other component is.
         if (typeof arg === 'function' && !(arg as any).$chemical && typeof (arg as any).prototype?.view !== 'function') {
             arg = wrapped(arg);
         }
 
+        // A component was handed in. What comes back depends on the second
+        // argument: nothing resolves it in the scope being rendered, the
+        // representative answers what stands behind it, and another component
+        // opens a registration — `$(A,B)(C)`.
         if (typeof arg === 'function' && (arg as any).$chemical) {
             const second = arguments[1];
             if (second === undefined) return askedFor(arg);
@@ -1390,6 +1702,10 @@ class $Chemistry$ extends $Chemical {
             return registrar(arg, second);
         }
 
+        // String tag — a pid first, then the HTML catalogue. `$(pid)`
+        // answers the live chemical enrolled under that persistence id.
+        // `$('div')` looks up (or lazily creates) the cached Component for
+        // that tag. `$('div', X)` registers X as the override for that tag.
         if (typeof arg === 'string') {
             const override = arguments[1];
             if (override !== undefined) {
@@ -1407,9 +1723,12 @@ class $Chemistry$ extends $Chemical {
             return cached;
         }
 
+        // Class form — JS constructor arity picks the shape.
         if (typeof arg === 'function') {
             const cls = arg as any;
             if (cls.length === 0) {
+                // Walk static prototype chain might find an ancestor's
+                // template — verify it's actually OF this class.
                 let template = cls[$$template$$];
                 if (!template || !(template instanceof cls)) {
                     new cls();
@@ -1420,10 +1739,14 @@ class $Chemistry$ extends $Chemical {
             return (...args: any[]) => new cls(...args)[$resolveComponent$]();
         }
 
+        // Unrecognized arg — null is safer than re-entering JSX.
         return null;
     }
 }
 
 export const $ = new $Chemistry$().view as any as $Chemistry;
 
+// The walk resolves a facade in the scope of whoever wrote the element, and it
+// does that through `$` like everything else — handed over here so the walk
+// names nothing from this layer.
 asking((component: any) => ($ as any)(component));

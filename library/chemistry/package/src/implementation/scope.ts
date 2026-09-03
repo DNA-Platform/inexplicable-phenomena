@@ -1,6 +1,15 @@
 import { $backing$, $reaction$, $rendering$, $$parent$$ } from "./symbols";
 import { equivalent } from "./reconcile";
 
+/**
+ * Deep-clone a value for snapshotting. Map/Set/Array/plain-object aware.
+ * Class instances are reference-held (not walked) — the class owns its
+ * equivalence semantics. Primitives pass through unchanged.
+ *
+ * Faster than $symbolize (which produces a string and compares via memcmp):
+ * we walk the structure, copy it, and compare later via equivalent() with
+ * early exit on first mismatch.
+ */
 function snapshot(v: any): any {
     if (v === null || typeof v !== 'object') return v;
     if (Array.isArray(v)) return v.map(snapshot);
@@ -21,9 +30,29 @@ function snapshot(v: any): any {
         for (const k of Object.keys(v)) out[k] = snapshot((v as any)[k]);
         return out;
     }
+    // Class instance (including chemicals) — reference only
     return v;
 }
 
+/**
+ * Scope — the reactivity tracking context.
+ *
+ * A Scope is active during a reactive entry into chemical code: an event
+ * handler invocation (via view augmentation), a reactive method call, or a
+ * render cycle. While a Scope is active, every property read on a reactive
+ * chemical property records a snapshot via $symbolize; every property write
+ * records the target chemical.
+ *
+ * When the Scope finalizes (at the end of the entry), it fires
+ * `chemical[$reaction$].react()` on every chemical that was written directly
+ * OR whose recorded read-snapshot differs from its current serialization.
+ * This catches in-place mutations of collections and nested objects, as well
+ * as cross-chemical state changes that happened during the scope.
+ *
+ * Outside any scope, property setters fire react() immediately. This covers
+ * external callbacks (setTimeout, fetch.then, websocket) that do direct
+ * writes.
+ */
 export class $Scope {
     private reads = new Map<any, Map<string, any>>();
     private writes = new Map<any, Set<string>>();
@@ -59,6 +88,9 @@ export class $Scope {
                 }
             }
         }
+        // Propagate up the composition tree: if a child chemical was written,
+        // its parent may read that child's state in its view. Walk up through
+        // $$parent$$ so the parent re-evaluates its view.
         for (const chem of [...dirty]) {
             let current = chem;
             let parent = current[$$parent$$];
@@ -74,6 +106,8 @@ export class $Scope {
     }
 }
 
+// diffuse — propagate a write upward through a chemical's composition tree.
+// Parent chemicals are re-rendered so cross-chemical reads re-evaluate.
 export function diffuse(chemical: any): void {
     let current = chemical;
     let parent = current[$$parent$$];
@@ -90,6 +124,12 @@ export function currentScope(): $Scope | null {
     return $currentScope;
 }
 
+/**
+ * withScope — run fn in a reactivity scope.
+ *
+ * If a scope is already active, this is a no-op (nested scopes propagate to
+ * the outer scope). Only the outermost scope finalizes.
+ */
 export function withScope<T>(fn: () => T): T {
     if ($currentScope) return fn();
     const scope = new $Scope();
@@ -102,6 +142,12 @@ export function withScope<T>(fn: () => T): T {
     }
 }
 
+// The asker — which chemical's code is running. Unrelated to the reactivity
+// scope above; it answers "who is asking" so `$(Component)` can resolve
+// against the graph the asker stands in. The framework raises it around the
+// three calls it makes into user code: the bond constructor, the view, and an
+// augmented handler. Outside those there is no asker, and `$` answers its
+// argument.
 let $currentAsker: any = null;
 let $drawing = false;
 
@@ -109,6 +155,9 @@ export function currentAsker(): any {
     return $currentAsker;
 }
 
+// Whether user code is being DRAWN — inside a bond constructor or a view.
+// Configuration is invalid there and only there: a handler has an asker so it
+// can resolve, but it runs after the paint, so it may also configure.
 export function drawing(): boolean {
     return $drawing;
 }

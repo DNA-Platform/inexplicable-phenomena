@@ -1,22 +1,22 @@
 import { ReactNode } from 'react';
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Article } from '@/encyclopedia/Article';
-import { $Writing, Dress } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
-import { $Section } from '@/writing/Section';
+import { $Writing } from '@/writing/Writing';
 import { $Document, $TypeOfDocument } from '@/writing/Document';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { $$ } from '@/utilities/Lib';
 
-export class $Chapter extends $Composition<$Section> {
+export class $Chapter extends $Document {
     $Chapter(block: $Block) {
-        super.$Composition(block);
+        super.$Document(block);
         this._type = $(<TypeOfChapter />);
     }
 
-    override get dress(): Dress { return Article; }
+    override frame(): ReactNode {
+        return <Article>{super.frame()}</Article>;
+    }
 }
 
 export class $$Chapter extends $Reference implements $Reference$<$Chapter> {

@@ -45,12 +45,37 @@ function reconcileVisitor(
     return pair;
 }
 
+// equivalent(a, b) — structural equality for arbitrary prop values.
+//
+// Rules, applied in order:
+//   1. a === b                      → equal
+//   2. a == null or b == null       → not equal
+//   3. typeof a !== typeof b        → not equal
+//   4. function                     → a.toString() === b.toString()
+//   5. primitive (any non-object)   → not equal (rule 1 covered equal case)
+//   6. React element                → delegate to reconcile
+//   7. Array                        → same length + equivalent element-wise
+//   8. Plain object                 → same own keys + equivalent value-wise
+//                                     (prototype is Object.prototype or null)
+//   9. Class instance               → not equal
+//                                     (rule 1 covered ===; we do not walk
+//                                     into instances — the class owns its
+//                                     own equivalence semantics)
+//
+// This is the single equality check used when comparing two view outputs
+// from the same chemical across a render cycle. It exists because JSX
+// re-constructs inline closures, inline objects, and inline arrays every
+// render — they have no identity but are semantically equivalent when
+// their shape is the same.
 export function equivalent(a: any, b: any): boolean {
     if (a === b) return true;
     if (a == null || b == null) return false;
     const ta = typeof a, tb = typeof b;
     if (ta !== tb) return false;
     if (ta === 'function') {
+        // Compare by original source — a wrapper augment() installed carries the
+        // user's own function via $original$. Two wrappers standing for one
+        // original are equivalent even though they are different instances.
         const aOrig = (a as any)[$original$] || a;
         const bOrig = (b as any)[$original$] || b;
         if (aOrig === bOrig) return true;

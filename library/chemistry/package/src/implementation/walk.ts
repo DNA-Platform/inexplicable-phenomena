@@ -22,6 +22,10 @@ export function walk(
             ? pair as ReactNode[]
             : undefined;
         if (paired) {
+            // Walk paired — if every element walks to its cached counterpart,
+            // return the cached array reference so outer visits treat it as
+            // unchanged. Only allocate a new array when something actually
+            // diverged.
             let modified = false;
             const result: ReactNode[] = new Array(node.length);
             for (let i = 0; i < node.length; i++) {
@@ -31,6 +35,7 @@ export function walk(
             }
             return modified ? result : paired;
         }
+        // No paired array — standard lazy walk
         for (let i = 0; i < node.length; i++) {
             const walked = walk(node[i], visit, undefined, each);
             if (walked !== node[i]) {

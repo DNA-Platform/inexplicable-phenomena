@@ -2,14 +2,13 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { ComponentType, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { $Sentence, Sentence } from './Sentence';
 import { parser } from '@/utilities/Parser';
 import { Prose } from '@/encyclopedia/Prose';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { $$ } from '@/utilities/Lib';
-import { html } from '@/utilities/Html';
 
 export class $Paragraph extends $Composition<$Sentence> implements $Composition$<$Sentence> {
 
@@ -18,7 +17,9 @@ export class $Paragraph extends $Composition<$Sentence> implements $Composition$
         this._type = $(<TypeOfParagraph />);
     }
 
-    override get dress(): ComponentType<{ className?: string; children?: ReactNode }> { return Prose; }
+    override frame(): ReactNode {
+        return <Prose>{super.frame()}</Prose>;
+    }
 
     protected override reduce(held: (string | $Writing)[]): $Sentence[] {
         const lines: (string | $Writing)[][] = [[]];
@@ -55,9 +56,6 @@ export class $$Paragraph extends $Reference implements $Reference$<$Paragraph> {
 
 export class $TypeOfParagraph extends $Type {
     resolve = false;
-
-    override get shell(): typeof $Writing { return $Paragraph; }
-    override flows = false;
     override nests = true;
     override code = 'Ph';
     override get writtenAs(): new () => $Writing { return $Sentence; }
@@ -90,7 +88,7 @@ export class ParagraphSpecification extends TypedSpecification<$Writing> {
 
     @specify('a paragraph is unbroken by a blank line')
     $noBlankLine(writing: $Writing): void {
-        $check(!this.patterns.divided.test(html.surface(writing.block)), 'a paragraph is unbroken by a blank line, and this one carries one');
+        $check(!this.patterns.divided.test(writing.copy), 'a paragraph is unbroken by a blank line, and this one carries one');
     }
 }
 

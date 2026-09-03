@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { $, $Block, $check, cache } from '@dna-platform/chemistry';
 import { Body } from '@/encyclopedia/Body';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { Dress } from '@/writing/Writing';
 import { $Writing } from '@/writing/Writing';
 import { $File, $TypeOfFile, FileSpecification } from '@/writing/File';
 import { $Document } from '@/writing/Document';
@@ -21,11 +20,11 @@ import { $Path } from '@/reference/Path';
 import { $Index, Index } from './Index';
 import { $References, References } from '@/reference/References';
 
-export class $Book extends $Composition<$Chapter> implements $Composition$<$Chapter> {
+export class $Book extends $File implements $Composition$<$Chapter> {
     get chapters(): $Composition$<$Chapter> { return this; }
     get cover(): $Chapter { return this.parts()[0]; }
-    get synopsis(): $Synopsis | undefined { const parts: $Writing[] = this.parts(); return parts.find((one): one is $Synopsis => one instanceof $Synopsis); }
-    get tableOfContents(): $TableOfContents | undefined { const parts: $Writing[] = this.parts(); return parts.find((one): one is $TableOfContents => one instanceof $TableOfContents); }
+    get synopsis(): $Synopsis | undefined { return this.parts().find((one): one is $Synopsis => one instanceof $Synopsis); }
+    get tableOfContents(): $TableOfContents | undefined { return this.parts().find((one): one is $TableOfContents => one instanceof $TableOfContents); }
     get sections(): $Composition<$Section> { return this.catalogue().comprehend(); }
     get paragraphs(): $Composition<$Paragraph> { return this.sections.catalogue().comprehend(); }
     get sentences(): $Composition<$Sentence> { return this.paragraphs.catalogue().comprehend(); }
@@ -37,7 +36,7 @@ export class $Book extends $Composition<$Chapter> implements $Composition$<$Chap
     override parts(): $Chapter[] { return super.parts() as $Chapter[]; }
 
     $Book(block: $Block) {
-        super.$Composition(block);
+        super.$File(block);
         this._type = $(<TypeOfBook />);
     }
 
@@ -54,7 +53,9 @@ export class $Book extends $Composition<$Chapter> implements $Composition$<$Chap
         return super.concatenate(...more) as $Composition<$Chapter>;
     }
 
-    override get dress(): Dress { return Body; }
+    override frame(): ReactNode {
+        return <Body>{super.frame()}</Body>;
+    }
 }
 
 export class $$Book extends $Reference implements $Reference$<$Book> {

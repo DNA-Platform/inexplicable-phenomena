@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Columns } from '@/encyclopedia/Columns';
-import { $Type, TypedSpecification, $Writing, Dress } from './Writing';
+import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
 import { $Document } from './Document';
@@ -16,7 +16,10 @@ export class $File extends $Composition<$Document> implements $Composition$<$Doc
         this._type = $(<TypeOfFile />);
     }
 
-    override get dress(): Dress | undefined { return this.constructor === $File ? Columns : undefined; }
+    override frame(): ReactNode {
+        const undressed = super.frame();
+        return this.constructor === $File ? <Columns>{undressed}</Columns> : undressed;
+    }
 }
 
 export class $$File extends $Reference implements $Reference$<$File> {
@@ -31,9 +34,6 @@ export class $$File extends $Reference implements $Reference$<$File> {
 }
 
 export class $TypeOfFile extends $Type {
-    override flows = false;
-
-    override get shell(): typeof $Writing { return $File; }
     resolve = false;
     override code = 'Fe';
     override get writtenAs(): new () => $Writing { return $Document; }

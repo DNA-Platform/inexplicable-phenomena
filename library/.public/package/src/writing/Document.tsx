@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Output } from '@/encyclopedia/Output';
-import { $Type, TypedSpecification, $Writing, Dress } from './Writing';
+import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
 import { $Section, Section } from './Section';
@@ -10,7 +10,7 @@ import { $Sentence } from './Sentence';
 import { $Word } from './Word';
 import { $Letter } from './Letter';
 import { $$ } from '@/utilities/Lib';
-import { $References, $References$, References } from '@/reference/References';
+import { $References, References } from '@/reference/References';
 import { parser } from '@/utilities/Parser';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
@@ -21,14 +21,16 @@ export class $Document extends $Composition<$Section> implements $Composition$<$
     get sentences(): $Composition<$Sentence> { return this.paragraphs.catalogue().comprehend(); }
     get words(): $Composition<$Word> { return this.sentences.catalogue().comprehend(); }
     get letters(): $Composition<$Letter> { return this.words.catalogue().comprehend(); }
-    get references(): $References$ | undefined { return (this.block?.$elements ?? []).find((one): one is $References => one instanceof $References); }
+    get references(): $References { return (this.block?.$elements ?? []).find((one): one is $References => one instanceof $References) as $References; }
 
     $Document(block: $Block) {
         super.$Composition(block);
         this._type = $(<TypeOfDocument />);
     }
 
-    override get dress(): Dress { return Output; }
+    override frame(): ReactNode {
+        return <Output>{super.frame()}</Output>;
+    }
 
 
     protected override reduce(held: (string | $Writing)[]): $Section[] {
@@ -48,9 +50,6 @@ export class $$Document extends $Reference implements $Reference$<$Document> {
 }
 
 export class $TypeOfDocument extends $Type {
-    override flows = false;
-
-    override get shell(): typeof $Writing { return $Document; }
     resolve = false;
     override code = 'Dt';
     override get writtenAs(): new () => $Writing { return $Section; }

@@ -2,14 +2,14 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { $Letter, Letter, graphemes } from './Letter';
+import { $Letter, Letter } from './Letter';
 import { parser } from '@/utilities/Parser';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { $$ } from '@/utilities/Lib';
-import { html } from '@/utilities/Html';
 
 export class $Word extends $Composition<$Letter> implements $Composition$<$Letter> {
+    protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
     protected patterns = {
         alphanumeric: /[\p{L}\p{N}]/u
@@ -25,7 +25,7 @@ export class $Word extends $Composition<$Letter> implements $Composition$<$Lette
     }
 
     protected override reduce(held: (string | $Writing)[]): $Letter[] {
-        return [...graphemes.segment(parser.text(held))].map(({ segment }) => $(<Letter>{segment}</Letter>) as $Letter);
+        return [...this.graphemes.segment(parser.text(held))].map(({ segment }) => $(<Letter>{segment}</Letter>) as $Letter);
     }
 }
 
@@ -42,8 +42,6 @@ export class $$Word extends $Reference implements $Reference$<$Word> {
 
 export class $TypeOfWord extends $Type {
     resolve = false;
-
-    override get shell(): typeof $Writing { return $Word; }
     override nests = true;
     override code = 'Wd';
     override get writtenAs(): new () => $Writing { return $Letter; }
@@ -76,7 +74,7 @@ export class WordSpecification extends TypedSpecification<$Writing> {
 
     @specify('a word is one unbroken stretch')
     $noWhitespace(writing: $Writing): void {
-        $check(!this.patterns.broken.test(html.surface(writing.block)), 'a word is one unbroken stretch, and this one carries whitespace');
+        $check(!this.patterns.broken.test(writing.copy), 'a word is one unbroken stretch, and this one carries whitespace');
     }
 }
 

@@ -1,3 +1,9 @@
+// The hydration cache — the one store persisted chemicals live in, read whole
+// and eagerly at module load so persisted things can be the first referents.
+// Keyed by pid — the persistence id; today it is backed by localStorage, one day a server hands the
+// same shape over. A chemical enrolls by being atomic; the false transition
+// clears its record; the bond setter alerts changed() on every committed write.
+
 import { $backing$, $molecule$, $reaction$, $template$ } from './symbols';
 
 const key = '$Chemistry.hydration';

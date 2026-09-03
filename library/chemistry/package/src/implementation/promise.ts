@@ -1,6 +1,10 @@
 import type { $Promise } from './types';
 import { $cancelled$ } from './symbols';
 
+// ===========================================================================
+// $promise — cancellable promise
+// ===========================================================================
+
 export function $promise<T = any>(executor: (resolve: (value?: T) => void) => void): $Promise<T> {
     let reject: ((reason?: any) => void) | undefined;
     let promise = new Promise<T>((res, rej) => {

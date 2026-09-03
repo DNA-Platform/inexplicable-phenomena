@@ -4,7 +4,7 @@ import { Specification, specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, $Type, TypedSpecification } from '@/writing/Writing';
 import { $Path } from './Path';
 import { Anchor } from '@/encyclopedia/Anchor';
-import type { $References$ } from './References';
+import type { $References } from './References';
 
 export interface $Reference$<T extends $Writing = $Writing> extends $Writing {
     get path(): $Path | undefined;
@@ -17,13 +17,6 @@ export class $Reference extends $Annotation implements $Reference$ {
     override get canonical(): boolean { return false; }
 
     get path(): $Path | undefined { return (this.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path); }
-    get url(): string | undefined {
-        const path = this.path;
-        if (path !== undefined) return path.copy;
-        const copy = this.copy;
-        const target = /^(?:[a-z][a-z0-9+.-]*:\/\/|\/|#)/iu.test(copy) || /^[A-Z][a-z]?:\d+/.test(copy);
-        return target && !/\s/u.test(copy) && URL.canParse(copy, 'https://library') ? copy : undefined;
-    }
 
     $Reference(block: $Block) {
         super.$Writing(block);
@@ -32,29 +25,26 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     override view(): ReactNode {
-        const held = (this.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        const Held = held !== undefined ? $(held) : undefined;
-        return <Anchor href={this.url} onClick={() => this.focus()}>{Held !== undefined ? <Held /> : this.url}</Anchor>;
+        return <Anchor href={this.path?.copy} onClick={() => this.focus()}>{this.path?.copy}</Anchor>;
     }
 
     focus(): void {
         this.$pid ??= this.path?.copy;
         this.$focused = true;
         this.persist = true;
-        (this.book() as { references?: $References$ }).references?.append(this);
+        (this.book() as { references?: $References }).references?.append(this);
     }
 
     unfocus(): void {
         this.$focused = false;
         this.persist = false;
-        (this.book() as { references?: $References$ }).references?.remove(this);
+        (this.book() as { references?: $References }).references?.remove(this);
     }
 
     async read(): Promise<$Writing> {
         const held = (this.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
         if (held) return held;
-        const path = this.path;
-        if (path !== undefined) return path.read(this);
+        if (this.path !== undefined) throw new Error('a reference reads to what it means, and following its path is not yet designed');
         throw new Error('a reference reads to what it means, and this one holds nothing to read');
     }
 }
@@ -79,14 +69,8 @@ export class $TypeOfReference extends $Type {
 export class ReferenceSpecification extends TypedSpecification<$Writing> {
     @specify('a reference carries a path')
     $carriesPath(writing: $Writing): void {
-        $check((writing.block?.$elements ?? []).some(one => one instanceof $Path) || (writing as $Reference).url !== undefined,
+        $check((writing.block?.$elements ?? []).some(one => one instanceof $Path),
             'a reference carries a path, and this one carries none');
-    }
-
-    @specify('a reference reads by its path when it says nothing itself')
-    override $mustHaveText(writing: $Writing): boolean | void {
-        if ((writing.block?.$elements ?? []).some(one => one instanceof $Path)) return false;
-        return super.$mustHaveText(writing);
     }
 }
 

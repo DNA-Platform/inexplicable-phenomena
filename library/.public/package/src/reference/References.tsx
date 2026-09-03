@@ -2,21 +2,13 @@ import { ReactNode } from 'react';
 import { $Block, $, cache, hydration } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Composition } from '@/writing/Composition';
-import { $Paragraph } from '@/writing/Paragraph';
-import { $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
 import { $Reference, prints } from './Reference';
 import { $Path, Path } from './Path';
 import { Heading } from '@/encyclopedia/Heading';
 import { Cited } from '@/encyclopedia/Cited';
 
-export interface $References$ extends $Writing {
-    recollection: $Reference[];
-    append(one: $Reference): void;
-    remove(one: $Reference): void;
-}
-
-export class $References extends $Composition<$Paragraph> implements $References$ {
+export class $References extends $Section {
     override parenthetical = true;
     serialized = '[]';
     recollection: $Reference[] = [];
@@ -24,7 +16,7 @@ export class $References extends $Composition<$Paragraph> implements $References
     get stack(): string[] { return JSON.parse(this.serialized); }
 
     $References(block: $Block) {
-        super.$Composition(block);
+        super.$Section(block);
         this._type = $(<TypeOfReferences />);
         queueMicrotask(() => this.reassemble());
     }

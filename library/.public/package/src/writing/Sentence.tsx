@@ -7,7 +7,6 @@ import { $Letter } from './Letter';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { $$ } from '@/utilities/Lib';
-import { html } from '@/utilities/Html';
 
 export class $Sentence extends $Composition<$Word> implements $Composition$<$Word> {
     get words(): $Composition<$Word> { return this; }
@@ -34,8 +33,6 @@ export class $$Sentence extends $Reference implements $Reference$<$Sentence> {
 
 export class $TypeOfSentence extends $Type {
     resolve = false;
-
-    override get shell(): typeof $Writing { return $Sentence; }
     override nests = true;
     override code = 'Se';
     override get writtenAs(): new () => $Writing { return $Word; }
@@ -61,14 +58,14 @@ export class $TypeOf$Sentence extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new $SentenceSpecification();
 }
 
-export class SentenceSpecification extends TypedSpecification<$Writing> {
+class SentenceSpecification extends TypedSpecification<$Writing> {
     protected patterns = {
         stopped: /[.!?][^\S\n]*\S/u
     };
 
     @specify('a sentence stops once, at its end')
     $stopsAtItsEnd(writing: $Writing): void {
-        $check(!this.patterns.stopped.test(html.surface(writing.block)), 'a sentence stops once, at its end, and this one stops before it');
+        $check(!this.patterns.stopped.test(writing.copy), 'a sentence stops once, at its end, and this one stops before it');
     }
 }
 

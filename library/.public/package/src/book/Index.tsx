@@ -3,23 +3,21 @@ import { $, $Block, cache } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
 import { DocumentSpecification } from '@/writing/Document';
 import { Specification, specify } from '@/utilities/Specification';
-import { $TypeOfChapter } from './Chapter';
-import { $Composition } from '@/writing/Composition';
-import { $Section } from '@/writing/Section';
-import { $References, $References$ } from '@/reference/References';
+import { $Chapter, $TypeOfChapter } from './Chapter';
+import { $References } from '@/reference/References';
 import { $Reference } from '@/reference/Reference';
 import { Heading } from '@/encyclopedia/Heading';
 import { Cited } from '@/encyclopedia/Cited';
 
-export class $Index extends $Composition<$Section> {
+export class $Index extends $Chapter {
     override parenthetical = true;
 
     $Index(block: $Block) {
-        super.$Composition(block);
+        super.$Chapter(block);
         this._type = $(<TypeOfIndex />);
     }
 
-    get references(): $References$ | undefined {
+    get references(): $References | undefined {
         return (this.block?.$elements ?? []).find((one): one is $References => one instanceof $References);
     }
 

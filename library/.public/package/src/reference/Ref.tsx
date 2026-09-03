@@ -26,7 +26,7 @@ export class $Ref extends $Composition<$Word> implements $Reference$<$Writing> {
 
     $Ref(block: $Block) {
         super.$Composition(block);
-        this._type = $(<TypeOfRef />);
+        this.type = $(<TypeOfRef />);
     }
 
     override view(): ReactNode {
@@ -64,9 +64,11 @@ export class $Ref extends $Composition<$Word> implements $Reference$<$Writing> {
 export class $TypeOfRef extends $TypeOfPhrase {
     override get canonicalForm(): typeof $Writing { return $Ref; }
 
+    name = 'Ref';
+
     constructor() {
         super();
-        this[cache]('Ref');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new RefSpecification();

@@ -48,9 +48,6 @@ export class $$Section extends $Reference implements $Reference$<$Section> {
 
 export class $TypeOfSection extends $Type {
     resolve = false;
-
-    override get shell(): typeof $Writing { return $Section; }
-    override flows = false;
     override nests = true;
     override code = 'Sn';
     override get writtenAs(): new () => $Writing { return $Paragraph; }
