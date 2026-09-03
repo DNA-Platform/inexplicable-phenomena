@@ -4,12 +4,11 @@ import { lexer } from 'marked';
 import { Link, useInRouterContext } from 'react-router-dom';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Word, Word } from '@/writing/Word';
-import { $Composition } from '@/writing/Composition';
+import { Word } from '@/writing/Word';
+import { $Composition, $Composition$ } from '@/writing/Composition';
 import { $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
-import { $$ } from '@/utilities/Lib';
 import type { $Reference$ } from './Reference';
-import { $Path, Path } from './Path';
+import { $Path } from './Path';
 import { Anchor } from '@/encyclopedia/Anchor';
 import { parser } from '@/utilities/Parser';
 
@@ -17,7 +16,8 @@ const Routed = ({ to, children }: { to: string; children: ReactNode }) => useInR
     ? <Link to={to}>{children}</Link>
     : <Anchor href={to}>{children}</Anchor>;
 
-export class $Ref extends $Composition<$Word> implements $Reference$<$Writing> {
+export class $Ref extends $Composition implements $Composition$, $Reference$ {
+    override indent = 1;
     $path?: string;
 
     get path(): $Path | undefined { return (this.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path); }
@@ -25,8 +25,9 @@ export class $Ref extends $Composition<$Word> implements $Reference$<$Writing> {
     get written(): string { return this.link?.text ?? this.copy; }
 
     $Ref(block: $Block) {
+        const Asked = $(TypeOfRef);
+        this.type ??= $(<Asked />);
         super.$Composition(block);
-        this.type = $(<TypeOfRef />);
     }
 
     override view(): ReactNode {
@@ -40,8 +41,10 @@ export class $Ref extends $Composition<$Word> implements $Reference$<$Writing> {
     async read(): Promise<$Writing> {
         const url = this.url;
         if (url === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
-        const path = this.path ?? $<$Path>(<Path>{url}</Path>);
-        return path.read(this);
+        const fragment = url.startsWith('#') ? url.slice(1) : url;
+        const root = this.book();
+        if (/^(?:[A-Z][a-z]?:)?\d/.test(fragment) && root instanceof $Composition) return root.catalogue().follow(fragment);
+        throw new Error('a reference reads to what it means, and this route is the application to follow');
     }
 
     protected get link(): { text: string; url: string } | undefined {
@@ -55,16 +58,15 @@ export class $Ref extends $Composition<$Word> implements $Reference$<$Writing> {
         return undefined;
     }
 
-    protected override reduce(held: (string | $Writing)[]): $Word[] {
+    protected override reduce(held: (string | $Writing)[]): $Writing[] {
         const text = this.link?.text ?? parser.text(held);
-        return text.split(/\s+/u).filter(one => one !== '').map(one => $<$Word>(<Word>{one}</Word>));
+        const Asked = $(Word);
+        return text.split(/\s+/u).filter(one => one !== '').map(one => $(<Asked>{one}</Asked>) as $Writing);
     }
 }
 
 export class $TypeOfRef extends $TypeOfPhrase {
-    override get canonicalForm(): typeof $Writing { return $Ref; }
-
-    name = 'Ref';
+    override name = 'Ref';
 
     constructor() {
         super();
@@ -77,12 +79,12 @@ export class $TypeOfRef extends $TypeOfPhrase {
 export class RefSpecification extends PhraseSpecification {
     @specify('a ref names a target')
     $namesTarget(writing: $Writing): void {
-        $check($$(writing)($Ref) && $$(writing, $Ref).url !== undefined, 'a ref names a target, and this one names none');
+        $check(writing instanceof $Ref && writing.url !== undefined, 'a ref names a target, and this one names none');
     }
 
     @specify('a ref points, and its url is not prose')
     override $stopsAtItsEnd(writing: $Writing): boolean | void {
-        if ($$(writing)($Ref)) return false;
+        if (writing instanceof $Ref) return false;
         return super.$stopsAtItsEnd(writing);
     }
 }

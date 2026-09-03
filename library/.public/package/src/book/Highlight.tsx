@@ -14,8 +14,9 @@ export class $Highlight extends $Reference {
     get ending(): $Reference | undefined { return this.pair?.[1]; }
 
     $Highlight(block: $Block) {
+        const Asked = $(TypeOfHighlight);
+        this.type ??= $(<Asked />);
         super.$Reference(block);
-        this._type = $(<TypeOfHighlight />);
     }
 
     override async read(): Promise<$Writing> {
@@ -31,11 +32,11 @@ export class $Highlight extends $Reference {
 }
 
 export class $TypeOfHighlight extends $TypeOfReference {
-    override get canonicalForm(): typeof $Writing { return $Highlight; }
+    override name = 'Highlight';
 
     constructor() {
         super();
-        this[cache]('Highlight');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new HighlightSpecification();

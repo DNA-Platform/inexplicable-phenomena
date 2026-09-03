@@ -5,7 +5,10 @@ import { $Writing } from '@/writing/Writing';
 const numbered = (part: $Writing): part is $Writing & { index: number } => 'index' in part;
 
 export class Parser {
+    makes = new Map<string, (held: (string | $Writing)[]) => $Writing[]>();
+
     private parsed = new WeakMap<$Writing, $Writing[]>();
+    private graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
     tokens(of: $Writing): (string | $Writing)[] {
         return ((of.block?.$elements ?? []) as unknown[])
@@ -47,6 +50,33 @@ export class Parser {
             if (!(part.parent instanceof $Writing)) part.parent = of;
         this.parsed.set(of, parsed);
         return parsed;
+    }
+
+    sentences(held: (string | $Writing)[]): (string | $Writing)[][] {
+        const lines: (string | $Writing)[][] = [[]];
+        for (const token of held) {
+            if (typeof token !== 'string' || !token.includes('\n')) {
+                lines[lines.length - 1].push(token);
+                continue;
+            }
+            token.split('\n').forEach((piece, at, pieces) => {
+                if (at < pieces.length - 1) {
+                    lines[lines.length - 1].push(piece + '\n');
+                    lines.push([]);
+                } else if (piece !== '') {
+                    lines[lines.length - 1].push(piece);
+                }
+            });
+        }
+        return lines.filter(line => line.some(token => typeof token !== 'string' || token.trim() !== ''));
+    }
+
+    words(held: (string | $Writing)[]): string[] {
+        return this.text(held).split(/\s+/u).filter(one => one !== '');
+    }
+
+    letters(held: (string | $Writing)[]): string[] {
+        return [...this.graphemes.segment(this.text(held))].map(({ segment }) => segment);
     }
 
     text(held: (string | $Writing)[]): string {

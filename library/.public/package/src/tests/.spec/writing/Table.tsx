@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { Table, TableTrait, Cell } from '@/writing/Table';
+import { Table } from '@/writing/Table';
+import { Paragraph } from '@/writing/Paragraph';
 import { Sentence } from '@/writing/Sentence';
 import { TypeOfParagraph } from '@/writing/Paragraph';
 import { Word } from '@/writing/Word';
@@ -12,7 +13,7 @@ import { Writing, Type, Trait } from '@/writing/Writing';
 export class $TableRowsSpec extends $Chemical {
     view(): ReactNode {
         return (
-            <Table>{'first row\n\nsecond row'}</Table>
+            <Table><Paragraph>first row</Paragraph><Paragraph>second row</Paragraph></Table>
         );
     }
 }
@@ -24,7 +25,7 @@ export const TableRowsSpec = $($TableRowsSpec);
 export class $TableWritingSpec extends $Chemical {
     view(): ReactNode {
         return (
-            <Writing>{'first row\n\nsecond row'}<Type>Table</Type></Writing>
+            <Writing><Paragraph>first row</Paragraph><Paragraph>second row</Paragraph><Type>Table</Type></Writing>
         );
     }
 }
@@ -36,7 +37,7 @@ export const TableWritingSpec = $($TableWritingSpec);
 export class $TableCellsSpec extends $Chemical {
     view(): ReactNode {
         return (
-            <Table><Cell>first cell</Cell><Cell>second cell</Cell></Table>
+            <Table><Paragraph>first cell</Paragraph><Paragraph>second cell</Paragraph></Table>
         );
     }
 }

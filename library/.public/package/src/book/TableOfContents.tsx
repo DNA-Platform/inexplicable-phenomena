@@ -4,17 +4,18 @@ import { $Chapter, $TypeOfChapter } from './Chapter';
 
 export class $TableOfContents extends $Chapter {
     $TableOfContents(block: $Block) {
+        const Asked = $(TypeOfTableOfContents);
+        this.type ??= $(<Asked />);
         super.$Chapter(block);
-        this._type = $(<TypeOfTableOfContents />);
     }
 }
 
 export class $TypeOfTableOfContents extends $TypeOfChapter {
-    override get canonicalForm(): typeof $Writing { return $TableOfContents; }
+    override name = 'TableOfContents';
 
     constructor() {
         super();
-        this[cache]('TableOfContents');
+        this[cache](this.name);
     }
 }
 

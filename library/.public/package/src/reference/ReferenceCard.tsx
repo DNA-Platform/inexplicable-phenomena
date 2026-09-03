@@ -1,7 +1,7 @@
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Writing, $Trait } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 import { $Reference, $TypeOfReference, ReferenceSpecification } from './Reference';
 import { $Path } from './Path';
 
@@ -13,8 +13,7 @@ export interface $ReferenceCard$ {
 
 export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
     get references(): $Reference[] {
-        const from = this.bound ? this.inside! : this;
-        return (from.block?.$elements ?? []).filter((one): one is $Reference => one instanceof $Reference);
+        return (this.block?.$elements ?? []).filter((one): one is $Reference => one instanceof $Reference);
     }
 
     get first(): $Reference | undefined { return this.references[0]; }
@@ -23,8 +22,9 @@ export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
     override get path(): $Path | undefined { return super.path ?? this.first?.path; }
 
     $ReferenceCard(block: $Block) {
+        const Asked = $(TypeOfReferenceCard);
+        this.type ??= $(<Asked />);
         super.$Reference(block);
-        this._type = $(<TypeOfReferenceCard />);
     }
 
     override read(): Promise<$Writing> {
@@ -34,22 +34,22 @@ export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
 }
 
 export class $TypeOfReferenceCard extends $TypeOfReference {
-    override get canonicalForm(): typeof $Writing { return $ReferenceCard; }
+    override name = 'ReferenceCard';
 
     constructor() {
         super();
-        this[cache]('ReferenceCard');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new ReferenceCardSpecification();
 }
 
 export class $Card extends $Trait {
-    override get canonicalForm(): typeof $Writing { return $ReferenceCard; }
+    override name = 'Card';
 
     constructor() {
         super();
-        this[cache]('Card');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new CardSpecification();
@@ -90,7 +90,7 @@ export class ReferenceCardSpecification extends ReferenceSpecification {
 export class CardSpecification extends ReferenceCardSpecification {
     @specify('a card is worn by a reference')
     $wornByAReference(writing: $Writing): void {
-        $check($$(writing)($Reference),
+        $check(reflection.stands(writing, 'Reference') || writing instanceof $Reference,
             'a card is worn by a reference, and this writing is not one');
     }
 }

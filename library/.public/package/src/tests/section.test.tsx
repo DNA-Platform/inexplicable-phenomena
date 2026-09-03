@@ -3,7 +3,7 @@ import { Type } from '@/writing/Writing';
 import { $Section, $TypeOfSection } from '@/writing/Section';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph } from '@/writing/Paragraph';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 import { built, chain, declares, drawn, section, shown, word, letter, title, Section } from './written';
 
 const three = () => built<$Section>(section(title('t'), chain.Paragraph('a'), chain.Paragraph('b'), chain.Paragraph('c')));
@@ -11,7 +11,7 @@ const three = () => built<$Section>(section(title('t'), chain.Paragraph('a'), ch
 describe('$Section composes $Paragraph', () => {
     it('composes the level below, in the order written', () => {
         expect(three().parts().map(one => one.copy)).toEqual(['t', 'a', 'b', 'c']);
-        expect(three().parts().every(one => $$(one)($Paragraph))).toBe(true);
+        expect(three().parts().every(one => reflection.stands(one, 'Paragraph'))).toBe(true);
     });
 
     it('answers part zero', () => {
@@ -43,18 +43,12 @@ describe('$Section composes $Paragraph', () => {
 
     it('and a piece of writing TOLD it is a Section composes the same', () => {
         const { writing } = drawn(title('t'), chain.Paragraph('h'), chain.Paragraph('i'), <Type>Section</Type>);
-        expect($$(writing)($Section)).toBe(true);
-        expect($$(writing, $Section).parts().map(one => one.copy)).toEqual(['t', 'h', 'i']);
+        expect(reflection.stands(writing, 'Section')).toBe(true);
+        expect(writing.parts().map(one => one.copy)).toEqual(['t', 'h', 'i']);
     });
 });
 
 describe('a section is written as paragraphs', () => {
-    // QUARANTINED 2026-08-30 — this test HANGS the reaction system rather than
-    // failing. Rendering an INVALID writing whose block holds CHEMICAL children
-    // loops synchronously until the worker is killed; the same test with STRING
-    // children (see sentence/paragraph/word/letter) draws its message and passes.
-    // It is skipped, not deleted: it asserts real behaviour and returns when the
-    // defect is fixed. See Solutions — the hang that ate the machine.
     it('refuses a word written where a paragraph belongs, and says why', () => {
         expect(() => built<$Section>(<Section>{[word(letter('h'))]}</Section>).specify()).toThrow(/a section is written as paragraphs/);
     });

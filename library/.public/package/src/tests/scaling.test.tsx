@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { $Section } from '@/writing/Section';
 import { $Letter } from '@/writing/Letter';
-import { $Document } from '@/writing/Document';
+import { $Chapter } from '@/book/Chapter';
 import { $Paragraph } from '@/writing/Paragraph';
 import { $TypeOfLetter } from '@/writing/Letter';
-import { built, chain, document, paragraph, section, sentence, title, word, letter, specificationOf } from './written';
+import { $Composition } from '@/writing/Composition';
+import { built, chapter, paragraph, section, sentence, title, word, letter, specificationOf } from './written';
 
 // A PERFORMANCE TEST, kept apart from the ones that say what writing IS.
 // Doug, 2026-08-30: "Maybe run tests one level at a time. Don't test a huge tree
@@ -43,9 +44,9 @@ describe('asking for parts goes ONE level, and the cost is flat in the depth bel
     });
 
     it('a document of many sections is not more than linear in its sections', () => {
-        const small = built<$Document>(document(...Array.from({ length: 4 },
+        const small = built<$Chapter>(chapter(...Array.from({ length: 4 },
             () => section(title('t'), ...prose(4)))));
-        const large = built<$Document>(document(...Array.from({ length: 16 },
+        const large = built<$Chapter>(chapter(...Array.from({ length: 16 },
             () => section(title('t'), ...prose(4)))));
         const one = took(() => small.parts());
         const four = took(() => large.parts());
@@ -54,10 +55,10 @@ describe('asking for parts goes ONE level, and the cost is flat in the depth bel
     });
 
     it('and descending a level at a time stays cheap at each step', () => {
-        const one = built<$Document>(document(section(title('t'), ...prose(8))));
+        const one = built<$Chapter>(chapter(section(title('t'), ...prose(8))));
         const sections = took(() => one.parts());
-        const paragraphs = took(() => one.parts()[0].parts());
-        const sentences = took(() => (one.parts()[0].parts()[1] as $Paragraph).parts());
+        const paragraphs = took(() => (one.parts()[0] as $Composition).parts());
+        const sentences = took(() => ((one.parts()[0] as $Composition).parts()[1] as $Paragraph).parts());
         for (const step of [sections, paragraphs, sentences])
             expect(step).toBeLessThan(400);
     });

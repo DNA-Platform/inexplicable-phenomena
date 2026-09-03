@@ -3,7 +3,7 @@ import { $Block, $, cache, hydration } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
-import { $Reference, prints } from './Reference';
+import { $Reference, Reference, prints } from './Reference';
 import { $Path, Path } from './Path';
 import { Heading } from '@/encyclopedia/Heading';
 import { Cited } from '@/encyclopedia/Cited';
@@ -16,8 +16,11 @@ export class $References extends $Section {
     get stack(): string[] { return JSON.parse(this.serialized); }
 
     $References(block: $Block) {
+        const Asked = $(TypeOfReferences);
+        this.type ??= $(<Asked />);
         super.$Section(block);
-        this._type = $(<TypeOfReferences />);
+        this.$pid ??= '$references$';
+        this.persist = true;
         queueMicrotask(() => this.reassemble());
     }
 
@@ -47,8 +50,9 @@ export class $References extends $Section {
             if (written.has(path) || held.has(path)) continue;
             const [step] = path.split('/').filter(Boolean);
             const code = step?.includes(':') ? step.split(':')[0] : undefined;
-            const Printed = $((code ? prints.get(code) : undefined) ?? $Reference);
-            const printed = $<$Reference>(<Printed />, $<$Path>(<Path>{path}</Path>));
+            const Asked = $((code ? prints.get(code) : undefined) ?? Reference);
+            const AskedPath = $(Path);
+            const printed = $<$Reference>(<Asked />, $<$Path>(<AskedPath>{path}</AskedPath>));
             printed.$pid ??= path;
             printed.parent = this;
             hydration.overwrite(printed);
@@ -76,7 +80,8 @@ export class $References extends $Section {
 }
 
 export class $TypeOfReferences extends $TypeOfSection {
-    override get canonicalForm(): typeof $Writing { return $References; }
+    override name = 'References';
+
     override specifically(writing: $Writing): void {
         super.specifically(writing);
         writing.$pid ??= '$references$';
@@ -85,7 +90,7 @@ export class $TypeOfReferences extends $TypeOfSection {
 
     constructor() {
         super();
-        this[cache]('References');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new ReferencesSpecification();

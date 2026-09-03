@@ -2,12 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { Type } from '@/writing/Writing';
-import { $Document } from '@/writing/Document';
-import { $File } from '@/writing/File';
+import { $Composition } from '@/writing/Composition';
 import { $Chapter, $TypeOfChapter } from '@/book/Chapter';
 import { $Book, $TypeOfBook } from '@/book/Book';
-import { $$ } from '@/utilities/Lib';
-import { built, chain, drawn, letter, paragraph, section, sentence, shown, title, word } from './written';
+import { reflection } from '@/utilities/Reflection';
+import { built, chain, drawn, letter, paragraph, section, sentence, title, word } from './written';
 
 const Chapter = $($Chapter);
 const Book = $($Book);
@@ -15,13 +14,13 @@ const Book = $($Book);
 const chapter = (copy: string) => <Chapter>{chain.Section(copy)}</Chapter>;
 const book = (...inside: ReactNode[]) => <Book>{inside}</Book>;
 
-describe('a chapter is a document, and a book is a file of them', () => {
-    it('a chapter IS a document', () => {
-        expect($$(built<$Chapter>(chapter('a')))($Document)).toBe(true);
+describe('the seven levels end at the book, and the book composes chapters', () => {
+    it('a chapter stands as a chapter', () => {
+        expect(reflection.stands(built<$Chapter>(chapter('a')), 'Chapter')).toBe(true);
     });
 
-    it('a book IS a file', () => {
-        expect($$(built<$Book>(book(chapter('a'))))($File)).toBe(true);
+    it('a book stands as a book', () => {
+        expect(reflection.stands(built<$Book>(book(chapter('a'))), 'Book')).toBe(true);
     });
 
     it('a book composes its chapters', () => {
@@ -34,19 +33,12 @@ describe('a chapter is a document, and a book is a file of them', () => {
         expect(built<$Book>(book(chapter('a'), chapter('b'))).parts()[0].copy).toBe('a');
     });
 
-    it('a chapter answers to Document, because a chapter IS one', () => {
-        const one = built<$Chapter>(chapter('a'));
-        expect($$(one)($Document)).toBe(true);
-        expect($$(one, $Document)).toBeInstanceOf($Document);
-    });
-
     it('AND A PIECE OF WRITING BEHAVES AS A BOOK when it carries the type', () => {
         const { writing } = drawn(chapter('a'), chapter('b'), <Type>Book</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfBook);
-        const asBook = $$(writing, $Book);
-        expect(asBook).toBeInstanceOf($Book);
-        expect(asBook.parts().length).toBe(2);
-        expect(asBook.parts().every(part => part instanceof $Chapter)).toBe(true);
+        expect(writing instanceof $Book).toBe(false);
+        expect(writing.parts().length).toBe(2);
+        expect(writing.parts().every(part => part instanceof $Chapter)).toBe(true);
     });
 });
 
@@ -55,10 +47,6 @@ describe('the whole ladder specifies, from the top, when everything is right', (
     // level asserts that specify() does not throw on valid writing, and the book did
     // not. Doug, 2026-08-30: "the specification tests should actually cover the top
     // level specify path — when everything is correct. That gives some coverage there."
-    //
-    // It matters more since specification left the bond constructor: nothing runs a
-    // rule unless something asks, so the ONLY proof that a correct book satisfies its
-    // own type is a test that asks.
     it('a well-formed book satisfies its own specification', () => {
         expect(() => built<$Book>(book(chapter('a'), chapter('b'))).specify()).not.toThrow();
     });
@@ -73,61 +61,32 @@ describe('the whole ladder specifies, from the top, when everything is right', (
         const one = built<$Book>(book(titled));
         expect(() => one.specify()).not.toThrow();
         expect(() => one.parts()[0].specify()).not.toThrow();
-        expect(() => one.parts()[0].parts()[0].specify()).not.toThrow();
+        expect(() => (one.parts()[0] as $Composition).parts()[0].specify()).not.toThrow();
     });
 });
 
-describe('a book carries only its own type, and still keeps a file’s constraints', () => {
+describe('a book carries only its own type', () => {
     it('carries $TypeOfBook alone', () => {
         const one = built<$Book>(book(chapter('a')));
         expect(one.type).toBeDefined();
         expect(one.type).toBeInstanceOf($TypeOfBook);
     });
 
-    // QUARANTINED 2026-08-30 — this test HANGS the reaction system rather than
-    // failing. Rendering an INVALID writing whose block holds CHEMICAL children
-    // loops synchronously until the worker is killed; the same test with STRING
-    // children (see sentence/paragraph/word/letter) draws its message and passes.
-    // It is skipped, not deleted: it asserts real behaviour and returns when the
-    // defect is fixed. See Solutions — the hang that ate the machine.
-    it('and a FILE constraint still refuses it, through inheritance rather than a second type', () => {
-        expect(() => built<$Book>(<Book>{[chain.Paragraph('a')]}</Book>).specify()).toThrow(/a file is written as documents/);
+    it('and the book constraint refuses a paragraph written where a chapter belongs', () => {
+        expect(() => built<$Book>(<Book>{[chain.Paragraph('a')]}</Book>).specify()).toThrow(/a book is written as chapters/);
     });
 
-    // QUARANTINED 2026-08-30 — this test HANGS the reaction system rather than
-    // failing. Rendering an INVALID writing whose block holds CHEMICAL children
-    // loops synchronously until the worker is killed; the same test with STRING
-    // children (see sentence/paragraph/word/letter) draws its message and passes.
-    // It is skipped, not deleted: it asserts real behaviour and returns when the
-    // defect is fixed. See Solutions — the hang that ate the machine.
-    it('a chapter likewise carries only $TypeOfChapter, and a DOCUMENT constraint still applies', () => {
+    it('a chapter likewise carries only $TypeOfChapter, and its constraint still applies', () => {
         const one = built<$Chapter>(chapter('a'));
         expect(one.type).toBeDefined();
         expect(one.type).toBeInstanceOf($TypeOfChapter);
-        expect(() => built<$Chapter>(<Chapter>{[word(letter('h'))]}</Chapter>).specify()).toThrow(/a document is written as sections/);
+        expect(() => built<$Chapter>(<Chapter>{[word(letter('h'))]}</Chapter>).specify()).toThrow(/is written as sections/);
     });
 
-    it('and a book composes CHAPTERS where a file composes documents', () => {
+    it('and a book composes CHAPTERS, standing and instanced alike', () => {
         const one = built<$Book>(book(chapter('a'), chapter('b')));
         expect(one.parts().length).toBe(2);
         expect(one.parts().every(part => part instanceof $Chapter)).toBe(true);
-        expect(one.parts().every(part => $$(part)($Document))).toBe(true);
-    });
-});
-
-describe('a book is a composition of chapters, and satisfies being a composition of documents', () => {
-    it('read AS A FILE it composes documents, and they are the very chapters', () => {
-        const one = built<$Book>(book(chapter('a'), chapter('b')));
-        const asFile = $$(one, $File);
-        expect(asFile).toBeInstanceOf($File);
-        expect(asFile.parts().length).toBe(2);
-        expect(asFile.parts().every(part => $$(part)($Document))).toBe(true);
-        expect(asFile.parts()[0]).toBe(one.parts()[0]);
-    });
-
-    it('and a piece of writing told it is a Book answers the same way as a file', () => {
-        const { writing } = drawn(chapter('a'), chapter('b'), <Type>Book</Type>);
-        expect($$(writing)($File)).toBe(true);
-        expect($$(writing, $File).parts().every(part => $$(part)($Document))).toBe(true);
+        expect(one.parts().every(part => reflection.stands(part, 'Chapter'))).toBe(true);
     });
 });

@@ -2,11 +2,12 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
+import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
+import { parser } from '@/utilities/Parser';
 
-export class $Letter extends $Composition<$Letter> implements $Composition$<$Letter> {
+export class $Letter extends $Composition implements $Composition$ {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
     case: 'uppercase' | 'lowercase' = 'lowercase';
 
@@ -17,17 +18,13 @@ export class $Letter extends $Composition<$Letter> implements $Composition$<$Let
         punctuation: /^\p{P}\p{M}*$/u
     };
 
-    override parts(): $Letter[] { return [this]; }
+    override parts(): $Writing[] { return [this]; }
     override get canonical(): boolean { return this.kind === 'alphabetical'; }
 
     $Letter(block: $Block) {
+        const Asked = $(TypeOfLetter);
+        this.type ??= $(<Asked />);
         super.$Composition(block);
-        this.build();
-        this._type = $(<TypeOfLetter />);
-    }
-
-    override bind(writing: $Writing) {
-        super.bind(writing);
         this.build();
     }
 
@@ -47,37 +44,32 @@ export class $Letter extends $Composition<$Letter> implements $Composition$<$Let
     }
 }
 
-export class $$Letter extends $Reference implements $Reference$<$Letter> {
+export class $$Letter extends $Reference {
     $$Letter(block: $Block) {
+        const Asked = $(TypeOf$Letter);
+        this.type ??= $(<Asked />);
         super.$Reference(block);
-        this._type = $(<TypeOf$Letter />);
-    }
-
-    override async read(): Promise<$Letter> {
-        return $$(await super.read(), $Letter);
     }
 }
 
 export class $TypeOfLetter extends $Type {
     resolve = false;
-    override code = 'Lr';
-
-    override get canonicalForm(): typeof $Writing { return $Letter; }
+    override name = 'Letter';
 
     constructor() {
         super();
-        this[cache]('Letter');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new LetterSpecification();
 }
 
 export class $TypeOf$Letter extends $TypeOfReference {
-    override get canonicalForm(): typeof $Writing { return $$Letter; }
+    override name = '$Letter';
 
     constructor() {
         super();
-        this[cache]('$Letter');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new $LetterSpecification();
@@ -101,12 +93,16 @@ export class $LetterSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Lr:'),
             'a reference to a letter lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || $$(held)($Letter),
+        $check(held === undefined || reflection.stands(held, 'Letter'),
             'a reference to a letter lands on one, and what it holds is not one');
     }
 }
 
 export const Letter = $($Letter);
+parser.makes.set('Letter', held => {
+    const Asked = $(Letter);
+    return parser.letters(held).map(segment => $(<Asked>{segment}</Asked>) as $Writing);
+});
 export const TypeOfLetter = $($TypeOfLetter);
 export const TypeOf$Letter = $($TypeOf$Letter);
-prints.set('Lr', $$Letter);
+prints.set('Lr', $($$Letter));

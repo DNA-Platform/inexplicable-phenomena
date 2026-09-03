@@ -8,19 +8,19 @@ export class $Path extends $Writing {
     override get canonical(): boolean { return false; }
 
     $Path(block: $Block) {
+        const Asked = $(TypeOfPath);
+        this.type ??= $(<Asked />);
         super.$Writing(block);
-        this._type = $(<TypeOfPath />);
     }
 }
 
 export class $TypeOfPath extends $Type {
     resolve = false;
-
-    override get canonicalForm(): typeof $Writing { return $Path; }
+    override name = 'Path';
 
     constructor() {
         super();
-        this[cache]('Path');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new PathSpecification();

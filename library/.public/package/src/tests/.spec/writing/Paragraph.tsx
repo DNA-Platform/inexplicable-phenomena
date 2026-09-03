@@ -20,7 +20,7 @@ export class ParagraphQuotedSpecification extends Specification<$Writing> {
 }
 
 export class $ParagraphTypeOfQuotation extends $TypeOfParagraph {
-    override get canonicalForm(): typeof $Writing { return $Paragraph; }
+    override name = 'DerivedTitle';
 
     constructor() {
         super();

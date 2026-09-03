@@ -4,10 +4,10 @@ import { $, $Chemical } from '@dna-platform/chemistry';
 import { $Annotation, $Writing, $Type, Type } from '@/writing/Writing';
 import { $Letter, $TypeOfLetter } from '@/writing/Letter';
 import { $Word, $TypeOfWord } from '@/writing/Word';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 import { $Book, $TypeOfBook } from '@/book/Book';
 import { $TypeOfChapter, $Chapter } from '@/book/Chapter';
-import { $TypeOfFile } from '@/writing/File';
+import { $TypeOfCover } from '@/book/Cover';
 import { Word, built, chain, drawn, letter } from './written';
 
 class $Apart extends $Chemical {
@@ -50,18 +50,19 @@ describe('the bond lifts what is parenthetical, and leaves it in the block', () 
         expect(writing.type).toBeDefined();
     });
 
-    it('writing with no annotation at all carries none, and specify refuses it', () => {
+    it('writing with no annotation at all carries none, and specify has no law to run', () => {
         const { writing } = drawn('abc');
         expect(writing.type).toBeUndefined();
-        expect(() => writing.specify()).toThrow(/has a type, and this one has none/);
+        expect(() => writing.specify()).not.toThrow();
+        expect(reflection.stands(writing, 'Word')).toBe(false);
     });
 });
 
 describe('a piece of writing is ONE kind of writing', () => {
-    it('carries a level type and a refinement of it, because that is one kind', () => {
-        const { writing } = drawn(chain.Document('a'), <Type>Book</Type>);
-        expect(() => writing.specify()).not.toThrow();
-        expect(writing.type).toBeInstanceOf($TypeOfBook);
+    it('a refinement carries its whole chain — a cover stands as a chapter', () => {
+        const { writing } = drawn(chain.Section('a'), <Type>Cover</Type>);
+        expect(writing.type).toBeInstanceOf($TypeOfCover);
+        expect(reflection.stands(writing, 'Chapter')).toBe(true);
     });
 
     it('and a written Book carries ONE type, the most derived, never its ancestor as well', () => {
@@ -73,8 +74,8 @@ describe('a piece of writing is ONE kind of writing', () => {
     });
 
     it('but it CANNOT be a book and a chapter', () => {
-        const { writing } = drawn(chain.Document('a'), <Type>Book</Type>, <Type>Chapter</Type>);
-        expect(() => writing.specify()).toThrow(/one kind of writing, and this one is written as two/);
+        const { writing } = drawn(chain.Chapter('a'), <Type>Book</Type>, <Type>Chapter</Type>);
+        expect(() => writing.specify()).toThrow(/typed once/);
     });
 
     it('nor a word and a letter', () => {
@@ -82,8 +83,8 @@ describe('a piece of writing is ONE kind of writing', () => {
         expect(() => writing.specify()).toThrow(/one kind of writing/);
     });
 
-    it('nor a document and a chapter, though the most derived is still what it answers', () => {
-        const { writing } = drawn(chain.Section('a'), <Type>Document</Type>, <Type>Chapter</Type>);
+    it('nor two chapter kinds, and the FIRST written is what it answers', () => {
+        const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>, <Type>Cover</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfChapter);
         expect(() => writing.specify()).toThrow(/typed once/);
     });

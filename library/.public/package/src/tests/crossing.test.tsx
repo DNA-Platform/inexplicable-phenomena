@@ -2,17 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { $, $Block, cache } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Document } from '@/writing/Document';
-import { $Book } from '@/book/Book';
 import { $Chapter, $TypeOfChapter, TypeOfChapter } from '@/book/Chapter';
-import { $$ } from '@/utilities/Lib';
+import { $Book } from '@/book/Book';
+import { reflection } from '@/utilities/Reflection';
 import { built, chain, specificationOf } from './written';
 
 // A chapter implementation that reuses NOTHING from $Chapter.
 class $Preface extends $Writing {
     $Preface(block: $Block) {
+        this.type ??= $(<TypeOfChapter />);
         super.$Writing(block);
-        this._type = $(<TypeOfChapter />);
     }
 }
 
@@ -22,31 +21,31 @@ class CoverSpecification extends Specification<$Writing> {
 
 // THE TYPE says a cover is a chapter. It says it ONCE, in the type hierarchy,
 // and no class has to agree.
-class $TypeOfCover extends $TypeOfChapter {
-    override get canonicalForm(): typeof $Writing { return $Cover; }
-    constructor() { super(); this[cache]('Cover'); }
+class $TypeOfMadeCover extends $TypeOfChapter {
+    override name = 'MadeCover';
+    constructor() { super(); this[cache](this.name); }
     protected override specification: Specification<$Writing> = new CoverSpecification();
 }
 
 // THE CANONICAL cover, anchored in the framework's own chapter.
-class $Cover extends $Chapter {
-    $Cover(block: $Block) {
+class $MadeCover extends $Chapter {
+    $MadeCover(block: $Block) {
+        this.type ??= $(<TypeOfMadeCover />);
         super.$Chapter(block);
-        this._type = $(<TypeOfCover />);
     }
 }
 
 // A cover that reuses PREFACE's implementation instead. Same type, different base.
 class $CoverOfPreface extends $Preface {
     $CoverOfPreface(block: $Block) {
+        this.type ??= $(<TypeOfMadeCover />);
         super.$Preface(block);
-        this._type = $(<TypeOfCover />);
     }
 }
 
-const TypeOfCover = $($TypeOfCover);
+const TypeOfMadeCover = $($TypeOfMadeCover);
 const Preface = $($Preface);
-const Cover = $($Cover);
+const MadeCover = $($MadeCover);
 const CoverOfPreface = $($CoverOfPreface);
 const Chapter = $($Chapter);
 const Book = $($Book);
@@ -55,29 +54,29 @@ const inside = (copy: string) => chain.Section(copy);
 
 describe('a cover crosses the class hierarchy without leaving its type', () => {
     it('the two cover implementations share NO ancestor but $Writing', () => {
-        expect(Object.getPrototypeOf($Cover)).toBe($Chapter);
+        expect(Object.getPrototypeOf($MadeCover)).toBe($Chapter);
         expect(Object.getPrototypeOf($CoverOfPreface)).toBe($Preface);
         expect(new $CoverOfPreface() instanceof $Chapter).toBe(false);
-        expect(new $CoverOfPreface() instanceof $Document).toBe(false);
+        expect(new $CoverOfPreface() instanceof $Book).toBe(false);
     });
 
     it('and BOTH are covers', () => {
-        const anchored = built<$Cover>(<Cover>{[inside('a')]}</Cover>);
+        const anchored = built<$MadeCover>(<MadeCover>{[inside('a')]}</MadeCover>);
         const crossed = built<$CoverOfPreface>(<CoverOfPreface>{[inside('b')]}</CoverOfPreface>);
-        expect($$(anchored)($Cover)).toBe(true);
-        expect($$(crossed)($Cover)).toBe(true);
+        expect(reflection.stands(anchored, 'MadeCover')).toBe(true);
+        expect(reflection.stands(crossed, 'MadeCover')).toBe(true);
     });
 
-    it('and BOTH are chapters, because the TYPE says so and the canonical anchors it', () => {
+    it('and BOTH are chapters, because the TYPE says so', () => {
         const crossed = built<$CoverOfPreface>(<CoverOfPreface>{[inside('b')]}</CoverOfPreface>);
         expect(crossed instanceof $Chapter).toBe(false);
-        expect($$(crossed)($Chapter)).toBe(true);
+        expect(reflection.stands(crossed, 'Chapter')).toBe(true);
     });
 
     it('so a book composes covers, prefaces and its own chapters together', () => {
         const one = built<$Book>(
             <Book>{[
-                <Cover key="c">{inside('a')}</Cover>,
+                <MadeCover key="c">{inside('a')}</MadeCover>,
                 <CoverOfPreface key="x">{inside('b')}</CoverOfPreface>,
                 <Preface key="p">{inside('c')}</Preface>,
                 <Chapter key="h">{inside('d')}</Chapter>
@@ -87,7 +86,7 @@ describe('a cover crosses the class hierarchy without leaving its type', () => {
     });
 
     it('and the cover contract runs on both, from the type neither class shares', () => {
-        const spec = specificationOf(new $TypeOfCover());
+        const spec = specificationOf(new $TypeOfMadeCover());
         expect(spec.rules().map((pair: [string, unknown]) => pair[0])).toContain('$opens');
         expect(spec.check(built<$CoverOfPreface>(<CoverOfPreface>{[inside('b')]}</CoverOfPreface>))).toContain('$opens');
     });

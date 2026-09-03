@@ -3,6 +3,7 @@ import { ReactNode, act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $, $Block, $Chemical } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
+import { $Composition } from '@/writing/Composition';
 import type { $Type } from '@/writing/Writing';
 import type { Specification } from '@/utilities/Specification';
 import { $Letter } from '@/writing/Letter';
@@ -11,8 +12,8 @@ import { $Sentence } from '@/writing/Sentence';
 import { $Paragraph } from '@/writing/Paragraph';
 import { $Title } from '@/writing/Title';
 import { $Section } from '@/writing/Section';
-import { $Document } from '@/writing/Document';
-import { $File } from '@/writing/File';
+import { $Chapter } from '@/book/Chapter';
+import { $Book } from '@/book/Book';
 
 export const Writing = $($Writing);
 export const Letter = $($Letter);
@@ -21,8 +22,8 @@ export const Sentence = $($Sentence);
 export const Paragraph = $($Paragraph);
 export const Title = $($Title);
 export const Section = $($Section);
-export const Document = $($Document);
-export const File = $($File);
+export const Chapter = $($Chapter);
+export const Book = $($Book);
 
 export const letter = (c: string) => <Letter>{c}</Letter>;
 export const word = (...inside: ReactNode[]) => <Word>{inside}</Word>;
@@ -30,8 +31,8 @@ export const sentence = (...inside: ReactNode[]) => <Sentence>{inside}</Sentence
 export const paragraph = (...inside: ReactNode[]) => <Paragraph>{inside}</Paragraph>;
 export const title = (...inside: ReactNode[]) => <Title>{inside}</Title>;
 export const section = (...inside: ReactNode[]) => <Section>{inside}</Section>;
-export const document = (...inside: ReactNode[]) => <Document>{inside}</Document>;
-export const file = (...inside: ReactNode[]) => <File>{inside}</File>;
+export const chapter = (...inside: ReactNode[]) => <Chapter>{inside}</Chapter>;
+export const book = (...inside: ReactNode[]) => <Book>{inside}</Book>;
 
 export const built = <T,>(element: ReactNode): T => $(element as never) as T;
 
@@ -49,10 +50,10 @@ export const mounted = (node: ReactNode): HTMLElement => {
     return host;
 };
 
-export const drawn = (...inside: ReactNode[]): { writing: $Writing; host: HTMLElement } => {
-    let kept: $Writing | undefined;
-    class $Kept extends $Writing {
-        $Kept(block: $Block) { super.$Writing(block); }
+export const drawn = (...inside: ReactNode[]): { writing: $Composition; host: HTMLElement } => {
+    let kept: $Composition | undefined;
+    class $Kept extends $Composition {
+        $Kept(block: $Block) { super.$Composition(block); }
 
         override view(): ReactNode {
             kept = this;
@@ -82,7 +83,7 @@ export const chain: Record<string, (copy: string) => ReactNode> = {
     Paragraph: copy => paragraph(sentence(word(letter(copy)))),
     Title: copy => title(sentence(word(letter(copy)))),
     Section: copy => section(paragraph(sentence(word(letter(copy))))),
-    Document: copy => document(section(paragraph(sentence(word(letter(copy))))))
+    Chapter: copy => chapter(section(paragraph(sentence(word(letter(copy))))))
 };
 
 // A type's specification is PROTECTED — nothing outside a type consults one, and

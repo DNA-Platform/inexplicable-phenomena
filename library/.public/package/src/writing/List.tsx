@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
 import { $Block, $, cache } from '@dna-platform/chemistry';
-import { $Writing } from './Writing';
 import { $Paragraph, $TypeOfParagraph } from './Paragraph';
 import { html } from '@/utilities/Html';
 import { Bullets } from '@/encyclopedia/Bullets';
 
 export class $List extends $Paragraph {
     $List(block: $Block) {
+        const Asked = $(TypeOfList);
+        this.type ??= $(<Asked />);
         super.$Paragraph(block);
-        this._type = $(<TypeOfList />);
     }
 
     override view(): ReactNode {
@@ -22,11 +22,11 @@ export class $List extends $Paragraph {
 }
 
 export class $TypeOfList extends $TypeOfParagraph {
-    override get canonicalForm(): typeof $Writing { return $List; }
+    override name = 'List';
 
     constructor() {
         super();
-        this[cache]('List');
+        this[cache](this.name);
     }
 }
 

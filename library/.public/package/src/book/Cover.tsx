@@ -4,17 +4,18 @@ import { $Chapter, $TypeOfChapter } from './Chapter';
 
 export class $Cover extends $Chapter {
     $Cover(block: $Block) {
+        const Asked = $(TypeOfCover);
+        this.type ??= $(<Asked />);
         super.$Chapter(block);
-        this._type = $(<TypeOfCover />);
     }
 }
 
 export class $TypeOfCover extends $TypeOfChapter {
-    override get canonicalForm(): typeof $Writing { return $Cover; }
+    override name = 'Cover';
 
     constructor() {
         super();
-        this[cache]('Cover');
+        this[cache](this.name);
     }
 }
 

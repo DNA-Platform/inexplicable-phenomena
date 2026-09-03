@@ -3,7 +3,7 @@ import { Type } from '@/writing/Writing';
 import { $Paragraph, $TypeOfParagraph } from '@/writing/Paragraph';
 import { $Composition } from '@/writing/Composition';
 import { $Sentence } from '@/writing/Sentence';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 import { built, chain, declares, drawn, paragraph, shown, Paragraph } from './written';
 
 const three = () => built<$Paragraph>(paragraph(chain.Sentence('a'), chain.Sentence('b'), chain.Sentence('c')));
@@ -43,8 +43,8 @@ describe('$Paragraph composes $Sentence', () => {
 
     it('and a piece of writing TOLD it is a Paragraph composes the same', () => {
         const { writing } = drawn(chain.Sentence('h'), chain.Sentence('i'), <Type>Paragraph</Type>);
-        expect($$(writing)($Paragraph)).toBe(true);
-        expect($$(writing, $Paragraph).parts().map(one => one.copy)).toEqual(['h', 'i']);
+        expect(reflection.stands(writing, 'Paragraph')).toBe(true);
+        expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
     });
 });
 

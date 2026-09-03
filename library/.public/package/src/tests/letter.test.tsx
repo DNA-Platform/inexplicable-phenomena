@@ -3,7 +3,7 @@ import { Type } from '@/writing/Writing';
 import { $Letter, $TypeOfLetter } from '@/writing/Letter';
 import { $Composition } from '@/writing/Composition';
 import { $Word } from '@/writing/Word';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 import { Letter, Word, built, declares, drawn, letter, shown } from './written';
 
 describe('$Letter is the floor', () => {
@@ -38,19 +38,11 @@ describe('$Letter is the floor', () => {
 });
 
 describe('a piece of writing TOLD it is a Letter', () => {
-    it('is one in the sense of the reading, and stands for the writing', () => {
+    it('is one in the sense of the reading, and nothing is built to say so', () => {
         const { writing } = drawn('a', <Type>Letter</Type>);
-        const one = $$(writing, $Letter);
-        expect(one).toBeInstanceOf($Letter);
-        expect(one.copy).toBe(writing.copy);
-        expect(one.copy).toBe('a');
-    });
-
-    it('reads a DIFFERENT writing once it is bound to one', () => {
-        const one = $$(drawn('a', <Type>Letter</Type>).writing, $Letter);
-        expect(one.copy).toBe('a');
-        one.bind(drawn('b', <Type>Letter</Type>).writing);
-        expect(one.copy).toBe('b');
+        expect(writing instanceof $Letter).toBe(false);
+        expect(reflection.stands(writing, 'Letter')).toBe(true);
+        expect(writing.copy).toBe('a');
     });
 
     it('refuses writing that is not one grapheme, and says why', () => {
@@ -58,25 +50,21 @@ describe('a piece of writing TOLD it is a Letter', () => {
         expect(() => writing.specify()).toThrow(/a letter is one grapheme/);
     });
 
-    it('throws on an unrelated type, naming both sides', () => {
+    it('does not stand as an unrelated kind', () => {
         const { writing } = drawn('a', <Type>Letter</Type>);
-        expect(() => $$(writing, $Word)).toThrow(/not a \$Word/);
-    });
-
-    it('throws when the writing carries no type at all', () => {
-        expect(() => $$(drawn('a').writing, $Letter)).toThrow(/no type at all/);
+        expect(reflection.stands(writing, 'Word')).toBe(false);
     });
 });
 
-describe('the reading answers two ways', () => {
+describe('the reading answers by standing', () => {
     it('asks whether a writing IS a kind, and answers without binding it', () => {
         const { writing } = drawn('a', <Type>Letter</Type>);
-        expect($$(writing)($Letter)).toBe(true);
-        expect($$(writing)($Word)).toBe(false);
+        expect(reflection.stands(writing, 'Letter')).toBe(true);
+        expect(reflection.stands(writing, 'Word')).toBe(false);
     });
 
     it('answers a writing carrying no type at all with false rather than a throw', () => {
-        expect($$(drawn('a').writing)($Letter)).toBe(false);
+        expect(reflection.stands(drawn('a').writing, 'Letter')).toBe(false);
     });
 });
 
@@ -125,7 +113,7 @@ describe('a grapheme is one letter however many code points it takes', () => {
     it('and a word divides on graphemes, not on code points', () => {
         const one = built<$Word>(<Word>{'a\u{1F468}‍\u{1F469}‍\u{1F467}b'}</Word>);
         expect(one.parts().length).toBe(3);
-        expect(one.parts().map(part => part.kind)).toEqual(['alphabetical', 'symbolic', 'alphabetical']);
+        expect(one.parts().map(part => (part as $Letter).kind)).toEqual(['alphabetical', 'symbolic', 'alphabetical']);
     });
 });
 
@@ -140,13 +128,11 @@ describe('what renders the same classifies the same', () => {
     });
 });
 
-describe('a letter that stands for other writing', () => {
-    it('answers the kind of what it draws', () => {
+describe('a writing carrying the letter type keeps the letter law', () => {
+    it('one grapheme specifies clean where it stands', () => {
         const { writing } = drawn('a', <Type>Letter</Type>);
-        const one = $$(writing, $Letter);
-        expect(one.copy).toBe('a');
-        expect(one.kind).toBe('alphabetical');
-        expect(one.canonical).toBe(true);
+        expect(writing.copy).toBe('a');
+        expect(() => writing.specify()).not.toThrow();
     });
 });
 

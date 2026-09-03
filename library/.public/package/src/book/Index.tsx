@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
 import { $, $Block, cache } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
-import { DocumentSpecification } from '@/writing/Document';
+import { $Chapter, $TypeOfChapter, ChapterSpecification } from './Chapter';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Chapter, $TypeOfChapter } from './Chapter';
 import { $References } from '@/reference/References';
 import { $Reference } from '@/reference/Reference';
 import { Heading } from '@/encyclopedia/Heading';
@@ -13,12 +12,9 @@ export class $Index extends $Chapter {
     override parenthetical = true;
 
     $Index(block: $Block) {
+        const Asked = $(TypeOfIndex);
+        this.type ??= $(<Asked />);
         super.$Chapter(block);
-        this._type = $(<TypeOfIndex />);
-    }
-
-    get references(): $References | undefined {
-        return (this.block?.$elements ?? []).find((one): one is $References => one instanceof $References);
     }
 
     override view(): ReactNode {
@@ -41,17 +37,17 @@ export class $Index extends $Chapter {
 }
 
 export class $TypeOfIndex extends $TypeOfChapter {
-    override get canonicalForm(): typeof $Writing { return $Index; }
+    override name = 'Index';
 
     constructor() {
         super();
-        this[cache]('Index');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new IndexSpecification();
 }
 
-export class IndexSpecification extends DocumentSpecification {
+export class IndexSpecification extends ChapterSpecification {
     @specify('an index says nothing of its own — the references speak')
     override $mustHaveText(writing: $Writing): boolean | void {
         if (writing instanceof $Index) return false;

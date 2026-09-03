@@ -4,41 +4,38 @@ import { $Referent$ } from '@/reference/Referent';
 import { Specification, specify } from '@/utilities/Specification';
 import type { $Reference } from '@/reference/Reference';
 import { html } from '@/utilities/Html';
+import { reflection } from '@/utilities/Reflection';
 import { Anchor } from '@/encyclopedia/Anchor';
 
 export class $Writing extends $Chemical implements $Referent$ {
     inline = true;
     parenthetical = false;
     annotation = false;
+    indent = 0;
     block: $Block = undefined as any;
-    protected inside?: $Writing = undefined;
-    protected _type?: $Type = undefined;
+    type!: $Type;
 
-    get copy(): string { return this.bound ? this.inside!.copy : html.text(this.block); }
+    get copy(): string { return html.text(this.block); }
     get canonical(): boolean { return true; }
     get traits(): $Trait[] { return this.annotations.filter((one): one is $Trait => one instanceof $Trait); }
     get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && (one as $Reference).path !== undefined); }
     get $print(): boolean { return !this.parenthetical; }
     set $print(print: boolean) { this.parenthetical = !print; }
-    get type(): $Type { return this._type as $Type; }
     get annotations(): $Writing[] { return (this.block?.$elements ?? []).filter((one): one is $Writing => one instanceof $Writing && one.annotation); }
 
     book(): $Writing {
-        if (this.bound) return this.inside!.book();
         const up = this.parent;
         return up instanceof $Writing && up !== this ? up.book() : this;
     }
 
     $Writing(block: $Block) {
         this.block = block ?? this.block;
-        this._type = this.annotations
-            .filter((one): one is $Type => one instanceof $Type && !(one instanceof $Trait))
-            .reduce((most: $Type | undefined, one) => most === undefined || one instanceof (most.constructor as new () => $Type) ? one : most,
-                undefined) as $Type;
+        const carried = this.annotations.find((one): one is $Type => one instanceof $Type && !(one instanceof $Trait));
+        this.type = carried ?? this.type;
     }
 
     view(): ReactNode {
-        const Writing = this.bound ? $(this.inside!) : this.block ? $(this.block) : null;
+        const Writing = this.block ? $(this.block) : null;
         const means = this.means;
         if (means?.path !== undefined)
             return <Anchor href={means.path.copy}>{Writing && <Writing />}</Anchor>;
@@ -52,24 +49,20 @@ export class $Writing extends $Chemical implements $Referent$ {
         return this.copy;
     }
 
+    override frame(): ReactNode {
+        const labels = reflection.labels(this);
+        if (labels.length === 0) return super.frame();
+        return <span className={labels.join(' ')}>{super.frame()}</span>;
+    }
+
     specify(): void {
-        $check(!!this.type || this.parenthetical, 'a piece of writing has a type, and this one has none');
         this.type?.specifically(this);
         for (const one of this.traits) one.specifically(this);
     }
 
     valid(): boolean {
-        this._type?.specifically(this);
         return true;
     }
-
-    bind(writing: $Writing) {
-        this.type?.specifically(writing);
-        for (const one of this.traits) one.specifically(writing);
-        this.inside = writing;
-    }
-
-    protected get bound() { return !!this.inside; }
 }
 
 export class $Annotation extends $Writing {
@@ -79,10 +72,7 @@ export class $Annotation extends $Writing {
 
 export class $Type extends $Annotation {
     formula = true;
-    code = '';
-    nests = false;
-    get writtenAs(): (new () => $Writing) | undefined { return undefined; }
-    get canonicalForm(): typeof $Writing { return $Writing; }
+    name = 'Type';
     protected specification: Specification<$Writing> = new TypedSpecification<$Writing>();
 
     specifically(writing: $Writing): void {
@@ -94,7 +84,9 @@ export class $Type extends $Annotation {
     }
 }
 
-export class $Trait extends $Type { }
+export class $Trait extends $Type {
+    resolve = false;
+}
 
 export class TypedSpecification<T extends $Writing> extends Specification<T> {
     @specify('a piece of writing has a block')

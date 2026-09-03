@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import { $Block, $, $check, cache } from '@dna-platform/chemistry';
-import { Type, $Writing, Writing } from './Writing';
+import { $Block, $, cache } from '@dna-platform/chemistry';
 import { $Paragraph, $TypeOfParagraph } from './Paragraph';
 import { Heading } from '@/encyclopedia/Heading';
 
@@ -8,8 +7,9 @@ export class $Title extends $Paragraph {
     override get canonical(): boolean { return false; }
 
     $Title(block: $Block) {
+        const Asked = $(TypeOfTitle);
+        this.type ??= $(<Asked />);
         super.$Paragraph(block);
-        this._type = $(<TypeOfTitle />);
     }
 
     override view(): ReactNode {
@@ -24,11 +24,11 @@ export class $Title extends $Paragraph {
 }
 
 export class $TypeOfTitle extends $TypeOfParagraph {
-    override get canonicalForm(): typeof $Writing { return $Title; }
+    override name = 'Title';
 
     constructor() {
         super();
-        this[cache]('Title');
+        this[cache](this.name);
     }
 }
 

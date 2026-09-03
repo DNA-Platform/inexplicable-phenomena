@@ -4,17 +4,18 @@ import { $Chapter, $TypeOfChapter } from './Chapter';
 
 export class $Synopsis extends $Chapter {
     $Synopsis(block: $Block) {
+        const Asked = $(TypeOfSynopsis);
+        this.type ??= $(<Asked />);
         super.$Chapter(block);
-        this._type = $(<TypeOfSynopsis />);
     }
 }
 
 export class $TypeOfSynopsis extends $TypeOfChapter {
-    override get canonicalForm(): typeof $Writing { return $Synopsis; }
+    override name = 'Synopsis';
 
     constructor() {
         super();
-        this[cache]('Synopsis');
+        this[cache](this.name);
     }
 }
 

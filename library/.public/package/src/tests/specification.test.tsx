@@ -3,7 +3,7 @@ import { $, $check, cache } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing, $Type, TypedSpecification, Type } from '@/writing/Writing';
 import { $Letter, $TypeOfLetter } from '@/writing/Letter';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 import { built, drawn, letter, specificationOf } from './written';
 
 const one = () => drawn('a', <Type>Letter</Type>).writing;
@@ -107,19 +107,17 @@ describe('the levels state their rules the same way', () => {
     });
 });
 
-describe('binding checks the type it binds to, and nothing more', () => {
-    it('refuses writing that cannot be what it is being bound as', () => {
-        expect(() => $$(drawn('U+0041', <Type>Letter</Type>).writing, $Letter)).toThrow(/one grapheme/);
+describe('standing is free, and specify is where the law speaks', () => {
+    it('writing that cannot satisfy its type still stands, and specify refuses it', () => {
+        const { writing } = drawn('U+0041', <Type>Letter</Type>);
+        expect(reflection.stands(writing, 'Letter')).toBe(true);
+        expect(() => writing.specify()).toThrow(/one grapheme/);
     });
 
-    it('and binds writing that can', () => {
-        expect($$(drawn('a', <Type>Letter</Type>).writing, $Letter).copy).toBe('a');
-    });
-
-    it('a rebind is checked too, so a bound letter cannot be handed a word', () => {
-        const bound = $$(drawn('a', <Type>Letter</Type>).writing, $Letter);
-        expect(() => bound.bind(drawn('hi', <Type>Letter</Type>).writing)).toThrow(/one grapheme/);
-        expect(bound.copy).toBe('a');
+    it('and writing that can satisfies clean', () => {
+        const { writing } = drawn('a', <Type>Letter</Type>);
+        expect(writing.copy).toBe('a');
+        expect(() => writing.specify()).not.toThrow();
     });
 });
 
@@ -136,7 +134,6 @@ describe('there is ONE specification, and it is the type’s', () => {
 
         class $TypeOfCounted extends $Type {
             resolve = false;
-            override get canonicalForm(): typeof $Writing { return $Writing; }
             constructor() { super(); this[cache]('Counted'); }
             protected override specification: Specification<$Writing> = new $Counted();
         }
@@ -184,8 +181,8 @@ describe('the TYPE specifies, and a writing asks its type', () => {
         ]);
     });
 
-    it('and writing carrying no type has nothing to specify with, and says so', () => {
-        expect(() => drawn('a').writing.specify()).toThrow(/has a type, and this one has none/);
+    it('and writing carrying no type has no law to run, and specify is vacuous', () => {
+        expect(() => drawn('a').writing.specify()).not.toThrow();
     });
 });
 

@@ -3,7 +3,7 @@ import { Type } from '@/writing/Writing';
 import { $Word, $TypeOfWord } from '@/writing/Word';
 import { $Composition } from '@/writing/Composition';
 import { $Letter } from '@/writing/Letter';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 import { built, chain, declares, drawn, letter, word, Word , shown } from './written';
 
 const three = () => built<$Word>(word(chain.Letter('a'), chain.Letter('b'), chain.Letter('c')));
@@ -43,8 +43,8 @@ describe('$Word composes $Letter', () => {
 
     it('and a piece of writing TOLD it is a Word composes the same', () => {
         const { writing } = drawn(chain.Letter('h'), chain.Letter('i'), <Type>Word</Type>);
-        expect($$(writing)($Word)).toBe(true);
-        expect($$(writing, $Word).parts().map(one => one.copy)).toEqual(['h', 'i']);
+        expect(reflection.stands(writing, 'Word')).toBe(true);
+        expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
     });
 });
 
@@ -56,7 +56,7 @@ describe('$Word divides prose into its letters', () => {
     it('and a written letter stands among divided ones, in order', () => {
         const one = built<$Word>(<Word>{['h', letter('\u{1F642}'), 'i']}</Word>);
         expect(one.parts().map(part => part.copy)).toEqual(['h', '\u{1F642}', 'i']);
-        expect(one.parts().map(part => part.kind)).toEqual(['alphabetical', 'symbolic', 'alphabetical']);
+        expect(one.parts().map(part => (part as $Letter).kind)).toEqual(['alphabetical', 'symbolic', 'alphabetical']);
     });
 
     it('the CANONICAL word has a letter or a number in it', () => {

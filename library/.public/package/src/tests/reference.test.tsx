@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { $Type, Type, $Trait, Trait } from '@/writing/Writing';
+import { $Composition } from '@/writing/Composition';
+import type { $Writing } from '@/writing/Writing';
 import { $Letter } from '@/writing/Letter';
 import { $Word, Word } from '@/writing/Word';
 import { $Phrase, Phrase } from '@/writing/Phrase';
 import { $Path, Path } from '@/reference/Path';
 import { $Reference, Reference } from '@/reference/Reference';
-import { $TypeOfDocument, $Document } from '@/writing/Document';
+import { $TypeOfChapter, $Chapter } from '@/book/Chapter';
 import { $Sentence } from '@/writing/Sentence';
 import { Sentence, built, chain, drawn, letter, word } from './written';
 
@@ -30,8 +32,8 @@ describe('a phrase is a sentence that may stand inside one', () => {
         expect(one.parts().map(part => part.copy)).toEqual(['a', 'b']);
     });
 
-    it('and a phrase written as prose composes no words, because the parse above word is not built', () => {
-        expect(built<$Phrase>(<Phrase>at last</Phrase>).parts()).toHaveLength(0);
+    it('and a phrase written as prose composes its words, because the parser makes all three floors', () => {
+        expect(built<$Phrase>(<Phrase>at last</Phrase>).parts()).toHaveLength(2);
     });
 });
 
@@ -86,13 +88,13 @@ describe('writing MEANS what its reference refers to', () => {
 
 describe('every part of a composition carries its index', () => {
     it('the one at the top is zero, and it is never assigned', () => {
-        expect(built<$Document>(chain.Document('a')).index).toBe(0);
+        expect(built<$Chapter>(chain.Chapter('a')).index).toBe(0);
     });
 
     it('and the parser numbers every part it finds, in written order', () => {
-        const one = built<$Document>(chain.Document('deep'));
-        expect(one.parts().map(part => part.index)).toEqual([0]);
-        expect(one.parts()[0].parts().map(part => part.index)).toEqual([0]);
+        const one = built<$Chapter>(chain.Chapter('deep'));
+        expect(one.parts().map(part => (part as $Composition).index)).toEqual([0]);
+        expect((one.parts()[0] as $Composition).parts().map((part) => (part as $Composition).index)).toEqual([0]);
     });
 });
 
@@ -120,8 +122,8 @@ describe('an attribute specifies but names no level', () => {
     });
 
     it('and an attribute written BEFORE the type is not bound through', () => {
-        const { writing } = drawn(chain.Section('a'), <Trait />, <Type>Document</Type>);
-        expect(writing.type).toBeInstanceOf($TypeOfDocument);
+        const { writing } = drawn(chain.Section('a'), <Trait />, <Type>Chapter</Type>);
+        expect(writing.type).toBeInstanceOf($TypeOfChapter);
         expect(writing.traits.length).toBe(1);
     });
 });

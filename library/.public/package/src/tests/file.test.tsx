@@ -1,17 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { Type } from '@/writing/Writing';
-import { $File, $TypeOfFile } from '@/writing/File';
+import { $Book, $TypeOfBook } from '@/book/Book';
 import { $Composition } from '@/writing/Composition';
-import { $Document } from '@/writing/Document';
-import { $$ } from '@/utilities/Lib';
-import { built, chain, declares, drawn, file, shown, File } from './written';
+import { reflection } from '@/utilities/Reflection';
+import { built, chain, declares, drawn, book, word, letter } from './written';
 
-const three = () => built<$File>(file(chain.Document('a'), chain.Document('b'), chain.Document('c')));
+const three = () => built<$Book>(book(chain.Chapter('a'), chain.Chapter('b'), chain.Chapter('c')));
 
-describe('$File composes $Document', () => {
+describe('$Book composes $Chapter', () => {
     it('composes the level below, in the order written', () => {
         expect(three().parts().map(one => one.copy)).toEqual(['a', 'b', 'c']);
-        expect(three().parts().every(one => $$(one)($Document))).toBe(true);
+        expect(three().parts().every(one => reflection.stands(one, 'Chapter'))).toBe(true);
     });
 
     it('answers part zero', () => {
@@ -19,7 +18,7 @@ describe('$File composes $Document', () => {
     });
 
     it('carries its own type, written into it by its own bond', () => {
-        expect(three().type).toBeInstanceOf($TypeOfFile);
+        expect(three().type).toBeInstanceOf($TypeOfBook);
     });
 
     it('arrives inside a block, and holds one', () => {
@@ -28,10 +27,10 @@ describe('$File composes $Document', () => {
         expect(one.block).toBeDefined();
     });
 
-    it('affords the four from composition, narrowed, and answers all of them', () => {
+    it('affords the four from composition and answers all of them', () => {
         for (const member of ['where', 'select', 'selectMany', 'single']) {
             expect(declares($Composition, member)).toBe(true);
-            expect(declares($File, member)).toBe(false);
+            expect(declares($Book, member)).toBe(false);
         }
         const one = three();
         expect(one.where(part => part.copy !== 'b').map(part => part.copy)).toEqual(['a', 'c']);
@@ -41,25 +40,19 @@ describe('$File composes $Document', () => {
         expect(() => one.single(part => part.copy !== 'b')).toThrow();
     });
 
-    it('and a piece of writing TOLD it is a File composes the same', () => {
-        const { writing } = drawn(chain.Document('h'), chain.Document('i'), <Type>File</Type>);
-        expect($$(writing)($File)).toBe(true);
-        expect($$(writing, $File).parts().map(one => one.copy)).toEqual(['h', 'i']);
+    it('and a piece of writing TOLD it is a Book composes the same', () => {
+        const { writing } = drawn(chain.Chapter('h'), chain.Chapter('i'), <Type>Book</Type>);
+        expect(reflection.stands(writing, 'Book')).toBe(true);
+        expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
     });
 });
 
-describe('a file is written as documents', () => {
-    // QUARANTINED 2026-08-30 — this test HANGS the reaction system rather than
-    // failing. Rendering an INVALID writing whose block holds CHEMICAL children
-    // loops synchronously until the worker is killed; the same test with STRING
-    // children (see sentence/paragraph/word/letter) draws its message and passes.
-    // It is skipped, not deleted: it asserts real behaviour and returns when the
-    // defect is fixed. See Solutions — the hang that ate the machine.
-    it('refuses a section written where a document belongs, and says why', () => {
-        expect(() => built<$File>(<File>{[chain.Section('a')]}</File>).specify()).toThrow(/a file is written as documents/);
+describe('a book is written as chapters', () => {
+    it('refuses a word written where a chapter belongs, and says why', () => {
+        expect(() => built<$Book>(book(word(letter('x')))).specify()).toThrow(/a book is written as chapters/);
     });
 
-    it('and accepts a file of documents', () => {
+    it('and accepts a book of chapters', () => {
         expect(() => three().specify()).not.toThrow();
     });
 });

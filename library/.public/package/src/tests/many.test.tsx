@@ -1,25 +1,25 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Block } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
-import { $File } from '@/writing/File';
+import { $Composition } from '@/writing/Composition';
 import { $Book, $TypeOfBook, TypeOfBook } from '@/book/Book';
-import { $Chapter, $TypeOfChapter, TypeOfChapter } from '@/book/Chapter';
-import { $$ } from '@/utilities/Lib';
-import { built, chain, shown, specificationOf } from './written';
+import { $Chapter, TypeOfChapter } from '@/book/Chapter';
+import { reflection } from '@/utilities/Reflection';
+import { built, chain, specificationOf } from './written';
 
-// Two classes that are books and are related to NOTHING — not to $Book, not to
-// $File, not to each other. Each one's bond names the type, and that is all.
-class $Bound extends $Writing {
+// Two classes that are books and are related to NOTHING — not to $Book and not
+// to each other. Each one's bond names the type, and that is all.
+class $Bound extends $Composition {
     $Bound(block: $Block) {
-        super.$Writing(block);
-        this._type = $(<TypeOfBook />);
+        this.type ??= $(<TypeOfBook />);
+        super.$Composition(block);
     }
 }
 
-class $Paperback extends $Writing {
+class $Paperback extends $Composition {
     $Paperback(block: $Block) {
-        super.$Writing(block);
-        this._type = $(<TypeOfBook />);
+        this.type ??= $(<TypeOfBook />);
+        super.$Composition(block);
     }
 }
 
@@ -29,57 +29,50 @@ const Chapter = $($Chapter);
 const chapter = (copy: string) => <Chapter>{chain.Section(copy)}</Chapter>;
 
 describe('one type, many implementations, related only through writing', () => {
-    it('neither class descends from $Book, from $File, or from the other', () => {
+    it('neither class descends from $Book or from the other', () => {
         const one = built<$Bound>(<Bound>{[chapter('a')]}</Bound>);
         expect(one instanceof $Book).toBe(false);
-        expect(one instanceof $File).toBe(false);
         expect(one instanceof $Paperback).toBe(false);
     });
 
     it('and BOTH answer as books, because both carry the type', () => {
         const bound = built<$Bound>(<Bound>{[chapter('a')]}</Bound>);
         const paper = built<$Paperback>(<Paperback>{[chapter('b')]}</Paperback>);
-        expect($$(bound)($Book)).toBe(true);
-        expect($$(paper)($Book)).toBe(true);
+        expect(reflection.stands(bound, 'Book')).toBe(true);
+        expect(reflection.stands(paper, 'Book')).toBe(true);
     });
 
-    it('the CANONICAL form is what the reading builds when it has to make one', () => {
+    it('nothing is built when the reading stands — the writing itself answers', () => {
         const bound = built<$Bound>(<Bound>{[chapter('a'), chapter('b')]}</Bound>);
-        const asBook = $$(bound, $Book);
-        expect(asBook).toBeInstanceOf($Book);
-        expect(asBook.parts().length).toBe(2);
+        expect(bound instanceof $Book).toBe(false);
+        expect(reflection.stands(bound, 'Book')).toBe(true);
+        expect(bound.parts().length).toBe(2);
     });
 
-    // QUARANTINED 2026-08-30 — this test HANGS the reaction system rather than
-    // failing. Rendering an INVALID writing whose block holds CHEMICAL children
-    // loops synchronously until the worker is killed; the same test with STRING
-    // children (see sentence/paragraph/word/letter) draws its message and passes.
-    // It is skipped, not deleted: it asserts real behaviour and returns when the
-    // defect is fixed. See Solutions — the hang that ate the machine.
     it('and the type contract is enforced on all of them alike', () => {
-        expect(() => built<$Bound>(<Bound>{[chain.Paragraph('a')]}</Bound>).specify()).toThrow(/a file is written as documents/);
-        expect(() => built<$Paperback>(<Paperback>{[chain.Paragraph('a')]}</Paperback>).specify()).toThrow(/a file is written as documents/);
+        expect(() => built<$Bound>(<Bound>{[chain.Paragraph('a')]}</Bound>).specify()).toThrow(/a book is written as chapters/);
+        expect(() => built<$Paperback>(<Paperback>{[chain.Paragraph('a')]}</Paperback>).specify()).toThrow(/a book is written as chapters/);
     });
 
     it('and it is the TYPE that holds it — the classes share no base to put it on', () => {
-        expect(Object.getPrototypeOf($Bound)).toBe($Writing);
-        expect(Object.getPrototypeOf($Paperback)).toBe($Writing);
+        expect(Object.getPrototypeOf($Bound)).toBe($Composition);
+        expect(Object.getPrototypeOf($Paperback)).toBe($Composition);
         expect(specificationOf(new $TypeOfBook()).rules().map((pair: [string, unknown]) => pair[0]))
-            .toContain('$writtenAsDocuments');
+            .toContain('$writtenAsChapters');
     });
 });
 
 class $Preface extends $Writing {
     $Preface(block: $Block) {
+        this.type ??= $(<TypeOfChapter />);
         super.$Writing(block);
-        this._type = $(<TypeOfChapter />);
     }
 }
 
 class $Appendix extends $Writing {
     $Appendix(block: $Block) {
+        this.type ??= $(<TypeOfChapter />);
         super.$Writing(block);
-        this._type = $(<TypeOfChapter />);
     }
 }
 

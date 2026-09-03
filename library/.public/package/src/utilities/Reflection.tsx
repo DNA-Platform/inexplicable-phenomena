@@ -1,0 +1,69 @@
+import { createElement } from 'react';
+import { $ } from '@dna-platform/chemistry';
+import { $Type, $Trait, $Writing } from '@/writing/Writing';
+
+export class Reflection {
+    private templates = new WeakMap<new () => $Type, $Type>();
+    private declarations = new WeakMap<new () => $Writing, $Type | undefined>();
+    private bares = new WeakMap<new () => $Writing, $Writing>();
+
+    protected levels = ['Book', 'Chapter', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
+
+    stands(writing: $Writing, asked: (new () => $Type) | string): boolean {
+        const worn = [writing.type, this.declared(writing), ...writing.traits].filter((one): one is $Type => one instanceof $Type);
+        if (typeof asked === 'string')
+            return worn.some(one => this.chain(one).includes(asked) || (one instanceof $Trait && one.copy === asked));
+        return worn.some(one => one instanceof asked);
+    }
+
+    below(type: $Type): string | undefined {
+        const names = this.chain(type);
+        const at = this.levels.findIndex(level => names.includes(level));
+        return at >= 0 && at < this.levels.length - 1 ? this.levels[at + 1] : undefined;
+    }
+
+    code(name: string): string {
+        return name[0].toUpperCase() + name[name.length - 1].toLowerCase();
+    }
+
+    indent(writing: $Writing): number {
+        const found = writing.constructor as new () => $Writing;
+        const bare = this.bares.get(found) ?? new found();
+        this.bares.set(found, bare);
+        return Math.max(bare.indent, writing.indent);
+    }
+
+    chain(type: $Type): string[] {
+        const names = [type.name];
+        for (let at = Object.getPrototypeOf(Object.getPrototypeOf(type)); at !== null && at !== Object.prototype; at = Object.getPrototypeOf(at)) {
+            const found = at.constructor as new () => $Type;
+            if (found === ($Type as never) || found === ($Trait as never)) break;
+            const template = this.templates.get(found) ?? new found();
+            this.templates.set(found, template);
+            if (template.name !== names[names.length - 1]) names.push(template.name);
+        }
+        return names;
+    }
+
+    labels(writing: $Writing): string[] {
+        const found: string[] = [];
+        if (writing.type instanceof $Type) found.push(...this.chain(writing.type).reverse());
+        for (const one of writing.traits) found.push(one.copy !== '' ? one.copy : one.name);
+        return [...new Set(found)].map(one => `pd-${this.kebab(one)}`);
+    }
+
+    protected declared(writing: $Writing): $Type | undefined {
+        const found = writing.constructor as new () => $Writing;
+        if (this.declarations.has(found)) return this.declarations.get(found);
+        const Made = $(found);
+        const made = $(createElement(Made as never)) as $Writing;
+        this.declarations.set(found, made.type);
+        return made.type;
+    }
+
+    protected kebab(name: string): string {
+        return name.replace(/(?<!^)[A-Z]/gu, '-$&').toLowerCase();
+    }
+}
+
+export const reflection = new Reflection();

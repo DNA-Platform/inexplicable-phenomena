@@ -3,79 +3,52 @@ import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
 import { ReactNode } from 'react';
-import { $Sentence, Sentence } from './Sentence';
+import { Sentence } from './Sentence';
 import { parser } from '@/utilities/Parser';
 import { Prose } from '@/encyclopedia/Prose';
-import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
+import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
-import { $$ } from '@/utilities/Lib';
+import { reflection } from '@/utilities/Reflection';
 
-export class $Paragraph extends $Composition<$Sentence> implements $Composition$<$Sentence> {
+export class $Paragraph extends $Composition implements $Composition$ {
 
     $Paragraph(block: $Block) {
+        const Asked = $(TypeOfParagraph);
+        this.type ??= $(<Asked />);
         super.$Composition(block);
-        this._type = $(<TypeOfParagraph />);
     }
 
     override frame(): ReactNode {
         return <Prose>{super.frame()}</Prose>;
     }
-
-    protected override reduce(held: (string | $Writing)[]): $Sentence[] {
-        const lines: (string | $Writing)[][] = [[]];
-        for (const token of held) {
-            if (typeof token !== 'string' || !token.includes('\n')) {
-                lines[lines.length - 1].push(token);
-                continue;
-            }
-            token.split('\n').forEach((piece, at, pieces) => {
-                if (at < pieces.length - 1) {
-                    lines[lines.length - 1].push(piece + '\n');
-                    lines.push([]);
-                } else if (piece !== '') {
-                    lines[lines.length - 1].push(piece);
-                }
-            });
-        }
-        return lines
-            .filter(line => line.some(token => typeof token !== 'string' || token.trim() !== ''))
-            .map(line => $(<Sentence>{parser.elements(line)}</Sentence>) as $Sentence);
-    }
 }
 
-export class $$Paragraph extends $Reference implements $Reference$<$Paragraph> {
+export class $$Paragraph extends $Reference {
     $$Paragraph(block: $Block) {
+        const Asked = $(TypeOf$Paragraph);
+        this.type ??= $(<Asked />);
         super.$Reference(block);
-        this._type = $(<TypeOf$Paragraph />);
-    }
-
-    override async read(): Promise<$Paragraph> {
-        return $$(await super.read(), $Paragraph);
     }
 }
 
 export class $TypeOfParagraph extends $Type {
     resolve = false;
-    override nests = true;
-    override code = 'Ph';
-    override get writtenAs(): new () => $Writing { return $Sentence; }
-
-    override get canonicalForm(): typeof $Writing { return $Paragraph; }
+    override name = 'Paragraph';
 
     constructor() {
         super();
-        this[cache]('Paragraph');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new ParagraphSpecification();
 }
 
 export class $TypeOf$Paragraph extends $TypeOfReference {
-    override get canonicalForm(): typeof $Writing { return $$Paragraph; }
+    override name = '$Paragraph';
 
     constructor() {
         super();
-        this[cache]('$Paragraph');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new $ParagraphSpecification();
@@ -90,6 +63,13 @@ export class ParagraphSpecification extends TypedSpecification<$Writing> {
     $noBlankLine(writing: $Writing): void {
         $check(!this.patterns.divided.test(writing.copy), 'a paragraph is unbroken by a blank line, and this one carries one');
     }
+    @specify('a paragraph is written as sentences')
+    $writtenAsSentences(writing: $Writing): void {
+        const inside = ((writing.block?.$elements ?? []) as unknown[])
+            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        $check(inside.every(one => reflection.stands(one, 'Sentence') || reflection.stands(one, 'Paragraph')),
+            'a paragraph is written as sentences, and something in this one is not one');
+    }
 }
 
 export class $ParagraphSpecification extends ReferenceSpecification {
@@ -100,12 +80,16 @@ export class $ParagraphSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Ph:'),
             'a reference to a paragraph lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || $$(held)($Paragraph),
+        $check(held === undefined || reflection.stands(held, 'Paragraph'),
             'a reference to a paragraph lands on one, and what it holds is not one');
     }
 }
 
 export const Paragraph = $($Paragraph);
+parser.makes.set('Paragraph', held => {
+    const Asked = $(Paragraph);
+    return [$(<Asked>{parser.elements(held)}</Asked>) as $Writing];
+});
 export const TypeOfParagraph = $($TypeOfParagraph);
 export const TypeOf$Paragraph = $($TypeOf$Paragraph);
-prints.set('Ph', $$Paragraph);
+prints.set('Ph', $($$Paragraph));

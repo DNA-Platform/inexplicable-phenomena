@@ -2,72 +2,49 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { $Paragraph, Paragraph } from './Paragraph';
+import { Paragraph } from './Paragraph';
 import { $TypeOfTitle } from './Title';
-import { $$ } from '@/utilities/Lib';
 import { parser } from '@/utilities/Parser';
-import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
+import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
+import { reflection } from '@/utilities/Reflection';
 
-export class $Section extends $Composition<$Paragraph> implements $Composition$<$Paragraph> {
+export class $Section extends $Composition implements $Composition$ {
 
     $Section(block: $Block) {
+        const Asked = $(TypeOfSection);
+        this.type ??= $(<Asked />);
         super.$Composition(block);
-        this._type = $(<TypeOfSection />);
     }
 
-    protected override reduce(held: (string | $Writing)[]): $Paragraph[] {
-        const divided = /\n[^\S\n]*\n/u;
-        const chunks: (string | $Writing)[][] = [[]];
-        for (const token of held) {
-            if (typeof token !== 'string' || !divided.test(token)) {
-                chunks[chunks.length - 1].push(token);
-                continue;
-            }
-            token.split(divided).forEach((piece, at) => {
-                if (at > 0) chunks.push([]);
-                if (piece !== '') chunks[chunks.length - 1].push(piece);
-            });
-        }
-        return chunks
-            .filter(chunk => chunk.some(token => typeof token !== 'string' || token.trim() !== ''))
-            .map(chunk => $(<Paragraph>{parser.elements(chunk)}</Paragraph>) as $Paragraph);
-    }
 }
 
-export class $$Section extends $Reference implements $Reference$<$Section> {
+export class $$Section extends $Reference {
     $$Section(block: $Block) {
+        const Asked = $(TypeOf$Section);
+        this.type ??= $(<Asked />);
         super.$Reference(block);
-        this._type = $(<TypeOf$Section />);
-    }
-
-    override async read(): Promise<$Section> {
-        return $$(await super.read(), $Section);
     }
 }
 
 export class $TypeOfSection extends $Type {
     resolve = false;
-    override nests = true;
-    override code = 'Sn';
-    override get writtenAs(): new () => $Writing { return $Paragraph; }
-
-    override get canonicalForm(): typeof $Writing { return $Section; }
+    override name = 'Section';
 
     constructor() {
         super();
-        this[cache]('Section');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new SectionSpecification();
 }
 
 export class $TypeOf$Section extends $TypeOfReference {
-    override get canonicalForm(): typeof $Writing { return $$Section; }
+    override name = '$Section';
 
     constructor() {
         super();
-        this[cache]('$Section');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new $SectionSpecification();
@@ -78,7 +55,8 @@ export class SectionSpecification extends TypedSpecification<$Writing> {
     $writtenAsParagraphs(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => $$(one)($Paragraph) || $$(one)($Section)), 'a section is written as paragraphs, and something in this one is not one');
+        $check(inside.every(one => reflection.stands(one, 'Paragraph') || reflection.stands(one, 'Section')),
+            'a section is written as paragraphs, and something in this one is not one');
     }
 
     @specify('a section opens with its title')
@@ -98,12 +76,16 @@ export class $SectionSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Sn:'),
             'a reference to a section lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || $$(held)($Section),
+        $check(held === undefined || reflection.stands(held, 'Section'),
             'a reference to a section lands on one, and what it holds is not one');
     }
 }
 
 export const Section = $($Section);
+parser.makes.set('Section', held => {
+    const Asked = $(Section);
+    return [$(<Asked>{parser.elements(held)}</Asked>) as $Writing];
+});
 export const TypeOfSection = $($TypeOfSection);
 export const TypeOf$Section = $($TypeOf$Section);
-prints.set('Sn', $$Section);
+prints.set('Sn', $($$Section));

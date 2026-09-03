@@ -6,18 +6,19 @@ export class $PageFold extends $$Chapter {
     location = 0;
 
     $PageFold(block: $Block) {
+        const Asked = $(TypeOfPageFold);
+        this.type ??= $(<Asked />);
         super.$$Chapter(block);
-        this._type = $(<TypeOfPageFold />);
         this.persist = true;
     }
 }
 
 export class $TypeOfPageFold extends $TypeOf$Chapter {
-    override get canonicalForm(): typeof $Writing { return $PageFold; }
+    override name = 'PageFold';
 
     constructor() {
         super();
-        this[cache]('PageFold');
+        this[cache](this.name);
     }
 }
 

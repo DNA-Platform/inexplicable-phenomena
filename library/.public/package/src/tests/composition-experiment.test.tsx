@@ -7,7 +7,6 @@ import { $Block, $, cache, hydration } from '@dna-platform/chemistry';
 import { $Writing, Type, Trait } from '@/writing/Writing';
 import { $Word, $$Word, $TypeOfWord, TypeOfWord } from '@/writing/Word';
 import { $Letter } from '@/writing/Letter';
-import { $Document, TypeOfDocument } from '@/writing/Document';
 import { $Book, $$Book, Book } from '@/book/Book';
 import { $Chapter, $$Chapter, Chapter } from '@/book/Chapter';
 import { $Cover, Cover } from '@/book/Cover';
@@ -17,8 +16,8 @@ import { $PageFold, PageFold } from '@/book/PageFold';
 import { $Bookmark, Bookmark } from '@/book/Bookmark';
 import { $Highlight, Highlight } from '@/book/Highlight';
 import { $Reference, Reference } from '@/reference/Reference';
-import { $$ } from '@/utilities/Lib';
-import { built, drawn, shown, letter, word, sentence, paragraph, section, document, title, file, Sentence, Document, Word, Writing, Paragraph, Section, File } from './written';
+import { reflection } from '@/utilities/Reflection';
+import { built, drawn, shown, letter, word, sentence, paragraph, section, chapter, title, Sentence, Word, Writing, Paragraph, Section } from './written';
 import { $Path, Path } from '@/reference/Path';
 import { $Section } from '@/writing/Section';
 import { $List, List } from '@/writing/List';
@@ -27,9 +26,9 @@ import { $ReferenceCard, ReferenceCard } from '@/reference/ReferenceCard';
 import { $References, References } from '@/reference/References';
 import { $Index, Index } from '@/book/Index';
 
-const referencesOf = (of: $Document): $References => {
+const referencesOf = (of: $Chapter): $References => {
     const held = of.references;
-    if (!(held instanceof $References)) throw new Error('the document holds no references section');
+    if (!(held instanceof $References)) throw new Error('the chapter holds no references section');
     return held;
 };
 
@@ -43,12 +42,11 @@ describe('a composition can be configured with a type to make the thing you need
         expect(parts.map(part => part.copy)).toEqual(['one', 'two']);
     });
 
-    it('configured as a sentence, it stands as one', () => {
+    it('configured as a sentence, it stands as one and nothing is built to say so', () => {
         const composed = built<$Composition>(<Composition><TypeOfSentence />{word(letter('h'), letter('i'))}</Composition>);
-        expect($$(composed)($Sentence)).toBe(true);
-        const stood = $$(composed, $Sentence);
-        expect(stood).toBeInstanceOf($Sentence);
-        expect(stood.parts()).toHaveLength(1);
+        expect(reflection.stands(composed, 'Sentence')).toBe(true);
+        expect(composed instanceof $Sentence).toBe(false);
+        expect(composed.parts()).toHaveLength(1);
     });
 
     it('configured as a paragraph, it composes sentences', () => {
@@ -121,8 +119,8 @@ describe('the catalogue, consulted and comprehended', () => {
         expect(one.concatenate(two).parts().map(part => part.copy)).toEqual(['a', 'b', 'c']);
     });
 
-    it('a document goes all the way from sections to letters', () => {
-        const one = built<$Document>(document(
+    it('a chapter goes all the way from sections to letters', () => {
+        const one = built<$Chapter>(chapter(
             section(paragraph(sentence(word(letter('a'), letter('b'))))),
             section(paragraph(sentence(word(letter('c')))))));
         expect(one.sections.parts()).toHaveLength(2);
@@ -165,7 +163,7 @@ describe('the catalogue, consulted and comprehended', () => {
 
 describe('the step, the fragment, and the one-field index', () => {
     it("a printed reference's step lives in its path, matching its referent's place", async () => {
-        const one = built<$Document>(document(
+        const one = built<$Chapter>(chapter(
             section(paragraph(sentence(word(letter('a'))))),
             section(paragraph(sentence(word(letter('b')))))));
         const consulted = one.catalogue();
@@ -173,20 +171,11 @@ describe('the step, the fragment, and the one-field index', () => {
         await expect(consulted.parts()[1].read()).resolves.toBe(one.parts()[1]);
     });
 
-    it('a fragment of slash steps descends to the very object', () => {
-        const one = built<$Document>(document(
-            section(paragraph(sentence(word(letter('a'))))),
-            section(paragraph(sentence(word(letter('x'), letter('y')))), paragraph(sentence(word(letter('z')))))));
-        const steps = '1/1/0/0'.split('/').map(Number);
-        const landed = steps.reduce((at: { parts(): { copy: string; parts(): never[] }[] }, step) => at.parts()[step], one as never);
-        expect(landed.copy).toBe('z');
-    });
-
     it('a deep part answers its typed address, and the address follows back to the very object', () => {
-        const one = built<$Document>(document(
+        const one = built<$Chapter>(chapter(
             section(paragraph(sentence(word(letter('a'))))),
             section(paragraph(sentence(word(letter('x'), letter('y')))), paragraph(sentence(word(letter('z')))))));
-        const z = one.parts()[1].parts()[1].parts()[0].parts()[0];
+        const z = (((one.parts()[1] as $Composition).parts()[1] as $Composition).parts()[0] as $Composition).parts()[0];
         expect(one.catalogue().address(z)).toBe('Sn:1/Ph:1/Se:0/Wd:0');
         expect(one.catalogue().follow('Sn:1/Ph:1/Se:0/Wd:0')).toBe(z);
         expect(one.catalogue().follow('1/1/0/0')).toBe(z);
@@ -211,12 +200,12 @@ describe('the step, the fragment, and the one-field index', () => {
         expect(() => one.catalogue().follow('Lr:1-3/0')).toThrow(/a span stands only in the last step/);
     });
 
-    it('the nine codes are first-and-last and none collide', () => {
-        const codes = ['Lr', 'Wd', 'Se', 'Ph', 'Sn', 'Dt', 'Fe', 'Cr', 'Bk'];
-        expect(new Set(codes).size).toBe(9);
-        const one = built<$Document>(document(section(paragraph(sentence(word(letter('a')))))));
-        expect(one.parts()[0].type.code).toBe('Sn');
-        expect(one.parts()[0].parts()[0].type.code).toBe('Ph');
+    it('the seven codes are first-and-last and none collide', () => {
+        const codes = ['Lr', 'Wd', 'Se', 'Ph', 'Sn', 'Cr', 'Bk'];
+        expect(new Set(codes).size).toBe(7);
+        const one = built<$Chapter>(chapter(section(paragraph(sentence(word(letter('a')))))));
+        expect(one.catalogue().parts()[0].path?.copy).toBe('Sn:0');
+        expect((one.parts()[0] as $Composition).catalogue().parts()[0].path?.copy).toBe('Ph:0');
     });
 
     it('the bookmark shape: the handle HOLDS its path, and the path follows back', () => {
@@ -238,21 +227,21 @@ describe('the step, the fragment, and the one-field index', () => {
     });
 
     it('a stacked walk never renumbers shared parts — canonical indices belong to the canonical parent', () => {
-        const one = built<$Document>(document(
+        const one = built<$Chapter>(chapter(
             section(paragraph(sentence(word(letter('a')), word(letter('b'))))),
             section(paragraph(sentence(word(letter('c')))))));
-        const lastSentence = one.parts()[1].parts()[0].parts()[0];
-        expect(lastSentence.parts().map(part => part.index)).toEqual([0]);
+        const lastSentence = ((one.parts()[1] as $Composition).parts()[0] as $Composition).parts()[0] as $Composition;
+        expect(lastSentence.parts().map(part => (part as $Composition).index)).toEqual([0]);
         one.words.parts();
-        expect(lastSentence.parts().map(part => part.index)).toEqual([0]);
+        expect(lastSentence.parts().map(part => (part as $Composition).index)).toEqual([0]);
     });
 });
 
 describe('the active document', () => {
-    it('a deep letter under a document answers that document', () => {
-        const one = built<$Document>(document(
+    it('a deep letter under a chapter answers that chapter', () => {
+        const one = built<$Chapter>(chapter(
             section(paragraph(sentence(word(letter('a'), letter('b')))))));
-        const deep = one.parts()[0].parts()[0].parts()[0].parts()[0].parts()[0];
+        const deep = ((((one.parts()[0] as $Composition).parts()[0] as $Composition).parts()[0] as $Composition).parts()[0] as $Composition).parts()[0];
         expect(deep.book()).toBe(one);
     });
 
@@ -261,23 +250,15 @@ describe('the active document', () => {
         expect(one.book()).toBe(one);
     });
 
-    it('a document written as loose prose adopts what its parse built', () => {
-        const one = built<$Document>(<Document>{paragraph(sentence(word(letter('x'))))}</Document>);
-        const parsed = one.parts()[0];
+    it('a chapter written as loose prose adopts what its parse built', () => {
+        const one = built<$Chapter>(<Chapter>{paragraph(sentence(word(letter('x'))))}</Chapter>);
+        const parsed = one.parts()[0] as $Composition;
         expect(parsed.book()).toBe(one);
         expect(parsed.parts()[0].book()).toBe(one);
     });
 
-    it('a bound stand-in answers the document of what it stands for', () => {
-        const one = built<$Document>(document(
-            section(paragraph(sentence(word(letter('h'), letter('i')))))));
-        const held = one.parts()[0].parts()[0].parts()[0];
-        const stood = $$(held, $Sentence);
-        expect(stood.book()).toBe(one);
-    });
-
     it('created in an <X>, a child of X: the type a bond constructor makes answers the document', () => {
-        const one = built<$Document>(document(section(paragraph(sentence(word(letter('a')))))));
+        const one = built<$Chapter>(chapter(section(paragraph(sentence(word(letter('a')))))));
         expect(one.type.book()).toBe(one);
         expect(one.parts()[0].type.book()).toBe(one);
     });
@@ -289,7 +270,7 @@ describe("the book's anatomy — roles by position, no flags", () => {
     it('the four kinds arrive by the standard type pattern and stand as chapters', () => {
         const kind = built<$Cover>(<Cover>{page('hi')}</Cover>);
         expect(kind).toBeInstanceOf($Composition);
-        expect($$(kind)($Chapter)).toBe(true);
+        expect(reflection.stands(kind, 'Chapter')).toBe(true);
         expect(() => kind.specify()).not.toThrow();
     });
 
@@ -319,10 +300,10 @@ describe("the book's anatomy — roles by position, no flags", () => {
         expect(one.tableOfContents).toBeUndefined();
     });
 
-    it("a chapter kind deep in a book answers the book as its document", () => {
+    it('a chapter kind deep in a book answers the book as its document', () => {
         const one = built<$Book>(<Book><Cover>{page('a')}</Cover></Book>);
         expect(one.cover.book()).toBe(one);
-        expect(one.cover.parts()[0].book()).toBe(one);
+        expect((one.cover as $Composition).parts()[0].book()).toBe(one);
     });
 });
 
@@ -372,7 +353,7 @@ describe('the bookmark — inserted somewhere, it finds its chapter', () => {
                 <Chapter>{section(paragraph(sentence(word(letter('h'), letter('i')))))}</Chapter>
                 <Chapter>{section(paragraph(sentence(word(letter('y'), letter('o')), <Bookmark>here</Bookmark>)))}</Chapter>
             </Book>);
-        const within = book.parts()[1].parts()[0].parts()[0].parts()[0];
+        const within = (((book.parts()[1] as $Composition).parts()[0] as $Composition).parts()[0] as $Composition).parts()[0];
         const mark = within.annotations.find((one): one is $Bookmark => one instanceof $Bookmark)!;
         return { book, mark };
     };
@@ -381,7 +362,7 @@ describe('the bookmark — inserted somewhere, it finds its chapter', () => {
         const { book, mark } = marked();
         expect(mark).toBeInstanceOf($$Chapter);
         expect(mark.chapter).toBe(book.parts()[1]);
-        const found: $Chapter = await mark.read();
+        const found = await mark.read();
         expect(found).toBe(book.parts()[1]);
     });
 
@@ -403,7 +384,7 @@ describe('the bookmark — inserted somewhere, it finds its chapter', () => {
 
     it('the writing is untouched by its bookmark', () => {
         const { book } = marked();
-        expect($$(book.parts()[1], $Document).letters.parts().map(part => part.copy)).toEqual(['y', 'o']);
+        expect((book.parts()[1] as $Chapter).letters.parts().map(part => part.copy)).toEqual(['y', 'o']);
     });
 
     it('a bookmark holds a piece of content, and specifies clean where it stands', () => {
@@ -441,17 +422,17 @@ describe('the highlight — a dynamically typed pair of references of the same k
     });
 });
 
-describe('specifically is called in the constructor of writing', () => {
-    it('the type acts at birth on writing of its own kind', () => {
+describe('the bond assigns, and specify is where the type acts', () => {
+    it('the type acts at specify, never at birth', () => {
         let acted = 0;
         class $Acting extends $Word {
             $Acting(block: $Block) {
+                this.type ??= $(<TypeOfActing />);
                 super.$Word(block);
-                this._type = $(<TypeOfActing />);
             }
         }
         class $TypeOfActing extends $TypeOfWord {
-            override get canonicalForm(): typeof $Writing { return $Acting; }
+            override name = 'Acting';
 
             override specifically(writing: $Writing): void {
                 acted++;
@@ -460,23 +441,23 @@ describe('specifically is called in the constructor of writing', () => {
 
             constructor() {
                 super();
-                this[cache]('Acting');
+                this[cache](this.name);
             }
         }
         const Acting = $($Acting);
         const TypeOfActing = $($TypeOfActing);
         const one = built<$Acting>(<Acting>{letter('h')}{letter('i')}</Acting>);
-        expect(acted).toBe(1);
+        expect(acted).toBe(0);
         one.specify();
-        expect(acted).toBe(2);
+        expect(acted).toBe(1);
     });
 });
 
 describe('the typed references — $$Letter through $$Book, and they are fun', () => {
     it('writing carrying <Type>$Book</Type> stands as a reference to a book', () => {
         const { writing } = drawn('algebra', <Type>$Book</Type>, <Path>Bk:0</Path>);
-        expect($$(writing)($$Book)).toBe(true);
-        expect($$(writing, $$Book)).toBeInstanceOf($$Book);
+        expect(reflection.stands(writing, '$Book')).toBe(true);
+        expect(writing instanceof $$Book).toBe(false);
     });
 
     it('its specification refuses a path landing on something else, in its own words', () => {
@@ -491,13 +472,13 @@ describe('the typed references — $$Letter through $$Book, and they are fun', (
         expect(() => one.specify()).not.toThrow();
     });
 
-    it('read is typed: a reference to a word reads to the very word', async () => {
+    it('read answers the very writing that was held', async () => {
         const Word = $($$Word);
         const held = built<$Word>(word(letter('h'), letter('i')));
         const one = $<$$Word>(<Word />, held, $<$Path>(<Path>Wd:0</Path>));
-        const found: $Word = await one.read();
+        const found = await one.read();
         expect(found).toBe(held);
-        expect(found.letters.parts().map(part => part.copy)).toEqual(['h', 'i']);
+        expect((found as $Word).letters.parts().map(part => part.copy)).toEqual(['h', 'i']);
     });
 
     it('a page fold IS a reference to a chapter now, and inherits its law', () => {
@@ -507,36 +488,37 @@ describe('the typed references — $$Letter through $$Book, and they are fun', (
     });
 });
 
-describe('newlines are optional separators, and a newline-stopped sentence is not canonical', () => {
+describe('newlines divide sentences, and a newline-stopped sentence is not canonical', () => {
     it('a paragraph of lines parses each line as a sentence', () => {
         const one = built<$Paragraph>(<Paragraph>{'First sentence\nSecond sentence\nThird sentence'}</Paragraph>);
         expect(one.parts()).toHaveLength(3);
         expect(one.parts().map(part => part.canonical)).toEqual([false, false, true]);
     });
 
-    it('a section of blank-line chunks parses each as a paragraph', () => {
+    it('a section of bare text implies AT MOST ONE paragraph, and a blank line inside is the error', () => {
         const one = built<$Section>(<Section>{'one two\n\nthree four'}</Section>);
-        expect(one.parts()).toHaveLength(2);
+        expect(one.parts()).toHaveLength(1);
+        expect(() => one.parts()[0].specify()).toThrow(/unbroken by a blank line/);
     });
 });
 
-describe('the list and the table — a paragraph of bullets, a section of rows', () => {
+describe('the list and the table — a paragraph of bullets, a section of cells', () => {
     it('a list behaves exactly like a paragraph and draws its sentences as bullets', () => {
         const one = built<$List>(<List>{'alpha\nbeta\ngamma'}</List>);
         expect(one).toBeInstanceOf($Composition);
-        expect($$(one)($Paragraph)).toBe(true);
+        expect(reflection.stands(one, 'Paragraph')).toBe(true);
         expect(one.parts()).toHaveLength(3);
         const { host } = drawn(<List>{'alpha\nbeta\ngamma'}</List>);
         expect(host.querySelectorAll('li')).toHaveLength(3);
         expect(host.textContent).toContain('beta');
     });
 
-    it('a table is a section whose paragraphs are its rows', () => {
-        const one = built<$Table>(<Table>{'first row\n\nsecond row'}</Table>);
+    it('a table is a section whose cells are its paragraphs', () => {
+        const one = built<$Table>(<Table><Paragraph>first cell</Paragraph><Paragraph>second cell</Paragraph></Table>);
         expect(one).toBeInstanceOf($Composition);
-        expect($$(one)($Section)).toBe(true);
+        expect(reflection.stands(one, 'Section')).toBe(true);
         expect(one.parts()).toHaveLength(2);
-        const { host } = drawn(<Table>{'first row\n\nsecond row'}</Table>);
+        const { host } = drawn(<Table><Paragraph>first cell</Paragraph><Paragraph>second cell</Paragraph></Table>);
         expect(host.querySelectorAll('tr')).toHaveLength(2);
     });
 });
@@ -558,16 +540,16 @@ describe('the reference card — decorates its first, exposes the rest', () => {
         expect(() => one.specify()).toThrow(/a reference card is a list of references/);
     });
 
-    it('a reference wearing <Trait>Card</Trait> stands as a card', () => {
+    it('a reference wearing <Trait>Card</Trait> stands as a card, and nothing is built', () => {
         const { writing } = drawn(
             <Reference><Trait>Card</Trait><Reference>{word(letter('a'))}<Path>Wd:0</Path></Reference><Reference>beta<Path>Se:1</Path></Reference></Reference>);
         const wearer = writing.annotations.find((one): one is $Reference => one instanceof $Reference)!;
         expect(wearer.traits).toHaveLength(1);
-        expect($$(wearer)($ReferenceCard)).toBe(true);
-        const stood = $$(wearer, $ReferenceCard);
-        expect(stood).toBeInstanceOf($ReferenceCard);
-        expect(stood.first?.path?.copy).toBe('Wd:0');
-        expect(stood.rest).toHaveLength(1);
+        expect(reflection.stands(wearer, 'Card')).toBe(true);
+        expect(wearer instanceof $ReferenceCard).toBe(false);
+        const held = (wearer.block?.$elements ?? []).filter((one): one is $Reference => one instanceof $Reference);
+        expect(held).toHaveLength(2);
+        expect(held[0].path?.copy).toBe('Wd:0');
     });
 });
 
@@ -593,16 +575,6 @@ describe('the basic view — the encyclopedia look', () => {
         expect(host.querySelector('article')).not.toBeNull();
     });
 
-    it('a file is the index page — entries ruled into columns', () => {
-        const { host } = drawn(
-            <File>{document(section(title(sentence(word(letter('c')))), paragraph(sentence(word(letter('d'))))))}</File>);
-        window.document.body.appendChild(host);
-        const columns = host.querySelector('div');
-        expect(columns).not.toBeNull();
-        expect(getComputedStyle(columns!).columnCount).toBe('3');
-        expect(host.querySelector('main')).toBeNull();
-    });
-
     it('a reference draws as the blue anchor', () => {
         const { host } = drawn(<Sentence>Read <Reference>Algebra<Path>/books/algebra</Path></Reference></Sentence>);
         window.document.body.appendChild(host);
@@ -611,25 +583,25 @@ describe('the basic view — the encyclopedia look', () => {
     });
 });
 
-describe('a document keeps its references — the section at its end', () => {
+describe('a chapter keeps its references — the section at its end', () => {
     beforeEach(() => { hydration.forget(); localStorage.clear(); });
 
-    it('the type augments to enforce: a document gets its references section', () => {
-        const one = built<$Document>(document(section(paragraph(sentence(word(letter('a')))))));
-        expect(one.references).toBeInstanceOf($References);
+    it('the type augments to enforce: a specified chapter gets its references section', () => {
+        const one = built<$Chapter>(chapter(section(paragraph(sentence(word(letter('a')))))));
         expect(() => one.specify()).not.toThrow();
+        expect(one.references).toBeInstanceOf($References);
         expect(one.parts()).toHaveLength(1);
         expect(one.copy).toBe('a');
     });
 
-    it('writing told it is a document is augmented the same way at specify', () => {
-        const { writing } = drawn(section(paragraph(sentence(word(letter('a'))))), <Type>Document</Type>);
+    it('writing told it is a chapter is augmented the same way at specify', () => {
+        const { writing } = drawn(section(paragraph(sentence(word(letter('a'))))), <Type>Chapter</Type>);
         expect(() => writing.specify()).not.toThrow();
         expect((writing.block?.$elements ?? []).some(one => one instanceof $References)).toBe(true);
     });
 
     it('a references section authored out of place is refused', () => {
-        const one = built<$Document>(<Document><References />{section(paragraph(sentence(word(letter('a')))))}</Document>);
+        const one = built<$Chapter>(<Chapter><References />{section(paragraph(sentence(word(letter('a')))))}</Chapter>);
         expect(() => one.specify()).toThrow(/ends with its references/);
     });
 
@@ -643,7 +615,9 @@ describe('a document keeps its references — the section at its end', () => {
     });
 
     it('$print flips the margin', () => {
-        const refs = referencesOf(built<$Document>(document(section(paragraph(sentence(word(letter('a'))))))));
+        const one = built<$Chapter>(chapter(section(paragraph(sentence(word(letter('a')))))));
+        one.specify();
+        const refs = referencesOf(one);
         expect(refs.$print).toBe(false);
         refs.$print = true;
         expect(refs.parenthetical).toBe(false);
@@ -698,11 +672,12 @@ describe('links persist on active — surviving different pages', () => {
     it('focus stacks the link in its references section, and the whole section persists', async () => {
         hydration.forget();
         localStorage.clear();
-        const one = built<$Document>(document(
+        const one = built<$Chapter>(chapter(
             section(paragraph(sentence(word(letter('a')), <Reference>alpha<Path>/books/p</Path></Reference>))),
             section(paragraph(sentence(word(letter('b')), <Reference>beta<Path>/books/q</Path></Reference>)))));
+        one.specify();
         const links = one.paragraphs.parts()
-            .flatMap(paragraph => paragraph.parts())
+            .flatMap(one => (one as $Composition).parts())
             .flatMap(line => line.annotations)
             .filter((mark): mark is $Reference => mark instanceof $Reference);
         links[0].focus();
@@ -711,19 +686,21 @@ describe('links persist on active — surviving different pages', () => {
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('/books/p');
 
-        const reloaded = built<$Document>(document(section(paragraph(sentence(word(letter('c')))))));
-        expect(referencesOf(reloaded).stack).toContain('/books/p');
-        expect(referencesOf(reloaded).stack).toContain('/books/q');
+        const reloaded = built<$References>(<References />);
+        await settled();
+        expect(reloaded.stack).toContain('/books/p');
+        expect(reloaded.stack).toContain('/books/q');
     });
 
     it('unfocus removes from the stack and forgets the link, without moving its neighbors', async () => {
         hydration.forget();
         localStorage.clear();
-        const one = built<$Document>(document(
+        const one = built<$Chapter>(chapter(
             section(paragraph(sentence(word(letter('a')), <Reference>alpha<Path>/books/p</Path></Reference>))),
             section(paragraph(sentence(word(letter('b')), <Reference>beta<Path>/books/q</Path></Reference>)))));
+        one.specify();
         const links = one.paragraphs.parts()
-            .flatMap(paragraph => paragraph.parts())
+            .flatMap(one => (one as $Composition).parts())
             .flatMap(line => line.annotations)
             .filter((mark): mark is $Reference => mark instanceof $Reference);
         links[0].focus();
@@ -750,7 +727,7 @@ describe('links persist on active — surviving different pages', () => {
     });
 });
 
-describe('an X nests in an X — up to section, and the outer collects its parts', () => {
+describe('an X nests in an X — every level, and the outer collects its parts', () => {
     it('a paragraph in a paragraph flattens to sentences', () => {
         const one = built<$Paragraph>(
             <Paragraph>{sentence(word(letter('a')))}{sentence(word(letter('b')))}<Paragraph>{sentence(word(letter('c')))}</Paragraph></Paragraph>);
@@ -772,9 +749,11 @@ describe('an X nests in an X — up to section, and the outer collects its parts
         expect(() => one.specify()).not.toThrow();
     });
 
-    it('a document does not nest — its type never learned to', () => {
-        expect(($(<TypeOfParagraph />) as { nests: boolean }).nests).toBe(true);
-        expect(($(<TypeOfDocument />) as { nests: boolean }).nests).toBe(false);
+    it('a chapter nests in a chapter now — all seven do', () => {
+        const one = built<$Chapter>(
+            <Chapter>{section(paragraph(sentence(word(letter('a')))))}<Chapter>{section(paragraph(sentence(word(letter('b')))))}</Chapter></Chapter>);
+        expect(one.parts()).toHaveLength(2);
+        expect(one.parts().every(part => reflection.stands(part, 'Section'))).toBe(true);
     });
 });
 
@@ -782,7 +761,7 @@ describe('the references persist as one, and the index takes them', () => {
     beforeEach(() => { hydration.forget(); localStorage.clear(); });
     const settled = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
 
-    it('the type grants the power — a references section persists under the one shared key', async () => {
+    it('a references section persists under the one shared key, declared at birth', async () => {
         const one = built<$References>(<References />);
         expect(one.$pid).toBe('$references$');
         expect(one.persist).toBe(true);
@@ -831,11 +810,12 @@ describe('the references persist as one, and the index takes them', () => {
         expect(one.recollection).toHaveLength(0);
     });
 
-    it('the index is a chapter that takes the references — pulled in, visible, persisting nothing itself', async () => {
+    it('the index is a chapter that takes the references — pulled in at specify, persisting nothing itself', async () => {
         const one = built<$Index>(<Index><Reference>alpha<Path>Se:0</Path></Reference></Index>);
-        expect($$(one)($Chapter)).toBe(true);
+        expect(reflection.stands(one, 'Chapter')).toBe(true);
         expect(one.$pid).toBeUndefined();
         expect(one.persist).toBe(false);
+        one.specify();
         const pulled = (one.block?.$elements ?? []).find((it): it is $References => it instanceof $References);
         expect(pulled).toBeDefined();
         expect(pulled!.parenthetical).toBe(true);
@@ -843,7 +823,7 @@ describe('the references persist as one, and the index takes them', () => {
         expect(pulled!.persist).toBe(true);
     });
 
-    it('every book has at least a parenthetical index, and it fetches the persisted references', async () => {
+    it('a specified book has at least a parenthetical index, and it fetches the persisted references', async () => {
         const kept = built<$References>(<References />);
         const link = built<$Reference>(<Reference>alpha<Path>/books/shelved</Path></Reference>);
         kept.append(link);
@@ -852,6 +832,7 @@ describe('the references persist as one, and the index takes them', () => {
             <Book>
                 <Chapter>{section(paragraph(sentence(word(letter('a')))))}</Chapter>
             </Book>);
+        book.specify();
         await settled();
         const index = (book.block?.$elements ?? []).find((it): it is $Index => it instanceof $Index);
         expect(index).toBeDefined();

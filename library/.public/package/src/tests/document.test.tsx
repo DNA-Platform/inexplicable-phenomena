@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { Type } from '@/writing/Writing';
-import { $Document, $TypeOfDocument } from '@/writing/Document';
+import { $Chapter, $TypeOfChapter } from '@/book/Chapter';
 import { $Composition } from '@/writing/Composition';
 import { $Section } from '@/writing/Section';
-import { $$ } from '@/utilities/Lib';
-import { built, chain, declares, document, drawn, letter, shown, word, Document } from './written';
+import { reflection } from '@/utilities/Reflection';
+import { built, chain, declares, chapter, drawn, letter, word, Chapter } from './written';
 
-const three = () => built<$Document>(document(chain.Section('a'), chain.Section('b'), chain.Section('c')));
+const three = () => built<$Chapter>(chapter(chain.Section('a'), chain.Section('b'), chain.Section('c')));
 
-describe('$Document composes $Section', () => {
+describe('$Chapter composes $Section', () => {
     it('composes the level below, in the order written', () => {
         expect(three().parts().map(one => one.copy)).toEqual(['a', 'b', 'c']);
         expect(three().parts().every(one => one instanceof $Section)).toBe(true);
@@ -19,7 +19,7 @@ describe('$Document composes $Section', () => {
     });
 
     it('carries its own type, written into it by its own bond', () => {
-        expect(three().type).toBeInstanceOf($TypeOfDocument);
+        expect(three().type).toBeInstanceOf($TypeOfChapter);
     });
 
     it('arrives inside a block, and holds one', () => {
@@ -28,10 +28,10 @@ describe('$Document composes $Section', () => {
         expect(one.block).toBeDefined();
     });
 
-    it('affords the four from composition, narrowed, and answers all of them', () => {
+    it('affords the four from composition and answers all of them', () => {
         for (const member of ['where', 'select', 'selectMany', 'single']) {
             expect(declares($Composition, member)).toBe(true);
-            expect(declares($Document, member)).toBe(false);
+            expect(declares($Chapter, member)).toBe(false);
         }
         const one = three();
         expect(one.where(part => part.copy !== 'b').map(part => part.copy)).toEqual(['a', 'c']);
@@ -41,32 +41,28 @@ describe('$Document composes $Section', () => {
         expect(() => one.single(part => part.copy !== 'b')).toThrow();
     });
 
-    it('and a piece of writing TOLD it is a Document composes the same', () => {
-        const { writing } = drawn(chain.Section('h'), chain.Section('i'), <Type>Document</Type>);
-        expect($$(writing)($Document)).toBe(true);
-        expect($$(writing, $Document).parts().map(one => one.copy)).toEqual(['h', 'i']);
+    it('and a piece of writing TOLD it is a Chapter composes the same', () => {
+        const { writing } = drawn(chain.Section('h'), chain.Section('i'), <Type>Chapter</Type>);
+        expect(reflection.stands(writing, 'Chapter')).toBe(true);
+        expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
     });
 });
 
-describe('a document is written as sections, or as a title and paragraphs', () => {
-    it('accepts a document of sections', () => {
+describe('a chapter is written as sections, or as a title and paragraphs', () => {
+    it('accepts a chapter of sections', () => {
         expect(() => three().specify()).not.toThrow();
     });
 
     it('accepts a title and paragraphs, and wraps them in ONE section', () => {
-        const one = built<$Document>(<Document>{[chain.Paragraph('a'), chain.Paragraph('b')]}</Document>);
+        const one = built<$Chapter>(<Chapter>{[chain.Paragraph('a'), chain.Paragraph('b')]}</Chapter>);
         expect(() => one.specify()).not.toThrow();
         expect(one.parts().length).toBe(1);
-        expect(one.parts()[0].parts().length).toBe(2);
+        const first = one.parts()[0];
+        expect(first).toBeInstanceOf($Composition);
+        expect((first as $Composition).parts().length).toBe(2);
     });
 
-    // QUARANTINED 2026-08-30 — this test HANGS the reaction system rather than
-    // failing. Rendering an INVALID writing whose block holds CHEMICAL children
-    // loops synchronously until the worker is killed; the same test with STRING
-    // children (see sentence/paragraph/word/letter) draws its message and passes.
-    // It is skipped, not deleted: it asserts real behaviour and returns when the
-    // defect is fixed. See Solutions — the hang that ate the machine.
     it('and refuses a word, which is neither', () => {
-        expect(() => built<$Document>(<Document>{[word(letter('h'))]}</Document>).specify()).toThrow(/is written as sections/);
+        expect(() => built<$Chapter>(<Chapter>{[word(letter('h'))]}</Chapter>).specify()).toThrow(/is written as sections/);
     });
 });

@@ -16,12 +16,13 @@ export class $Bookmark extends $$Chapter {
     }
 
     $Bookmark(block: $Block) {
+        const Asked = $(TypeOfBookmark);
+        this.type ??= $(<Asked />);
         super.$$Chapter(block);
-        this._type = $(<TypeOfBookmark />);
         this.persist = true;
     }
 
-    override async read(): Promise<$Chapter> {
+    override async read(): Promise<$Writing> {
         const chapter = this.chapter;
         if (chapter) return chapter;
         return super.read();
@@ -29,11 +30,11 @@ export class $Bookmark extends $$Chapter {
 }
 
 export class $TypeOfBookmark extends $TypeOf$Chapter {
-    override get canonicalForm(): typeof $Writing { return $Bookmark; }
+    override name = 'Bookmark';
 
     constructor() {
         super();
-        this[cache]('Bookmark');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new BookmarkSpecification();

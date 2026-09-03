@@ -2,55 +2,31 @@ import { ReactNode } from 'react';
 import { $, $Block, $check, cache } from '@dna-platform/chemistry';
 import { Body } from '@/encyclopedia/Body';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { $Writing } from '@/writing/Writing';
-import { $File, $TypeOfFile, FileSpecification } from '@/writing/File';
-import { $Document } from '@/writing/Document';
+import { $Type, TypedSpecification, $Writing } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
-import { $$ } from '@/utilities/Lib';
-import { $Section } from '@/writing/Section';
-import { $Paragraph } from '@/writing/Paragraph';
-import { $Sentence } from '@/writing/Sentence';
-import { $Word } from '@/writing/Word';
-import { $Letter } from '@/writing/Letter';
-import { $Chapter } from './Chapter';
+import { reflection } from '@/utilities/Reflection';
 import { $Synopsis } from './Synopsis';
 import { $TableOfContents } from './TableOfContents';
-import { $Reference, $TypeOfReference, ReferenceSpecification, prints, type $Reference$ } from '@/reference/Reference';
+import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { $Index, Index } from './Index';
 import { $References, References } from '@/reference/References';
 
-export class $Book extends $File implements $Composition$<$Chapter> {
-    get chapters(): $Composition$<$Chapter> { return this; }
-    get cover(): $Chapter { return this.parts()[0]; }
+export class $Book extends $Composition implements $Composition$ {
+    get chapters(): $Composition { return this; }
+    get cover(): $Writing { return this.parts()[0]; }
     get synopsis(): $Synopsis | undefined { return this.parts().find((one): one is $Synopsis => one instanceof $Synopsis); }
     get tableOfContents(): $TableOfContents | undefined { return this.parts().find((one): one is $TableOfContents => one instanceof $TableOfContents); }
-    get sections(): $Composition<$Section> { return this.catalogue().comprehend(); }
-    get paragraphs(): $Composition<$Paragraph> { return this.sections.catalogue().comprehend(); }
-    get sentences(): $Composition<$Sentence> { return this.paragraphs.catalogue().comprehend(); }
-    get words(): $Composition<$Word> { return this.sentences.catalogue().comprehend(); }
-    get letters(): $Composition<$Letter> { return this.words.catalogue().comprehend(); }
-
-    override book(): $Book { return this; }
-
-    override parts(): $Chapter[] { return super.parts() as $Chapter[]; }
+    get sections(): $Composition { return this.catalogue().comprehend(); }
+    get paragraphs(): $Composition { return this.sections.catalogue().comprehend(); }
+    get sentences(): $Composition { return this.paragraphs.catalogue().comprehend(); }
+    get words(): $Composition { return this.sentences.catalogue().comprehend(); }
+    get letters(): $Composition { return this.words.catalogue().comprehend(); }
 
     $Book(block: $Block) {
-        super.$File(block);
-        this._type = $(<TypeOfBook />);
-    }
-
-    override where(match: (part: $Chapter) => boolean): $Chapter[] { return this.parts().filter(match); }
-    override select<U>(pick: (part: $Chapter) => U): U[] { return this.parts().map(pick); }
-    override selectMany<U>(pick: (part: $Chapter) => U[]): U[] { return this.parts().flatMap(pick); }
-    override single(match: (part: $Chapter) => boolean): $Chapter {
-        const found = this.parts().filter(match);
-        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
-        return found[0];
-    }
-
-    override concatenate(...more: $Composition$<$Chapter>[]): $Composition<$Chapter> {
-        return super.concatenate(...more) as $Composition<$Chapter>;
+        const Asked = $(TypeOfBook);
+        this.type ??= $(<Asked />);
+        super.$Composition(block);
     }
 
     override frame(): ReactNode {
@@ -58,26 +34,23 @@ export class $Book extends $File implements $Composition$<$Chapter> {
     }
 }
 
-export class $$Book extends $Reference implements $Reference$<$Book> {
+export class $$Book extends $Reference {
     $$Book(block: $Block) {
+        const Asked = $(TypeOf$Book);
+        this.type ??= $(<Asked />);
         super.$Reference(block);
-        this._type = $(<TypeOf$Book />);
-    }
-
-    override async read(): Promise<$Book> {
-        return $$(await super.read(), $Book);
     }
 }
 
-export class $TypeOfBook extends $TypeOfFile {
-    override code = 'Bk';
-    override get writtenAs(): new () => $Writing { return $Chapter; }
-
-    override get canonicalForm(): typeof $Writing { return $Book; }
+export class $TypeOfBook extends $Type {
+    resolve = false;
+    override name = 'Book';
 
     override specifically(writing: $Writing): void {
         if (writing.block && !(writing.block.$elements ?? []).some(one => one instanceof $Index)) {
-            const index = $<$Index>(<Index />, $<$References>(<References />));
+            const AskedIndex = $(Index);
+            const AskedReferences = $(References);
+            const index = $<$Index>(<AskedIndex />, $<$References>(<AskedReferences />));
             writing.block.$elements = [...(writing.block.$elements ?? []), index];
         }
         super.specifically(writing);
@@ -85,24 +58,24 @@ export class $TypeOfBook extends $TypeOfFile {
 
     constructor() {
         super();
-        this[cache]('Book');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new BookSpecification();
 }
 
 export class $TypeOf$Book extends $TypeOfReference {
-    override get canonicalForm(): typeof $Writing { return $$Book; }
+    override name = '$Book';
 
     constructor() {
         super();
-        this[cache]('$Book');
+        this[cache](this.name);
     }
 
     protected override specification: Specification<$Writing> = new $BookSpecification();
 }
 
-export class BookSpecification extends FileSpecification {
+export class BookSpecification extends TypedSpecification<$Writing> {
     @specify('a book ends with its index')
     $endsWithIndex(writing: $Writing): void {
         const elements = (writing.block?.$elements ?? []);
@@ -115,7 +88,7 @@ export class BookSpecification extends FileSpecification {
     $writtenAsChapters(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => $$(one)($Chapter) || $$(one)($Document)),
+        $check(inside.every(one => reflection.stands(one, 'Chapter')),
             'a book is written as chapters, and something in this one could never be one');
     }
 }
@@ -128,7 +101,7 @@ export class $BookSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Bk:'),
             'a reference to a book lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || $$(held)($Book),
+        $check(held === undefined || reflection.stands(held, 'Book'),
             'a reference to a book lands on one, and what it holds is not one');
     }
 }
@@ -136,4 +109,4 @@ export class $BookSpecification extends ReferenceSpecification {
 export const Book = $($Book);
 export const TypeOfBook = $($TypeOfBook);
 export const TypeOf$Book = $($TypeOf$Book);
-prints.set('Bk', $$Book);
+prints.set('Bk', $($$Book));
