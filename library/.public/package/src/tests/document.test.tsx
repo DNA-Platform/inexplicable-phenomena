@@ -43,7 +43,7 @@ describe('$Chapter composes $Section', () => {
 
     it('and a piece of writing TOLD it is a Chapter composes the same', () => {
         const { writing } = drawn(chain.Section('h'), chain.Section('i'), <Type>Chapter</Type>);
-        expect(reflection.stands(writing, 'Chapter')).toBe(true);
+        expect(reflection.is(writing, 'Chapter')).toBe(true);
         expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
     });
 });

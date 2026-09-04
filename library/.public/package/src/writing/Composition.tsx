@@ -27,7 +27,7 @@ export class $Composition extends $Writing implements $Composition$ {
                     if (mutual || reflection.indent(token) > 0) return token.parts();
                 }
                 if (below === undefined) return token;
-                return reflection.stands(token, below) ? token : undefined;
+                return reflection.is(token, below) ? token : undefined;
             },
             held => this.reduce(held),
             type !== undefined);
@@ -37,6 +37,7 @@ export class $Composition extends $Writing implements $Composition$ {
         const Asked = $(Catalogue);
         return $<$Catalogue>(<Asked />, ...this.parts());
     }
+
 
     $Composition(block: $Block) {
         super.$Writing(block);

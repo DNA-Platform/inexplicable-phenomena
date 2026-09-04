@@ -8,14 +8,12 @@ import { Writing, Type } from '@/writing/Writing';
 import { Path } from '@/reference/Path';
 
 // A chapter IS a document, so it is written as sections and answers every document constraint.
-export class $ChapterSectionsSpec extends $Chemical {
+export class $ChapterSectionsExample extends $Chemical {
     view(): ReactNode {
         return (
             <Chapter>
                 <Section>
-                    <Title>
-                        What a chapter promises
-                    </Title>
+                    <Title>What a chapter promises</Title>
                     <Paragraph>
                         A chapter is a document, so everything a document promises it promises too.
                     </Paragraph>
@@ -24,9 +22,7 @@ export class $ChapterSectionsSpec extends $Chemical {
                     </Paragraph>
                 </Section>
                 <Section>
-                    <Title>
-                        What a second section knows
-                    </Title>
+                    <Title>What a second section knows</Title>
                     <Paragraph>
                         A second section sits beside the first and knows nothing about it.
                     </Paragraph>
@@ -39,19 +35,17 @@ export class $ChapterSectionsSpec extends $Chemical {
     }
 }
 
-export const ChapterSectionsSpec = $($ChapterSectionsSpec);
+export const ChapterSectionsExample = $($ChapterSectionsExample);
 
 // Writing told it is a Chapter carries $TypeOfChapter alone, and is therefore a Document.
-// The writing is the SAME writing as SectionsSpec's, so the only difference between
+// The writing is the SAME writing as SectionsExample's, so the only difference between
 // the two examples is that one IS a Chapter and this one merely SAYS it is.
-export class $ChapterWritingSpec extends $Chemical {
+export class $ChapterWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>
                 <Section>
-                    <Title>
-                        What a chapter promises
-                    </Title>
+                    <Title>What a chapter promises</Title>
                     <Paragraph>
                         A chapter is a document, so everything a document promises it promises too.
                     </Paragraph>
@@ -60,9 +54,7 @@ export class $ChapterWritingSpec extends $Chemical {
                     </Paragraph>
                 </Section>
                 <Section>
-                    <Title>
-                        What a second section knows
-                    </Title>
+                    <Title>What a second section knows</Title>
                     <Paragraph>
                         A second section sits beside the first and knows nothing about it.
                     </Paragraph>
@@ -76,11 +68,11 @@ export class $ChapterWritingSpec extends $Chemical {
     }
 }
 
-export const ChapterWritingSpec = $($ChapterWritingSpec);
+export const ChapterWritingExample = $($ChapterWritingExample);
 
 // A reference to a chapter stands one meta-level up: writing carrying
 // <Type>$Chapter</Type> whose path must land on a chapter.
-export class $ChapterReferenceSpec extends $Chemical {
+export class $ChapterReferenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>chapter<Type>$Chapter</Type><Path>Cr:0</Path></Writing>
@@ -88,4 +80,4 @@ export class $ChapterReferenceSpec extends $Chemical {
     }
 }
 
-export const ChapterReferenceSpec = $($ChapterReferenceSpec);
+export const ChapterReferenceExample = $($ChapterReferenceExample);

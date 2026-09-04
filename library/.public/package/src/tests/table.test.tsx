@@ -25,14 +25,14 @@ describe('a table is an arrangement, and its type gives it a level', () => {
 
     it('the class keeps its standing through a retyping', () => {
         const table = built<$Table>(<Table><TypeOfParagraph />{'one two'}</Table>);
-        expect(reflection.stands(table, 'Table')).toBe(true);
+        expect(reflection.is(table, 'Table')).toBe(true);
         expect(table.type).toBeInstanceOf($TypeOfParagraph);
     });
 
     it('a sentence wearing the table trait stands as a table, its words the cells', () => {
         const { writing } = drawn(<Sentence>{word(letter('h'), letter('i'))} {word(letter('y'), letter('o'))}<Trait>Table</Trait></Sentence>);
         const written = (writing.block?.$elements ?? []).find((one): one is $Sentence => one instanceof $Sentence)!;
-        expect(reflection.stands(written, 'Table')).toBe(true);
+        expect(reflection.is(written, 'Table')).toBe(true);
         expect(written.parts().map(part => part.copy)).toEqual(['hi', 'yo']);
     });
 

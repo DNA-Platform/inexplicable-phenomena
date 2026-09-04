@@ -2,10 +2,8 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { ReactNode } from 'react';
-import { Sentence } from './Sentence';
+import { Sentence, $TypeOfSentence } from './Sentence';
 import { parser } from '@/utilities/Parser';
-import { Prose } from '@/encyclopedia/Prose';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { reflection } from '@/utilities/Reflection';
@@ -18,9 +16,6 @@ export class $Paragraph extends $Composition implements $Composition$ {
         super.$Composition(block);
     }
 
-    override frame(): ReactNode {
-        return <Prose>{super.frame()}</Prose>;
-    }
 }
 
 export class $$Paragraph extends $Reference {
@@ -67,7 +62,7 @@ export class ParagraphSpecification extends TypedSpecification<$Writing> {
     $writtenAsSentences(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => reflection.stands(one, 'Sentence') || reflection.stands(one, 'Paragraph')),
+        $check(inside.every(one => reflection.is(one, $TypeOfSentence) || reflection.is(one, $TypeOfParagraph)),
             'a paragraph is written as sentences, and something in this one is not one');
     }
 }
@@ -80,7 +75,7 @@ export class $ParagraphSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Ph:'),
             'a reference to a paragraph lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.stands(held, 'Paragraph'),
+        $check(held === undefined || reflection.is(held, $TypeOfParagraph),
             'a reference to a paragraph lands on one, and what it holds is not one');
     }
 }

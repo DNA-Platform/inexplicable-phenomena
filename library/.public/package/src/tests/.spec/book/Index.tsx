@@ -7,7 +7,7 @@ import { Path } from '@/reference/Path';
 // The index is a chapter that takes the references: it persists nothing
 // itself — the references it inherits persists under the one shared key,
 // and the index pulls it into view.
-export class $IndexSectionSpec extends $Chemical {
+export class $IndexSectionExample extends $Chemical {
     view(): ReactNode {
         return (
             <Index><Reference>alpha<Path>Se:0</Path></Reference></Index>
@@ -15,4 +15,4 @@ export class $IndexSectionSpec extends $Chemical {
     }
 }
 
-export const IndexSectionSpec = $($IndexSectionSpec);
+export const IndexSectionExample = $($IndexSectionExample);

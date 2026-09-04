@@ -6,7 +6,7 @@ import { Path } from '@/reference/Path';
 
 // A highlight is a dynamically typed pair of references of the same kind — its
 // substance is its pair, and it says nothing of its own.
-export class $HighlightPairSpec extends $Chemical {
+export class $HighlightPairExample extends $Chemical {
     view(): ReactNode {
         return (
             <Highlight><Reference>from<Path>Lr:1</Path></Reference><Reference>to<Path>Lr:3</Path></Reference></Highlight>
@@ -14,4 +14,4 @@ export class $HighlightPairSpec extends $Chemical {
     }
 }
 
-export const HighlightPairSpec = $($HighlightPairSpec);
+export const HighlightPairExample = $($HighlightPairExample);

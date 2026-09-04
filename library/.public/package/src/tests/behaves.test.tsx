@@ -10,14 +10,14 @@ describe('a piece of writing that carries a type BEHAVES as that type', () => {
     it('carries the type it was written with, resolved from the name', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>);
         expect(writing.type).toBeDefined();
-        expect(reflection.stands(writing, 'Chapter')).toBe(true);
+        expect(reflection.is(writing, 'Chapter')).toBe(true);
     });
 
     it('IS a book, in the sense of the reading, and is not a word', () => {
         const { writing } = drawn(chain.Chapter('a'), <Type>Book</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfBook);
-        expect(reflection.stands(writing, 'Book')).toBe(true);
-        expect(reflection.stands(writing, 'Word')).toBe(false);
+        expect(reflection.is(writing, 'Book')).toBe(true);
+        expect(reflection.is(writing, 'Word')).toBe(false);
     });
 
     it('and nothing is built to read it — the writing composes the chapters written inside it', () => {

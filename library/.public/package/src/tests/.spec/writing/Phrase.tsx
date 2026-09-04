@@ -7,59 +7,56 @@ import { Writing, Type } from '@/writing/Writing';
 
 // A phrase written as prose carries the spaces a word may not. Its words await
 // the parse above word, which is not built.
-export class $PhraseTextSpec extends $Chemical {
+export class $PhraseTextExample extends $Chemical {
     view(): ReactNode {
         return (
-            <Phrase>the semantics of books</Phrase>
+            <Phrase>The semantics of books</Phrase>
         );
     }
 }
 
-export const PhraseTextSpec = $($PhraseTextSpec);
+export const PhraseTextExample = $($PhraseTextExample);
 
 // A phrase takes words and composes them, staying on one unbroken line.
-export class $PhraseWordsSpec extends $Chemical {
+export class $PhraseWordsExample extends $Chemical {
     view(): ReactNode {
         return (
             <Phrase>
-                <Word>at</Word> <Word>last</Word>
+                <Word>at</Word>
+                <Word>last</Word>
             </Phrase>
         );
     }
 }
 
-export const PhraseWordsSpec = $($PhraseWordsSpec);
+export const PhraseWordsExample = $($PhraseWordsExample);
 
 // A phrase is a sentence standing inside one: it lends its words to the sentence
 // holding it, and is never itself a part.
-export class $PhraseSentenceSpec extends $Chemical {
+export class $PhraseSentenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Sentence>
-                <Word>see</Word>
-                {' '}
-                <Phrase>
-                    <Word>gauge</Word> <Word>theory</Word>
-                </Phrase>
-                {' '}
-                <Word>today</Word>
+                See Also:
+                <Phrase>Gauge Theory</Phrase>
+                [and <Phrase>General Relativity</Phrase>]
             </Sentence>
         );
     }
 }
 
-export const PhraseSentenceSpec = $($PhraseSentenceSpec);
+export const PhraseSentenceExample = $($PhraseSentenceExample);
 
 // Writing told it is a Phrase composes its words at sentence grade.
-export class $PhraseWritingSpec extends $Chemical {
+export class $PhraseWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>
-                <Word>at</Word> <Word>last</Word>
+                At last!
                 <Type>Phrase</Type>
             </Writing>
         );
     }
 }
 
-export const PhraseWritingSpec = $($PhraseWritingSpec);
+export const PhraseWritingExample = $($PhraseWritingExample);

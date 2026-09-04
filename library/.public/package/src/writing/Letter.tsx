@@ -93,7 +93,7 @@ export class $LetterSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Lr:'),
             'a reference to a letter lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.stands(held, 'Letter'),
+        $check(held === undefined || reflection.is(held, $TypeOfLetter),
             'a reference to a letter lands on one, and what it holds is not one');
     }
 }

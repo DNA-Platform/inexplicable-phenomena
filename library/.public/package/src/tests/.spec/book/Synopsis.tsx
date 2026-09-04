@@ -7,7 +7,7 @@ import { Paragraph } from '@/writing/Paragraph';
 
 // A synopsis is a chapter kind by the standard type pattern; on a book, the
 // cover alone is found by position and the rest are found by kind.
-export class $SynopsisKindSpec extends $Chemical {
+export class $SynopsisKindExample extends $Chemical {
     view(): ReactNode {
         return (
             <Synopsis><Section><Title>Algebra</Title><Paragraph>It opens.</Paragraph></Section></Synopsis>
@@ -15,4 +15,4 @@ export class $SynopsisKindSpec extends $Chemical {
     }
 }
 
-export const SynopsisKindSpec = $($SynopsisKindSpec);
+export const SynopsisKindExample = $($SynopsisKindExample);

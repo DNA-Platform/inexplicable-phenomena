@@ -8,7 +8,7 @@ import { Writing, Type } from '@/writing/Writing';
 
 // The two halves stay apart: the copy is the identification a reader sees and
 // the parenthetical path is the location, which is never one of the parts.
-export class $ReferencePathSpec extends $Chemical {
+export class $ReferencePathExample extends $Chemical {
     view(): ReactNode {
         return (
             <Reference>Algebra<Path>/books/algebra</Path></Reference>
@@ -16,11 +16,11 @@ export class $ReferencePathSpec extends $Chemical {
     }
 }
 
-export const ReferencePathSpec = $($ReferencePathSpec);
+export const ReferencePathExample = $($ReferencePathExample);
 
 // A reference is writing; the letters of its identification are written here,
 // standing beside the parenthetical path.
-export class $ReferenceLettersSpec extends $Chemical {
+export class $ReferenceLettersExample extends $Chemical {
     view(): ReactNode {
         return (
             <Reference>
@@ -32,28 +32,35 @@ export class $ReferenceLettersSpec extends $Chemical {
     }
 }
 
-export const ReferenceLettersSpec = $($ReferenceLettersSpec);
+export const ReferenceLettersExample = $($ReferenceLettersExample);
 
 // Writing told it is a Reference must carry a path, and it need not derive from
 // $Reference to be one — the type holds the rule, so any writing can satisfy it.
-export class $ReferenceWritingSpec extends $Chemical {
+export class $ReferenceWritingExample extends $Chemical {
     view(): ReactNode {
         return (
-            <Writing>Algebra<Path>/books/algebra</Path><Type>Reference</Type></Writing>
+            <Writing>
+                Algebra
+                <Path>/books/algebra</Path>
+                <Type>Reference</Type>
+            </Writing>
         );
     }
 }
 
-export const ReferenceWritingSpec = $($ReferenceWritingSpec);
+export const ReferenceWritingExample = $($ReferenceWritingExample);
 
 // A printed handle carries its path AND holds what it stands for — the loaded
 // case, whose read() resolves at once while the path still says where it points.
-export class $ReferenceHoldsSpec extends $Chemical {
+export class $ReferenceHoldsExample extends $Chemical {
     view(): ReactNode {
         return (
-            <Reference><Word><Letter>h</Letter><Letter>i</Letter></Word><Path>Wd:0</Path></Reference>
+            <Reference>
+                <Word>hi</Word>
+                <Path>Wd:0</Path>
+            </Reference>
         );
     }
 }
 
-export const ReferenceHoldsSpec = $($ReferenceHoldsSpec);
+export const ReferenceHoldsExample = $($ReferenceHoldsExample);

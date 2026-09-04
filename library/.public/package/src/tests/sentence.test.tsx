@@ -43,7 +43,7 @@ describe('$Sentence composes $Word', () => {
 
     it('and a piece of writing TOLD it is a Sentence composes the same', () => {
         const { writing } = drawn(chain.Word('h'), chain.Word('i'), <Type>Sentence</Type>);
-        expect(reflection.stands(writing, 'Sentence')).toBe(true);
+        expect(reflection.is(writing, 'Sentence')).toBe(true);
         expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
     });
 });

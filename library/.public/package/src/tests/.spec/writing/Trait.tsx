@@ -29,7 +29,7 @@ $($TraitFriend);
 
 // A declared trait carries laws: this writing is specified by its type AND by
 // the friend it wears.
-export class $TraitDeclaredSpecFriend extends $Chemical {
+export class $TraitDeclaredFriendExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>Doug<Trait>TraitFriend</Trait><Type>Phrase</Type></Writing>
@@ -37,22 +37,20 @@ export class $TraitDeclaredSpecFriend extends $Chemical {
     }
 }
 
-export const TraitDeclaredSpecFriend = $($TraitDeclaredSpecFriend);
+export const TraitDeclaredFriendExample = $($TraitDeclaredFriendExample);
 
 // A pure trait needs no class at all. The written word is the label, the frame
 // wears it, and a stylesheet may dress it — glowing is not in the framework,
 // which is the point.
-export class $TraitPureSpec extends $Chemical {
+export class $TraitPureExample extends $Chemical {
     view(): ReactNode {
         return (
             <Sentence>
-                <Word><Letter>i</Letter><Letter>t</Letter></Word>
-                {' '}
-                <Word><Letter>s</Letter><Letter>h</Letter><Letter>i</Letter><Letter>n</Letter><Letter>e</Letter><Letter>s</Letter></Word>
+                it shines
                 <Trait>Glowing</Trait>
             </Sentence>
         );
     }
 }
 
-export const TraitPureSpec = $($TraitPureSpec);
+export const TraitPureExample = $($TraitPureExample);

@@ -63,14 +63,14 @@ describe('a cover crosses the class hierarchy without leaving its type', () => {
     it('and BOTH are covers', () => {
         const anchored = built<$MadeCover>(<MadeCover>{[inside('a')]}</MadeCover>);
         const crossed = built<$CoverOfPreface>(<CoverOfPreface>{[inside('b')]}</CoverOfPreface>);
-        expect(reflection.stands(anchored, 'MadeCover')).toBe(true);
-        expect(reflection.stands(crossed, 'MadeCover')).toBe(true);
+        expect(reflection.is(anchored, 'MadeCover')).toBe(true);
+        expect(reflection.is(crossed, 'MadeCover')).toBe(true);
     });
 
     it('and BOTH are chapters, because the TYPE says so', () => {
         const crossed = built<$CoverOfPreface>(<CoverOfPreface>{[inside('b')]}</CoverOfPreface>);
         expect(crossed instanceof $Chapter).toBe(false);
-        expect(reflection.stands(crossed, 'Chapter')).toBe(true);
+        expect(reflection.is(crossed, 'Chapter')).toBe(true);
     });
 
     it('so a book composes covers, prefaces and its own chapters together', () => {

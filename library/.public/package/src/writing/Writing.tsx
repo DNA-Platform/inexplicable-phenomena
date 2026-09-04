@@ -50,9 +50,9 @@ export class $Writing extends $Chemical implements $Referent$ {
     }
 
     override frame(): ReactNode {
-        const labels = reflection.labels(this);
+        const labels = reflection.classNames(this);
         if (labels.length === 0) return super.frame();
-        return <span className={labels.join(' ')}>{super.frame()}</span>;
+        return <div className={labels.join(' ')}>{super.frame()}</div>;
     }
 
     specify(): void {

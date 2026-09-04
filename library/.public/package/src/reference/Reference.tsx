@@ -2,7 +2,7 @@ import { ComponentType, ReactNode } from 'react';
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, $Type, TypedSpecification } from '@/writing/Writing';
-import { $Path } from './Path';
+import { $Path, Path } from './Path';
 import { $Composition } from '@/writing/Composition';
 import { Anchor } from '@/encyclopedia/Anchor';
 import type { $References } from './References';
@@ -60,6 +60,12 @@ export class $TypeOfReference extends $Type {
     override name = 'Reference';
 
     override specifically(reference: $Reference): void {
+        const block = reference.block;
+        if (block && !(block.$elements ?? []).some(one => one instanceof $Path)
+            && /^(?:[a-z][a-z0-9+.-]*:\/\/|\/|#)/iu.test(reference.copy) && URL.canParse(reference.copy, 'https://library')) {
+            const AskedPath = $(Path);
+            block.$elements = [...(block.$elements ?? []), $<$Path>(<AskedPath>{reference.copy}</AskedPath>)];
+        }
         super.specifically(reference);
     }
 

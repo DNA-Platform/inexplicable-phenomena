@@ -2,17 +2,18 @@ import { ReactNode } from 'react';
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Section, $TypeOfSection, SectionSpecification } from './Section';
+import { $Composition$, $Composition } from '@/writing/Composition';
+import { $TypeOfSection, SectionSpecification } from './Section';
 import { reflection } from '@/utilities/Reflection';
 import { Wikitable, Cell } from '@/encyclopedia/Wikitable';
 
-export class $Table extends $Section {
+export class $Table extends $Composition implements $Composition$ {
     $columns?: number;
 
     $Table(block: $Block) {
         const Asked = $(TypeOfTable);
         this.type ??= $(<Asked />);
-        super.$Section(block);
+        super.$Composition(block);
     }
 
     override view(): ReactNode {
@@ -41,7 +42,7 @@ export class $TypeOfTable extends $TypeOfSection {
 export class TableSpecification extends SectionSpecification {
     @specify('a table opens with its cells, and needs no title')
     override $opensWithTitle(writing: $Writing): boolean | void {
-        if (reflection.stands(writing, 'Table')) return false;
+        if (reflection.is(writing, $TypeOfTable)) return false;
         return super.$opensWithTitle(writing);
     }
 

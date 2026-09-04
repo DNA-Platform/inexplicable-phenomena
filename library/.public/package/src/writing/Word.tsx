@@ -2,7 +2,7 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { Letter } from './Letter';
+import { Letter, $TypeOfLetter } from './Letter';
 import { parser } from '@/utilities/Parser';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
@@ -67,7 +67,7 @@ export class WordSpecification extends TypedSpecification<$Writing> {
     $writtenAsLetters(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => reflection.stands(one, 'Letter') || reflection.stands(one, 'Word')),
+        $check(inside.every(one => reflection.is(one, $TypeOfLetter) || reflection.is(one, $TypeOfWord)),
             'a word is written as letters, and something in this one is not one');
     }
 }
@@ -81,7 +81,7 @@ export class $WordSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Wd:'),
             'a reference to a word lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.stands(held, 'Word'),
+        $check(held === undefined || reflection.is(held, $TypeOfWord),
             'a reference to a word lands on one, and what it holds is not one');
     }
 }

@@ -1,14 +1,15 @@
 import { ReactNode } from 'react';
 import { $Block, $, cache } from '@dna-platform/chemistry';
-import { $Paragraph, $TypeOfParagraph } from './Paragraph';
+import { $Composition$, $Composition } from './Composition';
+import { $TypeOfParagraph } from './Paragraph';
 import { html } from '@/utilities/Html';
 import { Bullets } from '@/encyclopedia/Bullets';
 
-export class $List extends $Paragraph {
+export class $List extends $Composition implements $Composition$ {
     $List(block: $Block) {
         const Asked = $(TypeOfList);
         this.type ??= $(<Asked />);
-        super.$Paragraph(block);
+        super.$Composition(block);
     }
 
     override view(): ReactNode {

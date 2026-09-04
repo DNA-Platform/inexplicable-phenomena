@@ -10,7 +10,7 @@ const three = () => built<$Book>(book(chain.Chapter('a'), chain.Chapter('b'), ch
 describe('$Book composes $Chapter', () => {
     it('composes the level below, in the order written', () => {
         expect(three().parts().map(one => one.copy)).toEqual(['a', 'b', 'c']);
-        expect(three().parts().every(one => reflection.stands(one, 'Chapter'))).toBe(true);
+        expect(three().parts().every(one => reflection.is(one, 'Chapter'))).toBe(true);
     });
 
     it('answers part zero', () => {
@@ -42,7 +42,7 @@ describe('$Book composes $Chapter', () => {
 
     it('and a piece of writing TOLD it is a Book composes the same', () => {
         const { writing } = drawn(chain.Chapter('h'), chain.Chapter('i'), <Type>Book</Type>);
-        expect(reflection.stands(writing, 'Book')).toBe(true);
+        expect(reflection.is(writing, 'Book')).toBe(true);
         expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
     });
 });

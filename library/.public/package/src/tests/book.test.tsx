@@ -16,11 +16,11 @@ const book = (...inside: ReactNode[]) => <Book>{inside}</Book>;
 
 describe('the seven levels end at the book, and the book composes chapters', () => {
     it('a chapter stands as a chapter', () => {
-        expect(reflection.stands(built<$Chapter>(chapter('a')), 'Chapter')).toBe(true);
+        expect(reflection.is(built<$Chapter>(chapter('a')), 'Chapter')).toBe(true);
     });
 
     it('a book stands as a book', () => {
-        expect(reflection.stands(built<$Book>(book(chapter('a'))), 'Book')).toBe(true);
+        expect(reflection.is(built<$Book>(book(chapter('a'))), 'Book')).toBe(true);
     });
 
     it('a book composes its chapters', () => {
@@ -87,6 +87,6 @@ describe('a book carries only its own type', () => {
         const one = built<$Book>(book(chapter('a'), chapter('b')));
         expect(one.parts().length).toBe(2);
         expect(one.parts().every(part => part instanceof $Chapter)).toBe(true);
-        expect(one.parts().every(part => reflection.stands(part, 'Chapter'))).toBe(true);
+        expect(one.parts().every(part => reflection.is(part, 'Chapter'))).toBe(true);
     });
 });

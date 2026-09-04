@@ -44,7 +44,7 @@ describe('a composition can be configured with a type to make the thing you need
 
     it('configured as a sentence, it stands as one and nothing is built to say so', () => {
         const composed = built<$Composition>(<Composition><TypeOfSentence />{word(letter('h'), letter('i'))}</Composition>);
-        expect(reflection.stands(composed, 'Sentence')).toBe(true);
+        expect(reflection.is(composed, 'Sentence')).toBe(true);
         expect(composed instanceof $Sentence).toBe(false);
         expect(composed.parts()).toHaveLength(1);
     });
@@ -270,7 +270,7 @@ describe("the book's anatomy — roles by position, no flags", () => {
     it('the four kinds arrive by the standard type pattern and stand as chapters', () => {
         const kind = built<$Cover>(<Cover>{page('hi')}</Cover>);
         expect(kind).toBeInstanceOf($Composition);
-        expect(reflection.stands(kind, 'Chapter')).toBe(true);
+        expect(reflection.is(kind, 'Chapter')).toBe(true);
         expect(() => kind.specify()).not.toThrow();
     });
 
@@ -456,7 +456,7 @@ describe('the bond assigns, and specify is where the type acts', () => {
 describe('the typed references — $$Letter through $$Book, and they are fun', () => {
     it('writing carrying <Type>$Book</Type> stands as a reference to a book', () => {
         const { writing } = drawn('algebra', <Type>$Book</Type>, <Path>Bk:0</Path>);
-        expect(reflection.stands(writing, '$Book')).toBe(true);
+        expect(reflection.is(writing, '$Book')).toBe(true);
         expect(writing instanceof $$Book).toBe(false);
     });
 
@@ -506,7 +506,7 @@ describe('the list and the table — a paragraph of bullets, a section of cells'
     it('a list behaves exactly like a paragraph and draws its sentences as bullets', () => {
         const one = built<$List>(<List>{'alpha\nbeta\ngamma'}</List>);
         expect(one).toBeInstanceOf($Composition);
-        expect(reflection.stands(one, 'Paragraph')).toBe(true);
+        expect(reflection.is(one, 'Paragraph')).toBe(true);
         expect(one.parts()).toHaveLength(3);
         const { host } = drawn(<List>{'alpha\nbeta\ngamma'}</List>);
         expect(host.querySelectorAll('li')).toHaveLength(3);
@@ -516,7 +516,7 @@ describe('the list and the table — a paragraph of bullets, a section of cells'
     it('a table is a section whose cells are its paragraphs', () => {
         const one = built<$Table>(<Table><Paragraph>first cell</Paragraph><Paragraph>second cell</Paragraph></Table>);
         expect(one).toBeInstanceOf($Composition);
-        expect(reflection.stands(one, 'Section')).toBe(true);
+        expect(reflection.is(one, 'Section')).toBe(true);
         expect(one.parts()).toHaveLength(2);
         const { host } = drawn(<Table><Paragraph>first cell</Paragraph><Paragraph>second cell</Paragraph></Table>);
         expect(host.querySelectorAll('tr')).toHaveLength(2);
@@ -545,7 +545,7 @@ describe('the reference card — decorates its first, exposes the rest', () => {
             <Reference><Trait>Card</Trait><Reference>{word(letter('a'))}<Path>Wd:0</Path></Reference><Reference>beta<Path>Se:1</Path></Reference></Reference>);
         const wearer = writing.annotations.find((one): one is $Reference => one instanceof $Reference)!;
         expect(wearer.traits).toHaveLength(1);
-        expect(reflection.stands(wearer, 'Card')).toBe(true);
+        expect(reflection.is(wearer, 'Card')).toBe(true);
         expect(wearer instanceof $ReferenceCard).toBe(false);
         const held = (wearer.block?.$elements ?? []).filter((one): one is $Reference => one instanceof $Reference);
         expect(held).toHaveLength(2);
@@ -562,7 +562,7 @@ describe('the basic view — the encyclopedia look', () => {
         const heading = host.querySelector('h2');
         expect(heading?.textContent).toContain('Hi');
         expect(getComputedStyle(heading!).borderBottomColor).toBe('#a2a9b1');
-        expect(host.querySelector('p')?.textContent).toContain('yo');
+        expect(host.querySelector('.pd-paragraph:not(.pd-title)')?.textContent).toContain('yo');
     });
 
     it('a book opens as the reading column', () => {
@@ -753,7 +753,7 @@ describe('an X nests in an X — every level, and the outer collects its parts',
         const one = built<$Chapter>(
             <Chapter>{section(paragraph(sentence(word(letter('a')))))}<Chapter>{section(paragraph(sentence(word(letter('b')))))}</Chapter></Chapter>);
         expect(one.parts()).toHaveLength(2);
-        expect(one.parts().every(part => reflection.stands(part, 'Section'))).toBe(true);
+        expect(one.parts().every(part => reflection.is(part, 'Section'))).toBe(true);
     });
 });
 
@@ -812,7 +812,7 @@ describe('the references persist as one, and the index takes them', () => {
 
     it('the index is a chapter that takes the references — pulled in at specify, persisting nothing itself', async () => {
         const one = built<$Index>(<Index><Reference>alpha<Path>Se:0</Path></Reference></Index>);
-        expect(reflection.stands(one, 'Chapter')).toBe(true);
+        expect(reflection.is(one, 'Chapter')).toBe(true);
         expect(one.$pid).toBeUndefined();
         expect(one.persist).toBe(false);
         one.specify();

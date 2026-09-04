@@ -5,7 +5,7 @@ import { Path } from '@/reference/Path';
 
 // A bookmark stands in a chapter, or — as here, rehydrated — carries the path
 // it kept; inserted in prose it finds its chapter by grabbing its parent.
-export class $BookmarkReferenceSpec extends $Chemical {
+export class $BookmarkReferenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Bookmark>here<Path>Cr:1</Path></Bookmark>
@@ -13,4 +13,4 @@ export class $BookmarkReferenceSpec extends $Chemical {
     }
 }
 
-export const BookmarkReferenceSpec = $($BookmarkReferenceSpec);
+export const BookmarkReferenceExample = $($BookmarkReferenceExample);

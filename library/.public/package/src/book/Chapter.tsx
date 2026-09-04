@@ -5,7 +5,8 @@ import { Output } from '@/encyclopedia/Output';
 import { $Type, TypedSpecification, $Writing } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { Section } from '@/writing/Section';
+import { Section, $TypeOfSection } from '@/writing/Section';
+import { $TypeOfParagraph } from '@/writing/Paragraph';
 import { parser } from '@/utilities/Parser';
 import { reflection } from '@/utilities/Reflection';
 import { $References, References } from '@/reference/References';
@@ -84,7 +85,7 @@ export class ChapterSpecification extends TypedSpecification<$Writing> {
     $writtenAsSections(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => reflection.stands(one, 'Section') || reflection.stands(one, 'Paragraph')),
+        $check(inside.every(one => reflection.is(one, $TypeOfSection) || reflection.is(one, $TypeOfParagraph)),
             'a chapter is written as sections, or as a title and paragraphs, and something in this one is neither');
     }
 }
@@ -97,7 +98,7 @@ export class $ChapterSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Cr:'),
             'a reference to a chapter lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.stands(held, 'Chapter'),
+        $check(held === undefined || reflection.is(held, $TypeOfChapter),
             'a reference to a chapter lands on one, and what it holds is not one');
     }
 }

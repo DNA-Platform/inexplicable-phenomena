@@ -8,7 +8,7 @@ import { Path } from '@/reference/Path';
 // MEANING IS OPTIONAL. Writing that carries a reference means what the reference
 // refers to; writing that carries none means nothing formally, because meaning
 // may be informal to the app.
-export class $WritingMeansSpec extends $Chemical {
+export class $WritingMeansExample extends $Chemical {
     view(): ReactNode {
         return (
             <Sentence>Read <Reference>Algebra<Path>/books/algebra</Path></Reference></Sentence>
@@ -16,11 +16,11 @@ export class $WritingMeansSpec extends $Chemical {
     }
 }
 
-export const WritingMeansSpec = $($WritingMeansSpec);
+export const WritingMeansExample = $($WritingMeansExample);
 
 // The same sentence with nothing to mean. A handle never appears here: incoming
 // reference is compiled, never authored, so there is no markup for one.
-export class $WritingPlainSpec extends $Chemical {
+export class $WritingPlainExample extends $Chemical {
     view(): ReactNode {
         return (
             <Sentence><Word>Read</Word> <Word>on</Word></Sentence>
@@ -28,4 +28,4 @@ export class $WritingPlainSpec extends $Chemical {
     }
 }
 
-export const WritingPlainSpec = $($WritingPlainSpec);
+export const WritingPlainExample = $($WritingPlainExample);

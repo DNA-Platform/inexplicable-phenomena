@@ -32,98 +32,74 @@ export class $ParagraphTypeOfQuotation extends $TypeOfParagraph {
 
 $($ParagraphTypeOfQuotation);
 
-export class $ParagraphDerivedSpecTitle extends $Chemical {
+export class $ParagraphDerivedTitleExample extends $Chemical {
     view(): ReactNode {
         return (
             <>
-                <Title>
-                    A kind whose rule was derived
-                </Title>
+                <Title>A kind whose rule was derived</Title>
                 <Writing>
                     He said it plainly.
                     <Type>Quotation</Type>
                 </Writing>
-                <Paragraph>
-                    An ordinary paragraph, carrying no kind of its own.
-                </Paragraph>
+                <Paragraph>{'An ordinary paragraph, carrying no kind of its own.\nIt says three things.\nEach sentence is one of them.'}</Paragraph>
             </>
         );
     }
 }
 
-export const ParagraphDerivedSpecTitle = $($ParagraphDerivedSpecTitle);
+export const ParagraphDerivedTitleExample = $($ParagraphDerivedTitleExample);
 
-export class $ParagraphSentencesSpec extends $Chemical {
+export class $ParagraphSentencesExample extends $Chemical {
     view(): ReactNode {
         return (
             <Paragraph>
-                <Sentence>
-                    <Word>A</Word>
-                    <Word>paragraph</Word>
-                    <Word>is</Word>
-                    <Word>written</Word>
-                    <Word>as</Word>
-                    <Word>sentences</Word>
-                </Sentence>
-                <Sentence>
-                    <Word>Each</Word>
-                    <Word>one</Word>
-                    <Word>stops</Word>
-                    <Word>once</Word>
-                </Sentence>
+                <Sentence>A paragraph is written as sentences.</Sentence>
+                <Sentence>Each one stops once.</Sentence>
+                <Sentence>A third one closes the set.</Sentence>
             </Paragraph>
         );
     }
 }
 
-export const ParagraphSentencesSpec = $($ParagraphSentencesSpec);
+export const ParagraphSentencesExample = $($ParagraphSentencesExample);
 
-export class $ParagraphNestedSpec extends $Chemical {
+export class $ParagraphNestedExample extends $Chemical {
     view(): ReactNode {
         return (
             <Paragraph>
-                <Paragraph>
-                    <Sentence>
-                        <Word>The</Word>
-                        <Word>nested</Word>
-                        <Word>contributes</Word>
-                    </Sentence>
-                </Paragraph>
-                <Sentence>
-                    <Word>its</Word>
-                    <Word>parts</Word>
-                    <Word>to</Word>
-                    <Word>the</Word>
-                    <Word>parts</Word>
-                </Sentence>
+                <Paragraph>The nested contributes.</Paragraph>
+                <Sentence>its parts to the parts.</Sentence>
             </Paragraph>
         );
     }
 }
 
-export const ParagraphNestedSpec = $($ParagraphNestedSpec);
+export const ParagraphNestedExample = $($ParagraphNestedExample);
 
-export class $ParagraphTextSpec extends $Chemical {
+export class $ParagraphTextExample extends $Chemical {
     view(): ReactNode {
         return (
-            <Paragraph>A paragraph may carry text.</Paragraph>
+            <Paragraph>{'A paragraph may carry text.\nThe parser divides it into sentences.\nEach sentence keeps its own line.'}</Paragraph>
         );
     }
 }
 
-export const ParagraphTextSpec = $($ParagraphTextSpec);
+export const ParagraphTextExample = $($ParagraphTextExample);
 
-export class $ParagraphWritingSpec extends $Chemical {
+export class $ParagraphWritingExample extends $Chemical {
     view(): ReactNode {
         return (
-            <Writing>A paragraph, told.<Type>Paragraph</Type></Writing>
+            <Writing>
+                {'A paragraph, told.\nIt divides the same.\nThe type does the telling.'}
+                <Type>Paragraph</Type>
+            </Writing>
         );
     }
 }
 
-export const ParagraphWritingSpec = $($ParagraphWritingSpec);
+export const ParagraphWritingExample = $($ParagraphWritingExample);
 
-export class $ParagraphReferenceSpec extends $Chemical {
+export class $ParagraphReferenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>paragraph<Type>$Paragraph</Type><Path>Ph:0</Path></Writing>
@@ -131,4 +107,4 @@ export class $ParagraphReferenceSpec extends $Chemical {
     }
 }
 
-export const ParagraphReferenceSpec = $($ParagraphReferenceSpec);
+export const ParagraphReferenceExample = $($ParagraphReferenceExample);

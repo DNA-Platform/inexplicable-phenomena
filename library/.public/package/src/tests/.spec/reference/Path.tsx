@@ -5,7 +5,7 @@ import { Letter } from '@/writing/Letter';
 import { Writing, Type } from '@/writing/Writing';
 
 // A path IS the url. Its copy is the address and it holds no member for one.
-export class $PathTextSpec extends $Chemical {
+export class $PathTextExample extends $Chemical {
     view(): ReactNode {
         return (
             <>
@@ -16,10 +16,10 @@ export class $PathTextSpec extends $Chemical {
     }
 }
 
-export const PathTextSpec = $($PathTextSpec);
+export const PathTextExample = $($PathTextExample);
 
 // A path is writing; its letters here are written, and its copy still reads as a url.
-export class $PathLettersSpec extends $Chemical {
+export class $PathLettersExample extends $Chemical {
     view(): ReactNode {
         return (
             <Path>
@@ -30,15 +30,18 @@ export class $PathLettersSpec extends $Chemical {
     }
 }
 
-export const PathLettersSpec = $($PathLettersSpec);
+export const PathLettersExample = $($PathLettersExample);
 
 // Writing told it is a Path must read as a url, which is a phrase narrowed.
-export class $PathWritingSpec extends $Chemical {
+export class $PathWritingExample extends $Chemical {
     view(): ReactNode {
         return (
-            <Writing>/books/algebra<Type>Path</Type></Writing>
+            <Writing>
+                /books/algebra
+                <Type>Path</Type>
+            </Writing>
         );
     }
 }
 
-export const PathWritingSpec = $($PathWritingSpec);
+export const PathWritingExample = $($PathWritingExample);

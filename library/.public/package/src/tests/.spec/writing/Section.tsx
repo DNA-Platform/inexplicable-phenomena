@@ -8,13 +8,11 @@ import { Path } from '@/reference/Path';
 
 // A section is written as paragraphs, delineated explicitly. Nothing is parsed
 // at this level.
-export class $SectionParagraphsSpec extends $Chemical {
+export class $SectionParagraphsExample extends $Chemical {
     view(): ReactNode {
         return (
             <Section>
-                <Title>
-                    What a section is written as
-                </Title>
+                <Title>What a section is written as</Title>
                 <Paragraph>
                     A section is written as paragraphs, and every one of them is delineated by whoever wrote it.
                 </Paragraph>
@@ -26,21 +24,17 @@ export class $SectionParagraphsSpec extends $Chemical {
     }
 }
 
-export const SectionParagraphsSpec = $($SectionParagraphsSpec);
+export const SectionParagraphsExample = $($SectionParagraphsExample);
 
 // A section inside a section contributes its parts to the parts, its title
 // among them.
-export class $SectionNestedSpec extends $Chemical {
+export class $SectionNestedExample extends $Chemical {
     view(): ReactNode {
         return (
             <Section>
-                <Title>
-                    The outer section
-                </Title>
+                <Title>The outer section</Title>
                 <Section>
-                    <Title>
-                        The inner section
-                    </Title>
+                    <Title>The inner section</Title>
                     <Paragraph>
                         The nested contributes its parts to the parts, its title among them.
                     </Paragraph>
@@ -53,33 +47,29 @@ export class $SectionNestedSpec extends $Chemical {
     }
 }
 
-export const SectionNestedSpec = $($SectionNestedSpec);
+export const SectionNestedExample = $($SectionNestedExample);
 
 // A section may be written as a title and a string of text. That text is one
 // paragraph and is not divided further.
-export class $SectionTextSpec extends $Chemical {
+export class $SectionTextExample extends $Chemical {
     view(): ReactNode {
         return (
             <Section>
-                <Title>
-                    A section written as prose
-                </Title>
+                <Title>A section written as prose</Title>
                 Everything after the title, first character to last, is ONE paragraph. It is not divided at this level, however many sentences it carries.
             </Section>
         );
     }
 }
 
-export const SectionTextSpec = $($SectionTextSpec);
+export const SectionTextExample = $($SectionTextExample);
 
 // Writing told it is a Section composes the paragraphs written inside it.
-export class $SectionWritingSpec extends $Chemical {
+export class $SectionWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>
-                <Title>
-                    What a section is written as
-                </Title>
+                <Title>What a section is written as</Title>
                 <Paragraph>
                     A section is written as paragraphs, and every one of them is delineated by whoever wrote it.
                 </Paragraph>
@@ -92,11 +82,11 @@ export class $SectionWritingSpec extends $Chemical {
     }
 }
 
-export const SectionWritingSpec = $($SectionWritingSpec);
+export const SectionWritingExample = $($SectionWritingExample);
 
 // A reference to a section stands one meta-level up: writing carrying the
 // $Section type whose path must land on a section.
-export class $SectionReferenceSpec extends $Chemical {
+export class $SectionReferenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>section<Type>$Section</Type><Path>Sn:0</Path></Writing>
@@ -104,4 +94,4 @@ export class $SectionReferenceSpec extends $Chemical {
     }
 }
 
-export const SectionReferenceSpec = $($SectionReferenceSpec);
+export const SectionReferenceExample = $($SectionReferenceExample);

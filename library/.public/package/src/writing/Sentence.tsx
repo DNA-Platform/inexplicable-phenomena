@@ -2,7 +2,7 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { Word } from './Word';
+import { Word, $TypeOfWord } from './Word';
 import { parser } from '@/utilities/Parser';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
@@ -64,7 +64,7 @@ export class SentenceSpecification extends TypedSpecification<$Writing> {
     $writtenAsWords(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => reflection.stands(one, 'Word') || reflection.stands(one, 'Sentence')),
+        $check(inside.every(one => reflection.is(one, $TypeOfWord) || reflection.is(one, $TypeOfSentence)),
             'a sentence is written as words, and something in this one is not one');
     }
 }
@@ -77,7 +77,7 @@ export class $SentenceSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Se:'),
             'a reference to a sentence lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.stands(held, 'Sentence'),
+        $check(held === undefined || reflection.is(held, $TypeOfSentence),
             'a reference to a sentence lands on one, and what it holds is not one');
     }
 }

@@ -11,7 +11,7 @@ const three = () => built<$Section>(section(title('t'), chain.Paragraph('a'), ch
 describe('$Section composes $Paragraph', () => {
     it('composes the level below, in the order written', () => {
         expect(three().parts().map(one => one.copy)).toEqual(['t', 'a', 'b', 'c']);
-        expect(three().parts().every(one => reflection.stands(one, 'Paragraph'))).toBe(true);
+        expect(three().parts().every(one => reflection.is(one, 'Paragraph'))).toBe(true);
     });
 
     it('answers part zero', () => {
@@ -43,7 +43,7 @@ describe('$Section composes $Paragraph', () => {
 
     it('and a piece of writing TOLD it is a Section composes the same', () => {
         const { writing } = drawn(title('t'), chain.Paragraph('h'), chain.Paragraph('i'), <Type>Section</Type>);
-        expect(reflection.stands(writing, 'Section')).toBe(true);
+        expect(reflection.is(writing, 'Section')).toBe(true);
         expect(writing.parts().map(one => one.copy)).toEqual(['t', 'h', 'i']);
     });
 });

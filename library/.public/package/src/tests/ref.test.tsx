@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ReactNode, act } from 'react';
+import { ComponentType, ReactNode, act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { $Writing } from '@/writing/Writing';
@@ -10,7 +10,8 @@ import { $Paragraph } from '@/writing/Paragraph';
 import { $Section } from '@/writing/Section';
 import { $Ref, Ref } from '@/reference/Ref';
 import { Path } from '@/reference/Path';
-import { Reference } from '@/reference/Reference';
+import { $ } from '@dna-platform/chemistry';
+import { $Reference, Reference } from '@/reference/Reference';
 import { Type } from '@/writing/Writing';
 import { built, drawn, letter, mounted, word, sentence, paragraph, title, Sentence, Section, Writing } from './written';
 
@@ -19,7 +20,7 @@ const routed = (node: ReactNode, at = '/'): HTMLElement => mounted(<MemoryRouter
 describe('a ref assembles its own reference and knows where it points', () => {
     it('the snappy form — markdown in, an external anchor out', () => {
         const { host } = drawn(<Ref>{'[wiki](https://en.wikipedia.org/wiki/Gauge_theory)'}</Ref>);
-        const anchor = host.querySelector('a')!;
+        const anchor = host.querySelector('a[href]')!;
         expect(anchor).not.toBeNull();
         expect(anchor.getAttribute('href')).toBe('https://en.wikipedia.org/wiki/Gauge_theory');
         expect(anchor.textContent).toBe('wiki');
@@ -27,14 +28,14 @@ describe('a ref assembles its own reference and knows where it points', () => {
 
     it('the prop form — a typed path prop and the written words', () => {
         const { host } = drawn(<Ref path="https://en.wikipedia.org/wiki/Gauge_theory">gauge theory</Ref>);
-        const anchor = host.querySelector('a')!;
+        const anchor = host.querySelector('a[href]')!;
         expect(anchor.getAttribute('href')).toBe('https://en.wikipedia.org/wiki/Gauge_theory');
         expect(anchor.textContent).toBe('gauge theory');
     });
 
     it('the element form — writing beside a held path', () => {
         const { host } = drawn(<Ref>gauge theory<Path>/physics/gauge</Path></Ref>);
-        const anchor = host.querySelector('a')!;
+        const anchor = host.querySelector('a[href]')!;
         expect(anchor.getAttribute('href')).toBe('/physics/gauge');
         expect(anchor.textContent).toBe('gauge theory');
     });
@@ -88,10 +89,18 @@ describe('an internal reference travels by the router', () => {
 });
 
 describe('writing that carries a reference reads as an anchor', () => {
-    // U10, the Ref round: the means-anchor over a url-bearing Ref is that round's design.
-    it.skip('a reference beside the words wraps the writing in its target', () => {
-        const { host } = drawn(<Writing>Whatever<Type>Word</Type><Reference>https://example.org/x</Reference></Writing>);
-        const anchor = host.querySelector('a')!;
+    // Specify is where the library accepts writing: a url-bearing reference gains
+    // its minted path there, and only then does the writing read as an anchor.
+    it('a reference beside the words wraps the writing in its target', () => {
+        const { host, writing } = drawn(<Writing>Whatever<Type>Word</Type><Reference>https://example.org/x</Reference></Writing>);
+        expect(host.querySelector('a[href]')).toBeNull();
+        const inner = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.annotation)!;
+        const reference = (inner.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Reference)!;
+        act(() => reference.specify());
+        expect(reference.path?.copy).toBe('https://example.org/x');
+        const Inner = $(inner as never) as ComponentType;
+        const accepted = mounted(<Inner />);
+        const anchor = accepted.querySelector('a[href]')!;
         expect(anchor).not.toBeNull();
         expect(anchor.getAttribute('href')).toBe('https://example.org/x');
         expect(anchor.textContent).toContain('Whatever');

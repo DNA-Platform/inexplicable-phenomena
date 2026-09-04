@@ -38,14 +38,14 @@ describe('one type, many implementations, related only through writing', () => {
     it('and BOTH answer as books, because both carry the type', () => {
         const bound = built<$Bound>(<Bound>{[chapter('a')]}</Bound>);
         const paper = built<$Paperback>(<Paperback>{[chapter('b')]}</Paperback>);
-        expect(reflection.stands(bound, 'Book')).toBe(true);
-        expect(reflection.stands(paper, 'Book')).toBe(true);
+        expect(reflection.is(bound, 'Book')).toBe(true);
+        expect(reflection.is(paper, 'Book')).toBe(true);
     });
 
     it('nothing is built when the reading stands — the writing itself answers', () => {
         const bound = built<$Bound>(<Bound>{[chapter('a'), chapter('b')]}</Bound>);
         expect(bound instanceof $Book).toBe(false);
-        expect(reflection.stands(bound, 'Book')).toBe(true);
+        expect(reflection.is(bound, 'Book')).toBe(true);
         expect(bound.parts().length).toBe(2);
     });
 

@@ -9,15 +9,13 @@ import { Writing, Type } from '@/writing/Writing';
 import { Path } from '@/reference/Path';
 
 // A book is a composition of chapters, and as such it satisfies being a composition of documents.
-export class $BookChaptersSpec extends $Chemical {
+export class $BookChaptersExample extends $Chemical {
     view(): ReactNode {
         return (
             <Book>
                 <Chapter>
                     <Section>
-                        <Title>
-                            What a book is composed of
-                        </Title>
+                        <Title>What a book is composed of</Title>
                         <Paragraph>
                             A book is a composition of chapters, and a chapter is a document.
                         </Paragraph>
@@ -26,9 +24,7 @@ export class $BookChaptersSpec extends $Chemical {
                         </Paragraph>
                     </Section>
                     <Section>
-                        <Title>
-                            What a section will accept
-                        </Title>
+                        <Title>What a section will accept</Title>
                         <Paragraph>
                             A section gathers the paragraphs written inside it, and refuses anything that is not one.
                         </Paragraph>
@@ -36,9 +32,7 @@ export class $BookChaptersSpec extends $Chemical {
                 </Chapter>
                 <Chapter>
                     <Section>
-                        <Title>
-                            The second chapter
-                        </Title>
+                        <Title>The second chapter</Title>
                         <Paragraph>
                             A second chapter is composed exactly as the first was, because the composition belongs to the type rather than to the class.
                         </Paragraph>
@@ -52,20 +46,18 @@ export class $BookChaptersSpec extends $Chemical {
     }
 }
 
-export const BookChaptersSpec = $($BookChaptersSpec);
+export const BookChaptersExample = $($BookChaptersExample);
 
 // Writing told it is a Book carries $TypeOfBook alone, and is therefore a File.
-// The writing is the SAME writing as ChaptersSpec's, so the only difference between
+// The writing is the SAME writing as ChaptersExample's, so the only difference between
 // the two examples is that one IS a Book and this one merely SAYS it is.
-export class $BookWritingSpec extends $Chemical {
+export class $BookWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>
                 <Chapter>
                     <Section>
-                        <Title>
-                            What a book is composed of
-                        </Title>
+                        <Title>What a book is composed of</Title>
                         <Paragraph>
                             A book is a composition of chapters, and a chapter is a document.
                         </Paragraph>
@@ -74,9 +66,7 @@ export class $BookWritingSpec extends $Chemical {
                         </Paragraph>
                     </Section>
                     <Section>
-                        <Title>
-                            What a section will accept
-                        </Title>
+                        <Title>What a section will accept</Title>
                         <Paragraph>
                             A section gathers the paragraphs written inside it, and refuses anything that is not one.
                         </Paragraph>
@@ -84,9 +74,7 @@ export class $BookWritingSpec extends $Chemical {
                 </Chapter>
                 <Chapter>
                     <Section>
-                        <Title>
-                            The second chapter
-                        </Title>
+                        <Title>The second chapter</Title>
                         <Paragraph>
                             A second chapter is composed exactly as the first was, because the composition belongs to the type rather than to the class.
                         </Paragraph>
@@ -101,11 +89,11 @@ export class $BookWritingSpec extends $Chemical {
     }
 }
 
-export const BookWritingSpec = $($BookWritingSpec);
+export const BookWritingExample = $($BookWritingExample);
 
 // A reference to a book stands one meta-level up: writing carrying
 // <Type>$Book</Type> whose path must land on a book.
-export class $BookReferenceSpec extends $Chemical {
+export class $BookReferenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>book<Type>$Book</Type><Path>Bk:0</Path></Writing>
@@ -113,4 +101,4 @@ export class $BookReferenceSpec extends $Chemical {
     }
 }
 
-export const BookReferenceSpec = $($BookReferenceSpec);
+export const BookReferenceExample = $($BookReferenceExample);

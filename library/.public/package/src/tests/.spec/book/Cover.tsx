@@ -7,7 +7,7 @@ import { Paragraph } from '@/writing/Paragraph';
 
 // A cover is a chapter kind by the standard type pattern; on a book, the
 // cover alone is found by position and the rest are found by kind.
-export class $CoverKindSpec extends $Chemical {
+export class $CoverKindExample extends $Chemical {
     view(): ReactNode {
         return (
             <Cover><Section><Title>Algebra</Title><Paragraph>It opens.</Paragraph></Section></Cover>
@@ -15,4 +15,4 @@ export class $CoverKindSpec extends $Chemical {
     }
 }
 
-export const CoverKindSpec = $($CoverKindSpec);
+export const CoverKindExample = $($CoverKindExample);

@@ -33,7 +33,7 @@ export class $LetterCats extends $LetterSmiley {
 
 export const LetterCats = $($LetterCats);
 
-export class $LetterDerivedSpecSmiley extends $Chemical {
+export class $LetterDerivedSmileyExample extends $Chemical {
     view(): ReactNode {
         return (
             <>
@@ -50,10 +50,10 @@ export class $LetterDerivedSpecSmiley extends $Chemical {
     }
 }
 
-export const LetterDerivedSpecSmiley = $($LetterDerivedSpecSmiley);
+export const LetterDerivedSmileyExample = $($LetterDerivedSmileyExample);
 
 // One grapheme, however many code points it takes: composed, decomposed, and a joined family.
-export class $LetterGraphemeSpec extends $Chemical {
+export class $LetterGraphemeExample extends $Chemical {
     view(): ReactNode {
         return (
             <>
@@ -65,16 +65,16 @@ export class $LetterGraphemeSpec extends $Chemical {
     }
 }
 
-export const LetterGraphemeSpec = $($LetterGraphemeSpec);
+export const LetterGraphemeExample = $($LetterGraphemeExample);
 
 // The five kinds a letter answers with: alphabetical, numeric, whitespace, punctuation, symbolic.
-export class $LetterKindSpec extends $Chemical {
+export class $LetterKindExample extends $Chemical {
     view(): ReactNode {
         return (
             <>
                 <Letter>a</Letter>
                 <Letter>7</Letter>
-                <Letter>{' '}</Letter>
+                <Letter> </Letter>
                 <Letter>,</Letter>
                 <Letter>🙂</Letter>
             </>
@@ -82,10 +82,10 @@ export class $LetterKindSpec extends $Chemical {
     }
 }
 
-export const LetterKindSpec = $($LetterKindSpec);
+export const LetterKindExample = $($LetterKindExample);
 
 // A letter is written as one grapheme of text.
-export class $LetterTextSpec extends $Chemical {
+export class $LetterTextExample extends $Chemical {
     view(): ReactNode {
         return (
             <Letter>L</Letter>
@@ -93,10 +93,10 @@ export class $LetterTextSpec extends $Chemical {
     }
 }
 
-export const LetterTextSpec = $($LetterTextSpec);
+export const LetterTextExample = $($LetterTextExample);
 
 // Writing told it is a Letter reads as one, without being written as one.
-export class $LetterWritingSpec extends $Chemical {
+export class $LetterWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>a<Type>Letter</Type></Writing>
@@ -104,11 +104,11 @@ export class $LetterWritingSpec extends $Chemical {
     }
 }
 
-export const LetterWritingSpec = $($LetterWritingSpec);
+export const LetterWritingExample = $($LetterWritingExample);
 
 // A reference to a letter stands one meta-level up: writing carrying
 // <Type>$Letter</Type> whose path must land on a letter.
-export class $LetterReferenceSpec extends $Chemical {
+export class $LetterReferenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>letter<Type>$Letter</Type><Path>Lr:0</Path></Writing>
@@ -116,4 +116,4 @@ export class $LetterReferenceSpec extends $Chemical {
     }
 }
 
-export const LetterReferenceSpec = $($LetterReferenceSpec);
+export const LetterReferenceExample = $($LetterReferenceExample);

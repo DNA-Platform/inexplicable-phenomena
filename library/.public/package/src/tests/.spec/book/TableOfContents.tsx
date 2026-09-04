@@ -7,7 +7,7 @@ import { Paragraph } from '@/writing/Paragraph';
 
 // A table of contents is a chapter kind by the standard type pattern; on a book, the
 // cover alone is found by position and the rest are found by kind.
-export class $TableOfContentsKindSpec extends $Chemical {
+export class $TableOfContentsKindExample extends $Chemical {
     view(): ReactNode {
         return (
             <TableOfContents><Section><Title>Algebra</Title><Paragraph>It opens.</Paragraph></Section></TableOfContents>
@@ -15,4 +15,4 @@ export class $TableOfContentsKindSpec extends $Chemical {
     }
 }
 
-export const TableOfContentsKindSpec = $($TableOfContentsKindSpec);
+export const TableOfContentsKindExample = $($TableOfContentsKindExample);

@@ -49,12 +49,12 @@ const click = (host: HTMLElement) => {
 
 describe('a leaf that is not composed, and provides its own type of Letter', () => {
     it('carries the letter type among its specification', () => {
-        expect(reflection.stands(shown(<Smiley>{face}</Smiley>).writing, 'Letter')).toBe(true);
+        expect(reflection.is(shown(<Smiley>{face}</Smiley>).writing, 'Letter')).toBe(true);
     });
 
     it('is a letter in the sense of the reading, and the whole thing is what it stands for', () => {
         const { writing } = shown(<Smiley>{face}</Smiley>);
-        expect(reflection.stands(writing, 'Letter')).toBe(true);
+        expect(reflection.is(writing, 'Letter')).toBe(true);
         expect(writing.copy).toBe('\u{1F642}');
         expect([...writing.copy].length).toBe(1);
     });

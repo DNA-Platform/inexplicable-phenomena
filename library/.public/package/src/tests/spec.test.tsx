@@ -3,39 +3,39 @@ import { Children, ComponentType, Fragment, ReactElement, ReactNode, createEleme
 import { $Chemical } from '@dna-platform/chemistry';
 import { $Writing, $Type } from '@/writing/Writing';
 import { reflection } from '@/utilities/Reflection';
-import { BookChaptersSpec, $BookChaptersSpec, BookWritingSpec, $BookWritingSpec } from './.spec/book/Book';
-import { ChapterSectionsSpec, $ChapterSectionsSpec, ChapterWritingSpec, $ChapterWritingSpec } from './.spec/book/Chapter';
-import { PathLettersSpec, $PathLettersSpec, PathTextSpec, $PathTextSpec, PathWritingSpec, $PathWritingSpec } from './.spec/reference/Path';
-import { ReferenceHoldsSpec, $ReferenceHoldsSpec, ReferenceLettersSpec, $ReferenceLettersSpec, ReferencePathSpec, $ReferencePathSpec, ReferenceWritingSpec, $ReferenceWritingSpec } from './.spec/reference/Reference';
-import { TraitDeclaredSpecFriend, $TraitDeclaredSpecFriend, TraitPureSpec, $TraitPureSpec } from './.spec/writing/Trait';
-import { RefMarkdownSpec, $RefMarkdownSpec, RefPathSpec, $RefPathSpec, RefHeldSpec, $RefHeldSpec, RefSentenceSpec, $RefSentenceSpec } from './.spec/reference/Ref';
-import { ReferenceCardListSpec, $ReferenceCardListSpec, ReferenceCardTraitSpec, $ReferenceCardTraitSpec } from './.spec/reference/ReferenceCard';
-import { ListLinesSpec, $ListLinesSpec, ListWritingSpec, $ListWritingSpec, ListNestedSpec, $ListNestedSpec, ListTypedSpec, $ListTypedSpec } from './.spec/writing/List';
-import { TableRowsSpec, $TableRowsSpec, TableWritingSpec, $TableWritingSpec, TableCellsSpec, $TableCellsSpec, TableTypedSpec, $TableTypedSpec, TableTraitSpec, $TableTraitSpec } from './.spec/writing/Table';
-import { LetterReferenceSpec, $LetterReferenceSpec } from './.spec/writing/Letter';
-import { WordReferenceSpec, $WordReferenceSpec } from './.spec/writing/Word';
-import { SentenceReferenceSpec, $SentenceReferenceSpec } from './.spec/writing/Sentence';
-import { ParagraphReferenceSpec, $ParagraphReferenceSpec } from './.spec/writing/Paragraph';
-import { SectionReferenceSpec, $SectionReferenceSpec } from './.spec/writing/Section';
-import { ChapterReferenceSpec, $ChapterReferenceSpec } from './.spec/book/Chapter';
-import { BookReferenceSpec, $BookReferenceSpec } from './.spec/book/Book';
-import { CoverKindSpec, $CoverKindSpec } from './.spec/book/Cover';
-import { SynopsisKindSpec, $SynopsisKindSpec } from './.spec/book/Synopsis';
-import { TableOfContentsKindSpec, $TableOfContentsKindSpec } from './.spec/book/TableOfContents';
-import { IndexSectionSpec, $IndexSectionSpec } from './.spec/book/Index';
-import { PageFoldReferenceSpec, $PageFoldReferenceSpec } from './.spec/book/PageFold';
-import { BookmarkReferenceSpec, $BookmarkReferenceSpec } from './.spec/book/Bookmark';
-import { HighlightPairSpec, $HighlightPairSpec } from './.spec/book/Highlight';
-import { ReferencesSectionSpec, $ReferencesSectionSpec } from './.spec/reference/References';
-import { CompositionConfiguredSpec, $CompositionConfiguredSpec } from './.spec/writing/Composition';
-import { LetterDerivedSpecSmiley, $LetterDerivedSpecSmiley, LetterGraphemeSpec, $LetterGraphemeSpec, LetterKindSpec, $LetterKindSpec, LetterTextSpec, $LetterTextSpec, LetterWritingSpec, $LetterWritingSpec } from './.spec/writing/Letter';
-import { ParagraphDerivedSpecTitle, $ParagraphDerivedSpecTitle, ParagraphSentencesSpec, $ParagraphSentencesSpec, ParagraphTextSpec, $ParagraphTextSpec, ParagraphWritingSpec, $ParagraphWritingSpec, ParagraphNestedSpec, $ParagraphNestedSpec } from './.spec/writing/Paragraph';
-import { PhraseSentenceSpec, $PhraseSentenceSpec, PhraseTextSpec, $PhraseTextSpec, PhraseWordsSpec, $PhraseWordsSpec, PhraseWritingSpec, $PhraseWritingSpec } from './.spec/writing/Phrase';
-import { SectionParagraphsSpec, $SectionParagraphsSpec, SectionTextSpec, $SectionTextSpec, SectionWritingSpec, $SectionWritingSpec, SectionNestedSpec, $SectionNestedSpec } from './.spec/writing/Section';
-import { SentenceStopSpec, $SentenceStopSpec, SentenceWordsSpec, $SentenceWordsSpec, SentenceWritingSpec, $SentenceWritingSpec, SentenceNestedSpec, $SentenceNestedSpec } from './.spec/writing/Sentence';
-import { WordKindSpec, $WordKindSpec, WordLettersSpec, $WordLettersSpec, WordMixedSpec, $WordMixedSpec, WordTextSpec, $WordTextSpec, WordWritingSpec, $WordWritingSpec, WordNestedSpec, $WordNestedSpec } from './.spec/writing/Word';
-import { WritingMeansSpec, $WritingMeansSpec, WritingPlainSpec, $WritingPlainSpec } from './.spec/writing/Writing';
-import { TitleKindSpec, $TitleKindSpec } from './.spec/writing/Title';
+import { BookChaptersExample, $BookChaptersExample, BookWritingExample, $BookWritingExample } from './.spec/book/Book';
+import { ChapterSectionsExample, $ChapterSectionsExample, ChapterWritingExample, $ChapterWritingExample } from './.spec/book/Chapter';
+import { PathLettersExample, $PathLettersExample, PathTextExample, $PathTextExample, PathWritingExample, $PathWritingExample } from './.spec/reference/Path';
+import { ReferenceHoldsExample, $ReferenceHoldsExample, ReferenceLettersExample, $ReferenceLettersExample, ReferencePathExample, $ReferencePathExample, ReferenceWritingExample, $ReferenceWritingExample } from './.spec/reference/Reference';
+import { TraitDeclaredFriendExample, $TraitDeclaredFriendExample, TraitPureExample, $TraitPureExample } from './.spec/writing/Trait';
+import { RefMarkdownExample, $RefMarkdownExample, RefPathExample, $RefPathExample, RefHeldExample, $RefHeldExample, RefSentenceExample, $RefSentenceExample } from './.spec/reference/Ref';
+import { ReferenceCardListExample, $ReferenceCardListExample, ReferenceCardTraitExample, $ReferenceCardTraitExample } from './.spec/reference/ReferenceCard';
+import { ListLinesExample, $ListLinesExample, ListWritingExample, $ListWritingExample, ListNestedExample, $ListNestedExample, ListTypedExample, $ListTypedExample } from './.spec/writing/List';
+import { TableRowsExample, $TableRowsExample, TableWritingExample, $TableWritingExample, TableCellsExample, $TableCellsExample, TableTypedExample, $TableTypedExample, TableTraitExample, $TableTraitExample } from './.spec/writing/Table';
+import { LetterReferenceExample, $LetterReferenceExample } from './.spec/writing/Letter';
+import { WordReferenceExample, $WordReferenceExample } from './.spec/writing/Word';
+import { SentenceReferenceExample, $SentenceReferenceExample } from './.spec/writing/Sentence';
+import { ParagraphReferenceExample, $ParagraphReferenceExample } from './.spec/writing/Paragraph';
+import { SectionReferenceExample, $SectionReferenceExample } from './.spec/writing/Section';
+import { ChapterReferenceExample, $ChapterReferenceExample } from './.spec/book/Chapter';
+import { BookReferenceExample, $BookReferenceExample } from './.spec/book/Book';
+import { CoverKindExample, $CoverKindExample } from './.spec/book/Cover';
+import { SynopsisKindExample, $SynopsisKindExample } from './.spec/book/Synopsis';
+import { TableOfContentsKindExample, $TableOfContentsKindExample } from './.spec/book/TableOfContents';
+import { IndexSectionExample, $IndexSectionExample } from './.spec/book/Index';
+import { PageFoldReferenceExample, $PageFoldReferenceExample } from './.spec/book/PageFold';
+import { BookmarkReferenceExample, $BookmarkReferenceExample } from './.spec/book/Bookmark';
+import { HighlightPairExample, $HighlightPairExample } from './.spec/book/Highlight';
+import { ReferencesSectionExample, $ReferencesSectionExample } from './.spec/reference/References';
+import { CompositionConfiguredExample, $CompositionConfiguredExample } from './.spec/writing/Composition';
+import { LetterDerivedSmileyExample, $LetterDerivedSmileyExample, LetterGraphemeExample, $LetterGraphemeExample, LetterKindExample, $LetterKindExample, LetterTextExample, $LetterTextExample, LetterWritingExample, $LetterWritingExample } from './.spec/writing/Letter';
+import { ParagraphDerivedTitleExample, $ParagraphDerivedTitleExample, ParagraphSentencesExample, $ParagraphSentencesExample, ParagraphTextExample, $ParagraphTextExample, ParagraphWritingExample, $ParagraphWritingExample, ParagraphNestedExample, $ParagraphNestedExample } from './.spec/writing/Paragraph';
+import { PhraseSentenceExample, $PhraseSentenceExample, PhraseTextExample, $PhraseTextExample, PhraseWordsExample, $PhraseWordsExample, PhraseWritingExample, $PhraseWritingExample } from './.spec/writing/Phrase';
+import { SectionParagraphsExample, $SectionParagraphsExample, SectionTextExample, $SectionTextExample, SectionWritingExample, $SectionWritingExample, SectionNestedExample, $SectionNestedExample } from './.spec/writing/Section';
+import { SentenceStopExample, $SentenceStopExample, SentenceWordsExample, $SentenceWordsExample, SentenceWritingExample, $SentenceWritingExample, SentenceNestedExample, $SentenceNestedExample } from './.spec/writing/Sentence';
+import { WordKindExample, $WordKindExample, WordLettersExample, $WordLettersExample, WordMixedExample, $WordMixedExample, WordTextExample, $WordTextExample, WordWritingExample, $WordWritingExample, WordNestedExample, $WordNestedExample } from './.spec/writing/Word';
+import { WritingMeansExample, $WritingMeansExample, WritingPlainExample, $WritingPlainExample } from './.spec/writing/Writing';
+import { TitleKindExample, $TitleKindExample } from './.spec/writing/Title';
 import { Writing, built, drawn, shown } from './written';
 
 // EVERY SPEC IS DRAWN, SPECIFIED AND COMPOSED.
@@ -48,85 +48,85 @@ import { Writing, built, drawn, shown } from './written';
 // the example is writing the library would accept rather than merely writing it can
 // render. Composing it proves the example has parts to read.
 const specs: [string, ComponentType, new () => $Chemical][] = [
-    ['book/Book.ChaptersSpec', BookChaptersSpec, $BookChaptersSpec],
-    ['book/Book.WritingSpec', BookWritingSpec, $BookWritingSpec],
-    ['book/Chapter.SectionsSpec', ChapterSectionsSpec, $ChapterSectionsSpec],
-    ['book/Chapter.WritingSpec', ChapterWritingSpec, $ChapterWritingSpec],
-    ['reference/Path.LettersSpec', PathLettersSpec, $PathLettersSpec],
-    ['reference/Path.TextSpec', PathTextSpec, $PathTextSpec],
-    ['reference/Path.WritingSpec', PathWritingSpec, $PathWritingSpec],
-    ['reference/Reference.HoldsSpec', ReferenceHoldsSpec, $ReferenceHoldsSpec],
-    ['reference/Reference.LettersSpec', ReferenceLettersSpec, $ReferenceLettersSpec],
-    ['reference/Reference.PathSpec', ReferencePathSpec, $ReferencePathSpec],
-    ['reference/Reference.WritingSpec', ReferenceWritingSpec, $ReferenceWritingSpec],
-    ['writing/Trait.DeclaredSpecFriend', TraitDeclaredSpecFriend, $TraitDeclaredSpecFriend],
-    ['writing/Trait.PureSpec', TraitPureSpec, $TraitPureSpec],
-    ['reference/Ref.MarkdownSpec', RefMarkdownSpec, $RefMarkdownSpec],
-    ['reference/Ref.PathSpec', RefPathSpec, $RefPathSpec],
-    ['reference/Ref.HeldSpec', RefHeldSpec, $RefHeldSpec],
-    ['reference/Ref.SentenceSpec', RefSentenceSpec, $RefSentenceSpec],
-    ['writing/Composition.ConfiguredSpec', CompositionConfiguredSpec, $CompositionConfiguredSpec],
-    ['writing/Letter.DerivedSpecSmiley', LetterDerivedSpecSmiley, $LetterDerivedSpecSmiley],
-    ['writing/Letter.GraphemeSpec', LetterGraphemeSpec, $LetterGraphemeSpec],
-    ['writing/Letter.KindSpec', LetterKindSpec, $LetterKindSpec],
-    ['writing/Letter.TextSpec', LetterTextSpec, $LetterTextSpec],
-    ['writing/Letter.WritingSpec', LetterWritingSpec, $LetterWritingSpec],
-    ['writing/Paragraph.DerivedSpecTitle', ParagraphDerivedSpecTitle, $ParagraphDerivedSpecTitle],
-    ['writing/Paragraph.SentencesSpec', ParagraphSentencesSpec, $ParagraphSentencesSpec],
-    ['writing/Paragraph.TextSpec', ParagraphTextSpec, $ParagraphTextSpec],
-    ['writing/Paragraph.WritingSpec', ParagraphWritingSpec, $ParagraphWritingSpec],
-    ['writing/Paragraph.NestedSpec', ParagraphNestedSpec, $ParagraphNestedSpec],
-    ['writing/Phrase.SentenceSpec', PhraseSentenceSpec, $PhraseSentenceSpec],
-    ['writing/Phrase.TextSpec', PhraseTextSpec, $PhraseTextSpec],
-    ['writing/Phrase.WordsSpec', PhraseWordsSpec, $PhraseWordsSpec],
-    ['writing/Phrase.WritingSpec', PhraseWritingSpec, $PhraseWritingSpec],
-    ['writing/Section.ParagraphsSpec', SectionParagraphsSpec, $SectionParagraphsSpec],
-    ['writing/Section.TextSpec', SectionTextSpec, $SectionTextSpec],
-    ['writing/Section.WritingSpec', SectionWritingSpec, $SectionWritingSpec],
-    ['writing/Section.NestedSpec', SectionNestedSpec, $SectionNestedSpec],
-    ['writing/Sentence.StopSpec', SentenceStopSpec, $SentenceStopSpec],
-    ['writing/Sentence.WordsSpec', SentenceWordsSpec, $SentenceWordsSpec],
-    ['writing/Sentence.WritingSpec', SentenceWritingSpec, $SentenceWritingSpec],
-    ['writing/Sentence.NestedSpec', SentenceNestedSpec, $SentenceNestedSpec],
-    ['writing/Word.KindSpec', WordKindSpec, $WordKindSpec],
-    ['writing/Word.LettersSpec', WordLettersSpec, $WordLettersSpec],
-    ['writing/Word.MixedSpec', WordMixedSpec, $WordMixedSpec],
-    ['writing/Word.TextSpec', WordTextSpec, $WordTextSpec],
-    ['writing/Word.WritingSpec', WordWritingSpec, $WordWritingSpec],
-    ['writing/Word.NestedSpec', WordNestedSpec, $WordNestedSpec],
-    ['writing/Writing.MeansSpec', WritingMeansSpec, $WritingMeansSpec],
-    ['writing/Writing.PlainSpec', WritingPlainSpec, $WritingPlainSpec],
-    ['reference/ReferenceCard.ListSpec', ReferenceCardListSpec, $ReferenceCardListSpec],
-    ['reference/ReferenceCard.TraitSpec', ReferenceCardTraitSpec, $ReferenceCardTraitSpec],
-    ['writing/List.LinesSpec', ListLinesSpec, $ListLinesSpec],
-    ['writing/List.WritingSpec', ListWritingSpec, $ListWritingSpec],
-    ['writing/List.NestedSpec', ListNestedSpec, $ListNestedSpec],
-    ['writing/List.TypedSpec', ListTypedSpec, $ListTypedSpec],
-    ['writing/Table.RowsSpec', TableRowsSpec, $TableRowsSpec],
-    ['writing/Table.WritingSpec', TableWritingSpec, $TableWritingSpec],
-    ['writing/Table.CellsSpec', TableCellsSpec, $TableCellsSpec],
-    ['writing/Table.TypedSpec', TableTypedSpec, $TableTypedSpec],
-    ['writing/Table.TraitSpec', TableTraitSpec, $TableTraitSpec],
-    ['writing/Title.KindSpec', TitleKindSpec, $TitleKindSpec],
-    ['writing/Letter.ReferenceSpec', LetterReferenceSpec, $LetterReferenceSpec],
-    ['writing/Word.ReferenceSpec', WordReferenceSpec, $WordReferenceSpec],
-    ['writing/Sentence.ReferenceSpec', SentenceReferenceSpec, $SentenceReferenceSpec],
-    ['writing/Paragraph.ReferenceSpec', ParagraphReferenceSpec, $ParagraphReferenceSpec],
-    ['writing/Section.ReferenceSpec', SectionReferenceSpec, $SectionReferenceSpec],
-    ['book/Chapter.ReferenceSpec', ChapterReferenceSpec, $ChapterReferenceSpec],
-    ['book/Book.ReferenceSpec', BookReferenceSpec, $BookReferenceSpec],
-    ['book/Cover.KindSpec', CoverKindSpec, $CoverKindSpec],
-    ['book/Synopsis.KindSpec', SynopsisKindSpec, $SynopsisKindSpec],
-    ['book/TableOfContents.KindSpec', TableOfContentsKindSpec, $TableOfContentsKindSpec],
-    ['reference/Index.SectionSpec', IndexSectionSpec, $IndexSectionSpec],
-    ['book/PageFold.ReferenceSpec', PageFoldReferenceSpec, $PageFoldReferenceSpec],
-    ['book/Bookmark.ReferenceSpec', BookmarkReferenceSpec, $BookmarkReferenceSpec],
-    ['book/Highlight.PairSpec', HighlightPairSpec, $HighlightPairSpec],
-    ['reference/References.SectionSpec', ReferencesSectionSpec, $ReferencesSectionSpec]
+    ['book/Book.ChaptersExample', BookChaptersExample, $BookChaptersExample],
+    ['book/Book.WritingExample', BookWritingExample, $BookWritingExample],
+    ['book/Chapter.SectionsExample', ChapterSectionsExample, $ChapterSectionsExample],
+    ['book/Chapter.WritingExample', ChapterWritingExample, $ChapterWritingExample],
+    ['reference/Path.LettersExample', PathLettersExample, $PathLettersExample],
+    ['reference/Path.TextExample', PathTextExample, $PathTextExample],
+    ['reference/Path.WritingExample', PathWritingExample, $PathWritingExample],
+    ['reference/Reference.HoldsExample', ReferenceHoldsExample, $ReferenceHoldsExample],
+    ['reference/Reference.LettersExample', ReferenceLettersExample, $ReferenceLettersExample],
+    ['reference/Reference.PathExample', ReferencePathExample, $ReferencePathExample],
+    ['reference/Reference.WritingExample', ReferenceWritingExample, $ReferenceWritingExample],
+    ['writing/Trait.DeclaredFriendExample', TraitDeclaredFriendExample, $TraitDeclaredFriendExample],
+    ['writing/Trait.PureExample', TraitPureExample, $TraitPureExample],
+    ['reference/Ref.MarkdownExample', RefMarkdownExample, $RefMarkdownExample],
+    ['reference/Ref.PathExample', RefPathExample, $RefPathExample],
+    ['reference/Ref.HeldExample', RefHeldExample, $RefHeldExample],
+    ['reference/Ref.SentenceExample', RefSentenceExample, $RefSentenceExample],
+    ['writing/Composition.ConfiguredExample', CompositionConfiguredExample, $CompositionConfiguredExample],
+    ['writing/Letter.DerivedSmileyExample', LetterDerivedSmileyExample, $LetterDerivedSmileyExample],
+    ['writing/Letter.GraphemeExample', LetterGraphemeExample, $LetterGraphemeExample],
+    ['writing/Letter.KindExample', LetterKindExample, $LetterKindExample],
+    ['writing/Letter.TextExample', LetterTextExample, $LetterTextExample],
+    ['writing/Letter.WritingExample', LetterWritingExample, $LetterWritingExample],
+    ['writing/Paragraph.DerivedTitleExample', ParagraphDerivedTitleExample, $ParagraphDerivedTitleExample],
+    ['writing/Paragraph.SentencesExample', ParagraphSentencesExample, $ParagraphSentencesExample],
+    ['writing/Paragraph.TextExample', ParagraphTextExample, $ParagraphTextExample],
+    ['writing/Paragraph.WritingExample', ParagraphWritingExample, $ParagraphWritingExample],
+    ['writing/Paragraph.NestedExample', ParagraphNestedExample, $ParagraphNestedExample],
+    ['writing/Phrase.SentenceExample', PhraseSentenceExample, $PhraseSentenceExample],
+    ['writing/Phrase.TextExample', PhraseTextExample, $PhraseTextExample],
+    ['writing/Phrase.WordsExample', PhraseWordsExample, $PhraseWordsExample],
+    ['writing/Phrase.WritingExample', PhraseWritingExample, $PhraseWritingExample],
+    ['writing/Section.ParagraphsExample', SectionParagraphsExample, $SectionParagraphsExample],
+    ['writing/Section.TextExample', SectionTextExample, $SectionTextExample],
+    ['writing/Section.WritingExample', SectionWritingExample, $SectionWritingExample],
+    ['writing/Section.NestedExample', SectionNestedExample, $SectionNestedExample],
+    ['writing/Sentence.StopExample', SentenceStopExample, $SentenceStopExample],
+    ['writing/Sentence.WordsExample', SentenceWordsExample, $SentenceWordsExample],
+    ['writing/Sentence.WritingExample', SentenceWritingExample, $SentenceWritingExample],
+    ['writing/Sentence.NestedExample', SentenceNestedExample, $SentenceNestedExample],
+    ['writing/Word.KindExample', WordKindExample, $WordKindExample],
+    ['writing/Word.LettersExample', WordLettersExample, $WordLettersExample],
+    ['writing/Word.MixedExample', WordMixedExample, $WordMixedExample],
+    ['writing/Word.TextExample', WordTextExample, $WordTextExample],
+    ['writing/Word.WritingExample', WordWritingExample, $WordWritingExample],
+    ['writing/Word.NestedExample', WordNestedExample, $WordNestedExample],
+    ['writing/Writing.MeansExample', WritingMeansExample, $WritingMeansExample],
+    ['writing/Writing.PlainExample', WritingPlainExample, $WritingPlainExample],
+    ['reference/ReferenceCard.ListExample', ReferenceCardListExample, $ReferenceCardListExample],
+    ['reference/ReferenceCard.TraitExample', ReferenceCardTraitExample, $ReferenceCardTraitExample],
+    ['writing/List.LinesExample', ListLinesExample, $ListLinesExample],
+    ['writing/List.WritingExample', ListWritingExample, $ListWritingExample],
+    ['writing/List.NestedExample', ListNestedExample, $ListNestedExample],
+    ['writing/List.TypedExample', ListTypedExample, $ListTypedExample],
+    ['writing/Table.RowsExample', TableRowsExample, $TableRowsExample],
+    ['writing/Table.WritingExample', TableWritingExample, $TableWritingExample],
+    ['writing/Table.CellsExample', TableCellsExample, $TableCellsExample],
+    ['writing/Table.TypedExample', TableTypedExample, $TableTypedExample],
+    ['writing/Table.TraitExample', TableTraitExample, $TableTraitExample],
+    ['writing/Title.KindExample', TitleKindExample, $TitleKindExample],
+    ['writing/Letter.ReferenceExample', LetterReferenceExample, $LetterReferenceExample],
+    ['writing/Word.ReferenceExample', WordReferenceExample, $WordReferenceExample],
+    ['writing/Sentence.ReferenceExample', SentenceReferenceExample, $SentenceReferenceExample],
+    ['writing/Paragraph.ReferenceExample', ParagraphReferenceExample, $ParagraphReferenceExample],
+    ['writing/Section.ReferenceExample', SectionReferenceExample, $SectionReferenceExample],
+    ['book/Chapter.ReferenceExample', ChapterReferenceExample, $ChapterReferenceExample],
+    ['book/Book.ReferenceExample', BookReferenceExample, $BookReferenceExample],
+    ['book/Cover.KindExample', CoverKindExample, $CoverKindExample],
+    ['book/Synopsis.KindExample', SynopsisKindExample, $SynopsisKindExample],
+    ['book/TableOfContents.KindExample', TableOfContentsKindExample, $TableOfContentsKindExample],
+    ['reference/Index.SectionExample', IndexSectionExample, $IndexSectionExample],
+    ['book/PageFold.ReferenceExample', PageFoldReferenceExample, $PageFoldReferenceExample],
+    ['book/Bookmark.ReferenceExample', BookmarkReferenceExample, $BookmarkReferenceExample],
+    ['book/Highlight.PairExample', HighlightPairExample, $HighlightPairExample],
+    ['reference/References.SectionExample', ReferencesSectionExample, $ReferencesSectionExample]
 ];
 
-const roots = (Spec: new () => $Chemical): ReactElement[] => {
-    const view = new Spec().view() as ReactElement;
+const roots = (Example: new () => $Chemical): ReactElement[] => {
+    const view = new Example().view() as ReactElement;
     if (!isValidElement(view))
         throw new Error('a specification draws nothing');
     if (view.type !== Fragment)
@@ -146,9 +146,9 @@ const composed = (writing: $Writing): $Writing[] => {
 };
 
 describe('every specification draws', () => {
-    for (const [name, Spec] of specs)
+    for (const [name, Example] of specs)
         it(name, () => {
-            expect(() => shown(createElement(Spec))).not.toThrow();
+            expect(() => shown(createElement(Example))).not.toThrow();
         });
 
     it('and there are as many as the folders hold', () => {
@@ -157,17 +157,17 @@ describe('every specification draws', () => {
 });
 
 describe('every specification SPECIFIES — the example is writing the library accepts', () => {
-    for (const [name, , Spec] of specs)
+    for (const [name, , Example] of specs)
         it(name, () => {
-            for (const one of roots(Spec))
+            for (const one of roots(Example))
                 expect(() => rooted(one).specify()).not.toThrow();
         });
 });
 
 describe('every specification COMPOSES — the example has parts to read', () => {
-    for (const [name, , Spec] of specs)
+    for (const [name, , Example] of specs)
         it(name, () => {
-            for (const one of roots(Spec)) {
+            for (const one of roots(Example)) {
                 const writing = rooted(one);
                 expect(() => composed(writing)).not.toThrow();
                 expect(composed(writing).every(part => part instanceof $Writing)).toBe(true);

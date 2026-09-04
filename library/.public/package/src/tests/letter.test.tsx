@@ -41,7 +41,7 @@ describe('a piece of writing TOLD it is a Letter', () => {
     it('is one in the sense of the reading, and nothing is built to say so', () => {
         const { writing } = drawn('a', <Type>Letter</Type>);
         expect(writing instanceof $Letter).toBe(false);
-        expect(reflection.stands(writing, 'Letter')).toBe(true);
+        expect(reflection.is(writing, 'Letter')).toBe(true);
         expect(writing.copy).toBe('a');
     });
 
@@ -52,19 +52,19 @@ describe('a piece of writing TOLD it is a Letter', () => {
 
     it('does not stand as an unrelated kind', () => {
         const { writing } = drawn('a', <Type>Letter</Type>);
-        expect(reflection.stands(writing, 'Word')).toBe(false);
+        expect(reflection.is(writing, 'Word')).toBe(false);
     });
 });
 
 describe('the reading answers by standing', () => {
     it('asks whether a writing IS a kind, and answers without binding it', () => {
         const { writing } = drawn('a', <Type>Letter</Type>);
-        expect(reflection.stands(writing, 'Letter')).toBe(true);
-        expect(reflection.stands(writing, 'Word')).toBe(false);
+        expect(reflection.is(writing, 'Letter')).toBe(true);
+        expect(reflection.is(writing, 'Word')).toBe(false);
     });
 
     it('answers a writing carrying no type at all with false rather than a throw', () => {
-        expect(reflection.stands(drawn('a').writing, 'Letter')).toBe(false);
+        expect(reflection.is(drawn('a').writing, 'Letter')).toBe(false);
     });
 });
 

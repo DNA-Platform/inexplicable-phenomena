@@ -25,9 +25,9 @@ $($TypeOfMyChapter);
 describe('a subclassed book composes subclassed chapters, dynamically', () => {
     it('MY book stands as a book and its parts stand as chapters', () => {
         const one = built<$Book>(<MyBook>{[<MyChapter key="a">{chain.Section('a')}</MyChapter>]}</MyBook>);
-        expect(reflection.stands(one, 'Book')).toBe(true);
+        expect(reflection.is(one, 'Book')).toBe(true);
         expect(one.parts()[0]).toBeInstanceOf($Chapter);
-        expect(reflection.stands(one.parts()[0], 'Chapter')).toBe(true);
+        expect(reflection.is(one.parts()[0], 'Chapter')).toBe(true);
     });
 
     it('and MY book composes MY chapters, two levels on, no generic anywhere', () => {
@@ -41,7 +41,7 @@ describe('a subclassed book composes subclassed chapters, dynamically', () => {
 
     it('and it still answers as everything above it', () => {
         const one = built<$MyBook>(<MyBook>{[<MyChapter key="a">{chain.Section('a')}</MyChapter>]}</MyBook>);
-        expect(reflection.stands(one, 'Book')).toBe(true);
+        expect(reflection.is(one, 'Book')).toBe(true);
     });
 });
 
@@ -49,7 +49,7 @@ describe('a writing carrying ONE type reads as every level above it', () => {
     it('stands as the level asked for, through the type it carries', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfChapter);
-        expect(reflection.stands(writing, 'Chapter')).toBe(true);
+        expect(reflection.is(writing, 'Chapter')).toBe(true);
     });
 
     it('and a second type at one level is refused, however it is ordered', () => {

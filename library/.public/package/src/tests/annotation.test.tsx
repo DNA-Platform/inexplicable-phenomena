@@ -54,7 +54,7 @@ describe('the bond lifts what is parenthetical, and leaves it in the block', () 
         const { writing } = drawn('abc');
         expect(writing.type).toBeUndefined();
         expect(() => writing.specify()).not.toThrow();
-        expect(reflection.stands(writing, 'Word')).toBe(false);
+        expect(reflection.is(writing, 'Word')).toBe(false);
     });
 });
 
@@ -62,7 +62,7 @@ describe('a piece of writing is ONE kind of writing', () => {
     it('a refinement carries its whole chain — a cover stands as a chapter', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Cover</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfCover);
-        expect(reflection.stands(writing, 'Chapter')).toBe(true);
+        expect(reflection.is(writing, 'Chapter')).toBe(true);
     });
 
     it('and a written Book carries ONE type, the most derived, never its ancestor as well', () => {

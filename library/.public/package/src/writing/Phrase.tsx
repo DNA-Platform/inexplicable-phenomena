@@ -1,9 +1,10 @@
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from './Writing';
-import { $Sentence, $TypeOfSentence, SentenceSpecification } from './Sentence';
+import { $Composition$, $Composition } from './Composition';
+import { $TypeOfSentence, SentenceSpecification } from './Sentence';
 
-export class $Phrase extends $Sentence {
+export class $Phrase extends $Composition implements $Composition$ {
     override indent = 1;
 
     override get canonical(): boolean { return false; }
@@ -11,7 +12,7 @@ export class $Phrase extends $Sentence {
     $Phrase(block: $Block) {
         const Asked = $(TypeOfPhrase);
         this.type ??= $(<Asked />);
-        super.$Sentence(block);
+        super.$Composition(block);
     }
 }
 

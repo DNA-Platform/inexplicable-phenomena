@@ -1,15 +1,16 @@
 import { ReactNode } from 'react';
 import { $Block, $, cache } from '@dna-platform/chemistry';
-import { $Paragraph, $TypeOfParagraph } from './Paragraph';
+import { $Composition$, $Composition } from './Composition';
+import { $TypeOfParagraph } from './Paragraph';
 import { Heading } from '@/encyclopedia/Heading';
 
-export class $Title extends $Paragraph {
+export class $Title extends $Composition implements $Composition$ {
     override get canonical(): boolean { return false; }
 
     $Title(block: $Block) {
         const Asked = $(TypeOfTitle);
         this.type ??= $(<Asked />);
-        super.$Paragraph(block);
+        super.$Composition(block);
     }
 
     override view(): ReactNode {

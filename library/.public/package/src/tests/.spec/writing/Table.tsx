@@ -10,7 +10,7 @@ import { Writing, Type, Trait } from '@/writing/Writing';
 
 // A table is a section whose blank lines separate its rows — each row a
 // paragraph, and no title owed, because a table opens with its rows.
-export class $TableRowsSpec extends $Chemical {
+export class $TableRowsExample extends $Chemical {
     view(): ReactNode {
         return (
             <Table><Paragraph>first row</Paragraph><Paragraph>second row</Paragraph></Table>
@@ -18,11 +18,11 @@ export class $TableRowsSpec extends $Chemical {
     }
 }
 
-export const TableRowsSpec = $($TableRowsSpec);
+export const TableRowsExample = $($TableRowsExample);
 
 // Writing told it is a Table stands as one, and the title law stands down the
 // same way — the rule reads the carried type, not the class.
-export class $TableWritingSpec extends $Chemical {
+export class $TableWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing><Paragraph>first row</Paragraph><Paragraph>second row</Paragraph><Type>Table</Type></Writing>
@@ -30,11 +30,11 @@ export class $TableWritingSpec extends $Chemical {
     }
 }
 
-export const TableWritingSpec = $($TableWritingSpec);
+export const TableWritingExample = $($TableWritingExample);
 
 // A table of cells composes each cell one down from its level — a paragraph,
 // for the default section-grade table.
-export class $TableCellsSpec extends $Chemical {
+export class $TableCellsExample extends $Chemical {
     view(): ReactNode {
         return (
             <Table><Paragraph>first cell</Paragraph><Paragraph>second cell</Paragraph></Table>
@@ -42,11 +42,11 @@ export class $TableCellsSpec extends $Chemical {
     }
 }
 
-export const TableCellsSpec = $($TableCellsSpec);
+export const TableCellsExample = $($TableCellsExample);
 
 // An arrangement has no level: typed as a paragraph, the table composes
 // sentences — the written type overrides the class default.
-export class $TableTypedSpec extends $Chemical {
+export class $TableTypedExample extends $Chemical {
     view(): ReactNode {
         return (
             <Table><TypeOfParagraph />{'one two\nthree four'}</Table>
@@ -54,21 +54,19 @@ export class $TableTypedSpec extends $Chemical {
     }
 }
 
-export const TableTypedSpec = $($TableTypedSpec);
+export const TableTypedExample = $($TableTypedExample);
 
 // The trait says table and the type keeps the level: a sentence wearing Table
 // reads as a word table.
-export class $TableTraitSpec extends $Chemical {
+export class $TableTraitExample extends $Chemical {
     view(): ReactNode {
         return (
             <Sentence>
-                <Word><Letter>h</Letter><Letter>i</Letter></Word>
-                {' '}
-                <Word><Letter>y</Letter><Letter>o</Letter></Word>
+                hi yo
                 <Trait>Table</Trait>
             </Sentence>
         );
     }
 }
 
-export const TableTraitSpec = $($TableTraitSpec);
+export const TableTraitExample = $($TableTraitExample);

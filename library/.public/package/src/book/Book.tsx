@@ -9,6 +9,7 @@ import { $Synopsis } from './Synopsis';
 import { $TableOfContents } from './TableOfContents';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
+import { $TypeOfChapter } from './Chapter';
 import { $Index, Index } from './Index';
 import { $References, References } from '@/reference/References';
 
@@ -86,9 +87,12 @@ export class BookSpecification extends TypedSpecification<$Writing> {
 
     @specify('a book is written as chapters')
     $writtenAsChapters(writing: $Writing): void {
-        const inside = ((writing.block?.$elements ?? []) as unknown[])
+        const elements = (writing.block?.$elements ?? []) as unknown[];
+        $check(elements.every(one => typeof one !== 'string' || one.trim() === ''),
+            'a book is written as chapters, and this one carries loose text');
+        const inside = elements
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => reflection.stands(one, 'Chapter')),
+        $check(inside.every(one => reflection.is(one, $TypeOfChapter)),
             'a book is written as chapters, and something in this one could never be one');
     }
 }
@@ -101,7 +105,7 @@ export class $BookSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Bk:'),
             'a reference to a book lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.stands(held, 'Book'),
+        $check(held === undefined || reflection.is(held, $TypeOfBook),
             'a reference to a book lands on one, and what it holds is not one');
     }
 }

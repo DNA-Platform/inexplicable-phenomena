@@ -90,7 +90,7 @@ export class ReferenceCardSpecification extends ReferenceSpecification {
 export class CardSpecification extends ReferenceCardSpecification {
     @specify('a card is worn by a reference')
     $wornByAReference(writing: $Writing): void {
-        $check(reflection.stands(writing, 'Reference') || writing instanceof $Reference,
+        $check(reflection.is(writing, $TypeOfReference) || writing instanceof $Reference,
             'a card is worn by a reference, and this writing is not one');
     }
 }

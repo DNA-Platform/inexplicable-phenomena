@@ -9,15 +9,15 @@ export class Reflection {
 
     protected levels = ['Book', 'Chapter', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
 
-    stands(writing: $Writing, asked: (new () => $Type) | string): boolean {
+    is(writing: $Writing, asked: (new () => $Type) | string): boolean {
         const worn = [writing.type, this.declared(writing), ...writing.traits].filter((one): one is $Type => one instanceof $Type);
         if (typeof asked === 'string')
-            return worn.some(one => this.chain(one).includes(asked) || (one instanceof $Trait && one.copy === asked));
+            return worn.some(one => this.names(one).includes(asked) || (one instanceof $Trait && one.copy === asked));
         return worn.some(one => one instanceof asked);
     }
 
     below(type: $Type): string | undefined {
-        const names = this.chain(type);
+        const names = this.names(type);
         const at = this.levels.findIndex(level => names.includes(level));
         return at >= 0 && at < this.levels.length - 1 ? this.levels[at + 1] : undefined;
     }
@@ -33,7 +33,7 @@ export class Reflection {
         return Math.max(bare.indent, writing.indent);
     }
 
-    chain(type: $Type): string[] {
+    names(type: $Type): string[] {
         const names = [type.name];
         for (let at = Object.getPrototypeOf(Object.getPrototypeOf(type)); at !== null && at !== Object.prototype; at = Object.getPrototypeOf(at)) {
             const found = at.constructor as new () => $Type;
@@ -45,9 +45,9 @@ export class Reflection {
         return names;
     }
 
-    labels(writing: $Writing): string[] {
+    classNames(writing: $Writing): string[] {
         const found: string[] = [];
-        if (writing.type instanceof $Type) found.push(...this.chain(writing.type).reverse());
+        if (writing.type instanceof $Type) found.push(...this.names(writing.type).reverse());
         for (const one of writing.traits) found.push(one.copy !== '' ? one.copy : one.name);
         return [...new Set(found)].map(one => `pd-${this.kebab(one)}`);
     }

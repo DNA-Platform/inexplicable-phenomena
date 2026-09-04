@@ -110,7 +110,7 @@ describe('the levels state their rules the same way', () => {
 describe('standing is free, and specify is where the law speaks', () => {
     it('writing that cannot satisfy its type still stands, and specify refuses it', () => {
         const { writing } = drawn('U+0041', <Type>Letter</Type>);
-        expect(reflection.stands(writing, 'Letter')).toBe(true);
+        expect(reflection.is(writing, 'Letter')).toBe(true);
         expect(() => writing.specify()).toThrow(/one grapheme/);
     });
 

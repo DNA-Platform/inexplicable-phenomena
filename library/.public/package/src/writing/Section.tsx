@@ -2,7 +2,7 @@ import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
-import { Paragraph } from './Paragraph';
+import { Paragraph, $TypeOfParagraph } from './Paragraph';
 import { $TypeOfTitle } from './Title';
 import { parser } from '@/utilities/Parser';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
@@ -55,7 +55,7 @@ export class SectionSpecification extends TypedSpecification<$Writing> {
     $writtenAsParagraphs(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
             .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.every(one => reflection.stands(one, 'Paragraph') || reflection.stands(one, 'Section')),
+        $check(inside.every(one => reflection.is(one, $TypeOfParagraph) || reflection.is(one, $TypeOfSection)),
             'a section is written as paragraphs, and something in this one is not one');
     }
 
@@ -76,7 +76,7 @@ export class $SectionSpecification extends ReferenceSpecification {
         $check(!!step && step.startsWith('Sn:'),
             'a reference to a section lands on one, and this path lands on something else');
         const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.stands(held, 'Section'),
+        $check(held === undefined || reflection.is(held, $TypeOfSection),
             'a reference to a section lands on one, and what it holds is not one');
     }
 }

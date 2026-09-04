@@ -7,7 +7,7 @@ import { Path } from '@/reference/Path';
 
 // A canonical word carries a letter or a number; punctuation and whitespace are
 // its residue.
-export class $WordKindSpec extends $Chemical {
+export class $WordKindExample extends $Chemical {
     view(): ReactNode {
         return (
             <>
@@ -19,10 +19,10 @@ export class $WordKindSpec extends $Chemical {
     }
 }
 
-export const WordKindSpec = $($WordKindSpec);
+export const WordKindExample = $($WordKindExample);
 
 // A word written as letters keeps the very objects it was written with.
-export class $WordLettersSpec extends $Chemical {
+export class $WordLettersExample extends $Chemical {
     view(): ReactNode {
         return (
             <Word>
@@ -33,10 +33,10 @@ export class $WordLettersSpec extends $Chemical {
     }
 }
 
-export const WordLettersSpec = $($WordLettersSpec);
+export const WordLettersExample = $($WordLettersExample);
 
 // A word inside a word contributes its letters.
-export class $WordNestedSpec extends $Chemical {
+export class $WordNestedExample extends $Chemical {
     view(): ReactNode {
         return (
             <Word>
@@ -47,10 +47,10 @@ export class $WordNestedSpec extends $Chemical {
     }
 }
 
-export const WordNestedSpec = $($WordNestedSpec);
+export const WordNestedExample = $($WordNestedExample);
 
 // A written letter stands among divided ones, in written order.
-export class $WordMixedSpec extends $Chemical {
+export class $WordMixedExample extends $Chemical {
     view(): ReactNode {
         return (
             <Word>a<Letter>🙂</Letter>b</Word>
@@ -58,10 +58,10 @@ export class $WordMixedSpec extends $Chemical {
     }
 }
 
-export const WordMixedSpec = $($WordMixedSpec);
+export const WordMixedExample = $($WordMixedExample);
 
 // A word written as text divides into its letters, one per grapheme.
-export class $WordTextSpec extends $Chemical {
+export class $WordTextExample extends $Chemical {
     view(): ReactNode {
         return (
             <Word>hi</Word>
@@ -69,10 +69,10 @@ export class $WordTextSpec extends $Chemical {
     }
 }
 
-export const WordTextSpec = $($WordTextSpec);
+export const WordTextExample = $($WordTextExample);
 
 // Writing told it is a Word composes the same letters a written Word does.
-export class $WordWritingSpec extends $Chemical {
+export class $WordWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>hi<Type>Word</Type></Writing>
@@ -80,11 +80,11 @@ export class $WordWritingSpec extends $Chemical {
     }
 }
 
-export const WordWritingSpec = $($WordWritingSpec);
+export const WordWritingExample = $($WordWritingExample);
 
 // A reference to a word stands one meta-level up: writing carrying the $Word
 // type whose path must land on a word.
-export class $WordReferenceSpec extends $Chemical {
+export class $WordReferenceExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>word<Type>$Word</Type><Path>Wd:0</Path></Writing>
@@ -92,4 +92,4 @@ export class $WordReferenceSpec extends $Chemical {
     }
 }
 
-export const WordReferenceSpec = $($WordReferenceSpec);
+export const WordReferenceExample = $($WordReferenceExample);

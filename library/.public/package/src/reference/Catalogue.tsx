@@ -98,7 +98,7 @@ export class $Catalogue extends $Writing implements $Composition$ {
 
     protected code(of: $Writing | undefined): string | undefined {
         if (of?.type === undefined) return undefined;
-        return reflection.chain(of.type).map(name => reflection.code(name)).find(one => prints.has(one));
+        return reflection.names(of.type).map(name => reflection.code(name)).find(one => prints.has(one));
     }
 }
 
