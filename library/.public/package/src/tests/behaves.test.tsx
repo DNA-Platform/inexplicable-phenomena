@@ -43,7 +43,7 @@ describe('a piece of writing that carries a type BEHAVES as that type', () => {
         expect(writing.parts().length).toBe(1);
         const first = writing.parts()[0];
         expect(first).toBeInstanceOf($Composition);
-        expect((first as $Composition).parts().length).toBe(1);
+        expect((first as $Composition).parts().length).toBe(2);
     });
 
     it('a written level and one told what it is BOTH carry the same type', () => {

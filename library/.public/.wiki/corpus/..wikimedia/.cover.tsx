@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Cover, List, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/lib';
+import { Cover, List, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/public';
 
 export const Wikimedia = $(
     <Cover>

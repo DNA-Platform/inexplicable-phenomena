@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { Chapter } from '@/book/Chapter';
 import { Section } from '@/writing/Section';
-import { Title } from '@/writing/Title';
+import { Heading } from '@/writing/Heading';
 import { Paragraph } from '@/writing/Paragraph';
 import { Writing, Type } from '@/writing/Writing';
 import { Path } from '@/reference/Path';
@@ -13,7 +13,7 @@ export class $ChapterSectionsExample extends $Chemical {
         return (
             <Chapter>
                 <Section>
-                    <Title>What a chapter promises</Title>
+                    <Heading>What a chapter promises</Heading>
                     <Paragraph>
                         A chapter is a document, so everything a document promises it promises too.
                     </Paragraph>
@@ -22,7 +22,7 @@ export class $ChapterSectionsExample extends $Chemical {
                     </Paragraph>
                 </Section>
                 <Section>
-                    <Title>What a second section knows</Title>
+                    <Heading>What a second section knows</Heading>
                     <Paragraph>
                         A second section sits beside the first and knows nothing about it.
                     </Paragraph>
@@ -45,7 +45,7 @@ export class $ChapterWritingExample extends $Chemical {
         return (
             <Writing>
                 <Section>
-                    <Title>What a chapter promises</Title>
+                    <Heading>What a chapter promises</Heading>
                     <Paragraph>
                         A chapter is a document, so everything a document promises it promises too.
                     </Paragraph>
@@ -54,7 +54,7 @@ export class $ChapterWritingExample extends $Chemical {
                     </Paragraph>
                 </Section>
                 <Section>
-                    <Title>What a second section knows</Title>
+                    <Heading>What a second section knows</Heading>
                     <Paragraph>
                         A second section sits beside the first and knows nothing about it.
                     </Paragraph>

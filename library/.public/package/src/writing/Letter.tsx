@@ -7,7 +7,10 @@ import { $Path } from '@/reference/Path';
 import { reflection } from '@/utilities/Reflection';
 import { parser } from '@/utilities/Parser';
 
-export class $Letter extends $Composition implements $Composition$ {
+export interface $Letter$ extends $Composition$ {
+}
+
+export class $Letter extends $Composition implements $Composition$, $Letter$ {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
     case: 'uppercase' | 'lowercase' = 'lowercase';
 
@@ -22,8 +25,8 @@ export class $Letter extends $Composition implements $Composition$ {
     override get canonical(): boolean { return this.kind === 'alphabetical'; }
 
     $Letter(block: $Block) {
-        const Asked = $(TypeOfLetter);
-        this.type ??= $(<Asked />);
+        const TypeOfLetter = $(typeOfLetter);
+        this.type ??= $(<TypeOfLetter />);
         super.$Composition(block);
         this.build();
     }
@@ -46,8 +49,8 @@ export class $Letter extends $Composition implements $Composition$ {
 
 export class $$Letter extends $Reference {
     $$Letter(block: $Block) {
-        const Asked = $(TypeOf$Letter);
-        this.type ??= $(<Asked />);
+        const TypeOf$Letter = $(typeOf$Letter);
+        this.type ??= $(<TypeOf$Letter />);
         super.$Reference(block);
     }
 }
@@ -99,10 +102,13 @@ export class $LetterSpecification extends ReferenceSpecification {
 }
 
 export const Letter = $($Letter);
+const letter = Letter;
 parser.makes.set('Letter', held => {
-    const Asked = $(Letter);
-    return parser.letters(held).map(segment => $(<Asked>{segment}</Asked>) as $Writing);
+    const Letter = $(letter);
+    return parser.letters(held).map(segment => $(<Letter>{segment}</Letter>) as $Writing);
 });
 export const TypeOfLetter = $($TypeOfLetter);
+const typeOfLetter = TypeOfLetter;
 export const TypeOf$Letter = $($TypeOf$Letter);
+const typeOf$Letter = TypeOf$Letter;
 prints.set('Lr', $($$Letter));

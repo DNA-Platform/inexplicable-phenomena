@@ -11,7 +11,7 @@ export default defineConfig({
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js'],
         alias: {
-            "@dna-platform/lib": "C:/Source/dna-platform/inexplicable-phenomena/library/.public/package/src/index.ts",
+            "@dna-platform/public": "C:/Source/dna-platform/inexplicable-phenomena/library/.public/package/src/index.ts",
             '@': "C:/Source/dna-platform/inexplicable-phenomena/library/.public/package/src",
         },
     },

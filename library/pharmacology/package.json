@@ -4,6 +4,6 @@
   "private": true,
   "description": "Pharmacology — a subject of the library, documented with $Chemistry",
   "dependencies": {
-    "@dna-platform/lib": "*"
+    "@dna-platform/public": "*"
   }
 }

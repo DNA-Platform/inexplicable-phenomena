@@ -5,7 +5,7 @@ import { $Chapter } from '@/book/Chapter';
 import { $Paragraph } from '@/writing/Paragraph';
 import { $TypeOfLetter } from '@/writing/Letter';
 import { $Composition } from '@/writing/Composition';
-import { built, chapter, paragraph, section, sentence, title, word, letter, specificationOf } from './written';
+import { built, chapter, paragraph, section, sentence, heading, word, letter, specificationOf } from './written';
 
 // A PERFORMANCE TEST, kept apart from the ones that say what writing IS.
 // Doug, 2026-08-30: "Maybe run tests one level at a time. Don't test a huge tree
@@ -30,14 +30,14 @@ const prose = (n: number) => Array.from({ length: n }, (_, i) =>
 
 describe('asking for parts goes ONE level, and the cost is flat in the depth below', () => {
     it('a section of many paragraphs answers its parts without descending', () => {
-        const one = built<$Section>(section(title('t'), ...prose(40)));
+        const one = built<$Section>(section(heading('t'), ...prose(40)));
         const first = took(() => one.parts());
         expect(one.parts().length).toBe(41);
         expect(first).toBeLessThan(400);
     });
 
     it('and asking twice costs almost nothing, because the parse is kept', () => {
-        const one = built<$Section>(section(title('t'), ...prose(40)));
+        const one = built<$Section>(section(heading('t'), ...prose(40)));
         const first = took(() => one.parts());
         const again = took(() => one.parts());
         expect(again).toBeLessThan(Math.max(first, 1));
@@ -45,9 +45,9 @@ describe('asking for parts goes ONE level, and the cost is flat in the depth bel
 
     it('a document of many sections is not more than linear in its sections', () => {
         const small = built<$Chapter>(chapter(...Array.from({ length: 4 },
-            () => section(title('t'), ...prose(4)))));
+            () => section(heading('t'), ...prose(4)))));
         const large = built<$Chapter>(chapter(...Array.from({ length: 16 },
-            () => section(title('t'), ...prose(4)))));
+            () => section(heading('t'), ...prose(4)))));
         const one = took(() => small.parts());
         const four = took(() => large.parts());
         expect(large.parts().length).toBe(16);
@@ -55,7 +55,7 @@ describe('asking for parts goes ONE level, and the cost is flat in the depth bel
     });
 
     it('and descending a level at a time stays cheap at each step', () => {
-        const one = built<$Chapter>(chapter(section(title('t'), ...prose(8))));
+        const one = built<$Chapter>(chapter(section(heading('t'), ...prose(8))));
         const sections = took(() => one.parts());
         const paragraphs = took(() => (one.parts()[0] as $Composition).parts());
         const sentences = took(() => ((one.parts()[0] as $Composition).parts()[1] as $Paragraph).parts());

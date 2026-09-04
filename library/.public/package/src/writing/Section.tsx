@@ -3,17 +3,25 @@ import { $Type, TypedSpecification, $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from './Composition';
 import { Paragraph, $TypeOfParagraph } from './Paragraph';
-import { $TypeOfTitle } from './Title';
+import { $TypeOfHeading } from './Heading';
 import { parser } from '@/utilities/Parser';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { reflection } from '@/utilities/Reflection';
 
-export class $Section extends $Composition implements $Composition$ {
+export interface $Section$ extends $Composition$ {
+    get name(): $Writing | undefined;
+}
+
+export class $Section extends $Composition implements $Composition$, $Section$ {
+    get name(): $Writing | undefined {
+        const opening = this.parts()[0];
+        return reflection.is(opening, $TypeOfHeading) ? opening : undefined;
+    }
 
     $Section(block: $Block) {
-        const Asked = $(TypeOfSection);
-        this.type ??= $(<Asked />);
+        const TypeOfSection = $(typeOfSection);
+        this.type ??= $(<TypeOfSection />);
         super.$Composition(block);
     }
 
@@ -21,8 +29,8 @@ export class $Section extends $Composition implements $Composition$ {
 
 export class $$Section extends $Reference {
     $$Section(block: $Block) {
-        const Asked = $(TypeOf$Section);
-        this.type ??= $(<Asked />);
+        const TypeOf$Section = $(typeOf$Section);
+        this.type ??= $(<TypeOf$Section />);
         super.$Reference(block);
     }
 }
@@ -54,17 +62,17 @@ export class SectionSpecification extends TypedSpecification<$Writing> {
     @specify('a section is written as paragraphs')
     $writtenAsParagraphs(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+            .filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
         $check(inside.every(one => reflection.is(one, $TypeOfParagraph) || reflection.is(one, $TypeOfSection)),
             'a section is written as paragraphs, and something in this one is not one');
     }
 
-    @specify('a section opens with its title')
-    $opensWithTitle(writing: $Writing): void {
+    @specify('a section opens with its heading')
+    $opensWithHeading(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(inside.length > 0 && inside[0].type instanceof $TypeOfTitle,
-            'a section opens with its title, and this one opens without one');
+            .filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
+        $check(inside.length > 0 && inside[0].type instanceof $TypeOfHeading,
+            'a section opens with its heading, and this one opens without one');
     }
 }
 
@@ -82,10 +90,13 @@ export class $SectionSpecification extends ReferenceSpecification {
 }
 
 export const Section = $($Section);
+const section = Section;
 parser.makes.set('Section', held => {
-    const Asked = $(Section);
-    return [$(<Asked>{parser.elements(held)}</Asked>) as $Writing];
+    const Section = $(section);
+    return [$(<Section>{parser.elements(held)}</Section>) as $Writing];
 });
 export const TypeOfSection = $($TypeOfSection);
+const typeOfSection = TypeOfSection;
 export const TypeOf$Section = $($TypeOf$Section);
+const typeOf$Section = TypeOf$Section;
 prints.set('Sn', $($$Section));

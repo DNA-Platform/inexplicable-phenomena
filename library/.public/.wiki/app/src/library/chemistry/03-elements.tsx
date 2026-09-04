@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Cell, Chapter, Paragraph, Ref, Section, Sentence, Table, Title } from '@dna-platform/lib';
+import { Cell, Chapter, Paragraph, Ref, Section, Sentence, Table, Title } from '@dna-platform/public';
 
 export const Elements = $(
     <Chapter>

@@ -16,8 +16,8 @@ export class $Bookmark extends $$Chapter {
     }
 
     $Bookmark(block: $Block) {
-        const Asked = $(TypeOfBookmark);
-        this.type ??= $(<Asked />);
+        const TypeOfBookmark = $(typeOfBookmark);
+        this.type ??= $(<TypeOfBookmark />);
         super.$$Chapter(block);
         this.persist = true;
     }
@@ -56,3 +56,4 @@ export class BookmarkSpecification extends $ChapterSpecification {
 
 export const Bookmark = $($Bookmark);
 export const TypeOfBookmark = $($TypeOfBookmark);
+const typeOfBookmark = TypeOfBookmark;

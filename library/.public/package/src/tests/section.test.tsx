@@ -4,9 +4,9 @@ import { $Section, $TypeOfSection } from '@/writing/Section';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph } from '@/writing/Paragraph';
 import { reflection } from '@/utilities/Reflection';
-import { built, chain, declares, drawn, section, shown, word, letter, title, Section } from './written';
+import { built, chain, declares, drawn, section, shown, word, letter, heading, Section } from './written';
 
-const three = () => built<$Section>(section(title('t'), chain.Paragraph('a'), chain.Paragraph('b'), chain.Paragraph('c')));
+const three = () => built<$Section>(section(heading('t'), chain.Paragraph('a'), chain.Paragraph('b'), chain.Paragraph('c')));
 
 describe('$Section composes $Paragraph', () => {
     it('composes the level below, in the order written', () => {
@@ -42,7 +42,7 @@ describe('$Section composes $Paragraph', () => {
     });
 
     it('and a piece of writing TOLD it is a Section composes the same', () => {
-        const { writing } = drawn(title('t'), chain.Paragraph('h'), chain.Paragraph('i'), <Type>Section</Type>);
+        const { writing } = drawn(heading('t'), chain.Paragraph('h'), chain.Paragraph('i'), <Type>Section</Type>);
         expect(reflection.is(writing, 'Section')).toBe(true);
         expect(writing.parts().map(one => one.copy)).toEqual(['t', 'h', 'i']);
     });
@@ -60,14 +60,14 @@ describe('a section is written as paragraphs', () => {
 
 describe('a section may be written as a title and a string of text', () => {
     it('takes the text as ONE paragraph, first character to last', () => {
-        const one = built<$Section>(<Section>{[title('A title'), 'some prose here']}</Section>);
+        const one = built<$Section>(<Section>{[heading('A title'), 'some prose here']}</Section>);
         expect(() => one.specify()).not.toThrow();
         expect(one.parts().length).toBe(2);
         expect(one.parts()[1].copy).toBe('some prose here');
     });
 
     it('and does not divide that text further', () => {
-        const one = built<$Section>(<Section>{[title('A title'), 'one. two. three.']}</Section>);
+        const one = built<$Section>(<Section>{[heading('A title'), 'one. two. three.']}</Section>);
         expect(one.parts().length).toBe(2);
         expect(one.parts()[1].copy).toBe('one. two. three.');
     });

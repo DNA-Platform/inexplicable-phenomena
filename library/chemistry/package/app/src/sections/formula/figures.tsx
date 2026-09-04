@@ -72,7 +72,9 @@ export class $Constellation extends $Figure {
             }
         }
         return this.plate(<>
-            {[14, 32, 50, 68, 86].map(y => <line key={`g${y}`} x1={7} y1={y} x2={153} y2={y} stroke={this.ink} strokeWidth={0.2} opacity={0.18} />)}
+            {[14, 32, 50, 68, 86].map(y => (
+                <line key={`g${y}`} x1={7} y1={y} x2={153} y2={y} stroke={this.ink} strokeWidth={0.2} opacity={0.18} />
+            ))}
             {Array.from({ length: 14 }, (_, at) => <line key={`t${at}`} x1={7 + at * 11.2} y1={102} x2={7 + at * 11.2} y2={105} stroke={this.ink} strokeWidth={0.35} opacity={0.4} />)}
             <line x1={7} y1={105} x2={153} y2={105} stroke={this.ink} strokeWidth={0.4} opacity={0.45} />
             {edges.map(([a, b], at) => (
@@ -148,7 +150,9 @@ export class $Neuron extends $Figure {
             }
         }
         return this.plate(<>
-            {[22, 58, 94].map(at => <line key={at} x1={0} y1={at} x2={160} y2={at} stroke={this.ink} strokeWidth={0.22} opacity={0.2} />)}
+            {[22, 58, 94].map(at => (
+                <line key={at} x1={0} y1={at} x2={160} y2={at} stroke={this.ink} strokeWidth={0.22} opacity={0.2} />
+            ))}
             <path d={`M${trace.join(' L')} L160,110 L0,110 Z`} fill={this.tint(2, 62, 0.14)} />
             <path d={`M${trace.join(' L')}`} fill="none" stroke={this.tint(2, 44)} strokeWidth={0.9}
                 strokeLinejoin="round" strokeLinecap="round" />
@@ -241,8 +245,12 @@ export class $Rings extends $Figure {
     @look('reading') view() {
         const ring = this.values.map((v, at) => this.point(at, 10 + v * 42));
         return this.plate(<>
-            {[16, 30, 44].map(r => <circle key={r} cx={80} cy={55} r={r} fill="none" stroke={this.ink} strokeWidth={0.4} opacity={0.28} />)}
-            {ring.map(([x, y], at) => <line key={at} x1={80} y1={55} x2={x} y2={y} stroke={this.ink} strokeWidth={0.4} opacity={0.35} />)}
+            {[16, 30, 44].map(r => (
+                <circle key={r} cx={80} cy={55} r={r} fill="none" stroke={this.ink} strokeWidth={0.4} opacity={0.28} />
+            ))}
+            {ring.map(([x, y], at) => (
+                <line key={at} x1={80} y1={55} x2={x} y2={y} stroke={this.ink} strokeWidth={0.4} opacity={0.35} />
+            ))}
             <polygon points={ring.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ')}
                 fill={this.tint(3, 56, 0.32)} stroke={this.tint(3, 46)} strokeWidth={1.4} />
             {ring.map(([x, y], at) => <circle key={at} cx={x} cy={y} r={2} fill={this.tint(at, 48)} />)}

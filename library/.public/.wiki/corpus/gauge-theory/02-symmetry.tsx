@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/lib';
+import { Chapter, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/public';
 
 export const Symmetry = $(
     <Chapter>

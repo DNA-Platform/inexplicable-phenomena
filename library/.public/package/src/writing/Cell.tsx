@@ -1,16 +1,16 @@
 import { $Block, $, cache } from '@dna-platform/chemistry';
-import { $Type } from './Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
+import { $TypeOfParagraph } from './Paragraph';
 
 export class $Cell extends $Composition implements $Composition$ {
     $Cell(block: $Block) {
-        const Asked = $(TypeOfCell);
-        this.type ??= $(<Asked />);
+        const TypeOfCell = $(typeOfCell);
+        this.type ??= $(<TypeOfCell />);
         super.$Composition(block);
     }
 }
 
-export class $TypeOfCell extends $Type {
+export class $TypeOfCell extends $TypeOfParagraph {
     override name = 'Cell';
 
     constructor() {
@@ -21,3 +21,4 @@ export class $TypeOfCell extends $Type {
 
 export const Cell = $($Cell);
 export const TypeOfCell = $($TypeOfCell);
+const typeOfCell = TypeOfCell;

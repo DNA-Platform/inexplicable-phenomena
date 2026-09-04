@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Paragraph, Section, Synopsis, Title } from '@dna-platform/lib';
+import { Paragraph, Section, Synopsis, Title } from '@dna-platform/public';
 
 export const GaugeTheorySynopsis = $(
     <Synopsis>

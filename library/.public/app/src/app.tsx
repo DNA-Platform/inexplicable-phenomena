@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { $Book, $Synopsis, $Cover } from '@dna-platform/lib';
+import { $Book, $Synopsis, $Cover } from '@dna-platform/public';
 import styled from 'styled-components';
 import { $Card, at, fetch } from './catalogue';
 import { keep, kept, topOf } from './bookmark';

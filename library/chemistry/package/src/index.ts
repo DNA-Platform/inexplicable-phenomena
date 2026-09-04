@@ -29,7 +29,7 @@ export { $lookup, $load } from './framework/load';
 export { inert, reactive, look } from './abstraction/bond';
 
 // Members a chemical implements, carried as symbols so they cost no name
-export { cache, children, style } from './implementation/symbols';
+export { cache, children, style, resolved } from './implementation/symbols';
 
 // Styling — the resolved styled-components callable, so nothing downstream
 // writes the dual-shape import again.

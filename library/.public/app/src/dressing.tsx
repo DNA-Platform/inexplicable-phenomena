@@ -1,7 +1,7 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Theme, Book } from '@dna-platform/lib';
-import * as lib from '@dna-platform/lib';
+import { $Theme, Book } from '@dna-platform/public';
+import * as lib from '@dna-platform/public';
 
 // THE COMPOSITION ROOT'S ONE JOB — the theme, the component, the registration.
 //

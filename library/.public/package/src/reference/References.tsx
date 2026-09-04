@@ -3,10 +3,10 @@ import { $Block, $, cache, hydration } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
-import { $Reference, Reference, prints } from './Reference';
-import { $Path, Path } from './Path';
-import { Heading } from '@/encyclopedia/Heading';
-import { Cited } from '@/encyclopedia/Cited';
+import { $Reference, Reference as reference, prints } from './Reference';
+import { $Path, Path as path } from './Path';
+import { Heading as heading } from '@/encyclopedia/Heading';
+import { Cited as cited } from '@/encyclopedia/Cited';
 
 export class $References extends $Section {
     override parenthetical = true;
@@ -16,8 +16,8 @@ export class $References extends $Section {
     get stack(): string[] { return JSON.parse(this.serialized); }
 
     $References(block: $Block) {
-        const Asked = $(TypeOfReferences);
-        this.type ??= $(<Asked />);
+        const TypeOfReferences = $(typeOfReferences);
+        this.type ??= $(<TypeOfReferences />);
         super.$Section(block);
         this.$pid ??= '$references$';
         this.persist = true;
@@ -42,18 +42,19 @@ export class $References extends $Section {
 
     reassemble(): void {
         const written = new Set((this.block?.$elements ?? [])
-            .filter((one): one is $Reference => one instanceof $Reference)
+            .filter((reference): reference is $Reference => reference instanceof $Reference)
             .map(one => one.path?.copy));
         const held = new Set(this.recollection.map(one => one.path?.copy));
         const made: $Reference[] = [];
-        for (const path of this.stack) {
-            if (written.has(path) || held.has(path)) continue;
-            const [step] = path.split('/').filter(Boolean);
+        for (const link of this.stack) {
+            if (written.has(link) || held.has(link)) continue;
+            const [step] = link.split('/').filter(Boolean);
             const code = step?.includes(':') ? step.split(':')[0] : undefined;
-            const Asked = $((code ? prints.get(code) : undefined) ?? Reference);
-            const AskedPath = $(Path);
-            const printed = $<$Reference>(<Asked />, $<$Path>(<AskedPath>{path}</AskedPath>));
-            printed.$pid ??= path;
+            const Reference = $(reference);
+                const Printed = (code ? prints.get(code) : undefined) ?? Reference;
+            const Path = $(path);
+            const printed = $<$Reference>(<Printed />, $<$Path>(<Path>{link}</Path>));
+            printed.$pid ??= link;
             printed.parent = this;
             hydration.overwrite(printed);
             made.push(printed);
@@ -64,20 +65,20 @@ export class $References extends $Section {
     override view(): ReactNode {
         if (this.parenthetical) return null;
         const written = (this.block?.$elements ?? [])
-            .filter((one): one is $Reference => one instanceof $Reference);
+            .filter((reference): reference is $Reference => reference instanceof $Reference);
         const recollection = [...this.recollection].reverse();
-        const Held = $(Heading);
-        const Asked = $(Cited);
+        const Heading = $(heading);
+        const Cited = $(cited);
 
         return <>
-            <Held>References</Held>
-            <Asked>{written.map((one, at) => {
+            <Heading>References</Heading>
+            <Cited>{written.map((one, at) => {
                 const Cite = $(one);
                 return <li key={at}><Cite /></li>;
             })}{recollection.map(one => {
                 const Cite = $(one);
                 return <li key={one.path?.copy ?? ''}><Cite /></li>;
-            })}</Asked>
+            })}</Cited>
         </>;
     }
 }
@@ -101,9 +102,9 @@ export class $TypeOfReferences extends $TypeOfSection {
 
 export class ReferencesSpecification extends SectionSpecification {
     @specify('a references section holds references, and needs no title')
-    override $opensWithTitle(writing: $Writing): boolean | void {
+    override $opensWithHeading(writing: $Writing): boolean | void {
         if (writing instanceof $References) return false;
-        return super.$opensWithTitle(writing);
+        return super.$opensWithHeading(writing);
     }
 
     @specify('a references section says nothing of its own')
@@ -127,3 +128,4 @@ export class ReferencesSpecification extends SectionSpecification {
 
 export const References = $($References);
 export const TypeOfReferences = $($TypeOfReferences);
+const typeOfReferences = TypeOfReferences;

@@ -13,8 +13,8 @@ export class Parser {
     tokens(of: $Writing): (string | $Writing)[] {
         return ((of.block?.$elements ?? []) as unknown[])
             .filter(one => one !== null && one !== undefined && typeof one !== 'boolean')
-            .map(one => one instanceof $Writing ? one : String(one))
-            .filter(one => one instanceof $Writing ? !one.parenthetical : one !== '');
+            .map(writing => writing instanceof $Writing ? writing : String(writing))
+            .filter(writing => writing instanceof $Writing ? !writing.parenthetical : writing !== '');
     }
 
     parse<T extends $Writing>(

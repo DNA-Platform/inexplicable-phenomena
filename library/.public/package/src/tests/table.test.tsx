@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { $Writing, Trait, Type } from '@/writing/Writing';
+import { $Writing, Type } from '@/writing/Writing';
+import { Heading } from '@/writing/Heading';
 import { $Table, Table, $TypeOfTable } from '@/writing/Table';
 import { $Paragraph, $TypeOfParagraph, TypeOfParagraph, Paragraph } from '@/writing/Paragraph';
 import { $Sentence, Sentence } from '@/writing/Sentence';
 import { $Chapter, Chapter } from '@/book/Chapter';
 import { reflection } from '@/utilities/Reflection';
-import { built, drawn, letter, word, sentence, paragraph, section, title, Writing } from './written';
+import { built, drawn, letter, word, sentence, paragraph, section, heading, Writing } from './written';
 
 describe('a table is an arrangement, and its type gives it a level', () => {
     it('a table of cells composes each cell one down — a paragraph by default', () => {
@@ -30,7 +31,7 @@ describe('a table is an arrangement, and its type gives it a level', () => {
     });
 
     it('a sentence wearing the table trait stands as a table, its words the cells', () => {
-        const { writing } = drawn(<Sentence>{word(letter('h'), letter('i'))} {word(letter('y'), letter('o'))}<Trait>Table</Trait></Sentence>);
+        const { writing } = drawn(<Sentence>{word(letter('h'), letter('i'))} {word(letter('y'), letter('o'))}<Type>Table</Type></Sentence>);
         const written = (writing.block?.$elements ?? []).find((one): one is $Sentence => one instanceof $Sentence)!;
         expect(reflection.is(written, 'Table')).toBe(true);
         expect(written.parts().map(part => part.copy)).toEqual(['hi', 'yo']);
@@ -46,7 +47,7 @@ describe('a table is an arrangement, and its type gives it a level', () => {
 describe('the columns divide the cells', () => {
     it('an even table specifies clean', () => {
         const table = built<$Table>(
-            <Table columns={2}><Paragraph>a</Paragraph><Paragraph>b</Paragraph><Paragraph>c</Paragraph><Paragraph>d</Paragraph></Table>);
+            <Table columns={2}><Heading>Even</Heading><Paragraph>a</Paragraph><Paragraph>b</Paragraph><Paragraph>c</Paragraph><Paragraph>d</Paragraph></Table>);
         expect(() => table.specify()).not.toThrow();
     });
 
@@ -58,7 +59,7 @@ describe('the columns divide the cells', () => {
 
     it('the view lays the cells by the columns', () => {
         const { host } = drawn(
-            <Table columns={2}><Paragraph>a</Paragraph><Paragraph>b</Paragraph><Paragraph>c</Paragraph><Paragraph>d</Paragraph></Table>);
+            <Table columns={2}><Heading>Even</Heading><Paragraph>a</Paragraph><Paragraph>b</Paragraph><Paragraph>c</Paragraph><Paragraph>d</Paragraph></Table>);
         expect(host.querySelectorAll('tr')).toHaveLength(2);
         expect(host.querySelectorAll('td')).toHaveLength(4);
     });
@@ -68,7 +69,7 @@ describe('an arrangement is addressed at the level it stands at', () => {
     it('a table addresses as the section it is, and the address follows back', () => {
         const outer = built<$Chapter>(
             <Chapter>
-                {section(title(sentence(word(letter('t')))), paragraph(sentence(word(letter('a')))))}
+                {section(heading(sentence(word(letter('t')))), paragraph(sentence(word(letter('a')))))}
                 <Table><Paragraph>first cell</Paragraph></Table>
             </Chapter>);
         const table = outer.parts().find(one => one instanceof $Table)!;

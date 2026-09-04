@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Book, TableOfContents } from '@dna-platform/lib';
+import { Book, TableOfContents } from '@dna-platform/public';
 import { Consciousness } from './.cover';
 import { ConsciousnessSynopsis } from './.synopsis';
 import { TheHardProblem } from './01-the-hard-problem';

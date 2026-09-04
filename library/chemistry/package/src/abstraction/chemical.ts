@@ -8,7 +8,7 @@ import {
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
     $devError$, $devException$, $watched$,
-    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, $formed$
+    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
@@ -883,11 +883,21 @@ function isFormula(cls: any): boolean {
     return !!templateOf(cls)?.formula;
 }
 
+// `formula = 'new'` starts a catalogue of its own, so a name filed here never
+// reaches the formulas this one inherits from. The declaring class is the one
+// whose PARENT does not say it: a class field is initialized on every subclass's
+// template too, so the value alone cannot say which class wrote it.
+function fresh(cls: any): boolean {
+    return templateOf(cls)?.formula === 'new'
+        && templateOf(Object.getPrototypeOf(cls))?.formula !== 'new';
+}
+
 function branch(cls: any): any[] {
     const chain: any[] = [];
     let at = cls;
     while (at && isFormula(at) && !Object.prototype.hasOwnProperty.call(at, $isFormulaBase$)) {
         chain.push(at);
+        if (fresh(at)) break;
         at = Object.getPrototypeOf(at);
     }
     return chain;
@@ -975,7 +985,7 @@ function missing(formula: any, asked: string, names: string[]): string {
 
 export class $Chemical extends $Particle {
     resolve = true;
-    formula = false;
+    formula: boolean | 'new' = false;
     $pid?: string;
     protected _persist = false;
 
@@ -1025,6 +1035,10 @@ export class $Chemical extends $Particle {
         const held = catalogueOf((this as any)[$type$]);
         const found = held.$find({ $ref: key }) ?? held.$find(standing);
         if (found) {
+            // MARKED ON THE TEMPLATE, which every derivative reads through. A
+            // symbol is never bonded, so this is not a write into somebody
+            // else's render.
+            found[resolved] = true;
             const component = found[$resolveComponent$]();
             return asker ? withAsker(asker, () => $(component)) : component;
         }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { $Type, Type, $Trait, Trait } from '@/writing/Writing';
+import { $Type, Type } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import type { $Writing } from '@/writing/Writing';
 import { $Letter } from '@/writing/Letter';
@@ -94,7 +94,7 @@ describe('every part of a composition carries its index', () => {
     it('and the parser numbers every part it finds, in written order', () => {
         const one = built<$Chapter>(chain.Chapter('deep'));
         expect(one.parts().map(part => (part as $Composition).index)).toEqual([0]);
-        expect((one.parts()[0] as $Composition).parts().map((part) => (part as $Composition).index)).toEqual([0]);
+        expect((one.parts()[0] as $Composition).parts().map((part) => (part as $Composition).index)).toEqual([0, 1]);
     });
 });
 
@@ -116,14 +116,14 @@ describe('canonical marks an ORDINARY member of a kind, and these are not', () =
     });
 });
 
-describe('an attribute specifies but names no level', () => {
-    it('an attribute is a kind of type, and the difference is how writing treats it', () => {
-        expect(new $Trait()).toBeInstanceOf($Type);
+describe('a nameless type names no level, and the level beside it is the canonical one', () => {
+    it('a type with nothing written in it stands unresolved, and is still carried', () => {
+        const { writing } = drawn(chain.Section('a'), <Type />, <Type>Chapter</Type>);
+        expect(writing.types.length).toBe(2);
     });
 
-    it('and an attribute written BEFORE the type is not bound through', () => {
-        const { writing } = drawn(chain.Section('a'), <Trait />, <Type>Chapter</Type>);
+    it('and the canonical is the one that names a level', () => {
+        const { writing } = drawn(chain.Section('a'), <Type />, <Type>Chapter</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfChapter);
-        expect(writing.traits.length).toBe(1);
     });
 });

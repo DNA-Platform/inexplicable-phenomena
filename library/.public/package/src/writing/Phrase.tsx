@@ -10,8 +10,8 @@ export class $Phrase extends $Composition implements $Composition$ {
     override get canonical(): boolean { return false; }
 
     $Phrase(block: $Block) {
-        const Asked = $(TypeOfPhrase);
-        this.type ??= $(<Asked />);
+        const TypeOfPhrase = $(typeOfPhrase);
+        this.type ??= $(<TypeOfPhrase />);
         super.$Composition(block);
     }
 }
@@ -40,3 +40,4 @@ export class PhraseSpecification extends SentenceSpecification {
 
 export const Phrase = $($Phrase);
 export const TypeOfPhrase = $($TypeOfPhrase);
+const typeOfPhrase = TypeOfPhrase;

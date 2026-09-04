@@ -53,7 +53,7 @@ describe('a specification is a list of rules, and running it says which ran', ()
 
     it('and a base class’s rules come first, because it is the parent class', () => {
         expect(new $Counting().check(one()).slice(-1)).toEqual(['$mine']);
-        expect(new $Counting().check(one()).length).toBe(8);
+        expect(new $Counting().check(one()).length).toBe(7);
     });
 });
 
@@ -147,7 +147,7 @@ describe('there is ONE specification, and it is the type’s', () => {
 
     it('and a level names each of its rules once', () => {
         const names = specificationOf(new $TypeOfLetter()).rules().map((pair: [string, unknown]) => pair[0]);
-        expect(names).toEqual(['$hasBlock', '$mustHaveText', '$hasType', '$typedOnce', '$hasWriting', '$terminates', '$oneKind', '$oneCharacter']);
+        expect(names).toEqual(['$hasBlock', '$mustHaveText', '$hasType', '$typesResolve', '$hasWriting', '$terminates', '$oneCharacter']);
         expect(new Set(names).size).toBe(names.length);
     });
 });
@@ -159,10 +159,9 @@ describe('the TYPE specifies, and a writing asks its type', () => {
             'a piece of writing has a block',
             'a piece of writing has characters',
             'a piece of writing has a type',
-            'a piece of writing is typed once',
+            'a type that stands for something else has been given it',
             'a piece of writing has something written in it',
             'a piece of writing descends from a chain that terminates',
-            'a piece of writing is one kind of writing',
             'a letter is one grapheme'
         ]);
     });
@@ -173,10 +172,9 @@ describe('the TYPE specifies, and a writing asks its type', () => {
             'a piece of writing has a block',
             'a piece of writing has characters',
             'a piece of writing has a type',
-            'a piece of writing is typed once',
+            'a type that stands for something else has been given it',
             'a piece of writing has something written in it',
             'a piece of writing descends from a chain that terminates',
-            'a piece of writing is one kind of writing',
             'a letter is one grapheme'
         ]);
     });
@@ -193,10 +191,9 @@ describe('a rule is LABELLED by @specify, and the label is what comes back', () 
                 'a piece of writing has a block',
                 'a piece of writing has characters',
                 'a piece of writing has a type',
-                'a piece of writing is typed once',
+                'a type that stands for something else has been given it',
                 'a piece of writing has something written in it',
-                'a piece of writing descends from a chain that terminates',
-                'a piece of writing is one kind of writing'
+                'a piece of writing descends from a chain that terminates'
             ]);
     });
 

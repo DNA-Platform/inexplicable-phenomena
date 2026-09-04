@@ -17,7 +17,7 @@ const deepLinks = () => ({
 });
 
 // The public view onto the repository — built to GitHub Pages. It depends on
-// @dna-platform/lib (the library core, in ./package) to render the library.
+// @dna-platform/public (the library core, in ./package) to render the library.
 // DECORATORS REACH THE BROWSER THROUGH BABEL, NOT THROUGH tsconfig.
 // `experimentalDecorators` is read by tsc, by esbuild (so vitest compiles
 // `@look` fine) and by the rollup dist build — but @vitejs/plugin-react runs

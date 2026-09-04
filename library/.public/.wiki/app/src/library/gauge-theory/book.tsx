@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Book, TableOfContents } from '@dna-platform/lib';
+import { Book, TableOfContents } from '@dna-platform/public';
 import { GaugeTheory } from './.cover';
 import { GaugeTheorySynopsis } from './.synopsis';
 import { History } from './01-history';

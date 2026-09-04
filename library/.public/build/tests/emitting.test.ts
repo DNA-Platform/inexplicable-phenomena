@@ -46,7 +46,7 @@ const corpus = (): { at: string; resolved: Library } => {
     const at = mkdtempSync(join(tmpdir(), 'emit-unit-'));
     mkdirSync(join(at, 'alone'), { recursive: true });
     writeFileSync(join(at, 'alone', '.cover.tsx'),
-        `import { $Cover, Section, Title, Author, Subject } from '@dna-platform/lib';\nexport class $C extends $Cover {}\nexport const Cover = $C;\n`);
+        `import { $Cover, Section, Title, Author, Subject } from '@dna-platform/public';\nexport class $C extends $Cover {}\nexport const Cover = $C;\n`);
     writeFileSync(join(at, 'alone', '.synopsis.tsx'), `export const Synopsis = 1;\n`);
     writeFileSync(join(at, 'alone', 'one.tsx'), `export const One = 1;\n`);
 

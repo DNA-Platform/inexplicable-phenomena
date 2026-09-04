@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { $Book } from '@dna-platform/lib';
+import type { $Book } from '@dna-platform/public';
 import type { Library } from '../library.ts';
 
 // VALIDATING. A program becomes a verdict.

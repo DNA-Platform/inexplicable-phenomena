@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, Section, Title, Paragraph, Sentence, Ref } from '@dna-platform/lib';
+import { Chapter, Section, Title, Paragraph, Sentence, Ref } from '@dna-platform/public';
 
 export const Fields = $(
     <Chapter>

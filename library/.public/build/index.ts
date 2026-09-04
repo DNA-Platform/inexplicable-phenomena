@@ -45,7 +45,7 @@ emit(resolved, into);
 // that is stated rather than degraded into a compile with no catalogue.
 const named = await cardsOf(resolved, into).catch((error: Error) => {
     console.error(`  CANNOT READ THE CARDS — the emitted books could not be opened at ${into}.`);
-    console.error(`  A card is read off a living book, so the target must sit where @dna-platform/lib resolves.`);
+    console.error(`  A card is read off a living book, so the target must sit where @dna-platform/public resolves.`);
     console.error(`  ${error.message.split('\n')[0]}`);
     process.exit(1);
 });

@@ -8,11 +8,14 @@ import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/
 import { $Path } from '@/reference/Path';
 import { reflection } from '@/utilities/Reflection';
 
-export class $Paragraph extends $Composition implements $Composition$ {
+export interface $Paragraph$ extends $Composition$ {
+}
+
+export class $Paragraph extends $Composition implements $Composition$, $Paragraph$ {
 
     $Paragraph(block: $Block) {
-        const Asked = $(TypeOfParagraph);
-        this.type ??= $(<Asked />);
+        const TypeOfParagraph = $(typeOfParagraph);
+        this.type ??= $(<TypeOfParagraph />);
         super.$Composition(block);
     }
 
@@ -20,8 +23,8 @@ export class $Paragraph extends $Composition implements $Composition$ {
 
 export class $$Paragraph extends $Reference {
     $$Paragraph(block: $Block) {
-        const Asked = $(TypeOf$Paragraph);
-        this.type ??= $(<Asked />);
+        const TypeOf$Paragraph = $(typeOf$Paragraph);
+        this.type ??= $(<TypeOf$Paragraph />);
         super.$Reference(block);
     }
 }
@@ -61,7 +64,7 @@ export class ParagraphSpecification extends TypedSpecification<$Writing> {
     @specify('a paragraph is written as sentences')
     $writtenAsSentences(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+            .filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
         $check(inside.every(one => reflection.is(one, $TypeOfSentence) || reflection.is(one, $TypeOfParagraph)),
             'a paragraph is written as sentences, and something in this one is not one');
     }
@@ -81,10 +84,13 @@ export class $ParagraphSpecification extends ReferenceSpecification {
 }
 
 export const Paragraph = $($Paragraph);
+const paragraph = Paragraph;
 parser.makes.set('Paragraph', held => {
-    const Asked = $(Paragraph);
-    return [$(<Asked>{parser.elements(held)}</Asked>) as $Writing];
+    const Paragraph = $(paragraph);
+    return [$(<Paragraph>{parser.elements(held)}</Paragraph>) as $Writing];
 });
 export const TypeOfParagraph = $($TypeOfParagraph);
+const typeOfParagraph = TypeOfParagraph;
 export const TypeOf$Paragraph = $($TypeOf$Paragraph);
+const typeOf$Paragraph = TypeOf$Paragraph;
 prints.set('Ph', $($$Paragraph));

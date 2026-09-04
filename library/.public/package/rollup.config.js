@@ -27,7 +27,7 @@ const at = () => ({
 const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/chemistry', 'react-router-dom', 'styled-components', 'katex', 'marked'];
 
 module.exports = [
-    // @dna-platform/lib — the base classes a dependent library instantiates against.
+    // @dna-platform/public — the base classes a dependent library instantiates against.
     {
         input: 'src/index.ts',
         output: [
@@ -42,7 +42,7 @@ module.exports = [
         output: { file: 'dist/lib.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })]
     },
-    // @dna-platform/lib/encyclopedia — the Wikipedia default dress. Its own
+    // @dna-platform/public/encyclopedia — the Wikipedia default dress. Its own
     // surface because its words are the encyclopedia's, not the library's, and
     // a Table there is a different thing from a Table in the writing.
     {
@@ -59,7 +59,7 @@ module.exports = [
         output: { file: 'dist/encyclopedia.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })]
     },
-    // @dna-platform/lib/utilities — the machinery a consumer reaches for
+    // @dna-platform/public/utilities — the machinery a consumer reaches for
     // deliberately rather than by opening the library.
     {
         input: 'src/utilities/index.ts',

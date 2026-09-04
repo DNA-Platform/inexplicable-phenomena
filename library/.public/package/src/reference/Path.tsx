@@ -8,8 +8,8 @@ export class $Path extends $Writing {
     override get canonical(): boolean { return false; }
 
     $Path(block: $Block) {
-        const Asked = $(TypeOfPath);
-        this.type ??= $(<Asked />);
+        const TypeOfPath = $(typeOfPath);
+        this.type ??= $(<TypeOfPath />);
         super.$Writing(block);
     }
 }
@@ -40,3 +40,4 @@ export class PathSpecification extends TypedSpecification<$Writing> {
 
 export const Path = $($Path);
 export const TypeOfPath = $($TypeOfPath);
+const typeOfPath = TypeOfPath;

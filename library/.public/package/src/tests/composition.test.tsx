@@ -50,8 +50,10 @@ describe('one bond shape, one block', () => {
 });
 
 describe('the composition surface is declared once and afforded everywhere', () => {
-    it('composition declares the surface, and writing implements none of it', () => {
-        for (const member of ['parts', 'where', 'select', 'selectMany', 'single']) {
+    it('writing composes, and composition declares the query surface over it', () => {
+        expect(declares($Writing, 'parts')).toBe(true);
+        expect(declares($Composition, 'parts')).toBe(false);
+        for (const member of ['where', 'select', 'selectMany', 'single']) {
             expect(declares($Composition, member)).toBe(true);
             expect(declares($Writing, member)).toBe(false);
         }

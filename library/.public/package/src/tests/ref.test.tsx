@@ -13,7 +13,7 @@ import { Path } from '@/reference/Path';
 import { $ } from '@dna-platform/chemistry';
 import { $Reference, Reference } from '@/reference/Reference';
 import { Type } from '@/writing/Writing';
-import { built, drawn, letter, mounted, word, sentence, paragraph, title, Sentence, Section, Writing } from './written';
+import { built, drawn, letter, mounted, word, sentence, paragraph, heading, Sentence, Section, Writing } from './written';
 
 const routed = (node: ReactNode, at = '/'): HTMLElement => mounted(<MemoryRouter initialEntries={[at]}>{node}</MemoryRouter>);
 
@@ -111,7 +111,7 @@ describe('a reference reads to what it means', () => {
     it('read() follows an address through the catalogue of its own book', async () => {
         const outer = built<$Section>(
             <Section>
-                {title(sentence(word(letter('t'))))}
+                {heading(sentence(word(letter('t'))))}
                 {paragraph(sentence(word(letter('f'), letter('i'), letter('r'), letter('s'), letter('t'))))}
                 {paragraph(sentence(word(letter('s'), letter('e'), letter('c'), letter('o'), letter('n'), letter('d'))), <Ref>{'[back](#Ph:1)'}</Ref>)}
             </Section>);

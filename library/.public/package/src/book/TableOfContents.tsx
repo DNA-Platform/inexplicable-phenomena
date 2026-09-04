@@ -4,8 +4,8 @@ import { $Chapter, $TypeOfChapter } from './Chapter';
 
 export class $TableOfContents extends $Chapter {
     $TableOfContents(block: $Block) {
-        const Asked = $(TypeOfTableOfContents);
-        this.type ??= $(<Asked />);
+        const TypeOfTableOfContents = $(typeOfTableOfContents);
+        this.type ??= $(<TypeOfTableOfContents />);
         super.$Chapter(block);
     }
 }
@@ -21,3 +21,4 @@ export class $TypeOfTableOfContents extends $TypeOfChapter {
 
 export const TableOfContents = $($TableOfContents);
 export const TypeOfTableOfContents = $($TypeOfTableOfContents);
+const typeOfTableOfContents = TypeOfTableOfContents;

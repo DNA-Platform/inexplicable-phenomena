@@ -6,8 +6,8 @@ export class $PageFold extends $$Chapter {
     location = 0;
 
     $PageFold(block: $Block) {
-        const Asked = $(TypeOfPageFold);
-        this.type ??= $(<Asked />);
+        const TypeOfPageFold = $(typeOfPageFold);
+        this.type ??= $(<TypeOfPageFold />);
         super.$$Chapter(block);
         this.persist = true;
     }
@@ -24,3 +24,4 @@ export class $TypeOfPageFold extends $TypeOf$Chapter {
 
 export const PageFold = $($PageFold);
 export const TypeOfPageFold = $($TypeOfPageFold);
+const typeOfPageFold = TypeOfPageFold;

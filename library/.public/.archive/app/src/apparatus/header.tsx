@@ -15,7 +15,7 @@ class $Header extends $Chemical {
     view(): ReactNode {
         return (
             <HeaderBar>
-                <BrandMark>@dna-platform/lib</BrandMark>
+                <BrandMark>@dna-platform/public</BrandMark>
                 <SubBrand>The Library Lab</SubBrand>
                 <Spacer />
                 <SearchButton title="Search — coming soon">

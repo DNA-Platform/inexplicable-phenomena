@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, Paragraph, Section, Title } from '@dna-platform/lib';
+import { Chapter, Paragraph, Section, Title } from '@dna-platform/public';
 
 export const Correlates = $(
     <Chapter>

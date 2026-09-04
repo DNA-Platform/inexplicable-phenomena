@@ -9,12 +9,12 @@ const three = () => built<$Book>(book(chain.Chapter('a'), chain.Chapter('b'), ch
 
 describe('$Book composes $Chapter', () => {
     it('composes the level below, in the order written', () => {
-        expect(three().parts().map(one => one.copy)).toEqual(['a', 'b', 'c']);
+        expect(three().parts().map(one => one.copy)).toEqual(['Ta', 'Tb', 'Tc']);
         expect(three().parts().every(one => reflection.is(one, 'Chapter'))).toBe(true);
     });
 
     it('answers part zero', () => {
-        expect(three().parts()[0].copy).toBe('a');
+        expect(three().parts()[0].copy).toBe('Ta');
     });
 
     it('carries its own type, written into it by its own bond', () => {
@@ -33,17 +33,17 @@ describe('$Book composes $Chapter', () => {
             expect(declares($Book, member)).toBe(false);
         }
         const one = three();
-        expect(one.where(part => part.copy !== 'b').map(part => part.copy)).toEqual(['a', 'c']);
-        expect(one.select(part => part.copy)).toEqual(['a', 'b', 'c']);
+        expect(one.where(part => part.copy !== 'Tb').map(part => part.copy)).toEqual(['Ta', 'Tc']);
+        expect(one.select(part => part.copy)).toEqual(['Ta', 'Tb', 'Tc']);
         expect(one.selectMany(part => [part.copy, part.copy]).length).toBe(6);
-        expect(one.single(part => part.copy === 'b').copy).toBe('b');
+        expect(one.single(part => part.copy === 'Tb').copy).toBe('Tb');
         expect(() => one.single(part => part.copy !== 'b')).toThrow();
     });
 
     it('and a piece of writing TOLD it is a Book composes the same', () => {
         const { writing } = drawn(chain.Chapter('h'), chain.Chapter('i'), <Type>Book</Type>);
         expect(reflection.is(writing, 'Book')).toBe(true);
-        expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
+        expect(writing.parts().map(one => one.copy)).toEqual(['Th', 'Ti']);
     });
 });
 

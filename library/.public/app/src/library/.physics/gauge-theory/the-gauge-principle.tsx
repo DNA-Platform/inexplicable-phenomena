@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Section, Title, Summary, Paragraph } from '@dna-platform/lib';
+import { $Chapter, Section, Title, Summary, Paragraph } from '@dna-platform/public';
 
 export class $TheGaugePrinciple extends $Chapter {
     view(): ReactNode {

@@ -1,5 +1,5 @@
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
-import { $Writing, $Trait } from '@/writing/Writing';
+import { $Writing, $Type } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Reference, $TypeOfReference, ReferenceSpecification } from './Reference';
@@ -13,7 +13,7 @@ export interface $ReferenceCard$ {
 
 export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
     get references(): $Reference[] {
-        return (this.block?.$elements ?? []).filter((one): one is $Reference => one instanceof $Reference);
+        return (this.block?.$elements ?? []).filter((reference): reference is $Reference => reference instanceof $Reference);
     }
 
     get first(): $Reference | undefined { return this.references[0]; }
@@ -22,8 +22,8 @@ export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
     override get path(): $Path | undefined { return super.path ?? this.first?.path; }
 
     $ReferenceCard(block: $Block) {
-        const Asked = $(TypeOfReferenceCard);
-        this.type ??= $(<Asked />);
+        const TypeOfReferenceCard = $(typeOfReferenceCard);
+        this.type ??= $(<TypeOfReferenceCard />);
         super.$Reference(block);
     }
 
@@ -44,7 +44,8 @@ export class $TypeOfReferenceCard extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new ReferenceCardSpecification();
 }
 
-export class $Card extends $Trait {
+export class $Card extends $Type {
+    override resolve = false;
     override name = 'Card';
 
     constructor() {
@@ -67,22 +68,22 @@ export class ReferenceCardSpecification extends ReferenceSpecification {
 
     @specify('a card wears its first reference — the canonical one')
     override $carriesPath(writing: $Writing): boolean | void {
-        const first = (writing.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Reference);
+        const first = (writing.block?.$elements ?? []).find((reference): reference is $Reference => reference instanceof $Reference);
         if (first?.path !== undefined) return false;
         return super.$carriesPath(writing);
     }
 
     @specify('a card says nothing of its own — its references are its substance')
     override $mustHaveText(writing: $Writing): boolean | void {
-        const held = (writing.block?.$elements ?? []).some(one => one instanceof $Reference);
-        if (held) return false;
+        const cites = (writing.block?.$elements ?? []).some(reference => reference instanceof $Reference);
+        if (cites) return false;
         return super.$mustHaveText(writing);
     }
 
     @specify('a card holds nothing but its references')
     override $hasWriting(writing: $Writing): boolean | void {
-        const held = (writing.block?.$elements ?? []).some(one => one instanceof $Reference);
-        if (held) return false;
+        const cites = (writing.block?.$elements ?? []).some(reference => reference instanceof $Reference);
+        if (cites) return false;
         return super.$hasWriting(writing);
     }
 }
@@ -97,4 +98,5 @@ export class CardSpecification extends ReferenceCardSpecification {
 
 export const ReferenceCard = $($ReferenceCard);
 export const TypeOfReferenceCard = $($TypeOfReferenceCard);
+const typeOfReferenceCard = TypeOfReferenceCard;
 export const Card = $($Card);

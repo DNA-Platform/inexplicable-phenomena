@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { Synopsis } from '@/book/Synopsis';
 import { Section } from '@/writing/Section';
-import { Title } from '@/writing/Title';
+import { Heading } from '@/writing/Heading';
 import { Paragraph } from '@/writing/Paragraph';
 
 // A synopsis is a chapter kind by the standard type pattern; on a book, the
@@ -10,7 +10,7 @@ import { Paragraph } from '@/writing/Paragraph';
 export class $SynopsisKindExample extends $Chemical {
     view(): ReactNode {
         return (
-            <Synopsis><Section><Title>Algebra</Title><Paragraph>It opens.</Paragraph></Section></Synopsis>
+            <Synopsis><Section><Heading>Algebra</Heading><Paragraph>It opens.</Paragraph></Section></Synopsis>
         );
     }
 }

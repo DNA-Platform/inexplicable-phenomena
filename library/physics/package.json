@@ -4,6 +4,6 @@
   "private": true,
   "description": "Physics — a subject of the library, documented with $Chemistry",
   "dependencies": {
-    "@dna-platform/lib": "*"
+    "@dna-platform/public": "*"
   }
 }

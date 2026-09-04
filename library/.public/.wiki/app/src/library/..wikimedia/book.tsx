@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Book, TableOfContents } from '@dna-platform/lib';
+import { Book, TableOfContents } from '@dna-platform/public';
 import { Wikimedia } from './.cover';
 import { WikimediaSynopsis } from './.synopsis';
 

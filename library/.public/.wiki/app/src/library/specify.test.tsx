@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { $Book } from '@dna-platform/lib';
+import type { $Book } from '@dna-platform/public';
 
 const books: [string, () => Promise<{ book: $Book }>][] = [
     ["/wikimedia", () => import('./..wikimedia/book')],

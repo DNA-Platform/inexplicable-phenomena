@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { $, $Chemical, $check, cache } from '@dna-platform/chemistry';
 import { $Writing, Writing, Type } from '@/writing/Writing';
 import { ParagraphSpecification, $TypeOfParagraph, $Paragraph, Paragraph } from '@/writing/Paragraph';
-import { Title } from '@/writing/Title';
+import { Heading } from '@/writing/Heading';
 import { Specification } from '@/utilities/Specification';
 import { Sentence } from '@/writing/Sentence';
 import { Word } from '@/writing/Word';
@@ -36,7 +36,7 @@ export class $ParagraphDerivedTitleExample extends $Chemical {
     view(): ReactNode {
         return (
             <>
-                <Title>A kind whose rule was derived</Title>
+                <Heading>A kind whose rule was derived</Heading>
                 <Writing>
                     He said it plainly.
                     <Type>Quotation</Type>

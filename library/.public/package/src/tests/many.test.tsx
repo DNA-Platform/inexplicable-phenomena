@@ -89,7 +89,7 @@ describe('many kinds of chapter are interchangeable, because a book asks the typ
                 <Appendix key="x">{chain.Section('c')}</Appendix>
             ]}</Book>);
         expect(one.parts().length).toBe(3);
-        expect(one.parts().map(part => part.copy)).toEqual(['a', 'b', 'c']);
+        expect(one.parts().map(part => part.copy)).toEqual(['Ta', 'Tb', 'Tc']);
     });
 
     it('and none of them descends from $Chapter', () => {

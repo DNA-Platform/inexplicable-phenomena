@@ -7,7 +7,7 @@ import { BookChaptersExample, $BookChaptersExample, BookWritingExample, $BookWri
 import { ChapterSectionsExample, $ChapterSectionsExample, ChapterWritingExample, $ChapterWritingExample } from './.spec/book/Chapter';
 import { PathLettersExample, $PathLettersExample, PathTextExample, $PathTextExample, PathWritingExample, $PathWritingExample } from './.spec/reference/Path';
 import { ReferenceHoldsExample, $ReferenceHoldsExample, ReferenceLettersExample, $ReferenceLettersExample, ReferencePathExample, $ReferencePathExample, ReferenceWritingExample, $ReferenceWritingExample } from './.spec/reference/Reference';
-import { TraitDeclaredFriendExample, $TraitDeclaredFriendExample, TraitPureExample, $TraitPureExample } from './.spec/writing/Trait';
+import { LabelDeclaredExample, $LabelDeclaredExample, LabelEmptyExample, $LabelEmptyExample } from './.spec/writing/Label';
 import { RefMarkdownExample, $RefMarkdownExample, RefPathExample, $RefPathExample, RefHeldExample, $RefHeldExample, RefSentenceExample, $RefSentenceExample } from './.spec/reference/Ref';
 import { ReferenceCardListExample, $ReferenceCardListExample, ReferenceCardTraitExample, $ReferenceCardTraitExample } from './.spec/reference/ReferenceCard';
 import { ListLinesExample, $ListLinesExample, ListWritingExample, $ListWritingExample, ListNestedExample, $ListNestedExample, ListTypedExample, $ListTypedExample } from './.spec/writing/List';
@@ -35,7 +35,7 @@ import { SectionParagraphsExample, $SectionParagraphsExample, SectionTextExample
 import { SentenceStopExample, $SentenceStopExample, SentenceWordsExample, $SentenceWordsExample, SentenceWritingExample, $SentenceWritingExample, SentenceNestedExample, $SentenceNestedExample } from './.spec/writing/Sentence';
 import { WordKindExample, $WordKindExample, WordLettersExample, $WordLettersExample, WordMixedExample, $WordMixedExample, WordTextExample, $WordTextExample, WordWritingExample, $WordWritingExample, WordNestedExample, $WordNestedExample } from './.spec/writing/Word';
 import { WritingMeansExample, $WritingMeansExample, WritingPlainExample, $WritingPlainExample } from './.spec/writing/Writing';
-import { TitleKindExample, $TitleKindExample } from './.spec/writing/Title';
+import { HeadingKindExample, $HeadingKindExample } from './.spec/writing/Heading';
 import { Writing, built, drawn, shown } from './written';
 
 // EVERY SPEC IS DRAWN, SPECIFIED AND COMPOSED.
@@ -59,8 +59,8 @@ const specs: [string, ComponentType, new () => $Chemical][] = [
     ['reference/Reference.LettersExample', ReferenceLettersExample, $ReferenceLettersExample],
     ['reference/Reference.PathExample', ReferencePathExample, $ReferencePathExample],
     ['reference/Reference.WritingExample', ReferenceWritingExample, $ReferenceWritingExample],
-    ['writing/Trait.DeclaredFriendExample', TraitDeclaredFriendExample, $TraitDeclaredFriendExample],
-    ['writing/Trait.PureExample', TraitPureExample, $TraitPureExample],
+    ['writing/Label.DeclaredExample', LabelDeclaredExample, $LabelDeclaredExample],
+    ['writing/Label.EmptyExample', LabelEmptyExample, $LabelEmptyExample],
     ['reference/Ref.MarkdownExample', RefMarkdownExample, $RefMarkdownExample],
     ['reference/Ref.PathExample', RefPathExample, $RefPathExample],
     ['reference/Ref.HeldExample', RefHeldExample, $RefHeldExample],
@@ -107,7 +107,7 @@ const specs: [string, ComponentType, new () => $Chemical][] = [
     ['writing/Table.CellsExample', TableCellsExample, $TableCellsExample],
     ['writing/Table.TypedExample', TableTypedExample, $TableTypedExample],
     ['writing/Table.TraitExample', TableTraitExample, $TableTraitExample],
-    ['writing/Title.KindExample', TitleKindExample, $TitleKindExample],
+    ['writing/Heading.KindExample', HeadingKindExample, $HeadingKindExample],
     ['writing/Letter.ReferenceExample', LetterReferenceExample, $LetterReferenceExample],
     ['writing/Word.ReferenceExample', WordReferenceExample, $WordReferenceExample],
     ['writing/Sentence.ReferenceExample', SentenceReferenceExample, $SentenceReferenceExample],

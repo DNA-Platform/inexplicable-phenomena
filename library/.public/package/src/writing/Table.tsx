@@ -4,29 +4,51 @@ import { $Writing } from './Writing';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $TypeOfSection, SectionSpecification } from './Section';
+import { $TypeOfHeading } from './Heading';
 import { reflection } from '@/utilities/Reflection';
-import { Table as Wikitable } from '@/encyclopedia/Table';
+import { Table as tableStyle } from '@/encyclopedia/Table';
 
 export class $Table extends $Composition implements $Composition$ {
     $columns?: number;
 
     $Table(block: $Block) {
-        const Asked = $(TypeOfTable);
-        this.type ??= $(<Asked />);
+        const TypeOfTable = $(typeOfTable);
+        this.type ??= $(<TypeOfTable />);
         super.$Composition(block);
     }
 
     override view(): ReactNode {
-        const cells = (this.block?.$elements ?? []).filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        const written = (this.block?.$elements ?? []).filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
+        const opening = written.find(one => reflection.is(one, $TypeOfHeading));
+        const Opening = opening === undefined ? undefined : $(opening);
+        const cells = written.filter(one => one !== opening);
         const per = this.$columns ?? 1;
         const rows: $Writing[][] = [];
         for (let at = 0; at < cells.length; at += per) rows.push(cells.slice(at, at + per));
-        const Held = $(Wikitable);
+        const TableStyle = $(tableStyle);
 
-        return <Held><tbody>{rows.map((row, at) => <tr key={at}>{row.map((one, seat) => {
-            const Piece = $(one);
-            return <td key={seat}><Piece /></td>;
-        })}</tr>)}</tbody></Held>;
+        return (
+            <>
+            {Opening && <Opening />}
+            <TableStyle>
+                <tbody>
+                    {rows.map((row, at) => (
+                        <tr key={at}>
+                            {row.map((cell, seat) => {
+                                const Cell = $(cell);
+
+                                return (
+                                    <td key={seat}>
+                                        <Cell />
+                                    </td>
+                                );
+                            })}
+                        </tr>
+                    ))}
+                </tbody>
+            </TableStyle>
+            </>
+        );
     }
 }
 
@@ -42,19 +64,15 @@ export class $TypeOfTable extends $TypeOfSection {
 }
 
 export class TableSpecification extends SectionSpecification {
-    @specify('a table opens with its cells, and needs no title')
-    override $opensWithTitle(writing: $Writing): boolean | void {
-        if (reflection.is(writing, $TypeOfTable)) return false;
-        return super.$opensWithTitle(writing);
-    }
-
     @specify('a table\'s columns divide its cells')
     $columnsDivideCells(writing: $Writing): void {
         if (!(writing instanceof $Table) || writing.$columns === undefined) return;
-        $check(writing.parts().length % writing.$columns === 0,
+        const cells = writing.parts().filter(one => !reflection.is(one, $TypeOfHeading));
+        $check(cells.length % writing.$columns === 0,
             'a table\'s columns divide its cells, and these do not');
     }
 }
 
 export const Table = $($Table);
 export const TypeOfTable = $($TypeOfTable);
+const typeOfTable = TypeOfTable;

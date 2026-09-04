@@ -17,7 +17,7 @@ export default defineConfig({
     preview: { port: 5199, strictPort: true },
     resolve: {
         alias: {
-            '@dna-platform/lib': path.resolve(__dirname, '../../package/src/index.ts'),
+            '@dna-platform/public': path.resolve(__dirname, '../../package/src/index.ts'),
             '@dna-platform/chemistry': path.resolve(__dirname, '../../../chemistry/package/src/index.ts'),
             '@': path.resolve(__dirname, '../../package/src'),
         },

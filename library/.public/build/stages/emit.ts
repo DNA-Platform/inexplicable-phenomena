@@ -173,7 +173,7 @@ const assemble = (book: Book, held: Book[], cards?: Cards): string => {
     const imports = [
         `import React from 'react';`,
         `import { $ } from '@dna-platform/chemistry';`,
-        `import { $Book, Book, ${held.length ? '$Synopsis, ' : ''}TableOfContents } from '@dna-platform/lib';`,
+        `import { $Book, Book, ${held.length ? '$Synopsis, ' : ''}TableOfContents } from '@dna-platform/public';`,
         ...(carried.length ? [`import { ${carried.join(', ')} } from '${specifier(book.path, 'cards')}';`] : []),
         `import { ${book.cover.declares} } from '${specifier(book.path, join(book.path, book.cover.name))}';`,
         ...parts.map(f => `import { ${f.declares} } from '${specifier(book.path, join(book.path, f.name))}';`),

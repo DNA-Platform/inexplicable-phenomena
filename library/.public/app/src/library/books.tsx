@@ -1,4 +1,4 @@
-import type { $Book } from '@dna-platform/lib';
+import type { $Book } from '@dna-platform/public';
 
 // THE ONLY DOOR INTO A BOOK, and every one of them is named. A glob would find
 // none: every cover and synopsis in this library begins with a dot.

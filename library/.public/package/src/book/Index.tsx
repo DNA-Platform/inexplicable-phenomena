@@ -5,15 +5,15 @@ import { $Chapter, $TypeOfChapter, ChapterSpecification } from './Chapter';
 import { Specification, specify } from '@/utilities/Specification';
 import { $References } from '@/reference/References';
 import { $Reference } from '@/reference/Reference';
-import { Heading } from '@/encyclopedia/Heading';
-import { Cited } from '@/encyclopedia/Cited';
+import { Heading as heading } from '@/encyclopedia/Heading';
+import { Cited as cited } from '@/encyclopedia/Cited';
 
 export class $Index extends $Chapter {
     override parenthetical = true;
 
     $Index(block: $Block) {
-        const Asked = $(TypeOfIndex);
-        this.type ??= $(<Asked />);
+        const TypeOfIndex = $(typeOfIndex);
+        this.type ??= $(<TypeOfIndex />);
         super.$Chapter(block);
     }
 
@@ -21,20 +21,20 @@ export class $Index extends $Chapter {
         const references = this.references;
         if (!references) return super.view();
         const written = (references.block?.$elements ?? [])
-            .filter((one): one is $Reference => one instanceof $Reference);
+            .filter((reference): reference is $Reference => reference instanceof $Reference);
         const recollection = [...references.recollection].reverse();
-        const Held = $(Heading);
-        const Asked = $(Cited);
+        const Heading = $(heading);
+        const Cited = $(cited);
 
         return <>
-            <Held>Index</Held>
-            <Asked>{written.map((one, at) => {
+            <Heading>Index</Heading>
+            <Cited>{written.map((one, at) => {
                 const Cite = $(one);
                 return <li key={at}><Cite /></li>;
             })}{recollection.map(one => {
                 const Cite = $(one);
                 return <li key={one.path?.copy ?? ''}><Cite /></li>;
-            })}</Asked>
+            })}</Cited>
         </>;
     }
 }
@@ -60,3 +60,4 @@ export class IndexSpecification extends ChapterSpecification {
 
 export const Index = $($Index);
 export const TypeOfIndex = $($TypeOfIndex);
+const typeOfIndex = TypeOfIndex;

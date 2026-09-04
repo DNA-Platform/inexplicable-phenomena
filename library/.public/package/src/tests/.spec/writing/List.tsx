@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { List } from '@/writing/List';
-import { Title } from '@/writing/Title';
+import { Heading } from '@/writing/Heading';
 import { TypeOfSection } from '@/writing/Section';
 import { Writing, Type } from '@/writing/Writing';
 
@@ -50,8 +50,8 @@ export class $ListTypedExample extends $Chemical {
         return (
             <List>
                 <TypeOfSection />
-                <Title>A list at section level</Title>
-                {'Alpha beta.\n\nGamma delta.'}
+                <Heading>A list at section level</Heading>
+                {'Alpha beta'}
             </List>
         );
     }

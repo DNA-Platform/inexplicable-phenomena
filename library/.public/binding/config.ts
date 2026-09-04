@@ -20,7 +20,7 @@ export const config = (at: string): Config => {
         from,
         to: said.to ? forward(resolve(folder, said.to)) : `${from}/..public`,
         ...(said.order ? { order: forward(resolve(folder, said.order)) } : {}),
-        package: said.package ?? '@dna-platform/lib',
+        package: said.package ?? '@dna-platform/public',
     };
 };
 

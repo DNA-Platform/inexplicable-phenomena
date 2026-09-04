@@ -1,5 +1,5 @@
 {
-  "name": "@dna-platform/lib",
+  "name": "@dna-platform/public",
   "version": "0.0.1",
   "description": "The canonical code library for creating libraries \u00e2\u20ac\u201d the base classes a library instantiates against, built on @dna-platform/chemistry",
   "license": "MIT",

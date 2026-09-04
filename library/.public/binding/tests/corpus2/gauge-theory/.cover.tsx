@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Cover, Section, Title, Paragraph, Sentence } from '@dna-platform/lib';
+import { Cover, Section, Title, Paragraph, Sentence } from '@dna-platform/public';
 
 export const GaugeTheoryCover = $(
     <Cover>

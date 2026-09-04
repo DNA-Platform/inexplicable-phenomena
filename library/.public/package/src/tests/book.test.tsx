@@ -6,7 +6,7 @@ import { $Composition } from '@/writing/Composition';
 import { $Chapter, $TypeOfChapter } from '@/book/Chapter';
 import { $Book, $TypeOfBook } from '@/book/Book';
 import { reflection } from '@/utilities/Reflection';
-import { built, chain, drawn, letter, paragraph, section, sentence, title, word } from './written';
+import { built, chain, drawn, letter, paragraph, section, sentence, heading, word } from './written';
 
 const Chapter = $($Chapter);
 const Book = $($Book);
@@ -30,7 +30,7 @@ describe('the seven levels end at the book, and the book composes chapters', () 
     });
 
     it('and the chapter at zero is its first part', () => {
-        expect(built<$Book>(book(chapter('a'), chapter('b'))).parts()[0].copy).toBe('a');
+        expect(built<$Book>(book(chapter('a'), chapter('b'))).parts()[0].copy).toBe('Ta');
     });
 
     it('AND A PIECE OF WRITING BEHAVES AS A BOOK when it carries the type', () => {
@@ -53,11 +53,11 @@ describe('the whole ladder specifies, from the top, when everything is right', (
 
     // ONE LEVEL AT A TIME, and each asked separately rather than by descending a
     // whole tree. The section here is built WITH its title on purpose: chain.Section
-    // in written.tsx has none, which the `a section opens with its title` rule now
+    // in written.tsx has none, which the `a section opens with its heading` rule now
     // refuses — a real finding this test made, recorded rather than papered over by
     // changing a fixture eighteen files depend on.
     it('and so does every level beneath it, asked one at a time', () => {
-        const titled = <Chapter>{section(title('t'), paragraph(sentence(word(letter('a')))))}</Chapter>;
+        const titled = <Chapter>{section(heading('t'), paragraph(sentence(word(letter('a')))))}</Chapter>;
         const one = built<$Book>(book(titled));
         expect(() => one.specify()).not.toThrow();
         expect(() => one.parts()[0].specify()).not.toThrow();

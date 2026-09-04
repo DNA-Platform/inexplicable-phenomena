@@ -8,7 +8,10 @@ import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/
 import { $Path } from '@/reference/Path';
 import { reflection } from '@/utilities/Reflection';
 
-export class $Word extends $Composition implements $Composition$ {
+export interface $Word$ extends $Composition$ {
+}
+
+export class $Word extends $Composition implements $Composition$, $Word$ {
     protected patterns = {
         alphanumeric: /[\p{L}\p{N}]/u
     };
@@ -17,16 +20,16 @@ export class $Word extends $Composition implements $Composition$ {
     get letters(): $Composition { return this; }
 
     $Word(block: $Block) {
-        const Asked = $(TypeOfWord);
-        this.type ??= $(<Asked />);
+        const TypeOfWord = $(typeOfWord);
+        this.type ??= $(<TypeOfWord />);
         super.$Composition(block);
     }
 }
 
 export class $$Word extends $Reference {
     $$Word(block: $Block) {
-        const Asked = $(TypeOf$Word);
-        this.type ??= $(<Asked />);
+        const TypeOf$Word = $(typeOf$Word);
+        this.type ??= $(<TypeOf$Word />);
         super.$Reference(block);
     }
 }
@@ -66,7 +69,7 @@ export class WordSpecification extends TypedSpecification<$Writing> {
     @specify('a word is written as letters')
     $writtenAsLetters(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+            .filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
         $check(inside.every(one => reflection.is(one, $TypeOfLetter) || reflection.is(one, $TypeOfWord)),
             'a word is written as letters, and something in this one is not one');
     }
@@ -87,10 +90,13 @@ export class $WordSpecification extends ReferenceSpecification {
 }
 
 export const Word = $($Word);
+const word = Word;
 parser.makes.set('Word', held => {
-    const Asked = $(Word);
-    return parser.words(held).map(piece => $(<Asked>{piece}</Asked>) as $Writing);
+    const Word = $(word);
+    return parser.words(held).map(piece => $(<Word>{piece}</Word>) as $Writing);
 });
 export const TypeOfWord = $($TypeOfWord);
+const typeOfWord = TypeOfWord;
 export const TypeOf$Word = $($TypeOf$Word);
+const typeOf$Word = TypeOf$Word;
 prints.set('Wd', $($$Word));

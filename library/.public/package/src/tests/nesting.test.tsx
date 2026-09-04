@@ -5,7 +5,7 @@ import { $Letter } from '@/writing/Letter';
 import { $Word } from '@/writing/Word';
 import { $Sentence, TypeOfSentence } from '@/writing/Sentence';
 import { $Paragraph } from '@/writing/Paragraph';
-import { $Title, Title } from '@/writing/Title';
+import { $Heading, Heading } from '@/writing/Heading';
 import { $Section, TypeOfSection } from '@/writing/Section';
 import { $List, List } from '@/writing/List';
 import { $Table, Table } from '@/writing/Table';
@@ -50,16 +50,16 @@ describe('nesting means the nested contributes its parts to the parts', () => {
     it('a section in a section contributes its parts, its title among them', () => {
         const outer = built<$Section>(
             <Section>
-                <Title>Outer</Title>
+                <Heading>Outer</Heading>
                 <Section>
-                    <Title>Inner</Title>
+                    <Heading>Inner</Heading>
                     <Paragraph>The nested paragraph.</Paragraph>
                 </Section>
                 <Paragraph>The outer paragraph.</Paragraph>
             </Section>);
         const parts = outer.parts();
         expect(parts).toHaveLength(4);
-        expect(parts.filter(part => part instanceof $Title)).toHaveLength(2);
+        expect(parts.filter(part => part instanceof $Heading)).toHaveLength(2);
         expect(parts.every(part => reflection.is(part, 'Paragraph'))).toBe(true);
     });
 
@@ -96,13 +96,13 @@ describe('all writing is polymorphic', () => {
         const typed = built<$List>(
             <List>
                 <TypeOfSection />
-                <Title>A list at section level</Title>
+                <Heading>A list at section level</Heading>
                 {'Alpha beta.'}
             </List>);
         const parts = typed.parts();
         expect(parts).toHaveLength(2);
         expect(parts.every(part => reflection.is(part, 'Paragraph'))).toBe(true);
-        expect(parts[0]).toBeInstanceOf($Title);
+        expect(parts[0]).toBeInstanceOf($Heading);
     });
 });
 

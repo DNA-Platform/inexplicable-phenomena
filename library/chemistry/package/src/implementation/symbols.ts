@@ -35,6 +35,11 @@ export const style = Symbol("$Particle.style");
 // reaches for its BLOCK and never for the raw children it happens to have been handed.
 export const children = $children$;
 
+// Whether a formula stood for something else. Set on what the walk substituted
+// IN, so anything asking a written tag learns what happened rather than
+// inferring it from `resolve`, which says what to do and not what was done.
+export const resolved = Symbol("$Formula.resolved");
+
 export const $remove$ = Symbol("$Chemical.remove");
 export const $molecule$ = Symbol("$Chemical.molecule");
 export const $reaction$ = Symbol("$Chemical.reaction");

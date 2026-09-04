@@ -58,7 +58,7 @@ describe('the bond lifts what is parenthetical, and leaves it in the block', () 
     });
 });
 
-describe('a piece of writing is ONE kind of writing', () => {
+describe('a piece of writing may carry several types, and one of them is canonical', () => {
     it('a refinement carries its whole chain — a cover stands as a chapter', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Cover</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfCover);
@@ -73,20 +73,23 @@ describe('a piece of writing is ONE kind of writing', () => {
         expect(one.type).toBeInstanceOf($TypeOfBook);
     });
 
-    it('but it CANNOT be a book and a chapter', () => {
+    it('and it MAY be a book and a chapter, carrying both', () => {
         const { writing } = drawn(chain.Chapter('a'), <Type>Book</Type>, <Type>Chapter</Type>);
-        expect(() => writing.specify()).toThrow(/typed once/);
+        expect(writing.types.length).toBe(2);
+        expect(writing.type).toBeInstanceOf($TypeOfBook);
     });
 
-    it('nor a word and a letter', () => {
-        const { writing } = drawn(letter('h'), <Type>Word</Type>, <Type>Letter</Type>);
-        expect(() => writing.specify()).toThrow(/one kind of writing/);
+    it('and the type that is NOT canonical still weighs in when it specifies', () => {
+        const { writing } = drawn(letter('h'), letter('i'), <Type>Word</Type>, <Type>Letter</Type>);
+        expect(writing.types.length).toBe(2);
+        expect(writing.type).toBeInstanceOf($TypeOfWord);
+        expect(() => writing.specify()).toThrow(/one grapheme/);
     });
 
-    it('nor two chapter kinds, and the FIRST written is what it answers', () => {
+    it('and of two chapter kinds the FIRST written is the canonical one', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>, <Type>Cover</Type>);
         expect(writing.type).toBeInstanceOf($TypeOfChapter);
-        expect(() => writing.specify()).toThrow(/typed once/);
+        expect(writing.types.length).toBe(2);
     });
 });
 

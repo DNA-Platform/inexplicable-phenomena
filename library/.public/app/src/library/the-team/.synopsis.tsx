@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Synopsis, Section, Title, Summary, Paragraph } from '@dna-platform/lib';
+import { $Synopsis, Section, Title, Summary, Paragraph } from '@dna-platform/public';
 
 export class $TheTeamSynopsis extends $Synopsis {
     view(): ReactNode {

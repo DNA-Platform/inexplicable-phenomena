@@ -4,8 +4,8 @@ import { $Chapter, $TypeOfChapter } from './Chapter';
 
 export class $Cover extends $Chapter {
     $Cover(block: $Block) {
-        const Asked = $(TypeOfCover);
-        this.type ??= $(<Asked />);
+        const TypeOfCover = $(typeOfCover);
+        this.type ??= $(<TypeOfCover />);
         super.$Chapter(block);
     }
 }
@@ -21,3 +21,4 @@ export class $TypeOfCover extends $TypeOfChapter {
 
 export const Cover = $($Cover);
 export const TypeOfCover = $($TypeOfCover);
+const typeOfCover = TypeOfCover;

@@ -1,4 +1,4 @@
-import type { $Book } from '@dna-platform/lib';
+import type { $Book } from '@dna-platform/public';
 import { books } from './library/books';
 
 // THE APPLICATION'S DOOR ONTO THE CATALOGUE, and almost nothing is left in it.

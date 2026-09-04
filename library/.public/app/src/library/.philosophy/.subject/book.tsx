@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, Book, $Synopsis, TableOfContents } from '@dna-platform/lib';
+import { $Book, Book, $Synopsis, TableOfContents } from '@dna-platform/public';
 import { philosophyTheHardProblem, philosophy } from '../../cards';
 import { PhilosophyCover } from './.cover';
 import { PhilosophySynopsis } from './.synopsis';

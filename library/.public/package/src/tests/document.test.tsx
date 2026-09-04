@@ -10,12 +10,12 @@ const three = () => built<$Chapter>(chapter(chain.Section('a'), chain.Section('b
 
 describe('$Chapter composes $Section', () => {
     it('composes the level below, in the order written', () => {
-        expect(three().parts().map(one => one.copy)).toEqual(['a', 'b', 'c']);
+        expect(three().parts().map(one => one.copy)).toEqual(['Ta', 'Tb', 'Tc']);
         expect(three().parts().every(one => one instanceof $Section)).toBe(true);
     });
 
     it('answers part zero', () => {
-        expect(three().parts()[0].copy).toBe('a');
+        expect(three().parts()[0].copy).toBe('Ta');
     });
 
     it('carries its own type, written into it by its own bond', () => {
@@ -34,17 +34,17 @@ describe('$Chapter composes $Section', () => {
             expect(declares($Chapter, member)).toBe(false);
         }
         const one = three();
-        expect(one.where(part => part.copy !== 'b').map(part => part.copy)).toEqual(['a', 'c']);
-        expect(one.select(part => part.copy)).toEqual(['a', 'b', 'c']);
+        expect(one.where(part => part.copy !== 'Tb').map(part => part.copy)).toEqual(['Ta', 'Tc']);
+        expect(one.select(part => part.copy)).toEqual(['Ta', 'Tb', 'Tc']);
         expect(one.selectMany(part => [part.copy, part.copy]).length).toBe(6);
-        expect(one.single(part => part.copy === 'b').copy).toBe('b');
+        expect(one.single(part => part.copy === 'Tb').copy).toBe('Tb');
         expect(() => one.single(part => part.copy !== 'b')).toThrow();
     });
 
     it('and a piece of writing TOLD it is a Chapter composes the same', () => {
         const { writing } = drawn(chain.Section('h'), chain.Section('i'), <Type>Chapter</Type>);
         expect(reflection.is(writing, 'Chapter')).toBe(true);
-        expect(writing.parts().map(one => one.copy)).toEqual(['h', 'i']);
+        expect(writing.parts().map(one => one.copy)).toEqual(['Th', 'Ti']);
     });
 });
 
@@ -54,12 +54,12 @@ describe('a chapter is written as sections, or as a title and paragraphs', () =>
     });
 
     it('accepts a title and paragraphs, and wraps them in ONE section', () => {
-        const one = built<$Chapter>(<Chapter>{[chain.Paragraph('a'), chain.Paragraph('b')]}</Chapter>);
+        const one = built<$Chapter>(<Chapter>{[chain.Heading('t'), chain.Paragraph('a'), chain.Paragraph('b')]}</Chapter>);
         expect(() => one.specify()).not.toThrow();
         expect(one.parts().length).toBe(1);
         const first = one.parts()[0];
         expect(first).toBeInstanceOf($Composition);
-        expect((first as $Composition).parts().length).toBe(2);
+        expect((first as $Composition).parts().length).toBe(3);
     });
 
     it('and refuses a word, which is neither', () => {

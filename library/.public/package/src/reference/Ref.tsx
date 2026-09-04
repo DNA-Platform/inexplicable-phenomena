@@ -4,17 +4,17 @@ import { lexer } from 'marked';
 import { Link, useInRouterContext } from 'react-router-dom';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { Word } from '@/writing/Word';
+import { Word as word } from '@/writing/Word';
 import { $Composition, $Composition$ } from '@/writing/Composition';
 import { $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
 import type { $Reference$ } from './Reference';
 import { $Path } from './Path';
-import { Anchor } from '@/encyclopedia/Anchor';
+import { Anchor as anchor } from '@/writing/Writing';
 import { parser } from '@/utilities/Parser';
 
-const Routed = ({ to, children, held: Held }: { to: string; children: ReactNode; held: typeof Anchor }) => useInRouterContext()
+const Routed = ({ to, children, anchor: Anchor }: { to: string; children: ReactNode; anchor: typeof anchor }) => useInRouterContext()
     ? <Link to={to}>{children}</Link>
-    : <Held href={to}>{children}</Held>;
+    : <Anchor href={to}>{children}</Anchor>;
 
 export class $Ref extends $Composition implements $Composition$, $Reference$ {
     override indent = 1;
@@ -25,19 +25,19 @@ export class $Ref extends $Composition implements $Composition$, $Reference$ {
     get written(): string { return this.link?.text ?? this.copy; }
 
     $Ref(block: $Block) {
-        const Asked = $(TypeOfRef);
-        this.type ??= $(<Asked />);
+        const TypeOfRef = $(typeOfRef);
+        this.type ??= $(<TypeOfRef />);
         super.$Composition(block);
     }
 
     override view(): ReactNode {
         const url = this.url;
         if (url === undefined) return super.view();
-        const Asked = $(Anchor);
+        const Anchor = $(anchor);
         const internal = /^[A-Z][a-z]?:\d+/.test(url) || (URL.canParse(url, 'https://library') && new URL(url, 'https://library').origin === 'https://library');
-        if (internal) return <Routed to={url} held={Asked}>{this.written}</Routed>;
+        if (internal) return <Routed to={url} anchor={Anchor}>{this.written}</Routed>;
 
-        return <Asked href={url}>{this.written}</Asked>;
+        return <Anchor href={url}>{this.written}</Anchor>;
     }
 
     async read(): Promise<$Writing> {
@@ -62,8 +62,8 @@ export class $Ref extends $Composition implements $Composition$, $Reference$ {
 
     protected override reduce(held: (string | $Writing)[]): $Writing[] {
         const text = this.link?.text ?? parser.text(held);
-        const Asked = $(Word);
-        return text.split(/\s+/u).filter(one => one !== '').map(one => $(<Asked>{one}</Asked>) as $Writing);
+        const Word = $(word);
+        return text.split(/\s+/u).filter(one => one !== '').map(one => $(<Word>{one}</Word>) as $Writing);
     }
 }
 
@@ -93,3 +93,4 @@ export class RefSpecification extends PhraseSpecification {
 
 export const Ref = $($Ref);
 export const TypeOfRef = $($TypeOfRef);
+const typeOfRef = TypeOfRef;

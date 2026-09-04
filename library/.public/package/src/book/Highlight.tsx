@@ -6,7 +6,7 @@ import { $Reference, $TypeOfReference, ReferenceSpecification } from '@/referenc
 
 export class $Highlight extends $Reference {
     get pair(): [$Reference, $Reference] | undefined {
-        const ends = (this.block?.$elements ?? []).filter((one): one is $Reference => one instanceof $Reference);
+        const ends = (this.block?.$elements ?? []).filter((reference): reference is $Reference => reference instanceof $Reference);
         return ends.length === 2 ? [ends[0], ends[1]] : undefined;
     }
 
@@ -14,8 +14,8 @@ export class $Highlight extends $Reference {
     get ending(): $Reference | undefined { return this.pair?.[1]; }
 
     $Highlight(block: $Block) {
-        const Asked = $(TypeOfHighlight);
-        this.type ??= $(<Asked />);
+        const TypeOfHighlight = $(typeOfHighlight);
+        this.type ??= $(<TypeOfHighlight />);
         super.$Reference(block);
     }
 
@@ -74,3 +74,4 @@ export class HighlightSpecification extends ReferenceSpecification {
 
 export const Highlight = $($Highlight);
 export const TypeOfHighlight = $($TypeOfHighlight);
+const typeOfHighlight = TypeOfHighlight;

@@ -1,5 +1,5 @@
 import { $, styled } from '@dna-platform/chemistry';
-import { $Style } from './Style';
+import { $Style } from '@/writing/Writing';
 
 export class $Article extends $Style {
     selector = styled.article;

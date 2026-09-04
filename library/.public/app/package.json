@@ -2,7 +2,7 @@
   "name": "@dna-platform/public-library",
   "version": "0.0.1",
   "private": true,
-  "description": "The public view onto the repository — the app that renders the library, built to GitHub Pages. Depends on @dna-platform/lib.",
+  "description": "The public view onto the repository — the app that renders the library, built to GitHub Pages. Depends on @dna-platform/public.",
   "repository": {
     "type": "git",
     "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
@@ -17,7 +17,7 @@
     "test": "node typecheck.mjs && node verify-library.mjs"
   },
   "dependencies": {
-    "@dna-platform/lib": "*",
+    "@dna-platform/public": "*",
     "@dna-platform/chemistry": "*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { $Book } from '@dna-platform/lib';
+import type { $Book } from '@dna-platform/public';
 import type { Book, Library } from '../library.ts';
 
 // THE CARDS, READ OFF LIVING BOOKS — never parsed out of the source that made
@@ -88,7 +88,7 @@ export const cards = (named: Card[]): string => {
 
     return `import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, $$Book } from '@dna-platform/lib';
+import { $Book, $$Book } from '@dna-platform/public';
 
 // THE CARDS OF THIS LIBRARY, GENERATED. A card in the framework is an
 // $$Book and nothing more; which fields a library's cards carry is
@@ -141,7 +141,7 @@ export const at = (path: string): $Card | undefined => held.get(path);
 // dotted folder nor a dotted file, so it would find none of these and report a
 // confident zero. This module is the only door into a book.
 
-export const books = (named: Card[]): string => `import type { $Book } from '@dna-platform/lib';
+export const books = (named: Card[]): string => `import type { $Book } from '@dna-platform/public';
 
 // THE ONLY DOOR INTO A BOOK, and every one of them is named. A glob would find
 // none: every cover and synopsis in this library begins with a dot.

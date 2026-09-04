@@ -10,7 +10,7 @@ import { $Letter } from '@/writing/Letter';
 import { $Word } from '@/writing/Word';
 import { $Sentence } from '@/writing/Sentence';
 import { $Paragraph } from '@/writing/Paragraph';
-import { $Title } from '@/writing/Title';
+import { $Heading } from '@/writing/Heading';
 import { $Section } from '@/writing/Section';
 import { $Chapter } from '@/book/Chapter';
 import { $Book } from '@/book/Book';
@@ -20,7 +20,7 @@ export const Letter = $($Letter);
 export const Word = $($Word);
 export const Sentence = $($Sentence);
 export const Paragraph = $($Paragraph);
-export const Title = $($Title);
+export const Heading = $($Heading);
 export const Section = $($Section);
 export const Chapter = $($Chapter);
 export const Book = $($Book);
@@ -29,7 +29,7 @@ export const letter = (c: string) => <Letter>{c}</Letter>;
 export const word = (...inside: ReactNode[]) => <Word>{inside}</Word>;
 export const sentence = (...inside: ReactNode[]) => <Sentence>{inside}</Sentence>;
 export const paragraph = (...inside: ReactNode[]) => <Paragraph>{inside}</Paragraph>;
-export const title = (...inside: ReactNode[]) => <Title>{inside}</Title>;
+export const heading = (...inside: ReactNode[]) => <Heading>{inside}</Heading>;
 export const section = (...inside: ReactNode[]) => <Section>{inside}</Section>;
 export const chapter = (...inside: ReactNode[]) => <Chapter>{inside}</Chapter>;
 export const book = (...inside: ReactNode[]) => <Book>{inside}</Book>;
@@ -81,9 +81,9 @@ export const chain: Record<string, (copy: string) => ReactNode> = {
     Word: copy => word(letter(copy)),
     Sentence: copy => sentence(word(letter(copy))),
     Paragraph: copy => paragraph(sentence(word(letter(copy)))),
-    Title: copy => title(sentence(word(letter(copy)))),
-    Section: copy => section(paragraph(sentence(word(letter(copy))))),
-    Chapter: copy => chapter(section(paragraph(sentence(word(letter(copy))))))
+    Heading: copy => heading(sentence(word(letter(copy)))),
+    Section: copy => section(heading(sentence(word(letter('T')))), paragraph(sentence(word(letter(copy))))),
+    Chapter: copy => chapter(section(heading(sentence(word(letter('T')))), paragraph(sentence(word(letter(copy))))))
 };
 
 // A type's specification is PROTECTED — nothing outside a type consults one, and

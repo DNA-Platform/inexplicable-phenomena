@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "experimentalDecorators": true,
     "paths": {
-      "@dna-platform/lib": ["../../package/src/index.ts"],
+      "@dna-platform/public": ["../../package/src/index.ts"],
       "@dna-platform/chemistry": ["../../../chemistry/package/src/index.ts"],
       "@/*": ["../../package/src/*"]
     }

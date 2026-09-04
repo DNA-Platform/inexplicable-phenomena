@@ -82,7 +82,7 @@ describe('a cover crosses the class hierarchy without leaving its type', () => {
                 <Chapter key="h">{inside('d')}</Chapter>
             ]}</Book>);
         expect(one.parts().length).toBe(4);
-        expect(one.parts().map(part => part.copy)).toEqual(['a', 'b', 'c', 'd']);
+        expect(one.parts().map(part => part.copy)).toEqual(['Ta', 'Tb', 'Tc', 'Td']);
     });
 
     it('and the cover contract runs on both, from the type neither class shares', () => {

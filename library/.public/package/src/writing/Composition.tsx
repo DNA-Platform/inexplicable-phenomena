@@ -2,7 +2,7 @@ import { $Block, $ } from '@dna-platform/chemistry';
 import { $Type, $Writing } from './Writing';
 import { reflection } from '@/utilities/Reflection';
 import { parser } from '@/utilities/Parser';
-import { $Catalogue, Catalogue } from '@/reference/Catalogue';
+import { $Catalogue, Catalogue as catalogue } from '@/reference/Catalogue';
 
 export interface $Composition$ {
     get index(): number;
@@ -15,27 +15,9 @@ export interface $Composition$ {
 }
 
 export class $Composition extends $Writing implements $Composition$ {
-    index = 0;
-
-    parts(): $Writing[] {
-        const type = this.type;
-        const below = type === undefined ? undefined : reflection.below(type);
-        return parser.parse(this,
-            token => {
-                if (type !== undefined && token instanceof $Composition && token !== this && token.type instanceof (type.constructor as new () => $Type)) {
-                    const mutual = type instanceof (token.type.constructor as new () => $Type);
-                    if (mutual || reflection.indent(token) > 0) return token.parts();
-                }
-                if (below === undefined) return token;
-                return reflection.is(token, below) ? token : undefined;
-            },
-            held => this.reduce(held),
-            type !== undefined);
-    }
-
     catalogue(): $Catalogue {
-        const Asked = $(Catalogue);
-        return $<$Catalogue>(<Asked />, ...this.parts());
+        const Catalogue = $(catalogue);
+        return $<$Catalogue>(<Catalogue />, ...this.parts());
     }
 
 
@@ -47,21 +29,17 @@ export class $Composition extends $Writing implements $Composition$ {
     select<U>(pick: (part: $Writing) => U): U[] { return this.parts().map(pick); }
     selectMany<U>(pick: (part: $Writing) => U[]): U[] { return this.parts().flatMap(pick); }
     single(match: (part: $Writing) => boolean): $Writing {
-        const found = this.parts().filter(match);
-        if (found.length !== 1) throw new Error(`single expected exactly one part and found ${found.length}.`);
-        return found[0];
+        const matches = this.parts().filter(match);
+        if (matches.length !== 1) throw new Error(`single expected exactly one part and found ${matches.length}.`);
+        return matches[0];
     }
 
     concatenate(...more: $Composition$[]): $Composition {
-        const Asked = $(Composition);
-        return $<$Composition>(<Asked />, ...this.parts(), ...more.flatMap(one => one.parts()));
+        const Composition = $(composition);
+        return $<$Composition>(<Composition />, ...this.parts(), ...more.flatMap(one => one.parts()));
     }
 
-    protected reduce(held: (string | $Writing)[]): $Writing[] {
-        const below = this.type === undefined ? undefined : reflection.below(this.type);
-        const make = below === undefined ? undefined : parser.makes.get(below);
-        return make === undefined ? [] : make(held);
-    }
 }
 
 export const Composition = $($Composition);
+const composition = Composition;

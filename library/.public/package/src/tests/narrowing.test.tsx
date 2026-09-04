@@ -34,9 +34,9 @@ describe('a subclassed book composes subclassed chapters, dynamically', () => {
         const one = built<$MyBook>(<MyBook>{[<MyChapter key="a">{chain.Section('a')}</MyChapter>, <MyChapter key="b">{chain.Section('b')}</MyChapter>]}</MyBook>);
         expect(one.parts().length).toBe(2);
         expect(one.parts().every(part => part instanceof $MyChapter)).toBe(true);
-        expect(one.parts()[0].copy).toBe('a');
-        expect(one.select(part => part.copy)).toEqual(['a', 'b']);
-        expect(one.single(part => part.copy === 'b')).toBeInstanceOf($MyChapter);
+        expect(one.parts()[0].copy).toBe('Ta');
+        expect(one.select(part => part.copy)).toEqual(['Ta', 'Tb']);
+        expect(one.single(part => part.copy === 'Tb')).toBeInstanceOf($MyChapter);
     });
 
     it('and it still answers as everything above it', () => {
@@ -52,8 +52,10 @@ describe('a writing carrying ONE type reads as every level above it', () => {
         expect(reflection.is(writing, 'Chapter')).toBe(true);
     });
 
-    it('and a second type at one level is refused, however it is ordered', () => {
+    it('and a second type at one level is carried beside the first, which stays canonical', () => {
         const { writing } = drawn(chain.Section('a'), <Type>Chapter</Type>, <Type>Book</Type>);
-        expect(() => writing.specify()).toThrow(/typed once/);
+        expect(writing.types.length).toBe(2);
+        expect(reflection.is(writing, 'Chapter')).toBe(true);
+        expect(reflection.is(writing, 'Book')).toBe(true);
     });
 });

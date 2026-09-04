@@ -2,9 +2,9 @@ import { ComponentType, ReactNode } from 'react';
 import { $Block, $, $check, cache } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, $Type, TypedSpecification } from '@/writing/Writing';
-import { $Path, Path } from './Path';
+import { $Path, Path as path } from './Path';
 import { $Composition } from '@/writing/Composition';
-import { Anchor } from '@/encyclopedia/Anchor';
+import { Anchor as anchor } from '@/writing/Writing';
 import type { $References } from './References';
 
 export interface $Reference$ extends $Writing {
@@ -20,16 +20,16 @@ export class $Reference extends $Annotation implements $Reference$ {
     get path(): $Path | undefined { return (this.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path); }
 
     $Reference(block: $Block) {
-        const Asked = $(TypeOfReference);
-        this.type ??= $(<Asked />);
+        const TypeOfReference = $(typeOfReference);
+        this.type ??= $(<TypeOfReference />);
         super.$Writing(block);
         this.$pid ??= this.path?.copy;
     }
 
     override view(): ReactNode {
-        const Asked = $(Anchor);
+        const Anchor = $(anchor);
 
-        return <Asked href={this.path?.copy} onClick={() => this.focus()}>{this.path?.copy}</Asked>;
+        return <Anchor href={this.path?.copy} onClick={() => this.focus()}>{this.path?.copy}</Anchor>;
     }
 
     focus(): void {
@@ -46,7 +46,7 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     async read(): Promise<$Writing> {
-        const held = (this.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+        const held = (this.block?.$elements ?? []).find((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
         if (held) return held;
         const path = this.path;
         if (path === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
@@ -65,8 +65,8 @@ export class $TypeOfReference extends $Type {
         const block = reference.block;
         if (block && !(block.$elements ?? []).some(one => one instanceof $Path)
             && /^(?:[a-z][a-z0-9+.-]*:\/\/|\/|#)/iu.test(reference.copy) && URL.canParse(reference.copy, 'https://library')) {
-            const AskedPath = $(Path);
-            block.$elements = [...(block.$elements ?? []), $<$Path>(<AskedPath>{reference.copy}</AskedPath>)];
+            const Path = $(path);
+            block.$elements = [...(block.$elements ?? []), $<$Path>(<Path>{reference.copy}</Path>)];
         }
         super.specifically(reference);
     }
@@ -91,3 +91,4 @@ export const prints = new Map<string, ComponentType>();
 
 export const Reference = $($Reference);
 export const TypeOfReference = $($TypeOfReference);
+const typeOfReference = TypeOfReference;

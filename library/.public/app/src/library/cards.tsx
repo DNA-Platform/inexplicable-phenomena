@@ -1,6 +1,6 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, $$Book } from '@dna-platform/lib';
+import { $Book, $$Book } from '@dna-platform/public';
 
 // THE CARDS OF THIS LIBRARY, GENERATED. A card in the framework is an
 // $$Book and nothing more; which fields a library's cards carry is

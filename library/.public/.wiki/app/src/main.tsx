@@ -2,7 +2,7 @@ import { Suspense, lazy, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Outlet, useParams } from 'react-router-dom';
 import { $ } from '@dna-platform/chemistry';
-import { Ref } from '@dna-platform/lib';
+import { Ref } from '@dna-platform/public';
 import { books } from './library/books';
 import { cards } from './library/cards';
 

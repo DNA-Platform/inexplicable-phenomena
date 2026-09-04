@@ -1,4 +1,4 @@
-import type { $Book } from '@dna-platform/lib';
+import type { $Book } from '@dna-platform/public';
 
 export const books: Record<string, () => Promise<{ book: $Book }>> = {
     "/wikimedia": () => import('./..wikimedia/book'),

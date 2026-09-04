@@ -4,8 +4,8 @@ import { $Chapter, $TypeOfChapter } from './Chapter';
 
 export class $Synopsis extends $Chapter {
     $Synopsis(block: $Block) {
-        const Asked = $(TypeOfSynopsis);
-        this.type ??= $(<Asked />);
+        const TypeOfSynopsis = $(typeOfSynopsis);
+        this.type ??= $(<TypeOfSynopsis />);
         super.$Chapter(block);
     }
 }
@@ -21,3 +21,4 @@ export class $TypeOfSynopsis extends $TypeOfChapter {
 
 export const Synopsis = $($Synopsis);
 export const TypeOfSynopsis = $($TypeOfSynopsis);
+const typeOfSynopsis = TypeOfSynopsis;

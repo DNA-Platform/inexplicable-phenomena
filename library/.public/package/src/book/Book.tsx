@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, cache } from '@dna-platform/chemistry';
-import { Body } from '@/encyclopedia/Body';
+import { Body as body } from '@/encyclopedia/Body';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Type, TypedSpecification, $Writing } from '@/writing/Writing';
 import { Specification, specify } from '@/utilities/Specification';
@@ -10,10 +10,13 @@ import { $TableOfContents } from './TableOfContents';
 import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
 import { $Path } from '@/reference/Path';
 import { $TypeOfChapter } from './Chapter';
-import { $Index, Index } from './Index';
-import { $References, References } from '@/reference/References';
+import { $Index, Index as index } from './Index';
+import { $References, References as references } from '@/reference/References';
 
-export class $Book extends $Composition implements $Composition$ {
+export interface $Book$ extends $Composition$ {
+}
+
+export class $Book extends $Composition implements $Composition$, $Book$ {
     get chapters(): $Composition { return this; }
     get cover(): $Writing { return this.parts()[0]; }
     get synopsis(): $Synopsis | undefined { return this.parts().find((one): one is $Synopsis => one instanceof $Synopsis); }
@@ -25,22 +28,22 @@ export class $Book extends $Composition implements $Composition$ {
     get letters(): $Composition { return this.words.catalogue().comprehend(); }
 
     $Book(block: $Block) {
-        const Asked = $(TypeOfBook);
-        this.type ??= $(<Asked />);
+        const TypeOfBook = $(typeOfBook);
+        this.type ??= $(<TypeOfBook />);
         super.$Composition(block);
     }
 
     override frame(): ReactNode {
-        const Asked = $(Body);
+        const Body = $(body);
 
-        return <Asked>{super.frame()}</Asked>;
+        return <Body>{super.frame()}</Body>;
     }
 }
 
 export class $$Book extends $Reference {
     $$Book(block: $Block) {
-        const Asked = $(TypeOf$Book);
-        this.type ??= $(<Asked />);
+        const TypeOf$Book = $(typeOf$Book);
+        this.type ??= $(<TypeOf$Book />);
         super.$Reference(block);
     }
 }
@@ -50,11 +53,10 @@ export class $TypeOfBook extends $Type {
     override name = 'Book';
 
     override specifically(writing: $Writing): void {
-        if (writing.block && !(writing.block.$elements ?? []).some(one => one instanceof $Index)) {
-            const AskedIndex = $(Index);
-            const AskedReferences = $(References);
-            const index = $<$Index>(<AskedIndex />, $<$References>(<AskedReferences />));
-            writing.block.$elements = [...(writing.block.$elements ?? []), index];
+        if (writing.block && !(writing.block.$elements ?? []).some(index => index instanceof $Index)) {
+            const Index = $(index);
+            const References = $(references);
+            writing.block.$elements = [...(writing.block.$elements ?? []), $<$Index>(<Index />, $<$References>(<References />))];
         }
         super.specifically(writing);
     }
@@ -82,7 +84,7 @@ export class BookSpecification extends TypedSpecification<$Writing> {
     @specify('a book ends with its index')
     $endsWithIndex(writing: $Writing): void {
         const elements = (writing.block?.$elements ?? []);
-        const at = elements.findIndex(one => one instanceof $Index);
+        const at = elements.findIndex(index => index instanceof $Index);
         $check(at >= 0 && at === elements.length - 1,
             'a book ends with its index, and this one does not');
     }
@@ -93,7 +95,7 @@ export class BookSpecification extends TypedSpecification<$Writing> {
         $check(elements.every(one => typeof one !== 'string' || one.trim() === ''),
             'a book is written as chapters, and this one carries loose text');
         const inside = elements
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+            .filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
         $check(inside.every(one => reflection.is(one, $TypeOfChapter)),
             'a book is written as chapters, and something in this one could never be one');
     }
@@ -106,13 +108,15 @@ export class $BookSpecification extends ReferenceSpecification {
         const step = path?.copy.split('/').pop();
         $check(!!step && step.startsWith('Bk:'),
             'a reference to a book lands on one, and this path lands on something else');
-        const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.is(held, $TypeOfBook),
+        const target = (writing.block?.$elements ?? []).find((part): part is $Writing => part instanceof $Writing && !part.parenthetical);
+        $check(target === undefined || reflection.is(target, $TypeOfBook),
             'a reference to a book lands on one, and what it holds is not one');
     }
 }
 
 export const Book = $($Book);
 export const TypeOfBook = $($TypeOfBook);
+const typeOfBook = TypeOfBook;
 export const TypeOf$Book = $($TypeOf$Book);
+const typeOf$Book = TypeOf$Book;
 prints.set('Bk', $($$Book));

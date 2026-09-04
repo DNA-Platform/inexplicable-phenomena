@@ -1,7 +1,7 @@
 import { philosophy, theTeam } from '../../cards';
 import React, { type ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Cover, Section, Title, Author, Subject, Canonical, Paragraph } from '@dna-platform/lib';
+import { $Cover, Section, Title, Author, Subject, Canonical, Paragraph } from '@dna-platform/public';
 
 export class $HardProblemCover extends $Cover {
     view(): ReactNode {

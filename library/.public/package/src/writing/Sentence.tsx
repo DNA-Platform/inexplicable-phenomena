@@ -8,22 +8,25 @@ import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/
 import { $Path } from '@/reference/Path';
 import { reflection } from '@/utilities/Reflection';
 
-export class $Sentence extends $Composition implements $Composition$ {
+export interface $Sentence$ extends $Composition$ {
+}
+
+export class $Sentence extends $Composition implements $Composition$, $Sentence$ {
     get words(): $Composition { return this; }
     get letters(): $Composition { return this.catalogue().comprehend(); }
     override get canonical(): boolean { return !this.copy.endsWith('\n'); }
 
     $Sentence(block: $Block) {
-        const Asked = $(TypeOfSentence);
-        this.type ??= $(<Asked />);
+        const TypeOfSentence = $(typeOfSentence);
+        this.type ??= $(<TypeOfSentence />);
         super.$Composition(block);
     }
 }
 
 export class $$Sentence extends $Reference {
     $$Sentence(block: $Block) {
-        const Asked = $(TypeOf$Sentence);
-        this.type ??= $(<Asked />);
+        const TypeOf$Sentence = $(typeOf$Sentence);
+        this.type ??= $(<TypeOf$Sentence />);
         super.$Reference(block);
     }
 }
@@ -63,7 +66,7 @@ export class SentenceSpecification extends TypedSpecification<$Writing> {
     @specify('a sentence is written as words')
     $writtenAsWords(writing: $Writing): void {
         const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
+            .filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
         $check(inside.every(one => reflection.is(one, $TypeOfWord) || reflection.is(one, $TypeOfSentence)),
             'a sentence is written as words, and something in this one is not one');
     }
@@ -83,10 +86,13 @@ export class $SentenceSpecification extends ReferenceSpecification {
 }
 
 export const Sentence = $($Sentence);
+const sentence = Sentence;
 parser.makes.set('Sentence', held => {
-    const Asked = $(Sentence);
-    return parser.sentences(held).map(line => $(<Asked>{parser.elements(line)}</Asked>) as $Writing);
+    const Sentence = $(sentence);
+    return parser.sentences(held).map(line => $(<Sentence>{parser.elements(line)}</Sentence>) as $Writing);
 });
 export const TypeOfSentence = $($TypeOfSentence);
+const typeOfSentence = TypeOfSentence;
 export const TypeOf$Sentence = $($TypeOf$Sentence);
+const typeOf$Sentence = TypeOf$Sentence;
 prints.set('Se', $($$Sentence));

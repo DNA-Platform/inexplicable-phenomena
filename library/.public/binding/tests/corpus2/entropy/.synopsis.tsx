@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Synopsis, Section, Title, Paragraph, Sentence } from '@dna-platform/lib';
+import { Synopsis, Section, Title, Paragraph, Sentence } from '@dna-platform/public';
 
 export const EntropySynopsis = $(
     <Synopsis>

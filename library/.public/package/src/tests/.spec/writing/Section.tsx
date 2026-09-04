@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { Section } from '@/writing/Section';
-import { Title } from '@/writing/Title';
+import { Heading } from '@/writing/Heading';
 import { Paragraph } from '@/writing/Paragraph';
 import { Writing, Type } from '@/writing/Writing';
 import { Path } from '@/reference/Path';
@@ -12,12 +12,12 @@ export class $SectionParagraphsExample extends $Chemical {
     view(): ReactNode {
         return (
             <Section>
-                <Title>What a section is written as</Title>
+                <Heading>What a section is written as</Heading>
                 <Paragraph>
-                    A section is written as paragraphs, and every one of them is delineated by whoever wrote it.
+                    A section is written as paragraphs, and every one of them is delineated by whoever wrote it
                 </Paragraph>
                 <Paragraph>
-                    Nothing is divided at this level. A paragraph arrives already a paragraph, and the section only gathers what it was given.
+                    A paragraph arrives already a paragraph, and the section only gathers what it was given
                 </Paragraph>
             </Section>
         );
@@ -32,9 +32,9 @@ export class $SectionNestedExample extends $Chemical {
     view(): ReactNode {
         return (
             <Section>
-                <Title>The outer section</Title>
+                <Heading>The outer section</Heading>
                 <Section>
-                    <Title>The inner section</Title>
+                    <Heading>The inner section</Heading>
                     <Paragraph>
                         The nested contributes its parts to the parts, its title among them.
                     </Paragraph>
@@ -55,8 +55,8 @@ export class $SectionTextExample extends $Chemical {
     view(): ReactNode {
         return (
             <Section>
-                <Title>A section written as prose</Title>
-                Everything after the title, first character to last, is ONE paragraph. It is not divided at this level, however many sentences it carries.
+                <Heading>A section written as prose</Heading>
+                Everything after the heading, first character to last, is ONE paragraph
             </Section>
         );
     }
@@ -69,12 +69,12 @@ export class $SectionWritingExample extends $Chemical {
     view(): ReactNode {
         return (
             <Writing>
-                <Title>What a section is written as</Title>
+                <Heading>What a section is written as</Heading>
                 <Paragraph>
-                    A section is written as paragraphs, and every one of them is delineated by whoever wrote it.
+                    A section is written as paragraphs, and every one of them is delineated by whoever wrote it
                 </Paragraph>
                 <Paragraph>
-                    Nothing is divided at this level. A paragraph arrives already a paragraph, and the section only gathers what it was given.
+                    A paragraph arrives already a paragraph, and the section only gathers what it was given
                 </Paragraph>
                 <Type>Section</Type>
             </Writing>

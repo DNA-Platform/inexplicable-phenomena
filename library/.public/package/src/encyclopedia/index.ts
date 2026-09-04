@@ -1,5 +1,3 @@
-export * from './Style';
-export * from './Anchor';
 export * from './Article';
 export * from './Body';
 export * from './Bullets';
