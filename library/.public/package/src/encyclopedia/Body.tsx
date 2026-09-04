@@ -1,12 +1,16 @@
-import { styled } from '@/utilities/Styled';
+import { $, styled } from '@dna-platform/chemistry';
+import { $Style } from './Style';
 
-export const Body = styled.main`
-    max-width: 60em;
-    margin: 0 auto;
-    padding: 1.5em;
-    background: #fff;
-    color: #202122;
-    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-`;
+export class $Body extends $Style {
+    selector = styled.main;
+    margin = '0 auto';
+    padding = '1.5em';
+    get maxWidth() { return this.theme.measure; }
+    get background() { return this.theme.paper; }
+    get color() { return this.theme.ink; }
+    get fontFamily() { return this.theme.body; }
+    get fontSize() { return this.theme.size; }
+    get lineHeight() { return this.theme.leading; }
+}
+
+export const Body = $($Body);

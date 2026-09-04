@@ -27,7 +27,9 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     override view(): ReactNode {
-        return <Anchor href={this.path?.copy} onClick={() => this.focus()}>{this.path?.copy}</Anchor>;
+        const Asked = $(Anchor);
+
+        return <Asked href={this.path?.copy} onClick={() => this.focus()}>{this.path?.copy}</Asked>;
     }
 
     focus(): void {

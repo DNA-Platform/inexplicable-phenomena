@@ -66,15 +66,18 @@ export class $References extends $Section {
         const written = (this.block?.$elements ?? [])
             .filter((one): one is $Reference => one instanceof $Reference);
         const recollection = [...this.recollection].reverse();
+        const Held = $(Heading);
+        const Asked = $(Cited);
+
         return <>
-            <Heading>References</Heading>
-            <Cited>{written.map((one, at) => {
+            <Held>References</Held>
+            <Asked>{written.map((one, at) => {
                 const Cite = $(one);
                 return <li key={at}><Cite /></li>;
             })}{recollection.map(one => {
                 const Cite = $(one);
                 return <li key={one.path?.copy ?? ''}><Cite /></li>;
-            })}</Cited>
+            })}</Asked>
         </>;
     }
 }

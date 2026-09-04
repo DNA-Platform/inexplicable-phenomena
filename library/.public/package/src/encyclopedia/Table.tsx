@@ -1,22 +1,17 @@
-import { styled } from '@/utilities/Styled';
+import { $, select, styled } from '@dna-platform/chemistry';
+import { $Style } from './Style';
 
-export const Table = styled.table`
-    background: #f8f9fa;
-    color: #202122;
-    border: 1px solid #a2a9b1;
-    border-collapse: collapse;
-    margin: 1em 0;
-`;
+export class $Table extends $Style {
+    selector = styled.table;
+    borderCollapse = 'collapse';
+    margin = '1em 0';
+    @select('td, th') padding = '0.2em 0.4em';
+    @select('th') textAlign = 'center';
+    @select('th') fontWeight = 'bold';
+    get background() { return this.theme.quiet; }
+    get color() { return this.theme.ink; }
+    @select('td, th') get border() { return `1px solid ${this.theme.rule}`; }
+    @select('th') get head_background() { return this.theme.shade; }
+}
 
-export const Cell = styled.td`
-    border: 1px solid #a2a9b1;
-    padding: 0.2em 0.4em;
-`;
-
-export const Header = styled.th`
-    background: #eaecf0;
-    border: 1px solid #a2a9b1;
-    padding: 0.2em 0.4em;
-    text-align: center;
-    font-weight: bold;
-`;
+export const Table = $($Table);

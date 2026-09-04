@@ -16,7 +16,9 @@ export class $Title extends $Composition implements $Composition$ {
     override view(): ReactNode {
         if (!this.block) return null;
         const Block = $(this.block as never);
-        return <Heading><Block /></Heading>;
+        const Asked = $(Heading);
+
+        return <Asked><Block /></Asked>;
     }
 
     override frame(): ReactNode {

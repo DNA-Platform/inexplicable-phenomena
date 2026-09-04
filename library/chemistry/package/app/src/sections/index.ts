@@ -40,6 +40,7 @@ import { sectionData as blocks } from './blocks-showcase';
 import { sectionData as formula } from './formula-section';
 import { sectionData as facesSection } from './facades-section';
 import { sectionData as assigned } from './assigned-properties';
+import { sectionData as styledSection } from './styled-section';
 
 export type SectionModule = {
     id: string;
@@ -89,6 +90,7 @@ const modules: SectionModule[] = [
     formula,
     facesSection,
     assigned,
+    styledSection,
 ];
 
 export const sectionModules: Record<string, SectionModule> = Object.fromEntries(

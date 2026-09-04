@@ -17,6 +17,16 @@
       "types": "./dist/lib.d.ts",
       "import": "./dist/lib.js",
       "require": "./dist/lib.cjs"
+    },
+    "./encyclopedia": {
+      "types": "./dist/encyclopedia.d.ts",
+      "import": "./dist/encyclopedia.js",
+      "require": "./dist/encyclopedia.cjs"
+    },
+    "./utilities": {
+      "types": "./dist/utilities.d.ts",
+      "import": "./dist/utilities.js",
+      "require": "./dist/utilities.cjs"
     }
   },
   "files": [

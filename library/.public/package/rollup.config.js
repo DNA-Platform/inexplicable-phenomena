@@ -41,5 +41,38 @@ module.exports = [
         input: 'src/index.ts',
         output: { file: 'dist/lib.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })]
+    },
+    // @dna-platform/lib/encyclopedia — the Wikipedia default dress. Its own
+    // surface because its words are the encyclopedia's, not the library's, and
+    // a Table there is a different thing from a Table in the writing.
+    {
+        input: 'src/encyclopedia/index.ts',
+        output: [
+            { file: 'dist/encyclopedia.js',  format: 'es',  sourcemap: true },
+            { file: 'dist/encyclopedia.cjs', format: 'cjs', sourcemap: true }
+        ],
+        plugins: [at(), tsPlugin()],
+        external: externalDeps
+    },
+    {
+        input: 'src/encyclopedia/index.ts',
+        output: { file: 'dist/encyclopedia.d.ts', format: 'es' },
+        plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })]
+    },
+    // @dna-platform/lib/utilities — the machinery a consumer reaches for
+    // deliberately rather than by opening the library.
+    {
+        input: 'src/utilities/index.ts',
+        output: [
+            { file: 'dist/utilities.js',  format: 'es',  sourcemap: true },
+            { file: 'dist/utilities.cjs', format: 'cjs', sourcemap: true }
+        ],
+        plugins: [at(), tsPlugin()],
+        external: externalDeps
+    },
+    {
+        input: 'src/utilities/index.ts',
+        output: { file: 'dist/utilities.d.ts', format: 'es' },
+        plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })]
     }
 ];

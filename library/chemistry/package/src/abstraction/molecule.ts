@@ -12,7 +12,7 @@ const universalProperties = ['$show', '$hide', '$look'];
 // otherwise be bonded as a REAGENT — cached at the moment it is formed and
 // answered as a bound wrapper, so what the framework got back would be neither
 // the function it was handed nor the one it was handed later.
-const framework = new Set(['toString', '$form', '$new', '$on']);
+const framework = new Set(['toString', '$form', '$new', '$on', 'selector']);
 
 // $Molecule — structural description of a chemical.
 //

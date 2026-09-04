@@ -1,10 +1,13 @@
-import { styled } from '@/utilities/Styled';
+import { $, select, styled } from '@dna-platform/chemistry';
+import { $Style } from './Style';
 
-export const Anchor = styled.a`
-    color: #3366cc;
-    text-decoration: none;
+export class $Anchor extends $Style {
+    selector = styled.a;
+    textDecoration = 'none';
+    $href: string | undefined = undefined;
+    $onClick: (() => void) | undefined = undefined;
+    @select('&:hover') hover_textDecoration = 'underline';
+    get color() { return this.theme.link; }
+}
 
-    &:hover {
-        text-decoration: underline;
-    }
-`;
+export const Anchor = $($Anchor);

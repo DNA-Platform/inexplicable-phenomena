@@ -23,15 +23,18 @@ export class $Index extends $Chapter {
         const written = (references.block?.$elements ?? [])
             .filter((one): one is $Reference => one instanceof $Reference);
         const recollection = [...references.recollection].reverse();
+        const Held = $(Heading);
+        const Asked = $(Cited);
+
         return <>
-            <Heading>Index</Heading>
-            <Cited>{written.map((one, at) => {
+            <Held>Index</Held>
+            <Asked>{written.map((one, at) => {
                 const Cite = $(one);
                 return <li key={at}><Cite /></li>;
             })}{recollection.map(one => {
                 const Cite = $(one);
                 return <li key={one.path?.copy ?? ''}><Cite /></li>;
-            })}</Cited>
+            })}</Asked>
         </>;
     }
 }

@@ -12,9 +12,9 @@ import { $Path } from './Path';
 import { Anchor } from '@/encyclopedia/Anchor';
 import { parser } from '@/utilities/Parser';
 
-const Routed = ({ to, children }: { to: string; children: ReactNode }) => useInRouterContext()
+const Routed = ({ to, children, held: Held }: { to: string; children: ReactNode; held: typeof Anchor }) => useInRouterContext()
     ? <Link to={to}>{children}</Link>
-    : <Anchor href={to}>{children}</Anchor>;
+    : <Held href={to}>{children}</Held>;
 
 export class $Ref extends $Composition implements $Composition$, $Reference$ {
     override indent = 1;
@@ -33,9 +33,11 @@ export class $Ref extends $Composition implements $Composition$, $Reference$ {
     override view(): ReactNode {
         const url = this.url;
         if (url === undefined) return super.view();
+        const Asked = $(Anchor);
         const internal = /^[A-Z][a-z]?:\d+/.test(url) || (URL.canParse(url, 'https://library') && new URL(url, 'https://library').origin === 'https://library');
-        if (internal) return <Routed to={url}>{this.written}</Routed>;
-        return <Anchor href={url}>{this.written}</Anchor>;
+        if (internal) return <Routed to={url} held={Asked}>{this.written}</Routed>;
+
+        return <Asked href={url}>{this.written}</Asked>;
     }
 
     async read(): Promise<$Writing> {

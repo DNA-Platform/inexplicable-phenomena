@@ -5,7 +5,7 @@ import { Specification, specify } from '@/utilities/Specification';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $TypeOfSection, SectionSpecification } from './Section';
 import { reflection } from '@/utilities/Reflection';
-import { Wikitable, Cell } from '@/encyclopedia/Wikitable';
+import { Table as Wikitable } from '@/encyclopedia/Table';
 
 export class $Table extends $Composition implements $Composition$ {
     $columns?: number;
@@ -21,10 +21,12 @@ export class $Table extends $Composition implements $Composition$ {
         const per = this.$columns ?? 1;
         const rows: $Writing[][] = [];
         for (let at = 0; at < cells.length; at += per) rows.push(cells.slice(at, at + per));
-        return <Wikitable><tbody>{rows.map((row, at) => <tr key={at}>{row.map((one, seat) => {
+        const Held = $(Wikitable);
+
+        return <Held><tbody>{rows.map((row, at) => <tr key={at}>{row.map((one, seat) => {
             const Piece = $(one);
-            return <Cell key={seat}><Piece /></Cell>;
-        })}</tr>)}</tbody></Wikitable>;
+            return <td key={seat}><Piece /></td>;
+        })}</tr>)}</tbody></Held>;
     }
 }
 

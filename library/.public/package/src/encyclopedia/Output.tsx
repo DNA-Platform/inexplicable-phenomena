@@ -1,7 +1,9 @@
-import { styled } from '@/utilities/Styled';
+import { $, select, styled } from '@dna-platform/chemistry';
+import { $Style } from './Style';
 
-export const Output = styled.div`
-    > *:first-child {
-        margin-top: 0;
-    }
-`;
+export class $Output extends $Style {
+    selector = styled.div;
+    @select('> *:first-child') marginTop = '0';
+}
+
+export const Output = $($Output);

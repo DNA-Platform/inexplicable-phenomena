@@ -499,6 +499,7 @@ export const catalogue: Group[] = [
             { id: 'formula', title: 'Formulas', symbol: 'Fo', planned: [] },
             { id: 'facades', title: 'Facades', symbol: 'Fc', planned: [] },
             { id: 'assigned', title: 'Assigned properties', symbol: 'As', planned: [] },
+            { id: 'styled', title: 'Styled chemicals', symbol: 'St', planned: [] },
         ],
     },
     {

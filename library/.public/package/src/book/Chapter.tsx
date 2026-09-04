@@ -28,7 +28,10 @@ export class $Chapter extends $Composition implements $Composition$ {
     }
 
     override frame(): ReactNode {
-        return <Article><Output>{super.frame()}</Output></Article>;
+        const Held = $(Article);
+        const Asked = $(Output);
+
+        return <Held><Asked>{super.frame()}</Asked></Held>;
     }
 
 }

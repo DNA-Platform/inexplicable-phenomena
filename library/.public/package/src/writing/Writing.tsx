@@ -36,9 +36,10 @@ export class $Writing extends $Chemical implements $Referent$ {
 
     view(): ReactNode {
         const Writing = this.block ? $(this.block) : null;
+        const Asked = $(Anchor);
         const means = this.means;
         if (means?.path !== undefined)
-            return <Anchor href={means.path.copy}>{Writing && <Writing />}</Anchor>;
+            return <Asked href={means.path.copy}>{Writing && <Writing />}</Asked>;
         return <>
             {Writing && <Writing />}
         </>;

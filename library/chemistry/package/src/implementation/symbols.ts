@@ -26,6 +26,11 @@ export const $$parseCid$$ = Symbol("$Particle.static.parseCid");
 // own vocabulary. A plain name is spent only on what every chemical has.
 export const cache = Symbol("$Chemical.cache");
 
+// The component a styled particle renders through, compiled once per class from
+// the CSS fields it declares. Read it to reach the compiled component; declare
+// `selector` to say what it is built from.
+export const style = Symbol("$Particle.style");
+
 // The children a chemical was given. A SYMBOL rather than a property, so that a view
 // reaches for its BLOCK and never for the raw children it happens to have been handed.
 export const children = $children$;

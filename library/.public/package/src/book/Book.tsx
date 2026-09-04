@@ -31,7 +31,9 @@ export class $Book extends $Composition implements $Composition$ {
     }
 
     override frame(): ReactNode {
-        return <Body>{super.frame()}</Body>;
+        const Asked = $(Body);
+
+        return <Asked>{super.frame()}</Asked>;
     }
 }
 

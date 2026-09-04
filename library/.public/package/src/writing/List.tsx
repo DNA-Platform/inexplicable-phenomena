@@ -14,7 +14,9 @@ export class $List extends $Composition implements $Composition$ {
 
     override view(): ReactNode {
         const lines = html.text(this.block).split('\n').filter(line => line.trim() !== '');
-        return <Bullets>{lines.map((line, at) => <li key={at}>{line}</li>)}</Bullets>;
+        const Asked = $(Bullets);
+
+        return <Asked>{lines.map((line, at) => <li key={at}>{line}</li>)}</Asked>;
     }
 
     override frame(): ReactNode {

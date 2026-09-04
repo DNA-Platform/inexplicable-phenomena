@@ -29,7 +29,11 @@ export { $lookup, $load } from './framework/load';
 export { inert, reactive, look } from './abstraction/bond';
 
 // Members a chemical implements, carried as symbols so they cost no name
-export { cache, children } from './implementation/symbols';
+export { cache, children, style } from './implementation/symbols';
+
+// Styling — the resolved styled-components callable, so nothing downstream
+// writes the dual-shape import again.
+export { styled, select } from './abstraction/styled';
 export { hydration } from './implementation/hydration';
 
 // Bond-constructor validation helpers (used inside user bond ctors)

@@ -6,8 +6,9 @@ import {
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
-    $renderView$, $views$, looks
+    $renderView$, $views$, looks, style
 } from "../implementation/symbols";
+import { compile, given, styledFor } from "./styled";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
 import { augment, assigned, unassign } from "../implementation/augment";
@@ -70,6 +71,17 @@ export class $Particle {
     // Inline vs block: a class declares itself inline (flows within a text block)
     // in its constructor; block is the default. Read from the template, frozen.
     inline = false;
+
+    // What this class is styled as — `selector = styled.main` says it renders
+    // through a <main> carrying the CSS its fields declare. A finished styled
+    // component stands as it is and nothing compiles. `styled` is the explicit
+    // word: undefined defers to the selector, true and false decide outright.
+    selector?: any;
+    styled?: boolean;
+
+    // The compiled component, built once per class and read through the
+    // prototype by every instance of it.
+    get [style](): any { return compile(this)?.component; }
 
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
@@ -136,7 +148,8 @@ export class $Particle {
 
         if (!drawn) throw new Error(missingLook(this, table, this.$look));
 
-        return drawn.call(this);
+        const view = drawn.call(this);
+        return this.selector === undefined ? view : styling(this, view);
     }
 
     [$renderView$](): ReactNode {
@@ -291,6 +304,35 @@ function deepestLook(particle: any): number {
     return deepest;
 }
 
+// A STYLED PARTICLE WRITES THE ELEMENT IT IS STYLED AS, and this stands that
+// element as the component compiled from its CSS fields, carrying the live
+// values the compiled interpolations read. NOTHING IS ADDED TO THE TREE: the
+// element the view wrote is the element the page gets. Reached only when a
+// selector was declared, so nothing else pays for it — and a class wanting the
+// component itself overrides frame() and reaches it at [style].
+function styling(particle: any, drawn: ReactNode): ReactNode {
+    const made = styledFor(particle);
+    if (!made) return drawn;
+
+    const props = given(made, particle);
+    const written = outer(drawn);
+
+    // A class that WROTE the element it is styled as is styled where it stands,
+    // and nothing is added to the tree. A DRESS writes none — what it holds is
+    // what it was given — so it is handed the element here.
+    return written?.type === made.tag
+        ? { ...written, props: { ...written.props as object, ...props }, type: made.component }
+        : React.createElement(made.component, props, drawn);
+}
+
+// The one element a view drew, seen through the wrappers that hold exactly one.
+function outer(node: ReactNode): any {
+    if (Array.isArray(node)) return node.length === 1 ? outer(node[0]) : undefined;
+    if (!React.isValidElement(node)) return undefined;
+    return node.type === React.Fragment ? outer((node.props as any).children) : node;
+}
+
+
 function missingLook(particle: any, table: Map<number | string, unknown>, asked: number | string): string {
     const held = [...table.keys()];
     const drawn = held.filter(key => typeof key === 'number').length;
@@ -352,6 +394,10 @@ export function applyRenderFilters(p: $Particle): ReactNode | undefined {
 //   Non-template: Instance IS the component. No clone, no derivative.
 //                 State persists across unmount/remount. Caller owns lifecycle.
 export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?: boolean): $Component<T> {
+    // Compiled here because this is the one factory both particles and chemicals
+    // pass through, and it runs before anything of that class renders — so the
+    // walk only ever reads an answer, and no template is seeded mid-render.
+    compile(parent);
     const direct = !(parent as any)[$isTemplate$];
     const Component = (props?: $Props): ReactNode => {
         const [cid, setCid] = useState(-1);

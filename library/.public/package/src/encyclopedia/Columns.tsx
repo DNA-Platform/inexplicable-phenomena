@@ -1,6 +1,11 @@
-import { styled } from '@/utilities/Styled';
+import { $, styled } from '@dna-platform/chemistry';
+import { $Style } from './Style';
 
-export const Columns = styled.div`
-    column-count: 3;
-    column-gap: 2em;
-`;
+export class $Columns extends $Style {
+    selector = styled.div;
+    columnCount = '3';
+    columnGap = '2em';
+    get columnRuleColor() { return this.theme.rule; }
+}
+
+export const Columns = $($Columns);
