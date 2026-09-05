@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/public';
+import { Chapter, Heading, Paragraph, Ref, Section, Sentence } from '@dna-platform/public';
 
 export const TheHardProblem = $(
     <Chapter>
         <Section>
-            <Title>The Hard Problem</Title>
+            <Heading>The Hard Problem</Heading>
             <Paragraph>{
                 'The easy problems of consciousness ask how the brain discriminates, integrates, and reports, and each yields to the standard methods of cognitive science.\n' +
                 'The hard problem asks why any of that processing is accompanied by experience.\n' +

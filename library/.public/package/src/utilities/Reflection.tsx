@@ -1,81 +1,81 @@
-import { createElement } from 'react';
-import { $ } from '@dna-platform/chemistry';
-import { $Type, $Writing } from '@/writing/Writing';
+import { $Block } from '@dna-platform/chemistry';
+import { $Annotation, $Type, $Writing } from '@/writing/Writing';
 
 export class Reflection {
-    private templates = new WeakMap<new () => $Type, $Type>();
-    private declarations = new WeakMap<new () => $Writing, $Type | undefined>();
-    private bares = new WeakMap<new () => $Writing, $Writing>();
+    private templates = new WeakMap<new() => $Type, $Type>();
 
-    protected levels = ['Book', 'Chapter', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
+    protected compositions = ['Book', 'Chapter', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
+    protected codes = ['Bk', 'Cr', 'Sn', 'Ph', 'Se', 'Wd', 'Lr'];
 
-    is(writing: $Writing, asked: (new () => $Type) | string): boolean {
-        const worn = [writing.type, this.declared(writing), ...writing.types].filter((one): one is $Type => one instanceof $Type);
-        if (typeof asked === 'string')
-            return worn.some(one => this.names(one).includes(asked) || one.copy === asked);
-        return worn.some(one => one instanceof asked);
+    is(writing: $Writing, asked: new() => $Type): boolean {
+        return this.types(writing).some(type => type instanceof asked);
     }
 
-    below(type: $Type): string | undefined {
-        const names = this.names(type);
-        const at = this.levels.findIndex(level => names.includes(level));
-        return at >= 0 && at < this.levels.length - 1 ? this.levels[at + 1] : undefined;
+    instanceOf(part: unknown, asked: new() => $Type): boolean {
+        return part instanceof $Writing && this.is(part, asked);
     }
 
-    level(type: $Type): boolean {
-        return this.levels.includes(type.name);
+    writing(part: unknown): part is $Writing {
+        return part instanceof $Writing;
     }
 
-    code(name: string): string {
-        return name[0].toUpperCase() + name[name.length - 1].toLowerCase();
+    composition(type: $Type | undefined): boolean {
+        return type !== undefined && this.names(type).some(name => this.compositions.includes(name));
     }
 
-    indent(writing: $Writing): number {
-        const kind = writing.constructor as new () => $Writing;
-        const bare = this.bares.get(kind) ?? new kind();
-        this.bares.set(kind, bare);
-        return Math.max(bare.indent, writing.indent, this.deep(writing));
+    annotations(writing: $Writing): $Annotation[] {
+        return (writing._block.$elements ?? []).filter((part): part is $Annotation => part instanceof $Annotation);
     }
 
-    protected deep(writing: $Writing): number {
-        const of = writing.type?.constructor as (new () => $Type) | undefined;
-        if (of === undefined) return 0;
-        let depth = 0;
-        for (let at = writing.parent; at instanceof $Writing && at !== at.parent; at = at.parent)
-            if (at.type instanceof of) depth += 1;
-        return depth;
+    types(writing: $Writing): $Type[] {
+        return (writing._block.$elements ?? []).filter((part): part is $Type => part instanceof $Type);
+    }
+
+    means(writing: $Writing): $Annotation | undefined {
+        return (writing._block.$elements ?? []).find((part): part is $Annotation =>
+            part instanceof $Annotation && this.types(part).some(type => this.names(type).includes('Reference')));
+    }
+
+    beneath(holding: $Type | undefined, held: $Type | undefined): boolean {
+        if (holding === undefined || held === undefined) return false;
+        for (let kind = holding.constructor as (new() => $Type) | undefined; kind !== undefined;) {
+            if (held instanceof kind) return true;
+            kind = this.template(kind).below();
+        }
+        return false;
     }
 
     names(type: $Type): string[] {
         const names = [type.name];
-        for (let at = Object.getPrototypeOf(Object.getPrototypeOf(type)); at !== null && at !== Object.prototype; at = Object.getPrototypeOf(at)) {
-            const kind = at.constructor as new () => $Type;
-            if (kind === ($Type as never)) break;
-            const template = this.templates.get(kind) ?? new kind();
-            this.templates.set(kind, template);
-            if (template.name !== names[names.length - 1]) names.push(template.name);
+        for (let kind = Object.getPrototypeOf(type.constructor) as (new() => $Type) | null;
+            kind !== null && (kind as never) !== $Type; kind = Object.getPrototypeOf(kind)) {
+            const named = this.template(kind).name;
+            if (named !== names[names.length - 1]) names.push(named);
         }
         return names;
     }
 
     classNames(writing: $Writing): string[] {
-        const found: string[] = [];
-        if (writing.type instanceof $Type) found.push(...this.names(writing.type).reverse());
-        for (const one of writing.types) if (one !== writing.type) found.push(one.copy !== '' ? one.copy : one.name);
-        return [...new Set(found)].map(one => `pd-${this.kebab(one)}`);
+        const named = this.types(writing).flatMap(type => this.names(type).reverse());
+        return [...new Set(named)].map(name => `pd-${this.kebab(name)}`);
     }
 
-    protected declared(writing: $Writing): $Type | undefined {
-        const kind = writing.constructor as new () => $Writing;
-        if (this.declarations.has(kind)) return this.declarations.get(kind);
-        const Kind = $(kind);
-        const made = $(createElement(Kind as never)) as $Writing;
-        this.declarations.set(kind, made.type);
-        return made.type;
+    code(type: $Type): string | undefined {
+        const at = this.names(type)
+            .map(name => this.compositions.indexOf(name.replace(/^\$/u, '')))
+            .find(place => place >= 0);
+        return at === undefined ? undefined : this.codes[at];
+    }
+
+    template(kind: new() => $Type): $Type {
+        const held = this.templates.get(kind) ?? new kind();
+        held._block ??= new $Block();
+        this.templates.set(kind, held);
+        return held;
     }
 
     protected kebab(name: string): string {
-        return name.replace(/(?<!^)[A-Z]/gu, '-$&').toLowerCase();
+        return name.replace(/(?<!^)[A-Z]/gu, '-$&').toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '');
     }
 }
 

@@ -8,7 +8,7 @@ import {
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
     $devError$, $devException$, $watched$,
-    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$
+    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, framework
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
@@ -776,7 +776,7 @@ export class $ParamValidation {
         return false;
     }
 
-    private static validateArgument(arg: any, type: any): boolean {
+    static validateArgument(arg: any, type: any): boolean {
         if (Array.isArray(type)) {
             if (!Array.isArray(arg)) return false;
             const elementType = type[0];
@@ -836,6 +836,15 @@ export class $ParamValidation {
 
 export const $paramValidation = new $ParamValidation();
 
+// MAKING ONE IS ASKING FOR ONE THAT IS NOT THERE. '!' as the last argument says
+// the caller wants an instance rather than a refusal: $check(Kind, '!') makes one,
+// and $check(held, Kind, '!') keeps what was handed in when it fits and makes one
+// when it does not. It is built through $, so the scope answers with whatever it
+// has registered for that kind — the same door $(<Kind />) goes through, with the
+// fetch and the evaluation in one call so neither can be forgotten. This
+// generalizes what a 'block' already does: materialize when asked, rather than raise.
+export function $check<T>(kind: Component<T> | (new () => T), made: '!'): T;
+export function $check<T>(arg: unknown, kind: Component<T> | (new () => T), made: '!'): T;
 export function $check<T>(arg: T, ...types: $ParameterType[]): T;
 export function $check(held: boolean, reason: string): boolean;
 
@@ -843,6 +852,14 @@ export function $check(arg: any, ...rest: any[]): any {
     if (typeof arg === 'boolean' && rest.length === 1 && typeof rest[0] === 'string') {
         if (!arg) $paramValidation.raise(rest[0]);
         return arg;
+    }
+    if (rest[rest.length - 1] === '!') {
+        const types = rest.slice(0, -1);
+        const kind = types.length === 0 ? arg
+            : arg === undefined || !types.some(type => $ParamValidation.validateArgument(arg, type)) ? types[0]
+            : undefined;
+        if (kind === undefined) return $paramValidation.check(arg, ...types);
+        return $(React.createElement($(kind) as any));
     }
     return $paramValidation.check(arg, ...rest);
 }
@@ -1014,7 +1031,6 @@ export class $Chemical extends $Particle {
     protected [cache](key?: string): void {
         const chain = branch((this as any)[$type$]);
         const ref = key === undefined ? standing : { $ref: key };
-        if (key !== undefined && chain.slice(1).some(cls => catalogueOf(cls).$find(ref) !== undefined)) return;
         Object.defineProperty(this, $isTemplate$, { value: true, configurable: true });
         for (const cls of chain) {
             const held = catalogueOf(cls);
@@ -1167,12 +1183,13 @@ export class $Chemical extends $Particle {
         for (const bond of this[$molecule$].bonds.values())
             if ($Reflection.isSpecial(bond.property)) {
                 seen.add(bond.property);
+                if (framework.has(bond.property)) continue;
                 const value = $this[bond.property];
                 if (value !== undefined) props[bond.property.slice(1)] = value;
             }
         for (const key of Object.keys($this)) {
             if (seen.has(key)) continue;
-            if (!$Reflection.isSpecial(key)) continue;
+            if (!$Reflection.isSpecial(key) || framework.has(key)) continue;
             const value = $this[key];
             if (value !== undefined) props[key.slice(1)] = value;
         }

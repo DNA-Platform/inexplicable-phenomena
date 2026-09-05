@@ -1,12 +1,12 @@
 {
     "[typescriptreact]": {
         "editor.wordWrap": "bounded",
-        "editor.wordWrapColumn": 100,
+        "editor.wordWrapColumn": 150,
         "editor.wrappingIndent": "indent"
     },
     "editor.rulers": [
-        125
+        150
     ],
-    "editor.wordWrapColumn": 125,
+    "editor.wordWrapColumn": 150,
     "editor.wordWrap": "bounded"
 }

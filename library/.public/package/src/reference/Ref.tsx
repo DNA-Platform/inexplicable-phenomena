@@ -1,56 +1,55 @@
 import { ReactNode } from 'react';
-import { $Block, $, $check, cache } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { lexer } from 'marked';
-import { Link, useInRouterContext } from 'react-router-dom';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Writing } from '@/writing/Writing';
-import { Word as word } from '@/writing/Word';
-import { $Composition, $Composition$ } from '@/writing/Composition';
-import { $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
-import type { $Reference$ } from './Reference';
-import { $Path } from './Path';
-import { Anchor as anchor } from '@/writing/Writing';
+import { html } from '@/utilities/Html';
+import { reflection } from '@/utilities/Reflection';
 import { parser } from '@/utilities/Parser';
+import { $Writing } from '@/writing/Writing';
+import { $Composition } from '@/writing/Composition';
+import { $Phrase$, $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
+import { Word as word } from '@/writing/Word';
+import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
+import { $Path, $TypeOfPath } from './Path';
 
-const Routed = ({ to, children, anchor: Anchor }: { to: string; children: ReactNode; anchor: typeof anchor }) => useInRouterContext()
-    ? <Link to={to}>{children}</Link>
-    : <Anchor href={to}>{children}</Anchor>;
+export interface $Ref$ extends $Phrase$ {
+    path(): $Path | undefined;
+    url(): string | undefined;
+    written(): string;
+}
 
-export class $Ref extends $Composition implements $Composition$, $Reference$ {
-    override indent = 1;
+export class $Ref extends $Composition implements $Ref$ {
     $path?: string;
 
-    get path(): $Path | undefined { return (this.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path); }
-    get url(): string | undefined { return this.path?.copy ?? this.$path ?? this.link?.url; }
-    get written(): string { return this.link?.text ?? this.copy; }
+    path(): $Path | undefined { return this.searchForOne<$Path>($TypeOfPath); }
+    url(): string | undefined { return html.text(this.path()?._block) || this.$path || this.link()?.url; }
+    written(): string { return this.link()?.text ?? html.text(this._block); }
 
     $Ref(block: $Block) {
-        const TypeOfRef = $(typeOfRef);
-        this.type ??= $(<TypeOfRef />);
         super.$Composition(block);
+        if (reflection.is(this, $TypeOfRef)) return;
+        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfRef, '!')];
     }
 
     override view(): ReactNode {
-        const url = this.url;
+        const url = this.url();
         if (url === undefined) return super.view();
         const Anchor = $(anchor);
-        const internal = /^[A-Z][a-z]?:\d+/.test(url) || (URL.canParse(url, 'https://library') && new URL(url, 'https://library').origin === 'https://library');
-        if (internal) return <Routed to={url} anchor={Anchor}>{this.written}</Routed>;
 
-        return <Anchor href={url}>{this.written}</Anchor>;
+        return <Anchor href={url}>{this.written()}</Anchor>;
     }
 
     async read(): Promise<$Writing> {
-        const url = this.url;
+        const url = this.url();
         if (url === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
         const fragment = url.startsWith('#') ? url.slice(1) : url;
-        const root = this.book();
-        if (/^(?:[A-Z][a-z]?:)?\d/.test(fragment) && root instanceof $Composition) return root.catalogue().follow(fragment);
+        const book = this.book();
+        if (/^(?:[A-Z][a-z]?:)?\d/.test(fragment) && book instanceof $Composition) return book.catalogue().follow(fragment);
         throw new Error('a reference reads to what it means, and this route is the application to follow');
     }
 
-    protected get link(): { text: string; url: string } | undefined {
-        const copy = this.copy;
+    protected link(): { text: string; url: string } | undefined {
+        const copy = html.text(this._block);
         if (!copy.startsWith('[')) return undefined;
         for (const token of lexer(copy)) {
             if (token.type !== 'paragraph') continue;
@@ -60,28 +59,23 @@ export class $Ref extends $Composition implements $Composition$, $Reference$ {
         return undefined;
     }
 
-    protected override reduce(held: (string | $Writing)[]): $Writing[] {
-        const text = this.link?.text ?? parser.text(held);
+    protected override reduce(tokens: (string | $Writing)[]): $Writing[] {
+        const text = this.link()?.text ?? parser.text(tokens);
         const Word = $(word);
-        return text.split(/\s+/u).filter(one => one !== '').map(one => $(<Word>{one}</Word>) as $Writing);
+
+        return text.split(/\s+/u).filter(piece => piece !== '').map(piece => $(<Word>{piece}</Word>));
     }
 }
 
 export class $TypeOfRef extends $TypeOfPhrase {
     override name = 'Ref';
-
-    constructor() {
-        super();
-        this[cache](this.name);
-    }
-
     protected override specification: Specification<$Writing> = new RefSpecification();
 }
 
 export class RefSpecification extends PhraseSpecification {
     @specify('a ref names a target')
     $namesTarget(writing: $Writing): void {
-        $check(writing instanceof $Ref && writing.url !== undefined, 'a ref names a target, and this one names none');
+        $check(writing instanceof $Ref && writing.url() !== undefined, 'a ref names a target, and this one names none');
     }
 
     @specify('a ref points, and its url is not prose')

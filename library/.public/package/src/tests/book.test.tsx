@@ -1,92 +1,91 @@
 import { describe, it, expect } from 'vitest';
-import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Type } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
-import { $Chapter, $TypeOfChapter } from '@/book/Chapter';
-import { $Book, $TypeOfBook } from '@/book/Book';
-import { reflection } from '@/utilities/Reflection';
-import { built, chain, drawn, letter, paragraph, section, sentence, heading, word } from './written';
+import { $Writing } from '@/writing/Writing';
+import { $Book, Book } from '@/book/Book';
+import { Chapter } from '@/book/Chapter';
+import { Cover } from '@/book/Cover';
+import { Synopsis } from '@/book/Synopsis';
+import { TableOfContents } from '@/book/TableOfContents';
+import { Title } from '@/book/Title';
+import { Author } from '@/book/Author';
+import { Subject } from '@/book/Subject';
+import { Reference } from '@/reference/Reference';
 
-const Chapter = $($Chapter);
-const Book = $($Book);
+const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
-const chapter = (copy: string) => <Chapter>{chain.Section(copy)}</Chapter>;
-const book = (...inside: ReactNode[]) => <Book>{inside}</Book>;
+const cover = () => (
+    <Cover>
+        <Title>Chemistry<Reference>#Bk:0</Reference></Title>
+        <Author>Doug</Author>
+        <Subject>Science</Subject>
+    </Cover>
+);
 
-describe('the seven levels end at the book, and the book composes chapters', () => {
-    it('a chapter stands as a chapter', () => {
-        expect(reflection.is(built<$Chapter>(chapter('a')), 'Chapter')).toBe(true);
+describe('a book carries its furniture, and each stands in its place', () => {
+    const book = () => built<$Book>(
+        <Book>
+            {cover()}
+            <Synopsis>A book about chemistry.</Synopsis>
+            <TableOfContents>One.</TableOfContents>
+            <Chapter>One.</Chapter>
+        </Book>);
+
+    it('and the book answers each of them', () => {
+        const held = book();
+        held.specify();
+        expect(held.cover()).toBeDefined();
+        expect(held.synopsis()).toBeDefined();
+        expect(held.tableOfContents()).toBeDefined();
+        expect(held.index()).toBeDefined();
     });
 
-    it('a book stands as a book', () => {
-        expect(reflection.is(built<$Book>(book(chapter('a'))), 'Book')).toBe(true);
+    it('AND THE BOOK MAKES ITS OWN INDEX, AT ITS BINDING', () => {
+        expect(book().index()).toBeDefined();
     });
 
-    it('a book composes its chapters', () => {
-        const one = built<$Book>(book(chapter('a'), chapter('b')));
-        expect(one.parts().length).toBe(2);
-        expect(one.parts().every(part => part instanceof $Chapter)).toBe(true);
+    it('a book in that order specifies clean', () => {
+        expect(() => book().specify()).not.toThrow();
     });
 
-    it('and the chapter at zero is its first part', () => {
-        expect(built<$Book>(book(chapter('a'), chapter('b'))).parts()[0].copy).toBe('Ta');
+    it('AND A BOOK THAT OPENS WITH SOMETHING ELSE IS REFUSED', () => {
+        const held = built<$Book>(
+            <Book>
+                <Chapter>One.</Chapter>
+                {cover()}
+            </Book>);
+        expect(() => held.specify()).toThrow(/opens with its cover/);
     });
 
-    it('AND A PIECE OF WRITING BEHAVES AS A BOOK when it carries the type', () => {
-        const { writing } = drawn(chapter('a'), chapter('b'), <Type>Book</Type>);
-        expect(writing.type).toBeInstanceOf($TypeOfBook);
-        expect(writing instanceof $Book).toBe(false);
-        expect(writing.parts().length).toBe(2);
-        expect(writing.parts().every(part => part instanceof $Chapter)).toBe(true);
+    it('AND A SYNOPSIS THAT DOES NOT STAND SECOND IS REFUSED', () => {
+        const held = built<$Book>(
+            <Book>
+                {cover()}
+                <Chapter>One.</Chapter>
+                <Synopsis>A book about chemistry.</Synopsis>
+            </Book>);
+        expect(() => held.specify()).toThrow(/synopsis second/);
+    });
+
+    it('AND A TABLE OF CONTENTS THAT DOES NOT STAND THIRD IS REFUSED', () => {
+        const held = built<$Book>(
+            <Book>
+                {cover()}
+                <Synopsis>A book about chemistry.</Synopsis>
+                <Chapter>One.</Chapter>
+                <TableOfContents>One.</TableOfContents>
+            </Book>);
+        expect(() => held.specify()).toThrow(/table of contents third/);
     });
 });
 
-describe('the whole ladder specifies, from the top, when everything is right', () => {
-    // THE HAPPY PATH AT THE TOP LEVEL, which nothing covered until now — every other
-    // level asserts that specify() does not throw on valid writing, and the book did
-    // not. Doug, 2026-08-30: "the specification tests should actually cover the top
-    // level specify path — when everything is correct. That gives some coverage there."
-    it('a well-formed book satisfies its own specification', () => {
-        expect(() => built<$Book>(book(chapter('a'), chapter('b'))).specify()).not.toThrow();
+describe('a title is a section that means the book', () => {
+    it('and a title with no meaning is refused', () => {
+        const held = built<$Writing>(<Title>Chemistry</Title>);
+        expect(() => held.specify()).toThrow(/means the book/);
     });
 
-    // ONE LEVEL AT A TIME, and each asked separately rather than by descending a
-    // whole tree. The section here is built WITH its title on purpose: chain.Section
-    // in written.tsx has none, which the `a section opens with its heading` rule now
-    // refuses — a real finding this test made, recorded rather than papered over by
-    // changing a fixture eighteen files depend on.
-    it('and so does every level beneath it, asked one at a time', () => {
-        const titled = <Chapter>{section(heading('t'), paragraph(sentence(word(letter('a')))))}</Chapter>;
-        const one = built<$Book>(book(titled));
-        expect(() => one.specify()).not.toThrow();
-        expect(() => one.parts()[0].specify()).not.toThrow();
-        expect(() => (one.parts()[0] as $Composition).parts()[0].specify()).not.toThrow();
-    });
-});
-
-describe('a book carries only its own type', () => {
-    it('carries $TypeOfBook alone', () => {
-        const one = built<$Book>(book(chapter('a')));
-        expect(one.type).toBeDefined();
-        expect(one.type).toBeInstanceOf($TypeOfBook);
-    });
-
-    it('and the book constraint refuses a paragraph written where a chapter belongs', () => {
-        expect(() => built<$Book>(<Book>{[chain.Paragraph('a')]}</Book>).specify()).toThrow(/a book is written as chapters/);
-    });
-
-    it('a chapter likewise carries only $TypeOfChapter, and its constraint still applies', () => {
-        const one = built<$Chapter>(chapter('a'));
-        expect(one.type).toBeDefined();
-        expect(one.type).toBeInstanceOf($TypeOfChapter);
-        expect(() => built<$Chapter>(<Chapter>{[word(letter('h'))]}</Chapter>).specify()).toThrow(/is written as sections/);
-    });
-
-    it('and a book composes CHAPTERS, standing and instanced alike', () => {
-        const one = built<$Book>(book(chapter('a'), chapter('b')));
-        expect(one.parts().length).toBe(2);
-        expect(one.parts().every(part => part instanceof $Chapter)).toBe(true);
-        expect(one.parts().every(part => reflection.is(part, 'Chapter'))).toBe(true);
+    it('AND ONE THAT MEANS SOMETHING STANDS', () => {
+        const held = built<$Writing>(<Title>Chemistry<Reference>#Bk:0</Reference></Title>);
+        expect(() => held.specify()).not.toThrow();
     });
 });

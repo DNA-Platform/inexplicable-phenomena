@@ -1,83 +1,75 @@
-import { $Block, $ } from '@dna-platform/chemistry';
-import { $Writing } from '@/writing/Writing';
-import { $Composition, Composition as composition } from '@/writing/Composition';
-import type { $Composition$ } from '@/writing/Composition';
-import { $Reference, Reference as reference, prints } from './Reference';
-import { $Path, Path as path } from './Path';
+import { $, $Block, $check } from '@dna-platform/chemistry';
+import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
+import { $Writing$, $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Composition, Composition as composition } from '@/writing/Composition';
+import { $Reference, Reference as reference } from './Reference';
+import { $Path, Path as path } from './Path';
 
-export class $Catalogue extends $Writing implements $Composition$ {
-    index = 0;
+export interface $Catalogue$ extends $Writing$ {
+    parts(): $Reference[];
+    comprehend(): $Composition;
+    follow(fragment: string): $Writing;
+    address(of: $Writing): string;
+}
 
+export class $Catalogue extends $Writing implements $Catalogue$ {
     parts(): $Reference[] {
-        return (this.block?.$elements ?? [])
-            .filter((writing): writing is $Writing => writing instanceof $Writing && (writing instanceof $Reference || !writing.parenthetical))
-            .map((one, at) => {
-                if (reference instanceof $Reference) return reference;
-                const code = this.code(one);
+        return (this._block.$elements ?? [])
+            .filter((part): part is $Writing =>
+                part instanceof $Writing && (part instanceof $Reference || !(part instanceof $Annotation)))
+            .map((part, at) => {
+                if (part instanceof $Reference) return part;
+                const code = this.code(part);
                 const step = code ? `${code}:${at}` : `${at}`;
                 const Reference = $(reference);
-                const Printed = (code ? prints.get(code) : undefined) ?? Reference;
                 const Path = $(path);
-                return $<$Reference>(<Printed />, one, $<$Path>(<Path>{step}</Path>));
+
+                return $<$Reference>(<Reference />, part, $<$Path>(<Path>{step}</Path>));
             });
     }
 
     comprehend(): $Composition {
         const [first, ...rest] = this.select(reference =>
-            (reference.block?.$elements ?? []).find((part): part is $Composition => part instanceof $Composition && !part.parenthetical) as $Composition);
+            (reference._block.$elements ?? [])
+                .find((part): part is $Composition => part instanceof $Composition));
         if (first === undefined) {
             const Composition = $(composition);
+
             return $<$Composition>(<Composition />);
         }
-        return first.concatenate(...rest.filter(one => one !== undefined));
-    }
-
-    catalogue(): $Catalogue {
-        const Catalogue = $(catalogue);
-        return $<$Catalogue>(<Catalogue />, ...this.parts());
+        return first.concatenate(...rest.filter(held => held !== undefined));
     }
 
     $Catalogue(block: $Block) {
         super.$Writing(block);
+        if (reflection.is(this, $TypeOfCatalogue)) return;
+        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfCatalogue, '!')];
     }
 
     follow(fragment: string): $Writing {
         const [step, ...rest] = fragment.split('/');
         const [named, place] = step.includes(':') ? step.split(':') : [undefined, step];
         const references = this.parts();
-        const contentOf = (reference: $Reference) =>
-            (reference.block?.$elements ?? []).find((part): part is $Writing => part instanceof $Writing && !part.parenthetical);
-        if (place.includes('-')) {
-            if (rest.length > 0) throw new Error('a span stands only in the last step of an address');
-            const [from, to] = place.split('-').map(Number);
-            if (!Number.isInteger(from) || from < 0 || from >= references.length)
-                throw new Error(`the span begins at position ${from} where ${references.length} parts stand`);
-            const span = references.slice(from, Number.isInteger(to) ? to + 1 : undefined)
-                .map(contentOf)
-                .filter((writing): writing is $Writing => writing !== undefined);
-            for (const writing of span)
-                if (named !== undefined && this.code(writing) && named !== this.code(writing))
-                    throw new Error(`the address expected ${named} and landed on ${this.code(writing)}`);
-            const Composition = $(composition);
-            return $<$Composition>(<Composition />, ...span);
-        }
-        const index = Number(place);
-        if (!Number.isInteger(index) || index < 0 || index >= references.length)
+        if (place.includes('-')) return this.span(named, place, rest);
+        const at = Number(place);
+        if (!Number.isInteger(at) || at < 0 || at >= references.length)
             throw new Error(`the address names position ${place} where ${references.length} parts stand`);
-        const landed = contentOf(references[index]);
-        if (landed === undefined) throw new Error(`the address names position ${place}, and the reference there holds nothing`);
-        if (named !== undefined && this.code(landed) && named !== this.code(landed))
-            throw new Error(`the address expected ${named} and landed on ${this.code(landed)}`);
-        if (rest.length === 0) return landed;
-        if (!(landed instanceof $Composition)) throw new Error('nothing stands beneath this writing, and the address descends further');
-        return landed.catalogue().follow(rest.join('/'));
+        const writing = this.held(references[at]);
+        if (writing === undefined)
+            throw new Error(`the address names position ${place}, and the reference there holds nothing`);
+        if (named !== undefined && this.code(writing) && named !== this.code(writing))
+            throw new Error(`the address expected ${named} and landed on ${this.code(writing)}`);
+        if (rest.length === 0) return writing;
+        if (!(writing instanceof $Composition))
+            throw new Error('nothing stands beneath this writing, and the address descends further');
+        return writing.catalogue().follow(rest.join('/'));
     }
 
     address(of: $Writing): string {
         const references = this.parts();
         for (let at = 0; at < references.length; at++) {
-            const writing = (references[at].block?.$elements ?? []).find((it): it is $Writing => it instanceof $Writing && !it.parenthetical);
+            const writing = this.held(references[at]);
             if (writing === undefined) continue;
             const code = this.code(writing);
             const step = code ? `${code}:${at}` : `${at}`;
@@ -93,15 +85,55 @@ export class $Catalogue extends $Writing implements $Composition$ {
     selectMany<U>(pick: (part: $Reference) => U[]): U[] { return this.parts().flatMap(pick); }
     single(match: (part: $Reference) => boolean): $Reference {
         const matches = this.parts().filter(match);
-        if (matches.length !== 1) throw new Error(`single expected exactly one part and found ${matches.length}.`);
+        $check(matches.length === 1, `single expected exactly one part and found ${matches.length}`);
         return matches[0];
     }
 
+    protected span(named: string | undefined, place: string, rest: string[]): $Writing {
+        if (rest.length > 0) throw new Error('a span stands only in the last step of an address');
+        const references = this.parts();
+        const [from, to] = place.split('-').map(Number);
+        if (!Number.isInteger(from) || from < 0 || from >= references.length)
+            throw new Error(`the span begins at position ${from} where ${references.length} parts stand`);
+        const span = references.slice(from, Number.isInteger(to) ? to + 1 : undefined)
+            .map(reference => this.held(reference))
+            .filter((writing): writing is $Writing => writing !== undefined);
+        for (const writing of span)
+            if (named !== undefined && this.code(writing) && named !== this.code(writing))
+                throw new Error(`the address expected ${named} and landed on ${this.code(writing)}`);
+        const Composition = $(composition);
+
+        return $<$Composition>(<Composition />, ...span);
+    }
+
+    protected held(of: $Reference): $Writing | undefined {
+        return (of._block.$elements ?? [])
+            .find((part): part is $Writing => part instanceof $Writing && !(part instanceof $Annotation));
+    }
+
     protected code(of: $Writing | undefined): string | undefined {
-        if (of?.type === undefined) return undefined;
-        return reflection.names(of.type).map(name => reflection.code(name)).find(one => prints.has(one));
+        const kind = of?.type();
+        return kind === undefined ? undefined : reflection.code(kind);
+    }
+}
+
+export class $TypeOfCatalogue extends $Type {
+    override name = 'Catalogue';
+    protected override specification: Specification<$Writing> = new CatalogueSpecification();
+}
+
+export class CatalogueSpecification extends WritingSpecification {
+    @specify('a catalogue says what it holds')
+    override $saysSomething(writing: $Writing): boolean | void {
+        return false;
+    }
+
+    @specify('a catalogue holds references, not parts')
+    override $composesWhatItHolds(writing: $Writing): boolean | void {
+        return false;
     }
 }
 
 export const Catalogue = $($Catalogue);
-const catalogue = Catalogue;
+export const TypeOfCatalogue = $($TypeOfCatalogue);
+const typeOfCatalogue = TypeOfCatalogue;

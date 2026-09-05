@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Paragraph, Section, Synopsis, Title } from '@dna-platform/public';
+import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
 
 export const GaugeTheorySynopsis = $(
     <Synopsis>
         <Section>
-            <Title>Gauge Theory</Title>
+            <Heading>Gauge Theory</Heading>
             <Paragraph>{
                 'In physics, a gauge theory is a field theory whose laws keep their form under transformations that may differ from point to point.\n' +
                 'That local freedom is called gauge symmetry, and it is not a decoration on the equations but a constraint that dictates them.\n' +

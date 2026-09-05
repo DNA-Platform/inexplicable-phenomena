@@ -1,114 +1,96 @@
-import { $Block, $, $check, cache } from '@dna-platform/chemistry';
-import { $Type, TypedSpecification, $Writing } from './Writing';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Composition$, $Composition } from './Composition';
-import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
-import { $Path } from '@/reference/Path';
+import { html } from '@/utilities/Html';
 import { reflection } from '@/utilities/Reflection';
+import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
+import { $Composition$, $Composition } from '@/writing/Composition';
 import { parser } from '@/utilities/Parser';
+import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 
 export interface $Letter$ extends $Composition$ {
+    kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic';
+    case: 'uppercase' | 'lowercase';
 }
 
-export class $Letter extends $Composition implements $Composition$, $Letter$ {
+export interface $$Letter$ extends $Reference$ { }
+
+export class $Letter extends $Composition implements $Letter$ {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
     case: 'uppercase' | 'lowercase' = 'lowercase';
 
+    $Letter(block: $Block) {
+        super.$Composition(block);
+        if (reflection.is(this, $TypeOfLetter)) return;
+        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfLetter, '!')];
+    }
+}
+
+export class $$Letter extends $Reference implements $$Letter$ {
+    $$Letter(block: $Block) {
+        const held = block ?? new $Block();
+        held.$elements = [...(held.$elements ?? []), $check(typeOf$Letter, '!')];
+        super.$Reference(held);
+    }
+}
+
+export class $TypeOfLetter extends $Type {
+    override name = 'Letter';
     protected patterns = {
         alphabetical: /^\p{L}\p{M}*$/u,
         numeric: /^\p{N}\p{M}*$/u,
         whitespace: /^\s$/u,
         punctuation: /^\p{P}\p{M}*$/u
     };
-
-    override parts(): $Writing[] { return [this]; }
-    override get canonical(): boolean { return this.kind === 'alphabetical'; }
-
-    $Letter(block: $Block) {
-        const TypeOfLetter = $(typeOfLetter);
-        this.type ??= $(<TypeOfLetter />);
-        super.$Composition(block);
-        this.build();
-    }
-
-    protected build(): void {
-        const copy = this.copy;
-        this.kind = 'symbolic';
-        if (this.patterns.alphabetical.test(copy))
-            this.kind = 'alphabetical';
-        else if (this.patterns.numeric.test(copy))
-            this.kind = 'numeric';
-        else if (this.patterns.whitespace.test(copy))
-            this.kind = 'whitespace';
-        else if (this.patterns.punctuation.test(copy))
-            this.kind = 'punctuation';
-
-        this.case = copy !== copy.toLowerCase() ? 'uppercase' : 'lowercase';
-    }
-}
-
-export class $$Letter extends $Reference {
-    $$Letter(block: $Block) {
-        const TypeOf$Letter = $(typeOf$Letter);
-        this.type ??= $(<TypeOf$Letter />);
-        super.$Reference(block);
-    }
-}
-
-export class $TypeOfLetter extends $Type {
-    resolve = false;
-    override name = 'Letter';
-
-    constructor() {
-        super();
-        this[cache](this.name);
-    }
-
     protected override specification: Specification<$Writing> = new LetterSpecification();
+
+    override makes(tokens: (string | $Writing)[]): $Writing[] {
+        const Letter = $(letter);
+
+        return parser.letters(tokens).map(segment => $(<Letter>{segment}</Letter>));
+    }
+
+    override specifically(letter: $Writing): void {
+        if (letter instanceof $Letter) this.spell(letter);
+        super.specifically(letter);
+    }
+
+    protected spell(letter: $Letter): void {
+        const copy = html.text(letter._block);
+        letter.kind = this.reads(copy);
+        letter.case = copy !== copy.toLowerCase() ? 'uppercase' : 'lowercase';
+    }
+
+    protected reads(copy: string): $Letter['kind'] {
+        if (this.patterns.alphabetical.test(copy)) return 'alphabetical';
+        if (this.patterns.numeric.test(copy)) return 'numeric';
+        if (this.patterns.whitespace.test(copy)) return 'whitespace';
+        if (this.patterns.punctuation.test(copy)) return 'punctuation';
+        return 'symbolic';
+    }
 }
 
 export class $TypeOf$Letter extends $TypeOfReference {
     override name = '$Letter';
-
-    constructor() {
-        super();
-        this[cache](this.name);
-    }
-
     protected override specification: Specification<$Writing> = new $LetterSpecification();
 }
 
-class LetterSpecification extends TypedSpecification<$Writing> {
+export class LetterSpecification extends WritingSpecification {
     protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
     @specify('a letter is one grapheme')
     $oneCharacter(writing: $Writing): void {
-        const copy = writing.copy;
-        $check(this.graphemes.segment(copy).containing(0)?.segment === copy, 'a letter is one grapheme, and this one is not');
+        const copy = html.text(writing._block);
+        $check(this.graphemes.segment(copy).containing(0)?.segment === copy,
+            'a letter is one grapheme, and this one is not');
     }
 }
 
 export class $LetterSpecification extends ReferenceSpecification {
-    @specify('a reference to a letter lands on one')
-    $landsOnIt(writing: $Writing): void {
-        const path = (writing.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path);
-        const step = path?.copy.split('/').pop();
-        $check(!!step && step.startsWith('Lr:'),
-            'a reference to a letter lands on one, and this path lands on something else');
-        const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.is(held, $TypeOfLetter),
-            'a reference to a letter lands on one, and what it holds is not one');
-    }
 }
 
 export const Letter = $($Letter);
 const letter = Letter;
-parser.makes.set('Letter', held => {
-    const Letter = $(letter);
-    return parser.letters(held).map(segment => $(<Letter>{segment}</Letter>) as $Writing);
-});
 export const TypeOfLetter = $($TypeOfLetter);
 const typeOfLetter = TypeOfLetter;
 export const TypeOf$Letter = $($TypeOf$Letter);
 const typeOf$Letter = TypeOf$Letter;
-prints.set('Lr', $($$Letter));

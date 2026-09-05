@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Paragraph, Section, Synopsis, Title } from '@dna-platform/public';
+import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
 
 export const WikimediaSynopsis = $(
     <Synopsis>
         <Section>
-            <Title>Wikimedia</Title>
+            <Heading>Wikimedia</Heading>
             <Paragraph>{
                 'Wikimedia is the movement behind the free encyclopedia and its sister projects.\n' +
                 'Volunteers write, cite, and tend its pages in hundreds of languages.\n' +

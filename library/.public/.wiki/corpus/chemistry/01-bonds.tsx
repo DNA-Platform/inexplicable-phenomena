@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, List, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/public';
+import { Chapter, Heading, List, Paragraph, Ref, Section, Sentence } from '@dna-platform/public';
 
 export const Bonds = $(
     <Chapter>
         <Section>
-            <Title>Bonds</Title>
+            <Heading>Bonds</Heading>
             <Paragraph>{
                 'Atoms bind because their electrons find lower energy together than apart.\n' +
                 'A covalent bond shares electron pairs between partners.\n' +

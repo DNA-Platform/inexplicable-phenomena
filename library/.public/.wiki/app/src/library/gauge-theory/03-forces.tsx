@@ -1,21 +1,21 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Cell, Chapter, Paragraph, Ref, Section, Table, Title } from '@dna-platform/public';
+import { Chapter, Heading, Paragraph, Ref, Section, Table } from '@dna-platform/public';
 
 export const Forces = $(
     <Chapter>
         <Section>
-            <Title>Forces</Title>
+            <Heading>Forces</Heading>
             <Paragraph>{
                 'Each fundamental interaction follows from insisting on a different local symmetry.\n' +
                 'The symmetry dictates the carrier, and the carrier writes the force.\n' +
                 'Three of the four interactions are gauge theories in the strict sense, and the fourth rhymes with them.'
             }</Paragraph>
             <Table>
-                <Cell>{'electromagnetism, carried by the photon'}</Cell>
-                <Cell>{'the weak interaction, carried by the W and Z bosons'}</Cell>
-                <Cell>{'the strong interaction, carried by eight gluons'}</Cell>
-                <Cell>{'gravitation, described instead by the curvature of spacetime'}</Cell>
+                <Paragraph>{'electromagnetism, carried by the photon'}</Paragraph>
+                <Paragraph>{'the weak interaction, carried by the W and Z bosons'}</Paragraph>
+                <Paragraph>{'the strong interaction, carried by eight gluons'}</Paragraph>
+                <Paragraph>{'gravitation, described instead by the curvature of spacetime'}</Paragraph>
             </Table>
             <Paragraph>
                 {'The unabridged account remains at '}

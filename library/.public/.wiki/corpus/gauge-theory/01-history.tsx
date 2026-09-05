@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, Paragraph, Section, Title } from '@dna-platform/public';
+import { Chapter, Heading, Paragraph, Section } from '@dna-platform/public';
 
 export const History = $(
     <Chapter>
         <Section>
-            <Title>History</Title>
+            <Heading>History</Heading>
             <Paragraph>{
                 'The electromagnetic potentials of Maxwell carry a hidden freedom, since shifting them leaves every measurable field unchanged.\n' +
                 'In 1918, Hermann Weyl proposed that a local change of scale might be such a freedom, and coined the term gauge invariance.\n' +

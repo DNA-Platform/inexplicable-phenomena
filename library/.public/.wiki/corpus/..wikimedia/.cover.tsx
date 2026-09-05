@@ -1,11 +1,14 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Cover, List, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/public';
+import { Author, Cover, Heading, List, Paragraph, Ref, Section, Sentence, Subject, Title } from '@dna-platform/public';
 
 export const Wikimedia = $(
     <Cover>
+        <Title><Heading>Wikimedia</Heading></Title>
+        <Author><Heading>Wikipedia</Heading></Author>
+        <Subject><Heading>Wikimedia</Heading></Subject>
         <Section>
-            <Title>Wikimedia</Title>
+            <Heading>Wikimedia</Heading>
             <Paragraph>{
                 'Wikimedia is a family of free knowledge projects built by volunteers.\n' +
                 'Its flagship is an encyclopedia that anyone can edit, and its shelves hold dictionaries, textbooks, source documents, and a commons of media.\n' +

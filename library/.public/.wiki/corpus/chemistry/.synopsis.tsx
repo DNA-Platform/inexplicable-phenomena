@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Paragraph, Section, Synopsis, Title } from '@dna-platform/public';
+import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
 
 export const ChemistrySynopsis = $(
     <Synopsis>
         <Section>
-            <Title>Chemistry</Title>
+            <Heading>Chemistry</Heading>
             <Paragraph>{
                 'Chemistry is the scientific study of matter, its properties, and the transformations it undergoes.\n' +
                 'Its central objects are atoms and the molecules they form, and its central event is the reaction.\n' +

@@ -11,11 +11,28 @@ const forward = (p: string): string => p.split(sep).join('/');
 
 const specifier = (name: string): string => './' + name.replace(/\.tsx?$/, '');
 
+// A card is a formula: the name written on a cover stands for whatever class has
+// registered it, and nothing answers a name until some class does. So the compiler
+// declares one class per card its cover wears. A library written by hand writes them.
+const declared = (said: string): string => said.replace(/[^A-Za-z0-9]/gu, '');
+
+const kinds = ['Title', 'Author', 'Subject'] as const;
+
+const worn = (book: Book): { kind: string; said: string; name: string }[] => {
+    const cards = book.cover.cards;
+    if (!cards) return [];
+    return kinds.flatMap(kind => {
+        const said = cards[kind.toLowerCase() as 'title' | 'author' | 'subject'];
+        return said ? [{ kind, said, name: `${kind}Of${declared(said)}` }] : [];
+    });
+};
+
 const assemble = (book: Book, pack: string): string => {
     const parts = [book.cover, book.synopsis, ...book.chapters];
+    const cards = worn(book);
     const imports = [
-        `import { $ } from '@dna-platform/chemistry';`,
-        `import { Book, TableOfContents } from '${pack}';`,
+        `import { $${cards.length ? ', cache' : ''} } from '@dna-platform/chemistry';`,
+        `import { Book, TableOfContents${cards.map(card => `, $${card.kind}`).filter((one, at, all) => all.indexOf(one) === at).join('')} } from '${pack}';`,
         ...parts.map(file => `import { ${file.declares} } from '${specifier(file.name)}';`),
     ];
     const inside = [
@@ -24,7 +41,10 @@ const assemble = (book: Book, pack: string): string => {
         `${book.synopsis.declares}`,
         ...book.chapters.map(file => `${file.declares}`),
     ];
-    return `${imports.join('\n')}\n\nexport const book = $(\n    <Book />,\n${inside.map(one => `    ${one}`).join(',\n')},\n);\n`;
+    const declares = cards.map(card =>
+        `class $${card.name} extends $${card.kind} {\n    constructor() {\n        super();\n        this[cache](${JSON.stringify(card.said)});\n    }\n}\n\nexport const ${card.name} = $($${card.name});`);
+    const registry = declares.length ? `\n${declares.join('\n\n')}\n` : '';
+    return `${imports.join('\n')}\n${registry}\nexport const book = $(\n    <Book />,\n${inside.map(one => `    ${one}`).join(',\n')},\n);\n`;
 };
 
 const doors = (library: Library, pack: string): string => `import type { $Book } from '${pack}';

@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, Paragraph, Section, Title } from '@dna-platform/public';
+import { Chapter, Heading, Paragraph, Section } from '@dna-platform/public';
 
 export const Correlates = $(
     <Chapter>
         <Section>
-            <Title>Correlates</Title>
+            <Heading>Correlates</Heading>
             <Paragraph>{
                 'A neural correlate of consciousness is the smallest set of brain events sufficient for a given experience.\n' +
                 'Researchers hunt them by contrast, comparing what the brain does when a stimulus is seen with what it does when the same stimulus goes unnoticed.\n' +

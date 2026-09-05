@@ -1,25 +1,32 @@
-import { $Block, $, cache } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
+import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $$Chapter, $TypeOf$Chapter } from './Chapter';
+import { $Reference$, $Reference } from '@/reference/Reference';
+import { $TypeOf$Chapter, $ChapterSpecification } from './Chapter';
 
-export class $PageFold extends $$Chapter {
+export interface $PageFold$ extends $Reference$ { }
+
+export class $PageFold extends $Reference implements $PageFold$ {
     location = 0;
 
     $PageFold(block: $Block) {
-        const TypeOfPageFold = $(typeOfPageFold);
-        this.type ??= $(<TypeOfPageFold />);
-        super.$$Chapter(block);
-        this.persist = true;
+        const held = block ?? new $Block();
+        held.$elements = [...(held.$elements ?? []), $check(typeOfPageFold, '!')];
+        super.$Reference(held);
     }
 }
 
 export class $TypeOfPageFold extends $TypeOf$Chapter {
     override name = 'PageFold';
+    protected override specification: Specification<$Writing> = new PageFoldSpecification();
 
-    constructor() {
-        super();
-        this[cache](this.name);
+    override specifically(fold: $Writing): void {
+        fold.persist = true;
+        super.specifically(fold);
     }
+}
+
+export class PageFoldSpecification extends $ChapterSpecification {
 }
 
 export const PageFold = $($PageFold);

@@ -1,29 +1,23 @@
-import { $Block, $, $check, cache } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Writing } from './Writing';
-import { $Composition$, $Composition } from './Composition';
-import { $TypeOfSentence, SentenceSpecification } from './Sentence';
+import { html } from '@/utilities/Html';
+import { reflection } from '@/utilities/Reflection';
+import { $Writing } from '@/writing/Writing';
+import { $Composition } from '@/writing/Composition';
+import { $Sentence$, $TypeOfSentence, SentenceSpecification } from './Sentence';
 
-export class $Phrase extends $Composition implements $Composition$ {
-    override indent = 1;
+export interface $Phrase$ extends $Sentence$ { }
 
-    override get canonical(): boolean { return false; }
-
+export class $Phrase extends $Composition implements $Phrase$ {
     $Phrase(block: $Block) {
-        const TypeOfPhrase = $(typeOfPhrase);
-        this.type ??= $(<TypeOfPhrase />);
         super.$Composition(block);
+        if (reflection.is(this, $TypeOfPhrase)) return;
+        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfPhrase, '!')];
     }
 }
 
 export class $TypeOfPhrase extends $TypeOfSentence {
     override name = 'Phrase';
-
-    constructor() {
-        super();
-        this[cache](this.name);
-    }
-
     protected override specification: Specification<$Writing> = new PhraseSpecification();
 }
 
@@ -34,7 +28,8 @@ export class PhraseSpecification extends SentenceSpecification {
 
     @specify('a phrase is written on one line')
     $onOneLine(writing: $Writing): void {
-        $check(!this.lines.broken.test(writing.copy), 'a phrase is written on one line, and this one breaks across lines');
+        $check(!this.lines.broken.test(html.text(writing._block)),
+            'a phrase is written on one line, and this one breaks across lines');
     }
 }
 

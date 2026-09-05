@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, List, Paragraph, Ref, Section, Sentence, Title } from '@dna-platform/public';
+import { Chapter, Heading, List, Paragraph, Ref, Section, Sentence } from '@dna-platform/public';
 
 export const Theories = $(
     <Chapter>
         <Section>
-            <Title>Theories</Title>
+            <Heading>Theories</Heading>
             <Paragraph>{
                 'No single theory of consciousness commands the field, but several have earned standing programs.\n' +
                 'Each names a property that conscious processing has and unconscious processing lacks.\n' +

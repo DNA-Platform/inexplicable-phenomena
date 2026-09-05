@@ -1,98 +1,69 @@
-import { $Block, $, $check, cache } from '@dna-platform/chemistry';
-import { $Type, TypedSpecification, $Writing } from './Writing';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Composition$, $Composition } from './Composition';
-import { Word, $TypeOfWord } from './Word';
-import { parser } from '@/utilities/Parser';
-import { $Reference, $TypeOfReference, ReferenceSpecification, prints } from '@/reference/Reference';
-import { $Path } from '@/reference/Path';
+import { html } from '@/utilities/Html';
 import { reflection } from '@/utilities/Reflection';
+import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
+import { $Composition$, $Composition } from '@/writing/Composition';
+import { parser } from '@/utilities/Parser';
+import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
+import { $TypeOfWord } from './Word';
 
-export interface $Sentence$ extends $Composition$ {
-}
+export interface $Sentence$ extends $Composition$ { }
 
-export class $Sentence extends $Composition implements $Composition$, $Sentence$ {
-    get words(): $Composition { return this; }
-    get letters(): $Composition { return this.catalogue().comprehend(); }
-    override get canonical(): boolean { return !this.copy.endsWith('\n'); }
+export interface $$Sentence$ extends $Reference$ { }
 
+export class $Sentence extends $Composition implements $Sentence$ {
     $Sentence(block: $Block) {
-        const TypeOfSentence = $(typeOfSentence);
-        this.type ??= $(<TypeOfSentence />);
         super.$Composition(block);
+        if (reflection.is(this, $TypeOfSentence)) return;
+        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfSentence, '!')];
     }
 }
 
-export class $$Sentence extends $Reference {
+export class $$Sentence extends $Reference implements $$Sentence$ {
     $$Sentence(block: $Block) {
-        const TypeOf$Sentence = $(typeOf$Sentence);
-        this.type ??= $(<TypeOf$Sentence />);
-        super.$Reference(block);
+        const held = block ?? new $Block();
+        held.$elements = [...(held.$elements ?? []), $check(typeOf$Sentence, '!')];
+        super.$Reference(held);
     }
 }
 
 export class $TypeOfSentence extends $Type {
-    resolve = false;
     override name = 'Sentence';
+    protected override specification: Specification<$Writing> = new SentenceSpecification();
 
-    constructor() {
-        super();
-        this[cache](this.name);
+    override makes(tokens: (string | $Writing)[]): $Writing[] {
+        const Sentence = $(sentence);
+
+        return parser.sentences(tokens).map(line => $(<Sentence>{parser.elements(line)}</Sentence>));
     }
 
-    protected override specification: Specification<$Writing> = new SentenceSpecification();
+    override below(): new() => $TypeOfWord { return $TypeOfWord; }
 }
 
 export class $TypeOf$Sentence extends $TypeOfReference {
     override name = '$Sentence';
-
-    constructor() {
-        super();
-        this[cache](this.name);
-    }
-
     protected override specification: Specification<$Writing> = new $SentenceSpecification();
 }
 
-export class SentenceSpecification extends TypedSpecification<$Writing> {
+export class SentenceSpecification extends WritingSpecification {
     protected patterns = {
         stopped: /[.!?][^\S\n]*\S/u
     };
 
     @specify('a sentence stops once, at its end')
     $stopsAtItsEnd(writing: $Writing): void {
-        $check(!this.patterns.stopped.test(writing.copy), 'a sentence stops once, at its end, and this one stops before it');
-    }
-    @specify('a sentence is written as words')
-    $writtenAsWords(writing: $Writing): void {
-        const inside = ((writing.block?.$elements ?? []) as unknown[])
-            .filter((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
-        $check(inside.every(one => reflection.is(one, $TypeOfWord) || reflection.is(one, $TypeOfSentence)),
-            'a sentence is written as words, and something in this one is not one');
+        $check(!this.patterns.stopped.test(html.text(writing._block)),
+            'a sentence stops once, at its end, and this one stops before it');
     }
 }
 
 export class $SentenceSpecification extends ReferenceSpecification {
-    @specify('a reference to a sentence lands on one')
-    $landsOnIt(writing: $Writing): void {
-        const path = (writing.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path);
-        const step = path?.copy.split('/').pop();
-        $check(!!step && step.startsWith('Se:'),
-            'a reference to a sentence lands on one, and this path lands on something else');
-        const held = (writing.block?.$elements ?? []).find((one): one is $Writing => one instanceof $Writing && !one.parenthetical);
-        $check(held === undefined || reflection.is(held, $TypeOfSentence),
-            'a reference to a sentence lands on one, and what it holds is not one');
-    }
 }
 
 export const Sentence = $($Sentence);
 const sentence = Sentence;
-parser.makes.set('Sentence', held => {
-    const Sentence = $(sentence);
-    return parser.sentences(held).map(line => $(<Sentence>{parser.elements(line)}</Sentence>) as $Writing);
-});
 export const TypeOfSentence = $($TypeOfSentence);
 const typeOfSentence = TypeOfSentence;
 export const TypeOf$Sentence = $($TypeOf$Sentence);
 const typeOf$Sentence = TypeOf$Sentence;
-prints.set('Se', $($$Sentence));

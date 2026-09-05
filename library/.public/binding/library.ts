@@ -2,11 +2,14 @@ export type Path = string;
 
 export type Role = 'cover' | 'synopsis' | 'chapter';
 
+export type Cards = { title: string; author: string; subject: string };
+
 export type File = {
     name: string;
     role: Role;
     order: number;
     declares?: string;
+    cards?: Cards;
 };
 
 export type Entry = {

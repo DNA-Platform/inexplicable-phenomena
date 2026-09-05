@@ -1,5 +1,5 @@
 import styledImport from 'styled-components';
-import { $type$, $$template$$, $isChemicalBase$ } from '../implementation/symbols';
+import { $type$, $$template$$, $isChemicalBase$, framework } from '../implementation/symbols';
 
 // ===========================================================================
 // Styled particles — a class says what it is styled as, writes plain HTML, and
@@ -266,10 +266,6 @@ export function compile(particle: any): $Styled | null {
     compiled.set(cls, made);
     return made;
 }
-
-// The framework's own $-props. They configure a particle and are never the
-// author's, so they are the one thing a dress does not hand on.
-const framework = new Set(['$look', '$show', '$hide', '$on', '$pid', '$facade']);
 
 // The live values a compiled component's interpolations read, taken from the
 // instance being drawn — and beside them WHAT THE AUTHOR GAVE IT. A dress

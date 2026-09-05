@@ -82,6 +82,12 @@ export const $views$ = Symbol("$Particle.views");
 // ever bonded over.
 export const looks = /^\$*view$/;
 
+// The framework's own $-props. They configure a particle and are never the
+// author's, so no seat that strips a $ into a prop may hand one on. Stated once
+// here because two seats strip — the styled component's, and the chemical's own
+// props — and a closed set stated twice is a set checkable in neither.
+export const framework = new Set(['$look', '$show', '$hide', '$on', '$pid', '$facade']);
+
 // $Formula — a formula stands for something else, and the framework replaces it
 // with what it symbolizes.
 // $cache$   — the catalogue of specimens a formula branch stands for. Held per

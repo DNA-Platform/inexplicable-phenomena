@@ -1,11 +1,11 @@
 import React from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, Paragraph, Section, Title } from '@dna-platform/public';
+import { Chapter, Heading, Paragraph, Section } from '@dna-platform/public';
 
 export const Reactions = $(
     <Chapter>
         <Section>
-            <Title>Reactions</Title>
+            <Heading>Reactions</Heading>
             <Paragraph>{
                 'A chemical reaction rearranges atoms without creating or destroying them.\n' +
                 'Reactants meet, bonds break and reform, and products carry the atoms away in new company.\n' +

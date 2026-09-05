@@ -1,93 +1,95 @@
-import { ComponentType, ReactNode } from 'react';
-import { $Block, $, $check, cache } from '@dna-platform/chemistry';
+import { ReactNode } from 'react';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Writing, $Annotation, $Type, TypedSpecification } from '@/writing/Writing';
-import { $Path, Path as path } from './Path';
-import { $Composition } from '@/writing/Composition';
-import { Anchor as anchor } from '@/writing/Writing';
-import type { $References } from './References';
+import { html } from '@/utilities/Html';
+import { reflection } from '@/utilities/Reflection';
+import { $Annotation$, $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Path, $TypeOfPath, Path as path } from './Path';
+import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 
-export interface $Reference$ extends $Writing {
-    get path(): $Path | undefined;
+export interface $Reference$ extends $Annotation$ {
+    $focused: boolean;
+
+    path(): $Path | undefined;
+    focus(): void;
+    unfocus(): void;
     read(): Promise<$Writing>;
 }
 
 export class $Reference extends $Annotation implements $Reference$ {
     $focused = false;
 
-    override get canonical(): boolean { return false; }
-
-    get path(): $Path | undefined { return (this.block?.$elements ?? []).find((one): one is $Path => one instanceof $Path); }
+    path(): $Path | undefined { return this.searchForOne<$Path>($TypeOfPath); }
 
     $Reference(block: $Block) {
-        const TypeOfReference = $(typeOfReference);
-        this.type ??= $(<TypeOfReference />);
         super.$Writing(block);
-        this.$pid ??= this.path?.copy;
+        if (!reflection.is(this, $TypeOfReference))
+            this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfReference, '!')];
+        const copy = html.text(this._block);
+        if (this.searchFor($TypeOfPath).length === 0 && this.reads(copy)) {
+            const Path = $(path);
+            this._block.$elements = [...(this._block.$elements ?? []), $<$Path>(<Path>{copy}</Path>)];
+        }
+
+        this.$pid ??= html.text(this.path()?._block);
+    }
+
+    protected reads(copy: string): boolean {
+        return /^(?:[a-z][a-z0-9+.-]*:\/\/|\/|#)/iu.test(copy) && URL.canParse(copy, 'https://library');
     }
 
     override view(): ReactNode {
         const Anchor = $(anchor);
+        const url = html.text(this.path()?._block);
 
-        return <Anchor href={this.path?.copy} onClick={() => this.focus()}>{this.path?.copy}</Anchor>;
+        return <Anchor href={url} onClick={() => this.focus()}>{url}</Anchor>;
     }
 
     focus(): void {
-        this.$pid ??= this.path?.copy;
+        this.$pid ??= html.text(this.path()?._block);
         this.$focused = true;
         this.persist = true;
-        (this.book() as { references?: $References }).references?.append(this);
     }
 
     unfocus(): void {
         this.$focused = false;
         this.persist = false;
-        (this.book() as { references?: $References }).references?.remove(this);
     }
 
     async read(): Promise<$Writing> {
-        const held = (this.block?.$elements ?? []).find((writing): writing is $Writing => writing instanceof $Writing && !writing.parenthetical);
-        if (held) return held;
-        const path = this.path;
-        if (path === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
-        const fragment = path.copy.startsWith('#') ? path.copy.slice(1) : path.copy;
-        const root = this.book();
-        if (/^(?:[A-Z][a-z]?:)?\d/.test(fragment) && root instanceof $Composition) return root.catalogue().follow(fragment);
-        throw new Error('a reference reads to what it means, and this route is the application to follow');
+        const referent = (this._block.$elements ?? [])
+            .find((part): part is $Writing => reflection.writing(part) && !(part instanceof $Annotation));
+        if (referent) return referent;
+        throw new Error('a reference reads to what it means, and this one holds nothing to read');
     }
 }
 
 export class $TypeOfReference extends $Type {
-    resolve = false;
     override name = 'Reference';
-
-    override specifically(reference: $Reference): void {
-        const block = reference.block;
-        if (block && !(block.$elements ?? []).some(one => one instanceof $Path)
-            && /^(?:[a-z][a-z0-9+.-]*:\/\/|\/|#)/iu.test(reference.copy) && URL.canParse(reference.copy, 'https://library')) {
-            const Path = $(path);
-            block.$elements = [...(block.$elements ?? []), $<$Path>(<Path>{reference.copy}</Path>)];
-        }
-        super.specifically(reference);
-    }
-
-    constructor() {
-        super();
-        this[cache](this.name);
-    }
-
     protected override specification: Specification<$Writing> = new ReferenceSpecification();
 }
 
-export class ReferenceSpecification extends TypedSpecification<$Writing> {
+export class ReferenceSpecification extends WritingSpecification {
     @specify('a reference carries a path')
-    $carriesPath(writing: $Writing): void {
-        $check((writing.block?.$elements ?? []).some(one => one instanceof $Path),
+    $carriesPath(writing: $Writing): boolean | void {
+        $check(writing.searchFor($TypeOfPath).length > 0,
             'a reference carries a path, and this one carries none');
     }
-}
 
-export const prints = new Map<string, ComponentType>();
+    @specify('a reference lands on the kind it names')
+    $landsOnIt(writing: $Writing): boolean | void {
+        const code = reflection.code(writing.type());
+        if (code === undefined) return false;
+        const step = html.text(writing.searchForOne<$Path>($TypeOfPath)?._block).split('/').pop();
+        $check(!!step && step.startsWith(`${code}:`),
+            'a reference lands on the kind it names, and this path lands on something else');
+    }
+
+    @specify('a reference composes nothing of its own')
+    override $composesWhatItHolds(writing: $Writing): boolean | void {
+        return false;
+    }
+}
 
 export const Reference = $($Reference);
 export const TypeOfReference = $($TypeOfReference);

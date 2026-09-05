@@ -1,38 +1,39 @@
 import { ReactNode } from 'react';
-import { $Block, $, cache } from '@dna-platform/chemistry';
-import { $Composition } from './Composition';
-import { $TypeOfParagraph } from './Paragraph';
-import { Heading as heading } from '@/encyclopedia/Heading';
+import { $, $Block, $check } from '@dna-platform/chemistry';
+import { Specification } from '@/utilities/Specification';
+import { reflection } from '@/utilities/Reflection';
+import { $Writing } from '@/writing/Writing';
+import { $Composition } from '@/writing/Composition';
+import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
+import { HeadingFormat as heading } from '@/encyclopedia/HeadingFormat';
 
-export class $Heading extends $Composition {
-    override get canonical(): boolean { return false; }
+export interface $Heading$ extends $Paragraph$ { }
 
+export class $Heading extends $Composition implements $Heading$ {
     $Heading(block: $Block) {
-        const TypeOfHeading = $(typeOfHeading);
-        this.type ??= $(<TypeOfHeading />);
         super.$Composition(block);
+        if (reflection.is(this, $TypeOfHeading)) return;
+        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfHeading, '!')];
     }
 
     override view(): ReactNode {
-        if (!this.block) return null;
-        const Block = $(this.block as never);
+        const Block = $(this._block);
         const Heading = $(heading);
 
-        return <Heading><Block /></Heading>;
-    }
-
-    override frame(): ReactNode {
-        return this.view();
+        return (
+            <Heading>
+                <Block />
+            </Heading>
+        );
     }
 }
 
 export class $TypeOfHeading extends $TypeOfParagraph {
     override name = 'Heading';
+    protected override specification: Specification<$Writing> = new HeadingSpecification();
+}
 
-    constructor() {
-        super();
-        this[cache](this.name);
-    }
+export class HeadingSpecification extends ParagraphSpecification {
 }
 
 export const Heading = $($Heading);

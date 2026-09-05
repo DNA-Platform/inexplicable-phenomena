@@ -5,5 +5,8 @@
   "scripts": {
     "dev": "vite --port 5199",
     "verify": "node verify-demo.mjs"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.18.6"
   }
 }

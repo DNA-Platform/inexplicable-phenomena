@@ -30,7 +30,13 @@ const archive = {
 
 const src = {
     test: { ...shared, name: 'src', include: ['src/**/*.test.{ts,tsx}'] },
-    resolve: { extensions, alias: { '@': path.resolve(__dirname, './src') } },
+    resolve: { extensions, alias: {
+        '@': path.resolve(__dirname, './src'),
+        // THE BOOKS ARE IN THE SUITE. The four authored books import the package by
+        // its published name; pointing that name at src is what lets a promise read
+        // the real books rather than a reproduction of them.
+        '@dna-platform/public': path.resolve(__dirname, './src')
+    } },
     esbuild
 };
 

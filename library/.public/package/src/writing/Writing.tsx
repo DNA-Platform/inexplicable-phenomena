@@ -1,204 +1,155 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check, $Chemical, look, resolved, select, styled } from '@dna-platform/chemistry';
-import { $Referent$ } from '@/reference/Referent';
+import { $, $Block, $check, $Chemical, $Written, look } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import type { $Reference } from '@/reference/Reference';
-import { html } from '@/utilities/Html';
 import { reflection } from '@/utilities/Reflection';
-import { parser } from '@/utilities/Parser';
+import { html } from '@/utilities/Html';
+import { $Reference$ } from '@/reference/Reference';
+import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 
-export class $Writing extends $Chemical implements $Referent$ {
+export interface $Annotation$ extends $Writing$ {
+    specifically(writing: $Writing$): void;
+}
+
+export interface $Type$ extends $Annotation$ { }
+
+export interface $Writing$ extends $Chemical {
+    type(): $Type$;
+    means(): $Reference$ | undefined;
+    annotations(): $Annotation[];
+    types(): $Type[];
+    book(): $Writing$;
+    searchFor<T extends $Writing>(type: new() => $Type): T[];
+    searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
+    specify(): void;
+}
+
+export class $Writing extends $Chemical implements $Writing$ {
     inline = true;
-    parenthetical = false;
-    annotation = false;
-    indent = 0;
-    index = 0;
-    block: $Block = undefined as any;
-    type!: $Type;
+    _block!: $Block;
 
-    get copy(): string { return html.text(this.block); }
-    get canonical(): boolean { return true; }
-    get types(): $Type[] { return this.annotations.filter((one): one is $Type => one instanceof $Type); }
-    get means(): $Reference | undefined { return (this.block?.$elements ?? []).find((one): one is $Reference => one instanceof $Writing && (one as $Reference).path !== undefined); }
-    get $print(): boolean { return !this.parenthetical; }
-    set $print(print: boolean) { this.parenthetical = !print; }
-    get annotations(): $Writing[] { return (this.block?.$elements ?? []).filter((one): one is $Writing => one instanceof $Writing && one.annotation); }
-
-    parts(): $Writing[] {
-        const type = this.type;
-        const below = type === undefined ? undefined : reflection.below(type);
-        return parser.parse(this,
-            token => {
-                if (type !== undefined && token instanceof $Writing && token !== this && token.type instanceof (type.constructor as new () => $Type)) {
-                    const mutual = type instanceof (token.type.constructor as new () => $Type);
-                    if (mutual || reflection.indent(token) > 0) return token.parts();
-                }
-                if (below === undefined) return token;
-                return reflection.is(token, below) ? token : undefined;
-            },
-            held => this.reduce(held),
-            type !== undefined);
+    type(): $Type {
+        const carried = this.types();
+        const standing = carried.filter(one => reflection.composition(one));
+        $check(standing.length <= 1, `writing is one kind of writing, and this one is ${standing.length}`);
+        return standing[0] ?? carried[0];
     }
-
-    protected reduce(held: (string | $Writing)[]): $Writing[] {
-        const below = this.type === undefined ? undefined : reflection.below(this.type);
-        const make = below === undefined ? undefined : parser.makes.get(below);
-        return make === undefined ? [] : make(held);
-    }
-
+    means(): $Reference$ | undefined { return reflection.means(this) as $Reference$ | undefined; }
+    annotations(): $Annotation[] { return reflection.annotations(this); }
+    types(): $Type[] { return reflection.types(this); }
     book(): $Writing {
-        const up = this.parent;
-        return up instanceof $Writing && up !== this ? up.book() : this;
+        const holding = this.parent;
+        return reflection.writing(holding) && holding !== this ? holding.book() : this;
     }
 
     $Writing(block: $Block) {
-        this.block = block ?? this.block;
-        const carried = this.types;
-        const candidates = this.type === undefined ? carried : [...carried, this.type];
-        this.type = candidates.find(one => reflection.level(one)) ?? candidates[0] ?? this.type;
+        this._block = $check(block, $Block);
     }
 
     view(): ReactNode {
-        const Writing = this.block ? $(this.block) : null;
+        const Block = $(this._block);
+        const means = this.means();
+        if (means === undefined) return <Block />;
         const Anchor = $(anchor);
-        const means = this.means;
 
-        if (means?.path !== undefined)
-            return <Anchor href={means.path.copy}>{Writing && <Writing />}</Anchor>;
-
-        return <>
-            {Writing && <Writing />}
-        </>;
+        return (
+            <Anchor href={html.text(means.path()?._block)}>
+                <Block />
+            </Anchor>
+        );
     }
 
     @look('back')
     $view(): ReactNode {
-        return this.copy;
+        return html.text(this._block);
     }
 
     override frame(): ReactNode {
-        const labels = reflection.classNames(this);
-        if (labels.length === 0) return super.frame();
-        return <div className={labels.join(' ')}>{super.frame()}</div>;
+        return <span className={reflection.classNames(this).join(' ')}>{super.frame()}</span>;
+    }
+
+    searchFor<T extends $Writing>(type: new() => $Type): T[] {
+        return (this._block.$elements ?? []).filter((part): part is T =>
+            reflection.instanceOf(part, type));
+    }
+
+    searchForOne<T extends $Writing>(type: new() => $Type): T | undefined {
+        const found = this.searchFor<T>(type);
+        $check(found.length <= 1, `writing holds one of a kind, and this one holds ${found.length}`);
+        return found[0];
     }
 
     specify(): void {
-        const ran = new Set<unknown>();
-        for (const one of this.type === undefined ? this.types : [this.type, ...this.types]) {
-            if (ran.has(one.constructor)) continue;
-            ran.add(one.constructor);
-            one.specifically(this);
+        const kinds = new Set<unknown>();
+        for (const annotation of this.annotations()) {
+            if (kinds.has(annotation.constructor)) continue;
+            kinds.add(annotation.constructor);
+            annotation.specifically(this);
         }
-        for (const part of this.parts()) if (part !== this) part.specify();
-    }
-
-    valid(): boolean {
-        return true;
     }
 }
 
-export class $Annotation extends $Writing {
-    override parenthetical = true;
-    override annotation = true;
-}
-
-export class $Theme extends $Annotation {
-    paper = '#ffffff';
-    ink = '#202122';
-    quiet = '#f8f9fa';
-    shade = '#eaecf0';
-    rule = '#a2a9b1';
-    link = '#3366cc';
-    measure = '60em';
-    body = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
-    display = "'Linux Libertine', 'Georgia', 'Times', serif";
-    size = '14px';
-    leading = '1.6';
-}
-
-export class $Style extends $Chemical {
-    theme!: $Theme;
-
-    $Style(block: $Block) {
-        const Theme = $(theme);
-        const written = (block?.$elements ?? []).find((one): one is $Theme => one instanceof $Theme);
-
-        this.theme = written ?? $(<Theme />) as $Theme;
-    }
-}
-
-export class $Anchor extends $Style {
-    selector = styled.a;
-    textDecoration = 'none';
-    $href: string | undefined = undefined;
-    $onClick: (() => void) | undefined = undefined;
-    @select('&:hover') hover_textDecoration = 'underline';
-    get color() { return this.theme.link; }
-}
-
-export class $Type extends $Annotation {
-    formula: boolean | 'new' = true;
-    name = 'Type';
-    protected specification: Specification<$Writing> = new TypedSpecification<$Writing>();
+export class $Annotation extends $Writing implements $Annotation$ {
+    protected specification: Specification<$Writing> = new WritingSpecification();
 
     specifically(writing: $Writing): void {
         this.specification.check(writing);
     }
+}
+
+export class $Type extends $Annotation implements $Type$ {
+    name = 'Type';
 
     override view(): ReactNode {
         return null;
     }
+
+    override frame(): ReactNode {
+        return null;
+    }
+
+    below(): (new() => $Type) | undefined { return undefined; }
+
+    makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
 }
 
-export class TypedSpecification<T extends $Writing> extends Specification<T> {
-    @specify('a piece of writing has a block')
-    $hasBlock(writing: T): void {
-        $check(!!writing.block, 'a piece of writing has a block, and this one has none');
+export class WritingSpecification extends Specification<$Writing> {
+    @specify('a piece of writing says what kind of writing it is')
+    $saysItsKind(writing: $Writing): void {
+        $check(writing.type() !== undefined,
+            'a piece of writing says what kind of writing it is, and this one says nothing');
     }
 
-    @specify('a piece of writing has characters')
-    $mustHaveText(writing: T): void {
-        $check(writing.copy !== '', 'a piece of writing has characters, and this one is empty');
+    @specify('a piece of writing says something')
+    $saysSomething(writing: $Writing): void {
+        $check(html.text(writing._block).length > 0 || this.composed(writing).length > 0,
+            'a piece of writing says something, and this one says nothing at all');
     }
 
-    @specify('a piece of writing has a type')
-    $hasType(writing: T): void {
-        this.for = writing.type instanceof $Type ? writing.type : undefined;
-        $check(this.for !== undefined || writing.parenthetical,
-            'a piece of writing has a type, and this one has none');
+    @specify('a piece of writing holds copy, annotations and writing')
+    $holdsCopyAndWriting(writing: $Writing): void {
+        $check(this.beside(writing).every(part => reflection.writing(part)),
+            'a piece of writing holds copy, annotations and writing, and this one holds something else');
     }
 
-    @specify('a type that stands for something else has been given it')
-    $typesResolve(writing: T): void {
-        for (const one of writing.types) {
-            if (!one.resolve) continue;
-            const named = one.copy.trim();
-            if (named === '') continue;
-            $check((one as unknown as Record<symbol, unknown>)[resolved] === true,
-                `a type that stands for something else has been given it, and nothing here is called ${JSON.stringify(named)}`);
-        }
+    @specify('a piece of writing composes the kind beneath it, or its own')
+    $composesWhatItHolds(writing: $Writing): void {
+        const kind = writing.type();
+        const beneath = kind?.below();
+        const own = kind?.constructor as (new() => $Type) | undefined;
+        $check(this.composed(writing).every(part =>
+            (beneath !== undefined && reflection.instanceOf(part, beneath))
+            || (own !== undefined && reflection.instanceOf(part, own))),
+            'a piece of writing composes the kind beneath it, or its own, and this one holds neither');
     }
 
-    @specify('a piece of writing has something written in it')
-    $hasWriting(writing: T): void {
-        const inside = writing.block?.$elements ?? [];
-        $check(inside.some(one => !(one instanceof $Writing) || !one.annotation),
-            'a piece of writing has something written in it, and this one is nothing but annotations');
+    protected composed(writing: $Writing): $Writing[] {
+        return writing.searchFor($Type).filter(part => reflection.composition(part.type()));
     }
 
-    @specify('a piece of writing descends from a chain that terminates')
-    $terminates(writing: T): void {
-        void writing.book;
+    protected beside(writing: $Writing): $Written[] {
+        return (writing._block.$elements ?? []).filter(part => typeof part !== 'string' && typeof part !== 'number');
     }
-
 }
-
-
-export const Theme = $($Theme);
-const theme = Theme;
-export const Style = $($Style);
-export const Anchor = $($Anchor);
-const anchor = Anchor;
 
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);

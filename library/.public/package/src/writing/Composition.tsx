@@ -1,11 +1,10 @@
-import { $Block, $ } from '@dna-platform/chemistry';
-import { $Type, $Writing } from './Writing';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
 import { parser } from '@/utilities/Parser';
+import { $Writing$, $Writing, $Type } from '@/writing/Writing';
 import { $Catalogue, Catalogue as catalogue } from '@/reference/Catalogue';
 
-export interface $Composition$ {
-    get index(): number;
+export interface $Composition$ extends $Writing$ {
     parts(): $Writing[];
     catalogue(): $Catalogue;
     where(match: (part: $Writing) => boolean): $Writing[];
@@ -15,11 +14,25 @@ export interface $Composition$ {
 }
 
 export class $Composition extends $Writing implements $Composition$ {
-    catalogue(): $Catalogue {
-        const Catalogue = $(catalogue);
-        return $<$Catalogue>(<Catalogue />, ...this.parts());
+    parts(): $Writing[] {
+        const kind = this.type();
+        const beneath = kind?.below();
+        const own = kind?.constructor as (new() => $Type) | undefined;
+        return parser.parse(this,
+            token => {
+                if (own !== undefined && token !== this && reflection.instanceOf(token, own))
+                    return token instanceof $Composition ? token.parts() : token;
+                if (beneath === undefined) return token;
+                return reflection.instanceOf(token, beneath) ? token : undefined;
+            },
+            tokens => this.reduce(tokens));
     }
 
+    catalogue(): $Catalogue {
+        const Catalogue = $(catalogue);
+
+        return $<$Catalogue>(<Catalogue />, ...this.parts());
+    }
 
     $Composition(block: $Block) {
         super.$Writing(block);
@@ -30,15 +43,20 @@ export class $Composition extends $Writing implements $Composition$ {
     selectMany<U>(pick: (part: $Writing) => U[]): U[] { return this.parts().flatMap(pick); }
     single(match: (part: $Writing) => boolean): $Writing {
         const matches = this.parts().filter(match);
-        if (matches.length !== 1) throw new Error(`single expected exactly one part and found ${matches.length}.`);
+        $check(matches.length === 1, `single expected exactly one part and found ${matches.length}`);
         return matches[0];
     }
 
-    concatenate(...more: $Composition$[]): $Composition {
+    concatenate(...more: $Composition[]): $Composition {
         const Composition = $(composition);
-        return $<$Composition>(<Composition />, ...this.parts(), ...more.flatMap(one => one.parts()));
+
+        return $<$Composition>(<Composition />, ...this.parts(), ...more.flatMap(part => part.parts()));
     }
 
+    protected reduce(tokens: (string | $Writing)[]): $Writing[] {
+        const beneath = this.type()?.below();
+        return beneath === undefined ? [] : reflection.template(beneath).makes(tokens);
+    }
 }
 
 export const Composition = $($Composition);
