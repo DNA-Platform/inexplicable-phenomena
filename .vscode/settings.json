@@ -1,8 +1,8 @@
 {
     "[typescriptreact]": {
         "editor.wordWrap": "bounded",
-        "editor.wordWrapColumn": 150,
-        "editor.wrappingIndent": "indent"
+        "editor.wordWrapColumn": 120,
+        "editor.wrappingIndent": "same"
     },
     "editor.rulers": [
         150

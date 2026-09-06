@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Chapter$, $TypeOfChapter, ChapterSpecification, Chapter as chapter } from './Chapter';
@@ -22,8 +21,7 @@ export class $Cover extends $Composition implements $Cover$ {
 
     $Cover(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfCover)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfCover, '!')];
+        this.addType($TypeOfCover);
     }
 
     override frame(): ReactNode {
@@ -60,4 +58,3 @@ export class CoverSpecification extends ChapterSpecification {
 
 export const Cover = $($Cover);
 export const TypeOfCover = $($TypeOfCover);
-const typeOfCover = TypeOfCover;

@@ -3,7 +3,6 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { lexer } from 'marked';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { reflection } from '@/utilities/Reflection';
 import { parser } from '@/utilities/Parser';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -27,8 +26,7 @@ export class $Ref extends $Composition implements $Ref$ {
 
     $Ref(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfRef)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfRef, '!')];
+        this.addType($TypeOfRef);
     }
 
     override view(): ReactNode {
@@ -87,4 +85,3 @@ export class RefSpecification extends PhraseSpecification {
 
 export const Ref = $($Ref);
 export const TypeOfRef = $($TypeOfRef);
-const typeOfRef = TypeOfRef;

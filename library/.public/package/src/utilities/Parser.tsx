@@ -46,17 +46,14 @@ export class Parser {
     sentences(tokens: (string | $Writing)[]): (string | $Writing)[][] {
         const lines: (string | $Writing)[][] = [[]];
         for (const token of tokens) {
-            if (typeof token !== 'string' || !token.includes('\n')) {
+            if (typeof token !== 'string') {
                 lines[lines.length - 1].push(token);
                 continue;
             }
-            token.split('\n').forEach((line, at, split) => {
-                if (at < split.length - 1) {
-                    lines[lines.length - 1].push(line + '\n');
-                    lines.push([]);
-                } else if (line !== '') {
-                    lines[lines.length - 1].push(line);
-                }
+            token.split(/(?<=\n)|(?<=[.!?])[^\S\n]+(?=\S)/u).forEach((piece, at, split) => {
+                const opened = lines[lines.length - 1].length === 0 ? piece.trimStart() : piece;
+                if (opened !== '') lines[lines.length - 1].push(opened);
+                if (at < split.length - 1) lines.push([]);
             });
         }
         return lines.filter(line => line.some(token => typeof token !== 'string' || token.trim() !== ''));

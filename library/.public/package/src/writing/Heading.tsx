@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
-import { reflection } from '@/utilities/Reflection';
+import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
@@ -12,8 +12,7 @@ export interface $Heading$ extends $Paragraph$ { }
 export class $Heading extends $Composition implements $Heading$ {
     $Heading(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfHeading)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfHeading, '!')];
+        this.addType($TypeOfHeading);
     }
 
     override view(): ReactNode {
@@ -21,7 +20,7 @@ export class $Heading extends $Composition implements $Heading$ {
         const Heading = $(heading);
 
         return (
-            <Heading>
+            <Heading id={html.text(this._block).replace(/\s+/gu, '_')}>
                 <Block />
             </Heading>
         );
@@ -38,4 +37,3 @@ export class HeadingSpecification extends ParagraphSpecification {
 
 export const Heading = $($Heading);
 export const TypeOfHeading = $($TypeOfHeading);
-const typeOfHeading = TypeOfHeading;

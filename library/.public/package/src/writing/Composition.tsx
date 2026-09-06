@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
 import { parser } from '@/utilities/Parser';
@@ -5,6 +6,9 @@ import { $Writing$, $Writing, $Type } from '@/writing/Writing';
 import { $Catalogue, Catalogue as catalogue } from '@/reference/Catalogue';
 
 export interface $Composition$ extends $Writing$ {
+    parenthetical: boolean;
+    $print: boolean;
+
     parts(): $Writing[];
     catalogue(): $Catalogue;
     where(match: (part: $Writing) => boolean): $Writing[];
@@ -14,6 +18,9 @@ export interface $Composition$ extends $Writing$ {
 }
 
 export class $Composition extends $Writing implements $Composition$ {
+    parenthetical = false;
+    $print = false;
+
     parts(): $Writing[] {
         const kind = this.type();
         const beneath = kind?.below();
@@ -36,6 +43,14 @@ export class $Composition extends $Writing implements $Composition$ {
 
     $Composition(block: $Block) {
         super.$Writing(block);
+    }
+
+    override view(): ReactNode {
+        return this.parenthetical && !this.$print ? null : super.view();
+    }
+
+    override frame(): ReactNode {
+        return this.parenthetical && !this.$print ? null : super.frame();
     }
 
     where(match: (part: $Writing) => boolean): $Writing[] { return this.parts().filter(match); }

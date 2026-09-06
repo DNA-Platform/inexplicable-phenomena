@@ -31,7 +31,7 @@ export class Reflection {
         return (writing._block.$elements ?? []).filter((part): part is $Type => part instanceof $Type);
     }
 
-    means(writing: $Writing): $Annotation | undefined {
+    meaning(writing: $Writing): $Annotation | undefined {
         return (writing._block.$elements ?? []).find((part): part is $Annotation =>
             part instanceof $Annotation && this.types(part).some(type => this.names(type).includes('Reference')));
     }

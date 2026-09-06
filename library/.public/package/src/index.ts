@@ -14,6 +14,7 @@ export * from './writing/Heading';
 export * from './writing/Phrase';
 export * from './writing/List';
 export * from './writing/Table';
+export * from './writing/Summary';
 export * from './writing/Theme';
 export * from './writing/Format';
 
@@ -26,6 +27,8 @@ export * from './reference/Ref';
 
 export * from './book/Book';
 export * from './book/Chapter';
+export * from './book/Abstract';
+export * from './book/Part';
 export * from './book/Cover';
 export * from './book/Synopsis';
 export * from './book/Index';

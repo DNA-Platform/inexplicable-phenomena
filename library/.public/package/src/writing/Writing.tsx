@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check, $Chemical, $Written, look } from '@dna-platform/chemistry';
+import { $, $Block, $check, $Chemical, $Written, inert, look } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
@@ -14,9 +14,11 @@ export interface $Type$ extends $Annotation$ { }
 
 export interface $Writing$ extends $Chemical {
     type(): $Type$;
-    means(): $Reference$ | undefined;
+    meaning(): $Reference$ | undefined;
     annotations(): $Annotation[];
     types(): $Type[];
+    mention: $Writing$;
+
     book(): $Writing$;
     searchFor<T extends $Writing>(type: new() => $Type): T[];
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
@@ -25,6 +27,7 @@ export interface $Writing$ extends $Chemical {
 
 export class $Writing extends $Chemical implements $Writing$ {
     inline = true;
+    @inert() mention!: $Writing;
     _block!: $Block;
 
     type(): $Type {
@@ -33,7 +36,7 @@ export class $Writing extends $Chemical implements $Writing$ {
         $check(standing.length <= 1, `writing is one kind of writing, and this one is ${standing.length}`);
         return standing[0] ?? carried[0];
     }
-    means(): $Reference$ | undefined { return reflection.means(this) as $Reference$ | undefined; }
+    meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
     annotations(): $Annotation[] { return reflection.annotations(this); }
     types(): $Type[] { return reflection.types(this); }
     book(): $Writing {
@@ -43,16 +46,17 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
+        for (const part of this._block.$elements ?? []) if (part instanceof $Writing && !reflection.writing(part.parent)) part.parent = this;
     }
 
     view(): ReactNode {
         const Block = $(this._block);
-        const means = this.means();
-        if (means === undefined) return <Block />;
+        const meaning = this.meaning();
+        if (meaning === undefined) return <Block />;
         const Anchor = $(anchor);
 
         return (
-            <Anchor href={html.text(means.path()?._block)}>
+            <Anchor href={html.text(meaning.path()?._block)}>
                 <Block />
             </Anchor>
         );
@@ -76,6 +80,10 @@ export class $Writing extends $Chemical implements $Writing$ {
         const found = this.searchFor<T>(type);
         $check(found.length <= 1, `writing holds one of a kind, and this one holds ${found.length}`);
         return found[0];
+    }
+
+    addType(type: new() => $Type): void {
+        if (!reflection.is(this, type)) this._block = this._block.concat($check(type, '!'));
     }
 
     specify(): void {

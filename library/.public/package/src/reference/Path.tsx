@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { reflection } from '@/utilities/Reflection';
 import { $Annotation$, $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
 
 export interface $Path$ extends $Annotation$ { }
@@ -10,8 +9,7 @@ export interface $Path$ extends $Annotation$ { }
 export class $Path extends $Annotation implements $Path$ {
     $Path(block: $Block) {
         super.$Writing(block);
-        if (reflection.is(this, $TypeOfPath)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfPath, '!')];
+        this.addType($TypeOfPath);
     }
 
     override view(): ReactNode {
@@ -44,4 +42,3 @@ export class PathSpecification extends WritingSpecification {
 
 export const Path = $($Path);
 export const TypeOfPath = $($TypeOfPath);
-const typeOfPath = TypeOfPath;

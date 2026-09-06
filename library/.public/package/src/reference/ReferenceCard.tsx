@@ -21,9 +21,7 @@ export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
     override path(): $Path | undefined { return super.path() ?? this.first()?.path(); }
 
     $ReferenceCard(block: $Block) {
-        const held = block ?? new $Block();
-        held.$elements = [...(held.$elements ?? []), $check(typeOfReferenceCard, '!')];
-        super.$Reference(held);
+        super.$Reference((block ?? new $Block()).concat($check(typeOfReferenceCard, '!')));
     }
 
     override read(): Promise<$Writing> {

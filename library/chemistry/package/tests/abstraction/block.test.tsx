@@ -95,45 +95,64 @@ describe('reading a block sequentially', () => {
 describe('EVERY READING OF A BLOCK IS A BLOCK', () => {
     const prose = () => held('Call me ', <Word>Ishmael</Word>, '. Some ', <Word>years</Word>, ' ago');
 
-    it('where filters into a new block', () => {
-        const words = prose().where(piece => typeof piece === 'object');
+    it('filter filters into a new block', () => {
+        const words = prose().filter(piece => typeof piece === 'object');
         expect(words).toBeInstanceOf($Block);
         expect(words.length).toBe(2);
         expect(words).not.toBe(prose());
     });
 
-    it('select maps into a new block', () => {
-        const shouted = held('a', 'b').select(piece => String(piece).toUpperCase());
+    it('map maps into a new block', () => {
+        const shouted = held('a', 'b').map(piece => String(piece).toUpperCase());
         expect(shouted).toBeInstanceOf($Block);
         expect([...shouted]).toEqual(['A', 'B']);
     });
 
-    it('selectMany flattens into a new block', () => {
-        const doubled = held('a', 'b').selectMany(piece => [piece, piece] as $Written[]);
+    it('flatMap flattens into a new block', () => {
+        const doubled = held('a', 'b').flatMap(piece => [piece, piece] as $Written[]);
         expect(doubled).toBeInstanceOf($Block);
         expect([...doubled]).toEqual(['a', 'a', 'b', 'b']);
     });
 
-    it('single takes exactly one piece, and refuses any other count', () => {
-        const block = held('a', 'bb', 'ccc');
-        expect(block.single(piece => String(piece).length === 2)).toBe('bb');
-        expect(() => block.single(piece => String(piece).length > 1)).toThrow(/found 2/);
-        expect(() => block.single(() => false)).toThrow(/found 0/);
+    it('reduce folds into a new block, seeded with an empty one', () => {
+        const kept = held('a', 'b', 'c').reduce((into, piece) =>
+            piece === 'b' ? into : into.concat(piece));
+        expect(kept).toBeInstanceOf($Block);
+        expect([...kept]).toEqual(['a', 'c']);
+    });
+
+    it('concat answers a new block and leaves both untouched', () => {
+        const one = held('a', 'b');
+        const joined = one.concat('c');
+        expect(joined).toBeInstanceOf($Block);
+        expect([...joined]).toEqual(['a', 'b', 'c']);
+        expect(one.length).toBe(2);
+    });
+
+    it('AND A BLOCK HANDED TO CONCAT CONTRIBUTES ITS PIECES, NOT ITSELF', () => {
+        const joined = held('a').concat(held('b', 'c'));
+        expect([...joined]).toEqual(['a', 'b', 'c']);
+    });
+
+    it('AND THERE IS NO EXCEPTION — a caller who wants one piece searches elements', () => {
+        const one = held('a', 'bb', 'ccc').filter(piece => String(piece).length === 2);
+        expect(one).toBeInstanceOf($Block);
+        expect(one.elements[0]).toBe('bb');
     });
 
     it('SO READINGS COMPOSE — a reading of a reading of a reading', () => {
         const read = prose()
-            .where(piece => typeof piece === 'string')
-            .select(piece => String(piece).trim())
-            .where(piece => String(piece).length > 0);
+            .filter(piece => typeof piece === 'string')
+            .map(piece => String(piece).trim())
+            .filter(piece => String(piece).length > 0);
         expect(read).toBeInstanceOf($Block);
         expect([...read]).toEqual(['Call me', '. Some', 'ago']);
     });
 
     it('and the original is untouched by any of them', () => {
         const block = prose();
-        block.where(() => false);
-        block.select(() => 'x');
+        block.filter(() => false);
+        block.map(() => 'x');
         expect(block.length).toBe(5);
     });
 });
@@ -148,13 +167,13 @@ describe('a block is a chemical, so it draws', () => {
     });
 
     it('and so does a block that a reading made', () => {
-        const words = held('a ', <Word>b</Word>, ' c').where(piece => typeof piece === 'object');
+        const words = held('a ', <Word>b</Word>, ' c').filter(piece => typeof piece === 'object');
         const Drawn = $(words);
         expect(render(<Drawn />).container.textContent).toBe('b');
     });
 
     it('a made block goes back to a bond constructor whole', () => {
-        const some = held('a', 'b', 'c').where(piece => piece !== 'b');
+        const some = held('a', 'b', 'c').filter(piece => piece !== 'b');
         const host = $(<Host />, some) as $Host;
         expect(host.held).toBe(some);
         expect([...host.held]).toEqual(['a', 'c']);

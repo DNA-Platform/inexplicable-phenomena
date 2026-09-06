@@ -1,8 +1,8 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Reference$, $Reference } from '@/reference/Reference';
-import { $Chapter, $TypeOf$Chapter, $ChapterSpecification } from './Chapter';
+import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
+import { $Chapter } from './Chapter';
 
 export interface $Bookmark$ extends $Reference$ {
     chapter(): $Chapter | undefined;
@@ -18,9 +18,7 @@ export class $Bookmark extends $Reference implements $Bookmark$ {
     }
 
     $Bookmark(block: $Block) {
-        const held = block ?? new $Block();
-        held.$elements = [...(held.$elements ?? []), $check(typeOfBookmark, '!')];
-        super.$Reference(held);
+        super.$Reference((block ?? new $Block()).concat($check(typeOfBookmark, '!')));
     }
 
     override async read(): Promise<$Writing> {
@@ -30,17 +28,17 @@ export class $Bookmark extends $Reference implements $Bookmark$ {
     }
 }
 
-export class $TypeOfBookmark extends $TypeOf$Chapter {
+export class $TypeOfBookmark extends $TypeOfReference {
     override name = 'Bookmark';
     protected override specification: Specification<$Writing> = new BookmarkSpecification();
 
-    override specifically(bookmark: $Writing): void {
+    override specifically(bookmark: $Bookmark): void {
         bookmark.persist = true;
         super.specifically(bookmark);
     }
 }
 
-export class BookmarkSpecification extends $ChapterSpecification {
+export class BookmarkSpecification extends ReferenceSpecification {
     @specify('a bookmark stands in a chapter, or carries a path')
     override $carriesPath(writing: $Writing): boolean | void {
         if (writing instanceof $Bookmark && writing.chapter() !== undefined) return false;

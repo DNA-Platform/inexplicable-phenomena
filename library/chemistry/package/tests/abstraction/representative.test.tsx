@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { render , act } from '@testing-library/react';
 import React from 'react';
 import { $Chemical, $ } from '@/abstraction/chemical';
 import { $reaction$ } from '@/implementation/symbols';
@@ -269,6 +269,30 @@ describe('$(A,B)(C) — register', () => {
 
 // ─── Narrowing: reach, and who asks ──────────────────────────────────────────
 
+describe('$(A,B)(C) — the replacement is a SUBCLASS, and it may add members', () => {
+    class $Wide extends $Plain {
+        $accent = 'wide';
+        override view() { return <span>{this.$accent}</span>; }
+    }
+
+    it('a subclass carrying a member the requested kind lacks registers without a cast or a type argument', () => {
+        const Plain = $($Plain);
+        const Wide = $($Wide);
+        const Host = $(host(Plain) as any);
+        const stood = $(Host, Plain)(Wide);
+        expect(stood).toBe(Wide);
+        expect(drawn(Host)).toContain('wide');
+    });
+
+    it('and the registrar still answers the replacement it was given, typed as that replacement', () => {
+        const Plain = $($Plain);
+        const Wide = $($Wide);
+        const Host = $(host(Plain) as any);
+        const stood: typeof Wide = $(Host, Plain)(Wide);
+        expect(stood.$).toBe(Wide.$);
+    });
+});
+
 describe('reach — how far a registration carries', () => {
     it('projects DOWNWARD by default, reaching a bound child', () => {
         const Plain = $($Plain);
@@ -313,11 +337,12 @@ describe('the asker — whose asks a registration answers', () => {
 
 // ─── What a scope reaches, and in what order ─────────────────────────────────
 
-describe('a scope reaches what it BINDS', () => {
-    // A chemical that merely returns `this[children]` never parents them, so a
-    // part standing "inside" it has no lineage to walk. The catalyst graph is
-    // threaded by the bond constructor — the bond is what makes a scope reach.
-    it('does not reach a child it never bound', () => {
+describe('a scope reaches what it BINDS, and what its view draws at its top', () => {
+    // A chemical that merely returns `this[children]` never bound them, and once
+    // that left them with no lineage to walk. Now what a view draws at its top is
+    // given a default assignment to the drawer, completed on mount — so the child
+    // draws plain once, and fancy once it belongs.
+    it('reaches a child it draws at its top once that child has mounted', async () => {
         const Plain = $($Plain);
         const Fancy = $($Fancy);
         class $Loose extends $Chemical {
@@ -326,7 +351,10 @@ describe('a scope reaches what it BINDS', () => {
         const Loose = $($Loose);
         $(Loose, Plain)(Fancy);
         const Inner = $(host(Plain) as any);
-        expect(drawing(<Loose><Inner /></Loose>)).toContain('plain');
+        let page: HTMLElement;
+        await act(async () => { page = render(<Loose><Inner /></Loose>).container; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(page!.textContent).toContain('fancy');
     });
 
     it('and DOES reach one it bound through its bond constructor', () => {

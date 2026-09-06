@@ -1,30 +1,47 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
+import { ProseFormat as prose } from '@/encyclopedia/ProseFormat';
 import { html } from '@/utilities/Html';
-import { reflection } from '@/utilities/Reflection';
 import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { parser } from '@/utilities/Parser';
-import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
+import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfSentence } from './Sentence';
+import { $Phrase$, $TypeOfPhrase } from './Phrase';
 
 export interface $Paragraph$ extends $Composition$ { }
 
-export interface $$Paragraph$ extends $Reference$ { }
+export interface $$Paragraph$ extends $Phrase$ {
+    parts(): $Writing[];
+}
 
 export class $Paragraph extends $Composition implements $Paragraph$ {
     $Paragraph(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfParagraph)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfParagraph, '!')];
+        this.addType($TypeOfParagraph);
+    }
+
+    override frame(): ReactNode {
+        const Prose = $(prose);
+
+        return <Prose>{super.frame()}</Prose>;
     }
 }
 
-export class $$Paragraph extends $Reference implements $$Paragraph$ {
+export class $$Paragraph extends $Composition implements $$Paragraph$ {
+    parts(): $Writing[] {
+        const paragraph = this.searchForOne<$Paragraph>($TypeOfParagraph);
+
+        return paragraph === undefined ? [] : paragraph.parts()
+            .filter((part): part is $Composition => part instanceof $Composition)
+            .map(part => part.mention);
+    }
+
     $$Paragraph(block: $Block) {
-        const held = block ?? new $Block();
-        held.$elements = [...(held.$elements ?? []), $check(typeOf$Paragraph, '!')];
-        super.$Reference(held);
+        super.$Composition(block);
+        this.addType($TypeOfPhrase);
+        this.addType($TypeOf$Paragraph);
     }
 }
 
@@ -34,8 +51,11 @@ export class $TypeOfParagraph extends $Type {
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
         const Paragraph = $(paragraph);
+        const Representation = $($$Paragraph);
+        const written = $<$Paragraph>(<Paragraph>{parser.elements(tokens)}</Paragraph>);
+        written.mention = $<$$Paragraph>(<Representation />, written);
 
-        return [$(<Paragraph>{parser.elements(tokens)}</Paragraph>)];
+        return [written];
     }
 
     override below(): new() => $TypeOfSentence { return $TypeOfSentence; }
@@ -64,6 +84,4 @@ export class $ParagraphSpecification extends ReferenceSpecification {
 export const Paragraph = $($Paragraph);
 const paragraph = Paragraph;
 export const TypeOfParagraph = $($TypeOfParagraph);
-const typeOfParagraph = TypeOfParagraph;
 export const TypeOf$Paragraph = $($TypeOf$Paragraph);
-const typeOf$Paragraph = TypeOf$Paragraph;

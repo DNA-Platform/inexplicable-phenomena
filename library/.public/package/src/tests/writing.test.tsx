@@ -5,13 +5,16 @@ import { Reference } from '@/reference/Reference';
 import { TypeOfLetter, $TypeOfLetter } from '@/writing/Letter';
 import { TypeOfWord } from '@/writing/Word';
 import { TypeOfSentence } from '@/writing/Sentence';
-import { TypeOfParagraph } from '@/writing/Paragraph';
+import { TypeOfParagraph, Paragraph } from '@/writing/Paragraph';
 import { TypeOfSection } from '@/writing/Section';
-import { TypeOfHeading } from '@/writing/Heading';
+import { TypeOfHeading, Heading } from '@/writing/Heading';
+import { List } from '@/writing/List';
+import { Table } from '@/writing/Table';
 import { Path } from '@/reference/Path';
 import { TypeOfChapter, $TypeOfChapter } from '@/book/Chapter';
 import { TypeOfBook, $TypeOfBook } from '@/book/Book';
 import { reflection } from '@/utilities/Reflection';
+import { parser } from '@/utilities/Parser';
 import { render } from '@testing-library/react';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -34,6 +37,11 @@ describe('a piece of writing says what kind of writing it is', () => {
 });
 
 describe('the seven stand in order, and a type knows what it composes', () => {
+    it('a sentence is found at its stop, and at a line', () => {
+        expect(parser.sentences(['One. Two? Three!\nFour']).length).toBe(4);
+        expect(parser.sentences(['e.g. this']).length).toBe(2);
+    });
+
     it('each names the one beneath it, and the letter names none', () => {
         const beneath = (Kind: React.ComponentType) => (built<$Type>(<Kind />)).below();
         expect(beneath(TypeOfBook)).toBe($TypeOfChapter);
@@ -158,5 +166,37 @@ describe('the frame carries the names of every kind the writing stands as', () =
 
     it('AND THE COPY IS STILL THERE', () => {
         expect(drawn(<Writing><TypeOfSentence />hello</Writing>).textContent).toContain('hello');
+    });
+});
+
+describe('a kind draws in its default look, and the look makes up for plain copy', () => {
+    const drawn = (node: React.ReactNode) => {
+        class $Page extends $Chemical { view(): React.ReactNode { return node; } }
+        const Page = $($Page);
+        return render(<Page />).container;
+    };
+    const styles = () => [...document.querySelectorAll('style')].map(style => style.textContent).join('')
+        + [...document.styleSheets].flatMap(sheet => [...sheet.cssRules]).map(rule => rule.cssText).join('');
+
+    it('a paragraph is worn as prose', () => {
+        expect(drawn(<Paragraph>One.</Paragraph>).querySelector('p .pd-paragraph')).not.toBeNull();
+    });
+
+    it('a list finds its items at their marks', () => {
+        expect(drawn(<List>- One - Two - Three</List>).querySelectorAll('li').length).toBe(3);
+    });
+
+    it('a table draws its cells in a grid of its columns', () => {
+        const host = drawn(
+            <Table columns={2}>
+                <Heading>Two by two</Heading>
+                <Paragraph>One.</Paragraph>
+                <Paragraph>Two.</Paragraph>
+                <Paragraph>Three.</Paragraph>
+                <Paragraph>Four.</Paragraph>
+            </Table>
+        );
+        expect(host.querySelector('.pd-table')!.children.length).toBe(5);
+        expect(styles()).toContain('grid-template-columns:repeat(2, minmax(0, 1fr))');
     });
 });

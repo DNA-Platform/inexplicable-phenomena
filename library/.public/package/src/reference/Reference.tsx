@@ -23,12 +23,11 @@ export class $Reference extends $Annotation implements $Reference$ {
 
     $Reference(block: $Block) {
         super.$Writing(block);
-        if (!reflection.is(this, $TypeOfReference))
-            this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfReference, '!')];
+        this.addType($TypeOfReference);
         const copy = html.text(this._block);
         if (this.searchFor($TypeOfPath).length === 0 && this.reads(copy)) {
             const Path = $(path);
-            this._block.$elements = [...(this._block.$elements ?? []), $<$Path>(<Path>{copy}</Path>)];
+            this._block = this._block.concat($<$Path>(<Path>{copy}</Path>));
         }
 
         this.$pid ??= html.text(this.path()?._block);
@@ -93,4 +92,3 @@ export class ReferenceSpecification extends WritingSpecification {
 
 export const Reference = $($Reference);
 export const TypeOfReference = $($TypeOfReference);
-const typeOfReference = TypeOfReference;

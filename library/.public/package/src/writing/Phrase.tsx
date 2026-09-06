@@ -1,7 +1,6 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Sentence$, $TypeOfSentence, SentenceSpecification } from './Sentence';
@@ -11,8 +10,7 @@ export interface $Phrase$ extends $Sentence$ { }
 export class $Phrase extends $Composition implements $Phrase$ {
     $Phrase(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfPhrase)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfPhrase, '!')];
+        this.addType($TypeOfPhrase);
     }
 }
 
@@ -35,4 +33,3 @@ export class PhraseSpecification extends SentenceSpecification {
 
 export const Phrase = $($Phrase);
 export const TypeOfPhrase = $($TypeOfPhrase);
-const typeOfPhrase = TypeOfPhrase;

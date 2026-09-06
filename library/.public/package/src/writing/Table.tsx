@@ -23,41 +23,13 @@ export class $Table extends $Composition implements $Table$ {
 
     $Table(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfTable)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfTable, '!')];
+        this.addType($TypeOfTable);
     }
 
-    override view(): ReactNode {
-        const heading = this.heading();
-        const Opening = heading === undefined ? undefined : $(heading);
+    override frame(): ReactNode {
         const TableStyle = $(tableStyle);
-        const cells = this.cells();
-        const per = this.$columns ?? 1;
-        const rows: $Writing[][] = [];
-        for (let at = 0; at < cells.length; at += per) rows.push(cells.slice(at, at + per));
 
-        return (
-            <>
-                {Opening && <Opening />}
-                <TableStyle>
-                    <tbody>
-                        {rows.map((row, at) => (
-                            <tr key={at}>
-                                {row.map((cell, seat) => {
-                                    const Cell = $(cell);
-
-                                    return (
-                                        <td key={seat}>
-                                            <Cell />
-                                        </td>
-                                    );
-                                })}
-                            </tr>
-                        ))}
-                    </tbody>
-                </TableStyle>
-            </>
-        );
+        return <TableStyle columns={this.$columns ?? 1}>{super.frame()}</TableStyle>;
     }
 }
 
@@ -82,4 +54,3 @@ export class TableSpecification extends SectionSpecification {
 
 export const Table = $($Table);
 export const TypeOfTable = $($TypeOfTable);
-const typeOfTable = TypeOfTable;

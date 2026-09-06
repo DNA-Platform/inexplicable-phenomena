@@ -818,6 +818,12 @@ export class $ParamValidation {
             }
         } else if (type?.prototype && typeof type.prototype.view === 'function') {
             return arg instanceof type;
+        // A COMPONENT NAMES ITS KIND. $check(held, Kind, '!') takes the kind as a
+        // component as readily as a class — the overload says so — and what was
+        // handed in fits when it is an instance of the class behind it.
+        } else if (typeof type === 'function' && (type as any).$chemical) {
+            const kind = (type as any).$chemical[$type$] ?? (type as any).$chemical.constructor;
+            return typeof kind === 'function' && arg instanceof kind;
         } else if (typeof type === 'function') {
             return arg instanceof $Function$ && (arg as any).__$Function === type;
         }
@@ -1301,10 +1307,12 @@ export class $Html$<T extends $HtmlTag = any> extends $Chemical {
 // string, a raw number, a chemical whole — because wrapping the raw ones is what
 // made prose and a written element indistinguishable downstream.
 //
-// EVERY READING OF A BLOCK IS A BLOCK, and that is the point of the operator set
-// below: a reading can be read again, so a caller composes readings instead of
-// falling out into an array on the first one and hand-building a block to get
-// back in.
+// EVERY READING OF A BLOCK IS A BLOCK, WITHOUT EXCEPTION, and that is the point
+// of the operator set below: a reading can be read again, so a caller composes
+// readings instead of falling out into an array on the first one and
+// hand-building a block to get back in. The comprehension is over BLOCKS rather
+// than over elements — a caller who genuinely wants one piece searches
+// `elements`, which is right there and needs no member of its own.
 export class $Block extends $Html$<'block'> {
     $elements?: $Written[];
     get elements(): $Written[] { return this.$elements ?? []; }
@@ -1318,27 +1326,37 @@ export class $Block extends $Html$<'block'> {
         return this.elements[Symbol.iterator]();
     }
 
-    where(match: (piece: $Written, at: number) => boolean): $Block {
+    filter(match: (piece: $Written, at: number) => boolean): $Block {
         return block(this.elements.filter(match));
     }
 
-    select(pick: (piece: $Written, at: number) => $Written): $Block {
+    map(pick: (piece: $Written, at: number) => $Written): $Block {
         return block(this.elements.map(pick));
     }
 
-    selectMany(pick: (piece: $Written, at: number) => $Written[]): $Block {
+    flatMap(pick: (piece: $Written, at: number) => $Written[]): $Block {
         return block(this.elements.flatMap(pick));
     }
 
-    // THE ONE MEMBER THAT ANSWERS A PIECE RATHER THAN A BLOCK, and it is a
-    // reading of the instruction rather than the instruction: a block of one and
-    // the one are different things, and a caller who wanted the block wrote
-    // `where`. Reversible in a line if the reading is wrong.
-    single(match: (piece: $Written, at: number) => boolean): $Written {
-        const found = this.elements.filter(match);
-        if (found.length !== 1)
-            throw new Error(`single expected exactly one piece of the block and found ${found.length}.`);
-        return found[0];
+    // A fold answers a BLOCK like everything else here, so what it accumulates
+    // into is a block and it is seeded with an empty one. That is what keeps the
+    // rule whole — there is no reading of a block that falls out into an array.
+    reduce(fold: (held: $Block, piece: $Written, at: number) => $Block, seed = new $Block()): $Block {
+        return this.elements.reduce(fold, seed);
+    }
+
+    // Concatenation folds what it is handed into ONE NEW BLOCK, and the blocks it
+    // was built from are never touched. A block handed in contributes its pieces
+    // rather than standing as one, so `held.concat(made)` and `held.concat(other)`
+    // mean the same thing at the seat that matters.
+    //
+    // This is the member a bond constructor reaches for. Assigning `$elements`
+    // instead is a write to a live chemical while its own tree is being built,
+    // and that is the shape of a defect this codebase has already met twice.
+    concat(...elements: $Written[]): $Block {
+        return block(elements.reduce<$Written[]>(
+            (held, piece) => held.concat(piece instanceof $Block ? piece.elements : piece),
+            this.elements));
     }
 
     override view(): ReactNode {
@@ -1428,6 +1446,13 @@ export interface $Narrowing {
 }
 
 interface $Chemistry {
+    // Eval, NAMING THE KIND: $(<Cover>…</Cover>, Cover) → a $Cover, checked.
+    // $<$Cover>(…) only ASSERTS — $<$Cover>(<Section/>) compiles clean, because
+    // JSX erases the chemical and the element's own `type` is `any`. A component
+    // does not erase: Cover is Component<$Cover>, so naming it second is what
+    // binds T, and the markup still checks its own children. Precedes the eval
+    // overload below, which a component never matches as written content.
+    <T extends $Chemical>(element: React.ReactElement, kind: Component<T>): T;
     // Eval: $(<Word/>) → the live instance. Defaults to `any` — the honest type,
     // since JSX erased the real one and the result lands in an already-typed slot;
     // $<$Word>(<Word/>) narrows it. Must precede the props overload, which an
@@ -1470,7 +1495,7 @@ interface $Chemistry {
     <A extends $Particle, B extends $Particle>(
         scope: Component<A> | Element<A>,
         requested: Component<B> | Element<B>
-    ): (replacement: Component<B> | Element<B>, options?: $Narrowing) => Component<B> | Element<B>;
+    ): <C extends B>(replacement: Component<C> | Element<C>, options?: $Narrowing) => Component<C> | Element<C>;
     // …and the same, for scopes or parts that are plain function components.
     (scope: Component<any> | Element<any> | React.FC<any>, requested: React.FC<any>):
         (replacement: React.FC<any> | Component<any> | Element<any>, options?: $Narrowing) => any;
@@ -1697,8 +1722,12 @@ class $Chemistry$ extends $Chemical {
         // constructor, the view, and an augmented handler — is the element `$`
         // is operating in now, and what is evaluated here is parented to it.
         // Outside those windows there is no asker and the instance is a root.
+        // A COMPONENT HANDED IN BESIDE THE MARKUP NAMES THE KIND AND IS NOT
+        // WRITTEN CONTENT — $(<Cover>…</Cover>, Cover) is checked rather than
+        // asserted, and Cover is a witness to the type, not a part of the book.
         if (React.isValidElement(arg)) {
-            const written = Array.prototype.slice.call(arguments, 1);
+            const rest = Array.prototype.slice.call(arguments, 1);
+            const written = rest.filter((one: any) => !(typeof one === 'function' && one.$chemical));
             const asker = currentAsker();
             return evalElement(arg as React.ReactElement, asker instanceof $Chemical ? asker : undefined, written);
         }

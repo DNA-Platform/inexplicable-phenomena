@@ -1,40 +1,22 @@
-import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { reflection } from '@/utilities/Reflection';
-import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 import { $Writing } from '@/writing/Writing';
-import { $Reference$, $Reference, $TypeOfReference } from '@/reference/Reference';
 import { $Composition } from '@/writing/Composition';
-import { $TypeOfHeading } from '@/writing/Heading';
+import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
 import { $Section$, $TypeOfSection, SectionSpecification } from '@/writing/Section';
 
 export interface $Title$ extends $Section$ { }
 
 export class $Title extends $Composition implements $Title$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
-    reference(): $Reference$ | undefined {
-        return this.heading()?.searchForOne<$Reference>($TypeOfReference)
-            ?? this.searchForOne<$Reference>($TypeOfReference);
-    }
 
     $Title(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfTitle)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfTitle, '!')];
-    }
-
-    override view(): ReactNode {
-        const Block = $(this._block);
-        const Anchor = $(anchor);
-        const url = html.text(this.reference()?.path()?._block);
-
-        return (
-            <Anchor href={url}>
-                <Block />
-            </Anchor>
-        );
+        this.addType($TypeOfTitle);
+        if (this.heading() !== undefined) return;
+        const Heading = $(heading);
+        this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));
     }
 }
 
@@ -49,13 +31,12 @@ export class TitleSpecification extends SectionSpecification {
         return false;
     }
 
-    @specify('a title means the book')
+    @specify('a title means what it titles')
     $meansTheBook(writing: $Writing): void {
-        $check(writing.means() !== undefined,
-            'a title means the book, and this one means nothing');
+        $check(writing.meaning() !== undefined,
+            'a title means what it titles, and this one means nothing');
     }
 }
 
 export const Title = $($Title);
 export const TypeOfTitle = $($TypeOfTitle);
-const typeOfTitle = TypeOfTitle;

@@ -18,9 +18,7 @@ export class $Highlight extends $Reference implements $Highlight$ {
     ending(): $Reference | undefined { return this.pair()?.[1]; }
 
     $Highlight(block: $Block) {
-        const held = block ?? new $Block();
-        held.$elements = [...(held.$elements ?? []), $check(typeOfHighlight, '!')];
-        super.$Reference(held);
+        super.$Reference((block ?? new $Block()).concat($check(typeOfHighlight, '!')));
     }
 }
 

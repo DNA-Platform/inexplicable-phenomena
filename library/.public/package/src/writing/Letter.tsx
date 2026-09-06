@@ -1,18 +1,17 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { reflection } from '@/utilities/Reflection';
 import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
+import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { parser } from '@/utilities/Parser';
-import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
+
+export interface $$Letter$ extends $Letter$ { }
 
 export interface $Letter$ extends $Composition$ {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic';
     case: 'uppercase' | 'lowercase';
 }
-
-export interface $$Letter$ extends $Reference$ { }
 
 export class $Letter extends $Composition implements $Letter$ {
     kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
@@ -20,16 +19,18 @@ export class $Letter extends $Composition implements $Letter$ {
 
     $Letter(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfLetter)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfLetter, '!')];
+        this.addType($TypeOfLetter);
     }
 }
 
-export class $$Letter extends $Reference implements $$Letter$ {
+export class $$Letter extends $Composition implements $$Letter$ {
+    kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
+    case: 'uppercase' | 'lowercase' = 'lowercase';
+
     $$Letter(block: $Block) {
-        const held = block ?? new $Block();
-        held.$elements = [...(held.$elements ?? []), $check(typeOf$Letter, '!')];
-        super.$Reference(held);
+        super.$Composition(block);
+        this.addType($TypeOfLetter);
+        this.addType($TypeOf$Letter);
     }
 }
 
@@ -49,8 +50,8 @@ export class $TypeOfLetter extends $Type {
         return parser.letters(tokens).map(segment => $(<Letter>{segment}</Letter>));
     }
 
-    override specifically(letter: $Writing): void {
-        if (letter instanceof $Letter) this.spell(letter);
+    override specifically(letter: $Letter): void {
+        this.spell(letter);
         super.specifically(letter);
     }
 
@@ -91,6 +92,4 @@ export class $LetterSpecification extends ReferenceSpecification {
 export const Letter = $($Letter);
 const letter = Letter;
 export const TypeOfLetter = $($TypeOfLetter);
-const typeOfLetter = TypeOfLetter;
 export const TypeOf$Letter = $($TypeOf$Letter);
-const typeOf$Letter = TypeOf$Letter;

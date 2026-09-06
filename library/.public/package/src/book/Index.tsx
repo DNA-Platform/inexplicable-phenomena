@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
@@ -10,10 +9,11 @@ import { ColumnsFormat as columns } from '@/encyclopedia/ColumnsFormat';
 export interface $Index$ extends $Chapter$ { }
 
 export class $Index extends $Composition implements $Index$ {
+    override parenthetical = true;
+
     $Index(block: $Block) {
         super.$Composition(block);
-        if (reflection.is(this, $TypeOfIndex)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfIndex, '!')];
+        this.addType($TypeOfIndex);
     }
 
     override view(): ReactNode {
@@ -42,4 +42,3 @@ export class IndexSpecification extends ChapterSpecification {
 
 export const Index = $($Index);
 export const TypeOfIndex = $($TypeOfIndex);
-const typeOfIndex = TypeOfIndex;

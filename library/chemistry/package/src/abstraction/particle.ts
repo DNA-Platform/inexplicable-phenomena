@@ -423,6 +423,14 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             if (contextParent && $parent$ in made) {
                 made[$parent$] = contextParent;
             }
+            // TOLD WHERE IT BELONGS BEFORE IT IS BONDED. An assignment written for
+            // this element — by its author, or by the walk for a top — names the
+            // chemical whose view wrote it, and a derivative with no parent of its
+            // own takes that one here, so its bond constructor already stands in
+            // the lineage when it asks the scope for a kind. Mount confirms the
+            // same fact and never moves one.
+            const told = (props as any)?.on?.[$assigned$]?.[0]?.receiver;
+            if (told && told !== made && $parent$ in made && made[$parent$] === made) made[$parent$] = told;
             if ((made as any)._persist) {
                 const was = made[$rendering$];
                 made[$rendering$] = true;

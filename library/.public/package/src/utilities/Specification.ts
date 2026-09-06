@@ -1,5 +1,4 @@
 import { $check } from '@dna-platform/chemistry';
-import type { $Writing } from '@/writing/Writing';
 
 export function specify(description: string) {
     return (target: object, key: string, descriptor: PropertyDescriptor): void => {

@@ -3,7 +3,7 @@ import { $Format } from '@/writing/Format';
 
 export class $ProseFormat extends $Format {
     selector = styled.p;
-    margin = '0.4em 0 0.5em';
+    margin = '0.5em 0 1em';
     @select('& &') marginLeft = '1.6em';
     get color() { return this.theme.ink; }
 }

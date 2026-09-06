@@ -21,11 +21,11 @@ export class $Theme extends $Chemical implements $Theme$ {
     shade = '#eaecf0';
     rule = '#a2a9b1';
     link = '#3366cc';
-    measure = '60em';
-    body = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
-    display = "'Linux Libertine', 'Georgia', 'Times', serif";
-    size = '14px';
-    leading = '1.6';
+    measure = '60.75em';
+    body = 'sans-serif';
+    display = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
+    size = '16px';
+    leading = '1.625';
 }
 
 export const Theme = $($Theme);

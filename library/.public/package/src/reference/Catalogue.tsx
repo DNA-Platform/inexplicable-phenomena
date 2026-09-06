@@ -1,12 +1,12 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
-import { $Writing$, $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
-import { $Composition, Composition as composition } from '@/writing/Composition';
+import { $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Composition$, $Composition, Composition as composition } from '@/writing/Composition';
 import { $Reference, Reference as reference } from './Reference';
 import { $Path, Path as path } from './Path';
 
-export interface $Catalogue$ extends $Writing$ {
+export interface $Catalogue$ extends $Composition$ {
     parts(): $Reference[];
     comprehend(): $Composition;
     follow(fragment: string): $Writing;
@@ -14,6 +14,9 @@ export interface $Catalogue$ extends $Writing$ {
 }
 
 export class $Catalogue extends $Writing implements $Catalogue$ {
+    parenthetical = false;
+    $print = false;
+
     parts(): $Reference[] {
         return (this._block.$elements ?? [])
             .filter((part): part is $Writing =>
@@ -41,10 +44,11 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
         return first.concatenate(...rest.filter(held => held !== undefined));
     }
 
+    catalogue(): $Catalogue { return this; }
+
     $Catalogue(block: $Block) {
         super.$Writing(block);
-        if (reflection.is(this, $TypeOfCatalogue)) return;
-        this._block.$elements = [...(this._block.$elements ?? []), $check(typeOfCatalogue, '!')];
+        this.addType($TypeOfCatalogue);
     }
 
     follow(fragment: string): $Writing {
@@ -136,4 +140,3 @@ export class CatalogueSpecification extends WritingSpecification {
 
 export const Catalogue = $($Catalogue);
 export const TypeOfCatalogue = $($TypeOfCatalogue);
-const typeOfCatalogue = TypeOfCatalogue;

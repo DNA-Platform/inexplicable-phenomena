@@ -27,6 +27,12 @@ describe("$check makes one when asked with '!'", () => {
         expect($check(held, $Kind, '!')).toBe(held);
     });
 
+    it('AND KEEPS IT WHEN THE KIND IS NAMED BY ITS COMPONENT, which is what a scope-resolved ask hands in', () => {
+        const held = $(<Kind />) as $Kind;
+        expect($check(held, Kind, '!')).toBe(held);
+        expect($check($(<Other />), Kind, '!')).toBeInstanceOf($Kind);
+    });
+
     it('makes one when what it was handed is missing', () => {
         const made = $check<$Kind>(undefined, $Kind, '!');
         expect(made).toBeInstanceOf($Kind);

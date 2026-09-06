@@ -1,6 +1,6 @@
 import type { ReactNode, ReactElement } from 'react';
 import { withScope, withAsker } from './scope';
-import { $original$, $assigned$, $formula$, $facades$ } from './symbols';
+import { $original$, $assigned$, $formula$, $facades$, $isTemplate$ } from './symbols';
 import { pathOf } from './reflection';
 
 // Asked for late, so this module names no class from the abstraction layer.
@@ -57,6 +57,7 @@ function augmentNode(node: ReactNode, react: () => void, asker?: any, pass?: $Pa
     // the same question of it, and asking once is also what makes them read as
     // one decision rather than three passes that happen to be adjacent.
     const chemical = (element.type as any)?.$chemical;
+    const top = !!chemical && standing.length === 0;
 
     // The children are walked INSIDE this element, because what encloses them is
     // the question a facade has to answer.
@@ -82,6 +83,17 @@ function augmentNode(node: ReactNode, react: () => void, asker?: any, pass?: $Pa
         if (typeof value !== 'function' || !isEventHandlerProp(key)) continue;
         if (!newProps) newProps = { ...props };
         (newProps as Record<string, any>)[key] = wrapHandler(value as Function, react, asker);
+    }
+
+    // WHAT A VIEW WRITES AT ITS TOP BELONGS TO THE CHEMICAL WHOSE VIEW WROTE IT.
+    // The synthesis parents a bond's children; a chemical written in a view had no
+    // parent until it said where it belonged. A topmost chemical element — one no
+    // other chemical element of this drawing encloses — that says nothing is given
+    // a default: it belongs to the writer, and the assignment threads the lineage
+    // on mount the way a written one does — the parent, and nothing else.
+    if (top && asker && !(assignment in props) && chemical[$isTemplate$]) {
+        if (!newProps) newProps = { ...props };
+        (newProps as Record<string, any>)[assignment] = belonging(asker);
     }
 
     // A FACADE IS CHOSEN WHERE THE ELEMENT WAS WRITTEN, not where the instance
@@ -277,6 +289,20 @@ const passes = new WeakMap<object, $Pass & { run: number; fed: boolean }>();
 // A DRAWING THAT FOLLOWED AN ASSIGNMENT is the only kind that can be a runaway.
 // One that grew because somebody pressed something did not feed itself, and must
 // not be counted against the run.
+// One default assignment per writer, resolved once. It names the writer as the
+// receiver and holds NO member: the parent is threaded where the chemical says
+// it belongs, and a parent is a fact about the tree, not a write a view wakes for.
+const implied = new WeakMap<any, any>();
+
+function belonging(asker: any): any {
+    let assign = implied.get(asker);
+    if (assign) return assign;
+    assign = () => {};
+    assign[$assigned$] = [{ receiver: asker, path: [] }];
+    implied.set(asker, assign);
+    return assign;
+}
+
 function fedBy(receiver: any): void {
     const held = passes.get(receiver);
     if (held) held.fed = true;
@@ -372,6 +398,7 @@ function into(receiver: any, path: string[], held: any): void {
 export function unassign(assign: any, held: any): void {
     const places = assign?.[$assigned$] as { receiver: any; path: string[] }[] | undefined;
     if (!places) return;
+    if (implied.get(places[0]?.receiver) === assign) return;
     for (const place of places) {
         fedBy(place.receiver);
         let target: any;
