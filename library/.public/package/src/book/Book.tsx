@@ -10,6 +10,8 @@ import { Heading as heading } from '@/writing/Heading';
 import { Paragraph as paragraph } from '@/writing/Paragraph';
 import { Ref as ref } from '@/reference/Ref';
 import { $TypeOfChapter } from './Chapter';
+import { $Paragraph$, $TypeOfParagraph } from '@/writing/Paragraph';
+import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfCover, Cover as cover } from './Cover';
 import { $TypeOfSynopsis, Synopsis as synopsis } from './Synopsis';
 import { $TypeOfTableOfContents, TableOfContents as table } from './TableOfContents';
@@ -27,6 +29,8 @@ export interface $Book$ extends $Composition$ {
     index: $Writing;
     readonly chapters: $Writing[];
 }
+
+export interface $$Book$ extends $Paragraph$ { }
 
 export class $Book extends $Composition implements $Book$ {
     _opening!: $Block;
@@ -112,6 +116,14 @@ export class $Book extends $Composition implements $Book$ {
     }
 }
 
+export class $$Book extends $Composition implements $$Book$ {
+    $$Book(block: $Block) {
+        super.$Composition(block);
+        this.addType($TypeOfParagraph);
+        this.addType($TypeOf$Book);
+    }
+}
+
 export class $TypeOfBook extends $Type {
     override name = 'Book';
     protected override specification: Specification<$Writing> = new BookSpecification();
@@ -156,5 +168,15 @@ export class BookSpecification extends WritingSpecification {
     }
 }
 
+export class $TypeOf$Book extends $TypeOfReference {
+    override name = '$Book';
+    protected override specification: Specification<$Writing> = new $BookSpecification();
+}
+
+export class $BookSpecification extends ReferenceSpecification {
+}
+
 export const Book = $($Book);
+export const book = $($$Book);
+export const TypeOf$Book = $($TypeOf$Book);
 export const TypeOfBook = $($TypeOfBook);

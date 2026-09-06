@@ -15,7 +15,6 @@ export * from './writing/Phrase';
 export * from './writing/List';
 export * from './writing/Table';
 export * from './writing/Summary';
-export * from './writing/Theme';
 export * from './writing/Format';
 
 export * from './reference/Reference';

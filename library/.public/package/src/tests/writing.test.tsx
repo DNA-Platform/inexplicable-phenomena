@@ -5,13 +5,13 @@ import { Reference } from '@/reference/Reference';
 import { TypeOfLetter, $TypeOfLetter } from '@/writing/Letter';
 import { TypeOfWord } from '@/writing/Word';
 import { TypeOfSentence } from '@/writing/Sentence';
-import { TypeOfParagraph, Paragraph } from '@/writing/Paragraph';
+import { TypeOfParagraph, $TypeOfParagraph, Paragraph } from '@/writing/Paragraph';
 import { TypeOfSection } from '@/writing/Section';
 import { TypeOfHeading, Heading } from '@/writing/Heading';
 import { List } from '@/writing/List';
 import { Table } from '@/writing/Table';
 import { Path } from '@/reference/Path';
-import { TypeOfChapter, $TypeOfChapter } from '@/book/Chapter';
+import { TypeOfChapter, $TypeOfChapter, chapter as Chapter, $TypeOf$Chapter } from '@/book/Chapter';
 import { TypeOfBook, $TypeOfBook } from '@/book/Book';
 import { reflection } from '@/utilities/Reflection';
 import { parser } from '@/utilities/Parser';
@@ -198,5 +198,26 @@ describe('a kind draws in its default look, and the look makes up for plain copy
         );
         expect(host.querySelector('.pd-table')!.children.length).toBe(5);
         expect(styles()).toContain('grid-template-columns:repeat(2, minmax(0, 1fr))');
+    });
+});
+
+describe('a mention stands for another piece of writing', () => {
+    const mentioned = () => built<$Writing>(<Chapter>Body sections<Reference>#Body_sections</Reference></Chapter>);
+
+    it('a mentioned chapter carries what it points at, and the base draws it as an anchor', () => {
+        const Drawn = $(mentioned());
+        const host = render(<Drawn />).container;
+        expect(host.querySelector('a')?.getAttribute('href')).toBe('#Body_sections');
+    });
+
+    it('AND IT STANDS AT THE LEVEL IT IS WRITTEN AT, NOT THE LEVEL OF WHAT IT MENTIONS', () => {
+        const held = mentioned();
+        expect(reflection.is(held, $TypeOfParagraph)).toBe(true);
+        expect(reflection.is(held, $TypeOfChapter)).toBe(false);
+        expect(reflection.is(held, $TypeOf$Chapter)).toBe(true);
+    });
+
+    it('and it means what it holds, so a mention is a reference by having a meaning', () => {
+        expect(mentioned().meaning()).toBeDefined();
     });
 });

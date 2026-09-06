@@ -1,15 +1,15 @@
-import { $, $Block, $check, $Chemical } from '@dna-platform/chemistry';
-import { $Theme$, $Theme, Theme } from './Theme';
+import { $, $Chemical } from '@dna-platform/chemistry';
+import type { $Theme$, $Theme } from './Writing';
 
 export interface $Format$ extends $Chemical {
     readonly theme: $Theme$;
 }
 
 export class $Format extends $Chemical implements $Format$ {
-    theme!: $Theme;
-
-    $Format(block: $Block) {
-        this.theme = $check((block?.$elements ?? []).find(part => part instanceof $Theme), Theme, '!');
+    get theme(): $Theme {
+        for (let at = this.parent; at !== undefined && at !== at.parent; at = at.parent)
+            if ('theme' in at && typeof at.theme === 'function') return (at.theme as () => $Theme)();
+        throw new Error('a format is worn by writing, and this one is worn by nothing that has a theme');
     }
 }
 

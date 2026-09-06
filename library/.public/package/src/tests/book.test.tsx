@@ -17,7 +17,7 @@ import { Paragraph } from '@/writing/Paragraph';
 import { $Title } from '@/book/Title';
 import { html } from '@/utilities/Html';
 import { render, act } from '@testing-library/react';
-import { $Theme, Theme } from '@/writing/Theme';
+import { $Theme, Theme } from '@/writing/Writing';
 import { $Chapter, $TypeOfChapter } from '@/book/Chapter';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -188,5 +188,26 @@ describe('every piece of writing is in a book, and a book themes what it holds',
         const css = [...document.querySelectorAll('style')].map(style => style.textContent).join('')
             + [...document.styleSheets].flatMap(sheet => [...sheet.cssRules]).map(rule => rule.cssText).join('');
         expect(css).toContain('font-size:11px');
+    });
+
+    it('AND A THEME WRITTEN INTO A BOOK IS THE ONE THAT BOOK IS DRAWN IN', async () => {
+        class $Tiny extends $Theme { override size = '9px'; }
+        const Tiny = $($Tiny);
+        const held = $(<Book />, $(<Tiny />), $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), chapter());
+        expect(held.theme()).toBeInstanceOf($Tiny);
+        const Drawn = $(held);
+        await act(async () => { render(<Drawn />); });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        const css = [...document.querySelectorAll('style')].map(style => style.textContent).join('')
+            + [...document.styleSheets].flatMap(sheet => [...sheet.cssRules]).map(rule => rule.cssText).join('');
+        expect(css).toContain('font-size:9px');
+    });
+
+    it('and a chapter inside it answers the same theme, because the theme of a writing is the theme of what holds it', () => {
+        class $Tiny extends $Theme { override size = '9px'; }
+        const Tiny = $($Tiny);
+        const inside = chapter();
+        $(<Book />, $(<Tiny />), $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), inside);
+        expect(inside.theme()).toBeInstanceOf($Tiny);
     });
 });

@@ -20,6 +20,7 @@ export interface $Writing$ extends $Chemical {
     mention: $Writing$;
 
     book(): $Writing$;
+    theme(): $Theme;
     searchFor<T extends $Writing>(type: new() => $Type): T[];
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
     specify(): void;
@@ -42,6 +43,12 @@ export class $Writing extends $Chemical implements $Writing$ {
     book(): $Writing {
         const holding = this.parent;
         return reflection.writing(holding) && holding !== this ? holding.book() : this;
+    }
+    theme(): $Theme {
+        const written = this.searchForOne<$Theme>($TypeOfTheme);
+        if (written !== undefined) return written;
+        const holding = this.parent;
+        return reflection.writing(holding) && holding !== this ? holding.theme() : $check(theme, '!');
     }
 
     $Writing(block: $Block) {
@@ -120,6 +127,48 @@ export class $Type extends $Annotation implements $Type$ {
     makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
 }
 
+
+export interface $Theme$ extends $Annotation$ {
+    paper: string;
+    ink: string;
+    quiet: string;
+    shade: string;
+    rule: string;
+    link: string;
+    measure: string;
+    body: string;
+    display: string;
+    size: string;
+    leading: string;
+}
+
+export class $Theme extends $Annotation implements $Theme$ {
+    paper = '#ffffff';
+    ink = '#202122';
+    quiet = '#f8f9fa';
+    shade = '#eaecf0';
+    rule = '#a2a9b1';
+    link = '#3366cc';
+    measure = '60.75em';
+    body = 'sans-serif';
+    display = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
+    size = '16px';
+    leading = '1.625';
+
+    $Theme(block: $Block) {
+        super.$Writing(block);
+        this.addType($TypeOfTheme);
+    }
+
+    override view(): ReactNode {
+        return null;
+    }
+
+    override frame(): ReactNode {
+        return null;
+    }
+}
+
 export class WritingSpecification extends Specification<$Writing> {
     @specify('a piece of writing says what kind of writing it is')
     $saysItsKind(writing: $Writing): void {
@@ -159,6 +208,17 @@ export class WritingSpecification extends Specification<$Writing> {
     }
 }
 
+export class $TypeOfTheme extends $Type {
+    override name = 'Theme';
+    protected override specification: Specification<$Writing> = new ThemeSpecification();
+}
+
+export class ThemeSpecification extends WritingSpecification {
+}
+
+export const Theme = $($Theme);
+const theme = Theme;
+export const TypeOfTheme = $($TypeOfTheme);
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);
 export const Type = $($Type);

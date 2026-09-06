@@ -48,10 +48,6 @@ describe('every module stands on its own, whatever loads first', () => {
         await expect(import('@/writing/Table')).resolves.toBeDefined();
     });
 
-    it('writing/Theme', async () => {
-        await expect(import('@/writing/Theme')).resolves.toBeDefined();
-    });
-
     it('writing/Format', async () => {
         await expect(import('@/writing/Format')).resolves.toBeDefined();
     });

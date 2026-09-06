@@ -4,12 +4,15 @@ import { reflection } from '@/utilities/Reflection';
 import { $Writing$, $Writing, $Type, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { parser } from '@/utilities/Parser';
-import { $$Paragraph, $TypeOfParagraph } from './Paragraph';
+import { $$Paragraph, $Paragraph$, $TypeOfParagraph } from './Paragraph';
 import { $TypeOfHeading } from './Heading';
+import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 
 export interface $Section$ extends $Composition$ {
     heading(): $Writing$ | undefined;
 }
+
+export interface $$Section$ extends $Paragraph$ { }
 
 export class $Section extends $Composition implements $Section$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
@@ -23,17 +26,33 @@ export class $Section extends $Composition implements $Section$ {
     }
 }
 
+export class $$Section extends $Composition implements $$Section$ {
+    $$Section(block: $Block) {
+        super.$Composition(block);
+        this.addType($TypeOfParagraph);
+        this.addType($TypeOf$Section);
+    }
+}
+
 export class $TypeOfSection extends $Type {
     override name = 'Section';
     protected override specification: Specification<$Writing> = new SectionSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
-        const Section = $(section);
+        const Section = $(written);
 
         return [$<$Section>(<Section>{parser.elements(tokens)}</Section>)];
     }
 
     override below(): new() => $TypeOfParagraph { return $TypeOfParagraph; }
+}
+
+export class $TypeOf$Section extends $TypeOfReference {
+    override name = '$Section';
+    protected override specification: Specification<$Writing> = new $SectionSpecification();
+}
+
+export class $SectionSpecification extends ReferenceSpecification {
 }
 
 export class SectionSpecification extends WritingSpecification {
@@ -51,5 +70,7 @@ export class SectionSpecification extends WritingSpecification {
 }
 
 export const Section = $($Section);
-const section = Section;
+const written = Section;
+export const section = $($$Section);
 export const TypeOfSection = $($TypeOfSection);
+export const TypeOf$Section = $($TypeOf$Section);
