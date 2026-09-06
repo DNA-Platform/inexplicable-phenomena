@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Type } from '@/writing/Writing';
+import { $Format, Format } from '@/writing/Format';
 import { Reference } from '@/reference/Reference';
 import { TypeOfLetter, $TypeOfLetter } from '@/writing/Letter';
 import { TypeOfWord } from '@/writing/Word';
@@ -228,5 +229,12 @@ describe('a mention stands for another piece of writing', () => {
 
     it('and a mention carrying no path at all is refused', () => {
         expect(() => built<$Writing>(<Chapter>Body sections</Chapter>).specify()).toThrow(/carries a path/);
+    });
+});
+
+describe('a format is worn by writing', () => {
+    it('and one worn by nothing that has a theme says so rather than guessing', () => {
+        const bare = built<$Format>(<Format />);
+        expect(() => bare.theme).toThrow(/worn by nothing that has a theme/);
     });
 });
