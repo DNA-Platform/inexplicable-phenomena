@@ -45,11 +45,6 @@ export class BookmarkSpecification extends ReferenceSpecification {
         return super.$carriesPath(writing);
     }
 
-    @specify('a bookmark lands on the chapter it stands in, or where its path lands')
-    override $landsOnIt(writing: $Writing): boolean | void {
-        if (writing instanceof $Bookmark && writing.chapter() !== undefined && writing.path() === undefined) return false;
-        return super.$landsOnIt(writing);
-    }
 }
 
 export const Bookmark = $($Bookmark);

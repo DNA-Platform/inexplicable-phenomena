@@ -2,18 +2,16 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Reference$ } from '@/reference/Reference';
-import { $Composition } from '@/writing/Composition';
-import { $TypeOfHeading } from '@/writing/Heading';
-import { $Section$, $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $Composition$, $Composition } from '@/writing/Composition';
+import { $TypeOfSection, SectionSpecification } from '@/writing/Section';
 import { $Title, $TypeOfTitle } from '@/book/Title';
 
-export interface $IndexCard$ extends $Section$ {
+export interface $IndexCard$ extends $Composition$ {
     title(): $Title | undefined;
 }
 
 export class $IndexCard extends $Composition implements $IndexCard$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
-    heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $IndexCard(block: $Block) {
         super.$Composition(block);

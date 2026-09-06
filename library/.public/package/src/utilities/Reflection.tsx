@@ -5,7 +5,6 @@ export class Reflection {
     private templates = new WeakMap<new() => $Type, $Type>();
 
     protected compositions = ['Book', 'Chapter', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
-    protected codes = ['Bk', 'Cr', 'Sn', 'Ph', 'Se', 'Wd', 'Lr'];
 
     is(writing: $Writing, asked: new() => $Type): boolean {
         return this.types(writing).some(type => type instanceof asked);
@@ -60,12 +59,6 @@ export class Reflection {
         return [...new Set(named)].map(name => `pd-${this.kebab(name)}`);
     }
 
-    code(type: $Type): string | undefined {
-        const at = this.names(type)
-            .map(name => this.compositions.indexOf(name.replace(/^\$/u, '')))
-            .find(place => place >= 0);
-        return at === undefined ? undefined : this.codes[at];
-    }
 
     template(kind: new() => $Type): $Type {
         const held = this.templates.get(kind) ?? new kind();

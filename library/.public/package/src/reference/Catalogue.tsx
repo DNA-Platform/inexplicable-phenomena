@@ -1,6 +1,5 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { reflection } from '@/utilities/Reflection';
 import { $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition, Composition as composition } from '@/writing/Composition';
 import { $Reference, Reference as reference } from './Reference';
@@ -23,12 +22,10 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
                 part instanceof $Writing && (part instanceof $Reference || !(part instanceof $Annotation)))
             .map((part, at) => {
                 if (part instanceof $Reference) return part;
-                const code = this.code(part);
-                const step = code ? `${code}:${at}` : `${at}`;
                 const Reference = $(reference);
                 const Path = $(path);
 
-                return $<$Reference>(<Reference />, part, $<$Path>(<Path>{step}</Path>));
+                return $<$Reference>(<Reference />, part, $<$Path>(<Path>{`${at}`}</Path>));
             });
     }
 
@@ -52,18 +49,15 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
     }
 
     follow(fragment: string): $Writing {
-        const [step, ...rest] = fragment.split('/');
-        const [named, place] = step.includes(':') ? step.split(':') : [undefined, step];
+        const [place, ...rest] = fragment.split('/');
         const references = this.parts();
-        if (place.includes('-')) return this.span(named, place, rest);
+        if (place.includes('-')) return this.span(place, rest);
         const at = Number(place);
         if (!Number.isInteger(at) || at < 0 || at >= references.length)
             throw new Error(`the address names position ${place} where ${references.length} parts stand`);
         const writing = this.held(references[at]);
         if (writing === undefined)
             throw new Error(`the address names position ${place}, and the reference there holds nothing`);
-        if (named !== undefined && this.code(writing) && named !== this.code(writing))
-            throw new Error(`the address expected ${named} and landed on ${this.code(writing)}`);
         if (rest.length === 0) return writing;
         if (!(writing instanceof $Composition))
             throw new Error('nothing stands beneath this writing, and the address descends further');
@@ -75,11 +69,9 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
         for (let at = 0; at < references.length; at++) {
             const writing = this.held(references[at]);
             if (writing === undefined) continue;
-            const code = this.code(writing);
-            const step = code ? `${code}:${at}` : `${at}`;
-            if (writing === of) return step;
+            if (writing === of) return `${at}`;
             if (!(writing instanceof $Composition) || writing.parts().includes(writing)) continue;
-            try { return `${step}/${writing.catalogue().address(of)}`; } catch { }
+            try { return `${at}/${writing.catalogue().address(of)}`; } catch { }
         }
         throw new Error('this catalogue does not reach that writing at any depth');
     }
@@ -93,7 +85,7 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
         return matches[0];
     }
 
-    protected span(named: string | undefined, place: string, rest: string[]): $Writing {
+    protected span(place: string, rest: string[]): $Writing {
         if (rest.length > 0) throw new Error('a span stands only in the last step of an address');
         const references = this.parts();
         const [from, to] = place.split('-').map(Number);
@@ -102,9 +94,6 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
         const span = references.slice(from, Number.isInteger(to) ? to + 1 : undefined)
             .map(reference => this.held(reference))
             .filter((writing): writing is $Writing => writing !== undefined);
-        for (const writing of span)
-            if (named !== undefined && this.code(writing) && named !== this.code(writing))
-                throw new Error(`the address expected ${named} and landed on ${this.code(writing)}`);
         const Composition = $(composition);
 
         return $<$Composition>(<Composition />, ...span);
@@ -115,10 +104,6 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
             .find((part): part is $Writing => part instanceof $Writing && !(part instanceof $Annotation));
     }
 
-    protected code(of: $Writing | undefined): string | undefined {
-        const kind = of?.type();
-        return kind === undefined ? undefined : reflection.code(kind);
-    }
 }
 
 export class $TypeOfCatalogue extends $Type {

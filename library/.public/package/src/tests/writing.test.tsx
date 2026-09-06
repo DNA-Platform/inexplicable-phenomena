@@ -220,4 +220,13 @@ describe('a mention stands for another piece of writing', () => {
     it('and it means what it holds, so a mention is a reference by having a meaning', () => {
         expect(mentioned().meaning()).toBeDefined();
     });
+
+    it('AND ITS ADDRESS IS A POSITION, BECAUSE A FIXED ORDER ALREADY SAYS THE LEVEL', () => {
+        const held = built<$Writing>(<Chapter>Body sections<Path>1</Path></Chapter>);
+        expect(() => held.specify()).not.toThrow();
+    });
+
+    it('and a mention carrying no path at all is refused', () => {
+        expect(() => built<$Writing>(<Chapter>Body sections</Chapter>).specify()).toThrow(/carries a path/);
+    });
 });

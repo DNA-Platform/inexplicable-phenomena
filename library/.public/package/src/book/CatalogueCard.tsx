@@ -3,7 +3,6 @@ import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Reference$ } from '@/reference/Reference';
 import { $Composition } from '@/writing/Composition';
-import { $TypeOfHeading } from '@/writing/Heading';
 import { $IndexCard$, $TypeOfIndexCard, IndexCardSpecification } from '@/reference/IndexCard';
 import { $Title, $TypeOfTitle } from './Title';
 
@@ -11,7 +10,6 @@ export interface $CatalogueCard$ extends $IndexCard$ { }
 
 export class $CatalogueCard extends $Composition implements $CatalogueCard$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
-    heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $CatalogueCard(block: $Block) {
         super.$Composition(block);

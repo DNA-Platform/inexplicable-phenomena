@@ -75,14 +75,6 @@ export class ReferenceSpecification extends WritingSpecification {
             'a reference carries a path, and this one carries none');
     }
 
-    @specify('a reference lands on the kind it names')
-    $landsOnIt(writing: $Writing): boolean | void {
-        const code = reflection.code(writing.type());
-        if (code === undefined) return false;
-        const step = html.text(writing.searchForOne<$Path>($TypeOfPath)?._block).split('/').pop();
-        $check(!!step && step.startsWith(`${code}:`),
-            'a reference lands on the kind it names, and this path lands on something else');
-    }
 
     @specify('a reference composes nothing of its own')
     override $composesWhatItHolds(writing: $Writing): boolean | void {

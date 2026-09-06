@@ -24,7 +24,7 @@ const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 const cover = () => (
     <Cover>
-        <Title>Chemistry<Reference>#Bk:0</Reference></Title>
+        <Title>Chemistry<Reference>#0</Reference></Title>
         <Author>Doug</Author>
         <Subject>Science</Subject>
     </Cover>
@@ -94,7 +94,7 @@ describe('a title is a section that means the book', () => {
     });
 
     it('AND ONE THAT MEANS SOMETHING STANDS', () => {
-        const held = built<$Writing>(<Title>Chemistry<Reference>#Bk:0</Reference></Title>);
+        const held = built<$Writing>(<Title>Chemistry<Reference>#0</Reference></Title>);
         expect(() => held.specify()).not.toThrow();
     });
 });

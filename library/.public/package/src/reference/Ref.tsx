@@ -42,7 +42,7 @@ export class $Ref extends $Composition implements $Ref$ {
         if (url === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
         const fragment = url.startsWith('#') ? url.slice(1) : url;
         const book = this.book();
-        if (/^(?:[A-Z][a-z]?:)?\d/.test(fragment) && book instanceof $Composition) return book.catalogue().follow(fragment);
+        if (/^\d/.test(fragment) && book instanceof $Composition) return book.catalogue().follow(fragment);
         throw new Error('a reference reads to what it means, and this route is the application to follow');
     }
 
