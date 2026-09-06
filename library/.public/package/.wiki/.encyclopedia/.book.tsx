@@ -46,6 +46,7 @@ export class $HomeContentFormat extends $ContentFormat {
     gridTemplateColumns = 'minmax(0, 7fr) minmax(0, 13fr)';
     gap = '0';
     textAlign = 'left';
+    @select('article') article_width = '100%';
     @select('article:first-of-type') languages_gridColumn = '1 / -1';
     @select('article:first-of-type') languages_textAlign = 'center';
     @select('article:first-of-type') languages_marginBottom = '2.64em';
@@ -90,7 +91,7 @@ export class $HomeContentFormat extends $ContentFormat {
     @select('article:nth-of-type(2) .pd-ref') links_margin = '0 0.8em 0 0';
     @select('article:nth-of-type(3)') projects_textAlign = 'left';
     @select('article:nth-of-type(3) .pd-chapter') projects_display = 'grid';
-    @select('article:nth-of-type(3) .pd-chapter') projects_gridTemplateColumns = 'repeat(auto-fill, minmax(max(30%, 11em), 1fr))';
+    @select('article:nth-of-type(3) .pd-chapter') projects_gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
     @select('article:nth-of-type(3) .pd-chapter > .pd-section:not(.pd-index-card)') intro_display = 'none';
     @select('article:nth-of-type(4)') licence_gridColumn = '1 / -1';
     @select('article:nth-of-type(4)') licence_textAlign = 'center';
