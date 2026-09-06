@@ -8,9 +8,12 @@ export interface $Format$ extends $Chemical {
 }
 
 export class $Format extends $Chemical implements $Format$ {
+    _theme?: $Theme;
+
     get theme(): $Theme {
+        if (this._theme !== undefined) return this._theme;
         for (let at = this.parent; at !== undefined && at !== at.parent; at = at.parent)
-            if (themed(at)) return at.theme();
+            if (themed(at)) return this._theme = at.theme();
         throw new Error('a format is worn by writing, and this one is worn by nothing that has a theme');
     }
 }

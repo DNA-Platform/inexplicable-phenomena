@@ -30,6 +30,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     inline = true;
     @inert() mention!: $Writing;
     _block!: $Block;
+    _theme?: $Theme;
 
     type(): $Type {
         const carried = this.types();
@@ -45,10 +46,11 @@ export class $Writing extends $Chemical implements $Writing$ {
         return reflection.writing(holding) && holding !== this ? holding.book() : this;
     }
     theme(): $Theme {
+        if (this._theme !== undefined) return this._theme;
         const written = this.searchForOne<$Theme>($TypeOfTheme);
-        if (written !== undefined) return written;
+        if (written !== undefined) return this._theme = written;
         const holding = this.parent;
-        return reflection.writing(holding) && holding !== this ? holding.theme() : $check(theme, '!');
+        return this._theme = reflection.writing(holding) && holding !== this ? holding.theme() : $check(theme, '!');
     }
 
     $Writing(block: $Block) {
