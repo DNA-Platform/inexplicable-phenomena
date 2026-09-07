@@ -13,7 +13,7 @@ export class $TableFormat extends $Format {
     @select('> .pd-table') table_display = 'contents';
     @select('> .pd-table > .pd-heading') heading_gridColumn = '1 / -1';
     @select('> .pd-table > *') cell_padding = '0.2em 0.4em';
-    @select('> .pd-table > *') get cell_border() { return `1px solid ${this.theme.rule}`; }
+    get cell_border() { return `1px solid ${this.theme.rule}`; }
 }
 
 export const TableFormat = $($TableFormat);

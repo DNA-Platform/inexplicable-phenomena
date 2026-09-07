@@ -33,7 +33,7 @@ class $Nested extends $Chemical {
     selector = styled.div;
     background = 'rgb(2, 4, 6)';
     @select('> span') first_background = 'rgb(8, 9, 10)';
-    @select('> span') padding = '3px';
+    first_padding = '3px';
 }
 const Nested = $($Nested);
 
@@ -269,5 +269,147 @@ describe('the three spellings differ where the reactive law says they do', () =>
         expect(getComputedStyle(drawn(container)).background).toContain('rgb(11, 11, 11)');
         await act(async () => { one.$background = 'rgb(12, 12, 12)'; });
         expect(getComputedStyle(drawn(container)).background).toContain('rgb(12, 12, 12)');
+    });
+});
+
+// A SELECTOR SAYS WHERE A DECLARATION STANDS, and it may open more than one
+// level. A prefix names one selector and says it once; every member of that
+// prefix is under it. No prefix is the top of the class.
+class $Levels extends $Chemical {
+    selector = styled.section;
+    padding = '1px';
+    @select(`@media (max-width: 40em) {
+             .inner {`) narrow_display = 'none';
+    narrow_color = 'rgb(3, 3, 3)';
+    @select('> span') inner_margin = '2px';
+    _inner_borderWidth = '4px';
+    get inner_outlineColor() { return this.edge; }
+    edge = 'rgb(5, 5, 5)';
+
+    override view(): ReactNode { return <section><span>inside</span></section>; }
+}
+const Levels = $($Levels);
+
+class $Deeper extends $Levels {
+    narrow_fontSize = '7px';
+    @select(`@supports (display: grid) {
+             @media (min-width: 10em) {
+             > span {`) three_letterSpacing = '3px';
+}
+const Deeper = $($Deeper);
+
+class $Moved extends $Levels {
+    @select('> b') inner_margin = '2px';
+
+    override view(): ReactNode { return <section><b>moved</b></section>; }
+}
+const Moved = $($Moved);
+
+const stylesheet = () => [...document.querySelectorAll('style')].map(one => one.textContent).join('');
+
+describe('a selector opens the levels it needs, and a prefix names one selector once', () => {
+    it('A MEMBER WITH NO PREFIX AND NO SELECTOR STANDS AT THE TOP OF ITS CLASS', () => {
+        const { container } = render(<Levels />);
+        expect(getComputedStyle(drawn(container)).padding).toBe('1px');
+    });
+
+    it('and a one-level selector puts its declarations on what it names', () => {
+        const { container } = render(<Levels />);
+        const inside = drawn(container).querySelector('span') as HTMLElement;
+        expect(getComputedStyle(inside).margin).toBe('2px');
+    });
+
+    it('A MEDIA QUERY MAY HOLD A DESCENDANT RULE — the thing one level could not say', () => {
+        render(<Levels />);
+        const css = stylesheet();
+        expect(css).toMatch(/@media \(max-width: 40em\)\{[^{}]*\.inner\{[^{}]*display:none;/u);
+        expect((css.match(/\{/gu) ?? []).length).toBe((css.match(/\}/gu) ?? []).length);
+    });
+
+    it('AND A MEMBER OF THAT PREFIX THAT SAYS NOTHING IS UNDER IT TOO — the selector is written once', () => {
+        render(<Levels />);
+        expect(stylesheet()).toMatch(/@media \(max-width: 40em\)\{[^{}]*\.inner\{[^}]*color:rgb\(3, 3, 3\)/u);
+    });
+
+    it('A BARE GETTER IS UNDER THE PREFIX A FIELD DECLARED — the group crosses the storage boundary', () => {
+        const { container } = render(<Levels />);
+        const inside = drawn(container).querySelector('span') as HTMLElement;
+        expect(getComputedStyle(inside).outlineColor).toBe('rgb(5, 5, 5)');
+        expect(getComputedStyle(drawn(container)).outlineColor).not.toBe('rgb(5, 5, 5)');
+    });
+
+    it('a selector may open three levels, and every one of them is closed', () => {
+        render(<Deeper />);
+        const css = stylesheet();
+        expect(css).toMatch(/@supports \(display: grid\)\{@media \(min-width: 10em\)\{[^{}]*span\{[^}]*letter-spacing:3px;/u);
+        expect((css.match(/\{/gu) ?? []).length).toBe((css.match(/\}/gu) ?? []).length);
+    });
+
+    it('AND A SUBCLASS JOINS ITS PARENT PREFIX WITHOUT REPEATING THE SELECTOR', () => {
+        render(<Deeper />);
+        expect(stylesheet()).toMatch(/@media \(max-width: 40em\)\{[^{}]*\.inner\{[^}]*font-size:7px/u);
+    });
+
+    it('AND A SUBCLASS MAY SAY IT AGAIN, WHICH MOVES THE WHOLE GROUP', () => {
+        const { container } = render(<Moved />);
+        const inside = drawn(container).querySelector('b') as HTMLElement;
+        expect(getComputedStyle(inside).margin).toBe('2px');
+    });
+
+    it('A BARE INERT FIELD JOINS A PREFIX WHOSE SELECTOR A FIELD DECLARED — and still bakes', () => {
+        const { container } = render(<Levels />);
+        const inside = drawn(container).querySelector('span') as HTMLElement;
+        expect(getComputedStyle(inside).borderWidth).toBe('4px');
+    });
+
+    it('AND SO DOES A BARE GETTER, WHICH LIVES ON THE PROTOTYPE WHERE THE SELECTOR LIVES ON THE TEMPLATE', async () => {
+        const one = standing(() => new $Levels());
+        const Held = $(one);
+        const { container } = render(<Held />);
+        const inside = drawn(container).querySelector('span') as HTMLElement;
+        expect(getComputedStyle(inside).outlineColor).toContain('rgb(5, 5, 5)');
+        await act(async () => { one.edge = 'rgb(6, 6, 6)'; });
+        expect(getComputedStyle(inside).outlineColor).toContain('rgb(6, 6, 6)');
+    });
+
+    it('A PREFIX SAYS ITS SELECTOR ONCE — saying it twice in one class is refused', () => {
+        expect(() => {
+            class $Again extends $Chemical {
+                selector = styled.div;
+                @select('a') one_color = 'red';
+                @select('a') one_margin = '1px';
+            }
+            return $Again;
+        }).toThrow(/says its selector once/u);
+    });
+
+    it('and one prefix naming two selectors in one class is refused', () => {
+        expect(() => {
+            class $Twice extends $Chemical {
+                selector = styled.div;
+                @select('a') two_color = 'red';
+                @select('b') two_margin = '1px';
+            }
+            return $Twice;
+        }).toThrow(/names two/u);
+    });
+
+    it('and a selector that says nothing at all is refused', () => {
+        expect(() => {
+            class $Empty extends $Chemical {
+                selector = styled.div;
+                @select('   ') three_color = 'red';
+            }
+            return $Empty;
+        }).toThrow(/says nothing/u);
+    });
+
+    it('AND THE AUTHOR NEVER CLOSES A LEVEL — the emit owns the closing', () => {
+        class $Closed extends $Chemical {
+            selector = styled.div;
+            @select('@media (min-width: 1em) { a { } }') four_color = 'rgb(1, 1, 1)';
+            override view(): ReactNode { return <div />; }
+        }
+        expect(() => render(React.createElement($($Closed)))).toThrow(/closes none of them/u);
     });
 });

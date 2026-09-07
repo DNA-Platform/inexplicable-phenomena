@@ -27,7 +27,7 @@ export class $Theme extends $Chemical implements $Theme$ {
     jet = '#101418';
     pressed = '#3056a9';
     link = '#3366cc';
-    measure = '59.25em';
+    measure = '57em';
     body = 'sans-serif';
     display = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
     size = '16px';

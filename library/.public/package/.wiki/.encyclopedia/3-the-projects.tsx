@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Reference, Section, Title } from '@dna-platform/public';
-import Chapter, { Logo, Project } from './.chapter';
+import { Projects, Logo, Project } from './.chapter';
 
 export default $(
-    <Chapter>
+    <Projects>
         <Section>
             <Heading>Other projects</Heading>
             <Paragraph>
@@ -72,6 +72,6 @@ export default $(
             <Title>Meta-Wiki<Reference>https://meta.wikimedia.org/</Reference></Title>
             <Paragraph>Community coordination</Paragraph>
         </Project>
-    </Chapter>,
-    Chapter
+    </Projects>,
+    Projects
 );

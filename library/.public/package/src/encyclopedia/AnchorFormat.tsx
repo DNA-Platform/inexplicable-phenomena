@@ -16,7 +16,7 @@ export class $AnchorFormat extends $Format implements $AnchorFormat$ {
     get color() { return this.showMeaning ? this.theme.link : 'inherit'; }
     get cursor() { return this.clickableMeaning ? 'pointer' : 'text'; }
     @select('&:hover') get hover_color() { return this.showMeaning ? this.theme.pressed : 'inherit'; }
-    @select('&:hover') get hover_textDecoration() { return this.showMeaning ? 'underline' : 'none'; }
+    get hover_textDecoration() { return this.showMeaning ? 'underline' : 'none'; }
 }
 
 export const AnchorFormat = $($AnchorFormat);
