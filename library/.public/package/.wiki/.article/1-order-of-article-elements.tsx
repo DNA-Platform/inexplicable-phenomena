@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, List, Paragraph, Section } from '@dna-platform/public';
+import { Heading, Illustration, List, Paragraph, Section } from '@dna-platform/public';
 import Chapter from './.chapter';
 import { BookLink } from '../.chapter';
 
@@ -7,6 +7,9 @@ export default $(
     <Chapter>
         <Section>
             <Heading>Order of article elements</Heading>
+            <Illustration source="https://commons.wikimedia.org/wiki/Special:FilePath/Wikipedia_layout_sample_large.png">
+                Sample article layout (click on image for larger view)
+            </Illustration>
             <Paragraph>A <BookLink>[simple article](https://en.wikipedia.org/wiki/Wikipedia:Stub#Creating_and_improving_a_stub_article)</BookLink> should have, at least, (a) a lead section and (b) references. The following list includes additional standardized sections in an article. A complete article need not have all, or even most, of these elements.</Paragraph>
             <Paragraph>Some elements also appear in sections. The order of elements after a section heading is the same as it would have been if the elements were placed before the lead.</Paragraph>
             <List>

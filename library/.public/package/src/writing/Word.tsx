@@ -1,28 +1,26 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
+import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
-import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfLetter } from './Letter';
+import { $Type } from './Type';
 
 export interface $Word$ extends $Composition$ { }
 
-export interface $$Word$ extends $Word$ { }
-
 export class $Word extends $Composition implements $Word$ {
     $Word(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfWord);
+        super.$Composition($check(block, $Block).concat($check($TypeOfWord, '!')));
     }
 }
 
-export class $$Word extends $Composition implements $$Word$ {
+export interface $$Word$ extends $Word$ { }
+
+export class $$Word extends $Catalogue implements $$Word$ {
     $$Word(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfWord);
-        this.addType($TypeOf$Word);
+        super.$Catalogue($check(block, $Block).concat($check($TypeOfWord, '!')).concat($check($TypeOf$Word, '!')));
     }
 }
 
@@ -42,7 +40,7 @@ export class $TypeOfWord extends $Type {
     override below(): new() => $TypeOfLetter { return $TypeOfLetter; }
 }
 
-export class $TypeOf$Word extends $TypeOfReference {
+export class $TypeOf$Word extends $Type {
     override name = '$Word';
     protected override specification: Specification<$Writing> = new $WordSpecification();
 }
@@ -59,7 +57,7 @@ export class WordSpecification extends WritingSpecification {
     }
 }
 
-export class $WordSpecification extends ReferenceSpecification {
+export class $WordSpecification extends WritingSpecification {
 }
 
 export const Word = $($Word);

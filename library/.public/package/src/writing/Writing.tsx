@@ -3,23 +3,21 @@ import { $, $Block, $check, $Chemical, $Written, inert, look } from '@dna-platfo
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
+import type { $Annotation$, $Annotation } from './Annotation';
+import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
+import type { $Type$, $Type } from './Type';
 import { $Reference$ } from '@/reference/Reference';
+import { $Theme, Theme as theme } from './Theme';
 import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 
-export interface $Annotation$ extends $Writing$ {
-    specifically(writing: $Writing$): void;
-}
-
-export interface $Type$ extends $Annotation$ { }
-
 export interface $Writing$ extends $Chemical {
-    book(): $Writing$;
-    theme(): $Theme;
-    mention: $Writing$;
-    meaning(): $Reference$ | undefined;
-    kind(): $Type$;
-    type(): $Type[];
-    annotations(): $Annotation[];
+    book: $Writing$;
+    theme: $Theme;
+    mention?: $Catalogue$;
+    meaning: $Reference$ | undefined;
+    kind: $Type$;
+    type: $Type[];
+    annotations: $Annotation[];
     searchFor<T extends $Writing>(type: new() => $Type): T[];
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
     specify(): void;
@@ -27,43 +25,33 @@ export interface $Writing$ extends $Chemical {
 
 export class $Writing extends $Chemical implements $Writing$ {
     inline = true;
-    @inert() mention!: $Writing;
+    @inert() mention?: $Catalogue;
     _block!: $Block;
-    _theme?: $Theme;
+    theme!: $Theme;
 
-    type(): $Type {
-        const carried = this.types();
-        const standing = carried.filter(one => reflection.composition(one));
+    get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
+    get annotations(): $Annotation[] { return reflection.annotations(this); }
+    get type(): $Type[] { return reflection.types(this); }
+    get book(): $Writing {
+        const holding = this.parent;
+        return reflection.writing(holding) && holding !== this ? holding.book : this;
+    }
+    get kind(): $Type {
+        const carried = this.type;
+        const standing = carried.filter(kind => reflection.composition(kind));
         $check(standing.length <= 1, `writing is one kind of writing, and this one is ${standing.length}`);
         return standing[0] ?? carried[0];
     }
 
-    meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
-    annotations(): $Annotation[] { return reflection.annotations(this); }
-    types(): $Type[] { return reflection.types(this); }
-    book(): $Writing {
-        const holding = this.parent;
-        return reflection.writing(holding) && holding !== this ? holding.book() : this;
-    }
-
-    theme(): $Theme {
-        if (this._theme !== undefined) return this._theme;
-        const written = this.searchForOne<$Theme>($TypeOfTheme);
-        if (written !== undefined) return this._theme = written;
-        const holding = this.parent;
-        return this._theme = reflection.writing(holding) && holding !== this ? holding.theme() : $check(theme, '!');
-    }
-
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
-        for (const part of this._block.$elements ?? []) 
-            if (part instanceof $Writing && !reflection.writing(part.parent)) 
-                part.parent = this;
+        this.theme = $check(theme, '!');
+        for (const part of this._block.$elements ?? []) if (part instanceof $Writing && !reflection.writing(part.parent)) part.parent = this;
     }
 
     view(): ReactNode {
+        const meaning = this.meaning;
         const Block = $(this._block);
-        const meaning = this.meaning();
         if (meaning === undefined) return <Block />;
         const Anchor = $(anchor);
 
@@ -79,13 +67,13 @@ export class $Writing extends $Chemical implements $Writing$ {
         return html.text(this._block);
     }
 
-    override frame(): ReactNode {
-        return <span className={reflection.classNames(this).join(' ')}>{super.frame()}</span>;
+    override frame(drawn: ReactNode): ReactNode {
+        return super.frame(reflection.formatted(this,
+            <span className={reflection.classNames(this).join(' ')}>{drawn}</span>));
     }
 
     searchFor<T extends $Writing>(type: new() => $Type): T[] {
-        return (this._block.$elements ?? []).filter((part): part is T =>
-            reflection.instanceOf(part, type));
+        return (this._block.$elements ?? []).filter((part): part is T => reflection.instanceOf(part, type));
     }
 
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined {
@@ -98,9 +86,14 @@ export class $Writing extends $Chemical implements $Writing$ {
         if (!reflection.is(this, type)) this._block = this._block.concat($check(type, '!'));
     }
 
+    valid(): boolean {
+        this.specify();
+        return true;
+    }
+
     specify(): void {
         const kinds = new Set<unknown>();
-        for (const annotation of this.annotations()) {
+        for (const annotation of this.annotations) {
             if (kinds.has(annotation.constructor)) continue;
             kinds.add(annotation.constructor);
             annotation.specifically(this);
@@ -108,77 +101,17 @@ export class $Writing extends $Chemical implements $Writing$ {
     }
 }
 
-export class $Annotation extends $Writing implements $Annotation$ {
-    protected specification: Specification<$Writing> = new WritingSpecification();
-
-    specifically(writing: $Writing): void {
-        this.specification.check(writing);
-    }
-}
-
-export class $Type extends $Annotation implements $Type$ {
-    name = 'Type';
-
-    override view(): ReactNode {
-        return null;
-    }
-
-    override frame(): ReactNode {
-        return null;
-    }
-
-    below(): (new() => $Type) | undefined { return undefined; }
-
-    makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
-}
-
-
-export interface $Theme$ extends $Annotation$ {
-    paper: string;
-    ink: string;
-    quiet: string;
-    shade: string;
-    rule: string;
-    link: string;
-    measure: string;
-    body: string;
-    display: string;
-    size: string;
-    leading: string;
-}
-
-export class $Theme extends $Annotation implements $Theme$ {
-    paper = '#ffffff';
-    ink = '#202122';
-    quiet = '#f8f9fa';
-    shade = '#eaecf0';
-    rule = '#a2a9b1';
-    link = '#3366cc';
-    measure = '60.75em';
-    body = 'sans-serif';
-    display = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
-    size = '16px';
-    leading = '1.625';
-
-    $Theme(block: $Block) {
-        super.$Writing(block);
-        this.addType($TypeOfTheme);
-    }
-
-    override view(): ReactNode {
-        return null;
-    }
-
-    override frame(): ReactNode {
-        return null;
-    }
-}
-
 export class WritingSpecification extends Specification<$Writing> {
     @specify('a piece of writing says what kind of writing it is')
     $saysItsKind(writing: $Writing): void {
-        $check(writing.type() !== undefined,
+        $check(writing.kind !== undefined,
             'a piece of writing says what kind of writing it is, and this one says nothing');
+    }
+
+    @specify('a piece of writing is drawn in a theme')
+    $isDrawnInATheme(writing: $Writing): void {
+        $check(writing.theme instanceof $Theme,
+            'a piece of writing is drawn in a theme, and this one was given none');
     }
 
     @specify('a piece of writing says something')
@@ -193,19 +126,23 @@ export class WritingSpecification extends Specification<$Writing> {
             'a piece of writing holds copy, annotations and writing, and this one holds something else');
     }
 
-    @specify('a piece of writing composes the kind beneath it, or its own')
+    @specify('a piece of writing holds nothing above its own level')
     $composesWhatItHolds(writing: $Writing): void {
-        const kind = writing.type();
-        const beneath = kind?.below();
-        const own = kind?.constructor as (new() => $Type) | undefined;
-        $check(this.composed(writing).every(part =>
-            (beneath !== undefined && reflection.instanceOf(part, beneath))
-            || (own !== undefined && reflection.instanceOf(part, own))),
-            'a piece of writing composes the kind beneath it, or its own, and this one holds neither');
+        $check(this.composed(writing).every(part => reflection.beneath(writing.kind, part.kind)),
+            'a piece of writing holds nothing above its own level, and this one holds something above it');
     }
 
+    // A RULE READS, AND A READING IS WHAT parts() ANSWERS. A composition arranges what
+    // it holds and supplies what its own rules require, so a rule that consulted the
+    // block alone would refuse a book for lacking a footer the book itself answers.
+    // A writing that cannot read — one carrying a type but composing nothing — is
+    // judged on what is written into it, which is all it has.
     protected composed(writing: $Writing): $Writing[] {
-        return writing.searchFor($Type).filter(part => reflection.composition(part.type()));
+        const read = (writing as { parts?: () => $Writing[] }).parts?.();
+        if (read !== undefined) return read;
+
+        return (writing._block.$elements ?? []).filter((part): part is $Writing =>
+            reflection.writing(part) && reflection.composition(part.kind));
     }
 
     protected beside(writing: $Writing): $Written[] {
@@ -213,17 +150,4 @@ export class WritingSpecification extends Specification<$Writing> {
     }
 }
 
-export class $TypeOfTheme extends $Type {
-    override name = 'Theme';
-    protected override specification: Specification<$Writing> = new ThemeSpecification();
-}
-
-export class ThemeSpecification extends WritingSpecification {
-}
-
-export const Theme = $($Theme);
-const theme = Theme;
-export const TypeOfTheme = $($TypeOfTheme);
 export const Writing = $($Writing);
-export const Annotation = $($Annotation);
-export const Type = $($Type);

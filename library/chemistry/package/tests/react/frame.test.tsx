@@ -7,10 +7,11 @@ import { $, $Particle, $Chemical, $check } from '@/index';
 // frame() — the render template method
 //
 // The framework renders a particle through frame(), never view() directly:
-// [$renderView$]() returns this.frame(), and frame() calls the ACTIVE view. The
-// default frame is a transparent pass-through, so un-overridden render stays
-// byte-identical. Overriding frame() lets a class WRAP or REORGANIZE its output
-// while view() remains the content method.
+// [$renderView$]() draws the ACTIVE view and HANDS IT to frame(). The default
+// frame answers what it was handed, so un-overridden render stays byte-identical.
+// Overriding frame() lets a class WRAP or REORGANIZE its output while view()
+// remains the content method — and because the drawing arrives as an argument,
+// the class chooses whether its wrapper sits inside or outside its bases.
 //
 // The load-bearing fact these tests pin down: the bond constructor runs BEFORE
 // frame (bond() precedes renderView() in $lift), so by the time frame runs the
@@ -57,7 +58,7 @@ describe('frame — a wrapping frame surrounds the view', () => {
     class $Linked extends $Chemical {
         $label = '';
         view() { return <span className="content">{this.$label}</span>; }
-        frame() { return <a className="link" href="#x">{super.frame()}</a>; }
+        frame(drawn: React.ReactNode) { return <a className="link" href="#x">{super.frame(drawn)}</a>; }
     }
     const Linked = $($Linked);
 
@@ -73,11 +74,11 @@ describe('frame — a wrapping frame surrounds the view', () => {
             n = 0;
             bump() { this.n++; }
             view() { return <span className="count">{String(this.n)}</span>; }
-            frame() {
+            frame(drawn: React.ReactNode) {
                 return (
                     <div className="badge">
                         <button className="bump" onClick={this.bump}>+</button>
-                        {super.frame()}
+                        {super.frame(drawn)}
                     </div>
                 );
             }
@@ -92,16 +93,16 @@ describe('frame — a wrapping frame surrounds the view', () => {
 
 
 // =============================================================================
-// 3. Nested frame overrides compose through super.frame()
+// 3. Nested frame overrides compose through super.frame(drawn)
 // =============================================================================
 
-describe('frame — nested overrides compose via super.frame()', () => {
+describe('frame — nested overrides compose via super.frame(drawn)', () => {
     class $Inner extends $Chemical {
         view() { return <span className="v">core</span>; }
-        frame() { return <div className="inner">{super.frame()}</div>; }
+        frame(drawn: React.ReactNode) { return <div className="inner">{super.frame(drawn)}</div>; }
     }
     class $Outer extends $Inner {
-        frame() { return <div className="outer">{super.frame()}</div>; }
+        frame(drawn: React.ReactNode) { return <div className="outer">{super.frame(drawn)}</div>; }
     }
     const Outer = $($Outer);
 
@@ -133,7 +134,7 @@ describe('frame — coexists with the bond constructor', () => {
                 </ul>
             );
         }
-        frame() { return <section className="book-frame">{super.frame()}</section>; }
+        frame(drawn: React.ReactNode) { return <section className="book-frame">{super.frame(drawn)}</section>; }
     }
     const Chapter = $($Chapter);
     const Book = $($Book);
@@ -189,7 +190,7 @@ describe('frame — reorganizes already-bound children freely', () => {
         $Reversed(...items: $Item[]) {
             this.items = items.map(i => $check(i, $Item));
         }
-        frame() {
+        frame(drawn: React.ReactNode) {
             return (
                 <div className="reversed">
                     {this.items.slice().reverse().map((it, i) => { const I = $(it); return <I key={i} />; })}
@@ -223,7 +224,7 @@ describe('frame — renders the selected look', () => {
         label = 'x';
         view() { return <span className="v">base:{this.label}</span>; }
         $view() { return <span className="v">mid:{this.label}</span>; }
-        frame() { return <div className="fr">{super.frame()}</div>; }
+        frame(drawn: React.ReactNode) { return <div className="fr">{super.frame(drawn)}</div>; }
     }
     class Leaf extends Base {
         $$view() { return <span className="v">leaf:{this.label}</span>; }
@@ -257,7 +258,7 @@ describe('frame — renders the selected look', () => {
 describe('frame — render filters short-circuit before frame', () => {
     class $Toggle extends $Chemical {
         view() { return <span className="v">shown</span>; }
-        frame() { return <div className="fr">{super.frame()}</div>; }
+        frame(drawn: React.ReactNode) { return <div className="fr">{super.frame(drawn)}</div>; }
     }
     // $show is a framework filter prop, above the derived prop type — cast, as
     // the render-filters suite does.
@@ -275,21 +276,57 @@ describe('frame — render filters short-circuit before frame', () => {
 
 
 // =============================================================================
-// 8. frame is the render entry — view is reached only through it
+// 8. frame is the render entry — it is handed what the view drew
 // =============================================================================
 
-describe('frame — is the sole render entry', () => {
-    it('frame() runs, then reaches view() through super.frame()', () => {
+describe('frame — is handed what the view drew', () => {
+    it('the view draws first, and frame receives that drawing', () => {
         const order: string[] = [];
         class $Traced extends $Chemical {
             view() { order.push('view'); return <span className="v">t</span>; }
-            frame() { order.push('frame'); return super.frame(); }
+            frame(drawn: React.ReactNode) { order.push('frame'); return super.frame(drawn); }
         }
         const Traced = $($Traced);
         render(<Traced />);
         expect(order.includes('frame')).toBe(true);
         expect(order.includes('view')).toBe(true);
-        // frame is entered before the view it wraps.
-        expect(order.indexOf('frame')).toBeLessThan(order.indexOf('view'));
+        expect(order.indexOf('view')).toBeLessThan(order.indexOf('frame'));
+    });
+});
+
+
+// =============================================================================
+// 9. A class chooses which side of its bases it wraps on
+//
+// Handing the drawing IN is what makes an INNER wrapper expressible at all:
+// wrap `drawn` and hand it up, and the bases close outside you; wrap
+// `super.frame(drawn)` and you close outside them. Before the drawing was an
+// argument, `super.frame()` returned content the bases had already finished
+// wrapping, so depth decided position and the deepest class was always
+// outermost — which is how a class ended up outside a facade it should sit in.
+// =============================================================================
+
+describe('frame — inner and outer', () => {
+    class $Based extends $Chemical {
+        view() { return <span className="v">core</span>; }
+        frame(drawn: React.ReactNode) { return <div className="base">{super.frame(drawn)}</div>; }
+    }
+
+    it('a class that wraps the DRAWING sits inside its base', () => {
+        class $In extends $Based {
+            frame(drawn: React.ReactNode) { return super.frame(<i className="in">{drawn}</i>); }
+        }
+        const In = $($In);
+        const { container } = render(<In />);
+        expect(container.querySelector('.base > .in > .v')?.textContent).toBe('core');
+    });
+
+    it('a class that wraps its BASE sits outside it', () => {
+        class $Out extends $Based {
+            frame(drawn: React.ReactNode) { return <i className="out">{super.frame(drawn)}</i>; }
+        }
+        const Out = $($Out);
+        const { container } = render(<Out />);
+        expect(container.querySelector('.out > .base > .v')?.textContent).toBe('core');
     });
 });

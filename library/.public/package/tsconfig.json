@@ -17,19 +17,8 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "experimentalDecorators": true,
-    "paths": {
-      "@/*": [
-        "./.archive/*"
-      ]
-    }
+    "experimentalDecorators": true
   },
-  "include": [
-    ".archive/**/*.ts",
-    ".archive/**/*.tsx",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
   "exclude": [
     "node_modules",
     "dist"

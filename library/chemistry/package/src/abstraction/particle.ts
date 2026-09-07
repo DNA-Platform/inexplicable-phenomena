@@ -138,11 +138,10 @@ export class $Particle {
         return this.toString();
     }
 
-    // frame — the render template method. $lift's render entry calls
-    // [$renderView$], which calls frame(), never view() directly. Override
-    // frame() to WRAP what is drawn, and wrap `super.frame()` so the content
-    // inside the wrapper still evolves with the view.
-    frame(): ReactNode {
+    // draw — the content itself, before anything wraps it: the view the look
+    // selects, styled as the class declared it. Nothing is added to the tree
+    // here, so what the view wrote is what a frame is handed.
+    draw(): ReactNode {
         const table = this[$views$];
         const drawn = table.get(this.$look ?? 0);
 
@@ -152,8 +151,20 @@ export class $Particle {
         return this.selector === undefined ? view : styling(this, view);
     }
 
+    // frame — the render template method. $lift's render entry calls
+    // [$renderView$], which draws the content and HANDS IT IN, so a class that
+    // wraps chooses which side of its bases it wraps on:
+    //
+    //   wrap `drawn` and hand it up   — the wrapper sits INSIDE what the bases add
+    //   wrap `super.frame(drawn)`     — the wrapper CLOSES OUTSIDE them
+    //
+    // Depth no longer decides position; the class does.
+    frame(drawn: ReactNode): ReactNode {
+        return drawn;
+    }
+
     [$renderView$](): ReactNode {
-        return this.frame();
+        return this.frame(this.draw());
     }
 
     // The view dictionary — every look this instance can draw, held under its

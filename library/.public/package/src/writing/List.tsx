@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
@@ -11,8 +11,7 @@ export interface $List$ extends $Paragraph$ { }
 
 export class $List extends $Composition implements $List$ {
     $List(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfList);
+        super.$Composition($check(block, $Block).concat($check($TypeOfList, '!')));
     }
 
     override view(): ReactNode {

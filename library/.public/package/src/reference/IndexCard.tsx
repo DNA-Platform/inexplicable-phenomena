@@ -14,13 +14,10 @@ export class $IndexCard extends $Composition implements $IndexCard$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
 
     $IndexCard(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfIndexCard);
+        super.$Composition($check(block, $Block).concat($check($TypeOfIndexCard, '!')));
     }
 
-    override meaning(): $Reference$ | undefined {
-        return this.title()?.meaning();
-    }
+    override get meaning(): $Reference$ | undefined { return this.title()?.meaning; }
 }
 
 export class $TypeOfIndexCard extends $TypeOfSection {
@@ -34,9 +31,14 @@ export class IndexCardSpecification extends SectionSpecification {
         return false;
     }
 
+    @specify('an index card carries what it stands for, and composes nothing of its own')
+    override $composesWhatItHolds(): boolean | void {
+        return false;
+    }
+
     @specify('an index card carries a title that means something')
     $titleMeansSomething(writing: $Writing): void {
-        $check(writing.searchForOne<$Title>($TypeOfTitle)?.meaning() !== undefined,
+        $check(writing.searchForOne<$Title>($TypeOfTitle)?.meaning !== undefined,
             'an index card carries a title that means something, and this one carries none that does');
     }
 }

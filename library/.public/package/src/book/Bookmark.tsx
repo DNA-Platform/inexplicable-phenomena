@@ -10,9 +10,9 @@ export interface $Bookmark$ extends $Reference$ {
 
 export class $Bookmark extends $Reference implements $Bookmark$ {
     chapter(): $Chapter | undefined {
-        for (let at = this.parent; at instanceof $Writing; at = at.parent) {
-            if (at instanceof $Chapter) return at;
-            if (at.parent === at) return undefined;
+        for (let holding = this.parent; holding instanceof $Writing; holding = holding.parent) {
+            if (holding instanceof $Chapter) return holding;
+            if (holding.parent === holding) return undefined;
         }
         return undefined;
     }

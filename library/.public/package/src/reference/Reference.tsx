@@ -2,8 +2,11 @@ import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
+import { url } from '@/utilities/Url';
 import { reflection } from '@/utilities/Reflection';
-import { $Annotation$, $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Annotation$, $Annotation } from '@/writing/Annotation';
+import { $Type } from '@/writing/Type';
 import { $Path, $TypeOfPath, Path as path } from './Path';
 import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 
@@ -22,8 +25,7 @@ export class $Reference extends $Annotation implements $Reference$ {
     path(): $Path | undefined { return this.searchForOne<$Path>($TypeOfPath); }
 
     $Reference(block: $Block) {
-        super.$Writing(block);
-        this.addType($TypeOfReference);
+        super.$Writing($check(block, $Block).concat($check($TypeOfReference, '!')));
         const copy = html.text(this._block);
         if (this.searchFor($TypeOfPath).length === 0 && this.reads(copy)) {
             const Path = $(path);
@@ -34,7 +36,7 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     protected reads(copy: string): boolean {
-        return /^(?:[a-z][a-z0-9+.-]*:\/\/|\/|#)/iu.test(copy) && URL.canParse(copy, 'https://library');
+        return url.addresses(copy);
     }
 
     override view(): ReactNode {
@@ -69,10 +71,19 @@ export class $TypeOfReference extends $Type {
 }
 
 export class ReferenceSpecification extends WritingSpecification {
-    @specify('a reference carries a path')
+    // THREE WAYS TO ADDRESS SOMETHING, and only the first was written down. A reference
+    // CARRIES its path. A mention an author writes MEANS one — it holds the reference and
+    // the path sits inside it, one level below a searchFor that does not recurse. And a
+    // representative the parse MAKES — the $$Word behind every word — stands for the very
+    // writing it holds and has nowhere to point. A rule the framework's own machinery
+    // cannot satisfy is a rule stated too narrowly.
+    @specify('a reference carries a path, means one, or stands for what it holds')
     $carriesPath(writing: $Writing): boolean | void {
-        $check(writing.searchFor($TypeOfPath).length > 0,
-            'a reference carries a path, and this one carries none');
+        const meant = reflection.meaning(writing);
+        $check(writing.searchFor($TypeOfPath).length > 0
+            || (meant !== undefined && meant.searchFor($TypeOfPath).length > 0)
+            || this.beside(writing).length > reflection.annotations(writing).length,
+            'a reference carries a path, means one, or stands for what it holds, and this one does none');
     }
 
 

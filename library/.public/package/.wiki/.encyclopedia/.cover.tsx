@@ -1,18 +1,20 @@
 import { $ } from '@dna-platform/chemistry';
-import { Author, Cover, Paragraph, Section, Subject, Title } from '@dna-platform/public';
+import { Author, Cover, Heading, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
 import { BookLink, Search } from '../.chapter';
 import { Language, Languages, Logo } from './.chapter';
 
 export default $(
     <Cover>
-        <Title>Wikipedia</Title>
+        <Title>Wikipedia<Reference>https://www.wikipedia.org/</Reference></Title>
         <Author>Wikipedians</Author>
         <Subject>Knowledge</Subject>
         <Section>
+            <Heading>Wikipedia</Heading>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Wikipedia_wordmark.svg" width="176">Wikipedia</Logo>
             <Paragraph>The Free Encyclopedia</Paragraph>
         </Section>
         <Languages globe="https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg">
+            <Heading>Read Wikipedia in your language</Heading>
             <Language at={1}><BookLink>[English](https://en.wikipedia.org/)</BookLink> 7,189,000+ articles</Language>
             <Language at={2}><BookLink>[日本語](https://ja.wikipedia.org/)</BookLink> 1,503,000+ 記事</Language>
             <Language at={3}><BookLink>[Deutsch](https://de.wikipedia.org/)</BookLink> 3.125.000+ Artikel</Language>

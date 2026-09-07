@@ -8,6 +8,7 @@ export * from './ContentFormat';
 export * from './FooterFormat';
 export * from './HeaderFormat';
 export * from './HeadingFormat';
+export * from './IllustrationFormat';
 export * from './MarginFormat';
 export * from './OutputFormat';
 export * from './ProseFormat';

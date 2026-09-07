@@ -1,4 +1,4 @@
-import { $, $Block } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
@@ -18,8 +18,7 @@ export class $Part extends $Composition implements $Part$ {
     sections: $Section[] = [];
 
     $Part(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfPart);
+        super.$Composition($check(block, $Block).concat($check($TypeOfPart, '!')));
     }
 }
 

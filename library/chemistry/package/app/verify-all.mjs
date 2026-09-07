@@ -8,29 +8,29 @@ const PORT = process.env.PORT || 4000;
 const BASE = `http://localhost:${PORT}`;
 
 const interactions = [
-    { section: 'II.1', name: 'Like button', action: async (p) => {
+    { section: 'handlers', name: 'Like button', action: async (p) => {
         await p.evaluate(() => { Array.from(document.querySelectorAll('button')).find(b => b.textContent?.includes('♥'))?.click(); });
     }},
-    { section: 'II.4', name: 'Weather card', action: async (p) => {
+    { section: 'data-loading', name: 'Weather card', action: async (p) => {
         await new Promise(r => setTimeout(r, 2000)); // wait for async load
     }},
-    { section: 'II.5', name: 'Particularization', action: null }, // auto-pass
-    { section: 'III.3', name: 'Binding constructor', action: null }, // auto-pass
-    { section: 'V.1', name: 'Counter', action: async (p) => {
+    { section: 'native-objects', name: 'Particularization', action: null }, // auto-pass
+    { section: 'typed-children', name: 'Binding constructor', action: null }, // auto-pass
+    { section: 'properties', name: 'Counter', action: async (p) => {
         await p.evaluate(() => { Array.from(document.querySelectorAll('button')).find(b => b.textContent === '+')?.click(); });
     }},
-    { section: 'V.1', name: 'Greeting', action: async (p) => {
+    { section: 'properties', name: 'Greeting', action: async (p) => {
         const input = await p.$('input[placeholder="Your name"]');
         if (input) { await input.type('Test'); }
     }},
-    { section: 'V.1', name: 'FAQ', action: async (p) => {
+    { section: 'properties', name: 'FAQ', action: async (p) => {
         await p.evaluate(() => {
             const btns = Array.from(document.querySelectorAll('button'));
             const q = btns.find(b => b.textContent?.includes('What is'));
             q?.click();
         });
     }},
-    { section: 'V.3', name: 'Volume slider', action: async (p) => {
+    { section: 'parent-child', name: 'Volume slider', action: async (p) => {
         const box = await p.evaluate(() => {
             const r = document.querySelector('input[type="range"]');
             if (!r) return null;
@@ -41,16 +41,16 @@ const interactions = [
             await p.mouse.click(box.x + box.w * 0.6, box.y + box.h / 2);
         }
     }},
-    { section: 'V.3', name: 'Dashboard refresh', action: async (p) => {
+    { section: 'parent-child', name: 'Dashboard refresh', action: async (p) => {
         await p.evaluate(() => {
             Array.from(document.querySelectorAll('button')).find(b => b.textContent === 'Refresh')?.click();
         });
     }},
-    { section: 'V.4', name: 'Tag input', action: async (p) => {
+    { section: 'collections', name: 'Tag input', action: async (p) => {
         const input = await p.$('input[placeholder*="tag"]');
         if (input) { await input.type('test'); await p.keyboard.press('Enter'); }
     }},
-    { section: 'V.4', name: 'Settings editor', action: async (p) => {
+    { section: 'collections', name: 'Settings editor', action: async (p) => {
         await p.evaluate(() => {
             const inputs = document.querySelectorAll('input[placeholder="key"]');
             if (inputs[0]) { inputs[0].value = 'theme'; inputs[0].dispatchEvent(new Event('input', { bubbles: true })); inputs[0].dispatchEvent(new Event('change', { bubbles: true })); }
@@ -63,13 +63,13 @@ const interactions = [
             Array.from(document.querySelectorAll('button')).find(b => b.textContent === 'Set')?.click();
         });
     }},
-    { section: 'V.4', name: 'Feature flags', action: async (p) => {
+    { section: 'collections', name: 'Feature flags', action: async (p) => {
         await p.evaluate(() => {
             const toggles = document.querySelectorAll('[class*="FlagSwitch"], [class*="Toggle"]');
             if (toggles[0]) (toggles[0]).click();
         });
     }},
-    { section: 'VI.1', name: 'Emoji reactions', action: async (p) => {
+    { section: 'reusable', name: 'Emoji reactions', action: async (p) => {
         await p.evaluate(() => {
             // Find the 👍 text node and click its nearest ancestor div
             const all = document.querySelectorAll('*');
@@ -81,7 +81,7 @@ const interactions = [
             }
         });
     }},
-    { section: 'VI.1', name: 'Theme switcher', action: async (p) => {
+    { section: 'reusable', name: 'Theme switcher', action: async (p) => {
         await p.evaluate(() => {
             const btns = Array.from(document.querySelectorAll('button'));
             const toggle = btns.find(b => b.textContent === 'light' || b.textContent === 'dark');
@@ -120,7 +120,7 @@ const interactions = [
     }},
     { section: 'stress', name: 'Rapid-fire', action: async (p) => {
         await p.evaluate(() => {
-            Array.from(document.querySelectorAll('button')).find(b => b.textContent?.includes('Run'))?.click();
+            Array.from(document.querySelectorAll('button')).find(b => b.textContent?.includes('Fire wave'))?.click();
         });
     }},
     { section: 'mount', name: 'Conditional mount', action: async (p) => {
@@ -261,6 +261,63 @@ const interactions = [
         const woken = await leaves();
         if (!woken.every(n => n === 'dawn')) throw new Error(`the registration made silently did not take effect once something asked again: ${woken.join(',')}`);
     }},
+    // Sections that carry verdicts and that this driver never visited. Added
+    // 2026-09-07 after the roman-numeral ids were found stale: the rename from
+    // II.1 to handlers left eight routes pointing at nothing, and finding that
+    // showed the driver had also never been extended to the sections built
+    // since. Each works its own controls; a section that needs none passes on
+    // the verdicts its case already draws.
+    { section: 'frames', name: 'Frames', action: null },
+    { section: 'tabs', name: 'Tabs', action: async (p) => {
+        await p.evaluate(() => {
+            Array.from(document.querySelectorAll('button'))
+                .filter(b => !/view source|Search/.test(b.textContent || ''))
+                .slice(0, 3).forEach(b => b.click());
+        });
+    }},
+    { section: 'dashboard', name: 'Dashboard', action: null },
+    { section: 'adapted', name: 'Adapted components', action: async (p) => {
+        await p.evaluate(() => {
+            Array.from(document.querySelectorAll('button'))
+                .filter(b => !/view source|Search/.test(b.textContent || ''))
+                .slice(0, 6).forEach(b => b.click());
+        });
+    }},
+    { section: 'cloning', name: 'Cloning', action: async (p) => {
+        await p.evaluate(() => {
+            Array.from(document.querySelectorAll('button'))
+                .filter(b => !/view source|Search/.test(b.textContent || ''))
+                .slice(0, 3).forEach(b => b.click());
+        });
+    }},
+    { section: 'evolve', name: 'Evolve', action: async (p) => {
+        await p.evaluate(() => {
+            Array.from(document.querySelectorAll('button'))
+                .filter(b => !/view source|Search/.test(b.textContent || ''))
+                .slice(0, 3).forEach(b => b.click());
+        });
+    }},
+    { section: 'override', name: 'Override behavior', action: async (p) => {
+        await p.evaluate(() => {
+            Array.from(document.querySelectorAll('button'))
+                .filter(b => !/view source|Search/.test(b.textContent || ''))
+                .slice(0, 3).forEach(b => b.click());
+        });
+    }},
+    { section: 'poly-form', name: 'Polymorphic form', action: async (p) => {
+        const name = await p.$('input[placeholder="Name"]');
+        if (name) await name.type('Ada');
+        const email = await p.$('input[placeholder="Email"]');
+        if (email) await email.type('ada@example.com');
+        const role = await p.$('select');
+        if (role) await role.select(await p.evaluate(() => document.querySelector('select').options[1].value));
+        await p.evaluate(() => {
+            const box = document.querySelector('input[type="checkbox"]');
+            if (box && !box.checked) box.click();
+            Array.from(document.querySelectorAll('button')).find(b => b.textContent?.includes('Submit'))?.click();
+        });
+    }},
+    { section: 'polymorphism', name: 'Polymorphism', action: null },
 ];
 
 async function run() {

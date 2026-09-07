@@ -9,6 +9,14 @@ export function specify(description: string) {
 export class Specification<T> {
     parent?: Specification<T> = undefined;
 
+    // A RULE THAT DEMANDS A KIND ALSO KNOWS HOW TO READ IT. Answering the parts
+    // unchanged is the honest default: most rules refuse and nothing can be read.
+    // A specification that CAN read the kind it requires overrides this, and the
+    // demand and the reading then stand in one class instead of two.
+    supplies(writing: T, parts: T[]): T[] {
+        return parts;
+    }
+
     private cached?: [string, (writing: T) => boolean | void][] = undefined;
 
     rules(): [string, (writing: T) => boolean | void][] {

@@ -14,7 +14,7 @@ export class $HeaderFormat extends $MarginFormat {
     @select('.pd-author h2, .pd-subject h2') byline_fontSize = '0.875em';
     @select('.pd-author h2, .pd-subject h2') byline_border = 'none';
     @select('.pd-author h2, .pd-subject h2') byline_margin = '0';
-    @select('.pd-subject h2') subject_color = '#54595d';
+    @select('.pd-subject h2') get subject_color() { return this.theme.pale; }
     @select('.pd-synopsis h2') description_display = 'none';
     @select('.pd-author h2, .pd-subject h2') get byline_fontFamily() { return this.theme.body; }
     @select('.pd-author h2') get author_color() { return this.theme.ink; }

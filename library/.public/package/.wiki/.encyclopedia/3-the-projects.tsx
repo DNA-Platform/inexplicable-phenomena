@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Section } from '@dna-platform/public';
+import { Heading, Paragraph, Reference, Section, Title } from '@dna-platform/public';
 import Chapter, { Logo, Project } from './.chapter';
 
 export default $(
@@ -12,64 +12,64 @@ export default $(
                 Three of them land on words this library already holds: a gazetteer, a florilegium, and an anthology of the documents themselves.
             </Paragraph>
         </Section>
-        <Project url="https://commons.wikimedia.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Commons-logo.svg" width="38">Commons</Logo>
-            <Heading>Commons</Heading>
+            <Title>Commons<Reference>https://commons.wikimedia.org/</Reference></Title>
             <Paragraph>Free media collection</Paragraph>
         </Project>
-        <Project url="https://en.wikivoyage.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Wikivoyage-Logo-v3-icon.svg" width="38">Wikivoyage</Logo>
-            <Heading>Wikivoyage</Heading>
+            <Title>Wikivoyage<Reference>https://en.wikivoyage.org/</Reference></Title>
             <Paragraph>Free travel guide</Paragraph>
         </Project>
-        <Project url="https://en.wiktionary.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wiktionary-logo.svg" width="38">Wiktionary</Logo>
-            <Heading>Wiktionary</Heading>
+            <Title>Wiktionary<Reference>https://en.wiktionary.org/</Reference></Title>
             <Paragraph>Free dictionary</Paragraph>
         </Project>
-        <Project url="https://en.wikibooks.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Wikibooks-logo.svg" width="38">Wikibooks</Logo>
-            <Heading>Wikibooks</Heading>
+            <Title>Wikibooks<Reference>https://en.wikibooks.org/</Reference></Title>
             <Paragraph>Free textbooks</Paragraph>
         </Project>
-        <Project url="https://www.wikidata.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Wikidata-logo.svg" width="38">Wikidata</Logo>
-            <Heading>Wikidata</Heading>
+            <Title>Wikidata<Reference>https://www.wikidata.org/</Reference></Title>
             <Paragraph>Free knowledge base</Paragraph>
         </Project>
-        <Project url="https://en.wikiversity.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/9/91/Wikiversity-logo.svg" width="38">Wikiversity</Logo>
-            <Heading>Wikiversity</Heading>
+            <Title>Wikiversity<Reference>https://en.wikiversity.org/</Reference></Title>
             <Paragraph>Free learning resources</Paragraph>
         </Project>
-        <Project url="https://en.wikiquote.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Wikiquote-logo.svg" width="38">Wikiquote</Logo>
-            <Heading>Wikiquote</Heading>
+            <Title>Wikiquote<Reference>https://en.wikiquote.org/</Reference></Title>
             <Paragraph>Free quote compendium</Paragraph>
         </Project>
-        <Project url="https://www.mediawiki.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/b/bb/MediaWiki-notext.svg" width="38">MediaWiki</Logo>
-            <Heading>MediaWiki</Heading>
+            <Title>MediaWiki<Reference>https://www.mediawiki.org/</Reference></Title>
             <Paragraph>Free and open wiki software</Paragraph>
         </Project>
-        <Project url="https://en.wikisource.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Wikisource-logo.svg" width="38">Wikisource</Logo>
-            <Heading>Wikisource</Heading>
+            <Title>Wikisource<Reference>https://en.wikisource.org/</Reference></Title>
             <Paragraph>Free content library</Paragraph>
         </Project>
-        <Project url="https://species.wikimedia.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/d/df/Wikispecies-logo.svg" width="38">Wikispecies</Logo>
-            <Heading>Wikispecies</Heading>
+            <Title>Wikispecies<Reference>https://species.wikimedia.org/</Reference></Title>
             <Paragraph>Free species directory</Paragraph>
         </Project>
-        <Project url="https://www.wikifunctions.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Wikifunctions-logo.svg" width="38">Wikifunctions</Logo>
-            <Heading>Wikifunctions</Heading>
+            <Title>Wikifunctions<Reference>https://www.wikifunctions.org/</Reference></Title>
             <Paragraph>Free function library</Paragraph>
         </Project>
-        <Project url="https://meta.wikimedia.org/">
+        <Project>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/7/75/Wikimedia_Community_Logo.svg" width="38">Meta-Wiki</Logo>
-            <Heading>Meta-Wiki</Heading>
+            <Title>Meta-Wiki<Reference>https://meta.wikimedia.org/</Reference></Title>
             <Paragraph>Community coordination</Paragraph>
         </Project>
     </Chapter>,

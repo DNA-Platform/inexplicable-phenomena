@@ -3,13 +3,14 @@ import { $Format } from '@/writing/Format';
 
 export class $BodyFormat extends $Format {
     selector = styled.main;
-    margin = '0';
-    padding = '1.5em 2.75em';
+    margin = '0 auto';
+    padding = '0 2.75em';
     display = 'grid';
-    gridTemplateColumns = 'minmax(0, 12.25em) minmax(0, 1fr)';
-    gridTemplateAreas = "'left top' 'left main' 'bottom bottom'";
+    boxSizing = 'border-box';
+    gridTemplateColumns = 'minmax(0, 11em) minmax(0, 1fr) minmax(0, 11em)';
+    gridTemplateAreas = "'left top right' 'left main right' 'bottom bottom bottom'";
     gap = '1em 1.5em';
-    get maxWidth() { return this.theme.measure; }
+    get maxWidth() { return '99.75em'; }
     get background() { return this.theme.paper; }
     get color() { return this.theme.ink; }
     get fontFamily() { return this.theme.body; }

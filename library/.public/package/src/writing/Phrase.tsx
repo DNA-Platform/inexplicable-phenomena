@@ -9,8 +9,7 @@ export interface $Phrase$ extends $Sentence$ { }
 
 export class $Phrase extends $Composition implements $Phrase$ {
     $Phrase(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfPhrase);
+        super.$Composition($check(block, $Block).concat($check($TypeOfPhrase, '!')));
     }
 }
 

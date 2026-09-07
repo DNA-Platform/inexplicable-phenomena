@@ -1,6 +1,7 @@
 import { ReactNode, createElement } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Annotation, $Writing } from '@/writing/Writing';
+import { $Writing } from '@/writing/Writing';
+import { $Annotation } from '@/writing/Annotation';
 import { html } from '@/utilities/Html';
 
 export class Parser {
@@ -17,7 +18,8 @@ export class Parser {
     parse<T extends $Writing>(
         of: $Writing,
         accept: (token: $Writing) => T | T[] | undefined,
-        reduce: (tokens: (string | $Writing)[]) => T[]
+        reduce: (tokens: (string | $Writing)[]) => T[],
+        supply?: (parts: T[]) => T[]
     ): T[] {
         if (this.parts.has(of)) return this.parts.get(of) as T[];
 
@@ -35,12 +37,20 @@ export class Parser {
                 parts.push(...(Array.isArray(part) ? part : [part]));
                 continue;
             }
+            if (typeof token !== 'string') {
+                reducing();
+                parts.push(...reduce([token]));
+                continue;
+            }
             gathered.push(token);
         }
         reducing();
-        for (const part of parts) if (!(part.parent instanceof $Writing)) part.parent = of;
-        this.parts.set(of, parts);
-        return parts;
+        // SUPPLIED BEFORE THE MEMO, never around it — a reading added afterwards
+        // would be decided by whoever asked first and then never asked again.
+        const answered = supply === undefined ? parts : supply(parts);
+        for (const part of answered) if (!(part.parent instanceof $Writing)) part.parent = of;
+        this.parts.set(of, answered);
+        return answered;
     }
 
     sentences(tokens: (string | $Writing)[]): (string | $Writing)[][] {

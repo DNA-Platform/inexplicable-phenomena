@@ -53,7 +53,8 @@ export class $SearchFormat extends $Format {
     $action: string | undefined = undefined;
     display = 'flex';
     width = '100%';
-    maxWidth = '32.14em';
+    maxWidth = '38.57em';
+    padding = '0.43em 0 0.86em';
     margin = '0 auto';
     @select('div') field_position = 'relative';
     @select('div') field_flex = '1';

@@ -16,31 +16,29 @@ export class $Logo extends $Paragraph {
 export class $Languages extends $Section {
     $globe = '';
 
-    override frame(): ReactNode {
+    override frame(drawn: ReactNode): ReactNode {
         const Ring = $(RingFormat);
 
-        return <Ring globe={this.$globe}>{super.frame()}</Ring>;
+        return <Ring globe={this.$globe}>{super.frame(drawn)}</Ring>;
     }
 }
 
 export class $Language extends $Paragraph {
     $at = 1;
 
-    override frame(): ReactNode {
+    override frame(drawn: ReactNode): ReactNode {
         const Place = $(LanguageFormat);
 
-        return <Place at={this.$at}>{super.frame()}</Place>;
+        return <Place at={this.$at}>{super.frame(drawn)}</Place>;
     }
 }
 
 export class $Project extends $IndexCard {
-    $url = '';
-
     override view(): ReactNode {
         const Card = $(CardFormat);
         const Block = $(this._block);
 
-        return <Card href={this.$url}><Block /></Card>;
+        return <Card><Block /></Card>;
     }
 }
 
@@ -78,7 +76,7 @@ export class $LanguageFormat extends $Format {
     @select('a') link_textDecoration = 'none';
     @select('p') line_margin = '0';
     @select('p') line_fontSize = '0.93em';
-    @select('p') line_color = '#54595d';
+    @select('p') get line_color() { return this.theme.pale; }
     @select('@media (max-width: 45em)') narrow_position = 'static';
     @select('@media (max-width: 45em)') narrow_width = 'auto';
     @select('@media (max-width: 45em)') narrow_padding = '0 1.14em';
@@ -89,31 +87,38 @@ export class $LanguageFormat extends $Format {
 }
 
 export class $CardFormat extends $Format {
-    selector = styled.a;
-    $href: string | undefined = undefined;
+    selector = styled.div;
+    position = 'relative';
     display = 'grid';
     gridTemplateColumns = 'auto 1fr';
     gridTemplateRows = '1fr auto auto 1fr';
     gap = '0 0.23em';
     padding = '1em';
-    minHeight = '7em';
+    minHeight = '4.9em';
     lineHeight = '1.5';
-    textDecoration = 'none';
     @select('p') line_margin = '0';
     @select('p:first-child') logo_gridRow = '1 / -1';
-    @select('.pd-heading') name_gridRow = '2';
+    @select('.pd-title') name_gridRow = '2';
     @select('p:last-child') line_gridRow = '3';
-    @select('p:last-child') line_color = '#54595d';
+    @select('p:last-child') get line_color() { return this.theme.pale; }
     @select('img') logo_display = 'block';
     @select('img') logo_width = '50px';
     @select('img') logo_height = '47px';
     @select('img') logo_objectFit = 'contain';
-    @select('h2') name_fontSize = '1.09em';
-    @select('h2') name_border = 'none';
-    @select('h2') name_margin = '0';
-    @select('&:hover h2') hover_textDecoration = 'underline';
-    @select('h2') get name_fontFamily() { return this.theme.body; }
-    @select('h2') get name_color() { return this.theme.link; }
+    @select('.pd-reference') meaning_display = 'none';
+    @select('.pd-title a') link_textDecoration = 'none';
+    @select('.pd-title > a::after') reach_content = "''";
+    @select('.pd-title > a::after') reach_position = 'absolute';
+    @select('.pd-title > a::after') reach_inset = '0';
+    @select('.pd-heading h2') name_fontSize = '1.075em';
+    @select('.pd-heading h2') name_fontWeight = '400';
+    @select('.pd-heading h2') name_lineHeight = '1.5';
+    @select('.pd-heading h2') name_border = 'none';
+    @select('.pd-heading h2') name_margin = '0';
+    @select('.pd-heading h2') name_padding = '0';
+    @select('&:hover .pd-heading h2') hover_textDecoration = 'underline';
+    @select('.pd-heading h2') get name_fontFamily() { return this.theme.body; }
+    @select('.pd-heading h2') get name_color() { return this.theme.link; }
 }
 
 export default $($WikipediaChapter);

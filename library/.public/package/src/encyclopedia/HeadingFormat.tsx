@@ -6,7 +6,7 @@ export class $HeadingFormat extends $Format {
     $id: string | undefined = undefined;
     fontSize = '1.5em';
     fontWeight = 'normal';
-    color = '#101418';
+    get color() { return this.theme.jet; }
     margin = '0 0 0.25em';
     padding = '0';
     get fontFamily() { return this.theme.display; }

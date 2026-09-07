@@ -1,6 +1,7 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Annotation, $Writing } from '@/writing/Writing';
+import { $Writing } from '@/writing/Writing';
+import { $Annotation } from '@/writing/Annotation';
 import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from './Reference';
 import { $Path } from './Path';
 

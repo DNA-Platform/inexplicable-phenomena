@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -12,8 +12,7 @@ export class $Index extends $Composition implements $Index$ {
     override parenthetical = true;
 
     $Index(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfIndex);
+        super.$Composition($check(block, $Block).concat($check($TypeOfIndex, '!')));
     }
 
     override view(): ReactNode {

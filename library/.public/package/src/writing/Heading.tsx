@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
@@ -11,8 +11,7 @@ export interface $Heading$ extends $Paragraph$ { }
 
 export class $Heading extends $Composition implements $Heading$ {
     $Heading(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfHeading);
+        super.$Composition($check(block, $Block).concat($check($TypeOfHeading, '!')));
     }
 
     override view(): ReactNode {

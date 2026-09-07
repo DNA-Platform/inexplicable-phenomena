@@ -25,8 +25,7 @@ export class $Ref extends $Composition implements $Ref$ {
     written(): string { return this.link()?.text ?? html.text(this._block); }
 
     $Ref(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfRef);
+        super.$Composition($check(block, $Block).concat($check($TypeOfRef, '!')));
     }
 
     override view(): ReactNode {
@@ -41,8 +40,9 @@ export class $Ref extends $Composition implements $Ref$ {
         const url = this.url();
         if (url === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
         const fragment = url.startsWith('#') ? url.slice(1) : url;
-        const book = this.book();
-        if (/^\d/.test(fragment) && book instanceof $Composition) return book.catalogue().follow(fragment);
+        const book = this.book;
+        const held = book instanceof $Composition ? book.catalogue() : undefined;
+        if (/^\d/.test(fragment) && held !== undefined) return held.follow(fragment);
         throw new Error('a reference reads to what it means, and this route is the application to follow');
     }
 

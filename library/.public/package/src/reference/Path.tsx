@@ -2,14 +2,16 @@ import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { $Annotation$, $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
+import { url } from '@/utilities/Url';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Annotation$, $Annotation } from '@/writing/Annotation';
+import { $Type } from '@/writing/Type';
 
 export interface $Path$ extends $Annotation$ { }
 
 export class $Path extends $Annotation implements $Path$ {
     $Path(block: $Block) {
-        super.$Writing(block);
-        this.addType($TypeOfPath);
+        super.$Writing($check(block, $Block).concat($check($TypeOfPath, '!')));
     }
 
     override view(): ReactNode {
@@ -23,15 +25,10 @@ export class $TypeOfPath extends $Type {
 }
 
 export class PathSpecification extends WritingSpecification {
-    protected patterns = {
-        broken: /\s/u
-    };
-
     @specify('a path reads as a url')
     $readsAsUrl(writing: $Writing): void {
         const copy = html.text(writing._block);
-        $check(!this.patterns.broken.test(copy) && URL.canParse(copy, 'https://library'),
-            'a path reads as a url, and this one does not');
+        $check(url.reads(copy), 'a path reads as a url, and this one does not');
     }
 
     @specify('a path composes nothing')

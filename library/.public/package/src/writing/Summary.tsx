@@ -1,4 +1,4 @@
-import { $, $Block } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -13,8 +13,7 @@ export class $Summary extends $Composition implements $Summary$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Summary(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfSummary);
+        super.$Composition($check(block, $Block).concat($check($TypeOfSummary, '!')));
     }
 }
 

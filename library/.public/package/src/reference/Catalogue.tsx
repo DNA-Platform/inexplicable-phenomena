@@ -1,37 +1,30 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Annotation, $Type, $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Annotation } from '@/writing/Annotation';
+import { $Type } from '@/writing/Type';
 import { $Composition$, $Composition, Composition as composition } from '@/writing/Composition';
 import { $Reference, Reference as reference } from './Reference';
 import { $Path, Path as path } from './Path';
 
 export interface $Catalogue$ extends $Composition$ {
-    parts(): $Reference[];
     comprehend(): $Composition;
     follow(fragment: string): $Writing;
     address(of: $Writing): string;
 }
 
-export class $Catalogue extends $Writing implements $Catalogue$ {
-    parenthetical = false;
-    $print = false;
+export class $Catalogue extends $Composition implements $Catalogue$ {
+    parts(): $Writing[] {
+        const meant = this.held(this);
 
-    parts(): $Reference[] {
-        return (this._block.$elements ?? [])
-            .filter((part): part is $Writing =>
-                part instanceof $Writing && (part instanceof $Reference || !(part instanceof $Annotation)))
-            .map((part, at) => {
-                if (part instanceof $Reference) return part;
-                const Reference = $(reference);
-                const Path = $(path);
-
-                return $<$Reference>(<Reference />, part, $<$Path>(<Path>{`${at}`}</Path>));
-            });
+        return meant instanceof $Composition
+            ? meant.parts().map(part => part.mention).filter((part): part is $Catalogue => part !== undefined)
+            : [];
     }
 
     comprehend(): $Composition {
-        const [first, ...rest] = this.select(reference =>
-            (reference._block.$elements ?? [])
+        const [first, ...rest] = this.select(part =>
+            (part._block.$elements ?? [])
                 .find((part): part is $Composition => part instanceof $Composition));
         if (first === undefined) {
             const Composition = $(composition);
@@ -41,11 +34,8 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
         return first.concatenate(...rest.filter(held => held !== undefined));
     }
 
-    catalogue(): $Catalogue { return this; }
-
     $Catalogue(block: $Block) {
-        super.$Writing(block);
-        this.addType($TypeOfCatalogue);
+        super.$Composition($check(block, $Block).concat($check($TypeOfCatalogue, '!')));
     }
 
     follow(fragment: string): $Writing {
@@ -61,7 +51,10 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
         if (rest.length === 0) return writing;
         if (!(writing instanceof $Composition))
             throw new Error('nothing stands beneath this writing, and the address descends further');
-        return writing.catalogue().follow(rest.join('/'));
+        const held = writing.catalogue();
+        if (held === undefined) throw new Error('the address descends into writing that catalogues nothing');
+
+        return held.follow(rest.join('/'));
     }
 
     address(of: $Writing): string {
@@ -71,18 +64,9 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
             if (writing === undefined) continue;
             if (writing === of) return `${at}`;
             if (!(writing instanceof $Composition) || writing.parts().includes(writing)) continue;
-            try { return `${at}/${writing.catalogue().address(of)}`; } catch { }
+            try { return `${at}/${writing.catalogue()?.address(of)}`; } catch { }
         }
         throw new Error('this catalogue does not reach that writing at any depth');
-    }
-
-    where(match: (part: $Reference) => boolean): $Reference[] { return this.parts().filter(match); }
-    select<U>(pick: (part: $Reference) => U): U[] { return this.parts().map(pick); }
-    selectMany<U>(pick: (part: $Reference) => U[]): U[] { return this.parts().flatMap(pick); }
-    single(match: (part: $Reference) => boolean): $Reference {
-        const matches = this.parts().filter(match);
-        $check(matches.length === 1, `single expected exactly one part and found ${matches.length}`);
-        return matches[0];
     }
 
     protected span(place: string, rest: string[]): $Writing {
@@ -99,7 +83,7 @@ export class $Catalogue extends $Writing implements $Catalogue$ {
         return $<$Composition>(<Composition />, ...span);
     }
 
-    protected held(of: $Reference): $Writing | undefined {
+    protected held(of: $Writing): $Writing | undefined {
         return (of._block.$elements ?? [])
             .find((part): part is $Writing => part instanceof $Writing && !(part instanceof $Annotation));
     }

@@ -148,7 +148,8 @@ declare module 'react' {
 // deliberately does not list the members that are not.
 export interface $Particular {
     view(): ReactNode;
-    frame(): ReactNode;
+    draw(): ReactNode;
+    frame(drawn: ReactNode): ReactNode;
     $look?: number | string;
 }
 

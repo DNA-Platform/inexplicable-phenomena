@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification, Chapter as chapter } from './Chapter';
+import { $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
 import { $Title, $TypeOfTitle } from './Title';
 import { $Author, $TypeOfAuthor } from './Author';
 import { $Subject, $TypeOfSubject } from './Subject';
@@ -20,14 +19,7 @@ export class $Cover extends $Composition implements $Cover$ {
     subject(): $Subject | undefined { return this.searchForOne<$Subject>($TypeOfSubject); }
 
     $Cover(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfCover);
-    }
-
-    override frame(): ReactNode {
-        const Chapter = $(chapter);
-
-        return <Chapter>{super.frame()}</Chapter>;
+        super.$Composition($check(block, $Block).concat($check($TypeOfCover, '!')));
     }
 }
 

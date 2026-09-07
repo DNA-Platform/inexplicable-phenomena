@@ -33,15 +33,15 @@
     "dist"
   ],
   "scripts": {
+    "prebuild": "rimraf dist/chunks && tsx register.ts",
     "build": "rollup -c",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
     "typecheck": "tsc --noEmit",
-    "test": "tsc --noEmit -p src/tsconfig.json && vitest run",
+    "test": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run",
     "test:fast": "vitest run",
     "test:watch": "vitest",
-    "test:all": "npm run test && npm run test:archive",
-    "test:archive": "vitest run -c vitest.archive.config.ts",
-    "clean": "tsx clean.ts"
+    "clean": "tsx clean.ts",
+    "wiki": "npm run build && vite .wiki/.public"
   },
   "dependencies": {
     "@dna-platform/chemistry": "*",

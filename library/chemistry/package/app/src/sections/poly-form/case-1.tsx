@@ -257,7 +257,7 @@ export default function Case1Demo() {
             <TextField
                 label="Email"
                 required
-                pattern="^[^@]+@[^@]+\\.[^@]+$"
+                pattern="^[^@]+@[^@]+\.[^@]+$"
                 patternHint="Enter a valid email (e.g. name@example.com)"
             />
             <SelectField label="Role" options={['Developer', 'Designer', 'Manager']} required />

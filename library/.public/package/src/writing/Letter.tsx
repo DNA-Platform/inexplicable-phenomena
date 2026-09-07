@@ -1,36 +1,38 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
+import { $Catalogue } from '@/reference/Catalogue';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { parser } from '@/utilities/Parser';
+import { $Type } from './Type';
 
-export interface $$Letter$ extends $Letter$ { }
+type SortOfLetter = 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic';
+type CaseOfLetter = 'uppercase' | 'lowercase';
 
 export interface $Letter$ extends $Composition$ {
-    kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic';
-    case: 'uppercase' | 'lowercase';
+    sort: SortOfLetter;
+    case: CaseOfLetter;
 }
 
 export class $Letter extends $Composition implements $Letter$ {
-    kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
-    case: 'uppercase' | 'lowercase' = 'lowercase';
+    sort!: SortOfLetter;
+    case: CaseOfLetter = 'lowercase';
 
     $Letter(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfLetter);
+        super.$Composition($check(block, $Block).concat($check($TypeOfLetter, '!')));
     }
 }
 
-export class $$Letter extends $Composition implements $$Letter$ {
-    kind: 'alphabetical' | 'numeric' | 'punctuation' | 'whitespace' | 'symbolic' = 'symbolic';
-    case: 'uppercase' | 'lowercase' = 'lowercase';
+export interface $$Letter$ extends $Letter$ { }
+
+export class $$Letter extends $Catalogue implements $$Letter$ {
+    sort!: SortOfLetter;
+    case: CaseOfLetter = 'lowercase';
 
     $$Letter(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfLetter);
-        this.addType($TypeOf$Letter);
+        super.$Catalogue($check(block, $Block).concat($check($TypeOfLetter, '!')).concat($check($TypeOf$Letter, '!')));
     }
 }
 
@@ -57,11 +59,11 @@ export class $TypeOfLetter extends $Type {
 
     protected spell(letter: $Letter): void {
         const copy = html.text(letter._block);
-        letter.kind = this.reads(copy);
+        letter.sort = this.reads(copy);
         letter.case = copy !== copy.toLowerCase() ? 'uppercase' : 'lowercase';
     }
 
-    protected reads(copy: string): $Letter['kind'] {
+    protected reads(copy: string): $Letter['sort'] {
         if (this.patterns.alphabetical.test(copy)) return 'alphabetical';
         if (this.patterns.numeric.test(copy)) return 'numeric';
         if (this.patterns.whitespace.test(copy)) return 'whitespace';
@@ -70,7 +72,7 @@ export class $TypeOfLetter extends $Type {
     }
 }
 
-export class $TypeOf$Letter extends $TypeOfReference {
+export class $TypeOf$Letter extends $Type {
     override name = '$Letter';
     protected override specification: Specification<$Writing> = new $LetterSpecification();
 }
@@ -86,8 +88,7 @@ export class LetterSpecification extends WritingSpecification {
     }
 }
 
-export class $LetterSpecification extends ReferenceSpecification {
-}
+export class $LetterSpecification extends WritingSpecification { }
 
 export const Letter = $($Letter);
 const letter = Letter;

@@ -3,45 +3,36 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { ProseFormat as prose } from '@/encyclopedia/ProseFormat';
 import { html } from '@/utilities/Html';
-import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
+import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfSentence } from './Sentence';
 import { $Phrase$, $TypeOfPhrase } from './Phrase';
+import { $Type } from './Type';
 
 export interface $Paragraph$ extends $Composition$ { }
+
+export class $Paragraph extends $Composition implements $Paragraph$ {
+    $Paragraph(block: $Block) {
+        super.$Composition($check(block, $Block).concat($check($TypeOfParagraph, '!')));
+    }
+
+    override frame(drawn: ReactNode): ReactNode {
+        const Prose = $(prose);
+
+        return <Prose>{super.frame(drawn)}</Prose>;
+    }
+}
 
 export interface $$Paragraph$ extends $Phrase$ {
     parts(): $Writing[];
 }
 
-export class $Paragraph extends $Composition implements $Paragraph$ {
-    $Paragraph(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfParagraph);
-    }
-
-    override frame(): ReactNode {
-        const Prose = $(prose);
-
-        return <Prose>{super.frame()}</Prose>;
-    }
-}
-
-export class $$Paragraph extends $Composition implements $$Paragraph$ {
-    parts(): $Writing[] {
-        const paragraph = this.searchForOne<$Paragraph>($TypeOfParagraph);
-
-        return paragraph === undefined ? [] : paragraph.parts()
-            .filter((part): part is $Composition => part instanceof $Composition)
-            .map(part => part.mention);
-    }
-
+export class $$Paragraph extends $Catalogue implements $$Paragraph$ {
     $$Paragraph(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfPhrase);
-        this.addType($TypeOf$Paragraph);
+        super.$Catalogue($check(block, $Block).concat($check($TypeOfPhrase, '!')).concat($check($TypeOf$Paragraph, '!')));
     }
 }
 
@@ -61,7 +52,7 @@ export class $TypeOfParagraph extends $Type {
     override below(): new() => $TypeOfSentence { return $TypeOfSentence; }
 }
 
-export class $TypeOf$Paragraph extends $TypeOfReference {
+export class $TypeOf$Paragraph extends $Type {
     override name = '$Paragraph';
     protected override specification: Specification<$Writing> = new $ParagraphSpecification();
 }
@@ -78,7 +69,7 @@ export class ParagraphSpecification extends WritingSpecification {
     }
 }
 
-export class $ParagraphSpecification extends ReferenceSpecification {
+export class $ParagraphSpecification extends WritingSpecification {
 }
 
 export const Paragraph = $($Paragraph);

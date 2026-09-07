@@ -2,11 +2,12 @@ import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
-import { $Writing, $Type } from '@/writing/Writing';
+import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Section$, $TypeOfSection, SectionSpecification } from './Section';
 import { $TypeOfHeading } from './Heading';
 import { TableFormat as tableStyle } from '@/encyclopedia/TableFormat';
+import { $Type } from './Type';
 
 export interface $Table$ extends $Section$ {
     $columns?: number;
@@ -18,18 +19,17 @@ export class $Table extends $Composition implements $Table$ {
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
     cells(): $Writing[] {
-        return this.searchFor($Type).filter(part => reflection.composition(part.type()) && part !== this.heading());
+        return this.searchFor($Type).filter(part => reflection.composition(part.kind) && part !== this.heading());
     }
 
     $Table(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfTable);
+        super.$Composition($check(block, $Block).concat($check($TypeOfTable, '!')));
     }
 
-    override frame(): ReactNode {
+    override frame(drawn: ReactNode): ReactNode {
         const TableStyle = $(tableStyle);
 
-        return <TableStyle columns={this.$columns ?? 1}>{super.frame()}</TableStyle>;
+        return <TableStyle columns={this.$columns ?? 1}>{super.frame(drawn)}</TableStyle>;
     }
 }
 

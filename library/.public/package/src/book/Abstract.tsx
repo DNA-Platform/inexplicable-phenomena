@@ -1,4 +1,4 @@
-import { $, $Block } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -10,8 +10,7 @@ export class $Abstract extends $Composition implements $Abstract$ {
     override parenthetical = true;
 
     $Abstract(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfAbstract);
+        super.$Composition($check(block, $Block).concat($check($TypeOfAbstract, '!')));
     }
 }
 

@@ -27,6 +27,7 @@ export class $HomeFormat extends $BodyFormat {
 export class $HomeHeaderFormat extends $HeaderFormat {
     paddingTop = '2.86em';
     @select('.pd-title, .pd-author, .pd-subject') cover_display = 'none';
+    @select('.pd-cover .pd-section > .pd-heading') label_display = 'none';
     @select('article') article_margin = '0 auto';
     @select('article') article_maxWidth = '39em';
     @select('p:has(img)') logo_margin = '0.857em 0 0';
@@ -42,6 +43,9 @@ export class $HomeSidebarFormat extends $SidebarFormat {
 }
 
 export class $HomeContentFormat extends $ContentFormat {
+    override get maxWidth() { return 'none'; }
+    margin = '0 auto';
+    width = '100%';
     display = 'grid';
     gridTemplateColumns = 'minmax(0, 7fr) minmax(0, 13fr)';
     gap = '0';
@@ -83,10 +87,10 @@ export class $HomeContentFormat extends $ContentFormat {
     @select('article:nth-of-type(2) p:has(img)') icon_top = '0';
     @select('article:nth-of-type(2) h2') hosted_fontSize = '1em';
     @select('article:nth-of-type(2) h2') hosted_fontWeight = '400';
-    @select('article:nth-of-type(2) h2') hosted_color = '#54595d';
+    @select('article:nth-of-type(2) h2') get hosted_color() { return this.theme.pale; }
     @select('article:nth-of-type(2) h2') hosted_borderBottom = 'none';
     @select('article:nth-of-type(2) h2') hosted_margin = '0';
-    @select('article:nth-of-type(2) p') text_color = '#54595d';
+    @select('article:nth-of-type(2) p') get text_color() { return this.theme.pale; }
     @select('article:nth-of-type(2) p') text_margin = '0';
     @select('article:nth-of-type(2) .pd-ref') links_margin = '0 0.8em 0 0';
     @select('article:nth-of-type(3)') projects_textAlign = 'left';
@@ -99,7 +103,7 @@ export class $HomeContentFormat extends $ContentFormat {
     @select('article:nth-of-type(4) h2') licence_display = 'inline';
     @select('article:nth-of-type(4) h2') licence_fontSize = '1em';
     @select('article:nth-of-type(4) h2') licence_fontWeight = '400';
-    @select('article:nth-of-type(4) h2') licence_color = '#54595d';
+    @select('article:nth-of-type(4) h2') get licence_color() { return this.theme.pale; }
     @select('article:nth-of-type(4) h2') licence_border = 'none';
     @select('article:nth-of-type(4) h2') licence_margin = '0';
     @select('article:nth-of-type(4) p') line_display = 'inline';

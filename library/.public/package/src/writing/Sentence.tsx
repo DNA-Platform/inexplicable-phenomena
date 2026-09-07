@@ -1,38 +1,29 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
-import { $Writing, $Type, WritingSpecification } from '@/writing/Writing';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
+import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfWord } from './Word';
+import { $Type } from './Type';
 
 export interface $Sentence$ extends $Composition$ { }
+
+export class $Sentence extends $Composition implements $Sentence$ {
+    $Sentence(block: $Block) {
+        super.$Composition($check(block, $Block).concat($check($TypeOfSentence, '!')));
+    }
+}
 
 export interface $$Sentence$ extends $Sentence$ {
     parts(): $Writing[];
 }
 
-export class $Sentence extends $Composition implements $Sentence$ {
-    $Sentence(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfSentence);
-    }
-}
-
-export class $$Sentence extends $Composition implements $$Sentence$ {
-    parts(): $Writing[] {
-        const sentence = this.searchForOne<$Sentence>($TypeOfSentence);
-
-        return sentence === undefined ? [] : sentence.parts()
-            .filter((part): part is $Composition => part instanceof $Composition)
-            .map(part => part.mention);
-    }
-
+export class $$Sentence extends $Catalogue implements $$Sentence$ {
     $$Sentence(block: $Block) {
-        super.$Composition(block);
-        this.addType($TypeOfSentence);
-        this.addType($TypeOf$Sentence);
+        super.$Catalogue($check(block, $Block).concat($check($TypeOfSentence, '!')).concat($check($TypeOf$Sentence, '!')));
     }
 }
 
@@ -53,7 +44,7 @@ export class $TypeOfSentence extends $Type {
     override below(): new() => $TypeOfWord { return $TypeOfWord; }
 }
 
-export class $TypeOf$Sentence extends $TypeOfReference {
+export class $TypeOf$Sentence extends $Type {
     override name = '$Sentence';
     protected override specification: Specification<$Writing> = new $SentenceSpecification();
 }
@@ -70,7 +61,7 @@ export class SentenceSpecification extends WritingSpecification {
     }
 }
 
-export class $SentenceSpecification extends ReferenceSpecification {
+export class $SentenceSpecification extends WritingSpecification {
 }
 
 export const Sentence = $($Sentence);

@@ -287,7 +287,7 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
                 const bonding = c[$rendering$];
                 c[$rendering$] = true;
                 try {
-                if (!dev && $exceptions.mode === 'throw') {
+                if ($exceptions.mode === 'throw') {
                     try {
                         // The asker is raised HERE, at the invocation, not only in
                         // $lift's wrapper — the eval path reaches this without $lift,
@@ -1151,15 +1151,15 @@ export class $Chemical extends $Particle {
     //
     // Nothing re-enters the view, so a stack of facades terminates on its own and
     // every one of them is handed the chemical rather than the one beneath.
-    override frame(): ReactNode {
-        if (this[$isTemplate$]) return super.frame();
+    override frame(drawn: ReactNode): ReactNode {
+        if (this[$isTemplate$]) return super.frame(drawn);
         // What the scope answered stands in for what the class declared.
         // null is the walk saying it is ALREADY inside one; undefined is the walk
         // having nothing to say, so the declaration stands.
         const wearing = this.$facade === null ? noFacades
             : this.$facade ? [this.$facade] : facadesOf(this);
-        if (wearing.length === 0) return super.frame();
-        let out: ReactNode = super.frame();
+        if (wearing.length === 0) return super.frame(drawn);
+        let out: ReactNode = super.frame(drawn);
         const outermost = dress(this, wearing[0]);
         for (let at = wearing.length - 1; at >= 0; at--) {
             const held = at === 0 ? outermost : dress(this, wearing[at]);
