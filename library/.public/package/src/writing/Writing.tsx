@@ -13,14 +13,13 @@ export interface $Annotation$ extends $Writing$ {
 export interface $Type$ extends $Annotation$ { }
 
 export interface $Writing$ extends $Chemical {
-    type(): $Type$;
-    meaning(): $Reference$ | undefined;
-    annotations(): $Annotation[];
-    types(): $Type[];
-    mention: $Writing$;
-
     book(): $Writing$;
     theme(): $Theme;
+    mention: $Writing$;
+    meaning(): $Reference$ | undefined;
+    kind(): $Type$;
+    type(): $Type[];
+    annotations(): $Annotation[];
     searchFor<T extends $Writing>(type: new() => $Type): T[];
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
     specify(): void;
@@ -38,6 +37,7 @@ export class $Writing extends $Chemical implements $Writing$ {
         $check(standing.length <= 1, `writing is one kind of writing, and this one is ${standing.length}`);
         return standing[0] ?? carried[0];
     }
+
     meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
     annotations(): $Annotation[] { return reflection.annotations(this); }
     types(): $Type[] { return reflection.types(this); }
@@ -45,6 +45,7 @@ export class $Writing extends $Chemical implements $Writing$ {
         const holding = this.parent;
         return reflection.writing(holding) && holding !== this ? holding.book() : this;
     }
+
     theme(): $Theme {
         if (this._theme !== undefined) return this._theme;
         const written = this.searchForOne<$Theme>($TypeOfTheme);
@@ -55,7 +56,9 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
-        for (const part of this._block.$elements ?? []) if (part instanceof $Writing && !reflection.writing(part.parent)) part.parent = this;
+        for (const part of this._block.$elements ?? []) 
+            if (part instanceof $Writing && !reflection.writing(part.parent)) 
+                part.parent = this;
     }
 
     view(): ReactNode {
