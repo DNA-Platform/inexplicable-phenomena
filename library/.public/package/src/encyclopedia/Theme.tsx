@@ -18,6 +18,22 @@ export class $Theme extends $Sheet {
     override size = '16px';
     override leading = '1.625';
 
+    // A field's resting edge is the link colour lightened against the paper, so a theme that
+    // changes what a link looks like changes every border drawn from one.
+    get edge(): string { return `color-mix(in srgb, ${this.link} 76%, ${this.paper})`; }
+
+    chevron(colour: string): string { return this.painted("%3Csvg width='12' height='8' viewBox='-1 -1 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='{ink}' stroke-width='1.11' d='M.56.55 5 4.9 9.44.54'/%3E%3C/svg%3E", colour); }
+    magnifier(colour: string): string { return this.painted("%3Csvg width='22' height='22' viewBox='-1 -1 22 22' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='{ink}' d='M7.5 13c3.04 0 5.5-2.46 5.5-5.5S10.54 2 7.5 2 2 4.46 2 7.5 4.46 13 7.5 13zm4.55.46A7.432 7.432 0 0 1 7.5 15C3.36 15 0 11.64 0 7.5S3.36 0 7.5 0C11.64 0 15 3.36 15 7.5c0 1.71-.57 3.29-1.54 4.55l6.49 6.49-1.41 1.41-6.49-6.49z'/%3E%3C/svg%3E", colour); }
+    translation(colour: string): string { return this.painted("%3Csvg width='22' height='22' viewBox='-1 -1 22 22' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='{ink}' fill-rule='evenodd' d='M20 18h-1.44a.61.61 0 0 1-.4-.12.81.81 0 0 1-.23-.31L17 15h-5l-1 2.54a.77.77 0 0 1-.22.3.59.59 0 0 1-.4.14H9l4.55-11.47h1.89zm-3.53-4.31L14.89 9.5a11.62 11.62 0 0 1-.39-1.24q-.09.37-.19.69l-.19.56-1.58 4.19zm-6.3-1.58a13.43 13.43 0 0 1-2.91-1.41 11.46 11.46 0 0 0 2.81-5.37H12V4H7.31a4 4 0 0 0-.2-.56C6.87 2.79 6.6 2 6.6 2l-1.47.5s.4.89.6 1.5H0v1.33h2.15A11.23 11.23 0 0 0 5 10.7a17.19 17.19 0 0 1-5 2.1q.56.82.87 1.38a23.28 23.28 0 0 0 5.22-2.51 15.64 15.64 0 0 0 3.56 1.77zM3.63 5.33h4.91a8.11 8.11 0 0 1-2.45 4.45 9.11 9.11 0 0 1-2.46-4.45z'/%3E%3C/svg%3E", colour); }
+    caret(colour: string): string { return this.painted("%3Csvg width='14' height='14' viewBox='-1 -1 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='{ink}' d='M10.085 2.943 6.05 6.803l-3.947-3.86L1.05 3.996l5 5 5-5z'/%3E%3C/svg%3E", colour); }
+
+    // An icon drawn into a data URI cannot inherit, so the colour is painted into it.
+    // OPEN, and it is the next level's question: a format reads `theme` as the BASE $Theme,
+    // so nothing outside this class can reach these yet — a format cannot see its own book's theme.
+    protected painted(svg: string, colour: string): string {
+        return `url("data:image/svg+xml,${svg.replaceAll('{ink}', encodeURIComponent(colour))}")`;
+    }
+
     override get maxWidth() { return '99.75em'; }
     override padding = '0 3em';
     display = 'grid';

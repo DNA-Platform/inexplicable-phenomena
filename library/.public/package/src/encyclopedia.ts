@@ -2,3 +2,6 @@
 export * from './encyclopedia/Theme';
 export * from './encyclopedia/Infobox';
 export * from './encyclopedia/Hatnote';
+export * from './encyclopedia/Logo';
+export * from './encyclopedia/Masthead';
+export * from './encyclopedia/Colophon';
