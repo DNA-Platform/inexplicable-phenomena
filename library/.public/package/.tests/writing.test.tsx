@@ -139,9 +139,9 @@ describe('the frame carries the names of every kind the writing stands as', () =
         expect(labelled!.className.split(' ')).toEqual(['pd-sentence']);
     });
 
-    it('AND A PATH SHOWS ITS URL, WEARING NO ANCHOR', () => {
+    it('AND A PATH IS PRESENT IN THE WRITING AND ABSENT FROM THE READING — no url printed, and no anchor, since a bare path means nothing', () => {
         const host = drawn(<Writing><TypeOfSentence />hello<Path>https://example.com/thing</Path></Writing>);
-        expect(host.textContent).toBe('hellohttps://example.com/thing');
+        expect(host.textContent).toBe('hello');
         expect(host.querySelector('.pd-sentence a')).toBeNull();
     });
 

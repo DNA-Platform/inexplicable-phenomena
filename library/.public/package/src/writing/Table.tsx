@@ -22,14 +22,12 @@ export class $Table extends $Composition implements $Table$ {
         return this.searchFor($Type).filter(part => reflection.composition(part.kind) && part !== this.heading());
     }
 
-    $Table(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfTable, '!')));
+    override print(content: ReactNode): ReactNode {
+        return <div className={this.className}>{content}</div>;
     }
 
-    override frame(drawn: ReactNode): ReactNode {
-        const TableStyle = $(tableStyle);
-
-        return <TableStyle columns={this.$columns ?? 1}>{super.frame(drawn)}</TableStyle>;
+    $Table(block: $Block) {
+        super.$Composition($check(block, $Block).concat($check($TypeOfTable, '!')).concat($check(tableStyle, '!')));
     }
 }
 

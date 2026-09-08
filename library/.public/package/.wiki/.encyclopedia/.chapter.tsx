@@ -48,7 +48,6 @@ export class $EditionListFormat extends $Format {
 export class $Foundation extends $WikipediaChapter {
     override frame(drawn: ReactNode): ReactNode {
         const Held = $(FoundationFormat);
-
         return <Held>{super.frame(drawn)}</Held>;
     }
 }
@@ -56,7 +55,6 @@ export class $Foundation extends $WikipediaChapter {
 export class $Projects extends $WikipediaChapter {
     override frame(drawn: ReactNode): ReactNode {
         const Held = $(ProjectsFormat);
-
         return <Held>{super.frame(drawn)}</Held>;
     }
 }
@@ -64,7 +62,6 @@ export class $Projects extends $WikipediaChapter {
 export class $Licence extends $WikipediaChapter {
     override frame(drawn: ReactNode): ReactNode {
         const Held = $(LicenceFormat);
-
         return <Held>{super.frame(drawn)}</Held>;
     }
 }
@@ -83,7 +80,6 @@ export class $Languages extends $Section {
 
     override frame(drawn: ReactNode): ReactNode {
         const Ring = $(RingFormat);
-
         return <Ring globe={this.$globe}>{super.frame(drawn)}</Ring>;
     }
 }
@@ -93,7 +89,6 @@ export class $Language extends $Paragraph {
 
     override frame(drawn: ReactNode): ReactNode {
         const Place = $(LanguageFormat);
-
         return <Place at={this.$at}>{super.frame(drawn)}</Place>;
     }
 }
@@ -102,7 +97,6 @@ export class $Project extends $IndexCard {
     override view(): ReactNode {
         const Card = $(CardFormat);
         const Block = $(this._block);
-
         return <Card><Block /></Card>;
     }
 }

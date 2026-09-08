@@ -23,8 +23,8 @@ export class $Cover extends $Composition implements $Cover$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfCover, '!')));
     }
 
-    override view(): ReactNode {
-        return <header>{super.view()}</header>;
+    override print(content: ReactNode): ReactNode {
+        return <header className={this.className}>{content}</header>;
     }
 }
 

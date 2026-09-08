@@ -17,10 +17,8 @@ export class $Chapter extends $Composition implements $Chapter$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfChapter, '!')));
     }
 
-    override view(): ReactNode {
-        const drawn = super.view();
-
-        return drawn === null ? null : <article>{drawn}</article>;
+    override print(content: ReactNode): ReactNode {
+        return <article className={this.className}>{content}</article>;
     }
 }
 

@@ -12,8 +12,8 @@ export class $TableOfContents extends $Composition implements $TableOfContents$ 
         super.$Composition($check(block, $Block).concat($check($TypeOfTableOfContents, '!')));
     }
 
-    override view(): ReactNode {
-        return <nav>{super.view()}</nav>;
+    override print(content: ReactNode): ReactNode {
+        return <nav className={this.className}>{content}</nav>;
     }
 }
 

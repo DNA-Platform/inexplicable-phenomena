@@ -12,8 +12,8 @@ export class $Footer extends $Composition implements $Footer$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfFooter, '!')));
     }
 
-    override view(): ReactNode {
-        return <footer>{super.view()}</footer>;
+    override print(content: ReactNode): ReactNode {
+        return <footer className={this.className}>{content}</footer>;
     }
 }
 

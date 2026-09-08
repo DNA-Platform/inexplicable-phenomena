@@ -21,13 +21,11 @@ export class $Illustration extends $Composition implements $Illustration$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfIllustration, '!')));
     }
 
-    override view(): ReactNode {
-        const Block = $(this._block);
-
+    override print(content: ReactNode): ReactNode {
         return (
-            <figure>
+            <figure className={this.className}>
                 <img src={this.source} alt={this.caption} />
-                <figcaption><Block /></figcaption>
+                <figcaption>{content}</figcaption>
             </figure>
         );
     }

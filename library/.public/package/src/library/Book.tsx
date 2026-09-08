@@ -55,8 +55,12 @@ export class $Book extends $Composition implements $Book$ {
         this.placed($TypeOfTheme, theme, this.footer);
     }
 
-    override view(): ReactNode {
-        return <div>{super.view()}</div>;
+    // A book type says what stands above its cover and below its footer without rewriting how a book draws.
+    masthead(): ReactNode { return null; }
+    colophon(): ReactNode { return null; }
+
+    override print(content: ReactNode): ReactNode {
+        return <div className={this.className}>{this.masthead()}{content}{this.colophon()}</div>;
     }
 
     protected contents(after?: $Writing): $Writing {

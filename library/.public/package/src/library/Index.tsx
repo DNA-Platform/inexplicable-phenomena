@@ -14,10 +14,8 @@ export class $Index extends $Composition implements $Index$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfIndex, '!')));
     }
 
-    override view(): ReactNode {
-        const drawn = super.view();
-
-        return drawn === null ? null : <section>{drawn}</section>;
+    override print(content: ReactNode): ReactNode {
+        return <section className={this.className}>{content}</section>;
     }
 }
 

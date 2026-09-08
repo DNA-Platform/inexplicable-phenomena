@@ -49,10 +49,6 @@ export class $Composition extends $Writing implements $Composition$ {
         return this.parenthetical && !this.$print ? null : super.view();
     }
 
-    override frame(drawn: ReactNode): ReactNode {
-        return this.parenthetical && !this.$print ? null : super.frame(drawn);
-    }
-
     where(match: (part: $Writing) => boolean): $Writing[] { return this.parts().filter(match); }
     select<U>(pick: (part: $Writing) => U): U[] { return this.parts().map(pick); }
     selectMany<U>(pick: (part: $Writing) => U[]): U[] { return this.parts().flatMap(pick); }

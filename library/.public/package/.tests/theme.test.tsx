@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { $ } from '@dna-platform/chemistry';
+import { $, look, styled } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
-    $Book, $Writing, $Theme, $TypeOfTheme, $TypeOfSection, $TypeOfParagraph,
+    $Book, $Writing, $Theme, $Format, $TypeOfTheme, $TypeOfSection, $TypeOfParagraph,
     Book, Chapter, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph, Theme,
 } from '@dna-platform/public';
 
@@ -104,5 +104,32 @@ describe('the theme is the sheet, worn once at the book', () => {
         expect(mains[0].contains(mains[1])).toBe(true);
         expect(mains[1].textContent).toContain('Bletchley Park.');
         expect(mains[1].textContent).not.toContain('Born in Maida Vale.');
+    });
+});
+
+describe('a format is written into the writing it formats', () => {
+    class $Boxed extends $Format {
+        $tone = 'plain';
+        override selector = styled.aside;
+        get borderLeft() { return `4px solid ${this.$tone}`; }
+        @look('worn') override $view() { return <aside>{this.$content}</aside>; }
+    }
+    const Boxed = $($Boxed);
+    const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };
+
+    it('A FORMAT WRITTEN INTO A CHAPTER WEARS THAT CHAPTER IN ITS ELEMENT, AND KEEPS ITS PROP', () => {
+        const container = drawn(built<$Book>(
+            <Book>
+                {cover()}{synopsis()}
+                {life()}
+                <Chapter><Boxed tone="red" /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Chapter>
+            </Book>));
+        const asides = container.querySelectorAll('aside');
+
+        expect(asides.length).toBe(1);
+        expect(asides[0].textContent).toContain('Bletchley Park.');
+        expect(asides[0].textContent).not.toContain('Born in Maida Vale.');
+        expect(asides[0].className).not.toBe('');
+        expect(container.querySelector('.pd-format')).toBeNull();
     });
 });

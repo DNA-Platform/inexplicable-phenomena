@@ -18,10 +18,8 @@ export class $Paragraph extends $Composition implements $Paragraph$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfParagraph, '!')));
     }
 
-    override view(): ReactNode {
-        const drawn = super.view();
-
-        return drawn === null ? null : <p>{drawn}</p>;
+    override print(content: ReactNode): ReactNode {
+        return <p className={this.className}>{content}</p>;
     }
 }
 

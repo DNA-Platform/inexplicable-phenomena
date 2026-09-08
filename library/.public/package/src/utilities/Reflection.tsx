@@ -8,6 +8,7 @@ import type { $Theme } from '@/formatting/Theme';
 export class Reflection {
     private templates = new WeakMap<new() => $Writing, $Writing>();
     private readings = new WeakMap<$Writing, { parts: $Writing[]; block: $Block }>();
+    private contents = new WeakMap<$Block, $Block>();
 
     // HANDED THE THREE KINDS AT THE COMPOSITION ROOT, which is src/index.ts.
     // A utility that must ask `instanceof` cannot IMPORT what imports it: $Writing
@@ -48,13 +49,21 @@ export class Reflection {
         return type !== undefined && this.names(type).some(name => this.compositions.includes(name));
     }
 
+    // WHAT A WRITING DRAWS IS ITS BLOCK WITHOUT ITS ANNOTATIONS — present in the writing, absent from the reading — memoised on the block, which a bond replaces whole.
+    content(writing: $Writing): $Block {
+        const held = this.contents.get(writing._block);
+        if (held !== undefined) return held;
+        const block = writing._block.filter(part => !(part instanceof this.kinds.annotation));
+        this.contents.set(writing._block, block);
+
+        return block;
+    }
+
     wrapped(writing: $Writing & { parts(): $Writing[] }): $Block {
         const parts = writing.parts();
         const held = this.readings.get(writing);
         if (held?.parts === parts) return held.block;
-        const block = new $Block()
-            .concat(...parts)
-            .concat(writing._block.filter(part => part instanceof this.kinds.annotation));
+        const block = new $Block().concat(...parts);
         this.readings.set(writing, { parts, block });
 
         return block;
@@ -97,14 +106,15 @@ export class Reflection {
         return this.annotations(writing).reduce((held, one) => one.format(held), drawn);
     }
 
-    // IN PROGRESS: one component per theme class, or React remounts the sheet every draw. Delete if chemistry memoises $(class).
-    private sheets = new WeakMap<new() => $Theme, any>();
+    // IN PROGRESS: one component per class, or React remounts what is worn every draw. Delete if chemistry memoises $(class).
+    private sheets = new WeakMap<new() => $Writing, any>();
 
-    sheet(kind: new() => $Theme): any {
+    sheet(kind: new() => $Writing): any {
         let held = this.sheets.get(kind);
         if (held === undefined) this.sheets.set(kind, held = $(kind as never));
         return held;
     }
+
 
     theme(writing: $Writing): $Theme {
         return this.nearest(writing, at => this.annotations(at).find((one): one is $Theme => one instanceof this.kinds.theme))

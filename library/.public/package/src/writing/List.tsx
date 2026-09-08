@@ -13,10 +13,10 @@ export class $List extends $Composition implements $List$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfList, '!')));
     }
 
-    override view(): ReactNode {
+    override print(): ReactNode {
         const lines = html.text(this._block).split(/\n|(?:^|\s)-\s+/u).map(line => line.trim()).filter(line => line !== '');
 
-        return <ul>{lines.map((line, at) => <li key={at}>{line}</li>)}</ul>;
+        return <ul className={this.className}>{lines.map((line, at) => <li key={at}>{line}</li>)}</ul>;
     }
 }
 

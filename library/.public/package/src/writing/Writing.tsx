@@ -1,4 +1,4 @@
-import { ReactNode, cloneElement, isValidElement } from 'react';
+import { ReactNode } from 'react';
 import { $, $Block, $check, $Chemical, $Written, inert, look } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
@@ -19,6 +19,8 @@ export interface $Writing$ extends $Chemical {
     type: $Type[];
     annotations: $Annotation[];
     reading(): $Block;
+    classes: string[];
+    print(content: ReactNode): ReactNode;
     searchFor<T extends $Writing>(type: new() => $Type): T[];
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
     specify(): void;
@@ -31,10 +33,12 @@ export class $Writing extends $Chemical implements $Writing$ {
     _block!: $Block;
 
     get theme(): $Theme { return reflection.theme(this); }
+    get classes(): string[] { return reflection.classNames(this); }
+    get className(): string { return this.classes.join(' '); }
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get type(): $Type[] { return reflection.types(this); }
-    reading(): $Block { return this._block; }
+    reading(): $Block { return reflection.content(this); }
     get book(): $Writing {
         const holding = this.parent;
         return reflection.writing(holding) && holding !== this ? holding.book : this;
@@ -55,28 +59,17 @@ export class $Writing extends $Chemical implements $Writing$ {
     view(): ReactNode {
         const meaning = this.meaning;
         const Block = $(this.reading());
-        if (meaning === undefined) return <Block />;
 
-        return (
-            <a href={html.text(meaning.path()?._block)}>
-                <Block />
-            </a>
-        );
+        return reflection.formatted(this, this.print(meaning === undefined ? <Block /> : <a href={html.text(meaning.path()?._block)}><Block /></a>));
+    }
+
+    print(content: ReactNode): ReactNode {
+        return <span className={this.className}>{content}</span>;
     }
 
     @look('back')
     $view(): ReactNode {
         return html.text(this._block);
-    }
-
-    override frame(drawn: ReactNode): ReactNode {
-        const named = reflection.classNames(this).join(' ');
-        const written = isValidElement<{ className?: string }>(drawn) && typeof drawn.type === 'string' ? drawn : undefined;
-        const classed = written === undefined
-            ? <span className={named}>{drawn}</span>
-            : cloneElement(written, { className: [written.props.className, named].filter(Boolean).join(' ') });
-
-        return super.frame(reflection.formatted(this, classed));
     }
 
     searchFor<T extends $Writing>(type: new() => $Type): T[] {

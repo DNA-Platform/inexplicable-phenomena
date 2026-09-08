@@ -13,10 +13,8 @@ export class $Heading extends $Composition implements $Heading$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfHeading, '!')));
     }
 
-    override view(): ReactNode {
-        const Block = $(this._block);
-
-        return <h2 id={html.text(this._block).replace(/\s+/gu, '_')}><Block /></h2>;
+    override print(content: ReactNode): ReactNode {
+        return <h2 id={html.text(this._block).replace(/\s+/gu, '_')} className={this.className}>{content}</h2>;
     }
 }
 

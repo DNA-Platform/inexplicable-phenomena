@@ -1,12 +1,11 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, look, select, styled } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
+import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
-import { $Writing, WritingSpecification } from '@/writing/Writing';
-import { $Annotation$, $Annotation } from '@/writing/Annotation';
-import { $Type } from '@/writing/Type';
+import { $Writing } from '@/writing/Writing';
+import { $Format$, $Format, $TypeOfFormat, FormatSpecification } from './Format';
 
-export interface $Theme$ extends $Annotation$ {
+export interface $Theme$ extends $Format$ {
     paper: string;
     ink: string;
     quiet: string;
@@ -23,10 +22,9 @@ export interface $Theme$ extends $Annotation$ {
     leading: string;
 }
 
-// IN PROGRESS · rating 2. The theme is the annotation the walk finds AND the sheet worn once per book as a FRESH instance of its class with the drawing as $content — a parented annotation mounted with a prop loops (probes P1–P7, Sprint 53 § where things stand). $content and face are proxies.
-export class $Theme extends $Annotation implements $Theme$ {
-    selector = styled.main;
-    $content: ReactNode = null;
+// IN PROGRESS · rating 2. The theme is a FORMAT that is a singleton with values: the annotation the walk finds, and the sheet worn once at the book. `face` is a proxy (`display` is a CSS property and would be emitted).
+export class $Theme extends $Format implements $Theme$ {
+    override selector: any = styled.main;
     paper = '#ffffff';
     ink = '#1f2328';
     quiet = '#f6f8fa';
@@ -98,27 +96,14 @@ export class $Theme extends $Annotation implements $Theme$ {
     @select('article') chapter_marginBottom = '2em';
     @select('.pd-index') index_columnCount = '3';
 
+    // Machinery extending machinery, so the chain is called whole; a KIND would extend its level instead.
     $Theme(block: $Block) {
-        super.$Writing($check(block, $Block).concat($check($TypeOfTheme, '!')));
+        super.$Format($check(block, $Block).concat($check($TypeOfTheme, '!')));
     }
 
-    override view(): ReactNode {
-        return null;
-    }
-
-    @look('sheet')
+    @look('worn')
     override $view(): ReactNode {
         return <main>{this.$content}</main>;
-    }
-
-    override frame(drawn: ReactNode): ReactNode {
-        return this.$look === 'sheet' ? drawn : null;
-    }
-
-    override format(drawn: ReactNode): ReactNode {
-        const Sheet = reflection.sheet(this.constructor as new() => $Theme);
-
-        return <Sheet look="sheet" content={drawn} />;
     }
 
     static $register(): void {
@@ -126,16 +111,12 @@ export class $Theme extends $Annotation implements $Theme$ {
     }
 }
 
-export class $TypeOfTheme extends $Type {
+export class $TypeOfTheme extends $TypeOfFormat {
     override name = 'Theme';
     protected override specification: Specification<$Writing> = new ThemeSpecification();
 }
 
-export class ThemeSpecification extends WritingSpecification {
-    @specify('a theme says nothing of its own; it is worn')
-    override $saysSomething(): boolean | void {
-        return false;
-    }
+export class ThemeSpecification extends FormatSpecification {
 }
 
 export const Theme = $($Theme);

@@ -20,10 +20,8 @@ export class $Section extends $Composition implements $Section$ {
 
     override reading(): $Block { return reflection.wrapped(this); }
 
-    override view(): ReactNode {
-        const drawn = super.view();
-
-        return drawn === null ? null : <section>{drawn}</section>;
+    override print(content: ReactNode): ReactNode {
+        return <section className={this.className}>{content}</section>;
     }
 
     $Section(block: $Block) {
