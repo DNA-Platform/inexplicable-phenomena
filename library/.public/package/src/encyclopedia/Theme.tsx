@@ -26,7 +26,7 @@ export class $Theme extends $Sheet {
     gridAutoRows = 'min-content';
     columnGap = '2.5em';
     @select('> .pd-book') book_display = 'contents';
-    @select('.pd-book > header, .pd-book > .pd-synopsis') top_gridColumn = '1 / -1';
+    @select('.pd-book > header') top_gridColumn = '1 / -1';
     @select('.pd-book > nav') side_gridColumn = '1';
     side_gridRow = '2 / span 400';
     side_alignSelf = 'start';
@@ -35,7 +35,7 @@ export class $Theme extends $Sheet {
     side_maxHeight = 'calc(100vh - 3em)';
     side_overflowY = 'auto';
     side_fontSize = '0.875em';
-    @select('.pd-book > article, .pd-book > .pd-index') text_gridColumn = '2';
+    @select('.pd-book > .pd-synopsis, .pd-book > article, .pd-book > .pd-index') text_gridColumn = '2';
     text_minWidth = '0';
     get text_maxWidth() { return this.measure; }
     @select('.pd-book > footer') foot_gridColumn = '1 / -1';
@@ -50,9 +50,9 @@ export class $Theme extends $Sheet {
     title_borderBottom = 'none';
     title_lineHeight = '1.375';
     title_margin = '0';
-    @select('header .pd-title a, header .pd-author a, header .pd-subject a') coverLink_color = 'inherit';
+    @select('header a.pd-title, header a.pd-author, header a.pd-subject') coverLink_color = 'inherit';
     coverLink_cursor = 'text';
-    @select('header .pd-title a:hover, header .pd-author a:hover, header .pd-subject a:hover') coverHover_textDecoration = 'none';
+    @select('header a.pd-title:hover, header a.pd-author:hover, header a.pd-subject:hover') coverHover_textDecoration = 'none';
     @select('header .pd-author, header .pd-subject') byline_display = 'block';
     byline_marginTop = '0.5em';
     @select('header .pd-author h2, header .pd-subject h2') bylineHeading_fontSize = '0.875em';
