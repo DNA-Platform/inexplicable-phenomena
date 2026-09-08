@@ -11,7 +11,6 @@ export class $Type extends $Annotation implements $Type$ {
 
     below(): (new() => $Type) | undefined { return undefined; }
     makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
-    format(drawn: ReactNode): ReactNode { return drawn; }
 
     override view(): ReactNode {
         return null;

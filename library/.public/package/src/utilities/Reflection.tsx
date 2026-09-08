@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $Block } from '@dna-platform/chemistry';
+import { $, $Block } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
 import type { $Type } from '@/writing/Type';
@@ -94,7 +94,18 @@ export class Reflection {
     }
 
     formatted(writing: $Writing, drawn: ReactNode): ReactNode {
-        return this.types(writing).reduce((held, type) => type.format(held), drawn);
+        return this.annotations(writing).reduce((held, one) => one.format(held), drawn);
+    }
+
+    // IN PROGRESS (Sprint 53): $(class) answers a new root component each call, so a sheet worn
+    // per render must come from ONE memoised component per theme class or React remounts it
+    // every draw. Chemistry may already memoise this — not measured; if it does, delete this.
+    private sheets = new WeakMap<new() => $Theme, any>();
+
+    sheet(kind: new() => $Theme): any {
+        let held = this.sheets.get(kind);
+        if (held === undefined) this.sheets.set(kind, held = $(kind as never));
+        return held;
     }
 
     theme(writing: $Writing): $Theme {

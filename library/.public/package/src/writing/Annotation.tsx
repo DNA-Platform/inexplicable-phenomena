@@ -1,9 +1,11 @@
+import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing$, $Writing, WritingSpecification } from './Writing';
 
 export interface $Annotation$ extends $Writing$ {
     specifically(writing: $Writing$): void;
+    format(drawn: ReactNode): ReactNode;
 }
 
 export class $Annotation extends $Writing implements $Annotation$ {
@@ -11,6 +13,10 @@ export class $Annotation extends $Writing implements $Annotation$ {
 
     specifically(writing: $Writing): void {
         this.specification.check(writing);
+    }
+
+    format(drawn: ReactNode): ReactNode {
+        return drawn;
     }
 
     supplies(writing: $Writing, parts: $Writing[]): $Writing[] {

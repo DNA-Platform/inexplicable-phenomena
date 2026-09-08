@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, cloneElement, isValidElement } from 'react';
 import { $, $Block, $check, $Chemical, $Written, inert, look } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
@@ -70,8 +70,13 @@ export class $Writing extends $Chemical implements $Writing$ {
     }
 
     override frame(drawn: ReactNode): ReactNode {
-        return super.frame(reflection.formatted(this,
-            <span className={reflection.classNames(this).join(' ')}>{drawn}</span>));
+        const named = reflection.classNames(this).join(' ');
+        const written = isValidElement<{ className?: string }>(drawn) && typeof drawn.type === 'string' ? drawn : undefined;
+        const classed = written === undefined
+            ? <span className={named}>{drawn}</span>
+            : cloneElement(written, { className: [written.props.className, named].filter(Boolean).join(' ') });
+
+        return super.frame(reflection.formatted(this, classed));
     }
 
     searchFor<T extends $Writing>(type: new() => $Type): T[] {

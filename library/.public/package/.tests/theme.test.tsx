@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
+import { render } from '@testing-library/react';
 import {
     $Book, $Writing, $Theme, $TypeOfTheme, $TypeOfSection, $TypeOfParagraph,
     Book, Chapter, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph, Theme,
@@ -73,5 +74,35 @@ describe('a writing has a theme the way it has a meaning — read, never stored'
 
     it('A BOOK IS REFUSED WHEN IT IS DRAWN IN TWO THEMES', () => {
         expect(() => built<$Book>(<Book>{cover()}{synopsis()}<Dark /><Portal />{life()}</Book>).specify()).toThrow(/one theme/u);
+    });
+});
+
+describe('the theme is the sheet, worn once at the book', () => {
+    const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };
+
+    it('THE BOOK WEARS ONE MAIN, THE THEME DRAWS NOTHING WHERE IT STANDS, AND A CHAPTER IS AN ARTICLE', () => {
+        const container = drawn(built<$Book>(<Book>{cover()}{synopsis()}{life()}</Book>));
+        const mains = container.querySelectorAll('main');
+
+        expect(mains.length).toBe(1);
+        expect(mains[0].className).not.toBe('');
+        expect(container.querySelector('.pd-theme')).toBeNull();
+        expect(container.querySelector('article.pd-chapter')).not.toBeNull();
+        expect(container.textContent).toContain('Born in Maida Vale.');
+    });
+
+    it('A CHAPTER WEARING ITS OWN THEME WEARS A SECOND SHEET INSIDE THE FIRST', () => {
+        const container = drawn(built<$Book>(
+            <Book>
+                {cover()}{synopsis()}
+                {life()}
+                <Chapter><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Chapter>
+            </Book>));
+        const mains = container.querySelectorAll('main');
+
+        expect(mains.length).toBe(2);
+        expect(mains[0].contains(mains[1])).toBe(true);
+        expect(mains[1].textContent).toContain('Bletchley Park.');
+        expect(mains[1].textContent).not.toContain('Born in Maida Vale.');
     });
 });

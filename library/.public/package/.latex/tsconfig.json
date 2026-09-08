@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "vitest/globals"
+    ],
+    "paths": {
+      "@/*": [
+        "../src/*"
+      ],
+      "@dna-platform/public": [
+        "../src/index.ts"
+      ],
+      "@dna-platform/public/encyclopedia": [
+        "../src/encyclopedia/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "*.ts",
+    "*.tsx",
+    ".*.ts",
+    ".*.tsx",
+    ".encyclopedia/**/*.ts",
+    ".encyclopedia/**/*.tsx",
+    ".encyclopedia/**/.*.ts",
+    ".encyclopedia/**/.*.tsx",
+    ".public/main.tsx",
+    ".article/**/*.tsx",
+    ".article/**/.*.tsx",
+    ".public/.encyclopedia/**/*.tsx",
+    ".public/.article/**/*.tsx",
+    ".public/.article/**/.*.tsx",
+    ".public/.encyclopedia/**/.*.tsx"
+  ]
+}

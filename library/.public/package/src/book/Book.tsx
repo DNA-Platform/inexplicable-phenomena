@@ -20,7 +20,6 @@ import { $TypeOfTableOfContents, TableOfContents as table } from './TableOfConte
 import { $TypeOfIndex, Index as index } from './Index';
 import { $TypeOfFooter, Footer as footer } from './Footer';
 import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
-import { BodyFormat as body } from '@/encyclopedia/BodyFormat';
 import { HeaderFormat as header } from '@/encyclopedia/HeaderFormat';
 import { SidebarFormat as sidebar } from '@/encyclopedia/SidebarFormat';
 import { ContentFormat as content } from '@/encyclopedia/ContentFormat';
@@ -86,12 +85,6 @@ export class $Book extends $Composition implements $Book$ {
                 <Footer><Closing /></Footer>
             </>
         );
-    }
-
-    override frame(drawn: ReactNode): ReactNode {
-        const Body = $(body);
-
-        return <Body>{super.frame(drawn)}</Body>;
     }
 
     protected contents(after?: $Writing): $Writing {

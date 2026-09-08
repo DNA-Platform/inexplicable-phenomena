@@ -43,7 +43,7 @@ export class $HomeHeaderFormat extends $HeaderFormat {
     narrow_backgroundRepeat = 'no-repeat';
     narrow_backgroundSize = '3.43em';
     narrow_backgroundPosition = 'calc(50% - 8.6em) 2.35em';
-    get slogan_fontFamily() { return this.theme.display; }
+    get slogan_fontFamily() { return this.theme.face; }
 }
 
 export class $HomeSidebarFormat extends $SidebarFormat {

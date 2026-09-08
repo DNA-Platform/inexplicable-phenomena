@@ -1,0 +1,3 @@
+// CREATED 2026-09-08 — Sprint 53 scaffold. THE .latex INTEGRATION TEST (PS6: a suite that drives the running demo). Serves the BUILT directory (.latex/.public/dist) itself, the way 02-public-audit-performance--drive.mjs does, and asserts VISIBLE TEXT — never a storage string or a transient status.
+// OWED: build the wiki's driver pattern into this file — serve, open, wait networkidle, then assert: the title once on the cover; the abstract present; equation count > 0 and each numbered; theorem labels; the references list; zero <pre> refusal panels; zero console errors; and a text hash recorded beside the run.
+throw new Error('not implemented: verify-latex.mjs — see the OWED list at the head of this file');
