@@ -30,8 +30,11 @@ export class $Format extends $Annotation implements $Format$ {
         return this[children];
     }
 
+    // CHEMISTRY MEMOISES $(class) — measured, $($Probe) === $($Probe) — so the WeakMap that stood
+    // behind this, guarding against React remounting what is worn every draw, was a second cache
+    // over chemistry's own. Its comment said to delete it under exactly this condition.
     override format(drawn: ReactNode): ReactNode {
-        const Worn = reflection.sheet(this.constructor as new() => $Format);
+        const Worn = $(this.constructor as new() => $Format);
 
         return <Worn of={this} {...this.handed()}>{drawn}</Worn>;
     }

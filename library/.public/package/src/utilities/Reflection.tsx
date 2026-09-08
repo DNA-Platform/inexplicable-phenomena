@@ -111,15 +111,6 @@ export class Reflection {
         return this.annotations(writing).reduce((held, one) => one.format(held), drawn);
     }
 
-    // IN PROGRESS: one component per class, or React remounts what is worn every draw. Delete if chemistry memoises $(class).
-    private sheets = new WeakMap<new() => $Writing, any>();
-
-    sheet(kind: new() => $Writing): any {
-        let held = this.sheets.get(kind);
-        if (held === undefined) this.sheets.set(kind, held = $(kind as never));
-        return held;
-    }
-
 
     theme(writing: $Writing): $Theme {
         return this.nearest(writing, at => this.annotations(at).find((one): one is $Theme => one instanceof this.kinds.theme))
