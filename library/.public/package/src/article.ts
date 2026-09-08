@@ -1,12 +1,15 @@
 // The door @dna-platform/public/article — the LaTeX article as a book type.
-// Section and Abstract say the same words the base does and mean a paper's: a consumer importing
-// from THIS door gets the numbered section and the paper's abstract, which is the whole point of
-// naming them the same (Doug: "Complex names suggest that you might need DI").
-// Margin was here and is GONE: it was written as "the part holding header, sidebar, footer", and
-// every one of those is the APPLICATION's. A marginal note would come back under that name alone.
+//
+// Section WAS HERE AND IS DELETED. It existed to number a section, and numbering is not LaTeX's:
+// Wikipedia numbers its contents entries, and $Equation, $Theorem, $Citation and $Footnote each
+// wanted the same reading. FIVE KINDS ASKING FOR ONE THING IS A FINDING ABOUT THE BASE, and the
+// base now answers it — reflection.numbered. A section that draws its number is one line in a
+// theme reading that, not a class here.
+//
+// Abstract says the word the base once said and means a paper's, which is the DI naming: a
+// consumer importing from THIS door gets the paper's.
 export * from './article/Article';
 export * from './article/Abstract';
-export * from './article/Section';
 export * from './article/Theorem';
 export * from './article/Footnote';
 export * from './article/Appendix';

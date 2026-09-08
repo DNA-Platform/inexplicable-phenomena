@@ -1,30 +1,34 @@
-// CREATED 2026-09-08 · rating 3 · shell. The infobox is a catalogue card of labelled lines (ch18; Sprint 51 R9), promoted from the demo's Sidebar/Line. Open: an index card's title must MEAN something and a line's does not.
+// CREATED 2026-09-08 · rating 3. THE INFOBOX IS AN ASIDE — Doug asked whether it is really an
+// encyclopedia's thing and it is not; what is Wikipedia's is the NAME and the fixed vocabulary of
+// labelled lines, not the standing-beside. So the shape moved to writing/Aside and this inherits it,
+// which is why it draws <aside> without saying so. Open: an index card's title must MEAN something
+// and a line's does not, so a line is a labelled paragraph here rather than a card.
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Title, $TypeOfTitle } from '@/library/Title';
-import { $CatalogueCard$, $TypeOfCatalogueCard, CatalogueCardSpecification } from '@/library/CatalogueCard';
+import { $Aside$, $Aside, $TypeOfAside, AsideSpecification } from '@/writing/Aside';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
 
-export interface $Infobox$ extends $CatalogueCard$ { }
+export interface $Infobox$ extends $Aside$ { }
 
-export class $Infobox extends $Composition implements $Infobox$ {
+export class $Infobox extends $Aside implements $Infobox$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
 
     $Infobox(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfInfobox, '!')));
+        super.$Aside($check(block, $Block).concat($check($TypeOfInfobox, '!')));
     }
 
-    // OWED: <aside class="pd-infobox"> — the kind writes its element (T5); the encyclopedia theme floats it right.
+    // The <aside> comes from $Aside; the encyclopedia theme floats it right by its pd-infobox class.
 }
 
-export class $TypeOfInfobox extends $TypeOfCatalogueCard {
+export class $TypeOfInfobox extends $TypeOfAside {
     override name = 'Infobox';
     protected override specification: Specification<$Writing> = new InfoboxSpecification();
 }
 
-export class InfoboxSpecification extends CatalogueCardSpecification {
+export class InfoboxSpecification extends AsideSpecification {
 }
 
 export interface $Line$ extends $Paragraph$ {

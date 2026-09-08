@@ -13,6 +13,8 @@ export * from './writing/Word';
 export * from './writing/Sentence';
 export * from './writing/Paragraph';
 export * from './writing/Section';
+export * from './writing/Aside';
+export * from './writing/Quote';
 export * from './writing/Heading';
 export * from './writing/Illustration';
 export * from './writing/Phrase';

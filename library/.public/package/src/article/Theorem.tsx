@@ -1,6 +1,7 @@
 // CREATED 2026-09-08 · rating 3 · shell. A section whose heading is its label, numbered by a reading like $Equation; $kind (theorem / lemma / proof) is a proxy.
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
+import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Section$, $TypeOfSection, SectionSpecification } from '@/writing/Section';
@@ -15,9 +16,8 @@ export class $Theorem extends $Composition implements $Theorem$ {
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
-    number(): number | undefined {
-        throw new Error('not implemented: $Theorem.number — a reading over the chapter, shared in shape with $Equation.number');
-    }
+    // ACROSS THE BOOK: a paper's Theorem 3 is the third in the paper, not the third in its section.
+    number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Theorem(block: $Block) {
         super.$Composition($check(block, $Block).concat($check($TypeOfTheorem, '!')));

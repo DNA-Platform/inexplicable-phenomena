@@ -136,6 +136,35 @@ export class Reflection {
         return this.nearest(writing, at => at.$indent > 0 ? at.$indent : undefined) ?? 0;
     }
 
+    // THE NUMBER A KIND WEARS — a writing's position among the writings of its own kind that a
+    // holder holds, however deeply it holds them. FIVE KINDS ASKED FOR THIS SEPARATELY — $Equation,
+    // $Theorem, $Citation, $Footnote and a numbered section — and five implementations of one
+    // reading is what a base is for. The holder is GIVEN because the scope differs by kind: a
+    // citation counts across its book, an equation across its chapter. `numbered` is a proxy name.
+    numbered(writing: $Writing, within: $Writing): number | undefined {
+        const kind = writing.kind?.constructor as (new() => $Type) | undefined;
+        if (kind === undefined) return undefined;
+
+        const found: $Writing[] = [];
+        const seen = new Set<unknown>();
+        const gather = (at: $Writing): void => {
+            if (seen.has(at)) return;
+            seen.add(at);
+            for (const part of at._block.$elements ?? []) {
+                if (!this.writing(part)) continue;
+                // ITS OWN KIND, NOT ANYTHING CARRYING THE TYPE. A heading IS a paragraph by type, so
+                // asking `is` counts it among the paragraphs — measured, by the promise that pins this.
+                // Theorem 3 is the third theorem and not the third section.
+                if (part.kind?.constructor === kind) found.push(part);
+                gather(part);
+            }
+        };
+        gather(within);
+
+        const at = found.indexOf(writing);
+        return at < 0 ? undefined : at + 1;
+    }
+
     classNames(writing: $Writing): string[] {
         const named = this.types(writing).flatMap(type => this.names(type).reverse());
         const held = [...new Set(named)].map(name => `pd-${this.kebab(name)}`);

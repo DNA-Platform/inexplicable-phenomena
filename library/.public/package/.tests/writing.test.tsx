@@ -369,3 +369,30 @@ describe('the parser is asked for what is asked for, and never by a rule', () =>
         expect(asking(() => held.parts())).toEqual(['$Section']);
     });
 });
+
+
+describe('a writing knows its number among its own kind', () => {
+    it('and it is its position in the holder, counted however deeply the holder holds it', () => {
+        const held = built<$Composition>(
+            <Section>
+                <Heading>Three</Heading>
+                <Paragraph>One.</Paragraph>
+                <Paragraph>Two.</Paragraph>
+                <Paragraph>Three.</Paragraph>
+            </Section>
+        );
+        // searchFor answers FOUR: a heading is a paragraph by type. Numbering counts the writing's
+        // OWN kind, so the heading numbers among headings and the prose among prose.
+        const carried = held.searchFor($TypeOfParagraph);
+
+        expect(carried.length).toBe(4);
+        expect(carried.map(one => reflection.numbered(one, held))).toEqual([1, 1, 2, 3]);
+    });
+
+    it('and a writing the holder does not hold has no number there', () => {
+        const held = built<$Composition>(<Section><Heading>H</Heading><Paragraph>One.</Paragraph></Section>);
+        const stranger = built<$Composition>(<Section><Heading>S</Heading><Paragraph>Elsewhere.</Paragraph></Section>);
+
+        expect(reflection.numbered(stranger.searchFor($TypeOfParagraph)[0], held)).toBeUndefined();
+    });
+});
