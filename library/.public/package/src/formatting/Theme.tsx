@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check, look, styled } from '@dna-platform/chemistry';
+import { $, $Block, $check, look, select, styled } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
@@ -48,6 +48,55 @@ export class $Theme extends $Annotation implements $Theme$ {
     get lineHeight() { return this.leading; }
     get color() { return this.ink; }
     get background() { return this.paper; }
+    get maxWidth() { return this.measure; }
+    margin = '0 auto';
+    padding = '2rem';
+
+    @select('h1, h2, h3, h4, h5, h6') heading_marginTop = '1.5rem';
+    heading_marginBottom = '1rem';
+    heading_fontWeight = '600';
+    heading_lineHeight = '1.25';
+    get heading_fontFamily() { return this.face; }
+    @select('h1') h1_fontSize = '2em';
+    h1_paddingBottom = '.3em';
+    get h1_borderBottom() { return `1px solid ${this.rule}`; }
+    @select('h2') h2_fontSize = '1.5em';
+    h2_paddingBottom = '.3em';
+    get h2_borderBottom() { return `1px solid ${this.rule}`; }
+    @select('h3') h3_fontSize = '1.25em';
+    @select('p') p_marginTop = '0';
+    p_marginBottom = '10px';
+    @select('ul, ol') list_marginTop = '0';
+    list_marginBottom = '0';
+    list_paddingLeft = '2em';
+    @select('li + li') item_marginTop = '.25em';
+    @select('code') code_fontFamily = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace";
+    code_fontSize = '85%';
+    code_padding = '.2em .4em';
+    code_borderRadius = '6px';
+    get code_backgroundColor() { return this.quiet; }
+    @select('pre') pre_fontSize = '12px';
+    pre_padding = '1rem';
+    pre_borderRadius = '6px';
+    pre_overflow = 'auto';
+    pre_lineHeight = '1.45';
+    get pre_backgroundColor() { return this.quiet; }
+    @select('blockquote') quote_padding = '0 1em';
+    get quote_color() { return this.pale; }
+    get quote_borderLeft() { return `.25em solid ${this.shade}`; }
+    @select('hr') hr_margin = '1.5rem 0';
+    hr_border = '0';
+    hr_height = '.25em';
+    get hr_backgroundColor() { return this.shade; }
+    @select('table th, table td') cell_padding = '6px 13px';
+    get cell_border() { return `1px solid ${this.shade}`; }
+    @select('figure') figure_margin = '1rem 0';
+    @select('img') img_maxWidth = '100%';
+    @select('a') a_textDecoration = 'none';
+    get a_color() { return this.link; }
+    @select('a:hover') hover_textDecoration = 'underline';
+    @select('article') chapter_marginBottom = '2em';
+    @select('.pd-index') index_columnCount = '3';
 
     $Theme(block: $Block) {
         super.$Writing($check(block, $Block).concat($check($TypeOfTheme, '!')));

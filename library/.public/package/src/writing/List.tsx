@@ -5,7 +5,6 @@ import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
-import { BulletsFormat as bullets } from '@/encyclopedia/BulletsFormat';
 
 export interface $List$ extends $Paragraph$ { }
 
@@ -16,13 +15,8 @@ export class $List extends $Composition implements $List$ {
 
     override view(): ReactNode {
         const lines = html.text(this._block).split(/\n|(?:^|\s)-\s+/u).map(line => line.trim()).filter(line => line !== '');
-        const Bullets = $(bullets);
 
-        return (
-            <Bullets>
-                {lines.map((line, at) => <li key={at}>{line}</li>)}
-            </Bullets>
-        );
+        return <ul>{lines.map((line, at) => <li key={at}>{line}</li>)}</ul>;
     }
 }
 

@@ -20,10 +20,6 @@ import { $TypeOfTableOfContents, TableOfContents as table } from './TableOfConte
 import { $TypeOfIndex, Index as index } from './Index';
 import { $TypeOfFooter, Footer as footer } from './Footer';
 import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
-import { HeaderFormat as header } from '@/encyclopedia/HeaderFormat';
-import { SidebarFormat as sidebar } from '@/encyclopedia/SidebarFormat';
-import { ContentFormat as content } from '@/encyclopedia/ContentFormat';
-import { FooterFormat as footerFormat } from '@/encyclopedia/FooterFormat';
 
 export interface $Book$ extends $Composition$ {
     cover: $Writing;
@@ -37,10 +33,6 @@ export interface $Book$ extends $Composition$ {
 export interface $$Book$ extends $Paragraph$ { }
 
 export class $Book extends $Composition implements $Book$ {
-    _opening!: $Block;
-    _contents!: $Block;
-    _body!: $Block;
-    _closing!: $Block;
     cover!: $Writing;
     synopsis!: $Writing;
     table!: $Writing;
@@ -59,32 +51,12 @@ export class $Book extends $Composition implements $Book$ {
         this.table = this.searchForOne($TypeOfTableOfContents) ?? this.contents(this.synopsis);
         const chapters = this.chapters;
         this.index = this.placed($TypeOfIndex, index, chapters[chapters.length - 1] ?? this.table);
-        this._opening = this._block.filter(piece => piece === this.cover || piece === this.synopsis);
-        this._contents = this._block.filter(piece => piece === this.table);
-        this._body = this._block.filter(piece => piece instanceof $Writing && (chapters.includes(piece) || piece === this.index));
         this.footer = this.placed($TypeOfFooter, footer, this.index);
-        this._closing = this._block.filter(piece => piece === this.footer);
         this.placed($TypeOfTheme, theme, this.footer);
     }
 
     override view(): ReactNode {
-        const Header = $(header);
-        const Sidebar = $(sidebar);
-        const Content = $(content);
-        const Footer = $(footerFormat);
-        const Opening = $(this._opening);
-        const Contents = $(this._contents);
-        const Chapters = $(this._body);
-        const Closing = $(this._closing);
-
-        return (
-            <>
-                <Header><Opening /></Header>
-                <Sidebar><Contents /></Sidebar>
-                <Content><Chapters /></Content>
-                <Footer><Closing /></Footer>
-            </>
-        );
+        return <div>{super.view()}</div>;
     }
 
     protected contents(after?: $Writing): $Writing {

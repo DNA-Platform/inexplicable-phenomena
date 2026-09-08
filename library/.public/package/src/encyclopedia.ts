@@ -14,4 +14,4 @@ export * from './encyclopedia/MarginFormat';
 export * from './encyclopedia/OutputFormat';
 export * from './encyclopedia/ProseFormat';
 export * from './encyclopedia/SidebarFormat';
-export * from './encyclopedia/TableFormat';
+

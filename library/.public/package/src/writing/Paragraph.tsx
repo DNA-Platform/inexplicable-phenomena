@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { ProseFormat as prose } from '@/encyclopedia/ProseFormat';
 import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
@@ -19,10 +18,10 @@ export class $Paragraph extends $Composition implements $Paragraph$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfParagraph, '!')));
     }
 
-    override frame(drawn: ReactNode): ReactNode {
-        const Prose = $(prose);
+    override view(): ReactNode {
+        const drawn = super.view();
 
-        return <Prose>{super.frame(drawn)}</Prose>;
+        return drawn === null ? null : <p>{drawn}</p>;
     }
 }
 

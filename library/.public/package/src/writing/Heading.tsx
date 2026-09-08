@@ -5,7 +5,6 @@ import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
-import { HeadingFormat as heading } from '@/encyclopedia/HeadingFormat';
 
 export interface $Heading$ extends $Paragraph$ { }
 
@@ -16,13 +15,8 @@ export class $Heading extends $Composition implements $Heading$ {
 
     override view(): ReactNode {
         const Block = $(this._block);
-        const Heading = $(heading);
 
-        return (
-            <Heading id={html.text(this._block).replace(/\s+/gu, '_')}>
-                <Block />
-            </Heading>
-        );
+        return <h2 id={html.text(this._block).replace(/\s+/gu, '_')}><Block /></h2>;
     }
 }
 

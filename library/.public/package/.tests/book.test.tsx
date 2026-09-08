@@ -114,18 +114,17 @@ describe('a book draws itself in four regions, and its contents point at its cha
         expect(ids).toContain('Second_things');
     });
 
-    it('and the cover opens the first region, the chapters fill the third, and the FOOTER closes the last — an index is not assumed to be at the end', () => {
+    it('and the book draws FLAT under the sheet: the cover first, the contents before the chapters, the index after them, and the FOOTER last — an index is not assumed to be at the end', () => {
         const held = built<$Book>(<Book>{cover()}{chapter('First things')}</Book>);
         if (held.index instanceof $Composition) held.index.$print = true;
         const host = drawn(held);
-        const regions = [...host.querySelectorAll('main > .pd-book > *')];
-        expect(regions.length).toBe(4);
-        expect(regions[0].querySelector('.pd-cover')).not.toBeNull();
-        expect(regions[1].querySelector('.pd-table-of-contents')).not.toBeNull();
-        expect(regions[2].querySelector('.pd-chapter')).not.toBeNull();
-        expect(regions[2].querySelector('.pd-cover')).toBeNull();
-        expect(regions[2].querySelector('.pd-index')).not.toBeNull();
-        expect(regions[3].querySelector('.pd-footer')).not.toBeNull();
+        const children = [...host.querySelectorAll('main > .pd-book > *')];
+        const at = (selector: string) => children.findIndex(child => child.matches(selector));
+        expect(children[0].matches('header.pd-cover')).toBe(true);
+        expect(children[children.length - 1].matches('footer.pd-footer')).toBe(true);
+        expect(at('nav.pd-table-of-contents')).toBeLessThan(at('article'));
+        expect(at('article')).toBeLessThan(at('section.pd-index'));
+        expect(at('section.pd-index')).toBeLessThan(at('footer'));
     });
 
     it('a title written as copy makes its own heading', () => {

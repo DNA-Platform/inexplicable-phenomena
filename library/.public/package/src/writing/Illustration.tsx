@@ -5,7 +5,6 @@ import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
-import { IllustrationFormat as illustration } from '@/encyclopedia/IllustrationFormat';
 
 export interface $Illustration$ extends $Paragraph$ {
     source: string;
@@ -23,16 +22,13 @@ export class $Illustration extends $Composition implements $Illustration$ {
     }
 
     override view(): ReactNode {
-        const Illustration = $(illustration);
         const Block = $(this._block);
 
         return (
-            <Illustration>
+            <figure>
                 <img src={this.source} alt={this.caption} />
-                <figcaption>
-                    <Block />
-                </figcaption>
-            </Illustration>
+                <figcaption><Block /></figcaption>
+            </figure>
         );
     }
 }

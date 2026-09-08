@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
@@ -9,6 +10,10 @@ export interface $Footer$ extends $Chapter$ { }
 export class $Footer extends $Composition implements $Footer$ {
     $Footer(block: $Block) {
         super.$Composition($check(block, $Block).concat($check($TypeOfFooter, '!')));
+    }
+
+    override view(): ReactNode {
+        return <footer>{super.view()}</footer>;
     }
 }
 

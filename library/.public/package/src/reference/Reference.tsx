@@ -8,7 +8,6 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Annotation$, $Annotation } from '@/writing/Annotation';
 import { $Type } from '@/writing/Type';
 import { $Path, $TypeOfPath, Path as path } from './Path';
-import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 
 export interface $Reference$ extends $Annotation$ {
     $focused: boolean;
@@ -40,10 +39,9 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     override view(): ReactNode {
-        const Anchor = $(anchor);
         const url = html.text(this.path()?._block);
 
-        return <Anchor href={url} onClick={() => this.focus()}>{url}</Anchor>;
+        return <a href={url} onClick={() => this.focus()}>{url}</a>;
     }
 
     focus(): void {

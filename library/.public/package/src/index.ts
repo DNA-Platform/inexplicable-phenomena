@@ -21,6 +21,7 @@ export * from './writing/Table';
 export * from './writing/Summary';
 export * from './formatting/Theme';
 export * from './formatting/Format';
+export * from './formatting/TableFormat';
 
 export * from './reference/Reference';
 export * from './reference/Path';

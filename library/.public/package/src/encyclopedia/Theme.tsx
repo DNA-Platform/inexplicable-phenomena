@@ -25,7 +25,7 @@ export class $Theme extends $Sheet {
     gap = '1em 2.5em';
     padding = '0 3em';
     margin = '0 auto';
-    maxWidth = '99.75em';
+    override get maxWidth() { return '99.75em'; }
     @select('> .pd-book') book_display = 'contents';
     @select('.pd-cover, .pd-synopsis') top_gridArea = 'top';
     @select('.pd-table-of-contents') left_gridArea = 'left';

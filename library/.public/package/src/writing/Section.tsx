@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
@@ -18,6 +19,12 @@ export class $Section extends $Composition implements $Section$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     override reading(): $Block { return reflection.wrapped(this); }
+
+    override view(): ReactNode {
+        const drawn = super.view();
+
+        return drawn === null ? null : <section>{drawn}</section>;
+    }
 
     $Section(block: $Block) {
         super.$Composition($check(block, $Block).concat($check($TypeOfSection, '!')));

@@ -8,7 +8,6 @@ import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Phrase$, $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
 import { Word as word } from '@/writing/Word';
-import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 import { $Path, $TypeOfPath } from './Path';
 
 export interface $Ref$ extends $Phrase$ {
@@ -31,9 +30,8 @@ export class $Ref extends $Composition implements $Ref$ {
     override view(): ReactNode {
         const url = this.url();
         if (url === undefined) return super.view();
-        const Anchor = $(anchor);
 
-        return <Anchor href={url}>{this.written()}</Anchor>;
+        return <a href={url}>{this.written()}</a>;
     }
 
     async read(): Promise<$Writing> {

@@ -6,7 +6,7 @@ import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Section$, $TypeOfSection, SectionSpecification } from './Section';
 import { $TypeOfHeading } from './Heading';
-import { TableFormat as tableStyle } from '@/encyclopedia/TableFormat';
+import { TableFormat as tableStyle } from '@/formatting/TableFormat';
 import { $Type } from './Type';
 
 export interface $Table$ extends $Section$ {

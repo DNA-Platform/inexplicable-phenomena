@@ -4,7 +4,6 @@ import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
-import { ColumnsFormat as columns } from '@/encyclopedia/ColumnsFormat';
 
 export interface $Index$ extends $Chapter$ { }
 
@@ -16,14 +15,9 @@ export class $Index extends $Composition implements $Index$ {
     }
 
     override view(): ReactNode {
-        const Block = $(this._block);
-        const Columns = $(columns);
+        const drawn = super.view();
 
-        return (
-            <Columns>
-                <Block />
-            </Columns>
-        );
+        return drawn === null ? null : <section>{drawn}</section>;
     }
 }
 

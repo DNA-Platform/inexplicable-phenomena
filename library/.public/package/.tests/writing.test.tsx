@@ -164,8 +164,8 @@ describe('a kind draws in its default look, and the look makes up for plain copy
     const styles = () => [...document.querySelectorAll('style')].map(style => style.textContent).join('')
         + [...document.styleSheets].flatMap(sheet => [...sheet.cssRules]).map(rule => rule.cssText).join('');
 
-    it('a paragraph is worn as prose', () => {
-        expect(drawn(<Paragraph>One.</Paragraph>).querySelector('p .pd-paragraph')).not.toBeNull();
+    it('a paragraph writes its own element, and the classes stand on it', () => {
+        expect(drawn(<Paragraph>One.</Paragraph>).querySelector('p.pd-paragraph')).not.toBeNull();
     });
 
     it('a list finds its items at their marks', () => {

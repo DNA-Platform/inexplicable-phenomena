@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
@@ -20,6 +21,10 @@ export class $Cover extends $Composition implements $Cover$ {
 
     $Cover(block: $Block) {
         super.$Composition($check(block, $Block).concat($check($TypeOfCover, '!')));
+    }
+
+    override view(): ReactNode {
+        return <header>{super.view()}</header>;
     }
 }
 
