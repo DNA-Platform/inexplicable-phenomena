@@ -1,7 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { Author, Cover, Heading, Paragraph, Reference, Subject, Title } from '@dna-platform/public';
-import { Header, Wordmark } from '../.article/.margin';
-import { OutwardLink } from '../.chapter';
+import { Header, OutwardLink, Wordmark } from '../.chapter';
 
 export default $(
     <Cover>

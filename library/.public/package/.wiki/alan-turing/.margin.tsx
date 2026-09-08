@@ -1,7 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import { Footer } from '../.article/.margin';
-import { OutwardLink } from '../.chapter';
+import { Footer, OutwardLink } from '../.chapter';
 
 export const footer = $(
     <Footer>

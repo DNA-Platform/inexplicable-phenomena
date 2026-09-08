@@ -4,7 +4,6 @@ export * from './library/Chapter';
 export * from './library/Part';
 export * from './library/Cover';
 export * from './library/Synopsis';
-export * from './library/Abstract';
 export * from './library/TableOfContents';
 export * from './library/Index';
 export * from './library/Footer';
