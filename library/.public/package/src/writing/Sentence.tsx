@@ -5,6 +5,7 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
+import { reflection } from '@/utilities/Reflection';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfWord } from './Word';
 import { $Type } from './Type';
@@ -35,7 +36,7 @@ export class $TypeOfSentence extends $Type {
         const Made = $(Sentence);
         const Representation = $($$Sentence);
         const sentences = parser.sentences(tokens)
-            .map(line => $<$Sentence>(<Made>{parser.elements(line)}</Made>));
+            .map(line => reflection.carrying<$Sentence>(Made, line));
         for (const written of sentences) written.mention = $<$$Sentence>(<Representation />, written);
 
         return sentences;

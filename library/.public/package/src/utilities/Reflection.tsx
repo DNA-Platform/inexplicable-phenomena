@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { $, $Block } from '@dna-platform/chemistry';
+import { createElement, ReactNode } from 'react';
+import { $, $Block, $Component } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
 import type { $Type } from '@/writing/Type';
@@ -105,6 +105,19 @@ export class Reflection {
             if (named !== names[names.length - 1]) names.push(named);
         }
         return names;
+    }
+
+    // CARRYING WHAT IS ALREADY WRITTEN. A token that is already a piece of writing is HANDED to the
+    // one being made, rather than turned back into an element and evaluated again: `parser.elements`
+    // did the latter, and evaluating an element whose component stands for a BUILT chemical
+    // constructs that class a second time with no children, on an empty block. Measured 2026-09-09,
+    // with no list involved — <Section>see <Ref>[a page](url)</Ref> here.</Section> drew a refusal
+    // panel reading "a ref names a target, and this one names none", because the ref it re-made
+    // held nothing. Chemistry's written-argument form takes strings and writings TOGETHER and keeps
+    // their order, which is exactly what a piece of writing made out of a run of tokens needs.
+    // `carrying` is a proxy name.
+    carrying<T extends $Writing>(kind: $Component<T>, tokens: (string | $Writing)[]): T {
+        return $<T>(createElement(kind as never), ...tokens as never[]);
     }
 
     formatted(writing: $Writing, drawn: ReactNode): ReactNode {

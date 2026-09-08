@@ -1,9 +1,13 @@
+// A LIST IS A PARAGRAPH THAT HOLDS ITEMS — Doug: "if the list has a type of item, it renders
+// itself as a list, and item is a type of sentence." So the list's level below is $TypeOfItem, the
+// parse makes the items, and the <li> is theirs.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { html } from '@/utilities/Html';
+import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
+import { $TypeOfItem } from './Item';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
 
 export interface $List$ extends $Paragraph$ { }
@@ -13,16 +17,24 @@ export class $List extends $Composition implements $List$ {
         super.$Composition($check(block, $Block, '!').concat($check($TypeOfList, '!')));
     }
 
-    override print(): ReactNode {
-        const lines = html.text(this._block).split(/\n|(?:^|\s)-\s+/u).map(line => line.trim()).filter(line => line !== '');
+    // A LIST DRAWS ITS PARTS, which is the reading $Section already takes. What stood here split
+    // the list's own copy with a regex and built <li> elements out of the pieces, so the 54 list
+    // items on /article were not writings at all — nothing could dress one, nest one, reference one
+    // or carry an operation on one, and the bullet that opened a line was copy rather than structure.
+    override reading(): $Block {
+        return reflection.wrapped(this);
+    }
 
-        return <ul className={this.className}>{lines.map((line, at) => <li key={at}>{line}</li>)}</ul>;
+    override print(content: ReactNode): ReactNode {
+        return <ul className={this.className}>{content}</ul>;
     }
 }
 
 export class $TypeOfList extends $TypeOfParagraph {
     override name = 'List';
     protected override specification: Specification<$Writing> = new ListSpecification();
+
+    override below(): new() => $TypeOfItem { return $TypeOfItem; }
 }
 
 export class ListSpecification extends ParagraphSpecification {

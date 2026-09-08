@@ -6,6 +6,7 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
+import { reflection } from '@/utilities/Reflection';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfSentence } from './Sentence';
 import { $Phrase$, $TypeOfPhrase } from './Phrase';
@@ -40,7 +41,7 @@ export class $TypeOfParagraph extends $Type {
     override makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Paragraph);
         const Representation = $($$Paragraph);
-        const written = $<$Paragraph>(<Made>{parser.elements(tokens)}</Made>);
+        const written = reflection.carrying<$Paragraph>(Made, tokens);
         written.mention = $<$$Paragraph>(<Representation />, written);
 
         return [written];
