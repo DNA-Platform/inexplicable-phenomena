@@ -47,7 +47,7 @@ export class $TypeOfSection extends $Type {
     override makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Section);
 
-        return [$<$Section>(<Made>{parser.elements(tokens)}</Made>)];
+        return [reflection.carrying<$Section>(Made, tokens)];
     }
 
     override below(): new() => $TypeOfParagraph { return $TypeOfParagraph; }

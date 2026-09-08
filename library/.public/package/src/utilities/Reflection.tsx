@@ -108,9 +108,9 @@ export class Reflection {
     }
 
     // CARRYING WHAT IS ALREADY WRITTEN. A token that is already a piece of writing is HANDED to the
-    // one being made, rather than turned back into an element and evaluated again: `parser.elements`
-    // did the latter, and evaluating an element whose component stands for a BUILT chemical
-    // constructs that class a second time with no children, on an empty block. Measured 2026-09-09,
+    // one being made, rather than turned back into an element and evaluated again — which is what
+    // `parser.elements` did until it was deleted, because evaluating an element whose component
+    // stands for a BUILT chemical constructs that class a second time, on an empty block. Measured 2026-09-09,
     // with no list involved — <Section>see <Ref>[a page](url)</Ref> here.</Section> drew a refusal
     // panel reading "a ref names a target, and this one names none", because the ref it re-made
     // held nothing. Chemistry's written-argument form takes strings and writings TOGETHER and keeps
@@ -143,18 +143,15 @@ export class Reflection {
 
     // HOW DEEP A WRITING STANDS, COUNTED — and until 2026-09-09 it could only be DECLARED, because
     // $Composition.parts() replaced a section written inside a section with that section's
-    // paragraphs, so no depth survived to be counted. Measured on the LaTeX paper: nine sections,
-    // none of them nested, every heading an h2. With the nesting kept, the holders can be counted.
-    // AN AUTHORED $indent STILL WINS, and must: the 37 that stand in the demos were written to say
-    // what the reading could not answer, and both themes select .pd-indent-1 against them.
+    // paragraphs, so no depth survived to be counted. AN AUTHORED $indent STILL WINS, and must: the
+    // 37 that stand in the demos were written to say what the reading could not answer, and both
+    // themes select .pd-indent-1 against them. A HEADING IS NOT NESTED IN HEADINGS but in what
+    // holds it, so the count is taken against the kind of the nearest holder — the section a
+    // heading opens — and every further holder of that same kind is one level down.
     indent(writing: $Writing): number {
-        return this.nearest(writing, at => at.$indent > 0 ? at.$indent : undefined) ?? this.deep(writing);
-    }
+        const declared = this.nearest(writing, at => at.$indent > 0 ? at.$indent : undefined);
+        if (declared !== undefined) return declared;
 
-    // A HEADING IS NOT NESTED IN HEADINGS, IT IS NESTED IN WHAT HOLDS IT, so the count is taken
-    // against the kind of the nearest holder — the section a heading opens — and every further
-    // holder of that same kind is one level down. `deep` is a proxy name.
-    protected deep(writing: $Writing): number {
         let holder: unknown;
         let held = 0;
         for (let at: any = writing.parent; this.writing(at) && at.parent !== at; at = at.parent) {

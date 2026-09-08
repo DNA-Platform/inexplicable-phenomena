@@ -58,13 +58,12 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     // A LINK NOBODY CAN REACH IS A LINK NOBODY CAN CHANGE. Measured 2026-09-08: 33 anchors on
     // /turing and 33 of them classless, so no sheet could dress one, no subclass could specialise
-    // one and nothing could ask a book for its links. `meant` is a proxy name for the class.
+    // one and nothing could ask a book for its links.
     view(): ReactNode {
-        const meant = 'pd-meaning';
         const meaning = this.meaning;
         const Block = $(this.reading());
 
-        return reflection.formatted(this, this.print(meaning === undefined ? <Block /> : <a href={html.text(meaning.path()?._block)} className={meant}><Block /></a>));
+        return reflection.formatted(this, this.print(meaning === undefined ? <Block /> : <a href={html.text(meaning.path()?._block)} className="pd-meaning"><Block /></a>));
     }
 
     print(content: ReactNode): ReactNode {

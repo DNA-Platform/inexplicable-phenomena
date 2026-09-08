@@ -1,5 +1,3 @@
-import { ReactNode, createElement } from 'react';
-import { $ } from '@dna-platform/chemistry';
 import { $Writing } from '@/writing/Writing';
 import { $Annotation } from '@/writing/Annotation';
 import { html } from '@/utilities/Html';
@@ -80,11 +78,6 @@ export class Parser {
         return tokens.map(token => typeof token === 'string' ? token : html.text(token._block)).join('');
     }
 
-    elements(tokens: (string | $Writing)[]): ReactNode[] {
-        return tokens.map((token, at) => typeof token === 'string'
-            ? token
-            : createElement($(token) as never, { key: at }));
-    }
 }
 
 export const parser = new Parser();

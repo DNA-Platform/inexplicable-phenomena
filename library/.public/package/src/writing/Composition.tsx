@@ -49,27 +49,8 @@ export class $Composition extends $Writing implements $Composition$ {
         return this.mention;
     }
 
-    // A COMPOSITION MAY WRITE ITSELF. A consumer's chapter is `export default $(<Chapter>…</Chapter>)`
-    // at module scope, so importing it builds its whole tree before React exists — Doug: "we
-    // shouldn't even be evaling the chapters in place. That is module load time." A subclass that
-    // answers `writes()` declares the same content as a CLASS, and it is evaluated here, when the
-    // chapter is constructed, which is when the book is built rather than when the module is read.
-    //
-    // IT IS THE BOND AND NOT THE VIEW, measured 2026-09-09: a $Chapter subclass declaring its
-    // sections in view() draws two refusal panels reading "a piece of writing says something, and
-    // this one says nothing at all", because a rule reads the BLOCK and a view never fills one. The
-    // same content concatenated onto the block here draws clean. `writes` is a proxy name.
-    // AN ARRAY AND NOT A FRAGMENT, measured: $(<>…</>) answers something that is not a piece of
-    // writing, and the block then refuses with "a piece of writing holds copy, annotations and
-    // writing, and this one holds something else". Each one is evaluated on its own.
-    protected writes(): ReactNode[] {
-        return [];
-    }
-
     $Composition(block: $Block) {
-        const own = this.writes();
-        super.$Writing(own.length === 0 ? block
-            : $check(block, $Block, '!').concat(...own.map(one => $(one as never)) as never[]));
+        super.$Writing(block);
     }
 
     override view(): ReactNode {
