@@ -14,6 +14,7 @@ export * from './writing/Sentence';
 export * from './writing/Paragraph';
 export * from './writing/Section';
 export * from './writing/Aside';
+export * from './writing/Note';
 // QUOTE WAS HERE AND IS DELETED. It was written as a $Section whose specification WAIVED
 // "a section opens with its heading" — and a waiver is the design saying the thing is not that
 // kind. Nothing in either demo quoted, so it was a shape argued from a theme group rather than
