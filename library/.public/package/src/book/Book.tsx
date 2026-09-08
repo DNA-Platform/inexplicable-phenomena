@@ -19,7 +19,7 @@ import { $TypeOfSynopsis, Synopsis as synopsis } from './Synopsis';
 import { $TypeOfTableOfContents, TableOfContents as table } from './TableOfContents';
 import { $TypeOfIndex, Index as index } from './Index';
 import { $TypeOfFooter, Footer as footer } from './Footer';
-import { $TypeOfTheme, Theme as theme } from '@/writing/Theme';
+import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
 import { BodyFormat as body } from '@/encyclopedia/BodyFormat';
 import { HeaderFormat as header } from '@/encyclopedia/HeaderFormat';
 import { SidebarFormat as sidebar } from '@/encyclopedia/SidebarFormat';

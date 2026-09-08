@@ -7,7 +7,7 @@ import type { $Annotation$, $Annotation } from './Annotation';
 import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
 import { $Reference$ } from '@/reference/Reference';
-import type { $Theme } from './Theme';
+import type { $Theme } from '@/formatting/Theme';
 
 export interface $Writing$ extends $Chemical {
     $indent: number;

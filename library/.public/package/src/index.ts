@@ -19,8 +19,8 @@ export * from './writing/Phrase';
 export * from './writing/List';
 export * from './writing/Table';
 export * from './writing/Summary';
-export * from './writing/Theme';
-export * from './writing/Format';
+export * from './formatting/Theme';
+export * from './formatting/Format';
 
 export * from './reference/Reference';
 export * from './reference/Path';
@@ -54,7 +54,7 @@ export * from './encyclopedia';
 // everything between the markers is EMITTED by register.ts before each build, so
 // a kind cannot be added and silently left unwired. Do not edit it by hand.
 // <registrations>
-import { $Theme } from './writing/Theme';
+import { $Theme } from './formatting/Theme';
 import { $Type } from './writing/Type';
 
 $Theme.$register();

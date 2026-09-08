@@ -1,9 +1,9 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
-import { $Writing, WritingSpecification } from './Writing';
-import { $Annotation$, $Annotation } from './Annotation';
-import { $Type } from './Type';
+import { $Writing, WritingSpecification } from '@/writing/Writing';
+import { $Annotation$, $Annotation } from '@/writing/Annotation';
+import { $Type } from '@/writing/Type';
 
 export interface $Theme$ extends $Annotation$ {
     paper: string;

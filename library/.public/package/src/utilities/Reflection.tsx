@@ -3,7 +3,7 @@ import { $Block } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
 import type { $Type } from '@/writing/Type';
-import type { $Theme } from '@/writing/Theme';
+import type { $Theme } from '@/formatting/Theme';
 
 export class Reflection {
     private templates = new WeakMap<new() => $Writing, $Writing>();

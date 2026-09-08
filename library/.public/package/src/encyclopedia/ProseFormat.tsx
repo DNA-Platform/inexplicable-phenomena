@@ -1,5 +1,5 @@
 import { $, select, styled } from '@dna-platform/chemistry';
-import { $Format } from '@/writing/Format';
+import { $Format } from '@/formatting/Format';
 
 export class $ProseFormat extends $Format {
     selector = styled.p;

@@ -1,5 +1,5 @@
 import { $, select, styled } from '@dna-platform/chemistry';
-import { $Format$, $Format } from '../writing/Format';
+import { $Format$, $Format } from '@/formatting/Format';
 
 export interface $AnchorFormat$ extends $Format$ {
     showMeaning: boolean;
