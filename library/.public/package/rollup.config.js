@@ -64,9 +64,9 @@ module.exports = [
         input: {
             lib: 'src/index.ts',
             library: 'src/library.ts',
-            article: 'src/article/index.ts',
-            encyclopedia: 'src/encyclopedia/index.ts',
-            utilities: 'src/utilities/index.ts'
+            article: 'src/article.ts',
+            encyclopedia: 'src/encyclopedia.ts',
+            utilities: 'src/utilities.ts'
         },
         output: [
             { dir: 'dist', format: 'es',  entryFileNames: '[name].js',  chunkFileNames: 'chunks/[name]-[hash].js',  sourcemap: true },
@@ -89,19 +89,19 @@ module.exports = [
         onwarn
     },
     {
-        input: 'src/article/index.ts',
+        input: 'src/article.ts',
         output: { file: 'dist/article.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
         onwarn
     },
     {
-        input: 'src/encyclopedia/index.ts',
+        input: 'src/encyclopedia.ts',
         output: { file: 'dist/encyclopedia.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
         onwarn
     },
     {
-        input: 'src/utilities/index.ts',
+        input: 'src/utilities.ts',
         output: { file: 'dist/utilities.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
         onwarn

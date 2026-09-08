@@ -28,13 +28,13 @@
         "../src/index.ts"
       ],
       "@dna-platform/public/encyclopedia": [
-        "../src/encyclopedia/index.ts"
+        "../src/encyclopedia.ts"
       ],
       "@dna-platform/public/library": [
         "../src/library.ts"
       ],
       "@dna-platform/public/article": [
-        "../src/article/index.ts"
+        "../src/article.ts"
       ]
     }
   },
