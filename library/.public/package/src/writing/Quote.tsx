@@ -34,6 +34,14 @@ export class $Quote extends $Section implements $Quote$ {
 export class $TypeOfQuote extends $TypeOfSection {
     override name = 'Quote';
     protected override specification: Specification<$Writing> = new QuoteSpecification();
+
+    // A QUOTATION HAS NO HEADING, AND WAIVING THE RULE WAS NOT ENOUGH — seen on the paper: the quote
+    // drew its own first sentence as a heading ABOVE itself and then said the whole thing again,
+    // because $TypeOfSection SUPPLIES a heading to any section that opens without one. The rule and
+    // the supply are two statements of the same demand and both have to be answered.
+    override supplies(writing: $Writing, parts: $Writing[]): $Writing[] {
+        return parts;
+    }
 }
 
 export class QuoteSpecification extends SectionSpecification {
