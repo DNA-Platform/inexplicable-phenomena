@@ -40,6 +40,15 @@ export class $Format extends $Annotation implements $Format$ {
     protected handed(): Record<string, unknown> {
         return {};
     }
+
+    // A MARK A FORMAT DRAWS, painted in a colour it chooses. An icon written into a data URI
+    // cannot inherit one, so the colour is put into the source. This is here because a format
+    // is where a mark belongs: a theme holds VALUES, and a mark is a drawing. Before it, a
+    // format that needed one kept it at module scope, which is where the demo's six constants
+    // came from and why they read as cruft.
+    protected painted(mark: string, colour: string): string {
+        return `url("data:image/svg+xml,${mark.replaceAll('{ink}', encodeURIComponent(colour))}")`;
+    }
 }
 
 export class $TypeOfFormat extends $Type {

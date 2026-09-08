@@ -29,6 +29,8 @@ export * from './reference/IndexCard';
 export * from './reference/ReferenceCard';
 export * from './reference/Catalogue';
 export * from './reference/Ref';
+export * from './reference/Citation';
+export * from './reference/References';
 
 export * from './library/Book';
 export * from './library/Chapter';

@@ -1,8 +1,8 @@
-// CREATED 2026-09-08 · rating 3 · shell. LaTeX's \cite — writing that MEANS a bibliography entry and is drawn as its number. A citation is a reference (Sprint 48: a mention that also knows where), so it extends one rather than inventing a second way to point. Owed by the base: a numbering that is a READING over the bibliography, never a stored field — the shape $Equation and $Theorem also want.
+// CREATED 2026-09-08 · rating 2 · shell. LaTeX's \cite and Wikipedia's [1] are one kind: writing that MEANS an entry and is drawn as that entry's number. OWED BY THE BASE and the reason this is the sprint's sharpest finding: the number is the entry's position, so a citation must read the References that holds it — the INVERSE of pointing, which nothing here computes. A reference knows where it points; nothing knows what points at it.
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
+import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from './Reference';
 
 export interface $Citation$ extends $Reference$ {
     number(): number | undefined;
