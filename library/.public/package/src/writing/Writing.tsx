@@ -11,6 +11,7 @@ import { $Theme, Theme as theme } from './Theme';
 import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
 
 export interface $Writing$ extends $Chemical {
+    $indent: number;
     book: $Writing$;
     theme: $Theme;
     mention?: $Catalogue$;
@@ -18,12 +19,14 @@ export interface $Writing$ extends $Chemical {
     kind: $Type$;
     type: $Type[];
     annotations: $Annotation[];
+    reading(): $Block;
     searchFor<T extends $Writing>(type: new() => $Type): T[];
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
     specify(): void;
 }
 
 export class $Writing extends $Chemical implements $Writing$ {
+    $indent = 0;
     inline = true;
     @inert() mention?: $Catalogue;
     _block!: $Block;
@@ -32,26 +35,28 @@ export class $Writing extends $Chemical implements $Writing$ {
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get type(): $Type[] { return reflection.types(this); }
+    reading(): $Block { return this._block; }
     get book(): $Writing {
         const holding = this.parent;
         return reflection.writing(holding) && holding !== this ? holding.book : this;
     }
+
     get kind(): $Type {
         const carried = this.type;
         const standing = carried.filter(kind => reflection.composition(kind));
-        $check(standing.length <= 1, `writing is one kind of writing, and this one is ${standing.length}`);
-        return standing[0] ?? carried[0];
+        const chosen = standing.filter(kind => !standing.some(other => other !== kind && reflection.specialises(other, kind)));
+        $check(chosen.length <= 1, `writing is one kind of writing, and this one is ${chosen.length}`);
+        return chosen[0] ?? carried[0];
     }
 
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
         this.theme = $check(theme, '!');
-        for (const part of this._block.$elements ?? []) if (part instanceof $Writing && !reflection.writing(part.parent)) part.parent = this;
     }
 
     view(): ReactNode {
         const meaning = this.meaning;
-        const Block = $(this._block);
+        const Block = $(this.reading());
         if (meaning === undefined) return <Block />;
         const Anchor = $(anchor);
 
@@ -138,9 +143,6 @@ export class WritingSpecification extends Specification<$Writing> {
     // A writing that cannot read — one carrying a type but composing nothing — is
     // judged on what is written into it, which is all it has.
     protected composed(writing: $Writing): $Writing[] {
-        const read = (writing as { parts?: () => $Writing[] }).parts?.();
-        if (read !== undefined) return read;
-
         return (writing._block.$elements ?? []).filter((part): part is $Writing =>
             reflection.writing(part) && reflection.composition(part.kind));
     }

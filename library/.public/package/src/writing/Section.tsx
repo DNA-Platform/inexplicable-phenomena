@@ -17,9 +17,10 @@ export interface $Section$ extends $Composition$ {
 export class $Section extends $Composition implements $Section$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
+    override reading(): $Block { return reflection.wrapped(this); }
+
     $Section(block: $Block) {
         super.$Composition($check(block, $Block).concat($check($TypeOfSection, '!')));
-        this._block = reflection.wrapped(this);
         const Representation = $($$Paragraph);
         for (const written of this.searchFor($TypeOfParagraph))
             written.mention ??= $<$$Paragraph>(<Representation />, written);
@@ -56,9 +57,14 @@ export class $SectionSpecification extends WritingSpecification {
 }
 
 export class SectionSpecification extends WritingSpecification {
+    // A RULE READS WHAT IS WRITTEN. Asking for the parts would run the parser, and the
+    // parser answers what is asked for, when it is asked for — never on a rule's behalf.
+    // So the demand is the one the reading can meet: a heading is held, or something is
+    // held to read one out of.
     @specify('a section opens with its heading')
     $opensWithHeading(writing: $Writing): void {
-        $check(this.read(writing).some(part => reflection.is(part, $TypeOfHeading)),
+        $check(this.composed(writing).some(part => reflection.is(part, $TypeOfHeading))
+            || parser.tokens(writing).length > 0,
             'a section opens with its heading, and this one opens without one');
     }
 
@@ -82,13 +88,6 @@ export class SectionSpecification extends WritingSpecification {
         const title = opened.length > measure ? opened.slice(0, measure).trimEnd() + '…' : opened;
 
         return [$<$Writing>(<Heading>{title}</Heading>), ...parts];
-    }
-
-    // THE READING, WHERE THERE IS ONE. A section that composes answers its parts, which
-    // carry what it supplied; a writing that merely carries a Section type is judged on
-    // what is written into it, because that is all it has.
-    protected read(writing: $Writing): $Writing[] {
-        return writing instanceof $Composition ? writing.parts() : this.composed(writing);
     }
 
 }

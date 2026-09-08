@@ -8,7 +8,7 @@ import { $Type } from '@/writing/Type';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
 import { $Section, $TypeOfSection, Section as section } from '@/writing/Section';
-import { Heading as heading } from '@/writing/Heading';
+import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
 import { Paragraph as paragraph } from '@/writing/Paragraph';
 import { Ref as ref } from '@/reference/Ref';
 import { $TypeOfChapter } from './Chapter';
@@ -98,12 +98,15 @@ export class $Book extends $Composition implements $Book$ {
         const Heading = $(heading);
         const Paragraph = $(paragraph);
         const Ref = $(ref);
-        const named = this.chapters.map(chapter => html.text(chapter.searchFor<$Section>($TypeOfSection)[0]?.heading()?._block)).filter(name => name !== '');
+        const named = this.chapters
+            .flatMap(chapter => chapter.searchFor<$Section>($TypeOfSection))
+            .map(part => ({ name: html.text(part.searchForOne($TypeOfHeading)?._block), indent: part.$indent }))
+            .filter(entry => entry.name !== '');
         const made = $(
             <TableOfContents>
                 <Section>
                     <Heading>Contents</Heading>
-                    {named.map((name, at) => <Paragraph key={at}><Ref>[{name}](#{name.replace(/\s+/gu, '_')})</Ref></Paragraph>)}
+                    {named.map((entry, at) => <Paragraph key={at} indent={entry.indent}><Ref>[{entry.name}](#{entry.name.replace(/\s+/gu, '_')})</Ref></Paragraph>)}
                 </Section>
             </TableOfContents>,
             TableOfContents

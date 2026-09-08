@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition } from '@/writing/Composition';
@@ -5,11 +6,19 @@ import { $Writing } from '@/writing/Writing';
 import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
 import { html } from '@/utilities/Html';
 import { $Section$, $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $TypeOfCover } from './Cover';
 
 export interface $Title$ extends $Section$ { }
 
 export class $Title extends $Composition implements $Title$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
+
+    canonical(): $Title | undefined {
+        if (html.text(this._block).trim() !== '') return undefined;
+        const held = this.book.searchForOne<$Writing>($TypeOfCover)?.searchForOne<$Title>($TypeOfTitle);
+
+        return held === this ? undefined : held;
+    }
 
     $Title(block: $Block) {
         super.$Composition($check(block, $Block).concat($check($TypeOfTitle, '!')));
@@ -17,6 +26,14 @@ export class $Title extends $Composition implements $Title$ {
             const Heading = $(heading);
             this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));
         }
+    }
+
+    override view(): ReactNode {
+        const held = this.canonical();
+        if (held === undefined) return super.view();
+        const Canonical = $(held);
+
+        return <Canonical />;
     }
 }
 
@@ -36,6 +53,7 @@ export class TitleSpecification extends SectionSpecification {
         $check(writing.meaning !== undefined,
             'a title means what it titles, and this one means nothing');
     }
+
 }
 
 export const Title = $($Title);

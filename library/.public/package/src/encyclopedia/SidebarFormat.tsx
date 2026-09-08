@@ -17,6 +17,10 @@ export class $SidebarFormat extends $MarginFormat {
     heading_border = 'none';
     heading_margin = '0 0 0.9em';
     @select('p') entry_fontSize = '1em';
+    @select('.pd-indent-1') sub_display = 'block';
+    sub_paddingLeft = '0.9em';
+    @select('.pd-indent-2') deep_display = 'block';
+    deep_paddingLeft = '1.8em';
     entry_margin = '0';
     entry_lineHeight = '2';
     @select('a') link_display = 'block';

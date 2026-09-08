@@ -37,11 +37,11 @@
     "build": "rollup -c",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
     "typecheck": "tsc --noEmit",
-    "test": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run",
-    "test:fast": "vitest run",
+    "test": "vitest run",
     "test:watch": "vitest",
     "clean": "tsx clean.ts",
-    "wiki": "npm run build && vite .wiki/.public"
+    "wiki": "npm run build && vite .wiki/.public",
+    "test:gate": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run"
   },
   "dependencies": {
     "@dna-platform/chemistry": "*",

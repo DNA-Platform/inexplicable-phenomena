@@ -6,6 +6,7 @@ import type { $Type } from '@/writing/Type';
 
 export class Reflection {
     private templates = new WeakMap<new() => $Type, $Type>();
+    private readings = new WeakMap<$Writing, { parts: $Writing[]; block: $Block }>();
 
     // HANDED THE THREE KINDS AT THE COMPOSITION ROOT, which is src/index.ts.
     // A utility that must ask `instanceof` cannot IMPORT what imports it: $Writing
@@ -37,14 +38,24 @@ export class Reflection {
         return part instanceof this.kinds.writing;
     }
 
+    specialises(type: $Type, of: $Type): boolean {
+        return type instanceof (of.constructor as new() => $Type);
+    }
+
     composition(type: $Type | undefined): boolean {
         return type !== undefined && this.names(type).some(name => this.compositions.includes(name));
     }
 
     wrapped(writing: $Writing & { parts(): $Writing[] }): $Block {
-        return new $Block()
-            .concat(...writing.parts())
+        const parts = writing.parts();
+        const held = this.readings.get(writing);
+        if (held?.parts === parts) return held.block;
+        const block = new $Block()
+            .concat(...parts)
             .concat(writing._block.filter(part => part instanceof this.kinds.annotation));
+        this.readings.set(writing, { parts, block });
+
+        return block;
     }
 
     annotations(writing: $Writing): $Annotation[] {
@@ -71,6 +82,7 @@ export class Reflection {
 
     names(type: $Type): string[] {
         const names = [type.name];
+        if (type.constructor === this.kinds.type) return names;
         for (let kind = Object.getPrototypeOf(type.constructor) as (new() => $Type) | null;
             kind !== null && (kind as never) !== this.kinds.type; kind = Object.getPrototypeOf(kind)) {
             const named = this.template(kind).name;
@@ -83,9 +95,20 @@ export class Reflection {
         return this.types(writing).reduce((held, type) => type.format(held), drawn);
     }
 
+    // A WALK UP STOPS WHERE THE HOLDING STOPS. A writing that holds itself is the top,
+    // and reading its parent again would be reading it again — so the step is taken
+    // only while it moves.
+    indent(writing: $Writing): number {
+        for (let at: any = writing; this.writing(at); at = at.parent === at ? undefined : at.parent)
+            if (at.$indent > 0) return at.$indent;
+        return 0;
+    }
+
     classNames(writing: $Writing): string[] {
         const named = this.types(writing).flatMap(type => this.names(type).reverse());
-        return [...new Set(named)].map(name => `pd-${this.kebab(name)}`);
+        const held = [...new Set(named)].map(name => `pd-${this.kebab(name)}`);
+        const deep = this.indent(writing);
+        return deep > 0 ? [...held, `pd-indent-${Math.min(deep, 5)}`] : held;
     }
 
 

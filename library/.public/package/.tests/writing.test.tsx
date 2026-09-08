@@ -314,11 +314,17 @@ describe('a composition generates the level it needs from what it holds', () => 
         expect(html.text(section.parts()[0]._block)).toContain('One thing to say.');
     });
 
-    it('AND A SECTION HOLDS NO COPY — what it was written with, it wraps', () => {
+    it('AND A SECTION READS NO COPY — what it was written with, it wraps', () => {
         const held = built<$Composition>(<Section>Hey, A. What is up?</Section>);
-        const loose = (held._block.$elements ?? []).filter(part => typeof part === 'string' || typeof part === 'number');
+        const loose = (held.reading().$elements ?? []).filter(part => typeof part === 'string' || typeof part === 'number');
         expect(loose).toEqual([]);
         expect(held.parts().length).toBeGreaterThan(0);
+    });
+
+    it('AND THE BLOCK KEEPS WHAT WAS WRITTEN — the wrapping is a reading, not a replacement', () => {
+        const held = built<$Composition>(<Section>Hey, A. What is up?</Section>);
+        expect(html.text(held._block)).toContain('What is up?');
+        expect(held.reading()).toBe(held.reading());
     });
 
     it('AND THE ONLY REFUSAL IS HOLDING SOMETHING ABOVE', () => {
@@ -334,5 +340,32 @@ describe('a composition generates the level it needs from what it holds', () => 
         const held = section();
         expect(held.parts()).toEqual(held.parts());
         expect(held.parts()[0]).toBe(held.parts()[0]);
+    });
+});
+
+
+describe('the parser is asked for what is asked for, and never by a rule', () => {
+    const asking = (run: () => void): string[] => {
+        const asked: string[] = [];
+        const answered = parser.parse;
+        parser.parse = ((of: $Writing, ...rest: never[]) =>
+            (asked.push(of.constructor.name), (answered as Function).apply(parser, [of, ...rest]))) as typeof parser.parse;
+        try { run(); } finally { parser.parse = answered; }
+        return asked;
+    };
+
+    it('specifying a piece of writing asks the parser for nothing', () => {
+        const held = built<$Writing>(<Section><Heading>H</Heading><Paragraph>One. Two.</Paragraph></Section>);
+        expect(asking(() => held.valid())).toEqual([]);
+    });
+
+    it('a paragraph asks the parser for nothing, however much prose it holds', () => {
+        const held = built<$Writing>(<Paragraph>One. Two. Three. Four.</Paragraph>);
+        expect(asking(() => held.valid())).toEqual([]);
+    });
+
+    it('asking a section for its parts parses the section, and nothing beneath it', () => {
+        const held = built<$Composition>(<Section><Heading>H</Heading><Paragraph>One. Two.</Paragraph></Section>);
+        expect(asking(() => held.parts())).toEqual(['$Section']);
     });
 });

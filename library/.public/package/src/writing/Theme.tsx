@@ -18,6 +18,7 @@ export interface $Theme$ extends $Chemical {
 }
 
 export class $Theme extends $Chemical implements $Theme$ {
+    atom = true;
     paper = '#ffffff';
     ink = '#202122';
     quiet = '#f8f9fa';

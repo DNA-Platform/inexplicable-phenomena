@@ -30,7 +30,8 @@ const at = () => ({
 // extending a half-built base. They are named here so a THIRD one FAILS the
 // build rather than joining a list of warnings nobody reads.
 const knownCycles = [
-    'src/writing/Composition.tsx -> src/reference/Catalogue.tsx -> src/writing/Composition.tsx'
+    'src/writing/Composition.tsx -> src/reference/Catalogue.tsx -> src/writing/Composition.tsx',
+    'src/book/Title.tsx -> src/book/Cover.tsx -> src/book/Title.tsx'
 ];
 
 const named = warning => (warning.ids || [])

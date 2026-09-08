@@ -11,7 +11,7 @@ export class $ContentFormat extends $Format {
     @select('article h2') heading_padding = '0.5em 0 0.17em';
     heading_margin = '0.25em 0';
     heading_lineHeight = '1.375';
-    @select('article .pd-section:not(:first-child):not(.pd-index-card) h2') sub_fontSize = '1.2em';
+    @select('article .pd-indent-1 h2') sub_fontSize = '1.2em';
     sub_fontWeight = '700';
     sub_lineHeight = '1.6';
     sub_padding = '0.5em 0 0';

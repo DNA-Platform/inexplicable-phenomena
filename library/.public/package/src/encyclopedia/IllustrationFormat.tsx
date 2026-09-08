@@ -6,11 +6,11 @@ export class $IllustrationFormat extends $Format {
     float = 'right';
     clear = 'right';
     boxSizing = 'border-box';
-    width = '17em';
+    width = '13.125em';
     maxWidth = '100%';
     margin = '0.5em 0 1.3em 1.4em';
     padding = '3px';
-    @select('@media (max-width: 45em)') narrow_float = 'none';
+    @select('@media (max-width: 480px)') narrow_float = 'none';
     narrow_width = '100%';
     narrow_margin = '0.5em 0 1.3em';
     @select('img') image_display = 'block';

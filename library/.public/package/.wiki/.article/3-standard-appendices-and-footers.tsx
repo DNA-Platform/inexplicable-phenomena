@@ -8,16 +8,16 @@ export default $(
         <Section>
             <Heading>Standard appendices and footers</Heading>
         </Section>
-        <Section>
+        <Section indent={1}>
             <Heading>Headings</Heading>
             <Paragraph>When appendix sections are used, they should appear at the bottom of an article, with ==level 2 headings==, followed by the various footers. When it is useful to sub-divide these sections (for example, to separate a list of magazine articles from a list of books), this should be done using level 3 headings (===Books===) instead of <BookLink>[definition list headings](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Lists#Description_(definition,_association)_lists)</BookLink> (;Books), as explained in the <BookLink>[accessibility guidelines](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Accessibility#Lists)</BookLink>.</Paragraph>
         </Section>
-        <Section>
+        <Section indent={1}>
             <Heading>Works or publications</Heading>
             <Paragraph>Contents: A bulleted list, usually ordered chronologically, of the works created by the subject of the article.</Paragraph>
             <Paragraph>Heading names: Many different headings are used, depending on the subject matter. "Works" is preferred when the list includes items that are not written publications (e.g. music, films, paintings, choreography, or architectural designs), or if multiple types of works are included. "Publications", "Discography" or "Filmography" are occasionally used where appropriate; however, "Bibliography" is discouraged because it is not clear whether it is limited to the works of the subject of the article. "Works" or "Publications" should be plural, even if it lists only a single item.</Paragraph>
         </Section>
-        <Section>
+        <Section indent={1}>
             <Heading>"See also" section</Heading>
             <Paragraph>A "See also" section is a useful way to organize <BookLink>[internal links](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Linking)</BookLink> to related or comparable articles and to encourage readers to explore related concepts that may be new to them. However, the section itself is not required; many high-quality and comprehensive articles do not have one.</Paragraph>
             <Paragraph>The section should be a bulleted list, sorted either logically (for example, by subject matter), chronologically, or alphabetically. Consider using &#123;&#123;Columns-list&#125;&#125; or &#123;&#123;Div col&#125;&#125; if the list is lengthy. List entries should begin with a capital letter.</Paragraph>
@@ -28,7 +28,7 @@ export default $(
             <Paragraph>If the linked article has a <BookLink>[short description](https://en.wikipedia.org/wiki/WP:Short_description)</BookLink> then the template &#123;&#123;Annotated link&#125;&#125; will automatically generate an annotation. For example, will produce:</Paragraph>
             <Paragraph>Other internal links: &#123;&#123;Portal&#125;&#125; links are usually placed in this section. As an alternative, &#123;&#123;Portal bar&#125;&#125; may be placed with the end matter navigation templates. See relevant template documentation for correct placement.</Paragraph>
         </Section>
-        <Section>
+        <Section indent={1}>
             <Heading>Notes and references</Heading>
             <Paragraph>Contents: This section, or series of sections, may contain any or all of the following:</Paragraph>
             <Paragraph><BookLink>[Editors may use any citation method they choose](https://en.wikipedia.org/wiki/Wikipedia:Citing_sources#Variation_in_citation_methods)</BookLink>, but it should be consistent within an article.</Paragraph>
@@ -47,15 +47,15 @@ export default $(
                 - For a list of full citations or general references: "References" or "Works cited"
             </List>
         </Section>
-        <Section>
+        <Section indent={1}>
             <Heading>Further reading</Heading>
             <Paragraph>Contents: An optional bulleted list, usually alphabetized, of a reasonable number of publications that would help interested readers learn more about the article subject. Editors may include brief annotations. Publications listed in <BookLink>[further reading](https://en.wikipedia.org/wiki/Wikipedia:Further_reading)</BookLink> are formatted in the same <BookLink>[citation style](https://en.wikipedia.org/wiki/WP:CITE#HOW)</BookLink> used by the rest of the article. The Further reading section should not duplicate the content of the External links section, and should normally not duplicate the content of the References section, unless the References section is too long for a reader to use as part of a general reading list. This section is not intended as a repository for <BookLink>[general references](https://en.wikipedia.org/wiki/WP:General_references)</BookLink> or full citations that were used to create the article content. Any links to external websites included under "Further reading" are subject to the guidelines described at <BookLink>[Wikipedia:External links](https://en.wikipedia.org/wiki/Wikipedia:External_links)</BookLink>.</Paragraph>
         </Section>
-        <Section>
+        <Section indent={1}>
             <Heading>External links</Heading>
             <Paragraph>Contents: A bulleted list of recommended <BookLink>[relevant websites](https://en.wikipedia.org/wiki/Wikipedia:External_links#What_can_normally_be_linked)</BookLink>, each accompanied by a short description. These hyperlinks should not appear in the article's body text, nor should links used as references normally be duplicated in this section. "External links" should be plural, even if it lists only a single item. Depending on the nature of the link contents, this section may be accompanied or replaced by a <BookLink>["Further reading"](#Further_reading)</BookLink> section.</Paragraph>
         </Section>
-        <Section>
+        <Section indent={2}>
             <Heading>Links to sister projects</Heading>
             <Paragraph>Links to <BookLink>[Wikimedia sister projects](https://en.wikipedia.org/wiki/Wikipedia:Wikimedia_sister_projects)</BookLink> and &#123;&#123;Spoken Wikipedia&#125;&#125; should be placed in the last section of the page, which is usually "External links". If the article does not already have an "External links" section, then you may choose whether to place larger sister link(s) (such as &#123;&#123;Sister project links&#125;&#125; or &#123;&#123;Commons category&#125;&#125;) in whatever the last section is (usually "References"), or to create an "External links" section and use the less common inline form of these templates (e.g., &#123;&#123;Commons-inline&#125;&#125;).</Paragraph>
             <List>
@@ -63,7 +63,7 @@ export default $(
                 - "Inline" templates are used when box-type templates are not desirable, either because they result in a long sequence of right-aligned boxes hanging off the bottom of the article, or because there are no external links except sister project ones. "Inline" templates, such as &#123;&#123;Commons category-inline&#125;&#125;, create links to sister projects that appear as list items, like this:
             </List>
         </Section>
-        <Section>
+        <Section indent={1}>
             <Heading>Navigation templates</Heading>
             <Paragraph>An article may end with <BookLink>[Navigation templates](https://en.wikipedia.org/wiki/Wikipedia:Navigation_template)</BookLink> and footer navboxes, such as <BookLink>[succession boxes](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Succession_Box_Standardization#Overview)</BookLink> and geography boxes (for example, &#123;&#123;Geographic location&#125;&#125;). Most navboxes do not appear in printed versions of Wikipedia articles.</Paragraph>
         </Section>

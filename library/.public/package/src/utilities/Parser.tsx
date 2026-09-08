@@ -48,7 +48,6 @@ export class Parser {
         // SUPPLIED BEFORE THE MEMO, never around it — a reading added afterwards
         // would be decided by whoever asked first and then never asked again.
         const answered = supply === undefined ? parts : supply(parts);
-        for (const part of answered) if (!(part.parent instanceof $Writing)) part.parent = of;
         this.parts.set(of, answered);
         return answered;
     }
