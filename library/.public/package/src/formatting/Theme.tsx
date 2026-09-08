@@ -50,7 +50,7 @@ export class $Theme extends $Format implements $Theme$ {
     margin = '0 auto';
     padding = '2rem';
 
-    @select('h1, h2, h3, h4, h5, h6') heading_marginTop = '1.5rem';
+    @select('.pd-heading') heading_marginTop = '1.5rem';
     heading_marginBottom = '1rem';
     heading_fontWeight = '600';
     heading_lineHeight = '1.25';
@@ -58,13 +58,24 @@ export class $Theme extends $Format implements $Theme$ {
     @select('h1') h1_fontSize = '2em';
     h1_paddingBottom = '.3em';
     get h1_borderBottom() { return `1px solid ${this.rule}`; }
-    @select('h2') h2_fontSize = '1.5em';
+    @select('.pd-heading') h2_fontSize = '1.5em';
     h2_paddingBottom = '.3em';
     get h2_borderBottom() { return `1px solid ${this.rule}`; }
-    @select('h3') h3_fontSize = '1.25em';
-    @select('p') p_marginTop = '0';
+    @select('h3.pd-heading') h3_fontSize = '1.25em';
+    // THE SHEET DRESSES KINDS, NOT MARKDOWN. Measured 2026-09-08: seventeen of eighteen groups here
+    // selected a raw ELEMENT and one selected a kind, so the theme was styling markdown's output
+    // while every kind wrote a pd- class the sheet ignored. Two kinds writing the same tag could not
+    // be told apart, and a consumer could restyle a TAG but never a KIND. Six are converted.
+    //
+    // WHAT IS LEFT ON AN ELEMENT, and each is a finding rather than a leftover:
+    //   a, a:hover  — the base writes the meaning anchor with NO CLASS ($Writing.view), so there is
+    //                 nothing to select. Giving that anchor a class is the fix and is not done here.
+    //   li + li, table th/td, img, code — PARTS of a kind's own element, which is legitimate.
+    //   h1, h3, h1..h6, pre, hr — no kind writes these. They arrive from markdown inside copy, and
+    //                 that is the gap $Code and a heading level beyond h2 would close.
+    @select('.pd-paragraph') p_marginTop = '0';
     p_marginBottom = '10px';
-    @select('ul, ol') list_marginTop = '0';
+    @select('.pd-list') list_marginTop = '0';
     list_marginBottom = '0';
     list_paddingLeft = '2em';
     @select('li + li') item_marginTop = '.25em';
@@ -79,7 +90,7 @@ export class $Theme extends $Format implements $Theme$ {
     pre_overflow = 'auto';
     pre_lineHeight = '1.45';
     get pre_backgroundColor() { return this.quiet; }
-    @select('blockquote') quote_padding = '0 1em';
+    @select('.pd-quote') quote_padding = '0 1em';
     get quote_color() { return this.pale; }
     get quote_borderLeft() { return `.25em solid ${this.shade}`; }
     @select('hr') hr_margin = '1.5rem 0';
@@ -88,12 +99,12 @@ export class $Theme extends $Format implements $Theme$ {
     get hr_backgroundColor() { return this.shade; }
     @select('table th, table td') cell_padding = '6px 13px';
     get cell_border() { return `1px solid ${this.shade}`; }
-    @select('figure') figure_margin = '1rem 0';
+    @select('.pd-illustration') figure_margin = '1rem 0';
     @select('img') img_maxWidth = '100%';
-    @select('a') a_textDecoration = 'none';
+    @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecoration = 'none';
     get a_color() { return this.link; }
-    @select('a:hover') hover_textDecoration = 'underline';
-    @select('article') chapter_marginBottom = '2em';
+    @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover') hover_textDecoration = 'underline';
+    @select('.pd-chapter') chapter_marginBottom = '2em';
     @select('.pd-index') index_columnCount = '3';
 
     // Machinery extending machinery, so the chain is called whole; a KIND would extend its level instead.

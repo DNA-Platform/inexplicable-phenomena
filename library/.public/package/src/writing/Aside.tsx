@@ -6,6 +6,27 @@
 // IT IS A SECTION, because an aside runs to several paragraphs and carries its own heading; and it
 // is CANONICAL-NAMED the way $Letter is: a letter is the canonical character and an aside is the
 // canonical thing standing beside the reading, whatever a domain calls its own.
+// ===========================================================================================
+// GREEN AS A PRIMITIVE — a note against this file, written 2026-09-08 and owed to Doug's test.
+//
+// If the primitives are red, yellow and blue and you meet green, adding green to the list because
+// it tidies things up is the wrong move: the SEMANTICS OF COLOUR say green is a MIXTURE, and that
+// orange and purple are coming. You complete the mixing rule, not the primitive list.
+//
+// THIS KIND IS GREEN. It is a level the framework already has, mixed with WHERE IT IS DRAWN — a
+// dimension the framework never named. Five kinds are the same mixture and each was invented
+// separately: $Aside (a section drawn beside), $Note (a paragraph drawn away), $Hatnote (a note
+// drawn above), $Footnote (a note drawn at the foot), and $Margin, which was deleted for being
+// nothing BUT that. Orange and purple are already visible: an endnote, a sidenote, an epigraph.
+//
+// The dimension is half-present and spelled three ways: `parenthetical` is a BOOLEAN saying not
+// drawn HERE without saying where instead; $Book PLACES its cover, contents, index and footer by
+// hand; and a format wraps a drawing to move it. One idea, three mechanisms, none of them named.
+//
+// IT EARNS ITS KEEP MEANWHILE — $Aside deleted four demo classes and two formats and the infobox
+// now draws as a real <aside> — so it stands until the mixing rule exists, and this note is here
+// so nobody mistakes it for a primitive.
+// ===========================================================================================
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';

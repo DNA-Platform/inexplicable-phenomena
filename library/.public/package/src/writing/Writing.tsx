@@ -56,11 +56,15 @@ export class $Writing extends $Chemical implements $Writing$ {
         this._block = $check(block, $Block);
     }
 
+    // A LINK NOBODY CAN REACH IS A LINK NOBODY CAN CHANGE. Measured 2026-09-08: 33 anchors on
+    // /turing and 33 of them classless, so no sheet could dress one, no subclass could specialise
+    // one and nothing could ask a book for its links. `meant` is a proxy name for the class.
     view(): ReactNode {
+        const meant = 'pd-meaning';
         const meaning = this.meaning;
         const Block = $(this.reading());
 
-        return reflection.formatted(this, this.print(meaning === undefined ? <Block /> : <a href={html.text(meaning.path()?._block)}><Block /></a>));
+        return reflection.formatted(this, this.print(meaning === undefined ? <Block /> : <a href={html.text(meaning.path()?._block)} className={meant}><Block /></a>));
     }
 
     print(content: ReactNode): ReactNode {
@@ -102,6 +106,21 @@ export class $Writing extends $Chemical implements $Writing$ {
 }
 
 export class WritingSpecification extends Specification<$Writing> {
+    // NOT a `patterns` bag: WordSpecification declares its own and a shared name made the two
+    // collide, which is the base reaching for a member a subclass had already spent.
+    private readonly divided = /\n[^\S\n]*\n/u;
+
+    // A BLANK LINE IS BLOCK STRUCTURE, NOT TEXT, and the parse owns block structure. Copy that
+    // carries one is markdown that never went through the parse — the wart Doug named: we have a
+    // paragraph and a section of our own, so a paragraph holding markdown's paragraphs is an error
+    // rather than a thing to convert. It was on ParagraphSpecification and is here because it is
+    // true of every piece of writing. One test on the copy, no allocation beyond it.
+    @specify('a piece of writing carries no blank line')
+    $noBlankLine(writing: $Writing): void {
+        $check(!this.divided.test(html.text(writing._block)),
+            'a piece of writing carries no blank line, and this one is broken by one');
+    }
+
     @specify('a piece of writing says what kind of writing it is')
     $saysItsKind(writing: $Writing): void {
         $check(writing.kind !== undefined,

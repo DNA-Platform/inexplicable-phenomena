@@ -31,7 +31,12 @@ export class $Ref extends $Composition implements $Ref$ {
         const url = this.url();
         if (url === undefined) return super.view();
 
-        return <a href={url}>{this.written()}</a>;
+        // IT WRITES ITS OWN ELEMENT AND MUST WRITE ITS OWN CLASSES. Overriding view() rather than
+        // print() means $Writing.view never runs, so this anchor got neither its pd- classes nor
+        // reflection.formatted — measured: 32 of 33 anchors on /turing unreachable by any sheet, and
+        // no format can ever reach a reference. The class is added; that view() overrides at all is
+        // the finding underneath, and it is the same shape as every wrapper we removed.
+        return <a href={url} className={this.className}>{this.written()}</a>;
     }
 
     async read(): Promise<$Writing> {

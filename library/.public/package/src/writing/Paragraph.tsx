@@ -55,15 +55,6 @@ export class $TypeOf$Paragraph extends $Type {
 }
 
 export class ParagraphSpecification extends WritingSpecification {
-    protected patterns = {
-        divided: /\n[^\S\n]*\n/u
-    };
-
-    @specify('a paragraph is unbroken by a blank line')
-    $noBlankLine(writing: $Writing): void {
-        $check(!this.patterns.divided.test(html.text(writing._block)),
-            'a paragraph is unbroken by a blank line, and this one carries one');
-    }
 }
 
 export class $ParagraphSpecification extends WritingSpecification {
