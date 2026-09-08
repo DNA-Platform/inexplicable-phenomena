@@ -4,6 +4,8 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
+import { html } from '@/utilities/Html';
+import { tex } from '@/utilities/Tex';
 import { $Phrase$, $TypeOfPhrase, PhraseSpecification } from './Phrase';
 
 export interface $Math$ extends $Phrase$ {
@@ -11,17 +13,18 @@ export interface $Math$ extends $Phrase$ {
 }
 
 export class $Math extends $Composition implements $Math$ {
-    tex(): string {
-        throw new Error('not implemented: $Math.tex — the copy, which IS the TeX');
-    }
+    tex(): string { return html.text(this._block); }
 
     $Math(block: $Block) {
         super.$Composition($check(block, $Block, '!').concat($check($TypeOfMath, '!')));
     }
 
-    // OWED: <span class="pd-math"> holding tex.inline(this.tex()) — the sheet dresses nothing here; katex ships its own CSS (a demo/app concern, not the base's).
-    override view(): ReactNode {
-        throw new Error('not implemented: $Math.view — inline TeX rendered once per copy');
+    // IT WRITES ITS ELEMENT LIKE EVERY OTHER KIND, through print rather than view — katex answers
+    // markup, so this is the one place the framework hands HTML straight to the DOM, and it is safe
+    // because the string it renders is the author's own copy. The sheet dresses nothing here: katex
+    // ships its own CSS, which is an application's concern and not the base's.
+    override print(): ReactNode {
+        return <span className={this.className} dangerouslySetInnerHTML={{ __html: tex.inline(this.tex()) }} />;
     }
 }
 

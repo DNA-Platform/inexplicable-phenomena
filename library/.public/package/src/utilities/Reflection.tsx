@@ -170,9 +170,21 @@ export class Reflection {
         return at < 0 ? undefined : at + 1;
     }
 
+    // A KIND IS NAMED BY ITS CLASS WHERE IT HAS NO TYPE. Measured 2026-09-08: the .wiki demo declares
+    // TWENTY kinds and not one carries a type of its own, which is the consumer shape Doug ruled —
+    // one class, no interface, no type, no specification. Reading only the types made every one of
+    // them INVISIBLE to a sheet: $Editions, $Languages, $Logo and the rest all answered pd-chapter or
+    // pd-paragraph and nothing else. That is the whole reason a consumer reached for a wrapper — a
+    // kind that cannot be named cannot be dressed, so it had to be wrapped in something that could.
+    // The class chain is read only ABOVE the point the types already name, and STOPS AT $Writing —
+    // measured, because it climbed into chemistry and answered pd-chemical and pd-particle, which are
+    // machinery and not kinds. Two promises caught that, which is what they are for.
     classNames(writing: $Writing): string[] {
         const named = this.types(writing).flatMap(type => this.names(type).reverse());
-        const held = [...new Set(named)].map(name => `pd-${this.kebab(name)}`);
+        const own: string[] = [];
+        for (let cls: any = writing.constructor; cls && cls !== this.kinds.writing && cls.name && !named.includes(this.authored(cls.name)); cls = Object.getPrototypeOf(cls))
+            own.unshift(this.authored(cls.name));
+        const held = [...new Set([...own, ...named])].map(name => `pd-${this.kebab(name)}`);
         const deep = this.indent(writing);
         return deep > 0 ? [...held, `pd-indent-${Math.min(deep, 5)}`] : held;
     }
@@ -183,6 +195,12 @@ export class Reflection {
         held._block ??= new $Block();
         this.templates.set(kind, held);
         return held;
+    }
+
+    // A class name with the $ it is written with and any build decoration taken off, so `$Editions`
+    // and a bundler's `_$Editions2` name the same kind.
+    protected authored(name: string): string {
+        return name.replace(/^_*\$?/u, '').replace(/\d+$/u, '');
     }
 
     protected kebab(name: string): string {

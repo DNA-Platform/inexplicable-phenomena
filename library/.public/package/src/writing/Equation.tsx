@@ -4,6 +4,9 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
+import { html } from '@/utilities/Html';
+import { reflection } from '@/utilities/Reflection';
+import { tex } from '@/utilities/Tex';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
 
 export interface $Equation$ extends $Paragraph$ {
@@ -12,22 +15,21 @@ export interface $Equation$ extends $Paragraph$ {
 }
 
 export class $Equation extends $Composition implements $Equation$ {
-    tex(): string {
-        throw new Error('not implemented: $Equation.tex — the copy, which IS the TeX');
-    }
+    tex(): string { return html.text(this._block); }
 
-    // OWED: 1 + the count of equations standing before this one in the same chapter — read through the parent chain (reflection.nearest) and the chapter's parts.
-    number(): number | undefined {
-        throw new Error('not implemented: $Equation.number — a reading over the chapter, never stored');
-    }
+    // ACROSS THE BOOK, the same reading $Theorem, $Citation and $Footnote each take. It was written
+    // here as "over the chapter"; a book is the holder the base can always answer, and a paper that
+    // numbers per chapter passes its chapter instead — which is why the holder is an argument.
+    number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Equation(block: $Block) {
         super.$Composition($check(block, $Block, '!').concat($check($TypeOfEquation, '!')));
     }
 
-    // OWED: <div class="pd-equation"> holding tex.display(this.tex()) and its number; the LaTeX theme right-aligns the number in parentheses, the base sheet only centres.
-    override view(): ReactNode {
-        throw new Error('not implemented: $Equation.view — display TeX rendered once per copy, numbered');
+    // The number is DRAWN AS AN ATTRIBUTE and not as words, so a theme places it — LaTeX puts it
+    // right in parentheses, a web page might put it anywhere — and the reading stays a reading.
+    override print(): ReactNode {
+        return <div className={this.className} data-number={this.number()} dangerouslySetInnerHTML={{ __html: tex.display(this.tex()) }} />;
     }
 }
 
