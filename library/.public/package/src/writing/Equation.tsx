@@ -22,7 +22,7 @@ export class $Equation extends $Composition implements $Equation$ {
     }
 
     $Equation(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfEquation, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfEquation, '!')));
     }
 
     // OWED: <div class="pd-equation"> holding tex.display(this.tex()) and its number; the LaTeX theme right-aligns the number in parentheses, the base sheet only centres.

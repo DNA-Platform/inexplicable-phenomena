@@ -21,7 +21,7 @@ export class $Title extends $Composition implements $Title$ {
     }
 
     $Title(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfTitle, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfTitle, '!')));
         if (this.heading() === undefined) {
             const Heading = $(heading);
             this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));

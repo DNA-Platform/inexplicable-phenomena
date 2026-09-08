@@ -24,7 +24,7 @@ export class $Reference extends $Annotation implements $Reference$ {
     path(): $Path | undefined { return this.searchForOne<$Path>($TypeOfPath); }
 
     $Reference(block: $Block) {
-        super.$Writing($check(block, $Block).concat($check($TypeOfReference, '!')));
+        super.$Writing($check(block, $Block, '!').concat($check($TypeOfReference, '!')));
         const copy = html.text(this._block);
         if (this.searchFor($TypeOfPath).length === 0 && this.reads(copy)) {
             const Path = $(path);

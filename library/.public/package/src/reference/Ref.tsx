@@ -24,7 +24,7 @@ export class $Ref extends $Composition implements $Ref$ {
     written(): string { return this.link()?.text ?? html.text(this._block); }
 
     $Ref(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfRef, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfRef, '!')));
     }
 
     override view(): ReactNode {

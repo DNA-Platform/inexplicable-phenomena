@@ -32,13 +32,13 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
+import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
 
 export interface $Note$ extends $Paragraph$ { }
 
-export class $Note extends $Composition implements $Note$ {
+export class $Note extends $Paragraph implements $Note$ {
     $Note(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfNote, '!')));
+        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfNote, '!')));
     }
 
     // It draws where it stands by default, which is a hatnote. A note drawn ELSEWHERE says so by

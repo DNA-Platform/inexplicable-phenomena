@@ -21,7 +21,7 @@ export class $Letter extends $Composition implements $Letter$ {
     case: CaseOfLetter = 'lowercase';
 
     $Letter(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfLetter, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfLetter, '!')));
     }
 }
 
@@ -32,7 +32,7 @@ export class $$Letter extends $Catalogue implements $$Letter$ {
     case: CaseOfLetter = 'lowercase';
 
     $$Letter(block: $Block) {
-        super.$Catalogue($check(block, $Block).concat($check($TypeOfLetter, '!')).concat($check($TypeOf$Letter, '!')));
+        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfLetter, '!')).concat($check($TypeOf$Letter, '!')));
     }
 }
 

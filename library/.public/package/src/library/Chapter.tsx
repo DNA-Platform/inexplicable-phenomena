@@ -14,7 +14,7 @@ export interface $Chapter$ extends $Composition$ { }
 
 export class $Chapter extends $Composition implements $Chapter$ {
     $Chapter(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfChapter, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfChapter, '!')));
     }
 
     override print(content: ReactNode): ReactNode {
@@ -26,7 +26,7 @@ export interface $$Chapter$ extends $Paragraph$ { }
 
 export class $$Chapter extends $Catalogue implements $$Chapter$ {
     $$Chapter(block: $Block) {
-        super.$Catalogue($check(block, $Block).concat($check($TypeOfParagraph, '!')).concat($check($TypeOf$Chapter, '!')));
+        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfParagraph, '!')).concat($check($TypeOf$Chapter, '!')));
     }
 }
 

@@ -9,7 +9,7 @@ export interface $TableOfContents$ extends $Chapter$ { }
 
 export class $TableOfContents extends $Composition implements $TableOfContents$ {
     $TableOfContents(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfTableOfContents, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfTableOfContents, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

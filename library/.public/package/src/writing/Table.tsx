@@ -27,7 +27,7 @@ export class $Table extends $Composition implements $Table$ {
     }
 
     $Table(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfTable, '!')).concat($check(tableStyle, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfTable, '!')).concat($check(tableStyle, '!')));
     }
 }
 

@@ -9,7 +9,7 @@ export interface $Footer$ extends $Chapter$ { }
 
 export class $Footer extends $Composition implements $Footer$ {
     $Footer(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfFooter, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfFooter, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

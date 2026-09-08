@@ -20,7 +20,7 @@ export class $Cover extends $Composition implements $Cover$ {
     subject(): $Subject | undefined { return this.searchForOne<$Subject>($TypeOfSubject); }
 
     $Cover(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfCover, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfCover, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

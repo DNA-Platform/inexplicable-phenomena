@@ -16,7 +16,7 @@ export class $Math extends $Composition implements $Math$ {
     }
 
     $Math(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfMath, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfMath, '!')));
     }
 
     // OWED: <span class="pd-math"> holding tex.inline(this.tex()) — the sheet dresses nothing here; katex ships its own CSS (a demo/app concern, not the base's).

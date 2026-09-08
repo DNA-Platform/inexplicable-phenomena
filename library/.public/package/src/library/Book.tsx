@@ -45,7 +45,7 @@ export class $Book extends $Composition implements $Book$ {
     }
 
     $Book(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfBook, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfBook, '!')));
         this.cover = this.placed($TypeOfCover, cover);
         this.synopsis = this.placed($TypeOfSynopsis, synopsis, this.cover);
         this.table = this.searchForOne($TypeOfTableOfContents) ?? this.contents(this.synopsis);
@@ -100,7 +100,7 @@ export class $Book extends $Composition implements $Book$ {
 
 export class $$Book extends $Catalogue implements $$Book$ {
     $$Book(block: $Block) {
-        super.$Catalogue($check(block, $Block).concat($check($TypeOfParagraph, '!')).concat($check($TypeOf$Book, '!')));
+        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfParagraph, '!')).concat($check($TypeOf$Book, '!')));
     }
 }
 

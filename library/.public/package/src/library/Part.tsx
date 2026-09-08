@@ -12,13 +12,13 @@ export interface $Part$ extends $Chapter$ {
     sections: $Section[];
 }
 
-export class $Part extends $Composition implements $Part$ {
+export class $Part extends $Chapter implements $Part$ {
     partitions: $Part[] = [];
     chapters: $Chapter[] = [];
     sections: $Section[] = [];
 
     $Part(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfPart, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfPart, '!')));
     }
 }
 

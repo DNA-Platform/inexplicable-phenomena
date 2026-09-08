@@ -18,7 +18,7 @@ export class $Illustration extends $Composition implements $Illustration$ {
     get caption(): string { return html.text(this._block); }
 
     $Illustration(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfIllustration, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfIllustration, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

@@ -35,7 +35,7 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
     }
 
     $Catalogue(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfCatalogue, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfCatalogue, '!')));
     }
 
     follow(fragment: string): $Writing {

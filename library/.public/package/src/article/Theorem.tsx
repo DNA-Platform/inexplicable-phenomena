@@ -4,14 +4,14 @@ import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Section$, $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $Section$, $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
 import { $TypeOfHeading } from '@/writing/Heading';
 
 export interface $Theorem$ extends $Section$ {
     number(): number | undefined;
 }
 
-export class $Theorem extends $Composition implements $Theorem$ {
+export class $Theorem extends $Section implements $Theorem$ {
     $kind = 'theorem';
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
@@ -20,7 +20,7 @@ export class $Theorem extends $Composition implements $Theorem$ {
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Theorem(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfTheorem, '!')));
+        super.$Section($check(block, $Block, '!').concat($check($TypeOfTheorem, '!')));
     }
 }
 

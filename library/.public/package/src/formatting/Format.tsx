@@ -18,7 +18,7 @@ export class $Format extends $Annotation implements $Format$ {
     override get theme(): $Theme { return this.$of === null ? reflection.theme(this) : this.$of.theme; }
 
     $Format(block: $Block) {
-        super.$Writing($check(block, $Block).concat($check($TypeOfFormat, '!')));
+        super.$Writing($check(block, $Block, '!').concat($check($TypeOfFormat, '!')));
     }
 
     override view(): ReactNode {

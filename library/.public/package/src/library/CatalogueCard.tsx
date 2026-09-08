@@ -12,7 +12,7 @@ export class $CatalogueCard extends $Composition implements $CatalogueCard$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
 
     $CatalogueCard(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfCatalogueCard, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfCatalogueCard, '!')));
     }
 
     override get meaning(): $Reference$ | undefined { return this.title()?.meaning; }

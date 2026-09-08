@@ -25,7 +25,7 @@ export class $Section extends $Composition implements $Section$ {
     }
 
     $Section(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfSection, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfSection, '!')));
         const Representation = $($$Paragraph);
         for (const written of this.searchFor($TypeOfParagraph))
             written.mention ??= $<$$Paragraph>(<Representation />, written);
@@ -36,7 +36,7 @@ export interface $$Section$ extends $Paragraph$ { }
 
 export class $$Section extends $Catalogue implements $$Section$ {
     $$Section(block: $Block) {
-        super.$Catalogue($check(block, $Block).concat($check($TypeOfParagraph, '!')).concat($check($TypeOf$Section, '!')));
+        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfParagraph, '!')).concat($check($TypeOf$Section, '!')));
     }
 }
 

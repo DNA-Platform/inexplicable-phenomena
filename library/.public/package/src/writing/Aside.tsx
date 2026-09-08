@@ -41,7 +41,7 @@ export class $Aside extends $Composition implements $Aside$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Aside(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfAside, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfAside, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

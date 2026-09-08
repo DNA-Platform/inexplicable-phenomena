@@ -16,7 +16,7 @@ export class $Code extends $Composition implements $Code$ {
     get language(): string { return this.$language; }
 
     $Code(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfCode, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfCode, '!')));
     }
 
     // OWED: <pre><code> through the highlighting box with this.language; the sheet dresses pre/code by the pd- class (U5/U6).

@@ -3,19 +3,19 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification } from '@/library/Chapter';
+import { $Chapter$, $Chapter, $TypeOfChapter, ChapterSpecification } from '@/library/Chapter';
 
 export interface $Appendix$ extends $Chapter$ {
     letter(): string | undefined;
 }
 
-export class $Appendix extends $Composition implements $Appendix$ {
+export class $Appendix extends $Chapter implements $Appendix$ {
     letter(): string | undefined {
         throw new Error('not implemented: $Appendix.letter — a reading over the book\u2019s appendices in the order it holds them');
     }
 
     $Appendix(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfAppendix, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfAppendix, '!')));
     }
 }
 

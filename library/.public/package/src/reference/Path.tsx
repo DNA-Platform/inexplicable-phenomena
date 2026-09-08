@@ -11,7 +11,7 @@ export interface $Path$ extends $Annotation$ { }
 
 export class $Path extends $Annotation implements $Path$ {
     $Path(block: $Block) {
-        super.$Writing($check(block, $Block).concat($check($TypeOfPath, '!')));
+        super.$Writing($check(block, $Block, '!').concat($check($TypeOfPath, '!')));
     }
 
     override view(): ReactNode {

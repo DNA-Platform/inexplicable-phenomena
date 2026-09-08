@@ -14,7 +14,7 @@ export class $Citation extends $Reference implements $Citation$ {
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Citation(block: $Block) {
-        super.$Reference($check(block, $Block).concat($check($TypeOfCitation, '!')));
+        super.$Reference($check(block, $Block, '!').concat($check($TypeOfCitation, '!')));
     }
 
     // OWED: <a class="pd-citation" href="#entry">[n]</a> — the number is drawn, the copy is not.

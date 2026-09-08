@@ -3,18 +3,18 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification } from '@/library/Chapter';
+import { $Chapter$, $Chapter, $TypeOfChapter, ChapterSpecification } from '@/library/Chapter';
 import { $TypeOfReferenceCard } from '@/reference/ReferenceCard';
 
 export interface $References$ extends $Chapter$ {
     entries(): $Writing[];
 }
 
-export class $References extends $Composition implements $References$ {
+export class $References extends $Chapter implements $References$ {
     entries(): $Writing[] { return this.searchFor($TypeOfReferenceCard); }
 
     $References(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfReferences, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfReferences, '!')));
     }
 
     // OWED: <section class="pd-bibliography"><ol> — an ordered list, because the order IS the numbering.

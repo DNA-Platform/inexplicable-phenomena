@@ -11,7 +11,7 @@ export class $Index extends $Composition implements $Index$ {
     override parenthetical = true;
 
     $Index(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfIndex, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfIndex, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

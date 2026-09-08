@@ -4,15 +4,15 @@ import { $Composition } from '@/writing/Composition';
 import { $Writing } from '@/writing/Writing';
 import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
 import { html } from '@/utilities/Html';
-import { $Section$, $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $Section$, $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
 
 export interface $Subject$ extends $Section$ { }
 
-export class $Subject extends $Composition implements $Subject$ {
+export class $Subject extends $Section implements $Subject$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Subject(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfSubject, '!')));
+        super.$Section($check(block, $Block, '!').concat($check($TypeOfSubject, '!')));
         if (this.heading() === undefined) {
             const Heading = $(heading);
             this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));

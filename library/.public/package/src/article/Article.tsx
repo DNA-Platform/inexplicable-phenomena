@@ -13,7 +13,7 @@ export interface $Article$ extends $Part$ { }
 // three, so they are the type being causal (P13). Extending the class inherits them filled.
 export class $Article extends $Part implements $Article$ {
     $Article(block: $Block) {
-        super.$Part($check(block, $Block).concat($check($TypeOfArticle, '!')));
+        super.$Part($check(block, $Block, '!').concat($check($TypeOfArticle, '!')));
     }
 
     // OWED: the article's cover read from its canonical section (Sprint 51 R3/R4: "canonical is a property, not a position"); its contents.

@@ -13,7 +13,7 @@ export class $Summary extends $Composition implements $Summary$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Summary(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfSummary, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfSummary, '!')));
     }
 }
 

@@ -12,7 +12,7 @@ export interface $Word$ extends $Composition$ { }
 
 export class $Word extends $Composition implements $Word$ {
     $Word(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfWord, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfWord, '!')));
     }
 }
 
@@ -20,7 +20,7 @@ export interface $$Word$ extends $Word$ { }
 
 export class $$Word extends $Catalogue implements $$Word$ {
     $$Word(block: $Block) {
-        super.$Catalogue($check(block, $Block).concat($check($TypeOfWord, '!')).concat($check($TypeOf$Word, '!')));
+        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfWord, '!')).concat($check($TypeOf$Word, '!')));
     }
 }
 

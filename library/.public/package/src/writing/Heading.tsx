@@ -11,7 +11,7 @@ export interface $Heading$ extends $Paragraph$ { }
 
 export class $Heading extends $Composition implements $Heading$ {
     $Heading(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfHeading, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfHeading, '!')));
     }
 
     // A HEADING HAS A LEVEL AND NOW WRITES IT. It wrote <h2> always, so the base sheet carried h1,

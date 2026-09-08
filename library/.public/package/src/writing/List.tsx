@@ -10,7 +10,7 @@ export interface $List$ extends $Paragraph$ { }
 
 export class $List extends $Composition implements $List$ {
     $List(block: $Block) {
-        super.$Composition($check(block, $Block).concat($check($TypeOfList, '!')));
+        super.$Composition($check(block, $Block, '!').concat($check($TypeOfList, '!')));
     }
 
     override print(): ReactNode {

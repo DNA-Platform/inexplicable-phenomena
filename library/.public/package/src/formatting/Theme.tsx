@@ -109,7 +109,7 @@ export class $Theme extends $Format implements $Theme$ {
 
     // Machinery extending machinery, so the chain is called whole; a KIND would extend its level instead.
     $Theme(block: $Block) {
-        super.$Format($check(block, $Block).concat($check($TypeOfTheme, '!')));
+        super.$Format($check(block, $Block, '!').concat($check($TypeOfTheme, '!')));
     }
 
     @look('worn')
