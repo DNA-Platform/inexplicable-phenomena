@@ -3,4 +3,4 @@
 export * from './Article';
 export * from './Margin';
 export * from './Theorem';
-export * from './LatexTheme';
+export * from './Theme';

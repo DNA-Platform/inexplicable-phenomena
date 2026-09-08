@@ -31,7 +31,7 @@ const at = () => ({
 // build rather than joining a list of warnings nobody reads.
 const knownCycles = [
     'src/writing/Composition.tsx -> src/reference/Catalogue.tsx -> src/writing/Composition.tsx',
-    'src/book/Title.tsx -> src/book/Cover.tsx -> src/book/Title.tsx'
+    'src/library/Title.tsx -> src/library/Cover.tsx -> src/library/Title.tsx'
 ];
 
 const named = warning => (warning.ids || [])
@@ -63,6 +63,8 @@ module.exports = [
     {
         input: {
             lib: 'src/index.ts',
+            library: 'src/library.ts',
+            article: 'src/article/index.ts',
             encyclopedia: 'src/encyclopedia/index.ts',
             utilities: 'src/utilities/index.ts'
         },
@@ -77,6 +79,18 @@ module.exports = [
     {
         input: 'src/index.ts',
         output: { file: 'dist/lib.d.ts', format: 'es' },
+        plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
+        onwarn
+    },
+    {
+        input: 'src/library.ts',
+        output: { file: 'dist/library.d.ts', format: 'es' },
+        plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
+        onwarn
+    },
+    {
+        input: 'src/article/index.ts',
+        output: { file: 'dist/article.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
         onwarn
     },

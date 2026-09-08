@@ -6,8 +6,8 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Title, $TypeOfTitle } from '@/book/Title';
-import { $CatalogueCard$, $TypeOfCatalogueCard, CatalogueCardSpecification } from '@/book/CatalogueCard';
+import { $Title, $TypeOfTitle } from '@/library/Title';
+import { $CatalogueCard$, $TypeOfCatalogueCard, CatalogueCardSpecification } from '@/library/CatalogueCard';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
 
 export interface $Infobox$ extends $CatalogueCard$ { }

@@ -4,7 +4,7 @@ import { $Writing } from '@/writing/Writing';
 import { $Reference$ } from '@/reference/Reference';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $TypeOfSection, SectionSpecification } from '@/writing/Section';
-import { $Title, $TypeOfTitle } from '@/book/Title';
+import { $Title, $TypeOfTitle } from '@/library/Title';
 
 export interface $IndexCard$ extends $Composition$ {
     title(): $Title | undefined;

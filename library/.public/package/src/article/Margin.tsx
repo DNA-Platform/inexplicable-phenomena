@@ -6,7 +6,7 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Part$, $TypeOfPart, PartSpecification } from '@/book/Part';
+import { $Part$, $TypeOfPart, PartSpecification } from '@/library/Part';
 
 export interface $Margin$ extends $Part$ { }
 

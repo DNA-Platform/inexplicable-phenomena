@@ -29,24 +29,23 @@ export * from './reference/ReferenceCard';
 export * from './reference/Catalogue';
 export * from './reference/Ref';
 
-export * from './book/Book';
-export * from './book/Chapter';
-export * from './book/Abstract';
-export * from './book/Part';
-export * from './book/Cover';
-export * from './book/Synopsis';
-export * from './book/Index';
-export * from './book/Footer';
-export * from './book/TableOfContents';
-export * from './book/Title';
-export * from './book/Author';
-export * from './book/Subject';
-export * from './book/CatalogueCard';
-export * from './book/Bookmark';
-export * from './book/Highlight';
-export * from './book/PageFold';
+export * from './library/Book';
+export * from './library/Chapter';
+export * from './library/Abstract';
+export * from './library/Part';
+export * from './library/Cover';
+export * from './library/Synopsis';
+export * from './library/Index';
+export * from './library/Footer';
+export * from './library/TableOfContents';
+export * from './library/Title';
+export * from './library/Author';
+export * from './library/Subject';
+export * from './library/CatalogueCard';
+export * from './library/Bookmark';
+export * from './library/Highlight';
+export * from './library/PageFold';
 
-export * from './encyclopedia';
 
 // THE COMPOSITION ROOT, AND THE ONE PLACE DI HAPPENS. Every consumer reads the
 // package here, so this runs after every module above has resolved and before

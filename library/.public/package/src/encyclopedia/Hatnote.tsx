@@ -1,5 +1,5 @@
 // CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY. Built in the encyclopedia sprint.
-// A HATNOTE IS A PARAGRAPH that stands before a section's prose and points elsewhere ("This page is about…; for…, see…"). Today it lives in the demo (.wiki/.article/.hatnote.tsx) as $Hatnote extends $Paragraph with a format; promoted here as a kind, its look a group in EncyclopediaTheme (italic, indented).
+// A HATNOTE IS A PARAGRAPH that stands before a section's prose and points elsewhere ("This page is about…; for…, see…"). Today it lives in the demo (.wiki/.article/.hatnote.tsx) as $Hatnote extends $Paragraph with a format; promoted here as a kind, its look a group in encyclopedia/Theme (italic, indented).
 // DEPENDS ON: $Composition, $TypeOfParagraph / ParagraphSpecification — designed for it (a kind is a shell over its level).
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
