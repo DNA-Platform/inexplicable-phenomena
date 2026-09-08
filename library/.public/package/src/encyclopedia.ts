@@ -1,3 +1,4 @@
+// The door @dna-platform/public/encyclopedia. IN PROGRESS: the *Format lines leave as their groups land in encyclopedia/Theme.
 export * from './encyclopedia/AnchorFormat';
 export * from './encyclopedia/ArticleFormat';
 export * from './encyclopedia/BodyFormat';

@@ -1,7 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY. Built as U7 of this sprint.
-// THE ENCYCLOPEDIA'S LOOK AS ONE THEME SUBCLASS: Wikipedia's values (the ones $Theme carried before 2026-09-08 — wikimedia-ui-base's tokens, MIT) and the groups the sixteen *Format.tsx files say today, folded in one by one as each format is deleted. The grid, the float and the attr(label) are all sayable on pd- classes at the sheet root, so the encyclopedia needs no format a sheet cannot give — measured in the register (cluster "encyclopedia").
-// The demo installs it: `.wiki/.encyclopedia/.book.tsx` registers `$(Wikipedia, Theme)(encyclopedia/Theme)` (today it registers $PortalTheme extends $Theme with three overrides, plus four region formats — those four become groups here).
-// DEPENDS ON: $Theme — designed for it. DEPENDS ON, in progress: $Book drawing flat with no region view (U4), every kind writing its element (U5), so the groups have elements to dress.
+// CREATED 2026-09-08 · rating 3 · in progress. The encyclopedia's theme: Wikipedia's values and its grid as groups; the sixteen *Format files fold in here one by one.
 import { $, select } from '@dna-platform/chemistry';
 import { $Theme as $Sheet } from '@/formatting/Theme';
 

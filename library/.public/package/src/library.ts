@@ -1,5 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold. THE DOOR `@dna-platform/public/book` (T9: "writing is default index, book exports separately"; T12: book, article, encyclopedia are the second level).
-// A door is a ROOT file named for its folder — chemistry's own src/symbolic.ts precedent — never a folder's index.ts, which Windows folds into the kind Index.tsx.
+// The door @dna-platform/public/library — a root file named for its folder, on chemistry's src/symbolic.ts precedent; the base door re-exports these until every consumer imports from here.
 export * from './library/Book';
 export * from './library/Chapter';
 export * from './library/Part';

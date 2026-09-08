@@ -97,9 +97,7 @@ export class Reflection {
         return this.annotations(writing).reduce((held, one) => one.format(held), drawn);
     }
 
-    // IN PROGRESS (Sprint 53): $(class) answers a new root component each call, so a sheet worn
-    // per render must come from ONE memoised component per theme class or React remounts it
-    // every draw. Chemistry may already memoise this — not measured; if it does, delete this.
+    // IN PROGRESS: one component per theme class, or React remounts the sheet every draw. Delete if chemistry memoises $(class).
     private sheets = new WeakMap<new() => $Theme, any>();
 
     sheet(kind: new() => $Theme): any {

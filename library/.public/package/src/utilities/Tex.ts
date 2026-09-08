@@ -1,6 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY. Built with Math and Equation.
-// "a latex processing method that is efficient in components that represent equations" (Doug): ONE render per distinct TeX string, memoised, never per draw. katex is already a dependency (package.json) and is imported by nothing until this is built.
-// DEPENDS ON: katex.renderToString — a dependency, not a framework feature. Sanitisation is a decision to take before any external content renders (ch02's open question).
+// CREATED 2026-09-08 · rating 1 · shell. One katex render per distinct TeX string, memoised — never per draw.
 export class TexRenderer {
     private rendered = new Map<string, string>();
 

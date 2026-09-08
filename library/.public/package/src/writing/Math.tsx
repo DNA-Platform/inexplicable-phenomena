@@ -1,9 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY. Built in the sprint after.
-// Math is INLINE mathematics at PHRASE grade, beside $Ref (reference/Ref) — the same place in the levels a link stands. Its display sibling is $Equation at paragraph grade.
-// DEPENDS ON: $Composition, $TypeOfPhrase / PhraseSpecification (writing/Phrase) — designed for it: Phrase exists for "a word that contributes multiple words", which TeX in a sentence is.
-// DEPENDS ON, owed: utilities/Tex — one memoised render per copy through katex (declared in package.json, imported by nothing yet). Never per draw: every chemical draws three times (PS4).
-// DOUG 2026-09-08: "basic math should work without [the theme] and you'll need a latex processing method that is efficient in components that represent equations."
-// OPEN (ch02 Markdown with LaTeX): whether `math` is an intrinsic content kind beside string and block — "a framework conversation". This scaffold treats the TeX as the copy and the rendering as the drawing.
+// CREATED 2026-09-08 · rating 1 · shell. Inline mathematics at phrase grade beside $Ref: the TeX is the copy, rendered once per string through utilities/Tex.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';

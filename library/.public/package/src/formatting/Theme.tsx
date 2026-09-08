@@ -23,23 +23,7 @@ export interface $Theme$ extends $Annotation$ {
     leading: string;
 }
 
-// IN PROGRESS — Sprint 53 U2/U3 (public-code-design). THE THEME IS THE SHEET: an annotation
-// found in a writing's block by the walk (reflection.theme), AND a styled chemical whose
-// compiled component is worn once per book mount. MEASURED 2026-09-08, probes P1–P7:
-//   - the annotation standing in a block draws nothing and is harmless (P2)
-//   - the PARENTED annotation mounted as the sheet with a prop LOOPS the page (P4 — a write
-//     to a held chemical wakes its ancestry; Solutions 16/29/52)
-//   - a fresh instance of the theme's CLASS mounted with the drawing as CHILDREN draws nothing,
-//     because a writing takes its children as its block (P5 — ch13's old finding)
-//   - the bare [style] component nests right but reads no live values; `given` is not
-//     exported (P6) — no chemistry change needed after P7, so no pitch
-//   - a fresh class instance handed the drawing as a $content PROP: nested, live, no loop (P7)
-// So format() below mounts the CLASS component with content={drawn}; `$content` and `face`
-// are PROXY names, Doug's to rename (`display` collided: a styled chemical emits any member
-// named like a CSS property). The default look draws null; frame() answers null unless the
-// sheet look is on — a conditional on the instance's own look, the same shape as $print.
-// OWED: the class component memoised per class (reflection.component?) so a subclass's
-// format() need not name its own exported component; the sheet's @select groups (U6).
+// IN PROGRESS · rating 2. The theme is the annotation the walk finds AND the sheet worn once per book as a FRESH instance of its class with the drawing as $content — a parented annotation mounted with a prop loops (probes P1–P7, Sprint 53 § where things stand). $content and face are proxies.
 export class $Theme extends $Annotation implements $Theme$ {
     selector = styled.main;
     $content: ReactNode = null;
@@ -82,8 +66,6 @@ export class $Theme extends $Annotation implements $Theme$ {
         return this.$look === 'sheet' ? drawn : null;
     }
 
-    // The sheet is a FRESH, UNPARENTED instance of this theme's class (P7), never `$(this)`,
-    // which is the parented annotation and loops (P4). reflection.sheet memoises $(class).
     override format(drawn: ReactNode): ReactNode {
         const Sheet = reflection.sheet(this.constructor as new() => $Theme);
 

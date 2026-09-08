@@ -1,7 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY: change freely. Built in the sprint after (Math, Equation, Code in the base).
-// DEPENDS ON: $Composition (writing/Composition) and $TypeOfParagraph / ParagraphSpecification (writing/Paragraph) — a kind is a shell over its level (ch14 Shells Over Types): designed for it.
-// DEPENDS ON, owed: prism-react-renderer's Highlight — the old demo's code box (.archive/app/src/sections/page/faces/faces.tsx, drawer.tsx) — a dependency, not a framework feature.
-// DOUG 2026-09-08: "Code should be in the old demo, something that integrates with a codebox react control that supports syntax highlighting and formatting from many languages… the language is a prop I guess and the code is the writing. I would put it at the paragraph level and I might put a line-based parser in parts if anyone ever needs the parts. One day we would adapt the actual parse tree to our model."
+// CREATED 2026-09-08 · rating 1 · shell. Code at paragraph grade: the code is the copy, the language a prop, drawn through a highlighting box as .archive did; parts() a line-based read on demand, never in the draw (PS3).
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';

@@ -1,7 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY. Built in the article sprint.
-// THE MARGIN IS THE PART THAT HOLDS WHAT IS NOT THE ARTICLE — header, sidebar, footer — "the stuff that would go in the Margin of the page" (Doug, Sprint 51). It retired the words frame and apparatus.
-// Its chapters are parenthetical: not drawn where they stand but by the parts that use them. Sprint 51 measured the gap: "parenthetical means invisible, not drawn elsewhere — a $Margin holding a header and a footer draws NOTHING, because parenthetical has no way to ask whether something else is using it." THAT IS A BASE FINDING, and the shell carries it until the base answers.
-// DEPENDS ON: $Composition, $TypeOfPart / PartSpecification (book/Part) — designed for it as a Part; NOT yet designed for the drawn-elsewhere half.
+// CREATED 2026-09-08 · rating 3 · shell. The part holding what is not the article — header, sidebar, footer — drawn by the parts that use them. Base finding it waits on: parenthetical means invisible, not drawn elsewhere.
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';

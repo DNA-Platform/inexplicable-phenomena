@@ -1,4 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold. A placeholder chapter so the book stands; REPLACED by the paper's own sections when Doug supplies the source. Shows the authoring surface the article expects: sections with headings, prose with inline <Math>, display <Equation>, a <Theorem>.
+// CREATED 2026-09-08 · rating 4 · placeholder chapter, replaced by the paper's sections.
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
 import Chapter from './.chapter';

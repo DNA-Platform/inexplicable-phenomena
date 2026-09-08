@@ -1,7 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY. Built in the encyclopedia sprint.
-// THE INFOBOX IS A CATALOGUE CARD (ch18 The Wikipedia Fit: "a fixed vocabulary of labelled facts about one subject, set beside the opening of the writing, where every field is optional and the card is whatever survives"; Sprint 51 R9: "the infobox draws from $CatalogueCard with $IndexCard rows, every field optional"). Today it lives in the DEMO as $Sidebar/$Line (.wiki/.article/.sidebar.tsx) — a section of paragraphs with a $label prop drawn through attr(label); this is that, promoted to a kind the encyclopedia ships.
-// DEPENDS ON: $Composition and $TypeOfCatalogueCard (book/CatalogueCard) for the box, $TypeOfIndexCard (reference/IndexCard) for a line — designed for it per ch18's fit table ("exact"). UNCLEAR: an index card carries a title that MEANS something ($titleMeansSomething), and an infobox line ("Born · 23 June 1912") means nothing — the rule may be too narrow for a line, which is a BASE finding to raise, not a slot to add.
-// The label (`$label`) is drawable without an element (Sprint 51: `content: attr(label)`) — "a keeper and belongs in the framework as it stands".
+// CREATED 2026-09-08 · rating 3 · shell. The infobox is a catalogue card of labelled lines (ch18; Sprint 51 R9), promoted from the demo's Sidebar/Line. Open: an index card's title must MEAN something and a line's does not.
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';

@@ -1,7 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold under public-code-design. CLAY. Built in the sprint after.
-// An Equation is DISPLAY mathematics at PARAGRAPH grade — $Math one level up, the way the levels chapter's "$Code whose inline boolean moves its level" was asked for; with the fixed hierarchy that is two kinds, and Doug gave both names.
-// NUMBERED BY A READING, never a field: its number is its index among the equations of its chapter (Sprint 34: position encodes canonicality; the index is a number related to the composition). That reading runs ABOVE the paragraph and is affordable (PS1–PS3).
-// DEPENDS ON: $Composition, $TypeOfParagraph / ParagraphSpecification — designed for it. DEPENDS ON, owed: utilities/Tex (display mode), and a chapter-level reading of equations (which the chapter must be designed to answer — a possible base finding).
+// CREATED 2026-09-08 · rating 1 · shell. Display mathematics at paragraph grade, numbered by a reading over its chapter — never a field.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
