@@ -3,9 +3,10 @@ import { $Block } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
 import type { $Type } from '@/writing/Type';
+import type { $Theme } from '@/writing/Theme';
 
 export class Reflection {
-    private templates = new WeakMap<new() => $Type, $Type>();
+    private templates = new WeakMap<new() => $Writing, $Writing>();
     private readings = new WeakMap<$Writing, { parts: $Writing[]; block: $Block }>();
 
     // HANDED THE THREE KINDS AT THE COMPOSITION ROOT, which is src/index.ts.
@@ -18,10 +19,11 @@ export class Reflection {
         writing: new () => $Writing;
         annotation: new () => $Annotation;
         type: new () => $Type;
+        theme: new () => $Theme;
     };
 
-    knows(kinds: Reflection['kinds']): void {
-        this.kinds = kinds;
+    knows(kinds: Partial<Reflection['kinds']>): void {
+        this.kinds = { ...this.kinds, ...kinds };
     }
 
     protected compositions = ['Book', 'Chapter', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
@@ -95,13 +97,24 @@ export class Reflection {
         return this.types(writing).reduce((held, type) => type.format(held), drawn);
     }
 
+    theme(writing: $Writing): $Theme {
+        return this.nearest(writing, at => this.annotations(at).find((one): one is $Theme => one instanceof this.kinds.theme))
+            ?? this.template(this.kinds.theme);
+    }
+
     // A WALK UP STOPS WHERE THE HOLDING STOPS. A writing that holds itself is the top,
     // and reading its parent again would be reading it again — so the step is taken
     // only while it moves.
+    nearest<T>(writing: $Writing, read: (at: $Writing) => T | undefined): T | undefined {
+        for (let at: any = writing; this.writing(at); at = at.parent === at ? undefined : at.parent) {
+            const found = read(at);
+            if (found !== undefined) return found;
+        }
+        return undefined;
+    }
+
     indent(writing: $Writing): number {
-        for (let at: any = writing; this.writing(at); at = at.parent === at ? undefined : at.parent)
-            if (at.$indent > 0) return at.$indent;
-        return 0;
+        return this.nearest(writing, at => at.$indent > 0 ? at.$indent : undefined) ?? 0;
     }
 
     classNames(writing: $Writing): string[] {
@@ -112,8 +125,8 @@ export class Reflection {
     }
 
 
-    template(kind: new() => $Type): $Type {
-        const held = this.templates.get(kind) ?? new kind();
+    template<T extends $Writing>(kind: new() => T): T {
+        const held = (this.templates.get(kind) ?? new kind()) as T;
         held._block ??= new $Block();
         this.templates.set(kind, held);
         return held;

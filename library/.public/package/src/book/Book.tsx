@@ -19,6 +19,7 @@ import { $TypeOfSynopsis, Synopsis as synopsis } from './Synopsis';
 import { $TypeOfTableOfContents, TableOfContents as table } from './TableOfContents';
 import { $TypeOfIndex, Index as index } from './Index';
 import { $TypeOfFooter, Footer as footer } from './Footer';
+import { $TypeOfTheme, Theme as theme } from '@/writing/Theme';
 import { BodyFormat as body } from '@/encyclopedia/BodyFormat';
 import { HeaderFormat as header } from '@/encyclopedia/HeaderFormat';
 import { SidebarFormat as sidebar } from '@/encyclopedia/SidebarFormat';
@@ -64,6 +65,7 @@ export class $Book extends $Composition implements $Book$ {
         this._body = this._block.filter(piece => piece instanceof $Writing && (chapters.includes(piece) || piece === this.index));
         this.footer = this.placed($TypeOfFooter, footer, this.index);
         this._closing = this._block.filter(piece => piece === this.footer);
+        this.placed($TypeOfTheme, theme, this.footer);
     }
 
     override view(): ReactNode {
@@ -157,6 +159,12 @@ export class BookSpecification extends WritingSpecification {
     $tableStandsThird(writing: $Writing): void {
         $check(this.standing(writing, $TypeOfTableOfContents, 2),
             'a book carries its table of contents third, and this one carries it elsewhere or not at all');
+    }
+
+    @specify('a book is drawn in one theme')
+    $isDrawnInATheme(writing: $Writing): void {
+        const worn = writing.searchFor($TypeOfTheme).length;
+        $check(worn === 1, `a book is drawn in one theme, and this one is drawn in ${worn}`);
     }
 
     @specify('a book ends with its footer')

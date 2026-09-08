@@ -1,6 +1,11 @@
-import { $, $Chemical } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
+import { Specification, specify } from '@/utilities/Specification';
+import { reflection } from '@/utilities/Reflection';
+import { $Writing, WritingSpecification } from './Writing';
+import { $Annotation$, $Annotation } from './Annotation';
+import { $Type } from './Type';
 
-export interface $Theme$ extends $Chemical {
+export interface $Theme$ extends $Annotation$ {
     paper: string;
     ink: string;
     quiet: string;
@@ -17,22 +22,42 @@ export interface $Theme$ extends $Chemical {
     leading: string;
 }
 
-export class $Theme extends $Chemical implements $Theme$ {
-    atom = true;
+export class $Theme extends $Annotation implements $Theme$ {
     paper = '#ffffff';
-    ink = '#202122';
-    quiet = '#f8f9fa';
-    shade = '#eaecf0';
-    rule = '#a2a9b1';
-    pale = '#54595d';
-    jet = '#101418';
-    pressed = '#3056a9';
-    link = '#3366cc';
+    ink = '#1f2328';
+    quiet = '#f6f8fa';
+    shade = '#d1d9e0';
+    rule = '#d1d9e0';
+    pale = '#59636e';
+    jet = '#1f2328';
+    pressed = '#0550ae';
+    link = '#0969da';
     measure = '57em';
-    body = 'sans-serif';
-    display = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
+    body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
+    display = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
     size = '16px';
-    leading = '1.625';
+    leading = '1.5';
+
+    $Theme(block: $Block) {
+        super.$Writing($check(block, $Block).concat($check($TypeOfTheme, '!')));
+    }
+
+    static $register(): void {
+        reflection.knows({ theme: $Theme });
+    }
+}
+
+export class $TypeOfTheme extends $Type {
+    override name = 'Theme';
+    protected override specification: Specification<$Writing> = new ThemeSpecification();
+}
+
+export class ThemeSpecification extends WritingSpecification {
+    @specify('a theme says nothing of its own; it is worn')
+    override $saysSomething(): boolean | void {
+        return false;
+    }
 }
 
 export const Theme = $($Theme);
+export const TypeOfTheme = $($TypeOfTheme);

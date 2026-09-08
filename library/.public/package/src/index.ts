@@ -54,7 +54,9 @@ export * from './encyclopedia';
 // everything between the markers is EMITTED by register.ts before each build, so
 // a kind cannot be added and silently left unwired. Do not edit it by hand.
 // <registrations>
+import { $Theme } from './writing/Theme';
 import { $Type } from './writing/Type';
 
+$Theme.$register();
 $Type.$register();
 // </registrations>

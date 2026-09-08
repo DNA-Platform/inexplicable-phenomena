@@ -7,8 +7,7 @@ import type { $Annotation$, $Annotation } from './Annotation';
 import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
 import { $Reference$ } from '@/reference/Reference';
-import { $Theme, Theme as theme } from './Theme';
-import { AnchorFormat as anchor } from '@/encyclopedia/AnchorFormat';
+import type { $Theme } from './Theme';
 
 export interface $Writing$ extends $Chemical {
     $indent: number;
@@ -30,8 +29,8 @@ export class $Writing extends $Chemical implements $Writing$ {
     inline = true;
     @inert() mention?: $Catalogue;
     _block!: $Block;
-    theme!: $Theme;
 
+    get theme(): $Theme { return reflection.theme(this); }
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get type(): $Type[] { return reflection.types(this); }
@@ -51,19 +50,17 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
-        this.theme = $check(theme, '!');
     }
 
     view(): ReactNode {
         const meaning = this.meaning;
         const Block = $(this.reading());
         if (meaning === undefined) return <Block />;
-        const Anchor = $(anchor);
 
         return (
-            <Anchor href={html.text(meaning.path()?._block)}>
+            <a href={html.text(meaning.path()?._block)}>
                 <Block />
-            </Anchor>
+            </a>
         );
     }
 
@@ -111,12 +108,6 @@ export class WritingSpecification extends Specification<$Writing> {
     $saysItsKind(writing: $Writing): void {
         $check(writing.kind !== undefined,
             'a piece of writing says what kind of writing it is, and this one says nothing');
-    }
-
-    @specify('a piece of writing is drawn in a theme')
-    $isDrawnInATheme(writing: $Writing): void {
-        $check(writing.theme instanceof $Theme,
-            'a piece of writing is drawn in a theme, and this one was given none');
     }
 
     @specify('a piece of writing says something')
