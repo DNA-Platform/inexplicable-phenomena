@@ -141,8 +141,29 @@ export class Reflection {
         return undefined;
     }
 
+    // HOW DEEP A WRITING STANDS, COUNTED — and until 2026-09-09 it could only be DECLARED, because
+    // $Composition.parts() replaced a section written inside a section with that section's
+    // paragraphs, so no depth survived to be counted. Measured on the LaTeX paper: nine sections,
+    // none of them nested, every heading an h2. With the nesting kept, the holders can be counted.
+    // AN AUTHORED $indent STILL WINS, and must: the 37 that stand in the demos were written to say
+    // what the reading could not answer, and both themes select .pd-indent-1 against them.
     indent(writing: $Writing): number {
-        return this.nearest(writing, at => at.$indent > 0 ? at.$indent : undefined) ?? 0;
+        return this.nearest(writing, at => at.$indent > 0 ? at.$indent : undefined) ?? this.deep(writing);
+    }
+
+    // A HEADING IS NOT NESTED IN HEADINGS, IT IS NESTED IN WHAT HOLDS IT, so the count is taken
+    // against the kind of the nearest holder — the section a heading opens — and every further
+    // holder of that same kind is one level down. `deep` is a proxy name.
+    protected deep(writing: $Writing): number {
+        let holder: unknown;
+        let held = 0;
+        for (let at: any = writing.parent; this.writing(at) && at.parent !== at; at = at.parent) {
+            const own = at.kind?.constructor;
+            if (holder === undefined) { holder = own; continue; }
+            if (own === holder) held++;
+        }
+
+        return held;
     }
 
     // THE NUMBER A KIND WEARS — a writing's position among the writings of its own kind that a
