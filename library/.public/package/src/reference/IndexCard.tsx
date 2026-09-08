@@ -31,11 +31,6 @@ export class IndexCardSpecification extends SectionSpecification {
         return false;
     }
 
-    @specify('an index card carries what it stands for, and composes nothing of its own')
-    override $composesWhatItHolds(): boolean | void {
-        return false;
-    }
-
     @specify('an index card carries a title that means something')
     $titleMeansSomething(writing: $Writing): void {
         $check(writing.searchForOne<$Title>($TypeOfTitle)?.meaning !== undefined,

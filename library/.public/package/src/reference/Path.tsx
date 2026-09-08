@@ -31,10 +31,6 @@ export class PathSpecification extends WritingSpecification {
         $check(url.reads(copy), 'a path reads as a url, and this one does not');
     }
 
-    @specify('a path composes nothing')
-    override $composesWhatItHolds(writing: $Writing): boolean | void {
-        return false;
-    }
 }
 
 export const Path = $($Path);

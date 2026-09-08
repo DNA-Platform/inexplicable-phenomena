@@ -1,6 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold, CLAY. The book of the .latex demo: Scott Aaronson's article on the times undecidability cropped up around P vs NP (Doug supplies the source; best identification "Is P Versus NP Formally Independent?", 2003). Replicated so it FEELS NATIVE — the gate is a person reading it beside the PDF.
-// The theme is INSTALLED here, by registration on this book's component (Doug: "registration is done by the user or by another module… either global or by book") — never carried by the theme.
-// OWED: the article as an $Article part with a $Margin (Sprint 51's model), the paper's chapters as N-name.tsx files, the cover with title/authors/abstract.
+// CREATED 2026-09-08 · rating 4 · shell. The .latex demo's book: the Aaronson article Doug supplies, its theme installed HERE by registration. Owed: the paper's chapters, an $Article part with a $Margin.
 import { $ } from '@dna-platform/chemistry';
 import { $Book, Theme } from '@dna-platform/public';
 import { Theme as Latex } from '@dna-platform/public/article';

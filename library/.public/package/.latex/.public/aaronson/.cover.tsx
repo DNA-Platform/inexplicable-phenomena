@@ -1,4 +1,4 @@
-// CREATED 2026-09-08 — Sprint 53 scaffold. OWED: the paper's real title, author and subject once Doug supplies the source; the abstract is the synopsis (.synopsis.tsx) — or an <Abstract>, which exists in book/ and is parenthetical by a copied default the register flags (book/Abstract.tsx:10).
+// CREATED 2026-09-08 · rating 4 · placeholder until the paper's source arrives.
 import { $ } from '@dna-platform/chemistry';
 import { Author, Cover, Reference, Subject, Title } from '@dna-platform/public';
 

@@ -49,17 +49,18 @@ export class $TypeOf$Sentence extends $Type {
     protected override specification: Specification<$Writing> = new $SentenceSpecification();
 }
 
+// THE RULE THAT STOPPED THE PAGE, struck 2026-09-08 with the reason beside it. It refused any
+// stop with text after it, so `Dr. Smith went home.`, `the U.S. Navy` and `e.g. this` were all
+// refused, and the Turing article is full of them. A pattern cannot tell a sentence's terminal
+// stop from an abbreviation's period, and it did not have to try: THE PARSER ALREADY DECIDED
+// WHERE THE SENTENCE ENDED. A sentence the parse made is well bounded by construction and a
+// sentence an author wrote is the author's, so the rule re-derived a boundary it was handed and
+// then disagreed with it. WHAT WOULD MAKE IT BETTER: a rule saying something about a sentence
+// that the PARSE cannot say — and if there is none, a sentence carries no rule of its own,
+// which is an honest answer rather than a gap.
 export class SentenceSpecification extends WritingSpecification {
-    protected patterns = {
-        stopped: /[.!?][^\S\n]*\S/u
-    };
-
-    @specify('a sentence stops once, at its end')
-    $stopsAtItsEnd(writing: $Writing): void {
-        $check(!this.patterns.stopped.test(html.text(writing._block)),
-            'a sentence stops once, at its end, and this one stops before it');
-    }
 }
+
 
 export class $SentenceSpecification extends WritingSpecification {
 }

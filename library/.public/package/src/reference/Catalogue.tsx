@@ -101,10 +101,6 @@ export class CatalogueSpecification extends WritingSpecification {
         return false;
     }
 
-    @specify('a catalogue holds references, not parts')
-    override $composesWhatItHolds(writing: $Writing): boolean | void {
-        return false;
-    }
 }
 
 export const Catalogue = $($Catalogue);

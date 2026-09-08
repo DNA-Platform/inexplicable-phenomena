@@ -73,12 +73,6 @@ export class RefSpecification extends PhraseSpecification {
     $namesTarget(writing: $Writing): void {
         $check(writing instanceof $Ref && writing.url() !== undefined, 'a ref names a target, and this one names none');
     }
-
-    @specify('a ref points, and its url is not prose')
-    override $stopsAtItsEnd(writing: $Writing): boolean | void {
-        if (writing instanceof $Ref) return false;
-        return super.$stopsAtItsEnd(writing);
-    }
 }
 
 export const Ref = $($Ref);

@@ -30,13 +30,7 @@ export class $TypeOfMath extends $TypeOfPhrase {
     protected override specification: Specification<$Writing> = new MathSpecification();
 }
 
-export class MathSpecification extends PhraseSpecification {
-    // TeX is not prose: a stop inside it is not the end of a sentence — the same waiver $Ref carries.
-    @specify('mathematics is not prose, and stops nowhere')
-    override $stopsAtItsEnd(writing: $Writing): boolean | void {
-        return false;
-    }
-}
+export class MathSpecification extends PhraseSpecification {}
 
 export const Math = $($Math);
 export const TypeOfMath = $($TypeOfMath);

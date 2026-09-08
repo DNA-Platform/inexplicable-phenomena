@@ -85,10 +85,6 @@ export class ReferenceSpecification extends WritingSpecification {
     }
 
 
-    @specify('a reference composes nothing of its own')
-    override $composesWhatItHolds(writing: $Writing): boolean | void {
-        return false;
-    }
 }
 
 export const Reference = $($Reference);

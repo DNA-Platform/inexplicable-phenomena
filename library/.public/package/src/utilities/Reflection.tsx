@@ -69,16 +69,21 @@ export class Reflection {
         return block;
     }
 
+    // A WRITING BEING CONSTRUCTED HOLDS NOTHING YET, and the walk reaches one: a format asks its
+    // theme, the theme walks parents, and a parent whose bond has not run has no block. Asking such
+    // a writing what it holds answers NOTHING, which is true — the same fact M5 states about a field
+    // initializer, met from the other side. Reading `_block` as though it were always there threw,
+    // and it threw only once the specification refusals stopped hiding it.
     annotations(writing: $Writing): $Annotation[] {
-        return (writing._block.$elements ?? []).filter((part): part is $Annotation => part instanceof this.kinds.annotation);
+        return (writing._block?.$elements ?? []).filter((part): part is $Annotation => part instanceof this.kinds.annotation);
     }
 
     types(writing: $Writing): $Type[] {
-        return (writing._block.$elements ?? []).filter((part): part is $Type => part instanceof this.kinds.type);
+        return (writing._block?.$elements ?? []).filter((part): part is $Type => part instanceof this.kinds.type);
     }
 
     meaning(writing: $Writing): $Annotation | undefined {
-        return (writing._block.$elements ?? []).find((part): part is $Annotation =>
+        return (writing._block?.$elements ?? []).find((part): part is $Annotation =>
             part instanceof this.kinds.annotation && this.types(part).some(type => this.names(type).includes('Reference')));
     }
 

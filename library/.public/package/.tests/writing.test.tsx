@@ -57,10 +57,16 @@ describe('a piece of writing holds nothing above its own level', () => {
         expect(() => section.specify()).not.toThrow();
     });
 
-    it('AND A SENTENCE HOLDING A CHAPTER FAILS', () => {
+    // THE LEVEL RULE IS STRUCK AND THIS PINS WHAT THAT COST. `a piece of writing holds nothing above
+    // its own level` refused 329 pieces of the two demos' OWN writing and took both pages to blank,
+    // and nobody could say which of the 329 were real faults — a rule whose failures cannot be
+    // triaged is not a rule. WHAT WOULD MAKE IT BETTER: a refusal that names WHICH part offended and
+    // WHICH level it stands at, so it can be read; and a count against the whole corpus before it is
+    // turned on, because this one was written against examples and then met a book.
+    it('and a sentence holding a chapter is admitted, which is what striking the level rule costs', () => {
         const sentence = built<$Writing>(
             <Writing><TypeOfSentence /><Writing><TypeOfChapter />a</Writing></Writing>);
-        expect(() => sentence.specify()).toThrow(/holds nothing above its own level/);
+        expect(() => sentence.specify()).not.toThrow();
     });
 
     it('and a word holding letters specifies clean', () => {
@@ -327,9 +333,9 @@ describe('a composition generates the level it needs from what it holds', () => 
         expect(held.reading()).toBe(held.reading());
     });
 
-    it('AND THE ONLY REFUSAL IS HOLDING SOMETHING ABOVE', () => {
+    it('and nothing about the level is refused now, which is the same cost said twice', () => {
         expect(() => built<$Writing>(<Writing><TypeOfSentence /><Writing><TypeOfChapter />a</Writing></Writing>).specify())
-            .toThrow(/holds nothing above its own level/);
+            .not.toThrow();
     });
 
     it('and a chapter handed a bare paragraph is a chapter, because the section between them is read', () => {

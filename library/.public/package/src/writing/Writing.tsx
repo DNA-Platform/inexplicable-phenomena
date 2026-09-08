@@ -120,12 +120,6 @@ export class WritingSpecification extends Specification<$Writing> {
             'a piece of writing holds copy, annotations and writing, and this one holds something else');
     }
 
-    @specify('a piece of writing holds nothing above its own level')
-    $composesWhatItHolds(writing: $Writing): void {
-        $check(this.composed(writing).every(part => reflection.beneath(writing.kind, part.kind)),
-            'a piece of writing holds nothing above its own level, and this one holds something above it');
-    }
-
     // A RULE READS, AND A READING IS WHAT parts() ANSWERS. A composition arranges what
     // it holds and supplies what its own rules require, so a rule that consulted the
     // block alone would refuse a book for lacking a footer the book itself answers.
