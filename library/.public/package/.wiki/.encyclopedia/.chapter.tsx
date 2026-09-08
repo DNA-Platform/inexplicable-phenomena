@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, select, styled } from '@dna-platform/chemistry';
+import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
 import { $Format, $Chapter, $Section, $Paragraph, $IndexCard, $Ref, $Theme$, html } from '@dna-platform/public';
 
 // A field's resting edge is the link colour lightened against the paper, so a
@@ -23,18 +23,14 @@ export const globe = 'https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipe
 export class $WikipediaChapter extends $Chapter { }
 
 export class $Editions extends $WikipediaChapter {
-    override frame(drawn: ReactNode): ReactNode {
-        const Held = $(EditionsFormat);
-
-        return <Held>{super.frame(drawn)}</Held>;
+    $Editions(block: $Block) {
+        super.$Chapter($check(block, $Block, '!').concat($check(editionsFormatLook, '!')));
     }
 }
 
 export class $EditionList extends $Section {
-    override frame(drawn: ReactNode): ReactNode {
-        const Held = $(EditionListFormat);
-
-        return <Held>{super.frame(drawn)}</Held>;
+    $EditionList(block: $Block) {
+        super.$Section($check(block, $Block, '!').concat($check(editionListFormatLook, '!')));
     }
 }
 
@@ -46,23 +42,20 @@ export class $EditionListFormat extends $Format {
 }
 
 export class $Foundation extends $WikipediaChapter {
-    override frame(drawn: ReactNode): ReactNode {
-        const Held = $(FoundationFormat);
-        return <Held>{super.frame(drawn)}</Held>;
+    $Foundation(block: $Block) {
+        super.$Chapter($check(block, $Block, '!').concat($check(foundationFormatLook, '!')));
     }
 }
 
 export class $Projects extends $WikipediaChapter {
-    override frame(drawn: ReactNode): ReactNode {
-        const Held = $(ProjectsFormat);
-        return <Held>{super.frame(drawn)}</Held>;
+    $Projects(block: $Block) {
+        super.$Chapter($check(block, $Block, '!').concat($check(projectsFormatLook, '!')));
     }
 }
 
 export class $Licence extends $WikipediaChapter {
-    override frame(drawn: ReactNode): ReactNode {
-        const Held = $(LicenceFormat);
-        return <Held>{super.frame(drawn)}</Held>;
+    $Licence(block: $Block) {
+        super.$Chapter($check(block, $Block, '!').concat($check(licenceFormatLook, '!')));
     }
 }
 
@@ -78,18 +71,16 @@ export class $Logo extends $Paragraph {
 export class $Languages extends $Section {
     $globe = '';
 
-    override frame(drawn: ReactNode): ReactNode {
-        const Ring = $(RingFormat);
-        return <Ring globe={this.$globe}>{super.frame(drawn)}</Ring>;
+    $Languages(block: $Block) {
+        super.$Section($check(block, $Block, '!').concat($check(ringFormatLook, '!')));
     }
 }
 
 export class $Language extends $Paragraph {
     $at = 1;
 
-    override frame(drawn: ReactNode): ReactNode {
-        const Place = $(LanguageFormat);
-        return <Place at={this.$at}>{super.frame(drawn)}</Place>;
+    $Language(block: $Block) {
+        super.$Paragraph($check(block, $Block, '!').concat($check(languageFormatLook, '!')));
     }
 }
 
@@ -399,3 +390,10 @@ export const LanguageFormat = $($LanguageFormat);
 export const CardFormat = $($CardFormat);
 export const Search = $($Search);
 export const SearchFormat = $($SearchFormat);
+const editionsFormatLook = EditionsFormat;
+const editionListFormatLook = EditionListFormat;
+const foundationFormatLook = FoundationFormat;
+const projectsFormatLook = ProjectsFormat;
+const licenceFormatLook = LicenceFormat;
+const ringFormatLook = RingFormat;
+const languageFormatLook = LanguageFormat;

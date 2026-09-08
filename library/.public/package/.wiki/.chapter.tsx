@@ -3,7 +3,7 @@
 // joins them because BOTH books share it and alan-turing was reaching into .article's folder
 // for it. A website has a header; a book does not — which is why none of this is framework.
 import { ReactNode } from 'react';
-import { $, select, styled } from '@dna-platform/chemistry';
+import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
 import { $Chapter, $Format, $Paragraph, $Ref, $Section, html } from '@dna-platform/public';
 
 export class $BookLink extends $Ref { }
@@ -12,18 +12,14 @@ export class $AuthorLink extends $Ref { }
 export class $OutwardLink extends $Ref { }
 
 export class $Header extends $Section {
-    override frame(drawn: ReactNode): ReactNode {
-        const Masthead = $(HeaderFormat);
-
-        return <Masthead>{super.frame(drawn)}</Masthead>;
+    $Header(block: $Block) {
+        super.$Section($check(block, $Block, '!').concat($check(headerFormatLook, '!')));
     }
 }
 
 export class $Footer extends $Chapter {
-    override frame(drawn: ReactNode): ReactNode {
-        const Colophon = $(FooterFormat);
-
-        return <Colophon>{super.frame(drawn)}</Colophon>;
+    $Footer(block: $Block) {
+        super.$Chapter($check(block, $Block, '!').concat($check(footerFormatLook, '!')));
     }
 }
 
@@ -94,3 +90,5 @@ export const BookLink = $($BookLink);
 export const SubjectLink = $($SubjectLink);
 export const AuthorLink = $($AuthorLink);
 export const OutwardLink = $($OutwardLink);
+const headerFormatLook = HeaderFormat;
+const footerFormatLook = FooterFormat;

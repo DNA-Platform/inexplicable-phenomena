@@ -1,12 +1,10 @@
 import { ReactNode } from 'react';
-import { $, select, styled } from '@dna-platform/chemistry';
+import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
 import { $Format, $Paragraph } from '@dna-platform/public';
 
 export class $Hatnote extends $Paragraph {
-    override frame(drawn: ReactNode): ReactNode {
-        const Note = $(HatnoteFormat);
-
-        return <Note>{super.frame(drawn)}</Note>;
+    $Hatnote(block: $Block) {
+        super.$Paragraph($check(block, $Block, '!').concat($check(hatnoteFormatLook, '!')));
     }
 }
 
@@ -22,3 +20,4 @@ export class $HatnoteFormat extends $Format {
 
 export const Hatnote = $($Hatnote);
 export const HatnoteFormat = $($HatnoteFormat);
+const hatnoteFormatLook = HatnoteFormat;
