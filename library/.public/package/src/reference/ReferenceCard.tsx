@@ -22,7 +22,7 @@ export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
     override path(): $Path | undefined { return super.path() ?? this.first()?.path(); }
 
     $ReferenceCard(block: $Block) {
-        super.$Reference((block ?? new $Block()).concat($check(typeOfReferenceCard, '!')));
+        super.$Reference((block ?? new $Block()).concat($check(TypeOfReferenceCard, '!')));
     }
 
     override read(): Promise<$Writing> {
@@ -64,4 +64,3 @@ export class ReferenceCardSpecification extends ReferenceSpecification {
 
 export const ReferenceCard = $($ReferenceCard);
 export const TypeOfReferenceCard = $($TypeOfReferenceCard);
-const typeOfReferenceCard = TypeOfReferenceCard;

@@ -38,9 +38,9 @@ export class $TypeOfParagraph extends $Type {
     protected override specification: Specification<$Writing> = new ParagraphSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
-        const Paragraph = $(paragraph);
+        const Made = $(Paragraph);
         const Representation = $($$Paragraph);
-        const written = $<$Paragraph>(<Paragraph>{parser.elements(tokens)}</Paragraph>);
+        const written = $<$Paragraph>(<Made>{parser.elements(tokens)}</Made>);
         written.mention = $<$$Paragraph>(<Representation />, written);
 
         return [written];
@@ -61,6 +61,5 @@ export class $ParagraphSpecification extends WritingSpecification {
 }
 
 export const Paragraph = $($Paragraph);
-const paragraph = Paragraph;
 export const TypeOfParagraph = $($TypeOfParagraph);
 export const TypeOf$Paragraph = $($TypeOf$Paragraph);

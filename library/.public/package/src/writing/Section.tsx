@@ -45,9 +45,9 @@ export class $TypeOfSection extends $Type {
     protected override specification: Specification<$Writing> = new SectionSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
-        const Section = $(written);
+        const Made = $(Section);
 
-        return [$<$Section>(<Section>{parser.elements(tokens)}</Section>)];
+        return [$<$Section>(<Made>{parser.elements(tokens)}</Made>)];
     }
 
     override below(): new() => $TypeOfParagraph { return $TypeOfParagraph; }
@@ -98,7 +98,6 @@ export class SectionSpecification extends WritingSpecification {
 }
 
 export const Section = $($Section);
-const written = Section;
 export const section = $($$Section);
 export const TypeOfSection = $($TypeOfSection);
 export const TypeOf$Section = $($TypeOf$Section);

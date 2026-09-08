@@ -112,11 +112,6 @@ export class $Theme extends $Format implements $Theme$ {
         super.$Format($check(block, $Block, '!').concat($check($TypeOfTheme, '!')));
     }
 
-    @look('worn')
-    override $view(): ReactNode {
-        return <main>{this.$content}</main>;
-    }
-
     static $register(): void {
         reflection.knows({ theme: $Theme });
     }

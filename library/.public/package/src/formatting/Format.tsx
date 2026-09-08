@@ -1,6 +1,6 @@
-// IN PROGRESS · rating 2. A format is an annotation WRITTEN INTO the writing it formats, found by formatted() and applied by wearing a fresh instance of its class around the drawing (probe P7) — its own $-props carried over, so <Ring globe="…"/> keeps its globe. A theme is a format that is a singleton with values.
+// CREATED · rating 4. A format is an annotation written INTO the writing it formats, found by formatted(), and it is a DRESS — chemistry's word: a styled chemical with no view, handed what it dresses and standing it in its selector, or restyling it in place where the tags agree, adding NOTHING. A theme is a format that is a singleton with values.
 import { ReactNode } from 'react';
-import { $, $Block, $check, look, styled } from '@dna-platform/chemistry';
+import { $, $Block, $check, children, styled } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
@@ -12,7 +12,6 @@ export interface $Format$ extends $Annotation$ { }
 
 export class $Format extends $Annotation implements $Format$ {
     override selector: any = styled.div;
-    $content: ReactNode = null;
     $of: $Format | null = null;
 
     override get theme(): $Theme { return this.$of === null ? reflection.theme(this) : this.$of.theme; }
@@ -21,19 +20,20 @@ export class $Format extends $Annotation implements $Format$ {
         super.$Writing($check(block, $Block, '!').concat($check($TypeOfFormat, '!')));
     }
 
+    // A DRESS NEEDS NO VIEW — chemistry promises it: handed the element, it holds what it is
+    // given. This override exists only to UN-INHERIT $Writing.view(), which draws a block, and a
+    // format has no block to draw. What stood here instead was a second look writing a <div> the
+    // selector was going to write anyway, and a $content prop standing in for the children a
+    // chemical already carries — the framework's own mechanism, rebuilt by hand after being
+    // switched off. A format whose selector is the tag of what it dresses adds no element at all.
     override view(): ReactNode {
-        return null;
-    }
-
-    @look('worn')
-    override $view(): ReactNode {
-        return <div>{this.$content}</div>;
+        return this[children];
     }
 
     override format(drawn: ReactNode): ReactNode {
         const Worn = reflection.sheet(this.constructor as new() => $Format);
 
-        return <Worn of={this} {...this.handed()} look="worn" content={drawn} />;
+        return <Worn of={this} {...this.handed()}>{drawn}</Worn>;
     }
 
     // What the worn instance is handed besides the drawing; a format that carries a prop says so here.

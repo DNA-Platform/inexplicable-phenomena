@@ -59,9 +59,9 @@ export class $Composition extends $Writing implements $Composition$ {
     }
 
     concatenate(...more: $Composition[]): $Composition {
-        const Composition = $(composition);
+        const Made = $(Composition);
 
-        return $<$Composition>(<Composition />, ...this.parts(), ...more.flatMap(part => part.parts()));
+        return $<$Composition>(<Made />, ...this.parts(), ...more.flatMap(part => part.parts()));
     }
 
     protected reduce(tokens: (string | $Writing)[]): $Writing[] {
@@ -71,4 +71,3 @@ export class $Composition extends $Writing implements $Composition$ {
 }
 
 export const Composition = $($Composition);
-const composition = Composition;

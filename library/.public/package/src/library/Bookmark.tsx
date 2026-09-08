@@ -18,7 +18,7 @@ export class $Bookmark extends $Reference implements $Bookmark$ {
     }
 
     $Bookmark(block: $Block) {
-        super.$Reference((block ?? new $Block()).concat($check(typeOfBookmark, '!')));
+        super.$Reference((block ?? new $Block()).concat($check(TypeOfBookmark, '!')));
     }
 
     override async read(): Promise<$Writing> {
@@ -49,4 +49,3 @@ export class BookmarkSpecification extends ReferenceSpecification {
 
 export const Bookmark = $($Bookmark);
 export const TypeOfBookmark = $($TypeOfBookmark);
-const typeOfBookmark = TypeOfBookmark;

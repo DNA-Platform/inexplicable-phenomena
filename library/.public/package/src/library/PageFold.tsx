@@ -10,7 +10,7 @@ export class $PageFold extends $Reference implements $PageFold$ {
     location = 0;
 
     $PageFold(block: $Block) {
-        super.$Reference((block ?? new $Block()).concat($check(typeOfPageFold, '!')));
+        super.$Reference((block ?? new $Block()).concat($check(TypeOfPageFold, '!')));
     }
 }
 
@@ -29,4 +29,3 @@ export class PageFoldSpecification extends ReferenceSpecification {
 
 export const PageFold = $($PageFold);
 export const TypeOfPageFold = $($TypeOfPageFold);
-const typeOfPageFold = TypeOfPageFold;

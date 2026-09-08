@@ -47,9 +47,9 @@ export class $TypeOfLetter extends $Type {
     protected override specification: Specification<$Writing> = new LetterSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
-        const Letter = $(letter);
+        const Made = $(Letter);
 
-        return parser.letters(tokens).map(segment => $(<Letter>{segment}</Letter>));
+        return parser.letters(tokens).map(segment => $(<Made>{segment}</Made>));
     }
 
     override specifically(letter: $Letter): void {
@@ -91,6 +91,5 @@ export class LetterSpecification extends WritingSpecification {
 export class $LetterSpecification extends WritingSpecification { }
 
 export const Letter = $($Letter);
-const letter = Letter;
 export const TypeOfLetter = $($TypeOfLetter);
 export const TypeOf$Letter = $($TypeOf$Letter);

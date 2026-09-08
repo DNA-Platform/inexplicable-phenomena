@@ -32,10 +32,10 @@ export class $TypeOfSentence extends $Type {
     protected override specification: Specification<$Writing> = new SentenceSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
-        const Sentence = $(sentence);
+        const Made = $(Sentence);
         const Representation = $($$Sentence);
         const sentences = parser.sentences(tokens)
-            .map(line => $<$Sentence>(<Sentence>{parser.elements(line)}</Sentence>));
+            .map(line => $<$Sentence>(<Made>{parser.elements(line)}</Made>));
         for (const written of sentences) written.mention = $<$$Sentence>(<Representation />, written);
 
         return sentences;
@@ -66,6 +66,5 @@ export class $SentenceSpecification extends WritingSpecification {
 }
 
 export const Sentence = $($Sentence);
-const sentence = Sentence;
 export const TypeOfSentence = $($TypeOfSentence);
 export const TypeOf$Sentence = $($TypeOf$Sentence);

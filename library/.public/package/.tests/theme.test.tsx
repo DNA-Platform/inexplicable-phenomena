@@ -112,7 +112,6 @@ describe('a format is written into the writing it formats', () => {
         $tone = 'plain';
         override selector = styled.aside;
         get borderLeft() { return `4px solid ${this.$tone}`; }
-        @look('worn') override $view() { return <aside>{this.$content}</aside>; }
     }
     const Boxed = $($Boxed);
     const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };

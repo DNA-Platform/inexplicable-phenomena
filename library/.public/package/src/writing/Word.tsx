@@ -29,9 +29,9 @@ export class $TypeOfWord extends $Type {
     protected override specification: Specification<$Writing> = new WordSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
-        const Word = $(word);
+        const Made = $(Word);
         const Representation = $($$Word);
-        const words = parser.words(tokens).map(piece => $<$Word>(<Word>{piece}</Word>));
+        const words = parser.words(tokens).map(piece => $<$Word>(<Made>{piece}</Made>));
         for (const written of words) written.mention = $<$$Word>(<Representation />, written);
 
         return words;
@@ -61,6 +61,5 @@ export class $WordSpecification extends WritingSpecification {
 }
 
 export const Word = $($Word);
-const word = Word;
 export const TypeOfWord = $($TypeOfWord);
 export const TypeOf$Word = $($TypeOf$Word);
