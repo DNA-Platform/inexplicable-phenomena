@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
-import { Line, Sidebar } from '../.article/.sidebar';
+import { Infobox, Line } from '@dna-platform/public/encyclopedia';
 
 export default $(
     <Synopsis print>
-        <Sidebar>
+        <Infobox>
             <Heading>Alan Turing OBE FRS</Heading>
             <Line label="Born">Alan Mathison Turing, 23 June 1912, Maida Vale, London, England</Line>
             <Line label="Died">7 June 1954 (aged 41), Wilmslow, Cheshire, England</Line>
@@ -18,7 +18,7 @@ export default $(
             <Line label="Thesis">Systems of Logic Based on Ordinals (1938)</Line>
             <Line label="Doctoral advisor">Alonzo Church</Line>
             <Line label="Doctoral students">Robin Gandy · Beatrice Worsley</Line>
-        </Sidebar>
+        </Infobox>
         <Section>
             <Heading>English computer scientist (1912–1954)</Heading>
             <Paragraph>Alan Mathison Turing (/ˈtjʊərɪŋ/; 23 June 1912 – 7 June 1954) was an English mathematician, computer scientist, logician, cryptanalyst, philosopher and theoretical biologist. He was highly influential in the development of theoretical computer science, providing a formalisation of the concepts of algorithm and computation with the Turing machine, which can be considered a model of a general-purpose computer. Turing is widely considered to be the father of theoretical computer science.</Paragraph>

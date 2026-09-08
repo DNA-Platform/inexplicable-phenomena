@@ -1,15 +1,17 @@
 // The door @dna-platform/public/article — the LaTeX article as a book type.
 //
-// Section WAS HERE AND IS DELETED. It existed to number a section, and numbering is not LaTeX's:
-// Wikipedia numbers its contents entries, and $Equation, $Theorem, $Citation and $Footnote each
-// wanted the same reading. FIVE KINDS ASKING FOR ONE THING IS A FINDING ABOUT THE BASE, and the
-// base now answers it — reflection.numbered. A section that draws its number is one line in a
-// theme reading that, not a class here.
+// ABSTRACT WAS HERE AND IS DELETED, not moved back. Read beside library/Synopsis it was the SAME
+// CLASS under another name — both extend $Composition, both parenthetical, both a $TypeOfChapter
+// with an empty specification, line for line. A paper's abstract IS a synopsis; `abstract` is what
+// one domain calls it. Doug's own rule settles which word survives: a kind is named after its
+// CANONICAL member, the way $Letter is named for a letter and covers every character. This is the
+// public library, so the library's word wins and a paper writes <Synopsis print>.
+// That also dissolves Q7 — "an <Abstract> would vanish because it is parenthetical" was a question
+// about a duplicate, and `print` is how a parenthetical is shown.
 //
-// Abstract says the word the base once said and means a paper's, which is the DI naming: a
-// consumer importing from THIS door gets the paper's.
+// Section was here and is deleted: numbering is not LaTeX's, and reflection.numbered answers it.
+// Margin was here and is deleted: it held header, sidebar and footer, and all three are the app's.
 export * from './article/Article';
-export * from './article/Abstract';
 export * from './article/Theorem';
 export * from './article/Footnote';
 export * from './article/Appendix';

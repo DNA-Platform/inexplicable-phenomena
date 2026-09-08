@@ -3,6 +3,7 @@
 // labelled lines, not the standing-beside. So the shape moved to writing/Aside and this inherits it,
 // which is why it draws <aside> without saying so. Open: an index card's title must MEAN something
 // and a line's does not, so a line is a labelled paragraph here rather than a card.
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
@@ -45,7 +46,9 @@ export class $Line extends $Composition implements $Line$ {
         super.$Composition($check(block, $Block).concat($check($TypeOfLine, '!')));
     }
 
-    // OWED: <p class="pd-line" label={this.label}> — the theme draws the label with ::before { content: attr(label) }.
+    override print(content: ReactNode): ReactNode {
+        return <p className={this.className} data-label={this.label}>{content}</p>;
+    }
 }
 
 export class $TypeOfLine extends $TypeOfParagraph {

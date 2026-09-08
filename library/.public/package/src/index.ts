@@ -14,7 +14,12 @@ export * from './writing/Sentence';
 export * from './writing/Paragraph';
 export * from './writing/Section';
 export * from './writing/Aside';
-export * from './writing/Quote';
+// QUOTE WAS HERE AND IS DELETED. It was written as a $Section whose specification WAIVED
+// "a section opens with its heading" — and a waiver is the design saying the thing is not that
+// kind. Nothing in either demo quoted, so it was a shape argued from a theme group rather than
+// from writing. WHAT WOULD BRING IT BACK: a demo that quotes, and an answer to whether a quotation
+// is a section at all or a paragraph that MEANS its source — the anchor is already drawn for a
+// writing that means something, which may be the whole of it.
 export * from './writing/Heading';
 export * from './writing/Illustration';
 export * from './writing/Phrase';
