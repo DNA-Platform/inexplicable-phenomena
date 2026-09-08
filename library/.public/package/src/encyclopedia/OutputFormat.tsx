@@ -1,9 +1,0 @@
-import { $, select, styled } from '@dna-platform/chemistry';
-import { $Format } from '@/formatting/Format';
-
-export class $OutputFormat extends $Format {
-    selector = styled.div;
-    @select('> *:first-child') opening_marginTop = '0';
-}
-
-export const OutputFormat = $($OutputFormat);

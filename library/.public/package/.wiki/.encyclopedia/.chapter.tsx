@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, select, styled } from '@dna-platform/chemistry';
 import { $Format, $Chapter, $Section, $Paragraph, $IndexCard, $Ref, $Theme$, html } from '@dna-platform/public';
-import { $ArticleFormat, ArticleFormat } from '@dna-platform/public/encyclopedia';
 
 // A field's resting edge is the link colour lightened against the paper, so a
 // theme that changes what a link looks like changes every border drawn from one.
@@ -23,7 +22,13 @@ export const globe = 'https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipe
 
 export class $WikipediaChapter extends $Chapter { }
 
-export class $Editions extends $WikipediaChapter { }
+export class $Editions extends $WikipediaChapter {
+    override frame(drawn: ReactNode): ReactNode {
+        const Held = $(EditionsFormat);
+
+        return <Held>{super.frame(drawn)}</Held>;
+    }
+}
 
 export class $EditionList extends $Section {
     override frame(drawn: ReactNode): ReactNode {
@@ -40,11 +45,29 @@ export class $EditionListFormat extends $Format {
     display = 'none';
 }
 
-export class $Foundation extends $WikipediaChapter { }
+export class $Foundation extends $WikipediaChapter {
+    override frame(drawn: ReactNode): ReactNode {
+        const Held = $(FoundationFormat);
 
-export class $Projects extends $WikipediaChapter { }
+        return <Held>{super.frame(drawn)}</Held>;
+    }
+}
 
-export class $Licence extends $WikipediaChapter { }
+export class $Projects extends $WikipediaChapter {
+    override frame(drawn: ReactNode): ReactNode {
+        const Held = $(ProjectsFormat);
+
+        return <Held>{super.frame(drawn)}</Held>;
+    }
+}
+
+export class $Licence extends $WikipediaChapter {
+    override frame(drawn: ReactNode): ReactNode {
+        const Held = $(LicenceFormat);
+
+        return <Held>{super.frame(drawn)}</Held>;
+    }
+}
 
 export class $Logo extends $Paragraph {
     $src = '';
@@ -84,7 +107,8 @@ export class $Project extends $IndexCard {
     }
 }
 
-export class $PortalChapterFormat extends $ArticleFormat {
+export class $PortalChapterFormat extends $Format {
+    selector = styled.div;
     width = '100%';
 }
 
@@ -101,7 +125,7 @@ export class $EditionsFormat extends $PortalChapterFormat {
     backgroundRepeat = 'no-repeat';
     backgroundSize = 'min(88%, 32.86em) 1px';
     backgroundPosition = 'center 1.43em';
-    @select('.pd-heading h2') pill_fontSize = '1em';
+    @select('h2.pd-heading') pill_fontSize = '1em';
     pill_fontWeight = '700';
     pill_lineHeight = '1.57';
     pill_boxSizing = 'border-box';
@@ -132,7 +156,7 @@ export class $FoundationFormat extends $BackMatterFormat {
     @select('p:has(img)') icon_position = 'absolute';
     icon_left = '0.62em';
     icon_top = '0';
-    @select('.pd-heading h2') hosted_fontSize = '1em';
+    @select('h2.pd-heading') hosted_fontSize = '1em';
     hosted_fontWeight = '400';
     hosted_borderBottom = 'none';
     hosted_margin = '0';
@@ -154,7 +178,7 @@ export class $LicenceFormat extends $BackMatterFormat {
     gridColumn = '1 / -1';
     textAlign = 'center';
     paddingTop = '1em';
-    @select('.pd-heading h2') licence_display = 'inline';
+    @select('h2.pd-heading') licence_display = 'inline';
     licence_fontSize = '1em';
     licence_fontWeight = '400';
     licence_border = 'none';
@@ -237,13 +261,13 @@ export class $CardFormat extends $Format {
     @select('.pd-title > a::after') reach_content = "''";
     reach_position = 'absolute';
     reach_inset = '0';
-    @select('.pd-heading h2') name_fontSize = '1.075em';
+    @select('h2.pd-heading') name_fontSize = '1.075em';
     name_fontWeight = '400';
     name_lineHeight = '1.5';
     name_border = 'none';
     name_margin = '0';
     name_padding = '0';
-    @select('&:hover .pd-heading h2') hover_textDecoration = 'underline';
+    @select('&:hover h2.pd-heading') hover_textDecoration = 'underline';
     get name_fontFamily() { return this.theme.body; }
     get name_color() { return this.theme.link; }
 }
@@ -381,8 +405,3 @@ export const LanguageFormat = $($LanguageFormat);
 export const CardFormat = $($CardFormat);
 export const Search = $($Search);
 export const SearchFormat = $($SearchFormat);
-
-$(Editions, ArticleFormat)(EditionsFormat);
-$(Foundation, ArticleFormat)(FoundationFormat);
-$(Projects, ArticleFormat)(ProjectsFormat);
-$(Licence, ArticleFormat)(LicenceFormat);

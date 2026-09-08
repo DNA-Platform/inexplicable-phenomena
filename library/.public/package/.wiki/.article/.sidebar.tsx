@@ -32,7 +32,7 @@ export class $SidebarFormat extends $Format {
     fontSize = '0.88em';
     lineHeight = '1.4';
 
-    @select('.pd-heading h2')
+    @select('h2.pd-heading')
     name_display = 'block';
     name_fontSize = '1.3em';
     name_fontWeight = '700';
