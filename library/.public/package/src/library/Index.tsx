@@ -3,15 +3,15 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
+import { $Chapter, $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
 
 export interface $Index$ extends $Chapter$ { }
 
-export class $Index extends $Composition implements $Index$ {
+export class $Index extends $Chapter implements $Index$ {
     override parenthetical = true;
 
     $Index(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfIndex, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfIndex, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

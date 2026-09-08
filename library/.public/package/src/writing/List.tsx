@@ -9,12 +9,13 @@ import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $TypeOfItem } from './Item';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
+import { $Paragraph } from '@/writing/Paragraph';
 
 export interface $List$ extends $Paragraph$ { }
 
-export class $List extends $Composition implements $List$ {
+export class $List extends $Paragraph implements $List$ {
     $List(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfList, '!')));
+        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfList, '!')));
     }
 
     // A LIST DRAWS ITS PARTS, which is the reading $Section already takes. What stood here split

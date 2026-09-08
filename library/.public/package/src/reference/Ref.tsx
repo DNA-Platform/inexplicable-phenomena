@@ -6,7 +6,7 @@ import { html } from '@/utilities/Html';
 import { parser } from '@/utilities/Parser';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Phrase$, $TypeOfPhrase, PhraseSpecification } from '@/writing/Phrase';
+import { $Phrase$, $TypeOfPhrase, PhraseSpecification, $Phrase } from '@/writing/Phrase';
 import { Word as word } from '@/writing/Word';
 import { $Path, $TypeOfPath } from './Path';
 
@@ -16,7 +16,7 @@ export interface $Ref$ extends $Phrase$ {
     written(): string;
 }
 
-export class $Ref extends $Composition implements $Ref$ {
+export class $Ref extends $Phrase implements $Ref$ {
     $path?: string;
 
     path(): $Path | undefined { return this.searchForOne<$Path>($TypeOfPath); }
@@ -24,7 +24,7 @@ export class $Ref extends $Composition implements $Ref$ {
     written(): string { return this.link()?.text ?? html.text(this._block); }
 
     $Ref(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfRef, '!')));
+        super.$Phrase($check(block, $Block, '!').concat($check($TypeOfRef, '!')));
     }
 
     override view(): ReactNode {

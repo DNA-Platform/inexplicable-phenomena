@@ -3,13 +3,13 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
+import { $Chapter, $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
 
 export interface $TableOfContents$ extends $Chapter$ { }
 
-export class $TableOfContents extends $Composition implements $TableOfContents$ {
+export class $TableOfContents extends $Chapter implements $TableOfContents$ {
     $TableOfContents(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfTableOfContents, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfTableOfContents, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

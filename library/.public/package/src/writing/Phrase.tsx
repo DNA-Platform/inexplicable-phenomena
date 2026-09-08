@@ -4,12 +4,13 @@ import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Sentence$, $TypeOfSentence, SentenceSpecification } from './Sentence';
+import { $Sentence } from '@/writing/Sentence';
 
 export interface $Phrase$ extends $Sentence$ { }
 
-export class $Phrase extends $Composition implements $Phrase$ {
+export class $Phrase extends $Sentence implements $Phrase$ {
     $Phrase(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfPhrase, '!')));
+        super.$Sentence($check(block, $Block, '!').concat($check($TypeOfPhrase, '!')));
     }
 }
 

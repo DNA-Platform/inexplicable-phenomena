@@ -7,16 +7,17 @@ import { $Composition } from '@/writing/Composition';
 import { html } from '@/utilities/Html';
 import { tex } from '@/utilities/Tex';
 import { $Phrase$, $TypeOfPhrase, PhraseSpecification } from './Phrase';
+import { $Phrase } from '@/writing/Phrase';
 
 export interface $Math$ extends $Phrase$ {
     tex(): string;
 }
 
-export class $Math extends $Composition implements $Math$ {
+export class $Math extends $Phrase implements $Math$ {
     tex(): string { return html.text(this._block); }
 
     $Math(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfMath, '!')));
+        super.$Phrase($check(block, $Block, '!').concat($check($TypeOfMath, '!')));
     }
 
     // IT WRITES ITS ELEMENT LIKE EVERY OTHER KIND, through print rather than view — katex answers

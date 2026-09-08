@@ -8,13 +8,14 @@ import { html } from '@/utilities/Html';
 import { reflection } from '@/utilities/Reflection';
 import { tex } from '@/utilities/Tex';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
+import { $Paragraph } from '@/writing/Paragraph';
 
 export interface $Equation$ extends $Paragraph$ {
     tex(): string;
     number(): number | undefined;
 }
 
-export class $Equation extends $Composition implements $Equation$ {
+export class $Equation extends $Paragraph implements $Equation$ {
     tex(): string { return html.text(this._block); }
 
     // ACROSS THE BOOK, the same reading $Theorem, $Citation and $Footnote each take. It was written
@@ -23,7 +24,7 @@ export class $Equation extends $Composition implements $Equation$ {
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Equation(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfEquation, '!')));
+        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfEquation, '!')));
     }
 
     // The number is DRAWN AS AN ATTRIBUTE and not as words, so a theme places it — LaTeX puts it

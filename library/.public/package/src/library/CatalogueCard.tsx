@@ -3,16 +3,16 @@ import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Reference$ } from '@/reference/Reference';
 import { $Composition } from '@/writing/Composition';
-import { $IndexCard$, $TypeOfIndexCard, IndexCardSpecification } from '@/reference/IndexCard';
+import { $IndexCard$, $TypeOfIndexCard, IndexCardSpecification, $IndexCard } from '@/reference/IndexCard';
 import { $Title, $TypeOfTitle } from './Title';
 
 export interface $CatalogueCard$ extends $IndexCard$ { }
 
-export class $CatalogueCard extends $Composition implements $CatalogueCard$ {
+export class $CatalogueCard extends $IndexCard implements $CatalogueCard$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
 
     $CatalogueCard(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfCatalogueCard, '!')));
+        super.$IndexCard($check(block, $Block, '!').concat($check($TypeOfCatalogueCard, '!')));
     }
 
     override get meaning(): $Reference$ | undefined { return this.title()?.meaning; }

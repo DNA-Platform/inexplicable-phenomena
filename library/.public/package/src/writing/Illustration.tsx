@@ -5,20 +5,21 @@ import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
+import { $Paragraph } from '@/writing/Paragraph';
 
 export interface $Illustration$ extends $Paragraph$ {
     source: string;
     caption: string;
 }
 
-export class $Illustration extends $Composition implements $Illustration$ {
+export class $Illustration extends $Paragraph implements $Illustration$ {
     $source = '';
 
     get source(): string { return this.$source; }
     get caption(): string { return html.text(this._block); }
 
     $Illustration(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfIllustration, '!')));
+        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfIllustration, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

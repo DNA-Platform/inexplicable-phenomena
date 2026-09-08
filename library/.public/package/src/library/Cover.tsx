@@ -3,7 +3,7 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
+import { $Chapter, $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
 import { $Title, $TypeOfTitle } from './Title';
 import { $Author, $TypeOfAuthor } from './Author';
 import { $Subject, $TypeOfSubject } from './Subject';
@@ -14,13 +14,13 @@ export interface $Cover$ extends $Chapter$ {
     subject(): $Subject | undefined;
 }
 
-export class $Cover extends $Composition implements $Cover$ {
+export class $Cover extends $Chapter implements $Cover$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
     author(): $Author | undefined { return this.searchForOne<$Author>($TypeOfAuthor); }
     subject(): $Subject | undefined { return this.searchForOne<$Subject>($TypeOfSubject); }
 
     $Cover(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfCover, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfCover, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

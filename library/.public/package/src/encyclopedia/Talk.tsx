@@ -14,18 +14,18 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification } from '@/library/Chapter';
-import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
+import { $Chapter$, $TypeOfChapter, ChapterSpecification, $Chapter } from '@/library/Chapter';
+import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification, $Paragraph } from '@/writing/Paragraph';
 
 export interface $Talk$ extends $Chapter$ {
     topics(): $Writing[];
 }
 
-export class $Talk extends $Composition implements $Talk$ {
+export class $Talk extends $Chapter implements $Talk$ {
     topics(): $Writing[] { throw new Error('not implemented: $Talk.topics — the sections it holds, each one a discussion'); }
 
     $Talk(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfTalk, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfTalk, '!')));
     }
 }
 
@@ -44,11 +44,11 @@ export interface $Comment$ extends $Paragraph$ {
 // A COMMENT IS SIGNED AND HOLDS ITS REPLIES. The signature is a $Reference to a user page plus a
 // time — OPEN: is that a kind of its own, or two props here? A kind, if a signature is ever read
 // on its own; two props, if it is only ever drawn. Nothing in the demos decides it yet.
-export class $Comment extends $Composition implements $Comment$ {
+export class $Comment extends $Paragraph implements $Comment$ {
     replies(): $Comment[] { throw new Error('not implemented: $Comment.replies — the comments composed into this one, which is what threading IS'); }
 
     $Comment(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfComment, '!')));
+        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfComment, '!')));
     }
 }
 

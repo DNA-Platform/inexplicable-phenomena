@@ -8,13 +8,14 @@ import { $Section$, $TypeOfSection, SectionSpecification } from './Section';
 import { $TypeOfHeading } from './Heading';
 import { TableFormat as tableStyle } from '@/formatting/TableFormat';
 import { $Type } from './Type';
+import { $Section } from '@/writing/Section';
 
 export interface $Table$ extends $Section$ {
     $columns?: number;
     cells(): $Writing[];
 }
 
-export class $Table extends $Composition implements $Table$ {
+export class $Table extends $Section implements $Table$ {
     $columns?: number;
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
@@ -27,7 +28,7 @@ export class $Table extends $Composition implements $Table$ {
     }
 
     $Table(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfTable, '!')).concat($check(tableStyle, '!')));
+        super.$Section($check(block, $Block, '!').concat($check($TypeOfTable, '!')).concat($check(tableStyle, '!')));
     }
 }
 

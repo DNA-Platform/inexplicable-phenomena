@@ -34,14 +34,15 @@ import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Section$, $TypeOfSection, SectionSpecification } from './Section';
 import { $TypeOfHeading } from './Heading';
+import { $Section } from '@/writing/Section';
 
 export interface $Aside$ extends $Section$ { }
 
-export class $Aside extends $Composition implements $Aside$ {
+export class $Aside extends $Section implements $Aside$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Aside(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfAside, '!')));
+        super.$Section($check(block, $Block, '!').concat($check($TypeOfAside, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

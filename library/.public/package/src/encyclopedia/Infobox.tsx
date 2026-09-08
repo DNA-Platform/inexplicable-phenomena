@@ -10,7 +10,7 @@ import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Title, $TypeOfTitle } from '@/library/Title';
 import { $Aside$, $Aside, $TypeOfAside, AsideSpecification } from '@/writing/Aside';
-import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
+import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification, $Paragraph } from '@/writing/Paragraph';
 
 export interface $Infobox$ extends $Aside$ { }
 
@@ -37,13 +37,13 @@ export interface $Line$ extends $Paragraph$ {
 }
 
 // A LINE IS A LABELLED PARAGRAPH — the demo's $Line, promoted. Whether it should be an $IndexCard instead (ch18's "exact" fit) is the open question above.
-export class $Line extends $Composition implements $Line$ {
+export class $Line extends $Paragraph implements $Line$ {
     $label = '';
 
     get label(): string { return this.$label; }
 
     $Line(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfLine, '!')));
+        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfLine, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

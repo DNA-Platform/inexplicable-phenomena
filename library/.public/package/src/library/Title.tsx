@@ -5,12 +5,12 @@ import { $Composition } from '@/writing/Composition';
 import { $Writing } from '@/writing/Writing';
 import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
 import { html } from '@/utilities/Html';
-import { $Section$, $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $Section$, $TypeOfSection, SectionSpecification, $Section } from '@/writing/Section';
 import { $TypeOfCover } from './Cover';
 
 export interface $Title$ extends $Section$ { }
 
-export class $Title extends $Composition implements $Title$ {
+export class $Title extends $Section implements $Title$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     canonical(): $Title | undefined {
@@ -21,7 +21,7 @@ export class $Title extends $Composition implements $Title$ {
     }
 
     $Title(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfTitle, '!')));
+        super.$Section($check(block, $Block, '!').concat($check($TypeOfTitle, '!')));
         if (this.heading() === undefined) {
             const Heading = $(heading);
             this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));

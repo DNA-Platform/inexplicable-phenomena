@@ -3,13 +3,13 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
+import { $Chapter, $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
 
 export interface $Footer$ extends $Chapter$ { }
 
-export class $Footer extends $Composition implements $Footer$ {
+export class $Footer extends $Chapter implements $Footer$ {
     $Footer(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfFooter, '!')));
+        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfFooter, '!')));
     }
 
     override print(content: ReactNode): ReactNode {

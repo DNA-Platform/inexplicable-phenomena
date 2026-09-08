@@ -6,12 +6,13 @@ import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
+import { $Paragraph } from '@/writing/Paragraph';
 
 export interface $Heading$ extends $Paragraph$ { }
 
-export class $Heading extends $Composition implements $Heading$ {
+export class $Heading extends $Paragraph implements $Heading$ {
     $Heading(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfHeading, '!')));
+        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfHeading, '!')));
     }
 
     // A HEADING HAS A LEVEL AND NOW WRITES IT. It wrote <h2> always, so the base sheet carried h1,
