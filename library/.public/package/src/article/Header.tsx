@@ -22,7 +22,12 @@ import { $, $Chemical, styled } from '@dna-platform/chemistry';
 export class $Header extends $Chemical {
     override selector: any = styled.header;
     $className = 'pd-header';
-    position = 'fixed';
+    // FIXED AT THE TOP, OR SCROLLING OFF WITH THE DOCUMENT. Doug, 2026-09-09: "have a header that
+    // toggle to fixed at top versus scrolling off the screen." Absolute rather than static, because
+    // the strip is written inside the book and static would put it inside the sheet; absolute
+    // against the page keeps it full width and lets it scroll away. `fixed` is the CSS word.
+    $fixed: string | undefined = undefined;
+    get position() { return this.$fixed === 'no' ? 'absolute' : 'fixed'; }
     top = '0';
     left = '0';
     right = '0';

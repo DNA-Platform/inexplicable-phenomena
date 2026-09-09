@@ -3,10 +3,15 @@ import $Book from './.book';
 import cover from './.cover';
 import synopsis from './.synopsis';
 import introduction from './1-introduction';
-import formalIndependence from './2-formal-independence';
-import conclusion from './3-conclusion';
-import references from './4-references';
-import appendix from './5-appendix';
+import formalizing from './2-formalizing';
+import beliefs from './3-beliefs';
+import whyDifficult from './4-why-difficult';
+import strengthenings from './5-strengthenings';
+import progress from './6-progress';
+import conclusions from './7-conclusions';
+import acknowledgments from './8-acknowledgments';
+import appendix from './9-appendix';
+import references from './references';
 
 const Book = $($Book);
 
@@ -15,8 +20,13 @@ export const book = $<$Book>(
     cover,
     synopsis,
     introduction,
-    formalIndependence,
-    conclusion,
-    references,
+    formalizing,
+    beliefs,
+    whyDifficult,
+    strengthenings,
+    progress,
+    conclusions,
+    acknowledgments,
     appendix,
+    references,
 );

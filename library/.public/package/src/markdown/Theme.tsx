@@ -28,6 +28,12 @@ export class $Theme extends $Sheet {
     override pale = 'oklch(55.1% 0.027 264.364)';
     override shade = 'oklch(87.2% 0.01 258.338)';
 
+    // NO LEADERS AND NO MARKER — a rendered document has no pages, and drawing a place for one it
+    // does not have is the kind of ceremony a README never has. Both are the base's values, so
+    // turning them off is two words rather than a rule.
+    override leader = 'none';
+    override place = 'none';
+
     override indent = '0';
     override between = '1.25em';
     override titled = 'left';
@@ -81,6 +87,11 @@ export class $Theme extends $Sheet {
     override get strip_borderBottom() { return `1px solid ${this.rule}`; }
 
     get headingColour() { return 'oklch(21% 0.034 264.665)'; }
+
+    // OUR MARKDOWN STARTS AT H2's SIZE. Doug: "just start OUR markdown at the H1 == H2 size. No one
+    // needs the markdown H1 size." A document's title is set by the cover, so an h1 inside the prose
+    // is a section heading like any other and does not need to be twice the body.
+    @select('h1') override h1_fontSize = '1.5em';
 
     @select('.pd-heading') head_fontSize = '1.5em';
     head_marginTop = '2em';

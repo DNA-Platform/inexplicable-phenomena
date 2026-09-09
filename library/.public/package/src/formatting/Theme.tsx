@@ -84,9 +84,48 @@ export class $Theme extends $Format implements $Theme$ {
     listed_marginTop = '0';
     listed_marginBottom = '0';
     @select('.pd-table-of-contents > .pd-section > .pd-list') outer_paddingLeft = '0';
-    @select('.pd-table-of-contents .pd-item') entry_marginTop = '0';
+    // AN ENTRY IS A ROW: a name on the left and the place it names on the right, with the space
+    // between them led across. THIS IS IN THE BASE, not in the article theme, because it is what a
+    // table of contents IS and not what LaTeX does — Doug: "ask if you are hurting yourself by not
+    // taking some of this and moving it back into the main framework so markdown can inherit some."
+    // The nested list takes a row of its own, which is what lets the row be a flex line at all.
+    @select('.pd-table-of-contents .pd-item') entry_display = 'flex';
+    entry_flexWrap = 'wrap';
+    entry_alignItems = 'baseline';
+    entry_marginTop = '0';
     entry_marginBottom = '.15rem';
     entry_textIndent = '0';
+    @select('.pd-table-of-contents .pd-item > .pd-list') under_flex = '0 0 100%';
+    under_order = '4';
+
+    // THE LEADER AND THE PLACE, drawn inside the anchor so the whole row follows the link. `leader`
+    // and `place` are VALUES a theme sets: a documentleading with dots to a marker is one reading, a
+    // document with neither is another, and the markdown theme takes the second by setting them to
+    // none. The marker stands where a page number would stand, and becomes one the day a page does.
+    // TWO BOXES, because they are two things: the leader GROWS to fill the row and belongs inside
+    // the anchor so the whole run follows the link; the marker stands at the end of the row and is
+    // the entry's own. Drawn as one box the dots ran underneath the marker.
+    // `leader` is a background IMAGE rather than a dotted border: a 1px dotted border draws dots too
+    // fine and too close to read as leaders — seen, it came out a hairline — where a repeated
+    // radial gradient spaces them the way a typesetter does.
+    leader = 'none';
+    place = 'none';
+    spacing = '.55em';
+    @select('.pd-table-of-contents .pd-item > a') entryLink_display = 'flex';
+    entryLink_alignItems = 'baseline';
+    entryLink_flex = '1 1 auto';
+    entryLink_order = '1';
+    @select('.pd-table-of-contents .pd-item > a::after') leading_content = "''";
+    leading_flex = '1 1 auto';
+    leading_marginLeft = '.6em';
+    leading_alignSelf = 'stretch';
+    get leading_backgroundImage() { return this.leader; }
+    get leading_backgroundSize() { return `${this.spacing} ${this.spacing}`; }
+    leading_backgroundRepeat = 'repeat-x';
+    leading_backgroundPosition = 'left bottom .3em';
+    @select('.pd-table-of-contents .pd-item::after') get placed_content() { return this.place; }
+    placed_order = '3';
+    placed_marginLeft = '.6em';
     @select('.pd-table-of-contents a') named_textDecoration = 'none';
     get named_color() { return this.ink; }
 

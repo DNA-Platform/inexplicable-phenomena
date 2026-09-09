@@ -90,7 +90,11 @@ export class $Theme extends $Sheet {
     // "defined as an accessor... overridden here as an instance property" — which is the same
     // brittleness that broke `ruled`. A strip follows the palette by default and this one does not,
     // because it is not the document's colour; it is the viewer's.
-    @select('.pd-header') override get strip_background() { return '#3c3c3c'; }
+    // ONLY SLIGHTLY LIGHTER THAN THE DESK. Chrome's own bar is #3c3c3c on #282828 and it is loud
+    // because it carries controls; ours carries a name and a toggle, so Doug: "make its color only
+    // slightly lighter than the background in general, as ours doesn't truly do anything at the
+    // moment so shouldn't be called out."
+    @select('.pd-header') override get strip_background() { return '#2f2f2f'; }
     override get strip_color() { return '#e8eaed'; }
     override strip_height = '56px';
     strip_border = 'none';
@@ -146,10 +150,23 @@ export class $Theme extends $Sheet {
     // the NESTING rather than from anything an entry declares. The apparatus is excluded here by
     // the very classes the chapters write, which each entry now carries: the same :not() as above,
     // so the two numberings cannot drift apart because they are the same sentence twice.
+    // LEADERS TO A MARKER. There is no page to lead to, so the marker is LaTeX's own empty
+    // square rather than a number — it says honestly that a page is missing while keeping the
+    // shape and the rhythm of a real contents, and it is inside the anchor, so it follows the
+    // link. The day the document paginates, `place` becomes the number and nothing else here
+    // changes. Both are BASE values, so this theme sets two words rather than writing rules.
+    override leader = 'radial-gradient(circle at center, currentColor 1px, transparent 1.1px)';
+    override place = "'\\25A1'";
+
+    // A TOP-LEVEL ENTRY IS BOLD, name and marker alike, which is what article.cls does.
+    @select('.pd-table-of-contents > .pd-section > .pd-list > .pd-item > a') top_fontWeight = '700';
+
     @select('.pd-table-of-contents .pd-list') counting_counterReset = 'listed';
     @select('.pd-table-of-contents .pd-item') tallied_counterIncrement = 'listed';
     @select('.pd-table-of-contents .pd-item.pd-references, .pd-table-of-contents .pd-item.pd-appendix') apart_counterIncrement = 'none';
-    @select('.pd-table-of-contents .pd-item > a::before') listedNumber_content = "counters(listed, '.') '\\00a0\\00a0'";
+    @select('.pd-table-of-contents .pd-item > a::before') listedNumber_content = "counters(listed, '.')";
+    listedNumber_flex = '0 0 auto';
+    listedNumber_minWidth = '2.6em';
     @select('.pd-table-of-contents .pd-item.pd-references > a::before, .pd-table-of-contents .pd-item.pd-appendix > a::before') apartNumber_content = "''";
 
     // A PAPER IS SET JUSTIFIED AND HYPHENATED, which is the difference nobody names when they say a
