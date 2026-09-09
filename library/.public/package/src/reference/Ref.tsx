@@ -20,7 +20,14 @@ export class $Ref extends $Phrase implements $Ref$ {
     $path?: string;
 
     path(): $Path | undefined { return this.searchForOne<$Path>($TypeOfPath); }
-    url(): string | undefined { return html.text(this.path()?._block) || this.$path || this.link()?.url; }
+    // A BARE KEY NAMES A FOLD. Markdown's own syntax already affords it — [Cook 1971](cook) — and
+    // Doug asked for exactly that: "do you use Ref as much as you can and the markdown reference
+    // syntax it affords?" A target with no scheme, no slash and no hash is not a URL anybody meant;
+    // it is the key a $PageFold denotes, so it is answered as the fragment that reaches it.
+    url(): string | undefined {
+        const named = html.text(this.path()?._block) || this.$path || this.link()?.url;
+        return named !== undefined && /^[\w.:-]+$/u.test(named) && !/^\w+:/u.test(named) ? '#' + named : named;
+    }
     written(): string { return this.link()?.text ?? html.text(this._block); }
 
     $Ref(block: $Block) {

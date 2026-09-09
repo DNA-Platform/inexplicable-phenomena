@@ -82,9 +82,23 @@ export class Reflection {
         return (writing._block?.$elements ?? []).filter((part): part is $Type => part instanceof this.kinds.type);
     }
 
+    // A FOLD IS NOT A MEANING. It is typed Reference — it extends one — so without this line a
+    // writing that merely marks a place was drawn as a link to itself.
     meaning(writing: $Writing): $Annotation | undefined {
         return (writing._block?.$elements ?? []).find((part): part is $Annotation =>
-            part instanceof this.kinds.annotation && this.types(part).some(type => this.names(type).includes('Reference')));
+            part instanceof this.kinds.annotation && !this.named(part, 'PageFold')
+            && this.types(part).some(type => this.names(type).includes('Reference')));
+    }
+
+    // THE PLACE A WRITING DENOTES, if it denotes one. The mirror of meaning(): one answers what a
+    // writing points AT, this answers what points at IT.
+    folded(writing: $Writing): $Annotation | undefined {
+        return (writing._block?.$elements ?? []).find((part): part is $Annotation =>
+            part instanceof this.kinds.annotation && this.named(part, 'PageFold'));
+    }
+
+    protected named(part: $Writing, name: string): boolean {
+        return this.types(part).some(type => this.names(type).includes(name));
     }
 
     beneath(holding: $Type | undefined, held: $Type | undefined): boolean {

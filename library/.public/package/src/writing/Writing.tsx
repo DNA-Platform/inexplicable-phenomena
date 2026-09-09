@@ -11,6 +11,7 @@ import type { $Theme } from '@/formatting/Theme';
 
 export interface $Writing$ extends $Chemical {
     $className?: string;
+    fold: { key(): string } | undefined;
     book: $Writing$;
     theme: $Theme;
     mention?: $Catalogue$;
@@ -50,6 +51,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     get classes(): string[] { return reflection.classNames(this); }
     get className(): string { return [...this.classes, this.$className ?? ''].join(' ').trim(); }
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
+    get fold(): { key(): string } | undefined { return reflection.folded(this) as unknown as { key(): string } | undefined; }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get type(): $Type[] { return reflection.types(this); }
     reading(): $Block { return reflection.content(this); }
@@ -75,9 +77,14 @@ export class $Writing extends $Chemical implements $Writing$ {
     // one and nothing could ask a book for its links.
     view(): ReactNode {
         const meaning = this.meaning;
+        const fold = this.fold;
         const Block = $(this.reading());
+        // ONE ANCHOR, TWO REASONS TO WRITE IT. A meaning makes a writing POINT and a fold makes it
+        // POINTABLE, so href and id are the same element's two halves and neither needs its own.
+        const drawn = meaning === undefined && fold === undefined ? <Block />
+            : <a id={fold?.key()} href={meaning === undefined ? undefined : html.text(meaning.path()?._block)} className="pd-meaning"><Block /></a>;
 
-        return reflection.formatted(this, this.print(meaning === undefined ? <Block /> : <a href={html.text(meaning.path()?._block)} className="pd-meaning"><Block /></a>));
+        return reflection.formatted(this, this.print(drawn));
     }
 
     print(content: ReactNode): ReactNode {

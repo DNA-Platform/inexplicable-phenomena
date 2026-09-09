@@ -1,12 +1,12 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Heading, Paragraph, Section } from '@dna-platform/public';
 import Chapter from './.chapter';
 
 export default $(
     <Chapter>
         <Section>
             <Heading>Introduction</Heading>
-            <Paragraph>“Now my general conjecture is as follows: for almost all sufficiently complex types of</Paragraph>
+            <Paragraph>“Now my general conjecture is as follows: for almost all sufficiently complex types of<Citation>[1](cook)</Citation></Paragraph>
             <Section>
                 <Heading>The Importance of P = NP</Heading>
                 <Paragraph>Before getting formal, it seems appropriate to say something about the significance of the P = NP question. P = NP, we might say, shares with Hilbert’s original question the character of a “math problem that’s more than a math problem”: a question that reaches inward to ask about mathematical reasoning itself, and also outward to everything from philosophy to natural science to practical computation.</Paragraph>
