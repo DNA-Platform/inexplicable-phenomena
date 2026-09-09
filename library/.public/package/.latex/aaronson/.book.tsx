@@ -7,4 +7,4 @@ export default class $Aaronson extends $Book { }
 
 export const Aaronson = $($Aaronson);
 
-$(Aaronson, Theme)(Latex);
+// SEEING THE BASE FIRST, per Doug 2026-09-09: $(Aaronson, Theme)(Latex);

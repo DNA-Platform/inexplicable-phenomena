@@ -34,16 +34,21 @@ export class $Theme extends $Format implements $Theme$ {
     jet = '#1f2328';
     pressed = '#0550ae';
     link = '#0969da';
-    measure = '57em';
-    // THE LOOK THAT SHIPPED. The documents in .archive/library/.public were real production and set
-    // github-markdown-css with Merriweather for prose and Open Sans for headings — Doug: "can we do
-    // this then as our default?" The base already carried github-markdown-css's values; the faces
-    // were the missing half. BOTH STACKS FALL BACK TO SYSTEM FACES, so a page that never loads the
-    // webfonts is still set in Georgia and a clean sans rather than in nothing.
-    body = "Merriweather, Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, serif";
-    face = "'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
+    // THE LOOK THAT SHIPPED, MEASURED FROM THE DOCUMENT DOUG POINTED AT —
+    // dna-consciousness/catalogue/interpretation/the-doug-and-eirian-theory-of-consciousness.html.
+    // It is github-markdown-css@5.1.0 and NOTHING ELSE, with the whole look inline on one element:
+    // max-width 860px, margin 2rem auto, padding 2rem, a 1px #ddd border, 6px radius and a soft
+    // shadow — a CARD. No webfont at all, so an earlier reading of this file that set Merriweather
+    // for prose and Open Sans for headings was wrong twice; both are github-markdown-css's own
+    // system stack, and the computed style of the rendered page is the evidence rather than a
+    // <link> in somebody's head.
+    body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
+    face = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
+    measure = 'min(60ch, 100%)';
+    card = '#e4e8ec';
+    tracking = '-0.011em';
     size = '16px';
-    leading = '1.5';
+    leading = '1.6';
     wordWrap = 'break-word';
 
     get fontFamily() { return this.body; }
@@ -52,8 +57,23 @@ export class $Theme extends $Format implements $Theme$ {
     get color() { return this.ink; }
     get background() { return this.paper; }
     get maxWidth() { return this.measure; }
-    margin = '0 auto';
-    padding = '2rem';
+    // A CARD IS A DESKTOP AFFORDANCE. The document Doug pointed at writes 860px, 2rem margin, 2rem
+    // padding, a 1px border, a 6px radius and a soft shadow inline — and at 375px that leaves about
+    // 247px of text inside a squeezed box. So the border, the radius and the outer margin belong to
+    // the wide view only, and below the measure the page goes full-bleed with the padding halved.
+    // The paper is white and the GROUND behind it is the app's, not the theme's: a theme dresses a
+    // book, and the window is not part of the book.
+    margin = '2rem auto';
+    padding = '2rem 1.5rem';
+    borderRadius = '6px';
+    boxShadow = '0 2px 5px rgba(0, 0, 0, .05)';
+    get border() { return `1px solid ${this.card}`; }
+
+    @select('@media (max-width: 900px)') narrow_margin = '0';
+    narrow_padding = '1rem';
+    narrow_border = 'none';
+    narrow_borderRadius = '0';
+    narrow_boxShadow = 'none';
 
     // THE LAYOUT A DOCUMENT TAKES, held as VALUES rather than written as rules. The base had a
     // vocabulary for colour and type and none for layout, so a theme wanting a different document
@@ -72,6 +92,27 @@ export class $Theme extends $Format implements $Theme$ {
     titled = 'left';
     ruling = '1px';
     get ruled() { return `${this.ruling} solid ${this.rule}`; }
+
+    // THE DETAILS THAT ARE FELT AND NOT SEEN — Doug's San Francisco analogy: a great deal of
+    // conditionality underneath, and simple to look at. Each of these is invisible on its own and
+    // the set of them is the whole difference between a README and a document.
+    //
+    //   measure    70ch rather than a pixel width, so the column follows the FACE. Measured on the
+    //              document this is drawn from: 860px is 117 characters a line against a readable
+    //              45–75, which is the single largest fault in it.
+    //   pretty     text-wrap: pretty on prose — no orphan on the last line
+    //   balance    text-wrap: balance on headings — a two-line heading breaks evenly
+    //   tracking   headings very slightly negative; large type looks loose at the same tracking
+    //   underline  a thin underline held off the baseline, which is the detail most often felt
+    //   figures    kerning, ligatures and optical sizing asked for rather than assumed
+    fontKerning = 'normal';
+    fontOpticalSizing = 'auto';
+    fontVariantLigatures = 'common-ligatures';
+
+    @select('.pd-heading') balanced_textWrap = 'balance';
+    get balanced_letterSpacing() { return this.tracking; }
+    balanced_scrollMarginTop = '2rem';
+
 
     @select('.pd-cover') get cover_textAlign() { return this.titled; }
 
@@ -103,6 +144,7 @@ export class $Theme extends $Format implements $Theme$ {
     //   h1, h3, h1..h6, pre, hr — no kind writes these. They arrive from markdown inside copy, and
     //                 that is the gap $Code and a heading level beyond h2 would close.
     @select('p.pd-paragraph') p_marginTop = '0';
+    p_textWrap = 'pretty';
     get p_marginBottom() { return this.between; }
     get p_textIndent() { return this.indent; }
     @select('.pd-list') list_marginTop = '0';
@@ -131,7 +173,12 @@ export class $Theme extends $Format implements $Theme$ {
     get cell_border() { return `1px solid ${this.shade}`; }
     @select('.pd-illustration') figure_margin = '1rem 0';
     @select('img') img_maxWidth = '100%';
-    @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecoration = 'none';
+    // A LINK IN PROSE CARRIES ITS UNDERLINE. `text-decoration: none` with an underline on hover is
+    // a UI convention, not a document one: in running text an unmarked link is invisible until the
+    // pointer finds it. A thin rule held off the baseline reads as part of the setting rather than
+    // as a box — it is the detail most often felt and least often noticed.
+    @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecorationThickness = '1px';
+    a_textUnderlineOffset = '.16em';
     get a_color() { return this.link; }
     @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover') hover_textDecoration = 'underline';
     @select('.pd-chapter') chapter_marginBottom = '2em';
