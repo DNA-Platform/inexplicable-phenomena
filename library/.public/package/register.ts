@@ -32,12 +32,27 @@ for (const file of walk('src')) {
 
 declared.sort((a, b) => (a.module + a.kind).localeCompare(b.module + b.kind));
 
-const emitted = declared.length === 0
+// TWO KINDS MAY SHARE A CLASS NAME, and in this library they do — $Theme stands in formatting,
+// article, encyclopedia and markdown, because a kind is named after its canonical member and the
+// FOLDER says which library it belongs to. Emitting `import { $Theme }` twice is a duplicate
+// identifier, so a repeated name is imported under an alias built from its module.
+const named = new Map<string, number>();
+const local = ({ kind, module }: { kind: string; module: string }) => {
+    const seen = (named.get(kind) ?? 0) + 1;
+    named.set(kind, seen);
+    if (seen === 1) return kind;
+    const where = module.split('/').slice(1, -1).join('') || module.split('/').pop() as string;
+    return kind + where.charAt(0).toUpperCase() + where.slice(1);
+};
+
+const wired = declared.map(one => ({ ...one, as: local(one) }));
+
+const emitted = wired.length === 0
     ? ['// none — no kind declares static $register().']
     : [
-        ...declared.map(({ kind, module }) => `import { ${kind} } from '${module}';`),
+        ...wired.map(({ kind, module, as }) => `import { ${kind === as ? kind : `${kind} as ${as}`} } from '${module}';`),
         '',
-        ...declared.map(({ kind }) => `${kind}.$register();`),
+        ...wired.map(({ as }) => `${as}.$register();`),
     ];
 
 const index = 'src/index.ts';

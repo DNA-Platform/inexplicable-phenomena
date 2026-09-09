@@ -26,7 +26,7 @@ export default $(
             <Equation>{String.raw`\forall k \; \exists n \; \forall M \; \left[ |M| \le k \Rightarrow M \text{ fails on some } x, |x| = n \right]`}</Equation>
             <Paragraph>
                 which is <Math>{String.raw`\Pi_2`}</Math>, and that alone rules out the easiest routes to an independence
-                proof<Citation>[2](#hartmanis)</Citation>.
+                proof<Citation>[2](#References)</Citation>.
             </Paragraph>
             <Quote>
                 <Paragraph>

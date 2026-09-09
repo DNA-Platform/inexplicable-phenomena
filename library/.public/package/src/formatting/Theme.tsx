@@ -46,9 +46,45 @@ export class $Theme extends $Format implements $Theme$ {
     get lineHeight() { return this.leading; }
     get color() { return this.ink; }
     get background() { return this.paper; }
-    get maxWidth() { return this.measure; }
+    // A MEASURE IS A CEILING, NOT A WIDTH. min(measure, 100%) is what makes one value serve a
+    // desktop, a laptop and a phone — the column never exceeds its reading measure and never
+    // exceeds the window, and no media query is needed to say it.
+    get maxWidth() { return `min(${this.measure}, 100%)`; }
     margin = '0 auto';
     padding = '2rem';
+
+    // AND THE GUTTER SHRINKS WHERE THERE IS NO ROOM FOR IT. 2rem each side of a 390px phone is a
+    // sixth of the screen; below the fold of a laptop it is right.
+    @select('@media (max-width: 640px)') narrow_padding = '1rem';
+
+    // WIDE CONTENT SCROLLS INSIDE ITS OWN BOX AND NEVER PUSHES THE PAGE. Measured on a 390px phone:
+    // one display equation was 594px wide and took the whole document with it. A formula, a table
+    // and a code block are the three things that cannot be made narrower, so each carries its own
+    // scroll instead.
+    // A CONTENTS STEPS BY LEVEL, and the levels were already there — measured, every entry carried
+    // the right pd-indent class and every entry sat at the same x, because nothing selected them.
+    // AND THE SELECTOR NAMES THE PARAGRAPH, not the class alone: a prop's class reaches every part
+    // the parse makes beneath it, so <p class="pd-indent-1"> holds <a class="pd-indent-1"> and the
+    // step applied TWICE — measured 24px on the paragraph and another 24px on its anchor.
+    @select('.pd-table-of-contents p.pd-indent-1') stepped_marginLeft = '1.5em';
+    @select('.pd-table-of-contents p.pd-indent-2') deeper_marginLeft = '3em';
+    @select('.pd-table-of-contents p.pd-indent-3') deepest_marginLeft = '4.5em';
+
+    // AND A CONTENTS ENTRY IS A NAME, NOT PROSE. Both of these were in the article theme, and both
+    // are about what a table of contents IS: the entries sit close together, and a first-line
+    // indent belongs to a paragraph of prose rather than to a line naming a section. Measured on
+    // the LaTeX reading, the indent leaked in and broke the very stepping above — the levels read
+    // 355 / 379 / 427 instead of a ladder, because every entry but the first took the paper's
+    // 23.4px first line. The markdown reading had the mirror fault: 1.25em of prose air per entry.
+    @select('.pd-table-of-contents p.pd-paragraph') listed_textIndent = '0';
+    listed_marginTop = '0';
+    listed_marginBottom = '.15rem';
+    @select('.pd-table-of-contents a') entry_textDecoration = 'none';
+    get entry_color() { return this.ink; }
+
+    @select('.pd-equation, .katex-display, .pd-table, pre') wide_overflowX = 'auto';
+    wide_overflowY = 'hidden';
+    wide_maxWidth = '100%';
 
     // THE LAYOUT A DOCUMENT TAKES, held as VALUES rather than written as rules. The base had a
     // vocabulary for colour and type and none for layout, so a theme wanting a different document
@@ -68,7 +104,30 @@ export class $Theme extends $Format implements $Theme$ {
     ruling = '1px';
     get ruled() { return `${this.ruling} solid ${this.rule}`; }
 
+    // A COVER HAS A HIERARCHY — the title, then who wrote it, then what it is about — and that is
+    // what a cover IS rather than anything LaTeX does. All of it lived in the article theme, so the
+    // markdown reading drew three EQUAL headings: measured, title, author and subject were all
+    // 1.5em at weight 600, indistinguishable from each other and from a section heading. A cover
+    // heading is also not ruled — the base rules h1 and h2, which would draw a line under a name.
     @select('.pd-cover') get cover_textAlign() { return this.titled; }
+    cover_marginBottom = '3rem';
+    @select('.pd-cover .pd-heading') titling_marginTop = '.4rem';
+    titling_marginBottom = '.4rem';
+    titling_borderBottom = 'none';
+    titling_paddingBottom = '0';
+    @select('.pd-title .pd-heading') title_fontSize = '2rem';
+    title_fontWeight = '700';
+    title_lineHeight = '1.15';
+    @select('.pd-title a') titled_textDecoration = 'none';
+    get titled_color() { return this.ink; }
+    @select('.pd-author .pd-heading') author_fontSize = '1.05em';
+    author_fontWeight = '400';
+    // A DOCUMENT DOES NOT PRINT ITS SUBJECT AS A HEADING — it is a keyword line, so it is set as
+    // one rather than hidden, because hiding is losing.
+    @select('.pd-subject .pd-heading') subject_fontSize = '.9em';
+    subject_fontStyle = 'italic';
+    subject_fontWeight = '400';
+    get subject_color() { return this.pale; }
 
     @select('.pd-heading') heading_marginTop = '1.5rem';
     heading_marginBottom = '1rem';

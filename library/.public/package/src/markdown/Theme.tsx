@@ -15,7 +15,8 @@
 // AND IT DRAWS NO RULE UNDER A HEADING. GitHub's rules are a README convention; prose has none,
 // which is why `ruling` is 0 here and 1px in the base.
 import { $, select } from '@dna-platform/chemistry';
-import { $Theme as $Sheet } from '@/formatting/Theme';
+import type { Component } from '@dna-platform/chemistry';
+import { $Theme as $Sheet, Theme as Base } from '@/formatting/Theme';
 
 export class $Theme extends $Sheet {
     override measure = '65ch';
@@ -66,6 +67,15 @@ export class $Theme extends $Sheet {
     @select('pre') pre_fontSize = '.875em';
     pre_lineHeight = '1.7142857';
     pre_borderRadius = '.375rem';
+    // A THEME DRESSES A SCOPE. Doug proposed $register for this and the name is already taken by a
+    // different act: `static $register()` is the composition root's wiring hook — register.ts walks
+    // src for it and EMITS the call into index.ts before every build — and it takes no scope, while
+    // applying a theme is a per-book choice. So this is its own static, and `$dresses` is a proxy
+    // name. Chemistry's registration is `$(A, B)(C)` — for A, a B is a C — and there is no bare
+    // form: `$(B)(C)` CALLS the component and answers "Cannot read properties of null" from React.
+    static $dresses(within: Component<never>): void {
+        $(within, Base)(Theme);
+    }
 }
 
 export const Theme = $($Theme);

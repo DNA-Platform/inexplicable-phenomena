@@ -68,10 +68,7 @@ export class $Book extends $Composition implements $Book$ {
         const Heading = $(heading);
         const Paragraph = $(paragraph);
         const Ref = $(ref);
-        const named = this.chapters
-            .flatMap(chapter => chapter.searchFor<$Section>($TypeOfSection))
-            .map(part => ({ name: html.text(part.searchForOne($TypeOfHeading)?._block), indent: part.$indent }))
-            .filter(entry => entry.name !== '');
+        const named = this.chapters.flatMap(chapter => this.listed(chapter, 0));
         const made = $(
             <TableOfContents>
                 <Section>
@@ -82,6 +79,22 @@ export class $Book extends $Composition implements $Book$ {
             TableOfContents
         );
         return this.following(made, after);
+    }
+
+    // A CONTENTS IS THE SECTIONS A CHAPTER HOLDS, HOWEVER DEEPLY, and parts() answers exactly that.
+    // It read searchFor before, which is ONE level, so a paper of nested sections listed only its
+    // top ones — measured, a chapter of five sections across three levels listed two. The depth is
+    // the walk's own and not an authored $indent: a contents entry is indented because of where the
+    // section STANDS, which is the reading the walk performs anyway.
+    protected listed(writing: $Writing, deep: number): { name: string; indent: number }[] {
+        const held: { name: string; indent: number }[] = [];
+        for (const part of writing instanceof $Composition ? writing.parts() : []) {
+            if (!reflection.instanceOf(part, $TypeOfSection)) continue;
+            const name = html.text(part.searchForOne($TypeOfHeading)?._block);
+            if (name !== '') held.push({ name, indent: deep });
+            held.push(...this.listed(part, deep + 1));
+        }
+        return held;
     }
 
     protected placed<T extends $Writing>(type: new() => $Type, kind: Component<T>, after?: $Writing): T {

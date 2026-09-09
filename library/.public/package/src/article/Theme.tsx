@@ -1,6 +1,7 @@
 // CREATED 2026-09-08, WRITTEN 2026-09-09 · rating 3. The article's theme: the base sheet with LaTeX's groups re-said, installed by registration, carrying no formats. Groups owed against the paper.
 import { $, select } from '@dna-platform/chemistry';
-import { $Theme as $Sheet } from '@/formatting/Theme';
+import type { Component } from '@dna-platform/chemistry';
+import { $Theme as $Sheet, Theme as Base } from '@/formatting/Theme';
 
 export class $Theme extends $Sheet {
     // THE VALUES ARE LaTeX.css's, not invented — https://latex.vercel.app, a classless library that
@@ -11,7 +12,10 @@ export class $Theme extends $Sheet {
     override body = "'Latin Modern', 'Latin Modern Roman', 'CMU Serif', Georgia, Cambria, 'Times New Roman', Times, serif";
     override size = '16px';
     override leading = '1.8';
-    override measure = '80ch';
+    // 58ch AND NOT LaTeX.css's 80ch. `ch` is the width of a ZERO, which in a serif is much narrower
+    // than the average letter — measured, 80ch drew 102 characters a line against a readable 45–75.
+    // A real article at 10pt on 6.5in sets about 72, which is what 58ch gives here.
+    override measure = '58ch';
     override ink = 'hsl(0, 5%, 10%)';
     override paper = 'hsl(210, 20%, 98%)';
     override link = 'hsl(0, 100%, 33%)';
@@ -33,24 +37,10 @@ export class $Theme extends $Sheet {
     // entries are the loudest thing on the page.
     // .pd-title IS A SECTION, and the anchor inside it is the MEANING anchor $Writing.view wraps a
     // printed element in when the writing means something — seen in the DOM rather than guessed:
-    // <section class="pd-section pd-title"><a class="pd-meaning"><h2 class="pd-heading">.
-    @select('.pd-title .pd-heading') title_fontSize = '2rem';
-    title_fontWeight = '700';
-    @select('.pd-title a') titled_textDecoration = 'none';
-    get titled_color() { return this.ink; }
-    @select('.pd-table-of-contents a') entry_textDecoration = 'none';
-    get entry_color() { return this.ink; }
-    @select('.pd-author .pd-heading') author_fontSize = '1.05em';
-    author_fontWeight = '400';
-    // A PAPER DOES NOT PRINT ITS SUBJECT AS A HEADING — it is a keyword line, so it is set as one
-    // rather than hidden, because hiding is losing.
-    @select('.pd-subject .pd-heading') subject_fontSize = '.9em';
-    subject_fontStyle = 'italic';
-    subject_fontWeight = '400';
-
-    @select('.pd-cover') cover_marginBottom = '3rem';
-    @select('.pd-cover .pd-heading') titling_marginTop = '.4rem';
-    titling_marginBottom = '.4rem';
+    // <section class="pd-section pd-title"><a class="pd-meaning"><h2 class="pd-heading">. The whole
+    // cover — the title's scale, the plain author, the italic subject line, the air around them —
+    // MOVED TO THE BASE, because none of it is a thing LaTeX does; it is what a cover is. What is
+    // left here is the one value a paper differs on, and it is `titled` above.
 
     // THE SCALE IS LaTeX.css's — h2 at 1.7rem with 3rem above it and .8rem below, h3 at 1.4rem
     // with 2.5rem above. It is more air than a README gives a heading, and it is what makes a page
@@ -77,7 +67,6 @@ export class $Theme extends $Sheet {
     abstracted_textAlign = 'center';
 
     @select('.pd-heading + p.pd-paragraph') opening_textIndent = '0';
-    @select('.pd-table-of-contents .pd-paragraph') contents_marginBottom = '0';
     contents_marginTop = '0';
     contents_lineHeight = '1.5';
 
@@ -101,6 +90,15 @@ export class $Theme extends $Sheet {
     // Every part of a book is a .pd-chapter now — the cover, the abstract, the contents and the
     // bibliography included — so counting chapters would number the cover 1. What is missing is a
     // way to say which chapters are the BODY, and that is Doug's to rule rather than mine to invent.
+    // A THEME DRESSES A SCOPE. Doug proposed $register for this and the name is already taken by a
+    // different act: `static $register()` is the composition root's wiring hook — register.ts walks
+    // src for it and EMITS the call into index.ts before every build — and it takes no scope, while
+    // applying a theme is a per-book choice. So this is its own static, and `$dresses` is a proxy
+    // name. Chemistry's registration is `$(A, B)(C)` — for A, a B is a C — and there is no bare
+    // form: `$(B)(C)` CALLS the component and answers "Cannot read properties of null" from React.
+    static $dresses(within: Component<never>): void {
+        $(within, Base)(Theme);
+    }
 }
 
 export const Theme = $($Theme);
