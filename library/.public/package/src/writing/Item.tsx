@@ -33,6 +33,7 @@ export class $TypeOfItem extends $TypeOfSentence {
     // a line is SPENT here, so no item carries one and nothing downstream has to strip it.
     protected marks = {
         dividing: /\n|(?:^|\s)[-*•·]\s+/u,
+        opening: /^[-*•·]\s+/u,
         leading: /^\s+/u,
         trailing: /\s+$/u
     };
@@ -58,10 +59,15 @@ export class $TypeOfItem extends $TypeOfSentence {
             .map(line => reflection.carrying<$Item>(Made, line));
     }
 
+    // THE MARK IS SPENT HERE AND NOT ON THE SPLIT. A cut made ON a newline consumes it, so the mark
+    // opening the NEXT line has nothing in front of it for the split to match against — measured, a
+    // list written one line per item kept every bullet after the first, and the demos escaped it
+    // only because they indent, which put a space back before the mark. Stripping the opening mark
+    // from each line AFTER the cut is what makes it hold however the copy is laid out.
     protected trimmed(line: (string | $Writing)[]): (string | $Writing)[] {
         const cut = [...line];
         const first = cut[0];
-        if (typeof first === 'string') cut[0] = first.replace(this.marks.leading, '');
+        if (typeof first === 'string') cut[0] = first.replace(this.marks.leading, '').replace(this.marks.opening, '');
         const last = cut[cut.length - 1];
         if (typeof last === 'string') cut[cut.length - 1] = last.replace(this.marks.trailing, '');
 
