@@ -42,7 +42,7 @@ export class $TypeOfSentence extends $Type {
         return sentences;
     }
 
-    override below(): new() => $TypeOfWord { return $TypeOfWord; }
+    override below(): new() => $Type { return $TypeOfWord; }
 }
 
 export class $TypeOf$Sentence extends $Type {

@@ -34,11 +34,16 @@ describe('the seven stand in order, and a type knows what it composes', () => {
         expect(beneath(TypeOfLetter)).toBeUndefined();
     });
 
-    it('a documented is beneath a book, and a book is not beneath a documented', () => {
+    // A BOOK IS A KIND OF DOCUMENT NOW, and this promise is where that shows. It used to assert an
+    // ASYMMETRY — a document beneath a book, a book not beneath a document — and half of it was
+    // never about levels at all: beneath() answers `held instanceof kind`, which is SUBTYPE, and a
+    // book being a kind of document makes a book answer as a document. The level question and the
+    // kind question are the same call, and this is the line where they part company.
+    it('a documented is beneath a book, and a book answers as a documented because it IS one', () => {
         const book = built<$Type>(<TypeOfBook />);
         const documented = built<$Type>(<TypeOfDocument />);
         expect(reflection.beneath(book, documented)).toBe(true);
-        expect(reflection.beneath(documented, book)).toBe(false);
+        expect(reflection.beneath(documented, book)).toBe(true);
     });
 
     it('AND IT REACHES ALL THE WAY DOWN — a letter is beneath a book', () => {

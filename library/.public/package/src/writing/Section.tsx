@@ -50,7 +50,7 @@ export class $TypeOfSection extends $Type {
         return [$<$Section>(<Made />, ...tokens as never[])];
     }
 
-    override below(): new() => $TypeOfParagraph { return $TypeOfParagraph; }
+    override below(): new() => $Type { return $TypeOfParagraph; }
 }
 
 export class $TypeOf$Section extends $Type {

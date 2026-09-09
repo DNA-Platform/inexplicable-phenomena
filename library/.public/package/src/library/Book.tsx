@@ -13,7 +13,7 @@ import { Paragraph as paragraph, $Paragraph$, $TypeOfParagraph } from '@/writing
 import { List as list } from '@/writing/List';
 import { Item as item } from '@/writing/Item';
 import { Ref as ref } from '@/reference/Ref';
-import { $TypeOfDocument } from './Document';
+import { $Document$, $Document, $TypeOfDocument } from './Document';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfCover, Cover as cover } from './Cover';
 import { $TypeOfSynopsis, Synopsis as synopsis } from './Synopsis';
@@ -22,7 +22,7 @@ import { $TypeOfIndex, Index as index } from './Index';
 import { $TypeOfFooter, Footer as footer } from './Footer';
 import { $Theme, $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
 
-export interface $Book$ extends $Composition$ {
+export interface $Book$ extends $Document$ {
     cover: $Writing;
     synopsis: $Writing;
     table: $Writing;
@@ -33,7 +33,11 @@ export interface $Book$ extends $Composition$ {
 
 export interface $$Book$ extends $Paragraph$ { }
 
-export class $Book extends $Composition implements $Book$ {
+// A BOOK IS A KIND OF DOCUMENT, which is where Doug put it: "have a document at the top of writing.
+// We can't have it be book. And so I think chapter has to be a type of document and so does book, so
+// we can add the book property to chapter." A document is the top of the WRITING ladder; a book and
+// a chapter are both documents, and what makes them the second ladder is what they COMPOSE.
+export class $Book extends $Document implements $Book$ {
     cover!: $Writing;
     synopsis!: $Writing;
     table!: $Writing;
@@ -46,7 +50,7 @@ export class $Book extends $Composition implements $Book$ {
     }
 
     $Book(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfBook, '!')));
+        super.$Document($check(block, $Block, '!').concat($check($TypeOfBook, '!')));
         this.cover = this.placed($TypeOfCover, cover);
         this.synopsis = this.placed($TypeOfSynopsis, synopsis, this.cover);
         this.table = this.searchForOne($TypeOfTableOfContents) ?? this.contents(this.synopsis);
@@ -156,11 +160,11 @@ export class $$Book extends $Catalogue implements $$Book$ {
     }
 }
 
-export class $TypeOfBook extends $Type {
+export class $TypeOfBook extends $TypeOfDocument {
     override name = 'Book';
     protected override specification: Specification<$Writing> = new BookSpecification();
 
-    override below(): new() => $TypeOfDocument { return $TypeOfDocument; }
+    override below(): new() => $Type { return $TypeOfDocument; }
 }
 
 export class BookSpecification extends WritingSpecification {

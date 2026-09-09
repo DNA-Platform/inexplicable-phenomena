@@ -34,7 +34,7 @@ export class $TypeOfDocument extends $Type {
     override name = 'Document';
     protected override specification: Specification<$Writing> = new DocumentSpecification();
 
-    override below(): new() => $TypeOfSection { return $TypeOfSection; }
+    override below(): new() => $Type { return $TypeOfSection; }
 }
 
 export class DocumentSpecification extends WritingSpecification {

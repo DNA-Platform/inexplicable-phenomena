@@ -3,6 +3,7 @@
 // parse makes the items, and the <li> is theirs.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $Type } from '@/writing/Type';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
@@ -35,7 +36,7 @@ export class $TypeOfList extends $TypeOfParagraph {
     override name = 'List';
     protected override specification: Specification<$Writing> = new ListSpecification();
 
-    override below(): new() => $TypeOfItem { return $TypeOfItem; }
+    override below(): new() => $Type { return $TypeOfItem; }
 }
 
 export class ListSpecification extends ParagraphSpecification {

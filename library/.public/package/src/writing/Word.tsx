@@ -37,7 +37,7 @@ export class $TypeOfWord extends $Type {
         return words;
     }
 
-    override below(): new() => $TypeOfLetter { return $TypeOfLetter; }
+    override below(): new() => $Type { return $TypeOfLetter; }
 }
 
 export class $TypeOf$Word extends $Type {
