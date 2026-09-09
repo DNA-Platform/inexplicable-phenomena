@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Government apology and pardon</Heading>
             <Paragraph>In August 2009, British programmer John Graham-Cumming started a petition urging the British government to apologise for Turing's prosecution as a homosexual. The petition received more than 30,000 signatures. The prime minister, Gordon Brown, acknowledged the petition, releasing a statement on 10 September 2009 apologising and describing the treatment of Turing as "appalling":</Paragraph>
@@ -18,6 +18,6 @@ export default $(
             <Paragraph>In September 2016, the government announced its intention to expand this retroactive exoneration to other men convicted of similar historical indecency offences, in what was described as an "Alan Turing law". The Alan Turing law is now an informal term for the law in the United Kingdom, contained in the Policing and Crime Act 2017, which serves as an amnesty law to retroactively pardon men who were cautioned or convicted under historical legislation that outlawed homosexual acts. The law applies in England and Wales. Due to his repeated attempts to bring attention to the issue, Leech is now regularly described as the "architect" of Turing's pardon and subsequently the Alan Turing Law, which went on to secure pardons for 75,000 other men and women. At the British premiere of a film based on Turing's life, The Imitation Game, the producers thanked Leech for bringing the topic to public attention and securing Turing's pardon.</Paragraph>
             <Paragraph>On 19 July 2023, following an apology to LGBT veterans from the UK Government, Defence Secretary Ben Wallace suggested Turing should be honoured with a permanent statue on the fourth plinth of Trafalgar Square, describing Turing as "probably the greatest war hero, in my book, of the Second World War, [whose] achievements shortened the war, saved thousands of lives, helped defeat the Nazis. And his story is a sad story of a society and how it treated him."</Paragraph>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

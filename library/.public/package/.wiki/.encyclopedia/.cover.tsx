@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { Author, Cover, Heading, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
-import { BookLink } from '../.chapter';
-import { globe, Language, Languages, Logo, Search } from './.chapter';
+import { BookLink } from '../.document';
+import { globe, Language, Languages, Logo, Search } from './.document';
 
 export default $(
     <Cover>

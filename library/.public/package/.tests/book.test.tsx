@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $check } from '@dna-platform/chemistry';
 import { render, act } from '@testing-library/react';
-import { $Writing, $Composition, $Book, Book, Chapter, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Chapter, $TypeOfChapter } from '@dna-platform/public';
+import { $Writing, $Composition, $Book, Book, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Document, $TypeOfDocument } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -19,7 +19,7 @@ describe('a book carries its cover, its synopsis, its table of contents and its 
             {cover()}
             <Synopsis>A book about chemistry.</Synopsis>
             <TableOfContents>One.</TableOfContents>
-            <Chapter>One.</Chapter>
+            <Document>One.</Document>
         </Book>);
 
     it('and the book answers each of them', () => {
@@ -42,7 +42,7 @@ describe('a book carries its cover, its synopsis, its table of contents and its 
     it('AND A BOOK THAT OPENS WITH SOMETHING ELSE IS REFUSED', () => {
         const held = built<$Book>(
             <Book>
-                <Chapter>One.</Chapter>
+                <Document>One.</Document>
                 {cover()}
             </Book>);
         expect(() => held.specify()).toThrow(/opens with its cover/);
@@ -52,7 +52,7 @@ describe('a book carries its cover, its synopsis, its table of contents and its 
         const held = built<$Book>(
             <Book>
                 {cover()}
-                <Chapter>One.</Chapter>
+                <Document>One.</Document>
                 <Synopsis>A book about chemistry.</Synopsis>
             </Book>);
         expect(() => held.specify()).toThrow(/synopsis second/);
@@ -63,7 +63,7 @@ describe('a book carries its cover, its synopsis, its table of contents and its 
             <Book>
                 {cover()}
                 <Synopsis>A book about chemistry.</Synopsis>
-                <Chapter>One.</Chapter>
+                <Document>One.</Document>
                 <TableOfContents>One.</TableOfContents>
             </Book>);
         expect(() => held.specify()).toThrow(/table of contents third/);
@@ -82,18 +82,18 @@ describe('a title is a section that means the book', () => {
     });
 });
 
-describe('a book draws itself in four regions, and its contents point at its chapters', () => {
+describe('a book draws itself in four regions, and its contents point at its documents', () => {
     const drawn = (book: $Book) => {
         const Drawn = $(book);
         return render(<Drawn />).container;
     };
-    const chapter = (heading: string) => (
-        <Chapter>
+    const documented = (heading: string) => (
+        <Document>
             <Section>
                 <Heading>{heading}</Heading>
                 <Paragraph>One.</Paragraph>
             </Section>
-        </Chapter>
+        </Document>
     );
     const synopsis = (print: boolean) => (
         <Synopsis print={print}>
@@ -104,8 +104,8 @@ describe('a book draws itself in four regions, and its contents point at its cha
         </Synopsis>
     );
 
-    it('a book with no table of contents makes one from its chapters, and each entry reaches a heading', () => {
-        const host = drawn(built<$Book>(<Book>{cover()}{chapter('First things')}{chapter('Second things')}</Book>));
+    it('a book with no table of contents makes one from its documents, and each entry reaches a heading', () => {
+        const host = drawn(built<$Book>(<Book>{cover()}{documented('First things')}{documented('Second things')}</Book>));
         const links = [...host.querySelectorAll('a')].map(anchor => anchor.getAttribute('href'));
         const ids = [...host.querySelectorAll('h2')].map(heading => heading.id);
         expect(links).toContain('#First_things');
@@ -114,8 +114,8 @@ describe('a book draws itself in four regions, and its contents point at its cha
         expect(ids).toContain('Second_things');
     });
 
-    it('and the book draws FLAT under the sheet: the cover first, the contents before the chapters, the index after them, and the FOOTER last — an index is not assumed to be at the end', () => {
-        const held = built<$Book>(<Book>{cover()}{chapter('First things')}</Book>);
+    it('and the book draws FLAT under the sheet: the cover first, the contents before the documents, the index after them, and the FOOTER last — an index is not assumed to be at the end', () => {
+        const held = built<$Book>(<Book>{cover()}{documented('First things')}</Book>);
         if (held.index instanceof $Composition) held.index.$print = true;
         const host = drawn(held);
         const children = [...host.querySelectorAll('main > .pd-book > *')];
@@ -133,29 +133,29 @@ describe('a book draws itself in four regions, and its contents point at its cha
     });
 
     it('AND A SYNOPSIS DRAWS NOTHING UNLESS IT IS PRINTED', () => {
-        const quiet = drawn(built<$Book>(<Book>{cover()}{synopsis(false)}{chapter('First things')}</Book>));
-        const printed = drawn(built<$Book>(<Book>{cover()}{synopsis(true)}{chapter('First things')}</Book>));
+        const quiet = drawn(built<$Book>(<Book>{cover()}{synopsis(false)}{documented('First things')}</Book>));
+        const printed = drawn(built<$Book>(<Book>{cover()}{synopsis(true)}{documented('First things')}</Book>));
         expect(quiet.textContent).not.toContain('Quietly');
         expect(printed.textContent).toContain('Quietly');
     });
 });
 
 describe('every piece of writing is in a book, and a book themes what it holds', () => {
-    const chapter = () => $(
-        <Chapter>
+    const documented = () => $(
+        <Document>
             <Section>
                 <Heading>One</Heading>
                 <Paragraph>One.</Paragraph>
             </Section>
-        </Chapter>,
-        Chapter
+        </Document>,
+        Document
     );
 
-    it('a chapter handed to a book answers that book', () => {
-        const held = chapter();
+    it('a documented handed to a book answers that book', () => {
+        const held = documented();
         const book = $(<Book />, $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), held);
         expect(held.book).toBe(book);
-        expect(held.searchFor<$Chapter>($TypeOfChapter)[0]?.book ?? held.book).toBe(book);
+        expect(held.searchFor<$Document>($TypeOfDocument)[0]?.book ?? held.book).toBe(book);
     });
 
     it('A THEME REGISTERED ON A BOOK IS THE ONE ITS PROSE IS DRAWN IN', async () => {
@@ -164,7 +164,7 @@ describe('every piece of writing is in a book, and a book themes what it holds',
         class $Pocket extends $Book { }
         const Pocket = $($Pocket);
         $(Pocket, Theme)(Small);
-        const held = $(<Pocket />, $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), chapter());
+        const held = $(<Pocket />, $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), documented());
         const Drawn = $(held);
         await act(async () => { render(<Drawn />); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
@@ -183,7 +183,7 @@ describe('every piece of writing is in a book, and a book themes what it holds',
         class $Pamphlet extends $Book { }
         const Pamphlet = $($Pamphlet);
         $(Pamphlet, Theme)(Tiny);
-        const inside = chapter();
+        const inside = documented();
         $(<Pamphlet />, $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), inside);
         expect(inside.theme).toBeInstanceOf($Theme);
     });

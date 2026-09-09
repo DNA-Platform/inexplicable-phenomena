@@ -36,7 +36,7 @@ describe('the package a consumer is handed stands on its own', () => {
 
     it('and the seven levels of composition each stand beneath the one above', () => {
         const seven: [string, string][] = [
-            ['$Chapter', '$Composition'],
+            ['$Document', '$Composition'],
             ['$Section', '$Composition'],
             ['$Paragraph', '$Composition'],
             ['$Sentence', '$Composition'],

@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Death</Heading>
             <Paragraph>On 8 June 1954, at his house at 43 Adlington Road, Wilmslow, Turing's housekeeper found him dead. A post mortem was held that evening, which determined that he had died the previous day at age 41 with cyanide poisoning cited as the cause of death. When his body was discovered, an apple lay half-eaten beside his bed, and although the apple was not tested for cyanide, it was speculated that this was the means by which Turing had consumed a fatal dose.</Paragraph>
@@ -19,6 +19,6 @@ export default $(
                 <Paragraph>Doubts on the suicide thesis have been also cast by John W. Dawson Jr. who, in his review of Hodges' book, recalls "Turing's vulnerable position in the Cold War political climate" and points out that "Turing was found dead by a maid, who discovered him 'lying neatly in his bed'—hardly what one would expect of "a man fighting for life against the suffocation induced by cyanide poisoning." Turing had given no hint of suicidal inclinations to his friends and had made no effort to put his affairs in order.</Paragraph>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

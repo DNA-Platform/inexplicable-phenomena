@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, List, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
-import { BookLink } from '../.chapter';
+import Document from './.document';
+import { BookLink } from '../.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Formatting</Heading>
             <Section>
@@ -23,6 +23,6 @@ export default $(
                 <Paragraph>As explained at <BookLink>[MOS:COLLAPSE](https://en.wikipedia.org/wiki/MOS:COLLAPSE)</BookLink>, limit the use of &#123;&#123;Collapse top&#125;&#125;/&#123;&#123;Collapse bottom&#125;&#125; and similar templates in articles. That said, they can be <BookLink>[useful in talk pages](https://en.wikipedia.org/wiki/WP:TALKOFFTOPIC)</BookLink>.</Paragraph>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

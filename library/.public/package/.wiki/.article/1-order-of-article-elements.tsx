@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Illustration, List, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
-import { BookLink } from '../.chapter';
+import Document from './.document';
+import { BookLink } from '../.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Order of article elements</Heading>
             <Illustration source="https://commons.wikimedia.org/wiki/Special:FilePath/Wikipedia_layout_sample_large.png">
@@ -49,6 +49,6 @@ export default $(
                 - Stub templates (follow WP:STUBSPACING)
             </List>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

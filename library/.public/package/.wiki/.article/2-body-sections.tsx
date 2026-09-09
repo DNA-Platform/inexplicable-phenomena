@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, List, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
-import { BookLink } from '../.chapter';
+import Document from './.document';
+import { BookLink } from '../.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Body sections</Heading>
             <Paragraph>Articles longer than a <BookLink>[stub](https://en.wikipedia.org/wiki/wp:stub)</BookLink> are generally divided into sections, and sections over a certain length are generally divided into paragraphs: these divisions enhance the readability of the article. Recommended names and orders of section headings may <BookLink>[vary by subject matter](#Specialized_layout)</BookLink>, although articles should still follow good organizational and writing principles regarding sections and paragraphs.</Paragraph>
@@ -35,6 +35,6 @@ export default $(
                 <Paragraph><BookLink>[Bullet points](https://en.wikipedia.org/wiki/Bullet_(typography)#Bullet_points)</BookLink> should not be used in the lead of an article. They may be used in the body to break up a mass of text, particularly if the topic requires significant effort to comprehend. Sometimes, it may be preferable to use bullet points instead of having a series of very short paragraphs. Bulleted lists are typical in the reference, further reading, and external links sections towards the end of the article. Bullet points are usually not separated by blank lines, as that causes an accessibility issue (see <BookLink>[MOS:LISTGAP](https://en.wikipedia.org/wiki/MOS:LISTGAP)</BookLink> for ways to create multiple paragraphs within list items that do not cause this issue).</Paragraph>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

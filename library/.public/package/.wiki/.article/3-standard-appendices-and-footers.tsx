@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, List, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
-import { BookLink } from '../.chapter';
+import Document from './.document';
+import { BookLink } from '../.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Standard appendices and footers</Heading>
             <Section>
@@ -67,6 +67,6 @@ export default $(
                 <Paragraph>An article may end with <BookLink>[Navigation templates](https://en.wikipedia.org/wiki/Wikipedia:Navigation_template)</BookLink> and footer navboxes, such as <BookLink>[succession boxes](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Succession_Box_Standardization#Overview)</BookLink> and geography boxes (for example, &#123;&#123;Geographic location&#125;&#125;). Most navboxes do not appear in printed versions of Wikipedia articles.</Paragraph>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

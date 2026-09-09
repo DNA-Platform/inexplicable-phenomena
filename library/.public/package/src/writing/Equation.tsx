@@ -1,4 +1,4 @@
-// CREATED 2026-09-08 · rating 1 · shell. Display mathematics at paragraph grade, numbered by a reading over its chapter — never a field.
+// CREATED 2026-09-08 · rating 1 · shell. Display mathematics at paragraph grade, numbered by a reading over its document — never a field.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
@@ -19,8 +19,8 @@ export class $Equation extends $Paragraph implements $Equation$ {
     tex(): string { return html.text(this._block); }
 
     // ACROSS THE BOOK, the same reading $Theorem, $Citation and $Footnote each take. It was written
-    // here as "over the chapter"; a book is the holder the base can always answer, and a paper that
-    // numbers per chapter passes its chapter instead — which is why the holder is an argument.
+    // here as "over the document"; a book is the holder the base can always answer, and a paper that
+    // numbers per document passes its document instead — which is why the holder is an argument.
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Equation(block: $Block) {

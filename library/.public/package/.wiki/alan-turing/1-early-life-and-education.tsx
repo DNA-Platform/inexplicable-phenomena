@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Early life and education</Heading>
             <Section>
@@ -40,6 +40,6 @@ export default $(
                 <Paragraph>From September 1936 to July 1938, Turing spent most of his time studying under Church at Princeton University, in the second year as a Jane Eliza Procter Visiting Fellow. In addition to his purely mathematical work, he studied cryptology and also built three of four stages of an electro-mechanical binary multiplier. In June 1938, he obtained his PhD from the Department of Mathematics at Princeton;[citation needed] his dissertation, Systems of Logic Based on Ordinals, introduced the concept of ordinal logic and the notion of relative computing, in which Turing machines are augmented with so-called oracles, allowing the study of problems that cannot be solved by Turing machines. Von Neumann wanted to hire him as his postdoctoral assistant, but he went back to the United Kingdom. His thesis was republished in the journal Proceedings of the London Mathematical Society in 1939,</Paragraph>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

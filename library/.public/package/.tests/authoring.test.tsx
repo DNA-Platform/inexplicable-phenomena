@@ -2,15 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
-    $Book, $Cover, $Chapter, $Writing, $Section, $TypeOfSection,
-    Book, Cover, Chapter, Synopsis, Title, Author, Subject, Reference,
+    $Book, $Cover, $Document, $Writing, $Section, $TypeOfSection,
+    Book, Cover, Document, Synopsis, Title, Author, Subject, Reference,
     Section, Heading, Paragraph,
 } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };
 
-// THE SHAPE UNDER TEST — a chapter is a SUBCLASS with its stuff written in it,
+// THE SHAPE UNDER TEST — a documented is a SUBCLASS with its stuff written in it,
 // and nothing is written at the call site.
 class $Masthead extends $Cover {
     $Masthead(block: $Block) {
@@ -21,9 +21,9 @@ class $Masthead extends $Cover {
     }
 }
 
-class $EarlyLife extends $Chapter {
+class $EarlyLife extends $Document {
     $EarlyLife(block: $Block) {
-        super.$Chapter($check(block, $Block).concat(built<$Writing>(
+        super.$Document($check(block, $Block).concat(built<$Writing>(
             <Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section>)));
     }
 }
@@ -38,7 +38,7 @@ const made = () => built<$Book>(
         <EarlyLife />
     </Book>);
 
-describe('a chapter written as a subclass, with nothing at the call site', () => {
+describe('a documented written as a subclass, with nothing at the call site', () => {
     it('IT IS BUILT AND IT HOLDS WHAT THE CLASS WROTE', () => {
         const book = made();
         const cover = book.cover as $Cover;
@@ -51,10 +51,10 @@ describe('a chapter written as a subclass, with nothing at the call site', () =>
 
     it('AND THE BOOK REACHES ITS SECTIONS — the stuff the contents are made of', () => {
         const book = made();
-        const chapter = book.chapters.find(one => one instanceof $EarlyLife);
+        const documented = book.documents.find(one => one instanceof $EarlyLife);
 
-        expect(chapter).toBeDefined();
-        expect(chapter!.searchFor<$Section>($TypeOfSection).length).toBe(1);
+        expect(documented).toBeDefined();
+        expect(documented!.searchFor<$Section>($TypeOfSection).length).toBe(1);
     });
 
     it('AND THE TABLE OF CONTENTS CATALOGUES IT', () => {
@@ -74,28 +74,28 @@ describe('a chapter written as a subclass, with nothing at the call site', () =>
 
 // THE OTHER SPELLING — content authored in view() instead. Drawn, but the model
 // never sees it, which is the whole question.
-class $Written extends $Chapter {
-    $Written(block: $Block) { super.$Chapter($check(block, $Block)); }
+class $Written extends $Document {
+    $Written(block: $Block) { super.$Document($check(block, $Block)); }
     override view(): React.ReactNode {
         const Whole = $(Section);
 
         return <><Whole><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Whole></>;
     }
 }
-const WrittenChapter = $($Written);
+const WrittenDocument = $($Written);
 
-describe('the same chapter written in view() instead', () => {
+describe('the same documented written in view() instead', () => {
     it('IS REFUSED AT CONSTRUCTION — it never gets as far as being invisible', () => {
         const book = built<$Book>(
             <Book>
                 <Masthead />
                 <Synopsis>A life.</Synopsis>
-                <WrittenChapter />
+                <WrittenDocument />
             </Book>);
-        const chapter = book.chapters.find(one => one instanceof $Written);
+        const documented = book.documents.find(one => one instanceof $Written);
         const container = drawn(book);
 
-        expect(chapter!.searchFor<$Section>($TypeOfSection).length).toBe(0);
+        expect(documented!.searchFor<$Section>($TypeOfSection).length).toBe(0);
         expect(container.textContent).toContain('a piece of writing says something');
         expect(container.textContent).not.toContain('Bletchley Park.');
     });

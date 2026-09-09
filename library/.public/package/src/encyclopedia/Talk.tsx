@@ -14,27 +14,27 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $TypeOfChapter, ChapterSpecification, $Chapter } from '@/library/Chapter';
+import { $Document$, $TypeOfDocument, DocumentSpecification, $Document } from '@/library/Document';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification, $Paragraph } from '@/writing/Paragraph';
 
-export interface $Talk$ extends $Chapter$ {
+export interface $Talk$ extends $Document$ {
     topics(): $Writing[];
 }
 
-export class $Talk extends $Chapter implements $Talk$ {
+export class $Talk extends $Document implements $Talk$ {
     topics(): $Writing[] { throw new Error('not implemented: $Talk.topics — the sections it holds, each one a discussion'); }
 
     $Talk(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfTalk, '!')));
+        super.$Document($check(block, $Block, '!').concat($check($TypeOfTalk, '!')));
     }
 }
 
-export class $TypeOfTalk extends $TypeOfChapter {
+export class $TypeOfTalk extends $TypeOfDocument {
     override name = 'Talk';
     protected override specification: Specification<$Writing> = new TalkSpecification();
 }
 
-export class TalkSpecification extends ChapterSpecification {
+export class TalkSpecification extends DocumentSpecification {
 }
 
 export interface $Comment$ extends $Paragraph$ {

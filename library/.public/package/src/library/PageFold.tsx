@@ -12,7 +12,7 @@ export interface $PageFold$ extends $Reference$ {
 // A PAGE FOLD IS AN ARBITRARY PLACE IN WRITING, DENOTED SO IT CAN BE REFERRED TO. Doug: "a page
 // fold is a great metaphor for an arbitrary place in writing, that can be denoted and referred to…
 // Nothing paper about a page on the web." It does not bend: folding is the act and the page is
-// incidental to it. A BOOKMARK is chapter-grained — it answers chapter() — and a fold is
+// incidental to it. A BOOKMARK is document-grained — it answers document() — and a fold is
 // point-grained, which is a distinction the two classes already carried before either was used.
 //
 // AND IT IS THE INVERSE OF ITS PARENT. A $Reference gives its holder a MEANING, and a writing with

@@ -37,7 +37,7 @@ export class $Composition extends $Writing implements $Composition$ {
                 // A NESTED WRITING OF THE SAME KIND IS A PART, NOT ITS PARTS. What stood here
                 // answered `token.parts()` — the ONLY recursion in this reading, and the reason a
                 // parse could not be asked for safely anywhere: asking a book for its parts asked
-                // every chapter for theirs, and every section under those. It also DISSOLVED the
+                // every document for theirs, and every section under those. It also DISSOLVED the
                 // nesting an author wrote. Measured 2026-09-09: <List><List>- inner</List>- outer
                 // </List> answered two items and no inner list at all, and the LaTeX paper drew
                 // nine sections with NONE nested and every heading an h2, because a section written

@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Equation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Formalizing P = NP and Central Related Concepts</Heading>
             <Paragraph>The P = NP problem is normally phrased in terms of Turing machines: a theoretical model of computation proposed by Alan Turing in 1936, which involves a one-dimensional tape divided into discrete squares, and a finite control that moves back and forth on the tape, reading and writing symbols. For a formal definition, see, e.g., Sipser [242] or Cook [74].</Paragraph>
@@ -48,6 +48,6 @@ export default $(
                 </Section>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

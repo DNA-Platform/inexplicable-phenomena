@@ -2,24 +2,24 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter$, $Chapter, $TypeOfChapter, ChapterSpecification } from './Chapter';
+import { $Document$, $Document, $TypeOfDocument, DocumentSpecification } from './Document';
 
-export interface $Synopsis$ extends $Chapter$ { }
+export interface $Synopsis$ extends $Document$ { }
 
-export class $Synopsis extends $Chapter implements $Synopsis$ {
+export class $Synopsis extends $Document implements $Synopsis$ {
     override parenthetical = true;
 
     $Synopsis(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfSynopsis, '!')));
+        super.$Document($check(block, $Block, '!').concat($check($TypeOfSynopsis, '!')));
     }
 }
 
-export class $TypeOfSynopsis extends $TypeOfChapter {
+export class $TypeOfSynopsis extends $TypeOfDocument {
     override name = 'Synopsis';
     protected override specification: Specification<$Writing> = new SynopsisSpecification();
 }
 
-export class SynopsisSpecification extends ChapterSpecification {
+export class SynopsisSpecification extends DocumentSpecification {
     @specify('a synopsis may stand empty until something is written into it')
     override $saysSomething(): boolean | void {
         return false;

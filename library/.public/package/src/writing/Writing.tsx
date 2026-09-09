@@ -112,8 +112,8 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     // A PIECE OF WRITING IS JUDGED BY THE KIND IT IS, NOT BY EVERY KIND IT INHERITS FROM. A child's
     // bond concatenates its own type onto its parent's, so a synopsis carries $TypeOfSynopsis AND
-    // $TypeOfChapter — and both specifications ran. SynopsisSpecification overrides $saysSomething
-    // so a book's own made-empty apparatus may stand, and ChapterSpecification refused it anyway:
+    // $TypeOfDocument — and both specifications ran. SynopsisSpecification overrides $saysSomething
+    // so a book's own made-empty apparatus may stand, and DocumentSpecification refused it anyway:
     // the override never won, because the two rules stood side by side rather than one above the
     // other. Measured 2026-09-09 — a book's placed synopsis, index and footer each drew a refusal
     // panel reading "a piece of writing says something, and this one says nothing at all", and no

@@ -8,7 +8,7 @@
 // name, not only by adding a member.
 //
 // THE ORIGINAL NOTE: ABSTRACT WAS HERE AND IS DELETED, not moved back. Read beside library/Synopsis it was the SAME
-// CLASS under another name — both extend $Composition, both parenthetical, both a $TypeOfChapter
+// CLASS under another name — both extend $Composition, both parenthetical, both a $TypeOfDocument
 // with an empty specification, line for line. A paper's abstract IS a synopsis; `abstract` is what
 // one domain calls it. Doug's own rule settles which word survives: a kind is named after its
 // CANONICAL member, the way $Letter is named for a letter and covers every character. This is the

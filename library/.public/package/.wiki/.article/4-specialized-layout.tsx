@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, List, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
-import { BookLink } from '../.chapter';
+import Document from './.document';
+import { BookLink } from '../.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Specialized layout</Heading>
             <Paragraph><BookLink>[Stand-alone lists](https://en.wikipedia.org/wiki/Wikipedia:Stand-alone_lists)</BookLink> and <BookLink>[talk pages](https://en.wikipedia.org/wiki/Wikipedia:Talk_page_layout)</BookLink> have their own layout designs.</Paragraph>
@@ -18,6 +18,6 @@ export default $(
                 - Video games
             </List>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
-import { $Writing, Writing, $Type, $Format, Format, $Theme, Reference, TypeOfLetter, $TypeOfLetter, TypeOfWord, TypeOfSentence, TypeOfParagraph, $TypeOfParagraph, Paragraph, TypeOfSection, $TypeOfSection, TypeOfHeading, $TypeOfHeading, Heading, List, Table, Path, TypeOfChapter, $TypeOfChapter, chapter as Chapter, Chapter as Written, $TypeOf$Chapter, TypeOfBook, $TypeOfBook, reflection, parser, Section, $Composition, html } from '@dna-platform/public';
+import { $Writing, Writing, $Type, $Format, Format, $Theme, Reference, TypeOfLetter, $TypeOfLetter, TypeOfWord, TypeOfSentence, TypeOfParagraph, $TypeOfParagraph, Paragraph, TypeOfSection, $TypeOfSection, TypeOfHeading, $TypeOfHeading, Heading, List, Table, Path, TypeOfDocument, $TypeOfDocument, documented as Document, Document as Written, $TypeOf$Document, TypeOfBook, $TypeOfBook, reflection, parser, Section, $Composition, html } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 describe('a piece of writing says what kind of writing it is', () => {
     it('and the kind is the type written into it', () => {
-        const chapter = built<$Writing>(<Writing><TypeOfChapter />a</Writing>);
-        expect(chapter.kind).toBeInstanceOf($TypeOfChapter);
+        const documented = built<$Writing>(<Writing><TypeOfDocument />a</Writing>);
+        expect(documented.kind).toBeInstanceOf($TypeOfDocument);
     });
 
     it('and writing with no kind written into it answers nothing', () => {
@@ -17,7 +17,7 @@ describe('a piece of writing says what kind of writing it is', () => {
 
     it('AND IT IS REFUSED WHEN IT IS ASKED TO SPECIFY', () => {
         expect(() => built<$Writing>(<Writing>a</Writing>).specify()).not.toThrow();
-        const typed = built<$Writing>(<Writing><TypeOfChapter />a</Writing>);
+        const typed = built<$Writing>(<Writing><TypeOfDocument />a</Writing>);
         expect(() => typed.specify()).not.toThrow();
     });
 });
@@ -30,15 +30,15 @@ describe('the seven stand in order, and a type knows what it composes', () => {
 
     it('each names the one beneath it, and the letter names none', () => {
         const beneath = (Kind: React.ComponentType) => (built<$Type>(<Kind />)).below();
-        expect(beneath(TypeOfBook)).toBe($TypeOfChapter);
+        expect(beneath(TypeOfBook)).toBe($TypeOfDocument);
         expect(beneath(TypeOfLetter)).toBeUndefined();
     });
 
-    it('a chapter is beneath a book, and a book is not beneath a chapter', () => {
+    it('a documented is beneath a book, and a book is not beneath a documented', () => {
         const book = built<$Type>(<TypeOfBook />);
-        const chapter = built<$Type>(<TypeOfChapter />);
-        expect(reflection.beneath(book, chapter)).toBe(true);
-        expect(reflection.beneath(chapter, book)).toBe(false);
+        const documented = built<$Type>(<TypeOfDocument />);
+        expect(reflection.beneath(book, documented)).toBe(true);
+        expect(reflection.beneath(documented, book)).toBe(false);
     });
 
     it('AND IT REACHES ALL THE WAY DOWN — a letter is beneath a book', () => {
@@ -63,9 +63,9 @@ describe('a piece of writing holds nothing above its own level', () => {
     // triaged is not a rule. WHAT WOULD MAKE IT BETTER: a refusal that names WHICH part offended and
     // WHICH level it stands at, so it can be read; and a count against the whole corpus before it is
     // turned on, because this one was written against examples and then met a book.
-    it('and a sentence holding a chapter is admitted, which is what striking the level rule costs', () => {
+    it('and a sentence holding a documented is admitted, which is what striking the level rule costs', () => {
         const sentence = built<$Writing>(
-            <Writing><TypeOfSentence /><Writing><TypeOfChapter />a</Writing></Writing>);
+            <Writing><TypeOfSentence /><Writing><TypeOfDocument />a</Writing></Writing>);
         expect(() => sentence.specify()).not.toThrow();
     });
 
@@ -99,9 +99,9 @@ describe('a piece of writing says something', () => {
 // nothing, and reflection is what tells you it is one.
 describe('an annotation weighs in; a type also resolves', () => {
     it('a type written into a piece of writing is among its annotations', () => {
-        const chapter = built<$Writing>(<Writing><TypeOfChapter />a</Writing>);
-        expect(chapter.annotations).toHaveLength(1);
-        expect(chapter.type).toHaveLength(1);
+        const documented = built<$Writing>(<Writing><TypeOfDocument />a</Writing>);
+        expect(documented.annotations).toHaveLength(1);
+        expect(documented.type).toHaveLength(1);
     });
 
     it('AND A TYPE CARRIES NO KIND OF ITS OWN', () => {
@@ -109,8 +109,8 @@ describe('an annotation weighs in; a type also resolves', () => {
     });
 
     it('and the type it holds is not one of the things it composes', () => {
-        const chapter = built<$Writing>(<Writing><TypeOfChapter />a</Writing>);
-        expect(() => chapter.specify()).not.toThrow();
+        const documented = built<$Writing>(<Writing><TypeOfDocument />a</Writing>);
+        expect(() => documented.specify()).not.toThrow();
     });
 });
 
@@ -128,11 +128,11 @@ describe('the frame carries the names of every kind the writing stands as', () =
         return render(<Page />).container;
     };
 
-    it('a chapter is labelled a chapter', () => {
-        const host = drawn(<Writing><TypeOfChapter />a</Writing>);
-        const labelled = host.querySelector('.pd-chapter');
+    it('a documented is labelled a documented', () => {
+        const host = drawn(<Writing><TypeOfDocument />a</Writing>);
+        const labelled = host.querySelector('.pd-document');
         expect(labelled).not.toBeNull();
-        expect(labelled!.className.split(' ')).toEqual(['pd-chapter']);
+        expect(labelled!.className.split(' ')).toEqual(['pd-document']);
     });
 
     // ONLY A TYPE LABELS. An annotation says something about the writing without
@@ -194,9 +194,9 @@ describe('a kind draws in its default look, and the look makes up for plain copy
 });
 
 describe('a mention stands for another piece of writing', () => {
-    const mentioned = () => built<$Writing>(<Chapter>Body sections<Reference>#Body_sections</Reference></Chapter>);
+    const mentioned = () => built<$Writing>(<Document>Body sections<Reference>#Body_sections</Reference></Document>);
 
-    it('a mentioned chapter carries what it points at, and the base draws it as an anchor', () => {
+    it('a mentioned documented carries what it points at, and the base draws it as an anchor', () => {
         const Drawn = $(mentioned());
         const host = render(<Drawn />).container;
         expect(host.querySelector('a')?.getAttribute('href')).toBe('#Body_sections');
@@ -205,8 +205,8 @@ describe('a mention stands for another piece of writing', () => {
     it('AND IT STANDS AT THE LEVEL IT IS WRITTEN AT, NOT THE LEVEL OF WHAT IT MENTIONS', () => {
         const held = mentioned();
         expect(reflection.is(held, $TypeOfParagraph)).toBe(true);
-        expect(reflection.is(held, $TypeOfChapter)).toBe(false);
-        expect(reflection.is(held, $TypeOf$Chapter)).toBe(true);
+        expect(reflection.is(held, $TypeOfDocument)).toBe(false);
+        expect(reflection.is(held, $TypeOf$Document)).toBe(true);
     });
 
     it('and it means what it holds, so a mention is a reference by having a meaning', () => {
@@ -214,7 +214,7 @@ describe('a mention stands for another piece of writing', () => {
     });
 
     it('AND ITS ADDRESS IS A POSITION, BECAUSE A FIXED ORDER ALREADY SAYS THE LEVEL', () => {
-        const held = built<$Writing>(<Chapter>Body sections<Path>1</Path></Chapter>);
+        const held = built<$Writing>(<Document>Body sections<Path>1</Path></Document>);
         expect(() => held.specify()).not.toThrow();
     });
 
@@ -226,10 +226,10 @@ describe('a mention stands for another piece of writing', () => {
     });
 
     it('AND ONE WITH NOTHING TO MEAN YET STILL STANDS — a mention is writing that MEANS the thing, never a reference that carries a path', () => {
-        const bare = built<$Writing>(<Chapter>Body sections</Chapter>);
+        const bare = built<$Writing>(<Document>Body sections</Document>);
         expect(() => bare.specify()).not.toThrow();
         expect(bare.meaning).toBeUndefined();
-        expect(built<$Writing>(<Chapter>Body sections<Reference>#Body_sections</Reference></Chapter>).meaning).toBeDefined();
+        expect(built<$Writing>(<Document>Body sections<Reference>#Body_sections</Reference></Document>).meaning).toBeDefined();
     });
 });
 
@@ -312,7 +312,7 @@ describe('a composition generates the level it needs from what it holds', () => 
         expect(() => built<$Composition>(<Section>a</Section>).specify()).not.toThrow();
     });
 
-    it('AND YOU STILL END UP WITH A TITLE — the section a chapter reads runs its own type, so it has its heading', () => {
+    it('AND YOU STILL END UP WITH A TITLE — the section a documented reads runs its own type, so it has its heading', () => {
         const read = built<$Composition>(<Written>One thing to say. Then another thing.</Written>);
         const section = read.parts()[0] as $Composition;
         expect(reflection.is(section, $TypeOfSection)).toBe(true);
@@ -334,11 +334,11 @@ describe('a composition generates the level it needs from what it holds', () => 
     });
 
     it('and nothing about the level is refused now, which is the same cost said twice', () => {
-        expect(() => built<$Writing>(<Writing><TypeOfSentence /><Writing><TypeOfChapter />a</Writing></Writing>).specify())
+        expect(() => built<$Writing>(<Writing><TypeOfSentence /><Writing><TypeOfDocument />a</Writing></Writing>).specify())
             .not.toThrow();
     });
 
-    it('and a chapter handed a bare paragraph is a chapter, because the section between them is read', () => {
+    it('and a documented handed a bare paragraph is a documented, because the section between them is read', () => {
         expect(() => built<$Composition>(<Written><Paragraph>One thing to say.</Paragraph></Written>).specify()).not.toThrow();
     });
 

@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Citation, Equation, Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Progress</Heading>
             <Paragraph>One common view among mathematicians is that questions like P = NP, while undoubtedly im- portant, are just too hard to make progress on in the present state of mathematics. It’s true that we seem to be nowhere close to a solution, but in this section, I’ll build a case that the extreme pessimistic view is unwarranted. I’ll explain what genuine knowledge I think we have, relevant to proving P ̸= NP, that we didn’t have thirty years ago or in many cases ten years ago. One could argue that, if P ̸= NP is a distant peak, then all the progress has remained in the foothills. On the other hand, scaling the foothills has already been nontrivial, so anyone aiming for the summit had better get acquainted with what’s been done.</Paragraph>
@@ -88,7 +88,7 @@ export default $(
                 </Section>
                 <Section>
                     <Heading>Arithmetic Circuit Lower Bounds</Heading>
-                    <Paragraph>I won’t do justice in this survey to the now-impressive body of work motivated by Conjecture 72; in particular, I’ll say little about proof techniques. Readers who want to learn more about arithmetic circuit lower bounds should consult Shpilka and Yehudayoff [239, Chapter 3] for an excellent survey circa 2010, or Saraf [230] for a 2014 update. Briefly, though, computer scientists have tried to approach Conjecture 72 much as they’ve approached NP ̸⊂ P/poly, by proving lower bounds against more and more powerful arithmetic circuit classes. In that quest, they’ve had some notable successes (paralleling the Boolean successes), but have also run up against some differences from the Boolean case.</Paragraph>
+                    <Paragraph>I won’t do justice in this survey to the now-impressive body of work motivated by Conjecture 72; in particular, I’ll say little about proof techniques. Readers who want to learn more about arithmetic circuit lower bounds should consult Shpilka and Yehudayoff [239, Document 3] for an excellent survey circa 2010, or Saraf [230] for a 2014 update. Briefly, though, computer scientists have tried to approach Conjecture 72 much as they’ve approached NP ̸⊂ P/poly, by proving lower bounds against more and more powerful arithmetic circuit classes. In that quest, they’ve had some notable successes (paralleling the Boolean successes), but have also run up against some differences from the Boolean case.</Paragraph>
                 </Section>
                 <Section>
                     <Heading>Arithmetic Natural Proofs?</Heading>
@@ -128,6 +128,6 @@ export default $(
                 </Section>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

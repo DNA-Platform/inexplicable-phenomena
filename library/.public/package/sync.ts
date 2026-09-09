@@ -37,11 +37,14 @@ const walk = (shared: string, published: string, top = false) => {
     for (const entry of readdirSync(from, { withFileTypes: true })) {
         const here = join(from, entry.name);
         const there = join(to, entry.name);
-        // THE DEMO'S OWN ROOT IS NOT MIRRORED, only the folders inside it: `.public` holds the app
-        // shell (index.html, main.tsx, vite.config.ts, build.mjs) and the package side holds the
-        // tsconfig, and neither belongs to the other. Mirroring them copied the shell inward and
-        // DELETED both tsconfigs on the first run.
-        if (top && !entry.isDirectory()) continue;
+        // AT THE DEMO'S OWN ROOT, MIRROR ONLY WHAT EXISTS IN BOTH — never create, never delete.
+        // `.public` holds the app shell there (index.html, main.tsx, vite.config.ts, build.mjs) and
+        // the package side holds the tsconfig, and neither belongs to the other; mirroring them
+        // wholesale copied the shell inward and DELETED both tsconfigs. But the wiki keeps a
+        // CONTENT file at that root too, and skipping the root entirely let it diverge silently —
+        // it still imported $Chapter after everything else had been renamed. Existing in both is
+        // the test, and it needs no list of exceptions.
+        if (top && !entry.isDirectory() && !existsSync(there)) continue;
         if (entry.isDirectory()) {
             if (!existsSync(join(shared, entry.name)) || !existsSync(join(published, entry.name))) continue;
             walk(join(shared, entry.name), join(published, entry.name));

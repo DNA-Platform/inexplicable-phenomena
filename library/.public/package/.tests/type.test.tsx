@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, Type, Writing, TypeOfParagraph, TypeOfList, TypeOfSection, TypeOfChapter } from '@dna-platform/public';
+import { $Writing, Type, Writing, TypeOfParagraph, TypeOfList, TypeOfSection, TypeOfDocument } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -20,7 +20,7 @@ describe('a type carried by writing is asked what it is, and answers once', () =
     });
 
     it('AND TWO KINDS THAT SPECIALISE NEITHER ARE STILL REFUSED', () => {
-        const held = built<$Writing>(<Writing><TypeOfSection /><TypeOfChapter />a</Writing>);
+        const held = built<$Writing>(<Writing><TypeOfSection /><TypeOfDocument />a</Writing>);
         expect(() => held.kind).toThrow(/one kind of writing/u);
     });
 });

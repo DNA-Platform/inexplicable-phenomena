@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
-import { BookLink } from '../.chapter';
+import { BookLink } from '../.document';
 import { Hatnote } from './.hatnote';
 
 export default $(

@@ -3,7 +3,7 @@ import { $, look, styled } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
     $Book, $Writing, $Theme, $Format, $TypeOfTheme, $TypeOfSection, $TypeOfParagraph,
-    Book, Chapter, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph, Theme,
+    Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph, Theme,
 } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -11,8 +11,8 @@ const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const cover = () => <Cover><Title>Alan Turing<Reference>https://en.wikipedia.org/wiki/Alan_Turing</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>;
 const synopsis = () => <Synopsis>A life.</Synopsis>;
 
-const life = () => <Chapter><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Chapter>;
-const work = () => <Chapter><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Chapter>;
+const life = () => <Document><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Document>;
+const work = () => <Document><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>;
 
 class $Dark extends $Theme {
     override ink = '#ffffff';
@@ -32,12 +32,12 @@ $(Mine, Theme)(Portal);
 describe('a writing has a theme the way it has a meaning — read, never stored', () => {
     it('A BOOK PLACES ONE THEME, AND EVERYTHING IN IT READS THAT ONE', () => {
         const book = built<$Book>(<Book>{cover()}{synopsis()}{life()}</Book>);
-        const chapter = book.chapters[0];
-        const paragraph = chapter.searchFor<$Writing>($TypeOfSection)[0].searchFor<$Writing>($TypeOfParagraph)[0];
+        const documented = book.documents[0];
+        const paragraph = documented.searchFor<$Writing>($TypeOfSection)[0].searchFor<$Writing>($TypeOfParagraph)[0];
 
         expect(book.searchFor($TypeOfTheme).length).toBe(1);
         expect(book.theme).toBeInstanceOf($Theme);
-        expect(chapter.theme).toBe(book.theme);
+        expect(documented.theme).toBe(book.theme);
         expect(paragraph.theme).toBe(book.theme);
     });
 
@@ -46,9 +46,9 @@ describe('a writing has a theme the way it has a meaning — read, never stored'
             <Book>
                 {cover()}{synopsis()}
                 {life()}
-                <Chapter><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Chapter>
+                <Document><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>
             </Book>);
-        const [first, second] = book.chapters;
+        const [first, second] = book.documents;
 
         expect(second.theme).toBeInstanceOf($Dark);
         expect(second.theme).not.toBe(book.theme);
@@ -68,7 +68,7 @@ describe('a writing has a theme the way it has a meaning — read, never stored'
         const book = built<$Book>(<Mine>{cover()}{synopsis()}{life()}{work()}</Mine>);
 
         expect(book.theme).toBeInstanceOf($Portal);
-        expect(book.chapters[1].theme.size).toBe('14px');
+        expect(book.documents[1].theme.size).toBe('14px');
         expect(book.searchFor($TypeOfTheme).length).toBe(1);
     });
 
@@ -87,7 +87,7 @@ describe('the theme is the sheet, worn once at the book', () => {
         expect(mains.length).toBe(1);
         expect(mains[0].className).not.toBe('');
         expect(container.querySelector('.pd-theme')).toBeNull();
-        expect(container.querySelector('article.pd-chapter')).not.toBeNull();
+        expect(container.querySelector('article.pd-document')).not.toBeNull();
         expect(container.textContent).toContain('Born in Maida Vale.');
     });
 
@@ -96,7 +96,7 @@ describe('the theme is the sheet, worn once at the book', () => {
             <Book>
                 {cover()}{synopsis()}
                 {life()}
-                <Chapter><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Chapter>
+                <Document><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>
             </Book>));
         const mains = container.querySelectorAll('main');
 
@@ -121,7 +121,7 @@ describe('a format is written into the writing it formats', () => {
             <Book>
                 {cover()}{synopsis()}
                 {life()}
-                <Chapter><Boxed tone="red" /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Chapter>
+                <Document><Boxed tone="red" /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>
             </Book>));
         const asides = container.querySelectorAll('aside');
 

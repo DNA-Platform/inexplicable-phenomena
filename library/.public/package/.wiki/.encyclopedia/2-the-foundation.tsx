@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import { OutwardLink } from '../.chapter';
-import { Foundation, Logo } from './.chapter';
+import { OutwardLink } from '../.document';
+import { Foundation, Logo } from './.document';
 
 export default $(
     <Foundation>

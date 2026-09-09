@@ -157,7 +157,7 @@ export class $Theme extends $Format implements $Theme$ {
     // markdown reading drew three EQUAL headings: measured, title, author and subject were all
     // 1.5em at weight 600, indistinguishable from each other and from a section heading. A cover
     // heading is also not ruled — the base rules h1 and h2, which would draw a line under a name.
-    // THE SHEET, and the strip above it — the two groups a theme needs to draw a document as a
+    // THE SHEET, and the strip above it — the two groups a theme needs to draw a documented as a
     // PAGE rather than as a column of text. Neither says anything here beyond the colour, because
     // what a sheet MEASURES is `measure` and what a strip LOOKS LIKE is the theme's own business:
     // Doug, 2026-09-09, "developing a theme means all components ideally SHOULD look good in the
@@ -289,7 +289,7 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecoration = 'none';
     get a_color() { return this.link; }
     @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover') hover_textDecoration = 'underline';
-    @select('.pd-chapter') chapter_marginBottom = '2em';
+    @select('.pd-document') document_marginBottom = '2em';
     @select('.pd-index') index_columnCount = '3';
 
     // Machinery extending machinery, so the chain is called whole; a KIND would extend its level instead.

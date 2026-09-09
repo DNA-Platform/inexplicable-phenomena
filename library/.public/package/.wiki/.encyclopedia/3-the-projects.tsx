@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Reference, Section, Title } from '@dna-platform/public';
-import { Projects, Logo, Project } from './.chapter';
+import { Projects, Logo, Project } from './.document';
 
 export default $(
     <Projects>

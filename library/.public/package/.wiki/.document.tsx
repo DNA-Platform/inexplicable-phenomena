@@ -4,7 +4,7 @@
 // for it. A website has a header; a book does not — which is why none of this is framework.
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
-import { $Chapter, $Format, $Paragraph, $Ref, $Section, html } from '@dna-platform/public';
+import { $Document, $Format, $Paragraph, $Ref, $Section, html } from '@dna-platform/public';
 
 export class $BookLink extends $Ref { }
 export class $SubjectLink extends $Ref { }
@@ -17,9 +17,9 @@ export class $Header extends $Section {
     }
 }
 
-export class $Footer extends $Chapter {
+export class $Footer extends $Document {
     $Footer(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check(footerFormatLook, '!')));
+        super.$Document($check(block, $Block, '!').concat($check(footerFormatLook, '!')));
     }
 }
 

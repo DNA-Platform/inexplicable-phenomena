@@ -128,26 +128,26 @@ export class $Theme extends $Sheet {
     deepest_marginBottom = '5pt';
 
     // SECTIONS ARE NUMBERED, and it turned out to need no ruling and no change to src. The blocker
-    // recorded here for two sprints was "every part of a book is a .pd-chapter, so counting chapters
+    // recorded here for two sprints was "every part of a book is a .pd-document, so counting documents
     // would number the cover 1" — which is FALSE, and one look at the page says so: the apparatus
-    // each writes its own class beside pd-chapter, so pd-synopsis, pd-references and pd-appendix
+    // each writes its own class beside pd-document, so pd-synopsis, pd-references and pd-appendix
     // name themselves and :not() excludes them. Numbering belongs to the THEME because numbering is
     // what article.cls does and what a README does not, so the markdown reading simply has none.
     // The counters ride the SECTION NESTING, which is the same tree the contents walks.
     @select('.pd-book') counted_counterReset = 'depth1';
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section') one_counterIncrement = 'depth1';
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section') one_counterIncrement = 'depth1';
     one_counterReset = 'depth2';
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section') two_counterIncrement = 'depth2';
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section') two_counterIncrement = 'depth2';
     two_counterReset = 'depth3';
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section') three_counterIncrement = 'depth3';
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') numbered_content = "counter(depth1) '\\00a0\\00a0'";
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section') three_counterIncrement = 'depth3';
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') numbered_content = "counter(depth1) '\\00a0\\00a0'";
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
 
     // AND THE CONTENTS CARRIES THE SAME NUMBERS, said the same way. counters() — the plural — walks
     // every level of a nested list and joins them, so one rule gives 1, then 1.1, then 1.2.1, from
     // the NESTING rather than from anything an entry declares. The apparatus is excluded here by
-    // the very classes the chapters write, which each entry now carries: the same :not() as above,
+    // the very classes the documents write, which each entry now carries: the same :not() as above,
     // so the two numberings cannot drift apart because they are the same sentence twice.
     // LEADERS TO A MARKER. There is no page to lead to, so the marker is LaTeX's own empty
     // square rather than a number — it says honestly that a page is missing while keeping the

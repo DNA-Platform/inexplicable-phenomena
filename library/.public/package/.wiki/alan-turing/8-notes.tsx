@@ -1,12 +1,12 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Notes</Heading>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

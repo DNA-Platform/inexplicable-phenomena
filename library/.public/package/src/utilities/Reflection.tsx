@@ -27,7 +27,7 @@ export class Reflection {
         this.kinds = { ...this.kinds, ...kinds };
     }
 
-    protected compositions = ['Book', 'Chapter', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
+    protected compositions = ['Book', 'Document', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
 
     is(writing: $Writing, asked: new() => $Type): boolean {
         return this.types(writing).some(type => type instanceof asked);
@@ -166,7 +166,7 @@ export class Reflection {
     // holder holds, however deeply it holds them. FIVE KINDS ASKED FOR THIS SEPARATELY — $Equation,
     // $Theorem, $Citation, $Footnote and a numbered section — and five implementations of one
     // reading is what a base is for. The holder is GIVEN because the scope differs by kind: a
-    // citation counts across its book, an equation across its chapter. `numbered` is a proxy name.
+    // citation counts across its book, an equation across its document. `numbered` is a proxy name.
     numbered(writing: $Writing, within: $Writing): number | undefined {
         const kind = writing.kind?.constructor as (new() => $Type) | undefined;
         if (kind === undefined) return undefined;
@@ -194,7 +194,7 @@ export class Reflection {
     // A KIND IS NAMED BY ITS CLASS WHERE IT HAS NO TYPE. Measured 2026-09-08: the .wiki demo declares
     // TWENTY kinds and not one carries a type of its own, which is the consumer shape Doug ruled —
     // one class, no interface, no type, no specification. Reading only the types made every one of
-    // them INVISIBLE to a sheet: $Editions, $Languages, $Logo and the rest all answered pd-chapter or
+    // them INVISIBLE to a sheet: $Editions, $Languages, $Logo and the rest all answered pd-document or
     // pd-paragraph and nothing else. That is the whole reason a consumer reached for a wrapper — a
     // kind that cannot be named cannot be dressed, so it had to be wrapped in something that could.
     // The class chain is read only ABOVE the point the types already name, and STOPS AT $Writing —

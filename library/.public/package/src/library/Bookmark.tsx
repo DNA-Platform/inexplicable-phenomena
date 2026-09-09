@@ -2,16 +2,16 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
-import { $Chapter } from './Chapter';
+import { $Document } from './Document';
 
 export interface $Bookmark$ extends $Reference$ {
-    chapter(): $Chapter | undefined;
+    document(): $Document | undefined;
 }
 
 export class $Bookmark extends $Reference implements $Bookmark$ {
-    chapter(): $Chapter | undefined {
+    document(): $Document | undefined {
         for (let holding = this.parent; holding instanceof $Writing; holding = holding.parent) {
-            if (holding instanceof $Chapter) return holding;
+            if (holding instanceof $Document) return holding;
             if (holding.parent === holding) return undefined;
         }
         return undefined;
@@ -22,8 +22,8 @@ export class $Bookmark extends $Reference implements $Bookmark$ {
     }
 
     override async read(): Promise<$Writing> {
-        const chapter = this.chapter();
-        if (chapter) return chapter;
+        const document = this.document();
+        if (document) return document;
         return super.read();
     }
 }
@@ -39,9 +39,9 @@ export class $TypeOfBookmark extends $TypeOfReference {
 }
 
 export class BookmarkSpecification extends ReferenceSpecification {
-    @specify('a bookmark stands in a chapter, or carries a path')
+    @specify('a bookmark stands in a document, or carries a path')
     override $carriesPath(writing: $Writing): boolean | void {
-        if (writing instanceof $Bookmark && writing.chapter() !== undefined) return false;
+        if (writing instanceof $Bookmark && writing.document() !== undefined) return false;
         return super.$carriesPath(writing);
     }
 

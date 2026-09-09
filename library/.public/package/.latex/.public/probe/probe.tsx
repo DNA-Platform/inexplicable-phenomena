@@ -1,17 +1,17 @@
 import { $ } from '@dna-platform/chemistry';
 import {
-    Aside, Author, Book, Chapter, Citation, Code, Cover, Equation, Figure, Heading, Highlight,
+    Aside, Author, Book, Document, Citation, Code, Cover, Equation, Figure, Heading, Highlight,
     Illustration, List, Math, Note, PageFold, Paragraph, Quote, Ref, Reference, References,
     Section, Subject, Summary, Synopsis, Table, Title,
 } from '@dna-platform/public';
 import { Appendix, Theorem } from '@dna-platform/public/article';
 
-const chapter = (
-    <Chapter>
+const document = (
+    <Document>
         <Section>
             <Heading>Every kind, drawn at once</Heading>
             <Paragraph>
-                This chapter exists to be looked at. It writes one of everything the library exports so
+                This document exists to be looked at. It writes one of everything the library exports so
                 that a theme can be judged on what it actually dresses rather than on what it declares,
                 and so that a kind nothing styles shows up as the plain thing it is.
             </Paragraph>
@@ -116,13 +116,13 @@ const chapter = (
                 </Paragraph>
             </Section>
         </Section>
-    </Chapter>
+    </Document>
 );
 
 export const probe = $(
     <Book>
         <Cover>
-            <Title>The Probe<Reference>#probe</Reference></Title>
+            <Title>The Probe<Reference>https://localhost:5310/?probe</Reference></Title>
             <Author>The framework itself</Author>
             <Subject print={false}>Every kind at once</Subject>
         </Cover>
@@ -135,7 +135,7 @@ export const probe = $(
                 </Paragraph>
             </Section>
         </Synopsis>
-        {chapter}
+        {document}
         <References>
             <Section>
                 <Heading>References</Heading>

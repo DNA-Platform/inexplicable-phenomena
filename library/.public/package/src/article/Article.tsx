@@ -8,7 +8,7 @@ export interface $Article$ extends $Part$ { }
 
 // IT EXTENDS THE CLASS, not $Composition, and that is the $ReferenceCard precedent: P11 forbids a
 // class extending the LEVEL above it, and an article is not a level above a part — it IS one, the
-// way a reference card is a reference. Extending $Composition made it COPY partitions, chapters and
+// way a reference card is a reference. Extending $Composition made it COPY partitions, documents and
 // sections as empty fields, which reads as cruft and is not: $TypeOfPart.specifically fills all
 // three, so they are the type being causal (P13). Extending the class inherits them filled.
 export class $Article extends $Part implements $Article$ {

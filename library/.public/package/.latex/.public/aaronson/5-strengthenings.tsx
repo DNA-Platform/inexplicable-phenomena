@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Strengthenings of the P ̸= NP Conjecture</Heading>
             <Paragraph>I’ll now survey various strengthenings of the P ̸= NP conjecture, which are often needed for ap- plications to cryptography, quantum computing, fine-grained complexity, and elsewhere. Some of these strengthenings will play a role when, in Section 6, we discuss the main approaches to proving P ̸= NP that have been tried.</Paragraph>
@@ -36,6 +36,6 @@ export default $(
                 <Paragraph>The class BPP might not exhaust what the physical world lets us efficiently compute, with quantum computing an obvious contender for going further. In 1993, Bernstein and Vazirani [47] defined the complexity class BQP, or Bounded-Error Quantum Polynomial-Time, as a quantum-mechanical generalization of BPP. (Details of quantum computing and BQP are beyond the scope of this survey, but see [203, 6].) Bernstein and Vazirani, along with Adleman, DeMarrais, and Huang [13], also showed some basic containments:</Paragraph>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

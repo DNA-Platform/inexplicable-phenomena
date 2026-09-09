@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
-import { $Book, Book, Chapter, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph } from '@dna-platform/public';
+import { $Book, Book, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };
@@ -15,7 +15,7 @@ const book = (written: React.ReactNode) => built<$Book>(
         </Cover>
         <Synopsis>A life.</Synopsis>
         <TableOfContents>Early life</TableOfContents>
-        <Chapter><Section><Heading>Early life</Heading>{written}<Paragraph>Born in Maida Vale.</Paragraph></Section></Chapter>
+        <Document><Section><Heading>Early life</Heading>{written}<Paragraph>Born in Maida Vale.</Paragraph></Section></Document>
     </Book>);
 
 // The cover carries the title anyway, so "the page contains it" is true either way.

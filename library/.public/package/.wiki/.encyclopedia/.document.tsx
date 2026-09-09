@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
-import { $Format, $Chapter, $Section, $Paragraph, $IndexCard, $Ref, $Theme$, html } from '@dna-platform/public';
+import { $Format, $Document, $Section, $Paragraph, $IndexCard, $Ref, $Theme$, html } from '@dna-platform/public';
 
 // A field's resting edge is the link colour lightened against the paper, so a
 // theme that changes what a link looks like changes every border drawn from one.
@@ -20,11 +20,11 @@ const caret = (colour: string) => painted("%3Csvg width='14' height='14' viewBox
 
 export const globe = 'https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg';
 
-export class $WikipediaChapter extends $Chapter { }
+export class $WikipediaDocument extends $Document { }
 
-export class $Editions extends $WikipediaChapter {
+export class $Editions extends $WikipediaDocument {
     $Editions(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check(editionsFormatLook, '!')));
+        super.$Document($check(block, $Block, '!').concat($check(editionsFormatLook, '!')));
     }
 }
 
@@ -41,21 +41,21 @@ export class $EditionListFormat extends $Format {
     display = 'none';
 }
 
-export class $Foundation extends $WikipediaChapter {
+export class $Foundation extends $WikipediaDocument {
     $Foundation(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check(foundationFormatLook, '!')));
+        super.$Document($check(block, $Block, '!').concat($check(foundationFormatLook, '!')));
     }
 }
 
-export class $Projects extends $WikipediaChapter {
+export class $Projects extends $WikipediaDocument {
     $Projects(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check(projectsFormatLook, '!')));
+        super.$Document($check(block, $Block, '!').concat($check(projectsFormatLook, '!')));
     }
 }
 
-export class $Licence extends $WikipediaChapter {
+export class $Licence extends $WikipediaDocument {
     $Licence(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check(licenceFormatLook, '!')));
+        super.$Document($check(block, $Block, '!').concat($check(licenceFormatLook, '!')));
     }
 }
 
@@ -92,19 +92,19 @@ export class $Project extends $IndexCard {
     }
 }
 
-export class $PortalChapterFormat extends $Format {
+export class $PortalDocumentFormat extends $Format {
     selector = styled.div;
     width = '100%';
 }
 
-export class $BackMatterFormat extends $PortalChapterFormat {
+export class $BackMatterFormat extends $PortalDocumentFormat {
     fontSize = '0.93em';
     lineHeight = '1.5';
     paddingTop = '3.2em';
     get borderTop() { return `1px solid ${this.theme.shade}`; }
 }
 
-export class $EditionsFormat extends $PortalChapterFormat {
+export class $EditionsFormat extends $PortalDocumentFormat {
     gridColumn = '1 / -1';
     textAlign = 'center';
     backgroundRepeat = 'no-repeat';
@@ -131,9 +131,9 @@ export class $EditionsFormat extends $PortalChapterFormat {
 }
 
 export class $FoundationFormat extends $BackMatterFormat {
-    @select('.pd-chapter') chapter_display = 'block';
-    chapter_maxWidth = '26.9em';
-    chapter_margin = '0 auto';
+    @select('.pd-document') document_display = 'block';
+    document_maxWidth = '26.9em';
+    document_margin = '0 auto';
     @select('.pd-section') section_display = 'block';
     section_position = 'relative';
     section_padding = '0 1.54em 0 4.6em';
@@ -154,9 +154,9 @@ export class $FoundationFormat extends $BackMatterFormat {
 
 export class $ProjectsFormat extends $BackMatterFormat {
     textAlign = 'left';
-    @select('.pd-chapter') projects_display = 'grid';
+    @select('.pd-document') projects_display = 'grid';
     projects_gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
-    @select('.pd-chapter > .pd-section:not(.pd-index-card)') intro_display = 'none';
+    @select('.pd-document > .pd-section:not(.pd-index-card)') intro_display = 'none';
 }
 
 export class $LicenceFormat extends $BackMatterFormat {
@@ -368,7 +368,7 @@ export class $SearchFormat extends $Format {
     get button_backgroundImage() { return magnifier(this.theme.paper); }
 }
 
-export default $($WikipediaChapter);
+export default $($WikipediaDocument);
 export const Editions = $($Editions);
 export const EditionList = $($EditionList);
 export const EditionListFormat = $($EditionListFormat);
@@ -379,7 +379,7 @@ export const Logo = $($Logo);
 export const Languages = $($Languages);
 export const Language = $($Language);
 export const Project = $($Project);
-export const PortalChapterFormat = $($PortalChapterFormat);
+export const PortalDocumentFormat = $($PortalDocumentFormat);
 export const BackMatterFormat = $($BackMatterFormat);
 export const EditionsFormat = $($EditionsFormat);
 export const FoundationFormat = $($FoundationFormat);

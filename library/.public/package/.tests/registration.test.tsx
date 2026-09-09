@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
-    $Book, $Chapter, $Writing, Book, Cover, Synopsis, Title, Author, Subject,
+    $Book, $Document, $Writing, Book, Cover, Synopsis, Title, Author, Subject,
     Section, Heading, Paragraph, TableOfContents,
 } from '@dna-platform/public';
 
@@ -12,10 +12,10 @@ const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />)
 const bonded: string[] = [];
 const knew: Record<string, boolean> = {};
 
-class $Recorded extends $Chapter {
+class $Recorded extends $Document {
     $Recorded(block: $Block) {
-        super.$Chapter($check(block, $Block));
-        const named = `chapter ${bonded.filter(one => one.startsWith('chapter')).length + 1}`;
+        super.$Document($check(block, $Block));
+        const named = `documented ${bonded.filter(one => one.startsWith('documented')).length + 1}`;
         knew[named] = this.book !== (this as unknown as $Writing);
         bonded.push(named);
     }
@@ -39,21 +39,21 @@ const made = () => built<$Book>(
         <Recorded><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Recorded>
     </Bound>);
 
-describe('a chapter is built before its book, and it already knows the book', () => {
+describe('a documented is built before its book, and it already knows the book', () => {
     it('EVERY CHAPTER IS BONDED BEFORE THE BOOK IS', () => {
         bonded.length = 0;
         made();
-        expect(bonded).toEqual(['chapter 1', 'chapter 2', 'book']);
+        expect(bonded).toEqual(['documented 1', 'documented 2', 'book']);
     });
 
     it('AND EACH ONE REACHES ITS BOOK FROM INSIDE ITS OWN BOND CONSTRUCTOR', () => {
         bonded.length = 0;
         made();
-        expect(knew['chapter 1']).toBe(true);
-        expect(knew['chapter 2']).toBe(true);
+        expect(knew['documented 1']).toBe(true);
+        expect(knew['documented 2']).toBe(true);
     });
 
-    it('so the book is the LAST thing bonded, and what a chapter said is already said', () => {
+    it('so the book is the LAST thing bonded, and what a documented said is already said', () => {
         bonded.length = 0;
         made();
 
@@ -61,14 +61,14 @@ describe('a chapter is built before its book, and it already knows the book', ()
     });
 });
 
-describe('the table of contents is drawn BEFORE the chapters it catalogues', () => {
-    it('THE TABLE DRAWS FIRST, so nothing a chapter learns at draw time can reach it', () => {
+describe('the table of contents is drawn BEFORE the documents it catalogues', () => {
+    it('THE TABLE DRAWS FIRST, so nothing a documented learns at draw time can reach it', () => {
         const order: string[] = [];
 
-        class $Watched extends $Chapter {
-            $Watched(block: $Block) { super.$Chapter($check(block, $Block)); }
+        class $Watched extends $Document {
+            $Watched(block: $Block) { super.$Document($check(block, $Block)); }
             override view(): React.ReactNode {
-                order.push('chapter');
+                order.push('documented');
 
                 return super.view();
             }
@@ -94,6 +94,6 @@ describe('the table of contents is drawn BEFORE the chapters it catalogues', () 
         drawn(book);
 
         expect(order[0]).toBe('book');
-        expect(order).toContain('chapter');
+        expect(order).toContain('documented');
     });
 });

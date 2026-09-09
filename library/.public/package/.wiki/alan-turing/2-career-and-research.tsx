@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
+import Document from './.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>Career and research</Heading>
             <Paragraph>When Turing returned to Cambridge, he attended lectures given in 1939 by Ludwig Wittgenstein about the foundations of mathematics. The lectures have been reconstructed verbatim, including interjections from Turing and other students, from students' notes. Turing and Wittgenstein argued and disagreed, with Turing defending formalism and Wittgenstein propounding his view that mathematics does not discover any absolute truths, but rather invents them.</Paragraph>
@@ -73,6 +73,6 @@ export default $(
                 <Paragraph>On a 1949 visit to Britain to attend a conference on psychiatry American cybernetician Warren McCulloch made a trip to Manchester to meet Turing (who may have been unimpressed).</Paragraph>
             </Section>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

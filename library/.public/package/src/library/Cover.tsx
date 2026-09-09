@@ -3,24 +3,24 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter, $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
+import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from './Document';
 import { $Title, $TypeOfTitle } from './Title';
 import { $Author, $TypeOfAuthor } from './Author';
 import { $Subject, $TypeOfSubject } from './Subject';
 
-export interface $Cover$ extends $Chapter$ {
+export interface $Cover$ extends $Document$ {
     title(): $Title | undefined;
     author(): $Author | undefined;
     subject(): $Subject | undefined;
 }
 
-export class $Cover extends $Chapter implements $Cover$ {
+export class $Cover extends $Document implements $Cover$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
     author(): $Author | undefined { return this.searchForOne<$Author>($TypeOfAuthor); }
     subject(): $Subject | undefined { return this.searchForOne<$Subject>($TypeOfSubject); }
 
     $Cover(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfCover, '!')));
+        super.$Document($check(block, $Block, '!').concat($check($TypeOfCover, '!')));
     }
 
     override print(content: ReactNode): ReactNode {
@@ -28,12 +28,12 @@ export class $Cover extends $Chapter implements $Cover$ {
     }
 }
 
-export class $TypeOfCover extends $TypeOfChapter {
+export class $TypeOfCover extends $TypeOfDocument {
     override name = 'Cover';
     protected override specification: Specification<$Writing> = new CoverSpecification();
 }
 
-export class CoverSpecification extends ChapterSpecification {
+export class CoverSpecification extends DocumentSpecification {
     @specify('a cover carries its title')
     $carriesTitle(writing: $Writing): void {
         $check(writing.searchFor($TypeOfTitle).length > 0,

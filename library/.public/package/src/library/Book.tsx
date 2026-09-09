@@ -13,7 +13,7 @@ import { Paragraph as paragraph, $Paragraph$, $TypeOfParagraph } from '@/writing
 import { List as list } from '@/writing/List';
 import { Item as item } from '@/writing/Item';
 import { Ref as ref } from '@/reference/Ref';
-import { $TypeOfChapter } from './Chapter';
+import { $TypeOfDocument } from './Document';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfCover, Cover as cover } from './Cover';
 import { $TypeOfSynopsis, Synopsis as synopsis } from './Synopsis';
@@ -28,7 +28,7 @@ export interface $Book$ extends $Composition$ {
     table: $Writing;
     index: $Writing;
     footer: $Writing;
-    readonly chapters: $Writing[];
+    readonly documents: $Writing[];
 }
 
 export interface $$Book$ extends $Paragraph$ { }
@@ -40,9 +40,9 @@ export class $Book extends $Composition implements $Book$ {
     index!: $Writing;
     footer!: $Writing;
 
-    get chapters(): $Writing[] {
-        return this.searchFor($TypeOfChapter).filter(chapter =>
-            chapter !== this.cover && chapter !== this.synopsis && chapter !== this.table && chapter !== this.index && chapter !== this.footer);
+    get documents(): $Writing[] {
+        return this.searchFor($TypeOfDocument).filter(document =>
+            document !== this.cover && document !== this.synopsis && document !== this.table && document !== this.index && document !== this.footer);
     }
 
     $Book(block: $Block) {
@@ -50,8 +50,8 @@ export class $Book extends $Composition implements $Book$ {
         this.cover = this.placed($TypeOfCover, cover);
         this.synopsis = this.placed($TypeOfSynopsis, synopsis, this.cover);
         this.table = this.searchForOne($TypeOfTableOfContents) ?? this.contents(this.synopsis);
-        const chapters = this.chapters;
-        this.index = this.placed($TypeOfIndex, index, chapters[chapters.length - 1] ?? this.table);
+        const documents = this.documents;
+        this.index = this.placed($TypeOfIndex, index, documents[documents.length - 1] ?? this.table);
         this.footer = this.placed($TypeOfFooter, footer, this.index);
         this.placed($TypeOfTheme, theme, this.footer);
     }
@@ -88,7 +88,7 @@ export class $Book extends $Composition implements $Book$ {
             <TableOfContents>
                 <Section>
                     <Heading>Contents</Heading>
-                    {this.listed(this.chapters)}
+                    {this.listed(this.documents)}
                 </Section>
             </TableOfContents>,
             TableOfContents
@@ -98,7 +98,7 @@ export class $Book extends $Composition implements $Book$ {
 
     // A CONTENTS IS THE SECTIONS A CHAPTER HOLDS, HOWEVER DEEPLY, and parts() answers exactly that.
     // It read searchFor before, which is ONE level, so a paper of nested sections listed only its
-    // top ones — measured, a chapter of five sections across three levels listed two.
+    // top ones — measured, a document of five sections across three levels listed two.
     //
     // AND IT IS A LIST OF LISTS. Doug, 2026-09-09, on seeing a flat run of paragraphs carrying an
     // indent number: "no! You nest them... that is fine stylistically, but I would remove it and
@@ -160,7 +160,7 @@ export class $TypeOfBook extends $Type {
     override name = 'Book';
     protected override specification: Specification<$Writing> = new BookSpecification();
 
-    override below(): new() => $TypeOfChapter { return $TypeOfChapter; }
+    override below(): new() => $TypeOfDocument { return $TypeOfDocument; }
 }
 
 export class BookSpecification extends WritingSpecification {

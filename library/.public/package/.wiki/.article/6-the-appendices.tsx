@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, List, Paragraph, Section } from '@dna-platform/public';
-import Chapter from './.chapter';
-import { BookLink, OutwardLink } from '../.chapter';
+import Document from './.document';
+import { BookLink, OutwardLink } from '../.document';
 
 export default $(
-    <Chapter>
+    <Document>
         <Section>
             <Heading>See also</Heading>
             <List>
@@ -39,6 +39,6 @@ export default $(
                 - <OutwardLink>[Wikipedia:Citing sources](https://en.wikipedia.org/wiki/Wikipedia:Citing_sources)</OutwardLink>, on the appendix this page places last but names first.
             </List>
         </Section>
-    </Chapter>,
-    Chapter
+    </Document>,
+    Document
 );

@@ -88,9 +88,9 @@ export class $Theme extends $Sheet {
 
     // NUMBERS ARE THE ONE STRUCTURAL THING A RENDERED DOCUMENT DROPS — a README does not say
     // "1.2.1" — and dropping them is four empty strings rather than undoing the counters.
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') override numbered_content = "''";
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') override deepNumbered_content = "''";
-    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') override deepestNumbered_content = "''";
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') override numbered_content = "''";
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') override deepNumbered_content = "''";
+    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') override deepestNumbered_content = "''";
     @select('.pd-table-of-contents .pd-item > a::before') override listedNumber_content = "''";
     override listedNumber_minWidth = '0';
 

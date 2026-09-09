@@ -3,13 +3,13 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Chapter, $Chapter$, $TypeOfChapter, ChapterSpecification } from './Chapter';
+import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from './Document';
 
-export interface $Footer$ extends $Chapter$ { }
+export interface $Footer$ extends $Document$ { }
 
-export class $Footer extends $Chapter implements $Footer$ {
+export class $Footer extends $Document implements $Footer$ {
     $Footer(block: $Block) {
-        super.$Chapter($check(block, $Block, '!').concat($check($TypeOfFooter, '!')));
+        super.$Document($check(block, $Block, '!').concat($check($TypeOfFooter, '!')));
     }
 
     override print(content: ReactNode): ReactNode {
@@ -17,12 +17,12 @@ export class $Footer extends $Chapter implements $Footer$ {
     }
 }
 
-export class $TypeOfFooter extends $TypeOfChapter {
+export class $TypeOfFooter extends $TypeOfDocument {
     override name = 'Footer';
     protected override specification: Specification<$Writing> = new FooterSpecification();
 }
 
-export class FooterSpecification extends ChapterSpecification {
+export class FooterSpecification extends DocumentSpecification {
     @specify('a footer may stand empty until something is written into it')
     override $saysSomething(): boolean | void {
         return false;

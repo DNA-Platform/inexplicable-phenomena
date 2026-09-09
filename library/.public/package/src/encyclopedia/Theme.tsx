@@ -1,4 +1,4 @@
-// IN PROGRESS · rating 3. The encyclopedia's theme: Wikipedia's values and its whole look as groups over the base sheet — installed by registration, replacing the base Theme in a scope. The contents column is placed by grid LINES, not areas, because chapters drawn flat in one area stack (Sprint 52); the row span is the one smell, and it names what the base lacks — a reading of a block drawn without making a block.
+// IN PROGRESS · rating 3. The encyclopedia's theme: Wikipedia's values and its whole look as groups over the base sheet — installed by registration, replacing the base Theme in a scope. The contents column is placed by grid LINES, not areas, because documents drawn flat in one area stack (Sprint 52); the row span is the one smell, and it names what the base lacks — a reading of a block drawn without making a block.
 import { $, select } from '@dna-platform/chemistry';
 import { $Theme as $Sheet } from '@/formatting/Theme';
 
@@ -116,7 +116,7 @@ export class $Theme extends $Sheet {
     entryLink_textDecoration = 'none';
     @select('nav a:hover') get entryHover_color() { return this.pressed; }
 
-    @select('article') override chapter_marginBottom = '2em';
+    @select('article') override document_marginBottom = '2em';
     @select('article > *:first-child') opening_marginTop = '0';
     @select('article h2') override h2_fontSize = '1.5em';
     h2_fontWeight = 'normal';

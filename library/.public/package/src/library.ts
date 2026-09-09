@@ -1,6 +1,6 @@
 // The door @dna-platform/public/library — a root file named for its folder, on chemistry's src/symbolic.ts precedent; the base door re-exports these until every consumer imports from here.
 export * from './library/Book';
-export * from './library/Chapter';
+export * from './library/Document';
 export * from './library/Part';
 export * from './library/Cover';
 export * from './library/Synopsis';

@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import { BookLink, SubjectLink } from '../.chapter';
-import { EditionList, Editions } from './.chapter';
+import { BookLink, SubjectLink } from '../.document';
+import { EditionList, Editions } from './.document';
 
 export default $(
     <Editions>

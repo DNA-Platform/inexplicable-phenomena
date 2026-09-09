@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
-import { OutwardLink } from '../.chapter';
-import { Licence } from './.chapter';
+import { OutwardLink } from '../.document';
+import { Licence } from './.document';
 
 export default $(
     <Licence>
