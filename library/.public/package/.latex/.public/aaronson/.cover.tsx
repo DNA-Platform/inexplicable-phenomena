@@ -4,7 +4,10 @@ import { Author, Cover, Reference, Subject, Title } from '@dna-platform/public';
 
 export default $(
     <Cover>
-        <Title>Is P Versus NP Formally Independent?<Reference>https://www.scottaaronson.com/papers/pnp.pdf</Reference></Title>
+        <Title>
+            Is P Versus NP Formally Independent?
+            <Reference>https://www.scottaaronson.com/papers/pnp.pdf</Reference>
+        </Title>
         <Author>Scott Aaronson</Author>
         <Subject>Computational complexity</Subject>
     </Cover>,

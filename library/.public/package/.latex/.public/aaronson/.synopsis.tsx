@@ -9,8 +9,7 @@ export default $(
         <Section>
             <Heading>Abstract</Heading>
             <Paragraph>
-                We survey the possibility that <Math>{String.raw`\mathsf{P} \ne \mathsf{NP}`}</Math> is independent of the
-                standard axioms of set theory. Although we do not settle the question, we argue that the evidence
+                We survey the possibility that <Math>{String.raw`\mathsf{P} \ne \mathsf{NP}`}</Math> is independent of the standard axioms of set theory. Although we do not settle the question, we argue that the evidence
                 for independence is weaker than it is often taken to be, and that the proof techniques known to be
                 insufficient are insufficient for reasons that are themselves mathematical rather than logical.
             </Paragraph>
