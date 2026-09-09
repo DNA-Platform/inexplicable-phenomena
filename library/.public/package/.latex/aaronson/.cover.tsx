@@ -12,7 +12,7 @@ export default $(
             <Reference>https://www.scottaaronson.com/papers/pnp.pdf</Reference>
         </Title>
         <Author>Scott Aaronson</Author>
-        <Subject>Computational complexity</Subject>
+        <Subject print={false}>Computational complexity</Subject>
     </Cover>,
     Cover
 );

@@ -7,7 +7,7 @@ export default $(
     <Cover>
         <Title>Wikipedia<Reference>https://www.wikipedia.org/</Reference></Title>
         <Author>Wikipedians</Author>
-        <Subject print>Knowledge</Subject>
+        <Subject>Knowledge</Subject>
         <Section>
             <Heading>Wikipedia</Heading>
             <Logo src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Wikipedia_wordmark.svg" width="176">Wikipedia</Logo>

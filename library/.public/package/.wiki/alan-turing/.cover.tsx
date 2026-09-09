@@ -11,7 +11,7 @@ export default $(
         </Header>
         <Title>Alan Turing<Reference>https://en.wikipedia.org/wiki/Alan_Turing</Reference></Title>
         <Author>Wikipedians</Author>
-        <Subject print>English computer scientist (1912–1954)</Subject>
+        <Subject>English computer scientist (1912–1954)</Subject>
     </Cover>,
     Cover
 );

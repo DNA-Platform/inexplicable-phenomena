@@ -9,12 +9,6 @@ import { $Section$, $Section, $TypeOfSection, SectionSpecification } from '@/wri
 export interface $Subject$ extends $Section$ { }
 
 export class $Subject extends $Section implements $Subject$ {
-    // PRESENT, AND SHOWN ONLY WHERE A BOOK ASKS. A cover's specification REQUIRES a subject, and a
-    // paper does not print one — Doug: "You can not print parenthetical things if you need them in
-    // the schema but not on the page." Removing it from the cover answered with a refusal panel
-    // reading "a cover carries its subject, and this one carries none", which is the specification
-    // doing its job. An encyclopedia, which does show it, writes <Subject print>.
-    override parenthetical = true;
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 

@@ -8,7 +8,7 @@ import { $Type } from './Type';
 
 export interface $Composition$ extends $Writing$ {
     parenthetical: boolean;
-    $print: boolean;
+    $print?: boolean;
 
     parts(): $Writing[];
     catalogue(): $Catalogue | undefined;
@@ -20,7 +20,13 @@ export interface $Composition$ extends $Writing$ {
 
 export class $Composition extends $Writing implements $Composition$ {
     parenthetical = false;
-    $print = false;
+    // PRINT IS TRI-STATE, and that is Doug's ruling: "On the cover, print=false should make it
+    // parenthetical. We cover that everyone." Unwritten, a writing is shown unless it is
+    // parenthetical; written, the author decides — print turns a parenthetical writing ON and
+    // print={false} turns any writing OFF. It was a boolean defaulting to false, so it could only
+    // ever say yes, and a paper wanting a subject in its schema and not on its page had to make the
+    // KIND parenthetical for every book that has one.
+    $print?: boolean;
 
     parts(): $Writing[] {
         const kind = this.kind;
@@ -54,7 +60,7 @@ export class $Composition extends $Writing implements $Composition$ {
     }
 
     override view(): ReactNode {
-        return this.parenthetical && !this.$print ? null : super.view();
+        return (this.$print ?? !this.parenthetical) ? super.view() : null;
     }
 
     where(match: (part: $Writing) => boolean): $Writing[] { return this.parts().filter(match); }

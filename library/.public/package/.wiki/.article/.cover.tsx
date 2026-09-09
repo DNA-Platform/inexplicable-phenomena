@@ -11,7 +11,7 @@ export default $(
         </Header>
         <Title>Wikipedia:Manual of Style/Layout<Reference>https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout</Reference></Title>
         <Author>Wikipedians</Author>
-        <Subject print>Wikipedia how-to</Subject>
+        <Subject>Wikipedia how-to</Subject>
     </Cover>,
     Cover
 );
