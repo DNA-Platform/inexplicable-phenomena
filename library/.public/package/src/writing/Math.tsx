@@ -22,7 +22,7 @@ export class $Math extends $Phrase implements $Math$ {
 
     // IT WRITES ITS ELEMENT LIKE EVERY OTHER KIND, through print rather than view — katex answers
     // markup, so this is the one place the framework hands HTML straight to the DOM, and it is safe
-    // because the string it renders is the author's own copy. The sheet dresses nothing here: katex
+    // because the string it renders is the author's own copy. The sheet styles nothing here: katex
     // ships its own CSS, which is an application's concern and not the base's.
     override print(): ReactNode {
         return <span className={this.className} dangerouslySetInnerHTML={{ __html: tex.inline(this.tex()) }} />;

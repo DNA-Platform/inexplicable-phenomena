@@ -35,7 +35,7 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     protected reads(copy: string): boolean {
-        return url.addresses(copy);
+        return url.adstyles(copy);
     }
 
     override view(): ReactNode {
@@ -74,7 +74,7 @@ export class $TypeOfReference extends $Type {
 }
 
 export class ReferenceSpecification extends WritingSpecification {
-    // THREE WAYS TO ADDRESS SOMETHING, and only the first was written down. A reference
+    // THREE WAYS TO ADSTYLE SOMETHING, and only the first was written down. A reference
     // CARRIES its path. A mention an author writes MEANS one — it holds the reference and
     // the path sits inside it, one level below a searchFor that does not recurse. And a
     // representative the parse MAKES — the $$Word behind every word — stands for the very

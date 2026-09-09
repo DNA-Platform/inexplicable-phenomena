@@ -213,7 +213,7 @@ describe('a mention stands for another piece of writing', () => {
         expect(mentioned().meaning).toBeDefined();
     });
 
-    it('AND ITS ADDRESS IS A POSITION, BECAUSE A FIXED ORDER ALREADY SAYS THE LEVEL', () => {
+    it('AND ITS ADSTYLE IS A POSITION, BECAUSE A FIXED ORDER ALREADY SAYS THE LEVEL', () => {
         const held = built<$Writing>(<Document>Body sections<Path>1</Path></Document>);
         expect(() => held.specify()).not.toThrow();
     });

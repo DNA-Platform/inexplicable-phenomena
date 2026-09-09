@@ -16,7 +16,7 @@ export class $Heading extends $Paragraph implements $Heading$ {
     }
 
     // A HEADING HAS A LEVEL AND NOW WRITES IT. It wrote <h2> always, so the base sheet carried h1,
-    // h3 and h1..h6 groups dressing elements no kind produced — the census of a hole. The level was
+    // h3 and h1..h6 groups styling elements no kind produced — the census of a hole. The level was
     // already known: reflection.indent answers how deep a writing stands, and the table of contents
     // has been nesting by it. Nothing is added; an existing reading reaches the element it was for.
     override print(content: ReactNode): ReactNode {

@@ -63,7 +63,7 @@ export class $Book extends $Composition implements $Book$ {
     // A BOOK SHOULD CHOOSE WHAT IT WEARS, AND TWICE IT COULD NOT — recorded rather than left as a
     // half-built member, because both failures are about the framework and not about the feature.
     //
-    // A BOOK CANNOT KNOW ITS OWN SCOPE. $dresses registers a sheet for a COMPONENT, and
+    // A BOOK CANNOT KNOW ITS OWN SCOPE. $register registers a sheet for a COMPONENT, and
     // $(this.constructor) is not the component the tree was built from — measured, the toggle went
     // silent, the body stayed Latin Modern and all 64 numbers kept drawing, because the registration
     // landed on a component nothing renders. A chemical knows its class; it does not know the

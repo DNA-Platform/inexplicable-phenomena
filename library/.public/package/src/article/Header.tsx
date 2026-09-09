@@ -15,7 +15,7 @@
 //
 // AND IT CARRIES NO COLOUR. Doug, the same day: *"developing a theme means all components ideally
 // SHOULD look good in the style."* So this declares STRUCTURE — where the strip stands and how it
-// arranges what it holds — and every theme dresses `.pd-header` in its own way. The class is a
+// arranges what it holds — and every theme styles `.pd-header` in its own way. The class is a
 // plain DOM prop handed in with a $, which is chemistry's blend, exactly as $Choice takes $onClick.
 import { $, $Chemical, styled } from '@dna-platform/chemistry';
 

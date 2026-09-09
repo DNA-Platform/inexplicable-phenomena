@@ -21,7 +21,7 @@ export class $Code extends $Paragraph implements $Code$ {
     }
 
     // CODE IS A <pre> HOLDING A <code>, which is the only markup HTML has for it and the one every
-    // sheet already dresses — latex.css and github-markdown-css both, without being asked. The
+    // sheet already styles — latex.css and github-markdown-css both, without being asked. The
     // language rides as `language-x`, which is the class every highlighter in the world looks for,
     // so a highlighting box can be added later without this changing.
     //

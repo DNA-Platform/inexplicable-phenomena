@@ -10,7 +10,7 @@
 //
 // So the test ch14 asks — name what this does that its type could not confer — is answered by the
 // NAME itself: $(within, Abstract)(Something) reaches a paper's abstract and leaves every other
-// book's synopsis alone, and `.pd-abstract` dresses one without dressing the other. An abstract
+// book's synopsis alone, and `.pd-abstract` styles one without styling the other. An abstract
 // stays parenthetical, inherited from the synopsis: present, and shown only where a paper prints it.
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';

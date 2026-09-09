@@ -161,7 +161,7 @@ export class $Theme extends $Format implements $Theme$ {
     // PAGE rather than as a column of text. Neither says anything here beyond the colour, because
     // what a sheet MEASURES is `measure` and what a strip LOOKS LIKE is the theme's own business:
     // Doug, 2026-09-09, "developing a theme means all components ideally SHOULD look good in the
-    // style", so every theme dresses these and the component carries only its structure.
+    // style", so every theme styles these and the component carries only its structure.
     @select('.pd-book') get sheet_background() { return this.paper; }
     sheet_counterReset = 'figure';
     @select('.pd-header') get strip_background() { return this.quiet; }
@@ -172,7 +172,7 @@ export class $Theme extends $Format implements $Theme$ {
     get strip_fontFamily() { return this.body; }
     strip_fontSize = '13px';
 
-    // THE KINDS NOTHING DRESSED. Measured on the probe page, which exists to find exactly this:
+    // THE KINDS NOTHING STYLED. Measured on the probe page, which exists to find exactly this:
     // aside, note, summary, highlight and footer were named by NO theme — base, article, markdown or
     // encyclopedia — so each drew as the bare element it prints and a reader could not tell one from
     // a paragraph. These are the base's because they are what the kinds ARE, not what a paper does.
@@ -246,7 +246,7 @@ export class $Theme extends $Format implements $Theme$ {
     h2_paddingBottom = '.3em';
     get h2_borderBottom() { return this.ruled; }
     @select('h3.pd-heading') h3_fontSize = '1.25em';
-    // THE SHEET DRESSES KINDS, NOT MARKDOWN. Measured 2026-09-08: seventeen of eighteen groups here
+    // THE SHEET STYLES KINDS, NOT MARKDOWN. Measured 2026-09-08: seventeen of eighteen groups here
     // selected a raw ELEMENT and one selected a kind, so the theme was styling markdown's output
     // while every kind wrote a pd- class the sheet ignored. Two kinds writing the same tag could not
     // be told apart, and a consumer could restyle a TAG but never a KIND. Six are converted.
@@ -297,43 +297,19 @@ export class $Theme extends $Format implements $Theme$ {
         super.$Format($check(block, $Block, '!').concat($check($TypeOfTheme, '!')));
     }
 
-    static $register(): void {
-        reflection.knows({ theme: $Theme });
-    }
-
-    // A THEME DRESSES A SCOPE, and it is the SAME ACT for every theme: register this class in place
-    // of the base one, for that scope. It was written as a static on each sheet — the same three
-    // tokens, twice — and a static's `this` IS the subclass, so written once here every theme
-    // inherits its own registration and no sheet says it again.
+    // ONE REGISTRATION, TWO READINGS OF IT. There were two statics here and Doug's ruling is that
+    // there is no reason for two: "It's a static member so they can collide on different classes.
+    // Therefore they can just be merged." Registering with NO SCOPE makes the kind itself known,
+    // which is what the composition root calls before every build — register.ts walks src for
+    // `static $register` and emits the call. Registering WITH a scope makes THIS sheet the theme
+    // for that scope, and a static's `this` IS the subclass, so every theme inherits its own
+    // registration and no sheet says it again.
     //
-    // `$dresses` is a PROXY NAME. Doug proposed $register and that name is taken by a different act:
-    // `static $register()` is the composition root's wiring hook, which register.ts walks src for and
-    // EMITS into index.ts before every build, and it takes no scope.
-    // GENERIC IN THE SCOPE, because Component<T> is INVARIANT: written Component<$Writing> a demo's
-    // own book will not go in, and written Component<never> every caller has to cast. A cast belongs
-    // in the framework where the variance is known, never at the seat where a consumer writes.
-    // AND `this` IS NOT TYPED, deliberately. Written `this: new() => $Theme` a consumer typechecking
-    // against dist compares $Theme to the copy of $Theme in src and fails on a PROTECTED member of
-    // $Format — the two-copies problem, surfacing where nothing about it is visible. The class is
-    // taken at runtime, which is what a static's `this` is, and said in one cast here.
-    // A THEME DRESSES A KIND, and that is the reading that fits. Written to take a Component the
-    // variance fights from every side — Component<T> is INVARIANT, so Component<$Writing> refuses a
-    // demo's own book and Component<never> makes every caller cast at the seat where a consumer
-    // writes. A CLASS composes the ordinary way: `new() => $Aaronson` IS a `new() => $Writing`, so a
-    // book goes in unaided and the framework fetches its component itself, which is what $ is for.
-    //
-    // It is the same act for every theme — register this class in place of the base one, for that
-    // scope — and a static's `this` IS the subclass, so written once here every sheet inherits its
-    // own registration and none of them says it again.
-    // ONE CAST, HERE, AND IT IS CHEMISTRY'S TYPING RATHER THAN THIS. The registration form is
-    // `$(A, B)(C)` over COMPONENTS, and its scope parameter is Component<never> — the contravariant
-    // bottom — so nothing a consumer holds goes in without a cast, and a class does not go in at
-    // all. Written any other way the cast lands at the seat where a consumer writes, which is the
-    // wrong place for it. THE TYPING IS THE GAP, flagged for Doug; the act is right.
-    //
-    // It is the same act for every theme, and a static's `this` IS the subclass, so written once
-    // here every sheet inherits its own registration and none of them says it again.
-    static $dresses(within: unknown): void {
+    // THE CAST IS CHEMISTRY'S TYPING, not this. The registration form is `$(A, B)(C)` over
+    // components and its scope parameter is Component<never> — the contravariant bottom — so
+    // nothing a consumer holds goes in without one. A cast belongs where the variance is known.
+    static $register(within?: unknown): void {
+        if (within === undefined) return reflection.knows({ theme: $Theme });
         $(within as Component<never>, Theme)($(this as unknown as new() => $Theme));
     }
 }

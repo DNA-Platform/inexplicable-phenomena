@@ -196,7 +196,7 @@ export class Reflection {
     // one class, no interface, no type, no specification. Reading only the types made every one of
     // them INVISIBLE to a sheet: $Editions, $Languages, $Logo and the rest all answered pd-document or
     // pd-paragraph and nothing else. That is the whole reason a consumer reached for a wrapper — a
-    // kind that cannot be named cannot be dressed, so it had to be wrapped in something that could.
+    // kind that cannot be named cannot be styled, so it had to be wrapped in something that could.
     // The class chain is read only ABOVE the point the types already name, and STOPS AT $Writing —
     // measured, because it climbed into chemistry and answered pd-chemical and pd-particle, which are
     // machinery and not kinds. Two promises caught that, which is what they are for.

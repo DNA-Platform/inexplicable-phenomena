@@ -73,7 +73,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     }
 
     // A LINK NOBODY CAN REACH IS A LINK NOBODY CAN CHANGE. Measured 2026-09-08: 33 anchors on
-    // /turing and 33 of them classless, so no sheet could dress one, no subclass could specialise
+    // /turing and 33 of them classless, so no sheet could style one, no subclass could specialise
     // one and nothing could ask a book for its links.
     view(): ReactNode {
         const meaning = this.meaning;

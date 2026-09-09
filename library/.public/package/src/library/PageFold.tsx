@@ -23,7 +23,7 @@ export interface $PageFold$ extends $Reference$ {
 export class $PageFold extends $Reference implements $PageFold$ {
     location = 0;
 
-    // THE KEY IS WHAT IT HOLDS. $Reference only makes a $Path when its copy addresses something,
+    // THE KEY IS WHAT IT HOLDS. $Reference only makes a $Path when its copy adstyles something,
     // so `cook` never became one — a key is not a URL and does not have to look like one.
     key(): string { return html.text(this._block).trim(); }
 

@@ -4,7 +4,7 @@
 //
 // AN ILLUSTRATION SHOWS SOMETHING; A FIGURE IS NUMBERED AND REFERRED TO. That is the whole
 // difference, and it is enough — a book sets a plate one way and a paper sets Figure 3 another, and
-// neither can be dressed without a class to name it.
+// neither can be styled without a class to name it.
 //
 // IT IS A SHELL, VISIBLY ONE, and ch14's test asks what it does that its type could not confer.
 // The honest answer is NOTHING, and that is the point: what it confers is its NAME, which is what a

@@ -1,7 +1,7 @@
 // RESTORED 2026-09-08 · rating 1. It was deleted for waiving "a section opens with its heading",
 // on the grounds that a waiver means the thing is not that kind and no demo quoted. BOTH REASONS
 // WERE WRONG, and the base sheet said so: it carries a `blockquote` group, so the theme was already
-// dressing a quotation — by ELEMENT, because there was no kind to dress. Deleting the kind did not
+// styling a quotation — by ELEMENT, because there was no kind to style. Deleting the kind did not
 // remove the concept, it left the theme styling something the framework did not model.
 //
 // The waiver is the real finding and it points AT $Section, not here: a quotation has no heading,

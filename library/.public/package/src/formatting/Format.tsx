@@ -1,4 +1,4 @@
-// CREATED · rating 4. A format is an annotation written INTO the writing it formats, found by formatted(), and it is a DRESS — chemistry's word: a styled chemical with no view, handed what it dresses and standing it in its selector, or restyling it in place where the tags agree, adding NOTHING. A theme is a format that is a singleton with values.
+// CREATED · rating 4. A format is an annotation written INTO the writing it formats, found by formatted(), and it is a STYLE — chemistry's word: a styled chemical with no view, handed what it styles and standing it in its selector, or restyling it in place where the tags agree, adding NOTHING. A theme is a format that is a singleton with values.
 import { ReactNode } from 'react';
 import { $, $Block, $check, children, styled } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
@@ -20,13 +20,13 @@ export class $Format extends $Annotation implements $Format$ {
         super.$Writing($check(block, $Block, '!').concat($check($TypeOfFormat, '!')));
     }
 
-    // A DRESS NEEDS NO VIEW — chemistry promises it: handed the element, it holds what it is
+    // A FORMAT NEEDS NO VIEW — chemistry promises it: handed the element, it holds what it is
     // given. This override exists only to UN-INHERIT $Writing.view(), which draws a block, and a
     // format has no block to draw. What stood here instead was a second look writing a <div> the
     // selector was going to write anyway, and a $content prop standing in for the children a
     // chemical already carries — the framework's own mechanism, rebuilt by hand after being
-    // switched off. A format whose selector is the tag of what it dresses adds no element at all.
-    // A FORMAT MAKES NO DEMAND OF WHAT IT DRESSES. $Annotation.specifically runs a WritingSpecification
+    // switched off. A format whose selector is the tag of what it styles adds no element at all.
+    // A FORMAT MAKES NO DEMAND OF WHAT IT STYLES. $Annotation.specifically runs a WritingSpecification
     // over its holder, which is right for an annotation that says something ABOUT the writing and
     // wrong for one that only clothes it. Measured 2026-09-09: a writing wearing TWO formats refused
     // with "a piece of writing says something, and this one says nothing at all" — the second

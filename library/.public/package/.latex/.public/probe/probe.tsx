@@ -12,7 +12,7 @@ const document = (
             <Heading>Every kind, drawn at once</Heading>
             <Paragraph>
                 This document exists to be looked at. It writes one of everything the library exports so
-                that a theme can be judged on what it actually dresses rather than on what it declares,
+                that a theme can be judged on what it actually styles rather than on what it declares,
                 and so that a kind nothing styles shows up as the plain thing it is.
             </Paragraph>
 
@@ -130,7 +130,7 @@ export const probe = $(
             <Section>
                 <Heading>Abstract</Heading>
                 <Paragraph>
-                    One of everything, so a theme can be judged on what it dresses. Toggle the reading and
+                    One of everything, so a theme can be judged on what it styles. Toggle the reading and
                     every kind here should still look like something.
                 </Paragraph>
             </Section>

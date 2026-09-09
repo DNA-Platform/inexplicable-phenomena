@@ -10,7 +10,7 @@ import { $Path, Path as path } from './Path';
 export interface $Catalogue$ extends $Composition$ {
     comprehend(): $Composition;
     follow(fragment: string): $Writing;
-    address(of: $Writing): string;
+    adstyle(of: $Writing): string;
 }
 
 export class $Catalogue extends $Composition implements $Catalogue$ {
@@ -44,33 +44,33 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
         if (place.includes('-')) return this.span(place, rest);
         const at = Number(place);
         if (!Number.isInteger(at) || at < 0 || at >= references.length)
-            throw new Error(`the address names position ${place} where ${references.length} parts stand`);
+            throw new Error(`the adstyle names position ${place} where ${references.length} parts stand`);
         const writing = this.held(references[at]);
         if (writing === undefined)
-            throw new Error(`the address names position ${place}, and the reference there holds nothing`);
+            throw new Error(`the adstyle names position ${place}, and the reference there holds nothing`);
         if (rest.length === 0) return writing;
         if (!(writing instanceof $Composition))
-            throw new Error('nothing stands beneath this writing, and the address descends further');
+            throw new Error('nothing stands beneath this writing, and the adstyle descends further');
         const held = writing.catalogue();
-        if (held === undefined) throw new Error('the address descends into writing that catalogues nothing');
+        if (held === undefined) throw new Error('the adstyle descends into writing that catalogues nothing');
 
         return held.follow(rest.join('/'));
     }
 
-    address(of: $Writing): string {
+    adstyle(of: $Writing): string {
         const references = this.parts();
         for (let at = 0; at < references.length; at++) {
             const writing = this.held(references[at]);
             if (writing === undefined) continue;
             if (writing === of) return `${at}`;
             if (!(writing instanceof $Composition) || writing.parts().includes(writing)) continue;
-            try { return `${at}/${writing.catalogue()?.address(of)}`; } catch { }
+            try { return `${at}/${writing.catalogue()?.adstyle(of)}`; } catch { }
         }
         throw new Error('this catalogue does not reach that writing at any depth');
     }
 
     protected span(place: string, rest: string[]): $Writing {
-        if (rest.length > 0) throw new Error('a span stands only in the last step of an address');
+        if (rest.length > 0) throw new Error('a span stands only in the last step of an adstyle');
         const references = this.parts();
         const [from, to] = place.split('-').map(Number);
         if (!Number.isInteger(from) || from < 0 || from >= references.length)

@@ -15,7 +15,7 @@ export default class $Aaronson extends $Book {
 
     wears(setting: string, sheet: typeof $Latex): void {
         this.$setting = setting;
-        sheet.$dresses(Aaronson);
+        sheet.$register(Aaronson);
         this._block = this._block.filter(part => !(part instanceof $Theme)).concat($check(Theme, '!'));
     }
 
@@ -55,4 +55,4 @@ export const Aaronson = $($Aaronson);
 const Switch = $($Switch);
 const Choice = $($Choice);
 
-$Latex.$dresses(Aaronson);
+$Latex.$register(Aaronson);

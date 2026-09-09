@@ -20,7 +20,7 @@ export class $List extends $Paragraph implements $List$ {
 
     // A LIST DRAWS ITS PARTS, which is the reading $Section already takes. What stood here split
     // the list's own copy with a regex and built <li> elements out of the pieces, so the 54 list
-    // items on /article were not writings at all — nothing could dress one, nest one, reference one
+    // items on /article were not writings at all — nothing could style one, nest one, reference one
     // or carry an operation on one, and the bullet that opened a line was copy rather than structure.
     override reading(): $Block {
         return reflection.wrapped(this);

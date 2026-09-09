@@ -7,7 +7,7 @@
 // @tailwindcss/typography and wikimedia's palette rather than copying values out of them. Doug:
 // "Find the best stylesheet package that you can to get the whole latex document feel." It is
 // classless, so every element our kinds already write — p, h2, table, pre, blockquote, figure — is
-// dressed by it without a class, and it brings the REAL Latin Modern webfonts, which no amount of
+// styled by it without a class, and it brings the REAL Latin Modern webfonts, which no amount of
 // naming a font family we do not have could do.
 //
 // TWO THINGS IT IS NOT, read out of its own 785 lines rather than assumed: it does NOT number
@@ -22,7 +22,7 @@ import { book } from './aaronson/book';
 import { probe } from './probe/probe';
 
 // TWO BOOKS, ONE SHELL. ?probe draws one of every kind at once so a theme can be judged on what it
-// actually dresses rather than on what it declares — Doug: "You should throw together some test
+// actually styles rather than on what it declares — Doug: "You should throw together some test
 // probes on the page to see what lots of components look like."
 const Opened = $(location.search.includes('probe') ? probe : book);
 
