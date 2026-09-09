@@ -26,8 +26,11 @@ export class $Theme extends $Sheet {
     // first sets the prose and the formulas in ONE family, which is the thing a reader notices
     // without being able to say why. Latin Modern stays behind it for a machine that has the
     // desktop font installed.
-    override face = "'KaTeX_Main', 'Latin Modern Roman', 'Latin Modern', 'CMU Serif', Georgia, 'Times New Roman', Times, serif";
-    override body = "'KaTeX_Main', 'Latin Modern Roman', 'Latin Modern', 'CMU Serif', Georgia, 'Times New Roman', Times, serif";
+    // LATIN MODERN FIRST, because latex.css brings the real webfont — LM-regular.woff2 and its
+    // bold and italic — so the name now resolves to the face instead of falling through to Georgia.
+    // KaTeX_Main stays behind it: it is the same design, and it is what the formulas are set in.
+    override face = "'Latin Modern', 'KaTeX_Main', Georgia, Cambria, 'Times New Roman', Times, serif";
+    override body = "'Latin Modern', 'KaTeX_Main', Georgia, Cambria, 'Times New Roman', Times, serif";
     override size = '11pt';
     override leading = '1.2364';
     override measure = '6.5in';
@@ -46,23 +49,41 @@ export class $Theme extends $Sheet {
 
     // THE DESK. The theme element is the surface the sheet stands on rather than the column itself,
     // which is the whole difference between a document and a web page.
+    //
+    // AND IT ESCAPES latex.css's BODY. That sheet sets `body { max-width: 80ch; margin: 0 auto }`,
+    // because it is styling a web article and not a page — so the desk would have been a 80ch strip
+    // down the middle of the window. The escape is the ordinary full-bleed one and needs no rule on
+    // body, which nothing here is allowed to write: take the viewport's width and pull left by half
+    // the difference.
     override padding = '0';
     override margin = '0';
-    override get maxWidth() { return '100%'; }
+    width = '100vw';
+    marginLeft = 'calc(50% - 50vw)';
+    // AND ITS PADDING. latex.css also sets `body { padding: 2rem 1.25rem }`, which the desk cannot
+    // paint over and nothing here may write a rule for, so it is cancelled — measured, it pushed
+    // the sheet 32px further from the strip than Chrome's own 3px.
+    marginTop = '-2rem';
+    marginBottom = '-2rem';
+    override get maxWidth() { return '100vw'; }
 
     // THE SHEET IS US LETTER. 8.5in is exactly what Chrome draws at 100% zoom and 1in margins are
-    // what article.cls sets, leaving the 6.5in measure above. The padding shrinks below a 960px
-    // window through min() rather than a media query, so a laptop and a desktop both get a true
-    // inch and a phone gets a readable margin — the same argument as min(measure, 100%).
+    // what article.cls sets, leaving the 6.5in measure above. A FIXED WIDTH, not a fixed margin —
+    // Doug: "You have fixed margin not fixed width at breakpoints that support full width."
+    // The margin narrows at STANDARD breakpoints rather than by a min() trick, on his instruction:
+    // "Just be standard on breakpoints... I am looking on desktop and mobile."
     @select('.pd-book') sheet_width = '8.5in';
     sheet_maxWidth = '100%';
     sheet_marginLeft = 'auto';
     sheet_marginRight = 'auto';
     sheet_marginTop = '59px';
     sheet_marginBottom = '2rem';
-    sheet_padding = 'min(1in, 10vw)';
+    sheet_padding = '1in';
     sheet_boxSizing = 'border-box';
     sheet_boxShadow = '0 1px 5px rgba(0, 0, 0, .55)';
+    @select('@media (max-width: 768px) {\n            .pd-book {') tablet_padding = '2rem';
+    tablet_marginTop = '56px';
+    tablet_marginBottom = '0';
+    @select('@media (max-width: 640px) {\n            .pd-book {') phone_padding = '1.25rem';
 
     // THE STRIP is Chrome's own bar, measured rather than chosen.
     // OVERRIDDEN AS GETTERS BECAUSE THE BASE DECLARED THEM AS GETTERS. tsc refuses the other way —

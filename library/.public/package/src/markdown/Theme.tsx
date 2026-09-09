@@ -43,17 +43,37 @@ export class $Theme extends $Sheet {
     override desk = 'oklch(98.4% 0.003 247.858)';
     override padding = '0';
     override margin = '0';
-    override get maxWidth() { return '100%'; }
+    // THE SAME ESCAPE THE ARTICLE THEME MAKES, and it is here for a reason worth recording rather
+    // than for symmetry: latex.css is imported GLOBALLY, so `body { max-width: 80ch }` reached this
+    // reading too and squeezed it to 600px — measured. A GLOBAL STYLESHEET CANNOT BE TOGGLED, which
+    // is in tension with the anchor that the only difference between the two readings is the theme.
+    // The better answer is for a theme to bring its own sheet and disable it when another is
+    // applied — HTMLLinkElement.disabled does exactly that — and it is not done here because the
+    // sheet arrives through the bundler as a <style> in dev and a file in production, so finding it
+    // is fragile. Escaping body costs two lines and is honest about what it is working around.
+    width = '100vw';
+    marginLeft = 'calc(50% - 50vw)';
+    // AND ITS PADDING. latex.css also sets `body { padding: 2rem 1.25rem }`, which the desk cannot
+    // paint over and nothing here may write a rule for, so it is cancelled — measured, it pushed
+    // the sheet 32px further from the strip than Chrome's own 3px.
+    marginTop = '-2rem';
+    marginBottom = '-2rem';
+    override get maxWidth() { return '100vw'; }
 
     @select('.pd-book') sheet_maxWidth = 'min(72ch, 100%)';
     sheet_marginLeft = 'auto';
     sheet_marginRight = 'auto';
-    sheet_marginTop = '2.5rem';
+    sheet_marginTop = '4rem';
     sheet_marginBottom = '2.5rem';
-    sheet_padding = 'min(3rem, 7vw)';
+    sheet_padding = '3rem';
     sheet_boxSizing = 'border-box';
     sheet_borderRadius = '.75rem';
     get sheet_border() { return `1px solid ${this.rule}`; }
+    @select('@media (max-width: 768px) {\n            .pd-book {') tablet_padding = '2rem';
+    tablet_marginTop = '3.5rem';
+    @select('@media (max-width: 640px) {\n            .pd-book {') phone_padding = '1.25rem';
+    phone_border = 'none';
+    phone_borderRadius = '0';
 
     // THE STRIP IS THE SAME COMPONENT and it is not dark here, because nothing about a rendered
     // markdown document is dark. It is the page's own paper with a hairline under it.

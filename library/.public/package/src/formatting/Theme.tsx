@@ -54,6 +54,12 @@ export class $Theme extends $Format implements $Theme$ {
     get color() { return this.ink; }
     get background() { return this.desk; }
     minHeight = '100vh';
+    // A THEME CONTAINS ITS CHILDREN'S MARGINS. Without this the sheet's top margin COLLAPSES out
+    // through the theme element and pushes the whole desk down — measured, main began at y91 rather
+    // than y32 and the page behind it showed as a pale band under the strip. flow-root is the one
+    // line that says "be a block formatting context" without the side effects overflow or a border
+    // bring, and it is right for any theme, not only one that paints a ground.
+    display = 'flow-root';
     // A MEASURE IS A CEILING, NOT A WIDTH. min(measure, 100%) is what makes one value serve a
     // desktop, a laptop and a phone — the column never exceeds its reading measure and never
     // exceeds the window, and no media query is needed to say it.
