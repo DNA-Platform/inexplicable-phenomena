@@ -16,8 +16,8 @@ export default $(
             </Paragraph>
             <Paragraph>
                 It is sometimes suggested that the question is not merely open but formally independent of the axioms
-                we reason with.<Footnote>The suggestion is older than it looks; Hartmanis and Hopcroft raised it in 1976.</Footnote>
-                This paper asks what such a claim would have to mean, and what would count as evidence for it.
+                we reason with. This paper asks what such a claim would have to mean, and what would count as evidence
+                for it.<Footnote>The suggestion is older than it looks; Hartmanis and Hopcroft raised it in 1976.</Footnote>
             </Paragraph>
 
             <Section>
