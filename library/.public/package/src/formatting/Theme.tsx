@@ -7,6 +7,7 @@ import { $Format$, $Format, $TypeOfFormat, FormatSpecification } from './Format'
 
 export interface $Theme$ extends $Format$ {
     paper: string;
+    desk: string;
     ink: string;
     quiet: string;
     shade: string;
@@ -26,6 +27,12 @@ export interface $Theme$ extends $Format$ {
 export class $Theme extends $Format implements $Theme$ {
     override selector: any = styled.main;
     paper = '#ffffff';
+    // THE SURFACE A BOOK LIES ON, beside the sheet it is printed on. The base had one colour for
+    // both and could therefore not say what a document viewer says with two — a page standing on a
+    // ground. It is `paper` by default, so a theme that does not separate them sees no change at
+    // all, and the encyclopedia's book, which is display:contents, has no box to paint either way.
+    // `desk` IS A PROXY NAME, flagged for Doug.
+    desk = '#ffffff';
     ink = '#1f2328';
     quiet = '#f6f8fa';
     shade = '#d1d9e0';
@@ -45,7 +52,8 @@ export class $Theme extends $Format implements $Theme$ {
     get fontSize() { return this.size; }
     get lineHeight() { return this.leading; }
     get color() { return this.ink; }
-    get background() { return this.paper; }
+    get background() { return this.desk; }
+    minHeight = '100vh';
     // A MEASURE IS A CEILING, NOT A WIDTH. min(measure, 100%) is what makes one value serve a
     // desktop, a laptop and a phone — the column never exceeds its reading measure and never
     // exceeds the window, and no media query is needed to say it.
@@ -109,6 +117,20 @@ export class $Theme extends $Format implements $Theme$ {
     // markdown reading drew three EQUAL headings: measured, title, author and subject were all
     // 1.5em at weight 600, indistinguishable from each other and from a section heading. A cover
     // heading is also not ruled — the base rules h1 and h2, which would draw a line under a name.
+    // THE SHEET, and the strip above it — the two groups a theme needs to draw a document as a
+    // PAGE rather than as a column of text. Neither says anything here beyond the colour, because
+    // what a sheet MEASURES is `measure` and what a strip LOOKS LIKE is the theme's own business:
+    // Doug, 2026-09-09, "developing a theme means all components ideally SHOULD look good in the
+    // style", so every theme dresses these and the component carries only its structure.
+    @select('.pd-book') get sheet_background() { return this.paper; }
+    @select('.pd-header') get strip_background() { return this.quiet; }
+    get strip_color() { return this.ink; }
+    get strip_borderBottom() { return this.ruled; }
+    strip_height = '48px';
+    strip_padding = '0 1.25rem';
+    get strip_fontFamily() { return this.body; }
+    strip_fontSize = '13px';
+
     @select('.pd-cover') get cover_textAlign() { return this.titled; }
     cover_marginBottom = '3rem';
     @select('.pd-cover .pd-heading') titling_marginTop = '.4rem';

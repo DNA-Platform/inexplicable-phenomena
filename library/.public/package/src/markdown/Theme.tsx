@@ -33,6 +33,33 @@ export class $Theme extends $Sheet {
     override titled = 'left';
     override ruling = '0';
 
+    // THE SAME TWO GROUPS THE ARTICLE THEME USES, and that is the point of writing them together:
+    // a desk with a sheet standing on it, and a strip above. Doug, 2026-09-09: *"The markdown and
+    // the latex should be developed in parallel to prove to yourself that the abstraction handles
+    // both… latex doesn't build on the markdown theme."* Neither does — both build on the base, and
+    // what they share is the VOCABULARY rather than the values. Here the desk is a hair off white
+    // and the sheet is a card on it, which is what a rendered document looks like on the web; there
+    // it is a US Letter page on Chrome's #282828. One mechanism, two readings.
+    override desk = 'oklch(98.4% 0.003 247.858)';
+    override padding = '0';
+    override margin = '0';
+    override get maxWidth() { return '100%'; }
+
+    @select('.pd-book') sheet_maxWidth = 'min(72ch, 100%)';
+    sheet_marginLeft = 'auto';
+    sheet_marginRight = 'auto';
+    sheet_marginTop = '2.5rem';
+    sheet_marginBottom = '2.5rem';
+    sheet_padding = 'min(3rem, 7vw)';
+    sheet_boxSizing = 'border-box';
+    sheet_borderRadius = '.75rem';
+    get sheet_border() { return `1px solid ${this.rule}`; }
+
+    // THE STRIP IS THE SAME COMPONENT and it is not dark here, because nothing about a rendered
+    // markdown document is dark. It is the page's own paper with a hairline under it.
+    @select('.pd-header') override get strip_background() { return this.paper; }
+    override get strip_borderBottom() { return `1px solid ${this.rule}`; }
+
     get headingColour() { return 'oklch(21% 0.034 264.665)'; }
 
     @select('.pd-heading') head_fontSize = '1.5em';

@@ -11,8 +11,12 @@
 //
 // Section was here and is deleted: numbering is not LaTeX's, and reflection.numbered answers it.
 // Margin was here and is deleted: it held header, sidebar and footer, and all three are the app's.
+// THAT IS REVERSED FOR THE HEADER, 2026-09-09, on Doug's instruction — "the header can be a
+// component from the framework in the article abstraction". Every paper wants the strip and no
+// paper wants to write it. The sidebar and the footer stay the app's.
 export * from './article/Article';
 export * from './article/Theorem';
 export * from './article/Footnote';
 export * from './article/Appendix';
+export * from './article/Header';
 export * from './article/Theme';

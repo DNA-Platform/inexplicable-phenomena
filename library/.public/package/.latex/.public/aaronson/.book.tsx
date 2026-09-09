@@ -9,7 +9,7 @@
 import { ReactNode } from 'react';
 import { $, $check, $Chemical, styled } from '@dna-platform/chemistry';
 import { $Book, $Theme, Theme } from '@dna-platform/public';
-import { $Theme as $Latex } from '@dna-platform/public/article';
+import { Header, $Theme as $Latex } from '@dna-platform/public/article';
 import { $Theme as $Markdown } from '@dna-platform/public/markdown';
 
 export default class $Aaronson extends $Book {
@@ -22,10 +22,13 @@ export default class $Aaronson extends $Book {
     }
 
     override masthead(): ReactNode {
-        return <Switch>
-            <Choice chosen={this.$setting === 'latex' ? 'yes' : undefined} onClick={() => this.wears('latex', $Latex)}>LaTeX</Choice>
-            <Choice chosen={this.$setting === 'markdown' ? 'yes' : undefined} onClick={() => this.wears('markdown', $Markdown)}>Markdown</Choice>
-        </Switch>;
+        return <Header>
+            P versus NP
+            <Switch>
+                <Choice chosen={this.$setting === 'latex' ? 'yes' : undefined} onClick={() => this.wears('latex', $Latex)}>LaTeX</Choice>
+                <Choice chosen={this.$setting === 'markdown' ? 'yes' : undefined} onClick={() => this.wears('markdown', $Markdown)}>Markdown</Choice>
+            </Switch>
+        </Header>;
     }
 }
 
@@ -35,8 +38,6 @@ class $Switch extends $Chemical {
     override selector: any = styled.nav;
     display = 'flex';
     gap = '.35rem';
-    justifyContent = 'flex-end';
-    marginBottom = '1.5rem';
 }
 
 class $Choice extends $Chemical {
