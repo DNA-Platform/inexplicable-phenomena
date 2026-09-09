@@ -97,6 +97,28 @@ export class $Theme extends $Sheet {
     deep_fontSize = '12pt';
     deep_marginTop = '14pt';
     deep_marginBottom = '6.5pt';
+    // A subsubsection is normalsize bold — the level where LaTeX stops growing the type.
+    @select('h4.pd-heading') deepest_fontWeight = '700';
+    deepest_fontSize = '11pt';
+    deepest_marginTop = '13pt';
+    deepest_marginBottom = '5pt';
+
+    // SECTIONS ARE NUMBERED, and it turned out to need no ruling and no change to src. The blocker
+    // recorded here for two sprints was "every part of a book is a .pd-chapter, so counting chapters
+    // would number the cover 1" — which is FALSE, and one look at the page says so: the apparatus
+    // each writes its own class beside pd-chapter, so pd-synopsis, pd-references and pd-appendix
+    // name themselves and :not() excludes them. Numbering belongs to the THEME because numbering is
+    // what article.cls does and what a README does not, so the markdown reading simply has none.
+    // The counters ride the SECTION NESTING, which is the same tree the contents walks.
+    @select('.pd-book') counted_counterReset = 'depth1';
+    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section') one_counterIncrement = 'depth1';
+    one_counterReset = 'depth2';
+    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section') two_counterIncrement = 'depth2';
+    two_counterReset = 'depth3';
+    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section') three_counterIncrement = 'depth3';
+    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') numbered_content = "counter(depth1) '\\00a0\\00a0'";
+    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
+    @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
 
     // A PAPER IS SET JUSTIFIED AND HYPHENATED, which is the difference nobody names when they say a
     // page looks typeset.
