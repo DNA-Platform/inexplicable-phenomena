@@ -35,8 +35,13 @@ export class $Theme extends $Format implements $Theme$ {
     pressed = '#0550ae';
     link = '#0969da';
     measure = '57em';
-    body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
-    face = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
+    // THE LOOK THAT SHIPPED. The documents in .archive/library/.public were real production and set
+    // github-markdown-css with Merriweather for prose and Open Sans for headings — Doug: "can we do
+    // this then as our default?" The base already carried github-markdown-css's values; the faces
+    // were the missing half. BOTH STACKS FALL BACK TO SYSTEM FACES, so a page that never loads the
+    // webfonts is still set in Georgia and a clean sans rather than in nothing.
+    body = "Merriweather, Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, serif";
+    face = "'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif";
     size = '16px';
     leading = '1.5';
     wordWrap = 'break-word';
@@ -50,6 +55,26 @@ export class $Theme extends $Format implements $Theme$ {
     margin = '0 auto';
     padding = '2rem';
 
+    // THE LAYOUT A DOCUMENT TAKES, held as VALUES rather than written as rules. The base had a
+    // vocabulary for colour and type and none for layout, so a theme wanting a different document
+    // look had to write CSS for questions every document answers — measured 2026-09-09, the article
+    // theme was 7 values against 36 properties in 16 groups, and the encyclopedia 21 against 129 in
+    // 45. These four carry ten of the article theme's sixteen groups. What is left there is
+    // genuinely kind-specific — the brackets round a citation, a hanging bibliography, a theorem's
+    // italic — and belongs in a theme as a rule. `ruled`, `indent`, `between` and `titled` are
+    // proxy names.
+    // A DERIVED GETTER IS NOT A THEME'S KNOB. `ruled` was one for ten minutes and tsc refused the
+    // article's override with "defined as an accessor... overridden here as an instance property" —
+    // the same brittleness that broke the encyclopedia when p_marginBottom became a getter. So the
+    // VALUE is the thickness, which a theme sets, and the rule derives from it and the rule colour.
+    indent = '0';
+    between = '1rem';
+    titled = 'left';
+    ruling = '1px';
+    get ruled() { return `${this.ruling} solid ${this.rule}`; }
+
+    @select('.pd-cover') get cover_textAlign() { return this.titled; }
+
     @select('.pd-heading') heading_marginTop = '1.5rem';
     heading_marginBottom = '1rem';
     heading_fontWeight = '600';
@@ -57,10 +82,14 @@ export class $Theme extends $Format implements $Theme$ {
     get heading_fontFamily() { return this.face; }
     @select('h1') h1_fontSize = '2em';
     h1_paddingBottom = '.3em';
-    get h1_borderBottom() { return `1px solid ${this.rule}`; }
-    @select('.pd-heading') h2_fontSize = '1.5em';
+    get h1_borderBottom() { return this.ruled; }
+    // ONLY h1 AND h2 CARRY A RULE, which is what github-markdown-css does and what the documents
+    // that shipped looked like. The selector was `.pd-heading`, which is EVERY heading, so an h3 and
+    // an h4 were ruled too — the thing that made the plain look read as a README rather than an
+    // article.
+    @select('h2.pd-heading') h2_fontSize = '1.5em';
     h2_paddingBottom = '.3em';
-    get h2_borderBottom() { return `1px solid ${this.rule}`; }
+    get h2_borderBottom() { return this.ruled; }
     @select('h3.pd-heading') h3_fontSize = '1.25em';
     // THE SHEET DRESSES KINDS, NOT MARKDOWN. Measured 2026-09-08: seventeen of eighteen groups here
     // selected a raw ELEMENT and one selected a kind, so the theme was styling markdown's output
@@ -73,8 +102,9 @@ export class $Theme extends $Format implements $Theme$ {
     //   li + li, table th/td, img, code — PARTS of a kind's own element, which is legitimate.
     //   h1, h3, h1..h6, pre, hr — no kind writes these. They arrive from markdown inside copy, and
     //                 that is the gap $Code and a heading level beyond h2 would close.
-    @select('.pd-paragraph') p_marginTop = '0';
-    p_marginBottom = '10px';
+    @select('p.pd-paragraph') p_marginTop = '0';
+    get p_marginBottom() { return this.between; }
+    get p_textIndent() { return this.indent; }
     @select('.pd-list') list_marginTop = '0';
     list_marginBottom = '0';
     list_paddingLeft = '2em';

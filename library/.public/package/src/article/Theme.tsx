@@ -11,14 +11,17 @@ export class $Theme extends $Sheet {
     override ink = '#000000';
     override link = '#000000';
 
+    // THE FOUR LAYOUT VALUES THE BASE NOW CARRIES. Everything below them used to be written here as
+    // CSS: a rule under every heading undone group by group, a paragraph's indent and spacing said
+    // twice, the cover's alignment. Ten of sixteen groups became these four lines.
+    override indent = '1.5em';
+    override between = '0';
+    override titled = 'center';
+    override ruling = '0';
+
     // THE TITLE BLOCK. A paper opens centred and unruled — the rules under every heading are
     // GitHub's, and LaTeX draws none. Written against the page rather than guessed: each group
     // below names a class the paper actually carries, counted in the browser.
-    @select('.pd-cover') cover_textAlign = 'center';
-    cover_marginBottom = '2.5rem';
-    @select('.pd-cover .pd-heading') covered_borderBottom = 'none';
-    covered_paddingBottom = '0';
-    covered_marginTop = '0';
     @select('a.pd-title') title_fontSize = '1.7em';
     title_fontWeight = '400';
     @select('.pd-author .pd-heading') author_fontSize = '1.05em';
@@ -29,27 +32,19 @@ export class $Theme extends $Sheet {
     subject_fontStyle = 'italic';
     subject_fontWeight = '400';
 
+    @select('.pd-cover') cover_marginBottom = '2.5rem';
+    @select('.pd-heading') head_fontWeight = '700';
+    @select('.pd-synopsis .pd-heading') abstracted_fontSize = '1em';
+    abstracted_textAlign = 'center';
+
     // THE ABSTRACT is narrower than the text and labelled — egin{abstract}.
     @select('.pd-synopsis') abstract_maxWidth = '86%';
     abstract_margin = '0 auto 2.5rem';
     abstract_fontSize = '.95em';
-    @select('.pd-synopsis .pd-heading') abstracted_fontSize = '1em';
-    abstracted_textAlign = 'center';
-    abstracted_borderBottom = 'none';
-    abstracted_paddingBottom = '0';
 
-    // HEADINGS bold and unruled.
-    @select('.pd-heading') head_borderBottom = 'none';
-    head_paddingBottom = '0';
-    head_fontWeight = '700';
     head_marginTop = '1.4rem';
     head_marginBottom = '.4rem';
 
-    // PARAGRAPHS run on, first line indented, no space between — \parindent. ON THE ELEMENT AND
-    // NOT THE CLASS ALONE: a heading, a list and a contents entry are all .pd-paragraph by type
-    // now, and an indent written for prose stepped every one of them in. Prose is what writes <p>.
-    @select('p.pd-paragraph') para_marginBottom = '0';
-    para_textIndent = '1.5em';
     @select('.pd-heading + p.pd-paragraph') opening_textIndent = '0';
     @select('.pd-table-of-contents .pd-paragraph') contents_marginBottom = '.1rem';
 

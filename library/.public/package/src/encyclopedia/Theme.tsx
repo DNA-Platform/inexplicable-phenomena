@@ -17,6 +17,7 @@ export class $Theme extends $Sheet {
     override face = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
     override size = '16px';
     override leading = '1.625';
+    override between = '1em';
 
     // THE INFOBOX, SAID BY THE SHEET AND NOT BY A WRAPPER. Every one of these is a rule about a
     // class, so nothing needs to stand around the writing to carry it — which is the whole reason
@@ -133,8 +134,9 @@ export class $Theme extends $Sheet {
     sub2_padding = '0.5em 0 0';
     sub2_borderBottom = 'none';
     get sub2_fontFamily() { return this.body; }
+    // THE SPACE BETWEEN PARAGRAPHS IS A VALUE NOW, not a rule of its own — the base carries it as
+    // `between` and its own group reads it.
     @select('p') override p_marginTop = '0.5em';
-    override p_marginBottom = '1em';
     @select('p p') nested_marginLeft = '1.6em';
     @select('ul, ol') override list_marginTop = '0.3em';
     override list_paddingLeft = '1.6em';
