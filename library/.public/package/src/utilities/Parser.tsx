@@ -50,14 +50,18 @@ export class Parser {
         return answered;
     }
 
-    sentences(tokens: (string | $Writing)[]): (string | $Writing)[][] {
+    // THE CUT IS A PARAMETER. This walk — accumulate, pass written tokens through, split the
+    // strings, start a line at each cut, drop the empty ones — is what every level below a
+    // paragraph needs, and $TypeOfItem had it copied out with one regex changed. The sentence's own
+    // cut stays the default so nothing that asked for sentences has to say so.
+    sentences(tokens: (string | $Writing)[], cut = /(?<=\n)|(?<=[.!?])[^\S\n]+(?=\S)/u): (string | $Writing)[][] {
         const lines: (string | $Writing)[][] = [[]];
         for (const token of tokens) {
             if (typeof token !== 'string') {
                 lines[lines.length - 1].push(token);
                 continue;
             }
-            token.split(/(?<=\n)|(?<=[.!?])[^\S\n]+(?=\S)/u).forEach((piece, at, split) => {
+            token.split(cut).forEach((piece, at, split) => {
                 const opened = lines[lines.length - 1].length === 0 ? piece.trimStart() : piece;
                 if (opened !== '') lines[lines.length - 1].push(opened);
                 if (at < split.length - 1) lines.push([]);

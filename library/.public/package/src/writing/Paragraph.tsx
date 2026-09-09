@@ -41,7 +41,7 @@ export class $TypeOfParagraph extends $Type {
     override makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Paragraph);
         const Representation = $($$Paragraph);
-        const written = reflection.carrying<$Paragraph>(Made, tokens);
+        const written = $<$Paragraph>(<Made />, ...tokens as never[]);
         written.mention = $<$$Paragraph>(<Representation />, written);
 
         return [written];
