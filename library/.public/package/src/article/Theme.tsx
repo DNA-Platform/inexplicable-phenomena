@@ -200,8 +200,12 @@ export class $Theme extends $Sheet {
     @select('.pd-heading + p.pd-paragraph') opening_textIndent = '0';
 
     // A CITATION IS SET AS [n], which is what a cite draws.
-    @select('.pd-citation::before') opened_content = "'['";
-    @select('.pd-citation::after') closed_content = "']'";
+    // THE BRACKETS ARE WRITTEN AS ESCAPES. As literal '[' and ']' the rule never reached the
+    // page — measured, ::before computed to `none` — because an unbalanced bracket inside a
+    // content string is read by the CSS tokeniser as the start of an attribute selector and the
+    // declaration is discarded. The unicode escapes say the same thing and parse.
+    @select('.pd-citation::before') opened_content = "'\\005B'";
+    @select('.pd-citation::after') closed_content = "'\\005D'";
 
     // AN EQUATION stands centred on its own line.
     @select('.pd-equation') equation_textAlign = 'center';

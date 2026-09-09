@@ -25,6 +25,15 @@ export class $Theorem extends $Section implements $Theorem$ {
 }
 
 export class $TypeOfTheorem extends $TypeOfSection {
+
+    // NO HEADING IS READ OUT OF IT. $TypeOfSection supplies one to any section opening without a
+    // heading, which is right for a SECTION and wrong for everything that merely extends one — seen
+    // on the probe page: this drew its own first sentence as a heading above itself, elided with an
+    // ellipsis, and then said the whole thing again. $Quote met this first and the answer is the
+    // same: the rule and the supply are two statements of one demand, and both have to be answered.
+    override supplies(writing: $Writing, parts: $Writing[]): $Writing[] {
+        return parts;
+    }
     override name = 'Theorem';
     protected override specification: Specification<$Writing> = new TheoremSpecification();
 }

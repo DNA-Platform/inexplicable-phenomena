@@ -171,6 +171,33 @@ export class $Theme extends $Format implements $Theme$ {
     get strip_fontFamily() { return this.body; }
     strip_fontSize = '13px';
 
+    // THE KINDS NOTHING DRESSED. Measured on the probe page, which exists to find exactly this:
+    // aside, note, summary, highlight and footer were named by NO theme — base, article, markdown or
+    // encyclopedia — so each drew as the bare element it prints and a reader could not tell one from
+    // a paragraph. These are the base's because they are what the kinds ARE, not what a paper does.
+    @select('.pd-aside') aside_margin = '1.5rem 0';
+    aside_padding = '.75rem 1rem';
+    get aside_borderLeft() { return `3px solid ${this.shade}`; }
+    get aside_background() { return this.quiet; }
+    @select('.pd-note') noted_margin = '1rem 0';
+    noted_fontSize = '.9em';
+    get noted_color() { return this.pale; }
+    @select('.pd-summary') summed_margin = '1rem 0';
+    summed_fontStyle = 'italic';
+    get summed_color() { return this.pale; }
+    @select('.pd-highlight') lit_padding = '0 .15em';
+    lit_background = 'rgba(255, 229, 100, .45)';
+    @select('.pd-footer') foot_marginTop = '3rem';
+    foot_paddingTop = '1rem';
+    foot_fontSize = '.85em';
+    get foot_color() { return this.pale; }
+    get foot_borderTop() { return this.ruled; }
+
+    // AND latex.css NUMBERS EVERY figcaption, so an illustration was drawn as "Figure 2." — the very
+    // distinction $Figure exists to make, undone by an imported sheet. A caption is numbered only
+    // where the KIND says figure.
+    @select('figure:not(.pd-figure) figcaption::before') uncounted_content = "''";
+
     @select('.pd-cover') get cover_textAlign() { return this.titled; }
     cover_marginBottom = '3rem';
     @select('.pd-cover .pd-heading') titling_marginTop = '.4rem';

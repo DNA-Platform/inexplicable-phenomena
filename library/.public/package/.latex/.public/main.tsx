@@ -19,8 +19,12 @@ import 'katex/dist/katex.min.css';
 import { createRoot } from 'react-dom/client';
 import { $ } from '@dna-platform/chemistry';
 import { book } from './aaronson/book';
+import { probe } from './probe/probe';
 
-const Opened = $(book);
+// TWO BOOKS, ONE SHELL. ?probe draws one of every kind at once so a theme can be judged on what it
+// actually dresses rather than on what it declares — Doug: "You should throw together some test
+// probes on the page to see what lots of components look like."
+const Opened = $(location.search.includes('probe') ? probe : book);
 
 const root = document.getElementById('root');
 if (!root) throw new Error('no #root element');
