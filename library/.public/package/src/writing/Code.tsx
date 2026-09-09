@@ -20,10 +20,17 @@ export class $Code extends $Paragraph implements $Code$ {
         super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfCode, '!')));
     }
 
-    // OWED: <pre><code> through the highlighting box with this.language; the sheet dresses pre/code by the pd- class (U5/U6).
-    // The default draw must NOT call parts() (PS3); a line-based parts() is a read on demand, added only when asked for.
-    override view(): ReactNode {
-        throw new Error('not implemented: $Code.view — the copy drawn through a highlighting code box, the language a prop');
+    // CODE IS A <pre> HOLDING A <code>, which is the only markup HTML has for it and the one every
+    // sheet already dresses — latex.css and github-markdown-css both, without being asked. The
+    // language rides as `language-x`, which is the class every highlighter in the world looks for,
+    // so a highlighting box can be added later without this changing.
+    //
+    // IT IS print(), NOT view(). The throw that stood here overrode view, which is the shape this
+    // library has spent a sprint removing: overriding view means $Writing.view never runs, so the
+    // element gets neither its pd- classes nor reflection.formatted and no format can ever reach it.
+    // A kind writes its element in print, in one line, and gets everything else for free.
+    override print(content: ReactNode): ReactNode {
+        return <pre className={this.className}><code className={this.language === '' ? undefined : `language-${this.language}`}>{content}</code></pre>;
     }
 }
 

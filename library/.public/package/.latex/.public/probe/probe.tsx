@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import {
-    Aside, Author, Book, Chapter, Citation, Cover, Equation, Figure, Heading, Highlight,
+    Aside, Author, Book, Chapter, Citation, Code, Cover, Equation, Figure, Heading, Highlight,
     Illustration, List, Math, Note, PageFold, Paragraph, Quote, Ref, Reference, References,
     Section, Subject, Summary, Synopsis, Table, Title,
 } from '@dna-platform/public';
@@ -26,15 +26,20 @@ const chapter = (
                 <Paragraph>
                     A second paragraph, so the space between them and the first line indent can be seen at
                     the same time. Inline mathematics stands here — <Math>{String.raw`e^{i\pi} + 1 = 0`}</Math> —
-                    beside a <Ref>[plain link](https://example.org)</Ref>. $Code IS NOT DRAWN HERE because
-                    its view throws "not implemented" and takes the whole page with it, which is the first
-                    thing this probe found.
+                    beside inline <Code>parts()</Code> and a <Ref>[plain link](https://example.org)</Ref>.
                 </Paragraph>
 
                 <Section>
                     <Heading>A third level of heading</Heading>
                     <Paragraph>So the scale can be judged over three levels rather than two.</Paragraph>
                 </Section>
+            </Section>
+
+            <Section>
+                <Heading>Code</Heading>
+                <Code language="ts">{`override print(content: ReactNode): ReactNode {
+    return <pre className={this.className}>{content}</pre>;
+}`}</Code>
             </Section>
 
             <Section>
