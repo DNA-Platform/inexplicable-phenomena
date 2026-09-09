@@ -26,6 +26,16 @@ export class $Format extends $Annotation implements $Format$ {
     // selector was going to write anyway, and a $content prop standing in for the children a
     // chemical already carries — the framework's own mechanism, rebuilt by hand after being
     // switched off. A format whose selector is the tag of what it dresses adds no element at all.
+    // A FORMAT MAKES NO DEMAND OF WHAT IT DRESSES. $Annotation.specifically runs a WritingSpecification
+    // over its holder, which is right for an annotation that says something ABOUT the writing and
+    // wrong for one that only clothes it. Measured 2026-09-09: a writing wearing TWO formats refused
+    // with "a piece of writing says something, and this one says nothing at all" — the second
+    // format's worn instance holds the first as an annotation, and that annotation demanded its host
+    // say something, while a worn format's block holds a drawn element rather than copy. One format
+    // worked, two did not, and the second was judging the first.
+    override specifically(): void {
+    }
+
     override view(): ReactNode {
         return this[children];
     }
