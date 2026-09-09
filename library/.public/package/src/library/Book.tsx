@@ -95,6 +95,10 @@ export class $Book extends $Composition implements $Book$ {
         const List = $(list);
         const Item = $(item);
         const Ref = $(ref);
+        // AN ENTRY CARRIES WHAT HOLDS WHAT IT NAMES, and the book does not have to understand it —
+        // it passes on the classes that writing already writes. That is what lets a SHEET say the
+        // apparatus is not numbered, in the contents, with the same :not() it uses in the document,
+        // without $Book in the base ever hearing of an appendix or a bibliography.
         const parts = holders
             .flatMap(holder => holder instanceof $Composition ? holder.parts() : [])
             .filter(part => reflection.instanceOf(part, $TypeOfSection));
@@ -102,11 +106,15 @@ export class $Book extends $Composition implements $Book$ {
         // map it made an EMPTY <li> for one, and the specification refused it exactly as it should
         // have — "a piece of writing says something, and this one says nothing at all".
         const entries = parts
-            .map(part => ({ name: html.text(part.searchForOne($TypeOfHeading)?._block), under: this.listed([part]) }))
+            .map(part => ({
+                name: html.text(part.searchForOne($TypeOfHeading)?._block),
+                held: part.parent instanceof $Writing ? part.parent.className : '',
+                under: this.listed([part])
+            }))
             .filter(entry => entry.name !== '' || entry.under !== null);
         if (entries.length === 0) return null;
         return <List>
-            {entries.map((entry, at) => <Item key={at}>
+            {entries.map((entry, at) => <Item key={at} className={entry.held}>
                 {entry.name === '' ? null : <Ref>[{entry.name}](#{entry.name.replace(/\s+/gu, '_')})</Ref>}
                 {entry.under}
             </Item>)}

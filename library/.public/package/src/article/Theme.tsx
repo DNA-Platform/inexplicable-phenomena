@@ -141,6 +141,17 @@ export class $Theme extends $Sheet {
     @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
     @select('article.pd-chapter:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
 
+    // AND THE CONTENTS CARRIES THE SAME NUMBERS, said the same way. counters() — the plural — walks
+    // every level of a nested list and joins them, so one rule gives 1, then 1.1, then 1.2.1, from
+    // the NESTING rather than from anything an entry declares. The apparatus is excluded here by
+    // the very classes the chapters write, which each entry now carries: the same :not() as above,
+    // so the two numberings cannot drift apart because they are the same sentence twice.
+    @select('.pd-table-of-contents .pd-list') counting_counterReset = 'listed';
+    @select('.pd-table-of-contents .pd-item') tallied_counterIncrement = 'listed';
+    @select('.pd-table-of-contents .pd-item.pd-references, .pd-table-of-contents .pd-item.pd-appendix') apart_counterIncrement = 'none';
+    @select('.pd-table-of-contents .pd-item > a::before') listedNumber_content = "counters(listed, '.') '\\00a0\\00a0'";
+    @select('.pd-table-of-contents .pd-item.pd-references > a::before, .pd-table-of-contents .pd-item.pd-appendix > a::before') apartNumber_content = "''";
+
     // A PAPER IS SET JUSTIFIED AND HYPHENATED, which is the difference nobody names when they say a
     // page looks typeset.
     @select('p.pd-paragraph, .pd-item') justified_textAlign = 'justify';

@@ -14,22 +14,6 @@ export default defineConfig({
         strictPort: true,
         fs: { allow: [path.resolve(__dirname, '../../../../..')] },
     },
-    // DIST IS NOT A DEPENDENCY, IT IS THE BUILD. Vite pre-bundles anything it resolves into
-    // node_modules-shaped territory and then serves that CACHE, so a fresh `npm run build` was read
-    // as a stale module four separate times — always the same symptom, "does not provide an export
-    // named '$Book'", against a dist that plainly had it. Excluding these makes vite serve the
-    // built files directly, which is what a demo reading its own package through the front door
-    // should have been doing all along.
-    optimizeDeps: {
-        exclude: [
-            '@dna-platform/public',
-            '@dna-platform/public/library',
-            '@dna-platform/public/article',
-            '@dna-platform/public/markdown',
-            '@dna-platform/public/encyclopedia',
-            '@dna-platform/chemistry',
-        ],
-    },
     resolve: {
         alias: {
             // THROUGH THE FRONT DOOR. The demo reads the package by its published
