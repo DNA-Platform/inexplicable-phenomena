@@ -75,26 +75,20 @@ export class $Theme extends $Format implements $Theme$ {
     // one display equation was 594px wide and took the whole document with it. A formula, a table
     // and a code block are the three things that cannot be made narrower, so each carries its own
     // scroll instead.
-    // A CONTENTS STEPS BY LEVEL, and the levels were already there — measured, every entry carried
-    // the right pd-indent class and every entry sat at the same x, because nothing selected them.
-    // AND THE SELECTOR NAMES THE PARAGRAPH, not the class alone: a prop's class reaches every part
-    // the parse makes beneath it, so <p class="pd-indent-1"> holds <a class="pd-indent-1"> and the
-    // step applied TWICE — measured 24px on the paragraph and another 24px on its anchor.
-    @select('.pd-table-of-contents p.pd-indent-1') stepped_marginLeft = '1.5em';
-    @select('.pd-table-of-contents p.pd-indent-2') deeper_marginLeft = '3em';
-    @select('.pd-table-of-contents p.pd-indent-3') deepest_marginLeft = '4.5em';
-
-    // AND A CONTENTS ENTRY IS A NAME, NOT PROSE. Both of these were in the article theme, and both
-    // are about what a table of contents IS: the entries sit close together, and a first-line
-    // indent belongs to a paragraph of prose rather than to a line naming a section. Measured on
-    // the LaTeX reading, the indent leaked in and broke the very stepping above — the levels read
-    // 355 / 379 / 427 instead of a ladder, because every entry but the first took the paper's
-    // 23.4px first line. The markdown reading had the mirror fault: 1.25em of prose air per entry.
-    @select('.pd-table-of-contents p.pd-paragraph') listed_textIndent = '0';
+    // A CONTENTS IS A LIST OF LISTS and its indentation is the NESTING. Three rules stepping a
+    // pd-indent class stood here and are gone with the class: the walk produces a tree, the
+    // contents keeps it, and a <ul> inside an <li> indents itself. What is left is what a contents
+    // IS — names set close together, not prose, and not underlined.
+    @select('.pd-table-of-contents .pd-list') listed_listStyle = 'none';
+    listed_paddingLeft = '1.5em';
     listed_marginTop = '0';
-    listed_marginBottom = '.15rem';
-    @select('.pd-table-of-contents a') entry_textDecoration = 'none';
-    get entry_color() { return this.ink; }
+    listed_marginBottom = '0';
+    @select('.pd-table-of-contents > .pd-section > .pd-list') outer_paddingLeft = '0';
+    @select('.pd-table-of-contents .pd-item') entry_marginTop = '0';
+    entry_marginBottom = '.15rem';
+    entry_textIndent = '0';
+    @select('.pd-table-of-contents a') named_textDecoration = 'none';
+    get named_color() { return this.ink; }
 
     @select('.pd-equation, .katex-display, .pd-table, pre') wide_overflowX = 'auto';
     wide_overflowY = 'hidden';

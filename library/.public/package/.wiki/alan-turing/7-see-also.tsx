@@ -6,9 +6,9 @@ export default $(
     <Chapter>
         <Section>
             <Heading>See also</Heading>
-        </Section>
-        <Section indent={1}>
-            <Heading>Works cited</Heading>
+            <Section>
+                <Heading>Works cited</Heading>
+            </Section>
         </Section>
     </Chapter>,
     Chapter

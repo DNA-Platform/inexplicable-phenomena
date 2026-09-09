@@ -6,12 +6,12 @@ export default $(
     <Chapter>
         <Section>
             <Heading>Further reading</Heading>
-        </Section>
-        <Section indent={1}>
-            <Heading>Articles</Heading>
-        </Section>
-        <Section indent={1}>
-            <Heading>Books</Heading>
+            <Section>
+                <Heading>Articles</Heading>
+            </Section>
+            <Section>
+                <Heading>Books</Heading>
+            </Section>
         </Section>
     </Chapter>,
     Chapter

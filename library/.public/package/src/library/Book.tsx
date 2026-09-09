@@ -10,6 +10,8 @@ import { $Catalogue } from '@/reference/Catalogue';
 import { $Section, $TypeOfSection, Section as section } from '@/writing/Section';
 import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
 import { Paragraph as paragraph, $Paragraph$, $TypeOfParagraph } from '@/writing/Paragraph';
+import { List as list } from '@/writing/List';
+import { Item as item } from '@/writing/Item';
 import { Ref as ref } from '@/reference/Ref';
 import { $TypeOfChapter } from './Chapter';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
@@ -66,14 +68,11 @@ export class $Book extends $Composition implements $Book$ {
         const TableOfContents = $(table);
         const Section = $(section);
         const Heading = $(heading);
-        const Paragraph = $(paragraph);
-        const Ref = $(ref);
-        const named = this.chapters.flatMap(chapter => this.listed(chapter, 0));
         const made = $(
             <TableOfContents>
                 <Section>
                     <Heading>Contents</Heading>
-                    {named.map((entry, at) => <Paragraph key={at} indent={entry.indent}><Ref>[{entry.name}](#{entry.name.replace(/\s+/gu, '_')})</Ref></Paragraph>)}
+                    {this.listed(this.chapters)}
                 </Section>
             </TableOfContents>,
             TableOfContents
@@ -83,18 +82,35 @@ export class $Book extends $Composition implements $Book$ {
 
     // A CONTENTS IS THE SECTIONS A CHAPTER HOLDS, HOWEVER DEEPLY, and parts() answers exactly that.
     // It read searchFor before, which is ONE level, so a paper of nested sections listed only its
-    // top ones — measured, a chapter of five sections across three levels listed two. The depth is
-    // the walk's own and not an authored $indent: a contents entry is indented because of where the
-    // section STANDS, which is the reading the walk performs anyway.
-    protected listed(writing: $Writing, deep: number): { name: string; indent: number }[] {
-        const held: { name: string; indent: number }[] = [];
-        for (const part of writing instanceof $Composition ? writing.parts() : []) {
-            if (!reflection.instanceOf(part, $TypeOfSection)) continue;
-            const name = html.text(part.searchForOne($TypeOfHeading)?._block);
-            if (name !== '') held.push({ name, indent: deep });
-            held.push(...this.listed(part, deep + 1));
-        }
-        return held;
+    // top ones — measured, a chapter of five sections across three levels listed two.
+    //
+    // AND IT IS A LIST OF LISTS. Doug, 2026-09-09, on seeing a flat run of paragraphs carrying an
+    // indent number: "no! You nest them... that is fine stylistically, but I would remove it and
+    // make it semantic. All you did was nullify the utility of the recursion I built." Exactly so —
+    // the walk produces a TREE and the old reading flattened it to {name, indent}, throwing the
+    // tree away and then paying to fake it back with a pd-indent class and three CSS rules. A
+    // <ul> inside an <li> is the semantic form, the indentation is structural, and nested counters
+    // number it without anything having to say how deep it is.
+    protected listed(holders: $Writing[]): ReactNode {
+        const List = $(list);
+        const Item = $(item);
+        const Ref = $(ref);
+        const parts = holders
+            .flatMap(holder => holder instanceof $Composition ? holder.parts() : [])
+            .filter(part => reflection.instanceOf(part, $TypeOfSection));
+        // A SECTION WITH NEITHER A NAME NOR A NAMED SECTION UNDER IT IS NOT AN ENTRY. Written as a
+        // map it made an EMPTY <li> for one, and the specification refused it exactly as it should
+        // have — "a piece of writing says something, and this one says nothing at all".
+        const entries = parts
+            .map(part => ({ name: html.text(part.searchForOne($TypeOfHeading)?._block), under: this.listed([part]) }))
+            .filter(entry => entry.name !== '' || entry.under !== null);
+        if (entries.length === 0) return null;
+        return <List>
+            {entries.map((entry, at) => <Item key={at}>
+                {entry.name === '' ? null : <Ref>[{entry.name}](#{entry.name.replace(/\s+/gu, '_')})</Ref>}
+                {entry.under}
+            </Item>)}
+        </List>;
     }
 
     protected placed<T extends $Writing>(type: new() => $Type, kind: Component<T>, after?: $Writing): T {

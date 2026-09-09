@@ -128,17 +128,15 @@ export class Reflection {
         return undefined;
     }
 
-    // HOW DEEP A WRITING STANDS, COUNTED — and until 2026-09-09 it could only be DECLARED, because
-    // $Composition.parts() replaced a section written inside a section with that section's
-    // paragraphs, so no depth survived to be counted. AN AUTHORED $indent STILL WINS, and must: the
-    // 37 that stand in the demos were written to say what the reading could not answer, and both
-    // themes select .pd-indent-1 against them. A HEADING IS NOT NESTED IN HEADINGS but in what
-    // holds it, so the count is taken against the kind of the nearest holder — the section a
-    // heading opens — and every further holder of that same kind is one level down.
+    // HOW DEEP A WRITING STANDS, COUNTED AND NEVER DECLARED. Until 2026-09-09 it could only be
+    // declared, because $Composition.parts() replaced a section written inside a section with that
+    // section's paragraphs, so no depth survived to be counted; that is fixed, and with it fixed an
+    // authored $indent is going around the structure rather than saying something it cannot answer.
+    // The 37 that stood in the demos are gone and those sections are NESTED. A HEADING IS NOT
+    // NESTED IN HEADINGS but in what holds it, so the count is taken against the kind of the
+    // nearest holder — the section a heading opens — and every further holder of that kind is one
+    // level down. `indent` is a proxy name for a count of holders.
     indent(writing: $Writing): number {
-        const declared = this.nearest(writing, at => at.$indent > 0 ? at.$indent : undefined);
-        if (declared !== undefined) return declared;
-
         let holder: unknown;
         let held = 0;
         for (let at: any = writing.parent; this.writing(at) && at.parent !== at; at = at.parent) {
@@ -193,9 +191,9 @@ export class Reflection {
         const own: string[] = [];
         for (let cls: any = writing.constructor; cls && cls !== this.kinds.writing && cls.name && !named.includes(this.authored(cls.name)); cls = Object.getPrototypeOf(cls))
             own.unshift(this.authored(cls.name));
-        const held = [...new Set([...own, ...named])].map(name => `pd-${this.kebab(name)}`);
-        const deep = this.indent(writing);
-        return deep > 0 ? [...held, `pd-indent-${Math.min(deep, 5)}`] : held;
+        // NO pd-indent CLASS. Depth is structure — a section inside a section, a list inside an
+        // item — so a sheet selects it by nesting and nothing has to carry a number.
+        return [...new Set([...own, ...named])].map(name => `pd-${this.kebab(name)}`);
     }
 
 

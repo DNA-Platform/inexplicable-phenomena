@@ -10,7 +10,7 @@ import { $Reference$ } from '@/reference/Reference';
 import type { $Theme } from '@/formatting/Theme';
 
 export interface $Writing$ extends $Chemical {
-    $indent: number;
+    $className?: string;
     book: $Writing$;
     theme: $Theme;
     mention?: $Catalogue$;
@@ -27,14 +27,28 @@ export interface $Writing$ extends $Chemical {
 }
 
 export class $Writing extends $Chemical implements $Writing$ {
-    $indent = 0;
+    // CLASSES A CALLER ADDS, joined to the ones the kinds and types already write. Doug, 2026-09-09:
+    // "you absolutely should give a classes prop or whatever react uses on html to pass those
+    // through to the list that the Writing puts on its wrapper above print. You should be able to
+    // do what you want. But not at the expense of going around the semantic structure." It is
+    // React's own name, declared with a $ and handed in without one, which is chemistry's blend.
+    //
+    // $indent WAS HERE AND IS GONE. It let a writing DECLARE how deep it stood, which was a
+    // workaround for parts() flattening a section written inside a section — fixed earlier this
+    // sprint. With that fixed, depth is STRUCTURAL and declaring it is going around the structure:
+    // the demos said indent={1} on flat sibling sections and are nested now.
+    // DECLARED WITHOUT A VALUE, the way $Table declares $columns. As '' it was handed to the
+    // element by every styled chemical and CLOBBERED the classes the kind had written — measured,
+    // a table drew <div class="sc-jSFhYz"> with no pd-table at all, because the format restyling
+    // it in place passed an empty className over it.
+    $className?: string;
     inline = true;
     @inert() mention?: $Catalogue;
     _block!: $Block;
 
     get theme(): $Theme { return reflection.theme(this); }
     get classes(): string[] { return reflection.classNames(this); }
-    get className(): string { return this.classes.join(' '); }
+    get className(): string { return [...this.classes, this.$className ?? ''].join(' ').trim(); }
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get type(): $Type[] { return reflection.types(this); }

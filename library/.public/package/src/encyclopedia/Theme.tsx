@@ -110,10 +110,8 @@ export class $Theme extends $Sheet {
     @select('nav p') entry_fontSize = '1em';
     entry_margin = '0';
     entry_lineHeight = '2';
-    @select('nav .pd-indent-1') sub_display = 'block';
-    sub_paddingLeft = '0.9em';
-    @select('nav .pd-indent-2') deep_display = 'block';
-    deep_paddingLeft = '1.8em';
+    // THE CONTENTS INDENTS BY NESTING, not by a pd-indent class — a list inside an item.
+    @select('nav .pd-list .pd-list') sub_paddingLeft = '0.9em';
     @select('nav a') entryLink_display = 'block';
     entryLink_textDecoration = 'none';
     @select('nav a:hover') get entryHover_color() { return this.pressed; }
@@ -128,7 +126,7 @@ export class $Theme extends $Sheet {
     override get h2_borderBottom() { return `1px solid ${this.rule}`; }
     get h2_color() { return this.jet; }
     get h2_fontFamily() { return this.face; }
-    @select('article .pd-indent-1 h2') sub2_fontSize = '1.2em';
+    @select('article .pd-section .pd-section h2') sub2_fontSize = '1.2em';
     sub2_fontWeight = '700';
     sub2_lineHeight = '1.6';
     sub2_padding = '0.5em 0 0';
