@@ -20,7 +20,7 @@ import { $TypeOfSynopsis, Synopsis as synopsis } from './Synopsis';
 import { $TypeOfTableOfContents, TableOfContents as table } from './TableOfContents';
 import { $TypeOfIndex, Index as index } from './Index';
 import { $TypeOfFooter, Footer as footer } from './Footer';
-import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
+import { $Theme, $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
 
 export interface $Book$ extends $Composition$ {
     cover: $Writing;
@@ -59,6 +59,22 @@ export class $Book extends $Composition implements $Book$ {
     // A book type says what stands above its cover and below its footer without rewriting how a book draws.
     masthead(): ReactNode { return null; }
     colophon(): ReactNode { return null; }
+
+    // A BOOK SHOULD CHOOSE WHAT IT WEARS, AND TWICE IT COULD NOT — recorded rather than left as a
+    // half-built member, because both failures are about the framework and not about the feature.
+    //
+    // A BOOK CANNOT KNOW ITS OWN SCOPE. $dresses registers a sheet for a COMPONENT, and
+    // $(this.constructor) is not the component the tree was built from — measured, the toggle went
+    // silent, the body stayed Latin Modern and all 64 numbers kept drawing, because the registration
+    // landed on a component nothing renders. A chemical knows its class; it does not know the
+    // component a caller fetched for it.
+    //
+    // AND AN INERT FIELD HOLDING A CLASS DID NOT COMPARE. `@inert() worn` was chosen because a class
+    // on a REACTIVE field is answered wrapped by the membrane — identity meets an impostor — but
+    // read back through wearing() it never equalled the sheet that had just been assigned. Neither
+    // button read as chosen, before any click.
+    //
+    // So the demo keeps its own two lines for now and this stays a design owed.
 
     override print(content: ReactNode): ReactNode {
         return <div className={this.className}>{this.masthead()}{content}{this.colophon()}</div>;

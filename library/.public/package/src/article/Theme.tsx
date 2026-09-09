@@ -1,7 +1,6 @@
 // CREATED 2026-09-08, MEASURED 2026-09-09 · rating 3. The article's theme: a page on a desk, set
 // the way LaTeX sets one, installed by registration and carrying no formats.
 import { $, select } from '@dna-platform/chemistry';
-import type { Component } from '@dna-platform/chemistry';
 import { $Theme as $Sheet, Theme as Base } from '@/formatting/Theme';
 
 export class $Theme extends $Sheet {
@@ -224,20 +223,6 @@ export class $Theme extends $Sheet {
     @select('.pd-references a') cited_textDecoration = 'none';
     get cited_color() { return this.ink; }
 
-    // OWED, and it needs a structural decision first: sections numbered "1", "1.1" by CSS counters.
-    // $Book.chapters already filters the cover, the synopsis, the contents, the index and the
-    // footer, so the book knows its body — what is undecided is what an appendix and a bibliography
-    // number as, and whether the walk that builds the contents writes the number or the sheet
-    // counts it. Doug's ruling is owed on the second.
-    // A THEME DRESSES A SCOPE. Doug proposed $register for this and the name is already taken by a
-    // different act: `static $register()` is the composition root's wiring hook — register.ts walks
-    // src for it and EMITS the call into index.ts before every build — and it takes no scope, while
-    // applying a theme is a per-book choice. So this is its own static, and `$dresses` is a proxy
-    // name. Chemistry's registration is `$(A, B)(C)` — for A, a B is a C — and there is no bare
-    // form: `$(B)(C)` CALLS the component and answers "Cannot read properties of null" from React.
-    static $dresses(within: Component<never>): void {
-        $(within, Base)(Theme);
-    }
 }
 
 export const Theme = $($Theme);

@@ -35,6 +35,9 @@
       ],
       "@dna-platform/public/article": [
         "../src/article.ts"
+      ],
+      "@dna-platform/public/markdown": [
+        "../src/markdown.ts"
       ]
     }
   },

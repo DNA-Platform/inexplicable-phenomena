@@ -19,7 +19,6 @@
 // blockquote inset 1em. Its most considered decision is that LINKS ARE THE HEADING COLOUR —
 // distinguished by weight and underline rather than by turning blue.
 import { $, select } from '@dna-platform/chemistry';
-import type { Component } from '@dna-platform/chemistry';
 import { $Theme as $Sheet } from '@/article/Theme';
 import { Theme as Base } from '@/formatting/Theme';
 
@@ -126,13 +125,6 @@ export class $Theme extends $Sheet {
     @select('figcaption') caption_fontSize = '.875em';
     get caption_color() { return this.pale; }
 
-    // IT EXTENDS ARTICLE AND REGISTERS AGAINST THE BASE, which are different acts and were briefly
-    // the same one. A book asks for the BASE theme — $check(Theme, '!') names it — so a registration
-    // against the article theme is a registration nobody looks up: measured, this whole file did
-    // nothing, the body stayed Latin Modern at 11pt and every section number still drew.
-    static $dresses(within: Component<never>): void {
-        $(within, Base)(Theme);
-    }
 }
 
 export const Theme = $($Theme);

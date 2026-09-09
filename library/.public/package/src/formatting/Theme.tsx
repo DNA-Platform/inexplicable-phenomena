@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, look, select, styled } from '@dna-platform/chemistry';
+import type { Component } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
@@ -198,6 +199,17 @@ export class $Theme extends $Format implements $Theme$ {
     // where the KIND says figure.
     @select('figure:not(.pd-figure) figcaption::before') uncounted_content = "''";
 
+    // A FIGURE STANDS CENTRED, CAPTION AND ALL — seen in the paper rather than assumed, where the
+    // drawing sits on the measure's centre line and the caption under it. Ours drew flush left.
+    // It is the base's because it is what a figure IS; a reading that wants one flush left says so.
+    @select('.pd-illustration') shown_textAlign = 'center';
+    shown_margin = '1.5rem auto';
+    @select('.pd-illustration img') drawn_maxWidth = '100%';
+    drawn_height = 'auto';
+    @select('.pd-illustration figcaption') told_textAlign = 'center';
+    told_marginTop = '.6rem';
+    told_fontSize = '.9em';
+
     @select('.pd-cover') get cover_textAlign() { return this.titled; }
     cover_marginBottom = '3rem';
     @select('.pd-cover .pd-heading') titling_marginTop = '.4rem';
@@ -287,6 +299,42 @@ export class $Theme extends $Format implements $Theme$ {
 
     static $register(): void {
         reflection.knows({ theme: $Theme });
+    }
+
+    // A THEME DRESSES A SCOPE, and it is the SAME ACT for every theme: register this class in place
+    // of the base one, for that scope. It was written as a static on each sheet — the same three
+    // tokens, twice — and a static's `this` IS the subclass, so written once here every theme
+    // inherits its own registration and no sheet says it again.
+    //
+    // `$dresses` is a PROXY NAME. Doug proposed $register and that name is taken by a different act:
+    // `static $register()` is the composition root's wiring hook, which register.ts walks src for and
+    // EMITS into index.ts before every build, and it takes no scope.
+    // GENERIC IN THE SCOPE, because Component<T> is INVARIANT: written Component<$Writing> a demo's
+    // own book will not go in, and written Component<never> every caller has to cast. A cast belongs
+    // in the framework where the variance is known, never at the seat where a consumer writes.
+    // AND `this` IS NOT TYPED, deliberately. Written `this: new() => $Theme` a consumer typechecking
+    // against dist compares $Theme to the copy of $Theme in src and fails on a PROTECTED member of
+    // $Format — the two-copies problem, surfacing where nothing about it is visible. The class is
+    // taken at runtime, which is what a static's `this` is, and said in one cast here.
+    // A THEME DRESSES A KIND, and that is the reading that fits. Written to take a Component the
+    // variance fights from every side — Component<T> is INVARIANT, so Component<$Writing> refuses a
+    // demo's own book and Component<never> makes every caller cast at the seat where a consumer
+    // writes. A CLASS composes the ordinary way: `new() => $Aaronson` IS a `new() => $Writing`, so a
+    // book goes in unaided and the framework fetches its component itself, which is what $ is for.
+    //
+    // It is the same act for every theme — register this class in place of the base one, for that
+    // scope — and a static's `this` IS the subclass, so written once here every sheet inherits its
+    // own registration and none of them says it again.
+    // ONE CAST, HERE, AND IT IS CHEMISTRY'S TYPING RATHER THAN THIS. The registration form is
+    // `$(A, B)(C)` over COMPONENTS, and its scope parameter is Component<never> — the contravariant
+    // bottom — so nothing a consumer holds goes in without a cast, and a class does not go in at
+    // all. Written any other way the cast lands at the seat where a consumer writes, which is the
+    // wrong place for it. THE TYPING IS THE GAP, flagged for Doug; the act is right.
+    //
+    // It is the same act for every theme, and a static's `this` IS the subclass, so written once
+    // here every sheet inherits its own registration and none of them says it again.
+    static $dresses(within: unknown): void {
+        $(within as Component<never>, Theme)($(this as unknown as new() => $Theme));
     }
 }
 
