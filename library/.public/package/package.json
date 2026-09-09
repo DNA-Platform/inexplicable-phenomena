@@ -48,7 +48,9 @@
     "dist"
   ],
   "scripts": {
-    "prebuild": "rimraf dist/chunks && tsx register.ts",
+    "prebuild": "rimraf dist/chunks && tsx sync.ts && tsx register.ts",
+    "sync": "tsx sync.ts",
+    "sync:check": "tsx sync.ts --check",
     "build": "rollup -c",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
     "typecheck": "tsc --noEmit",
