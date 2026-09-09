@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check, $Chemical, $Written, inert, look } from '@dna-platform/chemistry';
+import { $, $Block, $check, $Chemical, $Written, inert } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
@@ -68,11 +68,6 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     print(content: ReactNode): ReactNode {
         return <span className={this.className}>{content}</span>;
-    }
-
-    @look('back')
-    $view(): ReactNode {
-        return html.text(this._block);
     }
 
     searchFor<T extends $Writing>(type: new() => $Type): T[] {
