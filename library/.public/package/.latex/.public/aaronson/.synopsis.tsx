@@ -1,12 +1,12 @@
-// The paper's abstract, and it is the REAL one now — read off the PDF rather than written to fit.
-// THE FRAMEWORK HAS NO $Abstract AND SHOULD NOT: an abstract IS a synopsis — the same class under
-// a domain's word — so a paper writes the library's own kind and prints it, because a synopsis is
-// parenthetical (present, not shown) unless a book asks for it.
+// The paper's abstract, written as one: a paper has an abstract and the article door carries it.
+// The REAL one now — read off the PDF rather than written to fit.
+// An abstract is parenthetical, like the synopsis it is one of: present, and shown where asked.
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Math, Paragraph, Section, Synopsis } from '@dna-platform/public';
+import { Heading, Math, Paragraph, Section } from '@dna-platform/public';
+import { Abstract } from '@dna-platform/public/article';
 
 export default $(
-    <Synopsis print>
+    <Abstract print>
         <Section>
             <Heading>Abstract</Heading>
             <Paragraph>
@@ -24,6 +24,6 @@ export default $(
                 hint at a duality between impossibility proofs and algorithms.
             </Paragraph>
         </Section>
-    </Synopsis>,
-    Synopsis
+    </Abstract>,
+    Abstract
 );

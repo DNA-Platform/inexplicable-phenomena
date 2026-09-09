@@ -21,6 +21,7 @@ export * from './writing/Code';
 export * from './writing/Quote';
 export * from './writing/Heading';
 export * from './writing/Illustration';
+export * from './writing/Figure';
 export * from './writing/Phrase';
 export * from './writing/Item';
 export * from './writing/List';

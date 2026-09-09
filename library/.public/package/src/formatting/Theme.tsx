@@ -162,6 +162,7 @@ export class $Theme extends $Format implements $Theme$ {
     // Doug, 2026-09-09, "developing a theme means all components ideally SHOULD look good in the
     // style", so every theme dresses these and the component carries only its structure.
     @select('.pd-book') get sheet_background() { return this.paper; }
+    sheet_counterReset = 'figure';
     @select('.pd-header') get strip_background() { return this.quiet; }
     get strip_color() { return this.ink; }
     get strip_borderBottom() { return this.ruled; }

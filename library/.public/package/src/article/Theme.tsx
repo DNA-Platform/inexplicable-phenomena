@@ -169,6 +169,14 @@ export class $Theme extends $Sheet {
     listedNumber_minWidth = '2.6em';
     @select('.pd-table-of-contents .pd-item.pd-references > a::before, .pd-table-of-contents .pd-item.pd-appendix > a::before') apartNumber_content = "''";
 
+    // A FIGURE IS NUMBERED, and by the sheet, exactly as a section is — so a reading that does not
+    // number figures simply does not, and $Figure stays a shell with no member for it. latex.css
+    // numbers a bare <figcaption>; this names the KIND, so an illustration standing in the same
+    // document is left alone, which is the whole reason a figure is its own thing.
+    @select('.pd-figure') figured_counterIncrement = 'figure';
+    @select('.pd-figure figcaption::before') figuring_content = "'Figure ' counter(figure) '. '";
+    figuring_fontWeight = '700';
+
     // A PAPER IS SET JUSTIFIED AND HYPHENATED, which is the difference nobody names when they say a
     // page looks typeset.
     @select('p.pd-paragraph, .pd-item') justified_textAlign = 'justify';
@@ -177,10 +185,13 @@ export class $Theme extends $Sheet {
 
     // THE ABSTRACT is a quotation environment set small: 10pt on 12pt, inset both sides — measured
     // at 40px, which is the 30pt those margins come to.
-    @select('.pd-synopsis') abstract_margin = '0 30pt 1.5rem';
+    // .pd-abstract RATHER THAN .pd-synopsis, which is the point of there being an $Abstract: a
+    // paper's abstract is set as a quotation and a book's synopsis is not, and until now one
+    // selector had to serve both.
+    @select('.pd-abstract') abstract_margin = '0 30pt 1.5rem';
     abstract_fontSize = '10pt';
     abstract_lineHeight = '1.2';
-    @select('.pd-synopsis .pd-heading') abstracted_fontSize = '10pt';
+    @select('.pd-abstract .pd-heading') abstracted_fontSize = '10pt';
     abstracted_fontWeight = '700';
     abstracted_textAlign = 'center';
     abstracted_marginTop = '0';

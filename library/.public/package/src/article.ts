@@ -1,6 +1,13 @@
 // The door @dna-platform/public/article — the LaTeX article as a book type.
 //
-// ABSTRACT WAS HERE AND IS DELETED, not moved back. Read beside library/Synopsis it was the SAME
+// ABSTRACT IS BACK, 2026-09-09, and the note below is kept because the reasoning in it is what got
+// corrected rather than what was wrong. Doug: "you should have an abstract in article and that
+// should be carrying it… Our framework isn't fake. It is polymorphic and you can't wrap your head
+// around that. Two things can be nearly identical but different just because you can register
+// components to each independently." A kind earns its keep by being a REGISTRATION KEY and a class
+// name, not only by adding a member.
+//
+// THE ORIGINAL NOTE: ABSTRACT WAS HERE AND IS DELETED, not moved back. Read beside library/Synopsis it was the SAME
 // CLASS under another name — both extend $Composition, both parenthetical, both a $TypeOfChapter
 // with an empty specification, line for line. A paper's abstract IS a synopsis; `abstract` is what
 // one domain calls it. Doug's own rule settles which word survives: a kind is named after its
@@ -18,5 +25,6 @@ export * from './article/Article';
 export * from './article/Theorem';
 export * from './article/Footnote';
 export * from './article/Appendix';
+export * from './article/Abstract';
 export * from './article/Header';
 export * from './article/Theme';
