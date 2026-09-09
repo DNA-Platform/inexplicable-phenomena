@@ -1,51 +1,51 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Heading, Math, Paragraph, Section } from '@dna-platform/public';
+import { Heading, Paragraph, Section } from '@dna-platform/public';
 import Chapter from './.chapter';
 
 export default $(
     <Chapter>
         <Section>
             <Heading>Introduction</Heading>
-            <Paragraph>The question of whether <Math>{String.raw`\mathsf{P} \stackrel{?}{=} \mathsf{NP}`}</Math> has been open since it was posed by Cook<Citation>[1](#References)</Citation> and independently by Levin. A proof either way would settle whether every problem whose solutions can be checked quickly can also be solved quickly, and it is the rare open question whose statement a non-specialist can hold in mind while the difficulty of answering it remains entirely out of view.</Paragraph>
+            <Paragraph>“Now my general conjecture is as follows: for almost all sufficiently complex types of</Paragraph>
             <Section>
-                <Heading>The Importance of P versus NP</Heading>
-                <Paragraph>The practical reading is the least interesting one. What makes the question central is that a proof of <Math>{String.raw`\mathsf{P} \ne \mathsf{NP}`}</Math> would be a proof that some finite search cannot be shortened, and we have almost no techniques for proving that anything cannot be shortened.</Paragraph>
+                <Heading>The Importance of P = NP</Heading>
+                <Paragraph>Before getting formal, it seems appropriate to say something about the significance of the P = NP question. P = NP, we might say, shares with Hilbert’s original question the character of a “math problem that’s more than a math problem”: a question that reaches inward to ask about mathematical reasoning itself, and also outward to everything from philosophy to natural science to practical computation.</Paragraph>
             </Section>
             <Section>
-                <Heading>Objections to P versus NP</Heading>
-                <Paragraph>Several objections recur, and it is worth separating them because they fail for different reasons.</Paragraph>
+                <Heading>Objections to P = NP</Heading>
+                <Paragraph>After modest exposure to the P = NP problem, some people come up with what they consider an irrefutable objection to its phrasing or importance. Since the same objections tend to recur, in this section I’ll collect the most frequent ones and make some comments about them.</Paragraph>
                 <Section>
                     <Heading>The Asymptotic Objection</Heading>
-                    <Paragraph>Polynomial time is an asymptotic notion, and a polynomial of degree one hundred is not fast. The objection is correct and does not bear on the question, which is about a boundary rather than about any particular algorithm on that boundary.</Paragraph>
+                    <Paragraph>Objection: P = NP talks only about asymptotics—i.e., whether the running time of an algorithm grows polynomially or exponentially with the size n of the question that was asked, as n goes to infinity. It says nothing about the number of steps needed for concrete values of n (say, a thousand or a million), which is all anyone would ever care about in practice.</Paragraph>
                 </Section>
                 <Section>
                     <Heading>The Polynomial-Time Objection</Heading>
-                    <Paragraph>A related complaint holds that the class is an artefact of the model. It is not: the class is stable across every reasonable model of computation anyone has proposed, which is the strongest evidence available that it names something real.</Paragraph>
+                    <Paragraph>Objection: But why should we draw the border of efficiency at the polynomial functions, as opposed to any other class of functions—for example, functions upper-bounded by n , or functions of the form n (called quasipolynomial functions)?</Paragraph>
                 </Section>
                 <Section>
                     <Heading>The Kitchen-Sink Objection</Heading>
-                    <Paragraph>Complexity theory has hundreds of classes, so why should this pair matter more than the rest? Because almost every other separation anyone cares about would follow from techniques strong enough to settle this one.</Paragraph>
+                    <Paragraph>Objection: P = NP is limited, because it talks only about discrete, deterministic algorithms that find exact solutions in the worst case—and also, because it ignores the possibility of natural processes that might exceed the limits of Turing machines, such as analog computers, biological computers, or quantum computers.</Paragraph>
                 </Section>
                 <Section>
                     <Heading>The Mathematical Snobbery Objection</Heading>
-                    <Paragraph>The question is sometimes dismissed as engineering rather than mathematics. The barriers literature is the answer: what stands in the way is not a lack of cleverness about algorithms but a shortage of mathematics.</Paragraph>
+                    <Paragraph>Objection: P = NP is not a “real” math problem, because it talks about Turing machines, which are arbitrary human creations, rather than about “natural” mathematical objects like integers or manifolds.</Paragraph>
                 </Section>
                 <Section>
                     <Heading>The Sour Grapes Objection</Heading>
-                    <Paragraph>If the answer is unprovable, the objection runs, the effort is wasted. The effort has already produced circuit lower bounds, interactive proofs and derandomization, none of which needed the question settled.</Paragraph>
+                    <Paragraph>Objection: P = NP is so hard that it’s impossible to make anything resembling progress on it, at least at this stage in human history—and for that reason, it’s unworthy of serious effort or attention. Indeed, we might as well treat such questions as if their answers were formally independent of set theory, as for all we know they are (a possibility discussed further in Section 3.1).</Paragraph>
                 </Section>
                 <Section>
                     <Heading>The Obviousness Objection</Heading>
-                    <Paragraph>The answer is obvious, the objection runs, so the problem is uninteresting. The answer is indeed widely believed. What is not obvious is the proof, and the gap between belief and proof is exactly the subject.</Paragraph>
+                    <Paragraph>Objection: It’s intuitively obvious that P ̸= NP. For that reason, a proof of P ̸= NP—confirming that indeed, we can’t do something that no reasonable person would ever have imagined we could do—gives almost no useful information.</Paragraph>
                 </Section>
                 <Section>
                     <Heading>The Constructivity Objection</Heading>
-                    <Paragraph>A non-constructive separation would tell us nothing useful. This is the only objection that touches the independence claim, and it does so obliquely: an independence result is a statement about what proofs exist, not about what algorithms do.</Paragraph>
+                    <Paragraph>Objection: Even if P = NP, the proof could be nonconstructive—in which case it wouldn’t have any of the amazing implications discussed in Section 1.1, because we wouldn’t know the algorithm.</Paragraph>
                 </Section>
             </Section>
             <Section>
                 <Heading>Further Reading</Heading>
-                <Paragraph>Three readings of the independence claim are usually run together, and they are not the same: that the question is undecidable in ZFC, that no proof exists in any system we would accept, and that the answer depends on the model as the continuum hypothesis does. The barriers literature is the place to start, and Baker, Gill and Solovay<Citation>[3](#References)</Citation> is where it begins.</Paragraph>
+                <Paragraph>There were at least four previous major survey articles about P = NP: Michael Sipser’s 1992 “The History and Status of the P versus NP Question” [241]; Stephen Cook’s 2000 “The P versus NP Problem” [74], which was written for the announcement of the Clay Millennium Prize; Avi Wigderson’s 2006 “P, NP, and Mathematics—A Computational Complexity Perspective” [269]; and Eric Allender’s 2009 “A Status Report on the P versus NP Question” [22]. All four are excellent, so it’s only with trepidation that I add another entry to the crowded arena. I hope that, if nothing else, this survey shows how much has continued to occur through 2017. I cover several major topics that either didn’t exist a decade ago, or existed only in much more rudimentary form: for example, the algebrization barrier, “ironic complexity theory” (including Ryan Williams’s NEXP ̸⊂ ACC result), the “chasm at depth three” for the permanent, and the Mulmuley-Sohoni Geometric Complexity Theory program.</Paragraph>
             </Section>
         </Section>
     </Chapter>,

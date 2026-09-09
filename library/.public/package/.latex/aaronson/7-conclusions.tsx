@@ -6,7 +6,7 @@ export default $(
     <Chapter>
         <Section>
             <Heading>Conclusions</Heading>
-            <Paragraph>The evidence for independence is weaker than it is often taken to be. The proof techniques known to be insufficient are insufficient for reasons that are themselves mathematical rather than logical, and that is a different situation from the one independence would describe.</Paragraph>
+            <Paragraph>Some will say that this survey’s very length, the bewildering zoo of approaches and variations and results and barriers that it covered, is a sign that no one has any real clue about the P = NP problem—or at least, that I don’t. Among those who think that, perhaps someone will write a shorter survey that points unambiguously to the right way forward!</Paragraph>
         </Section>
     </Chapter>,
     Chapter

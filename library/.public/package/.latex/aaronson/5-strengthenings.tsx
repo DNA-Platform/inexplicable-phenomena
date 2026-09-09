@@ -5,35 +5,35 @@ import Chapter from './.chapter';
 export default $(
     <Chapter>
         <Section>
-            <Heading>Strengthenings of the P ≠ NP Conjecture</Heading>
-            <Paragraph>The conjecture has stronger forms, and several are easier to work with because they say something quantitative rather than merely qualitative.</Paragraph>
+            <Heading>Strengthenings of the P ̸= NP Conjecture</Heading>
+            <Paragraph>I’ll now survey various strengthenings of the P ̸= NP conjecture, which are often needed for ap- plications to cryptography, quantum computing, fine-grained complexity, and elsewhere. Some of these strengthenings will play a role when, in Section 6, we discuss the main approaches to proving P ̸= NP that have been tried.</Paragraph>
             <Section>
                 <Heading>Different Running Times</Heading>
-                <Paragraph>The Exponential Time Hypothesis asserts that satisfiability needs genuinely exponential time, and a great deal of fine-grained complexity is built on it.</Paragraph>
+                <Paragraph>There’s been a great deal of progress on beating brute-force search for many NP-complete problems, even if the resulting algorithms still take exponential time. For example, Sch¨oning proved the following in 1999. Theorem 22 (Sch¨oning [232]) There’s a randomized algorithm that solves 3Sat in O((4/3) ) time.</Paragraph>
             </Section>
             <Section>
                 <Heading>Nonuniform Algorithms and Circuits</Heading>
-                <Paragraph>Circuit families may differ for each input length, so a circuit lower bound is a stronger statement than a running-time lower bound and is where most progress has been made.</Paragraph>
+                <Paragraph>P = NP asks whether there’s a single algorithm that, for every input size n, solves an NP-complete problem like 3Sat in time polynomial in n. But we could also allow a different algorithm for each input size. For example, it often happens in practice that a na¨ıve algorithm works the fastest for inputs up to a certain size (say n = 100), then a slightly clever algorithm starts doing better, then at n ≥ 1000 a very clever algorithm starts to outperform the slightly clever algorithm, and so on. In such a case, we might not even know whether the sequence terminates with a “maximally clever algorithm,” or whether it goes on forever.</Paragraph>
             </Section>
             <Section>
                 <Heading>Average-Case Complexity</Heading>
-                <Paragraph>Worst-case hardness says nothing about the instances anyone meets, and cryptography needs hardness on average.</Paragraph>
+                <Paragraph>If P ̸= NP, that means that there are NP problems for which no Turing machine succeeds at solving all instances in polynomial time. But often, especially in cryptography, we need more than that. It would be laughable to advertise a cryptosystem on the grounds that there exist messages that are hard to decode! So it’s natural to ask whether there are NP problems that are hard “in the average case” or “on random instances,” rather than merely in the worst case. More pointedly, does the existence of such problems follow from P ̸= NP, or is it a different, stronger assumption?</Paragraph>
                 <Section>
                     <Heading>Cryptography and One-Way Functions</Heading>
-                    <Paragraph>One-way functions are the minimal cryptographic assumption, and their existence implies a form of average-case hardness strictly stronger than a separation.</Paragraph>
+                    <Paragraph>One might hope that, even if we can’t base secure cryptography solely on the assumption that P ̸= NP, at least we could base it on Conjecture 28. But there’s one more obstacle. In cryptography, we don’t merely need NP problems for which it’s easy to generate hard instances: rather, we need NP problems for which it’s easy to generate hard instances, along with secret solutions to those instances. This motivates the definition of a one-way function (OWF), perhaps the central concept</Paragraph>
                 </Section>
             </Section>
             <Section>
                 <Heading>Randomized Algorithms</Heading>
-                <Paragraph>Randomness looked like a genuine resource for two decades and now looks like a convenience.</Paragraph>
+                <Paragraph>Even assuming P ̸= NP, we can still ask whether NP-complete problems can be solved in polynomial time with help from random bits. This is a different question than whether NP is hard on average: whereas before we were asking about algorithms that solve most instances (with respect to some distribution), now we’re asking about algorithms that solve all instances, for most choices of some auxiliary random numbers.</Paragraph>
                 <Section>
                     <Heading>BPP and Derandomization</Heading>
-                    <Paragraph>Under plausible circuit lower bounds every randomized polynomial-time algorithm can be derandomized, which is the clearest case of hardness buying an algorithm.</Paragraph>
+                    <Paragraph>What’s the power of randomness more generally? Can every randomized algorithm be derandom- ized, as ultimately happened with Primes? To explore these issues, complexity theorists study several randomized generalizations of the class P. We’ll consider just one of them: Bounded-Error Probabilistic Polynomial-Time, or BPP, is the class of languages L ⊆ &#123;0,1&#125; for which there exists a polynomial-time Turing machine M, as well as a polynomial p, such that for all inputs x ∈ &#123;0,1&#125; ,</Paragraph>
                 </Section>
             </Section>
             <Section>
                 <Heading>Quantum Algorithms</Heading>
-                <Paragraph>Quantum computers factor efficiently and are not believed to solve NP-complete problems, so they move the boundary without erasing it.</Paragraph>
+                <Paragraph>The class BPP might not exhaust what the physical world lets us efficiently compute, with quantum computing an obvious contender for going further. In 1993, Bernstein and Vazirani [47] defined the complexity class BQP, or Bounded-Error Quantum Polynomial-Time, as a quantum-mechanical generalization of BPP. (Details of quantum computing and BQP are beyond the scope of this survey, but see [203, 6].) Bernstein and Vazirani, along with Adleman, DeMarrais, and Huang [13], also showed some basic containments:</Paragraph>
             </Section>
         </Section>
     </Chapter>,

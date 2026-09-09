@@ -212,8 +212,13 @@ export class $Theme extends $Sheet {
     @select('.pd-theorem .pd-paragraph') theorem_fontStyle = 'italic';
 
     // THE BIBLIOGRAPHY hangs.
+    // A BIBLIOGRAPHY HANGS, AND IT IS NOT SET IN LINK RED. hyperref's red is for a CITATION in
+    // running text, where it has to be found; an entry that is itself the target has nothing to
+    // find. Doug: "I don't think we need red references!"
     @select('.pd-references .pd-paragraph') bibliography_textIndent = '-1.5em';
     bibliography_paddingLeft = '1.5em';
+    @select('.pd-references a') cited_textDecoration = 'none';
+    get cited_color() { return this.ink; }
 
     // OWED, and it needs a structural decision first: sections numbered "1", "1.1" by CSS counters.
     // $Book.chapters already filters the cover, the synopsis, the contents, the index and the

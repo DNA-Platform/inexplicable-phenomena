@@ -5,11 +5,11 @@ import Chapter from './.chapter';
 export default $(
     <Chapter>
         <Section>
-            <Heading>Beliefs About P versus NP</Heading>
-            <Paragraph>Almost everyone who works on the problem believes the classes are different, and it is worth being precise about what that belief rests on: the failure of fifty years of algorithmic effort against thousands of natural problems.</Paragraph>
+            <Heading>Beliefs About P = NP</Heading>
+            <Paragraph>Just as Hilbert’s question turned out to have a negative answer, so too in this case, most computer scientists conjecture that P ̸= NP: that there exist rapidly checkable problems that aren’t rapidly solvable, and for which brute-force search is close to the best we can do. This is not a unanimous opinion. At least one famous computer scientist, Donald Knuth [155], has professed a belief that P = NP, while another, Richard Lipton [175], professes agnosticism. Also, in a poll of mathematicians and theoretical computer scientists conducted by William Gasarch [105] in 2002, there were 61 respondents who said P ̸= NP, but also 9 who said P = NP. (In a followup poll that Gasarch [106] conducted in 2012, there were 126 respondents who said P ̸= NP, and again 9 who said P = NP.) Admittedly, it can be hard to tell whether declarations that P = NP are meant seriously, or are merely attempts to be contrarian. However, we can surely agree with Knuth and Lipton that we’re far from understanding the limits of efficient computation, and that there are further surprises in store.</Paragraph>
             <Section>
                 <Heading>Independent of Set Theory?</Heading>
-                <Paragraph>It is sometimes suggested that the question is not merely open but formally independent of the axioms we reason with. This survey asks what such a claim would have to mean, and what would count as evidence for it.</Paragraph>
+                <Paragraph>Since the 1970s, there’s been speculation that P ̸= NP might be independent (that is, neither provable nor disprovable) from the standard axiom systems for mathematics, such as Zermelo- Fraenkel set theory. To be clear, this would mean that either</Paragraph>
             </Section>
         </Section>
     </Chapter>,
