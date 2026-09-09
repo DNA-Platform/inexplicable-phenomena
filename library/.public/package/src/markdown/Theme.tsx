@@ -1,0 +1,71 @@
+// CREATED 2026-09-09 · rating 3. The markdown look, and every value in it is @tailwindcss/typography's
+// — a real dependency of this package, read out of its own `styles.js` rather than guessed:
+//
+//   base            fontSize 1rem, lineHeight 1.75          DEFAULT.maxWidth 65ch
+//   p               margin 1.25em                            ul/ol paddingInlineStart 1.625em
+//   li              margin 0.5em                             blockquote paddingInlineStart 1em
+//   h2              1.5em, 2em above, 1em below, lh 1.333    h3 1.25em, 1.6em above, 0.6em below
+//   code            0.875em                                  pre 0.875em / 1.714, radius 0.375rem
+//
+// Its colours are oklch with a real hue rather than neutral greys, which is the difference Doug
+// described as small and felt: --tw-prose-body is a warm-cool dark, --tw-prose-bullets is much
+// paler than the text, and LINKS ARE THE HEADING COLOUR — Tailwind distinguishes a link by weight
+// and underline, not by turning it blue. That is the single most considered decision in it.
+//
+// AND IT DRAWS NO RULE UNDER A HEADING. GitHub's rules are a README convention; prose has none,
+// which is why `ruling` is 0 here and 1px in the base.
+import { $, select } from '@dna-platform/chemistry';
+import { $Theme as $Sheet } from '@/formatting/Theme';
+
+export class $Theme extends $Sheet {
+    override measure = '65ch';
+    override size = '16px';
+    override leading = '1.75';
+    override ink = 'oklch(37.3% 0.034 259.733)';
+    override link = 'oklch(21% 0.034 264.665)';
+    override rule = 'oklch(92.8% 0.006 264.531)';
+    override pale = 'oklch(55.1% 0.027 264.364)';
+    override shade = 'oklch(87.2% 0.01 258.338)';
+
+    override indent = '0';
+    override between = '1.25em';
+    override titled = 'left';
+    override ruling = '0';
+
+    get headingColour() { return 'oklch(21% 0.034 264.665)'; }
+
+    @select('.pd-heading') head_fontSize = '1.5em';
+    head_marginTop = '2em';
+    head_marginBottom = '1em';
+    head_lineHeight = '1.3333333';
+    head_fontWeight = '700';
+    get head_color() { return this.headingColour; }
+
+    @select('h3.pd-heading') deep_fontSize = '1.25em';
+    deep_marginTop = '1.6em';
+    deep_marginBottom = '.6em';
+    deep_lineHeight = '1.6';
+
+    @select('p.pd-paragraph') prose_marginTop = '1.25em';
+
+    @select('.pd-list') list_marginTop = '1.25em';
+    list_marginBottom = '1.25em';
+    list_paddingInlineStart = '1.625em';
+
+    @select('.pd-item') item_marginTop = '.5em';
+    item_marginBottom = '.5em';
+
+    @select('.pd-quote') quote_marginTop = '1.6em';
+    quote_marginBottom = '1.6em';
+    quote_paddingInlineStart = '1em';
+    quote_paddingRight = '0';
+    quote_fontStyle = 'italic';
+    get quote_borderLeft() { return `.25rem solid ${this.shade}`; }
+
+    @select('code') code_fontSize = '.875em';
+    @select('pre') pre_fontSize = '.875em';
+    pre_lineHeight = '1.7142857';
+    pre_borderRadius = '.375rem';
+}
+
+export const Theme = $($Theme);

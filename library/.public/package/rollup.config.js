@@ -65,6 +65,7 @@ module.exports = [
             lib: 'src/index.ts',
             library: 'src/library.ts',
             article: 'src/article.ts',
+            markdown: 'src/markdown.ts',
             encyclopedia: 'src/encyclopedia.ts',
             utilities: 'src/utilities.ts'
         },
@@ -91,6 +92,12 @@ module.exports = [
     {
         input: 'src/article.ts',
         output: { file: 'dist/article.d.ts', format: 'es' },
+        plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
+        onwarn
+    },
+    {
+        input: 'src/markdown.ts',
+        output: { file: 'dist/markdown.d.ts', format: 'es' },
         plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
         onwarn
     },

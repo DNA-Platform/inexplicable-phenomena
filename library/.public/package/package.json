@@ -1,7 +1,7 @@
 {
   "name": "@dna-platform/public",
   "version": "0.0.1",
-  "description": "The canonical code library for creating libraries â€” the base classes a library instantiates against, built on @dna-platform/chemistry",
+  "description": "The canonical code library for creating libraries \u00e2\u20ac\u201d the base classes a library instantiates against, built on @dna-platform/chemistry",
   "license": "MIT",
   "author": "Doug Rubino",
   "repository": {
@@ -27,6 +27,11 @@
       "types": "./dist/article.d.ts",
       "import": "./dist/article.js",
       "require": "./dist/article.cjs"
+    },
+    "./markdown": {
+      "types": "./dist/markdown.d.ts",
+      "import": "./dist/markdown.js",
+      "require": "./dist/markdown.cjs"
     },
     "./encyclopedia": {
       "types": "./dist/encyclopedia.d.ts",
@@ -55,6 +60,7 @@
   },
   "dependencies": {
     "@dna-platform/chemistry": "*",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/katex": "^0.16.8",
     "katex": "^0.18.1",
     "marked": "^18.0.7",

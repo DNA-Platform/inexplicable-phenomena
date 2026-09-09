@@ -23,6 +23,7 @@ export default defineConfig({
             // order the ES module spec fixes and no bundler is asked to fix there.
             '@dna-platform/public/library': path.resolve(__dirname, '../../dist/library.js'),
             '@dna-platform/public/article': path.resolve(__dirname, '../../dist/article.js'),
+            '@dna-platform/public/markdown': path.resolve(__dirname, '../../dist/markdown.js'),
             '@dna-platform/public/encyclopedia': path.resolve(__dirname, '../../dist/encyclopedia.js'),
             '@dna-platform/public': path.resolve(__dirname, '../../dist/lib.js'),
             '@dna-platform/chemistry': path.resolve(__dirname, '../../../../chemistry/package/src/index.ts'),
