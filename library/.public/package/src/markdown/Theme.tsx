@@ -23,6 +23,12 @@ import { $Theme as $Sheet } from '@/article/Theme';
 import { Theme as Base } from '@/formatting/Theme';
 
 export class $Theme extends $Sheet {
+    // A RENDERED NOTE LINKS IN BLUE. The article theme sets links BLACK because a printed paper
+    // has no links to follow; markdown descends from it and inherited that, which is exactly the
+    // trickle this theme has to answer. The value is the BASE's own - wikipedia blue.
+    override link = '#3366cc';
+    @select('.pd-table-of-contents a') override get named_color() { return this.link; }
+
     override face = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Helvetica, Arial, sans-serif";
     override body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Helvetica, Arial, sans-serif";
     override size = '16px';
@@ -62,7 +68,7 @@ export class $Theme extends $Sheet {
     override get strip_borderBottom() { return `1px solid ${this.rule}`; }
 
     // A COVER, LEFT AND UNCENTRED, at markdown's own scale.
-    @select('.pd-title .pd-heading') override title_fontSize = '1.5em';
+    @select('.pd-title .pd-heading') override title_fontSize = '1.25em';
     override title_fontWeight = '700';
     override title_marginBottom = '.25rem';
     @select('.pd-author .pd-heading') override author_fontSize = '1em';
@@ -77,19 +83,19 @@ export class $Theme extends $Sheet {
     // keeps a paper's proportions — much flatter than a README's 1.5 / 1.25 / 1.1 — and only the
     // face, the alignment and the air change. LaTeX at 11pt runs 14.4 / 12 / 11, which is
     // 1.31 / 1.09 / 1 against the body; these sit just above it.
-    @select('h2.pd-heading') override h2_fontSize = '1.25em';
-    @select('h3.pd-heading') override h3_fontSize = '1em';
-    @select('h2.pd-heading') override head_fontSize = '1.25em';
+    @select('h2.pd-heading') override h2_fontSize = '1em';
+    @select('h3.pd-heading') override h3_fontSize = '.875em';
+    @select('h2.pd-heading') override head_fontSize = '1em';
     override head_fontWeight = '700';
     override head_marginTop = '2em';
     override head_marginBottom = '.75em';
-    @select('h3.pd-heading') override deep_fontSize = '1em';
+    @select('h3.pd-heading') override deep_fontSize = '.875em';
     override deep_marginTop = '1.6em';
     override deep_marginBottom = '.5em';
-    @select('h4.pd-heading') override deepest_fontSize = '.875em';
+    @select('h4.pd-heading') override deepest_fontSize = '.85em';
     override deepest_marginTop = '1.4em';
     override deepest_marginBottom = '.4em';
-    @select('h1') override h1_fontSize = '1.5em';
+    @select('h1') override h1_fontSize = '1.25em';
 
     // NUMBERS ARE THE ONE STRUCTURAL THING A RENDERED DOCUMENT DROPS — a README does not say
     // "1.2.1" — and dropping them is four empty strings rather than undoing the counters.

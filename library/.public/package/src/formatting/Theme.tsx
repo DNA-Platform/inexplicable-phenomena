@@ -288,6 +288,12 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecoration = 'none';
     get a_color() { return this.link; }
     @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover') hover_textDecoration = 'underline';
+    // AN ANCHOR THAT ONLY NAMES ITSELF IS NOT A LINK. A fold makes a writing POINTABLE, and
+    // view() writes the id on the same anchor that carries an href when there is one - so a
+    // reference entry with a page fold drew as twelve blue paragraphs nobody can follow.
+    @select('.pd-meaning:not([href])') keyed_color = 'inherit';
+    keyed_cursor = 'text';
+    @select('.pd-meaning:not([href]):hover') keyedOver_textDecoration = 'none';
     @select('.pd-cover .pd-meaning') naming_color = 'inherit';
     @select('.pd-document') document_marginBottom = '2em';
     @select('.pd-index') index_columnCount = '3';
