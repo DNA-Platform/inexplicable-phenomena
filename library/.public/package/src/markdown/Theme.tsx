@@ -23,11 +23,11 @@ import { $Theme as $Sheet } from '@/article/Theme';
 import { Theme as Base } from '@/formatting/Theme';
 
 export class $Theme extends $Sheet {
-    // A RENDERED NOTE LINKS IN BLUE. The article theme sets links BLACK because a printed paper
-    // has no links to follow; markdown descends from it and inherited that, which is exactly the
-    // trickle this theme has to answer. The value is the BASE's own - wikipedia blue.
+    // ANYTHING WITH A MEANING IS A BLUE LINK, and a reading that prints overrides it. Doug,
+    // 2026-09-10: "latex is great, latex should just be overriding a default." So this is ONE value,
+    // not a list of rules - the base reads `link` wherever a meaning is drawn, the article theme
+    // sets it black for a page nobody can click, and a note sets it back.
     override link = '#3366cc';
-    @select('.pd-table-of-contents a') override get named_color() { return this.link; }
 
     override face = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Helvetica, Arial, sans-serif";
     override body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Helvetica, Arial, sans-serif";
@@ -99,9 +99,9 @@ export class $Theme extends $Sheet {
 
     // NUMBERS ARE THE ONE STRUCTURAL THING A RENDERED DOCUMENT DROPS — a README does not say
     // "1.2.1" — and dropping them is four empty strings rather than undoing the counters.
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') override numbered_content = "''";
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') override deepNumbered_content = "''";
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') override deepestNumbered_content = "''";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-heading::before') override numbered_content = "''";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section > .pd-heading::before') override deepNumbered_content = "''";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section > .pd-section > .pd-heading::before') override deepestNumbered_content = "''";
     @select('.pd-table-of-contents > .pd-chapter::before') override listedNumber_content = "''";
     override listedNumber_minWidth = '0';
     @select('.pd-table-of-contents > .pd-chapter > .pd-chapter::before') override deepNumber_content = "''";
@@ -111,7 +111,7 @@ export class $Theme extends $Sheet {
 
     // PROSE IS RAGGED RIGHT. Justification without TeX's paragraph optimiser is worse than not
     // justifying, and a rendered document has never pretended otherwise.
-    @select('.pd-paragraph:not(.pd-heading)') override justified_textAlign = 'left';
+    @select('.pd-paragraph:not(.pd-heading), .pd-item') override justified_textAlign = 'left';
     override justified_hyphens = 'manual';
 
     // THE ABSTRACT IS NOT A QUOTATION HERE; it is the opening of the document.
@@ -123,6 +123,7 @@ export class $Theme extends $Sheet {
     override abstracted_marginBottom = '.75em';
 
     @select('.pd-paragraph:not(.pd-heading)') prose_marginTop = '1.25em';
+    @select('.pd-item') item_marginTop = '.5em';
     @select('.pd-list') list_marginTop = '1.25em';
     list_marginBottom = '1.25em';
     list_paddingInlineStart = '1.625em';
@@ -132,11 +133,11 @@ export class $Theme extends $Sheet {
     quote_paddingInlineStart = '1em';
     quote_fontStyle = 'italic';
     get quote_borderLeft() { return `.25rem solid ${this.shade}`; }
-    @select('code') override code_fontSize = '.875em';
-    @select('pre') override pre_fontSize = '.875em';
+    @select('.pd-code code') override code_fontSize = '.875em';
+    @select('.pd-code') override pre_fontSize = '.875em';
     override pre_lineHeight = '1.7142857';
     override pre_borderRadius = '.375rem';
-    @select('figcaption') caption_fontSize = '.875em';
+    @select('.pd-illustration figcaption') caption_fontSize = '.875em';
     get caption_color() { return this.pale; }
 
 }

@@ -126,9 +126,9 @@ export class $Theme extends $Format implements $Theme$ {
     leading_backgroundRepeat = 'repeat-x';
     leading_backgroundPosition = 'left bottom .3em';
     @select('.pd-table-of-contents a') named_textDecoration = 'none';
-    get named_color() { return this.ink; }
+    get named_color() { return this.link; }
 
-    @select('.pd-equation, .katex-display, .pd-table, pre') wide_overflowX = 'auto';
+    @select('.pd-equation, .katex-display, .pd-table, .pd-code') wide_overflowX = 'auto';
     wide_overflowY = 'hidden';
     wide_maxWidth = '100%';
 
@@ -218,7 +218,7 @@ export class $Theme extends $Format implements $Theme$ {
     title_fontWeight = '700';
     title_lineHeight = '1.15';
     @select('.pd-title a') titled_textDecoration = 'none';
-    get titled_color() { return this.ink; }
+    get titled_color() { return this.link; }
     @select('.pd-author .pd-heading') author_fontSize = '1.05em';
     author_fontWeight = '400';
     // A DOCUMENT DOES NOT PRINT ITS SUBJECT AS A HEADING — it is a keyword line, so it is set as
@@ -261,13 +261,13 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-list') list_marginTop = '0';
     list_marginBottom = '0';
     list_paddingLeft = '2em';
-    @select('li + li') item_marginTop = '.25em';
-    @select('code') code_fontFamily = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace";
+    @select('.pd-item + .pd-item') item_marginTop = '.25em';
+    @select('.pd-code code') code_fontFamily = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace";
     code_fontSize = '85%';
     code_padding = '.2em .4em';
     code_borderRadius = '6px';
     get code_backgroundColor() { return this.quiet; }
-    @select('pre') pre_fontSize = '12px';
+    @select('.pd-code') pre_fontSize = '12px';
     pre_padding = '1rem';
     pre_borderRadius = '6px';
     pre_overflow = 'auto';
@@ -280,9 +280,12 @@ export class $Theme extends $Format implements $Theme$ {
     hr_border = '0';
     hr_height = '.25em';
     get hr_backgroundColor() { return this.shade; }
-    @select('table th, table td') cell_padding = '6px 13px';
+    @select('.pd-table th, .pd-table td') cell_padding = '6px 13px';
     get cell_border() { return `1px solid ${this.shade}`; }
     @select('.pd-illustration') figure_margin = '1rem 0';
+    // AN ELEMENT HERE MEANS AN IMAGE THE LIBRARY DID NOT WRITE. A kind's picture answers .pd-image,
+    // but a demo or a foreign sheet can put a bare <img> on the page and this is the guard for it -
+    // the same reason figure:not(.pd-figure) above names an element.
     @select('img') img_maxWidth = '100%';
     @select('.pd-illustration img') figured_marginInline = 'auto';
     @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecoration = 'none';
@@ -294,7 +297,7 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-meaning:not([href])') keyed_color = 'inherit';
     keyed_cursor = 'text';
     @select('.pd-meaning:not([href]):hover') keyedOver_textDecoration = 'none';
-    @select('.pd-cover .pd-meaning') naming_color = 'inherit';
+    @select('.pd-cover .pd-meaning') get naming_color() { return this.link; }
     @select('.pd-document') document_marginBottom = '2em';
     @select('.pd-index') index_columnCount = '3';
 
