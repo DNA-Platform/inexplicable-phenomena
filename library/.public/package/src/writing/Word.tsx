@@ -16,13 +16,7 @@ export class $Word extends $Composition implements $Word$ {
     }
 }
 
-export interface $$Word$ extends $Word$ { }
-
-export class $$Word extends $Catalogue implements $$Word$ {
-    $$Word(block: $Block) {
-        super.$Catalogue(this.addType(block, $TypeOfWord, $TypeOf$Word));
-    }
-}
+export class $$Word extends $Catalogue { }
 
 export class $TypeOfWord extends $Type {
     protected override specification: Specification<$Writing> = new WordSpecification();
@@ -39,10 +33,6 @@ export class $TypeOfWord extends $Type {
     override below(): new() => $Type { return $TypeOfLetter; }
 }
 
-export class $TypeOf$Word extends $Type {
-    protected override specification: Specification<$Writing> = new $WordSpecification();
-}
-
 export class WordSpecification extends WritingSpecification {
     protected patterns = {
         broken: /\s/u
@@ -55,9 +45,6 @@ export class WordSpecification extends WritingSpecification {
     }
 }
 
-export class $WordSpecification extends WritingSpecification {
-}
-
 export const Word = $($Word);
+export const word = $($$Word);
 export const TypeOfWord = $($TypeOfWord);
-export const TypeOf$Word = $($TypeOf$Word);

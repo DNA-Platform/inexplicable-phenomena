@@ -7,7 +7,6 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Type } from '@/writing/Type';
 import { $Catalogue } from '@/reference/Catalogue';
 import { $TypeOfReference } from '@/reference/Reference';
-import { $Paragraph$, $TypeOfParagraph } from '@/writing/Paragraph';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Document, $TypeOfDocument } from './Document';
 import { $Chapter, $TypeOfChapter } from './Chapter';
@@ -53,13 +52,7 @@ export class $Book extends $Composition implements $Book$ {
     }
 }
 
-export interface $$Book$ extends $Paragraph$ { }
-
-export class $$Book extends $Catalogue implements $$Book$ {
-    $$Book(block: $Block) {
-        super.$Catalogue(this.addType(block, $TypeOfParagraph, $TypeOf$Book));
-    }
-}
+export class $$Book extends $Catalogue { }
 
 export class $TypeOfBook extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new BookSpecification();
@@ -75,13 +68,6 @@ export class BookSpecification extends WritingSpecification {
     }
 }
 
-export class $TypeOf$Book extends $Type {
-    protected override specification: Specification<$Writing> = new $BookSpecification();
-}
-
-export class $BookSpecification extends WritingSpecification { }
-
 export const Book = $($Book);
 export const book = $($$Book);
-export const TypeOf$Book = $($TypeOf$Book);
 export const TypeOfBook = $($TypeOfBook);

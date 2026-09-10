@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
-import { $Writing, Writing, $Type, $Format, Format, $Theme, Reference, TypeOfLetter, $TypeOfLetter, TypeOfWord, TypeOfSentence, TypeOfParagraph, $TypeOfParagraph, Paragraph, TypeOfSection, $TypeOfSection, TypeOfHeading, $TypeOfHeading, Heading, List, Table, Path, TypeOfDocument, $TypeOfDocument, documented as Document, Document as Written, $TypeOf$Document, TypeOfBook, $TypeOfBook, TypeOfChapter, $TypeOfChapter, reflection, parser, Section, $Composition, html } from '@dna-platform/public';
+import { $Writing, Writing, $Type, $Format, Format, $Theme, Reference, TypeOfLetter, $TypeOfLetter, TypeOfWord, TypeOfSentence, TypeOfParagraph, $TypeOfParagraph, Paragraph, TypeOfSection, $TypeOfSection, TypeOfHeading, $TypeOfHeading, Heading, List, Table, Path, TypeOfDocument, $TypeOfDocument, doc as Mention, Document as Written, $TypeOfReference, $Catalogue,TypeOfBook, $TypeOfBook, TypeOfChapter, $TypeOfChapter, reflection, parser, Section, $Composition, html } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -189,29 +189,32 @@ describe('a kind draws in its default look, and the look makes up for plain copy
     });
 });
 
-describe('a mention stands for another piece of writing', () => {
-    const mentioned = () => built<$Writing>(<Document>Body sections<Reference>#Body_sections</Reference></Document>);
+describe('a mention is a reference to another piece of writing', () => {
+    const mentioned = () => built<$Catalogue>(<Mention>Body sections</Mention>);
 
-    it('a mentioned documented carries what it points at, and the base draws it as an anchor', () => {
-        const Drawn = $(mentioned());
-        const host = render(<Drawn />).container;
-        expect(host.querySelector('a')?.getAttribute('href')).toBe('#Body_sections');
+    it('A MENTION GIVEN A TITLE MAKES ITS ANCHOR FROM IT', () => {
+        expect(html.text(mentioned().path()?._block)).toBe('#body-sections');
     });
 
-    it('AND IT STANDS AT THE LEVEL IT IS WRITTEN AT, NOT THE LEVEL OF WHAT IT MENTIONS', () => {
+    it('and it is a reference, standing at no level of writing', () => {
         const held = mentioned();
-        expect(reflection.is(held, $TypeOfParagraph)).toBe(true);
+        expect(reflection.is(held, $TypeOfReference)).toBe(true);
+        expect(reflection.is(held, $TypeOfParagraph)).toBe(false);
         expect(reflection.is(held, $TypeOfDocument)).toBe(false);
-        expect(reflection.is(held, $TypeOf$Document)).toBe(true);
     });
 
-    it('and it means what it holds, so a mention is a reference by having a meaning', () => {
-        expect(mentioned().meaning).toBeDefined();
+    it('AND PASSED INTO A PIECE OF WRITING IT IS THAT WRITING\'S MEANING, AND THE WRITING DRAWS THE ANCHOR', () => {
+        const held = built<$Writing>(<Written>Body sections<Mention>Body sections</Mention></Written>);
+        expect(held.meaning).toBeDefined();
+        const Drawn = $(held);
+        const host = render(<Drawn />).container;
+        expect(host.querySelector('a')?.getAttribute('href')).toBe('#body-sections');
     });
 
-    it('AND ITS ADSTYLE IS A POSITION, BECAUSE A FIXED ORDER ALREADY SAYS THE LEVEL', () => {
-        const held = built<$Writing>(<Document>Body sections<Path>1</Path></Document>);
+    it('AND ITS ADDRESS MAY BE A POSITION, BECAUSE A FIXED ORDER ALREADY SAYS THE LEVEL', () => {
+        const held = built<$Catalogue>(<Mention>Body sections<Path>1</Path></Mention>);
         expect(() => held.specify()).not.toThrow();
+        expect(html.text(held.path()?._block)).toBe('1');
     });
 
     it('AND A MENTION THAT STANDS FOR WHAT IT HOLDS NEEDS NO PATH — every word the parse makes has one', () => {
@@ -221,11 +224,10 @@ describe('a mention stands for another piece of writing', () => {
         for (const word of words) expect(() => (word as $Composition).mention?.specify()).not.toThrow();
     });
 
-    it('AND ONE WITH NOTHING TO MEAN YET STILL STANDS — a mention is writing that MEANS the thing, never a reference that carries a path', () => {
-        const bare = built<$Writing>(<Document>Body sections</Document>);
+    it('AND ONE GIVEN NOTHING BUT A TITLE MEANS NOTHING OF ITS OWN, AND STANDS', () => {
+        const bare = mentioned();
         expect(() => bare.specify()).not.toThrow();
         expect(bare.meaning).toBeUndefined();
-        expect(built<$Writing>(<Document>Body sections<Reference>#Body_sections</Reference></Document>).meaning).toBeDefined();
     });
 });
 

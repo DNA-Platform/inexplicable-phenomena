@@ -4,7 +4,6 @@ import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
-import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { parser } from '@/utilities/Parser';
 import { $Type } from './Type';
 
@@ -25,16 +24,7 @@ export class $Letter extends $Composition implements $Letter$ {
     }
 }
 
-export interface $$Letter$ extends $Letter$ { }
-
-export class $$Letter extends $Catalogue implements $$Letter$ {
-    sort!: SortOfLetter;
-    case: CaseOfLetter = 'lowercase';
-
-    $$Letter(block: $Block) {
-        super.$Catalogue(this.addType(block, $TypeOfLetter, $TypeOf$Letter));
-    }
-}
+export class $$Letter extends $Catalogue { }
 
 export class $TypeOfLetter extends $Type {
     protected patterns = {
@@ -71,10 +61,6 @@ export class $TypeOfLetter extends $Type {
     }
 }
 
-export class $TypeOf$Letter extends $Type {
-    protected override specification: Specification<$Writing> = new $LetterSpecification();
-}
-
 export class LetterSpecification extends WritingSpecification {
     protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
@@ -86,8 +72,6 @@ export class LetterSpecification extends WritingSpecification {
     }
 }
 
-export class $LetterSpecification extends WritingSpecification { }
-
 export const Letter = $($Letter);
+export const letter = $($$Letter);
 export const TypeOfLetter = $($TypeOfLetter);
-export const TypeOf$Letter = $($TypeOf$Letter);

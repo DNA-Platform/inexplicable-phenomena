@@ -6,9 +6,8 @@ import { $Writing$, $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
-import { $Paragraph$, $TypeOfParagraph } from './Paragraph';
+import { $TypeOfParagraph } from './Paragraph';
 import { $TypeOfHeading, Heading as heading } from './Heading';
-import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $Type } from './Type';
 
 export interface $Section$ extends $Composition$ {
@@ -30,13 +29,7 @@ export class $Section extends $Composition implements $Section$ {
     }
 }
 
-export interface $$Section$ extends $Paragraph$ { }
-
-export class $$Section extends $Catalogue implements $$Section$ {
-    $$Section(block: $Block) {
-        super.$Catalogue(this.addType(block, $TypeOfParagraph, $TypeOf$Section));
-    }
-}
+export class $$Section extends $Catalogue { }
 
 export class $TypeOfSection extends $Type {
     protected override specification: Specification<$Writing> = new SectionSpecification();
@@ -48,13 +41,6 @@ export class $TypeOfSection extends $Type {
     }
 
     override below(): new() => $Type { return $TypeOfParagraph; }
-}
-
-export class $TypeOf$Section extends $Type {
-    protected override specification: Specification<$Writing> = new $SectionSpecification();
-}
-
-export class $SectionSpecification extends WritingSpecification {
 }
 
 export class SectionSpecification extends WritingSpecification {
@@ -96,4 +82,3 @@ export class SectionSpecification extends WritingSpecification {
 export const Section = $($Section);
 export const section = $($$Section);
 export const TypeOfSection = $($TypeOfSection);
-export const TypeOf$Section = $($TypeOf$Section);

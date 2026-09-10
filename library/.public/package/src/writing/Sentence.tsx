@@ -5,8 +5,6 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
-import { reflection } from '@/utilities/Reflection';
-import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $TypeOfWord } from './Word';
 import { $Type } from './Type';
 
@@ -18,15 +16,7 @@ export class $Sentence extends $Composition implements $Sentence$ {
     }
 }
 
-export interface $$Sentence$ extends $Sentence$ {
-    parts(): $Writing[];
-}
-
-export class $$Sentence extends $Catalogue implements $$Sentence$ {
-    $$Sentence(block: $Block) {
-        super.$Catalogue(this.addType(block, $TypeOfSentence, $TypeOf$Sentence));
-    }
-}
+export class $$Sentence extends $Catalogue { }
 
 export class $TypeOfSentence extends $Type {
     protected override specification: Specification<$Writing> = new SentenceSpecification();
@@ -44,10 +34,6 @@ export class $TypeOfSentence extends $Type {
     override below(): new() => $Type { return $TypeOfWord; }
 }
 
-export class $TypeOf$Sentence extends $Type {
-    protected override specification: Specification<$Writing> = new $SentenceSpecification();
-}
-
 // THE RULE THAT STOPPED THE PAGE, struck 2026-09-08 with the reason beside it. It refused any
 // stop with text after it, so `Dr. Smith went home.`, `the U.S. Navy` and `e.g. this` were all
 // refused, and the Turing article is full of them. A pattern cannot tell a sentence's terminal
@@ -60,10 +46,6 @@ export class $TypeOf$Sentence extends $Type {
 export class SentenceSpecification extends WritingSpecification {
 }
 
-
-export class $SentenceSpecification extends WritingSpecification {
-}
-
 export const Sentence = $($Sentence);
+export const sentence = $($$Sentence);
 export const TypeOfSentence = $($TypeOfSentence);
-export const TypeOf$Sentence = $($TypeOf$Sentence);

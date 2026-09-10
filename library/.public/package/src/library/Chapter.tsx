@@ -6,8 +6,6 @@ import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
-import { $Type } from '@/writing/Type';
-import { $Paragraph$, $TypeOfParagraph } from '@/writing/Paragraph';
 import { $Reference, $TypeOfReference, ReferenceSpecification, Reference as reference } from '@/reference/Reference';
 
 export interface $Chapter$ extends $Composition$ { }
@@ -29,13 +27,7 @@ export class $Chapter extends $Composition implements $Chapter$ {
     }
 }
 
-export interface $$Chapter$ extends $Paragraph$ { }
-
-export class $$Chapter extends $Catalogue implements $$Chapter$ {
-    $$Chapter(block: $Block) {
-        super.$Catalogue(this.addType(block, $TypeOfParagraph, $TypeOf$Chapter));
-    }
-}
+export class $$Chapter extends $Catalogue { }
 
 export class $TypeOfChapter extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new ChapterSpecification();
@@ -66,13 +58,6 @@ export class ChapterSpecification extends ReferenceSpecification {
     }
 }
 
-export class $TypeOf$Chapter extends $Type {
-    protected override specification: Specification<$Writing> = new $ChapterSpecification();
-}
-
-export class $ChapterSpecification extends WritingSpecification { }
-
 export const Chapter = $($Chapter);
 export const chapter = $($$Chapter);
-export const TypeOf$Chapter = $($TypeOf$Chapter);
 export const TypeOfChapter = $($TypeOfChapter);

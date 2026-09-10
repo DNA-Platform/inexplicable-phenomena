@@ -1,19 +1,19 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
+import { html } from '@/utilities/Html';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
-import { $Annotation } from '@/writing/Annotation';
 import { $Type } from '@/writing/Type';
-import { $Composition$, $Composition, Composition as composition } from '@/writing/Composition';
-import { $Reference, Reference as reference } from './Reference';
+import { $Composition, Composition as composition } from '@/writing/Composition';
+import { $Reference$, $Reference } from './Reference';
 import { $Path, Path as path } from './Path';
 
-export interface $Catalogue$ extends $Composition$ {
-    comprehend(): $Composition;
+export interface $Catalogue$ extends $Reference$ {
+    parts(): $Writing[];
     follow(fragment: string): $Writing;
 }
 
-export class $Catalogue extends $Composition implements $Catalogue$ {
+export class $Catalogue extends $Reference implements $Catalogue$ {
     parts(): $Writing[] {
         const meant = this.held(this);
 
@@ -22,20 +22,13 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
             : [];
     }
 
-    comprehend(): $Composition {
-        const [first, ...rest] = this.select(part =>
-            (part._block.$elements ?? [])
-                .find((part): part is $Composition => reflection.composition(part)));
-        if (first === undefined) {
-            const Composition = $(composition);
-
-            return $<$Composition>(<Composition />);
-        }
-        return first.concatenate(...rest.filter(held => held !== undefined));
-    }
-
     $Catalogue(block: $Block) {
-        super.$Composition(this.addType(block, $TypeOfCatalogue));
+        super.$Reference(this.addType(block, $TypeOfCatalogue));
+        const named = html.text(this._block).trim();
+        if (this.path() === undefined && this.held(this) === undefined && named !== '') {
+            const Path = $(path);
+            this._block = this._block.concat($<$Path>(<Path>{`#${reflection.kebab(named)}`}</Path>));
+        }
     }
 
     follow(fragment: string): $Writing {
@@ -75,7 +68,6 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
         return (of._block.$elements ?? [])
             .find((part): part is $Writing => reflection.writing(part) && !reflection.annotation(part));
     }
-
 }
 
 export class $TypeOfCatalogue extends $Type {
@@ -87,7 +79,6 @@ export class CatalogueSpecification extends WritingSpecification {
     override $saysSomething(writing: $Writing): boolean | void {
         return false;
     }
-
 }
 
 export const Catalogue = $($Catalogue);

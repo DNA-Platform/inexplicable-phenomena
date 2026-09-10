@@ -30,7 +30,8 @@ export class $Reference extends $Annotation implements $Reference$ {
             this._block = this._block.concat($<$Path>(<Path>{copy}</Path>));
         }
 
-        this.$pid ??= html.text(this.path()?._block);
+        const at = html.text(this.path()?._block);
+        if (at !== '') this.$pid ??= at;
     }
 
     protected reads(copy: string): boolean {
@@ -38,7 +39,8 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     focus(): void {
-        this.$pid ??= html.text(this.path()?._block);
+        const at = html.text(this.path()?._block);
+        if (at !== '') this.$pid ??= at;
         this.$focused = true;
         this.persist = true;
     }
