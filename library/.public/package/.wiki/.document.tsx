@@ -23,15 +23,6 @@ export class $Footer extends $Document {
     }
 }
 
-export class $Wordmark extends $Paragraph {
-    $src = '';
-    $width = '';
-
-    override view(): ReactNode {
-        return <img src={this.$src} width={this.$width} alt={html.text(this._block)} />;
-    }
-}
-
 export class $HeaderFormat extends $Format {
     selector = styled.div;
     display = 'flex';
@@ -82,7 +73,6 @@ export class $FooterFormat extends $Format {
 
 export const Header = $($Header);
 export const Footer = $($Footer);
-export const Wordmark = $($Wordmark);
 export const HeaderFormat = $($HeaderFormat);
 export const FooterFormat = $($FooterFormat);
 
