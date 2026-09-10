@@ -41,7 +41,7 @@ export class $Theme extends $Format implements $Theme$ {
     pale = '#59636e';
     jet = '#1f2328';
     pressed = '#0550ae';
-    link = '#0969da';
+    link = '#3366cc';
     measure = '57em';
     body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
     face = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
@@ -96,6 +96,11 @@ export class $Theme extends $Format implements $Theme$ {
     entry_marginTop = '0';
     entry_marginBottom = '.15rem';
     entry_textIndent = '0';
+    @select('.pd-table-of-contents .pd-chapter > a') entryLink_flex = '1 1 auto';
+    entryLink_order = '1';
+    @select('.pd-table-of-contents .pd-chapter .pd-chapter') under_flex = '0 0 100%';
+    under_order = '4';
+    under_paddingLeft = '1.6em';
 
     // THE LEADER AND THE PLACE, drawn inside the anchor so the whole row follows the link. `leader`
     // and `place` are VALUES a theme sets: a documentleading with dots to a marker is one reading, a
@@ -111,6 +116,7 @@ export class $Theme extends $Format implements $Theme$ {
     place = 'none';
     spacing = '.55em';
     @select('.pd-table-of-contents .pd-chapter::after') get leading_content() { return this.place; }
+    leading_order = '3';
     leading_flex = '1 1 auto';
     leading_textAlign = 'right';
     leading_marginLeft = '.6em';

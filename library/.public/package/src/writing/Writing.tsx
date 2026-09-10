@@ -73,7 +73,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
         const holding = this.parent;
-        this.book = reflection.writing(holding) && holding !== this ? holding.book : this;
+        this.book = reflection.writing(holding) && holding !== this ? holding.book ?? holding : this;
     }
 
     // A LINK NOBODY CAN REACH IS A LINK NOBODY CAN CHANGE. Measured 2026-09-08: 33 anchors on

@@ -14,6 +14,9 @@ export class $Path extends $Annotation implements $Path$ {
         super.$Writing(this.addType(block, $TypeOfPath));
     }
 
+    override specifically(): void {
+    }
+
     override view(): ReactNode {
         return html.text(this._block);
     }

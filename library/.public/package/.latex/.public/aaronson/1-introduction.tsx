@@ -36,7 +36,7 @@ export default $(
                 </Section>
                 <Section>
                     <Heading>The Obviousness Objection</Heading>
-                    <Paragraph>Objection: It’s intuitively obvious that P ̸= NP. For that reason, a proof of P ̸= NP—confirming that indeed, we can’t do something that no reasonable person would ever have imagined we could do—gives almost no useful information.</Paragraph>
+                    <Paragraph>Objection: It’s intuitively obvious that P ≠ NP. For that reason, a proof of P ≠ NP—confirming that indeed, we can’t do something that no reasonable person would ever have imagined we could do—gives almost no useful information.</Paragraph>
                 </Section>
                 <Section>
                     <Heading>The Constructivity Objection</Heading>
@@ -45,7 +45,7 @@ export default $(
             </Section>
             <Section>
                 <Heading>Further Reading</Heading>
-                <Paragraph>There were at least four previous major survey articles about P = NP: Michael Sipser’s 1992 “The History and Status of the P versus NP Question” [241]; Stephen Cook’s 2000 “The P versus NP Problem” [74], which was written for the announcement of the Clay Millennium Prize; Avi Wigderson’s 2006 “P, NP, and Mathematics—A Computational Complexity Perspective” [269]; and Eric Allender’s 2009 “A Status Report on the P versus NP Question” [22]. All four are excellent, so it’s only with trepidation that I add another entry to the crowded arena. I hope that, if nothing else, this survey shows how much has continued to occur through 2017. I cover several major topics that either didn’t exist a decade ago, or existed only in much more rudimentary form: for example, the algebrization barrier, “ironic complexity theory” (including Ryan Williams’s NEXP ̸⊂ ACC result), the “chasm at depth three” for the permanent, and the Mulmuley-Sohoni Geometric Complexity Theory program.</Paragraph>
+                <Paragraph>There were at least four previous major survey articles about P = NP: Michael Sipser’s 1992 “The History and Status of the P versus NP Question” [241]; Stephen Cook’s 2000 “The P versus NP Problem” [74], which was written for the announcement of the Clay Millennium Prize; Avi Wigderson’s 2006 “P, NP, and Mathematics—A Computational Complexity Perspective” [269]; and Eric Allender’s 2009 “A Status Report on the P versus NP Question” [22]. All four are excellent, so it’s only with trepidation that I add another entry to the crowded arena. I hope that, if nothing else, this survey shows how much has continued to occur through 2017. I cover several major topics that either didn’t exist a decade ago, or existed only in much more rudimentary form: for example, the algebrization barrier, “ironic complexity theory” (including Ryan Williams’s NEXP ⊂ ACC result), the “chasm at depth three” for the permanent, and the Mulmuley-Sohoni Geometric Complexity Theory program.</Paragraph>
             </Section>
         </Section>
     </Document>,

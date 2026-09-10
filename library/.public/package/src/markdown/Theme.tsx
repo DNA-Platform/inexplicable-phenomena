@@ -29,7 +29,6 @@ export class $Theme extends $Sheet {
     override leading = '1.75';
     override measure = '65ch';
     override ink = 'oklch(37.3% 0.034 259.733)';
-    override link = 'oklch(21% 0.034 264.665)';
     override rule = 'oklch(92.8% 0.006 264.531)';
     override pale = 'oklch(55.1% 0.027 264.364)';
     override shade = 'oklch(87.2% 0.01 258.338)';

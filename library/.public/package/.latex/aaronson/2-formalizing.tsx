@@ -21,7 +21,7 @@ export default $(
                 </Section>
                 <Section>
                     <Heading>The Twilight Zone: Between P and NP-complete</Heading>
-                    <Paragraph>We say a language L is NP-intermediate if L ∈ NP, but L is neither in P nor NP-complete. Based on experience, one might hope not only that P ̸= NP, but that there’d be a dichotomy, with all NP problems either in P or else NP-complete. However, a classic result by Ladner [160] rules that possibility out. Theorem 5 (Ladner [160]) If P ̸= NP, then there exist NP-intermediate languages.</Paragraph>
+                    <Paragraph>We say a language L is NP-intermediate if L ∈ NP, but L is neither in P nor NP-complete. Based on experience, one might hope not only that P ≠ NP, but that there’d be a dichotomy, with all NP problems either in P or else NP-complete. However, a classic result by Ladner [160] rules that possibility out. Theorem 5 (Ladner [160]) If P ≠ NP, then there exist NP-intermediate languages.</Paragraph>
                 </Section>
                 <Section>
                     <Heading>coNP and the Polynomial Hierarchy</Heading>

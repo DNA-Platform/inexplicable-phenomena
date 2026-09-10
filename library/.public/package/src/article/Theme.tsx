@@ -36,7 +36,7 @@ export class $Theme extends $Sheet {
     override ink = '#000000';
     override paper = '#ffffff';
     override desk = '#282828';
-    override link = 'hsl(0, 100%, 33%)';
+    override link = '#000000';
     override rule = 'hsl(0, 0%, 80%)';
 
     // THE FOUR LAYOUT VALUES THE BASE CARRIES. parindent for an 11pt article is 17pt, parskip is
@@ -160,10 +160,20 @@ export class $Theme extends $Sheet {
     // A TOP-LEVEL ENTRY IS BOLD, name and marker alike, which is what article.cls does.
     @select('.pd-table-of-contents > .pd-chapter') top_fontWeight = '700';
 
-    @select('.pd-table-of-contents') counting_counterReset = 'listed';
-    @select('.pd-table-of-contents .pd-chapter') tallied_counterIncrement = 'listed';
+    @select('.pd-table-of-contents') counting_counterReset = 'listed1 listed2 listed3';
+    @select('.pd-table-of-contents > .pd-chapter') tallied_counterIncrement = 'listed1';
+    tallied_counterReset = 'listed2 listed3';
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter') deepTallied_counterIncrement = 'listed2';
+    deepTallied_counterReset = 'listed3';
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter') deepestTallied_counterIncrement = 'listed3';
     @select('.pd-table-of-contents .pd-chapter.pd-references, .pd-table-of-contents .pd-chapter.pd-appendix') apart_counterIncrement = 'none';
-    @select('.pd-table-of-contents .pd-chapter::before') listedNumber_content = "counters(listed, '.')";
+    @select('.pd-table-of-contents > .pd-chapter::before') listedNumber_content = "counter(listed1)";
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter::before') deepNumber_content = "counter(listed1) '.' counter(listed2)";
+    deepNumber_flex = '0 0 auto';
+    deepNumber_minWidth = '2.6em';
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter::before') deepestNumber_content = "counter(listed1) '.' counter(listed2) '.' counter(listed3)";
+    deepestNumber_flex = '0 0 auto';
+    deepestNumber_minWidth = '3.4em';
     listedNumber_flex = '0 0 auto';
     listedNumber_minWidth = '2.6em';
     @select('.pd-table-of-contents .pd-chapter.pd-references::before, .pd-table-of-contents .pd-chapter.pd-appendix::before') apartNumber_content = "''";
