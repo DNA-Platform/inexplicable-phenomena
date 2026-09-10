@@ -32,6 +32,11 @@ export class $Book extends $Composition implements $Book$ {
         super.$Composition(this.addType(block, $TypeOfBook));
         if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
         this.removeClass('pd-reference');
+        const held: $Writing[] = [this];
+        for (let at = 0; at < held.length; at++) {
+            held[at].book = this;
+            for (const part of held[at]._block.$elements ?? []) if (reflection.writing(part)) held.push(part);
+        }
     }
 
     header(): ReactNode { return undefined; }

@@ -5,6 +5,7 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { html } from '@/utilities/Html';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Path, $TypeOfPath, Path as path } from '@/reference/Path';
+import { $Document, $TypeOfDocument } from './Document';
 import { $TypeOfReference } from '@/reference/Reference';
 
 export interface $Chapter$ extends $Composition$ {
@@ -13,6 +14,13 @@ export interface $Chapter$ extends $Composition$ {
 
 export class $Chapter extends $Composition implements $Chapter$ {
     $title = '';
+
+    override get classes(): string[] {
+        const meant = this.book.searchFor<$Document>($TypeOfDocument)
+            .find(document => html.text(document.title()?._block).trim() === this.$title.trim());
+
+        return [...super.classes, ...(meant?.classes ?? [])];
+    }
 
     $Chapter(block: $Block) {
         const Path = $(path);

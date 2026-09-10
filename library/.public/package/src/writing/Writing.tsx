@@ -45,6 +45,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     apart: string[] = [];
     inline = true;
     @inert() mention?: $Catalogue;
+    @inert() book!: $Writing;
     _block!: $Block;
 
     get theme(): $Theme { return reflection.theme(this); }
@@ -59,10 +60,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get type(): $Type[] { return reflection.types(this); }
     reading(): $Block { return reflection.content(this); }
-    get book(): $Writing {
-        const holding = this.parent;
-        return reflection.writing(holding) && holding !== this ? holding.book : this;
-    }
+
 
     get kind(): $Type {
         const carried = this.type;
@@ -74,6 +72,8 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
+        const holding = this.parent;
+        this.book = reflection.writing(holding) && holding !== this ? holding.book : this;
     }
 
     // A LINK NOBODY CAN REACH IS A LINK NOBODY CAN CHANGE. Measured 2026-09-08: 33 anchors on
