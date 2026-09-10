@@ -80,7 +80,7 @@ export class $Theme extends $Sheet {
     @select('@media (max-width: 1119px)') narrow_gridTemplateColumns = '1fr';
     narrow_padding = '1.5em';
     @select('@media (max-width: 1119px) {\n             .pd-book > nav {') narrowSide_display = 'none';
-    @select('@media (max-width: 1119px) {\n             .pd-book > article, .pd-book > .pd-index, .pd-book > footer {') narrowText_gridColumn = '1';
+    @select('@media (max-width: 1119px) {\n             .pd-book > .pd-synopsis, .pd-book > article, .pd-book > .pd-index, .pd-book > footer {') narrowText_gridColumn = '1';
 
     @select('.pd-book > header') cover_marginBottom = '1em';
     @select('header .pd-title h2') title_fontSize = '1.8em';
