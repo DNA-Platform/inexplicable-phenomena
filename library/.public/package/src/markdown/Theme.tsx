@@ -88,15 +88,15 @@ export class $Theme extends $Sheet {
 
     // NUMBERS ARE THE ONE STRUCTURAL THING A RENDERED DOCUMENT DROPS — a README does not say
     // "1.2.1" — and dropping them is four empty strings rather than undoing the counters.
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') override numbered_content = "''";
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') override deepNumbered_content = "''";
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') override deepestNumbered_content = "''";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') override numbered_content = "''";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') override deepNumbered_content = "''";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') override deepestNumbered_content = "''";
     @select('.pd-table-of-contents .pd-item > a::before') override listedNumber_content = "''";
     override listedNumber_minWidth = '0';
 
     // PROSE IS RAGGED RIGHT. Justification without TeX's paragraph optimiser is worse than not
     // justifying, and a rendered document has never pretended otherwise.
-    @select('p.pd-paragraph, .pd-item') override justified_textAlign = 'left';
+    @select('.pd-paragraph:not(.pd-heading), .pd-item') override justified_textAlign = 'left';
     override justified_hyphens = 'manual';
 
     // THE ABSTRACT IS NOT A QUOTATION HERE; it is the opening of the document.
@@ -107,7 +107,7 @@ export class $Theme extends $Sheet {
     override abstracted_textAlign = 'left';
     override abstracted_marginBottom = '.75em';
 
-    @select('p.pd-paragraph') prose_marginTop = '1.25em';
+    @select('.pd-paragraph:not(.pd-heading)') prose_marginTop = '1.25em';
     @select('.pd-list') list_marginTop = '1.25em';
     list_marginBottom = '1.25em';
     list_paddingInlineStart = '1.625em';

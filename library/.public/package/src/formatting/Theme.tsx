@@ -249,7 +249,7 @@ export class $Theme extends $Format implements $Theme$ {
     //   li + li, table th/td, img, code — PARTS of a kind's own element, which is legitimate.
     //   h1, h3, h1..h6, pre, hr — no kind writes these. They arrive from markdown inside copy, and
     //                 that is the gap $Code and a heading level beyond h2 would close.
-    @select('p.pd-paragraph') p_marginTop = '0';
+    @select('.pd-paragraph:not(.pd-heading)') p_marginTop = '0';
     get p_marginBottom() { return this.between; }
     get p_textIndent() { return this.indent; }
     @select('.pd-list') list_marginTop = '0';

@@ -135,14 +135,14 @@ export class $Theme extends $Sheet {
     // what article.cls does and what a README does not, so the markdown reading simply has none.
     // The counters ride the SECTION NESTING, which is the same tree the contents walks.
     @select('.pd-book') counted_counterReset = 'depth1';
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section') one_counterIncrement = 'depth1';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section') one_counterIncrement = 'depth1';
     one_counterReset = 'depth2';
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section') two_counterIncrement = 'depth2';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section') two_counterIncrement = 'depth2';
     two_counterReset = 'depth3';
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section') three_counterIncrement = 'depth3';
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') numbered_content = "counter(depth1) '\\00a0\\00a0'";
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
-    @select('article.pd-document:not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section') three_counterIncrement = 'depth3';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') numbered_content = "counter(depth1) '\\00a0\\00a0'";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
 
     // AND THE CONTENTS CARRIES THE SAME NUMBERS, said the same way. counters() — the plural — walks
     // every level of a nested list and joins them, so one rule gives 1, then 1.1, then 1.2.1, from
@@ -178,7 +178,7 @@ export class $Theme extends $Sheet {
 
     // A PAPER IS SET JUSTIFIED AND HYPHENATED, which is the difference nobody names when they say a
     // page looks typeset.
-    @select('p.pd-paragraph, .pd-item') justified_textAlign = 'justify';
+    @select('.pd-paragraph:not(.pd-heading), .pd-item') justified_textAlign = 'justify';
     justified_hyphens = 'auto';
     justified_textRendering = 'optimizeLegibility';
 
@@ -196,7 +196,7 @@ export class $Theme extends $Sheet {
     abstracted_marginTop = '0';
     abstracted_marginBottom = '6pt';
 
-    @select('.pd-heading + p.pd-paragraph') opening_textIndent = '0';
+    @select('.pd-heading + .pd-paragraph') opening_textIndent = '0';
 
     // A CITATION IS SET AS [n], which is what a cite draws.
     // THE BRACKETS ARE WRITTEN AS ESCAPES. As literal '[' and ']' the rule never reached the
