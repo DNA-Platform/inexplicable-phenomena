@@ -13,7 +13,7 @@ const cover = () => (
     </Cover>
 );
 
-describe('a book carries its cover, its synopsis, its table of contents and its index, and each stands in its place', () => {
+describe('a book reaches its cover, its synopsis, its table of contents and its chapters, in whatever order they stand', () => {
     const book = () => built<$Book>(
         <Book>
             {cover()}
@@ -28,46 +28,12 @@ describe('a book carries its cover, its synopsis, its table of contents and its 
         expect(held.cover).toBeDefined();
         expect(held.synopsis).toBeDefined();
         expect(held.table).toBeDefined();
-        expect(held.index).toBeDefined();
-    });
-
-    it('AND THE BOOK MAKES ITS OWN INDEX, AT ITS BINDING', () => {
-        expect(book().index).toBeDefined();
     });
 
     it('a book in that order specifies clean', () => {
         expect(() => book().specify()).not.toThrow();
     });
 
-    it('AND A BOOK THAT OPENS WITH SOMETHING ELSE IS REFUSED', () => {
-        const held = built<$Book>(
-            <Book>
-                <Document>One.</Document>
-                {cover()}
-            </Book>);
-        expect(() => held.specify()).toThrow(/opens with its cover/);
-    });
-
-    it('AND A SYNOPSIS THAT DOES NOT STAND SECOND IS REFUSED', () => {
-        const held = built<$Book>(
-            <Book>
-                {cover()}
-                <Document>One.</Document>
-                <Synopsis>A book about chemistry.</Synopsis>
-            </Book>);
-        expect(() => held.specify()).toThrow(/synopsis second/);
-    });
-
-    it('AND A TABLE OF CONTENTS THAT DOES NOT STAND THIRD IS REFUSED', () => {
-        const held = built<$Book>(
-            <Book>
-                {cover()}
-                <Synopsis>A book about chemistry.</Synopsis>
-                <Document>One.</Document>
-                <TableOfContents>One.</TableOfContents>
-            </Book>);
-        expect(() => held.specify()).toThrow(/table of contents third/);
-    });
 });
 
 describe('a title is a section that means the book', () => {
@@ -82,7 +48,7 @@ describe('a title is a section that means the book', () => {
     });
 });
 
-describe('a book draws itself in four regions, and its contents point at its documents', () => {
+describe('a book draws what it holds, under one sheet', () => {
     const drawn = (book: $Book) => {
         const Drawn = $(book);
         return render(<Drawn />).container;
@@ -104,27 +70,14 @@ describe('a book draws itself in four regions, and its contents point at its doc
         </Synopsis>
     );
 
-    it('a book with no table of contents makes one from its documents, and each entry reaches a heading', () => {
-        const host = drawn(built<$Book>(<Book>{cover()}{documented('First things')}{documented('Second things')}</Book>));
-        const links = [...host.querySelectorAll('a')].map(anchor => anchor.getAttribute('href'));
-        const ids = [...host.querySelectorAll('h2')].map(heading => heading.id);
-        expect(links).toContain('#First_things');
-        expect(links).toContain('#Second_things');
-        expect(ids).toContain('First_things');
-        expect(ids).toContain('Second_things');
-    });
-
-    it('and the book draws FLAT under the sheet: the cover first, the contents before the documents, the index after them, and the FOOTER last — an index is not assumed to be at the end', () => {
-        const held = built<$Book>(<Book>{cover()}{documented('First things')}</Book>);
-        if (held.index instanceof $Composition) held.index.$print = true;
+    it('and the book draws FLAT under the sheet, its parts in the order they were written', () => {
+        const held = built<$Book>(<Book>{cover()}{synopsis(true)}<TableOfContents>One.</TableOfContents>{documented('First things')}</Book>);
         const host = drawn(held);
         const children = [...host.querySelectorAll('main > .pd-book > *')];
-        const at = (selector: string) => children.findIndex(child => child.matches(selector));
         expect(children[0].matches('header.pd-cover')).toBe(true);
-        expect(children[children.length - 1].matches('footer.pd-footer')).toBe(true);
-        expect(at('nav.pd-table-of-contents')).toBeLessThan(at('article'));
-        expect(at('article')).toBeLessThan(at('section.pd-index'));
-        expect(at('section.pd-index')).toBeLessThan(at('footer'));
+        expect(children[1].matches('.pd-synopsis')).toBe(true);
+        expect(children[2].matches('nav.pd-table-of-contents')).toBe(true);
+        expect(children[3].matches('article.pd-document')).toBe(true);
     });
 
     it('a title written as copy makes its own heading', () => {

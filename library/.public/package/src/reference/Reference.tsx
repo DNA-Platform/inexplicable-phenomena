@@ -60,6 +60,10 @@ export class $Reference extends $Annotation implements $Reference$ {
         this.persist = false;
     }
 
+    static $register(): void {
+        reflection.knows({ reference: $Reference });
+    }
+
     async read(): Promise<$Writing> {
         const referent = (this._block.$elements ?? [])
             .find((part): part is $Writing => reflection.writing(part) && !(part instanceof $Annotation));

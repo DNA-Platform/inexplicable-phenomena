@@ -6,12 +6,13 @@ import { html } from '@/utilities/Html';
 import type { $Annotation$, $Annotation } from './Annotation';
 import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
-import { $Reference$ } from '@/reference/Reference';
+import type { $Reference$ } from '@/reference/Reference';
+import type { $Fold$ } from '@/reference/Fold';
 import type { $Theme } from '@/formatting/Theme';
 
 export interface $Writing$ extends $Chemical {
     $className?: string;
-    fold: { key(): string } | undefined;
+    fold: $Fold$ | undefined;
     book: $Writing$;
     theme: $Theme;
     mention?: $Catalogue$;
@@ -22,8 +23,6 @@ export interface $Writing$ extends $Chemical {
     reading(): $Block;
     classes: string[];
     print(content: ReactNode): ReactNode;
-    searchFor<T extends $Writing>(type: new() => $Type): T[];
-    searchForOne<T extends $Writing>(type: new() => $Type): T | undefined;
     specify(): void;
 }
 
@@ -48,10 +47,10 @@ export class $Writing extends $Chemical implements $Writing$ {
     _block!: $Block;
 
     get theme(): $Theme { return reflection.theme(this); }
-    get classes(): string[] { return reflection.classNames(this); }
-    get className(): string { return [...this.classes, this.$className ?? ''].join(' ').trim(); }
+    get classes(): string[] { return [...reflection.classNames(this), ...(this.$className ?? '').split(/\s+/u)].filter(name => name !== ''); }
+    get className(): string { return this.classes.join(' '); }
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
-    get fold(): { key(): string } | undefined { return reflection.folded(this) as unknown as { key(): string } | undefined; }
+    get fold(): $Fold$ | undefined { return reflection.folded(this); }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get type(): $Type[] { return reflection.types(this); }
     reading(): $Block { return reflection.content(this); }
@@ -62,7 +61,7 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     get kind(): $Type {
         const carried = this.type;
-        const standing = carried.filter(kind => reflection.composition(kind));
+        const standing = carried.filter(kind => reflection.level(kind));
         const chosen = standing.filter(kind => !standing.some(other => other !== kind && reflection.specialises(other, kind)));
         $check(chosen.length <= 1, `writing is one kind of writing, and this one is ${chosen.length}`);
         return chosen[0] ?? carried[0];
@@ -173,7 +172,7 @@ export class WritingSpecification extends Specification<$Writing> {
     // judged on what is written into it, which is all it has.
     protected composed(writing: $Writing): $Writing[] {
         return (writing._block.$elements ?? []).filter((part): part is $Writing =>
-            reflection.writing(part) && reflection.composition(part.kind));
+            reflection.composition(part));
     }
 
     protected beside(writing: $Writing): $Written[] {

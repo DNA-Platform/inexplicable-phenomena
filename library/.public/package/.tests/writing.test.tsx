@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
-import { $Writing, Writing, $Type, $Format, Format, $Theme, Reference, TypeOfLetter, $TypeOfLetter, TypeOfWord, TypeOfSentence, TypeOfParagraph, $TypeOfParagraph, Paragraph, TypeOfSection, $TypeOfSection, TypeOfHeading, $TypeOfHeading, Heading, List, Table, Path, TypeOfDocument, $TypeOfDocument, documented as Document, Document as Written, $TypeOf$Document, TypeOfBook, $TypeOfBook, reflection, parser, Section, $Composition, html } from '@dna-platform/public';
+import { $Writing, Writing, $Type, $Format, Format, $Theme, Reference, TypeOfLetter, $TypeOfLetter, TypeOfWord, TypeOfSentence, TypeOfParagraph, $TypeOfParagraph, Paragraph, TypeOfSection, $TypeOfSection, TypeOfHeading, $TypeOfHeading, Heading, List, Table, Path, TypeOfDocument, $TypeOfDocument, documented as Document, Document as Written, $TypeOf$Document, TypeOfBook, $TypeOfBook, TypeOfChapter, $TypeOfChapter, reflection, parser, Section, $Composition, html } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -28,26 +28,23 @@ describe('the seven stand in order, and a type knows what it composes', () => {
         expect(parser.sentences(['e.g. this']).length).toBe(2);
     });
 
-    it('each names the one beneath it, and the letter names none', () => {
+    it('each names the one beneath it, and both hierarchies end in a kind that names none', () => {
         const beneath = (Kind: React.ComponentType) => (built<$Type>(<Kind />)).below();
-        expect(beneath(TypeOfBook)).toBe($TypeOfDocument);
+        expect(beneath(TypeOfBook)).toBe($TypeOfChapter);
+        expect(beneath(TypeOfDocument)).toBe($TypeOfSection);
         expect(beneath(TypeOfLetter)).toBeUndefined();
+        expect(beneath(TypeOfChapter)).toBeUndefined();
     });
 
-    // A BOOK IS A KIND OF DOCUMENT NOW, and this promise is where that shows. It used to assert an
-    // ASYMMETRY — a document beneath a book, a book not beneath a document — and half of it was
-    // never about levels at all: beneath() answers `held instanceof kind`, which is SUBTYPE, and a
-    // book being a kind of document makes a book answer as a document. The level question and the
-    // kind question are the same call, and this is the line where they part company.
-    it('a documented is beneath a book, and a book answers as a documented because it IS one', () => {
+    it('A CHAPTER IS BENEATH A BOOK, AND A DOCUMENT IS NOT — a book composes one level', () => {
         const book = built<$Type>(<TypeOfBook />);
-        const documented = built<$Type>(<TypeOfDocument />);
-        expect(reflection.beneath(book, documented)).toBe(true);
-        expect(reflection.beneath(documented, book)).toBe(true);
+        expect(reflection.beneath(book, built<$Type>(<TypeOfChapter />))).toBe(true);
+        expect(reflection.beneath(book, built<$Type>(<TypeOfDocument />))).toBe(false);
     });
 
-    it('AND IT REACHES ALL THE WAY DOWN — a letter is beneath a book', () => {
-        expect(reflection.beneath(built<$Type>(<TypeOfBook />), built<$Type>(<TypeOfLetter />))).toBe(true);
+    it('AND A DOCUMENT REACHES A LETTER WITHOUT EVER REACHING A CHAPTER', () => {
+        expect(reflection.beneath(built<$Type>(<TypeOfDocument />), built<$Type>(<TypeOfLetter />))).toBe(true);
+        expect(reflection.beneath(built<$Type>(<TypeOfBook />), built<$Type>(<TypeOfLetter />))).toBe(false);
     });
 
     it('and a kind is at or below itself', () => {

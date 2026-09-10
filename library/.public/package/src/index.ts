@@ -32,6 +32,7 @@ export * from './formatting/Format';
 export * from './formatting/TableFormat';
 
 export * from './reference/Reference';
+export * from './reference/Fold';
 export * from './reference/Path';
 export * from './reference/IndexCard';
 export * from './reference/ReferenceCard';
@@ -64,8 +65,16 @@ export * from './library/PageFold';
 // a kind cannot be added and silently left unwired. Do not edit it by hand.
 // <registrations>
 import { $Theme } from './formatting/Theme';
+import { $Book } from './library/Book';
+import { $Fold } from './reference/Fold';
+import { $Reference } from './reference/Reference';
+import { $Composition } from './writing/Composition';
 import { $Type } from './writing/Type';
 
 $Theme.$register();
+$Book.$register();
+$Fold.$register();
+$Reference.$register();
+$Composition.$register();
 $Type.$register();
 // </registrations>

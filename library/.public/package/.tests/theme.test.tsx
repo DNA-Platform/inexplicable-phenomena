@@ -2,11 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { $, look, styled } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
-    $Book, $Writing, $Theme, $Format, $TypeOfTheme, $TypeOfSection, $TypeOfParagraph,
+    $Book, $Writing, $Theme, $Format, $TypeOfTheme, $TypeOfSection, $TypeOfParagraph, $TypeOfDocument,
     Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph, Theme,
 } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+
+const documents = (book: $Book) => book.searchFor<$Writing>($TypeOfDocument).slice(2);
 
 const cover = () => <Cover><Title>Alan Turing<Reference>https://en.wikipedia.org/wiki/Alan_Turing</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>;
 const synopsis = () => <Synopsis>A life.</Synopsis>;
@@ -32,7 +34,7 @@ $(Mine, Theme)(Portal);
 describe('a writing has a theme the way it has a meaning — read, never stored', () => {
     it('A BOOK PLACES ONE THEME, AND EVERYTHING IN IT READS THAT ONE', () => {
         const book = built<$Book>(<Book>{cover()}{synopsis()}{life()}</Book>);
-        const documented = book.documents[0];
+        const documented = documents(book)[0];
         const paragraph = documented.searchFor<$Writing>($TypeOfSection)[0].searchFor<$Writing>($TypeOfParagraph)[0];
 
         expect(book.searchFor($TypeOfTheme).length).toBe(1);
@@ -48,7 +50,7 @@ describe('a writing has a theme the way it has a meaning — read, never stored'
                 {life()}
                 <Document><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>
             </Book>);
-        const [first, second] = book.documents;
+        const [first, second] = documents(book);
 
         expect(second.theme).toBeInstanceOf($Dark);
         expect(second.theme).not.toBe(book.theme);
@@ -68,7 +70,7 @@ describe('a writing has a theme the way it has a meaning — read, never stored'
         const book = built<$Book>(<Mine>{cover()}{synopsis()}{life()}{work()}</Mine>);
 
         expect(book.theme).toBeInstanceOf($Portal);
-        expect(book.documents[1].theme.size).toBe('14px');
+        expect(documents(book)[1].theme.size).toBe('14px');
         expect(book.searchFor($TypeOfTheme).length).toBe(1);
     });
 

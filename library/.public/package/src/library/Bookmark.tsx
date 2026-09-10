@@ -1,14 +1,14 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
+import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Reference$, $Reference, $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
+import { $Fold$, $Fold, $TypeOfFold, FoldSpecification } from '@/reference/Fold';
 import { $Document } from './Document';
 
-export interface $Bookmark$ extends $Reference$ {
+export interface $Bookmark$ extends $Fold$ {
     document(): $Document | undefined;
 }
 
-export class $Bookmark extends $Reference implements $Bookmark$ {
+export class $Bookmark extends $Fold implements $Bookmark$ {
     document(): $Document | undefined {
         for (let holding = this.parent; holding instanceof $Writing; holding = holding.parent) {
             if (holding instanceof $Document) return holding;
@@ -18,17 +18,11 @@ export class $Bookmark extends $Reference implements $Bookmark$ {
     }
 
     $Bookmark(block: $Block) {
-        super.$Reference((block ?? new $Block()).concat($check(TypeOfBookmark, '!')));
-    }
-
-    override async read(): Promise<$Writing> {
-        const document = this.document();
-        if (document) return document;
-        return super.read();
+        super.$Fold((block ?? new $Block()).concat($check(TypeOfBookmark, '!')));
     }
 }
 
-export class $TypeOfBookmark extends $TypeOfReference {
+export class $TypeOfBookmark extends $TypeOfFold {
     override name = 'Bookmark';
     protected override specification: Specification<$Writing> = new BookmarkSpecification();
 
@@ -38,14 +32,7 @@ export class $TypeOfBookmark extends $TypeOfReference {
     }
 }
 
-export class BookmarkSpecification extends ReferenceSpecification {
-    @specify('a bookmark stands in a document, or carries a path')
-    override $carriesPath(writing: $Writing): boolean | void {
-        if (writing instanceof $Bookmark && writing.document() !== undefined) return false;
-        return super.$carriesPath(writing);
-    }
-
-}
+export class BookmarkSpecification extends FoldSpecification { }
 
 export const Bookmark = $($Bookmark);
 export const TypeOfBookmark = $($TypeOfBookmark);

@@ -20,7 +20,7 @@ export class $Table extends $Section implements $Table$ {
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
     cells(): $Writing[] {
-        return this.searchFor($Type).filter(part => reflection.composition(part.kind) && part !== this.heading());
+        return this.searchFor($Type).filter(part => reflection.composition(part) && part !== this.heading());
     }
 
     override print(content: ReactNode): ReactNode {

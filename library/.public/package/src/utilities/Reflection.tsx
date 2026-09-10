@@ -4,6 +4,9 @@ import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
 import type { $Type } from '@/writing/Type';
 import type { $Theme } from '@/formatting/Theme';
+import type { $Composition } from '@/writing/Composition';
+import type { $Reference } from '@/reference/Reference';
+import type { $Fold } from '@/reference/Fold';
 
 export class Reflection {
     private templates = new WeakMap<new() => $Writing, $Writing>();
@@ -21,13 +24,15 @@ export class Reflection {
         annotation: new () => $Annotation;
         type: new () => $Type;
         theme: new () => $Theme;
+        composition: new () => $Composition;
+        hierarchies: (new () => $Type)[];
+        reference: new () => $Reference;
+        fold: new () => $Fold;
     };
 
     knows(kinds: Partial<Reflection['kinds']>): void {
         this.kinds = { ...this.kinds, ...kinds };
     }
-
-    protected compositions = ['Book', 'Document', 'Section', 'Paragraph', 'Sentence', 'Word', 'Letter'];
 
     is(writing: $Writing, asked: new() => $Type): boolean {
         return this.types(writing).some(type => type instanceof asked);
@@ -45,8 +50,12 @@ export class Reflection {
         return type instanceof (of.constructor as new() => $Type);
     }
 
-    composition(type: $Type | undefined): boolean {
-        return type !== undefined && this.names(type).some(name => this.compositions.includes(name));
+    composition(part: unknown): part is $Composition {
+        return part instanceof this.kinds.composition;
+    }
+
+    level(type: $Type | undefined): boolean {
+        return type !== undefined && this.kinds.hierarchies.some(top => this.beneath(this.template(top), type));
     }
 
     // WHAT A WRITING DRAWS IS ITS BLOCK WITHOUT ITS ANNOTATIONS — present in the writing, absent from the reading — memoised on the block, which a bond replaces whole.
@@ -82,23 +91,14 @@ export class Reflection {
         return (writing._block?.$elements ?? []).filter((part): part is $Type => part instanceof this.kinds.type);
     }
 
-    // A FOLD IS NOT A MEANING. It is typed Reference — it extends one — so without this line a
-    // writing that merely marks a place was drawn as a link to itself.
-    meaning(writing: $Writing): $Annotation | undefined {
-        return (writing._block?.$elements ?? []).find((part): part is $Annotation =>
-            part instanceof this.kinds.annotation && !this.named(part, 'PageFold')
-            && this.types(part).some(type => this.names(type).includes('Reference')));
+    // WHAT A WRITING POINTS AT, and its mirror: what points at IT. One reads as a reference and
+    // the other as a fold, and neither has to be spelled — a fold is not a kind of reference.
+    meaning(writing: $Writing): $Reference | undefined {
+        return (writing._block?.$elements ?? []).find((part): part is $Reference => part instanceof this.kinds.reference);
     }
 
-    // THE PLACE A WRITING DENOTES, if it denotes one. The mirror of meaning(): one answers what a
-    // writing points AT, this answers what points at IT.
-    folded(writing: $Writing): $Annotation | undefined {
-        return (writing._block?.$elements ?? []).find((part): part is $Annotation =>
-            part instanceof this.kinds.annotation && this.named(part, 'PageFold'));
-    }
-
-    protected named(part: $Writing, name: string): boolean {
-        return this.types(part).some(type => this.names(type).includes(name));
+    folded(writing: $Writing): $Fold | undefined {
+        return (writing._block?.$elements ?? []).find((part): part is $Fold => part instanceof this.kinds.fold);
     }
 
     beneath(holding: $Type | undefined, held: $Type | undefined): boolean {

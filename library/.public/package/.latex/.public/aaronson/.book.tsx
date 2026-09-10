@@ -19,7 +19,7 @@ export default class $Aaronson extends $Book {
         this._block = this._block.filter(part => !(part instanceof $Theme)).concat($check(Theme, '!'));
     }
 
-    override masthead(): ReactNode {
+    override header(): ReactNode {
         return <Header>
             P versus NP
             <Switch>

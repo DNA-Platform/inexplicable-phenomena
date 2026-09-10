@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
-    $Book, $Cover, $Document, $Writing, $Section, $TypeOfSection,
+    $Book, $Cover, $Document, $Writing, $Section, $TypeOfSection, $TypeOfDocument,
     Book, Cover, Document, Synopsis, Title, Author, Subject, Reference,
     Section, Heading, Paragraph,
 } from '@dna-platform/public';
@@ -51,17 +51,18 @@ describe('a documented written as a subclass, with nothing at the call site', ()
 
     it('AND THE BOOK REACHES ITS SECTIONS — the stuff the contents are made of', () => {
         const book = made();
-        const documented = book.documents.find(one => one instanceof $EarlyLife);
+        const documented = book.searchFor<$Document>($TypeOfDocument).find(one => one instanceof $EarlyLife);
 
         expect(documented).toBeDefined();
         expect(documented!.searchFor<$Section>($TypeOfSection).length).toBe(1);
     });
 
-    it('AND THE TABLE OF CONTENTS CATALOGUES IT', () => {
-        const container = drawn(made());
+    it('AND THE BOOK REACHES ITS COVER BY TYPE, WHATEVER ORDER IT STANDS IN', () => {
+        const book = made();
 
-        expect(container.textContent).toContain('Early life');
-        expect(container.querySelectorAll('.pd-table-of-contents a').length).toBeGreaterThan(0);
+        expect(book.cover).toBeInstanceOf($Masthead);
+        expect(book.synopsis).toBeDefined();
+        expect(book.table).toBeUndefined();
     });
 
     it('AND IT DRAWS WHAT THE CLASS WROTE', () => {
@@ -92,7 +93,7 @@ describe('the same documented written in view() instead', () => {
                 <Synopsis>A life.</Synopsis>
                 <WrittenDocument />
             </Book>);
-        const documented = book.documents.find(one => one instanceof $Written);
+        const documented = book.searchFor<$Document>($TypeOfDocument).find(one => one instanceof $Written);
         const container = drawn(book);
 
         expect(documented!.searchFor<$Section>($TypeOfSection).length).toBe(0);

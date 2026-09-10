@@ -10,6 +10,9 @@ const path = require('path');
 // vite's dev module runner in charge of an evaluation order the ES module spec
 // fixes, which is why a kind could not live in its own file until this changed.
 
+// ONE ENVIRONMENT, ONE THREAD, REUSED. Measured 2026-09-10: a run reported `environment 15.89s`
+// and `transform 3.39s` against `Duration 3.6s` — the promises were the cheap part and the cost was
+// standing up happy-dom and re-transforming chemistry once per FILE. Ten files, ten environments.
 const shared = {
     globals: true,
     environment: 'happy-dom',

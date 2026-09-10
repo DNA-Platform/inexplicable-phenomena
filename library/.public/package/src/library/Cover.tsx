@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
 import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from './Document';
 import { $Title, $TypeOfTitle } from './Title';
 import { $Author, $TypeOfAuthor } from './Author';

@@ -78,6 +78,10 @@ export class $Composition extends $Writing implements $Composition$ {
         return $<$Composition>(<Made />, ...this.parts(), ...more.flatMap(part => part.parts()));
     }
 
+    static $register(): void {
+        reflection.knows({ composition: $Composition });
+    }
+
     protected reduce(tokens: (string | $Writing)[]): $Writing[] {
         const beneath = this.kind?.below();
         return beneath === undefined ? [] : reflection.template(beneath).makes(tokens);
