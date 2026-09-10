@@ -105,10 +105,10 @@ export class $Theme extends $Sheet {
     // rather than bold, with the author large.
     @select('.pd-title .pd-heading') title_fontSize = '17.28pt';
     title_fontWeight = '400';
-    title_marginBottom = '0';
+    title_marginBottom = '15px';
     @select('.pd-author .pd-heading') author_fontSize = '12pt';
     @select('.pd-subject .pd-heading') subject_fontSize = '10pt';
-    @select('.pd-cover') cover_marginTop = '1.5rem';
+    @select('.pd-cover') cover_marginTop = '37px';
     cover_marginBottom = '1.5rem';
 
     // A section is Large bold with 3.5ex above and 2.3ex below; a subsection is large with 3.25ex
@@ -159,7 +159,17 @@ export class $Theme extends $Sheet {
 
     // A TOP-LEVEL ENTRY IS BOLD, name and marker alike, which is what article.cls does.
     @select('.pd-table-of-contents > .pd-chapter > a, .pd-table-of-contents > .pd-chapter::before') top_fontWeight = '800';
-    @select('.pd-table-of-contents > .pd-chapter') group_marginTop = '.5em';
+    // A CONTENTS ROW IS 18px WHATEVER THE BODY'S LEADING IS, because the page sets it that way
+    // and a row is one line by construction.
+    @select('.pd-table-of-contents .pd-chapter') paced_lineHeight = '18px';
+    override entry_marginBottom = '0';
+    @select('.pd-table-of-contents > .pd-chapter + .pd-chapter') group_marginTop = '18px';
+
+    // EACH LEVEL HAS ITS OWN NUMBER COLUMN AND ITS OWN STEP, which is what makes a `1` and a
+    // `1.2.1` both sit right. Read off the paper's text layer: numbers at 96, 118, 151 and
+    // titles at 118, 151, 198, so the columns are 22, 33 and 47 and the steps are 22 then 33.
+    override under_paddingLeft = '22px';
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter') deepUnder_paddingLeft = '33px';
 
     @select('.pd-table-of-contents') counting_counterReset = 'listed1 listed2 listed3';
     @select('.pd-table-of-contents > .pd-chapter') tallied_counterIncrement = 'listed1';
@@ -171,12 +181,12 @@ export class $Theme extends $Sheet {
     @select('.pd-table-of-contents > .pd-chapter::before') listedNumber_content = "counter(listed1)";
     @select('.pd-table-of-contents > .pd-chapter > .pd-chapter::before') deepNumber_content = "counter(listed1) '.' counter(listed2)";
     deepNumber_flex = '0 0 auto';
-    deepNumber_minWidth = '2.6em';
+    deepNumber_minWidth = '33px';
     @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter::before') deepestNumber_content = "counter(listed1) '.' counter(listed2) '.' counter(listed3)";
     deepestNumber_flex = '0 0 auto';
-    deepestNumber_minWidth = '3.4em';
+    deepestNumber_minWidth = '47px';
     listedNumber_flex = '0 0 auto';
-    listedNumber_minWidth = '2.6em';
+    listedNumber_minWidth = '22px';
     @select('.pd-table-of-contents .pd-chapter.pd-references::before, .pd-table-of-contents .pd-chapter.pd-appendix::before') apartNumber_content = "''";
 
     // A FIGURE IS NUMBERED, and by the sheet, exactly as a section is — so a reading that does not
@@ -189,7 +199,7 @@ export class $Theme extends $Sheet {
 
     // A PAPER IS SET JUSTIFIED AND HYPHENATED, which is the difference nobody names when they say a
     // page looks typeset.
-    @select('.pd-paragraph:not(.pd-heading), .pd-item') justified_textAlign = 'justify';
+    @select('.pd-paragraph:not(.pd-heading)') justified_textAlign = 'justify';
     justified_hyphens = 'auto';
     justified_textRendering = 'optimizeLegibility';
 
@@ -198,7 +208,9 @@ export class $Theme extends $Sheet {
     // .pd-abstract RATHER THAN .pd-synopsis, which is the point of there being an $Abstract: a
     // paper's abstract is set as a quotation and a book's synopsis is not, and until now one
     // selector had to serve both.
-    @select('.pd-abstract') abstract_margin = '0 30pt 1.5rem';
+    @select('.pd-abstract') abstract_margin = '54px 27pt 1.5rem';
+    @select('.pd-abstract .pd-paragraph:not(.pd-heading)') indented_textIndent = '20px';
+    indented_marginTop = '0';
     abstract_fontSize = '10pt';
     abstract_lineHeight = '1.2';
     @select('.pd-abstract .pd-math') summarised_fontSize = '.75em';
@@ -206,7 +218,7 @@ export class $Theme extends $Sheet {
     abstracted_fontWeight = '700';
     abstracted_textAlign = 'center';
     abstracted_marginTop = '0';
-    abstracted_marginBottom = '6pt';
+    abstracted_marginBottom = '5px';
 
     @select('.pd-heading + .pd-paragraph') opening_textIndent = '0';
 

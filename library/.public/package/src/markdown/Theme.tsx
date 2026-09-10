@@ -67,12 +67,18 @@ export class $Theme extends $Sheet {
     override title_marginBottom = '.25rem';
     @select('.pd-author .pd-heading') override author_fontSize = '1em';
     @select('.pd-cover') override cover_marginTop = '0';
+    @select('.pd-abstract .pd-paragraph:not(.pd-heading)') override indented_textIndent = '0';
+    override under_paddingLeft = '1.6em';
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter') override deepUnder_paddingLeft = '1.6em';
+    @select('.pd-table-of-contents .pd-chapter') override paced_lineHeight = 'normal';
     override cover_marginBottom = '2rem';
 
     // HEADINGS A LITTLE CLOSER TO LaTeX, EVEN LEFT-ALIGNED, which is what Doug asked for. The SCALE
     // keeps a paper's proportions — much flatter than a README's 1.5 / 1.25 / 1.1 — and only the
     // face, the alignment and the air change. LaTeX at 11pt runs 14.4 / 12 / 11, which is
     // 1.31 / 1.09 / 1 against the body; these sit just above it.
+    @select('h2.pd-heading') override h2_fontSize = '1.25em';
+    @select('h3.pd-heading') override h3_fontSize = '1em';
     @select('h2.pd-heading') override head_fontSize = '1.25em';
     override head_fontWeight = '700';
     override head_marginTop = '2em';
@@ -99,7 +105,7 @@ export class $Theme extends $Sheet {
 
     // PROSE IS RAGGED RIGHT. Justification without TeX's paragraph optimiser is worse than not
     // justifying, and a rendered document has never pretended otherwise.
-    @select('.pd-paragraph:not(.pd-heading), .pd-item') override justified_textAlign = 'left';
+    @select('.pd-paragraph:not(.pd-heading)') override justified_textAlign = 'left';
     override justified_hyphens = 'manual';
 
     // THE ABSTRACT IS NOT A QUOTATION HERE; it is the opening of the document.
@@ -114,7 +120,6 @@ export class $Theme extends $Sheet {
     @select('.pd-list') list_marginTop = '1.25em';
     list_marginBottom = '1.25em';
     list_paddingInlineStart = '1.625em';
-    @select('.pd-item') item_marginTop = '.5em';
     item_marginBottom = '.5em';
     @select('.pd-quote') quote_marginTop = '1.6em';
     quote_marginBottom = '1.6em';
