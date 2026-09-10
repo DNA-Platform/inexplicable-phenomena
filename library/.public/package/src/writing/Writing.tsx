@@ -42,7 +42,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     // a table drew <div class="sc-jSFhYz"> with no pd-table at all, because the format restyling
     // it in place passed an empty className over it.
     $className?: string;
-    protected apart: string[] = [];
+    apart: string[] = [];
     inline = true;
     @inert() mention?: $Catalogue;
     _block!: $Block;

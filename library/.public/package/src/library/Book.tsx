@@ -27,11 +27,11 @@ export class $Book extends $Composition implements $Book$ {
     get synopsis(): $Synopsis | undefined { return this.searchForOne<$Synopsis>($TypeOfSynopsis); }
     get table(): $TableOfContents | undefined { return this.searchForOne<$TableOfContents>($TypeOfTableOfContents); }
     get chapters(): $Chapter[] { return this.searchFor<$Chapter>($TypeOfChapter); }
-    override get classes(): string[] { return super.classes.filter(name => name !== 'pd-reference'); }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
         if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
+        this.removeClass('pd-reference');
     }
 
     header(): ReactNode { return undefined; }
