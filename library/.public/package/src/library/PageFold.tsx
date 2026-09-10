@@ -12,7 +12,6 @@ export class $PageFold extends $Fold implements $PageFold$ {
 }
 
 export class $TypeOfPageFold extends $TypeOfFold {
-    override name = 'PageFold';
     protected override specification: Specification<$Writing> = new PageFoldSpecification();
 
     override specifically(fold: $PageFold): void {

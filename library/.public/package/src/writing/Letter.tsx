@@ -37,7 +37,6 @@ export class $$Letter extends $Catalogue implements $$Letter$ {
 }
 
 export class $TypeOfLetter extends $Type {
-    override name = 'Letter';
     protected patterns = {
         alphabetical: /^\p{L}\p{M}*$/u,
         numeric: /^\p{N}\p{M}*$/u,
@@ -73,7 +72,6 @@ export class $TypeOfLetter extends $Type {
 }
 
 export class $TypeOf$Letter extends $Type {
-    override name = '$Letter';
     protected override specification: Specification<$Writing> = new $LetterSpecification();
 }
 

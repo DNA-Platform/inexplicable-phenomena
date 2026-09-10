@@ -18,7 +18,6 @@ export class $Footer extends $Document implements $Footer$ {
 }
 
 export class $TypeOfFooter extends $TypeOfDocument {
-    override name = 'Footer';
     protected override specification: Specification<$Writing> = new FooterSpecification();
 }
 

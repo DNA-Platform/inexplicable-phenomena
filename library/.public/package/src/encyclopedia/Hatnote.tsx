@@ -16,7 +16,6 @@ export class $Hatnote extends $Note implements $Hatnote$ {
 }
 
 export class $TypeOfHatnote extends $TypeOfNote {
-    override name = 'Hatnote';
     protected override specification: Specification<$Writing> = new HatnoteSpecification();
 }
 

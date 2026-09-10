@@ -25,7 +25,6 @@ export class $$Word extends $Catalogue implements $$Word$ {
 }
 
 export class $TypeOfWord extends $Type {
-    override name = 'Word';
     protected override specification: Specification<$Writing> = new WordSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
@@ -41,7 +40,6 @@ export class $TypeOfWord extends $Type {
 }
 
 export class $TypeOf$Word extends $Type {
-    override name = '$Word';
     protected override specification: Specification<$Writing> = new $WordSpecification();
 }
 

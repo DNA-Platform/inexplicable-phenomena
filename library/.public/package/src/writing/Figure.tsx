@@ -24,7 +24,6 @@ export class $Figure extends $Illustration implements $Figure$ {
 }
 
 export class $TypeOfFigure extends $TypeOfIllustration {
-    override name = 'Figure';
     protected override specification: Specification<$Writing> = new FigureSpecification();
 }
 

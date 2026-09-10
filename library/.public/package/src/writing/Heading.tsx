@@ -28,7 +28,6 @@ export class $Heading extends $Paragraph implements $Heading$ {
 }
 
 export class $TypeOfHeading extends $TypeOfParagraph {
-    override name = 'Heading';
     protected override specification: Specification<$Writing> = new HeadingSpecification();
 }
 

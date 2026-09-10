@@ -62,7 +62,6 @@ export class $$Book extends $Catalogue implements $$Book$ {
 }
 
 export class $TypeOfBook extends $TypeOfReference {
-    override name = 'Book';
     protected override specification: Specification<$Writing> = new BookSpecification();
 
     override below(): new() => $Type { return $TypeOfChapter; }
@@ -77,7 +76,6 @@ export class BookSpecification extends WritingSpecification {
 }
 
 export class $TypeOf$Book extends $Type {
-    override name = '$Book';
     protected override specification: Specification<$Writing> = new $BookSpecification();
 }
 

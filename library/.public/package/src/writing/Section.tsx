@@ -41,7 +41,6 @@ export class $$Section extends $Catalogue implements $$Section$ {
 }
 
 export class $TypeOfSection extends $Type {
-    override name = 'Section';
     protected override specification: Specification<$Writing> = new SectionSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
@@ -54,7 +53,6 @@ export class $TypeOfSection extends $Type {
 }
 
 export class $TypeOf$Section extends $Type {
-    override name = '$Section';
     protected override specification: Specification<$Writing> = new $SectionSpecification();
 }
 

@@ -20,7 +20,6 @@ export class $Index extends $Document implements $Index$ {
 }
 
 export class $TypeOfIndex extends $TypeOfDocument {
-    override name = 'Index';
     protected override specification: Specification<$Writing> = new IndexSpecification();
 }
 

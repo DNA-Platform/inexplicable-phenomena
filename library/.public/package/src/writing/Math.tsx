@@ -30,7 +30,6 @@ export class $Math extends $Phrase implements $Math$ {
 }
 
 export class $TypeOfMath extends $TypeOfPhrase {
-    override name = 'Math';
     protected override specification: Specification<$Writing> = new MathSpecification();
 }
 

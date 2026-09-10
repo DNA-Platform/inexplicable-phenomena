@@ -22,7 +22,6 @@ export class $Subject extends $Section implements $Subject$ {
 }
 
 export class $TypeOfSubject extends $TypeOfSection {
-    override name = 'Subject';
     protected override specification: Specification<$Writing> = new SubjectSpecification();
 }
 

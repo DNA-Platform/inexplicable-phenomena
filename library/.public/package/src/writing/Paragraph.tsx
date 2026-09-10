@@ -35,7 +35,6 @@ export class $$Paragraph extends $Catalogue implements $$Paragraph$ {
 }
 
 export class $TypeOfParagraph extends $Type {
-    override name = 'Paragraph';
     protected override specification: Specification<$Writing> = new ParagraphSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
@@ -51,7 +50,6 @@ export class $TypeOfParagraph extends $Type {
 }
 
 export class $TypeOf$Paragraph extends $Type {
-    override name = '$Paragraph';
     protected override specification: Specification<$Writing> = new $ParagraphSpecification();
 }
 

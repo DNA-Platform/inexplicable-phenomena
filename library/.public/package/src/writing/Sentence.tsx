@@ -29,7 +29,6 @@ export class $$Sentence extends $Catalogue implements $$Sentence$ {
 }
 
 export class $TypeOfSentence extends $Type {
-    override name = 'Sentence';
     protected override specification: Specification<$Writing> = new SentenceSpecification();
 
     override makes(tokens: (string | $Writing)[]): $Writing[] {
@@ -46,7 +45,6 @@ export class $TypeOfSentence extends $Type {
 }
 
 export class $TypeOf$Sentence extends $Type {
-    override name = '$Sentence';
     protected override specification: Specification<$Writing> = new $SentenceSpecification();
 }
 

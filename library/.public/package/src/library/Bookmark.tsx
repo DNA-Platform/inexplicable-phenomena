@@ -23,7 +23,6 @@ export class $Bookmark extends $Fold implements $Bookmark$ {
 }
 
 export class $TypeOfBookmark extends $TypeOfFold {
-    override name = 'Bookmark';
     protected override specification: Specification<$Writing> = new BookmarkSpecification();
 
     override specifically(bookmark: $Bookmark): void {

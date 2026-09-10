@@ -27,7 +27,6 @@ export class $Image extends $Paragraph implements $Image$ {
 }
 
 export class $TypeOfImage extends $TypeOfParagraph {
-    override name = 'Image';
     protected override specification: Specification<$Writing> = new ImageSpecification();
 }
 

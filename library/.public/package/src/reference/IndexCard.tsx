@@ -21,7 +21,6 @@ export class $IndexCard extends $Composition implements $IndexCard$ {
 }
 
 export class $TypeOfIndexCard extends $TypeOfSection {
-    override name = 'IndexCard';
     protected override specification: Specification<$Writing> = new IndexCardSpecification();
 }
 

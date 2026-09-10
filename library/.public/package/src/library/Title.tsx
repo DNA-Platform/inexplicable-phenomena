@@ -48,7 +48,6 @@ export class $Title extends $Section implements $Title$ {
 }
 
 export class $TypeOfTitle extends $TypeOfSection {
-    override name = 'Title';
     protected override specification: Specification<$Writing> = new TitleSpecification();
 }
 

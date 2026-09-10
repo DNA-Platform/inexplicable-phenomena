@@ -28,7 +28,6 @@ export class $TypeOfSummary extends $TypeOfSection {
     override supplies(writing: $Writing, parts: $Writing[]): $Writing[] {
         return parts;
     }
-    override name = 'Summary';
     protected override specification: Specification<$Writing> = new SummarySpecification();
 }
 

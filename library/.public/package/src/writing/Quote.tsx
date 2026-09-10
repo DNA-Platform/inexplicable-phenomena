@@ -32,7 +32,6 @@ export class $Quote extends $Section implements $Quote$ {
 }
 
 export class $TypeOfQuote extends $TypeOfSection {
-    override name = 'Quote';
     protected override specification: Specification<$Writing> = new QuoteSpecification();
 
     // A QUOTATION HAS NO HEADING, AND WAIVING THE RULE WAS NOT ENOUGH — seen on the paper: the quote

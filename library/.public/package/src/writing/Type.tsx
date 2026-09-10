@@ -8,7 +8,7 @@ import { reflection } from '@/utilities/Reflection';
 export interface $Type$ extends $Annotation$ { }
 
 export class $Type extends $Annotation implements $Type$ {
-    name = 'Type';
+    name: string = this.constructor.name.replace(/^_*\$?/u, '').replace(/\d+$/u, '').replace(/^TypeOf/u, '');
 
     $Type(block: $Block) {
         super.$Writing($check(block, $Block, '!'));

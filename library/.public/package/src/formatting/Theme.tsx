@@ -309,7 +309,6 @@ export class $Theme extends $Format implements $Theme$ {
 }
 
 export class $TypeOfTheme extends $TypeOfFormat {
-    override name = 'Theme';
     protected override specification: Specification<$Writing> = new ThemeSpecification();
 }
 

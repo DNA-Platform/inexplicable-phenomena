@@ -21,7 +21,6 @@ export class $Highlight extends $Fold implements $Highlight$ {
 }
 
 export class $TypeOfHighlight extends $TypeOfFold {
-    override name = 'Highlight';
     protected override specification: Specification<$Writing> = new HighlightSpecification();
 }
 

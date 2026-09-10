@@ -34,7 +34,6 @@ export class $TypeOfTheorem extends $TypeOfSection {
     override supplies(writing: $Writing, parts: $Writing[]): $Writing[] {
         return parts;
     }
-    override name = 'Theorem';
     protected override specification: Specification<$Writing> = new TheoremSpecification();
 }
 

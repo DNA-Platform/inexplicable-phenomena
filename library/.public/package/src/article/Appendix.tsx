@@ -20,7 +20,6 @@ export class $Appendix extends $Document implements $Appendix$ {
 }
 
 export class $TypeOfAppendix extends $TypeOfDocument {
-    override name = 'Appendix';
     protected override specification: Specification<$Writing> = new AppendixSpecification();
 }
 

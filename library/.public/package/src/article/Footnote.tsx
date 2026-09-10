@@ -28,7 +28,6 @@ export class $Footnote extends $Note implements $Footnote$ {
 }
 
 export class $TypeOfFootnote extends $TypeOfNote {
-    override name = 'Footnote';
     protected override specification: Specification<$Writing> = new FootnoteSpecification();
 }
 

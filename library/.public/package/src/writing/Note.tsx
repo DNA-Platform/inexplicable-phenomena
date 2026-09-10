@@ -46,7 +46,6 @@ export class $Note extends $Paragraph implements $Note$ {
 }
 
 export class $TypeOfNote extends $TypeOfParagraph {
-    override name = 'Note';
     protected override specification: Specification<$Writing> = new NoteSpecification();
 }
 

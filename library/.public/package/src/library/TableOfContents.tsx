@@ -20,7 +20,6 @@ export class $TableOfContents extends $Document implements $TableOfContents$ {
 }
 
 export class $TypeOfTableOfContents extends $TypeOfDocument {
-    override name = 'TableOfContents';
     protected override specification: Specification<$Writing> = new TableOfContentsSpecification();
 
     override below(): new() => $Type { return $TypeOfChapter; }

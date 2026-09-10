@@ -26,7 +26,6 @@ export class $Abstract extends $Synopsis implements $Abstract$ {
 }
 
 export class $TypeOfAbstract extends $TypeOfSynopsis {
-    override name = 'Abstract';
     protected override specification: Specification<$Writing> = new AbstractSpecification();
 }
 

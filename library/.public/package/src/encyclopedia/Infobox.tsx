@@ -25,7 +25,6 @@ export class $Infobox extends $Aside implements $Infobox$ {
 }
 
 export class $TypeOfInfobox extends $TypeOfAside {
-    override name = 'Infobox';
     protected override specification: Specification<$Writing> = new InfoboxSpecification();
 }
 
@@ -52,7 +51,6 @@ export class $Line extends $Paragraph implements $Line$ {
 }
 
 export class $TypeOfLine extends $TypeOfParagraph {
-    override name = 'Line';
     protected override specification: Specification<$Writing> = new LineSpecification();
 }
 

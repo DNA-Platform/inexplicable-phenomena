@@ -19,7 +19,6 @@ export class $CatalogueCard extends $IndexCard implements $CatalogueCard$ {
 }
 
 export class $TypeOfCatalogueCard extends $TypeOfIndexCard {
-    override name = 'CatalogueCard';
     protected override specification: Specification<$Writing> = new CatalogueCardSpecification();
 }
 

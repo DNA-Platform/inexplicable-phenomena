@@ -35,7 +35,6 @@ export class $Equation extends $Paragraph implements $Equation$ {
 }
 
 export class $TypeOfEquation extends $TypeOfParagraph {
-    override name = 'Equation';
     protected override specification: Specification<$Writing> = new EquationSpecification();
 }
 

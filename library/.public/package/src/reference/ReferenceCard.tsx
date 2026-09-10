@@ -32,7 +32,6 @@ export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
 }
 
 export class $TypeOfReferenceCard extends $TypeOfReference {
-    override name = 'ReferenceCard';
     protected override specification: Specification<$Writing> = new ReferenceCardSpecification();
 }
 

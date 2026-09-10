@@ -30,7 +30,6 @@ export class $Talk extends $Document implements $Talk$ {
 }
 
 export class $TypeOfTalk extends $TypeOfDocument {
-    override name = 'Talk';
     protected override specification: Specification<$Writing> = new TalkSpecification();
 }
 
@@ -53,7 +52,6 @@ export class $Comment extends $Paragraph implements $Comment$ {
 }
 
 export class $TypeOfComment extends $TypeOfParagraph {
-    override name = 'Comment';
     protected override specification: Specification<$Writing> = new CommentSpecification();
 }
 

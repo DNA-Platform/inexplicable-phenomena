@@ -30,7 +30,6 @@ export class $Citation extends $Ref implements $Citation$ {
 }
 
 export class $TypeOfCitation extends $TypeOfRef {
-    override name = 'Citation';
     protected override specification: Specification<$Writing> = new CitationSpecification();
 }
 

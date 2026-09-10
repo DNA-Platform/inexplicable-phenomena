@@ -27,7 +27,6 @@ export class $Illustration extends $Image implements $Illustration$ {
 }
 
 export class $TypeOfIllustration extends $TypeOfImage {
-    override name = 'Illustration';
     protected override specification: Specification<$Writing> = new IllustrationSpecification();
 }
 

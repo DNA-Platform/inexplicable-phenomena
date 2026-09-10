@@ -26,7 +26,6 @@ export class $Item extends $Sentence implements $Item$ {
 }
 
 export class $TypeOfItem extends $TypeOfSentence {
-    override name = 'Item';
     protected override specification: Specification<$Writing> = new ItemSpecification();
 
     // A MARK IS BLOCK STRUCTURE, NOT COPY, and the parse owns block structure. The mark that opened

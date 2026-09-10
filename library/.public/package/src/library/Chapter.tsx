@@ -36,7 +36,6 @@ export class $Chapter extends $Composition implements $Chapter$ {
 }
 
 export class $TypeOfChapter extends $TypeOfReference {
-    override name = 'Chapter';
     protected override specification: Specification<$Writing> = new ChapterSpecification();
 }
 

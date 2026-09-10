@@ -91,7 +91,6 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
 }
 
 export class $TypeOfCatalogue extends $Type {
-    override name = 'Catalogue';
     protected override specification: Specification<$Writing> = new CatalogueSpecification();
 }
 

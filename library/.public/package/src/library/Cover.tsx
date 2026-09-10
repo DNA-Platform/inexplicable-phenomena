@@ -28,7 +28,6 @@ export class $Cover extends $Document implements $Cover$ {
 }
 
 export class $TypeOfCover extends $TypeOfDocument {
-    override name = 'Cover';
     protected override specification: Specification<$Writing> = new CoverSpecification();
 }
 

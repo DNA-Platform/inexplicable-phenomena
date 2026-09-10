@@ -33,7 +33,6 @@ export class $List extends $Paragraph implements $List$ {
 }
 
 export class $TypeOfList extends $TypeOfParagraph {
-    override name = 'List';
     protected override specification: Specification<$Writing> = new ListSpecification();
 
     override below(): new() => $Type { return $TypeOfItem; }

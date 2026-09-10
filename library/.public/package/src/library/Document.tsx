@@ -35,7 +35,6 @@ export class $$Document extends $Catalogue implements $$Document$ {
 }
 
 export class $TypeOfDocument extends $Type {
-    override name = 'Document';
     protected override specification: Specification<$Writing> = new DocumentSpecification();
 
     override below(): new() => $Type { return $TypeOfSection; }
@@ -45,7 +44,6 @@ export class DocumentSpecification extends WritingSpecification {
 }
 
 export class $TypeOf$Document extends $Type {
-    override name = '$Document';
     protected override specification: Specification<$Writing> = new $DocumentSpecification();
 }
 

@@ -73,7 +73,6 @@ export class $Reference extends $Annotation implements $Reference$ {
 }
 
 export class $TypeOfReference extends $Type {
-    override name = 'Reference';
     protected override specification: Specification<$Writing> = new ReferenceSpecification();
 }
 

@@ -35,7 +35,6 @@ export class $Code extends $Paragraph implements $Code$ {
 }
 
 export class $TypeOfCode extends $TypeOfParagraph {
-    override name = 'Code';
     protected override specification: Specification<$Writing> = new CodeSpecification();
 }
 

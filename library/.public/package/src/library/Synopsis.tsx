@@ -15,7 +15,6 @@ export class $Synopsis extends $Document implements $Synopsis$ {
 }
 
 export class $TypeOfSynopsis extends $TypeOfDocument {
-    override name = 'Synopsis';
     protected override specification: Specification<$Writing> = new SynopsisSpecification();
 }
 

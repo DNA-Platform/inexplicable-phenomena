@@ -20,7 +20,6 @@ export class $Path extends $Annotation implements $Path$ {
 }
 
 export class $TypeOfPath extends $Type {
-    override name = 'Path';
     protected override specification: Specification<$Writing> = new PathSpecification();
 }
 

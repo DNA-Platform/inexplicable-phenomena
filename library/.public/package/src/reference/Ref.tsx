@@ -76,7 +76,6 @@ export class $Ref extends $Phrase implements $Ref$ {
 }
 
 export class $TypeOfRef extends $TypeOfPhrase {
-    override name = 'Ref';
     protected override specification: Specification<$Writing> = new RefSpecification();
 }
 

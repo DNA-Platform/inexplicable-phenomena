@@ -23,7 +23,6 @@ export class $Fold extends $Annotation implements $Fold$ {
 }
 
 export class $TypeOfFold extends $Type {
-    override name = 'Fold';
     protected override specification: Specification<$Writing> = new FoldSpecification();
 }
 

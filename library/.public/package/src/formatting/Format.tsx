@@ -65,7 +65,6 @@ export class $Format extends $Annotation implements $Format$ {
 }
 
 export class $TypeOfFormat extends $Type {
-    override name = 'Format';
     protected override specification: Specification<$Writing> = new FormatSpecification();
 }
 

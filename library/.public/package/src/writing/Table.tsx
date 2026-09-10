@@ -33,7 +33,6 @@ export class $Table extends $Section implements $Table$ {
 }
 
 export class $TypeOfTable extends $TypeOfSection {
-    override name = 'Table';
     protected override specification: Specification<$Writing> = new TableSpecification();
 
     override supplies(writing: $Writing, parts: $Writing[]): $Writing[] {

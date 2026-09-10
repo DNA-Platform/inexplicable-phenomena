@@ -15,7 +15,6 @@ export class $Phrase extends $Sentence implements $Phrase$ {
 }
 
 export class $TypeOfPhrase extends $TypeOfSentence {
-    override name = 'Phrase';
     protected override specification: Specification<$Writing> = new PhraseSpecification();
 }
 

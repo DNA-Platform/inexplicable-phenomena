@@ -21,7 +21,6 @@ export class $Author extends $Section implements $Author$ {
 }
 
 export class $TypeOfAuthor extends $TypeOfSection {
-    override name = 'Author';
     protected override specification: Specification<$Writing> = new AuthorSpecification();
 }
 

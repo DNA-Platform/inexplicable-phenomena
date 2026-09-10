@@ -21,7 +21,6 @@ export class $References extends $Document implements $References$ {
 }
 
 export class $TypeOfReferences extends $TypeOfDocument {
-    override name = 'References';
     protected override specification: Specification<$Writing> = new ReferencesSpecification();
 }
 

@@ -60,7 +60,6 @@ export class $TypeOfAside extends $TypeOfSection {
     override supplies(writing: $Writing, parts: $Writing[]): $Writing[] {
         return parts;
     }
-    override name = 'Aside';
     protected override specification: Specification<$Writing> = new AsideSpecification();
 }
 
