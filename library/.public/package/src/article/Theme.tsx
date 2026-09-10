@@ -158,7 +158,7 @@ export class $Theme extends $Sheet {
     override place = "'\\25A1'";
 
     // A TOP-LEVEL ENTRY IS BOLD, name and marker alike, which is what article.cls does.
-    @select('.pd-table-of-contents > .pd-chapter > a, .pd-table-of-contents > .pd-chapter::before') top_fontWeight = '700';
+    @select('.pd-table-of-contents > .pd-chapter > a, .pd-table-of-contents > .pd-chapter::before') top_fontWeight = '800';
     @select('.pd-table-of-contents > .pd-chapter') group_marginTop = '.5em';
 
     @select('.pd-table-of-contents') counting_counterReset = 'listed1 listed2 listed3';
@@ -201,6 +201,7 @@ export class $Theme extends $Sheet {
     @select('.pd-abstract') abstract_margin = '0 30pt 1.5rem';
     abstract_fontSize = '10pt';
     abstract_lineHeight = '1.2';
+    @select('.pd-abstract .pd-math') summarised_fontSize = '.75em';
     @select('.pd-abstract .pd-heading') abstracted_fontSize = '10pt';
     abstracted_fontWeight = '700';
     abstracted_textAlign = 'center';
