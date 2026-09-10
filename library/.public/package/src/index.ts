@@ -20,6 +20,7 @@ export * from './writing/Equation';
 export * from './writing/Code';
 export * from './writing/Quote';
 export * from './writing/Heading';
+export * from './writing/Image';
 export * from './writing/Illustration';
 export * from './writing/Figure';
 export * from './writing/Phrase';
@@ -30,7 +31,7 @@ export * from './writing/Summary';
 export * from './formatting/Theme';
 export * from './formatting/Format';
 export * from './formatting/TableFormat';
-export * from './formatting/FigureFormat';
+export * from './formatting/IllustrationFormat';
 
 export * from './reference/Reference';
 export * from './reference/Fold';

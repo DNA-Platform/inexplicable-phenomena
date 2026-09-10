@@ -1,25 +1,19 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
+import { $, $Block } from '@dna-platform/chemistry';
+import { Specification } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
-import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
-import { $Paragraph } from '@/writing/Paragraph';
+import { $Image$, $Image, $TypeOfImage, ImageSpecification } from './Image';
 
-export interface $Illustration$ extends $Paragraph$ {
-    source: string;
+export interface $Illustration$ extends $Image$ {
     caption: string;
 }
 
-export class $Illustration extends $Paragraph implements $Illustration$ {
-    $source = '';
-
-    get source(): string { return this.$source; }
+export class $Illustration extends $Image implements $Illustration$ {
     get caption(): string { return html.text(this._block); }
 
     $Illustration(block: $Block) {
-        super.$Paragraph(this.addType(block, $TypeOfIllustration));
+        super.$Image(this.addType(block, $TypeOfIllustration));
     }
 
     override print(content: ReactNode): ReactNode {
@@ -32,18 +26,12 @@ export class $Illustration extends $Paragraph implements $Illustration$ {
     }
 }
 
-export class $TypeOfIllustration extends $TypeOfParagraph {
+export class $TypeOfIllustration extends $TypeOfImage {
     override name = 'Illustration';
     protected override specification: Specification<$Writing> = new IllustrationSpecification();
 }
 
-export class IllustrationSpecification extends ParagraphSpecification {
-    @specify('an illustration shows something')
-    $showsSomething(writing: $Writing): void {
-        $check(writing instanceof $Illustration && writing.source !== '',
-            'an illustration shows something, and this one shows nothing');
-    }
-}
+export class IllustrationSpecification extends ImageSpecification { }
 
 export const Illustration = $($Illustration);
 export const TypeOfIllustration = $($TypeOfIllustration);
