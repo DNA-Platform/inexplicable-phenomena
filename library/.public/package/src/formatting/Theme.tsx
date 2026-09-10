@@ -96,7 +96,7 @@ export class $Theme extends $Format implements $Theme$ {
     entry_marginTop = '0';
     entry_marginBottom = '.15rem';
     entry_textIndent = '0';
-    @select('.pd-table-of-contents .pd-chapter > a') entryLink_flex = '1 1 auto';
+    @select('.pd-table-of-contents .pd-chapter > a') entryLink_flex = '0 1 auto';
     entryLink_order = '1';
     @select('.pd-table-of-contents .pd-chapter .pd-chapter') under_flex = '0 0 100%';
     under_order = '4';

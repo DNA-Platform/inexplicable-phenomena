@@ -2,10 +2,11 @@
 // document nests. Each <Chapter> means the section that wears its title, wears that section's own
 // classes, and reaches the heading that opens it.
 import { $ } from '@dna-platform/chemistry';
-import { Chapter, TableOfContents } from '@dna-platform/public';
+import { Chapter, Heading, TableOfContents } from '@dna-platform/public';
 
 export default $(
     <TableOfContents>
+        <Heading>Contents</Heading>
         <Chapter title="Introduction">
             <Chapter title="The Importance of P = NP">
             </Chapter>
