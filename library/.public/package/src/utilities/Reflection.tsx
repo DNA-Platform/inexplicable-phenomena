@@ -11,7 +11,6 @@ import type { $Fold } from '@/reference/Fold';
 export class Reflection {
     private templates = new WeakMap<new() => $Writing, $Writing>();
     private readings = new WeakMap<$Writing, { parts: $Writing[]; block: $Block }>();
-    private contents = new WeakMap<$Block, $Block>();
 
     // HANDED THE THREE KINDS AT THE COMPOSITION ROOT, which is src/index.ts.
     // A utility that must ask `instanceof` cannot IMPORT what imports it: $Writing
@@ -55,18 +54,12 @@ export class Reflection {
         return part instanceof this.kinds.composition;
     }
 
-    level(type: $Type | undefined): boolean {
-        return type !== undefined && this.kinds.hierarchies.some(top => this.beneath(this.template(top), type));
+    holding(writing: $Writing): $Writing | undefined {
+        return this.nearest(writing, at => this.kinds.hierarchies.some(top => this.is(at, top)) ? at : undefined);
     }
 
-    // WHAT A WRITING DRAWS IS ITS BLOCK WITHOUT ITS ANNOTATIONS — present in the writing, absent from the reading — memoised on the block, which a bond replaces whole.
-    content(writing: $Writing): $Block {
-        const held = this.contents.get(writing._block);
-        if (held !== undefined) return held;
-        const block = writing._block.filter(part => !(part instanceof this.kinds.annotation));
-        this.contents.set(writing._block, block);
-
-        return block;
+    level(type: $Type | undefined): boolean {
+        return type !== undefined && this.kinds.hierarchies.some(top => this.beneath(this.template(top), type));
     }
 
     wrapped(writing: $Writing & { parts(): $Writing[] }): $Block {
@@ -225,7 +218,7 @@ export class Reflection {
         return name.replace(/^_*\$?/u, '').replace(/\d+$/u, '');
     }
 
-    protected kebab(name: string): string {
+    kebab(name: string): string {
         return name.replace(/(?<!^)[A-Z]/gu, '-$&').toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '');
     }
 }

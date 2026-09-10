@@ -14,16 +14,13 @@ export interface $Cover$ extends $Document$ {
 }
 
 export class $Cover extends $Document implements $Cover$ {
+    definition = 'header';
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
     author(): $Author | undefined { return this.searchForOne<$Author>($TypeOfAuthor); }
     subject(): $Subject | undefined { return this.searchForOne<$Subject>($TypeOfSubject); }
 
     $Cover(block: $Block) {
         super.$Document(this.addType(block, $TypeOfCover));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <header className={this.className}>{content}</header>;
     }
 }
 

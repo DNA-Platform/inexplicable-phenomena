@@ -36,7 +36,7 @@ export class $TypeOfSentence extends $Type {
         const Representation = $($$Sentence);
         const sentences = parser.sentences(tokens)
             .map(line => $<$Sentence>(<Made />, ...line as never[]));
-        for (const written of sentences) written.mention = $<$$Sentence>(<Representation />, written);
+        for (const written of sentences) written._mention = $<$$Sentence>(<Representation />, written);
 
         return sentences;
     }

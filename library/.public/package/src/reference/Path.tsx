@@ -16,10 +16,6 @@ export class $Path extends $Annotation implements $Path$ {
 
     override specifically(): void {
     }
-
-    override print(): ReactNode {
-        return html.text(this._block);
-    }
 }
 
 export class $TypeOfPath extends $Type {

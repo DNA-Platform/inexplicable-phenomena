@@ -16,7 +16,7 @@ export class $Footnote extends $Note implements $Footnote$ {
 
     // ACROSS THE BOOK for now. A paper restarts its footnotes per page and this reading cannot see
     // pages, which is the honest limit: numbering wants a HOLDER, and a page is not one here.
-    number(): number | undefined { return reflection.numbered(this, this.book); }
+    number(): number | undefined { return reflection.numbered(this, reflection.holding(this) ?? this); }
 
     $Footnote(block: $Block) {
         super.$Note(this.addType(block, $TypeOfFootnote));

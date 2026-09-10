@@ -9,24 +9,17 @@ import { $Catalogue } from '@/reference/Catalogue';
 import { $Section, $TypeOfSection } from '@/writing/Section';
 import { $Paragraph$, $TypeOfParagraph } from '@/writing/Paragraph';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
-import { $Chapter, $TypeOfChapter } from './Chapter';
 
 export interface $Document$ extends $Composition$ {
     title(): $Writing | undefined;
 }
 
 export class $Document extends $Composition implements $Document$ {
+    definition = 'article';
     title(): $Writing | undefined { return this.searchFor<$Section>($TypeOfSection)[0]?.heading(); }
 
-    // A DOCUMENT DRAWN IN A CHAPTER TELLS THE CHAPTER IT IS THERE, so the chapter can be followed to it.
     $Document(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfDocument));
-        const holding = this.parent;
-        if (reflection.is<$Chapter>(holding, $TypeOfChapter)) holding.written ??= this;
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <article className={this.className}>{content}</article>;
     }
 }
 

@@ -8,12 +8,9 @@ import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from '.
 export interface $Footer$ extends $Document$ { }
 
 export class $Footer extends $Document implements $Footer$ {
+    definition = 'footer';
     $Footer(block: $Block) {
         super.$Document(this.addType(block, $TypeOfFooter));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <footer className={this.className}>{content}</footer>;
     }
 }
 

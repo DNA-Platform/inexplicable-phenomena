@@ -162,6 +162,7 @@ export class $Theme extends $Format implements $Theme$ {
     // style", so every theme styles these and the component carries only its structure.
     @select('.pd-book') get sheet_background() { return this.paper; }
     sheet_counterReset = 'figure';
+    @select('.pd-document, .pd-section, .pd-meaning') get landing_scrollMarginTop() { return `calc(${this.strip_height} + 1rem)`; }
     @select('.pd-header') get strip_background() { return this.quiet; }
     get strip_color() { return this.ink; }
     get strip_borderBottom() { return this.ruled; }
@@ -288,9 +289,9 @@ export class $Theme extends $Format implements $Theme$ {
     // the same reason figure:not(.pd-figure) above names an element.
     @select('img') img_maxWidth = '100%';
     @select('.pd-illustration img') figured_marginInline = 'auto';
-    @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecoration = 'none';
+    @select('.pd-meaning, .pd-ref') a_textDecoration = 'none';
     get a_color() { return this.link; }
-    @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover') hover_textDecoration = 'underline';
+    @select('.pd-meaning:hover, .pd-ref:hover') hover_textDecoration = 'underline';
     // AN ANCHOR THAT ONLY NAMES ITSELF IS NOT A LINK. A fold makes a writing POINTABLE, and
     // view() writes the id on the same anchor that carries an href when there is one - so a
     // reference entry with a page fold drew as twelve blue paragraphs nobody can follow.

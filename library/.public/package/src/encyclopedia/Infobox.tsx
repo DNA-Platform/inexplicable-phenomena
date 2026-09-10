@@ -5,6 +5,7 @@
 // and a line's does not, so a line is a labelled paragraph here rather than a card.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
+import { reflection } from '@/utilities/Reflection';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -45,8 +46,8 @@ export class $Line extends $Paragraph implements $Line$ {
         super.$Paragraph(this.addType(block, $TypeOfLine));
     }
 
-    override print(content: ReactNode): ReactNode {
-        return <p className={this.className} data-label={this.label}>{content}</p>;
+    override view(): ReactNode {
+        return reflection.formatted(this, <p className={this.className} data-label={this.label}>{this.print()}</p>);
     }
 }
 

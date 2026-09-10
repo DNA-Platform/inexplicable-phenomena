@@ -15,12 +15,9 @@ import { $Type } from './Type';
 export interface $Paragraph$ extends $Composition$ { }
 
 export class $Paragraph extends $Composition implements $Paragraph$ {
+    definition = 'p';
     $Paragraph(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfParagraph));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <p className={this.className}>{content}</p>;
     }
 }
 
@@ -41,7 +38,7 @@ export class $TypeOfParagraph extends $Type {
         const Made = $(Paragraph);
         const Representation = $($$Paragraph);
         const written = $<$Paragraph>(<Made />, ...tokens as never[]);
-        written.mention = $<$$Paragraph>(<Representation />, written);
+        written._mention = $<$$Paragraph>(<Representation />, written);
 
         return [written];
     }

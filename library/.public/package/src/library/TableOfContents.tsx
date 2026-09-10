@@ -12,12 +12,9 @@ import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from '.
 export interface $TableOfContents$ extends $Document$ { }
 
 export class $TableOfContents extends $Document implements $TableOfContents$ {
+    definition = 'nav';
     $TableOfContents(block: $Block) {
         super.$Document(this.addType(block, $TypeOfTableOfContents));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <nav className={this.className}>{content}</nav>;
     }
 }
 

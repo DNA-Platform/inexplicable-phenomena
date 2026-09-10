@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
@@ -35,14 +34,7 @@ export class $Reference extends $Annotation implements $Reference$ {
     }
 
     protected reads(copy: string): boolean {
-        return url.adstyles(copy);
-    }
-
-    // IT WRITES ITS OWN ELEMENT, and print is where a kind writes one.
-    override print(): ReactNode {
-        const url = html.text(this.path()?._block);
-
-        return <a href={url} className={this.className} onClick={() => this.focus()}>{url}</a>;
+        return url.addresses(copy);
     }
 
     focus(): void {

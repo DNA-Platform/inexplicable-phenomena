@@ -17,12 +17,10 @@ import { $Section$, $Section, $TypeOfSection, SectionSpecification } from './Sec
 export interface $Quote$ extends $Section$ { }
 
 export class $Quote extends $Section implements $Quote$ {
+    definition = 'blockquote';
     // A QUOTATION HAS NO HEADING, and it writes HTML's own word for itself rather than a section's.
     // This is the one kind in the sweep that could not simply inherit its element: everything else
     // draws what its type says it is, and a quote is a section that draws a blockquote.
-    override print(content: ReactNode): ReactNode {
-        return <blockquote className={this.className}>{content}</blockquote>;
-    }
 
     $Quote(block: $Block) {
         super.$Section(this.addType(block, $TypeOfQuote));

@@ -19,12 +19,12 @@ export class $Heading extends $Paragraph implements $Heading$ {
     // h3 and h1..h6 groups styling elements no kind produced — the census of a hole. The level was
     // already known: reflection.indent answers how deep a writing stands, and the table of contents
     // has been nesting by it. Nothing is added; an existing reading reaches the element it was for.
-    override print(content: ReactNode): ReactNode {
+    override view(): ReactNode {
         const levels = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
         const at = Math.min(reflection.indent(this), levels.length - 1);
         const Level = levels[at];
 
-        return <Level id={html.text(this._block).replace(/\s+/gu, '_')} className={`${this.className} pd-level-${at + 1}`}>{content}</Level>;
+        return reflection.formatted(this, <Level id={reflection.kebab(html.text(this._block))} className={`${this.className} pd-level-${at + 1}`}>{this.print()}</Level>);
     }
 }
 

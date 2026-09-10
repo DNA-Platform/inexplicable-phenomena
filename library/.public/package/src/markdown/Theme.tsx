@@ -28,6 +28,7 @@ export class $Theme extends $Sheet {
     // not a list of rules - the base reads `link` wherever a meaning is drawn, the article theme
     // sets it black for a page nobody can click, and a note sets it back.
     override link = '#3366cc';
+    @select('.pd-citation') override get marked_color() { return this.link; }
 
     override face = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Helvetica, Arial, sans-serif";
     override body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Helvetica, Arial, sans-serif";

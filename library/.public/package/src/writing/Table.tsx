@@ -16,14 +16,11 @@ export interface $Table$ extends $Section$ {
 }
 
 export class $Table extends $Section implements $Table$ {
+    definition = 'div';
     $columns?: number;
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
     cells(): $Cell[] { return this.searchFor<$Cell>($TypeOfCell); }
-
-    override print(content: ReactNode): ReactNode {
-        return <div className={this.className}>{content}</div>;
-    }
 
     $Table(block: $Block) {
         super.$Section(this.addType(block, $TypeOfTable).concat($check(tableStyle, '!')));

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { $, $Block, $check, $Chemical, $Written, inert } from '@dna-platform/chemistry';
+import { ReactNode, createElement } from 'react';
+import { $, $Block, $check, $Chemical, $Written } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
@@ -7,67 +7,36 @@ import type { $Annotation$, $Annotation } from './Annotation';
 import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
 import type { $Reference$ } from '@/reference/Reference';
-import type { $Fold$ } from '@/reference/Fold';
 import type { $Theme } from '@/formatting/Theme';
 
+const printed = new WeakMap<$Block, $Block>();
+
 export interface $Writing$ extends $Chemical {
-    $className?: string;
-    fold: $Fold$ | undefined;
-    book: $Writing$;
-    theme: $Theme;
+    document?: $Catalogue$;
     mention?: $Catalogue$;
-    meaning: $Reference$ | undefined;
+    meaning?: $Reference$;
     kind: $Type$;
-    type: $Type[];
     annotations: $Annotation[];
-    reading(): $Block;
-    classes: string[];
-    print(content: ReactNode): ReactNode;
-    specify(): void;
 }
 
 export class $Writing extends $Chemical implements $Writing$ {
-    // CLASSES A CALLER ADDS, joined to the ones the kinds and types already write. Doug, 2026-09-09:
-    // "you absolutely should give a classes prop or whatever react uses on html to pass those
-    // through to the list that the Writing puts on its wrapper above print. You should be able to
-    // do what you want. But not at the expense of going around the semantic structure." It is
-    // React's own name, declared with a $ and handed in without one, which is chemistry's blend.
-    //
-    // $indent WAS HERE AND IS GONE. It let a writing DECLARE how deep it stood, which was a
-    // workaround for parts() flattening a section written inside a section — fixed earlier this
-    // sprint. With that fixed, depth is STRUCTURAL and declaring it is going around the structure:
-    // the demos said indent={1} on flat sibling sections and are nested now.
-    // DECLARED WITHOUT A VALUE, the way $Table declares $columns. As '' it was handed to the
-    // element by every styled chemical and CLOBBERED the classes the kind had written — measured,
-    // a table drew <div class="sc-jSFhYz"> with no pd-table at all, because the format restyling
-    // it in place passed an empty className over it.
     $className?: string;
     $print?: boolean;
     parenthetical = false;
-    apart: string[] = [];
     inline = true;
-    @inert() mention?: $Catalogue;
-    _book?: $Writing;
+    definition = 'span';
+    _mention?: $Catalogue;
     _block!: $Block;
 
-    get book(): $Writing { return this._book ?? this; }
-    set book(held: $Writing) { this._book = held; }
-    get theme(): $Theme { return reflection.theme(this); }
-    get classes(): string[] {
-        return [...reflection.classNames(this), ...(this.$className ?? '').split(/\s+/u)]
-            .filter(name => name !== '' && !this.apart.includes(name));
-    }
-
-    get className(): string { return this.classes.join(' '); }
+    get mention(): $Catalogue | undefined { return this._mention; }
+    get document(): $Catalogue | undefined { return reflection.holding(this)?.mention; }
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
-    get fold(): $Fold$ | undefined { return reflection.folded(this); }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
-    get type(): $Type[] { return reflection.types(this); }
-    reading(): $Block { return reflection.content(this); }
-
+    get theme(): $Theme { return reflection.theme(this); }
+    get className(): string { return [...reflection.classNames(this), this.$className ?? ''].join(' ').trim(); }
 
     get kind(): $Type {
-        const carried = this.type;
+        const carried = reflection.types(this);
         const standing = carried.filter(kind => reflection.level(kind));
         const chosen = standing.filter(kind => !standing.some(other => other !== kind && reflection.specialises(other, kind)));
         $check(chosen.length <= 1, `writing is one kind of writing, and this one is ${chosen.length}`);
@@ -77,28 +46,24 @@ export class $Writing extends $Chemical implements $Writing$ {
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
         if (this.$print !== undefined) this.parenthetical = !this.$print;
-        const holding = this.parent;
-        this._book = reflection.writing(holding) && holding !== this ? holding.book ?? holding : this;
     }
 
-    // A LINK NOBODY CAN REACH IS A LINK NOBODY CAN CHANGE. Measured 2026-09-08: 33 anchors on
-    // /turing and 33 of them classless, so no sheet could style one, no subclass could specialise
-    // one and nothing could ask a book for its links.
     view(): ReactNode {
         if (this.parenthetical) return null;
         const meaning = this.meaning;
-        const fold = this.fold;
-        const Block = $(this.reading());
-        // ONE ANCHOR, TWO REASONS TO WRITE IT. A meaning makes a writing POINT and a fold makes it
-        // POINTABLE, so href and id are the same element's two halves and neither needs its own.
-        const drawn = meaning === undefined && fold === undefined ? <Block />
-            : <a id={fold?.key()} href={meaning === undefined ? undefined : html.text(meaning.path()?._block)} className="pd-meaning"><Block /></a>;
+        const fold = reflection.folded(this);
+        const printed = meaning === undefined && fold === undefined ? this.print()
+            : <a id={fold?.key()} href={meaning === undefined ? undefined : html.text(meaning.path()?._block)} className="pd-meaning">{this.print()}</a>;
 
-        return reflection.formatted(this, this.print(drawn));
+        return reflection.formatted(this, createElement(this.definition, { className: this.className }, printed));
     }
 
-    print(content: ReactNode): ReactNode {
-        return <span className={this.className}>{content}</span>;
+    print(): ReactNode {
+        let children = printed.get(this._block);
+        if (children === undefined) printed.set(this._block, children = this._block.filter(part => !reflection.annotation(part)));
+        const Children = $(children);
+
+        return <Children />;
     }
 
     searchFor<T extends $Writing>(type: new() => $Type): T[] {
@@ -115,31 +80,13 @@ export class $Writing extends $Chemical implements $Writing$ {
         return types.reduce((held, type) => held.concat($check(type, '!')), $check(block, $Block, '!'));
     }
 
-    addClass(name: string): void {
-        this.$className = [this.$className ?? '', name].join(' ').trim();
-    }
-
-    removeClass(name: string): void {
-        this.apart = [...this.apart, name];
-    }
-
     valid(): boolean {
         this.specify();
         return true;
     }
 
-    // A PIECE OF WRITING IS JUDGED BY THE KIND IT IS, NOT BY EVERY KIND IT INHERITS FROM. A child's
-    // bond concatenates its own type onto its parent's, so a synopsis carries $TypeOfSynopsis AND
-    // $TypeOfDocument — and both specifications ran. SynopsisSpecification overrides $saysSomething
-    // so a book's own made-empty apparatus may stand, and DocumentSpecification refused it anyway:
-    // the override never won, because the two rules stood side by side rather than one above the
-    // other. Measured 2026-09-09 — a book's placed synopsis, index and footer each drew a refusal
-    // panel reading "a piece of writing says something, and this one says nothing at all", and no
-    // promise looked at that slot. The specification chain ALREADY inherits, so the specialised
-    // type carries its parent's rules; running the parent's separately is what broke the override.
-    // The test is the one `kind` already uses.
     specify(): void {
-        const carried = this.type;
+        const carried = reflection.types(this);
         const kinds = new Set<unknown>();
         for (const annotation of this.annotations) {
             if (kinds.has(annotation.constructor)) continue;
@@ -151,15 +98,8 @@ export class $Writing extends $Chemical implements $Writing$ {
 }
 
 export class WritingSpecification extends Specification<$Writing> {
-    // NOT a `patterns` bag: WordSpecification declares its own and a shared name made the two
-    // collide, which is the base reaching for a member a subclass had already spent.
     private readonly divided = /\n[^\S\n]*\n/u;
 
-    // A BLANK LINE IS BLOCK STRUCTURE, NOT TEXT, and the parse owns block structure. Copy that
-    // carries one is markdown that never went through the parse — the wart Doug named: we have a
-    // paragraph and a section of our own, so a paragraph holding markdown's paragraphs is an error
-    // rather than a thing to convert. It was on ParagraphSpecification and is here because it is
-    // true of every piece of writing. One test on the copy, no allocation beyond it.
     @specify('a piece of writing carries no blank line')
     $noBlankLine(writing: $Writing): void {
         $check(!this.divided.test(html.text(writing._block)),
@@ -184,11 +124,6 @@ export class WritingSpecification extends Specification<$Writing> {
             'a piece of writing holds copy, annotations and writing, and this one holds something else');
     }
 
-    // A RULE READS, AND A READING IS WHAT parts() ANSWERS. A composition arranges what
-    // it holds and supplies what its own rules require, so a rule that consulted the
-    // block alone would refuse a book for lacking a footer the book itself answers.
-    // A writing that cannot read — one carrying a type but composing nothing — is
-    // judged on what is written into it, which is all it has.
     protected composed(writing: $Writing): $Writing[] {
         return (writing._block.$elements ?? []).filter((part): part is $Writing =>
             reflection.composition(part));

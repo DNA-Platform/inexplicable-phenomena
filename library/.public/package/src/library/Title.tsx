@@ -16,13 +16,6 @@ export interface $Title$ extends $Section$ { }
 export class $Title extends $Section implements $Title$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
-    canonical(): $Title | undefined {
-        if (html.text(this._block).trim() !== '') return undefined;
-        const held = (this.book as $Writing & Partial<$Book$>).cover?.searchForOne<$Title>($TypeOfTitle);
-
-        return held === this ? undefined : held;
-    }
-
     $Title(block: $Block) {
         super.$Section(this.addType(block, $TypeOfTitle));
         // A TITLE'S HEADING HOLDS THE TITLE'S CONTENT, not its text. It read html.text(this._block)
@@ -40,13 +33,6 @@ export class $Title extends $Section implements $Title$ {
         }
     }
 
-    override print(content: ReactNode): ReactNode {
-        const held = this.canonical();
-        if (held === undefined) return super.print(content);
-        const Canonical = $(held);
-
-        return <Canonical />;
-    }
 }
 
 export class $TypeOfTitle extends $TypeOfSection {

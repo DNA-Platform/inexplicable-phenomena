@@ -22,8 +22,8 @@ export class $Image extends $Paragraph implements $Image$ {
         super.$Paragraph(this.addType(block, $TypeOfImage).concat($check(shownStyle, '!')));
     }
 
-    override print(content: ReactNode): ReactNode {
-        return <img src={this.source} alt={html.text(this._block)} className={this.className} />;
+    override view(): ReactNode {
+        return reflection.formatted(this, <img src={this.source} alt={html.text(this._block)} className={this.className} />);
     }
 }
 

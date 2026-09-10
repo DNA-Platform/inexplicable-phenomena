@@ -8,14 +8,11 @@ import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from '.
 export interface $Index$ extends $Document$ { }
 
 export class $Index extends $Document implements $Index$ {
+    definition = 'section';
     override parenthetical = true;
 
     $Index(block: $Block) {
         super.$Document(this.addType(block, $TypeOfIndex));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <section className={this.className}>{content}</section>;
     }
 }
 

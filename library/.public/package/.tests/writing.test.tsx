@@ -103,7 +103,7 @@ describe('an annotation weighs in; a type also resolves', () => {
     it('a type written into a piece of writing is among its annotations', () => {
         const documented = built<$Writing>(<Writing><TypeOfDocument />a</Writing>);
         expect(documented.annotations).toHaveLength(1);
-        expect(documented.type).toHaveLength(1);
+        expect(reflection.types(documented)).toHaveLength(1);
     });
 
     it('AND A TYPE CARRIES NO KIND OF ITS OWN', () => {
@@ -116,12 +116,6 @@ describe('an annotation weighs in; a type also resolves', () => {
     });
 });
 
-describe('every piece of writing is in a book', () => {
-    it('and writing that is held by nothing is its own book', () => {
-        const alone = built<$Writing>(<Writing><TypeOfBook />a</Writing>);
-        expect(alone.book).toBe(alone);
-    });
-});
 
 describe('the frame carries the names of every kind the writing stands as', () => {
     const drawn = (node: React.ReactNode) => {
@@ -324,7 +318,7 @@ describe('a composition generates the level it needs from what it holds', () => 
 
     it('AND A SECTION READS NO COPY — what it was written with, it wraps', () => {
         const held = built<$Composition>(<Section>Hey, A. What is up?</Section>);
-        const loose = (held.reading().$elements ?? []).filter(part => typeof part === 'string' || typeof part === 'number');
+        const loose = (reflection.wrapped(held).$elements ?? []).filter(part => typeof part === 'string' || typeof part === 'number');
         expect(loose).toEqual([]);
         expect(held.parts().length).toBeGreaterThan(0);
     });
@@ -332,7 +326,7 @@ describe('a composition generates the level it needs from what it holds', () => 
     it('AND THE BLOCK KEEPS WHAT WAS WRITTEN — the wrapping is a reading, not a replacement', () => {
         const held = built<$Composition>(<Section>Hey, A. What is up?</Section>);
         expect(html.text(held._block)).toContain('What is up?');
-        expect(held.reading()).toBe(held.reading());
+        expect(reflection.wrapped(held)).toBe(reflection.wrapped(held));
     });
 
     it('and nothing about the level is refused now, which is the same cost said twice', () => {

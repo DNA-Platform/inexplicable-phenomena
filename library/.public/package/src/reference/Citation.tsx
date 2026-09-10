@@ -21,7 +21,7 @@ export interface $Citation$ extends $Ref$ {
 
 export class $Citation extends $Ref implements $Citation$ {
     // ACROSS THE BOOK, because a citation's number is the same wherever in the text it stands.
-    number(): number | undefined { return reflection.numbered(this, this.book); }
+    number(): number | undefined { return reflection.numbered(this, reflection.holding(this) ?? this); }
 
     $Citation(block: $Block) {
         super.$Ref(this.addType(block, $TypeOfCitation));

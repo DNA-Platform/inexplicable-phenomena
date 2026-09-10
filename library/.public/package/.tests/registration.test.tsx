@@ -16,7 +16,7 @@ class $Recorded extends $Document {
     $Recorded(block: $Block) {
         super.$Document($check(block, $Block));
         const named = `documented ${bonded.filter(one => one.startsWith('documented')).length + 1}`;
-        knew[named] = this.book !== (this as unknown as $Writing);
+        knew[named] = this.parent !== (this as unknown as $Writing);
         bonded.push(named);
     }
 }

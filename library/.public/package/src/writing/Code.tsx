@@ -1,6 +1,7 @@
 // CREATED 2026-09-08 · rating 1 · shell. Code at paragraph grade: the code is the copy, the language a prop, drawn through a highlighting box as .archive did; parts() a line-based read on demand, never in the draw (PS3).
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
+import { reflection } from '@/utilities/Reflection';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -29,8 +30,8 @@ export class $Code extends $Paragraph implements $Code$ {
     // library has spent a sprint removing: overriding view means $Writing.view never runs, so the
     // element gets neither its pd- classes nor reflection.formatted and no format can ever reach it.
     // A kind writes its element in print, in one line, and gets everything else for free.
-    override print(content: ReactNode): ReactNode {
-        return <pre className={this.className}><code className={this.language === '' ? undefined : `language-${this.language}`}>{content}</code></pre>;
+    override view(): ReactNode {
+        return reflection.formatted(this, <pre className={this.className}><code className={this.language === '' ? undefined : `language-${this.language}`}>{this.print()}</code></pre>);
     }
 }
 

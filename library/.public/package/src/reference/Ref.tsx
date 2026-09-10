@@ -38,19 +38,18 @@ export class $Ref extends $Phrase implements $Ref$ {
     // IT WRITES ITS OWN ELEMENT, and print is where a kind writes one. view() ran here until
     // sprint 57 and $Writing.view never did, so this anchor got neither its pd- classes nor
     // reflection.formatted — measured: 32 of 33 anchors on /turing unreachable by any sheet.
-    override print(content: ReactNode): ReactNode {
+    override view(): ReactNode {
         const url = this.url();
-        if (url === undefined) return super.print(content);
+        if (url === undefined) return super.view();
 
-        return <a href={url} className={this.className}>{this.written()}</a>;
+        return reflection.formatted(this, <a href={url} className={this.className}>{this.written()}</a>);
     }
 
     async read(): Promise<$Writing> {
         const url = this.url();
         if (url === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
         const fragment = url.startsWith('#') ? url.slice(1) : url;
-        const book = this.book;
-        const held = reflection.composition(book) ? book.catalogue() : undefined;
+        const held = this.document;
         if (/^\d/.test(fragment) && held !== undefined) return held.follow(fragment);
         throw new Error('a reference reads to what it means, and this route is the application to follow');
     }

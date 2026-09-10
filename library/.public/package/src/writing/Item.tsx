@@ -16,12 +16,9 @@ import { $Sentence$, $Sentence, $TypeOfSentence, SentenceSpecification } from '@
 export interface $Item$ extends $Sentence$ { }
 
 export class $Item extends $Sentence implements $Item$ {
+    definition = 'li';
     $Item(block: $Block) {
         super.$Sentence(this.addType(block, $TypeOfItem));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <li className={this.className}>{content}</li>;
     }
 }
 

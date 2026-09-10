@@ -104,12 +104,6 @@ describe('every piece of writing is in a book, and a book themes what it holds',
         Document
     );
 
-    it('a documented handed to a book answers that book', () => {
-        const held = documented();
-        const book = $(<Book />, $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), held);
-        expect(held.book).toBe(book);
-        expect(held.searchFor<$Document>($TypeOfDocument)[0]?.book ?? held.book).toBe(book);
-    });
 
     it('A THEME REGISTERED ON A BOOK IS THE ONE ITS PROSE IS DRAWN IN', async () => {
         class $Small extends $Theme { override size = '11px'; }

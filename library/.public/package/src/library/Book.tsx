@@ -24,36 +24,28 @@ export interface $Book$ extends $Composition$ {
 }
 
 export class $Book extends $Composition implements $Book$ {
-    // THE APPARATUS ARE DOCUMENTS THE BOOK'S CHAPTERS WRITE, followed through the chapters once drawn.
+    definition = 'div';
+
     get cover(): $Cover | undefined { return this.documents().find((held): held is $Cover => reflection.is(held, $TypeOfCover)); }
     get synopsis(): $Synopsis | undefined { return this.documents().find((held): held is $Synopsis => reflection.is(held, $TypeOfSynopsis)); }
     get table(): $TableOfContents | undefined { return this.documents().find((held): held is $TableOfContents => reflection.is(held, $TypeOfTableOfContents)); }
-    // A BOOK COMPOSES CHAPTERS — its parts, which below() already says.
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
+    override get document(): $Catalogue | undefined { return this.cover?.mention; }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
         if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
-        this.removeClass('pd-reference');
-        const held: $Writing[] = [this];
-        for (let at = 0; at < held.length; at++) {
-            if (held[at].book !== this) held[at].book = this;
-            for (const part of held[at]._block.$elements ?? []) if (reflection.writing(part)) held.push(part);
-        }
     }
 
     protected documents(): $Document[] {
-        return [...this.searchFor<$Document>($TypeOfDocument), ...this.chapters.map(chapter => chapter.read())]
-            .filter((held): held is $Document => held !== undefined);
+        return this.searchFor<$Document>($TypeOfDocument);
     }
 
     header(): ReactNode { return undefined; }
     footer(): ReactNode { return undefined; }
 
-    override print(content: ReactNode): ReactNode {
-        return <div className={this.className}>
-            {this.header()}{content}{this.footer()}
-        </div>;
+    override print(): ReactNode {
+        return <>{this.header()}{super.print()}{this.footer()}</>;
     }
 
     static $register(): void {

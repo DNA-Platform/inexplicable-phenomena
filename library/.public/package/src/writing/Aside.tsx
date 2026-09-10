@@ -39,14 +39,11 @@ import { $Section } from '@/writing/Section';
 export interface $Aside$ extends $Section$ { }
 
 export class $Aside extends $Section implements $Aside$ {
+    definition = 'aside';
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Aside(block: $Block) {
         super.$Section(this.addType(block, $TypeOfAside));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <aside className={this.className}>{content}</aside>;
     }
 }
 

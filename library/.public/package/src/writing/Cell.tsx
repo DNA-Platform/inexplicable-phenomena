@@ -11,12 +11,9 @@ import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } fro
 export interface $Cell$ extends $Paragraph$ { }
 
 export class $Cell extends $Paragraph implements $Cell$ {
+    definition = 'div';
     $Cell(block: $Block) {
         super.$Paragraph(this.addType(block, $TypeOfCell));
-    }
-
-    override print(content: ReactNode): ReactNode {
-        return <div className={this.className}>{content}</div>;
     }
 }
 

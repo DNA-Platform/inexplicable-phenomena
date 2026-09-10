@@ -4,15 +4,15 @@ export class UrlParser {
         broken: /\s/u,
         scheme: /^([a-z][a-z0-9+.-]*):/iu,
         host: /^(?:[a-z][a-z0-9+.-]*:)?\/\//iu,
-        adstyle: /^(?:[a-z][a-z0-9+.-]*:\/\/|\/\/|\/|#|\?)/iu
+        address: /^(?:[a-z][a-z0-9+.-]*:\/\/|\/\/|\/|#|\?)/iu
     };
 
     reads(copy: string): boolean {
         return !this.patterns.broken.test(copy) && URL.canParse(copy, this.base);
     }
 
-    adstyles(copy: string): boolean {
-        return this.patterns.adstyle.test(copy) && this.reads(copy);
+    addresses(copy: string): boolean {
+        return this.patterns.address.test(copy) && this.reads(copy);
     }
 
     scheme(copy: string): string {

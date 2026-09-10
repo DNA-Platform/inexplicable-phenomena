@@ -31,7 +31,7 @@ export class $TypeOfWord extends $Type {
         const Made = $(Word);
         const Representation = $($$Word);
         const words = parser.words(tokens).map(piece => $<$Word>(<Made>{piece}</Made>));
-        for (const written of words) written.mention = $<$$Word>(<Representation />, written);
+        for (const written of words) written._mention = $<$$Word>(<Representation />, written);
 
         return words;
     }

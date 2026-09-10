@@ -229,6 +229,7 @@ export class $Theme extends $Sheet {
     // declaration is discarded. The unicode escapes say the same thing and parse.
     @select('.pd-citation::before') opened_content = "'\\005B'";
     @select('.pd-citation::after') closed_content = "'\\005D'";
+    @select('.pd-citation') get marked_color() { return 'hsl(0, 100%, 33%)'; }
 
     // AN EQUATION stands centred on its own line.
     @select('.pd-equation') equation_textAlign = 'center';

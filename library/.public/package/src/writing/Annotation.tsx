@@ -9,6 +9,7 @@ export interface $Annotation$ extends $Writing$ {
 }
 
 export class $Annotation extends $Writing implements $Annotation$ {
+    override parenthetical = true;
     protected specification: Specification<$Writing> = new WritingSpecification();
 
     specifically(writing: $Writing): void {

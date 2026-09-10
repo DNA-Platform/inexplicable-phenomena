@@ -17,7 +17,7 @@ export class $Theorem extends $Section implements $Theorem$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     // ACROSS THE BOOK: a paper's Theorem 3 is the third in the paper, not the third in its section.
-    number(): number | undefined { return reflection.numbered(this, this.book); }
+    number(): number | undefined { return reflection.numbered(this, reflection.holding(this) ?? this); }
 
     $Theorem(block: $Block) {
         super.$Section(this.addType(block, $TypeOfTheorem));

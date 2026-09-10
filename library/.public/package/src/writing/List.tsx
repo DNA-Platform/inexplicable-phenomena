@@ -15,6 +15,7 @@ import { $Paragraph } from '@/writing/Paragraph';
 export interface $List$ extends $Paragraph$ { }
 
 export class $List extends $Paragraph implements $List$ {
+    definition = 'ul';
     $List(block: $Block) {
         super.$Paragraph(this.addType(block, $TypeOfList));
     }
@@ -23,12 +24,10 @@ export class $List extends $Paragraph implements $List$ {
     // the list's own copy with a regex and built <li> elements out of the pieces, so the 54 list
     // items on /article were not writings at all — nothing could style one, nest one, reference one
     // or carry an operation on one, and the bullet that opened a line was copy rather than structure.
-    override reading(): $Block {
-        return reflection.wrapped(this);
-    }
+    override print(): ReactNode {
+        const Parts = $(reflection.wrapped(this));
 
-    override print(content: ReactNode): ReactNode {
-        return <ul className={this.className}>{content}</ul>;
+        return <Parts />;
     }
 }
 

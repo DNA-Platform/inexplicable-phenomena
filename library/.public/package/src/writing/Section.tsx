@@ -6,7 +6,7 @@ import { $Writing$, $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
 import { parser } from '@/utilities/Parser';
-import { $$Paragraph, $Paragraph$, $TypeOfParagraph } from './Paragraph';
+import { $Paragraph$, $TypeOfParagraph } from './Paragraph';
 import { $TypeOfHeading, Heading as heading } from './Heading';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 import { $Type } from './Type';
@@ -16,19 +16,17 @@ export interface $Section$ extends $Composition$ {
 }
 
 export class $Section extends $Composition implements $Section$ {
+    definition = 'section';
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
-    override reading(): $Block { return reflection.wrapped(this); }
+    override print(): ReactNode {
+        const Parts = $(reflection.wrapped(this));
 
-    override print(content: ReactNode): ReactNode {
-        return <section className={this.className}>{content}</section>;
+        return <Parts />;
     }
 
     $Section(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfSection));
-        const Representation = $($$Paragraph);
-        for (const written of this.searchFor($TypeOfParagraph))
-            written.mention ??= $<$$Paragraph>(<Representation />, written);
     }
 }
 
