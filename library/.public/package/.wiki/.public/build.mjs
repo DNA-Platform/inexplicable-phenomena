@@ -43,18 +43,22 @@ const bind = async (where) => {
     const opening = [['cover', '.cover'], ['synopsis', '.synopsis'], ['contents', '.table']]
         .filter(([, file]) => held.includes(`${file}.tsx`));
 
+    // WHAT IT IMPORTS ARE CHAPTER CLASSES; it makes their components and passes them into the book.
+    const classed = (one) => local(one).replace(/^\w/, c => c.toUpperCase());
+    const bound = [...opening.map(([name]) => classed(name)), ...chapters.map(one => classed(one))];
     const lines = [
         `import { $ } from '@dna-platform/chemistry';`,
         `import $Book from './.book';`,
-        ...opening.map(([name, file]) => `import ${name} from './${file}';`),
-        ...chapters.map(one => `import ${local(one)} from './${named(one)}';`),
+        ...opening.map(([name, file]) => `import $${classed(name)} from './${file}';`),
+        ...chapters.map(one => `import $${classed(one)} from './${named(one)}';`),
         ``,
         `const Book = $($Book);`,
+        ...bound.map(name => `const ${name} = $($${name});`),
         ``,
         `export const book = $<$Book>(`,
-        `    <Book />,`,
-        ...opening.map(([name]) => `    ${name},`),
-        ...chapters.map(one => `    ${local(one)},`),
+        `    <Book>`,
+        ...bound.map(name => `        <${name} />`),
+        `    </Book>`,
         `);`,
         ``,
     ];

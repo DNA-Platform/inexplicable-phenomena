@@ -1,24 +1,33 @@
 import { $ } from '@dna-platform/chemistry';
 import $Book from './.book';
-import cover from './.cover';
-import synopsis from './.synopsis';
-import orderOfArticleElements from './1-order-of-article-elements';
-import bodySections from './2-body-sections';
-import standardAppendicesAndFooters from './3-standard-appendices-and-footers';
-import specializedLayout from './4-specialized-layout';
-import formatting from './5-formatting';
-import theAppendices from './6-the-appendices';
+import $Cover from './.cover';
+import $Synopsis from './.synopsis';
+import $OrderOfArticleElements from './1-order-of-article-elements';
+import $BodySections from './2-body-sections';
+import $StandardAppendicesAndFooters from './3-standard-appendices-and-footers';
+import $SpecializedLayout from './4-specialized-layout';
+import $Formatting from './5-formatting';
+import $TheAppendices from './6-the-appendices';
 
 const Book = $($Book);
+const Cover = $($Cover);
+const Synopsis = $($Synopsis);
+const OrderOfArticleElements = $($OrderOfArticleElements);
+const BodySections = $($BodySections);
+const StandardAppendicesAndFooters = $($StandardAppendicesAndFooters);
+const SpecializedLayout = $($SpecializedLayout);
+const Formatting = $($Formatting);
+const TheAppendices = $($TheAppendices);
 
 export const book = $<$Book>(
-    <Book />,
-    cover,
-    synopsis,
-    orderOfArticleElements,
-    bodySections,
-    standardAppendicesAndFooters,
-    specializedLayout,
-    formatting,
-    theAppendices,
+    <Book>
+        <Cover />
+        <Synopsis />
+        <OrderOfArticleElements />
+        <BodySections />
+        <StandardAppendicesAndFooters />
+        <SpecializedLayout />
+        <Formatting />
+        <TheAppendices />
+    </Book>
 );

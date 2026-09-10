@@ -1,33 +1,46 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block, $check, inert } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
+import { reflection } from '@/utilities/Reflection';
+import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { $Ref, Ref as ref } from '@/reference/Ref';
-import { $TypeOfReference } from '@/reference/Reference';
+import { $Reference, $TypeOfReference, ReferenceSpecification, Reference as reference } from '@/reference/Reference';
+import type { $Document } from './Document';
 
 export interface $Chapter$ extends $Composition$ {
-    $title: string;
+    title(): string;
+    read(): $Document | undefined;
 }
 
+// A CHAPTER IS A REFERENCE TO A DOCUMENT. Given a title it is a link to the document named that;
+// bare, it looks like nothing; a subclass is its view, and the document that view writes tells the
+// chapter it is there when it is drawn, so whoever needs it FOLLOWS the chapter with read().
 export class $Chapter extends $Composition implements $Chapter$ {
-    $title = '';
+    @inert() written?: $Document;
 
-    // THE LINK IS A PIECE OF WRITING. It was a hand-written <a> carrying no class, so the one
-    // element a sheet most wants to address — the contents row's link — was the one it could not
-    // reach: measured, 65 of the paper's 80 anchors and 32 of /turing's 60. A $Ref is already this
-    // shape, and it carries the target too, so the chapter no longer holds a separate path.
-    $Chapter(block: $Block) {
-        const Link = $(ref);
-        const named = $<$Ref>(<Link>{`[${this.$title}](#${this.$title.replace(/\s+/gu, '_')})`}</Link>);
-        super.$Composition(this.addType(block, $TypeOfChapter));
-        const held = this._block.$elements ?? [];
-        this._block = this._block.filter(() => false).concat(named, ...held);
-        this.removeClass('pd-reference');
+    // A CHAPTER'S BOOK IS ITS PARENT — Doug: "The chapter will always have a book as its parent."
+    override get book(): $Writing { return reflection.writing(this.parent) ? this.parent : this; }
+
+    title(): string {
+        const named = html.text(this._block).trim();
+        return named !== '' ? named : html.text(this.read()?.title()?._block).trim();
     }
 
-    override print(content: ReactNode): ReactNode {
-        return <div className={this.className}>{content}</div>;
+    read(): $Document | undefined { return this.written; }
+
+    $Chapter(block: $Block) {
+        super.$Composition(this.addType(block, $TypeOfChapter));
+        this.removeClass('pd-reference');
+        const named = html.text(this._block).trim();
+        if (named !== '' && reflection.meaning(this) === undefined) {
+            const Reference = $(reference);
+            this._block = this._block.concat($<$Reference>(<Reference>{`#${named.replace(/\s+/gu, '_')}`}</Reference>));
+        }
+    }
+
+    view(): ReactNode {
+        return html.text(this._block).trim() === '' ? null : super.view();
     }
 }
 
@@ -35,10 +48,29 @@ export class $TypeOfChapter extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new ChapterSpecification();
 }
 
-export class ChapterSpecification extends WritingSpecification {
+export class ChapterSpecification extends ReferenceSpecification {
     @specify('a piece of writing says something')
     override $saysSomething(writing: $Writing): boolean | void {
         return false;
+    }
+
+    // A CHAPTER NAMES A DOCUMENT OR WRITES ONE IN ITS VIEW — a reference's rule, said for a chapter.
+    @specify('a chapter names a document, or is one in its view')
+    override $carriesPath(writing: $Writing): boolean | void {
+        $check(html.text(writing._block).trim() === '' || reflection.meaning(writing) !== undefined,
+            'a chapter names a document, or is one in its view, and this one names a document it cannot reach');
+    }
+
+    @specify('a chapter says nothing of its own')
+    $saysNothing(writing: $Writing): void {
+        $check(this.composed(writing).length === 0,
+            'a chapter says nothing of its own, and this one composes writing');
+    }
+
+    @specify('a chapter holds only annotations')
+    $holdsOnlyAnnotations(writing: $Writing): void {
+        $check(this.beside(writing).every(part => reflection.annotation(part)),
+            'a chapter holds only annotations, and this one holds something else');
     }
 }
 

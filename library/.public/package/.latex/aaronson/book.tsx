@@ -1,34 +1,48 @@
 import { $ } from '@dna-platform/chemistry';
 import $Book from './.book';
-import cover from './.cover';
-import synopsis from './.synopsis';
-import table from './.table';
-import introduction from './1-introduction';
-import formalizing from './2-formalizing';
-import beliefs from './3-beliefs';
-import whyDifficult from './4-why-difficult';
-import strengthenings from './5-strengthenings';
-import progress from './6-progress';
-import conclusions from './7-conclusions';
-import acknowledgments from './8-acknowledgments';
-import appendix from './9-appendix';
-import references from './references';
+import $Cover from './.cover';
+import $Synopsis from './.synopsis';
+import $Table from './.table';
+import $Introduction from './1-introduction';
+import $Formalizing from './2-formalizing';
+import $Beliefs from './3-beliefs';
+import $WhyDifficult from './4-why-difficult';
+import $Strengthenings from './5-strengthenings';
+import $Progress from './6-progress';
+import $Conclusions from './7-conclusions';
+import $Acknowledgments from './8-acknowledgments';
+import $Appendix from './9-appendix';
+import $References from './references';
 
 const Book = $($Book);
+const Cover = $($Cover);
+const Synopsis = $($Synopsis);
+const Table = $($Table);
+const Introduction = $($Introduction);
+const Formalizing = $($Formalizing);
+const Beliefs = $($Beliefs);
+const WhyDifficult = $($WhyDifficult);
+const Strengthenings = $($Strengthenings);
+const Progress = $($Progress);
+const Conclusions = $($Conclusions);
+const Acknowledgments = $($Acknowledgments);
+const Appendix = $($Appendix);
+const References = $($References);
 
 export const book = $<$Book>(
-    <Book />,
-    cover,
-    synopsis,
-    table,
-    introduction,
-    formalizing,
-    beliefs,
-    whyDifficult,
-    strengthenings,
-    progress,
-    conclusions,
-    acknowledgments,
-    appendix,
-    references,
+    <Book>
+        <Cover />
+        <Synopsis />
+        <Table />
+        <Introduction />
+        <Formalizing />
+        <Beliefs />
+        <WhyDifficult />
+        <Strengthenings />
+        <Progress />
+        <Conclusions />
+        <Acknowledgments />
+        <Appendix />
+        <References />
+    </Book>
 );

@@ -3,16 +3,19 @@
 // What's wrong with a title written in latex notation?" Nothing — and this is the demo that says
 // so, because a title is a piece of writing like any other and $Math stands inside one.
 import { $ } from '@dna-platform/chemistry';
-import { Author, Cover, Math, Reference, Subject, Title } from '@dna-platform/public';
+import { $Chapter, Author, Cover, Math, Reference, Subject, Title } from '@dna-platform/public';
 
-export default $(
-    <Cover>
-        <Title>
-            <Math>{String.raw`\mathsf{P} \stackrel{?}{=} \mathsf{NP}`}</Math>
-            <Reference>https://www.scottaaronson.com/papers/pnp.pdf</Reference>
-        </Title>
-        <Author>Scott Aaronson</Author>
-        <Subject print={false}>Computational complexity</Subject>
-    </Cover>,
-    Cover
-);
+export default class $Cover extends $Chapter {
+    view() {
+        return (
+            <Cover>
+                <Title>
+                    <Math>{String.raw`\mathsf{P} \stackrel{?}{=} \mathsf{NP}`}</Math>
+                    <Reference>https://www.scottaaronson.com/papers/pnp.pdf</Reference>
+                </Title>
+                <Author>Scott Aaronson</Author>
+                <Subject print={false}>Computational complexity</Subject>
+            </Cover>
+        );
+    }
+}

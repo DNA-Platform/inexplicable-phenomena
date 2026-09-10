@@ -24,10 +24,12 @@ export interface $Book$ extends $Composition$ {
 }
 
 export class $Book extends $Composition implements $Book$ {
-    get cover(): $Cover | undefined { return this.searchForOne<$Cover>($TypeOfCover); }
-    get synopsis(): $Synopsis | undefined { return this.searchForOne<$Synopsis>($TypeOfSynopsis); }
-    get table(): $TableOfContents | undefined { return this.searchForOne<$TableOfContents>($TypeOfTableOfContents); }
-    get chapters(): $Chapter[] { return this.searchFor<$Chapter>($TypeOfChapter); }
+    // THE APPARATUS ARE DOCUMENTS THE BOOK'S CHAPTERS WRITE, followed through the chapters once drawn.
+    get cover(): $Cover | undefined { return this.documents().find((held): held is $Cover => reflection.is(held, $TypeOfCover)); }
+    get synopsis(): $Synopsis | undefined { return this.documents().find((held): held is $Synopsis => reflection.is(held, $TypeOfSynopsis)); }
+    get table(): $TableOfContents | undefined { return this.documents().find((held): held is $TableOfContents => reflection.is(held, $TypeOfTableOfContents)); }
+    // A BOOK COMPOSES CHAPTERS — its parts, which below() already says.
+    get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
@@ -35,23 +37,14 @@ export class $Book extends $Composition implements $Book$ {
         this.removeClass('pd-reference');
         const held: $Writing[] = [this];
         for (let at = 0; at < held.length; at++) {
-            held[at].book = this;
+            if (held[at].book !== this) held[at].book = this;
             for (const part of held[at]._block.$elements ?? []) if (reflection.writing(part)) held.push(part);
         }
-        this.name(held);
     }
 
-    // A CHAPTER WEARS THE CLASSES OF THE DOCUMENT IT NAMES, which is how the appendices tell
-    // themselves apart from the body without the contents saying so. The chapter derived this on
-    // every className read — 65 chapters against 11 documents, 715 comparisons a draw — and the
-    // book already walks everything beneath it, so it is assigned there instead.
-    protected name(held: $Writing[]): void {
-        const documents = this.searchFor<$Document>($TypeOfDocument);
-        for (const part of held) {
-            if (!reflection.is<$Chapter>(part, $TypeOfChapter)) continue;
-            const meant = documents.find(document => html.text(document.title()?._block).trim() === part.$title.trim());
-            for (const written of meant?.classes ?? []) part.addClass(written);
-        }
+    protected documents(): $Document[] {
+        return [...this.searchFor<$Document>($TypeOfDocument), ...this.chapters.map(chapter => chapter.read())]
+            .filter((held): held is $Document => held !== undefined);
     }
 
     header(): ReactNode { return undefined; }

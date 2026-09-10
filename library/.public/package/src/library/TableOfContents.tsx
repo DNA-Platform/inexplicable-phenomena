@@ -1,10 +1,12 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
-import { Specification } from '@/utilities/Specification';
+import { Specification, specify } from '@/utilities/Specification';
+import { reflection } from '@/utilities/Reflection';
+import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Type } from '@/writing/Type';
-import { $TypeOfChapter } from './Chapter';
+import { $Chapter, $TypeOfChapter } from './Chapter';
 import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from './Document';
 
 export interface $TableOfContents$ extends $Document$ { }
@@ -25,6 +27,8 @@ export class $TypeOfTableOfContents extends $TypeOfDocument {
     override below(): new() => $Type { return $TypeOfChapter; }
 }
 
+// A TABLE OF CONTENTS IS VALIDATED IN THE PAGE, not at the bond: a link names a document by its id,
+// and the document is drawn after the table — so the gate that drives the page follows every link.
 export class TableOfContentsSpecification extends DocumentSpecification {
 }
 
