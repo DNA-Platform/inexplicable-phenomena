@@ -90,8 +90,12 @@ export class $Theme extends $Sheet {
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > .pd-heading::before') override numbered_content = "''";
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > .pd-heading::before') override deepNumbered_content = "''";
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > section > section > section > .pd-heading::before') override deepestNumbered_content = "''";
-    @select('.pd-table-of-contents .pd-item > a::before') override listedNumber_content = "''";
+    @select('.pd-table-of-contents > .pd-chapter::before') override listedNumber_content = "''";
     override listedNumber_minWidth = '0';
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter::before') override deepNumber_content = "''";
+    override deepNumber_minWidth = '0';
+    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter::before') override deepestNumber_content = "''";
+    override deepestNumber_minWidth = '0';
 
     // PROSE IS RAGGED RIGHT. Justification without TeX's paragraph optimiser is worse than not
     // justifying, and a rendered document has never pretended otherwise.

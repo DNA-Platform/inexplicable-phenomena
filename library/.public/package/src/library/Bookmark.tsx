@@ -2,7 +2,8 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Fold$, $Fold, $TypeOfFold, FoldSpecification } from '@/reference/Fold';
-import { $Document } from './Document';
+import { reflection } from '@/utilities/Reflection';
+import { $Document, $TypeOfDocument } from './Document';
 
 export interface $Bookmark$ extends $Fold$ {
     document(): $Document | undefined;
@@ -10,8 +11,8 @@ export interface $Bookmark$ extends $Fold$ {
 
 export class $Bookmark extends $Fold implements $Bookmark$ {
     document(): $Document | undefined {
-        for (let holding = this.parent; holding instanceof $Writing; holding = holding.parent) {
-            if (holding instanceof $Document) return holding;
+        for (let holding = this.parent; reflection.writing(holding); holding = holding.parent) {
+            if (reflection.is<$Document>(holding, $TypeOfDocument)) return holding;
             if (holding.parent === holding) return undefined;
         }
         return undefined;

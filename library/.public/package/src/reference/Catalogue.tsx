@@ -1,4 +1,5 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
+import { reflection } from '@/utilities/Reflection';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Annotation } from '@/writing/Annotation';
@@ -17,7 +18,7 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
     parts(): $Writing[] {
         const meant = this.held(this);
 
-        return meant instanceof $Composition
+        return reflection.composition(meant)
             ? meant.parts().map(part => part.mention).filter((part): part is $Catalogue => part !== undefined)
             : [];
     }
@@ -25,7 +26,7 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
     comprehend(): $Composition {
         const [first, ...rest] = this.select(part =>
             (part._block.$elements ?? [])
-                .find((part): part is $Composition => part instanceof $Composition));
+                .find((part): part is $Composition => reflection.composition(part)));
         if (first === undefined) {
             const Composition = $(composition);
 
@@ -49,7 +50,7 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
         if (writing === undefined)
             throw new Error(`the adstyle names position ${place}, and the reference there holds nothing`);
         if (rest.length === 0) return writing;
-        if (!(writing instanceof $Composition))
+        if (!reflection.composition(writing))
             throw new Error('nothing stands beneath this writing, and the adstyle descends further');
         const held = writing.catalogue();
         if (held === undefined) throw new Error('the adstyle descends into writing that catalogues nothing');
@@ -63,7 +64,7 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
             const writing = this.held(references[at]);
             if (writing === undefined) continue;
             if (writing === of) return `${at}`;
-            if (!(writing instanceof $Composition) || writing.parts().includes(writing)) continue;
+            if (!reflection.composition(writing) || writing.parts().includes(writing)) continue;
             try { return `${at}/${writing.catalogue()?.adstyle(of)}`; } catch { }
         }
         throw new Error('this catalogue does not reach that writing at any depth');
@@ -85,7 +86,7 @@ export class $Catalogue extends $Composition implements $Catalogue$ {
 
     protected held(of: $Writing): $Writing | undefined {
         return (of._block.$elements ?? [])
-            .find((part): part is $Writing => part instanceof $Writing && !(part instanceof $Annotation));
+            .find((part): part is $Writing => reflection.writing(part) && !reflection.annotation(part));
     }
 
 }

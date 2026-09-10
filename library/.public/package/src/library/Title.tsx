@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { reflection } from '@/utilities/Reflection';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Composition } from '@/writing/Composition';
@@ -33,8 +34,8 @@ export class $Title extends $Section implements $Title$ {
         // its meaning belong to the title and not to the words.
         if (this.heading() === undefined) {
             const Heading = $(heading);
-            const said = ((this._block.$elements ?? []) as unknown[]).filter(piece => !(piece instanceof $Annotation));
-            this._block = this._block.filter(piece => piece instanceof $Annotation).concat($<$Writing>(<Heading />, ...said as never[]));
+            const said = ((this._block.$elements ?? []) as unknown[]).filter(piece => !reflection.annotation(piece));
+            this._block = this._block.filter(piece => reflection.annotation(piece)).concat($<$Writing>(<Heading />, ...said as never[]));
         }
     }
 

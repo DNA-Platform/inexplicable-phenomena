@@ -1,6 +1,7 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
+import { reflection } from '@/utilities/Reflection';
 import { $Fold$, $Fold, $TypeOfFold, FoldSpecification } from '@/reference/Fold';
 
 export interface $Highlight$ extends $Fold$ {
@@ -9,7 +10,7 @@ export interface $Highlight$ extends $Fold$ {
 
 export class $Highlight extends $Fold implements $Highlight$ {
     pair(): [$Fold, $Fold] | undefined {
-        const ends = (this._block.$elements ?? []).filter((end): end is $Fold => end instanceof $Fold);
+        const ends = (this._block.$elements ?? []).filter((end): end is $Fold => reflection.is<$Fold>(end, $TypeOfFold));
         return ends.length === 2 ? [ends[0], ends[1]] : undefined;
     }
     beginning(): $Fold | undefined { return this.pair()?.[0]; }
@@ -27,7 +28,7 @@ export class $TypeOfHighlight extends $TypeOfFold {
 export class HighlightSpecification extends FoldSpecification {
     @specify('a highlight is a pair of folds in the same writing')
     $sameWriting(writing: $Writing): void {
-        if (!(writing instanceof $Highlight)) return;
+        if (!reflection.is<$Highlight>(writing, $TypeOfHighlight)) return;
         const pair = writing.pair();
         if (pair === undefined) return;
         const kinds = pair.map(end => end.key().split('/')[0]);

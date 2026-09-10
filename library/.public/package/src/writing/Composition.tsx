@@ -8,7 +8,6 @@ import { $Type } from './Type';
 
 export interface $Composition$ extends $Writing$ {
     parenthetical: boolean;
-    $print?: boolean;
 
     parts(): $Writing[];
     catalogue(): $Catalogue | undefined;
@@ -19,14 +18,12 @@ export interface $Composition$ extends $Writing$ {
 }
 
 export class $Composition extends $Writing implements $Composition$ {
-    parenthetical = false;
     // PRINT IS TRI-STATE, and that is Doug's ruling: "On the cover, print=false should make it
     // parenthetical. We cover that everyone." Unwritten, a writing is shown unless it is
     // parenthetical; written, the author decides — print turns a parenthetical writing ON and
     // print={false} turns any writing OFF. It was a boolean defaulting to false, so it could only
     // ever say yes, and a paper wanting a subject in its schema and not on its page had to make the
     // KIND parenthetical for every book that has one.
-    $print?: boolean;
 
     parts(): $Writing[] {
         const kind = this.kind;
@@ -43,9 +40,9 @@ export class $Composition extends $Writing implements $Composition$ {
                 // nine sections with NONE nested and every heading an h2, because a section written
                 // inside a section was replaced by its paragraphs before anything could draw it.
                 // The reading is one level now, which is what makes it safe to ask.
-                if (own !== undefined && token !== this && reflection.instanceOf(token, own)) return token;
+                if (own !== undefined && token !== this && reflection.is(token, own)) return token;
                 if (beneath === undefined) return token;
-                return reflection.instanceOf(token, beneath) ? token : undefined;
+                return reflection.is(token, beneath) ? token : undefined;
             },
             tokens => this.reduce(tokens),
             parts => kind?.supplies(this, parts) ?? parts);
@@ -57,10 +54,6 @@ export class $Composition extends $Writing implements $Composition$ {
 
     $Composition(block: $Block) {
         super.$Writing(block);
-    }
-
-    override view(): ReactNode {
-        return (this.$print ?? !this.parenthetical) ? super.view() : null;
     }
 
     where(match: (part: $Writing) => boolean): $Writing[] { return this.parts().filter(match); }

@@ -1,4 +1,5 @@
 import { $Writing } from '@/writing/Writing';
+import { reflection } from '@/utilities/Reflection';
 import { $Annotation } from '@/writing/Annotation';
 import { html } from '@/utilities/Html';
 
@@ -9,8 +10,8 @@ export class Parser {
     tokens(of: $Writing): (string | $Writing)[] {
         return ((of._block.$elements ?? []) as unknown[])
             .filter(node => node !== null && node !== undefined && typeof node !== 'boolean')
-            .map(node => node instanceof $Writing ? node : String(node))
-            .filter(node => node instanceof $Writing ? !(node instanceof $Annotation) : node !== '');
+            .map(node => reflection.writing(node) ? node : String(node))
+            .filter(node => reflection.writing(node) ? !reflection.annotation(node) : node !== '');
     }
 
     parse<T extends $Writing>(

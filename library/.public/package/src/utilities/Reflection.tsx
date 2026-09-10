@@ -34,16 +34,17 @@ export class Reflection {
         this.kinds = { ...this.kinds, ...kinds };
     }
 
-    is(writing: $Writing, asked: new() => $Type): boolean {
-        return this.types(writing).some(type => type instanceof asked);
-    }
-
-    instanceOf(part: unknown, asked: new() => $Type): boolean {
-        return part instanceof this.kinds.writing && this.is(part, asked);
+    is<T extends $Writing = $Writing>(part: unknown, asked: new() => $Type): part is T {
+        return part instanceof this.kinds.writing
+            && this.types(part as $Writing).some(type => type instanceof asked);
     }
 
     writing(part: unknown): part is $Writing {
         return part instanceof this.kinds.writing;
+    }
+
+    annotation(part: unknown): part is $Annotation {
+        return part instanceof this.kinds.annotation;
     }
 
     specialises(type: $Type, of: $Type): boolean {

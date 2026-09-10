@@ -43,7 +43,7 @@ export class $TypeOfTable extends $TypeOfSection {
 export class TableSpecification extends SectionSpecification {
     @specify('a table\'s columns divide its cells')
     $columnsDivideCells(writing: $Writing): void {
-        if (!(writing instanceof $Table) || writing.$columns === undefined) return;
+        if (!reflection.is<$Table>(writing, $TypeOfTable) || writing.$columns === undefined) return;
         $check(writing.cells().length % writing.$columns === 0,
             'a table\'s columns divide its cells, and these do not');
     }

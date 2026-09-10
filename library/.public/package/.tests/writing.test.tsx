@@ -279,7 +279,7 @@ describe('a composition generates the level it needs from what it holds', () => 
 
     it('AND THE PARAGRAPH IS STILL THERE, WHOLE — nothing was consumed to make the heading', () => {
         const held = section();
-        const paragraph = held.parts().find(part => reflection.is(part, $TypeOfParagraph) && !reflection.is(part, $TypeOfHeading));
+        const paragraph = held.parts().find(part => part.kind?.constructor === $TypeOfParagraph);
         expect(paragraph).toBeDefined();
         expect(html.text(paragraph!._block)).toContain('One thing to say.');
         expect(html.text(paragraph!._block)).toContain('Then another thing.');

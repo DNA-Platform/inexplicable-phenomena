@@ -42,6 +42,8 @@ export class $Writing extends $Chemical implements $Writing$ {
     // a table drew <div class="sc-jSFhYz"> with no pd-table at all, because the format restyling
     // it in place passed an empty className over it.
     $className?: string;
+    $print?: boolean;
+    parenthetical = false;
     apart: string[] = [];
     inline = true;
     @inert() mention?: $Catalogue;
@@ -72,6 +74,7 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
+        if (this.$print !== undefined) this.parenthetical = !this.$print;
         const holding = this.parent;
         this.book = reflection.writing(holding) && holding !== this ? holding.book ?? holding : this;
     }
@@ -80,6 +83,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     // /turing and 33 of them classless, so no sheet could style one, no subclass could specialise
     // one and nothing could ask a book for its links.
     view(): ReactNode {
+        if (this.parenthetical) return null;
         const meaning = this.meaning;
         const fold = this.fold;
         const Block = $(this.reading());
@@ -96,7 +100,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     }
 
     searchFor<T extends $Writing>(type: new() => $Type): T[] {
-        return (this._block.$elements ?? []).filter((part): part is T => reflection.instanceOf(part, type));
+        return (this._block.$elements ?? []).filter((part): part is T => reflection.is(part, type));
     }
 
     searchForOne<T extends $Writing>(type: new() => $Type): T | undefined {

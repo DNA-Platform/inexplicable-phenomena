@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { reflection } from '@/utilities/Reflection';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { lexer } from 'marked';
 import { Specification, specify } from '@/utilities/Specification';
@@ -51,7 +52,7 @@ export class $Ref extends $Phrase implements $Ref$ {
         if (url === undefined) throw new Error('a reference reads to what it means, and this one holds nothing to read');
         const fragment = url.startsWith('#') ? url.slice(1) : url;
         const book = this.book;
-        const held = book instanceof $Composition ? book.catalogue() : undefined;
+        const held = reflection.composition(book) ? book.catalogue() : undefined;
         if (/^\d/.test(fragment) && held !== undefined) return held.follow(fragment);
         throw new Error('a reference reads to what it means, and this route is the application to follow');
     }
@@ -82,7 +83,7 @@ export class $TypeOfRef extends $TypeOfPhrase {
 export class RefSpecification extends PhraseSpecification {
     @specify('a ref names a target')
     $namesTarget(writing: $Writing): void {
-        $check(writing instanceof $Ref && writing.url() !== undefined, 'a ref names a target, and this one names none');
+        $check(reflection.is<$Ref>(writing, $TypeOfRef) && writing.url() !== undefined, 'a ref names a target, and this one names none');
     }
 }
 

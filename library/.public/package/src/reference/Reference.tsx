@@ -66,7 +66,7 @@ export class $Reference extends $Annotation implements $Reference$ {
 
     async read(): Promise<$Writing> {
         const referent = (this._block.$elements ?? [])
-            .find((part): part is $Writing => reflection.writing(part) && !(part instanceof $Annotation));
+            .find((part): part is $Writing => reflection.writing(part) && !reflection.annotation(part));
         if (referent) return referent;
         throw new Error('a reference reads to what it means, and this one holds nothing to read');
     }

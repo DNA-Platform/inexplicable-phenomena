@@ -3,6 +3,7 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
+import { reflection } from '@/utilities/Reflection';
 import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
 import { IllustrationFormat as shownStyle } from '@/formatting/IllustrationFormat';
 
@@ -33,7 +34,7 @@ export class $TypeOfImage extends $TypeOfParagraph {
 export class ImageSpecification extends ParagraphSpecification {
     @specify('an image shows something')
     $showsSomething(writing: $Writing): void {
-        $check(writing instanceof $Image && writing.source !== '',
+        $check(reflection.is<$Image>(writing, $TypeOfImage) && writing.source !== '',
             'an image shows something, and this one shows nothing');
     }
 }

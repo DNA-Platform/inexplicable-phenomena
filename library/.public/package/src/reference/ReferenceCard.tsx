@@ -1,4 +1,5 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
+import { reflection } from '@/utilities/Reflection';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Annotation } from '@/writing/Annotation';
@@ -14,7 +15,7 @@ export interface $ReferenceCard$ extends $Reference$ {
 export class $ReferenceCard extends $Reference implements $ReferenceCard$ {
     references(): $Reference[] {
         return (this._block.$elements ?? [])
-            .filter((part): part is $Reference => part instanceof $Reference);
+            .filter((part): part is $Reference => reflection.is<$Reference>(part, $TypeOfReference));
     }
     first(): $Reference | undefined { return this.references()[0]; }
     rest(): $Reference[] { return this.references().slice(1); }
@@ -39,24 +40,24 @@ export class ReferenceCardSpecification extends ReferenceSpecification {
     @specify('a reference card is a list of references, the first canonical')
     $listOfReferences(writing: $Writing): void {
         const parts = (writing._block.$elements ?? [])
-            .filter((part): part is $Writing => part instanceof $Writing);
-        $check(parts.every(part => part instanceof $Reference || part instanceof $Annotation),
+            .filter((part): part is $Writing => reflection.writing(part));
+        $check(parts.every(part => reflection.is(part, $TypeOfReference) || reflection.annotation(part)),
             'a reference card is a list of references, and this one holds something else');
-        $check(parts.some(part => part instanceof $Reference),
+        $check(parts.some(part => reflection.is(part, $TypeOfReference)),
             'a reference card is a list of references, and this one holds none');
     }
 
     @specify('a card wears its first reference — the canonical one')
     override $carriesPath(writing: $Writing): boolean | void {
         const first = (writing._block.$elements ?? [])
-            .find((reference): reference is $Reference => reference instanceof $Reference);
+            .find((reference): reference is $Reference => reflection.is<$Reference>(reference, $TypeOfReference));
         if (first?.path() !== undefined) return false;
         return super.$carriesPath(writing);
     }
 
     @specify('a card says nothing of its own — its references are its substance')
     override $saysSomething(writing: $Writing): boolean | void {
-        if ((writing._block.$elements ?? []).some(part => part instanceof $Reference)) return false;
+        if ((writing._block.$elements ?? []).some(part => reflection.is(part, $TypeOfReference))) return false;
         return super.$saysSomething(writing);
     }
 }
