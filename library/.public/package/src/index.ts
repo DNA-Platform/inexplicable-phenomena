@@ -30,6 +30,7 @@ export * from './writing/Summary';
 export * from './formatting/Theme';
 export * from './formatting/Format';
 export * from './formatting/TableFormat';
+export * from './formatting/FigureFormat';
 
 export * from './reference/Reference';
 export * from './reference/Fold';

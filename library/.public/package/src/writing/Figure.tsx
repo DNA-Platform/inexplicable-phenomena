@@ -13,13 +13,16 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
+import { FigureFormat as figureStyle } from '@/formatting/FigureFormat';
 import { $Illustration$, $Illustration, $TypeOfIllustration, IllustrationSpecification } from './Illustration';
 
 export interface $Figure$ extends $Illustration$ { }
 
 export class $Figure extends $Illustration implements $Figure$ {
+    $measure = '100%';
+
     $Figure(block: $Block) {
-        super.$Illustration(this.addType(block, $TypeOfFigure));
+        super.$Illustration(this.addType(block, $TypeOfFigure).concat($check(figureStyle, '!')));
     }
 }
 

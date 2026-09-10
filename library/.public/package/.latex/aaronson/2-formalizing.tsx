@@ -10,7 +10,7 @@ export default $(
             <Section>
                 <Heading>NP-Completeness</Heading>
                 <Paragraph>A further concept, not part of the statement of P = NP but central to any discussion of it, is NP-completeness. To explain this requires a few more definitions. An oracle Turing machine is a Turing machine that, at any time, can submit an instance x to an “oracle”: a device that, in a single time step, returns a bit indicating whether x belongs to some given language L. Though it sounds fanciful, this notion is what lets us relate different computational problems to each other, and as such is one of the central concepts in computer science. An oracle that answers all queries consistently with L is called an L-oracle, and we write M to denote the (oracle) Turing machine M with L-oracle. We can then define P , or P relative to L, as the class of all languages L for which there exists an oracle machine M such that ML decides L′ in polynomial time. If L′ ∈ PL, then we also write L ≤P L, which means “L is polynomial-time Turing-reducible to L.” Note that polynomial-time Turing-reducibility is indeed a partial order relation (i.e., it’s transitive and reflexive).</Paragraph>
-                <Figure source="/figure-1.png">P, NP, NP-hard, and NP-complete</Figure>
+                <Figure source="/figure-1.png" measure="55%">P, NP, NP-hard, and NP-complete</Figure>
             </Section>
             <Section>
                 <Heading>Other Core Concepts</Heading>
