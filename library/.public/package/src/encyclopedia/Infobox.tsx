@@ -18,7 +18,7 @@ export class $Infobox extends $Aside implements $Infobox$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
 
     $Infobox(block: $Block) {
-        super.$Aside($check(block, $Block, '!').concat($check($TypeOfInfobox, '!')));
+        super.$Aside(this.addType(block, $TypeOfInfobox));
     }
 
     // The <aside> comes from $Aside; the encyclopedia theme floats it right by its pd-infobox class.
@@ -43,7 +43,7 @@ export class $Line extends $Paragraph implements $Line$ {
     get label(): string { return this.$label; }
 
     $Line(block: $Block) {
-        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfLine, '!')));
+        super.$Paragraph(this.addType(block, $TypeOfLine));
     }
 
     override print(content: ReactNode): ReactNode {

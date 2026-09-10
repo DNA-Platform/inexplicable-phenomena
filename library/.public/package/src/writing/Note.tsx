@@ -38,7 +38,7 @@ export interface $Note$ extends $Paragraph$ { }
 
 export class $Note extends $Paragraph implements $Note$ {
     $Note(block: $Block) {
-        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfNote, '!')));
+        super.$Paragraph(this.addType(block, $TypeOfNote));
     }
 
     // It draws where it stands by default, which is a hatnote. A note drawn ELSEWHERE says so by

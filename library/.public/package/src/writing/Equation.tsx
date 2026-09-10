@@ -24,7 +24,7 @@ export class $Equation extends $Paragraph implements $Equation$ {
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Equation(block: $Block) {
-        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfEquation, '!')));
+        super.$Paragraph(this.addType(block, $TypeOfEquation));
     }
 
     // The number is DRAWN AS AN ATTRIBUTE and not as words, so a theme places it — LaTeX puts it

@@ -9,7 +9,7 @@ export interface $Footer$ extends $Document$ { }
 
 export class $Footer extends $Document implements $Footer$ {
     $Footer(block: $Block) {
-        super.$Document($check(block, $Block, '!').concat($check($TypeOfFooter, '!')));
+        super.$Document(this.addType(block, $TypeOfFooter));
     }
 
     override print(content: ReactNode): ReactNode {

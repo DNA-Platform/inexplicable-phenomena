@@ -17,7 +17,7 @@ export class $Code extends $Paragraph implements $Code$ {
     get language(): string { return this.$language; }
 
     $Code(block: $Block) {
-        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfCode, '!')));
+        super.$Paragraph(this.addType(block, $TypeOfCode));
     }
 
     // CODE IS A <pre> HOLDING A <code>, which is the only markup HTML has for it and the one every

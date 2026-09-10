@@ -25,7 +25,7 @@ export class $Talk extends $Document implements $Talk$ {
     topics(): $Writing[] { throw new Error('not implemented: $Talk.topics — the sections it holds, each one a discussion'); }
 
     $Talk(block: $Block) {
-        super.$Document($check(block, $Block, '!').concat($check($TypeOfTalk, '!')));
+        super.$Document(this.addType(block, $TypeOfTalk));
     }
 }
 
@@ -48,7 +48,7 @@ export class $Comment extends $Paragraph implements $Comment$ {
     replies(): $Comment[] { throw new Error('not implemented: $Comment.replies — the comments composed into this one, which is what threading IS'); }
 
     $Comment(block: $Block) {
-        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfComment, '!')));
+        super.$Paragraph(this.addType(block, $TypeOfComment));
     }
 }
 

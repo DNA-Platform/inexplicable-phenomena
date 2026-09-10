@@ -28,7 +28,7 @@ export class $Table extends $Section implements $Table$ {
     }
 
     $Table(block: $Block) {
-        super.$Section($check(block, $Block, '!').concat($check($TypeOfTable, '!')).concat($check(tableStyle, '!')));
+        super.$Section(this.addType(block, $TypeOfTable).concat($check(tableStyle, '!')));
     }
 }
 

@@ -17,7 +17,7 @@ export interface $Item$ extends $Sentence$ { }
 
 export class $Item extends $Sentence implements $Item$ {
     $Item(block: $Block) {
-        super.$Sentence($check(block, $Block, '!').concat($check($TypeOfItem, '!')));
+        super.$Sentence(this.addType(block, $TypeOfItem));
     }
 
     override print(content: ReactNode): ReactNode {

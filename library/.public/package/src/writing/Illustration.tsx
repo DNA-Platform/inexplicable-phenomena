@@ -19,7 +19,7 @@ export class $Illustration extends $Paragraph implements $Illustration$ {
     get caption(): string { return html.text(this._block); }
 
     $Illustration(block: $Block) {
-        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfIllustration, '!')));
+        super.$Paragraph(this.addType(block, $TypeOfIllustration));
     }
 
     override print(content: ReactNode): ReactNode {

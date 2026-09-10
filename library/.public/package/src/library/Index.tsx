@@ -11,7 +11,7 @@ export class $Index extends $Document implements $Index$ {
     override parenthetical = true;
 
     $Index(block: $Block) {
-        super.$Document($check(block, $Block, '!').concat($check($TypeOfIndex, '!')));
+        super.$Document(this.addType(block, $TypeOfIndex));
     }
 
     override print(content: ReactNode): ReactNode {

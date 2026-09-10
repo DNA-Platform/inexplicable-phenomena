@@ -16,7 +16,7 @@ export interface $List$ extends $Paragraph$ { }
 
 export class $List extends $Paragraph implements $List$ {
     $List(block: $Block) {
-        super.$Paragraph($check(block, $Block, '!').concat($check($TypeOfList, '!')));
+        super.$Paragraph(this.addType(block, $TypeOfList));
     }
 
     // A LIST DRAWS ITS PARTS, which is the reading $Section already takes. What stood here split

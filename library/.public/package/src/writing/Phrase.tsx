@@ -10,7 +10,7 @@ export interface $Phrase$ extends $Sentence$ { }
 
 export class $Phrase extends $Sentence implements $Phrase$ {
     $Phrase(block: $Block) {
-        super.$Sentence($check(block, $Block, '!').concat($check($TypeOfPhrase, '!')));
+        super.$Sentence(this.addType(block, $TypeOfPhrase));
     }
 }
 

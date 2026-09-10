@@ -31,7 +31,7 @@ export class $Ref extends $Phrase implements $Ref$ {
     written(): string { return this.link()?.text ?? html.text(this._block); }
 
     $Ref(block: $Block) {
-        super.$Phrase($check(block, $Block, '!').concat($check($TypeOfRef, '!')));
+        super.$Phrase(this.addType(block, $TypeOfRef));
     }
 
     override view(): ReactNode {

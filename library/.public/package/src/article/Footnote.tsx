@@ -19,7 +19,7 @@ export class $Footnote extends $Note implements $Footnote$ {
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Footnote(block: $Block) {
-        super.$Note($check(block, $Block, '!').concat($check($TypeOfFootnote, '!')));
+        super.$Note(this.addType(block, $TypeOfFootnote));
     }
 
     // THE MARK IS NOT HERE and does not need to be: a footnote is ONE piece of writing, drawn at the

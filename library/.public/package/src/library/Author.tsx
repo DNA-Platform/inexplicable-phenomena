@@ -12,7 +12,7 @@ export class $Author extends $Section implements $Author$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Author(block: $Block) {
-        super.$Section($check(block, $Block, '!').concat($check($TypeOfAuthor, '!')));
+        super.$Section(this.addType(block, $TypeOfAuthor));
         if (this.heading() === undefined) {
             const Heading = $(heading);
             this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));

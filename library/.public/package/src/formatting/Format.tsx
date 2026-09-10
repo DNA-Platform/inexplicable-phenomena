@@ -17,7 +17,7 @@ export class $Format extends $Annotation implements $Format$ {
     override get theme(): $Theme { return this.$of === null ? reflection.theme(this) : this.$of.theme; }
 
     $Format(block: $Block) {
-        super.$Writing($check(block, $Block, '!').concat($check($TypeOfFormat, '!')));
+        super.$Writing(this.addType(block, $TypeOfFormat));
     }
 
     // A FORMAT NEEDS NO VIEW — chemistry promises it: handed the element, it holds what it is

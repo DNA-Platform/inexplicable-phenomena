@@ -19,7 +19,7 @@ export interface $Figure$ extends $Illustration$ { }
 
 export class $Figure extends $Illustration implements $Figure$ {
     $Figure(block: $Block) {
-        super.$Illustration($check(block, $Block, '!').concat($check($TypeOfFigure, '!')));
+        super.$Illustration(this.addType(block, $TypeOfFigure));
     }
 }
 

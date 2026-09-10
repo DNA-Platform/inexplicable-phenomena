@@ -11,7 +11,7 @@ export interface $Hatnote$ extends $Note$ { }
 
 export class $Hatnote extends $Note implements $Hatnote$ {
     $Hatnote(block: $Block) {
-        super.$Note($check(block, $Block, '!').concat($check($TypeOfHatnote, '!')));
+        super.$Note(this.addType(block, $TypeOfHatnote));
     }
 }
 

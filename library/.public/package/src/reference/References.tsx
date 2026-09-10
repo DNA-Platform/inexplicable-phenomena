@@ -14,7 +14,7 @@ export class $References extends $Document implements $References$ {
     entries(): $Writing[] { return this.searchFor($TypeOfReferenceCard); }
 
     $References(block: $Block) {
-        super.$Document($check(block, $Block, '!').concat($check($TypeOfReferences, '!')));
+        super.$Document(this.addType(block, $TypeOfReferences));
     }
 
     // OWED: <section class="pd-bibliography"><ol> — an ordered list, because the order IS the numbering.

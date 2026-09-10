@@ -42,7 +42,7 @@ export class $Aside extends $Section implements $Aside$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Aside(block: $Block) {
-        super.$Section($check(block, $Block, '!').concat($check($TypeOfAside, '!')));
+        super.$Section(this.addType(block, $TypeOfAside));
     }
 
     override print(content: ReactNode): ReactNode {

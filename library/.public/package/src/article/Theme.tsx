@@ -158,15 +158,13 @@ export class $Theme extends $Sheet {
     override place = "'\\25A1'";
 
     // A TOP-LEVEL ENTRY IS BOLD, name and marker alike, which is what article.cls does.
-    @select('.pd-table-of-contents > .pd-section > .pd-list > .pd-item > a') top_fontWeight = '700';
+    @select('.pd-table-of-contents > .pd-chapter') top_fontWeight = '700';
 
-    @select('.pd-table-of-contents .pd-list') counting_counterReset = 'listed';
-    @select('.pd-table-of-contents .pd-item') tallied_counterIncrement = 'listed';
-    @select('.pd-table-of-contents .pd-item.pd-references, .pd-table-of-contents .pd-item.pd-appendix') apart_counterIncrement = 'none';
-    @select('.pd-table-of-contents .pd-item > a::before') listedNumber_content = "counters(listed, '.')";
+    @select('.pd-table-of-contents') counting_counterReset = 'listed';
+    @select('.pd-table-of-contents .pd-chapter') tallied_counterIncrement = 'listed';
+    @select('.pd-table-of-contents .pd-chapter::before') listedNumber_content = "counters(listed, '.')";
     listedNumber_flex = '0 0 auto';
     listedNumber_minWidth = '2.6em';
-    @select('.pd-table-of-contents .pd-item.pd-references > a::before, .pd-table-of-contents .pd-item.pd-appendix > a::before') apartNumber_content = "''";
 
     // A FIGURE IS NUMBERED, and by the sheet, exactly as a section is — so a reading that does not
     // number figures simply does not, and $Figure stays a shell with no member for it. latex.css

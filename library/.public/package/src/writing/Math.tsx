@@ -17,7 +17,7 @@ export class $Math extends $Phrase implements $Math$ {
     tex(): string { return html.text(this._block); }
 
     $Math(block: $Block) {
-        super.$Phrase($check(block, $Block, '!').concat($check($TypeOfMath, '!')));
+        super.$Phrase(this.addType(block, $TypeOfMath));
     }
 
     // IT WRITES ITS ELEMENT LIKE EVERY OTHER KIND, through print rather than view — katex answers

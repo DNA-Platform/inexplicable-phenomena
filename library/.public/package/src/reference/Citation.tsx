@@ -24,7 +24,7 @@ export class $Citation extends $Ref implements $Citation$ {
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Citation(block: $Block) {
-        super.$Ref($check(block, $Block, '!').concat($check($TypeOfCitation, '!')));
+        super.$Ref(this.addType(block, $TypeOfCitation));
     }
 
 }

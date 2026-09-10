@@ -90,14 +90,12 @@ export class $Theme extends $Format implements $Theme$ {
     // table of contents IS and not what LaTeX does — Doug: "ask if you are hurting yourself by not
     // taking some of this and moving it back into the main framework so markdown can inherit some."
     // The nested list takes a row of its own, which is what lets the row be a flex line at all.
-    @select('.pd-table-of-contents .pd-item') entry_display = 'flex';
+    @select('.pd-table-of-contents .pd-chapter') entry_display = 'flex';
     entry_flexWrap = 'wrap';
     entry_alignItems = 'baseline';
     entry_marginTop = '0';
     entry_marginBottom = '.15rem';
     entry_textIndent = '0';
-    @select('.pd-table-of-contents .pd-item > .pd-list') under_flex = '0 0 100%';
-    under_order = '4';
 
     // THE LEADER AND THE PLACE, drawn inside the anchor so the whole row follows the link. `leader`
     // and `place` are VALUES a theme sets: a documentleading with dots to a marker is one reading, a
@@ -112,21 +110,15 @@ export class $Theme extends $Format implements $Theme$ {
     leader = 'none';
     place = 'none';
     spacing = '.55em';
-    @select('.pd-table-of-contents .pd-item > a') entryLink_display = 'flex';
-    entryLink_alignItems = 'baseline';
-    entryLink_flex = '1 1 auto';
-    entryLink_order = '1';
-    @select('.pd-table-of-contents .pd-item > a::after') leading_content = "''";
+    @select('.pd-table-of-contents .pd-chapter::after') get leading_content() { return this.place; }
     leading_flex = '1 1 auto';
+    leading_textAlign = 'right';
     leading_marginLeft = '.6em';
     leading_alignSelf = 'stretch';
     get leading_backgroundImage() { return this.leader; }
     get leading_backgroundSize() { return `${this.spacing} ${this.spacing}`; }
     leading_backgroundRepeat = 'repeat-x';
     leading_backgroundPosition = 'left bottom .3em';
-    @select('.pd-table-of-contents .pd-item::after') get placed_content() { return this.place; }
-    placed_order = '3';
-    placed_marginLeft = '.6em';
     @select('.pd-table-of-contents a') named_textDecoration = 'none';
     get named_color() { return this.ink; }
 
@@ -294,7 +286,7 @@ export class $Theme extends $Format implements $Theme$ {
 
     // Machinery extending machinery, so the chain is called whole; a KIND would extend its level instead.
     $Theme(block: $Block) {
-        super.$Format($check(block, $Block, '!').concat($check($TypeOfTheme, '!')));
+        super.$Format(this.addType(block, $TypeOfTheme));
     }
 
     // ONE REGISTRATION, TWO READINGS OF IT. There were two statics here and Doug's ruling is that

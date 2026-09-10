@@ -15,7 +15,7 @@ export class $Appendix extends $Document implements $Appendix$ {
     }
 
     $Appendix(block: $Block) {
-        super.$Document($check(block, $Block, '!').concat($check($TypeOfAppendix, '!')));
+        super.$Document(this.addType(block, $TypeOfAppendix));
     }
 }
 

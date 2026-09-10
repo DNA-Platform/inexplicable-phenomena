@@ -14,7 +14,7 @@ export class $IndexCard extends $Composition implements $IndexCard$ {
     title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
 
     $IndexCard(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfIndexCard, '!')));
+        super.$Composition(this.addType(block, $TypeOfIndexCard));
     }
 
     override get meaning(): $Reference$ | undefined { return this.title()?.meaning; }

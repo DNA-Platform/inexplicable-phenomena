@@ -30,7 +30,7 @@ export class $Book extends $Composition implements $Book$ {
     override get classes(): string[] { return super.classes.filter(name => name !== 'pd-reference'); }
 
     $Book(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfBook, '!')));
+        super.$Composition(this.addType(block, $TypeOfBook));
         if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
     }
 
@@ -52,7 +52,7 @@ export interface $$Book$ extends $Paragraph$ { }
 
 export class $$Book extends $Catalogue implements $$Book$ {
     $$Book(block: $Block) {
-        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfParagraph, '!')).concat($check($TypeOf$Book, '!')));
+        super.$Catalogue(this.addType(block, $TypeOfParagraph, $TypeOf$Book));
     }
 }
 

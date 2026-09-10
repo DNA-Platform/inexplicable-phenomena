@@ -2,6 +2,7 @@ import { $ } from '@dna-platform/chemistry';
 import $Book from './.book';
 import cover from './.cover';
 import synopsis from './.synopsis';
+import table from './.table';
 import introduction from './1-introduction';
 import formalizing from './2-formalizing';
 import beliefs from './3-beliefs';
@@ -19,6 +20,7 @@ export const book = $<$Book>(
     <Book />,
     cover,
     synopsis,
+    table,
     introduction,
     formalizing,
     beliefs,

@@ -21,7 +21,7 @@ export interface $Abstract$ extends $Synopsis$ { }
 
 export class $Abstract extends $Synopsis implements $Abstract$ {
     $Abstract(block: $Block) {
-        super.$Synopsis($check(block, $Block, '!').concat($check($TypeOfAbstract, '!')));
+        super.$Synopsis(this.addType(block, $TypeOfAbstract));
     }
 }
 

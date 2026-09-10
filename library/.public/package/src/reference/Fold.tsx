@@ -14,7 +14,7 @@ export class $Fold extends $Annotation implements $Fold$ {
     key(): string { return html.text(this._block).trim(); }
 
     $Fold(block: $Block) {
-        super.$Writing($check(block, $Block, '!').concat($check($TypeOfFold, '!')));
+        super.$Writing(this.addType(block, $TypeOfFold));
     }
 
     static $register(): void {

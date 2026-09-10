@@ -20,7 +20,7 @@ export class $Theorem extends $Section implements $Theorem$ {
     number(): number | undefined { return reflection.numbered(this, this.book); }
 
     $Theorem(block: $Block) {
-        super.$Section($check(block, $Block, '!').concat($check($TypeOfTheorem, '!')));
+        super.$Section(this.addType(block, $TypeOfTheorem));
     }
 }
 

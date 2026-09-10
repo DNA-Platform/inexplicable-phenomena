@@ -14,7 +14,7 @@ export interface $Sentence$ extends $Composition$ { }
 
 export class $Sentence extends $Composition implements $Sentence$ {
     $Sentence(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfSentence, '!')));
+        super.$Composition(this.addType(block, $TypeOfSentence));
     }
 }
 
@@ -24,7 +24,7 @@ export interface $$Sentence$ extends $Sentence$ {
 
 export class $$Sentence extends $Catalogue implements $$Sentence$ {
     $$Sentence(block: $Block) {
-        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfSentence, '!')).concat($check($TypeOf$Sentence, '!')));
+        super.$Catalogue(this.addType(block, $TypeOfSentence, $TypeOf$Sentence));
     }
 }
 

@@ -16,7 +16,7 @@ export interface $Paragraph$ extends $Composition$ { }
 
 export class $Paragraph extends $Composition implements $Paragraph$ {
     $Paragraph(block: $Block) {
-        super.$Composition($check(block, $Block, '!').concat($check($TypeOfParagraph, '!')));
+        super.$Composition(this.addType(block, $TypeOfParagraph));
     }
 
     override print(content: ReactNode): ReactNode {
@@ -30,7 +30,7 @@ export interface $$Paragraph$ extends $Phrase$ {
 
 export class $$Paragraph extends $Catalogue implements $$Paragraph$ {
     $$Paragraph(block: $Block) {
-        super.$Catalogue($check(block, $Block, '!').concat($check($TypeOfPhrase, '!')).concat($check($TypeOf$Paragraph, '!')));
+        super.$Catalogue(this.addType(block, $TypeOfPhrase, $TypeOf$Paragraph));
     }
 }
 

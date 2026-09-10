@@ -19,7 +19,7 @@ export class $Cover extends $Document implements $Cover$ {
     subject(): $Subject | undefined { return this.searchForOne<$Subject>($TypeOfSubject); }
 
     $Cover(block: $Block) {
-        super.$Document($check(block, $Block, '!').concat($check($TypeOfCover, '!')));
+        super.$Document(this.addType(block, $TypeOfCover));
     }
 
     override print(content: ReactNode): ReactNode {

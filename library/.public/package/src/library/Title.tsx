@@ -22,7 +22,7 @@ export class $Title extends $Section implements $Title$ {
     }
 
     $Title(block: $Block) {
-        super.$Section($check(block, $Block, '!').concat($check($TypeOfTitle, '!')));
+        super.$Section(this.addType(block, $TypeOfTitle));
         // A TITLE'S HEADING HOLDS THE TITLE'S CONTENT, not its text. It read html.text(this._block)
         // and dropped every string, so a title written as WRITING drew TWICE — measured 2026-09-09
         // with the real paper's title, which is a formula: the <Math> survived the string filter and

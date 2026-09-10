@@ -10,7 +10,7 @@ export class $Synopsis extends $Document implements $Synopsis$ {
     override parenthetical = true;
 
     $Synopsis(block: $Block) {
-        super.$Document($check(block, $Block, '!').concat($check($TypeOfSynopsis, '!')));
+        super.$Document(this.addType(block, $TypeOfSynopsis));
     }
 }
 

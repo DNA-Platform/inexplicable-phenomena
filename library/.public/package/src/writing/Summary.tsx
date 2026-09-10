@@ -14,7 +14,7 @@ export class $Summary extends $Section implements $Summary$ {
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
 
     $Summary(block: $Block) {
-        super.$Section($check(block, $Block, '!').concat($check($TypeOfSummary, '!')));
+        super.$Section(this.addType(block, $TypeOfSummary));
     }
 }
 

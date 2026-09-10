@@ -42,12 +42,17 @@ export class $Writing extends $Chemical implements $Writing$ {
     // a table drew <div class="sc-jSFhYz"> with no pd-table at all, because the format restyling
     // it in place passed an empty className over it.
     $className?: string;
+    protected apart: string[] = [];
     inline = true;
     @inert() mention?: $Catalogue;
     _block!: $Block;
 
     get theme(): $Theme { return reflection.theme(this); }
-    get classes(): string[] { return [...reflection.classNames(this), ...(this.$className ?? '').split(/\s+/u)].filter(name => name !== ''); }
+    get classes(): string[] {
+        return [...reflection.classNames(this), ...(this.$className ?? '').split(/\s+/u)]
+            .filter(name => name !== '' && !this.apart.includes(name));
+    }
+
     get className(): string { return this.classes.join(' '); }
     get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
     get fold(): $Fold$ | undefined { return reflection.folded(this); }
@@ -100,8 +105,16 @@ export class $Writing extends $Chemical implements $Writing$ {
         return found[0];
     }
 
-    addType(type: new() => $Type): void {
-        if (!reflection.is(this, type)) this._block = this._block.concat($check(type, '!'));
+    addType(block: $Block, ...types: (new() => $Type)[]): $Block {
+        return types.reduce((held, type) => held.concat($check(type, '!')), $check(block, $Block, '!'));
+    }
+
+    addClass(name: string): void {
+        this.$className = [this.$className ?? '', name].join(' ').trim();
+    }
+
+    removeClass(name: string): void {
+        this.apart = [...this.apart, name];
     }
 
     valid(): boolean {

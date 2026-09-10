@@ -25,7 +25,7 @@ export class $Quote extends $Section implements $Quote$ {
     }
 
     $Quote(block: $Block) {
-        super.$Section($check(block, $Block, '!').concat($check($TypeOfQuote, '!')));
+        super.$Section(this.addType(block, $TypeOfQuote));
     }
 
     // OWED: <blockquote class="pd-quote"> — and the attribution, which is the meaning it carries.
