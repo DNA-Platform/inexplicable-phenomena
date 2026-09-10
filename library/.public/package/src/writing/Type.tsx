@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
-import { $ } from '@dna-platform/chemistry';
+import { $, $Block, $check } from '@dna-platform/chemistry';
+import { html } from '@/utilities/Html';
 import { $Writing } from './Writing';
 import { $Annotation$, $Annotation } from './Annotation';
 import { reflection } from '@/utilities/Reflection';
@@ -8,6 +9,12 @@ export interface $Type$ extends $Annotation$ { }
 
 export class $Type extends $Annotation implements $Type$ {
     name = 'Type';
+
+    $Type(block: $Block) {
+        super.$Writing($check(block, $Block, '!'));
+        const said = html.text(this._block).trim();
+        if (said !== '') this.name = said;
+    }
 
     below(): (new() => $Type) | undefined { return undefined; }
     makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
