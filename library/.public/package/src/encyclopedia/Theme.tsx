@@ -101,6 +101,16 @@ export class $Theme extends $Sheet {
     @select('.pd-synopsis h2') description_display = 'none';
     @select('.pd-title .pd-reference') meaning_display = 'none';
 
+    // A CITATION IS A SUPERSCRIPT IN BRACKETS, which is the one thing every reader recognises an
+    // encyclopedia by. The mark writes its number and the sheet writes the brackets, so the number
+    // stays the only thing the demo says.
+    @select('.pd-citation') marker_fontSize = '.8em';
+    marker_verticalAlign = 'super';
+    marker_lineHeight = '1';
+    marker_whiteSpace = 'nowrap';
+    @select('.pd-citation::before') opened_content = "'['";
+    @select('.pd-citation::after') closed_content = "']'";
+
     @select('nav h2') contentsHeading_fontSize = '1em';
     contentsHeading_fontWeight = 'bold';
     contentsHeading_border = 'none';
