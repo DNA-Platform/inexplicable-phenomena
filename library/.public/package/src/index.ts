@@ -26,6 +26,7 @@ export * from './writing/Figure';
 export * from './writing/Phrase';
 export * from './writing/Item';
 export * from './writing/List';
+export * from './writing/Cell';
 export * from './writing/Table';
 export * from './writing/Summary';
 export * from './formatting/Theme';

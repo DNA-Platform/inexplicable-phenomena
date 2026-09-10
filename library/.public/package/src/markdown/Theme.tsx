@@ -83,16 +83,16 @@ export class $Theme extends $Sheet {
     // keeps a paper's proportions — much flatter than a README's 1.5 / 1.25 / 1.1 — and only the
     // face, the alignment and the air change. LaTeX at 11pt runs 14.4 / 12 / 11, which is
     // 1.31 / 1.09 / 1 against the body; these sit just above it.
-    @select('h2.pd-heading') override h2_fontSize = '1em';
-    @select('h3.pd-heading') override h3_fontSize = '.875em';
-    @select('h2.pd-heading') override head_fontSize = '1em';
+    @select('.pd-level-1') override h2_fontSize = '1em';
+    @select('.pd-level-2') override h3_fontSize = '.875em';
+    @select('.pd-level-1') override head_fontSize = '1em';
     override head_fontWeight = '700';
     override head_marginTop = '2em';
     override head_marginBottom = '.75em';
-    @select('h3.pd-heading') override deep_fontSize = '.875em';
+    @select('.pd-level-2') override deep_fontSize = '.875em';
     override deep_marginTop = '1.6em';
     override deep_marginBottom = '.5em';
-    @select('h4.pd-heading') override deepest_fontSize = '.85em';
+    @select('.pd-level-3') override deepest_fontSize = '.85em';
     override deepest_marginTop = '1.4em';
     override deepest_marginBottom = '.4em';
     @select('h1') override h1_fontSize = '1.25em';
@@ -137,7 +137,7 @@ export class $Theme extends $Sheet {
     @select('.pd-code') override pre_fontSize = '.875em';
     override pre_lineHeight = '1.7142857';
     override pre_borderRadius = '.375rem';
-    @select('.pd-illustration figcaption') caption_fontSize = '.875em';
+    @select('.pd-caption') caption_fontSize = '.875em';
     get caption_color() { return this.pale; }
 
 }

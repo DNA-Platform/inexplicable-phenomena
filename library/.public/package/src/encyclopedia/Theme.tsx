@@ -135,7 +135,7 @@ export class $Theme extends $Sheet {
     // A LEVEL IS THE ONE THING A CLASS LIST DOES NOT CARRY. Every other selector in this theme
     // names a kind; these two name h2 because a heading's DEPTH is not in `pd-heading`, and
     // `.pd-heading` alone restyles every sub-heading beneath it - measured, 22 of them.
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter) h2.pd-heading') override h2_fontSize = '1.5em';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter) .pd-level-1') override h2_fontSize = '1.5em';
     h2_fontWeight = 'normal';
     h2_padding = '0.5em 0 0.17em';
     h2_margin = '0.25em 0';
@@ -143,7 +143,7 @@ export class $Theme extends $Sheet {
     override get h2_borderBottom() { return `1px solid ${this.rule}`; }
     get h2_color() { return this.jet; }
     get h2_fontFamily() { return this.face; }
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter) .pd-section .pd-section h2.pd-heading') sub2_fontSize = '1.2em';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter) .pd-section .pd-section .pd-level-1') sub2_fontSize = '1.2em';
     sub2_fontWeight = '700';
     sub2_lineHeight = '1.6';
     sub2_padding = '0.5em 0 0';
@@ -168,7 +168,7 @@ export class $Theme extends $Sheet {
     @select('.pd-illustration .pd-image') image_display = 'block';
     image_width = '100%';
     image_height = 'auto';
-    @select('.pd-illustration figcaption') caption_fontSize = '0.875em';
+    @select('.pd-caption') caption_fontSize = '0.875em';
     caption_lineHeight = '1.4';
     caption_padding = '0.4em 0.6em';
     get caption_fontFamily() { return this.body; }

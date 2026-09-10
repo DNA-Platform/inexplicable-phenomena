@@ -1,9 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import {
-    Aside, Author, Book, Document, Citation, Code, Cover, Equation, Figure, Heading, Highlight,
-    Illustration, List, Math, Note, PageFold, Paragraph, Quote, Ref, Reference, References,
-    Section, Subject, Summary, Synopsis, Table, Title,
-} from '@dna-platform/public';
+import { Aside, Author, Book, Cell, Citation, Code, Cover, Document, Equation, Figure, Heading, Highlight, Illustration, List, Math, Note, PageFold, Paragraph, Quote, Ref, Reference, References, Section, Subject, Summary, Synopsis, Table, Title } from '@dna-platform/public';
 import { Appendix, Theorem } from '@dna-platform/public/article';
 
 const document = (
@@ -78,15 +74,15 @@ const document = (
             <Section>
                 <Heading>A table</Heading>
                 <Table columns={3}>
-                    <Paragraph>Class</Paragraph>
-                    <Paragraph>Resource</Paragraph>
-                    <Paragraph>Bound</Paragraph>
-                    <Paragraph>P</Paragraph>
-                    <Paragraph>time</Paragraph>
-                    <Paragraph>polynomial</Paragraph>
-                    <Paragraph>PSPACE</Paragraph>
-                    <Paragraph>space</Paragraph>
-                    <Paragraph>polynomial</Paragraph>
+                    <Cell>Class</Cell>
+                    <Cell>Resource</Cell>
+                    <Cell>Bound</Cell>
+                    <Cell>P</Cell>
+                    <Cell>time</Cell>
+                    <Cell>polynomial</Cell>
+                    <Cell>PSPACE</Cell>
+                    <Cell>space</Cell>
+                    <Cell>polynomial</Cell>
                 </Table>
             </Section>
 

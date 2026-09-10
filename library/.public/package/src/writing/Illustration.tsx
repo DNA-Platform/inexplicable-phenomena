@@ -19,8 +19,8 @@ export class $Illustration extends $Image implements $Illustration$ {
     override print(content: ReactNode): ReactNode {
         return (
             <figure className={this.className}>
-                <img src={this.source} alt={this.caption} />
-                <figcaption>{content}</figcaption>
+                <img src={this.source} alt={this.caption} className="pd-image" />
+                <figcaption className="pd-caption">{content}</figcaption>
             </figure>
         );
     }

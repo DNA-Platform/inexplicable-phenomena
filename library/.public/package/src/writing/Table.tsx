@@ -6,6 +6,7 @@ import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Section$, $TypeOfSection, SectionSpecification } from './Section';
 import { $TypeOfHeading } from './Heading';
+import { $Cell, $TypeOfCell } from './Cell';
 import { TableFormat as tableStyle } from '@/formatting/TableFormat';
 import { $Section } from '@/writing/Section';
 
@@ -18,10 +19,7 @@ export class $Table extends $Section implements $Table$ {
     $columns?: number;
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
-    cells(): $Writing[] {
-        return (this._block.$elements ?? []).filter((part): part is $Writing =>
-            reflection.composition(part) && part !== this.heading());
-    }
+    cells(): $Cell[] { return this.searchFor<$Cell>($TypeOfCell); }
 
     override print(content: ReactNode): ReactNode {
         return <div className={this.className}>{content}</div>;

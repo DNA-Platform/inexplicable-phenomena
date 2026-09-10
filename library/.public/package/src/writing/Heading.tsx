@@ -21,9 +21,10 @@ export class $Heading extends $Paragraph implements $Heading$ {
     // has been nesting by it. Nothing is added; an existing reading reaches the element it was for.
     override print(content: ReactNode): ReactNode {
         const levels = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
-        const Level = levels[Math.min(reflection.indent(this), levels.length - 1)];
+        const at = Math.min(reflection.indent(this), levels.length - 1);
+        const Level = levels[at];
 
-        return <Level id={html.text(this._block).replace(/\s+/gu, '_')} className={this.className}>{content}</Level>;
+        return <Level id={html.text(this._block).replace(/\s+/gu, '_')} className={`${this.className} pd-level-${at + 1}`}>{content}</Level>;
     }
 }
 

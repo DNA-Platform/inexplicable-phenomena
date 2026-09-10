@@ -113,16 +113,16 @@ export class $Theme extends $Sheet {
 
     // A section is Large bold with 3.5ex above and 2.3ex below; a subsection is large with 3.25ex
     // and 1.5ex. At 11pt an ex is about 4.3pt, which is where these numbers come from.
-    @select('h2.pd-heading') head_fontWeight = '700';
+    @select('.pd-level-1') head_fontWeight = '700';
     head_fontSize = '14.4pt';
     head_marginTop = '15pt';
     head_marginBottom = '10pt';
-    @select('h3.pd-heading') deep_fontWeight = '700';
+    @select('.pd-level-2') deep_fontWeight = '700';
     deep_fontSize = '12pt';
     deep_marginTop = '14pt';
     deep_marginBottom = '6.5pt';
     // A subsubsection is normalsize bold — the level where LaTeX stops growing the type.
-    @select('h4.pd-heading') deepest_fontWeight = '700';
+    @select('.pd-level-3') deepest_fontWeight = '700';
     deepest_fontSize = '11pt';
     deepest_marginTop = '13pt';
     deepest_marginBottom = '5pt';
@@ -194,7 +194,7 @@ export class $Theme extends $Sheet {
     // numbers a bare <figcaption>; this names the KIND, so an illustration standing in the same
     // document is left alone, which is the whole reason a figure is its own thing.
     @select('.pd-figure') figured_counterIncrement = 'figure';
-    @select('.pd-figure figcaption::before') figuring_content = "'Figure ' counter(figure) '. '";
+    @select('.pd-figure .pd-caption::before') figuring_content = "'Figure ' counter(figure) '. '";
     figuring_fontWeight = '700';
 
     // A PAPER IS SET JUSTIFIED AND HYPHENATED, which is the difference nobody names when they say a

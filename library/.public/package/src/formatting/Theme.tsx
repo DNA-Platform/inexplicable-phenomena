@@ -204,7 +204,7 @@ export class $Theme extends $Format implements $Theme$ {
     shown_margin = '1.5rem auto';
     @select('.pd-illustration img') drawn_maxWidth = '100%';
     drawn_height = 'auto';
-    @select('.pd-illustration figcaption') told_textAlign = 'center';
+    @select('.pd-caption') told_textAlign = 'center';
     told_marginTop = '.6rem';
     told_fontSize = '.9em';
 
@@ -240,10 +240,10 @@ export class $Theme extends $Format implements $Theme$ {
     // that shipped looked like. The selector was `.pd-heading`, which is EVERY heading, so an h3 and
     // an h4 were ruled too — the thing that made the plain look read as a README rather than an
     // article.
-    @select('h2.pd-heading') h2_fontSize = '1.5em';
+    @select('.pd-level-1') h2_fontSize = '1.5em';
     h2_paddingBottom = '.3em';
     get h2_borderBottom() { return this.ruled; }
-    @select('h3.pd-heading') h3_fontSize = '1.25em';
+    @select('.pd-level-2') h3_fontSize = '1.25em';
     // THE SHEET STYLES KINDS, NOT MARKDOWN. Measured 2026-09-08: seventeen of eighteen groups here
     // selected a raw ELEMENT and one selected a kind, so the theme was styling markdown's output
     // while every kind wrote a pd- class the sheet ignored. Two kinds writing the same tag could not
@@ -280,7 +280,7 @@ export class $Theme extends $Format implements $Theme$ {
     hr_border = '0';
     hr_height = '.25em';
     get hr_backgroundColor() { return this.shade; }
-    @select('.pd-table th, .pd-table td') cell_padding = '6px 13px';
+    @select('.pd-table .pd-cell') cell_padding = '6px 13px';
     get cell_border() { return `1px solid ${this.shade}`; }
     @select('.pd-illustration') figure_margin = '1rem 0';
     // AN ELEMENT HERE MEANS AN IMAGE THE LIBRARY DID NOT WRITE. A kind's picture answers .pd-image,
