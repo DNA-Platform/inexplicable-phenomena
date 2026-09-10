@@ -278,6 +278,7 @@ export class $Theme extends $Format implements $Theme$ {
     get cell_border() { return `1px solid ${this.shade}`; }
     @select('.pd-illustration') figure_margin = '1rem 0';
     @select('img') img_maxWidth = '100%';
+    @select('.pd-illustration img') figured_marginInline = 'auto';
     @select('a.pd-meaning, a.pd-ref, a.pd-reference') a_textDecoration = 'none';
     get a_color() { return this.link; }
     @select('a.pd-meaning:hover, a.pd-ref:hover, a.pd-reference:hover') hover_textDecoration = 'underline';
