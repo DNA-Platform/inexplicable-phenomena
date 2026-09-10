@@ -38,14 +38,10 @@ export class $Reference extends $Annotation implements $Reference$ {
         return url.adstyles(copy);
     }
 
-    override view(): ReactNode {
+    // IT WRITES ITS OWN ELEMENT, and print is where a kind writes one.
+    override print(): ReactNode {
         const url = html.text(this.path()?._block);
 
-        // IT WRITES ITS OWN ELEMENT AND MUST WRITE ITS OWN CLASSES. Overriding view() rather than
-        // print() means $Writing.view never runs, so this anchor got neither its pd- classes nor
-        // reflection.formatted — measured: 32 of 33 anchors on /turing unreachable by any sheet, and
-        // no format can ever reach a reference. The class is added; that view() overrides at all is
-        // the finding underneath, and it is the same shape as every wrapper we removed.
         return <a href={url} className={this.className} onClick={() => this.focus()}>{url}</a>;
     }
 

@@ -17,7 +17,7 @@ export class $Path extends $Annotation implements $Path$ {
     override specifically(): void {
     }
 
-    override view(): ReactNode {
+    override print(): ReactNode {
         return html.text(this._block);
     }
 }

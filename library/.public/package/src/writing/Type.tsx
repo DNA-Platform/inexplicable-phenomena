@@ -8,6 +8,7 @@ import { reflection } from '@/utilities/Reflection';
 export interface $Type$ extends $Annotation$ { }
 
 export class $Type extends $Annotation implements $Type$ {
+    override parenthetical = true;
     name: string = this.constructor.name.replace(/^_*\$?/u, '').replace(/\d+$/u, '').replace(/^TypeOf/u, '');
 
     $Type(block: $Block) {
@@ -18,10 +19,6 @@ export class $Type extends $Annotation implements $Type$ {
 
     below(): (new() => $Type) | undefined { return undefined; }
     makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
-
-    override view(): ReactNode {
-        return null;
-    }
 
     // DI, DECLARED BY THE KIND AND RUN LATE. The composition root calls every
     // $register once each module has resolved, and src/index.ts is emitted — see

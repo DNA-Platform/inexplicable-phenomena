@@ -2,13 +2,14 @@ import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
+import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Type } from '@/writing/Type';
 import { $Catalogue } from '@/reference/Catalogue';
 import { $TypeOfReference } from '@/reference/Reference';
 import { $Paragraph$, $TypeOfParagraph } from '@/writing/Paragraph';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { $TypeOfDocument } from './Document';
+import { $Document, $TypeOfDocument } from './Document';
 import { $Chapter, $TypeOfChapter } from './Chapter';
 import { $Cover, $TypeOfCover } from './Cover';
 import { $Synopsis, $TypeOfSynopsis } from './Synopsis';
@@ -36,6 +37,20 @@ export class $Book extends $Composition implements $Book$ {
         for (let at = 0; at < held.length; at++) {
             held[at].book = this;
             for (const part of held[at]._block.$elements ?? []) if (reflection.writing(part)) held.push(part);
+        }
+        this.name(held);
+    }
+
+    // A CHAPTER WEARS THE CLASSES OF THE DOCUMENT IT NAMES, which is how the appendices tell
+    // themselves apart from the body without the contents saying so. The chapter derived this on
+    // every className read — 65 chapters against 11 documents, 715 comparisons a draw — and the
+    // book already walks everything beneath it, so it is assigned there instead.
+    protected name(held: $Writing[]): void {
+        const documents = this.searchFor<$Document>($TypeOfDocument);
+        for (const part of held) {
+            if (!reflection.is<$Chapter>(part, $TypeOfChapter)) continue;
+            const meant = documents.find(document => html.text(document.title()?._block).trim() === part.$title.trim());
+            for (const written of meant?.classes ?? []) part.addClass(written);
         }
     }
 

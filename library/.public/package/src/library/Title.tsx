@@ -39,9 +39,9 @@ export class $Title extends $Section implements $Title$ {
         }
     }
 
-    override view(): ReactNode {
+    override print(content: ReactNode): ReactNode {
         const held = this.canonical();
-        if (held === undefined) return super.view();
+        if (held === undefined) return super.print(content);
         const Canonical = $(held);
 
         return <Canonical />;
