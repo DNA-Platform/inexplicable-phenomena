@@ -279,10 +279,10 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-illustration') figure_margin = '1rem 0';
     @select('img') img_maxWidth = '100%';
     @select('.pd-illustration img') figured_marginInline = 'auto';
-    @select('a.pd-meaning, a.pd-ref, a.pd-reference') a_textDecoration = 'none';
+    @select('.pd-meaning, .pd-ref, .pd-reference') a_textDecoration = 'none';
     get a_color() { return this.link; }
-    @select('a.pd-meaning:hover, a.pd-ref:hover, a.pd-reference:hover') hover_textDecoration = 'underline';
-    @select('.pd-cover a.pd-meaning') naming_color = 'inherit';
+    @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover') hover_textDecoration = 'underline';
+    @select('.pd-cover .pd-meaning') naming_color = 'inherit';
     @select('.pd-document') document_marginBottom = '2em';
     @select('.pd-index') index_columnCount = '3';
 
