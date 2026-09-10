@@ -26,6 +26,8 @@ class $TypeOfTitle extends $Type {
 }
 
 class $Cover extends $Composition implements $Cover$ {
+    title(): $Writing | undefined { return this.searchFor<$Writing>($TypeOfTitle)[0]; }
+
     $Cover(block: $Block) {
         super.$Composition(block);
         if (this.searchFor($TypeOfCover).length > 0) return;

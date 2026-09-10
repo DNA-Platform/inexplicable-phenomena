@@ -7,7 +7,6 @@ import { $Composition } from '@/writing/Composition';
 import { $Section$, $TypeOfSection, SectionSpecification } from './Section';
 import { $TypeOfHeading } from './Heading';
 import { TableFormat as tableStyle } from '@/formatting/TableFormat';
-import { $Type } from './Type';
 import { $Section } from '@/writing/Section';
 
 export interface $Table$ extends $Section$ {
@@ -20,7 +19,8 @@ export class $Table extends $Section implements $Table$ {
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
     cells(): $Writing[] {
-        return this.searchFor($Type).filter(part => reflection.composition(part) && part !== this.heading());
+        return (this._block.$elements ?? []).filter((part): part is $Writing =>
+            reflection.composition(part) && part !== this.heading());
     }
 
     override print(content: ReactNode): ReactNode {
@@ -33,17 +33,12 @@ export class $Table extends $Section implements $Table$ {
 }
 
 export class $TypeOfTable extends $TypeOfSection {
+    override name = 'Table';
+    protected override specification: Specification<$Writing> = new TableSpecification();
 
-    // NO HEADING IS READ OUT OF IT. $TypeOfSection supplies one to any section opening without a
-    // heading, which is right for a SECTION and wrong for everything that merely extends one — seen
-    // on the probe page: this drew its own first sentence as a heading above itself, elided with an
-    // ellipsis, and then said the whole thing again. $Quote met this first and the answer is the
-    // same: the rule and the supply are two statements of one demand, and both have to be answered.
     override supplies(writing: $Writing, parts: $Writing[]): $Writing[] {
         return parts;
     }
-    override name = 'Table';
-    protected override specification: Specification<$Writing> = new TableSpecification();
 }
 
 export class TableSpecification extends SectionSpecification {

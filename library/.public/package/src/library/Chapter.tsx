@@ -14,6 +14,8 @@ export interface $Chapter$ extends $Composition$ {
 export class $Chapter extends $Composition implements $Chapter$ {
     $title = '';
 
+    override get classes(): string[] { return super.classes.filter(name => name !== 'pd-reference'); }
+
     $Chapter(block: $Block) {
         const Path = $(path);
         super.$Composition(this.addType(block, $TypeOfChapter)

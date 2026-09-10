@@ -6,13 +6,17 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Type } from '@/writing/Type';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
-import { $TypeOfSection } from '@/writing/Section';
+import { $Section, $TypeOfSection } from '@/writing/Section';
 import { $Paragraph$, $TypeOfParagraph } from '@/writing/Paragraph';
 import { $TypeOfReference, ReferenceSpecification } from '@/reference/Reference';
 
-export interface $Document$ extends $Composition$ { }
+export interface $Document$ extends $Composition$ {
+    title(): $Writing | undefined;
+}
 
 export class $Document extends $Composition implements $Document$ {
+    title(): $Writing | undefined { return this.searchFor<$Section>($TypeOfSection)[0]?.heading(); }
+
     $Document(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfDocument));
     }

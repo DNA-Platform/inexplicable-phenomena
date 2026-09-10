@@ -162,9 +162,11 @@ export class $Theme extends $Sheet {
 
     @select('.pd-table-of-contents') counting_counterReset = 'listed';
     @select('.pd-table-of-contents .pd-chapter') tallied_counterIncrement = 'listed';
+    @select('.pd-table-of-contents .pd-chapter.pd-references, .pd-table-of-contents .pd-chapter.pd-appendix') apart_counterIncrement = 'none';
     @select('.pd-table-of-contents .pd-chapter::before') listedNumber_content = "counters(listed, '.')";
     listedNumber_flex = '0 0 auto';
     listedNumber_minWidth = '2.6em';
+    @select('.pd-table-of-contents .pd-chapter.pd-references::before, .pd-table-of-contents .pd-chapter.pd-appendix::before') apartNumber_content = "''";
 
     // A FIGURE IS NUMBERED, and by the sheet, exactly as a section is — so a reading that does not
     // number figures simply does not, and $Figure stays a shell with no member for it. latex.css
