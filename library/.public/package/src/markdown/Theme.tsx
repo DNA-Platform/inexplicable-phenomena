@@ -63,7 +63,7 @@ export class $Theme extends $Sheet {
     override get strip_borderBottom() { return `1px solid ${this.rule}`; }
 
     // A COVER, LEFT AND UNCENTRED, at markdown's own scale.
-    @select('.pd-title .pd-heading') override title_fontSize = '2em';
+    @select('.pd-title .pd-heading') override title_fontSize = '1.5em';
     override title_fontWeight = '700';
     override title_marginBottom = '.25rem';
     @select('.pd-author .pd-heading') override author_fontSize = '1em';
@@ -74,17 +74,17 @@ export class $Theme extends $Sheet {
     // keeps a paper's proportions — much flatter than a README's 1.5 / 1.25 / 1.1 — and only the
     // face, the alignment and the air change. LaTeX at 11pt runs 14.4 / 12 / 11, which is
     // 1.31 / 1.09 / 1 against the body; these sit just above it.
-    @select('h2.pd-heading') override head_fontSize = '1.4em';
+    @select('h2.pd-heading') override head_fontSize = '1.25em';
     override head_fontWeight = '700';
     override head_marginTop = '2em';
     override head_marginBottom = '.75em';
-    @select('h3.pd-heading') override deep_fontSize = '1.2em';
+    @select('h3.pd-heading') override deep_fontSize = '1em';
     override deep_marginTop = '1.6em';
     override deep_marginBottom = '.5em';
-    @select('h4.pd-heading') override deepest_fontSize = '1.05em';
+    @select('h4.pd-heading') override deepest_fontSize = '.875em';
     override deepest_marginTop = '1.4em';
     override deepest_marginBottom = '.4em';
-    @select('h1') override h1_fontSize = '1.4em';
+    @select('h1') override h1_fontSize = '1.5em';
 
     // NUMBERS ARE THE ONE STRUCTURAL THING A RENDERED DOCUMENT DROPS — a README does not say
     // "1.2.1" — and dropping them is four empty strings rather than undoing the counters.
@@ -103,7 +103,7 @@ export class $Theme extends $Sheet {
     @select('.pd-abstract') override abstract_margin = '0 0 2rem';
     override abstract_fontSize = '1em';
     override abstract_lineHeight = '1.75';
-    @select('.pd-abstract .pd-heading') override abstracted_fontSize = '1.4em';
+    @select('.pd-abstract .pd-heading') override abstracted_fontSize = '1.25em';
     override abstracted_textAlign = 'left';
     override abstracted_marginBottom = '.75em';
 
