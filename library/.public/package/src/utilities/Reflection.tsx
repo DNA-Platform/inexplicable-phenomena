@@ -3,7 +3,7 @@ import { $, $Block } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
 import type { $Type } from '@/writing/Type';
-import type { $Theme } from '@/formatting/Theme';
+import type { $Theme } from '@/writing/Theme';
 import type { $Composition } from '@/writing/Composition';
 import type { $Reference } from '@/reference/Reference';
 import type { $Fold } from '@/reference/Fold';

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block, $check, select } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
@@ -7,7 +7,7 @@ import { $Composition } from '@/writing/Composition';
 import { $Section$, $TypeOfSection, SectionSpecification } from './Section';
 import { $TypeOfHeading } from './Heading';
 import { $Cell, $TypeOfCell } from './Cell';
-import { TableFormat as tableStyle } from '@/formatting/TableFormat';
+import { $Format } from './Format';
 import { $Section } from '@/writing/Section';
 
 export interface $Table$ extends $Section$ {
@@ -51,3 +51,18 @@ export class TableSpecification extends SectionSpecification {
 
 export const Table = $($Table);
 export const TypeOfTable = $($TypeOfTable);
+
+export class $TableFormat extends $Format {
+    $columns = 1;
+    display = 'grid';
+    get gridTemplateColumns() { return `repeat(${this.$columns}, minmax(0, 1fr))`; }
+    @select('> .pd-table') table_display = 'contents';
+    @select('> .pd-table > .pd-heading') heading_gridColumn = '1 / -1';
+
+    protected override handed(): Record<string, unknown> {
+        return { columns: (this.parent as $Table | undefined)?.$columns ?? 1 };
+    }
+}
+
+export const TableFormat = $($TableFormat);
+const tableStyle = TableFormat;

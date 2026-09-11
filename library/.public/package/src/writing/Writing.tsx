@@ -7,7 +7,7 @@ import type { $Annotation } from './Annotation';
 import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
 import type { $Reference$, $Reference } from '@/reference/Reference';
-import type { $Theme } from '@/formatting/Theme';
+import type { $Theme } from '@/writing/Theme';
 import type { $Book } from '@/library/Book';
 
 const printed = new WeakMap<$Block, $Block>();

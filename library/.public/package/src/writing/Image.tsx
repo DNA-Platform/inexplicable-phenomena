@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block, $check, select } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { reflection } from '@/utilities/Reflection';
 import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
-import { IllustrationFormat as shownStyle } from '@/formatting/IllustrationFormat';
+import { $Format } from './Format';
 
 export interface $Image$ extends $Paragraph$ {
     source: string;
@@ -41,3 +41,15 @@ export class ImageSpecification extends ParagraphSpecification {
 
 export const Image = $($Image);
 export const TypeOfImage = $($TypeOfImage);
+
+export class $IllustrationFormat extends $Format {
+    @select('> figure.pd-illustration img, > img.pd-image') get image_width() { return this.shown()?.$width ?? 'auto'; }
+    get image_height() { return this.shown()?.$height ?? 'auto'; }
+
+    protected shown(): $Image | undefined {
+        return ((this.$of ?? this).parent) as $Image | undefined;
+    }
+}
+
+export const IllustrationFormat = $($IllustrationFormat);
+const shownStyle = IllustrationFormat;

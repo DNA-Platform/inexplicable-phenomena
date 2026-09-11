@@ -16,7 +16,7 @@ import { $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $Path, Path as path } from '@/reference/Path';
 import { $Scratchpad } from './Scratchpad';
-import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
+import { $TypeOfTheme, Theme as theme } from '@/writing/Theme';
 
 export interface $Book$ extends $Composition$ {
     readonly cover: $Chapter | undefined;

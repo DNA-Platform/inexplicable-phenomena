@@ -20,7 +20,7 @@
 // distinguished by weight and underline rather than by turning blue.
 import { $, select } from '@dna-platform/chemistry';
 import { $ArticleTheme } from '@/article/Theme';
-import { Theme as Base } from '@/formatting/Theme';
+import { Theme as Base } from '@/writing/Theme';
 
 export class $MarkdownTheme extends $ArticleTheme {
     // ANYTHING WITH A MEANING IS A BLUE LINK, and a reading that prints overrides it. Doug,

@@ -26,13 +26,11 @@ export * from './writing/Figure';
 export * from './writing/Phrase';
 export * from './writing/Item';
 export * from './writing/List';
-export * from './writing/Cell';
 export * from './writing/Table';
+export * from './writing/Cell';
 export * from './writing/Summary';
-export * from './formatting/Theme';
-export * from './formatting/Format';
-export * from './formatting/TableFormat';
-export * from './formatting/IllustrationFormat';
+export * from './writing/Theme';
+export * from './writing/Format';
 
 export * from './reference/Reference';
 export * from './reference/Fold';
@@ -71,7 +69,7 @@ export * from './library/PageFold';
 // everything between the markers is EMITTED by register.ts before each build, so
 // a kind cannot be added and silently left unwired. Do not edit it by hand.
 // <registrations>
-import { $Theme } from './formatting/Theme';
+import { $Theme } from './writing/Theme';
 import { $Book } from './library/Book';
 import { $Fold } from './reference/Fold';
 import { $Reference } from './reference/Reference';

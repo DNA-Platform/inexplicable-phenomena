@@ -1,7 +1,7 @@
 import { $, $Block, select, styled } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Format } from '@/formatting/Format';
+import { $Format } from '@/writing/Format';
 import { $Aside$, $Aside, $TypeOfAside, AsideSpecification } from '@/writing/Aside';
 
 export interface $Box$ extends $Aside$ { }

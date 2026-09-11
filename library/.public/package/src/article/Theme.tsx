@@ -1,7 +1,7 @@
 // CREATED 2026-09-08, MEASURED 2026-09-09 · rating 3. The article's theme: a page on a desk, set
 // the way LaTeX sets one, installed by registration and carrying no formats.
 import { $, select } from '@dna-platform/chemistry';
-import { $Theme, Theme as Base } from '@/formatting/Theme';
+import { $Theme, Theme as Base } from '@/writing/Theme';
 
 export class $ArticleTheme extends $Theme {
     // EVERY VALUE HERE WAS MEASURED OFF THE REAL THING, 2026-09-09. Doug: "You might need to open a
