@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $check } from '@dna-platform/chemistry';
 import { render, act } from '@testing-library/react';
-import { $Writing, $Composition, $Book, Book, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Document, $TypeOfDocument } from '@dna-platform/public';
+import { $Writing, $Composition, $Book, Book, $Chapter, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Document, $TypeOfDocument } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -13,24 +13,32 @@ const cover = () => (
     </Cover>
 );
 
-describe('a book reaches its cover, its synopsis, its table of contents and its chapters, in whatever order they stand', () => {
-    const book = () => built<$Book>(
-        <Book>
-            {cover()}
-            <Synopsis>A book about chemistry.</Synopsis>
-            <TableOfContents>One.</TableOfContents>
-            <Document>One.</Document>
-        </Book>);
+describe('a book is made of chapters, and its first three are its cover, its synopsis and its table, by position', () => {
+    class $CoverChapter extends $Chapter { print() { return cover(); } }
+    class $SynopsisChapter extends $Chapter { print() { return <Synopsis>A book about chemistry.</Synopsis>; } }
+    class $TableChapter extends $Chapter { print() { return <TableOfContents>One.</TableOfContents>; } }
+    const CoverChapter = $($CoverChapter);
+    const SynopsisChapter = $($SynopsisChapter);
+    const TableChapter = $($TableChapter);
+    const book = () => built<$Book>(<Book><CoverChapter /><SynopsisChapter /><TableChapter /></Book>);
 
-    it('and the book answers each of them', () => {
+    it('AND THE BOOK ANSWERS EACH BY ITS PLACE', () => {
         const held = book();
         held.specify();
-        expect(held.cover).toBeDefined();
-        expect(held.synopsis).toBeDefined();
-        expect(held.table).toBeDefined();
+        expect(held.chapters.length).toBe(3);
+        expect(held.cover).toBeInstanceOf($CoverChapter);
+        expect(held.synopsis).toBeInstanceOf($SynopsisChapter);
+        expect(held.table).toBeInstanceOf($TableChapter);
     });
 
-    it('a book in that order specifies clean', () => {
+    it('and every chapter carries a positional link the book made', () => {
+        const held = book();
+        expect(html.text(held.cover?.mention?.path()?._block)).toBe('0');
+        expect(html.text(held.table?.mention?.path()?._block)).toBe('2');
+        expect(held.document).toBe(held.cover?.mention);
+    });
+
+    it('a book of chapters specifies clean', () => {
         expect(() => book().specify()).not.toThrow();
     });
 

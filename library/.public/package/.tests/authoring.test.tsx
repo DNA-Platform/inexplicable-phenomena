@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
-    $Book, $Cover, $Document, $Writing, $Section, $TypeOfSection, $TypeOfDocument,
+    $Book, $Chapter, $Cover, $Document, $Writing, $Section, $TypeOfSection, $TypeOfDocument,
     Book, Cover, Document, Synopsis, Title, Author, Subject, Reference,
     Section, Heading, Paragraph,
 } from '@dna-platform/public';
@@ -31,17 +31,16 @@ class $EarlyLife extends $Document {
 const Masthead = $($Masthead);
 const EarlyLife = $($EarlyLife);
 
-const made = () => built<$Book>(
-    <Book>
-        <Masthead />
-        <Synopsis>A life.</Synopsis>
-        <EarlyLife />
-    </Book>);
+class $Front extends $Chapter { print() { return <Masthead />; } }
+class $Life extends $Chapter { print() { return <EarlyLife />; } }
+const Front = $($Front);
+const Life = $($Life);
+
+const made = () => built<$Book>(<Book><Front /><Life /></Book>);
 
 describe('a documented written as a subclass, with nothing at the call site', () => {
     it('IT IS BUILT AND IT HOLDS WHAT THE CLASS WROTE', () => {
-        const book = made();
-        const cover = book.cover as $Cover;
+        const cover = built<$Cover>(<Masthead />);
 
         expect(cover).toBeInstanceOf($Masthead);
         expect(cover.title()).toBeDefined();
@@ -49,19 +48,12 @@ describe('a documented written as a subclass, with nothing at the call site', ()
         expect(cover.subject()).toBeDefined();
     });
 
-    it('AND THE BOOK REACHES ITS SECTIONS — the stuff the contents are made of', () => {
-        const book = made();
-        const documented = book.searchFor<$Document>($TypeOfDocument).find(one => one instanceof $EarlyLife);
-
-        expect(documented).toBeDefined();
-        expect(documented!.searchFor<$Section>($TypeOfSection).length).toBe(1);
-    });
-
-    it('AND THE BOOK REACHES ITS COVER BY TYPE, WHATEVER ORDER IT STANDS IN', () => {
+    it('AND A CHAPTER PRINTS IT, AND THE BOOK REACHES ITS COVER BY POSITION — the first chapter', () => {
         const book = made();
 
-        expect(book.cover).toBeInstanceOf($Masthead);
-        expect(book.synopsis).toBeDefined();
+        expect(book.chapters.length).toBe(2);
+        expect(book.cover).toBeInstanceOf($Front);
+        expect(book.synopsis).toBeInstanceOf($Life);
         expect(book.table).toBeUndefined();
     });
 

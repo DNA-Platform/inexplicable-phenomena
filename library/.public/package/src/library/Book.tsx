@@ -12,36 +12,33 @@ import { $TypeOfParagraph } from '@/writing/Paragraph';
 import { $TypeOfSection } from '@/writing/Section';
 import { $TypeOfReference } from '@/reference/Reference';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { $Document, $TypeOfDocument } from './Document';
-import { $Chapter, $TypeOfChapter } from './Chapter';
-import { $Cover, $TypeOfCover } from './Cover';
-import { $Synopsis, $TypeOfSynopsis } from './Synopsis';
-import { $TableOfContents, $TypeOfTableOfContents } from './TableOfContents';
+import { $TypeOfDocument } from './Document';
+import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
+import { $Path, Path as path } from '@/reference/Path';
 import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
 
 export interface $Book$ extends $Composition$ {
-    readonly cover: $Cover | undefined;
-    readonly synopsis: $Synopsis | undefined;
-    readonly table: $TableOfContents | undefined;
+    readonly cover: $Chapter | undefined;
+    readonly synopsis: $Chapter | undefined;
+    readonly table: $Chapter | undefined;
     readonly chapters: $Chapter[];
 }
 
 export class $Book extends $Composition implements $Book$ {
     definition = 'div';
 
-    get cover(): $Cover | undefined { return this.documents().find((held): held is $Cover => reflection.is(held, $TypeOfCover)); }
-    get synopsis(): $Synopsis | undefined { return this.documents().find((held): held is $Synopsis => reflection.is(held, $TypeOfSynopsis)); }
-    get table(): $TableOfContents | undefined { return this.documents().find((held): held is $TableOfContents => reflection.is(held, $TypeOfTableOfContents)); }
+    get cover(): $Chapter | undefined { return this.chapters[0]; }
+    get synopsis(): $Chapter | undefined { return this.chapters[1]; }
+    get table(): $Chapter | undefined { return this.chapters[2]; }
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
         if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
-    }
-
-    protected documents(): $Document[] {
-        return this.searchFor<$Document>($TypeOfDocument);
+        const Mention = $(chapter);
+        const Path = $(path);
+        this.chapters.forEach((held, at) => { held._mention = $<$$Chapter>(<Mention />, $<$Path>(<Path>{String(at)}</Path>), held); });
     }
 
     header(): ReactNode { return undefined; }
