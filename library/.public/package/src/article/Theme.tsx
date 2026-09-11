@@ -229,7 +229,8 @@ export class $ArticleTheme extends $Theme {
     // declaration is discarded. The unicode escapes say the same thing and parse.
     @select('.pd-citation::before') opened_content = "'\\005B'";
     @select('.pd-citation::after') closed_content = "'\\005D'";
-    @select('.pd-citation') get marked_color() { return 'hsl(0, 100%, 33%)'; }
+    @select('.pd-citation') get marked_color() { return this.cite; }
+    cite = '#008000';
 
     // AN EQUATION stands centred on its own line.
     @select('.pd-equation') equation_textAlign = 'center';

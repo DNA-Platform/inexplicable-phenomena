@@ -15,6 +15,7 @@ import { $Composition$, $Composition } from '@/writing/Composition';
 import { $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $Path, Path as path } from '@/reference/Path';
+import { $References, $TypeOfReferences } from '@/reference/References';
 import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
 
 export interface $Book$ extends $Composition$ {
@@ -22,6 +23,7 @@ export interface $Book$ extends $Composition$ {
     readonly synopsis: $Chapter | undefined;
     readonly table: $Chapter | undefined;
     readonly chapters: $Chapter[];
+    references(): $References | undefined;
 }
 
 export class $Book extends $Composition implements $Book$ {
@@ -32,6 +34,14 @@ export class $Book extends $Composition implements $Book$ {
     get table(): $Chapter | undefined { return this.chapters[2]; }
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
+
+    references(): $References | undefined {
+        for (const chapter of this.chapters) {
+            const held = chapter.document?.held();
+            if (held !== undefined && reflection.is<$References>(held, $TypeOfReferences)) return held;
+        }
+        return undefined;
+    }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));

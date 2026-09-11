@@ -15,6 +15,11 @@ export class $Chapter extends $Composition implements $Chapter$ {
 
     override get document(): $Catalogue | undefined { return this._document; }
 
+    override read(): Promise<$Writing> {
+        if (this._document === undefined) throw new Error('a chapter is read for its document, and this one has none yet');
+        return this._document.read();
+    }
+
     $Chapter(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfChapter));
         const Mention = $(doc);

@@ -8,7 +8,7 @@ export default class $Introduction extends $Chapter {
             <Document>
                 <Section>
                     <Heading>Introduction</Heading>
-                    <Paragraph>“Now my general conjecture is as follows: for almost all sufficiently complex types of<Citation>cook</Citation></Paragraph>
+                    <Paragraph>“Now my general conjecture is as follows: for almost all sufficiently complex types of<Citation>cook1971</Citation></Paragraph>
                     <Section>
                         <Heading>The Importance of P = NP</Heading>
                         <Paragraph>Before getting formal, it seems appropriate to say something about the significance of the P = NP question. P = NP, we might say, shares with Hilbert’s original question the character of a “math problem that’s more than a math problem”: a question that reaches inward to ask about mathematical reasoning itself, and also outward to everything from philosophy to natural science to practical computation.</Paragraph>

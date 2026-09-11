@@ -68,6 +68,12 @@ export class $Writing extends $Chemical implements $Writing$ {
         return <Children />;
     }
 
+    read(): Promise<$Writing> {
+        const meant = this.meaning;
+        if (meant === undefined) throw new Error('a piece of writing is read for what it means, and this one means nothing');
+        return meant.read();
+    }
+
     searchFor<T extends $Writing>(type: new() => $Type): T[] {
         return (this._block.$elements ?? []).filter((part): part is T => reflection.is(part, type));
     }

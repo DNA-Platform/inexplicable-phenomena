@@ -26,7 +26,8 @@ export class $Ref extends $Phrase implements $Ref$ {
     // syntax it affords?" A target with no scheme, no slash and no hash is not a URL anybody meant;
     // it is the key a $PageFold denotes, so it is answered as the fragment that reaches it.
     url(): string | undefined {
-        const named = html.text(this.path()?._block) || this.$path || this.link()?.url;
+        const copy = html.text(this._block).trim();
+        const named = html.text(this.path()?._block) || this.$path || this.link()?.url || (/^[\w.:-]+$/u.test(copy) ? copy : undefined);
         return named !== undefined && /^[\w.:-]+$/u.test(named) && !/^\w+:/u.test(named) ? '#' + named : named;
     }
     written(): string { return this.link()?.text ?? html.text(this._block); }
