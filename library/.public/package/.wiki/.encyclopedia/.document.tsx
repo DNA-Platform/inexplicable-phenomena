@@ -114,7 +114,7 @@ export class $EditionsFormat extends $PortalDocumentFormat {
     pill_fontWeight = '700';
     pill_lineHeight = '1.57';
     pill_boxSizing = 'border-box';
-    pill_width = '21.43em';
+    pill_width = 'min(21.43em, 100%)';
     pill_margin = '0 auto';
     pill_padding = '0.43em 0.86em';
     pill_borderRadius = '0.14em';
@@ -190,7 +190,7 @@ export class $RingFormat extends $Format {
     backgroundPosition = 'center 10rem';
     backgroundSize = '12.5rem';
     @select('> .pd-section') section_display = 'contents';
-    @select('@media (max-width: 480px)') narrow_order = '1';
+    @select('@media (max-width: 768px)') narrow_order = '1';
     narrow_height = 'auto';
     narrow_display = 'grid';
     narrow_gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
@@ -218,7 +218,7 @@ export class $LanguageFormat extends $Format {
     @select('p') line_margin = '0';
     line_fontSize = '0.93em';
     get line_color() { return this.theme.pale; }
-    @select('@media (max-width: 480px)') narrow_position = 'static';
+    @select('@media (max-width: 768px)') narrow_position = 'static';
     narrow_width = 'auto';
     narrow_padding = '0 1.14em';
     narrow_lineHeight = '1.4';

@@ -24,8 +24,7 @@ export class InfoboxSpecification extends BoxSpecification {
 export class $InfoboxFormat extends $BoxFormat {
     float = 'right';
     clear = 'right';
-    width = '22em';
-    maxWidth = '100%';
+    width = 'min(22em, 100%)';
     override margin = '0 0 1em 1.4em';
 
     @select('> .pd-line') line_display = 'grid';
@@ -38,6 +37,9 @@ export class $InfoboxFormat extends $BoxFormat {
 
     @select('> .pd-line::before') label_content = 'attr(data-label)';
     label_fontWeight = '700';
+
+    @select('@media (max-width: 640px) {\n            & {') narrow_float = 'none';
+    narrow_margin = '0 0 1em';
 }
 
 export interface $Line$ extends $Paragraph$ {

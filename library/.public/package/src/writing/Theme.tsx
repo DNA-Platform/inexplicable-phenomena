@@ -96,10 +96,12 @@ export class $Theme extends $Format implements $Theme$ {
     entry_marginTop = '0';
     entry_marginBottom = '.15rem';
     entry_textIndent = '0';
-    @select('.pd-table-of-contents .pd-chapter > a') entryLink_flex = '0 1 auto';
+    @select('.pd-table-of-contents .pd-row > .pd-catalogue') entryLink_flex = '0 1 auto';
+    entryLink_minWidth = '0';
     entryLink_order = '1';
     @select('.pd-table-of-contents .pd-row .pd-row') under_flex = '0 0 100%';
     under_order = '4';
+    under_boxSizing = 'border-box';
     under_paddingLeft = '1.6em';
 
     // THE LEADER AND THE PLACE, drawn inside the anchor so the whole row follows the link. `leader`

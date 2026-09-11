@@ -20,7 +20,8 @@ export class $PortalTheme extends $EncyclopediaTheme {
     @select('.pd-book > .pd-chapter > header') cover_paddingTop = '2.86em';
     cover_gridColumn = '1 / -1';
     cover_margin = '0 auto';
-    cover_maxWidth = '39em';
+    cover_boxSizing = 'border-box';
+    cover_maxWidth = 'min(39em, 100%)';
     cover_display = 'flex';
     cover_flexDirection = 'column';
     @select('header .pd-title, header .pd-author, header .pd-subject') coverParts_display = 'none';

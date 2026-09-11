@@ -41,7 +41,7 @@ export class $EncyclopediaTheme extends $Theme {
     get text_maxWidth() { return this.measure; }
     @select('.pd-book > .pd-chapter > .pd-footer') foot_gridColumn = '1 / -1';
     foot_fontSize = '0.92em';
-    @select('@media (max-width: 1119px)') narrow_gridTemplateColumns = '1fr';
+    @select('@media (max-width: 1119px)') narrow_gridTemplateColumns = '0 minmax(0, 1fr) 0';
     narrow_padding = '1.5em';
     @select('@media (max-width: 1119px) {\n             .pd-book > .pd-chapter > nav {') narrowSide_display = 'none';
     @select('@media (max-width: 1119px) {\n             .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > article, .pd-book > .pd-chapter > .pd-index, .pd-book > .pd-chapter > footer {') narrowText_gridColumn = '1';
