@@ -1,5 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Entry, Heading, References, Section } from '@dna-platform/public';
+import { Entry, Heading, References, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 
 export default class $References extends $Chapter {
     print() {

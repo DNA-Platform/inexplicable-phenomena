@@ -187,7 +187,7 @@ export class $ArticleTheme extends $Theme {
     deepestNumber_minWidth = '47px';
     listedNumber_flex = '0 0 auto';
     listedNumber_minWidth = '22px';
-    @select('.pd-table-of-contents .pd-row.pd-references::before, .pd-table-of-contents .pd-row.pd-appendix::before') apartNumber_content = "''";
+    @select('.pd-table-of-contents .pd-row.pd-references::before, .pd-table-of-contents .pd-row.pd-notes::before, .pd-table-of-contents .pd-row.pd-appendix::before') apartNumber_content = "''";
 
     // A FIGURE IS NUMBERED, and by the sheet, exactly as a section is — so a reading that does not
     // number figures simply does not, and $Figure stays a shell with no member for it. latex.css
@@ -248,6 +248,20 @@ export class $ArticleTheme extends $Theme {
     @select('.pd-entry::before') entryNumber_content = "'\\005B' counter(entry) '\\005D '";
     @select('.pd-references a') cited_textDecoration = 'none';
     get cited_color() { return this.ink; }
+    @select('.pd-document.pd-notes') notes_counterReset = 'entry';
+    notes_fontSize = '8pt';
+    notes_marginTop = '2rem';
+    @select('.pd-document.pd-notes::before') footnoteRule_content = "''";
+    footnoteRule_display = 'block';
+    footnoteRule_width = '40%';
+    footnoteRule_borderTop = '0.4pt solid';
+    footnoteRule_marginBottom = '.6rem';
+    @select('.pd-document.pd-notes .pd-paragraph') note_textIndent = '1.8em';
+    note_marginBottom = '.2rem';
+    @select('.pd-document.pd-notes .pd-entry::before') noteNumber_content = "counter(entry)";
+    noteNumber_verticalAlign = 'super';
+    noteNumber_fontSize = '.7em';
+    noteNumber_marginRight = '.15em';
     equation_position = 'relative';
     @select('.pd-equation[data-number]::after') equationNumber_content = "'(' attr(data-number) ')'";
     equationNumber_position = 'absolute';

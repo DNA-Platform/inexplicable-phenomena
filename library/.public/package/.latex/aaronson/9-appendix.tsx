@@ -1,9 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Citation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import { Appendix } from '@dna-platform/public/article';
 
 export default class $Appendix extends $Chapter {
-    view() {
+    print() {
         return (
             <Appendix>
                 <Section>

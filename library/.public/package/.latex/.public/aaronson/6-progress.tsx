@@ -1,10 +1,11 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Citation, Equation, Heading, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Equation, Heading, Paragraph, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import { Footnote } from '@dna-platform/public/article';
 import Document from './.document';
 
 export default class $Progress extends $Chapter {
-    view() {
+    print() {
         return (
             <Document>
                 <Section>

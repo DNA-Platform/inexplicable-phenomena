@@ -1,9 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Citation, Heading, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Heading, Paragraph, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import Document from './.document';
 
 export default class $WhyDifficult extends $Chapter {
-    view() {
+    print() {
         return (
             <Document>
                 <Section>

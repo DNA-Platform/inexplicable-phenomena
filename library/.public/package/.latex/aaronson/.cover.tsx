@@ -3,10 +3,11 @@
 // What's wrong with a title written in latex notation?" Nothing — and this is the demo that says
 // so, because a title is a piece of writing like any other and $Math stands inside one.
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Author, Cover, Math, Reference, Subject, Title } from '@dna-platform/public';
+import { Author, Cover, Math, Reference, Subject, Title } from '@dna-platform/public';
+import $Chapter from './.chapter';
 
 export default class $Cover extends $Chapter {
-    view() {
+    print() {
         return (
             <Cover>
                 <Title>

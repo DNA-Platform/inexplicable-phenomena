@@ -1,9 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Citation, Equation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Equation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import Document from './.document';
 
 export default class $Formalizing extends $Chapter {
-    view() {
+    print() {
         return (
             <Document>
                 <Section>

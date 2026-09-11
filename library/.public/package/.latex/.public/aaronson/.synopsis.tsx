@@ -2,11 +2,12 @@
 // The REAL one now — read off the PDF rather than written to fit.
 // An abstract is parenthetical, like the synopsis it is one of: present, and shown where asked.
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Heading, Math, Paragraph, Section } from '@dna-platform/public';
+import { Heading, Math, Paragraph, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import { Abstract } from '@dna-platform/public/article';
 
 export default class $Synopsis extends $Chapter {
-    view() {
+    print() {
         return (
             <Abstract print>
                 <Section>
