@@ -16,6 +16,7 @@
 // the point sizes stay ours; what comes from here is the document's feel and its face.
 import 'latex.css/style.min.css';
 import 'katex/dist/katex.min.css';
+import './page.css';
 import { createRoot } from 'react-dom/client';
 import { $ } from '@dna-platform/chemistry';
 import { book } from './aaronson/book';

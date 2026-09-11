@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Equation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
+import { $Chapter, Citation, Equation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
 import Document from './.document';
 
 export default class $Formalizing extends $Chapter {
@@ -8,7 +8,7 @@ export default class $Formalizing extends $Chapter {
             <Document>
                 <Section>
                     <Heading>Formalizing P = NP and Central Related Concepts</Heading>
-                    <Paragraph>The P = NP problem is normally phrased in terms of Turing machines: a theoretical model of computation proposed by Alan Turing in 1936, which involves a one-dimensional tape divided into discrete squares, and a finite control that moves back and forth on the tape, reading and writing symbols. For a formal definition, see, e.g., Sipser [242] or Cook [74].</Paragraph>
+                    <Paragraph>The P = NP problem is normally phrased in terms of Turing machines: a theoretical model of computation proposed by Alan Turing in 1936, which involves a one-dimensional tape divided into discrete squares, and a finite control that moves back and forth on the tape, reading and writing symbols. For a formal definition, see, e.g., Sipser <Citation>sipser2005</Citation> or Cook <Citation>cook2000</Citation>.</Paragraph>
                     <Section>
                         <Heading>NP-Completeness</Heading>
                         <Paragraph>A further concept, not part of the statement of P = NP but central to any discussion of it, is NP-completeness. To explain this requires a few more definitions. An oracle Turing machine is a Turing machine that, at any time, can submit an instance x to an “oracle”: a device that, in a single time step, returns a bit indicating whether x belongs to some given language L. Though it sounds fanciful, this notion is what lets us relate different computational problems to each other, and as such is one of the central concepts in computer science. An oracle that answers all queries consistently with L is called an L-oracle, and we write M to denote the (oracle) Turing machine M with L-oracle. We can then define P , or P relative to L, as the class of all languages L for which there exists an oracle machine M such that ML decides L′ in polynomial time. If L′ ∈ PL, then we also write L ≤P L, which means “L is polynomial-time Turing-reducible to L.” Note that polynomial-time Turing-reducibility is indeed a partial order relation (i.e., it’s transitive and reflexive).</Paragraph>
@@ -23,7 +23,7 @@ export default class $Formalizing extends $Chapter {
                         </Section>
                         <Section>
                             <Heading>The Twilight Zone: Between P and NP-complete</Heading>
-                            <Paragraph>We say a language L is NP-intermediate if L ∈ NP, but L is neither in P nor NP-complete. Based on experience, one might hope not only that P ≠ NP, but that there’d be a dichotomy, with all NP problems either in P or else NP-complete. However, a classic result by Ladner [160] rules that possibility out. Theorem 5 (Ladner [160]) If P ≠ NP, then there exist NP-intermediate languages.</Paragraph>
+                            <Paragraph>We say a language L is NP-intermediate if L ∈ NP, but L is neither in P nor NP-complete. Based on experience, one might hope not only that P ≠ NP, but that there’d be a dichotomy, with all NP problems either in P or else NP-complete. However, a classic result by Ladner <Citation>ladner1975</Citation> rules that possibility out. Theorem 5 (Ladner <Citation>ladner1975</Citation>) If P ≠ NP, then there exist NP-intermediate languages.</Paragraph>
                         </Section>
                         <Section>
                             <Heading>coNP and the Polynomial Hierarchy</Heading>
@@ -40,7 +40,7 @@ export default class $Formalizing extends $Chapter {
                         </Section>
                         <Section>
                             <Heading>Counting Complexity</Heading>
-                            <Paragraph>Given an NP search problem, besides asking whether a solution exists, it’s also natural to ask how many solutions there are. To capture this, in 1979 Valiant [262] defined the class #P (pronounced “sharp-P”, not “hashtag-P”!) of combinatorial counting problems. Formally, a function f : &#123;0,1&#125; → N is in #P if and only if there’s a polynomial-time Turing machine M, and a polynomial p, such that for all x ∈ &#123;0,1&#125; ,</Paragraph>
+                            <Paragraph>Given an NP search problem, besides asking whether a solution exists, it’s also natural to ask how many solutions there are. To capture this, in 1979 Valiant <Citation>valiant1979b</Citation> defined the class #P (pronounced “sharp-P”, not “hashtag-P”!) of combinatorial counting problems. Formally, a function f : &#123;0,1&#125; → N is in #P if and only if there’s a polynomial-time Turing machine M, and a polynomial p, such that for all x ∈ &#123;0,1&#125; ,</Paragraph>
                             <Equation>{String.raw`\mathrm{P}^{\#P} \supseteq \mathrm{PH}`}</Equation>
                             <Paragraph>Toda: the polynomial hierarchy sits inside P with a counting oracle.</Paragraph>
                         </Section>

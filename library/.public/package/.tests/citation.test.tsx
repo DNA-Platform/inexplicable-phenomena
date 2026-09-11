@@ -71,3 +71,23 @@ describe('a citation names an entry by key and draws the entry\'s place, read fr
         expect(host.querySelector('#aside')?.textContent).toContain('An aside');
     });
 });
+
+class $Both extends $Chapter {
+    print() {
+        return <Document><Section><Heading>Both</Heading><Paragraph>Shown twice<Citation>hartmanis, cook</Citation>.</Paragraph></Section></Document>;
+    }
+}
+const Both = $($Both);
+
+describe('a citation may carry several keys, and draws their numbers joined in the order written', () => {
+    it('TWO KEYS, TWO NUMBERS — hartmanis first then cook, so 1, 2', async () => {
+        const book = $(<Book><Front /><Both /><Bib /></Book>) as unknown as $Book;
+        const Drawn = $(book);
+        let host: HTMLElement | undefined;
+        await act(async () => { host = render(<Drawn />).container; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        const cited = host!.querySelector('a.pd-citation');
+        expect(cited?.textContent).toBe('1, 2');
+        expect(cited?.getAttribute('href')).toBe('#hartmanis');
+    });
+});

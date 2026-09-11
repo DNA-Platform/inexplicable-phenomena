@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Heading, Paragraph, Section } from '@dna-platform/public';
+import { $Chapter, Citation, Heading, Paragraph, Section } from '@dna-platform/public';
 import Document from './.document';
 
 export default class $Strengthenings extends $Chapter {
@@ -11,7 +11,7 @@ export default class $Strengthenings extends $Chapter {
                     <Paragraph>I’ll now survey various strengthenings of the P ≠ NP conjecture, which are often needed for ap- plications to cryptography, quantum computing, fine-grained complexity, and elsewhere. Some of these strengthenings will play a role when, in Section 6, we discuss the main approaches to proving P ≠ NP that have been tried.</Paragraph>
                     <Section>
                         <Heading>Different Running Times</Heading>
-                        <Paragraph>There’s been a great deal of progress on beating brute-force search for many NP-complete problems, even if the resulting algorithms still take exponential time. For example, Sch¨oning proved the following in 1999. Theorem 22 (Sch¨oning [232]) There’s a randomized algorithm that solves 3Sat in O((4/3) ) time.</Paragraph>
+                        <Paragraph>There’s been a great deal of progress on beating brute-force search for many NP-complete problems, even if the resulting algorithms still take exponential time. For example, Sch¨oning proved the following in 1999. Theorem 22 (Sch¨oning <Citation>schoning1999</Citation>) There’s a randomized algorithm that solves 3Sat in O((4/3) ) time.</Paragraph>
                     </Section>
                     <Section>
                         <Heading>Nonuniform Algorithms and Circuits</Heading>
@@ -35,7 +35,7 @@ export default class $Strengthenings extends $Chapter {
                     </Section>
                     <Section>
                         <Heading>Quantum Algorithms</Heading>
-                        <Paragraph>The class BPP might not exhaust what the physical world lets us efficiently compute, with quantum computing an obvious contender for going further. In 1993, Bernstein and Vazirani [47] defined the complexity class BQP, or Bounded-Error Quantum Polynomial-Time, as a quantum-mechanical generalization of BPP. (Details of quantum computing and BQP are beyond the scope of this survey, but see [203, 6].) Bernstein and Vazirani, along with Adleman, DeMarrais, and Huang [13], also showed some basic containments:</Paragraph>
+                        <Paragraph>The class BPP might not exhaust what the physical world lets us efficiently compute, with quantum computing an obvious contender for going further. In 1993, Bernstein and Vazirani <Citation>bernstein1997</Citation> defined the complexity class BQP, or Bounded-Error Quantum Polynomial-Time, as a quantum-mechanical generalization of BPP. (Details of quantum computing and BQP are beyond the scope of this survey, but see <Citation>nielsen2000, aaronson2013</Citation>.) Bernstein and Vazirani, along with Adleman, DeMarrais, and Huang <Citation>adleman1997</Citation>, also showed some basic containments:</Paragraph>
                     </Section>
                 </Section>
             </Document>
