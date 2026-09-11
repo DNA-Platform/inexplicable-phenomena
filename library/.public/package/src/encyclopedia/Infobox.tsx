@@ -1,42 +1,31 @@
-// CREATED 2026-09-08 · rating 3. THE INFOBOX IS AN ASIDE — Doug asked whether it is really an
-// encyclopedia's thing and it is not; what is Wikipedia's is the NAME and the fixed vocabulary of
-// labelled lines, not the standing-beside. So the shape moved to writing/Aside and this inherits it,
-// which is why it draws <aside> without saying so. Open: an index card's title must MEAN something
-// and a line's does not, so a line is a labelled paragraph here rather than a card.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
-import { $Title, $TypeOfTitle } from '@/library/Title';
-import { $Aside$, $Aside, $TypeOfAside, AsideSpecification } from '@/writing/Aside';
-import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification, $Paragraph } from '@/writing/Paragraph';
+import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
+import { $Box$, $Box, $TypeOfBox, BoxSpecification } from './Box';
+import { InfoboxFormat as infoboxStyle } from './InfoboxFormat';
 
-export interface $Infobox$ extends $Aside$ { }
+export interface $Infobox$ extends $Box$ { }
 
-export class $Infobox extends $Aside implements $Infobox$ {
-    title(): $Title | undefined { return this.searchForOne<$Title>($TypeOfTitle); }
-
+export class $Infobox extends $Box implements $Infobox$ {
     $Infobox(block: $Block) {
-        super.$Aside(this.addType(block, $TypeOfInfobox));
+        super.$Box(this.addType(block, $TypeOfInfobox).concat($check(infoboxStyle, '!')));
     }
-
-    // The <aside> comes from $Aside; the encyclopedia theme floats it right by its pd-infobox class.
 }
 
-export class $TypeOfInfobox extends $TypeOfAside {
+export class $TypeOfInfobox extends $TypeOfBox {
     protected override specification: Specification<$Writing> = new InfoboxSpecification();
 }
 
-export class InfoboxSpecification extends AsideSpecification {
+export class InfoboxSpecification extends BoxSpecification {
 }
 
 export interface $Line$ extends $Paragraph$ {
     label: string;
 }
 
-// A LINE IS A LABELLED PARAGRAPH — the demo's $Line, promoted. Whether it should be an $IndexCard instead (ch18's "exact" fit) is the open question above.
 export class $Line extends $Paragraph implements $Line$ {
     $label = '';
 

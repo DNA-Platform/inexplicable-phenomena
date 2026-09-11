@@ -18,43 +18,6 @@ export class $EncyclopediaTheme extends $Theme {
     override size = '16px';
     override leading = '1.625';
     override between = '1em';
-
-    // THE INFOBOX, SAID BY THE SHEET AND NOT BY A WRAPPER. Every one of these is a rule about a
-    // class, so nothing needs to stand around the writing to carry it — which is the whole reason
-    // the demo's $Sidebar/$SidebarFormat pair could be deleted. A format is for what a sheet CANNOT
-    // say, and float, width and a labelled row are all sayable.
-    @select('.pd-infobox') box_float = 'right';
-    box_clear = 'right';
-    box_boxSizing = 'border-box';
-    box_width = '22em';
-    box_maxWidth = '100%';
-    box_margin = '0 0 1em 1.4em';
-    box_padding = '0.4em';
-    box_fontSize = '0.88em';
-    box_lineHeight = '1.4';
-    get box_background() { return this.quiet; }
-    get box_border() { return `1px solid ${this.shade}`; }
-
-    @select('.pd-infobox > .pd-heading') boxName_display = 'block';
-    boxName_fontSize = '1.3em';
-    boxName_fontWeight = '700';
-    boxName_textAlign = 'center';
-    boxName_border = 'none';
-    boxName_margin = '0';
-    boxName_padding = '0.4em 0.5em';
-    get boxName_fontFamily() { return this.body; }
-
-    @select('.pd-line') row_display = 'grid';
-    row_gridTemplateColumns = 'minmax(0, 6.5em) minmax(0, 1fr)';
-    row_gap = '0 0.6em';
-    row_padding = '0.35em 0.5em';
-    row_margin = '0';
-    row_alignItems = 'baseline';
-    get row_borderTop() { return `1px solid ${this.shade}`; }
-
-    @select('.pd-line::before') label_content = 'attr(data-label)';
-    label_fontWeight = '700';
-
     override get maxWidth() { return '99.75em'; }
     override padding = '0 3em';
     display = 'grid';
