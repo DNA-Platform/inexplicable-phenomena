@@ -41,7 +41,7 @@ export default class $Formalizing extends $Chapter {
                         <Section>
                             <Heading>Counting Complexity</Heading>
                             <Paragraph>Given an NP search problem, besides asking whether a solution exists, it’s also natural to ask how many solutions there are. To capture this, in 1979 Valiant [262] defined the class #P (pronounced “sharp-P”, not “hashtag-P”!) of combinatorial counting problems. Formally, a function f : &#123;0,1&#125; → N is in #P if and only if there’s a polynomial-time Turing machine M, and a polynomial p, such that for all x ∈ &#123;0,1&#125; ,</Paragraph>
-                            <Equation>{String.raw`\mathrm{P}^{#P} \supseteq \mathrm{PH}`}</Equation>
+                            <Equation>{String.raw`\mathrm{P}^{\#P} \supseteq \mathrm{PH}`}</Equation>
                             <Paragraph>Toda: the polynomial hierarchy sits inside P with a counting oracle.</Paragraph>
                         </Section>
                         <Section>

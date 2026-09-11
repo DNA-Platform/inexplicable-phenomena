@@ -9,11 +9,11 @@ export default class $References extends $Chapter {
                     <Heading>References</Heading>
                     <Entry>{"aaronson2003: S. Aaronson. Is P versus NP formally independent? Bulletin of the EATCS, (81), October 2003."}</Entry>
                     <Entry>{"aaronson2004: S. Aaronson. Multilinear formulas and skepticism of quantum computing. In Proc. ACM STOC, pages 118–127, 2004. quant-ph/0311039, www.scottaaronson.com/papers/mlinsiam.pdf."}</Entry>
-                    <Entry>{"aaronson2005: S. Aaronson. NP-complete problems and physical reality. SIGACT News, March 2005. quantph/0502072."}</Entry>
+                    <Entry>{"aaronson2005: S. Aaronson. NP-complete problems and physical reality. SIGACT News, March 2005. quant-ph/0502072."}</Entry>
                     <Entry>{"aaronson2006: S. Aaronson. Oracles are subtle but not malicious. In Proc. Conference on Computational Complexity, pages 340–354, 2006. ECCC TR05-040."}</Entry>
                     <Entry>{"aaronson2008: S. Aaronson. Arithmetic natural proofs theory is sought, 2008. www.scottaaronson.com/blog/?p=336."}</Entry>
                     <Entry>{"aaronson2013: S. Aaronson. Quantum Computing Since Democritus. Cambridge University Press, 2013."}</Entry>
-                    <Entry>{"aaronson2014: S. Aaronson. The scientific case for P ̸= NP, 2014. www.scottaaronson.com/blog/?p=1720."}</Entry>
+                    <Entry>{"aaronson2014: S. Aaronson. The scientific case for P ≠ NP, 2014. www.scottaaronson.com/blog/?p=1720."}</Entry>
                     <Entry>{"aaronson: S. Aaronson et al. The Complexity Zoo. www.complexityzoo.com."}</Entry>
                     <Entry>{"aaronson2014b: S. Aaronson, R. Impagliazzo, and D. Moshkovitz. AM with multiple Merlins. In Proc. Conference on Computational Complexity, pages 44–55, 2014. arXiv:1401.6848."}</Entry>
                     <Entry>{"aaronson2009: S. Aaronson and A. Wigderson. Algebrization: a new barrier in complexity theory. ACM Trans. on Computation Theory, 1(1), 2009. Earlier version in Proc. ACM STOC’2008."}</Entry>
@@ -23,16 +23,16 @@ export default class $References extends $Chapter {
                     <Entry>{"agrawal2006: M. Agrawal. Determinant versus permanent. In Proceedings of the International Congress of Mathematicians, 2006."}</Entry>
                     <Entry>{"agrawal2004: M. Agrawal, N. Kayal, and N. Saxena. PRIMES is in P. Annals of Mathematics, 160(2):781– 793, 2004. Preprint released in 2002."}</Entry>
                     <Entry>{"agrawal2008: M. Agrawal and V. Vinay. Arithmetic circuits: a chasm at depth four. In Proc. IEEE FOCS, pages 67–75, 2008."}</Entry>
-                    <Entry>{"ajtai1983: M. Ajtai. Σ1 1 -formulae on finite structures. Annals of Pure and Applied Logic, 24(1):1–48, 1983."}</Entry>
+                    <Entry>{"ajtai1983: M. Ajtai. Σ¹₁-formulae on finite structures. Annals of Pure and Applied Logic, 24(1):1–48, 1983."}</Entry>
                     <Entry>{"ajtai2005: M. Ajtai. A non-linear time lower bound for Boolean branching programs. Theory of Computing, 1(1):149–176, 2005. Earlier version in Proc. IEEE FOCS’1999, pp. 60-70."}</Entry>
                     <Entry>{"alexeev2011: B. Alexeev, M. A. Forbes, and J. Tsimerman. Tensor rank: some lower and upper bounds. In Proc. Conference on Computational Complexity, pages 283–291, 2011."}</Entry>
                     <Entry>{"allender1999: E. Allender. The permanent requires large uniform threshold circuits. Chicago Journal of Theoretical Computer Science, 7:19, 1999."}</Entry>
                     <Entry>{"allender2008: E. Allender. Cracks in the defenses: scouting out approaches on circuit lower bounds. In Computer Science in Russia, pages 3–10, 2008."}</Entry>
                     <Entry>{"allender2009: E. Allender. A status report on the P versus NP question. Advances in Computers, 77:117– 147, 2009."}</Entry>
-                    <Entry>{"allender1991: E. Allender and V. Gore. On strong separations from AC0 . In Fundamentals of Computation Theory, pages 1–15. Springer Berlin Heidelberg, 1991."}</Entry>
+                    <Entry>{"allender1991: E. Allender and V. Gore. On strong separations from AC⁰. In Fundamentals of Computation Theory, pages 1–15. Springer Berlin Heidelberg, 1991."}</Entry>
                     <Entry>{"allender1994: E. Allender and V. Gore. A uniform circuit lower bound for the permanent. SIAM J. Comput., 23(5):1026–1049, 1994."}</Entry>
-                    <Entry>{"allender2008b: E. Allender, L. Hellerstein, P. McCabe, T. Pitassi, and M. Saks. Minimizing disjunctive normal form formulas and AC0 circuits given a truth table. SIAM J. Comput., 38(1):63–84, 2008. Earlier version in Proc. IEEE Complexity’2006, pp. 237-251."}</Entry>
-                    <Entry>{"allender2010: E. Allender and M. Kouck´y. Amplifying lower bounds by means of self-reducibility. J. of the ACM, 57(3):1–36, 2010. Earlier version in Proc. IEEE Complexity’2008, pp. 31-40."}</Entry>
+                    <Entry>{"allender2008b: E. Allender, L. Hellerstein, P. McCabe, T. Pitassi, and M. Saks. Minimizing disjunctive normal form formulas and AC⁰ circuits given a truth table. SIAM J. Comput., 38(1):63–84, 2008. Earlier version in Proc. IEEE Complexity’2006, pp. 237-251."}</Entry>
+                    <Entry>{"allender2010: E. Allender and M. Koucký. Amplifying lower bounds by means of self-reducibility. J. of the ACM, 57(3):1–36, 2010. Earlier version in Proc. IEEE Complexity’2008, pp. 31-40."}</Entry>
                     <Entry>{"alon1987: N. Alon and R. B. Boppana. The monotone circuit complexity of Boolean functions. Combinatorica, 7(1):1–22, 1987."}</Entry>
                     <Entry>{"andreev1987: A. E. Andreev. On a method for obtaining more than quadratic effective lower bounds for the complexity of π-schemes. Moscow Univ. Math. Bull., 42:63–66, 1987. In Russian."}</Entry>
                     <Entry>{"arora2009: S. Arora and B. Barak. Complexity Theory: A Modern Approach. Cambridge University Press, 2009. Online draft at www.cs.princeton.edu/theory/complexity/."}</Entry>
@@ -40,8 +40,8 @@ export default class $References extends $Chapter {
                     <Entry>{"arora1998: S. Arora, C. Lund, R. Motwani, M. Sudan, and M. Szegedy. Proof verification and the hardness of approximation problems. J. of the ACM, 45(3):501–555, 1998. Earlier version in Proc. IEEE FOCS’1992, pp. 14-23."}</Entry>
                     <Entry>{"arora1998b: S. Arora and S. Safra. Probabilistic checking of proofs: a new characterization of NP. J. of the ACM, 45(1):70–122, 1998. Earlier version in Proc. IEEE FOCS’1992, pp. 2-13."}</Entry>
                     <Entry>{"atserias2006: A. Atserias. Distinguishing SAT from polynomial-size circuits, through black-box queries. In Proc. Conference on Computational Complexity, pages 88–95, 2006."}</Entry>
-                    <Entry>{"aydnlo2016: B. Aydınlıo˘glu and E. Bach. Affine relativization: unifying the algebrization and relativization barriers. ECCC TR16-040, 2016."}</Entry>
-                    <Entry>{"babai2016: L. Babai. Graph isomorphism in quasipolynomial time. In Proc. ACM STOC, pages 684–697, 2016. arXiv:1512.03547. See also correction at people.cs.uchicago.edu/˜laci/update.html."}</Entry>
+                    <Entry>{"aydnloglu2016: B. Aydınlıoğlu and E. Bach. Affine relativization: unifying the algebrization and relativization barriers. ECCC TR16-040, 2016."}</Entry>
+                    <Entry>{"babai2016: L. Babai. Graph isomorphism in quasipolynomial time. In Proc. ACM STOC, pages 684–697, 2016. arXiv:1512.03547. See also correction at people.cs.uchicago.edu/~laci/update.html."}</Entry>
                     <Entry>{"babai1983: L. Babai and E. M. Luks. Canonical labeling of graphs. In Proc. ACM STOC, pages 171–183, 1983."}</Entry>
                     <Entry>{"backurs2015: A. Backurs and P. Indyk. Edit distance cannot be computed in strongly subquadratic time (unless SETH is false). In Proc. ACM STOC, pages 51–58, 2015."}</Entry>
                     <Entry>{"baker1975: T. Baker, J. Gill, and R. Solovay. Relativizations of the P=?NP question. SIAM J. Comput., 4:431–442, 1975."}</Entry>
@@ -52,7 +52,7 @@ export default class $References extends $Chapter {
                     <Entry>{"bendavid1992: S. Ben-David and S. Halevi. On the independence of P versus NP. Technical Report TR714, Technion, 1992."}</Entry>
                     <Entry>{"bensasson2001: E. Ben-Sasson and A. Wigderson. Short proofs are narrow - resolution made simple. J. of the ACM, 48(2):149–169, 2001. Earlier version in Proc. IEEE Complexity’1999."}</Entry>
                     <Entry>{"bennett1997: C. Bennett, E. Bernstein, G. Brassard, and U. Vazirani. Strengths and weaknesses of quantum computing. SIAM J. Comput., 26(5):1510–1523, 1997. quant-ph/9701001."}</Entry>
-                    <Entry>{"bennett1981: C. H. Bennett and J. Gill. Relative to a random oracle A, P A ̸= NP A ̸= coNP A with probability 1. SIAM J. Comput., 10(1):96–113, 1981."}</Entry>
+                    <Entry>{"bennett1981: C. H. Bennett and J. Gill. Relative to a random oracle A, Pᴬ ≠ NPᴬ ≠ coNPᴬ with probability 1. SIAM J. Comput., 10(1):96–113, 1981."}</Entry>
                     <Entry>{"bernstein1997: E. Bernstein and U. Vazirani. Quantum complexity theory. SIAM J. Comput., 26(5):1411– 1473, 1997. Earlier version in Proc. ACM STOC’1993."}</Entry>
                     <Entry>{"bini1980: D. Bini. Relations between exact and approximate bilinear algorithms. Applications. Calcolo, 17(1):87–97, 1980."}</Entry>
                     <Entry>{"bini1980b: D. Bini, G. Lotti, and F. Romani. Approximate solutions for the bilinear form computational problem. SIAM J. Comput., 9(4):692–697, 1980."}</Entry>
@@ -61,20 +61,20 @@ export default class $References extends $Chapter {
                     <Entry>{"blum1967: M. Blum. A machine-independent theory of the complexity of recursive functions. J. of the ACM, 14(2):322–336, 1967."}</Entry>
                     <Entry>{"bogdanov2006: A. Bogdanov and L. Trevisan. Average-case complexity. Foundations and Trends in Theoretical Computer Science, 2(1), 2006. ECCC TR06-073."}</Entry>
                     <Entry>{"bookatz2014: A. D. Bookatz. QMA-complete problems. Quantum Information and Computation, 14(5- 6):361–383, 2014. arXiv:1212.6312."}</Entry>
-                    <Entry>{"boppana1987: R. B. Boppana, J. H˚astad, and S. Zachos. Does co-NP have short interactive proofs? Inform. Proc. Lett., 25:127–132, 1987."}</Entry>
+                    <Entry>{"boppana1987: R. B. Boppana, J. Håstad, and S. Zachos. Does co-NP have short interactive proofs? Inform. Proc. Lett., 25:127–132, 1987."}</Entry>
                     <Entry>{"brassard1979: G. Brassard. A note on the complexity of cryptography. IEEE Trans. Information Theory, 25(2):232–233, 1979."}</Entry>
-                    <Entry>{"braunstein2005: A. Braunstein, M. M´ezard, and R. Zecchina. Survey propagation: An algorithm for satisfiability. Random Structures and Algorithms, 27(2):201–226, 2005."}</Entry>
-                    <Entry>{"braverman2009: M. Braverman. Poly-logarithmic independence fools AC0 circuits. In Proc. Conference on Computational Complexity, pages 3–8, 2009. ECCC TR09-011."}</Entry>
+                    <Entry>{"braunstein2005: A. Braunstein, M. Mézard, and R. Zecchina. Survey propagation: An algorithm for satisfiability. Random Structures and Algorithms, 27(2):201–226, 2005."}</Entry>
+                    <Entry>{"braverman2009: M. Braverman. Poly-logarithmic independence fools AC⁰ circuits. In Proc. Conference on Computational Complexity, pages 3–8, 2009. ECCC TR09-011."}</Entry>
                     <Entry>{"bshouty1995: N. H. Bshouty, R. Cleve, and W. Eberly. Size-depth tradeoffs for algebraic formulae. SIAM J. Comput., 24(4):682–705, 1995. Earlier version in Proc. IEEE FOCS’1991, pp. 334-341."}</Entry>
-                    <Entry>{"bshouty1996: N. H. Bshouty, R. Cleve, R. Gavald`a, S. Kannan, and C. Tamon. Oracles and queries that are sufficient for exact learning. J. Comput. Sys. Sci., 52(3):421–433, 1996."}</Entry>
-                    <Entry>{"buhler1993: J. Buhler, R. Crandall, R. Ernvall, and T. Mets¨ankyl¨a. Irregular primes and cyclotomic invariants to four million. Mathematics of Computation, 61(203):151–153, 1993."}</Entry>
+                    <Entry>{"bshouty1996: N. H. Bshouty, R. Cleve, R. Gavaldà, S. Kannan, and C. Tamon. Oracles and queries that are sufficient for exact learning. J. Comput. Sys. Sci., 52(3):421–433, 1996."}</Entry>
+                    <Entry>{"buhler1993: J. Buhler, R. Crandall, R. Ernvall, and T. Metsänkylä. Irregular primes and cyclotomic invariants to four million. Mathematics of Computation, 61(203):151–153, 1993."}</Entry>
                     <Entry>{"buhrman1998: H. Buhrman, L. Fortnow, and T. Thierauf. Nonrelativizing separations. In Proc. Conference on Computational Complexity, pages 8–12, 1998."}</Entry>
-                    <Entry>{"burgisser2000: P. B¨urgisser. Completeness and reduction in algebraic complexity theory. 2000. Available at math-www.uni-paderborn.de/agpb/work/habil.ps."}</Entry>
-                    <Entry>{"burgisser2000b: P. B¨urgisser. Cook’s versus Valiant’s hypothesis. Theoretical Comput. Sci., 235(1):71–88, 2000."}</Entry>
-                    <Entry>{"burgisser2009: P. B¨urgisser. On defining integers and proving arithmetic circuit lower bounds. Computational Complexity, 18(1):81–103, 2009. Earlier version in Proc. STACS’2007, pp. 133-144."}</Entry>
-                    <Entry>{"burgisser2013: P. B¨urgisser and C. Ikenmeyer. Deciding positivity of Littlewood-Richardson coefficients. SIAM J. Discrete Math., 27(4):1639–1681, 2013."}</Entry>
-                    <Entry>{"burgisser2013b: P. B¨urgisser and C. Ikenmeyer. Explicit lower bounds via geometric complexity theory. In Proc. ACM STOC, pages 141–150, 2013. arXiv:1210.8368."}</Entry>
-                    <Entry>{"burgisser2016: P. B¨urgisser, C. Ikenmeyer, and G. Panova. No occurrence obstructions in geometric complexity theory. In Proc. IEEE FOCS, pages 386–395, 2016. arXiv:1604.06431."}</Entry>
+                    <Entry>{"burgisser2000: P. Bürgisser. Completeness and reduction in algebraic complexity theory. 2000. Available at math-www.uni-paderborn.de/agpb/work/habil.ps."}</Entry>
+                    <Entry>{"burgisser2000b: P. Bürgisser. Cook’s versus Valiant’s hypothesis. Theoretical Comput. Sci., 235(1):71–88, 2000."}</Entry>
+                    <Entry>{"burgisser2009: P. Bürgisser. On defining integers and proving arithmetic circuit lower bounds. Computational Complexity, 18(1):81–103, 2009. Earlier version in Proc. STACS’2007, pp. 133-144."}</Entry>
+                    <Entry>{"burgisser2013: P. Bürgisser and C. Ikenmeyer. Deciding positivity of Littlewood-Richardson coefficients. SIAM J. Discrete Math., 27(4):1639–1681, 2013."}</Entry>
+                    <Entry>{"burgisser2013b: P. Bürgisser and C. Ikenmeyer. Explicit lower bounds via geometric complexity theory. In Proc. ACM STOC, pages 141–150, 2013. arXiv:1210.8368."}</Entry>
+                    <Entry>{"burgisser2016: P. Bürgisser, C. Ikenmeyer, and G. Panova. No occurrence obstructions in geometric complexity theory. In Proc. IEEE FOCS, pages 386–395, 2016. arXiv:1604.06431."}</Entry>
                     <Entry>{"buss2015: S. R. Buss and R. Williams. Limits on alternation trading proofs for time-space lower bounds. Computational Complexity, 24(3):533–600, 2015. Earlier version in Proc. IEEE Complexity’2012, pp. 181-191."}</Entry>
                     <Entry>{"cai2010: J.-Y. Cai, X. Chen, and D. Li. Quadratic lower bound for permanent vs. determinant in any characteristic. 19(1):37–56, 2010. Earlier version in Proc. ACM STOC’2008, pp. 491-498."}</Entry>
                     <Entry>{"chen2016: R. Chen, R. Santhanam, and S. Srinivasan. Average-case lower bounds and satisfiability algorithms for small threshold circuits. In Proc. Conference on Computational Complexity, number 1, 2016. ECCC TR15-191."}</Entry>
@@ -89,7 +89,7 @@ export default class $References extends $Chapter {
                     <Entry>{"cormen2001: T. H. Cormen, C. E. Leiserson, R. L. Rivest, and C. Stein. Introduction to Algorithms (2nd edition). MIT Press, 2001."}</Entry>
                     <Entry>{"daskalakis2009: C. Daskalakis, P. W. Goldberg, and C. H. Papadimitriou. The complexity of computing a Nash equilibrium. Commun. of the ACM, 52(2):89–97, 2009. Earlier version in Proc. ACM STOC’2006."}</Entry>
                     <Entry>{"davis1962: M. Davis, G. Logemann, and D. Loveland. A machine program for theorem proving. Commun. of the ACM, 5(7):394–397, 1962."}</Entry>
-                    <Entry>{"deolalikar2010: V. Deolalikar. P ̸= NP. Archived version available at www.win.tue.nl/˜gwoegi/P-versusNP/Deolalikar.pdf, 2010."}</Entry>
+                    <Entry>{"deolalikar2010: V. Deolalikar. P ≠ NP. Archived version available at www.win.tue.nl/~gwoegi/P-versusNP/Deolalikar.pdf, 2010."}</Entry>
                     <Entry>{"edmonds1965: J. Edmonds. Paths, trees, and flowers. Canadian Journal of Mathematics, 17(3):449–467, 1965."}</Entry>
                     <Entry>{"fagin1975: R. Fagin. Monadic generalized spectra. Math. Logik Grundlag. Math., 21:89–96, 1975."}</Entry>
                     <Entry>{"fagin1993: R. Fagin. Finite model theory - a personal perspective. Theoretical Comput. Sci., 116:3–31, 1993."}</Entry>
@@ -104,7 +104,7 @@ export default class $References extends $Chapter {
                     <Entry>{"fortnow2000b: L. Fortnow and D. van Melkebeek. Time-space tradeoffs for nondeterministic computation. In Proc. Conference on Computational Complexity, pages 2–13, 2000."}</Entry>
                     <Entry>{"fortnow2008: L. Fortnow, A. Pavan, and S. Sengupta. Proving SAT does not have small circuits with an application to the two queries problem. J. Comput. Sys. Sci., 74(3):358–363, 2008. Earlier version in Proc. IEEE Complexity’2003, pp. 347-350."}</Entry>
                     <Entry>{"fortnow1988: L. Fortnow and M. Sipser. Are there interactive protocols for co-NP languages? Inform. Proc. Lett., 28:249–251, 1988."}</Entry>
-                    <Entry>{"fraenkel1981: A. Fraenkel and D. Lichtenstein. Computing a perfect strategy for nxn chess requires time exponential in n. Journal of Combinatorial Theory A, 31:199–214, 1981."}</Entry>
+                    <Entry>{"fraenkel1981: A. Fraenkel and D. Lichtenstein. Computing a perfect strategy for n×n chess requires time exponential in n. Journal of Combinatorial Theory A, 31:199–214, 1981."}</Entry>
                     <Entry>{"friedman1971: H. Friedman. Higher set theory and mathematical practice. Annals of Mathematical Logic, 2(3):325–357, 1971."}</Entry>
                     <Entry>{"friedman1987: H. Friedman, N. Robertson, and P. Seymour. The metamathematics of the graph minor theorem. In S. Simpson, editor, Logic and Combinatorics, volume 65 of AMS Contemporary Mathematics Series, pages 229–261. 1987."}</Entry>
                     <Entry>{"friedman2016: H. M. Friedman. Large cardinals and emulations. At www.cs.nyu.edu/pipermail/fom/2016- November/020170.html, 2016."}</Entry>
@@ -117,7 +117,7 @@ export default class $References extends $Chapter {
                     <Entry>{"goldreich1991: O. Goldreich, S. Micali, and A. Wigderson. Proofs that yield nothing but their validity or all languages in NP have zero-knowledge proof systems. J. of the ACM, 38(1):691–729, 1991."}</Entry>
                     <Entry>{"goldwasser1989: S. Goldwasser and M. Sipser. Private coins versus public coins in interactive proof systems. In Randomness and Computation, volume 5 of Advances in Computing Research. JAI Press, 1989."}</Entry>
                     <Entry>{"goodstein1944: R. Goodstein. On the restricted ordinal theorem. J. Symbolic Logic, 9:33–41, 1944."}</Entry>
-                    <Entry>{"grenet2011: B. Grenet. An upper bound for the permanent versus determinant problem. www.lirmm.fr/˜grenet/publis/Gre11.pdf, 2011."}</Entry>
+                    <Entry>{"grenet2011: B. Grenet. An upper bound for the permanent versus determinant problem. www.lirmm.fr/~grenet/publis/Gre11.pdf, 2011."}</Entry>
                     <Entry>{"grigoriev1998: D. Grigoriev and M. Karpinski. An exponential lower bound for depth 3 arithmetic circuits. In Proc. ACM STOC, pages 577–582, 1998."}</Entry>
                     <Entry>{"grigoriev2000: D. Grigoriev and A. A. Razborov. Exponential lower bounds for depth 3 arithmetic circuits in algebras of functions over finite fields. Appl. Algebra Eng. Commun. Comput., 10(6):465–487, 2000. Earlier version in Proc. IEEE FOCS’1998, pp. 269-278."}</Entry>
                     <Entry>{"grochow2012: J. A. Grochow. Symmetry and equivalence relations in classical and geometric complexity theory. PhD thesis, 2012."}</Entry>
@@ -129,10 +129,10 @@ export default class $References extends $Chapter {
                     <Entry>{"gurvits2005: L. Gurvits. On the complexity of mixed discriminants and related problems. In Mathematical Foundations of Computer Science, pages 447–458, 2005."}</Entry>
                     <Entry>{"haken1985: A. Haken. The intractability of resolution. Theoretical Comput. Sci., 39:297–308, 1985."}</Entry>
                     <Entry>{"hartmanis1965: J. Hartmanis and R. E. Stearns. On the computational complexity of algorithms. Transactions of the American Mathematical Society, 117:285–306, 1965."}</Entry>
-                    <Entry>{"hastad1987: J. H˚astad. Computational Limitations for Small Depth Circuits. MIT Press, 1987."}</Entry>
-                    <Entry>{"hastad1998: J. H˚astad. The shrinkage exponent of De Morgan formulas is 2. SIAM J. Comput., 27(1):48– 64, 1998. Earlier version in Proc. IEEE FOCS’1993, pp. 114-123."}</Entry>
-                    <Entry>{"hastad2001: J. H˚astad. Some optimal inapproximability results. J. of the ACM, 48:798–859, 2001. Earlier version in Proc. ACM STOC’1997, pp. 1-10."}</Entry>
-                    <Entry>{"hastad1999: J. H˚astad, R. Impagliazzo, L. A. Levin, and M. Luby. A pseudorandom generator from any one-way function. SIAM J. Comput., 28(4):1364–1396, 1999."}</Entry>
+                    <Entry>{"hastad1987: J. Håstad. Computational Limitations for Small Depth Circuits. MIT Press, 1987."}</Entry>
+                    <Entry>{"hastad1998: J. Håstad. The shrinkage exponent of De Morgan formulas is 2. SIAM J. Comput., 27(1):48– 64, 1998. Earlier version in Proc. IEEE FOCS’1993, pp. 114-123."}</Entry>
+                    <Entry>{"hastad2001: J. Håstad. Some optimal inapproximability results. J. of the ACM, 48:798–859, 2001. Earlier version in Proc. ACM STOC’1997, pp. 1-10."}</Entry>
+                    <Entry>{"hastad1999: J. Håstad, R. Impagliazzo, L. A. Levin, and M. Luby. A pseudorandom generator from any one-way function. SIAM J. Comput., 28(4):1364–1396, 1999."}</Entry>
                     <Entry>{"hauenstein2013: J. D. Hauenstein, C. Ikenmeyer, and J. M. Landsberg. Equations for lower bounds on border rank. Experimental Mathematics, 22(4):372–383, 2013. arXiv:1305.0779."}</Entry>
                     <Entry>{"held1962: M. Held and R. M. Karp. A dynamic programming approach to sequencing problems. Journal of the Society for Industrial and Applied Mathematics, 10(1):196–210, 1962."}</Entry>
                     <Entry>{"ikenmeyer2015: C. Ikenmeyer, K. Mulmuley, and M. Walter. On vanishing of Kronecker coefficients. arXiv:1507.02955, 2015."}</Entry>
@@ -162,28 +162,28 @@ export default class $References extends $Chapter {
                     <Entry>{"kirby1982: L. Kirby and J. Paris. Accessible independence results for Peano arithmetic. Bulletin of the London Mathematical Society, 14:285–293, 1982."}</Entry>
                     <Entry>{"klivans2002: A. Klivans and D. van Melkebeek. Graph nonisomorphism has subexponential size proofs unless the polynomial-time hierarchy collapses. SIAM J. Comput., 31:1501–1526, 2002. Earlier version in Proc. ACM STOC’1999."}</Entry>
                     <Entry>{"knuth2014: D. E. Knuth and E. G. Daylight. Algorithmic Barriers Falling: P=NP? Lonely Scholar, 2014."}</Entry>
-                    <Entry>{"knutson1999: A. Knutson and T. Tao. The honeycomb model of GLn(C) tensor products I: proof of the saturation conjecture. J. Amer. Math. Soc., 12(4):1055–1090, 1999."}</Entry>
+                    <Entry>{"knutson1999: A. Knutson and T. Tao. The honeycomb model of GLₙ(ℂ) tensor products I: proof of the saturation conjecture. J. Amer. Math. Soc., 12(4):1055–1090, 1999."}</Entry>
                     <Entry>{"koiran2011: P. Koiran. Shallow circuits with high-powered inputs. In Proc. Innovations in Theoretical Computer Science (ITCS), pages 309–320, 2011."}</Entry>
                     <Entry>{"koiran2012: P. Koiran. Arithmetic circuits: the chasm at depth four gets wider. Theor. Comput. Sci., 448:56–65, 2012."}</Entry>
                     <Entry>{"kushilevitz1997: E. Kushilevitz and N. Nisan. Communication Complexity. Cambridge, 1997."}</Entry>
                     <Entry>{"ladner1975: R. E. Ladner. On the structure of polynomial time reducibility. J. of the ACM, 22:155–171, 1975."}</Entry>
                     <Entry>{"landsberg2006: J. M. Landsberg. The border rank of the multiplication of two by two matrices is seven. J. Amer. Math. Soc., 19(2):447–459, 2006. arXiv:math/0407224."}</Entry>
                     <Entry>{"landsberg2015: J. M. Landsberg. Geometric complexity theory: an introduction for geometers. Annali dell’Universita di Ferrara, 61(1):65–117, 2015. arXiv:1305.7387."}</Entry>
-                    <Entry>{"landsberg2016: J. M. Landsberg and M. Michalek. A 2n 2 − log(n) − 1 lower bound for the border rank of matrix multiplication. 2016. arXiv:1608.07486."}</Entry>
+                    <Entry>{"landsberg2016: J. M. Landsberg and M. Michalek. A 2n² − log(n) − 1 lower bound for the border rank of matrix multiplication. 2016. arXiv:1608.07486."}</Entry>
                     <Entry>{"landsberg2015b: J. M. Landsberg and G. Ottaviani. New lower bounds for the border rank of matrix multiplication. Theory of Computing, 11:285–298, 2015. arXiv:1112.6007."}</Entry>
                     <Entry>{"landsberg2016b: J. M. Landsberg and N. Ressayre. Permanent v. determinant: an exponential lower bound assuming symmetry. In Proc. Innovations in Theoretical Computer Science (ITCS), pages 29–35, 2016. arXiv:1508.05788."}</Entry>
                     <Entry>{"lautemann1983: C. Lautemann. BPP and the polynomial hierarchy. Inform. Proc. Lett., 17:215–217, 1983."}</Entry>
                     <Entry>{"lee2015: J. R. Lee, P. Raghavendra, and D. Steurer. Lower bounds on the size of semidefinite programming relaxations. In Proc. ACM STOC, pages 567–576, 2015."}</Entry>
                     <Entry>{"levin1973: L. A. Levin. Universal sequential search problems. Problems of Information Transmission, 9(3):115–116, 1973."}</Entry>
                     <Entry>{"levin1974: L. A. Levin. Laws of information conservation (non-growth) and aspects of the foundations of probability theory. Problems of Information Transmission, 10(3):206–210, 1974."}</Entry>
-                    <Entry>{"li1992: M. Li and P. M. B. Vit´anyi. Average case complexity under the universal distribution equals worst-case complexity. Inform. Proc. Lett., 42(3):145–149, 1992."}</Entry>
+                    <Entry>{"li1992: M. Li and P. M. B. Vitányi. Average case complexity under the universal distribution equals worst-case complexity. Inform. Proc. Lett., 42(3):145–149, 1992."}</Entry>
                     <Entry>{"linial1993: N. Linial, Y. Mansour, and N. Nisan. Constant depth circuits, Fourier transform, and learnability. J. of the ACM, 40(3):607–620, 1993. Earlier version in Proc. IEEE FOCS’1989, pp. 574-579."}</Entry>
                     <Entry>{"linial1990: N. Linial and N. Nisan. Approximate inclusion-exclusion. Combinatorica, 10(4):349–365, 1990. Earlier version in Proc. ACM STOC’1990."}</Entry>
                     <Entry>{"lipton1991: R. J. Lipton. New directions in testing. In Distributed Computing and Cryptography, pages 191–202. AMS, 1991."}</Entry>
                     <Entry>{"lipton2010: R. J. Lipton. Galactic algorithms, 2010. rjlipton.wordpress.com/2010/10/23/galacticalgorithms/."}</Entry>
                     <Entry>{"lipton2014: R. J. Lipton and K. W. Regan. Practically P=NP?, 2014. rjlipton.wordpress.com/2014/02/28/practically-pnp/."}</Entry>
                     <Entry>{"lipton1999: R. J. Lipton and A. Viglas. On the complexity of SAT. In Proc. IEEE FOCS, pages 459–464, 1999."}</Entry>
-                    <Entry>{"luna1973: D. Luna. Slices ´etales. M´emoires de la Soci´et´e Math´ematique de France, 33:81–105, 1973."}</Entry>
+                    <Entry>{"luna1973: D. Luna. Slices étales. Mémoires de la Société Mathématique de France, 33:81–105, 1973."}</Entry>
                     <Entry>{"lund1992: C. Lund, L. Fortnow, H. Karloff, and N. Nisan. Algebraic methods for interactive proof systems. J. of the ACM, 39:859–868, 1992. Earlier version in Proc. IEEE FOCS’1990, pp. 2-10."}</Entry>
                     <Entry>{"martin1975: D. A. Martin. Borel determinacy. Annals of Mathematics, 102(2):363–371, 1975."}</Entry>
                     <Entry>{"mccreight1969: E. M. McCreight and A. R. Meyer. Classes of computable functions defined by bounds on computation: preliminary report. In Proc. ACM STOC, pages 79–88, 1969."}</Entry>
@@ -213,7 +213,7 @@ export default class $References extends $Chapter {
                     <Entry>{"nisan1997: N. Nisan and A. Wigderson. Lower bounds on arithmetic circuits via partial derivatives. Computational Complexity, 6(3):217–234, 1997. Earlier version in Proc. IEEE FOCS’1995, pp. 16-25."}</Entry>
                     <Entry>{"papadimitriou1994: C. H. Papadimitriou. Computational Complexity. Addison-Wesley, 1994."}</Entry>
                     <Entry>{"paterson1993: M. Paterson and U. Zwick. Shrinkage of De Morgan formulae under restriction. Random Structures and Algorithms, 4(2):135–150, 1993."}</Entry>
-                    <Entry>{"paul1983: W. J. Paul, N. Pippenger, E. Szemer´edi, and W. T. Trotter. On determinism versus nondeterminism and related problems. In Proc. IEEE FOCS, pages 429–438, 1983."}</Entry>
+                    <Entry>{"paul1983: W. J. Paul, N. Pippenger, E. Szemerédi, and W. T. Trotter. On determinism versus nondeterminism and related problems. In Proc. IEEE FOCS, pages 429–438, 1983."}</Entry>
                     <Entry>{"peikert2011: C. Peikert and B. Waters. Lossy trapdoor functions and their applications. SIAM J. Comput., 40(6):1803–1844, 2011. Earlier version in Proc. ACM STOC’2008."}</Entry>
                     <Entry>{"perelman2002: G. Perelman. The entropy formula for the Ricci flow and its geometric applications. arXiv:math/0211159, 2002."}</Entry>
                     <Entry>{"pomerance1996: C. Pomerance. A tale of two sieves. Notices of the American Mathematical Society, 43(12):1473–1485, 1996."}</Entry>
@@ -238,8 +238,8 @@ export default class $References extends $Chapter {
                     <Entry>{"santhanam2014: R. Santhanam and R. Williams. On uniformity and circuit lower bounds. Computational Complexity, 23(2):177–205, 2014. Earlier version in Proc. IEEE Complexity’2013, pp. 15-23."}</Entry>
                     <Entry>{"saraf2014: S. Saraf. Recent progress on lower bounds for arithmetic circuits. In Proc. Conference on Computational Complexity, pages 155–160, 2014."}</Entry>
                     <Entry>{"savitch1970: W. J. Savitch. Relationships between nondeterministic and deterministic tape complexities. J. Comput. Sys. Sci., 4(2):177–192, 1970."}</Entry>
-                    <Entry>{"schoning1999: U. Sch¨oning. A probabilistic algorithm for k-SAT and constraint satisfaction problems. In Proc. IEEE FOCS, pages 410–414, 1999."}</Entry>
-                    <Entry>{"schoning1998: U. Sch¨oning and R. J. Pruim. Gems of Theoretical Computer Science. Springer, 1998."}</Entry>
+                    <Entry>{"schoning1999: U. Schöning. A probabilistic algorithm for k-SAT and constraint satisfaction problems. In Proc. IEEE FOCS, pages 410–414, 1999."}</Entry>
+                    <Entry>{"schoning1998: U. Schöning and R. J. Pruim. Gems of Theoretical Computer Science. Springer, 1998."}</Entry>
                     <Entry>{"shamir1992: A. Shamir. IP=PSPACE. J. of the ACM, 39(4):869–877, 1992. Earlier version in Proc. IEEE FOCS’1990, pp. 11-15."}</Entry>
                     <Entry>{"shannon1949: C. Shannon. The synthesis of two-terminal switching circuits. Bell System Technical Journal, 28(1):59–98, 1949."}</Entry>
                     <Entry>{"shoenfield1961: J. Shoenfield. The problem of predicativity. In Y. Bar-Hillel et al., editor, Essays on the Foundations of Mathematics, pages 132–142. Hebrew University Magnes Press, 1961."}</Entry>
@@ -257,12 +257,12 @@ export default class $References extends $Chapter {
                     <Entry>{"storer1983: J. A. Storer. On the complexity of chess. J. Comput. Sys. Sci., 27(1):77–100, 1983."}</Entry>
                     <Entry>{"stothers2010: A. J. Stothers. On the complexity of matrix multiplication. PhD thesis, 2010."}</Entry>
                     <Entry>{"strassen1969: V. Strassen. Gaussian elimination is not optimal. Numerische Mathematik, 14(13):354–356, 1969."}</Entry>
-                    <Entry>{"strassen1973: V. Strassen. Vermeidung von divisionen. Journal f¨ur die Reine und Angewandte Mathematik, 264:182–202, 1973."}</Entry>
+                    <Entry>{"strassen1973: V. Strassen. Vermeidung von divisionen. Journal für die Reine und Angewandte Mathematik, 264:182–202, 1973."}</Entry>
                     <Entry>{"subbotovskaya1961: B. A. Subbotovskaya. Realizations of linear functions by formulas using +, ×, −. Doklady Akademii Nauk SSSR, 136(3):553–555, 1961. In Russian."}</Entry>
                     <Entry>{"swart1986: E. R. Swart. P = NP. Technical report, University of Guelph, 1986. Revision in 1987."}</Entry>
-                    <Entry>{"szelepcsenyi1988: R. Szelepcs´enyi. The method of forced enumeration for nondeterministic automata. Acta Informatica, 26(3):279–284, 1988."}</Entry>
+                    <Entry>{"szelepcsenyi1988: R. Szelepcsényi. The method of forced enumeration for nondeterministic automata. Acta Informatica, 26(3):279–284, 1988."}</Entry>
                     <Entry>{"tal2014: A. Tal. Shrinkage of De Morgan formulae by spectral techniques. In Proc. IEEE FOCS, pages 551–560, 2014. ECCC TR14-048."}</Entry>
-                    <Entry>{"tardos1988: E. Tardos. The gap between monotone and non-monotone circuit complexity is exponential. ´ Combinatorica, 8(1):141–142, 1988."}</Entry>
+                    <Entry>{"entry1988: É. Tardos. The gap between monotone and non-monotone circuit complexity is exponential. Combinatorica, 8(1):141–142, 1988."}</Entry>
                     <Entry>{"tavenas2015: S. Tavenas. Improved bounds for reduction to depth 4 and depth 3. Inf. Comput., 240:2–11, 2015. Earlier version in Proc. MFCS’2013, pp. 813-824."}</Entry>
                     <Entry>{"toda1991: S. Toda. PP is as hard as the polynomial-time hierarchy. SIAM J. Comput., 20(5):865–877, 1991. Earlier version in Proc. IEEE FOCS’1989, pp. 514-519."}</Entry>
                     <Entry>{"trakhtenbrot1984: B. A. Trakhtenbrot. A survey of Russian approaches to perebor (brute-force search) algorithms. Annals of the History of Computing, 6(4):384–400, 1984."}</Entry>
@@ -275,7 +275,7 @@ export default class $References extends $Chapter {
                     <Entry>{"vassilevskawilliams2012: V. Vassilevska Williams. Multiplying matrices faster than Coppersmith-Winograd. In Proc. ACM STOC, pages 887–898, 2012."}</Entry>
                     <Entry>{"vinodchandran2005: N. V. Vinodchandran. A note on the circuit complexity of PP. Theor. Comput. Sci., 347:415– 418, 2005. ECCC TR04-056."}</Entry>
                     <Entry>{"wagner1974: R. Wagner and M. Fischer. The string-to-string correction problem. J. of the ACM, 21:168– 178, 1974. See en.wikipedia.org/wiki/Wagner-Fischer algorithm for independent discoveries of the same algorithm."}</Entry>
-                    <Entry>{"wigderson2006: A. Wigderson. P, NP and mathematics - a computational complexity perspective. In Proceedings of the International Congress of Mathematicians 2006 (Madrid), pages 665–712. EMS Publishing House, 2007. www.math.ias.edu/˜avi/PUBLICATIONS/MYPAPERS/W06/w06.pdf."}</Entry>
+                    <Entry>{"wigderson2006: A. Wigderson. P, NP and mathematics - a computational complexity perspective. In Proceedings of the International Congress of Mathematicians 2006 (Madrid), pages 665–712. EMS Publishing House, 2007. www.math.ias.edu/~avi/PUBLICATIONS/MYPAPERS/W06/w06.pdf."}</Entry>
                     <Entry>{"wiles1995: A. Wiles. Modular elliptic curves and Fermat’s Last Theorem. Annals of Mathematics, 141(3):443–551, 1995."}</Entry>
                     <Entry>{"williams2005: R. Williams. Better time-space lower bounds for SAT and related problems. In Proc. Conference on Computational Complexity, pages 40–49, 2005."}</Entry>
                     <Entry>{"williams2008: R. Williams. Applying practice to theory. ACM SIGACT News, 39(4):37–52, 2008."}</Entry>

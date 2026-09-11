@@ -32,6 +32,7 @@ const src = {
         // spec fixes and no bundler is asked to fix there — which is why a kind could
         // not live in its own file until this changed. There is no `@` here on purpose.
         '@dna-platform/public/encyclopedia': path.resolve(__dirname, './dist/encyclopedia.js'),
+        '@dna-platform/public/article': path.resolve(__dirname, './dist/article.js'),
         '@dna-platform/public': path.resolve(__dirname, './dist/lib.js')
     } },
     esbuild

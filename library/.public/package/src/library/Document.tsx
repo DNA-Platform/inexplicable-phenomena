@@ -18,7 +18,6 @@ export class $Document extends $Composition implements $Document$ {
 
     $Document(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfDocument));
-        reflection.chapter(this)?.document?.catalogues(this);
     }
 }
 

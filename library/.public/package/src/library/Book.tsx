@@ -15,7 +15,7 @@ import { $Composition$, $Composition } from '@/writing/Composition';
 import { $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $Path, Path as path } from '@/reference/Path';
-import { $References, $TypeOfReferences } from '@/reference/References';
+import { $Scratchpad, Scratchpad as scratchpad } from './Scratchpad';
 import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
 
 export interface $Book$ extends $Composition$ {
@@ -23,29 +23,25 @@ export interface $Book$ extends $Composition$ {
     readonly synopsis: $Chapter | undefined;
     readonly table: $Chapter | undefined;
     readonly chapters: $Chapter[];
-    references(): $References | undefined;
+    readonly scratchpad: $Scratchpad;
 }
 
 export class $Book extends $Composition implements $Book$ {
     definition = 'div';
+    _scratchpad!: $Scratchpad;
 
     get cover(): $Chapter | undefined { return this.chapters[0]; }
     get synopsis(): $Chapter | undefined { return this.chapters[1]; }
     get table(): $Chapter | undefined { return this.chapters[2]; }
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
+    get scratchpad(): $Scratchpad { return this._scratchpad; }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
-
-    references(): $References | undefined {
-        for (const chapter of this.chapters) {
-            const held = chapter.document?.held();
-            if (held !== undefined && reflection.is<$References>(held, $TypeOfReferences)) return held;
-        }
-        return undefined;
-    }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
         if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
+        const Scratchpad = $(scratchpad);
+        this._scratchpad = $<$Scratchpad>(<Scratchpad />);
         const Mention = $(chapter);
         const Path = $(path);
         this.chapters.forEach((held, at) => { held._mention = $<$$Chapter>(<Mention />, $<$Path>(<Path>{String(at)}</Path>), held); });

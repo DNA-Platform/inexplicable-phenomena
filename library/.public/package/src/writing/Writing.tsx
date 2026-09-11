@@ -3,7 +3,7 @@ import { $, $Block, $check, $Chemical, $Written } from '@dna-platform/chemistry'
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
-import type { $Annotation$, $Annotation } from './Annotation';
+import type { $Annotation } from './Annotation';
 import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
 import type { $Reference$, $Reference } from '@/reference/Reference';

@@ -2,7 +2,7 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Ref$, $Ref, $TypeOfRef, RefSpecification } from './Ref';
-import { $Entry } from './Entry';
+import { $Entry, $TypeOfEntry } from './Entry';
 
 export interface $Citation$ extends $Ref$ {
     key(): string;
@@ -12,7 +12,7 @@ export interface $Citation$ extends $Ref$ {
 
 export class $Citation extends $Ref implements $Citation$ {
     key(): string { return (this.url() ?? '').replace(/^#/u, ''); }
-    entry(): $Entry | undefined { return this.book?.references()?.entries().find(entry => entry.key() === this.key()); }
+    entry(): $Entry | undefined { return this.book?.scratchpad.find<$Entry>($TypeOfEntry, this.key()); }
     number(): number | undefined { return this.entry()?.number(); }
 
     override written(): string {

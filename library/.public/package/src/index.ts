@@ -44,10 +44,12 @@ export * from './reference/Ref';
 export * from './reference/Entry';
 export * from './reference/Citation';
 export * from './reference/References';
+export * from './reference/Notes';
 
 export * from './library/Book';
 export * from './library/Chapter';
 export * from './library/Row';
+export * from './library/Scratchpad';
 export * from './library/Document';
 export * from './library/Cover';
 export * from './library/Synopsis';

@@ -128,6 +128,14 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-table-of-contents a') named_textDecoration = 'none';
     get named_color() { return this.link; }
 
+    landing = '#cfe3ff';
+    @select('@keyframes landed { from {') get from_background() { return this.landing; }
+    @select('@keyframes landed { to {') to_background = 'transparent';
+    @select('.pd-entry > .pd-meaning:target') landed_animation = 'landed 2s ease-out';
+    @select('.pd-footnote') footnote_verticalAlign = 'super';
+    footnote_fontSize = '.75em';
+    footnote_lineHeight = '0';
+
     @select('.pd-equation, .katex-display, .pd-table, .pd-code') wide_overflowX = 'auto';
     wide_overflowY = 'hidden';
     wide_maxWidth = '100%';

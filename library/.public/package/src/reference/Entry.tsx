@@ -24,6 +24,7 @@ export class $Entry extends $Paragraph implements $Entry$ {
             const Fold = $(fold);
             this._block = new $Block().concat((first as string).replace(this.keyed, ''), ...rest, $<$Fold>(<Fold>{named[1]}</Fold>));
         }
+        this.book?.scratchpad.keep($TypeOfEntry, this.key(), this);
     }
 }
 

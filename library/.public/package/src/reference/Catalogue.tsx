@@ -13,26 +13,12 @@ export interface $Catalogue$ extends $Reference$ {
     parts(): $Writing[];
     follow(fragment: string): $Writing;
     held(): $Writing | undefined;
-    catalogues(writing: $Writing): void;
 }
 
 export class $Catalogue extends $Reference implements $Catalogue$ {
     override parenthetical = false;
-    _reading?: Promise<$Writing>;
-    _arrived?: (writing: $Writing) => void;
 
     override specifically(): void {
-    }
-
-    catalogues(writing: $Writing): void {
-        this._block = this._block.filter(part => !reflection.writing(part) || reflection.annotation(part)).concat(writing);
-        this._arrived?.(writing);
-    }
-
-    override read(): Promise<$Writing> {
-        const held = this.held();
-        if (held !== undefined) return Promise.resolve(held);
-        return this._reading ??= new Promise(resolve => { this._arrived = resolve; });
     }
 
     parts(): $Writing[] {
