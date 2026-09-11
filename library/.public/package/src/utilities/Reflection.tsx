@@ -7,6 +7,8 @@ import type { $Theme } from '@/formatting/Theme';
 import type { $Composition } from '@/writing/Composition';
 import type { $Reference } from '@/reference/Reference';
 import type { $Fold } from '@/reference/Fold';
+import type { $Book } from '@/library/Book';
+import type { $Chapter } from '@/library/Chapter';
 
 export class Reflection {
     private templates = new WeakMap<new() => $Writing, $Writing>();
@@ -26,6 +28,8 @@ export class Reflection {
         composition: new () => $Composition;
         hierarchies: (new () => $Type)[];
         levels: (new () => $Type)[][];
+        book: new () => $Type;
+        chapter: new () => $Type;
         reference: new () => $Reference;
         fold: new () => $Fold;
     };
@@ -57,6 +61,24 @@ export class Reflection {
 
     holding(writing: $Writing): $Writing | undefined {
         return this.nearest(writing, at => this.kinds.hierarchies.some(top => this.is(at, top)) ? at : undefined);
+    }
+
+    book(writing: $Writing): $Book | undefined {
+        return this.nearest(writing, at => this.is<$Book>(at, this.kinds.book) ? at : undefined);
+    }
+
+    chapter(writing: $Writing): $Chapter | undefined {
+        return this.nearest(writing, at => this.is<$Chapter>(at, this.kinds.chapter) ? at : undefined);
+    }
+
+    within<T extends $Writing>(writing: $Writing, kind: new() => $Type): T[] {
+        const found: T[] = [];
+        for (const part of writing._block?.$elements ?? []) {
+            if (!this.writing(part)) continue;
+            if (this.is<T>(part, kind)) found.push(part);
+            found.push(...this.within<T>(part, kind));
+        }
+        return found;
     }
 
     level(type: $Type | undefined): boolean {

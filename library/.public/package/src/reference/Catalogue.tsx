@@ -12,6 +12,7 @@ import { $Path, Path as path } from './Path';
 export interface $Catalogue$ extends $Reference$ {
     parts(): $Writing[];
     follow(fragment: string): $Writing;
+    held(): $Writing | undefined;
 }
 
 export class $Catalogue extends $Reference implements $Catalogue$ {
@@ -76,7 +77,7 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
         return $<$Composition>(<Composition />, ...span);
     }
 
-    protected held(of: $Writing): $Writing | undefined {
+    held(of: $Writing = this): $Writing | undefined {
         return (of._block.$elements ?? [])
             .find((part): part is $Writing => reflection.writing(part) && !reflection.annotation(part));
     }

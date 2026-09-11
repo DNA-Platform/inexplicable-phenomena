@@ -4,13 +4,22 @@ import { reflection } from '@/utilities/Reflection';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue } from '@/reference/Catalogue';
+import { $Path, Path as path } from '@/reference/Path';
+import { doc } from './Document';
 import { $Type } from '@/writing/Type';
 
 export interface $Chapter$ extends $Composition$ { }
 
 export class $Chapter extends $Composition implements $Chapter$ {
+    _document?: $Catalogue;
+
+    override get document(): $Catalogue | undefined { return this._document; }
+
     $Chapter(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfChapter));
+        const Mention = $(doc);
+        const Path = $(path);
+        this._document = $<$Catalogue>(<Mention />, $<$Path>(<Path>0</Path>));
     }
 }
 

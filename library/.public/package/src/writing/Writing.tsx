@@ -8,6 +8,7 @@ import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
 import type { $Reference$, $Reference } from '@/reference/Reference';
 import type { $Theme } from '@/formatting/Theme';
+import type { $Book } from '@/library/Book';
 
 const printed = new WeakMap<$Block, $Block>();
 
@@ -33,6 +34,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     get meaning(): $Reference | undefined { return reflection.meaning(this); }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get theme(): $Theme { return reflection.theme(this); }
+    get book(): $Book | undefined { return reflection.book(this); }
     get className(): string { return [...reflection.classNames(this), this.$className ?? ''].join(' ').trim(); }
 
     get kind(): $Type {

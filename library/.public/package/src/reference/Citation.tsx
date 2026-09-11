@@ -1,32 +1,51 @@
-// CREATED 2026-09-08, RE-PARENTED 2026-09-09 · rating 3. LaTeX's \cite and Wikipedia's [1] are one
-// kind: a mark IN THE PROSE pointing at an entry. It extended $Reference and drew NOTHING on the
-// paper — measured — because a $Reference is an ANNOTATION, and reflection.content strips
-// annotations from what a writing draws. Nor could format() save it: formatted() reduces over the
-// HOLDER's annotations, so the mark would land at the end of the paragraph instead of where the
-// citation stands. $Ref already is this shape and draws correctly — a $Phrase standing in the text
-// that writes an anchor — so a citation IS a ref, and $Reference is the other thing that shares
-// the word: the annotation that carries a writing's meaning.
-// STILL OWED: the number is the ENTRY's position, so a citation must read the bibliography that
-// holds it — the inverse of pointing, which nothing here computes. number() answers its position
-// among the book's citations, which agrees only while a paper cites in order.
 import { $, $Block, $check } from '@dna-platform/chemistry';
-import { Specification } from '@/utilities/Specification';
+import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
+import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Ref$, $Ref, $TypeOfRef, RefSpecification } from './Ref';
+import { $References, $TypeOfReferences } from './References';
+import { $Entry } from './Entry';
 
 export interface $Citation$ extends $Ref$ {
+    key(): string;
+    entry(): $Entry | undefined;
     number(): number | undefined;
 }
 
 export class $Citation extends $Ref implements $Citation$ {
-    // ACROSS THE BOOK, because a citation's number is the same wherever in the text it stands.
-    number(): number | undefined { return reflection.numbered(this, reflection.holding(this) ?? this); }
+    protected keyed = /^[\w-]+$/u;
+
+    key(): string {
+        const copy = html.text(this._block).trim();
+        return this.keyed.test(copy) ? copy : (this.url() ?? '').replace(/^#/u, '');
+    }
+
+    entry(): $Entry | undefined {
+        const key = this.key();
+        for (const chapter of this.book?.chapters ?? []) {
+            const held = chapter.document?.held();
+            if (held !== undefined && reflection.is<$References>(held, $TypeOfReferences))
+                return held.entries().find(entry => entry.key() === key);
+        }
+        return undefined;
+    }
+
+    number(): number | undefined { return this.entry()?.number(); }
+
+    override url(): string | undefined {
+        const copy = html.text(this._block).trim();
+        return this.keyed.test(copy) ? `#${copy}` : super.url();
+    }
+
+    override written(): string {
+        const number = this.number();
+        return number === undefined ? super.written() : String(number);
+    }
 
     $Citation(block: $Block) {
         super.$Ref(this.addType(block, $TypeOfCitation));
     }
-
 }
 
 export class $TypeOfCitation extends $TypeOfRef {
@@ -34,7 +53,6 @@ export class $TypeOfCitation extends $TypeOfRef {
 }
 
 export class CitationSpecification extends RefSpecification {
-    // OWED: 'a citation means an entry its bibliography holds' — a citation of nothing is not admitted, which is what makes the number answerable.
 }
 
 export const Citation = $($Citation);

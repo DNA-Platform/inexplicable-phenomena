@@ -18,6 +18,8 @@ export class $Document extends $Composition implements $Document$ {
 
     $Document(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfDocument));
+        const meant = reflection.chapter(this)?.document;
+        if (meant !== undefined) meant._block = meant._block.filter(part => !reflection.writing(part) || reflection.annotation(part)).concat(this);
     }
 }
 

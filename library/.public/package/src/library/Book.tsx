@@ -51,6 +51,8 @@ export class $Book extends $Composition implements $Book$ {
     static $register(): void {
         reflection.knows({
             hierarchies: [$TypeOfBook, $TypeOfDocument],
+            book: $TypeOfBook,
+            chapter: $TypeOfChapter,
             levels: [
                 [$TypeOfLetter, $TypeOfWord, $TypeOfSentence, $TypeOfParagraph, $TypeOfSection, $TypeOfDocument],
                 [$TypeOfChapter, $TypeOfBook]

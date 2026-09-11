@@ -245,6 +245,9 @@ export class $ArticleTheme extends $Theme {
     // find. Doug: "I don't think we need red references!"
     @select('.pd-references .pd-paragraph') bibliography_textIndent = '-1.5em';
     bibliography_paddingLeft = '1.5em';
+    @select('.pd-references') listing_counterReset = 'entry';
+    @select('.pd-entry') entry_counterIncrement = 'entry';
+    @select('.pd-entry::before') entryNumber_content = "'\\005B' counter(entry) '\\005D '";
     @select('.pd-references a') cited_textDecoration = 'none';
     get cited_color() { return this.ink; }
 
