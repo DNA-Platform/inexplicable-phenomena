@@ -197,6 +197,10 @@ export class $RingFormat extends $Format {
     narrow_paddingTop = '0';
     narrow_backgroundImage = 'none';
     get backgroundImage() { return `url(${this.$globe})`; }
+
+    protected override handed(): Record<string, unknown> {
+        return { globe: (this.parent as $Languages | undefined)?.$globe ?? '' };
+    }
 }
 
 export class $LanguageFormat extends $Format {
@@ -220,6 +224,10 @@ export class $LanguageFormat extends $Format {
     get top() { return `${Math.floor((this.$at - 1) / 2) * 20}%`; }
     get left() { return `${(this.$at % 2 === 1 ? [4.43, 0.57, -0.21, 0.57, 4.43] : [23.43, 27.29, 28.07, 27.29, 23.43])[Math.floor((this.$at - 1) / 2)]}em`; }
     get link_color() { return this.theme.link; }
+
+    protected override handed(): Record<string, unknown> {
+        return { at: (this.parent as $Language | undefined)?.$at ?? 1 };
+    }
 }
 
 export class $CardFormat extends $Format {

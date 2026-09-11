@@ -1,29 +1,32 @@
-import { cp, rm, readdir, writeFile } from 'node:fs/promises';
-import { join, dirname, basename, resolve } from 'node:path';
+import { cp, rm, readdir, readFile, writeFile } from 'node:fs/promises';
+import { join, dirname, basename, resolve, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const out = dirname(fileURLToPath(import.meta.url));
 const library = resolve(out, '..');
 
-if (basename(out) !== '.public' || basename(library) !== '.wiki')
-    throw new Error(`the build stands in .wiki/.public and this one stands in ${library}/${basename(out)}`);
+if (basename(out) !== '.public')
+    throw new Error(`the compiler stands in a book library's .public and this one stands in ${out}`);
 
-const setup = new Set(['index.html', 'main.tsx', 'vite.config.ts', 'build.mjs']);
-const mine = (name) => setup.has(name);
-const book = (name) => name !== '.public' && name !== 'node_modules'
-    && name !== 'tsconfig.json' && !name.startsWith('.vite');
+const tooling = new Set(['build.mjs', 'main.tsx', 'index.html', 'vite.config.ts', 'tsconfig.json', 'node_modules', '.public']);
+const skipped = (name) => tooling.has(name) || name.startsWith('.vite') || /^verify-.+\.mjs$/.test(name);
+const manifest = join(out, '.synced.json');
 
-for (const entry of await readdir(out, { withFileTypes: true }))
-    if (!mine(entry.name)) await rm(join(out, entry.name), { recursive: true, force: true });
+const walk = async (root, at = '') => {
+    const found = [];
+    for (const entry of await readdir(join(root, at), { withFileTypes: true })) {
+        if (at === '' && skipped(entry.name)) continue;
+        if (at !== '' && entry.name === 'book.tsx') continue;
+        const path = at === '' ? entry.name : `${at}/${entry.name}`;
+        if (entry.isDirectory()) found.push(...await walk(root, path));
+        else found.push(path);
+    }
+    return found;
+};
 
-const lifted = [];
-const books = [];
-for (const entry of await readdir(library, { withFileTypes: true })) {
-    if (!book(entry.name)) continue;
-    await cp(join(library, entry.name), join(out, entry.name), { recursive: true });
-    lifted.push(entry.name);
-    if (entry.isDirectory()) books.push(entry.name);
-}
+const previous = await readFile(manifest, 'utf8').then(JSON.parse).catch(() => ({ synced: [], generated: [] }));
+const synced = await walk(library);
+for (const path of synced) await cp(join(library, path), join(out, path));
 
 const at = (name) => name.split('-')[0].split('.').map(Number);
 const before = (one, two) => {
@@ -39,13 +42,10 @@ const bind = async (where) => {
     const chapters = held.filter(one => /^\d/.test(one)).sort(before);
     const named = (one) => one.replace(/\.tsx$/, '');
     const local = (one) => named(one).replace(/^[\d.]+-/, '').replace(/-(\w)/g, (_, c) => c.toUpperCase());
-
     const opening = [['cover', '.cover'], ['synopsis', '.synopsis'], ['contents', '.table']]
         .filter(([, file]) => held.includes(`${file}.tsx`));
-
-    // WHAT IT IMPORTS ARE CHAPTER CLASSES; it makes their components and passes them into the book.
     const classed = (one) => local(one).replace(/^\w/, c => c.toUpperCase());
-    const bound = [...opening.map(([name]) => classed(name)), ...chapters.map(one => classed(one))];
+    const bound = [...opening.map(([name]) => classed(name)), ...chapters.map(classed)];
     const lines = [
         `import { $ } from '@dna-platform/chemistry';`,
         `import $Book from './.book';`,
@@ -63,10 +63,20 @@ const bind = async (where) => {
         ``,
     ];
     await writeFile(join(out, where, 'book.tsx'), lines.join('\n'), 'utf8');
-    return chapters.length;
+    return { chapters: chapters.length, path: `${where}/book.tsx` };
 };
 
-for (const name of books) {
-    const bound = await bind(name);
-    if (bound !== undefined) console.log(`bound ${name}/book.tsx — ${bound} chapters`);
+const generated = [];
+for (const entry of await readdir(library, { withFileTypes: true })) {
+    if (!entry.isDirectory() || skipped(entry.name)) continue;
+    const bound = await bind(entry.name);
+    if (bound === undefined) continue;
+    generated.push(bound.path);
+    console.log(`bound ${bound.path} — ${bound.chapters} chapters`);
 }
+
+const gone = previous.synced.filter(path => !synced.includes(path) && !generated.includes(path));
+for (const path of gone) await rm(join(out, path), { force: true });
+
+await writeFile(manifest, JSON.stringify({ synced, generated }, null, 1), 'utf8');
+console.log(`synced ${synced.length} files from ${relative(out, library) || '.'}${sep} · removed ${gone.length} that left the source · ${generated.length} books bound · what the served tree alone carries is untouched`);
