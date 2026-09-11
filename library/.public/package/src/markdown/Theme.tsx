@@ -19,10 +19,10 @@
 // blockquote inset 1em. Its most considered decision is that LINKS ARE THE HEADING COLOUR —
 // distinguished by weight and underline rather than by turning blue.
 import { $, select } from '@dna-platform/chemistry';
-import { $Theme as $Sheet } from '@/article/Theme';
+import { $ArticleTheme } from '@/article/Theme';
 import { Theme as Base } from '@/formatting/Theme';
 
-export class $Theme extends $Sheet {
+export class $MarkdownTheme extends $ArticleTheme {
     // ANYTHING WITH A MEANING IS A BLUE LINK, and a reading that prints overrides it. Doug,
     // 2026-09-10: "latex is great, latex should just be overriding a default." So this is ONE value,
     // not a list of rules - the base reads `link` wherever a meaning is drawn, the article theme
@@ -143,4 +143,4 @@ export class $Theme extends $Sheet {
 
 }
 
-export const Theme = $($Theme);
+export const MarkdownTheme = $($MarkdownTheme);

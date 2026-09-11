@@ -7,13 +7,13 @@
 import { ReactNode } from 'react';
 import { $, $check, $Chemical, styled } from '@dna-platform/chemistry';
 import { $Book, $Theme, Theme } from '@dna-platform/public';
-import { Header, $Theme as $Latex } from '@dna-platform/public/article';
-import { $Theme as $Markdown } from '@dna-platform/public/markdown';
+import { Header, $ArticleTheme } from '@dna-platform/public/article';
+import { $MarkdownTheme } from '@dna-platform/public/markdown';
 
 export default class $Aaronson extends $Book {
     $setting = 'latex';
 
-    wears(setting: string, sheet: typeof $Latex): void {
+    wears(setting: string, sheet: typeof $ArticleTheme): void {
         this.$setting = setting;
         sheet.$register(Aaronson);
         this._block = this._block.filter(part => !(part instanceof $Theme)).concat($check(Theme, '!'));
@@ -23,8 +23,8 @@ export default class $Aaronson extends $Book {
         return <Header>
             P versus NP
             <Switch>
-                <Choice key="latex" chosen={this.$setting === 'latex' ? 'yes' : undefined} onClick={() => this.wears('latex', $Latex)}>LaTeX</Choice>
-                <Choice key="markdown" chosen={this.$setting === 'markdown' ? 'yes' : undefined} onClick={() => this.wears('markdown', $Markdown)}>Markdown</Choice>
+                <Choice key="latex" chosen={this.$setting === 'latex' ? 'yes' : undefined} onClick={() => this.wears('latex', $ArticleTheme)}>LaTeX</Choice>
+                <Choice key="markdown" chosen={this.$setting === 'markdown' ? 'yes' : undefined} onClick={() => this.wears('markdown', $MarkdownTheme)}>Markdown</Choice>
             </Switch>
         </Header>;
     }
@@ -55,4 +55,4 @@ export const Aaronson = $($Aaronson);
 const Switch = $($Switch);
 const Choice = $($Choice);
 
-$Latex.$register(Aaronson);
+$ArticleTheme.$register(Aaronson);

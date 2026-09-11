@@ -1,9 +1,9 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Book, Theme } from '@dna-platform/public';
-import { Theme as Encyclopedia } from '@dna-platform/public/encyclopedia';
+import { EncyclopediaTheme } from '@dna-platform/public/encyclopedia';
 
 export default class $Article extends $Book { }
 
 export const Article = $($Article);
 
-$(Article, Theme)(Encyclopedia);
+$(Article, Theme)(EncyclopediaTheme);

@@ -1,11 +1,11 @@
 import { $, select } from '@dna-platform/chemistry';
 import { $Book, Theme } from '@dna-platform/public';
-import { $Theme } from '@dna-platform/public/encyclopedia';
+import { $EncyclopediaTheme } from '@dna-platform/public/encyclopedia';
 import { globe } from './.document';
 
 export default class $Wikipedia extends $Book { }
 
-export class $PortalTheme extends $Theme {
+export class $PortalTheme extends $EncyclopediaTheme {
     override size = '14px';
     override leading = '1.5';
     override body = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Helvetica, Arial, sans-serif";

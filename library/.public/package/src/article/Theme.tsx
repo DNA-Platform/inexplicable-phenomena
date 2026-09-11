@@ -1,9 +1,9 @@
 // CREATED 2026-09-08, MEASURED 2026-09-09 · rating 3. The article's theme: a page on a desk, set
 // the way LaTeX sets one, installed by registration and carrying no formats.
 import { $, select } from '@dna-platform/chemistry';
-import { $Theme as $Sheet, Theme as Base } from '@/formatting/Theme';
+import { $Theme, Theme as Base } from '@/formatting/Theme';
 
-export class $Theme extends $Sheet {
+export class $ArticleTheme extends $Theme {
     // EVERY VALUE HERE WAS MEASURED OFF THE REAL THING, 2026-09-09. Doug: "You might need to open a
     // REAL chrome instance and REALLY open aaronsen as a pdf and REALLY make something look like
     // that... a human couldn't tell it isn't a pdf." So the paper was fetched, opened in the
@@ -250,4 +250,4 @@ export class $Theme extends $Sheet {
 
 }
 
-export const Theme = $($Theme);
+export const ArticleTheme = $($ArticleTheme);

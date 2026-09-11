@@ -1,8 +1,8 @@
 // IN PROGRESS · rating 3. The encyclopedia's theme: Wikipedia's values and its whole look as groups over the base sheet — installed by registration, replacing the base Theme in a scope. The contents column is placed by grid LINES, not areas, because documents drawn flat in one area stack (Sprint 52); the row span is the one smell, and it names what the base lacks — a reading of a block drawn without making a block.
 import { $, select } from '@dna-platform/chemistry';
-import { $Theme as $Sheet } from '@/formatting/Theme';
+import { $Theme } from '@/formatting/Theme';
 
-export class $Theme extends $Sheet {
+export class $EncyclopediaTheme extends $Theme {
     override paper = '#ffffff';
     override ink = '#202122';
     override quiet = '#f8f9fa';
@@ -188,4 +188,4 @@ export class $Theme extends $Sheet {
     @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover, .pd-meaning:focus, .pd-ref:focus, .pd-reference:focus') get pressed_color() { return this.pressed; }
 }
 
-export const Theme = $($Theme);
+export const EncyclopediaTheme = $($EncyclopediaTheme);
