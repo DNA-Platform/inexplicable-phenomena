@@ -170,7 +170,7 @@ export class $Theme extends $Format implements $Theme$ {
     // style", so every theme styles these and the component carries only its structure.
     @select('.pd-book') get sheet_background() { return this.paper; }
     sheet_counterReset = 'figure';
-    @select('.pd-document, .pd-section, .pd-meaning') get landing_scrollMarginTop() { return `calc(${this.strip_height} + 1rem)`; }
+    @select('.pd-document, .pd-section, .pd-heading, .pd-meaning') get landing_scrollMarginTop() { return `calc(${this.strip_height} + 1rem)`; }
     @select('.pd-header') get strip_background() { return this.quiet; }
     get strip_color() { return this.ink; }
     get strip_borderBottom() { return this.ruled; }

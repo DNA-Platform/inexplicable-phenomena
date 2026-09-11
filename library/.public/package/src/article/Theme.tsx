@@ -251,6 +251,12 @@ export class $ArticleTheme extends $Theme {
     @select('.pd-entry::before') entryNumber_content = "'\\005B' counter(entry) '\\005D '";
     @select('.pd-references a') cited_textDecoration = 'none';
     get cited_color() { return this.ink; }
+    equation_position = 'relative';
+    @select('.pd-equation[data-number]::after') equationNumber_content = "'(' attr(data-number) ')'";
+    equationNumber_position = 'absolute';
+    equationNumber_right = '0';
+    equationNumber_top = '50%';
+    equationNumber_transform = 'translateY(-50%)';
 
 }
 
