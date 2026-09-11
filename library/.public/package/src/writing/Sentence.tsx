@@ -30,8 +30,6 @@ export class $TypeOfSentence extends $Type {
 
         return sentences;
     }
-
-    override below(): new() => $Type { return $TypeOfWord; }
 }
 
 // THE RULE THAT STOPPED THE PAGE, struck 2026-09-08 with the reason beside it. It refused any

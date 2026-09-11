@@ -6,7 +6,7 @@ import { html } from '@/utilities/Html';
 import type { $Annotation$, $Annotation } from './Annotation';
 import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
-import type { $Reference$ } from '@/reference/Reference';
+import type { $Reference$, $Reference } from '@/reference/Reference';
 import type { $Theme } from '@/formatting/Theme';
 
 const printed = new WeakMap<$Block, $Block>();
@@ -30,7 +30,7 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     get mention(): $Catalogue | undefined { return this._mention; }
     get document(): $Catalogue | undefined { return reflection.holding(this)?.mention; }
-    get meaning(): $Reference$ | undefined { return reflection.meaning(this) as $Reference$ | undefined; }
+    get meaning(): $Reference | undefined { return reflection.meaning(this); }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
     get theme(): $Theme { return reflection.theme(this); }
     get className(): string { return [...reflection.classNames(this), this.$className ?? ''].join(' ').trim(); }
@@ -50,7 +50,7 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     view(): ReactNode {
         if (this.parenthetical) return null;
-        const meaning = this.meaning;
+        const meaning = this.meaning?.parenthetical ? this.meaning : undefined;
         const fold = reflection.folded(this);
         const printed = meaning === undefined && fold === undefined ? this.print()
             : <a id={fold?.key()} href={meaning === undefined ? undefined : html.text(meaning.path()?._block)} className="pd-meaning">{this.print()}</a>;
@@ -60,7 +60,7 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     print(): ReactNode {
         let children = printed.get(this._block);
-        if (children === undefined) printed.set(this._block, children = this._block.filter(part => !reflection.annotation(part)));
+        if (children === undefined) printed.set(this._block, children = this._block.filter(part => !reflection.writing(part) || !part.parenthetical));
         const Children = $(children);
 
         return <Children />;

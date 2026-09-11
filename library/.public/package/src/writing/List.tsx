@@ -8,7 +8,8 @@ import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $TypeOfItem } from './Item';
+import { TypeOfItem } from './Item';
+import { TypeOfSentence } from './Sentence';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
 import { $Paragraph } from '@/writing/Paragraph';
 
@@ -33,8 +34,6 @@ export class $List extends $Paragraph implements $List$ {
 
 export class $TypeOfList extends $TypeOfParagraph {
     protected override specification: Specification<$Writing> = new ListSpecification();
-
-    override below(): new() => $Type { return $TypeOfItem; }
 }
 
 export class ListSpecification extends ParagraphSpecification {
@@ -46,3 +45,5 @@ export class ListSpecification extends ParagraphSpecification {
 
 export const List = $($List);
 export const TypeOfList = $($TypeOfList);
+
+$(List, TypeOfSentence)(TypeOfItem);

@@ -158,36 +158,36 @@ export class $Theme extends $Sheet {
     override place = "'\\25A1'";
 
     // A TOP-LEVEL ENTRY IS BOLD, name and marker alike, which is what article.cls does.
-    @select('.pd-table-of-contents > .pd-chapter > a, .pd-table-of-contents > .pd-chapter::before') top_fontWeight = '800';
+    @select('.pd-table-of-contents > .pd-row > .pd-chapter > a, .pd-table-of-contents > .pd-row::before') top_fontWeight = '800';
     // A CONTENTS ROW IS 18px WHATEVER THE BODY'S LEADING IS, because the page sets it that way
     // and a row is one line by construction.
-    @select('.pd-table-of-contents .pd-chapter') paced_lineHeight = '18px';
+    @select('.pd-table-of-contents .pd-row') paced_lineHeight = '18px';
     override entry_marginBottom = '0';
-    @select('.pd-table-of-contents > .pd-chapter + .pd-chapter') group_marginTop = '18px';
+    @select('.pd-table-of-contents > .pd-row + .pd-row') group_marginTop = '18px';
 
     // EACH LEVEL HAS ITS OWN NUMBER COLUMN AND ITS OWN STEP, which is what makes a `1` and a
     // `1.2.1` both sit right. Read off the paper's text layer: numbers at 96, 118, 151 and
     // titles at 118, 151, 198, so the columns are 22, 33 and 47 and the steps are 22 then 33.
     override under_paddingLeft = '22px';
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter') deepUnder_paddingLeft = '33px';
+    @select('.pd-table-of-contents > .pd-row > .pd-row > .pd-row') deepUnder_paddingLeft = '33px';
 
     @select('.pd-table-of-contents') counting_counterReset = 'listed1 listed2 listed3';
-    @select('.pd-table-of-contents > .pd-chapter') tallied_counterIncrement = 'listed1';
+    @select('.pd-table-of-contents > .pd-row') tallied_counterIncrement = 'listed1';
     tallied_counterReset = 'listed2 listed3';
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter') deepTallied_counterIncrement = 'listed2';
+    @select('.pd-table-of-contents > .pd-row > .pd-row') deepTallied_counterIncrement = 'listed2';
     deepTallied_counterReset = 'listed3';
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter') deepestTallied_counterIncrement = 'listed3';
-    @select('.pd-table-of-contents .pd-chapter.pd-references, .pd-table-of-contents .pd-chapter.pd-appendix') apart_counterIncrement = 'none';
-    @select('.pd-table-of-contents > .pd-chapter::before') listedNumber_content = "counter(listed1)";
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter::before') deepNumber_content = "counter(listed1) '.' counter(listed2)";
+    @select('.pd-table-of-contents > .pd-row > .pd-row > .pd-row') deepestTallied_counterIncrement = 'listed3';
+    @select('.pd-table-of-contents .pd-row.pd-references, .pd-table-of-contents .pd-row.pd-appendix') apart_counterIncrement = 'none';
+    @select('.pd-table-of-contents > .pd-row::before') listedNumber_content = "counter(listed1)";
+    @select('.pd-table-of-contents > .pd-row > .pd-row::before') deepNumber_content = "counter(listed1) '.' counter(listed2)";
     deepNumber_flex = '0 0 auto';
     deepNumber_minWidth = '33px';
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter::before') deepestNumber_content = "counter(listed1) '.' counter(listed2) '.' counter(listed3)";
+    @select('.pd-table-of-contents > .pd-row > .pd-row > .pd-row::before') deepestNumber_content = "counter(listed1) '.' counter(listed2) '.' counter(listed3)";
     deepestNumber_flex = '0 0 auto';
     deepestNumber_minWidth = '47px';
     listedNumber_flex = '0 0 auto';
     listedNumber_minWidth = '22px';
-    @select('.pd-table-of-contents .pd-chapter.pd-references::before, .pd-table-of-contents .pd-chapter.pd-appendix::before') apartNumber_content = "''";
+    @select('.pd-table-of-contents .pd-row.pd-references::before, .pd-table-of-contents .pd-row.pd-appendix::before') apartNumber_content = "''";
 
     // A FIGURE IS NUMBERED, and by the sheet, exactly as a section is — so a reading that does not
     // number figures simply does not, and $Figure stays a shell with no member for it. latex.css

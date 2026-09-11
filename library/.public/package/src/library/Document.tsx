@@ -25,8 +25,6 @@ export class $$Document extends $Catalogue { }
 
 export class $TypeOfDocument extends $Type {
     protected override specification: Specification<$Writing> = new DocumentSpecification();
-
-    override below(): new() => $Type { return $TypeOfSection; }
 }
 
 export class DocumentSpecification extends WritingSpecification {

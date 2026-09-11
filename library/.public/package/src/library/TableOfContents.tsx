@@ -5,8 +5,8 @@ import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
-import { $Type } from '@/writing/Type';
-import { $Chapter, $TypeOfChapter } from './Chapter';
+import { TypeOfSection } from '@/writing/Section';
+import { TypeOfRow } from './Row';
 import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from './Document';
 
 export interface $TableOfContents$ extends $Document$ { }
@@ -20,8 +20,6 @@ export class $TableOfContents extends $Document implements $TableOfContents$ {
 
 export class $TypeOfTableOfContents extends $TypeOfDocument {
     protected override specification: Specification<$Writing> = new TableOfContentsSpecification();
-
-    override below(): new() => $Type { return $TypeOfChapter; }
 }
 
 // A TABLE OF CONTENTS IS VALIDATED IN THE PAGE, not at the bond: a link names a document by its id,
@@ -31,3 +29,5 @@ export class TableOfContentsSpecification extends DocumentSpecification {
 
 export const TableOfContents = $($TableOfContents);
 export const TypeOfTableOfContents = $($TypeOfTableOfContents);
+
+$(TableOfContents, TypeOfSection)(TypeOfRow);

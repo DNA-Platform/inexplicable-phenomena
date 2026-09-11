@@ -45,16 +45,9 @@ export class TitleSpecification extends SectionSpecification {
         return false;
     }
 
-    // A TITLE THAT SAYS NOTHING IS STANDING IN FOR THE BOOK'S, and it is judged by the title it
-    // stands for rather than by itself. This rule refused that form outright — measured 2026-09-09:
-    // an empty <Title /> written into a section drew two refusal panels reading "a title means what
-    // it titles, and this one means nothing", so canonical() was never asked and the whole feature
-    // it exists for could not run. AND IT CANNOT BE MET BY DEFERRING `meaning` TO canonical(): a
-    // rule runs inside the bond chain, before a writing is held by anything, so the book it would
-    // ask is not reachable yet. What it says is decided where it stands, at draw.
     @specify('a title means what it titles')
     $meansTheBook(writing: $Writing): void {
-        $check(writing.meaning !== undefined || html.text(writing._block).trim() === '',
+        $check(writing.meaning !== undefined,
             'a title means what it titles, and this one means nothing');
     }
 

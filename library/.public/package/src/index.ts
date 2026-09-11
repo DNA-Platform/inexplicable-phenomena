@@ -46,6 +46,7 @@ export * from './reference/References';
 
 export * from './library/Book';
 export * from './library/Chapter';
+export * from './library/Row';
 export * from './library/Document';
 export * from './library/Cover';
 export * from './library/Synopsis';

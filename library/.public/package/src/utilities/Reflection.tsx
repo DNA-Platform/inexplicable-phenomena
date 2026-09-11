@@ -25,6 +25,7 @@ export class Reflection {
         theme: new () => $Theme;
         composition: new () => $Composition;
         hierarchies: (new () => $Type)[];
+        levels: (new () => $Type)[][];
         reference: new () => $Reference;
         fold: new () => $Fold;
     };
@@ -96,12 +97,30 @@ export class Reflection {
     }
 
     beneath(holding: $Type | undefined, held: $Type | undefined): boolean {
-        if (holding === undefined || held === undefined) return false;
-        for (let kind = holding.constructor as (new() => $Type) | undefined; kind !== undefined;) {
-            if (held instanceof kind) return true;
-            kind = this.template(kind).below();
+        const placed = this.placed(holding);
+        if (placed === undefined || held === undefined) return false;
+        const [ladder, at] = placed;
+
+        return ladder.slice(0, at + 1).some(level => held instanceof level);
+    }
+
+    below(kind: $Type | undefined): (new() => $Type) | undefined {
+        const placed = this.placed(kind);
+        if (placed === undefined) return undefined;
+        const [ladder, at] = placed;
+        const rung = ladder[at - 1];
+        if (rung === undefined) return undefined;
+
+        return $($(rung)).$.constructor as new() => $Type;
+    }
+
+    protected placed(kind: $Type | undefined): [(new() => $Type)[], number] | undefined {
+        if (kind === undefined) return undefined;
+        for (const ladder of this.kinds.levels) {
+            const at = ladder.findIndex(level => kind instanceof level);
+            if (at >= 0) return [ladder, at];
         }
-        return false;
+        return undefined;
     }
 
     names(type: $Type): string[] {

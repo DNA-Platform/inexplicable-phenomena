@@ -29,7 +29,7 @@ describe('the seven stand in order, and a type knows what it composes', () => {
     });
 
     it('each names the one beneath it, and both hierarchies end in a kind that names none', () => {
-        const beneath = (Kind: React.ComponentType) => (built<$Type>(<Kind />)).below();
+        const beneath = (Kind: React.ComponentType) => reflection.below(built<$Type>(<Kind />));
         expect(beneath(TypeOfBook)).toBe($TypeOfChapter);
         expect(beneath(TypeOfDocument)).toBe($TypeOfSection);
         expect(beneath(TypeOfLetter)).toBeUndefined();

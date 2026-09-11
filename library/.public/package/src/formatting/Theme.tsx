@@ -90,7 +90,7 @@ export class $Theme extends $Format implements $Theme$ {
     // table of contents IS and not what LaTeX does — Doug: "ask if you are hurting yourself by not
     // taking some of this and moving it back into the main framework so markdown can inherit some."
     // The nested list takes a row of its own, which is what lets the row be a flex line at all.
-    @select('.pd-table-of-contents .pd-chapter') entry_display = 'flex';
+    @select('.pd-table-of-contents .pd-row') entry_display = 'flex';
     entry_flexWrap = 'wrap';
     entry_alignItems = 'baseline';
     entry_marginTop = '0';
@@ -98,7 +98,7 @@ export class $Theme extends $Format implements $Theme$ {
     entry_textIndent = '0';
     @select('.pd-table-of-contents .pd-chapter > a') entryLink_flex = '0 1 auto';
     entryLink_order = '1';
-    @select('.pd-table-of-contents .pd-chapter .pd-chapter') under_flex = '0 0 100%';
+    @select('.pd-table-of-contents .pd-row .pd-row') under_flex = '0 0 100%';
     under_order = '4';
     under_paddingLeft = '1.6em';
 
@@ -115,7 +115,7 @@ export class $Theme extends $Format implements $Theme$ {
     leader = 'none';
     place = 'none';
     spacing = '.55em';
-    @select('.pd-table-of-contents .pd-chapter::after') get leading_content() { return this.place; }
+    @select('.pd-table-of-contents .pd-row::after') get leading_content() { return this.place; }
     leading_order = '3';
     leading_flex = '1 1 auto';
     leading_textAlign = 'right';

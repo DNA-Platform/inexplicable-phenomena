@@ -76,8 +76,8 @@ export class $Theme extends $Sheet {
     @select('.pd-cover') override cover_marginTop = '0';
     @select('.pd-abstract .pd-paragraph:not(.pd-heading)') override indented_textIndent = '0';
     override under_paddingLeft = '1.6em';
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter') override deepUnder_paddingLeft = '1.6em';
-    @select('.pd-table-of-contents .pd-chapter') override paced_lineHeight = 'normal';
+    @select('.pd-table-of-contents > .pd-row > .pd-row > .pd-row') override deepUnder_paddingLeft = '1.6em';
+    @select('.pd-table-of-contents .pd-row') override paced_lineHeight = 'normal';
     override cover_marginBottom = '2rem';
 
     // HEADINGS A LITTLE CLOSER TO LaTeX, EVEN LEFT-ALIGNED, which is what Doug asked for. The SCALE
@@ -103,11 +103,11 @@ export class $Theme extends $Sheet {
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-heading::before') override numbered_content = "''";
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section > .pd-heading::before') override deepNumbered_content = "''";
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section > .pd-section > .pd-heading::before') override deepestNumbered_content = "''";
-    @select('.pd-table-of-contents > .pd-chapter::before') override listedNumber_content = "''";
+    @select('.pd-table-of-contents > .pd-row::before') override listedNumber_content = "''";
     override listedNumber_minWidth = '0';
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter::before') override deepNumber_content = "''";
+    @select('.pd-table-of-contents > .pd-row > .pd-row::before') override deepNumber_content = "''";
     override deepNumber_minWidth = '0';
-    @select('.pd-table-of-contents > .pd-chapter > .pd-chapter > .pd-chapter::before') override deepestNumber_content = "''";
+    @select('.pd-table-of-contents > .pd-row > .pd-row > .pd-row::before') override deepestNumber_content = "''";
     override deepestNumber_minWidth = '0';
 
     // PROSE IS RAGGED RIGHT. Justification without TeX's paragraph optimiser is worse than not

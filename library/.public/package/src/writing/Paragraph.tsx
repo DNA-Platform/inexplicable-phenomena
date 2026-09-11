@@ -30,8 +30,6 @@ export class $TypeOfParagraph extends $Type {
 
         return [written];
     }
-
-    override below(): new() => $Type { return $TypeOfSentence; }
 }
 
 export class ParagraphSpecification extends WritingSpecification {

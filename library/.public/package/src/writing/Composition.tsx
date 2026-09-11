@@ -27,7 +27,7 @@ export class $Composition extends $Writing implements $Composition$ {
 
     parts(): $Writing[] {
         const kind = this.kind;
-        const beneath = kind?.below();
+        const beneath = reflection.below(kind);
         const own = kind?.constructor as (new() => $Type) | undefined;
         return parser.parse(this,
             token => {
@@ -76,7 +76,7 @@ export class $Composition extends $Writing implements $Composition$ {
     }
 
     protected reduce(tokens: (string | $Writing)[]): $Writing[] {
-        const beneath = this.kind?.below();
+        const beneath = reflection.below(this.kind);
         return beneath === undefined ? [] : reflection.template(beneath).makes(tokens);
     }
 }

@@ -22,9 +22,9 @@ const book = (written: React.ReactNode) => built<$Book>(
 // What only the trick can do is say it a SECOND time, where the empty one stands.
 const saying = (container: Element, said: string) => (container.textContent?.split(said).length ?? 1) - 1;
 
-describe('a title written empty says the title of the book it stands in', () => {
-    it('AN EMPTY TITLE SAYS THE BOOK TITLE WHERE IT STANDS', () => {
-        expect(saying(drawn(book(<Title />)), 'Alan Turing')).toBe(2);
+describe('a title says what it titles, and an empty one is refused', () => {
+    it('AN EMPTY TITLE IS REFUSED — validation, not a feature', () => {
+        expect(() => $(<Title /> as never).specify()).toThrow(/means what it titles/u);
     });
 
     it('and without one the cover says it once', () => {

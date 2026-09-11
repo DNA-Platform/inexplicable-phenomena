@@ -39,8 +39,6 @@ export class $TypeOfSection extends $Type {
 
         return [$<$Section>(<Made />, ...tokens as never[])];
     }
-
-    override below(): new() => $Type { return $TypeOfParagraph; }
 }
 
 export class SectionSpecification extends WritingSpecification {

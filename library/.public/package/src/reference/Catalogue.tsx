@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
@@ -14,6 +15,11 @@ export interface $Catalogue$ extends $Reference$ {
 }
 
 export class $Catalogue extends $Reference implements $Catalogue$ {
+    override parenthetical = false;
+
+    override specifically(): void {
+    }
+
     parts(): $Writing[] {
         const meant = this.held(this);
 
@@ -29,6 +35,12 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
             const Path = $(path);
             this._block = this._block.concat($<$Path>(<Path>{`#${reflection.kebab(named)}`}</Path>));
         }
+    }
+
+    override print(): ReactNode {
+        const at = html.text(this.path()?._block);
+
+        return at === '' ? super.print() : <a href={at} className="pd-meaning">{super.print()}</a>;
     }
 
     follow(fragment: string): $Writing {

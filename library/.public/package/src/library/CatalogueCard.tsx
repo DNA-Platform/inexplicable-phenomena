@@ -1,7 +1,7 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $Reference$ } from '@/reference/Reference';
+import { $Reference } from '@/reference/Reference';
 import { $Composition } from '@/writing/Composition';
 import { $IndexCard$, $TypeOfIndexCard, IndexCardSpecification, $IndexCard } from '@/reference/IndexCard';
 import { $Title, $TypeOfTitle } from './Title';
@@ -15,7 +15,7 @@ export class $CatalogueCard extends $IndexCard implements $CatalogueCard$ {
         super.$IndexCard(this.addType(block, $TypeOfCatalogueCard));
     }
 
-    override get meaning(): $Reference$ | undefined { return this.title()?.meaning; }
+    override get meaning(): $Reference | undefined { return this.title()?.meaning; }
 }
 
 export class $TypeOfCatalogueCard extends $TypeOfIndexCard {

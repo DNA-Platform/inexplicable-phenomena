@@ -17,7 +17,6 @@ export class $Type extends $Annotation implements $Type$ {
         if (said !== '') this.name = said;
     }
 
-    below(): (new() => $Type) | undefined { return undefined; }
     makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
 
     // DI, DECLARED BY THE KIND AND RUN LATE. The composition root calls every

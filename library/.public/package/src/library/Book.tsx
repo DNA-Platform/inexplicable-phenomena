@@ -4,8 +4,12 @@ import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
-import { $Type } from '@/writing/Type';
 import { $Catalogue } from '@/reference/Catalogue';
+import { $TypeOfLetter } from '@/writing/Letter';
+import { $TypeOfWord } from '@/writing/Word';
+import { $TypeOfSentence } from '@/writing/Sentence';
+import { $TypeOfParagraph } from '@/writing/Paragraph';
+import { $TypeOfSection } from '@/writing/Section';
 import { $TypeOfReference } from '@/reference/Reference';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Document, $TypeOfDocument } from './Document';
@@ -48,7 +52,13 @@ export class $Book extends $Composition implements $Book$ {
     }
 
     static $register(): void {
-        reflection.knows({ hierarchies: [$TypeOfBook, $TypeOfDocument] });
+        reflection.knows({
+            hierarchies: [$TypeOfBook, $TypeOfDocument],
+            levels: [
+                [$TypeOfLetter, $TypeOfWord, $TypeOfSentence, $TypeOfParagraph, $TypeOfSection, $TypeOfDocument],
+                [$TypeOfChapter, $TypeOfBook]
+            ]
+        });
     }
 }
 
@@ -56,8 +66,6 @@ export class $$Book extends $Catalogue { }
 
 export class $TypeOfBook extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new BookSpecification();
-
-    override below(): new() => $Type { return $TypeOfChapter; }
 }
 
 export class BookSpecification extends WritingSpecification {
