@@ -1,11 +1,10 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block, $check, select } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
-import { $Box$, $Box, $TypeOfBox, BoxSpecification } from './Box';
-import { InfoboxFormat as infoboxStyle } from './InfoboxFormat';
+import { $Box$, $Box, $TypeOfBox, BoxSpecification, $BoxFormat } from './Box';
 
 export interface $Infobox$ extends $Box$ { }
 
@@ -20,6 +19,25 @@ export class $TypeOfInfobox extends $TypeOfBox {
 }
 
 export class InfoboxSpecification extends BoxSpecification {
+}
+
+export class $InfoboxFormat extends $BoxFormat {
+    float = 'right';
+    clear = 'right';
+    width = '22em';
+    maxWidth = '100%';
+    override margin = '0 0 1em 1.4em';
+
+    @select('> .pd-line') line_display = 'grid';
+    line_gridTemplateColumns = 'minmax(0, 6.5em) minmax(0, 1fr)';
+    line_gap = '0 0.6em';
+    line_margin = '0';
+    line_padding = '0.35em 0.5em';
+    line_alignItems = 'baseline';
+    get line_borderTop() { return `1px solid ${this.theme.shade}`; }
+
+    @select('> .pd-line::before') label_content = 'attr(data-label)';
+    label_fontWeight = '700';
 }
 
 export interface $Line$ extends $Paragraph$ {
@@ -49,5 +67,7 @@ export class LineSpecification extends ParagraphSpecification {
 
 export const Infobox = $($Infobox);
 export const TypeOfInfobox = $($TypeOfInfobox);
+export const InfoboxFormat = $($InfoboxFormat);
 export const Line = $($Line);
 export const TypeOfLine = $($TypeOfLine);
+const infoboxStyle = InfoboxFormat;

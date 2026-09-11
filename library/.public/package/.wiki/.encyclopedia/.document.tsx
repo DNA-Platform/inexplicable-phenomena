@@ -181,13 +181,14 @@ export class $RingFormat extends $Format {
     $globe = '';
     selector = styled.div;
     position = 'relative';
-    height = '23.21em';
-    width = '100%';
-    maxWidth = '39em';
-    margin = '1.21em auto 0';
+    height = '32.5rem';
+    width = '54.6rem';
+    maxWidth = '100%';
+    margin = '0 auto';
+    textAlign = 'center';
     backgroundRepeat = 'no-repeat';
-    backgroundPosition = 'center 4.36em';
-    backgroundSize = '14.29em';
+    backgroundPosition = 'center 10rem';
+    backgroundSize = '12.5rem';
     @select('> .pd-section') section_display = 'contents';
     @select('@media (max-width: 480px)') narrow_order = '1';
     narrow_height = 'auto';
@@ -207,7 +208,7 @@ export class $LanguageFormat extends $Format {
     $at = 1;
     selector = styled.div;
     position = 'absolute';
-    width = '11.14em';
+    width = '15.6rem';
     textAlign = 'center';
     @select('a') link_display = 'block';
     link_fontSize = '1.23em';
@@ -222,8 +223,11 @@ export class $LanguageFormat extends $Format {
     narrow_padding = '0 1.14em';
     narrow_lineHeight = '1.4';
     get top() { return `${Math.floor((this.$at - 1) / 2) * 20}%`; }
-    get left() { return `${(this.$at % 2 === 1 ? [4.43, 0.57, -0.21, 0.57, 4.43] : [23.43, 27.29, 28.07, 27.29, 23.43])[Math.floor((this.$at - 1) / 2)]}em`; }
+    get right() { return this.$at % 2 === 1 ? `${this.inset}%` : 'auto'; }
+    get left() { return this.$at % 2 === 0 ? `${this.inset}%` : 'auto'; }
     get link_color() { return this.theme.link; }
+
+    private get inset(): number { return [60, 70, 72, 70, 60][Math.floor((this.$at - 1) / 2)]; }
 
     protected override handed(): Record<string, unknown> {
         return { at: (this.parent as $Language | undefined)?.$at ?? 1 };

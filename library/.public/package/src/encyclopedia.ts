@@ -6,7 +6,4 @@ export * from './encyclopedia/Theme';
 export * from './encyclopedia/Infobox';
 export * from './encyclopedia/Hatnote';
 export * from './encyclopedia/Box';
-export * from './encyclopedia/BoxFormat';
-export * from './encyclopedia/InfoboxFormat';
-export * from './encyclopedia/NavboxFormat';
 export * from './encyclopedia/Navbox';
