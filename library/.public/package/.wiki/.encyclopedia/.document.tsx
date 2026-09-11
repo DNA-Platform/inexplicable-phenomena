@@ -93,7 +93,7 @@ export class $Project extends $IndexCard {
 }
 
 export class $PortalDocumentFormat extends $Format {
-    selector = styled.div;
+    selector: any = styled.article;
     width = '100%';
 }
 
