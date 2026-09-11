@@ -15,9 +15,9 @@ export class $PortalTheme extends $EncyclopediaTheme {
     override padding = '0 0.914em';
     textAlign = 'center';
     @select('@media (max-width: 768px)') phone_padding = '0 0.457em';
-    @select('@media (max-width: 768px) {\n             .pd-book > * {') phoneAll_gridColumn = '1 / -1';
-    @select('.pd-book > nav') side_display = 'none';
-    @select('.pd-book > header') cover_paddingTop = '2.86em';
+    @select('@media (max-width: 768px) {\n             .pd-book > .pd-chapter > * {') phoneAll_gridColumn = '1 / -1';
+    @select('.pd-book > .pd-chapter > nav') side_display = 'none';
+    @select('.pd-book > .pd-chapter > header') cover_paddingTop = '2.86em';
     cover_gridColumn = '1 / -1';
     cover_margin = '0 auto';
     cover_maxWidth = '39em';
@@ -31,13 +31,13 @@ export class $PortalTheme extends $EncyclopediaTheme {
     slogan_lineHeight = '2.2';
     slogan_margin = '0';
     get slogan_fontFamily() { return this.face; }
-    @select('@media (max-width: 480px) {\n             .pd-book > header {') narrowHead_padding = '2.29em 0.457em 0';
+    @select('@media (max-width: 480px) {\n             .pd-book > .pd-chapter > header {') narrowHead_padding = '2.29em 0.457em 0';
     narrowHead_backgroundImage = `url(${globe})`;
     narrowHead_backgroundRepeat = 'no-repeat';
     narrowHead_backgroundSize = '3.43em';
     narrowHead_backgroundPosition = 'calc(50% - 8.6em) 2.35em';
-    @select('.pd-book > div') panel_textAlign = 'left';
-    @select('.pd-book > footer') override foot_gridColumn = '1 / -1';
+    @select('.pd-book > .pd-chapter > div') panel_textAlign = 'left';
+    @select('.pd-book > .pd-chapter > footer') override foot_gridColumn = '1 / -1';
 }
 
 export const PortalTheme = $($PortalTheme);

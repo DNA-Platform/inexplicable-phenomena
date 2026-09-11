@@ -26,8 +26,9 @@ export class $EncyclopediaTheme extends $Theme {
     gridAutoRows = 'min-content';
     columnGap = '2.5em';
     @select('> .pd-book') book_display = 'contents';
-    @select('.pd-book > .pd-cover') top_gridColumn = '1 / -1';
-    @select('.pd-book > .pd-table-of-contents') side_gridColumn = '1';
+    @select('.pd-book > .pd-chapter') chapter_display = 'contents';
+    @select('.pd-book > .pd-chapter > .pd-cover') top_gridColumn = '1 / -1';
+    @select('.pd-book > .pd-chapter > .pd-table-of-contents') side_gridColumn = '1';
     side_gridRow = '2 / span 400';
     side_alignSelf = 'start';
     side_position = 'sticky';
@@ -35,17 +36,17 @@ export class $EncyclopediaTheme extends $Theme {
     side_maxHeight = 'calc(100vh - 3em)';
     side_overflowY = 'auto';
     side_fontSize = '0.875em';
-    @select('.pd-book > .pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter), .pd-book > .pd-synopsis, .pd-book > .pd-index') text_gridColumn = '2';
+    @select('.pd-book > .pd-chapter > .pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter), .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-index') text_gridColumn = '2';
     text_minWidth = '0';
     get text_maxWidth() { return this.measure; }
-    @select('.pd-book > .pd-footer') foot_gridColumn = '1 / -1';
+    @select('.pd-book > .pd-chapter > .pd-footer') foot_gridColumn = '1 / -1';
     foot_fontSize = '0.92em';
     @select('@media (max-width: 1119px)') narrow_gridTemplateColumns = '1fr';
     narrow_padding = '1.5em';
-    @select('@media (max-width: 1119px) {\n             .pd-book > nav {') narrowSide_display = 'none';
-    @select('@media (max-width: 1119px) {\n             .pd-book > .pd-synopsis, .pd-book > article, .pd-book > .pd-index, .pd-book > footer {') narrowText_gridColumn = '1';
+    @select('@media (max-width: 1119px) {\n             .pd-book > .pd-chapter > nav {') narrowSide_display = 'none';
+    @select('@media (max-width: 1119px) {\n             .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > article, .pd-book > .pd-chapter > .pd-index, .pd-book > .pd-chapter > footer {') narrowText_gridColumn = '1';
 
-    @select('.pd-book > .pd-cover') cover_marginBottom = '1em';
+    @select('.pd-book > .pd-chapter > .pd-cover') cover_marginBottom = '1em';
     @select('.pd-cover .pd-title .pd-heading') title_fontSize = '1.8em';
     title_borderBottom = 'none';
     title_lineHeight = '1.375';

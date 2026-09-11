@@ -3,7 +3,7 @@ import { $Chapter, Heading, Paragraph, Section, Synopsis } from '@dna-platform/p
 import { Infobox, Line } from '@dna-platform/public/encyclopedia';
 
 export default class $Synopsis extends $Chapter {
-    view() {
+    print() {
         return (
             <Synopsis print>
                 <Infobox>

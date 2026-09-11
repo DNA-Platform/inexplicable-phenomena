@@ -4,7 +4,7 @@ import { BookLink } from '../.document';
 import { globe, Language, Languages, Logo, Search } from './.document';
 
 export default class $Cover extends $Chapter {
-    view() {
+    print() {
         return (
             <Cover>
                 <Title>Wikipedia<Reference>https://www.wikipedia.org/</Reference></Title>

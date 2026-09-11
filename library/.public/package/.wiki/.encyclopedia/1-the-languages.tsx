@@ -4,7 +4,7 @@ import { BookLink, SubjectLink } from '../.document';
 import { EditionList, Editions } from './.document';
 
 export default class $TheLanguages extends $Chapter {
-    view() {
+    print() {
         return (
             <Editions>
                 <Section>

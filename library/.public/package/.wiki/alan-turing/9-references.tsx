@@ -9,7 +9,7 @@ import { $Chapter, Heading, PageFold, Paragraph, Reference, Section } from '@dna
 import Document from './.document';
 
 export default class $References extends $Chapter {
-    view() {
+    print() {
         return (
             <Document>
                 <Section>

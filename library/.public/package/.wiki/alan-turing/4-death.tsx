@@ -3,7 +3,7 @@ import { $Chapter, Citation, Heading, Paragraph, Section } from '@dna-platform/p
 import Document from './.document';
 
 export default class $Death extends $Chapter {
-    view() {
+    print() {
         return (
             <Document>
                 <Section>

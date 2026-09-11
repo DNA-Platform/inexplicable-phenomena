@@ -4,7 +4,7 @@ import { BookLink } from '../.document';
 import { Hatnote } from './.hatnote';
 
 export default class $Synopsis extends $Chapter {
-    view() {
+    print() {
         return (
             <Synopsis print>
                 <Section>

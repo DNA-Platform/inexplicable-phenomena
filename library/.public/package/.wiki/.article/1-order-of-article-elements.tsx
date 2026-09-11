@@ -4,7 +4,7 @@ import Document from './.document';
 import { BookLink } from '../.document';
 
 export default class $OrderOfArticleElements extends $Chapter {
-    view() {
+    print() {
         return (
             <Document>
                 <Section>

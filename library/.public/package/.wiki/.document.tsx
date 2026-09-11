@@ -24,11 +24,15 @@ export class $Footer extends $Document {
 }
 
 export class $HeaderFormat extends $Format {
-    selector = styled.div;
+    selector = styled.section;
+    boxSizing = 'border-box';
+    width = '100%';
+    minHeight = '4.125em';
     display = 'flex';
     alignItems = 'center';
+    justifyContent = 'space-between';
     gap = '1.6em';
-    padding = '0 0 0.9em';
+    padding = '0 1em';
     marginBottom = '1.4em';
 
     @select('.pd-heading')
@@ -36,7 +40,7 @@ export class $HeaderFormat extends $Format {
 
     @select('img')
     mark_display = 'block';
-    mark_height = '2.1em';
+    mark_height = '1.25em';
     mark_width = 'auto';
 
     @select('p')

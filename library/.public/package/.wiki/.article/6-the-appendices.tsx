@@ -4,7 +4,7 @@ import Document from './.document';
 import { BookLink, OutwardLink } from '../.document';
 
 export default class $TheAppendices extends $Chapter {
-    view() {
+    print() {
         return (
             <Document>
                 <Section>
