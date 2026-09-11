@@ -13,6 +13,7 @@ import $Conclusions from './7-conclusions';
 import $Acknowledgments from './8-acknowledgments';
 import $Appendix from './9-appendix';
 import $References from './references';
+import $Notes from './notes';
 
 const Book = $($Book);
 const Cover = $($Cover);
@@ -28,6 +29,7 @@ const Conclusions = $($Conclusions);
 const Acknowledgments = $($Acknowledgments);
 const Appendix = $($Appendix);
 const References = $($References);
+const Notes = $($Notes);
 
 export const book = $<$Book>(
     <Book>
@@ -44,5 +46,6 @@ export const book = $<$Book>(
         <Acknowledgments />
         <Appendix />
         <References />
+        <Notes />
     </Book>
 );

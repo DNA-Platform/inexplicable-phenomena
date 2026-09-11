@@ -53,7 +53,7 @@ describe('a citation names an entry by key and draws the entry\'s place, read fr
     it('THE NUMBER IS THE ENTRY\'S PLACE — cook is second, hartmanis first', async () => {
         const host = await drawn();
         const cited = [...host.querySelectorAll('.pd-citation:not(.pd-footnote)')].map(one => one.textContent);
-        expect(cited).toEqual(['2', '1']);
+        expect(cited).toEqual(['[2]', '[1]']);
     });
 
     it('and every entry carries its key as its id, so the citation\'s anchor lands on it', async () => {
@@ -87,7 +87,7 @@ describe('a citation may carry several keys, and draws their numbers joined in t
         await act(async () => { host = render(<Drawn />).container; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         const cited = host!.querySelector('a.pd-citation');
-        expect(cited?.textContent).toBe('1, 2');
+        expect(cited?.textContent).toBe('[1, 2]');
         expect(cited?.getAttribute('href')).toBe('#hartmanis');
     });
 });

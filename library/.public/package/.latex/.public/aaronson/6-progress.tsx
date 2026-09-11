@@ -1,5 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Citation, Equation, Heading, Paragraph, Section } from '@dna-platform/public';
+import { Footnote } from '@dna-platform/public/article';
 import Document from './.document';
 
 export default class $Progress extends $Chapter {
@@ -14,7 +15,7 @@ export default class $Progress extends $Chapter {
                         <Paragraph>In the 1960s, Hartmanis and Stearns <Citation>hartmanis1965</Citation> realized that, by simply “scaling down” Turing’s diago- nalization proof of the undecidability of the halting problem, we can at least prove some separations between complexity classes. In particular, we can generally show that more of the same resource (time, memory, etc.) lets us decide more languages than less of that resource. Here’s a special case of their so-called Time Hierarchy Theorem. Theorem 37 (Hartmanis-Stearns <Citation>hartmanis1965</Citation>) P is strictly contained in EXP. Proof. Let</Paragraph>
                         <Section>
                             <Heading>Circuit Lower Bounds Based on Counting</Heading>
-                            <Paragraph>A related idea—not exactly “diagonalization,” but counting arguments made explicit—can also be used to show that certain problems can’t be solved by polynomial-size circuits. This story starts with Claude Shannon <Citation>shannon1949</Citation>, who made the following fundamental observation in 1949. Proposition 39 (Shannon <Citation>shannon1949</Citation>) There exists a Boolean function f : &#123;0,1&#125; → &#123;0,1&#125;, on n variables, such that any circuit to compute f requires at least Ω (2 /n) logic gates. Indeed, almost all Boolean functions on n variables (that is, a 1 − o(1) fraction of them) have this property. Proof. There are 2 different Boolean functions f on n variables, but only</Paragraph>
+                            <Paragraph>A related idea—not exactly “diagonalization,” but counting arguments made explicit—can also be used to show that certain problems can’t be solved by polynomial-size circuits. This story starts with Claude Shannon <Citation>shannon1949</Citation>, who made the following fundamental observation in 1949. Proposition 39 (Shannon <Citation>shannon1949</Citation>) There exists a Boolean function f : &#123;0,1&#125; → &#123;0,1&#125;, on n variables, such that any circuit to compute f requires at least Ω (2 /n) logic gates. Indeed, almost all Boolean functions on n variables (that is, a 1 − o(1) fraction of them) have this property.<Footnote>note43</Footnote> Proof. There are 2 different Boolean functions f on n variables, but only</Paragraph>
                         </Section>
                         <Section>
                             <Heading>The Relativization Barrier</Heading>

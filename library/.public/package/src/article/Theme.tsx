@@ -135,14 +135,14 @@ export class $ArticleTheme extends $Theme {
     // what article.cls does and what a README does not, so the markdown reading simply has none.
     // The counters ride the SECTION NESTING, which is the same tree the contents walks.
     @select('.pd-book') counted_counterReset = 'depth1';
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section') one_counterIncrement = 'depth1';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-notes):not(.pd-appendix) > .pd-section') one_counterIncrement = 'depth1';
     one_counterReset = 'depth2';
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section') two_counterIncrement = 'depth2';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-notes):not(.pd-appendix) > .pd-section > .pd-section') two_counterIncrement = 'depth2';
     two_counterReset = 'depth3';
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section > .pd-section') three_counterIncrement = 'depth3';
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-heading::before') numbered_content = "counter(depth1) '\\00a0\\00a0'";
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-appendix) > .pd-section > .pd-section > .pd-section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-notes):not(.pd-appendix) > .pd-section > .pd-section > .pd-section') three_counterIncrement = 'depth3';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-notes):not(.pd-appendix) > .pd-section > .pd-heading::before') numbered_content = "counter(depth1) '\\00a0\\00a0'";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-notes):not(.pd-appendix) > .pd-section > .pd-section > .pd-heading::before') deepNumbered_content = "counter(depth1) '.' counter(depth2) '\\00a0\\00a0'";
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-synopsis):not(.pd-references):not(.pd-notes):not(.pd-appendix) > .pd-section > .pd-section > .pd-section > .pd-heading::before') deepestNumbered_content = "counter(depth1) '.' counter(depth2) '.' counter(depth3) '\\00a0\\00a0'";
 
     // AND THE CONTENTS CARRIES THE SAME NUMBERS, said the same way. counters() — the plural — walks
     // every level of a nested list and joins them, so one rule gives 1, then 1.1, then 1.2.1, from
@@ -177,7 +177,7 @@ export class $ArticleTheme extends $Theme {
     @select('.pd-table-of-contents > .pd-row > .pd-row') deepTallied_counterIncrement = 'listed2';
     deepTallied_counterReset = 'listed3';
     @select('.pd-table-of-contents > .pd-row > .pd-row > .pd-row') deepestTallied_counterIncrement = 'listed3';
-    @select('.pd-table-of-contents .pd-row.pd-references, .pd-table-of-contents .pd-row.pd-appendix') apart_counterIncrement = 'none';
+    @select('.pd-table-of-contents .pd-row.pd-references, .pd-table-of-contents .pd-row.pd-notes, .pd-table-of-contents .pd-row.pd-appendix') apart_counterIncrement = 'none';
     @select('.pd-table-of-contents > .pd-row::before') listedNumber_content = "counter(listed1)";
     @select('.pd-table-of-contents > .pd-row > .pd-row::before') deepNumber_content = "counter(listed1) '.' counter(listed2)";
     deepNumber_flex = '0 0 auto';
@@ -227,10 +227,7 @@ export class $ArticleTheme extends $Theme {
     // page — measured, ::before computed to `none` — because an unbalanced bracket inside a
     // content string is read by the CSS tokeniser as the start of an attribute selector and the
     // declaration is discarded. The unicode escapes say the same thing and parse.
-    @select('.pd-citation::before') opened_content = "'\\005B'";
-    @select('.pd-citation::after') closed_content = "'\\005D'";
-    @select('.pd-citation') get marked_color() { return this.cite; }
-    cite = '#008000';
+    @select('.pd-citation') get marked_color() { return this.ink; }
 
     // AN EQUATION stands centred on its own line.
     @select('.pd-equation') equation_textAlign = 'center';

@@ -36,8 +36,10 @@ export class $Citation extends $Ref implements $Citation$ {
 
     override written(): string {
         const numbers = this.numbers();
-        return numbers.length === 0 || numbers.some(number => number === undefined) ? super.written() : numbers.join(', ');
+        return numbers.length === 0 || numbers.some(number => number === undefined) ? super.written() : this.marks(numbers as number[]);
     }
+
+    protected marks(numbers: number[]): string { return `[${numbers.join(', ')}]`; }
 
     $Citation(block: $Block) {
         super.$Ref(this.addType(block, $TypeOfCitation));

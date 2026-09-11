@@ -6,6 +6,8 @@ import { $Citation$, $Citation, $TypeOfCitation, CitationSpecification } from '@
 export interface $Footnote$ extends $Citation$ { }
 
 export class $Footnote extends $Citation implements $Footnote$ {
+    protected override marks(numbers: number[]): string { return numbers.join(', '); }
+
     $Footnote(block: $Block) {
         super.$Citation(this.addType(block, $TypeOfFootnote));
     }

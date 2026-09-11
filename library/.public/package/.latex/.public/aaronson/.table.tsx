@@ -86,6 +86,7 @@ export default class $Table extends $Chapter {
                 <Row><Chapter>Acknowledgments</Chapter></Row>
                 <Row className="pd-appendix"><Chapter>Appendix: Glossary of Complexity Classes</Chapter></Row>
                 <Row className="pd-references"><Chapter>References</Chapter></Row>
+                <Row className="pd-notes"><Chapter>Notes</Chapter></Row>
             </TableOfContents>
         );
     }
