@@ -413,3 +413,56 @@ describe('a selector opens the levels it needs, and a prefix names one selector 
         expect(() => render(React.createElement($($Closed)))).toThrow(/closes none of them/u);
     });
 });
+
+// AN ANIMATION IS DECLARED THE WAY EVERYTHING ELSE IS: its stops are levels a
+// selector opens, its declarations are members, and the name is the author's.
+class $Fades extends $Chemical {
+    selector = styled.section;
+    @select('@keyframes landed { from {') from_background = 'rgb(1, 1, 1)';
+    @select('@keyframes landed { to {') to_background = 'rgb(2, 2, 2)';
+    _animation = 'landed 2s ease-out';
+    override view(): ReactNode { return <section>landed</section>; }
+}
+const Fades = $($Fades);
+
+class $Slower extends $Fades {
+    to_background = 'rgb(3, 3, 3)';
+}
+const Slower = $($Slower);
+
+class $Twice extends $Chemical {
+    selector = styled.section;
+    @select('@media (max-width: 41em) { .a {') a_display = 'none';
+    @select('@media (max-width: 41em) { .b {') b_display = 'none';
+    override view(): ReactNode { return <section>twice</section>; }
+}
+const Twice = $($Twice);
+
+const blocksNamed = (css: string, name: string) => css.split('@keyframes ' + name + '{').slice(1).map(one => '@keyframes ' + name + '{' + one.split('}}')[0] + '}}');
+
+describe('an animation is a level a styled chemical opens, and it stands whole', () => {
+    it('TWO STOPS OF ONE ANIMATION STAND IN ONE BLOCK — the name is said once', () => {
+        render(<Fades />);
+        const css = stylesheet();
+        expect(blocksNamed(css, 'landed')).toHaveLength(1);
+        expect(css).toMatch(/@keyframes landed\{from\{[^}]*background:rgb\(1, 1, 1\);\}to\{[^}]*background:rgb\(2, 2, 2\);\}\}/u);
+        expect(css).toMatch(/animation:landed 2s ease-out;/u);
+    });
+
+    it('AND A SUBCLASS MAY RESTATE ONE STOP, AND THE OTHER SURVIVES — the block is whole wherever it stands', () => {
+        render(<Slower />);
+        const last = blocksNamed(stylesheet(), 'landed').at(-1) ?? '';
+        expect(last).toMatch(/from\{[^}]*background:rgb\(1, 1, 1\);\}/u);
+        expect(last).toMatch(/to\{[^}]*background:rgb\(3, 3, 3\);\}/u);
+        expect(last).not.toMatch(/rgb\(2, 2, 2\)/u);
+    });
+
+    it('and two groups under one media query open it once', () => {
+        render(<Twice />);
+        const css = stylesheet();
+        expect(css.split('@media (max-width: 41em)').length - 1).toBe(1);
+        const once = '@media (max-width: 41em){' + css.split('@media (max-width: 41em){')[1].split('}}')[0] + '}}';
+        expect(once).toContain('.a{display:none;}');
+        expect(once).toContain('.b{display:none;}');
+    });
+});

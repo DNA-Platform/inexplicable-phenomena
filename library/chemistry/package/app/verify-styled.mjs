@@ -82,6 +82,26 @@ const t1 = await tiles();
 say('writing the theme repaints the styles', t0[0] !== t1[0], `${t0[0]} -> ${t1[0]}`);
 say('the other scope is untouched', t0[1] === t1[1], `${t0[1]} -> ${t1[1]}`);
 
+const fade = () => page.evaluate(() => {
+    const el = document.querySelector('[data-demo="five"] section');
+    if (!el) return null;
+    const cs = getComputedStyle(el);
+    return { name: cs.animationName, bg: cs.backgroundColor };
+});
+await click('replay');
+await new Promise(r => setTimeout(r, 120));
+const f0 = await fade();
+await new Promise(r => setTimeout(r, 2800));
+const f1 = await fade();
+say('an animation is a level a styled chemical opens — its name is on the element', f0?.name === 'landed', String(f0?.name));
+say('and it runs — the fade moves the background over time', !!f0 && f0.bg !== f1?.bg, `${f0?.bg} -> ${f1?.bg}`);
+await click('restate a stop');
+await new Promise(r => setTimeout(r, 120));
+const g0 = await fade();
+await new Promise(r => setTimeout(r, 2800));
+const g1 = await fade();
+say('a subclass restating one stop starts elsewhere, and the inherited stop survives', !!g0 && g0.name === 'landed' && g0.bg !== f0.bg && g1?.bg === f1?.bg, `from ${f0?.bg} -> ${g0?.bg}; to ${f1?.bg} = ${g1?.bg}`);
+
 say('no console errors', errors.length === 0, errors.slice(0, 2).join(' | ') || 'none');
 
 await page.screenshot({ path: process.env.SHOT || 'styled-lab.png', fullPage: true });

@@ -5,11 +5,13 @@ import Case1Demo from './styled/case-1';
 import Case2Demo from './styled/case-2';
 import Case3Demo from './styled/case-3';
 import Case4Demo from './styled/case-4';
+import Case5Demo from './styled/case-5';
 
 import case1Source from './styled/case-1.tsx?raw';
 import case2Source from './styled/case-2.tsx?raw';
 import case3Source from './styled/case-3.tsx?raw';
 import case4Source from './styled/case-4.tsx?raw';
+import case5Source from './styled/case-5.tsx?raw';
 
 // Styled chemicals — styled-components integrated directly into $Chemistry.
 // A class says what it is styled as; its CSS fields are the stylesheet.
@@ -48,12 +50,20 @@ export function StyledCases() {
                 source={case4Source}
                 demo={<Case4Demo />}
             />
+            <CaseShell
+                caseId="styled / 5"
+                subject="An animation is a level a styled chemical opens, and it stands whole"
+                pass="both tiles fade in; the second starts from red and ends where the first does"
+                fail="nothing fades, or the second tile never reaches transparent"
+                source={case5Source}
+                demo={<Case5Demo />}
+            />
         </>
     );
 }
 
 export const sectionData = {
     id: 'styled',
-    cases: 4,
+    cases: 5,
     Component: StyledCases,
 };
