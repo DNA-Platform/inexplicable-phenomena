@@ -45,6 +45,11 @@ export { $symbolize, $literalize } from './implementation/representation';
 // Async helpers
 export { $promise, $await } from './implementation/promise';
 
+// The catalogue the framework's own scoped registration stands on: a consumer
+// holds one through $subject and never constructs one, as the framework does.
+export { $subject } from './implementation/catalogue';
+export type { $Catalogue } from './implementation/catalogue';
+
 // Public types — curated. Internal types ($SymbolFeature, $Particular,
 // $MethodComponent, $Bound, $ParameterType) live in /symbolic.
 export type {

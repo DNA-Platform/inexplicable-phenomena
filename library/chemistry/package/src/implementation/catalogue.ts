@@ -4,7 +4,7 @@ export type $Subject = any;
 export type $Topc = any;
 export type $Library = typeof $lib;
 
-class $Catalogue implements $Rep {
+export class $Catalogue implements $Rep {
     #literature = new Map<$Rep, any>();
     #references = new Map<string, $Rep>();
     #subjects = new Set<$Subject>();

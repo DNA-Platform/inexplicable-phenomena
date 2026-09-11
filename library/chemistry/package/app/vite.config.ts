@@ -10,11 +10,17 @@ import path from 'path';
 // shipped @inert and @reactive since long before this; nothing had ever
 // written one in an app, so nobody found out.
 const decorators = () => react({
-    babel: { plugins: [['@babel/plugin-proposal-decorators', { version: 'legacy' }]] },
+    // PARSED by babel, TRANSFORMED by esbuild — the shape the public branch's wiki uses, which
+    // is what lets @select stand on a class field: babel only has to read the syntax.
+    babel: { parserOpts: { plugins: ['decorators-legacy'] } },
 });
 
 export default defineConfig({
     plugins: [decorators()],
+    esbuild: {
+        keepNames: true,
+        tsconfigRaw: { compilerOptions: { experimentalDecorators: true, useDefineForClassFields: false } },
+    },
     root: __dirname,
     resolve: {
         alias: {

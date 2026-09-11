@@ -1,12 +1,11 @@
 import React from 'react';
-import { $, $Chemical, children, styled } from '@/index';
+import { $, $Chemical, children, select, styled } from '@/index';
 import { ActionButton } from '../V-1/case.styled';
 
 // An animation is declared the way everything else is: its stops are levels a
 // selector opens, its declarations are members, and its name is the author's.
 // Two selectors opening `@keyframes landed {` open it once, so the stops meet
-// in one block. The selector is written into the name here because the Lab's
-// babel path cannot yet decorate a class field; `@select` says the same thing.
+// in one block.
 class $Landed extends $Chemical {
     selector = styled.section;
     margin = '0 0 10px';
@@ -15,8 +14,8 @@ class $Landed extends $Chemical {
     border = '1px solid #a2a9b1';
     color = '#202122';
     background = 'transparent';
-    ['@keyframes landed { from {: background'] = '#ffe97a';
-    ['@keyframes landed { to {: background'] = 'transparent';
+    @select('@keyframes landed { from {') from_background = '#ffe97a';
+    @select('@keyframes landed { to {') to_background = 'transparent';
     _animation = 'landed 2.5s ease-out';
 
     view() {
@@ -31,7 +30,7 @@ const Landed = $($Landed);
 // is the page's, as any CSS name is — so the subclass stands IN for its base
 // rather than beside it, which is how a theme replaces a theme.
 class $Alarmed extends $Landed {
-    override ['@keyframes landed { from {: background'] = '#ffb3b3';
+    override from_background = '#ffb3b3';
 }
 
 const Alarmed = $($Alarmed);
