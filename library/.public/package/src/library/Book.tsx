@@ -15,7 +15,7 @@ import { $Composition$, $Composition } from '@/writing/Composition';
 import { $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $Path, Path as path } from '@/reference/Path';
-import { $Scratchpad, Scratchpad as scratchpad } from './Scratchpad';
+import { $Scratchpad } from './Scratchpad';
 import { $TypeOfTheme, Theme as theme } from '@/formatting/Theme';
 
 export interface $Book$ extends $Composition$ {
@@ -40,8 +40,7 @@ export class $Book extends $Composition implements $Book$ {
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
         if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
-        const Scratchpad = $(scratchpad);
-        this._scratchpad = $<$Scratchpad>(<Scratchpad />);
+        this._scratchpad = new $Scratchpad();
         const Mention = $(chapter);
         const Path = $(path);
         this.chapters.forEach((held, at) => { held._mention = $<$$Chapter>(<Mention />, $<$Path>(<Path>{String(at)}</Path>), held); });

@@ -1,27 +1,17 @@
-import { $, $Chemical } from '@dna-platform/chemistry';
-import { reflection } from '@/utilities/Reflection';
-import type { $Writing } from '@/writing/Writing';
-import type { $Type } from '@/writing/Type';
+export class $Scratchpad {
+    protected _kept = new Map<string, unknown[]>();
 
-export interface $Scratchpad$ extends $Chemical {
-    keep(kind: new() => $Type, key: string, writing: $Writing): void;
-    find<T extends $Writing = $Writing>(kind: new() => $Type, key: string): T | undefined;
-}
-
-export class $Scratchpad extends $Chemical implements $Scratchpad$ {
-    _kept = new Map<string, $Writing>();
-
-    keep(kind: new() => $Type, key: string, writing: $Writing): void {
-        this._kept.set(this.ref(kind, key), writing);
+    keep(key: string, it: unknown): void {
+        const kept = this._kept.get(key);
+        if (kept === undefined) this._kept.set(key, [it]);
+        else kept.push(it);
     }
 
-    find<T extends $Writing = $Writing>(kind: new() => $Type, key: string): T | undefined {
-        return this._kept.get(this.ref(kind, key)) as T | undefined;
+    find<T>(key: string): T | undefined {
+        return this.all<T>(key)[0];
     }
 
-    protected ref(kind: new() => $Type, key: string): string {
-        return `${reflection.template(kind).name}(${key})`;
+    all<T>(key: string): T[] {
+        return (this._kept.get(key) ?? []) as T[];
     }
 }
-
-export const Scratchpad = $($Scratchpad);

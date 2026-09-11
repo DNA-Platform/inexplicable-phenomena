@@ -1,10 +1,12 @@
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Annotation$, $Annotation } from '@/writing/Annotation';
 import { $Type } from '@/writing/Type';
+
+export const folded = (key: string): string => `#${key}`;
 
 export interface $Fold$ extends $Annotation$ {
     key(): string;
@@ -15,6 +17,8 @@ export class $Fold extends $Annotation implements $Fold$ {
 
     $Fold(block: $Block) {
         super.$Writing(this.addType(block, $TypeOfFold));
+        const named = this.parent;
+        if (reflection.writing(named)) this.book?.scratchpad.keep(folded(this.key()), named);
     }
 
     static $register(): void {

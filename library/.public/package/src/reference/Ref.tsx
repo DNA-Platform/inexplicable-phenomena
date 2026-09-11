@@ -10,6 +10,7 @@ import { $Composition } from '@/writing/Composition';
 import { $Phrase$, $TypeOfPhrase, PhraseSpecification, $Phrase } from '@/writing/Phrase';
 import { Word as word } from '@/writing/Word';
 import { $Path, $TypeOfPath } from './Path';
+import { folded } from './Fold';
 
 export interface $Ref$ extends $Phrase$ {
     path(): $Path | undefined;
@@ -52,6 +53,8 @@ export class $Ref extends $Phrase implements $Ref$ {
         const fragment = url.startsWith('#') ? url.slice(1) : url;
         const held = this.document;
         if (/^\d/.test(fragment) && held !== undefined) return held.follow(fragment);
+        const named = this.book?.scratchpad.find<$Writing>(folded(fragment));
+        if (named !== undefined) return named;
         throw new Error('a reference reads to what it means, and this route is the application to follow');
     }
 
