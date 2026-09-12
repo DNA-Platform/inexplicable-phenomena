@@ -66,6 +66,9 @@ const bind = async (where) => {
     return { chapters: chapters.length, path: `${where}/book.tsx` };
 };
 
+const gone = previous.synced.filter(path => !synced.includes(path));
+for (const path of gone) await rm(join(out, path), { force: true });
+
 const generated = [];
 for (const entry of await readdir(library, { withFileTypes: true })) {
     if (!entry.isDirectory() || skipped(entry.name)) continue;
@@ -74,9 +77,6 @@ for (const entry of await readdir(library, { withFileTypes: true })) {
     generated.push(bound.path);
     console.log(`bound ${bound.path} — ${bound.chapters} chapters`);
 }
-
-const gone = previous.synced.filter(path => !synced.includes(path) && !generated.includes(path));
-for (const path of gone) await rm(join(out, path), { force: true });
 
 await writeFile(manifest, JSON.stringify({ synced, generated }, null, 1), 'utf8');
 console.log(`synced ${synced.length} files from ${relative(out, library) || '.'}${sep} · removed ${gone.length} that left the source · ${generated.length} books bound · what the served tree alone carries is untouched`);

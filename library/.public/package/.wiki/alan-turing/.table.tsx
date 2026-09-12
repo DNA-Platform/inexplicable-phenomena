@@ -1,52 +1,56 @@
 import { $ } from '@dna-platform/chemistry';
-import { chapter as Chapter, section as Section, Heading, Row, TableOfContents } from '@dna-platform/public';
+import { Heading, Paragraph, Ref, Section, TableOfContents } from '@dna-platform/public';
+import { Menu, Summary } from '@dna-platform/public/encyclopedia';
 import $Chapter from './.chapter';
 
-export default class $Table extends $Chapter {
+export default class $Contents extends $Chapter {
     print() {
         return (
             <TableOfContents>
-                <Heading>Contents</Heading>
-                <Row><Chapter>Early life and education</Chapter>
-                    <Row><Section>Family</Section></Row>
-                    <Row><Section>School</Section></Row>
-                    <Row><Section>Christopher Morcom</Section></Row>
-                    <Row><Section>University and work on computability</Section></Row>
-                </Row>
-                <Row><Chapter>Career and research</Chapter>
-                    <Row><Section>Cryptanalysis</Section></Row>
-                    <Row><Section>Bombe</Section>
-                        <Row><Section>Action This Day</Section></Row>
-                    </Row>
-                    <Row><Section>Hut 8 and the naval Enigma</Section></Row>
-                    <Row><Section>Turingery</Section></Row>
-                    <Row><Section>Delilah</Section></Row>
-                    <Row><Section>Early computers and the Turing test</Section></Row>
-                    <Row><Section>Pattern formation and mathematical biology</Section></Row>
-                    <Row><Section>Ratio Club and other cybernetics contacts</Section></Row>
-                </Row>
-                <Row><Chapter>Personal life</Chapter>
-                    <Row><Section>Treasure</Section></Row>
-                    <Row><Section>Engagement</Section></Row>
-                    <Row><Section>Chess</Section></Row>
-                    <Row><Section>Homosexuality and indecency conviction</Section>
-                        <Row><Section>"Pryce's Buoy"</Section></Row>
-                    </Row>
-                </Row>
-                <Row><Chapter>Death</Chapter>
-                    <Row><Section>Doubts on suicide thesis</Section></Row>
-                </Row>
-                <Row><Chapter>Government apology and pardon</Chapter></Row>
-                <Row><Chapter>Further reading</Chapter>
-                    <Row><Section>Articles</Section></Row>
-                    <Row><Section>Books</Section></Row>
-                </Row>
-                <Row><Chapter>See also</Chapter>
-                    <Row><Section>Works cited</Section></Row>
-                </Row>
-                <Row><Chapter>Notes</Chapter></Row>
-                <Row><Chapter>References</Chapter></Row>
-                <Row><Chapter>External links</Chapter></Row>
+                <Section>
+                    <Heading>Contents</Heading>
+                    <Paragraph><Ref>[(Top)](#)</Ref></Paragraph>
+                    <Menu>
+                        <Summary><Ref>[Early life and education](#early-life-and-education)</Ref></Summary>
+                        <Paragraph><Ref>[Family](#family)</Ref></Paragraph>
+                        <Paragraph><Ref>[School](#school)</Ref></Paragraph>
+                        <Paragraph><Ref>[Christopher Morcom](#christopher-morcom)</Ref></Paragraph>
+                        <Paragraph><Ref>[University and work on computability](#university-and-work-on-computability)</Ref></Paragraph>
+                    </Menu>
+                    <Menu>
+                        <Summary><Ref>[Career and research](#career-and-research)</Ref></Summary>
+                        <Paragraph><Ref>[Cryptanalysis](#cryptanalysis)</Ref></Paragraph>
+                        <Paragraph><Ref>[Bombe](#bombe)</Ref></Paragraph>
+                        <Paragraph><Ref>[Hut 8 and the naval Enigma](#hut-8-and-the-naval-enigma)</Ref></Paragraph>
+                        <Paragraph><Ref>[Turingery](#turingery)</Ref></Paragraph>
+                        <Paragraph><Ref>[Delilah](#delilah)</Ref></Paragraph>
+                        <Paragraph><Ref>[Early computers and the Turing test](#early-computers-and-the-turing-test)</Ref></Paragraph>
+                        <Paragraph><Ref>[Pattern formation and mathematical biology](#pattern-formation-and-mathematical-biology)</Ref></Paragraph>
+                        <Paragraph><Ref>[Ratio Club and other cybernetics contacts](#ratio-club-and-other-cybernetics-contacts)</Ref></Paragraph>
+                    </Menu>
+                    <Menu>
+                        <Summary><Ref>[Personal life](#personal-life)</Ref></Summary>
+                        <Paragraph><Ref>[Treasure](#treasure)</Ref></Paragraph>
+                        <Paragraph><Ref>[Engagement](#engagement)</Ref></Paragraph>
+                        <Paragraph><Ref>[Chess](#chess)</Ref></Paragraph>
+                        <Paragraph><Ref>[Homosexuality and indecency conviction](#homosexuality-and-indecency-conviction)</Ref></Paragraph>
+                    </Menu>
+                    <Menu>
+                        <Summary><Ref>[Death](#death)</Ref></Summary>
+                        <Paragraph><Ref>[Doubts on suicide thesis](#doubts-on-suicide-thesis)</Ref></Paragraph>
+                    </Menu>
+                    <Paragraph><Ref>[Government apology and pardon](#government-apology-and-pardon)</Ref></Paragraph>
+                    <Menu>
+                        <Summary><Ref>[Further reading](#further-reading)</Ref></Summary>
+                        <Paragraph><Ref>[Articles](#articles)</Ref></Paragraph>
+                        <Paragraph><Ref>[Books](#books)</Ref></Paragraph>
+                    </Menu>
+                    <Menu>
+                        <Summary><Ref>[See also](#see-also)</Ref></Summary>
+                        <Paragraph><Ref>[Works cited](#works-cited)</Ref></Paragraph>
+                    </Menu>
+                    <Paragraph><Ref>[External links](#external-links)</Ref></Paragraph>
+                </Section>
             </TableOfContents>
         );
     }

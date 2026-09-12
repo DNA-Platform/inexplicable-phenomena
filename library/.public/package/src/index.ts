@@ -69,17 +69,17 @@ export * from './library/PageFold';
 // everything between the markers is EMITTED by register.ts before each build, so
 // a kind cannot be added and silently left unwired. Do not edit it by hand.
 // <registrations>
-import { $Theme } from './writing/Theme';
 import { $Book } from './library/Book';
 import { $Fold } from './reference/Fold';
 import { $Reference } from './reference/Reference';
 import { $Composition } from './writing/Composition';
+import { $Theme } from './writing/Theme';
 import { $Type } from './writing/Type';
 
-$Theme.$register();
 $Book.$register();
 $Fold.$register();
 $Reference.$register();
 $Composition.$register();
+$Theme.$register();
 $Type.$register();
 // </registrations>

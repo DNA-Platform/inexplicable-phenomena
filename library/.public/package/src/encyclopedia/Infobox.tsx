@@ -27,15 +27,23 @@ export class $InfoboxFormat extends $BoxFormat {
     width = 'min(22em, 100%)';
     override margin = '0 0 1em 1.4em';
 
-    @select('> .pd-line') line_display = 'grid';
-    line_gridTemplateColumns = 'minmax(0, 6.5em) minmax(0, 1fr)';
-    line_gap = '0 0.6em';
+    // A LINE IS A ROW OF TWO CELLS, and it is written as one. A grid made a cell of every run
+    // between a row's links — "mathematics" and "(PhD)" stood in the label column — and taking the
+    // label out of the flow instead left it unable to grow its row, so "Doctoral advisor" lay over
+    // the row beneath it. A table sets the label in one cell and gathers everything written into
+    // the other, which is what an infobox row has always been.
+    @select('> .pd-line') line_display = 'table';
+    line_width = '100%';
     line_margin = '0';
-    line_padding = '0.35em 0.5em';
-    line_alignItems = 'baseline';
+    line_padding = '0.2em 0.6em';
+    line_boxSizing = 'border-box';
     get line_borderTop() { return `1px solid ${this.theme.shade}`; }
 
     @select('> .pd-line::before') label_content = 'attr(data-label)';
+    label_display = 'table-cell';
+    label_width = '5.4em';
+    label_paddingRight = '0.6em';
+    label_verticalAlign = 'top';
     label_fontWeight = '700';
 
     @select('> .pd-heading + .pd-paragraph') said_textAlign = 'center';

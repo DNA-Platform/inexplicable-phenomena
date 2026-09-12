@@ -55,8 +55,6 @@ export class $BoxFormat extends $Format {
     label_border = 'none';
     get label_fontFamily() { return this.theme.body; }
 
-    @select('.pd-ref + .pd-ref::before') between_content = "' \\00b7 '";
-
     @select('@media (max-width: 640px) {\n            & > .pd-section {') narrow_gridTemplateColumns = 'minmax(0, 1fr)';
     narrow_gap = '0';
 }
