@@ -18,6 +18,86 @@ const translation = (colour: string) => painted("%3Csvg width='22' height='22' v
 
 const caret = (colour: string) => painted("%3Csvg width='14' height='14' viewBox='-1 -1 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='{ink}' d='M10.085 2.943 6.05 6.803l-3.947-3.86L1.05 3.996l5 5 5-5z'/%3E%3C/svg%3E", colour);
 
+export const editions = [
+    { name: 'Afrikaans', url: 'https://af.wikipedia.org/' },
+    { name: 'Shqip', url: 'https://sq.wikipedia.org/' },
+    { name: 'العربية', url: 'https://ar.wikipedia.org/' },
+    { name: 'Asturianu', url: 'https://ast.wikipedia.org/' },
+    { name: 'Azərbaycanca', url: 'https://az.wikipedia.org/' },
+    { name: 'Български', url: 'https://bg.wikipedia.org/' },
+    { name: '閩南語 / Bân-lâm-gú', url: 'https://nan.wikipedia.org/' },
+    { name: 'বাংলা', url: 'https://bn.wikipedia.org/' },
+    { name: 'Беларуская', url: 'https://be.wikipedia.org/' },
+    { name: 'Català', url: 'https://ca.wikipedia.org/' },
+    { name: 'Čeština', url: 'https://cs.wikipedia.org/' },
+    { name: 'Cymraeg', url: 'https://cy.wikipedia.org/' },
+    { name: 'Dansk', url: 'https://da.wikipedia.org/' },
+    { name: 'Deutsch', url: 'https://de.wikipedia.org/' },
+    { name: 'Eesti', url: 'https://et.wikipedia.org/' },
+    { name: 'Ελληνικά', url: 'https://el.wikipedia.org/' },
+    { name: 'English', url: 'https://en.wikipedia.org/' },
+    { name: 'Español', url: 'https://es.wikipedia.org/' },
+    { name: 'Esperanto', url: 'https://eo.wikipedia.org/' },
+    { name: 'Euskara', url: 'https://eu.wikipedia.org/' },
+    { name: 'فارسی', url: 'https://fa.wikipedia.org/' },
+    { name: 'Français', url: 'https://fr.wikipedia.org/' },
+    { name: 'Galego', url: 'https://gl.wikipedia.org/' },
+    { name: '한국어', url: 'https://ko.wikipedia.org/' },
+    { name: 'Hausa', url: 'https://ha.wikipedia.org/' },
+    { name: 'Հայերեն', url: 'https://hy.wikipedia.org/' },
+    { name: 'हिन्दी', url: 'https://hi.wikipedia.org/' },
+    { name: 'Hrvatski', url: 'https://hr.wikipedia.org/' },
+    { name: 'Bahasa Indonesia', url: 'https://id.wikipedia.org/' },
+    { name: 'Italiano', url: 'https://it.wikipedia.org/' },
+    { name: 'עברית', url: 'https://he.wikipedia.org/' },
+    { name: 'ქართული', url: 'https://ka.wikipedia.org/' },
+    { name: 'Ladin', url: 'https://lld.wikipedia.org/' },
+    { name: 'Latina', url: 'https://la.wikipedia.org/' },
+    { name: 'Latviešu', url: 'https://lv.wikipedia.org/' },
+    { name: 'Lietuvių', url: 'https://lt.wikipedia.org/' },
+    { name: 'Magyar', url: 'https://hu.wikipedia.org/' },
+    { name: 'Македонски', url: 'https://mk.wikipedia.org/' },
+    { name: 'Malagasy', url: 'https://mg.wikipedia.org/' },
+    { name: 'मराठी', url: 'https://mr.wikipedia.org/' },
+    { name: 'مصرى', url: 'https://arz.wikipedia.org/' },
+    { name: 'Bahasa Melayu', url: 'https://ms.wikipedia.org/' },
+    { name: 'Bahaso Minangkabau', url: 'https://min.wikipedia.org/' },
+    { name: 'မြန်မာဘာသာ', url: 'https://my.wikipedia.org/' },
+    { name: 'Nederlands', url: 'https://nl.wikipedia.org/' },
+    { name: '日本語', url: 'https://ja.wikipedia.org/' },
+    { name: 'Norsk (bokmål)', url: 'https://no.wikipedia.org/' },
+    { name: 'Norsk (nynorsk)', url: 'https://nn.wikipedia.org/' },
+    { name: 'Нохчийн', url: 'https://ce.wikipedia.org/' },
+    { name: 'Oʻzbekcha / Ўзбекча', url: 'https://uz.wikipedia.org/' },
+    { name: 'Polski', url: 'https://pl.wikipedia.org/' },
+    { name: 'Português', url: 'https://pt.wikipedia.org/' },
+    { name: 'Қазақша / Qazaqşa / قازاقشا', url: 'https://kk.wikipedia.org/' },
+    { name: 'Română', url: 'https://ro.wikipedia.org/' },
+    { name: 'Simple English', url: 'https://simple.wikipedia.org/' },
+    { name: 'Sinugboanong Binisaya', url: 'https://ceb.wikipedia.org/' },
+    { name: 'Slovenčina', url: 'https://sk.wikipedia.org/' },
+    { name: 'Slovenščina', url: 'https://sl.wikipedia.org/' },
+    { name: 'Српски / Srpski', url: 'https://sr.wikipedia.org/' },
+    { name: 'Srpskohrvatski / Српскохрватски', url: 'https://sh.wikipedia.org/' },
+    { name: 'Suomi', url: 'https://fi.wikipedia.org/' },
+    { name: 'Svenska', url: 'https://sv.wikipedia.org/' },
+    { name: 'Kiswahili', url: 'https://sw.wikipedia.org/' },
+    { name: 'தமிழ்', url: 'https://ta.wikipedia.org/' },
+    { name: 'Татарча / Tatarça', url: 'https://tt.wikipedia.org/' },
+    { name: 'తెలుగు', url: 'https://te.wikipedia.org/' },
+    { name: 'ภาษาไทย', url: 'https://th.wikipedia.org/' },
+    { name: 'Тоҷикӣ', url: 'https://tg.wikipedia.org/' },
+    { name: 'تۆرکجه', url: 'https://azb.wikipedia.org/' },
+    { name: 'Türkçe', url: 'https://tr.wikipedia.org/' },
+    { name: 'Українська', url: 'https://uk.wikipedia.org/' },
+    { name: 'اردو', url: 'https://ur.wikipedia.org/' },
+    { name: 'Tiếng Việt', url: 'https://vi.wikipedia.org/' },
+    { name: 'Winaray', url: 'https://war.wikipedia.org/' },
+    { name: '中文', url: 'https://zh.wikipedia.org/' },
+    { name: 'Русский', url: 'https://ru.wikipedia.org/' },
+    { name: '粵語', url: 'https://yue.wikipedia.org/' },
+];
+
 export const globe = 'https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg';
 
 export class $WikipediaDocument extends $Document { }
@@ -270,21 +350,6 @@ export class $CardFormat extends $Format {
 export class $Search extends $Section {
     $language = 'en';
 
-    editions(): $Ref[] {
-        const found: $Ref[] = [];
-        const gather = (piece: any): void => {
-            if (piece instanceof $Ref) { found.push(piece); return; }
-            for (const part of piece?._block?.$elements ?? []) gather(part);
-        };
-        const seek = (piece: any): any => {
-            if (piece instanceof $EditionList) return piece;
-            for (const part of piece?._block?.$elements ?? []) { const held = seek(part); if (held !== undefined) return held; }
-            return undefined;
-        };
-        gather(seek(this.book));
-        return found;
-    }
-
     override view(): ReactNode {
         const Form = $(SearchFormat);
 
@@ -295,10 +360,10 @@ export class $Search extends $Section {
                     <input name="search" type="search" size={20} dir="auto" autoComplete="off" aria-label={html.text(this._block)} autoFocus />
                     <span>{this.$language.toUpperCase()}</span>
                     <select name="language" value={this.$language} onChange={event => this.$language = event.target.value}>
-                        {this.editions().map(edition => {
-                            const code = (edition.url() ?? '').split('/')[2].split('.')[0];
+                        {editions.map(edition => {
+                            const code = edition.url.split('/')[2].split('.')[0];
 
-                            return <option key={code} value={code} lang={code}>{edition.written()}</option>;
+                            return <option key={code} value={code} lang={code}>{edition.name}</option>;
                         })}
                     </select>
                 </div>
@@ -313,12 +378,13 @@ export class $SearchFormat extends $Format {
     selector = styled.form;
     $action: string | undefined = undefined;
     display = 'flex';
+    justifyContent = 'center';
     width = '100%';
     maxWidth = '38.57em';
     padding = '0.43em 0 0.86em';
     margin = '0 auto';
     @select('div') field_position = 'relative';
-    field_flex = '1';
+    field_flex = '0 1 28.14em';
     field_minWidth = '0';
     @select('input[name=search]') input_boxSizing = 'border-box';
     input_width = '100%';
@@ -344,7 +410,7 @@ export class $SearchFormat extends $Format {
     @select('select') picker_position = 'absolute';
     picker_top = '0';
     picker_right = '0';
-    picker_width = '4.57em';
+    picker_width = '7.86em';
     picker_height = '100%';
     picker_margin = '0';
     picker_padding = '0';
