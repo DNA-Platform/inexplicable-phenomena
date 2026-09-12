@@ -1438,11 +1438,14 @@ function evalElement(element: React.ReactElement, parent?: $Chemical, written?: 
 // `$` has no `.foo` members yet — namespace reserved.
 // ===========================================================================
 
-// What narrows a registration: how far it reaches, and whose asks it answers.
-// The plain form is the one that projects downward.
+// What narrows a registration: how far it reaches, whose asks it answers, and
+// how many instances answer — one, when single. The plain form projects
+// downward and derives an instance per mount; `'single'` is the word for the
+// last, and this is how it composes with the other two.
 export interface $Narrowing {
     reach?: 'self' | 'progeny';
     asker?: abstract new (...args: any[]) => any;
+    single?: boolean;
 }
 
 interface $Chemistry {
@@ -1495,10 +1498,10 @@ interface $Chemistry {
     <A extends $Particle, B extends $Particle>(
         scope: Component<A> | Element<A>,
         requested: Component<B> | Element<B>
-    ): <C extends B>(replacement: Component<C> | Element<C>, options?: $Narrowing) => Component<C> | Element<C>;
+    ): <C extends B>(replacement: Component<C> | Element<C>, options?: $Narrowing | 'single') => Component<C> | Element<C>;
     // …and the same, for scopes or parts that are plain function components.
     (scope: Component<any> | Element<any> | React.FC<any>, requested: React.FC<any>):
-        (replacement: React.FC<any> | Component<any> | Element<any>, options?: $Narrowing) => any;
+        (replacement: React.FC<any> | Component<any> | Element<any>, options?: $Narrowing | 'single') => any;
     // HTML element catalogue — `$('div')` lazily creates a reactive $Html$
     // chemical for the tag, caches its Component, returns it. `$('div', X)`
     // registers `X` as the override for that tag — subsequent lookups
@@ -1647,16 +1650,35 @@ function configuring(act: string) {
 // class's asks. The plain form is the one that projects downward, because the
 // alternative would mean naming every class between a book and a sentence.
 function registrar(scope: any, requested: any) {
-    return (replacement: any, options?: { reach?: 'self' | 'progeny'; asker?: any }) => {
+    return (replacement: any, options?: $Narrowing | 'single') => {
         configuring('a registration arrived');
         const held = registry(scope.$chemical);
         const key = reference(wrapped(requested));
-        replacement = wrapped(replacement);
+        const narrowing = options === 'single' ? { single: true } : options;
+        replacement = narrowing?.single ? single(wrapped(replacement)) : wrapped(replacement);
         const entries = entriesOf(held, key, true).slice();
-        entries.push({ replacement, reach: options?.reach ?? 'progeny', asker: options?.asker });
+        entries.push({ replacement, reach: narrowing?.reach ?? 'progeny', asker: narrowing?.asker });
         held.$index(key, { owner: held, entries });
         return replacement;
     };
+}
+
+// FOR A, A B IS THIS ONE C. A class component derives an instance per mount; a
+// component made from a held instance IS that instance at every mount — the
+// form `$` already has. So a single registration makes one instance, bonds it
+// once through its own component, and answers that component: every ask is
+// answered by the same one, its bond constructor never runs again, and what is
+// written to it is what every mount reads. Made here, at configuration, which
+// is the one time a registration is allowed to arrive — never in a draw. A
+// component that already stands for one instance — a held one, or a plain
+// function's wrapper — is answered as it is.
+function single(component: any): any {
+    const template = component?.$chemical;
+    if (!template?.[$isTemplate$]) return component;
+    const one = new (template[$type$])();
+    const One = $(one);
+    $(React.createElement(One));
+    return One;
 }
 
 // $($,Component) — a new component derived from the one given, whose scope

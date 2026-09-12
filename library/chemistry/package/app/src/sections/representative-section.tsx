@@ -5,6 +5,8 @@ import RepresentativeDemo from './representative/case-1';
 import representativeSource from './representative/case-1.tsx?raw';
 import ThemeRegistrationDemo from './representative/case-2';
 import themeSource from './representative/case-2.tsx?raw';
+import SingleRegistrationDemo from './representative/case-3';
+import singleSource from './representative/case-3.tsx?raw';
 
 export function RepresentativeCases() {
     return (
@@ -25,12 +27,20 @@ export function RepresentativeCases() {
                 source={themeSource}
                 demo={<ThemeRegistrationDemo />}
             />
+            <CaseShell
+                caseId="one lamp"
+                subject="A part registered SINGLE — $(Wing, Lamp)(Lamp, 'single') — is one instance at every mount: the registrar makes one, bonds it once, and answers its component, the form $ already has for a held instance"
+                pass="both rooms read the one count once repainted; closing and reopening the wing remounts every room and the count is still there"
+                fail="the rooms read different counts, or reopening the wing resets the lamp"
+                source={singleSource}
+                demo={<SingleRegistrationDemo />}
+            />
         </>
     );
 }
 
 export const sectionData = {
     id: 'representative',
-    cases: 2,
+    cases: 3,
     Component: RepresentativeCases,
 };

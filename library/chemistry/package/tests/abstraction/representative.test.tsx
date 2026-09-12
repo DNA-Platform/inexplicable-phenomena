@@ -489,3 +489,52 @@ describe('a scope lets go with the chemical that held it', () => {
         expect(() => model[$reaction$].destroy()).not.toThrow();
     });
 });
+
+// ─── 'single' — for A, a B is THIS ONE C ────────────────────────────────────
+
+describe("$(A,B)(C, 'single') — one instance answers every ask", () => {
+    class $Counted extends $Plain {
+        n = 0;
+        override view() { return <span>{this.n}</span>; }
+    }
+    function twice(asked: any) {
+        return class extends $Chemical {
+            view() { const Plain = $(asked); return <div><Plain /><Plain /></div>; }
+        };
+    }
+
+    it('answers a component of ONE instance, so what is written to it is what every mount reads', async () => {
+        const Plain = $($Plain);
+        const Counted = $($Counted);
+        const Host = $(twice(Plain) as any);
+        const One = $(Host, Plain)(Counted, 'single');
+        expect(One).not.toBe(Counted);
+        expect(drawn(Host)).toBe('00');
+        await act(async () => { (One as any).$.n = 5; });
+        expect(drawn(Host)).toBe('55');
+    });
+
+    it('and its bond constructor runs once, at registration, never per mount', () => {
+        let bonded = 0;
+        class $Bonded extends $Plain {
+            $Bonded() { bonded++; }
+        }
+        const Plain = $($Plain);
+        const Bonded = $($Bonded);
+        const Host = $(twice(Plain) as any);
+        $(Host, Plain)(Bonded, { single: true });
+        expect(bonded).toBe(1);
+        drawn(Host);
+        drawn(Host);
+        expect(bonded).toBe(1);
+    });
+
+    it('a plain function component already stands for one thing, so the word changes nothing', () => {
+        const Plainly = () => <span>plainly</span>;
+        const Fancily = () => <span>fancily</span>;
+        const Host = $(host(Plainly) as any);
+        const stood = $(Host, Plainly)(Fancily, 'single');
+        expect(stood).toBe($(Fancily));
+        expect(drawn(Host)).toContain('fancily');
+    });
+});
