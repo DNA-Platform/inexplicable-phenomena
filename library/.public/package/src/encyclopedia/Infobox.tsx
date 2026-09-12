@@ -35,9 +35,7 @@ export class $InfoboxFormat extends $BoxFormat {
     @select('> .pd-line') line_display = 'table';
     line_width = '100%';
     line_margin = '0';
-    line_padding = '0.2em 0.6em';
     line_boxSizing = 'border-box';
-    get line_borderTop() { return `1px solid ${this.theme.shade}`; }
 
     @select('> .pd-line::before') label_content = 'attr(data-label)';
     label_display = 'table-cell';
@@ -61,8 +59,7 @@ export class $InfoboxFormat extends $BoxFormat {
     picture_margin = '0 auto';
     picture_maxWidth = '100%';
     picture_height = 'auto';
-    @select('.pd-illustration .pd-caption') caption_padding = '0.4em 0 0';
-    caption_fontSize = '1em';
+    @select('.pd-illustration .pd-caption') caption_fontSize = '1em';
     caption_textAlign = 'center';
 
     @select('@media (max-width: 640px) {\n            & {') narrow_float = 'none';

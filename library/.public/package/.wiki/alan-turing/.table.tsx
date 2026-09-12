@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Ref, Section, TableOfContents } from '@dna-platform/public';
-import { Menu, Summary } from '@dna-platform/public/encyclopedia';
+import { Menu, Summary } from '@dna-platform/public/application';
 import $Chapter from './.chapter';
 
 export default class $Contents extends $Chapter {
@@ -49,6 +49,8 @@ export default class $Contents extends $Chapter {
                         <Summary><Ref>[See also](#see-also)</Ref></Summary>
                         <Paragraph><Ref>[Works cited](#works-cited)</Ref></Paragraph>
                     </Menu>
+                    <Paragraph><Ref>[Notes](#notes)</Ref></Paragraph>
+                    <Paragraph><Ref>[References](#references)</Ref></Paragraph>
                     <Paragraph><Ref>[External links](#external-links)</Ref></Paragraph>
                 </Section>
             </TableOfContents>

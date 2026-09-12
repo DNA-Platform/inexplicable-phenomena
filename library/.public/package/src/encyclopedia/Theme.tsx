@@ -43,21 +43,23 @@ export class $EncyclopediaTheme extends $Theme {
     strip_padding = '0 2.75em';
     strip_gap = '0.5em';
     strip_fontSize = '1rem';
+    strip_marginBottom = '1.5em';
     get strip_borderBottom() { return `1px solid ${this.shade}`; }
     @select('.pd-cover > .pd-title') title_gridColumn = '3';
     title_gridRow = '2';
-    title_marginTop = '1.5em';
     title_maxWidth = 'calc(100% - 9.5em)';
     @select('.pd-cover > .pd-menu') tongue_gridColumn = '3';
     tongue_gridRow = '2';
     tongue_justifySelf = 'end';
     tongue_alignSelf = 'center';
-    tongue_marginTop = '1.5em';
     tongue_marginRight = '-0.8em';
+    tongue_padding = '0.35em 0';
+    tongue_borderRadius = '2px';
+    get tongue_border() { return `1px solid ${this.rule}`; }
     @select('.pd-toolbar') tabs_gridColumn = '3';
     tabs_gridRow = '3';
     tabs_marginTop = '0';
-    get tabs_borderBottom() { return `1px solid ${this.shade}`; }
+    tabs_boxShadow = '0 1px 0 #c8ccd1';
     @select('.pd-book > .pd-chapter > .pd-table-of-contents') side_gridColumn = '2';
     side_gridRow = '3 / span 400';
     side_alignSelf = 'start';
@@ -74,61 +76,69 @@ export class $EncyclopediaTheme extends $Theme {
     rail_alignSelf = 'start';
     rail_position = 'sticky';
     rail_top = '1.5em';
-    @select('.pd-appearance h4') railName_margin = '0 0 0.5rem';
-    railName_paddingBottom = '0.35rem';
+    @select('.pd-appearance h4') railName_margin = '6px 0';
+    railName_padding = '6px 0';
     get railName_color() { return this.pale; }
     get railName_borderBottom() { return `1px solid ${this.shade}`; }
 
     // THE THREE MENUS ABOVE THE FOLD, each pressed by a different mark: the bar's opens with three
     // rules, the languages with the script that means language, the page's tools with three dots.
     // The word each one is named by stays in the markup and is read out; only its drawing changes.
-    @select('.pd-menu > .pd-panel') panel_padding = '0.6em 0.8em';
+    @select('.pd-menu::details-content') panel_padding = '0.6em 0.8em';
     panel_borderRadius = '2px';
     get panel_background() { return this.paper; }
     get panel_border() { return `1px solid ${this.rule}`; }
     get panel_boxShadow() { return '0 2px 6px rgba(0, 0, 0, 0.12)'; }
     // A NAME INSIDE A MENU IS A LABEL, not a heading in an article: small, upright and in the
     // body's face, because it names a group of links rather than opening a piece of writing.
-    @select('.pd-menu > .pd-panel .pd-heading') group_margin = '0.7em 0 0.2em';
+    @select('.pd-menu::details-content .pd-heading') group_margin = '0.7em 0 0.2em';
     group_padding = '0';
     group_border = 'none';
     group_fontSize = '0.875em';
     group_fontWeight = '700';
     get group_fontFamily() { return this.body; }
     get group_color() { return this.pale; }
-    @select('.pd-menu > .pd-panel > .pd-heading:first-child') topmost_marginTop = '0';
+    @select('.pd-menu::details-content > .pd-heading:first-child') topmost_marginTop = '0';
     @select('.pd-menu .pd-ref') held_display = 'block';
     held_overflowWrap = 'anywhere';
     held_padding = '0.3em 0';
     @select('.pd-header > .pd-menu > .pd-summary') burger_width = '2rem';
     burger_height = '2rem';
     burger_justifyContent = 'center';
-    burger_fontSize = '0';
+    @select('.pd-header > .pd-menu > .pd-summary > .pd-sentence') burgerSaid_display = 'none';
     @select('.pd-header > .pd-menu > .pd-summary::before') mark_content = "'☰'";
     mark_fontSize = '1.25rem';
     mark_lineHeight = '1';
-    @select('.pd-cover > .pd-menu > .pd-summary') picker_padding = '0.35em 0.75em';
-    picker_borderRadius = '2px';
-    picker_fontSize = '0.875em';
+    @select('.pd-cover > .pd-menu > .pd-summary') picker_fontSize = '0.875em';
+    picker_fontWeight = '700';
+    picker_border = '1px solid transparent';
+    picker_margin = '0';
+    picker_padding = '0 0.786em';
     get picker_color() { return this.link; }
-    get picker_border() { return `1px solid ${this.rule}`; }
+    get picker_fontFamily() { return this.body; }
     @select('.pd-cover > .pd-menu > .pd-summary::before') script_content = "'文A  '";
     @select('.pd-cover > .pd-menu > .pd-summary::after') chevron_content = "'  ▾'";
-    @select('.pd-cover > .pd-menu > .pd-panel') tongues_right = '0';
+    @select('.pd-cover > .pd-menu::details-content') tongues_right = '0';
     tongues_left = 'auto';
     tongues_width = 'min(30em, calc(100vw - 3em))';
     tongues_columns = '3';
+    @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child') here_color = '#202122';
     @select('.pd-toolbar > .pd-menu > .pd-summary') dots_width = '2em';
     dots_justifyContent = 'center';
-    dots_fontSize = '0';
+    dots_fontWeight = '400';
+    dots_color = '#404244';
+    dots_border = '1px solid transparent';
+    dots_margin = '0';
+    get dots_fontFamily() { return this.body; }
+    @select('.pd-toolbar > .pd-menu > .pd-summary > .pd-sentence') dotsSaid_display = 'none';
     @select('.pd-toolbar > .pd-menu > .pd-summary::before') dotted_content = "'⋮'";
     dotted_fontSize = '1rem';
 
     // THE LINE UNDER THE TABS, which says where the words came from, is set small and tight.
     @select('.pd-book > .pd-chapter > .pd-synopsis') siteline_fontSize = '0.875em';
-    siteline_margin = '0.5em 0 1em';
-    get siteline_color() { return this.pale; }
-    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph') sited_margin = '0';
+    siteline_margin = '0';
+    get siteline_color() { return this.ink; }
+    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph') sited_margin = '0.5em 0 0';
 
     // A GROUP'S SELECTOR BELONGS TO WHOEVER DECLARED IT: narrowing the paragraph group to spare
     // the infobox's rows changed nothing, because the base names that selector and a subclass
@@ -136,11 +146,14 @@ export class $EncyclopediaTheme extends $Theme {
     // half a line apart and a whole one beneath, 212 pixels the real box does not spend.
     @select('.pd-infobox .pd-line') row_marginTop = '0';
     row_marginBottom = '0';
+    row_padding = '1px';
+    row_border = 'none';
+    row_color = '#000000';
 
     // THE CONTENTS OPENS IN PLACE. Its rows that hold rows are the same Menu the bar and the
     // tools are — one disclosure for the whole encyclopedia — and the only thing the contents
     // says differently is that what opens stands under the row instead of floating over it.
-    @select('.pd-table-of-contents .pd-menu > .pd-panel') opens_position = 'static';
+    @select('.pd-table-of-contents .pd-menu::details-content') opens_position = 'static';
     opens_padding = '0 0 0 0.9em';
     opens_margin = '0';
     opens_minWidth = '0';
@@ -152,13 +165,17 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-table-of-contents .pd-summary') opener_display = 'flex';
     opener_alignItems = 'baseline';
     opener_gap = '0.4em';
-    opener_lineHeight = '2';
+    @select('.pd-table-of-contents .pd-summary .pd-ref') rowWord_padding = '0.43em 0';
+    rowWord_fontWeight = '400';
+    @select('.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-ref') first_fontWeight = '700';
+    get first_color() { return this.ink; }
     @select('.pd-table-of-contents .pd-summary::before') arrow_content = "'›'";
     arrow_width = '0.8em';
     arrow_flex = '0 0 auto';
     get arrow_color() { return this.pale; }
     @select('.pd-table-of-contents .pd-menu[open] > .pd-summary::before') turned_transform = 'rotate(90deg)';
     @select('.pd-table-of-contents > .pd-section > .pd-paragraph:not(.pd-heading)') flat_paddingLeft = '1.2em';
+    @select('.pd-table-of-contents .pd-paragraph:not(.pd-heading) .pd-ref') rowLink_padding = '0.43em 0';
 
     // THE WORDMARK IS NOT A PARAGRAPH OF PROSE. An image is a paragraph by kind, so the space set
     // between paragraphs stood above and below it — measured, 24 pixels inside a 38 pixel bar.
@@ -170,9 +187,49 @@ export class $EncyclopediaTheme extends $Theme {
     override summed_fontStyle = 'normal';
     // A HATNOTE STANDS IN FROM THE MARGIN AND LEANS, which is how a reader tells it from the
     // article's own first words.
-    @select('.pd-hatnote') hat_fontStyle = 'italic';
-    hat_margin = '0 0 0.5em 1.6em';
+    @select('.pd-note.pd-hatnote') hat_fontStyle = 'italic';
+    hat_fontSize = '1em';
+    hat_margin = '0 0 0.5em';
+    hat_paddingLeft = '1.6em';
+    get hat_color() { return this.ink; }
+    @select('.pd-note.pd-hatnote + .pd-hatnote') hats_marginTop = '-0.5em';
 
+    @select('.pd-search .pd-field') field_fontSize = '0.875em';
+    field_lineHeight = '1.5714';
+    field_padding = '0.2857em 0.5714em 0.2857em 2.4286em';
+    field_border = '1px solid #72777d';
+    field_borderRadius = '2px 0 0 2px';
+    get field_color() { return this.ink; }
+    get field_background() { return this.paper; }
+    @select('.pd-search .pd-button') press_fontSize = '0.875em';
+    press_fontWeight = '700';
+    press_padding = '0 0.786em';
+    press_border = '1px solid #72777d';
+    press_borderRadius = '0 2px 2px 0';
+    press_marginLeft = '-1px';
+    press_color = '#404244';
+    get press_background() { return this.quiet; }
+    // THE INFOBOX, in Wikipedia's own numbers, said here because a theme's rule outranks a worn
+    // format's at what reads as equal specificity — the third feature request in the sprint.
+    @select('.pd-infobox.pd-aside') box_margin = '0.5em 0 0.5em 1em';
+    box_padding = '0.2em';
+    box_color = '#000000';
+    get box_border() { return `1px solid ${this.rule}`; }
+    @select('.pd-book .pd-document .pd-infobox.pd-aside > .pd-heading.pd-level-1') boxName_fontSize = '1.25em';
+    boxName_fontWeight = '700';
+    boxName_lineHeight = '1.2';
+    boxName_color = '#000000';
+    boxName_background = 'transparent';
+    boxName_border = 'none';
+    boxName_margin = '0';
+    boxName_padding = '1px';
+    get boxName_fontFamily() { return this.body; }
+    @select('.pd-infobox .pd-caption') boxCaption_lineHeight = '1.5';
+    boxCaption_color = '#000000';
+    boxCaption_background = 'transparent';
+    boxCaption_border = 'none';
+    boxCaption_margin = '0';
+    boxCaption_padding = '0';
     @select('.pd-book .pd-appearance') pane_padding = '0 1em';
 
     @select('.pd-book > .pd-chapter > .pd-footer') foot_gridColumn = '1 / -1';
@@ -185,7 +242,7 @@ export class $EncyclopediaTheme extends $Theme {
     narrow_padding = '0';
     @select('@media (max-width: 1119px) {\n             .pd-table-of-contents, .pd-appearance {') narrowSide_display = 'none';
     @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-title, .pd-cover > .pd-menu, .pd-toolbar, .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-document:not(.pd-cover), .pd-book > .pd-chapter > .pd-index {') narrowText_gridColumn = '3';
-    @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-menu > .pd-panel {') narrowTongues_columns = '1';
+    @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-menu::details-content {') narrowTongues_columns = '1';
     narrowTongues_width = 'calc(100vw - 3em)';
     // THE BAR WRAPS RATHER THAN SPILLS. At 360 the menu, the wordmark and who-you-are come to 409
     // pixels and the page scrolled sideways; the row is allowed a second line instead.
@@ -199,10 +256,12 @@ export class $EncyclopediaTheme extends $Theme {
     narrowBox_margin = '0 0 1em';
 
     @select('.pd-cover .pd-title .pd-heading') name_fontSize = '1.8em';
+    name_fontWeight = '400';
     name_borderBottom = 'none';
     name_lineHeight = '1.375';
     name_margin = '0';
     get name_fontFamily() { return this.face; }
+    get name_color() { return this.jet; }
     @select('.pd-cover .pd-title .pd-meaning, .pd-cover .pd-author .pd-meaning, .pd-cover .pd-subject .pd-meaning') coverLink_color = 'inherit';
     coverLink_cursor = 'text';
     @select('.pd-cover .pd-title .pd-meaning:hover, .pd-cover .pd-author .pd-meaning:hover, .pd-cover .pd-subject .pd-meaning:hover') coverHover_textDecoration = 'none';
@@ -213,15 +272,12 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-synopsis > .pd-heading') description_display = 'none';
     @select('.pd-title .pd-reference') meaning_display = 'none';
 
-    // A CITATION IS A SUPERSCRIPT IN BRACKETS, which is the one thing every reader recognises an
-    // encyclopedia by. The mark writes its number and the sheet writes the brackets, so the number
-    // stays the only thing the demo says.
+    // A CITATION IS A SUPERSCRIPT, and it writes its own brackets — the writer controls them — so
+    // the sheet only sets it small and high.
     @select('.pd-citation') marker_fontSize = '.8em';
     marker_verticalAlign = 'super';
     marker_lineHeight = '1';
     marker_whiteSpace = 'nowrap';
-    @select('.pd-citation::before') opened_content = "'['";
-    @select('.pd-citation::after') closed_content = "']'";
 
     @select('.pd-table-of-contents .pd-heading') contentsHeading_fontSize = '1em';
     contentsHeading_fontWeight = 'bold';
@@ -239,7 +295,7 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-table-of-contents .pd-meaning:hover, .pd-table-of-contents .pd-ref:hover, .pd-table-of-contents .pd-reference:hover') get entryHover_color() { return this.pressed; }
 
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter)') override document_marginBottom = '2em';
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter) > *:first-child') opening_marginTop = '0';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter):not(.pd-synopsis) > *:first-child:not(.pd-aside)') opening_marginTop = '0';
     // AND A CONTENTS ROW WEARS ITS DOCUMENT'S CLASSES, which is how the appendices tell
     // themselves apart in the contents - so a row answers .pd-document too, and every rule here
     // that means a document had to say it is not a row. Measured: ten rows took a document's
@@ -255,11 +311,13 @@ export class $EncyclopediaTheme extends $Theme {
     override get h2_borderBottom() { return `1px solid ${this.rule}`; }
     get h2_color() { return this.jet; }
     get h2_fontFamily() { return this.face; }
-    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter) .pd-section .pd-section .pd-level-1') sub2_fontSize = '1.2em';
+    @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter) .pd-section .pd-section .pd-level-2') sub2_fontSize = '1.2em';
     sub2_fontWeight = '700';
     sub2_lineHeight = '1.6';
     sub2_padding = '0.5em 0 0';
     sub2_borderBottom = 'none';
+    sub2_margin = '0 0 0.3em';
+    get sub2_color() { return this.jet; }
     get sub2_fontFamily() { return this.body; }
     // THE SPACE BETWEEN PARAGRAPHS IS A VALUE NOW, not a rule of its own — the base carries it as
     // `between` and its own group reads it.

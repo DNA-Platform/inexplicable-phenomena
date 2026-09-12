@@ -24,6 +24,7 @@ export default defineConfig({
             '@dna-platform/public/library': path.resolve(__dirname, '../../dist/library.js'),
             '@dna-platform/public/article': path.resolve(__dirname, '../../dist/article.js'),
             '@dna-platform/public/markdown': path.resolve(__dirname, '../../dist/markdown.js'),
+            '@dna-platform/public/application': path.resolve(__dirname, '../../dist/application.js'),
             '@dna-platform/public/encyclopedia': path.resolve(__dirname, '../../dist/encyclopedia.js'),
             '@dna-platform/public': path.resolve(__dirname, '../../dist/lib.js'),
             '@dna-platform/chemistry': path.resolve(__dirname, '../../../../chemistry/package/src/index.ts'),

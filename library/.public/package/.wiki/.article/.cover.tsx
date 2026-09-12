@@ -2,7 +2,7 @@ import { $ } from '@dna-platform/chemistry';
 import { Author, Cover, Heading, Paragraph, Reference, Subject, Title } from '@dna-platform/public';
 import $Chapter from './.chapter';
 import { Image } from '@dna-platform/public';
-import { Header } from '@dna-platform/public/encyclopedia';
+import { Header } from '@dna-platform/public/application';
 import { OutwardLink } from '../.document';
 
 export default class $Cover extends $Chapter {

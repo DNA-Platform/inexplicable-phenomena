@@ -28,7 +28,9 @@
   "alan-turing/.synopsis.tsx",
   "alan-turing/.table.tsx",
   "alan-turing/1-lead.tsx",
-  "alan-turing/10-the-foot.tsx",
+  "alan-turing/10-references.tsx",
+  "alan-turing/11-external-links.tsx",
+  "alan-turing/12-the-foot.tsx",
   "alan-turing/2-early-life-and-education.tsx",
   "alan-turing/3-career-and-research.tsx",
   "alan-turing/4-personal-life.tsx",
@@ -36,7 +38,7 @@
   "alan-turing/6-government-apology-and-pardon.tsx",
   "alan-turing/7-further-reading.tsx",
   "alan-turing/8-see-also.tsx",
-  "alan-turing/9-external-links.tsx"
+  "alan-turing/9-notes.tsx"
  ],
  "generated": [
   ".article/book.tsx",

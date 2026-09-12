@@ -1,5 +1,5 @@
-import { Author, Cover, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
-import { Header, Menu, Search, Summary, Toolbar } from '@dna-platform/public/encyclopedia';
+import { Author, Cover, Description, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
+import { Header, Menu, Search, Summary, Toolbar } from '@dna-platform/public/application';
 import { BookLink, OutwardLink } from '../.document';
 import $Chapter from './.chapter';
 
@@ -10,7 +10,7 @@ export default class $Cover extends $Chapter {
                 <Header>
                     <Heading>Wikipedia</Heading>
                     <Menu>
-                        <Summary>Main menu</Summary>
+                        <Summary><Description>Main menu</Description></Summary>
                         <Heading>Navigation</Heading>
                         <Paragraph>
                             <BookLink>[Main page](https://en.wikipedia.org/wiki/Main_Page)</BookLink>
@@ -29,7 +29,8 @@ export default class $Cover extends $Chapter {
                     </Menu>
                     <Section>
                         <Heading>The Free Encyclopedia</Heading>
-                        <Image source="https://en.wikipedia.org/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg" width="140" height="26">Wikipedia</Image>
+                        <Image source="https://en.wikipedia.org/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg" width="140" height="22">Wikipedia</Image>
+                        <Image source="https://en.wikipedia.org/static/images/mobile/copyright/wikipedia-tagline-en-25.svg" width="140" height="11">The Free Encyclopedia</Image>
                     </Section>
                     <Search said="Search" where="https://en.wikipedia.org/w/index.php">Search Wikipedia</Search>
                     <Paragraph>
@@ -38,7 +39,10 @@ export default class $Cover extends $Chapter {
                         <BookLink>[Log in](https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Alan+Turing)</BookLink>
                     </Paragraph>
                 </Header>
-                <Title>Alan Turing<Reference>https://en.wikipedia.org/wiki/Alan_Turing</Reference></Title>
+                <Title>
+                    Alan Turing
+                    <Reference>https://en.wikipedia.org/wiki/Alan_Turing</Reference>
+                </Title>
                 <Author>Wikipedians</Author>
                 <Subject>English computer scientist (1912–1954)</Subject>
                 <Menu>
@@ -220,7 +224,7 @@ export default class $Cover extends $Chapter {
                         <BookLink>[View history](https://en.wikipedia.org/w/index.php?title=Alan_Turing&action=history)</BookLink>
                     </Paragraph>
                     <Menu>
-                        <Summary>Tools</Summary>
+                        <Summary><Description>Tools</Description></Summary>
                         <Heading>Actions</Heading>
                         <Paragraph>
                             <BookLink>[Read](https://en.wikipedia.org/wiki/Alan_Turing)</BookLink>

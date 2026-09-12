@@ -5,6 +5,8 @@ import { Specification } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
 import { $Image$, $Image, $TypeOfImage, ImageSpecification } from './Image';
+import { TypeOfSentence } from './Sentence';
+import { TypeOfCaption } from './Description';
 
 export interface $Illustration$ extends $Image$ {
     caption: string;
@@ -35,3 +37,5 @@ export class IllustrationSpecification extends ImageSpecification { }
 
 export const Illustration = $($Illustration);
 export const TypeOfIllustration = $($TypeOfIllustration);
+
+$(Illustration, TypeOfSentence)(TypeOfCaption);

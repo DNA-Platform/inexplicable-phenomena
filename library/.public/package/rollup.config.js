@@ -92,6 +92,7 @@ const doors = {
     library: 'src/library.ts',
     article: 'src/article.ts',
     markdown: 'src/markdown.ts',
+    application: 'src/application.ts',
     encyclopedia: 'src/encyclopedia.ts',
     utilities: 'src/utilities.ts'
 };
@@ -127,6 +128,7 @@ module.exports = quick ? [code] : [
     typed('src/library.ts', 'library'),
     typed('src/article.ts', 'article'),
     typed('src/markdown.ts', 'markdown'),
+    typed('src/application.ts', 'application'),
     typed('src/encyclopedia.ts', 'encyclopedia'),
     typed('src/utilities.ts', 'utilities')
 ];

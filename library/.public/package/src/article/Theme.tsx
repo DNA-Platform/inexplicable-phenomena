@@ -162,7 +162,6 @@ export class $ArticleTheme extends $Theme {
     // A CONTENTS ROW IS 18px WHATEVER THE BODY'S LEADING IS, because the page sets it that way
     // and a row is one line by construction.
     @select('.pd-table-of-contents .pd-row') paced_lineHeight = '18px';
-    override entry_marginBottom = '0';
     @select('.pd-table-of-contents > .pd-row + .pd-row') group_marginTop = '18px';
 
     // EACH LEVEL HAS ITS OWN NUMBER COLUMN AND ITS OWN STEP, which is what makes a `1` and a
@@ -243,13 +242,11 @@ export class $ArticleTheme extends $Theme {
     // find. Doug: "I don't think we need red references!"
     @select('.pd-references .pd-paragraph') bibliography_textIndent = '-1.5em';
     bibliography_paddingLeft = '1.5em';
-    @select('.pd-references') listing_counterReset = 'entry';
-    @select('.pd-entry') entry_counterIncrement = 'entry';
-    @select('.pd-entry::before') entryNumber_content = "'\\005B' counter(entry) '\\005D '";
+    @select('.pd-entry') override entry_marginBottom = '0';
+    @select('.pd-entry::before') entryNumber_content = "'[' attr(data-number) '] '";
     @select('.pd-references a') cited_textDecoration = 'none';
     get cited_color() { return this.ink; }
-    @select('.pd-document.pd-notes') notes_counterReset = 'entry';
-    notes_fontSize = '8pt';
+    @select('.pd-document.pd-notes') notes_fontSize = '8pt';
     notes_marginTop = '2rem';
     @select('.pd-document.pd-notes::before') footnoteRule_content = "''";
     footnoteRule_display = 'block';
@@ -258,7 +255,7 @@ export class $ArticleTheme extends $Theme {
     footnoteRule_marginBottom = '.6rem';
     @select('.pd-document.pd-notes .pd-paragraph') note_textIndent = '1.8em';
     note_marginBottom = '.2rem';
-    @select('.pd-document.pd-notes .pd-entry::before') noteNumber_content = "counter(entry)";
+    @select('.pd-document.pd-notes .pd-entry::before') noteNumber_content = "attr(data-number)";
     noteNumber_verticalAlign = 'super';
     noteNumber_fontSize = '.7em';
     noteNumber_marginRight = '.15em';

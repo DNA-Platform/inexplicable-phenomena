@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
@@ -24,6 +25,18 @@ export class $Entry extends $Paragraph implements $Entry$ {
             const Fold = $(fold);
             this._block = new $Block().concat((first as string).replace(this.keyed, ''), ...rest, $<$Fold>(<Fold>{named[1]}</Fold>));
         }
+    }
+
+    // AN ENTRY WRITES ITS OWN NUMBER, as an equation does: its place among the entries of what
+    // holds it, read at draw and never kept, written as data on its element so that any reading
+    // draws it its own way and none has to count again. Its key is its id, on the element itself:
+    // an entry is full of links, and HTML admits no anchor inside an anchor.
+    override view(): ReactNode {
+        return reflection.formatted(this, (
+            <p id={reflection.folded(this)?.key()} className={this.className} data-number={this.number()}>
+                {this.print()}
+            </p>
+        ));
     }
 }
 

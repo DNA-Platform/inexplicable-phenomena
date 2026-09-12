@@ -6,6 +6,8 @@ import { $Writing } from '@/writing/Writing';
 import { reflection } from '@/utilities/Reflection';
 import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
 import { $Format } from './Format';
+import { TypeOfSentence } from './Sentence';
+import { TypeOfDescription } from './Description';
 
 export interface $Image$ extends $Paragraph$ {
     source: string;
@@ -53,3 +55,5 @@ export class $IllustrationFormat extends $Format {
 
 export const IllustrationFormat = $($IllustrationFormat);
 const shownStyle = IllustrationFormat;
+
+$(Image, TypeOfSentence)(TypeOfDescription);

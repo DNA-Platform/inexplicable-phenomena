@@ -27,6 +27,9 @@
       "@dna-platform/public": [
         "../src/index.ts"
       ],
+      "@dna-platform/public/application": [
+        "../src/application.ts"
+      ],
       "@dna-platform/public/encyclopedia": [
         "../src/encyclopedia.ts"
       ],

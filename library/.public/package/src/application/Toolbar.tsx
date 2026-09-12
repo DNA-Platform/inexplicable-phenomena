@@ -26,18 +26,17 @@ export class $ToolbarFormat extends $Format {
     @select('> .pd-heading') name_display = 'none';
     @select('> .pd-paragraph:not(.pd-heading)') group_display = 'flex';
     group_alignItems = 'stretch';
-    group_gap = '0';
+    group_gap = '1.143em';
     group_margin = '0';
-    @select('> .pd-paragraph:not(.pd-heading):first-of-type') opening_marginLeft = '-0.571em';
     @select('> .pd-paragraph:not(.pd-heading):last-of-type') closing_marginLeft = 'auto';
-    @select('.pd-ref, > .pd-menu > summary') tab_display = 'flex';
+    @select('.pd-ref, > .pd-menu > .pd-summary') tab_display = 'flex';
     tab_alignItems = 'center';
-    tab_padding = '0.5em 0.571em';
+    tab_padding = '0';
+    tab_margin = '0';
     tab_textDecoration = 'none';
     tab_whiteSpace = 'nowrap';
     @select('> .pd-menu') tools_flex = '0 0 auto';
-    tools_marginRight = '-0.571em';
-    @select('> .pd-menu > .pd-panel') held_left = 'auto';
+    @select('> .pd-menu::details-content') held_left = 'auto';
     held_right = '0';
 }
 

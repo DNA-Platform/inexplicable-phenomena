@@ -94,6 +94,10 @@ next-env.d.ts
 
 # The Wikipedia demo dist — build.mjs lifts the library here; the app files stay
 library/.public/package/.wiki/.public/*
+!library/.public/package/.wiki/.public/read-page.mjs
+!library/.public/package/.wiki/.public/verify-wiki.mjs
+!library/.public/package/.wiki/.public/.portal/
+!library/.public/package/.wiki/.public/.portal/portal.json
 !library/.public/package/.wiki/.public/index.html
 !library/.public/package/.wiki/.public/main.tsx
 !library/.public/package/.wiki/.public/vite.config.ts

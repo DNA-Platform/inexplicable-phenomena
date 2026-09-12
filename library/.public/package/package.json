@@ -33,6 +33,11 @@
       "import": "./dist/markdown.js",
       "require": "./dist/markdown.cjs"
     },
+    "./application": {
+      "types": "./dist/application.d.ts",
+      "import": "./dist/application.js",
+      "require": "./dist/application.cjs"
+    },
     "./encyclopedia": {
       "types": "./dist/encyclopedia.d.ts",
       "import": "./dist/encyclopedia.js",
@@ -48,7 +53,7 @@
     "dist"
   ],
   "scripts": {
-    "prebuild": "rimraf dist/chunks && tsx sync.ts && tsx register.ts",
+    "prebuild": "rimraf dist/chunks && tsx register.ts",
     "sync": "tsx sync.ts",
     "sync:check": "tsx sync.ts --check",
     "build": "rollup -c",

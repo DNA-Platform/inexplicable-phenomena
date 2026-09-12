@@ -35,19 +35,22 @@ export class $Appearance extends $Chemical {
     }
 
     @select('h3') name_margin = '0 0 0.5rem';
-    name_fontSize = '1rem';
+    name_fontSize = '0.875rem';
+    name_lineHeight = '1.6';
     name_fontWeight = '700';
     @select('div') group_margin = '0 0 1rem';
-    @select('h4') label_margin = '0 0 0.5rem';
-    label_paddingBottom = '0.35rem';
+    @select('h4') label_margin = '6px 0';
+    label_padding = '6px 0';
     label_fontSize = '0.875rem';
     label_fontWeight = '400';
-    @select('label') choice_display = 'flex';
-    choice_alignItems = 'center';
-    choice_gap = '0.6rem';
-    choice_padding = '0.35rem 0';
+    @select('label') choice_display = 'block';
+    choice_position = 'relative';
+    choice_padding = '0 0 4px 24px';
     choice_cursor = 'pointer';
-    @select('input') dot_margin = '0';
+    @select('input') dot_position = 'absolute';
+    dot_left = '0';
+    dot_top = '0.2em';
+    dot_margin = '0';
     dot_cursor = 'pointer';
     dot_width = '1rem';
     dot_height = '1rem';
