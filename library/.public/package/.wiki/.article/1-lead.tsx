@@ -2,7 +2,7 @@ import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Bold, Document, Heading, Illustration, Italics, Paragraph, Section } from '@dna-platform/public';
 import { Hatnote, Manual } from '@dna-platform/public/encyclopedia';
 import { Menu, Option, Search, Summary } from '@dna-platform/public/application';
-import { BookLink } from './.book';
+import { BookLink } from '../.book';
 
 export default class $Lead extends $Chapter {
     print() {

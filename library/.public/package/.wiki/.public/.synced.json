@@ -14,6 +14,7 @@
   ".article/7-see-also.tsx",
   ".article/8-notes.tsx",
   ".article/9-references.tsx",
+  ".book.tsx",
   ".encyclopedia/.book.tsx",
   ".encyclopedia/.cover.tsx",
   ".encyclopedia/.synopsis.tsx",

@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Heading, Paragraph, Section } from '@dna-platform/public';
-import { BookLink, SubjectLink } from '../.article/.book';
+import { BookLink, SubjectLink } from '../.book';
 import { editions, EditionList, Editions } from './.book';
 
 export default class $TheLanguages extends $Chapter {

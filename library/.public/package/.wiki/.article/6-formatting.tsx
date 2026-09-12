@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
 import { Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from './.book';
+import { BookLink, OutwardLink } from '../.book';
 
 export default class $Formatting extends $Chapter {
     print() {

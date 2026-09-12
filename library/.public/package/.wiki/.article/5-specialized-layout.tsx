@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
-import { BookLink } from './.book';
+import { BookLink } from '../.book';
 
 export default class $SpecializedLayout extends $Chapter {
     print() {

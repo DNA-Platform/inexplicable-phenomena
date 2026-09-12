@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Citation, Document, Heading, Illustration, Italics, Paragraph, Quote, Section } from '@dna-platform/public';
-import { BookLink } from '../.article/.book';
+import { BookLink } from '../.book';
 
 export default class $Death extends $Chapter {
     print() {

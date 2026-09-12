@@ -12,8 +12,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 //   node read-page.mjs https://en.wikipedia.org/wiki/Alan_Turing turing
 const page = process.argv[2] ?? 'https://en.wikipedia.org/wiki/Alan_Turing';
 const book = join(here, '..', process.argv[3] ?? 'turing');
-// THE LINKS EVERY WIKI BOOK WRITES WITH live in the article's book; a book that is not the article reaches over to it.
-const shared = basename(book) === '.article' ? './.book' : '../.article/.book';
+// THE LINKS EVERY WIKI BOOK WRITES WITH live in the application's book.
+const shared = '../.book';
 
 const named = (heading) => heading.toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-|-$/gu, '');
 const classed = (heading) => heading.replace(/[^A-Za-z0-9 ]/gu, '').split(/\s+/u).filter(Boolean)

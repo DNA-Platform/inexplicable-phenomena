@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Citation, Document, Heading, Italics, Paragraph, Quote, Section } from '@dna-platform/public';
 import { Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink } from '../.article/.book';
+import { BookLink } from '../.book';
 
 export default class $GovernmentApologyAndPardon extends $Chapter {
     print() {

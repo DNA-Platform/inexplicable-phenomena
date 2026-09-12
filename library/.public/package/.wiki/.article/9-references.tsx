@@ -1,5 +1,5 @@
 import { $Chapter, Entry, Heading, References, Section } from '@dna-platform/public';
-import { BookLink } from './.book';
+import { BookLink } from '../.book';
 
 export default class $References extends $Chapter {
     print() {

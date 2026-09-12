@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
-import { $Format, $Document, $Section, $Paragraph, $IndexCard, $Ref, $Theme$, html, $Book, $Theme, Book } from '@dna-platform/public';
+import { $Format, $Document, $Section, $Paragraph, $IndexCard, $Ref, $Theme$, html, $Theme, Book } from '@dna-platform/public';
+import $Wiki from '../.book';
 
 // A field's resting edge is the link colour lightened against the paper, so a
 // theme that changes what a link looks like changes every border drawn from one.
@@ -473,7 +474,7 @@ const licenceFormatLook = LicenceFormat;
 const ringFormatLook = RingFormat;
 const languageFormatLook = LanguageFormat;
 
-export default class $Wikipedia extends $Book { }
+export default class $Wikipedia extends $Wiki { }
 
 export class $PortalTheme extends $Theme {
     override paper = '#ffffff';

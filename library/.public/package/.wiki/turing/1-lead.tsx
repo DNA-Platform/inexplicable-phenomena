@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
 import { $Chapter, Bold, Citation, Document, Heading, Illustration, Italics, Paragraph, Quote } from '@dna-platform/public';
 import { Hatnote, Infobox, Line } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from '../.article/.book';
+import { BookLink, OutwardLink } from '../.book';
 
 export default class $Lead extends $Chapter {
     print() {
