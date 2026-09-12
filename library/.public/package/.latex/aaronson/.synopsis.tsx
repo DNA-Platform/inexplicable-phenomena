@@ -3,7 +3,7 @@
 // An abstract is parenthetical, like the synopsis it is one of: present, and shown where asked.
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Math, Paragraph, Section } from '@dna-platform/public';
-import $Chapter from './.chapter';
+import { $AaronsonChapter as $Chapter } from './.book';
 import { Abstract } from '@dna-platform/public/article';
 
 export default class $Synopsis extends $Chapter {

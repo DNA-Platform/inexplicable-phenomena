@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { Citation, Figure, Heading, Paragraph, Section } from '@dna-platform/public';
-import $Chapter from './.chapter';
+import { $AaronsonChapter as $Chapter } from './.book';
 import { Appendix } from '@dna-platform/public/article';
 
 export default class $Appendix extends $Chapter {

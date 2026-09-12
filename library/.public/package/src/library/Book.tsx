@@ -16,7 +16,7 @@ import { $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $Path, Path as path } from '@/reference/Path';
 import { $Scratchpad } from './Scratchpad';
-import { $TypeOfTheme, Theme as theme } from '@/writing/Theme';
+import { $Theme } from '@/writing/Theme';
 
 export interface $Book$ extends $Composition$ {
     readonly cover: $Chapter | undefined;
@@ -39,7 +39,6 @@ export class $Book extends $Composition implements $Book$ {
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
-        if (this.searchFor($TypeOfTheme).length === 0) this._block = this._block.concat($check(theme, '!'));
         this._scratchpad = new $Scratchpad();
         const Mention = $(chapter);
         const Path = $(path);
@@ -73,10 +72,9 @@ export class $TypeOfBook extends $TypeOfReference {
 }
 
 export class BookSpecification extends WritingSpecification {
-    @specify('a book is drawn in one theme')
+    @specify('a book is drawn in the theme its scope answers')
     $isDrawnInATheme(writing: $Writing): void {
-        const worn = writing.searchFor($TypeOfTheme).length;
-        $check(worn === 1, `a book is drawn in one theme, and this one is drawn in ${worn}`);
+        $check(writing.theme instanceof $Theme, 'a book is drawn in a theme, and this one asked and got none');
     }
 }
 

@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
 import { Entry, Heading, References, Section } from '@dna-platform/public';
-import $Chapter from './.chapter';
+import { $AaronsonChapter as $Chapter } from './.book';
 
 export default class $References extends $Chapter {
     print() {

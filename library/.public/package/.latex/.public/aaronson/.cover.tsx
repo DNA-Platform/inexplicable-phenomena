@@ -4,7 +4,7 @@
 // so, because a title is a piece of writing like any other and $Math stands inside one.
 import { $ } from '@dna-platform/chemistry';
 import { Author, Cover, Math, Reference, Subject, Title } from '@dna-platform/public';
-import $Chapter from './.chapter';
+import { $AaronsonChapter as $Chapter } from './.book';
 
 export default class $Cover extends $Chapter {
     print() {

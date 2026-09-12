@@ -1,9 +1,7 @@
 {
  "synced": [
   "aaronson/.book.tsx",
-  "aaronson/.chapter.tsx",
   "aaronson/.cover.tsx",
-  "aaronson/.document.tsx",
   "aaronson/.synopsis.tsx",
   "aaronson/.table.tsx",
   "aaronson/1-introduction.tsx",

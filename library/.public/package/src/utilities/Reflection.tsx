@@ -157,13 +157,16 @@ export class Reflection {
     }
 
     formatted(writing: $Writing, drawn: ReactNode): ReactNode {
-        return this.annotations(writing).reduce((held, one) => one.format(held), drawn);
+        const held = this.annotations(writing).reduce((held, one) => one.format(held), drawn);
+
+        return this.is(writing, this.kinds.book) ? this.theme(writing).format(held) : held;
     }
 
 
     theme(writing: $Writing): $Theme {
-        return this.nearest(writing, at => this.annotations(at).find((one): one is $Theme => one instanceof this.kinds.theme))
-            ?? this.template(this.kinds.theme);
+        const Sheet = $($(this.kinds.theme));
+
+        return $(Sheet, $) as $Theme;
     }
 
     // A WALK UP STOPS WHERE THE HOLDING STOPS. A writing that holds itself is the top,

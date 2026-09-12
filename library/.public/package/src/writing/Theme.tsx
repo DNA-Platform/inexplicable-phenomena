@@ -333,7 +333,7 @@ export class $Theme extends $Format implements $Theme$ {
     // nothing a consumer holds goes in without one. A cast belongs where the variance is known.
     static $register(within?: unknown): void {
         if (within === undefined) return reflection.knows({ theme: $Theme });
-        $(within as Component<never>, Theme)($(this as unknown as new() => $Theme));
+        $(within as Component<never>, Theme)($(this as unknown as new() => $Theme), 'single');
     }
 }
 
