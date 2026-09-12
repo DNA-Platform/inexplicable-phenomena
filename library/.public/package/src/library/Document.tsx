@@ -15,7 +15,7 @@ export interface $Document$ extends $Composition$ {
 
 export class $Document extends $Composition implements $Document$ {
     definition = 'article';
-    _theme: $Theme | undefined = undefined;
+    _theme?: $Theme;
 
     override get theme(): $Theme { return this._theme ?? reflection.theme(); }
     set theme(theme: $Theme) { this._theme = theme; }
@@ -23,6 +23,7 @@ export class $Document extends $Composition implements $Document$ {
 
     $Document(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfDocument));
+        this._theme = $check(theme, '!');
     }
 }
 
@@ -30,14 +31,13 @@ export class $$Document extends $Catalogue { }
 
 export class $TypeOfDocument extends $Type {
     protected override specification: Specification<$Writing> = new DocumentSpecification();
-
-    override specifically(writing: $Writing): void {
-        (writing as $Document).theme = $check(theme, '!');
-        super.specifically(writing);
-    }
 }
 
 export class DocumentSpecification extends WritingSpecification {
+    @specify('a document is drawn in a theme')
+    $isDrawnInATheme(writing: $Writing): void {
+        $check(writing.theme instanceof $Theme, 'a document is drawn in a theme, and this one has none');
+    }
 }
 
 export const Document = $($Document);

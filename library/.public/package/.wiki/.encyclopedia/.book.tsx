@@ -1,5 +1,5 @@
 import { $, select } from '@dna-platform/chemistry';
-import { $Book, $Theme, Theme } from '@dna-platform/public';
+import { $Book, $Theme, Book } from '@dna-platform/public';
 import { globe } from './.chapter';
 
 export default class $Wikipedia extends $Book { }
@@ -61,4 +61,4 @@ export class $PortalTheme extends $Theme {
 export const PortalTheme = $($PortalTheme);
 export const Wikipedia = $($Wikipedia);
 
-$(Wikipedia, Theme)(PortalTheme);
+$PortalTheme.$register(Book);

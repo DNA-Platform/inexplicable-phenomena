@@ -1,17 +1,16 @@
 import { createRoot } from 'react-dom/client';
 import { $ } from '@dna-platform/chemistry';
-import { book as encyclopedia } from './.encyclopedia/book';
-import { book as article } from './.article/book';
-import { book as turing } from './alan-turing/book';
 
-const opened = () => {
-    if (location.pathname.startsWith('/article')) return article;
-    if (location.pathname.startsWith('/turing')) return turing;
+// ONE BOOK AT A TIME: the book a route opens is the only one loaded, so the theme it registers on
+// Book is the page's and no other book's registration stands beside it.
+const opened = async () => {
+    if (location.pathname.startsWith('/article')) return (await import('./.article/book')).book;
+    if (location.pathname.startsWith('/turing')) return (await import('./alan-turing/book')).book;
 
-    return encyclopedia;
+    return (await import('./.encyclopedia/book')).book;
 };
 
-const Opened = $(opened());
+const Opened = $(await opened());
 
 const root = document.getElementById('root');
 if (!root) throw new Error('no #root element');

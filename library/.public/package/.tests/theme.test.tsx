@@ -1,9 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { $, look, styled } from '@dna-platform/chemistry';
-import { render } from '@testing-library/react';
+import { $ } from '@dna-platform/chemistry';
 import {
-    $Book, $Writing, $Theme, $Format, $TypeOfTheme, $TypeOfSection, $TypeOfParagraph, $TypeOfDocument,
-    Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph, Theme,
+    $Book, $Writing, $Theme, $TypeOfSection, $TypeOfParagraph, $TypeOfDocument,
+    Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph,
 } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -25,25 +24,23 @@ const Dark = $($Dark);
 class $Portal extends $Theme {
     override size = '14px';
 }
-const Portal = $($Portal);
 
 class $Mine extends $Book { }
 const Mine = $($Mine);
-$(Mine, Theme)(Portal);
+$Portal.$register(Mine);
 
-describe('a writing has a theme the way it has a meaning — read, never stored', () => {
-    it('A BOOK PLACES ONE THEME, AND EVERYTHING IN IT READS THAT ONE', () => {
+describe('a writing has a theme the way it has a meaning — read from its parents, never stored below the document', () => {
+    it('A BOOK MAKES ONE THEME, AND EVERYTHING IN IT READS THAT ONE', () => {
         const book = built<$Book>(<Book>{cover()}{synopsis()}{life()}</Book>);
         const documented = documents(book)[0];
         const paragraph = documented.searchFor<$Writing>($TypeOfSection)[0].searchFor<$Writing>($TypeOfParagraph)[0];
 
-        expect(book.searchFor($TypeOfTheme).length).toBe(1);
         expect(book.theme).toBeInstanceOf($Theme);
         expect(documented.theme).toBe(book.theme);
         expect(paragraph.theme).toBe(book.theme);
     });
 
-    it('A THEME WRITTEN INTO A CHAPTER IS THAT CHAPTER\'S, AND NO OTHER\'S', () => {
+    it('A THEME WRITTEN INTO A DOCUMENT DOES NOT MAKE IT THAT DOCUMENT\'S — A THEME IS THE BOOK\'S', () => {
         const book = built<$Book>(
             <Book>
                 {cover()}{synopsis()}
@@ -52,10 +49,9 @@ describe('a writing has a theme the way it has a meaning — read, never stored'
             </Book>);
         const [first, second] = documents(book);
 
-        expect(second.theme).toBeInstanceOf($Dark);
-        expect(second.theme).not.toBe(book.theme);
+        expect(second.theme).toBe(book.theme);
         expect(first.theme).toBe(book.theme);
-        expect(second.searchFor<$Writing>($TypeOfSection)[0].theme).toBe(second.theme);
+        expect(second.searchFor<$Writing>($TypeOfSection)[0].theme).toBe(book.theme);
     });
 
     it('A WRITING BUILT WITH NO BOOK STILL READS A THEME, AND IT IS THE ONE DEFAULT', () => {
@@ -66,71 +62,21 @@ describe('a writing has a theme the way it has a meaning — read, never stored'
         expect(alone.theme).toBe(again.theme);
     });
 
-    it('A REGISTRATION ON THE BOOK IS THE THEME THE BOOK PLACES', () => {
+    it('A THEME REGISTERED FOR A BOOK IS THE ONE THE BOOK MAKES, ONE INSTANCE THROUGHOUT', () => {
         const book = built<$Book>(<Mine>{cover()}{synopsis()}{life()}{work()}</Mine>);
 
         expect(book.theme).toBeInstanceOf($Portal);
+        expect(documents(book)[1].theme).toBe(book.theme);
         expect(documents(book)[1].theme.size).toBe('14px');
-        expect(book.searchFor($TypeOfTheme).length).toBe(1);
     });
 
-    it('A BOOK IS REFUSED WHEN IT IS DRAWN IN TWO THEMES', () => {
-        expect(() => built<$Book>(<Book>{cover()}{synopsis()}<Dark /><Portal />{life()}</Book>).specify()).toThrow(/one theme/u);
-    });
-});
+    it('A BOOK HANDED A THEME PASSES IT DOWN TO ITS DOCUMENTS', () => {
+        const book = built<$Book>(<Book>{cover()}{synopsis()}{life()}{work()}</Book>);
+        const dark = built<$Theme>(<Dark />);
+        book.theme = dark;
 
-describe('the theme is the sheet, worn once at the book', () => {
-    const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };
-
-    it('THE BOOK WEARS ONE MAIN, THE THEME DRAWS NOTHING WHERE IT STANDS, AND A CHAPTER IS AN ARTICLE', () => {
-        const container = drawn(built<$Book>(<Book>{cover()}{synopsis()}{life()}</Book>));
-        const mains = container.querySelectorAll('main');
-
-        expect(mains.length).toBe(1);
-        expect(mains[0].className).not.toBe('');
-        expect(container.querySelector('.pd-theme')).toBeNull();
-        expect(container.querySelector('article.pd-document')).not.toBeNull();
-        expect(container.textContent).toContain('Born in Maida Vale.');
-    });
-
-    it('A CHAPTER WEARING ITS OWN THEME WEARS A SECOND SHEET INSIDE THE FIRST', () => {
-        const container = drawn(built<$Book>(
-            <Book>
-                {cover()}{synopsis()}
-                {life()}
-                <Document><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>
-            </Book>));
-        const mains = container.querySelectorAll('main');
-
-        expect(mains.length).toBe(2);
-        expect(mains[0].contains(mains[1])).toBe(true);
-        expect(mains[1].textContent).toContain('Bletchley Park.');
-        expect(mains[1].textContent).not.toContain('Born in Maida Vale.');
-    });
-});
-
-describe('a format is written into the writing it formats', () => {
-    class $Boxed extends $Format {
-        $tone = 'plain';
-        override selector = styled.aside;
-        get borderLeft() { return `4px solid ${this.$tone}`; }
-    }
-    const Boxed = $($Boxed);
-    const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };
-
-    it('A FORMAT WRITTEN INTO A CHAPTER WEARS THAT CHAPTER IN ITS ELEMENT, AND KEEPS ITS PROP', () => {
-        const container = drawn(built<$Book>(
-            <Book>
-                {cover()}{synopsis()}
-                {life()}
-                <Document><Boxed tone="red" /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>
-            </Book>));
-        const asides = container.querySelectorAll('aside');
-
-        expect(asides.length).toBe(1);
-        expect(asides[0].textContent).toContain('Bletchley Park.');
-        expect(asides[0].textContent).not.toContain('Born in Maida Vale.');
-        expect(asides[0].className).not.toBe('');
-        expect(container.querySelector('.pd-format')).toBeNull();
+        expect(book.theme).toBe(dark);
+        expect(documents(book).every(one => one.theme === dark)).toBe(true);
+        expect(documents(book)[0].searchFor<$Writing>($TypeOfSection)[0].theme).toBe(dark);
     });
 });

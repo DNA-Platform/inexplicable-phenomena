@@ -29,7 +29,7 @@ export interface $Book$ extends $Composition$ {
 export class $Book extends $Composition implements $Book$ {
     definition = 'div';
     _scratchpad!: $Scratchpad;
-    _theme: $Theme | undefined = undefined;
+    _theme?: $Theme;
 
     get cover(): $Chapter | undefined { return this.chapters[0]; }
     get synopsis(): $Chapter | undefined { return this.chapters[1]; }
@@ -45,6 +45,7 @@ export class $Book extends $Composition implements $Book$ {
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
+        this._theme = $check(theme, '!');
         this._scratchpad = new $Scratchpad();
         const Mention = $(chapter);
         const Path = $(path);
@@ -76,17 +77,12 @@ export class $$Book extends $Catalogue { }
 
 export class $TypeOfBook extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new BookSpecification();
-
-    override specifically(writing: $Writing): void {
-        (writing as $Book).theme = $check(theme, '!');
-        super.specifically(writing);
-    }
 }
 
 export class BookSpecification extends WritingSpecification {
-    @specify('a book is drawn in the theme its scope answers')
+    @specify('a book is drawn in a theme')
     $isDrawnInATheme(writing: $Writing): void {
-        $check(writing.theme instanceof $Theme, 'a book is drawn in a theme, and this one asked and got none');
+        $check(writing.theme instanceof $Theme, 'a book is drawn in a theme, and this one has none');
     }
 }
 
