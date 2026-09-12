@@ -44,7 +44,6 @@ export class $EncyclopediaTheme extends $Theme {
     strip_gap = '0.5em';
     strip_fontSize = '1rem';
     strip_marginBottom = '1.5em';
-    get strip_borderBottom() { return `1px solid ${this.shade}`; }
     @select('.pd-cover > .pd-title') title_gridColumn = '3';
     title_gridRow = '2';
     title_maxWidth = 'calc(100% - 9.5em)';
@@ -57,7 +56,7 @@ export class $EncyclopediaTheme extends $Theme {
     tongue_marginRight = '-0.8em';
     tongue_padding = '0.35em 0';
     tongue_borderRadius = '2px';
-    get tongue_border() { return `1px solid ${this.rule}`; }
+    tongue_border = '1px solid transparent';
     @select('.pd-toolbar') tabs_gridColumn = '3';
     tabs_gridRow = '3';
     tabs_marginTop = '0';
@@ -74,6 +73,7 @@ export class $EncyclopediaTheme extends $Theme {
     side_maxHeight = 'calc(100vh - 3em)';
     side_overflowY = 'auto';
     side_fontSize = '0.875em';
+    side_padding = '0 1.143em';
     @select('.pd-book > .pd-chapter > .pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter):not(.pd-footer), .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-index') text_gridColumn = '3';
     text_minWidth = '0';
 
@@ -82,6 +82,7 @@ export class $EncyclopediaTheme extends $Theme {
     rail_alignSelf = 'start';
     rail_position = 'sticky';
     rail_top = '1.5em';
+    @select('.pd-appearance h3') paneName_width = 'fit-content';
     @select('.pd-appearance h4') railName_margin = '6px 0';
     railName_padding = '6px 0';
     get railName_color() { return this.pale; }
@@ -215,22 +216,33 @@ export class $EncyclopediaTheme extends $Theme {
     opens_background = 'transparent';
     opens_boxShadow = 'none';
     @select('.pd-table-of-contents .pd-summary') opener_display = 'flex';
-    opener_alignItems = 'baseline';
-    opener_gap = '0.4em';
+    opener_alignItems = 'center';
+    opener_gap = '0.0714em';
+    opener_paddingLeft = '0.857em';
     opener_whiteSpace = 'normal';
+    get opener_fontFamily() { return this.body; }
     @select('.pd-table-of-contents .pd-summary .pd-ref') rowWord_padding = '0.43em 0';
+    rowWord_lineHeight = '1.143';
     rowWord_fontWeight = '400';
+    rowWord_flex = '1 1 auto';
     rowWord_minWidth = '0';
     rowWord_whiteSpace = 'normal';
     @select('.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-ref') first_fontWeight = '700';
     get first_color() { return this.ink; }
-    @select('.pd-table-of-contents .pd-summary::before') arrow_content = "'›'";
-    arrow_width = '0.8em';
+    @select('.pd-table-of-contents .pd-summary::before') arrow_content = "''";
+    arrow_width = '1.571em';
+    arrow_height = '1.571em';
     arrow_flex = '0 0 auto';
-    get arrow_color() { return this.pale; }
-    @select('.pd-table-of-contents .pd-menu[open] > .pd-summary::before') turned_transform = 'rotate(90deg)';
-    @select('.pd-table-of-contents > .pd-section > .pd-paragraph:not(.pd-heading)') flat_paddingLeft = '1.2em';
+    arrow_marginLeft = '-1.643em';
+    arrow_backgroundRepeat = 'no-repeat';
+    arrow_backgroundPosition = 'center';
+    arrow_backgroundSize = '0.857em';
+    arrow_transform = 'rotate(-90deg)';
+    get arrow_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='{ink}' d='m11.05 3.996-.965-1.053-4.035 3.86-3.947-3.86L1.05 3.996l5 5z'/></svg>", this.pale); }
+    @select('.pd-table-of-contents .pd-menu[open] > .pd-summary::before') turned_transform = 'none';
+    @select('.pd-table-of-contents > .pd-section > .pd-paragraph:not(.pd-heading)') flat_paddingLeft = '0.857em';
     @select('.pd-table-of-contents .pd-paragraph:not(.pd-heading) .pd-ref') rowLink_padding = '0.43em 0';
+    rowLink_lineHeight = '1.143';
 
     // THE WORDMARK IS NOT A PARAGRAPH OF PROSE. An image is a paragraph by kind, so the space set
     // between paragraphs stood above and below it — measured, 24 pixels inside a 38 pixel bar.
@@ -290,7 +302,7 @@ export class $EncyclopediaTheme extends $Theme {
     boxCaption_border = 'none';
     boxCaption_margin = '0';
     boxCaption_padding = '0';
-    @select('.pd-book .pd-appearance') pane_padding = '0 1em';
+    @select('.pd-book .pd-appearance') pane_padding = '0 1.143em';
 
     @select('.pd-book > .pd-chapter > .pd-footer') foot_gridColumn = '1 / -1';
     foot_margin = '2rem 2.75rem 0';
@@ -339,11 +351,13 @@ export class $EncyclopediaTheme extends $Theme {
     marker_lineHeight = '1';
     marker_whiteSpace = 'nowrap';
 
-    @select('.pd-table-of-contents .pd-heading') contentsHeading_fontSize = '1em';
+    @select('.pd-table-of-contents > .pd-section > .pd-heading') contentsHeading_fontSize = '1em';
     contentsHeading_fontWeight = 'bold';
     contentsHeading_lineHeight = '1.6';
     contentsHeading_border = 'none';
-    contentsHeading_margin = '0 0 0.9em';
+    contentsHeading_margin = '0 0 0.43em 0.857em';
+    contentsHeading_paddingBottom = '0.43em';
+    contentsHeading_width = 'fit-content';
     get contentsHeading_color() { return this.jet; }
     get contentsHeading_fontFamily() { return this.body; }
     @select('.pd-table-of-contents .pd-paragraph') entry_fontSize = '1em';

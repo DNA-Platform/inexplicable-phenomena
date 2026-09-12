@@ -40,7 +40,8 @@ export class $HeaderFormat extends $Format {
     field_marginLeft = '2.125rem';
     @select('> .pd-paragraph:not(.pd-search):not(.pd-heading)') links_flex = '0 0 auto';
     links_display = 'flex';
-    links_gap = '1em';
+    links_gap = '0.5714em';
+    links_paddingRight = '0.2857em';
     links_margin = '0';
     links_marginLeft = 'auto';
     links_fontSize = '0.875em';

@@ -357,6 +357,17 @@
       "w": 19,
       "h": 22
      },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 205,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 192,
+      "w": 80,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 312,
@@ -427,6 +438,17 @@
      "indicator": {
       "x": 409,
       "w": 19,
+      "h": 22
+     },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 205,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 312,
+      "w": 80,
       "h": 22
      },
      "rail": {
@@ -501,6 +523,17 @@
       "w": 19,
       "h": 22
      },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 205,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 438,
+      "w": 80,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 720,
@@ -573,6 +606,17 @@
       "w": 19,
       "h": 22
      },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 205,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 670,
+      "w": 80,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 952,
@@ -643,6 +687,21 @@
      "indicator": {
       "x": 969,
       "w": 19,
+      "h": 22
+     },
+     "contents heading": {
+      "x": 60,
+      "w": 61,
+      "h": 22
+     },
+     "contents row": {
+      "x": 60,
+      "w": 164,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 1056,
+      "w": 80,
       "h": 22
      },
      "rail": {
@@ -1395,6 +1454,17 @@
       "w": 20,
       "h": 22
      },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 245,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 192,
+      "w": 80,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 312,
@@ -1461,6 +1531,17 @@
      "indicator": {
       "x": 436,
       "w": 20,
+      "h": 22
+     },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 245,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 312,
+      "w": 80,
       "h": 22
      },
      "rail": {
@@ -1531,6 +1612,17 @@
       "w": 20,
       "h": 22
      },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 245,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 438,
+      "w": 80,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 720,
@@ -1599,6 +1691,17 @@
       "w": 20,
       "h": 22
      },
+     "contents heading": null,
+     "contents row": {
+      "x": 39,
+      "w": 245,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 670,
+      "w": 80,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 952,
@@ -1665,6 +1768,21 @@
      "indicator": {
       "x": 996,
       "w": 20,
+      "h": 22
+     },
+     "contents heading": {
+      "x": 60,
+      "w": 61,
+      "h": 22
+     },
+     "contents row": {
+      "x": 60,
+      "w": 164,
+      "h": 28
+     },
+     "appearance heading": {
+      "x": 1056,
+      "w": 80,
       "h": 22
      },
      "rail": {
