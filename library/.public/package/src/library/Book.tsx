@@ -53,6 +53,7 @@ export class $Book extends $Composition implements $Book$ {
     }
 
     static $register(): void {
+        $Theme.$register(Book);
         reflection.knows({
             hierarchies: [$TypeOfBook, $TypeOfDocument],
             book: $TypeOfBook,

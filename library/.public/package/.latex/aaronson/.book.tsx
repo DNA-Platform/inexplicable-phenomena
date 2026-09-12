@@ -2,11 +2,11 @@
 // document has both readings and nothing about the document changes. THE BOOK'S FILE CARRIES WHAT
 // IS THE BOOK'S OWN — its chapter, its document, and the registrations that wire them — Doug: "get
 // rid of .chapter entirely, everything goes into .book… in the $register of your book, you are
-// expected to wire up your document." A theme is registered once as a singleton and switched by
-// registering another; what a registration reaches, it re-draws.
+// expected to wire up your document." A theme is the book's: it is registered once, as one instance,
+// on Book itself, and switched by registering another; what a registration reaches, it re-draws.
 import { ReactNode } from 'react';
 import { $, $Chemical, styled } from '@dna-platform/chemistry';
-import { $Book, $Chapter, $Document, Document } from '@dna-platform/public';
+import { $Book, $Chapter, $Document, Book } from '@dna-platform/public';
 import { Header, $ArticleTheme } from '@dna-platform/public/article';
 import { $MarkdownTheme } from '@dna-platform/public/markdown';
 
@@ -29,7 +29,7 @@ export default class $Aaronson extends $Book {
 
     protected set(setting: string, sheet: typeof $ArticleTheme): void {
         this.$setting = setting;
-        sheet.$register(Aaronson);
+        sheet.$register(Book);
     }
 }
 
@@ -59,5 +59,4 @@ export const AaronsonDocument = $($AaronsonDocument);
 const Switch = $($Switch);
 const Choice = $($Choice);
 
-$ArticleTheme.$register(Aaronson);
-$(Aaronson, Document)(AaronsonDocument);
+$ArticleTheme.$register(Book);

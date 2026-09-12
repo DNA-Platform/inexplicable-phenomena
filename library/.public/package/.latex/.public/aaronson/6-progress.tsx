@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Document, Equation, Heading, Paragraph, Section } from '@dna-platform/public';
-import { $AaronsonChapter as $Chapter } from './.book';
+import { Citation, Equation, Heading, Paragraph, Section } from '@dna-platform/public';
+import { $AaronsonChapter as $Chapter, AaronsonDocument as Document } from './.book';
 import { Footnote } from '@dna-platform/public/article';
 
 export default class $Progress extends $Chapter {
