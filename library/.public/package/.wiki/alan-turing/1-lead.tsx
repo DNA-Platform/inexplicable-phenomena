@@ -18,10 +18,10 @@ export default class $Lead extends $Chapter {
                         Turing in 1951
                     </Illustration>
                     <Line label="Born">
-                        Alan Mathison Turing(1912-06-23)23 June 1912<BookLink>[Maida Vale](https://en.wikipedia.org/wiki/Maida_Vale)</BookLink>, London, England
+                        Alan Mathison Turing 23 June 1912 <BookLink>[Maida Vale](https://en.wikipedia.org/wiki/Maida_Vale)</BookLink>, London, England
                     </Line>
                     <Line label="Died">
-                        7 June 1954(1954-06-07) (aged 41)<BookLink>[Wilmslow](https://en.wikipedia.org/wiki/Wilmslow)</BookLink>, Cheshire, England
+                        7 June 1954 (aged 41) <BookLink>[Wilmslow](https://en.wikipedia.org/wiki/Wilmslow)</BookLink>, Cheshire, England
                     </Line>
                     <Line label="Cause of death">
                         Suicide by <BookLink>[cyanide poisoning](https://en.wikipedia.org/wiki/Cyanide_poisoning)</BookLink><Citation>[note 1](cite_note-2)</Citation>

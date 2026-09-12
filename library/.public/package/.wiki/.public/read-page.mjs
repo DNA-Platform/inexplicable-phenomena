@@ -40,7 +40,6 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
             const tag = part.tagName.toLowerCase();
             if (tag === 'br') { said += ' '; continue; }
             if (getComputedStyle(part).display === 'none') continue;
-            if (tag === 'b' || tag === 'strong') { said += `**${inline(part)}**`; continue; }
             if (tag === 'sup' && part.classList.contains('reference')) {
                 const key = keyed(part.querySelector('a')?.getAttribute('href')?.replace('#', '') ?? '');
                 const mark = part.textContent.replace(/[[\]]/gu, '').trim();
@@ -60,6 +59,15 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
         }
         return said;
     };
+
+    // AN ITEM IS ITS OWN WORDS AND THE LIST UNDER IT. The words are read from the item's parts
+    // that are not a list; the list under it is read the same way, as deep as the page goes.
+    const listed = (list) => [...list.children].filter(one => one.tagName === 'LI').map(item => {
+        const own = document.createElement('li');
+        for (const part of item.childNodes) if (!(part.nodeType === 1 && /^(UL|OL)$/u.test(part.tagName))) own.appendChild(part.cloneNode(true));
+        const under = [...item.children].filter(one => /^(UL|OL)$/u.test(one.tagName)).flatMap(one => listed(one));
+        return { said: inline(own).replace(/\s+/gu, ' ').trim(), under };
+    }).filter(one => one.said !== '' || one.under.length > 0);
 
     const sections = [];
     let current = { name: '', wrote: [] };
@@ -92,7 +100,7 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
         }
         if (tag === 'blockquote') { const said = inline(node).trim(); if (said) current.wrote.push({ how: 'quote', said }); continue; }
         if (tag === 'ul' || tag === 'ol') {
-            const items = [...node.children].filter(one => one.tagName === 'LI').map(one => inline(one).trim()).filter(Boolean);
+            const items = listed(node);
             if (items.length) current.wrote.push({ how: 'list', ordered: tag === 'ol', items });
             continue;
         }
@@ -172,12 +180,21 @@ const aside = infobox === null ? '' : [
 ].join('\n');
 
 const kinds = new Set();
+// A LIST IS DRAWN AS DEEP AS IT WAS READ: an item with a list under it holds that list.
+const list = (items, pad) => [
+    `${pad}<List>`,
+    ...items.map(item => item.under.length === 0
+        ? `${pad}    <Item>${quoted(item.said)}</Item>`
+        : [`${pad}    <Item>`, `${pad}        ${quoted(item.said)}`, list(item.under, `${pad}        `), `${pad}    </Item>`].join(NEWLINE)),
+    `${pad}</List>`,
+].join(NEWLINE);
+
 const drawn = (one, pad = '                ') => {
     if (one.how === 'hatnote') { kinds.add('Hatnote'); return held('Hatnote', pad, quoted(one.said)); }
     if (one.how === 'quote') { kinds.add('Quote'); return held('Quote', pad, quoted(one.said)); }
     if (one.how === 'list') {
         kinds.add('List');
-        return [`${pad}<List>`, ...one.items.map(said => `${pad}    <Item>${quoted(said)}</Item>`), `${pad}</List>`].join(NEWLINE);
+        return list(one.items, pad);
     }
     if (one.how === 'figure') {
         kinds.add('Illustration');

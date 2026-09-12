@@ -35,7 +35,6 @@ export class $HeaderFormat extends $Format {
     wordmark_width = '8.75em';
     wordmark_height = 'auto';
     @select('> .pd-section:not(.pd-menu) > .pd-heading') tagline_display = 'none';
-    @select('> .pd-section:not(.pd-menu) > div + div .pd-image') taglineMark_marginTop = '5px';
     @select('.pd-search') field_flex = '0 0 29.625rem';
     field_minWidth = '29.625rem';
     field_marginLeft = '2.125rem';

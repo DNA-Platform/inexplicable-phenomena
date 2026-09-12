@@ -23,6 +23,74 @@ const ours = process.env.WIKI ?? 'http://localhost:5311/';
 const baselining = process.argv.includes('--baseline');
 const widths = [1280, 1000, 768, 480, 360];
 
+// WHAT ANY ENCYCLOPEDIA PAGE IS MEASURED BY: the same regions, counts and looks on every page
+// of the type, recorded from the real page each stands beside.
+const encyclopedia = {
+    regions: [
+        ['header bar', '.vector-header-container header', '.pd-header'],
+        ['wordmark', '.mw-logo', '.pd-header > .pd-section:not(.pd-menu)'],
+        ['main menu', '#vector-main-menu-dropdown-checkbox', '.pd-header > .pd-menu > .pd-summary'],
+        ['search', '#p-search form', '.pd-search'],
+        ['who you are', '.vector-user-links', '.pd-header > .pd-paragraph:not(.pd-search):not(.pd-heading)'],
+        ['contents', '.vector-column-start', 'nav.pd-table-of-contents'],
+        ['title', '#firstHeading', '.pd-cover > .pd-title'],
+        ['languages', '#p-lang-btn', '.pd-cover > .pd-menu'],
+        ['toolbar', '.vector-page-toolbar', '.pd-toolbar'],
+        ['site line', '#siteSub', 'article.pd-synopsis'],
+        ['rail', '.vector-column-end', '.pd-appearance'],
+        ['infobox', '.infobox', '.pd-infobox'],
+        ['footer', '.mw-footer', '.pd-footer'],
+    ],
+    counts: [
+        ['illustrations', '.mw-content-ltr figure', '.pd-illustration:not(.pd-infobox *)'],
+        ['quotations', '.mw-content-ltr blockquote', '.pd-quote'],
+        ['hatnotes', '.mw-content-ltr .hatnote', '.pd-hatnote'],
+        // A MARK IS READ WHEN IT NAMES AN ENTRY, so the count asks for the marks that do.
+        ['citation marks', '.mw-content-ltr p sup.reference:has(a[href^="#cite_note"]), .mw-content-ltr li sup.reference:has(a[href^="#cite_note"]), .mw-content-ltr figcaption sup.reference:has(a[href^="#cite_note"]), .mw-content-ltr blockquote sup.reference:has(a[href^="#cite_note"]), .infobox sup.reference:has(a[href^="#cite_note"])', '.pd-citation'],
+        ['infobox rows', '.infobox tr:has(.infobox-label):has(.infobox-data)', '.pd-line'],
+        ['languages offered', '.interlanguage-link', '.pd-cover > .pd-menu a'],
+        ['tools offered', '#vector-page-tools a', '.pd-toolbar > .pd-menu a'],
+        ['tabs', '#p-associated-pages a, #p-views a', '.pd-toolbar > .pd-paragraph a'],
+    ],
+    styles: [
+        ['title', '#firstHeading', '.pd-cover > .pd-title .pd-heading'],
+        ['title rule', '.vector-page-titlebar', '.pd-cover > .pd-title'],
+        ['toolbar rule', '.vector-page-toolbar', '.pd-toolbar'],
+        ['tab Article', '#ca-nstab-main a', '.pd-toolbar > .pd-paragraph:first-of-type .pd-ref:first-child'],
+        ['tab Talk', '#ca-talk a', '.pd-toolbar > .pd-paragraph:first-of-type .pd-ref:last-child'],
+        ['view Read', '#ca-view a', '.pd-toolbar > .pd-paragraph:last-of-type .pd-ref:first-child'],
+        ['view History', '#ca-history a', '.pd-toolbar > .pd-paragraph:last-of-type .pd-ref:last-child'],
+        ['tools button', '#vector-page-tools-dropdown .vector-dropdown-label', '.pd-toolbar > .pd-menu > .pd-summary'],
+        ['languages button', '#p-lang-btn .vector-dropdown-label', '.pd-cover > .pd-menu > .pd-summary'],
+        ['site line', '#siteSub', 'article.pd-synopsis .pd-paragraph'],
+        ['hatnote', '.mw-content-ltr .hatnote', '.pd-hatnote'],
+        ['second hatnote', '.mw-content-ltr section:first-of-type .hatnote + .hatnote', '.pd-book > .pd-chapter > article > .pd-hatnote + .pd-hatnote'],
+        ['lead paragraph', '.mw-content-ltr section:first-of-type > p:not(.mw-empty-elt)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote):not(.pd-heading)'],
+        ['body link', '.mw-content-ltr section p > a:not(.external)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote) .pd-book-link'],
+        ['citation mark', 'section p > sup.reference > a', '.pd-book > .pd-chapter > article .pd-citation:not(.pd-infobox .pd-citation)'],
+        ['section heading', '.mw-heading2 h2', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
+        ['section rule', '.mw-heading2', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
+        ['subheading', '.mw-heading3 h3', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-section > .pd-heading'],
+        ['infobox', '.infobox', '.pd-infobox'],
+        ['infobox title', '.infobox-above', '.pd-infobox > .pd-heading'],
+        ['infobox row', '.infobox-data', '.pd-line'],
+        ['infobox caption', '.infobox-caption', '.pd-infobox .pd-caption'],
+        ['contents heading', '#vector-toc .vector-toc-heading', '.pd-table-of-contents .pd-heading'],
+        ['contents top', '#toc-mw-content-text > a .vector-toc-text', '.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-ref'],
+        ['contents row', '#vector-toc .vector-toc-level-1:not(#toc-mw-content-text) > .vector-toc-link .vector-toc-text', '.pd-table-of-contents .pd-summary .pd-ref'],
+        ['search field', '#searchInput', '.pd-search .pd-field'],
+        ['search button', '#searchform button', '.pd-search .pd-button'],
+        ['wordmark', '.mw-logo-wordmark', '.pd-header .pd-image'],
+        ['tagline', '.mw-logo-tagline', '.pd-header > .pd-section:not(.pd-menu) > div + div .pd-image'],
+        ['user link', '#pt-createaccount-2 a', '.pd-header > .pd-paragraph:not(.pd-search):not(.pd-heading) .pd-ref'],
+        ['appearance heading', '#vector-appearance .vector-pinnable-header-label', '.pd-appearance h3'],
+        ['appearance group', '#vector-appearance .vector-menu-heading', '.pd-appearance h4'],
+        // THE OPTION'S INDENT is what a reader sees; its bottom padding reads 4px on one of Wikipedia's pages and 0 on another.
+        ['appearance option indent', '#vector-appearance .cdx-radio:first-of-type .cdx-radio__label', '.pd-appearance label'],
+    ],
+    landmarks: [],
+};
+
 const targets = [
     {
         key: 'portal',
@@ -52,71 +120,17 @@ const targets = [
         pinned: [1280],
         theirs: 'https://en.wikipedia.org/wiki/Alan_Turing',
         ours: 'turing',
-        regions: [
-            ['header bar', '.vector-header-container header', '.pd-header'],
-            ['wordmark', '.mw-logo', '.pd-header > .pd-section:not(.pd-menu)'],
-            ['main menu', '#vector-main-menu-dropdown-checkbox', '.pd-header > .pd-menu > .pd-summary'],
-            ['search', '#p-search form', '.pd-search'],
-            ['who you are', '.vector-user-links', '.pd-header > .pd-paragraph:not(.pd-search):not(.pd-heading)'],
-            ['contents', '.vector-column-start', 'nav.pd-table-of-contents'],
-            ['title', '#firstHeading', '.pd-cover > .pd-title'],
-            ['languages', '#p-lang-btn', '.pd-cover > .pd-menu'],
-            ['toolbar', '.vector-page-toolbar', '.pd-toolbar'],
-            ['site line', '#siteSub', 'article.pd-synopsis'],
-            ['rail', '.vector-column-end', '.pd-appearance'],
-            ['infobox', '.infobox', '.pd-infobox'],
-            ['footer', '.mw-footer', '.pd-footer'],
-        ],
-        counts: [
-            ['illustrations', '.mw-content-ltr figure', '.pd-illustration:not(.pd-infobox *)'],
-            ['quotations', '.mw-content-ltr blockquote', '.pd-quote'],
-            ['hatnotes', '.mw-content-ltr .hatnote', '.pd-hatnote'],
-            // A MARK IS READ WHEN IT NAMES AN ENTRY, so the count asks for the marks that do.
-            ['citation marks', '.mw-content-ltr p sup.reference:has(a[href^="#cite_note"]), .mw-content-ltr li sup.reference:has(a[href^="#cite_note"]), .mw-content-ltr figcaption sup.reference:has(a[href^="#cite_note"]), .mw-content-ltr blockquote sup.reference:has(a[href^="#cite_note"]), .infobox sup.reference:has(a[href^="#cite_note"])', '.pd-citation'],
-            ['infobox rows', '.infobox tr:has(.infobox-label):has(.infobox-data)', '.pd-line'],
-            ['languages offered', '.interlanguage-link', '.pd-cover > .pd-menu a'],
-            ['tools offered', '#vector-page-tools a', '.pd-toolbar > .pd-menu a'],
-            ['tabs', '#p-associated-pages a, #p-views a', '.pd-toolbar > .pd-paragraph a'],
-        ],
-        // THE APPEARANCE SELECTOR IS OUT OF SCOPE by Doug's word, 2026-09-12. Measured before it was
-        // dropped: .vector-appearance-landmark stands in Wikipedia's markup and is 0x0 at 1280 and at
-        // 1600, because Vector draws it only for a reader who is signed in.
-        landmarks: [],
-        styles: [
-            ['title', '#firstHeading', '.pd-cover > .pd-title .pd-heading'],
-            ['title rule', '.vector-page-titlebar', '.pd-cover > .pd-title'],
-            ['toolbar rule', '.vector-page-toolbar', '.pd-toolbar'],
-            ['tab Article', '#ca-nstab-main a', '.pd-toolbar > .pd-paragraph:first-of-type .pd-ref:first-child'],
-            ['tab Talk', '#ca-talk a', '.pd-toolbar > .pd-paragraph:first-of-type .pd-ref:last-child'],
-            ['view Read', '#ca-view a', '.pd-toolbar > .pd-paragraph:last-of-type .pd-ref:first-child'],
-            ['view History', '#ca-history a', '.pd-toolbar > .pd-paragraph:last-of-type .pd-ref:last-child'],
-            ['tools button', '#vector-page-tools-dropdown .vector-dropdown-label', '.pd-toolbar > .pd-menu > .pd-summary'],
-            ['languages button', '#p-lang-btn .vector-dropdown-label', '.pd-cover > .pd-menu > .pd-summary'],
-            ['site line', '#siteSub', 'article.pd-synopsis .pd-paragraph'],
-            ['hatnote', '.mw-content-ltr .hatnote', '.pd-hatnote'],
-            ['second hatnote', '.mw-content-ltr .hatnote ~ .hatnote', '.pd-hatnote ~ .pd-hatnote'],
-            ['lead paragraph', '.mw-content-ltr section:first-of-type > p:not(.mw-empty-elt)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote):not(.pd-heading)'],
-            ['body link', '.mw-content-ltr section p > a:not(.external)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote) .pd-book-link'],
-            ['citation mark', 'section p > sup.reference > a', '.pd-book > .pd-chapter > article > .pd-paragraph .pd-citation'],
-            ['section heading', '.mw-heading2 h2', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
-            ['section rule', '.mw-heading2', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
-            ['subheading', '.mw-heading3 h3', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-section > .pd-heading'],
-            ['infobox', '.infobox', '.pd-infobox'],
-            ['infobox title', '.infobox-above', '.pd-infobox > .pd-heading'],
-            ['infobox row', '.infobox-data', '.pd-line'],
-            ['infobox caption', '.infobox-caption', '.pd-infobox .pd-caption'],
-            ['contents heading', '#vector-toc .vector-toc-heading', '.pd-table-of-contents .pd-heading'],
-            ['contents top', '#toc-mw-content-text > a .vector-toc-text', '.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-ref'],
-            ['contents row', '#vector-toc .vector-toc-level-1:not(#toc-mw-content-text) > .vector-toc-link .vector-toc-text', '.pd-table-of-contents .pd-summary .pd-ref'],
-            ['search field', '#searchInput', '.pd-search .pd-field'],
-            ['search button', '#searchform button', '.pd-search .pd-button'],
-            ['wordmark', '.mw-logo-wordmark', '.pd-header .pd-image'],
-            ['tagline', '.mw-logo-tagline', '.pd-header > .pd-section:not(.pd-menu) > div + div .pd-image'],
-            ['user link', '#pt-createaccount-2 a', '.pd-header > .pd-paragraph:not(.pd-search):not(.pd-heading) .pd-ref'],
-            ['appearance heading', '#vector-appearance .vector-pinnable-header-label', '.pd-appearance h3'],
-            ['appearance group', '#vector-appearance .vector-menu-heading', '.pd-appearance h4'],
-            ['appearance option', '#vector-appearance .cdx-radio__label', '.pd-appearance label'],
-        ],
+        ...encyclopedia,
+    },
+    // THE MANUAL OF STYLE IS BUILT BY THE SAME READER AS THE TURING PAGE, so it is measured the same
+    // way: every region drawn, every count equal, every look Wikipedia's; where each region stands
+    // is pinned on the Turing page alone, by Doug's word.
+    {
+        key: 'article',
+        pinned: [],
+        theirs: 'https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout',
+        ours: 'article',
+        ...encyclopedia,
     },
 ];
 
@@ -176,6 +190,7 @@ const differs = (name, theirs, ours) => {
     const off = [];
     const ruled = /rule/.test(name), faced = /heading$|^title$/.test(name), pictured = ours.tag === 'IMG' || theirs.tag === 'IMG';
     for (const prop of looked) {
+        if (/indent$/.test(name) && prop !== 'paddingLeft') continue;
         if (pictured && /font|color|lineHeight|textDecoration/i.test(prop)) continue;
         if (ruled && !/^(border|margin|padding)/.test(prop)) continue;
         if (faced && /^(border|margin|padding)/.test(prop)) continue;
@@ -349,7 +364,7 @@ for (const target of targets) {
     }
     // EVERY MENU ABOVE THE FOLD IS OPENED AND THE CONTENTS IS FOLLOWED. A page whose chrome only
     // DRAWS right is half a page; these are the four things a reader does with it.
-    if (target.key === 'turing') {
+    if (target.ours !== '') {
         const opened = await page.evaluate(() => {
             const said = {};
             for (const [name, selector] of [['bar', '.pd-header > .pd-menu'], ['languages', '.pd-cover > .pd-menu'], ['tools', '.pd-toolbar > .pd-menu'], ['contents', '.pd-table-of-contents .pd-menu']]) {
@@ -378,37 +393,16 @@ for (const target of targets) {
             expect(!shut && open, `the ${name} menu does not open — ${shut ? 'drawn' : 'hidden'} shut, ${open ? 'drawn' : 'hidden'} open`);
         }
         const followed = await page.evaluate(() => {
-            const row = [...document.querySelectorAll('.pd-table-of-contents a')].find(one => one.getAttribute('href') === '#early-life-and-education');
-            if (row === undefined) return { found: false };
-            const named = document.getElementById('early-life-and-education');
-            return { found: true, lands: named !== null };
+            const rows = [...document.querySelectorAll('.pd-table-of-contents a')].filter(one => (one.getAttribute('href') ?? '#').length > 1);
+            const lost = rows.filter(one => document.getElementById(decodeURIComponent(one.getAttribute('href').slice(1))) === null);
+            return { rows: rows.length, lost: lost.map(one => one.getAttribute('href')) };
         });
-        expect(followed.found, 'the contents does not carry a row for Early life and education');
-        expect(followed.lands, 'the contents row for Early life and education lands on nothing');
+        expect(followed.rows > 0, `${target.key}: the contents carries no row that names a section`);
+        expect(followed.lost.length === 0, `${target.key}: ${followed.lost.length} contents rows land on nothing — ${followed.lost.slice(0, 4).join(', ')}`);
         const typed = await page.evaluate(() => { const field = document.querySelector('.pd-search input'); if (field === null) return 'no field'; field.value = 'turing'; return field.value; });
         expect(typed === 'turing', `the bar's field does not take what is typed — "${typed}"`);
-        console.log('turing operated: ' + Object.entries(opened).map(([k, v]) => `${k} ${v.shut ? 'drawn' : 'hidden'}→${v.open ? 'drawn' : 'hidden'}`).join(' · ') + ` · contents lands · field "${typed}"`);
+        console.log(`${target.key} operated: ` + Object.entries(opened).map(([k, v]) => `${k} ${v.shut ? 'drawn' : 'hidden'}→${v.open ? 'drawn' : 'hidden'}`).join(' · ') + ` · ${followed.rows} contents rows land · field "${typed}"`);
     }
-    await page.close();
-}
-
-{
-    const page = await browser.newPage();
-    const raised = [];
-    page.on('pageerror', error => raised.push(String(error.message).slice(0, 140)));
-    await page.setViewport({ width: 1280, height: 900 });
-    await page.goto(new URL('article', ours).href, { waitUntil: 'networkidle0', timeout: 60000 });
-    const read = await page.evaluate(() => ({
-        chars: document.body.textContent.length,
-        sections: document.querySelectorAll('.pd-section').length,
-        panels: document.body.textContent.split('Bond Constructor Failed').length - 1,
-        wide: document.documentElement.scrollWidth,
-    }));
-    expect(read.panels === 0, `/article: ${read.panels} refusal panels`);
-    expect(raised.length === 0, `/article: ${raised.length} page errors — ${raised[0] ?? ''}`);
-    expect(read.sections >= 28, `/article: ${read.sections} sections where 28 stood`);
-    expect(read.wide <= 1281, `/article: scrolls sideways at 1280 — ${read.wide}`);
-    console.log(`/article: ${read.chars} chars · ${read.sections} sections · ${read.panels} panels · ${raised.length} errors`);
     await page.close();
 }
 

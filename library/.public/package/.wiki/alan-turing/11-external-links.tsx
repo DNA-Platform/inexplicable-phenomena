@@ -20,7 +20,7 @@ export default class $ExternalLinks extends $Chapter {
                 <List>
                     <Item><OutwardLink>[Alan Turing Papers](https://archiveshub.jisc.ac.uk/manchesteruniversity/data/gb133-tur/add)</OutwardLink> – <BookLink>[University of Manchester Library](https://en.wikipedia.org/wiki/University_of_Manchester_Library)</BookLink></Item>
                     <Item><OutwardLink>[Science in the Making](https://makingscience.royalsociety.org/s/rs/people/fst00117605)</OutwardLink><OutwardLink>[Archived](https://web.archive.org/web/20230404044604/https://makingscience.royalsociety.org/s/rs/people/fst00117605)</OutwardLink> 4 April 2023 at the <BookLink>[Wayback Machine](https://en.wikipedia.org/wiki/Wayback_Machine)</BookLink> Alan Turing's papers in the <BookLink>[Royal Society](https://en.wikipedia.org/wiki/Royal_Society)</BookLink>'s archives</Item>
-                    <Item><OutwardLink>[The Turing Digital Archive](https://turingarchive.kings.cam.ac.uk/)</OutwardLink> – contains scans of some unpublished documents and material – <BookLink>[King's College, Cambridge](https://en.wikipedia.org/wiki/King's_College,_Cambridge)</BookLink></Item>
+                    <Item><OutwardLink>[The Turing Digital Archive](https://turingarchive.kings.cam.ac.uk/)</OutwardLink> – contains scans of some unpublished documents and material – <BookLink>[King's College, Cambridge](https://en.wikipedia.org/wiki/King's_College,_Cambridge)</BookLink></Item>
                     <Item>"<OutwardLink>[Pryce’s Buoy](https://doi.org/10.1093/res/hgag047)</OutwardLink>", autofiction. Transcribed by Sarah Dillon. The Review of English Studies, 2026.</Item>
                 </List>
                 <Paragraph>
@@ -34,13 +34,13 @@ export default class $ExternalLinks extends $Chapter {
                 </Paragraph>
                 <List>
                     <Item><OutwardLink>[How Alan Turing Cracked The Enigma Code](http://www.iwm.org.uk/history/how-alan-turing-cracked-the-enigma-code)</OutwardLink> Imperial War Museums</Item>
-                    <Item>Jones, G. James (11 December 2001). <OutwardLink>["Alan Turing – Towards a Digital Mind: Part 1"](https://web.archive.org/web/20070803163318/http://www.systemtoolbox.com/article.php?history_id=3)</OutwardLink>. System Toolbox. The Binary Freedom Project. Archived from <OutwardLink>[the original](http://www.systemtoolbox.com/article.php?history_id=3)</OutwardLink> on 3 August 2007.</Item>
+                    <Item>Jones, G. James (11 December 2001). <OutwardLink>["Alan Turing – Towards a Digital Mind: Part 1"](https://web.archive.org/web/20070803163318/http://www.systemtoolbox.com/article.php?history_id=3)</OutwardLink>. System Toolbox. The Binary Freedom Project. Archived from <OutwardLink>[the original](http://www.systemtoolbox.com/article.php?history_id=3)</OutwardLink> on 3 August 2007.</Item>
                 </List>
                 <Paragraph>
                     Websites
                 </Paragraph>
                 <List>
-                    <Item><OutwardLink>[AlanTuring.net](https://web.archive.org/web/20181012014022/http://www.alanturing.net/)</OutwardLink> – Turing Archive for the History of Computing by <BookLink>[Jack Copeland](https://en.wikipedia.org/wiki/Jack_Copeland)</BookLink></Item>
+                    <Item><OutwardLink>[AlanTuring.net](https://web.archive.org/web/20181012014022/http://www.alanturing.net/)</OutwardLink> – Turing Archive for the History of Computing by <BookLink>[Jack Copeland](https://en.wikipedia.org/wiki/Jack_Copeland)</BookLink></Item>
                     <Item><OutwardLink>[Alan Turing](http://www.turing.org.uk/)</OutwardLink> site maintained by <BookLink>[Andrew Hodges](https://en.wikipedia.org/wiki/Andrew_Hodges)</BookLink> including a <OutwardLink>[short biography](https://web.archive.org/web/20180721235734/http://www.turing.org.uk/bio/part1.html)</OutwardLink></Item>
                 </List>
                 <Paragraph>

@@ -37,8 +37,11 @@ export class $InfoboxFormat extends $BoxFormat {
     line_margin = '0';
     line_boxSizing = 'border-box';
 
-    @select('> .pd-line::before') label_content = 'attr(data-label)';
-    label_display = 'table-cell';
+    // THE PREFIX IS RESTATED ON THE MEMBER THE BASE DECORATED. Restated on any other, the group
+    // splits — measured, the cell's every property arrived but its display, which stayed under the
+    // box's own heading selector and reached nothing.
+    @select('> .pd-line::before') label_display = 'table-cell';
+    label_content = 'attr(data-label)';
     label_width = '5.4em';
     label_paddingRight = '0.6em';
     label_verticalAlign = 'top';

@@ -99,7 +99,7 @@ export class $EncyclopediaTheme extends $Theme {
     get group_fontFamily() { return this.body; }
     get group_color() { return this.pale; }
     @select('.pd-menu::details-content > .pd-heading:first-child') topmost_marginTop = '0';
-    @select('.pd-menu .pd-ref') held_display = 'block';
+    @select('.pd-menu::details-content .pd-ref') held_display = 'block';
     held_overflowWrap = 'anywhere';
     held_padding = '0.3em 0';
     @select('.pd-header > .pd-menu > .pd-summary') burger_width = '2rem';
@@ -180,6 +180,7 @@ export class $EncyclopediaTheme extends $Theme {
     // THE WORDMARK IS NOT A PARAGRAPH OF PROSE. An image is a paragraph by kind, so the space set
     // between paragraphs stood above and below it — measured, 24 pixels inside a 38 pixel bar.
     @select('.pd-header .pd-image') wordmark_margin = '0';
+    @select('.pd-header > .pd-section:not(.pd-menu) > div + div .pd-image') taglineMark_margin = '5px 0 0';
 
     // A SUMMARY IN AN ENCYCLOPEDIA IS A WORD YOU PRESS, not an abstract set in italic — the base
     // names that kind for what a summary usually is, and here every menu wears it.

@@ -18,6 +18,7 @@ export class $Toolbar extends $Section {
 export class $ToolbarFormat extends $Format {
     override selector: any = styled.nav;
     display = 'flex';
+    flexWrap = 'wrap';
     alignItems = 'stretch';
     gap = '0';
     fontSize = '0.875em';
