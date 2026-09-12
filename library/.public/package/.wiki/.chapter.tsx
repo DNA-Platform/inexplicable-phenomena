@@ -1,6 +1,5 @@
-// The .wiki application's own kinds — what every book in it is written with. Four kinds of link
-// and nothing else: the chrome that stood here is an ENCYCLOPEDIA's, not this application's, and
-// it moved into the package with the rest of what stands above the fold.
+// What every book in .wiki is written with: four kinds of link. A book's .chapter.tsx carries
+// what its chapters share; this is the application's, shared by every book in it.
 import { $ } from '@dna-platform/chemistry';
 import { $Ref } from '@dna-platform/public';
 

@@ -1,9 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Heading, Illustration, Item, List, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Document, Heading, Illustration, Item, List, Paragraph, Section } from '@dna-platform/public';
 import { Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from '../.document';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $StandardAppendicesAndFooters extends $Chapter {
     print() {
@@ -12,8 +11,8 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                 <Section>
                 <Heading>Standard appendices and footers</Heading>
                 <List>
-                    <Item><OutwardLink>[MOS:APPENDIX](https://en.wikipedia.org/w/index.php?title=MOS:APPENDIX&redirect=no)</OutwardLink><BookLink>[MOS:APPENDIX](https://en.wikipedia.org/wiki/MOS:APPENDIX)</BookLink></Item>
-                    <Item><OutwardLink>[MOS:FOOTERS](https://en.wikipedia.org/w/index.php?title=MOS:FOOTERS&redirect=no)</OutwardLink><BookLink>[MOS:FOOTERS](https://en.wikipedia.org/wiki/MOS:FOOTERS)</BookLink></Item>
+                    <Item><OutwardLink>[MOS:APPENDIX](https://en.wikipedia.org/w/index.php?title=MOS:APPENDIX&redirect=no)</OutwardLink></Item>
+                    <Item><OutwardLink>[MOS:FOOTERS](https://en.wikipedia.org/w/index.php?title=MOS:FOOTERS&redirect=no)</OutwardLink></Item>
                 </List>
                 <Hatnote>
                     For the list and order of common appendices and footers, see <BookLink>[§ Order of article elements](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout#Order_of_article_elements)</BookLink>.
@@ -27,8 +26,8 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                 <Section>
                     <Heading>Works or publications</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:LAYOUTWORKS](https://en.wikipedia.org/w/index.php?title=MOS:LAYOUTWORKS&redirect=no)</OutwardLink><BookLink>[MOS:LAYOUTWORKS](https://en.wikipedia.org/wiki/MOS:LAYOUTWORKS)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:BIB](https://en.wikipedia.org/w/index.php?title=MOS:BIB&redirect=no)</OutwardLink><BookLink>[MOS:BIB](https://en.wikipedia.org/wiki/MOS:BIB)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:LAYOUTWORKS](https://en.wikipedia.org/w/index.php?title=MOS:LAYOUTWORKS&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:BIB](https://en.wikipedia.org/w/index.php?title=MOS:BIB&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         Further information: <BookLink>[Wikipedia:Manual of Style/Lists of works](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Lists_of_works)</BookLink>
@@ -43,8 +42,8 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                 <Section>
                     <Heading>"See also" section</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:ALSO](https://en.wikipedia.org/w/index.php?title=MOS:ALSO&redirect=no)</OutwardLink><BookLink>[MOS:ALSO](https://en.wikipedia.org/wiki/MOS:ALSO)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:SEEALSO](https://en.wikipedia.org/w/index.php?title=MOS:SEEALSO&redirect=no)</OutwardLink><BookLink>[MOS:SEEALSO](https://en.wikipedia.org/wiki/MOS:SEEALSO)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:ALSO](https://en.wikipedia.org/w/index.php?title=MOS:ALSO&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:SEEALSO](https://en.wikipedia.org/w/index.php?title=MOS:SEEALSO&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         For the placement of "see also" notes at the top of an article, see <BookLink>[WP:RELATED](https://en.wikipedia.org/wiki/Wikipedia:RELATED)</BookLink>.
@@ -62,7 +61,7 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                         Contents: Links in this section should be relevant and limited to a reasonable number. Whether a link belongs in the "See also" section is ultimately a matter of editorial judgment and <BookLink>[common sense](https://en.wikipedia.org/wiki/Wikipedia:What_%22Ignore_all_rules%22_means#Use_common_sense)</BookLink>. One purpose of "See also" links is to enable readers to explore tangentially related topics; however, articles linked should be related to the topic of the article or be in the same defining category. For example, the article on <BookLink>[Jesus](https://en.wikipedia.org/wiki/Jesus)</BookLink> might include a "See also" link to <BookLink>[List of people claimed to be Jesus](https://en.wikipedia.org/wiki/List_of_people_claimed_to_be_Jesus)</BookLink> because it is related to the subject but not otherwise linked in the article. The article on <BookLink>[Tacos](https://en.wikipedia.org/wiki/Tacos)</BookLink> might include the "See also" link <BookLink>[Fajita](https://en.wikipedia.org/wiki/Fajita)</BookLink> as another example of Mexican cuisine.
                     </Paragraph>
                     <List>
-                        <Item><OutwardLink>[MOS:NOTSEEALSO](https://en.wikipedia.org/w/index.php?title=MOS:NOTSEEALSO&redirect=no)</OutwardLink><BookLink>[MOS:NOTSEEALSO](https://en.wikipedia.org/wiki/MOS:NOTSEEALSO)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:NOTSEEALSO](https://en.wikipedia.org/w/index.php?title=MOS:NOTSEEALSO&redirect=no)</OutwardLink></Item>
                     </List>
                     <Paragraph>
                         The "See also" section should not include <BookLink>[red links](https://en.wikipedia.org/wiki/Wikipedia:Red_link)</BookLink>, links to <BookLink>[disambiguation pages](https://en.wikipedia.org/wiki/Wikipedia:Disambiguation)</BookLink> (unless used in a disambiguation page for <BookLink>[further disambiguation](https://en.wikipedia.org/wiki/MOS:DABSEEALSO)</BookLink>), or <BookLink>[external links](https://en.wikipedia.org/wiki/Wikipedia:External_links)</BookLink> (including links to pages within <BookLink>[Wikimedia sister projects](https://en.wikipedia.org/wiki/Wikipedia:Wikimedia_sister_projects)</BookLink>). As a general rule, the "See also" section should not repeat links that appear in the article's body.<Citation>[10](cite_note-21)</Citation>
@@ -90,10 +89,10 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                 <Section>
                     <Heading>Notes and references</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:FNNR](https://en.wikipedia.org/w/index.php?title=MOS:FNNR&redirect=no)</OutwardLink><BookLink>[MOS:FNNR](https://en.wikipedia.org/wiki/MOS:FNNR)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:NOTES](https://en.wikipedia.org/w/index.php?title=MOS:NOTES&redirect=no)</OutwardLink><BookLink>[MOS:NOTES](https://en.wikipedia.org/wiki/MOS:NOTES)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:REFS](https://en.wikipedia.org/w/index.php?title=MOS:REFS&redirect=no)</OutwardLink><BookLink>[MOS:REFS](https://en.wikipedia.org/wiki/MOS:REFS)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:REF](https://en.wikipedia.org/w/index.php?title=MOS:REF&redirect=no)</OutwardLink><BookLink>[MOS:REF](https://en.wikipedia.org/wiki/MOS:REF)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:FNNR](https://en.wikipedia.org/w/index.php?title=MOS:FNNR&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:NOTES](https://en.wikipedia.org/w/index.php?title=MOS:NOTES&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:REFS](https://en.wikipedia.org/w/index.php?title=MOS:REFS&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:REF](https://en.wikipedia.org/w/index.php?title=MOS:REF&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         For how to generate and format these sections, see <BookLink>[Help:Footnotes](https://en.wikipedia.org/wiki/Help:Footnotes)</BookLink>, <BookLink>[Help:Shortened footnotes](https://en.wikipedia.org/wiki/Help:Shortened_footnotes)</BookLink>, and <BookLink>[Wikipedia:Citing sources](https://en.wikipedia.org/wiki/Wikipedia:Citing_sources)</BookLink> (particularly <BookLink>[§ How to create the list of citations](https://en.wikipedia.org/wiki/Wikipedia:Citing_sources#How_to_create_the_list_of_citations)</BookLink>).
@@ -145,7 +144,7 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                 <Section>
                     <Heading>Further reading</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:FURTHER](https://en.wikipedia.org/w/index.php?title=MOS:FURTHER&redirect=no)</OutwardLink><BookLink>[MOS:FURTHER](https://en.wikipedia.org/wiki/MOS:FURTHER)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:FURTHER](https://en.wikipedia.org/w/index.php?title=MOS:FURTHER&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         See also: <BookLink>[Wikipedia:Further reading](https://en.wikipedia.org/wiki/Wikipedia:Further_reading)</BookLink>
@@ -157,8 +156,8 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                 <Section>
                     <Heading>External links</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:LAYOUTEL](https://en.wikipedia.org/w/index.php?title=MOS:LAYOUTEL&redirect=no)</OutwardLink><BookLink>[MOS:LAYOUTEL](https://en.wikipedia.org/wiki/MOS:LAYOUTEL)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:ELLAYOUT](https://en.wikipedia.org/w/index.php?title=MOS:ELLAYOUT&redirect=no)</OutwardLink><BookLink>[MOS:ELLAYOUT](https://en.wikipedia.org/wiki/MOS:ELLAYOUT)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:LAYOUTEL](https://en.wikipedia.org/w/index.php?title=MOS:LAYOUTEL&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:ELLAYOUT](https://en.wikipedia.org/w/index.php?title=MOS:ELLAYOUT&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         Main pages: <BookLink>[Wikipedia:Manual of Style/Linking § External links section](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Linking#External_links_section)</BookLink>, and <BookLink>[Wikipedia:External links](https://en.wikipedia.org/wiki/Wikipedia:External_links)</BookLink>
@@ -188,8 +187,8 @@ export default class $StandardAppendicesAndFooters extends $Chapter {
                 <Section>
                     <Heading>Navigation templates</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:LAYOUTNAV](https://en.wikipedia.org/w/index.php?title=MOS:LAYOUTNAV&redirect=no)</OutwardLink><BookLink>[MOS:LAYOUTNAV](https://en.wikipedia.org/wiki/MOS:LAYOUTNAV)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:NAVLAYOUT](https://en.wikipedia.org/w/index.php?title=MOS:NAVLAYOUT&redirect=no)</OutwardLink><BookLink>[MOS:NAVLAYOUT](https://en.wikipedia.org/wiki/MOS:NAVLAYOUT)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:LAYOUTNAV](https://en.wikipedia.org/w/index.php?title=MOS:LAYOUTNAV&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:NAVLAYOUT](https://en.wikipedia.org/w/index.php?title=MOS:NAVLAYOUT&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         Main page: <BookLink>[Wikipedia:Categories, lists, and navigation templates § Navigation templates](https://en.wikipedia.org/wiki/Wikipedia:Categories,_lists,_and_navigation_templates#Navigation_templates)</BookLink>

@@ -1,6 +1,6 @@
 import { Author, Cover, Description, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
 import { Header, Menu, Search, Summary, Toolbar } from '@dna-platform/public/application';
-import { BookLink, OutwardLink } from '../.document';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
 
 export default class $Cover extends $Chapter {

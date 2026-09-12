@@ -1,9 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Heading, Illustration, Item, List, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Document, Heading, Illustration, Item, List, Paragraph, Section } from '@dna-platform/public';
 import { Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from '../.document';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $BodySections extends $Chapter {
     print() {
@@ -12,7 +11,7 @@ export default class $BodySections extends $Chapter {
                 <Section>
                 <Heading>Body sections</Heading>
                 <List>
-                    <Item><OutwardLink>[MOS:BODY](https://en.wikipedia.org/w/index.php?title=MOS:BODY&redirect=no)</OutwardLink><BookLink>[MOS:BODY](https://en.wikipedia.org/wiki/MOS:BODY)</BookLink></Item>
+                    <Item><OutwardLink>[MOS:BODY](https://en.wikipedia.org/w/index.php?title=MOS:BODY&redirect=no)</OutwardLink></Item>
                 </List>
                 <Hatnote>
                     Further information: <BookLink>[Help:Section](https://en.wikipedia.org/wiki/Help:Section)</BookLink> and <BookLink>[Wikipedia:Manual of Style § Article titles, headings, and sections](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Article_titles,_headings,_and_sections)</BookLink>
@@ -23,8 +22,8 @@ export default class $BodySections extends $Chapter {
                 <Section>
                     <Heading>Headings and sections</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:SUBSECTION](https://en.wikipedia.org/w/index.php?title=MOS:SUBSECTION&redirect=no)</OutwardLink><BookLink>[MOS:SUBSECTION](https://en.wikipedia.org/wiki/MOS:SUBSECTION)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:OVERSECTION](https://en.wikipedia.org/w/index.php?title=MOS:OVERSECTION&redirect=no)</OutwardLink><BookLink>[MOS:OVERSECTION](https://en.wikipedia.org/wiki/MOS:OVERSECTION)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:SUBSECTION](https://en.wikipedia.org/w/index.php?title=MOS:SUBSECTION&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:OVERSECTION](https://en.wikipedia.org/w/index.php?title=MOS:OVERSECTION&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         Further information: <BookLink>[Wikipedia:Manual of Style § Section headings](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Section_headings)</BookLink>
@@ -45,7 +44,7 @@ export default class $BodySections extends $Chapter {
                 <Section>
                     <Heading>Section order</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:SNO](https://en.wikipedia.org/w/index.php?title=MOS:SNO&redirect=no)</OutwardLink><BookLink>[MOS:SNO](https://en.wikipedia.org/wiki/MOS:SNO)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:SNO](https://en.wikipedia.org/w/index.php?title=MOS:SNO&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         See also: <BookLink>[Help:Section](https://en.wikipedia.org/wiki/Help:Section)</BookLink>, <BookLink>[WP:Manual of Style/Accessibility § Headings](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Accessibility#Headings)</BookLink>, <BookLink>[WP:Manual of Style § Section headings](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Section_headings)</BookLink>, and <BookLink>[WP:Manual of Style/Capital letters § Section headings](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Capital_letters#Section_headings)</BookLink>
@@ -82,8 +81,8 @@ export default class $BodySections extends $Chapter {
                 <Section>
                     <Heading>Paragraphs</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:PARA](https://en.wikipedia.org/w/index.php?title=MOS:PARA&redirect=no)</OutwardLink><BookLink>[MOS:PARA](https://en.wikipedia.org/wiki/MOS:PARA)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:LINEBREAKS](https://en.wikipedia.org/w/index.php?title=MOS:LINEBREAKS&redirect=no)</OutwardLink><BookLink>[MOS:LINEBREAKS](https://en.wikipedia.org/wiki/MOS:LINEBREAKS)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:PARA](https://en.wikipedia.org/w/index.php?title=MOS:PARA&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:LINEBREAKS](https://en.wikipedia.org/w/index.php?title=MOS:LINEBREAKS&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         "MOS:LINEBREAKS" redirects here. For preventing line breaks, see <BookLink>[Wikipedia:Manual of Style § Controlling line breaks](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Controlling_line_breaks)</BookLink>.

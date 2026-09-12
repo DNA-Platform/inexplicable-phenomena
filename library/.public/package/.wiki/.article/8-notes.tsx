@@ -1,8 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Quote, Section } from '@dna-platform/public';
-import { BookLink } from '../.document';
+import { Document, Heading, Paragraph, Quote, Section } from '@dna-platform/public';
+import { BookLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $Notes extends $Chapter {
     print() {
@@ -12,8 +11,7 @@ export default class $Notes extends $Chapter {
                 <Heading>Notes</Heading>
                 <Quote>
                     See also
-<BookLink>[Wikipedia:How to edit a page](https://en.wikipedia.org/wiki/Wikipedia:How_to_edit_a_page)</BookLink>
-<BookLink>[Wikipedia:Manual of Style](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style)</BookLink>
+<BookLink>[Wikipedia:How to edit a page](https://en.wikipedia.org/wiki/Wikipedia:How_to_edit_a_page)</BookLink> · <BookLink>[Wikipedia:Manual of Style](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style)</BookLink>
                 </Quote>
                 </Section>
             </Document>

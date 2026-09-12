@@ -1,8 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
-import { BookLink, OutwardLink } from '../.document';
+import { Citation, Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $SeeAlso extends $Chapter {
     print() {

@@ -1,6 +1,6 @@
 import { $, select } from '@dna-platform/chemistry';
 import { $Book, $Theme, Theme } from '@dna-platform/public';
-import { globe } from './.document';
+import { globe } from './.chapter';
 
 export default class $Wikipedia extends $Book { }
 

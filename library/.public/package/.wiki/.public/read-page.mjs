@@ -32,7 +32,7 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
     // and sometimes not, so every id is folded to it once here, for the mark and the entry alike.
     const keyed = (id) => id.replace(/[^\w-]/gu, '_');
 
-    const inline = (node) => {
+    const inline = (node, apart = false) => {
         let said = '';
         for (const part of node.childNodes) {
             if (part.nodeType === 3) { said += part.textContent.replace(/</gu, '&lt;').replace(/>/gu, '&gt;'); continue; }
@@ -40,6 +40,10 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
             const tag = part.tagName.toLowerCase();
             if (tag === 'br') { said += ' '; continue; }
             if (getComputedStyle(part).display === 'none') continue;
+            if (tag === 'ul' || tag === 'ol') {
+                if (!apart) said += [...part.children].filter(one => one.tagName === 'LI').map(one => inline(one).trim()).filter(Boolean).join(' · ');
+                continue;
+            }
             if (tag === 'sup' && part.classList.contains('reference')) {
                 const key = keyed(part.querySelector('a')?.getAttribute('href')?.replace('#', '') ?? '');
                 const mark = part.textContent.replace(/[[\]]/gu, '').trim();
@@ -63,10 +67,8 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
     // AN ITEM IS ITS OWN WORDS AND THE LIST UNDER IT. The words are read from the item's parts
     // that are not a list; the list under it is read the same way, as deep as the page goes.
     const listed = (list) => [...list.children].filter(one => one.tagName === 'LI').map(item => {
-        const own = document.createElement('li');
-        for (const part of item.childNodes) if (!(part.nodeType === 1 && /^(UL|OL)$/u.test(part.tagName))) own.appendChild(part.cloneNode(true));
         const under = [...item.children].filter(one => /^(UL|OL)$/u.test(one.tagName)).flatMap(one => listed(one));
-        return { said: inline(own).replace(/\s+/gu, ' ').trim(), under };
+        return { said: inline(item, true).replace(/\s+/gu, ' ').trim(), under };
     }).filter(one => one.said !== '' || one.under.length > 0);
 
     const sections = [];
@@ -240,7 +242,7 @@ for (const section of chapters) {
         const file = `${at}-${named(section.name)}.tsx`;
         await writeFile(join(book, file), [
             `import { ${holds.join(', ')} } from '@dna-platform/public';`,
-            ...(links.length ? [`import { ${links.join(', ')} } from '../.document';`] : []),
+            ...(links.length ? [`import { ${links.join(', ')} } from '../.chapter';`] : []),
             `import $Chapter from './.chapter';`,
             ``,
             `export default class $${classed(section.name)} extends $Chapter {`,
@@ -263,7 +265,7 @@ for (const section of chapters) {
     at += 1;
     const said = nested(section.wrote);
     const whole = said + (at === 1 ? aside : '');
-    const carries = [...new Set(['Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') ? [] : ['Section']),
+    const carries = [...new Set(['Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') ? [] : ['Section']),
         ...(at === 1 ? ['Illustration'] : []),
         ...(whole.includes('<Citation>') ? ['Citation'] : []),
         ...(whole.includes('<Illustration') ? ['Illustration'] : []),
@@ -276,9 +278,8 @@ for (const section of chapters) {
         `import { $ } from '@dna-platform/chemistry';`,
         `import { ${carries.join(', ')} } from '@dna-platform/public';`,
         ...((whole.includes('<Hatnote>') || at === 1) ? [`import { ${[...(at === 1 ? ['Infobox', 'Line'] : []), ...(whole.includes('<Hatnote>') ? ['Hatnote'] : [])].join(', ')} } from '@dna-platform/public/encyclopedia';`] : []),
-        ...(inward.length || outward.length ? [`import { ${[...inward, ...outward].join(', ')} } from '../.document';`] : []),
+        ...(inward.length || outward.length ? [`import { ${[...inward, ...outward].join(', ')} } from '../.chapter';`] : []),
         `import $Chapter from './.chapter';`,
-        `import Document from './.document';`,
         ``,
         `export default class $${classed(section.name) || 'Lead'} extends $Chapter {`,
         `    print() {`,
@@ -326,7 +327,7 @@ const linkKinds = new Set(chrome.menu.concat(chrome.people, chrome.languages, ch
 const cover = [
     `import { Author, Cover, Description, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';`,
     `import { Header, Menu, Search, Summary, Toolbar } from '@dna-platform/public/application';`,
-    `import { ${[...linkKinds].sort().join(', ')} } from '../.document';`,
+    `import { ${[...linkKinds].sort().join(', ')} } from '../.chapter';`,
     `import $Chapter from './.chapter';`,
     ``,
     `export default class $Cover extends $Chapter {`,
@@ -401,7 +402,7 @@ await writeFile(join(book, '.synopsis.tsx'), synopsis, 'utf8');
 
 const foot = [
     `import { Footer, Heading, Paragraph } from '@dna-platform/public';`,
-    `import { ${[...new Set(chrome.places.map(holds))].sort().join(', ') || 'OutwardLink'} } from '../.document';`,
+    `import { ${[...new Set(chrome.places.map(holds))].sort().join(', ') || 'OutwardLink'} } from '../.chapter';`,
     `import $Chapter from './.chapter';`,
     ``,
     `export default class $TheFoot extends $Chapter {`,

@@ -1,9 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Heading, Illustration, Paragraph, Quote } from '@dna-platform/public';
+import { Citation, Document, Heading, Illustration, Paragraph, Quote } from '@dna-platform/public';
 import { Infobox, Line, Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from '../.document';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $Lead extends $Chapter {
     print() {
@@ -27,10 +26,10 @@ export default class $Lead extends $Chapter {
                         Suicide by <BookLink>[cyanide poisoning](https://en.wikipedia.org/wiki/Cyanide_poisoning)</BookLink><Citation>[note 1](cite_note-2)</Citation>
                     </Line>
                     <Line label="Education">
-                        <BookLink>[University of Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge)</BookLink> (<BookLink>[MA](https://en.wikipedia.org/wiki/Master_of_Arts_%28Oxford,_Cambridge,_and_Dublin%29)</BookLink>) <BookLink>[Princeton University](https://en.wikipedia.org/wiki/Princeton_University)</BookLink> (PhD)
+                        <BookLink>[University of Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge)</BookLink> (<BookLink>[MA](https://en.wikipedia.org/wiki/Master_of_Arts_%28Oxford,_Cambridge,_and_Dublin%29)</BookLink>) · <BookLink>[Princeton University](https://en.wikipedia.org/wiki/Princeton_University)</BookLink> (PhD)
                     </Line>
                     <Line label="Known for">
-                        <BookLink>[Cryptanalysis of the Enigma](https://en.wikipedia.org/wiki/Cryptanalysis_of_the_Enigma)</BookLink> <BookLink>[Turing's proof](https://en.wikipedia.org/wiki/Turing's_proof)</BookLink> <BookLink>[Turing machine](https://en.wikipedia.org/wiki/Turing_machine)</BookLink> <BookLink>[Turing test](https://en.wikipedia.org/wiki/Turing_test)</BookLink> <BookLink>[unorganised machine](https://en.wikipedia.org/wiki/Unorganized_machine)</BookLink> <BookLink>[Turing pattern](https://en.wikipedia.org/wiki/Turing_pattern)</BookLink> <BookLink>[Turing reduction](https://en.wikipedia.org/wiki/Turing_reduction)</BookLink> "<BookLink>[The Chemical Basis of Morphogenesis](https://en.wikipedia.org/wiki/The_Chemical_Basis_of_Morphogenesis)</BookLink>" <BookLink>[Turing paradox](https://en.wikipedia.org/wiki/Quantum_Zeno_effect)</BookLink>
+                        <BookLink>[Cryptanalysis of the Enigma](https://en.wikipedia.org/wiki/Cryptanalysis_of_the_Enigma)</BookLink> · <BookLink>[Turing's proof](https://en.wikipedia.org/wiki/Turing's_proof)</BookLink> · <BookLink>[Turing machine](https://en.wikipedia.org/wiki/Turing_machine)</BookLink> · <BookLink>[Turing test](https://en.wikipedia.org/wiki/Turing_test)</BookLink> · <BookLink>[unorganised machine](https://en.wikipedia.org/wiki/Unorganized_machine)</BookLink> · <BookLink>[Turing pattern](https://en.wikipedia.org/wiki/Turing_pattern)</BookLink> · <BookLink>[Turing reduction](https://en.wikipedia.org/wiki/Turing_reduction)</BookLink> · "<BookLink>[The Chemical Basis of Morphogenesis](https://en.wikipedia.org/wiki/The_Chemical_Basis_of_Morphogenesis)</BookLink>" · <BookLink>[Turing paradox](https://en.wikipedia.org/wiki/Quantum_Zeno_effect)</BookLink>
                     </Line>
                     <Line label="Partner">
                         <BookLink>[Joan Clarke](https://en.wikipedia.org/wiki/Joan_Clarke)</BookLink> (engaged in 1941 but did not marry)
@@ -39,10 +38,10 @@ export default class $Lead extends $Chapter {
                         <BookLink>[Smith's Prize](https://en.wikipedia.org/wiki/Smith's_Prize)</BookLink> (1936)
                     </Line>
                     <Line label="Fields">
-                        <BookLink>[Logic](https://en.wikipedia.org/wiki/Logic)</BookLink> mathematics <BookLink>[cryptanalysis](https://en.wikipedia.org/wiki/Cryptanalysis)</BookLink> <BookLink>[computer science](https://en.wikipedia.org/wiki/Computer_science)</BookLink> <BookLink>[mathematical and theoretical biology](https://en.wikipedia.org/wiki/Mathematical_and_theoretical_biology)</BookLink><Citation>[2](cite_note-googlescholar-3)</Citation>
+                        <BookLink>[Logic](https://en.wikipedia.org/wiki/Logic)</BookLink> · mathematics · <BookLink>[cryptanalysis](https://en.wikipedia.org/wiki/Cryptanalysis)</BookLink> · <BookLink>[computer science](https://en.wikipedia.org/wiki/Computer_science)</BookLink> · <BookLink>[mathematical and theoretical biology](https://en.wikipedia.org/wiki/Mathematical_and_theoretical_biology)</BookLink><Citation>[2](cite_note-googlescholar-3)</Citation>
                     </Line>
                     <Line label="Workplaces">
-                        <BookLink>[University of Manchester](https://en.wikipedia.org/wiki/University_of_Manchester)</BookLink> <BookLink>[Government Code and Cypher School](https://en.wikipedia.org/wiki/Government_Code_and_Cypher_School)</BookLink> <BookLink>[National Physical Laboratory](https://en.wikipedia.org/wiki/National_Physical_Laboratory_%28United_Kingdom%29)</BookLink>
+                        <BookLink>[University of Manchester](https://en.wikipedia.org/wiki/University_of_Manchester)</BookLink> · <BookLink>[Government Code and Cypher School](https://en.wikipedia.org/wiki/Government_Code_and_Cypher_School)</BookLink> · <BookLink>[National Physical Laboratory](https://en.wikipedia.org/wiki/National_Physical_Laboratory_%28United_Kingdom%29)</BookLink>
                     </Line>
                     <Line label="Thesis">
                         <OutwardLink>[Systems of Logic Based on Ordinals](https://web.archive.org/web/20121023103503/https://webspace.princeton.edu/users/jedwards/Turing%20Centennial%202012/Mudd%20Archive%20files/12285_AC100_Turing_1938.pdf)</OutwardLink> (1938)
@@ -51,7 +50,7 @@ export default class $Lead extends $Chapter {
                         <BookLink>[Alonzo Church](https://en.wikipedia.org/wiki/Alonzo_Church)</BookLink><Citation>[3](cite_note-mathgene-4)</Citation>
                     </Line>
                     <Line label="Doctoral students">
-                        <BookLink>[Robin Gandy](https://en.wikipedia.org/wiki/Robin_Gandy)</BookLink><Citation>[3](cite_note-mathgene-4)</Citation><Citation>[4](cite_note-gandyphd-5)</Citation> <BookLink>[Beatrice Worsley](https://en.wikipedia.org/wiki/Beatrice_Worsley)</BookLink><Citation>[5](cite_note-bowen19-6)</Citation>
+                        <BookLink>[Robin Gandy](https://en.wikipedia.org/wiki/Robin_Gandy)</BookLink><Citation>[3](cite_note-mathgene-4)</Citation><Citation>[4](cite_note-gandyphd-5)</Citation> · <BookLink>[Beatrice Worsley](https://en.wikipedia.org/wiki/Beatrice_Worsley)</BookLink><Citation>[5](cite_note-bowen19-6)</Citation>
                     </Line>
                 </Infobox>
                 <Hatnote>

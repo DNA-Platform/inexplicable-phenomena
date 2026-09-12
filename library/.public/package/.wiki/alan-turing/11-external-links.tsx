@@ -1,8 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
-import { BookLink, OutwardLink } from '../.document';
+import { Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $ExternalLinks extends $Chapter {
     print() {

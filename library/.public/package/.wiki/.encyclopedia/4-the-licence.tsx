@@ -1,8 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
 import { Heading, Paragraph, Section } from '@dna-platform/public';
 import $Chapter from './.chapter';
-import { OutwardLink } from '../.document';
-import { Licence } from './.document';
+import { OutwardLink } from '../.chapter';
+import { Licence } from './.chapter';
 
 export default class $TheLicence extends $Chapter {
     view() {

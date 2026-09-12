@@ -1,9 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
+import { Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
 import { Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from '../.document';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $Formatting extends $Chapter {
     print() {
@@ -14,7 +13,7 @@ export default class $Formatting extends $Chapter {
                 <Section>
                     <Heading>Images</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:LAYIM](https://en.wikipedia.org/w/index.php?title=MOS:LAYIM&redirect=no)</OutwardLink><BookLink>[MOS:LAYIM](https://en.wikipedia.org/wiki/MOS:LAYIM)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:LAYIM](https://en.wikipedia.org/w/index.php?title=MOS:LAYIM&redirect=no)</OutwardLink></Item>
                     </List>
                     <Hatnote>
                         Main page: <BookLink>[Wikipedia:Manual of Style/Images](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Images)</BookLink>
@@ -35,8 +34,8 @@ export default class $Formatting extends $Chapter {
                 <Section>
                     <Heading>Horizontal rule</Heading>
                     <List>
-                        <Item><OutwardLink>[MOS:----](https://en.wikipedia.org/w/index.php?title=MOS:----&redirect=no)</OutwardLink><BookLink>[MOS:----](https://en.wikipedia.org/wiki/MOS:----)</BookLink></Item>
-                        <Item><OutwardLink>[MOS:HR](https://en.wikipedia.org/w/index.php?title=MOS:HR&redirect=no)</OutwardLink><BookLink>[MOS:HR](https://en.wikipedia.org/wiki/MOS:HR)</BookLink></Item>
+                        <Item><OutwardLink>[MOS:----](https://en.wikipedia.org/w/index.php?title=MOS:----&redirect=no)</OutwardLink></Item>
+                        <Item><OutwardLink>[MOS:HR](https://en.wikipedia.org/w/index.php?title=MOS:HR&redirect=no)</OutwardLink></Item>
                     </List>
                     <Paragraph>
                         <BookLink>[Horizontal rules](https://en.wikipedia.org/wiki/Help:Wikitext#Horizontal_rule)</BookLink> are sometimes used in some special circumstances, such as inside &#123;&#123;<BookLink>[sidebar](https://en.wikipedia.org/wiki/Template:Sidebar)</BookLink>&#125;&#125; template derivatives, but not in regular article prose.

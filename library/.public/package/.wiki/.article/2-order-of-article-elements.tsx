@@ -1,9 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
 import { Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from '../.document';
+import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
-import Document from './.document';
 
 export default class $OrderOfArticleElements extends $Chapter {
     print() {
@@ -12,8 +11,8 @@ export default class $OrderOfArticleElements extends $Chapter {
                 <Section>
                 <Heading>Order of article elements</Heading>
                 <List>
-                    <Item><OutwardLink>[MOS:ORDER](https://en.wikipedia.org/w/index.php?title=MOS:ORDER&redirect=no)</OutwardLink><BookLink>[MOS:ORDER](https://en.wikipedia.org/wiki/MOS:ORDER)</BookLink></Item>
-                    <Item><OutwardLink>[MOS:SECTIONORDER](https://en.wikipedia.org/w/index.php?title=MOS:SECTIONORDER&redirect=no)</OutwardLink><BookLink>[MOS:SECTIONORDER](https://en.wikipedia.org/wiki/MOS:SECTIONORDER)</BookLink></Item>
+                    <Item><OutwardLink>[MOS:ORDER](https://en.wikipedia.org/w/index.php?title=MOS:ORDER&redirect=no)</OutwardLink></Item>
+                    <Item><OutwardLink>[MOS:SECTIONORDER](https://en.wikipedia.org/w/index.php?title=MOS:SECTIONORDER&redirect=no)</OutwardLink></Item>
                 </List>
                 <Hatnote>
                     See also: <BookLink>[Wikipedia:Manual of Style § Section headings](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Section_headings)</BookLink>, <BookLink>[Wikipedia:Manual of Style/Lead section § Order](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Lead_section#Order)</BookLink>, and <BookLink>[Wikipedia:Stand-alone lists § Chronological ordering](https://en.wikipedia.org/wiki/Wikipedia:Stand-alone_lists#Chronological_ordering)</BookLink>
