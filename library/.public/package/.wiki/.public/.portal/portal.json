@@ -352,6 +352,11 @@
       "w": 312,
       "h": 23
      },
+     "indicators": {
+      "x": 289,
+      "w": 47,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 312,
@@ -418,6 +423,11 @@
       "x": 24,
       "w": 432,
       "h": 23
+     },
+     "indicators": {
+      "x": 409,
+      "w": 47,
+      "h": 22
      },
      "rail": {
       "x": 24,
@@ -486,6 +496,11 @@
       "w": 720,
       "h": 23
      },
+     "indicators": {
+      "x": 697,
+      "w": 47,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 720,
@@ -553,6 +568,11 @@
       "w": 952,
       "h": 23
      },
+     "indicators": {
+      "x": 929,
+      "w": 47,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 952,
@@ -619,6 +639,11 @@
       "x": 264,
       "w": 752,
       "h": 23
+     },
+     "indicators": {
+      "x": 969,
+      "w": 47,
+      "h": 22
      },
      "rail": {
       "x": 1040,
@@ -706,7 +731,7 @@
      "paddingLeft": "0px",
      "textDecorationLine": "none"
     },
-    "tab Article": {
+    "selected tab": {
      "tag": "A",
      "fontFamily": "sans-serif",
      "fontSize": "14px",
@@ -839,6 +864,7 @@
      "paddingLeft": "0px",
      "textDecorationLine": "none"
     },
+    "subpage line": null,
     "hatnote": {
      "tag": "DIV",
      "fontFamily": "sans-serif",
@@ -1049,7 +1075,25 @@
      "paddingLeft": "0px",
      "textDecorationLine": "none"
     },
-    "contents heading": null,
+    "contents heading": {
+     "tag": "H2",
+     "fontFamily": "sans-serif",
+     "fontSize": "14px",
+     "fontWeight": "700",
+     "fontStyle": "normal",
+     "lineHeight": "22.4px",
+     "color": "rgb(16, 20, 24)",
+     "backgroundColor": "rgba(0, 0, 0, 0)",
+     "borderTop": "0px none rgb(16, 20, 24)",
+     "borderBottom": "0px none rgb(16, 20, 24)",
+     "marginTop": "0px",
+     "marginBottom": "0px",
+     "marginLeft": "0px",
+     "paddingTop": "0px",
+     "paddingBottom": "0px",
+     "paddingLeft": "0px",
+     "textDecorationLine": "none"
+    },
     "contents top": {
      "tag": "DIV",
      "fontFamily": "sans-serif",
@@ -1295,6 +1339,11 @@
       "w": 312,
       "h": 23
      },
+     "indicators": {
+      "x": 316,
+      "w": 20,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 312,
@@ -1357,6 +1406,11 @@
       "x": 24,
       "w": 432,
       "h": 23
+     },
+     "indicators": {
+      "x": 436,
+      "w": 20,
+      "h": 22
      },
      "rail": {
       "x": 24,
@@ -1421,6 +1475,11 @@
       "w": 720,
       "h": 23
      },
+     "indicators": {
+      "x": 724,
+      "w": 20,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 720,
@@ -1484,6 +1543,11 @@
       "w": 952,
       "h": 23
      },
+     "indicators": {
+      "x": 956,
+      "w": 20,
+      "h": 22
+     },
      "rail": {
       "x": 24,
       "w": 952,
@@ -1546,6 +1610,11 @@
       "x": 264,
       "w": 752,
       "h": 23
+     },
+     "indicators": {
+      "x": 996,
+      "w": 20,
+      "h": 22
      },
      "rail": {
       "x": 1040,
@@ -1629,7 +1698,25 @@
      "paddingLeft": "0px",
      "textDecorationLine": "none"
     },
-    "tab Article": null,
+    "selected tab": {
+     "tag": "A",
+     "fontFamily": "sans-serif",
+     "fontSize": "14px",
+     "fontWeight": "400",
+     "fontStyle": "normal",
+     "lineHeight": "normal",
+     "color": "rgb(32, 33, 34)",
+     "backgroundColor": "rgba(0, 0, 0, 0)",
+     "borderTop": "0px none rgb(32, 33, 34)",
+     "borderBottom": "0px none rgb(32, 33, 34)",
+     "marginTop": "0px",
+     "marginBottom": "0px",
+     "marginLeft": "0px",
+     "paddingTop": "0px",
+     "paddingBottom": "0px",
+     "paddingLeft": "0px",
+     "textDecorationLine": "none"
+    },
     "tab Talk": {
      "tag": "A",
      "fontFamily": "sans-serif",
@@ -1737,6 +1824,25 @@
      "borderTop": "0px none rgb(32, 33, 34)",
      "borderBottom": "0px none rgb(32, 33, 34)",
      "marginTop": "8px",
+     "marginBottom": "0px",
+     "marginLeft": "0px",
+     "paddingTop": "0px",
+     "paddingBottom": "0px",
+     "paddingLeft": "0px",
+     "textDecorationLine": "none"
+    },
+    "subpage line": {
+     "tag": "DIV",
+     "fontFamily": "sans-serif",
+     "fontSize": "14px",
+     "fontWeight": "400",
+     "fontStyle": "normal",
+     "lineHeight": "22.75px",
+     "color": "rgb(84, 89, 93)",
+     "backgroundColor": "rgba(0, 0, 0, 0)",
+     "borderTop": "0px none rgb(84, 89, 93)",
+     "borderBottom": "0px none rgb(84, 89, 93)",
+     "marginTop": "0px",
      "marginBottom": "0px",
      "marginLeft": "0px",
      "paddingTop": "0px",
@@ -1882,7 +1988,25 @@
     "infobox title": null,
     "infobox row": null,
     "infobox caption": null,
-    "contents heading": null,
+    "contents heading": {
+     "tag": "H2",
+     "fontFamily": "sans-serif",
+     "fontSize": "14px",
+     "fontWeight": "700",
+     "fontStyle": "normal",
+     "lineHeight": "22.4px",
+     "color": "rgb(16, 20, 24)",
+     "backgroundColor": "rgba(0, 0, 0, 0)",
+     "borderTop": "0px none rgb(16, 20, 24)",
+     "borderBottom": "0px none rgb(16, 20, 24)",
+     "marginTop": "0px",
+     "marginBottom": "0px",
+     "marginLeft": "0px",
+     "paddingTop": "0px",
+     "paddingBottom": "0px",
+     "paddingLeft": "0px",
+     "textDecorationLine": "none"
+    },
     "contents top": {
      "tag": "DIV",
      "fontFamily": "sans-serif",

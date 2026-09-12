@@ -153,6 +153,8 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
             ?? document.querySelector('.mw-logo-tagline')?.textContent.trim() ?? '',
         title: document.querySelector('#firstHeading')?.textContent.trim() ?? '',
         said: document.querySelector('#siteSub')?.textContent.trim() ?? '',
+        indicators: [...document.querySelectorAll('.mw-indicators img')].map(img => ({ source: absolute(img.getAttribute('src')), wide: img.getAttribute('width') ?? '', tall: img.getAttribute('height') ?? '', said: img.getAttribute('alt') || img.closest('.mw-indicator')?.querySelector('a')?.getAttribute('title') || 'indicator' })),
+        subpages: (sub => sub === null ? '' : inline(sub).replace(/\s+/gu, ' ').trim())(document.querySelector('#contentSub .subpages')),
         about: document.querySelector('.shortdescription')?.textContent.trim() ?? '',
         menu: all('#vector-main-menu .vector-menu-content-list a, #mw-panel .vector-menu-content-list a'),
         people: all('.vector-user-links a, #p-personal a'),
@@ -384,7 +386,8 @@ const cover = [
 await writeFile(join(book, '.cover.tsx'), cover, 'utf8');
 
 const synopsis = [
-    `import { Paragraph, Synopsis } from '@dna-platform/public';`,
+    `import { ${['Paragraph', 'Synopsis', ...(chrome.indicators.length ? ['Image'] : [])].sort().join(', ')} } from '@dna-platform/public';`,
+    ...(chrome.subpages.includes('<BookLink>') ? [`import { BookLink } from '../.chapter';`] : []),
     `import $Chapter from './.chapter';`,
     ``,
     `export default class $Synopsis extends $Chapter {`,
@@ -392,6 +395,8 @@ const synopsis = [
     `        return (`,
     `            <Synopsis print>`,
     `                <Paragraph>${quoted(chrome.said)}</Paragraph>`,
+    ...chrome.indicators.map(one => `                <Image source="${one.source}" width="${one.wide}px" height="${one.tall}px">${quoted(one.said)}</Image>`),
+    ...(chrome.subpages ? [`                <Paragraph>`, `                    ${quoted(chrome.subpages)}`, `                </Paragraph>`] : []),
     `            </Synopsis>`,
     `        );`,
     `    }`,
