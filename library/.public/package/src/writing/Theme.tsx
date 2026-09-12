@@ -344,5 +344,6 @@ export class $TypeOfTheme extends $TypeOfFormat {
 export class ThemeSpecification extends FormatSpecification {
 }
 
+
 export const Theme = $($Theme);
 export const TypeOfTheme = $($TypeOfTheme);

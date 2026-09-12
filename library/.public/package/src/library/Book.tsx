@@ -12,11 +12,11 @@ import { $TypeOfParagraph } from '@/writing/Paragraph';
 import { $TypeOfSection } from '@/writing/Section';
 import { $TypeOfReference } from '@/reference/Reference';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { $TypeOfDocument } from './Document';
+import { $Document, $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $Path, Path as path } from '@/reference/Path';
 import { $Scratchpad } from './Scratchpad';
-import { $Theme } from '@/writing/Theme';
+import { $Theme, Theme as theme } from '@/writing/Theme';
 
 export interface $Book$ extends $Composition$ {
     readonly cover: $Chapter | undefined;
@@ -29,6 +29,7 @@ export interface $Book$ extends $Composition$ {
 export class $Book extends $Composition implements $Book$ {
     definition = 'div';
     _scratchpad!: $Scratchpad;
+    _theme: $Theme | undefined = undefined;
 
     get cover(): $Chapter | undefined { return this.chapters[0]; }
     get synopsis(): $Chapter | undefined { return this.chapters[1]; }
@@ -36,6 +37,11 @@ export class $Book extends $Composition implements $Book$ {
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
     get scratchpad(): $Scratchpad { return this._scratchpad; }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
+    override get theme(): $Theme { return this._theme ?? reflection.theme(); }
+    set theme(theme: $Theme) {
+        this._theme = theme;
+        for (const document of this.searchFor<$Document>($TypeOfDocument)) document.theme = theme;
+    }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
@@ -70,6 +76,11 @@ export class $$Book extends $Catalogue { }
 
 export class $TypeOfBook extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new BookSpecification();
+
+    override specifically(writing: $Writing): void {
+        (writing as $Book).theme = $check(theme, '!');
+        super.specifically(writing);
+    }
 }
 
 export class BookSpecification extends WritingSpecification {

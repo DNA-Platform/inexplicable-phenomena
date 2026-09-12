@@ -159,14 +159,19 @@ export class Reflection {
     formatted(writing: $Writing, drawn: ReactNode): ReactNode {
         const held = this.annotations(writing).reduce((held, one) => one.format(held), drawn);
 
-        return this.is(writing, this.kinds.book) ? this.theme(writing).format(held) : held;
+        return this.is(writing, this.kinds.book) ? writing.theme.format(held) : held;
     }
 
 
-    theme(writing: $Writing): $Theme {
-        const Sheet = $($(this.kinds.theme));
+    // THE WRITING HOLDING THIS ONE, and nothing at the top, where a writing holds itself.
+    above(writing: $Writing): $Writing | undefined {
+        const held = writing.parent;
 
-        return $(Sheet, $) as $Theme;
+        return held === undefined || held === writing || !this.writing(held) ? undefined : held as $Writing;
+    }
+
+    theme(): $Theme {
+        return this.template(this.kinds.theme);
     }
 
     // A WALK UP STOPS WHERE THE HOLDING STOPS. A writing that holds itself is the top,

@@ -14,7 +14,7 @@ export class $Format extends $Annotation implements $Format$ {
     override selector: any = styled.div;
     $of: $Format | null = null;
 
-    override get theme(): $Theme { return this.$of === null ? reflection.theme(this) : this.$of.theme; }
+    override get theme(): $Theme { return this.$of === null ? super.theme : this.$of.theme; }
 
     $Format(block: $Block) {
         super.$Writing(this.addType(block, $TypeOfFormat));

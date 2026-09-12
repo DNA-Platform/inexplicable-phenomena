@@ -33,7 +33,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     get document(): $Catalogue | undefined { return reflection.holding(this)?.mention; }
     get meaning(): $Reference | undefined { return reflection.meaning(this); }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
-    get theme(): $Theme { return reflection.theme(this); }
+    get theme(): $Theme { return reflection.above(this)?.theme ?? reflection.theme(); }
     get book(): $Book | undefined { return reflection.book(this); }
     get className(): string { return [...reflection.classNames(this), this.$className ?? ''].join(' ').trim(); }
 
