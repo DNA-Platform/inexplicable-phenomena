@@ -95,6 +95,7 @@ export class $Project extends $IndexCard {
 export class $PortalDocumentFormat extends $Format {
     selector: any = styled.article;
     width = '100%';
+    gridColumn = '1 / -1';
 }
 
 export class $BackMatterFormat extends $PortalDocumentFormat {
@@ -131,9 +132,9 @@ export class $EditionsFormat extends $PortalDocumentFormat {
 }
 
 export class $FoundationFormat extends $BackMatterFormat {
-    @select('.pd-document') document_display = 'block';
-    document_maxWidth = '26.9em';
-    document_margin = '0 auto';
+    maxWidth = '26.9em';
+    marginLeft = 'auto';
+    marginRight = 'auto';
     @select('.pd-section') section_display = 'block';
     section_position = 'relative';
     section_padding = '0 1.54em 0 4.6em';
@@ -154,9 +155,9 @@ export class $FoundationFormat extends $BackMatterFormat {
 
 export class $ProjectsFormat extends $BackMatterFormat {
     textAlign = 'left';
-    @select('.pd-document') projects_display = 'grid';
-    projects_gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
-    @select('.pd-document > .pd-section:not(.pd-index-card)') intro_display = 'none';
+    display = 'grid';
+    gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
+    @select('& > .pd-section') intro_display = 'none';
 }
 
 export class $LicenceFormat extends $BackMatterFormat {

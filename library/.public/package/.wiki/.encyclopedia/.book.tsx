@@ -37,6 +37,29 @@ export class $PortalTheme extends $EncyclopediaTheme {
     narrowHead_backgroundRepeat = 'no-repeat';
     narrowHead_backgroundSize = '3.43em';
     narrowHead_backgroundPosition = 'calc(50% - 8.6em) 2.35em';
+    @select('.pd-book > .pd-chapter > .pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter), .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-index') override text_gridColumn = '1 / -1';
+    text_minWidth = '0';
+    override get text_maxWidth() { return 'min(68.6rem, 100%)'; }
+    text_marginLeft = 'auto';
+    text_marginRight = 'auto';
+
+    @select('.pd-level-1') override h2_fontSize = '1em';
+    h2_fontWeight = '700';
+    h2_padding = '0';
+    h2_margin = '0 auto';
+    h2_lineHeight = '1.5';
+    override get h2_borderBottom() { return 'none'; }
+    get h2_color() { return this.ink; }
+    get h2_fontFamily() { return this.body; }
+    @select('.pd-section .pd-section .pd-level-1') sub2_fontSize = '1em';
+    sub2_fontWeight = '700';
+    sub2_lineHeight = '1.5';
+    sub2_padding = '0';
+    sub2_borderBottom = 'none';
+    get sub2_fontFamily() { return this.body; }
+    @select('.pd-document') override document_marginBottom = '0';
+    @select('.pd-document > *:first-child') opening_marginTop = '0';
+
     @select('.pd-book > .pd-chapter > div') panel_textAlign = 'left';
     @select('.pd-book > .pd-chapter > footer') override foot_gridColumn = '1 / -1';
 }
