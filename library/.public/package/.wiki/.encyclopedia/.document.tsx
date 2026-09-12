@@ -410,13 +410,12 @@ export class $SearchFormat extends $Format {
     @select('select') picker_position = 'absolute';
     picker_top = '0';
     picker_right = '0';
-    picker_width = '7.86em';
+    picker_width = '4.57em';
     picker_height = '100%';
     picker_margin = '0';
     picker_padding = '0';
     picker_border = 'none';
-    picker_background = 'transparent';
-    picker_color = 'transparent';
+    picker_opacity = '0';
     picker_appearance = 'none';
     picker_cursor = 'pointer';
     picker_outline = 'none';
