@@ -273,6 +273,9 @@ export class $Theme extends $Format implements $Theme$ {
     list_marginBottom = '0';
     list_paddingLeft = '2em';
     @select('.pd-item + .pd-item') item_marginTop = '.25em';
+    @select('.pd-bold') bold_fontWeight = '700';
+    @select('.pd-italics') italics_fontStyle = 'italic';
+    @select('.pd-underline') underline_textDecoration = 'underline';
     @select('.pd-code code') code_fontFamily = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace";
     code_fontSize = '85%';
     code_padding = '.2em .4em';

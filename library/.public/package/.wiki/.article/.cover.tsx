@@ -1,5 +1,5 @@
 import { Author, Cover, Description, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
-import { Header, Menu, Search, Summary, Toolbar } from '@dna-platform/public/application';
+import { Header, Menu, Option, Search, Summary, Toolbar } from '@dna-platform/public/application';
 import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
 
@@ -12,20 +12,18 @@ export default class $Cover extends $Chapter {
                     <Menu>
                         <Summary><Description>Main menu</Description></Summary>
                         <Heading>Navigation</Heading>
-                        <Paragraph>
-                            <BookLink>[Main page](https://en.wikipedia.org/wiki/Main_Page)</BookLink>
-                            <BookLink>[Contents](https://en.wikipedia.org/wiki/Wikipedia:Contents)</BookLink>
-                            <BookLink>[Current events](https://en.wikipedia.org/wiki/Portal:Current_events)</BookLink>
-                            <BookLink>[Random article](https://en.wikipedia.org/wiki/Special:Random)</BookLink>
-                            <BookLink>[About Wikipedia](https://en.wikipedia.org/wiki/Wikipedia:About)</BookLink>
-                            <BookLink>[Contact us](https://en.wikipedia.org/wiki/Wikipedia:Contact_us)</BookLink>
-                            <BookLink>[Help](https://en.wikipedia.org/wiki/Help:Contents)</BookLink>
-                            <BookLink>[Learn to edit](https://en.wikipedia.org/wiki/Help:Introduction)</BookLink>
-                            <BookLink>[Community portal](https://en.wikipedia.org/wiki/Wikipedia:Community_portal)</BookLink>
-                            <BookLink>[Recent changes](https://en.wikipedia.org/wiki/Special:RecentChanges)</BookLink>
-                            <BookLink>[Upload file](https://en.wikipedia.org/wiki/Wikipedia:File_upload_wizard)</BookLink>
-                            <BookLink>[Special pages](https://en.wikipedia.org/wiki/Special:SpecialPages)</BookLink>
-                        </Paragraph>
+                        <Option><BookLink>[Main page](https://en.wikipedia.org/wiki/Main_Page)</BookLink></Option>
+                        <Option><BookLink>[Contents](https://en.wikipedia.org/wiki/Wikipedia:Contents)</BookLink></Option>
+                        <Option><BookLink>[Current events](https://en.wikipedia.org/wiki/Portal:Current_events)</BookLink></Option>
+                        <Option><BookLink>[Random article](https://en.wikipedia.org/wiki/Special:Random)</BookLink></Option>
+                        <Option><BookLink>[About Wikipedia](https://en.wikipedia.org/wiki/Wikipedia:About)</BookLink></Option>
+                        <Option><BookLink>[Contact us](https://en.wikipedia.org/wiki/Wikipedia:Contact_us)</BookLink></Option>
+                        <Option><BookLink>[Help](https://en.wikipedia.org/wiki/Help:Contents)</BookLink></Option>
+                        <Option><BookLink>[Learn to edit](https://en.wikipedia.org/wiki/Help:Introduction)</BookLink></Option>
+                        <Option><BookLink>[Community portal](https://en.wikipedia.org/wiki/Wikipedia:Community_portal)</BookLink></Option>
+                        <Option><BookLink>[Recent changes](https://en.wikipedia.org/wiki/Special:RecentChanges)</BookLink></Option>
+                        <Option><BookLink>[Upload file](https://en.wikipedia.org/wiki/Wikipedia:File_upload_wizard)</BookLink></Option>
+                        <Option><BookLink>[Special pages](https://en.wikipedia.org/wiki/Special:SpecialPages)</BookLink></Option>
                     </Menu>
                     <Section>
                         <Heading>The Free Encyclopedia</Heading>
@@ -109,34 +107,26 @@ export default class $Cover extends $Chapter {
                     <Menu>
                         <Summary><Description>Tools</Description></Summary>
                         <Heading>Actions</Heading>
-                        <Paragraph>
-                            <BookLink>[Read](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout)</BookLink>
-                            <BookLink>[View source](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&action=edit)</BookLink>
-                            <BookLink>[View history](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&action=history)</BookLink>
-                        </Paragraph>
+                        <Option><BookLink>[Read](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout)</BookLink></Option>
+                        <Option><BookLink>[View source](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&action=edit)</BookLink></Option>
+                        <Option><BookLink>[View history](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&action=history)</BookLink></Option>
                         <Heading>General</Heading>
-                        <Paragraph>
-                            <BookLink>[What links here](https://en.wikipedia.org/wiki/Special:WhatLinksHere/Wikipedia:Manual_of_Style/Layout)</BookLink>
-                            <BookLink>[Related changes](https://en.wikipedia.org/wiki/Special:RecentChangesLinked/Wikipedia:Manual_of_Style/Layout)</BookLink>
-                            <BookLink>[Upload file](https://en.wikipedia.org/wiki/Wikipedia:File_Upload_Wizard)</BookLink>
-                            <BookLink>[Permanent link](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&oldid=1373392655)</BookLink>
-                            <BookLink>[Page information](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&action=info)</BookLink>
-                            <BookLink>[Get shortened URL](https://en.wikipedia.org/w/index.php?title=Special:UrlShortener&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWikipedia%3AManual_of_Style%2FLayout)</BookLink>
-                            <BookLink>[Switch to legacy parser](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&useparsoid=0)</BookLink>
-                            <BookLink>[Expand all](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout#)</BookLink>
-                            <OutwardLink>[Edit interlanguage links](https://www.wikidata.org/wiki/Special:EntityPage/Q4663958#sitelinks-wikipedia)</OutwardLink>
-                        </Paragraph>
+                        <Option><BookLink>[What links here](https://en.wikipedia.org/wiki/Special:WhatLinksHere/Wikipedia:Manual_of_Style/Layout)</BookLink></Option>
+                        <Option><BookLink>[Related changes](https://en.wikipedia.org/wiki/Special:RecentChangesLinked/Wikipedia:Manual_of_Style/Layout)</BookLink></Option>
+                        <Option><BookLink>[Upload file](https://en.wikipedia.org/wiki/Wikipedia:File_Upload_Wizard)</BookLink></Option>
+                        <Option><BookLink>[Permanent link](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&oldid=1373392655)</BookLink></Option>
+                        <Option><BookLink>[Page information](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&action=info)</BookLink></Option>
+                        <Option><BookLink>[Get shortened URL](https://en.wikipedia.org/w/index.php?title=Special:UrlShortener&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWikipedia%3AManual_of_Style%2FLayout)</BookLink></Option>
+                        <Option><BookLink>[Switch to legacy parser](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&useparsoid=0)</BookLink></Option>
+                        <Option><BookLink>[Expand all](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout#)</BookLink></Option>
+                        <Option><OutwardLink>[Edit interlanguage links](https://www.wikidata.org/wiki/Special:EntityPage/Q4663958#sitelinks-wikipedia)</OutwardLink></Option>
                         <Heading>Print/export</Heading>
-                        <Paragraph>
-                            <BookLink>[Download as PDF](https://en.wikipedia.org/w/index.php?title=Special:DownloadAsPdf&page=Wikipedia%3AManual_of_Style%2FLayout&action=show-download-screen)</BookLink>
-                            <BookLink>[Printable version](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&printable=yes)</BookLink>
-                        </Paragraph>
+                        <Option><BookLink>[Download as PDF](https://en.wikipedia.org/w/index.php?title=Special:DownloadAsPdf&page=Wikipedia%3AManual_of_Style%2FLayout&action=show-download-screen)</BookLink></Option>
+                        <Option><BookLink>[Printable version](https://en.wikipedia.org/w/index.php?title=Wikipedia:Manual_of_Style/Layout&printable=yes)</BookLink></Option>
                         <Heading>In other projects</Heading>
-                        <Paragraph>
-                            <OutwardLink>[Wikimedia Commons](https://commons.wikimedia.org/wiki/Commons:Guide_to_layout)</OutwardLink>
-                            <OutwardLink>[Wikiquote](https://en.wikiquote.org/wiki/Wikiquote:Guide_to_layout)</OutwardLink>
-                            <OutwardLink>[Wikidata item](https://www.wikidata.org/wiki/Special:EntityPage/Q4663958)</OutwardLink>
-                        </Paragraph>
+                        <Option><OutwardLink>[Wikimedia Commons](https://commons.wikimedia.org/wiki/Commons:Guide_to_layout)</OutwardLink></Option>
+                        <Option><OutwardLink>[Wikiquote](https://en.wikiquote.org/wiki/Wikiquote:Guide_to_layout)</OutwardLink></Option>
+                        <Option><OutwardLink>[Wikidata item](https://www.wikidata.org/wiki/Special:EntityPage/Q4663958)</OutwardLink></Option>
                     </Menu>
                 </Toolbar>
             </Cover>

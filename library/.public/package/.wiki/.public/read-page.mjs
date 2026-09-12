@@ -25,7 +25,7 @@ const tab = await browser.newPage();
 await tab.setViewport({ width: 1280, height: 900 });
 await tab.goto(page, { waitUntil: 'networkidle0', timeout: 120000 });
 
-const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() => {
+const { sections: read, infobox, manual, chrome, lists, order } = await tab.evaluate(() => {
     const body = document.querySelector('.mw-content-ltr');
     const absolute = (href) => href ? new URL(href, location.href).href.replace(/\(/gu, '%28').replace(/\)/gu, '%29') : '';
     // A KEY IS WHAT AN ENTRY MAY CARRY: word characters and hyphens. Wikipedia's ids are mostly that
@@ -51,6 +51,9 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
                 continue;
             }
             if (part.classList.contains('mw-editsection') || tag === 'style' || tag === 'sup') continue;
+            // A PHRASE SET OFF FROM ITS SENTENCE is written as the emphasis it carries.
+            const emphasis = { b: 'Bold', strong: 'Bold', i: 'Italics', em: 'Italics', u: 'Underline' }[tag];
+            if (emphasis !== undefined) { said += `<${emphasis}>${inline(part)}</${emphasis}>`; continue; }
             if (tag === 'a') {
                 const href = part.getAttribute('href') ?? '';
                 const words = part.textContent.replace(/[[\]()]/gu, '').replace(/</gu, '&lt;').replace(/>/gu, '&gt;').trim();
@@ -170,7 +173,30 @@ const { sections: read, infobox, chrome, lists, order } = await tab.evaluate(() 
         places: all('#footer-places a'),
     };
 
-    return { sections: sections.filter(one => one.wrote.length > 0), infobox, chrome, lists, order };
+    // THE SIDEBAR IS A MANUAL: its title, its field, its groups — each a title and a run of links,
+    // holding groups of its own — and the two lines at its foot.
+    const side = document.querySelector('table.sidebar');
+    const grouped = (list) => {
+        const content = list.querySelector(':scope > .sidebar-list-content');
+        return {
+            name: list.querySelector(':scope > .sidebar-list-title')?.textContent.replace(/\s+/gu, ' ').trim() ?? '',
+            items: [...content.children].filter(one => one.tagName === 'UL').flatMap(one => [...one.children].filter(item => item.tagName === 'LI').map(item => inline(item, true).replace(/\s+/gu, ' ').trim())).filter(one => one !== ''),
+            under: [...content.querySelectorAll(':scope > table .sidebar-list')].map(grouped),
+        };
+    };
+    const footed = (one) => one === null ? '' : inline(one).replace(/\s+/gu, ' ').trim();
+    const manual = side === null ? null : {
+        name: side.querySelector('.sidebar-title')?.textContent.trim() ?? '',
+        href: absolute(side.querySelector('.sidebar-title a')?.getAttribute('href') ?? ''),
+        where: absolute(side.querySelector('form')?.getAttribute('action') ?? ''),
+        // THE FIELD'S PROMPT is its placeholder where the form has one and its value where Wikipedia's inputbox writes it there instead.
+        asked: (field => field === null ? '' : field.placeholder || field.value || '')(side.querySelector('form input:not([type]), form input[type=text], form input[type=search]')),
+        said: side.querySelector('form input[type=submit]')?.value ?? 'Search',
+        groups: [...side.querySelectorAll(':scope > tbody > tr > td > .sidebar-list')].map(grouped),
+        below: footed(side.querySelector('.sidebar-below')),
+        navbar: footed(side.querySelector('.sidebar-navbar')),
+    };
+    return { sections: sections.filter(one => one.wrote.length > 0), infobox, manual, chrome, lists, order };
 });
 await browser.close();
 
@@ -182,6 +208,26 @@ const aside = infobox === null ? '' : [
     ...infobox.lines.map(one => held('Line', '                    ', quoted(one.said), ` label="${one.label.replace(/"/gu, '')}"`)),
     `                </Infobox>`,
 ].join('\n');
+
+// A GROUP IS A MENU: its title the summary, its links a paragraph, its own groups menus inside it.
+const menu = (group, pad) => [
+    `${pad}<Menu>`,
+    `${pad}    <Summary>${quoted(group.name)}</Summary>`,
+    ...group.items.map(one => `${pad}    <Option>${quoted(one)}</Option>`),
+    ...group.under.map(one => menu(one, `${pad}    `)),
+    `${pad}</Menu>`,
+].join(NEWLINE);
+const boxed = manual === null ? '' : [
+    `                <Manual>`,
+    `                    <Section>`,
+    `                        <Heading>${manual.href ? `<BookLink>[${quoted(manual.name)}](${manual.href})</BookLink>` : quoted(manual.name)}</Heading>`,
+    ...(manual.where ? [`                        <Search said="${manual.said}" where="${manual.where}">${quoted(manual.asked)}</Search>`] : []),
+    ...manual.groups.map(one => menu(one, '                        ')),
+    ...(manual.below ? [held('Paragraph', '                        ', quoted(manual.below))] : []),
+    ...(manual.navbar ? [held('Paragraph', '                        ', quoted(manual.navbar))] : []),
+    `                    </Section>`,
+    `                </Manual>`,
+].join(NEWLINE);
 
 const kinds = new Set();
 // A LIST IS DRAWN AS DEEP AS IT WAS READ: an item with a list under it holds that list.
@@ -239,7 +285,7 @@ for (const section of chapters) {
         at += 1;
         const said = section.entries.map(one => held('Entry', '                    ', `${one.key}: ${quoted(one.said)}`)).join(NEWLINE);
         const listed = section.name === 'Notes' ? 'Notes' : 'References';
-        const holds = [...new Set(['Entry', 'Heading', listed, 'Section', ...(said.includes('<Citation>') ? ['Citation'] : [])])].sort();
+        const holds = [...new Set(['Entry', 'Heading', listed, 'Section', ...(said.includes('<Citation>') ? ['Citation'] : []), ...['Bold', 'Italics', 'Underline'].filter(kind => said.includes(`<${kind}>`))])].sort();
         const links = [...(said.includes('<BookLink>') ? ['BookLink'] : []), ...(said.includes('<OutwardLink>') ? ['OutwardLink'] : [])];
         const file = `${at}-${named(section.name)}.tsx`;
         await writeFile(join(book, file), [
@@ -266,10 +312,11 @@ for (const section of chapters) {
     }
     at += 1;
     const said = nested(section.wrote);
-    const whole = said + (at === 1 ? aside : '');
-    const carries = [...new Set(['Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') ? [] : ['Section']),
+    const whole = said + (at === 1 ? aside + boxed : '');
+    const carries = [...new Set(['Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') && !boxed ? [] : ['Section']),
         ...(at === 1 ? ['Illustration'] : []),
         ...(whole.includes('<Citation>') ? ['Citation'] : []),
+        ...['Bold', 'Italics', 'Underline'].filter(kind => whole.includes(`<${kind}>`)),
         ...(whole.includes('<Illustration') ? ['Illustration'] : []),
         ...(whole.includes('<Quote>') ? ['Quote'] : []),
         ...(whole.includes('<List>') ? ['Item', 'List'] : [])])].sort();
@@ -279,7 +326,8 @@ for (const section of chapters) {
     const lines = [
         `import { $ } from '@dna-platform/chemistry';`,
         `import { ${carries.join(', ')} } from '@dna-platform/public';`,
-        ...((whole.includes('<Hatnote>') || at === 1) ? [`import { ${[...(at === 1 ? ['Infobox', 'Line'] : []), ...(whole.includes('<Hatnote>') ? ['Hatnote'] : [])].join(', ')} } from '@dna-platform/public/encyclopedia';`] : []),
+        ...(/<(Hatnote|Infobox|Manual)>/u.test(whole) ? [`import { ${[...(whole.includes('<Hatnote>') ? ['Hatnote'] : []), ...(whole.includes('<Infobox>') ? ['Infobox', 'Line'] : []), ...(whole.includes('<Manual>') ? ['Manual'] : [])].join(', ')} } from '@dna-platform/public/encyclopedia';`] : []),
+        ...(whole.includes('<Manual>') ? [`import { ${['Menu', 'Option', 'Summary', ...(whole.includes('<Search ') ? ['Search'] : [])].sort().join(', ')} } from '@dna-platform/public/application';`] : []),
         ...(inward.length || outward.length ? [`import { ${[...inward, ...outward].join(', ')} } from '../.chapter';`] : []),
         `import $Chapter from './.chapter';`,
         ``,
@@ -287,7 +335,7 @@ for (const section of chapters) {
         `    print() {`,
         `        return (`,
         `            <Document>`,
-        ...(at === 1 ? [aside, said] : [
+        ...(at === 1 ? (opening => [opening, aside, boxed, said.slice(opening.length)].filter(one => one !== ''))(said.match(/^(?:[ ]+<Hatnote>\n[^\n]*\n[ ]+<\/Hatnote>\n?)*/u)[0].replace(/\n$/u, '')) : [
             `                <Section>`,
             `                <Heading>${quoted(section.name)}</Heading>`,
             said,
@@ -312,15 +360,12 @@ const say = (one) => {
 };
 const holds = (one) => (one.outward ? 'OutwardLink' : 'BookLink');
 const listed = (links, pad) => links.map(one => `${pad}${say(one)}`).join('\n');
-// A MENU HOLDS PARAGRAPHS. A section written inside one is not a part a section admits — the
-// levels say a section holds paragraphs — so the parser folded each group into a paragraph and
-// the page drew a heading inside a <p>, sixty hydration errors' worth. A group is its name and
-// its links, which is a heading and a paragraph, which is what a menu holds.
+// A MENU HOLDS OPTIONS. A section written inside one is not a part a section admits — the levels
+// say a section holds paragraphs, and for a menu a paragraph is an option — so a group is its name
+// and an option per link, which is what a menu holds.
 const grouped = (name, links, pad) => [
     `${pad}<Heading>${quoted(name)}</Heading>`,
-    `${pad}<Paragraph>`,
-    listed(links, `${pad}    `),
-    `${pad}</Paragraph>`,
+    ...links.map(one => `${pad}<Option>${say(one)}</Option>`),
 ].join('\n');
 
 const linkKinds = new Set(chrome.menu.concat(chrome.people, chrome.languages, chrome.tabs, chrome.doing,
@@ -328,7 +373,7 @@ const linkKinds = new Set(chrome.menu.concat(chrome.people, chrome.languages, ch
 
 const cover = [
     `import { Author, Cover, Description, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';`,
-    `import { Header, Menu, Search, Summary, Toolbar } from '@dna-platform/public/application';`,
+    `import { Header, Menu, Option, Search, Summary, Toolbar } from '@dna-platform/public/application';`,
     `import { ${[...linkKinds].sort().join(', ')} } from '../.chapter';`,
     `import $Chapter from './.chapter';`,
     ``,
@@ -395,7 +440,7 @@ const synopsis = [
     `        return (`,
     `            <Synopsis print>`,
     `                <Paragraph>${quoted(chrome.said)}</Paragraph>`,
-    ...chrome.indicators.map(one => `                <Image source="${one.source}" width="${one.wide}px" height="${one.tall}px">${quoted(one.said)}</Image>`),
+    ...chrome.indicators.map(one => `                <Image source="${one.source}" width="${one.wide}" height="${one.tall}">${quoted(one.said)}</Image>`),
     ...(chrome.subpages ? [`                <Paragraph>`, `                    ${quoted(chrome.subpages)}`, `                </Paragraph>`] : []),
     `            </Synopsis>`,
     `        );`,
@@ -431,11 +476,11 @@ made.push(`${at + 1}-the-foot.tsx — ${chrome.foot.length} lines, ${chrome.plac
 
 const kebab = (said) => said.toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-|-$/gu, '');
 const rows = chapters;
-const row = (said, pad) => `${pad}<Paragraph><Ref>[${quoted(said)}](#${kebab(said)})</Ref></Paragraph>`;
+const row = (said, pad) => `${pad}<Option><Ref>[${quoted(said)}](#${kebab(said)})</Ref></Option>`;
 const contents = [
     `import { $ } from '@dna-platform/chemistry';`,
-    `import { Heading, Paragraph, Ref, Section, TableOfContents } from '@dna-platform/public';`,
-    `import { Menu, Summary } from '@dna-platform/public/application';`,
+    `import { Heading, Ref, Section, TableOfContents } from '@dna-platform/public';`,
+    `import { Menu, Option, Summary } from '@dna-platform/public/application';`,
     `import $Chapter from './.chapter';`,
     ``,
     `export default class $Contents extends $Chapter {`,
@@ -444,7 +489,7 @@ const contents = [
     `            <TableOfContents>`,
     `                <Section>`,
     `                    <Heading>Contents</Heading>`,
-    `                    <Paragraph><Ref>[(Top)](#)</Ref></Paragraph>`,
+    `                    <Option><Ref>[(Top)](#)</Ref></Option>`,
     ...rows.slice(1).flatMap(one => {
         const under = (one.wrote ?? []).filter(part => part.how === 'heading' && part.deep === 1);
         if (under.length === 0) return [row(one.name, '                    ')];

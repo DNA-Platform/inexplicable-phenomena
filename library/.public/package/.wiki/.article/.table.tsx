@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Ref, Section, TableOfContents } from '@dna-platform/public';
-import { Menu, Summary } from '@dna-platform/public/application';
+import { Heading, Ref, Section, TableOfContents } from '@dna-platform/public';
+import { Menu, Option, Summary } from '@dna-platform/public/application';
 import $Chapter from './.chapter';
 
 export default class $Contents extends $Chapter {
@@ -9,35 +9,35 @@ export default class $Contents extends $Chapter {
             <TableOfContents>
                 <Section>
                     <Heading>Contents</Heading>
-                    <Paragraph><Ref>[(Top)](#)</Ref></Paragraph>
-                    <Paragraph><Ref>[Order of article elements](#order-of-article-elements)</Ref></Paragraph>
+                    <Option><Ref>[(Top)](#)</Ref></Option>
+                    <Option><Ref>[Order of article elements](#order-of-article-elements)</Ref></Option>
                     <Menu>
                         <Summary><Ref>[Body sections](#body-sections)</Ref></Summary>
-                        <Paragraph><Ref>[Headings and sections](#headings-and-sections)</Ref></Paragraph>
-                        <Paragraph><Ref>[Section order](#section-order)</Ref></Paragraph>
-                        <Paragraph><Ref>[Section templates and summary style](#section-templates-and-summary-style)</Ref></Paragraph>
-                        <Paragraph><Ref>[Paragraphs](#paragraphs)</Ref></Paragraph>
+                        <Option><Ref>[Headings and sections](#headings-and-sections)</Ref></Option>
+                        <Option><Ref>[Section order](#section-order)</Ref></Option>
+                        <Option><Ref>[Section templates and summary style](#section-templates-and-summary-style)</Ref></Option>
+                        <Option><Ref>[Paragraphs](#paragraphs)</Ref></Option>
                     </Menu>
                     <Menu>
                         <Summary><Ref>[Standard appendices and footers](#standard-appendices-and-footers)</Ref></Summary>
-                        <Paragraph><Ref>[Headings](#headings)</Ref></Paragraph>
-                        <Paragraph><Ref>[Works or publications](#works-or-publications)</Ref></Paragraph>
-                        <Paragraph><Ref>["See also" section](#see-also-section)</Ref></Paragraph>
-                        <Paragraph><Ref>[Notes and references](#notes-and-references)</Ref></Paragraph>
-                        <Paragraph><Ref>[Further reading](#further-reading)</Ref></Paragraph>
-                        <Paragraph><Ref>[External links](#external-links)</Ref></Paragraph>
-                        <Paragraph><Ref>[Navigation templates](#navigation-templates)</Ref></Paragraph>
+                        <Option><Ref>[Headings](#headings)</Ref></Option>
+                        <Option><Ref>[Works or publications](#works-or-publications)</Ref></Option>
+                        <Option><Ref>["See also" section](#see-also-section)</Ref></Option>
+                        <Option><Ref>[Notes and references](#notes-and-references)</Ref></Option>
+                        <Option><Ref>[Further reading](#further-reading)</Ref></Option>
+                        <Option><Ref>[External links](#external-links)</Ref></Option>
+                        <Option><Ref>[Navigation templates](#navigation-templates)</Ref></Option>
                     </Menu>
-                    <Paragraph><Ref>[Specialized layout](#specialized-layout)</Ref></Paragraph>
+                    <Option><Ref>[Specialized layout](#specialized-layout)</Ref></Option>
                     <Menu>
                         <Summary><Ref>[Formatting](#formatting)</Ref></Summary>
-                        <Paragraph><Ref>[Images](#images)</Ref></Paragraph>
-                        <Paragraph><Ref>[Horizontal rule](#horizontal-rule)</Ref></Paragraph>
-                        <Paragraph><Ref>[Collapsible content](#collapsible-content)</Ref></Paragraph>
+                        <Option><Ref>[Images](#images)</Ref></Option>
+                        <Option><Ref>[Horizontal rule](#horizontal-rule)</Ref></Option>
+                        <Option><Ref>[Collapsible content](#collapsible-content)</Ref></Option>
                     </Menu>
-                    <Paragraph><Ref>[See also](#see-also)</Ref></Paragraph>
-                    <Paragraph><Ref>[Notes](#notes)</Ref></Paragraph>
-                    <Paragraph><Ref>[References](#references)</Ref></Paragraph>
+                    <Option><Ref>[See also](#see-also)</Ref></Option>
+                    <Option><Ref>[Notes](#notes)</Ref></Option>
+                    <Option><Ref>[References](#references)</Ref></Option>
                 </Section>
             </TableOfContents>
         );

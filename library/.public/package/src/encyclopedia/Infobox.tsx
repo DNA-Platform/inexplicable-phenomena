@@ -53,17 +53,26 @@ export class $InfoboxFormat extends $BoxFormat {
     said_fontWeight = '700';
     get said_color() { return this.theme.link; }
 
-    @select('.pd-illustration') shown_float = 'none';
+    @select('&.pd-infobox .pd-illustration') shown_display = 'block';
+    shown_float = 'none';
     shown_width = 'auto';
     shown_margin = '0';
-    shown_padding = '0.5em';
+    shown_padding = '1px';
+    shown_border = 'none';
+    shown_background = 'transparent';
     shown_textAlign = 'center';
-    @select('.pd-illustration img') picture_display = 'block';
-    picture_margin = '0 auto';
+    @select('&.pd-infobox .pd-illustration img') picture_display = 'inline-block';
+    picture_verticalAlign = 'middle';
+    picture_margin = '0';
+    picture_border = 'none';
+    picture_background = 'transparent';
     picture_maxWidth = '100%';
-    picture_height = 'auto';
-    @select('.pd-illustration .pd-caption') caption_fontSize = '1em';
+    @select('&.pd-infobox .pd-illustration .pd-caption') caption_display = 'block';
+    caption_fontSize = '1em';
     caption_textAlign = 'center';
+    caption_padding = '0';
+    caption_border = 'none';
+    caption_background = 'transparent';
 
     @select('@media (max-width: 640px) {\n            & {') narrow_float = 'none';
     narrow_margin = '0 0 1em';

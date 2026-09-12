@@ -22,7 +22,7 @@ export class $Illustration extends $Image implements $Illustration$ {
     override view(): ReactNode {
         return reflection.formatted(this,
             <figure className={this.className}>
-                <img src={this.source} alt={this.caption} className="pd-image" />
+                <img src={this.source} alt={this.caption} className="pd-image" width={html.sized(this.$width)} height={html.sized(this.$height)} />
                 <figcaption className="pd-caption">{this.print()}</figcaption>
             </figure>
         );

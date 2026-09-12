@@ -19,16 +19,23 @@ export class $EncyclopediaTheme extends $Theme {
     override leading = '1.625';
     override between = '1em';
     override get maxWidth() { return '99.75em'; }
-    override padding = '0';
+    override padding = '0 2.75em';
     display = 'grid';
     boxSizing = 'border-box';
-    // THE FRAME IN FIVE TRACKS, measured off en.wikipedia.org at 1280: a gutter, the contents at
-    // 208, the text, the rail at 196, a gutter — which puts the contents at x32, the text at x264
-    // and 752 wide, and the rail at x1040. The gutters are tracks rather than padding so that the
-    // bar can span the whole of it without taking any margin back.
-    gridTemplateColumns = 'minmax(0, 0.5em) minmax(0, 13em) minmax(0, 1fr) minmax(0, 12.25em) minmax(0, 1.25em)';
+    // THE FRAME IN THREE TRACKS, read off en.wikipedia.org at 1280, 1536, 1920 and 2560: the
+    // contents at 12.25em, the text capped at 59.25em, the rail at 12.25em, 1.5em apart and packed
+    // to the left inside a container capped at 1596px, padded 2.75em; from 1600 the side tracks are
+    // 15.5em and the padding 3.25em. At 1280 that is the contents at x32, the text at x264 and 752
+    // wide, the rail at x1040; at 1920 the text is 948 wide and the rail stands at x1458.
+    gridTemplateColumns = '12.25em minmax(0, 59.25em) 12.25em minmax(0, 1fr)';
     gridAutoRows = 'min-content';
     columnGap = '1.5em';
+    @select('@media (min-width: 1601px)') broad_padding = '0 3.25em';
+    broad_gridTemplateColumns = '15.5em minmax(0, 59.25em) 15.5em minmax(0, 1fr)';
+    @select('@media (min-width: 1601px) {\n             .pd-header {') wideBar_padding = '0 3.25em';
+    wideBar_marginLeft = '-3.25em';
+    wideBar_marginRight = '-3.25em';
+    @select('@media (min-width: 1601px) {\n             .pd-header .pd-search {') wideField_marginLeft = '5.375rem';
     @select('> .pd-book') book_display = 'contents';
     @select('.pd-book > .pd-chapter') chapter_display = 'contents';
     // A COVER HOLDS THE TITLE BLOCK AND IS NOT A BOX. Its parts are placed by the frame one row
@@ -38,26 +45,39 @@ export class $EncyclopediaTheme extends $Theme {
     // wordmark standing 84..224, the field 266..740 and who-you-are ending at 1236.
     @select('.pd-header') override get strip_background() { return this.paper; }
     strip_gridColumn = '1 / -1';
+    strip_width = 'auto';
+    strip_marginLeft = '-2.75em';
+    strip_marginRight = '-2.75em';
     strip_gridRow = '1';
     strip_height = '4.125em';
     strip_padding = '0 2.75em';
     strip_gap = '0.5em';
     strip_fontSize = '1rem';
     strip_marginBottom = '1.5em';
-    @select('.pd-cover > .pd-title') title_gridColumn = '3';
+    override get strip_borderBottom() { return 'none'; }
+    @select('.pd-cover > .pd-title') title_gridColumn = '2';
     title_gridRow = '2';
-    title_maxWidth = 'calc(100% - 9.5em)';
+    title_boxSizing = 'border-box';
+    title_paddingRight = '9.5em';
+    title_position = 'relative';
+    @select('.pd-cover > .pd-title::after') underline_content = "''";
+    underline_position = 'absolute';
+    underline_left = '0';
+    underline_right = '0';
+    underline_bottom = '0';
+    underline_height = '1px';
+    underline_background = '#a2a9b1';
     // THE TITLE'S REFERENCE wraps the heading; inline, its line box stood the block 7px taller than Wikipedia's 40.
     @select('.pd-cover > .pd-title > .pd-meaning') named_display = 'block';
-    @select('.pd-cover > .pd-menu') tongue_gridColumn = '3';
+    @select('.pd-cover > .pd-menu') tongue_gridColumn = '2';
     tongue_gridRow = '2';
     tongue_justifySelf = 'end';
     tongue_alignSelf = 'center';
     tongue_marginRight = '-0.8em';
-    tongue_padding = '0.35em 0';
+    tongue_padding = '0';
     tongue_borderRadius = '2px';
-    tongue_border = '1px solid transparent';
-    @select('.pd-toolbar') tabs_gridColumn = '3';
+    tongue_border = 'none';
+    @select('.pd-toolbar') tabs_gridColumn = '2';
     tabs_gridRow = '3';
     tabs_marginTop = '0';
     tabs_boxShadow = '0 1px 0 #c8ccd1';
@@ -65,7 +85,7 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-toolbar > .pd-paragraph') tabGroup_margin = '0';
     @select('.pd-toolbar > .pd-paragraph > .pd-ref') tab_height = '2.2857em';
     tab_position = 'relative';
-    @select('.pd-book > .pd-chapter > .pd-table-of-contents') side_gridColumn = '2';
+    @select('.pd-book > .pd-chapter > .pd-table-of-contents') side_gridColumn = '1';
     side_gridRow = '3 / span 400';
     side_alignSelf = 'start';
     side_position = 'sticky';
@@ -73,15 +93,18 @@ export class $EncyclopediaTheme extends $Theme {
     side_maxHeight = 'calc(100vh - 3em)';
     side_overflowY = 'auto';
     side_fontSize = '0.875em';
+    side_marginTop = '0.5em';
     side_padding = '0 1.143em';
-    @select('.pd-book > .pd-chapter > .pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter):not(.pd-footer), .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-index') text_gridColumn = '3';
+    side_marginLeft = '-0.857em';
+    @select('.pd-book > .pd-chapter > .pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter):not(.pd-footer), .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-index') text_gridColumn = '2';
     text_minWidth = '0';
 
-    @select('.pd-appearance') rail_gridColumn = '4';
+    @select('.pd-appearance') rail_gridColumn = '3';
     rail_gridRow = '3 / span 400';
     rail_alignSelf = 'start';
     rail_position = 'sticky';
     rail_top = '1.5em';
+    rail_marginTop = '0.5em';
     @select('.pd-appearance h3') paneName_width = 'fit-content';
     @select('.pd-appearance h4') railName_margin = '6px 0';
     railName_padding = '6px 0';
@@ -181,10 +204,11 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph') sited_margin = '0.5714em 0 0';
     sited_flex = '1 1 auto';
     // THE SITE LINE'S ROW: the line at the left, the page's indicators at its right, the subpage line beneath.
-    @select('.pd-book > .pd-chapter > .pd-synopsis') siteRow_display = 'flex';
+    @select('.pd-book > .pd-chapter > .pd-document.pd-synopsis') siteRow_display = 'flex';
     siteRow_flexWrap = 'wrap';
     siteRow_columnGap = '0.5em';
     siteRow_alignItems = 'start';
+    siteRow_marginBottom = '1.0714em';
     @select('.pd-book > .pd-chapter > .pd-synopsis .pd-image') indicator_display = 'block';
     indicator_height = '1.375em';
     indicator_width = 'auto';
@@ -251,6 +275,8 @@ export class $EncyclopediaTheme extends $Theme {
 
     // A SUMMARY IN AN ENCYCLOPEDIA IS A WORD YOU PRESS, not an abstract set in italic — the base
     // names that kind for what a summary usually is, and here every menu wears it.
+    // THE MANUAL'S BANDS: every group's title on the blue Wikipedia tints a sidebar's with.
+    @select('.pd-manual .pd-summary') band_background = '#ddeeff';
     @select('.pd-summary') override summed_margin = '0';
     override summed_fontStyle = 'normal';
     // A HATNOTE STANDS IN FROM THE MARGIN AND LEANS, which is how a reader tells it from the
@@ -305,7 +331,7 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-book .pd-appearance') pane_padding = '0 1.143em';
 
     @select('.pd-book > .pd-chapter > .pd-footer') foot_gridColumn = '1 / -1';
-    foot_margin = '2rem 2.75rem 0';
+    foot_margin = '2rem 0 0';
     foot_fontSize = '0.92em';
     // NARROW IS ONE COLUMN. The five tracks collapse to the text's, and the gaps with them —
     // left standing they added 96 pixels of nothing and the page scrolled sideways at 360.
@@ -313,12 +339,14 @@ export class $EncyclopediaTheme extends $Theme {
     narrow_columnGap = '0';
     narrow_padding = '0';
     @select('@media (max-width: 1119px) {\n             .pd-table-of-contents, .pd-appearance {') narrowSide_display = 'none';
-    @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-title, .pd-cover > .pd-menu, .pd-toolbar, .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-document:not(.pd-cover), .pd-book > .pd-chapter > .pd-index {') narrowText_gridColumn = '3';
+    @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-title, .pd-cover > .pd-menu, .pd-toolbar, .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-document:not(.pd-cover), .pd-book > .pd-chapter > .pd-index {') narrowText_gridColumn = '1';
     @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-menu::details-content {') narrowTongues_columns = '1';
     narrowTongues_width = 'calc(100vw - 3em)';
     // THE BAR WRAPS RATHER THAN SPILLS. At 360 the menu, the wordmark and who-you-are come to 409
     // pixels and the page scrolled sideways; the row is allowed a second line instead.
-    @select('@media (max-width: 1119px) {\n             .pd-header {') narrowBar_padding = '0.5em 1em';
+    @select('@media (max-width: 1119px) {\n             .pd-header {') narrowBar_padding = '0.5em 1.5em';
+    narrowBar_marginLeft = '-1.5em';
+    narrowBar_marginRight = '-1.5em';
     narrowBar_flexWrap = 'wrap';
     narrowBar_rowGap = '0.4em';
     narrowBar_height = 'auto';
@@ -405,20 +433,24 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-illustration') override figure_margin = '0.5em 0 1.3em 1.4em';
     figure_float = 'right';
     figure_clear = 'right';
+    figure_display = 'table';
     figure_boxSizing = 'border-box';
-    figure_width = '13.125em';
     figure_maxWidth = '100%';
-    figure_padding = '3px';
-    get figure_border() { return `1px solid ${this.shade}`; }
-    @select('.pd-illustration .pd-image') image_display = 'block';
-    image_width = '100%';
-    image_height = 'auto';
-    @select('.pd-caption') caption_fontSize = '0.875em';
+    figure_padding = '0';
+    figure_border = '1px solid #c8ccd1';
+    get figure_background() { return this.quiet; }
+    @select('.pd-illustration .pd-image') image_display = 'inline';
+    image_verticalAlign = 'middle';
+    image_margin = '3px';
+    image_border = '1px solid #c8ccd1';
+    get image_background() { return this.paper; }
+    @select('.pd-caption') caption_display = 'table-caption';
+    caption_captionSide = 'bottom';
+    caption_fontSize = '0.884em';
     caption_lineHeight = '1.4';
-    caption_padding = '0.4em 0.6em';
+    caption_padding = '0 0.43em 0.43em';
     get caption_fontFamily() { return this.body; }
     get caption_background() { return this.quiet; }
-    get caption_borderTop() { return `1px solid ${this.shade}`; }
     @select('@media (max-width: 480px) {\n             figure {') narrowFigure_float = 'none';
     narrowFigure_width = '100%';
     narrowFigure_margin = '0.5em 0 1.3em';

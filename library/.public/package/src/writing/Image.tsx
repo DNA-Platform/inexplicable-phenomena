@@ -25,7 +25,7 @@ export class $Image extends $Paragraph implements $Image$ {
     }
 
     override view(): ReactNode {
-        return reflection.formatted(this, <img src={this.source} alt={html.text(this._block)} className={this.className} />);
+        return reflection.formatted(this, <img src={this.source} alt={html.text(this._block)} className={this.className} width={html.sized(this.$width)} height={html.sized(this.$height)} />);
     }
 }
 
@@ -45,8 +45,8 @@ export const Image = $($Image);
 export const TypeOfImage = $($TypeOfImage);
 
 export class $IllustrationFormat extends $Format {
-    @select('> figure.pd-illustration img, > img.pd-image') get image_width() { return this.shown()?.$width ?? 'auto'; }
-    get image_height() { return this.shown()?.$height ?? 'auto'; }
+    @select('> figure.pd-illustration img, > img.pd-image') get image_width() { return html.length(this.shown()?.$width ?? 'auto'); }
+    get image_height() { return html.length(this.shown()?.$height ?? 'auto'); }
 
     protected shown(): $Image | undefined {
         return ((this.$of ?? this).parent) as $Image | undefined;

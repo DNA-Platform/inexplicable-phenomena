@@ -5,6 +5,7 @@ import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Format } from '@/writing/Format';
 import { $Heading$, $Heading, $TypeOfHeading, HeadingSpecification } from '@/writing/Heading';
+import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
 import { $Section$, $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
 
 export interface $Menu$ extends $Section$ { }
@@ -48,6 +49,25 @@ export class $TypeOfSummary extends $TypeOfHeading {
 export class SummarySpecification extends HeadingSpecification {
 }
 
+export interface $Option$ extends $Paragraph$ { }
+
+// A ROW OF A MENU, which is one thing you may choose there. It is a paragraph — a menu holds
+// paragraphs — written as one by whoever writes the menu: the page's tools, the contents'
+// sections, the manual's links. Registered instead, so that for a menu a paragraph is an option,
+// it took the menu's summary too — measured: every menu lost its word.
+export class $Option extends $Paragraph implements $Option$ {
+    $Option(block: $Block) {
+        super.$Paragraph(this.addType(block, $TypeOfOption));
+    }
+}
+
+export class $TypeOfOption extends $TypeOfParagraph {
+    protected override specification: Specification<$Writing> = new OptionSpecification();
+}
+
+export class OptionSpecification extends ParagraphSpecification {
+}
+
 // ONLY THE STRUCTURE IS HERE: the marker a browser draws beside a summary is taken off, and what
 // opens is taken out of the flow. Where it opens and what paints it are a theme's to say.
 export class $MenuFormat extends $Format {
@@ -86,5 +106,7 @@ export const Menu = $($Menu);
 export const TypeOfMenu = $($TypeOfMenu);
 export const Summary = $($Summary);
 export const TypeOfSummary = $($TypeOfSummary);
+export const Option = $($Option);
+export const TypeOfOption = $($TypeOfOption);
 export const MenuFormat = $($MenuFormat);
 const menuStyle = MenuFormat;

@@ -21,7 +21,11 @@ const here = dirname(fileURLToPath(import.meta.url));
 const recording = join(here, '.portal', 'portal.json');
 const ours = process.env.WIKI ?? 'http://localhost:5311/';
 const baselining = process.argv.includes('--baseline');
-const widths = [1280, 1000, 768, 480, 360];
+// ONE PAGE COSTS ONE PAGE: `--only=turing` runs that target alone; a baseline still records every page.
+const only = process.argv.find(one => one.startsWith('--only='))?.slice(7);
+// ONE WIDTH COSTS ONE WIDTH: `--at=1280` measures that width alone; the looks and counts are read at 1280 regardless.
+const at = Number(process.argv.find(one => one.startsWith('--at='))?.slice(5) ?? 0);
+const widths = [2560, 1920, 1600, 1536, 1440, 1366, 1280, 1200, 1120, 1024, 1000, 900, 768, 720, 640, 480, 414, 375, 360];
 
 // WHAT ANY ENCYCLOPEDIA PAGE IS MEASURED BY: the same regions, counts and looks on every page
 // of the type, recorded from the real page each stands beside.
@@ -33,11 +37,14 @@ const encyclopedia = {
         ['search', '#p-search form', '.pd-search'],
         ['who you are', '.vector-user-links', '.pd-header > .pd-paragraph:not(.pd-search):not(.pd-heading)'],
         ['contents', '.vector-column-start', 'nav.pd-table-of-contents'],
-        ['title', '#firstHeading', '.pd-cover > .pd-title'],
+        ['title', '#firstHeading', '.pd-cover > .pd-title .pd-heading'],
         ['languages', '#p-lang-btn', '.pd-cover > .pd-menu'],
         ['toolbar', '.vector-page-toolbar', '.pd-toolbar'],
-        ['site line', '#siteSub', 'article.pd-synopsis'],
+        ['text top', '.vector-body', 'article.pd-synopsis'],
         ['indicator', '.mw-indicator', 'article.pd-synopsis .pd-image'],
+        ['manual', 'table.sidebar', '.pd-manual'],
+        ['first text', '.mw-parser-output .hatnote', '.pd-book > .pd-chapter > article .pd-hatnote'],
+        ['infobox image', '.infobox-image img', '.pd-infobox img'],
         ['contents heading', '#vector-toc-pinned-container .vector-pinnable-header-label', '.pd-table-of-contents .pd-heading'],
         ['contents row', '#vector-toc .vector-toc-level-1:not(#toc-mw-content-text) > .vector-toc-link .vector-toc-text', '.pd-table-of-contents .pd-summary .pd-ref'],
         ['appearance heading', '#vector-appearance .vector-pinnable-header-label', '.pd-appearance h3'],
@@ -47,6 +54,8 @@ const encyclopedia = {
     ],
     counts: [
         ['illustrations', '.mw-content-ltr figure', '.pd-illustration:not(.pd-infobox *)'],
+        ['manual groups', 'table.sidebar .sidebar-list', '.pd-manual .pd-menu'],
+        ['manual links', 'table.sidebar a', '.pd-manual .pd-ref'],
         ['quotations', '.mw-content-ltr blockquote', '.pd-quote'],
         ['hatnotes', '.mw-content-ltr .hatnote', '.pd-hatnote'],
         // A MARK IS READ WHEN IT NAMES AN ENTRY, so the count asks for the marks that do.
@@ -59,7 +68,7 @@ const encyclopedia = {
     styles: [
         ['title', '#firstHeading', '.pd-cover > .pd-title .pd-heading'],
         ['title rule', '.vector-page-titlebar', '.pd-cover > .pd-title'],
-        ['toolbar rule', '.vector-page-toolbar', '.pd-toolbar'],
+        ['toolbar rule', '.vector-page-toolbar-container', '.pd-toolbar'],
         ['selected tab', '#p-associated-pages li.selected a', '.pd-toolbar > .pd-paragraph:first-of-type .pd-ref:first-child'],
         ['tab Talk', '#ca-talk a', '.pd-toolbar > .pd-paragraph:first-of-type .pd-ref:last-child'],
         ['view Read', '#ca-view a', '.pd-toolbar > .pd-paragraph:last-of-type .pd-ref:first-child'],
@@ -80,6 +89,8 @@ const encyclopedia = {
         ['infobox title', '.infobox-above', '.pd-infobox > .pd-heading'],
         ['infobox row', '.infobox-data', '.pd-line'],
         ['infobox caption', '.infobox-caption', '.pd-infobox .pd-caption'],
+        ['infobox image', '.infobox-image img', '.pd-infobox img'],
+        ['first figure image', '.mw-content-ltr figure img', '.pd-illustration:not(.pd-infobox *) img'],
         ['contents heading', '#vector-toc-pinned-container .vector-pinnable-header-label', '.pd-table-of-contents .pd-heading'],
         ['contents top', '#toc-mw-content-text > a .vector-toc-text', '.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-ref'],
         ['contents row', '#vector-toc .vector-toc-level-1:not(#toc-mw-content-text) > .vector-toc-link .vector-toc-text', '.pd-table-of-contents .pd-summary .pd-ref'],
@@ -122,7 +133,7 @@ const targets = [
     },
     {
         key: 'turing',
-        pinned: [1280],
+        pinned: widths.filter(one => one >= 1120),
         theirs: 'https://en.wikipedia.org/wiki/Alan_Turing',
         ours: 'turing',
         ...encyclopedia,
@@ -150,7 +161,7 @@ const measure = (page, list, which) => page.evaluate((list, which) => {
         const el = find(one[which]);
         if (!el) { seen[one[0]] = null; continue; }
         const box = el.getBoundingClientRect();
-        seen[one[0]] = { x: Math.round(box.x), w: Math.round(box.width), h: Math.round(box.height) };
+        seen[one[0]] = { x: Math.round(box.x), y: Math.round(box.y), w: Math.round(box.width), h: Math.round(box.height) };
     }
     return seen;
 }, list, which);
@@ -171,7 +182,7 @@ const present = (page, list, which) => page.evaluate((list, which) => {
 // size, the weight, the colour, the rules above and below it, and the space around it. Doug: "the
 // most iconic part of wikipedia — title, separators, font, spacing" — so each of those is a number
 // the recording carries and a failure the run names.
-const looked = ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'lineHeight', 'color', 'backgroundColor', 'borderTop', 'borderBottom', 'marginTop', 'marginBottom', 'marginLeft', 'paddingTop', 'paddingBottom', 'paddingLeft', 'textDecorationLine', 'height'];
+const looked = ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'lineHeight', 'color', 'backgroundColor', 'borderTop', 'borderBottom', 'marginTop', 'marginBottom', 'marginLeft', 'paddingTop', 'paddingBottom', 'paddingLeft', 'textDecorationLine', 'height', 'boxShadow', 'width'];
 const looks = (page, list, which) => page.evaluate((list, which, looked) => {
     const seen = {};
     for (const one of list) {
@@ -181,6 +192,7 @@ const looks = (page, list, which) => page.evaluate((list, which, looked) => {
         const style = getComputedStyle(el);
         const said = { tag: el.tagName };
         for (const name of looked) said[name] = style[name];
+        if (/rule$/.test(one[0])) { const after = getComputedStyle(el, '::after'); said.afterContent = after.content; said.afterHeight = after.height; said.afterBackground = after.backgroundColor; }
         seen[one[0]] = said;
     }
     return seen;
@@ -195,13 +207,15 @@ const differs = (name, theirs, ours) => {
     const off = [];
     const ruled = /rule/.test(name), faced = /heading$|^title$/.test(name), pictured = ours.tag === 'IMG' || theirs.tag === 'IMG';
     // A HEIGHT IS COMPARED ONLY WHERE IT IS SET, on a tab or a button; everywhere else it is the text's.
-    const boxed = /tab$|button$|^tab |^view /.test(name);
+    const boxed = /tab$|button$|^tab |^view /.test(name), sized = /image$/.test(name);
     for (const prop of looked) {
-        if (prop === 'height' && !boxed) continue;
+        if (prop === 'height' && !boxed && !sized) continue;
+        if (prop === 'width' && !sized) continue;
         if (/indent$/.test(name) && prop !== 'paddingLeft') continue;
         if (pictured && /font|color|lineHeight|textDecoration/i.test(prop)) continue;
-        if (ruled && !/^(border|margin|padding)/.test(prop)) continue;
-        if (faced && /^(border|margin|padding)/.test(prop)) continue;
+        if (ruled && !/^(border|margin|padding|boxShadow)/.test(prop)) continue;
+        if (faced && /^(border|margin|padding|boxShadow)/.test(prop)) continue;
+        if (prop === 'boxShadow' && !ruled) continue;
         const a = theirs[prop], b = ours[prop];
         if (a === undefined || b === undefined) continue;
         let same;
@@ -213,6 +227,10 @@ const differs = (name, theirs, ours) => {
         else if (prop === 'lineHeight' && (a === 'normal' || b === 'normal')) same = true;
         else same = a === b;
         if (!same) off.push(`${prop}: theirs ${a}, ours ${b}`);
+    }
+    if (ruled && theirs.afterContent !== undefined && theirs.afterContent !== 'none') {
+        if (px(theirs.afterHeight) === undefined || px(ours.afterHeight) === undefined || Math.abs(px(theirs.afterHeight) - px(ours.afterHeight)) > 1) off.push(`::after height: theirs ${theirs.afterHeight}, ours ${ours.afterHeight}`);
+        if (paint(theirs.afterBackground) !== paint(ours.afterBackground ?? '')) off.push(`::after background: theirs ${theirs.afterBackground}, ours ${ours.afterBackground}`);
     }
     return off;
 };
@@ -226,22 +244,40 @@ const up = async (url) => {
 };
 
 const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+// AN ABORTED IMAGE IS A BROKEN ONE, and a browser draws a broken image's words in place of its box —
+// on Wikipedia's side too, which put a 347px indicator into one recording. Every image is answered
+// with one pixel instead: it loads at once, and its width and height say its box.
+const pixel = { status: 200, contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>' };
+const opened = async (width, url, timeout) => {
+    const tab = await browser.newPage();
+    await tab.setRequestInterception(true);
+    tab.on('request', one => (one.resourceType() === 'image' ? one.respond(pixel) : /^(media|font)$/u.test(one.resourceType()) ? one.abort() : one.continue()));
+    await tab.setViewport({ width, height: 900 });
+    await tab.goto(url, { waitUntil: 'networkidle0', timeout });
+    return tab;
+};
+const each = async (list, limit, work) => {
+    const out = [];
+    for (let from = 0; from < list.length; from += limit) out.push(...await Promise.all(list.slice(from, from + limit).map(work)));
+    return out;
+};
 
 if (baselining) {
     const page = await browser.newPage();
     const read = {};
-    for (const target of targets) {
+    for (const target of targets.filter(one => baselining || only === undefined || one.key === only)) {
         read[target.key] = { regions: {}, counts: {}, landmarks: {} };
-        for (const width of widths) {
-            await page.setViewport({ width, height: 900 });
-            await page.goto(target.theirs, { waitUntil: 'networkidle0', timeout: 90000 });
-            read[target.key].regions[width] = await measure(page, target.regions, 1);
-            const drawn = Object.values(read[target.key].regions[width]).filter(Boolean).length;
-            if (width === 1280) {
-                read[target.key].counts = await tally(page, target.counts, 1);
-                read[target.key].landmarks = await present(page, target.landmarks, 1);
-            }
-            console.log(`  ${target.key.padEnd(7)} ${String(width).padStart(5)}  ${drawn} of ${target.regions.length} regions drawn`);
+        const seen = await each(widths, 4, async (width) => {
+            const tab = await opened(width, target.theirs, 90000);
+            const regions = await measure(tab, target.regions, 1);
+            const extra = width === 1280 ? { counts: await tally(tab, target.counts, 1), landmarks: await present(tab, target.landmarks, 1) } : {};
+            await tab.close();
+            return { width, regions, ...extra };
+        });
+        for (const one of seen) {
+            read[target.key].regions[one.width] = one.regions;
+            if (one.counts) { read[target.key].counts = one.counts; read[target.key].landmarks = one.landmarks; }
+            console.log(`  ${target.key.padEnd(7)} ${String(one.width).padStart(5)}  ${Object.values(one.regions).filter(Boolean).length} of ${target.regions.length} regions drawn`);
         }
         if ((target.styles ?? []).length) {
             await page.setViewport({ width: 1280, height: 900 });
@@ -266,18 +302,26 @@ if (wanted === null) { console.error('verify-wiki: no recording — run with --b
 const failures = [];
 const expect = (held, message) => { if (!held) failures.push(message); };
 
-for (const target of targets) {
+for (const target of targets.filter(one => baselining || only === undefined || one.key === only)) {
     const want = wanted.targets?.[target.key];
     if (!want) { expect(false, `${target.key}: nothing recorded — re-run with --baseline`); continue; }
     const page = await browser.newPage();
+    // AN IMAGE'S BOX IS ITS WIDTH AND HEIGHT, not its bytes: every image on the page is sized by the
+    // page, so the bytes are not fetched while measuring — networkidle0 then arrives in a moment.
+    await page.setRequestInterception(true);
+    page.on('request', one => (one.resourceType() === 'image' ? one.respond(pixel) : /^(media|font)$/u.test(one.resourceType()) ? one.abort() : one.continue()));
     const errors = [];
     page.on('pageerror', error => errors.push(String(error.message).slice(0, 140)));
     page.on('console', message => { if (message.type() === 'error') errors.push(message.text().slice(0, 140)); });
 
-    for (const width of widths) {
-        await page.setViewport({ width, height: 900 });
-        await page.goto(new URL(target.ours, ours).href, { waitUntil: 'networkidle0', timeout: 60000 });
-        const seen = await measure(page, target.regions, 2);
+    const visited = await each(at ? [at] : widths, 8, async (width) => {
+        const tab = await opened(width, new URL(target.ours, ours).href, 60000);
+        const seen = await measure(tab, target.regions, 2);
+        const wide = await tab.evaluate(() => document.documentElement.scrollWidth);
+        await tab.close();
+        return { width, seen, wide };
+    });
+    for (const { width, seen, wide } of visited) {
         const slack = width >= 768 ? 6 : 12;
         // WHERE A REGION STANDS IS CHECKED AT THE WIDTHS THE DESIGN IS FOR. Below those Wikipedia
         // reflows its chrome into a different page — the contents becomes a menu at the top, who
@@ -290,12 +334,13 @@ for (const target of targets) {
             const asked = want.regions[width]?.[name], got = seen[name];
             if (!asked) continue;
             if (!got) { expect(false, `${target.key} ${width}: ${name} is not drawn`); continue; }
-            if (Math.abs(asked.x - got.x) <= slack && Math.abs(asked.w - got.w) <= slack) matched++;
+            const placed = name === 'footer' || asked.y === undefined || Math.abs(asked.y - got.y) <= slack;
+            if (Math.abs(asked.x - got.x) <= slack && Math.abs(asked.w - got.w) <= slack && placed) matched++;
             if (!pinned) continue;
             expect(Math.abs(asked.x - got.x) <= slack, `${target.key} ${width}: ${name} stands at x ${got.x} where Wikipedia sets ${asked.x}`);
             expect(Math.abs(asked.w - got.w) <= slack, `${target.key} ${width}: ${name} is ${got.w} wide where Wikipedia sets ${asked.w}`);
+            expect(placed, `${target.key} ${width}: ${name} stands at y ${got.y} where Wikipedia sets ${asked.y}`);
         }
-        const wide = await page.evaluate(() => document.documentElement.scrollWidth);
         expect(wide <= width + 1, `${target.key} ${width}: scrolls sideways — ${wide}`);
         console.log(`${target.key.padEnd(7)} ${String(width).padStart(5)}  ${matched} of ${target.regions.length} regions within ${slack}px${pinned ? '' : ' (drawn only — Wikipedia reflows here)'}`);
     }
@@ -375,9 +420,9 @@ for (const target of targets) {
     if (target.ours !== '') {
         const opened = await page.evaluate(() => {
             const said = {};
-            for (const [name, selector] of [['bar', '.pd-header > .pd-menu'], ['languages', '.pd-cover > .pd-menu'], ['tools', '.pd-toolbar > .pd-menu'], ['contents', '.pd-table-of-contents .pd-menu']]) {
+            for (const [name, selector] of [['bar', '.pd-header > .pd-menu'], ['languages', '.pd-cover > .pd-menu'], ['tools', '.pd-toolbar > .pd-menu'], ['contents', '.pd-table-of-contents .pd-menu'], ['manual', '.pd-manual .pd-menu']]) {
                 const menu = document.querySelector(selector);
-                if (menu === null) { said[name] = { shut: false, open: false }; continue; }
+                if (menu === null) { said[name] = null; continue; }
                 const panel = menu.querySelector(':scope > :not(.pd-summary)');
                 // A SHUT <details> STILL HAS A BOX and still answers a visibility check, because the
                 // browser hides what it holds by not PAINTING it. What is painted is what is under
@@ -397,7 +442,9 @@ for (const target of targets) {
             }
             return said;
         });
-        for (const [name, { shut, open }] of Object.entries(opened)) {
+        for (const [name, state] of Object.entries(opened)) {
+            if (state === null) continue;
+            const { shut, open } = state;
             expect(!shut && open, `the ${name} menu does not open — ${shut ? 'drawn' : 'hidden'} shut, ${open ? 'drawn' : 'hidden'} open`);
         }
         const followed = await page.evaluate(() => {
@@ -409,7 +456,7 @@ for (const target of targets) {
         expect(followed.lost.length === 0, `${target.key}: ${followed.lost.length} contents rows land on nothing — ${followed.lost.slice(0, 4).join(', ')}`);
         const typed = await page.evaluate(() => { const field = document.querySelector('.pd-search input'); if (field === null) return 'no field'; field.value = 'turing'; return field.value; });
         expect(typed === 'turing', `the bar's field does not take what is typed — "${typed}"`);
-        console.log(`${target.key} operated: ` + Object.entries(opened).map(([k, v]) => `${k} ${v.shut ? 'drawn' : 'hidden'}→${v.open ? 'drawn' : 'hidden'}`).join(' · ') + ` · ${followed.rows} contents rows land · field "${typed}"`);
+        console.log(`${target.key} operated: ` + Object.entries(opened).filter(([, v]) => v !== null).map(([k, v]) => `${k} ${v.shut ? 'drawn' : 'hidden'}→${v.open ? 'drawn' : 'hidden'}`).join(' · ') + ` · ${followed.rows} contents rows land · field "${typed}"`);
     }
     await page.close();
 }

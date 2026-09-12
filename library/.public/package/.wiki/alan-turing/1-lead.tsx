@@ -1,6 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Document, Heading, Illustration, Paragraph, Quote } from '@dna-platform/public';
-import { Infobox, Line, Hatnote } from '@dna-platform/public/encyclopedia';
+import { Bold, Citation, Document, Heading, Illustration, Italics, Paragraph, Quote } from '@dna-platform/public';
+import { Hatnote, Infobox, Line } from '@dna-platform/public/encyclopedia';
 import { BookLink, OutwardLink } from '../.chapter';
 import $Chapter from './.chapter';
 
@@ -8,6 +8,12 @@ export default class $Lead extends $Chapter {
     print() {
         return (
             <Document>
+                <Hatnote>
+                    For the Oregon artwork, see <BookLink>[Alan Turing sculpture](https://en.wikipedia.org/wiki/Alan_Turing_%28sculpture%29)</BookLink>.
+                </Hatnote>
+                <Hatnote>
+                    "Turing" redirects here. For other uses, see <BookLink>[Turing disambiguation](https://en.wikipedia.org/wiki/Turing_%28disambiguation%29)</BookLink>.
+                </Hatnote>
                 <Infobox>
                     <Heading>Alan Turing</Heading>
                     <Paragraph>
@@ -44,7 +50,7 @@ export default class $Lead extends $Chapter {
                         <BookLink>[University of Manchester](https://en.wikipedia.org/wiki/University_of_Manchester)</BookLink> · <BookLink>[Government Code and Cypher School](https://en.wikipedia.org/wiki/Government_Code_and_Cypher_School)</BookLink> · <BookLink>[National Physical Laboratory](https://en.wikipedia.org/wiki/National_Physical_Laboratory_%28United_Kingdom%29)</BookLink>
                     </Line>
                     <Line label="Thesis">
-                        <OutwardLink>[Systems of Logic Based on Ordinals](https://web.archive.org/web/20121023103503/https://webspace.princeton.edu/users/jedwards/Turing%20Centennial%202012/Mudd%20Archive%20files/12285_AC100_Turing_1938.pdf)</OutwardLink> (1938)
+                        <Italics><OutwardLink>[Systems of Logic Based on Ordinals](https://web.archive.org/web/20121023103503/https://webspace.princeton.edu/users/jedwards/Turing%20Centennial%202012/Mudd%20Archive%20files/12285_AC100_Turing_1938.pdf)</OutwardLink></Italics> (1938)
                     </Line>
                     <Line label="Doctoral advisor">
                         <BookLink>[Alonzo Church](https://en.wikipedia.org/wiki/Alonzo_Church)</BookLink><Citation>[3](cite_note-mathgene-4)</Citation>
@@ -53,14 +59,9 @@ export default class $Lead extends $Chapter {
                         <BookLink>[Robin Gandy](https://en.wikipedia.org/wiki/Robin_Gandy)</BookLink><Citation>[3](cite_note-mathgene-4)</Citation><Citation>[4](cite_note-gandyphd-5)</Citation> · <BookLink>[Beatrice Worsley](https://en.wikipedia.org/wiki/Beatrice_Worsley)</BookLink><Citation>[5](cite_note-bowen19-6)</Citation>
                     </Line>
                 </Infobox>
-                <Hatnote>
-                    For the Oregon artwork, see <BookLink>[Alan Turing sculpture](https://en.wikipedia.org/wiki/Alan_Turing_%28sculpture%29)</BookLink>.
-                </Hatnote>
-                <Hatnote>
-                    "Turing" redirects here. For other uses, see <BookLink>[Turing disambiguation](https://en.wikipedia.org/wiki/Turing_%28disambiguation%29)</BookLink>.
-                </Hatnote>
+
                 <Paragraph>
-                    Alan Mathison Turing (<BookLink>[/ˈtjʊərɪŋ/](https://en.wikipedia.org/wiki/Help:IPA/English)</BookLink>; 23 June 1912 – 7 June 1954) was an English mathematician, <BookLink>[computer scientist](https://en.wikipedia.org/wiki/Computer_scientist)</BookLink>, <BookLink>[logician](https://en.wikipedia.org/wiki/Logic)</BookLink>, <BookLink>[cryptanalyst](https://en.wikipedia.org/wiki/Cryptanalyst)</BookLink>, philosopher and <BookLink>[theoretical biologist](https://en.wikipedia.org/wiki/Theoretical_biologist)</BookLink>.<Citation>[6](cite_note-Auto6D-1-7)</Citation> He was highly influential in the development of <BookLink>[theoretical computer science](https://en.wikipedia.org/wiki/Theoretical_computer_science)</BookLink>, providing a formalisation of the concepts of <BookLink>[algorithm](https://en.wikipedia.org/wiki/Algorithm)</BookLink> and <BookLink>[computation](https://en.wikipedia.org/wiki/Computation)</BookLink> with the <BookLink>[Turing machine](https://en.wikipedia.org/wiki/Turing_machine)</BookLink>, which can be considered a model of a general-purpose computer.<Citation>[7](cite_note-frs-8)</Citation><Citation>[8](cite_note-AFP-9)</Citation><Citation>[9](cite_note-Auto6D-2-10)</Citation> Turing is widely considered to be the father of theoretical computer science.<Citation>[10](cite_note-Auto6D-3-11)</Citation>
+                    <Bold>Alan Mathison Turing</Bold> (<BookLink>[/ˈtjʊərɪŋ/](https://en.wikipedia.org/wiki/Help:IPA/English)</BookLink>; 23 June 1912 – 7 June 1954) was an English mathematician, <BookLink>[computer scientist](https://en.wikipedia.org/wiki/Computer_scientist)</BookLink>, <BookLink>[logician](https://en.wikipedia.org/wiki/Logic)</BookLink>, <BookLink>[cryptanalyst](https://en.wikipedia.org/wiki/Cryptanalyst)</BookLink>, philosopher and <BookLink>[theoretical biologist](https://en.wikipedia.org/wiki/Theoretical_biologist)</BookLink>.<Citation>[6](cite_note-Auto6D-1-7)</Citation> He was highly influential in the development of <BookLink>[theoretical computer science](https://en.wikipedia.org/wiki/Theoretical_computer_science)</BookLink>, providing a formalisation of the concepts of <BookLink>[algorithm](https://en.wikipedia.org/wiki/Algorithm)</BookLink> and <BookLink>[computation](https://en.wikipedia.org/wiki/Computation)</BookLink> with the <BookLink>[Turing machine](https://en.wikipedia.org/wiki/Turing_machine)</BookLink>, which can be considered a model of a general-purpose computer.<Citation>[7](cite_note-frs-8)</Citation><Citation>[8](cite_note-AFP-9)</Citation><Citation>[9](cite_note-Auto6D-2-10)</Citation> Turing is widely considered to be the father of theoretical computer science.<Citation>[10](cite_note-Auto6D-3-11)</Citation>
                 </Paragraph>
                 <Paragraph>
                     Born in London, Turing was raised in <BookLink>[southern England](https://en.wikipedia.org/wiki/Southern_England)</BookLink>. He graduated from <BookLink>[King's College, Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge)</BookLink>, and in 1938, earned a doctorate degree from <BookLink>[Princeton University](https://en.wikipedia.org/wiki/Princeton_University)</BookLink>. During <BookLink>[World War II](https://en.wikipedia.org/wiki/World_War_II)</BookLink>, Turing worked for the <BookLink>[Government Code and Cypher School](https://en.wikipedia.org/wiki/Government_Code_and_Cypher_School)</BookLink> at <BookLink>[Bletchley Park](https://en.wikipedia.org/wiki/Bletchley_Park)</BookLink>, Britain's <BookLink>[codebreaking](https://en.wikipedia.org/wiki/Codebreaking)</BookLink> centre that produced <BookLink>[Ultra](https://en.wikipedia.org/wiki/Ultra_%28cryptography%29)</BookLink> intelligence. He led <BookLink>[Hut 8](https://en.wikipedia.org/wiki/Hut_8)</BookLink>, the section responsible for German naval cryptanalysis. Turing devised techniques for speeding the breaking of German <BookLink>[ciphers](https://en.wikipedia.org/wiki/Cipher)</BookLink>, including improvements to the pre-war Polish <BookLink>[bomba](https://en.wikipedia.org/wiki/Bomba_%28cryptography%29)</BookLink> method, an <BookLink>[electromechanical](https://en.wikipedia.org/wiki/Electromechanical)</BookLink> machine that could find settings for the <BookLink>[Enigma machine](https://en.wikipedia.org/wiki/Enigma_machine)</BookLink>. He played a crucial role in cracking intercepted messages that enabled the <BookLink>[Allies](https://en.wikipedia.org/wiki/Allies_of_World_War_2)</BookLink> to defeat the <BookLink>[Axis powers](https://en.wikipedia.org/wiki/Axis_powers)</BookLink> in the <BookLink>[Battle of the Atlantic](https://en.wikipedia.org/wiki/Battle_of_the_Atlantic)</BookLink> and other engagements.<Citation>[11](cite_note-bbc-copeland-12)</Citation><Citation>[12](cite_note-Auto6D-4-13)</Citation>

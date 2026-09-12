@@ -22,6 +22,7 @@ export * from './writing/Quote';
 export * from './writing/Heading';
 export * from './writing/Image';
 export * from './writing/Description';
+export * from './writing/Emphasis';
 export * from './writing/Illustration';
 export * from './writing/Figure';
 export * from './writing/Phrase';
