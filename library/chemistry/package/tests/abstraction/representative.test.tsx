@@ -538,3 +538,54 @@ describe("$(A,B)(C, 'single') — one instance answers every ask", () => {
         expect(drawn(Host)).toContain('fancily');
     });
 });
+
+// ─── A registration redraws what it reaches ──────────────────────────────────
+
+describe('a registration redraws what it reaches, and nothing that is not drawn', () => {
+    it('A SCOPE REGISTRATION REPAINTS WHAT THE SCOPE HAS DRAWN — from a handler, with no other write', async () => {
+        const Plain = $($Plain);
+        const Fancy = $($Fancy);
+        const Reading = $($, $(host(Plain) as any));
+        const { container } = render(<Reading />);
+        expect(container.textContent).toContain('plain');
+        await act(async () => { $(Reading, Plain)(Fancy); });
+        expect(container.textContent).toContain('fancy');
+    });
+
+    it('A TYPE REGISTRATION REPAINTS EVERY INSTANCE OF THE TYPE, subclasses included', async () => {
+        const Plain = $($Plain);
+        const Fancy = $($Fancy);
+        // NAMED, because a registration is inherited through the class chain by name.
+        class $Home extends $Chemical {
+            view() { const Asked = $(Plain); return <div><Asked /></div>; }
+        }
+        class $Annex extends $Home {}
+        const Home = $($Home);
+        const Annex = $($Annex);
+        const { container } = render(<div><Home /><Annex /></div>);
+        expect(container.textContent).toBe('plainplain');
+        await act(async () => { $(Home, Plain)(Fancy); });
+        expect(container.textContent).toBe('fancyfancy');
+    });
+
+    it('a registration before anything is mounted repaints nothing and throws nothing, and stands when something mounts', () => {
+        const Plain = $($Plain);
+        const Fancy = $($Fancy);
+        const Early = $($, $(host(Plain) as any));
+        expect(() => $(Early, Plain)(Fancy)).not.toThrow();
+        expect(drawn(Early)).toContain('fancy');
+    });
+
+    it('A GLOBAL REGISTRATION REPAINTS EVERYTHING that may have asked', async () => {
+        class $Keyed extends $Chemical {
+            view() { const Kbd = $('kbd'); return <Kbd>k</Kbd>; }
+        }
+        const Keyed = $($Keyed);
+        const Samp = () => <samp>k</samp>;
+        const { container } = render(<Keyed />);
+        expect(container.querySelector('kbd')).not.toBeNull();
+        await act(async () => { $('kbd', Samp); });
+        expect(container.querySelector('samp')).not.toBeNull();
+        expect(container.querySelector('kbd')).toBeNull();
+    });
+});

@@ -74,19 +74,18 @@ class $Study extends $Chemical {
     silentTried = false;
 
     // Re-registering from a HANDLER is legal — a handler runs after the paint,
-    // so it is configuration rather than a scope changing mid-frame. What it
-    // does NOT do by itself is repaint: the registry is deliberately not
-    // reactive, because configuration was specified to happen before rendering.
-    // So this writes the registration AND moves reactive state, and the button
-    // beside it writes only the registration, to show the difference.
+    // so it is configuration rather than a scope changing mid-frame. And since
+    // 2026-09-12 a registration REDRAWS what it reaches: the scope reacts what it
+    // has mounted, and the leaves re-ask. This writes the registration and moves
+    // reactive state too; the button beside it writes only the registration.
     choose(name: string, theme: any) {
         $(Reading, themes.Theme)(theme);
         this.chosen = name;
         this.switched = true;
     }
 
-    // TRULY silent: it registers and touches nothing reactive. If the page
-    // moves after this, the registry itself woke it.
+    // Only the registration, nothing reactive of its own — and the reading
+    // repaints anyway, because a registration on a scope redraws that scope.
     silently(theme: any) {
         $(Reading, themes.Theme)(theme);
     }
@@ -126,10 +125,10 @@ class $Study extends $Chemical {
 
                 <Sameness>
                     Re-registering from a handler is <b>legal</b> — a handler runs after the paint.
-                    But the registry is <b>deliberately not reactive</b>, so a registration alone
-                    repaints nothing. Press <b>register dawn</b> and nothing moves — the chip still says what you last
-                    picked. Press <b>now repaint</b> and dawn appears, because the ask ran again.
-                    The registration was in force the whole time; nothing had asked.
+                    And <b>a registration redraws what it reaches</b>: press <b>register dawn</b> and the
+                    leaves turn to dawn with nothing else written, because the reading was registered on
+                    and the reading is what repaints. <b>now repaint</b> is here to show it changes nothing
+                    further — the registration already did the work.
                 </Sameness>
 
                 <VerdictSection>

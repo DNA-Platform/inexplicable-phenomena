@@ -1659,8 +1659,27 @@ function registrar(scope: any, requested: any) {
         const entries = entriesOf(held, key, true).slice();
         entries.push({ replacement, reach: narrowing?.reach ?? 'progeny', asker: narrowing?.asker });
         held.$index(key, { owner: held, entries });
+        redrawn(scope.$chemical);
         return replacement;
     };
+}
+
+// A REGISTRATION REDRAWS WHAT IT REACHES, and nothing that is not drawn. A
+// scope reacts the derivatives it has mounted, and React carries that to their
+// progeny, whose elements a parent's view remakes. A class's root scope is a
+// TYPE registration and reacts every mounted instance of the type, subclasses
+// included, since a subclass inherits its base's registrations. react() is a
+// no-op on anything without an update handle — so before a render context
+// exists this does nothing, which is the rule, and a registration is refused
+// inside a draw, so the update never lands mid-render.
+function redrawn(chemical: any): void {
+    if (!chemical) return;
+    if (chemical[$isTemplate$]) {
+        const cls = chemical[$type$];
+        $Reaction.redraw((one: any) => one instanceof cls);
+        return;
+    }
+    $Reaction.redraw((one: any) => one === chemical || Object.getPrototypeOf(one) === chemical);
 }
 
 // FOR A, A B IS THIS ONE C. A class component derives an instance per mount; a
@@ -1792,6 +1811,9 @@ class $Chemistry$ extends $Chemical {
             const override = arguments[1];
             if (override !== undefined) {
                 $catalogue.set(arg, override);
+                // A GLOBAL REGISTRATION IS A GLOBAL REDRAW — everything mounted
+                // may have asked for this tag.
+                $Reaction.redraw(() => true);
                 return override;
             }
             const recalled = hydration.recollect(arg);

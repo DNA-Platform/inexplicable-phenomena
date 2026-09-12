@@ -64,4 +64,13 @@ export class $Reaction {
     static find(cid: number): $Particle | undefined {
         return this._chemicals.get(cid);
     }
+
+    // Every chemical the registry holds that matches, asked to re-render — a
+    // no-op for each that is not mounted. A registration on a class's root
+    // scope, or on a tag, reaches by type or by everything, and this is the
+    // one place that can answer either.
+    static redraw(match: (chemical: $Particle) => boolean): void {
+        for (const chemical of this._chemicals.values())
+            if (match(chemical)) chemical[$reaction$]?.react();
+    }
 }

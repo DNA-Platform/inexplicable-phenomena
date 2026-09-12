@@ -22,7 +22,7 @@ export function RepresentativeCases() {
             <CaseShell
                 caseId="the theme, live"
                 subject="A theme as a CHEMICAL, re-registered from a handler — $Leaf resolves the theme and then asks what stands behind it, so a value-bearing abstraction travels through a container whose currency is components"
-                pass="picking a theme repaints both leaves; no leaf is subclassed, told, or passed anything; registering without moving state repaints nothing until nudged, which is the registry being deliberately not reactive"
+                pass="picking a theme repaints both leaves; no leaf is subclassed, told, or passed anything; registering without moving any other state repaints the reading by itself, because a registration redraws the scope it was made on"
                 fail="a leaf needs a prop or a subclass to change theme, or configuring from a handler throws"
                 source={themeSource}
                 demo={<ThemeRegistrationDemo />}
