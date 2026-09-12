@@ -1,5 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Citation, Heading, Paragraph, Section } from '@dna-platform/public';
+import { Citation, Heading, Paragraph, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import Document from './.document';
 
 export default class $Death extends $Chapter {

@@ -62,7 +62,7 @@ export class $EncyclopediaTheme extends $Theme {
     get bylineHeading_fontFamily() { return this.body; }
     @select('.pd-cover .pd-subject .pd-heading') get subject_color() { return this.pale; }
     @select('.pd-cover .pd-author .pd-heading') get author_color() { return this.ink; }
-    @select('.pd-synopsis .pd-heading') description_display = 'none';
+    @select('.pd-synopsis > .pd-heading') description_display = 'none';
     @select('.pd-title .pd-reference') meaning_display = 'none';
 
     // A CITATION IS A SUPERSCRIPT IN BRACKETS, which is the one thing every reader recognises an

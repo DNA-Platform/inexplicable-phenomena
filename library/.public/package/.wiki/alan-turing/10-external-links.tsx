@@ -1,5 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Heading, Paragraph, Section } from '@dna-platform/public';
+import { Heading, Paragraph, Section } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import Document from './.document';
 
 export default class $ExternalLinks extends $Chapter {

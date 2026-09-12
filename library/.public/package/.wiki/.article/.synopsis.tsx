@@ -1,7 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
+import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import { BookLink } from '../.document';
-import { Hatnote } from './.hatnote';
+import { Hatnote } from '@dna-platform/public/encyclopedia';
 
 export default class $Synopsis extends $Chapter {
     print() {

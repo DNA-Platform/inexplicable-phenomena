@@ -38,6 +38,25 @@ export class $InfoboxFormat extends $BoxFormat {
     @select('> .pd-line::before') label_content = 'attr(data-label)';
     label_fontWeight = '700';
 
+    @select('> .pd-heading + .pd-paragraph') said_textAlign = 'center';
+    said_margin = '0';
+    said_padding = '0 0.5em 0.4em';
+    said_fontWeight = '700';
+    get said_color() { return this.theme.link; }
+
+    @select('.pd-illustration') shown_float = 'none';
+    shown_width = 'auto';
+    shown_margin = '0';
+    shown_padding = '0.5em';
+    shown_textAlign = 'center';
+    @select('.pd-illustration img') picture_display = 'block';
+    picture_margin = '0 auto';
+    picture_maxWidth = '100%';
+    picture_height = 'auto';
+    @select('.pd-illustration .pd-caption') caption_padding = '0.4em 0 0';
+    caption_fontSize = '1em';
+    caption_textAlign = 'center';
+
     @select('@media (max-width: 640px) {\n            & {') narrow_float = 'none';
     narrow_margin = '0 0 1em';
 }

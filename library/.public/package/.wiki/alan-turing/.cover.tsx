@@ -1,5 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Author, Cover, Heading, Paragraph, Reference, Subject, Title } from '@dna-platform/public';
+import { Author, Cover, Heading, Paragraph, Reference, Subject, Title } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import { Image } from '@dna-platform/public';
 import { Header, OutwardLink } from '../.document';
 

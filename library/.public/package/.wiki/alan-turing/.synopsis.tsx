@@ -1,5 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
+import { Heading, Illustration, Paragraph, Section, Synopsis } from '@dna-platform/public';
+import $Chapter from './.chapter';
 import { Infobox, Line } from '@dna-platform/public/encyclopedia';
 
 export default class $Synopsis extends $Chapter {
@@ -7,7 +8,9 @@ export default class $Synopsis extends $Chapter {
         return (
             <Synopsis print>
                 <Infobox>
-                    <Heading>Alan Turing OBE FRS</Heading>
+                    <Heading>Alan Turing</Heading>
+                    <Paragraph>OBE FRS</Paragraph>
+                    <Illustration source="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Alan_turing_header.jpg/250px-Alan_turing_header.jpg" width="250" height="333">Turing in 1951</Illustration>
                     <Line label="Born">Alan Mathison Turing, 23 June 1912, Maida Vale, London, England</Line>
                     <Line label="Died">7 June 1954 (aged 41), Wilmslow, Cheshire, England</Line>
                     <Line label="Cause of death">Suicide by cyanide poisoning</Line>
