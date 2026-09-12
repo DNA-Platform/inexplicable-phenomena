@@ -4,7 +4,7 @@ import { OutwardLink } from '../.document';
 import { Foundation, Logo } from './.document';
 
 export default class $TheFoundation extends $Chapter {
-    print() {
+    view() {
         return (
             <Foundation>
                 <Section>

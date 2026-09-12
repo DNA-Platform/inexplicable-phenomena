@@ -4,7 +4,7 @@ import { OutwardLink } from '../.document';
 import { Licence } from './.document';
 
 export default class $TheLicence extends $Chapter {
-    print() {
+    view() {
         return (
             <Licence>
                 <Section>

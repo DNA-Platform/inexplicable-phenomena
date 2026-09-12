@@ -61,7 +61,8 @@
     "clean": "tsx clean.ts",
     "wiki": "npm run build && vite .wiki/.public",
     "test:gate": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run",
-    "verify:latex": "node .latex/.public/verify-latex.mjs"
+    "verify:latex": "node .latex/.public/verify-latex.mjs",
+    "verify:wiki": "node .wiki/.public/verify-wiki.mjs"
   },
   "dependencies": {
     "@dna-platform/chemistry": "*",

@@ -3,7 +3,7 @@ import { $Chapter, Heading, Paragraph, Reference, Section, Title } from '@dna-pl
 import { Projects, Logo, Project } from './.document';
 
 export default class $TheProjects extends $Chapter {
-    print() {
+    view() {
         return (
             <Projects>
                 <Section>

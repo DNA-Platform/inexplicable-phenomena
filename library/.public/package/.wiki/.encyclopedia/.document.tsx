@@ -63,7 +63,7 @@ export class $Logo extends $Paragraph {
     $src = '';
     $width = '';
 
-    override view(): ReactNode {
+    override print(): ReactNode {
         return <img src={this.$src} width={this.$width} alt={html.text(this._block)} />;
     }
 }
@@ -93,9 +93,8 @@ export class $Project extends $IndexCard {
 }
 
 export class $PortalDocumentFormat extends $Format {
-    selector: any = styled.article;
+    selector = styled.div;
     width = '100%';
-    gridColumn = '1 / -1';
 }
 
 export class $BackMatterFormat extends $PortalDocumentFormat {
@@ -115,9 +114,9 @@ export class $EditionsFormat extends $PortalDocumentFormat {
     pill_fontWeight = '700';
     pill_lineHeight = '1.57';
     pill_boxSizing = 'border-box';
-    pill_width = 'min(21.43em, 100%)';
+    pill_width = '21.43em';
     pill_margin = '0 auto';
-    pill_padding = '0.43em 0.86em';
+    pill_padding = '0.43em 2.86em';
     pill_borderRadius = '0.14em';
     get pill_backgroundImage() { return `${translation(this.theme.link)}, ${caret(this.theme.link)}`; }
     pill_backgroundRepeat = 'no-repeat, no-repeat';
@@ -132,9 +131,9 @@ export class $EditionsFormat extends $PortalDocumentFormat {
 }
 
 export class $FoundationFormat extends $BackMatterFormat {
-    maxWidth = '26.9em';
-    marginLeft = 'auto';
-    marginRight = 'auto';
+    @select('.pd-document') document_display = 'block';
+    document_maxWidth = '26.9em';
+    document_margin = '0 auto';
     @select('.pd-section') section_display = 'block';
     section_position = 'relative';
     section_padding = '0 1.54em 0 4.6em';
@@ -155,9 +154,9 @@ export class $FoundationFormat extends $BackMatterFormat {
 
 export class $ProjectsFormat extends $BackMatterFormat {
     textAlign = 'left';
-    display = 'grid';
-    gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
-    @select('& > .pd-section') intro_display = 'none';
+    @select('.pd-document') projects_display = 'grid';
+    projects_gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
+    @select('.pd-document > .pd-section:not(.pd-index-card)') intro_display = 'none';
 }
 
 export class $LicenceFormat extends $BackMatterFormat {
@@ -182,16 +181,15 @@ export class $RingFormat extends $Format {
     $globe = '';
     selector = styled.div;
     position = 'relative';
-    height = '32.5rem';
-    width = '54.6rem';
-    maxWidth = '100%';
-    margin = '0 auto';
-    textAlign = 'center';
+    height = '23.21em';
+    width = '100%';
+    maxWidth = '39em';
+    margin = '1.21em auto 0';
     backgroundRepeat = 'no-repeat';
-    backgroundPosition = 'center 10rem';
-    backgroundSize = '12.5rem';
+    backgroundPosition = 'center 4.36em';
+    backgroundSize = '14.29em';
     @select('> .pd-section') section_display = 'contents';
-    @select('@media (max-width: 768px)') narrow_order = '1';
+    @select('@media (max-width: 480px)') narrow_order = '1';
     narrow_height = 'auto';
     narrow_display = 'grid';
     narrow_gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
@@ -209,7 +207,7 @@ export class $LanguageFormat extends $Format {
     $at = 1;
     selector = styled.div;
     position = 'absolute';
-    width = '15.6rem';
+    width = '11.14em';
     textAlign = 'center';
     @select('a') link_display = 'block';
     link_fontSize = '1.23em';
@@ -219,16 +217,13 @@ export class $LanguageFormat extends $Format {
     @select('p') line_margin = '0';
     line_fontSize = '0.93em';
     get line_color() { return this.theme.pale; }
-    @select('@media (max-width: 768px)') narrow_position = 'static';
+    @select('@media (max-width: 480px)') narrow_position = 'static';
     narrow_width = 'auto';
     narrow_padding = '0 1.14em';
     narrow_lineHeight = '1.4';
     get top() { return `${Math.floor((this.$at - 1) / 2) * 20}%`; }
-    get right() { return this.$at % 2 === 1 ? `${this.inset}%` : 'auto'; }
-    get left() { return this.$at % 2 === 0 ? `${this.inset}%` : 'auto'; }
+    get left() { return `${(this.$at % 2 === 1 ? [4.43, 0.57, -0.21, 0.57, 4.43] : [23.43, 27.29, 28.07, 27.29, 23.43])[Math.floor((this.$at - 1) / 2)]}em`; }
     get link_color() { return this.theme.link; }
-
-    private get inset(): number { return [60, 70, 72, 70, 60][Math.floor((this.$at - 1) / 2)]; }
 
     protected override handed(): Record<string, unknown> {
         return { at: (this.parent as $Language | undefined)?.$at ?? 1 };
@@ -238,8 +233,10 @@ export class $LanguageFormat extends $Format {
 export class $CardFormat extends $Format {
     selector = styled.div;
     position = 'relative';
+    alignSelf = 'start';
     display = 'grid';
-    gridTemplateColumns = 'auto 1fr';
+    justifyContent = 'start';
+    gridTemplateColumns = 'auto max-content';
     gridTemplateRows = '1fr auto auto 1fr';
     gap = '0 0.23em';
     padding = '1em';

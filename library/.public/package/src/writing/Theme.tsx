@@ -225,7 +225,7 @@ export class $Theme extends $Format implements $Theme$ {
     titling_marginBottom = '.4rem';
     titling_borderBottom = 'none';
     titling_paddingBottom = '0';
-    @select('.pd-title .pd-heading') title_fontSize = '2rem';
+    @select('.pd-cover .pd-title .pd-heading') title_fontSize = '2rem';
     title_fontWeight = '700';
     title_lineHeight = '1.15';
     @select('.pd-title a') titled_textDecoration = 'none';
