@@ -48,6 +48,8 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-cover > .pd-title') title_gridColumn = '3';
     title_gridRow = '2';
     title_maxWidth = 'calc(100% - 9.5em)';
+    // THE TITLE'S REFERENCE wraps the heading; inline, its line box stood the block 7px taller than Wikipedia's 40.
+    @select('.pd-cover > .pd-title > .pd-meaning') named_display = 'block';
     @select('.pd-cover > .pd-menu') tongue_gridColumn = '3';
     tongue_gridRow = '2';
     tongue_justifySelf = 'end';
@@ -60,6 +62,10 @@ export class $EncyclopediaTheme extends $Theme {
     tabs_gridRow = '3';
     tabs_marginTop = '0';
     tabs_boxShadow = '0 1px 0 #c8ccd1';
+    tabs_paddingBottom = '1px';
+    @select('.pd-toolbar > .pd-paragraph') tabGroup_margin = '0';
+    @select('.pd-toolbar > .pd-paragraph > .pd-ref') tab_height = '2.2857em';
+    tab_position = 'relative';
     @select('.pd-book > .pd-chapter > .pd-table-of-contents') side_gridColumn = '2';
     side_gridRow = '3 / span 400';
     side_alignSelf = 'start';
@@ -106,9 +112,13 @@ export class $EncyclopediaTheme extends $Theme {
     burger_height = '2rem';
     burger_justifyContent = 'center';
     @select('.pd-header > .pd-menu > .pd-summary > .pd-sentence') burgerSaid_display = 'none';
-    @select('.pd-header > .pd-menu > .pd-summary::before') mark_content = "'☰'";
-    mark_fontSize = '1.25rem';
-    mark_lineHeight = '1';
+    @select('.pd-header > .pd-menu') mainMenu_margin = '0 0.375rem 0 -0.375rem';
+    @select('.pd-header > .pd-menu > .pd-summary::before') mark_content = "''";
+    mark_width = '1.25rem';
+    mark_height = '1.25rem';
+    mark_backgroundRepeat = 'no-repeat';
+    mark_backgroundSize = '100%';
+    get mark_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M1 3h18v2H1zm0 6h18v2H1zm0 6h18v2H1z'/></svg>", '#404244'); }
     @select('.pd-cover > .pd-menu > .pd-summary') picker_fontSize = '0.875em';
     picker_fontWeight = '700';
     picker_border = '1px solid transparent';
@@ -116,14 +126,39 @@ export class $EncyclopediaTheme extends $Theme {
     picker_padding = '0 0.786em';
     get picker_color() { return this.link; }
     get picker_fontFamily() { return this.body; }
-    @select('.pd-cover > .pd-menu > .pd-summary::before') script_content = "'文A  '";
-    @select('.pd-cover > .pd-menu > .pd-summary::after') chevron_content = "'  ▾'";
+    picker_minHeight = '2.2857em';
+    picker_boxSizing = 'border-box';
+    picker_gap = '0.4286em';
+    @select('.pd-cover > .pd-menu > .pd-summary::before') script_content = "''";
+    script_width = '1.4286em';
+    script_height = '1.4286em';
+    script_flex = '0 0 auto';
+    script_backgroundRepeat = 'no-repeat';
+    script_backgroundSize = '100%';
+    get script_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='m17.835 19-1.248-3h-4.174l-1.248 3.001H9l4.577-11.005h1.846L20 19zm-4.59-5h2.51L14.5 10.982zM7.618 3H12v2H9.991a8.5 8.5 0 0 1-1.423 4.02q-.24.358-.528.707.634.367 1.379.711l.908.42-.839 1.816-.907-.42a18 18 0 0 1-2.026-1.09c-1.255.979-2.912 1.8-5.076 2.31l-.973.228-.458-1.946.973-.23c1.631-.383 2.885-.954 3.85-1.608C3.29 8.527 2.317 6.884 2.065 5H0V3h5.382l-.724-1.447 1.79-.895L7.617 3ZM4.094 5c.243 1.282.974 2.489 2.29 3.586A6.54 6.54 0 0 0 7.98 5z'/></svg>", this.link); }
+    @select('.pd-cover > .pd-menu > .pd-summary::after') chevron_content = "''";
+    chevron_width = '0.857em';
+    chevron_height = '0.857em';
+    chevron_flex = '0 0 auto';
+    chevron_backgroundRepeat = 'no-repeat';
+    chevron_backgroundSize = '100%';
+    get chevron_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='{ink}' d='m11.05 3.996-.965-1.053-4.035 3.86-3.947-3.86L1.05 3.996l5 5z'/></svg>", this.link); }
     @select('.pd-cover > .pd-menu::details-content') tongues_right = '0';
     tongues_left = 'auto';
     tongues_width = 'min(30em, calc(100vw - 3em))';
     tongues_columns = '3';
     @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child') here_color = '#202122';
-    @select('.pd-toolbar > .pd-menu > .pd-summary') dots_width = '2em';
+    @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child::after') bar_content = "''";
+    bar_position = 'absolute';
+    bar_left = '0';
+    bar_bottom = '0';
+    bar_width = '100%';
+    bar_height = '2px';
+    bar_background = '#202122';
+    @select('.pd-toolbar > .pd-menu') tools_marginRight = '-0.5714em';
+    @select('.pd-toolbar > .pd-menu > .pd-summary') dots_width = '2.2857em';
+    dots_height = '2.2857em';
+    dots_boxSizing = 'border-box';
     dots_justifyContent = 'center';
     dots_fontWeight = '400';
     dots_color = '#404244';
@@ -131,14 +166,18 @@ export class $EncyclopediaTheme extends $Theme {
     dots_margin = '0';
     get dots_fontFamily() { return this.body; }
     @select('.pd-toolbar > .pd-menu > .pd-summary > .pd-sentence') dotsSaid_display = 'none';
-    @select('.pd-toolbar > .pd-menu > .pd-summary::before') dotted_content = "'⋮'";
-    dotted_fontSize = '1rem';
+    @select('.pd-toolbar > .pd-menu > .pd-summary::before') dotted_content = "''";
+    dotted_width = '1.4286em';
+    dotted_height = '1.4286em';
+    dotted_backgroundRepeat = 'no-repeat';
+    dotted_backgroundSize = '100%';
+    get dotted_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M8 0h4v4H8zm0 8h4v4H8zm0 8h4v4H8z'/></svg>", '#404244'); }
 
     // THE LINE UNDER THE TABS, which says where the words came from, is set small and tight.
     @select('.pd-book > .pd-chapter > .pd-synopsis') siteline_fontSize = '0.875em';
     siteline_margin = '0';
     get siteline_color() { return this.ink; }
-    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph') sited_margin = '0.5em 0 0';
+    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph') sited_margin = '0.5714em 0 0';
     sited_flex = '1 1 auto';
     // THE SITE LINE'S ROW: the line at the left, the page's indicators at its right, the subpage line beneath.
     @select('.pd-book > .pd-chapter > .pd-synopsis') siteRow_display = 'flex';
@@ -148,7 +187,7 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-book > .pd-chapter > .pd-synopsis .pd-image') indicator_display = 'block';
     indicator_height = '1.375em';
     indicator_width = 'auto';
-    indicator_margin = '0.5em 0 0';
+    indicator_margin = '0.5714em 0 0';
     @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph:nth-of-type(2)') subpage_flex = '0 0 100%';
     subpage_marginTop = '0';
     get subpage_color() { return this.pale; }
@@ -216,12 +255,12 @@ export class $EncyclopediaTheme extends $Theme {
     field_padding = '0.2857em 0.5714em 0.2857em 2.4286em';
     field_border = '1px solid #72777d';
     field_borderRadius = '2px 0 0 2px';
-    get field_backgroundImage() { return this.painted('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="{ink}" d="M12.2 13.6a7 7 0 1 1 1.4-1.4l5.4 5.4-1.4 1.4zM3 8a5 5 0 1 0 10 0A5 5 0 0 0 3 8"/></svg>', '#54595d'); }
+    get field_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M12.2 13.6a7 7 0 1 1 1.4-1.4l5.4 5.4-1.4 1.4zM3 8a5 5 0 1 0 10 0A5 5 0 0 0 3 8'/></svg>", '#54595d'); }
     field_backgroundRepeat = 'no-repeat';
     field_backgroundPosition = '0.5714em center';
     field_backgroundSize = '1.2857em';
     get field_color() { return this.ink; }
-    get field_background() { return this.paper; }
+    get field_backgroundColor() { return this.paper; }
     @select('.pd-search .pd-button') press_fontSize = '0.875em';
     press_fontWeight = '700';
     press_padding = '0 0.786em';

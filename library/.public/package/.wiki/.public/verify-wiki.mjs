@@ -66,7 +66,7 @@ const encyclopedia = {
         ['site line', '#siteSub', 'article.pd-synopsis .pd-paragraph'],
         ['subpage line', '#contentSub .subpages', 'article.pd-synopsis .pd-paragraph:nth-of-type(2)'],
         ['hatnote', '.mw-content-ltr .hatnote', '.pd-hatnote'],
-        ['second hatnote', '.mw-content-ltr section .hatnote + .hatnote', '.pd-book > .pd-chapter > article > .pd-hatnote + .pd-hatnote'],
+        ['second hatnote', '.mw-content-ltr .hatnote ~ .hatnote', '.pd-book > .pd-chapter > article .pd-hatnote + .pd-hatnote'],
         ['lead paragraph', '.mw-content-ltr section:first-of-type > p:not(.mw-empty-elt)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote):not(.pd-heading)'],
         ['body link', '.mw-content-ltr section p > a:not(.external)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote) .pd-book-link'],
         ['citation mark', 'section p > sup.reference > a', '.pd-book > .pd-chapter > article .pd-citation:not(.pd-infobox .pd-citation)'],
@@ -168,7 +168,7 @@ const present = (page, list, which) => page.evaluate((list, which) => {
 // size, the weight, the colour, the rules above and below it, and the space around it. Doug: "the
 // most iconic part of wikipedia — title, separators, font, spacing" — so each of those is a number
 // the recording carries and a failure the run names.
-const looked = ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'lineHeight', 'color', 'backgroundColor', 'borderTop', 'borderBottom', 'marginTop', 'marginBottom', 'marginLeft', 'paddingTop', 'paddingBottom', 'paddingLeft', 'textDecorationLine'];
+const looked = ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'lineHeight', 'color', 'backgroundColor', 'borderTop', 'borderBottom', 'marginTop', 'marginBottom', 'marginLeft', 'paddingTop', 'paddingBottom', 'paddingLeft', 'textDecorationLine', 'height'];
 const looks = (page, list, which) => page.evaluate((list, which, looked) => {
     const seen = {};
     for (const one of list) {
@@ -191,7 +191,10 @@ const paint = (value) => value === 'rgba(0, 0, 0, 0)' ? 'transparent' : value;
 const differs = (name, theirs, ours) => {
     const off = [];
     const ruled = /rule/.test(name), faced = /heading$|^title$/.test(name), pictured = ours.tag === 'IMG' || theirs.tag === 'IMG';
+    // A HEIGHT IS COMPARED ONLY WHERE IT IS SET, on a tab or a button; everywhere else it is the text's.
+    const boxed = /tab$|button$|^tab |^view /.test(name);
     for (const prop of looked) {
+        if (prop === 'height' && !boxed) continue;
         if (/indent$/.test(name) && prop !== 'paddingLeft') continue;
         if (pictured && /font|color|lineHeight|textDecoration/i.test(prop)) continue;
         if (ruled && !/^(border|margin|padding)/.test(prop)) continue;

@@ -352,9 +352,9 @@
       "w": 312,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 289,
-      "w": 47,
+      "w": 19,
       "h": 22
      },
      "rail": {
@@ -424,9 +424,9 @@
       "w": 432,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 409,
-      "w": 47,
+      "w": 19,
       "h": 22
      },
      "rail": {
@@ -496,9 +496,9 @@
       "w": 720,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 697,
-      "w": 47,
+      "w": 19,
       "h": 22
      },
      "rail": {
@@ -568,9 +568,9 @@
       "w": 952,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 929,
-      "w": 47,
+      "w": 19,
       "h": 22
      },
      "rail": {
@@ -640,9 +640,9 @@
       "w": 752,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 969,
-      "w": 47,
+      "w": 19,
       "h": 22
      },
      "rail": {
@@ -691,7 +691,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "39.5938px"
     },
     "title rule": {
      "tag": "HEADER",
@@ -710,7 +711,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "39.5938px"
     },
     "toolbar rule": {
      "tag": "DIV",
@@ -729,7 +731,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "33px"
     },
     "selected tab": {
      "tag": "A",
@@ -748,7 +751,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "tab Talk": {
      "tag": "A",
@@ -767,7 +771,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "view Read": {
      "tag": "A",
@@ -786,7 +791,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "view History": {
      "tag": "A",
@@ -805,7 +811,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "tools button": {
      "tag": "LABEL",
@@ -824,7 +831,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "languages button": {
      "tag": "LABEL",
@@ -843,7 +851,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "11px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "site line": {
      "tag": "DIV",
@@ -862,7 +871,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22.75px"
     },
     "subpage line": null,
     "hatnote": {
@@ -882,9 +892,29 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "25.6px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "26px"
     },
-    "second hatnote": null,
+    "second hatnote": {
+     "tag": "DIV",
+     "fontFamily": "sans-serif",
+     "fontSize": "16px",
+     "fontWeight": "400",
+     "fontStyle": "italic",
+     "lineHeight": "26px",
+     "color": "rgb(32, 33, 34)",
+     "backgroundColor": "rgba(0, 0, 0, 0)",
+     "borderTop": "0px none rgb(32, 33, 34)",
+     "borderBottom": "0px none rgb(32, 33, 34)",
+     "marginTop": "-8px",
+     "marginBottom": "8px",
+     "marginLeft": "0px",
+     "paddingTop": "0px",
+     "paddingBottom": "0px",
+     "paddingLeft": "25.6px",
+     "textDecorationLine": "none",
+     "height": "26px"
+    },
     "lead paragraph": {
      "tag": "P",
      "fontFamily": "sans-serif",
@@ -902,7 +932,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "234px"
     },
     "body link": {
      "tag": "A",
@@ -921,7 +952,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "citation mark": {
      "tag": "A",
@@ -940,7 +972,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "section heading": {
      "tag": "H2",
@@ -959,7 +992,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "section rule": {
      "tag": "DIV",
@@ -978,7 +1012,8 @@
      "paddingTop": "12px",
      "paddingBottom": "4.08px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "33px"
     },
     "subheading": {
      "tag": "H3",
@@ -997,7 +1032,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "infobox": {
      "tag": "TABLE",
@@ -1016,7 +1052,8 @@
      "paddingTop": "2.816px",
      "paddingBottom": "2.816px",
      "paddingLeft": "2.816px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "1256.55px"
     },
     "infobox title": {
      "tag": "TH",
@@ -1035,7 +1072,8 @@
      "paddingTop": "1px",
      "paddingBottom": "1px",
      "paddingLeft": "1px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "42.25px"
     },
     "infobox row": {
      "tag": "TD",
@@ -1054,7 +1092,8 @@
      "paddingTop": "1px",
      "paddingBottom": "1px",
      "paddingLeft": "1px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "63.375px"
     },
     "infobox caption": {
      "tag": "DIV",
@@ -1073,7 +1112,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "21.125px"
     },
     "contents heading": {
      "tag": "H2",
@@ -1092,7 +1132,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22.3906px"
     },
     "contents top": {
      "tag": "DIV",
@@ -1111,7 +1152,8 @@
      "paddingTop": "6px",
      "paddingBottom": "6px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "16px"
     },
     "contents row": {
      "tag": "DIV",
@@ -1130,7 +1172,8 @@
      "paddingTop": "6px",
      "paddingBottom": "6px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "16px"
     },
     "search field": {
      "tag": "INPUT",
@@ -1149,7 +1192,8 @@
      "paddingTop": "4px",
      "paddingBottom": "4px",
      "paddingLeft": "34px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "search button": {
      "tag": "BUTTON",
@@ -1168,7 +1212,8 @@
      "paddingTop": "1px",
      "paddingBottom": "1px",
      "paddingLeft": "11px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "wordmark": {
      "tag": "IMG",
@@ -1187,7 +1232,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22px"
     },
     "tagline": {
      "tag": "IMG",
@@ -1206,7 +1252,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "11px"
     },
     "user link": {
      "tag": "A",
@@ -1225,7 +1272,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "appearance heading": {
      "tag": "DIV",
@@ -1244,7 +1292,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22.3906px"
     },
     "appearance group": {
      "tag": "DIV",
@@ -1263,7 +1312,8 @@
      "paddingTop": "6px",
      "paddingBottom": "6px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "16px"
     },
     "appearance option indent": {
      "tag": "LABEL",
@@ -1282,7 +1332,8 @@
      "paddingTop": "0px",
      "paddingBottom": "4px",
      "paddingLeft": "24px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22px"
     }
    }
   },
@@ -1339,7 +1390,7 @@
       "w": 312,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 316,
       "w": 20,
       "h": 22
@@ -1407,7 +1458,7 @@
       "w": 432,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 436,
       "w": 20,
       "h": 22
@@ -1475,7 +1526,7 @@
       "w": 720,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 724,
       "w": 20,
       "h": 22
@@ -1543,7 +1594,7 @@
       "w": 952,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 956,
       "w": 20,
       "h": 22
@@ -1611,7 +1662,7 @@
       "w": 752,
       "h": 23
      },
-     "indicators": {
+     "indicator": {
       "x": 996,
       "w": 20,
       "h": 22
@@ -1658,7 +1709,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "39.5938px"
     },
     "title rule": {
      "tag": "HEADER",
@@ -1677,7 +1729,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "39.5938px"
     },
     "toolbar rule": {
      "tag": "DIV",
@@ -1696,7 +1749,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "33px"
     },
     "selected tab": {
      "tag": "A",
@@ -1715,7 +1769,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "tab Talk": {
      "tag": "A",
@@ -1734,7 +1789,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "view Read": {
      "tag": "A",
@@ -1753,7 +1809,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "view History": {
      "tag": "A",
@@ -1772,7 +1829,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "tools button": {
      "tag": "LABEL",
@@ -1791,7 +1849,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "languages button": {
      "tag": "LABEL",
@@ -1810,7 +1869,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "11px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "site line": {
      "tag": "DIV",
@@ -1829,7 +1889,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22.75px"
     },
     "subpage line": {
      "tag": "DIV",
@@ -1848,7 +1909,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22.75px"
     },
     "hatnote": {
      "tag": "DIV",
@@ -1867,9 +1929,29 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "25.6px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "52px"
     },
-    "second hatnote": null,
+    "second hatnote": {
+     "tag": "DIV",
+     "fontFamily": "sans-serif",
+     "fontSize": "16px",
+     "fontWeight": "400",
+     "fontStyle": "italic",
+     "lineHeight": "26px",
+     "color": "rgb(32, 33, 34)",
+     "backgroundColor": "rgba(0, 0, 0, 0)",
+     "borderTop": "0px none rgb(32, 33, 34)",
+     "borderBottom": "0px none rgb(32, 33, 34)",
+     "marginTop": "-8px",
+     "marginBottom": "8px",
+     "marginLeft": "0px",
+     "paddingTop": "0px",
+     "paddingBottom": "0px",
+     "paddingLeft": "25.6px",
+     "textDecorationLine": "none",
+     "height": "52px"
+    },
     "lead paragraph": {
      "tag": "P",
      "fontFamily": "sans-serif",
@@ -1887,7 +1969,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "156px"
     },
     "body link": {
      "tag": "A",
@@ -1906,7 +1989,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "citation mark": {
      "tag": "A",
@@ -1925,7 +2009,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "section heading": {
      "tag": "H2",
@@ -1944,7 +2029,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "section rule": {
      "tag": "DIV",
@@ -1963,7 +2049,8 @@
      "paddingTop": "12px",
      "paddingBottom": "4.08px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "33px"
     },
     "subheading": {
      "tag": "H3",
@@ -1982,7 +2069,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "infobox": null,
     "infobox title": null,
@@ -2005,7 +2093,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22.3906px"
     },
     "contents top": {
      "tag": "DIV",
@@ -2024,7 +2113,8 @@
      "paddingTop": "6px",
      "paddingBottom": "6px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "16px"
     },
     "contents row": {
      "tag": "DIV",
@@ -2043,7 +2133,8 @@
      "paddingTop": "6px",
      "paddingBottom": "6px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "16px"
     },
     "search field": {
      "tag": "INPUT",
@@ -2062,7 +2153,8 @@
      "paddingTop": "4px",
      "paddingBottom": "4px",
      "paddingLeft": "34px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "search button": {
      "tag": "BUTTON",
@@ -2081,7 +2173,8 @@
      "paddingTop": "1px",
      "paddingBottom": "1px",
      "paddingLeft": "11px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "32px"
     },
     "wordmark": {
      "tag": "IMG",
@@ -2100,7 +2193,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22px"
     },
     "tagline": {
      "tag": "IMG",
@@ -2119,7 +2213,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "11px"
     },
     "user link": {
      "tag": "A",
@@ -2138,7 +2233,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "auto"
     },
     "appearance heading": {
      "tag": "DIV",
@@ -2157,7 +2253,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22.3906px"
     },
     "appearance group": {
      "tag": "DIV",
@@ -2176,7 +2273,8 @@
      "paddingTop": "6px",
      "paddingBottom": "6px",
      "paddingLeft": "0px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "16px"
     },
     "appearance option indent": {
      "tag": "LABEL",
@@ -2195,7 +2293,8 @@
      "paddingTop": "0px",
      "paddingBottom": "0px",
      "paddingLeft": "24px",
-     "textDecorationLine": "none"
+     "textDecorationLine": "none",
+     "height": "22px"
     }
    }
   }
