@@ -1,8 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { Citation, Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
+import { $Chapter, Citation, Document, Heading, Item, List, Paragraph, Section } from '@dna-platform/public';
 import { Hatnote } from '@dna-platform/public/encyclopedia';
-import { BookLink, OutwardLink } from '../.chapter';
-import $Chapter from './.chapter';
+import { BookLink, OutwardLink } from './.book';
 
 export default class $OrderOfArticleElements extends $Chapter {
     print() {

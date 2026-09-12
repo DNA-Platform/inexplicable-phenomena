@@ -5,7 +5,7 @@ import { $ } from '@dna-platform/chemistry';
 // Book is the page's and no other book's registration stands beside it.
 const opened = async () => {
     if (location.pathname.startsWith('/article')) return (await import('./.article/book')).book;
-    if (location.pathname.startsWith('/turing')) return (await import('./alan-turing/book')).book;
+    if (location.pathname.startsWith('/turing')) return (await import('./turing/book')).book;
 
     return (await import('./.encyclopedia/book')).book;
 };

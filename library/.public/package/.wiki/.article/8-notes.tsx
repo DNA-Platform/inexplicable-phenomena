@@ -1,7 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { Document, Heading, Paragraph, Quote, Section } from '@dna-platform/public';
-import { BookLink } from '../.chapter';
-import $Chapter from './.chapter';
+import { $Chapter, Document, Heading, Paragraph, Quote, Section } from '@dna-platform/public';
+import { BookLink } from './.book';
 
 export default class $Notes extends $Chapter {
     print() {

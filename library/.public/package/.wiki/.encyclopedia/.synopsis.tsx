@@ -1,6 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
-import $Chapter from './.chapter';
+import { $Chapter, Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
 
 export default class $Synopsis extends $Chapter {
     view() {

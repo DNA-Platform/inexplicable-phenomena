@@ -1,6 +1,5 @@
-import { Footer, Heading, Paragraph } from '@dna-platform/public';
-import { BookLink, OutwardLink } from '../.chapter';
-import $Chapter from './.chapter';
+import { $Chapter, Footer, Heading, Paragraph } from '@dna-platform/public';
+import { BookLink, OutwardLink } from '../.article/.book';
 
 export default class $TheFoot extends $Chapter {
     print() {

@@ -1,7 +1,6 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Reference, Section, Title } from '@dna-platform/public';
-import $Chapter from './.chapter';
-import { Projects, Logo, Project } from './.chapter';
+import { $Chapter, Heading, Paragraph, Reference, Section, Title } from '@dna-platform/public';
+import { Projects, Logo, Project } from './.book';
 
 export default class $TheProjects extends $Chapter {
     view() {

@@ -1,5 +1,4 @@
-import { Image, Paragraph, Synopsis } from '@dna-platform/public';
-import $Chapter from './.chapter';
+import { $Chapter, Image, Paragraph, Synopsis } from '@dna-platform/public';
 
 export default class $Synopsis extends $Chapter {
     print() {

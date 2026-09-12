@@ -1,8 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Section } from '@dna-platform/public';
-import $Chapter from './.chapter';
-import { OutwardLink } from '../.chapter';
-import { Foundation, Logo } from './.chapter';
+import { $Chapter, Heading, Paragraph, Section } from '@dna-platform/public';
+import { OutwardLink } from '../.article/.book';
+import { Foundation, Logo } from './.book';
 
 export default class $TheFoundation extends $Chapter {
     view() {

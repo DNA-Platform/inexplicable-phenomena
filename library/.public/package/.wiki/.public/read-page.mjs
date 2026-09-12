@@ -3,15 +3,17 @@
 // A demo is EVIDENCE, and a plausible substitute is what it must not be, so nothing here is invented:
 // every paragraph, link, figure, quotation, hatnote and citation mark comes off the served article.
 import { writeFile, mkdir, readdir, rm } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'file:///C:/Source/dna-platform/inexplicable-phenomena/node_modules/puppeteer/lib/esm/puppeteer/puppeteer.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 // ONE READER FOR ANY PAGE: the page it reads and the book it writes are its two arguments.
-//   node read-page.mjs https://en.wikipedia.org/wiki/Alan_Turing alan-turing
+//   node read-page.mjs https://en.wikipedia.org/wiki/Alan_Turing turing
 const page = process.argv[2] ?? 'https://en.wikipedia.org/wiki/Alan_Turing';
-const book = join(here, '..', process.argv[3] ?? 'alan-turing');
+const book = join(here, '..', process.argv[3] ?? 'turing');
+// THE LINKS EVERY WIKI BOOK WRITES WITH live in the article's book; a book that is not the article reaches over to it.
+const shared = basename(book) === '.article' ? './.book' : '../.article/.book';
 
 const named = (heading) => heading.toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-|-$/gu, '');
 const classed = (heading) => heading.replace(/[^A-Za-z0-9 ]/gu, '').split(/\s+/u).filter(Boolean)
@@ -285,13 +287,12 @@ for (const section of chapters) {
         at += 1;
         const said = section.entries.map(one => held('Entry', '                    ', `${one.key}: ${quoted(one.said)}`)).join(NEWLINE);
         const listed = section.name === 'Notes' ? 'Notes' : 'References';
-        const holds = [...new Set(['Entry', 'Heading', listed, 'Section', ...(said.includes('<Citation>') ? ['Citation'] : []), ...['Bold', 'Italics', 'Underline'].filter(kind => said.includes(`<${kind}>`))])].sort();
+        const holds = [...new Set(['$Chapter', 'Entry', 'Heading', listed, 'Section', ...(said.includes('<Citation>') ? ['Citation'] : []), ...['Bold', 'Italics', 'Underline'].filter(kind => said.includes(`<${kind}>`))])].sort();
         const links = [...(said.includes('<BookLink>') ? ['BookLink'] : []), ...(said.includes('<OutwardLink>') ? ['OutwardLink'] : [])];
         const file = `${at}-${named(section.name)}.tsx`;
         await writeFile(join(book, file), [
             `import { ${holds.join(', ')} } from '@dna-platform/public';`,
-            ...(links.length ? [`import { ${links.join(', ')} } from '../.chapter';`] : []),
-            `import $Chapter from './.chapter';`,
+            ...(links.length ? [`import { ${links.join(', ')} } from '${shared}';`] : []),
             ``,
             `export default class $${classed(section.name)} extends $Chapter {`,
             `    print() {`,
@@ -313,7 +314,7 @@ for (const section of chapters) {
     at += 1;
     const said = nested(section.wrote);
     const whole = said + (at === 1 ? aside + boxed : '');
-    const carries = [...new Set(['Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') && !boxed ? [] : ['Section']),
+    const carries = [...new Set(['$Chapter', 'Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') && !boxed ? [] : ['Section']),
         ...(at === 1 ? ['Illustration'] : []),
         ...(whole.includes('<Citation>') ? ['Citation'] : []),
         ...['Bold', 'Italics', 'Underline'].filter(kind => whole.includes(`<${kind}>`)),
@@ -328,8 +329,7 @@ for (const section of chapters) {
         `import { ${carries.join(', ')} } from '@dna-platform/public';`,
         ...(/<(Hatnote|Infobox|Manual)>/u.test(whole) ? [`import { ${[...(whole.includes('<Hatnote>') ? ['Hatnote'] : []), ...(whole.includes('<Infobox>') ? ['Infobox', 'Line'] : []), ...(whole.includes('<Manual>') ? ['Manual'] : [])].join(', ')} } from '@dna-platform/public/encyclopedia';`] : []),
         ...(whole.includes('<Manual>') ? [`import { ${['Menu', 'Option', 'Summary', ...(whole.includes('<Search ') ? ['Search'] : [])].sort().join(', ')} } from '@dna-platform/public/application';`] : []),
-        ...(inward.length || outward.length ? [`import { ${[...inward, ...outward].join(', ')} } from '../.chapter';`] : []),
-        `import $Chapter from './.chapter';`,
+        ...(inward.length || outward.length ? [`import { ${[...inward, ...outward].join(', ')} } from '${shared}';`] : []),
         ``,
         `export default class $${classed(section.name) || 'Lead'} extends $Chapter {`,
         `    print() {`,
@@ -372,10 +372,9 @@ const linkKinds = new Set(chrome.menu.concat(chrome.people, chrome.languages, ch
     ...chrome.tools.map(one => one.links), chrome.places).map(holds));
 
 const cover = [
-    `import { Author, Cover, Description, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';`,
+    `import { $Chapter, Author, Cover, Description, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';`,
     `import { Header, Menu, Option, Search, Summary, Toolbar } from '@dna-platform/public/application';`,
-    `import { ${[...linkKinds].sort().join(', ')} } from '../.chapter';`,
-    `import $Chapter from './.chapter';`,
+    `import { ${[...linkKinds].sort().join(', ')} } from '${shared}';`,
     ``,
     `export default class $Cover extends $Chapter {`,
     `    print() {`,
@@ -431,9 +430,8 @@ const cover = [
 await writeFile(join(book, '.cover.tsx'), cover, 'utf8');
 
 const synopsis = [
-    `import { ${['Paragraph', 'Synopsis', ...(chrome.indicators.length ? ['Image'] : [])].sort().join(', ')} } from '@dna-platform/public';`,
-    ...(chrome.subpages.includes('<BookLink>') ? [`import { BookLink } from '../.chapter';`] : []),
-    `import $Chapter from './.chapter';`,
+    `import { ${['$Chapter', 'Paragraph', 'Synopsis', ...(chrome.indicators.length ? ['Image'] : [])].sort().join(', ')} } from '@dna-platform/public';`,
+    ...(chrome.subpages.includes('<BookLink>') ? [`import { BookLink } from '${shared}';`] : []),
     ``,
     `export default class $Synopsis extends $Chapter {`,
     `    print() {`,
@@ -451,9 +449,8 @@ const synopsis = [
 await writeFile(join(book, '.synopsis.tsx'), synopsis, 'utf8');
 
 const foot = [
-    `import { Footer, Heading, Paragraph } from '@dna-platform/public';`,
-    `import { ${[...new Set(chrome.places.map(holds))].sort().join(', ') || 'OutwardLink'} } from '../.chapter';`,
-    `import $Chapter from './.chapter';`,
+    `import { $Chapter, Footer, Heading, Paragraph } from '@dna-platform/public';`,
+    `import { ${[...new Set(chrome.places.map(holds))].sort().join(', ') || 'OutwardLink'} } from '${shared}';`,
     ``,
     `export default class $TheFoot extends $Chapter {`,
     `    print() {`,
@@ -479,9 +476,8 @@ const rows = chapters;
 const row = (said, pad) => `${pad}<Option><Ref>[${quoted(said)}](#${kebab(said)})</Ref></Option>`;
 const contents = [
     `import { $ } from '@dna-platform/chemistry';`,
-    `import { Heading, Ref, Section, TableOfContents } from '@dna-platform/public';`,
+    `import { $Chapter, Heading, Ref, Section, TableOfContents } from '@dna-platform/public';`,
     `import { Menu, Option, Summary } from '@dna-platform/public/application';`,
-    `import $Chapter from './.chapter';`,
     ``,
     `export default class $Contents extends $Chapter {`,
     `    print() {`,

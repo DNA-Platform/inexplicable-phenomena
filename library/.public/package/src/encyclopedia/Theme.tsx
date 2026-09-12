@@ -12,6 +12,11 @@ export class $EncyclopediaTheme extends $Theme {
     override jet = '#101418';
     override pressed = '#3056a9';
     override link = '#3366cc';
+    edge = '#c8ccd1';
+    mark = '#404244';
+    field = '#72777d';
+    tint = '#ddeeff';
+    black = '#000000';
     override measure = '57em';
     override body = 'sans-serif';
     override face = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
@@ -66,7 +71,7 @@ export class $EncyclopediaTheme extends $Theme {
     underline_right = '0';
     underline_bottom = '0';
     underline_height = '1px';
-    underline_background = '#a2a9b1';
+    get underline_background() { return this.rule; }
     // THE TITLE'S REFERENCE wraps the heading; inline, its line box stood the block 7px taller than Wikipedia's 40.
     @select('.pd-cover > .pd-title > .pd-meaning') named_display = 'block';
     @select('.pd-cover > .pd-menu') tongue_gridColumn = '2';
@@ -80,7 +85,7 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-toolbar') tabs_gridColumn = '2';
     tabs_gridRow = '3';
     tabs_marginTop = '0';
-    tabs_boxShadow = '0 1px 0 #c8ccd1';
+    get tabs_boxShadow() { return `0 1px 0 ${this.edge}`; }
     tabs_paddingBottom = '1px';
     @select('.pd-toolbar > .pd-paragraph') tabGroup_margin = '0';
     @select('.pd-toolbar > .pd-paragraph > .pd-ref') tab_height = '2.2857em';
@@ -142,7 +147,7 @@ export class $EncyclopediaTheme extends $Theme {
     mark_height = '1.25rem';
     mark_backgroundRepeat = 'no-repeat';
     mark_backgroundSize = '100%';
-    get mark_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M1 3h18v2H1zm0 6h18v2H1zm0 6h18v2H1z'/></svg>", '#404244'); }
+    get mark_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M1 3h18v2H1zm0 6h18v2H1zm0 6h18v2H1z'/></svg>", this.mark); }
     @select('.pd-cover > .pd-menu > .pd-summary') picker_fontSize = '0.875em';
     picker_fontWeight = '700';
     picker_border = '1px solid transparent';
@@ -171,21 +176,21 @@ export class $EncyclopediaTheme extends $Theme {
     tongues_left = 'auto';
     tongues_width = 'min(30em, calc(100vw - 3em))';
     tongues_columns = '3';
-    @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child') here_color = '#202122';
+    @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child') get here_color() { return this.ink; }
     @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child::after') bar_content = "''";
     bar_position = 'absolute';
     bar_left = '0';
     bar_bottom = '0';
     bar_width = '100%';
     bar_height = '2px';
-    bar_background = '#202122';
+    get bar_background() { return this.ink; }
     @select('.pd-toolbar > .pd-menu') tools_marginRight = '-0.5714em';
     @select('.pd-toolbar > .pd-menu > .pd-summary') dots_width = '2.2857em';
     dots_height = '2.2857em';
     dots_boxSizing = 'border-box';
     dots_justifyContent = 'center';
     dots_fontWeight = '400';
-    dots_color = '#404244';
+    get dots_color() { return this.mark; }
     dots_border = '1px solid transparent';
     dots_margin = '0';
     get dots_fontFamily() { return this.body; }
@@ -195,7 +200,7 @@ export class $EncyclopediaTheme extends $Theme {
     dotted_height = '1.4286em';
     dotted_backgroundRepeat = 'no-repeat';
     dotted_backgroundSize = '100%';
-    get dotted_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M8 0h4v4H8zm0 8h4v4H8zm0 8h4v4H8z'/></svg>", '#404244'); }
+    get dotted_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M8 0h4v4H8zm0 8h4v4H8zm0 8h4v4H8z'/></svg>", this.mark); }
 
     // THE LINE UNDER THE TABS, which says where the words came from, is set small and tight.
     @select('.pd-book > .pd-chapter > .pd-synopsis') siteline_fontSize = '0.875em';
@@ -225,7 +230,7 @@ export class $EncyclopediaTheme extends $Theme {
     row_marginBottom = '0';
     row_padding = '1px';
     row_border = 'none';
-    row_color = '#000000';
+    get row_color() { return this.black; }
 
     // THE CONTENTS OPENS IN PLACE. Its rows that hold rows are the same Menu the bar and the
     // tools are — one disclosure for the whole encyclopedia — and the only thing the contents
@@ -276,7 +281,7 @@ export class $EncyclopediaTheme extends $Theme {
     // A SUMMARY IN AN ENCYCLOPEDIA IS A WORD YOU PRESS, not an abstract set in italic — the base
     // names that kind for what a summary usually is, and here every menu wears it.
     // THE MANUAL'S BANDS: every group's title on the blue Wikipedia tints a sidebar's with.
-    @select('.pd-manual .pd-summary') band_background = '#ddeeff';
+    @select('.pd-manual .pd-summary') get band_background() { return this.tint; }
     @select('.pd-summary') override summed_margin = '0';
     override summed_fontStyle = 'normal';
     // A HATNOTE STANDS IN FROM THE MARGIN AND LEANS, which is how a reader tells it from the
@@ -291,9 +296,9 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-search .pd-field') field_fontSize = '0.875em';
     field_lineHeight = '1.5714';
     field_padding = '0.2857em 0.5714em 0.2857em 2.4286em';
-    field_border = '1px solid #72777d';
+    get field_border() { return `1px solid ${this.field}`; }
     field_borderRadius = '2px 0 0 2px';
-    get field_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M12.2 13.6a7 7 0 1 1 1.4-1.4l5.4 5.4-1.4 1.4zM3 8a5 5 0 1 0 10 0A5 5 0 0 0 3 8'/></svg>", '#54595d'); }
+    get field_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='{ink}' d='M12.2 13.6a7 7 0 1 1 1.4-1.4l5.4 5.4-1.4 1.4zM3 8a5 5 0 1 0 10 0A5 5 0 0 0 3 8'/></svg>", this.pale); }
     field_backgroundRepeat = 'no-repeat';
     field_backgroundPosition = '0.5714em center';
     field_backgroundSize = '1.2857em';
@@ -302,28 +307,28 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-search .pd-button') press_fontSize = '0.875em';
     press_fontWeight = '700';
     press_padding = '0 0.786em';
-    press_border = '1px solid #72777d';
+    get press_border() { return `1px solid ${this.field}`; }
     press_borderRadius = '0 2px 2px 0';
     press_marginLeft = '-1px';
-    press_color = '#404244';
+    get press_color() { return this.mark; }
     get press_background() { return this.quiet; }
     // THE INFOBOX, in Wikipedia's own numbers, said here because a theme's rule outranks a worn
     // format's at what reads as equal specificity — the third feature request in the sprint.
     @select('.pd-infobox.pd-aside') box_margin = '0.5em 0 0.5em 1em';
     box_padding = '0.2em';
-    box_color = '#000000';
+    get box_color() { return this.black; }
     get box_border() { return `1px solid ${this.rule}`; }
     @select('.pd-book .pd-document .pd-infobox.pd-aside > .pd-heading.pd-level-1') boxName_fontSize = '1.25em';
     boxName_fontWeight = '700';
     boxName_lineHeight = '1.2';
-    boxName_color = '#000000';
+    get boxName_color() { return this.black; }
     boxName_background = 'transparent';
     boxName_border = 'none';
     boxName_margin = '0';
     boxName_padding = '1px';
     get boxName_fontFamily() { return this.body; }
     @select('.pd-infobox .pd-caption') boxCaption_lineHeight = '1.5';
-    boxCaption_color = '#000000';
+    get boxCaption_color() { return this.black; }
     boxCaption_background = 'transparent';
     boxCaption_border = 'none';
     boxCaption_margin = '0';
@@ -437,12 +442,12 @@ export class $EncyclopediaTheme extends $Theme {
     figure_boxSizing = 'border-box';
     figure_maxWidth = '100%';
     figure_padding = '0';
-    figure_border = '1px solid #c8ccd1';
+    get figure_border() { return `1px solid ${this.edge}`; }
     get figure_background() { return this.quiet; }
     @select('.pd-illustration .pd-image') image_display = 'inline';
     image_verticalAlign = 'middle';
     image_margin = '3px';
-    image_border = '1px solid #c8ccd1';
+    get image_border() { return `1px solid ${this.edge}`; }
     get image_background() { return this.paper; }
     @select('.pd-caption') caption_display = 'table-caption';
     caption_captionSide = 'bottom';

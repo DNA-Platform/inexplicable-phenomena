@@ -1,8 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { Author, Cover, Heading, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
-import $Chapter from './.chapter';
-import { BookLink } from '../.chapter';
-import { globe, Language, Languages, Logo, Search } from './.chapter';
+import { $Chapter, Author, Cover, Heading, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
+import { BookLink } from '../.article/.book';
+import { globe, Language, Languages, Logo, Search } from './.book';
 
 export default class $Cover extends $Chapter {
     view() {
