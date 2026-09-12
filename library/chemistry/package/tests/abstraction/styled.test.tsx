@@ -466,3 +466,52 @@ describe('an animation is a level a styled chemical opens, and it stands whole',
         expect(once).toContain('.b{display:none;}');
     });
 });
+
+// THE EMIT OWNS THE ORDER OF A RANGED LEVEL, as it owns the closing: a media
+// query's place in the cascade is a fact about its bounds, not about where it
+// was written or which class wrote it.
+class $Breaks extends $Chemical {
+    selector = styled.main;
+    @select('@media (max-width: 640px)') phone_padding = '1px';
+    @select('.inner') inner_padding = '3px';
+    @select('@media (max-width: 1119px)') tablet_padding = '2px';
+    @select('@media (min-width: 900px)') up_padding = '4px';
+    @select('@media (min-width: 600px)') mid_padding = '5px';
+    override view(): ReactNode { return <main><div className="inner">x</div></main>; }
+}
+const Breaks = $($Breaks);
+
+class $Added extends $Breaks {
+    @select('@media (max-width: 768px)') between_padding = '6px';
+}
+const Added = $($Added);
+
+const places = (css: string): string[] => Array.from(css.match(/@media \([^)]*\)|\.inner\{/gu) ?? []);
+
+describe('the emit owns the order of a ranged level, as it owns the closing', () => {
+    it('A NARROWER QUERY HAS THE LAST WORD, however it was written', () => {
+        render(<Breaks />);
+        const seen = places(stylesheet());
+        expect(seen.indexOf('@media (max-width: 1119px)')).toBeLessThan(seen.indexOf('@media (max-width: 640px)'));
+    });
+
+    it('a plain level comes before every ranged one', () => {
+        render(<Breaks />);
+        const seen = places(stylesheet());
+        expect(seen.indexOf('.inner{')).toBeLessThan(seen.indexOf('@media (max-width: 1119px)'));
+    });
+
+    it('and min-width follows max-width, ascending', () => {
+        render(<Breaks />);
+        const seen = places(stylesheet());
+        expect(seen.indexOf('@media (max-width: 640px)')).toBeLessThan(seen.indexOf('@media (min-width: 600px)'));
+        expect(seen.indexOf('@media (min-width: 600px)')).toBeLessThan(seen.indexOf('@media (min-width: 900px)'));
+    });
+
+    it('AND A QUERY A SUBCLASS ADDS IS PLACED BY ITS WIDTH, NOT BY ITS CLASS', () => {
+        render(<Added />);
+        const seen = places(stylesheet());
+        expect(seen.lastIndexOf('@media (max-width: 1119px)')).toBeLessThan(seen.lastIndexOf('@media (max-width: 768px)'));
+        expect(seen.lastIndexOf('@media (max-width: 768px)')).toBeLessThan(seen.lastIndexOf('@media (max-width: 640px)'));
+    });
+});
