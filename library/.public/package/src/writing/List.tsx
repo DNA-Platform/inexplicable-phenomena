@@ -1,13 +1,8 @@
-// A LIST IS A PARAGRAPH THAT HOLDS ITEMS — Doug: "if the list has a type of item, it renders
-// itself as a list, and item is a type of sentence." So the list's level below is $TypeOfItem, the
-// parse makes the items, and the <li> is theirs.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
-import { $Type } from '@/writing/Type';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
 import { TypeOfItem } from './Item';
 import { TypeOfSentence } from './Sentence';
 import { $Paragraph$, $TypeOfParagraph, ParagraphSpecification } from './Paragraph';
@@ -21,13 +16,8 @@ export class $List extends $Paragraph implements $List$ {
         super.$Paragraph(this.addType(block, $TypeOfList));
     }
 
-    // A LIST DRAWS ITS PARTS, which is the reading $Section already takes. What stood here split
-    // the list's own copy with a regex and built <li> elements out of the pieces, so the 54 list
-    // items on /article were not writings at all — nothing could style one, nest one, reference one
-    // or carry an operation on one, and the bullet that opened a line was copy rather than structure.
     override print(): ReactNode {
         const Parts = $(reflection.wrapped(this));
-
         return <Parts />;
     }
 }
