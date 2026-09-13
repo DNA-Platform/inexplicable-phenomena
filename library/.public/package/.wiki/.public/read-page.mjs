@@ -314,7 +314,7 @@ for (const section of chapters) {
     }
     at += 1;
     const said = nested(section.wrote);
-    const whole = said + (at === 1 ? aside + boxed : '');
+    const whole = said + (at === 1 ? aside : '');
     const carries = [...new Set(['Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') && !boxed ? [] : ['Section']),
         ...(at === 1 ? ['Illustration'] : []),
         ...(whole.includes('<Citation>') ? ['Citation'] : []),
@@ -504,6 +504,29 @@ const contents = [
     `}`,
     ``,
 ].join('\n');
+// THE MANUAL IS A CHAPTER, not something inside the lead. It is a logical part of the page in its
+// own right — a navigation box for a whole subject area — so it is written as a chapter and the
+// Encyclopedia's layout puts it in the body, where its format floats it and the prose flows beside.
+if (manual !== null) {
+    const said = boxed.split(NEWLINE).map(line => line.startsWith('    ') ? line.slice(4) : line).join(NEWLINE);
+    await writeFile(join(book, `0-${named(manual.name)}.tsx`), [
+        `import { $ } from '@dna-platform/chemistry';`,
+        `import { ${['Heading', 'Section', ...(manual.below || manual.navbar ? ['Paragraph'] : []), ...['Bold', 'Italics', 'Underline'].filter(kind => said.includes(`<${kind}>`))].sort().join(', ')} } from '@dna-platform/public';`,
+        `import { $Article, Manual } from '@dna-platform/public/encyclopedia';`,
+        `import { ${['Menu', 'Option', 'Summary', ...(manual.where ? ['Search'] : [])].sort().join(', ')} } from '@dna-platform/public/application';`,
+        ...(manual.href ? [`import { BookLink } from '${shared}';`] : []),
+        ``,
+        `export default class $${classed(manual.name)} extends $Article {`,
+        `    print() {`,
+        `        return (`,
+        said,
+        `        );`,
+        `    }`,
+        `}`,
+        ``,
+    ].join(NEWLINE), 'utf8');
+}
+
 await writeFile(join(book, '.table.tsx'), contents, 'utf8');
 made.push(`.table.tsx — ${rows.length} rows, ${rows.filter(one => (one.wrote ?? []).some(part => part.how === 'heading' && part.deep === 1)).length} of them opening`);
 

@@ -4,6 +4,7 @@
   ".article/.cover.tsx",
   ".article/.synopsis.tsx",
   ".article/.table.tsx",
+  ".article/0-manual-of-style.tsx",
   ".article/1-lead.tsx",
   ".article/10-the-foot.tsx",
   ".article/2-order-of-article-elements.tsx",
