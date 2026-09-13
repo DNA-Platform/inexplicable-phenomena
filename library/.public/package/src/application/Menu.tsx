@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
-import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Format } from '@/writing/Format';
 import { $Heading$, $Heading, $TypeOfHeading, HeadingSpecification } from '@/writing/Heading';
@@ -14,8 +13,6 @@ export interface $Menu$ extends $Section$ { }
 // which is <details> and <summary> exactly: the open state belongs to the element, the browser
 // draws what opens in one box of its own, and nothing here keeps or wraps anything.
 export class $Menu extends $Section implements $Menu$ {
-    override definition = 'details';
-
     $Menu(block: $Block) {
         super.$Section(this.addType(block, $TypeOfMenu).concat($check(menuStyle, '!')));
     }
@@ -38,7 +35,7 @@ export class $Summary extends $Heading implements $Summary$ {
     }
 
     override view(): ReactNode {
-        return reflection.formatted(this, <summary className={this.className}>{this.print()}</summary>);
+        return <summary className={this.className}>{this.print()}</summary>;
     }
 }
 

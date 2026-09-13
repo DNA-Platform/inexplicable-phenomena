@@ -44,13 +44,6 @@ export class TitleSpecification extends SectionSpecification {
     override $opensWithHeading(writing: $Writing): boolean | void {
         return false;
     }
-
-    @specify('a title means what it titles')
-    $meansTheBook(writing: $Writing): void {
-        $check(writing.meaning !== undefined,
-            'a title means what it titles, and this one means nothing');
-    }
-
 }
 
 export const Title = $($Title);

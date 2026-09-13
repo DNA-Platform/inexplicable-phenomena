@@ -44,7 +44,7 @@ export class $Ref extends $Phrase implements $Ref$ {
         const url = this.url();
         if (url === undefined) return super.view();
 
-        return reflection.formatted(this, <a href={url} className={this.className}>{this.written()}</a>);
+        return <a href={url} className={this.className}>{this.written()}</a>;
     }
 
     async read(): Promise<$Writing> {

@@ -1,7 +1,6 @@
 // CREATED 2026-09-08 · rating 1 · shell. Code at paragraph grade: the code is the copy, the language a prop, drawn through a highlighting box as .archive did; parts() a line-based read on demand, never in the draw (PS3).
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
-import { reflection } from '@/utilities/Reflection';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -13,6 +12,7 @@ export interface $Code$ extends $Paragraph$ {
 }
 
 export class $Code extends $Paragraph implements $Code$ {
+    definition = 'pre';
     $language = '';
 
     get language(): string { return this.$language; }
@@ -21,17 +21,8 @@ export class $Code extends $Paragraph implements $Code$ {
         super.$Paragraph(this.addType(block, $TypeOfCode));
     }
 
-    // CODE IS A <pre> HOLDING A <code>, which is the only markup HTML has for it and the one every
-    // sheet already styles — latex.css and github-markdown-css both, without being asked. The
-    // language rides as `language-x`, which is the class every highlighter in the world looks for,
-    // so a highlighting box can be added later without this changing.
-    //
-    // IT IS print(), NOT view(). The throw that stood here overrode view, which is the shape this
-    // library has spent a sprint removing: overriding view means $Writing.view never runs, so the
-    // element gets neither its pd- classes nor reflection.formatted and no format can ever reach it.
-    // A kind writes its element in print, in one line, and gets everything else for free.
-    override view(): ReactNode {
-        return reflection.formatted(this, <pre className={this.className}><code className={this.language === '' ? undefined : `language-${this.language}`}>{this.print()}</code></pre>);
+    override print(): ReactNode {
+        return <code className={this.language === '' ? undefined : `language-${this.language}`}>{super.print()}</code>;
     }
 }
 

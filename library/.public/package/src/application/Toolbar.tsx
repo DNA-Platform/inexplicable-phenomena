@@ -6,8 +6,6 @@ import { $Section } from '@/writing/Section';
 // Written, like the bar above it — each group a paragraph of links, and the last of them the menu
 // holding the page's tools.
 export class $Toolbar extends $Section {
-    override definition = 'nav';
-
     $Toolbar(block: $Block) {
         super.$Section($check(block, $Block, '!').concat($check(toolbarStyle, '!')));
     }

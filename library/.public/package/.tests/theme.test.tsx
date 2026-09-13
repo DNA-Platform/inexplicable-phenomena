@@ -1,19 +1,31 @@
 import { describe, it, expect } from 'vitest';
-import { $ } from '@dna-platform/chemistry';
+import { act, render } from '@testing-library/react';
+import { $, $Block, $check, styled } from '@dna-platform/chemistry';
 import {
-    $Book, $Writing, $Theme, $TypeOfSection, $TypeOfParagraph, $TypeOfDocument,
-    Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Section, Heading, Paragraph,
+    $Book, $Writing, $Theme, $Section, $Format,
+    Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Heading, Paragraph,
 } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
-const documents = (book: $Book) => book.searchFor<$Writing>($TypeOfDocument).slice(2);
-
 const cover = () => <Cover><Title>Alan Turing<Reference>https://en.wikipedia.org/wiki/Alan_Turing</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>;
 const synopsis = () => <Synopsis>A life.</Synopsis>;
 
-const life = () => <Document><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Document>;
-const work = () => <Document><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>;
+// A THEME IS READ WHERE IT IS DRAWN. A format's getter runs inside the draw, so it is where a promise
+// reads the theme a page is really drawn in; the reads are kept, in order, for the promise to look at.
+let seen: $Theme[] = [];
+class $ReadingFormat extends $Format {
+    override selector: any = styled.div;
+    get color() { seen.push(this.theme); return 'inherit'; }
+}
+const ReadingFormat = $($ReadingFormat);
+class $Reading extends $Section {
+    $Reading(block: $Block) { super.$Section($check(block, $Block, '!').concat($check(ReadingFormat, '!'))); }
+}
+const Reading = $($Reading);
+const life = () => <Document><Reading><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Reading></Document>;
+const work = () => <Document><Reading><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Reading></Document>;
+const drawn = async (book: $Book) => { seen = []; const Drawn = $(book); await act(async () => { render(<Drawn />); }); };
 
 class $Dark extends $Theme {
     override ink = '#ffffff';
@@ -29,29 +41,13 @@ class $Mine extends $Book { }
 const Mine = $($Mine);
 $Portal.$register(Mine);
 
-describe('a writing has a theme the way it has a meaning — read from its parents, never stored below the document', () => {
-    it('A BOOK MAKES ONE THEME, AND EVERYTHING IN IT READS THAT ONE', () => {
-        const book = built<$Book>(<Book>{cover()}{synopsis()}{life()}</Book>);
-        const documented = documents(book)[0];
-        const paragraph = documented.searchFor<$Writing>($TypeOfSection)[0].searchFor<$Writing>($TypeOfParagraph)[0];
+describe('a book draws its theme at its root, and everything drawn beneath reaches that one', () => {
+    it('A BOOK DRAWS ONE THEME, AND EVERY FORMAT BENEATH READS THAT ONE', async () => {
+        await drawn(built<$Book>(<Book>{cover()}{synopsis()}{life()}{work()}</Book>));
 
-        expect(book.theme).toBeInstanceOf($Theme);
-        expect(documented.theme).toBe(book.theme);
-        expect(paragraph.theme).toBe(book.theme);
-    });
-
-    it('A THEME WRITTEN INTO A DOCUMENT DOES NOT MAKE IT THAT DOCUMENT\'S — A THEME IS THE BOOK\'S', () => {
-        const book = built<$Book>(
-            <Book>
-                {cover()}{synopsis()}
-                {life()}
-                <Document><Dark /><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Document>
-            </Book>);
-        const [first, second] = documents(book);
-
-        expect(second.theme).toBe(book.theme);
-        expect(first.theme).toBe(book.theme);
-        expect(second.searchFor<$Writing>($TypeOfSection)[0].theme).toBe(book.theme);
+        expect(seen.length).toBeGreaterThanOrEqual(2);
+        expect(seen[0]).toBeInstanceOf($Theme);
+        expect(seen.every(one => one === seen[0])).toBe(true);
     });
 
     it('A WRITING BUILT WITH NO BOOK STILL READS A THEME, AND IT IS THE ONE DEFAULT', () => {
@@ -62,21 +58,26 @@ describe('a writing has a theme the way it has a meaning — read from its paren
         expect(alone.theme).toBe(again.theme);
     });
 
-    it('A THEME REGISTERED FOR A BOOK IS THE ONE THE BOOK MAKES, ONE INSTANCE THROUGHOUT', () => {
-        const book = built<$Book>(<Mine>{cover()}{synopsis()}{life()}{work()}</Mine>);
+    it('A THEME REGISTERED FOR A BOOK IS THE ONE THE BOOK DRAWS, ONE INSTANCE THROUGHOUT', async () => {
+        await drawn(built<$Book>(<Mine>{cover()}{synopsis()}{life()}{work()}</Mine>));
 
-        expect(book.theme).toBeInstanceOf($Portal);
-        expect(documents(book)[1].theme).toBe(book.theme);
-        expect(documents(book)[1].theme.size).toBe('14px');
+        expect(seen[0]).toBeInstanceOf($Portal);
+        expect(seen[0].size).toBe('14px');
+        expect(seen.every(one => one === seen[0])).toBe(true);
     });
 
-    it('A BOOK HANDED A THEME PASSES IT DOWN TO ITS DOCUMENTS', () => {
-        const book = built<$Book>(<Book>{cover()}{synopsis()}{life()}{work()}</Book>);
-        const dark = built<$Theme>(<Dark />);
-        book.theme = dark;
+    it('A BOOK IS RE-THEMED BY REGISTRATION, AND REDRAWS IN THE NEW ONE', async () => {
+        class $Pocket extends $Book { }
+        const Pocket = $($Pocket);
+        $Portal.$register(Pocket);
+        await drawn(built<$Book>(<Pocket>{cover()}{synopsis()}{life()}</Pocket>));
+        expect(seen[0]).toBeInstanceOf($Portal);
 
-        expect(book.theme).toBe(dark);
-        expect(documents(book).every(one => one.theme === dark)).toBe(true);
-        expect(documents(book)[0].searchFor<$Writing>($TypeOfSection)[0].theme).toBe(dark);
+        seen = [];
+        await act(async () => { $Dark.$register(Pocket); });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+
+        expect(seen.length).toBeGreaterThan(0);
+        expect(seen[seen.length - 1]).toBeInstanceOf($Dark);
     });
 });

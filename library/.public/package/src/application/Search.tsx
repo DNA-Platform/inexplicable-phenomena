@@ -1,10 +1,9 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
-import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
-import { $Format } from '@/writing/Format';
+import { $Format, $TypeOfFormat } from '@/writing/Format';
 import { $Control$, $Control, $TypeOfControl, ControlSpecification } from './Control';
 
 export interface $Search$ extends $Control$ { }
@@ -23,12 +22,14 @@ export class $Search extends $Control implements $Search$ {
     override view(): ReactNode {
         const described = html.text(this._block);
 
-        return reflection.formatted(this, (
-            <form className={this.className} action={this.$where} role="search">
+        const Format = $(this.searchForOne<$SearchFormat>($TypeOfFormat)!);
+
+        return (
+            <Format className={this.className} action={this.$where} role="search">
                 <input className="pd-field" type="search" name="search" placeholder={described} aria-label={described} />
                 <button className="pd-button" type="submit">{this.$said}</button>
-            </form>
-        ));
+            </Format>
+        );
     }
 }
 
@@ -41,6 +42,8 @@ export class SearchSpecification extends ControlSpecification {
 
 export class $SearchFormat extends $Format {
     override selector: any = styled.form;
+    $action = '';
+    $role = '';
     display = 'flex';
     alignItems = 'stretch';
     boxSizing = 'border-box';

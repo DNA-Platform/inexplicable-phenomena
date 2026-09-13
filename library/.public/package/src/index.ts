@@ -37,7 +37,6 @@ export * from './writing/Format';
 export * from './reference/Reference';
 export * from './reference/Fold';
 export * from './reference/Path';
-export * from './reference/IndexCard';
 export * from './reference/ReferenceCard';
 export * from './reference/Catalogue';
 export * from './reference/Ref';
@@ -75,6 +74,7 @@ import { $Book } from './library/Book';
 import { $Fold } from './reference/Fold';
 import { $Reference } from './reference/Reference';
 import { $Composition } from './writing/Composition';
+import { $Format } from './writing/Format';
 import { $Theme } from './writing/Theme';
 import { $Type } from './writing/Type';
 
@@ -82,6 +82,7 @@ $Book.$register();
 $Fold.$register();
 $Reference.$register();
 $Composition.$register();
+$Format.$register();
 $Theme.$register();
 $Type.$register();
 // </registrations>

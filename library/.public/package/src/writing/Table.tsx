@@ -16,7 +16,6 @@ export interface $Table$ extends $Section$ {
 }
 
 export class $Table extends $Section implements $Table$ {
-    definition = 'div';
     $columns?: number;
 
     heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
@@ -53,15 +52,11 @@ export const Table = $($Table);
 export const TypeOfTable = $($TypeOfTable);
 
 export class $TableFormat extends $Format {
-    $columns = 1;
     display = 'grid';
-    get gridTemplateColumns() { return `repeat(${this.$columns}, minmax(0, 1fr))`; }
-    @select('> .pd-table') table_display = 'contents';
-    @select('> .pd-table > .pd-heading') heading_gridColumn = '1 / -1';
+    get gridTemplateColumns() { return `repeat(${this.table.$columns ?? 1}, minmax(0, 1fr))`; }
+    @select('> .pd-heading') heading_gridColumn = '1 / -1';
 
-    protected override handed(): Record<string, unknown> {
-        return { columns: (this.parent as $Table | undefined)?.$columns ?? 1 };
-    }
+    protected get table(): $Table { return this.parent as $Table; }
 }
 
 export const TableFormat = $($TableFormat);

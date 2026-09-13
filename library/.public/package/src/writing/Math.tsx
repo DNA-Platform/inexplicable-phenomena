@@ -1,7 +1,6 @@
 // CREATED 2026-09-08 · rating 1 · shell. Inline mathematics at phrase grade beside $Ref: the TeX is the copy, rendered once per string through utilities/Tex.
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
-import { reflection } from '@/utilities/Reflection';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -26,7 +25,7 @@ export class $Math extends $Phrase implements $Math$ {
     // because the string it renders is the author's own copy. The sheet styles nothing here: katex
     // ships its own CSS, which is an application's concern and not the base's.
     override view(): ReactNode {
-        return reflection.formatted(this, <span className={this.className} dangerouslySetInnerHTML={{ __html: tex.inline(this.tex()) }} />);
+        return <span className={this.className} dangerouslySetInnerHTML={{ __html: tex.inline(this.tex()) }} />;
     }
 }
 

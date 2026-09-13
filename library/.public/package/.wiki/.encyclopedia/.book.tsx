@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
-import { $Format, $Document, $Section, $Paragraph, $IndexCard, $Ref, $Theme$, html, $Theme, Book } from '@dna-platform/public';
+import { $Format, $Document, $Section, $Paragraph, $CatalogueCard, $Ref, $Theme$, html, $Theme, Book } from '@dna-platform/public';
 import $Wiki from '../.book';
 
 // A field's resting edge is the link colour lightened against the paper, so a
@@ -140,15 +140,6 @@ export class $Licence extends $WikipediaDocument {
     }
 }
 
-export class $Logo extends $Paragraph {
-    $src = '';
-    $width = '';
-
-    override print(): ReactNode {
-        return <img src={this.$src} width={this.$width} alt={html.text(this._block)} />;
-    }
-}
-
 export class $Languages extends $Section {
     $globe = '';
 
@@ -165,11 +156,9 @@ export class $Language extends $Paragraph {
     }
 }
 
-export class $Project extends $IndexCard {
-    override view(): ReactNode {
-        const Card = $(CardFormat);
-        const Block = $(this._block);
-        return <Card><Block /></Card>;
+export class $Project extends $CatalogueCard {
+    $Project(block: $Block) {
+        super.$CatalogueCard($check(block, $Block, '!').concat($check(cardFormatLook, '!')));
     }
 }
 
@@ -212,14 +201,14 @@ export class $EditionsFormat extends $PortalDocumentFormat {
 }
 
 export class $FoundationFormat extends $BackMatterFormat {
-    @select('.pd-document') document_display = 'block';
-    document_maxWidth = '26.9em';
-    document_margin = '0 auto';
+    display = 'block';
+    maxWidth = '26.9em';
+    margin = '0 auto';
     @select('.pd-section') section_display = 'block';
     section_position = 'relative';
     section_padding = '0 1.54em 0 4.6em';
     section_marginBottom = '2.46em';
-    @select('p:has(img)') icon_position = 'absolute';
+    @select('.pd-image') icon_position = 'absolute';
     icon_left = '0.62em';
     icon_top = '0';
     @select('h2.pd-heading') hosted_fontSize = '1em';
@@ -235,9 +224,9 @@ export class $FoundationFormat extends $BackMatterFormat {
 
 export class $ProjectsFormat extends $BackMatterFormat {
     textAlign = 'left';
-    @select('.pd-document') projects_display = 'grid';
-    projects_gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
-    @select('.pd-document > .pd-section:not(.pd-index-card)') intro_display = 'none';
+    display = 'grid';
+    gridTemplateColumns = 'repeat(auto-fit, minmax(max(30%, 10em), 1fr))';
+    @select('> .pd-section:not(.pd-catalogue-card)') intro_display = 'none';
 }
 
 export class $LicenceFormat extends $BackMatterFormat {
@@ -259,7 +248,6 @@ export class $LicenceFormat extends $BackMatterFormat {
 }
 
 export class $RingFormat extends $Format {
-    $globe = '';
     selector = styled.div;
     position = 'relative';
     height = '23.21em';
@@ -269,7 +257,6 @@ export class $RingFormat extends $Format {
     backgroundRepeat = 'no-repeat';
     backgroundPosition = 'center 4.36em';
     backgroundSize = '14.29em';
-    @select('> .pd-section') section_display = 'contents';
     @select('@media (max-width: 480px)') narrow_order = '1';
     narrow_height = 'auto';
     narrow_display = 'grid';
@@ -277,43 +264,37 @@ export class $RingFormat extends $Format {
     narrow_gap = '1.14em 0';
     narrow_paddingTop = '0';
     narrow_backgroundImage = 'none';
-    get backgroundImage() { return `url(${this.$globe})`; }
+    get backgroundImage() { return `url(${this.languages.$globe})`; }
 
-    protected override handed(): Record<string, unknown> {
-        return { globe: (this.parent as $Languages | undefined)?.$globe ?? '' };
-    }
+    protected get languages(): $Languages { return this.parent as $Languages; }
 }
 
 export class $LanguageFormat extends $Format {
-    $at = 1;
     selector = styled.div;
     position = 'absolute';
-    width = '11.14em';
+    width = '156px';
     textAlign = 'center';
+    margin = '0';
+    fontSize = '0.93em';
+    get color() { return this.theme.pale; }
     @select('a') link_display = 'block';
     link_fontSize = '1.23em';
     link_fontWeight = '700';
     link_lineHeight = '1.5';
     link_textDecoration = 'none';
-    @select('p') line_margin = '0';
-    line_fontSize = '0.93em';
-    get line_color() { return this.theme.pale; }
     @select('@media (max-width: 480px)') narrow_position = 'static';
     narrow_width = 'auto';
     narrow_padding = '0 1.14em';
     narrow_lineHeight = '1.4';
-    get top() { return `${Math.floor((this.$at - 1) / 2) * 20}%`; }
-    get left() { return `${(this.$at % 2 === 1 ? [4.43, 0.57, -0.21, 0.57, 4.43] : [23.43, 27.29, 28.07, 27.29, 23.43])[Math.floor((this.$at - 1) / 2)]}em`; }
+    get top() { return `${Math.floor((this.language.$at - 1) / 2) * 20}%`; }
+    get left() { return `${(this.language.$at % 2 === 1 ? [62, 8, -3, 8, 62] : [328, 382, 393, 382, 328])[Math.floor((this.language.$at - 1) / 2)]}px`; }
     get link_color() { return this.theme.link; }
 
-    protected override handed(): Record<string, unknown> {
-        return { at: (this.parent as $Language | undefined)?.$at ?? 1 };
-    }
+    protected get language(): $Language { return this.parent as $Language; }
 }
 
 export class $CardFormat extends $Format {
     selector = styled.div;
-    position = 'relative';
     alignSelf = 'start';
     display = 'grid';
     justifyContent = 'start';
@@ -324,19 +305,14 @@ export class $CardFormat extends $Format {
     minHeight = '4.9em';
     lineHeight = '1.5';
     @select('p') line_margin = '0';
-    @select('p:first-child') logoLine_gridRow = '1 / -1';
-    @select('.pd-title') nameLine_gridRow = '2';
-    @select('p:last-child') lastLine_gridRow = '3';
-    get lastLine_color() { return this.theme.pale; }
-    @select('img') logo_display = 'block';
+    @select('.pd-image') logo_gridRow = '1 / -1';
+    logo_display = 'block';
     logo_width = '50px';
     logo_height = '47px';
     logo_objectFit = 'contain';
-    @select('.pd-reference') meaning_display = 'none';
-    @select('.pd-title a') link_textDecoration = 'none';
-    @select('.pd-title > a::after') reach_content = "''";
-    reach_position = 'absolute';
-    reach_inset = '0';
+    @select('.pd-title') nameLine_gridRow = '2';
+    @select('p:last-child') lastLine_gridRow = '3';
+    get lastLine_color() { return this.theme.pale; }
     @select('h2.pd-heading') name_fontSize = '1.075em';
     name_fontWeight = '400';
     name_lineHeight = '1.5';
@@ -451,7 +427,6 @@ export const EditionListFormat = $($EditionListFormat);
 export const Foundation = $($Foundation);
 export const Projects = $($Projects);
 export const Licence = $($Licence);
-export const Logo = $($Logo);
 export const Languages = $($Languages);
 export const Language = $($Language);
 export const Project = $($Project);
@@ -473,6 +448,7 @@ const projectsFormatLook = ProjectsFormat;
 const licenceFormatLook = LicenceFormat;
 const ringFormatLook = RingFormat;
 const languageFormatLook = LanguageFormat;
+const cardFormatLook = CardFormat;
 
 export default class $Wikipedia extends $Wiki { }
 
@@ -515,10 +491,9 @@ export class $PortalTheme extends $Theme {
     @select('.pd-book > footer') foot_gridColumn = '1 / -1';
     @select('header .pd-title, header .pd-author, header .pd-subject') coverParts_display = 'none';
     @select('header .pd-section > .pd-heading') label_display = 'none';
-    @select('header > .pd-section:has(form)') search_display = 'contents';
-    @select('header p:has(img)') logo_margin = '0.857em 0 0';
-    logo_textAlign = 'center';
-    @select('header p:has(img) + p') slogan_fontSize = '1.07em';
+    @select('.pd-book > header .pd-image') logo_display = 'block';
+    logo_margin = '0.857em auto 0';
+    @select('.pd-book > header .pd-image + .pd-paragraph') slogan_fontSize = '1.07em';
     slogan_lineHeight = '2.2';
     slogan_margin = '0';
     slogan_textAlign = 'center';

@@ -32,11 +32,11 @@ export class $Entry extends $Paragraph implements $Entry$ {
     // draws it its own way and none has to count again. Its key is its id, on the element itself:
     // an entry is full of links, and HTML admits no anchor inside an anchor.
     override view(): ReactNode {
-        return reflection.formatted(this, (
+        return (
             <p id={reflection.folded(this)?.key()} className={this.className} data-number={this.number()}>
                 {this.print()}
             </p>
-        ));
+        );
     }
 }
 

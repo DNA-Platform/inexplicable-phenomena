@@ -28,12 +28,9 @@ export class $HeaderFormat extends $Format {
     mark_margin = '0';
     mark_width = '8.75rem';
     mark_lineHeight = '0';
-    @select('> .pd-section:not(.pd-menu) > div') box_display = 'block';
-    box_lineHeight = '0';
     @select('> .pd-heading') name_display = 'none';
     @select('.pd-image') wordmark_display = 'block';
     wordmark_width = '8.75em';
-    wordmark_height = 'auto';
     @select('> .pd-section:not(.pd-menu) > .pd-heading') tagline_display = 'none';
     @select('.pd-search') field_flex = '0 0 29.625rem';
     field_minWidth = '29.625rem';

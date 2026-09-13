@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select } from '@dna-platform/chemistry';
-import { reflection } from '@/utilities/Reflection';
 import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
 import { $Paragraph$, $Paragraph, $TypeOfParagraph, ParagraphSpecification } from '@/writing/Paragraph';
@@ -92,7 +91,7 @@ export class $Line extends $Paragraph implements $Line$ {
     }
 
     override view(): ReactNode {
-        return reflection.formatted(this, <p className={this.className} data-label={this.label}>{this.print()}</p>);
+        return <p className={this.className} data-label={this.label}>{this.print()}</p>;
     }
 }
 

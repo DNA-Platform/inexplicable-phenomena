@@ -11,8 +11,6 @@ export interface $Manual$ extends $Document$ { }
 // and the lines at its foot. It is Wikipedia's sidebar, standing right of the lead the way the
 // infobox does; a document inside a document is kept whole, which is what lets it stand there.
 export class $Manual extends $Document implements $Manual$ {
-    override definition = 'aside';
-
     $Manual(block: $Block) {
         super.$Document(this.addType(block, $TypeOfManual).concat($check(manualStyle, '!')));
     }

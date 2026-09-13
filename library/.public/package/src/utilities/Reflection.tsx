@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
 import { $, $Block } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
 import type { $Type } from '@/writing/Type';
 import type { $Theme } from '@/writing/Theme';
+import type { $Format } from '@/writing/Format';
 import type { $Composition } from '@/writing/Composition';
 import type { $Reference } from '@/reference/Reference';
 import type { $Fold } from '@/reference/Fold';
@@ -25,6 +25,7 @@ export class Reflection {
         annotation: new () => $Annotation;
         type: new () => $Type;
         theme: new () => $Theme;
+        format: new () => $Format;
         composition: new () => $Composition;
         hierarchies: (new () => $Type)[];
         levels: (new () => $Type)[][];
@@ -118,6 +119,10 @@ export class Reflection {
         return (writing._block?.$elements ?? []).find((part): part is $Fold => part instanceof this.kinds.fold);
     }
 
+    format(writing: $Writing): $Format | undefined {
+        return (writing._block?.$elements ?? []).find((part): part is $Format => part instanceof this.kinds.format);
+    }
+
     beneath(holding: $Type | undefined, held: $Type | undefined): boolean {
         const placed = this.placed(holding);
         if (placed === undefined || held === undefined) return false;
@@ -155,13 +160,6 @@ export class Reflection {
         }
         return names;
     }
-
-    formatted(writing: $Writing, drawn: ReactNode): ReactNode {
-        const held = this.annotations(writing).reduce((held, one) => one.format(held), drawn);
-
-        return this.is(writing, this.kinds.book) ? writing.theme.format(held) : held;
-    }
-
 
     // THE WRITING HOLDING THIS ONE, and nothing at the top, where a writing holds itself.
     above(writing: $Writing): $Writing | undefined {

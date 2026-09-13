@@ -74,8 +74,8 @@ export class $EncyclopediaTheme extends $Theme {
     underline_bottom = '0';
     underline_height = '1px';
     get underline_background() { return this.rule; }
-    // THE TITLE'S REFERENCE wraps the heading; inline, its line box stood the block 7px taller than Wikipedia's 40.
-    @select('.pd-cover > .pd-title > .pd-meaning') named_display = 'block';
+    // THE TITLE IS ITS REFERENCE'S ANCHOR; inline, its line box stood the block 7px taller than Wikipedia's 40.
+    @select('.pd-cover > .pd-title') named_display = 'block';
     @select('.pd-cover > .pd-menu') tongue_gridColumn = '2';
     tongue_gridRow = '2';
     tongue_justifySelf = 'end';
@@ -214,7 +214,7 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-book > .pd-chapter > .pd-synopsis') siteline_fontSize = '0.875em';
     siteline_margin = '0';
     get siteline_color() { return this.ink; }
-    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph') sited_margin = '0.5714em 0 0';
+    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph:not(.pd-image)') sited_margin = '0.5714em 0 0';
     sited_flex = '1 1 auto';
     // THE SITE LINE'S ROW: the line at the left, the page's indicators at its right, the subpage line beneath.
     @select('.pd-book > .pd-chapter > .pd-document.pd-synopsis') siteRow_display = 'flex';
@@ -226,7 +226,7 @@ export class $EncyclopediaTheme extends $Theme {
     indicator_height = '1.375em';
     indicator_width = 'auto';
     indicator_margin = '0.5714em 0 0';
-    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph:nth-of-type(2)') subpage_flex = '0 0 100%';
+    @select('.pd-book > .pd-chapter > .pd-synopsis .pd-paragraph:not(.pd-image):nth-of-type(2)') subpage_flex = '0 0 100%';
     subpage_marginTop = '0';
     get subpage_color() { return this.pale; }
 
@@ -284,7 +284,7 @@ export class $EncyclopediaTheme extends $Theme {
     // THE WORDMARK IS NOT A PARAGRAPH OF PROSE. An image is a paragraph by kind, so the space set
     // between paragraphs stood above and below it — measured, 24 pixels inside a 38 pixel bar.
     @select('.pd-header .pd-image') wordmark_margin = '0';
-    @select('.pd-header > .pd-section:not(.pd-menu) > div + div .pd-image') taglineMark_margin = '5px 0 0';
+    @select('.pd-header > .pd-section:not(.pd-menu) > .pd-image + .pd-image') taglineMark_margin = '5px 0 0';
 
     // A SUMMARY IN AN ENCYCLOPEDIA IS A WORD YOU PRESS, not an abstract set in italic — the base
     // names that kind for what a summary usually is, and here every menu wears it.
@@ -388,9 +388,9 @@ export class $EncyclopediaTheme extends $Theme {
     name_margin = '0';
     get name_fontFamily() { return this.face; }
     get name_color() { return this.jet; }
-    @select('.pd-cover .pd-title .pd-meaning, .pd-cover .pd-author .pd-meaning, .pd-cover .pd-subject .pd-meaning') coverLink_color = 'inherit';
+    @select('.pd-cover .pd-title.pd-meaning, .pd-cover .pd-author.pd-meaning, .pd-cover .pd-subject.pd-meaning') coverLink_color = 'inherit';
     coverLink_cursor = 'text';
-    @select('.pd-cover .pd-title .pd-meaning:hover, .pd-cover .pd-author .pd-meaning:hover, .pd-cover .pd-subject .pd-meaning:hover') coverHover_textDecoration = 'none';
+    @select('.pd-cover .pd-title.pd-meaning:hover, .pd-cover .pd-author.pd-meaning:hover, .pd-cover .pd-subject.pd-meaning:hover') coverHover_textDecoration = 'none';
     // AN ENCYCLOPEDIA KNOWS ITS AUTHOR AND SUBJECT AND PRINTS NEITHER. A cover carries both by
     // specification, and rightly — the article has them; a Wikipedia page simply never shows them
     // above the title, so the theme is where they stop rather than the book.

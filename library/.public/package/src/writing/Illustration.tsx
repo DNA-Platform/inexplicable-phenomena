@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { $, $Block } from '@dna-platform/chemistry';
-import { reflection } from '@/utilities/Reflection';
 import { Specification } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Writing } from '@/writing/Writing';
@@ -20,11 +19,15 @@ export class $Illustration extends $Image implements $Illustration$ {
     }
 
     override view(): ReactNode {
-        return reflection.formatted(this,
-            <figure className={this.className}>
+        return <figure className={this.className}>{this.print()}</figure>;
+    }
+
+    override print(): ReactNode {
+        return (
+            <>
                 <img src={this.source} alt={this.caption} className="pd-image" width={html.sized(this.$width)} height={html.sized(this.$height)} />
-                <figcaption className="pd-caption">{this.print()}</figcaption>
-            </figure>
+                <figcaption className="pd-caption">{super.print()}</figcaption>
+            </>
         );
     }
 }

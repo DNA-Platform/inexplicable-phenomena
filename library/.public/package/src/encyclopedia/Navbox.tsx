@@ -6,8 +6,6 @@ import { $Box$, $Box, $TypeOfBox, BoxSpecification, $BoxFormat } from './Box';
 export interface $Navbox$ extends $Box$ { }
 
 export class $Navbox extends $Box implements $Navbox$ {
-    override definition = 'nav';
-
     $Navbox(block: $Block) {
         super.$Box(this.addType(block, $TypeOfNavbox).concat($check(navboxStyle, '!')));
     }

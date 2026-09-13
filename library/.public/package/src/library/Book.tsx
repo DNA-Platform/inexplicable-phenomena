@@ -16,7 +16,7 @@ import { $Document, $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $Path, Path as path } from '@/reference/Path';
 import { $Scratchpad } from './Scratchpad';
-import { $Theme, Theme as theme } from '@/writing/Theme';
+import { $Theme, Theme } from '@/writing/Theme';
 
 export interface $Book$ extends $Composition$ {
     readonly cover: $Chapter | undefined;
@@ -29,7 +29,6 @@ export interface $Book$ extends $Composition$ {
 export class $Book extends $Composition implements $Book$ {
     definition = 'div';
     _scratchpad!: $Scratchpad;
-    _theme?: $Theme;
 
     get cover(): $Chapter | undefined { return this.chapters[0]; }
     get synopsis(): $Chapter | undefined { return this.chapters[1]; }
@@ -37,15 +36,9 @@ export class $Book extends $Composition implements $Book$ {
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
     get scratchpad(): $Scratchpad { return this._scratchpad; }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
-    override get theme(): $Theme { return this._theme ?? reflection.theme(); }
-    set theme(theme: $Theme) {
-        this._theme = theme;
-        for (const document of this.searchFor<$Document>($TypeOfDocument)) document.theme = theme;
-    }
 
     $Book(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfBook));
-        this._theme = $check(theme, '!');
         this._scratchpad = new $Scratchpad();
         const Mention = $(chapter);
         const Path = $(path);
@@ -54,6 +47,12 @@ export class $Book extends $Composition implements $Book$ {
 
     header(): ReactNode { return undefined; }
     footer(): ReactNode { return undefined; }
+
+    override view(): ReactNode {
+        const Sheet = $(Theme);
+
+        return <Sheet>{super.view()}</Sheet>;
+    }
 
     override print(): ReactNode {
         return <>{this.header()}{super.print()}{this.footer()}</>;
@@ -80,10 +79,6 @@ export class $TypeOfBook extends $TypeOfReference {
 }
 
 export class BookSpecification extends WritingSpecification {
-    @specify('a book is drawn in a theme')
-    $isDrawnInATheme(writing: $Writing): void {
-        $check(writing.theme instanceof $Theme, 'a book is drawn in a theme, and this one has none');
-    }
 }
 
 export const Book = $($Book);

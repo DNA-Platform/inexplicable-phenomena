@@ -1,5 +1,5 @@
 import { ReactNode, createElement } from 'react';
-import { $, $Block, $check, $Chemical, $Written } from '@dna-platform/chemistry';
+import { $, $Block, $check, $Chemical, $Written, theme } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
@@ -8,6 +8,7 @@ import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
 import type { $Type$, $Type } from './Type';
 import type { $Reference$, $Reference } from '@/reference/Reference';
 import type { $Theme } from '@/writing/Theme';
+import type { $Format } from '@/writing/Format';
 import type { $Book } from '@/library/Book';
 
 const printed = new WeakMap<$Block, $Block>();
@@ -25,7 +26,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     $print?: boolean;
     parenthetical = false;
     inline = true;
-    definition = 'span';
+    protected definition = 'span';
     _mention?: $Catalogue;
     _block!: $Block;
 
@@ -33,7 +34,8 @@ export class $Writing extends $Chemical implements $Writing$ {
     get document(): $Catalogue | undefined { return reflection.holding(this)?.mention; }
     get meaning(): $Reference | undefined { return reflection.meaning(this); }
     get annotations(): $Annotation[] { return reflection.annotations(this); }
-    get theme(): $Theme { return reflection.above(this)?.theme ?? reflection.theme(); }
+    get theme(): $Theme { return this[theme] ?? reflection.theme(); }
+    get format(): $Format | undefined { return reflection.format(this); }
     get book(): $Book | undefined { return reflection.book(this); }
     get className(): string { return [...reflection.classNames(this), this.$className ?? ''].join(' ').trim(); }
 
@@ -53,11 +55,13 @@ export class $Writing extends $Chemical implements $Writing$ {
     view(): ReactNode {
         if (this.parenthetical) return null;
         const meaning = this.meaning?.parenthetical ? this.meaning : undefined;
-        const fold = reflection.folded(this);
-        const printed = meaning === undefined && fold === undefined ? this.print()
-            : <a id={fold?.key()} href={meaning === undefined ? undefined : html.text(meaning.path()?._block)} className="pd-meaning">{this.print()}</a>;
+        const linked = meaning !== undefined;
+        const drawn = { className: linked ? `${this.className} pd-meaning` : this.className, id: reflection.folded(this)?.key(), href: linked ? html.text(meaning.path()?._block) : undefined };
+        const format = this.format;
 
-        return reflection.formatted(this, createElement(this.definition, { className: this.className }, printed));
+        return format === undefined
+            ? createElement(linked ? 'a' : this.definition, drawn, this.print())
+            : createElement($(format), { ...drawn, as: linked ? 'a' : undefined }, this.print());
     }
 
     print(): ReactNode {

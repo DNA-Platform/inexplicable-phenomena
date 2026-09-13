@@ -24,7 +24,7 @@ const saying = (container: Element, said: string) => (container.textContent?.spl
 
 describe('a title says what it titles, and an empty one is refused', () => {
     it('AN EMPTY TITLE IS REFUSED — validation, not a feature', () => {
-        expect(() => $(<Title /> as never).specify()).toThrow(/means what it titles/u);
+        expect(() => $(<Title /> as never).specify()).toThrow(/names what it titles/u);
     });
 
     it('and without one the cover says it once', () => {

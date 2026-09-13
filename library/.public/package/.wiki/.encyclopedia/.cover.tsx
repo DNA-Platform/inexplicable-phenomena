@@ -1,7 +1,7 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Author, Cover, Heading, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
+import { $Chapter, Author, Cover, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
 import { BookLink } from '../.book';
-import { globe, Language, Languages, Logo, Search } from './.book';
+import { globe, Language, Languages, Search } from './.book';
 
 export default class $Cover extends $Chapter {
     view() {
@@ -12,7 +12,7 @@ export default class $Cover extends $Chapter {
                 <Subject>Knowledge</Subject>
                 <Section>
                     <Heading>Wikipedia</Heading>
-                    <Logo src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Wikipedia_wordmark.svg" width="176">Wikipedia</Logo>
+                    <Image source="https://upload.wikimedia.org/wikipedia/commons/b/bb/Wikipedia_wordmark.svg" width="176" height="32">Wikipedia</Image>
                     <Paragraph>The Free Encyclopedia</Paragraph>
                 </Section>
                 <Languages globe={globe}>

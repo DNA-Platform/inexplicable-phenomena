@@ -30,7 +30,7 @@ export class $Equation extends $Paragraph implements $Equation$ {
     // The number is DRAWN AS AN ATTRIBUTE and not as words, so a theme places it — LaTeX puts it
     // right in parentheses, a web page might put it anywhere — and the reading stays a reading.
     override view(): ReactNode {
-        return reflection.formatted(this, <div className={this.className} data-number={this.number()} dangerouslySetInnerHTML={{ __html: tex.display(this.tex()) }} />);
+        return <div className={this.className} data-number={this.number()} dangerouslySetInnerHTML={{ __html: tex.display(this.tex()) }} />;
     }
 }
 

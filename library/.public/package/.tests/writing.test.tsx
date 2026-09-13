@@ -133,12 +133,15 @@ describe('the frame carries the names of every kind the writing stands as', () =
 
     // ONLY A TYPE LABELS. An annotation says something about the writing without
     // saying what kind of writing it is, so it adds no name — a reference written
-    // into a section leaves the section labelled a section and nothing more.
+    // into a section leaves the section labelled a section and nothing more. What a
+    // reference adds is the LINK: the writing is drawn as an anchor, and the anchor's
+    // mark, pd-meaning, is not a kind's name.
     it('AND AN ANNOTATION THAT IS NOT A TYPE LABELS NOTHING', () => {
         const host = drawn(<Writing><TypeOfSentence /><Reference />a</Writing>);
         const labelled = host.querySelector('.pd-sentence');
         expect(labelled).not.toBeNull();
-        expect(labelled!.className.split(' ')).toEqual(['pd-sentence']);
+        expect(labelled!.tagName).toBe('A');
+        expect(labelled!.className.split(' ').filter(name => name !== 'pd-meaning')).toEqual(['pd-sentence']);
     });
 
     it('AND A PATH IS PRESENT IN THE WRITING AND ABSENT FROM THE READING — no url printed, and no anchor, since a bare path means nothing', () => {

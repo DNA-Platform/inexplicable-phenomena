@@ -44,10 +44,15 @@ describe('a book is made of chapters, and its first three are its cover, its syn
 
 });
 
-describe('a title is a section that means the book', () => {
-    it('and a title with no meaning is refused', () => {
+describe('a cover\'s title means the book, and a title elsewhere is a name', () => {
+    it('A COVER WHOSE TITLE MEANS NOTHING IS REFUSED', () => {
+        const held = built<$Writing>(<Cover><Title>Chemistry</Title><Author>Doug</Author><Subject>Science</Subject></Cover>);
+        expect(() => held.specify()).toThrow(/means the book/);
+    });
+
+    it('and a title elsewhere is a name', () => {
         const held = built<$Writing>(<Title>Chemistry</Title>);
-        expect(() => held.specify()).toThrow(/means what it titles/);
+        expect(() => held.specify()).not.toThrow();
     });
 
     it('AND ONE THAT MEANS SOMETHING STANDS', () => {

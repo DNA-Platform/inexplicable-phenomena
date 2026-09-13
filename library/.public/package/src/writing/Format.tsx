@@ -1,4 +1,3 @@
-// CREATED · rating 4. A format is an annotation written INTO the writing it formats, found by formatted(), and it is a STYLE — chemistry's word: a styled chemical with no view, handed what it styles and standing it in its selector, or restyling it in place where the tags agree, adding NOTHING. A theme is a format that is a singleton with values.
 import { ReactNode } from 'react';
 import { $, $Block, $check, children, styled } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
@@ -6,52 +5,26 @@ import { reflection } from '@/utilities/Reflection';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Annotation$, $Annotation } from '@/writing/Annotation';
 import { $Type } from '@/writing/Type';
-import type { $Theme } from './Theme';
 
 export interface $Format$ extends $Annotation$ { }
 
 export class $Format extends $Annotation implements $Format$ {
     override selector: any = styled.div;
-    $of: $Format | null = null;
-
-    override get theme(): $Theme { return this.$of === null ? super.theme : this.$of.theme; }
+    $as?: string;
+    $href?: string;
+    $id?: string;
 
     $Format(block: $Block) {
         super.$Writing(this.addType(block, $TypeOfFormat));
     }
 
-    // A FORMAT NEEDS NO VIEW — chemistry promises it: handed the element, it holds what it is
-    // given. This override exists only to UN-INHERIT $Writing.view(), which draws a block, and a
-    // format has no block to draw. What stood here instead was a second look writing a <div> the
-    // selector was going to write anyway, and a $content prop standing in for the children a
-    // chemical already carries — the framework's own mechanism, rebuilt by hand after being
-    // switched off. A format whose selector is the tag of what it styles adds no element at all.
-    // A FORMAT MAKES NO DEMAND OF WHAT IT STYLES. $Annotation.specifically runs a WritingSpecification
-    // over its holder, which is right for an annotation that says something ABOUT the writing and
-    // wrong for one that only clothes it. Measured 2026-09-09: a writing wearing TWO formats refused
-    // with "a piece of writing says something, and this one says nothing at all" — the second
-    // format's worn instance holds the first as an annotation, and that annotation demanded its host
-    // say something, while a worn format's block holds a drawn element rather than copy. One format
-    // worked, two did not, and the second was judging the first.
-    override specifically(): void {
+    override specifically(writing: $Writing): void {
+        const worn = writing.searchFor($TypeOfFormat).length;
+        $check(worn === 1, `a format is worn alone, and this writing wears ${worn}`);
     }
 
     override view(): ReactNode {
         return this[children];
-    }
-
-    // CHEMISTRY MEMOISES $(class) — measured, $($Probe) === $($Probe) — so the WeakMap that stood
-    // behind this, guarding against React remounting what is worn every draw, was a second cache
-    // over chemistry's own. Its comment said to delete it under exactly this condition.
-    override format(drawn: ReactNode): ReactNode {
-        const Worn = $(this.constructor as new() => $Format);
-
-        return <Worn of={this} {...this.handed()}>{drawn}</Worn>;
-    }
-
-    // What the worn instance is handed besides the drawing; a format that carries a prop says so here.
-    protected handed(): Record<string, unknown> {
-        return {};
     }
 
     // A MARK A FORMAT DRAWS, painted in a colour it chooses. An icon written into a data URI
@@ -61,6 +34,10 @@ export class $Format extends $Annotation implements $Format$ {
     // came from and why they read as cruft.
     protected painted(mark: string, colour: string): string {
         return `url("data:image/svg+xml,${mark.replaceAll('{ink}', encodeURIComponent(colour))}")`;
+    }
+
+    static $register(): void {
+        reflection.knows({ format: $Format });
     }
 }
 

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check, look, select, styled } from '@dna-platform/chemistry';
+import { $, $Block, $check, look, select, styled, theme } from '@dna-platform/chemistry';
 import type { Component } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
@@ -27,6 +27,7 @@ export interface $Theme$ extends $Format$ {
 // IN PROGRESS · rating 2. The theme is a FORMAT that is a singleton with values: the annotation the walk finds, and the sheet worn once at the book. `face` is a proxy (`display` is a CSS property and would be emitted).
 export class $Theme extends $Format implements $Theme$ {
     override selector: any = styled.main;
+    override get [theme](): $Theme { return this; }
     paper = '#ffffff';
     // THE SURFACE A BOOK LIES ON, beside the sheet it is printed on. The base had one colour for
     // both and could therefore not say what a document viewer says with two — a page standing on a
@@ -133,7 +134,7 @@ export class $Theme extends $Format implements $Theme$ {
     landing = '#cfe3ff';
     @select('@keyframes landed { from {') get from_background() { return this.landing; }
     @select('@keyframes landed { to {') to_background = 'transparent';
-    @select('.pd-entry:target, .pd-entry > .pd-meaning:target') landed_animation = 'landed 2s ease-out';
+    @select('.pd-entry:target') landed_animation = 'landed 2s ease-out';
     @select('.pd-footnote') footnote_verticalAlign = 'super';
     footnote_fontSize = '.75em';
     footnote_lineHeight = '0';
@@ -214,7 +215,6 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-illustration') shown_textAlign = 'center';
     shown_margin = '1.5rem auto';
     @select('.pd-illustration img') drawn_maxWidth = '100%';
-    drawn_height = 'auto';
     @select('.pd-caption') told_textAlign = 'center';
     told_marginTop = '.6rem';
     told_fontSize = '.9em';
@@ -228,8 +228,6 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-cover .pd-title .pd-heading') title_fontSize = '2rem';
     title_fontWeight = '700';
     title_lineHeight = '1.15';
-    @select('.pd-title a') titled_textDecoration = 'none';
-    get titled_color() { return this.link; }
     @select('.pd-author .pd-heading') author_fontSize = '1.05em';
     author_fontWeight = '400';
     // A DOCUMENT DOES NOT PRINT ITS SUBJECT AS A HEADING — it is a keyword line, so it is set as
@@ -305,12 +303,6 @@ export class $Theme extends $Format implements $Theme$ {
     @select('.pd-meaning, .pd-ref') a_textDecoration = 'none';
     get a_color() { return this.link; }
     @select('.pd-meaning:hover, .pd-ref:hover') hover_textDecoration = 'underline';
-    // AN ANCHOR THAT ONLY NAMES ITSELF IS NOT A LINK. A fold makes a writing POINTABLE, and
-    // view() writes the id on the same anchor that carries an href when there is one - so a
-    // reference entry with a page fold drew as twelve blue paragraphs nobody can follow.
-    @select('.pd-meaning:not([href])') keyed_color = 'inherit';
-    keyed_cursor = 'text';
-    @select('.pd-meaning:not([href]):hover') keyedOver_textDecoration = 'none';
     @select('.pd-cover .pd-meaning') get naming_color() { return this.link; }
     @select('.pd-document') document_marginBottom = '2em';
     @select('.pd-index') index_columnCount = '3';
@@ -333,7 +325,7 @@ export class $Theme extends $Format implements $Theme$ {
     // nothing a consumer holds goes in without one. A cast belongs where the variance is known.
     static $register(within?: unknown): void {
         if (within === undefined) return reflection.knows({ theme: $Theme });
-        $(within as Component<never>, Theme)($(this as unknown as new() => $Theme), 'single');
+        $(within as Component<never>, Theme)($(this as unknown as new() => $Theme));
     }
 }
 

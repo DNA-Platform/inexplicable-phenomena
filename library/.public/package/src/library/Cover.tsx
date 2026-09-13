@@ -35,6 +35,12 @@ export class CoverSpecification extends DocumentSpecification {
             'a cover carries its title, and this one carries none');
     }
 
+    @specify('a cover\'s title means the book')
+    $titleMeansTheBook(writing: $Writing): void {
+        $check(writing.searchForOne<$Title>($TypeOfTitle)?.meaning !== undefined,
+            'a cover\'s title means the book, and this one means nothing');
+    }
+
     @specify('a cover carries its author')
     $carriesAuthor(writing: $Writing): void {
         $check(writing.searchFor($TypeOfAuthor).length > 0,
