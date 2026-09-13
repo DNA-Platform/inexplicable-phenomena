@@ -287,14 +287,15 @@ for (const section of chapters) {
         at += 1;
         const said = section.entries.map(one => held('Entry', '                    ', `${one.key}: ${quoted(one.said)}`)).join(NEWLINE);
         const listed = section.name === 'Notes' ? 'Notes' : 'References';
-        const holds = [...new Set(['$Chapter', 'Entry', 'Heading', listed, 'Section', ...(said.includes('<Citation>') ? ['Citation'] : []), ...['Bold', 'Italics', 'Underline'].filter(kind => said.includes(`<${kind}>`))])].sort();
+        const holds = [...new Set(['Entry', 'Heading', listed, 'Section', ...(said.includes('<Citation>') ? ['Citation'] : []), ...['Bold', 'Italics', 'Underline'].filter(kind => said.includes(`<${kind}>`))])].sort();
         const links = [...(said.includes('<BookLink>') ? ['BookLink'] : []), ...(said.includes('<OutwardLink>') ? ['OutwardLink'] : [])];
         const file = `${at}-${named(section.name)}.tsx`;
         await writeFile(join(book, file), [
             `import { ${holds.join(', ')} } from '@dna-platform/public';`,
+            `import { $Article } from '@dna-platform/public/encyclopedia';`,
             ...(links.length ? [`import { ${links.join(', ')} } from '${shared}';`] : []),
             ``,
-            `export default class $${classed(section.name)} extends $Chapter {`,
+            `export default class $${classed(section.name)} extends $Article {`,
             `    print() {`,
             `        return (`,
             `            <${listed}>`,
@@ -314,7 +315,7 @@ for (const section of chapters) {
     at += 1;
     const said = nested(section.wrote);
     const whole = said + (at === 1 ? aside + boxed : '');
-    const carries = [...new Set(['$Chapter', 'Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') && !boxed ? [] : ['Section']),
+    const carries = [...new Set(['Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') && !boxed ? [] : ['Section']),
         ...(at === 1 ? ['Illustration'] : []),
         ...(whole.includes('<Citation>') ? ['Citation'] : []),
         ...['Bold', 'Italics', 'Underline'].filter(kind => whole.includes(`<${kind}>`)),
@@ -327,11 +328,11 @@ for (const section of chapters) {
     const lines = [
         `import { $ } from '@dna-platform/chemistry';`,
         `import { ${carries.join(', ')} } from '@dna-platform/public';`,
-        ...(/<(Hatnote|Infobox|Manual)>/u.test(whole) ? [`import { ${[...(whole.includes('<Hatnote>') ? ['Hatnote'] : []), ...(whole.includes('<Infobox>') ? ['Infobox', 'Line'] : []), ...(whole.includes('<Manual>') ? ['Manual'] : [])].join(', ')} } from '@dna-platform/public/encyclopedia';`] : []),
+        `import { ${['$Article', ...(whole.includes('<Hatnote>') ? ['Hatnote'] : []), ...(whole.includes('<Infobox>') ? ['Infobox', 'Line'] : []), ...(whole.includes('<Manual>') ? ['Manual'] : [])].join(', ')} } from '@dna-platform/public/encyclopedia';`,
         ...(whole.includes('<Manual>') ? [`import { ${['Menu', 'Option', 'Summary', ...(whole.includes('<Search ') ? ['Search'] : [])].sort().join(', ')} } from '@dna-platform/public/application';`] : []),
         ...(inward.length || outward.length ? [`import { ${[...inward, ...outward].join(', ')} } from '${shared}';`] : []),
         ``,
-        `export default class $${classed(section.name) || 'Lead'} extends $Chapter {`,
+        `export default class $${classed(section.name) || 'Lead'} extends $Article {`,
         `    print() {`,
         `        return (`,
         `            <Document>`,
