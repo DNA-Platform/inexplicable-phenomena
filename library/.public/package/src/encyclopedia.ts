@@ -8,3 +8,5 @@ export * from './encyclopedia/Box';
 export * from './encyclopedia/Navbox';
 export * from './encyclopedia/Talk';
 export * from './encyclopedia/Manual';
+export * from './encyclopedia/Article';
+export * from './encyclopedia/Encyclopedia';

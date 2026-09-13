@@ -2,9 +2,10 @@
 // of link. It registers no theme, so a chapter may import from it without a book's theme arriving
 // with it; each book registers its own theme on Book in its own file.
 import { $ } from '@dna-platform/chemistry';
-import { $Book, $Ref } from '@dna-platform/public';
+import { $Ref } from '@dna-platform/public';
+import { $Encyclopedia } from '@dna-platform/public/encyclopedia';
 
-export default class $Wiki extends $Book { }
+export default class $Wiki extends $Encyclopedia { }
 
 export class $BookLink extends $Ref { }
 export class $SubjectLink extends $Ref { }

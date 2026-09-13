@@ -42,7 +42,7 @@ export class $EncyclopediaTheme extends $Theme {
     wideBar_marginRight = '-3.25em';
     @select('@media (min-width: 1601px) {\n             .pd-header .pd-search {') wideField_marginLeft = '5.375rem';
     @select('> .pd-book') book_display = 'contents';
-    @select('.pd-book > .pd-chapter') chapter_display = 'contents';
+    @select('.pd-book > .pd-chapter, .pd-body > .pd-chapter') chapter_display = 'contents';
     // A COVER HOLDS THE TITLE BLOCK AND IS NOT A BOX. Its parts are placed by the frame one row
     // each — the bar, the title, the tabs — so the cover itself draws nothing.
     @select('.pd-book > .pd-chapter > .pd-cover') top_display = 'contents';
@@ -101,7 +101,7 @@ export class $EncyclopediaTheme extends $Theme {
     side_marginTop = '0.5em';
     side_padding = '0 1.143em';
     side_marginLeft = '-0.857em';
-    @select('.pd-book > .pd-chapter > .pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter):not(.pd-footer), .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-index') text_gridColumn = '2';
+    @select('.pd-body, .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-index') text_gridColumn = '2';
     text_minWidth = '0';
 
     @select('.pd-appearance') rail_gridColumn = '3';
@@ -344,7 +344,7 @@ export class $EncyclopediaTheme extends $Theme {
     narrow_columnGap = '0';
     narrow_padding = '0';
     @select('@media (max-width: 1119px) {\n             .pd-table-of-contents, .pd-appearance {') narrowSide_display = 'none';
-    @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-title, .pd-cover > .pd-menu, .pd-toolbar, .pd-book > .pd-chapter > .pd-synopsis, .pd-book > .pd-chapter > .pd-document:not(.pd-cover), .pd-book > .pd-chapter > .pd-index {') narrowText_gridColumn = '1';
+    @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-title, .pd-cover > .pd-menu, .pd-toolbar, .pd-book > .pd-chapter > .pd-synopsis, .pd-body, .pd-book > .pd-chapter > .pd-index {') narrowText_gridColumn = '1';
     @select('@media (max-width: 1119px) {\n             .pd-cover > .pd-menu::details-content {') narrowTongues_columns = '1';
     narrowTongues_width = 'calc(100vw - 3em)';
     // THE BAR WRAPS RATHER THAN SPILLS. At 360 the menu, the wordmark and who-you-are come to 409

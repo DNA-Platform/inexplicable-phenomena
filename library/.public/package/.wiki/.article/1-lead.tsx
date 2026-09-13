@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Bold, Document, Heading, Illustration, Italics, Paragraph, Section } from '@dna-platform/public';
-import { Hatnote, Manual } from '@dna-platform/public/encyclopedia';
+import { Bold, Document, Heading, Illustration, Italics, Paragraph, Section } from '@dna-platform/public';
+import { $Article, Hatnote, Manual } from '@dna-platform/public/encyclopedia';
 import { Menu, Option, Search, Summary } from '@dna-platform/public/application';
 import { BookLink } from '../.book';
 
-export default class $Lead extends $Chapter {
+export default class $Lead extends $Article {
     print() {
         return (
             <Document>
