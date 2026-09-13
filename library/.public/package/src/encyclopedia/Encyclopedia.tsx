@@ -1,10 +1,11 @@
 // CREATED 2026-09-13 · rating 2. THE ENCYCLOPEDIA'S BOOK, AND IT IS LAYOUT — Doug: "Book is layout.
-// Chapters are logical parts." Its body is a place beside the header and the footer: the chapters
-// carrying $TypeOfArticle stand in it, in the order they were written, so one formatting context
-// holds them all and a format that floats reaches the prose that follows. The apparatus — the cover,
-// the synopsis, the table of contents, the footer — carries no such type and draws where it stands.
-// ONE WALK OVER ONE LIST: nothing is filtered twice, nothing is held, and no member answers a list.
-import { ReactNode } from 'react';
+// Chapters are logical parts." The view puts the chapters in their groups and hands each group to
+// the template method for that part, exactly as the header and the footer are drawn. The body is
+// one such part: the chapters carrying $TypeOfArticle stand in it, in the order they were written,
+// so one formatting context holds them and a format that floats reaches the prose that follows.
+// The apparatus — the cover, the synopsis, the table of contents, the footer — carries no such type
+// and stands where it was written. ONE WALK OVER ONE LIST, and no member answers a list.
+import { Fragment, ReactNode } from 'react';
 import { $, $Block } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
@@ -23,21 +24,19 @@ export class $Encyclopedia extends $Book implements $Encyclopedia$ {
         const shown: ReactNode[] = [];
         let held: ReactNode[] = [];
 
-        const body = () => {
-            if (held.length === 0) return;
-            shown.push(<div className="pd-body" key={`body-${shown.length}`}>{held}</div>);
-            held = [];
-        };
-
         this.chapters.forEach((chapter, at) => {
             const Chapter = $(chapter);
             if (reflection.is(chapter, $TypeOfArticle)) return void held.push(<Chapter key={at} />);
-            body();
-            shown.push(<Chapter key={at} />);
+            shown.push(<Fragment key={`body-${at}`}>{this.body(held)}</Fragment>, <Chapter key={at} />);
+            held = [];
         });
-        body();
+        shown.push(<Fragment key="body">{this.body(held)}</Fragment>);
 
         return <>{this.header()}{shown}{this.footer()}</>;
+    }
+
+    body(held: ReactNode[]): ReactNode {
+        return held.length === 0 ? undefined : <div className="pd-body">{held}</div>;
     }
 }
 
