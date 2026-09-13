@@ -165,3 +165,8 @@ export const $setter$ = Symbol("$ObjectiveRep.setter");
 export const $literal$ = Symbol("$ObjectiveRep.literal")
 export const $typeof$ = Symbol("$ObjectiveRep.typeof");
 export const $functionInfo$ = Symbol("$ObjectiveRep.functionInfo");
+
+// The theme a render was handed, what a provider last handed on, and the member.
+export const $handed$ = Symbol("$Particle.handed");
+export const $provided$ = Symbol("$Particle.provided");
+export const theme = Symbol("$Particle.theme");

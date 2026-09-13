@@ -1,7 +1,8 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, cleanup, act } from '@testing-library/react';
 import React, { ReactNode } from 'react';
-import { $, $Block, $Chemical, $Particle, children, select, styled, style } from '@/index';
+import { $, $Block, $Chemical, $Particle, $Theme, children, select, styled, style, theme } from '@/index';
+import { ThemeProvider } from 'styled-components';
 
 afterEach(cleanup);
 
@@ -513,5 +514,87 @@ describe('the emit owns the order of a ranged level, as it owns the closing', ()
         const seen = places(stylesheet());
         expect(seen.lastIndexOf('@media (max-width: 1119px)')).toBeLessThan(seen.lastIndexOf('@media (max-width: 768px)'));
         expect(seen.lastIndexOf('@media (max-width: 768px)')).toBeLessThan(seen.lastIndexOf('@media (max-width: 640px)'));
+    });
+});
+
+// ─── theme — provided by a chemical, read by the styled beneath ──────────────
+// A styled chemical reads `this[theme]`: whatever was provided above it, by a
+// chemical or by styled-components' own provider. A chemical whose theme is not
+// the one it was handed provides it beneath, whole; a written field wakes the
+// readers; a raw styled component beneath follows the same theme.
+class $Hue extends $Theme {
+    paper = 'rgb(10, 10, 10)';
+    ink = 'rgb(11, 11, 11)';
+    get ruled() { return `1px solid ${this.ink}`; }
+}
+class $Sheet extends $Chemical {
+    selector = styled.div;
+    get background() { return this[theme]?.paper ?? 'rgb(0, 0, 0)'; }
+    get borderTop() { return this[theme]?.ruled ?? 'none'; }
+    view(): ReactNode { return <div>sheet</div>; }
+}
+const Sheet = $($Sheet);
+const Raw = styled.span`background: ${(p: any) => p.theme?.paper ?? 'rgb(0, 0, 0)'};`;
+
+function sheetIn(container: HTMLElement): CSSStyleDeclaration {
+    return getComputedStyle(container.querySelector('div') as HTMLElement);
+}
+
+describe('a theme is provided by a chemical and read by the styled beneath it', () => {
+    it('nothing above: the theme is undefined and a getter falls back', () => {
+        const { container } = render(<Sheet />);
+        expect(sheetIn(container).background).toContain('rgb(0, 0, 0)');
+    });
+
+    it("styled-components' own provider above is read as this.theme", () => {
+        const { container } = render(<ThemeProvider theme={{ paper: 'rgb(20, 20, 20)' } as any}><Sheet /></ThemeProvider>);
+        expect(sheetIn(container).background).toContain('rgb(20, 20, 20)');
+    });
+
+    it('a chemistry theme rendered above provides its fields, its getters intact', () => {
+        const Hue = $($Hue);
+        const { container } = render(<Hue><Sheet /></Hue>);
+        expect(sheetIn(container).background).toContain('rgb(10, 10, 10)');
+        expect(sheetIn(container).borderTop).toContain('rgb(11, 11, 11)');
+    });
+
+    it('a field written on the theme repaints the styled beneath — the wake', async () => {
+        const one = standing(() => new $Hue());
+        const Held = $(one);
+        const { container } = render(<Held><Sheet /></Held>);
+        expect(sheetIn(container).background).toContain('rgb(10, 10, 10)');
+        await act(async () => { one.paper = 'rgb(30, 30, 30)'; });
+        expect(sheetIn(container).background).toContain('rgb(30, 30, 30)');
+    });
+
+    it('a raw styled component beneath follows the chemistry theme, and its writes', async () => {
+        const one = standing(() => new $Hue());
+        const Held = $(one);
+        const { container } = render(<Held><Raw>raw</Raw></Held>);
+        const raw = () => getComputedStyle(container.querySelector('span') as HTMLElement).background;
+        expect(raw()).toContain('rgb(10, 10, 10)');
+        await act(async () => { one.paper = 'rgb(40, 40, 40)'; });
+        expect(raw()).toContain('rgb(40, 40, 40)');
+    });
+
+    it('the nearer theme wins, whole — an inner theme replaces an outer one', () => {
+        class $Night extends $Hue { override paper = 'rgb(50, 50, 50)'; }
+        const Hue = $($Hue);
+        const Night = $($Night);
+        const { container } = render(<Hue><Night><Sheet /></Night></Hue>);
+        expect(sheetIn(container).background).toContain('rgb(50, 50, 50)');
+        expect(sheetIn(container).borderTop).toContain('rgb(11, 11, 11)');
+    });
+
+    it('a chemical that answers theme with itself is a theme, and adds no element', () => {
+        class $Room extends $Chemical {
+            paper = 'rgb(60, 60, 60)';
+            override get [theme]() { return this; }
+            view(): ReactNode { return <section><Sheet /></section>; }
+        }
+        const Room = $($Room);
+        const { container } = render(<Room />);
+        expect(container.firstElementChild?.tagName).toBe('SECTION');
+        expect(sheetIn(container).background).toContain('rgb(60, 60, 60)');
     });
 });

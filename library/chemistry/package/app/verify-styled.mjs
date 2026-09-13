@@ -102,6 +102,20 @@ await new Promise(r => setTimeout(r, 2800));
 const g1 = await fade();
 say('a subclass restating one stop starts elsewhere, and the inherited stop survives', !!g0 && g0.name === 'landed' && g0.bg !== f0.bg && g1?.bg === f1?.bg, `from ${f0?.bg} -> ${g0?.bg}; to ${f1?.bg} = ${g1?.bg}`);
 
+const desk = () => page.evaluate(() => {
+    const card = document.querySelector('[data-demo="six"] article');
+    const plain = document.querySelector('[data-demo="six"] p');
+    if (!card || !plain) return null;
+    return { card: getComputedStyle(card).backgroundColor, ink: getComputedStyle(card).color, plain: getComputedStyle(plain).backgroundColor };
+});
+const d0 = await desk();
+say('a theme chemical provides its fields to the styled chemical beneath it', !!d0 && d0.card === 'rgb(248, 249, 250)' && d0.ink === 'rgb(32, 33, 34)', `${d0?.card} on ${d0?.ink}`);
+say('and to a raw styled component beneath it, the same theme', !!d0 && d0.plain === d0.card, `${d0?.plain} = ${d0?.card}`);
+await click('write the theme');
+await new Promise(r => setTimeout(r, 150));
+const d1 = await desk();
+say('a field written on the theme repaints both — the wake', !!d1 && !!d0 && d1.card !== d0.card && d1.plain === d1.card && d1.ink !== d0.ink, `${d0?.card} -> ${d1?.card}; raw ${d1?.plain}`);
+
 say('no console errors', errors.length === 0, errors.slice(0, 2).join(' | ') || 'none');
 
 await page.screenshot({ path: process.env.SHOT || 'styled-lab.png', fullPage: true });

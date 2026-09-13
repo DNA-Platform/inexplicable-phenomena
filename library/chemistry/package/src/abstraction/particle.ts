@@ -1,4 +1,5 @@
-import React, { ReactNode, useState, useEffect, useLayoutEffect } from 'react';
+import React, { ReactNode, useState, useEffect, useLayoutEffect, useContext } from 'react';
+import { ThemeContext } from 'styled-components';
 import {
     $cid$, $symbol$, $type$, $prototype$, $children$, $apply$, $bond$,
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
@@ -8,7 +9,8 @@ import {
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
     $renderView$, $views$, looks, style
 } from "../implementation/symbols";
-import { compile, given, styledFor } from "./styled";
+import { compile, given, styledFor, providing } from "./styled";
+import { $handed$, theme } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
 import { augment, assigned, unassign } from "../implementation/augment";
@@ -77,6 +79,13 @@ export class $Particle {
     // component stands as it is and nothing compiles. `styled` is the explicit
     // word: undefined defers to the selector, true and false decide outright.
     selector?: any;
+
+    // The theme this chemical was handed — styled-components' own, read in
+    // the render, so a styled getter follows whatever provided it, a chemical
+    // or a raw provider. A class that answers something else PROVIDES it to
+    // everything drawn beneath; a class that narrows the type answers the
+    // same and stays a reader. A symbol, so it claims no name of the class's.
+    get [theme](): any { return (this as any)[$handed$]; }
     styled?: boolean;
 
     // The compiled component, built once per class and read through the
@@ -164,7 +173,7 @@ export class $Particle {
     }
 
     [$renderView$](): ReactNode {
-        return this.frame(this.draw());
+        return providing(this, this.frame(this.draw()));
     }
 
     // The view dictionary — every look this instance can draw, held under its
@@ -468,6 +477,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         }
         const [, setToken] = useState(0);
         p[$update$] = () => setToken((t: number) => t + 1);
+        p[$handed$] = useContext(ThemeContext);
         const react = () => p[$reaction$]?.react();
         useEffect(() => {
             if (direct && p[$phase$] === 'unmount') {

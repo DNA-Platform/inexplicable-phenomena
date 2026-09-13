@@ -1,5 +1,6 @@
-import styledImport from 'styled-components';
-import { $type$, $$template$$, $isChemicalBase$, framework } from '../implementation/symbols';
+import React, { ReactNode } from 'react';
+import styledImport, { ThemeProvider } from 'styled-components';
+import { $type$, $$template$$, $isChemicalBase$, $handed$, $provided$, theme, framework } from '../implementation/symbols';
 
 // ===========================================================================
 // Styled particles — a class says what it is styled as, writes plain HTML, and
@@ -431,4 +432,43 @@ export function given(made: $Styled, particle: any): Record<string, any> {
 export function styledFor(particle: any): $Styled | null {
     const cls = particle?.[$type$];
     return cls ? compiled.get(cls) ?? null : null;
+}
+
+// A CHEMICAL WHOSE THEME IS NOT THE ONE IT WAS HANDED PROVIDES IT. What it
+// draws is wrapped in styled-components' own provider, so a styled chemical or
+// a raw styled component beneath reads it as its theme. What is handed on is a
+// face over the theme — its fields read live, its getters and its class intact
+// — remade only when a named field's value changed: a write wakes what reads
+// it, and an unchanged render keeps its identity, which the view diff needs.
+// Handed as a function so styled-components takes it whole rather than
+// spreading it over an outer theme; the nearer theme replaces the farther.
+export function providing(particle: any, drawn: ReactNode): ReactNode {
+    const of = particle[theme];
+    if (typeof of !== 'object' || of === null || of === particle[$handed$]) return drawn;
+    let held = particle[$provided$];
+    const now = fields(of);
+    if (held === undefined || held.of !== of || !same(held.was, now)) {
+        const face = Object.create(of);
+        held = { of, was: now, hand: () => face };
+        particle[$provided$] = held;
+    }
+    return React.createElement(ThemeProvider, { theme: held.hand }, drawn);
+}
+
+// The named fields a theme is judged to have changed by: not the framework's
+// own, not a $-prop, not what it holds.
+function fields(of: any): any[] {
+    const held: any[] = [];
+    if (typeof of !== 'object' || of === null) return held;
+    for (const name in of) {
+        if (name === 'children' || name.charCodeAt(0) === 36 || framework.has(name)) continue;
+        held.push(name, of[name]);
+    }
+    return held;
+}
+
+function same(a: any[], b: any[]): boolean {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+    return true;
 }

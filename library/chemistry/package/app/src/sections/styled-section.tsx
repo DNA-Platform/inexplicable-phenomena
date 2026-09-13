@@ -6,12 +6,14 @@ import Case2Demo from './styled/case-2';
 import Case3Demo from './styled/case-3';
 import Case4Demo from './styled/case-4';
 import Case5Demo from './styled/case-5';
+import Case6Demo from './styled/case-6';
 
 import case1Source from './styled/case-1.tsx?raw';
 import case2Source from './styled/case-2.tsx?raw';
 import case3Source from './styled/case-3.tsx?raw';
 import case4Source from './styled/case-4.tsx?raw';
 import case5Source from './styled/case-5.tsx?raw';
+import case6Source from './styled/case-6.tsx?raw';
 
 // Styled chemicals — styled-components integrated directly into $Chemistry.
 // A class says what it is styled as; its CSS fields are the stylesheet.
@@ -58,12 +60,20 @@ export function StyledCases() {
                 source={case5Source}
                 demo={<Case5Demo />}
             />
+            <CaseShell
+                caseId="styled / 6"
+                subject="A theme is a chemical that provides itself, to styled chemicals and raw styled components alike"
+                pass="writing the theme repaints the card and the raw paragraph together"
+                fail="the write repaints neither, or only one"
+                source={case6Source}
+                demo={<Case6Demo />}
+            />
         </>
     );
 }
 
 export const sectionData = {
     id: 'styled',
-    cases: 5,
+    cases: 6,
     Component: StyledCases,
 };
