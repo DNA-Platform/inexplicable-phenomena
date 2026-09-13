@@ -277,10 +277,18 @@ const nested = (wrote) => {
 
 await mkdir(book, { recursive: true });
 const made = [];
-// THE CHAPTERS STAND IN THE PAGE'S OWN ORDER: the lead, then every section as the article has
-// them, whether it is prose or a list of entries. Notes and References are the lists; a citation
-// mark finds its entry by the key both carry, and numbers itself by where the entry stands.
-const chapters = [read[0], ...order.map(name => read.find(one => one.name === name) ?? lists.find(one => one.name === name)).filter(one => one !== undefined && one !== read[0])];
+// THE ARTICLE IS ONE DOCUMENT. Every run of prose sections is one document with its sections
+// inside it, the first named for the page, so what floats in the lead is stood beside by every
+// section after it, as the page has it; a list of entries is a chapter of its own, and a citation
+// mark finds its entry by the key both carry, numbering itself by where the entry stands.
+const ordered = [read[0], ...order.map(name => read.find(one => one.name === name) ?? lists.find(one => one.name === name)).filter(one => one !== undefined && one !== read[0])];
+const chapters = [];
+for (const section of ordered) {
+    const last = chapters[chapters.length - 1];
+    if (section.entries !== undefined) chapters.push(section);
+    else if (last !== undefined && last.sections !== undefined) last.sections.push(section);
+    else chapters.push({ name: chapters.length === 0 ? chrome.title : section.name, sections: [section] });
+}
 let at = 0;
 for (const section of chapters) {
     if (section.entries !== undefined) {
@@ -312,7 +320,12 @@ for (const section of chapters) {
         continue;
     }
     at += 1;
-    const said = nested(section.wrote);
+    const said = section.sections.map(one => one.name === '' ? nested(one.wrote) : [
+        `                <Section>`,
+        `                    <Heading>${quoted(one.name)}</Heading>`,
+        nested(one.wrote).replace(/^/gmu, '    '),
+        `                </Section>`,
+    ].join('\n')).join('\n');
     const whole = said + (at === 1 ? aside + boxed : '');
     const carries = [...new Set(['$Chapter', 'Document', 'Heading', 'Paragraph', ...(at === 1 && !said.includes('<Section>') && !boxed ? [] : ['Section']),
         ...(at === 1 ? ['Illustration'] : []),
@@ -323,7 +336,7 @@ for (const section of chapters) {
         ...(whole.includes('<List>') ? ['Item', 'List'] : [])])].sort();
     const outward = whole.includes('<OutwardLink>') ? ['OutwardLink'] : [];
     const inward = whole.includes('<BookLink>') ? ['BookLink'] : [];
-    const file = `${at}-${named(section.name) || 'lead'}.tsx`;
+    const file = `${at}-${named(section.name)}.tsx`;
     const lines = [
         `import { $ } from '@dna-platform/chemistry';`,
         `import { ${carries.join(', ')} } from '@dna-platform/public';`,
@@ -331,16 +344,11 @@ for (const section of chapters) {
         ...(whole.includes('<Manual>') ? [`import { ${['Menu', 'Option', 'Summary', ...(whole.includes('<Search ') ? ['Search'] : [])].sort().join(', ')} } from '@dna-platform/public/application';`] : []),
         ...(inward.length || outward.length ? [`import { ${[...inward, ...outward].join(', ')} } from '${shared}';`] : []),
         ``,
-        `export default class $${classed(section.name) || 'Lead'} extends $Chapter {`,
+        `export default class $${classed(section.name)} extends $Chapter {`,
         `    print() {`,
         `        return (`,
         `            <Document>`,
-        ...(at === 1 ? (opening => [opening, aside, boxed, said.slice(opening.length)].filter(one => one !== ''))(said.match(/^(?:[ ]+<Hatnote>\n[^\n]*\n[ ]+<\/Hatnote>\n?)*/u)[0].replace(/\n$/u, '')) : [
-            `                <Section>`,
-            `                <Heading>${quoted(section.name)}</Heading>`,
-            said,
-            `                </Section>`,
-        ]),
+        ...(at === 1 ? (opening => [opening, aside, boxed, said.slice(opening.length)].filter(one => one !== ''))(said.match(/^(?:[ ]+<Hatnote>\n[^\n]*\n[ ]+<\/Hatnote>\n?)*/u)[0].replace(/\n$/u, '')) : [said]),
         `            </Document>`,
         `        );`,
         `    }`,
@@ -348,7 +356,7 @@ for (const section of chapters) {
         ``,
     ];
     await writeFile(join(book, file), lines.join('\n'), 'utf8');
-    made.push(`${file} — ${section.wrote.length} pieces`);
+    made.push(`${file} — ${section.sections.length} sections, ${section.sections.reduce((n, one) => n + one.wrote.length, 0)} pieces`);
 }
 
 // THE TITLE BLOCK, READ RATHER THAN WRITTEN. Everything above the fold on the real page — the bar,
@@ -472,7 +480,7 @@ made.push(`.cover.tsx — ${chrome.menu.length} menu, ${chrome.languages.length}
 made.push(`${at + 1}-the-foot.tsx — ${chrome.foot.length} lines, ${chrome.places.length} links`);
 
 const kebab = (said) => said.toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-|-$/gu, '');
-const rows = chapters;
+const rows = ordered;
 const row = (said, pad) => `${pad}<Option><Ref>[${quoted(said)}](#${kebab(said)})</Ref></Option>`;
 const contents = [
     `import { $ } from '@dna-platform/chemistry';`,
