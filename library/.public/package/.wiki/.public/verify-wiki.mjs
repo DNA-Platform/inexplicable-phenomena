@@ -43,7 +43,7 @@ const encyclopedia = {
         ['text top', '.vector-body', 'article.pd-synopsis'],
         ['indicator', '.mw-indicator', 'article.pd-synopsis .pd-image'],
         ['manual', 'table.sidebar', '.pd-manual'],
-        ['first text', '.mw-parser-output .hatnote', '.pd-book > .pd-chapter > article .pd-hatnote'],
+        ['first text', '.mw-parser-output .hatnote', '.pd-body > .pd-chapter > article .pd-hatnote'],
         ['infobox image', '.infobox-image img', '.pd-infobox img'],
         ['contents heading', '#vector-toc-pinned-container .vector-pinnable-header-label', '.pd-table-of-contents .pd-heading'],
         ['contents row', '#vector-toc .vector-toc-level-1:not(#toc-mw-content-text) > .vector-toc-link .vector-toc-text', '.pd-table-of-contents .pd-summary .pd-ref'],
@@ -78,19 +78,23 @@ const encyclopedia = {
         ['site line', '#siteSub', 'article.pd-synopsis .pd-paragraph'],
         ['subpage line', '#contentSub .subpages', 'article.pd-synopsis .pd-paragraph:nth-of-type(2)'],
         ['hatnote', '.mw-content-ltr .hatnote', '.pd-hatnote'],
-        ['second hatnote', '.mw-content-ltr .hatnote ~ .hatnote', '.pd-book > .pd-chapter > article .pd-hatnote + .pd-hatnote'],
-        ['lead paragraph', '.mw-content-ltr section:first-of-type > p:not(.mw-empty-elt)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote):not(.pd-heading)'],
-        ['body link', '.mw-content-ltr section p > a:not(.external)', '.pd-book > .pd-chapter > article.pd-document:not(.pd-synopsis) > .pd-paragraph:not(.pd-hatnote) .pd-book-link'],
-        ['citation mark', 'section p > sup.reference > a', '.pd-book > .pd-chapter > article .pd-citation:not(.pd-infobox .pd-citation)'],
-        ['section heading', '.mw-heading2 h2', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
-        ['section rule', '.mw-heading2', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
-        ['subheading', '.mw-heading3 h3', '.pd-book > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-section > .pd-heading'],
+        ['second hatnote', '.mw-content-ltr .hatnote ~ .hatnote', '.pd-body > .pd-chapter > article .pd-hatnote + .pd-hatnote'],
+        ['lead paragraph', '.mw-content-ltr section:first-of-type > p:not(.mw-empty-elt)', '.pd-body > .pd-chapter > article.pd-document > .pd-paragraph:not(.pd-hatnote):not(.pd-heading)'],
+        ['lead bold', '.mw-content-ltr section:first-of-type > p b', '.pd-body > .pd-chapter > article.pd-document > .pd-paragraph .pd-bold'],
+        ['lead italic', '.mw-content-ltr section p i', '.pd-body .pd-paragraph .pd-italics:not(.pd-aside .pd-italics):not(.pd-manual .pd-italics)'],
+        ['body link', '.mw-content-ltr section p > a:not(.external)', '.pd-body > .pd-chapter > article.pd-document > .pd-paragraph:not(.pd-hatnote) .pd-book-link'],
+        ['citation mark', 'section p > sup.reference > a', '.pd-body > .pd-chapter > article .pd-citation:not(.pd-infobox .pd-citation)'],
+        ['section heading', '.mw-heading2 h2', '.pd-body > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
+        ['section rule', '.mw-heading2', '.pd-body > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-heading'],
+        ['subheading', '.mw-heading3 h3', '.pd-body > .pd-chapter > article > .pd-section:not(.pd-aside) > .pd-section > .pd-heading'],
         ['infobox', '.infobox', '.pd-infobox'],
         ['infobox title', '.infobox-above', '.pd-infobox > .pd-heading'],
         ['infobox row', '.infobox-data', '.pd-line'],
         ['infobox caption', '.infobox-caption', '.pd-infobox .pd-caption'],
         ['infobox image', '.infobox-image img', '.pd-infobox img'],
         ['first figure image', '.mw-content-ltr figure img', '.pd-illustration:not(.pd-infobox *) img'],
+        ['figure', '.mw-content-ltr figure', '.pd-body .pd-illustration:not(.pd-infobox *)'],
+        ['figure caption', '.mw-content-ltr figure figcaption', '.pd-body .pd-illustration:not(.pd-infobox *) .pd-caption'],
         ['contents heading', '#vector-toc-pinned-container .vector-pinnable-header-label', '.pd-table-of-contents .pd-heading'],
         ['contents top', '#toc-mw-content-text > a .vector-toc-text', '.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-ref'],
         ['contents row', '#vector-toc .vector-toc-level-1:not(#toc-mw-content-text) > .vector-toc-link .vector-toc-text', '.pd-table-of-contents .pd-summary .pd-ref'],
@@ -103,6 +107,28 @@ const encyclopedia = {
         ['appearance group', '#vector-appearance .vector-menu-heading', '.pd-appearance h4'],
         // THE OPTION'S INDENT is what a reader sees; its bottom padding reads 4px on one of Wikipedia's pages and 0 on another.
         ['appearance option indent', '#vector-appearance .cdx-radio:first-of-type .cdx-radio__label', '.pd-appearance label'],
+        ['appearance option', '#vector-appearance .cdx-radio:first-of-type .cdx-radio__label', '.pd-appearance label'],
+        ['appearance radio', '#vector-appearance .cdx-radio__icon', '.pd-appearance input'],
+        // THE PANELS' ROWS, read shut on both pages: a shut menu's rows keep their font, colour and padding.
+        ['main menu row', '#vector-main-menu .vector-menu-content li a', '.pd-header > .pd-menu .pd-paragraph .pd-ref'],
+        ['tools row', '#vector-page-tools .vector-menu-content li a', '.pd-toolbar > .pd-menu .pd-paragraph .pd-ref'],
+        ['languages row', '#p-lang-btn .vector-menu-content li a', '.pd-cover > .pd-menu .pd-paragraph .pd-ref'],
+        ['footer', '.mw-footer', '.pd-footer'],
+        ['footer line', '#footer-info li', '.pd-footer .pd-paragraph:not(.pd-heading)'],
+        ['footer link', '#footer-places a', '.pd-footer .pd-ref'],
+        // THE MANUAL, part by part — Doug: "pull markup for many breakpoints and fix it." A toggle pair
+        // reads our summary's ::after, because that is where ours draws its [show].
+        ['manual box', 'table.sidebar', '.pd-manual'],
+        ['manual title', 'table.sidebar .sidebar-title', '.pd-manual > .pd-section > .pd-heading'],
+        ['manual title link', 'table.sidebar .sidebar-title a', '.pd-manual > .pd-section > .pd-heading .pd-ref'],
+        ['manual field', 'table.sidebar input.searchboxInput', '.pd-manual .pd-search .pd-field'],
+        ['manual search button', 'table.sidebar input[type=submit]', '.pd-manual .pd-search .pd-button'],
+        ['manual band', 'table.sidebar .sidebar-list-title', '.pd-manual .pd-menu > .pd-summary'],
+        ['manual toggle', 'table.sidebar .mw-collapsible-text', '.pd-manual .pd-menu > .pd-summary'],
+        ['manual link', 'table.sidebar .sidebar-list-content a', '.pd-manual .pd-menu .pd-paragraph .pd-ref'],
+        ['manual below', 'table.sidebar .sidebar-below', '.pd-manual > .pd-section > .pd-paragraph:nth-last-child(2)'],
+        ['manual navbar', 'table.sidebar .sidebar-navbar', '.pd-manual > .pd-section > .pd-paragraph:last-child'],
+        ['manual navbar link', 'table.sidebar .sidebar-navbar a', '.pd-manual > .pd-section > .pd-paragraph:last-child .pd-ref'],
     ],
     landmarks: [],
 };
@@ -144,6 +170,7 @@ const targets = [
     {
         key: 'article',
         pinned: [],
+        pinnedRegions: ['manual'],
         theirs: 'https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout',
         ours: 'article',
         ...encyclopedia,
@@ -189,7 +216,7 @@ const looks = (page, list, which) => page.evaluate((list, which, looked) => {
         let el = null;
         try { el = document.querySelector(one[which]); } catch (e) { el = null; }
         if (!el) { seen[one[0]] = null; continue; }
-        const style = getComputedStyle(el);
+        const style = /toggle$/.test(one[0]) && which === 2 ? getComputedStyle(el, '::after') : getComputedStyle(el);
         const said = { tag: el.tagName };
         for (const name of looked) said[name] = style[name];
         if (/rule$/.test(one[0])) { const after = getComputedStyle(el, '::after'); said.afterContent = after.content; said.afterHeight = after.height; said.afterBackground = after.backgroundColor; }
@@ -207,7 +234,7 @@ const differs = (name, theirs, ours) => {
     const off = [];
     const ruled = /rule/.test(name), faced = /heading$|^title$/.test(name), pictured = ours.tag === 'IMG' || theirs.tag === 'IMG';
     // A HEIGHT IS COMPARED ONLY WHERE IT IS SET, on a tab or a button; everywhere else it is the text's.
-    const boxed = /tab$|button$|^tab |^view /.test(name), sized = /image$/.test(name);
+    const boxed = /tab$|button$|^tab |^view /.test(name), sized = /image$|radio$/.test(name);
     for (const prop of looked) {
         if (prop === 'height' && !boxed && !sized) continue;
         if (prop === 'width' && !sized) continue;
@@ -284,6 +311,15 @@ if (baselining) {
             await page.goto(target.theirs, { waitUntil: 'networkidle0', timeout: 90000 });
             read[target.key].styles = await looks(page, target.styles, 1);
             console.log(`  ${target.key} styles: ${Object.values(read[target.key].styles).filter(Boolean).length} of ${target.styles.length} elements read`);
+            read[target.key].contentsStep = await page.evaluate(() => {
+                const li = [...document.querySelectorAll('#vector-toc .vector-toc-level-1')].find(one => one.querySelector('.vector-toc-level-2'));
+                if (!li) return null;
+                li.classList.add('vector-toc-list-item-expanded');
+                const above = li.querySelector(':scope > .vector-toc-link .vector-toc-text').getBoundingClientRect().x;
+                const below = li.querySelector('.vector-toc-level-2 > .vector-toc-link .vector-toc-text').getBoundingClientRect().x;
+                return Math.round(below - above);
+            });
+            console.log(`  ${target.key} contents step: ${read[target.key].contentsStep}`);
         }
         if (target.counts.length) console.log(`  ${target.key} counts: ` + Object.entries(read[target.key].counts).map(([k, v]) => `${k} ${v}`).join(' · '));
         if (target.landmarks.length) console.log(`  ${target.key} landmarks: ` + Object.entries(read[target.key].landmarks).map(([k, v]) => `${k} ${v ? 'present' : 'absent'}`).join(' · '));
@@ -336,10 +372,11 @@ for (const target of targets.filter(one => baselining || only === undefined || o
             if (!got) { expect(false, `${target.key} ${width}: ${name} is not drawn`); continue; }
             const placed = name === 'footer' || asked.y === undefined || Math.abs(asked.y - got.y) <= slack;
             if (Math.abs(asked.x - got.x) <= slack && Math.abs(asked.w - got.w) <= slack && placed) matched++;
-            if (!pinned) continue;
+            const held = pinned || (width >= 1120 && (target.pinnedRegions ?? []).includes(name));
+            if (!held) continue;
             expect(Math.abs(asked.x - got.x) <= slack, `${target.key} ${width}: ${name} stands at x ${got.x} where Wikipedia sets ${asked.x}`);
             expect(Math.abs(asked.w - got.w) <= slack, `${target.key} ${width}: ${name} is ${got.w} wide where Wikipedia sets ${asked.w}`);
-            expect(placed, `${target.key} ${width}: ${name} stands at y ${got.y} where Wikipedia sets ${asked.y}`);
+            if (pinned) expect(placed, `${target.key} ${width}: ${name} stands at y ${got.y} where Wikipedia sets ${asked.y}`);
         }
         expect(wide <= width + 1, `${target.key} ${width}: scrolls sideways — ${wide}`);
         console.log(`${target.key.padEnd(7)} ${String(width).padStart(5)}  ${matched} of ${target.regions.length} regions within ${slack}px${pinned ? '' : ' (drawn only — Wikipedia reflows here)'}`);
@@ -438,14 +475,20 @@ for (const target of targets.filter(one => baselining || only === undefined || o
                 const shut = drawn();
                 menu.open = true;
                 said[name] = { shut, open: drawn() };
+                if (name === 'contents' && panel !== null) {
+                    const above = menu.querySelector(':scope > .pd-summary .pd-ref')?.getBoundingClientRect().x;
+                    const below = panel.querySelector('.pd-ref')?.getBoundingClientRect().x;
+                    said[name].step = above === undefined || below === undefined ? null : Math.round(below - above);
+                }
                 menu.open = false;
             }
             return said;
         });
         for (const [name, state] of Object.entries(opened)) {
             if (state === null) continue;
-            const { shut, open } = state;
+            const { shut, open, step } = state;
             expect(!shut && open, `the ${name} menu does not open — ${shut ? 'drawn' : 'hidden'} shut, ${open ? 'drawn' : 'hidden'} open`);
+            if (name === 'contents' && want.contentsStep != null) expect(step !== null && Math.abs(step - want.contentsStep) <= 1, `${target.key}: a nested contents row stands ${step}px in from its holder where Wikipedia sets ${want.contentsStep}`);
         }
         const followed = await page.evaluate(() => {
             const rows = [...document.querySelectorAll('.pd-table-of-contents a')].filter(one => (one.getAttribute('href') ?? '#').length > 1);

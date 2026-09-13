@@ -17,6 +17,7 @@ export class $EncyclopediaTheme extends $Theme {
     field = '#72777d';
     tint = '#ddeeff';
     black = '#000000';
+    faint = '#aaaaaa';
     override measure = '57em';
     override body = 'sans-serif';
     override face = "'Linux Libertine', 'Georgia', 'Times', 'Source Serif 4', serif";
@@ -32,11 +33,12 @@ export class $EncyclopediaTheme extends $Theme {
     // to the left inside a container capped at 1596px, padded 2.75em; from 1600 the side tracks are
     // 15.5em and the padding 3.25em. At 1280 that is the contents at x32, the text at x264 and 752
     // wide, the rail at x1040; at 1920 the text is 948 wide and the rail stands at x1458.
-    gridTemplateColumns = '12.25em minmax(0, 59.25em) 12.25em minmax(0, 1fr)';
+    gridTemplateColumns = '12.25em minmax(0, 59.25em) minmax(12.25em, 1fr)';
     gridAutoRows = 'min-content';
     columnGap = '1.5em';
     @select('@media (min-width: 1601px)') broad_padding = '0 3.25em';
-    broad_gridTemplateColumns = '15.5em minmax(0, 59.25em) 15.5em minmax(0, 1fr)';
+    broad_gridTemplateColumns = '15.5em minmax(0, 59.25em) minmax(15.5em, 1fr)';
+    @select('@media (min-width: 1601px) {\n             .pd-appearance {') broadRail_width = '15.5rem';
     @select('@media (min-width: 1601px) {\n             .pd-header {') wideBar_padding = '0 3.25em';
     wideBar_marginLeft = '-3.25em';
     wideBar_marginRight = '-3.25em';
@@ -110,6 +112,8 @@ export class $EncyclopediaTheme extends $Theme {
     rail_position = 'sticky';
     rail_top = '1.5em';
     rail_marginTop = '0.5em';
+    rail_justifySelf = 'start';
+    rail_width = '12.25rem';
     @select('.pd-appearance h3') paneName_width = 'fit-content';
     @select('.pd-appearance h4') railName_margin = '6px 0';
     railName_padding = '6px 0';
@@ -126,17 +130,21 @@ export class $EncyclopediaTheme extends $Theme {
     get panel_boxShadow() { return '0 2px 6px rgba(0, 0, 0, 0.12)'; }
     // A NAME INSIDE A MENU IS A LABEL, not a heading in an article: small, upright and in the
     // body's face, because it names a group of links rather than opening a piece of writing.
-    @select('.pd-menu::details-content .pd-heading') group_margin = '0.7em 0 0.2em';
+    @select('.pd-header .pd-menu > .pd-heading:not(.pd-summary), .pd-toolbar .pd-menu > .pd-heading:not(.pd-summary), .pd-cover > .pd-menu > .pd-heading:not(.pd-summary)') group_margin = '0.7em 0 0.2em';
     group_padding = '0';
     group_border = 'none';
     group_fontSize = '0.875em';
     group_fontWeight = '700';
     get group_fontFamily() { return this.body; }
     get group_color() { return this.pale; }
-    @select('.pd-menu::details-content > .pd-heading:first-child') topmost_marginTop = '0';
-    @select('.pd-menu::details-content .pd-ref') held_display = 'block';
+    @select('.pd-menu > .pd-summary + .pd-heading') topmost_marginTop = '0';
+    @select('.pd-header .pd-menu > .pd-paragraph .pd-ref, .pd-toolbar .pd-menu > .pd-paragraph .pd-ref, .pd-cover > .pd-menu > .pd-paragraph .pd-ref') held_display = 'block';
     held_overflowWrap = 'anywhere';
-    held_padding = '0.3em 0';
+    held_padding = '0.4286em 0';
+    held_fontSize = '0.875em';
+    held_lineHeight = '1.143';
+    @select('.pd-section.pd-menu > .pd-paragraph') option_margin = '0';
+    @select('.pd-toolbar .pd-menu > .pd-paragraph .pd-ref') toolRow_fontSize = '1em';
     @select('.pd-header > .pd-menu > .pd-summary') burger_width = '2rem';
     burger_height = '2rem';
     burger_justifyContent = 'center';
@@ -236,7 +244,7 @@ export class $EncyclopediaTheme extends $Theme {
     // tools are — one disclosure for the whole encyclopedia — and the only thing the contents
     // says differently is that what opens stands under the row instead of floating over it.
     @select('.pd-table-of-contents .pd-menu::details-content') opens_position = 'static';
-    opens_padding = '0 0 0 0.9em';
+    opens_padding = '0 0 0 1.714em';
     opens_margin = '0';
     opens_minWidth = '0';
     opens_maxHeight = 'none';
@@ -282,8 +290,11 @@ export class $EncyclopediaTheme extends $Theme {
     // names that kind for what a summary usually is, and here every menu wears it.
     // THE MANUAL'S BANDS: every group's title on the blue Wikipedia tints a sidebar's with.
     @select('.pd-manual .pd-summary') get band_background() { return this.tint; }
+    @select('.pd-manual > .pd-section > .pd-paragraph:nth-last-child(2)') get manualFoot_borderTop() { return `1px solid ${this.faint}`; }
+    get manualFoot_borderBottom() { return `1px solid ${this.faint}`; }
     @select('.pd-summary') override summed_margin = '0';
     override summed_fontStyle = 'normal';
+    override get summed_color() { return this.ink; }
     // A HATNOTE STANDS IN FROM THE MARGIN AND LEANS, which is how a reader tells it from the
     // article's own first words.
     @select('.pd-note.pd-hatnote') hat_fontStyle = 'italic';
@@ -336,8 +347,18 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-book .pd-appearance') pane_padding = '0 1.143em';
 
     @select('.pd-book > .pd-chapter > .pd-footer') foot_gridColumn = '1 / -1';
-    foot_margin = '2rem 0 0';
-    foot_fontSize = '0.92em';
+    foot_margin = '0';
+    foot_fontSize = '1em';
+    foot_padding = '0.75em 0';
+    get foot_color() { return this.ink; }
+    @select('.pd-book > .pd-chapter > .pd-footer > .pd-heading') footName_display = 'none';
+    @select('.pd-book > .pd-chapter > .pd-footer .pd-paragraph:not(.pd-heading)') footLine_fontSize = '0.75em';
+    footLine_lineHeight = '1.4';
+    footLine_padding = '0.5em 0';
+    footLine_margin = '0';
+    @select('.pd-book > .pd-chapter > .pd-footer .pd-ref') footLink_display = 'inline-block';
+    footLink_marginRight = '1em';
+    footLink_lineHeight = '2';
     // NARROW IS ONE COLUMN. The five tracks collapse to the text's, and the gaps with them —
     // left standing they added 96 pixels of nothing and the page scrolled sideways at 360.
     @select('@media (max-width: 1119px)') narrow_gridTemplateColumns = '1.5em 0 minmax(0, 1fr) 0 1.5em';
@@ -350,8 +371,8 @@ export class $EncyclopediaTheme extends $Theme {
     // THE BAR WRAPS RATHER THAN SPILLS. At 360 the menu, the wordmark and who-you-are come to 409
     // pixels and the page scrolled sideways; the row is allowed a second line instead.
     @select('@media (max-width: 1119px) {\n             .pd-header {') narrowBar_padding = '0.5em 1.5em';
-    narrowBar_marginLeft = '-1.5em';
-    narrowBar_marginRight = '-1.5em';
+    narrowBar_marginLeft = '0';
+    narrowBar_marginRight = '0';
     narrowBar_flexWrap = 'wrap';
     narrowBar_rowGap = '0.4em';
     narrowBar_height = 'auto';
@@ -393,7 +414,7 @@ export class $EncyclopediaTheme extends $Theme {
     contentsHeading_width = 'fit-content';
     get contentsHeading_color() { return this.jet; }
     get contentsHeading_fontFamily() { return this.body; }
-    @select('.pd-table-of-contents .pd-paragraph') entry_fontSize = '1em';
+    @select('.pd-table-of-contents .pd-section .pd-paragraph') entry_fontSize = '1em';
     entry_margin = '0';
     entry_lineHeight = '2';
     // THE CONTENTS INDENTS BY NESTING, not by a pd-indent class — a list inside an item.
@@ -429,13 +450,23 @@ export class $EncyclopediaTheme extends $Theme {
     get sub2_fontFamily() { return this.body; }
     // THE SPACE BETWEEN PARAGRAPHS IS A VALUE NOW, not a rule of its own — the base carries it as
     // `between` and its own group reads it.
+    @select('.pd-document.pd-manual > .pd-section > .pd-heading.pd-level-1') manualName_fontSize = '1.45em';
+    manualName_fontWeight = '700';
+    manualName_lineHeight = '1.2';
+    manualName_padding = '0.2em 0.8em';
+    manualName_margin = '0';
+    manualName_borderBottom = 'none';
+    get manualName_color() { return this.ink; }
+    get manualName_fontFamily() { return this.body; }
+    @select('.pd-book .pd-body .pd-chapter .pd-document.pd-manual') manualBox_marginBottom = '1em';
     @select('.pd-paragraph:not(.pd-heading)') override p_marginTop = '0.5em';
     @select('.pd-paragraph:not(.pd-heading) .pd-paragraph:not(.pd-heading)') nested_marginLeft = '1.6em';
     @select('.pd-list') override list_marginTop = '0.3em';
     override list_paddingLeft = '1.6em';
     @select('.pd-item') item_marginBottom = '0.1em';
     @select('.pd-paragraph:not(.pd-heading) + .pd-list') afterProse_marginTop = '-0.5em';
-    @select('.pd-illustration') override figure_margin = '0.5em 0 1.3em 1.4em';
+    @select('.pd-body .pd-illustration:not(.pd-infobox .pd-illustration)') override figure_margin = '0.5em 0 1.3em 1.4em';
+    figure_lineHeight = '0';
     figure_float = 'right';
     figure_clear = 'right';
     figure_display = 'table';
@@ -443,6 +474,7 @@ export class $EncyclopediaTheme extends $Theme {
     figure_maxWidth = '100%';
     figure_padding = '0';
     get figure_border() { return `1px solid ${this.edge}`; }
+    get figure_borderBottom() { return 'none'; }
     get figure_background() { return this.quiet; }
     @select('.pd-illustration .pd-image') image_display = 'inline';
     image_verticalAlign = 'middle';
@@ -451,6 +483,8 @@ export class $EncyclopediaTheme extends $Theme {
     get image_background() { return this.paper; }
     @select('.pd-caption') caption_display = 'table-caption';
     caption_captionSide = 'bottom';
+    caption_marginTop = '0';
+    get caption_borderBottom() { return `1px solid ${this.edge}`; }
     caption_fontSize = '0.884em';
     caption_lineHeight = '1.4';
     caption_padding = '0 0.43em 0.43em';

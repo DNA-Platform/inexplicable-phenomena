@@ -39,8 +39,8 @@ export class $ManualFormat extends $Format {
     padding = '0.2em';
     fontSize = '0.88em';
     lineHeight = '1.4';
-    get background() { return this.theme.paper; }
-    get border() { return `1px solid ${this.theme.shade}`; }
+    get background() { return this.theme.quiet; }
+    get border() { return `1px solid ${this.theme.rule}`; }
 
     @select('> .pd-section') held_margin = '0';
     held_padding = '0';
@@ -53,10 +53,27 @@ export class $ManualFormat extends $Format {
     name_border = 'none';
     get name_fontFamily() { return this.theme.body; }
 
-    @select('> .pd-section > .pd-search') field_margin = '0.3em 0';
-    field_justifyContent = 'center';
+    @select('> .pd-section > .pd-search') field_margin = '0.2em 0.4em 0.4em';
+    field_flexDirection = 'column';
+    field_alignItems = 'center';
+    field_gap = '0.5714em';
+    @select('> .pd-section > .pd-search > .pd-field') input_flex = '0 0 auto';
+    input_width = '15.8125em';
+    input_maxWidth = '100%';
+    input_fontSize = '1.1364em';
+    input_lineHeight = '1.375';
+    input_padding = '0.25em 0.5em';
+    input_borderRadius = '2px';
+    input_backgroundImage = 'none';
+    @select('> .pd-section > .pd-search > .pd-button') go_flex = '0 0 auto';
+    go_fontSize = '1.1364em';
+    go_lineHeight = '1.375';
+    go_minHeight = '2em';
+    go_padding = '0.0625em 0.6875em';
+    go_margin = '0';
+    go_borderRadius = '2px';
 
-    @select('.pd-menu') group_margin = '0.3em 0 0';
+    @select('.pd-menu') group_margin = '0.32em 0 0';
     @select('.pd-menu > .pd-summary') opener_display = 'grid';
     opener_gridTemplateColumns = 'minmax(0, 1fr) auto';
     opener_alignItems = 'baseline';
@@ -64,15 +81,18 @@ export class $ManualFormat extends $Format {
     opener_padding = '0 0.4em 0 0.15em';
     opener_fontSize = '1.05em';
     opener_fontWeight = '700';
+    opener_lineHeight = '1.6';
+    opener_textAlign = 'center';
     get opener_fontFamily() { return this.theme.body; }
     @select('.pd-menu .pd-menu > .pd-summary') under_textAlign = 'center';
     @select('.pd-menu > .pd-summary::after') toggle_content = "'[show]'";
     toggle_fontWeight = '400';
-    toggle_fontSize = '0.9em';
+    toggle_fontSize = '0.952em';
+    toggle_lineHeight = '1.4';
     get toggle_color() { return this.theme.link; }
     @select('.pd-menu[open] > .pd-summary::after') shown_content = "'[hide]'";
     @select('.pd-menu::details-content') opens_position = 'static';
-    opens_padding = '0 0.5em 0.4em';
+    opens_padding = '0.32em 0 0.4em';
     opens_minWidth = '0';
     opens_maxWidth = 'none';
     opens_maxHeight = 'none';
@@ -82,8 +102,17 @@ export class $ManualFormat extends $Format {
     opens_background = 'transparent';
     @select('.pd-menu .pd-paragraph') listed_margin = '0';
     listed_textAlign = 'center';
-    @select('> .pd-section > .pd-paragraph') foot_margin = '0.3em 0 0';
-    foot_textAlign = 'center';
+    @select('> .pd-section > .pd-paragraph:nth-last-child(2)') below_margin = '0';
+    below_padding = '0.3em 0.8em';
+    below_fontWeight = '700';
+    below_textAlign = 'center';
+    @select('> .pd-section > .pd-paragraph:last-child') navbar_margin = '0';
+    navbar_padding = '0 0.4em 0.4em';
+    navbar_fontSize = '1.15em';
+    navbar_lineHeight = '1.2174';
+    navbar_textAlign = 'right';
+    @select('> .pd-section > .pd-paragraph:last-child .pd-ref') vte_fontSize = '0.88em';
+    vte_lineHeight = '1.3833';
 }
 
 export const Manual = $($Manual);

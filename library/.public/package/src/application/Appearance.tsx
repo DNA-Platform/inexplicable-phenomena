@@ -49,11 +49,20 @@ export class $Appearance extends $Chemical {
     choice_cursor = 'pointer';
     @select('input') dot_position = 'absolute';
     dot_left = '0';
-    dot_top = '0.2em';
-    dot_margin = '0';
+    dot_top = '0';
+    dot_margin = '1px 0 0';
     dot_cursor = 'pointer';
-    dot_width = '1rem';
-    dot_height = '1rem';
+    dot_width = '18px';
+    dot_height = '18px';
+    dot_boxSizing = 'border-box';
+    dot_appearance = 'none';
+    dot_borderRadius = '50%';
+    dot_border = '1px solid #72777d';
+    dot_background = '#ffffff';
+    dot_fontFamily = 'inherit';
+    dot_color = 'inherit';
+    @select('input:checked') chosen_borderWidth = '6px';
+    chosen_borderColor = '#3366cc';
 }
 
 export const Appearance = $($Appearance);
