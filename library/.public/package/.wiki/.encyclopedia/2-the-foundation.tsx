@@ -1,10 +1,11 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Heading, Image, Paragraph, Section } from '@dna-platform/public';
+import { Heading, Image, Paragraph, Section } from '@dna-platform/public';
+import { $PortalChapter as $Chapter } from './.book';
 import { OutwardLink } from '../.book';
 import { Foundation } from './.book';
 
 export default class $TheFoundation extends $Chapter {
-    view() {
+    print() {
         return (
             <Foundation>
                 <Section>

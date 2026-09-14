@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Document, $Document$, $TypeOfDocument, DocumentSpecification } from './Document';
@@ -22,11 +21,6 @@ export class $TypeOfIndex extends $TypeOfDocument {
 }
 
 export class IndexSpecification extends DocumentSpecification {
-    @specify('written, its parts specify; empty, it stands')
-    override $holdsSpecifiedParts(writing: $Writing): boolean | void {
-        return reflection.composition(writing) && writing.parts().length === 0 ? false : super.$holdsSpecifiedParts(writing);
-    }
-
     @specify('an index is written as the book is read')
     override $saysSomething(writing: $Writing): boolean | void {
         return false;

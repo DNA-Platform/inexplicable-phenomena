@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
-import { $Format, $Document, $Section, $Paragraph, $CatalogueCard, $Ref, $Theme$, html, $Theme, Book } from '@dna-platform/public';
+import { $Chapter, $Format, $Document, $Section, $Paragraph, $CatalogueCard, $Ref, $Theme$, html, $Theme, Book } from '@dna-platform/public';
 import $Wiki from '../.book';
 
 // A field's resting edge is the link colour lightened against the paper, so a
@@ -102,6 +102,10 @@ export const editions = [
 export const globe = 'https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg';
 
 export class $WikipediaDocument extends $Document { }
+
+export class $PortalChapter extends $Chapter {
+    override view(): ReactNode { return this.print(); }
+}
 
 export class $Editions extends $WikipediaDocument {
     $Editions(block: $Block) {

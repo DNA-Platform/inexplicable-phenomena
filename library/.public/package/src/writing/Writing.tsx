@@ -39,13 +39,7 @@ export class $Writing extends $Chemical implements $Writing$ {
     get book(): $Book | undefined { return reflection.book(this); }
     get className(): string { return [...reflection.classNames(this), this.$className ?? ''].join(' ').trim(); }
 
-    get kind(): $Type {
-        const carried = reflection.types(this);
-        const standing = carried.filter(kind => reflection.level(kind));
-        const chosen = standing.filter(kind => !standing.some(other => other !== kind && reflection.specialises(other, kind)));
-        $check(chosen.length <= 1, `writing is one kind of writing, and this one is ${chosen.length}`);
-        return chosen[0] ?? carried[0];
-    }
+    get kind(): $Type { return reflection.kind(this); }
 
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
@@ -118,6 +112,12 @@ export class WritingSpecification extends Specification<$Writing> {
             'a piece of writing carries no blank line, and this one is broken by one');
     }
 
+    @specify('a piece of writing is one kind of writing')
+    $oneKind(writing: $Writing): void {
+        const standing = reflection.standing(writing);
+        $check(standing.length <= 1, `writing is one kind of writing, and this one is ${standing.length}`);
+    }
+
     @specify('a piece of writing says what kind of writing it is')
     $saysItsKind(writing: $Writing): void {
         $check(writing.kind !== undefined,
@@ -130,24 +130,28 @@ export class WritingSpecification extends Specification<$Writing> {
             'a piece of writing says something, and this one says nothing at all');
     }
 
-    // THE DESCENT — Doug: "It is part of specify to have the specification call parts, see that there is at
-    // least one, and call specify on its parts." A kind that is the floor declines by answering false.
-    @specify('a piece of writing holds well-specified parts')
-    $holdsSpecifiedParts(writing: $Writing): boolean | void {
-        if (!reflection.composition(writing)) return false;
-        const parts = writing.parts();
-        $check(parts.length > 0, 'a piece of writing holds well-specified parts, and this one holds none');
-        const failures: string[] = [];
-        parts.forEach((part, at) => {
-            try { part.specify(); } catch (error) { failures.push(`${at}:${part.constructor.name.replace(/^_?\$?/u, '')} › ${(error as Error).message}`); }
-        });
-        $check(failures.length === 0, failures.join(' · '));
+    // THE DESCENT, THROUGH WHAT WAS WRITTEN. The parser's levels are made, not written, and its own
+    // promises answer for them, so the specification never asks the parser: what an author wrote into
+    // a writing specifies, and a chapter extends this to the document it prints.
+    @specify('what is written into a piece of writing specifies')
+    $holdsSpecifiedParts(writing: $Writing): void {
+        this.specified(this.composed(writing));
     }
 
     @specify('a piece of writing holds copy, annotations and writing')
     $holdsCopyAndWriting(writing: $Writing): void {
         $check(this.beside(writing).every(part => reflection.writing(part)),
             'a piece of writing holds copy, annotations and writing, and this one holds something else');
+    }
+
+    // EACH SPECIFIES, AND A FAILURE NAMES ITS PLACE — the part's index and kind, prefixed at every level it
+    // rises through, so the compiler lands it on the chapter it came from.
+    protected specified(parts: $Writing[]): void {
+        const failures: string[] = [];
+        parts.forEach((part, at) => {
+            try { part.specify(); } catch (error) { failures.push(`${at}:${part.constructor.name.replace(/^_?\$?/u, '')} › ${(error as Error).message}`); }
+        });
+        $check(failures.length === 0, failures.join(' · '));
     }
 
     protected composed(writing: $Writing): $Writing[] {

@@ -1,10 +1,11 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Author, Cover, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
+import { Author, Cover, Heading, Image, Paragraph, Reference, Section, Subject, Title } from '@dna-platform/public';
+import { $PortalChapter as $Chapter } from './.book';
 import { BookLink } from '../.book';
 import { globe, Language, Languages, Search } from './.book';
 
 export default class $Cover extends $Chapter {
-    view() {
+    print() {
         return (
             <Cover>
                 <Title>Wikipedia<Reference>https://www.wikipedia.org/</Reference></Title>

@@ -30,6 +30,11 @@ export class ChapterSpecification extends WritingSpecification {
         return false;
     }
 
+    @specify('the document a chapter prints specifies')
+    override $holdsSpecifiedParts(writing: $Writing): void {
+        this.specified(reflection.printed(writing));
+    }
+
     @specify('a chapter holds only annotations')
     $holdsOnlyAnnotations(writing: $Writing): void {
         $check(this.beside(writing).every(part => reflection.annotation(part)),

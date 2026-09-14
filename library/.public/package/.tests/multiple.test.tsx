@@ -46,9 +46,9 @@ describe('a piece of writing carries one of the seven, and as many other kinds a
         expect(() => flat.specify()).toThrow(/a list is written in lines/);
     });
 
-    it('AND TWO OF THE SEVEN ARE REFUSED — a piece of writing is one kind of writing', () => {
+    it('AND TWO OF THE SEVEN ARE REFUSED WHEN SPECIFIED — a piece of writing is one kind of writing', () => {
         const two = built<$Writing>(<Writing><TypeOfParagraph /><TypeOfSection />a</Writing>);
-        expect(() => two.kind).toThrow(/writing is one kind of writing/);
+        expect(() => two.specify()).toThrow(/writing is one kind of writing/);
     });
 
     it('and a kind can be swapped by writing a different one in', () => {

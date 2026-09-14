@@ -19,8 +19,8 @@ describe('a type carried by writing is asked what it is, and answers once', () =
         expect(built<$Writing>(<Writing><TypeOfSection />a</Writing>).kind.name).toBe('Section');
     });
 
-    it('AND TWO KINDS THAT SPECIALISE NEITHER ARE STILL REFUSED', () => {
+    it('AND TWO KINDS THAT SPECIALISE NEITHER ARE STILL REFUSED, WHEN SPECIFIED', () => {
         const held = built<$Writing>(<Writing><TypeOfSection /><TypeOfDocument />a</Writing>);
-        expect(() => held.kind).toThrow(/one kind of writing/u);
+        expect(() => held.specify()).toThrow(/one kind of writing/u);
     });
 });

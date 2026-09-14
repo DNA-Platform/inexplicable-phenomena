@@ -362,19 +362,16 @@ describe('the parser is asked for what is asked for, and never by a rule', () =>
         return asked;
     };
 
-    // SUPERSEDED 2026-09-15 — Doug: "We are setting up a system that runs in compile but not prod so we
-    // can." Specifying a piece of writing now specifies its parts, so the parser is asked for them —
-    // at compile, never in production, which the last promise below spawns a process to see.
-    it('specifying a piece of writing specifies its parts, and asks the parser for them', () => {
-        const asked = asking(() => built<$Writing>(<Section><Heading>H</Heading><Paragraph>One. Two.</Paragraph></Section>));
-        expect(asked).toContain('$Section');
-        expect(asked).toContain('$Paragraph');
+    // SPECIFYING DESCENDS THROUGH WHAT WAS WRITTEN AND NEVER THROUGH THE PARSER — Sprint 71, 2026-09-15:
+    // the parser's levels are made, and these promises answer for them; what an author wrote specifies,
+    // at compile and never in production, which the last promise below spawns a process to see.
+    it('specifying a piece of writing specifies what was written into it, and asks the parser for nothing', () => {
+        expect(asking(() => built<$Writing>(<Section><Heading>H</Heading><Paragraph>One. Two.</Paragraph></Section>))).toEqual([]);
     });
 
-    it('a paragraph specifies its sentences and their words when it is made', () => {
-        const asked = asking(() => built<$Writing>(<Paragraph>One. Two. Three. Four.</Paragraph>));
-        expect(asked).toContain('$Paragraph');
-        expect(asked).toContain('$Sentence');
+    it('a paragraph asks the parser for nothing, however much prose it holds', () => {
+        const held = built<$Writing>(<Paragraph>One. Two. Three. Four.</Paragraph>);
+        expect(asking(() => held.valid())).toEqual([]);
     });
 
     it('asking a section for its parts parses the section, and nothing beneath it', () => {
@@ -400,7 +397,6 @@ describe('the parser is asked for what is asked for, and never by a rule', () =>
         expect(ran('production')).toEqual({ rules: 0, asks: 0, refused: false });
         const developing = ran('development');
         expect(developing.rules).toBeGreaterThan(0);
-        expect(developing.asks).toBeGreaterThan(0);
         expect(developing.refused).toBe(true);
     });
 });

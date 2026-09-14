@@ -68,7 +68,7 @@ export const tasks: Task[] = [
         return `${plural(state.assembled.length, 'book module')}, the index, the routes, the stylesheets`;
     } },
     { name: 'specify', run: state => {
-        const verdicts = specifying(state.binding, need(state.table, 'specify').routes.map(route => route.name));
+        const verdicts = specifying(state.binding, need(state.found, 'specify').books.map(book => book.path));
         state.specified = verdicts.reduce((n, one) => n + one.walked, 0);
         return `${plural(state.specified, 'writing')} specified across ${plural(verdicts.length, 'book')}`;
     } },

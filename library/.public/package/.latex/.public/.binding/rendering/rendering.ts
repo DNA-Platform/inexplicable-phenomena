@@ -11,7 +11,9 @@ export const rendering = (binding: string, names: string[]): string[] => {
             cwd: binding,
             encoding: 'utf8',
             stdio: ['ignore', 'pipe', 'inherit'],
-            env: { ...process.env, NODE_ENV: 'development' },
+            // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
+            // nowhere here, so the child renders the way a reader's browser will.
+            env: { ...process.env, NODE_ENV: 'production' },
         });
         if (ran.status !== 0) throw new Error(`rendering ${name} failed (exit ${ran.status ?? 'signal'})`);
         pages.push(...(JSON.parse(lastLine(ran.stdout)) as string[]));

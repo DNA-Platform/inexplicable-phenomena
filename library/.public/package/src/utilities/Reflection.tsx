@@ -15,6 +15,9 @@ export class Reflection {
     private templates = new WeakMap<new() => $Writing, $Writing>();
     private readings = new WeakMap<$Writing, { parts: $Writing[]; block: $Block }>();
     private printings = new WeakMap<$Writing, $Writing[]>();
+    private kinds_ = new WeakMap<$Block, $Type | undefined>();
+    private names_ = new WeakMap<$Block, string[]>();
+    private numbers = new WeakMap<$Writing, Map<unknown, $Writing[]>>();
 
     // HANDED THE THREE KINDS AT THE COMPOSITION ROOT, which is src/index.ts.
     // A utility that must ask `instanceof` cannot IMPORT what imports it: $Writing
@@ -82,6 +85,22 @@ export class Reflection {
             found.push(...this.within<T>(part, kind));
         }
         return found;
+    }
+
+    // THE KINDS A WRITING STANDS IN — the composition types it carries that no other carried type
+    // specialises. One is the writing's kind; more than one is what the specification refuses.
+    standing(writing: $Writing): $Type[] {
+        const carried = this.types(writing).filter(kind => this.level(kind));
+        return carried.filter(kind => !carried.some(other => other !== kind && this.specialises(other, kind)));
+    }
+
+    // THE KIND, READ ONCE PER BLOCK: the standing kind, or the first type carried where none stands.
+    kind(writing: $Writing): $Type {
+        const block = writing._block;
+        if (block !== undefined && this.kinds_.has(block)) return this.kinds_.get(block) as $Type;
+        const answer = this.standing(writing)[0] ?? this.types(writing)[0];
+        if (block !== undefined) this.kinds_.set(block, answer);
+        return answer;
     }
 
     level(type: $Type | undefined): boolean {
@@ -226,22 +245,29 @@ export class Reflection {
     numbered(writing: $Writing, within: $Writing): number | undefined {
         const kind = writing.kind?.constructor as (new() => $Type) | undefined;
         if (kind === undefined) return undefined;
-
-        const found: $Writing[] = [];
-        const seen = new Set<unknown>();
-        const gather = (at: $Writing): void => {
-            if (seen.has(at)) return;
-            seen.add(at);
-            for (const part of at._block.$elements ?? []) {
-                if (!this.writing(part)) continue;
-                // ITS OWN KIND, NOT ANYTHING CARRYING THE TYPE. A heading IS a paragraph by type, so
-                // asking `is` counts it among the paragraphs — measured, by the promise that pins this.
-                // Theorem 3 is the third theorem and not the third section.
-                if (part.kind?.constructor === kind) found.push(part);
-                gather(part);
-            }
-        };
-        gather(within);
+        // THE HOLDER IS READ ONCE PER KIND, not once per writing that asks: a book with three hundred
+        // entries asked its number three hundred times and was walked whole each time.
+        const held = this.numbers.get(within) ?? new Map<unknown, $Writing[]>();
+        this.numbers.set(within, held);
+        let found = held.get(kind);
+        if (found === undefined) {
+            found = [];
+            const seen = new Set<unknown>();
+            const gather = (at: $Writing): void => {
+                if (seen.has(at)) return;
+                seen.add(at);
+                for (const part of at._block.$elements ?? []) {
+                    if (!this.writing(part)) continue;
+                    // ITS OWN KIND, NOT ANYTHING CARRYING THE TYPE. A heading IS a paragraph by type, so
+                    // asking `is` counts it among the paragraphs — measured, by the promise that pins this.
+                    // Theorem 3 is the third theorem and not the third section.
+                    if (part.kind?.constructor === kind) found!.push(part);
+                    gather(part);
+                }
+            };
+            gather(within);
+            held.set(kind, found);
+        }
 
         const at = found.indexOf(writing);
         return at < 0 ? undefined : at + 1;
@@ -257,13 +283,18 @@ export class Reflection {
     // measured, because it climbed into chemistry and answered pd-chemical and pd-particle, which are
     // machinery and not kinds. Two promises caught that, which is what they are for.
     classNames(writing: $Writing): string[] {
+        const block = writing._block;
+        const kept = block !== undefined ? this.names_.get(block) : undefined;
+        if (kept !== undefined) return kept;
         const named = this.types(writing).flatMap(type => this.names(type).reverse());
         const own: string[] = [];
         for (let cls: any = writing.constructor; cls && cls !== this.kinds.writing && cls.name && !named.includes(this.authored(cls.name)); cls = Object.getPrototypeOf(cls))
             own.unshift(this.authored(cls.name));
         // NO pd-indent CLASS. Depth is structure — a section inside a section, a list inside an
         // item — so a sheet selects it by nesting and nothing has to carry a number.
-        return [...new Set([...own, ...named])].map(name => `pd-${this.kebab(name)}`);
+        const answer = [...new Set([...own, ...named])].map(name => `pd-${this.kebab(name)}`);
+        if (block !== undefined) this.names_.set(block, answer);
+        return answer;
     }
 
 

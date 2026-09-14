@@ -2,61 +2,89 @@ import { window } from '../rendering/dom';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteDevServer } from 'vite';
+import { $Writing, Specification } from '@dna-platform/public';
 import { configure } from '../configuration/configuration';
 import { walk } from '../inventory/walk';
+import type { Book } from '../inventory/library';
 
 export type Failure = { at: string; file: string; says: string };
 export type Verdict = { book: string; walked: number; failures: Failure[] };
 
-type Writing = { specify(): void; parts?(): Writing[]; constructor: { name: string } };
-type Index = { books: Record<string, () => Promise<{ book: Writing }>>; named: string[] };
+type Index = { books: Record<string, () => Promise<{ book: $Writing }>>; named: string[] };
 
 void window;
 
-const kindOf = (writing: Writing): string => writing.constructor.name.replace(/^_?\$?/, '');
-const said = (error: unknown): string => String((error as Error)?.message ?? error).split('\n')[0];
+const kindOf = (writing: $Writing): string => writing.constructor.name.replace(/^_?\$?/, '');
+const said = (error: unknown): string => String((error as Error)?.message ?? error);
+const nameOf = (book: Book): string => book.folder.replace(/^\.+/, '');
 
-// WHICH FILE A PART CAME FROM. A book's parts stand in the order assembly wrote them — the
-// apparatus first, then the chapters — so the index of a book's part is the index of a file,
-// and everything beneath that part belongs to that file. That is what lets a failure deep in
-// a tree land on the chapter a person can open.
-const filesOf = (library: string, folder: string, held: { cover: boolean; synopsis: boolean; contents: boolean; chapters: { file: string }[] }): string[] => [
-    ...(held.cover ? ['.cover.tsx'] : []),
-    ...(held.synopsis ? ['.synopsis.tsx'] : []),
-    ...(held.contents ? ['.table.tsx'] : []),
-    ...held.chapters.map(chapter => chapter.file),
-].map(file => join(library, folder, file));
+// WHICH FILE A FAILURE CAME FROM. A book's parts stand in the order assembly wrote them — the
+// apparatus first, then the chapters — and the framework prefixes a failure with the index of the
+// part it rose through, so the first index names the chapter file a person can open.
+const filesOf = (library: string, book: Book): string[] => [
+    ...(book.cover ? ['.cover.tsx'] : []),
+    ...(book.synopsis ? ['.synopsis.tsx'] : []),
+    ...(book.contents ? ['.table.tsx'] : []),
+    ...book.chapters.map(chapter => chapter.file),
+].map(file => join(library, book.folder, file));
 
-export const specifyTree = (writing: Writing, at: string, file: string, files: string[] | undefined, verdict: Verdict): void => {
-    verdict.walked += 1;
-    try {
-        writing.specify();
-    } catch (error) {
-        verdict.failures.push({ at, file, says: said(error) });
-    }
-    if (typeof writing.parts !== 'function') return;
-    let parts: Writing[] = [];
-    try {
-        parts = writing.parts();
-    } catch (error) {
-        verdict.failures.push({ at: `${at}/parts()`, file, says: said(error) });
-    }
-    parts.forEach((part, index) => specifyTree(part, `${at}/${index}:${kindOf(part)}`, files?.[index] ?? file, undefined, verdict));
+// THE BOOKS A BOOK CATALOGUES — the seam for $$Synopsis, which Doug named as the sense in which a
+// book is catalogued and ruled for the sprint after this one. Until it lands, a book catalogues none.
+const catalogued = (book: $Writing): string[] => {
+    void book;
+    return [];
 };
 
-export const specify = async (server: ViteDevServer, only?: string): Promise<Verdict[]> => {
+// WRITINGS SPECIFIED, COUNTED ONCE EACH, at the specification's check — the one place every rule set
+// runs, and not a chemical, so nothing reaches around it. The framework specifies a writing at its
+// bond and again from each ancestor's descent; the count a person reads is distinct writings.
+const counting = (): { reached: () => number } => {
+    const seen = new WeakSet<object>();
+    let reached = 0;
+    const check = Specification.prototype.check;
+    Specification.prototype.check = function (this: Specification<object>, writing: object) {
+        if (!seen.has(writing)) { seen.add(writing); reached += 1; }
+        return check.call(this, writing);
+    };
+    return { reached: () => reached };
+};
+
+// ONE CALL PER BOOK. specify() descends by itself — Doug: "The goal here is to have it right in the
+// code and your thing just have to confirm it for each book." — and the harness confirms each book
+// under the folder pointed to, then the books it catalogues.
+export const specify = async (server: ViteDevServer, folder?: string): Promise<Verdict[]> => {
     const binding = resolve(dirname(fileURLToPath(import.meta.url)), '..');
     const library = resolve(binding, '..', '..');
     const found = walk(library, configure(binding));
     const { books, named } = (await server.ssrLoadModule(join(binding, 'application', 'books.ts'))) as Index;
+
+    const pointed = folder === undefined ? library : resolve(folder);
+    const scoped = pointed === library ? found.books
+        : found.books.filter(book => resolve(book.path) === pointed);
+    if (scoped.length === 0) throw new Error(`${pointed} is neither the library (${library}) nor a book in it (${found.books.map(nameOf).join(', ')})`);
+
     const verdicts: Verdict[] = [];
-    for (const name of named.filter(one => only === undefined || one === only)) {
+    const done = new Set<string>();
+    const queue = scoped.map(nameOf).filter(name => named.includes(name));
+    for (let name = queue.shift(); name !== undefined; name = queue.shift()) {
+        if (done.has(name)) continue;
+        done.add(name);
+        const held = found.books.find(book => nameOf(book) === name);
+        const files = held ? filesOf(library, held) : [];
+        const own = held ? join(library, held.folder, '.book.tsx') : join(library, name);
+        const count = counting();
         const { book } = await books[name]();
-        const held = found.books.find(one => one.folder.replace(/^\.+/, '') === name);
-        const files = held ? filesOf(library, held.folder, held) : undefined;
         const verdict: Verdict = { book: name, walked: 0, failures: [] };
-        specifyTree(book, `${name}:${kindOf(book)}`, held ? join(library, held.folder, '.book.tsx') : join(library, name), files, verdict);
+        try {
+            book.specify();
+        } catch (error) {
+            const message = said(error);
+            const first = Number(/^(\d+):/.exec(message)?.[1]);
+            verdict.failures.push({ at: `${name}:${kindOf(book)}`, file: files[first] ?? own, says: message });
+        }
+        verdict.walked = count.reached();
         verdicts.push(verdict);
+        queue.push(...catalogued(book));
     }
     return verdicts;
 };

@@ -9,6 +9,7 @@
     "prebuild": "npm run sync",
     "build": "tsx binding.ts",
     "bind": "tsx binding.ts",
+    "specify": "tsx specification/specifying.ts",
     "dev": "vite",
     "preview": "vite preview",
     "test": "vitest run",

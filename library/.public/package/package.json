@@ -65,8 +65,8 @@
     "test:watch": "vitest",
     "wiki": "npm --prefix .wiki/.public/.binding run build",
     "test:gate": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run",
-    "verify:latex": "node .latex/.public/.binding/specification/verify-latex.mjs",
-    "verify:wiki": "node .wiki/.public/.binding/specification/verify-wiki.mjs",
+    "verify:latex": "node .latex/.public/.binding/design/verify-latex.mjs",
+    "verify:wiki": "node .wiki/.public/.binding/design/verify-wiki.mjs",
     "latex": "npm --prefix .latex/.public/.binding run build",
     "sync": "npm --prefix .latex/.public/.binding run sync && npm --prefix .wiki/.public/.binding run sync"
   },
