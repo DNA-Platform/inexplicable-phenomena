@@ -4,9 +4,7 @@
   "workspaces": [
     ".claude",
     ".me/*",
-    "library/.public/app",
     "library/.public/package",
-    "library/.public/build",
     "library/chemistry/package",
     "library/pharmacology",
     "library/philosophy",

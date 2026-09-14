@@ -25,8 +25,11 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
     server: {
         fs: { allow: [searchForWorkspaceRoot(binding), resolve(binding, '..')] },
     },
+    // ONE COPY OF EACH, THE BINDING'S. A book outside .binding resolves a package by walking up its own
+    // folders, which in a repository holding the workspace reaches a checkout before the binding's
+    // node_modules; dedupe pins these to the binding, so a library runs off what it installed.
     resolve: {
-        dedupe: ['react', 'react-dom', 'styled-components'],
+        dedupe: ['react', 'react-dom', 'styled-components', '@dna-platform/chemistry', '@dna-platform/public'],
     },
     esbuild: {
         keepNames: true,

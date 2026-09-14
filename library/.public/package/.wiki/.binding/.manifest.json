@@ -5,6 +5,7 @@
     "turing/book.tsx"
   ],
   "written": [
+    ".binding/application/books.ts",
     ".binding/application/routes.ts",
     ".binding/application/stylesheets.ts"
   ],
@@ -14,12 +15,12 @@
     "turing/index.html"
   ],
   "bundled": [
-    "assets/.book-0BBWAMpl.js",
-    "assets/.book-Cnx1bLgu.js",
-    "assets/book-AS7zy08d.js",
-    "assets/book-BxrpDJvY.js",
-    "assets/book-DigDHCCk.js",
-    "assets/index-CqUoR4eY.js",
+    "assets/.book-DKBO_0Ds.js",
+    "assets/.book-FvBOloVm.js",
+    "assets/book-DsjN5HNp.js",
+    "assets/book-Dw--0N-o.js",
+    "assets/book-t1A_0HQ1.js",
+    "assets/index-DEHkS6X3.js",
     "assets/index-TZrNw7dA.css"
   ]
 }

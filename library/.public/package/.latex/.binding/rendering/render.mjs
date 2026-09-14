@@ -6,7 +6,7 @@ const binding = dirname(dirname(fileURLToPath(import.meta.url)));
 
 const server = await createServer({
     configFile: join(binding, 'vite.config.ts'),
-    logLevel: 'warn',
+    logLevel: 'error',
     server: { middlewareMode: true },
     appType: 'custom',
     ssr: { external: true },

@@ -59,17 +59,16 @@
     "push": "npm version patch --no-git-tag-version && npm publish",
     "prepublishOnly": "npm run test:gate",
     "build:quick": "rollup -c --environment QUICK",
-    "watch": "sh watch.sh",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
     "typecheck": "tsc --noEmit -p src/tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "clean": "tsx clean.ts",
-    "wiki": "npm run build && npm --prefix .wiki/.binding run build",
+    "wiki": "npm --prefix .wiki/.binding run build",
     "test:gate": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run",
     "verify:latex": "node .latex/.binding/specification/verify-latex.mjs",
     "verify:wiki": "node .wiki/.binding/specification/verify-wiki.mjs",
-    "latex": "npm run build && npm --prefix .latex/.binding run build"
+    "latex": "npm --prefix .latex/.binding run build",
+    "sync": "npm --prefix .latex/.binding run sync && npm --prefix .wiki/.binding run sync"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.20",

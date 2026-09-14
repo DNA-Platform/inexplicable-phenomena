@@ -3,6 +3,7 @@
     "aaronson/book.tsx"
   ],
   "written": [
+    ".binding/application/books.ts",
     ".binding/application/routes.ts",
     ".binding/application/stylesheets.ts"
   ],
@@ -69,8 +70,8 @@
     "assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff",
     "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
     "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
-    "assets/book-BSou7ssb.js",
-    "assets/index-B7ABZKrk.css",
-    "assets/index-cevhkLRP.js"
+    "assets/book-B2JoB3hf.js",
+    "assets/index-CREdeO4E.js",
+    "assets/index-CxdTbt_j.css"
   ]
 }
