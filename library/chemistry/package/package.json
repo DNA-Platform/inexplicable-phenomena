@@ -29,6 +29,8 @@
   ],
   "scripts": {
     "build": "rollup -c",
+    "push": "npm version patch --no-git-tag-version && npm publish",
+    "prepublishOnly": "npm run test:all",
     "build:clean": "rimraf dist .rollup.cache && rollup -c",
     "dev": "vite app",
     "typecheck": "tsc --noEmit",
