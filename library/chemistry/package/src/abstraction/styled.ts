@@ -384,22 +384,22 @@ function build(cls: any, per: Map<any, Map<string, string>>): $Styled | null {
     };
     emit(tree);
 
-    const from = (typeof base === 'function' ? base : styled(base as any)).withConfig({ componentId: identity(cls, parts) });
+    const from = (typeof base === 'function' ? base : styled(base as any)).withConfig({ componentId: identity(parts, live) });
     const text = Object.assign([...parts], { raw: [...parts] });
     return seat(from(text as any, ...values), live);
 }
 
-// A STYLED CLASS'S COMPONENT IS NAMED BY THE CLASS AND WHAT IT DECLARES, never
-// by the order it was compiled in: styled-components would number it, and a
-// prerender compiling every route's classes in one process numbers them
-// differently from a browser compiling one route's. The chain of class names
-// and a hash of the text agree on both sides.
-function identity(cls: any, parts: string[]): string {
-    const named = chain(cls).map(one => String(one.name).replace(/[^A-Za-z0-9_-]/g, '')).reverse().join('-') || 'styled';
-    const text = parts.join('|');
+// A STYLED CLASS'S COMPONENT IS NAMED BY WHAT IT DECLARES, never by the order
+// it was compiled in and never by its class's name: styled-components would
+// number it, and a prerender compiling every route's classes in one process
+// numbers them differently from a browser compiling one route's; a name is
+// whatever a bundler left of it. The text and the live names hash the same
+// wherever the class is compiled.
+function identity(parts: string[], live: $Styled['live']): string {
+    const text = parts.join('|') + '|' + live.map(one => one.from).join(',');
     let hash = 5381;
     for (let i = 0; i < text.length; i++) hash = ((hash * 33) ^ text.charCodeAt(i)) >>> 0;
-    return `${named}-${hash.toString(36)}`;
+    return `chem-${hash.toString(36)}`;
 }
 
 function seat(component: any, live: $Styled['live']): $Styled {

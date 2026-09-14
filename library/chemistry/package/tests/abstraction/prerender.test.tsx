@@ -113,13 +113,14 @@ import { hydration } from '@/implementation/hydration';
 import { render } from '@testing-library/react';
 
 describe('prerender — the compile and persistence agree on both sides', () => {
-    it("a styled class's component id is its class and its text, never its compile order", () => {
+    it("a styled class's component id is its text, never its compile order and never its class's name", () => {
         class $Wide extends $Card { maxWidth = '10px'; }
         const card = (new $Card() as any)[style]?.styledComponentId ?? (new $Card() as any)[style]?.styledComponentId;
         const wide = (new $Wide() as any)[style]?.styledComponentId;
-        expect(card).toMatch(/(^|-)Card-[0-9a-z]+$/);
-        expect(card).not.toMatch(/^sc-/);
-        expect(wide).toMatch(/(^|-)Card-Wide-[0-9a-z]+$/);
+        expect(card).toMatch(/^chem-[0-9a-z]+$/);
+        expect(wide).toMatch(/^chem-[0-9a-z]+$/);
+        expect(wide).not.toBe(card);
+        expect(card).not.toContain('Card');
     });
 
     it("a field named by a CSS property the environment's style object lacks still compiles", () => {
