@@ -30,6 +30,11 @@ export class $TypeOfLetter extends $Type {
 export class LetterSpecification extends WritingSpecification {
     protected graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 
+    @specify('a letter is the floor, and holds no parts')
+    override $holdsSpecifiedParts(): boolean | void {
+        return false;
+    }
+
     @specify('a letter is one grapheme')
     $oneCharacter(writing: $Writing): void {
         const copy = html.text(writing._block);

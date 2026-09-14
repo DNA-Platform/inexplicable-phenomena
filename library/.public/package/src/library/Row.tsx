@@ -31,6 +31,11 @@ export class RowSpecification extends SectionSpecification {
         return false;
     }
 
+    @specify('a row of a contents holds its mention, not parts')
+    override $holdsSpecifiedParts(): boolean | void {
+        return false;
+    }
+
     @specify('a row of a contents carries a mention')
     $carriesMention(writing: $Writing): void {
         $check(reflection.meaning(writing) !== undefined,

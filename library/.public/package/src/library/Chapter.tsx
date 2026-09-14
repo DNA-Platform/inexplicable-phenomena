@@ -12,6 +12,10 @@ export class $Chapter extends $Composition implements $Chapter$ {
     $Chapter(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfChapter));
     }
+
+    // A CHAPTER HOLDS ONLY ANNOTATIONS AND WRITES ITS DOCUMENT IN PRINT, its own specification says,
+    // so its parts are the one writing it prints.
+    override parts(): $Writing[] { return reflection.printed(this); }
 }
 
 export class $$Chapter extends $Catalogue { }

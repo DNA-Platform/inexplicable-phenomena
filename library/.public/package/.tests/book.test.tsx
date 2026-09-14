@@ -82,15 +82,25 @@ describe('a book draws what it holds, under one sheet', () => {
             </Section>
         </Synopsis>
     );
+    class $CoverChapter extends $Chapter { print() { return cover(); } }
+    class $QuietChapter extends $Chapter { print() { return synopsis(false); } }
+    class $PrintedChapter extends $Chapter { print() { return synopsis(true); } }
+    class $TableChapter extends $Chapter { print() { return <TableOfContents>One.</TableOfContents>; } }
+    class $FirstChapter extends $Chapter { print() { return documented('First things'); } }
+    const CoverChapter = $($CoverChapter);
+    const QuietChapter = $($QuietChapter);
+    const PrintedChapter = $($PrintedChapter);
+    const TableChapter = $($TableChapter);
+    const FirstChapter = $($FirstChapter);
 
     it('and the book draws FLAT under the sheet, its parts in the order they were written', () => {
-        const held = built<$Book>(<Book>{cover()}{synopsis(true)}<TableOfContents>One.</TableOfContents>{documented('First things')}</Book>);
+        const held = built<$Book>(<Book><CoverChapter /><PrintedChapter /><TableChapter /><FirstChapter /></Book>);
         const host = drawn(held);
-        const children = [...host.querySelectorAll('main > .pd-book > *')];
-        expect(children[0].matches('header.pd-cover')).toBe(true);
-        expect(children[1].matches('.pd-synopsis')).toBe(true);
-        expect(children[2].matches('nav.pd-table-of-contents')).toBe(true);
-        expect(children[3].matches('article.pd-document')).toBe(true);
+        const children = [...host.querySelectorAll('main > .pd-book > .pd-chapter')].map(chapter => chapter.firstElementChild);
+        expect(children[0]?.matches('header.pd-cover')).toBe(true);
+        expect(children[1]?.matches('.pd-synopsis')).toBe(true);
+        expect(children[2]?.matches('nav.pd-table-of-contents')).toBe(true);
+        expect(children[3]?.matches('article.pd-document')).toBe(true);
     });
 
     it('a title written as copy makes its own heading', () => {
@@ -99,8 +109,8 @@ describe('a book draws what it holds, under one sheet', () => {
     });
 
     it('AND A SYNOPSIS DRAWS NOTHING UNLESS IT IS PRINTED', () => {
-        const quiet = drawn(built<$Book>(<Book>{cover()}{synopsis(false)}{documented('First things')}</Book>));
-        const printed = drawn(built<$Book>(<Book>{cover()}{synopsis(true)}{documented('First things')}</Book>));
+        const quiet = drawn(built<$Book>(<Book><CoverChapter /><QuietChapter /><FirstChapter /></Book>));
+        const printed = drawn(built<$Book>(<Book><CoverChapter /><PrintedChapter /><FirstChapter /></Book>));
         expect(quiet.textContent).not.toContain('Quietly');
         expect(printed.textContent).toContain('Quietly');
     });
@@ -124,7 +134,11 @@ describe('every piece of writing is in a book, and a book themes what it holds',
         class $Pocket extends $Book { }
         const Pocket = $($Pocket);
         $(Pocket, Theme)(Small);
-        const held = $(<Pocket />, $(<Cover><Title>T</Title><Author>A</Author><Subject>S</Subject></Cover>, Cover), documented());
+        class $CoverChapter extends $Chapter { print() { return <Cover><Title>T<Reference>#0</Reference></Title><Author>A</Author><Subject>S</Subject></Cover>; } }
+        class $OneChapter extends $Chapter { print() { return <Document><Section><Heading>One</Heading><Paragraph>One.</Paragraph></Section></Document>; } }
+        const CoverChapter = $($CoverChapter);
+        const OneChapter = $($OneChapter);
+        const held = $(<Pocket />, $(<CoverChapter />), $(<OneChapter />));
         const Drawn = $(held);
         await act(async () => { render(<Drawn />); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });

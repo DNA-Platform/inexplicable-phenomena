@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { act, render } from '@testing-library/react';
 import { $, $Block, $check, styled } from '@dna-platform/chemistry';
-import {
+import { $Chapter,
     $Book, $Writing, $Theme, $Section, $Format,
     Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Heading, Paragraph,
 } from '@dna-platform/public';
@@ -25,6 +25,14 @@ class $Reading extends $Section {
 const Reading = $($Reading);
 const life = () => <Document><Reading><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Reading></Document>;
 const work = () => <Document><Reading><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Reading></Document>;
+class $CoverChapter extends $Chapter { print() { return cover(); } }
+class $SynopsisChapter extends $Chapter { print() { return synopsis(); } }
+class $LifeChapter extends $Chapter { print() { return life(); } }
+class $WorkChapter extends $Chapter { print() { return work(); } }
+const CoverChapter = $($CoverChapter);
+const SynopsisChapter = $($SynopsisChapter);
+const LifeChapter = $($LifeChapter);
+const WorkChapter = $($WorkChapter);
 const drawn = async (book: $Book) => { seen = []; const Drawn = $(book); await act(async () => { render(<Drawn />); }); };
 
 class $Dark extends $Theme {
@@ -43,7 +51,7 @@ $Portal.$register(Mine);
 
 describe('a book draws its theme at its root, and everything drawn beneath reaches that one', () => {
     it('A BOOK DRAWS ONE THEME, AND EVERY FORMAT BENEATH READS THAT ONE', async () => {
-        await drawn(built<$Book>(<Book>{cover()}{synopsis()}{life()}{work()}</Book>));
+        await drawn(built<$Book>(<Book><CoverChapter /><SynopsisChapter /><LifeChapter /><WorkChapter /></Book>));
 
         expect(seen.length).toBeGreaterThanOrEqual(2);
         expect(seen[0]).toBeInstanceOf($Theme);
@@ -59,7 +67,7 @@ describe('a book draws its theme at its root, and everything drawn beneath reach
     });
 
     it('A THEME REGISTERED FOR A BOOK IS THE ONE THE BOOK DRAWS, ONE INSTANCE THROUGHOUT', async () => {
-        await drawn(built<$Book>(<Mine>{cover()}{synopsis()}{life()}{work()}</Mine>));
+        await drawn(built<$Book>(<Mine><CoverChapter /><SynopsisChapter /><LifeChapter /><WorkChapter /></Mine>));
 
         expect(seen[0]).toBeInstanceOf($Portal);
         expect(seen[0].size).toBe('14px');
@@ -70,7 +78,7 @@ describe('a book draws its theme at its root, and everything drawn beneath reach
         class $Pocket extends $Book { }
         const Pocket = $($Pocket);
         $Portal.$register(Pocket);
-        await drawn(built<$Book>(<Pocket>{cover()}{synopsis()}{life()}</Pocket>));
+        await drawn(built<$Book>(<Pocket><CoverChapter /><SynopsisChapter /><LifeChapter /></Pocket>));
         expect(seen[0]).toBeInstanceOf($Portal);
 
         seen = [];

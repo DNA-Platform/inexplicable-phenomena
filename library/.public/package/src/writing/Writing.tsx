@@ -130,6 +130,20 @@ export class WritingSpecification extends Specification<$Writing> {
             'a piece of writing says something, and this one says nothing at all');
     }
 
+    // THE DESCENT — Doug: "It is part of specify to have the specification call parts, see that there is at
+    // least one, and call specify on its parts." A kind that is the floor declines by answering false.
+    @specify('a piece of writing holds well-specified parts')
+    $holdsSpecifiedParts(writing: $Writing): boolean | void {
+        if (!reflection.composition(writing)) return false;
+        const parts = writing.parts();
+        $check(parts.length > 0, 'a piece of writing holds well-specified parts, and this one holds none');
+        const failures: string[] = [];
+        parts.forEach((part, at) => {
+            try { part.specify(); } catch (error) { failures.push(`${at}:${part.constructor.name.replace(/^_?\$?/u, '')} › ${(error as Error).message}`); }
+        });
+        $check(failures.length === 0, failures.join(' · '));
+    }
+
     @specify('a piece of writing holds copy, annotations and writing')
     $holdsCopyAndWriting(writing: $Writing): void {
         $check(this.beside(writing).every(part => reflection.writing(part)),

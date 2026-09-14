@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { execFileSync } from 'node:child_process';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import { $Writing, Writing, $Type, $Format, Format, $Theme, Reference, TypeOfLetter, $TypeOfLetter, TypeOfWord, TypeOfSentence, TypeOfParagraph, $TypeOfParagraph, Paragraph, TypeOfSection, $TypeOfSection, TypeOfHeading, $TypeOfHeading, Heading, List, Table, Path, TypeOfDocument, $TypeOfDocument, doc as Mention, Document as Written, $TypeOfReference, $Catalogue,TypeOfBook, $TypeOfBook, TypeOfChapter, $TypeOfChapter, reflection, parser, Section, $Composition, html } from '@dna-platform/public';
@@ -361,19 +362,46 @@ describe('the parser is asked for what is asked for, and never by a rule', () =>
         return asked;
     };
 
-    it('specifying a piece of writing asks the parser for nothing', () => {
-        const held = built<$Writing>(<Section><Heading>H</Heading><Paragraph>One. Two.</Paragraph></Section>);
-        expect(asking(() => held.valid())).toEqual([]);
+    // SUPERSEDED 2026-09-15 — Doug: "We are setting up a system that runs in compile but not prod so we
+    // can." Specifying a piece of writing now specifies its parts, so the parser is asked for them —
+    // at compile, never in production, which the last promise below spawns a process to see.
+    it('specifying a piece of writing specifies its parts, and asks the parser for them', () => {
+        const asked = asking(() => built<$Writing>(<Section><Heading>H</Heading><Paragraph>One. Two.</Paragraph></Section>));
+        expect(asked).toContain('$Section');
+        expect(asked).toContain('$Paragraph');
     });
 
-    it('a paragraph asks the parser for nothing, however much prose it holds', () => {
-        const held = built<$Writing>(<Paragraph>One. Two. Three. Four.</Paragraph>);
-        expect(asking(() => held.valid())).toEqual([]);
+    it('a paragraph specifies its sentences and their words when it is made', () => {
+        const asked = asking(() => built<$Writing>(<Paragraph>One. Two. Three. Four.</Paragraph>));
+        expect(asked).toContain('$Paragraph');
+        expect(asked).toContain('$Sentence');
     });
 
     it('asking a section for its parts parses the section, and nothing beneath it', () => {
         const held = built<$Composition>(<Section><Heading>H</Heading><Paragraph>One. Two.</Paragraph></Section>);
         expect(asking(() => held.parts())).toEqual(['$Section']);
+    });
+
+    it('IN PRODUCTION THE SPECIFICATION RUNS NO RULE AND ASKS THE PARSER FOR NOTHING — and in development it does both', () => {
+        const counting = [
+            "import { Window } from 'happy-dom';",
+            "const window = new Window({ url: 'http://localhost/' });",
+            "for (const key of ['window', 'document', 'navigator']) { try { Object.defineProperty(globalThis, key, { value: window[key] ?? window, configurable: true, writable: true }); } catch {} }",
+            "const React = (await import('react')).default;",
+            "const { $ } = await import('@dna-platform/chemistry');",
+            "const { Paragraph, Specification, parser } = await import('./dist/lib.js');",
+            "let rules = 0, asks = 0;",
+            "const check = Specification.prototype.check; Specification.prototype.check = function (w) { const said = check.call(this, w); rules += said.length; return said; };",
+            "const parse = parser.parse; parser.parse = function (...args) { asks += 1; return parse.apply(this, args); };",
+            "let refused = false; try { $(React.createElement(Paragraph, null, 'One. Two.')); $(React.createElement(Paragraph)).specify(); } catch { refused = true; }",
+            "process.stdout.write(JSON.stringify({ rules, asks, refused }));",
+        ].join('\n');
+        const ran = (env: string) => JSON.parse(execFileSync(process.execPath, ['--input-type=module', '-e', counting], { cwd: process.cwd(), env: { ...process.env, NODE_ENV: env }, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
+        expect(ran('production')).toEqual({ rules: 0, asks: 0, refused: false });
+        const developing = ran('development');
+        expect(developing.rules).toBeGreaterThan(0);
+        expect(developing.asks).toBeGreaterThan(0);
+        expect(developing.refused).toBe(true);
     });
 });
 

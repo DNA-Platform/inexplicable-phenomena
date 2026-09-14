@@ -1,3 +1,4 @@
+import { isValidElement } from 'react';
 import { $, $Block } from '@dna-platform/chemistry';
 import type { $Writing } from '@/writing/Writing';
 import type { $Annotation } from '@/writing/Annotation';
@@ -13,6 +14,7 @@ import type { $Chapter } from '@/library/Chapter';
 export class Reflection {
     private templates = new WeakMap<new() => $Writing, $Writing>();
     private readings = new WeakMap<$Writing, { parts: $Writing[]; block: $Block }>();
+    private printings = new WeakMap<$Writing, $Writing[]>();
 
     // HANDED THE THREE KINDS AT THE COMPOSITION ROOT, which is src/index.ts.
     // A utility that must ask `instanceof` cannot IMPORT what imports it: $Writing
@@ -84,6 +86,19 @@ export class Reflection {
 
     level(type: $Type | undefined): boolean {
         return type !== undefined && this.kinds.hierarchies.some(top => this.beneath(this.template(top), type));
+    }
+
+    // THE WRITING A WRITING PRINTS, made once and kept, so a walk and a drawing meet the same object.
+    // A writing that prints no writing answers none.
+    printed(writing: $Writing): $Writing[] {
+        let held = this.printings.get(writing);
+        if (held === undefined) {
+            const written = writing.print();
+            const made = isValidElement(written) ? $<$Writing>(written) : undefined;
+            held = this.writing(made) ? [made] : [];
+            this.printings.set(writing, held);
+        }
+        return held;
     }
 
     wrapped(writing: $Writing & { parts(): $Writing[] }): $Block {

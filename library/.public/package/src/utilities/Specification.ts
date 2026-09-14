@@ -1,12 +1,17 @@
 import { $check } from '@dna-platform/chemistry';
 
+// THE TOGGLE, chemistry's own expression: a specification runs its rules at compile and never in
+// production — Doug: "specify runs. specification doesn't run its tests. The heavy stuff has to be put
+// in there." A bundler replaces the variable; node reads it.
+const dev = process.env.NODE_ENV !== 'production';
+
 export function specify(description: string) {
     return (target: object, key: string, descriptor: PropertyDescriptor): void => {
         Object.defineProperty(descriptor.value, 'description', { value: description, configurable: true });
     };
 }
 
-export class Specification<T> {
+export class Specification<T extends object> {
     parent?: Specification<T> = undefined;
 
     // A RULE THAT DEMANDS A KIND ALSO KNOWS HOW TO READ IT. Answering the parts
@@ -24,6 +29,7 @@ export class Specification<T> {
     }
 
     check(writing: T): string[] {
+        if (!dev) return [];
         const failures: string[] = [];
         const descriptions: string[] = [];
         for (const [name, rule] of this.rules())

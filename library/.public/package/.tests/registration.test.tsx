@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
-import {
+import { $Chapter, Reference,
     $Book, $Document, $Writing, Book, Cover, Synopsis, Title, Author, Subject,
     Section, Heading, Paragraph, TableOfContents,
 } from '@dna-platform/public';
@@ -31,13 +31,16 @@ class $Bound extends $Book {
 const Recorded = $($Recorded);
 const Bound = $($Bound);
 
-const made = () => built<$Book>(
-    <Bound>
-        <Cover><Title>Alan Turing</Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>
-        <Synopsis>A life.</Synopsis>
-        <Recorded><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Recorded>
-        <Recorded><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Recorded>
-    </Bound>);
+class $CoverChapter extends $Chapter { print() { return <Cover><Title>Alan Turing<Reference>#0</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>; } }
+class $SynopsisChapter extends $Chapter { print() { return <Synopsis>A life.</Synopsis>; } }
+class $EarlyLife extends $Chapter { print() { return <Recorded><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Recorded>; } }
+class $Cryptanalysis extends $Chapter { print() { return <Recorded><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Recorded>; } }
+const CoverChapter = $($CoverChapter);
+const SynopsisChapter = $($SynopsisChapter);
+const EarlyLife = $($EarlyLife);
+const Cryptanalysis = $($Cryptanalysis);
+
+const made = () => built<$Book>(<Bound><CoverChapter /><SynopsisChapter /><EarlyLife /><Cryptanalysis /></Bound>);
 
 describe('a documented is built before its book, and it already knows the book', () => {
     it('EVERY CHAPTER IS BONDED BEFORE THE BOOK IS', () => {
@@ -85,12 +88,9 @@ describe('the table of contents is drawn BEFORE the documents it catalogues', ()
         }
         const Noting = $($Noting);
 
-        const book = built<$Book>(
-            <Noting>
-                <Cover><Title>Alan Turing</Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>
-                <Synopsis>A life.</Synopsis>
-                <Watched><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Watched>
-            </Noting>);
+        class $WatchedChapter extends $Chapter { print() { return <Watched><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Watched>; } }
+        const WatchedChapter = $($WatchedChapter);
+        const book = built<$Book>(<Noting><CoverChapter /><SynopsisChapter /><WatchedChapter /></Noting>);
         drawn(book);
 
         expect(order[0]).toBe('book');

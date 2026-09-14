@@ -79,13 +79,12 @@ const WrittenDocument = $($Written);
 
 describe('the same documented written in view() instead', () => {
     it('IS REFUSED AT CONSTRUCTION — it never gets as far as being invisible', () => {
-        const book = built<$Book>(
-            <Book>
-                <Masthead />
-                <Synopsis>A life.</Synopsis>
-                <WrittenDocument />
-            </Book>);
-        const documented = book.searchFor<$Document>($TypeOfDocument).find(one => one instanceof $Written);
+        class $About extends $Chapter { print() { return <Synopsis>A life.</Synopsis>; } }
+        class $Wrong extends $Chapter { print() { return <WrittenDocument />; } }
+        const About = $($About);
+        const Wrong = $($Wrong);
+        const book = built<$Book>(<Book><Front /><About /><Wrong /></Book>);
+        const documented = book.chapters.flatMap(chapter => chapter.parts()).find(one => one instanceof $Written);
         const container = drawn(book);
 
         expect(documented!.searchFor<$Section>($TypeOfSection).length).toBe(0);
