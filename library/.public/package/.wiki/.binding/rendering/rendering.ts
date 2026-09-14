@@ -1,15 +1,20 @@
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 
-export const rendering = (binding: string): string[] => {
+const lastLine = (text: string): string => text.trim().split(/\r?\n/).at(-1) ?? '[]';
+
+export const rendering = (binding: string, names: string[]): string[] => {
     const entry = join(binding, 'rendering', 'render.mjs');
-    const ran = spawnSync(process.execPath, [entry], {
-        cwd: binding,
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'inherit'],
-        env: { ...process.env, NODE_ENV: 'development' },
-    });
-    if (ran.status !== 0) throw new Error(`rendering failed (exit ${ran.status ?? 'signal'})`);
-    const last = ran.stdout.trim().split('\n').at(-1) ?? '[]';
-    return JSON.parse(last) as string[];
+    const pages: string[] = [];
+    for (const name of names) {
+        const ran = spawnSync(process.execPath, [entry, name], {
+            cwd: binding,
+            encoding: 'utf8',
+            stdio: ['ignore', 'pipe', 'inherit'],
+            env: { ...process.env, NODE_ENV: 'development' },
+        });
+        if (ran.status !== 0) throw new Error(`rendering ${name} failed (exit ${ran.status ?? 'signal'})`);
+        pages.push(...(JSON.parse(lastLine(ran.stdout)) as string[]));
+    }
+    return pages;
 };

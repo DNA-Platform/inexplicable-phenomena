@@ -1,8 +1,13 @@
-import { describe, it } from 'vitest';
-import { shipping } from './environment';
+import { describe, it, expect } from 'vitest';
+import { specifying } from './specifying';
+import { binding, table, shipping } from './environment';
 
-// STUB — Sprint 70 U6. library.specification.check(library): titles unique, every subject
-// catalogued, a catalogue exists, authors resolve — each a @specify on LibrarySpecification.
 describe.skipIf(shipping)('library', () => {
-    it.skip('every book specifies itself, and the library specifies itself — waits on $Library (Sprint 70 U6)', () => {});
+    for (const route of table.routes) {
+        it(`${route.name} specifies itself, to the letter`, () => {
+            const [verdict] = specifying(binding, [route.name]);
+            expect(verdict.walked).toBeGreaterThan(0);
+            expect(verdict.failures).toEqual([]);
+        });
+    }
 });

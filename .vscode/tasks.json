@@ -1,0 +1,134 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "bind: latex",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/library/.public/package/.latex/.binding"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": [
+        {
+          "owner": "binding",
+          "source": "binding",
+          "fileLocation": "absolute",
+          "pattern": {
+            "regexp": "^(.+)\\((\\d+),(\\d+)\\): (error|warning) (\\w+): (.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "code": 5,
+            "message": 6
+          }
+        }
+      ]
+    },
+    {
+      "label": "bind: wiki",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/library/.public/package/.wiki/.binding"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": [
+        {
+          "owner": "binding",
+          "source": "binding",
+          "fileLocation": "absolute",
+          "pattern": {
+            "regexp": "^(.+)\\((\\d+),(\\d+)\\): (error|warning) (\\w+): (.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "code": 5,
+            "message": 6
+          }
+        }
+      ]
+    },
+    {
+      "label": "specify: latex",
+      "type": "shell",
+      "command": "npx tsx binding.ts configure inventory resolve assemble specify",
+      "options": {
+        "cwd": "${workspaceFolder}/library/.public/package/.latex/.binding",
+        "env": {
+          "NODE_ENV": "development"
+        }
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": [
+        {
+          "owner": "binding",
+          "source": "binding",
+          "fileLocation": "absolute",
+          "pattern": {
+            "regexp": "^(.+)\\((\\d+),(\\d+)\\): (error|warning) (\\w+): (.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "code": 5,
+            "message": 6
+          }
+        }
+      ]
+    },
+    {
+      "label": "specify: wiki",
+      "type": "shell",
+      "command": "npx tsx binding.ts configure inventory resolve assemble specify",
+      "options": {
+        "cwd": "${workspaceFolder}/library/.public/package/.wiki/.binding",
+        "env": {
+          "NODE_ENV": "development"
+        }
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": [
+        {
+          "owner": "binding",
+          "source": "binding",
+          "fileLocation": "absolute",
+          "pattern": {
+            "regexp": "^(.+)\\((\\d+),(\\d+)\\): (error|warning) (\\w+): (.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "code": 5,
+            "message": 6
+          }
+        }
+      ]
+    }
+  ]
+}

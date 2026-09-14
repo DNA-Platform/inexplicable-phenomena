@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "bind: latex (debug the binder)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/library/.public/package/.latex/.binding",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "binding.ts"],
+      "args": [],
+      "env": { "NODE_ENV": "development" },
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "autoAttachChildProcesses": true
+    },
+    {
+      "name": "specify: latex (debug one book's walk)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/library/.public/package/.latex/.binding",
+      "program": "${workspaceFolder}/library/.public/package/.latex/.binding/specification/specify.mjs",
+      "args": ["aaronson"],
+      "env": { "NODE_ENV": "development" },
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}

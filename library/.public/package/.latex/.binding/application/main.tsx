@@ -1,5 +1,5 @@
-import { createElement } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createElement, lazy, Suspense, useEffect } from 'react';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { $ } from '@dna-platform/chemistry';
 import './stylesheets';
 import { routes, root } from './routes';
@@ -20,13 +20,19 @@ const loading: Promise<{ book?: unknown; probe?: unknown }> = probing
     ? probes[Object.keys(probes)[0]]() as Promise<{ probe: unknown }>
     : route!.load();
 
-loading.then(loaded => {
-    const opened = probing ? loaded.probe : loaded.book;
-    const Opened = $(opened as never);
-    const mount = document.getElementById('root');
-    if (!mount) throw new Error('no #root element');
-    // Chemistry does not hydrate yet (Sprint 70): the prerendered page served the reader until this
-    // script arrived, and the client draws fresh over it rather than attaching to it.
-    mount.replaceChildren();
-    createRoot(mount).render(createElement(Opened));
+// HYDRATE BEFORE THE BOOK ARRIVES. The prerender shows its controls at once, and a click
+// before React listens is lost — measured 2026-09-14 at a 4.4s window on localhost. So the
+// root is hydrated now, with the book behind a Suspense boundary the server also wrote: React
+// keeps the served markup, listens from this moment, and replays a click it could not yet
+// answer once the boundary hydrates. The book's chunk is what the boundary waits for.
+const Opened = lazy(() => loading.then(loaded => ({ default: $((probing ? loaded.probe : loaded.book) as never) })));
+const mount = document.getElementById('root');
+if (!mount) throw new Error('no #root element');
+// Mounted beside the book, after it: its effect runs once the book's handlers are attached,
+// and hands the page's kept clicks back to them. Draws nothing, so the server markup is the same.
+const Landed = (): null => { useEffect(() => { (window as unknown as { __replayKept?: () => void }).__replayKept?.(); }, []); return null; };
+const app = createElement(Suspense, { fallback: null }, createElement(Opened), createElement(Landed));
+if (mount.hasChildNodes()) hydrateRoot(mount, app, {
+    onRecoverableError: error => console.error('hydration recovered by re-rendering:', error instanceof Error ? error.message : String(error)),
 });
+else createRoot(mount).render(app);

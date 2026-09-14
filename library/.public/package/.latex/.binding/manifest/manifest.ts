@@ -10,8 +10,6 @@ export type Manifest = {
 
 const empty = (): Manifest => ({ assembled: [], written: [], rendered: [], bundled: [] });
 
-const forward = (path: string): string => path.split('\\').join('/');
-
 export const manifest = {
     at: (binding: string): string => join(binding, '.manifest.json'),
 

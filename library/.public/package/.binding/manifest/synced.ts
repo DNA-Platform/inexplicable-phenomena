@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const here = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repository = 'DNA-Platform/inexplicable-phenomena';
 const within = 'library/.public/package/.binding';
-const kept = new Set(['.pubconfig', '.manifest.json', 'application/routes.ts', 'application/stylesheets.ts']);
+const kept = new Set(['.pubconfig', '.manifest.json', 'application/books.ts', 'application/routes.ts', 'application/stylesheets.ts']);
 const skipped = new Set(['node_modules', '.vite']);
 
 type Source = { kind: 'local'; at: string } | { kind: 'github'; ref: string };
