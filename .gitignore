@@ -95,3 +95,6 @@ next-env.d.ts
 # A library's .binding keeps its own debris out; the site it builds is committed on purpose
 library/.public/package/**/.binding/node_modules/
 library/.public/package/**/.binding/.vite/
+
+# npm auth lives in the user config, never here
+.npmrc
