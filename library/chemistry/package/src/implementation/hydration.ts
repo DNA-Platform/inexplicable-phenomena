@@ -4,7 +4,7 @@
 // same shape over. A chemical enrolls by being atomic; the false transition
 // clears its record; the bond setter alerts changed() on every committed write.
 
-import { $backing$, $molecule$, $reaction$, $template$ } from './symbols';
+import { $backing$, $defaults$, $molecule$, $reaction$, $template$ } from './symbols';
 
 const key = '$Chemistry.hydration';
 
@@ -110,6 +110,13 @@ export const hydration = {
         enroll(pid, chemical);
         const kept = held[pid];
         if (kept === undefined) return;
+        // WHAT IT DREW BEFORE IT REMEMBERED, kept on the constructed one and read
+        // by every derivative: a page hydrating a prerender draws these first,
+        // because the server had nothing to remember. Merged at every recall,
+        // earlier values winning, because an atom's own fields initialise after
+        // its constructor recalled and are only seen by the recall a microtask later.
+        if (Object.getPrototypeOf(chemical) === chemical.constructor?.prototype)
+            chemical[$defaults$] = { ...this.formationOf(chemical), ...(Object.prototype.hasOwnProperty.call(chemical, $defaults$) ? chemical[$defaults$] : {}) };
         recalling = true;
         try {
             for (const [property, value] of Object.entries(kept))

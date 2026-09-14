@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import styledImport, { ThemeProvider } from 'styled-components';
 import { $type$, $$template$$, $isChemicalBase$, $handed$, $provided$, theme, framework } from '../implementation/symbols';
+import { names as roster } from '../implementation/css';
 
 // ===========================================================================
 // Styled particles — a class says what it is styled as, writes plain HTML, and
@@ -34,11 +35,12 @@ export interface $Styled {
 
 let names: any;
 
-// A field is CSS when the browser says so. The platform already keeps that
-// list; a hand-written roster would be a second one that can disagree.
+// A field is CSS when the platform says so, and when the platform cannot — a
+// shim under Node, a browser behind the spec — when CSS's own roster says so,
+// so a prerender and the browser compile the same sheet.
 function css(name: string): boolean {
     if (names === undefined) names = typeof document === 'undefined' ? null : document.createElement('div').style;
-    return names !== null && name in names;
+    return (names !== null && name in names) || roster.has(name);
 }
 
 // The CSS property is the LAST underscore-separated part, so any prefix makes a
@@ -382,9 +384,22 @@ function build(cls: any, per: Map<any, Map<string, string>>): $Styled | null {
     };
     emit(tree);
 
-    const from = typeof base === 'function' ? base : styled(base as any);
+    const from = (typeof base === 'function' ? base : styled(base as any)).withConfig({ componentId: identity(cls, parts) });
     const text = Object.assign([...parts], { raw: [...parts] });
     return seat(from(text as any, ...values), live);
+}
+
+// A STYLED CLASS'S COMPONENT IS NAMED BY THE CLASS AND WHAT IT DECLARES, never
+// by the order it was compiled in: styled-components would number it, and a
+// prerender compiling every route's classes in one process numbers them
+// differently from a browser compiling one route's. The chain of class names
+// and a hash of the text agree on both sides.
+function identity(cls: any, parts: string[]): string {
+    const named = chain(cls).map(one => String(one.name).replace(/[^A-Za-z0-9_-]/g, '')).reverse().join('-') || 'styled';
+    const text = parts.join('|');
+    let hash = 5381;
+    for (let i = 0; i < text.length; i++) hash = ((hash * 33) ^ text.charCodeAt(i)) >>> 0;
+    return `${named}-${hash.toString(36)}`;
 }
 
 function seat(component: any, live: $Styled['live']): $Styled {

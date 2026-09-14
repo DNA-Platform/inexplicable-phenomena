@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect, useLayoutEffect, useContext } from 'react';
+import React, { ReactNode, useState, useEffect, useLayoutEffect, useContext, useSyncExternalStore } from 'react';
 import { ThemeContext } from 'styled-components';
 import {
     $cid$, $symbol$, $type$, $prototype$, $children$, $apply$, $bond$,
@@ -10,7 +10,7 @@ import {
     $renderView$, $views$, looks, style
 } from "../implementation/symbols";
 import { compile, given, styledFor, providing } from "./styled";
-import { $handed$, theme } from "../implementation/symbols";
+import { $handed$, $recall$, $defaults$, theme } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
 import { diff } from "../implementation/reconcile";
 import { augment, assigned, unassign } from "../implementation/augment";
@@ -419,8 +419,13 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
     // walk only ever reads an answer, and no template is seeded mid-render.
     compile(parent);
     const direct = !(parent as any)[$isTemplate$];
+    // A persistent chemical asks React whether this render is a HYDRATION — the
+    // server's snapshot is read then, and only then. Decided at the lift, so the
+    // hook is unconditional for the component's life and nothing else pays.
+    const persistent = !!(parent as any)._persist;
     const Component = (props?: $Props): ReactNode => {
         const [cid, setCid] = useState(-1);
+        const hydrating = persistent ? useSyncExternalStore(never, () => false, () => true) : false;
         let p: any;
         const derive = () => {
             if (direct) {
@@ -454,7 +459,15 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             if ((made as any)._persist) {
                 const was = made[$rendering$];
                 made[$rendering$] = true;
-                hydration.overwrite(made);
+                // HYDRATING, IT DRAWS THE DEFAULTS THE SERVER DREW and remembers at
+                // mount; otherwise it remembers now, as it always has.
+                if (hydrating) {
+                    made[$recall$] = true;
+                    const defaults = made[$defaults$];
+                    if (defaults) for (const [name, value] of Object.entries(defaults)) made[name] = value;
+                } else {
+                    hydration.overwrite(made);
+                }
                 made[$rendering$] = was;
             }
             return made;
@@ -486,6 +499,13 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             }
             p[$resolve$]('mount');
             belong(p);
+            if (p[$recall$]) {
+                p[$recall$] = false;
+                p[$rendering$] = true;
+                hydration.overwrite(p);
+                p[$rendering$] = false;
+                p[$reaction$]?.react();
+            }
             if (typeof p.$form === 'function' && !p[$formRan$]) {
                 p[$formRan$] = true;
                 const result = p.$form();
@@ -592,3 +612,7 @@ function belongs(particle: any, assign: any): void {
     if (particle[$parent$] && particle[$parent$] !== particle) return;
     particle[$parent$] = receiver;
 }
+
+// A subscription that never fires — the store useSyncExternalStore reads is
+// the question "is this a hydration", which only React answers.
+function never(): () => void { return () => {}; }

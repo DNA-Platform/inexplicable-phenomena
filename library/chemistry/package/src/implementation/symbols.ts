@@ -170,3 +170,8 @@ export const $functionInfo$ = Symbol("$ObjectiveRep.functionInfo");
 export const $handed$ = Symbol("$Particle.handed");
 export const $provided$ = Symbol("$Particle.provided");
 export const theme = Symbol("$Particle.theme");
+
+// A persistent chemical hydrating a prerendered page: recall waits for mount, and the
+// defaults it drew before its first recall are what the server drew.
+export const $recall$ = Symbol("$Particle.recall");
+export const $defaults$ = Symbol("$Particle.defaults");
