@@ -6,7 +6,7 @@
   "author": "Doug Rubino",
   "repository": {
     "type": "git",
-    "url": "https://github.com/DNA-Platform/inexplicable-phenomena.git",
+    "url": "git+https://github.com/DNA-Platform/inexplicable-phenomena.git",
     "directory": "library/chemistry/package"
   },
   "main": "dist/chemistry.cjs",
@@ -39,12 +39,6 @@
     "bench": "vitest bench --run",
     "verify:persistence": "node app/verify-persistence.mjs"
   },
-  "dependencies": {
-    "D": "^1.0.0",
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "styled-components": "^6.1.0"
-  },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.0",
     "@testing-library/jest-dom": "^6.9.1",
@@ -61,9 +55,17 @@
     "rollup-plugin-dts": "^6.2.3",
     "tslib": "^2.8.1",
     "typescript": "^5.9.2",
-    "vitest": "^4.0.6"
+    "vitest": "^4.0.6",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "styled-components": "^6.1.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "styled-components": "^6.1.0"
   }
 }
