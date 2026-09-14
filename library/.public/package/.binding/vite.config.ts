@@ -17,6 +17,20 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
     plugins: [
         react({ babel: { parserOpts: { plugins: ['decorators-legacy'] } } }),
         { name: 'binding:template', transformIndexHtml: html => template(html, chosen) },
+        // A BOOK'S ADDRESS IS ITS PAGE. GitHub Pages answers /turing with a redirect to /turing/, where
+        // the page stands; the preview does the same, so a link that works there works here.
+        {
+            name: 'binding:addresses',
+            configurePreviewServer: server => {
+                server.middlewares.use((request, response, next) => {
+                    const path = (request.url ?? '').split('?')[0];
+                    if (path.endsWith('/') || path.includes('.') || !existsSync(resolve(binding, '..', path.slice(1), 'index.html'))) return next();
+                    response.statusCode = 301;
+                    response.setHeader('Location', `${path}/`);
+                    response.end();
+                });
+            },
+        },
     ],
     build: {
         outDir: resolve(binding, '..'),
