@@ -1,5 +1,5 @@
 {
-  "name": "binding",
+  "name": "latex-binding",
   "private": true,
   "type": "module",
   "description": "The apparatus a library publishes itself with. Copied out of @dna-platform/public into a library, kept current from the package it came from; the library it stands in is its parent folder.",
@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dna-platform/public": "^0.0.2",
-    "@dna-platform/chemistry": "^0.1.2",
+    "@dna-platform/public": "*",
+    "@dna-platform/chemistry": "*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
     "styled-components": "^6.1.0"

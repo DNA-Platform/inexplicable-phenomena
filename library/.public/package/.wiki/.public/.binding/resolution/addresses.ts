@@ -1,9 +1,8 @@
 import { join, relative } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
-import { bindingOf, problem, type Diagnostic, type Library } from '../inventory/library';
+import { bindingOf, type Library } from '../inventory/library';
 import { forward } from '../manifest/origin';
 import type { Graph } from '../manifest/graph';
-import { LibrarySpecification } from '../specification/library';
 import { nameOf } from './names';
 
 export type Route = {
@@ -24,31 +23,9 @@ const specifierOf = (binding: string, module: string): string => {
     return at.startsWith('.') ? at : `./${at}`;
 };
 
-// WHAT DOES NOT HOLD ABOUT THE LIBRARY. The specification raises one error carrying every failure,
-// each opening with the book's folder, and each lands on that book's first file — its cover where
-// it has one — so a duplicate name is a red line under the book that took it.
-export const diagnostics = (found: Library, held: Graph): Diagnostic[] => {
-    try {
-        new LibrarySpecification().check(held);
-
-        return [];
-    } catch (error) {
-        return String((error as Error)?.message ?? error)
-            .split(' · ')
-            .filter(said => said.trim() !== '')
-            .map(said => {
-                const [at, ...rest] = said.split(' › ');
-                const book = found.books.find(one => one.folder === at);
-
-                return { at, file: join(book?.path ?? found.root, book?.files[0] ?? '.book.tsx'), says: rest.join(' › ') };
-            });
-    }
-};
-
+// WHERE EACH BOOK STANDS. Names are the books' own, read at specify; what it MEANS to be a library
+// is asked there too, so nothing here rules on anything and this step only resolves.
 export const resolution = (found: Library, held: Graph, chosen: Configuration): Table => {
-    const wrong = diagnostics(found, held);
-    if (wrong.length) throw new Error(wrong.map(problem).join('\n'));
-
     const wanted = chosen.inventory.root ?? (held.books.length === 1 ? nameOf(held.books[0]) : 'index');
     const binding = bindingOf(found.root);
     const routes = held.books.map(entry => {

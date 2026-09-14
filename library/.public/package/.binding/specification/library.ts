@@ -1,5 +1,7 @@
+import { join } from 'node:path';
 import { $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@dna-platform/public';
+import type { Diagnostic, Library } from '../inventory/library';
 import type { Entry, Graph } from '../manifest/graph';
 
 // WHAT IT MEANS TO BE A LIBRARY. The framework's own specification, over what the load answered
@@ -31,6 +33,27 @@ export class LibrarySpecification extends Specification<Graph> {
         $check(shared.length === 0, shared.join(' · '));
     }
 }
+
+// WHAT DOES NOT HOLD, WHERE A PERSON CAN OPEN IT. The specification raises one error carrying every
+// failure, each opening with the book's folder, and each lands on that book's first file — its cover
+// where it has one — so a name taken twice is a red line under the book that took it.
+export const diagnostics = (found: Library, held: Graph): Diagnostic[] => {
+    try {
+        new LibrarySpecification().check(held);
+
+        return [];
+    } catch (error) {
+        return String((error as Error)?.message ?? error)
+            .split(' · ')
+            .filter(said => said.trim() !== '')
+            .map(said => {
+                const [at, ...rest] = said.split(' › ');
+                const book = found.books.find(one => one.folder === at);
+
+                return { at, file: join(book?.path ?? found.root, book?.files[0] ?? '.book.tsx'), says: rest.join(' › ') };
+            });
+    }
+};
 
 const named = (one: Entry): string => one.book.name ?? '';
 

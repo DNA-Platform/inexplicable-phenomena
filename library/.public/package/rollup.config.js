@@ -115,20 +115,18 @@ const code = {
     onwarn
 };
 
-const typed = (door, name) => ({
-    input: door,
-    output: { file: `dist/${name}.d.ts`, format: 'es' },
+// ONE BUILD, SIX DOORS — FOR THE TYPES TOO, and for the same reason the code has it. Seven separate
+// dts rollups are seven separate programs, and a separate program DEFINES ITS OWN COPY of every type
+// it reaches: $Book stood once in lib.d.ts and again in encyclopedia.d.ts, so a book written against
+// the encyclopedia door was not a $Book to anything typed through the main one — measured 2026-09-15
+// at 117 errors across the two demo bindings, every one of that shape. Code splitting is the fix
+// here exactly as it is there: the shared declarations are emitted ONCE into a chunk that every
+// door imports, and a class stands once.
+const types = {
+    input: doors,
+    output: { dir: 'dist', format: 'es', entryFileNames: '[name].d.ts', chunkFileNames: 'chunks/[name]-[hash].d.ts' },
     plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
     onwarn
-});
+};
 
-module.exports = quick ? [code] : [
-    code,
-    typed('src/index.ts', 'lib'),
-    typed('src/library.ts', 'library'),
-    typed('src/article.ts', 'article'),
-    typed('src/markdown.ts', 'markdown'),
-    typed('src/application.ts', 'application'),
-    typed('src/encyclopedia.ts', 'encyclopedia'),
-    typed('src/utilities.ts', 'utilities')
-];
+module.exports = quick ? [code] : [code, types];

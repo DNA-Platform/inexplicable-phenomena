@@ -22,7 +22,6 @@
       "vite/client",
       "node"
     ],
-    "baseUrl": ".",
     "paths": {
       "@dna-platform/chemistry": [
         "./node_modules/@dna-platform/chemistry"

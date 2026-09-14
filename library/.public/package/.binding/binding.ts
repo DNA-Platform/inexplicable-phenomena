@@ -10,6 +10,7 @@ import { assemble } from './assembly/book';
 import { routes } from './assembly/routes';
 import { stylesheets } from './assembly/stylesheets';
 import { specifying } from './specification/specifying';
+import { diagnostics } from './specification/library';
 import { graph, type Graph } from './manifest/graph';
 import { rendering } from './rendering/rendering';
 import { manifest, type Manifest } from './manifest/manifest';
@@ -72,9 +73,11 @@ export const tasks: Task[] = [
         const scope = state.scope.length ? state.scope : found.books.map(book => book.folder);
         const verdict = specifying(state.binding, found, scope, graph.read(state.binding), need(state.chosen, 'specify'));
         state.graph = graph.write(state.binding, verdict.held);
-        if (verdict.failures.length) {
-            for (const one of verdict.failures) console.error(problem(one));
-            throw new Error(`the library does not specify — ${plural(verdict.failures.length, 'failure')} in ${[...new Set(verdict.failures.map(one => one.at))].join(', ')}`);
+        // EACH BOOK AGAINST ITS OWN SPECIFICATION, then the library against what it means to be one.
+        const wrong = [...verdict.failures, ...diagnostics(found, state.graph)];
+        if (wrong.length) {
+            for (const one of wrong) console.error(problem(one));
+            throw new Error(`the library does not specify — ${plural(wrong.length, 'failure')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
         }
         const kept = state.graph.books.reduce((total, one) => total + one.walked, 0);
         return `${plural(verdict.loaded.length, 'book')} read · ${verdict.unchanged.length} unchanged · ${plural(verdict.walked, 'writing')} specified (${kept} recorded)`;

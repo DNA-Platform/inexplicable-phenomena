@@ -13,9 +13,11 @@ export type Origin =
 export const repository = 'DNA-Platform/inexplicable-phenomena';
 export const within = 'library/.public/package/.binding';
 
-// A COPY'S OWN FILES, never overwritten by its origin: its configuration, its record, and what
-// its own assembly wrote. Everything else in the folder is the master's.
-export const kept = new Set(['.graph.json', '.pubconfig', '.manifest.json', 'application/routes.ts', 'application/stylesheets.ts']);
+// A COPY'S OWN FILES, never overwritten by its origin: its configuration, its record, what its own
+// assembly wrote, and ITS DEPENDENCIES — the master names the real packages, and a copy inside a
+// checkout points at the checkout instead, so a change is there the moment it is built rather than
+// the moment it is published. Everything else in the folder is the master's.
+export const kept = new Set(['.graph.json', 'package.json', '.pubconfig', '.manifest.json', 'application/routes.ts', 'application/stylesheets.ts']);
 export const skipped = new Set(['node_modules', '.vite']);
 
 export const forward = (path: string): string => path.split(sep).join('/');
