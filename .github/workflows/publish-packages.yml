@@ -24,6 +24,14 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
+      # TRUSTED PUBLISHING. npm accepts GitHub's identity for this workflow — no token, no
+      # one-time code — once each package on npmjs.com names this repository and this file as
+      # its trusted publisher. That needs npm 11.5 or newer, which Node 22 does not carry, and
+      # it needs NO token in the environment: a token takes precedence and npm then asks for
+      # a second factor, which is exactly what tokens no longer bypass (npm, 2026). The first
+      # version of a package is published by hand with a code; the trusted publisher is set on
+      # its settings page after that; every version after publishes itself here on a bump.
+      - run: npm install -g npm@latest
       - run: npm install
 
       - name: Build chemistry
@@ -33,8 +41,6 @@ jobs:
       - name: Publish chemistry
         working-directory: library/chemistry/package
         run: npm publish --access public --provenance || echo "Version already published, skipping"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build lib
         working-directory: library/.public/package
@@ -43,5 +49,3 @@ jobs:
       - name: Publish lib
         working-directory: library/.public/package
         run: npm publish --access public --provenance || echo "Version already published, skipping"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
