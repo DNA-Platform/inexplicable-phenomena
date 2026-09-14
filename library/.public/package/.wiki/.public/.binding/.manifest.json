@@ -5,6 +5,7 @@
     ".binding/application/books/turing.tsx"
   ],
   "written": [
+    ".binding/application/books.ts",
     ".binding/application/stylesheets.ts",
     ".binding/application/routes.ts"
   ],
@@ -14,12 +15,12 @@
     "alan-turing/index.html"
   ],
   "bundled": [
-    "assets/.article-CIiYdRuQ.js",
-    "assets/.book-DBUYZVHp.js",
-    "assets/.book-DmEGU9eg.js",
-    "assets/.encyclopedia-9a5IoDg4.js",
-    "assets/index-FLgOb9hj.js",
+    "assets/.article-ChMA0KrF.js",
+    "assets/.book-B6AiqiKA.js",
+    "assets/.book-BqqJLBbb.js",
+    "assets/.encyclopedia-UFEJziK6.js",
+    "assets/index-BVHrfVYz.js",
     "assets/index-TZrNw7dA.css",
-    "assets/turing-B5AYs_ke.js"
+    "assets/turing-BQGzbR1U.js"
   ]
 }

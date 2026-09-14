@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
 import type { Book, Diagnostic, Library } from '../inventory/library';
-import { graph, type Entry, type Graph } from '../manifest/graph';
+import { bases, graph, type Entry, type Graph } from '../manifest/graph';
 import type { Answer } from './specify';
 
 export type Verdict = { held: Graph; loaded: string[]; unchanged: string[]; failures: Diagnostic[]; walked: number };
@@ -37,13 +37,17 @@ const batched = (books: Book[], size: number): Book[][] => {
 // WHAT IS STALE IS READ; WHAT IS UNCHANGED IS CARRIED. The decision is made here, before a process
 // is opened, so a library of any size costs a build only what changed in it.
 export const specifying = (binding: string, found: Library, folders: string[], previous: Graph, chosen: Configuration): Verdict => {
+    // EVERY LOOKUP IS A MAP OR A SET. At a thousand books a list searched inside a loop is a million
+    // comparisons, and a base read inside a loop is a million file reads.
     const entry = join(binding, 'specification', 'specify.mjs');
     const known = new Map(previous.books.map(one => [one.folder, one]));
-    const inputs = fixed(binding);
-    const wanted = found.books.filter(book => folders.includes(book.folder));
-    const digests = new Map(wanted.map(book => [book.folder, graph.digest(found, book, inputs)]));
+    const inputs = [...fixed(binding), bases(found)];
+    const asked = new Set(folders);
+    const wanted = found.books.filter(book => asked.has(book.folder));
+    const digests = new Map(wanted.map(book => [book.folder, graph.digest(book, inputs)]));
     const unchanged = wanted.filter(book => known.get(book.folder)?.digest === digests.get(book.folder));
-    const stale = wanted.filter(book => !unchanged.includes(book));
+    const kept = new Set(unchanged.map(book => book.folder));
+    const stale = wanted.filter(book => !kept.has(book.folder));
 
     const answers: Answer[] = [];
     for (const batch of batched(stale, chosen.specification.batch)) {
@@ -61,13 +65,15 @@ export const specifying = (binding: string, found: Library, folders: string[], p
 
     // A BOOK OUT OF SCOPE KEEPS WHAT IT LAST ANSWERED, and a book that failed keeps nothing, so the
     // next build reads it again rather than resolving against a record that never held.
-    const books: Entry[] = previous.books.filter(one =>
-        !wanted.some(book => book.folder === one.folder) && found.books.some(book => book.folder === one.folder));
+    const asking = new Set(wanted.map(book => book.folder));
+    const standing = new Set(found.books.map(book => book.folder));
+    const books: Entry[] = previous.books.filter(one => !asking.has(one.folder) && standing.has(one.folder));
     for (const one of unchanged) books.push(known.get(one.folder) as Entry);
 
+    const at = new Map(found.books.map(book => [book.folder, book]));
     const failures: Diagnostic[] = [];
     for (const answer of answers) {
-        const book = found.books.find(one => one.folder === answer.folder);
+        const book = at.get(answer.folder);
         for (const said of answer.failures) {
             const [file, ...rest] = said.split(' › ');
             failures.push({ at: answer.folder, file: join(book?.path ?? found.root, file), says: rest.join(' › ') });

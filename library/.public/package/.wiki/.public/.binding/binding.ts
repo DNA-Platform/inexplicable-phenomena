@@ -7,10 +7,11 @@ import { walk } from './inventory/walk';
 import { around, problem, type Library } from './inventory/library';
 import { resolution, type Table } from './resolution/addresses';
 import { assemble } from './assembly/book';
+import { books } from './assembly/books';
 import { routes } from './assembly/routes';
 import { stylesheets } from './assembly/stylesheets';
 import { specifying } from './specification/specifying';
-import { diagnostics } from './specification/library';
+import { running } from './specification/running';
 import { graph, type Graph } from './manifest/graph';
 import { rendering } from './rendering/rendering';
 import { manifest, type Manifest } from './manifest/manifest';
@@ -65,16 +66,17 @@ export const tasks: Task[] = [
         const found = need(state.found, 'assemble');
         state.previous = manifest.read(state.binding);
         state.assembled = found.books.map(book => assemble(state.face, book));
-        state.written = [stylesheets(state.binding, need(state.chosen, 'assemble'))];
-        return `${plural(state.assembled.length, 'book module')}, the stylesheets`;
+        state.written = [books(state.binding, found), stylesheets(state.binding, need(state.chosen, 'assemble'))];
+        return `${plural(state.assembled.length, 'book module')}, the index, the stylesheets`;
     } },
-    { name: 'specify', run: state => {
+    { name: 'specify', run: async state => {
         const found = need(state.found, 'specify');
         const scope = state.scope.length ? state.scope : found.books.map(book => book.folder);
         const verdict = specifying(state.binding, found, scope, graph.read(state.binding), need(state.chosen, 'specify'));
         state.graph = graph.write(state.binding, verdict.held);
-        // EACH BOOK AGAINST ITS OWN SPECIFICATION, then the library against what it means to be one.
-        const wrong = [...verdict.failures, ...diagnostics(found, state.graph)];
+        // EACH BOOK AGAINST ITS OWN SPECIFICATION, which is the framework's; then the library against
+        // what it means to be one, which is the suite that stands beside this file.
+        const wrong = [...verdict.failures, ...await running(state.binding, found, 'specification/library')];
         if (wrong.length) {
             for (const one of wrong) console.error(problem(one));
             throw new Error(`the library does not specify — ${plural(wrong.length, 'failure')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);

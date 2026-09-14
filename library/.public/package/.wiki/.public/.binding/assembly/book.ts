@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, relative, sep } from 'node:path';
 import type { Book } from '../inventory/library';
 
@@ -25,8 +25,14 @@ export const assemble = (face: string, book: Book): string => {
         `);`,
         ``,
     ];
-    mkdirSync(dirname(book.module), { recursive: true });
-    writeFileSync(book.module, lines.join('\n'), 'utf8');
+    // WRITTEN ONLY WHEN IT CHANGED. A thousand books rewritten identically every build is a thousand
+    // writes vite must then decide are new, and the digest that keeps a book from being read again
+    // has the book's module among its inputs.
+    const written = lines.join('\n');
+    if (!existsSync(book.module) || readFileSync(book.module, 'utf8') !== written) {
+        mkdirSync(dirname(book.module), { recursive: true });
+        writeFileSync(book.module, written, 'utf8');
+    }
 
     return relative(face, book.module).split(sep).join('/');
 };

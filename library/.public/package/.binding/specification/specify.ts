@@ -1,5 +1,5 @@
 import { window } from '../rendering/dom';
-import { dirname, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteDevServer } from 'vite';
 import { $Book, Specification } from '@dna-platform/public';
@@ -38,14 +38,18 @@ const counting = (): { since: () => number } => {
 export const specify = async (server: ViteDevServer, folders: string[]): Promise<Answer[]> => {
     const { binding, library } = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
     const found = walk(library, configure(binding));
+    // THROUGH THE ONE DOOR the assembly wrote, which is how the prerender and the browser reach a
+    // book too — keyed by folder, because a name is what this pass is here to read.
+    const { books: open } = (await server.ssrLoadModule(join(binding, 'application', 'books.ts'))) as { books: Record<string, () => Promise<{ book: $Book }>> };
     const held = new Reading();
     const count = counting();
     const answers: Answer[] = [];
 
+    const at = new Map(found.books.map(one => [one.folder, one]));
     for (const folder of folders) {
-        const book = found.books.find(one => one.folder === folder);
+        const book = at.get(folder);
         if (book === undefined) throw new Error(`${folder} is not a book in ${library}`);
-        const { book: live } = (await server.ssrLoadModule(book.module)) as { book: $Book };
+        const { book: live } = await open[folder]();
         const answer: Answer = { folder, book: read(live, held), walked: 0, failures: [] };
         try {
             live.specify();

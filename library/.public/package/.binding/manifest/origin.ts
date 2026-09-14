@@ -17,7 +17,7 @@ export const within = 'library/.public/package/.binding';
 // assembly wrote, and ITS DEPENDENCIES — the master names the real packages, and a copy inside a
 // checkout points at the checkout instead, so a change is there the moment it is built rather than
 // the moment it is published. Everything else in the folder is the master's.
-export const kept = new Set(['.graph.json', 'package.json', '.pubconfig', '.manifest.json', 'application/routes.ts', 'application/stylesheets.ts']);
+export const kept = new Set(['.graph.json', 'package.json', 'application/books.ts', '.pubconfig', '.manifest.json', 'application/routes.ts', 'application/stylesheets.ts']);
 export const skipped = new Set(['node_modules', '.vite']);
 
 export const forward = (path: string): string => path.split(sep).join('/');

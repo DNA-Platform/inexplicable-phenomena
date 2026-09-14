@@ -7,9 +7,8 @@ import { nameOf } from './names';
 
 export type Route = {
     name: string;
+    folder: string;
     address: string;
-    module: string;
-    specifier: string;
 };
 
 export type Table = {
@@ -17,7 +16,7 @@ export type Table = {
     root?: Route;
 };
 
-const specifierOf = (binding: string, module: string): string => {
+export const specifierOf = (binding: string, module: string): string => {
     const at = forward(relative(join(binding, 'application'), module)).replace(/\.tsx$/u, '');
 
     return at.startsWith('.') ? at : `./${at}`;
@@ -27,17 +26,11 @@ const specifierOf = (binding: string, module: string): string => {
 // is asked there too, so nothing here rules on anything and this step only resolves.
 export const resolution = (found: Library, held: Graph, chosen: Configuration): Table => {
     const wanted = chosen.inventory.root ?? (held.books.length === 1 ? nameOf(held.books[0]) : 'index');
-    const binding = bindingOf(found.root);
-    const routes = held.books.map(entry => {
+    const standing = new Set(found.books.map(book => book.folder));
+    const routes = held.books.filter(entry => standing.has(entry.folder)).map(entry => {
         const name = nameOf(entry);
-        const book = found.books.find(one => one.folder === entry.folder);
 
-        return {
-            name,
-            address: name === wanted ? '/' : `/${name}`,
-            module: book?.module ?? '',
-            specifier: specifierOf(binding, book?.module ?? ''),
-        };
+        return { name, folder: entry.folder, address: name === wanted ? '/' : `/${name}` };
     });
     const root = routes.find(route => route.address === '/');
     if (chosen.inventory.root !== undefined && root === undefined)
