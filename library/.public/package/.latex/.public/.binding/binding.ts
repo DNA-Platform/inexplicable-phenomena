@@ -4,13 +4,13 @@ import { build, type Rollup } from 'vite';
 import { configuration } from './vite.config';
 import { configure, type Configuration } from './configuration/configuration';
 import { walk } from './inventory/walk';
-import type { Library } from './inventory/library';
+import { around, problem, type Library } from './inventory/library';
 import { resolution, type Table } from './resolution/addresses';
 import { assemble } from './assembly/book';
-import { books } from './assembly/books';
 import { routes } from './assembly/routes';
 import { stylesheets } from './assembly/stylesheets';
 import { specifying } from './specification/specifying';
+import { graph, type Graph } from './manifest/graph';
 import { rendering } from './rendering/rendering';
 import { manifest, type Manifest } from './manifest/manifest';
 import { removal } from './manifest/removal';
@@ -18,18 +18,23 @@ import { removal } from './manifest/removal';
 // THE BINDER IS A COMPILER: a sequence of named tasks, each run in order, each saying what it
 // did, the sequence stopping at the first that fails. `tsx binding.ts` runs them all;
 // `tsx binding.ts assemble specify` runs a subset, in this order, for a person debugging one.
+//
+// RESOLVE FOLLOWS SPECIFY, because a book is named by its own title and a title is a thing a
+// running book answers. So the books are assembled, then read once — which is the expensive step,
+// and the one that is kept — and only then are they named, ruled on, and given their addresses.
 
 type State = {
     binding: string;
     face: string;
     library: string;
+    scope: string[];
     chosen?: Configuration;
     found?: Library;
+    graph?: Graph;
     table?: Table;
     previous?: Manifest;
     assembled: string[];
     written: string[];
-    specified: number;
     bundled: string[];
     rendered: string[];
 };
@@ -55,22 +60,29 @@ export const tasks: Task[] = [
         if (state.found.books.length === 0) throw new Error(`${state.library} holds no book — a folder carrying a .book.tsx`);
         return `${plural(state.found.books.length, 'book')}: ${state.found.books.map(book => book.folder).join(', ')}`;
     } },
-    { name: 'resolve', run: state => {
-        state.table = resolution(need(state.found, 'resolve'), need(state.chosen, 'resolve'));
-        return state.table.routes.map(route => `${route.name} → ${route.address}`).join(' · ');
-    } },
     { name: 'assemble', run: state => {
         const found = need(state.found, 'assemble');
-        const table = need(state.table, 'assemble');
         state.previous = manifest.read(state.binding);
         state.assembled = found.books.map(book => assemble(state.face, book));
-        state.written = [books(state.binding, table), routes(state.binding, table), stylesheets(state.binding, need(state.chosen, 'assemble'))];
-        return `${plural(state.assembled.length, 'book module')}, the index, the routes, the stylesheets`;
+        state.written = [stylesheets(state.binding, need(state.chosen, 'assemble'))];
+        return `${plural(state.assembled.length, 'book module')}, the stylesheets`;
     } },
     { name: 'specify', run: state => {
-        const verdicts = specifying(state.binding, need(state.found, 'specify').books.map(book => book.path));
-        state.specified = verdicts.reduce((n, one) => n + one.walked, 0);
-        return `${plural(state.specified, 'writing')} specified across ${plural(verdicts.length, 'book')}`;
+        const found = need(state.found, 'specify');
+        const scope = state.scope.length ? state.scope : found.books.map(book => book.folder);
+        const verdict = specifying(state.binding, found, scope, graph.read(state.binding), need(state.chosen, 'specify'));
+        state.graph = graph.write(state.binding, verdict.held);
+        if (verdict.failures.length) {
+            for (const one of verdict.failures) console.error(problem(one));
+            throw new Error(`the library does not specify — ${plural(verdict.failures.length, 'failure')} in ${[...new Set(verdict.failures.map(one => one.at))].join(', ')}`);
+        }
+        const kept = state.graph.books.reduce((total, one) => total + one.walked, 0);
+        return `${plural(verdict.loaded.length, 'book')} read · ${verdict.unchanged.length} unchanged · ${plural(verdict.walked, 'writing')} specified (${kept} recorded)`;
+    } },
+    { name: 'resolve', run: state => {
+        state.table = resolution(need(state.found, 'resolve'), need(state.graph, 'resolve'), need(state.chosen, 'resolve'));
+        state.written.push(routes(state.binding, state.table));
+        return state.table.routes.map(route => `${route.name} → ${route.address}`).join(' · ');
     } },
     { name: 'bundle', run: async state => {
         const built = await build({ ...configuration({ isPreview: false }), configFile: false, logLevel: 'warn' });
@@ -82,14 +94,16 @@ export const tasks: Task[] = [
         return state.rendered.join(', ');
     } },
     { name: 'record', run: state => {
+        const previous = need(state.previous, 'record');
         const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered: state.rendered, bundled: state.bundled });
-        const gone = removal(state.face, state.previous ?? manifest.read(state.binding), current);
+        const gone = removal(state.face, previous, current);
         return `manifest written${gone.length ? ` · removed ${plural(gone.length, 'file')} the source no longer writes` : ''}`;
     } },
 ];
 
-export const bind = async (binding: string, only: string[] = []): Promise<State> => {
-    const state: State = { binding, face: resolve(binding, '..'), library: resolve(binding, '..', '..'), assembled: [], written: [], specified: 0, bundled: [], rendered: [] };
+export const bind = async (binding: string, only: string[] = [], scope: string[] = []): Promise<State> => {
+    const { face, library } = around(binding);
+    const state: State = { binding, face, library, scope, assembled: [], written: [], bundled: [], rendered: [] };
     const unknown = only.filter(name => !tasks.some(task => task.name === name));
     if (unknown.length) throw new Error(`no such task: ${unknown.join(', ')} — the tasks are ${tasks.map(task => task.name).join(', ')}`);
     const chosen = only.length ? tasks.filter(task => only.includes(task.name)) : tasks;
@@ -112,5 +126,7 @@ export const bind = async (binding: string, only: string[] = []): Promise<State>
 };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-    await bind(dirname(fileURLToPath(import.meta.url)), process.argv.slice(2));
+    const said = process.argv.slice(2);
+    const names = tasks.map(task => task.name);
+    await bind(dirname(fileURLToPath(import.meta.url)), said.filter(one => names.includes(one)), said.filter(one => !names.includes(one)));
 }

@@ -5,22 +5,21 @@
     ".binding/application/books/turing.tsx"
   ],
   "written": [
-    ".binding/application/books.ts",
-    ".binding/application/routes.ts",
-    ".binding/application/stylesheets.ts"
+    ".binding/application/stylesheets.ts",
+    ".binding/application/routes.ts"
   ],
   "rendered": [
-    "article/index.html",
+    "wikipedia-manual-of-style-layout/index.html",
     "index.html",
-    "turing/index.html"
+    "alan-turing/index.html"
   ],
   "bundled": [
-    "assets/.article-CJVOzRvx.js",
-    "assets/.book-BWHSbmCi.js",
-    "assets/.book-DpkHp9z5.js",
-    "assets/.encyclopedia-B80LDuG8.js",
-    "assets/index-BLoKmkEu.js",
+    "assets/.article-WfZh0GE8.js",
+    "assets/.book-CIEr1us-.js",
+    "assets/.book-Dl6Z8l4_.js",
+    "assets/.encyclopedia-BeErf4rp.js",
+    "assets/index-CW08EcdG.js",
     "assets/index-TZrNw7dA.css",
-    "assets/turing-D5Dfq3FT.js"
+    "assets/turing-DB6HHO1D.js"
   ]
 }

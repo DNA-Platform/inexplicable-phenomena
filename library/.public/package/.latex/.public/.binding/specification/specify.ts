@@ -1,90 +1,62 @@
 import { window } from '../rendering/dom';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteDevServer } from 'vite';
-import { $Writing, Specification } from '@dna-platform/public';
+import { $Book, Specification } from '@dna-platform/public';
 import { configure } from '../configuration/configuration';
 import { walk } from '../inventory/walk';
-import type { Book } from '../inventory/library';
+import { around } from '../inventory/library';
+import { Reading, read } from './reading';
 
-export type Failure = { at: string; file: string; says: string };
-export type Verdict = { book: string; walked: number; failures: Failure[] };
-
-type Index = { books: Record<string, () => Promise<{ book: $Writing }>>; named: string[] };
+export type Answer = { folder: string; book: Record<string, string>; walked: number; failures: string[] };
 
 void window;
 
-const kindOf = (writing: $Writing): string => writing.constructor.name.replace(/^_?\$?/, '');
-const said = (error: unknown): string => String((error as Error)?.message ?? error);
-const nameOf = (book: Book): string => book.folder.replace(/^\.+/, '');
-
-// WHICH FILE A FAILURE CAME FROM. A book's parts stand in the order assembly wrote them — the
-// apparatus first, then the chapters — and the framework prefixes a failure with the index of the
-// part it rose through, so the first index names the chapter file a person can open.
-const filesOf = (library: string, book: Book): string[] => [
-    ...(book.cover ? ['.cover.tsx'] : []),
-    ...(book.synopsis ? ['.synopsis.tsx'] : []),
-    ...(book.contents ? ['.table.tsx'] : []),
-    ...book.chapters.map(chapter => chapter.file),
-].map(file => join(library, book.folder, file));
-
-// THE BOOKS A BOOK CATALOGUES — the seam for $$Synopsis, which Doug named as the sense in which a
-// book is catalogued and ruled for the sprint after this one. Until it lands, a book catalogues none.
-const catalogued = (book: $Writing): string[] => {
-    void book;
-    return [];
-};
-
 // WRITINGS SPECIFIED, COUNTED ONCE EACH, at the specification's check — the one place every rule set
 // runs, and not a chemical, so nothing reaches around it. The framework specifies a writing at its
-// bond and again from each ancestor's descent; the count a person reads is distinct writings.
-const counting = (): { reached: () => number } => {
+// bond and again from each ancestor's descent; the count a person reads is distinct writings, and
+// the reading is taken once per book out of a single patch.
+const counting = (): { since: () => number } => {
     const seen = new WeakSet<object>();
     let reached = 0;
+    let last = 0;
     const check = Specification.prototype.check;
     Specification.prototype.check = function (this: Specification<object>, writing: object) {
         if (!seen.has(writing)) { seen.add(writing); reached += 1; }
+
         return check.call(this, writing);
     };
-    return { reached: () => reached };
+
+    return { since: () => { const answer = reached - last; last = reached; return answer; } };
 };
 
-// ONE CALL PER BOOK. specify() descends by itself — Doug: "The goal here is to have it right in the
-// code and your thing just have to confirm it for each book." — and the harness confirms each book
-// under the folder pointed to, then the books it catalogues.
-export const specify = async (server: ViteDevServer, folder?: string): Promise<Verdict[]> => {
-    const binding = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-    const library = resolve(binding, '..', '..');
+// EVERY BOOK OF THE BATCH IN ONE PROCESS. Opening vite and a DOM costs three seconds before a word
+// is read, and the first book pays the package's own load; each book after it costs a fraction —
+// measured 2026-09-15 on the wiki at 6.7s, then 1.5s, then 0.5s, against 3.1s of boot apiece when
+// each had its own process. Nothing here draws, so no theme is consulted and no book reaches
+// another; a pass that DRAWS keeps one process per page, which is what the isolation was ever for.
+export const specify = async (server: ViteDevServer, folders: string[]): Promise<Answer[]> => {
+    const { binding, library } = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
     const found = walk(library, configure(binding));
-    const { books, named } = (await server.ssrLoadModule(join(binding, 'application', 'books.ts'))) as Index;
+    const held = new Reading();
+    const count = counting();
+    const answers: Answer[] = [];
 
-    const pointed = folder === undefined ? library : resolve(folder);
-    const scoped = pointed === library ? found.books
-        : found.books.filter(book => resolve(book.path) === pointed);
-    if (scoped.length === 0) throw new Error(`${pointed} is neither the library (${library}) nor a book in it (${found.books.map(nameOf).join(', ')})`);
-
-    const verdicts: Verdict[] = [];
-    const done = new Set<string>();
-    const queue = scoped.map(nameOf).filter(name => named.includes(name));
-    for (let name = queue.shift(); name !== undefined; name = queue.shift()) {
-        if (done.has(name)) continue;
-        done.add(name);
-        const held = found.books.find(book => nameOf(book) === name);
-        const files = held ? filesOf(library, held) : [];
-        const own = held ? join(library, held.folder, '.book.tsx') : join(library, name);
-        const count = counting();
-        const { book } = await books[name]();
-        const verdict: Verdict = { book: name, walked: 0, failures: [] };
+    for (const folder of folders) {
+        const book = found.books.find(one => one.folder === folder);
+        if (book === undefined) throw new Error(`${folder} is not a book in ${library}`);
+        const { book: live } = (await server.ssrLoadModule(book.module)) as { book: $Book };
+        const answer: Answer = { folder, book: read(live, held), walked: 0, failures: [] };
         try {
-            book.specify();
+            live.specify();
         } catch (error) {
-            const message = said(error);
-            const first = Number(/^(\d+):/.exec(message)?.[1]);
-            verdict.failures.push({ at: `${name}:${kindOf(book)}`, file: files[first] ?? own, says: message });
+            const message = String((error as Error)?.message ?? error);
+            const first = Number(/^(\d+):/u.exec(message)?.[1]);
+            answer.failures.push(`${book.files[first] ?? '.book.tsx'} › ${message}`);
         }
-        verdict.walked = count.reached();
-        verdicts.push(verdict);
-        queue.push(...catalogued(book));
+        answer.walked = count.since();
+        answers.push(answer);
     }
-    return verdicts;
+
+    return answers;
 };

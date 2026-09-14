@@ -1,6 +1,6 @@
 {
   "inventory": {
-    "root": "encyclopedia"
+    "root": "wikipedia"
   },
   "rendering": {
     "title": "Wikipedia",

@@ -2,7 +2,7 @@ import { $ } from '@dna-platform/chemistry';
 import $Book from '../../../../turing/.book';
 import $Cover from '../../../../turing/.cover';
 import $Synopsis from '../../../../turing/.synopsis';
-import $Contents from '../../../../turing/.table';
+import $Table from '../../../../turing/.table';
 import $Lead from '../../../../turing/1-lead';
 import $EarlyLifeAndEducation from '../../../../turing/2-early-life-and-education';
 import $CareerAndResearch from '../../../../turing/3-career-and-research';
@@ -19,7 +19,7 @@ import $TheFoot from '../../../../turing/12-the-foot';
 const Book = $($Book);
 const Cover = $($Cover);
 const Synopsis = $($Synopsis);
-const Contents = $($Contents);
+const Table = $($Table);
 const Lead = $($Lead);
 const EarlyLifeAndEducation = $($EarlyLifeAndEducation);
 const CareerAndResearch = $($CareerAndResearch);
@@ -37,7 +37,7 @@ export const book = $<$Book>(
     <Book>
         <Cover />
         <Synopsis />
-        <Contents />
+        <Table />
         <Lead />
         <EarlyLifeAndEducation />
         <CareerAndResearch />

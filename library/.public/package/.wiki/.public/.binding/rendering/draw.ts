@@ -1,6 +1,6 @@
 import { window } from './dom';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteDevServer } from 'vite';
 import React from 'react';
@@ -8,8 +8,7 @@ import { Suspense } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { $ } from '@dna-platform/chemistry';
 import { configure } from '../configuration/configuration';
-import { walk } from '../inventory/walk';
-import { resolution } from '../resolution/addresses';
+import { around } from '../inventory/library';
 import { page } from './page';
 import { placeOf } from './place';
 import { styles } from './styles';
@@ -17,17 +16,20 @@ import { styles } from './styles';
 const { createElement } = React;
 const { renderToString } = ReactDOMServer;
 
+type Route = { name: string; address: string; load: () => Promise<{ book: unknown }> };
+
+// THE PAGE IS DRAWN THROUGH THE INDEX THE BINDER WROTE — the same routes, and the same loader, the
+// reader's browser runs. One process per page, because a book registers its theme on the shared
+// class when its module loads and a page must be drawn in its own book's.
 export const draw = async (server: ViteDevServer, only?: string): Promise<string[]> => {
-    const binding = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-    const face = resolve(binding, '..');
-    const library = resolve(face, '..');
+    const { binding, face } = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
     const chosen = configure(binding);
-    const table = resolution(walk(library, chosen), chosen);
+    const { routes } = (await server.ssrLoadModule(join(binding, 'application', 'routes.ts'))) as { routes: Route[] };
     const built = readFileSync(join(face, 'index.html'), 'utf8');
     const pages: string[] = [];
 
-    for (const route of table.routes.filter(one => only === undefined || one.name === only)) {
-        const { book } = (await server.ssrLoadModule(route.module)) as { book: unknown };
+    for (const route of routes.filter(one => only === undefined || one.name === only)) {
+        const { book } = await route.load();
         const Opened = $(book as never);
         // The same boundary the entry hydrates inside, so the markers match.
         const markup = renderToString(createElement(Suspense, { fallback: null }, createElement(Opened)));
@@ -35,7 +37,8 @@ export const draw = async (server: ViteDevServer, only?: string): Promise<string
         const at = placeOf(face, route);
         mkdirSync(dirname(at), { recursive: true });
         writeFileSync(at, page(built, markup, sheet, chosen.rendering.title), 'utf8');
-        pages.push(relative(face, at).split('\\').join('/'));
+        pages.push(relative(face, at).split(sep).join('/'));
     }
+
     return pages;
 };

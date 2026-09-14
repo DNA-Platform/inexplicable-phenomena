@@ -35,8 +35,11 @@ const book = (written: React.ReactNode) => {
 const saying = (container: Element, said: string) => (container.textContent?.split(said).length ?? 1) - 1;
 
 describe('a title says what it titles, and an empty one is refused', () => {
+    // AN EMPTY TITLE IS REFUSED BY WHAT REFUSES EVERY EMPTY WRITING. The promise named a rule of its
+    // own until Sprint 69 moved the title's demand to the cover; a title is a piece of writing like
+    // any other, and the heading it makes of what it was given says nothing when it was given nothing.
     it('AN EMPTY TITLE IS REFUSED — validation, not a feature', () => {
-        expect(() => $(<Title /> as never).specify()).toThrow(/names what it titles/u);
+        expect(() => $(<Title /> as never).specify()).toThrow(/says something, and this one says nothing/u);
     });
 
     it('and without one the cover says it once', () => {

@@ -1,15 +1,5 @@
-import type { Book, Diagnostic } from '../inventory/library';
+import type { Entry } from '../manifest/graph';
 
-export const nameOf = (book: Book): string => book.folder.replace(/^\.+/, '');
-
-export const collisions = (books: Book[]): Diagnostic[] => {
-    const seen = new Map<string, string>();
-    const found: Diagnostic[] = [];
-    for (const book of books) {
-        const name = nameOf(book);
-        const other = seen.get(name);
-        if (other !== undefined) found.push({ at: book.folder, says: `named "${name}", which ${other} already is` });
-        else seen.set(name, book.folder);
-    }
-    return found;
-};
+// A BOOK'S NAME IS THE BOOK'S OWN. It is read off the running book — its cover's title, put through
+// the framework's slug on the way out and never kept — and the binder makes no name of its own.
+export const nameOf = (entry: Entry): string => entry.book.name ?? '';

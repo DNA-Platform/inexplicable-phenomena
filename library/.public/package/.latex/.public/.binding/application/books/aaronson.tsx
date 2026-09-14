@@ -2,7 +2,7 @@ import { $ } from '@dna-platform/chemistry';
 import $Book from '../../../../aaronson/.book';
 import $Cover from '../../../../aaronson/.cover';
 import $Synopsis from '../../../../aaronson/.synopsis';
-import $Contents from '../../../../aaronson/.table';
+import $Table from '../../../../aaronson/.table';
 import $Introduction from '../../../../aaronson/1-introduction';
 import $Formalizing from '../../../../aaronson/2-formalizing';
 import $Beliefs from '../../../../aaronson/3-beliefs';
@@ -18,7 +18,7 @@ import $Notes from '../../../../aaronson/11-notes';
 const Book = $($Book);
 const Cover = $($Cover);
 const Synopsis = $($Synopsis);
-const Contents = $($Contents);
+const Table = $($Table);
 const Introduction = $($Introduction);
 const Formalizing = $($Formalizing);
 const Beliefs = $($Beliefs);
@@ -35,7 +35,7 @@ export const book = $<$Book>(
     <Book>
         <Cover />
         <Synopsis />
-        <Contents />
+        <Table />
         <Introduction />
         <Formalizing />
         <Beliefs />

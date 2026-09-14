@@ -1,50 +1,86 @@
 import { spawnSync } from 'node:child_process';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { configure } from '../configuration/configuration';
-import { walk } from '../inventory/walk';
-import type { Verdict } from './specify';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { join } from 'node:path';
+import type { Configuration } from '../configuration/configuration';
+import type { Book, Diagnostic, Library } from '../inventory/library';
+import { graph, type Entry, type Graph } from '../manifest/graph';
+import type { Answer } from './specify';
+
+export type Verdict = { held: Graph; loaded: string[]; unchanged: string[]; failures: Diagnostic[]; walked: number };
 
 const lastLine = (text: string): string => text.trim().split(/\r?\n/).at(-1) ?? '[]';
 
-// FAILURES IN THE COMPILER'S OWN SHAPE — `file(line,col): error TAG: message` — which is
-// what an editor's problem matcher reads, so a writing that does not specify is a red line
-// under the chapter it came from, the way a type error is.
-export const problem = (book: string, failure: { at: string; file: string; says: string }): string =>
-    `${failure.file}(1,1): error SPEC: ${failure.at} — ${failure.says}`;
+// WHAT THE BINDING ITSELF IS, AS BYTES: the two packages every book is written against, read where
+// this binding resolves them. A published bump — or an edit to a checkout a binding is linked to —
+// changes them, and every book is read again.
+const fixed = (binding: string): string[] => {
+    const asked = createRequire(join(binding, 'package.json'));
 
-// SCOPE POINTS AT A FOLDER — Doug: "Point to a folder." — the library, which is every book in it, or one
-// book's folder. Each book is confirmed in its own process.
-export const scoped = (binding: string, folders: string[]): string[] => {
-    const library = resolve(binding, '..', '..');
-    const books = walk(library, configure(binding)).books.map(book => resolve(book.path));
-    return folders.flatMap(folder => (resolve(folder) === library ? books : [resolve(folder)]));
+    return ['@dna-platform/public', '@dna-platform/chemistry'].map(name => {
+        try {
+            return createHash('sha256').update(readFileSync(asked.resolve(name))).digest('hex').slice(0, 16);
+        } catch {
+            return name;
+        }
+    });
 };
 
-export const specifying = (binding: string, folders: string[]): Verdict[] => {
+const batched = (books: Book[], size: number): Book[][] => {
+    const answer: Book[][] = [];
+    for (let at = 0; at < books.length; at += size) answer.push(books.slice(at, at + size));
+
+    return answer;
+};
+
+// WHAT IS STALE IS READ; WHAT IS UNCHANGED IS CARRIED. The decision is made here, before a process
+// is opened, so a library of any size costs a build only what changed in it.
+export const specifying = (binding: string, found: Library, folders: string[], previous: Graph, chosen: Configuration): Verdict => {
     const entry = join(binding, 'specification', 'specify.mjs');
-    const verdicts: Verdict[] = [];
-    for (const folder of scoped(binding, folders)) {
-        const ran = spawnSync(process.execPath, [entry, folder], {
+    const known = new Map(previous.books.map(one => [one.folder, one]));
+    const inputs = fixed(binding);
+    const wanted = found.books.filter(book => folders.includes(book.folder));
+    const digests = new Map(wanted.map(book => [book.folder, graph.digest(found, book, inputs)]));
+    const unchanged = wanted.filter(book => known.get(book.folder)?.digest === digests.get(book.folder));
+    const stale = wanted.filter(book => !unchanged.includes(book));
+
+    const answers: Answer[] = [];
+    for (const batch of batched(stale, chosen.specification.batch)) {
+        const ran = spawnSync(process.execPath, [entry, ...batch.map(book => book.folder)], {
             cwd: binding,
             encoding: 'utf8',
             stdio: ['ignore', 'pipe', 'inherit'],
             env: { ...process.env, NODE_ENV: 'development' },
-            maxBuffer: 64 * 1024 * 1024,
+            maxBuffer: 256 * 1024 * 1024,
         });
-        if (ran.status !== 0 && !ran.stdout.trim()) throw new Error(`specifying ${folder} failed before it could answer (exit ${ran.status ?? 'signal'})`);
-        verdicts.push(...(JSON.parse(lastLine(ran.stdout)) as Verdict[]));
+        if (ran.status !== 0 && !ran.stdout.trim())
+            throw new Error(`reading ${batch.map(book => book.folder).join(', ')} failed before it could answer (exit ${ran.status ?? 'signal'})`);
+        answers.push(...(JSON.parse(lastLine(ran.stdout)) as Answer[]));
     }
-    const failed = verdicts.filter(one => one.failures.length > 0);
-    if (failed.length > 0) {
-        for (const one of failed) for (const failure of one.failures) console.error(problem(one.book, failure));
-        throw new Error(`the library does not specify — ${failed.reduce((n, one) => n + one.failures.length, 0)} failure(s) in ${failed.map(one => one.book).join(', ')}`);
-    }
-    return verdicts;
-};
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-    const binding = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-    for (const verdict of specifying(binding, [process.argv[2] ?? resolve(binding, '..', '..')]))
-        console.log(`${verdict.book.padEnd(16)} ${verdict.walked} writings specified`);
-}
+    // A BOOK OUT OF SCOPE KEEPS WHAT IT LAST ANSWERED, and a book that failed keeps nothing, so the
+    // next build reads it again rather than resolving against a record that never held.
+    const books: Entry[] = previous.books.filter(one =>
+        !wanted.some(book => book.folder === one.folder) && found.books.some(book => book.folder === one.folder));
+    for (const one of unchanged) books.push(known.get(one.folder) as Entry);
+
+    const failures: Diagnostic[] = [];
+    for (const answer of answers) {
+        const book = found.books.find(one => one.folder === answer.folder);
+        for (const said of answer.failures) {
+            const [file, ...rest] = said.split(' › ');
+            failures.push({ at: answer.folder, file: join(book?.path ?? found.root, file), says: rest.join(' › ') });
+        }
+        if (answer.failures.length === 0)
+            books.push({ folder: answer.folder, book: answer.book, digest: digests.get(answer.folder) ?? '', walked: answer.walked });
+    }
+
+    return {
+        held: { books },
+        loaded: stale.map(book => book.folder),
+        unchanged: unchanged.map(book => book.folder),
+        failures,
+        walked: answers.reduce((total, one) => total + one.walked, 0),
+    };
+};

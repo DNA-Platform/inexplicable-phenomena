@@ -1,0 +1,15 @@
+{
+  "books": [
+    {
+      "folder": "aaronson",
+      "book": {
+        "author": "Scott Aaronson",
+        "name": "mathsf-p-stackrel-mathsf-np",
+        "subject": "Computational complexity",
+        "title": "\\mathsf{P} \\stackrel{?}{=} \\mathsf{NP}"
+      },
+      "digest": "23eb79209fbf8639",
+      "walked": 1192
+    }
+  ]
+}
