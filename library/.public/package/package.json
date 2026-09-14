@@ -1,6 +1,6 @@
 {
   "name": "@dna-platform/public",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The canonical code library for creating libraries â€” the base classes a library instantiates against, built on @dna-platform/chemistry",
   "license": "MIT",
   "author": "Doug Rubino",
