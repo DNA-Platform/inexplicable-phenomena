@@ -1,0 +1,8 @@
+{
+  "inventory": { "root": "encyclopedia" },
+  "rendering": {
+    "title": "Wikipedia",
+    "icon": "https://www.wikipedia.org/static/favicon/wikipedia.ico",
+    "stylesheets": ["./page.css"]
+  }
+}

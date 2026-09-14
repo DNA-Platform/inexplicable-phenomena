@@ -11,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  packages: write
+  id-token: write
 
 jobs:
   publish:
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://npm.pkg.github.com
+          registry-url: https://registry.npmjs.org
 
       - run: npm install
 
@@ -32,9 +32,9 @@ jobs:
 
       - name: Publish chemistry
         working-directory: library/chemistry/package
-        run: npm publish --access restricted || echo "Version already published, skipping"
+        run: npm publish --access public --provenance || echo "Version already published, skipping"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build lib
         working-directory: library/.public/package
@@ -42,6 +42,6 @@ jobs:
 
       - name: Publish lib
         working-directory: library/.public/package
-        run: npm publish --access restricted || echo "Version already published, skipping"
+        run: npm publish --access public --provenance || echo "Version already published, skipping"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

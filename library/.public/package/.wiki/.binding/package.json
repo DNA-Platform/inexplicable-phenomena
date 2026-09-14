@@ -1,0 +1,32 @@
+{
+  "name": "binding",
+  "private": true,
+  "type": "module",
+  "description": "The apparatus a library publishes itself with. Copied out of @dna-platform/public into a library, kept current from the package it came from; the library it stands in is its parent folder.",
+  "scripts": {
+    "sync": "tsx manifest/synced.ts",
+    "prebuild": "npm run sync",
+    "build": "tsx binding.ts",
+    "dev": "vite",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@dna-platform/public": "*",
+    "@dna-platform/chemistry": "*",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "styled-components": "^6.1.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^8.0.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.7.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vite": "^7.0.0",
+    "vitest": "^4.0.0"
+  }
+}

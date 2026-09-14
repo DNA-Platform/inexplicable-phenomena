@@ -1,7 +1,7 @@
 {
   "name": "@dna-platform/public",
   "version": "0.0.1",
-  "description": "The canonical code library for creating libraries \u00e2\u20ac\u201d the base classes a library instantiates against, built on @dna-platform/chemistry",
+  "description": "The canonical code library for creating libraries â€” the base classes a library instantiates against, built on @dna-platform/chemistry",
   "license": "MIT",
   "author": "Doug Rubino",
   "repository": {
@@ -50,12 +50,11 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    ".binding"
   ],
   "scripts": {
     "prebuild": "rimraf dist/chunks && tsx register.ts",
-    "sync": "tsx sync.ts",
-    "sync:check": "tsx sync.ts --check",
     "build": "rollup -c",
     "build:quick": "rollup -c --environment QUICK",
     "watch": "sh watch.sh",
@@ -64,10 +63,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "clean": "tsx clean.ts",
-    "wiki": "npm run build && vite .wiki/.public",
+    "wiki": "npm run build && npm --prefix .wiki/.binding run build",
     "test:gate": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run",
-    "verify:latex": "node .latex/.public/verify-latex.mjs",
-    "verify:wiki": "node .wiki/.public/verify-wiki.mjs"
+    "verify:latex": "node .latex/.binding/specification/verify-latex.mjs",
+    "verify:wiki": "node .wiki/.binding/specification/verify-wiki.mjs",
+    "latex": "npm run build && npm --prefix .latex/.binding run build"
   },
   "dependencies": {
     "@dna-platform/chemistry": "*",
@@ -94,5 +94,8 @@
     "tslib": "^2.8.1",
     "typescript": "^5.9.2",
     "vitest": "^4.0.6"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
