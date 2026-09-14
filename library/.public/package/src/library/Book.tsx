@@ -14,6 +14,8 @@ import { $TypeOfReference } from '@/reference/Reference';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Document, $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
+import { $Cover, $TypeOfCover } from './Cover';
+import { $Title } from './Title';
 import { $Path, Path as path } from '@/reference/Path';
 import { $Scratchpad } from './Scratchpad';
 import { $Theme, Theme } from '@/writing/Theme';
@@ -24,6 +26,8 @@ export interface $Book$ extends $Composition$ {
     readonly table: $Chapter | undefined;
     readonly chapters: $Chapter[];
     readonly scratchpad: $Scratchpad;
+    readonly title: $Title | undefined;
+    readonly name: string;
 }
 
 export class $Book extends $Composition implements $Book$ {
@@ -35,6 +39,8 @@ export class $Book extends $Composition implements $Book$ {
     get table(): $Chapter | undefined { return this.chapters[2]; }
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
     get scratchpad(): $Scratchpad { return this._scratchpad; }
+    get title(): $Title | undefined { return this.cover?.parts().find((part): part is $Cover => reflection.is(part, $TypeOfCover))?.title(); }
+    get name(): string { return reflection.kebab(html.text(this.title?.heading()?._block)); }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
 
     $Book(block: $Block) {

@@ -44,6 +44,17 @@ describe('a book is made of chapters, and its first three are its cover, its syn
 
 });
 
+describe('a book is named by its title', () => {
+    class $CoverChapter extends $Chapter { print() { return <Cover><Title>Alan Turing<Reference>#0</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>; } }
+    const CoverChapter = $($CoverChapter);
+
+    it('AND ITS NAME IS THE KEBAB OF THE TITLE\'S COPY', () => {
+        const held = built<$Book>(<Book><CoverChapter /></Book>);
+        expect(html.text(held.title?.heading()?._block)).toBe('Alan Turing');
+        expect(held.name).toBe('alan-turing');
+    });
+});
+
 describe('a cover\'s title means the book, and a title elsewhere is a name', () => {
     it('A COVER WHOSE TITLE MEANS NOTHING IS REFUSED', () => {
         const held = built<$Writing>(<Cover><Title>Chemistry</Title><Author>Doug</Author><Subject>Science</Subject></Cover>);
