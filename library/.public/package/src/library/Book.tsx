@@ -40,7 +40,7 @@ export class $Book extends $Composition implements $Book$ {
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
     get scratchpad(): $Scratchpad { return this._scratchpad; }
     get title(): $Title | undefined { return this.cover?.parts().find((part): part is $Cover => reflection.is(part, $TypeOfCover))?.title(); }
-    get name(): string { return reflection.kebab(html.text(this.title?.heading()?._block)); }
+    get name(): string { return reflection.slug(html.text(this.title?.heading()?._block)); }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
 
     $Book(block: $Block) {

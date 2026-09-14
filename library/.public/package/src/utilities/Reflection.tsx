@@ -305,14 +305,23 @@ export class Reflection {
         return held;
     }
 
+    // THE TWO TOKENS, AND THEY ARE NOT THE SAME READING. A CLASS name is camel, so its capitals are
+    // where the words are: `$CatalogueCard` is `catalogue-card`. COPY is prose, where a capital is
+    // just a capital: `P versus NP` is `p-versus-np`, not `p-versus-n-p`. Every token a reader can
+    // see — a book's name, a heading's id, a catalogue's anchor — is made of copy and takes `slug`;
+    // `kebab` names kinds, and that is all it names.
+    kebab(name: string): string {
+        return this.slug(name.replace(/(?<!^)[A-Z]/gu, '-$&'));
+    }
+
+    slug(copy: string): string {
+        return copy.toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '');
+    }
+
     // A class name with the $ it is written with and any build decoration taken off, so `$Editions`
     // and a bundler's `_$Editions2` name the same kind.
     protected authored(name: string): string {
         return name.replace(/^_*\$?/u, '').replace(/\d+$/u, '');
-    }
-
-    kebab(name: string): string {
-        return name.replace(/(?<!^)[A-Z]/gu, '-$&').toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '');
     }
 }
 

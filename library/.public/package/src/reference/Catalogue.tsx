@@ -35,7 +35,7 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
         if (named === '') this.parenthetical = true;
         if (this.path() === undefined && this.held(this) === undefined && named !== '') {
             const Path = $(path);
-            this._block = this._block.concat($<$Path>(<Path>{`#${reflection.kebab(named)}`}</Path>));
+            this._block = this._block.concat($<$Path>(<Path>{`#${reflection.slug(named)}`}</Path>));
         }
     }
 

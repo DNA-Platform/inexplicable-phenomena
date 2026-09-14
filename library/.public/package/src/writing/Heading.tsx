@@ -24,7 +24,7 @@ export class $Heading extends $Paragraph implements $Heading$ {
         const at = Math.min(reflection.indent(this), levels.length - 1);
         const Level = levels[at];
 
-        return <Level id={reflection.kebab(html.text(this._block))} className={`${this.className} pd-level-${at + 1}`}>{this.print()}</Level>;
+        return <Level id={reflection.slug(html.text(this._block))} className={`${this.className} pd-level-${at + 1}`}>{this.print()}</Level>;
     }
 }
 

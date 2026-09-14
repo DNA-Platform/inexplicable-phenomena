@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $check } from '@dna-platform/chemistry';
 import { render, act } from '@testing-library/react';
-import { $Writing, $Composition, $Book, Book, $Chapter, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Document, $TypeOfDocument } from '@dna-platform/public';
+import { $Writing, $Composition, $Book, Book, $Chapter, $Cover, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Document, $TypeOfDocument } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -51,6 +51,27 @@ describe('a book is named by its title', () => {
     it('AND ITS NAME IS THE KEBAB OF THE TITLE\'S COPY', () => {
         const held = built<$Book>(<Book><CoverChapter /></Book>);
         expect(html.text(held.title?.heading()?._block)).toBe('Alan Turing');
+        expect(held.name).toBe('alan-turing');
+    });
+
+    it('and an acronym in the title stays one word', () => {
+        class $PaperChapter extends $Chapter { print() { return <Cover><Title>P versus NP<Reference>#0</Reference></Title><Author>Scott Aaronson</Author><Subject>Complexity</Subject></Cover>; } }
+        const PaperChapter = $($PaperChapter);
+        expect(built<$Book>(<Book><PaperChapter /></Book>).name).toBe('p-versus-np');
+    });
+
+    // A BOOK IS NAMED THROUGH ITS TYPES, NOT THROUGH ITS CLASSES. A library writes its own cover and
+    // its own title — the wiki's twenty kinds are exactly that — so a book whose cover and title are
+    // subclasses, drawn by a chapter of its own, answers its name the same way.
+    it('AND A COVER AND TITLE OF THE LIBRARY\'S OWN KINDS ARE STILL FOUND', () => {
+        class $Plate extends $Cover { }
+        class $Banner extends $Title { }
+        const Plate = $($Plate);
+        const Banner = $($Banner);
+        class $PlateChapter extends $Chapter { print() { return <Plate><Banner>Alan Turing<Reference>#0</Reference></Banner><Author>Wikipedians</Author><Subject>Biography</Subject></Plate>; } }
+        const PlateChapter = $($PlateChapter);
+        const held = built<$Book>(<Book><PlateChapter /></Book>);
+        expect(held.title).toBeInstanceOf($Banner);
         expect(held.name).toBe('alan-turing');
     });
 });
