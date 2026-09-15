@@ -46,9 +46,9 @@ if (!existsSync(pointed)) {
 // Nothing reads the name afterwards: a face is known by the binding it holds, so this is the only
 // place in the binder that spells one.
 const standing = readdirSync(pointed);
-let named = '.public';
-while (!standing.every(one => named < one)) named = `.${named}`;
-const site = join(pointed, named);
+let face = '.public';
+while (!standing.every(one => face < one)) face = `.${face}`;
+const site = join(pointed, face);
 const into = join(site, '.binding');
 if (existsSync(into) && readdirSync(into).length > 0) {
     console.error(`${into} already holds files — it is a copy, and a copy syncs: run npm run sync there`);

@@ -15,6 +15,12 @@ export class $Author extends $Catalogue implements $Author$ {
     // still says what it says, and will lead somewhere the day that book arrives.
     protected override address(): string { return this.standing() ?? super.address(); }
 
+    // AND AN AUTHOR WHO WROTE THE BOOK YOU ARE READING IS NOT A LINK. Wikipedia calls this a
+    // self-link and draws it as plain text, because an anchor leading where the reader already is
+    // takes them nowhere: on MY Library Log, "Author: Doug" pointed at MY Library Log. Only the
+    // anchor is withdrawn — the label still stands, still copyable, and still MEANS the book.
+    protected override leads(): string { return this.itself ? '' : super.leads(); }
+
     $Author(block: $Block) {
         super.$Catalogue(this.addType(block, $TypeOfAuthor));
     }

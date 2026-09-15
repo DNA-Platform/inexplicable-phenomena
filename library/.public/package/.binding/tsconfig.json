@@ -33,7 +33,7 @@
         "./node_modules/@dna-platform/public"
       ],
       "@dna-platform/public/*": [
-        "./node_modules/@dna-platform/public/*"
+        "./node_modules/@dna-platform/public/dist/*"
       ]
     }
   },

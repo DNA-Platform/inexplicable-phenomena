@@ -33,14 +33,19 @@ export interface $Styled {
 // Reading — what a class declares, and where to read it from
 // ===========================================================================
 
-let names: any;
-
-// A field is CSS when the platform says so, and when the platform cannot — a
-// shim under Node, a browser behind the spec — when CSS's own roster says so,
-// so a prerender and the browser compile the same sheet.
+// A field is CSS when CSS's own roster says so, and the platform is not asked.
+// It used to be asked FIRST, with the roster as a fallback — which repairs a
+// platform that knows LESS than the browser, and a union can only ever make the
+// server a SUPERSET of it. Measured 2026-09-15: happy-dom 20 lists `rule`, the
+// Gap Decorations shorthand Chrome has not shipped, so a prerender wrote
+// `rule:#a2a9b1` into the sheet and the browser did not. The sheets differed,
+// the componentId is a hash OVER the sheet, and so every page served a <main>
+// whose class list React could not reconcile — one unpatchable hydration
+// mismatch per page, on all five. The roster is the only term with no platform
+// in it, and it is what makes a prerender and the browser compile the same
+// sheet in both directions.
 function css(name: string): boolean {
-    if (names === undefined) names = typeof document === 'undefined' ? null : document.createElement('div').style;
-    return (names !== null && name in names) || roster.has(name);
+    return roster.has(name);
 }
 
 // The CSS property is the LAST underscore-separated part, so any prefix makes a

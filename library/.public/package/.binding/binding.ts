@@ -12,6 +12,7 @@ import { routes } from './assembly/routes';
 import { stylesheets } from './assembly/stylesheets';
 import { specifying } from './specification/specifying';
 import { running } from './specification/running';
+import { proof } from './specification/proof';
 import { graph, type Graph } from './manifest/graph';
 import { rendering } from './rendering/rendering';
 import { manifest, type Manifest } from './manifest/manifest';
@@ -99,6 +100,17 @@ export const tasks: Task[] = [
     { name: 'render', run: state => {
         state.rendered = rendering(state.binding, need(state.table, 'render').routes.map(route => route.name));
         return state.rendered.join(', ');
+    } },
+    { name: 'proof', run: state => {
+        // RUNNABLE ON ITS OWN. `tsx binding.ts proof` reads the pages the last binding wrote, so a
+        // person checking one page does not pay for a bundle to find out.
+        const pages = state.rendered.length ? state.rendered : manifest.read(state.binding).rendered;
+        const wrong = proof(state.face, pages);
+        if (wrong.length) {
+            for (const one of wrong) console.error(problem(one));
+            throw new Error(`the pages are not readable — ${plural(wrong.length, 'fault')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
+        }
+        return `${plural(pages.length, 'page')} read back as the browser will build them`;
     } },
     { name: 'record', run: state => {
         const previous = need(state.previous, 'record');

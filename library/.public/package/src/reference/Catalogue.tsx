@@ -64,6 +64,13 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
 
     protected standing(): string | undefined { return $Catalogue.shelved.get(this.name); }
 
+    // DOES THIS MENTION NAME THE BOOK IT IS WRITTEN IN? Asked here because every kind that names a
+    // book asks it, and answered for none of them by the base: a catalogue that names a chapter or a
+    // heading is inside the book already and a fragment is right for it, so only the kinds that lead
+    // to OTHER pages — a book, an author, a subject — ever act on the answer. `itself` is a PROXY
+    // NAME, flagged for Doug.
+    protected get itself(): boolean { return this.name === this.book?.name; }
+
     parts(): $Writing[] {
         const meant = this.held(this);
 
@@ -82,8 +89,15 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
         }
     }
 
+    // WHERE THIS MENTION LEADS AS IT IS DRAWN, which is not always where it points. A mention keeps
+    // its meaning whatever it looks like — that is what lets a reference elsewhere resolve to it —
+    // and this is the one question the drawing asks. A kind that names something the reader is
+    // already inside answers it for itself rather than having the base guess what it is holding,
+    // the same way `linked` is answered on $Writing. `leads` is a PROXY NAME, flagged for Doug.
+    protected leads(): string { return html.text(this.path()?._block); }
+
     override print(): ReactNode {
-        const at = html.text(this.path()?._block);
+        const at = this.leads();
         const said = parser.link(this.copy)?.text ?? super.print();
 
         return at === '' ? said : <a href={at} className="pd-meaning">{said}</a>;
