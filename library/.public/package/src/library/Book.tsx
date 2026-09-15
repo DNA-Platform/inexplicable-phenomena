@@ -1,20 +1,19 @@
 import { ReactNode } from 'react';
-import { $, $Block, $check } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
+import { $, $Block } from '@dna-platform/chemistry';
+import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
-import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Catalogue } from '@/reference/Catalogue';
 import { $TypeOfLetter } from '@/writing/Letter';
 import { $TypeOfWord } from '@/writing/Word';
 import { $TypeOfSentence } from '@/writing/Sentence';
 import { $TypeOfParagraph } from '@/writing/Paragraph';
-import { $TypeOfSection } from '@/writing/Section';
+import { $Section, $TypeOfSection } from '@/writing/Section';
 import { $TypeOfReference } from '@/reference/Reference';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { $Document, $TypeOfDocument } from './Document';
+import { $TypeOfDocument } from './Document';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
-import { $Cover, $TypeOfCover } from './Cover';
+import { $TableOfContents, $TypeOfTableOfContents } from './TableOfContents';
 import { $Title } from './Title';
 import { $Path, Path as path } from '@/reference/Path';
 import { $Scratchpad } from './Scratchpad';
@@ -24,9 +23,10 @@ export interface $Book$ extends $Composition$ {
     readonly cover: $Chapter | undefined;
     readonly synopsis: $Chapter | undefined;
     readonly table: $Chapter | undefined;
+    readonly tableOfContents: $TableOfContents | undefined;
     readonly chapters: $Chapter[];
     readonly scratchpad: $Scratchpad;
-    readonly title: $Title | undefined;
+    readonly title: $Section | undefined;
     readonly name: string;
 }
 
@@ -37,10 +37,11 @@ export class $Book extends $Composition implements $Book$ {
     get cover(): $Chapter | undefined { return this.chapters[0]; }
     get synopsis(): $Chapter | undefined { return this.chapters[1]; }
     get table(): $Chapter | undefined { return this.chapters[2]; }
+    get tableOfContents(): $TableOfContents | undefined { return this.table?.parts().find((part): part is $TableOfContents => reflection.is(part, $TypeOfTableOfContents)); }
     get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
     get scratchpad(): $Scratchpad { return this._scratchpad; }
-    get title(): $Title | undefined { return this.cover?.parts().find((part): part is $Cover => reflection.is(part, $TypeOfCover))?.title(); }
-    get name(): string { return reflection.slug(html.text(this.title?.heading()?._block)); }
+    get title(): $Section | undefined { return this.cover?.title; }
+    get name(): string { return this.cover?.name ?? ''; }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
 
     $Book(block: $Block) {

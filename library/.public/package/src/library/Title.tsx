@@ -1,15 +1,10 @@
-import { ReactNode } from 'react';
 import { reflection } from '@/utilities/Reflection';
-import { $, $Block, $check } from '@dna-platform/chemistry';
+import { $, $Block } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import { $Composition } from '@/writing/Composition';
-import { $Annotation } from '@/writing/Annotation';
 import { $Writing } from '@/writing/Writing';
 import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
 import { html } from '@/utilities/Html';
 import { $Section$, $TypeOfSection, SectionSpecification, $Section } from '@/writing/Section';
-import { $TypeOfCover } from './Cover';
-import type { $Book$ } from './Book';
 
 export interface $Title$ extends $Section$ { }
 

@@ -1,14 +1,23 @@
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
+import { html } from '@/utilities/Html';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
-import { $Catalogue } from '@/reference/Catalogue';
+import { $Catalogue, $TypeOfCatalogue } from '@/reference/Catalogue';
 import { $Type } from '@/writing/Type';
+import { $Document, $TypeOfDocument } from './Document';
+import { $Section } from '@/writing/Section';
 
-export interface $Chapter$ extends $Composition$ { }
+export interface $Chapter$ extends $Composition$ {
+    readonly title: $Section | undefined;
+    readonly name: string;
+}
 
 export class $Chapter extends $Composition implements $Chapter$ {
+    get title(): $Section | undefined { return this.parts().find((part): part is $Document => reflection.is(part, $TypeOfDocument))?.title(); }
+    get name(): string { return reflection.slug(html.text(this.title?.heading()?._block)); }
+
     $Chapter(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfChapter));
     }
@@ -18,11 +27,19 @@ export class $Chapter extends $Composition implements $Chapter$ {
     override parts(): $Writing[] { return reflection.printed(this); }
 }
 
-export class $$Chapter extends $Catalogue { }
+export class $$Chapter extends $Catalogue {
+    get name(): string { return reflection.slug(html.text(this._block)); }
+
+    $$Chapter(block: $Block) {
+        super.$Catalogue(this.addType(block, $TypeOfChapterMention));
+    }
+}
 
 export class $TypeOfChapter extends $Type {
     protected override specification: Specification<$Writing> = new ChapterSpecification();
 }
+
+export class $TypeOfChapterMention extends $TypeOfCatalogue { }
 
 export class ChapterSpecification extends WritingSpecification {
     @specify('a chapter writes its document in print')
@@ -45,3 +62,4 @@ export class ChapterSpecification extends WritingSpecification {
 export const Chapter = $($Chapter);
 export const chapter = $($$Chapter);
 export const TypeOfChapter = $($TypeOfChapter);
+export const TypeOfChapterMention = $($TypeOfChapterMention);

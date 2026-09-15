@@ -4,33 +4,39 @@
       "folder": ".article",
       "book": {
         "author": "Wikipedians",
+        "catalogued": "",
+        "chapters": "wikipedia-manual-of-style-layout  contents manual-of-style-https-en-wikipedia-org-wiki-wikipedia-manual-of-style  order-of-article-elements body-sections standard-appendices-and-footers specialized-layout formatting see-also notes references ",
         "name": "wikipedia-manual-of-style-layout",
         "subject": "Style guide which presents the typical layout of Wikipedia articles",
         "title": "Wikipedia:Manual of Style/Layout"
       },
-      "digest": "ed13cd2572e9e957",
+      "digest": "b27caa7e1a89ebb3",
       "walked": 1016
     },
     {
       "folder": ".encyclopedia",
       "book": {
         "author": "Wikipedians",
+        "catalogued": "",
+        "chapters": "wikipedia wikipedia read-wikipedia-in-your-language wikipedia-is-hosted-by-the-wikimedia-foundation-a-non-profit-organization-that-also-hosts-a-range-of-other-projects other-projects this-page-is-available-under-the-creative-commons-attribution-sharealike-license",
         "name": "wikipedia",
         "subject": "Knowledge",
         "title": "Wikipedia"
       },
-      "digest": "2a5bb74453fbbd99",
+      "digest": "5f1a75b4055d02f0",
       "walked": 277
     },
     {
       "folder": "turing",
       "book": {
         "author": "Wikipedians",
+        "catalogued": "",
+        "chapters": "alan-turing  contents alan-turing early-life-and-education career-and-research personal-life death government-apology-and-pardon further-reading see-also notes references external-links ",
         "name": "alan-turing",
         "subject": "English computer scientist (1912–1954)",
         "title": "Alan Turing"
       },
-      "digest": "18b3820f866876a8",
+      "digest": "24be53e15976a5e2",
       "walked": 2995
     }
   ]
