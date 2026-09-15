@@ -46,9 +46,19 @@ export class $Writing extends $Chemical implements $Writing$ {
         if (this.$print !== undefined) this.parenthetical = !this.$print;
     }
 
+    // THE REFERENCE THIS WRITING IS DRAWN AS A LINK TO, WHICH IS NOT ALWAYS WHAT IT MEANS. Meaning is
+    // semantics and holds whether or not anything is drawn; this is the one question the view asks,
+    // and a kind that means something it should not be a link to answers it for itself rather than
+    // having the base guess. `linked` is a PROXY NAME, flagged for Doug.
+    protected get linked(): $Reference | undefined {
+        const meant = this.meaning;
+
+        return meant?.addresses === true ? meant : undefined;
+    }
+
     view(): ReactNode {
         if (this.parenthetical) return null;
-        const meaning = this.meaning?.parenthetical ? this.meaning : undefined;
+        const meaning = this.linked;
         const linked = meaning !== undefined;
         const drawn = { className: linked ? `${this.className} pd-meaning` : this.className, id: reflection.folded(this)?.key(), href: linked ? html.text(meaning.path()?._block) : undefined };
         const format = this.format;

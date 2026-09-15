@@ -1,35 +1,30 @@
-import { $, $Block, $check } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
-import { $Composition } from '@/writing/Composition';
+import { $, $Block } from '@dna-platform/chemistry';
+import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
-import { html } from '@/utilities/Html';
-import { $Section$, $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $Catalogue$, $Catalogue, $TypeOfCatalogue, CatalogueSpecification } from '@/reference/Catalogue';
 
-export interface $Author$ extends $Section$ { }
+// WHO WROTE THE BOOK, AND IT NAMES ONE. An author is not a string on a cover: the arrow points at
+// the book that is the account of them, so it is a mention like any other and says one thing while
+// naming another — `[Doug](dougs-library-log)` draws Doug and names the log.
+export interface $Author$ extends $Catalogue$ { }
 
-export class $Author extends $Section implements $Author$ {
-    heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
+export class $Author extends $Catalogue implements $Author$ {
+    // AND THE BOOK IT NAMES IS A PAGE. An author is an autobiography — a book — so the arrow leads
+    // out of this page and into that one, exactly as a book mention written in the prose does. Where
+    // the library has not shelved it, the fragment stands: a name for a book that is not here yet
+    // still says what it says, and will lead somewhere the day that book arrives.
+    protected override address(): string { return this.standing() ?? super.address(); }
 
     $Author(block: $Block) {
-        super.$Section(this.addType(block, $TypeOfAuthor));
-        if (this.heading() === undefined) {
-            const Heading = $(heading);
-            this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));
-        }
+        super.$Catalogue(this.addType(block, $TypeOfAuthor));
     }
 }
 
-export class $TypeOfAuthor extends $TypeOfSection {
+export class $TypeOfAuthor extends $TypeOfCatalogue {
     protected override specification: Specification<$Writing> = new AuthorSpecification();
 }
 
-export class AuthorSpecification extends SectionSpecification {
-    @specify('a author is its own heading')
-    override $opensWithHeading(writing: $Writing): boolean | void {
-        return false;
-    }
-}
+export class AuthorSpecification extends CatalogueSpecification { }
 
 export const Author = $($Author);
 export const TypeOfAuthor = $($TypeOfAuthor);

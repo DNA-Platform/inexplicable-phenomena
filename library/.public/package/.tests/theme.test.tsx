@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { act, render } from '@testing-library/react';
 import { $, $Block, $check, styled } from '@dna-platform/chemistry';
-import { $Chapter,
+import { For, $Chapter,
     $Book, $Writing, $Theme, $Section, $Format,
     Book, Document, Cover, Title, Author, Subject, Reference, Synopsis, Heading, Paragraph,
 } from '@dna-platform/public';
@@ -9,7 +9,7 @@ import { $Chapter,
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 const cover = () => <Cover><Title>Alan Turing<Reference>https://en.wikipedia.org/wiki/Alan_Turing</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>;
-const synopsis = () => <Synopsis>A life.</Synopsis>;
+const synopsis = () => <Synopsis><For>Alan Turing</For>A life.</Synopsis>;
 
 // A THEME IS READ WHERE IT IS DRAWN. A format's getter runs inside the draw, so it is where a promise
 // reads the theme a page is really drawn in; the reads are kept, in order, for the promise to look at.

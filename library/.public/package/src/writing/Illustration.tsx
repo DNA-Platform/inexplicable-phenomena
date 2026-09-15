@@ -25,10 +25,17 @@ export class $Illustration extends $Image implements $Illustration$ {
     override print(): ReactNode {
         return (
             <>
-                <img src={this.source} alt={this.caption} className="pd-image" width={html.sized(this.$width)} height={html.sized(this.$height)} />
+                {this.picture()}
                 <figcaption className="pd-caption">{super.print()}</figcaption>
             </>
         );
+    }
+
+    // THE PICTURE ITSELF, WHICH IS THE ONE THING A KIND OF ILLUSTRATION CHANGES. A figure and its
+    // caption are the same whatever is shown, so the base declares where the picture goes and a kind
+    // overrides that alone. `picture` is a PROXY NAME, flagged for Doug.
+    picture(): ReactNode {
+        return <img src={this.source} alt={this.caption} className="pd-image" width={html.sized(this.$width)} height={html.sized(this.$height)} />;
     }
 }
 

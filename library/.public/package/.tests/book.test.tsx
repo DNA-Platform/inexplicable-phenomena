@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $check } from '@dna-platform/chemistry';
 import { render, act } from '@testing-library/react';
-import { $Writing, $Composition, $Book, Book, $Chapter, $Cover, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Document, $TypeOfDocument } from '@dna-platform/public';
+import { $Writing, $Composition, $Book, Book, $Chapter, $Cover, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph, $Title, html, $Theme, Theme, $Document, $TypeOfDocument, reflection, For, $Synopsis } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -15,7 +15,7 @@ const cover = () => (
 
 describe('a book is made of chapters, and its first three are its cover, its synopsis and its table, by position', () => {
     class $CoverChapter extends $Chapter { print() { return cover(); } }
-    class $SynopsisChapter extends $Chapter { print() { return <Synopsis>A book about chemistry.</Synopsis>; } }
+    class $SynopsisChapter extends $Chapter { print() { return <Synopsis><For>Chemistry</For>A book about chemistry.</Synopsis>; } }
     class $TableChapter extends $Chapter { print() { return <TableOfContents><Title>Table of Contents</Title>One.</TableOfContents>; } }
     const CoverChapter = $($CoverChapter);
     const SynopsisChapter = $($SynopsisChapter);
@@ -48,16 +48,21 @@ describe('a book is named by its title', () => {
     class $CoverChapter extends $Chapter { print() { return <Cover><Title>Alan Turing<Reference>#0</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>; } }
     const CoverChapter = $($CoverChapter);
 
-    it('AND ITS NAME IS THE KEBAB OF THE TITLE\'S COPY', () => {
+    // A NAME IS THE COPY, NOT A TOKEN — Doug, 2026-09-15: "you NEVER write urls… names aren't
+    // actually kebab cased". This supersedes the promise that a name was the KEBAB of the copy,
+    // which stood until that ruling; the slug it used to answer is now asked for where a URL is.
+    it('AND ITS NAME IS THE TITLE\'S COPY', () => {
         const held = built<$Book>(<Book><CoverChapter /></Book>);
         expect(html.text(held.title?.heading()?._block)).toBe('Alan Turing');
-        expect(held.name).toBe('alan-turing');
+        expect(held.name).toBe('Alan Turing');
     });
 
-    it('and an acronym in the title stays one word', () => {
+    it('and it is slugged only where a URL is made, where an acronym stays one word', () => {
         class $PaperChapter extends $Chapter { print() { return <Cover><Title>P versus NP<Reference>#0</Reference></Title><Author>Scott Aaronson</Author><Subject>Complexity</Subject></Cover>; } }
         const PaperChapter = $($PaperChapter);
-        expect(built<$Book>(<Book><PaperChapter /></Book>).name).toBe('p-versus-np');
+        const held = built<$Book>(<Book><PaperChapter /></Book>);
+        expect(held.name).toBe('P versus NP');
+        expect(reflection.slug(held.name)).toBe('p-versus-np');
     });
 
     // A BOOK IS NAMED THROUGH ITS TYPES, NOT THROUGH ITS CLASSES. A library writes its own cover and
@@ -72,14 +77,23 @@ describe('a book is named by its title', () => {
         const PlateChapter = $($PlateChapter);
         const held = built<$Book>(<Book><PlateChapter /></Book>);
         expect(held.title).toBeInstanceOf($Banner);
-        expect(held.name).toBe('alan-turing');
+        expect(held.name).toBe('Alan Turing');
     });
 });
 
 describe('a cover\'s title means the book, and a title elsewhere is a name', () => {
-    it('A COVER WHOSE TITLE MEANS NOTHING IS REFUSED', () => {
+    // STRUCK 2026-09-15 — Doug: "we want to forget the web and think in books." A cover's title used
+    // to be required to hold a written <Reference>, which is an ADDRESS typed into a book. A title
+    // already means the thing it titles. What survives is that a cover must CARRY one, and both
+    // halves are promised here so striking a demand does not leave the cover unguarded.
+    it('A COVER STANDS ON ITS TITLE ALONE, WITH NO ADDRESS WRITTEN INTO IT', () => {
         const held = built<$Writing>(<Cover><Title>Chemistry</Title><Author>Doug</Author><Subject>Science</Subject></Cover>);
-        expect(() => held.specify()).toThrow(/means the book/);
+        expect(() => held.specify()).not.toThrow();
+    });
+
+    it('and a cover carrying NO title is still refused', () => {
+        const held = built<$Writing>(<Cover><Author>Doug</Author><Subject>Science</Subject></Cover>);
+        expect(() => held.specify()).toThrow(/carries its title/);
     });
 
     it('and a title elsewhere is a name', () => {
@@ -90,6 +104,22 @@ describe('a cover\'s title means the book, and a title elsewhere is a name', () 
     it('AND ONE THAT MEANS SOMETHING STANDS', () => {
         const held = built<$Writing>(<Title>Chemistry<Reference>#0</Reference></Title>);
         expect(() => held.specify()).not.toThrow();
+    });
+});
+
+// A SYNOPSIS IS FOR A BOOK — Doug, 2026-09-15: "canonicals are uniquely associated with something
+// so they are always FOR it". It is what makes a synopsis reusable: printed inside another book it
+// still names the book it is the synopsis OF.
+describe('a synopsis says the book it is for', () => {
+    it('AND IT NAMES THAT BOOK, WRITTEN THE WAY A PERSON WRITES IT', () => {
+        const held = built<$Synopsis>(<Synopsis><For>Alan Turing</For><Title>About</Title></Synopsis>);
+        expect(held.canonical()?.name).toBe('Alan Turing');
+    });
+
+    it('AND ONE THAT SAYS NOTHING IS REFUSED, because a synopsis is written to be read elsewhere', () => {
+        const held = built<$Synopsis>(<Synopsis><Title>About</Title></Synopsis>);
+        expect(held.canonical()).toBeUndefined();
+        expect(() => held.specify()).toThrow(/the book it is for/);
     });
 });
 
@@ -108,6 +138,7 @@ describe('a book draws what it holds, under one sheet', () => {
     );
     const synopsis = (print: boolean) => (
         <Synopsis print={print}>
+            <For>Chemistry</For>
             <Section>
                 <Heading>About</Heading>
                 <Paragraph>Quietly.</Paragraph>

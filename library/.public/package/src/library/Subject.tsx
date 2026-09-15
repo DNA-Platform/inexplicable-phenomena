@@ -1,36 +1,30 @@
-import { $, $Block, $check } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
-import { $Composition } from '@/writing/Composition';
+import { $, $Block } from '@dna-platform/chemistry';
+import { Specification } from '@/utilities/Specification';
 import { $Writing } from '@/writing/Writing';
-import { $TypeOfHeading, Heading as heading } from '@/writing/Heading';
-import { html } from '@/utilities/Html';
-import { $Section$, $Section, $TypeOfSection, SectionSpecification } from '@/writing/Section';
+import { $Catalogue$, $Catalogue, $TypeOfCatalogue, CatalogueSpecification } from '@/reference/Catalogue';
 
-export interface $Subject$ extends $Section$ { }
+// WHAT THE BOOK IS ABOUT, AND IT NAMES ONE. A subject is a mention of the book that catalogues it,
+// so a library can be asked whether every subject it holds has one — which no reading of a string
+// could answer. It says one thing and names another the way an author does.
+export interface $Subject$ extends $Catalogue$ { }
 
-export class $Subject extends $Section implements $Subject$ {
-
-    heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
+export class $Subject extends $Catalogue implements $Subject$ {
+    // AND THE CATALOGUE IT NAMES IS A PAGE. A subject exists as a catalogue of the same name, and a
+    // catalogue is a book — Doug, 2026-09-15: "the subject has to be a link to the subject
+    // catalogue… we need it to have a connected library." So the arrow leads to that book's page,
+    // and falls back to the fragment where the library has not shelved one.
+    protected override address(): string { return this.standing() ?? super.address(); }
 
     $Subject(block: $Block) {
-        super.$Section(this.addType(block, $TypeOfSubject));
-        if (this.heading() === undefined) {
-            const Heading = $(heading);
-            this._block = this._block.filter(piece => typeof piece !== 'string').concat($(<Heading>{html.text(this._block)}</Heading>));
-        }
+        super.$Catalogue(this.addType(block, $TypeOfSubject));
     }
 }
 
-export class $TypeOfSubject extends $TypeOfSection {
+export class $TypeOfSubject extends $TypeOfCatalogue {
     protected override specification: Specification<$Writing> = new SubjectSpecification();
 }
 
-export class SubjectSpecification extends SectionSpecification {
-    @specify('a subject is its own heading')
-    override $opensWithHeading(writing: $Writing): boolean | void {
-        return false;
-    }
-}
+export class SubjectSpecification extends CatalogueSpecification { }
 
 export const Subject = $($Subject);
 export const TypeOfSubject = $($TypeOfSubject);

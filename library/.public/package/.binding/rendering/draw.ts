@@ -12,6 +12,7 @@ import { around } from '../inventory/library';
 import { page } from './page';
 import { placeOf } from './place';
 import { styles } from './styles';
+import { shellOf } from './rendering';
 
 const { createElement } = React;
 const { renderToString } = ReactDOMServer;
@@ -25,7 +26,7 @@ export const draw = async (server: ViteDevServer, only?: string): Promise<string
     const { binding, face } = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
     const chosen = configure(binding);
     const { routes } = (await server.ssrLoadModule(join(binding, 'application', 'routes.ts'))) as { routes: Route[] };
-    const built = readFileSync(join(face, 'index.html'), 'utf8');
+    const built = readFileSync(shellOf(binding), 'utf8');
     const pages: string[] = [];
 
     for (const route of routes.filter(one => only === undefined || one.name === only)) {

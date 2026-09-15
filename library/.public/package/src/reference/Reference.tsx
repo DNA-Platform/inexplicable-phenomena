@@ -10,6 +10,7 @@ import { $Path, $TypeOfPath, Path as path } from './Path';
 
 export interface $Reference$ extends $Annotation$ {
     $focused: boolean;
+    readonly addresses: boolean;
 
     path(): $Path | undefined;
     focus(): void;
@@ -19,6 +20,13 @@ export interface $Reference$ extends $Annotation$ {
 
 export class $Reference extends $Annotation implements $Reference$ {
     $focused = false;
+
+    // WHETHER THIS REFERENCE IS THE ADDRESS OF WHATEVER HOLDS IT, as against something standing in
+    // the writing as content. A reference drawn nowhere can only be an address — there is nothing
+    // else for it to be — and that is what lets a title or a mention hand its holder a link without
+    // anybody writing one. The kinds that can ALSO be content override this; a plain reference
+    // cannot be content, so the two readings coincide here and the seam is only visible below.
+    get addresses(): boolean { return this.parenthetical; }
 
     path(): $Path | undefined { return this.searchForOne<$Path>($TypeOfPath); }
 

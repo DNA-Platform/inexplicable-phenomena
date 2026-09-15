@@ -44,7 +44,16 @@ export class $Composition extends $Writing implements $Composition$ {
                 // The reading is one level now, which is what makes it safe to ask.
                 if (own !== undefined && token !== this && reflection.is(token, own)) return token;
                 if (beneath === undefined) return token;
-                return reflection.is(token, beneath) ? token : undefined;
+                if (reflection.is(token, beneath)) return token;
+                // A WRITING FROM A HIGHER LEVEL STANDS WHERE IT WAS WRITTEN. What a level does not
+                // accept is treated as prose and MADE into the level beneath — which is right for a
+                // word or a mention and wrong for a synopsis, because a synopsis is a document and a
+                // document cannot be made into a paragraph. Measured 2026-09-15: every printed
+                // synopsis came out as `<p class="pd-paragraph"><article class="pd-synopsis">`, the
+                // parser closed the paragraph where the article opened, and the served markup was
+                // not the tree the browser built — so React discarded the whole page at the first
+                // press and no link on it could be clicked.
+                return reflection.above(kind, token.kind) ? token : undefined;
             },
             tokens => this.reduce(tokens),
             parts => kind?.supplies(this, parts) ?? parts);

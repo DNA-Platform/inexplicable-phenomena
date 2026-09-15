@@ -46,11 +46,17 @@ export class $InfoboxFormat extends $BoxFormat {
     label_verticalAlign = 'top';
     label_fontWeight = '700';
 
+    // THE LINE UNDER AN INFOBOX'S NAME IS PROSE, NOT A LINK. It was painted in the link colour so it
+    // would match Turing's, where "OBE FRS" is blue — but there it is blue because every word of it
+    // IS a link, and here it is a subtitle somebody wrote. Doug, 2026-09-15: "sometimes the text is
+    // still all blue and acts like a link… I wanted that as the default colour for links not for
+    // everything." Measured on all five pages of his library: one blue non-link each, and this was
+    // it. A link inside this line still draws in the link colour, because that rule belongs to links.
     @select('> .pd-heading + .pd-paragraph') said_textAlign = 'center';
     said_margin = '0';
     said_padding = '0 0.5em 0.4em';
     said_fontWeight = '700';
-    get said_color() { return this.theme.link; }
+    get said_color() { return this.theme.ink; }
 
     @select('&.pd-infobox .pd-illustration') shown_display = 'block';
     shown_float = 'none';

@@ -165,6 +165,20 @@ export class Reflection {
         return ladder.slice(0, at + 1).some(level => held instanceof level);
     }
 
+    // THE TWIN OF `beneath`, AND THE ONLY WAY TO TELL A SYNOPSIS FROM PROSE. A level answers what
+    // it holds; nothing answered what stands OVER it, so a document written inside a section was
+    // indistinguishable from a word and was made into a paragraph — which is `<p><article>`, markup
+    // the HTML parser rewrites and React cannot then hydrate. It is placed-and-higher, not
+    // merely not-beneath: a mention is on no ladder at all and is prose like any other writing.
+    // `above` is a PROXY NAME, flagged for Doug.
+    above(holding: $Type | undefined, held: $Type | undefined): boolean {
+        const placed = this.placed(holding);
+        if (placed === undefined || held === undefined) return false;
+        const [ladder, at] = placed;
+
+        return ladder.slice(at + 1).some(level => held instanceof level);
+    }
+
     below(kind: $Type | undefined): (new() => $Type) | undefined {
         const placed = this.placed(kind);
         if (placed === undefined) return undefined;
@@ -314,8 +328,14 @@ export class Reflection {
         return this.slug(name.replace(/(?<!^)[A-Z]/gu, '-$&'));
     }
 
+    // A NAME IS PROSE AND AN ADDRESS IS NOT, so the punctuation a person writes is READ rather than
+    // cut at. An apostrophe stands INSIDE a word, so it comes out rather than splitting one, and an
+    // ampersand IS a word, so it is written as one: `Doug's Library` is `dougs-library` and
+    // `Claude & Our Projects` is `claude-and-our-projects`.
     slug(copy: string): string {
-        return copy.toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '');
+        const said = copy.toLowerCase().replace(/['’]/gu, '').replace(/&/gu, ' and ');
+
+        return said.replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '');
     }
 
     // A class name with the $ it is written with and any build decoration taken off, so `$Editions`

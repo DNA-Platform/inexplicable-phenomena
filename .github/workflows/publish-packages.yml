@@ -11,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+  packages: write
 
 jobs:
   publish:
@@ -22,16 +22,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org
+          registry-url: https://npm.pkg.github.com
+          scope: '@dna-platform'
 
-      # TRUSTED PUBLISHING. npm accepts GitHub's identity for this workflow — no token, no
-      # one-time code — once each package on npmjs.com names this repository and this file as
-      # its trusted publisher. That needs npm 11.5 or newer, which Node 22 does not carry, and
-      # it needs NO token in the environment: a token takes precedence and npm then asks for
-      # a second factor, which is exactly what tokens no longer bypass (npm, 2026). The first
-      # version of a package is published by hand with a code; the trusted publisher is set on
-      # its settings page after that; every version after publishes itself here on a bump.
-      - run: npm install -g npm@latest
+      # THE REPOSITORY'S OWN PACKAGES. Every library here consumes @dna-platform/public and
+      # @dna-platform/chemistry from GitHub Packages — the registry a library's .npmrc already
+      # names — so this is where they are published, and a library updates by installing a version
+      # rather than by reaching into a checkout. GitHub's own GITHUB_TOKEN authorises it, which is
+      # what `packages: write` above grants and why no npm credential is needed. Provenance and
+      # trusted publishing are npmjs features and have no counterpart here.
       - run: npm install
 
       - name: Build chemistry
@@ -40,7 +39,9 @@ jobs:
 
       - name: Publish chemistry
         working-directory: library/chemistry/package
-        run: npm publish --access public --provenance || echo "Version already published, skipping"
+        run: npm publish || echo "Version already published, skipping"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build lib
         working-directory: library/.public/package
@@ -48,4 +49,6 @@ jobs:
 
       - name: Publish lib
         working-directory: library/.public/package
-        run: npm publish --access public --provenance || echo "Version already published, skipping"
+        run: npm publish || echo "Version already published, skipping"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

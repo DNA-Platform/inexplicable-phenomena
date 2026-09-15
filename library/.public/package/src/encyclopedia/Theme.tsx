@@ -421,7 +421,7 @@ export class $EncyclopediaTheme extends $Theme {
     @select('.pd-table-of-contents .pd-list .pd-list') sub_paddingLeft = '0.9em';
     @select('.pd-table-of-contents .pd-meaning, .pd-table-of-contents .pd-ref, .pd-table-of-contents .pd-reference') entryLink_display = 'block';
     entryLink_textDecoration = 'none';
-    @select('.pd-table-of-contents .pd-meaning:hover, .pd-table-of-contents .pd-ref:hover, .pd-table-of-contents .pd-reference:hover') get entryHover_color() { return this.pressed; }
+    @select('.pd-table-of-contents a.pd-meaning:hover, .pd-table-of-contents a.pd-ref:hover, .pd-table-of-contents a.pd-reference:hover') get entryHover_color() { return this.pressed; }
 
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter)') override document_marginBottom = '2em';
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter):not(.pd-synopsis) > *:first-child:not(.pd-aside)') opening_marginTop = '0';
@@ -500,8 +500,14 @@ export class $EncyclopediaTheme extends $Theme {
     get index_background() { return this.quiet; }
     get index_border() { return `1px solid ${this.rule}`; }
     @select('.pd-cited') cited_fontSize = '90%';
-    @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover') override hover_textDecoration = 'underline';
-    @select('.pd-meaning:hover, .pd-ref:hover, .pd-reference:hover, .pd-meaning:focus, .pd-ref:focus, .pd-reference:focus') get pressed_color() { return this.pressed; }
+    // ONLY AN ANCHOR ANSWERS A HOVER. `.pd-reference` is worn by anything whose TYPE descends from
+    // $TypeOfReference — and $TypeOfBook does, so the book element itself carries it. Unqualified,
+    // these two rules therefore matched the whole book the moment a pointer entered the page, and
+    // every word in it took the pressed colour and an underline: Doug, 2026-09-15, "the whole book
+    // becomes blue on hover and you can't find a link." Nothing is lost by asking for an anchor — a
+    // reference that is not one draws its own `.pd-meaning` anchor inside itself, which still matches.
+    @select('a.pd-meaning:hover, a.pd-ref:hover, a.pd-reference:hover') override hover_textDecoration = 'underline';
+    @select('a.pd-meaning:hover, a.pd-ref:hover, a.pd-reference:hover, a.pd-meaning:focus, a.pd-ref:focus, a.pd-reference:focus') get pressed_color() { return this.pressed; }
 }
 
 export const EncyclopediaTheme = $($EncyclopediaTheme);

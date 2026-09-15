@@ -12,6 +12,9 @@ import { $Section, $TypeOfSection } from '@/writing/Section';
 import { $TypeOfReference } from '@/reference/Reference';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $TypeOfDocument } from './Document';
+import { $Cover, $TypeOfCover } from './Cover';
+import { $Author } from './Author';
+import { $Subject } from './Subject';
 import { $Chapter, $$Chapter, $TypeOfChapter, chapter } from './Chapter';
 import { $TableOfContents, $TypeOfTableOfContents } from './TableOfContents';
 import { $Title } from './Title';
@@ -28,6 +31,8 @@ export interface $Book$ extends $Composition$ {
     readonly scratchpad: $Scratchpad;
     readonly title: $Section | undefined;
     readonly name: string;
+    readonly author: $Author | undefined;
+    readonly subject: $Subject | undefined;
 }
 
 export class $Book extends $Composition implements $Book$ {
@@ -42,6 +47,8 @@ export class $Book extends $Composition implements $Book$ {
     get scratchpad(): $Scratchpad { return this._scratchpad; }
     get title(): $Section | undefined { return this.cover?.title; }
     get name(): string { return this.cover?.name ?? ''; }
+    get author(): $Author | undefined { return this.cover?.searchPartsForOne<$Cover>($TypeOfCover)?.author(); }
+    get subject(): $Subject | undefined { return this.cover?.searchPartsForOne<$Cover>($TypeOfCover)?.subject(); }
     override get document(): $Catalogue | undefined { return this.cover?.mention; }
 
     $Book(block: $Block) {
@@ -79,7 +86,15 @@ export class $Book extends $Composition implements $Book$ {
     }
 }
 
-export class $$Book extends $Catalogue { }
+// A BOOK MENTION IS A PAGE, NOT A PLACE ON THIS ONE. Every other mention addresses something inside
+// the book being read, so a fragment is right for it; a book is somewhere else entirely. Measured
+// 2026-09-15 across Doug's library: every `<Book>MY Library Log</Book>` written in the prose
+// rendered as `href="#my-library-log"`, an anchor to an id that is not on the page — a link that
+// looks like a link and goes nowhere, which is worse than no link at all. Doug: "see that it doesn't
+// have links? Bug in the writing."
+export class $$Book extends $Catalogue {
+    protected override address(): string { return this.standing() ?? super.address(); }
+}
 
 export class $TypeOfBook extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new BookSpecification();

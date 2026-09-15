@@ -39,17 +39,29 @@ if (!existsSync(pointed)) {
     process.exit(1);
 }
 
-// THE FACE IS .public, MADE INSIDE THE LIBRARY POINTED TO — always, by ruling: the library
-// holds the books, its face holds the binding and the built site.
-const site = join(pointed, '.public');
+// THE FACE, MADE INSIDE THE LIBRARY POINTED TO — by ruling the library holds the books and its face
+// holds the binding and the built site. Doug, 2026-09-15: "it should have as many periods as is
+// needed to be up top" — the FEWEST that put it above everything already standing there, found by
+// asking rather than by counting, because a period is not the only thing that orders a name.
+// Nothing reads the name afterwards: a face is known by the binding it holds, so this is the only
+// place in the binder that spells one.
+const standing = readdirSync(pointed);
+let named = '.public';
+while (!standing.every(one => named < one)) named = `.${named}`;
+const site = join(pointed, named);
 const into = join(site, '.binding');
 if (existsSync(into) && readdirSync(into).length > 0) {
     console.error(`${into} already holds files — it is a copy, and a copy syncs: run npm run sync there`);
     process.exit(1);
 }
 
+// A FIRST COPY TAKES THE MANIFEST. `kept` is what a SYNC must not overwrite — a copy's own files,
+// its dependencies among them — and a copy that does not exist yet has none of its own, so keeping
+// the manifest back leaves it with no package.json and nothing to install from.
+const keeping = new Set([...kept].filter(path => path !== 'package.json'));
+
 mkdirSync(into, { recursive: true });
-const { written } = await bring({ kind: 'local', at: here }, into, kept);
+const { written } = await bring({ kind: 'local', at: here }, into, keeping);
 const origin = named(into);
 writeFileSync(join(into, '.pubconfig'), JSON.stringify({ manifest: { origin } }, null, 2) + '\n', 'utf8');
 console.log(`${written.length} files copied into ${into}`);

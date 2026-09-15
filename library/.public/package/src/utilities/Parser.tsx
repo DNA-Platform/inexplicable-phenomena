@@ -1,4 +1,3 @@
-import { lexer } from 'marked';
 import { $Writing } from '@/writing/Writing';
 import { reflection } from '@/utilities/Reflection';
 import { $Annotation } from '@/writing/Annotation';
@@ -12,14 +11,16 @@ export class Parser {
     // read here because this is the utility that parses; it stood private inside $Ref, which is why
     // a heading holding one was named after its own address (Solutions 82). A ref draws the text and
     // addresses the target; a mention draws the text and is NAMED by the target.
+    //
+    // AND IT IS OURS TO READ, NOT MARKDOWN'S — Doug, 2026-09-15: "it's not markdown, WE should be
+    // parsing that… no one ever said to use a markdown parser. We will want to change links." A
+    // markdown destination cannot hold a space, so `[Doug](MY Library Log)` was not a link to that
+    // reader at all — and a TARGET here is a NAME, which holds whatever a person writes. One
+    // expression, and the syntax is free to move without asking another language's permission.
     link(copy: string): { text: string; url: string } | undefined {
-        if (!copy.startsWith('[')) return undefined;
-        for (const token of lexer(copy)) {
-            if (token.type !== 'paragraph') continue;
-            for (const inline of (token as { tokens?: { type: string; text: string; href: string }[] }).tokens ?? [])
-                if (inline.type === 'link') return { text: inline.text, url: inline.href };
-        }
-        return undefined;
+        const held = /^\[([^\]]*)\]\(([^)]*)\)$/u.exec(copy.trim());
+
+        return held === null ? undefined : { text: held[1].trim(), url: held[2].trim() };
     }
 
     tokens(of: $Writing): (string | $Writing)[] {

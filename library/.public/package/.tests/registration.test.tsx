@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
-import { $Chapter, Reference,
+import { For, $Chapter, Reference,
     $Book, $Document, $Writing, Book, Cover, Synopsis, Title, Author, Subject,
     Section, Heading, Paragraph, TableOfContents,
 } from '@dna-platform/public';
@@ -32,7 +32,7 @@ const Recorded = $($Recorded);
 const Bound = $($Bound);
 
 class $CoverChapter extends $Chapter { print() { return <Cover><Title>Alan Turing<Reference>#0</Reference></Title><Author>Wikipedians</Author><Subject>Biography</Subject></Cover>; } }
-class $SynopsisChapter extends $Chapter { print() { return <Synopsis>A life.</Synopsis>; } }
+class $SynopsisChapter extends $Chapter { print() { return <Synopsis><For>Alan Turing</For>A life.</Synopsis>; } }
 class $EarlyLife extends $Chapter { print() { return <Recorded><Section><Heading>Early life</Heading><Paragraph>Born in Maida Vale.</Paragraph></Section></Recorded>; } }
 class $Cryptanalysis extends $Chapter { print() { return <Recorded><Section><Heading>Cryptanalysis</Heading><Paragraph>Bletchley Park.</Paragraph></Section></Recorded>; } }
 const CoverChapter = $($CoverChapter);

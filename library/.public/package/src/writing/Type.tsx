@@ -7,8 +7,13 @@ import { reflection } from '@/utilities/Reflection';
 
 export interface $Type$ extends $Annotation$ { }
 
+// A TYPE RESOLVES A NAME TO THE TYPE THAT BEARS IT. `formula` is what makes the render walk read
+// what is written inside a tag and stand the specimen filed under it there — so `<Type>Autobiography
+// </Type>` is an $Autobiography, and a kind that files nothing stands as written and raises nothing.
+// $Annotation is not a formula, so the catalogue reaches exactly the types and nothing above them.
 export class $Type extends $Annotation implements $Type$ {
     override parenthetical = true;
+    override formula = true;
     name: string = this.constructor.name.replace(/^_*\$?/u, '').replace(/\d+$/u, '').replace(/^TypeOf/u, '');
 
     $Type(block: $Block) {

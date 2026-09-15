@@ -6,7 +6,8 @@ import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Composition$, $Composition } from '@/writing/Composition';
 import { $Catalogue, $TypeOfCatalogue } from '@/reference/Catalogue';
 import { $Type } from '@/writing/Type';
-import { $Document, $TypeOfDocument } from './Document';
+import { $Document, $$Document, $TypeOfDocument, doc } from './Document';
+import { $Path, Path as path } from '@/reference/Path';
 import { $Section } from '@/writing/Section';
 
 export interface $Chapter$ extends $Composition$ {
@@ -16,15 +17,34 @@ export interface $Chapter$ extends $Composition$ {
 
 export class $Chapter extends $Composition implements $Chapter$ {
     get title(): $Section | undefined { return this.searchPartsForOne<$Document>($TypeOfDocument)?.title(); }
-    get name(): string { return reflection.slug(html.text(this.title?.heading()?._block)); }
+    get name(): string { return html.text(this.title?.heading()?._block).trim(); }
 
+    // A CHAPTER GIVES ITS DOCUMENT ITS ADDRESS, and the address is the TITLE — Doug, 2026-09-15: "it
+    // needs to point to the document. We need chapters to give their document #{title} and the title
+    // would point there wherever it is." A book gives each chapter a mention pathed by POSITION,
+    // which is the library's address and not a URL; a document is reached by what it is called, so
+    // a title pointing at it lands on the heading its own copy already carries an id for.
     $Chapter(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfChapter));
     }
 
     // A CHAPTER HOLDS ONLY ANNOTATIONS AND WRITES ITS DOCUMENT IN PRINT, its own specification says,
-    // so its parts are the one writing it prints.
-    override parts(): $Writing[] { return reflection.printed(this); }
+    // so its parts are the one writing it prints — and the chapter gives that document its address
+    // as it hands it over. Doug, 2026-09-15: "it needs to point to the document. We need chapters to
+    // give their document #{title} and the title would point there wherever it is." A book addresses
+    // its chapters by POSITION, which is the library's own address; a document is reached by what it
+    // is CALLED, and the heading its title draws already carries that id. It is given here rather
+    // than at the bond because a chapter has not printed yet when it is bound.
+    override parts(): $Writing[] {
+        const printed = reflection.printed(this);
+        const titled = printed.find((part): part is $Document => reflection.is(part, $TypeOfDocument))?.title()?.heading();
+        const Mention = $(doc);
+        const Path = $(path);
+        const at = `#${reflection.slug(html.text(titled?._block))}`;
+        for (const part of printed) part._mention ??= $<$$Document>(<Mention />, $<$Path>(<Path>{at}</Path>), part);
+
+        return printed;
+    }
 }
 
 export class $$Chapter extends $Catalogue {

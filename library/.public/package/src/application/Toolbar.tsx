@@ -28,12 +28,20 @@ export class $ToolbarFormat extends $Format {
     group_gap = '1.143em';
     group_margin = '0';
     @select('> .pd-paragraph:not(.pd-heading):last-of-type') closing_marginLeft = 'auto';
-    @select('.pd-ref, > .pd-menu > .pd-summary') tab_display = 'flex';
+    // A MENTION IN THE TAB ROW IS A TAB. A written ref lays itself out as a flex item the full height
+    // of the row; a MENTION arrives as a span with an inline anchor inside it, so it sat sixteen
+    // pixels tall against thirty-two and floated above the baseline of the tabs beside it — measured
+    // 2026-09-15 with `Book` at 138 against `Subject` at 139. A toolbar that can only seat the links
+    // somebody typed cannot carry a relation the library already knows, which is the one thing a
+    // library's tabs are for. Nothing about a mention changes here; only how the row seats it.
+    @select('.pd-ref, .pd-catalogue, > .pd-menu > .pd-summary') tab_display = 'flex';
     tab_alignItems = 'center';
     tab_padding = '0';
     tab_margin = '0';
     tab_textDecoration = 'none';
     tab_whiteSpace = 'nowrap';
+    @select('.pd-catalogue > .pd-meaning') said_display = 'block';
+    said_lineHeight = '1';
     @select('> .pd-menu') tools_flex = '0 0 auto';
     @select('> .pd-menu::details-content') held_left = 'auto';
     held_right = '0';

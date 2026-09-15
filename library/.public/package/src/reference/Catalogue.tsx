@@ -24,12 +24,45 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
     // WHAT A MENTION NAMES, which is not always what it says. Written plainly the copy is both;
     // written [label](name) it SAYS the label and NAMES the name, the way a ref says its text and
     // addresses its target — one reading in the parser, read here for the name and below for what
-    // is drawn. The name is a token, so it takes the copy reading and never the class one.
+    // is drawn. A NAME IS THE COPY, NOT A TOKEN — Doug, 2026-09-15: "you NEVER write urls… names
+    // aren't actually kebab cased" — so it is written the way a person writes it and slugged only
+    // where a URL is made, which below is the one anchor this mention stands at.
     protected get copy(): string { return html.text(this._block).trim(); }
-    get name(): string { const copy = this.copy; return reflection.slug(parser.link(copy)?.url ?? copy); }
+    get name(): string { const copy = this.copy; return (parser.link(copy)?.url ?? copy).trim(); }
+
+    // A MENTION THAT SAYS SOMETHING IS CONTENT, AND CONTENT IS NOT AN ADDRESS. A catalogue is the one
+    // kind of reference that can be either: written empty it is an address and hands it to whatever
+    // holds it, written with copy it is a mention standing in the prose and draws its own anchor.
+    // `parenthetical` alone could not tell them apart, because it also answers a silence the AUTHOR
+    // asked for — and `print={false}` is how a table of contents names a chapter it does not list.
+    // Measured 2026-09-15 on Doug's library AND on the reference wiki: the first such mention inside
+    // a contents section was read as that section's address, so the entire table of contents drew as
+    // one <a> with its own links nested inside it, invalid and blue from edge to edge. Doug: "that
+    // Doug self link is awful and ruins the flow… see that blue text everywhere?"
+    override get addresses(): boolean { return this.parenthetical && this.copy === ''; }
 
     override specifically(): void {
     }
+
+    // WHERE THIS MENTION LEADS when nobody wrote an address into it. A mention of something inside
+    // the book being read is reached by a FRAGMENT, and that is right for a chapter, a heading or a
+    // section. A mention of a BOOK is not on this page at all — it is another page — and the kinds
+    // that name books say so by overriding this rather than by the base asking what it is holding.
+    protected address(): string { return `#${reflection.slug(this.name)}`; }
+
+    // WHERE THE BOOKS OF THIS LIBRARY STAND, said once by whoever published it. A book cannot know
+    // where it was published any more than a page can know which shelf it ended up on, so the
+    // framework declares the question and the application answers it: a binder resolves every
+    // address at build time and writes the table its pages are loaded from, and this is that table
+    // said out loud. Names are COPY — a book is shelved under what a person would write, never under
+    // a slug. Doug, 2026-09-15: "we need it to have a connected library."
+    protected static shelved = new Map<string, string>();
+
+    static shelve(books: { name: string; address: string }[]): void {
+        books.forEach(book => $Catalogue.shelved.set(book.name, book.address));
+    }
+
+    protected standing(): string | undefined { return $Catalogue.shelved.get(this.name); }
 
     parts(): $Writing[] {
         const meant = this.held(this);
@@ -45,7 +78,7 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
         if (copy === '') this.parenthetical = true;
         if (this.path() === undefined && this.held(this) === undefined && copy !== '') {
             const Path = $(path);
-            this._block = this._block.concat($<$Path>(<Path>{`#${this.name}`}</Path>));
+            this._block = this._block.concat($<$Path>(<Path>{this.address()}</Path>));
         }
     }
 

@@ -8,7 +8,7 @@ import { walk } from '../inventory/walk';
 import { around } from '../inventory/library';
 import { Reading, read } from './reading';
 
-export type Answer = { folder: string; book: Record<string, string>; walked: number; failures: string[] };
+export type Answer = { folder: string; book: Record<string, string | string[]>; walked: number; failures: string[] };
 
 void window;
 

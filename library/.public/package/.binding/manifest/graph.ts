@@ -10,7 +10,7 @@ import type { Book, Library } from '../inventory/library';
 // and nothing here.
 export type Entry = {
     folder: string;
-    book: Record<string, string>;
+    book: Record<string, string | string[]>;
     digest: string;
     walked: number;
 };

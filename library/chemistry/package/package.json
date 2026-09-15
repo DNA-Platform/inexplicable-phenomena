@@ -63,7 +63,8 @@
     "styled-components": "^6.1.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

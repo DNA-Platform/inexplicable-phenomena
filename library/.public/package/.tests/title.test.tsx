@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
-import { $Chapter, $Book, Book, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph } from '@dna-platform/public';
+import { For, $Chapter, $Book, Book, Document, Cover, Synopsis, TableOfContents, Title, Author, Subject, Reference, Section, Heading, Paragraph } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = (book: $Book) => { const Drawn = $(book); return render(<Drawn />).container; };
@@ -17,7 +17,7 @@ class $CoverChapter extends $Chapter {
         );
     }
 }
-class $SynopsisChapter extends $Chapter { print() { return <Synopsis>A life.</Synopsis>; } }
+class $SynopsisChapter extends $Chapter { print() { return <Synopsis><For>Alan Turing</For>A life.</Synopsis>; } }
 class $TableChapter extends $Chapter { print() { return <TableOfContents><Title>Table of Contents</Title>Early life</TableOfContents>; } }
 const CoverChapter = $($CoverChapter);
 const SynopsisChapter = $($SynopsisChapter);

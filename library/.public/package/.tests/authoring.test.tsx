@@ -3,7 +3,7 @@ import { $, $Block, $check } from '@dna-platform/chemistry';
 import { render } from '@testing-library/react';
 import {
     $Book, $Chapter, $Cover, $Document, $Writing, $Section, $TypeOfSection, $TypeOfDocument,
-    Book, Cover, Document, Synopsis, Title, Author, Subject, Reference,
+    Book, Cover, Document, Synopsis, For, Title, Author, Subject, Reference,
     Section, Heading, Paragraph,
 } from '@dna-platform/public';
 
@@ -79,7 +79,7 @@ const WrittenDocument = $($Written);
 
 describe('the same documented written in view() instead', () => {
     it('IS REFUSED AT CONSTRUCTION — it never gets as far as being invisible', () => {
-        class $About extends $Chapter { print() { return <Synopsis>A life.</Synopsis>; } }
+        class $About extends $Chapter { print() { return <Synopsis><For>Alan Turing</For>A life.</Synopsis>; } }
         class $Wrong extends $Chapter { print() { return <WrittenDocument />; } }
         const About = $($About);
         const Wrong = $($Wrong);
