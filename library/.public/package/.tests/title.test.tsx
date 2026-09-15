@@ -18,7 +18,7 @@ class $CoverChapter extends $Chapter {
     }
 }
 class $SynopsisChapter extends $Chapter { print() { return <Synopsis>A life.</Synopsis>; } }
-class $TableChapter extends $Chapter { print() { return <TableOfContents>Early life</TableOfContents>; } }
+class $TableChapter extends $Chapter { print() { return <TableOfContents><Title>Table of Contents</Title>Early life</TableOfContents>; } }
 const CoverChapter = $($CoverChapter);
 const SynopsisChapter = $($SynopsisChapter);
 const TableChapter = $($TableChapter);

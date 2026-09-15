@@ -50,6 +50,17 @@ export class ChapterSpecification extends WritingSpecification {
         this.specified(reflection.printed(writing));
     }
 
+    // A CHAPTER VALIDATES ITS TITLE — Doug, 2026-09-15: "If the created one is bad, then we wrote a
+    // bad chapter. Have chapter validate the title then rather than any header or something like
+    // that." So the demand stands here, on the chapter, and asks nothing about what a document opens
+    // with: a chapter is titled by the section that is its title, and a chapter titled by nothing is
+    // a chapter written wrong.
+    @specify('a chapter is titled')
+    $isTitled(writing: $Writing): void {
+        const printed = reflection.printed(writing).find((part): part is $Document => reflection.is(part, $TypeOfDocument));
+        $check(printed?.title()?.heading() !== undefined, 'a chapter is titled, and this one is titled by nothing');
+    }
+
     @specify('a chapter holds only annotations')
     $holdsOnlyAnnotations(writing: $Writing): void {
         $check(this.beside(writing).every(part => reflection.annotation(part)),

@@ -16,7 +16,7 @@ const cover = () => (
 describe('a book is made of chapters, and its first three are its cover, its synopsis and its table, by position', () => {
     class $CoverChapter extends $Chapter { print() { return cover(); } }
     class $SynopsisChapter extends $Chapter { print() { return <Synopsis>A book about chemistry.</Synopsis>; } }
-    class $TableChapter extends $Chapter { print() { return <TableOfContents>One.</TableOfContents>; } }
+    class $TableChapter extends $Chapter { print() { return <TableOfContents><Title>Table of Contents</Title>One.</TableOfContents>; } }
     const CoverChapter = $($CoverChapter);
     const SynopsisChapter = $($SynopsisChapter);
     const TableChapter = $($TableChapter);
@@ -117,7 +117,7 @@ describe('a book draws what it holds, under one sheet', () => {
     class $CoverChapter extends $Chapter { print() { return cover(); } }
     class $QuietChapter extends $Chapter { print() { return synopsis(false); } }
     class $PrintedChapter extends $Chapter { print() { return synopsis(true); } }
-    class $TableChapter extends $Chapter { print() { return <TableOfContents>One.</TableOfContents>; } }
+    class $TableChapter extends $Chapter { print() { return <TableOfContents><Title>Table of Contents</Title>One.</TableOfContents>; } }
     class $FirstChapter extends $Chapter { print() { return documented('First things'); } }
     const CoverChapter = $($CoverChapter);
     const QuietChapter = $($QuietChapter);

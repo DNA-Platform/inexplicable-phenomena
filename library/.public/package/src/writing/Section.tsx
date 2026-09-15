@@ -16,7 +16,10 @@ export interface $Section$ extends $Composition$ {
 
 export class $Section extends $Composition implements $Section$ {
     definition = 'section';
-    heading(): $Writing | undefined { return this.searchForOne($TypeOfHeading); }
+    // THE HEADING IT OPENS WITH, RECOVERED OR WRITTEN. It reads the PARTS because that is where
+    // `supplies` puts a heading it read out of the opening sentence; the block holds only what an
+    // author wrote, so reading it made a recovered heading invisible to everything that asked.
+    heading(): $Writing | undefined { return this.searchPartsForOne($TypeOfHeading); }
 
     override print(): ReactNode {
         const Parts = $(reflection.wrapped(this));
@@ -42,13 +45,14 @@ export class $TypeOfSection extends $Type {
 }
 
 export class SectionSpecification extends WritingSpecification {
-    // A RULE READS WHAT IS WRITTEN, and a section an author WROTE opens with a heading they wrote.
-    // The rule used to accept anything readable instead, so `supplies` could pump a title off the
-    // opening sentence — Doug, 2026-09-15: "Check section and see why sections can get away without
-    // one. They shouldn't." Sections the PARSER makes are untouched: the descent never specifies them.
+    // A RULE READS WHAT IS WRITTEN. A section opens with its heading — one an author wrote, or one
+    // it holds something to RECOVER from, which `supplies` reads out of the opening sentence. Doug,
+    // 2026-09-15: "You should be able to recover a heading. For the chapter, it should have a title,
+    // so let its first heading even have to be a title of its first section. That is the promise."
     @specify('a section opens with its heading')
     $opensWithHeading(writing: $Writing): void {
-        $check(this.beside(writing).some(part => reflection.is(part, $TypeOfHeading)),
+        $check(this.beside(writing).some(part => reflection.is(part, $TypeOfHeading))
+            || parser.tokens(writing).length > 0,
             'a section opens with its heading, and this one opens without one');
     }
 

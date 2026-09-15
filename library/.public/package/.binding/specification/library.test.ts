@@ -40,6 +40,17 @@ describe.skipIf(shipping)('the library', () => {
                 expect(entry.walked, 'nothing in it was specified').toBeGreaterThan(0);
             });
 
+            // A BOOK IS NAMED OFF ITS COVER, AND THE SAME READING IS OWED TO EVERY CHAPTER — Doug,
+            // 2026-09-15: "that is why book name can be driven off cover name, but it needs to apply
+            // to all chapter documents". A chapter is titled by its document, whose title is the
+            // <Title> an author wrote or the heading its first section opens with, recovered where
+            // none was written; a chapter titled by nothing answers no name at all.
+            it('names every chapter it holds', ({ task }) => {
+                task.meta.book = entry.folder;
+                expect((entry.book.chapters ?? '').split(' ').filter(one => one === '').length,
+                    'a chapter of it is titled by nothing, so it answers no name').toBe(0);
+            });
+
             it('names each chapter once', ({ task }) => {
                 task.meta.book = entry.folder;
                 const held = names(entry.book.chapters);

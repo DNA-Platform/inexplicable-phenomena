@@ -273,8 +273,8 @@ describe('a composition generates the level it needs from what it holds', () => 
     const section = () => built<$Composition>(
         <Section><Paragraph>One thing to say. Then another thing.</Paragraph></Section>);
 
-    it('A SECTION WRITTEN AS ONE PARAGRAPH IS REFUSED — an author writes the heading', () => {
-        expect(() => section().specify()).toThrow(/opens with its heading/u);
+    it('a section written as one paragraph IS a valid section', () => {
+        expect(() => section().specify()).not.toThrow();
     });
 
     it('AND THE PARAGRAPH IS STILL THERE, WHOLE — nothing was consumed to make the heading', () => {
@@ -303,7 +303,7 @@ describe('a composition generates the level it needs from what it holds', () => 
     });
 
     it('AND EVERYTHING BELOW A SECTION RISES TO ONE — a section written as bare copy is a section', () => {
-        expect(() => built<$Composition>(<Section><Heading>Said</Heading>One thing to say. Then another.</Section>).specify()).not.toThrow();
+        expect(() => built<$Composition>(<Section>One thing to say. Then another.</Section>).specify()).not.toThrow();
     });
 
     it('AND A CHAPTER TAKES A LETTER — the theorem: a composition takes anything at or below its own level', () => {
@@ -311,7 +311,7 @@ describe('a composition generates the level it needs from what it holds', () => 
     });
 
     it('and a section takes a letter the same way', () => {
-        expect(() => built<$Composition>(<Section><Heading>Said</Heading>a</Section>).specify()).not.toThrow();
+        expect(() => built<$Composition>(<Section>a</Section>).specify()).not.toThrow();
     });
 
     it('AND YOU STILL END UP WITH A TITLE — the section a documented reads runs its own type, so it has its heading', () => {

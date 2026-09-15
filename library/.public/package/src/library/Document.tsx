@@ -13,10 +13,12 @@ export interface $Document$ extends $Composition$ {
 
 export class $Document extends $Composition implements $Document$ {
     definition = 'article';
-    // THE SECTION THAT TITLES IT: the title an author wrote, and otherwise the section it opens with,
-    // whose heading is the document's own. The two become one reading once every document opens with
-    // its title — Sprint 73 R9 — and this is the half of it that costs no rewrite.
-    title(): $Section | undefined { return this.searchForOne<$Title>($TypeOfTitle) ?? this.searchFor<$Section>($TypeOfSection)[0]; }
+    // THE HEADING OF ITS FIRST SECTION — Doug, 2026-09-15: "The chapter title IS the heading of its
+    // first section PERIOD", with "you should be able to recover a heading". So it reads the PARTS
+    // and not the block: a document written as prose has no section written into it, and the one the
+    // parse makes carries the heading `supplies` recovered. A cover is the one document that writes
+    // its title, and writes chrome before it, so a title of its own answers first.
+    title(): $Section | undefined { return this.searchForOne<$Title>($TypeOfTitle) ?? this.searchParts<$Section>($TypeOfSection)[0]; }
 
     $Document(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfDocument));

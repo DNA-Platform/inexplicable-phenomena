@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check, select, styled } from '@dna-platform/chemistry';
 import { $Chapter, $Format, $Document, $Section, $Paragraph, $CatalogueCard, $Ref, $Theme$, html, $Theme, Book } from '@dna-platform/public';
-import { $Control } from '@dna-platform/public/application';
 import $Wiki from '../.book';
 
 // A field's resting edge is the link colour lightened against the paper, so a
@@ -329,7 +328,7 @@ export class $CardFormat extends $Format {
     get name_color() { return this.theme.link; }
 }
 
-export class $Search extends $Control {
+export class $Search extends $Section {
     $language = 'en';
 
     override view(): ReactNode {
