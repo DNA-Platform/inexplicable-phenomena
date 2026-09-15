@@ -74,9 +74,11 @@ export const tasks: Task[] = [
         const scope = state.scope.length ? state.scope : found.books.map(book => book.folder);
         const verdict = specifying(state.binding, found, scope, graph.read(state.binding), need(state.chosen, 'specify'));
         state.graph = graph.write(state.binding, verdict.held);
-        // EACH BOOK AGAINST ITS OWN SPECIFICATION, which is the framework's; then the library against
-        // what it means to be one, which is the suite that stands beside this file.
-        const wrong = [...verdict.failures, ...await running(state.binding, found, 'specification/library')];
+        // EACH BOOK AGAINST ITS OWN SPECIFICATION FIRST, and the library only once every book was read.
+        // A library suite over a graph that is missing a book asks nothing and says so — and said so
+        // INSTEAD OF the reason the book did not load, because the two were gathered in one expression
+        // and the throw came first. A book that does not specify is now reported as itself.
+        const wrong = verdict.failures.length ? verdict.failures : await running(state.binding, found, 'specification/library');
         if (wrong.length) {
             for (const one of wrong) console.error(problem(one));
             throw new Error(`the library does not specify — ${plural(wrong.length, 'failure')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);

@@ -42,7 +42,7 @@ describe('a writing given a reference is drawn as a link', () => {
     });
 
     it('A TITLE ELSEWHERE IS A NAME — inside a linked section it draws no anchor of its own', () => {
-        const host = drawn(<Section><Reference>https://example.org/</Reference><Title>Name</Title><Paragraph>One.</Paragraph></Section>);
+        const host = drawn(<Section><Reference>https://example.org/</Reference><Heading>Head</Heading><Title>Name</Title><Paragraph>One.</Paragraph></Section>);
         expect(host.querySelectorAll('a').length).toBe(1);
         expect(host.querySelector('.pd-title')!.tagName).not.toBe('A');
     });

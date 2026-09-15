@@ -48,8 +48,7 @@ export class SectionSpecification extends WritingSpecification {
     // one. They shouldn't." Sections the PARSER makes are untouched: the descent never specifies them.
     @specify('a section opens with its heading')
     $opensWithHeading(writing: $Writing): void {
-        $check(this.beside(writing).some(part => reflection.is(part, $TypeOfHeading))
-            || parser.tokens(writing).length > 0,
+        $check(this.beside(writing).some(part => reflection.is(part, $TypeOfHeading)),
             'a section opens with its heading, and this one opens without one');
     }
 
