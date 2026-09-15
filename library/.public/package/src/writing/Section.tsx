@@ -42,13 +42,13 @@ export class $TypeOfSection extends $Type {
 }
 
 export class SectionSpecification extends WritingSpecification {
-    // A RULE READS WHAT IS WRITTEN. Asking for the parts would run the parser, and the
-    // parser answers what is asked for, when it is asked for — never on a rule's behalf.
-    // So the demand is the one the reading can meet: a heading is held, or something is
-    // held to read one out of.
+    // A RULE READS WHAT IS WRITTEN, and a section an author WROTE opens with a heading they wrote.
+    // The rule used to accept anything readable instead, so `supplies` could pump a title off the
+    // opening sentence — Doug, 2026-09-15: "Check section and see why sections can get away without
+    // one. They shouldn't." Sections the PARSER makes are untouched: the descent never specifies them.
     @specify('a section opens with its heading')
     $opensWithHeading(writing: $Writing): void {
-        $check(this.composed(writing).some(part => reflection.is(part, $TypeOfHeading))
+        $check(this.beside(writing).some(part => reflection.is(part, $TypeOfHeading))
             || parser.tokens(writing).length > 0,
             'a section opens with its heading, and this one opens without one');
     }
