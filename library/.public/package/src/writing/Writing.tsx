@@ -124,9 +124,13 @@ export class WritingSpecification extends Specification<$Writing> {
             'a piece of writing says what kind of writing it is, and this one says nothing');
     }
 
+    // SAYING SOMETHING IS PUTTING SOMETHING ON THE PAGE, and `parenthetical` is where a kind already
+    // says whether it does. An annotation starts parenthetical and draws nowhere; one that sets it
+    // false draws — a mention is exactly that — so writing that holds a mention is not empty, and
+    // nothing has to declare a second time what it already declared once.
     @specify('a piece of writing says something')
     $saysSomething(writing: $Writing): void {
-        $check(html.text(writing._block).length > 0 || this.composed(writing).length > 0,
+        $check(html.text(writing._block).length > 0 || this.shown(writing).length > 0,
             'a piece of writing says something, and this one says nothing at all');
     }
 
@@ -157,6 +161,13 @@ export class WritingSpecification extends Specification<$Writing> {
     protected composed(writing: $Writing): $Writing[] {
         return (writing._block.$elements ?? []).filter((part): part is $Writing =>
             reflection.composition(part));
+    }
+
+    // WHAT A WRITING SHOWS — the writing it holds that is not parenthetical, which is the same set
+    // $Writing.print() draws. `shown` is a proxy name, flagged.
+    protected shown(writing: $Writing): $Writing[] {
+        return (writing._block.$elements ?? []).filter((part): part is $Writing =>
+            reflection.writing(part) && !part.parenthetical);
     }
 
     protected beside(writing: $Writing): $Written[] {

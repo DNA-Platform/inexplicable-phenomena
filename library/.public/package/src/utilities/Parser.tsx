@@ -1,3 +1,4 @@
+import { lexer } from 'marked';
 import { $Writing } from '@/writing/Writing';
 import { reflection } from '@/utilities/Reflection';
 import { $Annotation } from '@/writing/Annotation';
@@ -6,6 +7,20 @@ import { html } from '@/utilities/Html';
 export class Parser {
     private parts = new WeakMap<$Writing, $Writing[]>();
     private graphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+
+    // [TEXT](TARGET) — WHAT A PIECE OF WRITING SAYS AND WHAT IT NAMES, when the two differ. It is
+    // read here because this is the utility that parses; it stood private inside $Ref, which is why
+    // a heading holding one was named after its own address (Solutions 82). A ref draws the text and
+    // addresses the target; a mention draws the text and is NAMED by the target.
+    link(copy: string): { text: string; url: string } | undefined {
+        if (!copy.startsWith('[')) return undefined;
+        for (const token of lexer(copy)) {
+            if (token.type !== 'paragraph') continue;
+            for (const inline of (token as { tokens?: { type: string; text: string; href: string }[] }).tokens ?? [])
+                if (inline.type === 'link') return { text: inline.text, url: inline.href };
+        }
+        return undefined;
+    }
 
     tokens(of: $Writing): (string | $Writing)[] {
         return ((of._block.$elements ?? []) as unknown[])

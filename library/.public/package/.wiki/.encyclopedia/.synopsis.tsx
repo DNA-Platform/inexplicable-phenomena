@@ -1,11 +1,12 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Paragraph, Section, Synopsis } from '@dna-platform/public';
+import { Heading, Paragraph, Section, Synopsis, Title } from '@dna-platform/public';
 import { $PortalChapter as $Chapter } from './.book';
 
 export default class $Synopsis extends $Chapter {
     print() {
         return (
             <Synopsis>
+                <Title print={false}>The Free Encyclopedia</Title>
                 <Section>
                     <Heading>Wikipedia</Heading>
                     <Paragraph>

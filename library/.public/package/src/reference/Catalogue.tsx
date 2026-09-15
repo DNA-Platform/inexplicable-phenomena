@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
+import { parser } from '@/utilities/Parser';
 import { Specification, specify } from '@/utilities/Specification';
 import { $Writing, WritingSpecification } from '@/writing/Writing';
 import { $Type } from '@/writing/Type';
@@ -10,6 +11,8 @@ import { $Reference$, $Reference } from './Reference';
 import { $Path, Path as path } from './Path';
 
 export interface $Catalogue$ extends $Reference$ {
+    readonly name: string;
+
     parts(): $Writing[];
     follow(fragment: string): $Writing;
     held(): $Writing | undefined;
@@ -17,6 +20,13 @@ export interface $Catalogue$ extends $Reference$ {
 
 export class $Catalogue extends $Reference implements $Catalogue$ {
     override parenthetical = false;
+
+    // WHAT A MENTION NAMES, which is not always what it says. Written plainly the copy is both;
+    // written [label](name) it SAYS the label and NAMES the name, the way a ref says its text and
+    // addresses its target — one reading in the parser, read here for the name and below for what
+    // is drawn. The name is a token, so it takes the copy reading and never the class one.
+    protected get copy(): string { return html.text(this._block).trim(); }
+    get name(): string { return reflection.slug(parser.link(this.copy)?.url ?? this.copy); }
 
     override specifically(): void {
     }
@@ -31,18 +41,18 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
 
     $Catalogue(block: $Block) {
         super.$Reference(this.addType(block, $TypeOfCatalogue));
-        const named = html.text(this._block).trim();
-        if (named === '') this.parenthetical = true;
-        if (this.path() === undefined && this.held(this) === undefined && named !== '') {
+        if (this.copy === '') this.parenthetical = true;
+        if (this.path() === undefined && this.held(this) === undefined && this.copy !== '') {
             const Path = $(path);
-            this._block = this._block.concat($<$Path>(<Path>{`#${reflection.slug(named)}`}</Path>));
+            this._block = this._block.concat($<$Path>(<Path>{`#${this.name}`}</Path>));
         }
     }
 
     override print(): ReactNode {
         const at = html.text(this.path()?._block);
+        const said = parser.link(this.copy)?.text ?? super.print();
 
-        return at === '' ? super.print() : <a href={at} className="pd-meaning">{super.print()}</a>;
+        return at === '' ? said : <a href={at} className="pd-meaning">{said}</a>;
     }
 
     follow(fragment: string): $Writing {

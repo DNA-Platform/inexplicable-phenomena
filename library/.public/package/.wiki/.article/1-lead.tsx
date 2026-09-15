@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Bold, Document, Illustration, Paragraph } from '@dna-platform/public';
+import { Bold, Document, Illustration, Paragraph, Title } from '@dna-platform/public';
 import { $Article, Hatnote } from '@dna-platform/public/encyclopedia';
 import { BookLink } from '../.book';
 
@@ -7,6 +7,7 @@ export default class $Lead extends $Article {
     print() {
         return (
             <Document>
+                <Title print={false}>Lead</Title>
                 <Hatnote>
                     This page is about the layout of Wikipedia articles. For the layout of Wikipedia talk pages, see <BookLink>[Wikipedia:Talk page layout](https://en.wikipedia.org/wiki/Wikipedia:Talk_page_layout)</BookLink>.
                 </Hatnote>

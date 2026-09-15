@@ -10,6 +10,8 @@ export class Reading {
     $title(book: $Book): string { return html.text(book.title?.heading()?._block); }
     $author(book: $Book): string { return html.text(this.cover(book)?.author()?._block); }
     $subject(book: $Book): string { return html.text(this.cover(book)?.subject()?._block); }
+    $chapters(book: $Book): string { return book.chapters.map(chapter => chapter.name).join(' '); }
+    $catalogued(book: $Book): string { return (book.tableOfContents?.chapters ?? []).map(mention => mention.name).join(' '); }
 
     protected cover(book: $Book): $Cover | undefined {
         return book.cover?.parts().find((part): part is $Cover => reflection.is<$Cover>(part, $TypeOfCover));

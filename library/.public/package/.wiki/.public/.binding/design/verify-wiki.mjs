@@ -161,7 +161,7 @@ const targets = [
         key: 'turing',
         pinned: widths.filter(one => one >= 1120),
         theirs: 'https://en.wikipedia.org/wiki/Alan_Turing',
-        ours: 'turing/',
+        ours: 'alan-turing/',
         ...encyclopedia,
     },
     // THE MANUAL OF STYLE IS BUILT BY THE SAME READER AS THE TURING PAGE, so it is measured the same
@@ -172,7 +172,7 @@ const targets = [
         pinned: [],
         pinnedRegions: ['manual'],
         theirs: 'https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout',
-        ours: 'article/',
+        ours: 'wikipedia-manual-of-style-layout/',
         ...encyclopedia,
     },
 ];

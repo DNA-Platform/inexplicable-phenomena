@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, Heading, Ref, Section, TableOfContents } from '@dna-platform/public';
+import { $Chapter, chapter as Chapter, Heading, Ref, Section, TableOfContents } from '@dna-platform/public';
 import { Menu, Option, Summary } from '@dna-platform/public/application';
 
 export default class $Contents extends $Chapter {
@@ -10,14 +10,14 @@ export default class $Contents extends $Chapter {
                     <Heading>Contents</Heading>
                     <Option><Ref>[(Top)](#)</Ref></Option>
                     <Menu>
-                        <Summary><Ref>[Early life and education](#early-life-and-education)</Ref></Summary>
+                        <Summary><Chapter>Early life and education</Chapter></Summary>
                         <Option><Ref>[Family](#family)</Ref></Option>
                         <Option><Ref>[School](#school)</Ref></Option>
                         <Option><Ref>[Christopher Morcom](#christopher-morcom)</Ref></Option>
                         <Option><Ref>[University and work on computability](#university-and-work-on-computability)</Ref></Option>
                     </Menu>
                     <Menu>
-                        <Summary><Ref>[Career and research](#career-and-research)</Ref></Summary>
+                        <Summary><Chapter>Career and research</Chapter></Summary>
                         <Option><Ref>[Cryptanalysis](#cryptanalysis)</Ref></Option>
                         <Option><Ref>[Bombe](#bombe)</Ref></Option>
                         <Option><Ref>[Hut 8 and the naval Enigma](#hut-8-and-the-naval-enigma)</Ref></Option>
@@ -28,29 +28,34 @@ export default class $Contents extends $Chapter {
                         <Option><Ref>[Ratio Club and other cybernetics contacts](#ratio-club-and-other-cybernetics-contacts)</Ref></Option>
                     </Menu>
                     <Menu>
-                        <Summary><Ref>[Personal life](#personal-life)</Ref></Summary>
+                        <Summary><Chapter>Personal life</Chapter></Summary>
                         <Option><Ref>[Treasure](#treasure)</Ref></Option>
                         <Option><Ref>[Engagement](#engagement)</Ref></Option>
                         <Option><Ref>[Chess](#chess)</Ref></Option>
                         <Option><Ref>[Homosexuality and indecency conviction](#homosexuality-and-indecency-conviction)</Ref></Option>
                     </Menu>
                     <Menu>
-                        <Summary><Ref>[Death](#death)</Ref></Summary>
+                        <Summary><Chapter>Death</Chapter></Summary>
                         <Option><Ref>[Doubts on suicide thesis](#doubts-on-suicide-thesis)</Ref></Option>
                     </Menu>
-                    <Option><Ref>[Government apology and pardon](#government-apology-and-pardon)</Ref></Option>
+                    <Option><Chapter>Government apology and pardon</Chapter></Option>
                     <Menu>
-                        <Summary><Ref>[Further reading](#further-reading)</Ref></Summary>
+                        <Summary><Chapter>Further reading</Chapter></Summary>
                         <Option><Ref>[Articles](#articles)</Ref></Option>
                         <Option><Ref>[Books](#books)</Ref></Option>
                     </Menu>
                     <Menu>
-                        <Summary><Ref>[See also](#see-also)</Ref></Summary>
+                        <Summary><Chapter>See also</Chapter></Summary>
                         <Option><Ref>[Works cited](#works-cited)</Ref></Option>
                     </Menu>
-                    <Option><Ref>[Notes](#notes)</Ref></Option>
-                    <Option><Ref>[References](#references)</Ref></Option>
-                    <Option><Ref>[External links](#external-links)</Ref></Option>
+                    <Option><Chapter>Notes</Chapter></Option>
+                    <Option><Chapter>References</Chapter></Option>
+                    <Option><Chapter>External links</Chapter></Option>
+                    <Chapter print={false}>Alan Turing</Chapter>
+                    <Chapter print={false}>From Wikipedia</Chapter>
+                    <Chapter print={false}>Contents</Chapter>
+                    <Chapter print={false}>Lead</Chapter>
+                    <Chapter print={false}>About this page</Chapter>
                 </Section>
             </TableOfContents>
         );

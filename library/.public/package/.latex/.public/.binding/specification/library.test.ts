@@ -14,6 +14,9 @@ const sharing = new Map<string, string[]>();
 for (const entry of held.books)
     sharing.set(nameOf(entry), [...(sharing.get(nameOf(entry)) ?? []), `${entry.folder} (titled "${entry.book.title}")`]);
 
+// A NAME IS COMPARED TO A NAME, and the reading answered a line of them.
+const names = (said: string | undefined): string[] => (said ?? '').split(' ').filter(Boolean).sort();
+
 describe.skipIf(shipping)('the library', () => {
     it('holds books that have been read', () => {
         expect(held.books.length, 'no graph — run `npm run build` first').toBeGreaterThan(0);
@@ -35,6 +38,24 @@ describe.skipIf(shipping)('the library', () => {
             it('specified every writing it holds', ({ task }) => {
                 task.meta.book = entry.folder;
                 expect(entry.walked, 'nothing in it was specified').toBeGreaterThan(0);
+            });
+
+            it('names each chapter once', ({ task }) => {
+                task.meta.book = entry.folder;
+                const held = names(entry.book.chapters);
+                expect(held.filter((one, at) => held.indexOf(one) !== at), 'two chapters answer the same name').toEqual([]);
+            });
+
+            it('has a table of contents', ({ task }) => {
+                task.meta.book = entry.folder;
+                expect(names(entry.book.catalogued), 'no table of contents names a chapter of it').not.toEqual([]);
+            });
+
+            it('is named chapter by chapter in its table of contents', ({ task }) => {
+                task.meta.book = entry.folder;
+                expect(names(entry.book.catalogued),
+                    `its table of contents names "${entry.book.catalogued}" where the book holds "${entry.book.chapters}"`)
+                    .toEqual(names(entry.book.chapters));
             });
         });
 });

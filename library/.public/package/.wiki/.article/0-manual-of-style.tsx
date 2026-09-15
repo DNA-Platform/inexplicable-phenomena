@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Heading, Italics, Paragraph, Section } from '@dna-platform/public';
+import { Heading, Italics, Paragraph, Section, Title } from '@dna-platform/public';
 import { $Article, Manual } from '@dna-platform/public/encyclopedia';
 import { Menu, Option, Search, Summary } from '@dna-platform/public/application';
 import { BookLink } from '../.book';
@@ -8,6 +8,7 @@ export default class $ManualOfStyle extends $Article {
     print() {
         return (
             <Manual>
+                <Title print={false}>Manual of Style</Title>
                 <Section>
                     <Heading><BookLink>[Manual of Style](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style)</BookLink></Heading>
                     <Search said="Search" where="https://en.wikipedia.org/wiki/Special:Search">Search the Manual of Style</Search>

@@ -1,11 +1,11 @@
-import { $Chapter, Footer, Heading, Paragraph } from '@dna-platform/public';
+import { $Chapter, Footer, Paragraph, Title } from '@dna-platform/public';
 import { BookLink, OutwardLink } from '../.book';
 
 export default class $TheFoot extends $Chapter {
     print() {
         return (
             <Footer>
-                <Heading>About this page</Heading>
+                <Title>About this page</Title>
                 <Paragraph>This page was last edited on 5 September 2026, at 18:44 (UTC).</Paragraph>
                 <Paragraph>Page was rendered with Parsoid.</Paragraph>
                 <Paragraph>Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.</Paragraph>

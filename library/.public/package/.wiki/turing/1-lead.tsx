@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import { Bold, Citation, Document, Heading, Illustration, Italics, Paragraph, Quote } from '@dna-platform/public';
+import { Bold, Citation, Document, Heading, Illustration, Italics, Paragraph, Quote, Title } from '@dna-platform/public';
 import { $Article, Hatnote, Infobox, Line } from '@dna-platform/public/encyclopedia';
 import { BookLink, OutwardLink } from '../.book';
 
@@ -7,6 +7,7 @@ export default class $Lead extends $Article {
     print() {
         return (
             <Document>
+                <Title print={false}>Lead</Title>
                 <Hatnote>
                     For the Oregon artwork, see <BookLink>[Alan Turing sculpture](https://en.wikipedia.org/wiki/Alan_Turing_%28sculpture%29)</BookLink>.
                 </Hatnote>

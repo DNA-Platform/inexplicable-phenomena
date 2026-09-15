@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { reflection } from '@/utilities/Reflection';
 import { $, $Block, $check } from '@dna-platform/chemistry';
-import { lexer } from 'marked';
 import { Specification, specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { parser } from '@/utilities/Parser';
@@ -58,16 +57,7 @@ export class $Ref extends $Phrase implements $Ref$ {
         throw new Error('a reference reads to what it means, and this route is the application to follow');
     }
 
-    protected link(): { text: string; url: string } | undefined {
-        const copy = html.text(this._block);
-        if (!copy.startsWith('[')) return undefined;
-        for (const token of lexer(copy)) {
-            if (token.type !== 'paragraph') continue;
-            for (const inline of (token as { tokens?: { type: string; text: string; href: string }[] }).tokens ?? [])
-                if (inline.type === 'link') return { text: inline.text, url: inline.href };
-        }
-        return undefined;
-    }
+    protected link(): { text: string; url: string } | undefined { return parser.link(html.text(this._block)); }
 
     protected override reduce(tokens: (string | $Writing)[]): $Writing[] {
         const text = this.link()?.text ?? parser.text(tokens);

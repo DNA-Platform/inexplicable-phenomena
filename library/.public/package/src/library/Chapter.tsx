@@ -28,8 +28,6 @@ export class $Chapter extends $Composition implements $Chapter$ {
 }
 
 export class $$Chapter extends $Catalogue {
-    get name(): string { return reflection.slug(html.text(this._block)); }
-
     $$Chapter(block: $Block) {
         super.$Catalogue(this.addType(block, $TypeOfChapterMention));
     }
