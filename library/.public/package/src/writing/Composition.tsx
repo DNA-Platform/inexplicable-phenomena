@@ -11,6 +11,8 @@ export interface $Composition$ extends $Writing$ {
 
     parts(): $Writing[];
     catalogue(): $Catalogue | undefined;
+    searchParts<T extends $Writing>(type: new() => $Type): T[];
+    searchPartsForOne<T extends $Writing>(type: new() => $Type): T | undefined;
     where(match: (part: $Writing) => boolean): $Writing[];
     select<U>(pick: (part: $Writing) => U): U[];
     selectMany<U>(pick: (part: $Writing) => U[]): U[];
@@ -54,6 +56,19 @@ export class $Composition extends $Writing implements $Composition$ {
 
     $Composition(block: $Block) {
         super.$Writing(block);
+    }
+
+    // THE PARTS TWIN OF searchFor. `searchFor` asks the BLOCK by type and `where`/`select`/`single`
+    // ask the PARTS by a predicate; nothing asked the parts BY TYPE, so four places wrote the same
+    // predicate by hand. `searchParts` and `searchPartsForOne` are proxy names, flagged.
+    searchParts<T extends $Writing>(type: new() => $Type): T[] {
+        return this.parts().filter((part): part is T => reflection.is(part, type));
+    }
+
+    searchPartsForOne<T extends $Writing>(type: new() => $Type): T | undefined {
+        const found = this.searchParts<T>(type);
+        $check(found.length <= 1, `writing holds one of a kind among its parts, and this one holds ${found.length}`);
+        return found[0];
     }
 
     where(match: (part: $Writing) => boolean): $Writing[] { return this.parts().filter(match); }

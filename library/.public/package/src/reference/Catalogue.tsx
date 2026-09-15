@@ -26,7 +26,7 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
     // addresses its target — one reading in the parser, read here for the name and below for what
     // is drawn. The name is a token, so it takes the copy reading and never the class one.
     protected get copy(): string { return html.text(this._block).trim(); }
-    get name(): string { return reflection.slug(parser.link(this.copy)?.url ?? this.copy); }
+    get name(): string { const copy = this.copy; return reflection.slug(parser.link(copy)?.url ?? copy); }
 
     override specifically(): void {
     }
@@ -41,8 +41,9 @@ export class $Catalogue extends $Reference implements $Catalogue$ {
 
     $Catalogue(block: $Block) {
         super.$Reference(this.addType(block, $TypeOfCatalogue));
-        if (this.copy === '') this.parenthetical = true;
-        if (this.path() === undefined && this.held(this) === undefined && this.copy !== '') {
+        const copy = this.copy;
+        if (copy === '') this.parenthetical = true;
+        if (this.path() === undefined && this.held(this) === undefined && copy !== '') {
             const Path = $(path);
             this._block = this._block.concat($<$Path>(<Path>{`#${this.name}`}</Path>));
         }

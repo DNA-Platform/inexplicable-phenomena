@@ -1,15 +1,16 @@
 import { $ } from '@dna-platform/chemistry';
-import { chapter as Chapter, section as Section, Row, TableOfContents, Title } from '@dna-platform/public';
+import { chapter as Chapter, section as Section, Heading, Row, TableOfContents, Title } from '@dna-platform/public';
 import { $AaronsonChapter as $Chapter } from './.book';
 
 export default class $Table extends $Chapter {
     print() {
         return (
             <TableOfContents>
-                <Title>Contents</Title>
+                <Title print={false}>Table of Contents</Title>
+                <Heading>Contents</Heading>
                 <Row print={false}><Chapter>[P versus NP](mathsf-p-stackrel-mathsf-np)</Chapter></Row>
                 <Row print={false}><Chapter>Abstract</Chapter></Row>
-                <Row print={false}><Chapter>Contents</Chapter></Row>
+                <Row print={false}><Chapter>Table of Contents</Chapter></Row>
                 <Row><Chapter>Introduction</Chapter>
                     <Row><Section>The Importance of P = NP</Section></Row>
                     <Row><Section>Objections to P = NP</Section>

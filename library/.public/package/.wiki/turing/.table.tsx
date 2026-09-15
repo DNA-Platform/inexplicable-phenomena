@@ -1,11 +1,12 @@
 import { $ } from '@dna-platform/chemistry';
-import { $Chapter, chapter as Chapter, Heading, Ref, Section, TableOfContents } from '@dna-platform/public';
+import { $Chapter, chapter as Chapter, Heading, Ref, Section, TableOfContents, Title } from '@dna-platform/public';
 import { Menu, Option, Summary } from '@dna-platform/public/application';
 
 export default class $Contents extends $Chapter {
     print() {
         return (
             <TableOfContents>
+                <Title print={false}>Table of Contents</Title>
                 <Section>
                     <Heading>Contents</Heading>
                     <Option><Ref>[(Top)](#)</Ref></Option>
@@ -53,7 +54,7 @@ export default class $Contents extends $Chapter {
                     <Option><Chapter>External links</Chapter></Option>
                     <Chapter print={false}>Alan Turing</Chapter>
                     <Chapter print={false}>From Wikipedia</Chapter>
-                    <Chapter print={false}>Contents</Chapter>
+                    <Chapter print={false}>Table of Contents</Chapter>
                     <Chapter print={false}>Lead</Chapter>
                     <Chapter print={false}>About this page</Chapter>
                 </Section>

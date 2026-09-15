@@ -37,8 +37,8 @@ export class $Book extends $Composition implements $Book$ {
     get cover(): $Chapter | undefined { return this.chapters[0]; }
     get synopsis(): $Chapter | undefined { return this.chapters[1]; }
     get table(): $Chapter | undefined { return this.chapters[2]; }
-    get tableOfContents(): $TableOfContents | undefined { return this.table?.parts().find((part): part is $TableOfContents => reflection.is(part, $TypeOfTableOfContents)); }
-    get chapters(): $Chapter[] { return this.parts().filter((part): part is $Chapter => reflection.is(part, $TypeOfChapter)); }
+    get tableOfContents(): $TableOfContents | undefined { return this.table?.searchPartsForOne<$TableOfContents>($TypeOfTableOfContents); }
+    get chapters(): $Chapter[] { return this.searchParts<$Chapter>($TypeOfChapter); }
     get scratchpad(): $Scratchpad { return this._scratchpad; }
     get title(): $Section | undefined { return this.cover?.title; }
     get name(): string { return this.cover?.name ?? ''; }

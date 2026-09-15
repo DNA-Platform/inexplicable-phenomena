@@ -4,40 +4,40 @@
       "folder": ".article",
       "book": {
         "author": "Wikipedians",
-        "catalogued": "order-of-article-elements body-sections standard-appendices-and-footers specialized-layout formatting see-also notes references wikipedia-manual-of-style-layout from-wikipedia contents lead manual-of-style about-this-page",
-        "chapters": "wikipedia-manual-of-style-layout from-wikipedia contents manual-of-style lead order-of-article-elements body-sections standard-appendices-and-footers specialized-layout formatting see-also notes references about-this-page",
+        "catalogued": "order-of-article-elements body-sections standard-appendices-and-footers specialized-layout formatting see-also notes references wikipedia-manual-of-style-layout from-wikipedia table-of-contents lead manual-of-style about-this-page",
+        "chapters": "wikipedia-manual-of-style-layout from-wikipedia table-of-contents manual-of-style lead order-of-article-elements body-sections standard-appendices-and-footers specialized-layout formatting see-also notes references about-this-page",
         "name": "wikipedia-manual-of-style-layout",
         "subject": "Style guide which presents the typical layout of Wikipedia articles",
         "title": "Wikipedia:Manual of Style/Layout"
       },
-      "digest": "f8c17512440da1a8",
-      "walked": 1043
+      "digest": "7867b9d3d49ed53a",
+      "walked": 1045
     },
     {
       "folder": ".encyclopedia",
       "book": {
         "author": "Wikipedians",
-        "catalogued": "wikipedia the-free-encyclopedia contents read-wikipedia-in-your-language the-foundation other-projects the-licence",
-        "chapters": "wikipedia the-free-encyclopedia contents read-wikipedia-in-your-language the-foundation other-projects the-licence",
+        "catalogued": "wikipedia the-free-encyclopedia table-of-contents read-wikipedia-in-your-language the-foundation other-projects the-licence",
+        "chapters": "wikipedia the-free-encyclopedia table-of-contents read-wikipedia-in-your-language the-foundation other-projects the-licence",
         "name": "wikipedia",
         "subject": "Knowledge",
         "title": "Wikipedia"
       },
-      "digest": "4e3209df73c6cafc",
+      "digest": "b20f8a9f0899d14d",
       "walked": 303
     },
     {
       "folder": "turing",
       "book": {
         "author": "Wikipedians",
-        "catalogued": "early-life-and-education career-and-research personal-life death government-apology-and-pardon further-reading see-also notes references external-links alan-turing from-wikipedia contents lead about-this-page",
-        "chapters": "alan-turing from-wikipedia contents lead early-life-and-education career-and-research personal-life death government-apology-and-pardon further-reading see-also notes references external-links about-this-page",
+        "catalogued": "early-life-and-education career-and-research personal-life death government-apology-and-pardon further-reading see-also notes references external-links alan-turing from-wikipedia table-of-contents lead about-this-page",
+        "chapters": "alan-turing from-wikipedia table-of-contents lead early-life-and-education career-and-research personal-life death government-apology-and-pardon further-reading see-also notes references external-links about-this-page",
         "name": "alan-turing",
         "subject": "English computer scientist (1912–1954)",
         "title": "Alan Turing"
       },
-      "digest": "1181a26641c92059",
-      "walked": 3020
+      "digest": "fc3f74298e810030",
+      "walked": 3022
     }
   ]
 }

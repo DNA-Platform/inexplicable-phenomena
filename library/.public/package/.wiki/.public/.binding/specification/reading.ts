@@ -14,7 +14,7 @@ export class Reading {
     $catalogued(book: $Book): string { return (book.tableOfContents?.chapters ?? []).map(mention => mention.name).join(' '); }
 
     protected cover(book: $Book): $Cover | undefined {
-        return book.cover?.parts().find((part): part is $Cover => reflection.is<$Cover>(part, $TypeOfCover));
+        return book.cover?.searchPartsForOne<$Cover>($TypeOfCover);
     }
 }
 

@@ -15,7 +15,7 @@ export interface $Chapter$ extends $Composition$ {
 }
 
 export class $Chapter extends $Composition implements $Chapter$ {
-    get title(): $Section | undefined { return this.parts().find((part): part is $Document => reflection.is(part, $TypeOfDocument))?.title(); }
+    get title(): $Section | undefined { return this.searchPartsForOne<$Document>($TypeOfDocument)?.title(); }
     get name(): string { return reflection.slug(html.text(this.title?.heading()?._block)); }
 
     $Chapter(block: $Block) {
