@@ -44,6 +44,12 @@ export class Reflection {
         this.kinds = { ...this.kinds, ...kinds };
     }
 
+    // A PREDICATE NARROWS BOTH WAYS, AND THE FALSE BRANCH IS WHERE THAT GOES WRONG. Asked without a
+    // kind this answers a plain boolean: a caller that has ALREADY excluded $Writing has excluded
+    // everything, and $Composition.parts() reached its last clause holding a `never` it could not ask
+    // for a kind. Asked WITH one it still narrows, which is what every typed reading here wants.
+    is(part: unknown, asked: new() => $Type): boolean;
+    is<T extends $Writing>(part: unknown, asked: new() => $Type): part is T;
     is<T extends $Writing = $Writing>(part: unknown, asked: new() => $Type): part is T {
         return part instanceof this.kinds.writing
             && this.types(part as $Writing).some(type => type instanceof asked);
@@ -207,13 +213,6 @@ export class Reflection {
             if (named !== names[names.length - 1]) names.push(named);
         }
         return names;
-    }
-
-    // THE WRITING HOLDING THIS ONE, and nothing at the top, where a writing holds itself.
-    above(writing: $Writing): $Writing | undefined {
-        const held = writing.parent;
-
-        return held === undefined || held === writing || !this.writing(held) ? undefined : held as $Writing;
     }
 
     theme(): $Theme {

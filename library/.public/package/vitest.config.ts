@@ -34,6 +34,7 @@ const src = {
         '@dna-platform/public/application': path.resolve(__dirname, './dist/application.js'),
             '@dna-platform/public/encyclopedia': path.resolve(__dirname, './dist/encyclopedia.js'),
         '@dna-platform/public/article': path.resolve(__dirname, './dist/article.js'),
+        '@dna-platform/public/conversation': path.resolve(__dirname, './dist/conversation.js'),
         '@dna-platform/public': path.resolve(__dirname, './dist/lib.js')
     } },
     esbuild

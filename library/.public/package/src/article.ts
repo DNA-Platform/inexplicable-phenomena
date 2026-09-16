@@ -1,4 +1,4 @@
-// The door @dna-platform/public/article — the LaTeX article as a book type.
+// @dna-platform/public/article — the LaTeX article as a book type.
 //
 // ABSTRACT IS BACK, 2026-09-09, and the note below is kept because the reasoning in it is what got
 // corrected rather than what was wrong. Doug: "you should have an abstract in article and that

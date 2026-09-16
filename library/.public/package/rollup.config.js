@@ -84,46 +84,47 @@ const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/
 
 // THE TEST LOOP DOES NOT NEED TYPES OR CJS. Six separate .d.ts rollups each run a full type
 // program, and the suite imports none of them — vitest.config.ts aliases exactly dist/lib.js and
-// dist/encyclopedia.js, both ES. `rollup -c --environment QUICK` emits the ES doors and stops.
+// dist/encyclopedia.js, both ES. `rollup -c --environment QUICK` emits the ES bundles and stops.
 const quick = process.env.QUICK !== undefined;
 
-const doors = {
+const inputs = {
     lib: 'src/index.ts',
     library: 'src/library.ts',
     article: 'src/article.ts',
     markdown: 'src/markdown.ts',
     application: 'src/application.ts',
     encyclopedia: 'src/encyclopedia.ts',
+    conversation: 'src/conversation.ts',
     utilities: 'src/utilities.ts'
 };
 
 const module_ = { dir: 'dist', format: 'es', entryFileNames: '[name].js', chunkFileNames: 'chunks/[name]-[hash].js', sourcemap: true };
 const common = { dir: 'dist', format: 'cjs', entryFileNames: '[name].cjs', chunkFileNames: 'chunks/[name]-[hash].cjs', sourcemap: true };
 
-// ONE BUILD, SIX DOORS. The surfaces were separate builds, and a separate build DEFINES ITS OWN
+// ONE BUILD, SIX INPUTS. The surfaces were separate builds, and a separate build DEFINES ITS OWN
 // COPY of everything it reaches — $BodyFormat, $ContentFormat and $Theme each stood twice, once in
 // lib and once in encyclopedia, with encyclopedia importing nothing from lib. DI keys on the
 // component object, so a demo registering encyclopedia's copy could never match the one $Book
 // fetched from lib's: the registration was silently dead and the portal drew in the wrong dress.
-// Code splitting is the fix — the shared modules are emitted ONCE into a chunk and every door
+// Code splitting is the fix — the shared modules are emitted ONCE into a chunk and every one
 // imports it, which keeps the surfaces apart without letting a class stand twice.
 const code = {
-    input: doors,
+    input: inputs,
     output: quick ? [module_] : [module_, common],
     plugins: quick ? [at(), extended(), transpiled()] : [at(), tsPlugin()],
     external: externalDeps,
     onwarn
 };
 
-// ONE BUILD, SIX DOORS — FOR THE TYPES TOO, and for the same reason the code has it. Seven separate
+// ONE BUILD, SIX INPUTS — FOR THE TYPES TOO, and for the same reason the code has it. Seven separate
 // dts rollups are seven separate programs, and a separate program DEFINES ITS OWN COPY of every type
 // it reaches: $Book stood once in lib.d.ts and again in encyclopedia.d.ts, so a book written against
-// the encyclopedia door was not a $Book to anything typed through the main one — measured 2026-09-15
+// the encyclopedia input was not a $Book to anything typed through the main one — measured 2026-09-15
 // at 117 errors across the two demo bindings, every one of that shape. Code splitting is the fix
 // here exactly as it is there: the shared declarations are emitted ONCE into a chunk that every
-// door imports, and a class stands once.
+// one imports, and a class stands once.
 const types = {
-    input: doors,
+    input: inputs,
     output: { dir: 'dist', format: 'es', entryFileNames: '[name].d.ts', chunkFileNames: 'chunks/[name]-[hash].d.ts' },
     plugins: [at(), dts({ tsconfig: './tsconfig.build.json' })],
     onwarn

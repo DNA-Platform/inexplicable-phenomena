@@ -43,6 +43,11 @@
       "import": "./dist/encyclopedia.js",
       "require": "./dist/encyclopedia.cjs"
     },
+    "./conversation": {
+      "types": "./dist/conversation.d.ts",
+      "import": "./dist/conversation.js",
+      "require": "./dist/conversation.cjs"
+    },
     "./utilities": {
       "types": "./dist/utilities.d.ts",
       "import": "./dist/utilities.js",
