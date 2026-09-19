@@ -1,5 +1,6 @@
-import { spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { copyFileSync, writeFileSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
 import { join } from 'node:path';
 
 const lastLine = (text: string): string => text.trim().split(/\r?\n/).at(-1) ?? '[]';
@@ -36,22 +37,52 @@ const landing = (address: string, title: string): string => [
     '',
 ].join('\n');
 
-export const rendering = (binding: string, names: string[], root?: { address: string; name: string }): string[] => {
+// ONE CHILD PER PAGE, AS MANY AT ONCE AS THE MACHINE HAS CORES.
+//
+// ONE PROCESS PER PAGE IS CORRECT, AND IT WAS MEASURED RATHER THAN ASSUMED. `draw.ts` says why — a
+// book registers its theme on the shared class when its module loads — and on 2026-09-19 every page
+// of a duplicated library was drawn in ONE process and diffed against these: the markup was
+// identical, and every page but the first carried the style rules of the books drawn before it. So a
+// page is drawn in a process of its own, and the cost is a vite boot per page — 3.1s, serial.
+//
+// THE CHILDREN ARE INDEPENDENT, SO THEY RUN TOGETHER. Doug, 2026-09-19: "We can optimize but we
+// can't test a different architecture" — this is the same architecture, the same child, the same
+// pages, in parallel. They come back in the order the names were given whatever order the children
+// finished in, because the manifest and the proof read this list and a list that reorders itself
+// is a diff on every build.
+//
+// AND THE ISOLATION THAT WOULD LET ONE RUNTIME DRAW THEM ALL IS THE SUBSTRATE'S TO GIVE. Doug: "Things
+// shouldn't be registered to [the shared class]. Each book can have its own [class] with things
+// registered to it." Recorded for that team; nothing here reaches for it.
+const drawn = (binding: string, entry: string, name: string): Promise<string[]> => new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [entry, name], {
+        cwd: binding,
+        stdio: ['ignore', 'pipe', 'inherit'],
+        // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
+        // nowhere here, so the child renders the way a reader's browser will.
+        env: { ...process.env, NODE_ENV: 'production' },
+    });
+    let out = '';
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', (chunk: string) => { out += chunk; });
+    child.on('error', reject);
+    child.on('close', status => {
+        if (status !== 0) reject(new Error(`rendering ${name} failed (exit ${status ?? 'signal'})`));
+        else resolve(JSON.parse(lastLine(out)) as string[]);
+    });
+});
+
+export const rendering = async (binding: string, names: string[], root?: { address: string; name: string }): Promise<string[]> => {
     const entry = join(binding, 'rendering', 'render.mjs');
-    const pages: string[] = [];
     copyFileSync(join(binding, '..', 'index.html'), shellOf(binding));
-    for (const name of names) {
-        const ran = spawnSync(process.execPath, [entry, name], {
-            cwd: binding,
-            encoding: 'utf8',
-            stdio: ['ignore', 'pipe', 'inherit'],
-            // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
-            // nowhere here, so the child renders the way a reader's browser will.
-            env: { ...process.env, NODE_ENV: 'production' },
-        });
-        if (ran.status !== 0) throw new Error(`rendering ${name} failed (exit ${ran.status ?? 'signal'})`);
-        pages.push(...(JSON.parse(lastLine(ran.stdout)) as string[]));
-    }
+
+    const each: string[][] = names.map(() => []);
+    let next = 0;
+    const worker = async (): Promise<void> => {
+        for (let at = next++; at < names.length; at = next++) each[at] = await drawn(binding, entry, names[at]);
+    };
+    await Promise.all(Array.from({ length: Math.min(availableParallelism(), names.length) }, worker));
+    const pages = each.flat();
     if (root !== undefined) {
         const at = join(binding, '..', 'index.html');
         // THE ADDRESS IS THE CATALOGUE'S, WRITTEN FROM THE DOMAIN FORWARD. An earlier writing

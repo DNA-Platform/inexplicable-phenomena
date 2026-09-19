@@ -77,6 +77,12 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // contents already links `#the-sheet`. The catalogue writes the same id with the same function,
     // so the address it hands out is the one the page already answers to.
     //
+    // AND A CHAPTER WHOSE TITLE DOES NOT PRINT IS ADDRESSED AS ITS BOOK'S PAGE. The page draws no
+    // heading for it and so no id, and the proof found the fragment leading nowhere. Doug,
+    // 2026-09-19: "Shouldn't it just be the url? That solves the cover problem." A synopsis, a
+    // table of contents, a lead with `print={false}` — a reference to any of them lands on the
+    // page it is part of, which is where it is.
+    //
     // A CHAPTER IS NAMED WITHIN ITS BOOK AND NOWHERE ELSE, so `Dougs Library > The Sheet` is the
     // WHOLE key and there is no bare one beside it.
     //
@@ -103,7 +109,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         for (const spot of structure.spots.values()) {
             if (spot.kind !== 'chapter' || spot.book !== route.folder) continue;
             const chapter = structure.named.get(spot.id);
-            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, `${book}#${reflection.slug(chapter)}`);
+            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, spot.prints ? `${book}#${reflection.slug(chapter)}` : book);
         }
     }
 

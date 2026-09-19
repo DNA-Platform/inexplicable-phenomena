@@ -37,7 +37,9 @@ export type SpotId = string;
 export type Where = { file: string; line: number };
 export type { Relation };
 
-export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter'; book: SpotId };
+// AND WHETHER A CHAPTER PRINTS ITS TITLE, because that decides whether the page has a place for it.
+// A book always does: its cover's title is the page's heading.
+export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter'; book: SpotId; prints: boolean };
 export type Half = { by: SpotId; end: End; at: Where };
 export type Edge = { relation: Relation; from: SpotId; to: SpotId; ends: Half[] };
 export type Naming = { spot: SpotId; at: Where };
@@ -172,7 +174,7 @@ export const structure = (found: Library): Structure => {
         const title = titled(one);
         const said = title === undefined ? '' : bare(title.says).name;
         if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
-        spots.set(one.book.folder, { id: one.book.folder, at: one.book.folder, file: one.path, kind: 'book', book: one.book.folder });
+        spots.set(one.book.folder, { id: one.book.folder, at: one.book.folder, file: one.path, kind: 'book', book: one.book.folder, prints: true });
         calls(said, one.book.folder, { file: one.path, line: one.on(title!.at) });
     }
 
@@ -186,7 +188,7 @@ export const structure = (found: Library): Structure => {
         if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
         if (said === within) continue;
         const id = titles(one.book, one.file);
-        spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder });
+        spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder, prints: title!.prints });
         calls(`${within}${separator}${said}`, id, { file: one.path, line: one.on(title!.at) });
     }
 

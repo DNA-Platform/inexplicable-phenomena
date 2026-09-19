@@ -114,7 +114,18 @@ const inside = (element: ts.JsxElement): string => {
 // library. `catalogue/structure.ts` asks this, and it is the reason the table of contents finally
 // does something: the listings were there the whole time, in elements, while the structure looked
 // for them in text and found none.
-export type Element = { tag: string; says: string; at: number; to: number };
+//
+// AND WHETHER IT PRINTS. `<Title print={false}>` names a chapter the page draws no heading for, so
+// the page draws no id for it either, and an address with a fragment would lead to a place that is
+// not there. Doug, 2026-09-19: "Shouldn't it just be the url?" — a chapter that does not print is
+// addressed as its book's page. The attribute is read here, where the element is read.
+export type Element = { tag: string; says: string; prints: boolean; at: number; to: number };
+
+const prints = (element: ts.JsxElement): boolean =>
+    !element.openingElement.attributes.properties.some(one =>
+        ts.isJsxAttribute(one) && ts.isIdentifier(one.name) && one.name.text === 'print'
+        && one.initializer !== undefined && ts.isJsxExpression(one.initializer)
+        && one.initializer.expression !== undefined && one.initializer.expression.kind === ts.SyntaxKind.FalseKeyword);
 
 export const elements = (file: string, code: string, tags: string[]): Element[] => {
     const source = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
@@ -124,7 +135,7 @@ export const elements = (file: string, code: string, tags: string[]): Element[] 
         // is INSIDE it, so a scan that returned on the first match found the row and never the
         // `<Chapter>` it was holding — every table read as naming nothing.
         if (ts.isJsxElement(node) && tags.includes(named(node.openingElement.tagName)))
-            held.push({ tag: named(node.openingElement.tagName), says: inside(node), at: node.getStart(source), to: node.end });
+            held.push({ tag: named(node.openingElement.tagName), says: inside(node), prints: prints(node), at: node.getStart(source), to: node.end });
         ts.forEachChild(node, walk);
     };
     walk(source);

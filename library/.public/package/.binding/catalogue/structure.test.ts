@@ -71,6 +71,15 @@ describe('the catalogue over it', () => {
         expect(card.where('A Paper / The Evidence')).toBe('/a-paper/#the-evidence');
     });
 
+    // A CHAPTER WHOSE TITLE DOES NOT PRINT HAS NO HEADING ON THE PAGE AND SO NO ID; its address is
+    // the page it is part of. Doug: "Shouldn't it just be the url?"
+    it('answers a chapter whose title does not print with its page alone', () => {
+        expect(made.spots.get('the-library/.synopsis.tsx')?.prints).toBe(false);
+        expect(made.spots.get('the-library/1-the-shelves.tsx')?.prints).toBe(true);
+        expect(card.where('The Library / What This Is')).toBe('/the-library/');
+        expect(card.where('The Library / Table of Contents')).toBe('/the-library/');
+    });
+
     it('refuses by non-membership alone', () => {
         expect(card.where('The Evidence')).toBeUndefined();
         expect(card.where('A Paper / Nowhere')).toBeUndefined();

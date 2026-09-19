@@ -150,13 +150,13 @@ export const tasks: Task[] = [
         state.bundled = emitted(built);
         return `${plural(state.bundled.length, 'file')} under assets/`;
     } },
-    { name: 'render', run: state => {
+    { name: 'render', run: async state => {
         const table = need(state.table, 'render');
         const held = need(state.held, 'render');
         // THE ROOT'S ADDRESS COMES FROM THE CATALOGUE, which is the one place that knows what a name
         // stands at. The route table holds a path; the catalogue holds the URL a reader arrives at.
         const root = table.root === undefined ? undefined : { name: table.root.name, address: held.where(table.root.name) ?? table.root.address };
-        state.rendered = rendering(state.binding, table.routes.map(route => route.name), root);
+        state.rendered = await rendering(state.binding, table.routes.map(route => route.name), root);
         return state.rendered.join(', ');
     } },
     { name: 'proof', run: state => {
