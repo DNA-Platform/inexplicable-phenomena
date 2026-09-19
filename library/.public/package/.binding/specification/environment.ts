@@ -4,7 +4,7 @@ import { configure } from '../configuration/configuration';
 import { walk } from '../inventory/walk';
 import { around } from '../inventory/library';
 import { graph } from '../manifest/graph';
-import { resolution } from '../resolution/addresses';
+import { catalogue } from '../catalogue/catalogue';
 
 const geometry = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
 
@@ -18,5 +18,9 @@ if (found.books.length === 0) throw new Error(`${library} holds no book — a sp
 // WHAT THE LAST BUILD READ. A promise about the pages reads it; a promise about the books does not,
 // and asks the library itself, because a suite that trusts a record cannot catch the record.
 export const held = graph.read(binding);
-export const table = held.books.length > 0 ? resolution(found, held, chosen) : { routes: [] };
+// THE ADDRESSES COME FROM THE PARSED CATALOGUE, not from the graph the last build wrote. A promise
+// about the PAGES needs to know where each book stands, and asking the running books that made the
+// compiler depend on its own output — which is how a suite came to collect no tests at all, because
+// a title had been lowered to a link and `.pubconfig` could no longer find the root it names.
+export const table = catalogue(found, chosen).table;
 export const shipping = chosen.specification.mode === 'production';

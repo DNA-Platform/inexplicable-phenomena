@@ -5,4 +5,4 @@ import type { Configuration } from './configuration';
 const never = new Set(['.binding', '.git', 'node_modules', 'assets']);
 
 export const excluded = (folder: string, chosen: Configuration): boolean =>
-    never.has(folder) || chosen.inventory.excludes.includes(folder);
+    never.has(folder) || chosen.inventory.exclude.includes(folder);

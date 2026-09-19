@@ -10,9 +10,12 @@
     "build": "tsx binding.ts",
     "bind": "tsx binding.ts",
     "specify": "tsx specification/specifying.ts",
-    "dev": "vite",
+    "dev": "tsx serving.ts",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --project unit",
+    "test:regression": "vitest run --project regression",
+    "test:performance": "vitest run --project performance",
+    "test:all": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

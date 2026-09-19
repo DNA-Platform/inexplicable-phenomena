@@ -38,7 +38,18 @@ const kinds = (attrs: string): string => ((/class="([^"]*)"/.exec(attrs) ?? ['',
 
 const at = (tag: Tag): string => `<${tag.name}> (${kinds(tag.attrs)})`;
 
-export const proof = (face: string, pages: string[]): Diagnostic[] => {
+// WHICH BUILT PAGE AN INTERNAL ADDRESS LEADS TO, and where on it. `/dougs-library/#the-books` is
+// the page `dougs-library/index.html` and the id `the-books`; `/` is the root page. Written from the
+// base the library is served under, because every address on every page is.
+const leads = (href: string, base: string): { page: string; fragment: string | undefined } | undefined => {
+    if (!href.startsWith(base)) return undefined;
+    const [path, fragment] = href.slice(base.length).split('#');
+    const folder = path.replace(/^\/+|\/+$/gu, '');
+
+    return { page: `${folder === '' ? '' : `${folder}/`}index.html`, fragment: fragment === '' ? undefined : fragment };
+};
+
+export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] => {
     const wrong: Diagnostic[] = [];
     const said = new Set<string>();
     const fault = (page: string, says: string): void => {
@@ -48,11 +59,17 @@ export const proof = (face: string, pages: string[]): Diagnostic[] => {
         wrong.push({ at: page, file: join(face, page), says });
     };
 
+    // EVERY PAGE'S IDS ARE GATHERED BEFORE ANY PAGE'S LINKS ARE JUDGED, because a link leads to a
+    // page that has not been read yet as often as to one that has.
+    const answers = new Map<string, Set<string>>();
+    const leaving: { page: string; href: string }[] = [];
+
     for (const page of pages) {
         const html = readFileSync(join(face, page), 'utf8');
         const open: Tag[] = [];
         const ids = new Set<string>();
         const fragments: string[] = [];
+        answers.set(page, ids);
 
         for (const tag of html.matchAll(/<(\/?)([a-zA-Z0-9-]+)((?:"[^"]*"|'[^']*'|[^>"'])*)>/g)) {
             const name = tag[2].toLowerCase();
@@ -74,6 +91,9 @@ export const proof = (face: string, pages: string[]): Diagnostic[] => {
             const to = /\shref="([^"#][^"]*)"/.exec(attrs);
             if (to !== null && !/^([a-z]+:|\/)/.test(to[1]))
                 fault(page, `${at({ name, attrs })} addresses ${to[1]}, which is read from whatever folder the page is served in`);
+            // ONLY AN ANCHOR LEADS A READER SOMEWHERE. A `<link>` addresses a stylesheet, and the
+            // first run of this asked where its page was.
+            if (to !== null && name === 'a' && to[1].startsWith('/')) leaving.push({ page, href: to[1] });
 
             if (empty.has(name) || attrs.trimEnd().endsWith('/')) continue;
 
@@ -90,6 +110,22 @@ export const proof = (face: string, pages: string[]): Diagnostic[] => {
 
         for (const fragment of new Set(fragments))
             if (!ids.has(fragment)) fault(page, `a link addresses #${fragment}, and nothing on this page answers to it`);
+    }
+
+    // AND EVERY ADDRESS INTO THE LIBRARY LEADS TO A PAGE THE BINDER BUILT, at a place on it that
+    // exists. The catalogue answers whether a name stands at an ADDRESS; nothing before this asked
+    // whether a PAGE stands at the address — and measured 2026-09-19, two chapter references on the
+    // live site led to folders no page was ever written to, while every check on the page passed.
+    // Doug: "if the library is validated and the routes are right, won't urls just work with Vite
+    // and the router and the pages generated? And we can test all of that infrastructure?" This is
+    // that test, and it reads the pages rather than the catalogue so that it cannot agree with the
+    // catalogue by construction.
+    for (const { page, href } of leaving) {
+        const led = leads(href, base);
+        if (led === undefined) continue;
+        const ids = answers.get(led.page);
+        if (ids === undefined) { fault(page, `a link addresses ${href}, and no page was built at ${led.page}`); continue; }
+        if (led.fragment !== undefined && !ids.has(led.fragment)) fault(page, `a link addresses ${href}, and nothing on ${led.page} answers to #${led.fragment}`);
     }
 
     return wrong;

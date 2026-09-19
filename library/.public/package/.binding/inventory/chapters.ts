@@ -1,27 +1,34 @@
 import { readdirSync } from 'node:fs';
+import { apparatus, before, isChapter, isDeclaration, isKnown, withoutFinalExtension } from './filenames';
 
-const apparatus = ['.cover.tsx', '.synopsis.tsx', '.table.tsx'];
-
-const order = (file: string): number[] => file.split('-')[0].split('.').map(Number);
-
-const before = (one: string, two: string): number => {
-    const first = order(one);
-    const second = order(two);
-    for (let at = 0; at < Math.max(first.length, second.length); at++) {
-        const a = first[at] ?? -1;
-        const b = second[at] ?? -1;
-        if (a !== b) return a - b;
-    }
-    return 0;
-};
-
-// WHAT A BOOK IS MADE OF, IN THE ORDER IT IS BOUND: the apparatus it holds, by name, then its
+// WHAT EVERY FILE IN A BOOK IS, READ ONCE. A file is the book, a piece of its apparatus, a chapter,
+// or some chapter's resource — and anything else is named so the binder can refuse it. All three
+// answers come from one reading because they are one question asked from three sides, and a second
+// walk would be both a second cost and a second place for the rules to drift. There are four hundred
+// and sixty-five conversations coming; this reads a directory that was already being read.
+//
+// THE CHAPTERS COME BACK IN THE ORDER THEY ARE BOUND: the apparatus a book holds, by name, then its
 // chapters by their number. Said once, so the module the assembly writes and the file a failure
 // lands on read the same list.
-export const files = (folder: string): string[] => {
-    const held = readdirSync(folder, { withFileTypes: true })
-        .filter(entry => entry.isFile() && /\.tsx$/.test(entry.name) && !entry.name.endsWith('.d.ts'))
-        .map(entry => entry.name);
+export const accountOfFiles = (folder: string): { chapters: string[]; resources: Map<string, string[]>; unaccounted: string[] } => {
+    const filesInFolder = readdirSync(folder, { withFileTypes: true }).filter(entry => entry.isFile()).map(entry => entry.name);
+    const writings = filesInFolder.filter(name => apparatus.includes(name) || isChapter(name));
+    const writingByName = new Map(writings.flatMap(name => [[name, name], [withoutFinalExtension(name), name]] as [string, string][]));
 
-    return [...apparatus.filter(name => held.includes(name)), ...held.filter(name => /^\d/.test(name)).sort(before)];
+    const resources = new Map<string, string[]>();
+    const unaccounted: string[] = [];
+
+    for (const file of filesInFolder) {
+        if (writings.includes(file) || isDeclaration(file)) continue;
+        const accompanies = isKnown(file) ? writingByName.get(withoutFinalExtension(file)) : undefined;
+        if (accompanies === undefined) { unaccounted.push(file); continue; }
+        resources.set(accompanies, [...(resources.get(accompanies) ?? []), file]);
+    }
+
+    const chapters = [
+        ...apparatus.filter(name => name !== '.book.tsx' && filesInFolder.includes(name)),
+        ...filesInFolder.filter(isChapter).sort(before),
+    ];
+
+    return { chapters, resources, unaccounted };
 };

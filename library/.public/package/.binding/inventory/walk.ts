@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
-import { excluded } from '../configuration/excludes';
+import { excluded } from '../configuration/exclude';
 import { isBook, book } from './books';
 import { faceOf, isFace, type Book, type Library } from './library';
 

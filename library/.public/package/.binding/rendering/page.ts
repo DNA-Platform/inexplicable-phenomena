@@ -20,10 +20,29 @@ export const template = (html: string, chosen: Configuration): string => {
 // re-dispatches them once the book has mounted. Inline, so nothing is awaited before it runs.
 const kept = `<script>(function(){var k=[];function on(e){var r=document.getElementById('root');if(!r||!r.contains(e.target)||e.__replayed)return;k.push({t:e.target,type:e.type});}document.addEventListener('click',on,true);window.__replayKept=function(){document.removeEventListener('click',on,true);var q=k;k=[];q.forEach(function(one){if(!document.contains(one.t))return;var ev=new MouseEvent(one.type,{bubbles:true,cancelable:true});ev.__replayed=true;one.t.dispatchEvent(ev);});};})();</script>`;
 
+// EVERY SUBSTITUTION IS MADE WITH A FUNCTION, AND THAT IS NOT A STYLE CHOICE.
+//
+// `String.replace` READS `$` IN THE REPLACEMENT — `$&` is the matched text, `$1` a group, `$$` a
+// literal dollar — so a page whose own markup contains one of those patterns rewrites itself while
+// being pasted into the shell. Measured 2026-09-18 on Doug's library: the library's page shows the
+// masthead's source as a code sample, that source reads `$<$Writing>`, it escapes to `$&lt;`, and
+// every `$&` in it inserted `<div id="root"></div>` back into the page. EIGHT TIMES on one page,
+// and the page still weighed 238 kB, so nothing about its size said anything was wrong.
+//
+// A FUNCTION REPLACER NEVER READS ITS RETURN VALUE. It is the only spelling of this that is correct
+// for arbitrary content, and arbitrary content is the whole job: a library about code will quote
+// code, and this library is about a compiler.
+const into = (html: string, what: string | RegExp, said: string): string => html.replace(what, () => said);
+
 export const page = (built: string, markup: string, styles: string, title: string): string =>
-    built
-        .replace(/<title>[\s\S]*?<\/title>/, `<title>${escaped(title)}</title>`)
-        .replace('</head>', `${styles}
+    into(
+        into(
+            into(built, /<title>[\s\S]*?<\/title>/, `<title>${escaped(title)}</title>`),
+            '</head>',
+            `${styles}
   ${kept}
-  </head>`)
-        .replace('<div id="root"></div>', `<div id="root">${markup}</div>`);
+  </head>`,
+        ),
+        '<div id="root"></div>',
+        `<div id="root">${markup}</div>`,
+    );

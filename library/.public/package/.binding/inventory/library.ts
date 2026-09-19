@@ -23,6 +23,11 @@ export type Book = {
     folder: string;
     path: string;
     files: string[];
+    // WHAT STANDS BESIDE EACH CHAPTER, and what stands beside nothing. Both come from the single
+    // reading of the folder that also ordered the chapters, so the binder never asks a book's
+    // directory a second question it already has the answer to.
+    resources: Map<string, string[]>;
+    unaccounted: string[];
     module: string;
 };
 
@@ -35,9 +40,18 @@ export type Diagnostic = {
     at: string;
     file: string;
     says: string;
+    // WHAT IS WRONG, NAMED IN THE LIBRARY'S OWN WORDS. Doug, 2026-09-18: "you have to map them to
+    // errors in the semantics of the actual framework — duplicate title, missing this, no catalogue
+    // for this." A reader debugging a cover is holding a book, not a graph, and a fault called
+    // `half-claim` or `unwhole edge` tells them about the compiler's data structure instead of
+    // about their library.
+    //
+    // IT STANDS WHERE A COMPILER PUTS ITS ERROR CODE, so an editor's problem matcher reads it and a
+    // person scanning a list of failures sees the KIND before the sentence.
+    fault?: string;
 };
 
 // FAILURES IN THE COMPILER'S OWN SHAPE — `file(line,col): error TAG: message` — which is what an
 // editor's problem matcher reads, so a book that does not hold turns a line red under the file it
 // came from, the way a type error does.
-export const problem = (one: Diagnostic): string => `${one.file}(1,1): error SPEC: ${one.at} — ${one.says}`;
+export const problem = (one: Diagnostic): string => `${one.file}(1,1): error ${one.fault ?? 'SPEC'}: ${one.at} — ${one.says}`;

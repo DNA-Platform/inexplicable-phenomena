@@ -1,4 +1,4 @@
-import { $Book, $Cover, $TypeOfCover, html, reflection } from '@dna-platform/public';
+import { $Book, $Canonical, $Cover, $TypeOfCanonical, $TypeOfCover, html, reflection } from '@dna-platform/public';
 
 // WHAT IS READ OFF A LIVE BOOK, ONE MEMBER PER FACT. Loading a book is what costs; once it is
 // loaded, another fact costs a member here and nothing else — no second pass, and no change to the
@@ -19,6 +19,15 @@ export class Reading {
     $types(book: $Book): string[] { return reflection.types(this.cover(book) ?? book).flatMap(type => reflection.names(type)); }
     $chapters(book: $Book): string[] { return book.chapters.map(chapter => chapter.name); }
     $catalogued(book: $Book): string[] { return (book.tableOfContents?.chapters ?? []).map(mention => mention.name); }
+    // WHAT A CATALOGUE SHELVES, which is a different question from what a book holds. A synopsis says
+    // the book it is FOR, and a catalogue is a book of synopses — so the books it shelves are the
+    // canonical names written into its chapters. It reads the PRINTED documents rather than the block,
+    // because a chapter writes its document in print() and nothing an author wrote is in the book.
+    $shelves(book: $Book): string[] {
+        return book.chapters.flatMap(chapter => chapter.parts())
+            .flatMap(document => reflection.within<$Canonical>(document, $TypeOfCanonical))
+            .map(named => named.name);
+    }
 
     protected cover(book: $Book): $Cover | undefined {
         return book.cover?.searchPartsForOne<$Cover>($TypeOfCover);

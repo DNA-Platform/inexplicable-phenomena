@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { files } from './chapters';
+import { accountOfFiles } from './chapters';
 import { bindingOf, type Book } from './library';
 
 export const isBook = (folder: string): boolean => existsSync(join(folder, '.book.tsx'));
@@ -13,6 +13,14 @@ const spelled = (folder: string): string => folder.split('/').map(part => part.r
 
 export const book = (library: string, folder: string): Book => {
     const path = join(library, folder);
+    const account = accountOfFiles(path);
 
-    return { folder, path, files: files(path), module: join(bindingOf(library), 'application', 'books', `${spelled(folder)}.tsx`) };
+    return {
+        folder,
+        path,
+        files: account.chapters,
+        resources: account.resources,
+        unaccounted: account.unaccounted,
+        module: join(bindingOf(library), 'application', 'books', `${spelled(folder)}.tsx`),
+    };
 };
