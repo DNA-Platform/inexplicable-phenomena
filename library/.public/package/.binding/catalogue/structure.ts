@@ -10,28 +10,11 @@ import { elements, type Element } from './reading';
 //
 // `catalogue/structure.ts` is a PROXY NAME, flagged for Doug.
 //
-// EVERY ANNOTATION IS HALF OF AN EDGE, AND BOTH SPELLINGS NORMALISE TO THE SAME EDGE. `*[[ X ]]`
-// written in A and `[[ A ]]*` written in X are one edge asserted twice, so the structure is a map
-// keyed by the edge and holding every assertion that produced it. That one move answers three
-// questions at once:
-//
-//   two ends   the edge is WHOLE — both sides agree
-//   one end    a CLAIM NOTHING CORROBORATES, reportable at the end that made it and the end owed
-//   two out    a CONTRADICTION — one writing claiming two parents in a relation that is a tree
-//
-// A SPOT IS KEYED BY WHERE IT STANDS AND NEVER BY ITS NAME. Doug: "the name is not an identifier for
-// the book." So a book renames without a single edge moving, and every check compares ids rather
-// than text — which retires the whole apostrophe, entity and casing family of fault in one decision.
-// Strings live at the boundary of the parse and nowhere after it.
-//
-// NAMES ARE A MULTIMAP ON PURPOSE. An earlier writing keyed cards by title in a plain Map and six
-// books silently became five: the collision was ABSORBED by the data structure and surfaced three
-// files away as a table complaining about a book that was standing right there.
-//
-// AND EVERY FILE IS READ ONCE. One text read, one TypeScript parse, one element scan, cached — and
-// then six passes over what was gathered. The passes cannot be collapsed, because a chapter's name
-// is scoped by its book's and a book's name may be written in the last file walked; what CAN be
-// collapsed is the reading, and it is.
+// EVERY ANNOTATION IS HALF OF AN EDGE, AND BOTH SPELLINGS NORMALISE TO THE SAME EDGE — two ends is
+// whole, one end is a claim nothing corroborates, two out of a tree relation is a contradiction. A
+// SPOT IS KEYED BY WHERE IT STANDS AND NEVER BY ITS NAME, so every check compares ids and strings
+// stop at the boundary of the parse. NAMES ARE A MULTIMAP ON PURPOSE, so a collision is reported
+// rather than absorbed. And every file is read once, cached, then six passes that cannot collapse.
 
 export type SpotId = string;
 export type Where = { file: string; line: number };

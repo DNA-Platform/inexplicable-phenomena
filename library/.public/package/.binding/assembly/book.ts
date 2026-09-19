@@ -22,18 +22,11 @@ const classed = (file: string): string => local(file).replace(/^\w/u, letter => 
 // SERVED, it has no place on disk at all and no directory to be relative to — so the caller that
 // knows which it is says so, and neither has to infer it from the other.
 //
-// AND THE BOOK TAKES ITS OWN HOT UPDATE, which is the last line of the module and the reason the
-// page no longer reloads when a chapter is saved.
-//
-// REACT FAST REFRESH DECLINES THIS MODULE AND IS RIGHT TO. It swaps a module only when every export
-// is a component it knows how to keep; `book` is a VALUE, and a chapter's default export is a
-// CLASS. So vite walked up from the edited chapter, through here, to the entry — which exports
-// nothing at all and therefore cannot accept either — and fell back to reloading the page. Measured
-// 2026-09-19: a mark left on the window did not survive a chapter being saved.
-//
-// A SELF-ACCEPTING MODULE IS THE BOUNDARY. Vite stops propagating at the first module that accepts,
-// re-executes it — which re-imports the chapter that changed — and hands the new namespace to the
-// callback. So the book puts itself back on the page, and nothing above it is disturbed.
+// AND THE BOOK TAKES ITS OWN HOT UPDATE, which is the last line of the module. React Fast Refresh
+// declines a module whose exports are values and classes, and a self-accepting module is where vite
+// stops propagating: it re-executes here — re-importing the chapter that changed — and hands the
+// new namespace to the callback, so the book puts itself back on the page and nothing above it
+// is disturbed.
 export const assembled = (book: Book, from = relative(dirname(book.module), book.path).split(sep).join('/')): string => {
     // HOW FAR THIS MODULE STANDS BELOW `application/`, COUNTED THE WAY IT WAS PUT THERE. A book
     // module is `application/books/<folder>.tsx` with the folder's own nesting kept, so the number

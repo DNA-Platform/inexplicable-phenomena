@@ -3,17 +3,12 @@ import { join } from 'node:path';
 import ts from 'typescript';
 import type { Book } from '../inventory/library';
 
-// WHAT A BOOK ANSWERS ABOUT ITSELF, READ OFF ITS SOURCE RATHER THAN OFF A RUNNING COPY.
+// THE SHARED RULES FOR READING A BOOK'S SOURCE: JSX's own whitespace, the entities prose reaches
+// for, and the framework's elements read by what their tags are bound to. Two passes ask these, and
+// a rule with two homes disagrees with itself.
 //
-// `catalogue/reading.ts` IS DELIBERATELY NAMED FOR `specification/reading.ts`, which answers the
-// same facts by loading the book and asking it. They are one question with two mechanisms, and the
-// second one is being replaced — so the names say that, rather than hiding it behind a word that
-// makes them look unrelated. Both names are PROXIES, flagged for Doug.
-//
-// WHY IT IS WORTH REPLACING: loading a book costs three seconds of vite and a DOM before a word is
-// read, then 6.7s for the first book and a fraction for each after — measured 2026-09-15. Parsing
-// one costs 2.07ms. And the loading is why `resolve` waits for `specify`: a title was a thing a
-// running book answered. Read here, it is a thing the source says.
+// `specification/reading.ts` reads the same facts off a RUNNING book, for the specify phase; this
+// reads them off the source, for the catalogue. Both names are PROXIES, flagged for Doug.
 
 // ---- JSX's own whitespace rule, which is not optional to replicate ----
 
@@ -96,15 +91,6 @@ const inside = (element: ts.JsxElement): string => {
 
     return reads(held).trim();
 };
-
-// WHAT THIS FILE IS NOW. It began as a second reader of the library — it built a CARD per book by
-// parsing covers, and `catalogue/catalogue.ts` keyed fifty-one addresses off it while
-// `catalogue/structure.ts` validated six names off its own reading. Two readers of one library, in
-// the middle of a compiler written against rules with two homes.
-//
-// WHAT SURVIVED IS THE PART THAT WAS ALWAYS SHARED: JSX's whitespace rule, the entities a person
-// writing prose reaches for, and reading the framework's own elements. Everything that made a
-// judgement about what a book IS moved to `catalogue/structure.ts`.
 
 // ---- what a tag is bound to ----
 

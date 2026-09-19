@@ -33,23 +33,12 @@ export const holds = (found: Library, held: Catalogue): Diagnostic[] => {
     return wrong;
 };
 
-// THE SAME QUESTION, ASKED WHILE A PERSON IS TYPING.
-//
-// IT READS THE LIBRARY AGAIN RATHER THAN TRUSTING WHAT STARTUP FOUND. A cover changing is exactly
-// the event this runs on, so the inventory taken when the server booted is the one thing that is
-// certainly out of date.
-//
-// BUT IT NO LONGER WALKS THE LIBRARY ITSELF TO GET THERE. This plugin used to re-walk and re-read
-// every book on every dot-chapter transform, which was correct and was also the only thing in the
-// binder that was correct — so the fix was not to make it cheaper but to give the whole compiler
-// the same freshness for one price. `inventory/retaken.ts` holds one reading and drops it when the
-// watcher says something moved; a transform that follows a save pays for the retake, and a
-// transform that follows nothing pays for nothing.
+// THE SAME QUESTION, ASKED WHILE A PERSON IS TYPING — of the inventory `inventory/retaken.ts`
+// keeps current, so a transform that follows a save pays for the retake and one that follows
+// nothing pays for nothing.
 //
 // IT THROWS FROM `transform`, which is how a compile is stopped rather than commented on: vite puts
-// a thrown transform error on the screen as the error overlay, and the module does not compile. The
-// file it throws on is the dot chapter the author just saved, so the overlay opens on the thing
-// they were editing even when the fault it names is in another book.
+// a thrown transform error on the screen as the overlay, on the dot chapter the author just saved.
 export const holding = (held: Inventory): Plugin => {
     const asked = (): Diagnostic[] => holds(held.library(), held.catalogue());
 

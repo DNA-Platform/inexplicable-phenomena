@@ -186,8 +186,9 @@ export const name = (said: string): Name => {
 // AND THE WHOLE OF IT AS ONE NAME, for asking whether the library holds a thing called exactly that.
 // MEMBERSHIP DECIDES AND THE SEPARATOR ONLY HINTS: a book really called `TCP/IP` is a book the
 // library holds, and reading it as a chapter of a book called `TCP` is the compiler being clever
-// about punctuation instead of asking. So a resolver tries the whole name first and splits second,
-// and a name where BOTH readings resolve is a real ambiguity — which is refused rather than guessed.
+// about punctuation instead of asking. The design is that a resolver tries the whole name first and
+// splits second, refusing a name where both readings resolve; TODAY NOTHING CALLS THIS — `reaches`
+// splits, and `TCP./IP` is how a writer keeps the slash. Kept as the seam, and flagged for Doug.
 export const whole = (said: string): string => unescaped(tidied(said));
 
 // THE KEY A NAME STANDS FOR, once the scope is known. A chapter is named within its book and nowhere

@@ -1,7 +1,11 @@
+import { execFileSync } from 'node:child_process';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configure, type Configuration } from '../configuration/configuration';
+import { walk } from '../inventory/walk';
+import type { Library } from '../inventory/library';
+import { catalogue, type Catalogue } from '../catalogue/catalogue';
 
 // THE TEST LIBRARY, AND HOW A TEST GETS ONE IT CAN BIND.
 //
@@ -31,6 +35,14 @@ export const configured = (): Configuration => {
     const chosen = configure(home);
 
     return { ...chosen, inventory: { ...chosen.inventory, exclude: [...chosen.inventory.exclude, '.staged'] } };
+};
+
+// THE TEST LIBRARY READ WHERE IT STANDS — what a unit suite starts from.
+export const read = (): { chosen: Configuration; found: Library; card: Catalogue } => {
+    const chosen = configured();
+    const found = walk(fixture, chosen);
+
+    return { chosen, found, card: catalogue(found, chosen) };
 };
 
 export type Staged = { root: string; library: string; face: string; binding: string; remove(): void };
@@ -66,6 +78,16 @@ export const staged = (): Staged => {
     writeFileSync(join(binding, '.pubconfig'), `${JSON.stringify({ inventory: { root: 'The Library' }, rendering: { title: 'The Test Library' } }, null, 2)}\n`);
 
     return { root, library, face, binding, remove: (): void => rmSync(root, { recursive: true, force: true }) };
+};
+
+// A STAGED LIBRARY, BOUND — the whole binder run over it, and what it printed handed back.
+//
+// WITHOUT THE TEST RUNNER'S `NODE_ENV`. Vitest sets it to `test`; a bind decides for itself what
+// each phase runs as, and the prerender's children insist on `production`.
+export const bound = (held: Staged): string => {
+    const { NODE_ENV: _, ...environment } = process.env;
+
+    return execFileSync('npx', ['tsx', 'binding.ts'], { cwd: held.binding, encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'pipe'], env: environment });
 };
 
 // THE SAME LIBRARY, LARGER: one of its books copied N times under N names, each listed where the

@@ -1,18 +1,14 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { walk } from '../inventory/walk';
-import { catalogue } from '../catalogue/catalogue';
-import { configured, fixture } from '../.test/staging';
+import { fixture, read } from '../.test/staging';
 import { transforming } from './transform';
 
 // WHAT THE TRANSFORM WRITES INTO A READER'S PROSE, which is the one thing in the compiler that edits
 // what a person sees. Every promise here is about the text that comes out: the address a reference
 // is given, the words it keeps, the name an annotation is left with, and the refusal when a name is
 // not the library's.
-const chosen = configured();
-const found = walk(fixture, chosen);
-const card = catalogue(found, chosen);
+const { card } = read();
 const chapter = join(fixture, 'paper', '1-the-argument.tsx');
 const cover = join(fixture, 'the-library', '.cover.tsx');
 

@@ -37,23 +37,11 @@ const landing = (address: string, title: string): string => [
     '',
 ].join('\n');
 
-// ONE CHILD PER PAGE, AS MANY AT ONCE AS THE MACHINE HAS CORES.
-//
-// ONE PROCESS PER PAGE IS CORRECT, AND IT WAS MEASURED RATHER THAN ASSUMED. `draw.ts` says why — a
-// book registers its theme on the shared class when its module loads — and on 2026-09-19 every page
-// of a duplicated library was drawn in ONE process and diffed against these: the markup was
-// identical, and every page but the first carried the style rules of the books drawn before it. So a
-// page is drawn in a process of its own, and the cost is a vite boot per page — 3.1s, serial.
-//
-// THE CHILDREN ARE INDEPENDENT, SO THEY RUN TOGETHER. Doug, 2026-09-19: "We can optimize but we
-// can't test a different architecture" — this is the same architecture, the same child, the same
-// pages, in parallel. They come back in the order the names were given whatever order the children
-// finished in, because the manifest and the proof read this list and a list that reorders itself
-// is a diff on every build.
-//
-// AND THE ISOLATION THAT WOULD LET ONE RUNTIME DRAW THEM ALL IS THE SUBSTRATE'S TO GIVE. Doug: "Things
-// shouldn't be registered to [the shared class]. Each book can have its own [class] with things
-// registered to it." Recorded for that team; nothing here reaches for it.
+// ONE CHILD PER PAGE, AS MANY AT ONCE AS THE MACHINE HAS CORES. One process per page is correct —
+// a book registers its theme on the shared class when its module loads, and one process drawing
+// two books carries the first's styles into the second — so the children run together instead.
+// They come back in the order the names were given, because the manifest and the proof read this
+// list and a list that reorders itself is a diff on every build.
 const drawn = (binding: string, entry: string, name: string): Promise<string[]> => new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [entry, name], {
         cwd: binding,

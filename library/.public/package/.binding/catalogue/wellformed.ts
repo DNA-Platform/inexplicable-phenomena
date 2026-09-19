@@ -2,35 +2,15 @@ import type { Diagnostic } from '../inventory/library';
 import { last, spelt } from './language';
 import type { SpotId, Structure } from './structure';
 
-// WHAT MAKES A LIBRARY WELL-FORMED, CHECKED OVER THE COMPILED STRUCTURE.
+// WHAT MAKES A LIBRARY WELL-FORMED, CHECKED OVER THE COMPILED STRUCTURE. It returns faults and
+// raises nothing; the phase that asked decides how a fault is reported.
 //
 // `catalogue/wellformed.ts` is a PROXY NAME, flagged for Doug.
 //
-// THE ESSENCE, AND IT IS THE THING TO HOLD: authorship begins in a single act of self-representation
-// and is extended only by delegation. One book comes into being that authors itself — a being
-// positing itself, the one claim in the library that needs no authority behind it, because there is
-// nothing above it to grant one. Everything is then attributed to that being. And the being may
-// represent itself more than once, but a further representation cannot be CLAIMED: it has to be
-// catalogued by an author and authored by that author. Vouched for from above.
-//
-// SO AUTHORSHIP IS GRANTED EVERYWHERE EXCEPT AT THE ORIGIN, where it must be claimed because it is
-// the origin. One self-delegation, once, ever; the rest is vouching.
-//
-// AND THE COLOURING IS THE INTERESTING PART. Doug, 2026-09-18: "it referentially colors the tree in
-// an interesting way, including the tree that contains the authors." There is no external registry
-// of who may write — the permission is a REGION OF THE SAME STRUCTURE it governs, grown from a
-// single book that had to claim itself because nothing above it existed.
-//
-// THE CATALOGUE IS A TREE AND THE TOPICS ARE A FREE OVERLAY. Two books may catalogue each other
-// topically and neither is wrong — Peano arithmetic representing set theory in one frame and set
-// theory representing Peano in another. What keeps a library sound is not acyclicity; it is that
-// every author descends from the one book that authors itself.
-//
-// EVERY FAULT IS NAMED IN THE LIBRARY'S OWN WORDS. Doug: "you have to map them to errors in the
-// semantics of the actual framework — duplicate title, missing this, no catalogue for this." The
-// data structure is the compiler's business and nobody debugging a cover should have to hear about
-// it. What they are holding is a book with no title, or a catalogue that does not answer for what
-// stands under it.
+// THE ESSENCE: authorship begins in a single act of self-representation and is extended only by
+// delegation — one book authors itself, once, and every other author is catalogued by an author and
+// authored by that author. The catalogue is a tree; the topics are a free overlay. EVERY FAULT IS
+// NAMED IN THE LIBRARY'S OWN WORDS, because the person holding it is holding a book, not a graph.
 
 // THE FAULTS A LIBRARY CAN HAVE — a closed list, and worth reading as one. Each names something a
 // person could say about their own library without knowing this code exists.

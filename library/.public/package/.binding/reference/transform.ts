@@ -24,17 +24,13 @@ import { key, name as parsed, notation, spelling } from '../catalogue/language';
 //   AND ANY OF THEM MAY BE `[ words ]( X )` — the bracket is what is shown, the paren is X.
 //
 // THE MENTION IS THE ONE EXCEPTION because it is the only form that CREATES an address rather than
-// spending one. It has to plant an id at the spot it stands in, and there is no writing kind in the
-// framework that does that yet — so for now its copy stands and the planting is owed. Nothing in
-// `.me` writes one, which is its own finding: the primitive of the language has never been used.
+// spending one. There is no writing kind in the framework that plants an id yet, so its copy stands
+// and the planting is owed.
 //
 // IT RUNS `pre` and splices by absolute offset, so the file is byte-identical either side of a
 // match and what @vitejs/plugin-react compiles is markup that never heard of a sigil.
 
-// THE TWO SHAPES, matched over one pass so their offsets interleave correctly — and the spelling is
-// THE LANGUAGE'S, constructed here with a cursor of its own. This file held a second copy of the
-// regex for a day, which is a rule with two homes: when `( name )` was put back into the language
-// the scanner learned it and this did not, and every cover would have compiled its words as a name.
+// THE SPELLING IS THE LANGUAGE'S, constructed here with a cursor of its own — never a second copy.
 const notating = new RegExp(notation.source, 'gu');
 
 export type Missing = { key: string; file: string; line: number };
@@ -121,37 +117,10 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             // exists that plants an id.
             if (!reference && read.brackets === 3) { declared.push(name); edits.push({ from: at, to, said: words }); continue; }
 
-            // AN ANNOTATION IS VERIFIED AND THEN WRITES ITS NAME. The address it resolves to is
-            // the COMPILER's — it goes into the card and into the route table the pages load —
-            // and what stands in the prose is the name, because the ELEMENT around it already
-            // carries the relation. `<Author>`, `<Subject>` and `<Book>` each resolve a name
-            // through that table, which is how this library worked before the notation existed.
-            //
-            // AN EARLIER WRITING SUBSTITUTED THE URL and broke every one of them. The runtime
-            // reads the parenthesised part as a NAME and looks it up; handed `/my-library-log/`
-            // it found nothing and slugged what it was given, so `#my-library-log` appeared on
-            // five pages pointing at an anchor no page answered to. Measured: thirteen faults
-            // from the compiler helpfully resolving something twice.
-            //
-            // AND A TITLE IS THE SAME MOVE FOR A DIFFERENT REASON — D10: "a title must not draw
-            // itself as a link." Its address is the page it is standing on.
-            //
-            // THE REFUSAL IS UNCHANGED, which is the whole point: the name is still resolved
-            // here, and a name the library does not hold still stops the compile by file and
-            // line. What moved is only what gets written down.
-            //
-            // WHAT A REFERENCE SHOWS IS THE THING, NOT THE SCOPE. `$[ &gt; The books ]` names a
-            // chapter of the book it stands in and reads "The books" — the `>` is how the scope
-            // is written, not part of the name. An earlier writing put the raw text back and
-            // emitted `[> The books](...)`, and esbuild refused the file: "the character > is
-            // not valid inside a JSX element."
-            //
-            // AND WHEN THE WRITER GAVE THE WORDS, THE WORDS ARE WHAT IS SHOWN. `[[ Author: Doug ]]( My
-            // Library Log )` asks the library for the log and shows "Author: Doug" — the bracket is
-            // display and the paren is the identifier, on every form. An annotation with words
-            // compiles to the `[words](name)` the runtime has always read (`$Author`: "`[Doug](
-            // dougs-library-log)` draws Doug and names the log"), and a reference with words puts
-            // them in the anchor. Without a paren the words ARE the name and nothing changes.
+            // AN ANNOTATION IS VERIFIED AND THEN WRITES ITS NAME — or `[words](name)` when the writer
+            // gave both — because the ELEMENT around it resolves the name through the shelf; handed a
+            // URL it would slug it and point at nothing. A REFERENCE writes `[words](url)`. What is
+            // shown is the thing and never the scope: `$[ ./The books ]` reads "The books".
             const meant = parsed(name);
             const shown = read.named ? words : meant.of === 'book' ? meant.book : meant.chapter;
             const url = catalogue.where(key(meant, within));

@@ -113,13 +113,8 @@ export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] =
     }
 
     // AND EVERY ADDRESS INTO THE LIBRARY LEADS TO A PAGE THE BINDER BUILT, at a place on it that
-    // exists. The catalogue answers whether a name stands at an ADDRESS; nothing before this asked
-    // whether a PAGE stands at the address — and measured 2026-09-19, two chapter references on the
-    // live site led to folders no page was ever written to, while every check on the page passed.
-    // Doug: "if the library is validated and the routes are right, won't urls just work with Vite
-    // and the router and the pages generated? And we can test all of that infrastructure?" This is
-    // that test, and it reads the pages rather than the catalogue so that it cannot agree with the
-    // catalogue by construction.
+    // exists — read off the pages rather than the catalogue, so it cannot agree with the catalogue
+    // by construction.
     for (const { page, href } of leaving) {
         const led = leads(href, base);
         if (led === undefined) continue;

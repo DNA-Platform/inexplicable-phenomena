@@ -9,38 +9,16 @@ import { assembled as assembledBooks } from './books';
 import { assembled as assembledRoutes } from './routes';
 import { assembled as assembledSheets } from './stylesheets';
 
-// THE GENERATED MODULES, SERVED RATHER THAN WRITTEN — and this is the bootstrap problem closing.
+// THE GENERATED MODULES, SERVED RATHER THAN WRITTEN. Each is generated on the spot from the same
+// function the batch uses — one producer, two consumers — and a file a previous bind left on disk
+// is never consulted, so the dev server cannot answer for a library that has moved on.
 //
 // `assembly/serving.ts` is a PROXY NAME, flagged for Doug.
 //
-// UNTIL NOW `npm run dev` HANDED OUT FILES A PREVIOUS BIND HAD WRITTEN. `application/books.ts`,
-// `application/routes.ts`, `application/stylesheets.ts` and one module per book all sat on disk, so
-// the dev server depended on the batch and could not produce what it served. A library whose
-// generated files were missing served a broken page; one whose source had moved on served a stale
-// one and said nothing. Doug, 2026-09-17, on finding a stale graph still answering for a cover that
-// had changed: "disable the previous version."
-//
-// SO NOTHING HERE IS READ FROM DISK. Each is generated on the spot from the same function the batch
-// uses — one producer, two consumers — and a file still lying there is never consulted.
-//
-// AND THE ROUTE TABLE NO LONGER WAITS FOR A BOOK TO BE RUN. It comes from the parsed catalogue,
-// which reads a book's source rather than loading it, so the reason `resolve` followed `specify`
-// is gone: a title is a thing the source says.
-//
-// THE IDS ARE THE PATHS THESE MODULES WOULD HAVE HAD, and not the `\0` a virtual module usually
-// carries. That was the second writing of this file and it failed twice: vite decides whether to
-// run TypeScript and JSX over a module by its id, and a `\0` id is skipped — so `books.ts` reached
-// the parser with an `import type` still in it, and a book module reached it as markup nobody had
-// compiled. A generated module needs the whole pipeline, which means it needs an ordinary id.
-//
-// AND THE FILE IS NEVER READ, whether or not one is lying there. `load` answers every time, so a
-// bind that wrote these yesterday cannot answer for a library that has changed since — which is
-// the whole point, and the failure Doug found this afternoon when a stale graph went on insisting
-// a cover said something it no longer said.
-//
-// FINALLY, THE LIBRARY IS ASKED FOR RATHER THAN HELD. What a book's module says is a list of that
-// book's chapters, so a chapter appearing on disk changes a module this plugin generates — and the
-// inventory these come from was, until the watcher below, the one taken when the server booted.
+// THE IDS ARE THE PATHS THESE MODULES WOULD HAVE HAD, not the `\0` a virtual module usually wears:
+// vite decides whether to run TypeScript and JSX over a module by its id, and a `\0` id is skipped.
+// And the library is ASKED FOR rather than held, because a chapter appearing on disk changes a
+// module this plugin generates.
 
 // A BOOK SERVED HAS NO DIRECTORY, so its chapters are imported by absolute path rather than by one
 // relative to a module that does not stand anywhere.

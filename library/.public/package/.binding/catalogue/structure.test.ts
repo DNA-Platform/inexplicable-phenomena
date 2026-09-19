@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { walk } from '../inventory/walk';
-import { configured, fixture } from '../.test/staging';
-import { catalogue } from './catalogue';
+import { read } from '../.test/staging';
 import { name } from './language';
 import { structure } from './structure';
 import { wellformed } from './wellformed';
@@ -11,8 +9,7 @@ import { wellformed } from './wellformed';
 // what it SEES when there is nothing to refuse — every book, every chapter, every edge with both its
 // ends, every reference — because a structure that quietly saw less than the library said would
 // pass every refusal test and still be wrong.
-const chosen = configured();
-const found = walk(fixture, chosen);
+const { found, card } = read();
 const made = structure(found);
 
 describe('the test library, read', () => {
@@ -73,8 +70,6 @@ describe('the test library, read', () => {
 });
 
 describe('the catalogue over it', () => {
-    const card = catalogue(found, chosen);
-
     it('answers a book with its page and a chapter with its page and a fragment', () => {
         expect(card.where('The Library')).toBe('/the-library/');
         expect(card.where('A Paper / The Evidence')).toBe('/a-paper/#the-evidence');

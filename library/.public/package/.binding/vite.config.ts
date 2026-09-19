@@ -32,20 +32,10 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
     publicDir: existsSync(resolve(binding, 'public')) ? resolve(binding, 'public') : false,
     appType: env.isPreview ? 'mpa' : 'spa',
     plugins: [
-        // FAST REFRESH IS KEPT OFF THE MODULES WE GENERATE, and that is what lets a book take its
-        // own hot update.
-        //
-        // THE PLUGIN SELF-ACCEPTS EVERY FILE IT TOUCHES and then, inside its own callback, decides
-        // whether it can keep the module — calling `import.meta.hot.invalidate()` when it cannot.
-        // A book module exports `book`, which is a VALUE, so it always cannot: measured 2026-09-19,
-        // `invalidate /application/books/reference.tsx: Could not Fast Refresh ("book" export is
-        // incompatible)`, which propagated to the entry and reloaded the page. Our own accept was
-        // registered and ran; the invalidate beside it undid the whole point of it.
-        //
-        // NOTHING IS LOST BY EXCLUDING THEM. Fast Refresh exists to keep a React component's state
-        // across an edit, and these modules hold no state and are not components — they are a list
-        // of imports and a table. What they DO hold is the seam where a book puts itself back on
-        // the page, and that seam only works if nobody else is invalidating the module underneath.
+        // FAST REFRESH IS KEPT OFF THE MODULES WE GENERATE. The plugin self-accepts every file it
+        // touches and calls `import.meta.hot.invalidate()` from inside its callback when it cannot
+        // keep the module — a book module exports a value, so it never can — which undid the
+        // book's own accept. These modules hold no state and are not components; nothing is lost.
         react({ exclude: [/[\\/]application[\\/](books[\\/].*|books|routes|stylesheets|opened)\.?[jt]sx?$/u], babel: { parserOpts: { plugins: ['decorators-legacy'] } } }),
         { name: 'binding:template', transformIndexHtml: html => template(html, chosen) },
         resources(),

@@ -19,18 +19,14 @@ import { structure as compiled, type Structure } from './structure';
 // is the reason `#${slug(name)}` has to go — a guess is what a table answers with when it would
 // rather not say no.
 //
-// NOTHING IS LOADED. The cards come from `catalogue/reading.ts`, which reads a book's source, and
-// the addresses from `resolution/addresses.ts`, which was already a pure pass over a graph and a
-// configuration and never opened a book. Put together they are the catalogue a page used to ask at
-// draw time, answered before a page exists.
+// NOTHING IS LOADED. The names come from `catalogue/structure.ts`, which reads a book's source, and
+// the addresses from `resolution/addresses.ts`, which never opened a book. Put together they are the
+// catalogue a page used to ask at draw time, answered before a page exists.
 
 export type Catalogue = {
     readonly table: Table;
-    // THE ONE READING OF THE LIBRARY, held so nothing asks a second time. `catalogue/holds.ts` and
-    // this file used to walk the same books through two different readers — this one through
-    // `catalogue/reading.ts` for its fifty-one keys, the validator through `catalogue/structure.ts`
-    // for its six names — so every chapter the site linked by was invisible to the specification.
-    // A rule with two homes, in the middle of the machinery built against rules with two homes.
+    // THE ONE READING OF THE LIBRARY, held so nothing reads it a second time — the validator and
+    // the catalogue answer off the same structure, or they disagree.
     readonly structure: Structure;
     where(key: string): string | undefined;
     // WHICH BOOK'S PAGE A FILE IS PART OF, which is the one thing a reference needs that is not in
@@ -49,12 +45,12 @@ export type Catalogue = {
 
 export const catalogue = (found: Library, chosen: Configuration, given?: Structure): Catalogue => {
     const structure = given ?? compiled(found);
-    const held = {
-        books: found.books
-            .filter(book => structure.named.has(book.folder))
-            .map(book => ({ folder: book.folder, book: { name: structure.named.get(book.folder) as string }, digest: '', walked: 0 })),
-    };
-    const table = resolution(found, held, chosen);
+    const named = found.books.flatMap(book => {
+        const name = structure.named.get(book.folder);
+
+        return name === undefined ? [] : [{ folder: book.folder, name }];
+    });
+    const table = resolution(found, named, chosen);
 
     // A KEY ANSWERS WITH A URL, WRITTEN FROM THE DOMAIN FORWARD — the library's base and the book's
     // own address, ending in a slash because that is the page a reader lands on. GitHub Pages
@@ -103,9 +99,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         const held = found.books.find(one => one.folder === route.folder);
         if (held !== undefined) inside.push({ path: forward(held.path), url: book, name: route.name });
 
-        // AND ITS CHAPTERS, WHICH ARE SPOTS OF THE STRUCTURE RATHER THAN A SECOND READING. A
-        // chapter is named within its book and nowhere else, so `Dougs Library > The Sheet` is the
-        // WHOLE key and there is no bare one beside it.
+        // AND ITS CHAPTERS, WHICH ARE SPOTS OF THE STRUCTURE RATHER THAN A SECOND READING.
         for (const spot of structure.spots.values()) {
             if (spot.kind !== 'chapter' || spot.book !== route.folder) continue;
             const chapter = structure.named.get(spot.id);
@@ -113,19 +107,9 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         }
     }
 
-    // THE BRACKET IS DISPLAY AND THE PAREN IS THE IDENTIFIER. Doug, 2026-09-18, exactly:
-    // "`**$[Author: Doug](Doug)*` says the text 'Author: Doug' is what I'll display for the url
-    // associated with Doug, the author identifier."
-    //
-    // SO NOTHING IN THE BRACKETS EVER BECOMES A KEY. An earlier writing of this registered the
-    // display text as a second name for the book — which put `Author: Doug` and `Doug` in the
-    // catalogue because they had been PRINTED somewhere, not because anything declared them. A
-    // catalogue that keys on what a page displays is keying on presentation.
-
     // THE DEEPEST BOOK THAT HOLDS A FILE, because a library nests: `semantics-of-types` stands
     // inside `semantic-reference-theory`, which stands inside `claude-and-our-projects`. The
-    // shallowest match would answer every chapter with the outermost book it happens to sit under,
-    // and every reference in the library would think it was standing somewhere else.
+    // shallowest match would answer every chapter with the outermost book it happens to sit under.
     const deepest = (file: string): { path: string; url: string; name: string } | undefined => {
         const held = forward(file);
 
@@ -136,10 +120,6 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         table,
         structure,
         where: (key: string): string | undefined => at.get(tidy(key)),
-        // THE DEEPEST BOOK THAT HOLDS IT, because a library nests: `semantics-of-types` stands
-        // inside `semantic-reference-theory`, which stands inside `claude-and-our-projects`. The
-        // shallowest match would answer every chapter with the outermost book it happens to sit
-        // under, and every reference in the library would think it was standing somewhere else.
         standing: (file: string): string | undefined => deepest(file)?.url,
         scope: (file: string): string | undefined => deepest(file)?.name,
         keys: (): string[] => [...at.keys()].sort(),

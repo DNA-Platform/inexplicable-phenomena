@@ -1,4 +1,3 @@
-import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { afterAll, describe, expect, it } from 'vitest';
 import { configure } from '../configuration/configuration';
@@ -6,7 +5,7 @@ import { walk } from '../inventory/walk';
 import { catalogue } from '../catalogue/catalogue';
 import { placeOf } from '../rendering/place';
 import { proof } from '../specification/proof';
-import { staged } from './staging';
+import { bound, staged } from './staging';
 
 // THE WHOLE BINDER, END TO END, OVER A LIBRARY THAT IS KNOWN TO BE RIGHT.
 //
@@ -24,14 +23,8 @@ describe('a bind of the test library', () => {
     const chosen = configure(held.binding);
     const found = walk(held.library, chosen);
     const table = catalogue(found, chosen).table;
-    let bound = '';
-
     it('runs every phase and finishes', () => {
-        // WITHOUT THE TEST RUNNER'S `NODE_ENV`. Vitest sets it to `test`; a bind decides for itself
-        // what each phase runs as, and the prerender's children insist on `production`.
-        const { NODE_ENV: _, ...environment } = process.env;
-        bound = execFileSync('npx', ['tsx', 'binding.ts'], { cwd: held.binding, encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'pipe'], env: environment });
-        expect(bound).toMatch(/^bound /mu);
+        expect(bound(held)).toMatch(/^bound /mu);
     });
 
     it('wrote a page for every book, and every page holds its book', () => {

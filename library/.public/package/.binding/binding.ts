@@ -81,10 +81,10 @@ export const tasks: Task[] = [
     // stands HERE — after the inventory and before anything is assembled — because a library that
     // does not hold together should not cost a bundle to find that out.
     //
-    // THE SAME MACHINERY THE DEV SERVER RUNS. `integrity` is `transforming` asked of every file at
-    // once, and `references()` in the vite config is that same expression asked of one file as it
-    // compiles. Doug: "We should get errors in the non-incremental part of the compiler which
-    // should use machinery for the incremental one, in production."
+    // THE SAME MACHINERY THE DEV SERVER RUNS. `holds` is what the `binding:holds` plugin asks on
+    // every dot-chapter transform, and the `references` plugin resolves every file's prose the same
+    // way in the bundle as in the dev server. Doug: "We should get errors in the non-incremental
+    // part of the compiler which should use machinery for the incremental one, in production."
     //
     // AND IT IS ONE QUESTION WITH ONE ANSWER. `holds` carries both the rules and the order they are
     // asked in, so this task and the `binding:holds` plugin cannot come to differ about what a
