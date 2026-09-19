@@ -26,8 +26,11 @@ type Made = { folder: string; name: string; author: string; catalogue?: string; 
 const where = mkdtempSync(join(tmpdir(), 'binder-wellformed-'));
 let made = 0;
 
+// AND IT IMPORTS WHAT IT USES, the way a real chapter does, because the compiler now reads a tag by
+// what it is bound to rather than by its name — an element nobody imported is nobody's element.
+// `Book` and `Chapter` here are the MENTIONS, bound the way every table in the library binds them.
 const page = (lines: string[]): string =>
-    `export default class C {\n    print() {\n        return (<Writing>\n${lines.map(one => `            ${one}`).join('\n')}\n        </Writing>);\n    }\n}\n`;
+    `import { For, Title, book as Book, chapter as Chapter } from '@dna-platform/public';\nimport { Option } from '@dna-platform/public/application';\n\nexport default class C {\n    print() {\n        return (<Writing>\n${lines.map(one => `            ${one}`).join('\n')}\n        </Writing>);\n    }\n}\n`;
 
 const built = (books: Made[]): Library => {
     const root = join(where, String(made++));

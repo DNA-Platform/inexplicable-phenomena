@@ -95,70 +95,91 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     // annotations could carry words, and this is asked at the one place a reference is written.
     let referred = false;
 
+    // ONE SCAN FOR PROSE AND FOR STRINGS. Doug, 2026-09-19: "You haven't done anything to change the
+    // language. Evaluating the ()[] was never the job of this framework." So a sigil in a string —
+    // a prop, a literal in a helper — compiles to exactly what it compiles to in prose: a reference
+    // to `[words](url)`, an annotation to its name, a mention to its words. The one difference is
+    // that prose gets a `<Ref>` around a reference, because `Parser.link` is anchored and JSX text
+    // needs an element to parse one, and a string is handed to whatever element receives it.
+    //
+    // AND PROSE IS READ THE WAY JSX READS IT — whitespace collapsed, entities spelled — while a
+    // string is read as written, because that is what its element will receive.
+    const scan = (text: string, from: number, prose: boolean): void => {
+        notating.lastIndex = 0;
+        for (let held = notating.exec(text); held !== null; held = notating.exec(text)) {
+            const read = spelling(held, prose ? reads : one => one);
+            const { refers: reference, name, words } = read;
+            const at = from + held.index;
+            const to = at + held[0].length;
+
+            // A BRACKET RUN THAT DOES NOT BALANCE IS LEFT ALONE. `catalogue/wellformed.ts`
+            // refuses it by name, and rewriting something the compiler does not understand is
+            // how a fault becomes invisible.
+            if (!read.balanced) continue;
+
+            // THE MENTION ALLOCATES AND OWES AN ANCHOR. Its copy stands until a writing kind
+            // exists that plants an id.
+            if (!reference && read.brackets === 3) { declared.push(name); edits.push({ from: at, to, said: words }); continue; }
+
+            // AN ANNOTATION IS VERIFIED AND THEN WRITES ITS NAME. The address it resolves to is
+            // the COMPILER's — it goes into the card and into the route table the pages load —
+            // and what stands in the prose is the name, because the ELEMENT around it already
+            // carries the relation. `<Author>`, `<Subject>` and `<Book>` each resolve a name
+            // through that table, which is how this library worked before the notation existed.
+            //
+            // AN EARLIER WRITING SUBSTITUTED THE URL and broke every one of them. The runtime
+            // reads the parenthesised part as a NAME and looks it up; handed `/my-library-log/`
+            // it found nothing and slugged what it was given, so `#my-library-log` appeared on
+            // five pages pointing at an anchor no page answered to. Measured: thirteen faults
+            // from the compiler helpfully resolving something twice.
+            //
+            // AND A TITLE IS THE SAME MOVE FOR A DIFFERENT REASON — D10: "a title must not draw
+            // itself as a link." Its address is the page it is standing on.
+            //
+            // THE REFUSAL IS UNCHANGED, which is the whole point: the name is still resolved
+            // here, and a name the library does not hold still stops the compile by file and
+            // line. What moved is only what gets written down.
+            //
+            // WHAT A REFERENCE SHOWS IS THE THING, NOT THE SCOPE. `$[ &gt; The books ]` names a
+            // chapter of the book it stands in and reads "The books" — the `>` is how the scope
+            // is written, not part of the name. An earlier writing put the raw text back and
+            // emitted `[> The books](...)`, and esbuild refused the file: "the character > is
+            // not valid inside a JSX element."
+            //
+            // AND WHEN THE WRITER GAVE THE WORDS, THE WORDS ARE WHAT IS SHOWN. `[[ Author: Doug ]]( My
+            // Library Log )` asks the library for the log and shows "Author: Doug" — the bracket is
+            // display and the paren is the identifier, on every form. An annotation with words
+            // compiles to the `[words](name)` the runtime has always read (`$Author`: "`[Doug](
+            // dougs-library-log)` draws Doug and names the log"), and a reference with words puts
+            // them in the anchor. Without a paren the words ARE the name and nothing changes.
+            const meant = parsed(name);
+            const shown = read.named ? words : meant.of === 'book' ? meant.book : meant.chapter;
+            const url = catalogue.where(key(meant, within));
+            if (url === undefined) {
+                missed.push({ key: key(meant, within), file, line: source.getLineAndCharacterOfPosition(at).line + 1 });
+                continue;
+            }
+
+            if (!reference) { declared.push(name); edits.push({ from: at, to, said: read.named ? `[${words}](${name})` : shown }); continue; }
+
+            if (prose) referred = true;
+            edits.push({ from: at, to, said: prose && draws ? `<Ref>[${shown}](${url})</Ref>` : `[${shown}](${url})` });
+        }
+    };
+
     const walk = (node: ts.Node): void => {
         if (ts.isJsxText(node)) {
             const from = node.getStart(source);
-            const text = code.slice(from, node.end);
-            notating.lastIndex = 0;
-            for (let held = notating.exec(text); held !== null; held = notating.exec(text)) {
-                const read = spelling(held, reads);
-                const { refers: reference, name, words } = read;
-                const at = from + held.index;
-                const to = at + held[0].length;
+            scan(code.slice(from, node.end), from, true);
 
-                // A BRACKET RUN THAT DOES NOT BALANCE IS LEFT ALONE. `catalogue/wellformed.ts`
-                // refuses it by name, and rewriting something the compiler does not understand is
-                // how a fault becomes invisible.
-                if (!read.balanced) continue;
-
-                // THE MENTION ALLOCATES AND OWES AN ANCHOR. Its copy stands until a writing kind
-                // exists that plants an id.
-                if (!reference && read.brackets === 3) { declared.push(name); edits.push({ from: at, to, said: words }); continue; }
-
-                // AN ANNOTATION IS VERIFIED AND THEN WRITES ITS NAME. The address it resolves to is
-                // the COMPILER's — it goes into the card and into the route table the pages load —
-                // and what stands in the prose is the name, because the ELEMENT around it already
-                // carries the relation. `<Author>`, `<Subject>` and `<Book>` each resolve a name
-                // through that table, which is how this library worked before the notation existed.
-                //
-                // AN EARLIER WRITING SUBSTITUTED THE URL and broke every one of them. The runtime
-                // reads the parenthesised part as a NAME and looks it up; handed `/my-library-log/`
-                // it found nothing and slugged what it was given, so `#my-library-log` appeared on
-                // five pages pointing at an anchor no page answered to. Measured: thirteen faults
-                // from the compiler helpfully resolving something twice.
-                //
-                // AND A TITLE IS THE SAME MOVE FOR A DIFFERENT REASON — D10: "a title must not draw
-                // itself as a link." Its address is the page it is standing on.
-                //
-                // THE REFUSAL IS UNCHANGED, which is the whole point: the name is still resolved
-                // here, and a name the library does not hold still stops the compile by file and
-                // line. What moved is only what gets written down.
-                //
-                // WHAT A REFERENCE SHOWS IS THE THING, NOT THE SCOPE. `$[ &gt; The books ]` names a
-                // chapter of the book it stands in and reads "The books" — the `>` is how the scope
-                // is written, not part of the name. An earlier writing put the raw text back and
-                // emitted `[> The books](...)`, and esbuild refused the file: "the character > is
-                // not valid inside a JSX element."
-                //
-                // AND WHEN THE WRITER GAVE THE WORDS, THE WORDS ARE WHAT IS SHOWN. `[[ Author: Doug ]]( My
-                // Library Log )` asks the library for the log and shows "Author: Doug" — the bracket is
-                // display and the paren is the identifier, on every form. An annotation with words
-                // compiles to the `[words](name)` the runtime has always read (`$Author`: "`[Doug](
-                // dougs-library-log)` draws Doug and names the log"), and a reference with words puts
-                // them in the anchor. Without a paren the words ARE the name and nothing changes.
-                const meant = parsed(name);
-                const shown = read.named ? words : meant.of === 'book' ? meant.book : meant.chapter;
-                const url = catalogue.where(key(meant, within));
-                if (url === undefined) {
-                    missed.push({ key: key(meant, within), file, line: source.getLineAndCharacterOfPosition(at).line + 1 });
-                    continue;
-                }
-
-                if (!reference) { declared.push(name); edits.push({ from: at, to, said: read.named ? `[${words}](${name})` : shown }); continue; }
-
-                referred = true;
-                edits.push({ from: at, to, said: draws ? `<Ref>[${shown}](${url})</Ref>` : `[${shown}](${url})` });
-            }
+            return;
+        }
+        // A STRING, WHEREVER IT STANDS — a prop, a literal in a helper, a template with nothing
+        // substituted. Scanned as the source spells it, quotes stripped, so every offset is exact
+        // even where the string carries an escape.
+        if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+            const raw = node.getText(source);
+            scan(raw.slice(1, -1), node.getStart(source) + 1, false);
 
             return;
         }

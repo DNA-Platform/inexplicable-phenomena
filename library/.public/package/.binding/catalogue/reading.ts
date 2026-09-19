@@ -106,6 +106,53 @@ const inside = (element: ts.JsxElement): string => {
 // writing prose reaches for, and reading the framework's own elements. Everything that made a
 // judgement about what a book IS moved to `catalogue/structure.ts`.
 
+// ---- what a tag is bound to ----
+
+// A TAG IS WHAT IT IS BOUND TO, NOT WHAT IT IS CALLED. `<Book>` in a table is a MENTION of a book
+// because the file wrote `import { book as bookMention }` and `const Book = $(bookMention)` — and in
+// a chapter that imported `Book` itself, the same tag is the whole book composed. A reader that
+// matched the name saw a mention in both, and the regression suite read a page back with a `<main>`
+// inside a `<p>` to say so. Doug, 2026-09-19: "You should be parsing things with static
+// comprehensions like the typescript compiler."
+//
+// WITHIN THE FILE. An import is followed to the name it imports and the module it imports from; a
+// local `const X = Y` or `const X = $(Y)` is followed to Y, and on to the import that names it. That
+// is every spelling a table in the library uses today. A binding that reaches another file of the
+// library is not followed — the `.public` this reads is being rewritten, and the binder proves the
+// design on the version it has rather than resolving a module graph for one.
+type Origin = { name: string; from: string };
+
+const origins = (source: ts.SourceFile): Map<string, Origin> => {
+    const held = new Map<string, Origin>();
+    const locals = new Map<string, string>();
+    for (const statement of source.statements) {
+        if (ts.isImportDeclaration(statement) && ts.isStringLiteral(statement.moduleSpecifier)) {
+            const bindings = statement.importClause?.namedBindings;
+            if (bindings !== undefined && ts.isNamedImports(bindings))
+                for (const one of bindings.elements) held.set(one.name.text, { name: (one.propertyName ?? one.name).text, from: statement.moduleSpecifier.text });
+        }
+        if (ts.isVariableStatement(statement))
+            for (const one of statement.declarationList.declarations) {
+                if (!ts.isIdentifier(one.name) || one.initializer === undefined) continue;
+                const to = ts.isIdentifier(one.initializer) ? one.initializer
+                    : ts.isCallExpression(one.initializer) && one.initializer.arguments.length === 1 && ts.isIdentifier(one.initializer.arguments[0]) ? one.initializer.arguments[0]
+                        : undefined;
+                if (to !== undefined) locals.set(one.name.text, to.text);
+            }
+    }
+    for (const [local, to] of locals) {
+        let at: string | undefined = to;
+        for (let hop = 0; at !== undefined && !held.has(at) && hop < 8; hop++) at = locals.get(at);
+        const origin = at === undefined ? undefined : held.get(at);
+        if (origin !== undefined) held.set(local, origin);
+    }
+
+    return held;
+};
+
+// THE FRAMEWORK'S, by the module it was imported from — `@dna-platform/public` or one of its doors.
+const frameworks = (origin: Origin | undefined): origin is Origin => origin !== undefined && /^@dna-platform\/public(\/|$)/u.test(origin.from);
+
 // ---- the framework's own elements, read with their offsets ----
 
 // WHAT THE ELEMENTS OF ONE FILE SAY, WITH WHERE EACH STANDS. The framework already has elements that
@@ -127,15 +174,21 @@ const prints = (element: ts.JsxElement): boolean =>
         && one.initializer !== undefined && ts.isJsxExpression(one.initializer)
         && one.initializer.expression !== undefined && one.initializer.expression.kind === ts.SyntaxKind.FalseKeyword);
 
+// `tags` ARE THE FRAMEWORK'S NAMES — `book`, `chapter`, `Title` — and an element is reported under
+// the name it is bound to, whatever the file called it.
 export const elements = (file: string, code: string, tags: string[]): Element[] => {
     const source = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
+    const bound = origins(source);
     const held: Element[] = [];
     const walk = (node: ts.Node): void => {
         // IT DOES NOT STOP AT A MATCH. An `<Option>` is the row a listing stands in and the listing
         // is INSIDE it, so a scan that returned on the first match found the row and never the
         // `<Chapter>` it was holding — every table read as naming nothing.
-        if (ts.isJsxElement(node) && tags.includes(named(node.openingElement.tagName)))
-            held.push({ tag: named(node.openingElement.tagName), says: inside(node), prints: prints(node), at: node.getStart(source), to: node.end });
+        if (ts.isJsxElement(node)) {
+            const origin = bound.get(named(node.openingElement.tagName));
+            if (frameworks(origin) && tags.includes(origin.name))
+                held.push({ tag: origin.name, says: inside(node), prints: prints(node), at: node.getStart(source), to: node.end });
+        }
         ts.forEachChild(node, walk);
     };
     walk(source);

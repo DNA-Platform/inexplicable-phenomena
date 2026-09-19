@@ -1,5 +1,10 @@
-import { $Chapter, Heading, Section, TableOfContents, Title, book as Book, chapter as Chapter } from '@dna-platform/public';
+import { $Chapter, Heading, Section, TableOfContents, Title, book, chapter as Chapter } from '@dna-platform/public';
+import { $ } from '@dna-platform/chemistry';
 import { Option } from '@dna-platform/public/application';
+
+// THE MENTION BOUND THROUGH A LOCAL. The compiler reads what `Book` is bound to — `$(book)`, and
+// so `book` — not what it is called. Doug, 2026-09-19: "Book = $(book)."
+const Book = $(book);
 
 export default class $Table extends $Chapter {
     print() {

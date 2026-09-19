@@ -57,9 +57,18 @@ describe('the test library, read', () => {
         expect(made.reaches(name('A Paper / The Evidence'), 'the-log')).toBe('paper/2-the-evidence.tsx');
     });
 
-    it('collects every reference written in prose, with the words it was written with', () => {
+    it('collects every reference written in the file, in a string as much as in prose', () => {
         const said = made.mentions.filter(one => one.kind === 'reference' && one.by === 'paper/1-the-argument.tsx').map(one => one.said);
-        expect(said).toEqual(['The Library', './The Evidence', 'Some Projects / The Work', 'The Log']);
+        expect(said).toEqual(['./The Evidence', 'The Library', './The Evidence', 'Some Projects / The Work', 'The Log']);
+    });
+
+    // A TABLE THAT BINDS THE MENTION THROUGH A LOCAL — `const Book = $(book)` — is read as
+    // mentioning, and a chapter that composed a `<Book>` would not be. The name is not the thing.
+    it('reads a mention by what its tag is bound to, not by what the file called it', () => {
+        const listed = [...(made.lists.get('the-log')?.values() ?? [])].filter(one => one.kind === 'book');
+        expect(listed.map(one => one.of).sort()).toEqual(['persona', 'projects', 'the-library']);
+        expect(listed.find(one => one.of === 'persona')?.canonical).toBe(true);
+        expect(listed.find(one => one.of === 'projects')?.canonical).toBe(false);
     });
 });
 

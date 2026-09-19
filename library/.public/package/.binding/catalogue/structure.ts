@@ -107,7 +107,12 @@ const lines = (code: string): ((at: number) => number) => {
 // `<BookMention>` mention a book, `<For>` says what a synopsis is for, `<Chapter>` names a chapter
 // of the book it stands in — so a chapter mention is read as `./X`, which is the same shape a
 // reference writes by hand.
-const mentioning: Record<string, Mention['kind']> = { Book: 'book', BookMention: 'book', For: 'for', Chapter: 'chapter' };
+//
+// NAMED AS THE FRAMEWORK EXPORTS THEM — `book` and `chapter` are the mentions, `Book` and `Chapter`
+// the compositions — because `elements()` reports a tag under what it is bound to, not what the
+// file called it. A table that writes `<Book>` after `const Book = $(bookMention)` is read as
+// mentioning; a chapter that composes a `<Book>` is not.
+const mentioning: Record<string, Mention['kind']> = { book: 'book', For: 'for', chapter: 'chapter' };
 const wanted = ['Title', 'Option', ...Object.keys(mentioning)];
 
 type Held = { book: Book; file: string; path: string; code: string; on: (at: number) => number; elements: Element[]; reading: Reading };
@@ -272,16 +277,16 @@ export const structure = (found: Library): Structure => {
         const beside = (at: number): boolean => rows.some(row => at >= row.at && at < row.to && /<Synopsis/u.test(one.code.slice(row.at, row.to)));
         const held = new Map<SpotId, Listing>();
         for (const element of one.elements) {
-            if (element.tag !== 'Chapter' && element.tag !== 'Book' && element.tag !== 'BookMention') continue;
+            if (element.tag !== 'chapter' && element.tag !== 'book') continue;
             if (element.says === '') continue;
             const plain = bare(element.says);
-            const said = parsed(element.tag === 'Chapter' ? `./${plain.name}` : plain.name);
+            const said = parsed(element.tag === 'chapter' ? `./${plain.name}` : plain.name);
             const spot = reaches(said, one.book.folder);
             if (spot === undefined) { strays.push({ by: one.book.folder, said: plain.name, tag: element.tag, at: { file: one.path, line: one.on(element.at) } }); continue; }
             if (spot === one.book.folder) continue;
             held.set(spot, {
                 of: spot,
-                kind: element.tag === 'Chapter' ? 'chapter' : 'book',
+                kind: element.tag === 'chapter' ? 'chapter' : 'book',
                 canonical: plain.stars === '**',
                 synopsis: beside(element.at),
                 at: { file: one.path, line: one.on(element.at) },

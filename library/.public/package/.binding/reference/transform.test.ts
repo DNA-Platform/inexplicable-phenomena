@@ -31,6 +31,10 @@ describe('a reference in prose', () => {
         expect(made.text).not.toContain('$[');
     });
 
+    it('compiles a reference in a string to the same thing, without the element prose needs', () => {
+        expect(made.text).toContain("const supporting = 'and the evidence is in [The Evidence](/a-paper/#the-evidence)';");
+    });
+
     it('does not owe a Ref to a file that imports one', () => {
         expect(made.owes).toBe(false);
     });
