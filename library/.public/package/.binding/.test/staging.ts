@@ -29,12 +29,23 @@ export const fixture = resolve(dirname(fileURLToPath(import.meta.url)));
 export const home = resolve(fixture, '..');
 export const stages = join(fixture, '.staged');
 
-// THE BINDER'S OWN CONFIGURATION WITH ONE EXCLUSION: a stage is not a book of the test library, and
-// a walk of `.test` that found one would find its five books twice.
-export const configured = (): Configuration => {
-    const chosen = configure(home);
+// THE TEST LIBRARY'S OWN CONFIGURATION, WHEREVER IT IS READ. It names its own root and its own
+// title, and never the host binder's: the first time the suite ran inside a library's copy of the
+// binder, `configure(home)` read that library's `.pubconfig`, which named a root the test library
+// does not have, and every unit suite failed at import. One setting, written once, used by the
+// unit suites here and by the staged `.pubconfig` below.
+const settings = { root: 'The Library', title: 'The Test Library' };
 
-    return { ...chosen, inventory: { ...chosen.inventory, exclude: [...chosen.inventory.exclude, '.staged'] } };
+// AND ONE EXCLUSION: a stage is not a book of the test library, and a walk of `.test` that found
+// one would find its five books twice.
+export const configured = (): Configuration => {
+    const chosen = configure(fixture);
+
+    return {
+        ...chosen,
+        inventory: { ...chosen.inventory, root: settings.root, exclude: [...chosen.inventory.exclude, '.staged'] },
+        rendering: { ...chosen.rendering, title: settings.title },
+    };
 };
 
 // THE TEST LIBRARY READ WHERE IT STANDS — what a unit suite starts from.
@@ -75,7 +86,7 @@ export const staged = (): Staged => {
     for (const entry of readdirSync(fixture, { withFileTypes: true }))
         if (entry.isDirectory() && entry.name !== '.staged') cpSync(join(fixture, entry.name), join(library, entry.name), { recursive: true });
     copied(home, binding);
-    writeFileSync(join(binding, '.pubconfig'), `${JSON.stringify({ inventory: { root: 'The Library' }, rendering: { title: 'The Test Library' } }, null, 2)}\n`);
+    writeFileSync(join(binding, '.pubconfig'), `${JSON.stringify({ inventory: { root: settings.root }, rendering: { title: settings.title } }, null, 2)}\n`);
 
     return { root, library, face, binding, remove: (): void => rmSync(root, { recursive: true, force: true }) };
 };
