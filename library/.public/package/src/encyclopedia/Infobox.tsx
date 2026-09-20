@@ -25,6 +25,17 @@ export class $InfoboxFormat extends $BoxFormat {
     clear = 'right';
     width = 'min(22em, 100%)';
     override margin = '0 0 1em 1.4em';
+    // THE BOX IS SECTIONED THE WAY WIKIPEDIA'S IS — Doug, 2026-09-20, against Turing's: "Look,
+    // padding, different formats of text." An inner margin so nothing touches the border; the name
+    // large and bold on the box's own ground, no band; the line under it plain; the picture in
+    // clear space with its caption a little below; the rows padded, their labels in a column wide
+    // enough for two words.
+    override padding = '0.2em';
+
+    @select('> .pd-heading') override get name_background() { return 'transparent'; }
+    override name_fontSize = '1.25em';
+    override name_padding = '0.3em 0.5em 0.1em';
+    name_lineHeight = '1.3';
 
     // A LINE IS A ROW OF TWO CELLS, and it is written as one. A grid made a cell of every run
     // between a row's links — "mathematics" and "(PhD)" stood in the label column — and taking the
@@ -34,6 +45,7 @@ export class $InfoboxFormat extends $BoxFormat {
     @select('> .pd-line') line_display = 'table';
     line_width = '100%';
     line_margin = '0';
+    line_padding = '0.25em 0.3em';
     line_boxSizing = 'border-box';
 
     // THE PREFIX IS RESTATED ON THE MEMBER THE BASE DECORATED. Restated on any other, the group
@@ -41,7 +53,7 @@ export class $InfoboxFormat extends $BoxFormat {
     // box's own heading selector and reached nothing.
     @select('> .pd-line::before') label_display = 'table-cell';
     label_content = 'attr(data-label)';
-    label_width = '5.4em';
+    label_width = '6.5em';
     label_paddingRight = '0.6em';
     label_verticalAlign = 'top';
     label_fontWeight = '700';
@@ -54,15 +66,15 @@ export class $InfoboxFormat extends $BoxFormat {
     // it. A link inside this line still draws in the link colour, because that rule belongs to links.
     @select('> .pd-heading + .pd-paragraph') said_textAlign = 'center';
     said_margin = '0';
-    said_padding = '0 0.5em 0.4em';
-    said_fontWeight = '700';
+    said_padding = '0 0.5em 0.5em';
+    said_fontWeight = '400';
     get said_color() { return this.theme.ink; }
 
     @select('&.pd-infobox .pd-illustration') shown_display = 'block';
     shown_float = 'none';
     shown_width = 'auto';
     shown_margin = '0';
-    shown_padding = '1px';
+    shown_padding = '0.3em 0.2em 0.2em';
     shown_border = 'none';
     shown_background = 'transparent';
     shown_textAlign = 'center';
@@ -75,7 +87,7 @@ export class $InfoboxFormat extends $BoxFormat {
     @select('&.pd-infobox .pd-illustration .pd-caption') caption_display = 'block';
     caption_fontSize = '1em';
     caption_textAlign = 'center';
-    caption_padding = '0';
+    caption_padding = '0.3em 0 0.5em';
     caption_border = 'none';
     caption_background = 'transparent';
 

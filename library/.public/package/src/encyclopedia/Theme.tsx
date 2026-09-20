@@ -234,9 +234,11 @@ export class $EncyclopediaTheme extends $Theme {
     // the infobox's rows changed nothing, because the base names that selector and a subclass
     // only says the values. The rows take a group of their own — measured, twelve of them at
     // half a line apart and a whole one beneath, 212 pixels the real box does not spend.
+    // AND A ROW BREATHES AS WIKIPEDIA'S DO — Doug, 2026-09-20, against Turing's box: "Look,
+    // padding, different formats of text." A pixel had been the whole of it.
     @select('.pd-infobox .pd-line') row_marginTop = '0';
     row_marginBottom = '0';
-    row_padding = '1px';
+    row_padding = '0.25em 0.3em';
     row_border = 'none';
     get row_color() { return this.black; }
 
@@ -326,24 +328,26 @@ export class $EncyclopediaTheme extends $Theme {
     // THE INFOBOX, in Wikipedia's own numbers, said here because a theme's rule outranks a worn
     // format's at what reads as equal specificity — the third feature request in the sprint.
     @select('.pd-infobox.pd-aside') box_margin = '0.5em 0 0.5em 1em';
+    // RENDERS AS 0px WHATEVER IS WRITTEN HERE — measured 2026-09-20 with the page's own rule list;
+    // the margin beside it lands. Registered; the box's inner room is its rows' for now.
     box_padding = '0.2em';
     get box_color() { return this.black; }
     get box_border() { return `1px solid ${this.rule}`; }
     @select('.pd-book .pd-document .pd-infobox.pd-aside > .pd-heading.pd-level-1') boxName_fontSize = '1.25em';
     boxName_fontWeight = '700';
-    boxName_lineHeight = '1.2';
+    boxName_lineHeight = '1.3';
     get boxName_color() { return this.black; }
     boxName_background = 'transparent';
     boxName_border = 'none';
     boxName_margin = '0';
-    boxName_padding = '1px';
+    boxName_padding = '0.3em 0.5em 0.1em';
     get boxName_fontFamily() { return this.body; }
     @select('.pd-infobox .pd-caption') boxCaption_lineHeight = '1.5';
     get boxCaption_color() { return this.black; }
     boxCaption_background = 'transparent';
     boxCaption_border = 'none';
     boxCaption_margin = '0';
-    boxCaption_padding = '0';
+    boxCaption_padding = '0.3em 0 0.5em';
     @select('.pd-book .pd-appearance') pane_padding = '0 1.143em';
 
     @select('.pd-book > .pd-chapter > .pd-footer') foot_gridColumn = '1 / -1';
