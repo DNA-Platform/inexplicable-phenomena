@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { Document, Paragraph, Quote, Section } from '@dna-platform/public';
+import { Document, Paragraph, Quote, Section, html } from '@dna-platform/public';
 import { $Dialogue, $Exchange, Dialogue, Exchange, Participant, Topic } from '@dna-platform/public/conversation';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -89,9 +89,9 @@ describe('an exchange is spoken', () => {
         expect(held.participants().length).toBe(2);
     });
 
-    it('AND A PARTICIPANT SAYS ONE THING AND NAMES ANOTHER', () => {
-        const held = built<$Exchange>(<Exchange><Participant>[Claude](Claude and Our Projects)</Participant>It answered.</Exchange>);
-        expect(held.participants()[0]?.name).toBe('Claude and Our Projects');
+    it('AND A PARTICIPANT SAYS ONE THING AND LEADS TO ANOTHER, at the address the compiler wrote', () => {
+        const held = built<$Exchange>(<Exchange><Participant>[Claude](/claude-and-our-projects/)</Participant>It answered.</Exchange>);
+        expect(html.text(held.participants()[0]?.path()?._block)).toBe('/claude-and-our-projects/');
     });
 });
 
@@ -106,12 +106,12 @@ describe('a dialogue is a conversation, and it is a document', () => {
     it('AND IT KNOWS THE CAST, declared once and not on every message', () => {
         const held = built<$Dialogue>(
             <Dialogue>
-                <Participant>[Doug](MY Library Log)</Participant>
-                <Participant>[Claude](Claude and Our Projects)</Participant>
+                <Participant>[Doug](/my-library-log/)</Participant>
+                <Participant>[Claude](/claude-and-our-projects/)</Participant>
                 <Exchange><Paragraph>He asked.</Paragraph></Exchange>
             </Dialogue>
         );
-        expect(held.participants.map(one => one.name)).toEqual(['MY Library Log', 'Claude and Our Projects']);
+        expect(held.participants.map(one => html.text(one.path()?._block))).toEqual(['/my-library-log/', '/claude-and-our-projects/']);
     });
 
     // THE PAYOFF OF DOCUMENT GRADE, and it is measured rather than asserted: a dialogue stands where

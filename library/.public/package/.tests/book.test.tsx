@@ -111,9 +111,9 @@ describe('a cover\'s title means the book, and a title elsewhere is a name', () 
 // so they are always FOR it". It is what makes a synopsis reusable: printed inside another book it
 // still names the book it is the synopsis OF.
 describe('a synopsis says the book it is for', () => {
-    it('AND IT NAMES THAT BOOK, WRITTEN THE WAY A PERSON WRITES IT', () => {
-        const held = built<$Synopsis>(<Synopsis><For>Alan Turing</For><Title>About</Title></Synopsis>);
-        expect(held.canonical()?.name).toBe('Alan Turing');
+    it('AND IT CARRIES THE COMPILED ADDRESS OF THAT BOOK', () => {
+        const held = built<$Synopsis>(<Synopsis><For>[Alan Turing](/alan-turing/)</For><Title>About</Title></Synopsis>);
+        expect(html.text(held.canonical()?.path()?._block)).toBe('/alan-turing/');
     });
 
     it('AND ONE THAT SAYS NOTHING IS REFUSED, because a synopsis is written to be read elsewhere', () => {

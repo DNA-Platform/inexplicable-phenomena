@@ -92,23 +92,7 @@ export class $Book extends $Composition implements $Book$ {
 // rendered as `href="#my-library-log"`, an anchor to an id that is not on the page — a link that
 // looks like a link and goes nowhere, which is worse than no link at all. Doug: "see that it doesn't
 // have links? Bug in the writing."
-export class $$Book extends $Catalogue {
-    protected override address(): string { return this.standing() ?? super.address(); }
-
-    // A MENTION OF THE BOOK YOU ARE READING IS NOT A LINK. Wikipedia draws one as plain bold text —
-    // it calls it a self-link — because an anchor that leads where the reader already is takes them
-    // nowhere, and every page of Doug's library carried several: measured 2026-09-15, five on the
-    // library catalogue alone, each `<a href="/">` served from `/`. Doug: "remove the weird links…
-    // the thing doesn't need the self-link for the book. Make it parenthetical. Meaning, the cover
-    // link. That will often be parenthetical."
-    //
-    // ONLY THE ANCHOR IS WITHDRAWN. The mention still MEANS the book — its address is still written
-    // into it, so a reference elsewhere still resolves here and the shelf is unaffected — and what
-    // it says still stands in the prose, which is what a self-link has to do to leave a sentence
-    // readable. A drawing whose whole body IS the anchor, like the cover link in a table of
-    // contents, simply has nothing left to draw, which is the parenthetical Doug asked for.
-    protected override leads(): string { return this.itself ? '' : super.leads(); }
-}
+export class $$Book extends $Catalogue { }
 
 export class $TypeOfBook extends $TypeOfReference {
     protected override specification: Specification<$Writing> = new BookSpecification();

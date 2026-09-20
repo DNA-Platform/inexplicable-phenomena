@@ -196,8 +196,30 @@ describe('a kind draws in its default look, and the look makes up for plain copy
 describe('a mention is a reference to another piece of writing', () => {
     const mentioned = () => built<$Catalogue>(<Mention>Body sections</Mention>);
 
-    it('A MENTION GIVEN A TITLE MAKES ITS ANCHOR FROM IT', () => {
-        expect(html.text(mentioned().path()?._block)).toBe('#body-sections');
+    // THE COMPILER WRITES EVERY ADDRESS — Doug, 2026-09-19: "There should not be anymore dynamic link
+    // generation." A mention given only words has none; one given a compiled link carries it; one the
+    // compiler resolved to the page it stands on is written `[words]()` and is this page.
+    it('A MENTION GIVEN ONLY WORDS HAS NO ADDRESS', () => {
+        expect(mentioned().path()).toBeUndefined();
+    });
+
+    it('AND ONE GIVEN A COMPILED LINK CARRIES THAT ADDRESS AND DRAWS IT', () => {
+        const held = built<$Catalogue>(<Mention>[Body sections](/turing/#body-sections)</Mention>);
+        expect(html.text(held.path()?._block)).toBe('/turing/#body-sections');
+        const Drawn = $(held);
+        const host = render(<Drawn />).container;
+        expect(host.querySelector('a.pd-meaning')?.getAttribute('href')).toBe('/turing/#body-sections');
+        expect(host.textContent).toBe('Body sections');
+    });
+
+    it('AND ONE COMPILED TO THE PAGE IT STANDS ON IS THIS, AND DRAWS NO ANCHOR', () => {
+        const held = built<$Catalogue>(<Mention>[Body sections]()</Mention>);
+        expect(held.path()).toBeUndefined();
+        expect(held.className.split(' ')).toContain('pd-this');
+        const Drawn = $(held);
+        const host = render(<Drawn />).container;
+        expect(host.querySelector('a')).toBeNull();
+        expect(host.textContent).toBe('Body sections');
     });
 
     it('and it is a reference, standing at no level of writing', () => {
@@ -208,11 +230,11 @@ describe('a mention is a reference to another piece of writing', () => {
     });
 
     it('AND PASSED INTO A PIECE OF WRITING IT IS THAT WRITING\'S MEANING, AND THE WRITING DRAWS THE ANCHOR', () => {
-        const held = built<$Writing>(<Written>Body sections<Mention>Body sections</Mention></Written>);
+        const held = built<$Writing>(<Written>Body sections<Mention>[Body sections](/turing/#body-sections)</Mention></Written>);
         expect(held.meaning).toBeDefined();
         const Drawn = $(held);
         const host = render(<Drawn />).container;
-        expect(host.querySelector('a')?.getAttribute('href')).toBe('#body-sections');
+        expect(host.querySelector('a')?.getAttribute('href')).toBe('/turing/#body-sections');
     });
 
     it('AND ITS ADDRESS MAY BE A POSITION, BECAUSE A FIXED ORDER ALREADY SAYS THE LEVEL', () => {

@@ -180,4 +180,13 @@ describe('the words and the name', () => {
         expect(bare('[[ The Sheet ]]')).toEqual({ name: 'The Sheet', words: 'The Sheet', stars: '' });
         expect(bare('The Sheet')).toEqual({ name: 'The Sheet', words: 'The Sheet', stars: '' });
     });
+
+    it('reads the framework\'s own display form, [words](name), as saying one thing and naming another', () => {
+        expect(bare('[Doug](My Library Log)')).toEqual({ name: 'My Library Log', words: 'Doug', stars: '' });
+    });
+
+    it('and does not count a reference beside a name as part of it — the box in a title leads away, the name stays', () => {
+        expect(bare('[[ My Library Log ]] $[ ]( Dougs Library )')).toEqual({ name: 'My Library Log', words: 'My Library Log', stars: '' });
+        expect(bare('$[ ]( The Log ) The Log')).toEqual({ name: 'The Log', words: 'The Log', stars: '' });
+    });
 });

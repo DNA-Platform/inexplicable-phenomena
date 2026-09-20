@@ -90,7 +90,7 @@ export class $EncyclopediaTheme extends $Theme {
     get tabs_boxShadow() { return `0 1px 0 ${this.edge}`; }
     tabs_paddingBottom = '1px';
     @select('.pd-toolbar > .pd-paragraph') tabGroup_margin = '0';
-    @select('.pd-toolbar > .pd-paragraph > .pd-ref') tab_height = '2.2857em';
+    @select('.pd-toolbar > .pd-paragraph > .pd-meaning, .pd-toolbar > .pd-paragraph > .pd-this') tab_height = '2.2857em';
     tab_position = 'relative';
     @select('.pd-book > .pd-chapter > .pd-table-of-contents') side_gridColumn = '1';
     side_gridRow = '3 / span 400';
@@ -138,13 +138,13 @@ export class $EncyclopediaTheme extends $Theme {
     get group_fontFamily() { return this.body; }
     get group_color() { return this.pale; }
     @select('.pd-menu > .pd-summary + .pd-heading') topmost_marginTop = '0';
-    @select('.pd-header .pd-menu > .pd-paragraph .pd-ref, .pd-toolbar .pd-menu > .pd-paragraph .pd-ref, .pd-cover > .pd-menu > .pd-paragraph .pd-ref') held_display = 'block';
+    @select('.pd-header .pd-menu > .pd-paragraph .pd-meaning, .pd-toolbar .pd-menu > .pd-paragraph .pd-meaning, .pd-cover > .pd-menu > .pd-paragraph .pd-meaning') held_display = 'block';
     held_overflowWrap = 'anywhere';
     held_padding = '0.4286em 0';
     held_fontSize = '0.875em';
     held_lineHeight = '1.143';
     @select('.pd-section.pd-menu > .pd-paragraph') option_margin = '0';
-    @select('.pd-toolbar .pd-menu > .pd-paragraph .pd-ref') toolRow_fontSize = '1em';
+    @select('.pd-toolbar .pd-menu > .pd-paragraph .pd-meaning') toolRow_fontSize = '1em';
     @select('.pd-header > .pd-menu > .pd-summary') burger_width = '2rem';
     burger_height = '2rem';
     burger_justifyContent = 'center';
@@ -184,8 +184,8 @@ export class $EncyclopediaTheme extends $Theme {
     tongues_left = 'auto';
     tongues_width = 'min(30em, calc(100vw - 3em))';
     tongues_columns = '3';
-    @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child') get here_color() { return this.ink; }
-    @select('.pd-toolbar > .pd-paragraph > .pd-ref:first-child::after') bar_content = "''";
+    @select('.pd-toolbar > .pd-paragraph > .pd-this') get here_color() { return this.ink; }
+    @select('.pd-toolbar > .pd-paragraph > .pd-this::after') bar_content = "''";
     bar_position = 'absolute';
     bar_left = '0';
     bar_bottom = '0';
@@ -258,13 +258,13 @@ export class $EncyclopediaTheme extends $Theme {
     opener_paddingLeft = '0.857em';
     opener_whiteSpace = 'normal';
     get opener_fontFamily() { return this.body; }
-    @select('.pd-table-of-contents .pd-summary .pd-ref') rowWord_padding = '0.43em 0';
+    @select('.pd-table-of-contents .pd-summary .pd-meaning') rowWord_padding = '0.43em 0';
     rowWord_lineHeight = '1.143';
     rowWord_fontWeight = '400';
     rowWord_flex = '1 1 auto';
     rowWord_minWidth = '0';
     rowWord_whiteSpace = 'normal';
-    @select('.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-ref') first_fontWeight = '700';
+    @select('.pd-table-of-contents > .pd-section > .pd-paragraph:first-of-type .pd-meaning') first_fontWeight = '700';
     get first_color() { return this.ink; }
     @select('.pd-table-of-contents .pd-summary::before') arrow_content = "''";
     arrow_width = '1.571em';
@@ -278,7 +278,7 @@ export class $EncyclopediaTheme extends $Theme {
     get arrow_backgroundImage() { return this.painted("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='{ink}' d='m11.05 3.996-.965-1.053-4.035 3.86-3.947-3.86L1.05 3.996l5 5z'/></svg>", this.pale); }
     @select('.pd-table-of-contents .pd-menu[open] > .pd-summary::before') turned_transform = 'none';
     @select('.pd-table-of-contents > .pd-section > .pd-paragraph:not(.pd-heading)') flat_paddingLeft = '0.857em';
-    @select('.pd-table-of-contents .pd-paragraph:not(.pd-heading) .pd-ref') rowLink_padding = '0.43em 0';
+    @select('.pd-table-of-contents .pd-paragraph:not(.pd-heading) .pd-meaning') rowLink_padding = '0.43em 0';
     rowLink_lineHeight = '1.143';
 
     // THE WORDMARK IS NOT A PARAGRAPH OF PROSE. An image is a paragraph by kind, so the space set
@@ -356,7 +356,7 @@ export class $EncyclopediaTheme extends $Theme {
     footLine_lineHeight = '1.4';
     footLine_padding = '0.5em 0';
     footLine_margin = '0';
-    @select('.pd-book > .pd-chapter > .pd-footer .pd-ref') footLink_display = 'inline-block';
+    @select('.pd-book > .pd-chapter > .pd-footer .pd-meaning') footLink_display = 'inline-block';
     footLink_marginRight = '1em';
     footLink_lineHeight = '2';
     // NARROW IS ONE COLUMN. The five tracks collapse to the text's, and the gaps with them —
@@ -419,9 +419,9 @@ export class $EncyclopediaTheme extends $Theme {
     entry_lineHeight = '2';
     // THE CONTENTS INDENTS BY NESTING, not by a pd-indent class — a list inside an item.
     @select('.pd-table-of-contents .pd-list .pd-list') sub_paddingLeft = '0.9em';
-    @select('.pd-table-of-contents .pd-meaning, .pd-table-of-contents .pd-ref, .pd-table-of-contents .pd-reference') entryLink_display = 'block';
+    @select('.pd-table-of-contents .pd-meaning, .pd-table-of-contents .pd-reference') entryLink_display = 'block';
     entryLink_textDecoration = 'none';
-    @select('.pd-table-of-contents a.pd-meaning:hover, .pd-table-of-contents a.pd-ref:hover, .pd-table-of-contents a.pd-reference:hover') get entryHover_color() { return this.pressed; }
+    @select('.pd-table-of-contents a.pd-meaning:hover') get entryHover_color() { return this.pressed; }
 
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter)') override document_marginBottom = '2em';
     @select('.pd-document:not(.pd-cover):not(.pd-table-of-contents):not(.pd-chapter):not(.pd-synopsis) > *:first-child:not(.pd-aside)') opening_marginTop = '0';
@@ -500,14 +500,12 @@ export class $EncyclopediaTheme extends $Theme {
     get index_background() { return this.quiet; }
     get index_border() { return `1px solid ${this.rule}`; }
     @select('.pd-cited') cited_fontSize = '90%';
-    // ONLY AN ANCHOR ANSWERS A HOVER. `.pd-reference` is worn by anything whose TYPE descends from
-    // $TypeOfReference — and $TypeOfBook does, so the book element itself carries it. Unqualified,
-    // these two rules therefore matched the whole book the moment a pointer entered the page, and
-    // every word in it took the pressed colour and an underline: Doug, 2026-09-15, "the whole book
-    // becomes blue on hover and you can't find a link." Nothing is lost by asking for an anchor — a
-    // reference that is not one draws its own `.pd-meaning` anchor inside itself, which still matches.
-    @select('a.pd-meaning:hover, a.pd-ref:hover, a.pd-reference:hover') override hover_textDecoration = 'underline';
-    @select('a.pd-meaning:hover, a.pd-ref:hover, a.pd-reference:hover, a.pd-meaning:focus, a.pd-ref:focus, a.pd-reference:focus') get pressed_color() { return this.pressed; }
+    // A LINK IS `a.pd-meaning`, the one class every anchor the framework draws wears — a written ref,
+    // a mention's anchor, a writing drawn as one — so a sheet says one word for a link and never has
+    // to know which kind drew it. Before it, this theme spelled a link three ways and missed the
+    // mention's; Doug, 2026-09-19: "MUCH regression has happened."
+    @select('a.pd-meaning:hover') override hover_textDecoration = 'underline';
+    @select('a.pd-meaning:hover, a.pd-meaning:focus') get pressed_color() { return this.pressed; }
 }
 
 export const EncyclopediaTheme = $($EncyclopediaTheme);

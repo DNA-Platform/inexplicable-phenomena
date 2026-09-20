@@ -70,7 +70,7 @@ export const reads = (text: string): string => spelled(said(text));
 // file through parent pointers, and this parse is made WITHOUT them — `setParentNodes: false` is
 // the one cheap trim a full parse allows and it costs nothing to stay inside. An element we read is
 // named by a plain identifier, so reading the identifier is the whole of it.
-const named = (tag: ts.JsxTagNameExpression): string => (ts.isIdentifier(tag) ? tag.text : '');
+export const named = (tag: ts.JsxTagNameExpression): string => (ts.isIdentifier(tag) ? tag.text : '');
 
 // WHAT AN ELEMENT SAYS, which is its JsxText and nothing else. An expression inside it is NOT read:
 // the whole soundness of this pass is that it sees prose and only prose, so `{this.$about}` is
@@ -108,7 +108,7 @@ const inside = (element: ts.JsxElement): string => {
 // design on the version it has rather than resolving a module graph for one.
 type Origin = { name: string; from: string };
 
-const origins = (source: ts.SourceFile): Map<string, Origin> => {
+export const origins = (source: ts.SourceFile): Map<string, Origin> => {
     const held = new Map<string, Origin>();
     const locals = new Map<string, string>();
     for (const statement of source.statements) {
@@ -137,7 +137,12 @@ const origins = (source: ts.SourceFile): Map<string, Origin> => {
 };
 
 // THE FRAMEWORK'S, by the module it was imported from — `@dna-platform/public` or one of its doors.
-const frameworks = (origin: Origin | undefined): origin is Origin => origin !== undefined && /^@dna-platform\/public(\/|$)/u.test(origin.from);
+export const frameworks = (origin: Origin | undefined): origin is Origin => origin !== undefined && /^@dna-platform\/public(\/|$)/u.test(origin.from);
+
+// AND THE KINDS A LIBRARY WRITES A MENTION WITH, named as the framework exports them. Each receives
+// `[words](url)` and draws the anchor, so the transform writes a link into these and words into
+// everything else.
+export const mentions = ['book', 'chapter', 'Author', 'Subject', 'For', 'Participant'];
 
 // ---- the framework's own elements, read with their offsets ----
 
@@ -154,7 +159,7 @@ const frameworks = (origin: Origin | undefined): origin is Origin => origin !== 
 // addressed as its book's page. The attribute is read here, where the element is read.
 export type Element = { tag: string; says: string; prints: boolean; at: number; to: number };
 
-const prints = (element: ts.JsxElement): boolean =>
+export const prints = (element: ts.JsxElement): boolean =>
     !element.openingElement.attributes.properties.some(one =>
         ts.isJsxAttribute(one) && ts.isIdentifier(one.name) && one.name.text === 'print'
         && one.initializer !== undefined && ts.isJsxExpression(one.initializer)

@@ -39,14 +39,34 @@ describe('a reference in prose', () => {
 describe('an annotation on a cover', () => {
     const made = transforming(readFileSync(cover, 'utf8'), cover, card);
 
-    it('is verified and then writes its name, so the element resolves it', () => {
+    it('is verified and then writes its address into the element — and none for the page it stands on', () => {
         expect(made.missing).toEqual([]);
         expect(made.text).toContain('<Title>The Library</Title>');
-        expect(made.text).toContain('<Subject>The Library</Subject>');
+        expect(made.text).toContain('<Subject>[The Library]()</Subject>');
     });
 
-    it('writes the words and the name when the writer gave both', () => {
-        expect(made.text).toContain('<Author>[Written by the Log](The Log)</Author>');
+    it('writes the words and the address when the writer gave both', () => {
+        expect(made.text).toContain('<Author>[Written by the Log](/the-log/)</Author>');
+    });
+});
+
+// A MENTION WRITTEN WITH PLAIN WORDS IS COMPILED TOO, because the structure has always read it as
+// naming what it says — Doug, 2026-09-19: "There should not be anymore dynamic link generation."
+describe('a mention in a table of contents', () => {
+    const table = join(fixture, 'the-log', '.table.tsx');
+    const made = transforming(readFileSync(table, 'utf8'), table, card);
+
+    it('written as plain words receives its address', () => {
+        expect(made.missing).toEqual([]);
+        expect(made.text).toContain('<Chapter>[Entries](/the-log/#entries)</Chapter>');
+    });
+
+    it('written with an empty display is an empty anchor to the book, and keeps no star', () => {
+        expect(made.text).toContain('<Book>[](/a-persona/)</Book>');
+    });
+
+    it('that does not print is left as written, because it draws nothing', () => {
+        expect(made.text).toContain('<Chapter print={false}>The Log</Chapter>');
     });
 });
 

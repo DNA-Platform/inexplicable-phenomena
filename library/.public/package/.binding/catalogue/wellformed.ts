@@ -178,6 +178,13 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // reader reads, so it is where the claim has to stand to be worth anything.
     for (const edge of structure.edges.values()) {
         if (edge.relation !== 'subject' || edge.from === edge.to) continue;
+        // AND THE ROW THAT CATALOGUES A BOOK NAMES THE CHAPTER THAT IS ITS SYNOPSIS — Doug,
+        // 2026-09-19: "the table needs links to its chapters and the books that those chapters
+        // are synopses of." A catalogue is a book of synopses, and its table is where each one
+        // is reached from.
+        const listing = structure.lists.get(edge.from)?.get(edge.to);
+        if (listing !== undefined && !listing.synopsis)
+            wrong.push({ fault: faults.noSynopsis, at: wrote(structure, edge.from).at, file: listing.at.file, says: `line ${listing.at.line} lists "${called(structure, edge.to)}" without the chapter that is its synopsis — a catalogue's row names the book and the chapter that is its synopsis` });
         const answering = edge.ends.find(one => one.end === 'source');
         if (answering === undefined || answering.at.file.endsWith('.table.tsx')) continue;
         wrong.push({ fault: faults.notInTheTable, at: wrote(structure, edge.from).at, file: answering.at.file, says: `"${called(structure, edge.from)}" says it catalogues "${called(structure, edge.to)}" at line ${answering.at.line}, which is not its table of contents — a catalogue answers for what it holds where a reader can see it` });
@@ -222,7 +229,7 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
             }
             const listing = structure.lists.get(topic)?.get(id);
             if (listing !== undefined && !listing.synopsis)
-                wrong.push({ fault: faults.noSynopsis, at: wrote(structure, topic).at, file: listing.at.file, says: `"${called(structure, topic)}" lists "${called(structure, id)}" with no synopsis — a book standing in a catalogue that is not its own says there what it is` });
+                wrong.push({ fault: faults.noSynopsis, at: wrote(structure, topic).at, file: listing.at.file, says: `"${called(structure, topic)}" lists "${called(structure, id)}" without the chapter that is its synopsis — a book standing in a catalogue that is not its own says there what it is` });
         }
 
     // ---- authorship: one self-delegation, and the rest is vouching ----

@@ -16,16 +16,6 @@ import { $Catalogue$, $Catalogue, $TypeOfCatalogue, CatalogueSpecification } fro
 export interface $Participant$ extends $Catalogue$ { }
 
 export class $Participant extends $Catalogue implements $Participant$ {
-    // AND THE BOOK IT NAMES IS A PAGE. A biography is a book, so the arrow leads out of this page
-    // and into that one, exactly as $Author's does. Where the library has not shelved it the
-    // fragment stands: a name for a book that is not here yet still says what it says.
-    protected override address(): string { return this.standing() ?? super.address(); }
-
-    // AND A PARTICIPANT WHO IS THE BOOK YOU ARE READING IS NOT A LINK. An anchor leading where the
-    // reader already stands takes them nowhere — the same self-link $Author and $Subject withdraw.
-    // Only the anchor goes; the name still stands in the turn and still MEANS the book.
-    protected override leads(): string { return this.itself ? '' : super.leads(); }
-
     $Participant(block: $Block) {
         super.$Catalogue(this.addType(block, $TypeOfParticipant));
     }

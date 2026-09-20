@@ -4,7 +4,10 @@ import type { Book } from '../inventory/library';
 
 const named = (file: string): string => file.replace(/\.tsx$/u, '');
 const local = (file: string): string => named(file).replace(/^\.+/u, '').replace(/^[\d.]+-/u, '').replace(/-(\w)/gu, (_, letter: string) => letter.toUpperCase());
-const classed = (file: string): string => local(file).replace(/^\w/u, letter => letter.toUpperCase());
+// A CHAPTER'S SYMBOL CARRIES ITS NUMBER, because two chapters of one book may be filed under one
+// slug — measured 2026-09-20: `3-semantic-reference-theory.tsx` and `5-semantic-reference-theory.tsx`
+// both became `SemanticReferenceTheory`, and esbuild refused the module. Nobody reads these names.
+const classed = (file: string): string => `${local(file).replace(/^\w/u, letter => letter.toUpperCase())}${/^(\d+)-/u.exec(file)?.[1] ?? ''}`;
 
 // A BOOK, ASSEMBLED FROM THE ONE LIST THE INVENTORY MADE: its apparatus, then its chapters in order.
 // The order is the inventory's, so nothing here counts files a second time.

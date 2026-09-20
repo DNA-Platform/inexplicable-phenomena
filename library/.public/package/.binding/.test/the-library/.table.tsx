@@ -17,9 +17,9 @@ export default class $Table extends $Chapter {
                 </Section>
                 <Section>
                     <Heading>The Catalogue</Heading>
-                    <Option><Book>[[ The Log ]]**</Book></Option>
-                    <Option><Book>[[ Some Projects ]]**</Book></Option>
-                    <Option><Book>[[ A Paper ]]**</Book></Option>
+                    <Option><Chapter>The Log</Chapter>&nbsp;<Book>[[ ]]( The Log )**</Book></Option>
+                    <Option><Chapter>Some Projects</Chapter>&nbsp;<Book>[[ ]]( Some Projects )**</Book></Option>
+                    <Option><Chapter>A Paper</Chapter>&nbsp;<Book>[[ ]]( A Paper )**</Book></Option>
                 </Section>
             </TableOfContents>
         );

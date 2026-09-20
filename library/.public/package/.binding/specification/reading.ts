@@ -1,4 +1,4 @@
-import { $Book, $Canonical, $Cover, $TypeOfCanonical, $TypeOfCover, html, reflection } from '@dna-platform/public';
+import { $Book, $Canonical, $Catalogue, $Cover, $TypeOfCanonical, $TypeOfCover, html, reflection } from '@dna-platform/public';
 
 // WHAT IS READ OFF A LIVE BOOK, ONE MEMBER PER FACT. Loading a book is what costs; once it is
 // loaded, another fact costs a member here and nothing else — no second pass, and no change to the
@@ -11,22 +11,26 @@ import { $Book, $Canonical, $Cover, $TypeOfCanonical, $TypeOfCover, html, reflec
 export class Reading {
     $name(book: $Book): string { return book.name; }
     $title(book: $Book): string { return html.text(book.title?.heading()?._block); }
-    // WHAT A MENTION NAMES, NOT WHAT IT SAYS. An author written `[Doug](MY Library Log)` says Doug
-    // and names the log, and it is the NAME a library is connected by — so the reading asks for the
-    // name and never for the copy, which is the same reading whether a display form was used or not.
-    $author(book: $Book): string { return this.cover(book)?.author()?.name ?? ''; }
-    $subject(book: $Book): string { return this.cover(book)?.subject()?.name ?? ''; }
+    // WHERE A MENTION LEADS, NOT WHAT IT SAYS. An author written `[Doug](/my-library-log/)` says Doug
+    // and leads to the log, and the address is the compiler's — so a running book answers the
+    // address it was given, and a mention of the page it stands on answers none.
+    $author(book: $Book): string { return this.leads(this.cover(book)?.author()); }
+    $subject(book: $Book): string { return this.leads(this.cover(book)?.subject()); }
     $types(book: $Book): string[] { return reflection.types(this.cover(book) ?? book).flatMap(type => reflection.names(type)); }
     $chapters(book: $Book): string[] { return book.chapters.map(chapter => chapter.name); }
-    $catalogued(book: $Book): string[] { return (book.tableOfContents?.chapters ?? []).map(mention => mention.name); }
+    $catalogued(book: $Book): string[] { return (book.tableOfContents?.chapters ?? []).map(mention => this.leads(mention)); }
     // WHAT A CATALOGUE SHELVES, which is a different question from what a book holds. A synopsis says
     // the book it is FOR, and a catalogue is a book of synopses — so the books it shelves are the
-    // canonical names written into its chapters. It reads the PRINTED documents rather than the block,
-    // because a chapter writes its document in print() and nothing an author wrote is in the book.
+    // canonical addresses written into its chapters. It reads the PRINTED documents rather than the
+    // block, because a chapter writes its document in print() and nothing an author wrote is in the book.
     $shelves(book: $Book): string[] {
         return book.chapters.flatMap(chapter => chapter.parts())
             .flatMap(document => reflection.within<$Canonical>(document, $TypeOfCanonical))
-            .map(named => named.name);
+            .map(named => this.leads(named));
+    }
+
+    protected leads(mention: $Catalogue | undefined): string {
+        return html.text(mention?.path()?._block);
     }
 
     protected cover(book: $Book): $Cover | undefined {

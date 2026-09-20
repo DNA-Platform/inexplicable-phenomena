@@ -21,7 +21,7 @@ import { faults, wellformed } from './wellformed';
 // silently green, because the structure found no books and every check passed over nothing. A
 // fixture that does not speak the real language tests a reader nobody ships.
 
-type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean };
+type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean; synopsised?: boolean };
 
 const where = mkdtempSync(join(tmpdir(), 'binder-wellformed-'));
 let made = 0;
@@ -49,12 +49,22 @@ const built = (books: Made[]): Library => {
             '<Title>Synopsis</Title>',
             one.silent === true ? '<Synopsis>What this is.</Synopsis>' : `<Synopsis><For>${one.name}</For>What this is.</Synopsis>`,
         ]));
+        // A BOOK THIS ONE CATALOGUES, OR HOLDS AS A TOPIC, HAS A SYNOPSIS CHAPTER HERE, and the row
+        // that lists the book names it — Doug, 2026-09-19: "the table needs links to its chapters
+        // and the books that those chapters are synopses of."
+        const synopses = one.synopsised === false ? [] : (one.holds ?? []).filter(held_ => /\*\*$/u.test(held_)).map(held_ => /\[\[\s*(.*?)\s*\]\]/u.exec(held_)?.[1] ?? held_);
+        const files = ['.book.tsx', '.cover.tsx', '.synopsis.tsx', '.table.tsx'];
+        synopses.forEach((name, at) => {
+            const file = `${at + 1}-synopsis.tsx`;
+            writeFileSync(join(path, file), page([`<Title>${name}</Title>`, 'What it is.']));
+            files.push(file);
+        });
         writeFileSync(join(path, '.table.tsx'), page([
             '<Title>Table of Contents</Title>',
             ...(one.lists ?? [one.name, 'Synopsis', 'Table of Contents']).map(held_ => `<Option><Chapter>${held_}</Chapter></Option>`),
-            ...(one.holds ?? []).map(held_ => `<Option><Book>${held_}</Book>${/\*\*\*$/u.test(held_) ? '<Synopsis>Why it stands here.</Synopsis>' : ''}</Option>`),
+            ...(one.holds ?? []).map(held_ => `<Option>${one.synopsised !== false && /\*\*$/u.test(held_) ? `<Chapter>${/\[\[\s*(.*?)\s*\]\]/u.exec(held_)?.[1] ?? held_}</Chapter>` : ''}<Book>${held_}</Book></Option>`),
         ]));
-        held.push({ folder: one.folder, path, files: ['.book.tsx', '.cover.tsx', '.synopsis.tsx', '.table.tsx'], resources: new Map(), unaccounted: [], module: join(path, '.book.tsx') });
+        held.push({ folder: one.folder, path, files, resources: new Map(), unaccounted: [], module: join(path, '.book.tsx') });
     }
 
     return { root, books: held };
@@ -114,6 +124,15 @@ describe('the catalogue', () => {
         books[0].holds = ['[[ A Log ]]**', '[[ A Paper ]]**'];
 
         expect(faultsOf(books)).toEqual([faults.notListed]);
+    });
+
+    // Doug, 2026-09-19: "the table needs links to its chapters and the books that those chapters
+    // are synopses of."
+    it('refuses a row that catalogues a book without naming the chapter that is its synopsis', () => {
+        const books = whole();
+        books[0].synopsised = false;
+
+        expect(faultsOf(books)).toEqual([faults.noSynopsis, faults.noSynopsis, faults.noSynopsis]);
     });
 
     it('refuses a chapter its own book does not list', () => {

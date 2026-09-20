@@ -3,18 +3,19 @@ import ts from 'typescript';
 import type { Plugin } from 'vite';
 import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
-import { reads } from '../catalogue/reading';
-import { key, name as parsed, notation, spelling } from '../catalogue/language';
+import { frameworks, mentions, named, origins, prints, reads } from '../catalogue/reading';
+import { bare, itself, key, name as parsed, notation, spelling } from '../catalogue/language';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
 //
 // `reference/transform.ts` is a PROXY NAME, flagged for Doug.
 //
-// EVERYTHING COMPILES TO `[ name ]( url )` EXCEPT THE MENTION. Doug, 2026-09-18: "Everything
+// EVERYTHING COMPILES TO `[ words ]( url )` EXCEPT THE MENTION. Doug, 2026-09-18: "Everything
 // supports [] or (). Everything compiles to []() except the mention." So this file has one job and
 // no judgement — resolve the identifier, write the address — and every decision about what is DRAWN
 // belongs to the element that receives it. A title not drawing itself as a link is `$Title`'s
-// ruling, not the resolver's.
+// ruling, not the resolver's. Three outcomes: inside an element that reads a link, `[words](url)`,
+// or `[words]()` for the page it stands on; anywhere else, the words alone.
 //
 //   [[ X ]]        [[ X ]]*       [[ X ]]**      [[ X ]]***     annotations, about this writing
 //     *[[ X ]]    **[[ X ]]     ***[[ X ]]                      annotations, about X
@@ -86,21 +87,24 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     const declared: string[] = [];
     const missed: Missing[] = [];
     // WHETHER THIS FILE WROTE AN INLINE REFERENCE, which is the one edit that needs `<Ref>` to be
-    // drawn. An annotation with words also writes `[words](name)`, and that is read by the element
-    // around it — so "does an edit start with a bracket" stopped being the question the moment
-    // annotations could carry words, and this is asked at the one place a reference is written.
+    // drawn. An annotation also writes `[words](url)`, and that is read by the element around it —
+    // so "does an edit start with a bracket" is not the question, and this is asked at the one
+    // place a reference is written.
     let referred = false;
 
     // ONE SCAN FOR PROSE AND FOR STRINGS. Doug, 2026-09-19: "You haven't done anything to change the
     // language. Evaluating the ()[] was never the job of this framework." So a sigil in a string —
     // a prop, a literal in a helper — compiles to exactly what it compiles to in prose: a reference
-    // to `[words](url)`, an annotation to its name, a mention to its words. The one difference is
-    // that prose gets a `<Ref>` around a reference, because `Parser.link` is anchored and JSX text
-    // needs an element to parse one, and a string is handed to whatever element receives it.
+    // and an annotation to `[words](url)`, a mention to its words. The one difference is that prose
+    // gets a `<Ref>` around a reference, because `Parser.link` is anchored and JSX text needs an
+    // element to parse one, and a string is handed to whatever element receives it.
     //
     // AND PROSE IS READ THE WAY JSX READS IT — whitespace collapsed, entities spelled — while a
     // string is read as written, because that is what its element will receive.
-    const scan = (text: string, from: number, prose: boolean): void => {
+    // `mentioning` SAYS WHETHER WHAT RECEIVES THE TEXT READS A LINK: the mention kinds do, and so
+    // does whatever a string is handed to, since nothing else parses one. Everything else — a
+    // title, a paragraph — receives an annotation as its words.
+    const scan = (text: string, from: number, prose: boolean, mentioning: boolean): void => {
         notating.lastIndex = 0;
         for (let held = notating.exec(text); held !== null; held = notating.exec(text)) {
             const read = spelling(held, prose ? reads : one => one);
@@ -117,10 +121,10 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             // exists that plants an id.
             if (!reference && read.brackets === 3) { declared.push(name); edits.push({ from: at, to, said: words }); continue; }
 
-            // AN ANNOTATION IS VERIFIED AND THEN WRITES ITS NAME — or `[words](name)` when the writer
-            // gave both — because the ELEMENT around it resolves the name through the shelf; handed a
-            // URL it would slug it and point at nothing. A REFERENCE writes `[words](url)`. What is
-            // shown is the thing and never the scope: `$[ ./The books ]` reads "The books".
+            // AN ANNOTATION IS VERIFIED AND THEN WRITES ITS ADDRESS, `[words](url)`, into the element
+            // that will draw it — Doug, 2026-09-19: "There should not be anymore dynamic link
+            // generation." A REFERENCE writes the same. What is shown is the thing and never the
+            // scope: `$[ ./The books ]` reads "The books".
             const meant = parsed(name);
             const shown = read.named ? words : meant.of === 'book' ? meant.book : meant.chapter;
             const url = catalogue.where(key(meant, within));
@@ -129,17 +133,24 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
                 continue;
             }
 
-            if (!reference) { declared.push(name); edits.push({ from: at, to, said: read.named ? `[${words}](${name})` : shown }); continue; }
+            // A LINK THAT LEADS WHERE YOU ALREADY ARE IS NOT A LINK — the branch settled that in
+            // Sprint 73 (a23a3b9), and this is where it is decided now: a mention of the page it
+            // stands on is written with no address, `[words]()`, and a reference to it is its words.
+            const here = url === catalogue.standing(file);
+
+            if (!reference) { declared.push(name); edits.push({ from: at, to, said: mentioning ? `[${shown}](${here ? '' : url})` : shown }); continue; }
+            if (here) { edits.push({ from: at, to, said: shown }); continue; }
 
             if (prose) referred = true;
             edits.push({ from: at, to, said: prose && draws ? `<Ref>[${shown}](${url})</Ref>` : `[${shown}](${url})` });
         }
     };
 
-    const walk = (node: ts.Node): void => {
+    const bound = origins(source);
+    const walk = (node: ts.Node, mentioning: boolean): void => {
         if (ts.isJsxText(node)) {
             const from = node.getStart(source);
-            scan(code.slice(from, node.end), from, true);
+            scan(code.slice(from, node.end), from, true, mentioning);
 
             return;
         }
@@ -148,13 +159,44 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
         // even where the string carries an escape.
         if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
             const raw = node.getText(source);
-            scan(raw.slice(1, -1), node.getStart(source) + 1, false);
+            scan(raw.slice(1, -1), node.getStart(source) + 1, false, true);
 
             return;
         }
-        ts.forEachChild(node, walk);
+        // A MENTION WRITTEN WITH PLAIN WORDS NAMES WHAT IT SAYS — `<Book>The Log</Book>` — which is
+        // how `catalogue/structure.ts` has read it all along. So the words are compiled as though
+        // bracketed, and the element receives the address the structure already validated.
+        if (ts.isJsxElement(node)) {
+            const origin = bound.get(named(node.openingElement.tagName));
+            const mention = frameworks(origin) && mentions.includes(origin.name);
+            // AND ONE THAT DOES NOT PRINT IS LEFT AS WRITTEN: it draws nothing, so it needs no
+            // address — a turn's `<Participant print={false}>Doug</Participant>` names who speaks,
+            // for the dialogue, and is not a mention of a book.
+            const [text] = node.children;
+            if (mention && prints(node) && node.children.length === 1 && ts.isJsxText(text) && !/\[\[|\$\[/u.test(text.text)) {
+                const from = text.getStart(source);
+                const raw = code.slice(from, text.end).trim();
+                const plain = bare(reads(raw));
+                if (plain.name === '') return;
+                // A TABLE NAMING ITS OWN COVER REACHES THE BOOK, as the structure reads it.
+                const said = parsed(origin.name === 'chapter' ? `./${plain.name}` : plain.name);
+                const meant = itself(said, within) && within !== undefined ? parsed(within) : said;
+                const url = catalogue.where(key(meant, within));
+                if (url === undefined) { missed.push({ key: key(meant, within), file, line: source.getLineAndCharacterOfPosition(from).line + 1 }); return; }
+                declared.push(plain.name);
+                // THE WORDS ARE WRITTEN AS THE SOURCE SPELLS THEM, entities and all, so the element
+                // receives what the author typed.
+                edits.push({ from, to: text.end, said: `[${bare(raw).words}](${url === catalogue.standing(file) ? '' : url})` });
+
+                return;
+            }
+            ts.forEachChild(node, child => walk(child, mentioning || mention));
+
+            return;
+        }
+        ts.forEachChild(node, child => walk(child, mentioning));
     };
-    walk(source);
+    walk(source, false);
 
     let said = code;
     for (const edit of [...edits].sort((one, two) => two.from - one.from))
@@ -175,7 +217,7 @@ export const references = (held: Inventory): Plugin => ({
     enforce: 'pre',
     transform(code: string, id: string) {
         const file = id.split('?')[0];
-        if (!file.endsWith('.tsx') || !/\[\[|\$\[/u.test(code)) return null;
+        if (!file.endsWith('.tsx')) return null;
 
         const catalogue = held.catalogue();
         const found = transforming(code, file, catalogue);

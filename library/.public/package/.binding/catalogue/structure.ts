@@ -249,15 +249,17 @@ export const structure = (found: Library): Structure => {
     // CANONICAL listing only when it carries `**`. That distinction is needed because the library's
     // table lists every book for a reader to reach, including ones it does not catalogue directly.
     //
-    // AND A SYNOPSIS STANDS BESIDE ITS LISTING rather than somewhere in the file. An `<Option>` is
-    // the row a listing stands in, so the question is whether a synopsis stands in THAT row — an
-    // earlier writing tested the whole table for the word and called every listing in it
+    // AND A SYNOPSIS IS A CHAPTER NAMED BESIDE ITS LISTING. An `<Option>` is the row a listing
+    // stands in, and the chapter that is a book's synopsis stands in THAT row — Doug, 2026-09-19:
+    // "the table needs links to its chapters and the books that those chapters are synopses of."
+    // An earlier writing tested the whole table for a word and called every listing in it
     // synopsised, which is a slug's fault in another costume: an answer that is always yes.
     const lists = new Map<SpotId, Map<SpotId, Listing>>();
     for (const one of read) {
         if (one.file !== '.table.tsx') continue;
         const rows = one.elements.filter(held => held.tag === 'Option');
-        const beside = (at: number): boolean => rows.some(row => at >= row.at && at < row.to && /<Synopsis/u.test(one.code.slice(row.at, row.to)));
+        const chapters = one.elements.filter(held => held.tag === 'chapter');
+        const beside = (at: number): boolean => rows.some(row => at >= row.at && at < row.to && chapters.some(held => held.at >= row.at && held.at < row.to));
         const held = new Map<SpotId, Listing>();
         for (const element of one.elements) {
             if (element.tag !== 'chapter' && element.tag !== 'book') continue;

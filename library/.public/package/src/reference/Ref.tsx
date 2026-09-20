@@ -8,7 +8,7 @@ import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
 import { $Phrase$, $TypeOfPhrase, PhraseSpecification, $Phrase } from '@/writing/Phrase';
 import { Word as word } from '@/writing/Word';
-import { $Path, $TypeOfPath } from './Path';
+import { $Path, $TypeOfPath, Path as path } from './Path';
 import { folded } from './Fold';
 
 export interface $Ref$ extends $Phrase$ {
@@ -32,8 +32,17 @@ export class $Ref extends $Phrase implements $Ref$ {
     }
     written(): string { return this.link()?.text ?? html.text(this._block); }
 
+    // IT READS ITS LINK ONCE, HERE: the address into a path and the words left as its text, so the
+    // text of a ref is what a reader sees and never the syntax — a heading holding one is named and
+    // given its id by its words. Measured 2026-09-20: a title written `$[ ]( The Log ) The Log`
+    // took the id of `[](/the-log/) The Log`, and its row in the contents led nowhere.
     $Ref(block: $Block) {
         super.$Phrase(this.addType(block, $TypeOfRef));
+        const link = this.link();
+        if (link !== undefined && this.path() === undefined) {
+            const Path = $(path);
+            this._block = this._block.filter(part => typeof part !== 'string').concat(link.text, $<$Path>(<Path>{link.url}</Path>));
+        }
     }
 
     // IT WRITES ITS OWN ELEMENT, and print is where a kind writes one. view() ran here until
@@ -43,7 +52,9 @@ export class $Ref extends $Phrase implements $Ref$ {
         const url = this.url();
         if (url === undefined) return super.view();
 
-        return <a href={url} className={this.className}>{this.written()}</a>;
+        // AND IT WEARS THE ONE CLASS EVERY LINK WEARS, so a sheet says `.pd-meaning` for a link and
+        // never has to know which kind drew it.
+        return <a href={url} className={`${this.className} pd-meaning`}>{this.written()}</a>;
     }
 
     async read(): Promise<$Writing> {
@@ -75,6 +86,14 @@ export class RefSpecification extends PhraseSpecification {
     @specify('a ref names a target')
     $namesTarget(writing: $Writing): void {
         $check(reflection.is<$Ref>(writing, $TypeOfRef) && writing.url() !== undefined, 'a ref names a target, and this one names none');
+    }
+
+    // A REF SAYS WHERE IT LEADS. Written with no words — `$[ ]( The Log )` — it draws its mark, the
+    // box that leads to a book, and a ref that names a target has said something.
+    @specify('a ref says its words, or says where it leads')
+    override $saysSomething(writing: $Writing): void {
+        if (reflection.is<$Ref>(writing, $TypeOfRef) && writing.url() !== undefined) return;
+        super.$saysSomething(writing);
     }
 }
 

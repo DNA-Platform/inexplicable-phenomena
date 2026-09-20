@@ -108,10 +108,21 @@ export const spelt = (relation: Relation, end: End, name: string): string => {
 const written = new RegExp(`^(?:${notation.source})$`, 'u');
 
 export const bare = (said: string): { name: string; words: string; stars: string } => {
-    const held = written.exec(said.trim());
-    if (held === null) return { name: said.trim(), words: said.trim(), stars: '' };
+    // WHAT A THING IS CALLED DOES NOT INCLUDE WHAT IT REFERS TO. A title may carry a reference
+    // beside its name — the box that leads to the subject — and its name is what is left.
+    const forms = new RegExp(notation.source, 'gu');
+    let plain = said;
+    for (let form = forms.exec(said); form !== null; form = forms.exec(said))
+        if (spelling(form).refers) plain = plain.replace(form[0], '');
+    plain = plain.trim();
+    const held = written.exec(plain);
+    // AND THE FRAMEWORK'S OWN DISPLAY FORM, `[words](name)` — what a mention element has always
+    // parsed as saying one thing and naming another — reads the same as `[[ words ]]( name )`.
+    const link = held === null ? /^\[([^\]]*)\]\(([^)]*)\)$/u.exec(plain) : null;
+    if (link !== null) return { name: link[2].trim(), words: link[1].trim(), stars: '' };
+    if (held === null) return { name: plain, words: plain, stars: '' };
     const read = spelling(held);
-    if (!read.balanced || read.refers) return { name: said.trim(), words: said.trim(), stars: '' };
+    if (!read.balanced || read.refers) return { name: plain, words: plain, stars: '' };
 
     return { name: read.name, words: read.words, stars: read.prefix !== '' ? read.prefix : read.postfix };
 };

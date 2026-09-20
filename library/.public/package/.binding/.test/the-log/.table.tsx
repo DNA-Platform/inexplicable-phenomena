@@ -26,7 +26,7 @@ export default class $Table extends $Chapter {
                 </Section>
                 <Section>
                     <Heading>What stands under the log</Heading>
-                    <Option><Book>[[ A Persona ]]**</Book></Option>
+                    <Option><Chapter>A Persona</Chapter>&nbsp;<Book>[[ ]]( A Persona )**</Book></Option>
                 </Section>
             </TableOfContents>
         );
