@@ -1,6 +1,7 @@
+import { reflection } from '@dna-platform/public';
 import type { Diagnostic } from '../inventory/library';
 import { last, separator, spelt } from './language';
-import type { SpotId, Structure } from './structure';
+import type { Naming, SpotId, Structure } from './structure';
 
 // WHAT MAKES A LIBRARY WELL-FORMED, CHECKED OVER THE COMPILED STRUCTURE. It returns faults and
 // raises nothing; the phase that asked decides how a fault is reported.
@@ -34,7 +35,15 @@ export const faults = {
     twoSelfAuthors: 'TWO-SELF-AUTHORS',
     mayNotAuthor: 'MAY-NOT-AUTHOR',
     unreferencedMention: 'UNREFERENCED-MENTION',
+    sameAddress: 'SAME-ADDRESS',
+    noAddress: 'NO-ADDRESS',
+    reservedAddress: 'RESERVED-ADDRESS',
+    resourceNames: 'RESOURCE-NAMES',
 } as const;
+
+// WHERE THE BINDER WRITES SOMETHING OF ITS OWN, so no book may stand there: the bundle's folder,
+// which is vite's `assetsDir`. A book called "Assets" would be written into it.
+const reserved = new Set(['assets']);
 
 const wrote = (structure: Structure, id: SpotId): { at: string; file: string } => {
     const spot = structure.spots.get(id);
@@ -90,6 +99,39 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         for (const naming of held)
             wrong.push({ fault: faults.duplicateTitle, at: wrote(structure, naming.spot).at, file: naming.at.file, says: `"${said}" is the title here at line ${naming.at.line}, and also in ${held.filter(other => other !== naming).map(other => `${other.at.file} line ${other.at.line}`).join(', ')} — one title, one book` });
     }
+
+    // ---- one address, one thing ----
+    //
+    // A NAME IS WHAT A PERSON WRITES AND AN ADDRESS IS WHAT A PAGE ANSWERS TO, and the slug between
+    // them is not one-to-one: "Doug's Library" and "Dougs Library" are two names at one address, as
+    // are "The Sheet" and "the sheet", and "???" is no address at all. A book stands at `/slug/`
+    // across the library; a chapter or a mention at `#slug` on its book's page, where the cover
+    // already answers to the book's own slug. Doug, 2026-09-20: "Use principles of urls. Do you ever
+    // get the same? Then validate that that scenario is impossible."
+    const addressed = new Map<string, { said: string; naming: Naming }[]>();
+    const claims = (key: string, said: string, naming: Naming): void => { addressed.set(key, [...(addressed.get(key) ?? []), { said, naming }]); };
+    for (const [said, held] of structure.names)
+        for (const naming of held) {
+            const spot = structure.spots.get(naming.spot);
+            if (spot === undefined) continue;
+            const slug = reflection.slug(last(said));
+            if (slug === '') { wrong.push({ fault: faults.noAddress, at: spot.at, file: naming.at.file, says: `"${said}" at line ${naming.at.line} leaves nothing to stand at once it is an address — a name carries a letter or a digit` }); continue; }
+            if (spot.kind === 'book') {
+                if (reserved.has(slug)) wrong.push({ fault: faults.reservedAddress, at: spot.at, file: naming.at.file, says: `"${said}" would stand at /${slug}/, where the binder writes its own files — a book stands nowhere the binder does` });
+                claims(`/${slug}/`, said, naming);
+            }
+            claims(`/${spot.book}/#${slug}`, said, naming);
+        }
+    for (const [key, held] of addressed) {
+        if (held.length < 2 || new Set(held.map(one => one.said)).size < 2) continue;
+        for (const one of held)
+            wrong.push({ fault: faults.sameAddress, at: wrote(structure, one.naming.spot).at, file: one.naming.at.file, says: `"${one.said}" at line ${one.naming.at.line} and ${held.filter(other => other !== one).map(other => `"${other.said}" in ${other.naming.at.file} line ${other.naming.at.line}`).join(', ')} would stand at one address — a name is a thing of its own only where its address is` });
+    }
+
+    // AND A RESOURCE NAMES NOTHING. It is drawn on every page that wears it, and a name stands in one
+    // place — a title makes a chapter and a mention makes an address, and neither can be everywhere.
+    for (const one of structure.resourceNames)
+        wrong.push({ fault: faults.resourceNames, at: one.by, file: one.at.file, says: `line ${one.at.line} of a resource names "${one.said}" — a resource is drawn wherever it is used, and a name stands in one place` });
 
     for (const book of books)
         if (!structure.named.has(book.id))

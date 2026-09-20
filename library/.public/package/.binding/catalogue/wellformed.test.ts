@@ -21,7 +21,7 @@ import { faults, wellformed } from './wellformed';
 // silently green, because the structure found no books and every check passed over nothing. A
 // fixture that does not speak the real language tests a reader nobody ships.
 
-type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean; synopsised?: boolean; anchors?: string[]; chapters?: string[] };
+type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean; synopsised?: boolean; anchors?: string[]; chapters?: string[]; shared?: string[] };
 
 const where = mkdtempSync(join(tmpdir(), 'binder-wellformed-'));
 let made = 0;
@@ -65,7 +65,13 @@ const built = (books: Made[]): Library => {
             ...(one.lists ?? [one.name, 'Synopsis', 'Table of Contents', ...(one.chapters ?? [])]).map(held_ => `<Option><Chapter>${held_}</Chapter></Option>`),
             ...(one.holds ?? []).map(held_ => { const of = /\[\[\s*(.*?)\s*\]\]/u.exec(held_)?.[1] ?? held_; return `<Option>${one.synopsised !== false && /\*\*$/u.test(held_) ? `<Chapter>[[ ${of} ]]( ${of} / Synopsis )</Chapter>` : ''}<Book>${held_}</Book></Option>`; }),
         ]));
-        held.push({ folder: one.folder, path, files, resources: new Map(), unaccounted: [], module: join(path, '.book.tsx') });
+        // AND A RESOURCE BESIDE THE SYNOPSIS, holding whatever lines the case gives it.
+        const resources = new Map<string, string[]>();
+        if (one.shared !== undefined) {
+            writeFileSync(join(path, '.synopsis.tsx.tsx'), page(one.shared));
+            resources.set('.synopsis.tsx', ['.synopsis.tsx.tsx']);
+        }
+        held.push({ folder: one.folder, path, files, resources, unaccounted: [], module: join(path, '.book.tsx') });
     }
 
     return { root, books: held };
@@ -168,6 +174,52 @@ describe('the catalogue', () => {
         books[2].lists = ['Some Projects', 'Table of Contents'];
 
         expect(faultsOf(books)).toEqual([faults.chapterNotListed]);
+    });
+});
+
+// THE PRINCIPLES OF A URL, EACH AS A SCENARIO THE COMPILER REFUSES — Doug, 2026-09-20: "Use
+// principles of urls. Do you ever get the same? Then validate that that scenario is impossible."
+describe('one address, one thing', () => {
+    it('refuses two books whose names meet at one path', () => {
+        const books = whole();
+        books[2].name = 'A. Paper';
+
+        expect(new Set(faultsOf(books))).toEqual(new Set([faults.sameAddress]));
+    });
+
+    it('refuses two chapters of one book whose names meet at one fragment', () => {
+        const books = whole();
+        books[2].chapters = ['Table Of Contents'];
+
+        expect(faultsOf(books)).toEqual([faults.sameAddress, faults.sameAddress]);
+    });
+
+    it('refuses a chapter titled with its own book\'s name, because the cover already answers to it', () => {
+        const books = whole();
+        books[2].chapters = ['Some Projects'];
+
+        expect(faultsOf(books)).toEqual([faults.sameAddress, faults.sameAddress]);
+    });
+
+    it('refuses a name that leaves no address', () => {
+        const books = whole();
+        books[2].chapters = ['???'];
+
+        expect(faultsOf(books)).toEqual([faults.noAddress]);
+    });
+
+    it('refuses a book that would stand where the binder writes', () => {
+        const books = whole();
+        books[2].name = 'Assets';
+
+        expect(faultsOf(books)).toContain(faults.reservedAddress);
+    });
+
+    it('refuses a resource that names anything, because it is drawn on every page that wears it', () => {
+        const books = whole();
+        books[2].shared = ['<Title>A Shared Title</Title>', '[[[ A Shared Spot ]]] stands here.'];
+
+        expect(faultsOf(books)).toEqual([faults.resourceNames, faults.resourceNames]);
     });
 });
 

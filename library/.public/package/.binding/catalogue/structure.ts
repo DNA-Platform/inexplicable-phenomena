@@ -60,6 +60,8 @@ export type Structure = {
     untitled: { at: string; file: string }[];
     // EVERY SPOT SOMETHING IN THE LIBRARY REFERS TO, so a name nobody spends can be refused.
     referred: Set<SpotId>;
+    // AND EVERY NAME A RESOURCE TRIED TO MAKE, which a resource may not.
+    resourceNames: { by: SpotId; said: string; at: Where }[];
 };
 
 const edgeKey = (relation: Relation, from: SpotId, to: SpotId): string => `${relation}:${from}:${to}`;
@@ -158,6 +160,7 @@ export const structure = (found: Library): Structure => {
     const refused: Structure['refused'] = [];
     const strays: Structure['strays'] = [];
     const untitled: Structure['untitled'] = [];
+    const resourceNames: Structure['resourceNames'] = [];
 
     const titled = (one: Held): Element | undefined => one.elements.find(held => held.tag === 'Title');
     const calls = (said: string, spot: SpotId, at: Where): void => {
@@ -186,7 +189,9 @@ export const structure = (found: Library): Structure => {
         const title = titled(one);
         const said = title === undefined ? '' : bare(title.says).name;
         if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
-        if (said === within) continue;
+        // A CHAPTER TITLED WITH ITS BOOK'S NAME IS A CHAPTER LIKE ANY OTHER, and its address is the
+        // cover's, which `wellformed` refuses. It was skipped here in silence, and a silent skip is
+        // a chapter nobody lists, nobody reaches and nobody checks.
         const id = titles(one.book, one.file);
         spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder });
         calls(`${within}${separator}${said}`, id, { file: one.path, line: one.on(title!.at) });
@@ -198,7 +203,16 @@ export const structure = (found: Library): Structure => {
     // its own — a reference `$[ ./X ]` reaches it exactly as it reaches a chapter, and a name that
     // answers twice in one book is what `wellformed` refuses.
     for (const one of read) {
-        if (one.resource) continue;
+        // A RESOURCE MAY NOT NAME ANYTHING: it is drawn on every page that wears it, and a name
+        // stands in one place. What it tries to name is kept for `wellformed` to refuse.
+        if (one.resource) {
+            for (const said of one.reading.annotations)
+                if (said.form.is === 'mention' && said.name.of === 'book' && said.name.book !== '')
+                    resourceNames.push({ by: one.book.folder, said: said.name.book, at: { file: one.path, line: said.line } });
+            const title = titled(one);
+            if (title !== undefined) resourceNames.push({ by: one.book.folder, said: bare(title.says).name, at: { file: one.path, line: one.on(title.at) } });
+            continue;
+        }
         const within = named.get(one.book.folder);
         if (within === undefined) continue;
         const by = speaks(one.book, one.file);
@@ -360,5 +374,5 @@ export const structure = (found: Library): Structure => {
         }
     }
 
-    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, strays, untitled, referred };
+    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, strays, untitled, referred, resourceNames };
 };
