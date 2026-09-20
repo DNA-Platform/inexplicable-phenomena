@@ -103,9 +103,10 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         const held = found.books.find(one => one.folder === route.folder);
         if (held !== undefined) inside.push({ path: forward(held.path), url: book, name: route.name, resources: [...held.resources.values()].flat() });
 
-        // AND ITS CHAPTERS, WHICH ARE SPOTS OF THE STRUCTURE RATHER THAN A SECOND READING.
+        // AND ITS CHAPTERS, WHICH ARE SPOTS OF THE STRUCTURE RATHER THAN A SECOND READING — and its
+        // anchors, which stand at a fragment the same way a printed chapter does.
         for (const spot of structure.spots.values()) {
-            if (spot.kind !== 'chapter' || spot.book !== route.folder) continue;
+            if (spot.kind === 'book' || spot.book !== route.folder) continue;
             const chapter = structure.named.get(spot.id);
             if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, spot.prints ? `${book}#${reflection.slug(chapter)}` : book);
         }

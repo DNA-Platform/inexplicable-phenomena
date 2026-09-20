@@ -21,7 +21,7 @@ import { faults, wellformed } from './wellformed';
 // silently green, because the structure found no books and every check passed over nothing. A
 // fixture that does not speak the real language tests a reader nobody ships.
 
-type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean; synopsised?: boolean };
+type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean; synopsised?: boolean; anchors?: string[] };
 
 const where = mkdtempSync(join(tmpdir(), 'binder-wellformed-'));
 let made = 0;
@@ -48,6 +48,7 @@ const built = (books: Made[]): Library => {
         writeFileSync(join(path, '.synopsis.tsx'), page([
             '<Title>Synopsis</Title>',
             one.silent === true ? '<Synopsis>What this is.</Synopsis>' : `<Synopsis><For>${one.name}</For>What this is.</Synopsis>`,
+            ...(one.anchors ?? []).map(anchor => `[[[ ${anchor} ]]] stands here.`),
         ]));
         // A BOOK THIS ONE CATALOGUES, OR HOLDS AS A TOPIC, HAS A SYNOPSIS CHAPTER HERE, and the row
         // that lists the book names it — Doug, 2026-09-19: "the table needs links to its chapters
@@ -124,6 +125,15 @@ describe('the catalogue', () => {
         books[0].holds = ['[[ A Log ]]**', '[[ A Paper ]]**'];
 
         expect(faultsOf(books)).toEqual([faults.notListed]);
+    });
+
+    // AN ANCHOR IS A NAME LIKE A CHAPTER'S, and the rule that refuses two chapters called one thing
+    // refuses an anchor allocated under a chapter's name — once for each of the two namings.
+    it('refuses a name that answers twice in one book — an anchor allocated under a chapter\'s name', () => {
+        const books = whole();
+        books[2].anchors = ['Synopsis'];
+
+        expect(faultsOf(books)).toEqual([faults.duplicateTitle, faults.duplicateTitle]);
     });
 
     // Doug, 2026-09-19: "the table needs links to its chapters and the books that those chapters

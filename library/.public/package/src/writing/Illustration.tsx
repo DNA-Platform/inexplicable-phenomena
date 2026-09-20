@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { $, $Block } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
+import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Image$, $Image, $TypeOfImage, ImageSpecification } from './Image';
 import { TypeOfSentence } from './Sentence';
@@ -18,8 +19,11 @@ export class $Illustration extends $Image implements $Illustration$ {
         super.$Image(this.addType(block, $TypeOfIllustration));
     }
 
+    // A FIGURE CARRIES THE ID A FOLD GIVES IT, as every element the base draws does. An image must
+    // draw its own element, so this cannot lean on the base's view; measured 2026-09-20, a
+    // `[[[ ]]]` allocated on a plate planted no id, because the fold's key never reached the figure.
     override view(): ReactNode {
-        return <figure className={this.className}>{this.print()}</figure>;
+        return <figure id={reflection.folded(this)?.key()} className={this.className}>{this.print()}</figure>;
     }
 
     override print(): ReactNode {

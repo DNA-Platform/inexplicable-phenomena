@@ -3,6 +3,7 @@ import ts from 'typescript';
 import type { Plugin } from 'vite';
 import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
+import { reflection } from '@dna-platform/public';
 import { frameworks, mentions, named, origins, prints, reads } from '../catalogue/reading';
 import { bare, itself, key, name as parsed, notation, spelling } from '../catalogue/language';
 
@@ -55,7 +56,9 @@ export const missing = (one: Missing, keys: string[]): string => {
     return `${basename(one.file)} line ${one.line} names "${one.key}", and the library holds no such thing${close.length ? ` — did it mean "${close[0]}"?` : ''}`;
 };
 
-export type Found = { text: string; declared: string[]; missing: Missing[]; owes: boolean };
+// AND WHAT A FILE OWES: the elements its prose needs and it did not import — `Ref` to draw a
+// reference, `Fold` to plant the id a `[[[ X ]]]` allocates.
+export type Found = { text: string; declared: string[]; missing: Missing[]; owes: string[] };
 
 // WHETHER A FILE CAN DRAW AN INLINE REFERENCE AT ALL. `Parser.link` is ANCHORED — it matches only
 // when the whole of a mention is a link — so `[text](url)` spliced into a paragraph is never parsed
@@ -68,7 +71,7 @@ export type Found = { text: string; declared: string[]; missing: Missing[]; owes
 // compiler can see and say, instead of a page that quietly prints its own source.
 const imports = /import\s*\{([^}]*)\}\s*from\s*'@dna-platform\/public'/u;
 
-const drawn = (code: string): boolean => (imports.exec(code)?.[1] ?? '').split(',').some(one => one.trim() === 'Ref');
+const imported = (code: string, name: string): boolean => (imports.exec(code)?.[1] ?? '').split(',').some(one => one.trim() === name);
 
 // EVERY SIGIL IN ONE FILE'S PROSE, SPLICED BACK TO FRONT so an offset taken before an edit is still
 // true after it.
@@ -78,7 +81,9 @@ const drawn = (code: string): boolean => (imports.exec(code)?.[1] ?? '').split('
 // an author wants while typing; the BATCH reads every file and names every failure at once. A gate
 // that reports the first fault sends someone back six times for six faults.
 export const transforming = (code: string, file: string, catalogue: Catalogue): Found => {
-    const draws = drawn(code);
+    const draws = imported(code, 'Ref');
+    const plants = imported(code, 'Fold');
+    let planted = false;
     // WHERE THIS FILE STANDS, because `$[ > The Sheet ]` means the chapter of the book it is written
     // in. The scope is the one thing a reference cannot carry and the place it stands always knows.
     const within = catalogue.scope(file);
@@ -123,9 +128,15 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             // how a fault becomes invisible.
             if (!read.balanced) continue;
 
-            // THE MENTION ALLOCATES AND OWES AN ANCHOR. Its copy stands until a writing kind
-            // exists that plants an id.
-            if (!reference && read.brackets === 3) { declared.push(name); edits.push({ from: at, to, said: words }); continue; }
+            // THE MENTION ALLOCATES, AND A FOLD PLANTS THE ID: `[[[ Everything I Keep ]]]` becomes the
+            // words with a `<Fold>` beside them, so the element holding them answers to the fragment
+            // the catalogue wrote for it. In a string there is no element to plant in; the words stand.
+            if (!reference && read.brackets === 3) {
+                declared.push(name);
+                if (prose) planted = true;
+                edits.push({ from: at, to, said: prose && plants ? `<Fold>${reflection.slug(words)}</Fold>${words}` : words });
+                continue;
+            }
 
             // AN ANNOTATION IS VERIFIED AND THEN WRITES ITS ADDRESS, `[words](url)`, into the element
             // that will draw it — Doug, 2026-09-19: "There should not be anymore dynamic link
@@ -209,7 +220,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     for (const edit of [...edits].sort((one, two) => two.from - one.from))
         said = said.slice(0, edit.from) + edit.said + said.slice(edit.to);
 
-    return { text: said, declared, missing: missed, owes: !draws && referred };
+    return { text: said, declared, missing: missed, owes: [...(referred && !draws ? ['Ref'] : []), ...(planted && !plants ? ['Fold'] : [])] };
 };
 
 // THE PLUGIN — the incremental half. It holds no catalogue of its own: the catalogue is the
@@ -232,7 +243,7 @@ export const references = (held: Inventory): Plugin => ({
         // AND A FILE THAT WRITES A REFERENCE MUST BE ABLE TO DRAW IT. `owes` was computed for a day
         // and read by nobody, so a chapter that forgot `Ref` printed its reference as the characters
         // themselves and nothing said so — the exact failure the flag was written to name.
-        if (found.owes) throw new Error(`${basename(file)} writes a reference in its prose and does not import Ref from '@dna-platform/public', so the reference would print as text`);
+        if (found.owes.length > 0) throw new Error(`${basename(file)} writes ${found.owes.includes('Ref') ? 'a reference' : 'a mention that allocates'} in its prose and does not import ${found.owes.join(' and ')} from '@dna-platform/public', so it would print as text`);
 
         return found.text === code ? null : found.text;
     },

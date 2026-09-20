@@ -22,7 +22,10 @@ export type { Relation };
 
 // AND WHETHER A CHAPTER PRINTS ITS TITLE, because that decides whether the page has a place for it.
 // A book always does: its cover's title is the page's heading.
-export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter'; book: SpotId; prints: boolean };
+// AN ANCHOR IS A SPOT TOO: `[[[ X ]]]` — "this is named X, here" — names the writing it stands in,
+// within its book, and a reference reaches it as it reaches a chapter. `anchor` is a PROXY NAME,
+// flagged for Doug; the language calls the form a mention.
+export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter' | 'anchor'; book: SpotId; prints: boolean };
 export type Half = { by: SpotId; end: End; at: Where };
 export type Edge = { relation: Relation; from: SpotId; to: SpotId; ends: Half[] };
 export type Naming = { spot: SpotId; at: Where };
@@ -178,6 +181,23 @@ export const structure = (found: Library): Structure => {
         const id = titles(one.book, one.file);
         spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder, prints: title!.prints });
         calls(`${within}${separator}${said}`, id, { file: one.path, line: one.on(title!.at) });
+    }
+
+    // ---- the anchors, named within their books ----
+    //
+    // `[[[ X ]]]` allocates an address where it stands, so it is a spot of its book with a name of
+    // its own — a reference `$[ ./X ]` reaches it exactly as it reaches a chapter, and a name that
+    // answers twice in one book is what `wellformed` refuses.
+    for (const one of read) {
+        const within = named.get(one.book.folder);
+        if (within === undefined) continue;
+        const by = speaks(one.book, one.file);
+        for (const said of one.reading.annotations) {
+            if (said.form.is !== 'mention' || said.name.of !== 'book' || said.name.book === '') continue;
+            const id = `${by}#${said.name.book}`;
+            spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'anchor', book: one.book.folder, prints: true });
+            calls(`${within}${separator}${said.name.book}`, id, { file: one.path, line: said.line });
+        }
     }
 
     const of = (said: string): SpotId | undefined => {

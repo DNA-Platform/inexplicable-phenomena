@@ -80,6 +80,12 @@ describe('the catalogue over it', () => {
     it('answers a chapter whose title does not print with its page alone', () => {
         expect(made.spots.get('the-library/.synopsis.tsx')?.prints).toBe(false);
         expect(made.spots.get('the-library/1-the-shelves.tsx')?.prints).toBe(true);
+    });
+
+    it('and an anchor a chapter allocates is a spot of its book, reached by name', () => {
+        const anchor = made.spots.get('the-library/1-the-shelves.tsx#The First Shelf');
+        expect(anchor?.kind).toBe('anchor');
+        expect(made.of('The Library / The First Shelf')).toBe(anchor?.id);
         expect(card.where('The Library / What This Is')).toBe('/the-library/');
         expect(card.where('The Library / Table of Contents')).toBe('/the-library/');
     });

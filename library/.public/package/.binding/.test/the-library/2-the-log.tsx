@@ -7,7 +7,7 @@ export default class $TheLog extends $Chapter {
         return (
             <Document>
                 <Title>The Log $[ ]( The Log )</Title>
-                <Paragraph>The book that writes the others: an account of the library being made, kept by the one who keeps it.</Paragraph>
+                <Paragraph>The book that writes the others: an account of the library being made, kept by the one who keeps it. It stands on $[ ./The First Shelf ].</Paragraph>
             </Document>
         );
     }

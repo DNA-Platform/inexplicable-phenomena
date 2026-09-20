@@ -32,7 +32,7 @@ describe('a reference in prose', () => {
     });
 
     it('does not owe a Ref to a file that imports one', () => {
-        expect(made.owes).toBe(false);
+        expect(made.owes).toEqual([]);
     });
 });
 
@@ -86,6 +86,30 @@ describe('a resource shared by every page', () => {
     });
 });
 
+// `[[[ X ]]]` ALLOCATES AN ADDRESS WHERE IT STANDS: the words stay, a Fold plants the id, and a
+// reference reaches it as it reaches a chapter.
+describe('a mention that allocates', () => {
+    const shelves = join(fixture, 'the-library', '1-the-shelves.tsx');
+    const log = join(fixture, 'the-library', '2-the-log.tsx');
+
+    it('keeps its words and plants a fold beside them', () => {
+        const made = transforming(readFileSync(shelves, 'utf8'), shelves, card);
+        expect(made.missing).toEqual([]);
+        expect(made.owes).toEqual([]);
+        expect(made.text).toContain('<Fold>the-first-shelf</Fold>The First Shelf is the one');
+    });
+
+    it('and a reference to it lands on the fragment the fold planted', () => {
+        const made = transforming(readFileSync(log, 'utf8'), log, card);
+        expect(made.text).toContain('<Ref>[The First Shelf](/the-library/#the-first-shelf)</Ref>');
+    });
+
+    it('and a file that allocates without importing Fold owes it', () => {
+        const code = `import { Paragraph } from '@dna-platform/public';\nexport default class C { print() { return (<Paragraph>\n  [[[ Somewhere ]]] here\n</Paragraph>); } }`;
+        expect(transforming(code, shelves, card).owes).toEqual(['Fold']);
+    });
+});
+
 describe('what the transform refuses', () => {
     it('a name the library does not hold, by file and line', () => {
         const code = `import { Ref } from '@dna-platform/public';\nexport default class C { print() { return (<Paragraph>\n  see $[ Nowhere ]\n</Paragraph>); } }`;
@@ -102,6 +126,6 @@ describe('what the transform refuses', () => {
         const code = `export default class C { print() { return (<Paragraph>$[ The Library ]</Paragraph>); } }`;
         const made = transforming(code, chapter, card);
         expect(made.missing).toEqual([]);
-        expect(made.owes).toBe(true);
+        expect(made.owes).toEqual(['Ref']);
     });
 });
