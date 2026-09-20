@@ -1,0 +1,15 @@
+{
+  "inventory": {
+    "root": "wikipedia"
+  },
+  "rendering": {
+    "title": "Wikipedia",
+    "icon": "https://www.wikipedia.org/static/favicon/wikipedia.ico",
+    "stylesheets": [
+      "./page.css"
+    ]
+  },
+  "manifest": {
+    "origin": "../../../.binding"
+  }
+}

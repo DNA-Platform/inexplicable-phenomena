@@ -1,0 +1,43 @@
+{
+  "books": [
+    {
+      "folder": ".article",
+      "book": {
+        "author": "Wikipedians",
+        "catalogued": "order-of-article-elements body-sections standard-appendices-and-footers specialized-layout formatting see-also notes references wikipedia-manual-of-style-layout from-wikipedia table-of-contents lead manual-of-style about-this-page",
+        "chapters": "wikipedia-manual-of-style-layout from-wikipedia table-of-contents manual-of-style lead order-of-article-elements body-sections standard-appendices-and-footers specialized-layout formatting see-also notes references about-this-page",
+        "name": "wikipedia-manual-of-style-layout",
+        "subject": "Style guide which presents the typical layout of Wikipedia articles",
+        "title": "Wikipedia:Manual of Style/Layout"
+      },
+      "digest": "d7a989d8af5baea4",
+      "walked": 1049
+    },
+    {
+      "folder": ".encyclopedia",
+      "book": {
+        "author": "Wikipedians",
+        "catalogued": "wikipedia the-free-encyclopedia table-of-contents read-wikipedia-in-your-language the-foundation other-projects the-licence",
+        "chapters": "wikipedia the-free-encyclopedia table-of-contents read-wikipedia-in-your-language the-foundation other-projects the-licence",
+        "name": "wikipedia",
+        "subject": "Knowledge",
+        "title": "Wikipedia"
+      },
+      "digest": "e2e61f06f0d42a9f",
+      "walked": 303
+    },
+    {
+      "folder": "turing",
+      "book": {
+        "author": "Wikipedians",
+        "catalogued": "early-life-and-education career-and-research personal-life death government-apology-and-pardon further-reading see-also notes references external-links alan-turing from-wikipedia table-of-contents lead about-this-page",
+        "chapters": "alan-turing from-wikipedia table-of-contents lead early-life-and-education career-and-research personal-life death government-apology-and-pardon further-reading see-also notes references external-links about-this-page",
+        "name": "alan-turing",
+        "subject": "English computer scientist (1912–1954)",
+        "title": "Alan Turing"
+      },
+      "digest": "49a5e5adf2e9470e",
+      "walked": 3026
+    }
+  ]
+}

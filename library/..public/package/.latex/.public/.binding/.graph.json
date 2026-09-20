@@ -1,0 +1,17 @@
+{
+  "books": [
+    {
+      "folder": "aaronson",
+      "book": {
+        "author": "Scott Aaronson",
+        "catalogued": "mathsf-p-stackrel-mathsf-np abstract table-of-contents introduction formalizing-p-np-and-central-related-concepts beliefs-about-p-np why-is-proving-p-np-difficult strengthenings-of-the-p-np-conjecture progress conclusions acknowledgments appendix-glossary-of-complexity-classes references notes",
+        "chapters": "mathsf-p-stackrel-mathsf-np abstract table-of-contents introduction formalizing-p-np-and-central-related-concepts beliefs-about-p-np why-is-proving-p-np-difficult strengthenings-of-the-p-np-conjecture progress conclusions acknowledgments appendix-glossary-of-complexity-classes references notes",
+        "name": "mathsf-p-stackrel-mathsf-np",
+        "subject": "Computational complexity",
+        "title": "\\mathsf{P} \\stackrel{?}{=} \\mathsf{NP}"
+      },
+      "digest": "ebcd3537451a2889",
+      "walked": 1203
+    }
+  ]
+}

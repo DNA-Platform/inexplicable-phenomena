@@ -1,0 +1,71 @@
+{
+  "name": "@dna-platform/public",
+  "version": "0.0.3",
+  "description": "The canonical code library for creating libraries â€” the base classes a library instantiates against, built on @dna-platform/chemistry",
+  "license": "MIT",
+  "author": "Doug Rubino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DNA-Platform/inexplicable-phenomena.git",
+    "directory": "library/.public/package"
+  },
+  "main": "dist/lib.cjs",
+  "module": "dist/lib.js",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/lib.d.ts",
+      "import": "./dist/lib.js",
+      "require": "./dist/lib.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    ".binding"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "push": "npm version patch --no-git-tag-version && npm publish",
+    "prepublishOnly": "npm run test:gate",
+    "build:quick": "rollup -c --environment QUICK",
+    "build:clean": "rimraf dist .rollup.cache && rollup -c",
+    "typecheck": "tsc --noEmit -p src/tsconfig.json",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "test:gate": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.20",
+    "highlight.js": "^11.12.0",
+    "katex": "^0.18.1",
+    "latex.css": "^1.14.0",
+    "marked": "^18.0.7"
+  },
+  "peerDependencies": {
+    "@dna-platform/chemistry": "^0.1.2",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "react-router-dom": ">=7.0.0",
+    "styled-components": "^6.1.0"
+  },
+  "devDependencies": {
+    "@dna-platform/chemistry": "*",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/katex": "^0.16.8",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.50.2",
+    "rollup-plugin-dts": "^6.2.3",
+    "styled-components": "^6.1.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.6"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  }
+}

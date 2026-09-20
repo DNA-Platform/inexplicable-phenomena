@@ -1,0 +1,2426 @@
+{
+ "notes": [
+  {
+   "number": 2,
+   "page": 8,
+   "text": "Because I was asked: “yellow books” are the Springer mathematics books that line many mathematicians’ offices."
+  },
+  {
+   "number": 4,
+   "page": 9,
+   "text": "As an amusing side note, there’s a trick calledLevin’s universal search[168], in which one “dovetails” over all"
+  },
+  {
+   "number": 8,
+   "page": 12,
+   "text": "Or one could consider theminimumnumber of steps along any accepting path; the resulting class will be the same."
+  },
+  {
+   "number": 10,
+   "page": 16,
+   "text": "Technically, Daskalakis et al. showed that the search problem of finding a Nash equilibrium is complete for a complexity class calledPPAD.This could be loosely interpreted as saying that the problem is “as close toNP-hard as it could possibly be, subject to Nash’s theorem showing why the decision version is trivial.”"
+  },
+  {
+   "number": 11,
+   "page": 18,
+   "text": "In defining thekthlevel of the hierarchy, we could also have given oracles forΠPk−"
+  },
+  {
+   "number": 1,
+   "page": 18,
+   "text": "rather than ΣPk−"
+  },
+  {
+   "number": 1,
+   "page": 18,
+   "text": ": it doesn’t matter.Note also that “an oracle for complexity classC” should be read as “an oracle for anyC-complete languageL.”"
+  },
+  {
+   "number": 12,
+   "page": 19,
+   "text": "This requires one nontrivial result, that every prime number has a succinct certificate—or in other words, that primality testing is inNP[211].Since 2002, it is even known that primality testing is inP[15]."
+  },
+  {
+   "number": 16,
+   "page": 20,
+   "text": "A further surprising result from 1987, called theImmerman-Szelepcs´enyi Theorem[131, 254], says that the"
+  },
+  {
+   "number": 19,
+   "page": 23,
+   "text": "In the literature,LOGSPACEandNLOGSPACEare often simply calledLandNLrespectively."
+  },
+  {
+   "number": 30,
+   "page": 32,
+   "text": "Despite the term “circuit,” which comes from electrical engineering, circuits in theoretical computer science are ironicallyfreeof cycles; they proceed from the inputs to the output via layers of logic gates."
+  },
+  {
+   "number": 32,
+   "page": 33,
+   "text": "If each logic gate depends on at most 2 inputs, then log"
+  },
+  {
+   "number": 2,
+   "page": 33,
+   "text": "nis the smallest depth that allows the output to depend on allninput bits."
+  },
+  {
+   "number": 34,
+   "page": 34,
+   "text": "That is, a graph where every two vertices are connected by an edge with independent probabilityp."
+  },
+  {
+   "number": 35,
+   "page": 34,
+   "text": "But making matters more complicated still,survey propagation fails badly on random4Sat."
+  },
+  {
+   "number": 37,
+   "page": 36,
+   "text": "By contrast, public-keydigital signature schemes—that is, ways to authenticate a message without a shared secret key—can be constructed under the sole assumption that OWFs exist.See for example Rompel [225]."
+  },
+  {
+   "number": 38,
+   "page": 38,
+   "text": "At least, not forarbitrarypolynomials computed by small formulas or circuits.A great deal of progress has been made derandomizingPITfor restricted classes of polynomials.In fact, the deterministic primality test of Agrawal, Kayal, and Saxena [15] was based on a derandomization of one extremely special case ofPIT."
+  },
+  {
+   "number": 39,
+   "page": 39,
+   "text": "One can also consider theQMA-complete problems, which are a quantum generalization of theNP-complete problems themselves (see [54]), but we won’t pursue that here."
+  },
+  {
+   "number": 41,
+   "page": 40,
+   "text": "For example, if the world is governed by quantum mechanics as physicists currently understand it, thenC=BQP."
+  },
+  {
+   "number": 1,
+   "page": 41,
+   "text": ""
+  },
+  {
+   "number": 43,
+   "page": 44,
+   "text": "With some effort, Shannon’s lower bound can be shown to be tight: that is, everyn-variable Boolean functioncanbe represented by a circuit of sizeO(2n/n).(The obvious upper bound isO(n2n).)"
+  },
+  {
+   "number": 44,
+   "page": 45,
+   "text": "Crucially, this will be a different language for eachk; otherwise we’d getPSPACE̸⊂P/poly, which is far beyond our current ability to prove."
+  },
+  {
+   "number": 1,
+   "page": 51,
+   "text": "/d"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "text": "⊕· · ·⊕xncan be written asy⊕z, wherey:=x"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "text": "⊕· · ·⊕xn/"
+  },
+  {
+   "number": 2,
+   "page": 52,
+   "text": "andz:=xn/2+1⊕ · · · ⊕xn.This in turn can be written as (y∧z)∨(y∧z).Expanding recursively now yields a size-n"
+  },
+  {
+   "number": 2,
+   "page": 52,
+   "text": "formula forParity, made of AND, OR, and NOT gates."
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "text": "[m] circuits—though in that case, the lower bound applies only toNEXP-complete problems, and polynomials are only one ingredient in the proof among many."
+  },
+  {
+   "number": 50,
+   "page": 55,
+   "text": "In theoretical computer science, the termnon-negligiblemeans lower-bounded by 1/nO(1)."
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "text": "has been a longstanding open problem, as discussed in Section 6.2.4."
+  },
+  {
+   "number": 60,
+   "page": 63,
+   "text": "Indeed, everyfnhas an extension to a degree-npolynomial, namely amultilinearone (in which no variable is raised to a higher power than 1): for example, OR (x, y) =x+y−xy."
+  },
+  {
+   "number": 1,
+   "page": 66,
+   "text": "−Ω(1)space must also use Ω(n·√logn/log logn)time."
+  },
+  {
+   "number": 4,
+   "page": 67,
+   "text": ""
+  },
+  {
+   "number": 0,
+   "page": 68,
+   "text": "[lcm (m"
+  },
+  {
+   "number": 1,
+   "page": 68,
+   "text": ", m"
+  },
+  {
+   "number": 2,
+   "page": 68,
+   "text": ", . . .)].On the other hand, if we allow MOD-mgates fornon-constantm(and in particular, formgrowing polynomially withn), then we jump up toTC"
+  },
+  {
+   "number": 0,
+   "page": 68,
+   "text": "."
+  },
+  {
+   "number": 66,
+   "page": 69,
+   "text": "Interestingly, both the polynomial method and the proof of Lemma 68 are also closely related to the proof of Toda’s Theorem (Theorem 13), thatPH⊆P#P."
+  },
+  {
+   "number": 70,
+   "page": 71,
+   "text": "This strengthens a previous result of Impagliazzo, Kabanets, and Wigderson [134], who showed that, if such a deterministic algorithm exists that runs in 2no(1)time, thenNEXP̸⊂P/poly."
+  },
+  {
+   "number": 71,
+   "page": 72,
+   "text": "I’ll restrict to fields here for simplicity, but one can also consider (e.g.) rings."
+  },
+  {
+   "number": 2,
+   "page": 73,
+   "text": ", but not equal as formal polynomials."
+  },
+  {
+   "number": 73,
+   "page": 73,
+   "text": "The central difference between thePR?=NPRandPC?=NPCquestions is simply that, becauseRis an ordered field, one defines Turing machines overRto allow comparisons (<,≤) and branching on their results."
+  },
+  {
+   "number": 1,
+   "page": 75,
+   "text": ""
+  },
+  {
+   "number": 0,
+   "page": 75,
+   "text": "∂x"
+  },
+  {
+   "number": 2,
+   "page": 75,
+   "text": "N"
+  },
+  {
+   "number": 0,
+   "page": 75,
+   "text": ""
+  },
+  {
+   "number": 78,
+   "page": 75,
+   "text": "Indeed, #Pwould even have polynomial-size circuits of depth logO(1)n."
+  },
+  {
+   "number": 80,
+   "page": 78,
+   "text": "We can also talk about fixed constant depths in theAC"
+  },
+  {
+   "number": 0,
+   "page": 78,
+   "text": "case, but if we do, the conclusions are weaker.For example, if we managed to prove a 2Ω(n)size lower bound againstAC"
+  },
+  {
+   "number": 0,
+   "page": 78,
+   "text": "circuits of depth 3, for some languageL, then we could deduce from Theorem 52 that anyNLOGSPACEmachine forLwould require Ω(n"
+  },
+  {
+   "number": 2,
+   "page": 78,
+   "text": "/log"
+  },
+  {
+   "number": 2,
+   "page": 78,
+   "text": "n)time."
+  },
+  {
+   "number": 83,
+   "page": 80,
+   "text": "An immediate corollary is that any multilinearcircuitfor Per (X) or Det (X) requiresdepthΩ(log"
+  },
+  {
+   "number": 2,
+   "page": 80,
+   "text": "n)."
+  },
+  {
+   "number": 84,
+   "page": 81,
+   "text": "For simplicity, here I’ll assume that we mean an “ordinary” (Boolean) polynomial-time algorithm, though one could also require polynomial-time algorithms in the arithmetic model."
+  },
+  {
+   "number": 90,
+   "page": 88,
+   "text": "See Grochow [114, Proposition 3.4.9] for a simple proof of this, via a dimension argument."
+  },
+  {
+   "number": 95,
+   "page": 91,
+   "text": "A languageLis calledP-completeif (1)L∈P, and (2) everyL′∈Pcan be reduced toLby some form of reduction weaker than arbitrary polynomial-time ones (LOGSPACEreductions are often used for this purpose)."
+  },
+  {
+   "number": 96,
+   "page": 92,
+   "text": "This result of Lipton’s provided the germ of the proof thatIP=PSPACE; see Section 6.3.1.Mulmuley’s test improves over Lipton’s by, for example, requiring only nonadaptive queries toCrather than adaptive ones."
+  },
+  {
+   "number": 97,
+   "page": 93,
+   "text": "A standard example is the 2×2×2 tensor whose (2,1,1), (1,2,1), and (1,1,2) entries are all 1, and whose 5 remaining entries are all 0.One can check that this tensor has a rank of 3 but border rank of 2."
+  },
+  {
+   "number": 1,
+   "page": 95,
+   "text": ""
+  },
+  {
+   "number": 2,
+   "page": 95,
+   "text": "A"
+  },
+  {
+   "number": 1,
+   "page": 95,
+   "text": ""
+  },
+  {
+   "number": 2,
+   "page": 95,
+   "text": ""
+  },
+  {
+   "number": 1,
+   "page": 98,
+   "text": ", . . . , xℓdoesn’t depend onC."
+  },
+  {
+   "number": 106,
+   "page": 100,
+   "text": "Examples are deleting two successive NOT gates, or applying de Morgan’s laws.By the completeness of Boolean"
+  }
+ ],
+ "marks": [
+  {
+   "number": 2,
+   "page": 4,
+   "before": "G¨ odel wrote: If there actually were a machine with [running time] ∼ Kn (or even only with ∼ Kn"
+  },
+  {
+   "number": 1,
+   "page": 5,
+   "before": "P = NP , and if moreover the algorithm was efficient in practice, that person could solve not merely one Millennium Problem but all seven of them —for she’d simply need to program her computer to search for formal proofs of the other six conjectures."
+  },
+  {
+   "number": 1,
+   "page": 5,
+   "before": "NP might also help with the recognition problem: for example, by letting us train a neural network that reverse-engineered the expressed artistic preferences of hundreds of human experts. But how well that neural network would perform is an empirical"
+  },
+  {
+   "number": 12,
+   "page": 5,
+   "before": "NP might also help with the recognition problem: for example, by letting us train a neural network that reverse-engineered the expressed artistic preferences of hundreds of human experts. But how well that neural network would perform is an empirical"
+  },
+  {
+   "number": 10,
+   "page": 6,
+   "before": "c significantly larger than 1. Furthermore, even when the first polynomial-time algorithm discovered for some problem takes (say) n or n"
+  },
+  {
+   "number": 2,
+   "page": 7,
+   "before": "1.2.2 The Polynomial-Time Objection Objection: But why should we draw the border of efficiency at the polynomial functions, as opposed to any other class of functions—for example, functions upper-bounded by n"
+  },
+  {
+   "number": 2,
+   "page": 8,
+   "before": ", and the same question about whether they’re equal. (This observation is known as the Extended Church-Turing Thesis .) This objection might also reflect lack of familiarity with recent progress in complexity theory, which has drawn on Fourier analysis, arithmetic combinatorics, representation theory, algebraic ge- ometry, and dozens of other subjects about which yellow books"
+  },
+  {
+   "number": 2,
+   "page": 9,
+   "before": "P = NP only gave an n algorithm, but we suspected that an n"
+  },
+  {
+   "number": 4,
+   "page": 9,
+   "before": "= NP only gave an n algorithm, but we suspected that an n algorithm existed."
+  },
+  {
+   "number": 2,
+   "page": 9,
+   "before": "= NP only gave an n algorithm, but we suspected that an n algorithm existed."
+  },
+  {
+   "number": 1,
+   "page": 10,
+   "before": "a theoretical model of computation proposed by Alan Turing in 1936, which involves a one-dimensional tape divided into discrete squares, and a finite control that moves back and forth on the tape, reading and writing symbols. For a formal definition, see, e.g., Sipser [242] or Cook [74]. In this survey, I won’t define Turing machines, for the simple reason that if you know any pro- gramming language—C, Java, Python, etc.—then you already know something that’s equivalent to"
+  },
+  {
+   "number": 2,
+   "page": 10,
+   "before": "a theoretical model of computation proposed by Alan Turing in 1936, which involves a one-dimensional tape divided into discrete squares, and a finite control that moves back and forth on the tape, reading and writing symbols. For a formal definition, see, e.g., Sipser [242] or Cook [74]. In this survey, I won’t define Turing machines, for the simple reason that if you know any pro- gramming language—C, Java, Python, etc.—then you already know something that’s equivalent to"
+  },
+  {
+   "number": 1,
+   "page": 10,
+   "before": "a theoretical model of computation proposed by Alan Turing in 1936, which involves a one-dimensional tape divided into discrete squares, and a finite control that moves back and forth on the tape, reading and writing symbols. For a formal definition, see, e.g., Sipser [242] or Cook [74]. In this survey, I won’t define Turing machines, for the simple reason that if you know any pro- gramming language—C, Java, Python, etc.—then you already know something that’s equivalent to"
+  },
+  {
+   "number": 1,
+   "page": 12,
+   "before": "+ 1. We say that a machine “accepts” its input x , if there exists a list of valid transitions between states, s"
+  },
+  {
+   "number": 2,
+   "page": 12,
+   "before": "x , if there exists a list of valid transitions between states, s → s"
+  },
+  {
+   "number": 8,
+   "page": 12,
+   "before": "s . The machine “rejects” if there’s no such accepting path. The “running time” of such a machine is the maximum number of steps taken along any path, until the machine either accepts or rejects."
+  },
+  {
+   "number": 1,
+   "page": 14,
+   "before": "with at least k vertices. • SubsetSum is the language consisting of all encodings of positive integer tuples ⟨ a"
+  },
+  {
+   "number": 1,
+   "page": 16,
+   "before": "x, w ) accepts. Proof. The idea is to learn the bits of an accepting witness w = w"
+  },
+  {
+   "number": 1,
+   "page": 16,
+   "before": "Does there exist a w such that M ( x, w ) accepts and w"
+  },
+  {
+   "number": 1,
+   "page": 16,
+   "before": "Does there exist a w such that M ( x, w ) accepts, w"
+  },
+  {
+   "number": 2,
+   "page": 16,
+   "before": "such that M ( x, w ) accepts, w = 0, and w"
+  },
+  {
+   "number": 1,
+   "page": 16,
+   "before": "Does there exist a w such that M ( x, w ) accepts, w"
+  },
+  {
+   "number": 2,
+   "page": 16,
+   "before": "such that M ( x, w ) accepts, w = 1, and w"
+  },
+  {
+   "number": 10,
+   "page": 16,
+   "before": "deciding whether one exists. A classic example, as it happens, is the problem of finding a Nash equilibrium of a matrix game. Here Nash’s theorem guarantees that an equilibrium always exists, but an important 2006 result of Daskalakis et al. [81] gave evidence that there’s no polynomial-time algorithm to find an equilibrium."
+  },
+  {
+   "number": 1,
+   "page": 18,
+   "before": "Σ = P , and ∆ = P"
+  },
+  {
+   "number": 1,
+   "page": 18,
+   "before": "and ∆ = P , Σ = NP"
+  },
+  {
+   "number": 1,
+   "page": 18,
+   "before": ", Σ = NP , Π = coNP"
+  },
+  {
+   "number": 11,
+   "page": 18,
+   "before": ", Π = coNP for all k ≥ 1."
+  },
+  {
+   "number": 12,
+   "page": 19,
+   "before": "∈ Fac by exhibiting the unique prime factorization of N , and showing that it only involves primes greater than k ."
+  },
+  {
+   "number": 16,
+   "page": 20,
+   "before": "But a 1970 result called Savitch’s Theorem [231] shows that actually PSPACE = NPSPACE ."
+  },
+  {
+   "number": 2,
+   "page": 20,
+   "before": ". The reasons for this are extremely specific to space, and don’t seem to suggest any avenue to proving P = NP , the analogous statement for time."
+  },
+  {
+   "number": 2,
+   "page": 22,
+   "before": "p ( n ) bits of information (e.g., the contents of a polynomial-size Turing machine tape, plus a few extra bits for the location and internal state of tape head). Clearly such a machine has at most 2 possible"
+  },
+  {
+   "number": 2,
+   "page": 23,
+   "before": ". Then consider the language L = { x 0"
+  },
+  {
+   "number": 2,
+   "page": 23,
+   "before": "L takes 2 time, which is linear in n + 2 (the length of x 0"
+  },
+  {
+   "number": 19,
+   "page": 23,
+   "before": "(log n ) bits of read/write memory, in addition to a read-only memory that stores the n -bit input itself. We can also define a nondeterministic counterpart, NLOGSPACE ."
+  },
+  {
+   "number": 2,
+   "page": 23,
+   "before": "P . Proof. An NLOGSPACE machine has, say, k log"
+  },
+  {
+   "number": 2,
+   "page": 23,
+   "before": "An NLOGSPACE machine has, say, k log n bits of read/write memory, and therefore 2"
+  },
+  {
+   "number": 1,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 2,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 2,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 1,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 1,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 1,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 1,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 1,
+   "page": 28,
+   "before": "is unprovable from certain systems of axioms: namely, axioms that capture the power of the tech- niques in question (relativizing, algebrizing, or naturalizing techniques) [30, 133, 222]. In all these cases, however, the axiom systems are known not to capture all techniques in complexity theory: there are existing results that go beyond them. Thus, these barriers indicate weaknesses in certain techniques, rather than in the foundations of mathematics."
+  },
+  {
+   "number": 2,
+   "page": 29,
+   "before": "P include HornSat (where each clause is an OR of arbitrarily many non-negated variables and at most one negated variable), and XorSat (where each clause is a linear equation mod 2, such as x"
+  },
+  {
+   "number": 1,
+   "page": 29,
+   "before": "decide in linear time whether a graph is 2-colorable. Also, even though SubsetSum is NP -complete, we can easily decide whether there’s a subset of a"
+  },
+  {
+   "number": 1,
+   "page": 29,
+   "before": "we can easily decide whether there’s a subset of a , . . . , a summing to b in time that’s nearly linear in a"
+  },
+  {
+   "number": 8,
+   "page": 29,
+   "before": "These techniques yield hundreds of optimization problems that seem similar to known NP -complete problems, and yet are solvable in P . A few examples are finding maximum flows, finding equilibria of two-player zero-sum games, training linear classifiers, and optimizing over quantum states and unitary transformations."
+  },
+  {
+   "number": 2,
+   "page": 30,
+   "before": "require ∼ n steps: ∼ n steps for each of the n"
+  },
+  {
+   "number": 2,
+   "page": 30,
+   "before": "entries of the product matrix C . But in 1968, Strassen [250] discovered an algorithm that takes only O ( n"
+  },
+  {
+   "number": 2,
+   "page": 30,
+   "before": "n ) steps. There’s since been a long sequence of further improvements, culminating in an O ( n"
+  },
+  {
+   "number": 2,
+   "page": 30,
+   "before": "( n ) algorithm by Coppersmith and Winograd [79], and its recent improvements to O ( n"
+  },
+  {
+   "number": 2,
+   "page": 30,
+   "before": "O ( n ) by Stothers [249] and to O ( n"
+  },
+  {
+   "number": 2,
+   "page": 32,
+   "before": "A second example comes from recent work of Backurs and Indyk [37], who studied the problem of EditDistance : that is, given two strings, computing the minimum number of insertions, deletions, and replacements needed to transform one string to the other. Here an O ( n"
+  },
+  {
+   "number": 2,
+   "page": 32,
+   "before": "time for any ε > 0 . Then EditDistance requires n"
+  },
+  {
+   "number": 1,
+   "page": 32,
+   "before": "poly be the class of languages L for which there exists a polynomial-time Turing machine M , as well as an infinite set of “advice strings” a"
+  },
+  {
+   "number": 2,
+   "page": 32,
+   "before": "be the class of languages L for which there exists a polynomial-time Turing machine M , as well as an infinite set of “advice strings” a , a"
+  },
+  {
+   "number": 30,
+   "page": 32,
+   "before": "is as the class of languages recognized by a family of polynomial- size circuits , one for each input size n . In theoretical computer science, a circuit just means a directed acyclic"
+  },
+  {
+   "number": 1,
+   "page": 32,
+   "before": "n . In theoretical computer science, a circuit just means a directed acyclic graph C of Boolean logic gates (such as AND, OR, NOT), with the input bits x"
+  },
+  {
+   "number": 1,
+   "page": 33,
+   "before": "bit—or, if we think of the logic gates as organized into layers, then the number of layers. There’s a subclass of P / poly called NC"
+  },
+  {
+   "number": 32,
+   "page": 33,
+   "before": "stands for “Nick’s Class,” after Nick Pippenger), which consists of all languages that are decided by a family of circuits that have polynomial size and also depth O (log n )."
+  },
+  {
+   "number": 1,
+   "page": 33,
+   "before": "also depth O (log n ). One can also think of NC"
+  },
+  {
+   "number": 1,
+   "page": 34,
+   "before": "(nonuniformly) using a polynomial number of parallel processors. It’s conjectured that P ̸ ⊂ NC"
+  },
+  {
+   "number": 1,
+   "page": 34,
+   "before": "̸ ⊂ NC (that is, not all efficient algorithms can be parallelized), but alas, even showing NEXP ̸ ⊂ NC"
+  },
+  {
+   "number": 1,
+   "page": 34,
+   "before": "(that is, not all efficient algorithms can be parallelized), but alas, even showing NEXP ̸ ⊂ NC remains open at present. Another way to define NC"
+  },
+  {
+   "number": 34,
+   "page": 34,
+   "before": "αn uniformly-random clauses (for some constant α ), or 3Coloring on an Erd˝ os-R´ enyi random graph."
+  },
+  {
+   "number": 35,
+   "page": 34,
+   "before": ": the breakthrough survey propagation algorithm [57] can solve random 3Sat quickly, even for α extremely close to the threshold."
+  },
+  {
+   "number": 0,
+   "page": 36,
+   "before": "(2) f is hard to invert: that is, for all polynomial-time algorithms A and polynomials q , we have Pr"
+  },
+  {
+   "number": 1,
+   "page": 36,
+   "before": "(2) f is hard to invert: that is, for all polynomial-time algorithms A and polynomials q , we have Pr"
+  },
+  {
+   "number": 37,
+   "page": 36,
+   "before": "public-key cryptography—i.e., the kind of cryptography that doesn’t require any secrets to be shared in advance, and which is used for sending credit- card numbers over the web. To create a secure public-key cryptosystem, we need something even stronger than Conjecture 29: for example, a trapdoor OWF,"
+  },
+  {
+   "number": 38,
+   "page": 38,
+   "before": "this day, no one knows of any deterministic approach that achieves similar performance."
+  },
+  {
+   "number": 0,
+   "page": 38,
+   "before": "x ∈ { 0 , 1 } , Pr"
+  },
+  {
+   "number": 1,
+   "page": 38,
+   "before": "x ∈ { 0 , 1 } , Pr"
+  },
+  {
+   "number": 2,
+   "page": 39,
+   "before": "∈ { 0 , 1 } from 1 / 3 down to (say) 2"
+  },
+  {
+   "number": 2,
+   "page": 39,
+   "before": "∈ { 0 , 1 } on which the algorithm errs is at most 2 ( 2"
+  },
+  {
+   "number": 41,
+   "page": 40,
+   "before": "have fixed mathematical definitions, which don’t change with the laws of physics—but we’d also have NP ⊆ C , where C is whichever class of problems is efficiently solvable in the physical world."
+  },
+  {
+   "number": 0,
+   "page": 40,
+   "before": "P ̸ = NP . We’ll see how the barriers influence the next generation of lower bound techniques, which are sometimes specifically designed to evade the barriers, or evaluated on their potential to do so."
+  },
+  {
+   "number": 1,
+   "page": 40,
+   "before": "P ̸ = NP . We’ll see how the barriers influence the next generation of lower bound techniques, which are sometimes specifically designed to evade the barriers, or evaluated on their potential to do so."
+  },
+  {
+   "number": 0,
+   "page": 40,
+   "before": "P ̸ = NP . We’ll see how the barriers influence the next generation of lower bound techniques, which are sometimes specifically designed to evade the barriers, or evaluated on their potential to do so."
+  },
+  {
+   "number": 1,
+   "page": 40,
+   "before": "P ̸ = NP . We’ll see how the barriers influence the next generation of lower bound techniques, which are sometimes specifically designed to evade the barriers, or evaluated on their potential to do so."
+  },
+  {
+   "number": 1,
+   "page": 40,
+   "before": "P ̸ = NP . We’ll see how the barriers influence the next generation of lower bound techniques, which are sometimes specifically designed to evade the barriers, or evaluated on their potential to do so."
+  },
+  {
+   "number": 0,
+   "page": 41,
+   "before": "the proof by Immerman [131] that nondeterministic space is closed under complement (though the independent proof by Szelepcs´ enyi [254] of the same result didn’t use these ideas). Descriptive complexity also played a role in the proof by Ajtai [17] that Parity is not in AC"
+  },
+  {
+   "number": 1,
+   "page": 41,
+   "before": "} , consider the following communication game: Alice receives an n -bit input x = x"
+  },
+  {
+   "number": 2,
+   "page": 42,
+   "before": "Here’s an example: given an n × n matrix A , say over the finite field F"
+  },
+  {
+   "number": 1,
+   "page": 42,
+   "before": "only does A have rank Ω ( n ), but any matrix obtained by changing O ( n"
+  },
+  {
+   "number": 10,
+   "page": 42,
+   "before": "only does A have rank Ω ( n ), but any matrix obtained by changing O ( n"
+  },
+  {
+   "number": 2,
+   "page": 42,
+   "before": "A also has rank Ω ( n ). It’s easy to show, via a counting argument, that almost all matrices A ∈ F"
+  },
+  {
+   "number": 2,
+   "page": 42,
+   "before": "explicit example of a rigid matrix, then we also get an explicit example of a Boolean function that can’t be computed by any circuit of linear size and logarithmic depth. For another connection in the same spirit, given a 3-dimensional tensor A ∈ F"
+  },
+  {
+   "number": 2,
+   "page": 42,
+   "before": "y z ). Then it’s easy to show, via a counting argument, that almost all tensors A ∈ F"
+  },
+  {
+   "number": 2,
+   "page": 42,
+   "before": "Then it’s easy to show, via a counting argument, that almost all tensors A ∈ F have rank Ω ( n"
+  },
+  {
+   "number": 2,
+   "page": 42,
+   "before": ", then we also get an explicit example of a Boolean function with circuit complexity Ω ( r ). Alas, proving that any explicit matrix is rigid, or that any explicit tensor has superlinear rank, have turned out to be staggeringly hard problems—as perhaps shouldn’t surprise us, given the implications for circuit lower bounds! The rest of the section is organized as follows:"
+  },
+  {
+   "number": 2,
+   "page": 42,
+   "before": ", then we also get an explicit example of a Boolean function with circuit complexity Ω ( r ). Alas, proving that any explicit matrix is rigid, or that any explicit tensor has superlinear rank, have turned out to be staggeringly hard problems—as perhaps shouldn’t surprise us, given the implications for circuit lower bounds! The rest of the section is organized as follows:"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "More broadly, the same argument shows that there are languages decidable in O ( n"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "). Then by a padding argument (cf. Proposition 17), P would also contain SPACE ( n"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "SPACE ( n ) , and therefore equal SPACE ( n"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "But then we’d have SPACE ( n ) = SPACE ( n"
+  },
+  {
+   "number": 43,
+   "page": 44,
+   "before": "all Boolean functions on n variables (that is, a 1 − o (1) fraction of them) have this property."
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "variables (that is, a 1 − o (1) fraction of them) have this property. Proof. There are 2"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "2 ) < ( n + T )"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "T NAND gates. Since each circuit only represents one function, and since ( n + T )"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "n + T ) = o ( 2"
+  },
+  {
+   "number": 2,
+   "page": 44,
+   "before": "some f must require a circuit with T = Ω (2 /n ) NAND gates—and indeed, that almost all of the 2"
+  },
+  {
+   "number": 2,
+   "page": 45,
+   "before": "with circuit complexity at least c 2 /n , for some constant c > 0. Thus, if we list all the 2"
+  },
+  {
+   "number": 44,
+   "page": 45,
+   "before": "Theorem 41 For every fixed k , there is a language in PSPACE that does not have circuits of size n ."
+  },
+  {
+   "number": 1,
+   "page": 46,
+   "before": "are enhanced in the same way, by being given access to the same oracle, the proof is completely oblivious to that change, and goes through just as before. A proof with this property is said to “relativize,” or to hold “in all possible relativized worlds” or “relative to any oracle.” Why do so many proofs relativize? Intuitively, because the proofs only do things like using one Turing machine M"
+  },
+  {
+   "number": 2,
+   "page": 46,
+   "before": "A proof with this property is said to “relativize,” or to hold “in all possible relativized worlds” or “relative to any oracle.” Why do so many proofs relativize? Intuitively, because the proofs only do things like using one Turing machine M to simulate a second Turing machine M"
+  },
+  {
+   "number": 2,
+   "page": 46,
+   "before": "one Turing machine M to simulate a second Turing machine M step-by-step, without examining either machine’s internal structure. In that case, if M"
+  },
+  {
+   "number": 1,
+   "page": 46,
+   "before": "step-by-step, without examining either machine’s internal structure. In that case, if M is given access to an oracle A , then M"
+  },
+  {
+   "number": 2,
+   "page": 46,
+   "before": "M is given access to an oracle A , then M can still simulate M"
+  },
+  {
+   "number": 1,
+   "page": 46,
+   "before": "A , then M can still simulate M just fine, provided that M"
+  },
+  {
+   "number": 2,
+   "page": 46,
+   "before": "just fine, provided that M is also given access to A , in order to simulate M"
+  },
+  {
+   "number": 1,
+   "page": 47,
+   "before": "proof is simply any proof that “knows” about complexity classes, only through axioms that assert the classes’ closure properties, as well as languages that the classes do contain. (For example, P contains the empty language; if L"
+  },
+  {
+   "number": 2,
+   "page": 47,
+   "before": "do contain. (For example, P contains the empty language; if L and L"
+  },
+  {
+   "number": 1,
+   "page": 47,
+   "before": "contains the empty language; if L and L are both in P , then so are Boolean combinations like L"
+  },
+  {
+   "number": 1,
+   "page": 47,
+   "before": "and L are both in P , then so are Boolean combinations like L and L"
+  },
+  {
+   "number": 2,
+   "page": 47,
+   "before": "are both in P , then so are Boolean combinations like L and L ∩ L"
+  },
+  {
+   "number": 2,
+   "page": 49,
+   "before": "Subsequently, Alon and Boppana [27] improved this, to show that any monotone circuit to detect a clique of size ∼ ( n/ log n )"
+  },
+  {
+   "number": 1,
+   "page": 49,
+   "before": "( Ω ( ( n/ log n )"
+  },
+  {
+   "number": 2,
+   "page": 50,
+   "before": "n -vertex graphs that admit a matching on at least ∼ ( n/ log n )"
+  },
+  {
+   "number": 1,
+   "page": 50,
+   "before": "( Ω ( ( n/ log n )"
+  },
+  {
+   "number": 2,
+   "page": 50,
+   "before": ". By using their connection between circuit depth and communication complexity (see Section 6), Karchmer and Wigderson [144] were able to prove that any monotone circuit for stCon requires Ω ( log"
+  },
+  {
+   "number": 2,
+   "page": 50,
+   "before": "depth , the number of layers of gates between input and output. If the allowed gates all have a fanin of 1 or 2 (that is, they all take only 1 or 2 input bits), then clearly any circuit that depends nontrivially on all n of the input bits must have depth at least log"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "2 neurons arranged into just 2 layers. So the interesting question is what happens if we restrict both the depth and the number of gates or neurons. More formally, let AC"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "d such that each C has depth at most d . Clearly AC"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "; indeed we recover P / poly by omitting condition (4). Now, one of the major triumphs of complexity theory in the 1980s was to understand AC"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "/ poly . It’s not just that we know NP ̸ ⊂ AC"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "It’s not just that we know NP ̸ ⊂ AC ; rather, it’s that we know in some detail which problems are and aren’t in AC"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "As the most famous example, let Parity be the language consisting of all strings with an odd number of ‘1’ bits. Then: Theorem 50 (Ajtai [17], Furst-Saxe-Sipser [102]) Parity is not in AC"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "Then: Theorem 50 (Ajtai [17], Furst-Saxe-Sipser [102]) Parity is not in AC . While the original lower bounds on the size of AC"
+  },
+  {
+   "number": 0,
+   "page": 51,
+   "before": "AC circuits for Parity were only slightly superpolynomial, Theorem 50 was subsequently improved by Yao [284] and then by H˚ astad [123], the latter of whom gave an essentially optimal result: namely, any AC"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "before": "Parity itself, or else NOT(Parity) . But a circuit of constant size clearly can’t compute a Boolean function that depends on ∼ n"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "AND function does have a depth-1 circuit, consisting of a single AND gate!). The original proofs for Parity / ∈ AC"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "The original proofs for Parity / ∈ AC have been generalized and improved on in many ways. For example, Linial, Mansour, and Nisan [171] examined the weakness of AC"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "have been generalized and improved on in many ways. For example, Linial, Mansour, and Nisan [171] examined the weakness of AC circuits from a different angle: “turning lemons into lemonade,” they gave a quasipolynomial-time algorithm to learn arbitrary AC"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "learn arbitrary AC circuits with respect to the uniform distribution over inputs. Also, proving a conjecture put forward by Linial and Nisan [172] (and independently Babai), Braverman [58] showed that AC"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "AC circuits can’t distinguish the outputs of a wide range of pseudorandom generators from truly random strings. Meanwhile, H˚ astad [123] showed that for every d , there are functions computable by AC"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "d , there are functions computable by AC circuits of depth d that require exponentially many gates for AC"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "is infinite (that is, all its levels are distinct). Improving that result, Rossman, Servedio, and Tan [226] very recently showed that the same functions H˚ astad had considered require exponentially many gates even to approximate using AC"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": "PH is infinite relative to a random oracle with probability 1, which resolved a thirty-year-old open problem. The random restriction method has also had other applications in complexity theory, besides to AC"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "before": "story of formula-size lower bounds starts in 1961 with Subbotovskaya [252], who used random restrictions to show that the n -bit Parity function requires formulas of size Ω ( n"
+  },
+  {
+   "number": 2,
+   "page": 52,
+   "before": "( n ) . Later Khrapchenko [152] improved this to Ω ( n"
+  },
+  {
+   "number": 2,
+   "page": 52,
+   "before": ") , which is tight. Next, in 1987, Andreev [28] con- structed a different Boolean function in P that could be shown, again using random restrictions, to require formulas of size n"
+  },
+  {
+   "number": 2,
+   "page": 52,
+   "before": "structed a different Boolean function in P that could be shown, again using random restrictions, to require formulas of size n . This was subsequently improved to n"
+  },
+  {
+   "number": 2,
+   "page": 52,
+   "before": "to require formulas of size n . This was subsequently improved to n by Impagliazzo and Nisan [135], to n"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "before": ") . On the other hand, for Boolean circuits rather than formulas, we still have no lower bound better than linear for any function in P (or for that"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "before": ") . On the other hand, for Boolean circuits rather than formulas, we still have no lower bound better than linear for any function in P (or for that"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": ") . On the other hand, for Boolean circuits rather than formulas, we still have no lower bound better than linear for any function in P (or for that"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "before": ") . On the other hand, for Boolean circuits rather than formulas, we still have no lower bound better than linear for any function in P (or for that"
+  },
+  {
+   "number": 0,
+   "page": 52,
+   "before": ") . On the other hand, for Boolean circuits rather than formulas, we still have no lower bound better than linear for any function in P (or for that"
+  },
+  {
+   "number": 1,
+   "page": 52,
+   "before": ") . On the other hand, for Boolean circuits rather than formulas, we still have no lower bound better than linear for any function in P (or for that"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "NP )! 6.2.4 Small-Depth Circuits and the Polynomial Method For our purposes, the most important extension of Theorem 50 was achieved by Smolensky [243] and Razborov [221] in 1987. Let AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "gates (which output 1 if their number of ‘1’ input bits is divisible by m , and 0 otherwise). Adding in MOD- m gates seems like a natural extension of AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "AC : for example, if m = 2, then we’re just adding Parity , one of the most basic functions not in AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "Parity , one of the most basic functions not in AC . Smolensky and Razborov extended the class of circuits for which lower bounds can be proven from AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "one of the most basic functions not in AC . Smolensky and Razborov extended the class of circuits for which lower bounds can be proven from AC to AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "be distinct primes. Then Mod , the set of all strings with Hamming weight divisible by q , is not in AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": ", is not in AC [ p ] . Indeed, any AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "( ) gates. As a corollary, the Majority function is also not in AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "p ] , and also requires 2 ( ) gates to compute using AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "[ p ] circuits of depth d . It’s not hard to show that AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "d . It’s not hard to show that AC [ p ] = AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "p ] for any k ≥ 1, and thus, one also gets lower bounds against AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "), can’t be approximated by any such low-degree polynomial. This provides the desired contradiction. The polynomial method is famously specific in scope: it’s still not known how to prove results like Theorem 51 even for AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "function has a constant-depth, polynomial- size, unbounded-fanin circuit consisting of AND, OR, NOT, and MOD-6 gates, or even entirely of MOD-6 gates! Stepping back, it’s interesting to ask whether the constant-depth circuit lower bounds evade the relativization barrier explained in Section 6.1.2. There’s some disagreement about whether it’s even sensible to feed oracles to tiny complexity classes such as AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "for example). However, to whatever extent it is sensible, the answer is that these lower bounds do evade relativization. For example, if by ( AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "sensible, the answer is that these lower bounds do evade relativization. For example, if by ( AC ) , we mean AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "extended by “oracle gates” that query A , then it’s easy to construct an A such that ( AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "P : for example, any A that is P -complete under AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "A that is P -complete under AC -reductions will work. On the other hand, we know from Theorem 50 that AC"
+  },
+  {
+   "number": 0,
+   "page": 53,
+   "before": "= P in the “real,” unrelativized world. There’s one other aspect of the constant-depth circuit lower bounds that requires discussion. Namely, we saw that both the random restriction method and the polynomial method yield lower bounds of the form 2 on the number of gates needed in an AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "that question has a very simple answer: because 2 ( ) is easily seen to be a matching upper bound! But could the same techniques yield a 2 lower bound on AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "for every odd constant d ≥ 3 , we can also decide L using a family of AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "m ( ) . Theorem 52 means, in particular, that if we proved that some language L required AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "001—then we also would have proven L / ∈ NLOGSPACE . In other words, if we had the ability to prove strong enough AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "̸ = P . 6.2.5 The Natural Proofs Barrier Despite the weakness of AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "P . 6.2.5 The Natural Proofs Barrier Despite the weakness of AC and AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "= NP . That path is simply to generalize the random restriction and polynomial methods further and further, to get lower bounds for more and more powerful classes of circuits. The first step, of course, would be to generalize the polynomial method to handle AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "[ m ] circuits, where m is not a prime power. Then one could handle what are called TC"
+  },
+  {
+   "number": 1,
+   "page": 54,
+   "before": "that is, constant-depth, polynomial-size, unbounded-fanin circuits with MAJORITY gates (or, as in a neural network, threshold gates , which output 1 if a certain weighted affine combination of the input bits exceeds 0, and 0 otherwise). Next, one could aim for polynomial-size circuits of logarithmic depth: that is, the class NC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": ". Finally, one could push all the way to polynomial-depth circuits: that is, the class P / poly . Unfortunately, we now know that this path hits a profound barrier at TC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "The basic insight is that combinatorial techniques, such as the method of random restrictions, do more than advertised: in some sense, they do too much for their own good. In particular, not only do they let us show that certain specific functions, like Parity , are hard for AC"
+  },
+  {
+   "number": 0,
+   "page": 54,
+   "before": "Parity , are hard for AC ; they even let us certify that a random function is hard for AC"
+  },
+  {
+   "number": 0,
+   "page": 55,
+   "before": "f is hard (i.e., that f is not in some circuit class C , such as AC"
+  },
+  {
+   "number": 0,
+   "page": 55,
+   "before": "Parity ” in the relevant respects). • The results of Linial, Mansour, and Nisan [171] show that any f that passes these tests remains nontrivial under most random restrictions, and for that reason, can’t be in AC"
+  },
+  {
+   "number": 50,
+   "page": 55,
+   "before": "/n probability over a truly random f . Thus, A serves to distinguish random from pseudorandom functions with non-negligible"
+  },
+  {
+   "number": 0,
+   "page": 55,
+   "before": "p ( n ) is as large a polynomial as we like (related to the length of the random “seed” s ). It follows from results of Naor and Reingold [200] that in TC"
+  },
+  {
+   "number": 1,
+   "page": 56,
+   "before": "ε > 0. (For comparison, the best known algorithms for these problems take roughly 2"
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "before": "ε > 0. (For comparison, the best known algorithms for these problems take roughly 2 time.) Likewise, Banerjee et al. [39] showed that in TC"
+  },
+  {
+   "number": 1,
+   "page": 56,
+   "before": "proof showing that these problems took at least t ( n ) time, would also show that they took at most roughly 2"
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "before": "question: namely, we’re trying to prove that certain functions are hard, but the problem of deciding whether a function is hard is itself hard, according to the very sorts of conjectures that we’re trying to prove. Of course, the natural proofs barrier didn’t prevent complexity theorists from proving strong lower bounds against AC"
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "before": "Of course, the natural proofs barrier didn’t prevent complexity theorists from proving strong lower bounds against AC . But the result of Linial, Mansour, and Nisan [171] can be interpreted as saying that this is because AC"
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "before": ". But the result of Linial, Mansour, and Nisan [171] can be interpreted as saying that this is because AC is not yet powerful enough to express pseudorandom functions. When we move just slightly higher, to TC"
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "before": "P ̸ = NP via circuit complexity stalled where it did. The one complication in the story is the AC"
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "before": "fraction of objects as having property P . In such cases, often we prove that O has property P by"
+  },
+  {
+   "number": 1,
+   "page": 56,
+   "before": "fraction of objects as having property P . In such cases, often we prove that O has property P by"
+  },
+  {
+   "number": 0,
+   "page": 56,
+   "before": "fraction of objects as having property P . In such cases, often we prove that O has property P by"
+  },
+  {
+   "number": 1,
+   "page": 57,
+   "before": "x is a codeword of a linear error-correcting code, and 0 otherwise. Here a manifestly orthogonal formula is a formula over x"
+  },
+  {
+   "number": 1,
+   "page": 57,
+   "before": "a linear error-correcting code, and 0 otherwise. Here a manifestly orthogonal formula is a formula over x , . . . , x , x"
+  },
+  {
+   "number": 1,
+   "page": 57,
+   "before": "is such a barrier in the first place for manifestly orthogonal formulas). Another proposal for how to evade the natural proofs barrier comes from a beautiful 2010 paper by Allender and Kouck´ y [26] (see also Allender’s survey [21]). These authors show that, if one wanted to prove that certain specific NC"
+  },
+  {
+   "number": 0,
+   "page": 57,
+   "before": "Another proposal for how to evade the natural proofs barrier comes from a beautiful 2010 paper by Allender and Kouck´ y [26] (see also Allender’s survey [21]). These authors show that, if one wanted to prove that certain specific NC problems were not in TC"
+  },
+  {
+   "number": 0,
+   "page": 57,
+   "before": "These authors show that, if one wanted to prove that certain specific NC problems were not in TC , thereby establishing the breakthrough separation TC"
+  },
+  {
+   "number": 1,
+   "page": 57,
+   "before": "problems were not in TC , thereby establishing the breakthrough separation TC ̸ = NC"
+  },
+  {
+   "number": 0,
+   "page": 57,
+   "before": ", thereby establishing the breakthrough separation TC ̸ = NC , it would suffice to show that those problems had no TC"
+  },
+  {
+   "number": 1,
+   "page": 57,
+   "before": "0. To achieve this striking “bootstrap,” from an n lower bound to a superpolynomial one, Allender and Kouck´ y exploit the self-reducibility of the NC"
+  },
+  {
+   "number": 0,
+   "page": 57,
+   "before": "hold for a random function. For this reason, the proposed lower bound method has at least the potential to evade the natural proofs barrier. Indeed, it’s not even totally implausible that a natural proof could yield an n lower bound for TC"
+  },
+  {
+   "number": 0,
+   "page": 58,
+   "before": "P ̸ = NP by the relativization barrier. Meanwhile, there are combinatorial techniques (like random restrictions) that suffice to prove circuit lower bounds against AC"
+  },
+  {
+   "number": 0,
+   "page": 58,
+   "before": "= NP by the relativization barrier. Meanwhile, there are combinatorial techniques (like random restrictions) that suffice to prove circuit lower bounds against AC and AC"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "coNP ⊆ IP . Let φ ( x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "2 . Merlin’s task is equivalent to convincing Arthur of the following equation: ∑ q ( x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "q ( x , . . . , x ) = 0 . To achieve this, Merlin first sends Arthur the coefficients of a univariate polynomial q"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "q : F → F . Merlin claims that q"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "F → F . Merlin claims that q satisfies q"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "F . Merlin claims that q satisfies q ( x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "q ( x ) = ∑ q ( x"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "( x ) = ∑ q ( x , x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "x , x , . . . , x ) , (1) and also satisfies q"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": ", . . . , x ) , (1) and also satisfies q (0) + q"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "q (0) + q (1) = 0. Arthur can easily check the latter equation for himself. To check equation (1), Arthur picks a random value r"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "Arthur can easily check the latter equation for himself. To check equation (1), Arthur picks a random value r ∈ F for x"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "∈ F for x and sends it to Merlin. Then Merlin replies with a univariate polynomial q"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "for x and sends it to Merlin. Then Merlin replies with a univariate polynomial q , for which he claims that q"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "and sends it to Merlin. Then Merlin replies with a univariate polynomial q , for which he claims that q ( x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "q ( x ) = ∑ q ( r"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "( x ) = ∑ q ( r , x"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "r , x , x , . . . , x ) . Arthur checks that q"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": ", x , . . . , x ) . Arthur checks that q (0) + q"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": ") . Arthur checks that q (0) + q (1) = q"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "Arthur checks that q (0) + q (1) = q ( r"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "(0) + q (1) = q ( r ), then picks a random value r"
+  },
+  {
+   "number": 2,
+   "page": 60,
+   "before": "( r ), then picks a random value r ∈ F for x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "Merlin, and so on. Finally, Arthur checks that q is indeed the univariate polynomial obtained by starting from the arithmetization of φ , then fixing x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "Finally, Arthur checks that q is indeed the univariate polynomial obtained by starting from the arithmetization of φ , then fixing x , . . . , x"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "is indeed the univariate polynomial obtained by starting from the arithmetization of φ , then fixing x , . . . , x to r"
+  },
+  {
+   "number": 1,
+   "page": 60,
+   "before": "starting from the arithmetization of φ , then fixing x , . . . , x to r , . . . , r"
+  },
+  {
+   "number": 2,
+   "page": 62,
+   "before": ". Theorem 60 (Aaronson [4]) There exists an oracle A relative to which all languages in PP have linear-sized circuits."
+  },
+  {
+   "number": 60,
+   "page": 63,
+   "before": ", 1 } , and it must be a polynomial of low degree—say, at most 2 n . But such extensions always exist,"
+  },
+  {
+   "number": 1,
+   "page": 65,
+   "before": "3Sat was proved by Fortnow [92], who showed that no random-access machine can solve 3Sat simultaneously in n time and n"
+  },
+  {
+   "number": 2,
+   "page": 65,
+   "before": "Later, Lipton and Viglas [176] gave a different tradeoff involving a striking exponent; I’ll use their result as my running example in this section. Theorem 64 (Lipton-Viglas [176]) No random-access machine can solve 3Sat simultaneously in n"
+  },
+  {
+   "number": 2,
+   "page": 65,
+   "before": "-bit 3Sat instance itself in a read-only memory, and we also get n bits of read/write memory to use as we wish."
+  },
+  {
+   "number": 0,
+   "page": 66,
+   "before": "or other natural problems in P . This makes Theorem 64 fundamentally different from (say) the Parity / ∈ AC"
+  },
+  {
+   "number": 2,
+   "page": 66,
+   "before": "Then Theorem 64 can be stated more succinctly as 3Sat / ∈ DTISP ( n"
+  },
+  {
+   "number": 2,
+   "page": 66,
+   "before": "( n ) ̸ ⊂ DTISP ( n"
+  },
+  {
+   "number": 1,
+   "page": 66,
+   "before": "T steps and uses S bits of memory. Then we can “chop the computation up” into k blocks, B"
+  },
+  {
+   "number": 0,
+   "page": 66,
+   "before": "T /k steps each. The statement that the computation accepts is then equivalent to the statement that there exist S -bit strings x"
+  },
+  {
+   "number": 0,
+   "page": 66,
+   "before": "there exist S -bit strings x , . . . , x , such that (i) x"
+  },
+  {
+   "number": 1,
+   "page": 66,
+   "before": "for all i ∈ { 1 , . . . , k } , the result of starting in state x"
+  },
+  {
+   "number": 1,
+   "page": 66,
+   "before": "T k ) , where the Σ means that we have two alternating quantifiers: an existential quantifier over x"
+  },
+  {
+   "number": 2,
+   "page": 67,
+   "before": ". So putting everything together, if we consider a constant c > 1, and use padding (as in Proposi- tion 17) to talk about NTIME ( n"
+  },
+  {
+   "number": 2,
+   "page": 67,
+   "before": "is solvable in n time and n space implies that NTIME ( n"
+  },
+  {
+   "number": 2,
+   "page": 67,
+   "before": "NTIME ( n ) ⊆ DTISP ( n"
+  },
+  {
+   "number": 2,
+   "page": 67,
+   "before": "TIME ( n ) ⊆ NTIME ( n"
+  },
+  {
+   "number": 2,
+   "page": 67,
+   "before": "⊆ NTIME ( n ) . But if c"
+  },
+  {
+   "number": 2,
+   "page": 67,
+   "before": "< 2, then this contradicts the Nondeterministic Time Hierarchy Theorem (Theorem 38). This completes the proof of Theorem 64. Notice that the starting hypothesis about 3Sat was applied not once but twice, which was how the final running time became n"
+  },
+  {
+   "number": 2,
+   "page": 68,
+   "before": "classes like TIME ( n ) and DTISP ( n"
+  },
+  {
+   "number": 0,
+   "page": 68,
+   "before": "6.4.2 NEXP ̸ ⊂ ACC In Section 6.2.4, we saw how Smolensky [243] and Razborov [221] proved strong lower bounds against the class AC"
+  },
+  {
+   "number": 0,
+   "page": 68,
+   "before": "p ], or constant-depth, polynomial-size circuits of AND, OR, NOT, and MOD p gates, where p is prime. This left the frontier of circuit lower bounds as AC"
+  },
+  {
+   "number": 0,
+   "page": 68,
+   "before": "poly using algebrizing tech- niques. Indeed, it remains open even to prove NEXP ̸ ⊂ TC"
+  },
+  {
+   "number": 0,
+   "page": 68,
+   "before": "̸ ⊂ ACC ), where ACC is the union of AC"
+  },
+  {
+   "number": 1,
+   "page": 68,
+   "before": "we were before. The proof of Theorem 66 was noteworthy not only because it defeats all the known barriers (relativization, algebrization, and natural proofs), but also because it brings to- gether almost all known techniques in Boolean circuit lower bounds, including diagonalization, the polynomial method, interactive proof results, and ironic complexity theory. So it’s worth at least"
+  },
+  {
+   "number": 2,
+   "page": 68,
+   "before": "we were before. The proof of Theorem 66 was noteworthy not only because it defeats all the known barriers (relativization, algebrization, and natural proofs), but also because it brings to- gether almost all known techniques in Boolean circuit lower bounds, including diagonalization, the polynomial method, interactive proof results, and ironic complexity theory. So it’s worth at least"
+  },
+  {
+   "number": 0,
+   "page": 69,
+   "before": "} → { 0 , 1 } be computable by an AC"
+  },
+  {
+   "number": 0,
+   "page": 69,
+   "before": "depends on both d and m .) The proof of Lemma 68 uses some elementary number theory, and is closely related to the polynomial method from Section 6.2.4, by which one shows that any AC"
+  },
+  {
+   "number": 66,
+   "page": 69,
+   "before": "polynomial method from Section 6.2.4, by which one shows that any AC [ p ] function can be ap- proximated by a low-degree polynomial over the finite field F ."
+  },
+  {
+   "number": 0,
+   "page": 70,
+   "before": ", and the problem is to decide whether or not φ is satisfiable. Indeed, we prove something stronger: the circuit C can be taken to be an AC"
+  },
+  {
+   "number": 0,
+   "page": 70,
+   "before": "ACC : roughly speaking, if NEXP ⊂ ACC , then a satisfying assignment for an AC"
+  },
+  {
+   "number": 0,
+   "page": 70,
+   "before": "( ) time. (4) Putting everything together, we get that NTIME (2 ) machines can be reduced to AC"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "̸ ⊂ C for larger and larger circuit classes C . For example, let TC"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "C . For example, let TC Sat be the problem where we’re given as input a TC"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "such that C ( x ) = 1. Then if we could solve TC"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "time for some positive k — Williams’s results would immediately imply NEXP ̸ ⊂ TC"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "/ poly . Admittedly, one might be skeptical that faster-than-brute-force algorithms should even exist for problems like TC"
+  },
+  {
+   "number": 2,
+   "page": 71,
+   "before": "} → { 0 , 1 } has no satisfying assignments or at least 2"
+  },
+  {
+   "number": 70,
+   "page": 71,
+   "before": "Then NEXP ̸ ⊂ P / poly ."
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "̸ ⊂ P / poly . Likewise, if such an algorithm exists for TC"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": ". Likewise, if such an algorithm exists for TC circuits, then NEXP ̸ ⊂ TC"
+  },
+  {
+   "number": 2,
+   "page": 71,
+   "before": "P ̸ = NP —implying that the classic O ( n"
+  },
+  {
+   "number": 2,
+   "page": 71,
+   "before": "is nearly optimal. But there’s a different way to interpret the same connection: namely, if Ed- itDistance were solvable in less than ∼ n"
+  },
+  {
+   "number": 2,
+   "page": 71,
+   "before": "But there’s a different way to interpret the same connection: namely, if Ed- itDistance were solvable in less than ∼ n time, then various satisfiability problems would be"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "But there’s a different way to interpret the same connection: namely, if Ed- itDistance were solvable in less than ∼ n time, then various satisfiability problems would be"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "But there’s a different way to interpret the same connection: namely, if Ed- itDistance were solvable in less than ∼ n time, then various satisfiability problems would be"
+  },
+  {
+   "number": 0,
+   "page": 71,
+   "before": "But there’s a different way to interpret the same connection: namely, if Ed- itDistance were solvable in less than ∼ n time, then various satisfiability problems would be"
+  },
+  {
+   "number": 2,
+   "page": 72,
+   "before": "theorem, which they describe in slogan form as “a polylog shaved is a lower bound made”: Theorem 70 (Abboud et al. [11]) Suppose that EditDistance is solvable in O ( n"
+  },
+  {
+   "number": 1,
+   "page": 72,
+   "before": "time, for every constant c . Then NEXP ̸ ⊂ NC"
+  },
+  {
+   "number": 0,
+   "page": 72,
+   "before": "̸ = NP , or even (say) NEXP ̸ ⊂ TC"
+  },
+  {
+   "number": 1,
+   "page": 72,
+   "before": ". Namely, we can consider computer programs that operate directly on elements of a field, such as the reals or complex numbers. Perhaps the easiest way to do this is via arithmetic circuits , which take as input a collection of elements x"
+  },
+  {
+   "number": 71,
+   "page": 72,
+   "before": "the easiest way to do this is via arithmetic circuits , which take as input a collection of elements x , . . . , x of a field F ,"
+  },
+  {
+   "number": 2,
+   "page": 73,
+   "before": "to simulate NOT, multiplication to simulate Boolean AND, and so on. But for arbitrary inputs, such a simulation might be impossible. Thus, arithmetic circuits represent a different kind of computation: or rather, a generalization of the usual kind, since we can recover ordinary Boolean computation by setting F = F"
+  },
+  {
+   "number": 73,
+   "page": 73,
+   "before": "implies NP ⊂ P / poly (see for example B¨ urgisser [63, Chapter 8])."
+  },
+  {
+   "number": 2,
+   "page": 73,
+   "before": "τ (2) = 1 via 1 + 1, • τ (3) = 2 via 1 + 1 + 1, • τ (4) = 2 via (1 + 1)"
+  },
+  {
+   "number": 2,
+   "page": 73,
+   "before": "n ) be the minimum of τ ( kn ) over all positive integers k ."
+  },
+  {
+   "number": 2,
+   "page": 74,
+   "before": "P = P . In the arithmetic model, Kaltofen and Villard [141] constructed circuits of size O ( n"
+  },
+  {
+   "number": 2,
+   "page": 74,
+   "before": "X ) requires size super- polynomial in n , over any field of characteristic other than 2 ."
+  },
+  {
+   "number": 78,
+   "page": 75,
+   "before": "poly , and hence NP ⊂ P / poly ."
+  },
+  {
+   "number": 2,
+   "page": 75,
+   "before": "and Ressayre [182] in 2004, following a long sequence of linear lower bounds: Theorem 74 (Mignon and Ressayre [182]) D ( n ) ≥ n"
+  },
+  {
+   "number": 0,
+   "page": 75,
+   "before": "of a polynomial p : F → F , or the matrix of second partial derivatives, evaluated at some particular point X"
+  },
+  {
+   "number": 0,
+   "page": 75,
+   "before": ", or the matrix of second partial derivatives, evaluated at some particular point X ∈ F : H ( X"
+  },
+  {
+   "number": 0,
+   "page": 75,
+   "before": "X ) :=     ( X"
+  },
+  {
+   "number": 0,
+   "page": 75,
+   "before": "  ( X ) · · · ( X"
+  },
+  {
+   "number": 2,
+   "page": 75,
+   "before": ". . . . . . . ."
+  },
+  {
+   "number": 1,
+   "page": 76,
+   "before": "is a finite field, we can still symboli- cally differentiate a polynomial over F , to produce new polynomials over smaller sets of variables. In general, when we’re trying to lower-bound the difficulty of computing a polynomial p , a com- mon technique in arithmetic complexity is to look at various partial derivatives"
+  },
+  {
+   "number": 2,
+   "page": 76,
+   "before": "is the permanent, of an n × n matrix of N = n"
+  },
+  {
+   "number": 0,
+   "page": 76,
+   "before": "× n matrix of N = n indeterminates, then there exists a point X"
+  },
+  {
+   "number": 0,
+   "page": 76,
+   "before": "indeterminates, then there exists a point X ∈ F such that rank ( H ( X"
+  },
+  {
+   "number": 2,
+   "page": 76,
+   "before": "m for every X . Combining these, we get m ≥ n"
+  },
+  {
+   "number": 2,
+   "page": 76,
+   "before": "For recall that the n × n determinant has an arithmetic circuit of size O ( n"
+  },
+  {
+   "number": 0,
+   "page": 77,
+   "before": "X ) requires size 2 . As another example, just as computer scientists considered constant-depth Boolean circuits (the classes AC"
+  },
+  {
+   "number": 0,
+   "page": 77,
+   "before": ". As another example, just as computer scientists considered constant-depth Boolean circuits (the classes AC , ACC , TC"
+  },
+  {
+   "number": 4,
+   "page": 77,
+   "before": "circuit for Det ( X ) requires size Ω ( n"
+  },
+  {
+   "number": 2,
+   "page": 77,
+   "before": "Ω ( n / log n ) ."
+  },
+  {
+   "number": 2,
+   "page": 77,
+   "before": "Ω ( n / log n ) ."
+  },
+  {
+   "number": 4,
+   "page": 77,
+   "before": "Ω ( n / log n ) ."
+  },
+  {
+   "number": 0,
+   "page": 78,
+   "before": "X ) requires arithmetic circuits of super- polynomial size, and Valiant’s Conjecture 72 holds. In some sense, Theorem 82 does for arithmetic circuit complexity what Theorem 52 did for Boolean circuit complexity. Recall that Theorem 52 constructed AC"
+  },
+  {
+   "number": 0,
+   "page": 78,
+   "before": "for any language in NLOGSPACE and any constant ε > 0, thereby showing that strong enough size lower bounds for AC"
+  },
+  {
+   "number": 80,
+   "page": 78,
+   "before": "bounds for AC circuits would entail a breakthrough in separating complexity classes. Arguably, though, Theorem 82 is even more surprising, because it reaches a similar conclusion while talking only about a fixed depth (in this case, depth 4), rather than about arbitrary constant depths."
+  },
+  {
+   "number": 83,
+   "page": 80,
+   "before": ") or Det ( X ) requires size n ."
+  },
+  {
+   "number": 1,
+   "page": 80,
+   "before": "Then basically, we randomly partition p ’s input variables into two small sets X = { x"
+  },
+  {
+   "number": 1,
+   "page": 80,
+   "before": "x , . . . , x } and Y = { y"
+  },
+  {
+   "number": 1,
+   "page": 80,
+   "before": "2 k . (Here we should imagine, say, k = n"
+  },
+  {
+   "number": 2,
+   "page": 80,
+   "before": "X and Y unfixed. Next, we define a matrix M ∈ R"
+  },
+  {
+   "number": 2,
+   "page": 80,
+   "before": "X and Y unfixed. Next, we define a matrix M ∈ R"
+  },
+  {
+   "number": 1,
+   "page": 80,
+   "before": "f elusive if f is not contained in the image of any polynomial mapping g : C"
+  },
+  {
+   "number": 2,
+   "page": 81,
+   "before": "ℓmn ) . Note that, if we had asked about complex zeroes, then Theorem 87 would badly fail, because of counterexamples such as x"
+  },
+  {
+   "number": 84,
+   "page": 81,
+   "before": ", which can’t be so distinguished from random functions, and whose existence is therefore incompatible with the existence of A . In the arithmetic setting, presumably we’d call a proof natural if it yields a polynomial-time algorithm"
+  },
+  {
+   "number": 2,
+   "page": 83,
+   "before": "n . My candidate was simply this: motivated by Valiant’s result [261] that the determinant can express any arithmetic formula (Theorem 75), take the random seed s to encode d"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": "1 , . . . , d } . Then set p ( x"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": "( x , . . . , x ) := Det    L"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": "( x , . . . , x ) := Det    L"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": ", . . . , x ) := Det    L ( x"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": " L ( x , . . . , x ) · · · L"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": "( x , . . . , x ) · · · L ( x"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": ". . . . . . . L"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": ". . . . . L ( x"
+  },
+  {
+   "number": 1,
+   "page": 83,
+   "before": "( x , . . . , x ) · · · L ( x"
+  },
+  {
+   "number": 1,
+   "page": 85,
+   "before": "P , but the known algorithms are inherently serial, and it remains open whether they can be parallelized. More concretely, is MaxFlow in NC"
+  },
+  {
+   "number": 1,
+   "page": 85,
+   "before": "NC , or some other small-depth circuit class? Note that any proof of MaxFlow / ∈ NC"
+  },
+  {
+   "number": 1,
+   "page": 85,
+   "before": "Note that any proof of MaxFlow / ∈ NC would imply the spectacular separation NC"
+  },
+  {
+   "number": 2,
+   "page": 85,
+   "before": "n ) . Moreover, this holds even if the capacities are restricted to be O ( n"
+  },
+  {
+   "number": 1,
+   "page": 85,
+   "before": "second part of the argument would work just as well for a random problem. Since polynomial degree is efficiently computable, this means that we get a natural proof in the Razborov-Rudich sense (Section 6.2.5). So the same technique can’t possibly work to prove NC"
+  },
+  {
+   "number": 2,
+   "page": 86,
+   "before": "in the usual complex topology. It contains all the points that can be arbitrarily well approximated by points in Gv . To be more concrete, let G = GL"
+  },
+  {
+   "number": 2,
+   "page": 86,
+   "before": ". To be more concrete, let G = GL ( C ) be the general linear group: the group of all invertible m"
+  },
+  {
+   "number": 2,
+   "page": 86,
+   "before": "G = GL ( C ) be the general linear group: the group of all invertible m × m"
+  },
+  {
+   "number": 2,
+   "page": 86,
+   "before": "complex matrices. Also, let V be the vector space of all homogeneous degree- m complex polynomials over m"
+  },
+  {
+   "number": 1,
+   "page": 86,
+   "before": "V be the vector space of all homogeneous degree- m complex polynomials over m variables; the variables are labeled x"
+  },
+  {
+   "number": 1,
+   "page": 86,
+   "before": "V be the vector space of all homogeneous degree- m complex polynomials over m variables; the variables are labeled x"
+  },
+  {
+   "number": 90,
+   "page": 88,
+   "before": "answer to the question of how it could overcome the natural proofs barrier. For notice that, if we picked a degree- m homogeneous polynomial at random, it almost certainly wouldn’t be uniquely characterized by its symmetries, as the permanent and determinant are."
+  },
+  {
+   "number": 2,
+   "page": 88,
+   "before": "= ( ) is the dimension of the vector space of homogeneous degree- m polynomials over m"
+  },
+  {
+   "number": 2,
+   "page": 89,
+   "before": "be one of these “big” polynomials, whose inputs are the coefficients of a “small” polynomial p (such as the permanent or determinant). Then we can define an action of the general linear group, G = GL"
+  },
+  {
+   "number": 95,
+   "page": 91,
+   "before": "The short answer is that Mulmuley and Sohoni [197] defined an NP function called E , as well as a P -complete"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "= NP should be “even harder” than proving Valiant’s Conjecture. For illustration, let me now define Mulmuley and Sohoni’s E function. Let X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "should be “even harder” than proving Valiant’s Conjecture. For illustration, let me now define Mulmuley and Sohoni’s E function. Let X and X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "n matrices over the finite field F . Also, given a binary string s = s"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "be the n × n matrix obtained by choosing the i column from X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "matrix obtained by choosing the i column from X if s = 0 or from X"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "1 , . . . , n } . We then set F ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": ", . . . , n } . We then set F ( X , X"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "Det ( X ) , and finally set E ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "X ) , and finally set E ( X , X"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "( X , X ) := 1 − F ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "X , X ) := 1 − F ( X , X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": ", X ) := 1 − F ( X , X )"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": ", 1 } . Testing whether E ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "1 } . Testing whether E ( X , X"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": ") = 0. Furthermore, Gurvits [120] showed that, at least over Z , testing whether F ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "Furthermore, Gurvits [120] showed that, at least over Z , testing whether F ( X , X"
+  },
+  {
+   "number": 2,
+   "page": 91,
+   "before": "(or rather F ) is the following: Theorem 93 (see Grochow [114, Proposition 3.4.6]) Let p : F"
+  },
+  {
+   "number": 2,
+   "page": 91,
+   "before": "(or rather F ) is the following: Theorem 93 (see Grochow [114, Proposition 3.4.6]) Let p : F"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "→ F be any homogeneous, degree- n 2 polynomial in the entries of X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "be any homogeneous, degree- n 2 polynomial in the entries of X and X"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "2 polynomial in the entries of X and X that’s divisible by Det ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "X and X that’s divisible by Det ( X ) Det ( X"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "F is also a linear symmetry of p . Then p ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "is also a linear symmetry of p . Then p ( X , X"
+  },
+  {
+   "number": 0,
+   "page": 91,
+   "before": "p ( X , X ) = αF ( X"
+  },
+  {
+   "number": 1,
+   "page": 91,
+   "before": "( X , X ) = αF ( X , X"
+  },
+  {
+   "number": 96,
+   "page": 92,
+   "before": "C ( X ) ̸ = Per ( X )."
+  },
+  {
+   "number": 2,
+   "page": 93,
+   "before": "Theorem 94 (Kayal [147]) Let n = d"
+  },
+  {
+   "number": 1,
+   "page": 93,
+   "before": "is a d × d matrix of affine forms in the variables X = ( x"
+  },
+  {
+   "number": 97,
+   "page": 93,
+   "before": "such that A can be written as the limit of rank- r tensors. It’s known that border rank can be strictly less than rank."
+  },
+  {
+   "number": 2,
+   "page": 93,
+   "before": "matrix multiplication tensor , say over C , is defined to be the 3- dimensional tensor M ∈ C"
+  },
+  {
+   "number": 2,
+   "page": 93,
+   "before": "matrix multiplication tensor , say over C , is defined to be the 3- dimensional tensor M ∈ C"
+  },
+  {
+   "number": 2,
+   "page": 93,
+   "before": "matrix multiplication tensor , say over C , is defined to be the 3- dimensional tensor M ∈ C"
+  },
+  {
+   "number": 2,
+   "page": 93,
+   "before": "matrix multiplication. Bini [48] showed, moreover, that the exponent ω of matrix multiplication is the same if calculated using rank or border rank—so in that sense, the two are asymptotically equal. In a tour-de-force, in 2004 Landsberg [161] proved that the border rank of M"
+  },
+  {
+   "number": 2,
+   "page": 94,
+   "before": "yield representation-theoretic embedding obstructions. Theorem 96 (B¨ urgisser and Ikenmeyer [67]) There are representation-theoretic (GCT) oc- currence obstructions that witness that the border rank of M is at least"
+  },
+  {
+   "number": 2,
+   "page": 94,
+   "before": "representation-theoretic embedding obstructions. Theorem 96 (B¨ urgisser and Ikenmeyer [67]) There are representation-theoretic (GCT) oc- currence obstructions that witness that the border rank of M is at least n"
+  },
+  {
+   "number": 2,
+   "page": 94,
+   "before": "By comparison, the state-of-the-art lower bound on the border rank of matrix multiplication— but without multiplicity or occurrence obstructions—is the following. Theorem 97 (Landsberg and Ottaviani [164]) The border rank of M is at least 2 n"
+  },
+  {
+   "number": 2,
+   "page": 94,
+   "before": "n − n . Since both lower bounds are still quadratic, neither of them shows that matrix multiplication requires more than ∼ n"
+  },
+  {
+   "number": 0,
+   "page": 94,
+   "before": "n time, but it’s interesting to see what bound one can currently achieve when one insists on GCT obstructions, compared to when one doesn’t insist on them. Meanwhile, in a 2014 paper, Grochow [115] has convincingly argued that most known circuit lower bounds (though not all of them) can be put into a “broadly GCT-like” format. In particular, the AC"
+  },
+  {
+   "number": 0,
+   "page": 94,
+   "before": "when one insists on GCT obstructions, compared to when one doesn’t insist on them. Meanwhile, in a 2014 paper, Grochow [115] has convincingly argued that most known circuit lower bounds (though not all of them) can be put into a “broadly GCT-like” format. In particular, the AC and AC"
+  },
+  {
+   "number": 0,
+   "page": 94,
+   "before": "̸ = EXP but can’t even prove NEXP ̸ ⊂ TC"
+  },
+  {
+   "number": 0,
+   "page": 94,
+   "before": "EXP but can’t even prove NEXP ̸ ⊂ TC (where TC"
+  },
+  {
+   "number": 2,
+   "page": 94,
+   "before": "TC means the nonuniform class), it seems conceivable that uniformity could help in proving P ̸ = NP ."
+  },
+  {
+   "number": 2,
+   "page": 94,
+   "before": "TC means the nonuniform class), it seems conceivable that uniformity could help in proving P ̸ = NP ."
+  },
+  {
+   "number": 1,
+   "page": 97,
+   "before": "χ ⊆ χ anyway. The above would seem to motivate an investigation of which functions in P (or NC"
+  },
+  {
+   "number": 1,
+   "page": 98,
+   "before": "n ). Then for every n and k , there’s a list of matrices A"
+  },
+  {
+   "number": 1,
+   "page": 98,
+   "before": "̸ = Per ( A ) . Indeed, a random list A"
+  },
+  {
+   "number": 1,
+   "page": 98,
+   "before": "o (1) probability. Furthermore, if polynomial identity testing has a black-box derandomization, then such a list can be found in deterministic n time."
+  },
+  {
+   "number": 1,
+   "page": 99,
+   "before": "The obstructions of Theorems 98 and 99 aren’t representation-theoretic; they’re simply lists of hard instances. Furthermore, a list like φ , . . . , φ or A"
+  },
+  {
+   "number": 0,
+   "page": 100,
+   "before": "breakthroughs should we seek next? What’s on the current horizon? There are hundreds of possible answers to that question—we’ve already encountered some in this survey—but if I had to highlight a few: • Prove lower bounds against nonuniform TC"
+  },
+  {
+   "number": 2,
+   "page": 100,
+   "before": "Prove lower bounds against nonuniform TC —for example, by finding a better-than-brute- force deterministic algorithm to estimate the probability that a neural network accepts a random input (cf. Theorem 69). • Prove a lower bound better than n"
+  },
+  {
+   "number": 106,
+   "page": 100,
+   "before": "into some equivalent circuit C , via moves that each swap out a size- O (1) subcircuit for a different size- O (1) subcircuit with identical input/output behavior."
+  },
+  {
+   "number": 0,
+   "page": 100,
+   "before": "into some equivalent circuit C , via moves that each swap out a size- O (1) subcircuit for a different size- O (1) subcircuit with identical input/output behavior."
+  },
+  {
+   "number": 0,
+   "page": 100,
+   "before": "into some equivalent circuit C , via moves that each swap out a size- O (1) subcircuit for a different size- O (1) subcircuit with identical input/output behavior."
+  },
+  {
+   "number": 2,
+   "page": 101,
+   "before": "n ), the determinantal complexity of the n × n permanent, better than Mignon and Ressayre’s n"
+  },
+  {
+   "number": 0,
+   "page": 103,
+   "before": "Computer Science in Russia , pages 3–10, 2008. [22] E. Allender. A status report on the P versus NP question. Advances in Computers , 77:117– 147, 2009. [23] E. Allender and V. Gore. On strong separations from AC"
+  },
+  {
+   "number": 0,
+   "page": 104,
+   "before": "[25] E. Allender, L. Hellerstein, P. McCabe, T. Pitassi, and M. Saks. Minimizing disjunctive normal form formulas and AC"
+  },
+  {
+   "number": 0,
+   "page": 106,
+   "before": "[58] M. Braverman. Poly-logarithmic independence fools AC"
+  },
+  {
+   "number": 2,
+   "page": 112,
+   "before": "[162] J. M. Landsberg. Geometric complexity theory: an introduction for geometers. Annali dell’Universita di Ferrara , 61(1):65–117, 2015. arXiv:1305.7387. [163] J. M. Landsberg and M. Michalek. A 2 n"
+  },
+  {
+   "number": 0,
+   "page": 119,
+   "before": ", the second level of the polynomial hierarchy (with universal quantifier in front). See Section 2.2.3. Σ : NP , the second level of the polynomial hierarchy (with existential quantifier in front). See Section 2.2.3. AC"
+  },
+  {
+   "number": 0,
+   "page": 119,
+   "before": "NP , the second level of the polynomial hierarchy (with existential quantifier in front). See Section 2.2.3. AC : The class decidable by a nonuniform family of polynomial-size, constant-depth, unbounded- fanin circuits of AND, OR, and NOT gates. See Section 6.2.3. AC"
+  },
+  {
+   "number": 0,
+   "page": 119,
+   "before": ": The class decidable by a nonuniform family of polynomial-size, constant-depth, unbounded- fanin circuits of AND, OR, and NOT gates. See Section 6.2.3. AC [ m ]: AC"
+  },
+  {
+   "number": 0,
+   "page": 119,
+   "before": "(the case of m a prime power versus a non-prime-power are dramatically different). See Section 6.2.4. ACC : AC"
+  },
+  {
+   "number": 1,
+   "page": 120,
+   "before": ". BPP . P / poly . NC"
+  },
+  {
+   "number": 0,
+   "page": 120,
+   "before": ". P / poly . NC . TC"
+  },
+  {
+   "number": 0,
+   "page": 120,
+   "before": ". NC . TC . ACC . AC"
+  },
+  {
+   "number": 0,
+   "page": 120,
+   "before": "ACC . AC [ p ] . AC"
+  },
+  {
+   "number": 1,
+   "page": 121,
+   "before": "The exponential-time analogue of MA , where now Merlin’s proof can be 2 bits long, and Arthur’s probabilistic verification can also take 2 time. See Section 6.3.2. NC"
+  },
+  {
+   "number": 0,
+   "page": 122,
+   "before": "TC"
+  },
+  {
+   "number": 0,
+   "page": 122,
+   "before": "TC : AC"
+  }
+ ]
+}

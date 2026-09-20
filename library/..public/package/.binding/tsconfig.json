@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "vite/client",
+      "node"
+    ],
+    "paths": {
+      "@dna-platform/chemistry": [
+        "./node_modules/@dna-platform/chemistry"
+      ],
+      "@dna-platform/chemistry/*": [
+        "./node_modules/@dna-platform/chemistry/*"
+      ],
+      "@dna-platform/public": [
+        "./node_modules/@dna-platform/public"
+      ],
+      "@dna-platform/public/*": [
+        "./node_modules/@dna-platform/public/dist/*"
+      ]
+    }
+  },
+  "include": [
+    "*.ts",
+    ".*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/.*.ts",
+    "**/.*.tsx",
+    "../../.book.tsx",
+    "../../*/*.tsx",
+    "../../*/.*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    ".test/.staged"
+  ]
+}

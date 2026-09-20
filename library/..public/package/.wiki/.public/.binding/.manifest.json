@@ -1,0 +1,26 @@
+{
+  "assembled": [
+    ".binding/application/books/.article.tsx",
+    ".binding/application/books/.encyclopedia.tsx",
+    ".binding/application/books/turing.tsx"
+  ],
+  "written": [
+    ".binding/application/books.ts",
+    ".binding/application/stylesheets.ts",
+    ".binding/application/routes.ts"
+  ],
+  "rendered": [
+    "wikipedia-manual-of-style-layout/index.html",
+    "index.html",
+    "alan-turing/index.html"
+  ],
+  "bundled": [
+    "assets/.article-BXcDQHor.js",
+    "assets/.book-B-D-qh51.js",
+    "assets/.book-DIioIgKe.js",
+    "assets/.encyclopedia-CEg7AInx.js",
+    "assets/index-BJ8sSai1.js",
+    "assets/index-TZrNw7dA.css",
+    "assets/turing-CM8iyyYc.js"
+  ]
+}
