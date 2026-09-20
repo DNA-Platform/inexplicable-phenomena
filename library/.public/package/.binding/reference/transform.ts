@@ -103,8 +103,14 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     // string is read as written, because that is what its element will receive.
     // `mentioning` SAYS WHETHER WHAT RECEIVES THE TEXT READS A LINK: the mention kinds do, and so
     // does whatever a string is handed to, since nothing else parses one. Everything else — a
-    // title, a paragraph — receives an annotation as its words.
-    const scan = (text: string, from: number, prose: boolean, mentioning: boolean): void => {
+    // title, a paragraph — receives an annotation as its words. AND A `Reference` ELEMENT RECEIVES
+    // THE ADDRESS ALONE, because a reference carries a path and nothing else: `<Reference>[[ Dougs
+    // Library ]]</Reference>` on a section makes the whole section the link.
+    //
+    // A FILE SHARED BY EVERY PAGE IS NEVER "HERE". The masthead is a resource of one book and is
+    // drawn on all of them; compiled once, its mention of the book it lives in keeps its address.
+    const shared = catalogue.shared(file);
+    const scan = (text: string, from: number, prose: boolean, mentioning: boolean, referencing = false): void => {
         notating.lastIndex = 0;
         for (let held = notating.exec(text); held !== null; held = notating.exec(text)) {
             const read = spelling(held, prose ? reads : one => one);
@@ -136,8 +142,9 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             // A LINK THAT LEADS WHERE YOU ALREADY ARE IS NOT A LINK — the branch settled that in
             // Sprint 73 (a23a3b9), and this is where it is decided now: a mention of the page it
             // stands on is written with no address, `[words]()`, and a reference to it is its words.
-            const here = url === catalogue.standing(file);
+            const here = !shared && url === catalogue.standing(file);
 
+            if (!reference && referencing) { declared.push(name); edits.push({ from: at, to, said: here ? '' : url }); continue; }
             if (!reference) { declared.push(name); edits.push({ from: at, to, said: mentioning ? `[${shown}](${here ? '' : url})` : shown }); continue; }
             if (here) { edits.push({ from: at, to, said: shown }); continue; }
 
@@ -147,10 +154,10 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     };
 
     const bound = origins(source);
-    const walk = (node: ts.Node, mentioning: boolean): void => {
+    const walk = (node: ts.Node, mentioning: boolean, referencing = false): void => {
         if (ts.isJsxText(node)) {
             const from = node.getStart(source);
-            scan(code.slice(from, node.end), from, true, mentioning);
+            scan(code.slice(from, node.end), from, true, mentioning, referencing);
 
             return;
         }
@@ -186,15 +193,15 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
                 declared.push(plain.name);
                 // THE WORDS ARE WRITTEN AS THE SOURCE SPELLS THEM, entities and all, so the element
                 // receives what the author typed.
-                edits.push({ from, to: text.end, said: `[${bare(raw).words}](${url === catalogue.standing(file) ? '' : url})` });
+                edits.push({ from, to: text.end, said: `[${bare(raw).words}](${!shared && url === catalogue.standing(file) ? '' : url})` });
 
                 return;
             }
-            ts.forEachChild(node, child => walk(child, mentioning || mention));
+            ts.forEachChild(node, child => walk(child, mentioning || mention, referencing || (frameworks(origin) && origin.name === 'Reference')));
 
             return;
         }
-        ts.forEachChild(node, child => walk(child, mentioning));
+        ts.forEachChild(node, child => walk(child, mentioning, referencing));
     };
     walk(source, false);
 

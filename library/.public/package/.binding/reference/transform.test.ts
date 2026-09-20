@@ -70,6 +70,22 @@ describe('a mention in a table of contents', () => {
     });
 });
 
+// A RESOURCE IS DRAWN ON EVERY PAGE THAT WEARS IT, so it is never "here" — and a Reference element
+// receives the address alone, because a reference carries a path and nothing else.
+describe('a resource shared by every page', () => {
+    const resource = join(fixture, 'the-library', '1-the-shelves.tsx.tsx');
+    const made = transforming(readFileSync(resource, 'utf8'), resource, card);
+
+    it('keeps the address of the book it lives in, even though it lives there', () => {
+        expect(made.missing).toEqual([]);
+        expect(made.text).toContain('<Book>[The Library](/the-library/)</Book>');
+    });
+
+    it('and a Reference element on a section receives the bare address, so the section is the link', () => {
+        expect(made.text).toContain('<Reference>/the-library/</Reference>');
+    });
+});
+
 describe('what the transform refuses', () => {
     it('a name the library does not hold, by file and line', () => {
         const code = `import { Ref } from '@dna-platform/public';\nexport default class C { print() { return (<Paragraph>\n  see $[ Nowhere ]\n</Paragraph>); } }`;
