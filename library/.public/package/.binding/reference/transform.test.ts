@@ -65,8 +65,8 @@ describe('a mention in a table of contents', () => {
         expect(made.text).toContain('<Book>[](/a-persona/)</Book>');
     });
 
-    it('that does not print is left as written, because it draws nothing', () => {
-        expect(made.text).toContain('<Chapter print={false}>The Log</Chapter>');
+    it('that does not print is compiled all the same, because the compiler does not read print', () => {
+        expect(made.text).toContain('<Chapter print={false}>[The Log]()</Chapter>');
     });
 });
 
@@ -90,17 +90,15 @@ describe('a resource shared by every page', () => {
 // reference reaches it as it reaches a chapter.
 describe('a mention that allocates', () => {
     const shelves = join(fixture, 'the-library', '1-the-shelves.tsx');
-    const log = join(fixture, 'the-library', '2-the-log.tsx');
+    const made = transforming(readFileSync(shelves, 'utf8'), shelves, card);
 
     it('keeps its words and plants a fold beside them', () => {
-        const made = transforming(readFileSync(shelves, 'utf8'), shelves, card);
         expect(made.missing).toEqual([]);
         expect(made.owes).toEqual([]);
         expect(made.text).toContain('<Fold>the-first-shelf</Fold>The First Shelf is the one');
     });
 
     it('and a reference to it lands on the fragment the fold planted', () => {
-        const made = transforming(readFileSync(log, 'utf8'), log, card);
         expect(made.text).toContain('<Ref>[The First Shelf](/the-library/#the-first-shelf)</Ref>');
     });
 

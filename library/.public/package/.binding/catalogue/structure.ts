@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { Book, Library } from '../inventory/library';
 import { dotChapters } from '../inventory/filenames';
 import { annotating, type Reading } from './annotations';
-import { bare, itself, key, last, name as parsed, separator, tidy, type End, type Name, type Relation } from './language';
+import { asChapter, bare, itself, key, last, name as parsed, separator, tidy, type End, type Name, type Relation } from './language';
 import { elements, type Element } from './reading';
 
 // THE LIBRARY COMPILED INTO SOMETHING THAT CAN BE CHECKED.
@@ -20,12 +20,10 @@ export type SpotId = string;
 export type Where = { file: string; line: number };
 export type { Relation };
 
-// AND WHETHER A CHAPTER PRINTS ITS TITLE, because that decides whether the page has a place for it.
-// A book always does: its cover's title is the page's heading.
 // AN ANCHOR IS A SPOT TOO: `[[[ X ]]]` — "this is named X, here" — names the writing it stands in,
 // within its book, and a reference reaches it as it reaches a chapter. `anchor` is a PROXY NAME,
 // flagged for Doug; the language calls the form a mention.
-export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter' | 'anchor'; book: SpotId; prints: boolean };
+export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter' | 'anchor'; book: SpotId };
 export type Half = { by: SpotId; end: End; at: Where };
 export type Edge = { relation: Relation; from: SpotId; to: SpotId; ends: Half[] };
 export type Naming = { spot: SpotId; at: Where };
@@ -60,6 +58,8 @@ export type Structure = {
     refused: { by: SpotId; said: string; at: Where }[];
     strays: { by: SpotId; said: string; tag: string; at: Where }[];
     untitled: { at: string; file: string }[];
+    // EVERY SPOT SOMETHING IN THE LIBRARY REFERS TO, so a name nobody spends can be refused.
+    referred: Set<SpotId>;
 };
 
 const edgeKey = (relation: Relation, from: SpotId, to: SpotId): string => `${relation}:${from}:${to}`;
@@ -101,7 +101,11 @@ const lines = (code: string): ((at: number) => number) => {
 const mentioning: Record<string, Mention['kind']> = { book: 'book', For: 'for', chapter: 'chapter' };
 const wanted = ['Title', 'Option', ...Object.keys(mentioning)];
 
-type Held = { book: Book; file: string; path: string; code: string; on: (at: number) => number; elements: Element[]; reading: Reading };
+// AND WHETHER A FILE IS A RESOURCE — code beside a chapter, shared by the pages that draw it. A
+// resource is read for what it REFERS TO and never for what it names: the masthead's reference to
+// the plate is spent from a resource, and the structure said nothing referred to the plate
+// (2026-09-20) because it read chapters alone while the transform compiled the resource fine.
+type Held = { book: Book; file: string; path: string; resource: boolean; code: string; on: (at: number) => number; elements: Element[]; reading: Reading };
 
 // WHAT A FILE SAID LAST TIME, KEPT UNTIL THE FILE CHANGES.
 //
@@ -135,11 +139,16 @@ const looked = (path: string): { code: string; on: (at: number) => number; eleme
 export const structure = (found: Library): Structure => {
     // ---- the one reading ----
     const read: Held[] = [];
-    for (const book of found.books)
+    for (const book of found.books) {
         for (const file of book.files) {
             const path = join(book.path, file);
-            read.push({ book, file, path, ...looked(path) });
+            read.push({ book, file, path, resource: false, ...looked(path) });
         }
+        for (const file of [...book.resources.values()].flat()) {
+            const path = join(book.path, file);
+            read.push({ book, file, path, resource: true, ...looked(path) });
+        }
+    }
 
     const spots = new Map<SpotId, Spot>();
     const names = new Map<string, Naming[]>();
@@ -165,13 +174,13 @@ export const structure = (found: Library): Structure => {
         const title = titled(one);
         const said = title === undefined ? '' : bare(title.says).name;
         if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
-        spots.set(one.book.folder, { id: one.book.folder, at: one.book.folder, file: one.path, kind: 'book', book: one.book.folder, prints: true });
+        spots.set(one.book.folder, { id: one.book.folder, at: one.book.folder, file: one.path, kind: 'book', book: one.book.folder });
         calls(said, one.book.folder, { file: one.path, line: one.on(title!.at) });
     }
 
     // ---- the chapters, named within their books ----
     for (const one of read) {
-        if (one.file === '.cover.tsx' || one.file === '.book.tsx') continue;
+        if (one.resource || one.file === '.cover.tsx' || one.file === '.book.tsx') continue;
         const within = named.get(one.book.folder);
         if (within === undefined) continue;
         const title = titled(one);
@@ -179,7 +188,7 @@ export const structure = (found: Library): Structure => {
         if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
         if (said === within) continue;
         const id = titles(one.book, one.file);
-        spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder, prints: title!.prints });
+        spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder });
         calls(`${within}${separator}${said}`, id, { file: one.path, line: one.on(title!.at) });
     }
 
@@ -189,13 +198,14 @@ export const structure = (found: Library): Structure => {
     // its own — a reference `$[ ./X ]` reaches it exactly as it reaches a chapter, and a name that
     // answers twice in one book is what `wellformed` refuses.
     for (const one of read) {
+        if (one.resource) continue;
         const within = named.get(one.book.folder);
         if (within === undefined) continue;
         const by = speaks(one.book, one.file);
         for (const said of one.reading.annotations) {
             if (said.form.is !== 'mention' || said.name.of !== 'book' || said.name.book === '') continue;
             const id = `${by}#${said.name.book}`;
-            spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'anchor', book: one.book.folder, prints: true });
+            spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'anchor', book: one.book.folder });
             calls(`${within}${separator}${said.name.book}`, id, { file: one.path, line: said.line });
         }
     }
@@ -243,10 +253,28 @@ export const structure = (found: Library): Structure => {
             if (kind === undefined || held.says === '') continue;
             const plain = bare(held.says).name;
             if (plain === '') continue;
-            const said = kind === 'chapter' ? `./${plain}` : plain;
+            const said = kind === 'chapter' ? asChapter(plain) : plain;
             mentions.push({ by, book: one.book.folder, name: parsed(said), said, kind, at: { file: one.path, line: one.on(held.at) } });
         }
     }
+
+    // ---- what is referred to, from anywhere in the library ----
+    //
+    // Doug, 2026-09-20: "it should also refuse when nothing references a mention in the whole
+    // library. It is unnecessary in that case and we want a compact library." So the structure says
+    // which spots anything refers to — a reference in prose, a mention written as an element, or a
+    // title written `[[ X ]]` inside a Reference — and `wellformed` refuses a name nobody spends.
+    const referred = new Set<SpotId>();
+    for (const one of mentions) {
+        const spot = reaches(one.name, one.book);
+        if (spot !== undefined) referred.add(spot);
+    }
+    for (const one of read)
+        for (const said of one.reading.annotations) {
+            if (said.form.is !== 'title') continue;
+            const spot = reaches(said.name, one.book.folder);
+            if (spot !== undefined) referred.add(spot);
+        }
 
     // ---- the relations, each shaped by the check it answers ----
     //
@@ -269,31 +297,42 @@ export const structure = (found: Library): Structure => {
     // CANONICAL listing only when it carries `**`. That distinction is needed because the library's
     // table lists every book for a reader to reach, including ones it does not catalogue directly.
     //
-    // AND A SYNOPSIS IS A CHAPTER NAMED BESIDE ITS LISTING. An `<Option>` is the row a listing
-    // stands in, and the chapter that is a book's synopsis stands in THAT row — Doug, 2026-09-19:
-    // "the table needs links to its chapters and the books that those chapters are synopses of."
-    // An earlier writing tested the whole table for a word and called every listing in it
-    // synopsised, which is a slug's fault in another costume: an answer that is always yes.
+    // AND THE ROW THAT LISTS A BOOK NAMES THAT BOOK'S OWN SYNOPSIS. An `<Option>` is the row a
+    // listing stands in; the chapter mention beside the book in that row names the listed book's
+    // `.synopsis.tsx` chapter, and the box leads to the book — Doug, 2026-09-19: "the table needs
+    // links to its chapters and the books that those chapters are synopses of"; 2026-09-20: "In the
+    // book. It has a .synopsis file literally." A chapter of another book named in a row is that
+    // pointer and never a listing of this book's own. An earlier writing tested the whole table for
+    // a word and called every listing in it synopsised, which is a slug's fault in another costume:
+    // an answer that is always yes.
     const lists = new Map<SpotId, Map<SpotId, Listing>>();
     for (const one of read) {
         if (one.file !== '.table.tsx') continue;
         const rows = one.elements.filter(held => held.tag === 'Option');
         const chapters = one.elements.filter(held => held.tag === 'chapter');
-        const beside = (at: number): boolean => rows.some(row => at >= row.at && at < row.to && chapters.some(held => held.at >= row.at && held.at < row.to));
+        const namedBeside = (at: number): SpotId[] => {
+            const row = rows.find(held => at >= held.at && at < held.to);
+            if (row === undefined) return [];
+
+            return chapters.filter(held => held.at >= row.at && held.at < row.to)
+                .map(held => reaches(parsed(asChapter(bare(held.says).name)), one.book.folder))
+                .filter((spot): spot is SpotId => spot !== undefined);
+        };
         const held = new Map<SpotId, Listing>();
         for (const element of one.elements) {
             if (element.tag !== 'chapter' && element.tag !== 'book') continue;
             if (element.says === '') continue;
             const plain = bare(element.says);
-            const said = parsed(element.tag === 'chapter' ? `./${plain.name}` : plain.name);
+            const said = parsed(element.tag === 'chapter' ? asChapter(plain.name) : plain.name);
             const spot = reaches(said, one.book.folder);
             if (spot === undefined) { strays.push({ by: one.book.folder, said: plain.name, tag: element.tag, at: { file: one.path, line: one.on(element.at) } }); continue; }
             if (spot === one.book.folder) continue;
+            if (element.tag === 'chapter' && spots.get(spot)?.book !== one.book.folder) continue;
             held.set(spot, {
                 of: spot,
                 kind: element.tag === 'chapter' ? 'chapter' : 'book',
                 canonical: plain.stars === '**',
-                synopsis: beside(element.at),
+                synopsis: namedBeside(element.at).includes(`${spot}/.synopsis.tsx`),
                 at: { file: one.path, line: one.on(element.at) },
             });
         }
@@ -321,5 +360,5 @@ export const structure = (found: Library): Structure => {
         }
     }
 
-    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, strays, untitled };
+    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, strays, untitled, referred };
 };

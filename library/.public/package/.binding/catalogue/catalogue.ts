@@ -77,11 +77,12 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // contents already links `#the-sheet`. The catalogue writes the same id with the same function,
     // so the address it hands out is the one the page already answers to.
     //
-    // AND A CHAPTER WHOSE TITLE DOES NOT PRINT IS ADDRESSED AS ITS BOOK'S PAGE. The page draws no
-    // heading for it and so no id, and the proof found the fragment leading nowhere. Doug,
-    // 2026-09-19: "Shouldn't it just be the url? That solves the cover problem." A synopsis, a
-    // table of contents, a lead with `print={false}` — a reference to any of them lands on the
-    // page it is part of, which is where it is.
+    // AND EVERY CHAPTER IS ADDRESSED BY ITS FRAGMENT, whether or not its title prints. A chapter
+    // whose title did not print was briefly addressed as its book's page, because the page drew no
+    // heading and so no id for it — which had the compiler reading `print={false}` off a tag. Doug,
+    // 2026-09-20: "if you are parsing like that, you have broken polymorphism… The compiler just
+    // cares that things are in the right file." The chapter's own element wears its id now, and the
+    // proof reads the page to see that it does.
     //
     // A CHAPTER IS NAMED WITHIN ITS BOOK AND NOWHERE ELSE, so `Dougs Library > The Sheet` is the
     // WHOLE key and there is no bare one beside it.
@@ -108,7 +109,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         for (const spot of structure.spots.values()) {
             if (spot.kind === 'book' || spot.book !== route.folder) continue;
             const chapter = structure.named.get(spot.id);
-            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, spot.prints ? `${book}#${reflection.slug(chapter)}` : book);
+            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, `${book}#${reflection.slug(chapter)}`);
         }
     }
 

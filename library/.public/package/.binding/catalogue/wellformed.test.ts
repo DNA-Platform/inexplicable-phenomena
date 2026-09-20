@@ -21,7 +21,7 @@ import { faults, wellformed } from './wellformed';
 // silently green, because the structure found no books and every check passed over nothing. A
 // fixture that does not speak the real language tests a reader nobody ships.
 
-type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean; synopsised?: boolean; anchors?: string[] };
+type Made = { folder: string; name: string; author: string; catalogue?: string; topics?: string[]; holds?: string[]; lists?: string[]; silent?: boolean; synopsised?: boolean; anchors?: string[]; chapters?: string[] };
 
 const where = mkdtempSync(join(tmpdir(), 'binder-wellformed-'));
 let made = 0;
@@ -50,20 +50,20 @@ const built = (books: Made[]): Library => {
             one.silent === true ? '<Synopsis>What this is.</Synopsis>' : `<Synopsis><For>${one.name}</For>What this is.</Synopsis>`,
             ...(one.anchors ?? []).map(anchor => `[[[ ${anchor} ]]] stands here.`),
         ]));
-        // A BOOK THIS ONE CATALOGUES, OR HOLDS AS A TOPIC, HAS A SYNOPSIS CHAPTER HERE, and the row
-        // that lists the book names it — Doug, 2026-09-19: "the table needs links to its chapters
-        // and the books that those chapters are synopses of."
-        const synopses = one.synopsised === false ? [] : (one.holds ?? []).filter(held_ => /\*\*$/u.test(held_)).map(held_ => /\[\[\s*(.*?)\s*\]\]/u.exec(held_)?.[1] ?? held_);
+        // A ROW THAT CATALOGUES A BOOK NAMES THAT BOOK'S OWN SYNOPSIS beside the box that leads to
+        // the book — Doug, 2026-09-20: "In the book. It has a .synopsis file literally."
         const files = ['.book.tsx', '.cover.tsx', '.synopsis.tsx', '.table.tsx'];
-        synopses.forEach((name, at) => {
-            const file = `${at + 1}-synopsis.tsx`;
-            writeFileSync(join(path, file), page([`<Title>${name}</Title>`, 'What it is.']));
+        // AND ANY FURTHER CHAPTER A CASE ASKS FOR, titled as the case says, so a title can be made to
+        // answer twice in one book.
+        (one.chapters ?? []).forEach((name, at) => {
+            const file = `${9 + at}-chapter.tsx`;
+            writeFileSync(join(path, file), page([`<Title>${name}</Title>`, 'What it says.']));
             files.push(file);
         });
         writeFileSync(join(path, '.table.tsx'), page([
             '<Title>Table of Contents</Title>',
-            ...(one.lists ?? [one.name, 'Synopsis', 'Table of Contents']).map(held_ => `<Option><Chapter>${held_}</Chapter></Option>`),
-            ...(one.holds ?? []).map(held_ => `<Option>${one.synopsised !== false && /\*\*$/u.test(held_) ? `<Chapter>${/\[\[\s*(.*?)\s*\]\]/u.exec(held_)?.[1] ?? held_}</Chapter>` : ''}<Book>${held_}</Book></Option>`),
+            ...(one.lists ?? [one.name, 'Synopsis', 'Table of Contents', ...(one.chapters ?? [])]).map(held_ => `<Option><Chapter>${held_}</Chapter></Option>`),
+            ...(one.holds ?? []).map(held_ => { const of = /\[\[\s*(.*?)\s*\]\]/u.exec(held_)?.[1] ?? held_; return `<Option>${one.synopsised !== false && /\*\*$/u.test(held_) ? `<Chapter>[[ ${of} ]]( ${of} / Synopsis )</Chapter>` : ''}<Book>${held_}</Book></Option>`; }),
         ]));
         held.push({ folder: one.folder, path, files, resources: new Map(), unaccounted: [], module: join(path, '.book.tsx') });
     }
@@ -129,6 +129,15 @@ describe('the catalogue', () => {
 
     // AN ANCHOR IS A NAME LIKE A CHAPTER'S, and the rule that refuses two chapters called one thing
     // refuses an anchor allocated under a chapter's name — once for each of the two namings.
+    // Doug, 2026-09-20: "Chapters & mentions per book, book titles across the library. These are hard
+    // constraints otherwise the reference can't work."
+    it('refuses two chapters answering to one name in one book', () => {
+        const books = whole();
+        books[2].chapters = ['Synopsis'];
+
+        expect(faultsOf(books)).toEqual([faults.duplicateTitle, faults.duplicateTitle]);
+    });
+
     it('refuses a name that answers twice in one book — an anchor allocated under a chapter\'s name', () => {
         const books = whole();
         books[2].anchors = ['Synopsis'];
@@ -143,6 +152,15 @@ describe('the catalogue', () => {
         books[0].synopsised = false;
 
         expect(faultsOf(books)).toEqual([faults.noSynopsis, faults.noSynopsis, faults.noSynopsis]);
+    });
+
+    // Doug, 2026-09-20: "it should also refuse when nothing references a mention in the whole
+    // library. It is unnecessary in that case and we want a compact library."
+    it('refuses a mention that nothing in the library refers to', () => {
+        const books = whole();
+        books[2].anchors = ['A Shelf'];
+
+        expect(faultsOf(books)).toEqual([faults.unreferencedMention]);
     });
 
     it('refuses a chapter its own book does not list', () => {

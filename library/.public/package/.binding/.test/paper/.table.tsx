@@ -11,7 +11,7 @@ export default class $Table extends $Chapter {
                     <Option><Chapter>The Argument</Chapter></Option>
                     <Option><Chapter>The Evidence</Chapter></Option>
                     <Chapter print={false}>A Paper</Chapter>
-                    <Chapter print={false}>The Claim</Chapter>
+                    <Chapter print={false}>Synopsis</Chapter>
                     <Chapter print={false}>Table of Contents</Chapter>
                 </Section>
             </TableOfContents>

@@ -15,7 +15,7 @@ export default class $Table extends $Chapter {
                     <Heading>Contents</Heading>
                     <Option><Chapter>Entries</Chapter></Option>
                     <Chapter print={false}>The Log</Chapter>
-                    <Chapter print={false}>Who Writes</Chapter>
+                    <Chapter print={false}>Synopsis</Chapter>
                     <Chapter print={false}>Table of Contents</Chapter>
                 </Section>
                 <Section>
@@ -26,7 +26,7 @@ export default class $Table extends $Chapter {
                 </Section>
                 <Section>
                     <Heading>What stands under the log</Heading>
-                    <Option><Chapter>A Persona</Chapter>&nbsp;<Book>[[ ]]( A Persona )**</Book></Option>
+                    <Option><Chapter>[[ A Persona ]]( A Persona / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( A Persona )**</Book></Option>
                 </Section>
             </TableOfContents>
         );

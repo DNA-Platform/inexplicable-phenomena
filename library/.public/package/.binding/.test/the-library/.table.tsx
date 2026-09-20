@@ -12,14 +12,14 @@ export default class $Table extends $Chapter {
                     <Heading>Contents</Heading>
                     <Option><Chapter>The Shelves</Chapter></Option>
                     <Chapter print={false}>The Library</Chapter>
-                    <Chapter print={false}>What This Is</Chapter>
+                    <Chapter print={false}>Synopsis</Chapter>
                     <Chapter print={false}>Table of Contents</Chapter>
                 </Section>
                 <Section>
                     <Heading>The Catalogue</Heading>
-                    <Option><Chapter>The Log</Chapter>&nbsp;<Book>[[ ]]( The Log )**</Book></Option>
-                    <Option><Chapter>Some Projects</Chapter>&nbsp;<Book>[[ ]]( Some Projects )**</Book></Option>
-                    <Option><Chapter>A Paper</Chapter>&nbsp;<Book>[[ ]]( A Paper )**</Book></Option>
+                    <Option><Chapter>[[ The Log ]]( The Log / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( The Log )**</Book></Option>
+                    <Option><Chapter>[[ Some Projects ]]( Some Projects / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( Some Projects )**</Book></Option>
+                    <Option><Chapter>[[ A Paper ]]( A Paper / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( A Paper )**</Book></Option>
                 </Section>
             </TableOfContents>
         );

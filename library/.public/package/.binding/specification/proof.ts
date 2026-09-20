@@ -49,6 +49,18 @@ const leads = (href: string, base: string): { page: string; fragment: string | u
     return { page: `${folder === '' ? '' : `${folder}/`}index.html`, fragment: fragment === '' ? undefined : fragment };
 };
 
+// WHAT IS WRONG WITH WHERE A FRAGMENT LEADS, or nothing. Exactly one element may answer to it: none
+// and the link is dead; more than one and the browser lands a reader on whichever comes first, which
+// is how a link to a synopsis chapter arrived at a section of another chapter and looked right.
+const answering = (ids: Map<string, number>, fragment: string, on: string): string | undefined => {
+    const count = ids.get(fragment) ?? 0;
+    if (count === 1) return undefined;
+
+    return count === 0
+        ? `nothing on ${on} answers to ${on === 'this page' ? 'it' : `#${fragment}`}`
+        : `${count} elements on ${on} answer to ${on === 'this page' ? 'it' : `#${fragment}`}, so a reader lands on whichever comes first`;
+};
+
 export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] => {
     const wrong: Diagnostic[] = [];
     const said = new Set<string>();
@@ -60,14 +72,18 @@ export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] =
     };
 
     // EVERY PAGE'S IDS ARE GATHERED BEFORE ANY PAGE'S LINKS ARE JUDGED, because a link leads to a
-    // page that has not been read yet as often as to one that has.
-    const answers = new Map<string, Set<string>>();
+    // page that has not been read yet as often as to one that has. AND THEY ARE COUNTED, NOT
+    // COLLECTED: a set swallowed the second `my-library-log` on Doug's summit page (2026-09-20), the
+    // row's link was passed as answered, and the browser landed it on the first element wearing the
+    // id — a section of another chapter that happened to print the same synopsis. Doug: "It
+    // concerns me that navigation worked."
+    const answers = new Map<string, Map<string, number>>();
     const leaving: { page: string; href: string }[] = [];
 
     for (const page of pages) {
         const html = readFileSync(join(face, page), 'utf8');
         const open: Tag[] = [];
-        const ids = new Set<string>();
+        const ids = new Map<string, number>();
         const fragments: string[] = [];
         answers.set(page, ids);
 
@@ -82,7 +98,7 @@ export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] =
             }
 
             const id = /\sid="([^"]*)"/.exec(attrs);
-            if (id !== null && id[1] !== '') ids.add(id[1]);
+            if (id !== null && id[1] !== '') ids.set(id[1], (ids.get(id[1]) ?? 0) + 1);
             const href = /\shref="#([^"]*)"/.exec(attrs);
             if (href !== null && href[1] !== '') fragments.push(href[1]);
 
@@ -108,8 +124,16 @@ export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] =
             open.push({ name, attrs });
         }
 
-        for (const fragment of new Set(fragments))
-            if (!ids.has(fragment)) fault(page, `a link addresses #${fragment}, and nothing on this page answers to it`);
+        // AND AN ID IS WORN ONCE, addressed or not. Doug, 2026-09-20: "it should refuse mentions
+        // that surface the same id" — two elements claiming one name on a page, and the first link
+        // written to it lands on whichever comes first.
+        for (const [id, count] of ids)
+            if (count > 1) fault(page, `#${id} is worn by ${count} elements on this page, and an id is worn once`);
+
+        for (const fragment of new Set(fragments)) {
+            const said = answering(ids, fragment, 'this page');
+            if (said !== undefined) fault(page, `a link addresses #${fragment}, and ${said}`);
+        }
     }
 
     // AND EVERY ADDRESS INTO THE LIBRARY LEADS TO A PAGE THE BINDER BUILT, at a place on it that
@@ -120,7 +144,9 @@ export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] =
         if (led === undefined) continue;
         const ids = answers.get(led.page);
         if (ids === undefined) { fault(page, `a link addresses ${href}, and no page was built at ${led.page}`); continue; }
-        if (led.fragment !== undefined && !ids.has(led.fragment)) fault(page, `a link addresses ${href}, and nothing on ${led.page} answers to #${led.fragment}`);
+        if (led.fragment === undefined) continue;
+        const said = answering(ids, led.fragment, led.page);
+        if (said !== undefined) fault(page, `a link addresses ${href}, and ${said}`);
     }
 
     return wrong;

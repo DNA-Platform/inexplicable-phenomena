@@ -33,7 +33,7 @@ export class $Entry extends $Paragraph implements $Entry$ {
     // an entry is full of links, and HTML admits no anchor inside an anchor.
     override view(): ReactNode {
         return (
-            <p id={reflection.folded(this)?.key()} className={this.className} data-number={this.number()}>
+            <p id={this.id} className={this.className} data-number={this.number()}>
                 {this.print()}
             </p>
         );

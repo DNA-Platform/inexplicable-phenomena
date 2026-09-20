@@ -16,6 +16,9 @@ export default class $TheShelves extends $Chapter {
                     <Paragraph>
                         [[[ The First Shelf ]]] is the one the log stands on, and a reference reaches it by name.
                     </Paragraph>
+                    <Paragraph>
+                        The log says as much of itself: it stands on $[ ./The First Shelf ].
+                    </Paragraph>
                 </Section>
             </Document>
         );

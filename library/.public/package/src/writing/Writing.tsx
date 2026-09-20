@@ -41,6 +41,13 @@ export class $Writing extends $Chemical implements $Writing$ {
 
     get kind(): $Type { return reflection.kind(this); }
 
+    // THE ID A WRITING'S ELEMENT WEARS, which is what a link lands on. A writing has one when a
+    // mention allocated it — `[[[ X ]]]` — and a chapter has its own, because a chapter is what the
+    // library addresses. Doug, 2026-09-20: a heading wears an id only as a title or when allocated;
+    // every heading naming itself by its words gave "Cautions" seven ids on one page and the chrome's
+    // name two on every page, and an id is worn once.
+    protected get id(): string | undefined { return reflection.folded(this)?.key(); }
+
     $Writing(block: $Block) {
         this._block = $check(block, $Block);
         if (this.$print !== undefined) this.parenthetical = !this.$print;
@@ -60,7 +67,7 @@ export class $Writing extends $Chemical implements $Writing$ {
         if (this.parenthetical) return null;
         const meaning = this.linked;
         const linked = meaning !== undefined;
-        const drawn = { className: linked ? `${this.className} pd-meaning` : this.className, id: reflection.folded(this)?.key(), href: linked ? html.text(meaning.path()?._block) : undefined };
+        const drawn = { className: linked ? `${this.className} pd-meaning` : this.className, id: this.id, href: linked ? html.text(meaning.path()?._block) : undefined };
         const format = this.format;
 
         return format === undefined
@@ -116,10 +123,16 @@ export class $Writing extends $Chemical implements $Writing$ {
 export class WritingSpecification extends Specification<$Writing> {
     private readonly divided = /\n[^\S\n]*\n/u;
 
+    // WHAT THIS WRITING CARRIES, NOT WHAT ITS PARTS DO. It read the whole block as text, so a blank
+    // line anywhere beneath broke every writing above it — and $Code, which waives this rule because
+    // code is verbatim, could not waive it for its holders. Measured 2026-09-16: thirty exchanges of
+    // an imported conversation went red for the blank lines inside the code they quoted.
     @specify('a piece of writing carries no blank line')
     $noBlankLine(writing: $Writing): void {
-        $check(!this.divided.test(html.text(writing._block)),
-            'a piece of writing carries no blank line, and this one is broken by one');
+        const broken = ((writing._block.$elements ?? []).filter(part => typeof part === 'string') as string[])
+            .find(text => this.divided.test(text));
+        $check(broken === undefined,
+            `a piece of writing carries no blank line, and this one is broken by one: ${JSON.stringify(broken ?? '').slice(0, 60)}`);
     }
 
     @specify('a piece of writing is one kind of writing')

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $Block, $check } from '@dna-platform/chemistry';
 import { Specification } from '@/utilities/Specification';
-import { html } from '@/utilities/Html';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing } from '@/writing/Writing';
 import { $Composition } from '@/writing/Composition';
@@ -19,12 +18,17 @@ export class $Heading extends $Paragraph implements $Heading$ {
     // h3 and h1..h6 groups styling elements no kind produced — the census of a hole. The level was
     // already known: reflection.indent answers how deep a writing stands, and the table of contents
     // has been nesting by it. Nothing is added; an existing reading reaches the element it was for.
+    //
+    // AND IT WEARS NO ID OF ITS OWN WORDS. It slugged its text into an id, so every heading was an
+    // address whether or not anything could refer to it, and a section called "Cautions" in seven
+    // chapters wore one id seven times on a page. A chapter's element wears the chapter's id; a
+    // heading wears one only when a mention allocated it, as any writing does.
     override view(): ReactNode {
         const levels = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
         const at = Math.min(reflection.indent(this), levels.length - 1);
         const Level = levels[at];
 
-        return <Level id={reflection.slug(html.text(this._block))} className={`${this.className} pd-level-${at + 1}`}>{this.print()}</Level>;
+        return <Level id={this.id} className={`${this.className} pd-level-${at + 1}`}>{this.print()}</Level>;
     }
 }
 

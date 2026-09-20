@@ -153,17 +153,12 @@ export const mentions = ['book', 'chapter', 'Author', 'Subject', 'For', 'Partici
 // does something: the listings were there the whole time, in elements, while the structure looked
 // for them in text and found none.
 //
-// AND WHETHER IT PRINTS. `<Title print={false}>` names a chapter the page draws no heading for, so
-// the page draws no id for it either, and an address with a fragment would lead to a place that is
-// not there. Doug, 2026-09-19: "Shouldn't it just be the url?" — a chapter that does not print is
-// addressed as its book's page. The attribute is read here, where the element is read.
-export type Element = { tag: string; says: string; prints: boolean; at: number; to: number };
-
-export const prints = (element: ts.JsxElement): boolean =>
-    !element.openingElement.attributes.properties.some(one =>
-        ts.isJsxAttribute(one) && ts.isIdentifier(one.name) && one.name.text === 'print'
-        && one.initializer !== undefined && ts.isJsxExpression(one.initializer)
-        && one.initializer.expression !== undefined && one.initializer.expression.kind === ts.SyntaxKind.FalseKeyword);
+// AND NEVER WHETHER IT PRINTS. This reader once read `print={false}` off a `<Title>` and addressed
+// such a chapter as its book's page. Doug, 2026-09-20: "if you are parsing like that, you have
+// broken polymorphism. What happens when we want a subclass of title? The compiler just cares that
+// things are in the right file." So a chapter is addressed by its fragment whatever its title does,
+// and the page's answering to it is the framework's.
+export type Element = { tag: string; says: string; at: number; to: number };
 
 // `tags` ARE THE FRAMEWORK'S NAMES — `book`, `chapter`, `Title` — and an element is reported under
 // the name it is bound to, whatever the file called it.
@@ -178,7 +173,7 @@ export const elements = (file: string, code: string, tags: string[]): Element[] 
         if (ts.isJsxElement(node)) {
             const origin = bound.get(named(node.openingElement.tagName));
             if (frameworks(origin) && tags.includes(origin.name))
-                held.push({ tag: origin.name, says: inside(node), prints: prints(node), at: node.getStart(source), to: node.end });
+                held.push({ tag: origin.name, says: inside(node), at: node.getStart(source), to: node.end });
         }
         ts.forEachChild(node, walk);
     };

@@ -10,7 +10,7 @@ export default class $Table extends $Chapter {
                     <Heading>Contents</Heading>
                     <Option><Chapter>Who Writes Here</Chapter></Option>
                     <Chapter print={false}>A Persona</Chapter>
-                    <Chapter print={false}>A Second Voice</Chapter>
+                    <Chapter print={false}>Synopsis</Chapter>
                     <Chapter print={false}>Table of Contents</Chapter>
                 </Section>
                 <Section>

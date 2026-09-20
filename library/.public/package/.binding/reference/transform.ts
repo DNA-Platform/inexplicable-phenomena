@@ -4,8 +4,8 @@ import type { Plugin } from 'vite';
 import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import { reflection } from '@dna-platform/public';
-import { frameworks, mentions, named, origins, prints, reads } from '../catalogue/reading';
-import { bare, itself, key, name as parsed, notation, spelling } from '../catalogue/language';
+import { frameworks, mentions, named, origins, reads } from '../catalogue/reading';
+import { asChapter, bare, itself, key, name as parsed, notation, spelling } from '../catalogue/language';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
 //
@@ -187,17 +187,16 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
         if (ts.isJsxElement(node)) {
             const origin = bound.get(named(node.openingElement.tagName));
             const mention = frameworks(origin) && mentions.includes(origin.name);
-            // AND ONE THAT DOES NOT PRINT IS LEFT AS WRITTEN: it draws nothing, so it needs no
-            // address — a turn's `<Participant print={false}>Doug</Participant>` names who speaks,
-            // for the dialogue, and is not a mention of a book.
+            // PRINTED OR NOT: the compiler does not read `print`, and a mention that draws nothing still
+            // names a book the library must hold.
             const [text] = node.children;
-            if (mention && prints(node) && node.children.length === 1 && ts.isJsxText(text) && !/\[\[|\$\[/u.test(text.text)) {
+            if (mention && node.children.length === 1 && ts.isJsxText(text) && !/\[\[|\$\[/u.test(text.text)) {
                 const from = text.getStart(source);
                 const raw = code.slice(from, text.end).trim();
                 const plain = bare(reads(raw));
                 if (plain.name === '') return;
                 // A TABLE NAMING ITS OWN COVER REACHES THE BOOK, as the structure reads it.
-                const said = parsed(origin.name === 'chapter' ? `./${plain.name}` : plain.name);
+                const said = parsed(origin.name === 'chapter' ? asChapter(plain.name) : plain.name);
                 const meant = itself(said, within) && within !== undefined ? parsed(within) : said;
                 const url = catalogue.where(key(meant, within));
                 if (url === undefined) { missed.push({ key: key(meant, within), file, line: source.getLineAndCharacterOfPosition(from).line + 1 }); return; }

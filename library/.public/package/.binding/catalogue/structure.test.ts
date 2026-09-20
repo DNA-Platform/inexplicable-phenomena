@@ -75,19 +75,19 @@ describe('the catalogue over it', () => {
         expect(card.where('A Paper / The Evidence')).toBe('/a-paper/#the-evidence');
     });
 
-    // A CHAPTER WHOSE TITLE DOES NOT PRINT HAS NO HEADING ON THE PAGE AND SO NO ID; its address is
-    // the page it is part of. Doug: "Shouldn't it just be the url?"
-    it('answers a chapter whose title does not print with its page alone', () => {
-        expect(made.spots.get('the-library/.synopsis.tsx')?.prints).toBe(false);
-        expect(made.spots.get('the-library/1-the-shelves.tsx')?.prints).toBe(true);
+    // EVERY CHAPTER IS ADDRESSED BY ITS FRAGMENT, and the compiler never reads whether its title
+    // prints — Doug, 2026-09-20: "if you are parsing like that, you have broken polymorphism… The
+    // compiler just cares that things are in the right file." The chapter's element wears the id.
+    it('answers a chapter by its fragment whether or not its title prints', () => {
+        expect(made.spots.get('the-library/.synopsis.tsx')?.kind).toBe('chapter');
+        expect(card.where('The Library / Synopsis')).toBe('/the-library/#synopsis');
+        expect(card.where('The Library / Table of Contents')).toBe('/the-library/#table-of-contents');
     });
 
     it('and an anchor a chapter allocates is a spot of its book, reached by name', () => {
         const anchor = made.spots.get('the-library/1-the-shelves.tsx#The First Shelf');
         expect(anchor?.kind).toBe('anchor');
         expect(made.of('The Library / The First Shelf')).toBe(anchor?.id);
-        expect(card.where('The Library / What This Is')).toBe('/the-library/');
-        expect(card.where('The Library / Table of Contents')).toBe('/the-library/');
     });
 
     it('refuses by non-membership alone', () => {

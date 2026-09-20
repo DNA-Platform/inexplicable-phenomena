@@ -55,9 +55,9 @@ describe('a bind of the test library', () => {
         expect(library).toMatch(/<a href="\/the-log\/"[^>]*>Written by the Log<\/a>/u);
     });
 
-    it('sent a reference to a chapter that does not print its title to the page it is part of', () => {
+    it('sent a reference to a chapter that does not print its title to the fragment its chapter wears', () => {
         const log = readFileSync(placeOf(held.face, table.routes.find(route => route.name === 'The Log')!), 'utf8');
-        expect(log).toMatch(/<a href="\/the-library\/"[^>]*>What This Is<\/a>/u);
+        expect(log).toMatch(/<a href="\/the-library\/#synopsis"[^>]*>Synopsis<\/a>/u);
         expect(log).toContain('href="/the-library/#the-shelves"');
     });
 });

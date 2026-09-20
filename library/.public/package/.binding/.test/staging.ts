@@ -124,28 +124,13 @@ export const duplicated = (held: Staged, copies: Copies, count: number): string[
         cpSync(at(copies.of), at(folder), { recursive: true });
         for (const file of ['.cover.tsx', '.synopsis.tsx', '.table.tsx'])
             writeFileSync(join(at(folder), file), readFileSync(join(at(folder), file), 'utf8').split(copies.name).join(name));
-        // AND ITS SYNOPSIS CHAPTER IN THE CATALOGUE THAT HOLDS IT, named beside the row that lists
-        // it — the shape `catalogue/wellformed.ts` requires of every catalogued book.
-        writeFileSync(join(at(copies.subject), `${4 + k}-${folder}.tsx`), [
-            `import { $Chapter, Document, Paragraph, Ref, Title } from '@dna-platform/public';`,
-            ``,
-            `export default class $Copy${k} extends $Chapter {`,
-            `    print() {`,
-            `        return (`,
-            `            <Document>`,
-            `                <Title>${name} $[ ]( ${name} )</Title>`,
-            `                <Paragraph>One of ${count} copies, made to measure the compiler at scale.</Paragraph>`,
-            `            </Document>`,
-            `        );`,
-            `    }`,
-            `}`,
-            ``,
-        ].join('\n'));
-        canonical.push(`                    <Option><Chapter>${name}</Chapter>&nbsp;<Book>[[ ]]( ${name} )**</Book></Option>`);
+        // AND ITS ROW IN THE CATALOGUE THAT HOLDS IT names the copy's own synopsis beside the box
+        // that leads to it — the shape `catalogue/wellformed.ts` requires of every catalogued book.
+        canonical.push(`                    <Option><Chapter>[[ ${name} ]]( ${name} / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( ${name} )**</Book></Option>`);
         authored.push(`                    <Option><Book>[[ ${name} ]]*</Book></Option>`);
         named.push(name);
     }
-    listing(join(at(copies.subject), '.table.tsx'), `                    <Option><Chapter>${copies.name}</Chapter>&nbsp;<Book>[[ ]]( ${copies.name} )**</Book></Option>`, canonical);
+    listing(join(at(copies.subject), '.table.tsx'), `                    <Option><Chapter>[[ ${copies.name} ]]( ${copies.name} / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( ${copies.name} )**</Book></Option>`, canonical);
     listing(join(at(copies.author), '.table.tsx'), `                    <Option><Book>[[ ${copies.name} ]]*</Book></Option>`, authored);
 
     return named;

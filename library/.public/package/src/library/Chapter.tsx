@@ -19,11 +19,22 @@ export class $Chapter extends $Composition implements $Chapter$ {
     get title(): $Section | undefined { return this.searchPartsForOne<$Document>($TypeOfDocument)?.title(); }
     get name(): string { return html.text(this.title?.heading()?._block).trim(); }
 
+    // A CHAPTER WEARS ITS OWN NAME AS ITS ID, printed title or not. The library addresses a chapter
+    // as `/book/#chapter`, and the compiler writes that fragment for every chapter without knowing
+    // whether its title prints — Doug, 2026-09-20: "The compiler just cares that things are in the
+    // right file." So the element that always draws, the chapter's, is what answers to it; a title
+    // with `print={false}` is filtered out before it is viewed and could never have.
+    protected override get id(): string | undefined {
+        const name = this.name;
+
+        return name === '' ? undefined : reflection.slug(name);
+    }
+
     // A CHAPTER GIVES ITS DOCUMENT ITS ADDRESS, and the address is the TITLE — Doug, 2026-09-15: "it
     // needs to point to the document. We need chapters to give their document #{title} and the title
     // would point there wherever it is." A book gives each chapter a mention pathed by POSITION,
     // which is the library's address and not a URL; a document is reached by what it is called, so
-    // a title pointing at it lands on the heading its own copy already carries an id for.
+    // a title pointing at it lands on the chapter whose element wears that id.
     $Chapter(block: $Block) {
         super.$Composition(this.addType(block, $TypeOfChapter));
     }
@@ -33,8 +44,8 @@ export class $Chapter extends $Composition implements $Chapter$ {
     // as it hands it over. Doug, 2026-09-15: "it needs to point to the document. We need chapters to
     // give their document #{title} and the title would point there wherever it is." A book addresses
     // its chapters by POSITION, which is the library's own address; a document is reached by what it
-    // is CALLED, and the heading its title draws already carries that id. It is given here rather
-    // than at the bond because a chapter has not printed yet when it is bound.
+    // is CALLED, and the chapter's own element wears that id. It is given here rather than at the
+    // bond because a chapter has not printed yet when it is bound.
     override parts(): $Writing[] {
         const printed = reflection.printed(this);
         const titled = printed.find((part): part is $Document => reflection.is(part, $TypeOfDocument))?.title()?.heading();

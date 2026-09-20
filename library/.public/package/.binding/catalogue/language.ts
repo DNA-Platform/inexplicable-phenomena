@@ -219,3 +219,10 @@ export const key = (held: Name, within: string | undefined): string => {
 // rule about identity is the exact fault this compiler exists to refuse.
 export const itself = (held: Name, within: string | undefined): boolean =>
     held.of === 'chapter' && 'within' in held && held.chapter === within;
+
+// AND WHAT A CHAPTER MENTION NAMES: a chapter of the book it stands in, unless it says which book.
+// `<Chapter>The Sheet</Chapter>` is `./The Sheet`; a catalogue's row writes
+// `<Chapter>[[ My Library Log ]]( My Library Log / Synopsis )</Chapter>` and names the synopsis
+// chapter of the book it lists, as written — Doug, 2026-09-20: "In the book. It has a .synopsis
+// file literally." `asChapter` is a PROXY NAME, flagged for Doug.
+export const asChapter = (said: string): string => (name(said).of === 'chapter' ? said : `./${said}`);

@@ -1,5 +1,5 @@
 import type { Diagnostic } from '../inventory/library';
-import { last, spelt } from './language';
+import { last, separator, spelt } from './language';
 import type { SpotId, Structure } from './structure';
 
 // WHAT MAKES A LIBRARY WELL-FORMED, CHECKED OVER THE COMPILED STRUCTURE. It returns faults and
@@ -33,6 +33,7 @@ export const faults = {
     noSelfAuthor: 'NO-SELF-AUTHOR',
     twoSelfAuthors: 'TWO-SELF-AUTHORS',
     mayNotAuthor: 'MAY-NOT-AUTHOR',
+    unreferencedMention: 'UNREFERENCED-MENTION',
 } as const;
 
 const wrote = (structure: Structure, id: SpotId): { at: string; file: string } => {
@@ -119,6 +120,17 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         wrong.push({ fault: faults.unknownReference, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line} ${reaching[one.kind]} "${shown}", and nothing in this library is called that` });
     }
 
+    // ---- a name somebody made is a name somebody spends ----
+    //
+    // Doug, 2026-09-20: "it should also refuse when nothing references a mention in the whole
+    // library. It is unnecessary in that case and we want a compact library." A chapter is spent by
+    // its table and a book by its catalogue; a mention `[[[ X ]]]` is spent only by a reference.
+    for (const spot of structure.spots.values()) {
+        if (spot.kind !== 'anchor' || structure.referred.has(spot.id)) continue;
+        const naming = structure.names.get(`${called(structure, spot.book)}${separator}${called(structure, spot.id)}`)?.find(one => one.spot === spot.id);
+        wrong.push({ fault: faults.unreferencedMention, at: spot.at, file: spot.file, says: `"${called(structure, spot.id)}" is named${naming === undefined ? '' : ` at line ${naming.at.line}`} and nothing in the library refers to it — a name nobody spends is unnecessary, and a library is compact` });
+    }
+
     // ---- a synopsis says what it is for ----
     //
     // A SYNOPSIS STANDS IN SOMEBODY ELSE'S TABLE as often as its own, so a reader meeting one needs
@@ -178,13 +190,13 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // reader reads, so it is where the claim has to stand to be worth anything.
     for (const edge of structure.edges.values()) {
         if (edge.relation !== 'subject' || edge.from === edge.to) continue;
-        // AND THE ROW THAT CATALOGUES A BOOK NAMES THE CHAPTER THAT IS ITS SYNOPSIS — Doug,
-        // 2026-09-19: "the table needs links to its chapters and the books that those chapters
-        // are synopses of." A catalogue is a book of synopses, and its table is where each one
-        // is reached from.
+        // AND THE ROW THAT CATALOGUES A BOOK NAMES THAT BOOK'S OWN SYNOPSIS — Doug, 2026-09-19:
+        // "the table needs links to its chapters and the books that those chapters are synopses
+        // of"; 2026-09-20: "In the book. It has a .synopsis file literally." A catalogue's table is
+        // where each synopsis is reached from.
         const listing = structure.lists.get(edge.from)?.get(edge.to);
         if (listing !== undefined && !listing.synopsis)
-            wrong.push({ fault: faults.noSynopsis, at: wrote(structure, edge.from).at, file: listing.at.file, says: `line ${listing.at.line} lists "${called(structure, edge.to)}" without the chapter that is its synopsis — a catalogue's row names the book and the chapter that is its synopsis` });
+            wrong.push({ fault: faults.noSynopsis, at: wrote(structure, edge.from).at, file: listing.at.file, says: `line ${listing.at.line} lists "${called(structure, edge.to)}" without naming its synopsis — a catalogue's row names the book's own synopsis chapter beside it, [[ ${called(structure, edge.to)} ]]( ${called(structure, edge.to)} / Synopsis )` });
         const answering = edge.ends.find(one => one.end === 'source');
         if (answering === undefined || answering.at.file.endsWith('.table.tsx')) continue;
         wrong.push({ fault: faults.notInTheTable, at: wrote(structure, edge.from).at, file: answering.at.file, says: `"${called(structure, edge.from)}" says it catalogues "${called(structure, edge.to)}" at line ${answering.at.line}, which is not its table of contents — a catalogue answers for what it holds where a reader can see it` });
