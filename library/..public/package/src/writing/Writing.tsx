@@ -30,11 +30,15 @@ export class $Writing extends $Chemical {
                 this.annotations.add(chemical);
             else
                 this.contents.add(chemical);
+        for (let ancestor = this.parent; ancestor instanceof $Writing; ancestor = ancestor.parent === ancestor ? undefined : ancestor.parent)
+            if (ancestor.$formal) {
+                this._formal = true;
+                break;
+            }
         this.$Reorganize();
         this.specify();
     }
 
-    // ask: public, run at the end of the bond and by the suite; and does the suite call this, or check on a specification of its own?
     specify(): void {
         const specification = new WritingSpecification();
         specification.enforced = this.$formal;
@@ -43,11 +47,16 @@ export class $Writing extends $Chemical {
             annotation.specifically(this);
     }
 
-    // ask: a span, hidden by the attribute — or is hiding a Format's to do, and the element the class's?
-    view(): ReactNode {
-        const elements = this.contents.map((chemical, index) => createElement($(chemical), { key: index }));
+    print(): ReactNode {
+        return this.contents.map((chemical, index) => createElement($(chemical), { key: index }));
+    }
 
-        return this.$parenthetical ? <span hidden>{elements}</span> : <>{elements}</>;
+    annotate(): ReactNode {
+        return <span className="parenthetical">{this.annotations.map((annotation, index) => createElement($(annotation), { key: index }))}</span>;
+    }
+
+    view(): ReactNode {
+        return <span className={this.$parenthetical ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
     }
 
     protected $Reorganize(): void { }
@@ -60,7 +69,6 @@ export class $Annotation extends $Writing {
 }
 
 export class WritingSpecification extends Specification<$Writing> {
-    // ask: two strings per rule, the description and the refusal; should one do, and should the rule's name be the $-method or the decorator?
     @specify('a piece of writing holds only writing')
     $holdsOnlyWriting(writing: $Writing): void {
         $check(writing.contents.every(chemical => chemical instanceof $Writing),

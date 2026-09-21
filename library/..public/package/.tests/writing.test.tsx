@@ -121,8 +121,11 @@ describe('formal is echoed into the specification, which checks only when enforc
         expect(writing.annotations.find($Annotation)[0].$formal).toBe(true);
     });
 
-    it('may be written', () => {
-        expect(built<$Writing>(<Writing formal />).$formal).toBe(true);
+    it('may be written, and what bonds beneath a formal writing is formal at its own bond', () => {
+        const writing = built<$Writing>(<Writing formal><Writing><Writing /></Writing><Annotation /></Writing>);
+        expect(writing.$formal).toBe(true);
+        expect(((writing.contents.at(0) as $Writing).contents.at(0) as $Writing).$formal).toBe(true);
+        expect(writing.annotations.find($Annotation)[0].$formal).toBe(true);
     });
 
     it('setting it runs nothing, and an informal writing is never checked', () => {
