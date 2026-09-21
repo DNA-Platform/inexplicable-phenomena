@@ -1,6 +1,6 @@
 import { $check } from '@dna-platform/chemistry';
 
-type Rule<T> = ((subject: T) => boolean | void) & { description?: string };
+type Rule<T> = ((writing: T) => boolean | void) & { description?: string };
 
 export function specify(description: string) {
     return (target: object, key: string, descriptor: PropertyDescriptor): void => {
@@ -16,11 +16,10 @@ export class Specification<T extends object> {
         const rules = new Map<string, Rule<T>>();
         const parent = this.parent;
         for (const [name, rule] of parent?.rules() ?? [])
-            rules.set(name, (subject: T) => rule.call(parent, subject));
+            rules.set(name, (writing: T) => rule.call(parent, writing));
 
         const prototypes: object[] = [];
-        let prototype: object | null = Object.getPrototypeOf(this);
-        for (; prototype !== null && prototype !== Object.prototype; prototype = Object.getPrototypeOf(prototype))
+        for (let prototype = Object.getPrototypeOf(this); prototype !== null && prototype !== Object.prototype; prototype = Object.getPrototypeOf(prototype))
             prototypes.push(prototype);
 
         for (const prototype of prototypes.reverse())
@@ -30,13 +29,13 @@ export class Specification<T extends object> {
         return [...rules.entries()];
     }
 
-    check(subject: T): string[] {
+    check(writing: T): string[] {
         if (!this.enforced) return [];
         const failures: string[] = [];
         const descriptions: string[] = [];
         for (const [name, rule] of this.rules())
             try {
-                if (rule.call(this, subject) !== false)
+                if (rule.call(this, writing) !== false)
                     descriptions.push(rule.description ?? name);
             } catch (error) {
                 failures.push((error as Error).message);
