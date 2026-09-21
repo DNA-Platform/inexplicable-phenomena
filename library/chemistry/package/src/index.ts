@@ -20,7 +20,7 @@ export { $ } from './abstraction/chemical';
 // The block — what a bond constructor is handed for prose, and an iterator over
 // what was written in it
 export { $Block } from './abstraction/chemical';
-export type { $Written } from './abstraction/chemical';
+export type { $Inline } from './abstraction/chemical';
 
 // Module-discovery utilities
 export { $lookup, $load } from './framework/load';

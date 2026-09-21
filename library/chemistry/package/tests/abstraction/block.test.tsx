@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { $, $Block, $Chemical, $check, type $Html, type $Written } from '@/index';
+import { $, $Block, $Chemical, $check, type $Html, type $Inline } from '@/index';
 import { $Html$ } from '@/abstraction/chemical';
 import { children } from '@/index';
 
@@ -40,7 +40,7 @@ class $Take extends $Chemical {
 const Take = $($Take);
 
 const held = (...inside: unknown[]): $Block =>
-    ($(<Take />, ...inside as $Written[]) as $Take).taken;
+    ($(<Take />, ...inside as $Inline[]) as $Take).taken;
 
 describe('what a bond constructor is handed for prose', () => {
     it('IS a $Block, and a $Block is an $Html$ of the block kind', () => {
@@ -109,7 +109,7 @@ describe('EVERY READING OF A BLOCK IS A BLOCK', () => {
     });
 
     it('flatMap flattens into a new block', () => {
-        const doubled = held('a', 'b').flatMap(piece => [piece, piece] as $Written[]);
+        const doubled = held('a', 'b').flatMap(piece => [piece, piece] as $Inline[]);
         expect(doubled).toBeInstanceOf($Block);
         expect([...doubled]).toEqual(['a', 'a', 'b', 'b']);
     });

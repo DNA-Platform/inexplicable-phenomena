@@ -8,7 +8,7 @@ import {
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
     $devError$, $devException$, $watched$,
-    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, framework
+    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, $recall$, framework
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
@@ -1021,7 +1021,10 @@ export class $Chemical extends $Particle {
                 (this as any)[$formed$] = true;
                 const was = (this as any)[$rendering$];
                 (this as any)[$rendering$] = true;
-                try { hydration.overwrite(this); } finally { (this as any)[$rendering$] = was; }
+                // A recall is setup and not news of the FIELDS, and never of the page: a hydrated
+                // page keeps the markup the server wrote, so a chemical that recalled while
+                // hydrating asks to be drawn at mount — and only if it recalled something.
+                try { if (hydration.overwrite(this)) (this as any)[$recall$] = true; } finally { (this as any)[$rendering$] = was; }
             }
             hydration.changed(this);
         }
@@ -1314,34 +1317,34 @@ export class $Html$<T extends $HtmlTag = any> extends $Chemical {
 // than over elements — a caller who genuinely wants one piece searches
 // `elements`, which is right there and needs no member of its own.
 export class $Block extends $Html$<'block'> {
-    $elements?: $Written[];
-    get elements(): $Written[] { return this.$elements ?? []; }
+    $elements?: $Inline[];
+    get elements(): $Inline[] { return this.$elements ?? []; }
     get length(): number { return this.elements.length; }
 
     constructor() {
         super('block');
     }
 
-    [Symbol.iterator](): IterableIterator<$Written> {
+    [Symbol.iterator](): IterableIterator<$Inline> {
         return this.elements[Symbol.iterator]();
     }
 
-    filter(match: (piece: $Written, at: number) => boolean): $Block {
+    filter(match: (piece: $Inline, at: number) => boolean): $Block {
         return block(this.elements.filter(match));
     }
 
-    map(pick: (piece: $Written, at: number) => $Written): $Block {
+    map(pick: (piece: $Inline, at: number) => $Inline): $Block {
         return block(this.elements.map(pick));
     }
 
-    flatMap(pick: (piece: $Written, at: number) => $Written[]): $Block {
+    flatMap(pick: (piece: $Inline, at: number) => $Inline[]): $Block {
         return block(this.elements.flatMap(pick));
     }
 
     // A fold answers a BLOCK like everything else here, so what it accumulates
     // into is a block and it is seeded with an empty one. That is what keeps the
     // rule whole — there is no reading of a block that falls out into an array.
-    reduce(fold: (held: $Block, piece: $Written, at: number) => $Block, seed = new $Block()): $Block {
+    reduce(fold: (held: $Block, piece: $Inline, at: number) => $Block, seed = new $Block()): $Block {
         return this.elements.reduce(fold, seed);
     }
 
@@ -1353,8 +1356,8 @@ export class $Block extends $Html$<'block'> {
     // This is the member a bond constructor reaches for. Assigning `$elements`
     // instead is a write to a live chemical while its own tree is being built,
     // and that is the shape of a defect this codebase has already met twice.
-    concat(...elements: $Written[]): $Block {
-        return block(elements.reduce<$Written[]>(
+    concat(...elements: $Inline[]): $Block {
+        return block(elements.reduce<$Inline[]>(
             (held, piece) => held.concat(piece instanceof $Block ? piece.elements : piece),
             this.elements));
     }
@@ -1366,9 +1369,9 @@ export class $Block extends $Html$<'block'> {
 }
 
 // What a block holds, named once so the union is stated in one place.
-export type $Written = string | number | $Chemical;
+export type $Inline = string | number | $Chemical;
 
-function block(elements: $Written[]): $Block {
+function block(elements: $Inline[]): $Block {
     const made = new $Block();
     made.$elements = elements;
     return made;

@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from "react";
 import type { $Particle } from "../abstraction/particle";
-import type { $Function$, $Html$, $Block, $Written, $Chemical } from "../abstraction/chemical";
+import type { $Function$, $Html$, $Block, $Inline, $Chemical } from "../abstraction/chemical";
 
 // I<T> — the interface of T: every member declared on T and its prototype
 // chain. TypeScript already collapses the chain into the instance type, so
@@ -112,7 +112,7 @@ export type $Function<T> = T extends React.FC<infer P>
 // prose and written elements indistinguishable downstream. The block carries them
 // as they are instead.
 export interface $Content {
-    block: { elements?: $Written[] };
+    block: { elements?: $Inline[] };
 }
 export type $HtmlTag = keyof JSX.IntrinsicElements | keyof $Content;
 type $HtmlProps<T extends $HtmlTag> =
@@ -135,7 +135,7 @@ export type $Html<T extends $HtmlTag = any> =
 declare module 'react' {
     namespace JSX {
         interface IntrinsicElements {
-            block: { elements?: $Written[] };
+            block: { elements?: $Inline[] };
         }
     }
 }
