@@ -1,12 +1,14 @@
 import { isValidElement, ReactElement } from 'react';
-import { $, $check } from '@dna-platform/chemistry';
+import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import type { Component } from '@dna-platform/chemistry';
 
 export type Given<T> = T | (new () => T) | Component<T> | ReactElement;
 
-export class Collection<T extends object> {
+export class Collection<T extends $Chemical> {
     private chemicals: T[] = [];
     private classes = new Map<Function, T[]>();
+
+    constructor(private parent?: $Chemical) { }
 
     get length(): number { return this.chemicals.length; }
 
@@ -31,6 +33,14 @@ export class Collection<T extends object> {
         this.chemicals.push(chemical);
         for (const Class of this.chain(chemical))
             this.file(Class, chemical);
+        return chemical;
+    }
+
+    prepend(given: Given<T>): T {
+        const chemical = this.made(given);
+        this.chemicals.unshift(chemical);
+        for (const Class of this.chain(chemical))
+            this.file(Class, chemical, true);
         return chemical;
     }
 
@@ -86,11 +96,13 @@ export class Collection<T extends object> {
         return this.classes.get(Class)?.length === 1;
     }
 
-    // ask: a class or a component goes through the framework's find-or-make, an element through its eval form, a chemical stands; is this the whole of what a prop may hand in?
     private made(given: Given<T>): T {
-        if (typeof given === 'function') return $check(given as new () => T, '!');
-        if (isValidElement(given)) return $(given) as T;
-        return given as T;
+        const chemical = typeof given === 'function' ? $check(given as new () => T, '!')
+            : isValidElement(given) ? $(given) as T
+            : given as T;
+        if (this.parent !== undefined && chemical.parent !== this.parent)
+            chemical.parent = this.parent;
+        return chemical;
     }
 
     private swap(replaced: T, chemical: T): void {
@@ -109,10 +121,12 @@ export class Collection<T extends object> {
             this.file(Class, chemical);
     }
 
-    private file(Class: Function, chemical: T): void {
+    private file(Class: Function, chemical: T, first = false): void {
         const chemicals = this.classes.get(Class);
         if (chemicals === undefined)
             this.classes.set(Class, [chemical]);
+        else if (first)
+            chemicals.unshift(chemical);
         else
             chemicals.push(chemical);
     }

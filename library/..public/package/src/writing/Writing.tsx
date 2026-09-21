@@ -14,12 +14,11 @@ export class $Writing extends $Chemical {
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
 
-    // ask: the prop declares the annotations that come from outside, in any form the framework can build; toggling is changing the list, removal is leaving one out, and what was written as a child is never touched. Its name?
     get $annotations(): Given<$Annotation>[] { return this._annotated; }
     set $annotations(given: Given<$Annotation>[]) {
         for (const annotation of this._annotated)
             this.annotations.drop(annotation);
-        this._annotated = given.map(one => this.annotations.ensure(one));
+        this._annotated = [...given].reverse().map(one => this.annotations.prepend(one)).reverse();
     }
 
     get $formal(): boolean { return this.annotations.contains($Formal); }
@@ -32,12 +31,12 @@ export class $Writing extends $Chemical {
 
     get contents(): Collection<$Chemical> {
         const contents = Object.hasOwn(this, '_contents') ? this._contents : undefined;
-        return contents ?? (this._contents = new Collection<$Chemical>());
+        return contents ?? (this._contents = new Collection<$Chemical>(this));
     }
 
     get annotations(): Collection<$Annotation> {
         const annotations = Object.hasOwn(this, '_annotations') ? this._annotations : undefined;
-        return annotations ?? (this._annotations = new Collection<$Annotation>());
+        return annotations ?? (this._annotations = new Collection<$Annotation>(this));
     }
 
     $Writing(...chemicals: $Chemical[]) {

@@ -111,8 +111,21 @@ describe('annotations may be handed in as a prop, in any form the framework can 
         writing.$annotations = [];
         expect(writing.$formal).toBe(false);
         expect(writing.$parenthetical).toBe(true);
-        writing.$annotations = [$Formal, $Formal];
-        expect(writing.annotations.containsOne($Formal)).toBe(true);
+    });
+
+    it('the ones from outside stand at the front in their order, shadow what is written, and are not made unique', () => {
+        const writing = built<$Writing>(<Writing annotations={[$Formal, $Parenthetical]}><Formal /></Writing>);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Formal);
+        expect(writing.annotations.at(1)).toBeInstanceOf($Parenthetical);
+        expect(writing.annotations.find($Formal).length).toBe(2);
+        expect(writing.annotations.find($Formal)[0]).toBe(writing.$annotations[0]);
+        expect(writing.$formal).toBe(true);
+    });
+
+    it('an annotation made from outside is parented to the writing that holds it', () => {
+        const writing = built<$Writing>(<Writing annotations={[$Formal, <Parenthetical />]} />);
+        for (const annotation of writing.annotations)
+            expect(annotation.parent).toBe(writing);
     });
 });
 
