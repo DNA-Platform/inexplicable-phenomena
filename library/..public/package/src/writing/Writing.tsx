@@ -1,4 +1,4 @@
-import { ReactNode, createElement } from 'react';
+import { ReactNode } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
@@ -41,6 +41,20 @@ export class $Writing extends $Chemical {
         this.define();
     }
 
+    view(): ReactNode {
+        this.define();
+        const parenthetical = this.annotations.contains($Parenthetical);
+        return (
+            <span className={parenthetical ? 'parenthetical' : undefined}>
+
+                {this.write()}
+
+                {this.annotate()}
+
+            </span>
+        );
+    }
+
     specify(): string[] {
         const failures = new WritingSpecification().check(this);
         for (const annotation of [...this.annotations])
@@ -56,17 +70,22 @@ export class $Writing extends $Chemical {
         return failures;
     }
 
-    print(): ReactNode {
-        return this.contents.map((chemical, index) => createElement($(chemical), { key: index }));
+    write(): ReactNode {
+        return this.contents.map((chemical, index) => {
+            const Chemical = $(chemical);
+            return <Chemical key={index} />;
+        });
     }
 
     annotate(): ReactNode {
-        return <span className="parenthetical">{this.annotations.map((annotation, index) => createElement($(annotation), { key: index }))}</span>;
-    }
-
-    view(): ReactNode {
-        this.define();
-        return <span className={this.annotations.contains($Parenthetical) ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
+        return (
+            <span className="parenthetical">
+                {this.annotations.map((annotation, index) => {
+                    const Annotation = $(annotation);
+                    return <Annotation key={index} />;
+                })}
+            </span>
+        );
     }
 
     protected define(): void {
@@ -79,9 +98,7 @@ export class $Writing extends $Chemical {
 
 export class $Annotation extends $Writing {
     enforced = true;
-
     defines(writing: $Writing): void { }
-
     specifies(writing: $Writing): void { }
 }
 
