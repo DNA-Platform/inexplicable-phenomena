@@ -6,11 +6,9 @@ const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 class $Mark extends $Annotation { }
 class $Stamp extends $Mark { }
-class $Declaring extends $Writing { static override declared = [$Mark]; }
 class $Tidying extends $Writing { protected override $Reorganize(): void { this.annotations.remove($Annotation); } }
 const Mark = $($Mark);
 const Stamp = $($Stamp);
-const Declaring = $($Declaring);
 const Tidying = $($Tidying);
 
 describe('what comes into a writing is sorted once, into contents and annotations', () => {
@@ -77,6 +75,17 @@ describe('the collection carries the API, by type', () => {
         expect(writing.annotations.length).toBe(3);
     });
 
+    it('contains halts on the first instance of a class, and containsOne asks that there be exactly one', () => {
+        const writing = built<$Writing>(<Writing><Stamp /><Mark /></Writing>);
+        expect(writing.annotations.contains($Mark)).toBe(true);
+        expect(writing.annotations.contains($Annotation)).toBe(true);
+        expect(writing.annotations.containsOne($Mark)).toBe(false);
+        expect(writing.annotations.containsOne($Stamp)).toBe(true);
+        writing.annotations.remove($Stamp);
+        expect(writing.annotations.contains($Stamp)).toBe(false);
+        expect(writing.annotations.containsOne($Mark)).toBe(true);
+    });
+
     it('remove takes every instance of the type, subclasses included', () => {
         const writing = built<$Writing>(<Writing><Mark /><Stamp /><Writing>a</Writing></Writing>);
         writing.annotations.remove($Mark);
@@ -84,10 +93,6 @@ describe('the collection carries the API, by type', () => {
         expect(writing.contents.length).toBe(1);
     });
 
-    it('the annotations a class declares are built at bond, once', () => {
-        expect(built<$Writing>(<Declaring />).annotations.find($Mark).length).toBe(1);
-        expect(built<$Writing>(<Declaring><Mark /></Declaring>).annotations.find($Mark).length).toBe(1);
-    });
 });
 
 describe('parenthetical and narrative are a pair', () => {
@@ -141,10 +146,7 @@ describe('formal is echoed into the specification, which checks only when enforc
         expect(specification.check(writing)).toEqual([]);
         specification.enforced = true;
         expect(() => specification.check(writing)).toThrow(/holds only writing/);
-        expect(specification.check(built<$Writing>(<Writing />))).toEqual([
-            'a piece of writing holds only writing',
-            'the annotations a piece of writing declares are built'
-        ]);
+        expect(specification.check(built<$Writing>(<Writing />))).toEqual(['a piece of writing holds only writing']);
     });
 
     it('reorganizing runs before the specification, and a subclass adjusts its collections there', () => {

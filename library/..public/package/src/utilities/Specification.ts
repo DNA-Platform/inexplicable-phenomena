@@ -10,11 +10,18 @@ export function specify(description: string) {
 
 export class Specification<T extends object> {
     enforced = false;
-    parent?: Specification<T> = undefined;
-    private collected?: [string, Rule<T>][] = undefined;
 
     rules(): [string, Rule<T>][] {
-        return this.collected ??= this.collect();
+        const rules = new Map<string, Rule<T>>();
+        const prototypes: object[] = [];
+        for (let prototype = Object.getPrototypeOf(this); prototype !== null && prototype !== Object.prototype; prototype = Object.getPrototypeOf(prototype))
+            prototypes.push(prototype);
+
+        for (const prototype of prototypes.reverse())
+            for (const name of Object.getOwnPropertyNames(prototype))
+                if (name.startsWith('$') && typeof (this as never)[name] === 'function')
+                    rules.set(name, (this as never)[name]);
+        return [...rules.entries()];
     }
 
     check(writing: T): string[] {
@@ -30,22 +37,5 @@ export class Specification<T extends object> {
             }
         $check(failures.length === 0, failures.join(' · '));
         return descriptions;
-    }
-
-    private collect(): [string, Rule<T>][] {
-        const rules = new Map<string, Rule<T>>();
-        const parent = this.parent;
-        for (const [name, rule] of parent?.rules() ?? [])
-            rules.set(name, (writing: T) => rule.call(parent, writing));
-
-        const prototypes: object[] = [];
-        for (let prototype = Object.getPrototypeOf(this); prototype !== null && prototype !== Object.prototype; prototype = Object.getPrototypeOf(prototype))
-            prototypes.push(prototype);
-
-        for (const prototype of prototypes.reverse())
-            for (const name of Object.getOwnPropertyNames(prototype))
-                if (name.startsWith('$') && typeof (this as never)[name] === 'function')
-                    rules.set(name, (this as never)[name]);
-        return [...rules.entries()];
     }
 }

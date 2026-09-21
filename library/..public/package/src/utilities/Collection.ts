@@ -1,4 +1,3 @@
-// ask: does the framework's collection tracking see a change inside this, or must it be an Array for that?
 export class Collection<T extends object> {
     private chemicals: T[] = [];
     private classes = new Map<Function, T[]>();
@@ -54,6 +53,14 @@ export class Collection<T extends object> {
 
     find<U extends T>(Class: new () => U): ReadonlyArray<U> {
         return (this.classes.get(Class) ?? []) as U[];
+    }
+
+    contains<U extends T>(Class: new () => U): boolean {
+        return this.classes.has(Class);
+    }
+
+    containsOne<U extends T>(Class: new () => U): boolean {
+        return this.classes.get(Class)?.length === 1;
     }
 
     private swap(replaced: T, chemical: T): void {

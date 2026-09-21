@@ -61,11 +61,7 @@ const at = () => ({
 // and tests/loading.test.tsx proves at runtime that neither leaves a class
 // extending a half-built base. They are named here so a THIRD one FAILS the
 // build rather than joining a list of warnings nobody reads.
-// An annotation is a writing, and a writing knows its annotations by their type (E5, E65). The folder's
-// index imports Annotation first, so Writing's body evaluates before Annotation extends it.
-const knownCycles = [
-    'src/writing/Annotation.tsx -> src/writing/Writing.tsx -> src/writing/Annotation.tsx'
-];
+const knownCycles = [];
 
 const named = warning => (warning.ids || [])
     .map(id => path.relative(__dirname, id).split(path.sep).join('/'))
