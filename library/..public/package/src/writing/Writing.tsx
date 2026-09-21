@@ -1,7 +1,7 @@
 import { ReactNode, createElement } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
-import type { $Annotation } from './Annotation';
+import { $Annotation } from './Annotation';
 
 export class $Writing extends $Chemical {
     $parenthetical?: boolean = false;
@@ -12,16 +12,22 @@ export class $Writing extends $Chemical {
 
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
+
     get $formal(): boolean { return this._formal; }
     set $formal(formal: boolean) {
         this._formal = formal;
-        for (const writing of this.writing)
-            writing.$formal = formal;
+        for (const chemical of this.source)
+            if (chemical instanceof $Writing)
+                chemical.$formal = formal;
     }
-    get annotation(): boolean { return false; }
-    get contents(): $Chemical[] { return this.source.filter(chemical => !(chemical instanceof $Writing && chemical.annotation)); }
-    get annotations(): $Annotation[] { return this.source.filter((chemical): chemical is $Annotation => chemical instanceof $Writing && chemical.annotation); }
-    get writing(): $Writing[] { return this.source.filter((chemical): chemical is $Writing => chemical instanceof $Writing); }
+
+    get contents(): $Chemical[] {
+        return this.source.filter(chemical => !(chemical instanceof $Annotation));
+    }
+
+    get annotations(): $Annotation[] {
+        return this.source.filter((chemical): chemical is $Annotation => chemical instanceof $Annotation);
+    }
 
     $Writing(...source: $Chemical[]) {
         this.source = [...source];
@@ -46,7 +52,7 @@ export class $Writing extends $Chemical {
         const Annotation = annotation.constructor as new () => $Annotation;
         if (this.find(Annotation).length > 0) return;
         const index = this.source.findIndex(chemical =>
-            chemical instanceof $Writing && chemical.annotation && annotation instanceof (chemical.constructor as new () => $Annotation));
+            chemical instanceof $Annotation && annotation instanceof (chemical.constructor as new () => $Annotation));
         if (index < 0) return this.add(annotation);
         this.source = this.source.map((chemical, at) => at === index ? annotation : chemical);
     }

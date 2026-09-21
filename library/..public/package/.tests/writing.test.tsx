@@ -19,7 +19,6 @@ describe('source is the one stored thing, and everything is read from it', () =>
         expect(writing.contents.length).toBe(1);
         expect(writing.contents[0]).toBeInstanceOf($Writing);
         expect(writing.annotations.length).toBe(2);
-        expect(writing.writing.length).toBe(3);
     });
 
     it('an annotation written inside the prose stands beside the prose, and is found', () => {
@@ -94,7 +93,7 @@ describe('formal is echoed into the specification, which checks only when enforc
         expect(writing.$formal).toBe(false);
         writing.$formal = true;
         expect(writing.$formal).toBe(true);
-        expect(writing.writing[0].writing[0].$formal).toBe(true);
+        expect(((writing.contents[0] as $Writing).contents[0] as $Writing).$formal).toBe(true);
     });
 
     it('may be written', () => {

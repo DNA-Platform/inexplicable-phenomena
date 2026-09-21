@@ -1,2 +1,2 @@
-export * from './Writing';
 export * from './Annotation';
+export * from './Writing';
