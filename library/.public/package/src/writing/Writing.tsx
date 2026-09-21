@@ -1,5 +1,5 @@
 import { ReactNode, createElement } from 'react';
-import { $, $Block, $check, $Chemical, $Written, theme } from '@dna-platform/chemistry';
+import { $, $Block, $check, $Chemical, $Inline, theme } from '@dna-platform/chemistry';
 import { Specification, specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { html } from '@/utilities/Html';
@@ -193,7 +193,7 @@ export class WritingSpecification extends Specification<$Writing> {
             reflection.writing(part) && !part.parenthetical);
     }
 
-    protected beside(writing: $Writing): $Written[] {
+    protected beside(writing: $Writing): $Inline[] {
         return (writing._block.$elements ?? []).filter(part => typeof part !== 'string' && typeof part !== 'number');
     }
 }
