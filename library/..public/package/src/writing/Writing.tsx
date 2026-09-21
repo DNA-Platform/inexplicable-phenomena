@@ -46,11 +46,8 @@ export class $Writing extends $Chemical {
         const parenthetical = this.annotations.contains($Parenthetical);
         return (
             <span className={parenthetical ? 'parenthetical' : undefined}>
-
                 {this.write()}
-
                 {this.annotate()}
-
             </span>
         );
     }
