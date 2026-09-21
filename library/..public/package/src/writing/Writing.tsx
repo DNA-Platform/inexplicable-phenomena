@@ -7,23 +7,27 @@ import { Specification, specify } from '@/utilities/Specification';
 export class $Writing extends $Chemical {
     private _contents?: Collection<$Chemical>;
     private _annotations?: Collection<$Annotation>;
-    protected _annotated: $Annotation[] = [];
+    protected _is: $Annotation[] = [];
 
     get $parenthetical(): boolean { return this.annotations.contains($Parenthetical); }
-    set $parenthetical(parenthetical: boolean) { this.annotations[parenthetical ? 'ensure' : 'remove']($Parenthetical); }
+    set $parenthetical(parenthetical: boolean) { this.annotations.enforce(parenthetical ? $Parenthetical : $Narrative); }
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
 
-    get $annotations(): Given<$Annotation>[] { return this._annotated; }
-    set $annotations(given: Given<$Annotation>[]) {
-        for (const annotation of this._annotated)
+    // ask: the JSX prop is typed from the read side, so the getter declares what the setter takes though it answers only annotations; a framework fact, or ours to change?
+    get $is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
+    set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
+        for (const annotation of this._is)
             this.annotations.drop(annotation);
-        this._annotated = [...given].reverse().map(one => this.annotations.prepend(one)).reverse();
+        this._is = [];
+        const givens = Array.isArray(given) ? given : [given];
+        for (let index = givens.length - 1; index >= 0; index--)
+            this._is.unshift(this.annotations.prepend(givens[index]));
     }
 
     get $formal(): boolean { return this.annotations.contains($Formal); }
     set $formal(formal: boolean) {
-        this.annotations[formal ? 'ensure' : 'remove']($Formal);
+        this.annotations.enforce(formal ? $Formal : $Informal);
         for (const chemical of this.contents)
             if (chemical instanceof $Writing)
                 chemical.$formal = formal;
@@ -45,13 +49,6 @@ export class $Writing extends $Chemical {
                 this.annotations.add(chemical);
             else
                 this.contents.add(chemical);
-        for (let ancestor = this.parent; ancestor instanceof $Writing; ancestor = ancestor.parent === ancestor ? undefined : ancestor.parent)
-            if (ancestor.$formal) {
-                this.annotations.ensure($Formal);
-                break;
-            }
-        this.$Reorganize();
-        this.specify();
     }
 
     specify(): void {
@@ -59,7 +56,8 @@ export class $Writing extends $Chemical {
         specification.enforced = this.$formal;
         specification.check(this);
         for (const annotation of this.annotations)
-            annotation.specifically(this);
+            if (annotation.enforced)
+                annotation.specifically(this);
     }
 
     print(): ReactNode {
@@ -73,17 +71,26 @@ export class $Writing extends $Chemical {
     view(): ReactNode {
         return <span className={this.$parenthetical ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
     }
-
-    protected $Reorganize(): void { }
 }
 
 export class $Annotation extends $Writing {
+    enforced = true;
+
     specifically(writing: $Writing): void { }
 }
 
 export class $Formal extends $Annotation { }
 
+// ask: an opposite names the class it opposes and is filed under it, so it is found where its twin would be and reads as absence; is `opposite` the word?
+export class $Informal extends $Annotation {
+    get opposite(): Function { return $Formal; }
+}
+
 export class $Parenthetical extends $Annotation { }
+
+export class $Narrative extends $Annotation {
+    get opposite(): Function { return $Parenthetical; }
+}
 
 export class WritingSpecification extends Specification<$Writing> {
     @specify('a piece of writing holds only writing')
@@ -96,4 +103,6 @@ export class WritingSpecification extends Specification<$Writing> {
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);
 export const Formal = $($Formal);
+export const Informal = $($Informal);
 export const Parenthetical = $($Parenthetical);
+export const Narrative = $($Narrative);
