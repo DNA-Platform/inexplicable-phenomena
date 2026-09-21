@@ -1,5 +1,5 @@
 import { ReactNode, createElement } from 'react';
-import { $, $check, $Chemical, inert } from '@dna-platform/chemistry';
+import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification, specify } from '@/utilities/Specification';
@@ -7,12 +7,11 @@ import { Specification, specify } from '@/utilities/Specification';
 export class $Writing extends $Chemical {
     private _contents?: Collection<$Chemical>;
     private _annotations?: Collection<$Annotation>;
+    parenthetical = false;
+    formal = false;
     protected _is: $Annotation[] = [];
-    // ask: a trait the annotations define at every draw is inert, the framework's own word, so that defining it inside a view is not a change that redraws; is inert the right spelling here, or should the annotation system own a word for it?
-    @inert() parenthetical = false;
-    @inert() formal = false;
 
-    // ask: the JSX prop is typed from the read side, so the getter declares what the setter takes though it answers only annotations; a framework fact, or ours to change?
+    // ask: the JSX prop is typed from the read side, so the getter declares what the setter takes though it answers only annotations
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
         for (const annotation of this._is)
@@ -21,6 +20,7 @@ export class $Writing extends $Chemical {
         const givens = Array.isArray(given) ? given : [given];
         for (let index = givens.length - 1; index >= 0; index--)
             this._is.unshift(this.annotations.prepend(givens[index]));
+        this.define();
     }
 
     get contents(): Collection<$Chemical> {
@@ -33,28 +33,18 @@ export class $Writing extends $Chemical {
         return annotations ?? (this._annotations = new Collection<$Annotation>(this));
     }
 
-    // ask: an annotation enters at the front, so the later written has the last word (E26), and what $is stands is re-stood in front of them all; a class's own bond comes after this and stands in front of $is — should the dynamic form win there too?
     $Writing(...chemicals: $Chemical[]) {
-        for (const chemical of chemicals)
+        for (let index = chemicals.length - 1; index >= 0; index--) {
+            const chemical = chemicals[index];
             if (chemical instanceof $Annotation)
-                this.annotations.prepend(chemical);
+                this.annotations.add(chemical);
             else
-                this.contents.add(chemical);
-        this.$is = this._is;
-    }
-
-    // ask: the traits start from the class defaults and every enforced annotation defines over them, front last so what $is stands wins; a subclass with traits of its own resets them and then calls this. It runs where the traits are read, in view and in specify, and not in the bond, since a subclass adjusts its annotations after Writing's bond returns. Right?
-    define(): void {
-        this.parenthetical = false;
-        this.formal = false;
-        const annotations = [...this.annotations];
-        for (let index = annotations.length - 1; index >= 0; index--)
-            if (annotations[index].enforced)
-                annotations[index].defines(this);
+                this.contents.prepend(chemical);
+        }
+        this.define();
     }
 
     specify(): void {
-        this.define();
         const specification = new WritingSpecification();
         specification.enforced = this.formal;
         specification.check(this);
@@ -74,6 +64,16 @@ export class $Writing extends $Chemical {
     view(): ReactNode {
         this.define();
         return <span className={this.parenthetical ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
+    }
+
+    // ask: a class that stands its own annotation in its bond enters last and so has the last word, over $is too; should the dynamic form win there?
+    protected define(): void {
+        this.parenthetical = false;
+        this.formal = false;
+        const annotations = [...this.annotations];
+        for (let index = annotations.length - 1; index >= 0; index--)
+            if (annotations[index].enforced)
+                annotations[index].defines(this);
     }
 }
 

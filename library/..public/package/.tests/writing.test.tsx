@@ -23,6 +23,7 @@ class $Aside extends $Writing {
     $Aside(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
         this.annotations.prepend(Parenthetical);
+        this.define();
     }
 }
 let draws = 0;
@@ -40,10 +41,11 @@ const Aside = $($Aside);
 const Counted = $($Counted);
 
 describe('what comes into a writing is sorted once, into contents and annotations', () => {
-    it('contents holds what is not an annotation, wherever the annotations stood', () => {
-        const writing = built<$Writing>(<Writing><Annotation /><Writing>a</Writing><Annotation /></Writing>);
-        expect(writing.contents.length).toBe(1);
-        expect(writing.contents.at(0)).toBeInstanceOf($Writing);
+    it('contents holds what is not an annotation, in its order, wherever the annotations stood', () => {
+        const writing = built<$Writing>(<Writing><Annotation /><Tidying /><Annotation /><Counted /></Writing>);
+        expect(writing.contents.length).toBe(2);
+        expect(writing.contents.at(0)).toBeInstanceOf($Tidying);
+        expect(writing.contents.at(1)).toBeInstanceOf($Counted);
         expect(writing.annotations.length).toBe(2);
     });
 
@@ -165,55 +167,46 @@ describe('$is declares what a writing is from outside: one or many, at the front
     });
 });
 
-describe('an annotation defines the writing it stands in, when the writing defines itself', () => {
-    it('a trait starts at the class default and is defined by an enforced annotation', () => {
+describe('an annotation defines the writing it stands in, at the bond and at every draw', () => {
+    it('a property starts at the class default and is defined at the bond by an enforced annotation', () => {
         const bare = built<$Writing>(<Writing />);
-        bare.define();
         expect(bare.parenthetical).toBe(false);
         expect(bare.formal).toBe(false);
-        const writing = built<$Writing>(<Writing><Parenthetical /><Formal /></Writing>);
-        writing.define();
+        const writing = built<$Writing>(<Writing>an aside <Parenthetical /><Formal /></Writing>);
         expect(writing.parenthetical).toBe(true);
         expect(writing.formal).toBe(true);
     });
 
     it('the front defines last: what $is stands wins over what was written, and a later child wins over an earlier one', () => {
-        const shadowed = built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>);
-        shadowed.define();
-        expect(shadowed.parenthetical).toBe(false);
-        const written = built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>);
-        written.define();
-        expect(written.parenthetical).toBe(true);
-        const reversed = built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>);
-        reversed.define();
-        expect(reversed.parenthetical).toBe(false);
+        expect(built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>).parenthetical).toBe(false);
+        expect(built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>).parenthetical).toBe(true);
+        expect(built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>).parenthetical).toBe(false);
     });
 
     it('a class that stands its own annotation in its bond enters last, and so has the last word, even over $is', () => {
         const aside = built<$Aside>(<Aside is={Narrative}>a</Aside>);
         expect(aside.annotations.at(0)).toBeInstanceOf($Parenthetical);
-        aside.define();
         expect(aside.parenthetical).toBe(true);
     });
 
-    it('an annotation that leaves, or is not enforced, does not make the cut; the trait falls back to its default', () => {
+    it('an annotation that leaves, or is not enforced, does not make the cut at the next draw; the property falls back to its default', () => {
         const writing = built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>);
         writing.$is = [];
-        writing.define();
+        writing.view();
         expect(writing.parenthetical).toBe(true);
         writing.annotations.find($Parenthetical)[0].enforced = false;
-        writing.define();
+        writing.view();
         expect(writing.parenthetical).toBe(false);
         writing.annotations.find($Parenthetical)[0].enforced = true;
         writing.$is = Narrative;
-        writing.define();
+        writing.view();
         expect(writing.parenthetical).toBe(false);
     });
 
     it('defining is idempotent, and an annotation may act on its siblings but not on the list', () => {
         const writing = built<$Writing>(<Writing is={Silence}><Parenthetical /></Writing>);
-        writing.define();
-        writing.define();
+        writing.view();
+        writing.view();
         expect(writing.parenthetical).toBe(false);
         expect(writing.annotations.find($Parenthetical)[0].enforced).toBe(false);
         expect(writing.annotations.length).toBe(2);
@@ -221,8 +214,8 @@ describe('an annotation defines the writing it stands in, when the writing defin
 });
 
 describe('drawn, a writing defines itself at every draw and settles', () => {
-    it('a parenthetical writing wears the class, a narrative one does not, and one draw is one draw', async () => {
-        const writing = built<$Counted>(<Counted><Parenthetical />a</Counted>);
+    it('a parenthetical writing wears the class, and one draw is one draw', async () => {
+        const writing = built<$Counted>(<Counted>a <Parenthetical /></Counted>);
         const Drawn = $(writing);
         draws = 0;
         let container: HTMLElement | undefined;
@@ -233,7 +226,7 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
     });
 
     it('flipping enforced on an annotation redraws the writing without it', async () => {
-        const writing = built<$Writing>(<Writing><Parenthetical />a</Writing>);
+        const writing = built<$Writing>(<Writing>a <Parenthetical /></Writing>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
@@ -242,14 +235,23 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('');
     });
+
+    it('setting $is from outside redraws the writing as what it now is', async () => {
+        const writing = built<$Writing>(<Writing>a <Parenthetical /></Writing>);
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        expect(container?.firstElementChild?.className).toBe('parenthetical');
+        await act(async () => { writing.$is = Narrative; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(container?.firstElementChild?.className).toBe('');
+    });
 });
 
-describe('formal is a trait the Formal annotation defines, echoed into the specification, which checks only when enforced', () => {
+describe('formal is defined by the Formal annotation, echoed into the specification, which checks only when enforced', () => {
     it('is defined by a written Formal, undone by an Informal in front, and set directly by a suite', () => {
-        expect((() => { const writing = built<$Writing>(<Writing><Formal /></Writing>); writing.define(); return writing.formal; })()).toBe(true);
-        const shadowed = built<$Writing>(<Writing is={Informal}><Formal /></Writing>);
-        shadowed.define();
-        expect(shadowed.formal).toBe(false);
+        expect(built<$Writing>(<Writing><Formal /></Writing>).formal).toBe(true);
+        expect(built<$Writing>(<Writing is={Informal}><Formal /></Writing>).formal).toBe(false);
         const writing = built<$Writing>(<Writing><Writing /></Writing>);
         writing.formal = true;
         expect(writing.formal).toBe(true);
@@ -257,9 +259,7 @@ describe('formal is a trait the Formal annotation defines, echoed into the speci
 
     it('does not reach what stands beneath it; each writing is defined by its own annotations', () => {
         const writing = built<$Writing>(<Writing><Formal /><Writing><Writing /></Writing></Writing>);
-        writing.define();
         const inner = (writing.contents.at(0) as $Writing).contents.at(0) as $Writing;
-        inner.define();
         expect(writing.formal).toBe(true);
         expect(inner.formal).toBe(false);
     });
@@ -273,12 +273,12 @@ describe('formal is a trait the Formal annotation defines, echoed into the speci
         expect(() => sound.specify()).not.toThrow();
     });
 
-    it('specifying defines first, so an Informal given from outside silences the check', () => {
-        const writing = built<$Writing>(<Writing><Formal />a</Writing>);
-        writing.$is = Informal;
-        expect(() => writing.specify()).not.toThrow();
-        writing.$is = [];
+    it('specify does not define, so what a suite sets stands until the next draw', () => {
+        const writing = built<$Writing>(<Writing>a</Writing>);
+        writing.formal = true;
         expect(() => writing.specify()).toThrow(/holds only writing/);
+        writing.view();
+        expect(() => writing.specify()).not.toThrow();
     });
 
     it('a detached specification checks only when enforced, and names each rule it ran', () => {
