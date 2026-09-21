@@ -65,6 +65,18 @@ describe('the collection carries the API, by type', () => {
         expect(writing.annotations.find($Mark)).toEqual([stamp]);
     });
 
+    it('find answers by any class in the chain, in the order added, and the collection keeps its order through it all', () => {
+        const writing = built<$Writing>(<Writing><Stamp /><Mark /><Annotation /></Writing>);
+        expect(writing.annotations.find($Mark).length).toBe(2);
+        expect(writing.annotations.find($Stamp).length).toBe(1);
+        expect(writing.annotations.find($Annotation).length).toBe(3);
+        writing.annotations.replace(built<$Mark>(<Mark />));
+        expect(writing.annotations.at(0)).toBeInstanceOf($Mark);
+        expect(writing.annotations.at(0)).not.toBeInstanceOf($Stamp);
+        expect(writing.annotations.find($Stamp).length).toBe(0);
+        expect(writing.annotations.length).toBe(3);
+    });
+
     it('remove takes every instance of the type, subclasses included', () => {
         const writing = built<$Writing>(<Writing><Mark /><Stamp /><Writing>a</Writing></Writing>);
         writing.annotations.remove($Mark);
