@@ -5,26 +5,34 @@ import { Specification, specify } from '@/utilities/Specification';
 
 export class $Writing extends $Chemical {
     $parenthetical?: boolean = false;
-    contents = new Collection<$Chemical>();
-    annotations = new Collection<$Annotation>();
-    protected _formal = false;
+    private _contents?: Collection<$Chemical>;
+    private _annotations?: Collection<$Annotation>;
 
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
 
-    get $formal(): boolean { return this._formal; }
+    get contents(): Collection<$Chemical> {
+        const contents = Object.hasOwn(this, '_contents') ? this._contents : undefined;
+        return contents ?? (this._contents = new Collection<$Chemical>());
+    }
+
+    get annotations(): Collection<$Annotation> {
+        const annotations = Object.hasOwn(this, '_annotations') ? this._annotations : undefined;
+        return annotations ?? (this._annotations = new Collection<$Annotation>());
+    }
+
+    get $formal(): boolean { return this.annotations.contains($Formal); }
     set $formal(formal: boolean) {
-        this._formal = formal;
+        if (formal)
+            this.annotations.ensure($Formal);
+        else
+            this.annotations.remove($Formal);
         for (const chemical of this.contents)
             if (chemical instanceof $Writing)
                 chemical.$formal = formal;
-        for (const annotation of this.annotations)
-            annotation.$formal = formal;
     }
 
     $Writing(...chemicals: $Chemical[]) {
-        this.contents = new Collection<$Chemical>();
-        this.annotations = new Collection<$Annotation>();
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
                 this.annotations.add(chemical);
@@ -32,7 +40,7 @@ export class $Writing extends $Chemical {
                 this.contents.add(chemical);
         for (let ancestor = this.parent; ancestor instanceof $Writing; ancestor = ancestor.parent === ancestor ? undefined : ancestor.parent)
             if (ancestor.$formal) {
-                this._formal = true;
+                this.annotations.ensure($Formal);
                 break;
             }
         this.$Reorganize();
@@ -68,6 +76,8 @@ export class $Annotation extends $Writing {
     specifically(writing: $Writing): void { }
 }
 
+export class $Formal extends $Annotation { }
+
 export class WritingSpecification extends Specification<$Writing> {
     @specify('a piece of writing holds only writing')
     $holdsOnlyWriting(writing: $Writing): void {
@@ -78,3 +88,4 @@ export class WritingSpecification extends Specification<$Writing> {
 
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);
+export const Formal = $($Formal);

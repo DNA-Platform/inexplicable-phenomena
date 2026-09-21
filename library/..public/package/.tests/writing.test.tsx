@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, Writing, WritingSpecification, $Annotation, Annotation, Collection } from '@dna-platform/public';
+import { $Writing, Writing, WritingSpecification, $Annotation, Annotation, $Formal, Formal, Collection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -111,21 +111,26 @@ describe('parenthetical and narrative are a pair', () => {
     });
 });
 
-describe('formal is echoed into the specification, which checks only when enforced', () => {
-    it('is a prop, false until set, and setting it cascades through the writing beneath', () => {
-        const writing = built<$Writing>(<Writing><Writing><Writing /></Writing><Annotation /></Writing>);
+describe('formal is a gene, echoed into the specification, which checks only when enforced', () => {
+    it('is the Formal annotation: written as one, added as a class, or set as a prop, and setting it cascades through the writing beneath', () => {
+        expect(built<$Writing>(<Writing><Formal /></Writing>).$formal).toBe(true);
+        const added = built<$Writing>(<Writing />);
+        added.annotations.add($Formal);
+        expect(added.$formal).toBe(true);
+        const writing = built<$Writing>(<Writing><Writing><Writing /></Writing></Writing>);
         expect(writing.$formal).toBe(false);
         writing.$formal = true;
-        expect(writing.$formal).toBe(true);
+        expect(writing.annotations.containsOne($Formal)).toBe(true);
         expect(((writing.contents.at(0) as $Writing).contents.at(0) as $Writing).$formal).toBe(true);
-        expect(writing.annotations.find($Annotation)[0].$formal).toBe(true);
+        writing.$formal = false;
+        expect(writing.$formal).toBe(false);
+        expect((writing.contents.at(0) as $Writing).$formal).toBe(false);
     });
 
-    it('may be written, and what bonds beneath a formal writing is formal at its own bond', () => {
-        const writing = built<$Writing>(<Writing formal><Writing><Writing /></Writing><Annotation /></Writing>);
+    it('may be written as a prop, and what bonds beneath a formal writing carries the gene at its own bond', () => {
+        const writing = built<$Writing>(<Writing formal><Writing><Writing /></Writing></Writing>);
         expect(writing.$formal).toBe(true);
-        expect(((writing.contents.at(0) as $Writing).contents.at(0) as $Writing).$formal).toBe(true);
-        expect(writing.annotations.find($Annotation)[0].$formal).toBe(true);
+        expect(((writing.contents.at(0) as $Writing).contents.at(0) as $Writing).annotations.contains($Formal)).toBe(true);
     });
 
     it('setting it runs nothing, and an informal writing is never checked', () => {

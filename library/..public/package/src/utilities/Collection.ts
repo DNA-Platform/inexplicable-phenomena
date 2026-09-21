@@ -1,3 +1,5 @@
+import { $check } from '@dna-platform/chemistry';
+
 export class Collection<T extends object> {
     private chemicals: T[] = [];
     private classes = new Map<Function, T[]>();
@@ -20,19 +22,23 @@ export class Collection<T extends object> {
         return this.chemicals.map(pick);
     }
 
-    add(chemical: T): void {
+    add(added: T | (new () => T)): void {
+        const chemical = this.made(added);
         this.chemicals.push(chemical);
         for (const Class of this.chain(chemical))
             this.file(Class, chemical);
     }
 
-    replace(chemical: T): void {
+    replace(replacing: T | (new () => T)): void {
+        const chemical = this.made(replacing);
         const replaced = this.find(chemical.constructor as new () => T)[0];
         if (replaced === undefined) return;
         this.swap(replaced, chemical);
     }
 
-    ensure(chemical: T): void {
+    ensure(ensured: T | (new () => T)): void {
+        if (typeof ensured === 'function' && this.contains(ensured)) return;
+        const chemical = this.made(ensured);
         if (this.find(chemical.constructor as new () => T).length > 0) return;
         for (const Class of this.chain(chemical)) {
             const replaced = this.classes.get(Class)?.[0];
@@ -61,6 +67,10 @@ export class Collection<T extends object> {
 
     containsOne<U extends T>(Class: new () => U): boolean {
         return this.classes.get(Class)?.length === 1;
+    }
+
+    private made(given: T | (new () => T)): T {
+        return typeof given === 'function' ? $check(given, '!') : given;
     }
 
     private swap(replaced: T, chemical: T): void {
