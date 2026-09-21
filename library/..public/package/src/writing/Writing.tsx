@@ -1,16 +1,26 @@
 import { ReactNode, createElement } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
+import type { Given } from '@/utilities/Collection';
 import { Specification, specify } from '@/utilities/Specification';
 
 export class $Writing extends $Chemical {
     private _contents?: Collection<$Chemical>;
     private _annotations?: Collection<$Annotation>;
+    protected _annotated: $Annotation[] = [];
 
     get $parenthetical(): boolean { return this.annotations.contains($Parenthetical); }
     set $parenthetical(parenthetical: boolean) { this.annotations[parenthetical ? 'ensure' : 'remove']($Parenthetical); }
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
+
+    // ask: the prop declares the annotations that come from outside, in any form the framework can build; toggling is changing the list, removal is leaving one out, and what was written as a child is never touched. Its name?
+    get $annotations(): Given<$Annotation>[] { return this._annotated; }
+    set $annotations(given: Given<$Annotation>[]) {
+        for (const annotation of this._annotated)
+            this.annotations.drop(annotation);
+        this._annotated = given.map(one => this.annotations.ensure(one));
+    }
 
     get $formal(): boolean { return this.annotations.contains($Formal); }
     set $formal(formal: boolean) {

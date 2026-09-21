@@ -95,7 +95,28 @@ describe('the collection carries the API, by type', () => {
 
 });
 
-describe('parenthetical is a gene, and narrative its absence', () => {
+describe('annotations may be handed in as a prop, in any form the framework can build, and toggled by changing the list', () => {
+    it('takes a class, a component, an element or a chemical', () => {
+        const writing = built<$Writing>(<Writing annotations={[$Formal, Parenthetical]} />);
+        expect(writing.$formal).toBe(true);
+        expect(writing.$parenthetical).toBe(true);
+        const elemental = built<$Writing>(<Writing annotations={[<Formal />, built<$Parenthetical>(<Parenthetical />)]} />);
+        expect(elemental.$formal).toBe(true);
+        expect(elemental.$parenthetical).toBe(true);
+    });
+
+    it('changing the list removes what is left out and keeps what was written as a child', () => {
+        const writing = built<$Writing>(<Writing annotations={[$Formal]}><Parenthetical /></Writing>);
+        expect(writing.$formal).toBe(true);
+        writing.$annotations = [];
+        expect(writing.$formal).toBe(false);
+        expect(writing.$parenthetical).toBe(true);
+        writing.$annotations = [$Formal, $Formal];
+        expect(writing.annotations.containsOne($Formal)).toBe(true);
+    });
+});
+
+describe('parenthetical is an annotation, and narrative its absence', () => {
     it('writing is narrative until the Parenthetical annotation is written, added, or set', () => {
         expect(built<$Writing>(<Writing />).$parenthetical).toBe(false);
         expect(built<$Writing>(<Writing />).$narrative).toBe(true);
@@ -116,7 +137,7 @@ describe('parenthetical is a gene, and narrative its absence', () => {
     });
 });
 
-describe('formal is a gene, echoed into the specification, which checks only when enforced', () => {
+describe('formal is an annotation, echoed into the specification, which checks only when enforced', () => {
     it('is the Formal annotation: written as one, added as a class, or set as a prop, and setting it cascades through the writing beneath', () => {
         expect(built<$Writing>(<Writing><Formal /></Writing>).$formal).toBe(true);
         const added = built<$Writing>(<Writing />);
@@ -132,7 +153,7 @@ describe('formal is a gene, echoed into the specification, which checks only whe
         expect((writing.contents.at(0) as $Writing).$formal).toBe(false);
     });
 
-    it('may be written as a prop, and what bonds beneath a formal writing carries the gene at its own bond', () => {
+    it('may be written as a prop, and what bonds beneath a formal writing carries the annotation at its own bond', () => {
         const writing = built<$Writing>(<Writing formal><Writing><Writing /></Writing></Writing>);
         expect(writing.$formal).toBe(true);
         expect(((writing.contents.at(0) as $Writing).contents.at(0) as $Writing).annotations.contains($Formal)).toBe(true);

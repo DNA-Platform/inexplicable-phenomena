@@ -1,4 +1,8 @@
-import { $check } from '@dna-platform/chemistry';
+import { isValidElement, ReactElement } from 'react';
+import { $, $check } from '@dna-platform/chemistry';
+import type { Component } from '@dna-platform/chemistry';
+
+export type Given<T> = T | (new () => T) | Component<T> | ReactElement;
 
 export class Collection<T extends object> {
     private chemicals: T[] = [];
@@ -22,30 +26,35 @@ export class Collection<T extends object> {
         return this.chemicals.map(pick);
     }
 
-    add(added: T | (new () => T)): void {
-        const chemical = this.made(added);
+    add(given: Given<T>): T {
+        const chemical = this.made(given);
         this.chemicals.push(chemical);
         for (const Class of this.chain(chemical))
             this.file(Class, chemical);
+        return chemical;
     }
 
-    replace(replacing: T | (new () => T)): void {
-        const chemical = this.made(replacing);
+    replace(given: Given<T>): T | undefined {
+        const chemical = this.made(given);
         const replaced = this.find(chemical.constructor as new () => T)[0];
-        if (replaced === undefined) return;
+        if (replaced === undefined) return undefined;
         this.swap(replaced, chemical);
+        return chemical;
     }
 
-    ensure(ensured: T | (new () => T)): void {
-        if (typeof ensured === 'function' && this.contains(ensured)) return;
-        const chemical = this.made(ensured);
-        if (this.find(chemical.constructor as new () => T).length > 0) return;
+    ensure(given: Given<T>): T {
+        if (typeof given === 'function' && this.contains(given as new () => T))
+            return this.find(given as new () => T)[0];
+        const chemical = this.made(given);
+        const present = this.find(chemical.constructor as new () => T)[0];
+        if (present !== undefined) return present;
         for (const Class of this.chain(chemical)) {
-            const replaced = this.classes.get(Class)?.[0];
+            const replaced = this.classes.get(Class)?.find(other => other.constructor === Class);
             if (replaced === undefined) continue;
-            return this.swap(replaced, chemical);
+            this.swap(replaced, chemical);
+            return chemical;
         }
-        this.add(chemical);
+        return this.add(chemical);
     }
 
     remove<U extends T>(Class: new () => U): void {
@@ -55,6 +64,14 @@ export class Collection<T extends object> {
         for (const chemical of removed)
             for (const Class of this.chain(chemical))
                 this.forget(Class, chemical);
+    }
+
+    drop(chemical: T): void {
+        const index = this.chemicals.indexOf(chemical);
+        if (index < 0) return;
+        this.chemicals.splice(index, 1);
+        for (const Class of this.chain(chemical))
+            this.forget(Class, chemical);
     }
 
     find<U extends T>(Class: new () => U): ReadonlyArray<U> {
@@ -69,8 +86,11 @@ export class Collection<T extends object> {
         return this.classes.get(Class)?.length === 1;
     }
 
-    private made(given: T | (new () => T)): T {
-        return typeof given === 'function' ? $check(given, '!') : given;
+    // ask: a class or a component goes through the framework's find-or-make, an element through its eval form, a chemical stands; is this the whole of what a prop may hand in?
+    private made(given: Given<T>): T {
+        if (typeof given === 'function') return $check(given as new () => T, '!');
+        if (isValidElement(given)) return $(given) as T;
+        return given as T;
     }
 
     private swap(replaced: T, chemical: T): void {
