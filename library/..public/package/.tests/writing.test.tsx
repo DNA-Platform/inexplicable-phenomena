@@ -89,25 +89,30 @@ describe('parenthetical and narrative are a pair', () => {
 });
 
 describe('formal is echoed into the specification, which checks only when enforced', () => {
-    it('is a property, false until set', () => {
-        const writing = built<$Writing>(<Writing />);
-        expect(writing.formal).toBe(false);
-        writing.formal = true;
-        expect(writing.formal).toBe(true);
+    it('is a prop, false until set, and setting it cascades through the writing beneath', () => {
+        const writing = built<$Writing>(<Writing><Writing><Writing /></Writing></Writing>);
+        expect(writing.$formal).toBe(false);
+        writing.$formal = true;
+        expect(writing.$formal).toBe(true);
+        expect(writing.writing[0].writing[0].$formal).toBe(true);
+    });
+
+    it('may be written', () => {
+        expect(built<$Writing>(<Writing formal />).$formal).toBe(true);
     });
 
     it('setting it runs nothing, and an informal writing is never checked', () => {
         const writing = built<$Writing>(<Writing>a</Writing>);
         expect(() => writing.specify()).not.toThrow();
-        expect(() => { writing.formal = true; }).not.toThrow();
+        expect(() => { writing.$formal = true; }).not.toThrow();
     });
 
     it('a formal writing is checked when it specifies, and refused when it holds what is not writing', () => {
         const writing = built<$Writing>(<Writing>a</Writing>);
-        writing.formal = true;
+        writing.$formal = true;
         expect(() => writing.specify()).toThrow(/holds only writing/);
         const sound = built<$Writing>(<Writing><Writing /></Writing>);
-        sound.formal = true;
+        sound.$formal = true;
         expect(() => sound.specify()).not.toThrow();
     });
 
@@ -126,7 +131,7 @@ describe('formal is echoed into the specification, which checks only when enforc
     it('reorganizing runs before the specification, and a subclass adjusts its source there', () => {
         const writing = built<$Writing>(<Tidying><Annotation /><Writing /></Tidying>);
         expect(writing.annotations.length).toBe(0);
-        writing.formal = true;
+        writing.$formal = true;
         expect(() => writing.specify()).not.toThrow();
     });
 });

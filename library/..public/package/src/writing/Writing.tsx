@@ -5,13 +5,19 @@ import type { $Annotation } from './Annotation';
 
 export class $Writing extends $Chemical {
     $parenthetical?: boolean = false;
-    formal = false;
     static declared: (new () => $Annotation)[] = [];
     protected source: $Chemical[] = [];
     protected specification: Specification<$Writing> = new WritingSpecification();
+    protected _formal = false;
 
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
+    get $formal(): boolean { return this._formal; }
+    set $formal(formal: boolean) {
+        this._formal = formal;
+        for (const writing of this.writing)
+            writing.$formal = formal;
+    }
     get annotation(): boolean { return false; }
     get contents(): $Chemical[] { return this.source.filter(chemical => !(chemical instanceof $Writing && chemical.annotation)); }
     get annotations(): $Annotation[] { return this.source.filter((chemical): chemical is $Annotation => chemical instanceof $Writing && chemical.annotation); }
@@ -54,7 +60,7 @@ export class $Writing extends $Chemical {
     }
 
     specify(): void {
-        this.specification.enforced = this.formal;
+        this.specification.enforced = this.$formal;
         this.specification.check(this);
         for (const annotation of this.annotations)
             annotation.specifically(this);
