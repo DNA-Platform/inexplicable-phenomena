@@ -135,7 +135,7 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
 
     it('an annotation that is not enforced does not act, and one that leaves acts no more; what it did to a sibling lasts', () => {
         const writing = built<$Writing>(<Writing><Parenthetical /></Writing>);
-        const narrative = writing.annotations.prepend(Narrative);
+        const [narrative] = writing.annotations.prepend(Narrative);
         narrative.enforced = false;
         writing.view();
         expect(writing.annotations.contains($Parenthetical)).toBe(true);
@@ -171,27 +171,28 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(built<$Writing>(<Writing is={Boxed} />).container).toBe('div');
     });
 
-    it('drawn, the container is the element, and the annotations stand inside it in their own span wearing parenthetical', async () => {
+    it('drawn, the container is the element, and the annotations stand inside it in their own span wearing pd-annotations', async () => {
         const writing = built<$Section>(<Section>a <Mark /></Section>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         const section = container?.firstElementChild;
         expect(section?.tagName).toBe('SECTION');
-        expect(section?.querySelector('span.parenthetical')).not.toBeNull();
+        expect(section?.querySelector('span.pd-annotations')).not.toBeNull();
+        expect(section?.className).toBe('');
         expect(section?.textContent).toContain('a');
     });
 });
 
 describe('drawn, a writing defines itself at every draw and settles', () => {
-    it('a parenthetical writing wears the class, and one draw is one draw', async () => {
+    it('a parenthetical writing wears pd-parenthetical, and one draw is one draw', async () => {
         const writing = built<$Counted>(<Counted>a <Parenthetical /></Counted>);
         const Drawn = $(writing);
         draws = 0;
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
-        expect(container?.querySelector('span.parenthetical')?.textContent).toContain('a');
+        expect(container?.querySelector('span.pd-parenthetical')?.textContent).toContain('a');
         expect(draws).toBeLessThanOrEqual(3);
     });
 
@@ -200,7 +201,7 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
-        expect(container?.firstElementChild?.className).toBe('parenthetical');
+        expect(container?.firstElementChild?.className).toBe('pd-parenthetical');
         await act(async () => { writing.annotations.find($Parenthetical)[0].enforced = false; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('');
@@ -211,7 +212,7 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
-        expect(container?.firstElementChild?.className).toBe('parenthetical');
+        expect(container?.firstElementChild?.className).toBe('pd-parenthetical');
         await act(async () => { writing.$is = Narrative; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('');

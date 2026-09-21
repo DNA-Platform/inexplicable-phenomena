@@ -36,13 +36,13 @@ describe('a collection is an ordered list', () => {
         expect(collection.map((chemical, index) => index)).toEqual([0, 1, 2]);
     });
 
-    it('add goes to the end and prepend to the front, each answering what it made', () => {
+    it('add goes to the end and prepend to the front, several at once in their order, each answering what it made', () => {
         const collection = marks(mark());
-        const added = collection.add(mark());
-        const prepended = collection.prepend(stamp());
-        expect(collection.at(0)).toBe(prepended);
-        expect(collection.at(-1)).toBe(added);
-        expect(collection.length).toBe(3);
+        const [added, last] = collection.add(mark(), stamp());
+        const [prepended, second] = collection.prepend(stamp(), mark());
+        expect([...collection]).toEqual([prepended, second, collection.at(2), added, last]);
+        expect(collection.find($Stamp)).toEqual([prepended, last]);
+        expect(collection.length).toBe(5);
     });
 });
 
@@ -50,23 +50,23 @@ describe('a collection is handed a given in any form the framework can build', (
     it('takes a chemical as it is, and makes one from a class, a component, or an element', () => {
         const collection = new Collection<$Mark>();
         const chemical = mark();
-        expect(collection.add(chemical)).toBe(chemical);
-        expect(collection.add($Stamp)).toBeInstanceOf($Stamp);
-        expect(collection.add(Mark)).toBeInstanceOf($Mark);
-        expect(collection.add(<Stamp />)).toBeInstanceOf($Stamp);
+        expect(collection.add(chemical)[0]).toBe(chemical);
+        expect(collection.add($Stamp)[0]).toBeInstanceOf($Stamp);
+        expect(collection.add(Mark)[0]).toBeInstanceOf($Mark);
+        expect(collection.add(<Stamp />)[0]).toBeInstanceOf($Stamp);
         expect(collection.length).toBe(4);
     });
 
     it('parents what it makes to the chemical it was made for, and leaves a parentless collection alone', () => {
         const holder = $(<Holder />) as unknown as $Holder;
         const owned = new Collection<$Mark>(holder);
-        expect(owned.add($Mark).parent).toBe(holder);
-        expect(owned.add(<Stamp />).parent).toBe(holder);
+        expect(owned.add($Mark)[0].parent).toBe(holder);
+        expect(owned.add(<Stamp />)[0].parent).toBe(holder);
         const chemical = mark();
         owned.add(chemical);
         expect(chemical.parent).toBe(holder);
         const loose = new Collection<$Mark>();
-        const made = loose.add($Mark);
+        const [made] = loose.add($Mark);
         expect(made.parent).not.toBe(holder);
     });
 });
@@ -135,7 +135,7 @@ describe('the two questions a specification asks count only what is enforced', (
     it('contains asks whether an enforced instance of the class is there', () => {
         const collection = new Collection<$Switch>();
         expect(collection.contains($Switch)).toBe(false);
-        const first = collection.add($Switch);
+        const [first] = collection.add($Switch);
         expect(collection.contains($Switch)).toBe(true);
         first.enforced = false;
         expect(collection.contains($Switch)).toBe(false);
@@ -144,9 +144,9 @@ describe('the two questions a specification asks count only what is enforced', (
 
     it('containsOne asks that exactly one enforced instance be there', () => {
         const collection = new Collection<$Switch>();
-        const first = collection.add(flip());
+        const [first] = collection.add(flip());
         expect(collection.containsOne($Switch)).toBe(true);
-        const second = collection.add(flip());
+        const [second] = collection.add(flip());
         expect(collection.containsOne($Switch)).toBe(false);
         second.enforced = false;
         expect(collection.containsOne($Switch)).toBe(true);

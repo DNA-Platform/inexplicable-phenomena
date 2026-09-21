@@ -28,20 +28,22 @@ export class Collection<T extends $Chemical & { enforced?: boolean }> {
         return this.chemicals.map(pick);
     }
 
-    add(given: Given<T>): T {
-        const chemical = this.made(given);
-        this.chemicals.push(chemical);
-        for (const Class of this.chain(chemical))
-            this.file(Class, chemical);
-        return chemical;
+    add(...givens: Given<T>[]): T[] {
+        const chemicals = givens.map(given => this.made(given));
+        this.chemicals.push(...chemicals);
+        for (const chemical of chemicals)
+            for (const Class of this.chain(chemical))
+                this.file(Class, chemical);
+        return chemicals;
     }
 
-    prepend(given: Given<T>): T {
-        const chemical = this.made(given);
-        this.chemicals.unshift(chemical);
-        for (const Class of this.chain(chemical))
-            this.file(Class, chemical, true);
-        return chemical;
+    prepend(...givens: Given<T>[]): T[] {
+        const chemicals = givens.map(given => this.made(given));
+        this.chemicals.unshift(...chemicals);
+        for (let index = chemicals.length - 1; index >= 0; index--)
+            for (const Class of this.chain(chemicals[index]))
+                this.file(Class, chemicals[index], true);
+        return chemicals;
     }
 
     replace(given: Given<T>): T | undefined {
@@ -66,7 +68,7 @@ export class Collection<T extends $Chemical & { enforced?: boolean }> {
             this.swap(replaced, chemical);
             return chemical;
         }
-        return this.add(chemical);
+        return this.add(chemical)[0];
     }
 
     remove<U extends T>(Class: new () => U): void {

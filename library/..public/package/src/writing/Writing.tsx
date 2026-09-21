@@ -14,11 +14,7 @@ export class $Writing extends $Chemical {
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
         for (const annotation of this.is)
             this.annotations.drop(annotation);
-        const givens = Array.isArray(given) ? given : [given];
-        const annotations: $Annotation[] = [];
-        for (let index = givens.length - 1; index >= 0; index--)
-            annotations.unshift(this.annotations.prepend(givens[index]));
-        this.is = annotations;
+        this.is = this.annotations.prepend(...(Array.isArray(given) ? given : [given]));
     }
 
     get contents(): Collection<$Chemical> {
@@ -35,11 +31,10 @@ export class $Writing extends $Chemical {
         const annotations: $Annotation[] = [];
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
-                annotations.push(chemical);
+                annotations.unshift(chemical);
             else
                 this.contents.add(chemical);
-        for (let index = annotations.length - 1; index >= 0; index--)
-            this.annotations.add(annotations[index]);
+        this.annotations.add(...annotations);
         this.define();
     }
 
@@ -48,7 +43,7 @@ export class $Writing extends $Chemical {
         const Container = this.container;
         const parenthetical = this.annotations.contains($Parenthetical);
         return (
-            <Container className={parenthetical ? 'parenthetical' : undefined}>
+            <Container className={parenthetical ? 'pd-parenthetical' : undefined}>
                 {this.write()}
                 {this.annotate()}
             </Container>
@@ -79,7 +74,7 @@ export class $Writing extends $Chemical {
 
     annotate(): ReactNode {
         return (
-            <span className="parenthetical">
+            <span className="pd-annotations">
                 {this.annotations.map((annotation, index) => {
                     const Annotation = $(annotation);
                     return <Annotation key={index} />;
