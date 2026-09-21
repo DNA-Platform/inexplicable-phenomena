@@ -31,13 +31,14 @@ export class $Writing extends $Chemical {
     }
 
     $Writing(...chemicals: $Chemical[]) {
-        for (let index = chemicals.length - 1; index >= 0; index--) {
-            const chemical = chemicals[index];
+        const annotations: $Annotation[] = [];
+        for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
-                this.annotations.add(chemical);
+                annotations.push(chemical);
             else
-                this.contents.prepend(chemical);
-        }
+                this.contents.add(chemical);
+        for (let index = annotations.length - 1; index >= 0; index--)
+            this.annotations.add(annotations[index]);
         this.define();
     }
 
