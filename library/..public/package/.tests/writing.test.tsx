@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, Annotation } from '@dna-platform/public';
+import { $Writing, Writing, WritingSpecification, $Annotation, Annotation } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 class $Mark extends $Annotation { }
 class $Stamp extends $Mark { }
-class $Declaring extends $Writing { protected static override declared = [$Mark]; }
+class $Declaring extends $Writing { static override declared = [$Mark]; }
 class $Tidying extends $Writing { protected override $Reorganize(): void { this.remove($Annotation); } }
 const Mark = $($Mark);
 const Stamp = $($Stamp);
@@ -88,7 +88,7 @@ describe('parenthetical and narrative are a pair', () => {
     });
 });
 
-describe('formal turns the specification on', () => {
+describe('formal is echoed into the specification, which checks only when enforced', () => {
     it('is false until flipped, and flipping cascades through the writing beneath', () => {
         const held = built<$Writing>(<Writing><Writing><Writing /></Writing></Writing>);
         expect(held.formal).toBe(false);
@@ -103,14 +103,32 @@ describe('formal turns the specification on', () => {
         expect(held.writing[0].formal).toBe(true);
     });
 
-    it('a piece of writing holds only writing, and is refused when it does not', () => {
-        expect(() => { built<$Writing>(<Writing><Writing /></Writing>).formal = true; }).not.toThrow();
-        expect(() => { built<$Writing>(<Writing>a</Writing>).formal = true; }).toThrow(/holds only writing/);
+    it('flipping runs nothing; an informal writing is never checked; a formal one is checked when it specifies', () => {
+        const loose = built<$Writing>(<Writing>a</Writing>);
+        expect(() => { loose.formal = true; }).not.toThrow();
+        expect(() => built<$Writing>(<Writing>a</Writing>).specify()).not.toThrow();
+        expect(() => loose.specify()).toThrow(/holds only writing/);
+        const sound = built<$Writing>(<Writing><Writing /></Writing>);
+        sound.formal = true;
+        expect(() => sound.specify()).not.toThrow();
+    });
+
+    it('a detached specification checks only when enforced, and names each rule it ran', () => {
+        const specification = new WritingSpecification();
+        const loose = built<$Writing>(<Writing>a</Writing>);
+        expect(specification.check(loose)).toEqual([]);
+        specification.enforced = true;
+        expect(() => specification.check(loose)).toThrow(/holds only writing/);
+        expect(specification.check(built<$Writing>(<Writing />))).toEqual([
+            'a piece of writing holds only writing',
+            'the annotations a piece of writing declares are built'
+        ]);
     });
 
     it('reorganizing runs before the specification, and a subclass adjusts its source there', () => {
         const held = built<$Writing>(<Tidying><Annotation /><Writing /></Tidying>);
         expect(held.annotations.length).toBe(0);
-        expect(() => { held.formal = true; }).not.toThrow();
+        held.formal = true;
+        expect(() => held.specify()).not.toThrow();
     });
 });

@@ -1,22 +1,24 @@
 import { ReactNode, createElement } from 'react';
 import { $, $Block, $check, $Chemical } from '@dna-platform/chemistry';
 import type { $Written } from '@dna-platform/chemistry';
+import { Specification, specify } from '@/utilities/Specification';
 import type { $Annotation } from './Annotation';
 
 export class $Writing extends $Chemical {
     $parenthetical?: boolean = false;
     $formal?: boolean;
+    static declared: (new () => $Annotation)[] = [];
     protected source: $Written[] = [];
+    protected specification: Specification<$Writing> = new WritingSpecification();
     private _formal = false;
-    protected static declared: (new () => $Annotation)[] = [];
 
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
     get annotation(): boolean { return false; }
     get formal(): boolean { return this._formal; }
     set formal(formal: boolean) {
-        this.formalize(formal);
-        if (formal) this.specify();
+        this._formal = formal;
+        for (const held of this.writing) held.formal = formal;
     }
     get contents(): $Written[] { return this.scan(piece => !(piece instanceof $Writing && piece.annotation)); }
     get annotations(): $Annotation[] { return this.scan(piece => piece instanceof $Writing && piece.annotation) as $Annotation[]; }
@@ -24,10 +26,10 @@ export class $Writing extends $Chemical {
 
     $Writing(...source: $Written[]) {
         this.source = [...source];
-        if (this.$formal !== undefined) this.formalize(this.$formal);
+        if (this.$formal !== undefined) this.formal = this.$formal;
         for (const Kind of (this.constructor as typeof $Writing).declared) this.ensure($check(Kind, '!'));
         this.$Reorganize();
-        if (this.formal) this.specify();
+        this.specify();
     }
 
     add(held: $Annotation): void {
@@ -64,9 +66,8 @@ export class $Writing extends $Chemical {
     }
 
     specify(): void {
-        this.test('a piece of writing holds only writing', () => this.contents.every(piece => piece instanceof $Writing));
-        this.test('the annotations a piece of writing declares are built', () =>
-            (this.constructor as typeof $Writing).declared.every(Kind => this.find(Kind).length > 0));
+        this.specification.enforced = this.formal;
+        this.specification.check(this);
         for (const held of this.annotations) held.specifically(this);
     }
 
@@ -78,17 +79,22 @@ export class $Writing extends $Chemical {
 
     protected $Reorganize(): void { }
 
-    protected test(name: string, holds: () => boolean): void {
-        $check(holds(), name);
-    }
-
     protected scan(keep: (piece: $Written) => boolean): $Written[] {
         return this.source.flatMap(piece => piece instanceof $Block ? piece.elements.filter(keep) : keep(piece) ? [piece] : []);
     }
+}
 
-    private formalize(formal: boolean): void {
-        this._formal = formal;
-        for (const held of this.writing) held.formal = formal;
+export class WritingSpecification extends Specification<$Writing> {
+    @specify('a piece of writing holds only writing')
+    $holdsOnlyWriting(writing: $Writing): void {
+        $check(writing.contents.every(piece => piece instanceof $Writing),
+            'a piece of writing holds only writing, and this one holds something else');
+    }
+
+    @specify('the annotations a piece of writing declares are built')
+    $declaredAreBuilt(writing: $Writing): void {
+        $check((writing.constructor as typeof $Writing).declared.every(Kind => writing.find(Kind).length > 0),
+            'the annotations a piece of writing declares are built, and one of these is missing');
     }
 }
 
