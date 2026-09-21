@@ -4,15 +4,14 @@ import type { $Written } from '@dna-platform/chemistry';
 import type { $Annotation } from './Annotation';
 
 export class $Writing extends $Chemical {
-    $parenthetical?: boolean;
-    $narrative?: boolean;
+    $parenthetical?: boolean = false;
     $formal?: boolean;
-    parenthetical = false;
     protected source: $Written[] = [];
     private _formal = false;
     protected static declared: (new () => $Annotation)[] = [];
 
-    get narrative(): boolean { return !this.parenthetical; }
+    get $narrative(): boolean { return !this.$parenthetical; }
+    set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
     get annotation(): boolean { return false; }
     get formal(): boolean { return this._formal; }
     set formal(formal: boolean) {
@@ -25,8 +24,6 @@ export class $Writing extends $Chemical {
 
     $Writing(...source: $Written[]) {
         this.source = [...source];
-        if (this.$narrative !== undefined) this.parenthetical = !this.$narrative;
-        if (this.$parenthetical !== undefined) this.parenthetical = this.$parenthetical;
         if (this.$formal !== undefined) this.formalize(this.$formal);
         for (const Kind of (this.constructor as typeof $Writing).declared) this.ensure($check(Kind, '!'));
         this.$Reorganize();
@@ -76,7 +73,7 @@ export class $Writing extends $Chemical {
     view(): ReactNode {
         const drawn = this.contents.map((piece, at) => typeof piece === 'object' ? createElement($(piece), { key: at }) : piece);
 
-        return this.parenthetical ? <span hidden>{drawn}</span> : <>{drawn}</>;
+        return this.$parenthetical ? <span hidden>{drawn}</span> : <>{drawn}</>;
     }
 
     protected $Reorganize(): void { }

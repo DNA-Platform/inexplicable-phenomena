@@ -74,14 +74,17 @@ describe('the writing API modifies source by type', () => {
 
 describe('parenthetical and narrative are a pair', () => {
     it('writing is narrative and an annotation is parenthetical by default', () => {
-        expect(built<$Writing>(<Writing />).parenthetical).toBe(false);
-        expect(built<$Writing>(<Writing />).narrative).toBe(true);
-        expect(built<$Annotation>(<Annotation />).parenthetical).toBe(true);
+        expect(built<$Writing>(<Writing />).$parenthetical).toBe(false);
+        expect(built<$Writing>(<Writing />).$narrative).toBe(true);
+        expect(built<$Annotation>(<Annotation />).$parenthetical).toBe(true);
     });
 
-    it('either may be written', () => {
-        expect(built<$Writing>(<Writing parenthetical />).parenthetical).toBe(true);
-        expect(built<$Annotation>(<Annotation narrative />).parenthetical).toBe(false);
+    it('either may be written, and setting one sets the other', () => {
+        expect(built<$Writing>(<Writing parenthetical />).$parenthetical).toBe(true);
+        expect(built<$Annotation>(<Annotation narrative />).$parenthetical).toBe(false);
+        const held = built<$Writing>(<Writing />);
+        held.$narrative = false;
+        expect(held.$parenthetical).toBe(true);
     });
 });
 
