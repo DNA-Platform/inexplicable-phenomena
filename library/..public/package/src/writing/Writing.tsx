@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ElementType, ReactNode } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
@@ -7,6 +7,7 @@ import { Specification, specify } from '@/utilities/Specification';
 export class $Writing extends $Chemical {
     private _contents?: Collection<$Chemical>;
     private _annotations?: Collection<$Annotation>;
+    container: ElementType = 'span';
     protected is: $Annotation[] = [];
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.is; }
@@ -44,12 +45,13 @@ export class $Writing extends $Chemical {
 
     view(): ReactNode {
         this.define();
+        const Container = this.container;
         const parenthetical = this.annotations.contains($Parenthetical);
         return (
-            <span className={parenthetical ? 'parenthetical' : undefined}>
+            <Container className={parenthetical ? 'parenthetical' : undefined}>
                 {this.write()}
                 {this.annotate()}
-            </span>
+            </Container>
         );
     }
 

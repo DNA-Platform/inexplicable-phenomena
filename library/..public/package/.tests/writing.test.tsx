@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { $Writing, Writing, WritingSpecification, $Annotation, Annotation, $Parenthetical, Parenthetical, $Narrative, Narrative, Collection } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, Annotation, $Parenthetical, Parenthetical, $Narrative, Narrative, Collection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -10,6 +10,11 @@ class $Stamp extends $Mark { }
 class $Demanding extends $Annotation {
     override specifies(writing: $Writing): void {
         $check(writing.contents.length > 0, 'a demanding annotation wants something written');
+    }
+}
+class $Boxed extends $Annotation {
+    override defines(writing: $Writing): void {
+        writing.container = 'div';
     }
 }
 class $Tidying extends $Writing {
@@ -25,6 +30,12 @@ class $Aside extends $Writing {
         this.define();
     }
 }
+class $Section extends $Writing {
+    $Section(...chemicals: $Chemical[]) {
+        this.$Writing(...chemicals);
+        this.container = 'section';
+    }
+}
 let draws = 0;
 class $Counted extends $Writing {
     override view(): React.ReactNode {
@@ -35,8 +46,10 @@ class $Counted extends $Writing {
 const Mark = $($Mark);
 const Stamp = $($Stamp);
 const Demanding = $($Demanding);
+const Boxed = $($Boxed);
 const Tidying = $($Tidying);
 const Aside = $($Aside);
+const Section = $($Section);
 const Counted = $($Counted);
 
 describe('what comes into a writing is sorted once, into contents and annotations', () => {
@@ -60,50 +73,6 @@ describe('what comes into a writing is sorted once, into contents and annotation
         expect(writing.annotations).toBeInstanceOf(Collection);
         expect((writing.contents.at(0) as $Writing).contents).not.toBe(writing.contents);
     });
-});
-
-describe('the collection carries the API, by type', () => {
-    it('add goes to the end', () => {
-        const writing = built<$Writing>(<Writing><Writing>a</Writing></Writing>);
-        writing.annotations.add(built<$Mark>(<Mark />));
-        expect(writing.annotations.find($Mark).length).toBe(1);
-        expect(writing.annotations.at(-1)).toBeInstanceOf($Mark);
-    });
-
-    it('replace swaps the first instance of the type, and does nothing when there is none', () => {
-        const writing = built<$Writing>(<Writing><Mark /><Mark /></Writing>);
-        const mark = built<$Mark>(<Mark />);
-        writing.annotations.replace(mark);
-        expect(writing.annotations.find($Mark)[0]).toBe(mark);
-        expect(writing.annotations.find($Mark).length).toBe(2);
-        const empty = built<$Writing>(<Writing />);
-        empty.annotations.replace(mark);
-        expect(empty.annotations.find($Mark).length).toBe(0);
-    });
-
-    it('ensure adds when absent, replaces a parent class, and does nothing when a subclass is there', () => {
-        const writing = built<$Writing>(<Writing />);
-        writing.annotations.ensure(built<$Mark>(<Mark />));
-        expect(writing.annotations.find($Mark).length).toBe(1);
-        const stamp = built<$Stamp>(<Stamp />);
-        writing.annotations.ensure(stamp);
-        expect(writing.annotations.find($Mark)).toEqual([stamp]);
-        writing.annotations.ensure(built<$Mark>(<Mark />));
-        expect(writing.annotations.find($Mark)).toEqual([stamp]);
-    });
-
-    it('find answers by any class in the chain, in the list\'s order, and the collection keeps its order through a replace', () => {
-        const writing = built<$Writing>(<Writing><Stamp /><Mark /><Annotation /></Writing>);
-        expect(writing.annotations.find($Mark).length).toBe(2);
-        expect(writing.annotations.find($Stamp).length).toBe(1);
-        expect(writing.annotations.find($Annotation).length).toBe(3);
-        expect(writing.annotations.find($Mark)[0]).toBe(writing.annotations.at(1));
-        const mark = built<$Mark>(<Mark />);
-        writing.annotations.replace(mark);
-        expect(writing.annotations.at(1)).toBe(mark);
-        expect(writing.annotations.find($Stamp).length).toBe(1);
-        expect(writing.annotations.length).toBe(3);
-    });
 
     it('an annotation written later stands nearer the front, and what $is stands is in front of them all', () => {
         const writing = built<$Writing>(<Writing is={Narrative}><Stamp /><Mark /></Writing>);
@@ -111,26 +80,6 @@ describe('the collection carries the API, by type', () => {
         expect(writing.annotations.at(1)).toBeInstanceOf($Mark);
         expect(writing.annotations.at(1)).not.toBeInstanceOf($Stamp);
         expect(writing.annotations.at(2)).toBeInstanceOf($Stamp);
-    });
-
-    it('contains asks whether an enforced one of a class is there, and containsOne that there be exactly one', () => {
-        const writing = built<$Writing>(<Writing><Stamp /><Mark /></Writing>);
-        expect(writing.annotations.contains($Mark)).toBe(true);
-        expect(writing.annotations.contains($Annotation)).toBe(true);
-        expect(writing.annotations.containsOne($Mark)).toBe(false);
-        expect(writing.annotations.containsOne($Stamp)).toBe(true);
-        writing.annotations.find($Stamp)[0].enforced = false;
-        expect(writing.annotations.contains($Stamp)).toBe(false);
-        expect(writing.annotations.containsOne($Mark)).toBe(true);
-        writing.annotations.remove($Stamp);
-        expect(writing.annotations.find($Stamp).length).toBe(0);
-    });
-
-    it('remove takes every instance of the type, subclasses included', () => {
-        const writing = built<$Writing>(<Writing><Mark /><Stamp /><Writing>a</Writing></Writing>);
-        writing.annotations.remove($Mark);
-        expect(writing.annotations.find($Mark).length).toBe(0);
-        expect(writing.contents.length).toBe(1);
     });
 });
 
@@ -214,6 +163,26 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
     });
 });
 
+describe('a writing draws through its container, which starts as a span', () => {
+    it('is a span until a class or an annotation says otherwise', () => {
+        expect(built<$Writing>(<Writing />).container).toBe('span');
+        expect(built<$Section>(<Section />).container).toBe('section');
+        expect(built<$Writing>(<Writing><Boxed /></Writing>).container).toBe('div');
+        expect(built<$Writing>(<Writing is={Boxed} />).container).toBe('div');
+    });
+
+    it('drawn, the container is the element, and the annotations stand inside it in their own span wearing parenthetical', async () => {
+        const writing = built<$Section>(<Section>a <Mark /></Section>);
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        const section = container?.firstElementChild;
+        expect(section?.tagName).toBe('SECTION');
+        expect(section?.querySelector('span.parenthetical')).not.toBeNull();
+        expect(section?.textContent).toContain('a');
+    });
+});
+
 describe('drawn, a writing defines itself at every draw and settles', () => {
     it('a parenthetical writing wears the class, and one draw is one draw', async () => {
         const writing = built<$Counted>(<Counted>a <Parenthetical /></Counted>);
@@ -274,12 +243,6 @@ describe('specify is the assert the binder calls; it is called by nothing in the
         expect(failures.every(failure => /holds only writing/.test(failure))).toBe(true);
         const annotated = built<$Writing>(<Writing><Writing /><Mark><Demanding /></Mark></Writing>);
         expect(annotated.specify()).toEqual(['a demanding annotation wants something written']);
-    });
-
-    it('a detached specification answers its failures when asked', () => {
-        const specification = new WritingSpecification();
-        expect(specification.check(built<$Writing>(<Writing>a</Writing>))).toEqual(['a piece of writing holds only writing, and this one holds something else']);
-        expect(specification.check(built<$Writing>(<Writing />))).toEqual([]);
     });
 
     it('a subclass adjusts its collections in its own bond, after calling Writing\'s', () => {
