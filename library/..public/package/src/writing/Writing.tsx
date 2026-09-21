@@ -1,14 +1,16 @@
 import { ReactNode, createElement } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { Collection } from '@/utilities/Collection';
 import { Specification, specify } from '@/utilities/Specification';
 // ask: Writing and Annotation are born together (E5) and refer to each other; one file, or two with the cycle declared as now?
 import { $Annotation } from './Annotation';
 
 export class $Writing extends $Chemical {
     $parenthetical?: boolean = false;
+    contents = new Collection<$Chemical>();
+    annotations = new Collection<$Annotation>();
     // ask: a proxy name, and a static list where E21 has a subclass add its annotations in its bond — should this go, and each class ensure its own in $Reorganize?
     static declared: (new () => $Annotation)[] = [];
-    protected source: $Chemical[] = [];
     // ask: one instance on the template, shared by every mount, which is why enforced is echoed at specify — a static per class instead, or a getter?
     protected specification: Specification<$Writing> = new WritingSpecification();
     protected _formal = false;
@@ -19,58 +21,27 @@ export class $Writing extends $Chemical {
     get $formal(): boolean { return this._formal; }
     set $formal(formal: boolean) {
         this._formal = formal;
-        for (const chemical of this.source)
+        for (const chemical of this.contents)
             if (chemical instanceof $Writing)
                 chemical.$formal = formal;
+        for (const annotation of this.annotations)
+            annotation.$formal = formal;
     }
 
-    get contents(): $Chemical[] {
-        return this.source.filter(chemical => !(chemical instanceof $Annotation));
-    }
-
-    get annotations(): $Annotation[] {
-        return this.source.filter((chemical): chemical is $Annotation => chemical instanceof $Annotation);
-    }
-
-    $Writing(...source: $Chemical[]) {
-        // ask: the copy is defensive; does source take the arguments as they come?
-        this.source = [...source];
+    // ask: the two collections are fields, so each mount must get its own — made here rather than in the initializer, or is a field initializer per derivative?
+    $Writing(...chemicals: $Chemical[]) {
+        this.contents = new Collection<$Chemical>();
+        this.annotations = new Collection<$Annotation>();
+        for (const chemical of chemicals)
+            if (chemical instanceof $Annotation)
+                this.annotations.add(chemical);
+            else
+                this.contents.add(chemical);
         // ask: the framework's find-or-make builds a declared annotation; or $(<Annotation />)?
         for (const Annotation of (this.constructor as typeof $Writing).declared)
-            this.ensure($check(Annotation, '!'));
+            this.annotations.ensure($check(Annotation, '!'));
         this.$Reorganize();
         this.specify();
-    }
-
-    // ask: E65's five are about annotations; does anything but an annotation ever enter source after the bond?
-    add(annotation: $Annotation): void {
-        this.source = [...this.source, annotation];
-    }
-
-    replace(annotation: $Annotation): void {
-        // ask: the constructor cast stands three times; should an annotation answer its own class, or the class be handed in beside it?
-        const Annotation = annotation.constructor as new () => $Annotation;
-        const index = this.source.findIndex(chemical => chemical instanceof Annotation);
-        if (index < 0) return;
-        // ask: a new array on every change, or mutate in place, which the framework's collection tracking sees?
-        this.source = this.source.map((chemical, at) => at === index ? annotation : chemical);
-    }
-
-    ensure(annotation: $Annotation): void {
-        const Annotation = annotation.constructor as new () => $Annotation;
-        if (this.find(Annotation).length > 0) return;
-        const index = this.source.findIndex(chemical =>
-            chemical instanceof $Annotation && annotation instanceof (chemical.constructor as new () => $Annotation));
-        if (index < 0) return this.add(annotation);
-        this.source = this.source.map((chemical, at) => at === index ? annotation : chemical);
-    }
-
-    remove<T extends $Annotation>(Annotation: new () => T): void {
-        this.source = this.source.filter(chemical => !(chemical instanceof Annotation));
-    }
-
-    find<T extends $Annotation>(Annotation: new () => T): T[] {
-        return this.source.filter((chemical): chemical is T => chemical instanceof Annotation);
     }
 
     // ask: public, run at the end of the bond and by the suite; and does the suite call this, or check on the specification?
@@ -81,7 +52,7 @@ export class $Writing extends $Chemical {
             annotation.specifically(this);
     }
 
-    // ask: a span, hidden by the attribute — or is hiding a Format's to do, and the element the kind's?
+    // ask: a span, hidden by the attribute — or is hiding a Format's to do, and the element the class's?
     view(): ReactNode {
         const elements = this.contents.map((chemical, index) => createElement($(chemical), { key: index }));
 
@@ -101,7 +72,7 @@ export class WritingSpecification extends Specification<$Writing> {
 
     @specify('the annotations a piece of writing declares are built')
     $declaredAreBuilt(writing: $Writing): void {
-        $check((writing.constructor as typeof $Writing).declared.every(Annotation => writing.find(Annotation).length > 0),
+        $check((writing.constructor as typeof $Writing).declared.every(Annotation => writing.annotations.find(Annotation).length > 0),
             'the annotations a piece of writing declares are built, and one of these is missing');
     }
 }

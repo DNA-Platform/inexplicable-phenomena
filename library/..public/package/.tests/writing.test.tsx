@@ -1,23 +1,23 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, Writing, WritingSpecification, $Annotation, Annotation } from '@dna-platform/public';
+import { $Writing, Writing, WritingSpecification, $Annotation, Annotation, Collection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 class $Mark extends $Annotation { }
 class $Stamp extends $Mark { }
 class $Declaring extends $Writing { static override declared = [$Mark]; }
-class $Tidying extends $Writing { protected override $Reorganize(): void { this.remove($Annotation); } }
+class $Tidying extends $Writing { protected override $Reorganize(): void { this.annotations.remove($Annotation); } }
 const Mark = $($Mark);
 const Stamp = $($Stamp);
 const Declaring = $($Declaring);
 const Tidying = $($Tidying);
 
-describe('source is the one stored thing, and everything is read from it', () => {
-    it('contents is a scan that ignores annotations wherever they stand', () => {
+describe('what comes into a writing is sorted once, into contents and annotations', () => {
+    it('contents holds what is not an annotation, wherever the annotations stood', () => {
         const writing = built<$Writing>(<Writing><Annotation /><Writing>a</Writing><Annotation /></Writing>);
         expect(writing.contents.length).toBe(1);
-        expect(writing.contents[0]).toBeInstanceOf($Writing);
+        expect(writing.contents.at(0)).toBeInstanceOf($Writing);
         expect(writing.annotations.length).toBe(2);
     });
 
@@ -26,48 +26,55 @@ describe('source is the one stored thing, and everything is read from it', () =>
         expect(writing.annotations.length).toBe(1);
         expect(writing.contents.every(chemical => !(chemical instanceof $Annotation))).toBe(true);
     });
+
+    it('both are collections, and each writing has its own', () => {
+        const writing = built<$Writing>(<Writing><Writing /></Writing>);
+        expect(writing.contents).toBeInstanceOf(Collection);
+        expect(writing.annotations).toBeInstanceOf(Collection);
+        expect((writing.contents.at(0) as $Writing).contents).not.toBe(writing.contents);
+    });
 });
 
-describe('the writing API modifies source by type', () => {
+describe('the collection carries the API, by type', () => {
     it('add goes to the end', () => {
         const writing = built<$Writing>(<Writing><Writing>a</Writing></Writing>);
-        writing.add(built<$Mark>(<Mark />));
-        expect(writing.find($Mark).length).toBe(1);
+        writing.annotations.add(built<$Mark>(<Mark />));
+        expect(writing.annotations.find($Mark).length).toBe(1);
         expect(writing.annotations.at(-1)).toBeInstanceOf($Mark);
     });
 
     it('replace swaps the first instance of the type, and does nothing when there is none', () => {
         const writing = built<$Writing>(<Writing><Mark /><Mark /></Writing>);
         const mark = built<$Mark>(<Mark />);
-        writing.replace(mark);
-        expect(writing.find($Mark)[0]).toBe(mark);
-        expect(writing.find($Mark).length).toBe(2);
+        writing.annotations.replace(mark);
+        expect(writing.annotations.find($Mark)[0]).toBe(mark);
+        expect(writing.annotations.find($Mark).length).toBe(2);
         const empty = built<$Writing>(<Writing />);
-        empty.replace(mark);
-        expect(empty.find($Mark).length).toBe(0);
+        empty.annotations.replace(mark);
+        expect(empty.annotations.find($Mark).length).toBe(0);
     });
 
     it('ensure adds when absent, replaces a parent class, and does nothing when a subclass is there', () => {
         const writing = built<$Writing>(<Writing />);
-        writing.ensure(built<$Mark>(<Mark />));
-        expect(writing.find($Mark).length).toBe(1);
+        writing.annotations.ensure(built<$Mark>(<Mark />));
+        expect(writing.annotations.find($Mark).length).toBe(1);
         const stamp = built<$Stamp>(<Stamp />);
-        writing.ensure(stamp);
-        expect(writing.find($Mark)).toEqual([stamp]);
-        writing.ensure(built<$Mark>(<Mark />));
-        expect(writing.find($Mark)).toEqual([stamp]);
+        writing.annotations.ensure(stamp);
+        expect(writing.annotations.find($Mark)).toEqual([stamp]);
+        writing.annotations.ensure(built<$Mark>(<Mark />));
+        expect(writing.annotations.find($Mark)).toEqual([stamp]);
     });
 
     it('remove takes every instance of the type, subclasses included', () => {
         const writing = built<$Writing>(<Writing><Mark /><Stamp /><Writing>a</Writing></Writing>);
-        writing.remove($Mark);
-        expect(writing.find($Mark).length).toBe(0);
+        writing.annotations.remove($Mark);
+        expect(writing.annotations.find($Mark).length).toBe(0);
         expect(writing.contents.length).toBe(1);
     });
 
     it('the annotations a class declares are built at bond, once', () => {
-        expect(built<$Writing>(<Declaring />).find($Mark).length).toBe(1);
-        expect(built<$Writing>(<Declaring><Mark /></Declaring>).find($Mark).length).toBe(1);
+        expect(built<$Writing>(<Declaring />).annotations.find($Mark).length).toBe(1);
+        expect(built<$Writing>(<Declaring><Mark /></Declaring>).annotations.find($Mark).length).toBe(1);
     });
 });
 
@@ -89,11 +96,12 @@ describe('parenthetical and narrative are a pair', () => {
 
 describe('formal is echoed into the specification, which checks only when enforced', () => {
     it('is a prop, false until set, and setting it cascades through the writing beneath', () => {
-        const writing = built<$Writing>(<Writing><Writing><Writing /></Writing></Writing>);
+        const writing = built<$Writing>(<Writing><Writing><Writing /></Writing><Annotation /></Writing>);
         expect(writing.$formal).toBe(false);
         writing.$formal = true;
         expect(writing.$formal).toBe(true);
-        expect(((writing.contents[0] as $Writing).contents[0] as $Writing).$formal).toBe(true);
+        expect(((writing.contents.at(0) as $Writing).contents.at(0) as $Writing).$formal).toBe(true);
+        expect(writing.annotations.find($Annotation)[0].$formal).toBe(true);
     });
 
     it('may be written', () => {
@@ -127,7 +135,7 @@ describe('formal is echoed into the specification, which checks only when enforc
         ]);
     });
 
-    it('reorganizing runs before the specification, and a subclass adjusts its source there', () => {
+    it('reorganizing runs before the specification, and a subclass adjusts its collections there', () => {
         const writing = built<$Writing>(<Tidying><Annotation /><Writing /></Tidying>);
         expect(writing.annotations.length).toBe(0);
         writing.$formal = true;
