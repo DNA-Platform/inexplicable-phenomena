@@ -1,5 +1,3 @@
-import { $check } from '@dna-platform/chemistry';
-
 type Rule<T> = ((writing: T) => boolean | void) & { description?: string };
 
 export function specify(description: string) {
@@ -9,8 +7,6 @@ export function specify(description: string) {
 }
 
 export class Specification<T extends object> {
-    enforced = false;
-
     rules(): [string, Rule<T>][] {
         const rules = new Map<string, Rule<T>>();
         const prototypes: object[] = [];
@@ -25,17 +21,13 @@ export class Specification<T extends object> {
     }
 
     check(writing: T): string[] {
-        if (!this.enforced) return [];
         const failures: string[] = [];
-        const descriptions: string[] = [];
-        for (const [name, rule] of this.rules())
+        for (const [, rule] of this.rules())
             try {
-                if (rule.call(this, writing) !== false)
-                    descriptions.push(rule.description ?? name);
+                rule.call(this, writing);
             } catch (error) {
                 failures.push((error as Error).message);
             }
-        $check(failures.length === 0, failures.join(' · '));
-        return descriptions;
+        return failures;
     }
 }

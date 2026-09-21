@@ -7,20 +7,17 @@ import { Specification, specify } from '@/utilities/Specification';
 export class $Writing extends $Chemical {
     private _contents?: Collection<$Chemical>;
     private _annotations?: Collection<$Annotation>;
-    parenthetical = false;
-    formal = false;
-    protected _is: $Annotation[] = [];
+    protected is: $Annotation[] = [];
 
-    // ask: the JSX prop is typed from the read side, so the getter declares what the setter takes though it answers only annotations
-    get $is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
+    get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.is; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
-        for (const annotation of this._is)
+        for (const annotation of this.is)
             this.annotations.drop(annotation);
-        this._is = [];
         const givens = Array.isArray(given) ? given : [given];
+        const annotations: $Annotation[] = [];
         for (let index = givens.length - 1; index >= 0; index--)
-            this._is.unshift(this.annotations.prepend(givens[index]));
-        this.define();
+            annotations.unshift(this.annotations.prepend(givens[index]));
+        this.is = annotations;
     }
 
     get contents(): Collection<$Chemical> {
@@ -44,13 +41,19 @@ export class $Writing extends $Chemical {
         this.define();
     }
 
-    specify(): void {
-        const specification = new WritingSpecification();
-        specification.enforced = this.formal;
-        specification.check(this);
+    specify(): string[] {
+        const failures = new WritingSpecification().check(this);
         for (const annotation of [...this.annotations])
             if (annotation.enforced)
-                annotation.specifies(this);
+                try {
+                    annotation.specifies(this);
+                } catch (error) {
+                    failures.push((error as Error).message);
+                }
+        for (const chemical of [...this.contents, ...this.annotations])
+            if (chemical instanceof $Writing)
+                failures.push(...chemical.specify());
+        return failures;
     }
 
     print(): ReactNode {
@@ -63,13 +66,10 @@ export class $Writing extends $Chemical {
 
     view(): ReactNode {
         this.define();
-        return <span className={this.parenthetical ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
+        return <span className={this.annotations.contains($Parenthetical) ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
     }
 
-    // ask: a class that stands its own annotation in its bond enters last and so has the last word, over $is too; should the dynamic form win there?
     protected define(): void {
-        this.parenthetical = false;
-        this.formal = false;
         const annotations = [...this.annotations];
         for (let index = annotations.length - 1; index >= 0; index--)
             if (annotations[index].enforced)
@@ -85,20 +85,13 @@ export class $Annotation extends $Writing {
     specifies(writing: $Writing): void { }
 }
 
-export class $Formal extends $Annotation {
-    override defines(writing: $Writing): void { writing.formal = true; }
-}
-
-export class $Informal extends $Annotation {
-    override defines(writing: $Writing): void { writing.formal = false; }
-}
-
-export class $Parenthetical extends $Annotation {
-    override defines(writing: $Writing): void { writing.parenthetical = true; }
-}
+export class $Parenthetical extends $Annotation { }
 
 export class $Narrative extends $Annotation {
-    override defines(writing: $Writing): void { writing.parenthetical = false; }
+    override defines(writing: $Writing): void {
+        for (const parenthetical of writing.annotations.find($Parenthetical))
+            parenthetical.enforced = false;
+    }
 }
 
 export class WritingSpecification extends Specification<$Writing> {
@@ -111,7 +104,5 @@ export class WritingSpecification extends Specification<$Writing> {
 
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);
-export const Formal = $($Formal);
-export const Informal = $($Informal);
 export const Parenthetical = $($Parenthetical);
 export const Narrative = $($Narrative);

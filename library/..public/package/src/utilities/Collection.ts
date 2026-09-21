@@ -4,7 +4,7 @@ import type { Component } from '@dna-platform/chemistry';
 
 export type Given<T> = T | (new () => T) | Component | ReactElement;
 
-export class Collection<T extends $Chemical> {
+export class Collection<T extends $Chemical & { enforced?: boolean }> {
     private chemicals: T[] = [];
     private classes = new Map<Function, T[]>();
 
@@ -91,11 +91,11 @@ export class Collection<T extends $Chemical> {
     }
 
     contains<U extends T>(Class: new () => U): boolean {
-        return this.classes.has(Class);
+        return this.find(Class).some(chemical => chemical.enforced !== false);
     }
 
     containsOne<U extends T>(Class: new () => U): boolean {
-        return this.classes.get(Class)?.length === 1;
+        return this.find(Class).filter(chemical => chemical.enforced !== false).length === 1;
     }
 
     private made(given: Given<T>): T {
