@@ -89,21 +89,14 @@ describe('parenthetical and narrative are a pair', () => {
 });
 
 describe('formal is echoed into the specification, which checks only when enforced', () => {
-    it('is false until flipped, and flipping cascades through the writing beneath', () => {
-        const writing = built<$Writing>(<Writing><Writing><Writing /></Writing></Writing>);
+    it('is a property, false until set', () => {
+        const writing = built<$Writing>(<Writing />);
         expect(writing.formal).toBe(false);
         writing.formal = true;
-        expect(writing.writing.every(writing => writing.formal)).toBe(true);
-        expect(writing.writing[0].writing[0].formal).toBe(true);
-    });
-
-    it('may be written, and then holds for everything beneath', () => {
-        const writing = built<$Writing>(<Writing formal><Writing /></Writing>);
         expect(writing.formal).toBe(true);
-        expect(writing.writing[0].formal).toBe(true);
     });
 
-    it('flipping runs nothing, and an informal writing is never checked', () => {
+    it('setting it runs nothing, and an informal writing is never checked', () => {
         const writing = built<$Writing>(<Writing>a</Writing>);
         expect(() => writing.specify()).not.toThrow();
         expect(() => { writing.formal = true; }).not.toThrow();

@@ -5,29 +5,20 @@ import type { $Annotation } from './Annotation';
 
 export class $Writing extends $Chemical {
     $parenthetical?: boolean = false;
-    $formal?: boolean;
+    formal = false;
     static declared: (new () => $Annotation)[] = [];
     protected source: $Chemical[] = [];
     protected specification: Specification<$Writing> = new WritingSpecification();
-    private _formal = false;
 
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
     get annotation(): boolean { return false; }
-    get formal(): boolean { return this._formal; }
-    set formal(formal: boolean) {
-        this._formal = formal;
-        for (const writing of this.writing)
-            writing.formal = formal;
-    }
     get contents(): $Chemical[] { return this.source.filter(chemical => !(chemical instanceof $Writing && chemical.annotation)); }
     get annotations(): $Annotation[] { return this.source.filter((chemical): chemical is $Annotation => chemical instanceof $Writing && chemical.annotation); }
     get writing(): $Writing[] { return this.source.filter((chemical): chemical is $Writing => chemical instanceof $Writing); }
 
     $Writing(...source: $Chemical[]) {
         this.source = [...source];
-        if (this.$formal !== undefined)
-            this.formal = this.$formal;
         for (const Annotation of (this.constructor as typeof $Writing).declared)
             this.ensure($check(Annotation, '!'));
         this.$Reorganize();
