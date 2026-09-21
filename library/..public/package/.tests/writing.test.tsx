@@ -19,6 +19,12 @@ class $Tidying extends $Writing {
         this.annotations.remove($Annotation);
     }
 }
+class $Aside extends $Writing {
+    $Aside(...chemicals: $Chemical[]) {
+        this.$Writing(...chemicals);
+        this.annotations.prepend(Parenthetical);
+    }
+}
 let draws = 0;
 class $Counted extends $Writing {
     override view(): React.ReactNode {
@@ -30,6 +36,7 @@ const Mark = $($Mark);
 const Stamp = $($Stamp);
 const Silence = $($Silence);
 const Tidying = $($Tidying);
+const Aside = $($Aside);
 const Counted = $($Counted);
 
 describe('what comes into a writing is sorted once, into contents and annotations', () => {
@@ -84,16 +91,25 @@ describe('the collection carries the API, by type', () => {
         expect(writing.annotations.find($Mark)).toEqual([stamp]);
     });
 
-    it('find answers by any class in the chain, in the order added, and the collection keeps its order through it all', () => {
+    it('find answers by any class in the chain, in the list\'s order, and the collection keeps its order through a replace', () => {
         const writing = built<$Writing>(<Writing><Stamp /><Mark /><Annotation /></Writing>);
         expect(writing.annotations.find($Mark).length).toBe(2);
         expect(writing.annotations.find($Stamp).length).toBe(1);
         expect(writing.annotations.find($Annotation).length).toBe(3);
-        writing.annotations.replace(built<$Mark>(<Mark />));
-        expect(writing.annotations.at(0)).toBeInstanceOf($Mark);
-        expect(writing.annotations.at(0)).not.toBeInstanceOf($Stamp);
-        expect(writing.annotations.find($Stamp).length).toBe(0);
+        expect(writing.annotations.find($Mark)[0]).toBe(writing.annotations.at(1));
+        const mark = built<$Mark>(<Mark />);
+        writing.annotations.replace(mark);
+        expect(writing.annotations.at(1)).toBe(mark);
+        expect(writing.annotations.find($Stamp).length).toBe(1);
         expect(writing.annotations.length).toBe(3);
+    });
+
+    it('an annotation written later stands nearer the front, and what $is stands is in front of them all', () => {
+        const writing = built<$Writing>(<Writing is={Narrative}><Stamp /><Mark /></Writing>);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Narrative);
+        expect(writing.annotations.at(1)).toBeInstanceOf($Mark);
+        expect(writing.annotations.at(1)).not.toBeInstanceOf($Stamp);
+        expect(writing.annotations.at(2)).toBeInstanceOf($Stamp);
     });
 
     it('contains halts on the first instance of a class, and containsOne asks that there be exactly one', () => {
@@ -161,16 +177,23 @@ describe('an annotation defines the writing it stands in, when the writing defin
         expect(writing.formal).toBe(true);
     });
 
-    it('the front defines last, so what $is stands wins over what was written, and among children the earlier wins', () => {
+    it('the front defines last: what $is stands wins over what was written, and a later child wins over an earlier one', () => {
         const shadowed = built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>);
         shadowed.define();
         expect(shadowed.parenthetical).toBe(false);
         const written = built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>);
         written.define();
-        expect(written.parenthetical).toBe(false);
+        expect(written.parenthetical).toBe(true);
         const reversed = built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>);
         reversed.define();
-        expect(reversed.parenthetical).toBe(true);
+        expect(reversed.parenthetical).toBe(false);
+    });
+
+    it('a class that stands its own annotation in its bond enters last, and so has the last word, even over $is', () => {
+        const aside = built<$Aside>(<Aside is={Narrative}>a</Aside>);
+        expect(aside.annotations.at(0)).toBeInstanceOf($Parenthetical);
+        aside.define();
+        expect(aside.parenthetical).toBe(true);
     });
 
     it('an annotation that leaves, or is not enforced, does not make the cut; the trait falls back to its default', () => {

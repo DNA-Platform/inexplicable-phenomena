@@ -33,12 +33,14 @@ export class $Writing extends $Chemical {
         return annotations ?? (this._annotations = new Collection<$Annotation>(this));
     }
 
+    // ask: an annotation enters at the front, so the later written has the last word (E26), and what $is stands is re-stood in front of them all; a class's own bond comes after this and stands in front of $is — should the dynamic form win there too?
     $Writing(...chemicals: $Chemical[]) {
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
-                this.annotations.add(chemical);
+                this.annotations.prepend(chemical);
             else
                 this.contents.add(chemical);
+        this.$is = this._is;
     }
 
     // ask: the traits start from the class defaults and every enforced annotation defines over them, front last so what $is stands wins; a subclass with traits of its own resets them and then calls this. It runs where the traits are read, in view and in specify, and not in the bond, since a subclass adjusts its annotations after Writing's bond returns. Right?
