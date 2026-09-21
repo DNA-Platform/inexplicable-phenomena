@@ -161,7 +161,7 @@ describe('an annotation defines the writing it stands in, when the writing defin
         expect(writing.formal).toBe(true);
     });
 
-    it('the front defines last, so what $is stands wins over what was written, and a later child wins over an earlier one', () => {
+    it('the front defines last, so what $is stands wins over what was written, and among children the earlier wins', () => {
         const shadowed = built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>);
         shadowed.define();
         expect(shadowed.parenthetical).toBe(false);
