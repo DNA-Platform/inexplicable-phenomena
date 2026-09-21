@@ -1,5 +1,5 @@
 import { ReactNode, createElement } from 'react';
-import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { $, $check, $Chemical, inert } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification, specify } from '@/utilities/Specification';
@@ -8,11 +8,9 @@ export class $Writing extends $Chemical {
     private _contents?: Collection<$Chemical>;
     private _annotations?: Collection<$Annotation>;
     protected _is: $Annotation[] = [];
-
-    get $parenthetical(): boolean { return this.annotations.contains($Parenthetical); }
-    set $parenthetical(parenthetical: boolean) { this.annotations.enforce(parenthetical ? $Parenthetical : $Narrative); }
-    get $narrative(): boolean { return !this.$parenthetical; }
-    set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
+    // ask: a trait the annotations define at every draw is inert, the framework's own word, so that defining it inside a view is not a change that redraws; is inert the right spelling here, or should the annotation system own a word for it?
+    @inert() parenthetical = false;
+    @inert() formal = false;
 
     // ask: the JSX prop is typed from the read side, so the getter declares what the setter takes though it answers only annotations; a framework fact, or ours to change?
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
@@ -23,14 +21,6 @@ export class $Writing extends $Chemical {
         const givens = Array.isArray(given) ? given : [given];
         for (let index = givens.length - 1; index >= 0; index--)
             this._is.unshift(this.annotations.prepend(givens[index]));
-    }
-
-    get $formal(): boolean { return this.annotations.contains($Formal); }
-    set $formal(formal: boolean) {
-        this.annotations.enforce(formal ? $Formal : $Informal);
-        for (const chemical of this.contents)
-            if (chemical instanceof $Writing)
-                chemical.$formal = formal;
     }
 
     get contents(): Collection<$Chemical> {
@@ -51,13 +41,24 @@ export class $Writing extends $Chemical {
                 this.contents.add(chemical);
     }
 
+    // ask: the traits start from the class defaults and every enforced annotation defines over them, front last so what $is stands wins; a subclass with traits of its own resets them and then calls this. It runs where the traits are read, in view and in specify, and not in the bond, since a subclass adjusts its annotations after Writing's bond returns. Right?
+    define(): void {
+        this.parenthetical = false;
+        this.formal = false;
+        const annotations = [...this.annotations];
+        for (let index = annotations.length - 1; index >= 0; index--)
+            if (annotations[index].enforced)
+                annotations[index].defines(this);
+    }
+
     specify(): void {
+        this.define();
         const specification = new WritingSpecification();
-        specification.enforced = this.$formal;
+        specification.enforced = this.formal;
         specification.check(this);
-        for (const annotation of this.annotations)
+        for (const annotation of [...this.annotations])
             if (annotation.enforced)
-                annotation.specifically(this);
+                annotation.specifies(this);
     }
 
     print(): ReactNode {
@@ -69,27 +70,33 @@ export class $Writing extends $Chemical {
     }
 
     view(): ReactNode {
-        return <span className={this.$parenthetical ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
+        this.define();
+        return <span className={this.parenthetical ? 'parenthetical' : undefined}>{this.print()}{this.annotate()}</span>;
     }
 }
 
 export class $Annotation extends $Writing {
     enforced = true;
 
-    specifically(writing: $Writing): void { }
+    defines(writing: $Writing): void { }
+
+    specifies(writing: $Writing): void { }
 }
 
-export class $Formal extends $Annotation { }
+export class $Formal extends $Annotation {
+    override defines(writing: $Writing): void { writing.formal = true; }
+}
 
-// ask: an opposite names the class it opposes and is filed under it, so it is found where its twin would be and reads as absence; is `opposite` the word?
 export class $Informal extends $Annotation {
-    get opposite(): Function { return $Formal; }
+    override defines(writing: $Writing): void { writing.formal = false; }
 }
 
-export class $Parenthetical extends $Annotation { }
+export class $Parenthetical extends $Annotation {
+    override defines(writing: $Writing): void { writing.parenthetical = true; }
+}
 
 export class $Narrative extends $Annotation {
-    get opposite(): Function { return $Parenthetical; }
+    override defines(writing: $Writing): void { writing.parenthetical = false; }
 }
 
 export class WritingSpecification extends Specification<$Writing> {
