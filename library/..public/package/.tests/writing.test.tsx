@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, Writing, WritingSpecification, $Annotation, Annotation, $Formal, Formal, Collection } from '@dna-platform/public';
+import { $Writing, Writing, WritingSpecification, $Annotation, Annotation, $Formal, Formal, $Parenthetical, Parenthetical, Collection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -95,19 +95,24 @@ describe('the collection carries the API, by type', () => {
 
 });
 
-describe('parenthetical and narrative are a pair', () => {
-    it('writing is narrative and an annotation is parenthetical by default', () => {
+describe('parenthetical is a gene, and narrative its absence', () => {
+    it('writing is narrative until the Parenthetical annotation is written, added, or set', () => {
         expect(built<$Writing>(<Writing />).$parenthetical).toBe(false);
         expect(built<$Writing>(<Writing />).$narrative).toBe(true);
-        expect(built<$Annotation>(<Annotation />).$parenthetical).toBe(true);
+        expect(built<$Writing>(<Writing><Parenthetical /></Writing>).$parenthetical).toBe(true);
+        const added = built<$Writing>(<Writing />);
+        added.annotations.add($Parenthetical);
+        expect(added.$narrative).toBe(false);
     });
 
-    it('either may be written, and setting one sets the other', () => {
-        expect(built<$Writing>(<Writing parenthetical />).$parenthetical).toBe(true);
-        expect(built<$Annotation>(<Annotation narrative />).$parenthetical).toBe(false);
+    it('either may be written as a prop, and setting one sets the other', () => {
+        expect(built<$Writing>(<Writing parenthetical />).annotations.containsOne($Parenthetical)).toBe(true);
+        expect(built<$Writing>(<Writing narrative />).$parenthetical).toBe(false);
         const writing = built<$Writing>(<Writing />);
         writing.$narrative = false;
         expect(writing.$parenthetical).toBe(true);
+        writing.$narrative = true;
+        expect(writing.annotations.contains($Parenthetical)).toBe(false);
     });
 });
 

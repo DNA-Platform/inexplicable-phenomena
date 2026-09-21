@@ -4,12 +4,21 @@ import { Collection } from '@/utilities/Collection';
 import { Specification, specify } from '@/utilities/Specification';
 
 export class $Writing extends $Chemical {
-    $parenthetical?: boolean = false;
     private _contents?: Collection<$Chemical>;
     private _annotations?: Collection<$Annotation>;
 
+    get $parenthetical(): boolean { return this.annotations.contains($Parenthetical); }
+    set $parenthetical(parenthetical: boolean) { this.annotations[parenthetical ? 'ensure' : 'remove']($Parenthetical); }
     get $narrative(): boolean { return !this.$parenthetical; }
     set $narrative(narrative: boolean) { this.$parenthetical = !narrative; }
+
+    get $formal(): boolean { return this.annotations.contains($Formal); }
+    set $formal(formal: boolean) {
+        this.annotations[formal ? 'ensure' : 'remove']($Formal);
+        for (const chemical of this.contents)
+            if (chemical instanceof $Writing)
+                chemical.$formal = formal;
+    }
 
     get contents(): Collection<$Chemical> {
         const contents = Object.hasOwn(this, '_contents') ? this._contents : undefined;
@@ -19,17 +28,6 @@ export class $Writing extends $Chemical {
     get annotations(): Collection<$Annotation> {
         const annotations = Object.hasOwn(this, '_annotations') ? this._annotations : undefined;
         return annotations ?? (this._annotations = new Collection<$Annotation>());
-    }
-
-    get $formal(): boolean { return this.annotations.contains($Formal); }
-    set $formal(formal: boolean) {
-        if (formal)
-            this.annotations.ensure($Formal);
-        else
-            this.annotations.remove($Formal);
-        for (const chemical of this.contents)
-            if (chemical instanceof $Writing)
-                chemical.$formal = formal;
     }
 
     $Writing(...chemicals: $Chemical[]) {
@@ -71,12 +69,12 @@ export class $Writing extends $Chemical {
 }
 
 export class $Annotation extends $Writing {
-    override $parenthetical?: boolean = true;
-
     specifically(writing: $Writing): void { }
 }
 
 export class $Formal extends $Annotation { }
+
+export class $Parenthetical extends $Annotation { }
 
 export class WritingSpecification extends Specification<$Writing> {
     @specify('a piece of writing holds only writing')
@@ -89,3 +87,4 @@ export class WritingSpecification extends Specification<$Writing> {
 export const Writing = $($Writing);
 export const Annotation = $($Annotation);
 export const Formal = $($Formal);
+export const Parenthetical = $($Parenthetical);
