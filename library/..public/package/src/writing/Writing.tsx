@@ -7,16 +7,18 @@ import { Specification, specify } from '@/utilities/Specification';
 import { Annotations } from './Annotations';
 
 export class $Writing extends $Chemical {
-    private _contents?: Collection<$Chemical>;
-    private _annotations?: Annotations;
-    private _classes?: Set<string>;
-    container: ElementType = 'span';
+    protected _contents?: Collection<$Chemical>;
+    protected _annotations?: Annotations;
     protected is: $Annotation[] = [];
+    container: ElementType = 'span';
+    classes!: Set<string>;
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.is; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
-        for (const annotation of this.is)
+        for (const annotation of this.is) {
             this.annotations.drop(annotation);
+            annotation.erase(this);
+        }
         this.is = this.annotations.prepend(...(Array.isArray(given) ? given : [given]));
     }
 
@@ -30,12 +32,8 @@ export class $Writing extends $Chemical {
         return annotations ?? (this._annotations = new Annotations(this));
     }
 
-    get classes(): Set<string> {
-        const classes = Object.hasOwn(this, '_classes') ? this._classes : undefined;
-        return classes ?? (this._classes = new Set<string>());
-    }
-
     $Writing(...chemicals: $Chemical[]) {
+        this.classes = new Set<string>();
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
                 this.annotations.add(chemical);
@@ -45,8 +43,6 @@ export class $Writing extends $Chemical {
         this.$Redefine();
         this.define();
     }
-
-    protected $Redefine(): void { }
 
     view(): ReactNode {
         this.define();
@@ -91,8 +87,9 @@ export class $Writing extends $Chemical {
         });
     }
 
+    protected $Redefine(): void { }
+
     protected define(): void {
-        this.classes.clear();
         for (const annotation of [...this.annotations])
             if (annotation.enforced)
                 annotation.defines(this);

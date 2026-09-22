@@ -136,15 +136,16 @@ describe('$is declares what a writing is from outside: one or many, at the front
 });
 
 describe('an annotation acts on the writing it stands in, at the bond and at every draw', () => {
-    it('classes is a set the annotations fill at every pass, cleared first; Parenthetical adds pd-parenthetical', () => {
+    it('classes is a set each writing resets at its bond and its annotations fill at every pass; Parenthetical adds pd-parenthetical', () => {
         expect(built<$Writing>(<Writing />).classes.size).toBe(0);
         expect(built<$Writing>(<Writing>an aside <Parenthetical /></Writing>).classes.has('pd-parenthetical')).toBe(true);
         expect(built<$Writing>(<Writing is={Parenthetical}>an aside</Writing>).classes.has('pd-parenthetical')).toBe(true);
         const writing = built<$Writing>(<Writing><Parenthetical /><Tagged /></Writing>);
         expect([...writing.classes]).toEqual(['pd-tagged', 'pd-parenthetical']);
-        writing.annotations.remove($Tagged);
+        expect(built<$Writing>(<Writing><Parenthetical /></Writing>).classes.has('pd-tagged')).toBe(false);
+        writing.annotations.find($Parenthetical)[0].enforced = false;
         writing.view();
-        expect([...writing.classes]).toEqual(['pd-parenthetical']);
+        expect([...writing.classes]).toEqual(['pd-tagged']);
     });
 
     it('an annotation that is not enforced erases what it defined; Narrative only flips enforced, and written after what it negates it settles in the bond\'s one pass', () => {
