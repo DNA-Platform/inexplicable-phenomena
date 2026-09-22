@@ -124,7 +124,7 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(writing.annotations.at(0)).toBeInstanceOf($Parenthetical);
     });
 
-    it('before the walk the edits are joined to the front of the annotations, so what was given and what was written see each other when they define', () => {
+    it('the bond makes edits empty and stands what $is gives after $Redefine, so what was given and what was written see each other when they define', () => {
         const given = built<$Writing>(<Writing is={Parenthetical}><Narrative /></Writing>);
         expect(given.annotations.find($Parenthetical)[0].enforced).toBe(false);
         given.view();

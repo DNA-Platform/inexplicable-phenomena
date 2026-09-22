@@ -138,7 +138,9 @@ export class Collection<T extends $Chemical> {
     private forget(Class: Function, chemical: T): void {
         const chemicals = this.classes.get(Class);
         if (chemicals === undefined) return;
-        chemicals.splice(chemicals.indexOf(chemical), 1);
+        const index = chemicals.indexOf(chemical);
+        if (index < 0) return;
+        chemicals.splice(index, 1);
         if (chemicals.length === 0)
             this.classes.delete(Class);
     }

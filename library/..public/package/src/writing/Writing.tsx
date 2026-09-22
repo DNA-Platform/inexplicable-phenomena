@@ -10,17 +10,18 @@ export class $Writing extends $Chemical {
     protected _contents?: Collection<$Chemical>;
     protected _annotations?: Annotations;
     protected _is: Given<$Annotation> | Given<$Annotation>[] = [];
-    edits: $Annotation[] = [];
-    container: ElementType = 'span';
+    edits!: $Annotation[];
     classes!: Set<string>;
+    container: ElementType = 'span';
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
+        this._is = given;
+        if (this.edits === undefined) return;
         for (const annotation of this.edits) {
             this.annotations.drop(annotation);
             annotation.erase(this);
         }
-        this._is = given;
         this.edits = this.annotations.prepend(...(Array.isArray(given) ? given : [given]));
     }
 
@@ -36,12 +37,14 @@ export class $Writing extends $Chemical {
 
     $Writing(...chemicals: $Chemical[]) {
         this.classes = new Set<string>();
+        this.edits = [];
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
                 this.annotations.add(chemical);
             else
                 this.contents.add(chemical);
         this.$Redefine();
+        this.$is = this._is;
         this.define();
     }
 
@@ -89,9 +92,6 @@ export class $Writing extends $Chemical {
     protected $Redefine(): void { }
 
     protected define(): void {
-        for (const annotation of this.edits)
-            this.annotations.drop(annotation);
-        this.annotations.prepend(...this.edits);
         for (const annotation of [...this.annotations])
             if (annotation.enforced)
                 annotation.defines(this);
