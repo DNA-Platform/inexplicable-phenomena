@@ -1,6 +1,7 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import type { Component } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification, specify } from '@/utilities/Specification';
@@ -12,6 +13,7 @@ export class $Writing extends $Chemical {
     protected _is: Given<$Annotation> | Given<$Annotation>[] = [];
     edits!: $Annotation[];
     classes!: Set<string>;
+    specification: Specification<$Writing> = new WritingSpecification();
     container: ElementType = 'span';
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
@@ -38,12 +40,12 @@ export class $Writing extends $Chemical {
     $Writing(...chemicals: $Chemical[]) {
         this.classes = new Set<string>();
         this.edits = [];
+        this.$Redefine();
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
                 this.annotations.add(chemical);
             else
                 this.contents.add(chemical);
-        this.$Redefine();
         this.$is = this._is;
         this.define();
     }
@@ -61,7 +63,7 @@ export class $Writing extends $Chemical {
     }
 
     specify(): string[] {
-        const failures = new WritingSpecification().check(this);
+        const failures = this.specification.check(this);
         for (const annotation of [...this.annotations])
             if (annotation.enforced)
                 try {
@@ -73,6 +75,12 @@ export class $Writing extends $Chemical {
             if (chemical instanceof $Writing)
                 failures.push(...chemical.specify());
         return failures;
+    }
+
+    is(given: (new () => $Annotation) | Component): boolean {
+        const chemical = (given as { $chemical?: $Chemical }).$chemical;
+        const Class = chemical === undefined ? given as new () => $Annotation : chemical.constructor as new () => $Annotation;
+        return this.annotations.contains(Class);
     }
 
     write(): ReactNode {
@@ -102,6 +110,7 @@ export class $Writing extends $Chemical {
 
 export class $Annotation extends $Writing {
     enforced = true;
+    override specification: Specification<$Writing> = new AnnotationSpecification();
 
     $Annotation(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
@@ -146,6 +155,10 @@ export class WritingSpecification extends Specification<$Writing> {
         $check(writing.contents.every(chemical => chemical instanceof $Writing),
             'a piece of writing holds only writing, and this one holds something else');
     }
+}
+
+export class AnnotationSpecification extends WritingSpecification {
+    override $holdsOnlyWriting(): void { }
 }
 
 export const Writing = $($Writing);

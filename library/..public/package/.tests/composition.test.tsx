@@ -1,0 +1,116 @@
+import { describe, it, expect } from 'vitest';
+import { $ } from '@dna-platform/chemistry';
+import { $Writing, Writing, $Composition, Composition, $Level, Level, Strict, $Permissive, Permissive, Open, Closed, CompositionSpecification, WritingSpecification, AnnotationSpecification } from '@dna-platform/public';
+
+const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+
+class $Fourth extends $Composition {
+    protected override $Redefine(): void {
+        this.annotations.add(<Level>4</Level>, <Permissive />, <Open />);
+    }
+}
+class $Fifth extends $Composition {
+    protected override $Redefine(): void {
+        this.annotations.add(<Level>5</Level>, <Permissive />, <Closed />);
+    }
+}
+class $Top extends $Composition {
+    protected override $Redefine(): void {
+        this.annotations.add(<Level>6</Level>, <Strict />, <Closed />);
+    }
+}
+const Fourth = $($Fourth);
+const Fifth = $($Fifth);
+const Top = $($Top);
+
+describe('a composition has a level, set by its Level annotation from what was written in it', () => {
+    it('is 0 until a Level sets it; a level class stands its own in $Redefine', () => {
+        expect(built<$Composition>(<Composition />).level).toBe(0);
+        expect(built<$Composition>(<Composition><Level>3</Level></Composition>).level).toBe(3);
+        expect(built<$Fourth>(<Fourth />).level).toBe(4);
+        expect(built<$Fourth>(<Fourth />).is(Level)).toBe(true);
+    });
+
+    it('a Level that is not enforced erases the level', () => {
+        const fourth = built<$Fourth>(<Fourth />);
+        fourth.annotations.find($Level)[0].enforced = false;
+        fourth.view();
+        expect(fourth.level).toBe(0);
+    });
+});
+
+describe('parts are the compositions among the contents', () => {
+    it('keeps the compositions in order; other writing and calligraphy are not parts', () => {
+        const fifth = built<$Fifth>(<Fifth>text <Fourth>a</Fourth><Writing /><Fourth>b</Fourth></Fifth>);
+        expect(fifth.contents.length).toBe(4);
+        expect(fifth.parts.length).toBe(2);
+        expect(fifth.parts.every(part => part instanceof $Fourth)).toBe(true);
+    });
+
+    it('a child of the same class is not a part; its parts are flattened in', () => {
+        const fifth = built<$Fifth>(<Fifth><Fifth><Fourth /></Fifth><Fourth /></Fifth>);
+        expect(fifth.parts.length).toBe(2);
+        expect(fifth.parts.some(part => part instanceof $Fifth)).toBe(false);
+    });
+
+    it('depth counts nesting in the same class, and is 0 under a different parent', () => {
+        const fifth = built<$Fifth>(<Fifth><Fifth><Fourth /></Fifth></Fifth>);
+        const inner = fifth.contents.find($Fifth)[0];
+        expect(fifth.depth).toBe(0);
+        expect(inner.depth).toBe(1);
+        expect(inner.contents.find($Fourth)[0].depth).toBe(0);
+    });
+
+    it('the canonical is the first part, and none when there is none', () => {
+        const fifth = built<$Fifth>(<Fifth>a <Fourth>b</Fourth><Fourth>c</Fourth></Fifth>);
+        expect(fifth.canonical).toBe(fifth.parts[0]);
+        expect(built<$Fifth>(<Fifth>a</Fifth>).canonical).toBeUndefined();
+    });
+});
+
+describe('is asks whether an annotation of a kind is enforced, by class or by component', () => {
+    it('answers the class and the component alike, and false once the annotation is not enforced', () => {
+        const fourth = built<$Fourth>(<Fourth />);
+        expect(fourth.is(Permissive)).toBe(true);
+        expect(fourth.is($Permissive)).toBe(true);
+        expect(fourth.is(Strict)).toBe(false);
+        fourth.annotations.find($Permissive)[0].enforced = false;
+        expect(fourth.is(Permissive)).toBe(false);
+    });
+
+    it('a pair negates its opposite, so a written Strict wins over the permissive a class stands', () => {
+        const fourth = built<$Fourth>(<Fourth><Strict /></Fourth>);
+        expect(fourth.is(Strict)).toBe(true);
+        expect(fourth.is(Permissive)).toBe(false);
+        const opened = built<$Fifth>(<Fifth is={Open} />);
+        expect(opened.is(Open)).toBe(true);
+        expect(opened.is(Closed)).toBe(false);
+    });
+});
+
+describe('the specification is a property each class reassigns, and specify never changes', () => {
+    it('Writing, Annotation and Composition each check with their own', () => {
+        expect(built<$Writing>(<Writing />).specification).toBeInstanceOf(WritingSpecification);
+        expect(built<$Writing>(<Writing />).specification).not.toBeInstanceOf(CompositionSpecification);
+        expect(built<$Fourth>(<Fourth />).specification).toBeInstanceOf(CompositionSpecification);
+        expect(built<$Fourth>(<Fourth />).annotations.at(0)!.specification).toBeInstanceOf(AnnotationSpecification);
+    });
+
+    it('a composition has a level above zero', () => {
+        expect(built<$Composition>(<Composition />).specify()).toEqual(['a composition has a level above zero, and this one has none']);
+        expect(built<$Fourth>(<Fourth />).specify()).toEqual([]);
+    });
+
+    it('strict holds parts at its level or one below; permissive at or below', () => {
+        expect(built<$Top>(<Top><Fifth /></Top>).specify()).toEqual([]);
+        expect(built<$Top>(<Top><Fourth /></Top>).specify()).toContain('a strict composition holds parts at its level or one below, and this one holds another');
+        expect(built<$Fifth>(<Fifth><Fourth /></Fifth>).specify()).toEqual([]);
+        expect(built<$Fifth>(<Fifth><Top /></Fifth>).specify()).toContain('a permissive composition holds parts at or below its level, and this one holds one above');
+    });
+
+    it('closed holds only writing; open lifts the rule a piece of writing has by default', () => {
+        expect(built<$Fifth>(<Fifth>prose</Fifth>).specify()).toEqual(['a closed composition holds only writing, and this one holds something else']);
+        expect(built<$Fourth>(<Fourth>prose</Fourth>).specify()).toEqual([]);
+        expect(built<$Fifth>(<Fifth is={Open}>prose</Fifth>).specify()).toEqual([]);
+    });
+});
