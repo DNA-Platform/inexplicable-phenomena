@@ -235,7 +235,7 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(built<$Writing>(<Writing is={Boxed} />).container).toBe('div');
     });
 
-    it('drawn, the container is the element wearing the classes, and the annotations stand inside it in their own span wearing pd-annotations', async () => {
+    it('drawn, the container is the element wearing the classes, and each annotation is rendered inside it as its own writing wearing pd-annotation', async () => {
         const writing = built<$Section>(<Section>a <Mark /><Tagged /><Parenthetical /></Section>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
@@ -243,25 +243,34 @@ describe('a writing draws through its container, which starts as a span', () => 
         const section = container?.firstElementChild;
         expect(section?.tagName).toBe('SECTION');
         expect(section?.className).toBe('pd-parenthetical pd-tagged');
-        expect(section?.querySelector('span.pd-annotations')).not.toBeNull();
+        expect(section?.querySelectorAll(':scope > span.pd-annotation').length).toBe(3);
         expect(section?.textContent).toContain('a');
     });
 
-    it('an annotation is not rendered by default; one that has something to render overrides its view', async () => {
-        const writing = built<$Writing>(<Writing>a <Mark /><Tagged /></Writing>);
+    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, wearing pd-annotation, and its note renders at the level of that writing, nothing by default', async () => {
+        const writing = built<$Writing>(<Writing>a <Mark>because it was late</Mark><Tagged /></Writing>);
+        expect(writing.annotations.find($Mark)[0].classes.has('pd-annotation')).toBe(true);
+        expect(writing.annotations.find($Mark)[0].note()).toBeNull();
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
-        expect(container?.querySelector('span.pd-annotations')?.childElementCount).toBe(0);
-        expect(container?.querySelector('span.pd-annotations')?.textContent).toBe('');
+        const notes = container?.querySelectorAll('span.pd-annotation');
+        expect(notes?.length).toBe(2);
+        expect(notes?.[0].textContent).toBe('');
+        expect(notes?.[1].textContent).toBe('because it was late');
+        expect(container?.firstElementChild?.childElementCount).toBe(2);
     });
 
-    it('Parenthetical renders, as its own view, the styled global style that targets pd-parenthetical', () => {
+    it('Parenthetical renders, as its note, the styled global style that targets pd-parenthetical; an annotation that is not enforced renders no note', async () => {
         const writing = built<$Writing>(<Writing>an aside <Parenthetical /></Writing>);
-        const style = writing.annotations.find($Parenthetical)[0].view() as React.ReactElement;
+        const parenthetical = writing.annotations.find($Parenthetical)[0];
+        const style = parenthetical.note() as React.ReactElement;
         expect(style).not.toBeNull();
         expect(typeof style.type).toBe('object');
         expect((style.type as { $$typeof?: symbol }).$$typeof).toBe(Symbol.for('react.memo'));
+        parenthetical.enforced = false;
+        const drawn = parenthetical.view() as React.ReactElement;
+        expect(drawn.props.children[1]).toBeNull();
     });
 });
 

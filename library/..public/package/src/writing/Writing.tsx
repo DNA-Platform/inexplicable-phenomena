@@ -43,9 +43,7 @@ export class $Writing extends $Chemical {
         return (
             <Container className={classes}>
                 {this.write()}
-                <span className="pd-annotations">
-                    {this.annotate()}
-                </span>
+                {this.annotate()}
             </Container>
         );
     }
@@ -101,7 +99,22 @@ export class $Writing extends $Chemical {
 
 export class $Annotation extends $Writing {
     enforced = true;
-    override view(): ReactNode { return null; }
+
+    $Annotation(...chemicals: $Chemical[]) {
+        this.$Writing(...chemicals);
+        this.classes.add('pd-annotation');
+    }
+
+    override view(): ReactNode {
+        return (
+            <>
+                {super.view()}
+                {this.enforced ? this.note() : null}
+            </>
+        );
+    }
+
+    note(): ReactNode { return null; }
     defines(writing: $Writing): void { }
     erase(writing: $Writing): void { }
     specifies(writing: $Writing): void { }
@@ -112,7 +125,7 @@ const ParentheticalStyle = createGlobalStyle`
 `;
 
 export class $Parenthetical extends $Annotation {
-    override view(): ReactNode { return <ParentheticalStyle />; }
+    override note(): ReactNode { return <ParentheticalStyle />; }
     override defines(writing: $Writing): void { writing.classes.add('pd-parenthetical'); }
     override erase(writing: $Writing): void { writing.classes.delete('pd-parenthetical'); }
 }
