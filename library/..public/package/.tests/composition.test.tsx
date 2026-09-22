@@ -88,8 +88,8 @@ describe('is asks whether an annotation of a kind is enforced, by class or by co
     });
 
     it('a pair said of a writing that is not a composition throws when it specifies, and the assert reports it', () => {
-        expect(built<$Writing>(<Writing><Strict /></Writing>).specify()).toEqual(['strict is said of a composition, and this is not one']);
-        expect(built<$Writing>(<Writing><Permissive /></Writing>).specify()).toEqual(['permissive is said of a composition, and this is not one']);
+        expect(built<$Writing>(<Writing><Strict /></Writing>).specify()).toEqual(['Writing: strict is said of a composition, and this is not one']);
+        expect(built<$Writing>(<Writing><Permissive /></Writing>).specify()).toEqual(['Writing: permissive is said of a composition, and this is not one']);
     });
 });
 
@@ -108,14 +108,14 @@ describe('the specification is a property each class reassigns, and specify neve
 
     it('strict holds parts at its level or one below; permissive at or below', () => {
         expect(built<$Top>(<Top><Fifth /></Top>).specify()).toEqual([]);
-        expect(built<$Top>(<Top><Fourth /></Top>).specify()).toContain('a strict composition holds parts at its level or one below, and this one holds another');
+        expect(built<$Top>(<Top><Fourth /></Top>).specify()).toContain('Top: a strict composition holds parts at its level or one below, and this one holds another');
         expect(built<$Fifth>(<Fifth><Fourth /></Fifth>).specify()).toEqual([]);
-        expect(built<$Fifth>(<Fifth><Top /></Fifth>).specify()).toContain('a permissive composition holds parts at or below its level, and this one holds one above');
+        expect(built<$Fifth>(<Fifth><Top /></Fifth>).specify()).toContain('Fifth: a permissive composition holds parts at or below its level, and this one holds one above');
     });
 
     it('closed holds only writing; open lifts the rule a piece of writing has by default; the cascade reaches a nested one', () => {
-        expect(built<$Fifth>(<Fifth>prose</Fifth>).specify()).toEqual(['a closed composition holds only writing, and this one holds something else']);
-        expect(built<$Top>(<Top><Fifth><Fifth>prose</Fifth></Fifth></Top>).specify()).toEqual(['a closed composition holds only writing, and this one holds something else']);
+        expect(built<$Fifth>(<Fifth>prose</Fifth>).specify()).toEqual(['Fifth: a closed composition holds only writing, and this one holds something else']);
+        expect(built<$Top>(<Top><Fifth><Fifth>prose</Fifth></Fifth></Top>).specify()).toEqual(['Top / Fifth 0 / Fifth 0: a closed composition holds only writing, and this one holds something else']);
         expect(built<$Fourth>(<Fourth>prose</Fourth>).specify()).toEqual([]);
         expect(built<$Fifth>(<Fifth is={Open}>prose</Fifth>).specify()).toEqual([]);
     });

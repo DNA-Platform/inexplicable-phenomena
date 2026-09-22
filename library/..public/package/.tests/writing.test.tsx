@@ -363,7 +363,7 @@ describe('specify is the assert the binder calls; it is called by nothing in the
     it('answers the failures of the writing, and nothing when it is up to code; Writing itself has no rule, a letter may hold anything', () => {
         expect(built<$Writing>(<Writing><Writing /></Writing>).specify()).toEqual([]);
         expect(built<$Writing>(<Writing>a</Writing>).specify()).toEqual([]);
-        expect(built<$Writing>(<Writing><Demanding /></Writing>).specify()).toEqual(['a demanding annotation wants something written']);
+        expect(built<$Writing>(<Writing><Demanding /></Writing>).specify()).toEqual(['Writing: a demanding annotation wants something written']);
     });
 
     it('the bond does not specify; a writing holding a string is built, and refused only when asked', () => {
@@ -372,7 +372,7 @@ describe('specify is the assert the binder calls; it is called by nothing in the
 
     it('every enforced annotation weighs in through specifies', () => {
         const wanting = built<$Writing>(<Writing><Demanding /></Writing>);
-        expect(wanting.specify()).toEqual(['a demanding annotation wants something written']);
+        expect(wanting.specify()).toEqual(['Writing: a demanding annotation wants something written']);
         wanting.annotations.find($Demanding)[0].enforced = false;
         expect(wanting.specify()).toEqual([]);
         expect(built<$Writing>(<Writing><Demanding /><Writing /></Writing>).specify()).toEqual([]);
@@ -381,10 +381,12 @@ describe('specify is the assert the binder calls; it is called by nothing in the
     it('cascades through contents and annotations, so every failure in reach appears', () => {
         const writing = built<$Writing>(<Writing><Writing><Demanding /></Writing><Writing><Writing><Demanding /></Writing></Writing><Demanding /></Writing>);
         const failures = writing.specify();
-        expect(failures.length).toBe(2);
-        expect(failures.every(failure => /wants something written/.test(failure))).toBe(true);
+        expect(failures).toEqual([
+            'Writing / Writing 0: a demanding annotation wants something written',
+            'Writing / Writing 1 / Writing 0: a demanding annotation wants something written',
+        ]);
         const annotated = built<$Writing>(<Writing><Writing /><Mark><Demanding /></Mark></Writing>);
-        expect(annotated.specify()).toEqual(['a demanding annotation wants something written']);
+        expect(annotated.specify()).toEqual(['Writing / Mark 1: a demanding annotation wants something written']);
     });
 
     it('a subclass adjusts its collections in its own bond, after calling Writing\'s', () => {

@@ -1,3 +1,5 @@
+import { reflection } from './Reflection';
+
 type Rule<T> = ((writing: T) => boolean | void) & { description?: string };
 
 export function specify(description: string) {
@@ -20,14 +22,23 @@ export class Specification<T extends object> {
         return [...rules.entries()];
     }
 
-    check(writing: T): string[] {
+    code(writing: T, within?: string, index?: number): string {
+        const name = reflection.name(writing);
+        return within === undefined ? name : `${within} / ${name} ${index}`;
+    }
+
+    check(writing: T, code?: string): string[] {
         const failures: string[] = [];
         for (const [, rule] of this.rules)
             try {
                 rule.call(this, writing);
             } catch (error) {
-                failures.push((error as Error).message);
+                failures.push(this.failure(error as Error, code));
             }
         return failures;
+    }
+
+    failure(error: Error, code?: string): string {
+        return code === undefined ? error.message : `${code}: ${error.message}`;
     }
 }

@@ -19,7 +19,7 @@ describe('a section is a composition at 5, permissive and closed, that means thr
     it('a section without a heading is a void, reported when asked', () => {
         const section = built<$Section>(<Section><Paragraph>only</Paragraph></Section>);
         expect(section.canonical).toBeUndefined();
-        expect(section.specify()).toEqual(['a section means through its heading, and this one has none']);
+        expect(section.specify()).toEqual(['Section: a section means through its heading, and this one has none']);
     });
 
     it('its parts across its subsections are their paragraphs and headings, and its canonical is its own heading only', () => {
@@ -52,9 +52,9 @@ describe('a heading is a sentence that means its section', () => {
     it('outside a section it has no section, and says so when asked', () => {
         const heading = built<$Heading>(<Heading>alone</Heading>);
         expect(heading.section).toBeUndefined();
-        expect(heading.specify()).toEqual(['a heading means its section, and this one is not in one']);
+        expect(heading.specify()).toEqual(['Heading: a heading means its section, and this one is not in one']);
         const misplaced = built<$Paragraph>(<Paragraph><Heading>h</Heading></Paragraph>);
-        expect(misplaced.specify()).toEqual(['a heading means its section, and this one is not in one']);
+        expect(misplaced.specify()).toEqual(['Paragraph / Heading 0: a heading means its section, and this one is not in one']);
         expect(built<$Section>(<Section><Sentence>s</Sentence><Heading>h</Heading></Section>).specify()).toEqual([]);
     });
 });

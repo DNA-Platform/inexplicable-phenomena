@@ -46,18 +46,18 @@ export class $Writing extends $Chemical {
         );
     }
 
-    specify(): string[] {
-        const failures = this.specification.check(this);
+    specify(code = this.specification.code(this)): string[] {
+        const failures = this.specification.check(this, code);
         for (const annotation of [...this.annotations])
             if (annotation.enforced)
                 try {
                     annotation.specifies(this);
                 } catch (error) {
-                    failures.push((error as Error).message);
+                    failures.push(this.specification.failure(error as Error, code));
                 }
-        for (const chemical of [...this.contents, ...this.annotations])
+        for (const [index, chemical] of [...this.contents, ...this.annotations].entries())
             if (chemical instanceof $Writing)
-                failures.push(...chemical.specify());
+                failures.push(...chemical.specify(chemical.specification.code(chemical, code, index)));
         return failures;
     }
 

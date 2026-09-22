@@ -43,11 +43,11 @@ describe('Word, Sentence and Paragraph are the intermixed levels, 2, 3 and 4, pe
     });
 
     it('permissive refuses a part above the level, and a written Strict or Closed overrides what the class stands', () => {
-        expect(built<$Word>(<Word><Sentence /></Word>).specify()).toContain('a permissive composition holds parts at or below its level, and this one holds one above');
+        expect(built<$Word>(<Word><Sentence /></Word>).specify()).toContain('Word: a permissive composition holds parts at or below its level, and this one holds one above');
         const strict = built<$Paragraph>(<Paragraph><Word /><Strict /></Paragraph>);
         expect(strict.is(Strict)).toBe(true);
-        expect(strict.specify()).toContain('a strict composition holds parts at its level or one below, and this one holds another');
+        expect(strict.specify()).toContain('Paragraph: a strict composition holds parts at its level or one below, and this one holds another');
         expect(built<$Paragraph>(<Paragraph><Sentence /><Strict /></Paragraph>).specify()).toEqual([]);
-        expect(built<$Word>(<Word>prose <Closed /></Word>).specify()).toEqual(['a closed composition holds only writing, and this one holds something else']);
+        expect(built<$Word>(<Word>prose <Closed /></Word>).specify()).toEqual(['Word: a closed composition holds only writing, and this one holds something else']);
     });
 });
