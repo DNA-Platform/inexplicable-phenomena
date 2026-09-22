@@ -20,7 +20,7 @@ export class $$Letter extends $Catalogue { }
 export class $TypeOfLetter extends $Type {
     protected override specification: Specification<$Writing> = new LetterSpecification();
 
-    override makes(tokens: (string | $Writing)[]): $Writing[] {
+    makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Letter);
 
         return parser.letters(tokens).map(segment => $(<Made>{segment}</Made>));

@@ -6,6 +6,18 @@ import { $Writing$, $Writing } from '@/writing/Writing';
 import type { $Catalogue } from '@/reference/Catalogue';
 import { $Type } from './Type';
 
+// A TYPE THAT MAKES THE LEVEL BENEATH, WHICH NOT EVERY TYPE DOES. Only the levels of a composition
+// make anything — a letter, a word, a sentence, a paragraph, a section, an item — and declaring it
+// on $Type meant every type in the library claimed to make things, when a type types them. Doug,
+// 2026-09-16: "it is now added the semantic commitment that a type makes anything when in fact it
+// types things or is the typeof things." The six that do keep it; the base does not; this asks.
+//
+// IT IS ASKED, NOT CAST. A type that makes things is narrower than a type, so the question is a
+// predicate with a real check behind it rather than an assertion that the check happened elsewhere.
+interface Makes extends $Type { makes(tokens: (string | $Writing)[]): $Writing[]; }
+
+const makes = (type: $Type): type is Makes => 'makes' in type;
+
 export interface $Composition$ extends $Writing$ {
     parenthetical: boolean;
 
@@ -101,7 +113,10 @@ export class $Composition extends $Writing implements $Composition$ {
 
     protected reduce(tokens: (string | $Writing)[]): $Writing[] {
         const beneath = reflection.below(this.kind);
-        return beneath === undefined ? [] : reflection.template(beneath).makes(tokens);
+        if (beneath === undefined) return [];
+        const type = reflection.template(beneath);
+
+        return makes(type) ? type.makes(tokens) : [];
     }
 }
 

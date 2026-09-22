@@ -22,8 +22,6 @@ export class $Type extends $Annotation implements $Type$ {
         if (said !== '') this.name = said;
     }
 
-    makes(tokens: (string | $Writing)[]): $Writing[] { return []; }
-
     // DI, DECLARED BY THE KIND AND RUN LATE. The composition root calls every
     // $register once each module has resolved, and src/index.ts is emitted — see
     // register.ts. `reflection` must ask `instanceof` against these three and

@@ -16,6 +16,22 @@ import { $Subject$, $Subject, $TypeOfSubject, SubjectSpecification } from '@/lib
 export interface $Topic$ extends $Subject$ { }
 
 export class $Topic extends $Subject implements $Topic$ {
+    // A TOPIC DRAWS NOWHERE, AND THIS IS UNFINISHED. Doug, 2026-09-16: "Leave topic as an annotation.
+    // We are going to use it to index parts of conversations." So it is carried by the writing and
+    // read by whatever asks, and it puts nothing on the page.
+    //
+    // WHAT IT IS HEADED TOWARDS, in his words the same day: a topic is going to be a kind of ALTERNATE,
+    // possibly AUTO-GENERATED catalogue — one that adds cohesion to a library by gathering the parts of
+    // conversations that are about the same thing, without anybody shelving a book for each. None of
+    // that is built. What stands here is the annotation it has to be first.
+    //
+    // AND DRAWING IT WAS WRONG, MEASURED: a subject names the book that catalogues it and leads to that
+    // book's page. Seven topics of Semantics of Types name subjects no book catalogues, so each fell
+    // back to a page fragment nothing answered — seven dead links, and the binder's proof gate stopped
+    // the build on them. The eighth, which names Semantic Reference Theory, resolved cleanly, which is
+    // how we know the inheritance is right and only the drawing was wrong.
+    override parenthetical = true;
+
     $Topic(block: $Block) {
         super.$Subject(this.addType(block, $TypeOfTopic));
     }

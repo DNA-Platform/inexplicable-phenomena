@@ -21,7 +21,7 @@ export class $$Sentence extends $Catalogue { }
 export class $TypeOfSentence extends $Type {
     protected override specification: Specification<$Writing> = new SentenceSpecification();
 
-    override makes(tokens: (string | $Writing)[]): $Writing[] {
+    makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Sentence);
         const Representation = $($$Sentence);
         const sentences = parser.sentences(tokens)

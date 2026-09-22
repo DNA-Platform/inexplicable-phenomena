@@ -104,12 +104,15 @@ export const hydration = {
         });
     },
 
-    overwrite(chemical: any): void {
+    // ANSWERS WHETHER IT RECALLED ANYTHING, because a chemical that recalled has something to show
+    // and a chemical that found no record has not. The seats that draw act on the difference; the
+    // seats that only restore ignore it.
+    overwrite(chemical: any): boolean {
         const pid = this.pidOf(chemical);
-        if (pid === undefined) return;
+        if (pid === undefined) return false;
         enroll(pid, chemical);
         const kept = held[pid];
-        if (kept === undefined) return;
+        if (kept === undefined) return false;
         // WHAT IT DREW BEFORE IT REMEMBERED, kept on the constructed one and read
         // by every derivative: a page hydrating a prerender draws these first,
         // because the server had nothing to remember. Merged at every recall,
@@ -124,6 +127,8 @@ export const hydration = {
         } finally {
             recalling = false;
         }
+
+        return true;
     },
 
     clear(chemical: any): void {

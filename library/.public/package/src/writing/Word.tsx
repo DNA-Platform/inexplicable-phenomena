@@ -21,7 +21,7 @@ export class $$Word extends $Catalogue { }
 export class $TypeOfWord extends $Type {
     protected override specification: Specification<$Writing> = new WordSpecification();
 
-    override makes(tokens: (string | $Writing)[]): $Writing[] {
+    makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Word);
         const Representation = $($$Word);
         const words = parser.words(tokens).map(piece => $<$Word>(<Made>{piece}</Made>));

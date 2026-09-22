@@ -37,7 +37,7 @@ export class $$Section extends $Catalogue { }
 export class $TypeOfSection extends $Type {
     protected override specification: Specification<$Writing> = new SectionSpecification();
 
-    override makes(tokens: (string | $Writing)[]): $Writing[] {
+    makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Section);
 
         return [$<$Section>(<Made />, ...tokens as never[])];

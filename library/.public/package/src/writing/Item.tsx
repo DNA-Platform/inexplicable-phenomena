@@ -33,7 +33,7 @@ export class $TypeOfItem extends $TypeOfSentence {
         opening: /^[-*•·]\s+/u
     };
 
-    override makes(tokens: (string | $Writing)[]): $Writing[] {
+    makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Item);
 
         // A cut made ON a newline consumes it, so the mark opening the NEXT line has nothing in

@@ -22,7 +22,7 @@ export class $$Paragraph extends $Catalogue { }
 export class $TypeOfParagraph extends $Type {
     protected override specification: Specification<$Writing> = new ParagraphSpecification();
 
-    override makes(tokens: (string | $Writing)[]): $Writing[] {
+    makes(tokens: (string | $Writing)[]): $Writing[] {
         const Made = $(Paragraph);
         const Representation = $($$Paragraph);
         const written = $<$Paragraph>(<Made />, ...tokens as never[]);

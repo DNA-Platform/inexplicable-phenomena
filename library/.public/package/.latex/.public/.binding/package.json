@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dna-platform/public": "*",
-    "@dna-platform/chemistry": "*",
+    "@dna-platform/public": "0.0.3",
+    "@dna-platform/chemistry": "0.1.2",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
     "styled-components": "^6.1.0"
