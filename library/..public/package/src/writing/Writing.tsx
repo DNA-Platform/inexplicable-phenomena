@@ -9,18 +9,11 @@ import { Annotations } from './Annotations';
 export class $Writing extends $Chemical {
     protected _contents?: Collection<$Chemical>;
     protected _annotations?: Annotations;
-    protected is: $Annotation[] = [];
+    protected _annotationEdits: $Annotation[] = [];
+    protected _applied?: Given<$Annotation> | Given<$Annotation>[];
+    $is: Given<$Annotation> | Given<$Annotation>[] = [];
     container: ElementType = 'span';
     classes!: Set<string>;
-
-    get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.is; }
-    set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
-        for (const annotation of this.is) {
-            this.annotations.drop(annotation);
-            annotation.erase(this);
-        }
-        this.is = this.annotations.prepend(...(Array.isArray(given) ? given : [given]));
-    }
 
     get contents(): Collection<$Chemical> {
         const contents = Object.hasOwn(this, '_contents') ? this._contents : undefined;
@@ -40,7 +33,6 @@ export class $Writing extends $Chemical {
             else
                 this.contents.add(chemical);
         this.$Redefine();
-        this.$is = this.is;
         this.define();
     }
 
@@ -90,6 +82,15 @@ export class $Writing extends $Chemical {
     protected $Redefine(): void { }
 
     protected define(): void {
+        if (this.$is !== this._applied) {
+            for (const annotation of this._annotationEdits) {
+                this.annotations.drop(annotation);
+                annotation.erase(this);
+            }
+            const givens = Array.isArray(this.$is) ? this.$is : [this.$is];
+            this._annotationEdits = this.annotations.prepend(...givens);
+            this._applied = this.$is;
+        }
         for (const annotation of [...this.annotations])
             if (annotation.enforced)
                 annotation.defines(this);

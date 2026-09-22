@@ -112,12 +112,26 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(built<$Writing>(<Writing is={$Mark} />).annotations.at(0)).toBeInstanceOf($Mark);
     });
 
-    it('changing it drops what it stood before and keeps what was written as a child', () => {
+    it('reads as what was given; annotations is the full set, and a change is applied at the next pass, dropping what it stood before and keeping what was written', () => {
         const writing = built<$Writing>(<Writing is={$Mark}><Parenthetical /></Writing>);
+        expect(writing.$is).toBe($Mark);
         expect(writing.annotations.length).toBe(2);
         writing.$is = [];
+        expect(writing.annotations.length).toBe(2);
+        writing.view();
         expect(writing.annotations.length).toBe(1);
         expect(writing.annotations.at(0)).toBeInstanceOf($Parenthetical);
+    });
+
+    it('the edits are applied before the walk, so what was given and what was written see each other when they define', () => {
+        const given = built<$Writing>(<Writing is={Parenthetical}><Narrative /></Writing>);
+        expect(given.annotations.find($Parenthetical)[0].enforced).toBe(false);
+        given.view();
+        expect(given.classes.has('pd-parenthetical')).toBe(false);
+        const written = built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>);
+        expect(written.classes.has('pd-parenthetical')).toBe(false);
+        written.view();
+        expect(written.annotations.find($Parenthetical)[0]).toBe(written.annotations.at(1));
     });
 
     it('stands at the front in its order, and is not made unique', () => {
