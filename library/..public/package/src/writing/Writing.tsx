@@ -1,6 +1,6 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
-import { $, $Chemical, reactive } from '@dna-platform/chemistry';
+import { $, $Chemical, inert, reactive } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
@@ -83,7 +83,7 @@ export class $Writing extends $Chemical {
 }
 
 export class $Annotation extends $Writing {
-    enforced = true;
+    @inert() enforced = true;
     specification = new AnnotationSpecification();
 
     $Annotation(...chemicals: $Chemical[]) {
@@ -101,6 +101,7 @@ export class $Annotation extends $Writing {
     }
 
     note(): ReactNode { return null; }
+    inactivates(writing: $Writing): void { }
     defines(writing: $Writing): void { }
     erase(writing: $Writing): void { }
     specifies(writing: $Writing): void { }
@@ -129,6 +130,11 @@ export class Annotations extends Collection<$Annotation> {
         for (const annotation of this.edits)
             this.drop(annotation);
         this.prepend(...this.edits);
+        for (const annotation of this)
+            annotation.enforced = true;
+        for (const annotation of [...this])
+            if (annotation.enforced)
+                annotation.inactivates(this.parent);
         for (const annotation of [...this])
             if (annotation.enforced)
                 annotation.defines(this.parent);
@@ -151,12 +157,6 @@ export class Annotations extends Collection<$Annotation> {
     override containsOne<U extends $Annotation>(given: Given<U>): boolean {
         return this.find(given).filter(annotation => annotation.enforced).length === 1;
     }
-
-    override toString(): string {
-        let text = '';
-        for (const annotation of this) text += `${annotation}[${annotation.enforced}],`;
-        return text;
-    }
 }
 
 function same(given: Given<$Annotation> | Given<$Annotation>[], other: Given<$Annotation> | Given<$Annotation>[]): boolean {
@@ -175,7 +175,7 @@ export class $Parenthetical extends $Annotation {
 }
 
 export class $Narrative extends $Annotation {
-    override defines(writing: $Writing): void {
+    override inactivates(writing: $Writing): void {
         for (const parenthetical of writing.annotations.find($Parenthetical))
             parenthetical.enforced = false;
     }

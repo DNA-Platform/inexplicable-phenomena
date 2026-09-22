@@ -24,7 +24,7 @@ export class $Level extends $Annotation {
 }
 
 export class $Strict extends $Annotation {
-    override defines(writing: $Writing): void {
+    override inactivates(writing: $Writing): void {
         for (const permissive of writing.annotations.find($Permissive))
             permissive.enforced = false;
     }
@@ -38,7 +38,7 @@ export class $Strict extends $Annotation {
 }
 
 export class $Permissive extends $Annotation {
-    override defines(writing: $Writing): void {
+    override inactivates(writing: $Writing): void {
         for (const strict of writing.annotations.find($Strict))
             strict.enforced = false;
     }
@@ -52,14 +52,14 @@ export class $Permissive extends $Annotation {
 }
 
 export class $Open extends $Annotation {
-    override defines(writing: $Writing): void {
+    override inactivates(writing: $Writing): void {
         for (const closed of writing.annotations.find($Closed))
             closed.enforced = false;
     }
 }
 
 export class $Closed extends $Annotation {
-    override defines(writing: $Writing): void {
+    override inactivates(writing: $Writing): void {
         for (const open of writing.annotations.find($Open))
             open.enforced = false;
     }

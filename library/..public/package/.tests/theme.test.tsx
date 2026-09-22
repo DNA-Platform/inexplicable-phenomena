@@ -103,6 +103,19 @@ class $Teal extends $Providing {
     override values = { rule: 'teal' };
 }
 
+class $Plain extends $Annotation {
+    override inactivates(writing: $Writing): void {
+        for (const format of writing.annotations.find($Format))
+            format.enforced = false;
+    }
+}
+class $Unthemed extends $Annotation {
+    override inactivates(writing: $Writing): void {
+        for (const theme of writing.annotations.find($Theme))
+            theme.enforced = false;
+    }
+}
+
 const Quoted = $($Quoted);
 const WrappingRed = $($WrappingRed);
 const Themed = $($Themed);
@@ -111,6 +124,8 @@ const Framed = $($Framed);
 const Ruled = $($Ruled);
 const Inked = $($Inked);
 const Teal = $($Teal);
+const Plain = $($Plain);
+const Unthemed = $($Unthemed);
 
 const sheet = (): string => [...document.querySelectorAll('style')].map(style => style.textContent).join('\n');
 
@@ -126,7 +141,7 @@ describe('Format, tried: an annotation holding its styled component on a propert
         const writing = built<$Writing>(<Writing>a quote <Quoted /></Writing>);
         expect(writing.container).toBe(Quotation);
         expect(writing.annotations.at(0)!.container).toBe('span');
-        writing.annotations.at(0)!.enforced = false;
+        writing.annotations.add(Plain);
         writing.view();
         expect(writing.container).toBe('span');
     });
@@ -155,7 +170,7 @@ describe('Theme, tried two ways: a provider wrapped around the container, and th
         expect(given.container).toBe(Quotation);
     });
 
-    it('the writing\'s own provider: a theme an annotation set is provided around the drawing, the container untouched, and un-enforcing the Theme redraws without it', async () => {
+    it('the writing\'s own provider: a theme an annotation set is provided around the drawing, the container untouched, and a repressor through $is redraws without it', async () => {
         const writing = built<$Themed>(<Themed>a quote <Quoted /><Blue /></Themed>);
         expect(writing.container).toBe(Quotation);
         expect(writing.theme).toBeInstanceOf($Blue);
@@ -164,7 +179,7 @@ describe('Theme, tried two ways: a provider wrapped around the container, and th
         expect(container.firstElementChild!.tagName).toBe('BLOCKQUOTE');
         expect(sheet()).toContain('border-left:3px solid blue');
         const was = container.firstElementChild!.className;
-        await act(async () => { writing.annotations.at(0)!.enforced = false; });
+        await act(async () => { writing.$is = Unthemed; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container.firstElementChild!.className).not.toBe(was);
         expect(writing.theme).toBeUndefined();

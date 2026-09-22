@@ -104,13 +104,16 @@ describe('what comes into a writing is sorted once, into contents and annotation
         expect(writing.annotations.find($Mark).length).toBe(2);
     });
 
-    it('the annotations say what they are: each member\'s symbol and whether it is enforced, the genome of the writing, changing when one is flipped', () => {
+    it('the annotations say what they hold: each member\'s symbol in order, the genome of the writing, changing when one joins or leaves and not when expression does', () => {
         const writing = built<$Writing>(<Writing><Parenthetical /><Mark /></Writing>);
-        expect(String(writing.annotations)).toMatch(/^\$Chemistry\.\$Mark\[\d+\]\[true\],\$Chemistry\.\$Parenthetical\[\d+\]\[true\],$/);
+        expect(String(writing.annotations)).toMatch(/^\$Chemistry\.\$Mark\[\d+\],\$Chemistry\.\$Parenthetical\[\d+\],$/);
         const before = String(writing.annotations);
         writing.annotations.find($Parenthetical)[0].enforced = false;
+        expect(String(writing.annotations)).toBe(before);
+        const [stamp] = writing.annotations.add(Stamp);
         expect(String(writing.annotations)).not.toBe(before);
-        expect(String(writing.annotations)).toMatch(/\$Parenthetical\[\d+\]\[false\],$/);
+        writing.annotations.drop(stamp);
+        expect(String(writing.annotations)).toBe(before);
     });
 
     it('an annotation written later stands nearer the front, and what $is stands is in front of them all', () => {
@@ -187,7 +190,7 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         const writing = built<$Writing>(<Writing><Parenthetical /><Tagged /></Writing>);
         expect([...writing.classes]).toEqual(['pd-tagged', 'pd-parenthetical']);
         expect(built<$Writing>(<Writing><Parenthetical /></Writing>).classes.has('pd-tagged')).toBe(false);
-        writing.annotations.find($Parenthetical)[0].enforced = false;
+        writing.$is = Narrative;
         writing.view();
         expect([...writing.classes]).toEqual(['pd-tagged']);
     });
@@ -203,12 +206,14 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         expect(natural.annotations.length).toBe(2);
     });
 
-    it('written before what it negates, Narrative acts after it, and the next pass settles it', () => {
-        const reversed = built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>);
-        expect(reversed.classes.has('pd-parenthetical')).toBe(true);
-        reversed.view();
-        expect(reversed.classes.has('pd-parenthetical')).toBe(false);
-        expect(reversed.annotations.find($Parenthetical)[0].enforced).toBe(false);
+    it('the order of a repressor and what it represses does not matter: one pass settles either way, since expression is computed before anything acts', () => {
+        for (const writing of [
+            built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>),
+            built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>),
+        ]) {
+            expect(writing.classes.has('pd-parenthetical')).toBe(false);
+            expect(writing.annotations.find($Parenthetical)[0].enforced).toBe(false);
+        }
     });
 
     it('the pass is idempotent: what the view\'s pass leaves is what the bond\'s pass left', () => {
@@ -225,18 +230,17 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         }
     });
 
-    it('an annotation that is not enforced does not act, and one that leaves acts no more; what it did to a sibling lasts', () => {
+    it('a repressor that leaves lets what it repressed express again, since every pass computes expression from what the genome holds', () => {
         const writing = built<$Writing>(<Writing><Parenthetical /></Writing>);
-        const [narrative] = writing.annotations.prepend(Narrative);
-        narrative.enforced = false;
-        writing.view();
         expect(writing.classes.has('pd-parenthetical')).toBe(true);
-        narrative.enforced = true;
+        const [narrative] = writing.annotations.prepend(Narrative);
         writing.view();
         expect(writing.classes.has('pd-parenthetical')).toBe(false);
+        expect(writing.annotations.find($Parenthetical)[0].enforced).toBe(false);
         writing.annotations.drop(narrative);
         writing.view();
-        expect(writing.classes.has('pd-parenthetical')).toBe(false);
+        expect(writing.classes.has('pd-parenthetical')).toBe(true);
+        expect(writing.annotations.find($Parenthetical)[0].enforced).toBe(true);
     });
 
     it('acting is idempotent, and an annotation acts on a copy of the list', () => {
@@ -317,15 +321,18 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
         expect(draws).toBeLessThanOrEqual(3);
     });
 
-    it('flipping enforced on an annotation redraws the writing without it', async () => {
+    it('a repressor given through $is redraws the writing without the trait, and taking it away redraws with it again', async () => {
         const writing = built<$Writing>(<Writing>a <Parenthetical /></Writing>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         expect(container?.firstElementChild?.className).toBe('pd-parenthetical');
-        await act(async () => { writing.annotations.find($Parenthetical)[0].enforced = false; });
+        await act(async () => { writing.$is = Narrative; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('');
+        await act(async () => { writing.$is = []; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(container?.firstElementChild?.className).toBe('pd-parenthetical');
     });
 
     it('setting $is from outside redraws the writing as what it now is', async () => {
