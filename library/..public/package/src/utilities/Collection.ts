@@ -1,9 +1,10 @@
 import { isValidElement, ReactElement } from 'react';
-import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { $, $check, $Chemical, represented } from '@dna-platform/chemistry';
 import type { Component } from '@dna-platform/chemistry';
 
 export type Given<T> = T | (new () => T) | Component | ReactElement;
 
+@represented()
 export class Collection<T extends $Chemical> {
     private chemicals: T[] = [];
     private classes = new Map<Function, T[]>();
@@ -13,7 +14,9 @@ export class Collection<T extends $Chemical> {
     get length(): number { return this.chemicals.length; }
 
     toString(): string {
-        return this.chemicals.map(String).join(',');
+        let text = '';
+        for (const chemical of this.chemicals) text += `${chemical},`;
+        return text;
     }
 
     [Symbol.iterator](): IterableIterator<T> {

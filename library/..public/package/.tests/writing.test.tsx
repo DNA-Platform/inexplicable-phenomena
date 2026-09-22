@@ -39,6 +39,16 @@ class $Section extends $Writing {
         this.container = 'section';
     }
 }
+class $Narrating extends $Writing {
+    narrate(): void {
+        this.annotations.add(Narrative);
+    }
+}
+class $Growing extends $Writing {
+    grow(): void {
+        this.contents.add(<Writing> more</Writing>);
+    }
+}
 let draws = 0;
 class $Counted extends $Writing {
     override view(): React.ReactNode {
@@ -55,6 +65,8 @@ const Tidying = $($Tidying);
 const Aside = $($Aside);
 const Section = $($Section);
 const Counted = $($Counted);
+const Narrating = $($Narrating);
+const Growing = $($Growing);
 
 describe('what comes into a writing is sorted once, into contents and annotations', () => {
     it('contents holds what is not an annotation, in its order, wherever the annotations stood', () => {
@@ -90,6 +102,15 @@ describe('what comes into a writing is sorted once, into contents and annotation
         writing.annotations.find($Stamp)[0].enforced = false;
         expect(writing.annotations.contains($Mark)).toBe(false);
         expect(writing.annotations.find($Mark).length).toBe(2);
+    });
+
+    it('the annotations say what they are: each member\'s symbol and whether it is enforced, the genome of the writing, changing when one is flipped', () => {
+        const writing = built<$Writing>(<Writing><Parenthetical /><Mark /></Writing>);
+        expect(String(writing.annotations)).toMatch(/^\$Chemistry\.\$Mark\[\d+\]\[true\],\$Chemistry\.\$Parenthetical\[\d+\]\[true\],$/);
+        const before = String(writing.annotations);
+        writing.annotations.find($Parenthetical)[0].enforced = false;
+        expect(String(writing.annotations)).not.toBe(before);
+        expect(String(writing.annotations)).toMatch(/\$Parenthetical\[\d+\]\[false\],$/);
     });
 
     it('an annotation written later stands nearer the front, and what $is stands is in front of them all', () => {
@@ -310,6 +331,25 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
         await act(async () => { writing.$is = Narrative; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('');
+    });
+
+    it('the collections are live: a method of the writing adding an annotation redraws it, and one adding content shows the new text', async () => {
+        const narrating = built<$Narrating>(<Narrating>an aside <Parenthetical /></Narrating>);
+        const DrawnNarrating = $(narrating);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<DrawnNarrating />).container; });
+        expect(container?.firstElementChild?.className).toBe('pd-parenthetical');
+        await act(async () => { narrating.narrate(); });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(container?.firstElementChild?.className).toBe('');
+        const growing = built<$Growing>(<Growing>some</Growing>);
+        const DrawnGrowing = $(growing);
+        let grown: HTMLElement | undefined;
+        await act(async () => { grown = render(<DrawnGrowing />).container; });
+        expect(grown?.textContent).toBe('some');
+        await act(async () => { growing.grow(); });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(grown?.textContent).toBe('some more');
     });
 });
 

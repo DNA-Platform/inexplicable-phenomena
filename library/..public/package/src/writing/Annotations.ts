@@ -14,6 +14,12 @@ export class Annotations extends Collection<$Annotation> {
         return this.prepend(...givens);
     }
 
+    override toString(): string {
+        let text = '';
+        for (const annotation of this) text += `${annotation}[${annotation.enforced}],`;
+        return text;
+    }
+
     define(): void {
         if (this.is !== this.applied) {
             for (const annotation of this.edits) {

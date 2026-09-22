@@ -1,6 +1,6 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
-import { $, $Chemical } from '@dna-platform/chemistry';
+import { $, $Chemical, reactive } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
@@ -8,8 +8,8 @@ import { Annotations } from './Annotations';
 import type { Kind } from './Annotations';
 
 export class $Writing extends $Chemical {
-    protected _contents?: Collection<$Chemical>;
-    protected _annotations?: Annotations;
+    @reactive() protected _contents?: Collection<$Chemical>;
+    @reactive() protected _annotations?: Annotations;
     classes!: Set<string>;
     specification: Specification<$Writing> = new WritingSpecification();
     container: ElementType = 'span';
@@ -18,13 +18,11 @@ export class $Writing extends $Chemical {
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.is = given; }
 
     get contents(): Collection<$Chemical> {
-        const contents = Object.hasOwn(this, '_contents') ? this._contents : undefined;
-        return contents ?? (this._contents = new Collection<$Chemical>(this));
+        return this._contents ?? (this._contents = new Collection<$Chemical>(this));
     }
 
     get annotations(): Annotations {
-        const annotations = Object.hasOwn(this, '_annotations') ? this._annotations : undefined;
-        return annotations ?? (this._annotations = new Annotations(this));
+        return this._annotations ?? (this._annotations = new Annotations(this));
     }
 
     $Writing(...chemicals: $Chemical[]) {
