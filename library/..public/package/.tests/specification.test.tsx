@@ -29,7 +29,7 @@ class HallSpecification extends RoomSpecification {
 
 describe('a specification is a detached set of named rules', () => {
     it('collects every $-rule up the prototype chain, base first, and the decorator names each', () => {
-        const rules = new HallSpecification().rules();
+        const rules = new HallSpecification().rules;
         expect(rules.map(([name]) => name)).toEqual(['$hasDoor', '$seatsSomeone', '$seatsCrowd']);
         expect(rules.map(([, rule]) => rule.description)).toEqual([undefined, 'a room seats someone', 'a hall seats a crowd']);
     });

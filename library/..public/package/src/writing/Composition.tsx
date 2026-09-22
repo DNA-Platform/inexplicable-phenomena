@@ -3,22 +3,12 @@ import { $Writing, $Annotation, WritingSpecification } from './Writing';
 
 export class $Composition extends $Writing {
     specification = new CompositionSpecification();
-
-    get level(): number {
-        return this.annotations.enforced($Level)?.level ?? 1;
-    }
-
+    get level(): number { return this.annotations.enforced($Level)?.level ?? 1; }
+    get depth(): number { return this.parent instanceof this.constructor ? (this.parent as $Composition).depth + 1 : 0;}
+    get canonical(): $Composition | undefined { return this.parts[0]; }
     get parts(): $Composition[] {
         return this.contents.find($Composition).flatMap(composition =>
             composition instanceof this.constructor ? composition.parts : [composition]);
-    }
-
-    get depth(): number {
-        return this.parent instanceof this.constructor ? (this.parent as $Composition).depth + 1 : 0;
-    }
-
-    get canonical(): $Composition | undefined {
-        return this.parts[0];
     }
 }
 
@@ -37,7 +27,8 @@ export class $Strict extends $Annotation {
 
     override specifies(writing: $Writing): void {
         const composition = writing as $Composition;
-        $check(composition.parts.every(part => part.level === composition.level || part.level === composition.level - 1),
+        $check(composition.parts
+            .every(part => part.level === composition.level || part.level === composition.level - 1),
             'a strict composition holds parts at its level or one below, and this one holds another');
     }
 }
@@ -50,7 +41,8 @@ export class $Permissive extends $Annotation {
 
     override specifies(writing: $Writing): void {
         const composition = writing as $Composition;
-        $check(composition.parts.every(part => part.level <= composition.level),
+        $check(composition.parts
+            .every(part => part.level <= composition.level),
             'a permissive composition holds parts at or below its level, and this one holds one above');
     }
 }
@@ -69,7 +61,8 @@ export class $Closed extends $Annotation {
     }
 
     override specifies(writing: $Writing): void {
-        $check(writing.contents.every(chemical => chemical instanceof $Writing),
+        $check(writing.contents
+            .every(chemical => chemical instanceof $Writing),
             'a closed composition holds only writing, and this one holds something else');
     }
 }

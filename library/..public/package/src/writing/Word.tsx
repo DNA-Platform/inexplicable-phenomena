@@ -3,7 +3,11 @@ import { $Composition, Level, Permissive, Open } from './Composition';
 
 export class $Word extends $Composition {
     protected override $Define(): void {
-        this.annotations.add(<Level>2</Level>, <Permissive />, <Open />);
+        this.annotations.add(
+            <Level>2</Level>,
+            <Permissive />,
+            <Open />
+        );
     }
 }
 

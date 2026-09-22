@@ -38,9 +38,9 @@ export class $Writing extends $Chemical {
     view(): ReactNode {
         this.annotations.define();
         const Container = this.container;
-        const classes = [...this.classes].join(' ') || undefined;
+        const className = [...this.classes].join(' ') || undefined;
         return (
-            <Container className={classes}>
+            <Container className={className}>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
             </Container>
@@ -110,38 +110,36 @@ export class $Annotation extends $Writing {
 export type Kind<U extends $Annotation> = (new () => U) | Component;
 
 export class Annotations extends Collection<$Annotation> {
+    private applied?: Given<$Annotation> | Given<$Annotation>[];
     is: Given<$Annotation> | Given<$Annotation>[] = [];
     edits: $Annotation[] = [];
-    private applied?: Given<$Annotation> | Given<$Annotation>[];
 
-    override add(...givens: Given<$Annotation>[]): $Annotation[] {
-        return this.prepend(...givens);
-    }
-
-    override toString(): string {
-        let text = '';
-        for (const annotation of this) text += `${annotation}[${annotation.enforced}],`;
-        return text;
+    constructor(protected override parent: $Writing) {
+        super(parent);
     }
 
     define(): void {
         if (this.is !== this.applied) {
             for (const annotation of this.edits) {
                 this.drop(annotation);
-                annotation.erase(this.parent as $Writing);
+                annotation.erase(this.parent);
             }
             this.edits = this.prepend(...(Array.isArray(this.is) ? this.is : [this.is]));
             this.applied = this.is;
         }
         for (const annotation of [...this])
             if (annotation.enforced)
-                annotation.defines(this.parent as $Writing);
+                annotation.defines(this.parent);
             else
-                annotation.erase(this.parent as $Writing);
+                annotation.erase(this.parent);
     }
 
     enforced<U extends $Annotation>(kind: Kind<U>): U | undefined {
         return this.find(kind).find(annotation => annotation.enforced);
+    }
+
+    override add(...givens: Given<$Annotation>[]): $Annotation[] {
+        return this.prepend(...givens);
     }
 
     override find<U extends $Annotation>(kind: Kind<U>): ReadonlyArray<U> {
@@ -154,6 +152,12 @@ export class Annotations extends Collection<$Annotation> {
 
     override containsOne<U extends $Annotation>(kind: Kind<U>): boolean {
         return this.find(kind).filter(annotation => annotation.enforced).length === 1;
+    }
+
+    override toString(): string {
+        let text = '';
+        for (const annotation of this) text += `${annotation}[${annotation.enforced}],`;
+        return text;
     }
 }
 

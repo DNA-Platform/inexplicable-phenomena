@@ -13,12 +13,6 @@ export class Collection<T extends $Chemical> {
 
     get length(): number { return this.chemicals.length; }
 
-    toString(): string {
-        let text = '';
-        for (const chemical of this.chemicals) text += `${chemical},`;
-        return text;
-    }
-
     [Symbol.iterator](): IterableIterator<T> {
         return this.chemicals[Symbol.iterator]();
     }
@@ -33,6 +27,12 @@ export class Collection<T extends $Chemical> {
 
     map<U>(pick: (chemical: T, index: number) => U): U[] {
         return this.chemicals.map(pick);
+    }
+
+    toString(): string {
+        let text = '';
+        for (const chemical of this.chemicals) text += `${chemical},`;
+        return text;
     }
 
     add(...givens: Given<T>[]): T[] {

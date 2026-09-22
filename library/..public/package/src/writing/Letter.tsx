@@ -6,7 +6,10 @@ export class $Letter extends $Composition {
     specification = new LetterSpecification();
 
     protected override $Define(): void {
-        this.annotations.add(<Level>1</Level>, <Open />);
+        this.annotations.add(
+            <Level>1</Level>, 
+            <Open />
+        );
     }
 }
 
