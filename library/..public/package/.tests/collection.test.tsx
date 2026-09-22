@@ -147,4 +147,17 @@ describe('the two questions a specification asks', () => {
         expect(collection.containsOne($Stamp)).toBe(true);
         expect(collection.containsOne($Seal)).toBe(false);
     });
+
+    it('says what it holds: its members\' symbols in order, so two readings are the same exactly when the members are', () => {
+        const first = mark(), second = stamp();
+        const collection = marks(first, second);
+        expect(String(collection)).toBe(`${first},${second}`);
+        expect(String(collection)).toMatch(/^\$Chemistry\.\$Mark\[\d+\],\$Chemistry\.\$Stamp\[\d+\]$/);
+        const before = String(collection);
+        collection.drop(second);
+        expect(String(collection)).toBe(String(first));
+        collection.add(second);
+        expect(String(collection)).toBe(before);
+        expect(String(new Collection<$Mark>())).toBe('');
+    });
 });

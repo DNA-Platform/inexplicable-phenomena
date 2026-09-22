@@ -12,6 +12,10 @@ export class Collection<T extends $Chemical> {
 
     get length(): number { return this.chemicals.length; }
 
+    toString(): string {
+        return this.chemicals.map(String).join(',');
+    }
+
     [Symbol.iterator](): IterableIterator<T> {
         return this.chemicals[Symbol.iterator]();
     }
