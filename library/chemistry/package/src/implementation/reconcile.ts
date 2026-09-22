@@ -1,6 +1,6 @@
 import React, { type ReactNode, type ReactElement } from 'react';
 import { walk } from './walk';
-import { $original$ } from './symbols';
+import { $original$, $represented$ } from './symbols';
 
 export function diff(node: ReactNode, cached: ReactNode): boolean {
     return reconcile(node, cached) !== cached;
@@ -93,6 +93,11 @@ const walked: Walked[] = [
         same: (a: Date, b: Date) => a.getTime() === b.getTime(),
     },
     {
+        is: value => $represented$ in value,
+        copy: value => ({ [$represented$]: expression(value) }),
+        same: (a, b) => expression(a) === expression(b),
+    },
+    {
         is: value => {
             const proto = Object.getPrototypeOf(value);
             return proto === Object.prototype || proto === null;
@@ -110,6 +115,13 @@ const walked: Walked[] = [
         },
     },
 ];
+
+// A represented class is walked by its toString; its snapshot carries the
+// string under the mark.
+function expression(value: any): string {
+    const carried = value[$represented$];
+    return typeof carried === 'string' ? carried : String(value);
+}
 
 // A member that is itself walked was copied into the snapshot, so `has` cannot
 // find it; it is found by content.

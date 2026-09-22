@@ -134,6 +134,11 @@ export const $cancelled$ = Symbol("$promise.cancelled");
 // because a view builds its closures fresh every time.
 export const $original$ = Symbol("$augment.original");
 
+// A class that declares @represented() carries this on its prototype: it has
+// value semantics, and its toString is its expression. A snapshot of one
+// carries the expression under the same key.
+export const $represented$ = Symbol("$Bond.represented");
+
 // What an assignment was resolved against: the chemical whose view wrote it, and
 // the member path read out of the arrow's own source. Carried on the wrapper so
 // the child can tell a resolved assignment from an arrow nobody rewrote.

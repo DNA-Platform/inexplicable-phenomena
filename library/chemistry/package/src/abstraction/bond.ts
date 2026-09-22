@@ -3,7 +3,7 @@ import {
 } from "../implementation/symbols";
 import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
 import { hydration } from "../implementation/hydration";
-import { $reinit$, $original$ } from "../implementation/symbols";
+import { $reinit$, $original$, $represented$ } from "../implementation/symbols";
 import { equivalent, snapshot } from '../implementation/reconcile';
 
 // ===========================================================================
@@ -68,6 +68,15 @@ export function reactive() {
         let properties = reactiveDecorators.get(prototype);
         if (!properties) reactiveDecorators.set(prototype, properties = new Set());
         properties.add(property);
+    };
+}
+
+// @represented() — a class with VALUE SEMANTICS, expressed by its toString.
+// Snapshotted and compared by that expression rather than held by reference,
+// so a scope that reads one and changes what it says redraws.
+export function represented() {
+    return function (constructor: Function) {
+        (constructor.prototype as any)[$represented$] = true;
     };
 }
 

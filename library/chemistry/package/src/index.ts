@@ -26,7 +26,7 @@ export type { $Inline } from './abstraction/chemical';
 export { $lookup, $load } from './framework/load';
 
 // Property and view attributes
-export { inert, reactive, look } from './abstraction/bond';
+export { inert, reactive, represented, look } from './abstraction/bond';
 
 // Members a chemical implements, carried as symbols so they cost no name
 export { cache, children, style, theme, resolved } from './implementation/symbols';

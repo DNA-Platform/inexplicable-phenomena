@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical } from '@/abstraction/chemical';
+import { represented } from '@/abstraction/bond';
 
 // A WALKED COLLECTION IS COMPARED BY WHAT IT HOLDS. snapshot() copies a Set, a
 // Map and a Date by content, so a scope that only reads one, or leaves it as it
@@ -124,5 +125,72 @@ describe('a Set, a Map and a Date are walked, so they are compared by content', 
         await click(container);
         expect(container.querySelector('.n')!.textContent).toBe('2');
         expect(draws).toBeLessThan(12);
+    });
+});
+
+// A CLASS EXPRESSES ITS OWN VALUE SEMANTICS WITH @represented(), and its
+// toString is then its proxy: it is walked by its expression, copied as the
+// string and equal when the strings match. An undecorated class stays a
+// reference, as the class owns its equivalence.
+
+describe("a class that declares @represented() is walked by its toString", () => {
+    it("read in a handler and mutated in place, it is seen by its expression", async () => {
+        @represented()
+        class Papers {
+            list: string[] = [];
+            toString() { return this.list.join(","); }
+        }
+        class $P extends $Chemical {
+            papers = new Papers();
+            view() {
+                return <div>
+                    <span className="n">{this.papers.list.length}</span>
+                    <button onClick={() => { this.papers.list.push("x"); }}>+</button>
+                </div>;
+            }
+        }
+        new $P();
+        const { container } = render(React.createElement($(new $P())));
+        expect(container.querySelector(".n")!.textContent).toBe("0");
+        await click(container);
+        expect(container.querySelector(".n")!.textContent).toBe("1");
+    });
+
+    it("assigning a fresh one with the same expression is not news", async () => {
+        @represented()
+        class Papers {
+            list: string[] = ["a"];
+            toString() { return this.list.join(","); }
+        }
+        let draws = 0;
+        class $P extends $Chemical {
+            papers = new Papers();
+            view() { draws++; return <button onClick={() => { this.papers = new Papers(); }}>same</button>; }
+        }
+        new $P();
+        const { container } = render(React.createElement($(new $P())));
+        const before = draws;
+        await click(container);
+        expect(draws - before).toBe(0);
+    });
+
+    it("an undecorated class is still a reference: mutated in place, it is not seen", async () => {
+        class Papers {
+            list: string[] = [];
+            toString() { return this.list.join(","); }
+        }
+        class $P extends $Chemical {
+            papers = new Papers();
+            view() {
+                return <div>
+                    <span className="n">{this.papers.list.length}</span>
+                    <button onClick={() => { this.papers.list.push("x"); }}>+</button>
+                </div>;
+            }
+        }
+        new $P();
+        const { container } = render(React.createElement($(new $P())));
+        await click(container);
+        expect(container.querySelector(".n")!.textContent).toBe("0");
     });
 });
