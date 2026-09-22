@@ -5,17 +5,17 @@ import { $Writing, Writing, $Composition, Composition, $Level, Level, Strict, $P
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 class $Fourth extends $Composition {
-    protected override $Redefine(): void {
+    protected override $Define(): void {
         this.annotations.add(<Level>4</Level>, <Permissive />, <Open />);
     }
 }
 class $Fifth extends $Composition {
-    protected override $Redefine(): void {
+    protected override $Define(): void {
         this.annotations.add(<Level>5</Level>, <Permissive />, <Closed />);
     }
 }
 class $Top extends $Composition {
-    protected override $Redefine(): void {
+    protected override $Define(): void {
         this.annotations.add(<Level>6</Level>, <Strict />, <Closed />);
     }
 }
@@ -24,18 +24,18 @@ const Fifth = $($Fifth);
 const Top = $($Top);
 
 describe('a composition has a level, set by its Level annotation from what was written in it', () => {
-    it('is 0 until a Level sets it; a level class stands its own in $Redefine', () => {
-        expect(built<$Composition>(<Composition />).level).toBe(0);
+    it('is a reading of its Level annotation, 1 until one says otherwise; a level class stands its own in $Define', () => {
+        expect(built<$Composition>(<Composition />).level).toBe(1);
         expect(built<$Composition>(<Composition><Level>3</Level></Composition>).level).toBe(3);
         expect(built<$Fourth>(<Fourth />).level).toBe(4);
         expect(built<$Fourth>(<Fourth />).is(Level)).toBe(true);
+        expect(built<$Fourth>(<Fourth><Level>6</Level></Fourth>).level).toBe(6);
     });
 
-    it('a Level that is not enforced erases the level', () => {
+    it('a Level that is not enforced is not read', () => {
         const fourth = built<$Fourth>(<Fourth />);
         fourth.annotations.find($Level)[0].enforced = false;
-        fourth.view();
-        expect(fourth.level).toBe(0);
+        expect(fourth.level).toBe(1);
     });
 });
 
@@ -96,8 +96,8 @@ describe('the specification is a property each class reassigns, and specify neve
         expect(built<$Fourth>(<Fourth />).annotations.at(0)!.specification).toBeInstanceOf(AnnotationSpecification);
     });
 
-    it('a composition has a level above zero', () => {
-        expect(built<$Composition>(<Composition />).specify()).toEqual(['a composition has a level above zero, and this one has none']);
+    it('a bare composition is up to code, a letter by default', () => {
+        expect(built<$Composition>(<Composition />).specify()).toEqual([]);
         expect(built<$Fourth>(<Fourth />).specify()).toEqual([]);
     });
 

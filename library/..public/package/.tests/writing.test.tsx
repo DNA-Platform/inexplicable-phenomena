@@ -29,7 +29,7 @@ class $Tidying extends $Writing {
     }
 }
 class $Aside extends $Writing {
-    protected override $Redefine(): void {
+    protected override $Define(): void {
         this.annotations.add(Parenthetical);
     }
 }
@@ -112,19 +112,21 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(built<$Writing>(<Writing is={$Mark} />).annotations.at(0)).toBeInstanceOf($Mark);
     });
 
-    it('reads as what was given; edits is what it became; annotations is the full set; setting it drops what it stood before and keeps what was written', () => {
+    it('reads as what was given; the annotations possess the edits, what it became, and the full set; a change is applied at the next pass, dropping what it stood before and keeping what was written', () => {
         const writing = built<$Writing>(<Writing is={$Mark}><Parenthetical /></Writing>);
         expect(writing.$is).toBe($Mark);
-        expect(writing.edits.length).toBe(1);
-        expect(writing.edits[0]).toBe(writing.annotations.at(0));
+        expect(writing.annotations.edits.length).toBe(1);
+        expect(writing.annotations.edits[0]).toBe(writing.annotations.at(0));
         expect(writing.annotations.length).toBe(2);
         writing.$is = [];
-        expect(writing.edits.length).toBe(0);
+        expect(writing.annotations.length).toBe(2);
+        writing.view();
+        expect(writing.annotations.edits.length).toBe(0);
         expect(writing.annotations.length).toBe(1);
         expect(writing.annotations.at(0)).toBeInstanceOf($Parenthetical);
     });
 
-    it('the bond makes edits empty and stands what $is gives after $Redefine, so what was given and what was written see each other when they define', () => {
+    it('define applies what $is gives in front of everything before it walks, so what was given and what was written see each other when they define', () => {
         const given = built<$Writing>(<Writing is={Parenthetical}><Narrative /></Writing>);
         expect(given.annotations.find($Parenthetical)[0].enforced).toBe(false);
         given.view();
@@ -218,7 +220,7 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         expect(writing.classes.has('pd-parenthetical')).toBe(false);
     });
 
-    it('a class stands its own annotations in $Redefine, before the first pass, and what $is gives stands in front of them', () => {
+    it('a class stands its own annotations in $Define, before the first pass, and what $is gives stands in front of them', () => {
         const aside = built<$Aside>(<Aside is={Mark}>a</Aside>);
         expect(aside.annotations.at(0)).toBeInstanceOf($Mark);
         expect(aside.annotations.at(1)).toBeInstanceOf($Parenthetical);
@@ -312,9 +314,10 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
 });
 
 describe('specify is the assert the binder calls; it is called by nothing in the library and cascades down', () => {
-    it('answers the failures of the writing, and nothing when it is up to code', () => {
+    it('answers the failures of the writing, and nothing when it is up to code; Writing itself has no rule, a letter may hold anything', () => {
         expect(built<$Writing>(<Writing><Writing /></Writing>).specify()).toEqual([]);
-        expect(built<$Writing>(<Writing>a</Writing>).specify()).toEqual(['a piece of writing holds only writing, and this one holds something else']);
+        expect(built<$Writing>(<Writing>a</Writing>).specify()).toEqual([]);
+        expect(built<$Writing>(<Writing><Demanding /></Writing>).specify()).toEqual(['a demanding annotation wants something written']);
     });
 
     it('the bond does not specify; a writing holding a string is built, and refused only when asked', () => {
@@ -330,10 +333,10 @@ describe('specify is the assert the binder calls; it is called by nothing in the
     });
 
     it('cascades through contents and annotations, so every failure in reach appears', () => {
-        const writing = built<$Writing>(<Writing><Writing>a</Writing><Writing><Writing>b</Writing></Writing><Demanding /></Writing>);
+        const writing = built<$Writing>(<Writing><Writing><Demanding /></Writing><Writing><Writing><Demanding /></Writing></Writing><Demanding /></Writing>);
         const failures = writing.specify();
         expect(failures.length).toBe(2);
-        expect(failures.every(failure => /holds only writing/.test(failure))).toBe(true);
+        expect(failures.every(failure => /wants something written/.test(failure))).toBe(true);
         const annotated = built<$Writing>(<Writing><Writing /><Mark><Demanding /></Mark></Writing>);
         expect(annotated.specify()).toEqual(['a demanding annotation wants something written']);
     });

@@ -1,10 +1,12 @@
 import { $, $check, $Block } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, WritingSpecification } from './Writing';
 
 export class $Composition extends $Writing {
-    level = 0;
-    override specification: Specification<$Writing> = new CompositionSpecification();
+    specification = new CompositionSpecification();
+
+    get level(): number {
+        return this.annotations.enforced($Level)?.level ?? 1;
+    }
 
     get parts(): $Composition[] {
         return this.contents.find($Composition).flatMap(composition =>
@@ -23,15 +25,7 @@ export class $Composition extends $Writing {
 export class $Level extends $Annotation {
     get level(): number {
         const block = this.contents.at(0);
-        return block instanceof $Block ? Number(block.elements.join('')) : 0;
-    }
-
-    override defines(writing: $Writing): void {
-        if (writing instanceof $Composition) writing.level = this.level;
-    }
-
-    override erase(writing: $Writing): void {
-        if (writing instanceof $Composition) writing.level = 0;
+        return block instanceof $Block ? Number(block.elements.join('')) : 1;
     }
 }
 
@@ -80,14 +74,7 @@ export class $Closed extends $Annotation {
     }
 }
 
-export class CompositionSpecification extends WritingSpecification {
-    override $holdsOnlyWriting(): void { }
-
-    @specify('a composition has a level')
-    $hasALevel(composition: $Composition): void {
-        $check(composition.level > 0, 'a composition has a level above zero, and this one has none');
-    }
-}
+export class CompositionSpecification extends WritingSpecification { }
 
 export const Composition = $($Composition);
 export const Level = $($Level);

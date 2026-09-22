@@ -8,7 +8,7 @@ export class Collection<T extends $Chemical> {
     private chemicals: T[] = [];
     private classes = new Map<Function, T[]>();
 
-    constructor(private parent?: $Chemical) { }
+    constructor(protected parent?: $Chemical) { }
 
     get length(): number { return this.chemicals.length; }
 

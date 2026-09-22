@@ -5,7 +5,7 @@ import { Letter, $Word, Word, $Sentence, Sentence, $Paragraph, Paragraph, Permis
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 describe('Word, Sentence and Paragraph are the intermixed levels, 2, 3 and 4, permissive and open', () => {
-    it('each stands its level and its pair in $Redefine', () => {
+    it('each stands its level and its pair in $Define', () => {
         for (const [built_, level] of [
             [built<$Word>(<Word />), 2],
             [built<$Sentence>(<Sentence />), 3],

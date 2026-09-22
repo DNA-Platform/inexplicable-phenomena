@@ -1,12 +1,11 @@
 import { $, $check } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
-import { $Writing } from './Writing';
+import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification, Level, Open } from './Composition';
 
 export class $Letter extends $Composition {
-    override specification: Specification<$Writing> = new LetterSpecification();
+    specification = new LetterSpecification();
 
-    protected override $Redefine(): void {
+    protected override $Define(): void {
         this.annotations.add(<Level>1</Level>, <Open />);
     }
 }
