@@ -9,11 +9,20 @@ import { Annotations } from './Annotations';
 export class $Writing extends $Chemical {
     protected _contents?: Collection<$Chemical>;
     protected _annotations?: Annotations;
-    protected _annotationEdits: $Annotation[] = [];
-    protected _applied?: Given<$Annotation> | Given<$Annotation>[];
-    $is: Given<$Annotation> | Given<$Annotation>[] = [];
+    protected _is: Given<$Annotation> | Given<$Annotation>[] = [];
+    edits: $Annotation[] = [];
     container: ElementType = 'span';
     classes!: Set<string>;
+
+    get $is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
+    set $is(given: Given<$Annotation> | Given<$Annotation>[]) {
+        for (const annotation of this.edits) {
+            this.annotations.drop(annotation);
+            annotation.erase(this);
+        }
+        this._is = given;
+        this.edits = this.annotations.prepend(...(Array.isArray(given) ? given : [given]));
+    }
 
     get contents(): Collection<$Chemical> {
         const contents = Object.hasOwn(this, '_contents') ? this._contents : undefined;
@@ -43,7 +52,7 @@ export class $Writing extends $Chemical {
         return (
             <Container className={classes}>
                 {this.write()}
-                {this.annotate()}
+                {this.annotate([...this.annotations].reverse())}
             </Container>
         );
     }
@@ -70,8 +79,8 @@ export class $Writing extends $Chemical {
         });
     }
 
-    annotate(): ReactNode {
-        return this.annotations.map((annotation, index) => {
+    annotate(annotations: $Annotation[]): ReactNode {
+        return annotations.map((annotation, index) => {
             const Annotation = $(annotation);
             return <Annotation key={index} />;
         });
@@ -80,15 +89,9 @@ export class $Writing extends $Chemical {
     protected $Redefine(): void { }
 
     protected define(): void {
-        if (this.$is !== this._applied) {
-            for (const annotation of this._annotationEdits) {
-                this.annotations.drop(annotation);
-                annotation.erase(this);
-            }
-            const givens = Array.isArray(this.$is) ? this.$is : [this.$is];
-            this._annotationEdits = this.annotations.prepend(...givens);
-            this._applied = this.$is;
-        }
+        for (const annotation of this.edits)
+            this.annotations.drop(annotation);
+        this.annotations.prepend(...this.edits);
         for (const annotation of [...this.annotations])
             if (annotation.enforced)
                 annotation.defines(this);

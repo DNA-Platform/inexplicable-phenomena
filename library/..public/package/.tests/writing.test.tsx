@@ -112,18 +112,19 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(built<$Writing>(<Writing is={$Mark} />).annotations.at(0)).toBeInstanceOf($Mark);
     });
 
-    it('reads as what was given; annotations is the full set, and a change is applied at the next pass, dropping what it stood before and keeping what was written', () => {
+    it('reads as what was given; edits is what it became; annotations is the full set; setting it drops what it stood before and keeps what was written', () => {
         const writing = built<$Writing>(<Writing is={$Mark}><Parenthetical /></Writing>);
         expect(writing.$is).toBe($Mark);
+        expect(writing.edits.length).toBe(1);
+        expect(writing.edits[0]).toBe(writing.annotations.at(0));
         expect(writing.annotations.length).toBe(2);
         writing.$is = [];
-        expect(writing.annotations.length).toBe(2);
-        writing.view();
+        expect(writing.edits.length).toBe(0);
         expect(writing.annotations.length).toBe(1);
         expect(writing.annotations.at(0)).toBeInstanceOf($Parenthetical);
     });
 
-    it('the edits are applied before the walk, so what was given and what was written see each other when they define', () => {
+    it('before the walk the edits are joined to the front of the annotations, so what was given and what was written see each other when they define', () => {
         const given = built<$Writing>(<Writing is={Parenthetical}><Narrative /></Writing>);
         expect(given.annotations.find($Parenthetical)[0].enforced).toBe(false);
         given.view();
@@ -247,8 +248,9 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(section?.textContent).toContain('a');
     });
 
-    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, wearing pd-annotation, and its note renders at the level of that writing, nothing by default', async () => {
+    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, wearing pd-annotation, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
         const writing = built<$Writing>(<Writing>a <Mark>because it was late</Mark><Tagged /></Writing>);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Tagged);
         expect(writing.annotations.find($Mark)[0].classes.has('pd-annotation')).toBe(true);
         expect(writing.annotations.find($Mark)[0].note()).toBeNull();
         const Drawn = $(writing);
@@ -256,8 +258,8 @@ describe('a writing draws through its container, which starts as a span', () => 
         await act(async () => { container = render(<Drawn />).container; });
         const notes = container?.querySelectorAll('span.pd-annotation');
         expect(notes?.length).toBe(2);
-        expect(notes?.[0].textContent).toBe('');
-        expect(notes?.[1].textContent).toBe('because it was late');
+        expect(notes?.[0].textContent).toBe('because it was late');
+        expect(notes?.[1].textContent).toBe('');
         expect(container?.firstElementChild?.childElementCount).toBe(2);
     });
 
@@ -269,7 +271,7 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(typeof style.type).toBe('object');
         expect((style.type as { $$typeof?: symbol }).$$typeof).toBe(Symbol.for('react.memo'));
         parenthetical.enforced = false;
-        const drawn = parenthetical.view() as React.ReactElement;
+        const drawn = parenthetical.view() as React.ReactElement<{ children: React.ReactNode[] }>;
         expect(drawn.props.children[1]).toBeNull();
     });
 });
