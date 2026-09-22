@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, Annotation, $Parenthetical, Parenthetical, $Narrative, Narrative, Collection } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, Collection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -17,6 +17,11 @@ class $Boxed extends $Annotation {
         writing.container = 'div';
     }
 }
+class $Tagged extends $Annotation {
+    override defines(writing: $Writing): void {
+        writing.classes.add('pd-tagged');
+    }
+}
 class $Tidying extends $Writing {
     $Tidying(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
@@ -24,10 +29,8 @@ class $Tidying extends $Writing {
     }
 }
 class $Aside extends $Writing {
-    $Aside(...chemicals: $Chemical[]) {
-        this.$Writing(...chemicals);
-        this.annotations.prepend(Parenthetical);
-        this.define();
+    protected override $Redefine(): void {
+        this.annotations.add(Parenthetical);
     }
 }
 class $Section extends $Writing {
@@ -47,6 +50,7 @@ const Mark = $($Mark);
 const Stamp = $($Stamp);
 const Demanding = $($Demanding);
 const Boxed = $($Boxed);
+const Tagged = $($Tagged);
 const Tidying = $($Tidying);
 const Aside = $($Aside);
 const Section = $($Section);
@@ -67,11 +71,25 @@ describe('what comes into a writing is sorted once, into contents and annotation
         expect(writing.contents.every(chemical => !(chemical instanceof $Annotation))).toBe(true);
     });
 
-    it('both are collections, and each writing has its own', () => {
+    it('both are collections, the annotations their own kind, and each writing has its own', () => {
         const writing = built<$Writing>(<Writing><Writing /></Writing>);
         expect(writing.contents).toBeInstanceOf(Collection);
-        expect(writing.annotations).toBeInstanceOf(Collection);
+        expect(writing.annotations).toBeInstanceOf(Annotations);
         expect((writing.contents.at(0) as $Writing).contents).not.toBe(writing.contents);
+    });
+
+    it('in the annotations, add means the front, and the two questions count only what is enforced', () => {
+        const writing = built<$Writing>(<Writing><Stamp /></Writing>);
+        const [mark] = writing.annotations.add(Mark);
+        expect(writing.annotations.at(0)).toBe(mark);
+        expect(writing.annotations.contains($Mark)).toBe(true);
+        expect(writing.annotations.containsOne($Stamp)).toBe(true);
+        expect(writing.annotations.containsOne($Mark)).toBe(false);
+        mark.enforced = false;
+        expect(writing.annotations.containsOne($Mark)).toBe(true);
+        writing.annotations.find($Stamp)[0].enforced = false;
+        expect(writing.annotations.contains($Mark)).toBe(false);
+        expect(writing.annotations.find($Mark).length).toBe(2);
     });
 
     it('an annotation written later stands nearer the front, and what $is stands is in front of them all', () => {
@@ -118,19 +136,48 @@ describe('$is declares what a writing is from outside: one or many, at the front
 });
 
 describe('an annotation acts on the writing it stands in, at the bond and at every draw', () => {
-    it('a writing is parenthetical when it carries an enforced Parenthetical, which the view asks by type', () => {
-        expect(built<$Writing>(<Writing />).annotations.contains($Parenthetical)).toBe(false);
-        expect(built<$Writing>(<Writing>an aside <Parenthetical /></Writing>).annotations.contains($Parenthetical)).toBe(true);
-        expect(built<$Writing>(<Writing is={Parenthetical}>an aside</Writing>).annotations.contains($Parenthetical)).toBe(true);
+    it('classes is a set the annotations fill at every pass, cleared first; Parenthetical adds pd-parenthetical', () => {
+        expect(built<$Writing>(<Writing />).classes.size).toBe(0);
+        expect(built<$Writing>(<Writing>an aside <Parenthetical /></Writing>).classes.has('pd-parenthetical')).toBe(true);
+        expect(built<$Writing>(<Writing is={Parenthetical}>an aside</Writing>).classes.has('pd-parenthetical')).toBe(true);
+        const writing = built<$Writing>(<Writing><Parenthetical /><Tagged /></Writing>);
+        expect([...writing.classes]).toEqual(['pd-tagged', 'pd-parenthetical']);
+        writing.annotations.remove($Tagged);
+        writing.view();
+        expect([...writing.classes]).toEqual(['pd-parenthetical']);
     });
 
-    it('Narrative inactivates the Parentheticals of its writing, written before or after it, or given from outside', () => {
-        expect(built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>).annotations.contains($Parenthetical)).toBe(false);
-        expect(built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>).annotations.contains($Parenthetical)).toBe(false);
-        expect(built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>).annotations.contains($Parenthetical)).toBe(false);
-        const writing = built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>);
-        expect(writing.annotations.find($Parenthetical)[0].enforced).toBe(false);
-        expect(writing.annotations.length).toBe(2);
+    it('an annotation that is not enforced erases what it defined; Narrative only flips enforced, and written after what it negates it settles in the bond\'s one pass', () => {
+        const parenthetical = built<$Writing>(<Writing>an aside <Parenthetical /></Writing>);
+        parenthetical.annotations.find($Parenthetical)[0].erase(parenthetical);
+        expect(parenthetical.classes.has('pd-parenthetical')).toBe(false);
+        expect(built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>).classes.has('pd-parenthetical')).toBe(false);
+        const natural = built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>);
+        expect(natural.classes.has('pd-parenthetical')).toBe(false);
+        expect(natural.annotations.find($Parenthetical)[0].enforced).toBe(false);
+        expect(natural.annotations.length).toBe(2);
+    });
+
+    it('written before what it negates, Narrative acts after it, and the next pass settles it', () => {
+        const reversed = built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>);
+        expect(reversed.classes.has('pd-parenthetical')).toBe(true);
+        reversed.view();
+        expect(reversed.classes.has('pd-parenthetical')).toBe(false);
+        expect(reversed.annotations.find($Parenthetical)[0].enforced).toBe(false);
+    });
+
+    it('the pass is idempotent: what the view\'s pass leaves is what the bond\'s pass left', () => {
+        for (const writing of [
+            built<$Writing>(<Writing>a <Parenthetical /><Tagged /></Writing>),
+            built<$Writing>(<Writing is={Narrative}><Parenthetical /><Tagged /></Writing>),
+            built<$Aside>(<Aside is={Mark}>a</Aside>),
+        ]) {
+            const classes = [...writing.classes];
+            const enforced = [...writing.annotations].map(annotation => annotation.enforced);
+            writing.view();
+            expect([...writing.classes]).toEqual(classes);
+            expect([...writing.annotations].map(annotation => annotation.enforced)).toEqual(enforced);
+        }
     });
 
     it('an annotation that is not enforced does not act, and one that leaves acts no more; what it did to a sibling lasts', () => {
@@ -138,13 +185,13 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         const [narrative] = writing.annotations.prepend(Narrative);
         narrative.enforced = false;
         writing.view();
-        expect(writing.annotations.contains($Parenthetical)).toBe(true);
+        expect(writing.classes.has('pd-parenthetical')).toBe(true);
         narrative.enforced = true;
         writing.view();
-        expect(writing.annotations.contains($Parenthetical)).toBe(false);
+        expect(writing.classes.has('pd-parenthetical')).toBe(false);
         writing.annotations.drop(narrative);
         writing.view();
-        expect(writing.annotations.contains($Parenthetical)).toBe(false);
+        expect(writing.classes.has('pd-parenthetical')).toBe(false);
     });
 
     it('acting is idempotent, and an annotation acts on a copy of the list', () => {
@@ -152,14 +199,14 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         writing.view();
         writing.view();
         expect(writing.annotations.length).toBe(2);
-        expect(writing.annotations.contains($Parenthetical)).toBe(false);
+        expect(writing.classes.has('pd-parenthetical')).toBe(false);
     });
 
-    it('a class that stands its own annotation in its bond defines again, and stands in front of $is', () => {
+    it('a class stands its own annotations in $Redefine, before the first pass, and they stand in front of $is', () => {
         const aside = built<$Aside>(<Aside is={Mark}>a</Aside>);
         expect(aside.annotations.at(0)).toBeInstanceOf($Parenthetical);
         expect(aside.annotations.at(1)).toBeInstanceOf($Mark);
-        expect(aside.annotations.contains($Parenthetical)).toBe(true);
+        expect(aside.classes.has('pd-parenthetical')).toBe(true);
     });
 });
 
@@ -171,16 +218,33 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(built<$Writing>(<Writing is={Boxed} />).container).toBe('div');
     });
 
-    it('drawn, the container is the element, and the annotations stand inside it in their own span wearing pd-annotations', async () => {
-        const writing = built<$Section>(<Section>a <Mark /></Section>);
+    it('drawn, the container is the element wearing the classes, and the annotations stand inside it in their own span wearing pd-annotations', async () => {
+        const writing = built<$Section>(<Section>a <Mark /><Tagged /><Parenthetical /></Section>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         const section = container?.firstElementChild;
         expect(section?.tagName).toBe('SECTION');
+        expect(section?.className).toBe('pd-parenthetical pd-tagged');
         expect(section?.querySelector('span.pd-annotations')).not.toBeNull();
-        expect(section?.className).toBe('');
         expect(section?.textContent).toContain('a');
+    });
+
+    it('an annotation is not rendered by default; one that has something to render overrides its view', async () => {
+        const writing = built<$Writing>(<Writing>a <Mark /><Tagged /></Writing>);
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        expect(container?.querySelector('span.pd-annotations')?.childElementCount).toBe(0);
+        expect(container?.querySelector('span.pd-annotations')?.textContent).toBe('');
+    });
+
+    it('Parenthetical renders, as its own view, the styled global style that targets pd-parenthetical', () => {
+        const writing = built<$Writing>(<Writing>an aside <Parenthetical /></Writing>);
+        const style = writing.annotations.find($Parenthetical)[0].view() as React.ReactElement;
+        expect(style).not.toBeNull();
+        expect(typeof style.type).toBe('object');
+        expect((style.type as { $$typeof?: symbol }).$$typeof).toBe(Symbol.for('react.memo'));
     });
 });
 

@@ -5,18 +5,15 @@ import { Collection } from '@dna-platform/public';
 class $Mark extends $Chemical { }
 class $Stamp extends $Mark { }
 class $Seal extends $Stamp { }
-class $Switch extends $Chemical { enforced = true; }
 class $Holder extends $Chemical { }
 const Mark = $($Mark);
 const Stamp = $($Stamp);
 const Seal = $($Seal);
-const Switch = $($Switch);
 const Holder = $($Holder);
 
 const mark = () => $(<Mark />) as unknown as $Mark;
 const stamp = () => $(<Stamp />) as unknown as $Stamp;
 const seal = () => $(<Seal />) as unknown as $Seal;
-const flip = () => $(<Switch />) as unknown as $Switch;
 const marks = (...chemicals: $Mark[]) => {
     const collection = new Collection<$Mark>();
     for (const chemical of chemicals) collection.add(chemical);
@@ -79,7 +76,7 @@ describe('the five operations of E65 go by type', () => {
         expect(collection.find($Stamp)).toEqual([sealed, collection.at(2)]);
         expect(collection.find($Seal)).toEqual([sealed]);
         expect(collection.find($Chemical).length).toBe(3);
-        expect(collection.find($Switch as never).length).toBe(0);
+        expect(collection.find($Holder as never).length).toBe(0);
     });
 
     it('replace swaps the first instance of the given\'s own class in place, everywhere it is filed, and does nothing when there is none', () => {
@@ -104,7 +101,7 @@ describe('the five operations of E65 go by type', () => {
         expect(collection.ensure($Mark)).toBe(stamped);
         const sealed = collection.ensure($Seal);
         expect([...collection]).toEqual([sealed]);
-        const other = collection.ensure($Switch as never);
+        const other = collection.ensure($Holder as never);
         expect(collection.length).toBe(2);
         expect(collection.at(1)).toBe(other);
     });
@@ -131,32 +128,23 @@ describe('the five operations of E65 go by type', () => {
     });
 });
 
-describe('the two questions a specification asks count only what is enforced', () => {
-    it('contains asks whether an enforced instance of the class is there', () => {
-        const collection = new Collection<$Switch>();
-        expect(collection.contains($Switch)).toBe(false);
-        const [first] = collection.add($Switch);
-        expect(collection.contains($Switch)).toBe(true);
-        first.enforced = false;
-        expect(collection.contains($Switch)).toBe(false);
-        expect(collection.find($Switch).length).toBe(1);
-    });
-
-    it('containsOne asks that exactly one enforced instance be there', () => {
-        const collection = new Collection<$Switch>();
-        const [first] = collection.add(flip());
-        expect(collection.containsOne($Switch)).toBe(true);
-        const [second] = collection.add(flip());
-        expect(collection.containsOne($Switch)).toBe(false);
-        second.enforced = false;
-        expect(collection.containsOne($Switch)).toBe(true);
-        first.enforced = false;
-        expect(collection.containsOne($Switch)).toBe(false);
-    });
-
-    it('a chemical without the word counts as enforced', () => {
-        const collection = marks(mark());
+describe('the two questions a specification asks', () => {
+    it('contains asks whether an instance of the class is there, subclasses included', () => {
+        const collection = new Collection<$Mark>();
+        expect(collection.contains($Mark)).toBe(false);
+        collection.add(stamp());
         expect(collection.contains($Mark)).toBe(true);
+        expect(collection.contains($Stamp)).toBe(true);
+        expect(collection.contains($Seal)).toBe(false);
+    });
+
+    it('containsOne asks that exactly one instance of the class be there', () => {
+        const collection = marks(stamp());
         expect(collection.containsOne($Mark)).toBe(true);
+        expect(collection.containsOne($Stamp)).toBe(true);
+        collection.add(mark());
+        expect(collection.containsOne($Mark)).toBe(false);
+        expect(collection.containsOne($Stamp)).toBe(true);
+        expect(collection.containsOne($Seal)).toBe(false);
     });
 });

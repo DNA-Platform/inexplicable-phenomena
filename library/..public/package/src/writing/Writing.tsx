@@ -1,12 +1,15 @@
 import { ElementType, ReactNode } from 'react';
+import { createGlobalStyle } from 'styled-components';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification, specify } from '@/utilities/Specification';
+import { Annotations } from './Annotations';
 
 export class $Writing extends $Chemical {
     private _contents?: Collection<$Chemical>;
-    private _annotations?: Collection<$Annotation>;
+    private _annotations?: Annotations;
+    private _classes?: Set<string>;
     container: ElementType = 'span';
     protected is: $Annotation[] = [];
 
@@ -22,30 +25,39 @@ export class $Writing extends $Chemical {
         return contents ?? (this._contents = new Collection<$Chemical>(this));
     }
 
-    get annotations(): Collection<$Annotation> {
+    get annotations(): Annotations {
         const annotations = Object.hasOwn(this, '_annotations') ? this._annotations : undefined;
-        return annotations ?? (this._annotations = new Collection<$Annotation>(this));
+        return annotations ?? (this._annotations = new Annotations(this));
+    }
+
+    get classes(): Set<string> {
+        const classes = Object.hasOwn(this, '_classes') ? this._classes : undefined;
+        return classes ?? (this._classes = new Set<string>());
     }
 
     $Writing(...chemicals: $Chemical[]) {
-        const annotations: $Annotation[] = [];
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
-                annotations.unshift(chemical);
+                this.annotations.add(chemical);
             else
                 this.contents.add(chemical);
-        this.annotations.add(...annotations);
+        this.$is = this.is;
+        this.$Redefine();
         this.define();
     }
+
+    protected $Redefine(): void { }
 
     view(): ReactNode {
         this.define();
         const Container = this.container;
-        const parenthetical = this.annotations.contains($Parenthetical);
+        const classes = [...this.classes].join(' ') || undefined;
         return (
-            <Container className={parenthetical ? 'pd-parenthetical' : undefined}>
+            <Container className={classes}>
                 {this.write()}
-                {this.annotate()}
+                <span className="pd-annotations">
+                    {this.annotate()}
+                </span>
             </Container>
         );
     }
@@ -73,31 +85,39 @@ export class $Writing extends $Chemical {
     }
 
     annotate(): ReactNode {
-        return (
-            <span className="pd-annotations">
-                {this.annotations.map((annotation, index) => {
-                    const Annotation = $(annotation);
-                    return <Annotation key={index} />;
-                })}
-            </span>
-        );
+        return this.annotations.map((annotation, index) => {
+            const Annotation = $(annotation);
+            return <Annotation key={index} />;
+        });
     }
 
     protected define(): void {
-        const annotations = [...this.annotations];
-        for (let index = annotations.length - 1; index >= 0; index--)
-            if (annotations[index].enforced)
-                annotations[index].defines(this);
+        this.classes.clear();
+        for (const annotation of [...this.annotations])
+            if (annotation.enforced)
+                annotation.defines(this);
+            else
+                annotation.erase(this);
     }
 }
 
 export class $Annotation extends $Writing {
     enforced = true;
+    override view(): ReactNode { return null; }
     defines(writing: $Writing): void { }
+    erase(writing: $Writing): void { }
     specifies(writing: $Writing): void { }
 }
 
-export class $Parenthetical extends $Annotation { }
+const ParentheticalStyle = createGlobalStyle`
+    .pd-parenthetical { display: none; }
+`;
+
+export class $Parenthetical extends $Annotation {
+    override view(): ReactNode { return <ParentheticalStyle />; }
+    override defines(writing: $Writing): void { writing.classes.add('pd-parenthetical'); }
+    override erase(writing: $Writing): void { writing.classes.delete('pd-parenthetical'); }
+}
 
 export class $Narrative extends $Annotation {
     override defines(writing: $Writing): void {
