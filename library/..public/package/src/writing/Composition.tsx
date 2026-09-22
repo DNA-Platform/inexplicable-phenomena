@@ -4,7 +4,8 @@ import { $Writing, $Annotation, WritingSpecification } from './Writing';
 export class $Composition extends $Writing {
     specification = new CompositionSpecification();
     get level(): number { return this.annotations.enforced($Level)?.level ?? 1; }
-    get depth(): number { return this.parent instanceof this.constructor ? (this.parent as $Composition).depth + 1 : 0;}
+    get composition(): $Composition | undefined { return this.parent instanceof $Composition ? this.parent : undefined; }
+    get depth(): number { return this.composition instanceof this.constructor ? this.composition.depth + 1 : 0; }
     get canonical(): $Composition | undefined { return this.parts[0]; }
     get parts(): $Composition[] {
         return this.contents.find($Composition).flatMap(composition =>
@@ -25,8 +26,8 @@ export class $Strict extends $Annotation {
             permissive.enforced = false;
     }
 
-    override specifies(writing: $Writing): void {
-        const composition = writing as $Composition;
+    override specifies(composition: $Composition): void {
+        $check(composition instanceof $Composition, 'strict is said of a composition, and this is not one');
         $check(composition.parts
             .every(part => part.level === composition.level || part.level === composition.level - 1),
             'a strict composition holds parts at its level or one below, and this one holds another');
@@ -39,8 +40,8 @@ export class $Permissive extends $Annotation {
             strict.enforced = false;
     }
 
-    override specifies(writing: $Writing): void {
-        const composition = writing as $Composition;
+    override specifies(composition: $Composition): void {
+        $check(composition instanceof $Composition, 'permissive is said of a composition, and this is not one');
         $check(composition.parts
             .every(part => part.level <= composition.level),
             'a permissive composition holds parts at or below its level, and this one holds one above');

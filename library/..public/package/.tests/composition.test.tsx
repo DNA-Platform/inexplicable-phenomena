@@ -86,6 +86,11 @@ describe('is asks whether an annotation of a kind is enforced, by class or by co
         expect(opened.is(Open)).toBe(true);
         expect(opened.is(Closed)).toBe(false);
     });
+
+    it('a pair said of a writing that is not a composition throws when it specifies, and the assert reports it', () => {
+        expect(built<$Writing>(<Writing><Strict /></Writing>).specify()).toEqual(['strict is said of a composition, and this is not one']);
+        expect(built<$Writing>(<Writing><Permissive /></Writing>).specify()).toEqual(['permissive is said of a composition, and this is not one']);
+    });
 });
 
 describe('the specification is a property each class reassigns, and specify never changes', () => {

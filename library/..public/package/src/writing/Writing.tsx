@@ -62,8 +62,8 @@ export class $Writing extends $Chemical {
         return failures;
     }
 
-    is(kind: Kind<$Annotation>): boolean {
-        return this.annotations.contains(kind);
+    is(representation: Representation<$Annotation>): boolean {
+        return this.annotations.contains(representation);
     }
 
     write(): ReactNode {
@@ -107,7 +107,7 @@ export class $Annotation extends $Writing {
     specifies(writing: $Writing): void { }
 }
 
-export type Kind<U extends $Annotation> = (new () => U) | Component;
+export type Representation<U extends $Annotation> = (new () => U) | Component;
 
 export class Annotations extends Collection<$Annotation> {
     private applied?: Given<$Annotation> | Given<$Annotation>[];
@@ -134,24 +134,24 @@ export class Annotations extends Collection<$Annotation> {
                 annotation.erase(this.parent);
     }
 
-    enforced<U extends $Annotation>(kind: Kind<U>): U | undefined {
-        return this.find(kind).find(annotation => annotation.enforced);
+    enforced<U extends $Annotation>(representation: Representation<U>): U | undefined {
+        return this.find(representation).find(annotation => annotation.enforced);
     }
 
     override add(...givens: Given<$Annotation>[]): $Annotation[] {
         return this.prepend(...givens);
     }
 
-    override find<U extends $Annotation>(kind: Kind<U>): ReadonlyArray<U> {
-        return super.find(classOf(kind));
+    override find<U extends $Annotation>(representation: Representation<U>): ReadonlyArray<U> {
+        return super.find(classOf(representation));
     }
 
-    override contains<U extends $Annotation>(kind: Kind<U>): boolean {
-        return this.enforced(kind) !== undefined;
+    override contains<U extends $Annotation>(representation: Representation<U>): boolean {
+        return this.enforced(representation) !== undefined;
     }
 
-    override containsOne<U extends $Annotation>(kind: Kind<U>): boolean {
-        return this.find(kind).filter(annotation => annotation.enforced).length === 1;
+    override containsOne<U extends $Annotation>(representation: Representation<U>): boolean {
+        return this.find(representation).filter(annotation => annotation.enforced).length === 1;
     }
 
     override toString(): string {
@@ -161,9 +161,9 @@ export class Annotations extends Collection<$Annotation> {
     }
 }
 
-function classOf<U extends $Annotation>(kind: Kind<U>): new () => U {
-    const chemical = (kind as { $chemical?: $Chemical }).$chemical;
-    return chemical === undefined ? kind as new () => U : chemical.constructor as new () => U;
+function classOf<U extends $Annotation>(representation: Representation<U>): new () => U {
+    const chemical = (representation as { $chemical?: $Chemical }).$chemical;
+    return chemical === undefined ? representation as new () => U : chemical.constructor as new () => U;
 }
 
 const ParentheticalStyle = createGlobalStyle`
