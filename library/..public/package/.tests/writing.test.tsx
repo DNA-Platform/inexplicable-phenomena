@@ -203,11 +203,13 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         expect(writing.classes.has('pd-parenthetical')).toBe(false);
     });
 
-    it('a class stands its own annotations in $Redefine, before the first pass, and they stand in front of $is', () => {
+    it('a class stands its own annotations in $Redefine, before the first pass, and what $is gives stands in front of them', () => {
         const aside = built<$Aside>(<Aside is={Mark}>a</Aside>);
-        expect(aside.annotations.at(0)).toBeInstanceOf($Parenthetical);
-        expect(aside.annotations.at(1)).toBeInstanceOf($Mark);
+        expect(aside.annotations.at(0)).toBeInstanceOf($Mark);
+        expect(aside.annotations.at(1)).toBeInstanceOf($Parenthetical);
         expect(aside.classes.has('pd-parenthetical')).toBe(true);
+        const narrated = built<$Aside>(<Aside is={Narrative}>a</Aside>);
+        expect(narrated.classes.has('pd-parenthetical')).toBe(false);
     });
 });
 

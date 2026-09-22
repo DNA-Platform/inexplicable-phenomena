@@ -39,8 +39,8 @@ export class $Writing extends $Chemical {
                 this.annotations.add(chemical);
             else
                 this.contents.add(chemical);
-        this.$is = this.is;
         this.$Redefine();
+        this.$is = this.is;
         this.define();
     }
 
