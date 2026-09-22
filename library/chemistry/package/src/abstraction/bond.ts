@@ -16,33 +16,22 @@ const inertDecorators = new Map<any, Set<string>>();
 const reactiveDecorators = new Map<any, Set<string>>();
 const lookDecorators = new Map<any, Map<string, string>>();
 
-function inertOf(chemical: any, property: string, general: boolean): boolean | undefined {
-    if (!general) return true;
-    if (chemical?.[$isChemicalBase$]) return undefined;
-    const map = inertDecorators.get(chemical);
-    return !map ?
-        inertOf(Object.getPrototypeOf(chemical), property, general) :
-        map.has(property);
-}
-
-function reactiveOf(chemical: any, property: string, general: boolean): boolean | undefined {
-    if (general) return true;
-    if (chemical?.[$isChemicalBase$]) return undefined;
-    const map = reactiveDecorators.get(chemical);
-    return !map ?
-        reactiveOf(Object.getPrototypeOf(chemical), property, general) :
-        map.has(property);
+// A DECORATION IS FILED BY PROTOTYPE AND READ BACK UP THE CHAIN, stopping at
+// the base — the one prototype that OWNS the marker, since every chemical
+// inherits it.
+function decorated(registry: Map<any, Set<string>>, chemical: any, property: string): boolean {
+    for (let proto = chemical; proto && !Object.hasOwn(proto, $isChemicalBase$); proto = Object.getPrototypeOf(proto))
+        if (registry.get(proto)?.has(property)) return true;
+    return false;
 }
 
 export class $Reflection {
     chemical: any;
     property: string;
     get reactive(): boolean {
-        if ($Reflection.isSpecial(this.property)) return true;
-        const general = $Reflection.isReactive(this.property);
-        return general ?
-            !inertOf(this.chemical, this.property, general) :
-            !!reactiveOf(this.chemical, this.property, general);
+        return $Reflection.isReactive(this.property) ?
+            !decorated(inertDecorators, this.chemical, this.property) :
+            decorated(reactiveDecorators, this.chemical, this.property);
     }
     constructor(chemical: any, property: string) {
         this.chemical = chemical;
@@ -102,7 +91,7 @@ export function look(name: string) {
 }
 
 // The name @look gave a member, found from an instance by walking what it
-// inherits from — the same fallback inertOf and reactiveOf use.
+// inherits from — the same walk a decoration is read back by.
 export function lookName(chemical: any, member: string): string | undefined {
     let held = chemical;
 

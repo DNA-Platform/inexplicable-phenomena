@@ -1,38 +1,5 @@
 import { $backing$, $reaction$, $rendering$, $$parent$$ } from "./symbols";
-import { equivalent } from "./reconcile";
-
-/**
- * Deep-clone a value for snapshotting. Map/Set/Array/plain-object aware.
- * Class instances are reference-held (not walked) — the class owns its
- * equivalence semantics. Primitives pass through unchanged.
- *
- * Faster than $symbolize (which produces a string and compares via memcmp):
- * we walk the structure, copy it, and compare later via equivalent() with
- * early exit on first mismatch.
- */
-function snapshot(v: any): any {
-    if (v === null || typeof v !== 'object') return v;
-    if (Array.isArray(v)) return v.map(snapshot);
-    if (v instanceof Map) {
-        const out = new Map();
-        for (const [k, val] of v) out.set(k, snapshot(val));
-        return out;
-    }
-    if (v instanceof Set) {
-        const out = new Set();
-        for (const val of v) out.add(snapshot(val));
-        return out;
-    }
-    if (v instanceof Date) return new Date(v.getTime());
-    const proto = Object.getPrototypeOf(v);
-    if (proto === Object.prototype || proto === null) {
-        const out: any = {};
-        for (const k of Object.keys(v)) out[k] = snapshot((v as any)[k]);
-        return out;
-    }
-    // Class instance (including chemicals) — reference only
-    return v;
-}
+import { equivalent, snapshot } from "./reconcile";
 
 /**
  * Scope — the reactivity tracking context.
@@ -40,12 +7,12 @@ function snapshot(v: any): any {
  * A Scope is active during a reactive entry into chemical code: an event
  * handler invocation (via view augmentation), a reactive method call, or a
  * render cycle. While a Scope is active, every property read on a reactive
- * chemical property records a snapshot via $symbolize; every property write
+ * chemical property records a snapshot; every property write
  * records the target chemical.
  *
  * When the Scope finalizes (at the end of the entry), it fires
  * `chemical[$reaction$].react()` on every chemical that was written directly
- * OR whose recorded read-snapshot differs from its current serialization.
+ * OR whose recorded read-snapshot differs from its current value.
  * This catches in-place mutations of collections and nested objects, as well
  * as cross-chemical state changes that happened during the scope.
  *

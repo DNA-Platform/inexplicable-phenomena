@@ -45,37 +45,102 @@ function reconcileVisitor(
     return pair;
 }
 
-// equivalent(a, b) — structural equality for arbitrary prop values.
-//
-// Rules, applied in order:
-//   1. a === b                      → equal
-//   2. a == null or b == null       → not equal
-//   3. typeof a !== typeof b        → not equal
-//   4. function                     → a.toString() === b.toString()
-//   5. primitive (any non-object)   → not equal (rule 1 covered equal case)
-//   6. React element                → delegate to reconcile
-//   7. Array                        → same length + equivalent element-wise
-//   8. Plain object                 → same own keys + equivalent value-wise
-//                                     (prototype is Object.prototype or null)
-//   9. Class instance               → not equal
-//                                     (rule 1 covered ===; we do not walk
-//                                     into instances — the class owns its
-//                                     own equivalence semantics)
-//
-// This is the single equality check used when comparing two view outputs
-// from the same chemical across a render cycle. It exists because JSX
-// re-constructs inline closures, inline objects, and inline arrays every
-// render — they have no identity but are semantically equivalent when
-// their shape is the same.
+// THE WALKED SHAPES. snapshot() copies one by content and equivalent() compares
+// one by content, from one list, so the two cannot disagree. Every other object
+// is a class instance and is held by reference: the class owns its equivalence.
+// (`walked` is a proxy name, flagged for Doug.)
+type Walked = {
+    is(value: object): boolean;
+    copy(value: any, copy: (value: any) => any): any;
+    same(a: any, b: any, same: (a: any, b: any) => boolean): boolean;
+};
+
+const walked: Walked[] = [
+    {
+        is: value => Array.isArray(value),
+        copy: (value: any[], copy) => value.map(copy),
+        same: (a: any[], b: any[], same) => a.length === b.length && a.every((value, i) => same(value, b[i])),
+    },
+    {
+        is: value => value instanceof Map,
+        copy: (value: Map<any, any>, copy) => {
+            const out = new Map();
+            for (const [key, held] of value) out.set(key, copy(held));
+            return out;
+        },
+        same: (a: Map<any, any>, b: Map<any, any>, same) => {
+            if (a.size !== b.size) return false;
+            for (const [key, held] of a) if (!b.has(key) || !same(held, b.get(key))) return false;
+            return true;
+        },
+    },
+    {
+        is: value => value instanceof Set,
+        copy: (value: Set<any>, copy) => {
+            const out = new Set();
+            for (const held of value) out.add(copy(held));
+            return out;
+        },
+        same: (a: Set<any>, b: Set<any>, same) => {
+            if (a.size !== b.size) return false;
+            for (const held of a) if (!b.has(held) && !holds(b, held, same)) return false;
+            return true;
+        },
+    },
+    {
+        is: value => value instanceof Date,
+        copy: (value: Date) => new Date(value.getTime()),
+        same: (a: Date, b: Date) => a.getTime() === b.getTime(),
+    },
+    {
+        is: value => {
+            const proto = Object.getPrototypeOf(value);
+            return proto === Object.prototype || proto === null;
+        },
+        copy: (value, copy) => {
+            const out: any = {};
+            for (const key of Object.keys(value)) out[key] = copy(value[key]);
+            return out;
+        },
+        same: (a, b, same) => {
+            const keys = Object.keys(a);
+            if (keys.length !== Object.keys(b).length) return false;
+            for (const key of keys) if (!same(a[key], b[key])) return false;
+            return true;
+        },
+    },
+];
+
+// A member that is itself walked was copied into the snapshot, so `has` cannot
+// find it; it is found by content.
+function holds(set: Set<any>, value: any, same: (a: any, b: any) => boolean): boolean {
+    if (value === null || typeof value !== 'object') return false;
+    for (const held of set) if (same(held, value)) return true;
+    return false;
+}
+
+function shapeOf(value: object): Walked | undefined {
+    for (const shape of walked) if (shape.is(value)) return shape;
+    return undefined;
+}
+
+// snapshot(value) — what a scope records at a read, compared at finalize.
+export function snapshot(value: any): any {
+    if (value === null || typeof value !== 'object') return value;
+    const shape = shapeOf(value);
+    return shape ? shape.copy(value, snapshot) : value;
+}
+
+// equivalent(a, b) — the one equality: at a setter, at a prop, at a snapshot.
+// === first, so a scalar costs what it always did; a function by its original
+// source; an element through reconcile; a walked shape by content; anything
+// else by reference.
 export function equivalent(a: any, b: any): boolean {
     if (a === b) return true;
     if (a == null || b == null) return false;
     const ta = typeof a, tb = typeof b;
     if (ta !== tb) return false;
     if (ta === 'function') {
-        // Compare by original source — a wrapper augment() installed carries the
-        // user's own function via $original$. Two wrappers standing for one
-        // original are equivalent even though they are different instances.
         const aOrig = (a as any)[$original$] || a;
         const bOrig = (b as any)[$original$] || b;
         if (aOrig === bOrig) return true;
@@ -86,21 +151,7 @@ export function equivalent(a: any, b: any): boolean {
         if (!React.isValidElement(a) || !React.isValidElement(b)) return false;
         return reconcile(a, b) === b;
     }
-    if (Array.isArray(a)) {
-        if (!Array.isArray(b) || a.length !== b.length) return false;
-        for (let i = 0; i < a.length; i++)
-            if (!equivalent(a[i], b[i])) return false;
-        return true;
-    }
-    if (Array.isArray(b)) return false;
-    const protoA = Object.getPrototypeOf(a);
-    if (protoA !== Object.prototype && protoA !== null) return false;
-    const protoB = Object.getPrototypeOf(b);
-    if (protoB !== Object.prototype && protoB !== null) return false;
-    const aKeys = Object.keys(a);
-    const bKeys = Object.keys(b);
-    if (aKeys.length !== bKeys.length) return false;
-    for (const k of aKeys)
-        if (!equivalent(a[k], b[k])) return false;
-    return true;
+    const shape = shapeOf(a);
+    if (!shape || !shape.is(b)) return false;
+    return shape.same(a, b, equivalent);
 }
