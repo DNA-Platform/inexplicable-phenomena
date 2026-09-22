@@ -3,8 +3,8 @@ import {
 } from "../implementation/symbols";
 import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
 import { hydration } from "../implementation/hydration";
-import { $reinit$ } from "../implementation/symbols";
-import { equivalent } from '../implementation/reconcile';
+import { $reinit$, $original$ } from "../implementation/symbols";
+import { equivalent, snapshot } from '../implementation/reconcile';
 
 // ===========================================================================
 // $Reflection — property annotation system
@@ -145,18 +145,22 @@ export class $Bond<T = any, P = any> {
         this._formed = true;
         this._getter = this._descriptor.get;
         this._setter = this._descriptor.set;
-        // For plain fields (no user getter/setter, not a method), activate the
-        // property — install a get/set accessor that participates in scope
-        // tracking. An inert field becomes a reactive one.
-        if (!this._getter && !this._setter && !$Bond.isMethod(this._descriptor)) {
+        // A declared accessor is wrapped; a plain field is activated. Either
+        // way the property participates in scope tracking.
+        if (this.isProperty)
+            wrap(this._chemical, this._property, this._getter, this._setter);
+        else if (!$Bond.isMethod(this._descriptor))
             activate(this._chemical, this._property, this._descriptor.value);
-        }
     }
 
+    // An instance that is not the template takes the template's bonds by
+    // doubling; a field is its own property already, an accessor's wrapper is
+    // installed here so it reaches the instance as a field's does.
     double(chemical: any): $Bond {
         const bond = Object.create(this) as $Bond;
         bond._chemical = chemical;
         bond._id = undefined;
+        if (this.isProperty) wrap(chemical, this._property, this._getter, this._setter);
         return bond;
     }
 
@@ -221,6 +225,40 @@ function activate(chemical: any, property: string, initial: any) {
     });
 }
 
+// A DECLARED ACCESSOR IS WRAPPED AS A FIELD IS ACTIVATED: a read records the
+// getter's answer in the scope, a set is news unless the answer is unchanged,
+// and a set during the chemical's own draw is construction. What the accessor
+// proxies to is its own business. (`wrap` is a proxy name, flagged for Doug.)
+function wrap(chemical: any, property: string, getter?: () => any, setter?: (value: any) => void) {
+    // Non-enumerable, as a class accessor is: an own-key walk must not meet it as a field.
+    const get = function (this: any) {
+        const value = getter?.call(this);
+        const scope = currentScope();
+        if (scope) scope.recordRead(this, property, value);
+        return value;
+    };
+    // The wrapper carries the declared accessor, as an augmented handler carries
+    // its own function, so a scan of own names can tell it from a field.
+    (get as any)[$original$] = getter ?? setter;
+    Object.defineProperty(chemical, property, {
+        get,
+        set: setter && function (this: any, value: any) {
+            const before = getter ? snapshot(getter.call(this)) : undefined;
+            setter.call(this, value);
+            if (this[$rendering$]) return;
+            if (getter && equivalent(getter.call(this), before)) return;
+            const scope = currentScope();
+            if (scope) {
+                scope.recordWrite(this, property);
+            } else {
+                this[$reaction$]?.react();
+                diffuse(this);
+            }
+        },
+        enumerable: false,
+        configurable: true,
+    });
+}
 
 // $Reagent — a reactive method. A reagent participates in / drives a reaction;
 // calling it runs user code in a scope, and any state changes it makes cause

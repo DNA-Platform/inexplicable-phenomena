@@ -48,7 +48,8 @@ export class $Scope {
         for (const [chem, perReads] of this.reads) {
             if (dirty.has(chem)) continue;
             for (const [prop, snap] of perReads) {
-                const current = chem[$backing$]?.[prop];
+                const backing = chem[$backing$];
+                const current = backing && prop in backing ? backing[prop] : chem[prop];
                 if (!equivalent(current, snap)) {
                     dirty.add(chem);
                     break;

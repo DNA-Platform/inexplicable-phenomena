@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styledImport, { ThemeProvider } from 'styled-components';
-import { $type$, $$template$$, $isChemicalBase$, $handed$, $provided$, theme, framework } from '../implementation/symbols';
+import { $type$, $$template$$, $isChemicalBase$, $handed$, $provided$, $original$, theme, framework } from '../implementation/symbols';
 import { names as roster } from '../implementation/css';
 
 // ===========================================================================
@@ -257,6 +257,8 @@ function declared(cls: any): string[] {
     const theirs = mine && template(Object.getPrototypeOf(cls));
 
     if (mine) for (const name of Object.getOwnPropertyNames(mine)) {
+        // A wrapped accessor is an own name of the template too; it is read below, off its prototype.
+        if ((Object.getOwnPropertyDescriptor(mine, name)?.get as any)?.[$original$]) continue;
         const value = mine[name];
         if (typeof value !== 'string' && typeof value !== 'number') continue;
         if (!property(name)) continue;

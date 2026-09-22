@@ -5,7 +5,7 @@ import {
     $props$, $lastProps$, $apply$, $bond$,
     $destroy$, $destroyed$, $remove$, $catalyst$, $isCatalyst$,
     $$template$$, $$getNextCid$$, $$createSymbol$$,
-    $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$,
+    $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$, $original$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
     $devError$, $devException$, $watched$,
     $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, $recall$, framework
@@ -951,6 +951,8 @@ function facadesOf(chemical: any): any[] {
         // A $-PREFIXED MEMBER IS A PROP — extrinsic context handed in from
         // outside. An assignment says what this thing IS, so it is never one.
         if (name.charCodeAt(0) === 36) continue;
+        // A WRAPPED ACCESSOR IS NOT A FIELD: it answers at a draw, and the template never draws.
+        if ((Object.getOwnPropertyDescriptor(declared, name)?.get as any)?.[$original$]) continue;
         const value = (declared as any)[name];
         const held = typeof value === 'function' ? (value as any).$chemical : undefined;
         if (held) found.push(value);
