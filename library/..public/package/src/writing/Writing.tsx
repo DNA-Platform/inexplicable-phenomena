@@ -10,10 +10,12 @@ import type { Kind } from './Annotations';
 export class $Writing extends $Chemical {
     protected _contents?: Collection<$Chemical>;
     protected _annotations?: Annotations;
-    $is: Given<$Annotation> | Given<$Annotation>[] = [];
     classes!: Set<string>;
     specification: Specification<$Writing> = new WritingSpecification();
     container: ElementType = 'span';
+
+    get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.is; }
+    set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.is = given; }
 
     get contents(): Collection<$Chemical> {
         const contents = Object.hasOwn(this, '_contents') ? this._contents : undefined;
@@ -33,11 +35,11 @@ export class $Writing extends $Chemical {
                 this.annotations.add(chemical);
             else
                 this.contents.add(chemical);
-        this.define();
+        this.annotations.define();
     }
 
     view(): ReactNode {
-        this.define();
+        this.annotations.define();
         const Container = this.container;
         const classes = [...this.classes].join(' ') || undefined;
         return (
@@ -82,10 +84,6 @@ export class $Writing extends $Chemical {
     }
 
     protected $Define(): void { }
-
-    protected define(): void {
-        this.annotations.define(this.$is);
-    }
 }
 
 export class $Annotation extends $Writing {

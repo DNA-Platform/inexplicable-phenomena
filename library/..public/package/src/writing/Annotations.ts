@@ -6,25 +6,23 @@ import type { $Annotation, $Writing } from './Writing';
 export type Kind<U extends $Annotation> = (new () => U) | Component;
 
 export class Annotations extends Collection<$Annotation> {
+    is: Given<$Annotation> | Given<$Annotation>[] = [];
     edits: $Annotation[] = [];
-    private given?: Given<$Annotation> | Given<$Annotation>[];
+    private applied?: Given<$Annotation> | Given<$Annotation>[];
 
     override add(...givens: Given<$Annotation>[]): $Annotation[] {
         return this.prepend(...givens);
     }
 
-    edit(given: Given<$Annotation> | Given<$Annotation>[]): $Annotation[] {
-        if (given === this.given) return this.edits;
-        for (const annotation of this.edits) {
-            this.drop(annotation);
-            annotation.erase(this.parent as $Writing);
+    define(): void {
+        if (this.is !== this.applied) {
+            for (const annotation of this.edits) {
+                this.drop(annotation);
+                annotation.erase(this.parent as $Writing);
+            }
+            this.edits = this.prepend(...(Array.isArray(this.is) ? this.is : [this.is]));
+            this.applied = this.is;
         }
-        this.given = given;
-        return this.edits = this.prepend(...(Array.isArray(given) ? given : [given]));
-    }
-
-    define(given: Given<$Annotation> | Given<$Annotation>[]): void {
-        this.edit(given);
         for (const annotation of [...this])
             if (annotation.enforced)
                 annotation.defines(this.parent as $Writing);
