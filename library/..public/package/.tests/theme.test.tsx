@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
-import { $, styled, theme } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, Parenthetical } from '@dna-platform/public';
+import { $, styled } from '@dna-platform/chemistry';
+import { $Writing, Writing, $Annotation } from '@dna-platform/public';
 import type { ElementType, ReactNode } from 'react';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -12,11 +12,12 @@ const Quotation = styled.blockquote`
 `;
 
 class $Format extends $Annotation {
+    format: ElementType = 'span';
     protected _lent?: ElementType;
     override defines(writing: $Writing): void {
-        if (writing.container === this.container) return;
+        if (writing.container === this.format) return;
         this._lent = writing.container;
-        writing.container = this.container;
+        writing.container = this.format;
     }
     override erase(writing: $Writing): void {
         if (this._lent === undefined) return;
@@ -25,7 +26,7 @@ class $Format extends $Annotation {
     }
 }
 class $Quoted extends $Format {
-    override container: ElementType = Quotation;
+    override format: ElementType = Quotation;
 }
 
 class $Wrapping extends $Annotation {
@@ -56,7 +57,11 @@ class $WrappingRed extends $Wrapping {
 
 class $Themed extends $Writing {
     theme?: object;
-    override get [theme](): any { return this.theme ?? super[theme]; }
+    override view(): ReactNode {
+        const drawn = super.view();
+        const theme = this.theme;
+        return theme === undefined ? drawn : <ThemeProvider theme={() => theme}>{drawn}</ThemeProvider>;
+    }
 }
 class $Theme extends $Annotation {
     rule = 'silver';
@@ -85,10 +90,11 @@ const drawn = async (element: React.ReactElement): Promise<HTMLElement> => {
     return container!;
 };
 
-describe('Format, tried: a writing whose container is a styled component, lent to the writing it annotates', () => {
-    it('lends its container in defines and gives it back in erase', () => {
+describe('Format, tried: an annotation holding its styled component on a property, lent to the writing it annotates', () => {
+    it('lends its format as the container in defines and gives the container back in erase; a subclass overrides the property', () => {
         const writing = built<$Writing>(<Writing>a quote <Quoted /></Writing>);
         expect(writing.container).toBe(Quotation);
+        expect(writing.annotations.at(0)!.container).toBe('span');
         writing.annotations.at(0)!.enforced = false;
         writing.view();
         expect(writing.container).toBe('span');
@@ -105,7 +111,7 @@ describe('Format, tried: a writing whose container is a styled component, lent t
     });
 });
 
-describe('Theme, tried two ways: a provider wrapped around the container, and chemistry\'s own theme seam', () => {
+describe('Theme, tried two ways: a provider wrapped around the container, and the writing placing styled-components\' provider around what it draws', () => {
     it('wrapping the container: two annotations on one surface break each other\'s idempotence, so a pass remakes the wrapper, a Format behind undoes it, and a render loops', () => {
         const ordered = built<$Writing>(<Writing>a quote <WrappingRed /><Quoted /></Writing>);
         const provider = ordered.container;
@@ -118,10 +124,10 @@ describe('Theme, tried two ways: a provider wrapped around the container, and ch
         expect(given.container).toBe(Quotation);
     });
 
-    it('chemistry\'s seam: a writing whose theme an annotation set provides it around what it draws, with no change of container', async () => {
+    it('the writing\'s own provider: a theme an annotation set is provided around the drawing, the container untouched, and un-enforcing the Theme redraws without it', async () => {
         const writing = built<$Themed>(<Themed>a quote <Quoted /><Blue /></Themed>);
         expect(writing.container).toBe(Quotation);
-        expect(writing[theme]).toBeInstanceOf($Blue);
+        expect(writing.theme).toBeInstanceOf($Blue);
         const Drawn = $(writing);
         const container = await drawn(<Drawn />);
         expect(container.firstElementChild!.tagName).toBe('BLOCKQUOTE');
@@ -130,17 +136,17 @@ describe('Theme, tried two ways: a provider wrapped around the container, and ch
         await act(async () => { writing.annotations.at(0)!.enforced = false; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container.firstElementChild!.className).not.toBe(was);
-        expect(writing[theme]).not.toBeInstanceOf($Blue);
+        expect(writing.theme).toBeUndefined();
     });
 
-    it('chemistry\'s seam does not care in what order Format and Theme act', () => {
+    it('the writing\'s own provider does not care in what order Format and Theme act, $is included', () => {
         for (const themed of [
             built<$Themed>(<Themed>a <Blue /><Quoted /></Themed>),
             built<$Themed>(<Themed>a <Quoted /><Blue /></Themed>),
             built<$Themed>(<Themed is={Blue}>a <Quoted /></Themed>),
         ]) {
             expect(themed.container).toBe(Quotation);
-            expect(themed[theme]).toBeInstanceOf($Blue);
+            expect(themed.theme).toBeInstanceOf($Blue);
         }
     });
 });
