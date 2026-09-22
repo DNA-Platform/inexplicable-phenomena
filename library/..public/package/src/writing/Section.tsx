@@ -5,8 +5,9 @@ import { $Sentence } from './Sentence';
 
 export class $Section extends $Composition {
     specification = new SectionSpecification();
-
-    override get canonical(): $Heading | undefined { return this.contents.find($Heading)[0]; }
+    override get canonical(): $Heading | undefined { 
+        return this.contents.find($Heading)[0]; 
+    }
 
     protected override $Define(): void {
         this.annotations.add(
@@ -19,8 +20,9 @@ export class $Section extends $Composition {
 
 export class $Heading extends $Sentence {
     specification = new HeadingSpecification();
-
-    get section(): $Section | undefined { return this.parent instanceof $Section ? this.parent : undefined; }
+    get section(): $Section | undefined { 
+        return this.parent instanceof $Section ? this.parent : undefined; 
+    }
 }
 
 export class SectionSpecification extends CompositionSpecification {

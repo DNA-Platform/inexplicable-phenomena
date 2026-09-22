@@ -113,8 +113,9 @@ describe('the specification is a property each class reassigns, and specify neve
         expect(built<$Fifth>(<Fifth><Top /></Fifth>).specify()).toContain('a permissive composition holds parts at or below its level, and this one holds one above');
     });
 
-    it('closed holds only writing; open lifts the rule a piece of writing has by default', () => {
+    it('closed holds only writing; open lifts the rule a piece of writing has by default; the cascade reaches a nested one', () => {
         expect(built<$Fifth>(<Fifth>prose</Fifth>).specify()).toEqual(['a closed composition holds only writing, and this one holds something else']);
+        expect(built<$Top>(<Top><Fifth><Fifth>prose</Fifth></Fifth></Top>).specify()).toEqual(['a closed composition holds only writing, and this one holds something else']);
         expect(built<$Fourth>(<Fourth>prose</Fourth>).specify()).toEqual([]);
         expect(built<$Fifth>(<Fifth is={Open}>prose</Fifth>).specify()).toEqual([]);
     });
