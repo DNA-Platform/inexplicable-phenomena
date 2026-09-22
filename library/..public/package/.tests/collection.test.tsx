@@ -79,7 +79,7 @@ describe('the five operations of E65 go by type', () => {
         expect(collection.find($Holder as never).length).toBe(0);
     });
 
-    it('replace swaps the first instance of the given\'s own class in place, everywhere it is filed, and does nothing when there is none', () => {
+    it('replace swaps the first instance of the given\'s own class in place, and does nothing when there is none', () => {
         const first = stamp(), second = mark(), third = stamp();
         const collection = marks(first, second, third);
         const replacement = stamp();

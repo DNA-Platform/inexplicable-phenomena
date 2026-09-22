@@ -1,4 +1,4 @@
-import { $, $check, $Block } from '@dna-platform/chemistry';
+import { $, $check, $Block, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, $Annotation, WritingSpecification } from './Writing';
 
 export class $Composition extends $Writing {
@@ -14,9 +14,12 @@ export class $Composition extends $Writing {
 }
 
 export class $Level extends $Annotation {
-    get level(): number {
+    level = 1;
+
+    $Level(...chemicals: $Chemical[]) {
+        this.$Annotation(...chemicals);
         const block = this.contents.at(0);
-        return block instanceof $Block ? Number(block.elements.join('')) : 1;
+        if (block instanceof $Block) this.level = Number(block.elements.join(''));
     }
 }
 

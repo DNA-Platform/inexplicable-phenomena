@@ -133,15 +133,21 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(built<$Writing>(<Writing is={$Mark} />).annotations.at(0)).toBeInstanceOf($Mark);
     });
 
-    it('reads as what was given; the annotations possess the edits, what it became, and the full set; a change is applied at the next pass, dropping what it stood before and keeping what was written', () => {
+    it('reads as what was given; the annotations possess the edits, what it became, and the full set; setting it integrates at once, dropping what it stood before and keeping what was written; the same given again is nothing', () => {
         const writing = built<$Writing>(<Writing is={$Mark}><Parenthetical /></Writing>);
         expect(writing.$is).toBe($Mark);
         expect(writing.annotations.edits.length).toBe(1);
         expect(writing.annotations.edits[0]).toBe(writing.annotations.at(0));
         expect(writing.annotations.length).toBe(2);
+        const mark = writing.annotations.edits[0];
+        writing.$is = $Mark;
+        expect(writing.annotations.edits[0]).toBe(mark);
+        writing.$is = [$Mark];
+        expect(writing.annotations.edits[0]).not.toBe(mark);
+        const marked = writing.annotations.edits[0];
+        writing.$is = [$Mark];
+        expect(writing.annotations.edits[0]).toBe(marked);
         writing.$is = [];
-        expect(writing.annotations.length).toBe(2);
-        writing.view();
         expect(writing.annotations.edits.length).toBe(0);
         expect(writing.annotations.length).toBe(1);
         expect(writing.annotations.at(0)).toBeInstanceOf($Parenthetical);

@@ -1,7 +1,6 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { $, $Chemical, reactive } from '@dna-platform/chemistry';
-import type { Component } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
@@ -62,8 +61,8 @@ export class $Writing extends $Chemical {
         return failures;
     }
 
-    is(representation: Representation<$Annotation>): boolean {
-        return this.annotations.contains(representation);
+    is(given: Given<$Annotation>): boolean {
+        return this.annotations.contains(given);
     }
 
     write(): ReactNode {
@@ -107,26 +106,29 @@ export class $Annotation extends $Writing {
     specifies(writing: $Writing): void { }
 }
 
-export type Representation<U extends $Annotation> = (new () => U) | Component;
-
 export class Annotations extends Collection<$Annotation> {
-    private applied?: Given<$Annotation> | Given<$Annotation>[];
-    is: Given<$Annotation> | Given<$Annotation>[] = [];
+    private _is: Given<$Annotation> | Given<$Annotation>[] = [];
     edits: $Annotation[] = [];
 
     constructor(protected override parent: $Writing) {
         super(parent);
     }
 
-    define(): void {
-        if (this.is !== this.applied) {
-            for (const annotation of this.edits) {
-                this.drop(annotation);
-                annotation.erase(this.parent);
-            }
-            this.edits = this.prepend(...(Array.isArray(this.is) ? this.is : [this.is]));
-            this.applied = this.is;
+    get is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
+    set is(given: Given<$Annotation> | Given<$Annotation>[]) {
+        if (same(given, this._is)) return;
+        for (const annotation of this.edits) {
+            this.drop(annotation);
+            annotation.erase(this.parent);
         }
+        this._is = given;
+        this.edits = this.prepend(...(Array.isArray(given) ? given : [given]));
+    }
+
+    define(): void {
+        for (const annotation of this.edits)
+            this.drop(annotation);
+        this.prepend(...this.edits);
         for (const annotation of [...this])
             if (annotation.enforced)
                 annotation.defines(this.parent);
@@ -134,24 +136,20 @@ export class Annotations extends Collection<$Annotation> {
                 annotation.erase(this.parent);
     }
 
-    enforced<U extends $Annotation>(representation: Representation<U>): U | undefined {
-        return this.find(representation).find(annotation => annotation.enforced);
+    enforced<U extends $Annotation>(given: Given<U>): U | undefined {
+        return this.find(given).find(annotation => annotation.enforced);
     }
 
     override add(...givens: Given<$Annotation>[]): $Annotation[] {
         return this.prepend(...givens);
     }
 
-    override find<U extends $Annotation>(representation: Representation<U>): ReadonlyArray<U> {
-        return super.find(classOf(representation));
+    override contains<U extends $Annotation>(given: Given<U>): boolean {
+        return this.enforced(given) !== undefined;
     }
 
-    override contains<U extends $Annotation>(representation: Representation<U>): boolean {
-        return this.enforced(representation) !== undefined;
-    }
-
-    override containsOne<U extends $Annotation>(representation: Representation<U>): boolean {
-        return this.find(representation).filter(annotation => annotation.enforced).length === 1;
+    override containsOne<U extends $Annotation>(given: Given<U>): boolean {
+        return this.find(given).filter(annotation => annotation.enforced).length === 1;
     }
 
     override toString(): string {
@@ -161,9 +159,9 @@ export class Annotations extends Collection<$Annotation> {
     }
 }
 
-function classOf<U extends $Annotation>(representation: Representation<U>): new () => U {
-    const chemical = (representation as { $chemical?: $Chemical }).$chemical;
-    return chemical === undefined ? representation as new () => U : chemical.constructor as new () => U;
+function same(given: Given<$Annotation> | Given<$Annotation>[], other: Given<$Annotation> | Given<$Annotation>[]): boolean {
+    if (given === other) return true;
+    return Array.isArray(given) && Array.isArray(other) && given.length === other.length && given.every((each, index) => each === other[index]);
 }
 
 const ParentheticalStyle = createGlobalStyle`

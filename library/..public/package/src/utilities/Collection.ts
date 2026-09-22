@@ -7,7 +7,6 @@ export type Given<T> = T | (new () => T) | Component | ReactElement;
 @represented()
 export class Collection<T extends $Chemical> {
     private chemicals: T[] = [];
-    private classes = new Map<Function, T[]>();
 
     constructor(protected parent?: $Chemical) { }
 
@@ -38,73 +37,56 @@ export class Collection<T extends $Chemical> {
     add(...givens: Given<T>[]): T[] {
         const chemicals = givens.map(given => this.made(given));
         this.chemicals.push(...chemicals);
-        for (const chemical of chemicals)
-            for (const Class of this.chain(chemical))
-                this.file(Class, chemical);
         return chemicals;
     }
 
     prepend(...givens: Given<T>[]): T[] {
         const chemicals = givens.map(given => this.made(given));
         this.chemicals.unshift(...chemicals);
-        for (let index = chemicals.length - 1; index >= 0; index--)
-            for (const Class of this.chain(chemicals[index]))
-                this.file(Class, chemicals[index], true);
         return chemicals;
     }
 
     replace(given: Given<T>): T | undefined {
         const chemical = this.made(given);
-        const replaced = this.find(chemical.constructor as new () => T)[0];
-        if (replaced === undefined) return undefined;
-        this.swap(replaced, chemical);
+        const index = this.chemicals.findIndex(present => present instanceof chemical.constructor);
+        if (index < 0) return undefined;
+        this.chemicals[index] = chemical;
         return chemical;
     }
 
     ensure(given: Given<T>): T {
-        if (typeof given === 'function') {
-            const present = this.find(given as new () => T)[0];
-            if (present !== undefined) return present;
-        }
-        const chemical = this.made(given);
-        const present = this.find(chemical.constructor as new () => T)[0];
+        const Class = classOf(given);
+        const present = this.chemicals.find(chemical => chemical instanceof Class);
         if (present !== undefined) return present;
-        for (const Class of this.chain(chemical)) {
-            const replaced = this.classes.get(Class)?.find(chemical => chemical.constructor === Class);
-            if (replaced === undefined) continue;
-            this.swap(replaced, chemical);
-            return chemical;
-        }
-        return this.add(chemical)[0];
+        const chemical = this.made(given);
+        const index = this.chemicals.findIndex(ancestor => chemical instanceof ancestor.constructor);
+        if (index < 0) return this.add(chemical)[0];
+        this.chemicals[index] = chemical;
+        return chemical;
     }
 
-    remove<U extends T>(Class: new () => U): void {
-        const removed = new Set<T>(this.find(Class));
-        if (removed.size === 0) return;
-        this.chemicals = this.chemicals.filter(chemical => !removed.has(chemical));
-        for (const chemical of removed)
-            for (const Class of this.chain(chemical))
-                this.forget(Class, chemical);
+    remove<U extends T>(given: Given<U>): void {
+        const Class = classOf(given);
+        this.chemicals = this.chemicals.filter(chemical => !(chemical instanceof Class));
     }
 
     drop(chemical: T): void {
         const index = this.chemicals.indexOf(chemical);
         if (index < 0) return;
         this.chemicals.splice(index, 1);
-        for (const Class of this.chain(chemical))
-            this.forget(Class, chemical);
     }
 
-    find<U extends T>(Class: new () => U): ReadonlyArray<U> {
-        return (this.classes.get(Class) ?? []) as U[];
+    find<U extends T>(given: Given<U>): U[] {
+        const Class = classOf(given);
+        return this.chemicals.filter(chemical => chemical instanceof Class) as U[];
     }
 
-    contains<U extends T>(Class: new () => U): boolean {
-        return this.classes.has(Class);
+    contains<U extends T>(given: Given<U>): boolean {
+        return this.find(given).length > 0;
     }
 
-    containsOne<U extends T>(Class: new () => U): boolean {
-        return this.classes.get(Class)?.length === 1;
+    containsOne<U extends T>(given: Given<U>): boolean {
+        return this.find(given).length === 1;
     }
 
     private made(given: Given<T>): T {
@@ -115,47 +97,13 @@ export class Collection<T extends $Chemical> {
             chemical.parent = this.parent;
         return chemical;
     }
+}
 
-    private swap(replaced: T, chemical: T): void {
-        this.chemicals[this.chemicals.indexOf(replaced)] = chemical;
-        const joined = new Set(this.chain(chemical));
-        for (const Class of this.chain(replaced)) {
-            if (!joined.has(Class)) {
-                this.forget(Class, replaced);
-                continue;
-            }
-            const chemicals = this.classes.get(Class) ?? [];
-            chemicals[chemicals.indexOf(replaced)] = chemical;
-            joined.delete(Class);
-        }
-        for (const Class of joined)
-            this.file(Class, chemical);
+export function classOf<T extends object>(given: Given<T>): new () => T {
+    if (typeof given === 'function') {
+        const chemical = (given as { $chemical?: $Chemical }).$chemical;
+        return chemical === undefined ? given as new () => T : chemical.constructor as new () => T;
     }
-
-    private file(Class: Function, chemical: T, first = false): void {
-        const chemicals = this.classes.get(Class);
-        if (chemicals === undefined)
-            this.classes.set(Class, [chemical]);
-        else if (first)
-            chemicals.unshift(chemical);
-        else
-            chemicals.push(chemical);
-    }
-
-    private forget(Class: Function, chemical: T): void {
-        const chemicals = this.classes.get(Class);
-        if (chemicals === undefined) return;
-        const index = chemicals.indexOf(chemical);
-        if (index < 0) return;
-        chemicals.splice(index, 1);
-        if (chemicals.length === 0)
-            this.classes.delete(Class);
-    }
-
-    private chain(chemical: T): Function[] {
-        const classes: Function[] = [];
-        for (let Class = chemical.constructor; Class !== Object && typeof Class === 'function'; Class = Object.getPrototypeOf(Class))
-            classes.push(Class);
-        return classes;
-    }
+    if (isValidElement(given)) return classOf<T>(given.type as Given<T>);
+    return (given as object).constructor as new () => T;
 }
