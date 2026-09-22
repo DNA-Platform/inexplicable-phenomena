@@ -2,3 +2,6 @@ export * from './Writing';
 export * from './Annotations';
 export * from './Composition';
 export * from './Letter';
+export * from './Word';
+export * from './Sentence';
+export * from './Paragraph';
