@@ -1,113 +1,42 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { ThemeProvider } from 'styled-components';
 import { $, styled } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation } from '@dna-platform/public';
-import type { ElementType, ReactNode } from 'react';
+import { $Writing, Writing, Paragraph, $Annotation, $Format, $Theme, Theme, ThemeSpecification } from '@dna-platform/public';
+import type { ElementType } from 'react';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+const sheet = (): string => [...document.querySelectorAll('style')].map(style => style.textContent).join('\n');
+const drawn = async (writing: $Writing): Promise<HTMLElement> => {
+    const Drawn = $(writing);
+    let container: HTMLElement | undefined;
+    await act(async () => { container = render(<Drawn />).container; });
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+    return container!;
+};
+const settled = async (): Promise<void> => {
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+};
 
 const Quotation = styled.blockquote`
     border-left: 3px solid ${(props: any) => props.theme.rule ?? 'silver'};
     color: ${(props: any) => props.theme.ink ?? 'black'};
 `;
+const Sheet = styled.div`
+    padding: 1rem;
+`;
 
-class $Format extends $Annotation {
-    format: ElementType = 'span';
-    protected _lent?: ElementType;
-    override defines(writing: $Writing): void {
-        if (writing.container === this.format) return;
-        this._lent = writing.container;
-        writing.container = this.format;
-    }
-    override erase(writing: $Writing): void {
-        if (this._lent === undefined) return;
-        writing.container = this._lent;
-        this._lent = undefined;
-    }
-}
 class $Quoted extends $Format {
     override format: ElementType = Quotation;
 }
-
-class $Wrapping extends $Annotation {
-    values: object = {};
-    protected _inner?: ElementType;
-    protected _provider?: ElementType;
-    override defines(writing: $Writing): void {
-        if (writing.container === this._provider) return;
-        const Inner = this._inner = writing.container;
-        const values = this.values;
-        this._provider = ({ children, ...props }: { children?: ReactNode }) => (
-            <ThemeProvider theme={values}>
-                <Inner {...props}>{children}</Inner>
-            </ThemeProvider>
-        );
-        writing.container = this._provider;
-    }
-    override erase(writing: $Writing): void {
-        if (this._inner === undefined) return;
-        writing.container = this._inner;
-        this._inner = undefined;
-        this._provider = undefined;
-    }
+class $Ruled extends $Theme {
+    override values = { rule: 'blue', ink: 'navy' };
 }
-class $WrappingRed extends $Wrapping {
-    override values = { rule: 'red' };
-}
-
-class $Themed extends $Writing {
-    theme?: object;
-    override view(): ReactNode {
-        const drawn = super.view();
-        const theme = this.theme;
-        return theme === undefined ? drawn : <ThemeProvider theme={() => theme}>{drawn}</ThemeProvider>;
-    }
-}
-class $Theme extends $Annotation {
-    rule = 'silver';
-    override defines(writing: $Writing): void {
-        if (writing instanceof $Themed) writing.theme = this;
-    }
-    override erase(writing: $Writing): void {
-        if (writing instanceof $Themed && writing.theme === this) writing.theme = undefined;
-    }
-}
-class $Blue extends $Theme {
-    override rule = 'blue';
-}
-
-class $Framed extends $Writing {
-    override view(): ReactNode {
-        let drawn = super.view();
-        for (const annotation of [...this.annotations])
-            if (annotation.enforced && annotation instanceof $Providing)
-                drawn = annotation.around(drawn);
-        return drawn;
-    }
-}
-class $Providing extends $Annotation {
-    values: object = {};
-    around(drawn: ReactNode): ReactNode {
-        const values = this.values;
-        return <ThemeProvider theme={outer => ({ ...outer, ...values })}>{drawn}</ThemeProvider>;
-    }
-}
-class $Ruled extends $Providing {
-    override values = { rule: 'blue' };
-}
-class $Inked extends $Providing {
+class $Inked extends $Theme {
     override values = { ink: 'green' };
 }
-class $Teal extends $Providing {
+class $Housed extends $Theme {
     override values = { rule: 'teal' };
-}
-
-class $Plain extends $Annotation {
-    override inactivates(writing: $Writing): void {
-        for (const format of writing.annotations.find($Format))
-            format.enforced = false;
-    }
+    override format: ElementType = Sheet;
 }
 class $Unthemed extends $Annotation {
     override inactivates(writing: $Writing): void {
@@ -115,98 +44,77 @@ class $Unthemed extends $Annotation {
             theme.enforced = false;
     }
 }
-
 const Quoted = $($Quoted);
-const WrappingRed = $($WrappingRed);
-const Themed = $($Themed);
-const Blue = $($Blue);
-const Framed = $($Framed);
 const Ruled = $($Ruled);
 const Inked = $($Inked);
-const Teal = $($Teal);
-const Plain = $($Plain);
+const Housed = $($Housed);
 const Unthemed = $($Unthemed);
 
-const sheet = (): string => [...document.querySelectorAll('style')].map(style => style.textContent).join('\n');
-
-const drawn = async (element: React.ReactElement): Promise<HTMLElement> => {
-    let container: HTMLElement | undefined;
-    await act(async () => { container = render(element).container; });
-    await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
-    return container!;
-};
-
-describe('Format, tried: an annotation holding its styled component on a property, lent to the writing it annotates', () => {
-    it('lends its format as the container in defines and gives the container back in erase; a subclass overrides the property', () => {
-        const writing = built<$Writing>(<Writing>a quote <Quoted /></Writing>);
-        expect(writing.container).toBe(Quotation);
-        expect(writing.annotations.at(0)!.container).toBe('span');
-        writing.annotations.add(Plain);
-        writing.view();
+describe('a theme is a format that also provides its values to everything the writing rendered', () => {
+    it('is a format, so it is found among them, and holds no component of its own by default', () => {
+        const writing = built<$Writing>(<Writing>a <Ruled /></Writing>);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Format);
+        expect(writing.is(Theme)).toBe(true);
         expect(writing.container).toBe('span');
     });
 
-    it('draws the writing as the styled element, with its rule in the sheet', async () => {
-        const writing = built<$Writing>(<Writing>a quote <Quoted /></Writing>);
-        const Drawn = $(writing);
-        const container = await drawn(<Drawn />);
-        const quotation = container.firstElementChild!;
-        expect(quotation.tagName).toBe('BLOCKQUOTE');
-        expect(quotation.className).toMatch(/sc-/);
-        expect(sheet()).toContain('border-left:3px solid silver');
-    });
-});
-
-describe('Theme, tried two ways: a provider wrapped around the container, and the writing placing styled-components\' provider around what it draws', () => {
-    it('wrapping the container: two annotations on one surface break each other\'s idempotence, so a pass remakes the wrapper, a Format behind undoes it, and a render loops', () => {
-        const ordered = built<$Writing>(<Writing>a quote <WrappingRed /><Quoted /></Writing>);
-        const provider = ordered.container;
-        expect(provider).not.toBe(Quotation);
-        ordered.view();
-        expect(ordered.container).not.toBe(provider);
-        const reversed = built<$Writing>(<Writing>a quote <Quoted /><WrappingRed /></Writing>);
-        expect(reversed.container).toBe(Quotation);
-        const given = built<$Writing>(<Writing is={WrappingRed}>a quote <Quoted /></Writing>);
-        expect(given.container).toBe(Quotation);
-    });
-
-    it('the writing\'s own provider: a theme an annotation set is provided around the drawing, the container untouched, and a repressor through $is redraws without it', async () => {
-        const writing = built<$Themed>(<Themed>a quote <Quoted /><Blue /></Themed>);
+    it('provides its values to the writing\'s own element, since a review goes around the whole container', async () => {
+        const writing = built<$Writing>(<Writing>a quote <Quoted /><Ruled /></Writing>);
         expect(writing.container).toBe(Quotation);
-        expect(writing.theme).toBeInstanceOf($Blue);
-        const Drawn = $(writing);
-        const container = await drawn(<Drawn />);
+        const container = await drawn(writing);
         expect(container.firstElementChild!.tagName).toBe('BLOCKQUOTE');
-        expect(sheet()).toContain('border-left:3px solid blue');
-        const was = container.firstElementChild!.className;
-        await act(async () => { writing.$is = Unthemed; });
-        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
-        expect(container.firstElementChild!.className).not.toBe(was);
-        expect(writing.theme).toBeUndefined();
+        expect(sheet()).toContain('border-left:3px solid blue;color:navy');
     });
 
-    it('annotations as providers: each enforced one wraps the drawing in turn, the front innermost, so several work together and the front wins a value they share', async () => {
-        const writing = built<$Framed>(<Framed is={Teal}>a quote <Quoted /><Ruled /><Inked /></Framed>);
-        expect(writing.container).toBe(Quotation);
-        const Drawn = $(writing);
-        const container = await drawn(<Drawn />);
-        expect(container.firstElementChild!.tagName).toBe('BLOCKQUOTE');
-        expect(sheet()).toContain('border-left:3px solid teal;color:green');
-        const was = container.firstElementChild!.className;
-        await act(async () => { writing.$is = []; });
-        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
-        expect(container.firstElementChild!.className).not.toBe(was);
+    it('provides to what the writing holds, which is the enclave a composition gives', async () => {
+        const writing = built<$Writing>(<Writing><Paragraph>a quote <Quoted /></Paragraph><Ruled /></Writing>);
+        const container = await drawn(writing);
+        expect(container.querySelector('blockquote')).not.toBeNull();
+        expect(sheet()).toContain('border-left:3px solid blue;color:navy');
+    });
+
+    it('several nest and merge, the front innermost winning what it names and inheriting the rest', async () => {
+        const writing = built<$Writing>(<Writing>a quote <Quoted /><Ruled /><Inked /></Writing>);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Inked);
+        await drawn(writing);
         expect(sheet()).toContain('border-left:3px solid blue;color:green');
     });
 
-    it('the writing\'s own provider does not care in what order Format and Theme act, $is included', () => {
-        for (const themed of [
-            built<$Themed>(<Themed>a <Blue /><Quoted /></Themed>),
-            built<$Themed>(<Themed>a <Quoted /><Blue /></Themed>),
-            built<$Themed>(<Themed is={Blue}>a <Quoted /></Themed>),
-        ]) {
-            expect(themed.container).toBe(Quotation);
-            expect(themed.theme).toBeInstanceOf($Blue);
-        }
+    it('a theme that holds a component both provides and is the element', async () => {
+        const writing = built<$Writing>(<Writing>a <Housed /></Writing>);
+        expect(writing.container).toBe(Sheet);
+        const container = await drawn(writing);
+        expect(container.firstElementChild!.tagName).toBe('DIV');
+        expect(sheet()).toContain('padding:1rem');
+    });
+
+    it('presenting another theme through $is redraws what the writing shows, and taking it away redraws again', async () => {
+        const writing = built<$Writing>(<Writing>a quote <Quoted /><Ruled /></Writing>);
+        const container = await drawn(writing);
+        const was = container.firstElementChild!.className;
+        await act(async () => { writing.$is = Inked; });
+        await settled();
+        expect(container.firstElementChild!.className).not.toBe(was);
+        expect(sheet()).toContain('border-left:3px solid blue;color:green');
+        await act(async () => { writing.$is = []; });
+        await settled();
+        expect(container.firstElementChild!.className).toBe(was);
+    });
+
+    it('a repressor takes it out of expression and the writing is drawn unthemed', async () => {
+        const writing = built<$Writing>(<Writing is={Unthemed}>a quote <Quoted /><Ruled /></Writing>);
+        expect(writing.is(Theme)).toBe(false);
+        await drawn(writing);
+        expect(sheet()).toContain('border-left:3px solid silver;color:black');
+    });
+
+    it('a theme holds only formats, and says so when the binder asks', () => {
+        expect(built<$Writing>(<Writing><Ruled /></Writing>).specify()).toEqual([]);
+        expect(built<$Theme>(<Theme><Quoted /></Theme>).specification).toBeInstanceOf(ThemeSpecification);
+        expect(built<$Writing>(<Writing><Theme><Quoted /></Theme></Writing>).specify()).toEqual([]);
+        expect(built<$Writing>(<Writing><Theme>prose</Theme></Writing>).specify())
+            .toEqual(['Writing / Theme 0: a theme holds only formats, and this one holds something else']);
+        expect(built<$Writing>(<Writing><Theme><Unthemed /></Theme></Writing>).specify())
+            .toEqual(['Writing / Theme 0: a theme holds only formats, and this one holds something else']);
     });
 });
