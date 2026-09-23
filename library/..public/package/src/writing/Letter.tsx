@@ -1,13 +1,15 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Composition, CompositionSpecification, Level, Open } from './Composition';
+import { $Composition, CompositionSpecification, Level as level, Open as open } from './Composition';
 
 export class $Letter extends $Composition {
     specification = new LetterSpecification();
 
     protected override $Define(): void {
+        const Level = $(level);
+        const Open = $(open);
         this.annotations.add(
-            <Level>1</Level>, 
+            <Level>1</Level>,
             <Open />
         );
     }

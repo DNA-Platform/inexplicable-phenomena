@@ -1,15 +1,19 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Composition, CompositionSpecification, Level, Permissive, Closed } from './Composition';
+import { $Composition, CompositionSpecification } from './Composition';
+import { Level as level, Permissive as permissive, Closed as closed } from './Composition';
 import { $Sentence } from './Sentence';
 
 export class $Section extends $Composition {
     specification = new SectionSpecification();
-    override get canonical(): $Heading | undefined { 
-        return this.contents.find($Heading)[0]; 
+    override get canonical(): $Heading | undefined {
+        return this.contents.find($Heading)[0];
     }
 
     protected override $Define(): void {
+        const Level = $(level);
+        const Permissive = $(permissive);
+        const Closed = $(closed);
         this.annotations.add(
             <Level>5</Level>,
             <Permissive />,
@@ -20,22 +24,22 @@ export class $Section extends $Composition {
 
 export class $Heading extends $Sentence {
     specification = new HeadingSpecification();
-    get section(): $Section | undefined { 
-        return this.parent instanceof $Section ? this.parent : undefined; 
+    get section(): $Section | undefined {
+        return this.parent instanceof $Section ? this.parent : undefined;
     }
 }
 
 export class SectionSpecification extends CompositionSpecification {
-    @specify('a section means through its heading')
+    @specify('a section has a heading')
     $hasAHeading(section: $Section): void {
-        $check(section.canonical !== undefined, 'a section means through its heading, and this one has none');
+        $check(section.canonical !== undefined, 'a section has a heading as its canonical, and this one has none');
     }
 }
 
 export class HeadingSpecification extends CompositionSpecification {
     @specify('a heading is in a section')
     $isInASection(heading: $Heading): void {
-        $check(heading.section !== undefined, 'a heading means its section, and this one is not in one');
+        $check(heading.section !== undefined, 'a heading stands in a section, and this one does not');
     }
 }
 

@@ -9,6 +9,7 @@ import { reflection } from '@/utilities/Reflection';
 export class $Writing extends $Chemical {
     protected _contents?: Collection<$Chemical>;
     protected _annotations?: Annotations;
+    id?: string;
     classes!: Set<string>;
     specification: Specification<$Writing> = new WritingSpecification();
     container: ElementType = 'span';
@@ -40,7 +41,7 @@ export class $Writing extends $Chemical {
         const Container = this.container;
         const className = [...this.classes].join(' ') || undefined;
         return (
-            <Container className={className}>
+            <Container id={this.id} className={className}>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
             </Container>

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, $Format } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, $Format, $Mention, Mention } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -15,6 +15,13 @@ const Counted = (props: { children?: ReactNode; className?: string }) => {
     useEffect(() => { counted.committed++; });
     return <Quotation {...props} />;
 };
+
+class $Mentioning extends $Mention {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+}
 
 class $Counting extends $Writing {
     override view(): ReactNode {
@@ -35,6 +42,7 @@ class $Plain extends $Annotation {
 }
 
 const Counting = $($Counting);
+const Mentioning = $($Mentioning);
 const Quoted = $($Quoted);
 const Plain = $($Plain);
 
@@ -86,5 +94,18 @@ describe('a change costs one paint, and the draws around it are counted', () => 
         await act(async () => { loud.$is = Plain; });
         await settle();
         expect(counted.drawn).toBe(3);
+    });
+});
+
+describe('a mention that stands its own annotation costs no more than any writing', () => {
+    beforeEach(counting);
+
+    it('mounting draws three times, though the pass runs twice at its bond', async () => {
+        const mention = $(<Mentioning>[The First Shelf](the-first-shelf)</Mentioning>) as unknown as $Mention;
+        const Drawn = $(mention);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect(counted.drawn).toBe(3);
+        expect(mention.id).toBe('the-first-shelf');
     });
 });

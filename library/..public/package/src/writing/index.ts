@@ -6,3 +6,6 @@ export * from './Sentence';
 export * from './Paragraph';
 export * from './Section';
 export * from './Format';
+export * from './Referent';
+export * from './Reference';
+export * from './Mention';

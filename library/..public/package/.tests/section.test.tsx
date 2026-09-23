@@ -4,7 +4,7 @@ import { $Section, Section, $Heading, Heading, $Paragraph, Paragraph, Sentence, 
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
-describe('a section is a composition at 5, permissive and closed, that means through its heading', () => {
+describe('a section is a composition at 5, permissive and closed, whose canonical is its heading', () => {
     it('stands its level and pair, and its canonical is its heading wherever it stands', () => {
         const section = built<$Section>(<Section><Paragraph>first</Paragraph><Heading>the heading</Heading></Section>);
         expect(section.level).toBe(5);
@@ -19,7 +19,7 @@ describe('a section is a composition at 5, permissive and closed, that means thr
     it('a section without a heading is a void, reported when asked', () => {
         const section = built<$Section>(<Section><Paragraph>only</Paragraph></Section>);
         expect(section.canonical).toBeUndefined();
-        expect(section.specify()).toEqual(['Section: a section means through its heading, and this one has none']);
+        expect(section.specify()).toEqual(['Section: a section has a heading as its canonical, and this one has none']);
     });
 
     it('its parts across its subsections are their paragraphs and headings, and its canonical is its own heading only', () => {
@@ -39,7 +39,7 @@ describe('a section is a composition at 5, permissive and closed, that means thr
     });
 });
 
-describe('a heading is a sentence that means its section', () => {
+describe('a heading is a sentence that stands in a section', () => {
     it('is a sentence at 3, and its section is its parent', () => {
         const section = built<$Section>(<Section><Heading>h</Heading></Section>);
         const heading = section.canonical!;
@@ -52,9 +52,9 @@ describe('a heading is a sentence that means its section', () => {
     it('outside a section it has no section, and says so when asked', () => {
         const heading = built<$Heading>(<Heading>alone</Heading>);
         expect(heading.section).toBeUndefined();
-        expect(heading.specify()).toEqual(['Heading: a heading means its section, and this one is not in one']);
+        expect(heading.specify()).toEqual(['Heading: a heading stands in a section, and this one does not']);
         const misplaced = built<$Paragraph>(<Paragraph><Heading>h</Heading></Paragraph>);
-        expect(misplaced.specify()).toEqual(['Paragraph / Heading 0: a heading means its section, and this one is not in one']);
+        expect(misplaced.specify()).toEqual(['Paragraph / Heading 0: a heading stands in a section, and this one does not']);
         expect(built<$Section>(<Section><Sentence>s</Sentence><Heading>h</Heading></Section>).specify()).toEqual([]);
     });
 });
