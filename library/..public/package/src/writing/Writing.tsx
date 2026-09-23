@@ -38,7 +38,7 @@ export class $Writing extends $Chemical {
         this.annotations.define();
         const Container = this.container;
         const className = [...this.classes].join(' ') || undefined;
-        return (
+        return this.annotations.review(
             <Container className={className}>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
@@ -101,6 +101,7 @@ export class $Annotation extends $Writing {
     }
 
     note(): ReactNode { return null; }
+    review(writing: ReactNode): ReactNode { return writing; }
     inactivates(writing: $Writing): void { }
     defines(writing: $Writing): void { }
     erase(writing: $Writing): void { }
@@ -140,6 +141,13 @@ export class Annotations extends Collection<$Annotation> {
                 annotation.defines(this.parent);
             else
                 annotation.erase(this.parent);
+    }
+
+    review(writing: ReactNode): ReactNode {
+        for (const annotation of this)
+            if (annotation.enforced)
+                writing = annotation.review(writing);
+        return writing;
     }
 
     enforced<U extends $Annotation>(given: Given<U>): U | undefined {

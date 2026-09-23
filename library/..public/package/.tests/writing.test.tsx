@@ -49,6 +49,15 @@ class $Growing extends $Writing {
         this.contents.add(<Writing> more</Writing>);
     }
 }
+class $Reviewing extends $Annotation {
+    mark = 'pd-review';
+    override review(writing: React.ReactNode): React.ReactNode {
+        return <span className={this.mark}>{writing}</span>;
+    }
+}
+class $Reviewed extends $Reviewing {
+    override mark = 'pd-reviewed';
+}
 let draws = 0;
 class $Counted extends $Writing {
     override view(): React.ReactNode {
@@ -67,6 +76,8 @@ const Section = $($Section);
 const Counted = $($Counted);
 const Narrating = $($Narrating);
 const Growing = $($Growing);
+const Reviewing = $($Reviewing);
+const Reviewed = $($Reviewed);
 
 describe('what comes into a writing is sorted once, into contents and annotations', () => {
     it('contents holds what is not an annotation, in its order, wherever the annotations stood', () => {
@@ -279,6 +290,34 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(section?.className).toBe('pd-parenthetical pd-tagged');
         expect(section?.querySelectorAll(':scope > span.pd-annotation').length).toBe(3);
         expect(section?.textContent).toContain('a');
+    });
+
+    it('an annotation reviews what the writing rendered: nothing by default, and around the whole container when it does', async () => {
+        const plain = built<$Writing>(<Writing>a <Mark /></Writing>);
+        const Plain = $(plain);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Plain />).container; });
+        expect(container?.firstElementChild?.className).toBe('');
+        const reviewed = built<$Writing>(<Writing>a <Reviewing /></Writing>);
+        const Reviewed_ = $(reviewed);
+        await act(async () => { container = render(<Reviewed_ />).container; });
+        const outer = container?.firstElementChild;
+        expect(outer?.className).toBe('pd-review');
+        expect(outer?.firstElementChild?.tagName).toBe('SPAN');
+        expect(outer?.textContent).toContain('a');
+    });
+
+    it('several reviews nest, the front innermost, and one that is not expressed does not review', async () => {
+        const writing = built<$Writing>(<Writing>a <Reviewed /><Reviewing /></Writing>);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Reviewing);
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        expect(container?.firstElementChild?.className).toBe('pd-reviewed');
+        expect(container?.firstElementChild?.firstElementChild?.className).toBe('pd-review');
+        writing.annotations.find($Reviewing)[0].enforced = false;
+        const quiet = writing.view() as React.ReactElement<{ className: string }>;
+        expect(quiet.props.className).toBe('pd-reviewed');
     });
 
     it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, with pd-annotation on it, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
