@@ -269,7 +269,7 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(built<$Writing>(<Writing is={Boxed} />).container).toBe('div');
     });
 
-    it('drawn, the container is the element wearing the classes, and each annotation is rendered inside it as its own writing wearing pd-annotation', async () => {
+    it('drawn, the container is the element its classes are on, and each annotation is rendered inside it as its own writing with pd-annotation on it', async () => {
         const writing = built<$Section>(<Section>a <Mark /><Tagged /><Parenthetical /></Section>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
@@ -281,7 +281,7 @@ describe('a writing draws through its container, which starts as a span', () => 
         expect(section?.textContent).toContain('a');
     });
 
-    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, wearing pd-annotation, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
+    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, with pd-annotation on it, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
         const writing = built<$Writing>(<Writing>a <Mark>because it was late</Mark><Tagged /></Writing>);
         expect(writing.annotations.at(0)).toBeInstanceOf($Tagged);
         expect(writing.annotations.find($Mark)[0].classes.has('pd-annotation')).toBe(true);
@@ -310,7 +310,7 @@ describe('a writing draws through its container, which starts as a span', () => 
 });
 
 describe('drawn, a writing defines itself at every draw and settles', () => {
-    it('a parenthetical writing wears pd-parenthetical, and one draw is one draw', async () => {
+    it('a parenthetical writing has pd-parenthetical on it, and one draw is one draw', async () => {
         const writing = built<$Counted>(<Counted>a <Parenthetical /></Counted>);
         const Drawn = $(writing);
         draws = 0;
