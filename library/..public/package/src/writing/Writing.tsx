@@ -1,13 +1,14 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
-import { $, $Chemical, inert, reactive } from '@dna-platform/chemistry';
+import { $, $Chemical } from '@dna-platform/chemistry';
 import { Collection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
+import { reflection } from '@/utilities/Reflection';
 
 export class $Writing extends $Chemical {
-    @reactive() protected _contents?: Collection<$Chemical>;
-    @reactive() protected _annotations?: Annotations;
+    protected _contents?: Collection<$Chemical>;
+    protected _annotations?: Annotations;
     classes!: Set<string>;
     specification: Specification<$Writing> = new WritingSpecification();
     container: ElementType = 'span';
@@ -38,7 +39,7 @@ export class $Writing extends $Chemical {
         this.annotations.define();
         const Container = this.container;
         const className = [...this.classes].join(' ') || undefined;
-        return this.annotations.review(
+        return (
             <Container className={className}>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
@@ -49,7 +50,7 @@ export class $Writing extends $Chemical {
     specify(code = this.specification.code(this)): string[] {
         const failures = this.specification.check(this, code);
         for (const annotation of [...this.annotations])
-            if (annotation.enforced)
+            if (annotation.expressed)
                 try {
                     annotation.specifies(this);
                 } catch (error) {
@@ -83,8 +84,10 @@ export class $Writing extends $Chemical {
 }
 
 export class $Annotation extends $Writing {
-    @inert() enforced = true;
+    private _enforced = true;
     specification = new AnnotationSpecification();
+
+    get expressed(): boolean { return this._enforced; }
 
     $Annotation(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
@@ -95,14 +98,13 @@ export class $Annotation extends $Writing {
         return (
             <>
                 {super.view()}
-                {this.enforced ? this.note() : null}
+                {this.expressed ? this.note() : null}
             </>
         );
     }
 
     note(): ReactNode { return null; }
-    review(writing: ReactNode): ReactNode { return writing; }
-    inactivates(writing: $Writing): void { }
+    express(expressed = true): void { this._enforced = expressed; }
     defines(writing: $Writing): void { }
     erase(writing: $Writing): void { }
     specifies(writing: $Writing): void { }
@@ -118,11 +120,9 @@ export class Annotations extends Collection<$Annotation> {
 
     get is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
     set is(given: Given<$Annotation> | Given<$Annotation>[]) {
-        if (same(given, this._is)) return;
-        for (const annotation of this.edits) {
-            this.drop(annotation);
-            annotation.erase(this.parent);
-        }
+        if (reflection.same(given, this._is)) return;
+        for (const annotation of this.edits)
+            this.leave(annotation);
         this._is = given;
         this.edits = this.prepend(...(Array.isArray(given) ? given : [given]));
     }
@@ -132,26 +132,26 @@ export class Annotations extends Collection<$Annotation> {
             this.drop(annotation);
         this.prepend(...this.edits);
         for (const annotation of this)
-            annotation.enforced = true;
+            annotation.express();
         for (const annotation of [...this])
-            if (annotation.enforced)
-                annotation.inactivates(this.parent);
-        for (const annotation of [...this])
-            if (annotation.enforced)
+            if (annotation.expressed)
                 annotation.defines(this.parent);
             else
                 annotation.erase(this.parent);
     }
 
-    review(writing: ReactNode): ReactNode {
-        for (const annotation of this)
-            if (annotation.enforced)
-                writing = annotation.review(writing);
-        return writing;
+    expressed<U extends $Annotation>(given: Given<U>): U | undefined {
+        return this.find(given).find(annotation => annotation.expressed);
     }
 
-    enforced<U extends $Annotation>(given: Given<U>): U | undefined {
-        return this.find(given).find(annotation => annotation.enforced);
+    override remove<U extends $Annotation>(given: Given<U>): void {
+        for (const annotation of this.find(given))
+            this.leave(annotation);
+    }
+
+    protected leave(annotation: $Annotation): void {
+        this.drop(annotation);
+        annotation.erase(this.parent);
     }
 
     override add(...givens: Given<$Annotation>[]): $Annotation[] {
@@ -159,38 +159,34 @@ export class Annotations extends Collection<$Annotation> {
     }
 
     override contains<U extends $Annotation>(given: Given<U>): boolean {
-        return this.enforced(given) !== undefined;
+        return this.expressed(given) !== undefined;
     }
 
     override containsOne<U extends $Annotation>(given: Given<U>): boolean {
-        return this.find(given).filter(annotation => annotation.enforced).length === 1;
+        return this.find(given).filter(annotation => annotation.expressed).length === 1;
     }
 }
 
-function same(given: Given<$Annotation> | Given<$Annotation>[], other: Given<$Annotation> | Given<$Annotation>[]): boolean {
-    if (given === other) return true;
-    return Array.isArray(given) && Array.isArray(other) && given.length === other.length && given.every((each, index) => each === other[index]);
-}
-
-const ParentheticalStyle = createGlobalStyle`
-    .pd-parenthetical { display: none; }
-`;
 
 export class $Parenthetical extends $Annotation {
-    override note(): ReactNode { return <ParentheticalStyle />; }
-    override defines(writing: $Writing): void { writing.classes.add('pd-parenthetical'); }
-    override erase(writing: $Writing): void { writing.classes.delete('pd-parenthetical'); }
+    style = createGlobalStyle`
+        .pa-parenthetical { display: none; }
+    `;
+
+    override note(): ReactNode { return <this.style />; }
+
+    override defines(writing: $Writing): void { writing.classes.add('pa-parenthetical'); }
+    override erase(writing: $Writing): void { writing.classes.delete('pa-parenthetical'); }
 }
 
 export class $Narrative extends $Annotation {
-    override inactivates(writing: $Writing): void {
+    override defines(writing: $Writing): void {
         for (const parenthetical of writing.annotations.find($Parenthetical))
-            parenthetical.enforced = false;
+            parenthetical.express(false);
     }
 }
 
 export class WritingSpecification extends Specification<$Writing> { }
-
 export class AnnotationSpecification extends WritingSpecification { }
 
 export const Writing = $($Writing);

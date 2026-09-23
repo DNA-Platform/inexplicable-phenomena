@@ -22,8 +22,15 @@ export class Reflection {
         return chemical;
     }
 
+
     name(given: Given<object>): string {
         return this.authored(this.classOf(given).name);
+    }
+
+    same(given: Given<object> | Given<object>[], other: Given<object> | Given<object>[]): boolean {
+        if (given === other) return true;
+        return Array.isArray(given) && Array.isArray(other) && given.length === other.length
+            && given.every((each, index) => each === other[index]);
     }
 
     protected authored(name: string): string {

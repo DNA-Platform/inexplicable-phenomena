@@ -32,9 +32,9 @@ describe('a composition has a level, set by its Level annotation from what was w
         expect(built<$Fourth>(<Fourth><Level>6</Level></Fourth>).level).toBe(6);
     });
 
-    it('a Level that is not enforced is not read', () => {
+    it('a Level that is not expressed is not read', () => {
         const fourth = built<$Fourth>(<Fourth />);
-        fourth.annotations.find($Level)[0].enforced = false;
+        fourth.annotations.find($Level)[0].express(false);
         expect(fourth.level).toBe(1);
     });
 });
@@ -68,13 +68,13 @@ describe('parts are the compositions among the contents', () => {
     });
 });
 
-describe('is asks whether an annotation of a kind is enforced, by class or by component', () => {
-    it('answers the class and the component alike, and false once the annotation is not enforced', () => {
+describe('is asks whether an annotation of a kind is expressed, by class or by component', () => {
+    it('answers the class and the component alike, and false once the annotation is not expressed', () => {
         const fourth = built<$Fourth>(<Fourth />);
         expect(fourth.is(Permissive)).toBe(true);
         expect(fourth.is($Permissive)).toBe(true);
         expect(fourth.is(Strict)).toBe(false);
-        fourth.annotations.find($Permissive)[0].enforced = false;
+        fourth.annotations.find($Permissive)[0].express(false);
         expect(fourth.is(Permissive)).toBe(false);
     });
 

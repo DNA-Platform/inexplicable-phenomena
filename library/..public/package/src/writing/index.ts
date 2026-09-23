@@ -6,4 +6,3 @@ export * from './Sentence';
 export * from './Paragraph';
 export * from './Section';
 export * from './Format';
-export * from './Theme';

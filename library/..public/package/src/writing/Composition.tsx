@@ -3,7 +3,7 @@ import { $Writing, $Annotation, WritingSpecification } from './Writing';
 
 export class $Composition extends $Writing {
     specification = new CompositionSpecification();
-    get level(): number { return this.annotations.enforced($Level)?.level ?? 1; }
+    get level(): number { return this.annotations.expressed($Level)?.level ?? 1; }
     get composition(): $Composition | undefined { return this.parent instanceof $Composition ? this.parent : undefined; }
     get depth(): number { return this.composition instanceof this.constructor ? this.composition.depth + 1 : 0; }
     get canonical(): $Composition | undefined { return this.parts[0]; }
@@ -24,9 +24,9 @@ export class $Level extends $Annotation {
 }
 
 export class $Strict extends $Annotation {
-    override inactivates(writing: $Writing): void {
+    override defines(writing: $Writing): void {
         for (const permissive of writing.annotations.find($Permissive))
-            permissive.enforced = false;
+            permissive.express(false);
     }
 
     override specifies(composition: $Composition): void {
@@ -38,9 +38,9 @@ export class $Strict extends $Annotation {
 }
 
 export class $Permissive extends $Annotation {
-    override inactivates(writing: $Writing): void {
+    override defines(writing: $Writing): void {
         for (const strict of writing.annotations.find($Strict))
-            strict.enforced = false;
+            strict.express(false);
     }
 
     override specifies(composition: $Composition): void {
@@ -52,16 +52,16 @@ export class $Permissive extends $Annotation {
 }
 
 export class $Open extends $Annotation {
-    override inactivates(writing: $Writing): void {
+    override defines(writing: $Writing): void {
         for (const closed of writing.annotations.find($Closed))
-            closed.enforced = false;
+            closed.express(false);
     }
 }
 
 export class $Closed extends $Annotation {
-    override inactivates(writing: $Writing): void {
+    override defines(writing: $Writing): void {
         for (const open of writing.annotations.find($Open))
-            open.enforced = false;
+            open.express(false);
     }
 
     override specifies(writing: $Writing): void {
