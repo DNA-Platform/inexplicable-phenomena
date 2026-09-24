@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, $Format, $Mention, Mention } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, Reference } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -78,6 +78,16 @@ describe('a change costs one paint, and the draws around it are counted', () => 
         await act(async () => { writing.$is = []; });
         await settle();
         expect(counted.drawn).toBe(2);
+        expect(counted.painted).toBe(1);
+        expect(counted.committed).toBe(1);
+    });
+
+    it('a reference in front of a format draws like any writing, which is the case that looped when both wrote one container', async () => {
+        const writing = $(<Counting>a quote <Quoted /><Reference>/there/</Reference></Counting>) as unknown as $Writing;
+        const Drawn = $(writing);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect(counted.drawn).toBe(3);
         expect(counted.painted).toBe(1);
         expect(counted.committed).toBe(1);
     });

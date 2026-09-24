@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, $check } from '@dna-platform/chemistry';
+import { $, $check, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, Word, Sentence, $Annotation, Parenthetical, binder, html } from '@dna-platform/public';
 import { $Sentence, $Mention, Mention, $Referent, Referent, $Reference, Reference } from '@dna-platform/public';
+import { $Format } from '@dna-platform/public';
 
 class $Unmentioned extends $Annotation {
     override defines(writing: $Writing): void {
@@ -13,6 +14,11 @@ class $Unmentioned extends $Annotation {
     }
 }
 const Unmentioned = $($Unmentioned);
+
+class $Quoted extends $Format {
+    style = styled.blockquote`border-left: 3px solid silver;`;
+}
+const Quoted = $($Quoted);
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -175,5 +181,49 @@ describe('a reference is the address its writing means', () => {
         expect(writing.id).toBe('here');
         expect([...writing.classes]).toContain('pa-referent');
         expect([...writing.classes]).toContain('pa-reference');
+    });
+});
+
+describe('a reference makes its writing a link by adding a layer to its containers', () => {
+    it('alone, its anchor is the outermost layer, wearing the classes and the id, with the writing\'s own inside it', async () => {
+        const writing = built<$Writing>(<Writing>go<Referent>there</Referent><Reference>/there/</Reference></Writing>);
+        const page = await drawn(writing);
+        const anchor = page.firstElementChild!;
+        expect(anchor.tagName).toBe('A');
+        expect(anchor.getAttribute('href')).toBe('/there/');
+        expect(anchor.id).toBe('there');
+        expect(anchor.className).toContain('pa-reference');
+        expect(anchor.firstElementChild!.tagName).toBe('SPAN');
+    });
+
+    it('composes with a format in either order, and whichever acts later is drawn outside', async () => {
+        const formatInFront = await drawn(built<$Writing>(<Writing>x<Reference>/r/</Reference><Quoted /></Writing>));
+        expect(formatInFront.firstElementChild!.tagName).toBe('A');
+        expect(formatInFront.querySelector('a > blockquote')).not.toBeNull();
+        const referenceInFront = await drawn(built<$Writing>(<Writing>x<Quoted /><Reference>/r/</Reference></Writing>));
+        expect(referenceInFront.firstElementChild!.tagName).toBe('BLOCKQUOTE');
+        expect(referenceInFront.querySelector('blockquote > a')).not.toBeNull();
+    });
+
+    it('the writing\'s text is inside the anchor, so clicking the writing follows it', async () => {
+        const page = await drawn(built<$Writing>(<Writing>Alan Turing<Reference>/alan-turing/</Reference><Quoted /></Writing>));
+        const text = [...page.querySelectorAll('span')].find(span => span.textContent?.startsWith('Alan Turing'))!;
+        expect(text.closest('a')?.getAttribute('href')).toBe('/alan-turing/');
+    });
+
+    it('taken out of expression, its layer goes and the format\'s stays', () => {
+        const writing = built<$Writing>(<Writing>x<Reference>/r/</Reference><Quoted /><Unmentioned /></Writing>);
+        const layers = [...writing.containers];
+        expect(layers.length).toBe(2);
+        expect(layers[1]).toBe('span');
+        expect(typeof layers[0]).not.toBe('string');
+    });
+
+    it('registering is idempotent, and its anchor keeps one identity however many passes run', () => {
+        const writing = built<$Writing>(<Writing>x<Reference>/r/</Reference></Writing>);
+        const anchor = [...writing.containers][0];
+        writing.view();
+        writing.view();
+        expect([...writing.containers]).toEqual([anchor, 'span']);
     });
 });
