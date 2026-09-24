@@ -90,7 +90,7 @@ describe('a referent is the id its writing answers to', () => {
 
     it('gives its writing the id and its class', () => {
         const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent></Writing>);
-        expect(writing.id).toBe('the-first-shelf');
+        expect(String(writing.id)).toBe('the-first-shelf');
         expect([...writing.classes]).toContain('pa-referent');
     });
 
@@ -103,16 +103,25 @@ describe('a referent is the id its writing answers to', () => {
 
     it('takes the id and the class back when a family member says it does not apply', () => {
         const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent><Unmentioned /></Writing>);
-        expect(writing.id).toBeUndefined();
+        expect(String(writing.id)).toBe('');
         expect([...writing.classes]).not.toContain('pa-referent');
     });
 
     it('is expressed again the moment what repressed it is gone, since expression is computed', () => {
         const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent><Unmentioned /></Writing>);
-        expect(writing.id).toBeUndefined();
+        expect(String(writing.id)).toBe('');
         writing.annotations.remove(writing, writing.annotations.find($Unmentioned)[0]);
         writing.annotations.define();
-        expect(writing.id).toBe('the-first-shelf');
+        expect(String(writing.id)).toBe('the-first-shelf');
+    });
+
+    it('answers the last id set, which is the referent standing furthest back, and the one before it when that one goes', () => {
+        const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent><Referent>the-second-shelf</Referent></Writing>);
+        expect(String(writing.id)).toBe('the-first-shelf');
+        const [, behind] = [...writing.annotations];
+        writing.annotations.remove(writing, behind);
+        writing.annotations.define();
+        expect(String(writing.id)).toBe('the-second-shelf');
     });
 
     it('refuses a writing that is mentioned twice, and one that names nothing', () => {
@@ -152,7 +161,7 @@ describe('a mention is the word that reads what the compiler wrote', () => {
     it('behaves the same written by hand as compiled, since the compiler only writes source', () => {
         const compiled = built<$Mention>(<Mention>[The First Shelf](the-first-shelf)</Mention>);
         const byHand = built<$Writing>(<Writing>The First Shelf<Referent>the-first-shelf</Referent></Writing>);
-        expect(compiled.id).toBe(byHand.id);
+        expect(String(compiled.id)).toBe(String(byHand.id));
     });
 
     it('says no identifier when its content is not a reference, and is refused', () => {
@@ -171,14 +180,14 @@ describe('a reference is the address its writing means', () => {
 
     it('never gives its writing an id, and takes its class back when it does not apply', () => {
         const standing = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference></Writing>);
-        expect(standing.id).toBeUndefined();
+        expect(String(standing.id)).toBe('');
         const repressed = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference><Unmentioned /></Writing>);
         expect([...repressed.classes]).not.toContain('pa-reference');
     });
 
     it('stands beside a referent without either taking the other\'s mark', () => {
         const writing = built<$Writing>(<Writing>here <Referent>here</Referent><Reference>/there/</Reference></Writing>);
-        expect(writing.id).toBe('here');
+        expect(String(writing.id)).toBe('here');
         expect([...writing.classes]).toContain('pa-referent');
         expect([...writing.classes]).toContain('pa-reference');
     });
@@ -191,7 +200,7 @@ describe('a reference makes its writing a link by adding a layer to its containe
         const anchor = page.firstElementChild!;
         expect(anchor.tagName).toBe('A');
         expect(anchor.getAttribute('href')).toBe('/there/');
-        expect(anchor.id).toBe('there');
+        expect(String(anchor.id)).toBe('there');
         expect(anchor.className).toContain('pa-reference');
         expect(anchor.firstElementChild!.tagName).toBe('SPAN');
     });

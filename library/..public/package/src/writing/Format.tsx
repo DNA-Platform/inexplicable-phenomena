@@ -21,14 +21,12 @@ export class $Format extends $Annotation {
     override defines(writing: $Writing): void {
         for (const format of writing.annotations.find($Format))
             if (format !== this) writing.annotations.express(format, false);
-        if (this.style === undefined)
-            writing.containers.remove(this);
-        else
-            writing.containers.prepend(this, this.style);
+        if (this.style !== undefined)
+            writing.containers.add(this, this.style, 'left');
     }
 
     override erase(writing: $Writing): void {
-        writing.containers.remove(this);
+        writing.containers.revert(this);
     }
 }
 

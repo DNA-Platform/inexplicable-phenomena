@@ -116,6 +116,6 @@ describe('a mention that stands its own annotation costs no more than any writin
         await act(async () => { render(<Drawn />); });
         await settle();
         expect(counted.drawn).toBe(3);
-        expect(mention.id).toBe('the-first-shelf');
+        expect(String(mention.id)).toBe('the-first-shelf');
     });
 });

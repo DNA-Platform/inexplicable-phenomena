@@ -13,13 +13,13 @@ export class $Referent extends $Annotation {
     }
 
     override defines(writing: $Writing): void {
-        if (writing.id !== this.identifier) writing.id = this.identifier;
-        writing.classes.add('pa-referent');
+        writing.id.set(this, this.identifier);
+        writing.classes.add(this, 'pa-referent');
     }
 
     override erase(writing: $Writing): void {
-        if (writing.id === this.identifier) writing.id = undefined;
-        writing.classes.delete('pa-referent');
+        writing.id.revert(this);
+        writing.classes.revert(this);
     }
 }
 

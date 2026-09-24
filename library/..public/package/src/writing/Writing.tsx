@@ -1,7 +1,7 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { ChemicalCollection, Collection } from '@/utilities/Collection';
+import { ChemicalCollection, Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given, Side } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
@@ -9,9 +9,9 @@ import { reflection } from '@/utilities/Reflection';
 export class $Writing extends $Chemical {
     protected _contents?: ChemicalCollection<$Chemical>;
     protected _annotations?: Annotations;
-    id?: string;
-    classes!: Set<string>;
-    containers!: Containers;
+    id!: Compilation<string>;
+    classes!: Collection<string>;
+    containers!: Collection<ElementType>;
     specification: Specification<$Writing> = new WritingSpecification();
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.is; }
@@ -26,8 +26,10 @@ export class $Writing extends $Chemical {
     }
 
     $Writing(...chemicals: $Chemical[]) {
-        this.classes = new Set<string>();
-        this.containers = new Containers(this, 'span');
+        this.id = new Compilation<string>();
+        this.classes = new Collection<string>();
+        this.containers = new Collection<ElementType>();
+        this.containers.add(this, 'span');
         for (const chemical of chemicals)
             if (!(chemical instanceof $Annotation))
                 this.contents.add(chemical);
@@ -41,7 +43,8 @@ export class $Writing extends $Chemical {
     view(): ReactNode {
         this.annotations.define();
         const [Container, ...layers] = [...this.containers];
-        const className = [...this.classes].join(' ') || undefined;
+        const [id] = this.id;
+        const className = [...new Set(this.classes)].join(' ') || undefined;
         const drawing = layers.reduceRight<ReactNode>((node, Layer) => <Layer>{node}</Layer>, (
             <>
                 {this.write()}
@@ -49,7 +52,7 @@ export class $Writing extends $Chemical {
             </>
         ));
         return (
-            <Container id={this.id} className={className}>
+            <Container id={id} className={className}>
                 {drawing}
             </Container>
         );
@@ -92,7 +95,7 @@ export class $Annotation extends $Writing {
 
     $Annotation(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
-        this.classes.add('pd-annotation');
+        this.classes.add(this, 'pd-annotation');
     }
 
     override view(): ReactNode {
@@ -181,40 +184,6 @@ export class Annotations extends Collection<$Annotation> {
     }
 }
 
-type Layer = { key: object; container: ElementType };
-
-export class Containers {
-    private layers: Layer[] = [];
-
-    constructor(key: object, container: ElementType) {
-        this.add(key, container);
-    }
-
-    [Symbol.iterator](): IterableIterator<ElementType> {
-        return this.layers.map(layer => layer.container)[Symbol.iterator]();
-    }
-
-    prepend(key: object, container: ElementType): void {
-        const index = this.layers.findIndex(layer => layer.key === key);
-        if (index < 0)
-            this.layers.unshift({ key, container });
-        else
-            this.layers[index] = { key, container };
-    }
-
-    add(key: object, container: ElementType): void {
-        const index = this.layers.findIndex(layer => layer.key === key);
-        if (index < 0)
-            this.layers.push({ key, container });
-        else
-            this.layers[index] = { key, container };
-    }
-
-    remove(key: object): void {
-        this.layers = this.layers.filter(layer => layer.key !== key);
-    }
-}
-
 
 export class $Parenthetical extends $Annotation {
     style = createGlobalStyle`
@@ -223,8 +192,8 @@ export class $Parenthetical extends $Annotation {
 
     override note(): ReactNode { return <this.style />; }
 
-    override defines(writing: $Writing): void { writing.classes.add('pa-parenthetical'); }
-    override erase(writing: $Writing): void { writing.classes.delete('pa-parenthetical'); }
+    override defines(writing: $Writing): void { writing.classes.add(this, 'pa-parenthetical'); }
+    override erase(writing: $Writing): void { writing.classes.revert(this); }
 }
 
 export class $Narrative extends $Annotation {

@@ -16,13 +16,13 @@ export class $Reference extends $Annotation {
     }
 
     override defines(writing: $Writing): void {
-        writing.classes.add('pa-reference');
-        writing.containers.prepend(this, this._anchor);
+        writing.classes.add(this, 'pa-reference');
+        writing.containers.add(this, this._anchor, 'left');
     }
 
     override erase(writing: $Writing): void {
-        writing.classes.delete('pa-reference');
-        writing.containers.remove(this);
+        writing.classes.revert(this);
+        writing.containers.revert(this);
     }
 }
 
