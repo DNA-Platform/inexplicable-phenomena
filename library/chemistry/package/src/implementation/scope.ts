@@ -5,10 +5,10 @@ import { equivalent, snapshot } from "./reconcile";
  * Scope — the reactivity tracking context.
  *
  * A Scope is active during a reactive entry into chemical code: an event
- * handler invocation (via view augmentation), a reactive method call, or a
- * render cycle. While a Scope is active, every property read on a reactive
- * chemical property records a snapshot; every property write
- * records the target chemical.
+ * handler invocation (via view augmentation) or a reactive method call. While
+ * a Scope is active, every read of a reactive property records a snapshot and
+ * every write records its chemical — except on a chemical that is drawing,
+ * whose dirtiness starts after its draw.
  *
  * When the Scope finalizes (at the end of the entry), it fires
  * `chemical[$reaction$].react()` on every chemical that was written directly

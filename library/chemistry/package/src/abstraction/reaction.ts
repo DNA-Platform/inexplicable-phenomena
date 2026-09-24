@@ -1,4 +1,4 @@
-import { $cid$, $destroyed$, $phase$, $update$, $reaction$ } from "../implementation/symbols";
+import { $cid$, $destroyed$, $phase$, $update$, $reaction$, $rendering$ } from "../implementation/symbols";
 import type { $Particle } from "./particle";
 
 // ===========================================================================
@@ -36,14 +36,16 @@ export class $Reaction {
     }
 
     /**
-     * Request a re-render of the bound chemical. No-op during unmount phase
-     * or if the chemical has been destroyed.
+     * Request a re-render of the bound chemical. No-op during unmount phase,
+     * if the chemical has been destroyed, or while it draws: a draw ends with
+     * its view, and the settle pass sees whatever changed during it.
      */
     react(): void {
         const chemical = this._chemical;
         if (!chemical) return;
         if (chemical[$destroyed$]) return;
         if (chemical[$phase$] === 'unmount') return;
+        if (chemical[$rendering$]) return;
         const update = chemical[$update$];
         if (update) update();
     }

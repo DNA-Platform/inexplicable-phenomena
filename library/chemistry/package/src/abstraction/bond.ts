@@ -208,7 +208,9 @@ function activate(chemical: any, property: string, initial: any) {
             if ((this as any)._persist && (this as any)[$reinit$]) (this as any)[$reinit$] = false;
             const value = this[$backing$]?.[property];
             const scope = currentScope();
-            if (scope) scope.recordRead(this, property, value);
+            // A CHEMICAL IS NOT DIRTY WHILE IT DRAWS: its dirtiness starts after
+            // render, so another chemical's scope does not record a read of it.
+            if (scope && !this[$rendering$]) scope.recordRead(this, property, value);
             return value;
         },
         set(value) {
@@ -236,14 +238,14 @@ function activate(chemical: any, property: string, initial: any) {
 
 // A DECLARED ACCESSOR IS WRAPPED AS A FIELD IS ACTIVATED: a read records the
 // getter's answer in the scope, a set is news unless the answer is unchanged,
-// and a set during the chemical's own draw is construction. What the accessor
+// and neither is news while the chemical draws. What the accessor
 // proxies to is its own business. (`wrap` is a proxy name, flagged for Doug.)
 function wrap(chemical: any, property: string, getter?: () => any, setter?: (value: any) => void) {
     // Non-enumerable, as a class accessor is: an own-key walk must not meet it as a field.
     const get = function (this: any) {
         const value = getter?.call(this);
         const scope = currentScope();
-        if (scope) scope.recordRead(this, property, value);
+        if (scope && !this[$rendering$]) scope.recordRead(this, property, value);
         return value;
     };
     // The wrapper carries the declared accessor, as an augmented handler carries
