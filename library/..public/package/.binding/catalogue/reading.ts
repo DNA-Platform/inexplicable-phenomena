@@ -139,11 +139,6 @@ export const origins = (source: ts.SourceFile): Map<string, Origin> => {
 // THE FRAMEWORK'S, by the module it was imported from — `@dna-platform/public` or one of its doors.
 export const frameworks = (origin: Origin | undefined): origin is Origin => origin !== undefined && /^@dna-platform\/public(\/|$)/u.test(origin.from);
 
-// AND THE KINDS A LIBRARY WRITES A MENTION WITH, named as the framework exports them. Each receives
-// `[words](url)` and draws the anchor, so the transform writes a link into these and words into
-// everything else.
-export const mentions = ['book', 'chapter', 'Author', 'Subject', 'For', 'Participant'];
-
 // ---- the framework's own elements, read with their offsets ----
 
 // WHAT THE ELEMENTS OF ONE FILE SAY, WITH WHERE EACH STANDS. The framework already has elements that

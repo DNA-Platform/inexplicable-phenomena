@@ -1,7 +1,6 @@
 import type { Configuration } from '../configuration/configuration';
 import type { Library } from '../inventory/library';
-import { resolution, type Table } from '../resolution/addresses';
-import { reflection } from '@dna-platform/public';
+import { resolution, slug, type Table } from '../resolution/addresses';
 import { forward } from '../manifest/origin';
 import { tidy } from './language';
 import { structure as compiled, type Structure } from './structure';
@@ -75,7 +74,8 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // Doug, 2026-09-19: "Don't chapters have #ids right now? Wouldn't it append the hash." They do:
     // the page gives every chapter heading an id from the framework's own `slug`, and its table of
     // contents already links `#the-sheet`. The catalogue writes the same id with the same function,
-    // so the address it hands out is the one the page already answers to.
+    // so the address it hands out is the one the page already answers to — and since 2026-09-24 the
+    // function is the compiler's own, `resolution/addresses.ts`, so the framework spells no address.
     //
     // AND EVERY CHAPTER IS ADDRESSED BY ITS FRAGMENT, whether or not its title prints. A chapter
     // whose title did not print was briefly addressed as its book's page, because the page drew no
@@ -109,7 +109,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         for (const spot of structure.spots.values()) {
             if (spot.kind === 'book' || spot.book !== route.folder) continue;
             const chapter = structure.named.get(spot.id);
-            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, `${book}#${reflection.slug(chapter)}`);
+            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, `${book}#${slug(chapter)}`);
         }
     }
 

@@ -8,10 +8,10 @@ export default class $Entries extends $Chapter {
                 <Section>
                     <Heading>The first entry</Heading>
                     <Paragraph>
-                        The library was started, and its first shelf is $[ The Library / The Shelves ]. What it
-                        is for is said in $[ The Library / Synopsis ], a synopsis whose title does not print,
+                        The library was started, and its first shelf is <Ref>$[ The Library / The Shelves ]</Ref>. What it
+                        is for is said in <Ref>$[ The Library / Synopsis ]</Ref>, a synopsis whose title does not print,
                         so the reference leads to the page it is part of. The persona was given a voice the same
-                        day, and the first thing it wrote is $[ its paper ]( A Paper ).
+                        day, and the first thing it wrote is <Ref>$[ its paper ]( A Paper )</Ref>.
                     </Paragraph>
                 </Section>
             </Document>

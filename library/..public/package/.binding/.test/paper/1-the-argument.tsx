@@ -15,9 +15,9 @@ export default class $TheArgument extends $Chapter {
                     <Heading>What is claimed</Heading>
                     <Paragraph>
                         A reference names a thing and never a place. The library this paper stands in is
-                        $[ The Library ]; what supports the claim is $[ ./The Evidence ]; the work it grew out of
-                        is $[ Some Projects / The Work ]; and the book that keeps the record is
-                        $[ the log ]( The Log ).
+                        <Ref>$[ The Library ]</Ref>; what supports the claim is <Ref>$[ ./The Evidence ]</Ref>; the work it grew out of
+                        is <Ref>$[ Some Projects / The Work ]</Ref>; and the book that keeps the record is
+                        <Ref>$[ the log ]( The Log )</Ref>.
                     </Paragraph>
                     <Paragraph>{supporting}</Paragraph>
                 </Section>

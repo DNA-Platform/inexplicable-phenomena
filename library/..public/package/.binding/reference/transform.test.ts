@@ -6,8 +6,9 @@ import { transforming } from './transform';
 
 // WHAT THE TRANSFORM WRITES INTO A READER'S PROSE, which is the one thing in the compiler that edits
 // what a person sees. Every promise here is about the text that comes out: the address a reference
-// is given, the words it keeps, the name an annotation is left with, and the refusal when a name is
-// not the library's.
+// is given, the words it keeps, the id a mention is given, and the refusal when a name is not the
+// library's. And what never comes out: a component, since the compiler knows none — Doug,
+// 2026-09-24: "The compiler ALWAYS should give: `[text](identifier)`."
 const { card } = read();
 const chapter = join(fixture, 'paper', '1-the-argument.tsx');
 const cover = join(fixture, 'the-library', '.cover.tsx');
@@ -17,31 +18,32 @@ describe('a reference in prose', () => {
 
     it('resolves every form to the address the catalogue holds, and refuses none', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Ref>[The Library](/the-library/)</Ref>');
-        expect(made.text).toContain('<Ref>[The Evidence](/a-paper/#the-evidence)</Ref>');
-        expect(made.text).toContain('<Ref>[The Work](/some-projects/#the-work)</Ref>');
+        expect(made.text).toContain('[The Library](/the-library/)');
+        expect(made.text).toContain('[The Evidence](/a-paper/#the-evidence)');
+        expect(made.text).toContain('[The Work](/some-projects/#the-work)');
     });
 
     it('keeps the words a writer gave and puts the address behind them', () => {
-        expect(made.text).toContain('<Ref>[the log](/the-log/)</Ref>');
+        expect(made.text).toContain('[the log](/the-log/)');
         expect(made.text).not.toContain('$[');
     });
 
-    it('compiles a reference in a string to the same thing, without the element prose needs', () => {
+    it('compiles a reference in a string to the same thing', () => {
         expect(made.text).toContain("const supporting = 'and the evidence is in [The Evidence](/a-paper/#the-evidence)';");
     });
 
-    it('does not owe a Ref to a file that imports one', () => {
-        expect(made.owes).toEqual([]);
+    it('adds no component, so what reads the link is whatever element the writer put it in', () => {
+        const written = readFileSync(chapter, 'utf8');
+        expect(made.text.match(/<\/?[A-Z]\w*/gu)).toEqual(written.match(/<\/?[A-Z]\w*/gu));
     });
 });
 
 describe('an annotation on a cover', () => {
     const made = transforming(readFileSync(cover, 'utf8'), cover, card);
 
-    it('is verified and then writes its address into the element — and none for the page it stands on', () => {
+    it('is verified and then writes both halves into the element, the address empty for the page it stands on', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Title>The Library</Title>');
+        expect(made.text).toContain('<Title>[The Library]()</Title>');
         expect(made.text).toContain('<Subject>[The Library]()</Subject>');
     });
 
@@ -50,80 +52,82 @@ describe('an annotation on a cover', () => {
     });
 });
 
-// A MENTION WRITTEN WITH PLAIN WORDS IS COMPILED TOO, because the structure has always read it as
-// naming what it says — Doug, 2026-09-19: "There should not be anymore dynamic link generation."
+// THE COMPILER KNOWS NO COMPONENT, so no element is read for being a mention. Doug, 2026-09-24:
+// "It doesn't know about specific components. To generate any is to break polymorphism."
 describe('a mention in a table of contents', () => {
     const table = join(fixture, 'the-log', '.table.tsx');
     const made = transforming(readFileSync(table, 'utf8'), table, card);
 
-    it('written as plain words receives its address', () => {
+    it('written with the notation, receives both halves whatever element it stands in', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Chapter>[Entries](/the-log/#entries)</Chapter>');
+        expect(made.text).toContain('<Book>[The Library](/the-library/)</Book>');
+        expect(made.text).toContain('<Chapter>[A Persona](/a-persona/#synopsis)</Chapter>');
     });
 
     it('written with an empty display is an empty anchor to the book, and keeps no star', () => {
         expect(made.text).toContain('<Book>[](/a-persona/)</Book>');
     });
 
-    it('that does not print is compiled all the same, because the compiler does not read print', () => {
-        expect(made.text).toContain('<Chapter print={false}>[The Log]()</Chapter>');
+    it('written as plain words is left as it was written', () => {
+        expect(made.text).toContain('<Chapter>Entries</Chapter>');
+        expect(made.text).toContain('<Chapter print={false}>The Log</Chapter>');
     });
 });
 
-// A RESOURCE IS DRAWN ON EVERY PAGE THAT WEARS IT, so it is never "here" — and a Reference element
-// receives the address alone, because a reference carries a path and nothing else.
+// A RESOURCE IS DRAWN ON EVERY PAGE THAT WEARS IT, so it is never "here".
 describe('a resource shared by every page', () => {
     const resource = join(fixture, 'the-library', '1-the-shelves.tsx.tsx');
     const made = transforming(readFileSync(resource, 'utf8'), resource, card);
 
     it('keeps the address of the book it lives in, even though it lives there', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Book>[The Library](/the-library/)</Book>');
-    });
-
-    it('and a Reference element on a section receives the bare address, so the section is the link', () => {
-        expect(made.text).toContain('<Reference>/the-library/</Reference>');
+        expect(made.text).toContain('<Reference>[The Library](/the-library/)</Reference>');
     });
 });
 
-// `[[[ X ]]]` ALLOCATES AN ADDRESS WHERE IT STANDS: the words stay, a Fold plants the id, and a
+// `[[[ X ]]]` ALLOCATES AN ADDRESS WHERE IT STANDS: its words and the id it is given, and a
 // reference reaches it as it reaches a chapter.
 describe('a mention that allocates', () => {
     const shelves = join(fixture, 'the-library', '1-the-shelves.tsx');
     const made = transforming(readFileSync(shelves, 'utf8'), shelves, card);
 
-    it('keeps its words and plants a fold beside them', () => {
+    it('keeps its words and gives them the id, both halves and no component', () => {
         expect(made.missing).toEqual([]);
-        expect(made.owes).toEqual([]);
-        expect(made.text).toContain('<Fold>the-first-shelf</Fold>The First Shelf is the one');
+        expect(made.text).toContain('[The First Shelf](the-first-shelf) is the one');
+        expect(made.text).not.toContain('<Fold>');
     });
 
-    it('and a reference to it lands on the fragment the fold planted', () => {
-        expect(made.text).toContain('<Ref>[The First Shelf](/the-library/#the-first-shelf)</Ref>');
+    it('and a reference to it lands on the fragment its id is', () => {
+        expect(made.text).toContain('[The First Shelf](/the-library/#the-first-shelf)');
     });
 
-    it('and a file that allocates without importing Fold owes it', () => {
-        const code = `import { Paragraph } from '@dna-platform/public';\nexport default class C { print() { return (<Paragraph>\n  [[[ Somewhere ]]] here\n</Paragraph>); } }`;
-        expect(transforming(code, shelves, card).owes).toEqual(['Fold']);
+    it('takes its id from the name it was given, which is the name a reference asks for', () => {
+        const code = `export default class C { print() { return (<Paragraph>[[[ the shelf ]]]( The First Shelf ) here</Paragraph>); } }`;
+        expect(transforming(code, shelves, card).text).toContain('<Paragraph>[the shelf](the-first-shelf) here</Paragraph>');
+    });
+
+    it('allocates the same in a string, which is handed to whatever reads it', () => {
+        const code = `const said = '[[[ The First Shelf ]]]';`;
+        expect(transforming(code, shelves, card).text).toBe(`const said = '[The First Shelf](the-first-shelf)';`);
     });
 });
 
 describe('what the transform refuses', () => {
     it('a name the library does not hold, by file and line', () => {
-        const code = `import { Ref } from '@dna-platform/public';\nexport default class C { print() { return (<Paragraph>\n  see $[ Nowhere ]\n</Paragraph>); } }`;
+        const code = `export default class C { print() { return (<Paragraph>\n  see $[ Nowhere ]\n</Paragraph>); } }`;
         const made = transforming(code, chapter, card);
-        expect(made.missing).toEqual([{ key: 'Nowhere', file: chapter, line: 3 }]);
+        expect(made.missing).toEqual([{ key: 'Nowhere', file: chapter, line: 2 }]);
     });
 
     it('a relative reference to a chapter the standing book does not have', () => {
-        const code = `import { Ref } from '@dna-platform/public';\nexport default class C { print() { return (<Paragraph>$[ ./The Work ]</Paragraph>); } }`;
+        const code = `export default class C { print() { return (<Paragraph>$[ ./The Work ]</Paragraph>); } }`;
         expect(transforming(code, chapter, card).missing.map(one => one.key)).toEqual(['A Paper / The Work']);
     });
 
-    it('and says when a file writes a reference it cannot draw', () => {
+    it('and nothing about what a file imports, since it writes nothing a file must hold', () => {
         const code = `export default class C { print() { return (<Paragraph>$[ The Library ]</Paragraph>); } }`;
         const made = transforming(code, chapter, card);
         expect(made.missing).toEqual([]);
-        expect(made.owes).toEqual(['Ref']);
+        expect(made.text).toContain('<Paragraph>[The Library](/the-library/)</Paragraph>');
     });
 });
