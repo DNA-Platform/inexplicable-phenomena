@@ -111,6 +111,40 @@ class $Aside extends $Writing {
         this.annotations.add(this, Parenthetical);
     }
 }
+const looked: string[][] = [];
+class $Looking extends $Annotation {
+    override defines(writing: $Writing): void {
+        looked.push([...writing.annotations].map(annotation => reflection.name(annotation)));
+    }
+}
+const read: boolean[][] = [];
+class $Reading extends $Annotation {
+    override defines(writing: $Writing): void {
+        read.push([
+            writing.annotations.expressed($Stamp) !== undefined,
+            writing.annotations.expressed($Unstamped) !== undefined,
+            writing.annotations.expressed(this) !== undefined,
+        ]);
+    }
+}
+class $Restamped extends $Annotation {
+    override defines(writing: $Writing): void {
+        for (const stamp of writing.annotations.find($Stamp))
+            writing.annotations.express(stamp, true);
+    }
+}
+class $Budding extends $Annotation {
+    override defines(writing: $Writing): void {
+        if (writing.annotations.find($Mark).length === 0)
+            writing.annotations.add(writing, Mark);
+    }
+}
+class $Grafting extends $Annotation {
+    override defines(writing: $Writing): void {
+        if (writing.annotations.find($Budding).length === 0)
+            writing.annotations.add(writing, Budding);
+    }
+}
 class $Owned extends $Writing {
     $Owned(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
@@ -158,6 +192,11 @@ const Excused = $($Excused);
 const Logged = $($Logged);
 const Editing = $($Editing);
 const Owned = $($Owned);
+const Looking = $($Looking);
+const Reading = $($Reading);
+const Restamped = $($Restamped);
+const Budding = $($Budding);
+const Grafting = $($Grafting);
 const Tidying = $($Tidying);
 const Aside = $($Aside);
 const Section = $($Section);
@@ -510,6 +549,79 @@ describe('a define takes back what ran, applies what changed, stands the edits o
         expect(writing.annotations.expressed($Unstamped)).toBeInstanceOf($Unstamped);
         writing.annotations.express(stamp);
         expect(writing.annotations.expressed(stamp)).toBeUndefined();
+    });
+});
+
+describe('while a define runs the annotations are one generation: the genome it established, and a record of what it called defines on', () => {
+    it('answers, while it runs, the genome the define established, whole and in order, every annotation however it will be expressed', () => {
+        const writing = built<$Writing>(<Writing>a <Mark /><Stamp /><Unstamped /><Looking /></Writing>);
+        looked.length = 0;
+        writing.annotations.define();
+        expect(looked).toEqual([['Looking', 'Unstamped', 'Stamp', 'Mark']]);
+    });
+
+    it('answers expression by what the run did for everything it has reached, and by what was asked for everything ahead, which starts expressed', () => {
+        const ahead = built<$Writing>(<Writing>a <Stamp /><Unstamped /><Reading /></Writing>);
+        read.length = 0;
+        ahead.annotations.define();
+        expect(read).toEqual([[true, true, true]]);
+        const behind = built<$Writing>(<Writing>a <Reading /><Stamp /><Unstamped /></Writing>);
+        read.length = 0;
+        behind.annotations.define();
+        expect(read).toEqual([[false, true, true]]);
+    });
+
+    it('lets a later annotation give expression back to one not yet reached, so the last word before an annotation is reached decides', () => {
+        const given = built<$Writing>(<Writing>a <Stamp /><Restamped /><Unstamped /></Writing>);
+        expect(given.is($Stamp)).toBe(true);
+        const taken = built<$Writing>(<Writing>a <Stamp /><Unstamped /><Restamped /></Writing>);
+        expect(taken.is($Stamp)).toBe(false);
+    });
+
+    it('records only what it called defines on, so an annotation reaching back to one already reached changes nothing the collection says of it', () => {
+        const passed = built<$Writing>(<Writing>a <Restamped /><Stamp /><Unstamped /></Writing>);
+        expect(passed.is($Stamp)).toBe(false);
+        const ran = built<$Writing>(<Writing>a <Unstamped /><Stamp /></Writing>);
+        expect(ran.is($Stamp)).toBe(true);
+    });
+
+    it('lets an annotation change the genome while it runs, and the change is the next generation: the run and every read stay on the genome it established', () => {
+        const writing = built<$Writing>(<Writing>a <Budding /></Writing>);
+        expect(writing.annotations.find($Mark)).toEqual([]);
+        writing.annotations.define();
+        expect(writing.annotations.find($Mark).length).toBe(1);
+        writing.annotations.define();
+        expect(writing.annotations.find($Mark).length).toBe(1);
+    });
+
+    it('lets recursion unfold one generation a define: an annotation added by an annotation adds another', () => {
+        const writing = built<$Writing>(<Writing>a <Grafting /></Writing>);
+        expect(writing.annotations.find($Budding)).toEqual([]);
+        writing.annotations.define();
+        expect(writing.annotations.find($Budding).length).toBe(1);
+        expect(writing.annotations.find($Mark)).toEqual([]);
+        writing.annotations.define();
+        expect(writing.annotations.find($Mark).length).toBe(1);
+    });
+
+    it('drawn, settles once the genome stops changing: two generations of additions cost the three draws of any mount, each draw a define', async () => {
+        const writing = built<$Counted>(<Counted>a <Grafting /></Counted>);
+        const Drawn = $(writing);
+        draws = 0;
+        await act(async () => { render(<Drawn />); });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(writing.annotations.find($Mark).length).toBe(1);
+        expect(draws).toBe(3);
+    });
+
+    it('answers at an index what it answers by iterating, which for the annotations is what the last define established', () => {
+        const writing = built<$Writing>(<Writing>a <Mark /><Stamp /></Writing>);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Stamp);
+        expect(writing.annotations.at(-1)).toBe(writing.annotations.find($Mark).find(mark => !(mark instanceof $Stamp)));
+        writing.annotations.add(writing, Parenthetical);
+        expect(writing.annotations.at(0)).toBeInstanceOf($Stamp);
+        writing.annotations.define();
+        expect(writing.annotations.at(0)).toBeInstanceOf($Parenthetical);
     });
 });
 

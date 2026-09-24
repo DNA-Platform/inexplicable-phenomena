@@ -132,7 +132,7 @@ export class Annotations extends Collection<$Annotation> {
     private established: $Annotation[] = [];
     private run: $Annotation[] = [];
     private unexpressed = new Set<$Annotation>();
-    private defining = false;
+    private reached = 0;
     edits: $Annotation[] = [];
 
     constructor(protected writing: $Writing) {
@@ -155,17 +155,17 @@ export class Annotations extends Collection<$Annotation> {
         this.established = [...super[Symbol.iterator]()];
         this.unexpressed.clear();
         this.run = [];
-        this.defining = true;
-        for (const annotation of this.established)
+        this.reached = 0;
+        for (const [index, annotation] of this.established.entries()) {
+            this.reached = index + 1;
             if (!this.unexpressed.has(annotation)) {
                 this.run.push(annotation);
                 annotation.defines(this.writing);
             }
-        this.defining = false;
+        }
     }
 
     express(annotation: $Annotation, expressed = true): void {
-        if (!this.defining || this.run.includes(annotation)) return;
         if (expressed)
             this.unexpressed.delete(annotation);
         else
@@ -173,8 +173,10 @@ export class Annotations extends Collection<$Annotation> {
     }
 
     expressed<U extends $Annotation>(given: Given<U>): U | undefined {
-        return this.find(given).find(annotation => !this.unexpressed.has(annotation)
-            && (!(given instanceof $Annotation) || annotation === given));
+        const expressed = this.find(given).filter(annotation => this.established.indexOf(annotation) < this.reached
+            ? this.run.includes(annotation)
+            : !this.unexpressed.has(annotation));
+        return given instanceof $Annotation ? expressed.find(annotation => annotation === given) : expressed[0];
     }
 
     override [Symbol.iterator](): IterableIterator<$Annotation> {
@@ -192,7 +194,7 @@ export class Annotations extends Collection<$Annotation> {
     }
 
     override containsOne<U extends $Annotation>(given: Given<U>): boolean {
-        return this.find(given).filter(annotation => !this.unexpressed.has(annotation)).length === 1;
+        return this.find(given).filter(annotation => this.expressed(annotation) !== undefined).length === 1;
     }
 }
 

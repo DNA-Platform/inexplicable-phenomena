@@ -26,6 +26,10 @@ export class Collection<T> {
         return text;
     }
 
+    at(index: number): T | undefined {
+        return [...this].at(index);
+    }
+
     add(author: Author, value: T, side: Side = 'right'): void {
         this.change(side, author, value);
     }
