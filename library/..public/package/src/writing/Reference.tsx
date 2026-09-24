@@ -17,6 +17,8 @@ export class $Reference extends $Annotation {
 
     override defines(writing: $Writing): void {
         writing.classes.add(this, 'pa-reference');
+        if (this.identifier.startsWith('#'))
+            writing.classes.add(this, 'pa-self-reference');
         writing.containers.prepend(this, this._anchor);
     }
 

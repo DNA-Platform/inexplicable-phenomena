@@ -117,11 +117,12 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
                 continue;
             }
 
-            // A LINK THAT LEADS WHERE YOU ALREADY ARE IS NOT A LINK — the branch settled that in
-            // Sprint 73 (a23a3b9). Both halves are still written, the second empty, `[words]()`, and
-            // what receives them decides what the page it stands on is.
+            // A LINK THAT LEADS WHERE YOU ALREADY ARE IS A SELF-REFERENCE, written with the self url,
+            // `[words](#)`. Doug, 2026-09-24: "I like self-referential anchors, and we want to capture
+            // that in what the compiler returns." Sprint 73 (a23a3b9) wrote such a link as its words
+            // alone, and C12 as `[words]()`; what receives `#` decides how a self-reference is drawn.
             const here = !shared && url === catalogue.standing(file);
-            edits.push({ from: at, to, said: `[${shown}](${here ? '' : url})` });
+            edits.push({ from: at, to, said: `[${shown}](${here ? '#' : url})` });
         }
     };
 

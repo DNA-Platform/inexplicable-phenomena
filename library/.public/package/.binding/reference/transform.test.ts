@@ -41,10 +41,10 @@ describe('a reference in prose', () => {
 describe('an annotation on a cover', () => {
     const made = transforming(readFileSync(cover, 'utf8'), cover, card);
 
-    it('is verified and then writes both halves into the element, the address empty for the page it stands on', () => {
+    it('is verified and then writes both halves into the element, the self url # for the page it stands on', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Title>[The Library]()</Title>');
-        expect(made.text).toContain('<Subject>[The Library]()</Subject>');
+        expect(made.text).toContain('<Title>[The Library](#)</Title>');
+        expect(made.text).toContain('<Subject>[The Library](#)</Subject>');
     });
 
     it('writes the words and the address when the writer gave both', () => {
