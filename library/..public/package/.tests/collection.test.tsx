@@ -227,17 +227,17 @@ describe('a collection finds its values by type', () => {
     });
 });
 
-describe('a compilation is one value compiled from what its authors set, and it answers the first author\'s', () => {
-    it('answers nothing until an author sets a value, and then the first author\'s', () => {
+describe('a compilation is one value compiled from what its authors set, and the last value set wins', () => {
+    it('answers nothing until an author sets a value, and then the last value set', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const compilation = new Compilation<string>();
         expect([...compilation]).toEqual([]);
         compilation.set(editor, 'the-first-shelf');
         compilation.set(reviewer, 'the-second-shelf');
-        expect([...compilation]).toEqual(['the-first-shelf']);
+        expect([...compilation]).toEqual(['the-second-shelf']);
     });
 
-    it('changes an author\'s own value where it stands when that author sets again', () => {
+    it('lets an author that sets again win, since its value is now the last set', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const compilation = new Compilation<string>();
         compilation.set(editor, 'the-first-shelf');
@@ -245,28 +245,28 @@ describe('a compilation is one value compiled from what its authors set, and it 
         compilation.set(editor, 'the-third-shelf');
         expect([...compilation]).toEqual(['the-third-shelf']);
         compilation.set(reviewer, 'the-fourth-shelf');
-        expect([...compilation]).toEqual(['the-third-shelf']);
+        expect([...compilation]).toEqual(['the-fourth-shelf']);
     });
 
-    it('says the value it answers and nothing of the authors behind it', () => {
+    it('says the value it answers and nothing of the values set before it', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const compilation = new Compilation<string>();
         expect(String(compilation)).toBe('');
         compilation.set(editor, 'the-first-shelf');
         compilation.set(reviewer, 'the-second-shelf');
-        expect(String(compilation)).toBe('the-first-shelf');
-        compilation.set(reviewer, 'the-third-shelf');
-        expect(String(compilation)).toBe('the-first-shelf');
+        expect(String(compilation)).toBe('the-second-shelf');
+        compilation.revert(editor);
+        expect(String(compilation)).toBe('the-second-shelf');
     });
 
-    it('takes an author\'s value back when that author is reverted, and answers the next author\'s', () => {
+    it('takes an author\'s value back when that author is reverted, and answers the value set before it', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const compilation = new Compilation<string>();
         compilation.set(editor, 'the-first-shelf');
         compilation.set(reviewer, 'the-second-shelf');
-        compilation.revert(editor);
-        expect([...compilation]).toEqual(['the-second-shelf']);
         compilation.revert(reviewer);
+        expect([...compilation]).toEqual(['the-first-shelf']);
+        compilation.revert(editor);
         expect([...compilation]).toEqual([]);
     });
 });

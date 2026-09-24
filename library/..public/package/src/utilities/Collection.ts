@@ -86,7 +86,7 @@ export class Compilation<T> {
     private collection = new Collection<Citation<T>>();
 
     [Symbol.iterator](): IterableIterator<T> {
-        const [citation] = this.collection;
+        const citation = [...this.collection].at(-1);
         return (citation === undefined ? [] : [citation.value])[Symbol.iterator]();
     }
 
@@ -96,9 +96,7 @@ export class Compilation<T> {
     }
 
     set(author: Author, value: T): void {
-        for (const citation of this.collection)
-            if (citation.author === author)
-                return this.collection.replace(author, citation, { author, value });
+        this.collection.revert(author);
         this.collection.add(author, { author, value });
     }
 
