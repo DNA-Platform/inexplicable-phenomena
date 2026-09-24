@@ -21,6 +21,11 @@ export class $Level extends $Annotation {
         const block = this.contents.at(0);
         if (block instanceof $Block) this.level = Number(block.elements.join(''));
     }
+
+    override specifies(composition: $Composition): void {
+        $check(composition instanceof $Composition, 'a level is said of a composition, and this is not one');
+        $check(Number.isInteger(this.level), 'a level is a number, and this one was written as something else');
+    }
 }
 
 export class $Strict extends $Annotation {

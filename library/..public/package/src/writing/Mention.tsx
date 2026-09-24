@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
@@ -11,14 +11,13 @@ export class $Mention extends $Word {
     specification = new MentionSpecification();
     text = '';
 
-    $Mention(...chemicals: $Chemical[]) {
-        this.$Writing(...chemicals);
+    protected override $Define(): void {
+        super.$Define();
         const reference = binder.reference(html.copy(this.contents));
         if (reference === undefined) return;
         this.text = reference.text;
         const Referent = $(referent);
         this.annotations.add(<Referent>{reference.identifier}</Referent>);
-        this.annotations.define();
     }
 
     override write(): ReactNode { return this.text; }

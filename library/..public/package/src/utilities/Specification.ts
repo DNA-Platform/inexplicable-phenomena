@@ -12,7 +12,8 @@ export class Specification<T extends object> {
     get rules(): [string, Rule<T>][] {
         const rules = new Map<string, Rule<T>>();
         const prototypes: object[] = [];
-        for (let prototype = Object.getPrototypeOf(this); prototype !== null && prototype !== Object.prototype; prototype = Object.getPrototypeOf(prototype))
+        for (let prototype = Object.getPrototypeOf(this); prototype !== null && prototype !== Object.prototype;
+            prototype = Object.getPrototypeOf(prototype))
             prototypes.push(prototype);
 
         for (const prototype of prototypes.reverse())

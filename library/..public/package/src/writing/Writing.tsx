@@ -27,12 +27,13 @@ export class $Writing extends $Chemical {
 
     $Writing(...chemicals: $Chemical[]) {
         this.classes = new Set<string>();
+        for (const chemical of chemicals)
+            if (!(chemical instanceof $Annotation))
+                this.contents.add(chemical);
         this.$Define();
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
                 this.annotations.add(chemical);
-            else
-                this.contents.add(chemical);
         this.annotations.define();
     }
 
@@ -145,6 +146,10 @@ export class Annotations extends Collection<$Annotation> {
         return this.find(given).find(annotation => annotation.expressed);
     }
 
+    override add(...givens: Given<$Annotation>[]): $Annotation[] {
+        return this.prepend(...givens);
+    }
+
     override remove<U extends $Annotation>(given: Given<U>): void {
         for (const annotation of this.find(given))
             this.leave(annotation);
@@ -153,10 +158,6 @@ export class Annotations extends Collection<$Annotation> {
     protected leave(annotation: $Annotation): void {
         this.drop(annotation);
         annotation.erase(this.parent);
-    }
-
-    override add(...givens: Given<$Annotation>[]): $Annotation[] {
-        return this.prepend(...givens);
     }
 
     override contains<U extends $Annotation>(given: Given<U>): boolean {
