@@ -1,13 +1,13 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { Collection } from '@/utilities/Collection';
+import { ChemicalCollection } from '@/utilities/Collection';
 import type { Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 
 export class $Writing extends $Chemical {
-    protected _contents?: Collection<$Chemical>;
+    protected _contents?: ChemicalCollection<$Chemical>;
     protected _annotations?: Annotations;
     id?: string;
     classes!: Set<string>;
@@ -17,8 +17,8 @@ export class $Writing extends $Chemical {
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.is; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.is = given; }
 
-    get contents(): Collection<$Chemical> {
-        return this._contents ?? (this._contents = new Collection<$Chemical>(this));
+    get contents(): ChemicalCollection<$Chemical> {
+        return this._contents ?? (this._contents = new ChemicalCollection<$Chemical>(this));
     }
 
     get annotations(): Annotations {
@@ -114,7 +114,7 @@ export class $Annotation extends $Writing {
     specifies(writing: $Writing, code?: string): string[] { return this.specification.check(writing, code); }
 }
 
-export class Annotations extends Collection<$Annotation> {
+export class Annotations extends ChemicalCollection<$Annotation> {
     private _is: Given<$Annotation> | Given<$Annotation>[] = [];
     edits: $Annotation[] = [];
 

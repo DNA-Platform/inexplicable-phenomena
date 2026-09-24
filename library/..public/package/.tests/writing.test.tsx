@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, Collection } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, ChemicalCollection } from '@dna-platform/public';
 import { AnnotationSpecification, specify, Level } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -178,7 +178,7 @@ describe('what comes into a writing is sorted once, into contents and annotation
 
     it('both are collections, the annotations their own kind, and each writing has its own', () => {
         const writing = built<$Writing>(<Writing><Writing /></Writing>);
-        expect(writing.contents).toBeInstanceOf(Collection);
+        expect(writing.contents).toBeInstanceOf(ChemicalCollection);
         expect(writing.annotations).toBeInstanceOf(Annotations);
         expect((writing.contents.at(0) as $Writing).contents).not.toBe(writing.contents);
     });

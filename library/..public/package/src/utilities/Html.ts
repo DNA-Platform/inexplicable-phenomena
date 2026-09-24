@@ -1,8 +1,8 @@
 import { $Block, $Chemical } from '@dna-platform/chemistry';
-import { Collection } from './Collection';
+import { ChemicalCollection } from './Collection';
 
 export class HtmlUtilities {
-    copy(contents: Collection<$Chemical>): string {
+    copy(contents: ChemicalCollection<$Chemical>): string {
         return [...contents].filter((chemical): chemical is $Block => chemical instanceof $Block)
             .flatMap(block => block.elements).join('');
     }
