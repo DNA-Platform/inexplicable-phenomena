@@ -43,6 +43,19 @@ class $Ruled extends $Format {
     }
 }
 
+class $Replacing extends $Format {
+    style = styled.section`
+        padding: 2rem;
+    `;
+
+    override defines(writing: $Writing): void {
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Format)
+                writing.annotations.express(annotation, false);
+        super.defines(writing);
+    }
+}
+
 class $Plain extends $Annotation {
     override defines(writing: $Writing): void {
         for (const annotation of writing.annotations.after(this))
@@ -69,10 +82,11 @@ const Quoted = $($Quoted);
 const Sided = $($Sided);
 const Housed = $($Housed);
 const Ruled = $($Ruled);
+const Replacing = $($Replacing);
 const Plain = $($Plain);
 const Red = $($Red);
 
-describe('a format hands a styled component over, and a writing has one format', () => {
+describe('a format hands a styled component over, and a writing carries every format written on it', () => {
     it('holds no style by default, so a bare format adds no layer', () => {
         const writing = built<$Writing>(<Writing>a <Format /></Writing>);
         expect([...writing.annotations][0]).toBeInstanceOf($Format);
@@ -98,10 +112,30 @@ describe('a format hands a styled component over, and a writing has one format',
         expect(layersOf(writing)[0]).toBe(styleOf(writing, $Housed));
     });
 
-    it('every format unexpresses every other, whatever its kind, so the one in front decides', () => {
+    it('every format written on a writing is expressed and stands its own layer, the one in front innermost', () => {
         const writing = built<$Writing>(<Writing>a <Quoted /><Sided /></Writing>);
         expect([...writing.annotations][0]).toBeInstanceOf($Sided);
-        expect(layersOf(writing)).toEqual([styleOf(writing, $Sided), 'span']);
+        expect(layersOf(writing)).toEqual([styleOf(writing, $Quoted), styleOf(writing, $Sided), 'span']);
+        expect(writing.is($Quoted)).toBe(true);
+        expect(writing.is($Sided)).toBe(true);
+    });
+
+    it('drawn, two formats on one writing are two elements, the one in front inside the other, and both rules are in the sheet', async () => {
+        const writing = built<$Writing>(<Writing>a quote <Quoted /><Sided /></Writing>);
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        const quotation = container!.firstElementChild!;
+        expect(quotation.tagName).toBe('BLOCKQUOTE');
+        expect(quotation.firstElementChild!.tagName).toBe('ASIDE');
+        expect(sheet()).toContain('border-left:3px solid silver');
+        expect(sheet()).toContain('font-style:italic');
+    });
+
+    it('a format meant to replace every other takes the formats behind it out of expression in its own defines', () => {
+        const writing = built<$Quoting>(<Quoting>a quote <Replacing /></Quoting>);
+        expect(layersOf(writing)).toEqual([styleOf(writing, $Replacing), 'span']);
         expect(writing.is($Quoted)).toBe(false);
     });
 
@@ -137,12 +171,12 @@ describe('a format hands a styled component over, and a writing has one format',
         expect(sheet()).toContain('border-left:3px solid silver');
     });
 
-    it('a class stands its own format in $Define, and one written stands in front of it', () => {
+    it('a class stands its own format in $Define, and one written stands in front of it, both drawn, the written inside', () => {
         const writing = built<$Quoting>(<Quoting>a quote</Quoting>);
         expect(layersOf(writing)[0]).toBe(styleOf(writing, $Quoted));
         const written = built<$Quoting>(<Quoting>a quote <Sided /></Quoting>);
-        expect(layersOf(written)).toEqual([styleOf(written, $Sided), 'span']);
-        expect(written.is($Quoted)).toBe(false);
+        expect(layersOf(written)).toEqual([styleOf(written, $Quoted), styleOf(written, $Sided), 'span']);
+        expect(written.is($Quoted)).toBe(true);
     });
 
     it('each writing carries its own format, so a document is drawn as many elements', async () => {
