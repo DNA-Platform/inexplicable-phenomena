@@ -20,7 +20,7 @@ export class $Format extends $Annotation {
 
     override defines(writing: $Writing): void {
         for (const format of writing.annotations.find($Format))
-            if (format !== this) format.express(false);
+            if (format !== this) writing.annotations.express(format, false);
         if (this.style === undefined)
             writing.containers.remove(this);
         else

@@ -1,24 +1,37 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Composition, Composition, $Level, Level, Strict, $Permissive, Permissive, Open, Closed, CompositionSpecification, WritingSpecification, AnnotationSpecification } from '@dna-platform/public';
+import { $Writing, Writing, $Composition, Composition, $Annotation, $Level, Level, Strict, $Permissive, Permissive, Open, Closed, CompositionSpecification, WritingSpecification, AnnotationSpecification } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 class $Fourth extends $Composition {
     protected override $Define(): void {
-        this.annotations.add(<Level>4</Level>, <Permissive />, <Open />);
+        this.annotations.add(this, <Level>4</Level>);
+        this.annotations.add(this, <Permissive />);
+        this.annotations.add(this, <Open />);
     }
 }
 class $Fifth extends $Composition {
     protected override $Define(): void {
-        this.annotations.add(<Level>5</Level>, <Permissive />, <Closed />);
+        this.annotations.add(this, <Level>5</Level>);
+        this.annotations.add(this, <Permissive />);
+        this.annotations.add(this, <Closed />);
     }
 }
 class $Top extends $Composition {
     protected override $Define(): void {
-        this.annotations.add(<Level>6</Level>, <Strict />, <Closed />);
+        this.annotations.add(this, <Level>6</Level>);
+        this.annotations.add(this, <Strict />);
+        this.annotations.add(this, <Closed />);
     }
 }
+class $Unleveled extends $Annotation {
+    override defines(writing: $Writing): void {
+        for (const level of writing.annotations.find($Level))
+            writing.annotations.express(level, false);
+    }
+}
+const Unleveled = $($Unleveled);
 const Fourth = $($Fourth);
 const Fifth = $($Fifth);
 const Top = $($Top);
@@ -32,10 +45,8 @@ describe('a composition has a level, set by its Level annotation from what was w
         expect(built<$Fourth>(<Fourth><Level>6</Level></Fourth>).level).toBe(6);
     });
 
-    it('a Level that is not expressed is not read', () => {
-        const fourth = built<$Fourth>(<Fourth />);
-        fourth.annotations.find($Level)[0].express(false);
-        expect(fourth.level).toBe(1);
+    it('a Level taken out of expression is not read', () => {
+        expect(built<$Fourth>(<Fourth is={Unleveled} />).level).toBe(1);
     });
 });
 
@@ -69,12 +80,13 @@ describe('parts are the compositions among the contents', () => {
 });
 
 describe('is asks whether an annotation of a kind is expressed, by class or by component', () => {
-    it('answers the class and the component alike, and false once the annotation is not expressed', () => {
+    it('answers the class and the component alike, and false once the annotation is taken out of expression', () => {
         const fourth = built<$Fourth>(<Fourth />);
         expect(fourth.is(Permissive)).toBe(true);
         expect(fourth.is($Permissive)).toBe(true);
         expect(fourth.is(Strict)).toBe(false);
-        fourth.annotations.find($Permissive)[0].express(false);
+        fourth.$is = Strict;
+        fourth.annotations.define();
         expect(fourth.is(Permissive)).toBe(false);
     });
 
@@ -98,7 +110,7 @@ describe('the specification is a property each class reassigns, and specify neve
         expect(built<$Writing>(<Writing />).specification).toBeInstanceOf(WritingSpecification);
         expect(built<$Writing>(<Writing />).specification).not.toBeInstanceOf(CompositionSpecification);
         expect(built<$Fourth>(<Fourth />).specification).toBeInstanceOf(CompositionSpecification);
-        expect(built<$Fourth>(<Fourth />).annotations.at(0)!.specification).toBeInstanceOf(AnnotationSpecification);
+        expect([...built<$Fourth>(<Fourth />).annotations][0].specification).toBeInstanceOf(AnnotationSpecification);
     });
 
     it('a bare composition is up to code, a letter by default', () => {

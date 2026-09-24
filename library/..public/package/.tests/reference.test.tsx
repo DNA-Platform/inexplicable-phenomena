@@ -8,9 +8,9 @@ import { $Format } from '@dna-platform/public';
 class $Unmentioned extends $Annotation {
     override defines(writing: $Writing): void {
         for (const referent of writing.annotations.find($Referent))
-            referent.express(false);
+            writing.annotations.express(referent, false);
         for (const reference of writing.annotations.find($Reference))
-            reference.express(false);
+            writing.annotations.express(reference, false);
     }
 }
 const Unmentioned = $($Unmentioned);
@@ -110,7 +110,7 @@ describe('a referent is the id its writing answers to', () => {
     it('is expressed again the moment what repressed it is gone, since expression is computed', () => {
         const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent><Unmentioned /></Writing>);
         expect(writing.id).toBeUndefined();
-        writing.annotations.remove($Unmentioned);
+        writing.annotations.remove(writing, writing.annotations.find($Unmentioned)[0]);
         writing.annotations.define();
         expect(writing.id).toBe('the-first-shelf');
     });

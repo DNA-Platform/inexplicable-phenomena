@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, ChemicalCollection } from '@dna-platform/public';
-import { AnnotationSpecification, specify, Level } from '@dna-platform/public';
+import { AnnotationSpecification, specify, Level, html, reflection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -13,7 +13,7 @@ class $Quiet extends $Annotation {
 class $Hushed extends $Annotation {
     override defines(writing: $Writing): void {
         for (const shouted of writing.annotations.find($Shouted))
-            shouted.express(false);
+            writing.annotations.express(shouted, false);
     }
 }
 class $Shouted extends $Annotation {
@@ -22,7 +22,7 @@ class $Shouted extends $Annotation {
     override defines(writing: $Writing): void {
         writing.classes.add('pa-shouted');
         for (const quiet of writing.annotations.find($Quiet))
-            quiet.express(false);
+            writing.annotations.express(quiet, false);
     }
 
     override erase(writing: $Writing): void { writing.classes.delete('pa-shouted'); }
@@ -57,16 +57,64 @@ class $Tagged extends $Annotation {
     override defines(writing: $Writing): void {
         writing.classes.add('pa-tagged');
     }
+
+    override erase(writing: $Writing): void {
+        writing.classes.delete('pa-tagged');
+    }
+}
+class $Framed extends $Annotation {
+    override defines(writing: $Writing): void {
+        writing.containers.prepend(this, 'article');
+    }
+
+    override erase(writing: $Writing): void {
+        writing.containers.remove(this);
+    }
+}
+class $Unframed extends $Annotation {
+    override defines(writing: $Writing): void {
+        for (const framed of writing.annotations.find($Framed))
+            writing.annotations.express(framed, false);
+    }
+}
+class $Unstamped extends $Annotation {
+    override defines(writing: $Writing): void {
+        for (const stamp of writing.annotations.find($Stamp))
+            writing.annotations.express(stamp, false);
+    }
+}
+class $Excused extends $Annotation {
+    override defines(writing: $Writing): void {
+        for (const demanding of writing.annotations.find($Demanding))
+            writing.annotations.express(demanding, false);
+    }
+}
+const acts: string[] = [];
+class $Logged extends $Annotation {
+    override defines(writing: $Writing): void {
+        acts.push(`defines ${html.copy(this.contents)}`);
+    }
+
+    override erase(writing: $Writing): void {
+        acts.push(`erase ${html.copy(this.contents)}`);
+    }
 }
 class $Tidying extends $Writing {
     $Tidying(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
-        this.annotations.remove($Annotation);
+        for (const annotation of this.annotations.find($Annotation))
+            this.annotations.remove(this, annotation);
     }
 }
 class $Aside extends $Writing {
     protected override $Define(): void {
-        this.annotations.add(Parenthetical);
+        this.annotations.add(this, Parenthetical);
+    }
+}
+class $Editing extends $Writing {
+    strike(): void {
+        for (const shouted of this.annotations.find($Shouted))
+            this.annotations.remove(this, shouted);
     }
 }
 class $Section extends $Writing {
@@ -77,7 +125,7 @@ class $Section extends $Writing {
 }
 class $Narrating extends $Writing {
     narrate(): void {
-        this.annotations.add(Narrative);
+        this.annotations.add(this, Narrative);
     }
 }
 class $Growing extends $Writing {
@@ -97,6 +145,12 @@ const Stamp = $($Stamp);
 const Demanding = $($Demanding);
 const Boxed = $($Boxed);
 const Tagged = $($Tagged);
+const Framed = $($Framed);
+const Unframed = $($Unframed);
+const Unstamped = $($Unstamped);
+const Excused = $($Excused);
+const Logged = $($Logged);
+const Editing = $($Editing);
 const Tidying = $($Tidying);
 const Aside = $($Aside);
 const Section = $($Section);
@@ -113,8 +167,8 @@ describe('the four powers of an annotation, exercised on one class', () => {
         const writing = built<$Writing>(<Writing>a word <Quiet /><Shouted /></Writing>);
 
         expect(writing.classes.has('pa-shouted')).toBe(true);
-        expect(writing.annotations.find($Shouted)[0].expressed).toBe(true);
-        expect(writing.annotations.find($Quiet)[0].expressed).toBe(false);
+        expect(writing.is($Shouted)).toBe(true);
+        expect(writing.is($Quiet)).toBe(false);
         expect(writing.classes.has('pa-quiet')).toBe(false);
 
         writing.$is = Hushed;
@@ -135,14 +189,14 @@ describe('the four powers of an annotation, exercised on one class', () => {
         expect(built<$Writing>(<Writing is={Hushed}><Shouted /></Writing>).specify()).toEqual([]);
     });
 
-    it('a writing already drawn redraws when an annotation is added to its genome, and when one is presented and taken away', async () => {
-        const writing = built<$Writing>(<Writing>a word</Writing>);
+    it('a writing already drawn redraws when an annotation is added to its genome, when one is presented and taken away, and when a method of the writing strikes one', async () => {
+        const writing = built<$Editing>(<Editing>a word</Editing>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         expect(container?.firstElementChild?.className).toBe('');
 
-        await act(async () => { writing.annotations.add(Shouted); });
+        await act(async () => { writing.annotations.add(writing, Shouted); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('pa-shouted');
 
@@ -154,10 +208,10 @@ describe('the four powers of an annotation, exercised on one class', () => {
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('pa-shouted');
 
-        await act(async () => { writing.annotations.remove($Shouted); });
+        await act(async () => { writing.strike(); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('');
-        expect(writing.annotations.length).toBe(0);
+        expect([...writing.annotations].length).toBe(0);
     });
 });
 
@@ -167,12 +221,12 @@ describe('what comes into a writing is sorted once, into contents and annotation
         expect(writing.contents.length).toBe(2);
         expect(writing.contents.at(0)).toBeInstanceOf($Tidying);
         expect(writing.contents.at(1)).toBeInstanceOf($Counted);
-        expect(writing.annotations.length).toBe(2);
+        expect([...writing.annotations].length).toBe(2);
     });
 
     it('an annotation written inside the prose stands beside the prose, and is found', () => {
         const writing = built<$Writing>(<Writing>before <Annotation /> after</Writing>);
-        expect(writing.annotations.length).toBe(1);
+        expect([...writing.annotations].length).toBe(1);
         expect(writing.contents.every(chemical => !(chemical instanceof $Annotation))).toBe(true);
     });
 
@@ -183,38 +237,42 @@ describe('what comes into a writing is sorted once, into contents and annotation
         expect((writing.contents.at(0) as $Writing).contents).not.toBe(writing.contents);
     });
 
-    it('in the annotations, add means the front, and the two questions count only what is expressed', () => {
+    it('in the annotations, add means the front at the next define, and the two questions count only what is expressed', () => {
         const writing = built<$Writing>(<Writing><Stamp /></Writing>);
-        const [mark] = writing.annotations.add(Mark);
-        expect(writing.annotations.at(0)).toBe(mark);
+        const mark = writing.annotations.add(writing, Mark);
+        writing.annotations.define();
+        expect([...writing.annotations][0]).toBe(mark);
         expect(writing.annotations.contains($Mark)).toBe(true);
         expect(writing.annotations.containsOne($Stamp)).toBe(true);
         expect(writing.annotations.containsOne($Mark)).toBe(false);
-        mark.express(false);
+        writing.$is = Unstamped;
+        writing.annotations.define();
         expect(writing.annotations.containsOne($Mark)).toBe(true);
-        writing.annotations.find($Stamp)[0].express(false);
-        expect(writing.annotations.contains($Mark)).toBe(false);
+        expect(writing.annotations.contains($Stamp)).toBe(false);
         expect(writing.annotations.find($Mark).length).toBe(2);
     });
 
-    it('the annotations say what they hold: each member\'s symbol in order, the genome of the writing, changing when one joins or leaves and not when expression does', () => {
+    it('the annotations say what they hold: each member\'s symbol in order, the genome of the writing, changing the moment one joins or leaves and never when a define decides expression', () => {
         const writing = built<$Writing>(<Writing><Parenthetical /><Mark /></Writing>);
         expect(String(writing.annotations)).toMatch(/^\$Chemistry\.\$Mark\[\d+\],\$Chemistry\.\$Parenthetical\[\d+\],$/);
         const before = String(writing.annotations);
-        writing.annotations.find($Parenthetical)[0].express(false);
-        expect(String(writing.annotations)).toBe(before);
-        const [stamp] = writing.annotations.add(Stamp);
+        const stamp = writing.annotations.add(writing, Stamp);
         expect(String(writing.annotations)).not.toBe(before);
-        writing.annotations.drop(stamp);
+        writing.annotations.remove(writing, stamp);
         expect(String(writing.annotations)).toBe(before);
+        const narrated = built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>);
+        const code = String(narrated.annotations);
+        narrated.annotations.define();
+        expect(String(narrated.annotations)).toBe(code);
     });
 
     it('an annotation written later stands nearer the front, and what $is stands is in front of them all', () => {
         const writing = built<$Writing>(<Writing is={Narrative}><Stamp /><Mark /></Writing>);
-        expect(writing.annotations.at(0)).toBeInstanceOf($Narrative);
-        expect(writing.annotations.at(1)).toBeInstanceOf($Mark);
-        expect(writing.annotations.at(1)).not.toBeInstanceOf($Stamp);
-        expect(writing.annotations.at(2)).toBeInstanceOf($Stamp);
+        const annotations = [...writing.annotations];
+        expect(annotations[0]).toBeInstanceOf($Narrative);
+        expect(annotations[1]).toBeInstanceOf($Mark);
+        expect(annotations[1]).not.toBeInstanceOf($Stamp);
+        expect(annotations[2]).toBeInstanceOf($Stamp);
     });
 });
 
@@ -224,17 +282,17 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(writing.annotations.find($Mark).length).toBe(1);
         expect(writing.annotations.find($Parenthetical).length).toBe(1);
         const elemental = built<$Writing>(<Writing is={[<Mark />, built<$Parenthetical>(<Parenthetical />)]} />);
-        expect(elemental.annotations.length).toBe(2);
-        expect(built<$Writing>(<Writing is={Narrative} />).annotations.at(0)).toBeInstanceOf($Narrative);
-        expect(built<$Writing>(<Writing is={$Mark} />).annotations.at(0)).toBeInstanceOf($Mark);
+        expect([...elemental.annotations].length).toBe(2);
+        expect([...built<$Writing>(<Writing is={Narrative} />).annotations][0]).toBeInstanceOf($Narrative);
+        expect([...built<$Writing>(<Writing is={$Mark} />).annotations][0]).toBeInstanceOf($Mark);
     });
 
-    it('reads as what was given; the annotations possess the edits, what it became, and the full set; setting it integrates at once, dropping what it stood before and keeping what was written; the same given again is nothing', () => {
+    it('reads as what was given; the annotations possess the edits, what it became, and the full set; setting it makes the edits at once and the next define integrates them, dropping what it stood before and keeping what was written; the same given again is nothing', () => {
         const writing = built<$Writing>(<Writing is={$Mark}><Parenthetical /></Writing>);
         expect(writing.$is).toBe($Mark);
         expect(writing.annotations.edits.length).toBe(1);
-        expect(writing.annotations.edits[0]).toBe(writing.annotations.at(0));
-        expect(writing.annotations.length).toBe(2);
+        expect(writing.annotations.edits[0]).toBe([...writing.annotations][0]);
+        expect([...writing.annotations].length).toBe(2);
         const mark = writing.annotations.edits[0];
         writing.$is = $Mark;
         expect(writing.annotations.edits[0]).toBe(mark);
@@ -245,8 +303,9 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(writing.annotations.edits[0]).toBe(marked);
         writing.$is = [];
         expect(writing.annotations.edits.length).toBe(0);
-        expect(writing.annotations.length).toBe(1);
-        expect(writing.annotations.at(0)).toBeInstanceOf($Parenthetical);
+        writing.annotations.define();
+        expect([...writing.annotations].length).toBe(1);
+        expect([...writing.annotations][0]).toBeInstanceOf($Parenthetical);
     });
 
     it('define stands what $is gives in front of everything before it walks, so an annotation given from outside acts before what was written', () => {
@@ -254,15 +313,16 @@ describe('$is declares what a writing is from outside: one or many, at the front
         expect(written.classes.has('pa-parenthetical')).toBe(false);
         written.view();
         expect(written.classes.has('pa-parenthetical')).toBe(false);
-        expect(written.annotations.find($Parenthetical)[0]).toBe(written.annotations.at(1));
+        expect(written.annotations.find($Parenthetical)[0]).toBe([...written.annotations][1]);
     });
 
     it('stands at the front in its order, and is not made unique', () => {
         const writing = built<$Writing>(<Writing is={[$Mark, $Parenthetical]}><Mark /></Writing>);
-        expect(writing.annotations.at(0)).toBeInstanceOf($Mark);
-        expect(writing.annotations.at(1)).toBeInstanceOf($Parenthetical);
+        const annotations = [...writing.annotations];
+        expect(annotations[0]).toBeInstanceOf($Mark);
+        expect(annotations[1]).toBeInstanceOf($Parenthetical);
         expect(writing.annotations.find($Mark).length).toBe(2);
-        expect(writing.annotations.find($Mark)[0]).toBe(writing.annotations.at(0));
+        expect(writing.annotations.find($Mark)[0]).toBe(annotations[0]);
     });
 
     it('what it stands is parented to the writing', () => {
@@ -291,22 +351,23 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
         aside.$is = Narrative;
         aside.view();
         expect(aside.classes.has('pa-parenthetical')).toBe(false);
-        expect(aside.annotations.find($Parenthetical)[0].expressed).toBe(false);
+        expect(aside.is($Parenthetical)).toBe(false);
         expect(built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>).classes.has('pa-parenthetical')).toBe(false);
         const natural = built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>);
         expect(natural.classes.has('pa-parenthetical')).toBe(false);
-        expect(natural.annotations.find($Parenthetical)[0].expressed).toBe(false);
-        expect(natural.annotations.length).toBe(2);
+        expect(natural.is($Parenthetical)).toBe(false);
+        expect([...natural.annotations].length).toBe(2);
     });
 
-    it('an annotation stands in front of what it takes out of expression, which is what reaching a fixed point in one pass asks of the author', () => {
+    it('the first is the most powerful: an annotation takes what stands behind it out of expression, and has nothing to reach in one that has already run', () => {
         const ahead = built<$Writing>(<Writing><Parenthetical /><Narrative /></Writing>);
-        expect(ahead.annotations.at(0)).toBeInstanceOf($Narrative);
+        expect([...ahead.annotations][0]).toBeInstanceOf($Narrative);
         expect(ahead.classes.has('pa-parenthetical')).toBe(false);
-        expect(ahead.annotations.find($Parenthetical)[0].expressed).toBe(false);
+        expect(ahead.is($Parenthetical)).toBe(false);
         const behind = built<$Writing>(<Writing><Narrative /><Parenthetical /></Writing>);
-        expect(behind.annotations.at(0)).toBeInstanceOf($Parenthetical);
+        expect([...behind.annotations][0]).toBeInstanceOf($Parenthetical);
         expect(behind.classes.has('pa-parenthetical')).toBe(true);
+        expect(behind.is($Parenthetical)).toBe(true);
     });
 
     it('the pass is idempotent: what the view\'s pass leaves is what the bond\'s pass left', () => {
@@ -316,41 +377,123 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
             built<$Aside>(<Aside is={Mark}>a</Aside>),
         ]) {
             const classes = [...writing.classes];
-            const expressed = [...writing.annotations].map(annotation => annotation.expressed);
+            const expressed = [...writing.annotations].map(annotation => writing.annotations.expressed(annotation) !== undefined);
             writing.view();
             expect([...writing.classes]).toEqual(classes);
-            expect([...writing.annotations].map(annotation => annotation.expressed)).toEqual(expressed);
+            expect([...writing.annotations].map(annotation => writing.annotations.expressed(annotation) !== undefined)).toEqual(expressed);
         }
     });
 
     it('an annotation that leaves lets what it took out of expression express again, since every pass computes expression from what the genome holds', () => {
         const writing = built<$Writing>(<Writing><Parenthetical /></Writing>);
         expect(writing.classes.has('pa-parenthetical')).toBe(true);
-        const [narrative] = writing.annotations.prepend(Narrative);
+        const narrative = writing.annotations.add(writing, Narrative);
         writing.view();
         expect(writing.classes.has('pa-parenthetical')).toBe(false);
-        expect(writing.annotations.find($Parenthetical)[0].expressed).toBe(false);
-        writing.annotations.drop(narrative);
+        expect(writing.is($Parenthetical)).toBe(false);
+        writing.annotations.remove(writing, narrative);
         writing.view();
         expect(writing.classes.has('pa-parenthetical')).toBe(true);
-        expect(writing.annotations.find($Parenthetical)[0].expressed).toBe(true);
+        expect(writing.is($Parenthetical)).toBe(true);
     });
 
     it('acting is idempotent, and an annotation acts on a copy of the list', () => {
         const writing = built<$Writing>(<Writing is={Narrative}><Parenthetical /></Writing>);
         writing.view();
         writing.view();
-        expect(writing.annotations.length).toBe(2);
+        expect([...writing.annotations].length).toBe(2);
         expect(writing.classes.has('pa-parenthetical')).toBe(false);
     });
 
     it('a class stands its own annotations in $Define, before the first pass, and what $is gives stands in front of them', () => {
         const aside = built<$Aside>(<Aside is={Mark}>a</Aside>);
-        expect(aside.annotations.at(0)).toBeInstanceOf($Mark);
-        expect(aside.annotations.at(1)).toBeInstanceOf($Parenthetical);
+        expect([...aside.annotations][0]).toBeInstanceOf($Mark);
+        expect([...aside.annotations][1]).toBeInstanceOf($Parenthetical);
         expect(aside.classes.has('pa-parenthetical')).toBe(true);
         const narrated = built<$Aside>(<Aside is={Narrative}>a</Aside>);
         expect(narrated.classes.has('pa-parenthetical')).toBe(false);
+    });
+});
+
+describe('a define takes back what ran, applies what changed, stands the edits of $is in front, and runs the annotations from the first', () => {
+    it('erases what ran last time, last first, and then runs every annotation from the first', () => {
+        const writing = built<$Writing>(<Writing>a <Logged>behind</Logged><Logged>front</Logged></Writing>);
+        acts.length = 0;
+        writing.annotations.define();
+        expect(acts).toEqual(['erase behind', 'erase front', 'defines front', 'defines behind']);
+    });
+
+    it('is a stack: the annotation added last is first, runs first, and is the most powerful', () => {
+        const stopped = built<$Writing>(<Writing><Stamp /><Unstamped /></Writing>);
+        expect([...stopped.annotations][0]).toBeInstanceOf($Unstamped);
+        expect(stopped.is($Stamp)).toBe(false);
+        const standing = built<$Writing>(<Writing><Unstamped /><Stamp /></Writing>);
+        expect([...standing.annotations][0]).toBeInstanceOf($Stamp);
+        expect(standing.is($Stamp)).toBe(true);
+    });
+
+    it('holds a change until the next define, so what is read is what the last define established', () => {
+        const writing = built<$Writing>(<Writing>a <Mark /></Writing>);
+        const stamp = writing.annotations.add(writing, Stamp);
+        expect(writing.annotations.find($Stamp)).toEqual([]);
+        writing.annotations.define();
+        expect([...writing.annotations][0]).toBe(stamp);
+        writing.annotations.remove(writing, stamp);
+        expect(writing.annotations.find($Stamp)).toEqual([stamp]);
+        writing.annotations.define();
+        expect(writing.annotations.find($Stamp)).toEqual([]);
+    });
+
+    it('is the one place an annotation acts: a removal waits for the define, which erases what the removed one did', () => {
+        const writing = built<$Writing>(<Writing>a <Logged>only</Logged></Writing>);
+        acts.length = 0;
+        writing.annotations.remove(writing, writing.annotations.find($Logged)[0]);
+        expect(acts).toEqual([]);
+        writing.annotations.define();
+        expect(acts).toEqual(['erase only']);
+    });
+
+    it('takes back what an annotation did after it left, however it left, because it erases what ran and not what is still there', () => {
+        const removed = built<$Writing>(<Writing>a <Boxed /></Writing>);
+        removed.annotations.remove(removed, removed.annotations.find($Boxed)[0]);
+        removed.annotations.define();
+        expect([...removed.containers]).toEqual(['span']);
+        const given = built<$Writing>(<Writing is={Boxed}>a</Writing>);
+        expect([...given.containers]).toEqual(['div', 'span']);
+        given.$is = [];
+        given.annotations.define();
+        expect([...given.containers]).toEqual(['span']);
+    });
+
+    it('draws an annotation that leaves and comes back where it drew before, since a define depends on what the annotations are and never on how they got there', () => {
+        const writing = built<$Writing>(<Writing>a <Boxed /><Framed /></Writing>);
+        expect([...writing.containers]).toEqual(['div', 'article', 'span']);
+        writing.$is = Unframed;
+        writing.annotations.define();
+        expect([...writing.containers]).toEqual(['div', 'span']);
+        writing.$is = [];
+        writing.annotations.define();
+        expect([...writing.containers]).toEqual(['div', 'article', 'span']);
+    });
+
+    it('stands the edits of $is in front at every define, cited to the collection, so revert(this) takes back exactly them and what was written stays', () => {
+        const writing = built<$Writing>(<Writing is={Narrative}>a <Parenthetical /></Writing>);
+        writing.annotations.add(writing, Mark);
+        writing.annotations.define();
+        expect([...writing.annotations].map(annotation => reflection.name(annotation))).toEqual(['Narrative', 'Mark', 'Parenthetical']);
+        writing.$is = [];
+        writing.annotations.define();
+        expect([...writing.annotations].map(annotation => reflection.name(annotation))).toEqual(['Mark', 'Parenthetical']);
+    });
+
+    it('answers whether an annotation or a type is expressed, and does nothing for a hand outside a define', () => {
+        const writing = built<$Writing>(<Writing>a <Stamp /><Unstamped /></Writing>);
+        const stamp = writing.annotations.find($Stamp)[0];
+        expect(writing.annotations.expressed(stamp)).toBeUndefined();
+        expect(writing.annotations.expressed($Stamp)).toBeUndefined();
+        expect(writing.annotations.expressed($Unstamped)).toBeInstanceOf($Unstamped);
+        writing.annotations.express(stamp);
+        expect(writing.annotations.expressed(stamp)).toBeUndefined();
     });
 });
 
@@ -388,7 +531,7 @@ describe('a writing draws through its containers, a layer for itself and one for
 
     it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, with pd-annotation on it, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
         const writing = built<$Writing>(<Writing>a <Mark>because it was late</Mark><Tagged /></Writing>);
-        expect(writing.annotations.at(0)).toBeInstanceOf($Tagged);
+        expect([...writing.annotations][0]).toBeInstanceOf($Tagged);
         expect(writing.annotations.find($Mark)[0].classes.has('pd-annotation')).toBe(true);
         expect(writing.annotations.find($Mark)[0].note()).toBeNull();
         const Drawn = $(writing);
@@ -408,8 +551,9 @@ describe('a writing draws through its containers, a layer for itself and one for
         expect(style).not.toBeNull();
         expect(typeof style.type).toBe('object');
         expect((style.type as { $$typeof?: symbol }).$$typeof).toBe(Symbol.for('react.memo'));
-        parenthetical.express(false);
-        const drawn = parenthetical.view() as React.ReactElement<{ children: React.ReactNode[] }>;
+        const narrated = built<$Writing>(<Writing>an aside <Parenthetical /><Narrative /></Writing>);
+        const unexpressed = narrated.annotations.find($Parenthetical)[0];
+        const drawn = unexpressed.view() as React.ReactElement<{ children: React.ReactNode[] }>;
         expect(drawn.props.children[1]).toBeNull();
     });
 });
@@ -485,8 +629,7 @@ describe('specify is the assert the binder calls; it is called by nothing in the
     it('every expressed annotation weighs in through specifies', () => {
         const wanting = built<$Writing>(<Writing><Demanding /></Writing>);
         expect(wanting.specify()).toEqual(['Writing: a demanding annotation wants something written']);
-        wanting.annotations.find($Demanding)[0].express(false);
-        expect(wanting.specify()).toEqual([]);
+        expect(built<$Writing>(<Writing><Demanding /><Excused /></Writing>).specify()).toEqual([]);
         expect(built<$Writing>(<Writing><Demanding /><Writing /></Writing>).specify()).toEqual([]);
     });
 
@@ -512,9 +655,10 @@ describe('specify is the assert the binder calls; it is called by nothing in the
         ]);
     });
 
-    it('a subclass adjusts its collections in its own bond, after calling Writing\'s', () => {
+    it('a subclass adjusts its collections in its own bond, after calling Writing\'s, and a change to its annotations lands at the next define', () => {
         const writing = built<$Writing>(<Tidying><Annotation /><Writing /></Tidying>);
-        expect(writing.annotations.length).toBe(0);
+        writing.annotations.define();
+        expect([...writing.annotations].length).toBe(0);
         expect(writing.contents.length).toBe(1);
         expect(writing.specify()).toEqual([]);
     });

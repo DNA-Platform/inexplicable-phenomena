@@ -30,7 +30,7 @@ export class $Strict extends $Annotation {
 
     override defines(writing: $Writing): void {
         for (const permissive of writing.annotations.find($Permissive))
-            permissive.express(false);
+            writing.annotations.express(permissive, false);
     }
 }
 
@@ -39,14 +39,14 @@ export class $Permissive extends $Annotation {
 
     override defines(writing: $Writing): void {
         for (const strict of writing.annotations.find($Strict))
-            strict.express(false);
+            writing.annotations.express(strict, false);
     }
 }
 
 export class $Open extends $Annotation {
     override defines(writing: $Writing): void {
         for (const closed of writing.annotations.find($Closed))
-            closed.express(false);
+            writing.annotations.express(closed, false);
     }
 }
 
@@ -55,7 +55,7 @@ export class $Closed extends $Annotation {
 
     override defines(writing: $Writing): void {
         for (const open of writing.annotations.find($Open))
-            open.express(false);
+            writing.annotations.express(open, false);
     }
 }
 

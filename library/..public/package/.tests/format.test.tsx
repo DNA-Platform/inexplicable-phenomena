@@ -46,7 +46,7 @@ class $Ruled extends $Format {
 class $Plain extends $Annotation {
     override defines(writing: $Writing): void {
         for (const format of writing.annotations.find($Format))
-            format.express(false);
+            writing.annotations.express(format, false);
     }
 }
 
@@ -59,7 +59,7 @@ class $Red extends $Annotation {
 
 class $Quoting extends $Writing {
     protected override $Define(): void {
-        this.annotations.add(<Quoted />);
+        this.annotations.add(this, <Quoted />);
     }
 }
 
@@ -74,7 +74,7 @@ const Red = $($Red);
 describe('a format hands a styled component over, and a writing has one format', () => {
     it('holds no style by default, so a bare format adds no layer', () => {
         const writing = built<$Writing>(<Writing>a <Format /></Writing>);
-        expect(writing.annotations.at(0)).toBeInstanceOf($Format);
+        expect([...writing.annotations][0]).toBeInstanceOf($Format);
         expect(layersOf(writing)).toEqual(['span']);
     });
 
@@ -99,9 +99,9 @@ describe('a format hands a styled component over, and a writing has one format',
 
     it('every format unexpresses every other, whatever its kind, so the one in front decides', () => {
         const writing = built<$Writing>(<Writing>a <Quoted /><Sided /></Writing>);
-        expect(writing.annotations.at(0)).toBeInstanceOf($Sided);
+        expect([...writing.annotations][0]).toBeInstanceOf($Sided);
         expect(layersOf(writing)).toEqual([styleOf(writing, $Sided), 'span']);
-        expect(writing.annotations.find($Quoted)[0].expressed).toBe(false);
+        expect(writing.is($Quoted)).toBe(false);
     });
 
     it('takes its layer away when it is not expressed and stands it again when it is, remembering nothing', () => {
@@ -141,7 +141,7 @@ describe('a format hands a styled component over, and a writing has one format',
         expect(layersOf(writing)[0]).toBe(styleOf(writing, $Quoted));
         const written = built<$Quoting>(<Quoting>a quote <Sided /></Quoting>);
         expect(layersOf(written)).toEqual([styleOf(written, $Sided), 'span']);
-        expect(written.annotations.find($Quoted)[0].expressed).toBe(false);
+        expect(written.is($Quoted)).toBe(false);
     });
 
     it('each writing carries its own format, so a document is drawn as many elements', async () => {
@@ -159,12 +159,12 @@ describe('a format hands a styled component over, and a writing has one format',
             .toEqual(['BLOCKQUOTE', 'ASIDE']);
     });
 
-    it('taking a format out of expression from outside does not survive the next pass, since expression is computed', () => {
+    it('taking a format out of expression from outside a define does nothing, since only a define decides expression', () => {
         const writing = built<$Writing>(<Writing>a quote <Quoted /></Writing>);
-        writing.annotations.find($Quoted)[0].express(false);
-        expect(writing.annotations.find($Quoted)[0].expressed).toBe(false);
+        writing.annotations.express(writing.annotations.find($Quoted)[0], false);
+        expect(writing.is($Quoted)).toBe(true);
         writing.view();
-        expect(writing.annotations.find($Quoted)[0].expressed).toBe(true);
+        expect(writing.is($Quoted)).toBe(true);
         expect(layersOf(writing)[0]).toBe(styleOf(writing, $Quoted));
     });
 
@@ -174,7 +174,6 @@ describe('a format hands a styled component over, and a writing has one format',
         writing.view();
         writing.view();
         expect(layersOf(writing)).toEqual([styleOf(writing, $Quoted), 'span']);
-        quoted.express(false);
         quoted.erase(writing);
         expect(layersOf(writing)).toEqual(['span']);
     });
@@ -204,7 +203,7 @@ describe('a format hands a styled component over, and a writing has one format',
 
     it('a format that never registered has nothing to take back', () => {
         const writing = built<$Writing>(<Writing>a <Format /></Writing>);
-        const bare = writing.annotations.at(0) as $Format;
+        const bare = [...writing.annotations][0] as $Format;
         bare.erase(writing);
         expect(layersOf(writing)).toEqual(['span']);
     });

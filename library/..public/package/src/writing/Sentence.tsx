@@ -6,11 +6,9 @@ export class $Sentence extends $Composition {
         const Level = $(level);
         const Permissive = $(permissive);
         const Open = $(open);
-        this.annotations.add(
-            <Level>3</Level>,
-            <Permissive />,
-            <Open />
-        );
+        this.annotations.add(this, <Level>3</Level>);
+        this.annotations.add(this, <Permissive />);
+        this.annotations.add(this, <Open />);
     }
 }
 

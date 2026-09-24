@@ -17,7 +17,7 @@ export class $Mention extends $Word {
         if (reference === undefined) return;
         this.text = reference.text;
         const Referent = $(referent);
-        this.annotations.add(
+        this.annotations.add(this,
             <Referent>{reference.identifier}</Referent>
         );
     }

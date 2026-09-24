@@ -1,8 +1,8 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { ChemicalCollection } from '@/utilities/Collection';
-import type { Given } from '@/utilities/Collection';
+import { ChemicalCollection, Collection } from '@/utilities/Collection';
+import type { Author, Given, Side } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 
@@ -34,7 +34,7 @@ export class $Writing extends $Chemical {
         this.$Define();
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
-                this.annotations.add(chemical);
+                this.annotations.add(this, chemical);
         this.annotations.define();
     }
 
@@ -57,8 +57,8 @@ export class $Writing extends $Chemical {
 
     specify(code = this.specification.code(this)): string[] {
         const failures = this.specification.check(this, code);
-        for (const annotation of [...this.annotations])
-            if (annotation.expressed)
+        for (const annotation of this.annotations)
+            if (this.annotations.expressed(annotation))
                 failures.push(...annotation.specifies(this, code));
         for (const [index, chemical] of [...this.contents].entries())
             if (chemical instanceof $Writing)
@@ -88,10 +88,7 @@ export class $Writing extends $Chemical {
 }
 
 export class $Annotation extends $Writing {
-    private _enforced = true;
     specification = new AnnotationSpecification();
-
-    get expressed(): boolean { return this._enforced; }
 
     $Annotation(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
@@ -99,67 +96,80 @@ export class $Annotation extends $Writing {
     }
 
     override view(): ReactNode {
+        const writing = this.parent;
+        const expressed = writing instanceof $Writing && writing.annotations.expressed(this) !== undefined;
         return (
             <>
                 {super.view()}
-                {this.expressed ? this.note() : null}
+                {expressed ? this.note() : null}
             </>
         );
     }
 
     note(): ReactNode { return null; }
-    express(expressed = true): void { this._enforced = expressed; }
     defines(writing: $Writing): void { }
     erase(writing: $Writing): void { }
     specifies(writing: $Writing, code?: string): string[] { return this.specification.check(writing, code); }
 }
 
-export class Annotations extends ChemicalCollection<$Annotation> {
+export class Annotations extends Collection<$Annotation> {
     private _is: Given<$Annotation> | Given<$Annotation>[] = [];
+    private established: $Annotation[] = [];
+    private run: $Annotation[] = [];
+    private unexpressed = new Set<$Annotation>();
+    private defining = false;
     edits: $Annotation[] = [];
 
-    constructor(protected override parent: $Writing) {
-        super(parent);
+    constructor(protected writing: $Writing) {
+        super();
     }
 
     get is(): Given<$Annotation> | Given<$Annotation>[] { return this._is; }
     set is(given: Given<$Annotation> | Given<$Annotation>[]) {
         if (reflection.same(given, this._is)) return;
-        for (const annotation of this.edits)
-            this.leave(annotation);
         this._is = given;
-        this.edits = this.prepend(...(Array.isArray(given) ? given : [given]));
+        const givens = Array.isArray(given) ? given : [given];
+        this.edits = givens.map(edit => reflection.chemical(edit, this.writing));
     }
 
     define(): void {
-        for (const annotation of this.edits)
-            this.drop(annotation);
-        this.prepend(...this.edits);
-        for (const annotation of this)
-            annotation.express();
-        for (const annotation of [...this])
-            if (annotation.expressed)
-                annotation.defines(this.parent);
-            else
-                annotation.erase(this.parent);
+        for (const annotation of [...this.run].reverse())
+            annotation.erase(this.writing);
+        this.revert(this);
+        this.change('left', this, ...this.edits);
+        this.established = [...super[Symbol.iterator]()];
+        this.unexpressed.clear();
+        this.run = [];
+        this.defining = true;
+        for (const annotation of this.established)
+            if (!this.unexpressed.has(annotation)) {
+                this.run.push(annotation);
+                annotation.defines(this.writing);
+            }
+        this.defining = false;
+    }
+
+    express(annotation: $Annotation, expressed = true): void {
+        if (!this.defining || this.run.includes(annotation)) return;
+        if (expressed)
+            this.unexpressed.delete(annotation);
+        else
+            this.unexpressed.add(annotation);
     }
 
     expressed<U extends $Annotation>(given: Given<U>): U | undefined {
-        return this.find(given).find(annotation => annotation.expressed);
+        return this.find(given).find(annotation => !this.unexpressed.has(annotation)
+            && (!(given instanceof $Annotation) || annotation === given));
     }
 
-    override add(...givens: Given<$Annotation>[]): $Annotation[] {
-        return this.prepend(...givens);
+    override [Symbol.iterator](): IterableIterator<$Annotation> {
+        return this.established[Symbol.iterator]();
     }
 
-    override remove<U extends $Annotation>(given: Given<U>): void {
-        for (const annotation of this.find(given))
-            this.leave(annotation);
-    }
-
-    protected leave(annotation: $Annotation): void {
-        this.drop(annotation);
-        annotation.erase(this.parent);
+    override add(author: Author, given: Given<$Annotation>, side: Side = 'left'): $Annotation {
+        const annotation = reflection.chemical(given, this.writing);
+        super.add(author, annotation, side);
+        return annotation;
     }
 
     override contains<U extends $Annotation>(given: Given<U>): boolean {
@@ -167,7 +177,7 @@ export class Annotations extends ChemicalCollection<$Annotation> {
     }
 
     override containsOne<U extends $Annotation>(given: Given<U>): boolean {
-        return this.find(given).filter(annotation => annotation.expressed).length === 1;
+        return this.find(given).filter(annotation => !this.unexpressed.has(annotation)).length === 1;
     }
 }
 
@@ -220,7 +230,7 @@ export class $Parenthetical extends $Annotation {
 export class $Narrative extends $Annotation {
     override defines(writing: $Writing): void {
         for (const parenthetical of writing.annotations.find($Parenthetical))
-            parenthetical.express(false);
+            writing.annotations.express(parenthetical, false);
     }
 }
 

@@ -37,7 +37,7 @@ class $Quoted extends $Format {
 class $Plain extends $Annotation {
     override defines(writing: $Writing): void {
         for (const format of writing.annotations.find($Format))
-            format.express(false);
+            writing.annotations.express(format, false);
     }
 }
 

@@ -57,12 +57,12 @@ export class Collection<T> {
 
     find<U extends T & object>(given: Given<U>): U[] {
         const Class = reflection.classOf(given);
-        return this.values.filter((value): value is U => value instanceof Class);
+        return [...this].filter((value): value is U => value instanceof Class);
     }
 
     contains<U extends T & object>(given: Given<U>): boolean {
         const Class = reflection.classOf(given);
-        return this.values.some(value => value instanceof Class);
+        return [...this].some(value => value instanceof Class);
     }
 
     containsOne<U extends T & object>(given: Given<U>): boolean {
