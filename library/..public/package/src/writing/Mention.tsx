@@ -17,7 +17,9 @@ export class $Mention extends $Word {
         if (reference === undefined) return;
         this.text = reference.text;
         const Referent = $(referent);
-        this.annotations.add(<Referent>{reference.identifier}</Referent>);
+        this.annotations.add(
+            <Referent>{reference.identifier}</Referent>
+        );
     }
 
     override write(): ReactNode { return this.text; }

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, Collection } from '@dna-platform/public';
+import { AnnotationSpecification, specify, Level } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -16,6 +17,8 @@ class $Hushed extends $Annotation {
     }
 }
 class $Shouted extends $Annotation {
+    specification = new ShoutedSpecification();
+
     override defines(writing: $Writing): void {
         writing.classes.add('pa-shouted');
         for (const quiet of writing.annotations.find($Quiet))
@@ -23,15 +26,21 @@ class $Shouted extends $Annotation {
     }
 
     override erase(writing: $Writing): void { writing.classes.delete('pa-shouted'); }
-
-    override specifies(writing: $Writing): void {
+}
+class ShoutedSpecification extends AnnotationSpecification {
+    @specify('a shouted writing has something to shout')
+    $hasSomethingToShout(writing: $Writing): void {
         $check(writing.contents.length > 0, 'a shouted writing has something to shout, and this one has nothing');
     }
 }
 class $Mark extends $Annotation { }
 class $Stamp extends $Mark { }
 class $Demanding extends $Annotation {
-    override specifies(writing: $Writing): void {
+    specification = new DemandingSpecification();
+}
+class DemandingSpecification extends AnnotationSpecification {
+    @specify('a demanding annotation wants something written')
+    $wantsSomethingWritten(writing: $Writing): void {
         $check(writing.contents.length > 0, 'a demanding annotation wants something written');
     }
 }
@@ -465,15 +474,26 @@ describe('specify is the assert the binder calls; it is called by nothing in the
         expect(built<$Writing>(<Writing><Demanding /><Writing /></Writing>).specify()).toEqual([]);
     });
 
-    it('cascades through contents and annotations, so every failure in reach appears', () => {
+    it('cascades through contents, so every failure within the writing appears', () => {
         const writing = built<$Writing>(<Writing><Writing><Demanding /></Writing><Writing><Writing><Demanding /></Writing></Writing><Demanding /></Writing>);
         const failures = writing.specify();
         expect(failures).toEqual([
             'Writing / Writing 0: a demanding annotation wants something written',
             'Writing / Writing 1 / Writing 0: a demanding annotation wants something written',
         ]);
+    });
+
+    it('never specifies an annotation: an annotation weighs in on the writing it annotates, and is not itself checked', () => {
         const annotated = built<$Writing>(<Writing><Writing /><Mark><Demanding /></Mark></Writing>);
-        expect(annotated.specify()).toEqual(['Writing / Mark 1: a demanding annotation wants something written']);
+        expect(annotated.specify()).toEqual([]);
+    });
+
+    it('reports every rule an annotation carries, not only the first that fails', () => {
+        const writing = built<$Writing>(<Writing><Level>x</Level></Writing>);
+        expect(writing.specify()).toEqual([
+            'Writing: a level is said of a composition, and this is not one',
+            'Writing: a level is a number, and this one was written as something else',
+        ]);
     });
 
     it('a subclass adjusts its collections in its own bond, after calling Writing\'s', () => {

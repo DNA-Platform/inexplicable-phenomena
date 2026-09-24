@@ -53,12 +53,8 @@ export class $Writing extends $Chemical {
         const failures = this.specification.check(this, code);
         for (const annotation of [...this.annotations])
             if (annotation.expressed)
-                try {
-                    annotation.specifies(this);
-                } catch (error) {
-                    failures.push(this.specification.failure(error as Error, code));
-                }
-        for (const [index, chemical] of [...this.contents, ...this.annotations].entries())
+                failures.push(...annotation.specifies(this, code));
+        for (const [index, chemical] of [...this.contents].entries())
             if (chemical instanceof $Writing)
                 failures.push(...chemical.specify(chemical.specification.code(chemical, code, index)));
         return failures;
@@ -109,7 +105,7 @@ export class $Annotation extends $Writing {
     express(expressed = true): void { this._enforced = expressed; }
     defines(writing: $Writing): void { }
     erase(writing: $Writing): void { }
-    specifies(writing: $Writing): void { }
+    specifies(writing: $Writing, code?: string): string[] { return this.specification.check(writing, code); }
 }
 
 export class Annotations extends Collection<$Annotation> {
