@@ -27,8 +27,9 @@ class $Top extends $Composition {
 }
 class $Unleveled extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const level of writing.annotations.find($Level))
-            writing.annotations.express(level, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Level)
+                writing.annotations.express(annotation, false);
     }
 }
 const Unleveled = $($Unleveled);

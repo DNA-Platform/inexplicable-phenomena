@@ -45,8 +45,9 @@ class $Ruled extends $Format {
 
 class $Plain extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const format of writing.annotations.find($Format))
-            writing.annotations.express(format, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Format)
+                writing.annotations.express(annotation, false);
     }
 }
 

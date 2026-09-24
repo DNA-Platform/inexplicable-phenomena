@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { represented } from '@dna-platform/chemistry';
+import { $check, represented } from '@dna-platform/chemistry';
 import type { Component } from '@dna-platform/chemistry';
 import { reflection } from './Reflection';
 
@@ -28,6 +28,13 @@ export class Collection<T> {
 
     at(index: number): T | undefined {
         return [...this].at(index);
+    }
+
+    after(value: T): T[] {
+        const values = [...this];
+        const index = values.indexOf(value);
+        $check(index >= 0, 'after is asked of a value the collection holds, and this one it does not');
+        return values.slice(index + 1);
     }
 
     add(author: Author, value: T, side: Side = 'right'): void {

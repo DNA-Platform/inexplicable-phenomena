@@ -212,8 +212,9 @@ export class $Parenthetical extends $Annotation {
 
 export class $Narrative extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const parenthetical of writing.annotations.find($Parenthetical))
-            writing.annotations.express(parenthetical, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Parenthetical)
+                writing.annotations.express(annotation, false);
     }
 }
 

@@ -12,8 +12,9 @@ class $Quiet extends $Annotation {
 }
 class $Hushed extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const shouted of writing.annotations.find($Shouted))
-            writing.annotations.express(shouted, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Shouted)
+                writing.annotations.express(annotation, false);
     }
 }
 class $Shouted extends $Annotation {
@@ -21,8 +22,9 @@ class $Shouted extends $Annotation {
 
     override defines(writing: $Writing): void {
         writing.classes.add(this, 'pa-shouted');
-        for (const quiet of writing.annotations.find($Quiet))
-            writing.annotations.express(quiet, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Quiet)
+                writing.annotations.express(annotation, false);
     }
 
     override erase(writing: $Writing): void { writing.classes.revert(this); }
@@ -73,20 +75,23 @@ class $Framed extends $Annotation {
 }
 class $Unframed extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const framed of writing.annotations.find($Framed))
-            writing.annotations.express(framed, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Framed)
+                writing.annotations.express(annotation, false);
     }
 }
 class $Unstamped extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const stamp of writing.annotations.find($Stamp))
-            writing.annotations.express(stamp, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Stamp)
+                writing.annotations.express(annotation, false);
     }
 }
 class $Excused extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const demanding of writing.annotations.find($Demanding))
-            writing.annotations.express(demanding, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Demanding)
+                writing.annotations.express(annotation, false);
     }
 }
 const acts: string[] = [];

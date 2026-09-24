@@ -183,6 +183,17 @@ describe('a collection is changed by authors, and every change is cited to the a
         expect(draws).toBe(2);
     });
 
+    it('answers what stands after a value, in order, and throws for a value it does not hold', () => {
+        const editor = new Editor();
+        const collection = new Collection<string>();
+        collection.add(editor, 'span');
+        collection.add(editor, 'div');
+        collection.add(editor, 'em');
+        expect(collection.after('span')).toEqual(['div', 'em']);
+        expect(collection.after('em')).toEqual([]);
+        expect(() => collection.after('section')).toThrow('after is asked of a value the collection holds, and this one it does not');
+    });
+
     it('changes nothing for an author that changed nothing, or for a value that is not there', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const collection = new Collection<string>();

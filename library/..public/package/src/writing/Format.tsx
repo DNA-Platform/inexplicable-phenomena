@@ -19,8 +19,9 @@ export class $Format extends $Annotation {
     }
 
     override defines(writing: $Writing): void {
-        for (const format of writing.annotations.find($Format))
-            if (format !== this) writing.annotations.express(format, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Format)
+                writing.annotations.express(annotation, false);
         if (this.style !== undefined)
             writing.containers.add(this, this.style, 'left');
     }

@@ -7,10 +7,9 @@ import { $Format } from '@dna-platform/public';
 
 class $Unmentioned extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const referent of writing.annotations.find($Referent))
-            writing.annotations.express(referent, false);
-        for (const reference of writing.annotations.find($Reference))
-            writing.annotations.express(reference, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Referent || annotation instanceof $Reference)
+                writing.annotations.express(annotation, false);
     }
 }
 const Unmentioned = $($Unmentioned);

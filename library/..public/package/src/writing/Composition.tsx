@@ -29,8 +29,9 @@ export class $Strict extends $Annotation {
     specification = new StrictSpecification();
 
     override defines(writing: $Writing): void {
-        for (const permissive of writing.annotations.find($Permissive))
-            writing.annotations.express(permissive, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Permissive)
+                writing.annotations.express(annotation, false);
     }
 }
 
@@ -38,15 +39,17 @@ export class $Permissive extends $Annotation {
     specification = new PermissiveSpecification();
 
     override defines(writing: $Writing): void {
-        for (const strict of writing.annotations.find($Strict))
-            writing.annotations.express(strict, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Strict)
+                writing.annotations.express(annotation, false);
     }
 }
 
 export class $Open extends $Annotation {
     override defines(writing: $Writing): void {
-        for (const closed of writing.annotations.find($Closed))
-            writing.annotations.express(closed, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Closed)
+                writing.annotations.express(annotation, false);
     }
 }
 
@@ -54,8 +57,9 @@ export class $Closed extends $Annotation {
     specification = new ClosedSpecification();
 
     override defines(writing: $Writing): void {
-        for (const open of writing.annotations.find($Open))
-            writing.annotations.express(open, false);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Open)
+                writing.annotations.express(annotation, false);
     }
 }
 
