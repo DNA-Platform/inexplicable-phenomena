@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { render, act } from '@testing-library/react';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { Collection, Compilation, ChemicalCollection } from '@dna-platform/public';
 
@@ -23,6 +24,32 @@ const marks = (...chemicals: $Mark[]) => {
 class Editor { }
 class Reviewer { }
 class Proofreader { }
+
+let draws = 0;
+class $Shelf extends $Chemical {
+    labels!: Collection<string>;
+
+    $Shelf() {
+        this.labels = new Collection<string>();
+    }
+
+    view(): React.ReactNode {
+        draws++;
+        return <span>{String(this.labels)}</span>;
+    }
+
+    label(text: string): void {
+        this.labels.add(this, text);
+    }
+
+    relabel(text: string): void {
+        this.labels.add(this, text);
+        this.labels.remove(this, text);
+    }
+}
+const Shelf = $($Shelf);
+
+const settle = () => act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
 
 class Watched extends Collection<string> {
     types: string[] = [];
@@ -133,6 +160,34 @@ describe('a collection is changed by authors, and every change is cited to the a
         expect([...collection]).toEqual([kept]);
     });
 
+    it('says its values in order and nothing of how they got there, so two collections read the same exactly when their values are the same', () => {
+        const editor = new Editor(), reviewer = new Reviewer();
+        const direct = new Collection<string>();
+        direct.add(editor, 'span');
+        const roundabout = new Collection<string>();
+        roundabout.add(reviewer, 'div');
+        roundabout.add(editor, 'span');
+        roundabout.remove(reviewer, 'div');
+        expect(String(direct)).toBe('span,');
+        expect(String(roundabout)).toBe(String(direct));
+        roundabout.revert(editor);
+        expect(String(roundabout)).toBe('');
+    });
+
+    it('is represented by what it says, so chemistry redraws when a method changes its values and not when a method leaves them as they were', async () => {
+        const shelf = $(<Shelf />) as unknown as $Shelf;
+        const Drawn = $(shelf);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        draws = 0;
+        await act(async () => { shelf.relabel('pa-quoted'); });
+        await settle();
+        expect(draws).toBe(0);
+        await act(async () => { shelf.label('pa-quoted'); });
+        await settle();
+        expect(draws).toBe(2);
+    });
+
     it('changes nothing for an author that changed nothing, or for a value that is not there', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const collection = new Collection<string>();
@@ -191,6 +246,17 @@ describe('a compilation is one value compiled from what its authors set, and it 
         expect([...compilation]).toEqual(['the-third-shelf']);
         compilation.set(reviewer, 'the-fourth-shelf');
         expect([...compilation]).toEqual(['the-third-shelf']);
+    });
+
+    it('says the value it answers and nothing of the authors behind it', () => {
+        const editor = new Editor(), reviewer = new Reviewer();
+        const compilation = new Compilation<string>();
+        expect(String(compilation)).toBe('');
+        compilation.set(editor, 'the-first-shelf');
+        compilation.set(reviewer, 'the-second-shelf');
+        expect(String(compilation)).toBe('the-first-shelf');
+        compilation.set(reviewer, 'the-third-shelf');
+        expect(String(compilation)).toBe('the-first-shelf');
     });
 
     it('takes an author\'s value back when that author is reverted, and answers the next author\'s', () => {

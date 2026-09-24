@@ -10,12 +10,20 @@ export type Side = 'left' | 'right';
 type Change<T> = { type: Side | 'remove' | 'replace'; author: Author; values: T[] };
 type Citation<T> = { author: Author; value: T };
 
+@represented()
 export class Collection<T> {
     private changes: Change<T>[] = [];
     private values: T[] = [];
 
     [Symbol.iterator](): IterableIterator<T> {
         return this.values[Symbol.iterator]();
+    }
+
+    toString(): string {
+        let text = '';
+        for (const value of this.values)
+            text += `${value},`;
+        return text;
     }
 
     add(author: Author, value: T, side: Side = 'right'): void {
@@ -73,12 +81,18 @@ export class Collection<T> {
     }
 }
 
+@represented()
 export class Compilation<T> {
     private collection = new Collection<Citation<T>>();
 
     [Symbol.iterator](): IterableIterator<T> {
         const [citation] = this.collection;
         return (citation === undefined ? [] : [citation.value])[Symbol.iterator]();
+    }
+
+    toString(): string {
+        const [value] = this;
+        return value === undefined ? '' : `${value}`;
     }
 
     set(author: Author, value: T): void {
