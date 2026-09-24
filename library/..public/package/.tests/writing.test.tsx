@@ -46,7 +46,11 @@ class DemandingSpecification extends AnnotationSpecification {
 }
 class $Boxed extends $Annotation {
     override defines(writing: $Writing): void {
-        writing.container = 'div';
+        writing.containers.prepend(this, 'div');
+    }
+
+    override erase(writing: $Writing): void {
+        writing.containers.remove(this);
     }
 }
 class $Tagged extends $Annotation {
@@ -68,7 +72,7 @@ class $Aside extends $Writing {
 class $Section extends $Writing {
     $Section(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
-        this.container = 'section';
+        this.containers.add(this, 'section');
     }
 }
 class $Narrating extends $Writing {
@@ -350,12 +354,24 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
     });
 });
 
-describe('a writing draws through its container, which starts as a span', () => {
-    it('is a span until a class or an annotation says otherwise', () => {
-        expect(built<$Writing>(<Writing />).container).toBe('span');
-        expect(built<$Section>(<Section />).container).toBe('section');
-        expect(built<$Writing>(<Writing><Boxed /></Writing>).container).toBe('div');
-        expect(built<$Writing>(<Writing is={Boxed} />).container).toBe('div');
+describe('a writing draws through its containers, a layer for itself and one for each annotation that adds one', () => {
+    it('is a span until a class says otherwise, and an annotation adds its layer under its own key', () => {
+        expect([...built<$Writing>(<Writing />).containers]).toEqual(['span']);
+        expect([...built<$Section>(<Section />).containers]).toEqual(['section']);
+        expect([...built<$Writing>(<Writing><Boxed /></Writing>).containers]).toEqual(['div', 'span']);
+        expect([...built<$Writing>(<Writing is={Boxed} />).containers]).toEqual(['div', 'span']);
+    });
+
+    it('draws every layer, the first outermost, and the outermost wears the classes and the id, so hiding hides them all', async () => {
+        const writing = built<$Writing>(<Writing>a <Boxed /><Tagged /></Writing>);
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        const outermost = container?.firstElementChild;
+        expect(outermost?.tagName).toBe('DIV');
+        expect(outermost?.className).toBe('pa-tagged');
+        expect(outermost?.firstElementChild?.tagName).toBe('SPAN');
+        expect(outermost?.firstElementChild?.className).toBe('');
     });
 
     it('drawn, the container is the element its classes are on, and each annotation is rendered inside it as its own writing with pd-annotation on it', async () => {

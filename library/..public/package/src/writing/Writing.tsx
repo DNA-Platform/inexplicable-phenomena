@@ -11,8 +11,8 @@ export class $Writing extends $Chemical {
     protected _annotations?: Annotations;
     id?: string;
     classes!: Set<string>;
+    containers!: Containers;
     specification: Specification<$Writing> = new WritingSpecification();
-    container: ElementType = 'span';
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.is; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.is = given; }
@@ -27,6 +27,7 @@ export class $Writing extends $Chemical {
 
     $Writing(...chemicals: $Chemical[]) {
         this.classes = new Set<string>();
+        this.containers = new Containers(this, 'span');
         for (const chemical of chemicals)
             if (!(chemical instanceof $Annotation))
                 this.contents.add(chemical);
@@ -39,12 +40,17 @@ export class $Writing extends $Chemical {
 
     view(): ReactNode {
         this.annotations.define();
-        const Container = this.container;
+        const [Container, ...layers] = [...this.containers];
         const className = [...this.classes].join(' ') || undefined;
-        return (
-            <Container id={this.id} className={className}>
+        const drawing = layers.reduceRight<ReactNode>((node, Layer) => <Layer>{node}</Layer>, (
+            <>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
+            </>
+        ));
+        return (
+            <Container id={this.id} className={className}>
+                {drawing}
             </Container>
         );
     }
@@ -162,6 +168,40 @@ export class Annotations extends Collection<$Annotation> {
 
     override containsOne<U extends $Annotation>(given: Given<U>): boolean {
         return this.find(given).filter(annotation => annotation.expressed).length === 1;
+    }
+}
+
+type Layer = { key: object; container: ElementType };
+
+export class Containers {
+    private layers: Layer[] = [];
+
+    constructor(key: object, container: ElementType) {
+        this.add(key, container);
+    }
+
+    [Symbol.iterator](): IterableIterator<ElementType> {
+        return this.layers.map(layer => layer.container)[Symbol.iterator]();
+    }
+
+    prepend(key: object, container: ElementType): void {
+        const index = this.layers.findIndex(layer => layer.key === key);
+        if (index < 0)
+            this.layers.unshift({ key, container });
+        else
+            this.layers[index] = { key, container };
+    }
+
+    add(key: object, container: ElementType): void {
+        const index = this.layers.findIndex(layer => layer.key === key);
+        if (index < 0)
+            this.layers.push({ key, container });
+        else
+            this.layers[index] = { key, container };
+    }
+
+    remove(key: object): void {
+        this.layers = this.layers.filter(layer => layer.key !== key);
     }
 }
 

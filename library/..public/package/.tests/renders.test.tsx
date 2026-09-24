@@ -71,13 +71,13 @@ describe('a change costs one paint, and the draws around it are counted', () => 
         counting();
         await act(async () => { writing.$is = Plain; });
         await settle();
-        expect(counted.drawn).toBe(3);
+        expect(counted.drawn).toBe(2);
         expect(counted.painted).toBe(0);
 
         counting();
         await act(async () => { writing.$is = []; });
         await settle();
-        expect(counted.drawn).toBe(3);
+        expect(counted.drawn).toBe(2);
         expect(counted.painted).toBe(1);
         expect(counted.committed).toBe(1);
     });
@@ -93,7 +93,7 @@ describe('a change costs one paint, and the draws around it are counted', () => 
         counting();
         await act(async () => { loud.$is = Plain; });
         await settle();
-        expect(counted.drawn).toBe(3);
+        expect(counted.drawn).toBe(2);
     });
 });
 
