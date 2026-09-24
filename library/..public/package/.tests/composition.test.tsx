@@ -6,23 +6,29 @@ const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
 class $Fourth extends $Composition {
     protected override $Define(): void {
-        this.annotations.add(this, <Level>4</Level>);
-        this.annotations.add(this, <Permissive />);
-        this.annotations.add(this, <Open />);
+        this.annotations.add(this,
+            <Level>4</Level>,
+            <Permissive />,
+            <Open />
+        );
     }
 }
 class $Fifth extends $Composition {
     protected override $Define(): void {
-        this.annotations.add(this, <Level>5</Level>);
-        this.annotations.add(this, <Permissive />);
-        this.annotations.add(this, <Closed />);
+        this.annotations.add(this,
+            <Level>5</Level>,
+            <Permissive />,
+            <Closed />
+        );
     }
 }
 class $Top extends $Composition {
     protected override $Define(): void {
-        this.annotations.add(this, <Level>6</Level>);
-        this.annotations.add(this, <Strict />);
-        this.annotations.add(this, <Closed />);
+        this.annotations.add(this,
+            <Level>6</Level>,
+            <Strict />,
+            <Closed />
+        );
     }
 }
 class $Unleveled extends $Annotation {

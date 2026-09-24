@@ -17,7 +17,7 @@ export class $Reference extends $Annotation {
 
     override defines(writing: $Writing): void {
         writing.classes.add(this, 'pa-reference');
-        writing.containers.add(this, this._anchor, 'left');
+        writing.containers.prepend(this, this._anchor);
     }
 
     override erase(writing: $Writing): void {

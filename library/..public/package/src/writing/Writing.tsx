@@ -2,7 +2,7 @@ import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { Collection, Compilation } from '@/utilities/Collection';
-import type { Author, Given, Side } from '@/utilities/Collection';
+import type { Author, Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 
@@ -120,10 +120,20 @@ export class Contents extends Collection<$Chemical> {
         super();
     }
 
-    override add(author: Author, given: Given<$Chemical>, side: Side = 'right'): $Chemical {
-        const chemical = reflection.chemical(given, this.writing);
-        super.add(author, chemical, side);
-        return chemical;
+    override add(author: Author, ...givens: Given<$Chemical>[]): $Chemical[] {
+        return this.append(author, ...givens);
+    }
+
+    override append(author: Author, ...givens: Given<$Chemical>[]): $Chemical[] {
+        const chemicals = givens.map(given => reflection.chemical(given, this.writing));
+        super.append(author, ...chemicals);
+        return chemicals;
+    }
+
+    override prepend(author: Author, ...givens: Given<$Chemical>[]): $Chemical[] {
+        const chemicals = givens.map(given => reflection.chemical(given, this.writing));
+        super.prepend(author, ...chemicals);
+        return chemicals;
     }
 }
 
@@ -151,7 +161,7 @@ export class Annotations extends Collection<$Annotation> {
         for (const annotation of [...this.run].reverse())
             annotation.erase(this.writing);
         this.revert(this);
-        this.change('left', this, ...this.edits);
+        super.prepend(this, ...this.edits);
         this.established = [...super[Symbol.iterator]()];
         this.unexpressed.clear();
         this.run = [];
@@ -183,10 +193,20 @@ export class Annotations extends Collection<$Annotation> {
         return this.established[Symbol.iterator]();
     }
 
-    override add(author: Author, given: Given<$Annotation>, side: Side = 'left'): $Annotation {
-        const annotation = reflection.chemical(given, this.writing);
-        super.add(author, annotation, side);
-        return annotation;
+    override add(author: Author, ...givens: Given<$Annotation>[]): $Annotation[] {
+        return this.prepend(author, ...givens);
+    }
+
+    override append(author: Author, ...givens: Given<$Annotation>[]): $Annotation[] {
+        const annotations = givens.map(given => reflection.chemical(given, this.writing));
+        super.append(author, ...annotations);
+        return annotations;
+    }
+
+    override prepend(author: Author, ...givens: Given<$Annotation>[]): $Annotation[] {
+        const annotations = givens.map(given => reflection.chemical(given, this.writing));
+        super.prepend(author, ...annotations);
+        return annotations;
     }
 
     override contains<U extends $Annotation>(given: Given<U>): boolean {

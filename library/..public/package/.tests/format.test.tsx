@@ -197,7 +197,7 @@ describe('a format hands a styled component over, and a writing has one format',
         expect(layersOf(writing)).toEqual(['span']);
         quoted.erase(writing);
         expect(layersOf(writing)).toEqual(['span']);
-        writing.containers.add({}, 'article', 'left');
+        writing.containers.prepend({}, 'article');
         quoted.erase(writing);
         expect(layersOf(writing)).toEqual(['article', 'span']);
     });

@@ -6,9 +6,11 @@ export class $Word extends $Composition {
         const Level = $(level);
         const Permissive = $(permissive);
         const Open = $(open);
-        this.annotations.add(this, <Level>2</Level>);
-        this.annotations.add(this, <Permissive />);
-        this.annotations.add(this, <Open />);
+        this.annotations.add(this,
+            <Level>2</Level>,
+            <Permissive />,
+            <Open />
+        );
     }
 }
 

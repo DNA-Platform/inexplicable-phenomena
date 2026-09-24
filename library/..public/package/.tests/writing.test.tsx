@@ -48,7 +48,7 @@ class DemandingSpecification extends AnnotationSpecification {
 }
 class $Boxed extends $Annotation {
     override defines(writing: $Writing): void {
-        writing.containers.add(this, 'div', 'left');
+        writing.containers.prepend(this, 'div');
     }
 
     override erase(writing: $Writing): void {
@@ -66,7 +66,7 @@ class $Tagged extends $Annotation {
 }
 class $Framed extends $Annotation {
     override defines(writing: $Writing): void {
-        writing.containers.add(this, 'article', 'left');
+        writing.containers.prepend(this, 'article');
     }
 
     override erase(writing: $Writing): void {
@@ -291,7 +291,7 @@ describe('what comes into a writing is sorted once, into contents and annotation
 
     it('in the annotations, add means the front at the next define, and the two questions count only what is expressed', () => {
         const writing = built<$Writing>(<Writing><Stamp /></Writing>);
-        const mark = writing.annotations.add(writing, Mark);
+        const [mark] = writing.annotations.add(writing, Mark);
         writing.annotations.define();
         expect([...writing.annotations][0]).toBe(mark);
         expect(writing.annotations.contains($Mark)).toBe(true);
@@ -308,7 +308,7 @@ describe('what comes into a writing is sorted once, into contents and annotation
         const writing = built<$Writing>(<Writing><Parenthetical /><Mark /></Writing>);
         expect(String(writing.annotations)).toMatch(/^\$Chemistry\.\$Mark\[\d+\],\$Chemistry\.\$Parenthetical\[\d+\],$/);
         const before = String(writing.annotations);
-        const stamp = writing.annotations.add(writing, Stamp);
+        const [stamp] = writing.annotations.add(writing, Stamp);
         expect(String(writing.annotations)).not.toBe(before);
         writing.annotations.remove(writing, stamp);
         expect(String(writing.annotations)).toBe(before);
@@ -439,7 +439,7 @@ describe('an annotation acts on the writing it stands in, at the bond and at eve
     it('an annotation that leaves lets what it took out of expression express again, since every pass computes expression from what the genome holds', () => {
         const writing = built<$Writing>(<Writing><Parenthetical /></Writing>);
         expect([...writing.classes]).toContain('pa-parenthetical');
-        const narrative = writing.annotations.add(writing, Narrative);
+        const [narrative] = writing.annotations.add(writing, Narrative);
         writing.view();
         expect([...writing.classes]).not.toContain('pa-parenthetical');
         expect(writing.is($Parenthetical)).toBe(false);
@@ -484,9 +484,19 @@ describe('a define takes back what ran, applies what changed, stands the edits o
         expect(standing.is($Stamp)).toBe(true);
     });
 
+    it('takes several for one author, the elements of a $Define stacked as TSX, and stands them at the front in the order written', () => {
+        const writing = built<$Writing>(<Writing>a <Parenthetical /></Writing>);
+        writing.annotations.add(writing,
+            <Mark />,
+            <Narrative />
+        );
+        writing.annotations.define();
+        expect([...writing.annotations].map(annotation => reflection.name(annotation))).toEqual(['Mark', 'Narrative', 'Parenthetical']);
+    });
+
     it('holds a change until the next define, so what is read is what the last define established', () => {
         const writing = built<$Writing>(<Writing>a <Mark /></Writing>);
-        const stamp = writing.annotations.add(writing, Stamp);
+        const [stamp] = writing.annotations.add(writing, Stamp);
         expect(writing.annotations.find($Stamp)).toEqual([]);
         writing.annotations.define();
         expect([...writing.annotations][0]).toBe(stamp);

@@ -14,9 +14,11 @@ export class $Section extends $Composition {
         const Level = $(level);
         const Permissive = $(permissive);
         const Closed = $(closed);
-        this.annotations.add(this, <Level>5</Level>);
-        this.annotations.add(this, <Permissive />);
-        this.annotations.add(this, <Closed />);
+        this.annotations.add(this,
+            <Level>5</Level>,
+            <Permissive />,
+            <Closed />
+        );
     }
 }
 

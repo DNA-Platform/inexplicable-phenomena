@@ -56,20 +56,20 @@ class Watched extends Collection<string> {
 }
 
 describe('a collection is changed by authors, and every change is cited to the author who made it', () => {
-    it('iterates its values in the order the changes put them: add puts a value on the right, or on the left when told', () => {
+    it('iterates its values in the order the changes put them: append puts values on the right and prepend on the left, several at once in their order, and add appends', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const collection = new Collection<string>();
         collection.add(editor, 'span');
-        collection.add(reviewer, 'blockquote', 'left');
-        collection.add(reviewer, 'em');
-        expect([...collection]).toEqual(['blockquote', 'span', 'em']);
+        collection.prepend(reviewer, 'blockquote', 'aside');
+        collection.append(reviewer, 'em', 'strong');
+        expect([...collection]).toEqual(['blockquote', 'aside', 'span', 'em', 'strong']);
     });
 
     it('makes every change through change, so a subclass sees add, remove, replace and revert in one place', () => {
         const editor = new Editor();
         const collection = new Watched();
         collection.add(editor, 'span');
-        collection.add(editor, 'div', 'left');
+        collection.prepend(editor, 'div');
         collection.remove(editor, 'span');
         collection.replace(editor, 'div', 'section');
         collection.revert(editor);
@@ -93,7 +93,7 @@ describe('a collection is changed by authors, and every change is cited to the a
         const editor = new Editor(), reviewer = new Reviewer();
         const collection = new Collection<string>();
         collection.add(editor, 'span');
-        collection.add(reviewer, 'div', 'left');
+        collection.prepend(reviewer, 'div');
         collection.remove(reviewer, 'span');
         collection.add(reviewer, 'em');
         collection.add(editor, 'strong');
@@ -137,11 +137,11 @@ describe('a collection is changed by authors, and every change is cited to the a
         const editor = new Editor(), reviewer = new Reviewer(), proofreader = new Proofreader();
         const collection = new Collection<string>();
         collection.add(editor, 'span');
-        collection.add(reviewer, 'div', 'left');
-        collection.add(proofreader, 'article', 'left');
+        collection.prepend(reviewer, 'div');
+        collection.prepend(proofreader, 'article');
         expect([...collection]).toEqual(['article', 'div', 'span']);
         collection.revert(reviewer);
-        collection.add(reviewer, 'div', 'left');
+        collection.prepend(reviewer, 'div');
         expect([...collection]).toEqual(['div', 'article', 'span']);
     });
 

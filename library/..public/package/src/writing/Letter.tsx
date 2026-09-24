@@ -8,8 +8,10 @@ export class $Letter extends $Composition {
     protected override $Define(): void {
         const Level = $(level);
         const Open = $(open);
-        this.annotations.add(this, <Level>1</Level>);
-        this.annotations.add(this, <Open />);
+        this.annotations.add(this, 
+            <Level>1</Level>,
+            <Open />
+        );
     }
 }
 

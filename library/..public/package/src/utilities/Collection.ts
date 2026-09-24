@@ -37,8 +37,8 @@ export class Collection<T> {
         return values.slice(index + 1);
     }
 
-    add(author: Author, value: T, side: Side = 'right'): void {
-        this.change(side, author, value);
+    add(author: Author, ...values: T[]): void {
+        this.append(author, ...values);
     }
 
     remove(author: Author, value: T): void {
@@ -51,6 +51,14 @@ export class Collection<T> {
 
     revert(author: Author): void {
         this.change('revert', author);
+    }
+
+    append(author: Author, ...values: T[]): void {
+        this.change('right', author, ...values);
+    }
+
+    prepend(author: Author, ...values: T[]): void {
+        this.change('left', author, ...values);
     }
 
     change(type: Side | 'remove' | 'replace' | 'revert', author: Author, ...values: T[]): void {

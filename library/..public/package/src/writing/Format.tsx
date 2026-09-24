@@ -23,7 +23,7 @@ export class $Format extends $Annotation {
             if (annotation instanceof $Format)
                 writing.annotations.express(annotation, false);
         if (this.style !== undefined)
-            writing.containers.add(this, this.style, 'left');
+            writing.containers.prepend(this, this.style);
     }
 
     override erase(writing: $Writing): void {
