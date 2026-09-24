@@ -18,7 +18,7 @@ describe('a letter is the composition that takes anything', () => {
     it('refuses a composition inside, a letter included, when asked', () => {
         const nested = built<$Letter>(<Letter><Letter>a</Letter></Letter>);
         expect(nested.parts.length).toBe(0);
-        expect(nested.contents.length).toBe(1);
+        expect([...nested.contents].length).toBe(1);
         expect(nested.specify()).toContain('Letter: a letter is allowed to have anything but a composition, and this one holds one');
         const graded = built<$Letter>(<Letter><Composition><Level>2</Level></Composition></Letter>);
         expect(graded.specify()).toContain('Letter: a letter is allowed to have anything but a composition, and this one holds one');

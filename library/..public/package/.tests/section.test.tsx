@@ -32,7 +32,7 @@ describe('a section is a composition at 5, permissive and closed, whose canonica
         );
         expect(section.parts.length).toBe(4);
         expect(section.parts.filter(part => part instanceof $Paragraph).length).toBe(2);
-        expect(section.canonical?.contents.at(0)?.toString()).toContain('$Chemistry');
+        expect(String([...section.contents.find($Heading)[0].contents][0])).toContain('$Chemistry');
         expect(section.canonical).toBe(section.contents.find($Heading)[0]);
         expect(section.contents.find($Section)[0].depth).toBe(1);
         expect(section.specify()).toEqual([]);

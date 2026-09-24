@@ -53,7 +53,7 @@ describe('a composition has a level, set by its Level annotation from what was w
 describe('parts are the compositions among the contents', () => {
     it('keeps the compositions in order; other writing and calligraphy are not parts', () => {
         const fifth = built<$Fifth>(<Fifth>text <Fourth>a</Fourth><Writing /><Fourth>b</Fourth></Fifth>);
-        expect(fifth.contents.length).toBe(4);
+        expect([...fifth.contents].length).toBe(4);
         expect(fifth.parts.length).toBe(2);
         expect(fifth.parts.every(part => part instanceof $Fourth)).toBe(true);
     });

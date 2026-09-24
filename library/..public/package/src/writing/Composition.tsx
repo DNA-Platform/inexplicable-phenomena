@@ -20,7 +20,7 @@ export class $Level extends $Annotation {
 
     $Level(...chemicals: $Chemical[]) {
         this.$Annotation(...chemicals);
-        const block = this.contents.at(0);
+        const [block] = this.contents;
         if (block instanceof $Block) this.level = Number(block.elements.join(''));
     }
 }
@@ -97,7 +97,7 @@ export class PermissiveSpecification extends AnnotationSpecification {
 export class ClosedSpecification extends AnnotationSpecification {
     @specify('a closed composition holds only writing')
     $holdsOnlyWriting(writing: $Writing): void {
-        $check(writing.contents
+        $check([...writing.contents]
             .every(chemical => chemical instanceof $Writing),
             'a closed composition holds only writing, and this one holds something else');
     }

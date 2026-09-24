@@ -1,13 +1,13 @@
 import { ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { $, $Chemical } from '@dna-platform/chemistry';
-import { ChemicalCollection, Collection, Compilation } from '@/utilities/Collection';
+import { Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given, Side } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 
 export class $Writing extends $Chemical {
-    protected _contents?: ChemicalCollection<$Chemical>;
+    protected _contents?: Contents;
     protected _annotations?: Annotations;
     id!: Compilation<string>;
     classes!: Collection<string>;
@@ -17,8 +17,8 @@ export class $Writing extends $Chemical {
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.is; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.is = given; }
 
-    get contents(): ChemicalCollection<$Chemical> {
-        return this._contents ?? (this._contents = new ChemicalCollection<$Chemical>(this));
+    get contents(): Contents {
+        return this._contents ?? (this._contents = new Contents(this));
     }
 
     get annotations(): Annotations {
@@ -32,7 +32,7 @@ export class $Writing extends $Chemical {
         this.containers.add(this, 'span');
         for (const chemical of chemicals)
             if (!(chemical instanceof $Annotation))
-                this.contents.add(chemical);
+                this.contents.add(this, chemical);
         this.$Define();
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
@@ -74,7 +74,7 @@ export class $Writing extends $Chemical {
     }
 
     write(): ReactNode {
-        return this.contents.map((chemical, index) => {
+        return [...this.contents].map((chemical, index) => {
             const Chemical = $(chemical);
             return <Chemical key={index} />;
         });
@@ -113,6 +113,18 @@ export class $Annotation extends $Writing {
     defines(writing: $Writing): void { }
     erase(writing: $Writing): void { }
     specifies(writing: $Writing, code?: string): string[] { return this.specification.check(writing, code); }
+}
+
+export class Contents extends Collection<$Chemical> {
+    constructor(protected writing: $Writing) {
+        super();
+    }
+
+    override add(author: Author, given: Given<$Chemical>, side: Side = 'right'): $Chemical {
+        const chemical = reflection.chemical(given, this.writing);
+        super.add(author, chemical, side);
+        return chemical;
+    }
 }
 
 export class Annotations extends Collection<$Annotation> {

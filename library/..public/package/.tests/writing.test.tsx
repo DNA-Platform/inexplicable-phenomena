@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, ChemicalCollection } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, Contents } from '@dna-platform/public';
 import { AnnotationSpecification, specify, Level, html, reflection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -30,7 +30,7 @@ class $Shouted extends $Annotation {
 class ShoutedSpecification extends AnnotationSpecification {
     @specify('a shouted writing has something to shout')
     $hasSomethingToShout(writing: $Writing): void {
-        $check(writing.contents.length > 0, 'a shouted writing has something to shout, and this one has nothing');
+        $check([...writing.contents].length > 0, 'a shouted writing has something to shout, and this one has nothing');
     }
 }
 class $Mark extends $Annotation { }
@@ -41,7 +41,7 @@ class $Demanding extends $Annotation {
 class DemandingSpecification extends AnnotationSpecification {
     @specify('a demanding annotation wants something written')
     $wantsSomethingWritten(writing: $Writing): void {
-        $check(writing.contents.length > 0, 'a demanding annotation wants something written');
+        $check([...writing.contents].length > 0, 'a demanding annotation wants something written');
     }
 }
 class $Boxed extends $Annotation {
@@ -136,7 +136,7 @@ class $Narrating extends $Writing {
 }
 class $Growing extends $Writing {
     grow(): void {
-        this.contents.add(<Writing> more</Writing>);
+        this.contents.add(this, <Writing> more</Writing>);
     }
 }
 let draws = 0;
@@ -225,23 +225,24 @@ describe('the four powers of an annotation, exercised on one class', () => {
 describe('what comes into a writing is sorted once, into contents and annotations', () => {
     it('contents holds what is not an annotation, in its order, wherever the annotations stood', () => {
         const writing = built<$Writing>(<Writing><Annotation /><Tidying /><Annotation /><Counted /></Writing>);
-        expect(writing.contents.length).toBe(2);
-        expect(writing.contents.at(0)).toBeInstanceOf($Tidying);
-        expect(writing.contents.at(1)).toBeInstanceOf($Counted);
+        const contents = [...writing.contents];
+        expect(contents.length).toBe(2);
+        expect(contents[0]).toBeInstanceOf($Tidying);
+        expect(contents[1]).toBeInstanceOf($Counted);
         expect([...writing.annotations].length).toBe(2);
     });
 
     it('an annotation written inside the prose stands beside the prose, and is found', () => {
         const writing = built<$Writing>(<Writing>before <Annotation /> after</Writing>);
         expect([...writing.annotations].length).toBe(1);
-        expect(writing.contents.every(chemical => !(chemical instanceof $Annotation))).toBe(true);
+        expect([...writing.contents].every(chemical => !(chemical instanceof $Annotation))).toBe(true);
     });
 
     it('both are collections, the annotations their own kind, and each writing has its own', () => {
         const writing = built<$Writing>(<Writing><Writing /></Writing>);
-        expect(writing.contents).toBeInstanceOf(ChemicalCollection);
+        expect(writing.contents).toBeInstanceOf(Contents);
         expect(writing.annotations).toBeInstanceOf(Annotations);
-        expect((writing.contents.at(0) as $Writing).contents).not.toBe(writing.contents);
+        expect(([...writing.contents][0] as $Writing).contents).not.toBe(writing.contents);
     });
 
     it('in the annotations, add means the front at the next define, and the two questions count only what is expressed', () => {
@@ -674,7 +675,7 @@ describe('specify is the assert the binder calls; it is called by nothing in the
         const writing = built<$Writing>(<Tidying><Annotation /><Writing /></Tidying>);
         writing.annotations.define();
         expect([...writing.annotations].length).toBe(0);
-        expect(writing.contents.length).toBe(1);
+        expect([...writing.contents].length).toBe(1);
         expect(writing.specify()).toEqual([]);
     });
 });
