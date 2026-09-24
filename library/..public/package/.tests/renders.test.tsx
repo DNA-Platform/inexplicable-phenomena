@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, Reference } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -17,6 +17,13 @@ const Counted = (props: { children?: ReactNode; className?: string }) => {
 };
 
 class $Mentioning extends $Mention {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+}
+
+class $Meaning extends $Means {
     override view(): ReactNode {
         counted.drawn++;
         return super.view();
@@ -44,6 +51,7 @@ class $Plain extends $Annotation {
 
 const Counting = $($Counting);
 const Mentioning = $($Mentioning);
+const Meaning = $($Meaning);
 const Quoted = $($Quoted);
 const Plain = $($Plain);
 
@@ -93,6 +101,16 @@ describe('a change costs one paint, and the draws around it are counted', () => 
         expect(counted.committed).toBe(1);
     });
 
+    it('two formats on one writing draw like one, and each layer is painted once', async () => {
+        const writing = $(<Counting>a quote <Quoted /><Quoted /></Counting>) as unknown as $Writing;
+        const Drawn = $(writing);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect(counted.drawn).toBe(3);
+        expect(counted.painted).toBe(2);
+        expect(counted.committed).toBe(2);
+    });
+
     it('a writing nobody touched is not drawn again when a sibling changes', async () => {
         const quiet = $(<Counting>untouched</Counting>) as unknown as $Writing;
         const loud = $(<Counting>a quote <Quoted /></Counting>) as unknown as $Writing;
@@ -118,5 +136,18 @@ describe('a mention that stands its own annotation costs no more than any writin
         await settle();
         expect(counted.drawn).toBe(3);
         expect(String(mention.id)).toBe('the-first-shelf');
+    });
+});
+
+describe('a means that stands its own reference costs no more than any writing', () => {
+    beforeEach(counting);
+
+    it('mounting draws three times, though the pass runs twice at its bond', async () => {
+        const means = $(<Meaning>[Alan Turing](/complicated-url)</Meaning>) as unknown as $Means;
+        const Drawn = $(means);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect(counted.drawn).toBe(3);
+        expect(means.annotations.find($Reference)[0].identifier).toBe('/complicated-url');
     });
 });

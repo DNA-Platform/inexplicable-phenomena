@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, Word, Sentence, $Annotation, Parenthetical, binder, html } from '@dna-platform/public';
-import { $Sentence, $Mention, Mention, $Referent, Referent, $Reference, Reference } from '@dna-platform/public';
+import { $Sentence, $Mention, Mention, $Referent, Referent, $Reference, Reference, $Means, Means } from '@dna-platform/public';
 import { $Format } from '@dna-platform/public';
 
 class $Unmentioned extends $Annotation {
@@ -167,6 +167,51 @@ describe('a mention is the word that reads what the compiler wrote', () => {
         const mention = built<$Mention>(<Mention>The First Shelf</Mention>);
         expect(mention.annotations.find($Referent)).toEqual([]);
         expect(mention.specify()).toContain('Mention: a mention says its words and an identifier, and this one says no identifier');
+    });
+});
+
+describe('a means is the word that reads what the compiler resolved', () => {
+    it('is a word, and stands a reference holding the url', () => {
+        const means = built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>);
+        expect(means.level).toBe(2);
+        expect(means.annotations.find($Reference)[0].identifier).toBe('/complicated-url');
+    });
+
+    it('shows the words and never the syntax', async () => {
+        const means = built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>);
+        expect(means.text).toBe('Alan Turing');
+        const page = await drawn(means);
+        expect(page.textContent).toContain('Alan Turing');
+        expect(page.textContent).not.toContain('](');
+    });
+
+    it('drawn, its own element is the link, with its words inside it', async () => {
+        const page = await drawn(built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>));
+        const anchor = page.firstElementChild!;
+        expect(anchor.tagName).toBe('A');
+        expect(anchor.getAttribute('href')).toBe('/complicated-url');
+        expect(anchor.className).toContain('pa-reference');
+        expect(anchor.textContent).toContain('Alan Turing');
+    });
+
+    it('is a part of the sentence that holds it, written as Doug wrote it', async () => {
+        const sentence = built<$Sentence>(<Sentence>You should check out this paper on <Means>[Alan Turing](/complicated-url)</Means></Sentence>);
+        expect(sentence.parts.filter(part => part instanceof $Means).length).toBe(1);
+        const page = await drawn(sentence);
+        expect(page.textContent).toContain('You should check out this paper on');
+        expect(page.querySelector('a[href="/complicated-url"]')?.textContent).toContain('Alan Turing');
+    });
+
+    it('behaves the same written by hand as compiled, since the compiler only writes source', () => {
+        const compiled = built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>);
+        const byHand = built<$Writing>(<Writing>Alan Turing<Reference>/complicated-url</Reference></Writing>);
+        expect(compiled.annotations.find($Reference)[0].identifier).toBe(byHand.annotations.find($Reference)[0].identifier);
+    });
+
+    it('says no url when its content is not a reference, and is refused', () => {
+        const means = built<$Means>(<Means>Alan Turing</Means>);
+        expect(means.annotations.find($Reference)).toEqual([]);
+        expect(means.specify()).toContain('Means: a means says its words and a url, and this one says no url');
     });
 });
 

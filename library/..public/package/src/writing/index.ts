@@ -9,3 +9,4 @@ export * from './Format';
 export * from './Referent';
 export * from './Reference';
 export * from './Mention';
+export * from './Means';
