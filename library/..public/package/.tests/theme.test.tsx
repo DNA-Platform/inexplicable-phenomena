@@ -44,11 +44,14 @@ const Inked = $($Inked);
 const Housed = $($Housed);
 
 describe('a format that says it is a theme provides its own properties to everything it draws', () => {
-    it('keeps the writing an element of its own, with the classes its annotations gave it', async () => {
+    it('keeps the writing an element of its own inside the theme\'s, with the classes its annotations gave it', async () => {
         const writing = built<$Writing>(<Writing>prose <Ruled /><Parenthetical /></Writing>);
         const container = await drawn(writing);
-        expect(container.firstElementChild!.tagName).toBe('SPAN');
-        expect(container.firstElementChild!.className).toBe('pa-parenthetical');
+        const themed = container.firstElementChild!;
+        expect(themed.tagName).toBe('SPAN');
+        expect(themed.className).toBe('');
+        expect(themed.firstElementChild!.tagName).toBe('SPAN');
+        expect(themed.firstElementChild!.className).toBe('pa-parenthetical');
     });
 
     it('provides to everything the writing holds, which is the enclave a composition gives', async () => {

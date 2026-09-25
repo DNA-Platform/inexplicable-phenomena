@@ -181,8 +181,8 @@ describe('a means is the word that reads what the compiler resolved', () => {
         const page = await drawn(built<$Means>(<Means>[The Library](#)</Means>));
         const anchor = page.firstElementChild!;
         expect(anchor.getAttribute('href')).toBe('#');
-        expect(anchor.className).toContain('pa-reference');
-        expect(anchor.className).toContain('pa-self-reference');
+        expect(anchor.firstElementChild!.className).toContain('pa-reference');
+        expect(anchor.firstElementChild!.className).toContain('pa-self-reference');
     });
 
     it('shows the words and never the syntax', async () => {
@@ -193,13 +193,13 @@ describe('a means is the word that reads what the compiler resolved', () => {
         expect(page.textContent).not.toContain('](');
     });
 
-    it('drawn, its own element is the link, with its words inside it', async () => {
+    it('drawn, it is a link, and its own element inside the anchor wears the class and its words', async () => {
         const page = await drawn(built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>));
         const anchor = page.firstElementChild!;
         expect(anchor.tagName).toBe('A');
         expect(anchor.getAttribute('href')).toBe('/complicated-url');
-        expect(anchor.className).toContain('pa-reference');
-        expect(anchor.textContent).toContain('Alan Turing');
+        expect(anchor.firstElementChild!.className).toContain('pa-reference');
+        expect(anchor.firstElementChild!.textContent).toContain('Alan Turing');
     });
 
     it('is a part of the sentence that holds it, written as Doug wrote it', async () => {
@@ -256,15 +256,18 @@ describe('a reference is the address its writing means', () => {
 });
 
 describe('a reference makes its writing a link by adding a layer to its containers', () => {
-    it('alone, its anchor is the outermost layer, wearing the classes and the id, with the writing\'s own inside it', async () => {
+    it('alone, its anchor is the outermost layer, and the writing\'s own element inside it wears the classes and the id', async () => {
         const writing = built<$Writing>(<Writing>go<Referent>there</Referent><Reference>/there/</Reference></Writing>);
         const page = await drawn(writing);
         const anchor = page.firstElementChild!;
         expect(anchor.tagName).toBe('A');
         expect(anchor.getAttribute('href')).toBe('/there/');
-        expect(String(anchor.id)).toBe('there');
-        expect(anchor.className).toContain('pa-reference');
-        expect(anchor.firstElementChild!.tagName).toBe('SPAN');
+        expect(anchor.id).toBe('');
+        expect(anchor.className).toBe('');
+        const own = anchor.firstElementChild!;
+        expect(own.tagName).toBe('SPAN');
+        expect(own.id).toBe('there');
+        expect(own.className).toContain('pa-reference');
     });
 
     it('composes with a format in either order, and whichever acts later is drawn outside', async () => {
@@ -286,15 +289,15 @@ describe('a reference makes its writing a link by adding a layer to its containe
         const writing = built<$Writing>(<Writing>x<Reference>/r/</Reference><Quoted /><Unmentioned /></Writing>);
         const layers = [...writing.containers];
         expect(layers.length).toBe(2);
-        expect(layers[1]).toBe('span');
-        expect(typeof layers[0]).not.toBe('string');
+        expect(layers[0]).toBe('span');
+        expect(typeof layers[1]).not.toBe('string');
     });
 
     it('registering is idempotent, and its anchor keeps one identity however many passes run', () => {
         const writing = built<$Writing>(<Writing>x<Reference>/r/</Reference></Writing>);
-        const anchor = [...writing.containers][0];
+        const anchor = [...writing.containers][1];
         writing.view();
         writing.view();
-        expect([...writing.containers]).toEqual([anchor, 'span']);
+        expect([...writing.containers]).toEqual(['span', anchor]);
     });
 });

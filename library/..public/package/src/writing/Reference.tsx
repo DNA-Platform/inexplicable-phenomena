@@ -19,7 +19,7 @@ export class $Reference extends $Annotation {
         writing.classes.add(this, 'pa-reference');
         if (this.identifier.startsWith('#'))
             writing.classes.add(this, 'pa-self-reference');
-        writing.containers.prepend(this, this._anchor);
+        writing.containers.add(this, this._anchor);
     }
 
     override erase(writing: $Writing): void {

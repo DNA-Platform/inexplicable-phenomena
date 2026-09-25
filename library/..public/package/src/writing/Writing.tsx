@@ -45,17 +45,12 @@ export class $Writing extends $Chemical {
         const [Container, ...layers] = [...this.containers];
         const [id] = this.id;
         const className = [...new Set(this.classes)].join(' ') || undefined;
-        const drawing = layers.reduceRight<ReactNode>((node, Layer) => <Layer>{node}</Layer>, (
-            <>
+        return layers.reduce<ReactNode>((drawing, Layer) => <Layer>{drawing}</Layer>, (
+            <Container id={id} className={className}>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
-            </>
-        ));
-        return (
-            <Container id={id} className={className}>
-                {drawing}
             </Container>
-        );
+        ));
     }
 
     specify(code = this.specification.code(this)): string[] {

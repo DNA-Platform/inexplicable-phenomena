@@ -95,7 +95,7 @@ describe('a format hands a styled component over, and a writing carries every fo
 
     it('a subclass declares its styled component in the class, and it becomes the outermost layer around the writing\'s own', () => {
         const writing = built<$Writing>(<Writing>a quote <Quoted /></Writing>);
-        expect(layersOf(writing)).toEqual([styleOf(writing, $Quoted), 'span']);
+        expect(layersOf(writing)).toEqual(['span', styleOf(writing, $Quoted)]);
     });
 
     it('two writings of one format share one component, and another format makes its own', () => {
@@ -108,14 +108,14 @@ describe('a format hands a styled component over, and a writing carries every fo
 
     it('one that themes is drawn as its own wrapper, which renders the provider and then the style', () => {
         const writing = built<$Writing>(<Writing>a quote <Housed /></Writing>);
-        expect(typeof layersOf(writing)[0]).toBe('function');
-        expect(layersOf(writing)[0]).toBe(styleOf(writing, $Housed));
+        expect(typeof layersOf(writing)[1]).toBe('function');
+        expect(layersOf(writing)[1]).toBe(styleOf(writing, $Housed));
     });
 
     it('every format written on a writing is expressed and stands its own layer, the one in front innermost', () => {
         const writing = built<$Writing>(<Writing>a <Quoted /><Sided /></Writing>);
         expect([...writing.annotations][0]).toBeInstanceOf($Sided);
-        expect(layersOf(writing)).toEqual([styleOf(writing, $Quoted), styleOf(writing, $Sided), 'span']);
+        expect(layersOf(writing)).toEqual(['span', styleOf(writing, $Sided), styleOf(writing, $Quoted)]);
         expect(writing.is($Quoted)).toBe(true);
         expect(writing.is($Sided)).toBe(true);
     });
@@ -135,19 +135,19 @@ describe('a format hands a styled component over, and a writing carries every fo
 
     it('a format meant to replace every other takes the formats behind it out of expression in its own defines', () => {
         const writing = built<$Quoting>(<Quoting>a quote <Replacing /></Quoting>);
-        expect(layersOf(writing)).toEqual([styleOf(writing, $Replacing), 'span']);
+        expect(layersOf(writing)).toEqual(['span', styleOf(writing, $Replacing)]);
         expect(writing.is($Quoted)).toBe(false);
     });
 
     it('takes its layer away when it is not expressed and stands it again when it is, remembering nothing', () => {
         const writing = built<$Writing>(<Writing>a quote <Quoted /></Writing>);
-        expect(layersOf(writing)).toEqual([styleOf(writing, $Quoted), 'span']);
+        expect(layersOf(writing)).toEqual(['span', styleOf(writing, $Quoted)]);
         writing.$is = Plain;
         writing.view();
         expect(layersOf(writing)).toEqual(['span']);
         writing.$is = [];
         writing.view();
-        expect(layersOf(writing)).toEqual([styleOf(writing, $Quoted), 'span']);
+        expect(layersOf(writing)).toEqual(['span', styleOf(writing, $Quoted)]);
     });
 
     it('another annotation reaches the format and sets what it draws with', async () => {
@@ -173,9 +173,9 @@ describe('a format hands a styled component over, and a writing carries every fo
 
     it('a class stands its own format in $Define, and one written stands in front of it, both drawn, the written inside', () => {
         const writing = built<$Quoting>(<Quoting>a quote</Quoting>);
-        expect(layersOf(writing)[0]).toBe(styleOf(writing, $Quoted));
+        expect(layersOf(writing)[1]).toBe(styleOf(writing, $Quoted));
         const written = built<$Quoting>(<Quoting>a quote <Sided /></Quoting>);
-        expect(layersOf(written)).toEqual([styleOf(written, $Quoted), styleOf(written, $Sided), 'span']);
+        expect(layersOf(written)).toEqual(['span', styleOf(written, $Sided), styleOf(written, $Quoted)]);
         expect(written.is($Quoted)).toBe(true);
     });
 
@@ -200,7 +200,7 @@ describe('a format hands a styled component over, and a writing carries every fo
         expect(writing.is($Quoted)).toBe(true);
         writing.view();
         expect(writing.is($Quoted)).toBe(true);
-        expect(layersOf(writing)[0]).toBe(styleOf(writing, $Quoted));
+        expect(layersOf(writing)[1]).toBe(styleOf(writing, $Quoted));
     });
 
     it('registering is idempotent: one layer under its key however many passes run', () => {
@@ -208,7 +208,7 @@ describe('a format hands a styled component over, and a writing carries every fo
         const quoted = writing.annotations.find($Quoted)[0];
         writing.view();
         writing.view();
-        expect(layersOf(writing)).toEqual([styleOf(writing, $Quoted), 'span']);
+        expect(layersOf(writing)).toEqual(['span', styleOf(writing, $Quoted)]);
         quoted.erase(writing);
         expect(layersOf(writing)).toEqual(['span']);
     });
@@ -218,7 +218,7 @@ describe('a format hands a styled component over, and a writing carries every fo
         const quoted = writing.annotations.find($Quoted)[0] as unknown as { style: unknown };
         quoted.style = 'article';
         writing.view();
-        expect(layersOf(writing)).toEqual(['article', 'span']);
+        expect(layersOf(writing)).toEqual(['span', 'article']);
         writing.$is = Plain;
         writing.view();
         expect(layersOf(writing)).toEqual(['span']);
@@ -231,9 +231,9 @@ describe('a format hands a styled component over, and a writing carries every fo
         expect(layersOf(writing)).toEqual(['span']);
         quoted.erase(writing);
         expect(layersOf(writing)).toEqual(['span']);
-        writing.containers.prepend({}, 'article');
+        writing.containers.add({}, 'article');
         quoted.erase(writing);
-        expect(layersOf(writing)).toEqual(['article', 'span']);
+        expect(layersOf(writing)).toEqual(['span', 'article']);
     });
 
     it('a format that never registered has nothing to take back', () => {

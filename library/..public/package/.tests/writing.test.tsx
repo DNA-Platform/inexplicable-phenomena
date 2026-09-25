@@ -48,7 +48,7 @@ class DemandingSpecification extends AnnotationSpecification {
 }
 class $Boxed extends $Annotation {
     override defines(writing: $Writing): void {
-        writing.containers.prepend(this, 'div');
+        writing.containers.add(this, 'div');
     }
 
     override erase(writing: $Writing): void {
@@ -66,7 +66,7 @@ class $Tagged extends $Annotation {
 }
 class $Framed extends $Annotation {
     override defines(writing: $Writing): void {
-        writing.containers.prepend(this, 'article');
+        writing.containers.add(this, 'article');
     }
 
     override erase(writing: $Writing): void {
@@ -521,7 +521,7 @@ describe('a define takes back what ran, applies what changed, stands the edits o
         removed.annotations.define();
         expect([...removed.containers]).toEqual(['span']);
         const given = built<$Writing>(<Writing is={Boxed}>a</Writing>);
-        expect([...given.containers]).toEqual(['div', 'span']);
+        expect([...given.containers]).toEqual(['span', 'div']);
         given.$is = [];
         given.annotations.define();
         expect([...given.containers]).toEqual(['span']);
@@ -529,13 +529,13 @@ describe('a define takes back what ran, applies what changed, stands the edits o
 
     it('draws an annotation that leaves and comes back where it drew before, since a define depends on what the annotations are and never on how they got there', () => {
         const writing = built<$Writing>(<Writing>a <Boxed /><Framed /></Writing>);
-        expect([...writing.containers]).toEqual(['div', 'article', 'span']);
+        expect([...writing.containers]).toEqual(['span', 'article', 'div']);
         writing.$is = Unframed;
         writing.annotations.define();
-        expect([...writing.containers]).toEqual(['div', 'span']);
+        expect([...writing.containers]).toEqual(['span', 'div']);
         writing.$is = [];
         writing.annotations.define();
-        expect([...writing.containers]).toEqual(['div', 'article', 'span']);
+        expect([...writing.containers]).toEqual(['span', 'article', 'div']);
     });
 
     it('stands the edits of $is in front at every define, cited to the collection, so revert(this) takes back exactly them and what was written stays', () => {
@@ -644,20 +644,20 @@ describe('a writing draws through its containers, a layer for itself and one for
     it('is a span until a class says otherwise, and an annotation adds its layer under its own key', () => {
         expect([...built<$Writing>(<Writing />).containers]).toEqual(['span']);
         expect([...built<$Section>(<Section />).containers]).toEqual(['section']);
-        expect([...built<$Writing>(<Writing><Boxed /></Writing>).containers]).toEqual(['div', 'span']);
-        expect([...built<$Writing>(<Writing is={Boxed} />).containers]).toEqual(['div', 'span']);
+        expect([...built<$Writing>(<Writing><Boxed /></Writing>).containers]).toEqual(['span', 'div']);
+        expect([...built<$Writing>(<Writing is={Boxed} />).containers]).toEqual(['span', 'div']);
     });
 
-    it('draws every layer, the first outermost, and the outermost wears the classes and the id, so hiding hides them all', async () => {
+    it('draws its layers inner to outer: the first is its own element, wearing the classes and the id, and each after it wraps the one before', async () => {
         const writing = built<$Writing>(<Writing>a <Boxed /><Tagged /></Writing>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         const outermost = container?.firstElementChild;
         expect(outermost?.tagName).toBe('DIV');
-        expect(outermost?.className).toBe('pa-tagged');
+        expect(outermost?.className).toBe('');
         expect(outermost?.firstElementChild?.tagName).toBe('SPAN');
-        expect(outermost?.firstElementChild?.className).toBe('');
+        expect(outermost?.firstElementChild?.className).toBe('pa-tagged');
     });
 
     it('drawn, the container is the element its classes are on, and each annotation is rendered inside it as its own writing with pd-annotation on it', async () => {

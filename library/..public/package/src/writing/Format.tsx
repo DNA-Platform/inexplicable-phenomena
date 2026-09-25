@@ -20,7 +20,7 @@ export class $Format extends $Annotation {
 
     override defines(writing: $Writing): void {
         if (this.style !== undefined)
-            writing.containers.prepend(this, this.style);
+            writing.containers.add(this, this.style);
     }
 
     override erase(writing: $Writing): void {
