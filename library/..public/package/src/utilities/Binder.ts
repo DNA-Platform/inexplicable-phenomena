@@ -1,8 +1,8 @@
 export class Binder {
     reference(copy: string): { text: string; identifier: string } | undefined {
-        const held = /^\[([^\]]*)\]\(([^)]*)\)$/u.exec(copy.trim());
-        if (held === null) return undefined;
-        return { text: held[1].trim(), identifier: held[2].trim() };
+        const match = /^\[([^\]]*)\]\(([^)]*)\)$/u.exec(copy.trim());
+        if (match === null) return undefined;
+        return { text: match[1].trim(), identifier: match[2].trim() };
     }
 }
 

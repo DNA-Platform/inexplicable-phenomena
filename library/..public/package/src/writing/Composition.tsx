@@ -21,7 +21,8 @@ export class $Level extends $Annotation {
     $Level(...chemicals: $Chemical[]) {
         this.$Annotation(...chemicals);
         const block = this.contents.at(0);
-        if (block instanceof $Block) this.level = Number(block.elements.join(''));
+        if (block instanceof $Block)
+            this.level = Number(block.elements.join(''));
     }
 }
 

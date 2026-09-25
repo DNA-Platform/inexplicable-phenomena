@@ -47,15 +47,15 @@ export type Missing = { key: string; file: string; line: number };
 // rules it: an exception message may never enumerate a roster. What is NEAR the name is worth
 // saying, because a name that differs by an apostrophe is the commonest way to be wrong.
 const near = (key: string, keys: string[]): string[] => {
-    const loose = (one: string): string => one.toLowerCase().replace(/[^a-z0-9]+/gu, '');
+    const loose = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/gu, '');
 
-    return keys.filter(one => loose(one) === loose(key));
+    return keys.filter(k => loose(k) === loose(key));
 };
 
-export const missing = (one: Missing, keys: string[]): string => {
-    const close = near(one.key, keys);
+export const missing = (missing: Missing, keys: string[]): string => {
+    const close = near(missing.key, keys);
 
-    return `${basename(one.file)} line ${one.line} names "${one.key}", and the library holds no such thing${close.length ? ` — did it mean "${close[0]}"?` : ''}`;
+    return `${basename(missing.file)} line ${missing.line} names "${missing.key}", and the library holds no such thing${close.length ? ` — did it mean "${close[0]}"?` : ''}`;
 };
 
 // WHAT A FILE COMES OUT AS: its source with every form written out, and every name it asked for
@@ -88,10 +88,10 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     // written, because that is what its element will receive.
     const scan = (text: string, from: number, prose: boolean): void => {
         notating.lastIndex = 0;
-        for (let held = notating.exec(text); held !== null; held = notating.exec(text)) {
-            const read = spelling(held, prose ? reads : one => one);
-            const at = from + held.index;
-            const to = at + held[0].length;
+        for (let match = notating.exec(text); match !== null; match = notating.exec(text)) {
+            const read = spelling(match, prose ? reads : t => t);
+            const at = from + match.index;
+            const to = at + match[0].length;
 
             // A BRACKET RUN THAT DOES NOT BALANCE IS LEFT ALONE. `catalogue/wellformed.ts`
             // refuses it by name, and rewriting something the compiler does not understand is
@@ -147,7 +147,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     walk(source);
 
     let said = code;
-    for (const edit of [...edits].sort((one, two) => two.from - one.from))
+    for (const edit of [...edits].sort((a, b) => b.from - a.from))
         said = said.slice(0, edit.from) + edit.said + said.slice(edit.to);
 
     return { text: said, missing: missed };
@@ -160,16 +160,16 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
 // and false of the code: a catalogue passed in at construction is a catalogue held, and while the
 // dev server was open it was the one built before the author had written anything. A reference to
 // a chapter added since would be refused by a compiler that was simply looking at yesterday.
-export const references = (held: Inventory): Plugin => ({
+export const references = (inventory: Inventory): Plugin => ({
     name: 'binding:references',
     enforce: 'pre',
     transform(code: string, id: string) {
         const file = id.split('?')[0];
         if (!file.endsWith('.tsx')) return null;
 
-        const catalogue = held.catalogue();
+        const catalogue = inventory.catalogue();
         const found = transforming(code, file, catalogue);
-        if (found.missing.length > 0) throw new Error(found.missing.map(one => missing(one, catalogue.keys())).join('\n'));
+        if (found.missing.length > 0) throw new Error(found.missing.map(m => missing(m, catalogue.keys())).join('\n'));
 
         return found.text === code ? null : found.text;
     },

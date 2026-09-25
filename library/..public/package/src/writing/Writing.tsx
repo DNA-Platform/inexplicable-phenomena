@@ -213,7 +213,6 @@ export class Annotations extends Collection<$Annotation> {
     }
 }
 
-
 export class $Parenthetical extends $Annotation {
     style = createGlobalStyle`
         .pa-parenthetical,
