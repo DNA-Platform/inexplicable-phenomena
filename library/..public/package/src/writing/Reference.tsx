@@ -6,12 +6,11 @@ import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
 
 export class $Reference extends $Annotation {
     specification = new ReferenceSpecification();
-    identifier = '';
     protected _anchor!: ElementType;
+    get identifier(): string { return html.copy(this.contents).trim(); }
 
     $Reference(...chemicals: $Chemical[]) {
         this.$Annotation(...chemicals);
-        this.identifier = html.copy(this.contents).trim();
         this._anchor = (props: { children?: ReactNode }) => <a href={this.identifier} {...props} />;
     }
 

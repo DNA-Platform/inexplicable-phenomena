@@ -9,13 +9,12 @@ import { $Referent, Referent as referent } from './Referent';
 
 export class $Mention extends $Word {
     specification = new MentionSpecification();
-    text = '';
+    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
 
     protected override $Define(): void {
         super.$Define();
         const reference = binder.reference(html.copy(this.contents));
         if (reference === undefined) return;
-        this.text = reference.text;
         const Referent = $(referent);
         this.annotations.add(this,
             <Referent>{reference.identifier}</Referent>

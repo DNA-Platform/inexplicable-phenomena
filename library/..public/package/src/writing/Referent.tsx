@@ -1,16 +1,11 @@
-import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
 
 export class $Referent extends $Annotation {
     specification = new ReferentSpecification();
-    identifier = '';
-
-    $Referent(...chemicals: $Chemical[]) {
-        this.$Annotation(...chemicals);
-        this.identifier = html.copy(this.contents).trim();
-    }
+    get identifier(): string { return html.copy(this.contents).trim(); }
 
     override defines(writing: $Writing): void {
         writing.id.set(this, this.identifier);

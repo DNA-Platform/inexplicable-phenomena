@@ -9,13 +9,12 @@ import { $Reference, Reference as reference } from './Reference';
 
 export class $Means extends $Word {
     specification = new MeansSpecification();
-    text = '';
+    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
 
     protected override $Define(): void {
         super.$Define();
         const link = binder.reference(html.copy(this.contents));
         if (link === undefined) return;
-        this.text = link.text;
         const Reference = $(reference);
         this.annotations.add(this,
             <Reference>{link.identifier}</Reference>
