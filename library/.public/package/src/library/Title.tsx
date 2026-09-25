@@ -12,7 +12,7 @@ import { $Chapter } from './Chapter';
 export class $Title extends $Sentence {
     specification = new TitleSpecification();
     get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
-    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
@@ -28,7 +28,7 @@ export class $Title extends $Sentence {
         );
     }
 
-    override write(): ReactNode { return this.text; }
+    override write(): ReactNode { return this.name; }
 }
 
 export class TitleSpecification extends CompositionSpecification {

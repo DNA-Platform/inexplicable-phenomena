@@ -15,7 +15,7 @@ export class $Cover extends $Format {
 
 export class $Author extends $Annotation {
     specification = new AuthorSpecification();
-    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
@@ -28,12 +28,12 @@ export class $Author extends $Annotation {
         );
     }
 
-    override write(): ReactNode { return this.text; }
+    override write(): ReactNode { return this.name; }
 }
 
 export class $Subject extends $Annotation {
     specification = new SubjectSpecification();
-    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
@@ -46,12 +46,12 @@ export class $Subject extends $Annotation {
         );
     }
 
-    override write(): ReactNode { return this.text; }
+    override write(): ReactNode { return this.name; }
 }
 
 export class $About extends $Annotation {
     specification = new AboutSpecification();
-    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
@@ -64,7 +64,7 @@ export class $About extends $Annotation {
         );
     }
 
-    override write(): ReactNode { return this.text; }
+    override write(): ReactNode { return this.name; }
 }
 
 export class CoverSpecification extends AnnotationSpecification {

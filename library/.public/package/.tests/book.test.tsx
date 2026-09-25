@@ -76,8 +76,8 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
 
     it('exposes what its cover says — its title, its author, its subject and what it is about', () => {
         const book = built<$Book>(<Book>{APaper()}{WhatItArgues()}{WhereThingsAre()}{TheArgument()}</Book>);
-        expect(book.title?.text).toBe('A Paper');
-        expect(book.author?.text).toBe('A Persona');
+        expect(book.title?.name).toBe('A Paper');
+        expect(book.author?.name).toBe('A Persona');
         expect(book.author?.reference?.identifier).toBe('/a-persona/');
         expect(book.subject?.reference?.identifier).toBe('/the-library/');
         expect(book.about).toBeUndefined();

@@ -56,7 +56,7 @@ describe('a title is a sentence that names its chapter, holding the link the com
 
     it('reads its words, stands a reference to its url, and wears the url\'s fragment as its id', () => {
         const title = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/#the-argument)</Title></Chapter>).canonical!;
-        expect(title.text).toBe('The Argument');
+        expect(title.name).toBe('The Argument');
         expect(title.reference?.identifier).toBe('/a-paper/#the-argument');
         expect(String(title.id)).toBe('the-argument');
     });

@@ -53,16 +53,16 @@ describe('the copy of a writing is what was written in it', () => {
 
 describe('the binder writes [text](identifier) and any component reads both halves through it', () => {
     it('reads an identifier the compiler allocated, which is an id', () => {
-        expect(binder.reference('[The First Shelf](the-first-shelf)')).toEqual({ text: 'The First Shelf', identifier: 'the-first-shelf' });
+        expect(binder.reference('[The First Shelf](the-first-shelf)')).toEqual({ name: 'The First Shelf', identifier: 'the-first-shelf' });
     });
 
     it('reads an identifier the compiler resolved, which is a url', () => {
-        expect(binder.reference('[The Library](/the-library/)')).toEqual({ text: 'The Library', identifier: '/the-library/' });
+        expect(binder.reference('[The Library](/the-library/)')).toEqual({ name: 'The Library', identifier: '/the-library/' });
     });
 
     it('reads a string a component found for itself, wherever it found it', () => {
         const writing = built<$Writing>(<Writing>[The First Shelf](the-first-shelf)</Writing>);
-        expect(binder.reference(html.copy(writing.contents))).toEqual({ text: 'The First Shelf', identifier: 'the-first-shelf' });
+        expect(binder.reference(html.copy(writing.contents))).toEqual({ name: 'The First Shelf', identifier: 'the-first-shelf' });
     });
 
     it('answers nothing for copy that is not a reference', () => {
@@ -136,7 +136,7 @@ describe('a mention is the word that reads what the compiler wrote', () => {
 
     it('shows the words and never the syntax', async () => {
         const mention = built<$Mention>(<Mention>[The First Shelf](the-first-shelf)</Mention>);
-        expect(mention.text).toBe('The First Shelf');
+        expect(mention.name).toBe('The First Shelf');
         const page = await drawn(mention);
         expect(page.textContent).toContain('The First Shelf');
         expect(page.textContent).not.toContain('](');
@@ -175,7 +175,7 @@ describe('a means is the word that reads what the compiler resolved', () => {
 
     it('shows the words and never the syntax', async () => {
         const means = built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>);
-        expect(means.text).toBe('Alan Turing');
+        expect(means.name).toBe('Alan Turing');
         const page = await drawn(means);
         expect(page.textContent).toContain('Alan Turing');
         expect(page.textContent).not.toContain('](');

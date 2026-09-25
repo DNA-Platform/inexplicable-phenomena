@@ -9,7 +9,7 @@ import { $Referent, Referent as referent } from './Referent';
 
 export class $Mention extends $Word {
     specification = new MentionSpecification();
-    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
 
     protected override $Define(): void {
         super.$Define();
@@ -21,7 +21,7 @@ export class $Mention extends $Word {
         );
     }
 
-    override write(): ReactNode { return this.text; }
+    override write(): ReactNode { return this.name; }
 }
 
 export class MentionSpecification extends CompositionSpecification {

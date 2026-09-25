@@ -81,7 +81,7 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
 describe('author, subject and about are annotations of a cover, each standing a reference made from its url', () => {
     it('an author answers its words, and a reference to its url standing among its own annotations', () => {
         const author = built<$Chapter>(paper()).annotations.expressed($Author)!;
-        expect(author.text).toBe('A Persona');
+        expect(author.name).toBe('A Persona');
         expect(author.reference).toBeInstanceOf($Reference);
         expect(author.reference?.identifier).toBe('/a-persona/');
         expect(author.annotations.find($Reference).length).toBe(1);
@@ -89,7 +89,7 @@ describe('author, subject and about are annotations of a cover, each standing a 
 
     it('a subject and an about answer the same way', () => {
         const chapter = built<$Chapter>(paper());
-        expect(chapter.annotations.expressed($Subject)?.text).toBe('The Library');
+        expect(chapter.annotations.expressed($Subject)?.name).toBe('The Library');
         expect(chapter.annotations.expressed($Subject)?.reference?.identifier).toBe('/the-library/');
         expect(chapter.annotations.expressed($About)?.reference?.identifier).toBe('/a-paper/');
     });
@@ -134,7 +134,7 @@ describe('author, subject and about are annotations of a cover, each standing a 
                 <Subject>[The Library](/the-library/)</Subject>
             </Chapter>
         );
-        expect(chapter.annotations.expressed($Author)?.text).toBe('A Persona');
+        expect(chapter.annotations.expressed($Author)?.name).toBe('A Persona');
         expect(chapter.specify()).toEqual([]);
     });
 });

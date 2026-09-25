@@ -9,7 +9,7 @@ import { $Reference, Reference as reference } from './Reference';
 
 export class $Means extends $Word {
     specification = new MeansSpecification();
-    get text(): string { return binder.reference(html.copy(this.contents))?.text ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
 
     protected override $Define(): void {
         super.$Define();
@@ -21,7 +21,7 @@ export class $Means extends $Word {
         );
     }
 
-    override write(): ReactNode { return this.text; }
+    override write(): ReactNode { return this.name; }
 }
 
 export class MeansSpecification extends CompositionSpecification {
