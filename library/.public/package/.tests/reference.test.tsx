@@ -315,6 +315,15 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
         expect([...writing.containers]).toEqual(['span']);
     });
 
+    it('its note is the global style that takes the underline off its link, and a reference has none', () => {
+        const writing = built<$Writing>(<Writing>this library <Self>/the-library/</Self></Writing>);
+        const style = writing.annotations.find($SelfReference)[0].note() as React.ReactElement;
+        expect(style).not.toBeNull();
+        expect((style.type as { $$typeof?: symbol }).$$typeof).toBe(Symbol.for('react.memo'));
+        const plain = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference></Writing>);
+        expect(plain.annotations.find($Reference)[0].note()).toBeNull();
+    });
+
     it('is held to the specification a reference is held to', () => {
         const writing = built<$Writing>(<Writing>this library <Self /></Writing>);
         expect(writing.specify()).toContain('Writing: a reference is the address its writing means, and this one holds none');

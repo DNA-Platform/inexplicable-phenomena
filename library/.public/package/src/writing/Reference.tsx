@@ -1,4 +1,5 @@
 import { ElementType, ReactNode } from 'react';
+import { createGlobalStyle } from 'styled-components';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
@@ -26,6 +27,15 @@ export class $Reference extends $Annotation {
 }
 
 export class $SelfReference extends $Reference {
+    style = createGlobalStyle`
+        .pd-container:has(> .pa-self-reference),
+        .pd-container:has(> .pd-container > .pa-self-reference) {
+            text-decoration: none;
+        }
+    `;
+
+    override note(): ReactNode { return <this.style />; }
+
     override defines(writing: $Writing): void {
         super.defines(writing);
         writing.classes.add(this, 'pa-self-reference');
