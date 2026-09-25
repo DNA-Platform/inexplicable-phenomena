@@ -1,7 +1,8 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification, Level as level, Strict as strict, Closed as closed } from '@/writing/Composition';
-import { $Chapter, $Title } from './Chapter';
+import { $Chapter } from './Chapter';
+import { $Title } from './Title';
 import { $Cover, $Author, $Subject, $About } from './Cover';
 import { $Synopsis } from './Synopsis';
 import { $TableOfContents } from './TableOfContents';

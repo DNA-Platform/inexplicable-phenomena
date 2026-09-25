@@ -1,4 +1,5 @@
 export * from './Chapter';
+export * from './Title';
 export * from './Cover';
 export * from './Synopsis';
 export * from './TableOfContents';

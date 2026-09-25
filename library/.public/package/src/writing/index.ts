@@ -5,6 +5,7 @@ export * from './Word';
 export * from './Sentence';
 export * from './Paragraph';
 export * from './Section';
+export * from './Heading';
 export * from './Format';
 export * from './Referent';
 export * from './Reference';

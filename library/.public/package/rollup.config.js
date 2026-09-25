@@ -56,12 +56,18 @@ const at = () => ({
 // external so lib does not carry a copy of it. react-router-dom is the same:
 // a second copy is a second context, and a reference would route through the
 // one nobody is rendering.
-// THE TWO CYCLES THAT ARE KNOWN AND HELD. Both are runtime cycles — each side
-// asks `instanceof` against the other — so a type-only import cannot break them,
-// and tests/loading.test.tsx proves at runtime that neither leaves a class
-// extending a half-built base. They are named here so a THIRD one FAILS the
-// build rather than joining a list of warnings nobody reads.
-const knownCycles = [];
+// THE CYCLES THAT ARE KNOWN AND HELD. A composition finds its canonical by class
+// and the canonical finds its composition by class, and each stands in its own
+// file — Doug, 2026-09-25: "Make Title and Heading their own files in library and
+// writing respectively please." Both are runtime cycles — each side asks
+// `instanceof` against the other, and only inside a method — so a type-only
+// import cannot break them, no class extends a half-built base, and every suite
+// that imports the package loads both sides. They are named here so another one
+// FAILS the build rather than joining a list of warnings nobody reads.
+const knownCycles = [
+    'src/writing/Section.tsx -> src/writing/Heading.tsx -> src/writing/Section.tsx',
+    'src/library/Chapter.tsx -> src/library/Title.tsx -> src/library/Chapter.tsx',
+];
 
 const named = warning => (warning.ids || [])
     .map(id => path.relative(__dirname, id).split(path.sep).join('/'))
