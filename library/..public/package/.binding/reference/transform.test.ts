@@ -41,10 +41,11 @@ describe('a reference in prose', () => {
 describe('an annotation on a cover', () => {
     const made = transforming(readFileSync(cover, 'utf8'), cover, card);
 
-    it('is verified and then writes both halves into the element, the self url # for the page it stands on', () => {
+    it('is verified and then writes both halves into the element, the url of the page it stands on included', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Title>[The Library](#)</Title>');
-        expect(made.text).toContain('<Subject>[The Library](#)</Subject>');
+        expect(made.text).toContain('<Title>[The Library](/the-library/)</Title>');
+        expect(made.text).toContain('<Subject>[The Library](/the-library/)</Subject>');
+        expect(made.text).not.toContain('](#)');
     });
 
     it('writes the words and the address when the writer gave both', () => {
@@ -73,7 +74,7 @@ describe('a mention in a table of contents', () => {
     });
 });
 
-// A RESOURCE IS DRAWN ON EVERY PAGE THAT WEARS IT, so it is never "here".
+// A RESOURCE IS DRAWN ON EVERY PAGE THAT WEARS IT, and what it names carries its url like everything else.
 describe('a resource shared by every page', () => {
     const resource = join(fixture, 'the-library', '1-the-shelves.tsx.tsx');
     const made = transforming(readFileSync(resource, 'utf8'), resource, card);

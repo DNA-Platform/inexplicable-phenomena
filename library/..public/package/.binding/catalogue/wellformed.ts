@@ -8,10 +8,10 @@ import type { Naming, SpotId, Structure } from './structure';
 //
 // `catalogue/wellformed.ts` is a PROXY NAME, flagged for Doug.
 //
-// THE ESSENCE: authorship begins in a single act of self-representation and is extended only by
-// delegation — one book authors itself, once, and every other author is catalogued by an author and
-// authored by that author. The catalogue is a tree; the topics are a free overlay. EVERY FAULT IS
-// NAMED IN THE LIBRARY'S OWN WORDS, because the person holding it is holding a book, not a graph.
+// THE ESSENCE: one book is by its own subject — the autobiography, and there can be only one of
+// those — and a book may author when that autobiography is its subject. The catalogue is a tree;
+// the topics are a free overlay. EVERY FAULT IS NAMED IN THE LIBRARY'S OWN WORDS, because the
+// person holding it is holding a book, not a graph.
 
 // THE FAULTS A LIBRARY CAN HAVE — a closed list, and worth reading as one. Each names something a
 // person could say about their own library without knowing this code exists.
@@ -61,16 +61,15 @@ const wrote = (structure: Structure, id: SpotId): { at: string; file: string } =
 // thirty-four-fold cost for ten times the library, while the structure beside it stayed linear.
 const called = (structure: Structure, id: SpotId): string => structure.named.get(id) ?? id;
 
-// HOW THE OTHER END WOULD HAVE ANSWERED, written out for an author to copy. A message that says a
-// connection is missing and does not say what to write sends somebody to read the compiler.
 // HOW THE OTHER END WOULD HAVE ANSWERED, written out for an author to copy — and spelled by
 // [the language](./language.ts) rather than by this file knowing where the stars go. A message that
 // says a connection is missing and does not say what to write sends somebody to read the compiler.
-const owes = (relation: 'author' | 'subject' | 'topic', name: string, facing: 'up' | 'down'): string =>
+// Only a catalogue and a topic are answered; an author is answered by nothing.
+const owes = (relation: 'subject' | 'topic', name: string, facing: 'up' | 'down'): string =>
     spelt(relation, facing === 'up' ? 'target' : 'source', name);
 
-const speaks = (relation: string): string =>
-    relation === 'author' ? 'author' : relation === 'subject' ? 'catalogue' : 'topical catalogue';
+const speaks = (relation: 'subject' | 'topic'): string =>
+    relation === 'subject' ? 'catalogue' : 'topical catalogue';
 
 export const wellformed = (structure: Structure): Diagnostic[] => {
     const wrong: Diagnostic[] = [];
@@ -288,13 +287,13 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
                 wrong.push({ fault: faults.noSynopsis, at: wrote(structure, topic).at, file: listing.at.file, says: `"${called(structure, topic)}" lists "${called(structure, id)}" without the chapter that is its synopsis — a book standing in a catalogue that is not its own says there what it is` });
         }
 
-    // ---- authorship: one self-delegation, and the rest is vouching ----
+    // ---- authorship: the autobiography, and the books it catalogues ----
     const itself = [...structure.authorOf].filter(([of, by]) => of === by).map(([of]) => of);
     if (itself.length === 0 && books.length > 0)
-        wrong.push({ fault: faults.noSelfAuthor, at: books[0].at, file: books[0].file, says: 'no book here authors itself — a library is grounded by one act of self-representation, and without it every attribution rests on nothing' });
+        wrong.push({ fault: faults.noSelfAuthor, at: books[0].at, file: books[0].file, says: 'no book here is by its own subject — a library is grounded by one autobiography, and without it every attribution rests on nothing' });
     if (itself.length > 1)
         for (const one of itself)
-            wrong.push({ fault: faults.twoSelfAuthors, at: wrote(structure, one).at, file: wrote(structure, one).file, says: `"${called(structure, one)}" authors itself, and so ${itself.length > 2 ? 'do' : 'does'} ${itself.filter(other => other !== one).map(other => `"${called(structure, other)}"`).join(', ')} — the self-delegation happens once, ever` });
+            wrong.push({ fault: faults.twoSelfAuthors, at: wrote(structure, one).at, file: wrote(structure, one).file, says: `"${called(structure, one)}" is by its own subject, and so ${itself.length > 2 ? 'are' : 'is'} ${itself.filter(other => other !== one).map(other => `"${called(structure, other)}"`).join(', ')} — there can be only one of those` });
 
     if (structure.origin !== undefined)
         for (const book of books) {
@@ -303,12 +302,13 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
             if (structure.authors.has(author)) continue;
 
             // WHY IT MAY NOT AUTHOR, said as the rule rather than as a set membership. Doug, 2026-09-25:
-            // "a book that is by it's subject, or catalogued by one is a potential author" — so an
-            // author that is not the ground failed at its catalogue, which is nothing or no author.
+            // "1. A book that is by its subject — There can be only one of those. 2. Any book
+            // catalogued by one that is a subject." So an author that is not the one book by its
+            // subject failed at its subject, which is nothing or not that book.
             const above = structure.subjectOf.get(author);
             const because = above === undefined
                 ? `"${called(structure, author)}" is catalogued by nothing`
-                : `"${called(structure, author)}" is catalogued by "${called(structure, above)}", which is not itself an author`;
+                : `"${called(structure, author)}" is catalogued by "${called(structure, above)}", which is not the one book by its own subject`;
             wrong.push({ fault: faults.mayNotAuthor, at: book.at, file: book.file, says: `"${called(structure, book.id)}" is authored by "${called(structure, author)}", which may not author: ${because}` });
         }
 

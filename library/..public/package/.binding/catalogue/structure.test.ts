@@ -45,7 +45,7 @@ describe('the test library, read', () => {
         expect(halves).toEqual(['subject:the-library']);
     });
 
-    it('colours the tree from the one book that authors itself', () => {
+    it('colours as authors the one book by its own subject and the books it catalogues', () => {
         expect(made.origin).toBe('the-log');
         expect(made.authors).toEqual(new Set(['the-log', 'persona']));
     });
