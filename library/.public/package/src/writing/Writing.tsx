@@ -1,201 +1,250 @@
-import { ReactNode, createElement } from 'react';
-import { $, $Block, $check, $Chemical, $Inline, theme } from '@dna-platform/chemistry';
-import { Specification, specify } from '@/utilities/Specification';
+import { ElementType, ReactNode } from 'react';
+import { createGlobalStyle } from 'styled-components';
+import { $, $Chemical } from '@dna-platform/chemistry';
+import { Collection, Compilation } from '@/utilities/Collection';
+import type { Author, Given } from '@/utilities/Collection';
+import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
-import { html } from '@/utilities/Html';
-import type { $Annotation } from './Annotation';
-import type { $Catalogue$, $Catalogue } from '@/reference/Catalogue';
-import type { $Type$, $Type } from './Type';
-import type { $Reference$, $Reference } from '@/reference/Reference';
-import type { $Theme } from '@/writing/Theme';
-import type { $Format } from '@/writing/Format';
-import type { $Book } from '@/library/Book';
 
-const printed = new WeakMap<$Block, $Block>();
+export class $Writing extends $Chemical {
+    protected _contents?: Contents;
+    protected _annotations?: Annotations;
+    id!: Compilation<string>;
+    classes!: Collection<string>;
+    containers!: Collection<ElementType>;
+    specification: Specification<$Writing> = new WritingSpecification();
 
-export interface $Writing$ extends $Chemical {
-    document?: $Catalogue$;
-    mention?: $Catalogue$;
-    meaning?: $Reference$;
-    kind: $Type$;
-    annotations: $Annotation[];
-}
+    get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.edit; }
+    set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.edit = given; }
 
-export class $Writing extends $Chemical implements $Writing$ {
-    $className?: string;
-    $print?: boolean;
-    parenthetical = false;
-    inline = true;
-    protected definition = 'span';
-    _mention?: $Catalogue;
-    _block!: $Block;
-
-    get mention(): $Catalogue | undefined { return this._mention; }
-    get document(): $Catalogue | undefined { return reflection.holding(this)?.mention; }
-    get meaning(): $Reference | undefined { return reflection.meaning(this); }
-    get annotations(): $Annotation[] { return reflection.annotations(this); }
-    get theme(): $Theme { return this[theme] ?? reflection.theme(); }
-    get format(): $Format | undefined { return reflection.format(this); }
-    get book(): $Book | undefined { return reflection.book(this); }
-    get className(): string { return [...reflection.classNames(this), this.$className ?? ''].join(' ').trim(); }
-
-    get kind(): $Type { return reflection.kind(this); }
-
-    // THE ID A WRITING'S ELEMENT WEARS, which is what a link lands on. A writing has one when a
-    // mention allocated it — `[[[ X ]]]` — and a chapter has its own, because a chapter is what the
-    // library addresses. Doug, 2026-09-20: a heading wears an id only as a title or when allocated;
-    // every heading naming itself by its words gave "Cautions" seven ids on one page and the chrome's
-    // name two on every page, and an id is worn once.
-    protected get id(): string | undefined { return reflection.folded(this)?.key(); }
-
-    $Writing(block: $Block) {
-        this._block = $check(block, $Block);
-        if (this.$print !== undefined) this.parenthetical = !this.$print;
+    get contents(): Contents {
+        return this._contents ?? (this._contents = new Contents(this));
     }
 
-    // THE REFERENCE THIS WRITING IS DRAWN AS A LINK TO, WHICH IS NOT ALWAYS WHAT IT MEANS. Meaning is
-    // semantics and holds whether or not anything is drawn; this is the one question the view asks,
-    // and a kind that means something it should not be a link to answers it for itself rather than
-    // having the base guess. `linked` is a PROXY NAME, flagged for Doug.
-    protected get linked(): $Reference | undefined {
-        const meant = this.meaning;
+    get annotations(): Annotations {
+        return this._annotations ?? (this._annotations = new Annotations(this));
+    }
 
-        return meant?.addresses === true ? meant : undefined;
+    $Writing(...chemicals: $Chemical[]) {
+        this.id = new Compilation<string>();
+        this.classes = new Collection<string>();
+        this.containers = new Collection<ElementType>();
+        this.containers.add(this, 'span');
+        for (const chemical of chemicals)
+            if (!(chemical instanceof $Annotation))
+                this.contents.add(this, chemical);
+        this.$Define();
+        for (const chemical of chemicals)
+            if (chemical instanceof $Annotation)
+                this.annotations.add(this, chemical);
+        this.annotations.define();
     }
 
     view(): ReactNode {
-        if (this.parenthetical) return null;
-        const meaning = this.linked;
-        const linked = meaning !== undefined;
-        const drawn = { className: linked ? `${this.className} pd-meaning` : this.className, id: this.id, href: linked ? html.text(meaning.path()?._block) : undefined };
-        const format = this.format;
-
-        return format === undefined
-            ? createElement(linked ? 'a' : this.definition, drawn, this.print())
-            : createElement($(format), { ...drawn, as: linked ? 'a' : undefined }, this.print());
+        this.annotations.define();
+        const [Container, ...layers] = [...this.containers];
+        const className = [...new Set(this.classes)].join(' ') || undefined;
+        return layers.reduce<ReactNode>((drawing, Layer) => <Layer className="pd-container">{drawing}</Layer>, (
+            <Container id={this.id.value} className={className}>
+                {this.write()}
+                {this.annotate([...this.annotations].reverse())}
+            </Container>
+        ));
     }
 
-    print(): ReactNode {
-        let children = printed.get(this._block);
-        if (children === undefined) printed.set(this._block, children = this._block.filter(part => !reflection.writing(part) || !part.parenthetical));
-        const Children = $(children);
-
-        return <Children />;
+    specify(code = this.specification.code(this)): string[] {
+        const failures = this.specification.check(this, code);
+        for (const annotation of this.annotations)
+            if (this.annotations.expressed(annotation))
+                failures.push(...annotation.specifies(this, code));
+        for (const [index, chemical] of [...this.contents].entries())
+            if (chemical instanceof $Writing)
+                failures.push(...chemical.specify(chemical.specification.code(chemical, code, index)));
+        return failures;
     }
 
-    read(): Promise<$Writing> {
-        const meant = this.meaning;
-        if (meant === undefined) throw new Error('a piece of writing is read for what it means, and this one means nothing');
-        return meant.read();
+    is(given: Given<$Annotation>): boolean {
+        return this.annotations.contains(given);
     }
 
-    searchFor<T extends $Writing>(type: new() => $Type): T[] {
-        return (this._block.$elements ?? []).filter((part): part is T => reflection.is(part, type));
+    write(): ReactNode {
+        return [...this.contents].map((chemical, index) => {
+            const Chemical = $(chemical);
+            return <Chemical key={index} />;
+        });
     }
 
-    searchForOne<T extends $Writing>(type: new() => $Type): T | undefined {
-        const found = this.searchFor<T>(type);
-        $check(found.length <= 1, `writing holds one of a kind, and this one holds ${found.length}`);
-        return found[0];
+    annotate(annotations: $Annotation[]): ReactNode {
+        return annotations.map((annotation, index) => {
+            const Annotation = $(annotation);
+            return <Annotation key={index} />;
+        });
     }
 
-    addType(block: $Block, ...types: (new() => $Type)[]): $Block {
-        return types.reduce((held, type) => held.concat($check(type, '!')), $check(block, $Block, '!'));
+    protected $Define(): void { }
+}
+
+export class $Annotation extends $Writing {
+    specification = new AnnotationSpecification();
+
+    $Annotation(...chemicals: $Chemical[]) {
+        this.$Writing(...chemicals);
+        this.classes.add(this, 'pd-annotation');
     }
 
-    valid(): boolean {
-        this.specify();
-        return true;
+    override view(): ReactNode {
+        const writing = this.parent;
+        const expressed = writing instanceof $Writing && writing.annotations.expressed(this) !== undefined;
+        return (
+            <>
+                {super.view()}
+                {expressed ? this.note() : null}
+            </>
+        );
     }
 
-    specify(): void {
-        const carried = reflection.types(this);
-        const kinds = new Set<unknown>();
-        for (const annotation of this.annotations) {
-            if (kinds.has(annotation.constructor)) continue;
-            kinds.add(annotation.constructor);
-            if (carried.some(other => other !== annotation && reflection.specialises(other, annotation as $Type))) continue;
-            annotation.specifically(this);
+    note(): ReactNode { return null; }
+    defines(writing: $Writing): void { }
+    erase(writing: $Writing): void { }
+    specifies(writing: $Writing, code?: string): string[] { return this.specification.check(writing, code); }
+}
+
+export class Contents extends Collection<$Chemical> {
+    constructor(protected writing: $Writing) {
+        super();
+    }
+
+    override add(author: Author, ...givens: Given<$Chemical>[]): $Chemical[] {
+        return this.append(author, ...givens);
+    }
+
+    override append(author: Author, ...givens: Given<$Chemical>[]): $Chemical[] {
+        const chemicals = givens.map(given => reflection.chemical(given, this.writing));
+        super.append(author, ...chemicals);
+        return chemicals;
+    }
+
+    override prepend(author: Author, ...givens: Given<$Chemical>[]): $Chemical[] {
+        const chemicals = givens.map(given => reflection.chemical(given, this.writing));
+        super.prepend(author, ...chemicals);
+        return chemicals;
+    }
+}
+
+export class Annotations extends Collection<$Annotation> {
+    protected _edit: Given<$Annotation> | Given<$Annotation>[] = [];
+    protected _edits: $Annotation[] = [];
+    protected established: $Annotation[] = [];
+    protected defined: $Annotation[] = [];
+    protected unexpressed = new Set<$Annotation>();
+    protected reached = 0;
+
+    get edits(): $Annotation[] { return this._edits; }
+
+    get edit(): Given<$Annotation> | Given<$Annotation>[] { return this._edit; }
+    set edit(given: Given<$Annotation> | Given<$Annotation>[]) {
+        if (reflection.same(given, this._edit)) return;
+        this._edit = given;
+        this._edits = [given].flat().map(edit => reflection.chemical(edit, this.writing));
+    }
+
+    constructor(protected writing: $Writing) {
+        super();
+    }
+
+    define(): void {
+        for (const annotation of [...this.defined].reverse())
+            annotation.erase(this.writing);
+        this.revert(this);
+        super.prepend(this, ...this._edits);
+        this.established = [...this.values];
+        this.defined = [];
+        this.unexpressed.clear();
+        this.reached = 0;
+        for (const [index, annotation] of this.established.entries()) {
+            this.reached = index + 1;
+            if (this.unexpressed.has(annotation)) continue;
+            this.defined.push(annotation);
+            annotation.defines(this.writing);
         }
     }
-}
 
-export class WritingSpecification extends Specification<$Writing> {
-    private readonly divided = /\n[^\S\n]*\n/u;
-
-    // WHAT THIS WRITING CARRIES, NOT WHAT ITS PARTS DO. It read the whole block as text, so a blank
-    // line anywhere beneath broke every writing above it — and $Code, which waives this rule because
-    // code is verbatim, could not waive it for its holders. Measured 2026-09-16: thirty exchanges of
-    // an imported conversation went red for the blank lines inside the code they quoted.
-    @specify('a piece of writing carries no blank line')
-    $noBlankLine(writing: $Writing): void {
-        const broken = ((writing._block.$elements ?? []).filter(part => typeof part === 'string') as string[])
-            .find(text => this.divided.test(text));
-        $check(broken === undefined,
-            `a piece of writing carries no blank line, and this one is broken by one: ${JSON.stringify(broken ?? '').slice(0, 60)}`);
+    express(annotation: $Annotation, expressed = true): void {
+        if (expressed)
+            this.unexpressed.delete(annotation);
+        else
+            this.unexpressed.add(annotation);
     }
 
-    @specify('a piece of writing is one kind of writing')
-    $oneKind(writing: $Writing): void {
-        const standing = reflection.standing(writing);
-        $check(standing.length <= 1, `writing is one kind of writing, and this one is ${standing.length}`);
+    expressed<U extends $Annotation>(given: Given<U>): U | undefined {
+        const annotations = this.find(given).filter(annotation => this.expresses(annotation));
+        return given instanceof $Annotation ? annotations.find(annotation => annotation === given) : annotations[0];
     }
 
-    @specify('a piece of writing says what kind of writing it is')
-    $saysItsKind(writing: $Writing): void {
-        $check(writing.kind !== undefined,
-            'a piece of writing says what kind of writing it is, and this one says nothing');
+    override [Symbol.iterator](): IterableIterator<$Annotation> {
+        return this.established[Symbol.iterator]();
     }
 
-    // SAYING SOMETHING IS PUTTING SOMETHING ON THE PAGE, and `parenthetical` is where a kind already
-    // says whether it does. An annotation starts parenthetical and draws nowhere; one that sets it
-    // false draws — a mention is exactly that — so writing that holds a mention is not empty, and
-    // nothing has to declare a second time what it already declared once.
-    @specify('a piece of writing says something')
-    $saysSomething(writing: $Writing): void {
-        $check(html.text(writing._block).length > 0 || this.shown(writing).length > 0,
-            'a piece of writing says something, and this one says nothing at all');
+    override add(author: Author, ...givens: Given<$Annotation>[]): $Annotation[] {
+        return this.prepend(author, ...givens);
     }
 
-    // THE DESCENT, THROUGH WHAT WAS WRITTEN. The parser's levels are made, not written, and its own
-    // promises answer for them, so the specification never asks the parser: what an author wrote into
-    // a writing specifies, and a chapter extends this to the document it prints.
-    @specify('what is written into a piece of writing specifies')
-    $holdsSpecifiedParts(writing: $Writing): void {
-        this.specified(this.composed(writing));
+    override append(author: Author, ...givens: Given<$Annotation>[]): $Annotation[] {
+        const annotations = givens.map(given => reflection.chemical(given, this.writing));
+        super.append(author, ...annotations);
+        return annotations;
     }
 
-    @specify('a piece of writing holds copy, annotations and writing')
-    $holdsCopyAndWriting(writing: $Writing): void {
-        $check(this.beside(writing).every(part => reflection.writing(part)),
-            'a piece of writing holds copy, annotations and writing, and this one holds something else');
+    override prepend(author: Author, ...givens: Given<$Annotation>[]): $Annotation[] {
+        const annotations = givens.map(given => reflection.chemical(given, this.writing));
+        super.prepend(author, ...annotations);
+        return annotations;
     }
 
-    // EACH SPECIFIES, AND A FAILURE NAMES ITS PLACE — the part's index and kind, prefixed at every level it
-    // rises through, so the compiler lands it on the chapter it came from.
-    protected specified(parts: $Writing[]): void {
-        const failures: string[] = [];
-        parts.forEach((part, at) => {
-            try { part.specify(); } catch (error) { failures.push(`${at}:${part.constructor.name.replace(/^_?\$?/u, '')} › ${(error as Error).message}`); }
-        });
-        $check(failures.length === 0, failures.join(' · '));
+    override contains<U extends $Annotation>(given: Given<U>): boolean {
+        return this.expressed(given) !== undefined;
     }
 
-    protected composed(writing: $Writing): $Writing[] {
-        return (writing._block.$elements ?? []).filter((part): part is $Writing =>
-            reflection.composition(part));
+    override containsOne<U extends $Annotation>(given: Given<U>): boolean {
+        return this.find(given).filter(annotation => this.expresses(annotation)).length === 1;
     }
 
-    // WHAT A WRITING SHOWS — the writing it holds that is not parenthetical, which is the same set
-    // $Writing.print() draws. `shown` is a proxy name, flagged.
-    protected shown(writing: $Writing): $Writing[] {
-        return (writing._block.$elements ?? []).filter((part): part is $Writing =>
-            reflection.writing(part) && !part.parenthetical);
-    }
-
-    protected beside(writing: $Writing): $Inline[] {
-        return (writing._block.$elements ?? []).filter(part => typeof part !== 'string' && typeof part !== 'number');
+    protected expresses(annotation: $Annotation): boolean {
+        return this.established.indexOf(annotation) < this.reached
+            ? this.defined.includes(annotation)
+            : !this.unexpressed.has(annotation);
     }
 }
+
+export class $Parenthetical extends $Annotation {
+    style = createGlobalStyle`
+        .pa-parenthetical,
+        .pd-container:has(> .pa-parenthetical),
+        .pd-container:has(> .pd-container > .pa-parenthetical),
+        .pd-container:has(> .pd-container > .pd-container > .pa-parenthetical),
+        .pd-container:has(> .pd-container > .pd-container > .pd-container > .pa-parenthetical) {
+            display: none;
+        }
+    `;
+
+    override note(): ReactNode { return <this.style />; }
+
+    override defines(writing: $Writing): void { writing.classes.add(this, 'pa-parenthetical'); }
+    override erase(writing: $Writing): void { writing.classes.revert(this); }
+}
+
+export class $Narrative extends $Annotation {
+    override defines(writing: $Writing): void {
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Parenthetical)
+                writing.annotations.express(annotation, false);
+    }
+}
+
+export class WritingSpecification extends Specification<$Writing> { }
+export class AnnotationSpecification extends WritingSpecification { }
 
 export const Writing = $($Writing);
+export const Annotation = $($Annotation);
+export const Parenthetical = $($Parenthetical);
+export const Narrative = $($Narrative);

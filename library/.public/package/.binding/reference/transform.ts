@@ -18,12 +18,8 @@ import { slug } from '../resolution/addresses';
 // is DRAWN belongs to the element the writer put the words in: a Mention reads an id and answers to
 // it, a Means reads a url and links to it, and words put in nothing print as they were written.
 //
-//   [[ X ]]        [[ X ]]*       [[ X ]]**      [[ X ]]***     annotations, about this writing
-//     *[[ X ]]    **[[ X ]]     ***[[ X ]]                      annotations, about X
-//      $[ X ]                                                   a reference
-//      [[[ X ]]]                                                a mention — allocates HERE
-//
-//   AND ANY OF THEM MAY BE `[ words ]( X )` — the bracket is what is shown, the paren is X.
+// THE FORMS ARE [the language](../catalogue/language.ts)'s, written down there once, and ANY OF
+// THEM MAY BE `[ words ]( X )` — the bracket is what is shown, the paren is X.
 //
 // WHAT THE IDENTIFIER IS. Doug, the same day: "An id should be given so that an id can be placed.
 // Otherwise urls should be given so anchors can be made… I want the urls coming from the compiler."
@@ -77,10 +73,6 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     const edits: { from: number; to: number; said: string }[] = [];
     const missed: Missing[] = [];
 
-    // A FILE SHARED BY EVERY PAGE IS NEVER "HERE". The masthead is a resource of one book and is
-    // drawn on all of them; compiled once, its mention of the book it lives in keeps its address.
-    const shared = catalogue.shared(file);
-
     // ONE SCAN FOR PROSE AND FOR STRINGS. Doug, 2026-09-19: "You haven't done anything to change the
     // language. Evaluating the ()[] was never the job of this framework." So a sigil in a string —
     // a prop, a literal in a helper — compiles to exactly what it compiles to in prose, and PROSE IS
@@ -117,12 +109,10 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
                 continue;
             }
 
-            // A LINK THAT LEADS WHERE YOU ALREADY ARE IS A SELF-REFERENCE, written with the self url,
-            // `[words](#)`. Doug, 2026-09-24: "I like self-referential anchors, and we want to capture
-            // that in what the compiler returns." Sprint 73 (a23a3b9) wrote such a link as its words
-            // alone, and C12 as `[words]()`; what receives `#` decides how a self-reference is drawn.
-            const here = !shared && url === catalogue.standing(file);
-            edits.push({ from: at, to, said: `[${shown}](${here ? '#' : url})` });
+            // THE SAME URL WHEREVER IT STANDS — Doug, 2026-09-25: "I don't like the special case. Just
+            // give the same urls everywhere." A link to the page it stands on is a self-reference and
+            // carries that page's url like any other; the `#` written here since C13 is gone.
+            edits.push({ from: at, to, said: `[${shown}](${url})` });
         }
     };
 

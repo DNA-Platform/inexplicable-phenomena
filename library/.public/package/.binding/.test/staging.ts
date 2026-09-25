@@ -105,7 +105,7 @@ export const bound = (held: Staged): string => {
 // specification requires. Doug: "we need scale." A duplicated book keeps its chapters, its
 // references and its shape, so what is measured over a thousand of them is the compiler over a
 // thousand real books rather than over a thousand stubs.
-export type Copies = { of: string; name: string; subject: string; author: string };
+export type Copies = { of: string; name: string; subject: string };
 
 export const duplicated = (held: Staged, copies: Copies, count: number): string[] => {
     const named: string[] = [];
@@ -117,7 +117,6 @@ export const duplicated = (held: Staged, copies: Copies, count: number): string[
     };
 
     const canonical: string[] = [];
-    const authored: string[] = [];
     for (let k = 1; k <= count; k++) {
         const name = `${copies.name} ${k}`;
         const folder = `${copies.of}-${k}`;
@@ -127,11 +126,9 @@ export const duplicated = (held: Staged, copies: Copies, count: number): string[
         // AND ITS ROW IN THE CATALOGUE THAT HOLDS IT names the copy's own synopsis beside the box
         // that leads to it — the shape `catalogue/wellformed.ts` requires of every catalogued book.
         canonical.push(`                    <Option><Chapter>[[ ${name} ]]( ${name} / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( ${name} )**</Book></Option>`);
-        authored.push(`                    <Option><Book>[[ ${name} ]]*</Book></Option>`);
         named.push(name);
     }
     listing(join(at(copies.subject), '.table.tsx'), `                    <Option><Chapter>[[ ${copies.name} ]]( ${copies.name} / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( ${copies.name} )**</Book></Option>`, canonical);
-    listing(join(at(copies.author), '.table.tsx'), `                    <Option><Book>[[ ${copies.name} ]]*</Book></Option>`, authored);
 
     return named;
 };

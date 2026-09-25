@@ -1,9 +1,6 @@
-import { $check } from '@dna-platform/chemistry';
+import { reflection } from './Reflection';
 
-// THE TOGGLE, chemistry's own expression: a specification runs its rules at compile and never in
-// production — Doug: "specify runs. specification doesn't run its tests. The heavy stuff has to be put
-// in there." A bundler replaces the variable; node reads it.
-const dev = process.env.NODE_ENV !== 'production';
+type Rule<T> = ((writing: T) => boolean | void) & { description?: string };
 
 export function specify(description: string) {
     return (target: object, key: string, descriptor: PropertyDescriptor): void => {
@@ -12,46 +9,11 @@ export function specify(description: string) {
 }
 
 export class Specification<T extends object> {
-    parent?: Specification<T> = undefined;
-
-    // A RULE THAT DEMANDS A KIND ALSO KNOWS HOW TO READ IT. Answering the parts
-    // unchanged is the honest default: most rules refuse and nothing can be read.
-    // A specification that CAN read the kind it requires overrides this, and the
-    // demand and the reading then stand in one class instead of two.
-    supplies(writing: T, parts: T[]): T[] {
-        return parts;
-    }
-
-    private cached?: [string, (writing: T) => boolean | void][] = undefined;
-
-    rules(): [string, (writing: T) => boolean | void][] {
-        return this.cached ??= this.collect();
-    }
-
-    check(writing: T): string[] {
-        if (!dev) return [];
-        const failures: string[] = [];
-        const descriptions: string[] = [];
-        for (const [name, rule] of this.rules())
-            try {
-                if (rule.call(this, writing) !== false)
-                    descriptions.push((rule as { description?: string }).description ?? name);
-            } catch (error) {
-                failures.push((error as Error).message);
-            }
-        $check(failures.length === 0, failures.join(' · '));
-        return descriptions;
-    }
-
-    private collect(): [string, (writing: T) => boolean | void][] {
-        const rules = new Map<string, (writing: T) => boolean | void>();
-        const parent = this.parent;
-        for (const [name, rule] of parent?.rules() ?? [])
-            rules.set(name, (writing: T) => rule.call(parent, writing));
-
+    get rules(): [string, Rule<T>][] {
+        const rules = new Map<string, Rule<T>>();
         const prototypes: object[] = [];
-        let prototype: object | null = Object.getPrototypeOf(this);
-        for (; prototype !== null && prototype !== Object.prototype; prototype = Object.getPrototypeOf(prototype))
+        for (let prototype = Object.getPrototypeOf(this); prototype !== null && prototype !== Object.prototype;
+            prototype = Object.getPrototypeOf(prototype))
             prototypes.push(prototype);
 
         for (const prototype of prototypes.reverse())
@@ -59,5 +21,25 @@ export class Specification<T extends object> {
                 if (name.startsWith('$') && typeof (this as never)[name] === 'function')
                     rules.set(name, (this as never)[name]);
         return [...rules.entries()];
+    }
+
+    code(writing: T, within?: string, index?: number): string {
+        const name = reflection.name(writing);
+        return within === undefined ? name : `${within} / ${name} ${index}`;
+    }
+
+    check(writing: T, code?: string): string[] {
+        const failures: string[] = [];
+        for (const [, rule] of this.rules)
+            try {
+                rule.call(this, writing);
+            } catch (error) {
+                failures.push(this.failure(error as Error, code));
+            }
+        return failures;
+    }
+
+    failure(error: Error, code?: string): string {
+        return code === undefined ? error.message : `${code}: ${error.message}`;
     }
 }

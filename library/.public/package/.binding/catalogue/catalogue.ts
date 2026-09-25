@@ -28,21 +28,9 @@ export type Catalogue = {
     // the catalogue answer off the same structure, or they disagree.
     readonly structure: Structure;
     where(key: string): string | undefined;
-    // WHICH BOOK'S PAGE A FILE IS PART OF, which is the one thing a reference needs that is not in
-    // the key: whether the address it resolved to is the page it is standing on.
-    //
-    // A LINK THAT LEADS WHERE YOU ALREADY ARE IS NOT A LINK — the branch settled that in Sprint 73
-    // (a23a3b9) and it is the same rule one floor up. A title's key is always its own book, so a
-    // title that lowered to `[copy](url)` would link a cover to itself: "that Doug self link is
-    // awful and ruins the flow."
-    standing(file: string): string | undefined;
-    // AND WHICH BOOK'S NAME SCOPES A REFERENCE WRITTEN IN IT. `$[ > The Sheet ]` means the chapter
+    // WHICH BOOK'S NAME SCOPES A REFERENCE WRITTEN IN IT. `$[ > The Sheet ]` means the chapter
     // of the book it stands in, and the scope is the one thing a reference cannot carry.
     scope(file: string): string | undefined;
-    // AND WHETHER A FILE IS DRAWN ON MORE PAGES THAN ITS OWN. A resource beside a chapter — the
-    // masthead every book of Doug's library wears — is compiled once and drawn everywhere, so a
-    // mention in it of the book it lives in is not "here" on the pages that share it.
-    shared(file: string): boolean;
     keys(): string[];
 };
 
@@ -97,12 +85,12 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // because the scope is what tells them apart — which is why the scope is IN the key rather than
     // inferred from what else happens to be in the library.
     const at = new Map<string, string>();
-    const inside: { path: string; url: string; name: string; resources: string[] }[] = [];
+    const inside: { path: string; name: string }[] = [];
     for (const route of table.routes) {
         const book = `${chosen.resolution.base}${route.address.replace(/^\//u, '')}/`;
         at.set(route.name, book);
         const held = found.books.find(one => one.folder === route.folder);
-        if (held !== undefined) inside.push({ path: forward(held.path), url: book, name: route.name, resources: [...held.resources.values()].flat() });
+        if (held !== undefined) inside.push({ path: forward(held.path), name: route.name });
 
         // AND ITS CHAPTERS, WHICH ARE SPOTS OF THE STRUCTURE RATHER THAN A SECOND READING — and its
         // anchors, which stand at a fragment the same way a printed chapter does.
@@ -116,7 +104,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // THE DEEPEST BOOK THAT HOLDS A FILE, because a library nests: `semantics-of-types` stands
     // inside `semantic-reference-theory`, which stands inside `claude-and-our-projects`. The
     // shallowest match would answer every chapter with the outermost book it happens to sit under.
-    const deepest = (file: string): { path: string; url: string; name: string; resources: string[] } | undefined => {
+    const deepest = (file: string): { path: string; name: string } | undefined => {
         const held = forward(file);
 
         return inside.filter(one => held.startsWith(`${one.path}/`)).sort((one, two) => two.path.length - one.path.length)[0];
@@ -126,9 +114,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         table,
         structure,
         where: (key: string): string | undefined => at.get(tidy(key)),
-        standing: (file: string): string | undefined => deepest(file)?.url,
         scope: (file: string): string | undefined => deepest(file)?.name,
-        shared: (file: string): boolean => deepest(file)?.resources.includes(forward(file).split('/').pop() ?? '') ?? false,
         keys: (): string[] => [...at.keys()].sort(),
     };
 };

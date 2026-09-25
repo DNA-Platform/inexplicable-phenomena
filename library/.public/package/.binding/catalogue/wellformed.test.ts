@@ -83,9 +83,9 @@ const faultsOf = (books: Made[]): string[] => wellformed(structure(built(books))
 // with a single thing taken away, so a fault names what was taken rather than the shape of the test.
 const whole = (): Made[] => [
     { folder: 'the-library', name: 'A Library', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]', holds: ['[[ A Log ]]**', '[[ Some Projects ]]**', '[[ A Paper ]]**'] },
-    { folder: 'log', name: 'A Log', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]', holds: ['[[ A Library ]]*', '[[ Some Projects ]]*', '[[ A Persona ]]*', '[[ A Persona ]]**'] },
+    { folder: 'log', name: 'A Log', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]', holds: ['[[ A Persona ]]**'] },
     { folder: 'projects', name: 'Some Projects', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]' },
-    { folder: 'persona', name: 'A Persona', author: '*[[ A Log ]]', catalogue: '**[[ A Log ]]', holds: ['[[ A Paper ]]*'] },
+    { folder: 'persona', name: 'A Persona', author: '*[[ A Log ]]', catalogue: '**[[ A Log ]]' },
     { folder: 'paper', name: 'A Paper', author: '*[[ A Persona ]]', catalogue: '**[[ A Library ]]' },
 ];
 
@@ -107,17 +107,47 @@ describe('a well-formed library', () => {
     });
 });
 
+// WHO MAY AUTHOR, in Doug's two clauses of 2026-09-25: "1. A book that is by its subject - There
+// can be only one of those 2. Any book catalogued by one that is a subject."
 describe('authorship', () => {
-    it('refuses a persona nobody vouched for', () => {
+    it('raises a fault for a persona the library catalogues, since only the autobiography\'s books may author', () => {
         const books = whole();
         books[3].catalogue = '**[[ A Library ]]';
-        books[1].holds = ['[[ A Library ]]*', '[[ Some Projects ]]*', '[[ A Persona ]]*'];
+        books[1].holds = [];
         books[0].holds = [...(books[0].holds ?? []), '[[ A Persona ]]**'];
 
         expect(faultsOf(books)).toEqual([faults.mayNotAuthor]);
     });
 
-    it('refuses a second book that authors itself, because the self-delegation happens once', () => {
+    // A second persona under the log writes, though it names the first persona as its own author.
+    it('lets a book catalogued by the autobiography write, whoever it names as its own author', () => {
+        const books: Made[] = [...whole(), { folder: 'second', name: 'A Second Persona', author: '*[[ A Persona ]]', catalogue: '**[[ A Log ]]' }];
+        books[1].holds = [...(books[1].holds ?? []), '[[ A Second Persona ]]**'];
+        books[2].author = '*[[ A Second Persona ]]';
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    // ONE STEP, NOT A WALK: a diary the persona catalogues stands two steps under the log, so the
+    // persona may author and the diary may not.
+    it('lets no book write whose subject is not the autobiography, however near it stands', () => {
+        const books: Made[] = [...whole(), { folder: 'diary', name: 'A Diary', author: '*[[ A Persona ]]', catalogue: '**[[ A Persona ]]' }];
+        books[3].holds = ['[[ A Diary ]]**'];
+        books[4].author = '*[[ A Diary ]]';
+
+        const said = wellformed(structure(built(books)));
+        expect(said.map(fault => fault.fault)).toEqual([faults.mayNotAuthor]);
+        expect(said[0].says).toContain('"A Diary" is catalogued by "A Persona", which is not the one book by its own subject');
+    });
+
+    it('reports an author answered in a table, since the notation has no such form', () => {
+        const books = whole();
+        books[3].holds = ['[[ A Paper ]]*'];
+
+        expect(faultsOf(books)).toEqual([faults.malformed]);
+    });
+
+    it('raises a fault for a second book by its own subject, since there can be only one of those', () => {
         const books = whole();
         books[2].author = '*[[ Some Projects ]]';
 

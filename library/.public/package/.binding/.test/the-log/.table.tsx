@@ -19,12 +19,6 @@ export default class $Table extends $Chapter {
                     <Chapter print={false}>Table of Contents</Chapter>
                 </Section>
                 <Section>
-                    <Heading>What the log has written</Heading>
-                    <Option><Book>[[ The Library ]]*</Book></Option>
-                    <Option><Book>[[ Some Projects ]]*</Book></Option>
-                    <Option><Book>[[ A Persona ]]*</Book></Option>
-                </Section>
-                <Section>
                     <Heading>What stands under the log</Heading>
                     <Option><Chapter>[[ A Persona ]]( A Persona / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( A Persona )**</Book></Option>
                 </Section>

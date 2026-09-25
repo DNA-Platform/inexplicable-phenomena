@@ -8,9 +8,7 @@
     "library/chemistry/package",
     "library/pharmacology",
     "library/philosophy",
-    "library/physics",
-    "library/.public/package/.latex/.public/.binding",
-    "library/.public/package/.wiki/.public/.binding"
+    "library/physics"
   ],
   "dependencies": {
     "commonmark": "^0.31.2"

@@ -353,25 +353,20 @@ export const structure = (found: Library): Structure => {
         lists.set(one.book.folder, held);
     }
 
-    // ---- the colouring, which is one flood ----
+    // ---- who may author ----
     //
-    // Authorship begins in a single act of self-representation and is extended only by delegation —
-    // so the origin is the one spot that authors itself, and a spot joins the authors only if its
-    // canonical catalogue is an author AND its author is that same catalogue. Both halves: being
-    // shelved under an author does not make you one, and naming an author as yours does not either.
+    // Doug, 2026-09-25, and it is the whole rule: "1. A book that is by its subject — There can be
+    // only one of those. 2. Any book catalogued by one that is a subject." So the origin is the one
+    // book by its own subject, the autobiography, and the others are the books whose subject —
+    // their singular catalogue, never a topic — is the origin. One step, not a walk down the tree.
     const alone = [...spots.keys()].filter(id => authorOf.get(id) === id);
     const origin = alone.length === 1 ? alone[0] : undefined;
     const authors = new Set<SpotId>();
     if (origin !== undefined) {
-        const under = new Map<SpotId, SpotId[]>();
-        for (const [child, parent] of subjectOf) under.set(parent, [...(under.get(parent) ?? []), child]);
-        const waiting = [origin];
         authors.add(origin);
-        while (waiting.length > 0) {
-            const here = waiting.pop() as SpotId;
-            for (const child of under.get(here) ?? [])
-                if (!authors.has(child) && authorOf.get(child) === here) { authors.add(child); waiting.push(child); }
-        }
+        for (const [book, subject] of subjectOf)
+            if (subject === origin)
+                authors.add(book);
     }
 
     return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, strays, untitled, referred, resourceNames };

@@ -10,16 +10,16 @@ import { bare, form, forms, key, last, name, notation, separator, spelling, spel
 // you write brittle code that you don't test very very very well, it will hurt us."
 //
 // AND THE FORM TABLE CLAIMS TO BE TOTAL BY INSPECTION, which is a claim a test can settle: every
-// combination of stars and brackets is enumerated below, not sampled. Eight are the language and the
-// other twenty-four must be refused — because the one outcome that must not happen is silence, and
+// combination of stars and brackets is enumerated below, not sampled. Seven are the language and the
+// other twenty-five must be refused — because the one outcome that must not happen is silence, and
 // an annotation that quietly does nothing looks exactly like one that works.
 
 const stars = ['', '*', '**', '***'];
 const depths = [2, 3];
 
 describe('the forms', () => {
-    it('has eight, and the table is the language', () => {
-        expect(forms).toHaveLength(8);
+    it('has seven, and the table is the language', () => {
+        expect(forms).toHaveLength(7);
     });
 
     it('refuses every spelling that is not one of them', () => {
@@ -31,8 +31,8 @@ describe('the forms', () => {
                     (form(prefix, brackets, postfix) === undefined ? refused : allowed)
                         .push(`${prefix}${'['.repeat(brackets)} X ${']'.repeat(brackets)}${postfix}`);
 
-        expect(allowed).toHaveLength(8);
-        expect(refused).toHaveLength(stars.length * stars.length * depths.length - 8);
+        expect(allowed).toHaveLength(7);
+        expect(refused).toHaveLength(stars.length * stars.length * depths.length - 7);
     });
 
     it('never lets stars stand on both sides', () => {
@@ -52,16 +52,20 @@ describe('the forms', () => {
 
     it('reads the prefix as facing out and the postfix as facing in', () => {
         expect(form('*', 2, '')).toEqual({ is: 'edge', relation: 'author', end: 'target' });
-        expect(form('', 2, '*')).toEqual({ is: 'edge', relation: 'author', end: 'source' });
         expect(form('**', 2, '')).toEqual({ is: 'edge', relation: 'subject', end: 'target' });
         expect(form('', 2, '**')).toEqual({ is: 'edge', relation: 'subject', end: 'source' });
         expect(form('***', 2, '')).toEqual({ is: 'edge', relation: 'topic', end: 'target' });
         expect(form('', 2, '***')).toEqual({ is: 'edge', relation: 'topic', end: 'source' });
     });
 
+    // AN AUTHOR IS ANSWERED BY NOTHING — Doug, 2026-09-25: Subject collapses the author syntax.
+    it('has no answer for an author, so [[ X ]]* is not the language and its count stays empty', () => {
+        expect(form('', 2, '*')).toBeUndefined();
+        expect(form('*', 2, '')).toEqual({ is: 'edge', relation: 'author', end: 'target' });
+    });
+
     it('spells the answering half of every edge it can name', () => {
         expect(spelt('author', 'target', 'A Book')).toBe('*[[ A Book ]]');
-        expect(spelt('author', 'source', 'A Book')).toBe('[[ A Book ]]*');
         expect(spelt('subject', 'source', 'A Book')).toBe('[[ A Book ]]**');
         expect(spelt('topic', 'source', 'A Book')).toBe('[[ A Book ]]***');
     });

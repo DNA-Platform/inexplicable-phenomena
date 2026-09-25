@@ -25,16 +25,6 @@ const extensions = ['.tsx', '.ts', '.jsx', '.js'];
 const src = {
     test: { ...shared, name: 'src', include: ['.tests/**/*.test.{ts,tsx}'] },
     resolve: { extensions, alias: {
-        // THROUGH THE FRONT DOOR, AGAINST dist. A promise reads the package by its
-        // published name, the way a consumer does, so rollup owns the module graph
-        // and the cycles it has already resolved stay resolved. Reaching into src
-        // put vite's dev module runner in charge of an evaluation order the ES module
-        // spec fixes and no bundler is asked to fix there — which is why a kind could
-        // not live in its own file until this changed. There is no `@` here on purpose.
-        '@dna-platform/public/application': path.resolve(__dirname, './dist/application.js'),
-            '@dna-platform/public/encyclopedia': path.resolve(__dirname, './dist/encyclopedia.js'),
-        '@dna-platform/public/article': path.resolve(__dirname, './dist/article.js'),
-        '@dna-platform/public/conversation': path.resolve(__dirname, './dist/conversation.js'),
         '@dna-platform/public': path.resolve(__dirname, './dist/lib.js')
     } },
     esbuild

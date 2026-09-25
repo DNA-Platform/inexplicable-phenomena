@@ -61,10 +61,7 @@ const at = () => ({
 // and tests/loading.test.tsx proves at runtime that neither leaves a class
 // extending a half-built base. They are named here so a THIRD one FAILS the
 // build rather than joining a list of warnings nobody reads.
-const knownCycles = [
-    'src/writing/Composition.tsx -> src/reference/Catalogue.tsx -> src/writing/Composition.tsx',
-    'src/library/Title.tsx -> src/library/Cover.tsx -> src/library/Title.tsx'
-];
+const knownCycles = [];
 
 const named = warning => (warning.ids || [])
     .map(id => path.relative(__dirname, id).split(path.sep).join('/'))
@@ -88,14 +85,7 @@ const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/
 const quick = process.env.QUICK !== undefined;
 
 const inputs = {
-    lib: 'src/index.ts',
-    library: 'src/library.ts',
-    article: 'src/article.ts',
-    markdown: 'src/markdown.ts',
-    application: 'src/application.ts',
-    encyclopedia: 'src/encyclopedia.ts',
-    conversation: 'src/conversation.ts',
-    utilities: 'src/utilities.ts'
+    lib: 'src/index.ts'
 };
 
 const module_ = { dir: 'dist', format: 'es', entryFileNames: '[name].js', chunkFileNames: 'chunks/[name]-[hash].js', sourcemap: true };
