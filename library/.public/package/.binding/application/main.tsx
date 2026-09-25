@@ -1,4 +1,4 @@
-import { createElement, lazy, Suspense, useEffect, type ElementType } from 'react';
+import { createElement, lazy, Suspense, useEffect, type ComponentType, type ElementType } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { $ } from '@dna-platform/chemistry';
 import './stylesheets';
@@ -26,7 +26,8 @@ const loading: Promise<{ book?: unknown; probe?: unknown }> = probing
 // root is hydrated now, with the book behind a Suspense boundary the server also wrote: React
 // keeps the served markup, listens from this moment, and replays a click it could not yet
 // answer once the boundary hydrates. The book's chunk is what the boundary waits for.
-const Opened = lazy(() => loading.then(loaded => ({ default: $((probing ? loaded.probe : loaded.book) as never) })));
+// THE BOOK IS A FUNCTION, SO IT IS WHAT IS DRAWN: rendering it calls it, and it calls its chapters.
+const Opened = lazy(() => loading.then(loaded => ({ default: probing ? $(loaded.probe as never) : loaded.book as ComponentType })));
 const mount = document.getElementById('root');
 if (!mount) throw new Error('no #root element');
 // Mounted beside the book, after it: its effect runs once the book's handlers are attached,
@@ -48,8 +49,8 @@ if (!served) drawing.render(app);
 // module and loses whatever the reader had open.
 //
 // IT IS A NEW COMPONENT EACH TIME AND THAT REMOUNTS THE BOOK. React keeps a component only while
-// its TYPE is the same, and a re-run of `$()` over a re-run class is a different type — so the tree
-// is rebuilt rather than patched. That is the part React Fast Refresh would normally do and cannot
+// its TYPE is the same, and a re-run module's `book` is a different function — so the tree is
+// rebuilt rather than patched. That is the part React Fast Refresh would normally do and cannot
 // here, and it is the seam where the substrate would have to keep a chemical's identity across an
 // update. FLAGGED FOR DOUG rather than reached for.
-opened.drawn(book => drawing.render(drawn($(book as never))));
+opened.drawn(book => drawing.render(drawn(book as ElementType)));

@@ -6,7 +6,6 @@ import type { ViteDevServer } from 'vite';
 import React from 'react';
 import { Suspense, type ReactNode } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { $ } from '@dna-platform/chemistry';
 import { configure } from '../configuration/configuration';
 import { around } from '../inventory/library';
 import { page } from './page';
@@ -17,7 +16,7 @@ import { shellOf } from './rendering';
 const { createElement } = React;
 const { renderToString } = ReactDOMServer;
 
-type Route = { name: string; address: string; load: () => Promise<{ book: unknown }> };
+type Route = { name: string; address: string; load: () => Promise<{ book: () => ReactNode }> };
 
 // A BOUNDARY THAT ERRORED IS NOT A PAGE. `renderToString` takes no `onError`, so a book that throws
 // is caught by the Suspense boundary above it, written into the markup as this marker, and handed
@@ -50,10 +49,10 @@ export const draw = async (server: ViteDevServer, only?: string): Promise<string
 
     for (const route of routes.filter(one => only === undefined || one.name === only)) {
         const { book } = await route.load();
-        const Opened = $(book as never);
-        // The same boundary the entry hydrates inside, so the markers match.
-        const markup = renderToString(createElement(Suspense, { fallback: null }, createElement(Opened)));
-        if (markup.includes(erroredBoundary)) throw new Error(`${route.name} does not draw — ${causeOfTheFailure(createElement(Opened))}`);
+        // The same boundary the entry hydrates inside, so the markers match; the book is a function,
+        // and drawing it calls it.
+        const markup = renderToString(createElement(Suspense, { fallback: null }, createElement(book)));
+        if (markup.includes(erroredBoundary)) throw new Error(`${route.name} does not draw — ${causeOfTheFailure(createElement(book))}`);
         const sheet = styles(window.document);
         const at = placeOf(face, route);
         mkdirSync(dirname(at), { recursive: true });

@@ -12,6 +12,13 @@ const classed = (file: string): string => `${local(file).replace(/^\w/u, letter 
 // A BOOK, ASSEMBLED FROM THE ONE LIST THE INVENTORY MADE: its apparatus, then its chapters in order.
 // The order is the inventory's, so nothing here counts files a second time.
 //
+// AND IT IS A FUNCTION THAT CALLS ITS CHAPTERS. Doug: "Books will be compiled to import the chapter
+// components call the functions and send them into the book as children", and "So too for books." A
+// chapter file default-exports a function returning its Chapter, and it is CALLED here, never
+// rendered: written as `<TheArgument />` it would reach the book as a function chemical its parts
+// never see, where `{TheArgument()}` hands the book the Chapter itself. So `book` is called when the
+// page draws it, and each chapter when the book is made.
+//
 // A RESOURCE IS NOT HANDED OVER HERE. It is found in a chapter's own source and replaced before
 // anything is compiled — see the binding:resources plugin. This file writes the book and nothing else.
 //
@@ -40,14 +47,13 @@ export const assembled = (book: Book, from = relative(dirname(book.module), book
         `import { $ } from '@dna-platform/chemistry';`,
         `import { opened } from '${application}opened';`,
         `import $Book from '${from}/.book';`,
-        ...book.files.map(file => `import $${classed(file)} from '${from}/${named(file)}';`),
+        ...book.files.map(file => `import ${classed(file)} from '${from}/${named(file)}';`),
         ``,
         `const Book = $($Book);`,
-        ...book.files.map(file => `const ${classed(file)} = $($${classed(file)});`),
         ``,
-        `export const book = $<$Book>(`,
+        `export const book = () => (`,
         `    <Book>`,
-        ...book.files.map(file => `        <${classed(file)} />`),
+        ...book.files.map(file => `        {${classed(file)}()}`),
         `    </Book>`,
         `);`,
         ``,

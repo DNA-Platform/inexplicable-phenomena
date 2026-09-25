@@ -3,14 +3,13 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Book, Library } from '../inventory/library';
 
-// WHAT THE LOAD ANSWERED, KEPT. Loading a book is the expensive thing the binder does — measured
-// 2026-09-15 at seconds each — so what a live book answers about itself is written down once,
-// beside the manifest, and read back by every later task and by the next build. `book` holds what
-// the readings answered: a reading is a member, so another fact about every book costs a member
-// and nothing here.
+// WHAT A SPECIFIED BOOK LEAVES BEHIND. Loading a book is the expensive thing the binder does —
+// measured 2026-09-15 at seconds each — so a book that specified is written down beside the
+// manifest with the digest of what it was read from, and the next build loads it again only when
+// that changes. Nothing a running book answers about itself is kept: a name, a title and an author
+// are the source's, read by the catalogue with nothing loaded.
 export type Entry = {
     folder: string;
-    book: Record<string, string | string[]>;
     digest: string;
     walked: number;
 };

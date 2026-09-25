@@ -79,7 +79,7 @@ export const specifying = (binding: string, found: Library, folders: string[], p
             failures.push({ at: answer.folder, file: join(book?.path ?? found.root, file), says: rest.join(' › ') });
         }
         if (answer.failures.length === 0)
-            books.push({ folder: answer.folder, book: answer.book, digest: digests.get(answer.folder) ?? '', walked: answer.walked });
+            books.push({ folder: answer.folder, digest: digests.get(answer.folder) ?? '', walked: answer.walked });
     }
 
     return {
