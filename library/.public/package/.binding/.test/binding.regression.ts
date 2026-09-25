@@ -1,7 +1,9 @@
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
-import { afterAll, describe, expect, it } from 'vitest';
+import puppeteer, { type Browser, type Page } from 'puppeteer';
+import { preview, type PreviewServer } from 'vite';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { configure } from '../configuration/configuration';
 import { walk } from '../inventory/walk';
 import { catalogue } from '../catalogue/catalogue';
@@ -95,6 +97,73 @@ describe('a bind of the test library', () => {
     it('marked the autobiography and the biography on their covers', () => {
         expect(page('The Log')).toMatch(/<header class="pd-container"><span class="pa-biography pa-autobiography">/u);
         expect(page('A Persona')).toMatch(/<header class="pd-container"><span class="pa-biography">/u);
+    });
+
+    // THE ORDINARY VIEW, which the test library's book class stands as its theme — Doug, 2026-09-25:
+    // "it is a format annotation that is also a theme that is global to a book."
+    it('drew every book inside its theme, whose sheet hides every annotation\'s own writing', () => {
+        for (const route of table.routes) {
+            const html = page(route.name);
+            expect(html, route.name).toMatch(/<div id="root"><!--\$--><div class="[^"]*pd-container">/u);
+            expect(html, route.name).toMatch(/\.pd-annotation\s*\{\s*display:\s*none/u);
+        }
+    });
+});
+
+// WHAT A READER SEES — R25: the pages the bind wrote, served as the preview serves them and driven in
+// a real browser, asserting visible text and never markup. Doug: "You don't release chemistry features
+// without checking that they work."
+describe('the bound test library, seen in a real browser', () => {
+    let server: PreviewServer | undefined;
+    let browser: Browser | undefined;
+    let at = '';
+    const heard: string[] = [];
+    beforeAll(async () => {
+        server = await preview({ configFile: join(held.binding, 'vite.config.ts'), preview: { port: 0 }, logLevel: 'silent' });
+        at = server.resolvedUrls?.local[0] ?? '';
+        browser = await puppeteer.launch({ headless: true });
+    });
+    afterAll(async () => {
+        await browser?.close();
+        await server?.close();
+    });
+    const opened = async (path: string): Promise<Page> => {
+        const page = await browser!.newPage();
+        page.on('console', message => heard.push(message.text()));
+        await page.goto(new URL(path, at).href, { waitUntil: 'networkidle0' });
+        return page;
+    };
+
+    it('shows the paper\'s cover in its header, and the byline its book draws, as links, with no annotation\'s writing showing', async () => {
+        const paper = await opened('/a-paper/');
+        expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A Paper');
+        const byline = await paper.$eval('#root > div > span > span', line => line.innerText.replace(/\s+/gu, ' ').trim());
+        expect(byline).toBe('by A Persona, filed under The Library');
+        expect(await paper.$eval('a[href="/a-persona/"]', link => link.innerText.trim())).toBe('A Persona');
+        expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
+    });
+
+    it('navigates from an entry of the table to the id its chapter\'s title wears', async () => {
+        const paper = await opened('/a-paper/');
+        await paper.click('nav a[href="/a-paper/#the-evidence"]');
+        await paper.waitForFunction(() => location.hash === '#the-evidence');
+        expect(await paper.$eval('#the-evidence', title => title.innerText.trim())).toBe('The Evidence');
+    });
+
+    it('draws a table\'s parenthetical entries on the page and hidden, where the proof still reads them', async () => {
+        const library = await opened('/the-library/');
+        // THREE: the table's own title, parenthetical, and its two parenthetical entries.
+        const hidden = await library.$$eval('nav a[href="/the-library/#synopsis"], nav a[href="/the-library/#table-of-contents"]',
+            links => links.map(link => link.getClientRects().length === 0));
+        expect(hidden).toEqual([true, true, true]);
+        const shown = await library.$eval('nav', nav => nav.innerText);
+        expect(shown).toContain('The Shelves');
+        expect(shown).toContain('The Log');
+        expect(shown).not.toContain('Table of Contents');
+    });
+
+    it('hydrated every page it opened without re-rendering it', () => {
+        expect(heard.filter(said => said.includes('hydration'))).toEqual([]);
     });
 });
 
