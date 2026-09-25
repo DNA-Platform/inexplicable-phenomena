@@ -12,8 +12,8 @@ type Citation<T> = { author: Author; value: T };
 
 @represented()
 export class Collection<T> {
-    private changes: Change<T>[] = [];
-    private values: T[] = [];
+    protected changes: Change<T>[] = [];
+    protected values: T[] = [];
 
     [Symbol.iterator](): IterableIterator<T> {
         return this.values[Symbol.iterator]();
@@ -88,7 +88,7 @@ export class Collection<T> {
         return this.find(given).length === 1;
     }
 
-    private apply(values: T[], change: Change<T>): T[] {
+    protected apply(values: T[], change: Change<T>): T[] {
         if (change.type === 'left')
             return [...change.values, ...values];
         if (change.type === 'right')
@@ -102,7 +102,7 @@ export class Collection<T> {
 
 @represented()
 export class Compilation<T> {
-    private collection = new Collection<Citation<T>>();
+    protected collection = new Collection<Citation<T>>();
 
     [Symbol.iterator](): IterableIterator<T> {
         const citation = [...this.collection].at(-1);
