@@ -7,7 +7,6 @@ export type Given<T> = T | (new () => T) | Component | ReactElement;
 export type Author = object;
 
 type Change<T> = { type: 'append' | 'prepend' | 'remove' | 'replace'; author: Author; values: T[] };
-type Citation<T> = { author: Author; value: T };
 
 @represented()
 export class Collection<T> {
@@ -101,21 +100,19 @@ export class Collection<T> {
 
 @represented()
 export class Compilation<T> {
-    protected collection = new Collection<Citation<T>>();
+    protected collection = new Collection<T>();
 
-    [Symbol.iterator](): IterableIterator<T> {
-        const citation = [...this.collection].at(-1);
-        return (citation === undefined ? [] : [citation.value])[Symbol.iterator]();
+    get value(): T | undefined {
+        return this.collection.at(-1);
     }
 
     toString(): string {
-        const [value] = this;
-        return value === undefined ? '' : `${value}`;
+        return this.value === undefined ? '' : `${this.value}`;
     }
 
     set(author: Author, value: T): void {
         this.collection.revert(author);
-        this.collection.add(author, { author, value });
+        this.collection.add(author, value);
     }
 
     revert(author: Author): void {

@@ -43,10 +43,9 @@ export class $Writing extends $Chemical {
     view(): ReactNode {
         this.annotations.define();
         const [Container, ...layers] = [...this.containers];
-        const [id] = this.id;
         const className = [...new Set(this.classes)].join(' ') || undefined;
         return layers.reduce<ReactNode>((drawing, Layer) => <Layer className="pd-container">{drawing}</Layer>, (
-            <Container id={id} className={className}>
+            <Container id={this.id.value} className={className}>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
             </Container>

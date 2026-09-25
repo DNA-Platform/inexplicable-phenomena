@@ -237,10 +237,10 @@ describe('a compilation is one value compiled from what its authors set, and the
     it('answers nothing until an author sets a value, and then the last value set', () => {
         const editor = new Editor(), reviewer = new Reviewer();
         const compilation = new Compilation<string>();
-        expect([...compilation]).toEqual([]);
+        expect(compilation.value).toBeUndefined();
         compilation.set(editor, 'the-first-shelf');
         compilation.set(reviewer, 'the-second-shelf');
-        expect([...compilation]).toEqual(['the-second-shelf']);
+        expect(compilation.value).toBe('the-second-shelf');
     });
 
     it('lets an author that sets again win, since its value is now the last set', () => {
@@ -249,9 +249,9 @@ describe('a compilation is one value compiled from what its authors set, and the
         compilation.set(editor, 'the-first-shelf');
         compilation.set(reviewer, 'the-second-shelf');
         compilation.set(editor, 'the-third-shelf');
-        expect([...compilation]).toEqual(['the-third-shelf']);
+        expect(compilation.value).toBe('the-third-shelf');
         compilation.set(reviewer, 'the-fourth-shelf');
-        expect([...compilation]).toEqual(['the-fourth-shelf']);
+        expect(compilation.value).toBe('the-fourth-shelf');
     });
 
     it('says the value it answers and nothing of the values set before it', () => {
@@ -271,8 +271,8 @@ describe('a compilation is one value compiled from what its authors set, and the
         compilation.set(editor, 'the-first-shelf');
         compilation.set(reviewer, 'the-second-shelf');
         compilation.revert(reviewer);
-        expect([...compilation]).toEqual(['the-first-shelf']);
+        expect(compilation.value).toBe('the-first-shelf');
         compilation.revert(editor);
-        expect([...compilation]).toEqual([]);
+        expect(compilation.value).toBeUndefined();
     });
 });
