@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, Word, Sentence, $Annotation, Parenthetical, binder, html } from '@dna-platform/public';
-import { $Sentence, $Mention, Mention, $Referent, Referent, $Reference, Reference, $Means, Means } from '@dna-platform/public';
+import { $Sentence, $Mention, Mention, $Referent, Referent, $Reference, Reference, $SelfReference, Self, $Means, Means } from '@dna-platform/public';
 import { $Format } from '@dna-platform/public';
 
 class $Unmentioned extends $Annotation {
@@ -58,10 +58,6 @@ describe('the binder writes [text](identifier) and any component reads both halv
 
     it('reads an identifier the compiler resolved, which is a url', () => {
         expect(binder.reference('[The Library](/the-library/)')).toEqual({ text: 'The Library', identifier: '/the-library/' });
-    });
-
-    it('reads the self url, which is the page it stands on', () => {
-        expect(binder.reference('[The Library](#)')).toEqual({ text: 'The Library', identifier: '#' });
     });
 
     it('reads a string a component found for itself, wherever it found it', () => {
@@ -177,14 +173,6 @@ describe('a means is the word that reads what the compiler resolved', () => {
         expect(means.annotations.find($Reference)[0].identifier).toBe('/complicated-url');
     });
 
-    it('of the page it stands on is a self-referential anchor, wearing both classes', async () => {
-        const page = await drawn(built<$Means>(<Means>[The Library](#)</Means>));
-        const anchor = page.firstElementChild!;
-        expect(anchor.getAttribute('href')).toBe('#');
-        expect(anchor.firstElementChild!.className).toContain('pa-reference');
-        expect(anchor.firstElementChild!.className).toContain('pa-self-reference');
-    });
-
     it('shows the words and never the syntax', async () => {
         const means = built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>);
         expect(means.text).toBe('Alan Turing');
@@ -230,12 +218,10 @@ describe('a reference is the address its writing means', () => {
         expect([...writing.classes]).toContain('pa-reference');
     });
 
-    it('to the self url is a self-reference, wearing pa-self-reference beside pa-reference, and one elsewhere is not', () => {
+    it('wears no pa-self-reference, whatever it holds', () => {
         const writing = built<$Writing>(<Writing>this library <Reference>#</Reference></Writing>);
         expect([...writing.classes]).toContain('pa-reference');
-        expect([...writing.classes]).toContain('pa-self-reference');
-        const elsewhere = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference></Writing>);
-        expect([...elsewhere.classes]).not.toContain('pa-self-reference');
+        expect([...writing.classes]).not.toContain('pa-self-reference');
     });
 
     it('never gives its writing an id, and takes its class back when it does not apply', () => {
@@ -243,8 +229,6 @@ describe('a reference is the address its writing means', () => {
         expect(String(standing.id)).toBe('');
         const repressed = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference><Unmentioned /></Writing>);
         expect([...repressed.classes]).not.toContain('pa-reference');
-        const self = built<$Writing>(<Writing>this library <Reference>#</Reference><Unmentioned /></Writing>);
-        expect([...self.classes]).not.toContain('pa-self-reference');
     });
 
     it('stands beside a referent without either taking the other\'s mark', () => {
@@ -299,5 +283,40 @@ describe('a reference makes its writing a link by adding a layer to its containe
         writing.view();
         writing.view();
         expect([...writing.containers]).toEqual(['span', anchor]);
+    });
+});
+
+describe('a self-reference is a reference that also wears pa-self-reference', () => {
+    it('is found where a reference is asked for, holding its url and wearing both classes', () => {
+        const writing = built<$Writing>(<Writing>this library <Self>/the-library/</Self></Writing>);
+        const reference = writing.annotations.find($Reference)[0];
+        expect(reference).toBeInstanceOf($SelfReference);
+        expect(reference.identifier).toBe('/the-library/');
+        expect([...writing.classes]).toContain('pa-reference');
+        expect([...writing.classes]).toContain('pa-self-reference');
+    });
+
+    it('drawn, is a link like any other, its own element wearing both classes', async () => {
+        const page = await drawn(built<$Writing>(<Writing>The Library<Self>/the-library/</Self></Writing>));
+        const anchor = page.firstElementChild!;
+        expect(anchor.tagName).toBe('A');
+        expect(anchor.getAttribute('href')).toBe('/the-library/');
+        expect(anchor.firstElementChild!.className).toContain('pa-reference');
+        expect(anchor.firstElementChild!.className).toContain('pa-self-reference');
+    });
+
+    it('takes back both classes and its layer when it stops applying, with the erase it inherits', () => {
+        const writing = built<$Writing>(<Writing>this library <Self>/the-library/</Self></Writing>);
+        expect([...writing.classes]).toContain('pa-self-reference');
+        writing.annotations.add(writing, <Unmentioned />);
+        writing.annotations.define();
+        expect([...writing.classes]).not.toContain('pa-reference');
+        expect([...writing.classes]).not.toContain('pa-self-reference');
+        expect([...writing.containers]).toEqual(['span']);
+    });
+
+    it('is held to the specification a reference is held to', () => {
+        const writing = built<$Writing>(<Writing>this library <Self /></Writing>);
+        expect(writing.specify()).toContain('Writing: a reference is the address its writing means, and this one holds none');
     });
 });

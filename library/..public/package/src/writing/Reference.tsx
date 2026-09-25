@@ -16,14 +16,19 @@ export class $Reference extends $Annotation {
 
     override defines(writing: $Writing): void {
         writing.classes.add(this, 'pa-reference');
-        if (this.identifier.startsWith('#'))
-            writing.classes.add(this, 'pa-self-reference');
         writing.containers.add(this, this._anchor);
     }
 
     override erase(writing: $Writing): void {
         writing.classes.revert(this);
         writing.containers.revert(this);
+    }
+}
+
+export class $SelfReference extends $Reference {
+    override defines(writing: $Writing): void {
+        super.defines(writing);
+        writing.classes.add(this, 'pa-self-reference');
     }
 }
 
@@ -36,3 +41,4 @@ export class ReferenceSpecification extends AnnotationSpecification {
 }
 
 export const Reference = $($Reference);
+export const Self = $($SelfReference);
