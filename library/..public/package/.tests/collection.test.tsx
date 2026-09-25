@@ -73,7 +73,7 @@ describe('a collection is changed by authors, and every change is cited to the a
         collection.remove(editor, 'span');
         collection.replace(editor, 'div', 'section');
         collection.revert(editor);
-        expect(collection.types).toEqual(['right', 'left', 'remove', 'replace', 'revert']);
+        expect(collection.types).toEqual(['append', 'prepend', 'remove', 'replace', 'revert']);
         expect([...collection]).toEqual([]);
     });
 

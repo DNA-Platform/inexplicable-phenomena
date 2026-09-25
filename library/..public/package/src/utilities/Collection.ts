@@ -5,9 +5,8 @@ import { reflection } from './Reflection';
 
 export type Given<T> = T | (new () => T) | Component | ReactElement;
 export type Author = object;
-export type Side = 'left' | 'right';
 
-type Change<T> = { type: Side | 'remove' | 'replace'; author: Author; values: T[] };
+type Change<T> = { type: 'append' | 'prepend' | 'remove' | 'replace'; author: Author; values: T[] };
 type Citation<T> = { author: Author; value: T };
 
 @represented()
@@ -54,14 +53,14 @@ export class Collection<T> {
     }
 
     append(author: Author, ...values: T[]): void {
-        this.change('right', author, ...values);
+        this.change('append', author, ...values);
     }
 
     prepend(author: Author, ...values: T[]): void {
-        this.change('left', author, ...values);
+        this.change('prepend', author, ...values);
     }
 
-    change(type: Side | 'remove' | 'replace' | 'revert', author: Author, ...values: T[]): void {
+    change(type: 'append' | 'prepend' | 'remove' | 'replace' | 'revert', author: Author, ...values: T[]): void {
         if (type === 'revert') {
             this.changes = this.changes.filter(change => change.author !== author);
             this.values = [];
@@ -89,9 +88,9 @@ export class Collection<T> {
     }
 
     protected apply(values: T[], change: Change<T>): T[] {
-        if (change.type === 'left')
+        if (change.type === 'prepend')
             return [...change.values, ...values];
-        if (change.type === 'right')
+        if (change.type === 'append')
             return [...values, ...change.values];
         if (change.type === 'remove')
             return values.filter(value => !change.values.includes(value));
