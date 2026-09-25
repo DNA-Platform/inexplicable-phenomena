@@ -162,6 +162,16 @@ describe('the bound test library, seen in a real browser', () => {
         expect(shown).not.toContain('Table of Contents');
     });
 
+    // A TABLE'S ENTRIES ARE CONTENTS — Doug: "Let's make a Content annotation, which is a type of
+    // Reference"; "it's note should draw its words... put it in a span with a pa-content on there".
+    it('draws a table\'s entries as the links their contents make, each name in a span wearing pa-content, in the order written', async () => {
+        const paper = await opened('/a-paper/');
+        const names = await paper.$$eval('nav span.pa-content', spans => spans.map(span => span.textContent));
+        expect(names).toEqual(['The Argument', 'The Evidence', 'A Paper', 'Synopsis', 'Table of Contents']);
+        expect(await paper.$eval('nav a[href="/a-paper/#the-argument"] span.pa-content', span => span.textContent)).toBe('The Argument');
+        expect(await paper.$eval('nav', nav => nav.innerText)).not.toContain('](/');
+    });
+
     it('hydrated every page it opened without re-rendering it', () => {
         expect(heard.filter(said => said.includes('hydration'))).toEqual([]);
     });
@@ -173,7 +183,7 @@ describe('a bind of the test library with one entry taken out of a table', () =>
     const broken = staged();
     afterAll(() => { broken.remove(); });
     const table = join(broken.library, 'paper', '.table.tsx');
-    writeFileSync(table, readFileSync(table, 'utf8').replace('            <Paragraph><Means>$[ ./The Evidence ]</Means></Paragraph>\n', ''));
+    writeFileSync(table, readFileSync(table, 'utf8').replace('            <Paragraph><Content>$[ ./The Evidence ]</Content></Paragraph>\n', ''));
 
     it('fails at catalogue, naming the book and the chapter its table does not refer to', () => {
         const said = printed(broken);

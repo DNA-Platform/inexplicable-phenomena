@@ -1,4 +1,4 @@
-import { Chapter, Heading, Means, Paragraph, Parenthetical, Section, TableOfContents, Title } from '@dna-platform/public';
+import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, TableOfContents, Title, Word } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -6,19 +6,19 @@ export default () => (
         <Title><Parenthetical />[[ Table of Contents ]]</Title>
         <Section>
             <Heading>Contents</Heading>
-            <Paragraph><Means>$[ ./The Shelves ]</Means></Paragraph>
+            <Paragraph><Content>$[ ./The Shelves ]</Content></Paragraph>
             <Paragraph>
                 <Parenthetical />
-                <Means>$[ The Library ]</Means>
-                <Means>$[ ./Synopsis ]</Means>
-                <Means>$[ ./Table of Contents ]</Means>
+                <Word><Content>$[ The Library ]</Content></Word>
+                <Word><Content>$[ ./Synopsis ]</Content></Word>
+                <Word><Content>$[ ./Table of Contents ]</Content></Word>
             </Paragraph>
         </Section>
         <Section>
             <Heading>The Catalogue</Heading>
-            <Paragraph><Means>[[ The Log ]]**</Means>: <Means>$[ The Log / Synopsis ]</Means></Paragraph>
-            <Paragraph><Means>[[ Some Projects ]]**</Means>: <Means>$[ Some Projects / Synopsis ]</Means></Paragraph>
-            <Paragraph><Means>[[ A Paper ]]**</Means>: <Means>$[ A Paper / Synopsis ]</Means></Paragraph>
+            <Paragraph><Word><Content>[[ The Log ]]**</Content></Word>: <Word><Content>$[ The Log / Synopsis ]</Content></Word></Paragraph>
+            <Paragraph><Word><Content>[[ Some Projects ]]**</Content></Word>: <Word><Content>$[ Some Projects / Synopsis ]</Content></Word></Paragraph>
+            <Paragraph><Word><Content>[[ A Paper ]]**</Content></Word>: <Word><Content>$[ A Paper / Synopsis ]</Content></Word></Paragraph>
         </Section>
     </Chapter>
 );

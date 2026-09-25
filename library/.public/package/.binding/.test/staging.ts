@@ -118,7 +118,7 @@ export const duplicated = (held: Staged, copies: Copies, count: number): string[
 
     // A CATALOGUE'S ROW ANSWERS FOR A BOOK AND REFERS TO ITS SYNOPSIS — the shape
     // `catalogue/wellformed.ts` requires of every catalogued book.
-    const row = (name: string): string => `            <Paragraph><Means>[[ ${name} ]]**</Means>: <Means>$[ ${name} / Synopsis ]</Means></Paragraph>`;
+    const row = (name: string): string => `            <Paragraph><Word><Content>[[ ${name} ]]**</Content></Word>: <Word><Content>$[ ${name} / Synopsis ]</Content></Word></Paragraph>`;
     const rows: string[] = [];
     for (let k = 1; k <= count; k++) {
         const name = `${copies.name} ${k}`;

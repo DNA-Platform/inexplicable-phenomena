@@ -84,12 +84,12 @@ describe('a table of contents', () => {
 
     it('refers to its chapters by their fragments, and to the synopsis of the book it answers for', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Means>[Entries](/the-log/#entries)</Means>');
-        expect(made.text).toContain('<Means>[Synopsis](/a-persona/#synopsis)</Means>');
+        expect(made.text).toContain('<Content>[Entries](/the-log/#entries)</Content>');
+        expect(made.text).toContain('<Content>[Synopsis](/a-persona/#synopsis)</Content>');
     });
 
     it('answers for the book it catalogues with the book\'s url, and keeps no star', () => {
-        expect(made.text).toContain('<Means>[A Persona](/a-persona/)</Means>');
+        expect(made.text).toContain('<Content>[A Persona](/a-persona/)</Content>');
         expect(made.text).not.toContain(']**');
     });
 });

@@ -1,4 +1,4 @@
-import { Chapter, Heading, Means, Paragraph, Parenthetical, Section, TableOfContents, Title } from '@dna-platform/public';
+import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, TableOfContents, Title, Word } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -6,17 +6,17 @@ export default () => (
         <Title><Parenthetical />[[ Table of Contents ]]</Title>
         <Section>
             <Heading>Contents</Heading>
-            <Paragraph><Means>$[ ./Entries ]</Means></Paragraph>
+            <Paragraph><Content>$[ ./Entries ]</Content></Paragraph>
             <Paragraph>
                 <Parenthetical />
-                <Means>$[ The Log ]</Means>
-                <Means>$[ ./Synopsis ]</Means>
-                <Means>$[ ./Table of Contents ]</Means>
+                <Word><Content>$[ The Log ]</Content></Word>
+                <Word><Content>$[ ./Synopsis ]</Content></Word>
+                <Word><Content>$[ ./Table of Contents ]</Content></Word>
             </Paragraph>
         </Section>
         <Section>
             <Heading>What stands under the log</Heading>
-            <Paragraph><Means>[[ A Persona ]]**</Means>: <Means>$[ A Persona / Synopsis ]</Means></Paragraph>
+            <Paragraph><Word><Content>[[ A Persona ]]**</Content></Word>: <Word><Content>$[ A Persona / Synopsis ]</Content></Word></Paragraph>
         </Section>
     </Chapter>
 );
