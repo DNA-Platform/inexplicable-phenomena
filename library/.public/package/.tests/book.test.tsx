@@ -83,6 +83,16 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(book.about).toBeUndefined();
     });
 
+    it('exposes its cover, its synopsis and its table — the chapters carrying each, wherever they stand', () => {
+        const book = built<$Book>(<Book>{TheArgument()}{WhereThingsAre()}{APaper()}{WhatItArgues()}</Book>);
+        expect(book.cover).toBe(book.parts[2]);
+        expect(book.cover).toBe(book.canonical);
+        expect(book.synopsis).toBe(book.parts[3]);
+        expect(book.table).toBe(book.parts[1]);
+        const untabled = built<$Book>(<Book>{APaper()}{WhatItArgues()}{TheArgument()}</Book>);
+        expect(untabled.table).toBeUndefined();
+    });
+
     it('a chapter that does not specify makes the book say so, coded to that chapter', () => {
         const Untitled = (): React.ReactNode => <Chapter><Paragraph>no title</Paragraph></Chapter>;
         const book = built<$Book>(<Book>{APaper()}{WhatItArgues()}{WhereThingsAre()}{Untitled()}</Book>);

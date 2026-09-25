@@ -9,6 +9,9 @@ import { $TableOfContents } from './TableOfContents';
 
 export class $Book extends $Composition {
     specification = new BookSpecification();
+    get cover(): $Chapter | undefined { return this.canonical; }
+    get synopsis(): $Chapter | undefined { return this.contents.find($Chapter).find(chapter => chapter.is($Synopsis)); }
+    get table(): $Chapter | undefined { return this.contents.find($Chapter).find(chapter => chapter.is($TableOfContents)); }
     get title(): $Title | undefined { return this.canonical?.canonical; }
     get author(): $Author | undefined { return this.canonical?.annotations.expressed($Author); }
     get subject(): $Subject | undefined { return this.canonical?.annotations.expressed($Subject); }
