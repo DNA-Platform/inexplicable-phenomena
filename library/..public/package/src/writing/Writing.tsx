@@ -45,7 +45,7 @@ export class $Writing extends $Chemical {
         const [Container, ...layers] = [...this.containers];
         const [id] = this.id;
         const className = [...new Set(this.classes)].join(' ') || undefined;
-        return layers.reduce<ReactNode>((drawing, Layer) => <Layer>{drawing}</Layer>, (
+        return layers.reduce<ReactNode>((drawing, Layer) => <Layer className="pd-container">{drawing}</Layer>, (
             <Container id={id} className={className}>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
@@ -216,7 +216,13 @@ export class Annotations extends Collection<$Annotation> {
 
 export class $Parenthetical extends $Annotation {
     style = createGlobalStyle`
-        .pa-parenthetical { display: none; }
+        .pa-parenthetical,
+        .pd-container:has(> .pa-parenthetical),
+        .pd-container:has(> .pd-container > .pa-parenthetical),
+        .pd-container:has(> .pd-container > .pd-container > .pa-parenthetical),
+        .pd-container:has(> .pd-container > .pd-container > .pd-container > .pa-parenthetical) {
+            display: none;
+        }
     `;
 
     override note(): ReactNode { return <this.style />; }

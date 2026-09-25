@@ -263,7 +263,7 @@ describe('a reference makes its writing a link by adding a layer to its containe
         expect(anchor.tagName).toBe('A');
         expect(anchor.getAttribute('href')).toBe('/there/');
         expect(anchor.id).toBe('');
-        expect(anchor.className).toBe('');
+        expect(anchor.className).toBe('pd-container');
         const own = anchor.firstElementChild!;
         expect(own.tagName).toBe('SPAN');
         expect(own.id).toBe('there');

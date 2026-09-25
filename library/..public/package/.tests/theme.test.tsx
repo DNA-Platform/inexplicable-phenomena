@@ -49,7 +49,7 @@ describe('a format that says it is a theme provides its own properties to everyt
         const container = await drawn(writing);
         const themed = container.firstElementChild!;
         expect(themed.tagName).toBe('SPAN');
-        expect(themed.className).toBe('');
+        expect(themed.className).toBe('pd-container');
         expect(themed.firstElementChild!.tagName).toBe('SPAN');
         expect(themed.firstElementChild!.className).toBe('pa-parenthetical');
     });

@@ -655,9 +655,22 @@ describe('a writing draws through its containers, a layer for itself and one for
         await act(async () => { container = render(<Drawn />).container; });
         const outermost = container?.firstElementChild;
         expect(outermost?.tagName).toBe('DIV');
-        expect(outermost?.className).toBe('');
+        expect(outermost?.className).toBe('pd-container');
         expect(outermost?.firstElementChild?.tagName).toBe('SPAN');
         expect(outermost?.firstElementChild?.className).toBe('pa-tagged');
+    });
+
+    it('marks every layer around it pd-container and never its own element, so a rule can reach its layers without reaching the writing that holds it', async () => {
+        const writing = built<$Writing>(<Writing>outer <Writing>inner <Boxed /><Framed /></Writing></Writing>);
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        const outer = container!.firstElementChild!;
+        expect(outer.tagName).toBe('SPAN');
+        expect(outer.className).toBe('');
+        const layers = [...outer.querySelectorAll('.pd-container')].map(layer => layer.tagName);
+        expect(layers).toEqual(['DIV', 'ARTICLE']);
+        expect(outer.querySelector('article.pd-container > span')?.className).toBe('');
     });
 
     it('drawn, the container is the element its classes are on, and each annotation is rendered inside it as its own writing with pd-annotation on it', async () => {
