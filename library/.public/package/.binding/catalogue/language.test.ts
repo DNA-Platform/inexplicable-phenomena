@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bare, form, forms, key, last, name, notation, separator, spelling, spelt, tidy, whole } from './language';
+import { form, forms, key, last, name, notation, separator, spelling, spelt, tidy, titled, whole } from './language';
 
 // WHAT THE LANGUAGE PROMISES A WRITER, and every one of these is a promise rather than a check on a
 // mechanism. The difference matters here more than anywhere else in the compiler: a parser that is
@@ -122,6 +122,12 @@ describe('a name', () => {
         expect(name('/')).toEqual({ of: 'chapter', book: '', chapter: '' });
         expect(name('./')).toEqual({ of: 'chapter', within: true, chapter: '' });
     });
+
+    it('in a title form names the writing its file is — its book in a cover, a chapter of its book anywhere else', () => {
+        expect(titled(name('The Argument'), true)).toEqual({ of: 'book', book: 'The Argument' });
+        expect(titled(name('The Argument'), false)).toEqual({ of: 'chapter', within: true, chapter: 'The Argument' });
+        expect(titled(name('A Paper / The Argument'), false)).toEqual({ of: 'chapter', book: 'A Paper', chapter: 'The Argument' });
+    });
 });
 
 describe('a key', () => {
@@ -179,18 +185,4 @@ describe('the words and the name', () => {
         expect(read('[[ Doug ]]]( Dougs Library )')).toMatchObject({ balanced: false });
     });
 
-    it('reads an element the same way', () => {
-        expect(bare('**[[ Doug ]]( Dougs Library )')).toEqual({ name: 'Dougs Library', words: 'Doug', stars: '**' });
-        expect(bare('[[ The Sheet ]]')).toEqual({ name: 'The Sheet', words: 'The Sheet', stars: '' });
-        expect(bare('The Sheet')).toEqual({ name: 'The Sheet', words: 'The Sheet', stars: '' });
-    });
-
-    it('reads the framework\'s own display form, [words](name), as saying one thing and naming another', () => {
-        expect(bare('[Doug](My Library Log)')).toEqual({ name: 'My Library Log', words: 'Doug', stars: '' });
-    });
-
-    it('and does not count a reference beside a name as part of it — the box in a title leads away, the name stays', () => {
-        expect(bare('[[ My Library Log ]] $[ ]( Dougs Library )')).toEqual({ name: 'My Library Log', words: 'My Library Log', stars: '' });
-        expect(bare('$[ ]( The Log ) The Log')).toEqual({ name: 'The Log', words: 'The Log', stars: '' });
-    });
 });

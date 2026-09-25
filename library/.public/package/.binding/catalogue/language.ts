@@ -103,35 +103,6 @@ export const spelt = (relation: Relation, end: End, name: string): string => {
     return held === undefined ? name : `${held.prefix}[[ ${name} ]]${held.postfix}`;
 };
 
-// AND THE NAME INSIDE A WRITTEN FORM, for the places that read an ELEMENT rather than prose. A
-// title may be written plain or annotated — `<Title>The Sheet</Title>` and
-// `<Title>[[ The Sheet ]]</Title>` name the same chapter — because the element already carries the
-// relation and the brackets are the explicit spelling of what it implies.
-//
-// THE WHOLE ELEMENT MUST BE THE FORM, so the regex is the one above with its ends pinned: a title
-// that is prose with an annotation somewhere inside it is not a title written as an annotation.
-const written = new RegExp(`^(?:${notation.source})$`, 'u');
-
-export const bare = (said: string): { name: string; words: string; stars: string } => {
-    // WHAT A THING IS CALLED DOES NOT INCLUDE WHAT IT REFERS TO. A title may carry a reference
-    // beside its name — the box that leads to the subject — and its name is what is left.
-    const forms = new RegExp(notation.source, 'gu');
-    let plain = said;
-    for (let form = forms.exec(said); form !== null; form = forms.exec(said))
-        if (spelling(form).refers) plain = plain.replace(form[0], '');
-    plain = plain.trim();
-    const held = written.exec(plain);
-    // AND THE FRAMEWORK'S OWN DISPLAY FORM, `[words](name)` — what a mention element has always
-    // parsed as saying one thing and naming another — reads the same as `[[ words ]]( name )`.
-    const link = held === null ? /^\[([^\]]*)\]\(([^)]*)\)$/u.exec(plain) : null;
-    if (link !== null) return { name: link[2].trim(), words: link[1].trim(), stars: '' };
-    if (held === null) return { name: plain, words: plain, stars: '' };
-    const read = spelling(held);
-    if (!read.balanced || read.refers) return { name: plain, words: plain, stars: '' };
-
-    return { name: read.name, words: read.words, stars: read.prefix !== '' ? read.prefix : read.postfix };
-};
-
 // ---- what a name is ----
 //
 // THREE SHAPES AND ONE RULE: a leading separator means WITHIN WHERE I STAND.
@@ -225,9 +196,9 @@ export const key = (held: Name, within: string | undefined): string => {
 export const itself = (held: Name, within: string | undefined): boolean =>
     held.of === 'chapter' && 'within' in held && held.chapter === within;
 
-// AND WHAT A CHAPTER MENTION NAMES: a chapter of the book it stands in, unless it says which book.
-// `<Chapter>The Sheet</Chapter>` is `./The Sheet`; a catalogue's row writes
-// `<Chapter>[[ My Library Log ]]( My Library Log / Synopsis )</Chapter>` and names the synopsis
-// chapter of the book it lists, as written — Doug, 2026-09-20: "In the book. It has a .synopsis
-// file literally." `asChapter` is a PROXY NAME, flagged for Doug.
-export const asChapter = (said: string): string => (name(said).of === 'chapter' ? said : `./${said}`);
+// AND WHAT A TITLE FORM NAMES, which is the writing its file is — the compiler knows the file it
+// reads. In a cover, a book; anywhere else, a chapter of the book the file stands in, so
+// `[[ The Argument ]]` in `1-the-argument.tsx` is `./The Argument`. A name that says which book
+// its chapter is in is left as written, and is a chapter of that book. `titled` is a PROXY NAME.
+export const titled = (held: Name, cover: boolean): Name =>
+    (cover || held.of !== 'book' ? held : { of: 'chapter', within: true, chapter: held.book });

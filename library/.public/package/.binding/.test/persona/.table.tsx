@@ -1,19 +1,18 @@
-import { $Chapter, Heading, Section, TableOfContents, Title, chapter as Chapter } from '@dna-platform/public';
-import { Option } from '@dna-platform/public/application';
+import { Chapter, Heading, Means, Paragraph, Parenthetical, Section, TableOfContents, Title } from '@dna-platform/public';
 
-export default class $Table extends $Chapter {
-    print() {
-        return (
-            <TableOfContents>
-                <Title print={false}>Table of Contents</Title>
-                <Section>
-                    <Heading>Contents</Heading>
-                    <Option><Chapter>Who Writes Here</Chapter></Option>
-                    <Chapter print={false}>A Persona</Chapter>
-                    <Chapter print={false}>Synopsis</Chapter>
-                    <Chapter print={false}>Table of Contents</Chapter>
-                </Section>
-            </TableOfContents>
-        );
-    }
-}
+export default () => (
+    <Chapter>
+        <TableOfContents />
+        <Title><Parenthetical />[[ Table of Contents ]]</Title>
+        <Section>
+            <Heading>Contents</Heading>
+            <Paragraph><Means>$[ ./Who Writes Here ]</Means></Paragraph>
+            <Paragraph>
+                <Parenthetical />
+                <Means>$[ A Persona ]</Means>
+                <Means>$[ ./Synopsis ]</Means>
+                <Means>$[ ./Table of Contents ]</Means>
+            </Paragraph>
+        </Section>
+    </Chapter>
+);

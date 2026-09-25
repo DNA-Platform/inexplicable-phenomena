@@ -116,19 +116,20 @@ export const duplicated = (held: Staged, copies: Copies, count: number): string[
         writeFileSync(table, code.replace(after, `${after}\n${rows.join('\n')}`));
     };
 
-    const canonical: string[] = [];
+    // A CATALOGUE'S ROW ANSWERS FOR A BOOK AND REFERS TO ITS SYNOPSIS — the shape
+    // `catalogue/wellformed.ts` requires of every catalogued book.
+    const row = (name: string): string => `            <Paragraph><Means>[[ ${name} ]]**</Means>: <Means>$[ ${name} / Synopsis ]</Means></Paragraph>`;
+    const rows: string[] = [];
     for (let k = 1; k <= count; k++) {
         const name = `${copies.name} ${k}`;
         const folder = `${copies.of}-${k}`;
         cpSync(at(copies.of), at(folder), { recursive: true });
         for (const file of ['.cover.tsx', '.synopsis.tsx', '.table.tsx'])
             writeFileSync(join(at(folder), file), readFileSync(join(at(folder), file), 'utf8').split(copies.name).join(name));
-        // AND ITS ROW IN THE CATALOGUE THAT HOLDS IT names the copy's own synopsis beside the box
-        // that leads to it — the shape `catalogue/wellformed.ts` requires of every catalogued book.
-        canonical.push(`                    <Option><Chapter>[[ ${name} ]]( ${name} / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( ${name} )**</Book></Option>`);
+        rows.push(row(name));
         named.push(name);
     }
-    listing(join(at(copies.subject), '.table.tsx'), `                    <Option><Chapter>[[ ${copies.name} ]]( ${copies.name} / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( ${copies.name} )**</Book></Option>`, canonical);
+    listing(join(at(copies.subject), '.table.tsx'), row(copies.name), rows);
 
     return named;
 };

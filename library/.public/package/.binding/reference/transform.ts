@@ -4,7 +4,7 @@ import type { Plugin } from 'vite';
 import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import { reads } from '../catalogue/reading';
-import { key, name as parsed, notation, spelling, whole } from '../catalogue/language';
+import { form, key, name as parsed, notation, spelling, titled, whole } from '../catalogue/language';
 import { slug } from '../resolution/addresses';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
@@ -69,6 +69,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     // WHERE THIS FILE STANDS, because `$[ ./The Sheet ]` means the chapter of the book it is written
     // in. The scope is the one thing a reference cannot carry and the place it stands always knows.
     const within = catalogue.scope(file);
+    const cover = basename(file) === '.cover.tsx';
     const source = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
     const edits: { from: number; to: number; said: string }[] = [];
     const missed: Missing[] = [];
@@ -100,8 +101,10 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
 
             // EVERY OTHER FORM IS VERIFIED AND GIVEN ITS URL — Doug, 2026-09-19: "There should not be
             // anymore dynamic link generation." What is shown is the thing and never the scope:
-            // `$[ ./The books ]` reads "The books".
-            const meant = parsed(read.name);
+            // `$[ ./The books ]` reads "The books". And a title form names the writing its file is —
+            // in a cover its book, anywhere else a chapter of its book.
+            const said = parsed(read.name);
+            const meant = !read.refers && form(read.prefix, read.brackets, read.postfix)?.is === 'title' ? titled(said, cover) : said;
             const shown = read.named ? read.words : meant.of === 'book' ? meant.book : meant.chapter;
             const url = catalogue.where(key(meant, within));
             if (url === undefined) {

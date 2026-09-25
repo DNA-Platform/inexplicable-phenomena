@@ -1,13 +1,12 @@
-import { $Chapter, Author, Cover, Subject, Title } from '@dna-platform/public';
+import { About, Author, Biography, Chapter, Cover, Subject, Title } from '@dna-platform/public';
 
-export default class $Cover extends $Chapter {
-    print() {
-        return (
-            <Cover>
-                <Title>[[ A Persona ]]</Title>
-                <Author>*[[ The Log ]]</Author>
-                <Subject>**[[ The Log ]]</Subject>
-            </Cover>
-        );
-    }
-}
+export default () => (
+    <Chapter>
+        <Cover />
+        <Biography />
+        <Title>[[ A Persona ]]</Title>
+        <Author>*[[ The Log ]]</Author>
+        <Subject>**[[ The Log ]]</Subject>
+        <About>[[ A Persona ]]</About>
+    </Chapter>
+);

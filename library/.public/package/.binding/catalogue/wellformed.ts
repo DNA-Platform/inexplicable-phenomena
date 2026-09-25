@@ -19,17 +19,17 @@ export const faults = {
     malformed: 'MALFORMED-ANNOTATION',
     noTitle: 'NO-TITLE',
     duplicateTitle: 'DUPLICATE-TITLE',
+    titledTwice: 'TITLED-TWICE',
     unknownReference: 'UNKNOWN-REFERENCE',
     notListed: 'NOT-LISTED',
+    notASubject: 'NOT-A-SUBJECT',
     noLibrary: 'NO-LIBRARY',
     twoLibraries: 'TWO-LIBRARIES',
     circularCatalogue: 'CIRCULAR-CATALOGUE',
     topicIsCatalogue: 'TOPIC-IS-CATALOGUE',
     noSynopsis: 'NO-SYNOPSIS',
-    strayListing: 'STRAY-LISTING',
     chapterNotListed: 'CHAPTER-NOT-LISTED',
     notInTheTable: 'NOT-IN-THE-TABLE',
-    noBookReference: 'NO-BOOK-REFERENCE',
     noAuthor: 'NO-AUTHOR',
     noSelfAuthor: 'NO-SELF-AUTHOR',
     twoSelfAuthors: 'TWO-SELF-AUTHORS',
@@ -70,6 +70,10 @@ const owes = (relation: 'subject' | 'topic', name: string, facing: 'up' | 'down'
 
 const speaks = (relation: 'subject' | 'topic'): string =>
     relation === 'subject' ? 'catalogue' : 'topical catalogue';
+
+// AND HOW A TABLE REFERS TO A BOOK'S SYNOPSIS, spelled with the name that synopsis titles itself.
+const synopsis = (structure: Structure, book: SpotId): string =>
+    `$[ ${called(structure, book)}${separator}${structure.named.get(`${book}/.synopsis.tsx`) ?? 'Synopsis'} ]`;
 
 export const wellformed = (structure: Structure): Diagnostic[] => {
     const wrong: Diagnostic[] = [];
@@ -140,25 +144,23 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // referred to, and cannot be arrived at. The cover is the one file that titles something other
     // than itself: its title is the BOOK's, and the cover is that book's first chapter.
     for (const one of structure.untitled)
-        wrong.push({ fault: faults.noTitle, at: one.at, file: one.file, says: `${one.file.split(/[\/]/).pop()} has no title — every chapter says what it is called with <Title>` });
+        wrong.push({ fault: faults.noTitle, at: one.at, file: one.file, says: `${one.file.split(/[\/]/).pop()} has no title — every chapter says what it is called with a title form, [[ Its Name ]]` });
+
+    // AND A FILE TITLES ONE THING. A title form names the writing its file is; a cover's second one
+    // is its About and names that same book, so one naming anything else is a second title.
+    for (const one of structure.titledTwice)
+        wrong.push({ fault: faults.titledTwice, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line} titles "${one.said}", and this file already titles "${called(structure, one.by)}" — a file titles one thing, and a cover's About names its own book` });
 
     if (wrong.length > 0) return wrong;
 
-    // ---- every reference resolves, however it was written ----
+    // ---- every reference resolves ----
     //
     // A REFERENCE SPENDS A NAME; AN ANNOTATION MAKES ONE, and making cannot fail for not having been
-    // made. So this is the one side of the language that can be wrong by ABSENCE — and it covers
-    // every shape a name is written in, not only the prose one.
-    //
-    // MEASURED BEFORE IT DID: 104 mentions written as `<Book>`, `<For>` and `<Chapter>` elements,
-    // three of them naming things this library does not hold — a book renamed months ago and a typo
-    // with three letters glued to the front of a title — and the specification said WELL-FORMED
-    // because it was only reading prose.
-    const reaching: Record<string, string> = { reference: 'refers to', book: 'mentions the book', chapter: 'mentions the chapter', for: 'says it is for' };
+    // made. So this is the one side of the language that can be wrong by ABSENCE: a `$[ X ]`, and an
+    // edge whose other end the library does not hold. A table listing what is not there is this.
     for (const one of structure.mentions) {
         if (structure.reaches(one.name, one.book) !== undefined) continue;
-        const shown = one.kind === 'chapter' ? structure.spells(one.name, one.book) : one.said;
-        wrong.push({ fault: faults.unknownReference, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line} ${reaching[one.kind]} "${shown}", and nothing in this library is called that` });
+        wrong.push({ fault: faults.unknownReference, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line} refers to "${structure.spells(one.name, one.book)}", and nothing in this library is called that` });
     }
 
     // ---- a name somebody made is a name somebody spends ----
@@ -170,18 +172,6 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         if (spot.kind !== 'anchor' || structure.referred.has(spot.id)) continue;
         const naming = structure.names.get(`${called(structure, spot.book)}${separator}${called(structure, spot.id)}`)?.find(one => one.spot === spot.id);
         wrong.push({ fault: faults.unreferencedMention, at: spot.at, file: spot.file, says: `"${called(structure, spot.id)}" is named${naming === undefined ? '' : ` at line ${naming.at.line}`} and nothing in the library refers to it — a name nobody spends is unnecessary, and a library is compact` });
-    }
-
-    // ---- a synopsis says what it is for ----
-    //
-    // A SYNOPSIS STANDS IN SOMEBODY ELSE'S TABLE as often as its own, so a reader meeting one needs
-    // to know which book it describes — and the framework already has the element for it. Every
-    // synopsis in Doug's library carries a `<For>`; nothing checked that they did.
-    const says = new Set(structure.mentions.filter(one => one.kind === 'for').map(one => one.at.file));
-    for (const spot of structure.spots.values()) {
-        if (!spot.file.endsWith('.synopsis.tsx')) continue;
-        if (says.has(spot.file)) continue;
-        wrong.push({ fault: faults.noBookReference, at: spot.at, file: spot.file, says: `this synopsis does not say what it is for — a synopsis names its book with <For>` });
     }
 
     // ---- a catalogue answers for what stands under it ----
@@ -209,6 +199,16 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         });
     }
 
+    // AND A BOOK IS FILED ONLY UNDER ONE THAT IS ABOUT SOMETHING. Doug, 2026-09-25: "Any book can be
+    // About something, but that allows other books to then be able to use it as a subject catalogue."
+    // A cover says what its book is about with a second title form, naming the book; the library's
+    // own, which catalogues itself, owes it as well.
+    for (const edge of structure.edges.values()) {
+        if (edge.relation !== 'subject' || structure.about.has(edge.from)) continue;
+        const half = edge.ends.find(h => h.end === 'target') ?? edge.ends[0];
+        wrong.push({ fault: faults.notASubject, at: wrote(structure, edge.to).at, file: half.at.file, says: `line ${half.at.line} files "${called(structure, edge.to)}" under "${called(structure, edge.from)}", which is about nothing — a book is a subject when its cover says what it is about, [[ ${called(structure, edge.from)} ]] after its title` });
+    }
+
     // ---- the table of contents, which is where a book answers for what it holds ----
     //
     // Doug, 2026-09-18: "have you validated one edge of the cataloguing graph because it is present
@@ -216,16 +216,12 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // catalogue edge was corroborated by an annotation somewhere in the book's apparatus, and the
     // same line written on the cover would have passed identically. The table was doing nothing.
 
-    // A TABLE NAMES NOTHING THAT IS NOT THERE.
-    for (const one of structure.strays)
-        wrong.push({ fault: faults.strayListing, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line} lists ${one.tag === 'Chapter' ? 'a chapter' : 'a book'} called "${one.said}", and this library holds no such thing` });
-
-    // AND IT NAMES EVERY CHAPTER ITS BOOK HOLDS. A chapter nobody lists is a chapter a reader
+    // A TABLE REFERS TO EVERY CHAPTER ITS BOOK HOLDS. A chapter nobody lists is a chapter a reader
     // arrives at only by knowing it is there.
     for (const spot of structure.spots.values()) {
         if (spot.kind !== 'chapter') continue;
         if (structure.lists.get(spot.book)?.has(spot.id) === true) continue;
-        wrong.push({ fault: faults.chapterNotListed, at: spot.at, file: spot.file, says: `"${structure.named.get(spot.id) ?? spot.id}" is a chapter of "${called(structure, spot.book)}" and its table of contents does not name it` });
+        wrong.push({ fault: faults.chapterNotListed, at: spot.at, file: spot.file, says: `"${structure.named.get(spot.id) ?? spot.id}" is a chapter of "${called(structure, spot.book)}" and its table of contents does not refer to it, $[ ./${structure.named.get(spot.id) ?? spot.id} ]` });
     }
 
     // AND THE ANSWERING HALF OF A CATALOGUE EDGE IS WRITTEN IN THE TABLE. A catalogue saying
@@ -233,13 +229,13 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // reader reads, so it is where the claim has to stand to be worth anything.
     for (const edge of structure.edges.values()) {
         if (edge.relation !== 'subject' || edge.from === edge.to) continue;
-        // AND THE ROW THAT CATALOGUES A BOOK NAMES THAT BOOK'S OWN SYNOPSIS — Doug, 2026-09-19:
+        // AND A TABLE THAT CATALOGUES A BOOK REFERS TO THAT BOOK'S OWN SYNOPSIS — Doug, 2026-09-19:
         // "the table needs links to its chapters and the books that those chapters are synopses
         // of"; 2026-09-20: "In the book. It has a .synopsis file literally." A catalogue's table is
         // where each synopsis is reached from.
         const listing = structure.lists.get(edge.from)?.get(edge.to);
         if (listing !== undefined && !listing.synopsis)
-            wrong.push({ fault: faults.noSynopsis, at: wrote(structure, edge.from).at, file: listing.at.file, says: `line ${listing.at.line} lists "${called(structure, edge.to)}" without naming its synopsis — a catalogue's row names the book's own synopsis chapter beside it, [[ ${called(structure, edge.to)} ]]( ${called(structure, edge.to)} / Synopsis )` });
+            wrong.push({ fault: faults.noSynopsis, at: wrote(structure, edge.from).at, file: listing.at.file, says: `line ${listing.at.line} answers for "${called(structure, edge.to)}" and the table does not refer to its synopsis — a catalogue's table reaches each book's own synopsis, ${synopsis(structure, edge.to)}` });
         const answering = edge.ends.find(one => one.end === 'source');
         if (answering === undefined || answering.at.file.endsWith('.table.tsx')) continue;
         wrong.push({ fault: faults.notInTheTable, at: wrote(structure, edge.from).at, file: answering.at.file, says: `"${called(structure, edge.from)}" says it catalogues "${called(structure, edge.to)}" at line ${answering.at.line}, which is not its table of contents — a catalogue answers for what it holds where a reader can see it` });
@@ -284,7 +280,7 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
             }
             const listing = structure.lists.get(topic)?.get(id);
             if (listing !== undefined && !listing.synopsis)
-                wrong.push({ fault: faults.noSynopsis, at: wrote(structure, topic).at, file: listing.at.file, says: `"${called(structure, topic)}" lists "${called(structure, id)}" without the chapter that is its synopsis — a book standing in a catalogue that is not its own says there what it is` });
+                wrong.push({ fault: faults.noSynopsis, at: wrote(structure, topic).at, file: listing.at.file, says: `"${called(structure, topic)}" answers for "${called(structure, id)}" and its table does not refer to its synopsis — a book standing in a catalogue that is not its own says there what it is, ${synopsis(structure, id)}` });
         }
 
     // ---- authorship: the autobiography, and the books it catalogues ----

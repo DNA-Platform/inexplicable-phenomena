@@ -1,27 +1,24 @@
-// A BOOK IS MENTIONED WITH `book` AND COMPOSED WITH `Book`, and a table mentions. The structure
-// reads the tag name, so the mention is bound to the name it reads.
-import { $Chapter, Heading, Section, TableOfContents, Title, book as Book, chapter as Chapter } from '@dna-platform/public';
-import { Option } from '@dna-platform/public/application';
+import { Chapter, Heading, Means, Paragraph, Parenthetical, Section, TableOfContents, Title } from '@dna-platform/public';
 
-export default class $Table extends $Chapter {
-    print() {
-        return (
-            <TableOfContents>
-                <Title print={false}>Table of Contents</Title>
-                <Section>
-                    <Heading>Contents</Heading>
-                    <Option><Chapter>The Shelves</Chapter></Option>
-                    <Chapter print={false}>The Library</Chapter>
-                    <Chapter print={false}>Synopsis</Chapter>
-                    <Chapter print={false}>Table of Contents</Chapter>
-                </Section>
-                <Section>
-                    <Heading>The Catalogue</Heading>
-                    <Option><Chapter>[[ The Log ]]( The Log / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( The Log )**</Book></Option>
-                    <Option><Chapter>[[ Some Projects ]]( Some Projects / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( Some Projects )**</Book></Option>
-                    <Option><Chapter>[[ A Paper ]]( A Paper / Synopsis )</Chapter>&nbsp;<Book>[[ ]]( A Paper )**</Book></Option>
-                </Section>
-            </TableOfContents>
-        );
-    }
-}
+export default () => (
+    <Chapter>
+        <TableOfContents />
+        <Title><Parenthetical />[[ Table of Contents ]]</Title>
+        <Section>
+            <Heading>Contents</Heading>
+            <Paragraph><Means>$[ ./The Shelves ]</Means></Paragraph>
+            <Paragraph>
+                <Parenthetical />
+                <Means>$[ The Library ]</Means>
+                <Means>$[ ./Synopsis ]</Means>
+                <Means>$[ ./Table of Contents ]</Means>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>The Catalogue</Heading>
+            <Paragraph><Means>[[ The Log ]]**</Means>: <Means>$[ The Log / Synopsis ]</Means></Paragraph>
+            <Paragraph><Means>[[ Some Projects ]]**</Means>: <Means>$[ Some Projects / Synopsis ]</Means></Paragraph>
+            <Paragraph><Means>[[ A Paper ]]**</Means>: <Means>$[ A Paper / Synopsis ]</Means></Paragraph>
+        </Section>
+    </Chapter>
+);

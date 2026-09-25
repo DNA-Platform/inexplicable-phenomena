@@ -18,11 +18,19 @@ describe('the test library, read', () => {
         expect(wellformed(made)).toEqual([]);
     });
 
-    it('names every book by its cover and every chapter within its book', () => {
+    it('names every book by its cover and every chapter within its book, each by its title form', () => {
         expect(made.named.get('the-library')).toBe('The Library');
         expect(made.named.get('paper/1-the-argument.tsx')).toBe('The Argument');
         expect(made.of('A Paper / The Evidence')).toBe('paper/2-the-evidence.tsx');
         expect(made.of('The Evidence')).toBeUndefined();
+    });
+
+    // A COVER'S SECOND TITLE FORM, NAMING ITS OWN BOOK, IS ITS ABOUT — and a book is a subject another
+    // may be filed under only when it is about something. Doug, 2026-09-25: "Any book can be About
+    // something, but that allows other books to then be able to use it as a subject catalogue."
+    it('reads a cover\'s second title form, naming its book, as what the book is about', () => {
+        expect(made.about).toEqual(new Set(['the-library', 'the-log', 'persona']));
+        expect(made.titledTwice).toEqual([]);
     });
 
     it('reads a cover that gives its words as naming the book behind them', () => {
@@ -57,16 +65,18 @@ describe('the test library, read', () => {
     });
 
     it('collects every reference written in the file, in a string as much as in prose', () => {
-        const said = made.mentions.filter(one => one.kind === 'reference' && one.by === 'paper/1-the-argument.tsx').map(one => one.said);
+        const said = made.mentions.filter(mention => mention.by === 'paper/1-the-argument.tsx').map(mention => mention.said);
         expect(said).toEqual(['./The Evidence', 'The Library', './The Evidence', 'Some Projects / The Work', 'The Log']);
     });
 
-    // A TABLE THAT BINDS THE MENTION THROUGH A LOCAL — `const Book = $(book)` — is read as
-    // mentioning, and a chapter that composed a `<Book>` would not be. The name is not the thing.
-    it('reads a mention by what its tag is bound to, not by what the file called it', () => {
-        const listed = [...(made.lists.get('the-log')?.values() ?? [])].filter(one => one.kind === 'book');
-        expect(listed.map(one => one.of)).toEqual(['persona']);
-        expect(listed.find(one => one.of === 'persona')?.canonical).toBe(true);
+    // A TABLE IS READ OFF THE NOTATION AND OFF NO ELEMENT — Doug, 2026-09-25: "You don't need the
+    // compiler to check for anything. You can't! They might subclass them. That's why they are in
+    // special files." A chapter is listed by a reference to it, a book by the answer the table gives.
+    it('reads a table\'s listings: its chapters by reference, and a book it catalogues by its answer, with its synopsis', () => {
+        const listings = [...(made.lists.get('the-log')?.values() ?? [])];
+        expect(listings.filter(l => l.kind === 'chapter').map(l => l.of).sort())
+            .toEqual(['the-log/.synopsis.tsx', 'the-log/.table.tsx', 'the-log/1-entries.tsx']);
+        expect(listings.filter(l => l.kind === 'book')).toMatchObject([{ of: 'persona', canonical: true, synopsis: true }]);
     });
 });
 
