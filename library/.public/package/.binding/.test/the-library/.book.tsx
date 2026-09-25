@@ -25,17 +25,18 @@ export default class $TheLibrary extends $Book {
     protected override $Define(): void {
         super.$Define();
         this.annotations.add(this,
-            <Ordinary />
+            <Theme />
         );
     }
 }
 
-// AND ITS THEME, THE ORDINARY VIEW: a Format that is also a theme, global to a book, whose style hides
-// every annotation's own writing inside the book — Doug, 2026-09-25: "if we want to have a theme, it
-// is a format annotation that is also a theme that is global to a book. The annotation validate that
-// it is a book. And we can use its style." `Ordinary` is a PROXY NAME, flagged for Doug.
-export class $Ordinary extends $Format {
-    specification = new OrdinarySpecification();
+// AND ITS THEME, which draws the ordinary view: a Format that is also a theme, global to a book, whose
+// style hides every annotation's own writing inside the book — Doug, 2026-09-25: "if we want to have a
+// theme, it is a format annotation that is also a theme that is global to a book. The annotation
+// validate that it is a book. And we can use its style"; and "One might give the book a format called
+// Theme which is a theme, which would be realized in its .book or as a resource in one of its chapters."
+export class $Theme extends $Format {
+    specification = new ThemeSpecification();
     theme = true;
     style = styled.div`
         .pd-annotation {
@@ -44,11 +45,11 @@ export class $Ordinary extends $Format {
     `;
 }
 
-export class OrdinarySpecification extends AnnotationSpecification {
-    @specify('the ordinary view is said of a book')
+export class ThemeSpecification extends AnnotationSpecification {
+    @specify('a theme is said of a book')
     $saidOfABook(writing: $Writing): void {
-        $check(writing instanceof $Book, 'the ordinary view is said of a book, and this is not one');
+        $check(writing instanceof $Book, 'a theme is said of a book, and this is not one');
     }
 }
 
-export const Ordinary = $($Ordinary);
+export const Theme = $($Theme);
