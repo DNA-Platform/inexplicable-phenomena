@@ -91,7 +91,7 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // outcome that must not happen is silence, because an annotation that does nothing looks exactly
     // like one that works.
     for (const one of structure.refused)
-        wrong.push({ fault: faults.malformed, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line}: "${one.said}" is not written in a form the notation has — brackets balance, and the stars stand on one side or the other, never both` });
+        wrong.push({ fault: faults.malformed, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line}: "${one.said}" is not written in a form the notation has — brackets balance, the stars stand on one side only, three brackets carry none, and an author is answered by nothing, so [[ X ]]* is not a form` });
 
     // ---- one title, one book ----
     for (const [said, held] of structure.names) {
@@ -192,10 +192,12 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // Measured before this held: two books in Doug's library reachable from no page a reader could
     // see, with every check green.
     //
-    // A BOOK THAT AUTHORS ITSELF IS THE ONE EXCEPTION, because both ends of that connection are the
-    // same book — which is exactly what makes it the ground rather than a claim.
+    // A BOOK THAT IS ITS OWN CATALOGUE IS ONE EXCEPTION, because both ends of that connection are the
+    // same book — which is exactly what makes it the ground rather than a claim. AND AN AUTHOR IS THE
+    // OTHER: the language has no answer for one since 2026-09-25, so a By is the whole of its edge and
+    // who may author is the colouring's to say.
     for (const edge of structure.edges.values()) {
-        if (edge.from === edge.to || edge.ends.length > 1) continue;
+        if (edge.relation === 'author' || edge.from === edge.to || edge.ends.length > 1) continue;
         const half = edge.ends[0];
         const other = half.end === 'source' ? edge.to : edge.from;
         const mine = half.end === 'source' ? edge.from : edge.to;
@@ -300,15 +302,13 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
             if (author === undefined) { wrong.push({ fault: faults.noAuthor, at: book.at, file: book.file, says: `"${called(structure, book.id)}" says nowhere who wrote it — every book names its author` }); continue; }
             if (structure.authors.has(author)) continue;
 
-            // WHY IT MAY NOT AUTHOR, said as the rule rather than as a set membership. The rule has
-            // two halves and a reader needs to know which one failed: being shelved under an author
-            // does not make you one, and naming an author as yours does not either.
+            // WHY IT MAY NOT AUTHOR, said as the rule rather than as a set membership. Doug, 2026-09-25:
+            // "a book that is by it's subject, or catalogued by one is a potential author" — so an
+            // author that is not the ground failed at its catalogue, which is nothing or no author.
             const above = structure.subjectOf.get(author);
             const because = above === undefined
                 ? `"${called(structure, author)}" is catalogued by nothing`
-                : !structure.authors.has(above)
-                    ? `"${called(structure, author)}" is catalogued by "${called(structure, above)}", which is not itself an author`
-                    : `"${called(structure, author)}" is catalogued by "${called(structure, above)}" but names "${called(structure, structure.authorOf.get(author) ?? above)}" as its own author — an author is authored by the catalogue it stands in`;
+                : `"${called(structure, author)}" is catalogued by "${called(structure, above)}", which is not itself an author`;
             wrong.push({ fault: faults.mayNotAuthor, at: book.at, file: book.file, says: `"${called(structure, book.id)}" is authored by "${called(structure, author)}", which may not author: ${because}` });
         }
 

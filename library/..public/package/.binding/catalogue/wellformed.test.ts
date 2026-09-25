@@ -83,9 +83,9 @@ const faultsOf = (books: Made[]): string[] => wellformed(structure(built(books))
 // with a single thing taken away, so a fault names what was taken rather than the shape of the test.
 const whole = (): Made[] => [
     { folder: 'the-library', name: 'A Library', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]', holds: ['[[ A Log ]]**', '[[ Some Projects ]]**', '[[ A Paper ]]**'] },
-    { folder: 'log', name: 'A Log', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]', holds: ['[[ A Library ]]*', '[[ Some Projects ]]*', '[[ A Persona ]]*', '[[ A Persona ]]**'] },
+    { folder: 'log', name: 'A Log', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]', holds: ['[[ A Persona ]]**'] },
     { folder: 'projects', name: 'Some Projects', author: '*[[ A Log ]]', catalogue: '**[[ A Library ]]' },
-    { folder: 'persona', name: 'A Persona', author: '*[[ A Log ]]', catalogue: '**[[ A Log ]]', holds: ['[[ A Paper ]]*'] },
+    { folder: 'persona', name: 'A Persona', author: '*[[ A Log ]]', catalogue: '**[[ A Log ]]' },
     { folder: 'paper', name: 'A Paper', author: '*[[ A Persona ]]', catalogue: '**[[ A Library ]]' },
 ];
 
@@ -111,10 +111,28 @@ describe('authorship', () => {
     it('refuses a persona nobody vouched for', () => {
         const books = whole();
         books[3].catalogue = '**[[ A Library ]]';
-        books[1].holds = ['[[ A Library ]]*', '[[ Some Projects ]]*', '[[ A Persona ]]*'];
+        books[1].holds = [];
         books[0].holds = [...(books[0].holds ?? []), '[[ A Persona ]]**'];
 
         expect(faultsOf(books)).toEqual([faults.mayNotAuthor]);
+    });
+
+    // BEING CATALOGUED BY AN AUTHOR IS THE VOUCHING — Doug, 2026-09-25: "a book that is by it's
+    // subject, or catalogued by one is a potential author." A second persona under the log writes,
+    // though it names the first persona as its own author and not the log.
+    it('lets a book catalogued by an author write, whoever it names as its own author', () => {
+        const books: Made[] = [...whole(), { folder: 'second', name: 'A Second Persona', author: '*[[ A Persona ]]', catalogue: '**[[ A Log ]]' }];
+        books[1].holds = [...(books[1].holds ?? []), '[[ A Second Persona ]]**'];
+        books[2].author = '*[[ A Second Persona ]]';
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    it('reports an author answered in a table, since the notation has no such form', () => {
+        const books = whole();
+        books[3].holds = ['[[ A Paper ]]*'];
+
+        expect(faultsOf(books)).toEqual([faults.malformed]);
     });
 
     it('refuses a second book that authors itself, because the self-delegation happens once', () => {

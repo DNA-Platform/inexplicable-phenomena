@@ -60,7 +60,6 @@ describe('a mention in a table of contents', () => {
 
     it('written with the notation, receives both halves whatever element it stands in', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Book>[The Library](/the-library/)</Book>');
         expect(made.text).toContain('<Chapter>[A Persona](/a-persona/#synopsis)</Chapter>');
     });
 

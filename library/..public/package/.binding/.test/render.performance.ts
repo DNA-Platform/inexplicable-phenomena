@@ -14,7 +14,7 @@ afterAll(() => { held.remove(); });
 
 describe(`a bind of ${5 + scale} real books`, () => {
     it('finishes, and says what each phase cost', () => {
-        duplicated(held, { of: 'paper', name: 'A Paper', subject: 'the-library', author: 'persona' }, scale);
+        duplicated(held, { of: 'paper', name: 'A Paper', subject: 'the-library' }, scale);
         const at = performance.now();
         const said = bound(held);
         const whole = performance.now() - at;

@@ -356,9 +356,9 @@ export const structure = (found: Library): Structure => {
     // ---- the colouring, which is one flood ----
     //
     // Authorship begins in a single act of self-representation and is extended only by delegation —
-    // so the origin is the one spot that authors itself, and a spot joins the authors only if its
-    // canonical catalogue is an author AND its author is that same catalogue. Both halves: being
-    // shelved under an author does not make you one, and naming an author as yours does not either.
+    // so the origin is the one spot that authors itself, and a spot joins the authors when its
+    // canonical catalogue is an author. Doug, 2026-09-25: "a book that is by it's subject, or
+    // catalogued by one is a potential author" — being catalogued by an author is the vouching.
     const alone = [...spots.keys()].filter(id => authorOf.get(id) === id);
     const origin = alone.length === 1 ? alone[0] : undefined;
     const authors = new Set<SpotId>();
@@ -370,7 +370,7 @@ export const structure = (found: Library): Structure => {
         while (waiting.length > 0) {
             const here = waiting.pop() as SpotId;
             for (const child of under.get(here) ?? [])
-                if (!authors.has(child) && authorOf.get(child) === here) { authors.add(child); waiting.push(child); }
+                if (!authors.has(child)) { authors.add(child); waiting.push(child); }
         }
     }
 

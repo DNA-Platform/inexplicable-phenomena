@@ -15,9 +15,15 @@
 
 // ---- what a form does ----
 //
-// PREFIX FACES OUT AND POSTFIX FACES IN. `*[[ X ]]` says something about X — this writing is the one
-// being authored, so it is the TARGET of the edge. `[[ X ]]*` says something about this writing —
-// it is the author, so it is the SOURCE. The side the stars stand on is the direction.
+// PREFIX FACES OUT AND POSTFIX FACES IN. `**[[ X ]]` says something about X — this writing is the one
+// catalogued, so it is the TARGET of the edge. `[[ X ]]**` says something about this writing — it is
+// the catalogue, so it is the SOURCE. The side the stars stand on is the direction, and each answer
+// carries the count of the link it answers.
+//
+// AN AUTHOR IS ANSWERED BY NOTHING. `*[[ X ]]` names the subject who wrote this writing and is the
+// whole of the edge: Doug, 2026-09-25, "if we decide that Subject collapses the Author syntax… it is an
+// author. We should be able to get rid of syntax." So `[[ X ]]*` is not the language, and its count
+// is left empty so the answers line up — "These don't line up… For things to line up."
 export type Relation = 'author' | 'subject' | 'topic';
 export type End = 'source' | 'target';
 
@@ -34,7 +40,6 @@ export const forms: { brackets: number; prefix: string; postfix: string; form: F
     { brackets: 2, prefix: '*',   postfix: '',    form: { is: 'edge', relation: 'author',  end: 'target' }, reads: 'this is authored by X' },
     { brackets: 2, prefix: '**',  postfix: '',    form: { is: 'edge', relation: 'subject', end: 'target' }, reads: 'this is catalogued by X, canonically' },
     { brackets: 2, prefix: '***', postfix: '',    form: { is: 'edge', relation: 'topic',   end: 'target' }, reads: 'this is catalogued by X' },
-    { brackets: 2, prefix: '',    postfix: '*',   form: { is: 'edge', relation: 'author',  end: 'source' }, reads: 'this is author X' },
     { brackets: 2, prefix: '',    postfix: '**',  form: { is: 'edge', relation: 'subject', end: 'source' }, reads: 'this is subject X' },
     { brackets: 2, prefix: '',    postfix: '***', form: { is: 'edge', relation: 'topic',   end: 'source' }, reads: 'this is a catalogue of X' },
 ];

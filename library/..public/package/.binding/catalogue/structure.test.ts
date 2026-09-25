@@ -30,17 +30,19 @@ describe('the test library, read', () => {
         expect(made.subjectOf.get('projects')).toBe('the-library');
     });
 
-    // THE TWO SPINES ARE THE ONLY EDGES ASSERTED FROM ONE END. A book that is its own subject says
-    // so on its cover and lists itself nowhere, because the self-reference IS the type — there is
-    // no other end to corroborate it from. Every other edge is whole, or it is a fault.
-    it('sees every edge from both of its ends, except the two that a book asserts of itself', () => {
+    // A BOOK THAT IS ITS OWN SUBJECT IS THE ONE CATALOGUE EDGE ASSERTED FROM ONE END. It says so on
+    // its cover and lists itself nowhere, because the self-reference IS the type — there is no other
+    // end to corroborate it from. And an author edge is said by its By alone since 2026-09-25, when
+    // Subject collapsed the author syntax. Every other edge is whole, or it is a fault.
+    it('sees every catalogue edge from both of its ends, and every author edge from its By alone', () => {
         const halves: string[] = [];
         for (const edge of made.edges.values()) {
             const ends = new Set(edge.ends.map(end => end.end));
+            if (edge.relation === 'author') { expect(ends, `author: ${edge.from} -> ${edge.to}`).toEqual(new Set(['target'])); continue; }
             if (edge.from === edge.to) { halves.push(`${edge.relation}:${edge.from}`); continue; }
             expect(ends, `${edge.relation}: ${edge.from} -> ${edge.to}`).toEqual(new Set(['source', 'target']));
         }
-        expect(halves.sort()).toEqual(['author:the-log', 'subject:the-library']);
+        expect(halves).toEqual(['subject:the-library']);
     });
 
     it('colours the tree from the one book that authors itself', () => {
@@ -63,9 +65,8 @@ describe('the test library, read', () => {
     // mentioning, and a chapter that composed a `<Book>` would not be. The name is not the thing.
     it('reads a mention by what its tag is bound to, not by what the file called it', () => {
         const listed = [...(made.lists.get('the-log')?.values() ?? [])].filter(one => one.kind === 'book');
-        expect(listed.map(one => one.of).sort()).toEqual(['persona', 'projects', 'the-library']);
+        expect(listed.map(one => one.of)).toEqual(['persona']);
         expect(listed.find(one => one.of === 'persona')?.canonical).toBe(true);
-        expect(listed.find(one => one.of === 'projects')?.canonical).toBe(false);
     });
 });
 
