@@ -8,7 +8,7 @@ import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
 export class $Reference extends $Annotation {
     specification = new ReferenceSpecification();
     protected _anchor!: ElementType;
-    get identifier(): string { return html.copy(this.contents).trim(); }
+    get identifier(): string { return html.copy(this.text).trim(); }
 
     $Reference(...chemicals: $Chemical[]) {
         this.$Annotation(...chemicals);

@@ -7,7 +7,7 @@ import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 
 export class $Writing extends $Chemical {
-    protected _contents?: Contents;
+    protected _text?: Text;
     protected _annotations?: Annotations;
     id!: Compilation<string>;
     classes!: Collection<string>;
@@ -17,8 +17,8 @@ export class $Writing extends $Chemical {
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.edit; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.edit = given; }
 
-    get contents(): Contents {
-        return this._contents ?? (this._contents = new Contents(this));
+    get text(): Text {
+        return this._text ?? (this._text = new Text(this));
     }
 
     get annotations(): Annotations {
@@ -32,7 +32,7 @@ export class $Writing extends $Chemical {
         this.containers.add(this, 'span');
         for (const chemical of chemicals)
             if (!(chemical instanceof $Annotation))
-                this.contents.add(this, chemical);
+                this.text.add(this, chemical);
         this.$Define();
         for (const chemical of chemicals)
             if (chemical instanceof $Annotation)
@@ -57,7 +57,7 @@ export class $Writing extends $Chemical {
         for (const annotation of this.annotations)
             if (this.annotations.expressed(annotation))
                 failures.push(...annotation.specifies(this, code));
-        for (const [index, chemical] of [...this.contents].entries())
+        for (const [index, chemical] of [...this.text].entries())
             if (chemical instanceof $Writing)
                 failures.push(...chemical.specify(chemical.specification.code(chemical, code, index)));
         return failures;
@@ -68,7 +68,7 @@ export class $Writing extends $Chemical {
     }
 
     write(): ReactNode {
-        return [...this.contents].map((chemical, index) => {
+        return [...this.text].map((chemical, index) => {
             const Chemical = $(chemical);
             return <Chemical key={index} />;
         });
@@ -109,7 +109,7 @@ export class $Annotation extends $Writing {
     specifies(writing: $Writing, code?: string): string[] { return this.specification.check(writing, code); }
 }
 
-export class Contents extends Collection<$Chemical> {
+export class Text extends Collection<$Chemical> {
     constructor(protected writing: $Writing) {
         super();
     }

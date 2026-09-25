@@ -57,10 +57,10 @@ describe('a composition has a level, set by its Level annotation from what was w
     });
 });
 
-describe('parts are the compositions among the contents', () => {
+describe('parts are the compositions in its text', () => {
     it('keeps the compositions in order; other writing and calligraphy are not parts', () => {
         const fifth = built<$Fifth>(<Fifth>text <Fourth>a</Fourth><Writing /><Fourth>b</Fourth></Fifth>);
-        expect([...fifth.contents].length).toBe(4);
+        expect([...fifth.text].length).toBe(4);
         expect(fifth.parts.length).toBe(2);
         expect(fifth.parts.every(part => part instanceof $Fourth)).toBe(true);
     });
@@ -73,10 +73,10 @@ describe('parts are the compositions among the contents', () => {
 
     it('depth counts nesting in the same class, and is 0 under a different parent', () => {
         const fifth = built<$Fifth>(<Fifth><Fifth><Fourth /></Fifth></Fifth>);
-        const inner = fifth.contents.find($Fifth)[0];
+        const inner = fifth.text.find($Fifth)[0];
         expect(fifth.depth).toBe(0);
         expect(inner.depth).toBe(1);
-        expect(inner.contents.find($Fourth)[0].depth).toBe(0);
+        expect(inner.text.find($Fourth)[0].depth).toBe(0);
     });
 
     it('the canonical is the first part, and none when there is none', () => {

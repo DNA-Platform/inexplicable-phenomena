@@ -9,7 +9,7 @@ export class $Composition extends $Writing {
     get depth(): number { return this.composition instanceof this.constructor ? this.composition.depth + 1 : 0; }
     get canonical(): $Composition | undefined { return this.parts[0]; }
     get parts(): $Composition[] {
-        return this.contents.find($Composition).flatMap(composition =>
+        return this.text.find($Composition).flatMap(composition =>
             composition instanceof this.constructor ? composition.parts : [composition]);
     }
 }
@@ -17,7 +17,7 @@ export class $Composition extends $Writing {
 export class $Level extends $Annotation {
     specification = new LevelSpecification();
     get level(): number {
-        const block = this.contents.at(0);
+        const block = this.text.at(0);
         return block instanceof $Block ? Number(block.elements.join('')) : 1;
     }
 }
@@ -98,7 +98,7 @@ export class PermissiveSpecification extends AnnotationSpecification {
 export class ClosedSpecification extends AnnotationSpecification {
     @specify('a closed composition holds only writing')
     $holdsOnlyWriting(writing: $Writing): void {
-        $check([...writing.contents]
+        $check([...writing.text]
             .every(chemical => chemical instanceof $Writing),
             'a closed composition holds only writing, and this one holds something else');
     }

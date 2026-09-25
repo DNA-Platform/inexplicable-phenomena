@@ -5,7 +5,7 @@ import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
 
 export class $Referent extends $Annotation {
     specification = new ReferentSpecification();
-    get identifier(): string { return html.copy(this.contents).trim(); }
+    get identifier(): string { return html.copy(this.text).trim(); }
 
     override defines(writing: $Writing): void {
         writing.id.set(this, this.identifier);

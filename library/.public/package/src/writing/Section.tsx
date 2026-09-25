@@ -7,7 +7,7 @@ import { $Heading } from './Heading';
 export class $Section extends $Composition {
     specification = new SectionSpecification();
     override get canonical(): $Heading | undefined {
-        return this.contents.find($Heading)[0];
+        return this.text.find($Heading)[0];
     }
 
     protected override $Define(): void {

@@ -9,11 +9,11 @@ import { $Referent, Referent as referent } from './Referent';
 
 export class $Mention extends $Word {
     specification = new MentionSpecification();
-    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
 
     protected override $Define(): void {
         super.$Define();
-        const reference = binder.reference(html.copy(this.contents));
+        const reference = binder.reference(html.copy(this.text));
         if (reference === undefined) return;
         const Referent = $(referent);
         this.annotations.add(this,

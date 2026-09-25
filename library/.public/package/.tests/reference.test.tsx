@@ -31,23 +31,23 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
 describe('the copy of a writing is what was written in it', () => {
     it('answers a string it was written with', () => {
         const writing = built<$Writing>(<Writing>the first shelf</Writing>);
-        expect(html.copy(writing.contents)).toBe('the first shelf');
+        expect(html.copy(writing.text)).toBe('the first shelf');
     });
 
     it('answers the prose around a nested writing and not what is inside it, since copy is one level deep', () => {
         const writing = built<$Writing>(<Writing>shelf <Word>number</Word> 3</Writing>);
-        expect(html.copy(writing.contents)).toBe('shelf  3');
+        expect(html.copy(writing.text)).toBe('shelf  3');
     });
 
     it('answers nothing for a writing with nothing written in it', () => {
         const writing = built<$Writing>(<Writing />);
-        expect(html.copy(writing.contents)).toBe('');
+        expect(html.copy(writing.text)).toBe('');
     });
 
-    it('never meets an annotation, because the bond sorts them out of the contents', () => {
+    it('never meets an annotation, because the bond sorts them out of the text', () => {
         const writing = built<$Writing>(<Writing>an aside <Parenthetical>because it was late</Parenthetical></Writing>);
-        expect(writing.contents.find($Annotation)).toEqual([]);
-        expect(html.copy(writing.contents)).toBe('an aside ');
+        expect(writing.text.find($Annotation)).toEqual([]);
+        expect(html.copy(writing.text)).toBe('an aside ');
     });
 });
 
@@ -62,7 +62,7 @@ describe('the binder writes [text](identifier) and any component reads both halv
 
     it('reads a string a component found for itself, wherever it found it', () => {
         const writing = built<$Writing>(<Writing>[The First Shelf](the-first-shelf)</Writing>);
-        expect(binder.reference(html.copy(writing.contents))).toEqual({ name: 'The First Shelf', identifier: 'the-first-shelf' });
+        expect(binder.reference(html.copy(writing.text))).toEqual({ name: 'The First Shelf', identifier: 'the-first-shelf' });
     });
 
     it('answers nothing for copy that is not a reference', () => {

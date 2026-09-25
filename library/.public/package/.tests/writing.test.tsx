@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, Contents } from '@dna-platform/public';
+import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, Text } from '@dna-platform/public';
 import { AnnotationSpecification, specify, Level, html, reflection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -32,7 +32,7 @@ class $Shouted extends $Annotation {
 class ShoutedSpecification extends AnnotationSpecification {
     @specify('a shouted writing has something to shout')
     $hasSomethingToShout(writing: $Writing): void {
-        $check([...writing.contents].length > 0, 'a shouted writing has something to shout, and this one has nothing');
+        $check([...writing.text].length > 0, 'a shouted writing has something to shout, and this one has nothing');
     }
 }
 class $Mark extends $Annotation { }
@@ -43,7 +43,7 @@ class $Demanding extends $Annotation {
 class DemandingSpecification extends AnnotationSpecification {
     @specify('a demanding annotation wants something written')
     $wantsSomethingWritten(writing: $Writing): void {
-        $check([...writing.contents].length > 0, 'a demanding annotation wants something written');
+        $check([...writing.text].length > 0, 'a demanding annotation wants something written');
     }
 }
 class $Boxed extends $Annotation {
@@ -97,11 +97,11 @@ class $Excused extends $Annotation {
 const acts: string[] = [];
 class $Logged extends $Annotation {
     override defines(writing: $Writing): void {
-        acts.push(`defines ${html.copy(this.contents)}`);
+        acts.push(`defines ${html.copy(this.text)}`);
     }
 
     override erase(writing: $Writing): void {
-        acts.push(`erase ${html.copy(this.contents)}`);
+        acts.push(`erase ${html.copy(this.text)}`);
     }
 }
 class $Tidying extends $Writing {
@@ -175,7 +175,7 @@ class $Narrating extends $Writing {
 }
 class $Growing extends $Writing {
     grow(): void {
-        this.contents.add(this, <Writing> more</Writing>);
+        this.text.add(this, <Writing> more</Writing>);
     }
 }
 let draws = 0;
@@ -266,27 +266,27 @@ describe('the four powers of an annotation, exercised on one class', () => {
     });
 });
 
-describe('what comes into a writing is sorted once, into contents and annotations', () => {
-    it('contents holds what is not an annotation, in its order, wherever the annotations stood', () => {
+describe('what comes into a writing is sorted once, into its text and its annotations', () => {
+    it('its text holds what is not an annotation, in its order, wherever the annotations stood', () => {
         const writing = built<$Writing>(<Writing><Annotation /><Tidying /><Annotation /><Counted /></Writing>);
-        const contents = [...writing.contents];
-        expect(contents.length).toBe(2);
-        expect(contents[0]).toBeInstanceOf($Tidying);
-        expect(contents[1]).toBeInstanceOf($Counted);
+        const text = [...writing.text];
+        expect(text.length).toBe(2);
+        expect(text[0]).toBeInstanceOf($Tidying);
+        expect(text[1]).toBeInstanceOf($Counted);
         expect([...writing.annotations].length).toBe(2);
     });
 
     it('an annotation written inside the prose stands beside the prose, and is found', () => {
         const writing = built<$Writing>(<Writing>before <Annotation /> after</Writing>);
         expect([...writing.annotations].length).toBe(1);
-        expect([...writing.contents].every(chemical => !(chemical instanceof $Annotation))).toBe(true);
+        expect([...writing.text].every(chemical => !(chemical instanceof $Annotation))).toBe(true);
     });
 
     it('both are collections, the annotations their own kind, and each writing has its own', () => {
         const writing = built<$Writing>(<Writing><Writing /></Writing>);
-        expect(writing.contents).toBeInstanceOf(Contents);
+        expect(writing.text).toBeInstanceOf(Text);
         expect(writing.annotations).toBeInstanceOf(Annotations);
-        expect(([...writing.contents][0] as $Writing).contents).not.toBe(writing.contents);
+        expect(([...writing.text][0] as $Writing).text).not.toBe(writing.text);
     });
 
     it('in the annotations, add means the front at the next define, and the two questions count only what is expressed', () => {
@@ -789,7 +789,7 @@ describe('specify is the assert the binder calls; it is called by nothing in the
         expect(built<$Writing>(<Writing><Demanding /><Writing /></Writing>).specify()).toEqual([]);
     });
 
-    it('cascades through contents, so every failure within the writing appears', () => {
+    it('cascades through its text, so every failure within the writing appears', () => {
         const writing = built<$Writing>(<Writing><Writing><Demanding /></Writing><Writing><Writing><Demanding /></Writing></Writing><Demanding /></Writing>);
         const failures = writing.specify();
         expect(failures).toEqual([
@@ -815,7 +815,7 @@ describe('specify is the assert the binder calls; it is called by nothing in the
         const writing = built<$Writing>(<Tidying><Annotation /><Writing /></Tidying>);
         writing.annotations.define();
         expect([...writing.annotations].length).toBe(0);
-        expect([...writing.contents].length).toBe(1);
+        expect([...writing.text].length).toBe(1);
         expect(writing.specify()).toEqual([]);
     });
 });

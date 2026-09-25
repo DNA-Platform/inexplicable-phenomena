@@ -12,12 +12,12 @@ import { $Chapter } from './Chapter';
 export class $Title extends $Sentence {
     specification = new TitleSpecification();
     get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
-    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
-        const link = binder.reference(html.copy(this.contents));
+        const link = binder.reference(html.copy(this.text));
         if (link === undefined) return;
         const [, fragment] = link.identifier.split('#');
         const Reference = $(reference);

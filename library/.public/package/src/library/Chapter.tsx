@@ -6,7 +6,7 @@ import { $Title } from './Title';
 export class $Chapter extends $Composition {
     specification = new ChapterSpecification();
     override get canonical(): $Title | undefined {
-        return this.contents.find($Title)[0];
+        return this.text.find($Title)[0];
     }
 
     protected override $Define(): void {
@@ -24,7 +24,7 @@ export class $Chapter extends $Composition {
 export class ChapterSpecification extends CompositionSpecification {
     @specify('a chapter has one title')
     $hasOneTitle(chapter: $Chapter): void {
-        $check(chapter.contents.find($Title).length === 1,
+        $check(chapter.text.find($Title).length === 1,
             'a chapter has one title as its canonical, and this one does not');
     }
 }

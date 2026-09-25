@@ -39,7 +39,7 @@ describe('Word, Sentence and Paragraph are the intermixed levels, 2, 3 and 4, pe
         const sentence = built<$Sentence>(<Sentence><Sentence><Word>inner</Word></Sentence><Word>outer</Word></Sentence>);
         expect(sentence.parts.length).toBe(2);
         expect(sentence.parts.every(part => part instanceof $Word)).toBe(true);
-        expect(sentence.contents.find($Sentence)[0].depth).toBe(1);
+        expect(sentence.text.find($Sentence)[0].depth).toBe(1);
     });
 
     it('permissive refuses a part above the level, and a written Strict or Closed overrides what the class stands', () => {

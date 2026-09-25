@@ -18,7 +18,7 @@ export class $Letter extends $Composition {
 export class LetterSpecification extends CompositionSpecification {
     @specify('a letter holds no composition')
     $holdsNoComposition(letter: $Letter): void {
-        $check(letter.contents.find($Composition).length === 0,
+        $check(letter.text.find($Composition).length === 0,
             'a letter is allowed to have anything but a composition, and this one holds one');
     }
 }

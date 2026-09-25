@@ -15,12 +15,12 @@ export class $Cover extends $Format {
 
 export class $Author extends $Annotation {
     specification = new AuthorSpecification();
-    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
-        const link = binder.reference(html.copy(this.contents));
+        const link = binder.reference(html.copy(this.text));
         if (link === undefined) return;
         const Reference = $(reference);
         this.annotations.add(this,
@@ -33,12 +33,12 @@ export class $Author extends $Annotation {
 
 export class $Subject extends $Annotation {
     specification = new SubjectSpecification();
-    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
-        const link = binder.reference(html.copy(this.contents));
+        const link = binder.reference(html.copy(this.text));
         if (link === undefined) return;
         const Reference = $(reference);
         this.annotations.add(this,
@@ -51,12 +51,12 @@ export class $Subject extends $Annotation {
 
 export class $About extends $Annotation {
     specification = new AboutSpecification();
-    get name(): string { return binder.reference(html.copy(this.contents))?.name ?? ''; }
+    get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
-        const link = binder.reference(html.copy(this.contents));
+        const link = binder.reference(html.copy(this.text));
         if (link === undefined) return;
         const Reference = $(reference);
         this.annotations.add(this,
