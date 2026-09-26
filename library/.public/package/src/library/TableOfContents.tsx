@@ -11,18 +11,11 @@ import { $Chapter } from './Chapter';
 export class $TableOfContents extends $Format {
     specification = new TableOfContentsSpecification();
     style: ElementType = 'nav';
-
-    get contents(): $Content[] {
-        const contents: $Content[] = [];
-        const visit = (writing: $Writing): void => {
-            for (const chemical of writing.text)
-                if (chemical instanceof $Writing)
-                    visit(chemical);
-            contents.push(...writing.annotations.find($Content).reverse());
-        };
-        if (this.parent instanceof $Writing)
-            visit(this.parent);
-        return contents;
+    get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
+    get contents(): $Reference[] {
+        const mentions = (chapter: $Chapter): $Reference[] =>
+            [...(chapter.mention === undefined ? [] : [chapter.mention]), ...chapter.text.find($Chapter).flatMap(mentions)];
+        return this.chapter?.$book?.text.find($Chapter).flatMap(mentions) ?? [];
     }
 
     override defines(writing: $Writing): void {
