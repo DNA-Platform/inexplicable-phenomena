@@ -44,7 +44,7 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(section.specify()).toEqual([]);
         expect(classes(section)).toEqual(['pa-table', 'pa-cols-2']);
         const [heading, ...rows] = section.parts;
-        expect(classes(heading)).toEqual([]);
+        expect(classes(heading).filter(name => name.startsWith('pa-row') || name.startsWith('pa-col'))).toEqual([]);
         expect(rows.map(row => classes(row))).toEqual([['pa-row', 'pa-row-start-1'], ['pa-row', 'pa-row-start-2'], ['pa-row', 'pa-row-start-3']]);
         expect(rows[0].parts.map(cell => classes(cell))).toEqual([['pa-col', 'pa-col-start-1'], ['pa-col', 'pa-col-start-2']]);
     });

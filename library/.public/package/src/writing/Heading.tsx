@@ -1,13 +1,34 @@
+import { ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
+import { binder } from '@/utilities/Binder';
+import { html } from '@/utilities/Html';
+import { identifier } from '@/utilities/Identifier';
 import { specify } from '@/utilities/Specification';
 import { CompositionSpecification } from './Composition';
 import { $Sentence } from './Sentence';
 import { $Section } from './Section';
+import { $Reference, Self as self } from './Reference';
+import { Referent as referent } from './Referent';
 
 export class $Heading extends $Sentence {
     specification = new HeadingSpecification();
-    get section(): $Section | undefined {
-        return this.parent instanceof $Section ? this.parent : undefined;
+    get section(): $Section | undefined { return this.parent instanceof $Section ? this.parent : undefined; }
+    get name(): string { return binder.reference(html.copy(this.text))?.name ?? html.copy(this.text).trim(); }
+    get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
+
+    override write(): ReactNode { return binder.reference(html.copy(this.text)) === undefined ? super.write() : this.name; }
+
+    protected override $Define(): void {
+        super.$Define();
+        const link = binder.reference(html.copy(this.text));
+        const name = link?.name ?? html.copy(this.text).trim();
+        if (name === '') return;
+        const Referent = $(referent);
+        const Self = $(self);
+        this.annotations.add(this,
+            <Referent>{identifier.slug(name)}</Referent>,
+            <Self>{link?.identifier ?? `#${identifier.slug(name)}`}</Self>
+        );
     }
 }
 
