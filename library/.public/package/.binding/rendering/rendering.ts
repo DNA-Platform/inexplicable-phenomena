@@ -41,10 +41,10 @@ const landing = (address: string, title: string): string => [
 // one document every page was drawn in, so a second book's page carried the first's — measured
 // 2026-09-26: a child per page 1.6s, six at once 7.3s, since each transformed the same graph, and one
 // child drawing all six 1.67s. Each page now collects its own styles as it is drawn. The pages come
-// back in the order the names were given, because the manifest and the proof read this list and a
-// list that reorders itself is a diff on every build.
-const drawn = (binding: string, entry: string, names: string[]): Promise<string[]> => new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [entry, ...names], {
+// back in the order the addresses were given, because the manifest and the proof read this list and
+// a list that reorders itself is a diff on every build.
+const drawn = (binding: string, entry: string, addresses: string[]): Promise<string[]> => new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [entry, ...addresses], {
         cwd: binding,
         stdio: ['ignore', 'pipe', 'inherit'],
         // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
@@ -61,11 +61,11 @@ const drawn = (binding: string, entry: string, names: string[]): Promise<string[
     });
 });
 
-export const rendering = async (binding: string, names: string[], root?: { address: string; name: string }): Promise<string[]> => {
+export const rendering = async (binding: string, addresses: string[], root?: { address: string; name: string }): Promise<string[]> => {
     const entry = join(binding, 'rendering', 'render.mjs');
     copyFileSync(join(binding, '..', 'index.html'), shellOf(binding));
 
-    const pages = await drawn(binding, entry, names);
+    const pages = await drawn(binding, entry, addresses);
     if (root !== undefined) {
         const at = join(binding, '..', 'index.html');
         // THE ADDRESS IS THE CATALOGUE'S, WRITTEN FROM THE DOMAIN FORWARD. An earlier writing

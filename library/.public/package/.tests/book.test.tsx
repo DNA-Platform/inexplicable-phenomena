@@ -19,7 +19,7 @@ const APaper = (): React.ReactNode => (
 const WhatItArgues = (): React.ReactNode => (
     <Chapter>
         <Synopsis />
-        <Title>[Synopsis](/a-paper/#synopsis)</Title>
+        <Title>[Synopsis](/a-paper/)</Title>
         <Paragraph>That a reference names a thing and never a place.</Paragraph>
     </Chapter>
 );
@@ -27,14 +27,14 @@ const WhatItArgues = (): React.ReactNode => (
 const WhereThingsAre = (): React.ReactNode => (
     <Chapter>
         <TableOfContents />
-        <Title>[Table of Contents](/a-paper/#table-of-contents)</Title>
+        <Title>[Table of Contents](/a-paper/table-of-contents/)</Title>
         <Paragraph>The argument, and the evidence for it.</Paragraph>
     </Chapter>
 );
 
 const TheArgument = (): React.ReactNode => (
     <Chapter>
-        <Title>[The Argument](/a-paper/#the-argument)</Title>
+        <Title>[The Argument](/a-paper/the-argument/)</Title>
         <Section>
             <Heading>What is claimed</Heading>
             <Paragraph>A reference names a thing and never a place.</Paragraph>
@@ -93,13 +93,16 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(built<$Book>(<Book>{TheArgument()}</Book>).means).toBeUndefined();
     });
 
-    // A catalogue's chapter is a synopsis of another book, so a book has one synopsis OF ITSELF and may carry others'.
+    // A catalogue's chapter is a synopsis of another book — its Synopsis handed that book's synopsis chapter — so a
+    // book has one synopsis OF ITSELF and may carry others'.
     it('has one synopsis of itself, which it exposes, and may carry a chapter that is another book\'s synopsis', () => {
+        const LogSynopsis = (): React.ReactNode => (
+            <Chapter><Synopsis /><Title>[Synopsis](/the-log/)</Title><Paragraph>The one book here that is by what it is about.</Paragraph></Chapter>
+        );
         const OfTheLog = (): React.ReactNode => (
             <Chapter>
-                <Title>[Of the Log](/a-paper/#of-the-log)</Title>
-                <Chapter><Synopsis /><Title>[Synopsis](/the-log/#synopsis)</Title></Chapter>
-                <Synopsis />
+                <Title>[Of the Log](/a-paper/of-the-log/)</Title>
+                <Synopsis>{LogSynopsis()}</Synopsis>
             </Chapter>
         );
         const book = built<$Book>(<Book>{APaper()}{OfTheLog()}{WhatItArgues()}{WhereThingsAre()}</Book>);
@@ -149,7 +152,7 @@ describe('a book binds: once it is whole, every writing in it is bound, top to b
         const Noting = $($Noting);
         const chapter = (): ReactNode => (
             <Chapter>
-                <Title>[The Argument](/a-paper/#the-argument)</Title>
+                <Title>[The Argument](/a-paper/the-argument/)</Title>
                 <Section>
                     <Heading>What is claimed</Heading>
                     <Binding>A reference names a thing and never a place. <Noting /></Binding>
@@ -185,7 +188,7 @@ describe('every writing has a book', () => {
             <Book>
                 {APaper()}
                 <Chapter>
-                    <Title>[The Argument](/a-paper/#the-argument)</Title>
+                    <Title>[The Argument](/a-paper/the-argument/)</Title>
                     <Section>
                         <Heading>What is claimed</Heading>
                         <Looking>A reference names a thing and never a place.</Looking>

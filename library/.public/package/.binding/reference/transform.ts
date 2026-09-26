@@ -4,8 +4,7 @@ import type { Plugin } from 'vite';
 import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import { reads } from '../catalogue/reading';
-import { form, key, name as parsed, notation, spelling, titled, whole } from '../catalogue/language';
-import { identifier } from '@dna-platform/public';
+import { form, key, name as parsed, notation, spelling, titled, whole, type Name } from '../catalogue/language';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
 //
@@ -21,11 +20,12 @@ import { identifier } from '@dna-platform/public';
 // THE FORMS ARE [the language](../catalogue/language.ts)'s, written down there once, and ANY OF
 // THEM MAY BE `[ words ]( X )` — the bracket is what is shown, the paren is X.
 //
-// WHAT THE IDENTIFIER IS. Doug, the same day: "An id should be given so that an id can be placed.
-// Otherwise urls should be given so anchors can be made… I want the urls coming from the compiler."
-// The mention is the one form that CREATES an address rather than spending one, so it is given an
-// id — the fragment a reference to it is handed — and every other form is given the url the
-// catalogue holds.
+// WHAT THE IDENTIFIER IS: THE URL THE CATALOGUE HOLDS, ON EVERY FORM. Doug, the same day: "I want
+// the urls coming from the compiler." The mention is the one form that CREATES an address rather
+// than spending one, and until 2026-09-26 it was given an id for that reason; now an element makes
+// its own id from its name — "Title should use the name to create the fragment with the Identifier
+// utility. The url should be completely arbitrary" — so a mention is given the url of the place it
+// makes, like everything else, and a heading written as one links to itself with it.
 //
 // IT RUNS `pre` and splices by absolute offset, so the file is byte-identical either side of a
 // match and what @vitejs/plugin-react compiles is markup that never heard of a sigil.
@@ -70,6 +70,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     // in. The scope is the one thing a reference cannot carry and the place it stands always knows.
     const within = catalogue.scope(file);
     const cover = basename(file) === '.cover.tsx';
+    const synopsis = basename(file) === '.synopsis.tsx';
     const source = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
     const edits: { from: number; to: number; said: string }[] = [];
     const missed: Missing[] = [];
@@ -91,20 +92,16 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             // how a fault becomes invisible.
             if (!read.balanced) continue;
 
-            // THE MENTION ALLOCATES, SO ITS IDENTIFIER IS AN ID: `[[[ The First Shelf ]]]` becomes
-            // `[The First Shelf](the-first-shelf)`, the slug of its whole name — the fragment the
-            // catalogue hands a reference to it, so what a mention answers to is what is reached.
-            if (!read.refers && read.brackets === 3) {
-                edits.push({ from: at, to, said: `[${read.words}](${identifier.slug(whole(read.name))})` });
-                continue;
-            }
-
-            // EVERY OTHER FORM IS VERIFIED AND GIVEN ITS URL — Doug, 2026-09-19: "There should not be
+            // EVERY FORM IS VERIFIED AND GIVEN ITS URL — Doug, 2026-09-19: "There should not be
             // anymore dynamic link generation." What is shown is the thing and never the scope:
-            // `$[ ./The books ]` reads "The books". And a title form names the writing its file is —
-            // in a cover its book, anywhere else a chapter of its book.
+            // `$[ ./The books ]` reads "The books". A title form names the writing its file is — in
+            // a cover its book, anywhere else a chapter of its book — and a mention names the place
+            // it makes, within the book it stands in, by its whole name: `[[[ The First Shelf ]]]`
+            // is `./The First Shelf`, and its url is that place's, fragment and all.
             const said = parsed(read.name);
-            const meant = !read.refers && form(read.prefix, read.brackets, read.postfix)?.is === 'title' ? titled(said, cover) : said;
+            const spelled = read.refers ? undefined : form(read.prefix, read.brackets, read.postfix);
+            const meant: Name = spelled?.is === 'mention' ? { of: 'chapter', within: true, chapter: whole(read.name) }
+                : spelled?.is === 'title' ? titled(said, cover) : said;
             const shown = read.named ? read.words : meant.of === 'book' ? meant.book : meant.chapter;
             const url = catalogue.where(key(meant, within));
             if (url === undefined) {
@@ -115,7 +112,14 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             // THE SAME URL WHEREVER IT STANDS — Doug, 2026-09-25: "I don't like the special case. Just
             // give the same urls everywhere." A link to the page it stands on is a self-reference and
             // carries that page's url like any other; the `#` written here since C13 is gone.
-            edits.push({ from: at, to, said: `[${shown}](${url})` });
+            //
+            // AND A SYNOPSIS'S TITLE GOES TO ITS BOOK — Doug, 2026-09-26: "we want the title of a
+            // synopsis chapter to go to the book it is a synopsis of! Most titles are self-links." The
+            // compiler knows the synopsis by its file, as it knows the cover, so the title form there is
+            // verified as the chapter it names and given the book's url; a reference to the chapter is
+            // given the chapter's own, so the synopsis is still reached where it stands.
+            const address = spelled?.is === 'title' && synopsis && within !== undefined ? catalogue.where(within) ?? url : url;
+            edits.push({ from: at, to, said: `[${shown}](${address})` });
         }
     };
 

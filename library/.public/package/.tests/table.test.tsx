@@ -19,7 +19,7 @@ const classes = (writing: $Writing): string[] => [...writing.classes].filter(nam
 const bound = (section: React.ReactNode): $Section => built<$Book>(
     <Book>
         <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
-        <Chapter><Title>[A Catalogue](/the-folio/#a-catalogue)</Title>{section}</Chapter>
+        <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{section}</Chapter>
     </Book>
 ).text.find($Chapter)[1].text.find($Section)[0];
 

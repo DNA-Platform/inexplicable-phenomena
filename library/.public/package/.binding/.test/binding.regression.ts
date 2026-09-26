@@ -42,6 +42,8 @@ describe('a bind of the test library', () => {
     const found = walk(galley.library, chosen);
     const table = catalogue(found, chosen).table;
     const page = (name: string): string => readFileSync(placeOf(galley.face, table.routes.find(route => route.name === name)!), 'utf8');
+    const chapterPage = (book: string, chapter: string): string =>
+        readFileSync(placeOf(galley.face, table.routes.find(route => route.name === book)!.chapters.find(one => one.name === chapter)!), 'utf8');
 
     // Doug, 2026-09-25: "in ..public, we drop the v1 dependency in our test library this sprint."
     it('binds with this code, the package the repository links, and no other', () => {
@@ -55,26 +57,29 @@ describe('a bind of the test library', () => {
         expect(said).toMatch(/^bound /mu);
     });
 
-    it('wrote a page for every book, and every page holds its book', () => {
-        for (const route of table.routes) {
-            const at = placeOf(galley.face, route);
-            expect(existsSync(at), `${route.name} was not rendered at ${at}`).toBe(true);
-            const html = readFileSync(at, 'utf8');
-            expect(html, `${route.name} left #root empty`).not.toContain('<div id="root"></div>');
-            expect(html).toMatch(/<div id="root">[\s\S]+<\/div>/u);
-        }
+    // A CHAPTER IS A ROUTE OF ITS BOOK — Doug, 2026-09-26: "The book is a static page returned by github
+    // pages, the chapters are routes on a local spa." A page at every address, the book at each.
+    it('wrote a page for every book and for every chapter of it, and every page holds its book', () => {
+        for (const route of table.routes)
+            for (const { name, address } of [route, ...route.chapters]) {
+                const at = placeOf(galley.face, { address });
+                expect(existsSync(at), `${name} was not rendered at ${at}`).toBe(true);
+                const html = readFileSync(at, 'utf8');
+                expect(html, `${name} left #root empty`).not.toContain('<div id="root"></div>');
+                expect(html).toMatch(/<div id="root">[\s\S]+<\/div>/u);
+            }
     });
 
     it('wrote pages the browser will build as sent, whose every link leads to an id worn once', () => {
-        const pages = table.routes.map(route => placeOf(galley.face, route).slice(galley.face.length + 1).split('\\').join('/'));
+        const pages = table.routes.flatMap(route => [route, ...route.chapters]).map(one => placeOf(galley.face, one).slice(galley.face.length + 1).split('\\').join('/'));
         expect(proof(galley.face, [...pages, 'index.html'], chosen.resolution.base)).toEqual([]);
     });
 
     it('resolved every reference to the address the page carries', () => {
         const paper = page('A Paper');
         expect(paper).toContain('href="/the-library/"');
-        expect(paper).toContain('href="/a-paper/#the-evidence"');
-        expect(paper).toContain('href="/some-projects/#the-work"');
+        expect(paper).toContain('href="/a-paper/the-evidence/"');
+        expect(paper).toContain('href="/some-projects/the-work/"');
         expect(paper).toMatch(/<a href="\/the-log\/"[^>]*><span[^>]*>the log/u);
     });
 
@@ -89,14 +94,16 @@ describe('a bind of the test library', () => {
         expect(page('Some Projects')).toMatch(/filed under <a href="\/the-library\/"[^>]*><span[^>]*>the library/u);
     });
 
-    it('sent a reference to a chapter whose title is parenthetical to the fragment its title wears', () => {
-        expect(page('The Log')).toMatch(/<a href="\/the-library\/#synopsis"[^>]*><span[^>]*>Synopsis/u);
-        expect(page('The Library')).toMatch(/<span id="synopsis" class="[^"]*pa-parenthetical/u);
+    // A SYNOPSIS'S TITLE GOES TO ITS BOOK — Doug, 2026-09-26: "we want the title of a synopsis chapter to go
+    // to the book it is a synopsis of! Most titles are self-links."
+    it('sent a reference to a chapter whose title is parenthetical to its page, where its title wears its id unseen and links to its book', () => {
+        expect(page('The Log')).toMatch(/<a href="\/the-library\/synopsis\/"[^>]*><span[^>]*>Synopsis/u);
+        expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><span id="synopsis" class="[^"]*pa-parenthetical/u);
     });
 
     // R4 — Doug: "just have the book expose its cover, table, synopsis... and other things use it from there."
     it('drew in the argument its book\'s title and a link to its book\'s table, read from its book alone', () => {
-        expect(page('A Paper')).toMatch(/<span>A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/#table-of-contents"[^>]*><span[^>]*>Table of Contents/u);
+        expect(page('A Paper')).toMatch(/<span>A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/table-of-contents\/"[^>]*><span[^>]*>Table of Contents/u);
     });
 
     it('marked the autobiography and the biography on their covers', () => {
@@ -118,7 +125,7 @@ describe('a bind of the test library', () => {
         const paper = page('A Paper');
         expect([...paper.matchAll(/<span class="pa-content">([^<]*)<\/span>/gu)].map(found => found[1]))
             .toEqual(['The Argument', 'The Evidence', 'A Paper', 'Synopsis', 'Table of Contents']);
-        expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
+        expect(paper).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
     });
 
     // THE CATALOGUE IS A TABLE — its section interpreted as a grid, its rows and cells marked by authorship.
@@ -133,18 +140,34 @@ describe('a bind of the test library', () => {
     // ONE TABLE IS DRAWN, NOT WRITTEN — Some Projects', its entries what its chapters mention.
     it('drew Some Projects\' table from its contents, every chapter a link inside its nav', () => {
         const projects = page('Some Projects');
-        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#the-work"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
-        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#synopsis"[^>]*>[\s\S]*<\/nav>/u);
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/the-work\/"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/table-of-contents\/"[^>]*>[\s\S]*<\/nav>/u);
+        // THE SYNOPSIS ENTRY LINKS TO THE BOOK, as its title does, beside the cover's.
+        expect((/<nav[\s\S]*?<\/nav>/u.exec(projects)?.[0] ?? '').match(/<a href="\/some-projects\/"/gu)).toHaveLength(2);
         expect(projects).not.toMatch(/<nav[^>]*>[\s\S]*pa-content[\s\S]*<\/nav>/u);
     });
 
-    // A CATALOGUE'S CHAPTER HOLDS ANOTHER BOOK'S SYNOPSIS — the log's, imported and rendered inside the
-    // library's second chapter, its title linking home and wearing no id on this page.
-    it('drew in the library a chapter holding the log\'s own synopsis, which links home and wears no second id', () => {
+    // A CATALOGUE'S CHAPTER IS ANOTHER BOOK'S SYNOPSIS — the log's, handed to the chapter's Synopsis, which
+    // keeps the imported chapter off the page, gives the catalogue's chapter its parts, and sends the
+    // chapter's title to the log. Doug, 2026-09-26: "the chapter is kept out of the Synopsis annotation's
+    // text, so that even in theory, it is not on the page."
+    it('drew in the library a chapter that is the log\'s synopsis: the log\'s words under its own title, which links to the log, and no second id', () => {
         const library = page('The Library');
         expect(library).toContain('authorship in this library begins here and nowhere else');
         expect(library.match(/ id="synopsis"/gu)).toHaveLength(1);
-        expect(library).toMatch(/<a href="\/the-log\/#synopsis"[^>]*><span class="[^"]*\bpa-parenthetical\b[^"]*">/u);
+        expect(library).toMatch(/<a href="\/the-log\/"[^>]*><span id="of-the-log"/u);
+        expect(library).not.toMatch(/<a href="\/the-log\/"[^>]*><span id="synopsis"/u);
+    });
+
+    // A HEADING WRITTEN AS A MENTION IS A FRAGMENT OF ITS CHAPTER'S ROUTE — Doug, 2026-09-26: "Long distance
+    // urls to that which was mentioned also must work." The log refers to what the argument claims; the
+    // argument's own page wears the id, and the heading links to itself with the same url.
+    it('addressed the argument\'s marked heading on the argument\'s page, where the log\'s link lands and the heading links to itself', () => {
+        expect(page('The Log')).toMatch(/<a href="\/a-paper\/the-argument\/#what-is-claimed"[^>]*><span[^>]*>What is claimed/u);
+        const argument = chapterPage('A Paper', 'The Argument');
+        expect(argument).toMatch(/<a href="\/a-paper\/the-argument\/#what-is-claimed"[^>]*>(?:(?!<\/a>)[\s\S])*id="what-is-claimed"/u);
+        expect(argument.match(/ id="what-is-claimed"/gu)).toHaveLength(1);
+        expect(argument).not.toContain('[[[');
     });
 
     // A STYLE ONE BOOK HAS AND THE OTHERS DO NOT, on its own page and on no other — the leak the render
@@ -199,7 +222,7 @@ describe('the bound test library, seen in a real browser', () => {
 
     it('shows a table\'s entries and hides its parenthetical ones, where the proof still reads them', async () => {
         // FOUR: the table's own title, parenthetical, and its three parenthetical entries.
-        const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/#synopsis"], nav a[href="/a-paper/#table-of-contents"]',
+        const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/synopsis/"], nav a[href="/a-paper/table-of-contents/"]',
             links => links.map(link => link.getClientRects().length === 0));
         expect(hidden).toEqual([true, true, true, true]);
         const shown = await paper.$eval('nav', nav => nav.innerText);
@@ -244,7 +267,7 @@ describe('a bind of the test library with a synopsis said of a section', () => {
         const chapter = join(broken.library, 'paper', '1-the-argument.tsx');
         writeFileSync(chapter, readFileSync(chapter, 'utf8')
             .replace("import { Chapter, Heading, Means, Paragraph, Section, Title }", "import { Chapter, Heading, Means, Paragraph, Section, Synopsis, Title }")
-            .replace('            <Heading>What is claimed</Heading>', '            <Synopsis />\n            <Heading>What is claimed</Heading>'));
+            .replace('            <Heading>[[[ What is claimed ]]]</Heading>', '            <Synopsis />\n            <Heading>[[[ What is claimed ]]]</Heading>'));
     });
     afterAll(() => { broken.remove(); });
 

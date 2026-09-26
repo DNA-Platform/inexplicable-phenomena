@@ -11,7 +11,9 @@ const path = location.pathname.slice(base.length).replace(/\/+$/, '') || '/';
 const probes = import.meta.glob('../specification/probe/*.tsx');
 const probing = import.meta.env.DEV && location.search.includes('probe') && Object.keys(probes).length > 0;
 
-const route = routes.find(one => one.address === path) ?? root;
+// A ROUTE IS A BOOK, AND A BOOK ANSWERS ITS CHAPTERS' ADDRESSES AS WELL AS ITS OWN — one app, drawn
+// with whichever chapter the address names open.
+const route = routes.find(one => one.address === path || one.chapters.some(chapter => chapter.address === path)) ?? root;
 if (!probing && !route) throw new Error(`no book stands at ${path}, and no book stands at the root`);
 
 // NO TOP-LEVEL AWAIT HERE. The book arrives as a chunk that imports its shared code from this

@@ -1,3 +1,4 @@
+import { basename } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
 import type { Library } from '../inventory/library';
 import { identifier } from '@dna-platform/public';
@@ -37,10 +38,18 @@ export type Catalogue = {
 
 export const catalogue = (found: Library, chosen: Configuration, given?: Structure): Catalogue => {
     const structure = given ?? compiled(found);
+    // A BOOK'S CHAPTERS IN THE ORDER THE STRUCTURE READ THEM, which is the inventory's. The cover is
+    // the book's own spot, so it stands in no book's list.
+    const chaptersOf = new Map<string, { file: string; name: string }[]>();
+    for (const spot of structure.spots.values()) {
+        const name = structure.named.get(spot.id);
+        if (spot.kind !== 'chapter' || name === undefined) continue;
+        chaptersOf.set(spot.book, [...(chaptersOf.get(spot.book) ?? []), { file: basename(spot.file), name }]);
+    }
     const named = found.books.flatMap(book => {
         const name = structure.named.get(book.folder);
 
-        return name === undefined ? [] : [{ folder: book.folder, name }];
+        return name === undefined ? [] : [{ folder: book.folder, name, chapters: chaptersOf.get(book.folder) ?? [] }];
     });
     const table = resolution(found, named, chosen);
 
@@ -55,23 +64,22 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // it is in before it says anything else — which is the reference grammar written as a URL:
     //
     //     Book Code                 ->  /dougs-library/
-    //     Book Code / Chapter Code  ->  /dougs-library/#the-sheet
+    //     Book Code / Chapter Code  ->  /dougs-library/the-sheet/
+    //     Book Code / Mention       ->  /dougs-library/the-sheet/#the-mention
     //
-    // A CHAPTER IS A SECTION OF ITS BOOK'S PAGE, SO ITS ADDRESS IS THAT PAGE AND A FRAGMENT. The
-    // first writing of this made it a FOLDER — `/dougs-library/the-sheet/` — and the binder writes
-    // one page per book, so every chapter reference on the site led to a page that did not exist.
-    // Doug, 2026-09-19: "Don't chapters have #ids right now? Wouldn't it append the hash." They do:
-    // the page gives every chapter heading an id from the framework's own `slug`, and its table of
-    // contents already links `#the-sheet`. The catalogue writes the same id with the same function,
-    // so the address it hands out is the one the page already answers to — and since 2026-09-24 the
-    // function is the compiler's own, `resolution/addresses.ts`, so the framework spells no address.
+    // A CHAPTER IS A ROUTE OF ITS BOOK, WITH A PAGE OF ITS OWN. It was a fragment on its book's page
+    // from 2026-09-19 — Doug: "Don't chapters have #ids right now? Wouldn't it append the hash." — to
+    // 2026-09-26, when the chapters became routes: "The book is a static page returned by github
+    // pages, the chapters are routes on a local spa"; "Long distance urls to that which was mentioned
+    // also must work… Everything needs to go through the router." The render writes a page at every
+    // route and the book's app answers each, so a link from anywhere lands on a page the host
+    // serves, and a link within the book is a route the app takes in place. Whether or not a
+    // chapter's title prints, the chapter has its route — the compiler reads no tag to know; Doug,
+    // 2026-09-20: "The compiler just cares that things are in the right file."
     //
-    // AND EVERY CHAPTER IS ADDRESSED BY ITS FRAGMENT, whether or not its title prints. A chapter
-    // whose title did not print was briefly addressed as its book's page, because the page drew no
-    // heading and so no id for it — which had the compiler reading `print={false}` off a tag. Doug,
-    // 2026-09-20: "if you are parsing like that, you have broken polymorphism… The compiler just
-    // cares that things are in the right file." The chapter's own element wears its id now, and the
-    // proof reads the page to see that it does.
+    // AND A MENTION IS A FRAGMENT ON THE PAGE OF THE FILE IT STANDS IN, the cover's on the book's.
+    // The id it lands on is its name's slug, made with the same `identifier.slug` the element makes
+    // its own id with, so the address written here and the id worn are one function by construction.
     //
     // A CHAPTER IS NAMED WITHIN ITS BOOK AND NOWHERE ELSE, so `Dougs Library > The Sheet` is the
     // WHOLE key and there is no bare one beside it.
@@ -85,20 +93,27 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // ONE KEY, ONE THING. Two books may both hold a `Table of Contents` and neither is wrong,
     // because the scope is what tells them apart — which is why the scope is IN the key rather than
     // inferred from what else happens to be in the library.
+    const pageOf = (address: string): string => `${chosen.resolution.base}${address.replace(/^\//u, '')}/`;
     const at = new Map<string, string>();
     const inside: { path: string; name: string }[] = [];
     for (const route of table.routes) {
-        const book = `${chosen.resolution.base}${route.address.replace(/^\//u, '')}/`;
+        const book = pageOf(route.address);
         at.set(route.name, book);
         const held = found.books.find(one => one.folder === route.folder);
         if (held !== undefined) inside.push({ path: forward(held.path), name: route.name });
 
-        // AND ITS CHAPTERS, WHICH ARE SPOTS OF THE STRUCTURE RATHER THAN A SECOND READING — and its
-        // anchors, which stand at a fragment the same way a printed chapter does.
+        // AND ITS CHAPTERS, EACH AT ITS OWN PAGE — and its anchors, which are spots of the structure
+        // rather than a second reading, each on the page of the file it stands in.
+        const pages = new Map<string, string>();
+        for (const chapter of route.chapters) {
+            const page = pageOf(chapter.address);
+            at.set(`${route.name} / ${chapter.name}`, page);
+            pages.set(chapter.file, page);
+        }
         for (const spot of structure.spots.values()) {
-            if (spot.kind === 'book' || spot.book !== route.folder) continue;
-            const chapter = structure.named.get(spot.id);
-            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, `${book}#${identifier.slug(chapter)}`);
+            if (spot.kind !== 'anchor' || spot.book !== route.folder) continue;
+            const anchor = structure.named.get(spot.id);
+            if (anchor !== undefined) at.set(`${route.name} / ${anchor}`, `${pages.get(basename(spot.file)) ?? book}#${identifier.slug(anchor)}`);
         }
     }
 

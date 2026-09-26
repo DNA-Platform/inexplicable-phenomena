@@ -107,9 +107,11 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // A NAME IS WHAT A PERSON WRITES AND AN ADDRESS IS WHAT A PAGE ANSWERS TO, and the slug between
     // them is not one-to-one: "Doug's Library" and "Dougs Library" are two names at one address, as
     // are "The Sheet" and "the sheet", and "???" is no address at all. A book stands at `/slug/`
-    // across the library; a chapter or a mention at `#slug` on its book's page, where the cover
-    // already answers to the book's own slug. Doug, 2026-09-20: "Use principles of urls. Do you ever
-    // get the same? Then validate that that scenario is impossible."
+    // across the library and a chapter at `/book/slug/` under it; and every chapter's title and
+    // every mention wears `#slug` as an id within its book, on one page when the book draws down
+    // the page — so within a book a slug is one thing, and a chapter titled with its book's name
+    // meets the id the cover's title already wears. Doug, 2026-09-20: "Use principles of urls. Do
+    // you ever get the same? Then validate that that scenario is impossible."
     const addressed = new Map<string, { said: string; naming: Naming }[]>();
     const claims = (key: string, said: string, naming: Naming): void => { addressed.set(key, [...(addressed.get(key) ?? []), { said, naming }]); };
     for (const [said, held] of structure.names)

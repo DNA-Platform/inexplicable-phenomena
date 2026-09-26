@@ -7,7 +7,7 @@ import { specify } from '@/utilities/Specification';
 import { CompositionSpecification } from '@/writing/Composition';
 import { $Sentence } from '@/writing/Sentence';
 import { $Reference, Reference as reference } from '@/writing/Reference';
-import { $Referent, Referent as referent } from '@/writing/Referent';
+import { Referent as referent } from '@/writing/Referent';
 import { $Chapter } from './Chapter';
 
 export class $Title extends $Sentence {
@@ -26,16 +26,6 @@ export class $Title extends $Sentence {
             <Reference>{link.identifier}</Reference>,
             <Referent>{identifier.slug(link.name)}</Referent>
         );
-    }
-
-    protected override $Bound(): void {
-        const home = this.$book?.means?.identifier;
-        if (home !== undefined && this.means?.identifier.split('#')[0] !== home) {
-            for (const referent of this.annotations.find($Referent))
-                this.annotations.remove(this, referent);
-            this.annotations.define();
-        }
-        super.$Bound();
     }
 
     override write(): ReactNode { return this.name; }

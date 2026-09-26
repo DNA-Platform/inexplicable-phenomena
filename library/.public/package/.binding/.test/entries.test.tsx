@@ -13,9 +13,9 @@ const chapter = (name: string, address: string): React.ReactNode => (
 const projects = (): $Book => $(
     <Book>
         <Chapter><Cover /><Title>[Some Projects](/some-projects/)</Title></Chapter>
-        <Chapter><Synopsis /><Title>[Synopsis](/some-projects/#synopsis)</Title></Chapter>
-        <Chapter><TableOfContents /><Title>[Table of Contents](/some-projects/#table-of-contents)</Title><Entries><Heading>Contents</Heading></Entries></Chapter>
-        {chapter('The Work', '/some-projects/#the-work')}
+        <Chapter><Synopsis /><Title>[Synopsis](/some-projects/synopsis/)</Title></Chapter>
+        <Chapter><TableOfContents /><Title>[Table of Contents](/some-projects/table-of-contents/)</Title><Entries><Heading>Contents</Heading></Entries></Chapter>
+        {chapter('The Work', '/some-projects/the-work/')}
     </Book>
 ) as unknown as $Book;
 
@@ -27,14 +27,14 @@ const drawn = (book: $Book): string => {
 describe('the test library\'s drawn table of contents', () => {
     it('lists every chapter its book mentions as a link with its name, the first three parenthetical', () => {
         const page = drawn(projects());
-        expect(page).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#the-work"[^>]*>[\s\S]*The Work/u);
-        expect(page).toMatch(/pa-parenthetical[^"]*"[^>]*>[\s\S]*<a href="\/some-projects\/"[^>]*>[\s\S]*<a href="\/some-projects\/#synopsis"[^>]*>[\s\S]*<a href="\/some-projects\/#table-of-contents"/u);
+        expect(page).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/the-work\/"[^>]*>[\s\S]*The Work/u);
+        expect(page).toMatch(/pa-parenthetical[^"]*"[^>]*>[\s\S]*<a href="\/some-projects\/"[^>]*>[\s\S]*<a href="\/some-projects\/synopsis\/"[^>]*>[\s\S]*<a href="\/some-projects\/table-of-contents\/"/u);
     });
 
     it('lists a chapter added to the book at the next draw, with nothing in the table changed', () => {
         const book = projects();
-        expect(drawn(book)).not.toContain('/some-projects/#more-work');
-        book.text.add(book, chapter('More Work', '/some-projects/#more-work'));
-        expect(drawn(book)).toMatch(/<a href="\/some-projects\/#more-work"[^>]*>[\s\S]*More Work/u);
+        expect(drawn(book)).not.toContain('/some-projects/more-work/');
+        book.text.add(book, chapter('More Work', '/some-projects/more-work/'));
+        expect(drawn(book)).toMatch(/<a href="\/some-projects\/more-work\/"[^>]*>[\s\S]*More Work/u);
     });
 });

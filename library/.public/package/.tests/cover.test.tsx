@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, styled } from '@dna-platform/chemistry';
-import { $Writing, $Section, Section, Heading, Paragraph, $Reference } from '@dna-platform/public';
+import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, $Reference } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, $Author, Author, $Subject, Subject, $About, About } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -24,43 +24,75 @@ const paper = (): React.ReactNode => (
 );
 
 // Doug, 2026-09-26: "synopsis.means - this can be a reference to the book that it is a synopsis of and we agreed that
-// synopsis will support the ()[] syntax handed to it from the compiler, or get its book"; and of a catalogue's chapter,
-// "the Synopsis attribute knows how to see another chapter that is a synopsis and reach in and get what it needs".
+// synopsis will support the ()[] syntax handed to it from the compiler, or get its book". And, ruling that .public
+// never reads a url: "the title should create a reference and expose that… so the synopsis can create one and add it
+// to its attributes"; "the synopsis attribute can take another synopsis component and populate everything under the
+// title"; "the chapter is kept out of the Synopsis annotation's text, so that even in theory, it is not on the page.
+// It is used for parts to inject and express in its parent chapter"; "we want the title of a synopsis chapter to go
+// to the book it is a synopsis of" — which the compiler writes into a synopsis chapter's title, as these fixtures do.
 describe('a synopsis means the book it is a synopsis of', () => {
+    const LogSynopsis = (): React.ReactNode => (
+        <Chapter><Synopsis /><Title>[Synopsis](/the-log/)</Title><Paragraph>The one book here that is by what it is about.</Paragraph></Chapter>
+    );
+    const ofTheLog = (): React.ReactNode => <Chapter><Title>[Of the Log](/the-library/of-the-log/)</Title><Synopsis>{LogSynopsis()}</Synopsis></Chapter>;
+
     it('means the book written inside it, read of itself as it is built', () => {
-        const written = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/#of-the-log)</Title></Chapter>);
+        const written = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/of-the-log/)</Title></Chapter>);
         expect(written.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
         expect(written.annotations.expressed($Synopsis)?.name).toBe('The Log');
     });
 
-    // Written empty, it reads beyond itself — its chapter's title, a synopsis chapter within — which it can only do
-    // once the book is whole: in $Bound. A chapter built alone is never bound, so these stand in a book.
-    it('written empty, means the book a synopsis chapter within its chapter means, else the book its chapter\'s title names — once bound', () => {
-        const alone = built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/the-log/#synopsis)</Title></Chapter>);
-        expect(alone.annotations.expressed($Synopsis)?.means).toBeUndefined();
+    it('written empty, means what its chapter\'s title means, which is the book', () => {
+        const chapter = built<$Chapter>(LogSynopsis());
+        expect(chapter.annotations.expressed($Synopsis)?.means).toBe(chapter.mention);
+        expect(chapter.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
+    });
+
+    it('handed a synopsis chapter, keeps it off the page, gives its own chapter that chapter\'s parts under its own title, and means what that chapter means', () => {
+        const chapter = built<$Chapter>(ofTheLog());
+        const synopsis = chapter.annotations.expressed($Synopsis)!;
+        expect(synopsis.means?.identifier).toBe('/the-log/');
+        expect([...synopsis.text]).toEqual([]);
+        expect(chapter.parts).toHaveLength(2);
+        expect(chapter.parts[1]).toBeInstanceOf($Paragraph);
+        expect(chapter.parts[1].parent).toBe(chapter);
+        expect(chapter.specify()).toEqual([]);
+    });
+
+    it('bound, sends its chapter\'s title to what it means, and the book finds the synopsis of itself by what the book means', () => {
         const book = built<$Book>(
             <Book>
                 <Chapter><Cover /><Title>[The Library](/the-library/)</Title><Author>[The Log](/the-log/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
-                <Chapter><Synopsis /><Title>[Synopsis](/the-library/#synopsis)</Title></Chapter>
-                <Chapter>
-                    <Title>[Of the Log](/the-library/#of-the-log)</Title>
-                    <Chapter><Synopsis /><Title>[Synopsis](/the-log/#synopsis)</Title></Chapter>
-                    <Synopsis />
-                </Chapter>
+                <Chapter><Synopsis /><Title>[Synopsis](/the-library/)</Title></Chapter>
+                {ofTheLog()}
             </Book>
         );
         const [, own, host] = book.text.find($Chapter);
-        expect(own.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-library/');
-        expect(host.text.find($Chapter)[0].annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
-        expect(host.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
         expect(book.synopsis).toBe(own);
+        expect(own.title?.means?.identifier).toBe('/the-library/');
+        expect(host.title?.means?.identifier).toBe('/the-log/');
+        expect(String(host.title?.id)).toBe('of-the-log');
+    });
+
+    it('taken out, the next define takes the parts back, and its chapter has its title alone', () => {
+        const chapter = built<$Chapter>(ofTheLog());
+        chapter.annotations.remove(chapter, chapter.annotations.expressed($Synopsis)!);
+        chapter.annotations.define();
+        expect(chapter.parts).toHaveLength(1);
     });
 
     it('drawn, is its name as a link to the book it means, and still adds no layer to its chapter', async () => {
-        const chapter = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/#of-the-log)</Title></Chapter>);
+        const chapter = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/of-the-log/)</Title></Chapter>);
         const page = await drawn(chapter);
         expect(page.querySelector('a[href="/the-log/"]')?.textContent).toContain('The Log');
         expect([...chapter.containers]).toEqual(['span']);
+    });
+
+    it('drawn with a synopsis chapter, shows that chapter\'s words under its own title and never that chapter\'s title', async () => {
+        const page = await drawn(built<$Chapter>(ofTheLog()));
+        expect(page.textContent).toContain('The one book here that is by what it is about.');
+        expect(page.querySelector('#of-the-log')).not.toBeNull();
+        expect(page.querySelector('#synopsis')).toBeNull();
     });
 });
 
@@ -76,9 +108,9 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
     });
 
     it('a table of contents draws its chapter inside a nav, and a synopsis adds no layer', async () => {
-        const table = await drawn(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/#table-of-contents)</Title></Chapter>));
+        const table = await drawn(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>));
         expect(table.firstElementChild?.tagName).toBe('NAV');
-        const synopsis = built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/#synopsis)</Title></Chapter>);
+        const synopsis = built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>);
         expect([...synopsis.containers]).toEqual(['span']);
         expect(synopsis.specify()).toEqual([]);
     });
@@ -88,9 +120,9 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
     it('each marks its chapter with its own class and none of the others\'', () => {
         const classes = (chapter: $Chapter): string[] => [...new Set(chapter.classes)].filter(name => name.startsWith('pa-'));
         expect(classes(built<$Chapter>(paper()))).toEqual(['pa-cover']);
-        expect(classes(built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/#synopsis)</Title></Chapter>))).toEqual(['pa-synopsis']);
-        expect(classes(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/#table-of-contents)</Title></Chapter>))).toEqual(['pa-table-of-contents']);
-        expect(classes(built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/#the-argument)</Title></Chapter>))).toEqual([]);
+        expect(classes(built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>))).toEqual(['pa-synopsis']);
+        expect(classes(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>))).toEqual(['pa-table-of-contents']);
+        expect(classes(built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>))).toEqual([]);
     });
 
     it('draws the class on the chapter\'s own element, inside its layer, and takes both back when it goes', async () => {
@@ -160,7 +192,7 @@ describe('author, subject and about are annotations of a cover, each standing a 
         const synopsis = built<$Chapter>(
             <Chapter>
                 <Synopsis />
-                <Title>[Synopsis](/a-paper/#synopsis)</Title>
+                <Title>[Synopsis](/a-paper/)</Title>
                 <Author>[A Persona](/a-persona/)</Author>
                 <Subject>[The Library](/the-library/)</Subject>
                 <About>[A Paper](/a-paper/)</About>

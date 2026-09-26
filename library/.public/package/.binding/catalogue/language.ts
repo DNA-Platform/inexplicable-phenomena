@@ -117,7 +117,7 @@ export const spelt = (relation: Relation, end: End, name: string): string => {
 // 2026-09-18: "I know but I was being unique on purpose. Let's be traditional."
 //
 // AND IT READS LIKE THE ADDRESS IT BECOMES, which is the part worth having: `Dougs Library / The
-// Sheet` compiles to `/dougs-library/#the-sheet`, so the nesting is spelled one way instead of two.
+// Sheet` compiles to `/dougs-library/the-sheet/`, so the nesting is spelled one way instead of two.
 export const separator = ' / ';
 
 // A KEY WRITTEN THE ONE WAY. Whitespace around the separator is the writer's business and never the
