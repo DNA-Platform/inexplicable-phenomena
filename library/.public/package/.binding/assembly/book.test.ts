@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { read } from '../.test/staging';
+import { read } from '../.test/galleys';
 import { assembled } from './book';
 
 // WHAT THE COMPILER WRITES FOR A BOOK: a module whose `book` is a function calling each chapter

@@ -49,23 +49,23 @@ describe('a content is a reference an entry of a table stands, which draws its n
     });
 });
 
-// A GRID, whose entries stand in its cells at different depths, one said of a row and one of the chapter
-// itself. Doug, 2026-09-26: "Yes, it should definitly read contents on the chapter. Try to think hard
+// A GRID, as the First Folio set its Catalogue in 1623 — the plays in rows, one entry said of a row and
+// one of the chapter itself, at different depths. Doug, 2026-09-26: "Yes, it should definitly read contents on the chapter. Try to think hard
 // about a standard implementation where they are buried in the rows of a grid. What order would they
 // be on the page? Traverse in that order."
 const grid = (): React.ReactNode => (
     <Chapter>
         <TableOfContents />
-        <Content>[The Table](/a-paper/#table-of-contents)</Content>
-        <Title>[Table of Contents](/a-paper/#table-of-contents)</Title>
+        <Content>[A Catalogue](/the-folio/#a-catalogue)</Content>
+        <Title>[A Catalogue](/the-folio/#a-catalogue)</Title>
         <Section>
-            <Heading>Contents</Heading>
+            <Heading>Comedies, Histories, and Tragedies</Heading>
             <Paragraph>
-                <Word><Content>[One](/a-paper/#one)</Content></Word>
-                <Word><Content>[Two](/a-paper/#two)</Content></Word>
+                <Word><Content>[The Tempest](/the-folio/#the-tempest)</Content></Word>
+                <Word><Content>[Twelfth Night](/the-folio/#twelfth-night)</Content></Word>
             </Paragraph>
-            <Paragraph><Content>[Three](/a-paper/#three)</Content><Word>three</Word></Paragraph>
-            <Paragraph><Sentence><Word><Content>[Four](/a-paper/#four)</Content></Word></Sentence></Paragraph>
+            <Paragraph><Content>[The Histories](/the-folio/#the-histories)</Content><Word>King John</Word></Paragraph>
+            <Paragraph><Sentence><Word><Content>[Hamlet](/the-folio/#hamlet)</Content></Word></Sentence></Paragraph>
         </Section>
     </Chapter>
 );
@@ -74,7 +74,7 @@ describe('a table of contents has contents: every content in its table, in the o
     it('answers a grid\'s contents cell by cell and row by row, whatever their depth, and one said of a row or the chapter after what it holds', async () => {
         const chapter = built<$Chapter>(grid());
         const found = chapter.annotations.expressed($TableOfContents)?.contents ?? [];
-        expect(found.map(content => content.name)).toEqual(['One', 'Two', 'Three', 'Four', 'The Table']);
+        expect(found.map(content => content.name)).toEqual(['The Tempest', 'Twelfth Night', 'The Histories', 'Hamlet', 'A Catalogue']);
         const page = await drawn(chapter);
         expect([...page.querySelectorAll('span.pa-content')].map(span => span.textContent)).toEqual(found.map(content => content.name));
     });

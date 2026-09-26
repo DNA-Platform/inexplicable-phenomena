@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { fixture, read } from '../.test/staging';
+import { fixture, read } from '../.test/galleys';
 import { transforming } from './transform';
 
 // WHAT THE TRANSFORM WRITES INTO A READER'S PROSE, which is the one thing in the compiler that edits

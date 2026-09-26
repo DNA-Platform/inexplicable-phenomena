@@ -14,36 +14,37 @@ import { catalogue, type Catalogue } from '../catalogue/catalogue';
 // subject, one its own author, a persona the log vouches for, and a paper with every kind of
 // reference in it. A test that only needs to READ a library reads them where they stand, through
 // `walk(fixture, configured())`. A test that needs to BIND one needs the geometry a real library
-// has — books, a face, and the binder inside the face — and that is what `staged` puts together:
-// these books, this binder's own source beside them, in a folder of their own under `.test/.staged/`.
+// has — books, a face, and the binder inside the face — and that is what `pulled` puts together: a
+// GALLEY, as a printer pulls a proof to correct before the book is bound — these books, this binder's
+// own source beside them, in a folder of their own under `.test/.galleys/`.
 //
 // UNDER THE BINDER AND NOT IN THE MACHINE'S TEMP FOLDER, because of where the packages are. This
 // binder installs nothing of its own; `vite`, `tsx` and the framework all resolve by walking UP to
 // the repository's `node_modules`, and a copy standing in the temp folder walks up to nothing.
 // Measured 2026-09-19: "Cannot find package 'vite'", from a binder that was byte-identical to this
-// one. A stage under `.test` walks up through the same folders this file does.
+// one. A galley under `.test` walks up through the same folders this file does.
 //
-// NOTHING HERE IS SYNTHETIC. The books are real files a reader could open, and a staged library is
-// bound by the same binder, from the same source, that binds every other library.
+// NOTHING HERE IS SYNTHETIC. The books are real files a reader could open, and a galley is bound by
+// the same binder, from the same source, that binds every other library.
 export const fixture = resolve(dirname(fileURLToPath(import.meta.url)));
 export const home = resolve(fixture, '..');
-export const stages = join(fixture, '.staged');
+export const galleys = join(fixture, '.galleys');
 
 // THE TEST LIBRARY'S OWN CONFIGURATION, WHEREVER IT IS READ. It names its own root and its own
 // title, and never the host binder's: the first time the suite ran inside a library's copy of the
 // binder, `configure(home)` read that library's `.pubconfig`, which named a root the test library
 // does not have, and every unit suite failed at import. One setting, written once, used by the
-// unit suites here and by the staged `.pubconfig` below.
+// unit suites here and by a galley's `.pubconfig` below.
 const settings = { root: 'The Library', title: 'The Test Library' };
 
-// AND ONE EXCLUSION: a stage is not a book of the test library, and a walk of `.test` that found
+// AND ONE EXCLUSION: a galley is not a book of the test library, and a walk of `.test` that found
 // one would find its five books twice.
 export const configured = (): Configuration => {
     const chosen = configure(fixture);
 
     return {
         ...chosen,
-        inventory: { ...chosen.inventory, root: settings.root, exclude: [...chosen.inventory.exclude, '.staged'] },
+        inventory: { ...chosen.inventory, root: settings.root, exclude: [...chosen.inventory.exclude, '.galleys'] },
         rendering: { ...chosen.rendering, title: settings.title },
     };
 };
@@ -56,14 +57,14 @@ export const read = (): { chosen: Configuration; found: Library; card: Catalogue
     return { chosen, found, card: catalogue(found, chosen) };
 };
 
-export type Staged = { root: string; library: string; face: string; binding: string; remove(): void };
+export type Galley = { root: string; library: string; face: string; binding: string; remove(): void };
 
 // WHAT THE BINDER'S SOURCE IS, as opposed to what a bind leaves behind or a package manager installs
-// — and never `.test` itself, so a stage does not carry a stage.
+// — and never `.test` itself, so a galley does not carry a galley.
 const source = (from: string): boolean =>
     !/[\\/](node_modules|\.test|application[\\/]books)([\\/]|$)|[\\/]\.(graph|manifest)\.json$|[\\/]\.shell\.html$|[\\/]application[\\/](books|routes|stylesheets)\.ts$/u.test(from);
 
-// COPIED FILE BY FILE, because the stage stands inside the binder it is a copy of, and `cpSync`
+// COPIED FILE BY FILE, because the galley stands inside the binder it is a copy of, and `cpSync`
 // refuses a folder whose destination is under its source before it ever asks the filter. A walk
 // that never enters `.test` has no self to copy into.
 const copied = (from: string, into: string): void => {
@@ -76,15 +77,15 @@ const copied = (from: string, into: string): void => {
     }
 };
 
-export const staged = (): Staged => {
-    mkdirSync(stages, { recursive: true });
-    const root = mkdtempSync(join(stages, 'library-'));
+export const pulled = (): Galley => {
+    mkdirSync(galleys, { recursive: true });
+    const root = mkdtempSync(join(galleys, 'library-'));
     const library = join(root, 'library');
     const face = join(library, '.public');
     const binding = join(face, '.binding');
 
     for (const entry of readdirSync(fixture, { withFileTypes: true }))
-        if (entry.isDirectory() && entry.name !== '.staged') cpSync(join(fixture, entry.name), join(library, entry.name), { recursive: true });
+        if (entry.isDirectory() && entry.name !== '.galleys') cpSync(join(fixture, entry.name), join(library, entry.name), { recursive: true });
     copied(home, binding);
     writeFileSync(join(binding, '.pubconfig'), `${JSON.stringify({ inventory: { root: settings.root }, rendering: { title: settings.title } }, null, 2)}\n`);
 
@@ -95,10 +96,10 @@ export const staged = (): Staged => {
 //
 // WITHOUT THE TEST RUNNER'S `NODE_ENV`. Vitest sets it to `test`; a bind decides for itself what
 // each phase runs as, and the prerender's children insist on `production`.
-export const bound = (held: Staged): string => {
+export const bound = (galley: Galley): string => {
     const { NODE_ENV: _, ...environment } = process.env;
 
-    return execFileSync('npx', ['tsx', 'binding.ts'], { cwd: held.binding, encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'pipe'], env: environment });
+    return execFileSync('npx', ['tsx', 'binding.ts'], { cwd: galley.binding, encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'pipe'], env: environment });
 };
 
 // THE SAME LIBRARY, LARGER: one of its books copied N times under N names, each listed where the
@@ -107,9 +108,9 @@ export const bound = (held: Staged): string => {
 // thousand real books rather than over a thousand stubs.
 export type Copies = { of: string; name: string; subject: string };
 
-export const duplicated = (held: Staged, copies: Copies, count: number): string[] => {
+export const duplicated = (galley: Galley, copies: Copies, count: number): string[] => {
     const named: string[] = [];
-    const at = (folder: string): string => join(held.library, folder);
+    const at = (folder: string): string => join(galley.library, folder);
     const listing = (table: string, after: string, rows: string[]): void => {
         const code = readFileSync(table, 'utf8');
         if (!code.includes(after)) throw new Error(`${table} does not list ${after}, so there is nowhere to list its copies after`);

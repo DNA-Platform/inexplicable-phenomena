@@ -18,11 +18,11 @@ import { defineConfig } from 'vitest/config';
 // the other two are their own scripts, because a suite that takes a minute stops being run.
 export default defineConfig({
     test: {
-        // AND NEVER A STAGED COPY. A regression or performance test stands the test library up under
-        // `.test/.staged/` with a copy of this binder beside it, suites and all; a project that
-        // walked into one would run every promise twice and the second time against a copy.
+        // AND NEVER A GALLEY. A regression or performance test pulls the test library as a galley under
+        // `.test/.galleys/`, a copy of this binder beside it, suites and all; a project that walked into
+        // one would run every promise twice and the second time against a copy.
         projects: [
-            { test: { name: 'unit', include: ['**/*.test.ts', '**/*.test.tsx'], exclude: ['node_modules/**', 'application/**', '.test/.staged/**'] } },
+            { test: { name: 'unit', include: ['**/*.test.ts', '**/*.test.tsx'], exclude: ['node_modules/**', 'application/**', '.test/.galleys/**'] } },
             { test: { name: 'regression', include: ['.test/*.regression.ts'], testTimeout: 600000, hookTimeout: 60000 } },
             { test: { name: 'performance', include: ['.test/*.performance.ts'], testTimeout: 600000, hookTimeout: 60000 } },
         ],

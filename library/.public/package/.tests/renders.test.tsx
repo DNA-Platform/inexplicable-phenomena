@@ -153,7 +153,7 @@ describe('a mention that stands its own annotation costs no more than any writin
 
 let read: $Book | undefined;
 
-class $CountingBook extends $Book {
+class $Ledger extends $Book {
     override view(): ReactNode {
         counted.drawn++;
         return super.view();
@@ -175,7 +175,7 @@ class $Unreading extends $Paragraph {
     }
 }
 
-const CountingBook = $($CountingBook);
+const Ledger = $($Ledger);
 const Reading = $($Reading);
 const Unreading = $($Unreading);
 
@@ -184,10 +184,10 @@ describe('a writing that reads its book while it draws costs nothing more', () =
 
     it('a book whose paragraph reads $book while it draws draws and paints exactly as one whose paragraph does not', async () => {
         const control = $(
-            <CountingBook>
+            <Ledger>
                 <Quoted />
                 <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
-            </CountingBook>
+            </Ledger>
         ) as unknown as $Book;
         const Control = $(control);
         await act(async () => { render(<Control />); });
@@ -197,10 +197,10 @@ describe('a writing that reads its book while it draws costs nothing more', () =
 
         counting();
         const book = $(
-            <CountingBook>
+            <Ledger>
                 <Quoted />
                 <Chapter><Title>[A Paper](/a-paper/)</Title><Reading>a line</Reading></Chapter>
-            </CountingBook>
+            </Ledger>
         ) as unknown as $Book;
         const Drawn = $(book);
         await act(async () => { render(<Drawn />); });

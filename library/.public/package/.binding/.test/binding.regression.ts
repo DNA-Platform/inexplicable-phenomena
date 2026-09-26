@@ -9,7 +9,7 @@ import { walk } from '../inventory/walk';
 import { catalogue } from '../catalogue/catalogue';
 import { placeOf } from '../rendering/place';
 import { proof } from '../specification/proof';
-import { bound, home, staged, type Staged } from './staging';
+import { bound, home, pulled, type Galley } from './galleys';
 
 // THE WHOLE BINDER, END TO END, OVER A LIBRARY THAT IS KNOWN TO BE RIGHT.
 //
@@ -24,13 +24,13 @@ import { bound, home, staged, type Staged } from './staging';
 // AND IT READS WHAT THIS CODE WRITES. A Means draws its words in its own element inside the anchor
 // its Reference lends it, and its annotations' own writing stands inside that element too, so an
 // anchor is matched by its address and the words it opens with, never by bare words.
-const held = staged();
-afterAll(() => { held.remove(); });
+const galley = pulled();
+afterAll(() => { galley.remove(); });
 
 // WHAT A BIND PRINTED, WHETHER IT FINISHED OR NOT — the phases on one stream and the faults on the other.
-const printed = (stage: Staged): string => {
+const printed = (galley: Galley): string => {
     try {
-        return bound(stage);
+        return bound(galley);
     } catch (error) {
         const failed = error as { stdout?: string; stderr?: string };
         return `${failed.stdout ?? ''}${failed.stderr ?? ''}`;
@@ -38,26 +38,26 @@ const printed = (stage: Staged): string => {
 };
 
 describe('a bind of the test library', () => {
-    const chosen = configure(held.binding);
-    const found = walk(held.library, chosen);
+    const chosen = configure(galley.binding);
+    const found = walk(galley.library, chosen);
     const table = catalogue(found, chosen).table;
-    const page = (name: string): string => readFileSync(placeOf(held.face, table.routes.find(route => route.name === name)!), 'utf8');
+    const page = (name: string): string => readFileSync(placeOf(galley.face, table.routes.find(route => route.name === name)!), 'utf8');
 
     // Doug, 2026-09-25: "in ..public, we drop the v1 dependency in our test library this sprint."
     it('binds with this code, the package the repository links, and no other', () => {
-        const at = createRequire(join(held.binding, 'package.json')).resolve('@dna-platform/public');
+        const at = createRequire(join(galley.binding, 'package.json')).resolve('@dna-platform/public');
         expect(realpathSync(at).startsWith(realpathSync(resolve(home, '..')))).toBe(true);
     });
 
     it('runs every phase, specify among them, and finishes', () => {
-        const said = bound(held);
+        const said = bound(galley);
         expect(said).toMatch(/^specify +\d+ books? read/mu);
         expect(said).toMatch(/^bound /mu);
     });
 
     it('wrote a page for every book, and every page holds its book', () => {
         for (const route of table.routes) {
-            const at = placeOf(held.face, route);
+            const at = placeOf(galley.face, route);
             expect(existsSync(at), `${route.name} was not rendered at ${at}`).toBe(true);
             const html = readFileSync(at, 'utf8');
             expect(html, `${route.name} left #root empty`).not.toContain('<div id="root"></div>');
@@ -66,8 +66,8 @@ describe('a bind of the test library', () => {
     });
 
     it('wrote pages the browser will build as sent, whose every link leads to an id worn once', () => {
-        const pages = table.routes.map(route => placeOf(held.face, route).slice(held.face.length + 1).split('\\').join('/'));
-        expect(proof(held.face, [...pages, 'index.html'], chosen.resolution.base)).toEqual([]);
+        const pages = table.routes.map(route => placeOf(galley.face, route).slice(galley.face.length + 1).split('\\').join('/'));
+        expect(proof(galley.face, [...pages, 'index.html'], chosen.resolution.base)).toEqual([]);
     });
 
     it('resolved every reference to the address the page carries', () => {
@@ -152,7 +152,7 @@ describe('the bound test library, seen in a real browser', () => {
     let paper: Page;
     const heard: string[] = [];
     beforeAll(async () => {
-        server = await preview({ configFile: join(held.binding, 'vite.config.ts'), preview: { port: 0 }, logLevel: 'silent' });
+        server = await preview({ configFile: join(galley.binding, 'vite.config.ts'), preview: { port: 0 }, logLevel: 'silent' });
         browser = await puppeteer.launch({ headless: true });
         paper = await browser.newPage();
         paper.on('console', message => heard.push(message.text()));
@@ -191,9 +191,9 @@ describe('the bound test library, seen in a real browser', () => {
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
 // a fault naming the chapter, at catalogue, before anything is drawn.
 describe('a bind of the test library with one entry taken out of a table', () => {
-    let broken: Staged;
+    let broken: Galley;
     beforeAll(() => {
-        broken = staged();
+        broken = pulled();
         const table = join(broken.library, 'paper', '.table.tsx');
         writeFileSync(table, readFileSync(table, 'utf8').replace('            <Paragraph><Content>$[ ./The Evidence ]</Content></Paragraph>\n', ''));
     });
@@ -212,9 +212,9 @@ describe('a bind of the test library with one entry taken out of a table', () =>
 // Synopsis written on a section is a writing that does not specify, and specify says so on the
 // chapter file its failure's code numbers — a book's contents are its chapters in file order.
 describe('a bind of the test library with a synopsis said of a section', () => {
-    let broken: Staged;
+    let broken: Galley;
     beforeAll(() => {
-        broken = staged();
+        broken = pulled();
         const chapter = join(broken.library, 'paper', '1-the-argument.tsx');
         writeFileSync(chapter, readFileSync(chapter, 'utf8')
             .replace("import { Chapter, Heading, Means, Paragraph, Section, Title }", "import { Chapter, Heading, Means, Paragraph, Section, Synopsis, Title }")

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { read } from '../.test/staging';
+import { read } from '../.test/galleys';
 import { name } from './language';
 import { structure } from './structure';
 import { wellformed } from './wellformed';

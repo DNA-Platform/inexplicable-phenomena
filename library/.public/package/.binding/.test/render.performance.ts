@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, it } from 'vitest';
-import { bound, duplicated, staged } from './staging';
+import { bound, duplicated, pulled } from './galleys';
 
 // WHAT A BIND COSTS, PHASE BY PHASE, OVER A LIBRARY OF N REAL BOOKS — and above all what the render
 // costs, because the render is one Node process per page and was measured at 3.1s a page, serial,
@@ -9,14 +9,14 @@ import { bound, duplicated, staged } from './staging';
 // chose once on one machine. What is asserted is that the bind finishes and reports every phase.
 // Run with SCALE=<n> to size it; the default is small enough to run without thinking about it.
 const scale = Number(process.env.SCALE ?? 20);
-const held = staged();
-afterAll(() => { held.remove(); });
+const galley = pulled();
+afterAll(() => { galley.remove(); });
 
 describe(`a bind of ${5 + scale} real books`, () => {
     it('finishes, and says what each phase cost', () => {
-        duplicated(held, { of: 'paper', name: 'A Paper', subject: 'the-library' }, scale);
+        duplicated(galley, { of: 'paper', name: 'A Paper', subject: 'the-library' }, scale);
         const at = performance.now();
-        const said = bound(held);
+        const said = bound(galley);
         const whole = performance.now() - at;
 
         const phases = [...said.matchAll(/^(\w+)\s+.*\((\d+\.\d)s\)$/gmu)].map(one => ({ phase: one[1], seconds: Number(one[2]) }));
