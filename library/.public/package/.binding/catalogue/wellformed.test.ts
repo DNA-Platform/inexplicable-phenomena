@@ -246,13 +246,13 @@ describe('the catalogue', () => {
         expect(faultsOf(books)).toEqual([faults.unreferencedMention]);
     });
 
-    it('raises a chapter its own book\'s table does not refer to, naming the book and the chapter', () => {
+    // A table need not refer to every chapter since 2026-09-26: a title gives each its address, and a
+    // table may be drawn from what the chapters mention.
+    it('raises nothing for a chapter its own book\'s table does not refer to', () => {
         const books = whole();
         books[2].lists = ['Some Projects', 'Table of Contents'];
 
-        const said = wellformed(structure(built(books)));
-        expect(said.map(fault => fault.fault)).toEqual([faults.chapterNotListed]);
-        expect(said[0].says).toContain('"Synopsis" is a chapter of "Some Projects"');
+        expect(faultsOf(books)).toEqual([]);
     });
 
     it('raises a table that lists what its book does not hold, as a reference to nothing', () => {

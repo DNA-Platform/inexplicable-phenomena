@@ -28,7 +28,6 @@ export const faults = {
     circularCatalogue: 'CIRCULAR-CATALOGUE',
     topicIsCatalogue: 'TOPIC-IS-CATALOGUE',
     noSynopsis: 'NO-SYNOPSIS',
-    chapterNotListed: 'CHAPTER-NOT-LISTED',
     notInTheTable: 'NOT-IN-THE-TABLE',
     noAuthor: 'NO-AUTHOR',
     noSelfAuthor: 'NO-SELF-AUTHOR',
@@ -216,13 +215,11 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // catalogue edge was corroborated by an annotation somewhere in the book's apparatus, and the
     // same line written on the cover would have passed identically. The table was doing nothing.
 
-    // A TABLE REFERS TO EVERY CHAPTER ITS BOOK HOLDS. A chapter nobody lists is a chapter a reader
-    // arrives at only by knowing it is there.
-    for (const spot of structure.spots.values()) {
-        if (spot.kind !== 'chapter') continue;
-        if (structure.lists.get(spot.book)?.has(spot.id) === true) continue;
-        wrong.push({ fault: faults.chapterNotListed, at: spot.at, file: spot.file, says: `"${structure.named.get(spot.id) ?? spot.id}" is a chapter of "${called(structure, spot.book)}" and its table of contents does not refer to it, $[ ./${structure.named.get(spot.id) ?? spot.id} ]` });
-    }
+    // A TABLE NEED NOT REFER TO EVERY CHAPTER ITS BOOK HOLDS — a rule that stood until 2026-09-26 as
+    // CHAPTER-NOT-LISTED. Every chapter's title already gives it an address, and a table may be
+    // drawn from what the chapters mention rather than written; a written one lists what its author
+    // chooses. Doug: "Even if we remove the check - because a check on the chapter titles guarantees
+    // the table of contents attribute has what it needs, let's test that the references work."
 
     // AND THE ANSWERING HALF OF A CATALOGUE EDGE IS WRITTEN IN THE TABLE. A catalogue saying
     // elsewhere that it holds a book is a claim in the wrong place: the table of contents is what a

@@ -121,6 +121,14 @@ describe('a bind of the test library', () => {
         expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
     });
 
+    // ONE TABLE IS DRAWN, NOT WRITTEN — Some Projects', its entries what its chapters mention.
+    it('drew Some Projects\' table from its contents, every chapter a link inside its nav', () => {
+        const projects = page('Some Projects');
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#the-work"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#synopsis"[^>]*>[\s\S]*<\/nav>/u);
+        expect(projects).not.toMatch(/<nav[^>]*>[\s\S]*pa-content[\s\S]*<\/nav>/u);
+    });
+
     // A CATALOGUE'S CHAPTER HOLDS ANOTHER BOOK'S SYNOPSIS — the log's, imported and rendered inside the
     // library's second chapter, its title linking home and wearing no id on this page.
     it('drew in the library a chapter holding the log\'s own synopsis, which links home and wears no second id', () => {
@@ -199,20 +207,20 @@ describe('the bound test library, seen in a real browser', () => {
 
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
 // a fault naming the chapter, at catalogue, before anything is drawn.
-describe('a bind of the test library with one entry taken out of a table', () => {
+describe('a bind of the test library with a catalogue row that does not refer to the book\'s synopsis', () => {
     let broken: Galley;
     beforeAll(() => {
         broken = pulled();
-        const table = join(broken.library, 'paper', '.table.tsx');
-        writeFileSync(table, readFileSync(table, 'utf8').replace('            <Paragraph><Content>$[ ./The Evidence ]</Content></Paragraph>\n', ''));
+        const table = join(broken.library, 'the-library', '.table.tsx');
+        writeFileSync(table, readFileSync(table, 'utf8').replace(': <Word><Content>$[ The Log / Synopsis ]</Content></Word>', ''));
     });
     afterAll(() => { broken.remove(); });
 
-    it('fails at catalogue, naming the book and the chapter its table does not refer to', () => {
+    it('fails at catalogue, naming the row and the synopsis it owes', () => {
         const said = printed(broken);
         expect(said).toMatch(/^catalogue +FAILED/mu);
-        expect(said).toContain('CHAPTER-NOT-LISTED');
-        expect(said).toContain('"The Evidence" is a chapter of "A Paper"');
+        expect(said).toContain('NO-SYNOPSIS');
+        expect(said).toContain('answers for "The Log" and the table does not refer to its synopsis');
         expect(said).not.toMatch(/^bound /mu);
     });
 });
