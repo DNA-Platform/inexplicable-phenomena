@@ -34,6 +34,13 @@ export class $Table extends $Annotation {
 
     override defines(writing: $Writing): void {
         writing.classes.add(this, 'pa-table', `pa-cols-${this.columns}`);
+    }
+
+    override erase(writing: $Writing): void {
+        writing.classes.revert(this);
+    }
+
+    protected override $Bound(): void {
         for (const [index, row] of this.rows.entries()) {
             row.classes.add(this, 'pa-row', `pa-row-start-${index + 1}`);
             for (const [column, cell] of row.parts.entries()) {
@@ -42,15 +49,7 @@ export class $Table extends $Annotation {
                     cell.classes.add(this, `pa-col-span-${this.columns - column}`);
             }
         }
-    }
-
-    override erase(writing: $Writing): void {
-        writing.classes.revert(this);
-        for (const part of this.composition?.parts ?? []) {
-            part.classes.revert(this);
-            for (const cell of part.parts)
-                cell.classes.revert(this);
-        }
+        super.$Bound();
     }
 }
 

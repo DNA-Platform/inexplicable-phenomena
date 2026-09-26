@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, Sentence, Word, $Table, Table } from '@dna-platform/public';
+import { $Book, Book, $Chapter, Chapter, Cover, Title } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -12,6 +13,15 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
     return container!;
 };
 const classes = (writing: $Writing): string[] => [...writing.classes].filter(name => name.startsWith('pa-'));
+
+// A TABLE MARKS ITS ROWS AND CELLS ONCE, IN $BOUND, when the book is whole and nothing has drawn — so the
+// marks cost no draw, and a section stands in a book to be bound. Doug, 2026-09-26: "Mark at bound is great."
+const bound = (section: React.ReactNode): $Section => built<$Book>(
+    <Book>
+        <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
+        <Chapter><Title>[A Catalogue](/the-folio/#a-catalogue)</Title>{section}</Chapter>
+    </Book>
+).text.find($Chapter)[1].text.find($Section)[0];
 
 // A GRID, as the First Folio set its Catalogue in 1623: the plays in rows, two to a row. Doug, 2026-09-26:
 // "A table is a way of interpreting a composition, and the attribute can handle annotating the various
@@ -30,7 +40,7 @@ const folio = (table: React.ReactNode = <Table />): React.ReactNode => (
 
 describe('a table is a way of interpreting a composition as a grid, marking its rows and cells by authorship', () => {
     it('interprets a section as a grid: its paragraphs the rows, their words the cells, and the heading no row', () => {
-        const section = built<$Section>(folio());
+        const section = bound(folio());
         expect(section.specify()).toEqual([]);
         expect(classes(section)).toEqual(['pa-table', 'pa-cols-2']);
         const [heading, ...rows] = section.parts;
@@ -48,7 +58,7 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
     });
 
     it('a short row\'s last cell spans the columns that remain', () => {
-        const section = built<$Section>(
+        const section = bound(
             <Section>
                 <Table />
                 <Heading>h</Heading>
@@ -59,25 +69,28 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(classes(section.parts[2].parts[0])).toEqual(['pa-col', 'pa-col-start-1', 'pa-col-span-2']);
     });
 
+    it('a section built alone is never bound: it wears pa-table, and its rows and cells no marks', () => {
+        const section = built<$Section>(folio());
+        expect(classes(section)).toEqual(['pa-table', 'pa-cols-2']);
+        expect(section.parts.slice(1).map(row => classes(row))).toEqual([[], [], []]);
+    });
+
     it('says so when it has not the rows or the columns it says, and when it is said of no composition', () => {
         expect(built<$Section>(folio(<Table rows={2} />)).specify()).toContain('Section: a table has the rows it says, and this one has another number');
         expect(built<$Section>(folio(<Table columns={1} />)).specify()).toContain('Section: a table has the columns it says, and one of its rows has more');
         expect(built<$Section>(folio(<Table rows={3} columns={2} />)).specify()).toEqual([]);
     });
 
-    it('taken out, the next define takes every class back from the section, its rows and their cells', () => {
-        const section = built<$Section>(folio());
+    it('taken out, the next define takes the section\'s classes back; the marks the bind gave its rows and cells stay', () => {
+        const section = bound(folio());
         section.annotations.remove(section, section.annotations.find($Table)[0]);
         section.annotations.define();
         expect(classes(section)).toEqual([]);
-        for (const row of section.parts) {
-            expect(classes(row)).toEqual([]);
-            for (const cell of row.parts) expect(classes(cell)).toEqual([]);
-        }
+        expect(classes(section.parts[1])).toEqual(['pa-row', 'pa-row-start-1']);
     });
 
     it('drawn, the section wears pa-table and its six cells stand inside it in their rows', async () => {
-        const page = await drawn(built<$Section>(folio()));
+        const page = await drawn(bound(folio()));
         expect(page.querySelector('.pa-table.pa-cols-2')).not.toBeNull();
         expect(page.querySelectorAll('.pa-table .pa-row').length).toBe(3);
         expect(page.querySelectorAll('.pa-table .pa-row .pa-col').length).toBe(6);

@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
-import { $Book, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word } from '@dna-platform/public';
+import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -208,37 +208,44 @@ const Binding = $($Binding);
 const CountedSection = $($CountedSection);
 const CountedParagraph = $($CountedParagraph);
 
-// Doug, 2026-09-26: "Paints count most, but draws count too as they will affect time to first paint"; of a Table
-// marking its rows in defines: "this is delaying the paint but not causing many. That is the right behavior."
-// Chemistry's third pass re-runs the section's define after its rows have drawn, and each row is drawn and
-// checked once more: two draws a row, before paint, and no paint.
-describe('a table that marks a composition\'s rows and cells delays the paint and causes none', () => {
+// Doug, 2026-09-26: "Paints count most, but draws count too as they will affect time to first paint". A Table
+// marking its rows in defines was measured at two draws a marked child before paint, since chemistry's third
+// pass re-runs the section's define after the rows have drawn — half a millisecond a child, a fifty-row
+// catalogue doubling its time to first paint. So a Table marks its rows and cells once, in $Bound, when
+// nothing has drawn: "Mark at bound is great."
+describe('a table that marks a composition\'s rows and cells costs nothing more', () => {
     beforeEach(counting);
 
-    it('a section wearing a Table paints and commits exactly as one without, and draws two more times a row', async () => {
-        const tabled = (table: ReactNode): $Writing => $(
-            <CountedSection>
-                {table}
-                <Heading>h</Heading>
-                <CountedParagraph><Word>a</Word><Word>b</Word></CountedParagraph>
-                <CountedParagraph><Word>c</Word><Word>d</Word></CountedParagraph>
-            </CountedSection>
-        ) as unknown as $Writing;
+    it('a book whose section wears a Table draws and paints exactly as one whose section does not, its rows counted with it', async () => {
+        const tabled = (table: ReactNode): $Book => $(
+            <Ledger>
+                <Quoted />
+                <Chapter>
+                    <Title>[A Folio](/a-folio/)</Title>
+                    <CountedSection>
+                        {table}
+                        <Heading>h</Heading>
+                        <CountedParagraph><Word>a</Word><Word>b</Word></CountedParagraph>
+                        <CountedParagraph><Word>c</Word><Word>d</Word></CountedParagraph>
+                    </CountedSection>
+                </Chapter>
+            </Ledger>
+        ) as unknown as $Book;
         const Control = $(tabled(null));
         await act(async () => { render(<Control />); });
         await settle();
         const expected = { ...counted };
-        expect(expected.drawn).toBe(9);
+        expect(expected).toEqual({ drawn: 12, painted: 1, committed: 1 });
 
         counting();
-        const section = tabled(<Table />);
-        const Drawn = $(section);
+        const book = tabled(<Table />);
+        const Drawn = $(book);
         await act(async () => { render(<Drawn />); });
         await settle();
+        const section = book.text.find($Chapter)[0].text.find($Section)[0];
         expect([...section.classes]).toContain('pa-table');
-        expect(counted.painted).toBe(expected.painted);
-        expect(counted.committed).toBe(expected.committed);
-        expect(counted.drawn).toBe(expected.drawn + 2 * 2);
+        expect([...section.parts[1].classes]).toContain('pa-row');
+        expect(counted).toEqual(expected);
     });
 });
 
