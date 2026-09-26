@@ -94,6 +94,11 @@ describe('a bind of the test library', () => {
         expect(page('The Library')).toMatch(/<span id="synopsis" class="[^"]*pa-parenthetical/u);
     });
 
+    // R4 — Doug: "just have the book expose its cover, table, synopsis... and other things use it from there."
+    it('drew in the argument its book\'s title and a link to its book\'s table, read from its book alone', () => {
+        expect(page('A Paper')).toMatch(/<span>A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/#table-of-contents"[^>]*><span[^>]*>Table of Contents/u);
+    });
+
     it('marked the autobiography and the biography on their covers', () => {
         expect(page('The Log')).toMatch(/<header class="pd-container"><span class="pa-biography pa-autobiography">/u);
         expect(page('A Persona')).toMatch(/<header class="pd-container"><span class="pa-biography">/u);
@@ -208,6 +213,6 @@ describe('a bind of the test library with a synopsis said of a section', () => {
     it('fails at specify, on the chapter\'s own file, saying what does not specify', () => {
         const said = printed(broken);
         expect(said).toMatch(/^specify +FAILED/mu);
-        expect(said).toMatch(/1-the-argument\.tsx\(1,1\): error SPEC: paper — APaper \/ Chapter 3 \/ Section 1: a synopsis is said of a chapter, and this is not one/u);
+        expect(said).toMatch(/1-the-argument\.tsx\(1,1\): error SPEC: paper — APaper \/ Chapter 3 \/ Section 2: a synopsis is said of a chapter, and this is not one/u);
     });
 });

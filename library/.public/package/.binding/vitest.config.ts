@@ -22,7 +22,7 @@ export default defineConfig({
         // `.test/.staged/` with a copy of this binder beside it, suites and all; a project that
         // walked into one would run every promise twice and the second time against a copy.
         projects: [
-            { test: { name: 'unit', include: ['**/*.test.ts'], exclude: ['node_modules/**', 'application/**', '.test/.staged/**'] } },
+            { test: { name: 'unit', include: ['**/*.test.ts', '**/*.test.tsx'], exclude: ['node_modules/**', 'application/**', '.test/.staged/**'] } },
             { test: { name: 'regression', include: ['.test/*.regression.ts'], testTimeout: 600000, hookTimeout: 60000 } },
             { test: { name: 'performance', include: ['.test/*.performance.ts'], testTimeout: 600000, hookTimeout: 60000 } },
         ],

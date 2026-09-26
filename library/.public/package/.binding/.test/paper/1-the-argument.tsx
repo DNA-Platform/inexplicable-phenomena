@@ -1,14 +1,17 @@
 import { Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { RunningHead } from '../the-library/1-the-shelves.tsx.tsx';
 
 // EVERY WAY A REFERENCE CAN BE WRITTEN, IN ONE CHAPTER: a book by name, a chapter of this book, a
 // chapter of another book, a reference that shows its own words — and one written in a STRING,
 // which compiles to the same thing prose does. A transform that gets one of these wrong gets it
-// wrong here, where a test is reading.
+// wrong here, where a test is reading. AND IT WEARS THE LIBRARY'S RUNNING HEAD, which names this
+// book and links to its table while nothing in this file names the book.
 const evidence = '$[ ./The Evidence ]';
 
 export default () => (
     <Chapter>
         <Title>[[ The Argument ]]</Title>
+        <RunningHead />
         <Section>
             <Heading>What is claimed</Heading>
             <Paragraph>
