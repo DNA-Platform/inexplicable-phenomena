@@ -138,16 +138,16 @@ class $Restamped extends $Annotation {
             writing.annotations.express(stamp, true);
     }
 }
-class $Budding extends $Annotation {
+class $Marking extends $Annotation {
     override defines(writing: $Writing): void {
         if (writing.annotations.find($Mark).length === 0)
             writing.annotations.add(writing, Mark);
     }
 }
-class $Grafting extends $Annotation {
+class $Glossing extends $Annotation {
     override defines(writing: $Writing): void {
-        if (writing.annotations.find($Budding).length === 0)
-            writing.annotations.add(writing, Budding);
+        if (writing.annotations.find($Marking).length === 0)
+            writing.annotations.add(writing, Marking);
     }
 }
 class $Owned extends $Writing {
@@ -173,8 +173,8 @@ class $Narrating extends $Writing {
         this.annotations.add(this, Narrative);
     }
 }
-class $Growing extends $Writing {
-    grow(): void {
+class $Drafting extends $Writing {
+    draft(): void {
         this.text.add(this, <Writing> more</Writing>);
     }
 }
@@ -200,14 +200,14 @@ const Owned = $($Owned);
 const Looking = $($Looking);
 const Reading = $($Reading);
 const Restamped = $($Restamped);
-const Budding = $($Budding);
-const Grafting = $($Grafting);
+const Marking = $($Marking);
+const Glossing = $($Glossing);
 const Tidying = $($Tidying);
 const Aside = $($Aside);
 const Section = $($Section);
 const Counted = $($Counted);
 const Narrating = $($Narrating);
-const Growing = $($Growing);
+const Drafting = $($Drafting);
 
 const Quiet = $($Quiet);
 const Shouted = $($Shouted);
@@ -601,7 +601,7 @@ describe('while a define runs the annotations are one generation: the genome it 
     });
 
     it('lets an annotation change the genome while it runs, and the change is the next generation: the run and every read stay on the genome it established', () => {
-        const writing = built<$Writing>(<Writing>a <Budding /></Writing>);
+        const writing = built<$Writing>(<Writing>a <Marking /></Writing>);
         expect(writing.annotations.find($Mark)).toEqual([]);
         writing.annotations.define();
         expect(writing.annotations.find($Mark).length).toBe(1);
@@ -610,17 +610,17 @@ describe('while a define runs the annotations are one generation: the genome it 
     });
 
     it('lets recursion unfold one generation a define: an annotation added by an annotation adds another', () => {
-        const writing = built<$Writing>(<Writing>a <Grafting /></Writing>);
-        expect(writing.annotations.find($Budding)).toEqual([]);
+        const writing = built<$Writing>(<Writing>a <Glossing /></Writing>);
+        expect(writing.annotations.find($Marking)).toEqual([]);
         writing.annotations.define();
-        expect(writing.annotations.find($Budding).length).toBe(1);
+        expect(writing.annotations.find($Marking).length).toBe(1);
         expect(writing.annotations.find($Mark)).toEqual([]);
         writing.annotations.define();
         expect(writing.annotations.find($Mark).length).toBe(1);
     });
 
     it('drawn, settles once the genome stops changing: two generations of additions cost the three draws of any mount, each draw a define', async () => {
-        const writing = built<$Counted>(<Counted>a <Grafting /></Counted>);
+        const writing = built<$Counted>(<Counted>a <Glossing /></Counted>);
         const Drawn = $(writing);
         draws = 0;
         await act(async () => { render(<Drawn />); });
@@ -760,14 +760,14 @@ describe('drawn, a writing defines itself at every draw and settles', () => {
         await act(async () => { narrating.narrate(); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(container?.firstElementChild?.className).toBe('');
-        const growing = built<$Growing>(<Growing>some</Growing>);
-        const DrawnGrowing = $(growing);
-        let grown: HTMLElement | undefined;
-        await act(async () => { grown = render(<DrawnGrowing />).container; });
-        expect(grown?.textContent).toBe('some');
-        await act(async () => { growing.grow(); });
+        const drafting = built<$Drafting>(<Drafting>some</Drafting>);
+        const DrawnDrafting = $(drafting);
+        let drafted: HTMLElement | undefined;
+        await act(async () => { drafted = render(<DrawnDrafting />).container; });
+        expect(drafted?.textContent).toBe('some');
+        await act(async () => { drafting.draft(); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
-        expect(grown?.textContent).toBe('some more');
+        expect(drafted?.textContent).toBe('some more');
     });
 });
 
