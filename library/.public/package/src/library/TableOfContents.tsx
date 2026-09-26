@@ -15,10 +15,10 @@ export class $TableOfContents extends $Format {
     get contents(): $Content[] {
         const contents: $Content[] = [];
         const visit = (writing: $Writing): void => {
-            contents.push(...writing.annotations.find($Content));
             for (const chemical of writing.text)
                 if (chemical instanceof $Writing)
                     visit(chemical);
+            contents.push(...writing.annotations.find($Content).reverse());
         };
         if (this.parent instanceof $Writing)
             visit(this.parent);

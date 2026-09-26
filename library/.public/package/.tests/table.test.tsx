@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, $Reference, $Section, Section, Heading, Paragraph, Word } from '@dna-platform/public';
+import { $Writing, $Reference, $Section, Section, Heading, Paragraph, Sentence, Word } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Title, Cover, Synopsis, $TableOfContents, TableOfContents, $Content, Content } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -49,7 +49,36 @@ describe('a content is a reference an entry of a table stands, which draws its n
     });
 });
 
-describe('a table of contents has contents: every content in its table, found depth-first, in the order written', () => {
+// A GRID, whose entries stand in its cells at different depths, one said of a row and one of the chapter
+// itself. Doug, 2026-09-26: "Yes, it should definitly read contents on the chapter. Try to think hard
+// about a standard implementation where they are buried in the rows of a grid. What order would they
+// be on the page? Traverse in that order."
+const grid = (): React.ReactNode => (
+    <Chapter>
+        <TableOfContents />
+        <Content>[The Table](/a-paper/#table-of-contents)</Content>
+        <Title>[Table of Contents](/a-paper/#table-of-contents)</Title>
+        <Section>
+            <Heading>Contents</Heading>
+            <Paragraph>
+                <Word><Content>[One](/a-paper/#one)</Content></Word>
+                <Word><Content>[Two](/a-paper/#two)</Content></Word>
+            </Paragraph>
+            <Paragraph><Content>[Three](/a-paper/#three)</Content><Word>three</Word></Paragraph>
+            <Paragraph><Sentence><Word><Content>[Four](/a-paper/#four)</Content></Word></Sentence></Paragraph>
+        </Section>
+    </Chapter>
+);
+
+describe('a table of contents has contents: every content in its table, in the order their names stand on the page', () => {
+    it('answers a grid\'s contents cell by cell and row by row, whatever their depth, and one said of a row or the chapter after what it holds', async () => {
+        const chapter = built<$Chapter>(grid());
+        const found = chapter.annotations.expressed($TableOfContents)?.contents ?? [];
+        expect(found.map(content => content.name)).toEqual(['One', 'Two', 'Three', 'Four', 'The Table']);
+        const page = await drawn(chapter);
+        expect([...page.querySelectorAll('span.pa-content')].map(span => span.textContent)).toEqual(found.map(content => content.name));
+    });
+
     it('answers every content its chapter holds, however deep it stands, in document order', () => {
         const chapter = built<$Chapter>(table());
         const found = chapter.annotations.expressed($TableOfContents)?.contents ?? [];
