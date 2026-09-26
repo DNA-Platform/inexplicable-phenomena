@@ -100,8 +100,16 @@ describe('a bind of the test library', () => {
     });
 
     it('marked the autobiography and the biography on their covers', () => {
-        expect(page('The Log')).toMatch(/<header class="pd-container"><span class="pa-biography pa-autobiography">/u);
-        expect(page('A Persona')).toMatch(/<header class="pd-container"><span class="pa-biography">/u);
+        expect(page('The Log')).toMatch(/<header class="pd-container"><span class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
+        expect(page('A Persona')).toMatch(/<header class="pd-container"><span class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
+    });
+
+    // Doug, 2026-09-26: "the annotations should frequently mark their presence with a CSS class."
+    it('marked each chapter a cover, a synopsis or a table of contents said of with that annotation\'s class', () => {
+        const paper = page('A Paper');
+        expect(paper).toMatch(/<header class="pd-container"><span class="[^"]*\bpa-cover\b/u);
+        expect(paper).toMatch(/<nav class="pd-container"><span class="[^"]*\bpa-table-of-contents\b/u);
+        expect(paper.match(/class="[^"]*\bpa-synopsis\b/gu)).toHaveLength(1);
     });
 
     // A TABLE'S ENTRIES ARE CONTENTS — Doug: "Let's make a Content annotation, which is a type of

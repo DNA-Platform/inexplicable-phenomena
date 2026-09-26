@@ -24,6 +24,16 @@ export class $TableOfContents extends $Format {
             visit(this.parent);
         return contents;
     }
+
+    override defines(writing: $Writing): void {
+        super.defines(writing);
+        writing.classes.add(this, 'pa-table-of-contents');
+    }
+
+    override erase(writing: $Writing): void {
+        super.erase(writing);
+        writing.classes.revert(this);
+    }
 }
 
 export class $Content extends $Reference {

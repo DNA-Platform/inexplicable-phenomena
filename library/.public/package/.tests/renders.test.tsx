@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
-import { $Book, Chapter, $Paragraph, Title } from '@dna-platform/public';
+import { $Book, Chapter, Cover, $Paragraph, Title } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -97,6 +97,17 @@ describe('a change costs one paint, and the draws around it are counted', () => 
         const Drawn = $(writing);
         await act(async () => { render(<Drawn />); });
         await settle();
+        expect(counted.drawn).toBe(3);
+        expect(counted.painted).toBe(1);
+        expect(counted.committed).toBe(1);
+    });
+
+    it('a cover that marks its writing with a class draws like any format: three draws, and its counted layer painted once', async () => {
+        const writing = $(<Counting>a cover <Cover /><Quoted /></Counting>) as unknown as $Writing;
+        const Drawn = $(writing);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect([...writing.classes]).toContain('pa-cover');
         expect(counted.drawn).toBe(3);
         expect(counted.painted).toBe(1);
         expect(counted.committed).toBe(1);

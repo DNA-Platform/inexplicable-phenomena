@@ -42,6 +42,26 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
         expect(synopsis.specify()).toEqual([]);
     });
 
+    // Doug, 2026-09-26: "Have cover and table wear pa-cover and pa-synopsis from their annotations", and
+    // of the table, "It can also put a pa-table-of-contents on the writing."
+    it('each marks its chapter with its own class and none of the others\'', () => {
+        const classes = (chapter: $Chapter): string[] => [...new Set(chapter.classes)].filter(name => name.startsWith('pa-'));
+        expect(classes(built<$Chapter>(paper()))).toEqual(['pa-cover']);
+        expect(classes(built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/#synopsis)</Title></Chapter>))).toEqual(['pa-synopsis']);
+        expect(classes(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/#table-of-contents)</Title></Chapter>))).toEqual(['pa-table-of-contents']);
+        expect(classes(built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/#the-argument)</Title></Chapter>))).toEqual([]);
+    });
+
+    it('draws the class on the chapter\'s own element, inside its layer, and takes both back when it goes', async () => {
+        const chapter = built<$Chapter>(paper());
+        const page = await drawn(chapter);
+        expect(page.querySelector('header > .pa-cover')).not.toBeNull();
+        chapter.annotations.remove(chapter, chapter.annotations.find($Cover)[0]);
+        chapter.annotations.define();
+        expect([...chapter.classes]).not.toContain('pa-cover');
+        expect([...chapter.containers]).toEqual(['span']);
+    });
+
     it('each is said of a chapter, and on a section says so', () => {
         const section = built<$Section>(<Section><Heading>h</Heading><Cover /><Synopsis /><TableOfContents /></Section>);
         const failures = section.specify();
@@ -75,6 +95,7 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
         expect(chapter.specify()).toEqual([]);
         const page = await drawn(chapter);
         expect(page.firstElementChild?.tagName).toBe('HEADER');
+        expect([...chapter.classes]).toContain('pa-cover');
     });
 });
 

@@ -11,6 +11,16 @@ import { $Chapter } from './Chapter';
 export class $Cover extends $Format {
     specification = new CoverSpecification();
     style: ElementType = 'header';
+
+    override defines(writing: $Writing): void {
+        super.defines(writing);
+        writing.classes.add(this, 'pa-cover');
+    }
+
+    override erase(writing: $Writing): void {
+        super.erase(writing);
+        writing.classes.revert(this);
+    }
 }
 
 export class $Author extends $Annotation {
