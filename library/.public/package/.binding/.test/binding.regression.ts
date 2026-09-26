@@ -104,6 +104,15 @@ describe('a bind of the test library', () => {
         expect(page('A Persona')).toMatch(/<header class="pd-container"><span class="pa-biography">/u);
     });
 
+    // A TABLE'S ENTRIES ARE CONTENTS — Doug: "Let's make a Content annotation, which is a type of
+    // Reference"; "it's note should draw its words... put it in a span with a pa-content on there".
+    it('drew a table\'s entries as the links their contents make, each name in a span wearing pa-content, in the order written', () => {
+        const paper = page('A Paper');
+        expect([...paper.matchAll(/<span class="pa-content">([^<]*)<\/span>/gu)].map(found => found[1]))
+            .toEqual(['The Argument', 'The Evidence', 'A Paper', 'Synopsis', 'Table of Contents']);
+        expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
+    });
+
     // A STYLE ONE BOOK HAS AND THE OTHERS DO NOT, on its own page and on no other — the leak the render
     // once kept one child per page to prevent. Doug, 2026-09-26: "Yes it was a style leak bug."
     it('drew the paper\'s own style on its page and on no other', () => {
@@ -126,66 +135,47 @@ describe('a bind of the test library', () => {
 // a real browser, asserting visible text and never markup. Doug: "You don't release chemistry features
 // without checking that they work."
 describe('the bound test library, seen in a real browser', () => {
+    // ONE PAGE, OPENED ONCE, AND ONLY WHAT A BROWSER ALONE CAN SAY: what shows once the theme's sheet
+    // applies, and that the page hydrates without drawing again. Doug, 2026-09-26: "You are supposed to
+    // use headless chrome to see the thing. What can't be checked a faster way?" What the markup says
+    // is read from the pages above, and a link landing on its id is the proof's.
     let server: PreviewServer | undefined;
     let browser: Browser | undefined;
-    let at = '';
+    let paper: Page;
     const heard: string[] = [];
     beforeAll(async () => {
         server = await preview({ configFile: join(held.binding, 'vite.config.ts'), preview: { port: 0 }, logLevel: 'silent' });
-        at = server.resolvedUrls?.local[0] ?? '';
         browser = await puppeteer.launch({ headless: true });
+        paper = await browser.newPage();
+        paper.on('console', message => heard.push(message.text()));
+        await paper.goto(new URL('/a-paper/', server.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
     });
     afterAll(async () => {
         await browser?.close();
         await server?.close();
     });
-    const opened = async (path: string): Promise<Page> => {
-        const page = await browser!.newPage();
-        page.on('console', message => heard.push(message.text()));
-        await page.goto(new URL(path, at).href, { waitUntil: 'networkidle0' });
-        return page;
-    };
 
-    it('shows the paper\'s cover in its header, and the byline its book draws, as links, with no annotation\'s writing showing', async () => {
-        const paper = await opened('/a-paper/');
+    it('shows the paper\'s cover in its header, and the byline its book draws, with no annotation\'s writing showing', async () => {
         expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A Paper');
         const byline = await paper.$$eval('#root span', spans => spans.map(span => span.innerText.replace(/\s+/gu, ' ').trim())
             .filter(text => text.startsWith('by ')).sort((one, other) => one.length - other.length)[0]);
         expect(byline).toBe('by A Persona, filed under The Library');
-        expect(await paper.$eval('a[href="/a-persona/"]', link => link.innerText.trim())).toBe('A Persona');
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
     });
 
-    it('navigates from an entry of the table to the id its chapter\'s title wears', async () => {
-        const paper = await opened('/a-paper/');
-        await paper.click('nav a[href="/a-paper/#the-evidence"]');
-        await paper.waitForFunction(() => location.hash === '#the-evidence');
-        expect(await paper.$eval('#the-evidence', title => title.innerText.trim())).toBe('The Evidence');
-    });
-
-    it('draws a table\'s parenthetical entries on the page and hidden, where the proof still reads them', async () => {
-        const library = await opened('/the-library/');
-        // THREE: the table's own title, parenthetical, and its two parenthetical entries.
-        const hidden = await library.$$eval('nav a[href="/the-library/#synopsis"], nav a[href="/the-library/#table-of-contents"]',
+    it('shows a table\'s entries and hides its parenthetical ones, where the proof still reads them', async () => {
+        // FOUR: the table's own title, parenthetical, and its three parenthetical entries.
+        const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/#synopsis"], nav a[href="/a-paper/#table-of-contents"]',
             links => links.map(link => link.getClientRects().length === 0));
-        expect(hidden).toEqual([true, true, true]);
-        const shown = await library.$eval('nav', nav => nav.innerText);
-        expect(shown).toContain('The Shelves');
-        expect(shown).toContain('The Log');
+        expect(hidden).toEqual([true, true, true, true]);
+        const shown = await paper.$eval('nav', nav => nav.innerText);
+        expect(shown).toContain('The Argument');
+        expect(shown).toContain('The Evidence');
         expect(shown).not.toContain('Table of Contents');
+        expect(shown).not.toContain('](/');
     });
 
-    // A TABLE'S ENTRIES ARE CONTENTS — Doug: "Let's make a Content annotation, which is a type of
-    // Reference"; "it's note should draw its words... put it in a span with a pa-content on there".
-    it('draws a table\'s entries as the links their contents make, each name in a span wearing pa-content, in the order written', async () => {
-        const paper = await opened('/a-paper/');
-        const names = await paper.$$eval('nav span.pa-content', spans => spans.map(span => span.textContent));
-        expect(names).toEqual(['The Argument', 'The Evidence', 'A Paper', 'Synopsis', 'Table of Contents']);
-        expect(await paper.$eval('nav a[href="/a-paper/#the-argument"] span.pa-content', span => span.textContent)).toBe('The Argument');
-        expect(await paper.$eval('nav', nav => nav.innerText)).not.toContain('](/');
-    });
-
-    it('hydrated every page it opened without re-rendering it', () => {
+    it('hydrated the page without drawing it again', () => {
         expect(heard.filter(said => said.includes('hydration'))).toEqual([]);
     });
 });
@@ -193,10 +183,13 @@ describe('the bound test library, seen in a real browser', () => {
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
 // a fault naming the chapter, at catalogue, before anything is drawn.
 describe('a bind of the test library with one entry taken out of a table', () => {
-    const broken = staged();
+    let broken: Staged;
+    beforeAll(() => {
+        broken = staged();
+        const table = join(broken.library, 'paper', '.table.tsx');
+        writeFileSync(table, readFileSync(table, 'utf8').replace('            <Paragraph><Content>$[ ./The Evidence ]</Content></Paragraph>\n', ''));
+    });
     afterAll(() => { broken.remove(); });
-    const table = join(broken.library, 'paper', '.table.tsx');
-    writeFileSync(table, readFileSync(table, 'utf8').replace('            <Paragraph><Content>$[ ./The Evidence ]</Content></Paragraph>\n', ''));
 
     it('fails at catalogue, naming the book and the chapter its table does not refer to', () => {
         const said = printed(broken);
@@ -211,12 +204,15 @@ describe('a bind of the test library with one entry taken out of a table', () =>
 // Synopsis written on a section is a writing that does not specify, and specify says so on the
 // chapter file its failure's code numbers — a book's contents are its chapters in file order.
 describe('a bind of the test library with a synopsis said of a section', () => {
-    const broken = staged();
+    let broken: Staged;
+    beforeAll(() => {
+        broken = staged();
+        const chapter = join(broken.library, 'paper', '1-the-argument.tsx');
+        writeFileSync(chapter, readFileSync(chapter, 'utf8')
+            .replace("import { Chapter, Heading, Means, Paragraph, Section, Title }", "import { Chapter, Heading, Means, Paragraph, Section, Synopsis, Title }")
+            .replace('            <Heading>What is claimed</Heading>', '            <Synopsis />\n            <Heading>What is claimed</Heading>'));
+    });
     afterAll(() => { broken.remove(); });
-    const chapter = join(broken.library, 'paper', '1-the-argument.tsx');
-    writeFileSync(chapter, readFileSync(chapter, 'utf8')
-        .replace("import { Chapter, Heading, Means, Paragraph, Section, Title }", "import { Chapter, Heading, Means, Paragraph, Section, Synopsis, Title }")
-        .replace('            <Heading>What is claimed</Heading>', '            <Synopsis />\n            <Heading>What is claimed</Heading>'));
 
     it('fails at specify, on the chapter\'s own file, saying what does not specify', () => {
         const said = printed(broken);
