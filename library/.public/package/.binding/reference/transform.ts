@@ -5,7 +5,7 @@ import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import { reads } from '../catalogue/reading';
 import { form, key, name as parsed, notation, spelling, titled, whole } from '../catalogue/language';
-import { slug } from '../resolution/addresses';
+import { identifier } from '@dna-platform/public';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
 //
@@ -95,7 +95,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             // `[The First Shelf](the-first-shelf)`, the slug of its whole name — the fragment the
             // catalogue hands a reference to it, so what a mention answers to is what is reached.
             if (!read.refers && read.brackets === 3) {
-                edits.push({ from: at, to, said: `[${read.words}](${slug(whole(read.name))})` });
+                edits.push({ from: at, to, said: `[${read.words}](${identifier.slug(whole(read.name))})` });
                 continue;
             }
 

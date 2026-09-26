@@ -81,10 +81,15 @@ describe('a title is a sentence that names its chapter, holding the link the com
         expect(page.textContent).not.toContain('](');
     });
 
-    it('a cover\'s title, whose url has no fragment, wears no id', () => {
-        const title = built<$Chapter>(<Chapter><Title>[The Library](/the-library/)</Title></Chapter>).canonical!;
-        expect(title.means?.identifier).toBe('/the-library/');
-        expect(String(title.id)).toBe('');
+    // Doug, 2026-09-26: "Title should use the name to create the fragment with the Identifier utility. The url
+    // should be completely arbitrary."
+    it('makes its id from its name and never from its url, so a cover\'s title wears its book\'s slug', () => {
+        const arbitrary = built<$Chapter>(<Chapter><Title>[The Argument](anything)</Title></Chapter>).canonical!;
+        expect(arbitrary.means?.identifier).toBe('anything');
+        expect(String(arbitrary.id)).toBe('the-argument');
+        const cover = built<$Chapter>(<Chapter><Title>[The Library](/the-library/)</Title></Chapter>).canonical!;
+        expect(cover.means?.identifier).toBe('/the-library/');
+        expect(String(cover.id)).toBe('the-library');
     });
 
     // A synopsis chapter drawn inside a catalogue's chapter links home and must not wear its id there: a title

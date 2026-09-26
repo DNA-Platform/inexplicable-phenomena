@@ -3,6 +3,7 @@ import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
+import { identifier } from '@/utilities/Identifier';
 import { CompositionSpecification } from './Composition';
 import { $Word } from './Word';
 import { $Referent, Referent as referent } from './Referent';
@@ -13,11 +14,11 @@ export class $Mention extends $Word {
 
     protected override $Define(): void {
         super.$Define();
-        const reference = binder.reference(html.copy(this.text));
-        if (reference === undefined) return;
+        const link = binder.reference(html.copy(this.text));
+        if (link === undefined) return;
         const Referent = $(referent);
         this.annotations.add(this,
-            <Referent>{reference.identifier}</Referent>
+            <Referent>{identifier.slug(link.name)}</Referent>
         );
     }
 

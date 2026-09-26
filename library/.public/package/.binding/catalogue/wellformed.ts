@@ -1,6 +1,6 @@
 import type { Diagnostic } from '../inventory/library';
 import { last, separator, spelt } from './language';
-import { slug } from '../resolution/addresses';
+import { identifier } from '@dna-platform/public';
 import type { Naming, SpotId, Structure } from './structure';
 
 // WHAT MAKES A LIBRARY WELL-FORMED, CHECKED OVER THE COMPILED STRUCTURE. It returns faults and
@@ -116,7 +116,7 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         for (const naming of held) {
             const spot = structure.spots.get(naming.spot);
             if (spot === undefined) continue;
-            const slugged = slug(last(said));
+            const slugged = identifier.slug(last(said));
             if (slugged === '') { wrong.push({ fault: faults.noAddress, at: spot.at, file: naming.at.file, says: `"${said}" at line ${naming.at.line} leaves nothing to stand at once it is an address — a name carries a letter or a digit` }); continue; }
             if (spot.kind === 'book') {
                 if (reserved.has(slugged)) wrong.push({ fault: faults.reservedAddress, at: spot.at, file: naming.at.file, says: `"${said}" would stand at /${slugged}/, where the binder writes its own files — a book stands nowhere the binder does` });

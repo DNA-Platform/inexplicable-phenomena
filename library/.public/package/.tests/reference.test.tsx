@@ -159,6 +159,12 @@ describe('a mention is the word that reads what the compiler wrote', () => {
         expect(String(compiled.id)).toBe(String(byHand.id));
     });
 
+    // Doug, 2026-09-26: the id is the name's, "The url should be completely arbitrary."
+    it('makes its id from its name and never from the identifier it was given', () => {
+        const mention = built<$Mention>(<Mention>[The First Shelf](anything)</Mention>);
+        expect(String(mention.id)).toBe('the-first-shelf');
+    });
+
     it('says no identifier when its content is not a reference, and is refused', () => {
         const mention = built<$Mention>(<Mention>The First Shelf</Mention>);
         expect(mention.annotations.find($Referent)).toEqual([]);

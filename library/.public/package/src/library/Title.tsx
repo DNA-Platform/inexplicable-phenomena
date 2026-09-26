@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
+import { identifier } from '@/utilities/Identifier';
 import { specify } from '@/utilities/Specification';
 import { CompositionSpecification } from '@/writing/Composition';
 import { $Sentence } from '@/writing/Sentence';
@@ -19,12 +20,11 @@ export class $Title extends $Sentence {
         super.$Define();
         const link = binder.reference(html.copy(this.text));
         if (link === undefined) return;
-        const [, fragment] = link.identifier.split('#');
         const Reference = $(reference);
         const Referent = $(referent);
         this.annotations.add(this,
             <Reference>{link.identifier}</Reference>,
-            ...(fragment ? [<Referent>{fragment}</Referent>] : [])
+            <Referent>{identifier.slug(link.name)}</Referent>
         );
     }
 

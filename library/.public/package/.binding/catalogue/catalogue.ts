@@ -1,6 +1,7 @@
 import type { Configuration } from '../configuration/configuration';
 import type { Library } from '../inventory/library';
-import { resolution, slug, type Table } from '../resolution/addresses';
+import { identifier } from '@dna-platform/public';
+import { resolution, type Table } from '../resolution/addresses';
 import { forward } from '../manifest/origin';
 import { tidy } from './language';
 import { structure as compiled, type Structure } from './structure';
@@ -97,7 +98,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         for (const spot of structure.spots.values()) {
             if (spot.kind === 'book' || spot.book !== route.folder) continue;
             const chapter = structure.named.get(spot.id);
-            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, `${book}#${slug(chapter)}`);
+            if (chapter !== undefined) at.set(`${route.name} / ${chapter}`, `${book}#${identifier.slug(chapter)}`);
         }
     }
 
