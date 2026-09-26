@@ -11,3 +11,4 @@ export * from './Referent';
 export * from './Reference';
 export * from './Mention';
 export * from './Means';
+export * from './Table';

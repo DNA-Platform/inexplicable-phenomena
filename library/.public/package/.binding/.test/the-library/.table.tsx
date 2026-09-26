@@ -1,4 +1,4 @@
-import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, TableOfContents, Title, Word } from '@dna-platform/public';
+import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Table, TableOfContents, Title, Word } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -16,6 +16,7 @@ export default () => (
             </Paragraph>
         </Section>
         <Section>
+            <Table />
             <Heading>The Catalogue</Heading>
             <Paragraph><Word><Content>[[ The Log ]]**</Content></Word>: <Word><Content>$[ The Log / Synopsis ]</Content></Word></Paragraph>
             <Paragraph><Word><Content>[[ Some Projects ]]**</Content></Word>: <Word><Content>$[ Some Projects / Synopsis ]</Content></Word></Paragraph>

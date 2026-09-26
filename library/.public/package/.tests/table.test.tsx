@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, $Reference, $Section, Section, Heading, Paragraph, Sentence, Word } from '@dna-platform/public';
-import { $Book, Book, $Chapter, Chapter, Title, Cover, Synopsis, $TableOfContents, TableOfContents, $Content, Content } from '@dna-platform/public';
+import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, Sentence, Word, $Table, Table } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -12,121 +11,75 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
     return container!;
 };
+const classes = (writing: $Writing): string[] => [...writing.classes].filter(name => name.startsWith('pa-'));
 
-const table = (): React.ReactNode => (
-    <Chapter>
-        <TableOfContents />
-        <Title>[Table of Contents](/a-paper/#table-of-contents)</Title>
-        <Section>
-            <Heading>Contents</Heading>
-            <Paragraph><Content>[The Argument](/a-paper/#the-argument)</Content></Paragraph>
-            <Paragraph>
-                <Word><Content>[The Evidence](/a-paper/#the-evidence)</Content></Word>
-                and a word that is no entry
-            </Paragraph>
-        </Section>
-        <Section>
-            <Heading>The Catalogue</Heading>
-            <Paragraph><Content>[The Log](/the-log/)</Content></Paragraph>
-        </Section>
-    </Chapter>
+// A GRID, as the First Folio set its Catalogue in 1623: the plays in rows, two to a row. Doug, 2026-09-26:
+// "A table is a way of interpreting a composition, and the attribute can handle annotating the various
+// contents as needed"; "$start: number, start = 1 would skip the canonical, and we can make table smart
+// enough to typecheck for sections and chapters and set start to 1 if undefined". The field is $start; the
+// attribute chemistry writes it as is `start`, as $is is written `is`.
+const folio = (table: React.ReactNode = <Table />): React.ReactNode => (
+    <Section>
+        {table}
+        <Heading>Comedies, Histories, and Tragedies</Heading>
+        <Paragraph><Word>The Tempest</Word><Word>Twelfth Night</Word></Paragraph>
+        <Paragraph><Word>King John</Word><Word>Richard II</Word></Paragraph>
+        <Paragraph><Word>Hamlet</Word><Word>Macbeth</Word></Paragraph>
+    </Section>
 );
 
-describe('a content is a reference an entry of a table stands, which draws its name as its note', () => {
-    it('reads its name and its identifier from the pair the compiler wrote, and is a reference', () => {
-        const paragraph = built<$Writing>(<Paragraph><Content>[The Argument](/a-paper/#the-argument)</Content></Paragraph>);
-        const content = paragraph.annotations.find($Content)[0];
-        expect(content).toBeInstanceOf($Reference);
-        expect(content.name).toBe('The Argument');
-        expect(content.identifier).toBe('/a-paper/#the-argument');
+describe('a table is a way of interpreting a composition as a grid, marking its rows and cells by authorship', () => {
+    it('interprets a section as a grid: its paragraphs the rows, their words the cells, and the heading no row', () => {
+        const section = built<$Section>(folio());
+        expect(section.specify()).toEqual([]);
+        expect(classes(section)).toEqual(['pa-table', 'pa-cols-2']);
+        const [heading, ...rows] = section.parts;
+        expect(classes(heading)).toEqual([]);
+        expect(rows.map(row => classes(row))).toEqual([['pa-row', 'pa-row-start-1'], ['pa-row', 'pa-row-start-2'], ['pa-row', 'pa-row-start-3']]);
+        expect(rows[0].parts.map(cell => classes(cell))).toEqual([['pa-col', 'pa-col-start-1'], ['pa-col', 'pa-col-start-2']]);
     });
 
-    it('drawn, makes the writing it annotates the link, its name inside it in a span wearing pa-content', async () => {
-        const page = await drawn(built<$Writing>(<Paragraph><Content>[The Argument](/a-paper/#the-argument)</Content></Paragraph>));
-        const link = page.querySelector('a[href="/a-paper/#the-argument"]');
-        expect(link).not.toBeNull();
-        expect(link?.querySelector('span.pa-content')?.textContent).toBe('The Argument');
-    });
-});
-
-// A GRID, as the First Folio set its Catalogue in 1623 — the plays in rows, one entry said of a row and
-// one of the chapter itself, at different depths. Doug, 2026-09-26: "Yes, it should definitly read contents on the chapter. Try to think hard
-// about a standard implementation where they are buried in the rows of a grid. What order would they
-// be on the page? Traverse in that order."
-const grid = (): React.ReactNode => (
-    <Chapter>
-        <TableOfContents />
-        <Content>[A Catalogue](/the-folio/#a-catalogue)</Content>
-        <Title>[A Catalogue](/the-folio/#a-catalogue)</Title>
-        <Section>
-            <Heading>Comedies, Histories, and Tragedies</Heading>
-            <Paragraph>
-                <Word><Content>[The Tempest](/the-folio/#the-tempest)</Content></Word>
-                <Word><Content>[Twelfth Night](/the-folio/#twelfth-night)</Content></Word>
-            </Paragraph>
-            <Paragraph><Content>[The Histories](/the-folio/#the-histories)</Content><Word>King John</Word></Paragraph>
-            <Paragraph><Sentence><Word><Content>[Hamlet](/the-folio/#hamlet)</Content></Word></Sentence></Paragraph>
-        </Section>
-    </Chapter>
-);
-
-// Doug, 2026-09-26: "can't table of contents just enumerate the chapters, including its own, in its gettable
-// property, and just get all of the references? That's much simpler."
-const Elsewhere = (): React.ReactNode => (
-    <Chapter>
-        <Title>[Elsewhere](/a-paper/#elsewhere)</Title>
-        <Paragraph><Content>[The Library](/the-library/)</Content></Paragraph>
-        <Chapter><Title>[Within](/a-paper/#within)</Title><Paragraph>a chapter in a chapter</Paragraph></Chapter>
-    </Chapter>
-);
-
-const paper = (): $Book => built<$Book>(
-    <Book>
-        <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
-        <Chapter><Synopsis /><Title>[Synopsis](/a-paper/#synopsis)</Title></Chapter>
-        {table()}
-        {Elsewhere()}
-    </Book>
-);
-
-describe('a table of contents has contents: what its book\'s chapters mention, its own among them, in book order', () => {
-    it('answers every chapter\'s mention, depth-first, a chapter in a chapter after its host, and is reached from the book as its table', () => {
-        const book = paper();
-        const contents = book.table?.annotations.expressed($TableOfContents)?.contents ?? [];
-        expect(contents.map(reference => reference.identifier))
-            .toEqual(['/a-paper/', '/a-paper/#synopsis', '/a-paper/#table-of-contents', '/a-paper/#elsewhere', '/a-paper/#within']);
-        expect(contents[2]).toBe(book.table?.mention);
+    it('a paragraph\'s sentences are its rows, every one unless $start says otherwise', () => {
+        const rows = (table: React.ReactNode): number => built<$Paragraph>(
+            <Paragraph>{table}<Sentence><Word>one</Word></Sentence><Sentence><Word>two</Word></Sentence><Sentence><Word>three</Word></Sentence></Paragraph>
+        ).annotations.expressed($Table)?.rows.length ?? 0;
+        expect(rows(<Table />)).toBe(3);
+        expect(rows(<Table start={1} />)).toBe(2);
     });
 
-    it('answers nothing for a table in a chapter built alone, which has no book', () => {
-        expect(built<$Chapter>(table()).annotations.expressed($TableOfContents)?.contents).toEqual([]);
-    });
-
-    // R7 — the written entries still work: every one within the book's own address is among the contents.
-    // A catalogue's rows name other books too, which no chapter of this one mentions.
-    it('every written entry within the book\'s address is among them', () => {
-        const chapter = (name: string, fragment: string): React.ReactNode => <Chapter><Title>[{name}](/a-paper/#{fragment})</Title><Paragraph>{name}</Paragraph></Chapter>;
-        const book = built<$Book>(
-            <Book>
-                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
-                {table()}
-                {chapter('The Argument', 'the-argument')}
-                {chapter('The Evidence', 'the-evidence')}
-            </Book>
+    it('a short row\'s last cell spans the columns that remain', () => {
+        const section = built<$Section>(
+            <Section>
+                <Table />
+                <Heading>h</Heading>
+                <Paragraph><Word>a</Word><Word>b</Word></Paragraph>
+                <Paragraph><Word>alone</Word></Paragraph>
+            </Section>
         );
-        const written = (writing: $Writing): $Content[] =>
-            [...writing.annotations.find($Content), ...[...writing.text].flatMap(chemical => chemical instanceof $Writing ? written(chemical) : [])];
-        const entries = written(book.table!).map(content => content.identifier);
-        const contents = book.table?.annotations.expressed($TableOfContents)?.contents.map(reference => reference.identifier) ?? [];
-        expect(entries).toEqual(['/a-paper/#the-argument', '/a-paper/#the-evidence', '/the-log/']);
-        for (const entry of entries.filter(identifier => identifier.startsWith('/a-paper/')))
-            expect(contents).toContain(entry);
+        expect(classes(section.parts[2].parts[0])).toEqual(['pa-col', 'pa-col-start-1', 'pa-col-span-2']);
     });
 
-    it('is read when asked, so a chapter added to the book is among them at once', () => {
-        const book = paper();
-        book.text.add(book, <Chapter><Title>[Afterword](/a-paper/#afterword)</Title><Paragraph>added</Paragraph></Chapter>);
-        const contents = book.table?.annotations.expressed($TableOfContents)?.contents ?? [];
-        expect(contents.map(reference => reference.identifier)).toContain('/a-paper/#afterword');
+    it('says so when it has not the rows or the columns it says, and when it is said of no composition', () => {
+        expect(built<$Section>(folio(<Table rows={2} />)).specify()).toContain('Section: a table has the rows it says, and this one has another number');
+        expect(built<$Section>(folio(<Table columns={1} />)).specify()).toContain('Section: a table has the columns it says, and one of its rows has more');
+        expect(built<$Section>(folio(<Table rows={3} columns={2} />)).specify()).toEqual([]);
+    });
+
+    it('taken out, the next define takes every class back from the section, its rows and their cells', () => {
+        const section = built<$Section>(folio());
+        section.annotations.remove(section, section.annotations.find($Table)[0]);
+        section.annotations.define();
+        expect(classes(section)).toEqual([]);
+        for (const row of section.parts) {
+            expect(classes(row)).toEqual([]);
+            for (const cell of row.parts) expect(classes(cell)).toEqual([]);
+        }
+    });
+
+    it('drawn, the section wears pa-table and its six cells stand inside it in their rows', async () => {
+        const page = await drawn(built<$Section>(folio()));
+        expect(page.querySelector('.pa-table.pa-cols-2')).not.toBeNull();
+        expect(page.querySelectorAll('.pa-table .pa-row').length).toBe(3);
+        expect(page.querySelectorAll('.pa-table .pa-row .pa-col').length).toBe(6);
     });
 });

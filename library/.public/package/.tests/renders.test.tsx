@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
-import { $Book, Chapter, Cover, $Paragraph, Title } from '@dna-platform/public';
+import { $Book, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -188,9 +188,59 @@ class $Binding extends $Paragraph {
 }
 
 const Ledger = $($Ledger);
+class $CountedSection extends $Section {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+}
+
+class $CountedParagraph extends $Paragraph {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+}
+
 const Reading = $($Reading);
 const Unreading = $($Unreading);
 const Binding = $($Binding);
+const CountedSection = $($CountedSection);
+const CountedParagraph = $($CountedParagraph);
+
+// Doug, 2026-09-26: "Paints count most, but draws count too as they will affect time to first paint"; of a Table
+// marking its rows in defines: "this is delaying the paint but not causing many. That is the right behavior."
+// Chemistry's third pass re-runs the section's define after its rows have drawn, and each row is drawn and
+// checked once more: two draws a row, before paint, and no paint.
+describe('a table that marks a composition\'s rows and cells delays the paint and causes none', () => {
+    beforeEach(counting);
+
+    it('a section wearing a Table paints and commits exactly as one without, and draws two more times a row', async () => {
+        const tabled = (table: ReactNode): $Writing => $(
+            <CountedSection>
+                {table}
+                <Heading>h</Heading>
+                <CountedParagraph><Word>a</Word><Word>b</Word></CountedParagraph>
+                <CountedParagraph><Word>c</Word><Word>d</Word></CountedParagraph>
+            </CountedSection>
+        ) as unknown as $Writing;
+        const Control = $(tabled(null));
+        await act(async () => { render(<Control />); });
+        await settle();
+        const expected = { ...counted };
+        expect(expected.drawn).toBe(9);
+
+        counting();
+        const section = tabled(<Table />);
+        const Drawn = $(section);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect([...section.classes]).toContain('pa-table');
+        expect(counted.painted).toBe(expected.painted);
+        expect(counted.committed).toBe(expected.committed);
+        expect(counted.drawn).toBe(expected.drawn + 2 * 2);
+    });
+});
 
 describe('a writing that reads its book while it draws costs nothing more', () => {
     beforeEach(counting);

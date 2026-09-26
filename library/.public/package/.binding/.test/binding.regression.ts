@@ -121,6 +121,15 @@ describe('a bind of the test library', () => {
         expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
     });
 
+    // THE CATALOGUE IS A TABLE — its section interpreted as a grid, its rows and cells marked by authorship.
+    it('drew the library\'s catalogue as a grid: the section wearing pa-table, its rows pa-row, its cells pa-col', () => {
+        const library = page('The Library');
+        expect(library).toMatch(/class="[^"]*\bpa-table\b[^"]*\bpa-cols-2\b/u);
+        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(3);
+        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(6);
+        expect(library).toMatch(/\.pa-table\s*\{\s*display:\s*grid/u);
+    });
+
     // ONE TABLE IS DRAWN, NOT WRITTEN — Some Projects', its entries what its chapters mention.
     it('drew Some Projects\' table from its contents, every chapter a link inside its nav', () => {
         const projects = page('Some Projects');
