@@ -5,10 +5,12 @@ import { Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
+import type { $Book } from '@/library/Book';
 
 export class $Writing extends $Chemical {
     protected _text?: Text;
     protected _annotations?: Annotations;
+    protected _book?: $Book;
     id!: Compilation<string>;
     classes!: Collection<string>;
     containers!: Collection<ElementType>;
@@ -16,6 +18,11 @@ export class $Writing extends $Chemical {
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.edit; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.edit = given; }
+
+    get $book(): $Book | undefined {
+        return this._book ?? (this.parent instanceof $Writing && this.parent !== this ? this.parent.$book : undefined);
+    }
+    set $book(value: $Book) { this._book = value; }
 
     get text(): Text {
         return this._text ?? (this._text = new Text(this));

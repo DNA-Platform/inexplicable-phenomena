@@ -16,6 +16,7 @@ export class $Book extends $Composition {
     get author(): $Author | undefined { return this.canonical?.annotations.expressed($Author); }
     get subject(): $Subject | undefined { return this.canonical?.annotations.expressed($Subject); }
     get about(): $About | undefined { return this.canonical?.annotations.expressed($About); }
+    override get $book(): $Book { return this; }
     override get canonical(): $Chapter | undefined {
         return this.text.find($Chapter).find(chapter => chapter.is($Cover));
     }

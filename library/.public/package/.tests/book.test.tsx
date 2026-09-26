@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import { render } from '@testing-library/react';
+import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Section, Heading, Paragraph, Strict, Closed } from '@dna-platform/public';
+import { $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed } from '@dna-platform/public';
 import { $Book, Book, BookSpecification, $Chapter, Chapter, Title, $Cover, Cover, Synopsis, TableOfContents, Author, Subject } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -97,5 +99,60 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         const Untitled = (): React.ReactNode => <Chapter><Paragraph>no title</Paragraph></Chapter>;
         const book = built<$Book>(<Book>{APaper()}{WhatItArgues()}{WhereThingsAre()}{Untitled()}</Book>);
         expect(book.specify()).toContain('Book / Chapter 3: a chapter has one title as its canonical, and this one does not');
+    });
+});
+
+describe('every writing has a book', () => {
+    it('a paragraph three levels down answers its book, in its own $Define and when drawn', () => {
+        const seen: { defined?: $Book; drawn?: $Book } = {};
+        class $Looking extends $Paragraph {
+            override view(): ReactNode {
+                seen.drawn = this.$book;
+                return super.view();
+            }
+
+            protected override $Define(): void {
+                super.$Define();
+                seen.defined = this.$book;
+            }
+        }
+        const Looking = $($Looking);
+        const book = built<$Book>(
+            <Book>
+                {APaper()}
+                <Chapter>
+                    <Title>[The Argument](/a-paper/#the-argument)</Title>
+                    <Section>
+                        <Heading>What is claimed</Heading>
+                        <Looking>A reference names a thing and never a place.</Looking>
+                    </Section>
+                </Chapter>
+            </Book>
+        );
+        expect(seen.defined).toBe(book);
+        const Drawn = $(book);
+        render(<Drawn />);
+        expect(seen.drawn).toBe(book);
+    });
+
+    it('a book answers itself', () => {
+        const book = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
+        expect(book.$book).toBe(book);
+    });
+
+    it('a writing lent a book answers it over the one above, and a paragraph inside it answers the lent one too', () => {
+        const lent = built<$Book>(<Book>{APaper()}</Book>);
+        const book = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
+        const chapter = book.text.find($Chapter)[1];
+        const section = chapter.text.find($Section)[0];
+        section.$book = lent;
+        expect(section.$book).toBe(lent);
+        expect(section.text.find($Paragraph)[0].$book).toBe(lent);
+        expect(chapter.$book).toBe(book);
+    });
+
+    it('a writing built alone answers none, and nothing loops', () => {
+        expect(built<$Paragraph>(<Paragraph>alone</Paragraph>).$book).toBeUndefined();
+        expect(built<$Chapter>(TheArgument()).text.find($Section)[0].$book).toBeUndefined();
     });
 });

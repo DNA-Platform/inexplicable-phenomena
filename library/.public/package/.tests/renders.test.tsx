@@ -3,6 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
+import { $Book, Chapter, $Paragraph, Title } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -136,6 +137,65 @@ describe('a mention that stands its own annotation costs no more than any writin
         await settle();
         expect(counted.drawn).toBe(3);
         expect(String(mention.id)).toBe('the-first-shelf');
+    });
+});
+
+let read: $Book | undefined;
+
+class $CountingBook extends $Book {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+}
+
+class $Reading extends $Paragraph {
+    override view(): ReactNode {
+        counted.drawn++;
+        read = this.$book;
+        return super.view();
+    }
+}
+
+class $Unreading extends $Paragraph {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+}
+
+const CountingBook = $($CountingBook);
+const Reading = $($Reading);
+const Unreading = $($Unreading);
+
+describe('a writing that reads its book while it draws costs nothing more', () => {
+    beforeEach(counting);
+
+    it('a book whose paragraph reads $book while it draws draws and paints exactly as one whose paragraph does not', async () => {
+        const control = $(
+            <CountingBook>
+                <Quoted />
+                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
+            </CountingBook>
+        ) as unknown as $Book;
+        const Control = $(control);
+        await act(async () => { render(<Control />); });
+        await settle();
+        const expected = { ...counted };
+        expect(expected).toEqual({ drawn: 6, painted: 1, committed: 1 });
+
+        counting();
+        const book = $(
+            <CountingBook>
+                <Quoted />
+                <Chapter><Title>[A Paper](/a-paper/)</Title><Reading>a line</Reading></Chapter>
+            </CountingBook>
+        ) as unknown as $Book;
+        const Drawn = $(book);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect(read).toBe(book);
+        expect(counted).toEqual(expected);
     });
 });
 
