@@ -121,6 +121,15 @@ describe('a bind of the test library', () => {
         expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
     });
 
+    // A CATALOGUE'S CHAPTER HOLDS ANOTHER BOOK'S SYNOPSIS — the log's, imported and rendered inside the
+    // library's second chapter, its title linking home and wearing no id on this page.
+    it('drew in the library a chapter holding the log\'s own synopsis, which links home and wears no second id', () => {
+        const library = page('The Library');
+        expect(library).toContain('authorship in this library begins here and nowhere else');
+        expect(library.match(/ id="synopsis"/gu)).toHaveLength(1);
+        expect(library).toMatch(/<a href="\/the-log\/#synopsis"[^>]*><span class="[^"]*\bpa-parenthetical\b[^"]*">/u);
+    });
+
     // A STYLE ONE BOOK HAS AND THE OTHERS DO NOT, on its own page and on no other — the leak the render
     // once kept one child per page to prevent. Doug, 2026-09-26: "Yes it was a style leak bug."
     it('drew the paper\'s own style on its page and on no other', () => {

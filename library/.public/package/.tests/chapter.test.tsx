@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Heading, Paragraph, Permissive, Closed } from '@dna-platform/public';
-import { $Chapter, Chapter, $Title, Title, ChapterSpecification, TitleSpecification } from '@dna-platform/public';
+import { $Book, Book, Cover, $Chapter, Chapter, $Title, Title, ChapterSpecification, TitleSpecification } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -85,6 +85,25 @@ describe('a title is a sentence that names its chapter, holding the link the com
         const title = built<$Chapter>(<Chapter><Title>[The Library](/the-library/)</Title></Chapter>).canonical!;
         expect(title.means?.identifier).toBe('/the-library/');
         expect(String(title.id)).toBe('');
+    });
+
+    // A synopsis chapter drawn inside a catalogue's chapter links home and must not wear its id there: a title
+    // whose book is not the one it is bound in takes its Referent back in $Bound.
+    it('bound in another book, takes its id back and keeps its link; bound at home, keeps both', () => {
+        const book = built<$Book>(
+            <Book>
+                <Chapter><Cover /><Title>[The Library](/the-library/)</Title></Chapter>
+                <Chapter>
+                    <Title>[Of the Log](/the-library/#of-the-log)</Title>
+                    <Chapter><Title>[Synopsis](/the-log/#synopsis)</Title></Chapter>
+                </Chapter>
+            </Book>
+        );
+        const [, host] = book.text.find($Chapter);
+        const abroad = host.text.find($Chapter)[0].title!;
+        expect(abroad.means?.identifier).toBe('/the-log/#synopsis');
+        expect(String(abroad.id)).toBe('');
+        expect(String(host.title!.id)).toBe('of-the-log');
     });
 
     it('outside a chapter, or written as plain words, says so when asked', () => {
