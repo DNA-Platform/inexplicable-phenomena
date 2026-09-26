@@ -1,10 +1,13 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification, Level as level, Permissive as permissive, Closed as closed } from '@/writing/Composition';
+import { $Reference } from '@/writing/Reference';
 import { $Title } from './Title';
 
 export class $Chapter extends $Composition {
     specification = new ChapterSpecification();
+    get title(): $Title | undefined { return this.canonical; }
+    get mention(): $Reference | undefined { return this.title?.means; }
     override get canonical(): $Title | undefined {
         return this.text.find($Title)[0];
     }

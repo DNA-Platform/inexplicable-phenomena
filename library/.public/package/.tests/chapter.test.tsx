@@ -54,11 +54,22 @@ describe('a title is a sentence that names its chapter, holding the link the com
         expect(title.specification).toBeInstanceOf(TitleSpecification);
     });
 
-    it('reads its words, stands a reference to its url, and wears the url\'s fragment as its id', () => {
+    it('reads its words, means its url, and wears the url\'s fragment as its id', () => {
         const title = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/#the-argument)</Title></Chapter>).canonical!;
         expect(title.name).toBe('The Argument');
-        expect(title.reference?.identifier).toBe('/a-paper/#the-argument');
+        expect(title.means?.identifier).toBe('/a-paper/#the-argument');
         expect(String(title.id)).toBe('the-argument');
+    });
+
+    // Doug, 2026-09-26: "title.means = Reference to chapter; chapter.mention is a get property that returns title.means".
+    it('is its chapter\'s title, and what it means is what its chapter mentions', () => {
+        const chapter = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/#the-argument)</Title></Chapter>);
+        expect(chapter.title).toBe(chapter.canonical);
+        expect(chapter.mention).toBe(chapter.title?.means);
+        expect(chapter.mention?.identifier).toBe('/a-paper/#the-argument');
+        const untitled = built<$Chapter>(<Chapter><Paragraph>no title</Paragraph></Chapter>);
+        expect(untitled.title).toBeUndefined();
+        expect(untitled.mention).toBeUndefined();
     });
 
     it('drawn, is its words as a link to itself, its own element wearing the id', async () => {
@@ -72,7 +83,7 @@ describe('a title is a sentence that names its chapter, holding the link the com
 
     it('a cover\'s title, whose url has no fragment, wears no id', () => {
         const title = built<$Chapter>(<Chapter><Title>[The Library](/the-library/)</Title></Chapter>).canonical!;
-        expect(title.reference?.identifier).toBe('/the-library/');
+        expect(title.means?.identifier).toBe('/the-library/');
         expect(String(title.id)).toBe('');
     });
 

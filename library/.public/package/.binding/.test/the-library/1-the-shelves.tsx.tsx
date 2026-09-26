@@ -19,7 +19,7 @@ export class $RunningHead extends $Paragraph {
         const Reference = $(reference);
         return (
             <>
-                <Means>$[ The Library ]</Means> / <Word>{book.title?.name}</Word>: <Word><Reference>{table?.reference?.identifier}</Reference>{table?.name}</Word>
+                <Means>$[ The Library ]</Means> / <Word>{book.title?.name}</Word>: <Word><Reference>{table?.means?.identifier}</Reference>{table?.name}</Word>
             </>
         );
     }

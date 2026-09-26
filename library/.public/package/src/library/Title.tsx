@@ -13,7 +13,7 @@ export class $Title extends $Sentence {
     specification = new TitleSpecification();
     get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
-    get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
+    get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
@@ -39,7 +39,7 @@ export class TitleSpecification extends CompositionSpecification {
 
     @specify('a title holds the link the compiler gives it')
     $holdsItsLink(title: $Title): void {
-        $check(title.reference !== undefined, 'a title holds the link the compiler gives it, and this one holds none');
+        $check(title.means !== undefined, 'a title holds the link the compiler gives it, and this one holds none');
     }
 }
 

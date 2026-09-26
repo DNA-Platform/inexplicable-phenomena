@@ -118,7 +118,7 @@ export class AboutSpecification extends AnnotationSpecification {
     $namesItsOwnBook(writing: $Writing): void {
         const about = writing.annotations.expressed($About);
         const title = writing instanceof $Chapter ? writing.canonical : undefined;
-        $check(about?.reference?.identifier === title?.reference?.identifier,
+        $check(about?.reference?.identifier === title?.means?.identifier,
             'about names its own book, and this one names another');
     }
 }
