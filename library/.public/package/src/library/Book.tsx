@@ -1,6 +1,7 @@
-import { $, $check } from '@dna-platform/chemistry';
+import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification, Level as level, Strict as strict, Closed as closed } from '@/writing/Composition';
+import { $Reference } from '@/writing/Reference';
 import { $Chapter } from './Chapter';
 import { $Title } from './Title';
 import { $Cover, $Author, $Subject, $About } from './Cover';
@@ -16,9 +17,15 @@ export class $Book extends $Composition {
     get author(): $Author | undefined { return this.canonical?.annotations.expressed($Author); }
     get subject(): $Subject | undefined { return this.canonical?.annotations.expressed($Subject); }
     get about(): $About | undefined { return this.canonical?.annotations.expressed($About); }
+    get means(): $Reference | undefined { return this.cover?.mention; }
     override get $book(): $Book { return this; }
     override get canonical(): $Chapter | undefined {
         return this.text.find($Chapter).find(chapter => chapter.is($Cover));
+    }
+
+    $Book(...chemicals: $Chemical[]) {
+        this.$Writing(...chemicals);
+        this.$Bound();
     }
 
     protected override $Define(): void {

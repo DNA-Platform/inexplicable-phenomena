@@ -175,9 +175,22 @@ class $Unreading extends $Paragraph {
     }
 }
 
+class $Binding extends $Paragraph {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+
+    protected override $Bound(): void {
+        read = this.$book;
+        super.$Bound();
+    }
+}
+
 const Ledger = $($Ledger);
 const Reading = $($Reading);
 const Unreading = $($Unreading);
+const Binding = $($Binding);
 
 describe('a writing that reads its book while it draws costs nothing more', () => {
     beforeEach(counting);
@@ -206,6 +219,34 @@ describe('a writing that reads its book while it draws costs nothing more', () =
         await act(async () => { render(<Drawn />); });
         await settle();
         expect(read).toBe(book);
+        expect(counted).toEqual(expected);
+    });
+
+    it('a book whose paragraph binds, reading its book in $Bound, draws and paints exactly as one whose paragraph does not', async () => {
+        const control = $(
+            <Ledger>
+                <Quoted />
+                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
+            </Ledger>
+        ) as unknown as $Book;
+        const Control = $(control);
+        await act(async () => { render(<Control />); });
+        await settle();
+        const expected = { ...counted };
+        expect(expected).toEqual({ drawn: 6, painted: 1, committed: 1 });
+
+        counting();
+        read = undefined;
+        const book = $(
+            <Ledger>
+                <Quoted />
+                <Chapter><Title>[A Paper](/a-paper/)</Title><Binding>a line</Binding></Chapter>
+            </Ledger>
+        ) as unknown as $Book;
+        expect(read).toBe(book);
+        const Drawn = $(book);
+        await act(async () => { render(<Drawn />); });
+        await settle();
         expect(counted).toEqual(expected);
     });
 });

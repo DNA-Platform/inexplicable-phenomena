@@ -89,6 +89,14 @@ export class $Writing extends $Chemical {
     }
 
     protected $Define(): void { }
+
+    protected $Bound(): void {
+        for (const chemical of this.text)
+            if (chemical instanceof $Writing)
+                chemical.$Bound();
+        for (const annotation of this.annotations)
+            annotation.$Bound();
+    }
 }
 
 export class $Annotation extends $Writing {

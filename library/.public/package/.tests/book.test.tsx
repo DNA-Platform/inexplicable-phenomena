@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed } from '@dna-platform/public';
+import { $Annotation, $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed } from '@dna-platform/public';
 import { $Book, Book, BookSpecification, $Chapter, Chapter, Title, $Cover, Cover, Synopsis, TableOfContents, Author, Subject } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -85,6 +85,14 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(book.about).toBeUndefined();
     });
 
+    // Doug, 2026-09-26: "Book can mean what its Cover means - return that, because a link that goes to the cover is one that goes to the book".
+    it('means what its cover means, which is the book itself', () => {
+        const book = built<$Book>(<Book>{TheArgument()}{APaper()}{WhatItArgues()}{WhereThingsAre()}</Book>);
+        expect(book.means).toBe(book.cover?.mention);
+        expect(book.means?.identifier).toBe('/a-paper/');
+        expect(built<$Book>(<Book>{TheArgument()}</Book>).means).toBeUndefined();
+    });
+
     it('exposes its cover, its synopsis and its table — the chapters carrying each, wherever they stand', () => {
         const book = built<$Book>(<Book>{TheArgument()}{WhereThingsAre()}{APaper()}{WhatItArgues()}</Book>);
         expect(book.cover).toBe(book.parts[2]);
@@ -99,6 +107,47 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         const Untitled = (): React.ReactNode => <Chapter><Paragraph>no title</Paragraph></Chapter>;
         const book = built<$Book>(<Book>{APaper()}{WhatItArgues()}{WhereThingsAre()}{Untitled()}</Book>);
         expect(book.specify()).toContain('Book / Chapter 3: a chapter has one title as its canonical, and this one does not');
+    });
+});
+
+// Doug, 2026-09-26: "$Bound is on writing... bound calls bound on all its contents and annotations after it
+// binds itself, and then $Book is the only bond constructor that actually calls it".
+describe('a book binds: once it is whole, every writing in it is bound, top to bottom', () => {
+    it('a paragraph three levels down and its annotation find the book whole in their $Bound; a chapter built alone is never bound', () => {
+        const bound: { book?: $Book; cover?: $Chapter; table?: $Chapter; order: string[] } = { order: [] };
+        class $Binding extends $Paragraph {
+            protected override $Bound(): void {
+                bound.book = this.$book;
+                bound.cover = this.$book?.cover;
+                bound.table = this.$book?.table;
+                bound.order.push('paragraph');
+                super.$Bound();
+            }
+        }
+        class $Noting extends $Annotation {
+            protected override $Bound(): void {
+                bound.order.push('annotation');
+                super.$Bound();
+            }
+        }
+        const Binding = $($Binding);
+        const Noting = $($Noting);
+        const chapter = (): ReactNode => (
+            <Chapter>
+                <Title>[The Argument](/a-paper/#the-argument)</Title>
+                <Section>
+                    <Heading>What is claimed</Heading>
+                    <Binding>A reference names a thing and never a place. <Noting /></Binding>
+                </Section>
+            </Chapter>
+        );
+        built<$Chapter>(chapter());
+        expect(bound.order).toEqual([]);
+        const book = built<$Book>(<Book>{APaper()}{WhereThingsAre()}{chapter()}</Book>);
+        expect(bound.book).toBe(book);
+        expect(bound.cover).toBe(book.cover);
+        expect(bound.table).toBe(book.table);
+        expect(bound.order).toEqual(['paragraph', 'annotation']);
     });
 });
 
