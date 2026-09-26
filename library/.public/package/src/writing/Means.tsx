@@ -10,6 +10,7 @@ import { $Reference, Reference as reference } from './Reference';
 export class $Means extends $Word {
     specification = new MeansSpecification();
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
+    get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();

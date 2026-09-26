@@ -26,7 +26,7 @@ export class $Cover extends $Format {
 export class $Author extends $Annotation {
     specification = new AuthorSpecification();
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
-    get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
+    get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
@@ -44,7 +44,7 @@ export class $Author extends $Annotation {
 export class $Subject extends $Annotation {
     specification = new SubjectSpecification();
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
-    get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
+    get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
@@ -62,7 +62,7 @@ export class $Subject extends $Annotation {
 export class $About extends $Annotation {
     specification = new AboutSpecification();
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
-    get reference(): $Reference | undefined { return this.annotations.expressed($Reference); }
+    get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {
         super.$Define();
@@ -118,7 +118,7 @@ export class AboutSpecification extends AnnotationSpecification {
     $namesItsOwnBook(writing: $Writing): void {
         const about = writing.annotations.expressed($About);
         const title = writing instanceof $Chapter ? writing.canonical : undefined;
-        $check(about?.reference?.identifier === title?.means?.identifier,
+        $check(about?.means?.identifier === title?.means?.identifier,
             'about names its own book, and this one names another');
     }
 }

@@ -22,7 +22,7 @@ export class AutobiographySpecification extends AnnotationSpecification {
     $byWhatItIsAbout(writing: $Writing): void {
         const author = writing.annotations.expressed($Author);
         const about = writing.annotations.expressed($About);
-        $check(author?.reference !== undefined && author.reference.identifier === about?.reference?.identifier,
+        $check(author?.means !== undefined && author.means.identifier === about?.means?.identifier,
             'an autobiography is by what it is about, and this one is not');
     }
 }

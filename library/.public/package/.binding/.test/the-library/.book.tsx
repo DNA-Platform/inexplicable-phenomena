@@ -14,8 +14,8 @@ export default class $TheLibrary extends $Book {
         return (
             <>
                 <Paragraph>
-                    by <Word><Reference>{this.author?.reference?.identifier}</Reference>{this.author?.name}</Word>,
-                    filed under <Word><Reference>{this.subject?.reference?.identifier}</Reference>{this.subject?.name}</Word>
+                    by <Word><Reference>{this.author?.means?.identifier}</Reference>{this.author?.name}</Word>,
+                    filed under <Word><Reference>{this.subject?.means?.identifier}</Reference>{this.subject?.name}</Word>
                 </Paragraph>
                 {super.write()}
             </>
