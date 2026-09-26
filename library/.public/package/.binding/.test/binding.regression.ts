@@ -104,6 +104,13 @@ describe('a bind of the test library', () => {
         expect(page('A Persona')).toMatch(/<header class="pd-container"><span class="pa-biography">/u);
     });
 
+    // A STYLE ONE BOOK HAS AND THE OTHERS DO NOT, on its own page and on no other — the leak the render
+    // once kept one child per page to prevent. Doug, 2026-09-26: "Yes it was a style leak bug."
+    it('drew the paper\'s own style on its page and on no other', () => {
+        for (const route of table.routes)
+            expect(/font-family: ?monospace/u.test(page(route.name)), route.name).toBe(route.name === 'A Paper');
+    });
+
     // THE ORDINARY VIEW, which the test library's book class stands as its theme — Doug, 2026-09-25:
     // "it is a format annotation that is also a theme that is global to a book."
     it('drew every book inside its theme, whose sheet hides every annotation\'s own writing', () => {
@@ -142,7 +149,8 @@ describe('the bound test library, seen in a real browser', () => {
     it('shows the paper\'s cover in its header, and the byline its book draws, as links, with no annotation\'s writing showing', async () => {
         const paper = await opened('/a-paper/');
         expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A Paper');
-        const byline = await paper.$eval('#root > div > span > span', line => line.innerText.replace(/\s+/gu, ' ').trim());
+        const byline = await paper.$$eval('#root span', spans => spans.map(span => span.innerText.replace(/\s+/gu, ' ').trim())
+            .filter(text => text.startsWith('by ')).sort((one, other) => one.length - other.length)[0]);
         expect(byline).toBe('by A Persona, filed under The Library');
         expect(await paper.$eval('a[href="/a-persona/"]', link => link.innerText.trim())).toBe('A Persona');
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');

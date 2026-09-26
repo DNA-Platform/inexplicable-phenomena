@@ -1,6 +1,5 @@
 import { spawn } from 'node:child_process';
 import { copyFileSync, writeFileSync } from 'node:fs';
-import { availableParallelism } from 'node:os';
 import { join } from 'node:path';
 
 const lastLine = (text: string): string => text.trim().split(/\r?\n/).at(-1) ?? '[]';
@@ -37,13 +36,15 @@ const landing = (address: string, title: string): string => [
     '',
 ].join('\n');
 
-// ONE CHILD PER PAGE, AS MANY AT ONCE AS THE MACHINE HAS CORES. One process per page is correct —
-// a book registers its theme on the shared class when its module loads, and one process drawing
-// two books carries the first's styles into the second — so the children run together instead.
-// They come back in the order the names were given, because the manifest and the proof read this
-// list and a list that reorders itself is a diff on every build.
-const drawn = (binding: string, entry: string, name: string): Promise<string[]> => new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [entry, name], {
+// EVERY PAGE IN ONE CHILD, which starts one server and transforms the module graph once. It was one
+// child per page, as many at once as the machine had cores, because a page took its styles from the
+// one document every page was drawn in, so a second book's page carried the first's — measured
+// 2026-09-26: a child per page 1.6s, six at once 7.3s, since each transformed the same graph, and one
+// child drawing all six 1.67s. Each page now collects its own styles as it is drawn. The pages come
+// back in the order the names were given, because the manifest and the proof read this list and a
+// list that reorders itself is a diff on every build.
+const drawn = (binding: string, entry: string, names: string[]): Promise<string[]> => new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [entry, ...names], {
         cwd: binding,
         stdio: ['ignore', 'pipe', 'inherit'],
         // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
@@ -55,7 +56,7 @@ const drawn = (binding: string, entry: string, name: string): Promise<string[]> 
     child.stdout.on('data', (chunk: string) => { out += chunk; });
     child.on('error', reject);
     child.on('close', status => {
-        if (status !== 0) reject(new Error(`rendering ${name} failed (exit ${status ?? 'signal'})`));
+        if (status !== 0) reject(new Error(`rendering failed (exit ${status ?? 'signal'})`));
         else resolve(JSON.parse(lastLine(out)) as string[]);
     });
 });
@@ -64,13 +65,7 @@ export const rendering = async (binding: string, names: string[], root?: { addre
     const entry = join(binding, 'rendering', 'render.mjs');
     copyFileSync(join(binding, '..', 'index.html'), shellOf(binding));
 
-    const each: string[][] = names.map(() => []);
-    let next = 0;
-    const worker = async (): Promise<void> => {
-        for (let at = next++; at < names.length; at = next++) each[at] = await drawn(binding, entry, names[at]);
-    };
-    await Promise.all(Array.from({ length: Math.min(availableParallelism(), names.length) }, worker));
-    const pages = each.flat();
+    const pages = await drawn(binding, entry, names);
     if (root !== undefined) {
         const at = join(binding, '..', 'index.html');
         // THE ADDRESS IS THE CATALOGUE'S, WRITTEN FROM THE DOMAIN FORWARD. An earlier writing
