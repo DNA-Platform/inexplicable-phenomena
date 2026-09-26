@@ -1,4 +1,4 @@
-const path = require('path');
+import { fileURLToPath } from 'node:url';
 
 // ONE PROJECT, ONE FOLDER, ONE DOOR. v1 is deleted — source and promises both —
 // on Doug's ruling, 2026-09-07: "Kill v1, move tests out to .tests, kill .archive".
@@ -25,9 +25,9 @@ const extensions = ['.tsx', '.ts', '.jsx', '.js'];
 const src = {
     test: { ...shared, name: 'src', include: ['.tests/**/*.test.{ts,tsx}'] },
     resolve: { extensions, alias: {
-        '@dna-platform/public': path.resolve(__dirname, './dist/lib.js')
+        '@dna-platform/public': fileURLToPath(new URL('./dist/lib.js', import.meta.url))
     } },
     esbuild
 };
 
-module.exports = { test: { projects: [src] } };
+export default { test: { projects: [src] } };
