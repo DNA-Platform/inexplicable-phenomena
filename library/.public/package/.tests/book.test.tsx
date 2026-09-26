@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Annotation, $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed } from '@dna-platform/public';
-import { $Book, Book, BookSpecification, $Chapter, Chapter, Title, $Cover, Cover, Synopsis, TableOfContents, Author, Subject } from '@dna-platform/public';
+import { $Book, Book, BookSpecification, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, Author, Subject } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -68,7 +68,7 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         const covered = built<$Book>(<Book>{APaper()}{APaper()}{WhatItArgues()}{WhereThingsAre()}</Book>);
         expect(covered.specify()).toContain('Book: a book has one cover, and this one does not');
         const twice = built<$Book>(<Book>{APaper()}{WhatItArgues()}{WhatItArgues()}{WhereThingsAre()}</Book>);
-        expect(twice.specify()).toContain('Book: a book has one synopsis, and this one does not');
+        expect(twice.specify()).toContain('Book: a book has one synopsis of itself, and this one does not');
     });
 
     it('holds chapters, and a section standing straight in it is not a part it may hold', () => {
@@ -91,6 +91,21 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(book.means).toBe(book.cover?.mention);
         expect(book.means?.identifier).toBe('/a-paper/');
         expect(built<$Book>(<Book>{TheArgument()}</Book>).means).toBeUndefined();
+    });
+
+    // A catalogue's chapter is a synopsis of another book, so a book has one synopsis OF ITSELF and may carry others'.
+    it('has one synopsis of itself, which it exposes, and may carry a chapter that is another book\'s synopsis', () => {
+        const OfTheLog = (): React.ReactNode => (
+            <Chapter>
+                <Title>[Of the Log](/a-paper/#of-the-log)</Title>
+                <Chapter><Synopsis /><Title>[Synopsis](/the-log/#synopsis)</Title></Chapter>
+                <Synopsis />
+            </Chapter>
+        );
+        const book = built<$Book>(<Book>{APaper()}{OfTheLog()}{WhatItArgues()}{WhereThingsAre()}</Book>);
+        expect(book.specify()).toEqual([]);
+        expect(book.synopsis).toBe(book.parts[2]);
+        expect(book.parts[1].annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
     });
 
     it('exposes its cover, its synopsis and its table — the chapters carrying each, wherever they stand', () => {

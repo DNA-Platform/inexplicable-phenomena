@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, styled } from '@dna-platform/chemistry';
 import { $Writing, $Section, Section, Heading, Paragraph, $Reference } from '@dna-platform/public';
-import { $Chapter, Chapter, Title, $Cover, Cover, Synopsis, TableOfContents, $Author, Author, $Subject, Subject, $About, About } from '@dna-platform/public';
+import { $Book, Book, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, $Author, Author, $Subject, Subject, $About, About } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -22,6 +22,47 @@ const paper = (): React.ReactNode => (
         <About>[A Paper](/a-paper/)</About>
     </Chapter>
 );
+
+// Doug, 2026-09-26: "synopsis.means - this can be a reference to the book that it is a synopsis of and we agreed that
+// synopsis will support the ()[] syntax handed to it from the compiler, or get its book"; and of a catalogue's chapter,
+// "the Synopsis attribute knows how to see another chapter that is a synopsis and reach in and get what it needs".
+describe('a synopsis means the book it is a synopsis of', () => {
+    it('means the book written inside it, read of itself as it is built', () => {
+        const written = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/#of-the-log)</Title></Chapter>);
+        expect(written.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
+        expect(written.annotations.expressed($Synopsis)?.name).toBe('The Log');
+    });
+
+    // Written empty, it reads beyond itself — its chapter's title, a synopsis chapter within — which it can only do
+    // once the book is whole: in $Bound. A chapter built alone is never bound, so these stand in a book.
+    it('written empty, means the book a synopsis chapter within its chapter means, else the book its chapter\'s title names — once bound', () => {
+        const alone = built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/the-log/#synopsis)</Title></Chapter>);
+        expect(alone.annotations.expressed($Synopsis)?.means).toBeUndefined();
+        const book = built<$Book>(
+            <Book>
+                <Chapter><Cover /><Title>[The Library](/the-library/)</Title><Author>[The Log](/the-log/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
+                <Chapter><Synopsis /><Title>[Synopsis](/the-library/#synopsis)</Title></Chapter>
+                <Chapter>
+                    <Title>[Of the Log](/the-library/#of-the-log)</Title>
+                    <Chapter><Synopsis /><Title>[Synopsis](/the-log/#synopsis)</Title></Chapter>
+                    <Synopsis />
+                </Chapter>
+            </Book>
+        );
+        const [, own, host] = book.text.find($Chapter);
+        expect(own.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-library/');
+        expect(host.text.find($Chapter)[0].annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
+        expect(host.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
+        expect(book.synopsis).toBe(own);
+    });
+
+    it('drawn, is its name as a link to the book it means, and still adds no layer to its chapter', async () => {
+        const chapter = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/#of-the-log)</Title></Chapter>);
+        const page = await drawn(chapter);
+        expect(page.querySelector('a[href="/the-log/"]')?.textContent).toContain('The Log');
+        expect([...chapter.containers]).toEqual(['span']);
+    });
+});
 
 describe('a cover is a format said of a chapter, drawing it inside a header', () => {
     it('draws its chapter inside a header, and takes the layer back when it goes', async () => {
