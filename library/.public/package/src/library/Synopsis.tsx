@@ -63,6 +63,12 @@ export class SynopsisSpecification extends AnnotationSpecification {
     $saidOfAChapter(writing: $Writing): void {
         $check(writing instanceof $Chapter, 'a synopsis is said of a chapter, and this is not one');
     }
+
+    @specify('a synopsis means the book it is a synopsis of')
+    $meansItsBook(writing: $Writing): void {
+        $check(writing.annotations.expressed($Synopsis)?.means !== undefined,
+            'a synopsis means the book it is a synopsis of, and this one means nothing');
+    }
 }
 
 export const Synopsis = $($Synopsis);

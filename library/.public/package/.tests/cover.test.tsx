@@ -81,6 +81,13 @@ describe('a synopsis means the book it is a synopsis of', () => {
         expect(chapter.parts).toHaveLength(1);
     });
 
+    // Doug, 2026-09-27: "A synopsis always has a chapter. Add it to the specification. How about the reference? Validate."
+    it('said of a section, or meaning nothing, says so when asked', () => {
+        expect(built<$Section>(<Section><Synopsis /><Heading>h</Heading></Section>).specify()).toContain('Section: a synopsis is said of a chapter, and this is not one');
+        expect(built<$Chapter>(<Chapter><Synopsis /><Title>plain words</Title></Chapter>).specify()).toContain('Chapter: a synopsis means the book it is a synopsis of, and this one means nothing');
+        expect(built<$Chapter>(LogSynopsis()).specify()).toEqual([]);
+    });
+
     it('drawn, is its name as a link to the book it means, and still adds no layer to its chapter', async () => {
         const chapter = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/of-the-log/)</Title></Chapter>);
         const page = await drawn(chapter);
