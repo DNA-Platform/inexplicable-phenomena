@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
-import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word } from '@dna-platform/public';
+import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word, $Next } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -318,6 +318,42 @@ describe('a means that stands its own reference costs no more than any writing',
         await settle();
         expect(counted.drawn).toBe(3);
         expect(means.annotations.find($Reference)[0].identifier).toBe('/complicated-url');
+    });
+});
+
+class $Nexting extends $Next {
+    override view(): ReactNode {
+        counted.drawn++;
+        return super.view();
+    }
+}
+
+const Nexting = $($Nexting);
+
+describe('a next that makes its reference at its bond costs no more than a means in its place', () => {
+    beforeEach(counting);
+
+    it('a book whose chapter ends in a next draws and paints exactly as one whose chapter ends in a means', async () => {
+        const shelf = (foot: ReactNode): $Book => $(
+            <Ledger>
+                <Quoted />
+                <Chapter><Title>[A Paper](/a-paper/)</Title></Chapter>
+                <Chapter><Title>[A](/a-paper/a/)</Title>{foot}</Chapter>
+            </Ledger>
+        ) as unknown as $Book;
+        const Control = $(shelf(<Meaning>[on](/a-paper/a/)</Meaning>));
+        await act(async () => { render(<Control />); });
+        await settle();
+        const expected = { ...counted };
+        expect(expected.painted).toBe(1);
+
+        counting();
+        const book = shelf(<Nexting>on</Nexting>);
+        const Drawn = $(book);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect(book.text.find($Chapter)[1].text.find($Next)[0].means?.identifier).toBe('/a-paper/a/');
+        expect(counted).toEqual(expected);
     });
 });
 
