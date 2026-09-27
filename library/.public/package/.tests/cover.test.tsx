@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, style as styled } from '@dna-platform/chemistry';
+import { $, styledComponents as styled } from '@dna-platform/chemistry';
 import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, $Reference } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, $Author, Author, $Subject, Subject, $About, About } from '@dna-platform/public';
 

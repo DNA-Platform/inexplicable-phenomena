@@ -28,8 +28,8 @@ export const cache = Symbol("$Chemical.cache");
 
 // The component a styled particle renders through, compiled once per class from
 // the CSS fields it declares. Read it to reach the compiled component; declare
-// [selector] to say what it is built from. (`compiled` is a proxy name.)
-export const compiled = Symbol("$Particle.compiled");
+// [selector] to say what it is built from.
+export const style = Symbol("$Particle.style");
 
 // The children a chemical was given. A SYMBOL rather than a property, so that a view
 // reaches for its BLOCK and never for the raw children it happens to have been handed.
@@ -42,7 +42,7 @@ export const resolved = Symbol("$Formula.resolved");
 
 // THE BASIC WORDS A CHEMICAL ANSWERS TO, carried as symbols so they cost no word in
 // the vocabulary of whatever is built on it: `this[next]('mount')`, `[selector] =
-// style.main`. `view`, `frame` and `parent` stay public.
+// styledComponents.main`. `view`, `frame` and `parent` stay public.
 export const formula = Symbol("$Chemical.formula");
 export const resolve = Symbol("$Chemical.resolve");
 export const persist = Symbol("$Chemical.persist");

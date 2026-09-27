@@ -29,12 +29,12 @@ export { $lookup, $load } from './framework/load';
 export { inert, reactive, represented, look } from './abstraction/bond';
 
 // Members a chemical implements, carried as symbols so they cost no name
-export { cache, children, compiled, theme, resolved } from './implementation/symbols';
+export { cache, children, style, theme, resolved } from './implementation/symbols';
 export { formula, resolve, persist, inline, selector, styled, next } from './implementation/symbols';
 
 // Styling — the resolved styled-components callable, so nothing downstream
 // writes the dual-shape import again.
-export { style, select } from './abstraction/styled';
+export { styledComponents, select } from './abstraction/styled';
 export { $Theme } from './abstraction/theme';
 export { hydration } from './implementation/hydration';
 

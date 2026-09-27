@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
-import { $, style as styled } from '@dna-platform/chemistry';
+import { $, styledComponents as styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
 import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word, $Next, Paginated } from '@dna-platform/public';
 import type { ReactNode } from 'react';

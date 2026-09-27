@@ -1,10 +1,10 @@
 import React from 'react';
-import { $, $Chemical, style, selector } from '@/index';
+import { $, $Chemical, styledComponents, selector } from '@/index';
 
 // A styled chemical writes the element it is styled as, and its CSS fields are
 // the stylesheet. A plain name is live, like every other member of a chemical.
 class $Card extends $Chemical {
-    [selector] = style.section;
+    [selector] = styledComponents.section;
     margin = '0 0 10px';
     padding = '16px';
     borderRadius = '6px';
@@ -14,7 +14,7 @@ class $Card extends $Chemical {
     fontFamily = 'Georgia, serif';
 
     view() {
-        return <section>style.section</section>;
+        return <section>styledComponents.section</section>;
     }
 }
 
@@ -22,7 +22,7 @@ const Card = $($Card);
 
 // A different element, styled the same way.
 class $Quote extends $Chemical {
-    [selector] = style.blockquote;
+    [selector] = styledComponents.blockquote;
     margin = '0 0 10px';
     padding = '12px 16px';
     borderLeft = '4px solid #3366cc';
@@ -31,7 +31,7 @@ class $Quote extends $Chemical {
     color = '#202122';
 
     view() {
-        return <blockquote>style.blockquote</blockquote>;
+        return <blockquote>styledComponents.blockquote</blockquote>;
     }
 }
 

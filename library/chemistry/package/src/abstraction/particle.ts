@@ -7,7 +7,7 @@ import {
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
-    $renderView$, $views$, $draw$, looks, compiled, inline, selector, styled, next
+    $renderView$, $views$, $draw$, looks, style, inline, selector, styled, next
 } from "../implementation/symbols";
 import { compile, given, styledFor, providing } from "./styled";
 import { $handed$, $recall$, $defaults$, theme } from "../implementation/symbols";
@@ -74,7 +74,7 @@ export class $Particle {
     // in its constructor; block is the default. Read from the template, frozen.
     [inline] = false;
 
-    // What this class is styled as — `[selector] = style.main` says it renders
+    // What this class is styled as — `[selector] = styledComponents.main` says it renders
     // through a <main> carrying the CSS its fields declare. A finished styled
     // component stands as it is and nothing compiles. [styled] is the explicit
     // word: undefined defers to the selector, true and false decide outright.
@@ -90,7 +90,7 @@ export class $Particle {
 
     // The compiled component, built once per class and read through the
     // prototype by every instance of it.
-    get [compiled](): any { return compile(this)?.component; }
+    get [style](): any { return compile(this)?.component; }
 
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
@@ -329,7 +329,7 @@ function deepestLook(particle: any): number {
 // values the compiled interpolations read. NOTHING IS ADDED TO THE TREE: the
 // element the view wrote is the element the page gets. Reached only when a
 // selector was declared, so nothing else pays for it — and a class wanting the
-// component itself overrides frame() and reaches it at [compiled].
+// component itself overrides frame() and reaches it at [style].
 function styling(particle: any, drawn: ReactNode): ReactNode {
     const made = styledFor(particle);
     if (!made) return drawn;

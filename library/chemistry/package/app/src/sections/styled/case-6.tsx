@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical, $Theme, children, style, theme, selector } from '@/index';
+import { $, $Chemical, $Theme, children, styledComponents, theme, selector } from '@/index';
 import { ActionButton } from '../V-1/case.styled';
 
 // A theme is a chemical that provides itself: its fields are the values, what
@@ -14,7 +14,7 @@ class $Palette extends $Theme {
 }
 
 class $Card extends $Chemical {
-    [selector] = style.article;
+    [selector] = styledComponents.article;
     get background() { return this[theme].paper; }
     get color() { return this[theme].ink; }
     get border() { return this[theme].ruled; }
@@ -31,7 +31,7 @@ const Card = $($Card);
 
 // Not a chemical at all — styled-components as anyone writes it, beneath the
 // same theme.
-const Plain = style.p`
+const Plain = styledComponents.p`
     margin: 0 0 8px;
     padding: 10px 14px;
     background: ${(p: any) => p.theme.paper};
