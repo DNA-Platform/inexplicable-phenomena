@@ -8,12 +8,12 @@ export class $Chapter extends $Composition {
     specification = new ChapterSpecification();
     get title(): $Title | undefined { return this.canonical; }
     get mention(): $Reference | undefined { return this.title?.means; }
-    get after(): $Chapter {
+    get next(): $Chapter {
         const chapters = this.$book?.text.find($Chapter) ?? [];
         const at = chapters.indexOf(this);
         return at === -1 ? this : chapters[at + 1] ?? this;
     }
-    get before(): $Chapter {
+    get previous(): $Chapter {
         const chapters = this.$book?.text.find($Chapter) ?? [];
         const at = chapters.indexOf(this);
         return at === -1 ? this : chapters[at - 1] ?? this;

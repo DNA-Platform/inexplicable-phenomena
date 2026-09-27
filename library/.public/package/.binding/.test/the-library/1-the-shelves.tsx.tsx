@@ -34,11 +34,11 @@ export const RunningHead = $($RunningHead);
 // "Next and Previous could reach to their chapter and be chapter references. I like previous of the cover
 // is the cover and next of the last chapter is the last chapter."
 export class $PreviousTitle extends $Previous {
-    override write(): ReactNode { return this.chapter?.before.title?.name; }
+    override write(): ReactNode { return this.chapter?.previous.title?.name; }
 }
 
 export class $NextTitle extends $Next {
-    override write(): ReactNode { return this.chapter?.after.title?.name; }
+    override write(): ReactNode { return this.chapter?.next.title?.name; }
 }
 
 export class $Catchword extends $Paragraph {

@@ -59,22 +59,22 @@ describe('a chapter knows the chapter after it and before it among its book\'s, 
 
     it('answers the chapter after and the chapter before, in the book\'s order', () => {
         const [cover, synopsis, table, a, b] = shelf().text.find($Chapter);
-        expect(a.after).toBe(b);
-        expect(a.before).toBe(table);
-        expect(synopsis.before).toBe(cover);
-        expect(synopsis.after).toBe(table);
+        expect(a.next).toBe(b);
+        expect(a.previous).toBe(table);
+        expect(synopsis.previous).toBe(cover);
+        expect(synopsis.next).toBe(table);
     });
 
     it('is its own next at the end of the book, and its own previous at the start', () => {
         const [cover, , , , b] = shelf().text.find($Chapter);
-        expect(b.after).toBe(b);
-        expect(cover.before).toBe(cover);
+        expect(b.next).toBe(b);
+        expect(cover.previous).toBe(cover);
     });
 
     it('built alone, or within a chapter rather than among the book\'s own, is its own neighbour both ways', () => {
         const alone = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>);
-        expect(alone.after).toBe(alone);
-        expect(alone.before).toBe(alone);
+        expect(alone.next).toBe(alone);
+        expect(alone.previous).toBe(alone);
         const book = built<$Book>(
             <Book>
                 <Chapter><Cover /><Title>[The Library](/the-library/)</Title></Chapter>
@@ -86,9 +86,9 @@ describe('a chapter knows the chapter after it and before it among its book\'s, 
         );
         const [cover, host] = book.text.find($Chapter);
         const [nested] = host.text.find($Chapter);
-        expect(host.before).toBe(cover);
-        expect(nested.after).toBe(nested);
-        expect(nested.before).toBe(nested);
+        expect(host.previous).toBe(cover);
+        expect(nested.next).toBe(nested);
+        expect(nested.previous).toBe(nested);
     });
 });
 

@@ -17,11 +17,11 @@ export class $Next extends $Word {
 
     protected override $Bound(): void {
         const chapter = this.chapter;
-        const after = chapter?.after;
-        if (after?.mention !== undefined) {
-            const Reference = $(after === chapter ? self : reference);
+        const next = chapter?.next;
+        if (next?.mention !== undefined) {
+            const Reference = $(next === chapter ? self : reference);
             this.annotations.add(this,
-                <Reference>{after.mention.identifier}</Reference>
+                <Reference>{next.mention.identifier}</Reference>
             );
             this.annotations.define();
         }
