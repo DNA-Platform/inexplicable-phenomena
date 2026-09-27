@@ -6,4 +6,5 @@ export * from './TableOfContents';
 export * from './Next';
 export * from './Previous';
 export * from './Book';
+export * from './Paginated';
 export * from './Biography';

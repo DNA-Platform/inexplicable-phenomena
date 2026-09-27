@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
-import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word, $Next } from '@dna-platform/public';
+import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word, $Next, Paginated } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -387,6 +387,43 @@ describe('a book turning to its bookmark costs the cascade, until chemistry ends
         expect(book.bookmark).toBe(book.parts[1]);
         expect(counted).toEqual({ drawn: 6, painted: 1, committed: 1 });
         expect(counted.drawn).toBeLessThan(mounted.drawn);
+
+        counting();
+        await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
+        await settle();
+        expect(counted).toEqual({ drawn: 0, painted: 0, committed: 0 });
+    });
+});
+
+// Doug, 2026-09-27: "I rely on you to make the most performant, elegant implementation of this possible as an example
+// of what is possible." A paginated book's move is the cascade above and two marks — the old page's taken back, the new
+// one's put — so the two chapters whose class changed redraw with what is under them: four draws over the cascade's six
+// here, one paint still. A bookmark set where it stands writes nothing.
+describe('a paginated book turning its page costs the cascade and two marks, and nothing when the page stands', () => {
+    beforeEach(counting);
+
+    it('mounts as any book; a bookmark moved redraws the cascade and the two pages whose mark changed, and a bookmark set where it stands draws nothing', async () => {
+        Element.prototype.scrollIntoView = () => {};
+        const book = $(
+            <Ledger bookmark="/a-paper/">
+                <Quoted />
+                <Paginated />
+                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
+                <Chapter><Title>[The Argument](/a-paper/the-argument/)</Title><Unreading>another</Unreading></Chapter>
+            </Ledger>
+        ) as unknown as $Book;
+        const Drawn = $(book);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        expect(counted.painted).toBe(1);
+        expect([...book.parts[0].classes].sort()).toEqual(['pa-open', 'pa-page']);
+
+        counting();
+        await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
+        await settle();
+        expect([...book.parts[0].classes]).toEqual(['pa-page']);
+        expect([...book.parts[1].classes].sort()).toEqual(['pa-open', 'pa-page']);
+        expect(counted).toEqual({ drawn: 10, painted: 1, committed: 1 });
 
         counting();
         await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
