@@ -1,4 +1,4 @@
-import { $, $check, $Block } from '@dna-platform/chemistry';
+import { $, $check, $Block as $Written } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, WritingSpecification, AnnotationSpecification } from './Writing';
 
@@ -17,8 +17,8 @@ export class $Composition extends $Writing {
 export class $Level extends $Annotation {
     specification = new LevelSpecification();
     get level(): number {
-        const block = this.text.at(0);
-        return block instanceof $Block ? Number(block.elements.join('')) : 1;
+        const written = this.text.at(0);
+        return written instanceof $Written ? Number(written.elements.join('')) : 1;
     }
 }
 
@@ -57,6 +57,31 @@ export class $Closed extends $Annotation {
         for (const annotation of writing.annotations.after(this))
             if (annotation instanceof $Open)
                 writing.annotations.express(annotation, false);
+    }
+}
+
+export class $Inline extends $Annotation {
+    specification = new InlineSpecification();
+
+    override defines(writing: $Writing): void {
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Block)
+                writing.annotations.express(annotation, false);
+    }
+}
+
+export class $Block extends $Annotation {
+    specification = new BlockSpecification();
+
+    override defines(writing: $Writing): void {
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Inline)
+                writing.annotations.express(annotation, false);
+        writing.containers.replace(this, writing.containers.at(0)!, 'div');
+    }
+
+    override erase(writing: $Writing): void {
+        writing.containers.revert(this);
     }
 }
 
@@ -104,9 +129,25 @@ export class ClosedSpecification extends AnnotationSpecification {
     }
 }
 
+export class InlineSpecification extends AnnotationSpecification {
+    @specify('inline is said of a composition')
+    $saidOfAComposition(writing: $Writing): void {
+        $check(writing instanceof $Composition, 'inline is said of a composition, and this is not one');
+    }
+}
+
+export class BlockSpecification extends AnnotationSpecification {
+    @specify('block is said of a composition')
+    $saidOfAComposition(writing: $Writing): void {
+        $check(writing instanceof $Composition, 'block is said of a composition, and this is not one');
+    }
+}
+
 export const Composition = $($Composition);
 export const Level = $($Level);
 export const Strict = $($Strict);
 export const Permissive = $($Permissive);
 export const Open = $($Open);
 export const Closed = $($Closed);
+export const Inline = $($Inline);
+export const Block = $($Block);

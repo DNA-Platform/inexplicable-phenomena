@@ -1,8 +1,48 @@
 import { describe, it, expect } from 'vitest';
+import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
-import { Letter, $Word, Word, $Sentence, Sentence, $Paragraph, Paragraph, Permissive, Open, Strict, Closed } from '@dna-platform/public';
+import { $Writing, $Letter, Letter, $Word, Word, $Sentence, Sentence, $Paragraph, Paragraph, $Section, Section, Heading, Permissive, Open, Strict, Closed } from '@dna-platform/public';
+import { $Chapter, Chapter, Title, $Book, Book } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+const drawn = async (writing: $Writing): Promise<HTMLElement> => {
+    const Drawn = $(writing);
+    let container: HTMLElement | undefined;
+    await act(async () => { container = render(<Drawn />).container; });
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+    return container!;
+};
+
+// Doug, 2026-09-27: "Don't we have the composition types put pd-letter, pd-word, etc... The theme should EXACTLY make
+// use of all the classes in .public. It exists to comprehend them."
+describe('every level marks itself and draws its own element, inline to the sentence and block from the paragraph', () => {
+    it('each level wears its mark and its default element', async () => {
+        for (const [writing, mark, tag] of [
+            [built<$Letter>(<Letter>a</Letter>), 'pd-letter', 'SPAN'],
+            [built<$Word>(<Word>word</Word>), 'pd-word', 'SPAN'],
+            [built<$Sentence>(<Sentence>a sentence</Sentence>), 'pd-sentence', 'SPAN'],
+            [built<$Paragraph>(<Paragraph>a paragraph</Paragraph>), 'pd-paragraph', 'DIV'],
+            [built<$Section>(<Section><Heading>h</Heading></Section>), 'pd-section', 'DIV'],
+            [built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>), 'pd-chapter', 'DIV'],
+            [built<$Book>(<Book><Chapter><Title>[A](/a/)</Title></Chapter></Book>), 'pd-book', 'DIV'],
+        ] as const) {
+            expect([...writing.classes]).toContain(mark);
+            const own = (await drawn(writing)).querySelector(`.${mark}`)!;
+            expect(own, mark).not.toBeNull();
+            expect(own.tagName, mark).toBe(tag);
+        }
+    });
+
+    it('a title and a heading wear their own mark beside the sentence\'s, and a subclass inherits its level\'s', () => {
+        const chapter = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>);
+        expect([...chapter.title!.classes]).toEqual(expect.arrayContaining(['pd-sentence', 'pd-title']));
+        const section = built<$Section>(<Section><Heading>h</Heading></Section>);
+        expect([...section.canonical!.classes]).toEqual(expect.arrayContaining(['pd-sentence', 'pd-heading']));
+        class $Aside extends $Paragraph { }
+        const Aside = $($Aside);
+        expect([...built<$Aside>(<Aside>an aside</Aside>).classes]).toContain('pd-paragraph');
+    });
+});
 
 describe('Word, Sentence and Paragraph are the intermixed levels, 2, 3 and 4, permissive and open', () => {
     it('each stands its level and its pair in $Define', () => {

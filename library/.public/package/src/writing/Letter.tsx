@@ -1,16 +1,19 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Composition, CompositionSpecification, Level as level, Open as open } from './Composition';
+import { $Composition, CompositionSpecification, Level as level, Open as open, Inline as inline } from './Composition';
 
 export class $Letter extends $Composition {
     specification = new LetterSpecification();
 
     protected override $Define(): void {
+        this.classes.add(this, 'pd-letter');
         const Level = $(level);
         const Open = $(open);
-        this.annotations.add(this, 
+        const Inline = $(inline);
+        this.annotations.add(this,
             <Level>1</Level>,
-            <Open />
+            <Open />,
+            <Inline />
         );
     }
 }

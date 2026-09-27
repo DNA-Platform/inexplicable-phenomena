@@ -92,7 +92,7 @@ describe('a synopsis means the book it is a synopsis of', () => {
         const chapter = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/of-the-log/)</Title></Chapter>);
         const page = await drawn(chapter);
         expect(page.querySelector('a[href="/the-log/"]')?.textContent).toContain('The Log');
-        expect([...chapter.containers]).toEqual(['span']);
+        expect([...chapter.containers]).toEqual(['div']);
     });
 
     it('drawn with a synopsis chapter, shows that chapter\'s words under its own title and never that chapter\'s title', async () => {
@@ -111,14 +111,14 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
         expect(page.firstElementChild?.tagName).toBe('HEADER');
         chapter.annotations.remove(chapter, chapter.annotations.find($Cover)[0]);
         chapter.annotations.define();
-        expect([...chapter.containers]).toEqual(['span']);
+        expect([...chapter.containers]).toEqual(['div']);
     });
 
     it('a table of contents draws its chapter inside a nav, and a synopsis adds no layer', async () => {
         const table = await drawn(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>));
         expect(table.firstElementChild?.tagName).toBe('NAV');
         const synopsis = built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>);
-        expect([...synopsis.containers]).toEqual(['span']);
+        expect([...synopsis.containers]).toEqual(['div']);
         expect(synopsis.specify()).toEqual([]);
     });
 
@@ -139,7 +139,7 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
         chapter.annotations.remove(chapter, chapter.annotations.find($Cover)[0]);
         chapter.annotations.define();
         expect([...chapter.classes]).not.toContain('pa-cover');
-        expect([...chapter.containers]).toEqual(['span']);
+        expect([...chapter.containers]).toEqual(['div']);
     });
 
     it('each is said of a chapter, and on a section says so', () => {

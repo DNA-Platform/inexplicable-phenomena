@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, Writing, $Composition, Composition, $Annotation, $Level, Level, Strict, $Permissive, Permissive, Open, Closed, CompositionSpecification, WritingSpecification, AnnotationSpecification } from '@dna-platform/public';
+import { $Writing, Writing, $Composition, Composition, $Annotation, $Level, Level, Strict, $Permissive, Permissive, Open, Closed, Inline, Block, CompositionSpecification, WritingSpecification, AnnotationSpecification } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -109,6 +109,45 @@ describe('is asks whether an annotation of a kind is expressed, by class or by c
     it('a pair said of a writing that is not a composition throws when it specifies, and the assert reports it', () => {
         expect(built<$Writing>(<Writing><Strict /></Writing>).specify()).toEqual(['Writing: strict is said of a composition, and this is not one']);
         expect(built<$Writing>(<Writing><Permissive /></Writing>).specify()).toEqual(['Writing: permissive is said of a composition, and this is not one']);
+    });
+});
+
+// Doug, 2026-09-27: "Maybe we want to make Inline and Block annotations and have the composition elements use them to
+// control what their base element is" — "Yes, the third pair."
+describe('inline and block are the third pair, and block draws the composition as a div', () => {
+    class $Blocked extends $Composition {
+        protected override $Define(): void {
+            this.annotations.add(this,
+                <Level>4</Level>,
+                <Block />
+            );
+        }
+    }
+    const Blocked = $($Blocked);
+
+    it('a composition is a span until a Block says otherwise, and its own element is the first container', () => {
+        expect([...built<$Fourth>(<Fourth />).containers][0]).toBe('span');
+        expect([...built<$Fourth>(<Fourth><Block /></Fourth>).containers][0]).toBe('div');
+        expect([...built<$Blocked>(<Blocked />).containers][0]).toBe('div');
+    });
+
+    it('a written Inline wins over the Block a class stands, and $is in front of both', () => {
+        const inlined = built<$Blocked>(<Blocked><Inline /></Blocked>);
+        expect(inlined.is(Inline)).toBe(true);
+        expect(inlined.is(Block)).toBe(false);
+        expect([...inlined.containers][0]).toBe('span');
+        const blocked = built<$Blocked>(<Blocked />);
+        blocked.$is = Inline;
+        blocked.annotations.define();
+        expect([...blocked.containers][0]).toBe('span');
+        blocked.$is = [];
+        blocked.annotations.define();
+        expect([...blocked.containers][0]).toBe('div');
+    });
+
+    it('either said of a writing that is not a composition says so when asked', () => {
+        expect(built<$Writing>(<Writing><Block /></Writing>).specify()).toEqual(['Writing: block is said of a composition, and this is not one']);
+        expect(built<$Writing>(<Writing><Inline /></Writing>).specify()).toEqual(['Writing: inline is said of a composition, and this is not one']);
     });
 });
 

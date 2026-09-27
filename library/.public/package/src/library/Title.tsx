@@ -18,6 +18,7 @@ export class $Title extends $Sentence {
 
     protected override $Define(): void {
         super.$Define();
+        this.classes.add(this, 'pd-title');
         const link = binder.reference(html.copy(this.text));
         if (link === undefined) return;
         const Reference = $(reference);

@@ -20,6 +20,7 @@ export class $Heading extends $Sentence {
 
     protected override $Define(): void {
         super.$Define();
+        this.classes.add(this, 'pd-heading');
         const link = binder.reference(html.copy(this.text));
         const name = link?.name ?? html.copy(this.text).trim();
         if (name === '') return;

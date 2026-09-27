@@ -29,14 +29,14 @@ const drawn = (title: string, address: string): string => {
 describe('the test library\'s running head', () => {
     it('standing in a book, draws the book\'s title and a link to the book\'s table', () => {
         expect(drawn('A Paper', '/a-paper/')).toMatch(
-            /<span>A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/table-of-contents\/"[^>]*><span[^>]*>Table of Contents/u);
+            /<span class="pd-word">A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/table-of-contents\/"[^>]*><span[^>]*>Table of Contents/u);
     });
 
     it('the same chapter in a renamed book follows the new name, with nothing in the chapter changed', () => {
         const renamed = drawn('A Short Paper', '/a-short-paper/');
         expect(renamed).toMatch(
-            /<span>A Short Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-short-paper\/table-of-contents\/"/u);
-        expect(renamed).not.toMatch(/<span>A Paper</u);
+            /<span class="pd-word">A Short Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-short-paper\/table-of-contents\/"/u);
+        expect(renamed).not.toMatch(/<span class="pd-word">A Paper</u);
     });
 
     it('standing in no book, answers none and draws no line', () => {

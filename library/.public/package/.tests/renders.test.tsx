@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
-import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word, $Next, Paginated } from '@dna-platform/public';
+import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word, $Next, Paginated, Inline } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
@@ -135,6 +135,34 @@ describe('a change costs one paint, and the draws around it are counted', () => 
         await act(async () => { loud.$is = Plain; });
         await settle();
         expect(counted.drawn).toBe(2);
+    });
+});
+
+describe('a paragraph made inline through $is is redrawn as a span at one paint', () => {
+    beforeEach(counting);
+
+    it('draws no more than a mount, and its own element changes', async () => {
+        class $Prose extends $Paragraph {
+            override view(): ReactNode {
+                counted.drawn++;
+                return super.view();
+            }
+        }
+        const Prose = $($Prose);
+        const prose = $(<Prose>a paragraph <Quoted /></Prose>) as unknown as $Paragraph;
+        const Drawn = $(prose);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        await settle();
+        expect(container!.querySelector('.pd-paragraph')!.tagName).toBe('DIV');
+        const mounted = { ...counted };
+
+        counting();
+        await act(async () => { prose.$is = Inline; });
+        await settle();
+        expect(container!.querySelector('.pd-paragraph')!.tagName).toBe('SPAN');
+        expect(counted.drawn).toBeLessThanOrEqual(mounted.drawn);
+        expect(counted.painted).toBe(1);
     });
 });
 
@@ -416,13 +444,13 @@ describe('a paginated book turning its page costs the cascade and two marks, and
         await act(async () => { render(<Drawn />); });
         await settle();
         expect(counted.painted).toBe(1);
-        expect([...book.parts[0].classes].sort()).toEqual(['pa-open', 'pa-page']);
+        expect([...book.parts[0].classes].sort()).toEqual(['pa-open', 'pa-page', 'pd-chapter']);
 
         counting();
         await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
         await settle();
-        expect([...book.parts[0].classes]).toEqual(['pa-page']);
-        expect([...book.parts[1].classes].sort()).toEqual(['pa-open', 'pa-page']);
+        expect([...book.parts[0].classes].sort()).toEqual(['pa-page', 'pd-chapter']);
+        expect([...book.parts[1].classes].sort()).toEqual(['pa-open', 'pa-page', 'pd-chapter']);
         expect(counted).toEqual({ drawn: 10, painted: 1, committed: 1 });
 
         counting();

@@ -1,7 +1,7 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification } from './Composition';
-import { Level as level, Permissive as permissive, Closed as closed } from './Composition';
+import { Level as level, Permissive as permissive, Closed as closed, Block as block } from './Composition';
 import { $Reference } from './Reference';
 import { $Heading } from './Heading';
 
@@ -13,13 +13,16 @@ export class $Section extends $Composition {
     }
 
     protected override $Define(): void {
+        this.classes.add(this, 'pd-section');
         const Level = $(level);
         const Permissive = $(permissive);
         const Closed = $(closed);
+        const Block = $(block);
         this.annotations.add(this,
             <Level>5</Level>,
             <Permissive />,
-            <Closed />
+            <Closed />,
+            <Block />
         );
     }
 }

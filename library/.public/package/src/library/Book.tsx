@@ -1,6 +1,6 @@
 import { $, $check, $Chemical, next } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Composition, CompositionSpecification, Level as level, Strict as strict, Closed as closed } from '@/writing/Composition';
+import { $Composition, CompositionSpecification, Level as level, Strict as strict, Closed as closed, Block as block } from '@/writing/Composition';
 import { $Reference } from '@/writing/Reference';
 import { $Chapter } from './Chapter';
 import { $Title } from './Title';
@@ -45,13 +45,16 @@ export class $Book extends $Composition {
     }
 
     protected override $Define(): void {
+        this.classes.add(this, 'pd-book');
         const Level = $(level);
         const Strict = $(strict);
         const Closed = $(closed);
+        const Block = $(block);
         this.annotations.add(this,
             <Level>7</Level>,
             <Strict />,
-            <Closed />
+            <Closed />,
+            <Block />
         );
     }
 
