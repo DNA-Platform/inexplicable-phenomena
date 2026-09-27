@@ -85,7 +85,7 @@ describe('a bind of the test library', () => {
 
     it('drew a cover inside its header, its title a link to its book, and a table inside its nav', () => {
         const paper = page('A Paper');
-        expect(paper).toMatch(/<header class="pd-container"><div[^>]*><a href="\/a-paper\/"[^>]*><span[^>]*>A Paper/u);
+        expect(paper).toMatch(/<header class="pd-container"><div[^>]*><a href="\/a-paper\/"[^>]*><div[^>]*>A Paper/u);
         expect(paper).toMatch(/<nav class="pd-container">/u);
     });
 
@@ -98,7 +98,7 @@ describe('a bind of the test library', () => {
     // to the book it is a synopsis of! Most titles are self-links."
     it('sent a reference to a chapter whose title is parenthetical to its page, where its title wears its id unseen and links to its book', () => {
         expect(page('The Log')).toMatch(/<a href="\/the-library\/synopsis\/"[^>]*><span[^>]*>Synopsis/u);
-        expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><span id="synopsis" class="[^"]*pa-parenthetical/u);
+        expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><div id="synopsis" class="[^"]*pa-parenthetical/u);
     });
 
     // R4 — Doug: "just have the book expose its cover, table, synopsis... and other things use it from there."
@@ -108,7 +108,8 @@ describe('a bind of the test library', () => {
 
     it('marked the autobiography and the biography on their covers', () => {
         expect(page('The Log')).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
-        expect(page('A Persona')).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
+        // THE PERSONA'S COVER STANDS INSIDE ITS FRAME, the layer its book adds to every chapter at its bind.
+        expect(page('A Persona')).toMatch(/<header class="pd-container"><div class="[^"]*pd-container[^"]*"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
     });
 
     // Doug, 2026-09-26: "the annotations should frequently mark their presence with a CSS class."
@@ -157,8 +158,8 @@ describe('a bind of the test library', () => {
         const library = page('The Library');
         expect(library).toContain('authorship in this library begins here and nowhere else');
         expect(library.match(/ id="synopsis"/gu)).toHaveLength(1);
-        expect(library).toMatch(/<a href="\/the-log\/"[^>]*><span id="of-the-log"/u);
-        expect(library).not.toMatch(/<a href="\/the-log\/"[^>]*><span id="synopsis"/u);
+        expect(library).toMatch(/<a href="\/the-log\/"[^>]*><div id="of-the-log"/u);
+        expect(library).not.toMatch(/<a href="\/the-log\/"[^>]*><div id="synopsis"/u);
     });
 
     // A HEADING WRITTEN AS A MENTION IS A FRAGMENT OF ITS CHAPTER'S ROUTE — Doug, 2026-09-26: "Long distance
@@ -220,6 +221,55 @@ describe('a bind of the test library', () => {
         for (const route of table.routes)
             if (route.name !== 'Some Projects')
                 expect(page(route.name), route.name).not.toMatch(/class="[^"]*\b(?:pa-paginated|pa-page|pa-open)\b/u);
+    });
+
+    // SPRINT 88 — every level marks itself and draws its element; the theme's sheet is on every page; the persona's
+    // poem is Lines; the paper's argument has a space, a break and the three basics; the log is dark; frames stand in
+    // two places.
+    it('drew every level as its element wearing its mark, and the default theme\'s sheet on every page', () => {
+        for (const route of table.routes) {
+            const html = page(route.name);
+            expect(html, route.name).toMatch(/<div class="[^"]*\bpd-book\b/u);
+            expect(html, route.name).toMatch(/<div class="[^"]*\bpd-chapter\b/u);
+            expect(html, route.name).toMatch(/<div class="[^"]*\bpd-paragraph\b/u);
+            expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
+            expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
+            expect(html, route.name).toMatch(/font-family:serif/u);
+            expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:1rem;\}/u);
+        }
+    });
+
+    it('drew the persona\'s poem as three lines, each a div wearing the sentence\'s mark and its own', () => {
+        const persona = chapterPage('A Persona', 'Who Writes Here');
+        expect(persona.match(/<div class="[^"]*\bpd-sentence\b[^"]*\bpd-line\b[^"]*">/gu)).toHaveLength(3);
+        expect(persona).toContain('A voice the log lent out,');
+    });
+
+    it('drew in the argument a space of three, a break, and the three basics as their elements', () => {
+        const argument = chapterPage('A Paper', 'The Argument');
+        expect(argument).toMatch(/<span class="(?=[^"]*\bpd-space\b)(?=[^"]*\bpa-blank\b)[^"]*">   </u);
+        // NOTHING WRITTEN IN IT: what follows the break's open tag is its annotations' own writing or its close.
+        expect(argument).toMatch(/<div class="(?=[^"]*\bpd-break\b)(?=[^"]*\bpa-blank\b)[^"]*">(?:<span class="pd-annotation">|<\/div>)/u);
+        expect(argument).toMatch(/<em class="pd-container"><span class="[^"]*\bpa-emphasis\b[^"]*">names/u);
+        expect(argument).toMatch(/<b class="pd-container"><span class="[^"]*\bpa-bold\b[^"]*">never/u);
+        expect(argument).toMatch(/<u class="pd-container"><span class="[^"]*\bpa-underline\b[^"]*">place/u);
+        expect(argument).toMatch(/\.pa-blank\{visibility:hidden;\}/u);
+    });
+
+    it('drew the log dark by its own theme in front of the library\'s, and no other book dark', () => {
+        expect(page('The Log')).toMatch(/color:ivory;background:#1f1f24/u);
+        for (const route of table.routes)
+            if (route.name !== 'The Log')
+                expect(page(route.name), route.name).not.toContain('#1f1f24');
+    });
+
+    it('drew the frame on Some Projects\' book and on each of the persona\'s chapters, its border in the theme\'s ink', () => {
+        const projects = page('Some Projects');
+        expect(projects).toMatch(/border:1px solid black;padding:1rem;margin-block:1rem/u);
+        expect(projects).toMatch(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-book\b/u);
+        const persona = page('A Persona');
+        expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
+        expect(page('The Log')).not.toMatch(/border:1px solid/u);
     });
 });
 
@@ -356,6 +406,34 @@ describe('the bound test library, seen in a real browser', () => {
         expect(await evidence.$eval('a[href="/a-paper/the-argument/"]:has(> .pa-reference:not(.pa-self-reference))', link => getComputedStyle(link).textDecorationLine)).toBe('underline');
         await evidence.close();
     });
+
+    // SPRINT 88, SEEN — Doug: "please use this primarily as a sprint to make the test library minimally readable."
+    it('shows the poem one line under another, the space three wide, the break starting a new line, and the basics styled', async () => {
+        const persona = await browser!.newPage();
+        await persona.goto(new URL('/a-persona/who-writes-here/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const tops = await persona.$$eval('.pd-line', lines => lines.map(line => line.getBoundingClientRect().top));
+        expect(tops).toHaveLength(3);
+        expect(tops[1]).toBeGreaterThan(tops[0]);
+        expect(tops[2]).toBeGreaterThan(tops[1]);
+        await persona.close();
+        const argument = await browser!.newPage();
+        await argument.goto(new URL('/a-paper/the-argument/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await argument.$eval('.pd-space', space => space.getBoundingClientRect().width)).toBeGreaterThan(6);
+        expect(await argument.$eval('.pd-break', line => getComputedStyle(line).display)).toBe('block');
+        expect(await argument.$eval('.pa-emphasis', word => getComputedStyle(word).fontStyle)).toBe('italic');
+        expect(await argument.$eval('.pa-bold', word => getComputedStyle(word).fontWeight)).toBe('700');
+        expect(await argument.$eval('.pa-underline', word => getComputedStyle(word).textDecorationLine)).toBe('underline');
+        await argument.close();
+    });
+
+    it('shows the log on dark paper in ivory ink, and the paper on white', async () => {
+        const log = await browser!.newPage();
+        await log.goto(new URL('/the-log/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await log.$eval('.pd-book', book => getComputedStyle(book.parentElement!).backgroundColor)).toBe('rgb(31, 31, 36)');
+        expect(await log.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(255, 255, 240)');
+        await log.close();
+        expect(await paper.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(0, 0, 0)');
+    });
 });
 
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
@@ -387,7 +465,7 @@ describe('a bind of the test library with a synopsis said of a section', () => {
         broken = pulled();
         const chapter = join(broken.library, 'paper', '1-the-argument.tsx');
         writeFileSync(chapter, readFileSync(chapter, 'utf8')
-            .replace("import { Chapter, Heading, Means, Paragraph, Section, Title }", "import { Chapter, Heading, Means, Paragraph, Section, Synopsis, Title }")
+            .replace('import { ', 'import { Synopsis, ')
             .replace('            <Heading>[[[ What is claimed ]]]</Heading>', '            <Synopsis />\n            <Heading>[[[ What is claimed ]]]</Heading>'));
     });
     afterAll(() => { broken.remove(); });

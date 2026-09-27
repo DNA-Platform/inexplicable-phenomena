@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import { $ } from '@dna-platform/chemistry';
-import { $Book, $Theme, Paragraph as paragraph, Reference as reference, Word as word } from '@dna-platform/public';
+import { $, selection } from '@dna-platform/chemistry';
+import { $Book, $Format, $Theme, Paragraph as paragraph, Reference as reference, Word as word } from '@dna-platform/public';
 
 // THE TEST LIBRARY'S OWN BOOK. Every book in this library extends this one, the way every book in a
 // real library extends the library's — so a change to what a book is here reaches all five. It is
@@ -39,3 +39,19 @@ export class $LibraryTheme extends $Theme {
 }
 
 export const LibraryTheme = $($LibraryTheme);
+
+// A FORMAT THAT WORKS IN DIFFERENT PLACES: a frame drawn from the theme's own values, stood by Some
+// Projects on itself in its $Define and by the persona's book on each of its chapters at its bind — and
+// in front of the theme where it stands beside one, since the front-most annotation draws innermost and a
+// format reads the theme only from inside its provider. Doug, 2026-09-27: "Consider adding test formats
+// for books and chapters, as annotations that work in different places, and maybe have them set in
+// Define, and maybe all of them can work with the theme."
+export class $Framed extends $Format {
+    style = selection.div`
+        border: 1px solid ${(props: { theme: { ink?: string } }) => props.theme.ink ?? 'currentColor'};
+        padding: ${(props: { theme: { space?: string } }) => props.theme.space ?? '1rem'};
+        margin-block: ${(props: { theme: { space?: string } }) => props.theme.space ?? '1rem'};
+    `;
+}
+
+export const Framed = $($Framed);
