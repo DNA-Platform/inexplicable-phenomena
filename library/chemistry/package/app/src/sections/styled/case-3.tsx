@@ -1,10 +1,10 @@
 import React from 'react';
-import { $, $Chemical, styledComponents, selector } from '@/index';
+import { $, $Chemical, selection, selector } from '@/index';
 import { ActionButton } from '../V-1/case.styled';
 
 // The base holds its own width. Live, but nobody outside can reach it.
 class $Bar extends $Chemical {
-    [selector] = styledComponents.div;
+    [selector] = selection.div;
     margin = '0 0 10px';
     height = '24px';
     borderRadius = '4px';

@@ -13,7 +13,7 @@ afterEach(cleanup);
 // Nothing crosses the wire but the markup and the sheet.
 
 class $Card extends $Chemical {
-    [selector] = styledComponents.article;
+    [selector] = selection.article;
     get background() { return this[theme]?.paper ?? 'rgb(1, 1, 1)'; }
     view(): ReactNode { return <article>{this[children]}</article>; }
 }
@@ -108,7 +108,7 @@ describe('prerender — drawn to a string, hydrated without a word, handlers att
 });
 
 // ─── what a prerender needs of the compile and of persistence ────────────────
-import { $Atom, styledComponents } from '@/index';
+import { $Atom, selection } from '@/index';
 import { hydration } from '@/implementation/hydration';
 import { render } from '@testing-library/react';
 
@@ -125,7 +125,7 @@ describe('prerender — the compile and persistence agree on both sides', () => 
 
     it("a field named by a CSS property the environment's style object lacks still compiles", () => {
         class $Balanced extends $Chemical {
-            [selector] = styledComponents.p;
+            [selector] = selection.p;
             textWrap = 'balance';
             inset = '0';
             view(): ReactNode { return <p>balanced</p>; }

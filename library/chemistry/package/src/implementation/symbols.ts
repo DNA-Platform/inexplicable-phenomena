@@ -42,7 +42,7 @@ export const resolved = Symbol("$Formula.resolved");
 
 // THE BASIC WORDS A CHEMICAL ANSWERS TO, carried as symbols so they cost no word in
 // the vocabulary of whatever is built on it: `this[next]('mount')`, `[selector] =
-// styledComponents.main`. `view`, `frame` and `parent` stay public.
+// selection.main`. `view`, `frame` and `parent` stay public.
 export const formula = Symbol("$Chemical.formula");
 export const resolve = Symbol("$Chemical.resolve");
 export const persist = Symbol("$Chemical.persist");

@@ -18,8 +18,9 @@ import { names as roster } from '../implementation/css';
 // The one resolution of styled-components' dual shape: v6's default import is
 // the callable under ESM and sits at .default under CJS. Exported so nothing
 // downstream writes this again.
-// `styledComponents` is a proxy name: `style` and `styled` are chemistry's symbols.
-export const styledComponents = ((styledImport as any).div ? styledImport : (styledImport as any).default) as typeof styledImport;
+// The callable is `selection`, Doug's name: `style` and `styled` are chemistry's symbols, and a class
+// writes `[selector] = selection.section`.
+export const selection = ((styledImport as any).div ? styledImport : (styledImport as any).default) as typeof styledImport;
 
 // What a class renders through, the element that component ends at, and every
 // live property the whole chain reads — one spread at the element feeds every
@@ -392,7 +393,7 @@ function build(cls: any, per: Map<any, Map<string, string>>): $Styled | null {
     };
     emit(tree);
 
-    const from = (typeof base === 'function' ? base : styledComponents(base as any)).withConfig({ componentId: identity(parts, live) });
+    const from = (typeof base === 'function' ? base : selection(base as any)).withConfig({ componentId: identity(parts, live) });
     const text = Object.assign([...parts], { raw: [...parts] });
     return seat(from(text as any, ...values), live);
 }

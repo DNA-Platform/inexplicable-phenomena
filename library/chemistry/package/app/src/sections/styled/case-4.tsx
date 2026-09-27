@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical, children, styledComponents, selector } from '@/index';
+import { $, $Chemical, children, selection, selector } from '@/index';
 import { ActionButton } from '../V-1/case.styled';
 
 // A theme is an ordinary chemical. Nothing about it is special.
@@ -32,7 +32,7 @@ class $Dressed extends $Chemical {
 }
 
 class $Page extends $Dressed {
-    [selector] = styledComponents.article;
+    [selector] = selection.article;
     padding = '18px 20px';
     borderRadius = '8px';
     fontFamily = 'Georgia, serif';
@@ -48,7 +48,7 @@ class $Page extends $Dressed {
 const Page = $($Page);
 
 class $Headline extends $Dressed {
-    [selector] = styledComponents.h2;
+    [selector] = selection.h2;
     margin = '0 0 0.3em';
     fontSize = '1.4em';
     fontWeight = 'normal';
@@ -64,7 +64,7 @@ class $Headline extends $Dressed {
 const Headline = $($Headline);
 
 class $Para extends $Dressed {
-    [selector] = styledComponents.p;
+    [selector] = selection.p;
     margin = '0.6em 0';
     lineHeight = '1.6';
     get color() { return this.$theme.ink; }
@@ -77,7 +77,7 @@ class $Para extends $Dressed {
 const Para = $($Para);
 
 class $Aside extends $Dressed {
-    [selector] = styledComponents.aside;
+    [selector] = selection.aside;
     margin = '0.8em 0 0';
     padding = '10px 12px';
     borderRadius = '4px';

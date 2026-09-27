@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, cleanup, act } from '@testing-library/react';
 import React, { ReactNode } from 'react';
-import { $, $Block, $Chemical, $Particle, $Theme, children, select, selector, styledComponents, style, theme } from '@/index';
+import { $, $Block, $Chemical, $Particle, $Theme, children, select, selector, selection, style, theme } from '@/index';
 import { ThemeProvider } from 'styled-components';
 
 afterEach(cleanup);
@@ -10,7 +10,7 @@ afterEach(cleanup);
 // are the stylesheet. The three spellings are the reactive law's own: _ is
 // inert and bakes, a bare name is reactive, a $ name is a prop.
 class $Body extends $Chemical {
-    [selector] = styledComponents.main;
+    [selector] = selection.main;
     maxWidth = '60em';
     color = 'rgb(32, 17, 34)';
     override view(): ReactNode { return <main>{this[children]}</main>; }
@@ -18,20 +18,20 @@ class $Body extends $Chemical {
 const Body = $($Body);
 
 class $Dress extends $Chemical {
-    [selector] = styledComponents.figure;
+    [selector] = selection.figure;
     padding = '7px';
 }
 const Dress = $($Dress);
 
 class $Linked extends $Chemical {
-    [selector] = styledComponents.a;
+    [selector] = selection.a;
     color = 'rgb(51, 102, 204)';
     $href: string | undefined = undefined;
 }
 const Linked = $($Linked);
 
 class $Nested extends $Chemical {
-    [selector] = styledComponents.div;
+    [selector] = selection.div;
     background = 'rgb(2, 4, 6)';
     @select('> span') first_background = 'rgb(8, 9, 10)';
     first_padding = '3px';
@@ -39,7 +39,7 @@ class $Nested extends $Chemical {
 const Nested = $($Nested);
 
 class $Written extends $Chemical {
-    [selector] = styledComponents.div;
+    [selector] = selection.div;
     background = 'rgb(3, 3, 3)';
     ['> span: color'] = 'rgb(11, 22, 33)';
     ['_> span: padding'] = '5px';
@@ -58,20 +58,20 @@ class $Wider extends $Body {
 const Wider = $($Wider);
 
 class $Live extends $Chemical {
-    [selector] = styledComponents.section;
+    [selector] = selection.section;
     background = 'rgb(1, 2, 3)';
     override view(): ReactNode { return <section />; }
 }
 
 class $Prop extends $Chemical {
-    [selector] = styledComponents.article;
+    [selector] = selection.article;
     $background = 'rgb(4, 5, 6)';
     override view(): ReactNode { return <article />; }
 }
 const Prop = $($Prop);
 
 class $Ordered extends $Chemical {
-    [selector] = styledComponents.aside;
+    [selector] = selection.aside;
     _background = 'rgb(9, 9, 9)';
     background = 'rgb(8, 8, 8)';
     $background = 'rgb(7, 7, 7)';
@@ -80,7 +80,7 @@ class $Ordered extends $Chemical {
 const Ordered = $($Ordered);
 
 class $Baked extends $Chemical {
-    [selector] = styledComponents.div;
+    [selector] = selection.div;
     _background = 'rgb(10, 10, 10)';
     override view(): ReactNode { return <div />; }
 }
@@ -90,7 +90,7 @@ class $Promoted extends $Baked {
 }
 
 class $Spot extends $Particle {
-    [selector] = styledComponents.span;
+    [selector] = selection.span;
     color = 'rgb(3, 3, 3)';
     override view(): ReactNode { return <span />; }
 }
@@ -195,7 +195,7 @@ class $Palette extends $Chemical {
 }
 
 class $Themed extends $Chemical {
-    [selector] = styledComponents.section;
+    [selector] = selection.section;
     palette!: $Palette;
     get background() { return this.palette.paper; }
 
@@ -209,7 +209,7 @@ class $Themed extends $Chemical {
 const Themed = $($Themed);
 
 class $Bonded extends $Chemical {
-    [selector] = styledComponents.section;
+    [selector] = selection.section;
     background = 'rgb(0, 0, 0)';
 
     $Bonded(block: $Block) {
@@ -277,7 +277,7 @@ describe('the three spellings differ where the reactive law says they do', () =>
 // level. A prefix names one selector and says it once; every member of that
 // prefix is under it. No prefix is the top of the class.
 class $Levels extends $Chemical {
-    [selector] = styledComponents.section;
+    [selector] = selection.section;
     padding = '1px';
     @select(`@media (max-width: 40em) {
              .inner {`) narrow_display = 'none';
@@ -376,7 +376,7 @@ describe('a selector opens the levels it needs, and a prefix names one selector 
     it('A PREFIX SAYS ITS SELECTOR ONCE — saying it twice in one class is refused', () => {
         expect(() => {
             class $Again extends $Chemical {
-                [selector] = styledComponents.div;
+                [selector] = selection.div;
                 @select('a') one_color = 'red';
                 @select('a') one_margin = '1px';
             }
@@ -387,7 +387,7 @@ describe('a selector opens the levels it needs, and a prefix names one selector 
     it('and one prefix naming two selectors in one class is refused', () => {
         expect(() => {
             class $Twice extends $Chemical {
-                [selector] = styledComponents.div;
+                [selector] = selection.div;
                 @select('a') two_color = 'red';
                 @select('b') two_margin = '1px';
             }
@@ -398,7 +398,7 @@ describe('a selector opens the levels it needs, and a prefix names one selector 
     it('and a selector that says nothing at all is refused', () => {
         expect(() => {
             class $Empty extends $Chemical {
-                [selector] = styledComponents.div;
+                [selector] = selection.div;
                 @select('   ') three_color = 'red';
             }
             return $Empty;
@@ -407,7 +407,7 @@ describe('a selector opens the levels it needs, and a prefix names one selector 
 
     it('AND THE AUTHOR NEVER CLOSES A LEVEL — the emit owns the closing', () => {
         class $Closed extends $Chemical {
-            [selector] = styledComponents.div;
+            [selector] = selection.div;
             @select('@media (min-width: 1em) { a { } }') four_color = 'rgb(1, 1, 1)';
             override view(): ReactNode { return <div />; }
         }
@@ -418,7 +418,7 @@ describe('a selector opens the levels it needs, and a prefix names one selector 
 // AN ANIMATION IS DECLARED THE WAY EVERYTHING ELSE IS: its stops are levels a
 // selector opens, its declarations are members, and the name is the author's.
 class $Fades extends $Chemical {
-    [selector] = styledComponents.section;
+    [selector] = selection.section;
     @select('@keyframes landed { from {') from_background = 'rgb(1, 1, 1)';
     @select('@keyframes landed { to {') to_background = 'rgb(2, 2, 2)';
     _animation = 'landed 2s ease-out';
@@ -432,7 +432,7 @@ class $Slower extends $Fades {
 const Slower = $($Slower);
 
 class $Twice extends $Chemical {
-    [selector] = styledComponents.section;
+    [selector] = selection.section;
     @select('@media (max-width: 41em) { .a {') a_display = 'none';
     @select('@media (max-width: 41em) { .b {') b_display = 'none';
     override view(): ReactNode { return <section>twice</section>; }
@@ -472,7 +472,7 @@ describe('an animation is a level a styled chemical opens, and it stands whole',
 // query's place in the cascade is a fact about its bounds, not about where it
 // was written or which class wrote it.
 class $Breaks extends $Chemical {
-    [selector] = styledComponents.main;
+    [selector] = selection.main;
     @select('@media (max-width: 640px)') phone_padding = '1px';
     @select('.inner') inner_padding = '3px';
     @select('@media (max-width: 1119px)') tablet_padding = '2px';
@@ -528,13 +528,13 @@ class $Hue extends $Theme {
     get ruled() { return `1px solid ${this.ink}`; }
 }
 class $Sheet extends $Chemical {
-    [selector] = styledComponents.div;
+    [selector] = selection.div;
     get background() { return this[theme]?.paper ?? 'rgb(0, 0, 0)'; }
     get borderTop() { return this[theme]?.ruled ?? 'none'; }
     view(): ReactNode { return <div>sheet</div>; }
 }
 const Sheet = $($Sheet);
-const Raw = styledComponents.span`background: ${(p: any) => p.theme?.paper ?? 'rgb(0, 0, 0)'};`;
+const Raw = selection.span`background: ${(p: any) => p.theme?.paper ?? 'rgb(0, 0, 0)'};`;
 
 function sheetIn(container: HTMLElement): CSSStyleDeclaration {
     return getComputedStyle(container.querySelector('div') as HTMLElement);

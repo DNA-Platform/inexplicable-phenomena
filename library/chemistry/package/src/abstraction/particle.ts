@@ -74,7 +74,7 @@ export class $Particle {
     // in its constructor; block is the default. Read from the template, frozen.
     [inline] = false;
 
-    // What this class is styled as — `[selector] = styledComponents.main` says it renders
+    // What this class is styled as — `[selector] = selection.main` says it renders
     // through a <main> carrying the CSS its fields declare. A finished styled
     // component stands as it is and nothing compiles. [styled] is the explicit
     // word: undefined defers to the selector, true and false decide outright.

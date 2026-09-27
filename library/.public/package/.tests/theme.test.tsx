@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, styledComponents as styled } from '@dna-platform/chemistry';
+import { $, selection as styled } from '@dna-platform/chemistry';
 import { $Writing, Writing, Paragraph, Parenthetical, $Format } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;

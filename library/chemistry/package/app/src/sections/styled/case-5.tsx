@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical, children, select, styledComponents, selector } from '@/index';
+import { $, $Chemical, children, select, selection, selector } from '@/index';
 import { ActionButton } from '../V-1/case.styled';
 
 // An animation is declared the way everything else is: its stops are levels a
@@ -7,7 +7,7 @@ import { ActionButton } from '../V-1/case.styled';
 // Two selectors opening `@keyframes landed {` open it once, so the stops meet
 // in one block.
 class $Landed extends $Chemical {
-    [selector] = styledComponents.section;
+    [selector] = selection.section;
     margin = '0 0 10px';
     padding = '12px 16px';
     borderRadius = '6px';

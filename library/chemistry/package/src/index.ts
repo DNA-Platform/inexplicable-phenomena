@@ -34,7 +34,7 @@ export { formula, resolve, persist, inline, selector, styled, next } from './imp
 
 // Styling — the resolved styled-components callable, so nothing downstream
 // writes the dual-shape import again.
-export { styledComponents, select } from './abstraction/styled';
+export { selection, select } from './abstraction/styled';
 export { $Theme } from './abstraction/theme';
 export { hydration } from './implementation/hydration';
 
