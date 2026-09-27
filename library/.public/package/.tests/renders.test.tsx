@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { useEffect } from 'react';
-import { $, selection as styled } from '@dna-platform/chemistry';
+import { $, selection } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, $Format, $Mention, Mention, $Means, $Reference, Reference } from '@dna-platform/public';
 import { $Book, $Chapter, Chapter, Cover, $Paragraph, $Section, Heading, Table, Title, Word, $Next, Paginated } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 const counted = { drawn: 0, painted: 0, committed: 0 };
 
-const Quotation = styled.blockquote`
+const Quotation = selection.blockquote`
     border-left: 3px solid silver;
 `;
 const Counted = (props: { children?: ReactNode; className?: string }) => {

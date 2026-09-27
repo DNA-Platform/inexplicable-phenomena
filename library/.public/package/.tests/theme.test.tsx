@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, selection as styled } from '@dna-platform/chemistry';
+import { $, selection } from '@dna-platform/chemistry';
 import { $Writing, Writing, Paragraph, Parenthetical, $Format } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -14,7 +14,7 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
 };
 
 class $Quoted extends $Format {
-    style = styled.blockquote`
+    style = selection.blockquote`
         border-left: 3px solid ${(props: any) => props.theme.rule ?? 'silver'};
         color: ${(props: any) => props.theme.ink ?? 'black'};
     `;
@@ -34,7 +34,7 @@ class $Inked extends $Format {
 class $Housed extends $Format {
     theme = true;
     rule = 'teal';
-    style = styled.section`
+    style = selection.section`
         padding: 1rem;
     `;
 }

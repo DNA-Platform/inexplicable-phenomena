@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, selection as styled } from '@dna-platform/chemistry';
+import { $, selection } from '@dna-platform/chemistry';
 import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, $Reference } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, $Author, Author, $Subject, Subject, $About, About } from '@dna-platform/public';
 
@@ -158,7 +158,7 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
 
     it('a library\'s own cover draws its own element and is still a cover', async () => {
         class $Masthead extends $Cover {
-            style = styled.header`
+            style = selection.header`
                 border-bottom: 1px solid silver;
             `;
         }

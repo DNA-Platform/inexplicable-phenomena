@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, $check, selection as styled } from '@dna-platform/chemistry';
+import { $, $check, selection } from '@dna-platform/chemistry';
 import { $Writing, Writing, Word, Sentence, $Annotation, Parenthetical, binder, html } from '@dna-platform/public';
 import { $Sentence, $Mention, Mention, $Referent, Referent, $Reference, Reference, $SelfReference, Self, $Means, Means } from '@dna-platform/public';
 import { $Format } from '@dna-platform/public';
@@ -15,7 +15,7 @@ class $Unmentioned extends $Annotation {
 const Unmentioned = $($Unmentioned);
 
 class $Quoted extends $Format {
-    style = styled.blockquote`border-left: 3px solid silver;`;
+    style = selection.blockquote`border-left: 3px solid silver;`;
 }
 const Quoted = $($Quoted);
 

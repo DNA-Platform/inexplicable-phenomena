@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, selection as styled, $Chemical } from '@dna-platform/chemistry';
+import { $, selection, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, Writing, Paragraph, $Annotation, $Format, Format } from '@dna-platform/public';
 import type { ElementType } from 'react';
 
@@ -11,20 +11,20 @@ const styleOf = (writing: $Writing, given: new () => $Format): unknown =>
 const layersOf = (writing: $Writing): unknown[] => [...writing.containers];
 
 class $Quoted extends $Format {
-    style = styled.blockquote`
+    style = selection.blockquote`
         border-left: 3px solid silver;
     `;
 }
 
 class $Sided extends $Format {
-    style = styled.aside`
+    style = selection.aside`
         font-style: italic;
     `;
 }
 
 class $Housed extends $Format {
     theme = true;
-    style = styled.section`
+    style = selection.section`
         padding: 1rem;
     `;
 }
@@ -32,7 +32,7 @@ class $Housed extends $Format {
 class $Ruled extends $Format {
     $rule?: string;
 
-    style: ElementType = styled.blockquote<{ rule?: string }>`
+    style: ElementType = selection.blockquote<{ rule?: string }>`
         border-left: 3px solid ${props => props.rule ?? 'silver'};
     `;
 
@@ -44,7 +44,7 @@ class $Ruled extends $Format {
 }
 
 class $Replacing extends $Format {
-    style = styled.section`
+    style = selection.section`
         padding: 2rem;
     `;
 
