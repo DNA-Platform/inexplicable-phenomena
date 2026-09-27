@@ -11,7 +11,7 @@ import { catalogue, type Catalogue } from '../catalogue/catalogue';
 //
 // Doug, 2026-09-19: "we need it to be a part of .binder, well groomed, and use for test purposes at
 // all levels." The books beside this file ARE the library — five of them, one filed under its own
-// subject, one its own author, a persona the log vouches for, and a paper with every kind of
+// subject, one its own author, a persona Libby vouches for, and a paper with every kind of
 // reference in it. A test that only needs to READ a library reads them where they stand, through
 // `walk(fixture, configured())`. A test that needs to BIND one needs the geometry a real library
 // has — books, a face, and the binder inside the face — and that is what `pulled` puts together: a

@@ -47,7 +47,10 @@ export class $Theme extends $Format {
         .pd-space { white-space: pre; }
         .pd-break { clear: both; }
         .pa-parenthetical { opacity: 0.6; }
+        .pd-previous::before { content: '\\2039\\00a0'; }
+        .pd-next::after { content: '\\00a0\\203a'; }
         .pa-reference { color: ${value('link')}; }
+        .pd-container:has(> .pa-reference) { text-decoration-color: ${value('link')}; text-underline-offset: 0.15em; }
         .pa-self-reference, .pd-title.pa-reference { color: inherit; }
         .pa-referent { scroll-margin-block-start: ${value('space')}; }
         .pa-content { color: ${value('link')}; }
@@ -55,7 +58,7 @@ export class $Theme extends $Format {
         .pa-table .pd-paragraph { margin-block: 0; }
         .pa-table > .pd-container { grid-column: 1 / -1; }
         .pa-row > .pd-container { display: contents; }
-        .pa-row:first-child .pa-col { font-weight: bold; }
+        .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${value('ink')}; }
         .pa-col { padding-block: calc(${value('space')} / 4); }
         .pa-cover { margin-block-end: calc(2 * ${value('space')}); }
         .pa-cover .pd-title { font-size: calc(2 * ${value('size')}); }

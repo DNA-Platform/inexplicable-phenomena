@@ -15,6 +15,11 @@ export class $Next extends $Word {
     }
     get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pd-next');
+    }
+
     protected override $Bound(): void {
         const chapter = this.chapter;
         const next = chapter?.next;

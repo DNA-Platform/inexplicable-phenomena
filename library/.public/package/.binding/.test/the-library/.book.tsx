@@ -38,7 +38,6 @@ export default class $TheLibrary extends $Book {
 // 2026-09-27: "one puts their theme in the book"; and, 2026-09-25, "it is a format annotation that is also a
 // theme that is global to a book."
 export class $LibraryTheme extends $Theme {
-    paper = 'ivory';
     link = 'darkslateblue';
 }
 

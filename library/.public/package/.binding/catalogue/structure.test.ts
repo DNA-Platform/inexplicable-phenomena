@@ -14,7 +14,7 @@ const made = structure(found);
 
 describe('the test library, read', () => {
     it('is five books, and holds together', () => {
-        expect(found.books.map(book => book.folder).sort()).toEqual(['paper', 'persona', 'projects', 'the-library', 'the-log']);
+        expect(found.books.map(book => book.folder).sort()).toEqual(['libby', 'paper', 'persona', 'projects', 'the-library']);
         expect(wellformed(made)).toEqual([]);
     });
 
@@ -29,12 +29,12 @@ describe('the test library, read', () => {
     // may be filed under only when it is about something. Doug, 2026-09-25: "Any book can be About
     // something, but that allows other books to then be able to use it as a subject catalogue."
     it('reads a cover\'s second title form, naming its book, as what the book is about', () => {
-        expect(made.about).toEqual(new Set(['the-library', 'the-log', 'persona']));
+        expect(made.about).toEqual(new Set(['the-library', 'libby', 'persona']));
         expect(made.titledTwice).toEqual([]);
     });
 
     it('reads a cover that gives its words as naming the book behind them', () => {
-        expect(made.authorOf.get('the-library')).toBe('the-log');
+        expect(made.authorOf.get('the-library')).toBe('libby');
         expect(made.subjectOf.get('projects')).toBe('the-library');
     });
 
@@ -54,28 +54,28 @@ describe('the test library, read', () => {
     });
 
     it('colours as authors the one book by its own subject and the books it catalogues', () => {
-        expect(made.origin).toBe('the-log');
-        expect(made.authors).toEqual(new Set(['the-log', 'persona']));
+        expect(made.origin).toBe('libby');
+        expect(made.authors).toEqual(new Set(['libby', 'persona']));
     });
 
     it('reaches a relative reference from where it stands and refuses it from elsewhere', () => {
         expect(made.reaches(name('./The Evidence'), 'paper')).toBe('paper/2-the-evidence.tsx');
-        expect(made.reaches(name('./The Evidence'), 'the-log')).toBeUndefined();
-        expect(made.reaches(name('A Paper / The Evidence'), 'the-log')).toBe('paper/2-the-evidence.tsx');
+        expect(made.reaches(name('./The Evidence'), 'libby')).toBeUndefined();
+        expect(made.reaches(name('A Paper / The Evidence'), 'libby')).toBe('paper/2-the-evidence.tsx');
     });
 
     it('collects every reference written in the file, in a string as much as in prose', () => {
         const said = made.mentions.filter(mention => mention.by === 'paper/1-the-argument.tsx').map(mention => mention.said);
-        expect(said).toEqual(['./The Evidence', 'The Library', './The Evidence', 'Some Projects / The Work', 'The Log']);
+        expect(said).toEqual(['./The Evidence', 'The Library', './The Evidence', 'Some Projects / The Work', 'Libby']);
     });
 
     // A TABLE IS READ OFF THE NOTATION AND OFF NO ELEMENT — Doug, 2026-09-25: "You don't need the
     // compiler to check for anything. You can't! They might subclass them. That's why they are in
     // special files." A chapter is listed by a reference to it, a book by the answer the table gives.
     it('reads a table\'s listings: its chapters by reference, and a book it catalogues by its answer, with its synopsis', () => {
-        const listings = [...(made.lists.get('the-log')?.values() ?? [])];
+        const listings = [...(made.lists.get('libby')?.values() ?? [])];
         expect(listings.filter(l => l.kind === 'chapter').map(l => l.of).sort())
-            .toEqual(['the-log/.synopsis.tsx', 'the-log/.table.tsx', 'the-log/1-entries.tsx']);
+            .toEqual(['libby/.synopsis.tsx', 'libby/.table.tsx', 'libby/1-who-i-am.tsx']);
         expect(listings.filter(l => l.kind === 'book')).toMatchObject([{ of: 'persona', canonical: true, synopsis: true }]);
     });
 });

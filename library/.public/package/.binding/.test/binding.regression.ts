@@ -80,7 +80,7 @@ describe('a bind of the test library', () => {
         expect(paper).toContain('href="/the-library/"');
         expect(paper).toContain('href="/a-paper/the-evidence/"');
         expect(paper).toContain('href="/some-projects/the-work/"');
-        expect(paper).toMatch(/<a href="\/the-log\/"[^>]*><span[^>]*>the log/u);
+        expect(paper).toMatch(/<a href="\/libby\/"[^>]*><span[^>]*>Libby/u);
     });
 
     it('drew a cover inside its header, its title a link to its book, and a table inside its nav', () => {
@@ -90,14 +90,14 @@ describe('a bind of the test library', () => {
     });
 
     it('drew the byline its book class draws from what its cover says, in the words the cover gave', () => {
-        expect(page('The Library')).toMatch(/by <a href="\/the-log\/"[^>]*><span[^>]*>the log[\s\S]*filed under <a href="\/the-library\/"/u);
-        expect(page('Some Projects')).toMatch(/filed under <a href="\/the-library\/"[^>]*><span[^>]*>the library/u);
+        expect(page('The Library')).toMatch(/by <a href="\/libby\/"[^>]*><span[^>]*>Libby[\s\S]*filed under <a href="\/the-library\/"/u);
+        expect(page('Some Projects')).toMatch(/filed under <a href="\/the-library\/"[^>]*><span[^>]*>Libraries/u);
     });
 
     // A SYNOPSIS'S TITLE GOES TO ITS BOOK — Doug, 2026-09-26: "we want the title of a synopsis chapter to go
     // to the book it is a synopsis of! Most titles are self-links."
     it('sent a reference to a chapter whose title is parenthetical to its page, where its title wears its id unseen and links to its book', () => {
-        expect(page('The Log')).toMatch(/<a href="\/the-library\/synopsis\/"[^>]*><span[^>]*>Synopsis/u);
+        expect(page('Libby')).toMatch(/<a href="\/the-library\/synopsis\/"[^>]*><span[^>]*>Synopsis/u);
         expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><div id="synopsis" class="[^"]*pa-parenthetical/u);
     });
 
@@ -107,7 +107,7 @@ describe('a bind of the test library', () => {
     });
 
     it('marked the autobiography and the biography on their covers', () => {
-        expect(page('The Log')).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
+        expect(page('Libby')).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
         // THE PERSONA'S COVER STANDS INSIDE ITS FRAME, the layer its book adds to every chapter at its bind.
         expect(page('A Persona')).toMatch(/<header class="pd-container"><div class="[^"]*pd-container[^"]*"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
     });
@@ -134,8 +134,9 @@ describe('a bind of the test library', () => {
     it('drew the library\'s catalogue as a grid: the section wearing pa-table, its rows pa-row, its cells pa-col', () => {
         const library = page('The Library');
         expect(library).toMatch(/class="[^"]*\bpa-table\b[^"]*\bpa-cols-2\b/u);
-        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(3);
-        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(6);
+        // A HEADER ROW AND THREE BOOKS since Sprint 88, the header bold by the theme.
+        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(4);
+        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(8);
         expect(library).toMatch(/\.pa-table\s*\{\s*display:\s*grid/u);
     });
 
@@ -150,23 +151,23 @@ describe('a bind of the test library', () => {
         expect(projects).not.toMatch(/<nav[^>]*>[\s\S]*pa-content[\s\S]*<\/nav>/u);
     });
 
-    // A CATALOGUE'S CHAPTER IS ANOTHER BOOK'S SYNOPSIS — the log's, handed to the chapter's Synopsis, which
+    // A CATALOGUE'S CHAPTER IS ANOTHER BOOK'S SYNOPSIS — Libby's, handed to the chapter's Synopsis, which
     // keeps the imported chapter off the page, gives the catalogue's chapter its parts, and sends the
-    // chapter's title to the log. Doug, 2026-09-26: "the chapter is kept out of the Synopsis annotation's
+    // chapter's title to Libby. Doug, 2026-09-26: "the chapter is kept out of the Synopsis annotation's
     // text, so that even in theory, it is not on the page."
-    it('drew in the library a chapter that is the log\'s synopsis: the log\'s words under its own title, which links to the log, and no second id', () => {
+    it('drew in the library a chapter that is Libby\'s synopsis: Libby\'s words under its own title, which links to Libby, and no second id', () => {
         const library = page('The Library');
-        expect(library).toContain('authorship in this library begins here and nowhere else');
+        expect(library).toContain('authorship in this library begins with her');
         expect(library.match(/ id="synopsis"/gu)).toHaveLength(1);
-        expect(library).toMatch(/<a href="\/the-log\/"[^>]*><div id="of-the-log"/u);
-        expect(library).not.toMatch(/<a href="\/the-log\/"[^>]*><div id="synopsis"/u);
+        expect(library).toMatch(/<a href="\/libby\/"[^>]*><div id="of-libby"/u);
+        expect(library).not.toMatch(/<a href="\/libby\/"[^>]*><div id="synopsis"/u);
     });
 
     // A HEADING WRITTEN AS A MENTION IS A FRAGMENT OF ITS CHAPTER'S ROUTE — Doug, 2026-09-26: "Long distance
-    // urls to that which was mentioned also must work." The log refers to what the argument claims; the
+    // urls to that which was mentioned also must work." Libby refers to what the argument claims; the
     // argument's own page wears the id, and the heading links to itself with the same url.
-    it('addressed the argument\'s marked heading on the argument\'s page, where the log\'s link lands and the heading links to itself', () => {
-        expect(page('The Log')).toMatch(/<a href="\/a-paper\/the-argument\/#what-is-claimed"[^>]*><span[^>]*>What is claimed/u);
+    it('addressed the argument\'s marked heading on the argument\'s page, where Libby\'s link lands and the heading links to itself', () => {
+        expect(page('Libby')).toMatch(/<a href="\/a-paper\/the-argument\/#what-is-claimed"[^>]*><span[^>]*>What is claimed/u);
         const argument = chapterPage('A Paper', 'The Argument');
         expect(argument).toMatch(/<a href="\/a-paper\/the-argument\/#what-is-claimed"[^>]*>(?:(?!<\/a>)[\s\S])*id="what-is-claimed"/u);
         expect(argument.match(/ id="what-is-claimed"/gu)).toHaveLength(1);
@@ -195,12 +196,12 @@ describe('a bind of the test library', () => {
     // and next of the last chapter is the last chapter - I prefer self-reference to undefined."
     it('drew at the foot of the paper\'s chapters a catchword whose Next links the next chapter and whose Previous the one before, the ends self-references', () => {
         const argument = chapterPage('A Paper', 'The Argument');
-        expect(argument).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pa-reference">The Evidence/u);
-        expect(argument).toMatch(/<a href="\/a-paper\/table-of-contents\/"[^>]*><span class="pd-word pa-reference">Table of Contents/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pd-next pa-reference">The Evidence/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/table-of-contents\/"[^>]*><span class="pd-word pd-previous pa-reference">Table of Contents/u);
         const evidence = chapterPage('A Paper', 'The Evidence');
-        expect(evidence).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pa-reference pa-self-reference">The Evidence/u);
-        expect(evidence).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*><span class="pd-word pa-reference">The Argument/u);
-        expect(page('A Paper')).toMatch(/<a href="\/a-paper\/"[^>]*><span class="pd-word pa-reference pa-self-reference">A Paper/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pd-next pa-reference pa-self-reference">The Evidence/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*><span class="pd-word pd-previous pa-reference">The Argument/u);
+        expect(page('A Paper')).toMatch(/<a href="\/a-paper\/"[^>]*><span class="pd-word pd-previous pa-reference pa-self-reference">A Paper/u);
     });
 
     // PAGINATED — Sprint 86: Some Projects' chapters are pages, marked once, and the page the address names is
@@ -224,7 +225,7 @@ describe('a bind of the test library', () => {
     });
 
     // SPRINT 88 — every level marks itself and draws its element; the theme's sheet is on every page; the persona's
-    // poem is Lines; the paper's argument has a space, a break and the three basics; the log is dark; frames stand in
+    // poem is Lines; the paper's argument has a space, a break and the three basics; Libby is dark; frames stand in
     // two places.
     it('drew every level as its element wearing its mark, and the default theme\'s sheet on every page', () => {
         for (const route of table.routes) {
@@ -242,7 +243,7 @@ describe('a bind of the test library', () => {
     it('drew the persona\'s poem as three lines, each a div wearing the sentence\'s mark and its own', () => {
         const persona = chapterPage('A Persona', 'Who Writes Here');
         expect(persona.match(/<div class="[^"]*\bpd-sentence\b[^"]*\bpd-line\b[^"]*">/gu)).toHaveLength(3);
-        expect(persona).toContain('A voice the log lent out,');
+        expect(persona).toContain('A voice Libby lent out,');
     });
 
     it('drew in the argument a space of three, a break, and the three basics as their elements', () => {
@@ -256,10 +257,10 @@ describe('a bind of the test library', () => {
         expect(argument).toMatch(/\.pa-blank\{visibility:hidden;\}/u);
     });
 
-    it('drew the log dark by its own theme in front of the library\'s, and no other book dark', () => {
-        expect(page('The Log')).toMatch(/color:ivory;background:#1f1f24/u);
+    it('drew Libby dark by its own theme in front of the library\'s, and no other book dark', () => {
+        expect(page('Libby')).toMatch(/color:ivory;background:#1f1f24/u);
         for (const route of table.routes)
-            if (route.name !== 'The Log')
+            if (route.name !== 'Libby')
                 expect(page(route.name), route.name).not.toContain('#1f1f24');
     });
 
@@ -269,7 +270,7 @@ describe('a bind of the test library', () => {
         expect(projects).toMatch(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-book\b/u);
         const persona = page('A Persona');
         expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
-        expect(page('The Log')).not.toMatch(/border:1px solid/u);
+        expect(page('Libby')).not.toMatch(/border:1px solid/u);
     });
 });
 
@@ -304,7 +305,7 @@ describe('the bound test library, seen in a real browser', () => {
         // THE BYLINE IS A PARAGRAPH, and a paragraph is a div since Sprint 88.
         const byline = await paper.$$eval('#root .pd-paragraph', paragraphs => paragraphs.map(paragraph => (paragraph as HTMLElement).innerText.replace(/\s+/gu, ' ').trim())
             .filter(text => text.startsWith('by ')).sort((one, other) => one.length - other.length)[0]);
-        expect(byline).toBe('by A Persona, filed under The Library');
+        expect(byline).toBe('by A Persona, filed under Libraries');
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
     });
 
@@ -364,16 +365,16 @@ describe('the bound test library, seen in a real browser', () => {
     // "Long distance urls to that which was mentioned also must work." A link to another book is the browser's
     // to follow; that page's own router lands on the heading once its book has drawn.
     it('follows a long-distance link to another book\'s heading: that page loads, turned to the heading', async () => {
-        const log = await browser!.newPage();
-        await log.setViewport({ width: 800, height: 100 });
-        await log.goto(new URL('/the-log/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
-        await Promise.all([log.waitForNavigation({ waitUntil: 'networkidle0' }), log.click('a[href="/a-paper/the-argument/#what-is-claimed"]')]);
+        const libby = await browser!.newPage();
+        await libby.setViewport({ width: 800, height: 100 });
+        await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await Promise.all([libby.waitForNavigation({ waitUntil: 'networkidle0' }), libby.click('a[href="/a-paper/the-argument/#what-is-claimed"]')]);
         await new Promise(resolve => setTimeout(resolve, 300));
-        expect(await log.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/the-argument/#what-is-claimed');
-        const top = await log.$eval('#what-is-claimed', heading => heading.getBoundingClientRect().top);
+        expect(await libby.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/the-argument/#what-is-claimed');
+        const top = await libby.$eval('#what-is-claimed', heading => heading.getBoundingClientRect().top);
         expect(top).toBeGreaterThanOrEqual(0);
         expect(top).toBeLessThan(100);
-        await log.close();
+        await libby.close();
     });
 
     // PAGINATED, SEEN — Doug: "I am happy to see scrolling and next/previous simple paginated chapters as an
@@ -426,12 +427,12 @@ describe('the bound test library, seen in a real browser', () => {
         await argument.close();
     });
 
-    it('shows the log on dark paper in ivory ink, and the paper on white', async () => {
-        const log = await browser!.newPage();
-        await log.goto(new URL('/the-log/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
-        expect(await log.$eval('.pd-book', book => getComputedStyle(book.parentElement!).backgroundColor)).toBe('rgb(31, 31, 36)');
-        expect(await log.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(255, 255, 240)');
-        await log.close();
+    it('shows Libby on dark paper in ivory ink, and the paper on white', async () => {
+        const libby = await browser!.newPage();
+        await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await libby.$eval('.pd-book', book => getComputedStyle(book.parentElement!).backgroundColor)).toBe('rgb(31, 31, 36)');
+        expect(await libby.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(255, 255, 240)');
+        await libby.close();
         expect(await paper.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(0, 0, 0)');
     });
 });
@@ -443,7 +444,7 @@ describe('a bind of the test library with a catalogue row that does not refer to
     beforeAll(() => {
         broken = pulled();
         const table = join(broken.library, 'the-library', '.table.tsx');
-        writeFileSync(table, readFileSync(table, 'utf8').replace(' <Word><Content>$[ The Log / Synopsis ]</Content></Word>', ''));
+        writeFileSync(table, readFileSync(table, 'utf8').replace(" <Word><Content>$[ the librarian's own account ]( Libby / Synopsis )</Content></Word>", ''));
     });
     afterAll(() => { broken.remove(); });
 
@@ -451,7 +452,7 @@ describe('a bind of the test library with a catalogue row that does not refer to
         const said = printed(broken);
         expect(said).toMatch(/^catalogue +FAILED/mu);
         expect(said).toContain('NO-SYNOPSIS');
-        expect(said).toContain('answers for "The Log" and the table does not refer to its synopsis');
+        expect(said).toContain('answers for "Libby" and the table does not refer to its synopsis');
         expect(said).not.toMatch(/^bound /mu);
     });
 });

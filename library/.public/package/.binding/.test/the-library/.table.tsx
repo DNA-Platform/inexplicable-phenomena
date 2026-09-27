@@ -1,6 +1,8 @@
 import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Table, TableOfContents, Title, Word } from '@dna-platform/public';
 import { Catchword } from './1-the-shelves.tsx.tsx';
 
+// THE CATALOGUE: a row for every book filed under this one, its name and what it is, the second linking to
+// the book's own synopsis, which is what the compiler requires of a catalogue's row.
 export default () => (
     <Chapter>
         <TableOfContents />
@@ -8,7 +10,7 @@ export default () => (
         <Section>
             <Heading>Contents</Heading>
             <Paragraph><Content>$[ ./The Shelves ]</Content></Paragraph>
-            <Paragraph><Content>$[ ./Of the Log ]</Content></Paragraph>
+            <Paragraph><Content>$[ ./Of Libby ]</Content></Paragraph>
             <Paragraph>
                 <Parenthetical />
                 <Word><Content>$[ The Library ]</Content></Word>
@@ -19,9 +21,10 @@ export default () => (
         <Section>
             <Table />
             <Heading>The Catalogue</Heading>
-            <Paragraph><Word><Content>[[ The Log ]]**</Content></Word> <Word><Content>$[ The Log / Synopsis ]</Content></Word></Paragraph>
-            <Paragraph><Word><Content>[[ Some Projects ]]**</Content></Word> <Word><Content>$[ Some Projects / Synopsis ]</Content></Word></Paragraph>
-            <Paragraph><Word><Content>[[ A Paper ]]**</Content></Word> <Word><Content>$[ A Paper / Synopsis ]</Content></Word></Paragraph>
+            <Paragraph><Word>Book</Word> <Word>What it is</Word></Paragraph>
+            <Paragraph><Word><Content>[[ Libby ]]**</Content></Word> <Word><Content>$[ the librarian's own account ]( Libby / Synopsis )</Content></Word></Paragraph>
+            <Paragraph><Word><Content>[[ Some Projects ]]**</Content></Word> <Word><Content>$[ what she has worked on ]( Some Projects / Synopsis )</Content></Word></Paragraph>
+            <Paragraph><Word><Content>[[ A Paper ]]**</Content></Word> <Word><Content>$[ a paper by a persona she vouched for ]( A Paper / Synopsis )</Content></Word></Paragraph>
         </Section>
         <Catchword />
     </Chapter>

@@ -10,11 +10,11 @@ export default () => (
         <Section>
             <Heading>Delegation</Heading>
             <Paragraph>
-                The persona writes because <Means>$[ The Log ]</Means> said it may, by cataloguing it and by writing it.
+                The persona writes because <Means>$[ Libby ]</Means> said it may, by cataloguing it and by writing it.
                 What it has written so far is <Means>$[ A Paper ]</Means>.
             </Paragraph>
             <Paragraph>
-                <Line>A voice the log lent out,</Line>
+                <Line>A voice Libby lent out,</Line>
                 <Line>and filed beneath itself,</Line>
                 <Line>writes papers of its own.</Line>
             </Paragraph>

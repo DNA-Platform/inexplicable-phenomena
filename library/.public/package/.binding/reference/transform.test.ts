@@ -24,7 +24,7 @@ describe('a reference in prose', () => {
     });
 
     it('keeps the words a writer gave and puts the address behind them', () => {
-        expect(made.text).toContain('<Means>[the log](/the-log/)</Means>');
+        expect(made.text).toContain('<Means>[Libby](/libby/)</Means>');
         expect(made.text).not.toContain('$[');
     });
 
@@ -70,26 +70,26 @@ describe('the annotations of a cover', () => {
     it('are verified and then written as both halves, the url of the page they stand on included', () => {
         expect(made.missing).toEqual([]);
         expect(made.text).toContain('<Title>[The Library](/the-library/)</Title>');
-        expect(made.text).toContain('<Subject>[The Library](/the-library/)</Subject>');
+        expect(made.text).toContain('<Subject>[Libraries](/the-library/)</Subject>');
         expect(made.text).toContain('<About>[The Library](/the-library/)</About>');
         expect(made.text).not.toContain('](#)');
     });
 
     it('write the words and the address when the writer gave both', () => {
-        expect(made.text).toContain('<Author>[the log](/the-log/)</Author>');
+        expect(made.text).toContain('<Author>[Libby](/libby/)</Author>');
     });
 });
 
 // THE COMPILER KNOWS NO COMPONENT, so a table is read and written by its notation alone. Doug,
 // 2026-09-24: "It doesn't know about specific components. To generate any is to break polymorphism."
 describe('a table of contents', () => {
-    const table = join(fixture, 'the-log', '.table.tsx');
+    const table = join(fixture, 'libby', '.table.tsx');
     const made = transforming(readFileSync(table, 'utf8'), table, card);
 
     it('refers to its chapters by their pages, and to the synopsis of the book it answers for', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Content>[Entries](/the-log/entries/)</Content>');
-        expect(made.text).toContain('<Content>[Synopsis](/a-persona/synopsis/)</Content>');
+        expect(made.text).toContain('<Content>[Who I Am](/libby/who-i-am/)</Content>');
+        expect(made.text).toContain('<Content>[a persona she vouches for, and its own account](/a-persona/synopsis/)</Content>');
     });
 
     it('answers for the book it catalogues with the book\'s url, and keeps no star', () => {

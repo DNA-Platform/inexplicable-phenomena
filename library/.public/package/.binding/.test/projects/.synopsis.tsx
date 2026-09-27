@@ -5,7 +5,7 @@ export default () => (
     <Chapter>
         <Synopsis />
         <Title><Parenthetical />[[ Synopsis ]]</Title>
-        <Paragraph>An ordinary book: written by the log, filed under the library, about the work.</Paragraph>
+        <Paragraph>An ordinary book: written by Libby, filed under the library, about the work.</Paragraph>
         <Catchword />
     </Chapter>
 );
