@@ -1,17 +1,20 @@
 import { ReactNode } from 'react';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Book, $Format, $Theme, Paragraph as paragraph, Reference as reference, Word as word } from '@dna-platform/public';
+import { Navigable, RunningHead as runningHead } from './1-the-shelves.tsx.tsx';
 
 // THE TEST LIBRARY'S OWN BOOK. Every book in this library extends this one, the way every book in a
 // real library extends the library's — so a change to what a book is here reaches all five. It is
 // the layout, and it draws what the book exposes of its cover: who wrote it and what it is filed under.
 export default class $TheLibrary extends $Book {
     override write(): ReactNode {
+        const RunningHead = $(runningHead);
         const Paragraph = $(paragraph);
         const Word = $(word);
         const Reference = $(reference);
         return (
             <>
+                <RunningHead book={this} />
                 <Paragraph>
                     by <Word><Reference>{this.author?.means?.identifier}</Reference>{this.author?.name}</Word>,
                     filed under <Word><Reference>{this.subject?.means?.identifier}</Reference>{this.subject?.name}</Word>
@@ -24,6 +27,7 @@ export default class $TheLibrary extends $Book {
     protected override $Define(): void {
         super.$Define();
         this.annotations.add(this,
+            <Navigable />,
             <LibraryTheme />
         );
     }

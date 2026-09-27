@@ -443,7 +443,7 @@ describe('a bind of the test library with a catalogue row that does not refer to
     beforeAll(() => {
         broken = pulled();
         const table = join(broken.library, 'the-library', '.table.tsx');
-        writeFileSync(table, readFileSync(table, 'utf8').replace(': <Word><Content>$[ The Log / Synopsis ]</Content></Word>', ''));
+        writeFileSync(table, readFileSync(table, 'utf8').replace(' <Word><Content>$[ The Log / Synopsis ]</Content></Word>', ''));
     });
     afterAll(() => { broken.remove(); });
 
@@ -473,6 +473,6 @@ describe('a bind of the test library with a synopsis said of a section', () => {
     it('fails at specify, on the chapter\'s own file, saying what does not specify', () => {
         const said = printed(broken);
         expect(said).toMatch(/^specify +FAILED/mu);
-        expect(said).toMatch(/1-the-argument\.tsx\(1,1\): error SPEC: paper — APaper \/ Chapter 3 \/ Section 2: a synopsis is said of a chapter, and this is not one/u);
+        expect(said).toMatch(/1-the-argument\.tsx\(1,1\): error SPEC: paper — APaper \/ Chapter 3 \/ Section 1: a synopsis is said of a chapter, and this is not one/u);
     });
 });

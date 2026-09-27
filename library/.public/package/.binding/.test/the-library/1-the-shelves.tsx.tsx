@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import { $, $Chemical } from '@dna-platform/chemistry';
-import { $Paragraph, $Next, $Previous, Means as means, Reference as reference, Word as word } from '@dna-platform/public';
+import { $, $Chemical, selection } from '@dna-platform/chemistry';
+import { $Format, $Paragraph, $Next, $Previous, Means as means, Reference as reference, Word as word } from '@dna-platform/public';
 
 // A RESOURCE OF THE FIRST CHAPTER: the library's name as a link to the library, which every book of
 // the test library could wear, and then the book it stands in and a link to that book's table, read
@@ -10,6 +10,11 @@ import { $Paragraph, $Next, $Previous, Means as means, Reference as reference, W
 // of `.public` — Doug: "that doesn't belong in the .public library. It can be a component of something
 // not user facing."
 export class $RunningHead extends $Paragraph {
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pd-running-head');
+    }
+
     override write(): ReactNode {
         const book = this.$book;
         if (book === undefined) return null;
@@ -55,8 +60,36 @@ export class $Catchword extends $Paragraph {
             </>
         );
     }
+
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pd-catchword');
+    }
+}
+
+// NAVIGABLE: the library's own dress for finding one's way, a Format stood on the book in front of its
+// theme and reading it — the running head a masthead, the catchword a footer line, each by the mark its
+// kind wears. Doug, 2026-09-27: "review that it looks navigable, and if not, add some annotations or
+// components to the test library that can be used in that theme to provide a more professional experience."
+export class $Navigable extends $Format {
+    style = selection.div`
+        .pd-running-head {
+            font-size: 0.85em;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding-block-end: calc(${(props: { theme: { space?: string } }) => props.theme.space ?? '1rem'} / 2);
+            border-block-end: 1px solid ${(props: { theme: { ink?: string } }) => props.theme.ink ?? 'currentColor'};
+        }
+        .pd-catchword {
+            font-size: 0.85em;
+            text-align: end;
+            padding-block-start: calc(${(props: { theme: { space?: string } }) => props.theme.space ?? '1rem'} / 2);
+            border-block-start: 1px solid ${(props: { theme: { ink?: string } }) => props.theme.ink ?? 'currentColor'};
+        }
+    `;
 }
 
 export const PreviousTitle = $($PreviousTitle);
 export const NextTitle = $($NextTitle);
 export const Catchword = $($Catchword);
+export const Navigable = $($Navigable);

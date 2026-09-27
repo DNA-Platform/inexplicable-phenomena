@@ -40,22 +40,28 @@ export class $Theme extends $Format {
         .pd-sentence { hyphens: manual; }
         .pd-word { overflow-wrap: break-word; }
         .pd-letter { font-kerning: normal; }
-        .pd-title { font-size: calc(1.5 * ${value('size')}); font-weight: bold; margin-block-end: ${value('space')}; }
+        .pd-title { font-size: calc(1.5 * ${value('size')}); font-weight: bold; margin-block-end: ${value('space')}; color: inherit; }
+        .pd-container:has(> .pd-title) { text-decoration: none; }
         .pd-heading { font-weight: bold; margin-block: ${value('space')} 0; }
         .pd-line { white-space: pre-wrap; }
         .pd-space { white-space: pre; }
         .pd-break { clear: both; }
         .pa-parenthetical { opacity: 0.6; }
         .pa-reference { color: ${value('link')}; }
-        .pa-self-reference { color: inherit; }
+        .pa-self-reference, .pd-title.pa-reference { color: inherit; }
         .pa-referent { scroll-margin-block-start: ${value('space')}; }
         .pa-content { color: ${value('link')}; }
         .pa-table { column-gap: ${value('space')}; row-gap: calc(${value('space')} / 2); }
+        .pa-table .pd-paragraph { margin-block: 0; }
+        .pa-table > .pd-container { grid-column: 1 / -1; }
+        .pa-row > .pd-container { display: contents; }
         .pa-row:first-child .pa-col { font-weight: bold; }
         .pa-col { padding-block: calc(${value('space')} / 4); }
         .pa-cover { margin-block-end: calc(2 * ${value('space')}); }
-        .pa-synopsis { font-style: italic; }
+        .pa-cover .pd-title { font-size: calc(2 * ${value('size')}); }
+        .pa-synopsis .pd-paragraph { font-style: italic; }
         .pa-table-of-contents { margin-block: ${value('space')}; }
+        .pa-table-of-contents .pd-paragraph { margin-block: calc(${value('space')} / 4); }
         .pa-biography .pd-title { font-variant: small-caps; }
         .pa-autobiography .pd-title { font-style: italic; }
         .pa-paginated { min-height: 50vh; }
