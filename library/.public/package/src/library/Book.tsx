@@ -10,6 +10,9 @@ import { $TableOfContents } from './TableOfContents';
 
 export class $Book extends $Composition {
     specification = new BookSpecification();
+    protected _bookmark?: string;
+    get $bookmark(): string | undefined { return this._bookmark; }
+    set $bookmark(value: string | undefined) { this._bookmark = value; this.turn(); }
     get cover(): $Chapter | undefined { return this.canonical; }
     get table(): $Chapter | undefined { return this.text.find($Chapter).find(chapter => chapter.is($TableOfContents)); }
     get title(): $Title | undefined { return this.canonical?.canonical; }
@@ -22,6 +25,10 @@ export class $Book extends $Composition {
         if (identifier === undefined) return undefined;
         return this.text.find($Chapter).find(chapter => chapter.annotations.expressed($Synopsis)?.means?.identifier === identifier);
     }
+    get bookmark(): $Chapter | undefined {
+        if (this.$bookmark === undefined) return undefined;
+        return this.text.find($Chapter).find(chapter => chapter.mention?.identifier === this.$bookmark);
+    }
     override get $book(): $Book { return this; }
     override get canonical(): $Chapter | undefined {
         return this.text.find($Chapter).find(chapter => chapter.is($Cover));
@@ -30,6 +37,7 @@ export class $Book extends $Composition {
     $Book(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
         this.$Bound();
+        void this.next('mount').then(() => this.turn());
     }
 
     protected override $Define(): void {
@@ -41,6 +49,12 @@ export class $Book extends $Composition {
             <Strict />,
             <Closed />
         );
+    }
+
+    protected turn(): void {
+        const title = this.bookmark?.title;
+        if (title === undefined) return;
+        document.getElementById(String(title.id))?.scrollIntoView();
     }
 }
 

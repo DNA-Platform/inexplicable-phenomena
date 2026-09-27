@@ -22,6 +22,11 @@ export type Table = {
     root?: Route;
 };
 
+// THE URL A PAGE IS REACHED AT, from the base forward and ending in a slash, because that is the page
+// a reader lands on — GitHub Pages answers `/turing` with a redirect to `/turing/`. The catalogue
+// writes it into every reference, and the render hands it to the book as the bookmark of each page.
+export const pageOf = (base: string, address: string): string => `${base}${address.replace(/^\//u, '')}/`;
+
 // THE SLUG IS THE LIBRARY'S, `identifier.slug` in `@dna-platform/public`, AND THE COMPILER IMPORTS IT.
 // It stood here as the compiler's own from 2026-09-24 — "the compiler should handle all of this" —
 // until 2026-09-26, when an id became the name's: "Title should use the name to create the fragment

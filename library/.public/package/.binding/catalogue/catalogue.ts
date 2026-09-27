@@ -2,7 +2,7 @@ import { basename } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
 import type { Library } from '../inventory/library';
 import { identifier } from '@dna-platform/public';
-import { resolution, type Table } from '../resolution/addresses';
+import { pageOf, resolution, type Table } from '../resolution/addresses';
 import { forward } from '../manifest/origin';
 import { tidy } from './language';
 import { structure as compiled, type Structure } from './structure';
@@ -93,11 +93,10 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // ONE KEY, ONE THING. Two books may both hold a `Table of Contents` and neither is wrong,
     // because the scope is what tells them apart — which is why the scope is IN the key rather than
     // inferred from what else happens to be in the library.
-    const pageOf = (address: string): string => `${chosen.resolution.base}${address.replace(/^\//u, '')}/`;
     const at = new Map<string, string>();
     const inside: { path: string; name: string }[] = [];
     for (const route of table.routes) {
-        const book = pageOf(route.address);
+        const book = pageOf(chosen.resolution.base, route.address);
         at.set(route.name, book);
         const held = found.books.find(one => one.folder === route.folder);
         if (held !== undefined) inside.push({ path: forward(held.path), name: route.name });
@@ -106,7 +105,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         // rather than a second reading, each on the page of the file it stands in.
         const pages = new Map<string, string>();
         for (const chapter of route.chapters) {
-            const page = pageOf(chapter.address);
+            const page = pageOf(chosen.resolution.base, chapter.address);
             at.set(`${route.name} / ${chapter.name}`, page);
             pages.set(chapter.file, page);
         }

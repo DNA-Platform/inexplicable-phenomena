@@ -4,11 +4,12 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteDevServer } from 'vite';
 import React from 'react';
-import { Suspense, type ReactNode } from 'react';
+import { Suspense, type FunctionComponent, type ReactNode } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
 import { configure } from '../configuration/configuration';
 import { around } from '../inventory/library';
+import { pageOf } from '../resolution/addresses';
 import { page } from './page';
 import { placeOf } from './place';
 import { shellOf } from './rendering';
@@ -16,7 +17,7 @@ import { shellOf } from './rendering';
 const { createElement } = React;
 const { renderToString } = ReactDOMServer;
 
-type Route = { name: string; address: string; chapters: { name: string; address: string }[]; load: () => Promise<{ book: () => ReactNode }> };
+type Route = { name: string; address: string; chapters: { name: string; address: string }[]; load: () => Promise<{ book: FunctionComponent<{ bookmark?: string }> }> };
 
 // A BOUNDARY THAT ERRORED IS NOT A PAGE. `renderToString` takes no `onError`, so a book that throws
 // is caught by the Suspense boundary above it, written into the markup as this marker, and handed
@@ -51,14 +52,17 @@ export const draw = async (server: ViteDevServer, addresses: string[]): Promise<
         const route = routes.find(one => one.address === address || one.chapters.some(chapter => chapter.address === address));
         if (route === undefined) throw new Error(`no book stands at ${address}, so there is no page to draw there`);
         const { book } = await route.load();
+        // THE PAGE IS OPEN AT ITS ADDRESS, and the book is told so as its bookmark — the url the
+        // catalogue wrote into that chapter's title, so the two meet by equality and nothing is read.
+        const bookmark = pageOf(chosen.resolution.base, address);
         // Each page collects its own styles in a sheet of its own, so every page drawn in this one
         // process carries what its book styles and nothing another book did.
         const sheet = new ServerStyleSheet();
         try {
             // The same boundary the entry hydrates inside, so the markers match; the book is a
             // function, and drawing it calls it.
-            const markup = renderToString(sheet.collectStyles(createElement(Suspense, { fallback: null }, createElement(book))));
-            if (markup.includes(erroredBoundary)) throw new Error(`${route.name} does not draw — ${causeOfTheFailure(createElement(book))}`);
+            const markup = renderToString(sheet.collectStyles(createElement(Suspense, { fallback: null }, createElement(book, { bookmark }))));
+            if (markup.includes(erroredBoundary)) throw new Error(`${route.name} does not draw — ${causeOfTheFailure(createElement(book, { bookmark }))}`);
             const at = placeOf(face, { address });
             mkdirSync(dirname(at), { recursive: true });
             writeFileSync(at, page(built, markup, sheet.getStyleTags(), chosen.rendering.title), 'utf8');

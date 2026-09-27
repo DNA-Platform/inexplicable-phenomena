@@ -16,6 +16,11 @@ const probing = import.meta.env.DEV && location.search.includes('probe') && Obje
 const route = routes.find(one => one.address === path || one.chapters.some(chapter => chapter.address === path)) ?? root;
 if (!probing && !route) throw new Error(`no book stands at ${path}, and no book stands at the root`);
 
+// THE BOOKMARK IS THE ADDRESS THE PAGE IS OPEN AT — the url the compiler wrote into that chapter's
+// title, so the book finds the chapter by equality and turns to it. Doug, 2026-09-26: "it is the
+// place where the user is (recently was) and it is a record of him being there."
+const bookmark = `${location.pathname.replace(/\/+$/u, '')}/`;
+
 // NO TOP-LEVEL AWAIT HERE. The book arrives as a chunk that imports its shared code from this
 // entry; an entry that awaits that chunk never finishes evaluating, the chunk never can either,
 // and nothing is thrown — the page simply stays as it was served.
@@ -35,7 +40,7 @@ if (!mount) throw new Error('no #root element');
 // Mounted beside the book, after it: its effect runs once the book's handlers are attached,
 // and hands the page's kept clicks back to them. Draws nothing, so the server markup is the same.
 const Landed = (): null => { useEffect(() => { (window as unknown as { __replayKept?: () => void }).__replayKept?.(); }, []); return null; };
-const drawn = (Book: ElementType) => createElement(Suspense, { fallback: null }, createElement(Book), createElement(Landed));
+const drawn = (Book: ElementType) => createElement(Suspense, { fallback: null }, createElement(Book, probing ? null : { bookmark }), createElement(Landed));
 const app = drawn(Opened);
 const served = mount.hasChildNodes();
 const drawing = served ? hydrateRoot(mount, app, {

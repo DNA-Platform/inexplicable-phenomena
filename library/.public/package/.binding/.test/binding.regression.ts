@@ -235,6 +235,22 @@ describe('the bound test library, seen in a real browser', () => {
     it('hydrated the page without drawing it again', () => {
         expect(heard.filter(said => said.includes('hydration'))).toEqual([]);
     });
+
+    // A CHAPTER'S PAGE OPENS TURNED TO THAT CHAPTER: the book is handed the address as its bookmark and,
+    // mounted, turns to the chapter whose title means it. Doug, 2026-09-26: "it is the place where the
+    // user is (recently was) and it is a record of him being there."
+    // A WINDOW A THIRD OF THE PAPER'S HEIGHT — measured 2026-09-27: the whole paper stands in 300 pixels, the
+    // evidence's title at 113, so a window of 300 had nothing to scroll.
+    it('opens a chapter\'s page turned to that chapter, its title in view', async () => {
+        const evidence = await browser!.newPage();
+        await evidence.setViewport({ width: 800, height: 100 });
+        await evidence.goto(new URL('/a-paper/the-evidence/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await evidence.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+        const top = await evidence.$eval('#the-evidence', title => title.getBoundingClientRect().top);
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(top).toBeLessThan(100);
+        await evidence.close();
+    });
 });
 
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises

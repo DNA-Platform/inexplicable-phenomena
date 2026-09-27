@@ -51,7 +51,7 @@ export class $Synopsis extends $Format {
         const title = this.chapter?.title;
         if (title?.means !== undefined && this.means !== undefined && this.means !== title.means) {
             const Reference = $(reference);
-            title.annotations.replace(this, title.means, reflection.chemical(<Reference>{this.means.identifier}</Reference>, title));
+            title.annotations.replace(this, title.means, reflection.chemical<$Reference>(<Reference>{this.means.identifier}</Reference>, title));
             title.annotations.define();
         }
         super.$Bound();

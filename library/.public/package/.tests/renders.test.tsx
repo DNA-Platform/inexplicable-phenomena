@@ -320,3 +320,34 @@ describe('a means that stands its own reference costs no more than any writing',
         expect(means.annotations.find($Reference)[0].identifier).toBe('/complicated-url');
     });
 });
+
+// THE BOOKMARK IS A PROP, so a move costs what a prop change costs — Sprint 85, D2: "The book learns the address
+// the way any chemical learns a prop, at one paint" — and a layout that reads it redraws with it. Measured
+// 2026-09-27: one paint, and the book's draws, fewer than a mount's.
+describe('a book turning to its bookmark costs one paint', () => {
+    beforeEach(counting);
+
+    it('mounts as any book, and a bookmark moved after the mount costs one paint and no more draws than a mount', async () => {
+        Element.prototype.scrollIntoView = () => {};
+        const book = $(
+            <Ledger bookmark="/a-paper/">
+                <Quoted />
+                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
+                <Chapter><Title>[The Argument](/a-paper/the-argument/)</Title><Unreading>another</Unreading></Chapter>
+            </Ledger>
+        ) as unknown as $Book;
+        const Drawn = $(book);
+        await act(async () => { render(<Drawn />); });
+        await settle();
+        const mounted = { ...counted };
+        expect(mounted.painted).toBe(1);
+
+        counting();
+        await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
+        await settle();
+        expect(book.bookmark).toBe(book.parts[1]);
+        expect(counted.painted).toBe(1);
+        expect(counted.committed).toBe(1);
+        expect(counted.drawn).toBeLessThan(mounted.drawn);
+    });
+});

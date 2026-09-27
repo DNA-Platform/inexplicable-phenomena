@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, act } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Annotation, $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed } from '@dna-platform/public';
@@ -119,6 +119,31 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(book.table).toBe(book.parts[1]);
         const untabled = built<$Book>(<Book>{APaper()}{WhatItArgues()}{TheArgument()}</Book>);
         expect(untabled.table).toBeUndefined();
+    });
+
+    // THE BOOKMARK — Doug, 2026-09-26: "it is a bookmark right? It is the place where the user is (recently was) and
+    // it is a record of him being there." The app and the render hand the book the url its page is open at; the
+    // book finds the chapter whose title means it, by equality and nothing read, and turns to it once mounted.
+    it('given a bookmark, the chapter whose title means it is the bookmark; given none, or one no chapter means, none', () => {
+        const book = built<$Book>(<Book bookmark="/a-paper/the-argument/">{APaper()}{WhatItArgues()}{WhereThingsAre()}{TheArgument()}</Book>);
+        expect(book.$bookmark).toBe('/a-paper/the-argument/');
+        expect(book.bookmark).toBe(book.parts[3]);
+        expect(built<$Book>(<Book>{APaper()}{TheArgument()}</Book>).bookmark).toBeUndefined();
+        expect(built<$Book>(<Book bookmark="/elsewhere/">{APaper()}{TheArgument()}</Book>).bookmark).toBeUndefined();
+    });
+
+    it('mounted, turns to its bookmark, and turns again when the bookmark moves', async () => {
+        const turned = vi.fn();
+        Element.prototype.scrollIntoView = function (this: Element) { turned(this.id); };
+        const book = built<$Book>(<Book bookmark="/a-paper/the-argument/">{APaper()}{WhatItArgues()}{WhereThingsAre()}{TheArgument()}</Book>);
+        const Drawn = $(book);
+        await act(async () => { render(<Drawn />); });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(turned.mock.calls).toEqual([['the-argument']]);
+        act(() => { book.$bookmark = '/a-paper/'; });
+        expect(turned.mock.calls).toEqual([['the-argument'], ['a-paper']]);
+        act(() => { book.$bookmark = '/elsewhere/'; });
+        expect(turned.mock.calls).toHaveLength(2);
     });
 
     it('a chapter that does not specify makes the book say so, coded to that chapter', () => {
