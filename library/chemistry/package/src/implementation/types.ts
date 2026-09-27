@@ -1,6 +1,7 @@
 import type { JSX, ReactNode } from "react";
 import type { $Particle } from "../abstraction/particle";
 import type { $Function$, $Html$, $Block, $Inline, $Chemical } from "../abstraction/chemical";
+import type { $draw$ } from "./symbols";
 
 // I<T> — the interface of T: every member declared on T and its prototype
 // chain. TypeScript already collapses the chain into the instance type, so
@@ -148,7 +149,7 @@ declare module 'react' {
 // deliberately does not list the members that are not.
 export interface $Particular {
     view(): ReactNode;
-    draw(): ReactNode;
+    [$draw$](): ReactNode;
     frame(drawn: ReactNode): ReactNode;
     $look?: number | string;
 }

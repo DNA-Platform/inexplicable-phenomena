@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical, $Formula, cache, children } from '@/index';
 import { $formula$, $keyOf$ } from '@/implementation/symbols';
+import { formula, resolve } from '@/implementation/symbols';
 
 // =============================================================================
 // $Formula — a formula stands for something else, and the framework replaces it
@@ -447,7 +448,7 @@ describe('resolve', () => {
         view() { return mark(this); }
     }
     class $Named extends $Root {
-        override resolve = false;
+        override [resolve] = false;
 
         constructor() { super(); this[cache]('Letter'); }
     }
@@ -484,7 +485,7 @@ describe('base classes back', () => {
         view() { return mark(this); }
     }
     class $Kind extends $Middle {
-        override formula = true;
+        override [formula] = true;
 
         constructor() { super(); this[cache](); }
     }

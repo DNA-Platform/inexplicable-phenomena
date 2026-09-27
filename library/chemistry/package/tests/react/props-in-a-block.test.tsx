@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import React, { type ReactNode } from 'react';
 import { $, $Block, $check, $Chemical } from '../../src/index';
+import { inline } from '@/implementation/symbols';
 
 // Props are construction, not mutation.
 //
@@ -29,21 +30,21 @@ const Host = $($Host);
 
 class $Marked extends $Chemical {
     $label = '';
-    constructor() { super(); this.inline = true; }
+    constructor() { super(); this[inline] = true; }
     get label(): string { return this.$label; }
     view(): ReactNode { return <span className="marked">{this.label}</span>; }
 }
 const Marked = $($Marked);
 
 class $Plain extends $Chemical {
-    constructor() { super(); this.inline = true; }
+    constructor() { super(); this[inline] = true; }
     view(): ReactNode { return <span className="plain">plain</span>; }
 }
 const Plain = $($Plain);
 
 class $Blocked extends $Chemical {
     $label = '';
-    constructor() { super(); this.inline = false; }
+    constructor() { super(); this[inline] = false; }
     get label(): string { return this.$label; }
     view(): ReactNode { return <div className="blocked">{this.label}</div>; }
 }
@@ -75,7 +76,7 @@ describe('props are construction — a propped child inside a block settles', ()
     it('a child that maps a prop in a method its view calls renders its data', () => {
         class $Drawn extends $Chemical {
             $items: string[] = [];
-            constructor() { super(); this.inline = true; }
+            constructor() { super(); this[inline] = true; }
             get items(): string[] { return this.$items; }
             view(): ReactNode { return <span className="drawn">{this.drawn()}</span>; }
             drawn(): ReactNode { return this.items.map(k => <b key={k}>{k}</b>); }

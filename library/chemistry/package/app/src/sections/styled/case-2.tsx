@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical, children, styled } from '@/index';
+import { $, $Chemical, children, style, selector } from '@/index';
 import { ActionButton } from '../V-1/case.styled';
 
 // Chemistry wants things reactive, so a plain name is the ordinary spelling.
@@ -7,7 +7,7 @@ import { ActionButton } from '../V-1/case.styled';
 //   $color       a prop   — reactive, and given from outside
 //   _borderLeft  inert    — the rare case: baked into the stylesheet
 class $Swatch extends $Chemical {
-    selector = styled.div;
+    [selector] = style.div;
     margin = '0 0 10px';
     padding = '18px';
     borderRadius = '6px';

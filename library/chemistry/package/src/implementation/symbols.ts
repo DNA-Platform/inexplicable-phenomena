@@ -28,8 +28,8 @@ export const cache = Symbol("$Chemical.cache");
 
 // The component a styled particle renders through, compiled once per class from
 // the CSS fields it declares. Read it to reach the compiled component; declare
-// `selector` to say what it is built from.
-export const style = Symbol("$Particle.style");
+// [selector] to say what it is built from. (`compiled` is a proxy name.)
+export const compiled = Symbol("$Particle.compiled");
 
 // The children a chemical was given. A SYMBOL rather than a property, so that a view
 // reaches for its BLOCK and never for the raw children it happens to have been handed.
@@ -39,6 +39,17 @@ export const children = $children$;
 // IN, so anything asking a written tag learns what happened rather than
 // inferring it from `resolve`, which says what to do and not what was done.
 export const resolved = Symbol("$Formula.resolved");
+
+// THE BASIC WORDS A CHEMICAL ANSWERS TO, carried as symbols so they cost no word in
+// the vocabulary of whatever is built on it: `this[next]('mount')`, `[selector] =
+// style.main`. `view`, `frame` and `parent` stay public.
+export const formula = Symbol("$Chemical.formula");
+export const resolve = Symbol("$Chemical.resolve");
+export const persist = Symbol("$Chemical.persist");
+export const inline = Symbol("$Particle.inline");
+export const selector = Symbol("$Particle.selector");
+export const styled = Symbol("$Particle.styled");
+export const next = Symbol("$Particle.next");
 
 export const $remove$ = Symbol("$Chemical.remove");
 export const $molecule$ = Symbol("$Chemical.molecule");
@@ -73,6 +84,7 @@ export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
 // $renderView$ — internal render entry: $lift calls this instead of view(),
 // so the drawing goes through frame() without disturbing user view() overrides.
 export const $renderView$ = Symbol("$Particle.renderView");
+export const $draw$ = Symbol("$Particle.draw");
 
 // $views$ — the instance's view dictionary, keyed by position AND by name.
 export const $views$ = Symbol("$Particle.views");

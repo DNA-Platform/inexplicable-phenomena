@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { $, $Chemical } from '@/index';
+import { $, $Chemical, persist } from '@/index';
 import {
     StudyRoom, Sheet, SheetTitle, SheetMeta, Notes, Note, Pin, Chip, Strokes,
     Controls, Btn, Tally, Hint,
@@ -31,7 +31,7 @@ class $Note extends $Chemical {
 class $KeptNote extends $Note {
     $KeptNote() {
         this.$pid = 'Study.kept';
-        this.persist = true;
+        this[persist] = true;
     }
 
     override get label(): string { return 'persist'; }
@@ -47,7 +47,7 @@ class $Manuscript extends $Chemical {
 
     $Manuscript() {
         this.$pid = 'Study.manuscript';
-        this.persist = true;
+        this[persist] = true;
     }
 
     revise() { this.drafts++; }

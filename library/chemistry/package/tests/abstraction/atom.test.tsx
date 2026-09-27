@@ -4,6 +4,7 @@ import React from 'react';
 import { $ } from '@/abstraction/chemical';
 import { $Atom } from '@/abstraction/atom';
 import { hydration } from '@/implementation/hydration';
+import { persist } from '@/implementation/symbols';
 
 const settled = async () => { await Promise.resolve(); await Promise.resolve(); };
 
@@ -15,7 +16,7 @@ describe('$Atom — the atomic singleton', () => {
         const a = new $A();
         const b = new $A();
         expect(a).toBe(b);
-        expect(a.persist).toBe(true);
+        expect(a[persist]).toBe(true);
         expect(a.$pid).toBe('$A');
     });
 
@@ -47,9 +48,9 @@ describe('$Atom — the atomic singleton', () => {
         one.count = 5;
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('"count":5');
-        one.persist = false;
+        one[persist] = false;
         expect(localStorage.getItem('$Chemistry.hydration')).not.toContain('$Toggled');
-        one.persist = true;
+        one[persist] = true;
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('"count":5');
         one.count = 8;
@@ -76,7 +77,7 @@ describe('$Atom — the atomic singleton', () => {
         one.count = 3;
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('$Fickle');
-        one.persist = false;
+        one[persist] = false;
         expect(localStorage.getItem('$Chemistry.hydration')).not.toContain('$Fickle');
         one.count = 9;
         await settled();
@@ -133,7 +134,7 @@ describe('the bare flag — persist works on an ordinary chemical, no base class
         }
         const one = new $Plain() as any;
         one.$pid = 'Plain.one';
-        one.persist = true;
+        one[persist] = true;
         one.count = 4;
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('"count":4');
@@ -146,7 +147,7 @@ describe('the bare flag — persist works on an ordinary chemical, no base class
         }
         const one = new $Plain() as any;
         one.$pid = 'Plain.two';
-        one.persist = true;
+        one[persist] = true;
         one.count = 9;
         await settled();
 
@@ -155,7 +156,7 @@ describe('the bare flag — persist works on an ordinary chemical, no base class
         }
         const later = new $Later() as any;
         later.$pid = 'Plain.two';
-        later.persist = true;
+        later[persist] = true;
         expect(later.count).toBe(9);
         await settled();
         expect(localStorage.getItem('$Chemistry.hydration')).toContain('"count":9');
@@ -168,7 +169,7 @@ describe('the bare flag — persist works on an ordinary chemical, no base class
         }
         const one = new $Plain() as any;
         one.$pid = 'Plain.door';
-        one.persist = true;
+        one[persist] = true;
         one.count = 2;
         await settled();
         const pid = 'Plain.door';

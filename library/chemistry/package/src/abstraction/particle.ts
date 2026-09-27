@@ -7,7 +7,7 @@ import {
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
-    $renderView$, $views$, looks, style
+    $renderView$, $views$, $draw$, looks, compiled, inline, selector, styled, next
 } from "../implementation/symbols";
 import { compile, given, styledFor, providing } from "./styled";
 import { $handed$, $recall$, $defaults$, theme } from "../implementation/symbols";
@@ -72,13 +72,13 @@ export class $Particle {
 
     // Inline vs block: a class declares itself inline (flows within a text block)
     // in its constructor; block is the default. Read from the template, frozen.
-    inline = false;
+    [inline] = false;
 
-    // What this class is styled as — `selector = styled.main` says it renders
+    // What this class is styled as — `[selector] = style.main` says it renders
     // through a <main> carrying the CSS its fields declare. A finished styled
-    // component stands as it is and nothing compiles. `styled` is the explicit
+    // component stands as it is and nothing compiles. [styled] is the explicit
     // word: undefined defers to the selector, true and false decide outright.
-    selector?: any;
+    [selector]?: any;
 
     // The theme this chemical was handed — styled-components' own, read in
     // the render, so a styled getter follows whatever provided it, a chemical
@@ -86,11 +86,11 @@ export class $Particle {
     // everything drawn beneath; a class that narrows the type answers the
     // same and stays a reader. A symbol, so it claims no name of the class's.
     get [theme](): any { return (this as any)[$handed$]; }
-    styled?: boolean;
+    [styled]?: boolean;
 
     // The compiled component, built once per class and read through the
     // prototype by every instance of it.
-    get [style](): any { return compile(this)?.component; }
+    get [compiled](): any { return compile(this)?.component; }
 
     get [$prototype$]() { return Object.getPrototypeOf(this); }
 
@@ -150,14 +150,14 @@ export class $Particle {
     // draw — the content itself, before anything wraps it: the view the look
     // selects, styled as the class declared it. Nothing is added to the tree
     // here, so what the view wrote is what a frame is handed.
-    draw(): ReactNode {
+    [$draw$](): ReactNode {
         const table = this[$views$];
         const drawn = table.get(this.$look ?? 0);
 
         if (!drawn) throw new Error(missingLook(this, table, this.$look));
 
         const view = drawn.call(this);
-        return this.selector === undefined ? view : styling(this, view);
+        return this[selector] === undefined ? view : styling(this, view);
     }
 
     // frame — the render template method. $lift's render entry calls
@@ -173,7 +173,7 @@ export class $Particle {
     }
 
     [$renderView$](): ReactNode {
-        return providing(this, this.frame(this.draw()));
+        return providing(this, this.frame(this[$draw$]()));
     }
 
     // The view dictionary — every look this instance can draw, held under its
@@ -218,7 +218,7 @@ export class $Particle {
         return clone;
     }
 
-    next(phase: $Phase): Promise<void> {
+    [next](phase: $Phase): Promise<void> {
         if (phase === 'construction') {
             return (this[$construction$] || Promise.resolve()) as Promise<void>;
         }
@@ -329,7 +329,7 @@ function deepestLook(particle: any): number {
 // values the compiled interpolations read. NOTHING IS ADDED TO THE TREE: the
 // element the view wrote is the element the page gets. Reached only when a
 // selector was declared, so nothing else pays for it — and a class wanting the
-// component itself overrides frame() and reaches it at [style].
+// component itself overrides frame() and reaches it at [compiled].
 function styling(particle: any, drawn: ReactNode): ReactNode {
     const made = styledFor(particle);
     if (!made) return drawn;

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import React from 'react';
 import { $Chemical, $ } from '@/abstraction/chemical';
+import { next } from '@/implementation/symbols';
 
 // =============================================================================
 // Async bond constructors — first-class async data loading.
@@ -11,7 +12,7 @@ import { $Chemical, $ } from '@/abstraction/chemical';
 // the chemical's [$construction$] event. When the bundle settles, the view
 // re-renders with whatever post-await state the ctor set.
 //
-// `chemical.next('construction')` returns the bundle promise. Resolves
+// `chemical[next]('construction')` returns the bundle promise. Resolves
 // immediately if the ctor was sync (or didn't run); resolves when the
 // Promise.allSettled bundle completes if it was async. Includes the
 // context-parent's construction in the bundle (chain).
@@ -50,7 +51,7 @@ describe('async bond ctor — sync prologue and async tail', () => {
 });
 
 
-describe('chemical.next("construction") — awaitable from outside', () => {
+describe('chemical[next]("construction") — awaitable from outside', () => {
     it('resolves after the async bond ctor settles', async () => {
         class $Slow extends $Chemical {
             $num = 0;

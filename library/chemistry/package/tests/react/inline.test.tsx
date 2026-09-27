@@ -3,6 +3,7 @@ import { render, act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical, $Html$, $check } from '@/abstraction/chemical';
 import { children } from '@/index';
+import { inline } from '@/implementation/symbols';
 
 // The block/inline content model, framework level. `string`, `number`, `block` are
 // intrinsic elements that lift through the SAME HTML path as real tags — no extra
@@ -14,11 +15,11 @@ describe('inline / block on the $Html$ abstraction', () => {
     // they are no longer content-node TYPES of their own. They are still inline —
     // isInline answers for them directly.
     it('inline is read from the type: inline tags inline; block and div block', () => {
-        expect(new $Html$('block').inline).toBe(false);
-        expect(new $Html$('span').inline).toBe(true);
-        expect(new $Html$('em').inline).toBe(true);
-        expect(new $Html$('div').inline).toBe(false);
-        expect(new $Html$('p').inline).toBe(false);
+        expect(new $Html$('block')[inline]).toBe(false);
+        expect(new $Html$('span')[inline]).toBe(true);
+        expect(new $Html$('em')[inline]).toBe(true);
+        expect(new $Html$('div')[inline]).toBe(false);
+        expect(new $Html$('p')[inline]).toBe(false);
     });
 
     // CHANGED 2026-08-18: there is no string node and no number node. $Block
@@ -52,7 +53,7 @@ describe('inline / block on the $Html$ abstraction', () => {
     it('an inline HTML element lifts to an inline $Html$ and renders its content', () => {
         const b = $(<b>bold</b>);
         expect(b).toBeInstanceOf($Html$);
-        expect(b.inline).toBe(true);
+        expect(b[inline]).toBe(true);
         const B = $(b);
         const { container } = render(<B />);
         expect(container.querySelector('b')?.textContent).toBe('bold');
@@ -68,7 +69,7 @@ describe('inline / block on the $Html$ abstraction', () => {
         render(<Host>Call me <b>Ishmael</b> today</Host>);
         expect(received.length).toBe(1);            // the whole inline run collapses to one block
         expect(received[0].type).toBe('block');
-        expect(received[0].inline).toBe(false);
+        expect(received[0][inline]).toBe(false);
         const Blk = $(received[0]);
         const { container } = render(<Blk />);
         expect(container.textContent).toBe('Call me Ishmael today');
@@ -76,7 +77,7 @@ describe('inline / block on the $Html$ abstraction', () => {
 
     it('a plain $Chemical is block by default', () => {
         class $Thing extends $Chemical { view() { return <i />; } }
-        expect(new $Thing().inline).toBe(false);
+        expect(new $Thing()[inline]).toBe(false);
     });
 
     it('$Block exposes its members: raw prose as itself, tags as $Html nodes', () => {

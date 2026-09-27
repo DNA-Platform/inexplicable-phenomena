@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styledImport, { ThemeProvider } from 'styled-components';
-import { $type$, $$template$$, $isChemicalBase$, $handed$, $provided$, $original$, theme, framework } from '../implementation/symbols';
+import { $type$, $$template$$, $isChemicalBase$, $handed$, $provided$, $original$, theme, framework, selector, styled } from '../implementation/symbols';
 import { names as roster } from '../implementation/css';
 
 // ===========================================================================
@@ -18,7 +18,7 @@ import { names as roster } from '../implementation/css';
 // The one resolution of styled-components' dual shape: v6's default import is
 // the callable under ESM and sits at .default under CJS. Exported so nothing
 // downstream writes this again.
-export const styled = ((styledImport as any).div ? styledImport : (styledImport as any).default) as typeof styledImport;
+export const style = ((styledImport as any).div ? styledImport : (styledImport as any).default) as typeof styledImport;
 
 // What a class renders through, the element that component ends at, and every
 // live property the whole chain reads — one spread at the element feeds every
@@ -306,14 +306,14 @@ function standing(cls: any): Map<any, Map<string, string>> {
 // ===========================================================================
 
 function selectorOf(cls: any): any {
-    return template(cls)?.selector;
+    return template(cls)?.[selector];
 }
 
 // undefined defers to the selector; true and false are the explicit word.
 function opted(cls: any): boolean {
     const mine = template(cls);
     if (!mine) return false;
-    return mine.styled === undefined ? mine.selector !== undefined : !!mine.styled;
+    return mine[styled] === undefined ? mine[selector] !== undefined : !!mine[styled];
 }
 
 // The element a styled component ends at. styled(Parent) holds what it extends,
@@ -391,7 +391,7 @@ function build(cls: any, per: Map<any, Map<string, string>>): $Styled | null {
     };
     emit(tree);
 
-    const from = (typeof base === 'function' ? base : styled(base as any)).withConfig({ componentId: identity(parts, live) });
+    const from = (typeof base === 'function' ? base : style(base as any)).withConfig({ componentId: identity(parts, live) });
     const text = Object.assign([...parts], { raw: [...parts] });
     return seat(from(text as any, ...values), live);
 }

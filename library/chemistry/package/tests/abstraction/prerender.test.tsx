@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import { renderToString } from 'react-dom/server';
 import { hydrateRoot } from 'react-dom/client';
 import { act, cleanup } from '@testing-library/react';
-import { $, $Chemical, $Theme, children, styled, theme } from '@/index';
+import { $, $Chemical, $Theme, children, compiled, selector, theme } from '@/index';
 
 afterEach(cleanup);
 
@@ -13,7 +13,7 @@ afterEach(cleanup);
 // Nothing crosses the wire but the markup and the sheet.
 
 class $Card extends $Chemical {
-    selector = styled.article;
+    [selector] = style.article;
     get background() { return this[theme]?.paper ?? 'rgb(1, 1, 1)'; }
     view(): ReactNode { return <article>{this[children]}</article>; }
 }
@@ -115,8 +115,8 @@ import { render } from '@testing-library/react';
 describe('prerender — the compile and persistence agree on both sides', () => {
     it("a styled class's component id is its text, never its compile order and never its class's name", () => {
         class $Wide extends $Card { maxWidth = '10px'; }
-        const card = (new $Card() as any)[style]?.styledComponentId ?? (new $Card() as any)[style]?.styledComponentId;
-        const wide = (new $Wide() as any)[style]?.styledComponentId;
+        const card = (new $Card() as any)[compiled]?.styledComponentId ?? (new $Card() as any)[compiled]?.styledComponentId;
+        const wide = (new $Wide() as any)[compiled]?.styledComponentId;
         expect(card).toMatch(/^chem-[0-9a-z]+$/);
         expect(wide).toMatch(/^chem-[0-9a-z]+$/);
         expect(wide).not.toBe(card);
@@ -125,7 +125,7 @@ describe('prerender — the compile and persistence agree on both sides', () => 
 
     it("a field named by a CSS property the environment's style object lacks still compiles", () => {
         class $Balanced extends $Chemical {
-            selector = styled.p;
+            [selector] = style.p;
             textWrap = 'balance';
             inset = '0';
             view(): ReactNode { return <p>balanced</p>; }

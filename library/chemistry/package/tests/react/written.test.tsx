@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { $, $Chemical } from '@/abstraction/chemical';
+import { inline } from '@/implementation/symbols';
 
 // $(<X/>, ...written) — a bond constructor handed what it composes.
 //
@@ -20,7 +21,7 @@ const Held = $($Held);
 // Inline, the way every writing below a document is — so it flows within a
 // block rather than standing beside one.
 class $Word extends $Chemical {
-    constructor() { super(); this.inline = true; }
+    constructor() { super(); this[inline] = true; }
     $Word(...parts: any[]) { this.parts = parts; }
     parts: any[] = [];
     view() { return null; }

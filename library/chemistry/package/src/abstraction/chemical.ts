@@ -8,7 +8,7 @@ import {
     $phase$, $phases$, $resolve$, $update$, $viewCache$, $rendering$, $original$,
     $isChemicalBase$, $lifted$, $construction$, $deriveInit$,
     $devError$, $devException$, $watched$,
-    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, $recall$, framework
+    $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, $recall$, framework, formula, resolve, persist, inline
 } from "../implementation/symbols";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
@@ -392,11 +392,11 @@ export class $Synthesis<T extends $Chemical = $Chemical> {
         if (child == null || typeof child === 'boolean') return false;
         if (typeof child === 'string' || typeof child === 'number') return true;
         // An already-built chemical answers for itself.
-        if (child instanceof $Chemical) return child.inline;
+        if (child instanceof $Chemical) return child[inline];
         if (!React.isValidElement(child)) return false;
         const type = (child as any).type;
         if (typeof type === 'string') return $inlineTypes.has(type);
-        if (typeof type === 'function') return !!(type as any).$chemical?.inline;
+        if (typeof type === 'function') return !!(type as any).$chemical?.[inline];
         return false;
     }
 
@@ -903,7 +903,7 @@ function templateOf(cls: any): any {
 }
 
 function isFormula(cls: any): boolean {
-    return !!templateOf(cls)?.formula;
+    return !!templateOf(cls)?.[formula];
 }
 
 // `formula = 'new'` starts a catalogue of its own, so a name filed here never
@@ -911,8 +911,8 @@ function isFormula(cls: any): boolean {
 // whose PARENT does not say it: a class field is initialized on every subclass's
 // template too, so the value alone cannot say which class wrote it.
 function fresh(cls: any): boolean {
-    return templateOf(cls)?.formula === 'new'
-        && templateOf(Object.getPrototypeOf(cls))?.formula !== 'new';
+    return templateOf(cls)?.[formula] === 'new'
+        && templateOf(Object.getPrototypeOf(cls))?.[formula] !== 'new';
 }
 
 function branch(cls: any): any[] {
@@ -1009,13 +1009,13 @@ function missing(formula: any, asked: string, names: string[]): string {
 }
 
 export class $Chemical extends $Particle {
-    resolve = true;
-    formula: boolean | 'new' = false;
+    [resolve] = true;
+    [formula]: boolean | 'new' = false;
     $pid?: string;
     protected _persist = false;
 
-    get persist(): boolean { return this._persist; }
-    set persist(persist: boolean) {
+    get [persist](): boolean { return this._persist; }
+    set [persist](persist: boolean) {
         if (this._persist && !persist) hydration.clear(this);
         this._persist = persist;
         if (persist) {
@@ -1055,7 +1055,7 @@ export class $Chemical extends $Particle {
     }
 
     [$formula$](element: React.ReactElement, asker?: any): any {
-        if (!this.formula || !this.resolve) return undefined;
+        if (!this[formula] || !this[resolve]) return undefined;
         seed((this as any)[$type$]);
         const key = (this as any)[$keyOf$]((element.props as any)?.children);
         if (key === undefined) return undefined;
@@ -1113,6 +1113,7 @@ export class $Chemical extends $Particle {
 
     get parent(): $Chemical | undefined { return this[$parent$]; }
     set parent(parent: $Chemical) { this[$parent$] = parent; }
+
 
     [$resolveComponent$](): Component<any> {
         if (Object.prototype.hasOwnProperty.call(this, $component$)) return this[$component$]!;
@@ -1296,7 +1297,7 @@ export class $Html$<T extends $HtmlTag = any> extends $Chemical {
     constructor(type: T) {
         super();
         this._type = type;
-        this.inline = $inlineTypes.has(type as string);
+        this[inline] = $inlineTypes.has(type as string);
     }
 
     view(): ReactNode {

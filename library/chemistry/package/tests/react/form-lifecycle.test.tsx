@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical } from '@/abstraction/chemical';
+import { next } from '@/implementation/symbols';
 
 describe('$form lifecycle hook', () => {
     it('sync $form runs once after mount', async () => {
@@ -69,7 +70,7 @@ describe('$form lifecycle hook', () => {
         render(<C />);
 
         await act(async () => {
-            await c.next('formation');
+            await c[next]('formation');
             formed = true;
         });
         expect(formed).toBe(true);
@@ -83,7 +84,7 @@ describe('$form lifecycle hook', () => {
         const C = $(c);
         render(<C />);
         await act(async () => {
-            await c.next('formation');
+            await c[next]('formation');
         });
         expect(true).toBe(true);
     });
@@ -92,7 +93,7 @@ describe('$form lifecycle hook', () => {
         let phaseAtFormTime: string | undefined;
         class $C extends $Chemical {
             $form() {
-                phaseAtFormTime = this.next('mount').constructor.name;
+                phaseAtFormTime = this[next]('mount').constructor.name;
             }
             view() { return null; }
         }

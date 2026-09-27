@@ -3,6 +3,7 @@ import { render, fireEvent, act } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical } from '@/abstraction/chemical';
 import { $phase$, $resolve$ } from '@/implementation/symbols';
+import { next } from '@/implementation/symbols';
 
 class $Display extends $Chemical {
     $text? = 'initial';
@@ -53,7 +54,7 @@ describe('Lifecycle: awaiting next(phase) resolves after the framework reaches t
         const display = new $Display();
         const Display = $(display);
         let mounted = false;
-        display.next('mount').then(() => { mounted = true; });
+        display[next]('mount').then(() => { mounted = true; });
         render(<Display />);
         await act(async () => { await new Promise(r => setTimeout(r, 10)); });
         expect(mounted).toBe(true);

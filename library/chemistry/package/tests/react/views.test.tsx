@@ -3,6 +3,7 @@ import { render, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { $, $Particle, $Chemical, look } from '@/index';
 import { $views$ } from '@/implementation/symbols';
+import { $draw$ } from '@/implementation/symbols';
 
 // =============================================================================
 // The series of looks — `view`, `$view`, `$$view`, and onward.
@@ -108,7 +109,7 @@ describe('the series — a class declares its looks', () => {
         const vast = new $Vast();
         expect(vast[$views$].size).toBe(41);
         vast.$look = 40;
-        expect(vast.draw()).toBe(40);
+        expect(vast[$draw$]()).toBe(40);
     });
 
     it('a CHAIN of subclasses each adding one reaches the same depth', () => {
@@ -132,7 +133,7 @@ describe('the series — a class declares its looks', () => {
 
         const seven = new $Seven();
         seven.$look = 7;
-        expect(() => seven.draw()).toThrow(/Nothing stands at look 7 — \$Seven draws 7\./);
+        expect(() => seven[$draw$]()).toThrow(/Nothing stands at look 7 — \$Seven draws 7\./);
     });
 
     it('a gap in the series is refused, and the message names the member that is missing', () => {
@@ -265,13 +266,13 @@ describe('$look — the choice', () => {
     it('a position out of bounds is refused, naming what was asked and how many there are', () => {
         const sheet = new $Sheet();
         sheet.$look = 9;
-        expect(() => sheet.draw()).toThrow(/Nothing stands at look 9 — \$Sheet draws 3\./);
+        expect(() => sheet[$draw$]()).toThrow(/Nothing stands at look 9 — \$Sheet draws 3\./);
     });
 
     it('a name that is not a look is refused, naming the names that are', () => {
         const sheet = new $Sheet();
         sheet.$look = 'nope';
-        expect(() => sheet.draw()).toThrow(/no look called nope — it draws github, night\./);
+        expect(() => sheet[$draw$]()).toThrow(/no look called nope — it draws github, night\./);
     });
 
     it('a write in a HANDLER repaints through the ordinary reactive field', () => {
@@ -332,7 +333,7 @@ for (const [root, Root] of [['$Particle', $Particle], ['$Chemical', $Chemical]] 
         it('out of bounds is refused', () => {
             const leaf: any = new Leaf();
             leaf.$look = 7;
-            expect(() => leaf.draw()).toThrow(/Nothing stands at look 7 — Leaf draws 3\./);
+            expect(() => leaf[$draw$]()).toThrow(/Nothing stands at look 7 — Leaf draws 3\./);
         });
     });
 }

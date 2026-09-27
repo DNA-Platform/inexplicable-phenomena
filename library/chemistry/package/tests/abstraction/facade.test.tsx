@@ -3,6 +3,7 @@ import { render, fireEvent, cleanup } from '@testing-library/react';
 import React, { ReactNode } from 'react';
 import { $, $Block, $Chemical, $Formula, cache } from '@/index';
 import { children } from '@/index';
+import { inline } from '@/implementation/symbols';
 
 // A LEVEL answers an interface by name. A chemical that assigns itself to one
 // is drawn inside it, wherever it is written.
@@ -45,7 +46,7 @@ class $Fancy extends $Level {
 const Fancy = $($Fancy);
 
 class $Thing extends $Chemical {
-    inline = true;
+    [inline] = true;
     facade = Level;
     $at = 0;
     faces = ['x', 'y', 'z'];
@@ -62,7 +63,7 @@ class $Thing extends $Chemical {
 const Thing = $($Thing);
 
 class $Plain extends $Chemical {
-    inline = true;
+    [inline] = true;
 
     override view(): ReactNode {
         return <span>plain</span>;
@@ -99,7 +100,7 @@ class $Both extends $Chemical {
 const Both = $($Both);
 
 class $Stateful extends $Chemical {
-    inline = true;
+    [inline] = true;
     $at = 0;
     faces = ['x', 'y', 'z'];
     get copy(): string { return this.faces[this.$at]; }

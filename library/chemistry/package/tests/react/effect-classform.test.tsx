@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import React from 'react';
 import { $, $Chemical } from '@/abstraction/chemical';
+import { next } from '@/implementation/symbols';
 
 describe('async bond constructor on class-form chemicals', () => {
     it('async bond ctor runs after mount for class-form $($X)', async () => {
@@ -10,7 +11,7 @@ describe('async bond constructor on class-form chemicals', () => {
             status = 'init';
             async $E() {
                 ctorRan = true;
-                await this.next('mount');
+                await this[next]('mount');
                 this.status = 'mounted';
             }
             view() { return <span className="s">{this.status}</span>; }

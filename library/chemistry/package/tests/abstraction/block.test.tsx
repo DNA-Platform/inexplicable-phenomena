@@ -4,6 +4,7 @@ import React from 'react';
 import { $, $Block, $Chemical, $check, type $Html, type $Inline } from '@/index';
 import { $Html$ } from '@/abstraction/chemical';
 import { children } from '@/index';
+import { inline } from '@/implementation/symbols';
 
 // $Block — what a bond constructor is handed for prose, and the one content kind
 // with behaviour of its own.
@@ -13,7 +14,7 @@ import { children } from '@/index';
 // falling out into an array on the first one.
 
 class $Word extends $Chemical {
-    constructor() { super(); this.inline = true; }
+    constructor() { super(); this[inline] = true; }
     view() { return <b>{this[children]}</b>; }
 }
 const Word = $($Word);
@@ -194,7 +195,7 @@ describe('a block answers as the html it is', () => {
         expect(block).toBeInstanceOf($Html$);
         expect(block).toBeInstanceOf($Block);
         expect(block.type).toBe('block');
-        expect(block.inline).toBe(false);
+        expect(block[inline]).toBe(false);
     });
 
     it('$check passes it as the base class, as the subclass, and as the tag', () => {

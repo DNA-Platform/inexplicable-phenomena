@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { $, $Chemical, cache } from '@/index';
+import { formula } from '@/implementation/symbols';
 
 // One shared catalogue. Two kinds under it. Both file the same name.
 class $Card extends $Chemical {
-    formula: boolean | 'new' = true;
+    [formula]: boolean | 'new' = true;
     view() { return <span data-kind={this.constructor.name} />; }
 }
 class $Subject extends $Card { }

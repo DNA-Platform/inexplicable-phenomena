@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { $Particle, isParticle } from '@/abstraction/particle';
 import { $Chemical } from '@/abstraction/chemical';
 import {
-    $cid$, $type$, $symbol$, $phases$, $particleMarker$,
+    $cid$, $type$, $symbol$, $phases$, $particleMarker$, next,
 } from '@/implementation/symbols';
 
 describe('particularization — new $Particle(particular)', () => {
@@ -45,7 +45,7 @@ describe('particularization — new $Particle(particular)', () => {
         const carrier = new $Particle(err);
         expect(Object.prototype.hasOwnProperty.call(carrier, 'view')).toBe(true);
         expect(Object.prototype.hasOwnProperty.call(carrier, 'toString')).toBe(true);
-        expect(Object.prototype.hasOwnProperty.call(carrier, 'next')).toBe(true);
+        expect(Object.prototype.hasOwnProperty.call(carrier, next)).toBe(true);
     });
 
     it('original object becomes the carrier prototype', () => {

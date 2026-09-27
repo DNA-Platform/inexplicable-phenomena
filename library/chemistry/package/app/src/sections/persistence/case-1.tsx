@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { $, $Atom, $Chemical, look } from '@/index';
+import { $, $Atom, $Chemical, look, persist } from '@/index';
 import {
     Desk, Hint,
     BookFace, Spread, PageHalf, ChapterTitle, TextLine, PageNumber, Ribbon, Tallies, Tally,
@@ -83,7 +83,7 @@ class $Reading extends $Atom {
 const Reading = $($Reading);
 
 class $ReadingRoom extends $Chemical {
-    retire() { new $Reading().persist = false; }
+    retire() { new $Reading()[persist] = false; }
 
     override view(): ReactNode {
         return (

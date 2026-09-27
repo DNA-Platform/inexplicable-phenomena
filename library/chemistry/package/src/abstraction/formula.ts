@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import { $Chemical } from './chemical';
-import { $children$, $isFormulaBase$ } from '../implementation/symbols';
+import { $children$, $isFormulaBase$, formula } from '../implementation/symbols';
 
 export class $Formula extends $Chemical {
-    override formula = true;
+    override [formula] = true;
 
     override view(): ReactNode {
         return this[$children$] ?? null;

@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { $Particle } from '@/abstraction/particle';
 import type { I } from '@/implementation/types';
+import { next } from '@/implementation/symbols';
 
 // $Error — particle that wraps a real Error. Constructor forwards the error
 // to $Particle for particularization, so the resulting carrier exposes both
@@ -17,7 +18,7 @@ export class $Error extends $Particle {
 
     // Static factory: takes any Error and returns the particularized carrier
     // typed as the intersection of both interfaces. Component devs reading
-    // `.message` see Error's API; reading `.view()` or `.next('mount')` see
+    // `.message` see Error's API; reading `.view()` or `[next]('mount')` see
     // $Error/$Particle's API.
     static view(error: Error): I<$Error> & I<Error> {
         return new $Error(error) as unknown as I<$Error> & I<Error>;

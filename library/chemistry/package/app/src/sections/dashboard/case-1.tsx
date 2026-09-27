@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical, $check } from '@/index';
+import { $, $Chemical, $check, next } from '@/index';
 import {
     DashGrid, CardFrame, CardTitle, LoadingText,
     SkeletonBlock, SkeletonBar,
@@ -53,7 +53,7 @@ class $MetricCard extends $DashboardCard {
     fresh = false;
 
     async $MetricCard() {
-        await this.next('mount');
+        await this[next]('mount');
         await new Promise(r => setTimeout(r, 800));
         this.value = this.$title === 'Revenue' ? 48250 : 12847;
         this.label = this.$title === 'Revenue' ? 'monthly total' : 'active this week';
@@ -82,7 +82,7 @@ class $ChartCard extends $DashboardCard {
     animated = false;
 
     async $ChartCard() {
-        await this.next('mount');
+        await this[next]('mount');
         await new Promise(r => setTimeout(r, 1200));
         this.data = [3, 7, 4, 9, 5, 6];
         this.loading = false;
@@ -115,7 +115,7 @@ class $StatusCard extends $DashboardCard {
     pop = false;
 
     async $StatusCard() {
-        await this.next('mount');
+        await this[next]('mount');
         await new Promise(r => setTimeout(r, 600));
         this.status = 'green';
         this.statusText = 'All systems operational';

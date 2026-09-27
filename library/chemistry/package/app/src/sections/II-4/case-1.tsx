@@ -1,5 +1,5 @@
 import React from 'react';
-import { $, $Chemical } from '@/index';
+import { $, $Chemical, next } from '@/index';
 import {
     WeatherFrame, WeatherTitle, WeatherLoading,
     ForecastRow, ForecastDay, ForecastIcon, ForecastTemp,
@@ -16,7 +16,7 @@ class $WeatherCard extends $Chemical {
     loaded = false;
 
     async $WeatherCard() {
-        await this.next('mount');
+        await this[next]('mount');
         await new Promise(r => setTimeout(r, 1200));
         this.loaded = true;
     }

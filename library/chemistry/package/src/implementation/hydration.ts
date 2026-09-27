@@ -4,7 +4,7 @@
 // same shape over. A chemical enrolls by being atomic; the false transition
 // clears its record; the bond setter alerts changed() on every committed write.
 
-import { $backing$, $defaults$, $molecule$, $reaction$, $template$ } from './symbols';
+import { $backing$, $defaults$, $molecule$, $reaction$, $template$, persist } from './symbols';
 
 const key = '$Chemistry.hydration';
 
@@ -81,7 +81,7 @@ export const hydration = {
     },
 
     changed(chemical: any): void {
-        if (recalling || !chemical.persist) return;
+        if (recalling || !chemical[persist]) return;
         const pid = this.pidOf(chemical);
         if (pid === undefined) return;
         enroll(pid, chemical);
@@ -93,7 +93,7 @@ export const hydration = {
             const flushed: [string, any][] = [];
             for (const one of dirty) {
                 const pid = hydration.pidOf(one);
-                if (pid !== undefined && one.persist) {
+                if (pid !== undefined && one[persist]) {
                     held[pid] = hydration.formationOf(one);
                     flushed.push([pid, one]);
                 }
