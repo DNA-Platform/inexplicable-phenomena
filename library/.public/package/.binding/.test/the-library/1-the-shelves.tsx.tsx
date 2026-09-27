@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import { $ } from '@dna-platform/chemistry';
-import { $Paragraph, Means as means, Reference as reference, Word as word } from '@dna-platform/public';
+import { $, $Chemical } from '@dna-platform/chemistry';
+import { $Paragraph, $Next, $Previous, Means as means, Reference as reference, Word as word } from '@dna-platform/public';
 
 // A RESOURCE OF THE FIRST CHAPTER: the library's name as a link to the library, which every book of
 // the test library could wear, and then the book it stands in and a link to that book's table, read
@@ -26,3 +26,37 @@ export class $RunningHead extends $Paragraph {
 }
 
 export const RunningHead = $($RunningHead);
+
+// THE CATCHWORD, at the foot of every chapter of every book: a Previous that shows the previous chapter's
+// title and a Next that shows the next's, each linking to that chapter's route — and at the ends, to its
+// own chapter, drawn as a self-reference. The words are the resource's business and not the component's:
+// a Next draws what is written in it, and these two draw the neighbour's title instead. Doug, 2026-09-27:
+// "Next and Previous could reach to their chapter and be chapter references. I like previous of the cover
+// is the cover and next of the last chapter is the last chapter."
+export class $PreviousTitle extends $Previous {
+    override write(): ReactNode { return this.chapter?.before.title?.name; }
+}
+
+export class $NextTitle extends $Next {
+    override write(): ReactNode { return this.chapter?.after.title?.name; }
+}
+
+export class $Catchword extends $Paragraph {
+    $Catchword(...chemicals: $Chemical[]) {
+        this.$Writing(...chemicals);
+        this.text.add(this, <PreviousTitle />, <NextTitle />);
+    }
+
+    override write(): ReactNode {
+        const [Previous, Next] = [...this.text].map(chemical => $(chemical));
+        return (
+            <>
+                <Previous /> · <Next />
+            </>
+        );
+    }
+}
+
+export const PreviousTitle = $($PreviousTitle);
+export const NextTitle = $($NextTitle);
+export const Catchword = $($Catchword);

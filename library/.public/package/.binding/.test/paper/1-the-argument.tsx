@@ -1,5 +1,5 @@
 import { Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
-import { RunningHead } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword, RunningHead } from '../the-library/1-the-shelves.tsx.tsx';
 
 // EVERY WAY A REFERENCE CAN BE WRITTEN, IN ONE CHAPTER: a book by name, a chapter of this book, a
 // chapter of another book, a reference that shows its own words — and one written in a STRING,
@@ -23,5 +23,6 @@ export default () => (
             </Paragraph>
             <Paragraph>And the evidence is in <Means>{evidence}</Means>.</Paragraph>
         </Section>
+        <Catchword />
     </Chapter>
 );

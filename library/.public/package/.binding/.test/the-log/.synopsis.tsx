@@ -1,4 +1,5 @@
 import { Chapter, Paragraph, Parenthetical, Synopsis, Title } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
@@ -8,5 +9,6 @@ export default () => (
             The one book here that is by what it is about. Every other book is written by it or by something it
             has vouched for, so authorship in this library begins here and nowhere else.
         </Paragraph>
+        <Catchword />
     </Chapter>
 );

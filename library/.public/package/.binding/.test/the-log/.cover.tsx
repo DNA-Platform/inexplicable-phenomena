@@ -1,4 +1,5 @@
 import { About, Author, Autobiography, Chapter, Cover, Subject, Title } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
@@ -8,5 +9,6 @@ export default () => (
         <Author>*[[ The Log ]]</Author>
         <Subject>**[[ The Library ]]</Subject>
         <About>[[ The Log ]]</About>
+        <Catchword />
     </Chapter>
 );

@@ -1,4 +1,5 @@
 import { Chapter, Heading, Paragraph, Section, Title } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
@@ -10,5 +11,6 @@ export default () => (
                 fragment its element wears, so a reference to it has somewhere to land.
             </Paragraph>
         </Section>
+        <Catchword />
     </Chapter>
 );

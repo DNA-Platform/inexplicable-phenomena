@@ -1,9 +1,11 @@
 import { Chapter, Paragraph, Parenthetical, Synopsis, Title } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
         <Synopsis />
         <Title><Parenthetical />[[ Synopsis ]]</Title>
         <Paragraph>An ordinary book: written by the log, filed under the library, about the work.</Paragraph>
+        <Catchword />
     </Chapter>
 );

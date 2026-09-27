@@ -1,4 +1,5 @@
 import { Chapter, Heading, Means, Mention, Paragraph, Section, Title } from '@dna-platform/public';
+import { Catchword } from './1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
@@ -18,5 +19,6 @@ export default () => (
                 The log says as much of itself: it stands on <Means>$[ ./The First Shelf ]</Means>.
             </Paragraph>
         </Section>
+        <Catchword />
     </Chapter>
 );

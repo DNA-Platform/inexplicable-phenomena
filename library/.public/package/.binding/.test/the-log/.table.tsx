@@ -1,4 +1,5 @@
 import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, TableOfContents, Title, Word } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
@@ -18,5 +19,6 @@ export default () => (
             <Heading>What stands under the log</Heading>
             <Paragraph><Word><Content>[[ A Persona ]]**</Content></Word>: <Word><Content>$[ A Persona / Synopsis ]</Content></Word></Paragraph>
         </Section>
+        <Catchword />
     </Chapter>
 );

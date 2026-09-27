@@ -1,4 +1,5 @@
 import { Chapter, Heading, Parenthetical, TableOfContents, Title } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 import { Entries } from './.table.tsx.tsx';
 
 // THE ONE TABLE OF THE TEST LIBRARY THAT IS DRAWN rather than written: its entries come from what its
@@ -12,5 +13,6 @@ export default () => (
         <Entries>
             <Heading>Contents</Heading>
         </Entries>
+        <Catchword />
     </Chapter>
 );

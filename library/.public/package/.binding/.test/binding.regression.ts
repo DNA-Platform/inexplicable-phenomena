@@ -142,8 +142,9 @@ describe('a bind of the test library', () => {
         const projects = page('Some Projects');
         expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/the-work\/"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
         expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/table-of-contents\/"[^>]*>[\s\S]*<\/nav>/u);
-        // THE SYNOPSIS ENTRY LINKS TO THE BOOK, as its title does, beside the cover's.
-        expect((/<nav[\s\S]*?<\/nav>/u.exec(projects)?.[0] ?? '').match(/<a href="\/some-projects\/"/gu)).toHaveLength(2);
+        // THE SYNOPSIS ENTRY LINKS TO THE BOOK, as its title does, beside the cover's — and since Sprint 86 the
+        // table chapter's catchword too, whose Previous is the synopsis and so means the book.
+        expect((/<nav[\s\S]*?<\/nav>/u.exec(projects)?.[0] ?? '').match(/<a href="\/some-projects\/"/gu)).toHaveLength(3);
         expect(projects).not.toMatch(/<nav[^>]*>[\s\S]*pa-content[\s\S]*<\/nav>/u);
     });
 
@@ -186,6 +187,38 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/\.pd-annotation\s*\{\s*display:\s*none/u);
         }
     });
+
+    // THE CATCHWORD — Sprint 86: a Previous and a Next at the foot of every chapter, each the neighbour's title
+    // linking to its route, and at the ends a self-reference. Doug: "I like previous of the cover is the cover
+    // and next of the last chapter is the last chapter - I prefer self-reference to undefined."
+    it('drew at the foot of the paper\'s chapters a catchword whose Next links the next chapter and whose Previous the one before, the ends self-references', () => {
+        const argument = chapterPage('A Paper', 'The Argument');
+        expect(argument).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pa-reference">The Evidence/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/table-of-contents\/"[^>]*><span class="pa-reference">Table of Contents/u);
+        const evidence = chapterPage('A Paper', 'The Evidence');
+        expect(evidence).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pa-reference pa-self-reference">The Evidence/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*><span class="pa-reference">The Argument/u);
+        expect(page('A Paper')).toMatch(/<a href="\/a-paper\/"[^>]*><span class="pa-reference pa-self-reference">A Paper/u);
+    });
+
+    // PAGINATED — Sprint 86: Some Projects' chapters are pages, marked once, and the page the address names is
+    // the open one; every other book is untouched.
+    it('marked Some Projects paginated, every chapter a page and the addressed chapter alone open, and no other book', () => {
+        const projects = page('Some Projects');
+        expect(projects).toMatch(/class="[^"]*\bpa-paginated\b/u);
+        expect(projects.match(/class="[^"]*\bpa-page\b/gu)).toHaveLength(4);
+        expect(projects.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
+        // THE CLASSES IN ANY ORDER: an annotation's class is taken back and put again at every define, so it moves.
+        expect(projects).toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
+        expect(projects).toMatch(/\.pa-paginated \.pa-page:not\(\.pa-open\)\s*\{\s*display:\s*none/u);
+        const work = chapterPage('Some Projects', 'The Work');
+        expect(work.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
+        expect(work).toMatch(/class="[^"]*\bpa-open\b[^"]*"[^>]*>(?:(?!<\/span>)[\s\S])*?id="the-work"/u);
+        expect(work).not.toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
+        for (const route of table.routes)
+            if (route.name !== 'Some Projects')
+                expect(page(route.name), route.name).not.toMatch(/\bpa-paginated\b|\bpa-page\b|\bpa-open\b/u);
+    });
 });
 
 // WHAT A READER SEES — R25: the pages the bind wrote, served as the preview serves them and driven in
@@ -213,7 +246,8 @@ describe('the bound test library, seen in a real browser', () => {
     });
 
     it('shows the paper\'s cover in its header, and the byline its book draws, with no annotation\'s writing showing', async () => {
-        expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A Paper');
+        // THE COVER'S TITLE, THEN ITS CATCHWORD — itself and the synopsis — since Sprint 86; every span inline.
+        expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A PaperA Paper · Synopsis');
         const byline = await paper.$$eval('#root span', spans => spans.map(span => span.innerText.replace(/\s+/gu, ' ').trim())
             .filter(text => text.startsWith('by ')).sort((one, other) => one.length - other.length)[0]);
         expect(byline).toBe('by A Persona, filed under The Library');
@@ -221,10 +255,11 @@ describe('the bound test library, seen in a real browser', () => {
     });
 
     it('shows a table\'s entries and hides its parenthetical ones, where the proof still reads them', async () => {
-        // FOUR: the table's own title, parenthetical, and its three parenthetical entries.
+        // FOUR HIDDEN: the table's own title, parenthetical, and its three parenthetical entries — and one shown,
+        // the table chapter's catchword's Previous, the synopsis, which means the book, since Sprint 86.
         const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/synopsis/"], nav a[href="/a-paper/table-of-contents/"]',
             links => links.map(link => link.getClientRects().length === 0));
-        expect(hidden).toEqual([true, true, true, true]);
+        expect(hidden).toEqual([true, true, true, true, false]);
         const shown = await paper.$eval('nav', nav => nav.innerText);
         expect(shown).toContain('The Argument');
         expect(shown).toContain('The Evidence');
@@ -285,6 +320,37 @@ describe('the bound test library, seen in a real browser', () => {
         expect(top).toBeGreaterThanOrEqual(0);
         expect(top).toBeLessThan(100);
         await log.close();
+    });
+
+    // PAGINATED, SEEN — Doug: "I am happy to see scrolling and next/previous simple paginated chapters as an
+    // example of what can be done in the test library." One chapter shows at a time, and the catchword's
+    // Previous turns the page in place.
+    it('shows on the work\'s page the work alone, the synopsis not displayed, and its Previous turns to the table in place', async () => {
+        const projects = await browser!.newPage();
+        await projects.goto(new URL('/some-projects/the-work/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const shown = await projects.$eval('#root', root => root.innerText);
+        expect(shown).toContain('Some chapters name nothing');
+        expect(shown).not.toContain('An ordinary book');
+        expect(await projects.$$eval('.pa-page', pages => pages.map(page => page.getClientRects().length > 0))).toEqual([false, false, false, true]);
+        await projects.evaluate(() => { (window as unknown as { samePage: boolean }).samePage = true; });
+        await projects.click('.pa-open a[href="/some-projects/table-of-contents/"]');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await projects.evaluate(() => location.pathname)).toBe('/some-projects/table-of-contents/');
+        expect(await projects.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
+        const turned = await projects.$eval('#root', root => root.innerText);
+        expect(turned).not.toContain('Some chapters name nothing');
+        expect(turned).toContain('The Work');
+        expect(await projects.$$eval('.pa-page', pages => pages.map(page => page.getClientRects().length > 0))).toEqual([false, false, true, false]);
+        await projects.close();
+    });
+
+    // A SELF-REFERENCE DRAWS WITHOUT AN UNDERLINE — the catchword's Next at the end of the paper.
+    it('shows the evidence\'s catchword: its Next a self-reference without an underline, its Previous a link with one', async () => {
+        const evidence = await browser!.newPage();
+        await evidence.goto(new URL('/a-paper/the-evidence/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await evidence.$eval('a:has(> .pa-self-reference)', link => getComputedStyle(link).textDecorationLine)).toBe('none');
+        expect(await evidence.$eval('a[href="/a-paper/the-argument/"]:has(> .pa-reference:not(.pa-self-reference))', link => getComputedStyle(link).textDecorationLine)).toBe('underline');
+        await evidence.close();
     });
 });
 

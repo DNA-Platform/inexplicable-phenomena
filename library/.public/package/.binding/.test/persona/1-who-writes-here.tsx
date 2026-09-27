@@ -1,4 +1,5 @@
 import { Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
@@ -10,5 +11,6 @@ export default () => (
                 What it has written so far is <Means>$[ A Paper ]</Means>.
             </Paragraph>
         </Section>
+        <Catchword />
     </Chapter>
 );

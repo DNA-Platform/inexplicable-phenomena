@@ -1,4 +1,5 @@
 import { Chapter, Paragraph, Parenthetical, Synopsis, Title } from '@dna-platform/public';
+import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
 
 export default () => (
     <Chapter>
@@ -8,5 +9,6 @@ export default () => (
             A book that may write, because the log catalogues it and the log wrote it. It is the only author here
             besides the log, and everything it writes is vouched for through that one fact.
         </Paragraph>
+        <Catchword />
     </Chapter>
 );
