@@ -4,7 +4,7 @@ import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
 import { identifier } from '@/utilities/Identifier';
 import { specify } from '@/utilities/Specification';
-import { CompositionSpecification } from './Composition';
+import { CompositionSpecification, Block as block } from './Composition';
 import { $Sentence } from './Sentence';
 import { $Section } from './Section';
 import { $Reference, Self as self } from './Reference';
@@ -21,6 +21,10 @@ export class $Heading extends $Sentence {
     protected override $Define(): void {
         super.$Define();
         this.classes.add(this, 'pd-heading');
+        const Block = $(block);
+        this.annotations.add(this,
+            <Block />
+        );
         const link = binder.reference(html.copy(this.text));
         const name = link?.name ?? html.copy(this.text).trim();
         if (name === '') return;

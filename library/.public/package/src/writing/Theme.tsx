@@ -37,11 +37,11 @@ export class $Theme extends $Format {
         .pd-chapter { margin-block: calc(2 * ${value('space')}); }
         .pd-section { margin-block: ${value('space')}; }
         .pd-paragraph { margin-block: ${value('space')}; }
-        .pd-sentence { display: inline; }
-        .pd-word { display: inline; }
-        .pd-letter { display: inline; }
-        .pd-title { display: block; font-size: calc(1.5 * ${value('size')}); font-weight: bold; margin-block-end: ${value('space')}; }
-        .pd-heading { display: block; font-weight: bold; margin-block: ${value('space')} 0; }
+        .pd-sentence { hyphens: manual; }
+        .pd-word { overflow-wrap: break-word; }
+        .pd-letter { font-kerning: normal; }
+        .pd-title { font-size: calc(1.5 * ${value('size')}); font-weight: bold; margin-block-end: ${value('space')}; }
+        .pd-heading { font-weight: bold; margin-block: ${value('space')} 0; }
         .pd-line { white-space: pre-wrap; }
         .pd-space { white-space: pre; }
         .pd-break { clear: both; }

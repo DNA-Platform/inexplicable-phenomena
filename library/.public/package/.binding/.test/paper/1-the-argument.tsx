@@ -1,4 +1,4 @@
-import { Break, Chapter, Heading, Means, Paragraph, Section, Space, Title } from '@dna-platform/public';
+import { Bold, Break, Chapter, Emphasis, Heading, Means, Paragraph, Section, Space, Title, Underline, Word } from '@dna-platform/public';
 import { Catchword, RunningHead } from '../the-library/1-the-shelves.tsx.tsx';
 
 // EVERY WAY A REFERENCE CAN BE WRITTEN, IN ONE CHAPTER: a book by name, a chapter of this book, a
@@ -16,7 +16,7 @@ export default () => (
         <Section>
             <Heading>[[[ What is claimed ]]]</Heading>
             <Paragraph>
-                A reference names a thing and never a place. The library this paper stands in is
+                A reference <Word><Emphasis />names</Word> a thing and <Word><Bold />never</Word> a <Word><Underline />place</Word>. The library this paper stands in is
                 <Means>$[ The Library ]</Means>; what supports the claim is <Means>$[ ./The Evidence ]</Means>; the work
                 it grew out of is <Means>$[ Some Projects / The Work ]</Means>; and the book that keeps the record is
                 <Means>$[ the log ]( The Log )</Means>.
