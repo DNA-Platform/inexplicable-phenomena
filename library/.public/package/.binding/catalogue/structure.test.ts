@@ -75,7 +75,7 @@ describe('the test library, read', () => {
     it('reads a table\'s listings: its chapters by reference, and a book it catalogues by its answer, with its synopsis', () => {
         const listings = [...(made.lists.get('libby')?.values() ?? [])];
         expect(listings.filter(l => l.kind === 'chapter').map(l => l.of).sort())
-            .toEqual(['libby/.synopsis.tsx', 'libby/.table.tsx', 'libby/1-who-i-am.tsx']);
+            .toEqual(['libby/.synopsis.tsx', 'libby/.table.tsx', 'libby/1-who-i-am.tsx', 'libby/2-the-books-i-keep.tsx']);
         expect(listings.filter(l => l.kind === 'book')).toMatchObject([{ of: 'persona', canonical: true, synopsis: true }]);
     });
 });

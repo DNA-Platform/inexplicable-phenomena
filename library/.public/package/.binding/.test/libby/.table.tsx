@@ -8,6 +8,7 @@ export default () => (
         <Section>
             <Heading>Contents</Heading>
             <Paragraph><Content>$[ ./Who I Am ]</Content></Paragraph>
+            <Paragraph><Content>$[ ./The Books I Keep ]</Content></Paragraph>
             <Paragraph>
                 <Parenthetical />
                 <Word><Content>$[ Libby ]</Content></Word>

@@ -132,6 +132,21 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(built<$Book>(<Book bookmark="/elsewhere/">{APaper()}{TheArgument()}</Book>).bookmark).toBeUndefined();
     });
 
+    // PITCHED, 2026-09-27, found by driving every link of the test library — Doug: "I clicked table of contents and of
+    // libby and I don't think either went to the right place." A catalogue's chapter holds another book's synopsis, and
+    // the Synopsis sends the chapter's title to that book at the bind, replacing the reference the compiler wrote; the
+    // bookmark is found by what a chapter's title means, so the chapter is no longer found at its own route. Expected
+    // to fail until Doug rules where a chapter keeps its address; the day it passes is the day to flip it.
+    it.fails('a catalogue\'s chapter, its title sent to the book it holds the synopsis of, is still the bookmark at its own route', () => {
+        const LibbySynopsis = (): React.ReactNode => (
+            <Chapter><Synopsis /><Title>[Synopsis](/libby/)</Title><Paragraph>A librarian's own account.</Paragraph></Chapter>
+        );
+        const OfLibby = (): React.ReactNode => <Chapter><Title>[Of Libby](/the-library/of-libby/)</Title><Synopsis>{LibbySynopsis()}</Synopsis></Chapter>;
+        const book = built<$Book>(<Book bookmark="/the-library/of-libby/">{APaper()}{OfLibby()}</Book>);
+        expect(book.parts[1].title?.means?.identifier).toBe('/libby/');
+        expect(book.bookmark).toBe(book.parts[1]);
+    });
+
     it('mounted, turns to its bookmark, and turns again when the bookmark moves', async () => {
         const turned = vi.fn();
         Element.prototype.scrollIntoView = function (this: Element) { turned(this.id); };

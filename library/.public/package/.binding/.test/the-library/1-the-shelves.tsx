@@ -5,7 +5,7 @@ export default () => (
     <Chapter>
         <Title>[[ The Shelves ]]</Title>
         <Section>
-            <Heading>What stands here</Heading>
+            <Heading>[[[ What stands here ]]]</Heading>
             <Paragraph>
                 Three books stand directly under this one. <Means>$[ Libby ]</Means> is the book that writes the
                 others, <Means>$[ Some Projects ]</Means> is what has been worked on, and <Means>$[ A Paper ]</Means> was
@@ -16,7 +16,8 @@ export default () => (
                 <Mention>[[[ The First Shelf ]]]</Mention> is the one Libby stands on, and a reference reaches it by name.
             </Paragraph>
             <Paragraph>
-                Libby says as much of herself: she stands on <Means>$[ ./The First Shelf ]</Means>.
+                Libby says as much of herself: she stands on <Means>$[ ./The First Shelf ]</Means>, and this book is
+                the first she wrote, <Means>$[ the library's own ]( Libby / The library's own book )</Means>.
             </Paragraph>
         </Section>
         <Catchword />

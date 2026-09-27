@@ -455,6 +455,44 @@ describe('the bound test library, seen in a real browser', () => {
         expect(await libby.$eval('.pd-running-head', head => (head as HTMLElement).innerText)).toBe('THE LIBRARY: TABLE OF CONTENTS');
         await libby.close();
     });
+
+    // PITCHED, 2026-09-27, found in the console while driving the links: on every themed page chemistry reports "$Theme
+    // did not call $Format — every declared bond constructor on the chain must be called", logs it and carries on. Theme's
+    // bond passes over Format's on purpose, since Format's would wrap the theme in a second provider; the fix is a template
+    // method on Format that Theme overrides — Doug's to rule. The check does not fire in the package's own build, so this
+    // is the lowest place that sees it; expected to fail until then, and the day it passes is the day to flip it.
+    it.fails('draws a themed page without chemistry reporting the theme\'s bond chain in the console', async () => {
+        const said: string[] = [];
+        const library = await browser!.newPage();
+        library.on('console', (message: { text(): string }) => { said.push(message.text()); });
+        await library.goto(new URL('/the-library/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await library.close();
+        expect(said.filter(line => line.includes('did not call'))).toEqual([]);
+    });
+
+    // PITCHED, 2026-09-27, found by driving every link — Doug: "I clicked table of contents and of libby and I don't
+    // think either went to the right place." A chapter route within the book changes the address and the book turns
+    // by scrolling its chapter's TITLE into view; the table's title is parenthetical, which the framework hides, and
+    // a hidden element scrolls nothing. Of Libby's title was sent to Libby's book by its Synopsis, so the book finds
+    // no chapter at Of Libby's own route and turns nowhere. Both are the Book's, in .public; the promise stands as an
+    // expected failure until Doug rules the fix, and goes red the day it passes, which is the day to flip it.
+    it.fails('turns to the table of contents and to Of Libby when their routes are taken within the library', async () => {
+        const library = await browser!.newPage();
+        await library.setViewport({ width: 900, height: 700 });
+        await library.goto(new URL('/the-library/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const turned = async (href: string, landmark: string): Promise<number> => {
+            await library.evaluate((at: string) => (document.querySelector(`a[href="${at}"]`) as HTMLElement).click(), href);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            return library.$eval(landmark, element => Math.round(element.getBoundingClientRect().top));
+        };
+        const table = await turned('/the-library/table-of-contents/', 'nav.pd-container');
+        expect(table).toBeGreaterThanOrEqual(0);
+        expect(table).toBeLessThan(120);
+        const ofLibby = await turned('/the-library/of-libby/', '#of-libby');
+        expect(ofLibby).toBeGreaterThanOrEqual(0);
+        expect(ofLibby).toBeLessThan(120);
+        await library.close();
+    });
 });
 
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
