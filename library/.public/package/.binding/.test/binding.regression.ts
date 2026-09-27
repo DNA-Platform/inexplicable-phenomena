@@ -85,7 +85,7 @@ describe('a bind of the test library', () => {
 
     it('drew a cover inside its header, its title a link to its book, and a table inside its nav', () => {
         const paper = page('A Paper');
-        expect(paper).toMatch(/<header class="pd-container"><span[^>]*><a href="\/a-paper\/"[^>]*><span[^>]*>A Paper/u);
+        expect(paper).toMatch(/<header class="pd-container"><div[^>]*><a href="\/a-paper\/"[^>]*><span[^>]*>A Paper/u);
         expect(paper).toMatch(/<nav class="pd-container">/u);
     });
 
@@ -103,19 +103,20 @@ describe('a bind of the test library', () => {
 
     // R4 — Doug: "just have the book expose its cover, table, synopsis... and other things use it from there."
     it('drew in the argument its book\'s title and a link to its book\'s table, read from its book alone', () => {
-        expect(page('A Paper')).toMatch(/<span>A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/table-of-contents\/"[^>]*><span[^>]*>Table of Contents/u);
+        expect(page('A Paper')).toMatch(/<span class="pd-word">A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/table-of-contents\/"[^>]*><span[^>]*>Table of Contents/u);
     });
 
     it('marked the autobiography and the biography on their covers', () => {
-        expect(page('The Log')).toMatch(/<header class="pd-container"><span class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
-        expect(page('A Persona')).toMatch(/<header class="pd-container"><span class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
+        expect(page('The Log')).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
+        expect(page('A Persona')).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
     });
 
     // Doug, 2026-09-26: "the annotations should frequently mark their presence with a CSS class."
     it('marked each chapter a cover, a synopsis or a table of contents said of with that annotation\'s class', () => {
         const paper = page('A Paper');
-        expect(paper).toMatch(/<header class="pd-container"><span class="[^"]*\bpa-cover\b/u);
-        expect(paper).toMatch(/<nav class="pd-container"><span class="[^"]*\bpa-table-of-contents\b/u);
+        // A CHAPTER'S OWN ELEMENT IS A DIV since Sprint 88, block by its level; the layer around it is the format's.
+        expect(paper).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpd-chapter\b)[^"]*\bpa-cover\b/u);
+        expect(paper).toMatch(/<nav class="pd-container"><div class="[^"]*\bpa-table-of-contents\b/u);
         expect(paper.match(/class="[^"]*\bpa-synopsis\b/gu)).toHaveLength(1);
     });
 
@@ -193,12 +194,12 @@ describe('a bind of the test library', () => {
     // and next of the last chapter is the last chapter - I prefer self-reference to undefined."
     it('drew at the foot of the paper\'s chapters a catchword whose Next links the next chapter and whose Previous the one before, the ends self-references', () => {
         const argument = chapterPage('A Paper', 'The Argument');
-        expect(argument).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pa-reference">The Evidence/u);
-        expect(argument).toMatch(/<a href="\/a-paper\/table-of-contents\/"[^>]*><span class="pa-reference">Table of Contents/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pa-reference">The Evidence/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/table-of-contents\/"[^>]*><span class="pd-word pa-reference">Table of Contents/u);
         const evidence = chapterPage('A Paper', 'The Evidence');
-        expect(evidence).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pa-reference pa-self-reference">The Evidence/u);
-        expect(evidence).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*><span class="pa-reference">The Argument/u);
-        expect(page('A Paper')).toMatch(/<a href="\/a-paper\/"[^>]*><span class="pa-reference pa-self-reference">A Paper/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pa-reference pa-self-reference">The Evidence/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*><span class="pd-word pa-reference">The Argument/u);
+        expect(page('A Paper')).toMatch(/<a href="\/a-paper\/"[^>]*><span class="pd-word pa-reference pa-self-reference">A Paper/u);
     });
 
     // PAGINATED — Sprint 86: Some Projects' chapters are pages, marked once, and the page the address names is
@@ -215,9 +216,10 @@ describe('a bind of the test library', () => {
         expect(work.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
         expect(work).toMatch(/class="[^"]*\bpa-open\b[^"]*"[^>]*>(?:(?!<\/span>)[\s\S])*?id="the-work"/u);
         expect(work).not.toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
+        // THE MARKS, NOT THE SHEET: the default theme's rules for the three classes stand on every page since Sprint 88.
         for (const route of table.routes)
             if (route.name !== 'Some Projects')
-                expect(page(route.name), route.name).not.toMatch(/\bpa-paginated\b|\bpa-page\b|\bpa-open\b/u);
+                expect(page(route.name), route.name).not.toMatch(/class="[^"]*\b(?:pa-paginated|pa-page|pa-open)\b/u);
     });
 });
 
@@ -246,9 +248,11 @@ describe('the bound test library, seen in a real browser', () => {
     });
 
     it('shows the paper\'s cover in its header, and the byline its book draws, with no annotation\'s writing showing', async () => {
-        // THE COVER'S TITLE, THEN ITS CATCHWORD — itself and the synopsis — since Sprint 86; every span inline.
-        expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A PaperA Paper · Synopsis');
-        const byline = await paper.$$eval('#root span', spans => spans.map(span => span.innerText.replace(/\s+/gu, ' ').trim())
+        // THE COVER'S TITLE, THEN ITS CATCHWORD — itself and the synopsis — since Sprint 86; on its own line since
+        // Sprint 88, the catchword being a paragraph and a paragraph a block.
+        expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A Paper\nA Paper · Synopsis');
+        // THE BYLINE IS A PARAGRAPH, and a paragraph is a div since Sprint 88.
+        const byline = await paper.$$eval('#root .pd-paragraph', paragraphs => paragraphs.map(paragraph => (paragraph as HTMLElement).innerText.replace(/\s+/gu, ' ').trim())
             .filter(text => text.startsWith('by ')).sort((one, other) => one.length - other.length)[0]);
         expect(byline).toBe('by A Persona, filed under The Library');
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');

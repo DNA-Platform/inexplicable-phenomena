@@ -1,0 +1,110 @@
+import { ElementType, ReactNode } from 'react';
+import { ThemeProvider } from 'styled-components';
+import { $, $check, $Chemical, children, selection } from '@dna-platform/chemistry';
+import { specify } from '@/utilities/Specification';
+import { reflection } from '@/utilities/Reflection';
+import { $Writing, AnnotationSpecification } from './Writing';
+import { $Format } from './Format';
+import { $Book } from '@/library/Book';
+
+export type Values = Record<'font' | 'size' | 'leading' | 'measure' | 'space' | 'ink' | 'paper' | 'link', string>;
+
+const value = (property: keyof Values) => ({ theme }: { theme: Partial<Values> }) => theme[property] ?? '';
+
+export class $Theme extends $Format {
+    specification = new ThemeSpecification();
+    theme = true;
+    font = 'serif';
+    size = '1rem';
+    leading = '1.5';
+    measure = '40rem';
+    space = '1rem';
+    ink = 'black';
+    paper = 'white';
+    link = 'blue';
+    style: ElementType = selection.div`
+        font-family: ${value('font')};
+        font-size: ${value('size')};
+        line-height: ${value('leading')};
+        color: ${value('ink')};
+        background: ${value('paper')};
+        max-width: ${value('measure')};
+        margin-inline: auto;
+        padding: ${value('space')};
+        .pd-container { box-sizing: border-box; }
+        .pd-annotation { display: none; }
+        .pd-book { margin-block: ${value('space')}; }
+        .pd-chapter { margin-block: calc(2 * ${value('space')}); }
+        .pd-section { margin-block: ${value('space')}; }
+        .pd-paragraph { margin-block: ${value('space')}; }
+        .pd-sentence { display: inline; }
+        .pd-word { display: inline; }
+        .pd-letter { display: inline; }
+        .pd-title { display: block; font-size: calc(1.5 * ${value('size')}); font-weight: bold; margin-block-end: ${value('space')}; }
+        .pd-heading { display: block; font-weight: bold; margin-block: ${value('space')} 0; }
+        .pd-line { white-space: pre-wrap; }
+        .pd-space { white-space: pre; }
+        .pd-break { clear: both; }
+        .pa-parenthetical { opacity: 0.6; }
+        .pa-reference { color: ${value('link')}; }
+        .pa-self-reference { color: inherit; }
+        .pa-referent { scroll-margin-block-start: ${value('space')}; }
+        .pa-content { color: ${value('link')}; }
+        .pa-table { column-gap: ${value('space')}; row-gap: calc(${value('space')} / 2); }
+        .pa-row:first-child .pa-col { font-weight: bold; }
+        .pa-col { padding-block: calc(${value('space')} / 4); }
+        .pa-cover { margin-block-end: calc(2 * ${value('space')}); }
+        .pa-synopsis { font-style: italic; }
+        .pa-table-of-contents { margin-block: ${value('space')}; }
+        .pa-biography .pd-title { font-variant: small-caps; }
+        .pa-autobiography .pd-title { font-style: italic; }
+        .pa-paginated { min-height: 50vh; }
+        .pa-page { margin-block: ${value('space')}; }
+        .pa-open { margin-block-start: 0; }
+        .pa-blank { visibility: hidden; }
+        .pa-emphasis { font-style: italic; }
+        .pa-bold { font-weight: bold; }
+        .pa-underline { text-decoration: underline; }
+    `;
+    protected _provider!: ElementType;
+    get values(): Values {
+        return { font: this.font, size: this.size, leading: this.leading, measure: this.measure, space: this.space, ink: this.ink, paper: this.paper, link: this.link };
+    }
+
+    $Theme(...chemicals: $Chemical[]) {
+        this.$Annotation(...chemicals);
+        const Provider = $(provider);
+        this._provider = $(reflection.chemical<$Provider>(<Provider theme={this} />, this));
+    }
+
+    override defines(writing: $Writing): void {
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Theme)
+                writing.annotations.express(annotation, false);
+        writing.containers.add(this, this._provider);
+    }
+}
+
+export class $Provider extends $Chemical {
+    $theme!: $Theme;
+    $className?: string;
+
+    view(): ReactNode {
+        const Sheet = this.$theme.style ?? 'div';
+        return (
+            <ThemeProvider theme={this.$theme.values}>
+                <Sheet className={this.$className}>{this[children]}</Sheet>
+            </ThemeProvider>
+        );
+    }
+}
+
+export class ThemeSpecification extends AnnotationSpecification {
+    @specify('a theme is said of a book')
+    $saidOfABook(writing: $Writing): void {
+        $check(writing instanceof $Book, 'a theme is said of a book, and this is not one');
+    }
+}
+
+export const Theme = $($Theme);
+const provider = $($Provider);

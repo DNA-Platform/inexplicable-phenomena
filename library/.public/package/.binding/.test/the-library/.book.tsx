@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
-import { styled } from 'styled-components';
-import { $, $check } from '@dna-platform/chemistry';
-import { $Book, $Format, $Writing, AnnotationSpecification, Paragraph as paragraph, Reference as reference, Word as word, specify } from '@dna-platform/public';
+import { $ } from '@dna-platform/chemistry';
+import { $Book, $Theme, Paragraph as paragraph, Reference as reference, Word as word } from '@dna-platform/public';
 
 // THE TEST LIBRARY'S OWN BOOK. Every book in this library extends this one, the way every book in a
 // real library extends the library's — so a change to what a book is here reaches all five. It is
@@ -25,31 +24,18 @@ export default class $TheLibrary extends $Book {
     protected override $Define(): void {
         super.$Define();
         this.annotations.add(this,
-            <Theme />
+            <LibraryTheme />
         );
     }
 }
 
-// AND ITS THEME, which draws the ordinary view: a Format that is also a theme, global to a book, whose
-// style hides every annotation's own writing inside the book — Doug, 2026-09-25: "if we want to have a
-// theme, it is a format annotation that is also a theme that is global to a book. The annotation
-// validate that it is a book. And we can use its style"; and "One might give the book a format called
-// Theme which is a theme, which would be realized in its .book or as a resource in one of its chapters."
-export class $Theme extends $Format {
-    specification = new ThemeSpecification();
-    theme = true;
-    style = styled.div`
-        .pd-annotation {
-            display: none;
-        }
-    `;
+// AND ITS THEME: the library's own, a class under .public's Theme that sets two of the eight and nothing
+// else, since the default sheet is the minimal viewing of a library and comprehends every class — Doug,
+// 2026-09-27: "one puts their theme in the book"; and, 2026-09-25, "it is a format annotation that is also a
+// theme that is global to a book."
+export class $LibraryTheme extends $Theme {
+    paper = 'ivory';
+    link = 'darkslateblue';
 }
 
-export class ThemeSpecification extends AnnotationSpecification {
-    @specify('a theme is said of a book')
-    $saidOfABook(writing: $Writing): void {
-        $check(writing instanceof $Book, 'a theme is said of a book, and this is not one');
-    }
-}
-
-export const Theme = $($Theme);
+export const LibraryTheme = $($LibraryTheme);

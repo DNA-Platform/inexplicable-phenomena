@@ -1,4 +1,4 @@
-import { Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Break, Chapter, Heading, Means, Paragraph, Section, Space, Title } from '@dna-platform/public';
 import { Catchword, RunningHead } from '../the-library/1-the-shelves.tsx.tsx';
 
 // EVERY WAY A REFERENCE CAN BE WRITTEN, IN ONE CHAPTER: a book by name, a chapter of this book, a
@@ -21,7 +21,10 @@ export default () => (
                 it grew out of is <Means>$[ Some Projects / The Work ]</Means>; and the book that keeps the record is
                 <Means>$[ the log ]( The Log )</Means>.
             </Paragraph>
-            <Paragraph>And the evidence is in <Means>{evidence}</Means>.</Paragraph>
+            <Paragraph>
+                And the evidence is in <Means>{evidence}</Means>.<Break />
+                Set apart by a break,<Space length={3} />and spaced by three.
+            </Paragraph>
         </Section>
         <Catchword />
     </Chapter>

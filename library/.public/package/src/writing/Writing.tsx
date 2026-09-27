@@ -256,6 +256,19 @@ export class $Narrative extends $Annotation {
     }
 }
 
+export class $Blank extends $Annotation {
+    style = createGlobalStyle`
+        .pa-blank {
+            visibility: hidden;
+        }
+    `;
+
+    override note(): ReactNode { return <this.style />; }
+
+    override defines(writing: $Writing): void { writing.classes.add(this, 'pa-blank'); }
+    override erase(writing: $Writing): void { writing.classes.revert(this); }
+}
+
 export class WritingSpecification extends Specification<$Writing> { }
 export class AnnotationSpecification extends WritingSpecification { }
 
@@ -263,3 +276,4 @@ export const Writing = $($Writing);
 export const Annotation = $($Annotation);
 export const Parenthetical = $($Parenthetical);
 export const Narrative = $($Narrative);
+export const Blank = $($Blank);

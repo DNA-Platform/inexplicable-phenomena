@@ -1,0 +1,145 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { render, act } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
+import { ServerStyleSheet } from 'styled-components';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { $, selection } from '@dna-platform/chemistry';
+import { $Writing, $Format, $Section, Section, Heading, Paragraph, Word } from '@dna-platform/public';
+import { $Book, Book, $Chapter, Chapter, Cover, Author, Subject, Synopsis, TableOfContents, Title, $Theme, Theme, ThemeSpecification } from '@dna-platform/public';
+import type { ReactNode } from 'react';
+
+Element.prototype.scrollIntoView = () => {};
+
+const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+const drawn = async (writing: $Writing): Promise<HTMLElement> => {
+    const Drawn = $(writing);
+    let container: HTMLElement | undefined;
+    await act(async () => { container = render(<Drawn />).container; });
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+    return container!;
+};
+const served = (writing: $Writing): { html: string; css: string } => {
+    const Drawn = $(writing);
+    const sheet = new ServerStyleSheet();
+    const html = renderToString(sheet.collectStyles(<Drawn />));
+    return { html, css: sheet.getStyleTags() };
+};
+const shelf = (theme: React.ReactNode): $Book => built<$Book>(
+    <Book>
+        {theme}
+        <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
+        <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
+        <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
+        <Chapter><Title>[A](/a-paper/a/)</Title><Paragraph>the words of A <Word>deep <Inked /></Word></Paragraph></Chapter>
+    </Book>
+);
+
+const counted = { painted: 0 };
+class $Inked extends $Format {
+    style = selection.span`
+        color: ${(props: { theme: { ink?: string } }) => props.theme.ink ?? 'unthemed'};
+    `;
+}
+const Inked = $($Inked);
+
+class $Dark extends $Theme {
+    ink = 'white';
+    paper = 'black';
+}
+class $Wide extends $Theme {
+    measure = '60rem';
+    style = selection.article`
+        max-width: ${(props: { theme: { measure?: string } }) => props.theme.measure ?? ''};
+    `;
+}
+const Dark = $($Dark);
+const Wide = $($Wide);
+
+// Doug, 2026-09-27: "one puts their theme in the book. It just occupies the Theme class in the writing folder and should
+// be designed to be extended and made to be dynamic"; "Maybe theme can have singular semantics, so we can use the
+// dynamic annotation system to change themes. That is cool."
+describe('a theme is a format said of a book that provides eight live properties to everything the book draws', () => {
+    beforeEach(() => { counted.painted = 0; });
+
+    it('a book without a theme draws no provider, and a styled element beneath it reads nothing', () => {
+        const { css } = served(shelf(null));
+        expect(css).toContain('color:unthemed');
+        expect(css).not.toContain('font-family:serif');
+    });
+
+    it('stood in a book, provides to a styled element three levels down, and its default sheet is in the page', () => {
+        const book = shelf(<Theme />);
+        expect(book.is($Theme)).toBe(true);
+        const { css } = served(book);
+        expect(css).toContain('color:black');
+        expect(css).toContain('font-family:serif');
+        expect(css).toContain('.pd-annotation{display:none;}');
+    });
+
+    it('is singular: two themes on a book stand one provider, the front\'s, and $is switches it at one paint', async () => {
+        const book = shelf([<Theme key="plain" />, <Dark key="dark" />]);
+        expect(book.annotations.expressed($Dark)).toBeDefined();
+        expect(book.annotations.find($Theme)).toHaveLength(2);
+        expect(book.annotations.expressed($Theme)).toBeInstanceOf($Dark);
+        expect([...book.containers].filter(layer => typeof layer !== 'string')).toHaveLength(1);
+        expect(served(book).css).toContain('color:white');
+        const container = await drawn(book);
+        expect(container.querySelector('.pd-book')).not.toBeNull();
+        await act(async () => { book.$is = Wide; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(book.annotations.expressed($Theme)).toBeInstanceOf($Wide);
+        expect(container.querySelector('article')).not.toBeNull();
+    });
+
+    // R7 — "live reactive properties that can be dynamically set": the provider is the theme's own chemical, so a
+    // property set on the theme is news to the provider alone, and every styled element beneath reads the new value.
+    it('a property set on a drawn theme reaches the styled element beneath it, and nothing of the book redraws', async () => {
+        const book = shelf(<Theme />);
+        const theme = book.annotations.expressed($Theme)!;
+        const container = await drawn(book);
+        const inked = container.querySelector('.pd-word')!.parentElement!;
+        expect(inked.className).toContain('pd-container');
+        const before = inked.className;
+        await act(async () => { theme.ink = 'red'; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(theme.values.ink).toBe('red');
+        expect(container.querySelector('.pd-word')!.parentElement!.className).not.toBe(before);
+    });
+
+    it('comprehends every class the source puts on an element: the classes in src, less the numbered families, are all in its sheet', () => {
+        const sources: string[] = [];
+        const walk = (folder: string): void => {
+            for (const entry of readdirSync(folder, { withFileTypes: true })) {
+                const at = join(folder, entry.name);
+                if (entry.isDirectory()) walk(at);
+                else if (at.endsWith('.tsx') || at.endsWith('.ts')) sources.push(readFileSync(at, 'utf8'));
+            }
+        };
+        walk(join(process.cwd(), 'src'));
+        const marks = new Set<string>();
+        for (const source of sources)
+            for (const found of source.matchAll(/\bp[ad]-[a-z][a-z-]*[a-z]\b(?!\$\{)/g))
+                if (!found[0].endsWith('-')) marks.add(found[0]);
+        const { css } = served(shelf(<Theme />));
+        const addressed = new Set([...css.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g)].map(found => found[1]));
+        const missing = [...marks].filter(mark => !addressed.has(mark) && !/-(start|span|cols)$/.test(mark)).sort();
+        expect(marks.size).toBeGreaterThan(20);
+        expect(missing).toEqual([]);
+    });
+
+    it('a subclass overriding its sheet and a property is still a theme where one is asked for, and draws its own sheet', () => {
+        const book = shelf(<Wide />);
+        expect(book.is($Theme)).toBe(true);
+        expect(book.annotations.expressed($Theme)).toBeInstanceOf($Wide);
+        const { html, css } = served(book);
+        expect(html).toContain('<article');
+        expect(css).toContain('max-width:60rem');
+    });
+
+    it('said of a section, says so when asked', () => {
+        const section = built<$Section>(<Section><Theme /><Heading>h</Heading></Section>);
+        expect(section.annotations.expressed($Theme)?.specification).toBeInstanceOf(ThemeSpecification);
+        expect(section.specify()).toContain('Section: a theme is said of a book, and this is not one');
+    });
+});
