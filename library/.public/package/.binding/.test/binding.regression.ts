@@ -90,8 +90,8 @@ describe('a bind of the test library', () => {
     });
 
     it('drew the byline its book class draws from what its cover says, in the words the cover gave', () => {
-        expect(page('The Library')).toMatch(/by <a href="\/libby\/"[^>]*><span[^>]*>Libby[\s\S]*filed under <a href="\/the-library\/"/u);
-        expect(page('Some Projects')).toMatch(/filed under <a href="\/the-library\/"[^>]*><span[^>]*>Libraries/u);
+        expect(page('The Library')).toMatch(/pd-label">Author<[\s\S]{0,200}?<a href="\/libby\/"[^>]*><span[^>]*>Libby[\s\S]*pd-label">Filed under<[\s\S]{0,200}?<a href="\/the-library\/"/u);
+        expect(page('Some Projects')).toMatch(/pd-label">Filed under<[\s\S]{0,200}?<a href="\/the-library\/"[^>]*><span[^>]*>Libraries/u);
     });
 
     // A SYNOPSIS'S TITLE GOES TO ITS BOOK — Doug, 2026-09-26: "we want the title of a synopsis chapter to go
@@ -235,8 +235,8 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/<div class="[^"]*\bpd-paragraph\b/u);
             expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
             expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
-            expect(html, route.name).toMatch(/font-family:serif/u);
-            expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:1rem;\}/u);
+            expect(html, route.name).toMatch(/font-family:Georgia/u);
+            expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:1\.25rem;\}/u);
         }
     });
 
@@ -266,11 +266,11 @@ describe('a bind of the test library', () => {
 
     it('drew the frame on Some Projects\' book and on each of the persona\'s chapters, its border in the theme\'s ink', () => {
         const projects = page('Some Projects');
-        expect(projects).toMatch(/border:1px solid black;padding:1rem;margin-block:1rem/u);
+        expect(projects).toMatch(/border:1px solid #23262a;padding:1\.25rem;margin-block:1\.25rem/u);
         expect(projects).toMatch(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-book\b/u);
         const persona = page('A Persona');
         expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
-        expect(page('Libby')).not.toMatch(/border:1px solid/u);
+        expect(page('Libby')).not.toMatch(/border:1px solid [^;]*;padding:1\.25rem;margin-block:1\.25rem/u);
     });
 });
 
@@ -303,9 +303,8 @@ describe('the bound test library, seen in a real browser', () => {
         // Sprint 88, the catchword being a paragraph and a paragraph a block.
         expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A Paper\nA Paper · Synopsis');
         // THE BYLINE IS A PARAGRAPH, and a paragraph is a div since Sprint 88.
-        const byline = await paper.$$eval('#root .pd-paragraph', paragraphs => paragraphs.map(paragraph => (paragraph as HTMLElement).innerText.replace(/\s+/gu, ' ').trim())
-            .filter(text => text.startsWith('by ')).sort((one, other) => one.length - other.length)[0]);
-        expect(byline).toBe('by A Persona, filed under Libraries');
+        const byline = await paper.$eval('.pd-byline', paragraph => (paragraph as HTMLElement).innerText.replace(/\s+/gu, ' ').trim());
+        expect(byline).toBe('AUTHOR A Persona FILED UNDER Libraries');
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
     });
 
@@ -427,13 +426,34 @@ describe('the bound test library, seen in a real browser', () => {
         await argument.close();
     });
 
-    it('shows Libby on dark paper in ivory ink, and the paper on white', async () => {
+    it('shows Libby on dark paper in ivory ink, and the paper in the library\'s ink', async () => {
         const libby = await browser!.newPage();
         await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         expect(await libby.$eval('.pd-book', book => getComputedStyle(book.parentElement!).backgroundColor)).toBe('rgb(31, 31, 36)');
         expect(await libby.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(255, 255, 240)');
         await libby.close();
-        expect(await paper.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(0, 0, 0)');
+        expect(await paper.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(35, 38, 42)');
+    });
+
+    // THE VISUAL LANGUAGE — Sprint 88 U9: a label above every chapter's title saying what the chapter is, drawn by
+    // the library's theme from the marks the kinds wear and suppressed where the title is already parenthetical; the
+    // byline's labels saying who wrote the book and where it stands; the running head naming the library then the
+    // book, and the library alone on its own page. Doug, 2026-09-27: "I am not sure what a cover is, or a table of
+    // contents, or a regular chapter, and it's not clear what will take me to the subject, or who is the author.
+    // Help me know where I am."
+    it('labels every chapter with what it is, the cover with who wrote it and where it stands, and the head with where the reader is', async () => {
+        const libby = await browser!.newPage();
+        await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const label = (selector: string): Promise<string> => libby.$eval(selector, title => getComputedStyle(title, '::before').content);
+        expect(await label('.pa-cover .pd-title')).toBe('"Autobiography"');
+        expect(await label('#who-i-am')).toMatch(/^"Chapter " counter\(chapter\)$/u);
+        expect(await label('#synopsis')).toBe('none');
+        // innerText, never textContent: a word's hidden annotations — its level's "2", a reference's url — are in textContent.
+        expect(await libby.$$eval('.pd-byline .pd-label', labels => labels.map(label => (label as HTMLElement).innerText))).toEqual(['AUTHOR', 'FILED UNDER']);
+        expect(await libby.$eval('.pd-running-head', head => (head as HTMLElement).innerText)).toBe('THE LIBRARY / LIBBY: TABLE OF CONTENTS');
+        await libby.goto(new URL('/the-library/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await libby.$eval('.pd-running-head', head => (head as HTMLElement).innerText)).toBe('THE LIBRARY: TABLE OF CONTENTS');
+        await libby.close();
     });
 });
 
