@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $, styled, $Chemical } from '@dna-platform/chemistry';
+import { $, style as styled, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, Writing, Paragraph, $Annotation, $Format, Format } from '@dna-platform/public';
 import type { ElementType } from 'react';
 

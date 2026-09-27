@@ -1,4 +1,4 @@
-import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { $, $check, $Chemical, next } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification, Level as level, Strict as strict, Closed as closed } from '@/writing/Composition';
 import { $Reference } from '@/writing/Reference';
@@ -41,7 +41,7 @@ export class $Book extends $Composition {
     $Book(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
         this.$Bound();
-        void this.next('mount').then(() => this.turn());
+        void this[next]('mount').then(() => this.turn());
     }
 
     protected override $Define(): void {
