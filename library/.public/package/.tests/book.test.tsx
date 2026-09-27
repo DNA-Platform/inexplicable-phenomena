@@ -142,6 +142,7 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(turned.mock.calls).toEqual([['the-argument']]);
         act(() => { book.$bookmark = '/a-paper/'; });
         expect(turned.mock.calls).toEqual([['the-argument'], ['a-paper']]);
+        act(() => { book.$bookmark = '/a-paper/'; });
         act(() => { book.$bookmark = '/elsewhere/'; });
         expect(turned.mock.calls).toHaveLength(2);
     });

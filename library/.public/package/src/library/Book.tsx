@@ -12,7 +12,11 @@ export class $Book extends $Composition {
     specification = new BookSpecification();
     protected _bookmark?: string;
     get $bookmark(): string | undefined { return this._bookmark; }
-    set $bookmark(value: string | undefined) { this._bookmark = value; this.turn(); }
+    set $bookmark(value: string | undefined) {
+        if (value === this._bookmark) return;
+        this._bookmark = value;
+        this.turn();
+    }
     get cover(): $Chapter | undefined { return this.canonical; }
     get table(): $Chapter | undefined { return this.text.find($Chapter).find(chapter => chapter.is($TableOfContents)); }
     get title(): $Title | undefined { return this.canonical?.canonical; }

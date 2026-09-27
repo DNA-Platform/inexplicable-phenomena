@@ -251,6 +251,41 @@ describe('the bound test library, seen in a real browser', () => {
         expect(top).toBeLessThan(100);
         await evidence.close();
     });
+
+    // THE ROUTER — R9. Doug, 2026-09-26: "Everything needs to go through the router." A link within the book
+    // is taken in place: the address moves, the page is the same page, the book turns; back is the same
+    // route the other way.
+    it('takes a link within the book in place: the address moves, the page is not reloaded, the book turns, and back returns', async () => {
+        const paper = await browser!.newPage();
+        await paper.setViewport({ width: 800, height: 100 });
+        await paper.goto(new URL('/a-paper/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await paper.evaluate(() => { (window as unknown as { samePage: boolean }).samePage = true; });
+        await paper.click('nav a[href="/a-paper/the-evidence/"]');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await paper.evaluate(() => location.pathname)).toBe('/a-paper/the-evidence/');
+        expect(await paper.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
+        expect(await paper.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+        await paper.goBack();
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await paper.evaluate(() => location.pathname)).toBe('/a-paper/');
+        expect(await paper.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
+        await paper.close();
+    });
+
+    // "Long distance urls to that which was mentioned also must work." A link to another book is the browser's
+    // to follow; that page's own router lands on the heading once its book has drawn.
+    it('follows a long-distance link to another book\'s heading: that page loads, turned to the heading', async () => {
+        const log = await browser!.newPage();
+        await log.setViewport({ width: 800, height: 100 });
+        await log.goto(new URL('/the-log/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await Promise.all([log.waitForNavigation({ waitUntil: 'networkidle0' }), log.click('a[href="/a-paper/the-argument/#what-is-claimed"]')]);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await log.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/the-argument/#what-is-claimed');
+        const top = await log.$eval('#what-is-claimed', heading => heading.getBoundingClientRect().top);
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(top).toBeLessThan(100);
+        await log.close();
+    });
 });
 
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
