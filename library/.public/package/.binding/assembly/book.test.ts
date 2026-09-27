@@ -12,14 +12,14 @@ const paper = found.books.find(book => book.folder === 'paper');
 describe('the module the compiler writes for a book', () => {
     const text = paper === undefined ? '' : assembled(paper, '../paper');
 
-    it('exports book, a function taking the bookmark the page is open at', () => {
-        expect(text).toContain('export const book = ({ bookmark }: { bookmark?: string } = {}) => (');
+    it('exports book, a function of the element, taking nothing — the bookmark is set on the instance by whoever draws it', () => {
+        expect(text).toContain('export const book = () => (');
     });
 
-    it('calls each chapter function once, in the order of its files, inside the book class, which is handed the bookmark', () => {
+    it('calls each chapter function once, in the order of its files, inside the book class', () => {
         const calls = [...text.matchAll(/^\s+\{(\w+)\(\)\}$/gmu)].map(call => call[1]);
         expect(calls).toEqual(['Cover', 'Synopsis', 'Table', 'TheArgument1', 'TheEvidence2']);
-        expect(text.indexOf('<Book bookmark={bookmark}>')).toBeLessThan(text.indexOf('{Cover()}'));
+        expect(text.indexOf('<Book>')).toBeLessThan(text.indexOf('{Cover()}'));
         expect(text.indexOf('{TheEvidence2()}')).toBeLessThan(text.indexOf('</Book>'));
     });
 

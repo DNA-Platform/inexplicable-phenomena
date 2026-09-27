@@ -321,13 +321,16 @@ describe('a means that stands its own reference costs no more than any writing',
     });
 });
 
-// THE BOOKMARK IS A PROP, so a move costs what a prop change costs — Sprint 85, D2: "The book learns the address
-// the way any chemical learns a prop, at one paint" — and a layout that reads it redraws with it. Measured
-// 2026-09-27: one paint, and the book's draws, fewer than a mount's.
-describe('a book turning to its bookmark costs one paint', () => {
+// THE BOOKMARK MOVES AND THE BOOK REDRAWS, AND SO DOES EVERY CHAPTER UNDER IT — the cascade, chemistry's and
+// pitched there on 2026-09-27: the lift draws a chemical's view on every React render of its component, so a
+// parent's redraw is its children's, though their state did not move; the diff guards only the settle pass. Probed
+// the same day on a book of three paragraphs: 3/9/1 at mount, 2/6/1 on one reactive write of the book, 0/0/0 on an
+// unchanged one. Doug: "This sounds like a chemistry bug that a change is so painful… I thought prop changes were
+// cheap." The numbers here pin the cascade so the pitch landing turns this promise red and it is rewritten.
+describe('a book turning to its bookmark costs the cascade, until chemistry ends it', () => {
     beforeEach(counting);
 
-    it('mounts as any book, and a bookmark moved after the mount costs one paint and no more draws than a mount', async () => {
+    it('mounts as any book; a bookmark moved after the mount redraws the book and its chapters, and a bookmark set where it stands draws nothing', async () => {
         Element.prototype.scrollIntoView = () => {};
         const book = $(
             <Ledger bookmark="/a-paper/">
@@ -346,8 +349,12 @@ describe('a book turning to its bookmark costs one paint', () => {
         await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
         await settle();
         expect(book.bookmark).toBe(book.parts[1]);
-        expect(counted.painted).toBe(1);
-        expect(counted.committed).toBe(1);
+        expect(counted).toEqual({ drawn: 6, painted: 1, committed: 1 });
         expect(counted.drawn).toBeLessThan(mounted.drawn);
+
+        counting();
+        await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
+        await settle();
+        expect(counted).toEqual({ drawn: 0, painted: 0, committed: 0 });
     });
 });

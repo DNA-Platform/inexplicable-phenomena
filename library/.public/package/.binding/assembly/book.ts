@@ -19,9 +19,11 @@ const classed = (file: string): string => `${local(file).replace(/^\w/u, letter 
 // never see, where `{TheArgument()}` hands the book the Chapter itself. So `book` is called when the
 // page draws it, and each chapter when the book is made.
 //
-// AND THE BOOK TAKES ITS BOOKMARK AS A PROP: the url the page is open at, which the render hands it
-// for every page it draws and the app for the pathname it is loaded at. Doug, 2026-09-26: "it is the
-// place where the user is (recently was) and it is a record of him being there."
+// AND THE BOOK IS HANDED ITS BOOKMARK BY WHOEVER DRAWS IT, on the instance and never as a prop: the
+// render and the app build the book from this function once, set its bookmark — the url the page is
+// open at — and draw it; a bookmark moved is set on the same instance and paints nothing. Doug,
+// 2026-09-27: "the thing can't render without intact routing that would be nonsensical. And we
+// should have still been on our first paint."
 //
 // A RESOURCE IS NOT HANDED OVER HERE. It is found in a chapter's own source and replaced before
 // anything is compiled — see the binding:resources plugin. This file writes the book and nothing else.
@@ -55,8 +57,8 @@ export const assembled = (book: Book, from = relative(dirname(book.module), book
         ``,
         `const Book = $($Book);`,
         ``,
-        `export const book = ({ bookmark }: { bookmark?: string } = {}) => (`,
-        `    <Book bookmark={bookmark}>`,
+        `export const book = () => (`,
+        `    <Book>`,
         ...book.files.map(file => `        {${classed(file)}()}`),
         `    </Book>`,
         `);`,
