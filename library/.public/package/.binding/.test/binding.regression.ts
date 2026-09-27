@@ -159,7 +159,9 @@ describe('a bind of the test library', () => {
         const library = page('The Library');
         expect(library).toContain('authorship in this library begins with her');
         expect(library.match(/ id="synopsis"/gu)).toHaveLength(1);
-        expect(library).toMatch(/<a href="\/libby\/"[^>]*><div id="of-libby"/u);
+        // THE TITLE STAYS THE CHAPTER'S OWN since 2026-09-27 — Doug: "the Synopsis can't use the title of the chapter."
+        expect(library).toMatch(/<a href="\/the-library\/of-libby\/"[^>]*><div id="of-libby"/u);
+        expect(library).not.toMatch(/<a href="\/libby\/"[^>]*><div id="of-libby"/u);
         expect(library).not.toMatch(/<a href="\/libby\/"[^>]*><div id="synopsis"/u);
     });
 
@@ -461,7 +463,7 @@ describe('the bound test library, seen in a real browser', () => {
     // bond passes over Format's on purpose, since Format's would wrap the theme in a second provider; the fix is a template
     // method on Format that Theme overrides — Doug's to rule. The check does not fire in the package's own build, so this
     // is the lowest place that sees it; expected to fail until then, and the day it passes is the day to flip it.
-    it.fails('draws a themed page without chemistry reporting the theme\'s bond chain in the console', async () => {
+    it('draws a themed page without chemistry reporting the theme\'s bond chain in the console', async () => {
         const said: string[] = [];
         const library = await browser!.newPage();
         library.on('console', (message: { text(): string }) => { said.push(message.text()); });
@@ -476,7 +478,7 @@ describe('the bound test library, seen in a real browser', () => {
     // a hidden element scrolls nothing. Of Libby's title was sent to Libby's book by its Synopsis, so the book finds
     // no chapter at Of Libby's own route and turns nowhere. Both are the Book's, in .public; the promise stands as an
     // expected failure until Doug rules the fix, and goes red the day it passes, which is the day to flip it.
-    it.fails('turns to the table of contents and to Of Libby when their routes are taken within the library', async () => {
+    it('turns to the table of contents and to Of Libby when their routes are taken within the library', async () => {
         const library = await browser!.newPage();
         await library.setViewport({ width: 900, height: 700 });
         await library.goto(new URL('/the-library/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
@@ -488,9 +490,12 @@ describe('the bound test library, seen in a real browser', () => {
         const table = await turned('/the-library/table-of-contents/', 'nav.pd-container');
         expect(table).toBeGreaterThanOrEqual(0);
         expect(table).toBeLessThan(120);
+        // OF LIBBY IS THE LAST CHAPTER, so the page ends before its top can reach the viewport's: the landing is the
+        // page's end with the title in view.
         const ofLibby = await turned('/the-library/of-libby/', '#of-libby');
         expect(ofLibby).toBeGreaterThanOrEqual(0);
-        expect(ofLibby).toBeLessThan(120);
+        expect(ofLibby).toBeLessThan(await library.evaluate(() => innerHeight));
+        expect(await library.evaluate(() => Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 1)).toBe(true);
         await library.close();
     });
 });

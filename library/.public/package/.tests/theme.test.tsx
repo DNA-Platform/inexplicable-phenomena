@@ -62,6 +62,41 @@ const Wide = $($Wide);
 describe('a theme is a format said of a book that provides eight live properties to everything the book draws', () => {
     beforeEach(() => { counted.painted = 0; });
 
+    // EVERYTHING IN REACH — Doug, 2026-09-27, asked whether .public should export the sheet's value helper: "The idiom
+    // is that the theme is on the book's annotations right? We have the book then the annotations and we can access the
+    // theme by type. That should be simple. If it's not, we have to ask why it's hard to get an annotation from the book,
+    // because I thought everything would be in reach and it should be." A format is a writing whose $book is its parent's.
+    // And the one thing that is not: a style is compiled once per class, from a first specimen, so a closure over `this`
+    // in a style reads that specimen and never the drawn instance — a style reads the theme through the provider's
+    // props, which is what the provider is for.
+    it('a format on a book, and one on a chapter, reach the book\'s theme by type; a style reads it through the provider\'s props, never through a closure', () => {
+        class $Reaching extends $Format {
+            style = selection.div`
+                color: ${({ theme }: { theme: { ink?: string } }) => theme.ink ?? 'unprovided'};
+                outline-color: ${() => this.$book?.annotations.expressed($Theme)?.ink ?? 'unreached'};
+            `;
+        }
+        const Reaching = $($Reaching);
+        const book = built<$Book>(
+            <Book>
+                <Theme />
+                <Reaching />
+                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
+                <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
+                <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
+                <Chapter><Reaching /><Title>[A](/a-paper/a/)</Title><Paragraph>the words of A</Paragraph></Chapter>
+            </Book>
+        );
+        const onBook = book.annotations.expressed($Reaching);
+        const onChapter = (book.parts[3] as $Chapter).annotations.expressed($Reaching);
+        expect(onBook?.$book?.annotations.expressed($Theme)?.ink).toBe('black');
+        expect(onChapter?.$book?.annotations.expressed($Theme)?.ink).toBe('black');
+        const { css } = served(book);
+        expect(css).toContain('color:black');
+        expect(css).not.toContain('unprovided');
+        expect(css).toContain('outline-color:unreached');
+    });
+
     it('a book without a theme draws no provider, and a styled element beneath it reads nothing', () => {
         const { css } = served(shelf(null));
         expect(css).toContain('color:unthemed');

@@ -59,7 +59,10 @@ describe('a synopsis means the book it is a synopsis of', () => {
         expect(chapter.specify()).toEqual([]);
     });
 
-    it('bound, sends its chapter\'s title to what it means, and the book finds the synopsis of itself by what the book means', () => {
+    // THE TITLE STAYS THE CHAPTER'S OWN since 2026-09-27, reversing the sending of it to the book — Doug: "the Synopsis
+    // can't use the title of the chapter… skip the title as a default and customize from there for your library" — so a
+    // catalogue's chapter is found at its own route; what the Synopsis MEANS is still the book.
+    it('bound, keeps its chapter\'s title as the chapter\'s own while meaning the book, and the book finds the synopsis of itself by what the book means', () => {
         const book = built<$Book>(
             <Book>
                 <Chapter><Cover /><Title>[The Library](/the-library/)</Title><Author>[The Log](/the-log/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
@@ -70,7 +73,8 @@ describe('a synopsis means the book it is a synopsis of', () => {
         const [, own, host] = book.text.find($Chapter);
         expect(book.synopsis).toBe(own);
         expect(own.title?.means?.identifier).toBe('/the-library/');
-        expect(host.title?.means?.identifier).toBe('/the-log/');
+        expect(host.title?.means?.identifier).toBe('/the-library/of-the-log/');
+        expect(host.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
         expect(String(host.title?.id)).toBe('of-the-log');
     });
 

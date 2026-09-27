@@ -81,10 +81,12 @@ export class $Theme extends $Format {
     }
 
     $Theme(...chemicals: $Chemical[]) {
-        this.$Annotation(...chemicals);
+        this.$Format(...chemicals);
         const Provider = $(provider);
         this._provider = $(reflection.chemical<$Provider>(<Provider theme={this} />, this));
     }
+
+    protected override provide(style: ElementType): ElementType { return style; }
 
     override defines(writing: $Writing): void {
         for (const annotation of writing.annotations.after(this))

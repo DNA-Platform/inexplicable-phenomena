@@ -61,7 +61,8 @@ export class $Book extends $Composition {
     protected turn(): void {
         const title = this.bookmark?.title;
         if (title === undefined) return;
-        document.getElementById(String(title.id))?.scrollIntoView();
+        const element = document.getElementById(String(title.id));
+        (element?.closest('.pd-chapter') ?? element)?.scrollIntoView();
     }
 }
 

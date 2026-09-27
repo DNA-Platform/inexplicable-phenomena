@@ -9,9 +9,11 @@ export class $Format extends $Annotation {
 
     $Format(...chemicals: $Chemical[]) {
         this.$Annotation(...chemicals);
-        if (!this.theme) return;
-        const Style = this.style ?? 'span';
-        this.style = (props: { children?: ReactNode }) => (
+        if (this.theme) this.style = this.provide(this.style ?? 'span');
+    }
+
+    protected provide(Style: ElementType): ElementType {
+        return (props: { children?: ReactNode }) => (
             <ThemeProvider theme={this}>
                 <Style {...props} />
             </ThemeProvider>

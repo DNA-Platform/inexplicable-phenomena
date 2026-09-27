@@ -63,6 +63,8 @@ export class $LibraryTheme extends $Theme {
         this.style = selection(this.style as ComponentType<{ className?: string }>)`
             @media (min-width: 64rem) { max-width: 52rem; }
             .pd-book { counter-reset: chapter; }
+            .pd-book > .pd-chapter { scroll-margin-block-start: calc(0.5 * ${at('space')}); }
+            :where(header, nav) > .pd-chapter { scroll-margin-block-start: calc(2.5 * ${at('space')}); }
 
             .pd-byline {
                 margin-block: ${at('space')} 0;
@@ -137,9 +139,12 @@ export const LibraryTheme = $($LibraryTheme);
 // A FORMAT THAT WORKS IN DIFFERENT PLACES: a frame drawn from the theme's own values, stood by Some
 // Projects on itself in its $Define and by the persona's book on each of its chapters at its bind — and
 // in front of the theme where it stands beside one, since the front-most annotation draws innermost and a
-// format reads the theme only from inside its provider. Doug, 2026-09-27: "Consider adding test formats
-// for books and chapters, as annotations that work in different places, and maybe have them set in
-// Define, and maybe all of them can work with the theme."
+// format reads the theme only from inside its provider. The values come as the provider's props and not
+// through a closure over the format: a style is compiled once per class, from a first specimen, so a
+// closure in it never reads the drawn instance — the theme is in reach by type from any writing, but not
+// from inside a style. Doug, 2026-09-27: "Consider adding test formats for books and chapters, as
+// annotations that work in different places, and maybe have them set in Define, and maybe all of them
+// can work with the theme."
 export class $Framed extends $Format {
     style = selection.div`
         border: 1px solid ${at('ink', 'currentColor')};

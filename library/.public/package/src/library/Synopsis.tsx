@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
-import { reflection } from '@/utilities/Reflection';
 import { specify } from '@/utilities/Specification';
 import { $Writing, AnnotationSpecification } from '@/writing/Writing';
 import { $Format } from '@/writing/Format';
@@ -49,15 +48,6 @@ export class $Synopsis extends $Format {
         );
     }
 
-    protected override $Bound(): void {
-        const title = this.chapter?.title;
-        if (title?.means !== undefined && this.means !== undefined && this.means !== title.means) {
-            const Reference = $(reference);
-            title.annotations.replace(this, title.means, reflection.chemical<$Reference>(<Reference>{this.means.identifier}</Reference>, title));
-            title.annotations.define();
-        }
-        super.$Bound();
-    }
 }
 
 export class SynopsisSpecification extends AnnotationSpecification {

@@ -132,24 +132,28 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         expect(built<$Book>(<Book bookmark="/elsewhere/">{APaper()}{TheArgument()}</Book>).bookmark).toBeUndefined();
     });
 
-    // PITCHED, 2026-09-27, found by driving every link of the test library — Doug: "I clicked table of contents and of
-    // libby and I don't think either went to the right place." A catalogue's chapter holds another book's synopsis, and
-    // the Synopsis sends the chapter's title to that book at the bind, replacing the reference the compiler wrote; the
-    // bookmark is found by what a chapter's title means, so the chapter is no longer found at its own route. Expected
-    // to fail until Doug rules where a chapter keeps its address; the day it passes is the day to flip it.
-    it.fails('a catalogue\'s chapter, its title sent to the book it holds the synopsis of, is still the bookmark at its own route', () => {
+    // A CATALOGUE'S CHAPTER KEEPS ITS OWN TITLE, found by driving every link of the test library, 2026-09-27 — Doug: "I
+    // clicked table of contents and of libby and I don't think either went to the right place." The Synopsis used to send
+    // the chapter's title to the book it holds the synopsis of, replacing the reference the compiler wrote, and the
+    // bookmark, found by what a title means, no longer found the chapter at its own route. Doug: "the Synopsis can't use
+    // the title of the chapter… as a minimal synopsis, I would have it put the inner contents and annotations in if
+    // possible, but skip the title as a default and customize from there for your library."
+    it('a catalogue\'s chapter holding another book\'s synopsis keeps its own title, and is the bookmark at its own route', () => {
         const LibbySynopsis = (): React.ReactNode => (
             <Chapter><Synopsis /><Title>[Synopsis](/libby/)</Title><Paragraph>A librarian's own account.</Paragraph></Chapter>
         );
         const OfLibby = (): React.ReactNode => <Chapter><Title>[Of Libby](/the-library/of-libby/)</Title><Synopsis>{LibbySynopsis()}</Synopsis></Chapter>;
         const book = built<$Book>(<Book bookmark="/the-library/of-libby/">{APaper()}{OfLibby()}</Book>);
-        expect(book.parts[1].title?.means?.identifier).toBe('/libby/');
-        expect(book.bookmark).toBe(book.parts[1]);
+        const ofLibby = book.parts[1] as $Chapter;
+        expect(ofLibby.title?.means?.identifier).toBe('/the-library/of-libby/');
+        expect(ofLibby.annotations.expressed($Synopsis)?.means?.identifier).toBe('/libby/');
+        expect(book.bookmark).toBe(ofLibby);
     });
 
     it('mounted, turns to its bookmark, and turns again when the bookmark moves', async () => {
         const turned = vi.fn();
-        Element.prototype.scrollIntoView = function (this: Element) { turned(this.id); };
+        // THE CHAPTER'S ELEMENT IS WHAT TURNS since 2026-09-27, found from its title's id — named here by that title.
+        Element.prototype.scrollIntoView = function (this: Element) { turned(this.classList.contains('pd-chapter') ? this.querySelector('.pd-title')?.id ?? '' : this.id); };
         const book = built<$Book>(<Book bookmark="/a-paper/the-argument/">{APaper()}{WhatItArgues()}{WhereThingsAre()}{TheArgument()}</Book>);
         const Drawn = $(book);
         await act(async () => { render(<Drawn />); });
