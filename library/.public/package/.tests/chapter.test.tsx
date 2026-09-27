@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Heading, Paragraph, Permissive, Closed } from '@dna-platform/public';
-import { $Book, Book, Cover, $Chapter, Chapter, $Title, Title, ChapterSpecification, TitleSpecification } from '@dna-platform/public';
+import { $Book, Book, Cover, Synopsis, TableOfContents, $Chapter, Chapter, $Title, Title, ChapterSpecification, TitleSpecification } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -41,6 +41,54 @@ describe('a chapter is a composition at 6, permissive and closed, whose canonica
     it('holds only writing', () => {
         const chapter = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title>words outside any writing</Chapter>);
         expect(chapter.specify()).toContain('Chapter: a closed composition holds only writing, and this one holds something else');
+    });
+});
+
+// Doug, 2026-09-27: "I like previous of the cover is the cover and next of the last chapter is the last chapter -
+// I prefer self-reference to undefined."
+describe('a chapter knows the chapter after it and before it among its book\'s, and is its own neighbour at either end', () => {
+    const shelf = (): $Book => built<$Book>(
+        <Book>
+            <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
+            <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
+            <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
+            <Chapter><Title>[A](/a-paper/a/)</Title></Chapter>
+            <Chapter><Title>[B](/a-paper/b/)</Title></Chapter>
+        </Book>
+    );
+
+    it('answers the chapter after and the chapter before, in the book\'s order', () => {
+        const [cover, synopsis, table, a, b] = shelf().text.find($Chapter);
+        expect(a.after).toBe(b);
+        expect(a.before).toBe(table);
+        expect(synopsis.before).toBe(cover);
+        expect(synopsis.after).toBe(table);
+    });
+
+    it('is its own next at the end of the book, and its own previous at the start', () => {
+        const [cover, , , , b] = shelf().text.find($Chapter);
+        expect(b.after).toBe(b);
+        expect(cover.before).toBe(cover);
+    });
+
+    it('built alone, or within a chapter rather than among the book\'s own, is its own neighbour both ways', () => {
+        const alone = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>);
+        expect(alone.after).toBe(alone);
+        expect(alone.before).toBe(alone);
+        const book = built<$Book>(
+            <Book>
+                <Chapter><Cover /><Title>[The Library](/the-library/)</Title></Chapter>
+                <Chapter>
+                    <Title>[Of the Log](/the-library/of-the-log/)</Title>
+                    <Chapter><Title>[Entries](/the-log/entries/)</Title></Chapter>
+                </Chapter>
+            </Book>
+        );
+        const [cover, host] = book.text.find($Chapter);
+        const [nested] = host.text.find($Chapter);
+        expect(host.before).toBe(cover);
+        expect(nested.after).toBe(nested);
+        expect(nested.before).toBe(nested);
     });
 });
 
