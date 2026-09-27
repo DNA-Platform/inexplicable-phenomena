@@ -31,7 +31,7 @@ export class $Theme extends $Format {
         max-width: ${value('measure')};
         margin-inline: auto;
         padding: ${value('space')};
-        .pd-container { box-sizing: border-box; }
+        .pd-container { box-sizing: border-box; color: inherit; }
         .pd-annotation { display: none; }
         .pd-book { margin-block: ${value('space')}; }
         .pd-chapter { margin-block: calc(2 * ${value('space')}); }
