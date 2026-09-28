@@ -25,6 +25,15 @@ describe('the test library, read', () => {
         expect(made.of('The Evidence')).toBeUndefined();
     });
 
+    // THE COMPILER READS WRITING AND NEVER THE MACHINERY AROUND IT. Until Sprint 90 the scanner ran
+    // over a file's raw source, and a form in a comment above a chapter's title would have named the
+    // chapter; the parser says where prose and strings stand, and only there is read.
+    it('never reads a form in a comment, so The Work is named by its title and nothing is refused', () => {
+        expect(made.named.get('projects/1-the-work.tsx')).toBe('The Work');
+        expect(made.of('Some Projects / A Ghost Title')).toBeUndefined();
+        expect(made.refused).toEqual([]);
+    });
+
     // A COVER'S SECOND TITLE FORM, NAMING ITS OWN BOOK, IS ITS ABOUT — and a book is a subject another
     // may be filed under only when it is about something. Doug, 2026-09-25: "Any book can be About
     // something, but that allows other books to then be able to use it as a subject catalogue."

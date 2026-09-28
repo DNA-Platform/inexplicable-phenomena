@@ -1,9 +1,9 @@
 import { basename } from 'node:path';
-import ts from 'typescript';
 import type { Plugin } from 'vite';
 import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import { reads } from '../catalogue/reading';
+import { sourceOf } from '../catalogue/structure';
 import { form, key, name as parsed, notation, spelling, titled, whole, type Name } from '../catalogue/language';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
@@ -71,7 +71,10 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
     const within = catalogue.scope(file);
     const cover = basename(file) === '.cover.tsx';
     const synopsis = basename(file) === '.synopsis.tsx';
-    const source = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
+    // THE SAME READING THE STRUCTURE TOOK, when it read this very text — one parse per version of a
+    // file across both passes, and the same runs, so the catalogue and the page cannot disagree about
+    // what a file says. Sprint 90.
+    const held = sourceOf(file, code);
     const edits: { from: number; to: number; said: string }[] = [];
     const missed: Missing[] = [];
 
@@ -105,7 +108,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             const shown = read.named ? read.words : meant.of === 'book' ? meant.book : meant.chapter;
             const url = catalogue.where(key(meant, within));
             if (url === undefined) {
-                missed.push({ key: key(meant, within), file, line: source.getLineAndCharacterOfPosition(at).line + 1 });
+                missed.push({ key: key(meant, within), file, line: held.line(at) });
                 continue;
             }
 
@@ -123,25 +126,9 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
         }
     };
 
-    const walk = (node: ts.Node): void => {
-        if (ts.isJsxText(node)) {
-            const from = node.getStart(source);
-            scan(code.slice(from, node.end), from, true);
-
-            return;
-        }
-        // A STRING, WHEREVER IT STANDS — a prop, a literal in a helper, a template with nothing
-        // substituted. Scanned as the source spells it, quotes stripped, so every offset is exact
-        // even where the string carries an escape.
-        if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
-            const raw = node.getText(source);
-            scan(raw.slice(1, -1), node.getStart(source) + 1, false);
-
-            return;
-        }
-        ts.forEachChild(node, walk);
-    };
-    walk(source);
+    // THE RUNS THE PARSER LOCATED — prose between tags, and a string wherever it stands, quotes
+    // stripped — and nothing else in the file: never a comment, an import's path or a tag's name.
+    for (const run of held.runs) scan(run.text, run.from, run.kind === 'prose');
 
     let said = code;
     for (const edit of [...edits].sort((a, b) => b.from - a.from))
@@ -149,6 +136,12 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
 
     return { text: said, missing: missed };
 };
+
+// A RAW MODULE IS A LITERAL AND IS LEFT AS WRITTEN. The assembly imports each file accompanying a
+// chapter with `?raw` so its text becomes an Append's, and that text is the file exactly — Doug,
+// 2026-09-28: "it is the version written that is used not the version modified." The same file
+// imported as a module still compiles. Sprint 90.
+export const literal = (query: string | undefined): boolean => query !== undefined && query.split('&').includes('raw');
 
 // THE PLUGIN — the incremental half. It holds no catalogue of its own: the catalogue is the
 // library's, and a plugin is only where the library is asked.
@@ -161,8 +154,8 @@ export const references = (inventory: Inventory): Plugin => ({
     name: 'binding:references',
     enforce: 'pre',
     transform(code: string, id: string) {
-        const file = id.split('?')[0];
-        if (!file.endsWith('.tsx')) return null;
+        const [file, query] = id.split('?');
+        if (!file.endsWith('.tsx') || literal(query)) return null;
 
         const catalogue = inventory.catalogue();
         const found = transforming(code, file, catalogue);

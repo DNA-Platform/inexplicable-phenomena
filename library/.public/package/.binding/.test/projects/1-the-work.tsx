@@ -1,6 +1,8 @@
 import { Chapter, Heading, Paragraph, Section, Title } from '@dna-platform/public';
 import { Catchword } from '../manual/.book';
 
+// [[ A Ghost Title ]] — a form in a comment names nothing: the compiler reads writing, never the
+// machinery around it, so this chapter is The Work and this line is left as it is. Sprint 90.
 export default () => (
     <Chapter>
         <Title>[[ The Work ]]</Title>

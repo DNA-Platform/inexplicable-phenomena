@@ -57,6 +57,26 @@ describe('a bind of the test library', () => {
         expect(said).toMatch(/^bound /mu);
     });
 
+    // A LITERAL IS AS WRITTEN — Doug, 2026-09-28: "it is the version written that is used not the
+    // version modified." Every file the manual prints through a Code figure is on its chapter's page
+    // exactly as it stands on disk, so the transform never touched the raw module the Append was made
+    // from; and nothing is planted in a manual file to prove it — the files themselves are the proof.
+    it('printed every file the manual holds exactly as written on disk', () => {
+        const manual = found.books.find(book => book.folder === 'manual')!;
+        const route = table.routes.find(one => one.name === 'The Library Reference Manual')!;
+        const decoded = (html: string): string => html.replace(/<!-- -->/gu, '').replace(/&(lt|gt|amp|quot|#x27|#39);/gu, (_, held: string) => ({ lt: '<', gt: '>', amp: '&', quot: '"', '#x27': "'", '#39': "'" })[held]!);
+        let printed = 0;
+        for (const [chapter, files] of manual.resources)
+            for (const one of files.filter(file => file.type === '.tsx')) {
+                const title = readFileSync(join(manual.path, chapter), 'utf8').match(/\[\[ (.+?) \]\]/u)![1];
+                const html = readFileSync(placeOf(galley.face, route.chapters.find(each => each.name === title)!), 'utf8');
+                const blocks = [...html.matchAll(/<code[^>]*>([\s\S]*?)<\/code>/gu)].map(match => decoded(match[1]));
+                expect(blocks, `${chapter} prints ${one.file}`).toContain(readFileSync(join(manual.path, one.file), 'utf8'));
+                printed++;
+            }
+        expect(printed).toBeGreaterThanOrEqual(5);
+    });
+
     // A CHAPTER IS A ROUTE OF ITS BOOK — Doug, 2026-09-26: "The book is a static page returned by github
     // pages, the chapters are routes on a local spa." A page at every address, the book at each.
     it('wrote a page for every book and for every chapter of it, and every page holds its book', () => {

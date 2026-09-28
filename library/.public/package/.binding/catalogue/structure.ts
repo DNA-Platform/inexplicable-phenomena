@@ -1,8 +1,9 @@
 import { readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import type { Book, Library } from '../inventory/library';
 import { dotChapters, imageTypes } from '../inventory/filenames';
 import { annotating, type Reading, type Said } from './annotations';
+import { source, type Source } from './source';
 import { itself, key, last, separator, tidy, titled, type End, type Name, type Relation } from './language';
 
 // THE LIBRARY COMPILED INTO SOMETHING THAT CAN BE CHECKED.
@@ -81,19 +82,6 @@ const titles = (book: Book, file: string): SpotId => (file === '.cover.tsx' ? bo
 const speaks = (book: Book, file: string): SpotId =>
     dotChapters.includes(file) || file === '.book.tsx' ? book.folder : `${book.folder}/${file}`;
 
-const lines = (code: string): ((at: number) => number) => {
-    const breaks: number[] = [];
-    for (let at = code.indexOf('\n'); at !== -1; at = code.indexOf('\n', at + 1)) breaks.push(at);
-
-    return (at: number): number => {
-        let low = 0;
-        let high = breaks.length;
-        while (low < high) { const mid = (low + high) >> 1; if (breaks[mid] < at) low = mid + 1; else high = mid; }
-
-        return low + 1;
-    };
-};
-
 // WHAT A TITLE FORM NAMES, as the name it gives: its book in a cover, and a chapter of its book
 // anywhere else, by [the language](./language.ts)'s one rule. A name that says another book gives
 // nothing, since a file titles what it is.
@@ -107,7 +95,7 @@ const titleOf = (name: Name, cover: boolean): string => {
 // resource is read for what it REFERS TO and never for what it names: the masthead's reference to
 // the plate is spent from a resource, and the structure said nothing referred to the plate
 // (2026-09-20) because it read chapters alone while the transform compiled the resource fine.
-type Held = { book: Book; file: string; path: string; resource: boolean; code: string; on: (at: number) => number; reading: Reading };
+type Held = { book: Book; file: string; path: string; resource: boolean; reading: Reading };
 
 // WHAT A FILE SAID LAST TIME, KEPT UNTIL THE FILE CHANGES.
 //
@@ -123,19 +111,28 @@ type Held = { book: Book; file: string; path: string; resource: boolean; code: s
 // KEYED ON WHAT THE FILE IS RATHER THAN WHEN WE LOOKED. Modified time and size together: a rewrite
 // that lands in the same millisecond almost always changes the length, and a `stat` of eleven
 // thousand files is milliseconds against seconds of parsing.
-const kept = new Map<string, { at: number; size: number; code: string; on: (at: number) => number; reading: Reading }>();
+const kept = new Map<string, { at: number; size: number; code: string; source: Source; reading: Reading }>();
 
-const looked = (path: string): { code: string; on: (at: number) => number; reading: Reading } => {
+const looked = (path: string): Reading => {
     const said = statSync(path);
-    const before = kept.get(path);
-    if (before !== undefined && before.at === said.mtimeMs && before.size === said.size) return before;
+    const before = kept.get(resolve(path));
+    if (before !== undefined && before.at === said.mtimeMs && before.size === said.size) return before.reading;
 
     const code = readFileSync(path, 'utf8');
-    const on = lines(code);
-    const held = { at: said.mtimeMs, size: said.size, code, on, reading: annotating(code, on) };
-    kept.set(path, held);
+    const read = source(path, code);
+    const held = { at: said.mtimeMs, size: said.size, code, source: read, reading: annotating(read) };
+    kept.set(resolve(path), held);
 
-    return held;
+    return held.reading;
+};
+
+// THE SOURCE OF A FILE THE TRANSFORM IS HANDED: the structure's own reading when it read this very
+// text, a fresh one otherwise — so a file is parsed once per version of itself across both passes,
+// and a reading of yesterday's text never edits today's. Sprint 90.
+export const sourceOf = (path: string, code: string): Source => {
+    const before = kept.get(resolve(path));
+
+    return before !== undefined && before.code === code ? before.source : source(path, code);
 };
 
 export const structure = (found: Library): Structure => {
@@ -144,13 +141,13 @@ export const structure = (found: Library): Structure => {
     for (const book of found.books) {
         for (const file of book.files) {
             const path = join(book.path, file);
-            read.push({ book, file, path, resource: false, ...looked(path) });
+            read.push({ book, file, path, resource: false, reading: looked(path) });
         }
         // A PICTURE IS NOT READ: its bytes are not writing, and a reference found in them is noise.
         for (const { file, type } of [...book.resources.values()].flat()) {
             if (imageTypes.includes(type)) continue;
             const path = join(book.path, file);
-            read.push({ book, file, path, resource: true, ...looked(path) });
+            read.push({ book, file, path, resource: true, reading: looked(path) });
         }
     }
 

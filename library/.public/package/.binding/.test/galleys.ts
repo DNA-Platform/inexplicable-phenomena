@@ -111,10 +111,15 @@ export type Copies = { of: string; name: string; subject: string };
 export const duplicated = (galley: Galley, copies: Copies, count: number): string[] => {
     const named: string[] = [];
     const at = (folder: string): string => join(galley.library, folder);
-    const listing = (table: string, after: string, rows: string[]): void => {
-        const code = readFileSync(table, 'utf8');
-        if (!code.includes(after)) throw new Error(`${table} does not list ${after}, so there is nowhere to list its copies after`);
-        writeFileSync(table, code.replace(after, `${after}\n${rows.join('\n')}`));
+    // THE ROW IS FOUND BY THE HALF THAT NAMES THE BOOK, `[[ name ]]**`, since Sprint 88 gave every
+    // row words apart from the name in its other half — measured 2026-09-28: an exact match of the
+    // whole row had not matched since, and the performance project had been red unrun.
+    const listing = (table: string, name: string, rows: string[]): void => {
+        const lines = readFileSync(table, 'utf8').split('\n');
+        const at = lines.findIndex(line => line.includes(`[[ ${name} ]]**`));
+        if (at === -1) throw new Error(`${table} does not list ${name}, so there is nowhere to list its copies after`);
+        lines.splice(at + 1, 0, ...rows);
+        writeFileSync(table, lines.join('\n'));
     };
 
     // A CATALOGUE'S ROW ANSWERS FOR A BOOK AND REFERS TO ITS SYNOPSIS — the shape
@@ -127,10 +132,15 @@ export const duplicated = (galley: Galley, copies: Copies, count: number): strin
         cpSync(at(copies.of), at(folder), { recursive: true });
         for (const file of ['.cover.tsx', '.synopsis.tsx', '.table.tsx'])
             writeFileSync(join(at(folder), file), readFileSync(join(at(folder), file), 'utf8').split(copies.name).join(name));
+        // A COPY NAMES NO PLACES. The original's headings are mentions because another book hops to
+        // them; nobody hops to a copy's, and a mention nobody spends is refused — so a copy's chapters
+        // keep the headings as plain words. Measured 2026-09-28: 400 UNREFERENCED-MENTION over 200 copies.
+        for (const file of readdirSync(at(folder)).filter(one => /^\d/u.test(one) && one.endsWith('.tsx')))
+            writeFileSync(join(at(folder), file), readFileSync(join(at(folder), file), 'utf8').replace(/\[\[\[\s*([^\]\n]*?)\s*\]\]\]/gu, '$1'));
         rows.push(row(name));
         named.push(name);
     }
-    listing(join(at(copies.subject), '.table.tsx'), row(copies.name), rows);
+    listing(join(at(copies.subject), '.table.tsx'), copies.name, rows);
 
     return named;
 };

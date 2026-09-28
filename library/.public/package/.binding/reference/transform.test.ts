@@ -2,16 +2,37 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { fixture, read } from '../.test/galleys';
-import { transforming } from './transform';
+import { literal, references, transforming } from './transform';
 
 // WHAT THE TRANSFORM WRITES INTO A READER'S PROSE, which is the one thing in the compiler that edits
 // what a person sees. Every promise here is about the text that comes out: the address a reference
 // is given, the words it keeps, the url a mention is given for the place it makes, and what it raises
 // when a name is not the library's. And what never comes out: a component, since the compiler knows none — Doug,
 // 2026-09-24: "The compiler ALWAYS should give: `[text](identifier)`."
-const { card } = read();
+const { found, card } = read();
 const chapter = join(fixture, 'paper', '1-the-argument.tsx');
 const cover = join(fixture, 'the-library', '.cover.tsx');
+
+// THE TRANSFORM READS WHAT THE PARSER LOCATED AND NOTHING ELSE, and a raw module is a literal. Sprint 90.
+describe('what the transform never touches', () => {
+    it('a form in a comment, which the compiler does not read', () => {
+        const work = join(fixture, 'projects', '1-the-work.tsx');
+        const made = transforming(readFileSync(work, 'utf8'), work, card);
+        expect(made.missing).toEqual([]);
+        expect(made.text).toContain('// [[ A Ghost Title ]]');
+    });
+
+    it('a raw module, whose text is an Append\'s and is the file exactly as written', () => {
+        const plugin = references({ library: () => found, catalogue: () => card, again: () => {} });
+        const hook = plugin.transform as (this: unknown, code: string, id: string) => string | null;
+        const raw = `export default ${JSON.stringify(readFileSync(chapter, 'utf8'))}`;
+        expect(hook.call(undefined, raw, `${chapter}?raw`)).toBeNull();
+        expect(hook.call(undefined, readFileSync(chapter, 'utf8'), chapter)).toContain('[The Library](/the-library/)');
+        expect(literal('raw')).toBe(true);
+        expect(literal('import&raw')).toBe(true);
+        expect(literal(undefined)).toBe(false);
+    });
+});
 
 describe('a reference in prose', () => {
     const made = transforming(readFileSync(chapter, 'utf8'), chapter, card);
