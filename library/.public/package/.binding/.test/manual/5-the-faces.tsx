@@ -1,4 +1,4 @@
-import { Chapter, Code, Heading, Means, Paragraph, Section, Title, Highlighted, Numbered } from '@dna-platform/public';
+import { Chapter, Code, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
 import { Catchword } from './.book';
 
 export default () => (
@@ -21,7 +21,7 @@ export default () => (
         </Section>
         <Section>
             <Heading>The faces' file</Heading>
-            <Paragraph><Code>![[ code.tsx ]]<Highlighted /><Numbered /></Code></Paragraph>
+            <Paragraph><Code>![[ code.tsx ]]</Code></Paragraph>
         </Section>
         <Catchword />
     </Chapter>

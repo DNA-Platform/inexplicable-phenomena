@@ -1,4 +1,4 @@
-import { Chapter, Code, Heading, Means, Paragraph, Section, Title, Highlighted, Numbered } from '@dna-platform/public';
+import { Chapter, Code, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
 import { Catchword } from './.book';
 
 export default () => (
@@ -26,7 +26,7 @@ export default () => (
                 as it is on disk. It is the book class every book of this library extends, and the same file is
                 imported from the manual's door by every one of them.
             </Paragraph>
-            <Paragraph><Code>![[ code.tsx ]]<Highlighted /><Numbered /></Code></Paragraph>
+            <Paragraph><Code>![[ code.tsx ]]</Code></Paragraph>
         </Section>
         <Catchword />
     </Chapter>

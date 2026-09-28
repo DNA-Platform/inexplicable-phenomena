@@ -36,8 +36,6 @@
     "test:gate": "tsc --noEmit -p src/tsconfig.json && npm run build && vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@lezer/highlight": "^1.2.5",
-    "@lezer/javascript": "^1.5.5",
     "@tailwindcss/typography": "^0.5.20",
     "katex": "^0.18.1",
     "latex.css": "^1.14.0",

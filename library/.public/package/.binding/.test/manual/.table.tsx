@@ -14,7 +14,6 @@ export default () => (
             <Paragraph><Content>$[[ ./The Faces ]]</Content></Paragraph>
             <Paragraph><Content>$[[ ./The Mark and the Photograph ]]</Content></Paragraph>
             <Paragraph><Content>$[[ ./The Explorer ]]</Content></Paragraph>
-            <Paragraph><Content>$[[ ./The Listing ]]</Content></Paragraph>
             <Paragraph>
                 <Parenthetical />
                 <Word><Content>$[[ The Library Reference Manual ]]</Content></Word>
