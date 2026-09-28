@@ -1,5 +1,5 @@
 import { Paginated } from '@dna-platform/public';
-import $TheLibrary, { Framed } from '../the-library/.book';
+import { $TheLibrary, Framed } from '../manual/.book';
 
 // THE ONE PAGINATED BOOK OF THE TEST LIBRARY: its chapters are pages and one shows at a time, the chapter
 // its bookmark names — so /some-projects/ shows the cover and /some-projects/the-work/ the work, and the

@@ -1,3 +1,6 @@
+import { copyFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { imageTypes } from './inventory/filenames';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build, type Rollup } from 'vite';
@@ -72,7 +75,10 @@ export const tasks: Task[] = [
         state.found = walk(state.library, chosen);
         if (state.found.books.length === 0) throw new Error(`${state.library} holds no book — a folder carrying a .book.tsx`);
         const wrong = misaccounted(state.found, chosen);
-        if (wrong !== undefined) throw new Error(wrong);
+        if (wrong.length) {
+            for (const one of wrong) console.error(problem(one));
+            throw new Error(`${plural(wrong.length, 'file')} not accounted for`);
+        }
 
         return `${plural(state.found.books.length, 'book')}: ${state.found.books.map(book => book.folder).join(', ')}`;
     } },
@@ -158,7 +164,14 @@ export const tasks: Task[] = [
         const root = table.root === undefined ? undefined : { name: table.root.name, address: held.where(table.root.name) ?? table.root.address };
         // A PAGE AT EVERY ADDRESS, a book's and each of its chapters'.
         state.rendered = await rendering(state.binding, table.routes.flatMap(route => [route.address, ...route.chapters.map(chapter => chapter.address)]), root);
-        return state.rendered.join(', ');
+        // AND EVERY PICTURE ACCOMPANYING A CHAPTER PLACED IN THE FACE beside its book's pages, at the
+        // address its Append names, `/<folder>/<file>` — copied, never bundled, so the address is a
+        // page's and not a dev server's. Sprint 89.
+        const face = join(state.binding, '..');
+        const pictures = need(state.found, 'render').books.flatMap(book => [...book.resources.values()].flat()
+            .filter(one => imageTypes.includes(one.type))
+            .map(one => { mkdirSync(join(face, book.folder), { recursive: true }); copyFileSync(join(book.path, one.file), join(face, book.folder, one.file)); return `${book.folder}/${one.file}`; }));
+        return [...state.rendered, ...pictures].join(', ');
     } },
     { name: 'proof', run: state => {
         // RUNNABLE ON ITS OWN. `tsx binding.ts proof` reads the pages the last binding wrote, so a

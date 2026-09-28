@@ -1,5 +1,5 @@
 import { About, Author, Autobiography, Chapter, Cover, Subject, Title } from '@dna-platform/public';
-import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 // THE AUTOBIOGRAPHY: the one book that is by its own subject. Libby is the librarian, so her book is
 // filed under Libraries like every other; it is About her, so she is a subject, and her name is what

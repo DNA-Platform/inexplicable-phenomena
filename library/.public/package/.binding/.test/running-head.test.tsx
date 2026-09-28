@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderToString } from 'react-dom/server';
 import { $ } from '@dna-platform/chemistry';
 import { $Book, Book, Chapter, Cover, TableOfContents, Title } from '@dna-platform/public';
-import { $RunningHead, RunningHead } from './the-library/1-the-shelves.tsx.tsx';
+import { $RunningHead, RunningHead } from './manual/3-the-masthead-and-the-byline.code.tsx';
 
 // THE TEST LIBRARY'S RUNNING HEAD, loading nothing but the package and the class — R4 of Sprint 83.
 // Doug: "Most things should be tested loading the least amount." A book is built in memory in the

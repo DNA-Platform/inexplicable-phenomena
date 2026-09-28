@@ -100,7 +100,7 @@ describe('a table of contents', () => {
 
 // A RESOURCE IS DRAWN ON EVERY PAGE THAT WEARS IT, and what it refers to carries its url like everything else.
 describe('a resource shared by every page', () => {
-    const resource = join(fixture, 'the-library', '1-the-shelves.tsx.tsx');
+    const resource = join(fixture, 'manual', '3-the-masthead-and-the-byline.code.tsx');
     const made = transforming(readFileSync(resource, 'utf8'), resource, card);
 
     it('keeps the address of the book it lives in, even though it lives there', () => {

@@ -5,7 +5,7 @@ import { Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
-import type { $Book } from '@/library/Book';
+import type { $Book } from '@/libraries/Book';
 
 export class $Writing extends $Chemical {
     protected _text?: Text;

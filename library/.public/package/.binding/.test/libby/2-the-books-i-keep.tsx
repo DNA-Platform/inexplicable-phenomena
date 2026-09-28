@@ -1,5 +1,5 @@
 import { Chapter, Emphasis, Heading, Means, Paragraph, Section, Title, Word } from '@dna-platform/public';
-import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 // LIBBY ON THE BOOKS SHE KEEPS: her story goes on through the library's books, each named where it stands,
 // and what each shows of .public — a mention for every hop, to the book, to a chapter, to a heading in it.

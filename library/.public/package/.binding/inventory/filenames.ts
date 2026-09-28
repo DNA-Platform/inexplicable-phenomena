@@ -15,12 +15,39 @@ export const dotChapters = ['.cover.tsx', '.synopsis.tsx', '.table.tsx'];
 // WHAT A BOOK IS MADE OF BESIDES ITS NUMBERED CHAPTERS, in the order it is bound.
 export const apparatus = ['.book.tsx', ...dotChapters];
 
-// A CHAPTER IS A NUMBERED .tsx AND A RESOURCE MAY ALSO BE ONE, so the two are told apart by the
-// double extension. A file that is TypeScript with markup in it cannot be spelled `.tsx` beside a
-// chapter without being read as one; written `.tsx.tsx` it stays importable, stays highlighted, and
-// is obviously a resource at a glance.
+// A CHAPTER IS A NUMBERED .tsx, and a file accompanying a writing carries the writing's extension-free
+// name, one separator character of the author's choosing, an identifier and its type —
+// `5-the-plate.version1.tsx`, `5-the-plate-figures.tsx` — or the writing's name and its type alone,
+// `5-the-plate.ts`, an empty identifier. Doug, 2026-09-28: "Any file that has the extension-free name
+// of the chapter as its prefix. The rest of the name is its filename, skipping one character as a
+// separator… It is empty, identify it by its extension"; and "just skip a character, let them use what
+// they want, and we make the dot a convention and recommendation." So a numbered .tsx is a chapter
+// unless it accompanies another — its name being another chapter's name, a character, and more —
+// which `accountOfFiles` decides with every candidate in hand; and a .tsx accompanying a chapter
+// always carries an identifier, since the name alone would be the chapter's.
 export const isChapter = (file: string): boolean =>
-    /^\d/u.test(file) && file.endsWith('.tsx') && !file.endsWith('.tsx.tsx');
+    /^\d/u.test(file) && file.endsWith('.tsx');
+
+// WHETHER A FILE'S BASE ACCOMPANIES A WRITING'S NAME: the same name, or the name, one character and
+// at least what `least` asks — nothing for an ordinary file, one character for a .tsx that must not
+// be the chapter itself.
+export const accompanies = (base: string, name: string, least = 0): boolean =>
+    base === name || (base.startsWith(name) && base.length >= name.length + 1 + least);
+
+// WHAT ACCOMPANIES A WRITING: the file, the identifier between the writing's name and the type, and
+// the type with its dot. Doug: "the identifier (part after chapter name then separator before
+// extension) and type (extension like .tsx), that can be passed as props to the annotation."
+export type Accompanying = { file: string; identifier: string; type: string };
+
+// TWO FILES UNDER ONE IDENTIFIER AND TYPE, named for the diagnostic that refuses them.
+export type Clashing = Accompanying & { writing: string };
+
+export const accompanying = (file: string, writing: string): Accompanying => {
+    const base = withoutFinalExtension(file);
+    const name = withoutFinalExtension(writing);
+
+    return { file, identifier: base === name ? '' : base.slice(name.length + 1), type: file.slice(file.lastIndexOf('.')) };
+};
 
 // A DECLARATION IS NOT AN OFFENCE: `.d.ts` is emitted rather than written, and no author put it there.
 export const isDeclaration = (file: string): boolean => file.endsWith('.d.ts');
@@ -28,7 +55,11 @@ export const isDeclaration = (file: string): boolean => file.endsWith('.d.ts');
 // AND A RESOURCE CARRIES ONE OF THE EXTENSIONS A LIBRARY KNOWS. Left open, a stray file passes by
 // being named after one that belongs: `2-the-source.tsx.bak` loses `.bak`, lands on a real chapter's
 // name and is waved through as its resource. What may stand beside a chapter is a closed list.
-const knownExtensions = ['ts', 'tsx', 'js', 'mjs', 'json', 'md', 'css', 'sh', 'txt', 'csv', 'svg'];
+const knownExtensions = ['ts', 'tsx', 'js', 'mjs', 'json', 'md', 'css', 'sh', 'txt', 'csv', 'svg', 'png', 'jpg', 'jpeg'];
+
+// AND WHICH OF THEM ARE PICTURES: imported as the bundler emits them, an address; read by nobody for
+// references, since their bytes are not writing.
+export const imageTypes = ['.png', '.jpg', '.jpeg'];
 
 export const isKnown = (file: string): boolean =>
     knownExtensions.includes(file.slice(file.lastIndexOf('.') + 1).toLowerCase());

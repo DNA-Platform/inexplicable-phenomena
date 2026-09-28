@@ -1,5 +1,5 @@
 import { $ } from '@dna-platform/chemistry';
-import $TheLibrary, { $LibraryTheme } from '../the-library/.book';
+import { $LibraryTheme, $TheLibrary } from '../manual/.book';
 
 // LIBBY'S BOOK IS DARK: her own theme stood in front of the library's, which the singular Theme takes out
 // of expression, so one book of the library shows a theme overwritten — Doug, 2026-09-27: "I hope that dark

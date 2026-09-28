@@ -1,5 +1,5 @@
 import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Table, TableOfContents, Title, Word } from '@dna-platform/public';
-import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 export default () => (
     <Chapter>

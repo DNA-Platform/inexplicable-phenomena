@@ -1,5 +1,6 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import type { Accompanying, Clashing } from './filenames';
 
 // THE GEOMETRY: a library holds books; its face holds the binding; what the binder generates
 // compiles inward, into the binding, never into the library. Said once, in both directions, so
@@ -26,8 +27,9 @@ export type Book = {
     // WHAT STANDS BESIDE EACH CHAPTER, and what stands beside nothing. Both come from the single
     // reading of the folder that also ordered the chapters, so the binder never asks a book's
     // directory a second question it already has the answer to.
-    resources: Map<string, string[]>;
+    resources: Map<string, Accompanying[]>;
     unaccounted: string[];
+    clashing: Clashing[];
     module: string;
 };
 

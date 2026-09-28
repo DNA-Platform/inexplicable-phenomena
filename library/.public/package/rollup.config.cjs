@@ -66,7 +66,7 @@ const at = () => ({
 // FAILS the build rather than joining a list of warnings nobody reads.
 const knownCycles = [
     'src/writing/Section.tsx -> src/writing/Heading.tsx -> src/writing/Section.tsx',
-    'src/library/Chapter.tsx -> src/library/Title.tsx -> src/library/Chapter.tsx',
+    'src/libraries/Chapter.tsx -> src/libraries/Title.tsx -> src/libraries/Chapter.tsx',
 ];
 
 const named = warning => (warning.ids || [])

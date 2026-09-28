@@ -13,8 +13,8 @@ const { found, card } = read();
 const made = structure(found);
 
 describe('the test library, read', () => {
-    it('is five books, and holds together', () => {
-        expect(found.books.map(book => book.folder).sort()).toEqual(['libby', 'paper', 'persona', 'projects', 'the-library']);
+    it('is six books, and holds together', () => {
+        expect(found.books.map(book => book.folder).sort()).toEqual(['libby', 'manual', 'paper', 'persona', 'projects', 'the-library']);
         expect(wellformed(made)).toEqual([]);
     });
 

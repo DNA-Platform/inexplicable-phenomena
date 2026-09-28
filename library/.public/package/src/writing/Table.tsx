@@ -5,7 +5,7 @@ import { specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
 import { $Composition } from './Composition';
 import { $Section } from './Section';
-import { $Chapter } from '@/library/Chapter';
+import { $Chapter } from '@/libraries/Chapter';
 
 const tracks = Array.from({ length: 12 }, (_, index) => index + 1);
 

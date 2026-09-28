@@ -1,5 +1,5 @@
 import { Bold, Break, Chapter, Emphasis, Heading, Means, Paragraph, Section, Space, Title, Underline, Word } from '@dna-platform/public';
-import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 // EVERY WAY A REFERENCE CAN BE WRITTEN, IN ONE CHAPTER: a book by name, a chapter of this book, a
 // chapter of another book, a reference that shows its own words — and one written in a STRING,

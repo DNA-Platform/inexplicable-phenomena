@@ -1,5 +1,5 @@
 import { Chapter, Heading, Parenthetical, TableOfContents, Title } from '@dna-platform/public';
-import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 import { Entries } from './.table.tsx.tsx';
 
 // THE ONE TABLE OF THE TEST LIBRARY THAT IS DRAWN rather than written: its entries come from what its

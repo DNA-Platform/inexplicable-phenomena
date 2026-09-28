@@ -1,7 +1,7 @@
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Book, Library } from '../inventory/library';
-import { dotChapters } from '../inventory/filenames';
+import { dotChapters, imageTypes } from '../inventory/filenames';
 import { annotating, type Reading, type Said } from './annotations';
 import { itself, key, last, separator, tidy, titled, type End, type Name, type Relation } from './language';
 
@@ -146,7 +146,9 @@ export const structure = (found: Library): Structure => {
             const path = join(book.path, file);
             read.push({ book, file, path, resource: false, ...looked(path) });
         }
-        for (const file of [...book.resources.values()].flat()) {
+        // A PICTURE IS NOT READ: its bytes are not writing, and a reference found in them is noise.
+        for (const { file, type } of [...book.resources.values()].flat()) {
+            if (imageTypes.includes(type)) continue;
             const path = join(book.path, file);
             read.push({ book, file, path, resource: true, ...looked(path) });
         }

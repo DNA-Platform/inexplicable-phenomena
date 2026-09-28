@@ -5,7 +5,7 @@ import { specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing, AnnotationSpecification } from './Writing';
 import { $Format } from './Format';
-import { $Book } from '@/library/Book';
+import { $Book } from '@/libraries/Book';
 
 export type Values = Record<'font' | 'size' | 'leading' | 'measure' | 'space' | 'ink' | 'paper' | 'link', string>;
 
@@ -33,6 +33,11 @@ export class $Theme extends $Format {
         padding: ${value('space')};
         .pd-container { box-sizing: border-box; color: inherit; }
         .pd-annotation { display: none; }
+        .pa-append { white-space: pre; }
+        .pd-figure { max-width: 100%; }
+        .pd-code { font-family: ui-monospace, monospace; font-size: calc(0.9 * ${value('size')}); white-space: pre; overflow-x: auto; }
+        .pd-image { max-width: 100%; height: auto; }
+        .pd-svg { max-width: 100%; }
         .pd-book { margin-block: ${value('space')}; }
         .pd-chapter { margin-block: calc(2 * ${value('space')}); }
         .pd-section { margin-block: ${value('space')}; }

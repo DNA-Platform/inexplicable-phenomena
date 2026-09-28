@@ -1,5 +1,5 @@
 import { Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
-import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 // AN AUTOBIOGRAPHY IS WRITTEN IN THE FIRST PERSON — Doug, 2026-09-27: "Don't have a Log in libby's
 // library. Have an autobiography."

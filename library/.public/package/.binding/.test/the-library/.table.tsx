@@ -1,5 +1,5 @@
 import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Table, TableOfContents, Title, Word } from '@dna-platform/public';
-import { Catchword } from './1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 // THE CATALOGUE: a row for every book filed under this one, its name and what it is, the second linking to
 // the book's own synopsis, which is what the compiler requires of a catalogue's row.
@@ -25,6 +25,7 @@ export default () => (
             <Paragraph><Word><Content>[[ Libby ]]**</Content></Word> <Word><Content>$[ the librarian's own account ]( Libby / Synopsis )</Content></Word></Paragraph>
             <Paragraph><Word><Content>[[ Some Projects ]]**</Content></Word> <Word><Content>$[ what she has worked on ]( Some Projects / Synopsis )</Content></Word></Paragraph>
             <Paragraph><Word><Content>[[ A Paper ]]**</Content></Word> <Word><Content>$[ a paper by a persona she vouched for ]( A Paper / Synopsis )</Content></Word></Paragraph>
+            <Paragraph><Word><Content>[[ The Library Reference Manual ]]**</Content></Word> <Word><Content>$[ the tools every book here is built with ]( The Library Reference Manual / Synopsis )</Content></Word></Paragraph>
         </Section>
         <Catchword />
     </Chapter>

@@ -1,5 +1,5 @@
 import { About, Author, Chapter, Cover, Subject, Title } from '@dna-platform/public';
-import { Catchword } from './1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 // THE TOP OF THE LIBRARY: the catalogue every book is filed under, itself filed under what it is about —
 // Libraries — which is its own name said as a subject. Written by the librarian.

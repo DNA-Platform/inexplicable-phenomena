@@ -21,6 +21,7 @@ export const book = (library: string, folder: string): Book => {
         files: account.chapters,
         resources: account.resources,
         unaccounted: account.unaccounted,
+        clashing: account.clashing,
         module: join(bindingOf(library), 'application', 'books', `${spelled(folder)}.tsx`),
     };
 };

@@ -1,11 +1,6 @@
-import { styled } from 'styled-components';
-import { $ } from '@dna-platform/chemistry';
-import { $Format } from '@dna-platform/public';
-import $TheLibrary from '../the-library/.book';
+import { $TheLibrary, Typewritten } from '../manual/.book';
 
-// THE PAPER'S OWN BOOK, TYPEWRITTEN, as a manuscript is — the one book of the test library styled
-// apart from the others, and the first drawn, so a style that leaked from one page would reach every
-// page after it.
+// THE PAPER'S OWN BOOK, TYPEWRITTEN, as a manuscript is — the face is the manual's, documented in The Faces.
 export default class $APaper extends $TheLibrary {
     protected override $Define(): void {
         super.$Define();
@@ -14,11 +9,3 @@ export default class $APaper extends $TheLibrary {
         );
     }
 }
-
-export class $Typewritten extends $Format {
-    style = styled.div`
-        font-family: monospace;
-    `;
-}
-
-export const Typewritten = $($Typewritten);

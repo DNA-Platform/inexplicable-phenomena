@@ -1,4 +1,5 @@
 export * from './utilities';
 export * from './writing';
-export * from './library';
-export { Author } from './library';
+export * from './libraries';
+export { Author } from './libraries';
+export * from './figures';

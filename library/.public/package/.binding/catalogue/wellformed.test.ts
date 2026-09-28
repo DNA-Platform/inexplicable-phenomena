@@ -1,3 +1,4 @@
+import type { Accompanying } from '../inventory/filenames';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -90,12 +91,12 @@ const built = (books: Made[]): Library => {
             }),
         ]));
         // AND A RESOURCE BESIDE THE SYNOPSIS, holding whatever lines the case gives it.
-        const resources = new Map<string, string[]>();
+        const resources = new Map<string, Accompanying[]>();
         if (one.shared !== undefined) {
             writeFileSync(join(path, '.synopsis.tsx.tsx'), page(one.shared));
-            resources.set('.synopsis.tsx', ['.synopsis.tsx.tsx']);
+            resources.set('.synopsis.tsx', [{ file: '.synopsis.tsx.tsx', identifier: 'tsx', type: '.tsx' }]);
         }
-        library.push({ folder: one.folder, path, files, resources, unaccounted: [], module: join(path, '.book.tsx') });
+        library.push({ folder: one.folder, path, files, resources, unaccounted: [], clashing: [], module: join(path, '.book.tsx') });
     }
 
     return { root, books: library };

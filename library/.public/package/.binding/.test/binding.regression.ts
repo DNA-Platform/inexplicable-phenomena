@@ -134,9 +134,9 @@ describe('a bind of the test library', () => {
     it('drew the library\'s catalogue as a grid: the section wearing pa-table, its rows pa-row, its cells pa-col', () => {
         const library = page('The Library');
         expect(library).toMatch(/class="[^"]*\bpa-table\b[^"]*\bpa-cols-2\b/u);
-        // A HEADER ROW AND THREE BOOKS since Sprint 88, the header bold by the theme.
-        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(4);
-        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(8);
+        // A HEADER ROW AND FOUR BOOKS since Sprint 89, the manual among them, the header bold by the theme.
+        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(5);
+        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(10);
         expect(library).toMatch(/\.pa-table\s*\{\s*display:\s*grid/u);
     });
 
@@ -179,8 +179,10 @@ describe('a bind of the test library', () => {
     // A STYLE ONE BOOK HAS AND THE OTHERS DO NOT, on its own page and on no other — the leak the render
     // once kept one child per page to prevent. Doug, 2026-09-26: "Yes it was a style leak bug."
     it('drew the paper\'s own style on its page and on no other', () => {
+        // THE STYLE BLOCKS ALONE: since Sprint 89 the manual PRINTS the faces' file, whose text quotes the paper's rule.
+        const styles = (html: string): string => (html.match(/<style[^>]*>[\s\S]*?<\/style>/gu) ?? []).join('\n');
         for (const route of table.routes)
-            expect(/font-family: ?monospace/u.test(page(route.name)), route.name).toBe(route.name === 'A Paper');
+            expect(/font-family: ?monospace/u.test(styles(page(route.name))), route.name).toBe(route.name === 'A Paper');
     });
 
     // THE ORDINARY VIEW, which the test library's book class stands as its theme — Doug, 2026-09-25:
@@ -188,7 +190,8 @@ describe('a bind of the test library', () => {
     it('drew every book inside its theme, whose sheet hides every annotation\'s own writing', () => {
         for (const route of table.routes) {
             const html = page(route.name);
-            expect(html, route.name).toMatch(/<div id="root"><!--\$--><div class="[^"]*pd-container">/u);
+            // A PRELOAD LINK MAY STAND FIRST, which React emits ahead of a page holding a picture.
+            expect(html, route.name).toMatch(/<div id="root">(<link [^>]*\/>)*<!--\$--><div class="[^"]*pd-container">/u);
             expect(html, route.name).toMatch(/\.pd-annotation\s*\{\s*display:\s*none/u);
         }
     });

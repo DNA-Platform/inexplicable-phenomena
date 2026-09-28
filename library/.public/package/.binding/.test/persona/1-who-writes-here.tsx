@@ -1,5 +1,5 @@
 import { Chapter, Heading, Line, Means, Paragraph, Section, Title } from '@dna-platform/public';
-import { Catchword } from '../the-library/1-the-shelves.tsx.tsx';
+import { Catchword } from '../manual/.book';
 
 // A POEM IN LINES: a Line is a Sentence that is Block, so each stands on a line of its own with no break
 // written between them — Doug, 2026-09-27: "a Line could be a type of sentence in a div so that lines of

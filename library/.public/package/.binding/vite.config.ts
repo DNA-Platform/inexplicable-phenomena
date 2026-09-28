@@ -5,7 +5,6 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configure } from './configuration/configuration';
 import { template } from './rendering/page';
-import { resources } from './assembly/resources';
 import { retaking, retakes } from './inventory/retaken';
 import { holding } from './catalogue/holds';
 import { references } from './reference/transform';
@@ -38,7 +37,6 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
         // book's own accept. These modules hold no state and are not components; nothing is lost.
         react({ exclude: [/[\\/]application[\\/](books[\\/].*|books|routes|stylesheets|opened)\.?[jt]sx?$/u], babel: { parserOpts: { plugins: ['decorators-legacy'] } } }),
         { name: 'binding:template', transformIndexHtml: html => template(html, chosen) },
-        resources(),
         // THE INVENTORY KEPT TRUE, FIRST, so everything after it is asking about the library as it
         // stands rather than as it stood when the server booted.
         retakes(binding, held),
