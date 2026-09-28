@@ -55,7 +55,7 @@ export const isDeclaration = (file: string): boolean => file.endsWith('.d.ts');
 // AND A RESOURCE CARRIES ONE OF THE EXTENSIONS A LIBRARY KNOWS. Left open, a stray file passes by
 // being named after one that belongs: `2-the-source.tsx.bak` loses `.bak`, lands on a real chapter's
 // name and is waved through as its resource. What may stand beside a chapter is a closed list.
-const knownExtensions = ['ts', 'tsx', 'js', 'mjs', 'json', 'md', 'css', 'sh', 'txt', 'csv', 'svg', 'png', 'jpg', 'jpeg'];
+const knownExtensions = ['ts', 'tsx', 'js', 'mjs', 'json', 'md', 'css', 'html', 'sh', 'txt', 'csv', 'svg', 'png', 'jpg', 'jpeg'];
 
 // AND WHICH OF THEM ARE PICTURES: imported as the bundler emits them, an address; read by nobody for
 // references, since their bytes are not writing.
