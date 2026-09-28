@@ -2,19 +2,9 @@ import { ComponentType } from 'react';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Theme } from '@dna-platform/public';
 
-// A THEME'S VALUE, READ BY A STYLE: the property named on the theme the format stands inside, or the
-// fallback where no theme stands. Every style in this library reads the theme this way, through the
-// provider's props — a style is compiled once per class, so it never reads through a closure.
 export const at = (property: string, fallback = '') =>
     ({ theme }: { theme: Record<string, string | undefined> }): string => theme[property] ?? fallback;
 
-// THE LIBRARY'S THEME, a class under .public's Theme. It sets the eight, and in its $Define it EXTENDS
-// the default sheet rather than replacing it — the default comprehends every class the framework puts
-// on an element, and this adds the library's look on top of those same marks: the cover a card whose
-// head is the byline, a label above every chapter's title saying what the chapter is, ordinary chapters
-// counted and ruled, the synopsis a ruled block, the table of contents boxed and its catalogue ruled, a
-// figure set off. Every rule reads the theme's values, so a book that overrides them — Libby's dark
-// one — keeps the look.
 export class $LibraryTheme extends $Theme {
     font = "Georgia, 'Times New Roman', serif";
     leading = '1.7';

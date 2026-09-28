@@ -1,12 +1,6 @@
 import { Chapter, Emphasis, Heading, Means, Paragraph, Section, Title, Word } from '@dna-platform/public';
 import { Catchword } from '../manual/.book';
 
-// LIBBY ON THE BOOKS SHE KEEPS: her story goes on through the library's books, each named where it stands,
-// and what each shows of .public — a mention for every hop, to the book, to a chapter, to a heading in it.
-// Doug, 2026-09-27: "As she writes her story, she can mention her work on the different books and the things
-// in .public that they represent, and those links can be hops to the right sections in those books, to test
-// out the mention system." Three headings here are mentions too, and the books they are about send a reader
-// back to them; the compiler refuses a mention nobody refers to, since a library is compact.
 export default () => (
     <Chapter>
         <Title>[[ The Books I Keep ]]</Title>
@@ -17,7 +11,17 @@ export default () => (
                 under what it is about. Its <Means>$[ shelves ]( The Library / What stands here )</Means> name the books
                 that stand directly under it, and its table of contents is a <Word><Emphasis />Table</Word>: a
                 catalogue with a row for every book and a link to that book's own synopsis, so the library never
-                describes a book in words the book did not write.
+                describes a book in words the book did not write; a row of that shape is what the compiler requires
+                of a catalogue. Its chapter <Means>$[ Of Libby ]( The Library / Of Libby )</Means> is my own synopsis,
+                imported: a catalogue's chapter is a synopsis of another book, and the catalogue may print it or import
+                it. The Synopsis keeps my chapter off that page, gives the library's chapter its parts under its own
+                title, and sends that title to this book, as a synopsis's title goes to the book it is a synopsis of.
+            </Paragraph>
+            <Paragraph>
+                My story goes on through the books, each named where it stands, and what each shows of the framework;
+                every hop here is a mention, to a book, to a chapter, or to a heading in it. Three headings of this
+                chapter are mentions too, and the books they are about send a reader back to them. The compiler
+                refuses a mention nobody refers to, since a library is compact, so every one of these is spent.
             </Paragraph>
         </Section>
         <Section>
@@ -26,7 +30,12 @@ export default () => (
                 <Means>$[ Some Projects ]</Means> is the one book I keep as pages. It stands <Word><Emphasis />Paginated</Word>,
                 so one chapter shows at a time and the catchword turns the page in
                 place; its <Means>$[ one chapter ]( Some Projects / The Work )</Means> names nothing, which is a thing a chapter is
-                allowed to do. Its table of contents is not written but drawn, from what its chapters mention.
+                allowed to do. So its route shows the cover and the work's route shows the work, one page at a time,
+                stood in the book's own class as the theme is. Its table of contents is not written but drawn, from
+                what its chapters mention: a section beside the table, in a file accompanying it, writes an entry for
+                each mention the book's table answers, the first three parenthetical, since every book's first three
+                chapters are its cover, its synopsis and its table. A chapter added to the book is listed at the next
+                draw, with no edit to the table. The other four books hand-write theirs.
             </Paragraph>
         </Section>
         <Section>
@@ -52,7 +61,8 @@ export default () => (
             <Paragraph>
                 My own is dark, because one book of a library should show its theme overwritten, and the theme is the
                 one thing every book here shares: its values are read by every format in front of it, so the card, the
-                labels and the rules you see are the same rules in another ink. What I say of myself is
+                labels and the rules you see are the same rules in another ink. My theme stands in front of the
+                library's, and a theme is singular, so the one in front takes the one behind out of expression. What I say of myself is
                 in <Means>$[ ./Who I Am ]</Means>; what is filed under me is in <Means>$[ ./Table of Contents ]</Means>.
             </Paragraph>
         </Section>

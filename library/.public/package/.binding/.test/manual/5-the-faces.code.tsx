@@ -2,10 +2,6 @@ import { $, selection } from '@dna-platform/chemistry';
 import { $Format } from '@dna-platform/public';
 import { at } from './2-the-theme.code.tsx';
 
-// NAVIGABLE: the library's own dress for finding one's way, a Format stood on every book in front of
-// its theme and reading it — the running head a masthead, the byline two labelled rows, the catchword
-// a footer line, each by the mark its kind wears. The theme dresses the framework's marks; this
-// dresses the library's own.
 export class $Navigable extends $Format {
     style = selection.div`
         .pd-running-head {
@@ -38,8 +34,6 @@ export class $Navigable extends $Format {
     `;
 }
 
-// FRAMED: a frame drawn from the theme's own values, stood by Some Projects on itself in its $Define and
-// by the persona's book on each of its chapters at its bind — a format working in different places.
 export class $Framed extends $Format {
     style = selection.div`
         border: 1px solid ${at('ink', 'currentColor')};
@@ -48,8 +42,6 @@ export class $Framed extends $Format {
     `;
 }
 
-// LITERARY: a bookish face for the persona's book — Palatino, paragraphs indented and set close,
-// titles centred and unweighted, the poem's lines let breathe.
 export class $Literary extends $Format {
     style = selection.div`
         font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
@@ -63,7 +55,6 @@ export class $Literary extends $Format {
     `;
 }
 
-// TYPEWRITTEN: the paper's face, a manuscript's.
 export class $Typewritten extends $Format {
     style = selection.div`
         font-family: monospace;

@@ -2,9 +2,6 @@ import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Paragraph, $Word, Means as means, Reference as reference, Word as word } from '@dna-platform/public';
 
-// THE RUNNING HEAD: the library's name as a link to the library, then the book it stands in and a link
-// to that book's table, read from its book alone — so a chapter that wears it never names its book,
-// and a book renamed is followed with no edit. On the library's own page the library stands alone.
 export class $RunningHead extends $Paragraph {
     protected override $Define(): void {
         super.$Define();
@@ -28,8 +25,6 @@ export class $RunningHead extends $Paragraph {
     }
 }
 
-// THE BYLINE: who wrote the book and where it stands, each under a label, read from the book's cover
-// alone — so a reader knows which link is the author and which is the subject.
 export class $Label extends $Word {
     protected override $Define(): void {
         super.$Define();

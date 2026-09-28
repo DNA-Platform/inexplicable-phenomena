@@ -1,8 +1,6 @@
 import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Table, TableOfContents, Title, Word } from '@dna-platform/public';
 import { Catchword } from '../manual/.book';
 
-// THE CATALOGUE: a row for every book filed under this one, its name and what it is, the second linking to
-// the book's own synopsis, which is what the compiler requires of a catalogue's row.
 export default () => (
     <Chapter>
         <TableOfContents />

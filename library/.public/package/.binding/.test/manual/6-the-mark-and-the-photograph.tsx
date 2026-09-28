@@ -1,16 +1,17 @@
 import { Chapter, Code, Heading, Image, Paragraph, Section, Svg, Title } from '@dna-platform/public';
 import { Catchword } from './.book';
 
-// TWO FILES BESIDE ONE CHAPTER, NEITHER OF THEM CODE: the library's mark as an SVG and a photograph of the
-// library as a PNG, each named by its type alone since neither carries an identifier — and each figure drawn
-// again from what is written in it, so the same tool shows a file and a literal. Doug, 2026-09-28: "have one
-// image and one SVG and to prove that both can work… so that the same tool can be used to express a literal in
-// the code."
 export default () => (
     <Chapter>
         <Title>[[ The Mark and the Photograph ]]</Title>
         <Section>
             <Heading>The mark</Heading>
+            <Paragraph>
+                Two files stand beside this chapter and neither is code: the library's mark as an SVG and a
+                photograph of the library as a PNG. Each is named by its type alone, since neither carries an
+                identifier, and each figure below is drawn once from its file and once from what is written in it,
+                so the same tool shows a file and a literal.
+            </Paragraph>
             <Paragraph>
                 Three books on a shelf, the library's mark, kept beside this chapter as a file and drawn here from
                 it.

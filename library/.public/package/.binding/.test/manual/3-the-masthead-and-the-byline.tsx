@@ -7,10 +7,16 @@ export default () => (
         <Section>
             <Heading>Where a reader is</Heading>
             <Paragraph>
-                The masthead says where a reader is: the library, the book, and a link to the book's table. The byline
-                says who wrote the book and where it stands, each under a label, so nobody has to guess which link is
-                the author and which the subject. Both read the book they stand in and nothing else, so I never name
-                a book in them, and a book renamed is followed with no edit.
+                The masthead is a running head: the library's name as a link to the library, then the book it stands
+                in and a link to that book's table, read from the book alone, so a chapter that wears it never names
+                its book and a book renamed is followed with no edit. On the library's own page the library stands
+                alone. The byline says who wrote the book and where it stands, each under a label, read from the
+                book's cover alone, so nobody has to guess which link is the author and which the subject.
+            </Paragraph>
+            <Paragraph>
+                The file holds three classes: the running head, a label, and the byline of two labelled rows. Each is
+                a paragraph the book draws in its own write, and each reads what the book exposes of itself and
+                nothing more.
             </Paragraph>
         </Section>
         <Section>
