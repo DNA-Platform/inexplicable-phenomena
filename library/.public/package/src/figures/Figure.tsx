@@ -6,13 +6,6 @@ import { $Letter, LetterSpecification } from '@/writing/Letter';
 import { $Chapter } from '@/libraries/Chapter';
 import { $Append } from './Append';
 
-// A FIGURE IS THE LETTER THAT INTERFACES AN APPEND: it names, by identifier or by type, a file the
-// binder appended to its chapter, and draws that file's contents after whatever the author wrote in
-// it — or draws only what the author wrote, standing as its own literal. The ways of showing are its
-// subclasses; this is the general form they grow from. Doug, 2026-09-28: "Resource should help you put
-// the contents of your resource in the page. That makes it a view-like component like Next… you can
-// specify an input to the resource system, or you can give it contents or both, and it puts the
-// resource content at the end of its text"; "we want to support many types of figures in our writing."
 export class $Figure extends $Letter {
     specification = new FigureSpecification();
     $identifier = '';
