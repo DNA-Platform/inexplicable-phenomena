@@ -36,6 +36,15 @@ export class $Theme extends $Format {
         .pa-append { white-space: pre; }
         .pd-figure { max-width: 100%; }
         .pd-code { font-family: ui-monospace, monospace; font-size: calc(0.9 * ${value('size')}); white-space: pre; overflow-x: auto; }
+        .pd-code .pd-line { display: block; }
+        .pd-code .pd-line-number { display: inline-block; min-width: 3ch; margin-right: 1.5ch; text-align: right; color: color-mix(in srgb, ${value('ink')} 40%, ${value('paper')}); user-select: none; }
+        .pa-highlighted .tok-keyword, .pa-highlighted .tok-tagName { color: ${value('link')}; }
+        .pa-highlighted .tok-string, .pa-highlighted .tok-string2, .pa-highlighted .tok-literal { color: color-mix(in srgb, ${value('link')} 45%, ${value('ink')}); }
+        .pa-highlighted .tok-comment { color: color-mix(in srgb, ${value('ink')} 55%, ${value('paper')}); font-style: italic; }
+        .pa-highlighted .tok-typeName, .pa-highlighted .tok-className { color: ${value('ink')}; font-weight: 600; }
+        .pa-highlighted .tok-number, .pa-highlighted .tok-bool, .pa-highlighted .tok-atom { color: color-mix(in srgb, ${value('link')} 70%, ${value('ink')}); }
+        .pa-highlighted .tok-punctuation, .pa-highlighted .tok-operator { color: color-mix(in srgb, ${value('ink')} 70%, ${value('paper')}); }
+        .pa-numbered { tab-size: 4; }
         .pd-image { max-width: 100%; height: auto; }
         .pd-svg { max-width: 100%; }
         .pd-book { margin-block: ${value('space')}; }

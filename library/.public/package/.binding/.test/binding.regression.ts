@@ -57,6 +57,17 @@ describe('a bind of the test library', () => {
         expect(said).toMatch(/^bound /mu);
     });
 
+    // THE LISTINGS ARE COLOURED AND NUMBERED — Sprint 92, Doug: "We should support syntax highlighting in
+    // code"; Lezer the viewer. The manual's tool files wear Highlighted and Numbered, so their keywords wear
+    // Lezer's mark and their lines their numbers; the mark's chapter inserts its own source the same way.
+    it('printed the manual\'s listings highlighted and numbered, a keyword wearing its mark and a line its number', () => {
+        const html = readFileSync(placeOf(galley.face, table.routes.find(one => one.name === 'The Library Reference Manual')!.chapters.find(each => each.name === 'The Book')!), 'utf8');
+        expect(html).toMatch(/class="(?=[^"]*\bpd-code\b)(?=[^"]*\bpa-highlighted\b)(?=[^"]*\bpa-numbered\b)[^"]*"/u);
+        expect(html).toMatch(/<span class="tok-keyword">import<\/span>/u);
+        expect(html).toContain('<span class="pd-line-number">1</span>');
+        expect(html).toMatch(/\.pa-highlighted \.tok-keyword[^{]*\{[^}]*color:/u);
+    });
+
     // A LITERAL IS AS WRITTEN — Doug, 2026-09-28: "it is the version written that is used not the
     // version modified." Every file the manual prints through a Code figure is on its chapter's page
     // exactly as it stands on disk, so the transform never touched the raw module the Append was made
@@ -64,7 +75,14 @@ describe('a bind of the test library', () => {
     it('printed every file the manual holds exactly as written on disk', () => {
         const manual = found.books.find(book => book.folder === 'manual')!;
         const route = table.routes.find(one => one.name === 'The Library Reference Manual')!;
-        const decoded = (html: string): string => html.replace(/<!-- -->/gu, '').replace(/&(lt|gt|amp|quot|#x27|#39);/gu, (_, held: string) => ({ lt: '<', gt: '>', amp: '&', quot: '"', '#x27': "'", '#39': "'" })[held]!);
+        // THE VIEWER'S OWN MARKS ARE NOT THE FILE: since Sprint 92 a listing is drawn as lines with numbers and
+        // tokens in spans, so the number spans go with their digits and every other tag goes alone, and what is
+        // left is what a reader reads.
+        const decoded = (html: string): string => html
+            .replace(/<span class="pd-line-number">\d+<\/span>/gu, '')
+            .replace(/<[^>]+>/gu, '')
+            .replace(/<!-- -->/gu, '')
+            .replace(/&(lt|gt|amp|quot|#x27|#39);/gu, (_, held: string) => ({ lt: '<', gt: '>', amp: '&', quot: '"', '#x27': "'", '#39': "'" })[held]!);
         let printed = 0;
         for (const [chapter, files] of manual.resources)
             for (const one of files.filter(file => file.type === '.tsx')) {

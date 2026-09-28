@@ -1,4 +1,4 @@
-import { Chapter, Code, Heading, Image, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Chapter, Code, Heading, Image, Means, Paragraph, Section, Title, Numbered } from '@dna-platform/public';
 import { Catchword } from './.book';
 
 export default () => (
@@ -32,7 +32,7 @@ export default () => (
                 The sketch is HTML and CSS and nothing else, written to be looked at and kept because it is the
                 design; it stands beside this chapter and is printed here as it is.
             </Paragraph>
-            <Paragraph><Code>![[ sketch.html ]]</Code></Paragraph>
+            <Paragraph><Code>![[ sketch.html ]]<Numbered /></Code></Paragraph>
         </Section>
         <Section>
             <Heading>Across four worlds</Heading>

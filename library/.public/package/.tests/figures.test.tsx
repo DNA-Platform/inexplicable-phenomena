@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToString } from 'react-dom/server';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, Book, Chapter, Cover, Title, Author, Subject, Paragraph, Append, Code, Image, Svg } from '@dna-platform/public';
+import { $Book, Book, Chapter, Cover, Title, Author, Subject, Paragraph, Append, Code, Image, Svg, Highlighted, Numbered } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const served = (book: $Book): string => { const Drawn = $(book); return renderToString(<Drawn />); };
@@ -28,6 +28,33 @@ describe('the figures', () => {
         expect(appended).toMatch(/<div class="pd-letter pd-figure pd-code"><pre><code>export const field = 2;\nexport const wheel = 1;<\/code><\/pre>/u);
         const given = served(shelf(<Paragraph><Code>{'const x = 1;'}</Code></Paragraph>));
         expect(given).toContain('<pre><code>const x = 1;</code></pre>');
+    });
+
+    // THE VIEWER'S POWERS ARE ANNOTATIONS ON CODE — Sprint 92, Doug: "We should support syntax highlighting in code";
+    // Lezer the viewer, ruled 2026-09-28. A keyword wears its mark whatever the theme, and the theme gives it ink.
+    it('Code highlighted draws its lines as spans, each token wearing the mark of its tag, and the figure its own mark', () => {
+        const drawn = served(shelf(<Paragraph><Code>{'const x = "one";\nexport class Y {}'}<Highlighted /></Code></Paragraph>));
+        expect(drawn).toMatch(/<pre><code><span class="pd-line"><span class="tok-keyword">const<\/span> /u);
+        expect(drawn).toContain('<span class="tok-string">&quot;one&quot;</span>');
+        expect(drawn).toContain('<span class="tok-keyword">class</span>');
+        expect(drawn).toMatch(/class="pd-letter pd-figure pd-code pa-highlighted"/u);
+        expect(drawn).not.toContain('pd-line-number');
+    });
+
+    it('Code numbered gives each line its number, and a language it has no grammar for draws plain but numbered', () => {
+        const numbered = served(shelf(<Paragraph><Code>{'one\ntwo\nthree\n'}<Numbered /></Code></Paragraph>));
+        expect(numbered).toContain('<span class="pd-line"><span class="pd-line-number">1</span>one\n</span>');
+        expect(numbered).toContain('<span class="pd-line-number">3</span>three\n</span></code></pre>');
+        expect(numbered).not.toContain('<span class="pd-line-number">4</span>');
+        const html = served(shelf(<Paragraph><Code>{'<p>hi</p>'}<Highlighted language="html" /><Numbered /></Code></Paragraph>));
+        expect(html).toContain('<span class="pd-line-number">1</span>&lt;p&gt;hi&lt;/p&gt;');
+        expect(html).not.toContain('tok-');
+    });
+
+    it('Code without either annotation draws exactly as it did', () => {
+        const plain = served(shelf(<Paragraph><Code>{'const x = 1;\n'}</Code></Paragraph>));
+        expect(plain).toContain('<pre><code>const x = 1;\n</code></pre>');
+        expect(plain).not.toContain('pd-line');
     });
 
     it('Image draws the picture an append holds by its address, and one whose address the author wrote', () => {

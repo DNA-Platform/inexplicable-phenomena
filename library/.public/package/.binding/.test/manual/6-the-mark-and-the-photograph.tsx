@@ -1,4 +1,4 @@
-import { Chapter, Code, Heading, Image, Paragraph, Section, Svg, Title } from '@dna-platform/public';
+import { Chapter, Code, Heading, Image, Paragraph, Section, Svg, Title, Highlighted, Numbered } from '@dna-platform/public';
 import { Catchword } from './.book';
 
 export default () => (
@@ -37,7 +37,7 @@ export default () => (
                 A chapter may insert its own source as written, so the literal forms above stand in the listing below
                 exactly as I typed them, uncompiled, since the version shown is the version written.
             </Paragraph>
-            <Paragraph><Code>![[ this ]]</Code></Paragraph>
+            <Paragraph><Code>![[ this ]]<Highlighted /><Numbered /></Code></Paragraph>
         </Section>
         <Catchword />
     </Chapter>
