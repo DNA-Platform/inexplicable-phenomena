@@ -38,6 +38,11 @@ export const faults = {
     noAddress: 'NO-ADDRESS',
     reservedAddress: 'RESERVED-ADDRESS',
     resourceNames: 'RESOURCE-NAMES',
+    // A LITERAL NAMES A FILE BESIDE ITS CHAPTER, AND EVERY FILE BESIDE A CHAPTER IS NAMED. Doug,
+    // 2026-09-28: "the compiler can now enforce that all resources are used… every resource file
+    // (except this, which is optional) must be specified." Sprint 92.
+    unknownFile: 'UNKNOWN-FILE',
+    unusedFile: 'UNUSED-FILE',
 } as const;
 
 // WHERE THE BINDER WRITES SOMETHING OF ITS OWN, so no book may stand there: the bundle's folder,
@@ -72,7 +77,7 @@ const speaks = (relation: 'subject' | 'topic'): string =>
 
 // AND HOW A TABLE REFERS TO A BOOK'S SYNOPSIS, spelled with the name that synopsis titles itself.
 const synopsis = (structure: Structure, book: SpotId): string =>
-    `$[ ${called(structure, book)}${separator}${structure.named.get(`${book}/.synopsis.tsx`) ?? 'Synopsis'} ]`;
+    `$[[ ${called(structure, book)}${separator}${structure.named.get(`${book}/.synopsis.tsx`) ?? 'Synopsis'} ]]`;
 
 export const wellformed = (structure: Structure): Diagnostic[] => {
     const wrong: Diagnostic[] = [];
@@ -93,7 +98,28 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // outcome that must not happen is silence, because an annotation that does nothing looks exactly
     // like one that works.
     for (const one of structure.refused)
-        wrong.push({ fault: faults.malformed, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line}: "${one.said}" is not written in a form the notation has — brackets balance, the stars stand on one side only, three brackets carry none, and an author is answered by nothing, so [[ X ]]* is not a form` });
+        wrong.push({ fault: faults.malformed, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line}: "${one.said}" is not written in a form the notation has — ${one.why ?? 'brackets balance and there are two of them, the stars stand on one side only, three brackets carry none, and an author is answered by nothing, so [[ X ]]* is not a form'}` });
+
+    // ---- a literal names a file beside its chapter, and every file beside a chapter is named ----
+    //
+    // `![[ this ]]` needs no file, and no file needs a `![[ this ]]`; every other literal names a file
+    // by identifier and type, and a file nobody names does not belong beside the chapter — Doug: "the
+    // compiler can now enforce that all resources are used."
+    for (const one of structure.inserting) {
+        for (const held of one.literals) {
+            if (held.name.of === 'this') continue;
+            const { identifier: id, type } = held.name;
+            if (one.accompanying.some(file => file.identifier === id && file.type === type)) continue;
+            wrong.push({ fault: faults.unknownFile, at: one.by, file: one.path, says: `line ${held.line} inserts "${held.said}", and no file beside this chapter is named so — a file beside it is the chapter's name, one character, then ${held.said}` });
+        }
+        // A FILE IS USED WHEN THE CHAPTER INSERTS IT — OR IMPORTS IT, since a file beside a chapter may
+        // be a tool the chapter runs rather than a text it prints; Some Projects' drawn table is one.
+        for (const file of one.accompanying) {
+            if (one.literals.some(held => held.name.of === 'file' && held.name.identifier === file.identifier && held.name.type === file.type)) continue;
+            if (one.imports.some(specifier => specifier.split('/').pop() === file.file)) continue;
+            wrong.push({ fault: faults.unusedFile, at: one.by, file: one.path, says: `${file.file} stands beside this chapter and nothing in it inserts or imports it — a file beside a chapter is named by ![[ ${file.identifier}${file.type} ]] or imported, or it does not belong there` });
+        }
+    }
 
     // ---- one title, one book ----
     for (const [said, held] of structure.names) {
@@ -157,7 +183,7 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // ---- every reference resolves ----
     //
     // A REFERENCE SPENDS A NAME; AN ANNOTATION MAKES ONE, and making cannot fail for not having been
-    // made. So this is the one side of the language that can be wrong by ABSENCE: a `$[ X ]`, and an
+    // made. So this is the one side of the language that can be wrong by ABSENCE: a `$[[ X ]]`, and an
     // edge whose other end the library does not hold. A table listing what is not there is this.
     for (const one of structure.mentions) {
         if (structure.reaches(one.name, one.book) !== undefined) continue;

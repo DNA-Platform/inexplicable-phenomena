@@ -24,7 +24,7 @@ export default () => (
         </Section>
         <Section>
             <Heading>The design's photograph</Heading>
-            <Paragraph><Image type=".png" /></Paragraph>
+            <Paragraph><Image>![[ .png ]]</Image></Paragraph>
         </Section>
         <Section>
             <Heading>The sketch itself</Heading>
@@ -32,7 +32,7 @@ export default () => (
                 The sketch is HTML and CSS and nothing else, written to be looked at and kept because it is the
                 design; it stands beside this chapter and is printed here as it is.
             </Paragraph>
-            <Paragraph><Code identifier="sketch" type=".html" /></Paragraph>
+            <Paragraph><Code>![[ sketch.html ]]</Code></Paragraph>
         </Section>
         <Section>
             <Heading>Across four worlds</Heading>
@@ -45,7 +45,7 @@ export default () => (
                 them. Where the two met, in the index, the design stopped being borrowed from an editor and became a
                 book's again, and every word I reached for came from the book arts. That told me which world is the
                 stronger, and that the work is the same as tending a catalogue: keep what a thing is while it takes a
-                new form. The rest of what I think of it is in my own book, <Means>$[ Libby ]</Means>.
+                new form. The rest of what I think of it is in my own book, <Means>$[[ Libby ]]</Means>.
             </Paragraph>
         </Section>
         <Catchword />

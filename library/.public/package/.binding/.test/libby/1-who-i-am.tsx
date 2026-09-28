@@ -7,11 +7,11 @@ export default () => (
         <Section>
             <Heading>A librarian</Heading>
             <Paragraph>
-                I keep this library. I began it with one shelf, <Means>$[ The Library / The Shelves ]</Means>, and said
-                what it is for in <Means>$[ The Library / Synopsis ]</Means>, a synopsis whose title is parenthetical, so a
+                I keep this library. I began it with one shelf, <Means>$[[ The Library / The Shelves ]]</Means>, and said
+                what it is for in <Means>$[[ The Library / Synopsis ]]</Means>, a synopsis whose title is parenthetical, so a
                 reference lands on an id the page wears and does not show. The same day I gave a persona a voice, and
-                the first thing it wrote is <Means>$[ its paper ]( A Paper )</Means>, which opens
-                with <Means>$[ A Paper / What is claimed ]</Means>.
+                the first thing it wrote is <Means>$[[ its paper ]]( A Paper )</Means>, which opens
+                with <Means>$[[ A Paper / What is claimed ]]</Means>.
             </Paragraph>
         </Section>
         <Section>

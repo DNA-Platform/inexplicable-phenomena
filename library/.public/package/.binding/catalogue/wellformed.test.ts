@@ -37,6 +37,10 @@ type Made = {
     chapters?: string[];
     titledIn?: string;
     shared?: string[];
+    // A FILE BESIDE THE FIRST EXTRA CHAPTER, by identifier and type, and the literals that chapter
+    // writes — so a file nobody names and a name nobody has can each be a library wrong in one way.
+    appendix?: string;
+    inserts?: string[];
 };
 
 const where = mkdtempSync(join(tmpdir(), 'binder-wellformed-'));
@@ -61,7 +65,9 @@ const built = (books: Made[]): Library => {
             ...(one.about === true ? [`<About>[[ ${one.name} ]]</About>`] : []),
             ...(one.retitled === undefined ? [] : [`<About>${one.retitled}</About>`]),
         ]));
-        writeFileSync(join(path, '.synopsis.tsx'), page([
+        // THE SYNOPSIS IMPORTS ITS SHARED RESOURCE, as a chapter imports a tool beside it, so the
+        // resource counts as used and the case is about what the resource writes, not whether it is there.
+        writeFileSync(join(path, '.synopsis.tsx'), (one.shared === undefined ? '' : `import './.synopsis.tsx.tsx';\n`) + page([
             '<Synopsis />',
             '<Title>[[ Synopsis ]]</Title>',
             '<Paragraph>What this is.</Paragraph>',
@@ -71,10 +77,18 @@ const built = (books: Made[]): Library => {
         // AND ANY FURTHER CHAPTER A CASE ASKS FOR, titled as the case says, so a title can be made to
         // answer twice in one book — in the element the case names, the framework's by default.
         const element = one.titledIn ?? 'Title';
+        const resources = new Map<string, Accompanying[]>();
         (one.chapters ?? []).forEach((name, at) => {
             const file = `${9 + at}-chapter.tsx`;
-            writeFileSync(join(path, file), page([`<${element}>[[ ${name} ]]</${element}>`, '<Paragraph>What it says.</Paragraph>']));
+            const inserts = at === 0 ? (one.inserts ?? []).map(form => `<Paragraph>${form}</Paragraph>`) : [];
+            writeFileSync(join(path, file), page([`<${element}>[[ ${name} ]]</${element}>`, '<Paragraph>What it says.</Paragraph>', ...inserts]));
             files.push(file);
+            if (at === 0 && one.appendix !== undefined) {
+                const beside = `${9 + at}-chapter.${one.appendix}`;
+                writeFileSync(join(path, beside), 'export const beside = true;\n');
+                const dot = one.appendix.lastIndexOf('.');
+                resources.set(file, [{ file: beside, identifier: one.appendix.slice(0, dot), type: one.appendix.slice(dot) }]);
+            }
         });
         // A TABLE REFERS TO EVERY CHAPTER OF ITS BOOK AND ANSWERS FOR WHAT IT CATALOGUES, referring
         // beside each answer to that book's own synopsis — Doug, 2026-09-20: "In the book. It has a
@@ -83,15 +97,14 @@ const built = (books: Made[]): Library => {
         writeFileSync(join(path, '.table.tsx'), page([
             '<TableOfContents />',
             '<Title>[[ Table of Contents ]]</Title>',
-            ...listed.map(name => `<Paragraph><Means>$[ ${name === one.name ? name : `./${name}`} ]</Means></Paragraph>`),
+            ...listed.map(name => `<Paragraph><Means>$[[ ${name === one.name ? name : `./${name}`} ]]</Means></Paragraph>`),
             ...(one.holds ?? []).map(answer => {
                 const of = /\[\[\s*(.*?)\s*\]\]/u.exec(answer)?.[1] ?? answer;
-                const synopsis = one.synopsised === false ? '' : ` <Means>$[ ${of} / Synopsis ]</Means>`;
+                const synopsis = one.synopsised === false ? '' : ` <Means>$[[ ${of} / Synopsis ]]</Means>`;
                 return `<Paragraph><Means>${answer}</Means>${synopsis}</Paragraph>`;
             }),
         ]));
         // AND A RESOURCE BESIDE THE SYNOPSIS, holding whatever lines the case gives it.
-        const resources = new Map<string, Accompanying[]>();
         if (one.shared !== undefined) {
             writeFileSync(join(path, '.synopsis.tsx.tsx'), page(one.shared));
             resources.set('.synopsis.tsx', [{ file: '.synopsis.tsx.tsx', identifier: 'tsx', type: '.tsx' }]);
@@ -331,6 +344,52 @@ describe('names', () => {
     it('raises a form the notation does not have', () => {
         const books = whole();
         books[4].author = '*[[ A Persona ]]**';
+
+        expect(faultsOf(books)).toEqual([faults.malformed]);
+    });
+});
+
+// A LITERAL NAMES A FILE BESIDE ITS CHAPTER, AND EVERY FILE BESIDE A CHAPTER IS NAMED. Sprint 92, on
+// Doug's ruling: "the compiler can now enforce that all resources are used… every resource file
+// (except this, which is optional) must be specified."
+describe('the files beside a chapter', () => {
+    it('holds together when a chapter inserts the file beside it, and when it inserts its own source', () => {
+        const books = whole();
+        books[2].chapters = ['A Chapter'];
+        books[2].appendix = 'code.ts';
+        books[2].inserts = ['![[ code.ts ]]', '![[ this ]]'];
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    it('raises a file beside a chapter that nothing in the chapter inserts', () => {
+        const books = whole();
+        books[2].chapters = ['A Chapter'];
+        books[2].appendix = 'code.ts';
+
+        expect(faultsOf(books)).toEqual([faults.unusedFile]);
+    });
+
+    it('raises a literal naming a file the chapter does not have', () => {
+        const books = whole();
+        books[2].chapters = ['A Chapter'];
+        books[2].inserts = ['![[ missing.ts ]]'];
+
+        expect(faultsOf(books)).toEqual([faults.unknownFile]);
+    });
+
+    it('raises a literal with a words half, one reaching across chapters, and one in a string, each by name', () => {
+        const books = whole();
+        books[2].chapters = ['A Chapter'];
+        books[2].appendix = 'code.ts';
+        books[2].inserts = ['![[ words ]]( code.ts )', '![[ ./other.code.ts ]]', "{'![[ code.ts ]]'}"];
+
+        expect(faultsOf(books)).toEqual([faults.malformed, faults.malformed, faults.malformed, faults.unusedFile]);
+    });
+
+    it('raises a resource that inserts anything, since a file beside a chapter is a module and not a chapter', () => {
+        const books = whole();
+        books[2].shared = ['<Paragraph>![[ this ]]</Paragraph>'];
 
         expect(faultsOf(books)).toEqual([faults.malformed]);
     });

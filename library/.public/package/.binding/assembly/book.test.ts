@@ -31,18 +31,17 @@ describe('the module the compiler writes for a book', () => {
         expect(text).not.toContain('Append');
     });
 
-    // A FILE ACCOMPANYING A CHAPTER IS APPENDED TO IT IN THE MODULE — Sprint 89, Doug, 2026-09-28: "by annotation
-    // that has the filename appended to chapter by the binder"; "it's just text that has been appended to the chapter."
-    it('appends each file accompanying a chapter to it as an Append, its contents imported raw and its identifier and type as spelled', () => {
+    // THE BINDER APPENDS NOTHING — Sprint 92, Doug, 2026-09-28: "append is the authors. You remove the
+    // flexibility if you have the binder do it." A file beside a chapter reaches the page through the literal
+    // the transform inserts, or an Append the author writes; the module knows only the chapters.
+    it('appends nothing to a chapter, however many files stand beside it', () => {
         const manual = found.books.find(book => book.folder === 'manual');
         const written = manual === undefined ? '' : assembled(manual, '../manual');
-        expect(written).toContain("import appended03themastheadandthebylinecodetsx from '../manual/3-the-masthead-and-the-byline.code.tsx?raw';");
-        expect(written).toMatch(/\{appending\(TheMastheadAndTheByline3\(\), <Append identifier="code" type="\.tsx">\{appended03themastheadandthebylinecodetsx\}<\/Append>\)\}/u);
-        // A PICTURE IS NEVER IMPORTED: its Append's text is its address beside the book's pages, where the binder copies it.
-        expect(written).not.toMatch(/import [^\n]*\.png/u);
-        expect(written).toContain(`<Append identifier="" type=".png">{'/manual/6-the-mark-and-the-photograph.png'}</Append>`);
-        expect(written).toMatch(/<Append identifier="" type="\.svg">\{appended\d+6themarkandthephotographsvg\}<\/Append>/u);
-        expect(written).toContain("import { Append } from '@dna-platform/public';");
-        expect(written).toContain('cloneElement(chapter, undefined, ...[chapter.props.children].flat(), ...appends)');
+        expect(manual?.resources.size).toBeGreaterThan(0);
+        expect(written).not.toContain('?raw');
+        expect(written).not.toContain('Append');
+        expect(written).not.toContain('cloneElement');
+        expect(written).not.toMatch(/import [^\n]*\.(png|svg|html)/u);
+        expect(written).toContain('        {TheMastheadAndTheByline3()}');
     });
 });

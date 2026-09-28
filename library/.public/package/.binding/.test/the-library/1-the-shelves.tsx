@@ -7,17 +7,17 @@ export default () => (
         <Section>
             <Heading>[[[ What stands here ]]]</Heading>
             <Paragraph>
-                Three books stand directly under this one. <Means>$[ Libby ]</Means> is the book that writes the
-                others, <Means>$[ Some Projects ]</Means> is what has been worked on, and <Means>$[ A Paper ]</Means> was
-                written by a persona Libby vouched for. The persona itself, <Means>$[ A Persona ]</Means>, stands under Libby rather
+                Three books stand directly under this one. <Means>$[[ Libby ]]</Means> is the book that writes the
+                others, <Means>$[[ Some Projects ]]</Means> is what has been worked on, and <Means>$[[ A Paper ]]</Means> was
+                written by a persona Libby vouched for. The persona itself, <Means>$[[ A Persona ]]</Means>, stands under Libby rather
                 than here, which is the shape a library takes when one voice writes as two.
             </Paragraph>
             <Paragraph>
                 <Mention>[[[ The First Shelf ]]]</Mention> is the one Libby stands on, and a reference reaches it by name.
             </Paragraph>
             <Paragraph>
-                Libby says as much of herself: she stands on <Means>$[ ./The First Shelf ]</Means>, and this book is
-                the first she wrote, <Means>$[ the library's own ]( Libby / The library's own book )</Means>.
+                Libby says as much of herself: she stands on <Means>$[[ ./The First Shelf ]]</Means>, and this book is
+                the first she wrote, <Means>$[[ the library's own ]]( Libby / The library's own book )</Means>.
             </Paragraph>
         </Section>
         <Section>
@@ -30,7 +30,7 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 Every tool this library is built with stands beside the chapter
-                of <Means>$[ The Library Reference Manual ]</Means> that documents it, and is used from there: the
+                of <Means>$[[ The Library Reference Manual ]]</Means> that documents it, and is used from there: the
                 library's own book class is the manual's first chapter's file, and this book's file does nothing but
                 take it from the manual's door.
             </Paragraph>

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { fixture, read } from '../.test/galleys';
-import { literal, references, transforming } from './transform';
+import { missing, rawModule, references, transforming } from './transform';
 
 // WHAT THE TRANSFORM WRITES INTO A READER'S PROSE, which is the one thing in the compiler that edits
 // what a person sees. Every promise here is about the text that comes out: the address a reference
@@ -12,6 +12,54 @@ import { literal, references, transforming } from './transform';
 const { found, card } = read();
 const chapter = join(fixture, 'paper', '1-the-argument.tsx');
 const cover = join(fixture, 'the-library', '.cover.tsx');
+
+// A LITERAL INSERTS A FILE WHERE IT STANDS, as one string expression — the chapter's own source as
+// written, the text of a file beside it, or a picture's address. Sprint 92, on Doug's rulings.
+describe('a literal, inserted', () => {
+    const manual = found.books.find(book => book.folder === 'manual')!;
+    const at = (chapter: string) => join(fixture, 'manual', chapter);
+    const over = (chapter: string) => transforming(readFileSync(at(chapter), 'utf8'), at(chapter), card, manual);
+
+    it('inserts the chapter\'s own source as written, the forms inside it uncompiled', () => {
+        const written = readFileSync(at('6-the-mark-and-the-photograph.tsx'), 'utf8');
+        const made = over('6-the-mark-and-the-photograph.tsx');
+        expect(made.missing).toEqual([]);
+        expect(made.text).toContain(`<Code>{${JSON.stringify(written)}}</Code>`);
+        expect(written).toContain('![[ this ]]');
+    });
+
+    it('inserts the text of the file beside the chapter it names, by identifier and type', () => {
+        const file = readFileSync(join(fixture, 'manual', '1-the-book.code.tsx'), 'utf8');
+        const made = over('1-the-book.tsx');
+        expect(made.missing).toEqual([]);
+        expect(made.text).toContain(`<Code>{${JSON.stringify(file)}}</Code>`);
+        expect(made.text).not.toContain('![[');
+    });
+
+    it('inserts a picture as its address beside the pages, and a file by its type alone', () => {
+        const made = over('6-the-mark-and-the-photograph.tsx');
+        expect(made.text).toContain('<Image>{"/manual/6-the-mark-and-the-photograph.png"}</Image>');
+        const mark = readFileSync(join(fixture, 'manual', '6-the-mark-and-the-photograph.svg'), 'utf8');
+        expect(made.text).toContain(`<Svg>{${JSON.stringify(mark)}}</Svg>`);
+    });
+
+    it('leaves a literal beside an annotation in one figure, which is then ordinary TSX', () => {
+        const made = over('4-the-catchword.tsx');
+        expect(made.text).toMatch(/<Code>\{"[^\n]*"\}<Framed \/><\/Code>/u);
+    });
+
+    it('misses a literal naming a file the chapter does not have, by file and line', () => {
+        const made = transforming('export default () => (<p>![[ nothing.ts ]]</p>);', at('1-the-book.tsx'), card, manual);
+        expect(made.missing).toEqual([{ key: '![[ nothing.ts ]]', file: at('1-the-book.tsx'), line: 1 }]);
+        expect(missing(made.missing[0], card.keys())).toContain('inserts ![[ nothing.ts ]], and no such file stands beside the chapter');
+    });
+
+    it('leaves a literal alone in a string, and one with the wrong brackets, which the bind refuses by name', () => {
+        const made = transforming("export default () => (<p title=\"![[ .png ]]\">![ this ] and $[ The Library ]</p>);", at('1-the-book.tsx'), card, manual);
+        expect(made.text).toContain('title="![[ .png ]]"');
+        expect(made.text).toContain('![ this ] and $[ The Library ]');
+    });
+});
 
 // THE TRANSFORM READS WHAT THE PARSER LOCATED AND NOTHING ELSE, and a raw module is a literal. Sprint 90.
 describe('what the transform never touches', () => {
@@ -28,9 +76,9 @@ describe('what the transform never touches', () => {
         const raw = `export default ${JSON.stringify(readFileSync(chapter, 'utf8'))}`;
         expect(hook.call(undefined, raw, `${chapter}?raw`)).toBeNull();
         expect(hook.call(undefined, readFileSync(chapter, 'utf8'), chapter)).toContain('[The Library](/the-library/)');
-        expect(literal('raw')).toBe(true);
-        expect(literal('import&raw')).toBe(true);
-        expect(literal(undefined)).toBe(false);
+        expect(rawModule('raw')).toBe(true);
+        expect(rawModule('import&raw')).toBe(true);
+        expect(rawModule(undefined)).toBe(false);
     });
 });
 
@@ -76,7 +124,7 @@ describe('a title form', () => {
         const made = transforming(readFileSync(synopsis, 'utf8'), synopsis, card);
         expect(made.missing).toEqual([]);
         expect(made.text).toContain('<Title><Parenthetical />[Synopsis](/the-library/)</Title>');
-        expect(transforming(`<Means>$[ ./Synopsis ]</Means>`, synopsis, card).text).toBe('<Means>[Synopsis](/the-library/synopsis/)</Means>');
+        expect(transforming(`<Means>$[[ ./Synopsis ]]</Means>`, synopsis, card).text).toBe('<Means>[Synopsis](/the-library/synopsis/)</Means>');
     });
 
     it('naming what its file is not, is missed rather than guessed', () => {
@@ -165,18 +213,18 @@ describe('a mention that allocates', () => {
 
 describe('what the transform misses', () => {
     it('a name the library does not hold, by file and line', () => {
-        const code = `export default () => (<Paragraph>\n  see <Means>$[ Nowhere ]</Means>\n</Paragraph>);`;
+        const code = `export default () => (<Paragraph>\n  see <Means>$[[ Nowhere ]]</Means>\n</Paragraph>);`;
         const made = transforming(code, chapter, card);
         expect(made.missing).toEqual([{ key: 'Nowhere', file: chapter, line: 2 }]);
     });
 
     it('a relative reference to a chapter the standing book does not have', () => {
-        const code = `export default () => (<Paragraph><Means>$[ ./The Work ]</Means></Paragraph>);`;
+        const code = `export default () => (<Paragraph><Means>$[[ ./The Work ]]</Means></Paragraph>);`;
         expect(transforming(code, chapter, card).missing.map(missing => missing.key)).toEqual(['A Paper / The Work']);
     });
 
     it('and nothing about what a file imports, since it writes nothing a file must hold', () => {
-        const code = `export default () => (<Paragraph>$[ The Library ]</Paragraph>);`;
+        const code = `export default () => (<Paragraph>$[[ The Library ]]</Paragraph>);`;
         const made = transforming(code, chapter, card);
         expect(made.missing).toEqual([]);
         expect(made.text).toContain('<Paragraph>[The Library](/the-library/)</Paragraph>');

@@ -1,10 +1,12 @@
-import { basename } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import type { Plugin } from 'vite';
 import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
+import type { Book } from '../inventory/library';
+import { imageTypes } from '../inventory/filenames';
 import { reads } from '../catalogue/reading';
-import { sourceOf } from '../catalogue/structure';
-import { form, key, name as parsed, notation, spelling, titled, whole, type Name } from '../catalogue/language';
+import { sourceOf, textOf } from '../catalogue/structure';
+import { form, key, literal, name as parsed, notation, spelling, titled, wellSpelt, whole, type Name } from '../catalogue/language';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
 //
@@ -49,6 +51,7 @@ const near = (key: string, keys: string[]): string[] => {
 };
 
 export const missing = (missing: Missing, keys: string[]): string => {
+    if (missing.key.startsWith('![[')) return `${basename(missing.file)} line ${missing.line} inserts ${missing.key}, and no such file stands beside the chapter`;
     const close = near(missing.key, keys);
 
     return `${basename(missing.file)} line ${missing.line} names "${missing.key}", and the library holds no such thing${close.length ? ` — did it mean "${close[0]}"?` : ''}`;
@@ -65,8 +68,16 @@ export type Found = { text: string; missing: Missing[] };
 // and they want different answers. The PLUGIN stops the file it is compiling, which is the feedback
 // an author wants while typing; the BATCH reads every file and names every failure at once. A gate
 // that reports the first fault sends someone back six times for six faults.
-export const transforming = (code: string, file: string, catalogue: Catalogue): Found => {
-    // WHERE THIS FILE STANDS, because `$[ ./The Sheet ]` means the chapter of the book it is written
+export const transforming = (code: string, file: string, catalogue: Catalogue, book?: Book): Found => {
+    // WHAT A LITERAL INSERTS: the text of the file beside this chapter it names, held by the
+    // structure, or a picture's address beside the book's pages, where the render copies it.
+    const inserted = (named: { identifier: string; type: string }): string | undefined => {
+        const one = book?.resources.get(basename(file))?.find(each => each.identifier === named.identifier && each.type === named.type);
+        if (book === undefined || one === undefined) return undefined;
+
+        return imageTypes.includes(one.type) ? `/${book.folder}/${one.file}` : textOf(join(book.path, one.file));
+    };
+    // WHERE THIS FILE STANDS, because `$[[ ./The Sheet ]]` means the chapter of the book it is written
     // in. The scope is the one thing a reference cannot carry and the place it stands always knows.
     const within = catalogue.scope(file);
     const cover = basename(file) === '.cover.tsx';
@@ -90,14 +101,29 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
             const at = from + match.index;
             const to = at + match[0].length;
 
-            // A BRACKET RUN THAT DOES NOT BALANCE IS LEFT ALONE. `catalogue/wellformed.ts`
-            // refuses it by name, and rewriting something the compiler does not understand is
-            // how a fault becomes invisible.
-            if (!read.balanced) continue;
+            // A LITERAL INSERTS A FILE WHERE IT STANDS, IN PROSE, AS ONE STRING EXPRESSION: the
+            // chapter's own source as handed — before any edit, so the forms inside it stand as
+            // written — or the text of the file beside the chapter, or a picture's address. Doug,
+            // 2026-09-28: "it is the version written that is used not the version modified." A JSX
+            // text with braces or angle brackets in it must become an expression to parse, and
+            // `JSON.stringify` escapes everything a string may not hold. Sprint 92.
+            if (read.inserts) {
+                const named = literal(read.name);
+                if (!prose || !wellSpelt(read) || named === undefined) continue;
+                const text = named.of === 'this' ? code : inserted(named);
+                if (text === undefined) { missed.push({ key: `![[ ${read.name} ]]`, file, line: held.line(at) }); continue; }
+                edits.push({ from: at, to, said: `{${JSON.stringify(text)}}` });
+                continue;
+            }
+
+            // A SPELLING THE LANGUAGE DOES NOT HAVE IS LEFT ALONE — a bracket run that does not
+            // balance, one bracket on a reference. `catalogue/wellformed.ts` refuses it by name, and
+            // rewriting something the compiler does not understand is how a fault becomes invisible.
+            if (!wellSpelt(read)) continue;
 
             // EVERY FORM IS VERIFIED AND GIVEN ITS URL — Doug, 2026-09-19: "There should not be
             // anymore dynamic link generation." What is shown is the thing and never the scope:
-            // `$[ ./The books ]` reads "The books". A title form names the writing its file is — in
+            // `$[[ ./The books ]]` reads "The books". A title form names the writing its file is — in
             // a cover its book, anywhere else a chapter of its book — and a mention names the place
             // it makes, within the book it stands in, by its whole name: `[[[ The First Shelf ]]]`
             // is `./The First Shelf`, and its url is that place's, fragment and all.
@@ -141,7 +167,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue): 
 // chapter with `?raw` so its text becomes an Append's, and that text is the file exactly — Doug,
 // 2026-09-28: "it is the version written that is used not the version modified." The same file
 // imported as a module still compiles. Sprint 90.
-export const literal = (query: string | undefined): boolean => query !== undefined && query.split('&').includes('raw');
+export const rawModule = (query: string | undefined): boolean => query !== undefined && query.split('&').includes('raw');
 
 // THE PLUGIN — the incremental half. It holds no catalogue of its own: the catalogue is the
 // library's, and a plugin is only where the library is asked.
@@ -155,10 +181,13 @@ export const references = (inventory: Inventory): Plugin => ({
     enforce: 'pre',
     transform(code: string, id: string) {
         const [file, query] = id.split('?');
-        if (!file.endsWith('.tsx') || literal(query)) return null;
+        if (!file.endsWith('.tsx') || rawModule(query)) return null;
 
         const catalogue = inventory.catalogue();
-        const found = transforming(code, file, catalogue);
+        // THE CHAPTER'S BOOK, for the files beside it a literal may insert: a chapter stands in its
+        // book's folder and nowhere else.
+        const book = inventory.library().books.find(one => resolve(dirname(file)) === resolve(one.path));
+        const found = transforming(code, file, catalogue, book);
         if (found.missing.length > 0) throw new Error(found.missing.map(m => missing(m, catalogue.keys())).join('\n'));
 
         return found.text === code ? null : found.text;

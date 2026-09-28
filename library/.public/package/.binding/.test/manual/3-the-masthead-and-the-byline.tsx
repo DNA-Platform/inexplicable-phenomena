@@ -21,7 +21,7 @@ export default () => (
         </Section>
         <Section>
             <Heading>The masthead's file</Heading>
-            <Paragraph><Code identifier="code" /></Paragraph>
+            <Paragraph><Code>![[ code.tsx ]]</Code></Paragraph>
         </Section>
         <Catchword />
     </Chapter>

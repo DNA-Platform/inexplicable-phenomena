@@ -52,46 +52,88 @@ export const form = (prefix: string, brackets: number, postfix: string): Form | 
 
 // ---- how a form is spelled ----
 //
-// THE BRACKET IS DISPLAY AND THE PAREN IS THE IDENTIFIER, ON EVERY FORM. Doug, 2026-09-18, exactly:
-// "`**$[Author: Doug](Doug)*` says the text 'Author: Doug' is what I'll display for the url
+// THE BRACKET IS DISPLAY AND THE PAREN IS THE IDENTIFIER, ON EVERY FORM THAT NAMES. Doug, 2026-09-18,
+// exactly: "`**$[Author: Doug](Doug)*` says the text 'Author: Doug' is what I'll display for the url
 // associated with Doug, the author identifier." And 2026-09-19, on finding the paren gone from the
 // table: "No language version ever gave anything one slot. It was always assumed."
 //
-// SO EVERY SPELLING BELOW MAY BE FOLLOWED BY `( name )`, TIGHT AGAINST THE CLOSING BRACKET. With it,
+// SO EVERY NAMING SPELLING MAY BE FOLLOWED BY `( name )`, TIGHT AGAINST THE CLOSING BRACKET. With it,
 // the bracket is what the page shows and the paren is what the library is asked for; without it,
 // the bracket is both. The tightness is not fussiness — `[[ X ]] (a parenthetical remark)` is prose
 // and must stay prose, and one space is the whole of what tells the two apart.
 //
 // AND THE PAREN COMES BEFORE THE POSTFIX STARS, the way Doug wrote it: `[[ Doug ]]( Dougs Library )**`.
 //
+// THE ONE FORM THAT DOES NOT NAME IS THE LITERAL, `![[ this ]]` and `![[ identifier.type ]]`, which
+// inserts a file where it stands — the chapter's own source, or a file beside the chapter — and it
+// has one slot, since what it shows is the thing itself. Sprint 92.
+//
 // ONE REGEX, WRITTEN HERE AND CONSTRUCTED WHERE IT IS RUN. The scanner and the transform each walk a
 // file with it; a shared GLOBAL regex would carry its `lastIndex` from one caller into the next, so
 // what is shared is the SOURCE and each caller owns its own cursor.
 //
+// THREE FAMILIES, TOLD APART BY WHAT STANDS BEFORE THE BRACKETS: stars or nothing annotate, `$`
+// refers, `!` inserts. Every family writes two brackets — Doug, 2026-09-28: "We should stick to two"
+// — and the run is captured as one to three so that `$[ X ]` is READ and refused rather than left in
+// the prose as if it were a word.
+//
 //   1 prefix stars · 2 opening brackets · 3 the words · 4 closing brackets · 5 the name, if given
 //   6 postfix stars                                          — the annotating shape
-//   7 the words · 8 the name, if given                       — the referring shape, `$[ ]`
-export const notation = /(\*{0,3})(\[{2,3})([^\]\n]*)(\]{2,3})(?:\(([^)\n]*)\))?(\*{0,3})|\$\[([^\]\n]*)\](?:\(([^)\n]*)\))?/u;
+//   7 opening · 8 the words · 9 closing · 10 the name, if given — the referring shape, `$[[ ]]`
+//   11 opening · 12 the file · 13 closing · 14 a paren, which a literal may not carry — `![[ ]]`
+export const notation = /(\*{0,3})(\[{2,3})([^\]\n]*)(\]{2,3})(?:\(([^)\n]*)\))?(\*{0,3})|\$(\[{1,3})([^\]\n]*)(\]{1,3})(?:\(([^)\n]*)\))?|!(\[{1,3})([^\]\n]*)(\]{1,3})(?:\(([^)\n]*)\))?/u;
 
 // WHAT A MATCH SAID, read off the groups above in one place — so nobody downstream knows that the
-// name is group five, or that a reference's words are group seven.
-export type Spelling = { refers: boolean; prefix: string; brackets: number; balanced: boolean; postfix: string; words: string; name: string; named: boolean };
+// name is group five, or that a reference's words are group eight.
+export type Family = 'annotates' | 'refers' | 'inserts';
+export type Spelling = { family: Family; refers: boolean; inserts: boolean; prefix: string; brackets: number; balanced: boolean; postfix: string; words: string; name: string; named: boolean };
 
 export const spelling = (held: RegExpExecArray, reads: (said: string) => string = one => one): Spelling => {
-    const refers = held[7] !== undefined;
-    const words = reads(refers ? held[7] : held[3]).trim();
-    const given = refers ? held[8] : held[5];
+    const family: Family = held[11] !== undefined ? 'inserts' : held[7] !== undefined ? 'refers' : 'annotates';
+    const [open, said, close, given] = family === 'inserts' ? [held[11], held[12], held[13], held[14]]
+        : family === 'refers' ? [held[7], held[8], held[9], held[10]]
+        : [held[2], held[3], held[4], held[5]];
+    const words = reads(said).trim();
 
     return {
-        refers,
-        prefix: refers ? '' : held[1],
-        brackets: refers ? 1 : held[2].length,
-        balanced: refers || held[2].length === held[4].length,
-        postfix: refers ? '' : held[6],
+        family,
+        refers: family === 'refers',
+        inserts: family === 'inserts',
+        prefix: family === 'annotates' ? held[1] : '',
+        brackets: open.length,
+        balanced: open.length === close.length,
+        postfix: family === 'annotates' ? held[6] : '',
         words,
         name: given === undefined ? words : reads(given).trim(),
         named: given !== undefined,
     };
+};
+
+// WHETHER A SPELLING IS ONE THE LANGUAGE HAS. An annotating form is a row of the table; a reference
+// and a literal are two brackets that balance, and a literal carries no words — Doug: "This inserts
+// a whole file in. No need to be anything else but what it is."
+export const wellSpelt = (read: Spelling): boolean =>
+    read.balanced && (read.family === 'annotates' ? form(read.prefix, read.brackets, read.postfix) !== undefined
+        : read.family === 'refers' ? read.brackets === 2
+        : read.brackets === 2 && !read.named);
+
+// ---- what a literal names ----
+//
+// A LITERAL NAMES A FILE OF THE CHAPTER IT STANDS IN, AND NEVER ANOTHER CHAPTER'S. `this` is the
+// chapter's own source as written; `identifier.type` is the file accompanying the chapter by that
+// identifier and type, the type alone when the identifier is empty — `.png`. Doug, 2026-09-28: "let's
+// not have it go across chapters. If it goes across chapters, it has no meaning which chapter its
+// associated with." So a separator in the name is not a literal, and the scanner refuses it by name.
+export type Literal = { of: 'this' } | { of: 'file'; identifier: string; type: string };
+
+export const literal = (said: string): Literal | undefined => {
+    const held = said.replace(/\s+/gu, ' ').trim();
+    if (held === 'this') return { of: 'this' };
+    if (held === '' || held.includes('/') || held.includes('\\') || held.includes(' ')) return undefined;
+    const dot = held.lastIndexOf('.');
+    if (dot === -1 || dot === held.length - 1) return undefined;
+
+    return { of: 'file', identifier: held.slice(0, dot), type: held.slice(dot) };
 };
 
 // HOW A FORM IS WRITTEN, for telling an author what the other end of a connection owes. A message

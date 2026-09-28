@@ -14,7 +14,7 @@ export default () => (
                 chapter's title saying what the chapter is, ordinary chapters counted and ruled, the synopsis a ruled
                 block, the table of contents boxed and its catalogue ruled, a figure set off. Every rule reads the
                 theme's values, so a book that overrides them keeps the look in another ink, which is
-                what <Means>$[ Libby ]</Means> does to go dark.
+                what <Means>$[[ Libby ]]</Means> does to go dark.
             </Paragraph>
             <Paragraph>
                 The file opens with a small helper every style in this library uses to read a value: the property
@@ -25,7 +25,7 @@ export default () => (
         </Section>
         <Section>
             <Heading>The theme's file</Heading>
-            <Paragraph><Code identifier="code" /></Paragraph>
+            <Paragraph><Code>![[ code.tsx ]]</Code></Paragraph>
         </Section>
         <Catchword />
     </Chapter>

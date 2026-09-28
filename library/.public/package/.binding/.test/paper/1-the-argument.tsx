@@ -1,7 +1,7 @@
 import { Bold, Break, Chapter, Emphasis, Heading, Means, Paragraph, Section, Space, Title, Underline, Word } from '@dna-platform/public';
 import { Catchword } from '../manual/.book';
 
-const evidence = '$[ ./The Evidence ]';
+const evidence = '$[[ ./The Evidence ]]';
 
 export default () => (
     <Chapter>
@@ -10,9 +10,9 @@ export default () => (
             <Heading>[[[ What is claimed ]]]</Heading>
             <Paragraph>
                 A reference <Word><Emphasis />names</Word> a thing and <Word><Bold />never</Word> a <Word><Underline />place</Word>.
-                The library this paper stands in is <Means>$[ The Library ]</Means>; what supports the claim is
-                <Means>$[ ./The Evidence ]</Means>; the work it grew out of is <Means>$[ Some Projects / The Work ]</Means>;
-                and the book that keeps the record is <Means>$[ Libby ]</Means>.
+                The library this paper stands in is <Means>$[[ The Library ]]</Means>; what supports the claim is
+                <Means>$[[ ./The Evidence ]]</Means>; the work it grew out of is <Means>$[[ Some Projects / The Work ]]</Means>;
+                and the book that keeps the record is <Means>$[[ Libby ]]</Means>.
             </Paragraph>
             <Paragraph>
                 And the evidence is in <Means>{evidence}</Means>.<Break />

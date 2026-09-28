@@ -7,13 +7,13 @@ export default () => (
         <Title><Parenthetical />[[ Table of Contents ]]</Title>
         <Section>
             <Heading>Contents</Heading>
-            <Paragraph><Content>$[ ./The Argument ]</Content></Paragraph>
-            <Paragraph><Content>$[ ./The Evidence ]</Content></Paragraph>
+            <Paragraph><Content>$[[ ./The Argument ]]</Content></Paragraph>
+            <Paragraph><Content>$[[ ./The Evidence ]]</Content></Paragraph>
             <Paragraph>
                 <Parenthetical />
-                <Word><Content>$[ A Paper ]</Content></Word>
-                <Word><Content>$[ ./Synopsis ]</Content></Word>
-                <Word><Content>$[ ./Table of Contents ]</Content></Word>
+                <Word><Content>$[[ A Paper ]]</Content></Word>
+                <Word><Content>$[[ ./Synopsis ]]</Content></Word>
+                <Word><Content>$[[ ./Table of Contents ]]</Content></Word>
             </Paragraph>
         </Section>
         <Catchword />

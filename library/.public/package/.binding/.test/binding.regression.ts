@@ -530,7 +530,7 @@ describe('a bind of the test library with a catalogue row that does not refer to
     beforeAll(() => {
         broken = pulled();
         const table = join(broken.library, 'the-library', '.table.tsx');
-        writeFileSync(table, readFileSync(table, 'utf8').replace(" <Word><Content>$[ the librarian's own account ]( Libby / Synopsis )</Content></Word>", ''));
+        writeFileSync(table, readFileSync(table, 'utf8').replace(" <Word><Content>$[[ the librarian's own account ]]( Libby / Synopsis )</Content></Word>", ''));
     });
     afterAll(() => { broken.remove(); });
 

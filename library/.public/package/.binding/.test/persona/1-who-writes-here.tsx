@@ -7,9 +7,9 @@ export default () => (
         <Section>
             <Heading>[[[ Delegation ]]]</Heading>
             <Paragraph>
-                The persona writes because <Means>$[ Libby ]</Means> said it may, by cataloguing it and by writing it:
-                it is, in her words, <Means>$[ a voice she lent out ]( Libby / A voice I lent out )</Means>. What it has
-                written so far is <Means>$[ A Paper ]</Means>, <Means>$[ a paper she did not write ]( Libby / A paper I did not write )</Means>.
+                The persona writes because <Means>$[[ Libby ]]</Means> said it may, by cataloguing it and by writing it:
+                it is, in her words, <Means>$[[ a voice she lent out ]]( Libby / A voice I lent out )</Means>. What it has
+                written so far is <Means>$[[ A Paper ]]</Means>, <Means>$[[ a paper she did not write ]]( Libby / A paper I did not write )</Means>.
             </Paragraph>
             <Paragraph>
                 This book is a biography: written by Libby about a persona of hers and filed under her. It is about

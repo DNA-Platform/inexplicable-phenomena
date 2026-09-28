@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { form, forms, key, last, name, notation, separator, spelling, spelt, tidy, titled, whole } from './language';
+import { form, forms, key, last, literal, name, notation, separator, spelling, spelt, tidy, titled, wellSpelt, whole } from './language';
 
 // WHAT THE LANGUAGE PROMISES A WRITER, and every one of these is a promise rather than a check on a
 // mechanism. The difference matters here more than anywhere else in the compiler: a parser that is
@@ -165,12 +165,12 @@ describe('the words and the name', () => {
 
     it('shows the words and asks for the name when both are given', () => {
         expect(read('*[[ Author: Doug ]]( My Library Log )')).toMatchObject({ refers: false, prefix: '*', words: 'Author: Doug', name: 'My Library Log', named: true });
-        expect(read('$[ the log ]( My Library Log )')).toMatchObject({ refers: true, words: 'the log', name: 'My Library Log', named: true });
+        expect(read('$[[ the log ]]( My Library Log )')).toMatchObject({ refers: true, words: 'the log', name: 'My Library Log', named: true });
     });
 
     it('takes the words as the name when no paren is given', () => {
         expect(read('[[ Dougs Library ]]')).toMatchObject({ words: 'Dougs Library', name: 'Dougs Library', named: false });
-        expect(read('$[ Dougs Library ]')).toMatchObject({ refers: true, words: 'Dougs Library', name: 'Dougs Library', named: false });
+        expect(read('$[[ Dougs Library ]]')).toMatchObject({ refers: true, words: 'Dougs Library', name: 'Dougs Library', named: false });
     });
 
     it('puts the paren before the postfix stars, the way Doug wrote it', () => {
@@ -185,4 +185,52 @@ describe('the words and the name', () => {
         expect(read('[[ Doug ]]]( Dougs Library )')).toMatchObject({ balanced: false });
     });
 
+});
+
+// THREE FAMILIES, TOLD APART BY THE SIGIL, AND EVERY ONE WRITES TWO BRACKETS. Sprint 92, on Doug's
+// rulings: "We should stick to two"; a literal "inserts a whole file in. No need to be anything else
+// but what it is"; "let's not have it go across chapters."
+describe('the families and the literal', () => {
+    const read = (said: string) => {
+        const held = new RegExp(notation.source, 'u').exec(said);
+
+        return held === null ? undefined : spelling(held);
+    };
+
+    it('refers with two brackets, and reads one or three as a spelling it refuses', () => {
+        expect(read('$[[ Dougs Library ]]')).toMatchObject({ family: 'refers', refers: true, brackets: 2, name: 'Dougs Library' });
+        expect(wellSpelt(read('$[[ Dougs Library ]]')!)).toBe(true);
+        expect(read('$[ Dougs Library ]')).toMatchObject({ family: 'refers', brackets: 1 });
+        expect(wellSpelt(read('$[ Dougs Library ]')!)).toBe(false);
+        expect(wellSpelt(read('$[[[ Dougs Library ]]]')!)).toBe(false);
+        expect(wellSpelt(read('$[[ Dougs Library ]')!)).toBe(false);
+    });
+
+    it('inserts with two brackets and one slot', () => {
+        expect(read('![[ this ]]')).toMatchObject({ family: 'inserts', inserts: true, brackets: 2, name: 'this', named: false });
+        expect(wellSpelt(read('![[ this ]]')!)).toBe(true);
+        expect(wellSpelt(read('![ this ]')!)).toBe(false);
+        expect(wellSpelt(read('![[ words ]]( code.tsx )')!)).toBe(false);
+    });
+
+    it('names the chapter\'s own file, or a file beside it by identifier and type', () => {
+        expect(literal('this')).toEqual({ of: 'this' });
+        expect(literal('code.tsx')).toEqual({ of: 'file', identifier: 'code', type: '.tsx' });
+        expect(literal('.png')).toEqual({ of: 'file', identifier: '', type: '.png' });
+        expect(literal('sketch.html')).toEqual({ of: 'file', identifier: 'sketch', type: '.html' });
+    });
+
+    it('names nothing across chapters, and nothing without a type', () => {
+        expect(literal('./3-the-masthead.code.tsx')).toBeUndefined();
+        expect(literal('a/b.ts')).toBeUndefined();
+        expect(literal('code')).toBeUndefined();
+        expect(literal('code.')).toBeUndefined();
+        expect(literal('')).toBeUndefined();
+    });
+
+    it('leaves the annotating forms exactly as they were', () => {
+        expect(read('**[[ Math ]]')).toMatchObject({ family: 'annotates', refers: false, inserts: false, prefix: '**', brackets: 2 });
+        expect(wellSpelt(read('[[[ A Place ]]]')!)).toBe(true);
+        expect(wellSpelt(read('[[ X ]]*')!)).toBe(false);
+    });
 });

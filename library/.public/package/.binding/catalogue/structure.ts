@@ -1,10 +1,10 @@
 import { readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Book, Library } from '../inventory/library';
-import { dotChapters, imageTypes } from '../inventory/filenames';
+import { dotChapters, imageTypes, type Accompanying } from '../inventory/filenames';
 import { annotating, type Reading, type Said } from './annotations';
 import { source, type Source } from './source';
-import { itself, key, last, separator, tidy, titled, type End, type Name, type Relation } from './language';
+import { itself, key, last, separator, tidy, titled, type End, type Literal, type Name, type Relation } from './language';
 
 // THE LIBRARY COMPILED INTO SOMETHING THAT CAN BE CHECKED.
 //
@@ -29,7 +29,7 @@ export type Edge = { relation: Relation; from: SpotId; to: SpotId; ends: Half[] 
 export type Naming = { spot: SpotId; at: Where };
 export type Listing = { of: SpotId; kind: 'chapter' | 'book'; canonical: boolean; synopsis: boolean; at: Where };
 
-// EVERY PLACE THE LIBRARY NAMES SOMETHING AND MEANS IT: a reference, `$[ X ]`, wherever it is written,
+// EVERY PLACE THE LIBRARY NAMES SOMETHING AND MEANS IT: a reference, `$[[ X ]]`, wherever it is written,
 // or an edge whose other end the library does not hold. Since Sprint 82 nothing is read off an
 // element — Doug: "You don't need the compiler to check for anything. You can't! They might
 // subclass them. That's why they are in special files."
@@ -55,7 +55,7 @@ export type Structure = {
     origin?: SpotId;
     authors: Set<SpotId>;
     mentions: Mention[];
-    refused: { by: SpotId; said: string; at: Where }[];
+    refused: { by: SpotId; said: string; at: Where; why?: string }[];
     untitled: { at: string; file: string }[];
     // THE BOOKS ABOUT SOMETHING — a cover carrying a second title form, its About, which names its
     // own book — and so the books another may be filed under. `about` is a PROXY NAME.
@@ -66,6 +66,9 @@ export type Structure = {
     referred: Set<SpotId>;
     // AND EVERY NAME A RESOURCE TRIED TO MAKE, which a resource may not.
     resourceNames: { by: SpotId; said: string; at: Where }[];
+    // AND EVERY LITERAL A CHAPTER WRITES, beside the files that stand beside that chapter, so
+    // `wellformed` can hold each to the other. Sprint 92.
+    inserting: { by: SpotId; file: string; path: string; accompanying: Accompanying[]; imports: string[]; literals: { name: Literal; said: string; line: number }[] }[];
 };
 
 const edgeKey = (relation: Relation, from: SpotId, to: SpotId): string => `${relation}:${from}:${to}`;
@@ -95,7 +98,7 @@ const titleOf = (name: Name, cover: boolean): string => {
 // resource is read for what it REFERS TO and never for what it names: the masthead's reference to
 // the plate is spent from a resource, and the structure said nothing referred to the plate
 // (2026-09-20) because it read chapters alone while the transform compiled the resource fine.
-type Held = { book: Book; file: string; path: string; resource: boolean; reading: Reading };
+type Held = { book: Book; file: string; path: string; resource: boolean; reading: Reading; imports: string[] };
 
 // WHAT A FILE SAID LAST TIME, KEPT UNTIL THE FILE CHANGES.
 //
@@ -113,17 +116,17 @@ type Held = { book: Book; file: string; path: string; resource: boolean; reading
 // thousand files is milliseconds against seconds of parsing.
 const kept = new Map<string, { at: number; size: number; code: string; source: Source; reading: Reading }>();
 
-const looked = (path: string): Reading => {
+const looked = (path: string): { reading: Reading; imports: string[] } => {
     const said = statSync(path);
     const before = kept.get(resolve(path));
-    if (before !== undefined && before.at === said.mtimeMs && before.size === said.size) return before.reading;
+    if (before !== undefined && before.at === said.mtimeMs && before.size === said.size) return { reading: before.reading, imports: before.source.imports };
 
     const code = readFileSync(path, 'utf8');
     const read = source(path, code);
     const held = { at: said.mtimeMs, size: said.size, code, source: read, reading: annotating(read) };
     kept.set(resolve(path), held);
 
-    return held.reading;
+    return { reading: held.reading, imports: read.imports };
 };
 
 // THE SOURCE OF A FILE THE TRANSFORM IS HANDED: the structure's own reading when it read this very
@@ -135,19 +138,24 @@ export const sourceOf = (path: string, code: string): Source => {
     return before !== undefined && before.code === code ? before.source : source(path, code);
 };
 
+// AND THE TEXT OF A FILE BESIDE A CHAPTER, as the structure holds it, for a literal to insert — read
+// from disk only when the structure has not read it, which is never on a bind and rarely on a dev
+// server. Sprint 92.
+export const textOf = (path: string): string => kept.get(resolve(path))?.code ?? readFileSync(path, 'utf8');
+
 export const structure = (found: Library): Structure => {
     // ---- the one reading ----
     const read: Held[] = [];
     for (const book of found.books) {
         for (const file of book.files) {
             const path = join(book.path, file);
-            read.push({ book, file, path, resource: false, reading: looked(path) });
+            read.push({ book, file, path, resource: false, ...looked(path) });
         }
         // A PICTURE IS NOT READ: its bytes are not writing, and a reference found in them is noise.
         for (const { file, type } of [...book.resources.values()].flat()) {
             if (imageTypes.includes(type)) continue;
             const path = join(book.path, file);
-            read.push({ book, file, path, resource: true, reading: looked(path) });
+            read.push({ book, file, path, resource: true, ...looked(path) });
         }
     }
 
@@ -209,7 +217,7 @@ export const structure = (found: Library): Structure => {
     // ---- the anchors, named within their books ----
     //
     // `[[[ X ]]]` allocates an address where it stands, so it is a spot of its book with a name of
-    // its own — a reference `$[ ./X ]` reaches it exactly as it reaches a chapter, and a name that
+    // its own — a reference `$[[ ./X ]]` reaches it exactly as it reaches a chapter, and a name that
     // answers twice in one book is what `wellformed` refuses.
     for (const one of read) {
         // A RESOURCE MAY NOT NAME ANYTHING: it is drawn on every page that wears it, and a name
@@ -248,9 +256,23 @@ export const structure = (found: Library): Structure => {
     // An edge runs from the one who does the thing to the one it is done to — an author to what they
     // wrote, a catalogue to what it catalogues — so the end a writing occupies decides which way
     // round its own id goes.
+    // ---- the literals, kept beside the files that stand beside each chapter ----
+    //
+    // A LITERAL INSERTS A FILE OF THE CHAPTER IT STANDS IN, and a resource — a file beside a chapter —
+    // inserts nothing, since it is a module and not a chapter; one that tries is refused with the reason.
+    const inserting: Structure['inserting'] = [];
+    for (const one of read) {
+        if (one.resource) {
+            for (const said of one.reading.literals)
+                refused.push({ by: one.book.folder, said: said.said, at: { file: one.path, line: said.line }, why: 'a file beside a chapter inserts nothing — a literal stands in a chapter' });
+            continue;
+        }
+        inserting.push({ by: speaks(one.book, one.file), file: one.file, path: one.path, accompanying: one.book.resources.get(one.file) ?? [], imports: one.imports, literals: one.reading.literals.map(said => ({ name: said.name, said: said.said, line: said.line })) });
+    }
+
     for (const one of read) {
         const by = speaks(one.book, one.file);
-        for (const said of one.reading.refused) refused.push({ by, said: said.said, at: { file: one.path, line: said.line } });
+        for (const said of one.reading.refused) refused.push({ by, said: said.said, at: { file: one.path, line: said.line }, why: said.why });
         for (const said of one.reading.references) mentions.push({ by, book: one.book.folder, name: said.name, said: said.said, at: { file: one.path, line: said.line } });
         for (const said of one.reading.annotations) {
             if (said.form.is !== 'edge') continue;
@@ -296,7 +318,7 @@ export const structure = (found: Library): Structure => {
     // ---- the table of contents, which is where a book answers ----
     //
     // A TABLE LISTS WHAT IT REFERS TO AND ANSWERS FOR, read off the notation in `.table.tsx` and off
-    // no element: a chapter of its own book is listed by a reference to it, `$[ ./The Shelves ]`, and a
+    // no element: a chapter of its own book is listed by a reference to it, `$[[ ./The Shelves ]]`, and a
     // book it catalogues by its answer, `[[ The Log ]]**`, canonical when that answer is a subject's.
     //
     // AND A TABLE THAT ANSWERS FOR A BOOK REFERS TO THAT BOOK'S OWN SYNOPSIS — Doug, 2026-09-19: "the
@@ -346,5 +368,5 @@ export const structure = (found: Library): Structure => {
                 authors.add(book);
     }
 
-    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, untitled, about, titledTwice, referred, resourceNames };
+    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, untitled, about, titledTwice, referred, resourceNames, inserting };
 };

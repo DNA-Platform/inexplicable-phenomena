@@ -13,14 +13,20 @@ import ts from 'typescript';
 // JSX's rule or as written is the reader's business, decided by its kind.
 export type Run = { kind: 'prose' | 'string'; from: number; to: number; text: string };
 
-export type Source = { runs: Run[]; line: (at: number) => number };
+// AND WHAT A FILE IMPORTS, by the specifiers as written — never read for the notation, but read for
+// use: a file beside a chapter that the chapter imports is a tool the chapter runs, and is used.
+export type Source = { runs: Run[]; imports: string[]; line: (at: number) => number };
 
 export const source = (file: string, code: string): Source => {
     const parsed = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
     const runs: Run[] = [];
+    const imports: string[] = [];
     const visit = (node: ts.Node): void => {
         // AN IMPORT OR AN EXPORT IS MACHINERY: its path is a string, and it is never writing.
-        if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) return;
+        if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
+            if (node.moduleSpecifier !== undefined && ts.isStringLiteral(node.moduleSpecifier)) imports.push(node.moduleSpecifier.text);
+            return;
+        }
         // JSX TEXT THAT IS ONLY WHITESPACE IS THE INDENTATION BETWEEN TAGS, not writing — a third of
         // the test library's text nodes, measured 2026-09-28.
         if (ts.isJsxText(node)) {
@@ -41,5 +47,5 @@ export const source = (file: string, code: string): Source => {
     };
     visit(parsed);
 
-    return { runs, line: at => parsed.getLineAndCharacterOfPosition(at).line + 1 };
+    return { runs, imports, line: at => parsed.getLineAndCharacterOfPosition(at).line + 1 };
 };

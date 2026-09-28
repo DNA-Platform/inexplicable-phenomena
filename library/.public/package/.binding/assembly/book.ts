@@ -1,7 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, relative, sep } from 'node:path';
 import type { Book } from '../inventory/library';
-import { imageTypes, type Accompanying } from '../inventory/filenames';
 
 const named = (file: string): string => file.replace(/\.tsx$/u, '');
 const local = (file: string): string => named(file).replace(/^\.+/u, '').replace(/^[\d.]+-/u, '').replace(/-(\w)/gu, (_, letter: string) => letter.toUpperCase());
@@ -26,13 +25,11 @@ const classed = (file: string): string => `${local(file).replace(/^\w/u, letter 
 // 2026-09-27: "the thing can't render without intact routing that would be nonsensical. And we
 // should have still been on our first paint."
 //
-// AND EVERY FILE ACCOMPANYING A CHAPTER IS APPENDED TO IT HERE, as an Append annotation among the
-// chapter's children: its text the file's contents, imported raw, or an image's address, imported as
-// the bundler emits it; `identifier` and `type` as the file spelled them. Doug, 2026-09-28: "by
-// annotation that has the filename appended to chapter by the binder"; "it's just text that has been
-// appended to the chapter." Nothing reads a chapter's source for it and nothing reads disk at draw:
-// the module imports the file, and a file that is not there stops the bundle by name.
-const held = (file: string, index: number): string => `appended${index}${file.replace(/[^A-Za-z0-9]/gu, '')}`;
+// AND THE BINDER APPENDS NOTHING TO A CHAPTER. From Sprint 89 to Sprint 92 every file beside a
+// chapter was imported here and handed to it as an Append; Doug, 2026-09-28: "append is the authors.
+// You remove the flexibility if you have the binder do it." A file beside a chapter reaches the page
+// through the literal, `![[ identifier.type ]]`, which the transform inserts where it stands, or
+// through an Append the author writes; the render still copies every picture beside the pages.
 //
 // THE TEXT OF A BOOK'S MODULE, WITHOUT WRITING IT ANYWHERE, because two things want the same text
 // and only one of them wants a file: the batch writes it so a publish has something to bundle, and
@@ -55,32 +52,17 @@ export const assembled = (book: Book, from = relative(dirname(book.module), book
     // of steps back up is the number of parts in the folder — the same fact `inventory/books.ts`
     // used to place it, rather than a second reading of the path it produced.
     const application = '../'.repeat(book.folder.split('/').length);
-    const accompanied = book.files.filter(file => (book.resources.get(file) ?? []).length > 0);
-    // A PICTURE'S TEXT IS ITS ADDRESS BESIDE THE BOOK'S PAGES, where the binder copies it — never an
-    // import, whose address would be the dev server's and not a page's.
-    const contents = (one: Accompanying, index: number): string =>
-        imageTypes.includes(one.type) ? `'/${book.folder}/${one.file}'` : held(one.file, index);
-    const appended = (file: string): string => (book.resources.get(file) ?? [])
-        .map((one, index) => `<Append identifier="${one.identifier}" type="${one.type}">{${contents(one, index)}}</Append>`)
-        .join(', ');
     const lines = [
         `import { $ } from '@dna-platform/chemistry';`,
-        ...(accompanied.length ? [`import { cloneElement } from 'react';`, `import { Append } from '@dna-platform/public';`] : []),
         `import { opened } from '${application}opened';`,
         `import $Book from '${from}/.book';`,
         ...book.files.map(file => `import ${classed(file)} from '${from}/${named(file)}';`),
-        ...accompanied.flatMap(file => (book.resources.get(file) ?? [])
-            .map((one, index) => imageTypes.includes(one.type) ? '' : `import ${held(one.file, index)} from '${from}/${one.file}?raw';`)
-            .filter(line => line !== '')),
         ``,
         `const Book = $($Book);`,
-        ...(accompanied.length ? [`const appending = (chapter, ...appends) => cloneElement(chapter, undefined, ...[chapter.props.children].flat(), ...appends);`] : []),
         ``,
         `export const book = () => (`,
         `    <Book>`,
-        ...book.files.map(file => accompanied.includes(file)
-            ? `        {appending(${classed(file)}(), ${appended(file)})}`
-            : `        {${classed(file)}()}`),
+        ...book.files.map(file => `        {${classed(file)}()}`),
         `    </Book>`,
         `);`,
         ``,

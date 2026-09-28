@@ -4,7 +4,7 @@ import { specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Letter, LetterSpecification } from '@/writing/Letter';
 import { $Chapter } from '@/libraries/Chapter';
-import { $Append } from './Append';
+import { $Append } from '@/writing/Append';
 
 export class $Figure extends $Letter {
     specification = new FigureSpecification();

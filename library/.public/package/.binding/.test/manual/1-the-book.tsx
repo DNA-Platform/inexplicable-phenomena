@@ -11,7 +11,7 @@ export default () => (
                 the library's, so what a book is here is decided once and a change to it reaches all of them. Mine is
                 the layout: the masthead, then the byline drawn from what the book exposes of its cover, then the
                 chapters; and it stands the library's dress and its theme on itself as defaults. A book of mine that
-                wants more adds to this in its own class, as <Means>$[ Some Projects ]</Means> adds its pages.
+                wants more adds to this in its own class, as <Means>$[[ Some Projects ]]</Means> adds its pages.
             </Paragraph>
             <Paragraph>
                 One thing it decides about turning. A cover's route opens at the top of the page, masthead and byline
@@ -26,7 +26,7 @@ export default () => (
                 as it is on disk. It is the book class every book of this library extends, and the same file is
                 imported from the manual's door by every one of them.
             </Paragraph>
-            <Paragraph><Code identifier="code" /></Paragraph>
+            <Paragraph><Code>![[ code.tsx ]]</Code></Paragraph>
         </Section>
         <Catchword />
     </Chapter>

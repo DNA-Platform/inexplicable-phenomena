@@ -30,7 +30,7 @@ export type Catalogue = {
     // the catalogue answer off the same structure, or they disagree.
     readonly structure: Structure;
     where(key: string): string | undefined;
-    // WHICH BOOK'S NAME SCOPES A REFERENCE WRITTEN IN IT. `$[ ./The Sheet ]` means the chapter
+    // WHICH BOOK'S NAME SCOPES A REFERENCE WRITTEN IN IT. `$[[ ./The Sheet ]]` means the chapter
     // of the book it stands in, and the scope is the one thing a reference cannot carry.
     scope(file: string): string | undefined;
     keys(): string[];
