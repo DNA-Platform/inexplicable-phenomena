@@ -5,7 +5,6 @@ import { specify } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing, AnnotationSpecification } from './Writing';
 import { $Format } from './Format';
-import { $Book } from '@/libraries/Book';
 
 export type Values = Record<'font' | 'size' | 'leading' | 'measure' | 'space' | 'ink' | 'paper' | 'link', string>;
 
@@ -116,7 +115,7 @@ export class $Provider extends $Chemical {
 export class ThemeSpecification extends AnnotationSpecification {
     @specify('a theme is said of a book')
     $saidOfABook(writing: $Writing): void {
-        $check(writing instanceof $Book, 'a theme is said of a book, and this is not one');
+        $check(writing.$book === writing, 'a theme is said of a book, and this is not one');
     }
 }
 

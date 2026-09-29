@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Annotation, $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed } from '@dna-platform/public';
+import { $Annotation, $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed, $Theme } from '@dna-platform/public';
 import { $Book, Book, BookSpecification, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, Author, Subject } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -267,4 +267,51 @@ describe('every writing has a book', () => {
         expect(built<$Paragraph>(<Paragraph>alone</Paragraph>).$book).toBeUndefined();
         expect(built<$Chapter>(TheArgument()).text.find($Section)[0].$book).toBeUndefined();
     });
+
+    // A BOOK ALWAYS HAS A THEME — Sprint 94, Doug, 2026-09-29: "let's give Book a theme property that returns the
+    // annotation. We probably want themes to be unique and subclasses can add their own in $Define. Books can type
+    // the theme property more specifically." And: "If the framework can't assume a theme, it has no place to draw
+    // values from, right?" The class stands the framework's; a written one in front is the one; a subclass stands
+    // its own and types the property as it. Uniqueness is expression's: one theme is ever expressed, the front's.
+    it('always has a theme: the class stands the framework\'s and answers it, and a written one in front is the one answered', () => {
+        const plain = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
+        expect(plain.theme).toBeInstanceOf($Theme);
+        expect(plain.theme.ink).toBe('black');
+        expect(plain.specify().filter(said => said.includes('theme'))).toEqual([]);
+        const dark = built<$Book>(<Book><Dark />{APaper()}{TheArgument()}</Book>);
+        expect(dark.theme).toBeInstanceOf($Dark);
+        expect(dark.theme.ink).toBe('white');
+        expect(dark.annotations.find($Theme)).toHaveLength(2);
+        expect(dark.annotations.containsOne($Theme)).toBe(true);
+        expect(dark.specify().filter(said => said.includes('theme'))).toEqual([]);
+    });
+
+    it('a book class stands its own theme in $Define and types the property as it', () => {
+        const darkened = built<$Darkened>(<Darkened>{APaper()}{TheArgument()}</Darkened>);
+        expect(darkened.theme).toBeInstanceOf($Dark);
+        expect(darkened.theme.ink).toBe('white');
+        expect(darkened.annotations.find($Theme)).toHaveLength(2);
+        expect(darkened.specify().filter(said => said.includes('theme'))).toEqual([]);
+    });
 });
+
+class $Dark extends $Theme {
+    ink = 'white';
+}
+const Dark = $($Dark);
+
+class $Darkened extends $Book {
+    override get theme(): $Dark {
+        const theme = this.annotations.expressed($Dark);
+        if (theme === undefined) throw new Error('a darkened book always has a dark theme, and this one has none');
+        return theme;
+    }
+
+    protected override $Define(): void {
+        super.$Define();
+        this.annotations.add(this,
+            <Dark />
+        );
+    }
+}
+const Darkened = $($Darkened);

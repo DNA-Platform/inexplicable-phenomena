@@ -97,10 +97,16 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(css).toContain('outline-color:unreached');
     });
 
-    it('a book without a theme draws no provider, and a styled element beneath it reads nothing', () => {
-        const { css } = served(shelf(null));
-        expect(css).toContain('color:unthemed');
-        expect(css).not.toContain('font-family:serif');
+    // A BOOK ALWAYS HAS A THEME since Sprint 94 — Doug, 2026-09-29: "If the framework can't assume a theme, it has
+    // no place to draw values from, right?" The class stands the framework's, so a book with none written draws
+    // under the default sheet and a styled element beneath it reads the framework's ink.
+    it('a book with no theme written draws under the framework\'s theme, and a styled element beneath it reads its ink', () => {
+        const book = shelf(null);
+        expect(book.theme).toBeInstanceOf($Theme);
+        const { css } = served(book);
+        expect(css).toContain('color:black');
+        expect(css).not.toContain('unthemed');
+        expect(css).toContain('font-family:serif');
     });
 
     it('stood in a book, provides to a styled element three levels down, and its default sheet is in the page', () => {
@@ -115,7 +121,7 @@ describe('a theme is a format said of a book that provides eight live properties
     it('is singular: two themes on a book stand one provider, the front\'s, and $is switches it at one paint', async () => {
         const book = shelf([<Theme key="plain" />, <Dark key="dark" />]);
         expect(book.annotations.expressed($Dark)).toBeDefined();
-        expect(book.annotations.find($Theme)).toHaveLength(2);
+        expect(book.annotations.find($Theme)).toHaveLength(3);   // the class's own beneath the two written, since Sprint 94
         expect(book.annotations.expressed($Theme)).toBeInstanceOf($Dark);
         expect([...book.containers].filter(layer => typeof layer !== 'string')).toHaveLength(1);
         expect(served(book).css).toContain('color:white');
