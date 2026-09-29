@@ -263,8 +263,8 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/<div class="[^"]*\bpd-paragraph\b/u);
             expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
             expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
-            expect(html, route.name).toMatch(/font-family:Georgia/u);
-            expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:1\.25rem;\}/u);
+            expect(html, route.name).toMatch(/--pd-font:Georgia/u);
+            expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1\.25rem\);\}/u);
         }
     });
 
@@ -286,7 +286,7 @@ describe('a bind of the test library', () => {
     });
 
     it('drew Libby dark by its own theme in front of the library\'s, and no other book dark', () => {
-        expect(page('Libby')).toMatch(/color:ivory;background:#1f1f24/u);
+        expect(page('Libby')).toMatch(/--pd-ink:ivory;--pd-paper:#1f1f24/u);
         for (const route of table.routes)
             if (route.name !== 'Libby')
                 expect(page(route.name), route.name).not.toContain('#1f1f24');
@@ -294,11 +294,11 @@ describe('a bind of the test library', () => {
 
     it('drew the frame on Some Projects\' book and on each of the persona\'s chapters, its border in the theme\'s ink', () => {
         const projects = page('Some Projects');
-        expect(projects).toMatch(/border:1px solid #23262a;padding:1\.25rem;margin-block:1\.25rem/u);
+        expect(projects).toMatch(/border:1px solid var\(--pd-ink, #23262a\);padding:var\(--pd-space, 1\.25rem\);margin-block:var\(--pd-space, 1\.25rem\)/u);
         expect(projects).toMatch(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-book\b/u);
         const persona = page('A Persona');
         expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
-        expect(page('Libby')).not.toMatch(/border:1px solid [^;]*;padding:1\.25rem;margin-block:1\.25rem/u);
+        expect(page('Libby')).not.toMatch(/border:1px solid [^;]*;padding:var\(--pd-space[^;]*\);margin-block:var\(--pd-space[^;]*\)/u);
     });
 });
 

@@ -23,7 +23,7 @@ class $Sided extends $Format {
 }
 
 class $Housed extends $Format {
-    theme = true;
+    themeProvider = true;
     style = selection.section`
         padding: 1rem;
     `;

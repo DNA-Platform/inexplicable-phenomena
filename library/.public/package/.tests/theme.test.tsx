@@ -5,13 +5,17 @@ import { ServerStyleSheet } from 'styled-components';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { $, selection } from '@dna-platform/chemistry';
-import { $Writing, $Format, $Section, Section, Heading, Paragraph, Word } from '@dna-platform/public';
+import { $Writing, $Format, $Section, Section, Heading, Paragraph, Word, $Word } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Cover, Author, Subject, Synopsis, TableOfContents, Title, $Theme, Theme, ThemeSpecification } from '@dna-platform/public';
 import type { ReactNode } from 'react';
 
 Element.prototype.scrollIntoView = () => {};
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+const stylesInDocument = (): string => [...document.styleSheets]
+    .map(sheet => { try { return [...sheet.cssRules].map(rule => rule.cssText).join(''); } catch { return ''; } })
+    .concat([...document.querySelectorAll('style')].map(style => style.textContent ?? ''))
+    .join('');
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
     const Drawn = $(writing);
     let container: HTMLElement | undefined;
@@ -92,7 +96,7 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(onBook?.$book?.annotations.expressed($Theme)?.ink).toBe('black');
         expect(onChapter?.$book?.annotations.expressed($Theme)?.ink).toBe('black');
         const { css } = served(book);
-        expect(css).toContain('color:black');
+        expect(css).toContain('color:var(--pd-ink, black)');
         expect(css).not.toContain('unprovided');
         expect(css).toContain('outline-color:unreached');
     });
@@ -104,17 +108,17 @@ describe('a theme is a format said of a book that provides eight live properties
         const book = shelf(null);
         expect(book.theme).toBeInstanceOf($Theme);
         const { css } = served(book);
-        expect(css).toContain('color:black');
+        expect(css).toContain('--pd-ink:black');
         expect(css).not.toContain('unthemed');
-        expect(css).toContain('font-family:serif');
+        expect(css).toContain('--pd-font:serif');
     });
 
     it('stood in a book, provides to a styled element three levels down, and its default sheet is in the page', () => {
         const book = shelf(<Theme />);
         expect(book.is($Theme)).toBe(true);
         const { css } = served(book);
-        expect(css).toContain('color:black');
-        expect(css).toContain('font-family:serif');
+        expect(css).toContain('--pd-ink:black');
+        expect(css).toContain('--pd-font:serif');
         expect(css).toContain('.pd-annotation{display:none;}');
     });
 
@@ -124,7 +128,7 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(book.annotations.find($Theme)).toHaveLength(3);   // the class's own beneath the two written, since Sprint 94
         expect(book.annotations.expressed($Theme)).toBeInstanceOf($Dark);
         expect([...book.containers].filter(layer => typeof layer !== 'string')).toHaveLength(1);
-        expect(served(book).css).toContain('color:white');
+        expect(served(book).css).toContain('--pd-ink:white');
         const container = await drawn(book);
         expect(container.querySelector('.pd-book')).not.toBeNull();
         await act(async () => { book.$is = Wide; });
@@ -134,18 +138,60 @@ describe('a theme is a format said of a book that provides eight live properties
     });
 
     // R7 — "live reactive properties that can be dynamically set": the provider is the theme's own chemical, so a
-    // property set on the theme is news to the provider alone, and every styled element beneath reads the new value.
-    it('a property set on a drawn theme reaches the styled element beneath it, and nothing of the book redraws', async () => {
+    // property set on the theme is news to the provider alone. Since Sprint 94 the eight are CSS custom properties
+    // declared on the sheet's element and every rule beneath reads a var(), so the write moves one declaration and
+    // no consumer's class — Doug: "Does it factor in having dynamic properties on the theme that can be consumed in
+    // the app?"
+    it('a property set on a drawn theme moves the sheet\'s declaration, and the styled element beneath keeps its class and reads the new value through it', async () => {
         const book = shelf(<Theme />);
-        const theme = book.annotations.expressed($Theme)!;
+        const theme = book.theme;
         const container = await drawn(book);
         const inked = container.querySelector('.pd-word')!.parentElement!;
         expect(inked.className).toContain('pd-container');
         const before = inked.className;
+        expect(stylesInDocument()).toContain('--pd-ink:black');
         await act(async () => { theme.ink = 'red'; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(theme.values.ink).toBe('red');
-        expect(container.querySelector('.pd-word')!.parentElement!.className).not.toBe(before);
+        expect(container.querySelector('.pd-word')!.parentElement!.className).toBe(before);
+        expect(stylesInDocument()).toContain('--pd-ink:red');
+    });
+
+    // R2 — MEASURED 2026-09-29, and pinned as the cost it is. Before the contract, one write of ink re-rendered
+    // twelve of twelve styled elements because the provider's value changed. With the contract the theme's context
+    // is one object across the write (probed inside the readers) and no consumer's class regenerates — and every
+    // word beneath the book still draws once more, the render and its development double, twenty-four views for
+    // twelve words: chemistry's diffusion, a write to an annotation's field walking up to the writing it annotates,
+    // the book redrawing all beneath it. That is chemistry's to change and is pitched, never bent around here.
+    it('a theme write keeps the contract one object and every class the same, and redraws each writing beneath the book once — chemistry\'s diffusion, pinned', async () => {
+        const counted = { views: 0 };
+        class $Counted extends $Word { override view(): ReactNode { counted.views++; return super.view(); } }
+        class $Reads extends $Format { style = selection.span`color: ${({ theme }) => theme.ink};`; }
+        class $Bolds extends $Format { style = selection.span`font-weight: bold;`; }
+        const Counted = $($Counted);
+        const Reads = $($Reads);
+        const Bolds = $($Bolds);
+        const six = [0, 1, 2, 3, 4, 5];
+        const book = built<$Book>(
+            <Book>
+                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
+                <Chapter>
+                    <Title>[Words](/a-paper/words/)</Title>
+                    <Paragraph>{six.map(i => <Counted key={i}><Reads />{`inked ${i}`}</Counted>)}</Paragraph>
+                    <Paragraph>{six.map(i => <Counted key={i}><Bolds />{`bold ${i}`}</Counted>)}</Paragraph>
+                </Chapter>
+            </Book>
+        );
+        const container = await drawn(book);
+        const classesBefore = [...container.querySelectorAll('.pd-word')].map(word => word.parentElement!.className);
+        const contract = book.theme.contract;
+        counted.views = 0;
+        await act(async () => { book.theme.ink = 'red'; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(stylesInDocument()).toContain('--pd-ink:red');
+        expect(book.theme.contract).toBe(contract);
+        expect([...container.querySelectorAll('.pd-word')].map(word => word.parentElement!.className)).toEqual(classesBefore);
+        expect(counted.views).toBe(24);
     });
 
     it('comprehends every class the source puts on an element: the classes in src, less the numbered families and those an annotation\'s own note rules, are all in its sheet', () => {
@@ -180,7 +226,7 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(book.annotations.expressed($Theme)).toBeInstanceOf($Wide);
         const { html, css } = served(book);
         expect(html).toContain('<article');
-        expect(css).toContain('max-width:60rem');
+        expect(css).toContain('--pd-measure:60rem');
     });
 
     it('said of a section, says so when asked', () => {
