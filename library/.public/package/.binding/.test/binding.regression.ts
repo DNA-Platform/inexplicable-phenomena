@@ -265,6 +265,13 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
             expect(html, route.name).toMatch(/--pd-font:Georgia/u);
             expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1\.25rem\);\}/u);
+            // THREE LAYERS since Sprint 94: the invariants first, the theme's sheet second, a Format's rules unlayered.
+            // The head is ordered by the order styled components were defined, so the first layer named is the
+            // invariants', from Writing.tsx, and the sheet's statement appends pd.theme after it (D3 as measured).
+            const layered = html.search(/@layer pd\.(?:invariants|theme)/u);
+            expect(layered, route.name).toBeGreaterThanOrEqual(0);
+            expect(html.slice(layered, layered + 24), route.name).toMatch(/^@layer pd\.invariants/u);
+            expect(html, route.name).toMatch(/@layer pd\.theme\{/u);
         }
     });
 
@@ -282,7 +289,7 @@ describe('a bind of the test library', () => {
         expect(argument).toMatch(/<em class="pd-container"><span class="[^"]*\bpa-emphasis\b[^"]*">names/u);
         expect(argument).toMatch(/<b class="pd-container"><span class="[^"]*\bpa-bold\b[^"]*">never/u);
         expect(argument).toMatch(/<u class="pd-container"><span class="[^"]*\bpa-underline\b[^"]*">place/u);
-        expect(argument).toMatch(/\.pa-blank\{visibility:hidden;\}/u);
+        expect(argument).toMatch(/\.pa-blank\{visibility:hidden!important;\}/u);
     });
 
     it('drew Libby dark by its own theme in front of the library\'s, and no other book dark', () => {
@@ -336,16 +343,26 @@ describe('the bound test library, seen in a real browser', () => {
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
     });
 
-    it('shows a table\'s entries and hides its parenthetical ones, where the proof still reads them', async () => {
+    it('shows a table\'s entries and hides its parenthetical ones from the eye, present to a reader, where the proof still reads them', async () => {
         // FOUR HIDDEN: the table's own title, parenthetical, and its three parenthetical entries — and one shown,
         // the table chapter's catchword's Previous, the synopsis, which means the book, since Sprint 86.
+        // A PARENTHETICAL IS PRESENT TO A READER AND NOT TO THE EYE since Sprint 94 (D9): a one-pixel box clipped
+        // from sight, not no box at all, and a clipped ancestor hides its children without touching their geometry.
+        // So the eye's measurement is a hit test: what is painted at the entry's centre once it is scrolled into
+        // view — a clipped entry answers with whatever stands behind it, a shown entry with itself.
         const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/synopsis/"], nav a[href="/a-paper/table-of-contents/"]',
-            links => links.map(link => link.getClientRects().length === 0));
+            links => links.map(link => {
+                link.scrollIntoView({ block: 'center' });
+                const box = link.getBoundingClientRect();
+                if (box.width === 0 || box.height === 0) return true;
+                const painted = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+                return painted === null || !(painted === link || link.contains(painted));
+            }));
         expect(hidden).toEqual([true, true, true, true, false]);
         const shown = await paper.$eval('nav', nav => nav.innerText);
         expect(shown).toContain('The Argument');
         expect(shown).toContain('The Evidence');
-        expect(shown).not.toContain('Table of Contents');
+        expect(shown).toContain('Table of Contents');
         expect(shown).not.toContain('](/');
     });
 

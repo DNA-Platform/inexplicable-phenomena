@@ -30,7 +30,7 @@ describe('blank keeps a writing\'s extent and shows nothing; space, break and li
         expect(word.is(Blank)).toBe(true);
         const page = await drawn(word);
         expect(page.querySelector('.pa-blank')!.textContent).toContain('unseen');
-        expect(served(word)).toContain('.pa-blank{visibility:hidden;}');
+        expect(served(word)).toContain('.pa-blank{visibility:hidden!important;}');
     });
 
     it('a space is a blank inline letter whose length is a count, one by default, drawn as non-breaking spaces', async () => {

@@ -233,12 +233,22 @@ export class Annotations extends Collection<$Annotation> {
 
 export class $Parenthetical extends $Annotation {
     style = createGlobalStyle`
-        .pa-parenthetical,
-        .pd-container:has(> .pa-parenthetical),
-        .pd-container:has(> .pd-container > .pa-parenthetical),
-        .pd-container:has(> .pd-container > .pd-container > .pa-parenthetical),
-        .pd-container:has(> .pd-container > .pd-container > .pd-container > .pa-parenthetical) {
-            display: none;
+        @layer pd.invariants {
+            .pa-parenthetical,
+            .pd-container:has(> .pa-parenthetical),
+            .pd-container:has(> .pd-container > .pa-parenthetical),
+            .pd-container:has(> .pd-container > .pd-container > .pa-parenthetical),
+            .pd-container:has(> .pd-container > .pd-container > .pd-container > .pa-parenthetical) {
+                position: absolute !important;
+                width: 1px !important;
+                height: 1px !important;
+                margin: -1px !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                clip-path: inset(50%) !important;
+                white-space: nowrap !important;
+                border: 0 !important;
+            }
         }
     `;
 
@@ -258,8 +268,10 @@ export class $Narrative extends $Annotation {
 
 export class $Blank extends $Annotation {
     style = createGlobalStyle`
-        .pa-blank {
-            visibility: hidden;
+        @layer pd.invariants {
+            .pa-blank {
+                visibility: hidden !important;
+            }
         }
     `;
 

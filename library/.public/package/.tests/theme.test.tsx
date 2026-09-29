@@ -120,6 +120,11 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(css).toContain('--pd-ink:black');
         expect(css).toContain('--pd-font:serif');
         expect(css).toContain('.pd-annotation{display:none;}');
+        // THREE LAYERS since Sprint 94: the sheet's first rule is the order statement, its marks' rules sit in
+        // pd.theme, its own element's declarations stand unlayered above them, and a Format's output is unlayered.
+        expect(css).toContain('@layer pd.invariants,pd.theme;');
+        expect(css).toMatch(/@layer pd\.theme\{[\s\S]*\.pd-annotation\{display:none;\}/u);
+        expect(css).toMatch(/\{[^{}]*font-family:var\(--pd-font, serif\)/u);
     });
 
     it('is singular: two themes on a book stand one provider, the front\'s, and $is switches it at one paint', async () => {

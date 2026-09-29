@@ -9,8 +9,10 @@ import { $Book } from './Book';
 export class $Paginated extends $Annotation {
     specification = new PaginatedSpecification();
     style = createGlobalStyle`
-        .pa-paginated .pa-page:not(.pa-open) {
-            display: none;
+        @layer pd.invariants {
+            .pa-paginated .pa-page:not(.pa-open) {
+                display: none !important;
+            }
         }
     `;
     get book(): $Book | undefined { return this.parent instanceof $Book ? this.parent : undefined; }

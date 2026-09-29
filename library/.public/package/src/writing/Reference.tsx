@@ -28,9 +28,11 @@ export class $Reference extends $Annotation {
 
 export class $SelfReference extends $Reference {
     style = createGlobalStyle`
-        .pd-container:has(> .pa-self-reference),
-        .pd-container:has(> .pd-container > .pa-self-reference) {
-            text-decoration: none;
+        @layer pd.invariants {
+            .pd-container:has(> .pa-self-reference),
+            .pd-container:has(> .pd-container > .pa-self-reference) {
+                text-decoration: none !important;
+            }
         }
     `;
 
