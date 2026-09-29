@@ -1,5 +1,5 @@
-import { Chapter, Code, Heading, Image, Means, Paragraph, Section, Title } from '@dna-platform/public';
-import { Catchword } from './.book';
+import { Append, Chapter, Code, Heading, Image, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Appendix, Catchword } from './.book';
 
 export default () => (
     <Chapter>
@@ -7,19 +7,20 @@ export default () => (
         <Section>
             <Heading>A design before a tool</Heading>
             <Paragraph>
-                This chapter holds a tool that is not built yet, which is a thing a manual may do when the tool is in
+                This chapter holds a tool that is being built, which is a thing a manual may do when the tool is in
                 the evolution of the library it serves. The explorer is my manual seen as an application for reading
-                its code: the table of contents drawn as a tree on the left, each chapter opening to its appendices;
+                its code: the table of contents drawn as a tree on the left, each chapter opening to its appendix;
                 the chapters a reader has opened as thumb tabs across the top, the cover's first; the open chapter in
-                the pane with its file printed and its lines numbered; and on the right the chapter's index, its
-                headings and the symbols its file defines, each with its line and with the chapters that refer to it.
-                Everything a reader sees has a book's name, because it is a book's thing.
+                the pane, its prose as prose and its file tucked away as an appendix a reader opens on purpose,
+                printed whole with its lines numbered; and on the right the chapter's index, its headings and the
+                names its file declares, each with its line. Everything a reader sees has a book's name, because it
+                is a book's thing.
             </Paragraph>
             <Paragraph>
                 I sketched it in HTML, the page's own material, and photographed it, and the photograph is the file
-                beside this chapter. When the explorer is built, its code will stand beside this chapter too and be
-                printed here, as every tool of mine is printed in the chapter that documents it. Until then the design
-                is the tool, and the chapter says what it is for.
+                beside this chapter. The explorer's own file stands beside this chapter too, its appendix, and grows
+                as the tool is built; its first tool is the mark that says a section is a chapter's appendix, which
+                every chapter of this manual now wears on the section that prints its file.
             </Paragraph>
         </Section>
         <Section>
@@ -48,6 +49,12 @@ export default () => (
                 new form. The rest of what I think of it is in my own book, <Means>$[[ Libby ]]</Means>.
             </Paragraph>
         </Section>
+        <Section>
+            <Appendix />
+            <Heading>The explorer's file</Heading>
+            <Paragraph><Code identifier="code" /></Paragraph>
+        </Section>
         <Catchword />
+        <Append identifier="code" type=".tsx">![[ code.tsx ]]</Append>
     </Chapter>
 );

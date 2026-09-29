@@ -1,5 +1,5 @@
-import { Chapter, Code, Heading, Paragraph, Section, Title } from '@dna-platform/public';
-import { Catchword, Framed } from './.book';
+import { Append, Chapter, Code, Heading, Paragraph, Section, Title } from '@dna-platform/public';
+import { Appendix, Catchword, Framed } from './.book';
 
 export default () => (
     <Chapter>
@@ -18,9 +18,11 @@ export default () => (
             </Paragraph>
         </Section>
         <Section>
+            <Appendix />
             <Heading>The catchword's file</Heading>
-            <Paragraph><Code>![[ code.tsx ]]<Framed /></Code></Paragraph>
+            <Paragraph><Code identifier="code"><Framed /></Code></Paragraph>
         </Section>
         <Catchword />
+        <Append identifier="code" type=".tsx">![[ code.tsx ]]</Append>
     </Chapter>
 );

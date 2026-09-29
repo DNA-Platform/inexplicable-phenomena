@@ -68,7 +68,7 @@ describe('a bind of the test library', () => {
         let printed = 0;
         for (const [chapter, files] of manual.resources)
             for (const one of files.filter(file => file.type === '.tsx')) {
-                const title = readFileSync(join(manual.path, chapter), 'utf8').match(/\[\[ (.+?) \]\]/u)![1];
+                const title = readFileSync(join(manual.path, chapter), 'utf8').match(/(?<!!)\[\[ (.+?) \]\]/u)![1];
                 const html = readFileSync(placeOf(galley.face, route.chapters.find(each => each.name === title)!), 'utf8');
                 const blocks = [...html.matchAll(/<code[^>]*>([\s\S]*?)<\/code>/gu)].map(match => decoded(match[1]));
                 expect(blocks, `${chapter} prints ${one.file}`).toContain(readFileSync(join(manual.path, one.file), 'utf8'));

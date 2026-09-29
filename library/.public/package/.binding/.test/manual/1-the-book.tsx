@@ -1,5 +1,5 @@
-import { Chapter, Code, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
-import { Catchword } from './.book';
+import { Append, Chapter, Code, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Appendix, Catchword } from './.book';
 
 export default () => (
     <Chapter>
@@ -20,14 +20,17 @@ export default () => (
             </Paragraph>
         </Section>
         <Section>
+            <Appendix />
             <Heading>The book's file</Heading>
             <Paragraph>
-                The file below stands beside this chapter, the binder appended it, and the figure prints it exactly
+                The file stands beside this chapter, and I append it to the chapter myself, tucked away as its
+                appendix, since one engages with code differently than with a page; the figure prints it exactly
                 as it is on disk. It is the book class every book of this library extends, and the same file is
                 imported from the manual's door by every one of them.
             </Paragraph>
-            <Paragraph><Code>![[ code.tsx ]]</Code></Paragraph>
+            <Paragraph><Code identifier="code" /></Paragraph>
         </Section>
         <Catchword />
+        <Append identifier="code" type=".tsx">![[ code.tsx ]]</Append>
     </Chapter>
 );
