@@ -1,43 +1,48 @@
-import { ReactNode } from 'react';
-import { createGlobalStyle } from 'styled-components';
-import { $, $check } from '@dna-platform/chemistry';
+import { ElementType, ReactNode } from 'react';
+import { $, $check, $Chemical, selection } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
-import { $Composition } from './Composition';
+import { $Writing, AnnotationSpecification } from './Writing';
+import { $Format } from './Format';
+import { $Composition, $Inline, $Block } from './Composition';
 import { $Section } from './Section';
 import { $Chapter } from '@/libraries/Chapter';
 
-export class $Table extends $Annotation {
+export class $Table extends $Format {
     $start?: number;
     $rows?: number;
     $columns?: number;
     specification = new TableSpecification();
-    style = createGlobalStyle`
-        .pa-table {
-            display: grid;
-        }
-        .pa-row {
-            display: contents;
-        }
-        ${Array.from({ length: this.limit }, (_, index) => index + 1).map(count => `
-        .pa-table.pa-cols-${count} { grid-template-columns: repeat(${count}, minmax(0, 1fr)); }
-        .pa-col-start-${count} { grid-column-start: ${count}; }
-        .pa-col-span-${count} { grid-column-end: span ${count}; }`).join('')}
+    style: ElementType = selection.div<{ $columns: number }>`
+        display: grid;
+        grid-template-columns: repeat(${({ $columns }) => $columns}, minmax(0, 1fr));
+        & > .pd-container { grid-column: 1 / -1; }
+        & .pa-row, & .pa-row > .pd-container { display: contents; }
+        ${({ $columns }) => Array.from({ length: $columns }, (_, index) => index + 1).map(count => `
+        & .pa-col-start-${count} { grid-column-start: ${count}; }
+        & .pa-col-span-${count} { grid-column-end: span ${count}; }`).join('')}
     `;
     get composition(): $Composition | undefined { return this.parent instanceof $Composition ? this.parent : undefined; }
     get start(): number { return this.$start ?? (this.composition instanceof $Section || this.composition instanceof $Chapter ? 1 : 0); }
     get rows(): $Composition[] { return this.composition?.parts.slice(this.start) ?? []; }
     get columns(): number { return this.$columns ?? Math.max(0, ...this.rows.map(row => row.parts.length)); }
-    protected get limit(): number { return 12; }
 
-    override note(): ReactNode { return <this.style />; }
+    $Table(...chemicals: $Chemical[]) {
+        this.$Format(...chemicals);
+        const Grid = this.style;
+        this.style = (props: { children?: ReactNode }) => <Grid $columns={this.columns} {...props} />;
+    }
 
     override defines(writing: $Writing): void {
-        writing.classes.add(this, 'pa-table', `pa-cols-${this.columns}`);
+        for (const annotation of writing.annotations.after(this))
+            if (annotation instanceof $Inline || annotation instanceof $Block)
+                writing.annotations.express(annotation, false);
+        writing.classes.add(this, 'pa-table');
+        writing.containers.replace(this, writing.containers.at(0)!, this.style);
     }
 
     override erase(writing: $Writing): void {
         writing.classes.revert(this);
+        super.erase(writing);
     }
 
     protected override $Bound(): void {

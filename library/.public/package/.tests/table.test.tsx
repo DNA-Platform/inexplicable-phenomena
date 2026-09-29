@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, Sentence, Word, $Table, Table } from '@dna-platform/public';
+import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, Sentence, Word, $Table, Table, Block } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Cover, Title } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -42,7 +42,8 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
     it('interprets a section as a grid: its paragraphs the rows, their words the cells, and the heading no row', () => {
         const section = bound(folio());
         expect(section.specify()).toEqual([]);
-        expect(classes(section)).toEqual(['pa-table', 'pa-cols-2']);
+        expect(classes(section)).toEqual(['pa-table']);
+        expect(section.is(Block)).toBe(false);
         const [heading, ...rows] = section.parts;
         expect(classes(heading).filter(name => name.startsWith('pa-row') || name.startsWith('pa-col'))).toEqual([]);
         expect(rows.map(row => classes(row))).toEqual([['pa-row', 'pa-row-start-1'], ['pa-row', 'pa-row-start-2'], ['pa-row', 'pa-row-start-3']]);
@@ -71,7 +72,7 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
 
     it('a section built alone is never bound: it wears pa-table, and its rows and cells no marks', () => {
         const section = built<$Section>(folio());
-        expect(classes(section)).toEqual(['pa-table', 'pa-cols-2']);
+        expect(classes(section)).toEqual(['pa-table']);
         expect(section.parts.slice(1).map(row => classes(row))).toEqual([[], [], []]);
     });
 
@@ -89,9 +90,12 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(classes(section.parts[1])).toEqual(['pa-row', 'pa-row-start-1']);
     });
 
-    it('drawn, the section wears pa-table and its six cells stand inside it in their rows', async () => {
+    it('drawn, the section\'s element is the table\'s grid of its two columns, wearing pa-table, and its six cells stand inside it in their rows', async () => {
         const page = await drawn(bound(folio()));
-        expect(page.querySelector('.pa-table.pa-cols-2')).not.toBeNull();
+        expect(page.querySelector('.pa-table')).not.toBeNull();
+        expect(page.querySelector('.pa-table')?.tagName).toBe('DIV');
+        expect(document.head.innerHTML).toMatch(/display:\s*grid;\s*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/u);
+        expect(page.querySelector('.pa-table')?.getAttribute('columns')).toBeNull();
         expect(page.querySelectorAll('.pa-table .pa-row').length).toBe(3);
         expect(page.querySelectorAll('.pa-table .pa-row .pa-col').length).toBe(6);
     });

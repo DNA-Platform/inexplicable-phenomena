@@ -59,8 +59,6 @@ export class $Theme extends $Format {
         .pa-content { color: ${this.provided('link')}; }
         .pa-table { column-gap: ${this.provided('space')}; row-gap: calc(${this.provided('space')} / 2); }
         .pa-table .pd-paragraph { margin-block: 0; }
-        .pa-table > .pd-container { grid-column: 1 / -1; }
-        .pa-row > .pd-container { display: contents; }
         .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${this.provided('ink')}; }
         .pa-col { padding-block: calc(${this.provided('space')} / 4); }
         .pa-cover { margin-block-end: calc(2 * ${this.provided('space')}); }
