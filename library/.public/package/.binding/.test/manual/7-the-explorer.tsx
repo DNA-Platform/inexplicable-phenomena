@@ -10,11 +10,12 @@ export default () => (
                 The explorer is the manual seen as an application for reading its code, and it is made of nothing
                 the manual did not already have. The table of contents is the tree at the left; the chapters a
                 reader has opened are thumb tabs across the top, the cover's first, each tab a chapter and nothing
-                else; the open chapter stands in the pane, its prose as prose, and each file it appends is a leaf
-                beneath it in the tree, which opens the chapter at its spread, the file up front and the prose
-                beside it. Every part is a form of writing: the tabs are a
-                paragraph of words, a leaf is a reference, an appendix is a section, and the book's own marks and
-                the reader's decide what is shown.
+                else. The cover's tab is the manual's front, its title with the synopsis beneath it, since the one
+                is about the other. The open chapter stands in the pane, and a chapter that prints a file is
+                about it, so it opens at its spread, the file up front and the prose beside it. Each file a
+                chapter appends is a leaf beneath it in the tree, which puts that file up front. Every part is a
+                form of writing: the tabs are a paragraph of words, a leaf is a reference, an appendix is a
+                section, and the book's own marks and the reader's decide what is shown.
             </Paragraph>
             <Paragraph>
                 The tool is in six files beside this chapter, one per part, each printed in the section that
@@ -34,16 +35,20 @@ export default () => (
             </Paragraph>
         </Section>
         <Section>
-            <Heading>The design's photograph</Heading>
+            <Heading>The design's photographs</Heading>
+            <Paragraph>A chapter at its spread, and the front.</Paragraph>
             <Paragraph><Image>![[ .png ]]</Image></Paragraph>
+            <Paragraph><Image>![[ front.png ]]</Image></Paragraph>
         </Section>
         <Section>
-            <Heading>The sketch itself</Heading>
+            <Heading>The sketches themselves</Heading>
             <Paragraph>
-                The sketch is HTML and CSS and nothing else, written to be looked at and kept because it is the
-                design; it stands beside this chapter and is printed here as it is.
+                The sketches are HTML and CSS and nothing else, written to be looked at and kept because they are
+                the design, and the book is matched to them rather than they to the book: the spread, and the
+                front. They stand beside this chapter and are printed here as they are.
             </Paragraph>
             <Paragraph><Code>![[ sketch.html ]]</Code></Paragraph>
+            <Paragraph><Code>![[ front.html ]]</Code></Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -61,10 +66,12 @@ export default () => (
             <Heading>[[[ The paging ]]]</Heading>
             <Paragraph>
                 A class under the framework's Paginated saying which chapters are pages, every chapter but the
-                table, which is the tree and always in view; and which page is open when the bookmark names a place
+                table, which is the tree and always in view, and the synopsis, which is the cover's and shown
+                whenever the cover is; and which page is open when the bookmark names a place
                 within a chapter rather than the chapter, found by comparing the bookmark with each heading's
-                reference, an equality and never a reading of the address. It also says which appendix is open,
-                by the same comparison, as Paginated says which page is.
+                reference, an equality and never a reading of the address. It also says which appendix is open, as
+                Paginated says which page is: the one the bookmark names, by the same comparison, or else the open
+                chapter's first, since a chapter that prints a file is about it.
             </Paragraph>
             <Paragraph><Code identifier="paging" numbered /></Paragraph>
         </Section>
@@ -74,9 +81,11 @@ export default () => (
             <Paragraph>
                 A format on the book whose layer is the grid: the running head and the byline across the top, the
                 table at the left, the tabs and the open page beside it, placed by the marks the framework and this
-                library already put on them. The tab names the chapter, so a chapter's title stands unseen in the
-                pane, the cover's excepted, and an appendix's heading likewise; a chapter opened at its appendix is
-                shown as a spread, the file up front and its prose beside it, the pane the one thing that scrolls.
+                library already put on them; the cover, when it is open, in a row of its own above the pane, the
+                synopsis in the pane beneath it. The tab names the chapter, so a chapter's title stands unseen in the
+                pane, the cover's excepted, and an appendix's heading likewise; a chapter whose appendix is open is
+                shown as a spread, the file up front and its prose beside it, what the appendix says of its file
+                first, the pane the one thing that scrolls.
                 Its define marks a chapter opened when the reader arrives at it, remembering the last arrival so
                 each is marked once. Once the book is whole it puts a branch on every entry of the table.
             </Paragraph>
@@ -109,9 +118,10 @@ export default () => (
             <Paragraph>
                 The library's theme with one value changed, the width, so the manual may take the whole page, and
                 the look of the explorer's marks laid over it: the paper on the book, which fills the page, a
-                page's headings a step larger than its text, the tabs, the tree's numbers and leaves, a file
-                printed plain on the paper in the spread with its lines wrapping, and the scrollbars thin and in the
-                theme's ink.
+                page's headings a step larger than its text, the front's title and its synopsis set as the page's
+                own text, the tabs, the tree's numbers and leaves, a file
+                printed plain on the paper in the spread with its lines wrapping under their own text, a picture
+                kept to its column, and the scrollbars thin and in the theme's ink.
             </Paragraph>
             <Paragraph><Code identifier="theme" numbered /></Paragraph>
         </Section>

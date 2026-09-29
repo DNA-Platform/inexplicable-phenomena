@@ -16,7 +16,10 @@ export class $ManualTheme extends $LibraryValues {
             .pd-tabs > .pd-container:first-child { padding-inline-start: 0; border-inline-start: 0; }
             .pd-tabs > .pd-container:has(.pa-active) { opacity: 1; color: ${at('ink')}; box-shadow: inset 0 -2px 0 ${at('link')}; }
             nav.pd-container:has(> .pa-table-of-contents) { counter-reset: entry; font-size: calc(0.9 * ${at('size')}); }
-            .pa-table-of-contents .pd-catchword { display: none; }
+            .pa-table-of-contents .pd-catchword, .pa-cover .pd-catchword, .pa-synopsis .pd-catchword { display: none; }
+            .pa-cover { margin-block: 0; }
+            .pa-cover .pd-title { font-size: calc(1.6 * ${at('size')}); line-height: 1.3; margin-block: 0; }
+            .pa-synopsis .pd-paragraph { font-style: normal; }
             .pa-table-of-contents .pd-heading { font-size: calc(0.7 * ${at('size')}); font-weight: normal; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.65; margin-block: 0 calc(${at('space')} / 2); }
             .pa-table-of-contents .pd-paragraph { margin-block: calc(${at('space')} / 3); }
             .pa-table-of-contents .pd-paragraph:not(.pa-parenthetical) { counter-increment: entry; }
@@ -25,7 +28,11 @@ export class $ManualTheme extends $LibraryValues {
             .pd-leaf { display: block; padding-inline-start: 1.5em; font-family: ui-monospace, monospace; font-size: calc(0.8 * ${at('size')}); line-height: 1.6; opacity: 0.75; text-decoration: none; color: inherit; }
             .pd-leaf::before { content: '·'; margin-inline-end: 0.5em; opacity: 0.5; }
             .pd-leaf.pa-open { opacity: 1; font-weight: bold; }
-            .pa-appendix .pd-code { margin-block: 0; padding: 0; background: none; border: 0; font-size: calc(0.8 * ${at('size')}); line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; overflow: visible; }
+            .pa-appendix .pd-code { margin-block: 0; padding: 0; background: none; border: 0; font-size: calc(0.8 * ${at('size')}); line-height: 1.6; white-space: normal; overflow: visible; }
+            .pa-appendix .pd-code :is(pre, code) { white-space: normal; }
+            .pa-appendix .pd-line { display: block; white-space: pre-wrap; overflow-wrap: anywhere; padding-inline-start: 4.5ch; text-indent: -4.5ch; }
+            .pa-appendix .pd-line::before { text-indent: 0; }
+            .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; }
             .pa-appendix .pd-paragraph { margin-block: 0; }
         `;
     }
