@@ -9,7 +9,7 @@ export default () => (
             <Paragraph>
                 The one thing every book here shares. It is a class under the framework's Theme; it sets the eight
                 values a theme has, and in its define it extends the default sheet rather than replacing it, since
-                the default comprehends every mark the framework puts on an element and mine adds the library's
+                the default comprehends every mark the framework puts on an element and this one adds the library's
                 look on top of those same marks: the cover a card whose head is the byline, a label above every
                 chapter's title saying what the chapter is, ordinary chapters counted and ruled, the synopsis a ruled
                 block, the table of contents boxed and its catalogue ruled, a figure set off. Every rule reads the
@@ -23,12 +23,13 @@ export default () => (
                 its eight values as custom properties once and hands every style a reference, so a value changed on
                 the theme moves one declaration and regenerates no class beneath it. A style is compiled once per
                 class, so it must read the theme through the provider's props and never through a closure over the
-                instance; the helper is where that rule lives once.
+                instance; the helper is where that rule lives once. The file is printed whole in the chapter's
+                appendix, <Means>$[[ ./The theme's file ]]</Means>.
             </Paragraph>
         </Section>
         <Section>
             <Appendix />
-            <Heading>The theme's file</Heading>
+            <Heading>[[[ The theme's file ]]]</Heading>
             <Paragraph><Code identifier="code" /></Paragraph>
         </Section>
         <Catchword />

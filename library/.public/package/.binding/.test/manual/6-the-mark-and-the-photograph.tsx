@@ -35,7 +35,7 @@ export default () => (
             <Heading>This chapter's own file</Heading>
             <Paragraph>
                 A chapter may insert its own source as written, so the literal forms above stand in the listing below
-                exactly as I typed them, uncompiled, since the version shown is the version written.
+                exactly as they were typed, uncompiled, since the version shown is the version written.
             </Paragraph>
             <Paragraph><Code>![[ this ]]</Code></Paragraph>
         </Section>

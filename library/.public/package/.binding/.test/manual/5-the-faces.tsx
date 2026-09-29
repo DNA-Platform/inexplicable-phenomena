@@ -16,12 +16,12 @@ export default () => (
                 different places. Literary is the persona's face, a bookish one, Palatino, paragraphs indented and
                 set close, titles centred and unweighted, the poem's lines let breathe. Typewritten is the paper's, a
                 manuscript's. None of them touches the structure of a chapter; a feel is a format, and that is all a
-                feel is allowed to be.
+                feel is allowed to be. The four are printed whole in the chapter's appendix, <Means>$[[ ./The faces' file ]]</Means>.
             </Paragraph>
         </Section>
         <Section>
             <Appendix />
-            <Heading>The faces' file</Heading>
+            <Heading>[[[ The faces' file ]]]</Heading>
             <Paragraph><Code identifier="code" /></Paragraph>
         </Section>
         <Catchword />

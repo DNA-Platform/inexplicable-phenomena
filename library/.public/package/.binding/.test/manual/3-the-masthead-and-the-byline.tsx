@@ -1,4 +1,4 @@
-import { Append, Chapter, Code, Heading, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Code, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
 import { Appendix, Catchword } from './.book';
 
 export default () => (
@@ -16,12 +16,12 @@ export default () => (
             <Paragraph>
                 The file holds three classes: the running head, a label, and the byline of two labelled rows. Each is
                 a paragraph the book draws in its own write, and each reads what the book exposes of itself and
-                nothing more.
+                nothing more. The file is printed whole in the chapter's appendix, <Means>$[[ ./The masthead's file ]]</Means>.
             </Paragraph>
         </Section>
         <Section>
             <Appendix />
-            <Heading>The masthead's file</Heading>
+            <Heading>[[[ The masthead's file ]]]</Heading>
             <Paragraph><Code identifier="code" /></Paragraph>
         </Section>
         <Catchword />

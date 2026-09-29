@@ -247,9 +247,24 @@ describe('a bind of the test library', () => {
         expect(work).toMatch(/class="[^"]*\bpa-open\b[^"]*"[^>]*>(?:(?!<\/span>)[\s\S])*?id="the-work"/u);
         expect(work).not.toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
         // THE MARKS, NOT THE SHEET: the default theme's rules for the three classes stand on every page since Sprint 88.
+        // AND THE MANUAL IS PAGINATED TOO SINCE SPRINT 93, by the explorer's own paging class.
         for (const route of table.routes)
-            if (route.name !== 'Some Projects')
+            if (route.name !== 'Some Projects' && route.name !== 'The Library Reference Manual')
                 expect(page(route.name), route.name).not.toMatch(/class="[^"]*\b(?:pa-paginated|pa-page|pa-open)\b/u);
+    });
+
+    // THE EXPLORER — Sprint 93: the manual's book wears the explorer's mark, every entry of its table carries a
+    // branch, and the files the chapters append stand as leaves beneath the entries, one per file, drawn from the
+    // graph and never written into the table, which catalogues chapters and nothing else.
+    it('marked the manual explored, a branch on every entry of its table and a leaf per appended file', () => {
+        const manual = page('The Library Reference Manual');
+        expect(manual).toMatch(/class="[^"]*\bpa-explorer\b/u);
+        expect(manual.match(/class="[^"]*\bpa-branch\b/gu)).toHaveLength(8);
+        const files = found.books.find(book => book.folder === 'manual')!.resources;
+        const appended = [...files.values()].flat().filter(file => file.type === '.tsx').length;
+        expect(manual.match(/class="pd-leaf[^"]*"/gu)).toHaveLength(appended);
+        expect(manual).toMatch(/class="pd-leaf[^"]*" href="\/the-library-reference-manual\/the-theme\/#the-themes-file"/u);
+        expect(page('Some Projects')).not.toMatch(/\bpa-branch\b|\bpd-leaf\b/u);
     });
 
     // SPRINT 88 — every level marks itself and draws its element; the theme's sheet is on every page; the persona's
@@ -549,7 +564,7 @@ describe('a bind of the test library with a catalogue row that does not refer to
     let broken: Galley;
     beforeAll(() => {
         broken = pulled();
-        const table = join(broken.library, 'the-library', '.table.tsx');
+        const table = join(broken.library, 'library', '.table.tsx');
         writeFileSync(table, readFileSync(table, 'utf8').replace(" <Word><Content>$[[ the librarian's own account ]]( Libby / Synopsis )</Content></Word>", ''));
     });
     afterAll(() => { broken.remove(); });

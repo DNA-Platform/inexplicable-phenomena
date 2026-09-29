@@ -1,4 +1,4 @@
-import { Append, Chapter, Code, Heading, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Code, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
 import { Appendix, Catchword, Framed } from './.book';
 
 export default () => (
@@ -14,12 +14,13 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 The words are this file's business and not the component's. A Next draws what is written in it; the
-                two here draw the neighbour's title instead, which is what a catchword does and a Next need not.
+                two here draw the neighbour's title instead, which is what a catchword does and a Next need not. The
+                file is printed whole in the chapter's appendix, <Means>$[[ ./The catchword's file ]]</Means>.
             </Paragraph>
         </Section>
         <Section>
             <Appendix />
-            <Heading>The catchword's file</Heading>
+            <Heading>[[[ The catchword's file ]]]</Heading>
             <Paragraph><Code identifier="code"><Framed /></Code></Paragraph>
         </Section>
         <Catchword />

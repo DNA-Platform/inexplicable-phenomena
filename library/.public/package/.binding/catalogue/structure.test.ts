@@ -103,13 +103,13 @@ describe('the catalogue over it', () => {
     // 2026-09-20: "if you are parsing like that, you have broken polymorphism… The compiler just
     // cares that things are in the right file."
     it('answers a chapter by its route whether or not its title prints', () => {
-        expect(made.spots.get('the-library/.synopsis.tsx')?.kind).toBe('chapter');
+        expect(made.spots.get('library/.synopsis.tsx')?.kind).toBe('chapter');
         expect(card.where('The Library / Synopsis')).toBe('/the-library/synopsis/');
         expect(card.where('The Library / Table of Contents')).toBe('/the-library/table-of-contents/');
     });
 
     it('and an anchor a chapter allocates is a spot of its book, reached by name and addressed on its chapter\'s page', () => {
-        const anchor = made.spots.get('the-library/1-the-shelves.tsx#The First Shelf');
+        const anchor = made.spots.get('library/1-the-shelves.tsx#The First Shelf');
         expect(anchor?.kind).toBe('anchor');
         expect(made.of('The Library / The First Shelf')).toBe(anchor?.id);
         expect(card.where('The Library / The First Shelf')).toBe('/the-library/the-shelves/#the-first-shelf');

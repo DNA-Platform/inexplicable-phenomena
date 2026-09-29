@@ -8,7 +8,8 @@ export default () => (
         <Paragraph>
             The technical information that accompanies the library's reference: every tool this library is built
             with stands beside the chapter that explains it, and the library uses that very file. Kept by the
-            librarian, who says in each chapter how she uses the tool for a library, and for hers.
+            librarian; each chapter says what the tool is, how the library uses it, and prints it whole as the
+            chapter's appendix.
         </Paragraph>
         <Paragraph>
             The catalogue is the reference, and this is the manual beside it. Its book file is the door: the book
