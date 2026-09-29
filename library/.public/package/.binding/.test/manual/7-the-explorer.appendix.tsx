@@ -3,7 +3,7 @@ import { $Annotation, $Chapter, $Figure, $Paragraph, $Section, $Writing } from '
 
 export class $Appendix extends $Annotation {
     static of(chapter: $Chapter): $Section[] {
-        return chapter.text.find($Section).filter(section => [...section.classes].includes('pa-appendix'));
+        return chapter.text.find($Section).filter(section => section.is($Appendix));
     }
 
     static named(appendix: $Section): string {
@@ -17,12 +17,6 @@ export class $Appendix extends $Annotation {
 
     override erase(writing: $Writing): void {
         writing.classes.revert(this);
-    }
-
-    protected override $Bound(): void {
-        const section = this.parent;
-        if (section instanceof $Section && ![...section.classes].includes('pa-appendix')) section.classes.add(this, 'pa-appendix');
-        super.$Bound();
     }
 }
 
