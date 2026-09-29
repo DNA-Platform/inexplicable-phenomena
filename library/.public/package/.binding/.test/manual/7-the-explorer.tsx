@@ -12,7 +12,7 @@ export default () => (
                 reader has opened are thumb tabs across the top, the cover's first, each tab a chapter and nothing
                 else. The cover's tab is the manual's front, its title with the synopsis beneath it, since the one
                 is about the other. The open chapter stands in the pane, and a chapter that prints a file is
-                about it, so it opens at its spread, the file up front and the prose beside it. Each file a
+                about it, so it is always shown as a spread, the file up front and the prose beside it. Each file a
                 chapter appends is a leaf beneath it in the tree, which puts that file up front. Every part is a
                 form of writing: the tabs are a paragraph of words, a leaf is a reference, an appendix is a
                 section, and the book's own marks and the reader's decide what is shown.
@@ -83,9 +83,9 @@ export default () => (
                 table at the left, the tabs and the open page beside it, placed by the marks the framework and this
                 library already put on them; the cover, when it is open, in a row of its own above the pane, the
                 synopsis in the pane beneath it. The tab names the chapter, so a chapter's title stands unseen in the
-                pane, the cover's excepted, and an appendix's heading likewise; a chapter whose appendix is open is
-                shown as a spread, the file up front and its prose beside it, what the appendix says of its file
-                first, the pane the one thing that scrolls.
+                pane, the cover's excepted, and an appendix's heading likewise; a chapter that prints a file is
+                shown as a spread, the open appendix's file up front and the prose beside it, what the appendix
+                says of its file first, the pane the one thing that scrolls.
                 Its define marks a chapter opened when the reader arrives at it, remembering the last arrival so
                 each is marked once. Once the book is whole it puts a branch on every entry of the table.
             </Paragraph>
@@ -107,8 +107,9 @@ export default () => (
             <Heading>[[[ The tabs ]]]</Heading>
             <Paragraph>
                 A paragraph the book draws, as it draws its masthead: a word per opened chapter, linking to the
-                chapter's route, the active one the bookmark's. A tab is a chapter and nothing else; a chapter's
-                file is opened from its leaf in the tree, and the chapter's own tab stays the one that is active.
+                chapter's route, the active one the bookmark's. A tab is a chapter and nothing else; a chapter
+                opens at its first file, its other files are put up front from their leaves in the tree, and the
+                chapter's own tab stays the one that is active.
             </Paragraph>
             <Paragraph><Code identifier="tabs" numbered /></Paragraph>
         </Section>
