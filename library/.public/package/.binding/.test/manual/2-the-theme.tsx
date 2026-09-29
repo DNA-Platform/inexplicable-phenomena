@@ -7,10 +7,12 @@ export default () => (
         <Section>
             <Heading>What the theme is</Heading>
             <Paragraph>
-                The one thing every book here shares. It is a class under the framework's Theme; it sets the eight
-                values a theme has, and in its define it extends the default sheet rather than replacing it, since
-                the default comprehends every mark the framework puts on an element and this one adds the library's
-                look on top of those same marks: the cover a card whose head is the byline, a label above every
+                The one thing every book here shares, in two classes. The first, under the framework's Theme, sets
+                the values a theme has and nothing else, so that a book may take the library's values without its
+                look, as the manual does for its explorer. The second, under the first, is the library's look: in
+                its define it extends the default sheet rather than replacing it, since the default comprehends
+                every mark the framework puts on an element and this one adds the library's look on top of those
+                same marks: the cover a card whose head is the byline, a label above every
                 chapter's title saying what the chapter is, ordinary chapters counted and ruled, the synopsis a ruled
                 block, the table of contents boxed and its catalogue ruled, a figure set off. Every rule reads the
                 theme's values, so a book that overrides them keeps the look in another ink, which is

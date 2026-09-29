@@ -5,7 +5,7 @@ import { $Theme } from '@dna-platform/public';
 export const at = (property: string, fallback = '') =>
     ({ theme }: { theme: Record<string, string | undefined> }): string => theme[property] ?? fallback;
 
-export class $LibraryTheme extends $Theme {
+export class $LibraryValues extends $Theme {
     font = "Georgia, 'Times New Roman', serif";
     leading = '1.7';
     measure = '42rem';
@@ -13,7 +13,9 @@ export class $LibraryTheme extends $Theme {
     ink = '#23262a';
     paper = '#faf8f4';
     link = '#5b2f2a';
+}
 
+export class $LibraryTheme extends $LibraryValues {
     protected override $Define(): void {
         super.$Define();
         this.style = selection(this.style as ComponentType<{ className?: string }>)`
@@ -100,4 +102,5 @@ export class $LibraryTheme extends $Theme {
     }
 }
 
+export const LibraryValues = $($LibraryValues);
 export const LibraryTheme = $($LibraryTheme);

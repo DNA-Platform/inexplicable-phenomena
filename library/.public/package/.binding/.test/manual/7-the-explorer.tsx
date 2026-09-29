@@ -73,8 +73,10 @@ export default () => (
             <Paragraph>
                 A format on the book whose layer is the grid: the running head and the byline across the top, the
                 table at the left, the tabs and the open page beside it, placed by the marks the framework and this
-                library already put on them. A chapter opened at its appendix is shown as a spread, its prose on the
-                left and the file on the right, each read beside the other. Its define puts the reader's marks on
+                library already put on them. The tab names the chapter, so a chapter's title stands unseen in the
+                pane, the cover's excepted, and an appendix's heading likewise; a chapter opened at its appendix is
+                shown as a spread, the file up front and its prose beside it, the pane the one thing that scrolls.
+                Its define puts the reader's marks on
                 the book: a chapter is opened when the reader arrives at it, and an appendix likewise, and the
                 format remembers the last arrival so a tab closed stays closed. Once the book is whole it puts a
                 branch on every entry of the table.
@@ -108,8 +110,9 @@ export default () => (
             <Heading>[[[ The manual's theme ]]]</Heading>
             <Paragraph>
                 The library's theme with one value changed, the width, so the manual may take the whole page, and
-                the look of the explorer's marks laid over it: the tabs, the tree's numbers and leaves, the label
-                above a chapter's title without its number, since a counter cannot count a hidden page.
+                the look of the explorer's marks laid over it: the tabs, the tree's numbers and leaves, a file
+                printed plain on the paper in the spread with its lines wrapping, and the scrollbars thin and in the
+                theme's ink.
             </Paragraph>
             <Paragraph><Code identifier="theme" /></Paragraph>
         </Section>

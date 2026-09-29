@@ -33,19 +33,14 @@ export class $Explorer extends $Format {
             column-gap: calc(2 * ${at('space')});
             align-content: start;
         }
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-container:has(> .pd-title) { grid-column: 1 / -1; }
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section:not(.pa-appendix),
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-catchword { grid-column: 2; font-size: calc(0.9 * ${at('size')}); }
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section.pa-appendix.pa-open {
-            grid-column: 1;
-            grid-row: 2 / span 99;
-            align-self: start;
-            position: sticky;
-            top: 0;
-            max-height: calc(100vh - 8 * ${at('space')});
-            overflow: auto;
-            margin-block: 0;
+        & > .pd-book > .pd-chapter:not(.pa-cover) > .pd-container:has(> .pd-title),
+        & > .pd-book > .pd-chapter > .pd-section.pa-appendix > .pd-container:has(> .pd-heading) {
+            position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
         }
+        & > .pd-book > .pd-chapter:not(.pa-cover) { padding-block-start: ${at('space')}; }
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section:not(.pa-appendix) { grid-column: 2; font-size: calc(0.9 * ${at('size')}); margin-block-start: 0; }
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-catchword { grid-column: 1 / -1; }
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section.pa-appendix.pa-open { grid-column: 1; grid-row: 1 / span 99; margin-block: 0; }
     `;
 
     override defines(writing: $Writing): void {
