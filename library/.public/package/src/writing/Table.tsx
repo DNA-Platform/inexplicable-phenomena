@@ -7,8 +7,6 @@ import { $Composition } from './Composition';
 import { $Section } from './Section';
 import { $Chapter } from '@/libraries/Chapter';
 
-const tracks = Array.from({ length: 12 }, (_, index) => index + 1);
-
 export class $Table extends $Annotation {
     $start?: number;
     $rows?: number;
@@ -21,14 +19,16 @@ export class $Table extends $Annotation {
         .pa-row {
             display: contents;
         }
-        ${tracks.map(count => `.pa-table.pa-cols-${count} { grid-template-columns: repeat(${count}, minmax(0, 1fr)); }`).join('\n        ')}
-        ${tracks.map(track => `.pa-col-start-${track} { grid-column-start: ${track}; }`).join('\n        ')}
-        ${tracks.map(span => `.pa-col-span-${span} { grid-column-end: span ${span}; }`).join('\n        ')}
+        ${Array.from({ length: this.widest }, (_, index) => index + 1).map(count => `
+        .pa-table.pa-cols-${count} { grid-template-columns: repeat(${count}, minmax(0, 1fr)); }
+        .pa-col-start-${count} { grid-column-start: ${count}; }
+        .pa-col-span-${count} { grid-column-end: span ${count}; }`).join('')}
     `;
     get composition(): $Composition | undefined { return this.parent instanceof $Composition ? this.parent : undefined; }
     get start(): number { return this.$start ?? (this.composition instanceof $Section || this.composition instanceof $Chapter ? 1 : 0); }
     get rows(): $Composition[] { return this.composition?.parts.slice(this.start) ?? []; }
     get columns(): number { return this.$columns ?? Math.max(0, ...this.rows.map(row => row.parts.length)); }
+    protected get widest(): number { return 12; }
 
     override note(): ReactNode { return <this.style />; }
 

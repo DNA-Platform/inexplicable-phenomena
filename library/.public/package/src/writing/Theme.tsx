@@ -9,8 +9,6 @@ import { $Book } from '@/libraries/Book';
 
 export type Values = Record<'font' | 'size' | 'leading' | 'measure' | 'space' | 'ink' | 'paper' | 'link', string>;
 
-const value = (property: keyof Values) => ({ theme }: { theme: Partial<Values> }) => theme[property] ?? '';
-
 export class $Theme extends $Format {
     specification = new ThemeSpecification();
     theme = true;
@@ -23,57 +21,57 @@ export class $Theme extends $Format {
     paper = 'white';
     link = 'blue';
     style: ElementType = selection.div`
-        font-family: ${value('font')};
-        font-size: ${value('size')};
-        line-height: ${value('leading')};
-        color: ${value('ink')};
-        background: ${value('paper')};
-        max-width: ${value('measure')};
+        font-family: ${this.interpolation('font')};
+        font-size: ${this.interpolation('size')};
+        line-height: ${this.interpolation('leading')};
+        color: ${this.interpolation('ink')};
+        background: ${this.interpolation('paper')};
+        max-width: ${this.interpolation('measure')};
         margin-inline: auto;
-        padding: ${value('space')};
+        padding: ${this.interpolation('space')};
         .pd-container { box-sizing: border-box; color: inherit; }
         .pd-annotation { display: none; }
         .pa-append { white-space: pre; }
         .pd-figure { max-width: 100%; }
-        .pd-code { font-family: ui-monospace, monospace; font-size: calc(0.9 * ${value('size')}); white-space: pre; overflow-x: auto; }
+        .pd-code { font-family: ui-monospace, monospace; font-size: calc(0.9 * ${this.interpolation('size')}); white-space: pre; overflow-x: auto; }
         .pd-image { max-width: 100%; height: auto; }
         .pd-svg { max-width: 100%; }
-        .pd-book { margin-block: ${value('space')}; }
-        .pd-chapter { margin-block: calc(2 * ${value('space')}); }
-        .pd-section { margin-block: ${value('space')}; }
-        .pd-paragraph { margin-block: ${value('space')}; }
+        .pd-book { margin-block: ${this.interpolation('space')}; }
+        .pd-chapter { margin-block: calc(2 * ${this.interpolation('space')}); }
+        .pd-section { margin-block: ${this.interpolation('space')}; }
+        .pd-paragraph { margin-block: ${this.interpolation('space')}; }
         .pd-sentence { hyphens: manual; }
         .pd-word { overflow-wrap: break-word; }
         .pd-letter { font-kerning: normal; }
-        .pd-title { font-size: calc(1.5 * ${value('size')}); font-weight: bold; margin-block-end: ${value('space')}; color: inherit; }
+        .pd-title { font-size: calc(1.5 * ${this.interpolation('size')}); font-weight: bold; margin-block-end: ${this.interpolation('space')}; color: inherit; }
         .pd-container:has(> .pd-title) { text-decoration: none; }
-        .pd-heading { font-weight: bold; margin-block: ${value('space')} 0; }
+        .pd-heading { font-weight: bold; margin-block: ${this.interpolation('space')} 0; }
         .pd-line { white-space: pre-wrap; }
         .pd-space { white-space: pre; }
         .pd-break { clear: both; }
         .pa-parenthetical { opacity: 0.6; }
         .pd-previous::before { content: '\\2039\\00a0'; }
         .pd-next::after { content: '\\00a0\\203a'; }
-        .pa-reference { color: ${value('link')}; }
-        .pd-container:has(> .pa-reference) { text-decoration-color: ${value('link')}; text-underline-offset: 0.15em; }
+        .pa-reference { color: ${this.interpolation('link')}; }
+        .pd-container:has(> .pa-reference) { text-decoration-color: ${this.interpolation('link')}; text-underline-offset: 0.15em; }
         .pa-self-reference, .pd-title.pa-reference { color: inherit; }
-        .pa-referent { scroll-margin-block-start: ${value('space')}; }
-        .pa-content { color: ${value('link')}; }
-        .pa-table { column-gap: ${value('space')}; row-gap: calc(${value('space')} / 2); }
+        .pa-referent { scroll-margin-block-start: ${this.interpolation('space')}; }
+        .pa-content { color: ${this.interpolation('link')}; }
+        .pa-table { column-gap: ${this.interpolation('space')}; row-gap: calc(${this.interpolation('space')} / 2); }
         .pa-table .pd-paragraph { margin-block: 0; }
         .pa-table > .pd-container { grid-column: 1 / -1; }
         .pa-row > .pd-container { display: contents; }
-        .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${value('ink')}; }
-        .pa-col { padding-block: calc(${value('space')} / 4); }
-        .pa-cover { margin-block-end: calc(2 * ${value('space')}); }
-        .pa-cover .pd-title { font-size: calc(2 * ${value('size')}); }
+        .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${this.interpolation('ink')}; }
+        .pa-col { padding-block: calc(${this.interpolation('space')} / 4); }
+        .pa-cover { margin-block-end: calc(2 * ${this.interpolation('space')}); }
+        .pa-cover .pd-title { font-size: calc(2 * ${this.interpolation('size')}); }
         .pa-synopsis .pd-paragraph { font-style: italic; }
-        .pa-table-of-contents { margin-block: ${value('space')}; }
-        .pa-table-of-contents .pd-paragraph { margin-block: calc(${value('space')} / 4); }
+        .pa-table-of-contents { margin-block: ${this.interpolation('space')}; }
+        .pa-table-of-contents .pd-paragraph { margin-block: calc(${this.interpolation('space')} / 4); }
         .pa-biography .pd-title { font-variant: small-caps; }
         .pa-autobiography .pd-title { font-style: italic; }
         .pa-paginated { min-height: 50vh; }
-        .pa-page { margin-block: ${value('space')}; }
+        .pa-page { margin-block: ${this.interpolation('space')}; }
         .pa-open { margin-block-start: 0; }
         .pa-blank { visibility: hidden; }
         .pa-emphasis { font-style: italic; }
@@ -89,6 +87,10 @@ export class $Theme extends $Format {
         this.$Format(...chemicals);
         const Provider = $(provider);
         this._provider = $(reflection.chemical<$Provider>(<Provider theme={this} />, this));
+    }
+
+    protected interpolation(property: keyof Values): (props: { theme: Partial<Values> }) => string {
+        return ({ theme }) => theme[property] ?? '';
     }
 
     protected override provide(style: ElementType): ElementType { return style; }
