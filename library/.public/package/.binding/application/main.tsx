@@ -29,10 +29,16 @@ const bookmarkOf = (url: { pathname: string; hash: string }): string => `${url.p
 // every move — never handed as a prop, since a prop is a render, and a bookmark moved must not paint.
 // Doug, 2026-09-27: "the thing can't render without intact routing that would be nonsensical. And we
 // should have still been on our first paint."
+//
+// ITS FIRST DRAW IS THE PAGE AS PRINTED. A served page is hydrated, and hydration keeps the printed
+// markup wherever the first draw disagrees with it; a print knows the page's address and never its
+// fragment, so the book is first drawn at the address, and the fragment is a move the router makes
+// once the book listens. Found 2026-09-29 by the manual's explorer, whose spread a fragment opens:
+// loaded at a file's own address, the page kept the printed chapter and never showed the file.
 let book: $Book | undefined;
-const building = (make: () => ReactElement): $Book => {
+const building = (make: () => ReactElement, place = bookmarkOf(location)): $Book => {
     book = $(make(), Book);
-    book.$bookmark = bookmarkOf(location);
+    book.$bookmark = place;
     return book;
 };
 
@@ -49,13 +55,14 @@ const loading: Promise<{ book?: () => ReactElement; probe?: unknown }> = probing
 // keeps the served markup, listens from this moment, and replays a click it could not yet
 // answer once the boundary hydrates. The book's chunk is what the boundary waits for.
 const Opened = lazy(() => loading.then(loaded => ({
-    default: probing ? $(loaded.probe as never) as ComponentType : $(building(loaded.book!)),
+    default: probing ? $(loaded.probe as never) as ComponentType : $(building(loaded.book!, bookmarkOf({ pathname: location.pathname, hash: '' }))),
 })));
 const mount = document.getElementById('root');
 if (!mount) throw new Error('no #root element');
-// Mounted beside the book, after it: its effect runs once the book's handlers are attached,
-// and hands the page's kept clicks back to them. Draws nothing, so the server markup is the same.
-const Landed = (): null => { useEffect(() => { (window as unknown as { __replayKept?: () => void }).__replayKept?.(); }, []); return null; };
+// Mounted beside the book, after it: its effect runs once the book's handlers are attached, moves
+// the book to the fragment the print could not know, and hands the page's kept clicks back to them.
+// Draws nothing, so the server markup is the same.
+const Landed = (): null => { useEffect(() => { visit(); (window as unknown as { __replayKept?: () => void }).__replayKept?.(); }, []); return null; };
 const drawn = (Component: ElementType) => createElement(Suspense, { fallback: null }, createElement(Component), createElement(Landed));
 const served = mount.hasChildNodes();
 const drawing = served ? hydrateRoot(mount, drawn(Opened), {

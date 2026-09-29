@@ -9,9 +9,10 @@ export default () => (
             <Paragraph>
                 The explorer is the manual seen as an application for reading its code, and it is made of nothing
                 the manual did not already have. The table of contents is the tree at the left; the chapters a
-                reader has opened are thumb tabs across the top, the cover's first; the open chapter stands in the
-                pane, its prose as prose, and each file it appends is tucked away as an appendix a reader opens on
-                purpose from the tree or the tabs, printed whole. Every part is a form of writing: the tabs are a
+                reader has opened are thumb tabs across the top, the cover's first, each tab a chapter and nothing
+                else; the open chapter stands in the pane, its prose as prose, and each file it appends is a leaf
+                beneath it in the tree, which opens the chapter at its spread, the file up front and the prose
+                beside it. Every part is a form of writing: the tabs are a
                 paragraph of words, a leaf is a reference, an appendix is a section, and the book's own marks and
                 the reader's decide what is shown.
             </Paragraph>
@@ -49,11 +50,11 @@ export default () => (
             <Heading>[[[ The appendix mark ]]]</Heading>
             <Paragraph>
                 An annotation said of a section: the section prints one of the chapter's files, and the explorer
-                treats it as an appendix, a tab of its own rather than a part of the prose. Every tool chapter of
+                treats it as an appendix, shown in the chapter's spread rather than among the prose. Every tool chapter of
                 this manual wears it on the section that prints its file. Its two readings answer for a chapter's
                 appendices and for the name an appendix goes by, the file's own.
             </Paragraph>
-            <Paragraph><Code identifier="appendix" /></Paragraph>
+            <Paragraph><Code identifier="appendix" numbered /></Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -65,7 +66,7 @@ export default () => (
                 reference, an equality and never a reading of the address. It also says which appendix is open,
                 by the same comparison, as Paginated says which page is.
             </Paragraph>
-            <Paragraph><Code identifier="paging" /></Paragraph>
+            <Paragraph><Code identifier="paging" numbered /></Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -76,12 +77,10 @@ export default () => (
                 library already put on them. The tab names the chapter, so a chapter's title stands unseen in the
                 pane, the cover's excepted, and an appendix's heading likewise; a chapter opened at its appendix is
                 shown as a spread, the file up front and its prose beside it, the pane the one thing that scrolls.
-                Its define puts the reader's marks on
-                the book: a chapter is opened when the reader arrives at it, and an appendix likewise, and the
-                format remembers the last arrival so a tab closed stays closed. Once the book is whole it puts a
-                branch on every entry of the table.
+                Its define marks a chapter opened when the reader arrives at it, remembering the last arrival so
+                each is marked once. Once the book is whole it puts a branch on every entry of the table.
             </Paragraph>
-            <Paragraph><Code identifier="layout" /></Paragraph>
+            <Paragraph><Code identifier="layout" numbered /></Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -92,29 +91,29 @@ export default () => (
                 chapter's appendices beneath it as leaves, each a link to the appendix's place. The written table
                 catalogues chapters and nothing else; the leaves are the view's.
             </Paragraph>
-            <Paragraph><Code identifier="tree" /></Paragraph>
+            <Paragraph><Code identifier="tree" numbered /></Paragraph>
         </Section>
         <Section>
             <Appendix />
             <Heading>[[[ The tabs ]]]</Heading>
             <Paragraph>
                 A paragraph the book draws, as it draws its masthead: a word per opened chapter, linking to the
-                chapter's route, and beside it a word per opened appendix; the active one is the bookmark's. Each
-                tab's close is a word wearing a format whose layer is the control, as a word wearing a reference is
-                a link: it takes the reader's marks back and, when the tab was active, is a route to the neighbour.
+                chapter's route, the active one the bookmark's. A tab is a chapter and nothing else; a chapter's
+                file is opened from its leaf in the tree, and the chapter's own tab stays the one that is active.
             </Paragraph>
-            <Paragraph><Code identifier="tabs" /></Paragraph>
+            <Paragraph><Code identifier="tabs" numbered /></Paragraph>
         </Section>
         <Section>
             <Appendix />
             <Heading>[[[ The manual's theme ]]]</Heading>
             <Paragraph>
                 The library's theme with one value changed, the width, so the manual may take the whole page, and
-                the look of the explorer's marks laid over it: the tabs, the tree's numbers and leaves, a file
+                the look of the explorer's marks laid over it: the paper on the book, which fills the page, a
+                page's headings a step larger than its text, the tabs, the tree's numbers and leaves, a file
                 printed plain on the paper in the spread with its lines wrapping, and the scrollbars thin and in the
                 theme's ink.
             </Paragraph>
-            <Paragraph><Code identifier="theme" /></Paragraph>
+            <Paragraph><Code identifier="theme" numbered /></Paragraph>
         </Section>
         <Section>
             <Heading>Across four worlds</Heading>

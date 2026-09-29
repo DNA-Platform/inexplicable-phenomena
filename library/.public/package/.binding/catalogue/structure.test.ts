@@ -14,12 +14,12 @@ const made = structure(found);
 
 describe('the test library, read', () => {
     it('is six books, and holds together', () => {
-        expect(found.books.map(book => book.folder).sort()).toEqual(['libby', 'manual', 'paper', 'persona', 'projects', 'the-library']);
+        expect(found.books.map(book => book.folder).sort()).toEqual(['libby', 'library', 'manual', 'paper', 'persona', 'projects']);
         expect(wellformed(made)).toEqual([]);
     });
 
     it('names every book by its cover and every chapter within its book, each by its title form', () => {
-        expect(made.named.get('the-library')).toBe('The Library');
+        expect(made.named.get('library')).toBe('The Library');
         expect(made.named.get('paper/1-the-argument.tsx')).toBe('The Argument');
         expect(made.of('A Paper / The Evidence')).toBe('paper/2-the-evidence.tsx');
         expect(made.of('The Evidence')).toBeUndefined();
@@ -38,13 +38,13 @@ describe('the test library, read', () => {
     // may be filed under only when it is about something. Doug, 2026-09-25: "Any book can be About
     // something, but that allows other books to then be able to use it as a subject catalogue."
     it('reads a cover\'s second title form, naming its book, as what the book is about', () => {
-        expect(made.about).toEqual(new Set(['the-library', 'libby', 'persona']));
+        expect(made.about).toEqual(new Set(['library', 'libby', 'persona']));
         expect(made.titledTwice).toEqual([]);
     });
 
     it('reads a cover that gives its words as naming the book behind them', () => {
-        expect(made.authorOf.get('the-library')).toBe('libby');
-        expect(made.subjectOf.get('projects')).toBe('the-library');
+        expect(made.authorOf.get('library')).toBe('libby');
+        expect(made.subjectOf.get('projects')).toBe('library');
     });
 
     // A BOOK THAT IS ITS OWN SUBJECT IS THE ONE CATALOGUE EDGE ASSERTED FROM ONE END. It says so on
@@ -59,7 +59,7 @@ describe('the test library, read', () => {
             if (edge.from === edge.to) { halves.push(`${edge.relation}:${edge.from}`); continue; }
             expect(ends, `${edge.relation}: ${edge.from} -> ${edge.to}`).toEqual(new Set(['source', 'target']));
         }
-        expect(halves).toEqual(['subject:the-library']);
+        expect(halves).toEqual(['subject:library']);
     });
 
     it('colours as authors the one book by its own subject and the books it catalogues', () => {

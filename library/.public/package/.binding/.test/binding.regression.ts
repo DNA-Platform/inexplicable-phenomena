@@ -64,7 +64,7 @@ describe('a bind of the test library', () => {
     it('printed every file the manual holds exactly as written on disk', () => {
         const manual = found.books.find(book => book.folder === 'manual')!;
         const route = table.routes.find(one => one.name === 'The Library Reference Manual')!;
-        const decoded = (html: string): string => html.replace(/<!-- -->/gu, '').replace(/&(lt|gt|amp|quot|#x27|#39);/gu, (_, held: string) => ({ lt: '<', gt: '>', amp: '&', quot: '"', '#x27': "'", '#39': "'" })[held]!);
+        const decoded = (html: string): string => html.replace(/<[^>]*>/gu, '').replace(/&(lt|gt|amp|quot|#x27|#39);/gu, (_, held: string) => ({ lt: '<', gt: '>', amp: '&', quot: '"', '#x27': "'", '#39': "'" })[held]!);
         let printed = 0;
         for (const [chapter, files] of manual.resources)
             for (const one of files.filter(file => file.type === '.tsx')) {

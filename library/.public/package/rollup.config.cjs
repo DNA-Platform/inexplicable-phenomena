@@ -83,7 +83,7 @@ const onwarn = (warning, warn) => {
     warn(warning);
 };
 
-const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/chemistry', 'react-router-dom', 'styled-components', 'katex', 'marked'];
+const externalDeps = ['react', 'react-dom', 'react/jsx-runtime', '@dna-platform/chemistry', 'react-router-dom', 'styled-components', 'katex', 'marked', 'highlight.js'];
 
 // THE TEST LOOP DOES NOT NEED TYPES OR CJS. Six separate .d.ts rollups each run a full type
 // program, and the suite imports none of them — vitest.config.ts aliases exactly dist/lib.js and

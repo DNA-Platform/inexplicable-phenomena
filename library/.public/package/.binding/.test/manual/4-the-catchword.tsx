@@ -21,7 +21,7 @@ export default () => (
         <Section>
             <Appendix />
             <Heading>[[[ The catchword's file ]]]</Heading>
-            <Paragraph><Code identifier="code" /></Paragraph>
+            <Paragraph><Code identifier="code" numbered /></Paragraph>
         </Section>
         <Catchword />
         <Append identifier="code" type=".tsx">![[ code.tsx ]]</Append>

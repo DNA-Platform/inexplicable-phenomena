@@ -1,7 +1,6 @@
 import { $, inert, selection } from '@dna-platform/chemistry';
-import { $Book, $Chapter, $Format, $Paragraph, $Section, $Writing } from '@dna-platform/public';
+import { $Book, $Format, $Paragraph, $Section, $Writing } from '@dna-platform/public';
 import { at } from './2-the-theme.code.tsx';
-import { $Appendix } from './7-the-explorer.appendix.tsx';
 import { $Tabbed } from './7-the-explorer.paging.tsx';
 import { $Branch, Branch as branch } from './7-the-explorer.tree.tsx';
 
@@ -54,9 +53,6 @@ export class $Explorer extends $Format {
         this.visited = place;
         const open = writing.annotations.expressed($Tabbed)?.open;
         if (open !== undefined && ![...open.classes].includes('pa-opened')) open.classes.add(this, 'pa-opened');
-        for (const chapter of writing.text.find($Chapter))
-            for (const appendix of $Appendix.of(chapter))
-                if (appendix.mention?.identifier === place && ![...appendix.classes].includes('pa-opened')) appendix.classes.add(this, 'pa-opened');
     }
 
     override erase(writing: $Writing): void {

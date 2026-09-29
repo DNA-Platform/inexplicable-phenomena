@@ -11,7 +11,7 @@ import { missing, rawModule, references, transforming } from './transform';
 // 2026-09-24: "The compiler ALWAYS should give: `[text](identifier)`."
 const { found, card } = read();
 const chapter = join(fixture, 'paper', '1-the-argument.tsx');
-const cover = join(fixture, 'the-library', '.cover.tsx');
+const cover = join(fixture, 'library', '.cover.tsx');
 
 // A LITERAL INSERTS A FILE WHERE IT STANDS, as one string expression — the chapter's own source as
 // written, the text of a file beside it, or a picture's address. Sprint 92, on Doug's rulings.
@@ -32,7 +32,7 @@ describe('a literal, inserted', () => {
         const file = readFileSync(join(fixture, 'manual', '1-the-book.code.tsx'), 'utf8');
         const made = over('1-the-book.tsx');
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain(`<Code>{${JSON.stringify(file)}}</Code>`);
+        expect(made.text).toContain(`<Append identifier="code" type=".tsx">{${JSON.stringify(file)}}</Append>`);
         expect(made.text).not.toContain('![[');
     });
 
@@ -44,7 +44,8 @@ describe('a literal, inserted', () => {
     });
 
     it('leaves a literal beside an annotation in one figure, which is then ordinary TSX', () => {
-        const made = over('4-the-catchword.tsx');
+        const made = transforming('export default () => (<Code>![[ code.tsx ]]<Framed /></Code>);', at('4-the-catchword.tsx'), card, manual);
+        expect(made.missing).toEqual([]);
         expect(made.text).toMatch(/<Code>\{"[^\n]*"\}<Framed \/><\/Code>/u);
     });
 
@@ -120,7 +121,7 @@ describe('a title form', () => {
     // go to the book it is a synopsis of! Most titles are self-links." A reference to the synopsis is
     // given the chapter's own page, where the table of contents reaches it.
     it('in the synopsis names that chapter, and compiles to its book\'s url, while a reference to it compiles to its page', () => {
-        const synopsis = join(fixture, 'the-library', '.synopsis.tsx');
+        const synopsis = join(fixture, 'library', '.synopsis.tsx');
         const made = transforming(readFileSync(synopsis, 'utf8'), synopsis, card);
         expect(made.missing).toEqual([]);
         expect(made.text).toContain('<Title><Parenthetical />[Synopsis](/the-library/)</Title>');
@@ -183,7 +184,7 @@ describe('a resource shared by every page', () => {
 // chapter. The id the element wears is its name's, made by the same slug; the compiler hands it no
 // id since 2026-09-26 — Doug: "The url should be completely arbitrary."
 describe('a mention that allocates', () => {
-    const shelves = join(fixture, 'the-library', '1-the-shelves.tsx');
+    const shelves = join(fixture, 'library', '1-the-shelves.tsx');
     const made = transforming(readFileSync(shelves, 'utf8'), shelves, card);
 
     it('keeps its words and gives them the url of its own place, both halves and no component', () => {
