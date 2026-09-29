@@ -227,6 +227,56 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(missing).toEqual([]);
     });
 
+    // THE ONE LAW — Sprint 94: no property on one element is written by two authors. The theme's sheet writes skin
+    // by mark in its layer; the Format that is an element writes that element's layout unlayered. For every mark
+    // both address, the properties they write must not meet.
+    it('writes no property for one mark from both its sheet and a Format\'s own component: one author per property', () => {
+        const { css } = served(shelf(<Theme />));
+        const written = new Map<string, Map<string, Set<'sheet' | 'format'>>>();
+        const layered = css.match(/@layer pd\.theme\{([\s\S]*?)\}\s*\/\*!sc\*\//u)?.[1] ?? '';
+        const unlayered = css.replace(/@layer pd\.[a-z]+\{[\s\S]*?\}\s*\/\*!sc\*\//gu, '');
+        const record = (block: string, author: 'sheet' | 'format'): void => {
+            for (const rule of block.matchAll(/([^{}]+)\{([^{}]*)\}/gu)) {
+                const mark = rule[1].match(/\.(p[ad]-[a-z][a-z-]*[a-z])\b(?![^{]*\.p[ad]-)/u)?.[1];
+                if (mark === undefined) continue;
+                for (const property of rule[2].split(';').map(declaration => declaration.split(':')[0].trim()).filter(name => name !== '')) {
+                    const authors = written.get(mark) ?? new Map<string, Set<'sheet' | 'format'>>();
+                    const by = authors.get(property) ?? new Set<'sheet' | 'format'>();
+                    by.add(author);
+                    authors.set(property, by);
+                    written.set(mark, authors);
+                }
+            }
+        };
+        record(layered, 'sheet');
+        record(unlayered, 'format');
+        const twice = [...written].flatMap(([mark, authors]) => [...authors].filter(([, by]) => by.size > 1).map(([property]) => `${mark} ${property}`));
+        expect(written.size).toBeGreaterThan(10);
+        expect(twice).toEqual([]);
+    });
+
+    // A FORMAT'S TEMPLATE CARRIES NO THEME LITERAL — a colour or a length that is not a variable or a structural
+    // constant is the theme's to give; the theme's own sheet is the one template allowed its constants.
+    it('no Format in src but the Theme writes a colour or a length literal in its styled template', () => {
+        const sources: { file: string; text: string }[] = [];
+        const walk = (folder: string): void => {
+            for (const entry of readdirSync(folder, { withFileTypes: true })) {
+                const at = join(folder, entry.name);
+                if (entry.isDirectory()) walk(at);
+                else if ((at.endsWith('.tsx') || at.endsWith('.ts')) && !at.endsWith('Theme.tsx')) sources.push({ file: entry.name, text: readFileSync(at, 'utf8') });
+            }
+        };
+        walk(join(process.cwd(), 'src'));
+        const literals: string[] = [];
+        for (const { file, text } of sources) {
+            if (!/extends \$Format\b/u.test(text)) continue;
+            for (const template of text.matchAll(/selection(?:\.[a-z]+|\([^)]*\))(?:<[^`]*>)?`([^`]*)`/gu))
+                for (const found of template[1].matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(|\b(?:red|blue|black|white|gr[ae]y|silver|navy|ivory|teal|green)\b|\b\d+(?:\.\d+)?(?:px|rem|em|vh|vw)\b/gu))
+                    literals.push(`${file}: ${found[0]}`);
+        }
+        expect(literals).toEqual([]);
+    });
+
     it('a subclass overriding its sheet and a property is still a theme where one is asked for, and draws its own sheet', () => {
         const book = shelf(<Wide />);
         expect(book.is($Theme)).toBe(true);
