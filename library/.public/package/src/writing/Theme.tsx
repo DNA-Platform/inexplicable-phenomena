@@ -49,7 +49,6 @@ export class $Theme extends $Format {
         .pd-line { white-space: pre-wrap; }
         .pd-space { white-space: pre; }
         .pd-break { clear: both; }
-        .pa-parenthetical { opacity: 0.6; }
         .pd-previous::before { content: '\\2039\\00a0'; }
         .pd-next::after { content: '\\00a0\\203a'; }
         .pa-reference { color: ${this.provided('link')}; }
@@ -71,7 +70,6 @@ export class $Theme extends $Format {
         .pa-paginated { min-height: 50vh; }
         .pa-page { margin-block: ${this.provided('space')}; }
         .pa-open { margin-block-start: 0; }
-        .pa-blank { visibility: hidden; }
         .pa-emphasis { font-style: italic; }
         .pa-bold { font-weight: bold; }
         .pa-underline { text-decoration: underline; }

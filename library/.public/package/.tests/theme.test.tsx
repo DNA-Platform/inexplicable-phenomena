@@ -142,7 +142,7 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(container.querySelector('.pd-word')!.parentElement!.className).not.toBe(before);
     });
 
-    it('comprehends every class the source puts on an element: the classes in src, less the numbered families, are all in its sheet', () => {
+    it('comprehends every class the source puts on an element: the classes in src, less the numbered families and those an annotation\'s own note rules, are all in its sheet', () => {
         const sources: string[] = [];
         const walk = (folder: string): void => {
             for (const entry of readdirSync(folder, { withFileTypes: true })) {
@@ -156,9 +156,14 @@ describe('a theme is a format said of a book that provides eight live properties
         for (const source of sources)
             for (const found of source.matchAll(/\bp[ad]-[a-z][a-z-]*[a-z]\b(?!\$\{)/g))
                 if (!found[0].endsWith('-')) marks.add(found[0]);
+        const noted = new Set<string>();
+        for (const source of sources)
+            for (const note of source.matchAll(/createGlobalStyle`([^`]*)`/g))
+                for (const found of note[1].matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g))
+                    noted.add(found[1]);
         const { css } = served(shelf(<Theme />));
         const addressed = new Set([...css.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g)].map(found => found[1]));
-        const missing = [...marks].filter(mark => !addressed.has(mark) && !/-(start|span|cols)$/.test(mark)).sort();
+        const missing = [...marks].filter(mark => !addressed.has(mark) && !noted.has(mark) && !/-(start|span|cols)$/.test(mark)).sort();
         expect(marks.size).toBeGreaterThan(20);
         expect(missing).toEqual([]);
     });
