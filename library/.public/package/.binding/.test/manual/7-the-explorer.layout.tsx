@@ -26,8 +26,26 @@ export class $Explorer extends $Format {
         & > .pd-book > .pd-tabs { grid-area: tabs; margin-block: 0; }
         & > .pd-book > header.pd-container, & > .pd-book > .pd-chapter { grid-area: page; overflow: auto; min-height: 0; margin-block: 0; }
         & > .pd-book > .pd-chapter:not(:has(> .pa-appendix.pa-open)) { max-width: ${at('measure')}; }
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section:not(.pa-open) { display: none; }
-        & > .pd-book > .pd-chapter:not(:has(> .pa-appendix.pa-open)) > .pd-section.pa-appendix { display: none; }
+        & > .pd-book > .pd-chapter > .pd-section.pa-appendix:not(.pa-open) { display: none; }
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+            column-gap: calc(2 * ${at('space')});
+            align-content: start;
+        }
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-container:has(> .pd-title) { grid-column: 1 / -1; }
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section:not(.pa-appendix),
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-catchword { grid-column: 2; font-size: calc(0.9 * ${at('size')}); }
+        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section.pa-appendix.pa-open {
+            grid-column: 1;
+            grid-row: 2 / span 99;
+            align-self: start;
+            position: sticky;
+            top: 0;
+            max-height: calc(100vh - 8 * ${at('space')});
+            overflow: auto;
+            margin-block: 0;
+        }
     `;
 
     override defines(writing: $Writing): void {

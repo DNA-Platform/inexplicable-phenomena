@@ -12,7 +12,10 @@ export class $ManualTheme extends $LibraryTheme {
             .pd-tab { display: inline-block; padding: calc(${at('space')} / 4) 0; opacity: 0.65; }
             .pd-tab.pa-active { opacity: 1; border-block-end: 2px solid ${at('link')}; }
             .pd-appendix-tab, .pd-leaf { font-family: ui-monospace, monospace; font-size: calc(0.8 * ${at('size')}); }
-            .pa-close { text-decoration: none; opacity: 0.5; }
+            .pa-close { text-decoration: none; opacity: 0.5; font-size: calc(0.75 * ${at('size')}); }
+            .pa-close:hover { opacity: 1; }
+            .pd-leaf::before { content: '·'; margin-inline-end: 0.5em; opacity: 0.5; }
+            .pa-appendix .pd-heading { position: sticky; top: 0; background: ${at('paper')}; margin-block: 0; padding-block: calc(${at('space')} / 4); }
             nav.pd-container:has(> .pa-table-of-contents) { border: 0; margin-block: 0; counter-reset: entry; }
             .pa-table-of-contents .pd-catchword { display: none; }
             .pa-table-of-contents .pd-paragraph { margin-block: calc(${at('space')} / 3); }

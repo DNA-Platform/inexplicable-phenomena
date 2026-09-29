@@ -73,9 +73,11 @@ export default () => (
             <Paragraph>
                 A format on the book whose layer is the grid: the running head and the byline across the top, the
                 table at the left, the tabs and the open page beside it, placed by the marks the framework and this
-                library already put on them. Its define puts the reader's marks on the book: a chapter is opened
-                when the reader arrives at it, and an appendix likewise, and the format remembers the last arrival
-                so a tab closed stays closed. Once the book is whole it puts a branch on every entry of the table.
+                library already put on them. A chapter opened at its appendix is shown as a spread, its prose on the
+                left and the file on the right, each read beside the other. Its define puts the reader's marks on
+                the book: a chapter is opened when the reader arrives at it, and an appendix likewise, and the
+                format remembers the last arrival so a tab closed stays closed. Once the book is whole it puts a
+                branch on every entry of the table.
             </Paragraph>
             <Paragraph><Code identifier="layout" /></Paragraph>
         </Section>

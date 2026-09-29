@@ -30,11 +30,13 @@ export class $Branch extends $Format {
     override defines(writing: $Writing): void {
         super.defines(writing);
         writing.classes.add(this, 'pa-branch');
+        const book = this.$book;
         const chapter = this.chapter;
-        const open = chapter !== undefined && this.$book?.annotations.expressed($Tabbed)?.open === chapter;
+        if (book === undefined) return;
+        const open = chapter !== undefined && book.annotations.expressed($Tabbed)?.open === chapter;
         const lit = [...writing.classes].includes('pa-open');
-        if (open && !lit) writing.classes.add(this, 'pa-open');
-        if (!open && lit) { writing.classes.revert(this); writing.classes.add(this, 'pa-branch'); }
+        if (open && !lit) writing.classes.add(book, 'pa-open');
+        if (!open && lit) writing.classes.revert(book);
     }
 
     override erase(writing: $Writing): void {
