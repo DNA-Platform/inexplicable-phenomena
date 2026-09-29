@@ -49,16 +49,20 @@ export class $Molecule {
         if (this._reactive && !refresh) return;
         const chemical = this._chemical;
         const template = chemical[$template$];
+        // A MEMBER IS JUDGED BY WHERE IT STANDS: what the instance holds is a field,
+        // a value even when it is a function; only a function on the prototype is a method.
         if (template !== chemical) {
             template[$molecule$]._reactivate(false);
-            this.formBonds(this.selectProperties(chemical));
+            const own = this.selectProperties(chemical);
+            this.formBonds(own, new Set(own.keys()));
             this.inheritBonds(template[$molecule$].bonds);
         } else {
             const properties = new Map<string, PropertyDescriptor>();
             if (!this.reactive)
                 this.collectProperties().forEach((d, p) => properties.set(p, d));
-            this.selectProperties(chemical).forEach((d, p) => properties.set(p, d));
-            this.formBonds(properties);
+            const own = this.selectProperties(chemical);
+            own.forEach((d, p) => properties.set(p, d));
+            this.formBonds(properties, new Set(own.keys()));
         }
         for (const prop of universalProperties) {
             if (this._bonds.has(prop) || this._inert.has(prop)) continue;
@@ -71,7 +75,7 @@ export class $Molecule {
         this._reactive = true;
     }
 
-    private formBonds(properties: Map<string, PropertyDescriptor>): void {
+    private formBonds(properties: Map<string, PropertyDescriptor>, fields: Set<string>): void {
         const chemical = this._chemical;
         properties.forEach((descriptor, property) => {
             if (this._bonds.has(property)) return;
@@ -79,7 +83,7 @@ export class $Molecule {
             if (looks.test(property) || framework.has(property)) return;
             const reflect = new $Reflection(chemical, property);
             if (!reflect.reactive) return this._inert.add(property);
-            const bond = $Bond.create(chemical, property, descriptor);
+            const bond = $Bond.create(chemical, property, descriptor, fields.has(property));
             this._bonds.set(property, bond);
             bond.form();
         });

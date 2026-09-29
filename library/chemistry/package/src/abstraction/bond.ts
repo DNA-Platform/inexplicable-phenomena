@@ -158,7 +158,7 @@ export class $Bond<T = any, P = any> {
         // way the property participates in scope tracking.
         if (this.isProperty)
             wrap(this._chemical, this._property, this._getter, this._setter);
-        else if (!$Bond.isMethod(this._descriptor))
+        else
             activate(this._chemical, this._property, this._descriptor.value);
     }
 
@@ -180,8 +180,9 @@ export class $Bond<T = any, P = any> {
         return typeof descriptor.value === 'function' && !(descriptor.value as any).$chemical;
     }
 
-    static create(chemical: any, property: string, descriptor: PropertyDescriptor): $Bond {
-        return $Bond.isMethod(descriptor) ?
+    // A FIELD IS NEVER A REAGENT: a function it holds is its value, settable and reactive.
+    static create(chemical: any, property: string, descriptor: PropertyDescriptor, field = false): $Bond {
+        return !field && $Bond.isMethod(descriptor) ?
             new $Reagent(chemical, property, descriptor) :
             new $Bond(chemical, property, descriptor);
     }
