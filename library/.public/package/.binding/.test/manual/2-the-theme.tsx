@@ -18,9 +18,12 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 The file opens with a small helper every style in this library uses to read a value: the property
-                named on the theme the format stands inside, or a fallback where no theme stands. A style is compiled
-                once per class, so it must read the theme through the provider's props and never through a closure
-                over the instance; the helper is where that rule lives once.
+                named on the theme the format stands inside. A book always has a theme, so the fallback the helper
+                still carries is never reached; what it reads is the theme's variable, since the framework declares
+                its eight values as custom properties once and hands every style a reference, so a value changed on
+                the theme moves one declaration and regenerates no class beneath it. A style is compiled once per
+                class, so it must read the theme through the provider's props and never through a closure over the
+                instance; the helper is where that rule lives once.
             </Paragraph>
         </Section>
         <Section>
