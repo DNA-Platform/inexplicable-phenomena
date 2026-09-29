@@ -19,7 +19,7 @@ export class $Table extends $Annotation {
         .pa-row {
             display: contents;
         }
-        ${Array.from({ length: this.widest }, (_, index) => index + 1).map(count => `
+        ${Array.from({ length: this.limit }, (_, index) => index + 1).map(count => `
         .pa-table.pa-cols-${count} { grid-template-columns: repeat(${count}, minmax(0, 1fr)); }
         .pa-col-start-${count} { grid-column-start: ${count}; }
         .pa-col-span-${count} { grid-column-end: span ${count}; }`).join('')}
@@ -28,7 +28,7 @@ export class $Table extends $Annotation {
     get start(): number { return this.$start ?? (this.composition instanceof $Section || this.composition instanceof $Chapter ? 1 : 0); }
     get rows(): $Composition[] { return this.composition?.parts.slice(this.start) ?? []; }
     get columns(): number { return this.$columns ?? Math.max(0, ...this.rows.map(row => row.parts.length)); }
-    protected get widest(): number { return 12; }
+    protected get limit(): number { return 12; }
 
     override note(): ReactNode { return <this.style />; }
 
