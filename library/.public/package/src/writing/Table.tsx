@@ -15,8 +15,12 @@ export class $Table extends $Format {
     style: ElementType = selection.div<{ $columns: number }>`
         display: grid;
         grid-template-columns: repeat(${({ $columns }) => $columns}, minmax(0, 1fr));
+        column-gap: ${({ theme }) => theme.space};
+        row-gap: calc(${({ theme }) => theme.space} / 2);
         & > .pd-container { grid-column: 1 / -1; }
         & .pa-row, & .pa-row > .pd-container { display: contents; }
+        & .pa-col { padding-block: calc(${({ theme }) => theme.space} / 4); }
+        & .pd-paragraph { margin-block: 0; }
         ${({ $columns }) => Array.from({ length: $columns }, (_, index) => index + 1).map(count => `
         & .pa-col-start-${count} { grid-column-start: ${count}; }
         & .pa-col-span-${count} { grid-column-end: span ${count}; }`).join('')}

@@ -63,10 +63,7 @@ export class $Theme extends $Format {
             .pa-self-reference, .pd-title.pa-reference { color: inherit; }
             .pa-referent { scroll-margin-block-start: ${({ theme }) => theme.space}; }
             .pa-content { color: ${({ theme }) => theme.link}; }
-            .pa-table { column-gap: ${({ theme }) => theme.space}; row-gap: calc(${({ theme }) => theme.space} / 2); }
-            .pa-table .pd-paragraph { margin-block: 0; }
-            .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${({ theme }) => theme.ink}; }
-            .pa-col { padding-block: calc(${({ theme }) => theme.space} / 4); }
+            .pa-table .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${({ theme }) => theme.ink}; }
             .pa-cover { margin-block-end: calc(2 * ${({ theme }) => theme.space}); }
             .pa-cover .pd-title { font-size: calc(2 * ${({ theme }) => theme.size}); }
             .pa-synopsis .pd-paragraph { font-style: italic; }

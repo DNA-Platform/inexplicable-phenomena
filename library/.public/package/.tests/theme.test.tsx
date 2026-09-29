@@ -199,7 +199,10 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(counted.views).toBe(24);
     });
 
-    it('comprehends every class the source puts on an element: the classes in src, less the numbered families and those an annotation\'s own note rules, are all in its sheet', () => {
+    // WHERE A LOOK LIVES, since Sprint 94: a mark is ruled by the theme's sheet (skin), by the styled component of
+    // the Format that is its element (layout), or by an annotation's own note (meaning) — and by nothing else, so a
+    // mark ruled nowhere is the finding this promise makes.
+    it('comprehends every class the source puts on an element: the classes in src, less the numbered families, are each ruled by its sheet, a Format\'s own component, or an annotation\'s note', () => {
         const sources: string[] = [];
         const walk = (folder: string): void => {
             for (const entry of readdirSync(folder, { withFileTypes: true })) {
@@ -215,9 +218,8 @@ describe('a theme is a format said of a book that provides eight live properties
                 if (!found[0].endsWith('-')) marks.add(found[0]);
         const noted = new Set<string>();
         for (const source of sources)
-            for (const note of source.matchAll(/createGlobalStyle`([^`]*)`/g))
-                for (const found of note[1].matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g))
-                    noted.add(found[1]);
+            for (const found of source.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g))
+                noted.add(found[1]);
         const { css } = served(shelf(<Theme />));
         const addressed = new Set([...css.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g)].map(found => found[1]));
         const missing = [...marks].filter(mark => !addressed.has(mark) && !noted.has(mark) && !/-(start|span|cols)$/.test(mark)).sort();

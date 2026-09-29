@@ -90,11 +90,20 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(classes(section.parts[1])).toEqual(['pa-row', 'pa-row-start-1']);
     });
 
-    it('drawn, the section\'s element is the table\'s grid of its two columns, wearing pa-table, and its six cells stand inside it in their rows', async () => {
-        const page = await drawn(bound(folio()));
+    it('drawn in its book, the section\'s element is the table\'s grid of its two columns, wearing pa-table, and its six cells stand inside it in their rows', async () => {
+        const page = await drawn(built<$Book>(
+            <Book>
+                <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
+                <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{folio()}</Chapter>
+            </Book>
+        ));
         expect(page.querySelector('.pa-table')).not.toBeNull();
         expect(page.querySelector('.pa-table')?.tagName).toBe('DIV');
         expect(document.head.innerHTML).toMatch(/display:\s*grid;\s*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/u);
+        // LAYOUT IS THE FORMAT'S since Sprint 94: the grid owns its gaps and its cells' padding, read from the theme
+        // as variables; the sheet keeps the header row's weight and rule, which are skin.
+        expect(document.head.innerHTML).toMatch(/column-gap:\s*var\(--pd-space/u);
+        expect(document.head.innerHTML).toMatch(/\.pa-col\s*\{\s*padding-block:\s*calc\(var\(--pd-space/u);
         expect(page.querySelector('.pa-table')?.getAttribute('columns')).toBeNull();
         expect(page.querySelectorAll('.pa-table .pa-row').length).toBe(3);
         expect(page.querySelectorAll('.pa-table .pa-row .pa-col').length).toBe(6);
