@@ -463,8 +463,9 @@ describe('the bound test library, seen in a real browser', () => {
     it('shows the evidence\'s catchword: its Next a self-reference without an underline, its Previous a link with one', async () => {
         const evidence = await browser!.newPage();
         await evidence.goto(new URL('/a-paper/the-evidence/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
-        expect(await evidence.$eval('a:has(> .pa-self-reference)', link => getComputedStyle(link).textDecorationLine)).toBe('none');
-        expect(await evidence.$eval('a[href="/a-paper/the-argument/"]:has(> .pa-reference:not(.pa-self-reference))', link => getComputedStyle(link).textDecorationLine)).toBe('underline');
+        // THE ANCHOR WEARS THE REFERENCE'S CLASS since Sprint 95's U16, so a link is found by name.
+        expect(await evidence.$eval('a.pa-self-reference', link => getComputedStyle(link).textDecorationLine)).toBe('none');
+        expect(await evidence.$eval('a.pa-reference:not(.pa-self-reference)[href="/a-paper/the-argument/"]', link => getComputedStyle(link).textDecorationLine)).toBe('underline');
         await evidence.close();
     });
 

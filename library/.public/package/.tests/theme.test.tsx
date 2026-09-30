@@ -227,11 +227,22 @@ describe('a theme is a format said of a book that provides eight live properties
                 noted.add(found[1]);
         const { css } = served(shelf(<Theme />));
         const addressed = new Set([...css.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g)].map(found => found[1]));
-        // pd-canonical says a writing stands in its plain form — Doug, 2026-09-30: "a special one removes canonical" —
-        // and it is a word for a library's own sheet: the framework's sheet has nothing to say by it.
+        // pd-canonical says a chapter is of the canonical type of chapter — Doug, 2026-09-30: "a special one removes
+        // canonical"; "Canonical is a relationship" — and it is a word for a library's own sheet: the framework's sheet
+        // has nothing to say by it.
         const missing = [...marks].filter(mark => !addressed.has(mark) && !noted.has(mark) && !/-(start|span|cols)$/.test(mark) && mark !== 'pd-canonical').sort();
         expect(marks.size).toBeGreaterThan(20);
         expect(missing).toEqual([]);
+    });
+
+    // THE ANCHOR WEARS THE REFERENCE'S CLASS — Sprint 95, U16, on Doug's yes to "the same class, through attrs": an
+    // underline is the anchor's own, so the sheet dresses a link by the class its anchor wears and reaches no layer
+    // through the word it holds.
+    it('dresses a link by the reference\'s class alone, reaching no anchor through the word it holds', () => {
+        const { css } = served(shelf(<Theme />));
+        expect(css).toMatch(/\.pa-reference\s*\{[^}]*text-decoration-color/u);
+        expect(css).not.toContain(':has(> .pa-reference)');
+        expect(css).not.toContain(':has(> .pa-self-reference)');
     });
 
     // THE ONE LAW — Sprint 94: no property on one element is written by two authors. The theme's sheet writes skin

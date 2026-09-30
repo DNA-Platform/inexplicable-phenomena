@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, selection } from '@dna-platform/chemistry';
@@ -196,6 +198,15 @@ describe('a means is the word that reads what the compiler resolved', () => {
         expect(anchor.firstElementChild!.textContent).toContain('Alan Turing');
     });
 
+    // SPRINT 95, U16 — Doug: "Yes, the same class, through attrs." An underline is the anchor's own, so the anchor
+    // wears the reference's class as its writing does, given where the anchor is made, and a sheet says a link plainly.
+    it('drawn, its anchor wears the reference\'s class as well as the layer\'s, so a sheet reaches it by name', async () => {
+        const page = await drawn(built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>));
+        const anchor = page.firstElementChild!;
+        expect(anchor.classList.contains('pa-reference')).toBe(true);
+        expect(anchor.classList.contains('pd-container')).toBe(true);
+    });
+
     it('is a part of the sentence that holds it, written as Doug wrote it', async () => {
         const sentence = built<$Sentence>(<Sentence>You should check out this paper on <Means>[Alan Turing](/complicated-url)</Means></Sentence>);
         expect(sentence.parts.filter(part => part instanceof $Means).length).toBe(1);
@@ -246,14 +257,14 @@ describe('a reference is the address its writing means', () => {
 });
 
 describe('a reference makes its writing a link by adding a layer to its containers', () => {
-    it('alone, its anchor is the outermost layer, and the writing\'s own element inside it wears the classes and the id', async () => {
+    it('alone, its anchor is the outermost layer, wearing the layer\'s class and its own, and the writing\'s own element inside it wears the classes and the id', async () => {
         const writing = built<$Writing>(<Writing>go<Referent>there</Referent><Reference>/there/</Reference></Writing>);
         const page = await drawn(writing);
         const anchor = page.firstElementChild!;
         expect(anchor.tagName).toBe('A');
         expect(anchor.getAttribute('href')).toBe('/there/');
         expect(anchor.id).toBe('');
-        expect(anchor.className).toBe('pd-container');
+        expect([...anchor.classList].filter(name => !name.startsWith('sc-')).sort()).toEqual(['pa-reference', 'pd-container']);
         const own = anchor.firstElementChild!;
         expect(own.tagName).toBe('SPAN');
         expect(own.id).toBe('there');
@@ -309,6 +320,22 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
         expect(anchor.getAttribute('href')).toBe('/the-library/');
         expect(anchor.firstElementChild!.className).toContain('pa-reference');
         expect(anchor.firstElementChild!.className).toContain('pa-self-reference');
+    });
+
+    it('drawn, its anchor wears both classes too, the self-reference\'s added to the one its parent gives', async () => {
+        const page = await drawn(built<$Writing>(<Writing>The Library<Self>/the-library/</Self></Writing>));
+        const anchor = page.firstElementChild!;
+        expect(anchor.classList.contains('pa-reference')).toBe(true);
+        expect(anchor.classList.contains('pa-self-reference')).toBe(true);
+        expect(anchor.classList.contains('pd-container')).toBe(true);
+    });
+
+    // A GLOBAL STYLE INJECTS NOTHING UNDER HAPPY-DOM, so the invariant is read where it is written.
+    it('its note takes the underline off by the class its anchor wears, reaching no layer through what it holds', () => {
+        const source = readFileSync(join(process.cwd(), 'src/writing/Reference.tsx'), 'utf8');
+        const invariant = source.match(/@layer pd\.invariants \{([^]*?)\n {8}\}/u)?.[1] ?? '';
+        expect(invariant).toMatch(/\.pa-self-reference \{[^}]*text-decoration: none !important/u);
+        expect(invariant).not.toContain(':has(');
     });
 
     it('takes back both classes and its layer when it stops applying, with the erase it inherits', () => {

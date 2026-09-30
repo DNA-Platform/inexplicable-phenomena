@@ -57,15 +57,14 @@ export class $Theme extends $Format {
             .pd-word { overflow-wrap: break-word; }
             .pd-letter { font-kerning: normal; }
             .pd-title { font-size: calc(1.5 * ${({ theme }) => theme.size}); font-weight: bold; margin-block-end: ${({ theme }) => theme.space}; color: inherit; }
-            .pd-container:has(> .pd-title) { text-decoration: none; }
+            .pd-container:has(> .pd-title) { text-decoration: none; color: inherit; }
             .pd-heading { font-weight: bold; margin-block: ${({ theme }) => theme.space} 0; }
             .pd-line { white-space: pre-wrap; }
             .pd-space { white-space: pre; }
             .pd-break { clear: both; }
             .pd-previous::before { content: '\\2039\\00a0'; }
             .pd-next::after { content: '\\00a0\\203a'; }
-            .pa-reference { color: ${({ theme }) => theme.link}; }
-            .pd-container:has(> .pa-reference) { text-decoration-color: ${({ theme }) => theme.link}; text-underline-offset: 0.15em; }
+            .pa-reference { color: ${({ theme }) => theme.link}; text-decoration-color: ${({ theme }) => theme.link}; text-underline-offset: 0.15em; }
             .pa-self-reference, .pd-title.pa-reference { color: inherit; }
             .pa-referent { scroll-margin-block-start: ${({ theme }) => theme.space}; }
             .pa-content { color: ${({ theme }) => theme.link}; }

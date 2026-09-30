@@ -1,18 +1,20 @@
-import { ElementType, ReactNode } from 'react';
+import { ComponentType, ElementType, ReactNode } from 'react';
 import { createGlobalStyle } from 'styled-components';
-import { $, $check, $Chemical } from '@dna-platform/chemistry';
+import { $, $check, $Chemical, selection } from '@dna-platform/chemistry';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
 import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
 
 export class $Reference extends $Annotation {
     specification = new ReferenceSpecification();
+    anchor: ElementType = selection.a.attrs({ className: 'pa-reference' })``;
     protected _anchor!: ElementType;
     get identifier(): string { return html.copy(this.text).trim(); }
 
     $Reference(...chemicals: $Chemical[]) {
         this.$Annotation(...chemicals);
-        this._anchor = (props: { children?: ReactNode }) => <a href={this.identifier} {...props} />;
+        const Anchor = this.anchor;
+        this._anchor = (props: { children?: ReactNode }) => <Anchor href={this.identifier} {...props} />;
     }
 
     override defines(writing: $Writing): void {
@@ -27,10 +29,10 @@ export class $Reference extends $Annotation {
 }
 
 export class $SelfReference extends $Reference {
+    override anchor: ElementType = selection(this.anchor as ComponentType<{ className?: string }>).attrs({ className: 'pa-self-reference' })``;
     style = createGlobalStyle`
         @layer pd.invariants {
-            .pd-container:has(> .pa-self-reference),
-            .pd-container:has(> .pd-container > .pa-self-reference) {
+            .pa-self-reference {
                 text-decoration: none !important;
             }
         }
