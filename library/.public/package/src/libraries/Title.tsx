@@ -6,7 +6,7 @@ import { identifier } from '@/utilities/Identifier';
 import { specify } from '@/utilities/Specification';
 import { CompositionSpecification, Block as block } from '@/writing/Composition';
 import { $Sentence } from '@/writing/Sentence';
-import { $Reference, Reference as reference } from '@/writing/Reference';
+import { $Reference, Self as self } from '@/writing/Reference';
 import { Referent as referent } from '@/writing/Referent';
 import { $Chapter } from './Chapter';
 
@@ -24,10 +24,10 @@ export class $Title extends $Sentence {
         );
         const link = binder.reference(html.copy(this.text));
         if (link === undefined) return;
-        const Reference = $(reference);
+        const Self = $(self);
         const Referent = $(referent);
         this.annotations.add(this,
-            <Reference>{link.identifier}</Reference>,
+            <Self>{link.identifier}</Self>,
             <Referent>{identifier.slug(link.name)}</Referent>
         );
     }

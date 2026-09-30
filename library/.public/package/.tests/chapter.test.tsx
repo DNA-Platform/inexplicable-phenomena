@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Heading, Heading, $Section, Section, $Paragraph, Paragraph, Permissive, Closed, $Theme } from '@dna-platform/public';
-import { $Book, Book, Cover, Synopsis, TableOfContents, $Chapter, Chapter, $Title, Title, ChapterSpecification, TitleSpecification } from '@dna-platform/public';
+import { $Book, Book, Cover, Synopsis, TableOfContents, $Chapter, Chapter, $Title, Title, ChapterSpecification, TitleSpecification, $SelfReference } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -127,6 +127,17 @@ describe('a title is a sentence that names its chapter, holding the link the com
         expect(own.textContent).toContain('The Argument');
         expect(own.closest('a')?.getAttribute('href')).toBe('/a-paper/the-argument/');
         expect(page.textContent).not.toContain('](');
+    });
+
+    // A TITLE IS A SELF-REFERENCE, as a heading is, since it links to its own chapter — Sprint 95, U16, on Doug's yes:
+    // "a title is a self-reference." So it stands a Self, and the invariant every self-reference has, no underline
+    // and the ink, is the title's too, and the Theme carries no rule just for titles.
+    it('is a self-reference, standing a Self, so its element and its anchor wear both classes and the Theme needs no rule for it', async () => {
+        const title = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>).title!;
+        expect(title.means).toBeInstanceOf($SelfReference);
+        expect([...title.classes]).toContain('pa-self-reference');
+        const page = await drawn(title);
+        expect(page.querySelector('a.pa-self-reference > #the-argument')).not.toBeNull();
     });
 
     // Doug, 2026-09-26: "Title should use the name to create the fragment with the Identifier utility. The url
