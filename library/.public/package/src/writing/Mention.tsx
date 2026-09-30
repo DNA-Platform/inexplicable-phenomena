@@ -28,7 +28,7 @@ export class $Mention extends $Word {
 export class MentionSpecification extends CompositionSpecification {
     @specify('a mention says what it mentions')
     $saysWhatItMentions(mention: $Mention): void {
-        $check(mention.annotations.contains($Referent),
+        $check(mention.is($Referent),
             'a mention says its words and an identifier, and this one says no identifier');
     }
 }

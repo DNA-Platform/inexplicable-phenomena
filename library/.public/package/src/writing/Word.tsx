@@ -3,6 +3,7 @@ import { $Composition, Level as level, Permissive as permissive, Open as open, I
 
 export class $Word extends $Composition {
     protected override $Define(): void {
+        super.$Define();
         this.classes.add(this, 'pd-word');
         const Level = $(level);
         const Permissive = $(permissive);

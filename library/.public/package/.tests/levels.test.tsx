@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Letter, Letter, $Word, Word, $Sentence, Sentence, $Paragraph, Paragraph, $Section, Section, Heading, Permissive, Open, Strict, Closed } from '@dna-platform/public';
@@ -89,5 +91,24 @@ describe('Word, Sentence and Paragraph are the intermixed levels, 2, 3 and 4, pe
         expect(strict.specify()).toContain('Paragraph: a strict composition holds parts at its level or one below, and this one holds another');
         expect(built<$Paragraph>(<Paragraph><Sentence /><Strict /></Paragraph>).specify()).toEqual([]);
         expect(built<$Word>(<Word>prose <Closed /></Word>).specify()).toEqual(['Word: a closed composition holds only writing, and this one holds something else']);
+    });
+
+    // Doug, 2026-09-30, on four levels whose $Define stood their own annotations without calling their parent's:
+    // "super.$Define being skipped might be a source of bugs." So every override of $Define in src opens by calling
+    // its parent's, and this promise reads the source to say so — a default a base stands is a default every class
+    // beneath it stands.
+    it('every $Define override in src calls its parent\'s first', () => {
+        const skipping: string[] = [];
+        const walk = (folder: string): void => {
+            for (const entry of readdirSync(folder, { withFileTypes: true })) {
+                const at = join(folder, entry.name);
+                if (entry.isDirectory()) walk(at);
+                else if (at.endsWith('.tsx'))
+                    for (const found of readFileSync(at, 'utf8').matchAll(/override \$Define\(\): void \{\s*\n\s*([^\n]*)/g))
+                        if (!found[1].startsWith('super.$Define();')) skipping.push(`${entry.name}: ${found[1].trim()}`);
+            }
+        };
+        walk(join(process.cwd(), 'src'));
+        expect(skipping).toEqual([]);
     });
 });

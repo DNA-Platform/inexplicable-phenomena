@@ -28,7 +28,7 @@ export class $Means extends $Word {
 export class MeansSpecification extends CompositionSpecification {
     @specify('a means says what it means')
     $saysWhatItMeans(means: $Means): void {
-        $check(means.annotations.contains($Reference),
+        $check(means.is($Reference),
             'a means says its words and a url, and this one says no url');
     }
 }

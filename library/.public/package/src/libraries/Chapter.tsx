@@ -23,6 +23,7 @@ export class $Chapter extends $Composition {
     }
 
     protected override $Define(): void {
+        super.$Define();
         this.classes.add(this, 'pd-chapter');
         const Level = $(level);
         const Permissive = $(permissive);

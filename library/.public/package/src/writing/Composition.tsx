@@ -43,6 +43,8 @@ export class $Permissive extends $Annotation {
 }
 
 export class $Open extends $Annotation {
+    specification = new OpenSpecification();
+
     override defines(writing: $Writing): void {
         for (const annotation of writing.annotations.after(this))
             if (annotation instanceof $Closed)
@@ -77,7 +79,9 @@ export class $Block extends $Annotation {
         for (const annotation of writing.annotations.after(this))
             if (annotation instanceof $Inline)
                 writing.annotations.express(annotation, false);
-        writing.containers.replace(this, writing.containers.at(0)!, 'div');
+        const element = writing.containers.at(0);
+        if (element === undefined) return;
+        writing.containers.replace(this, element, 'div');
     }
 
     override erase(writing: $Writing): void {
@@ -120,9 +124,17 @@ export class PermissiveSpecification extends AnnotationSpecification {
     }
 }
 
+export class OpenSpecification extends AnnotationSpecification {
+    @specify('open is said of a composition')
+    $saidOfAComposition(writing: $Writing): void {
+        $check(writing instanceof $Composition, 'open is said of a composition, and this is not one');
+    }
+}
+
 export class ClosedSpecification extends AnnotationSpecification {
     @specify('a closed composition holds only writing')
     $holdsOnlyWriting(writing: $Writing): void {
+        $check(writing instanceof $Composition, 'closed is said of a composition, and this is not one');
         $check([...writing.text]
             .every(chemical => chemical instanceof $Writing),
             'a closed composition holds only writing, and this one holds something else');

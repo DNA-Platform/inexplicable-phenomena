@@ -51,6 +51,7 @@ export class $Book extends $Composition {
     }
 
     protected override $Define(): void {
+        super.$Define();
         this.classes.add(this, 'pd-book');
         const Level = $(level);
         const Strict = $(strict);

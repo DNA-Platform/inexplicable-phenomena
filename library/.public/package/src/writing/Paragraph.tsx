@@ -3,6 +3,7 @@ import { $Composition, Level as level, Permissive as permissive, Open as open, B
 
 export class $Paragraph extends $Composition {
     protected override $Define(): void {
+        super.$Define();
         this.classes.add(this, 'pd-paragraph');
         const Level = $(level);
         const Permissive = $(permissive);

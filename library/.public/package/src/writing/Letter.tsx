@@ -6,6 +6,7 @@ export class $Letter extends $Composition {
     specification = new LetterSpecification();
 
     protected override $Define(): void {
+        super.$Define();
         this.classes.add(this, 'pd-letter');
         const Level = $(level);
         const Open = $(open);

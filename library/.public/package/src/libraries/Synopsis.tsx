@@ -13,8 +13,8 @@ export class $Synopsis extends $Format {
     protected _synopsis?: $Chapter;
     get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
-    get means(): $Reference | undefined { 
-        return this.annotations.expressed($Reference) ?? this._synopsis?.mention ?? this.chapter?.mention; 
+    get means(): $Reference | undefined {
+        return this.annotations.expressed($Reference) ?? this._synopsis?.mention ?? this.chapter?.mention;
     }
 
     $Synopsis(...chemicals: $Chemical[]) {
@@ -47,7 +47,6 @@ export class $Synopsis extends $Format {
             <Reference>{link.identifier}</Reference>
         );
     }
-
 }
 
 export class SynopsisSpecification extends AnnotationSpecification {

@@ -25,9 +25,9 @@ export class $Heading extends $Sentence {
         this.annotations.add(this,
             <Block />
         );
-        const link = binder.reference(html.copy(this.text));
-        const name = link?.name ?? html.copy(this.text).trim();
+        const name = this.name;
         if (name === '') return;
+        const link = binder.reference(html.copy(this.text));
         const Referent = $(referent);
         const Self = $(self);
         this.annotations.add(this,

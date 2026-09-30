@@ -177,4 +177,10 @@ describe('the specification is a property each class reassigns, and specify neve
         expect(built<$Fourth>(<Fourth>prose</Fourth>).specify()).toEqual([]);
         expect(built<$Fifth>(<Fifth is={Open}>prose</Fifth>).specify()).toEqual([]);
     });
+
+    it('open and closed are said of a composition, as their pair and inline and block are, and refuse a plain writing by name', () => {
+        expect(built<$Writing>(<Writing>prose<Open /></Writing>).specify()).toContain('Writing: open is said of a composition, and this is not one');
+        expect(built<$Writing>(<Writing>prose<Closed /></Writing>).specify()).toContain('Writing: closed is said of a composition, and this is not one');
+        expect(built<$Fourth>(<Fourth><Closed /></Fourth>).specify()).toEqual([]);
+    });
 });
