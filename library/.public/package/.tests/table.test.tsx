@@ -43,7 +43,10 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         const section = bound(folio());
         expect(section.specify()).toEqual([]);
         expect(classes(section)).toEqual(['pa-table']);
-        expect(section.is(Block)).toBe(false);
+        // THE SECTION KEEPS ITS OWN ELEMENT since Sprint 95's U4 — Doug: "Table should not be replacing the
+        // writing's element" — so its Block stands, and the grid is the Theme's rule by the mark.
+        expect(section.is(Block)).toBe(true);
+        expect([...section.containers]).toHaveLength(1);
         const [heading, ...rows] = section.parts;
         expect(classes(heading).filter(name => name.startsWith('pa-row') || name.startsWith('pa-col'))).toEqual([]);
         expect(rows.map(row => classes(row))).toEqual([['pa-row', 'pa-row-start-1'], ['pa-row', 'pa-row-start-2'], ['pa-row', 'pa-row-start-3']]);
@@ -90,22 +93,48 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(classes(section.parts[1])).toEqual(['pa-row', 'pa-row-start-1']);
     });
 
-    it('drawn in its book, the section\'s element is the table\'s grid of its two columns, wearing pa-table, and its six cells stand inside it in their rows', async () => {
+    // THE GRID IS THE THEME'S RULE BY THE MARK since Sprint 95's U4, and no rule is made per table — Doug: "Table
+    // should not be replacing the writing's element… Why wasn't Table able to operate as an annotation with classes
+    // as designed?" The section's own element wears pa-table and is the grid; its columns are implicit, each cell
+    // placed by its start class on an automatic grid; the sheet places twelve columns and spans, a wider table
+    // being a library's to extend.
+    it('drawn in its book, the section\'s own element wears pa-table and is the grid by the Theme\'s sheet, its six cells inside it in their rows, and no rule is made for this table', async () => {
         const page = await drawn(built<$Book>(
             <Book>
                 <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
                 <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{folio()}</Chapter>
             </Book>
         ));
-        expect(page.querySelector('.pa-table')).not.toBeNull();
-        expect(page.querySelector('.pa-table')?.tagName).toBe('DIV');
-        expect(document.head.innerHTML).toMatch(/display:\s*grid;\s*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/u);
-        // LAYOUT IS THE FORMAT'S since Sprint 94: the grid owns its gaps and its cells' padding, read from the theme
-        // as variables; the sheet keeps the header row's weight and rule, which are skin.
-        expect(document.head.innerHTML).toMatch(/column-gap:\s*var\(--pd-space/u);
-        expect(document.head.innerHTML).toMatch(/\.pa-col\s*\{\s*padding-block:\s*calc\(var\(--pd-space/u);
-        expect(page.querySelector('.pa-table')?.getAttribute('columns')).toBeNull();
+        const table = page.querySelector('.pa-table')!;
+        expect(table).not.toBeNull();
+        expect(table.tagName).toBe('DIV');
+        expect(table.classList.contains('pd-section')).toBe(true);
+        expect(table.parentElement?.classList.contains('pd-container')).toBe(false);
+        const sheet = document.head.innerHTML;
+        expect(sheet).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
+        expect(sheet).not.toMatch(/grid-template-columns:\s*repeat\(/u);
+        expect(sheet).toMatch(/column-gap:\s*var\(--pd-space/u);
+        expect(sheet).toMatch(/\.pa-col\s*\{\s*padding-block:\s*calc\(var\(--pd-space/u);
+        expect(sheet).toMatch(/\.pa-col-start-12\s*\{\s*grid-column-start:\s*12/u);
+        expect(sheet).toMatch(/\.pa-col-span-12\s*\{\s*grid-column-end:\s*span 12/u);
+        expect(sheet).not.toMatch(/\.pa-col-start-13\b/u);
+        expect(table.getAttribute('columns')).toBeNull();
         expect(page.querySelectorAll('.pa-table .pa-row').length).toBe(3);
         expect(page.querySelectorAll('.pa-table .pa-row .pa-col').length).toBe(6);
+    });
+
+    // A LINKED CELL IS A CELL: the anchor a Content or a Means draws around it is no box in the grid, so the cell
+    // is placed by its own marks; and a heading in a table, or the link around a mention heading, spans the width.
+    it('places a linked cell by its own marks, its anchor no box in the grid, and a heading across the width', async () => {
+        await drawn(built<$Book>(
+            <Book>
+                <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
+                <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{folio()}</Chapter>
+            </Book>
+        ));
+        const sheet = document.head.innerHTML;
+        expect(sheet).toMatch(/\.pa-row\s*>\s*\.pa-reference[^{]*\{\s*display:\s*contents/u);
+        expect(sheet).toMatch(/\.pa-table\s*>\s*\.pd-heading[^{]*\{\s*grid-column:\s*1\s*\/\s*-1/u);
+        expect(sheet).toMatch(/\.pa-table\s*>\s*\.pa-self-reference[^{]*\{\s*grid-column:\s*1\s*\/\s*-1/u);
     });
 });

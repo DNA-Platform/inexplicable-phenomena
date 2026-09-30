@@ -157,10 +157,13 @@ describe('a bind of the test library', () => {
         // A HEADER ROW AND FOUR BOOKS since Sprint 89, the manual among them, the header bold by the theme.
         expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(5);
         expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(10);
-        // THE TABLE IS A FORMAT since Sprint 92's close: the section's element is its grid, two columns wide,
-        // the rules scoped inside it — Doug: "we want format annotations to be standardized."
-        expect(library).toMatch(/display:\s*grid;\s*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/u);
+        // THE TABLE IS AN ANNOTATION since Sprint 95's U4 — Doug: "Table should not be replacing the writing's
+        // element" — the section's own element wears pa-table, the Theme's sheet is its grid by that mark, its
+        // columns implicit from the cells' start classes, and no rule is made per table.
+        expect(library).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
+        expect(library).not.toMatch(/grid-template-columns:\s*repeat\(/u);
         expect(library).not.toMatch(/pa-cols-/u);
+        expect(library).toMatch(/<div class="(?=[^"]*\bpd-section\b)(?=[^"]*\bpa-table\b)[^"]*"/u);
     });
 
     // ONE TABLE IS DRAWN, NOT WRITTEN — Some Projects', its entries what its chapters mention.
