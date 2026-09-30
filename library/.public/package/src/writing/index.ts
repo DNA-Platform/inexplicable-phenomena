@@ -22,4 +22,5 @@ export * from './Table';
 export * from './List';
 export * from './Math';
 export * from './Equation';
+export * from './Date';
 export * from './Append';

@@ -1,4 +1,4 @@
-import { Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Chapter, Date, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
 import { Catchword } from '../manual/.book';
 
 export default () => (
@@ -7,7 +7,8 @@ export default () => (
         <Section>
             <Heading>A librarian</Heading>
             <Paragraph>
-                I keep this library. I began it with one shelf, <Means>$[[ The Library / The Shelves ]]</Means>, and said
+                I keep this library. I began it on <Date>[the last day of September](2026-09-30)</Date> with one
+                shelf, <Means>$[[ The Library / The Shelves ]]</Means>, and said
                 what it is for in <Means>$[[ The Library / Synopsis ]]</Means>, a synopsis whose title is parenthetical, so a
                 reference lands on an id the page wears and does not show. The same day I gave a persona a voice, and
                 the first thing it wrote is <Means>$[[ its paper ]]( A Paper )</Means>, which opens

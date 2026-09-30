@@ -98,6 +98,7 @@ export class $Theme extends $Format {
             .pa-item { display: list-item; list-style: disc inside; margin-block: calc(${({ theme }) => theme.space} / 4); }
             .pa-ordered .pa-item { list-style-type: decimal; }
             .pd-math { white-space: nowrap; }
+            .pd-date { white-space: nowrap; }
             .pd-equation { position: relative; counter-increment: equation; }
             .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }
             .pa-cover { margin-block-end: calc(2 * ${({ theme }) => theme.space}); }

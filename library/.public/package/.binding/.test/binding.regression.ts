@@ -462,6 +462,15 @@ describe('the bound test library, seen in a real browser', () => {
         await projects.close();
     });
 
+    // A DATE — Sprint 95, U13: Libby's Who I Am dates the day she began, a Date reading the compiler's form and
+    // drawing its said words in a time element carrying the machine date.
+    it('shows the day Libby began as a time element carrying the machine date and saying the words', async () => {
+        const libby = await browser!.newPage();
+        await libby.goto(new URL('/libby/who-i-am/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await libby.$eval('time.pd-date', time => [time.getAttribute('datetime'), time.innerText])).toEqual(['2026-09-30', 'the last day of September']);
+        await libby.close();
+    });
+
     // MATH AND AN EQUATION — Sprint 95, U12: the evidence holds a formula in a sentence and an equation on a line of
     // its own, both typeset by KaTeX, the equation numbered by the sheet's counter, and KaTeX's own stylesheet, which
     // the package names on the binder, linked in the page's head by the assembly.
