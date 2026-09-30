@@ -1,4 +1,6 @@
 export class Binder {
+    stylesheets = ['katex/dist/katex.min.css'];
+
     reference(copy: string): { name: string; identifier: string } | undefined {
         const match = /^\[([^\]]*)\]\(([^)]*)\)$/u.exec(copy.trim());
         if (match === null) return undefined;

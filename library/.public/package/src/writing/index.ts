@@ -20,4 +20,6 @@ export * from './Mention';
 export * from './Means';
 export * from './Table';
 export * from './List';
+export * from './Math';
+export * from './Equation';
 export * from './Append';

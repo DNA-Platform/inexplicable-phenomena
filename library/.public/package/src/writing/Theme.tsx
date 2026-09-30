@@ -69,7 +69,7 @@ export class $Theme extends $Format {
             .hljs-title, .hljs-title.class_, .hljs-title.function_ { font-weight: bold; }
             .pd-image { max-width: 100%; height: auto; }
             .pd-svg { max-width: 100%; }
-            .pd-book { margin-block: ${({ theme }) => theme.space}; }
+            .pd-book { margin-block: ${({ theme }) => theme.space}; counter-reset: equation; }
             .pd-chapter { margin-block: calc(2 * ${({ theme }) => theme.space}); }
             .pd-section { margin-block: ${({ theme }) => theme.space}; }
             .pd-paragraph { margin-block: ${({ theme }) => theme.space}; }
@@ -97,6 +97,9 @@ export class $Theme extends $Format {
             .pa-list { counter-reset: list-item; }
             .pa-item { display: list-item; list-style: disc inside; margin-block: calc(${({ theme }) => theme.space} / 4); }
             .pa-ordered .pa-item { list-style-type: decimal; }
+            .pd-math { white-space: nowrap; }
+            .pd-equation { position: relative; counter-increment: equation; }
+            .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }
             .pa-cover { margin-block-end: calc(2 * ${({ theme }) => theme.space}); }
             .pa-cover .pd-title { font-size: calc(2 * ${({ theme }) => theme.size}); }
             .pa-synopsis .pd-paragraph { font-style: italic; }

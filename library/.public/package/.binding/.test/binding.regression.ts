@@ -462,6 +462,20 @@ describe('the bound test library, seen in a real browser', () => {
         await projects.close();
     });
 
+    // MATH AND AN EQUATION — Sprint 95, U12: the evidence holds a formula in a sentence and an equation on a line of
+    // its own, both typeset by KaTeX, the equation numbered by the sheet's counter, and KaTeX's own stylesheet, which
+    // the package names on the binder, linked in the page's head by the assembly.
+    it('shows the evidence\'s formula inline and its equation displayed and numbered, with KaTeX\'s sheet linked', async () => {
+        const evidence = await browser!.newPage();
+        await evidence.goto(new URL('/a-paper/the-evidence/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await evidence.$eval('.pd-math .katex', formula => getComputedStyle(formula).fontFamily)).toMatch(/KaTeX/u);
+        expect(await evidence.$eval('.pd-equation .katex-display', equation => getComputedStyle(equation).display)).toBe('block');
+        expect(await evidence.$eval('.pd-equation', equation => getComputedStyle(equation, '::after').content)).toMatch(/^"\(" counter\(equation\) "\)"$/u);
+        expect(await evidence.evaluate(() => [...document.styleSheets].some(sheet => [...sheet.cssRules].some(rule => (rule as CSSStyleRule).selectorText?.includes('.katex'))))).toBe(true);
+        expect(await evidence.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"]')].map(link => link.getAttribute('href') ?? ''))).toEqual(expect.arrayContaining([expect.stringMatching(/^\/assets\/.+\.css$/u)]));
+        await evidence.close();
+    });
+
     // A SELF-REFERENCE DRAWS WITHOUT AN UNDERLINE — the catchword's Next at the end of the paper.
     it('shows the evidence\'s catchword: its Next a self-reference without an underline, its Previous a link with one', async () => {
         const evidence = await browser!.newPage();
