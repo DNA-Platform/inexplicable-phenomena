@@ -1,4 +1,4 @@
-import { Chapter, Heading, Means, Mention, Paragraph, Section, Title } from '@dna-platform/public';
+import { Chapter, Heading, Line, List, Means, Mention, Paragraph, Section, Title } from '@dna-platform/public';
 import { Catchword } from '../manual/.book';
 
 export default () => (
@@ -6,11 +6,16 @@ export default () => (
         <Title>[[ The Shelves ]]</Title>
         <Section>
             <Heading>[[[ What stands here ]]]</Heading>
+            <Paragraph>Three books stand directly under this one, and this shelf is a list of Lines:</Paragraph>
             <Paragraph>
-                Three books stand directly under this one. <Means>$[[ Libby ]]</Means> is the book that writes the
-                others, <Means>$[[ Some Projects ]]</Means> is what has been worked on, and <Means>$[[ A Paper ]]</Means> was
-                written by a persona Libby vouched for. The persona itself, <Means>$[[ A Persona ]]</Means>, stands under Libby rather
-                than here, which is the shape a library takes when one voice writes as two.
+                <List />
+                <Line><Means>$[[ Libby ]]</Means> is the book that writes the others.</Line>
+                <Line><Means>$[[ Some Projects ]]</Means> is what has been worked on.</Line>
+                <Line><Means>$[[ A Paper ]]</Means> was written by a persona Libby vouched for.</Line>
+            </Paragraph>
+            <Paragraph>
+                The persona itself, <Means>$[[ A Persona ]]</Means>, stands under Libby rather than here, which is the
+                shape a library takes when one voice writes as two.
             </Paragraph>
             <Paragraph>
                 <Mention>[[[ The First Shelf ]]]</Mention> is the one Libby stands on, and a reference reaches it by name.

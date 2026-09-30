@@ -94,6 +94,9 @@ export class $Theme extends $Format {
             .pa-col { padding-block: calc(${({ theme }) => theme.space} / 4); }
             ${Array.from({ length: 12 }, (_, index) => `.pa-col-start-${index + 1} { grid-column-start: ${index + 1}; } .pa-col-span-${index + 1} { grid-column-end: span ${index + 1}; }`).join(' ')}
             .pa-table .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${({ theme }) => theme.ink}; }
+            .pa-list { counter-reset: list-item; }
+            .pa-item { display: list-item; list-style: disc inside; margin-block: calc(${({ theme }) => theme.space} / 4); }
+            .pa-ordered .pa-item { list-style-type: decimal; }
             .pa-cover { margin-block-end: calc(2 * ${({ theme }) => theme.space}); }
             .pa-cover .pd-title { font-size: calc(2 * ${({ theme }) => theme.size}); }
             .pa-synopsis .pd-paragraph { font-style: italic; }

@@ -493,6 +493,17 @@ describe('the bound test library, seen in a real browser', () => {
         await argument.close();
     });
 
+    // A LIST — Sprint 95, U11: the shelf in The Shelves is a paragraph of three Lines wearing a List, drawn as list
+    // items by the Theme's sheet, unordered, each a mark on the line's own element.
+    it('shows the shelf as a list of three items, each a line, marked and drawn as list items', async () => {
+        const shelves = await browser!.newPage();
+        await shelves.goto(new URL('/the-library/the-shelves/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await shelves.$$eval('.pa-list .pa-item', items => items.map(item => [item.classList.contains('pd-line'), getComputedStyle(item).display]))).toEqual([[true, 'list-item'], [true, 'list-item'], [true, 'list-item']]);
+        expect(await shelves.$eval('.pa-list', list => list.classList.contains('pa-ordered'))).toBe(false);
+        expect(await shelves.$eval('.pa-list', list => list.innerText)).toContain('Libby is the book that writes the others.');
+        await shelves.close();
+    });
+
     it('shows Libby on dark paper in ivory ink, and the paper in the library\'s ink', async () => {
         const libby = await browser!.newPage();
         await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
