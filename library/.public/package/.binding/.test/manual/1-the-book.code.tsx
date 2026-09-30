@@ -11,8 +11,8 @@ export class $TheLibrary extends $Book {
         const Byline = $(byline);
         return (
             <>
-                <RunningHead book={this} />
-                <Byline book={this} />
+                <RunningHead chapter={this.cover} />
+                <Byline chapter={this.cover} />
                 {super.write()}
             </>
         );

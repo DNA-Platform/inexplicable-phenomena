@@ -11,7 +11,6 @@ import { $Chapter } from './Chapter';
 export class $Synopsis extends $Format {
     specification = new SynopsisSpecification();
     protected _synopsis?: $Chapter;
-    get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     get means(): $Reference | undefined {
         return this.annotations.expressed($Reference) ?? this._synopsis?.mention ?? this.chapter?.mention;

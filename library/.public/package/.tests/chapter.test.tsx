@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $ } from '@dna-platform/chemistry';
-import { $Writing, $Heading, Paragraph, Permissive, Closed } from '@dna-platform/public';
+import { $Writing, $Heading, Heading, $Section, Section, $Paragraph, Paragraph, Permissive, Closed, $Theme } from '@dna-platform/public';
 import { $Book, Book, Cover, Synopsis, TableOfContents, $Chapter, Chapter, $Title, Title, ChapterSpecification, TitleSpecification } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -163,5 +163,76 @@ describe('a title is a sentence that names its chapter, holding the link the com
         expect(alone.specify()).toContain('Title: a title stands in a chapter, and this one does not');
         const plain = built<$Chapter>(<Chapter><Title>The Argument</Title></Chapter>);
         expect(plain.specify()).toContain('Chapter / Title 0: a title holds the link the compiler gives it, and this one holds none');
+    });
+});
+
+// Doug, 2026-09-30: "we can add a chapter get prop to writing… Every writing is a part of a chapter too", and then
+// the shape: "Why not have $chapter, chapter and book, and if $chapter is there, chapter returns it, otherwise it
+// looks it up, and then book is always the book of the chapter." So $chapter is the one thing ever given; chapter
+// answers it, else the parent's, a Chapter answering itself; book is the chapter's, and with no chapter the parent's,
+// a Book answering itself. Nothing is told a book, so the two never disagree.
+describe('every writing answers the chapter it stands in, given or looked up, and its book is that chapter\'s', () => {
+    const shelved = (): $Book => built<$Book>(
+        <Book>
+            <Chapter>
+                <Title>[The Argument](/a-paper/the-argument/)</Title>
+                <Section>
+                    <Heading>What is claimed</Heading>
+                    <Paragraph>A reference names a thing and never a place.</Paragraph>
+                </Section>
+            </Chapter>
+            <Chapter>
+                <Title>[The Evidence](/a-paper/the-evidence/)</Title>
+            </Chapter>
+        </Book>
+    );
+
+    it('a paragraph in a section answers the chapter above it, a title its own, and a chapter itself', () => {
+        const [argument] = shelved().text.find($Chapter);
+        const section = argument.text.find($Section)[0];
+        expect(section.chapter).toBe(argument);
+        expect(section.text.find($Paragraph)[0].chapter).toBe(argument);
+        expect(argument.title!.chapter).toBe(argument);
+        expect(argument.chapter).toBe(argument);
+    });
+
+    it('a writing given a chapter answers it over the one above, and what stands inside it answers the given one too', () => {
+        const book = shelved();
+        const [argument, evidence] = book.text.find($Chapter);
+        const section = argument.text.find($Section)[0];
+        section.$chapter = evidence;
+        expect(section.chapter).toBe(evidence);
+        expect(section.text.find($Paragraph)[0].chapter).toBe(evidence);
+        expect(section.book).toBe(book);
+        expect(argument.title!.chapter).toBe(argument);
+    });
+
+    it('a chapter\'s book is the book it stands in, and a chapter in a chapter answers its host\'s', () => {
+        const book = built<$Book>(
+            <Book>
+                <Chapter>
+                    <Title>[The Log](/libby/the-log/)</Title>
+                    <Chapter>
+                        <Title>[Entries](/libby/entries/)</Title>
+                    </Chapter>
+                </Chapter>
+            </Book>
+        );
+        const [host] = book.text.find($Chapter);
+        const [guest] = host.text.find($Chapter);
+        expect(host.book).toBe(book);
+        expect(guest.chapter).toBe(guest);
+        expect(guest.book).toBe(book);
+        expect(guest.title!.book).toBe(book);
+        expect(built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>).book).toBeUndefined();
+    });
+
+    it('a book and an annotation said of it stand in no chapter and still answer the book, and a writing built alone answers none', () => {
+        const book = shelved();
+        const theme = book.annotations.expressed($Theme)!;
+        expect(book.chapter).toBeUndefined();
+        expect(theme.chapter).toBeUndefined();
+        expect(theme.book).toBe(book);
+        expect(built<$Paragraph>(<Paragraph>alone</Paragraph>).chapter).toBeUndefined();
     });
 });

@@ -8,7 +8,7 @@ export class $Format extends $Annotation {
     themeProvider = false;
     style?: ElementType;
     get theme(): $Theme {
-        const book = this.$book;
+        const book = this.book;
         if (book === undefined) throw new Error('a format reads its theme from its book, and this one stands in none');
         return book.theme;
     }

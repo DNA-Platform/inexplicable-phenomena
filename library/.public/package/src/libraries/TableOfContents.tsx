@@ -11,11 +11,10 @@ import { $Chapter } from './Chapter';
 export class $TableOfContents extends $Format {
     specification = new TableOfContentsSpecification();
     style: ElementType = 'nav';
-    get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
     get contents(): $Reference[] {
         const mentions = (chapter: $Chapter): $Reference[] =>
             [...(chapter.mention === undefined ? [] : [chapter.mention]), ...chapter.text.find($Chapter).flatMap(mentions)];
-        return this.chapter?.$book?.text.find($Chapter).flatMap(mentions) ?? [];
+        return this.book?.text.find($Chapter).flatMap(mentions) ?? [];
     }
 
     override defines(writing: $Writing): void {

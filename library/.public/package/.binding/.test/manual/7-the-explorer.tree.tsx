@@ -5,16 +5,16 @@ import { $Appendix } from './7-the-explorer.appendix.tsx';
 import { $Tabbed } from './7-the-explorer.paging.tsx';
 
 export class $Branch extends $Format {
-    get chapter(): $Chapter | undefined {
+    get meant(): $Chapter | undefined {
         const identifier = this.parent?.annotations.expressed($Content)?.identifier;
         if (identifier === undefined || identifier === '') return undefined;
-        return this.$book?.text.find($Chapter).find(chapter => chapter.mention?.identifier === identifier);
+        return this.book?.text.find($Chapter).find(chapter => chapter.mention?.identifier === identifier);
     }
 
     $Branch(...chemicals: $Chemical[]) {
         this.$Format(...chemicals);
         this.style = (props: { className?: string; children?: ReactNode }) => {
-            const chapter = this.chapter;
+            const chapter = this.meant;
             const leaves = chapter === undefined ? [] : $Appendix.of(chapter);
             return (
                 <div {...props}>
@@ -30,8 +30,8 @@ export class $Branch extends $Format {
     override defines(writing: $Writing): void {
         super.defines(writing);
         writing.classes.add(this, 'pa-branch');
-        const book = this.$book;
-        const chapter = this.chapter;
+        const book = this.book;
+        const chapter = this.meant;
         if (book === undefined) return;
         const open = chapter !== undefined && book.annotations.expressed($Tabbed)?.open === chapter;
         const lit = [...writing.classes].includes('pa-open');

@@ -10,7 +10,7 @@ export class $Tabs extends $Paragraph {
     }
 
     override write(): ReactNode {
-        const book = this.$book;
+        const book = this.book;
         const open = book?.annotations.expressed($Tabbed)?.open;
         if (book === undefined) return null;
         const opened = book.text.find($Chapter).filter(chapter => [...chapter.classes].includes('pa-opened'));

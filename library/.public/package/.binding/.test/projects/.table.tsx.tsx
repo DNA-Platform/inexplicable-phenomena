@@ -4,7 +4,7 @@ import { $Section, $TableOfContents, $Title, Paragraph as paragraph, Parenthetic
 
 export class $Entries extends $Section {
     override write(): ReactNode {
-        const contents = this.$book?.table?.annotations.expressed($TableOfContents)?.contents ?? [];
+        const contents = this.book?.table?.annotations.expressed($TableOfContents)?.contents ?? [];
         const Paragraph = $(paragraph);
         const Parenthetical = $(parenthetical);
         const Reference = $(reference);

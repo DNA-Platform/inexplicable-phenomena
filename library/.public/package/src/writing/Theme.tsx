@@ -132,7 +132,7 @@ export class $Provider extends $Chemical {
 export class ThemeSpecification extends AnnotationSpecification {
     @specify('a theme is said of a book')
     $saidOfABook(writing: $Writing): void {
-        $check(writing.$book === writing, 'a theme is said of a book, and this is not one');
+        $check(writing.book === writing, 'a theme is said of a book, and this is not one');
     }
 }
 

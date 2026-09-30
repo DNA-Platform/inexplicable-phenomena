@@ -39,7 +39,7 @@ export class $Book extends $Composition {
         if (theme === undefined) throw new Error('a book always has a theme, and this one has none');
         return theme;
     }
-    override get $book(): $Book { return this; }
+    override get book(): $Book { return this; }
     override get canonical(): $Chapter | undefined {
         return this.text.find($Chapter).find(chapter => chapter.is($Cover));
     }

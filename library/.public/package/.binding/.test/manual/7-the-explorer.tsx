@@ -29,7 +29,7 @@ export default () => (
                 The manual's book takes the tool up in its own class, in the book file that is the manual's door:
                 its define stands the manual's theme first and then, in front of it, the paging and the layout, so
                 the layout's layer stands inside the theme's provider and reads its values; its write draws the
-                tabs after the chapters, lent the book as the masthead is; and it declines to turn, since the open
+                tabs after the chapters, given the cover as their chapter as the masthead is; and it declines to turn, since the open
                 page is shown by its mark and nothing scrolls. The leaves need no line of the book's: the layout
                 puts a branch on every entry of the table once the book is whole.
             </Paragraph>

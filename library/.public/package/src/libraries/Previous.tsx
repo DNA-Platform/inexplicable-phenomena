@@ -3,16 +3,9 @@ import { specify } from '@/utilities/Specification';
 import { CompositionSpecification } from '@/writing/Composition';
 import { $Word } from '@/writing/Word';
 import { $Reference, Reference as reference, Self as self } from '@/writing/Reference';
-import { $Chapter } from './Chapter';
 
 export class $Previous extends $Word {
     specification = new PreviousSpecification();
-    get chapter(): $Chapter | undefined {
-        let above = this.parent;
-        while (above !== undefined && !(above instanceof $Chapter) && above !== above.parent)
-            above = above.parent;
-        return above instanceof $Chapter ? above : undefined;
-    }
     get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
     protected override $Define(): void {

@@ -180,9 +180,9 @@ describe('a book binds: once it is whole, every writing in it is bound, top to b
         const bound: { book?: $Book; cover?: $Chapter; table?: $Chapter; order: string[] } = { order: [] };
         class $Binding extends $Paragraph {
             protected override $Bound(): void {
-                bound.book = this.$book;
-                bound.cover = this.$book?.cover;
-                bound.table = this.$book?.table;
+                bound.book = this.book;
+                bound.cover = this.book?.cover;
+                bound.table = this.book?.table;
                 bound.order.push('paragraph');
                 super.$Bound();
             }
@@ -219,13 +219,13 @@ describe('every writing has a book', () => {
         const seen: { defined?: $Book; drawn?: $Book } = {};
         class $Looking extends $Paragraph {
             override view(): ReactNode {
-                seen.drawn = this.$book;
+                seen.drawn = this.book;
                 return super.view();
             }
 
             protected override $Define(): void {
                 super.$Define();
-                seen.defined = this.$book;
+                seen.defined = this.book;
             }
         }
         const Looking = $($Looking);
@@ -249,23 +249,28 @@ describe('every writing has a book', () => {
 
     it('a book answers itself', () => {
         const book = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
-        expect(book.$book).toBe(book);
+        expect(book.book).toBe(book);
     });
 
-    it('a writing lent a book answers it over the one above, and a paragraph inside it answers the lent one too', () => {
-        const lent = built<$Book>(<Book>{APaper()}</Book>);
+    // Doug, 2026-09-30: "They should never be inconsistent. I don't really like the idea that they should ever be
+    // specified. Why not have $chapter, chapter and book, and if $chapter is there, chapter returns it, otherwise it
+    // looks it up, and then book is always the book of the chapter." So nothing is ever told a book: a writing lent a
+    // chapter answers that chapter's book, and so does everything inside it.
+    it('a writing lent a chapter answers that chapter\'s book over the one above, and a paragraph inside it answers the same', () => {
+        const elsewhere = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
         const book = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
         const chapter = book.text.find($Chapter)[1];
         const section = chapter.text.find($Section)[0];
-        section.$book = lent;
-        expect(section.$book).toBe(lent);
-        expect(section.text.find($Paragraph)[0].$book).toBe(lent);
-        expect(chapter.$book).toBe(book);
+        section.$chapter = elsewhere.text.find($Chapter)[1];
+        expect(section.chapter).toBe(elsewhere.text.find($Chapter)[1]);
+        expect(section.book).toBe(elsewhere);
+        expect(section.text.find($Paragraph)[0].book).toBe(elsewhere);
+        expect(chapter.book).toBe(book);
     });
 
     it('a writing built alone answers none, and nothing loops', () => {
-        expect(built<$Paragraph>(<Paragraph>alone</Paragraph>).$book).toBeUndefined();
-        expect(built<$Chapter>(TheArgument()).text.find($Section)[0].$book).toBeUndefined();
+        expect(built<$Paragraph>(<Paragraph>alone</Paragraph>).book).toBeUndefined();
+        expect(built<$Chapter>(TheArgument()).text.find($Section)[0].book).toBeUndefined();
     });
 
     // A BOOK ALWAYS HAS A THEME — Sprint 94, Doug, 2026-09-29: "let's give Book a theme property that returns the

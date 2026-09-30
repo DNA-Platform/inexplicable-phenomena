@@ -12,7 +12,7 @@ export default class $TheManual extends $TheLibrary {
         return (
             <>
                 {super.write()}
-                <Tabs book={this} />
+                <Tabs chapter={this.cover} />
             </>
         );
     }

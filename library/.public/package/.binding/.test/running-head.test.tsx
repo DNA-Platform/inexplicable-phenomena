@@ -41,7 +41,7 @@ describe('the test library\'s running head', () => {
 
     it('standing in no book, answers none and draws no line', () => {
         const head = $(<RunningHead />) as unknown as $RunningHead;
-        expect(head.$book).toBeUndefined();
+        expect(head.book).toBeUndefined();
         const Drawn = $(head);
         expect(renderToString(<Drawn />)).not.toMatch(/:|href/u);
     });

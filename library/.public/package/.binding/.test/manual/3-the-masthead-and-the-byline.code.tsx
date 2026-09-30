@@ -9,7 +9,7 @@ export class $RunningHead extends $Paragraph {
     }
 
     override write(): ReactNode {
-        const book = this.$book;
+        const book = this.book;
         if (book === undefined) return null;
         const table = book.table?.canonical;
         const top = book.subject?.means?.identifier === book.title?.means?.identifier;
@@ -39,7 +39,7 @@ export class $Byline extends $Paragraph {
     }
 
     override write(): ReactNode {
-        const book = this.$book;
+        const book = this.book;
         if (book === undefined) return null;
         const Label = $(label);
         const Word = $(word);

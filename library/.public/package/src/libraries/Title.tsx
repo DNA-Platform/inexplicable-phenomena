@@ -12,7 +12,6 @@ import { $Chapter } from './Chapter';
 
 export class $Title extends $Sentence {
     specification = new TitleSpecification();
-    get chapter(): $Chapter | undefined { return this.parent instanceof $Chapter ? this.parent : undefined; }
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
 
@@ -39,7 +38,7 @@ export class $Title extends $Sentence {
 export class TitleSpecification extends CompositionSpecification {
     @specify('a title is in a chapter')
     $isInAChapter(title: $Title): void {
-        $check(title.chapter !== undefined, 'a title stands in a chapter, and this one does not');
+        $check(title.parent instanceof $Chapter, 'a title stands in a chapter, and this one does not');
     }
 
     @specify('a title holds the link the compiler gives it')

@@ -191,7 +191,7 @@ class $Ledger extends $Book {
 class $Reading extends $Paragraph {
     override view(): ReactNode {
         counted.drawn++;
-        read = this.$book;
+        read = this.book;
         return super.view();
     }
 }
@@ -210,7 +210,7 @@ class $Binding extends $Paragraph {
     }
 
     protected override $Bound(): void {
-        read = this.$book;
+        read = this.book;
         super.$Bound();
     }
 }
@@ -280,7 +280,7 @@ describe('a table that marks a composition\'s rows and cells costs nothing more'
 describe('a writing that reads its book while it draws costs nothing more', () => {
     beforeEach(counting);
 
-    it('a book whose paragraph reads $book while it draws draws and paints exactly as one whose paragraph does not', async () => {
+    it('a book whose paragraph reads its book while it draws draws and paints exactly as one whose paragraph does not', async () => {
         const control = $(
             <Ledger>
                 <Quoted />

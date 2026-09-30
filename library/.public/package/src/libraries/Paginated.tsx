@@ -15,7 +15,6 @@ export class $Paginated extends $Annotation {
             }
         }
     `;
-    get book(): $Book | undefined { return this.parent instanceof $Book ? this.parent : undefined; }
     get pages(): $Chapter[] { return this.book?.text.find($Chapter) ?? []; }
     get open(): $Chapter | undefined { return this.book?.bookmark ?? this.book?.cover; }
 

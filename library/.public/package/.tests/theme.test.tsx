@@ -69,7 +69,7 @@ describe('a theme is a format said of a book that provides eight live properties
     // EVERYTHING IN REACH — Doug, 2026-09-27, asked whether .public should export the sheet's value helper: "The idiom
     // is that the theme is on the book's annotations right? We have the book then the annotations and we can access the
     // theme by type. That should be simple. If it's not, we have to ask why it's hard to get an annotation from the book,
-    // because I thought everything would be in reach and it should be." A format is a writing whose $book is its parent's.
+    // because I thought everything would be in reach and it should be." A format is a writing whose book is its parent's.
     // And the one thing that is not: a style is compiled once per class, from a first specimen, so a closure over `this`
     // in a style reads that specimen and never the drawn instance — a style reads the theme through the provider's
     // props, which is what the provider is for.
@@ -77,7 +77,7 @@ describe('a theme is a format said of a book that provides eight live properties
         class $Reaching extends $Format {
             style = selection.div`
                 color: ${({ theme }: { theme: { ink?: string } }) => theme.ink ?? 'unprovided'};
-                outline-color: ${() => this.$book?.annotations.expressed($Theme)?.ink ?? 'unreached'};
+                outline-color: ${() => this.book?.annotations.expressed($Theme)?.ink ?? 'unreached'};
             `;
         }
         const Reaching = $($Reaching);
@@ -93,8 +93,8 @@ describe('a theme is a format said of a book that provides eight live properties
         );
         const onBook = book.annotations.expressed($Reaching);
         const onChapter = (book.parts[3] as $Chapter).annotations.expressed($Reaching);
-        expect(onBook?.$book?.annotations.expressed($Theme)?.ink).toBe('black');
-        expect(onChapter?.$book?.annotations.expressed($Theme)?.ink).toBe('black');
+        expect(onBook?.book?.annotations.expressed($Theme)?.ink).toBe('black');
+        expect(onChapter?.book?.annotations.expressed($Theme)?.ink).toBe('black');
         const { css } = served(book);
         expect(css).toContain('color:var(--pd-ink, black)');
         expect(css).not.toContain('unprovided');

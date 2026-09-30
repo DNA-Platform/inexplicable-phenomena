@@ -66,7 +66,7 @@ export class $Explorer extends $Format {
     }
 
     protected override $Bound(): void {
-        const table = this.$book?.table;
+        const table = this.book?.table;
         const Branch = $(branch);
         for (const section of table?.text.find($Section) ?? [])
             for (const entry of section.text.find($Paragraph))

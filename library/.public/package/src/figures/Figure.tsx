@@ -3,7 +3,6 @@ import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
 import { html } from '@/utilities/Html';
 import { $Letter, LetterSpecification } from '@/writing/Letter';
-import { $Chapter } from '@/libraries/Chapter';
 import { $Append } from '@/writing/Append';
 
 export class $Figure extends $Letter {
@@ -11,12 +10,6 @@ export class $Figure extends $Letter {
     $identifier = '';
     $type = '';
 
-    get chapter(): $Chapter | undefined {
-        let above = this.parent;
-        while (above !== undefined && !(above instanceof $Chapter) && above !== above.parent)
-            above = above.parent;
-        return above instanceof $Chapter ? above : undefined;
-    }
     get names(): boolean { return this.$identifier !== '' || this.$type !== ''; }
     get append(): $Append | undefined {
         if (!this.names) return undefined;

@@ -6,23 +6,27 @@ import type { Author, Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import type { $Book } from '@/libraries/Book';
+import type { $Chapter } from '@/libraries/Chapter';
 
 export class $Writing extends $Chemical {
     protected _text?: Text;
     protected _annotations?: Annotations;
-    protected _book?: $Book;
     id!: Compilation<string>;
     classes!: Collection<string>;
     containers!: Collection<ElementType>;
     specification: Specification<$Writing> = new WritingSpecification();
+    $chapter?: $Chapter;
 
     get $is(): Given<$Annotation> | Given<$Annotation>[] { return this.annotations.edit; }
     set $is(given: Given<$Annotation> | Given<$Annotation>[]) { this.annotations.edit = given; }
 
-    get $book(): $Book | undefined {
-        return this._book ?? (this.parent instanceof $Writing && this.parent !== this ? this.parent.$book : undefined);
+    get chapter(): $Chapter | undefined {
+        return this.$chapter ?? (this.parent instanceof $Writing && this.parent !== this ? this.parent.chapter : undefined);
     }
-    set $book(value: $Book) { this._book = value; }
+
+    get book(): $Book | undefined {
+        return this.chapter?.book ?? (this.parent instanceof $Writing && this.parent !== this ? this.parent.book : undefined);
+    }
 
     get text(): Text {
         return this._text ?? (this._text = new Text(this));

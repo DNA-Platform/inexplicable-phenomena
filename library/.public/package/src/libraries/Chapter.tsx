@@ -3,21 +3,24 @@ import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification, Level as level, Permissive as permissive, Closed as closed, Block as block } from '@/writing/Composition';
 import { $Reference } from '@/writing/Reference';
 import { $Title } from './Title';
+import type { $Book } from './Book';
 
 export class $Chapter extends $Composition {
     specification = new ChapterSpecification();
     get title(): $Title | undefined { return this.canonical; }
     get mention(): $Reference | undefined { return this.title?.means; }
     get next(): $Chapter {
-        const chapters = this.$book?.text.find($Chapter) ?? [];
+        const chapters = this.book?.text.find($Chapter) ?? [];
         const at = chapters.indexOf(this);
         return at === -1 ? this : chapters[at + 1] ?? this;
     }
     get previous(): $Chapter {
-        const chapters = this.$book?.text.find($Chapter) ?? [];
+        const chapters = this.book?.text.find($Chapter) ?? [];
         const at = chapters.indexOf(this);
         return at === -1 ? this : chapters[at - 1] ?? this;
     }
+    override get chapter(): $Chapter { return this; }
+    override get book(): $Book | undefined { return this.composition?.book; }
     override get canonical(): $Title | undefined {
         return this.text.find($Title)[0];
     }
