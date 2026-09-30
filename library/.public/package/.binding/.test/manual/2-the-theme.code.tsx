@@ -21,8 +21,7 @@ export class $LibraryTheme extends $LibraryValues {
         this.style = selection(this.style as ComponentType<{ className?: string }>)`
             @media (min-width: 64rem) { max-width: 52rem; }
             .pd-book { counter-reset: chapter; }
-            .pd-book > .pd-chapter { scroll-margin-block-start: calc(0.5 * ${at('space')}); }
-            :where(header, nav) > .pd-chapter { scroll-margin-block-start: calc(2.5 * ${at('space')}); }
+            .pd-chapter { scroll-margin-block-start: calc(0.5 * ${at('space')}); }
 
             .pd-byline {
                 margin-block: ${at('space')} 0;
@@ -31,16 +30,15 @@ export class $LibraryTheme extends $LibraryValues {
                 border: 1px solid color-mix(in srgb, ${at('ink')} 10%, ${at('paper')});
                 border-block-start: 3px solid ${at('link')};
             }
-            header.pd-container:has(> .pa-cover) {
-                display: block;
-                margin-block: 0 calc(1.5 * ${at('space')});
+            .pa-cover { margin-block: 0; }
+            .pa-cover:not(.pa-framed) {
+                margin-block-end: calc(1.5 * ${at('space')});
                 padding: calc(0.75 * ${at('space')}) ${at('space')};
                 background: color-mix(in srgb, ${at('ink')} 3%, ${at('paper')});
                 border: 1px solid color-mix(in srgb, ${at('ink')} 10%, ${at('paper')});
                 border-block-start: 0;
+                scroll-margin-block-start: calc(1.75 * ${at('space')});
             }
-            :where(header, nav).pd-container:has(> .pa-page:not(.pa-open)) { display: none; }
-            .pa-cover { margin-block: 0; }
             .pa-cover .pd-title { margin-block: 0 calc(${at('space')} / 2); }
 
             .pd-chapter .pd-title::before,
@@ -64,8 +62,8 @@ export class $LibraryTheme extends $LibraryValues {
             .pa-synopsis .pd-title::before { content: 'Synopsis'; }
             .pa-table-of-contents .pd-title::before { content: 'Table of Contents'; }
             .pd-title.pa-parenthetical::before { content: none; }
-            .pd-chapter:not(.pa-cover):not(.pa-synopsis):not(.pa-table-of-contents) { counter-increment: chapter; }
-            .pd-book > .pd-chapter:not(.pa-cover):not(.pa-synopsis):not(.pa-table-of-contents) {
+            .pd-canonical.pd-chapter { counter-increment: chapter; }
+            .pd-canonical.pd-chapter:not(.pa-framed) {
                 border-block-start: 1px solid color-mix(in srgb, ${at('ink')} 10%, ${at('paper')});
                 padding-block-start: ${at('space')};
             }
@@ -76,13 +74,13 @@ export class $LibraryTheme extends $LibraryValues {
                 border-inline-start: 2px solid ${at('link')};
             }
 
-            nav.pd-container:has(> .pa-table-of-contents) {
-                display: block;
+            .pa-table-of-contents { margin-block: 0; }
+            .pa-table-of-contents:not(.pa-framed) {
                 margin-block: calc(1.5 * ${at('space')});
                 padding: calc(0.75 * ${at('space')}) ${at('space')};
                 border: 1px solid color-mix(in srgb, ${at('ink')} 10%, ${at('paper')});
+                scroll-margin-block-start: calc(1.75 * ${at('space')});
             }
-            .pa-table-of-contents { margin-block: 0; }
             .pa-col {
                 padding-block: calc(${at('space')} / 3);
                 border-block-end: 1px solid color-mix(in srgb, ${at('ink')} 7%, ${at('paper')});

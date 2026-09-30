@@ -201,7 +201,9 @@ describe('a theme is a format said of a book that provides eight live properties
 
     // WHERE A LOOK LIVES, since Sprint 94: a mark is ruled by the theme's sheet (skin), by the styled component of
     // the Format that is its element (layout), or by an annotation's own note (meaning) — and by nothing else, so a
-    // mark ruled nowhere is the finding this promise makes.
+    // mark ruled nowhere is the finding this promise makes. Since Sprint 95 a Format gives its own element its class
+    // through attrs, the writer's choice, and such a class is that Format's: "a kind of writing is dressed by the
+    // sheet, a Format dresses itself."
     it('comprehends every class the source puts on an element: the classes in src, less the numbered families, are each ruled by its sheet, a Format\'s own component, or an annotation\'s note', () => {
         const sources: string[] = [];
         const walk = (folder: string): void => {
@@ -220,9 +222,14 @@ describe('a theme is a format said of a book that provides eight live properties
         for (const source of sources)
             for (const found of source.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g))
                 noted.add(found[1]);
+        for (const source of sources)
+            for (const found of source.matchAll(/attrs\(\{ className: '(p[ad]-[a-z][a-z-]*[a-z])' \}\)/g))
+                noted.add(found[1]);
         const { css } = served(shelf(<Theme />));
         const addressed = new Set([...css.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g)].map(found => found[1]));
-        const missing = [...marks].filter(mark => !addressed.has(mark) && !noted.has(mark) && !/-(start|span|cols)$/.test(mark)).sort();
+        // pd-canonical says a writing stands in its plain form — Doug, 2026-09-30: "a special one removes canonical" —
+        // and it is a word for a library's own sheet: the framework's sheet has nothing to say by it.
+        const missing = [...marks].filter(mark => !addressed.has(mark) && !noted.has(mark) && !/-(start|span|cols)$/.test(mark) && mark !== 'pd-canonical').sort();
         expect(marks.size).toBeGreaterThan(20);
         expect(missing).toEqual([]);
     });

@@ -45,7 +45,7 @@ describe('a figure', () => {
 
     it('takes annotations as any letter does: a Format in front dresses it', () => {
         const html = served(shelf(<Paragraph><Figure identifier="version1"><Emphasis /></Figure></Paragraph>));
-        expect(html).toMatch(/<em class="pd-container"><span class="pd-letter pd-figure pa-emphasis">export const wheel = 1;<span/u);
+        expect(html).toMatch(/<em class="[^"]*pa-emphasis pd-container"><span class="pd-letter pd-figure">export const wheel = 1;<span/u);
     });
 
     it('names an append its chapter holds, and says so when it does not', () => {

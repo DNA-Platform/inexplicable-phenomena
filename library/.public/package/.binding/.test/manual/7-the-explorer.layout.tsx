@@ -21,30 +21,30 @@ export class $Explorer extends $Format {
         }
         & > .pd-book > .pd-running-head { grid-area: head; margin-block: 0; }
         & > .pd-book > .pd-byline { grid-area: head; justify-self: end; align-self: center; margin-block: 0; }
-        & > .pd-book > nav.pd-container:has(> .pa-table-of-contents) { grid-area: table; overflow: auto; margin-block: 0; }
+        & > .pd-book > .pd-container { display: contents; }
+        & > .pd-book .pa-table-of-contents { grid-area: table; overflow: auto; margin-block: 0; }
         & > .pd-book > .pd-tabs { grid-area: tabs; margin-block: 0; }
-        & > .pd-book > header.pd-container { grid-area: front; padding-block-start: ${at('space')}; margin-block: 0; }
-        & > .pd-book > header.pd-container:not(:has(> .pa-open)) { display: none; }
-        & > .pd-book > .pd-chapter { grid-area: page; overflow: auto; min-height: 0; margin-block: 0; }
-        & > .pd-book > .pa-synopsis:not(.pa-open) { display: none; }
-        & > .pd-book > .pd-chapter:not(:has(> .pa-appendix.pa-open)) { max-width: ${at('measure')}; }
-        & > .pd-book > .pd-chapter > .pd-section.pa-appendix:not(.pa-open) { display: none; }
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) {
+        & > .pd-book .pa-cover { grid-area: front; padding-block-start: ${at('space')}; margin-block: 0; }
+        & > .pd-book .pd-canonical.pd-chapter, & > .pd-book .pa-synopsis { grid-area: page; overflow: auto; min-height: 0; margin-block: 0; }
+        & > .pd-book .pa-synopsis:not(.pa-open) { display: none; }
+        & > .pd-book .pd-canonical.pd-chapter:not(:has(> .pa-appendix.pa-open)), & > .pd-book .pa-synopsis { max-width: ${at('measure')}; }
+        & > .pd-book .pd-chapter > .pd-section.pa-appendix:not(.pa-open) { display: none; }
+        & > .pd-book .pd-chapter:has(> .pa-appendix.pa-open) {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
             column-gap: calc(2 * ${at('space')});
             align-content: start;
         }
-        & > .pd-book > .pd-chapter:not(.pa-cover) > .pd-container:has(> .pd-title),
-        & > .pd-book > .pd-chapter > .pd-section.pa-appendix > .pd-container:has(> .pd-heading) {
+        & > .pd-book .pd-chapter:not(.pa-cover) > .pd-container:has(> .pd-title),
+        & > .pd-book .pd-chapter > .pd-section.pa-appendix > .pd-container:has(> .pd-heading) {
             position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
         }
-        & > .pd-book > .pd-chapter:not(.pa-cover):not(.pa-synopsis) { padding-block-start: ${at('space')}; }
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section:not(.pa-appendix) { grid-column: 2; font-size: calc(0.9 * ${at('size')}); margin-block-start: 0; }
-        & > .pd-book > .pd-chapter:has(> .pa-appendix.pa-open) > .pd-catchword { grid-column: 1 / -1; }
-        & > .pd-book > .pd-chapter > .pd-section.pa-appendix.pa-open { display: contents; }
-        & > .pd-book > .pd-chapter > .pa-appendix.pa-open > .pd-paragraph:has(.pd-code) { grid-column: 1; grid-row: 1 / span 99; margin-block: 0; }
-        & > .pd-book > .pd-chapter > .pa-appendix.pa-open > .pd-paragraph:not(:has(.pd-code)) { grid-column: 2; order: -1; font-size: calc(0.9 * ${at('size')}); margin-block: 0 ${at('space')}; }
+        & > .pd-book .pd-canonical.pd-chapter { padding-block-start: ${at('space')}; }
+        & > .pd-book .pd-chapter:has(> .pa-appendix.pa-open) > .pd-section:not(.pa-appendix) { grid-column: 2; font-size: calc(0.9 * ${at('size')}); margin-block-start: 0; }
+        & > .pd-book .pd-chapter:has(> .pa-appendix.pa-open) > .pd-catchword { grid-column: 1 / -1; }
+        & > .pd-book .pd-chapter > .pd-section.pa-appendix.pa-open { display: contents; }
+        & > .pd-book .pd-chapter > .pa-appendix.pa-open > .pd-paragraph:has(.pd-code) { grid-column: 1; grid-row: 1 / span 99; margin-block: 0; }
+        & > .pd-book .pd-chapter > .pa-appendix.pa-open > .pd-paragraph:not(:has(.pd-code)) { grid-column: 2; order: -1; font-size: calc(0.9 * ${at('size')}); margin-block: 0 ${at('space')}; }
     `;
 
     override defines(writing: $Writing): void {

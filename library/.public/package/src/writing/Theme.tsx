@@ -80,9 +80,6 @@ export class $Theme extends $Format {
             .pa-paginated { min-height: 50vh; }
             .pa-page { margin-block: ${({ theme }) => theme.space}; }
             .pa-open { margin-block-start: 0; }
-            .pa-emphasis { font-style: italic; }
-            .pa-bold { font-weight: bold; }
-            .pa-underline { text-decoration: underline; }
         }
     `;
     protected _provider!: ElementType;

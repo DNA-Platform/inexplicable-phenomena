@@ -15,7 +15,7 @@ export class $ManualTheme extends $LibraryValues {
             .pd-tabs > .pd-container { display: inline-block; padding: calc(${at('space')} / 4) calc(${at('space')} / 2); text-decoration: none; opacity: 0.65; border-inline-start: 1px solid color-mix(in srgb, ${at('ink')} 15%, ${at('paper')}); }
             .pd-tabs > .pd-container:first-child { padding-inline-start: 0; border-inline-start: 0; }
             .pd-tabs > .pd-container:has(.pa-active) { opacity: 1; color: ${at('ink')}; box-shadow: inset 0 -2px 0 ${at('link')}; }
-            nav.pd-container:has(> .pa-table-of-contents) { counter-reset: entry; font-size: calc(0.9 * ${at('size')}); }
+            .pa-table-of-contents { counter-reset: entry; font-size: calc(0.9 * ${at('size')}); }
             .pa-table-of-contents .pd-catchword, .pa-cover .pd-catchword, .pa-synopsis .pd-catchword { display: none; }
             .pa-cover { margin-block: 0; }
             .pa-cover .pd-title { font-size: calc(1.6 * ${at('size')}); line-height: 1.3; margin-block: 0; }

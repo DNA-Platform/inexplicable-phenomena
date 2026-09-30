@@ -444,13 +444,13 @@ describe('a paginated book turning its page costs the cascade and two marks, and
         await act(async () => { render(<Drawn />); });
         await settle();
         expect(counted.painted).toBe(1);
-        expect([...book.parts[0].classes].sort()).toEqual(['pa-open', 'pa-page', 'pd-chapter']);
+        expect([...book.parts[0].classes].sort()).toEqual(['pa-open', 'pa-page', 'pd-canonical', 'pd-chapter']);
 
         counting();
         await act(async () => { book.$bookmark = '/a-paper/the-argument/'; });
         await settle();
-        expect([...book.parts[0].classes].sort()).toEqual(['pa-page', 'pd-chapter']);
-        expect([...book.parts[1].classes].sort()).toEqual(['pa-open', 'pa-page', 'pd-chapter']);
+        expect([...book.parts[0].classes].sort()).toEqual(['pa-page', 'pd-canonical', 'pd-chapter']);
+        expect([...book.parts[1].classes].sort()).toEqual(['pa-open', 'pa-page', 'pd-canonical', 'pd-chapter']);
         expect(counted).toEqual({ drawn: 10, painted: 1, committed: 1 });
 
         counting();

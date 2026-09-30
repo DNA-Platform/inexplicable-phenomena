@@ -13,10 +13,12 @@ export default () => (
                 its define it extends the default sheet rather than replacing it, since the default comprehends
                 every mark the framework puts on an element and this one adds the library's look on top of those
                 same marks: the cover a card whose head is the byline, a label above every
-                chapter's title saying what the chapter is, ordinary chapters counted and ruled, the synopsis a ruled
-                block, the table of contents boxed and its catalogue ruled, a figure set off. Every rule reads the
-                theme's values, so a book that overrides them keeps the look in another ink, which is
-                what <Means>$[[ Libby ]]</Means> does to go dark.
+                chapter's title saying what the chapter is, chapters of the canonical type counted and ruled, the
+                synopsis a ruled block, the table of contents boxed and its catalogue ruled, a figure set off. Every
+                rule names a mark on the writing's own element and never the box a format draws around it, since a
+                format in front may stand any number of boxes between, and a chapter a face has framed is left to
+                its frame. Every rule reads the theme's values, so a book that overrides them keeps the look in
+                another ink, which is what <Means>$[[ Libby ]]</Means> does to go dark.
             </Paragraph>
             <Paragraph>
                 The file opens with a small helper every style in this library uses to read a value: the property

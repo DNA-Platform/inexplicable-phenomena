@@ -1,5 +1,5 @@
 import { $, selection } from '@dna-platform/chemistry';
-import { $Format } from '@dna-platform/public';
+import { $Format, $Writing } from '@dna-platform/public';
 import { at } from './2-the-theme.code.tsx';
 
 export class $Navigable extends $Format {
@@ -40,6 +40,16 @@ export class $Framed extends $Format {
         padding: ${at('space', '1rem')};
         margin-block: ${at('space', '1rem')};
     `;
+
+    override defines(writing: $Writing): void {
+        super.defines(writing);
+        writing.classes.add(this, 'pa-framed');
+    }
+
+    override erase(writing: $Writing): void {
+        super.erase(writing);
+        writing.classes.revert(this);
+    }
 }
 
 export class $Literary extends $Format {
@@ -48,7 +58,7 @@ export class $Literary extends $Format {
         .pd-title { text-align: center; font-weight: normal; font-variant: small-caps; letter-spacing: 0.06em; }
         .pd-chapter .pd-title::before { text-align: center; }
         .pd-heading { font-weight: normal; font-style: italic; }
-        .pd-chapter:not(.pa-table-of-contents) .pd-section .pd-paragraph { margin-block: 0; text-indent: 1.5em; }
+        .pd-canonical.pd-chapter .pd-section .pd-paragraph { margin-block: 0; text-indent: 1.5em; }
         .pd-section .pd-heading + .pd-paragraph, .pd-section .pd-container:has(> .pd-heading) + .pd-paragraph { text-indent: 0; }
         .pd-line { text-indent: 0; padding-inline-start: 1.5em; line-height: 1.9; }
         .pd-paragraph:has(> .pd-line) { margin-block: ${at('space', '1rem')}; }

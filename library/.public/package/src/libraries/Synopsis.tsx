@@ -26,6 +26,7 @@ export class $Synopsis extends $Format {
     override defines(writing: $Writing): void {
         super.defines(writing);
         writing.classes.add(this, 'pa-synopsis');
+        writing.classes.remove(this, 'pd-canonical');
         if (this._synopsis === undefined) return;
         const title = this._synopsis.canonical;
         writing.text.append(this, ...[...this._synopsis.text].filter(chemical => chemical !== title));

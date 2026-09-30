@@ -136,6 +136,30 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
         expect(classes(built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>))).toEqual([]);
     });
 
+    // Doug, 2026-09-30, on the rosters a library wrote to mean a plain chapter, one that is not a cover, not a
+    // synopsis and not a table: "don't we want pd-chapter on all the chapters? How about pd-canonical, and you can do
+    // pd-canonical.pd-chapter, and a special one removes canonical. This can be the general class for that kind of
+    // pattern." So every chapter is a pd-chapter; a chapter is of the canonical type of chapter until a Cover, a
+    // Synopsis or a TableOfContents makes it another type, and the class is back the moment that annotation goes.
+    // Canonical is a relationship, his word the same day, so the class always stands beside the kind's own: the
+    // canonical OF a composition is the part that means it, a book's its cover, and the canonical TYPE of a family
+    // is the type its special types depart from; a cover is the book's canonical chapter and not the canonical
+    // type of chapter.
+    it('a chapter is of the canonical type until a cover, a synopsis or a table of contents makes it another type of chapter, and again when that one goes', async () => {
+        const canonical = (chapter: $Chapter): boolean => [...chapter.classes].includes('pd-canonical');
+        const plain = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>);
+        expect(canonical(plain)).toBe(true);
+        expect((await drawn(plain)).querySelector('.pd-canonical.pd-chapter')).not.toBeNull();
+        const cover = built<$Chapter>(paper());
+        expect(canonical(cover)).toBe(false);
+        expect([...cover.classes]).toContain('pd-chapter');
+        expect(canonical(built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>))).toBe(false);
+        expect(canonical(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>))).toBe(false);
+        cover.annotations.remove(cover, cover.annotations.find($Cover)[0]);
+        cover.annotations.define();
+        expect(canonical(cover)).toBe(true);
+    });
+
     it('draws the class on the chapter\'s own element, inside its layer, and takes both back when it goes', async () => {
         const chapter = built<$Chapter>(paper());
         const page = await drawn(chapter);

@@ -15,6 +15,7 @@ export class $Cover extends $Format {
     override defines(writing: $Writing): void {
         super.defines(writing);
         writing.classes.add(this, 'pa-cover');
+        writing.classes.remove(this, 'pd-canonical');
     }
 
     override erase(writing: $Writing): void {

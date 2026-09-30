@@ -81,7 +81,8 @@ export default () => (
             <Paragraph>
                 A format on the book whose layer is the grid: the running head and the byline across the top, the
                 table at the left, the tabs and the open page beside it, placed by the marks the framework and this
-                library already put on them; the cover, when it is open, in a row of its own above the pane, the
+                library already put on them, the header and the nav the framework draws around the cover and the
+                table being no boxes in this layout; the cover, when it is open, in a row of its own above the pane, the
                 synopsis in the pane beneath it. The tab names the chapter, so a chapter's title stands unseen in the
                 pane, the cover's excepted, and an appendix's heading likewise; a chapter that prints a file is
                 shown as a spread, the open appendix's file up front and the prose beside it, what the appendix

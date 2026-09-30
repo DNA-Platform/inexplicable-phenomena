@@ -301,9 +301,10 @@ describe('a bind of the test library', () => {
         expect(argument).toMatch(/<span class="(?=[^"]*\bpd-space\b)(?=[^"]*\bpa-blank\b)[^"]*">   </u);
         // NOTHING WRITTEN IN IT: what follows the break's open tag is its annotations' own writing or its close.
         expect(argument).toMatch(/<div class="(?=[^"]*\bpd-break\b)(?=[^"]*\bpa-blank\b)[^"]*">(?:<span class="pd-annotation">|<\/div>)/u);
-        expect(argument).toMatch(/<em class="pd-container"><span class="[^"]*\bpa-emphasis\b[^"]*">names/u);
-        expect(argument).toMatch(/<b class="pd-container"><span class="[^"]*\bpa-bold\b[^"]*">never/u);
-        expect(argument).toMatch(/<u class="pd-container"><span class="[^"]*\bpa-underline\b[^"]*">place/u);
+        // EACH TAG WEARS ITS OWN CLASS since Sprint 95, the word inside it none of it: a basic is its tag.
+        expect(argument).toMatch(/<em class="[^"]*\bpa-emphasis pd-container"><span class="pd-word">names/u);
+        expect(argument).toMatch(/<b class="[^"]*\bpa-bold pd-container"><span class="pd-word">never/u);
+        expect(argument).toMatch(/<u class="[^"]*\bpa-underline pd-container"><span class="pd-word">place/u);
         expect(argument).toMatch(/\.pa-blank\{visibility:hidden!important;\}/u);
     });
 
