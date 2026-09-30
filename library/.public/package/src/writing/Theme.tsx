@@ -61,8 +61,8 @@ export class $Theme extends $Format {
             .pa-append { white-space: pre; }
             .pd-figure { max-width: 100%; }
             .pd-code { font-family: ui-monospace, monospace; font-size: calc(0.9 * ${({ theme }) => theme.size}); white-space: pre; overflow-x: auto; counter-reset: line; }
-            .pd-line { counter-increment: line; }
-            .pd-line::before { content: counter(line); display: inline-block; width: 3ch; margin-inline-end: 1.5ch; text-align: end; opacity: 0.4; user-select: none; }
+            .pd-code-line { counter-increment: line; }
+            .pd-code-line::before { content: counter(line); display: inline-block; width: 3ch; margin-inline-end: 1.5ch; text-align: end; opacity: 0.4; user-select: none; }
             .hljs-keyword, .hljs-built_in, .hljs-type, .hljs-number, .hljs-literal, .hljs-tag { color: ${({ theme }) => theme.link}; }
             .hljs-string, .hljs-regexp, .hljs-attr, .hljs-name { color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
             .hljs-comment, .hljs-meta, .hljs-doctag { color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); font-style: italic; }

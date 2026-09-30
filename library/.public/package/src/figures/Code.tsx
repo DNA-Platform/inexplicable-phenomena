@@ -25,7 +25,7 @@ export class $Code extends $Figure {
             const carried = open.join('');
             for (const tag of line.match(/<\/?span[^>]*>/gu) ?? [])
                 if (tag.startsWith('</')) open.pop(); else open.push(tag);
-            return `<span class="pd-line">${carried}${line}${'</span>'.repeat(open.length)}</span>`;
+            return `<span class="pd-code-line">${carried}${line}${'</span>'.repeat(open.length)}</span>`;
         }).join('\n');
     }
 

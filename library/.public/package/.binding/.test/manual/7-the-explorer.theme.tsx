@@ -30,8 +30,8 @@ export class $ManualTheme extends $LibraryValues {
             .pd-leaf.pa-open { opacity: 1; font-weight: bold; }
             .pa-appendix .pd-code { margin-block: 0; padding: 0; background: none; border: 0; font-size: calc(0.8 * ${at('size')}); line-height: 1.6; white-space: normal; overflow: visible; }
             .pa-appendix .pd-code :is(pre, code) { white-space: normal; }
-            .pa-appendix .pd-line { display: block; white-space: pre-wrap; overflow-wrap: anywhere; padding-inline-start: 4.5ch; text-indent: -4.5ch; }
-            .pa-appendix .pd-line::before { text-indent: 0; }
+            .pa-appendix .pd-code-line { display: block; white-space: pre-wrap; overflow-wrap: anywhere; padding-inline-start: 4.5ch; text-indent: -4.5ch; }
+            .pa-appendix .pd-code-line::before { text-indent: 0; }
             .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; }
             .pa-appendix .pd-paragraph { margin-block: 0; }
         `;

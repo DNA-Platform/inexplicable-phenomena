@@ -478,6 +478,8 @@ describe('the bound test library, seen in a real browser', () => {
         await persona.goto(new URL('/a-persona/who-writes-here/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         const tops = await persona.$$eval('.pd-line', lines => lines.map(line => line.getBoundingClientRect().top));
         expect(tops).toHaveLength(3);
+        // UNNUMBERED since Sprint 95's U7: the code's counter counts pd-code-line, and a poem's Lines wear pd-line alone.
+        expect(await persona.$$eval('.pd-line', lines => lines.map(line => getComputedStyle(line, '::before').content))).toEqual(['none', 'none', 'none']);
         expect(tops[1]).toBeGreaterThan(tops[0]);
         expect(tops[2]).toBeGreaterThan(tops[1]);
         await persona.close();
