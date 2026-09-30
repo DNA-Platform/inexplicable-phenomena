@@ -284,8 +284,8 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/--pd-font:Georgia/u);
             expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1\.25rem\);\}/u);
             // THREE LAYERS since Sprint 94: the invariants first, the theme's sheet second, a Format's rules unlayered.
-            // The head is ordered by the order styled components were defined, so the first layer named is the
-            // invariants', from Writing.tsx, and the sheet's statement appends pd.theme after it (D3 as measured).
+            // ONE GLOBAL SHEET since Sprint 95's U5: the Theme's sheet opens with the order statement and carries the
+            // invariants in their layer and the marks' looks in its own, and no annotation injects a style of its own.
             const layered = html.search(/@layer pd\.(?:invariants|theme)/u);
             expect(layered, route.name).toBeGreaterThanOrEqual(0);
             expect(html.slice(layered, layered + 24), route.name).toMatch(/^@layer pd\.invariants/u);

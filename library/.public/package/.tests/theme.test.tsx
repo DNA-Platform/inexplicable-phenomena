@@ -124,6 +124,23 @@ describe('a theme is a format said of a book that provides eight live properties
         // pd.theme, its own element's declarations stand unlayered above them, and a Format's output is unlayered.
         expect(css).toContain('@layer pd.invariants,pd.theme;');
         expect(css).toMatch(/@layer pd\.theme\{[\s\S]*\.pd-annotation\{display:none;\}/u);
+        // THE ONE GLOBAL SHEET since Sprint 95's U5: the four invariants that were four global styles stand in the
+        // sheet's first layer, and no annotation carries a global style of its own.
+        const invariants = css.match(/@layer pd\.invariants\{([\s\S]*?)\}\s*\/\*!sc\*\//u)?.[1] ?? css.match(/@layer pd\.invariants\{([\s\S]*?)@layer pd\.theme/u)?.[1] ?? '';
+        expect(invariants).toMatch(/\.pa-parenthetical,/u);
+        expect(invariants).toMatch(/\.pa-blank\{visibility:hidden!important;\}/u);
+        expect(invariants).toMatch(/\.pa-self-reference\{text-decoration:none!important;\}/u);
+        expect(invariants).toMatch(/\.pa-paginated \.pa-page:not\(\.pa-open\)\{display:none!important;\}/u);
+        const sources: string[] = [];
+        const walk = (folder: string): void => {
+            for (const entry of readdirSync(folder, { withFileTypes: true })) {
+                const at = join(folder, entry.name);
+                if (entry.isDirectory()) walk(at);
+                else if (at.endsWith('.tsx') || at.endsWith('.ts')) sources.push(readFileSync(at, 'utf8'));
+            }
+        };
+        walk(join(process.cwd(), 'src'));
+        expect(sources.filter(source => source.includes('createGlobalStyle'))).toHaveLength(0);
         expect(css).toMatch(/\{[^{}]*font-family:var\(--pd-font, serif\)/u);
     });
 

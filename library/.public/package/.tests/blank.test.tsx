@@ -4,6 +4,7 @@ import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Word, Word, $Paragraph, Paragraph, $Sentence, Blank, $Space, Space, $Break, Break, $Line, Line, Inline, Block } from '@dna-platform/public';
+import { $Book, Book, Chapter, Cover, Title } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -24,13 +25,15 @@ const served = (writing: $Writing): string => {
 // can add a linebreak, and Line… possibly driven by an annotation that allows something to maintain its spatial extent
 // but as a blank element. That's a fine genetic trait, like being albino :)"
 describe('blank keeps a writing\'s extent and shows nothing; space, break and line stand it and their pairs', () => {
-    it('a blank word wears pa-blank, and its note hides the ink and keeps the box', async () => {
+    it('a blank word wears pa-blank, and the Theme\'s sheet hides the ink and keeps the box, an invariant of the one global sheet', async () => {
         const word = built<$Word>(<Word>unseen <Blank /></Word>);
         expect([...word.classes]).toContain('pa-blank');
         expect(word.is(Blank)).toBe(true);
+        expect(word.annotations.find(Blank)[0].note()).toBeNull();
         const page = await drawn(word);
         expect(page.querySelector('.pa-blank')!.textContent).toContain('unseen');
-        expect(served(word)).toContain('.pa-blank{visibility:hidden!important;}');
+        const book = built<$Book>(<Book><Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Paragraph><Word>unseen <Blank /></Word></Paragraph></Chapter></Book>);
+        expect(served(book)).toContain('.pa-blank{visibility:hidden!important;}');
     });
 
     it('a space is a blank inline letter whose length is a count, one by default, drawn as non-breaking spaces', async () => {
@@ -54,7 +57,9 @@ describe('blank keeps a writing\'s extent and shows nothing; space, break and li
         const page = await drawn(one);
         const own = page.querySelector('.pd-break')!;
         expect(own.tagName).toBe('DIV');
-        expect(own.firstChild?.textContent ?? '').toBe('');
+        // NOTHING OF ITS OWN: no text, and every child an annotation's body, hidden.
+        expect(own.childNodes.length).toBe(own.children.length);
+        expect([...own.children].every(child => child.classList.contains('pd-annotation'))).toBe(true);
     });
 
     it('a line is a block sentence, a part of its paragraph, drawn as a div wearing the sentence\'s mark and its own', async () => {

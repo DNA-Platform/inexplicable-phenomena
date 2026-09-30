@@ -1,5 +1,4 @@
 import { ComponentType, ElementType, ReactNode } from 'react';
-import { createGlobalStyle } from 'styled-components';
 import { $, $check, $Chemical, selection } from '@dna-platform/chemistry';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
@@ -30,15 +29,6 @@ export class $Reference extends $Annotation {
 
 export class $SelfReference extends $Reference {
     override anchor: ElementType = selection(this.anchor as ComponentType<{ className?: string }>).attrs({ className: 'pa-self-reference' })``;
-    style = createGlobalStyle`
-        @layer pd.invariants {
-            .pa-self-reference {
-                text-decoration: none !important;
-            }
-        }
-    `;
-
-    override note(): ReactNode { return <this.style />; }
 
     override defines(writing: $Writing): void {
         super.defines(writing);

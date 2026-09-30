@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
@@ -673,19 +675,23 @@ describe('a writing draws through its containers, a layer for itself and one for
         expect(outer.querySelector('article.pd-container > span')?.className).toBe('');
     });
 
-    it('drawn, the container is the element its classes are on, and each annotation is rendered inside it as its own writing with pd-annotation on it', async () => {
-        const writing = built<$Section>(<Section>a <Mark /><Tagged /><Parenthetical /></Section>);
+    // THE GENOME IS OUT OF THE REACT TREE since Sprint 95's U5 — Doug: "let's design a version where things are drawn
+    // only when they have text… We are removing the genome from the React structure, but not from the $Chemistry
+    // one" — an annotation with nothing written in it renders no body; one with words renders its own writing.
+    it('drawn, the container is the element its classes are on; an annotation with words renders inside it as its own writing with pd-annotation on it, and one with nothing written renders no body', async () => {
+        const writing = built<$Section>(<Section>a <Mark>said</Mark><Tagged /><Parenthetical /></Section>);
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         const section = container?.firstElementChild;
         expect(section?.tagName).toBe('SECTION');
         expect(section?.className).toBe('pa-parenthetical pa-tagged');
-        expect(section?.querySelectorAll(':scope > span.pd-annotation').length).toBe(3);
+        expect(section?.querySelectorAll(':scope > span.pd-annotation').length).toBe(1);
+        expect(section?.querySelector(':scope > span.pd-annotation')?.textContent).toBe('said');
         expect(section?.textContent).toContain('a');
     });
 
-    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, with pd-annotation on it, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
+    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, with pd-annotation on it, one with nothing written renders no body, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
         const writing = built<$Writing>(<Writing>a <Mark>because it was late</Mark><Tagged /></Writing>);
         expect([...writing.annotations][0]).toBeInstanceOf($Tagged);
         expect([...writing.annotations.find($Mark)[0].classes]).toContain('pd-annotation');
@@ -694,19 +700,18 @@ describe('a writing draws through its containers, a layer for itself and one for
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         const notes = container?.querySelectorAll('span.pd-annotation');
-        expect(notes?.length).toBe(2);
+        expect(notes?.length).toBe(1);
         expect(notes?.[0].textContent).toBe('because it was late');
-        expect(notes?.[1].textContent).toBe('');
-        expect(container?.firstElementChild?.childElementCount).toBe(2);
+        expect(container?.firstElementChild?.childElementCount).toBe(1);
     });
 
-    it('Parenthetical renders, as its note, the styled global style that targets pa-parenthetical; an annotation that is not expressed renders no note', async () => {
+    // THE THEME'S SHEET IS THE ONE GLOBAL SHEET since Sprint 95's U5: a parenthetical's hiding is its invariant, read
+    // where it is written, and Parenthetical has no note of its own.
+    it('Parenthetical has no note: its hiding is the Theme\'s sheet\'s invariant; an annotation that is not expressed renders no note', async () => {
         const writing = built<$Writing>(<Writing>an aside <Parenthetical /></Writing>);
-        const parenthetical = writing.annotations.find($Parenthetical)[0];
-        const style = parenthetical.note() as React.ReactElement;
-        expect(style).not.toBeNull();
-        expect(typeof style.type).toBe('object');
-        expect((style.type as { $$typeof?: symbol }).$$typeof).toBe(Symbol.for('react.memo'));
+        expect(writing.annotations.find($Parenthetical)[0].note()).toBeNull();
+        const source = readFileSync(join(process.cwd(), 'src/writing/Theme.tsx'), 'utf8');
+        expect(source).toMatch(/@layer pd\.invariants \{[^]*?\.pa-parenthetical,[^]*?clip-path: inset\(50%\) !important/u);
         const narrated = built<$Writing>(<Writing>an aside <Parenthetical /><Narrative /></Writing>);
         const unexpressed = narrated.annotations.find($Parenthetical)[0];
         const drawn = unexpressed.view() as React.ReactElement<{ children: React.ReactNode[] }>;

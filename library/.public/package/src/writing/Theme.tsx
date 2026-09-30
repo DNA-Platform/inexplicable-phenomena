@@ -35,6 +35,26 @@ export class $Theme extends $Format {
         max-width: ${({ theme }) => theme.measure};
         margin-inline: auto;
         padding: ${({ theme }) => theme.space};
+        @layer pd.invariants {
+            .pa-parenthetical,
+            .pd-container:has(> .pa-parenthetical),
+            .pd-container:has(> .pd-container > .pa-parenthetical),
+            .pd-container:has(> .pd-container > .pd-container > .pa-parenthetical),
+            .pd-container:has(> .pd-container > .pd-container > .pd-container > .pa-parenthetical) {
+                position: absolute !important;
+                width: 1px !important;
+                height: 1px !important;
+                margin: -1px !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                clip-path: inset(50%) !important;
+                white-space: nowrap !important;
+                border: 0 !important;
+            }
+            .pa-blank { visibility: hidden !important; }
+            .pa-self-reference { text-decoration: none !important; }
+            .pa-paginated .pa-page:not(.pa-open) { display: none !important; }
+        }
         @layer pd.theme {
             .pd-container { box-sizing: border-box; color: inherit; }
             .pd-annotation { display: none; }

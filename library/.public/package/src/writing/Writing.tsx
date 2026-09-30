@@ -1,5 +1,4 @@
 import { ElementType, ReactNode } from 'react';
-import { createGlobalStyle } from 'styled-components';
 import { $, $Chemical } from '@dna-platform/chemistry';
 import { Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given } from '@/utilities/Collection';
@@ -116,7 +115,7 @@ export class $Annotation extends $Writing {
         const expressed = writing instanceof $Writing && writing.annotations.expressed(this) !== undefined;
         return (
             <>
-                {super.view()}
+                {this.text.at(0) === undefined ? null : super.view()}
                 {expressed ? this.note() : null}
             </>
         );
@@ -236,28 +235,6 @@ export class Annotations extends Collection<$Annotation> {
 }
 
 export class $Parenthetical extends $Annotation {
-    style = createGlobalStyle`
-        @layer pd.invariants {
-            .pa-parenthetical,
-            .pd-container:has(> .pa-parenthetical),
-            .pd-container:has(> .pd-container > .pa-parenthetical),
-            .pd-container:has(> .pd-container > .pd-container > .pa-parenthetical),
-            .pd-container:has(> .pd-container > .pd-container > .pd-container > .pa-parenthetical) {
-                position: absolute !important;
-                width: 1px !important;
-                height: 1px !important;
-                margin: -1px !important;
-                padding: 0 !important;
-                overflow: hidden !important;
-                clip-path: inset(50%) !important;
-                white-space: nowrap !important;
-                border: 0 !important;
-            }
-        }
-    `;
-
-    override note(): ReactNode { return <this.style />; }
-
     override defines(writing: $Writing): void { writing.classes.add(this, 'pa-parenthetical'); }
     override erase(writing: $Writing): void { writing.classes.revert(this); }
 }
@@ -271,16 +248,6 @@ export class $Narrative extends $Annotation {
 }
 
 export class $Blank extends $Annotation {
-    style = createGlobalStyle`
-        @layer pd.invariants {
-            .pa-blank {
-                visibility: hidden !important;
-            }
-        }
-    `;
-
-    override note(): ReactNode { return <this.style />; }
-
     override defines(writing: $Writing): void { writing.classes.add(this, 'pa-blank'); }
     override erase(writing: $Writing): void { writing.classes.revert(this); }
 }

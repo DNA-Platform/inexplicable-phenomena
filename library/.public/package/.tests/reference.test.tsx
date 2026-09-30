@@ -330,12 +330,13 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
         expect(anchor.classList.contains('pd-container')).toBe(true);
     });
 
-    // A GLOBAL STYLE INJECTS NOTHING UNDER HAPPY-DOM, so the invariant is read where it is written.
-    it('its note takes the underline off by the class its anchor wears, reaching no layer through what it holds', () => {
-        const source = readFileSync(join(process.cwd(), 'src/writing/Reference.tsx'), 'utf8');
-        const invariant = source.match(/@layer pd\.invariants \{([^]*?)\n {8}\}/u)?.[1] ?? '';
-        expect(invariant).toMatch(/\.pa-self-reference \{[^}]*text-decoration: none !important/u);
-        expect(invariant).not.toContain(':has(');
+    // THE INVARIANT IS THE THEME'S SHEET'S since Sprint 95's U5, read where it is written.
+    it('the sheet takes the underline off by the class its anchor wears, reaching no layer through what it holds', () => {
+        const source = readFileSync(join(process.cwd(), 'src/writing/Theme.tsx'), 'utf8');
+        const invariants = source.match(/@layer pd\.invariants \{([^]*?)\n {8}\}/u)?.[1] ?? '';
+        const rule = invariants.match(/\n([^\n{}]*\.pa-self-reference[^{}]*)\{([^}]*)\}/u);
+        expect(rule?.[1].trim()).toBe('.pa-self-reference');
+        expect(rule?.[2]).toMatch(/text-decoration: none !important/u);
     });
 
     it('takes back both classes and its layer when it stops applying, with the erase it inherits', () => {
@@ -348,11 +349,9 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
         expect([...writing.containers]).toEqual(['span']);
     });
 
-    it('its note is the global style that takes the underline off its link, and a reference has none', () => {
+    it('neither a self-reference nor a reference has a note: the underline is the sheet\'s invariant, and a link draws only its anchor', () => {
         const writing = built<$Writing>(<Writing>this library <Self>/the-library/</Self></Writing>);
-        const style = writing.annotations.find($SelfReference)[0].note() as React.ReactElement;
-        expect(style).not.toBeNull();
-        expect((style.type as { $$typeof?: symbol }).$$typeof).toBe(Symbol.for('react.memo'));
+        expect(writing.annotations.find($SelfReference)[0].note()).toBeNull();
         const plain = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference></Writing>);
         expect(plain.annotations.find($Reference)[0].note()).toBeNull();
     });

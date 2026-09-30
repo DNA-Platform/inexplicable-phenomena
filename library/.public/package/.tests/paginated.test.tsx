@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { createGlobalStyle } from 'styled-components';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Annotation, $Section, Section, Heading, Paragraph } from '@dna-platform/public';
 import { $Book, Book, Cover, Author, Subject, Synopsis, TableOfContents, $Chapter, Chapter, Title, $Paginated, Paginated, PaginatedSpecification } from '@dna-platform/public';
@@ -83,15 +82,10 @@ describe('a paginated book shows one chapter at a time, the one its bookmark nam
         expect(open[0].classList.contains('pa-page')).toBe(true);
     });
 
-    it('a class under it may say which chapters are its pages and give its own style, and is still paginated', () => {
+    it('a class under it may say which chapters are its pages, and is still paginated; a closed page is hidden by the Theme\'s sheet, not by any style of its own', () => {
         class $Tab extends $Annotation { }
         const Tab = $($Tab);
         class $Tabbed extends $Paginated {
-            override style = createGlobalStyle`
-                .pa-paginated .pa-page:not(.pa-open) {
-                    visibility: hidden;
-                }
-            `;
             override get pages(): $Chapter[] { return super.pages.filter(page => page.is($Tab)); }
         }
         const Tabbed = $($Tabbed);
