@@ -10,12 +10,12 @@ export default () => (
                 The one thing every book here shares: a place for the library's properties, and the one styled
                 component that dresses the framework's marks with them. The framework's Theme is bare, a place and
                 nothing in it, so the properties are this library's own — the font, the size, the leading, the
-                measure, the space, the ink, the paper and the link — declared as fields, named once for the provider,
-                and typed once for styled-components in this file, so that every style in the library reads them as
-                the theme's and a book that overrides them keeps the look in another ink, which is what
-                <Means>$[[ Libby ]]</Means> does to go dark. The provider declares them on the theme's element as
-                custom properties and hands every style a variable, so a value changed on the theme moves one
-                declaration and regenerates no class beneath it.
+                measure, the space, the ink, the paper and the link — declared as reactive fields and nothing else,
+                the class typed once as the theme styled-components hands down, so that every style in the library
+                reads them as the theme's and a book that overrides them keeps the look in another ink, which is what
+                <Means>$[[ Libby ]]</Means> does to go dark. How they reach a style is the framework's own provision:
+                the theme's layer answers for the theme, and the fields are templated into every rule beneath as
+                themselves; a field written on the theme regenerates the rules that read it.
             </Paragraph>
             <Paragraph>
                 The component is composed of parts, each a method returning a fragment of rules, so that a subclass

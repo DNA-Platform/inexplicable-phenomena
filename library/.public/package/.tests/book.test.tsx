@@ -282,7 +282,7 @@ describe('every writing has a book', () => {
         const plain = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
         expect(plain.theme).toBeInstanceOf($Theme);
         // NO VALUES OF ITS OWN since Sprint 97's policy — Doug: "none — a library names its own."
-        expect(plain.theme.values).toEqual({});
+        expect('ink' in plain.theme).toBe(false);
         expect(plain.specify().filter(said => said.includes('theme'))).toEqual([]);
         const dark = built<$Book>(<Book><Dark />{APaper()}{TheArgument()}</Book>);
         expect(dark.theme).toBeInstanceOf($Dark);
@@ -303,7 +303,6 @@ describe('every writing has a book', () => {
 
 class $Dark extends $Theme {
     ink = 'white';
-    override get values(): Record<string, string> { return { ink: this.ink }; }
 }
 const Dark = $($Dark);
 

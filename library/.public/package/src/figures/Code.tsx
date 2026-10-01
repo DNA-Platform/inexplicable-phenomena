@@ -1,8 +1,7 @@
 import { ReactNode } from 'react';
 import hljs from 'highlight.js';
-import { $ } from '@dna-platform/chemistry';
+import { $, $Chemical } from '@dna-platform/chemistry';
 import { html } from '@/utilities/Html';
-import { Block as block } from '@/writing/Composition';
 import { $Figure } from './Figure';
 
 export type Highlighter = (text: string, language: string) => string;
@@ -29,19 +28,18 @@ export class $Code extends $Figure {
         }).join('\n');
     }
 
+    $Code(...chemicals: $Chemical[]) {
+        this.$Writing(...chemicals);
+        this.containers.replace(this, 'span', 'pre');
+    }
+
     override write(): ReactNode {
-        return (
-            <pre><code className={this.language === '' ? undefined : `language-${this.language}`} dangerouslySetInnerHTML={{ __html: this.listing }} /></pre>
-        );
+        return <code className={this.language === '' ? undefined : `language-${this.language}`} dangerouslySetInnerHTML={{ __html: this.listing }} />;
     }
 
     protected override $Define(): void {
         super.$Define();
         this.classes.add(this, 'pd-code');
-        const Block = $(block);
-        this.annotations.add(this,
-            <Block />
-        );
     }
 }
 

@@ -238,9 +238,9 @@ describe('a bind of the test library', () => {
             const html = page(route.name);
             // A PRELOAD LINK MAY STAND FIRST, which React emits ahead of a page holding a picture.
             expect(html, route.name).toMatch(/<div id="root">(<link [^>]*\/>)*<!--\$--><div class="[^"]*pd-container"( style="[^"]*")?>/u);
-            // SOME PROJECTS REGISTERS THE FRAMEWORK'S OWN THEME ON ITS CLASS, D19, and the bare base declares nothing.
-            if (route.name === 'Some Projects') expect(html, route.name).not.toContain('--pd-');
-            else expect(html, route.name).toMatch(/ style="--pd-font:[^"]*">/u);
+            // SOME PROJECTS REGISTERS THE FRAMEWORK'S OWN THEME ON ITS CLASS, D19, the bare base; every other book's sheet carries the library's font.
+            if (route.name === 'Some Projects') expect(sheetOf(html), route.name).not.toContain('font-family');
+            else expect(sheetOf(html), route.name).toContain('font-family:Georgia');
             expect(html, route.name).not.toContain('pd-annotation');
             expect(sheetOf(html), route.name).not.toContain('pd-annotation');
         }
@@ -306,14 +306,14 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
             expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
             const sheet = sheetOf(html);
-            expect(sheet, route.name).not.toMatch(/--pd-font:(?:Georgia|serif)/u);
-            // SOME PROJECTS IS THE BASE, D19: no value declared, no rule for a level, only Paginated's own and the library's kinds undressed.
+            // THE THEME'S FIELDS ARE TEMPLATED INTO THE SHEET since Sprint 97, chemistry's own provision — Doug: "reactive
+            // properties and they are templated into the string" — and the theme's element declares nothing.
+            expect(html, route.name).not.toContain('--pd-');
+            // SOME PROJECTS IS THE BASE, D19: no rule for a level, only Paginated's own and the library's kinds undressed.
             if (route.name === 'Some Projects') {
-                expect(html, route.name).not.toContain('--pd-');
                 expect(sheet, route.name).not.toMatch(/\.pd-paragraph\{/u);
             } else {
-                expect(html, route.name).toMatch(/style="--pd-font:Georgia/u);
-                expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space\);\}/u);
+                expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:1\.25rem;\}/u);
             }
             expect(sheet, route.name).not.toContain('@layer');
             expect(sheet, route.name).not.toContain('!important');
@@ -361,17 +361,18 @@ describe('a bind of the test library', () => {
     });
 
     it('drew Libby dark by its own theme in front of the library\'s, and no other book dark', () => {
-        expect(page('Libby')).toMatch(/--pd-ink:ivory;--pd-paper:#1f1f24/u);
+        expect(sheetOf(page('Libby'))).toMatch(/color:ivory/u);
+        expect(sheetOf(page('Libby'))).toMatch(/background:#1f1f24/u);
         for (const route of table.routes)
             if (route.name !== 'Libby')
-                expect(page(route.name), route.name).not.toContain('#1f1f24');
+                expect(sheetOf(page(route.name)), route.name).not.toContain('#1f1f24');
     });
 
     it('drew the frame on each of the persona\'s chapters, its border in the theme\'s ink, and Some Projects bare: the base, its chapters the framework\'s own words', () => {
         const persona = page('A Persona');
-        expect(sheetOf(persona)).toMatch(/border:1px solid var\(--pd-ink\);padding:var\(--pd-space\);margin-block:var\(--pd-space\)/u);
+        expect(sheetOf(persona)).toMatch(/border:1px solid #23262a;padding:1\.25rem;margin-block:1\.25rem/u);
         expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
-        expect(sheetOf(page('Libby'))).not.toMatch(/border:1px solid [^;]*;padding:var\(--pd-space[^;]*\);margin-block:var\(--pd-space[^;]*\)/u);
+        expect(sheetOf(page('Libby'))).not.toMatch(/border:1px solid [^;]*;padding:1\.25rem;margin-block:1\.25rem/u);
         // SOME PROJECTS STANDS THE BASE ALONE since Sprint 97, B2: Paginated and the framework's Cover, Synopsis and
         // TableOfContents, no frame, no card, no rule of a library's Format in its sheet but its own kinds' marks.
         const projects = page('Some Projects');

@@ -1,6 +1,5 @@
 import { ElementType, ReactNode } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { $, $Chemical, children } from '@dna-platform/chemistry';
+import { $, $Chemical, children, theme } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
 import { $Writing, $Annotation } from './Writing';
 import type { $Theme } from './Theme';
@@ -36,18 +35,11 @@ export class $Format extends $Annotation {
 export class $Provider extends $Chemical {
     $format!: $Format;
     $className?: string;
+    override get [theme](): $Theme { return this.$format.theme; }
 
     view(): ReactNode {
-        const values = this.$format.theme.values;
-        const names = Object.keys(values);
-        const variables = Object.fromEntries(names.map(name => [name, `var(--pd-${name})`]));
-        const declarations = Object.fromEntries(names.map(name => [`--pd-${name}`, values[name]]));
         const Style = this.$format.style ?? 'div';
-        return (
-            <ThemeProvider theme={variables}>
-                <Style className={this.$className} style={declarations}>{this[children]}</Style>
-            </ThemeProvider>
-        );
+        return <Style className={this.$className}>{this[children]}</Style>;
     }
 }
 

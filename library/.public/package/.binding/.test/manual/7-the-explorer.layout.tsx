@@ -47,7 +47,7 @@ export class $Explorer extends $Format {
 
         .pa-page .pd-heading { font-size: calc(1.1 * ${({ theme }) => theme.size}); }
         .pa-appendix .pd-code { margin-block: 0; padding: 0; background: none; border: 0; font-size: calc(0.8 * ${({ theme }) => theme.size}); line-height: 1.6; white-space: normal; overflow: visible; }
-        .pa-appendix .pd-code :is(pre, code) { white-space: normal; }
+        .pa-appendix .pd-code code { white-space: normal; }
         .pa-appendix .pd-code-line { display: block; white-space: pre-wrap; overflow-wrap: anywhere; padding-inline-start: 4.5ch; text-indent: -4.5ch; }
         .pa-appendix .pd-code-line::before { text-indent: 0; }
         .pa-appendix .pd-paragraph { margin-block: 0; }

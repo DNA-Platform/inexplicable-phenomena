@@ -19,7 +19,6 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
 // fields, named in `values`, which the provider declares inline and every rule beneath reads as a variable.
 class $Inky extends $Theme {
     ink = 'black';
-    override get values(): Record<string, string> { return { ink: this.ink }; }
 }
 const Inky = $($Inky);
 
@@ -64,7 +63,7 @@ class $Inked extends $Format {
     $Inked(...chemicals: $Chemical[]) {
         this.$Format(...chemicals);
         const Span = this.style;
-        this.style = (props: { children?: ReactNode; className?: string }) => <Span $ink={this.theme.values.ink} {...props} />;
+        this.style = (props: { children?: ReactNode; className?: string }) => <Span $ink={(this.theme as $Inky).ink} {...props} />;
     }
 }
 
@@ -129,10 +128,9 @@ describe('a format consumes its theme through its book, exposes its own properti
         const book = shelf(<Paragraph>inked <Inked /><Themed /></Paragraph>);
         const inked = book.text.find($Chapter)[1].text.find($Paragraph)[0].annotations.find($Inked)[0];
         expect(inked.theme).toBe(book.theme);
-        expect(inked.theme.values.ink).toBe('black');
+        expect((inked.theme as $Inky).ink).toBe('black');
         await drawn(book);
         expect(sheet()).toContain('color:black');
-        expect(sheet()).toContain('color:var(--pd-ink)');
     });
 
     it('a format built in no book has no theme, and says so', () => {
@@ -141,13 +139,14 @@ describe('a format consumes its theme through its book, exposes its own properti
         expect(() => themed.theme).toThrow('a format reads its theme from its book, and this one stands in none');
     });
 
-    // AND THAT THEME'S DECLARATIONS STAND ON THE PROVIDING FORMAT'S ELEMENT since Sprint 97's policy, so the subtree
-    // reads the other theme's values and not the fallbacks — the gap Themes and Formats had recorded as owed.
-    it('one that provides hands its theme to everything it draws, the book\'s or another a subclass reaches, and declares that theme\'s values on its element', async () => {
+    // THE PROVIDER IS CHEMISTRY'S since Sprint 97 — Doug: "Why can't you just have reactive properties and they are
+    // templated into the string?" The layer answers chemistry's theme symbol with its Format's theme, and chemistry's
+    // providing() wraps it in ThemeProvider with a live face over that chemical, so a template reads the field itself;
+    // a Format reaching another theme hands that one down, the gap Themes and Formats had recorded as owed.
+    it('one that provides hands its theme to everything it draws, the book\'s or another a subclass reaches, as the fields themselves', async () => {
         await drawn(shelf(<Paragraph>a quote <Housed /><Themed /></Paragraph>));
-        expect(sheet()).toContain('color:var(--pd-ink)');
-        const page = await drawn(shelf(<Paragraph>a quote <Nightly /><Themed /></Paragraph>));
-        expect(sheet()).toContain('color:var(--pd-ink)');
-        expect((page.querySelector('section') as HTMLElement).style.getPropertyValue('--pd-ink')).toBe('ivory');
+        expect(sheet()).toContain('color:black');
+        await drawn(shelf(<Paragraph>a quote <Nightly /><Themed /></Paragraph>));
+        expect(sheet()).toContain('color:ivory');
     });
 });

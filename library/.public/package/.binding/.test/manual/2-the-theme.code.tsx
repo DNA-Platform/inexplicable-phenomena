@@ -3,19 +3,8 @@ import { css, RuleSet } from 'styled-components';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Theme } from '@dna-platform/public';
 
-export interface LibraryValues {
-    font: string;
-    size: string;
-    leading: string;
-    measure: string;
-    space: string;
-    ink: string;
-    paper: string;
-    link: string;
-}
-
 declare module 'styled-components' {
-    export interface DefaultTheme extends LibraryValues {}
+    export interface DefaultTheme extends $LibraryTheme {}
 }
 
 export class $LibraryTheme extends $Theme {
@@ -27,9 +16,6 @@ export class $LibraryTheme extends $Theme {
     ink = '#23262a';
     paper = '#faf8f4';
     link = '#5b2f2a';
-    override get values(): LibraryValues {
-        return { font: this.font, size: this.size, leading: this.leading, measure: this.measure, space: this.space, ink: this.ink, paper: this.paper, link: this.link };
-    }
     style: ElementType = selection.div`${this.parts()}`;
 
     protected parts(): RuleSet[] {
@@ -139,7 +125,6 @@ export class $LibraryTheme extends $Theme {
                 background: color-mix(in srgb, ${({ theme }) => theme.ink} 4%, ${({ theme }) => theme.paper});
                 border-inline-start: 2px solid color-mix(in srgb, ${({ theme }) => theme.ink} 25%, ${({ theme }) => theme.paper});
             }
-            .pd-code pre { margin: 0; }
             .pd-code-line::before { content: attr(data-line); display: inline-block; width: 3ch; margin-inline-end: 1.5ch; text-align: end; opacity: 0.4; user-select: none; }
             .hljs-keyword, .hljs-built_in, .hljs-type, .hljs-number, .hljs-literal, .hljs-tag { color: ${({ theme }) => theme.link}; }
             .hljs-string, .hljs-regexp, .hljs-attr, .hljs-name { color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }

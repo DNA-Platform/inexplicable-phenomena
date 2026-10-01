@@ -6,7 +6,6 @@ import { $Format } from './Format';
 export class $Theme extends $Format {
     specification = new ThemeSpecification();
     themeProvider = true;
-    get values(): Record<string, string> { return {}; }
     override get theme(): $Theme { return this; }
 
     override defines(writing: $Writing): void {

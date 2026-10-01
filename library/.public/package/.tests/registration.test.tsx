@@ -9,7 +9,8 @@ import { $Table, Table, $SelfReference, Self, $Theme, Theme, $Format } from '@dn
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const served = (book: $Book): string => {
     const Drawn = $(book);
-    return renderToString(new ServerStyleSheet().collectStyles(<Drawn />));
+    const sheet = new ServerStyleSheet();
+    return renderToString(sheet.collectStyles(<Drawn />)) + sheet.getStyleTags();
 };
 
 class $Ledger extends $Table {
@@ -20,7 +21,9 @@ class $Plain extends $SelfReference {
 }
 class $Purple extends $Theme {
     ink = 'rebeccapurple';
-    override get values(): Record<string, string> { return { ink: this.ink }; }
+}
+class $Inked extends $Format {
+    style = selection.span`color: ${({ theme }: { theme: { ink?: string } }) => theme.ink ?? 'unthemed'};`;
 }
 class $Framed extends $Format {
     style = selection.div.attrs({ className: 'pa-framed' })``;
@@ -29,12 +32,13 @@ const Ledger = $($Ledger);
 const Plain = $($Plain);
 const Purple = $($Purple);
 const Framed = $($Framed);
+const Inked = $($Inked);
 
 const chapters = (): React.ReactNode[] => [
     <Chapter key="c"><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>,
     <Chapter key="s"><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>,
     <Chapter key="t"><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>,
-    <Chapter key="a"><Table /><Framed /><Title>[A](/a-paper/a/)</Title><Paragraph>row one</Paragraph><Paragraph>row two</Paragraph></Chapter>,
+    <Chapter key="a"><Table /><Framed /><Title>[A](/a-paper/a/)</Title><Paragraph>row one <Inked /></Paragraph><Paragraph>row two</Paragraph></Chapter>,
 ];
 
 // REPLACE BY REGISTRATION WHAT THE FRAMEWORK STANDS; REPLACE BY IMPORT WHAT A CHAPTER WRITES — Sprint 97's P5 as
@@ -51,7 +55,7 @@ describe('a registration on a book class answers what the framework stands; what
         const html = served(built<$Book>(<Untouched>{chapters()}</Untouched>));
         expect(html).not.toContain('pa-ledger');
         expect(html).not.toContain('pa-plain');
-        expect(html).not.toContain('--pd-ink');
+        expect(html).toContain('unthemed');
         expect(html).toMatch(/class="[^"]*\bpa-table\b/u);
         expect(html).toMatch(/class="[^"]*\bpa-self-reference\b/u);
     });
@@ -66,7 +70,7 @@ describe('a registration on a book class answers what the framework stands; what
         expect(book.theme).toBeInstanceOf($Purple);
         const html = served(book);
         expect(html).toMatch(/<a [^>]*class="[^"]*\bpa-plain\b/u);
-        expect(html).toContain('--pd-ink:rebeccapurple');
+        expect(html).toContain('color:rebeccapurple');
         expect(html).toContain('pa-framed');
         expect(html).toMatch(/class="[^"]*\bpa-table\b/u);
         expect(html).not.toContain('pa-ledger');
@@ -87,7 +91,7 @@ describe('a registration on a book class answers what the framework stands; what
         expect($($SomeProjects)).toBe(SomeProjects);
         const html = served(built<$Book>(<SomeProjects>{chapters()}</SomeProjects>));
         expect(html).toMatch(/<a [^>]*class="[^"]*\bpa-plain\b/u);
-        expect(html).toContain('--pd-ink:rebeccapurple');
+        expect(html).toContain('color:rebeccapurple');
     });
 
     // D19 — SOME PROJECTS SHOWS THE BASE: a book registering the framework's own Theme on its own class, the nearest
@@ -102,6 +106,6 @@ describe('a registration on a book class answers what the framework stands; what
         const book = built<$Book>(<Bare>{chapters()}</Bare>);
         expect(book.theme).toBeInstanceOf($Theme);
         expect(book.theme).not.toBeInstanceOf($Purple);
-        expect(served(book)).not.toContain('--pd-ink');
+        expect(served(book)).toContain('unthemed');
     });
 });
