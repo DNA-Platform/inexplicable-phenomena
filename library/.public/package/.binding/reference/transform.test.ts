@@ -89,8 +89,8 @@ describe('a reference in prose', () => {
     it('resolves every form to the address the catalogue holds, and misses none', () => {
         expect(made.missing).toEqual([]);
         expect(made.text).toContain('<Means>[The Library](/the-library/)</Means>');
-        expect(made.text).toContain('<Means>[The Evidence](/a-paper/the-evidence/)</Means>');
-        expect(made.text).toContain('<Means>[The Work](/some-projects/the-work/)</Means>');
+        expect(made.text).toContain('<Means>[The Evidence](/a-paper/#the-evidence)</Means>');
+        expect(made.text).toContain('<Means>[The Work](/some-projects/#the-work)</Means>');
     });
 
     it('keeps the words a writer gave and puts the address behind them', () => {
@@ -99,7 +99,7 @@ describe('a reference in prose', () => {
     });
 
     it('compiles a reference in a string to the same thing', () => {
-        expect(made.text).toContain("const evidence = '[The Evidence](/a-paper/the-evidence/)';");
+        expect(made.text).toContain("const evidence = '[The Evidence](/a-paper/#the-evidence)';");
     });
 
     it('adds no component, so what reads the link is whatever element the writer put it in', () => {
@@ -114,7 +114,7 @@ describe('a reference in prose', () => {
 describe('a title form', () => {
     it('in a chapter names that chapter, and compiles to its own page under its book\'s', () => {
         const made = transforming(readFileSync(chapter, 'utf8'), chapter, card);
-        expect(made.text).toContain('<Title>[The Argument](/a-paper/the-argument/)</Title>');
+        expect(made.text).toContain('<Title>[The Argument](/a-paper/#the-argument)</Title>');
     });
 
     // A SYNOPSIS'S TITLE GOES TO ITS BOOK — Doug, 2026-09-26: "we want the title of a synopsis chapter to
@@ -125,7 +125,7 @@ describe('a title form', () => {
         const made = transforming(readFileSync(synopsis, 'utf8'), synopsis, card);
         expect(made.missing).toEqual([]);
         expect(made.text).toContain('<Title><Parenthetical />[Synopsis](/the-library/)</Title>');
-        expect(transforming(`<Means>$[[ ./Synopsis ]]</Means>`, synopsis, card).text).toBe('<Means>[Synopsis](/the-library/synopsis/)</Means>');
+        expect(transforming(`<Means>$[[ ./Synopsis ]]</Means>`, synopsis, card).text).toBe('<Means>[Synopsis](/the-library/#synopsis)</Means>');
     });
 
     it('naming what its file is not, is missed rather than guessed', () => {
@@ -158,8 +158,8 @@ describe('a table of contents', () => {
 
     it('refers to its chapters by their pages, and to the synopsis of the book it answers for', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Content>[Who I Am](/libby/who-i-am/)</Content>');
-        expect(made.text).toContain('<Content>[a persona she vouches for, and its own account](/a-persona/synopsis/)</Content>');
+        expect(made.text).toContain('<Content>[Who I Am](/libby/#who-i-am)</Content>');
+        expect(made.text).toContain('<Content>[a persona she vouches for, and its own account](/a-persona/#synopsis)</Content>');
     });
 
     it('answers for the book it catalogues with the book\'s url, and keeps no star', () => {
@@ -189,21 +189,21 @@ describe('a mention that allocates', () => {
 
     it('keeps its words and gives them the url of its own place, both halves and no component', () => {
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Mention>[The First Shelf](/the-library/the-shelves/#the-first-shelf)</Mention>');
+        expect(made.text).toContain('<Mention>[The First Shelf](/the-library/#the-first-shelf)</Mention>');
     });
 
     it('and a reference to it is given the same url', () => {
-        expect(made.text).toContain('<Means>[The First Shelf](/the-library/the-shelves/#the-first-shelf)</Means>');
+        expect(made.text).toContain('<Means>[The First Shelf](/the-library/#the-first-shelf)</Means>');
     });
 
     it('is addressed by the name it was given, which is the name a reference asks for, and keeps its words', () => {
         const code = `export default () => (<Paragraph><Mention>[[[ the shelf ]]]( The First Shelf )</Mention> here</Paragraph>);`;
-        expect(transforming(code, shelves, card).text).toContain('<Mention>[the shelf](/the-library/the-shelves/#the-first-shelf)</Mention>');
+        expect(transforming(code, shelves, card).text).toContain('<Mention>[the shelf](/the-library/#the-first-shelf)</Mention>');
     });
 
     it('allocates the same in a string, which is handed to whatever reads it', () => {
         const code = `const said = '[[[ The First Shelf ]]]';`;
-        expect(transforming(code, shelves, card).text).toBe(`const said = '[The First Shelf](/the-library/the-shelves/#the-first-shelf)';`);
+        expect(transforming(code, shelves, card).text).toBe(`const said = '[The First Shelf](/the-library/#the-first-shelf)';`);
     });
 
     it('naming a place its book does not make, is missed rather than given an id', () => {

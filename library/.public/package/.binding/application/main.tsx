@@ -14,15 +14,16 @@ const path = addressOf(location.pathname);
 const probes = import.meta.glob('../specification/probe/*.tsx');
 const probing = import.meta.env.DEV && location.search.includes('probe') && Object.keys(probes).length > 0;
 
-// A ROUTE IS A BOOK, AND A BOOK ANSWERS ITS CHAPTERS' ADDRESSES AS WELL AS ITS OWN — one app, drawn
-// with whichever chapter the address names open.
-const route = routes.find(one => one.address === path || one.chapters.some(chapter => chapter.address === path)) ?? root;
+// A ROUTE IS A BOOK, AND EVERY CHAPTER OF IT IS A FRAGMENT OF ITS ADDRESS — one app, one page, drawn
+// with whichever chapter the fragment names open. Sprint 95, D1.
+const route = routes.find(one => one.address === path) ?? root;
 if (!probing && !route) throw new Error(`no book stands at ${path}, and no book stands at the root`);
 
-// THE BOOKMARK IS THE PLACE THE PAGE IS OPEN AT — the url the compiler wrote into a chapter's title, so
-// the book finds the chapter by equality and turns to it; with a fragment, the mentioned place itself,
-// which no chapter's title means, so the book stays and the landing is the router's. Doug,
-// 2026-09-26: "it is the place where the user is (recently was) and it is a record of him being there."
+// THE BOOKMARK IS THE PLACE THE PAGE IS OPEN AT — the url the compiler wrote into a chapter's title,
+// `/book/#chapter` since Sprint 95's D1, so the book finds the chapter by equality and turns to it; a
+// fragment naming a mention or a heading, which no chapter's title means, leaves the book where it is
+// and the landing is the router's. Doug, 2026-09-26: "it is the place where the user is (recently was)
+// and it is a record of him being there."
 const bookmarkOf = (url: { pathname: string; hash: string }): string => `${url.pathname.replace(/\/+$/u, '')}/${url.hash}`;
 
 // THE BOOK IS BUILT ONCE AND HELD, its bookmark set on the instance before it is drawn and again on
@@ -71,16 +72,16 @@ const drawing = served ? hydrateRoot(mount, drawn(Opened), {
 if (!served) drawing.render(drawn(Opened));
 
 // THE ROUTER. Doug, 2026-09-26: "Everything needs to go through the router"; "Long distance urls to
-// that which was mentioned also must work." A link within the book is a route the app takes in place:
-// the address is pushed and the book's bookmark is set, which paints nothing — the book turns to the
-// chapter, and the router lands on the fragment. A link to another book, or anywhere else, is left to
-// the browser, which loads that page, whose own router completes the landing — the URL is the only
-// thing that passes between pages. Back and forward are the same route the other way, and a link to
-// a fragment of the page already open is the browser's own move. Nothing here decides what is
-// visible: the book's layout reads the bookmark.
+// that which was mentioned also must work." A link within the book is a move the app takes in place:
+// the book's bookmark is set, which paints nothing — the book turns to the chapter, and the router
+// lands on the fragment. Since Sprint 95's D1 every chapter is a fragment of the one page, so a link
+// to one is the browser's own move, taken up on `popstate`; a link to the book's own address is pushed
+// here. A link to another book, or anywhere else, is left to the browser, which loads that page, whose
+// own router completes the landing — the URL is the only thing that passes between pages. Back and
+// forward are the same move the other way. Nothing here decides what is visible: the book's layout
+// reads the bookmark.
 const within = (url: URL): boolean =>
-    url.origin === location.origin && route !== undefined
-    && (route.address === addressOf(url.pathname) || route.chapters.some(chapter => chapter.address === addressOf(url.pathname)));
+    url.origin === location.origin && route !== undefined && route.address === addressOf(url.pathname);
 const visit = (): void => {
     if (book === undefined || bookmarkOf(location) === book.$bookmark) return;
     book.$bookmark = bookmarkOf(location);

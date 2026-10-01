@@ -64,22 +64,24 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
     // it is in before it says anything else — which is the reference grammar written as a URL:
     //
     //     Book Code                 ->  /dougs-library/
-    //     Book Code / Chapter Code  ->  /dougs-library/the-sheet/
-    //     Book Code / Mention       ->  /dougs-library/the-sheet/#the-mention
+    //     Book Code / Chapter Code  ->  /dougs-library/#the-sheet
+    //     Book Code / Mention       ->  /dougs-library/#the-mention
     //
-    // A CHAPTER IS A ROUTE OF ITS BOOK, WITH A PAGE OF ITS OWN. It was a fragment on its book's page
-    // from 2026-09-19 — Doug: "Don't chapters have #ids right now? Wouldn't it append the hash." — to
-    // 2026-09-26, when the chapters became routes: "The book is a static page returned by github
-    // pages, the chapters are routes on a local spa"; "Long distance urls to that which was mentioned
-    // also must work… Everything needs to go through the router." The render writes a page at every
-    // route and the book's app answers each, so a link from anywhere lands on a page the host
-    // serves, and a link within the book is a route the app takes in place. Whether or not a
-    // chapter's title prints, the chapter has its route — the compiler reads no tag to know; Doug,
-    // 2026-09-20: "The compiler just cares that things are in the right file."
+    // A CHAPTER IS A FRAGMENT OF ITS BOOK'S PAGE — Sprint 95, D1. Doug, 2026-09-30: "It is one page per
+    // book for sure. Chapters and mentions are more like bookmarks within the book that one can link
+    // to." It was a fragment from 2026-09-19 — "Don't chapters have #ids right now? Wouldn't it append
+    // the hash." — then a route of its book with a page of its own from 2026-09-26, "the chapters are
+    // routes on a local spa", every page holding the whole book. The render writes one page per book,
+    // every chapter in its print for a crawler, and the book's own app opens the chapter the fragment
+    // names, so a link from anywhere lands on a page the host serves and a link within the book is a
+    // move the app takes in place — "Long distance urls to that which was mentioned also must work…
+    // Everything needs to go through the router." Whether or not a chapter's title prints, the chapter
+    // has its fragment — the compiler reads no tag to know; Doug, 2026-09-20: "The compiler just cares
+    // that things are in the right file."
     //
-    // AND A MENTION IS A FRAGMENT ON THE PAGE OF THE FILE IT STANDS IN, the cover's on the book's.
-    // The id it lands on is its name's slug, made with the same `identifier.slug` the element makes
-    // its own id with, so the address written here and the id worn are one function by construction.
+    // AND A MENTION IS A FRAGMENT ON THE SAME PAGE, since the whole book draws on it. The id it lands on
+    // is its name's slug, made with the same `identifier.slug` the element makes its own id with, so the
+    // address written here and the id worn are one function by construction.
     //
     // A CHAPTER IS NAMED WITHIN ITS BOOK AND NOWHERE ELSE, so `Dougs Library > The Sheet` is the
     // WHOLE key and there is no bare one beside it.
@@ -101,18 +103,15 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         const held = found.books.find(one => one.folder === route.folder);
         if (held !== undefined) inside.push({ path: forward(held.path), name: route.name });
 
-        // AND ITS CHAPTERS, EACH AT ITS OWN PAGE — and its anchors, which are spots of the structure
-        // rather than a second reading, each on the page of the file it stands in.
-        const pages = new Map<string, string>();
-        for (const chapter of route.chapters) {
-            const page = pageOf(chosen.resolution.base, chapter.address);
-            at.set(`${route.name} / ${chapter.name}`, page);
-            pages.set(chapter.file, page);
-        }
+        // AND ITS CHAPTERS, EACH A FRAGMENT OF THE BOOK'S PAGE — and its anchors, which are spots of the
+        // structure rather than a second reading, each a fragment of the same page, since the whole book
+        // draws on it. Sprint 95, D1.
+        for (const chapter of route.chapters)
+            at.set(`${route.name} / ${chapter.name}`, pageOf(chosen.resolution.base, chapter.address));
         for (const spot of structure.spots.values()) {
             if (spot.kind !== 'anchor' || spot.book !== route.folder) continue;
             const anchor = structure.named.get(spot.id);
-            if (anchor !== undefined) at.set(`${route.name} / ${anchor}`, `${pages.get(basename(spot.file)) ?? book}#${identifier.slug(anchor)}`);
+            if (anchor !== undefined) at.set(`${route.name} / ${anchor}`, `${book}#${identifier.slug(anchor)}`);
         }
     }
 

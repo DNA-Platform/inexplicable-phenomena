@@ -92,11 +92,11 @@ describe('the test library, read', () => {
 describe('the catalogue over it', () => {
     // A CHAPTER IS A ROUTE OF ITS BOOK — Doug, 2026-09-26: "The book is a static page returned by
     // github pages, the chapters are routes on a local spa."
-    it('answers a book with its page and a chapter with its own page under it', () => {
+    it('answers a book with its page and a chapter with a fragment of it, its address the address of its book and then the fragment, Sprint 95, D1', () => {
         expect(card.where('The Library')).toBe('/the-library/');
-        expect(card.where('A Paper / The Evidence')).toBe('/a-paper/the-evidence/');
+        expect(card.where('A Paper / The Evidence')).toBe('/a-paper/#the-evidence');
         expect(card.table.routes.find(route => route.name === 'A Paper')?.chapters.map(chapter => chapter.address))
-            .toEqual(['/a-paper/synopsis', '/a-paper/table-of-contents', '/a-paper/the-argument', '/a-paper/the-evidence']);
+            .toEqual(['/a-paper#synopsis', '/a-paper#table-of-contents', '/a-paper#the-argument', '/a-paper#the-evidence']);
     });
 
     // EVERY CHAPTER HAS ITS ROUTE, and the compiler never reads whether its title prints — Doug,
@@ -104,15 +104,15 @@ describe('the catalogue over it', () => {
     // cares that things are in the right file."
     it('answers a chapter by its route whether or not its title prints', () => {
         expect(made.spots.get('library/.synopsis.tsx')?.kind).toBe('chapter');
-        expect(card.where('The Library / Synopsis')).toBe('/the-library/synopsis/');
-        expect(card.where('The Library / Table of Contents')).toBe('/the-library/table-of-contents/');
+        expect(card.where('The Library / Synopsis')).toBe('/the-library/#synopsis');
+        expect(card.where('The Library / Table of Contents')).toBe('/the-library/#table-of-contents');
     });
 
     it('and an anchor a chapter allocates is a spot of its book, reached by name and addressed on its chapter\'s page', () => {
         const anchor = made.spots.get('library/1-the-shelves.tsx#The First Shelf');
         expect(anchor?.kind).toBe('anchor');
         expect(made.of('The Library / The First Shelf')).toBe(anchor?.id);
-        expect(card.where('The Library / The First Shelf')).toBe('/the-library/the-shelves/#the-first-shelf');
+        expect(card.where('The Library / The First Shelf')).toBe('/the-library/#the-first-shelf');
     });
 
     it('refuses by non-membership alone', () => {

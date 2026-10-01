@@ -41,9 +41,6 @@ const causeOfTheFailure = (unguarded: ReactNode): string => {
     return 'the boundary errored and the same book drawn again raised nothing';
 };
 
-// THE PAGE IS DRAWN THROUGH THE INDEX THE BINDER WROTE — the same routes, and the same loader, the
-// reader's browser runs. One page per address, a book's and each of its chapters', every one the
-// book that answers it — drawn whole at each until the book reads which chapter the address opens.
 const sheetOf = (face: string, css: string): string => {
     const named = `sheets/${createHash('sha256').update(css).digest('hex').slice(0, 12)}.css`;
     const at = join(face, named);
@@ -54,6 +51,9 @@ const sheetOf = (face: string, css: string): string => {
     return named;
 };
 
+// THE PAGE IS DRAWN THROUGH THE INDEX THE BINDER WROTE — the same routes, and the same loader, the
+// reader's browser runs. One page per book, drawn whole at the book's address with its cover open and
+// every chapter in its print, each a fragment of it that the book's own app opens — Sprint 95, D1.
 export const draw = async (server: ViteDevServer, addresses: string[]): Promise<string[]> => {
     const { binding, face } = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
     const chosen = configure(binding);
@@ -62,7 +62,7 @@ export const draw = async (server: ViteDevServer, addresses: string[]): Promise<
     const pages: string[] = [];
 
     for (const address of addresses) {
-        const route = routes.find(one => one.address === address || one.chapters.some(chapter => chapter.address === address));
+        const route = routes.find(one => one.address === address);
         if (route === undefined) throw new Error(`no book stands at ${address}, so there is no page to draw there`);
         const loaded = await route.load();
         // THE PAGE IS OPEN AT ITS ADDRESS, AND THE BOOK IS BUILT KNOWING IT: the book's function gives

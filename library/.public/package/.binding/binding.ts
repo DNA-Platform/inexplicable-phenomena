@@ -162,8 +162,8 @@ export const tasks: Task[] = [
         // THE ROOT'S ADDRESS COMES FROM THE CATALOGUE, which is the one place that knows what a name
         // stands at. The route table holds a path; the catalogue holds the URL a reader arrives at.
         const root = table.root === undefined ? undefined : { name: table.root.name, address: held.where(table.root.name) ?? table.root.address };
-        // A PAGE AT EVERY ADDRESS, a book's and each of its chapters'.
-        state.rendered = await rendering(state.binding, table.routes.flatMap(route => [route.address, ...route.chapters.map(chapter => chapter.address)]), root);
+        // ONE PAGE PER BOOK, every chapter in its print, each a fragment of it — Sprint 95, D1.
+        state.rendered = await rendering(state.binding, table.routes.map(route => route.address), root);
         // AND EVERY PICTURE ACCOMPANYING A CHAPTER PLACED IN THE FACE beside its book's pages, at the
         // address its Append names, `/<folder>/<file>` — copied, never bundled, so the address is a
         // page's and not a dev server's. Sprint 89.

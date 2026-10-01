@@ -5,6 +5,7 @@ import puppeteer, { type Browser, type Page } from 'puppeteer';
 import { preview, type PreviewServer } from 'vite';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { configure } from '../configuration/configuration';
+import { imageTypes } from '../inventory/filenames';
 import { walk } from '../inventory/walk';
 import { catalogue } from '../catalogue/catalogue';
 import { placeOf } from '../rendering/place';
@@ -45,8 +46,11 @@ describe('a bind of the test library', () => {
     // THE SHEET IS A FILE since Sprint 95's U8, named by its content and linked from the page's head.
     const linked = (html: string): string => html.match(/<link rel="stylesheet" href="[^"]*?(sheets\/[0-9a-f]+\.css)" \/>/u)?.[1] ?? '';
     const sheetOf = (html: string): string => readFileSync(join(galley.face, linked(html)), 'utf8');
-    const chapterPage = (book: string, chapter: string): string =>
-        readFileSync(placeOf(galley.face, table.routes.find(route => route.name === book)!.chapters.find(one => one.name === chapter)!), 'utf8');
+    // A CHAPTER'S PAGE IS ITS BOOK'S since Sprint 95's U9: one page per book, every chapter in its print.
+    const chapterPage = (book: string, chapter: string): string => {
+        expect(table.routes.find(route => route.name === book)!.chapters.find(one => one.name === chapter)).toBeDefined();
+        return page(book);
+    };
 
     // Doug, 2026-09-25: "in ..public, we drop the v1 dependency in our test library this sprint."
     it('binds with this code, the package the repository links, and no other', () => {
@@ -68,41 +72,49 @@ describe('a bind of the test library', () => {
         const manual = found.books.find(book => book.folder === 'manual')!;
         const route = table.routes.find(one => one.name === 'The Library Reference Manual')!;
         const decoded = (html: string): string => html.replace(/<[^>]*>/gu, '').replace(/&(lt|gt|amp|quot|#x27|#39);/gu, (_, held: string) => ({ lt: '<', gt: '>', amp: '&', quot: '"', '#x27': "'", '#39': "'" })[held]!);
+        // EVERY CHAPTER ON THE BOOK'S ONE PAGE since Sprint 95's U9, so every printed file is read off it.
+        const blocks = [...readFileSync(placeOf(galley.face, route), 'utf8').matchAll(/<code[^>]*>([\s\S]*?)<\/code>/gu)].map(match => decoded(match[1]));
         let printed = 0;
         for (const [chapter, files] of manual.resources)
             for (const one of files.filter(file => file.type === '.tsx')) {
                 const title = readFileSync(join(manual.path, chapter), 'utf8').match(/(?<!!)\[\[ (.+?) \]\]/u)![1];
-                const html = readFileSync(placeOf(galley.face, route.chapters.find(each => each.name === title)!), 'utf8');
-                const blocks = [...html.matchAll(/<code[^>]*>([\s\S]*?)<\/code>/gu)].map(match => decoded(match[1]));
+                expect(route.chapters.find(each => each.name === title), `${chapter} is a chapter of the manual`).toBeDefined();
                 expect(blocks, `${chapter} prints ${one.file}`).toContain(readFileSync(join(manual.path, one.file), 'utf8'));
                 printed++;
             }
         expect(printed).toBeGreaterThanOrEqual(5);
     });
 
-    // A CHAPTER IS A ROUTE OF ITS BOOK — Doug, 2026-09-26: "The book is a static page returned by github
-    // pages, the chapters are routes on a local spa." A page at every address, the book at each.
-    it('wrote a page for every book and for every chapter of it, and every page holds its book', () => {
-        for (const route of table.routes)
-            for (const { name, address } of [route, ...route.chapters]) {
-                const at = placeOf(galley.face, { address });
-                expect(existsSync(at), `${name} was not rendered at ${at}`).toBe(true);
-                const html = readFileSync(at, 'utf8');
-                expect(html, `${name} left #root empty`).not.toContain('<div id="root"></div>');
-                expect(html).toMatch(/<div id="root">[\s\S]+<\/div>/u);
+    // ONE PAGE PER BOOK — Sprint 95, D1, Doug: "It is one page per book for sure. Chapters and mentions are more
+    // like bookmarks within the book that one can link to." A page at every book's address holding the whole
+    // book, every chapter's text in its print for a crawler, and no page at any chapter's.
+    it('wrote one page per book holding every chapter, a fragment the chapter\'s address, and no page for a chapter', () => {
+        for (const route of table.routes) {
+            const at = placeOf(galley.face, route);
+            expect(existsSync(at), `${route.name} was not rendered at ${at}`).toBe(true);
+            const html = readFileSync(at, 'utf8');
+            expect(html, `${route.name} left #root empty`).not.toContain('<div id="root"></div>');
+            for (const chapter of route.chapters) {
+                expect(chapter.address).toBe(`${route.address}#${chapter.address.split('#')[1]}`);
+                expect(html, `${chapter.name} is not in ${route.name}'s print`).toContain(`id="${chapter.address.split('#')[1]}"`);
+                expect(existsSync(join(galley.face, chapter.address.split('#')[1], 'index.html')), `${chapter.name} was rendered as a page of its own`).toBe(false);
             }
+        }
+        // THE FACE'S FOLDERS: a page per book, the assets, the sheets, and the pictures of any book carrying one since Sprint 89.
+        const pictured = found.books.filter(book => [...book.resources.values()].flat().some(one => imageTypes.includes(one.type))).map(book => book.folder);
+        expect(readdirSync(galley.face).filter(name => !name.includes('.')).sort()).toEqual([...table.routes.map(route => route.address.slice(1)), 'assets', 'sheets', ...pictured].sort());
     });
 
     it('wrote pages the browser will build as sent, whose every link leads to an id worn once', () => {
-        const pages = table.routes.flatMap(route => [route, ...route.chapters]).map(one => placeOf(galley.face, one).slice(galley.face.length + 1).split('\\').join('/'));
+        const pages = table.routes.map(one => placeOf(galley.face, one).slice(galley.face.length + 1).split('\\').join('/'));
         expect(proof(galley.face, [...pages, 'index.html'], chosen.resolution.base)).toEqual([]);
     });
 
     it('resolved every reference to the address the page carries', () => {
         const paper = page('A Paper');
         expect(paper).toContain('href="/the-library/"');
-        expect(paper).toContain('href="/a-paper/the-evidence/"');
-        expect(paper).toContain('href="/some-projects/the-work/"');
+        expect(paper).toContain('href="/a-paper/#the-evidence"');
+        expect(paper).toContain('href="/some-projects/#the-work"');
         expect(paper).toMatch(/<a href="\/libby\/"[^>]*><span[^>]*>Libby/u);
     });
 
@@ -120,13 +132,13 @@ describe('a bind of the test library', () => {
     // A SYNOPSIS'S TITLE GOES TO ITS BOOK — Doug, 2026-09-26: "we want the title of a synopsis chapter to go
     // to the book it is a synopsis of! Most titles are self-links."
     it('sent a reference to a chapter whose title is parenthetical to its page, where its title wears its id unseen and links to its book', () => {
-        expect(page('Libby')).toMatch(/<a href="\/the-library\/synopsis\/"[^>]*><span[^>]*>Synopsis/u);
+        expect(page('Libby')).toMatch(/<a href="\/the-library\/#synopsis"[^>]*><span[^>]*>Synopsis/u);
         expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><div id="synopsis" class="[^"]*pa-parenthetical/u);
     });
 
     // R4 — Doug: "just have the book expose its cover, table, synopsis... and other things use it from there."
     it('drew in the argument its book\'s title and a link to its book\'s table, read from its book alone', () => {
-        expect(page('A Paper')).toMatch(/<span class="pd-word">A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/table-of-contents\/"[^>]*><span[^>]*>Table of Contents/u);
+        expect(page('A Paper')).toMatch(/<span class="pd-word">A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/#table-of-contents"[^>]*><span[^>]*>Table of Contents/u);
     });
 
     it('marked the autobiography and the biography on their covers', () => {
@@ -150,7 +162,7 @@ describe('a bind of the test library', () => {
         const paper = page('A Paper');
         expect([...paper.matchAll(/<span class="pa-content">([^<]*)<\/span>/gu)].map(found => found[1]))
             .toEqual(['The Argument', 'The Evidence', 'A Paper', 'Synopsis', 'Table of Contents']);
-        expect(paper).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
+        expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
     });
 
     // THE CATALOGUE IS A TABLE — its section interpreted as a grid, its rows and cells marked by authorship.
@@ -172,8 +184,8 @@ describe('a bind of the test library', () => {
     // ONE TABLE IS DRAWN, NOT WRITTEN — Some Projects', its entries what its chapters mention.
     it('drew Some Projects\' table from its contents, every chapter a link inside its nav', () => {
         const projects = page('Some Projects');
-        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/the-work\/"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
-        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/table-of-contents\/"[^>]*>[\s\S]*<\/nav>/u);
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#the-work"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#table-of-contents"[^>]*>[\s\S]*<\/nav>/u);
         // THE SYNOPSIS ENTRY LINKS TO THE BOOK, as its title does, beside the cover's — and since Sprint 86 the
         // table chapter's catchword too, whose Previous is the synopsis and so means the book.
         expect((/<nav[\s\S]*?<\/nav>/u.exec(projects)?.[0] ?? '').match(/<a href="\/some-projects\/"/gu)).toHaveLength(3);
@@ -189,18 +201,18 @@ describe('a bind of the test library', () => {
         expect(library).toContain('authorship in this library begins with her');
         expect(library.match(/ id="synopsis"/gu)).toHaveLength(1);
         // THE TITLE STAYS THE CHAPTER'S OWN since 2026-09-27 — Doug: "the Synopsis can't use the title of the chapter."
-        expect(library).toMatch(/<a href="\/the-library\/of-libby\/"[^>]*><div id="of-libby"/u);
+        expect(library).toMatch(/<a href="\/the-library\/#of-libby"[^>]*><div id="of-libby"/u);
         expect(library).not.toMatch(/<a href="\/libby\/"[^>]*><div id="of-libby"/u);
         expect(library).not.toMatch(/<a href="\/libby\/"[^>]*><div id="synopsis"/u);
     });
 
-    // A HEADING WRITTEN AS A MENTION IS A FRAGMENT OF ITS CHAPTER'S ROUTE — Doug, 2026-09-26: "Long distance
+    // A HEADING WRITTEN AS A MENTION IS A FRAGMENT OF ITS BOOK'S PAGE — Doug, 2026-09-26: "Long distance
     // urls to that which was mentioned also must work." Libby refers to what the argument claims; the
-    // argument's own page wears the id, and the heading links to itself with the same url.
-    it('addressed the argument\'s marked heading on the argument\'s page, where Libby\'s link lands and the heading links to itself', () => {
-        expect(page('Libby')).toMatch(/<a href="\/a-paper\/the-argument\/#what-is-claimed"[^>]*><span[^>]*>What is claimed/u);
+    // paper's page wears the id, and the heading links to itself with the same url.
+    it('addressed the argument\'s marked heading on the paper\'s page, where Libby\'s link lands and the heading links to itself', () => {
+        expect(page('Libby')).toMatch(/<a href="\/a-paper\/#what-is-claimed"[^>]*><span[^>]*>What is claimed/u);
         const argument = chapterPage('A Paper', 'The Argument');
-        expect(argument).toMatch(/<a href="\/a-paper\/the-argument\/#what-is-claimed"[^>]*>(?:(?!<\/a>)[\s\S])*id="what-is-claimed"/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/#what-is-claimed"[^>]*>(?:(?!<\/a>)[\s\S])*id="what-is-claimed"/u);
         expect(argument.match(/ id="what-is-claimed"/gu)).toHaveLength(1);
         expect(argument).not.toContain('[[[');
     });
@@ -227,21 +239,22 @@ describe('a bind of the test library', () => {
     });
 
     // THE CATCHWORD — Sprint 86: a Previous and a Next at the foot of every chapter, each the neighbour's title
-    // linking to its route, and at the ends a self-reference. Doug: "I like previous of the cover is the cover
+    // linking to its fragment, and at the ends a self-reference. Doug: "I like previous of the cover is the cover
     // and next of the last chapter is the last chapter - I prefer self-reference to undefined."
     it('drew at the foot of the paper\'s chapters a catchword whose Next links the next chapter and whose Previous the one before, the ends self-references', () => {
         const argument = chapterPage('A Paper', 'The Argument');
-        expect(argument).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pd-next pa-reference">The Evidence/u);
-        expect(argument).toMatch(/<a href="\/a-paper\/table-of-contents\/"[^>]*><span class="pd-word pd-previous pa-reference">Table of Contents/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/#the-evidence"[^>]*><span class="pd-word pd-next pa-reference">The Evidence/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/#table-of-contents"[^>]*><span class="pd-word pd-previous pa-reference">Table of Contents/u);
         const evidence = chapterPage('A Paper', 'The Evidence');
-        expect(evidence).toMatch(/<a href="\/a-paper\/the-evidence\/"[^>]*><span class="pd-word pd-next pa-reference pa-self-reference">The Evidence/u);
-        expect(evidence).toMatch(/<a href="\/a-paper\/the-argument\/"[^>]*><span class="pd-word pd-previous pa-reference">The Argument/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/#the-evidence"[^>]*><span class="pd-word pd-next pa-reference pa-self-reference">The Evidence/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*><span class="pd-word pd-previous pa-reference">The Argument/u);
         expect(page('A Paper')).toMatch(/<a href="\/a-paper\/"[^>]*><span class="pd-word pd-previous pa-reference pa-self-reference">A Paper/u);
     });
 
-    // PAGINATED — Sprint 86: Some Projects' chapters are pages, marked once, and the page the address names is
-    // the open one; every other book is untouched.
-    it('marked Some Projects paginated, every chapter a page and the addressed chapter alone open, and no other book', () => {
+    // PAGINATED — Sprint 86: Some Projects' chapters are pages, marked once, and the cover is the open one in the
+    // print, since the one page per book is printed at the book's address — Sprint 95's U9; the work open at its
+    // fragment is the browser's, below. Every other book is untouched.
+    it('marked Some Projects paginated, every chapter a page and the cover alone open in the print, and no other book', () => {
         const projects = page('Some Projects');
         expect(projects).toMatch(/class="[^"]*\bpa-paginated\b/u);
         expect(projects.match(/class="[^"]*\bpa-page\b/gu)).toHaveLength(4);
@@ -249,10 +262,7 @@ describe('a bind of the test library', () => {
         // THE CLASSES IN ANY ORDER: an annotation's class is taken back and put again at every define, so it moves.
         expect(projects).toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
         expect(sheetOf(projects)).toMatch(/\.pa-paginated \.pa-page:not\(\.pa-open\)\s*\{\s*display:\s*none/u);
-        const work = chapterPage('Some Projects', 'The Work');
-        expect(work.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
-        expect(work).toMatch(/class="[^"]*\bpa-open\b[^"]*"[^>]*>(?:(?!<\/span>)[\s\S])*?id="the-work"/u);
-        expect(work).not.toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
+        expect(projects).toContain('id="the-work"');
         // THE MARKS, NOT THE SHEET: the default theme's rules for the three classes stand on every page since Sprint 88.
         // AND THE MANUAL IS PAGINATED TOO SINCE SPRINT 93, by the explorer's own paging class.
         for (const route of table.routes)
@@ -270,7 +280,7 @@ describe('a bind of the test library', () => {
         const files = found.books.find(book => book.folder === 'manual')!.resources;
         const appended = [...files.values()].flat().filter(file => file.type === '.tsx').length;
         expect(manual.match(/class="pd-leaf[^"]*"/gu)).toHaveLength(appended);
-        expect(manual).toMatch(/class="pd-leaf[^"]*" href="\/the-library-reference-manual\/the-theme\/#the-themes-file"/u);
+        expect(manual).toMatch(/class="pd-leaf[^"]*" href="\/the-library-reference-manual\/#the-themes-file"/u);
         expect(page('Some Projects')).not.toMatch(/\bpa-branch\b|\bpd-leaf\b/u);
     });
 
@@ -301,20 +311,18 @@ describe('a bind of the test library', () => {
         }
     });
 
-    // THE SHEET IS A FILE — Sprint 95, U8, D8: named by its content, so the pages of one book link one file, two
-    // books with different values two, and a page carries no styles of its own; the pages lighter by the sheet.
-    it('wrote each book\'s sheet once as a file named by its content, every page of the book linking it, and the pages lighter for it', () => {
+    // THE SHEET IS A FILE — Sprint 95, U8, D8: named by its content, so a book's page links one file, two books with
+    // different values two, and a page carries no styles of its own; the page lighter by the sheet. One page per
+    // book since U9, so the manual's one page is what links it.
+    it('wrote each book\'s sheet once as a file named by its content, linked from the book\'s page, and the page lighter for it', () => {
         const manual = table.routes.find(route => route.name === 'The Library Reference Manual')!;
-        const links = new Set([manual, ...manual.chapters].map(one => linked(readFileSync(placeOf(galley.face, one), 'utf8'))));
-        expect(links.size).toBe(1);
-        expect([...links][0]).toMatch(/^sheets\/[0-9a-f]{12}\.css$/u);
+        expect(linked(page(manual.name))).toMatch(/^sheets\/[0-9a-f]{12}\.css$/u);
         expect(linked(page('Libby'))).not.toBe(linked(page('The Library')));
         expect(readdirSync(join(galley.face, 'sheets')).length).toBeLessThanOrEqual(table.routes.length);
         const sheet = sheetOf(page('The Library'));
         expect(sheet.slice(sheet.search(/@layer/u)).startsWith('@layer pd.invariants,pd.theme;')).toBe(true);
         expect(sheet.indexOf('@layer pd.invariants{')).toBeLessThan(sheet.indexOf('@layer pd.theme{'));
-        const bytes = statSync(placeOf(galley.face, manual.chapters.find(one => one.name === 'The Theme')!)).size;
-        expect(bytes).toBeLessThan(220 * 1024);
+        expect(statSync(placeOf(galley.face, manual)).size).toBeLessThan(220 * 1024);
     });
 
     it('drew the persona\'s poem as three lines, each a div wearing the sentence\'s mark and its own', () => {
@@ -393,7 +401,7 @@ describe('the bound test library, seen in a real browser', () => {
         // from sight, not no box at all, and a clipped ancestor hides its children without touching their geometry.
         // So the eye's measurement is a hit test: what is painted at the entry's centre once it is scrolled into
         // view — a clipped entry answers with whatever stands behind it, a shown entry with itself.
-        const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/synopsis/"], nav a[href="/a-paper/table-of-contents/"]',
+        const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/#synopsis"], nav a[href="/a-paper/#table-of-contents"]',
             links => links.map(link => {
                 link.scrollIntoView({ block: 'center' });
                 const box = link.getBoundingClientRect();
@@ -418,14 +426,20 @@ describe('the bound test library, seen in a real browser', () => {
     // user is (recently was) and it is a record of him being there."
     // A WINDOW A THIRD OF THE PAPER'S HEIGHT — measured 2026-09-27: the whole paper stands in 300 pixels, the
     // evidence's title at 113, so a window of 300 had nothing to scroll.
-    it('opens a chapter\'s page turned to that chapter, its title in view', async () => {
+    // AND A REFRESH AT THE FRAGMENT OPENS IT AGAIN — Sprint 95, A3: a direct load, a refresh and a back.
+    it('opens a chapter\'s page turned to that chapter, its title in view, and again on a refresh', async () => {
         const evidence = await browser!.newPage();
         await evidence.setViewport({ width: 800, height: 100 });
-        await evidence.goto(new URL('/a-paper/the-evidence/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
-        expect(await evidence.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-        const top = await evidence.$eval('#the-evidence', title => title.getBoundingClientRect().top);
-        expect(top).toBeGreaterThanOrEqual(0);
-        expect(top).toBeLessThan(100);
+        await evidence.goto(new URL('/a-paper/#the-evidence', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const turned = async (): Promise<void> => {
+            expect(await evidence.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+            const top = await evidence.$eval('#the-evidence', title => title.getBoundingClientRect().top);
+            expect(top).toBeGreaterThanOrEqual(0);
+            expect(top).toBeLessThan(100);
+        };
+        await turned();
+        await evidence.reload({ waitUntil: 'networkidle0' });
+        await turned();
         await evidence.close();
     });
 
@@ -437,14 +451,14 @@ describe('the bound test library, seen in a real browser', () => {
         await paper.setViewport({ width: 800, height: 100 });
         await paper.goto(new URL('/a-paper/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         await paper.evaluate(() => { (window as unknown as { samePage: boolean }).samePage = true; });
-        await paper.click('nav a[href="/a-paper/the-evidence/"]');
+        await paper.click('nav a[href="/a-paper/#the-evidence"]');
         await new Promise(resolve => setTimeout(resolve, 300));
-        expect(await paper.evaluate(() => location.pathname)).toBe('/a-paper/the-evidence/');
+        expect(await paper.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/#the-evidence');
         expect(await paper.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
         expect(await paper.evaluate(() => window.scrollY)).toBeGreaterThan(0);
         await paper.goBack();
         await new Promise(resolve => setTimeout(resolve, 300));
-        expect(await paper.evaluate(() => location.pathname)).toBe('/a-paper/');
+        expect(await paper.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/');
         expect(await paper.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
         await paper.close();
     });
@@ -455,9 +469,9 @@ describe('the bound test library, seen in a real browser', () => {
         const libby = await browser!.newPage();
         await libby.setViewport({ width: 800, height: 100 });
         await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
-        await Promise.all([libby.waitForNavigation({ waitUntil: 'networkidle0' }), libby.click('a[href="/a-paper/the-argument/#what-is-claimed"]')]);
+        await Promise.all([libby.waitForNavigation({ waitUntil: 'networkidle0' }), libby.click('a[href="/a-paper/#what-is-claimed"]')]);
         await new Promise(resolve => setTimeout(resolve, 300));
-        expect(await libby.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/the-argument/#what-is-claimed');
+        expect(await libby.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/#what-is-claimed');
         const top = await libby.$eval('#what-is-claimed', heading => heading.getBoundingClientRect().top);
         expect(top).toBeGreaterThanOrEqual(0);
         expect(top).toBeLessThan(100);
@@ -469,15 +483,15 @@ describe('the bound test library, seen in a real browser', () => {
     // Previous turns the page in place.
     it('shows on the work\'s page the work alone, the synopsis not displayed, and its Previous turns to the table in place', async () => {
         const projects = await browser!.newPage();
-        await projects.goto(new URL('/some-projects/the-work/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await projects.goto(new URL('/some-projects/#the-work', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         const shown = await projects.$eval('#root', root => root.innerText);
         expect(shown).toContain('Some chapters name nothing');
         expect(shown).not.toContain('An ordinary book');
         expect(await projects.$$eval('.pa-page', pages => pages.map(page => page.getClientRects().length > 0))).toEqual([false, false, false, true]);
         await projects.evaluate(() => { (window as unknown as { samePage: boolean }).samePage = true; });
-        await projects.click('.pa-open a[href="/some-projects/table-of-contents/"]');
+        await projects.click('.pa-open a[href="/some-projects/#table-of-contents"]');
         await new Promise(resolve => setTimeout(resolve, 300));
-        expect(await projects.evaluate(() => location.pathname)).toBe('/some-projects/table-of-contents/');
+        expect(await projects.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/some-projects/#table-of-contents');
         expect(await projects.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
         const turned = await projects.$eval('#root', root => root.innerText);
         expect(turned).not.toContain('Some chapters name nothing');
@@ -490,7 +504,7 @@ describe('the bound test library, seen in a real browser', () => {
     // drawing its said words in a time element carrying the machine date.
     it('shows the day Libby began as a time element carrying the machine date and saying the words', async () => {
         const libby = await browser!.newPage();
-        await libby.goto(new URL('/libby/who-i-am/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await libby.goto(new URL('/libby/#who-i-am', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         expect(await libby.$eval('time.pd-date', time => [time.getAttribute('datetime'), time.innerText])).toEqual(['2026-09-30', 'the last day of September']);
         await libby.close();
     });
@@ -500,7 +514,7 @@ describe('the bound test library, seen in a real browser', () => {
     // the package names on the binder, linked in the page's head by the assembly.
     it('shows the evidence\'s formula inline and its equation displayed and numbered, with KaTeX\'s sheet linked', async () => {
         const evidence = await browser!.newPage();
-        await evidence.goto(new URL('/a-paper/the-evidence/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await evidence.goto(new URL('/a-paper/#the-evidence', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         expect(await evidence.$eval('.pd-math .katex', formula => getComputedStyle(formula).fontFamily)).toMatch(/KaTeX/u);
         expect(await evidence.$eval('.pd-equation .katex-display', equation => getComputedStyle(equation).display)).toBe('block');
         expect(await evidence.$eval('.pd-equation', equation => getComputedStyle(equation, '::after').content)).toMatch(/^"\(" counter\(equation\) "\)"$/u);
@@ -512,17 +526,17 @@ describe('the bound test library, seen in a real browser', () => {
     // A SELF-REFERENCE DRAWS WITHOUT AN UNDERLINE — the catchword's Next at the end of the paper.
     it('shows the evidence\'s catchword: its Next a self-reference without an underline, its Previous a link with one', async () => {
         const evidence = await browser!.newPage();
-        await evidence.goto(new URL('/a-paper/the-evidence/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await evidence.goto(new URL('/a-paper/#the-evidence', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         // THE ANCHOR WEARS THE REFERENCE'S CLASS since Sprint 95's U16, so a link is found by name.
         expect(await evidence.$eval('a.pa-self-reference', link => getComputedStyle(link).textDecorationLine)).toBe('none');
-        expect(await evidence.$eval('a.pa-reference:not(.pa-self-reference)[href="/a-paper/the-argument/"]', link => getComputedStyle(link).textDecorationLine)).toBe('underline');
+        expect(await evidence.$eval('a.pa-reference:not(.pa-self-reference)[href="/a-paper/#the-argument"]', link => getComputedStyle(link).textDecorationLine)).toBe('underline');
         await evidence.close();
     });
 
     // SPRINT 88, SEEN — Doug: "please use this primarily as a sprint to make the test library minimally readable."
     it('shows the poem one line under another, the space three wide, the break starting a new line, and the basics styled', async () => {
         const persona = await browser!.newPage();
-        await persona.goto(new URL('/a-persona/who-writes-here/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await persona.goto(new URL('/a-persona/#who-writes-here', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         const tops = await persona.$$eval('.pd-line', lines => lines.map(line => line.getBoundingClientRect().top));
         expect(tops).toHaveLength(3);
         // UNNUMBERED since Sprint 95's U7: the code's counter counts pd-code-line, and a poem's Lines wear pd-line alone.
@@ -531,7 +545,7 @@ describe('the bound test library, seen in a real browser', () => {
         expect(tops[2]).toBeGreaterThan(tops[1]);
         await persona.close();
         const argument = await browser!.newPage();
-        await argument.goto(new URL('/a-paper/the-argument/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await argument.goto(new URL('/a-paper/#the-argument', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         expect(await argument.$eval('.pd-space', space => space.getBoundingClientRect().width)).toBeGreaterThan(6);
         expect(await argument.$eval('.pd-break', line => getComputedStyle(line).display)).toBe('block');
         expect(await argument.$eval('.pa-emphasis', word => getComputedStyle(word).fontStyle)).toBe('italic');
@@ -544,7 +558,7 @@ describe('the bound test library, seen in a real browser', () => {
     // items by the Theme's sheet, unordered, each a mark on the line's own element.
     it('shows the shelf as a list of three items, each a line, marked and drawn as list items', async () => {
         const shelves = await browser!.newPage();
-        await shelves.goto(new URL('/the-library/the-shelves/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await shelves.goto(new URL('/the-library/#the-shelves', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
         expect(await shelves.$$eval('.pa-list .pa-item', items => items.map(item => [item.classList.contains('pd-line'), getComputedStyle(item).display]))).toEqual([[true, 'list-item'], [true, 'list-item'], [true, 'list-item']]);
         expect(await shelves.$eval('.pa-list', list => list.classList.contains('pa-ordered'))).toBe(false);
         expect(await shelves.$eval('.pa-list', list => list.innerText)).toContain('Libby is the book that writes the others.');
@@ -610,12 +624,12 @@ describe('the bound test library, seen in a real browser', () => {
             await new Promise(resolve => setTimeout(resolve, 300));
             return library.$eval(landmark, element => Math.round(element.getBoundingClientRect().top));
         };
-        const table = await turned('/the-library/table-of-contents/', 'nav.pd-container');
+        const table = await turned('/the-library/#table-of-contents', 'nav.pd-container');
         expect(table).toBeGreaterThanOrEqual(0);
         expect(table).toBeLessThan(120);
         // OF LIBBY IS THE LAST CHAPTER, so the page ends before its top can reach the viewport's: the landing is the
         // page's end with the title in view.
-        const ofLibby = await turned('/the-library/of-libby/', '#of-libby');
+        const ofLibby = await turned('/the-library/#of-libby', '#of-libby');
         expect(ofLibby).toBeGreaterThanOrEqual(0);
         expect(ofLibby).toBeLessThan(await library.evaluate(() => innerHeight));
         expect(await library.evaluate(() => Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 1)).toBe(true);

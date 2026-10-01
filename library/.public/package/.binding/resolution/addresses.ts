@@ -25,7 +25,13 @@ export type Table = {
 // THE URL A PAGE IS REACHED AT, from the base forward and ending in a slash, because that is the page
 // a reader lands on — GitHub Pages answers `/turing` with a redirect to `/turing/`. The catalogue
 // writes it into every reference, and the render hands it to the book as the bookmark of each page.
-export const pageOf = (base: string, address: string): string => `${base}${address.replace(/^\//u, '')}/`;
+// A CHAPTER'S ADDRESS CARRIES ITS FRAGMENT after the book's, `/book#chapter`, and is written as the
+// book's page with the fragment after its slash, `/book/#chapter` — Sprint 95, D1.
+export const pageOf = (base: string, address: string): string => {
+    const [path, fragment] = address.split('#');
+
+    return `${base}${path.replace(/^\//u, '')}/${fragment === undefined ? '' : `#${fragment}`}`;
+};
 
 // THE SLUG IS THE LIBRARY'S, `identifier.slug` in `@dna-platform/public`, AND THE COMPILER IMPORTS IT.
 // It stood here as the compiler's own from 2026-09-24 — "the compiler should handle all of this" —
@@ -48,10 +54,14 @@ export const specifierOf = (binding: string, module: string): string => {
 // different question — which book `/` lands on — and no book gives up its own address to answer it.
 // Doug, 2026-09-18: "When did you decide that the library catalogue shouldn't follow the same rule."
 //
-// AND A CHAPTER IS A ROUTE OF ITS BOOK, at `/book/chapter/`. Doug, 2026-09-26: "The book is a static
-// page returned by github pages, the chapters are routes on a local spa" — the render writes a page at
-// every route and the book's own app answers each. The cover has no route of its own: it is the
-// chapter titled with the book's name, and the book's address is where it stands.
+// AND A CHAPTER IS A FRAGMENT OF ITS BOOK, at `/book/#chapter`. Doug, 2026-09-30: "each book is a
+// separate application basically. It amounts to a new html page. The chapters should be part of a
+// single page app right? Only books need their own pages. It's a bug if not… Chapters and mentions
+// are more like bookmarks within the book that one can link to." The render writes one page per
+// book, every chapter in its print for a crawler, and the book's own app opens the chapter the
+// fragment names. Until Sprint 95 a chapter was a route of its book at `/book/chapter/`, a page of
+// its own holding the whole book. The cover has no fragment of its own: it is the chapter titled
+// with the book's name, and the book's address is where it stands.
 export type Named = { folder: string; name: string; chapters: { file: string; name: string }[] };
 
 export const resolution = (found: Library, named: Named[], chosen: Configuration): Table => {
@@ -60,7 +70,7 @@ export const resolution = (found: Library, named: Named[], chosen: Configuration
     const routes = named.filter(one => standing.has(one.folder)).map(one => {
         const address = `/${identifier.slug(one.name)}`;
 
-        return { name: one.name, folder: one.folder, address, chapters: one.chapters.map(chapter => ({ ...chapter, address: `${address}/${identifier.slug(chapter.name)}` })) };
+        return { name: one.name, folder: one.folder, address, chapters: one.chapters.map(chapter => ({ ...chapter, address: `${address}#${identifier.slug(chapter.name)}` })) };
     });
     const root = routes.find(route => route.name === wanted);
     if (chosen.inventory.root !== undefined && root === undefined)
