@@ -5,19 +5,23 @@ export default () => (
     <Chapter>
         <Title>[[ The Faces ]]</Title>
         <Section>
-            <Heading>Four faces</Heading>
+            <Heading>Seven faces</Heading>
             <Paragraph>
-                Four formats, each a look a book or a chapter may take in front of the theme. Navigable dresses the
-                library's own furniture for finding one's way, the running head a masthead, the byline two labelled
-                rows, the catchword a footer line, each by the mark its kind wears; the theme dresses the framework's
-                marks and this dresses the library's own, and every book wears it. Framed draws a frame from the
-                theme's own values and works wherever it is put: <Means>$[[ Some Projects ]]</Means> stands it on itself
-                in its define, <Means>$[[ A Persona ]]</Means> on each of its chapters at its bind, a format working in
-                different places; and it marks what it frames, so the theme's card and rule stand down where a frame
-                already stands. Literary is the persona's face, a bookish one, Palatino, paragraphs indented and
-                set close, titles centred and unweighted, the poem's lines let breathe. Typewritten is the paper's, a
-                manuscript's. None of them touches the structure of a chapter; a feel is a format, and that is all a
-                feel is allowed to be. The four are printed whole in the chapter's appendix, <Means>$[[ ./The faces' file ]]</Means>.
+                Seven formats, each a shell of a class with a styled component for its style. Four of them are the
+                framework's own faces made this library's by subclass: the Cover, a card whose head is the byline
+                with a label above its title; the Synopsis, a ruled block set in italic; the TableOfContents, a box
+                with its headings in the labels' voice; and the Table, which keeps the framework's grid and adds its
+                gaps, its rules between rows and its header row. Each is exported from the manual's door under the
+                framework's own name, so a chapter that writes a Cover or a Table writes the word it always wrote
+                and gets this library's — the framework gives a face its element and the meaning of its marks, a
+                header, a nav, a grid, and nothing of how it looks, which is the library's to say. Three more are
+                looks of this library's own. Framed draws a frame from the theme's values and works wherever it is
+                put, on each of <Means>$[[ A Persona ]]</Means>'s chapters at its bind; it marks what it frames, so the
+                card and the rule stand down where a frame already stands. Literary is the persona's face, a bookish
+                one, Palatino, paragraphs indented and set close, titles centred and unweighted, the poem's lines let
+                breathe. Typewritten is the paper's, a manuscript's. None of them touches the structure of a chapter;
+                a feel is a format, and that is all a feel is allowed to be. The seven are printed whole in the
+                chapter's appendix, <Means>$[[ ./The faces' file ]]</Means>.
             </Paragraph>
         </Section>
         <Section>

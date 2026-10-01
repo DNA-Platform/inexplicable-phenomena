@@ -18,20 +18,22 @@ export default () => (
                 section, and the book's own marks and the reader's decide what is shown.
             </Paragraph>
             <Paragraph>
-                The tool is in six files beside this chapter, one per part, each printed in the section that
+                The tool is in seven files beside this chapter, one per part, each printed in the section that
                 explains it: the mark that says a section is an appendix, <Means>$[[ ./The appendix mark ]]</Means>;
                 the paging, <Means>$[[ ./The paging ]]</Means>; the layout, <Means>$[[ ./The layout ]]</Means>; the
-                tree, <Means>$[[ ./The tree ]]</Means>; the tabs, <Means>$[[ ./The tabs ]]</Means>; and the manual's
-                theme, <Means>$[[ ./The manual's theme ]]</Means>. A chapter may append as many files as its tool has
+                tree, <Means>$[[ ./The tree ]]</Means>; the tabs, <Means>$[[ ./The tabs ]]</Means>; the manual's
+                theme, <Means>$[[ ./The manual's theme ]]</Means>; and the manual's own faces for its cover, synopsis and
+                table, <Means>$[[ ./The manual's chapters ]]</Means>. A chapter may append as many files as its tool has
                 parts, which is how a tool is kept readable without slicing a file.
             </Paragraph>
             <Paragraph>
                 The manual's book takes the tool up in its own class, in the book file that is the manual's door:
-                its define stands the manual's theme first and then, in front of it, the paging and the layout, so
-                the layout's layer stands inside the theme's provider and reads its values; its write draws the
-                tabs after the chapters, given the cover as their chapter as the masthead is; and it declines to turn, since the open
-                page is shown by its mark and nothing scrolls. The leaves need no line of the book's: the layout
-                puts a branch on every entry of the table once the book is whole.
+                it registers the manual's theme for the framework's on its own class, so the Theme every book stands
+                is the manual's here; its define stands the paging and the layout, whose layer stands inside the
+                theme's provider and reads its values; its write draws the tabs after the chapters, given the cover
+                as their chapter as the masthead is; and it declines to turn, since the open page is shown by its
+                mark and nothing scrolls. The leaves need no line of the book's: the layout puts a branch on every
+                entry of the table once the book is whole.
             </Paragraph>
         </Section>
         <Section>
@@ -118,11 +120,12 @@ export default () => (
             <Appendix />
             <Heading>[[[ The manual's theme ]]]</Heading>
             <Paragraph>
-                The library's theme extended for the manual, in the theme's layer: the width let go so the manual
-                may take the whole page, the paper on the book, which fills the page, no chapter labels and a
-                byline set flat, the tabs, the tree's leaves, a picture kept to its column, and the scrollbars
-                thin and in the theme's ink. Every selector in it is a mark of what a writing is; what the
-                explorer says of a cover, a synopsis or a table is the next file's.
+                The library's theme subclassed for the manual, by its parts: the page part overridden to let the
+                width go, so the manual may take the whole page, to put the paper on the book, which fills it, and
+                to set the scrollbars thin in the theme's ink; and one part added after the library's, the
+                explorer's own — no chapter labels, a byline set flat, the tabs, the tree's leaves. A theme is
+                composed of parts so that a subclass changes one and keeps the rest; every selector in it is a mark
+                of what a writing is, and what the explorer says of a cover, a synopsis or a table is the next file's.
             </Paragraph>
             <Paragraph><Code identifier="theme" numbered /></Paragraph>
         </Section>

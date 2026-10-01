@@ -1,14 +1,8 @@
 import { $ } from '@dna-platform/chemistry';
+import { Theme } from '@dna-platform/public';
 import { $LibraryTheme, $TheLibrary } from '../manual/.book';
 
-export default class $Libby extends $TheLibrary {
-    protected override $Define(): void {
-        super.$Define();
-        this.annotations.add(this,
-            <DarkTheme />
-        );
-    }
-}
+export default class $Libby extends $TheLibrary { }
 
 export class $DarkTheme extends $LibraryTheme {
     ink = 'ivory';
@@ -17,3 +11,5 @@ export class $DarkTheme extends $LibraryTheme {
 }
 
 export const DarkTheme = $($DarkTheme);
+const Libby = $($Libby);
+$(Libby, Theme)(DarkTheme);

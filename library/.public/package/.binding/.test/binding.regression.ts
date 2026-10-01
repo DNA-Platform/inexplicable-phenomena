@@ -135,7 +135,8 @@ describe('a bind of the test library', () => {
     // to the book it is a synopsis of! Most titles are self-links."
     it('sent a reference to a chapter whose title is parenthetical to its page, where its title wears its id unseen and links to its book', () => {
         expect(page('Libby')).toMatch(/<a href="\/the-library\/#synopsis"[^>]*><span[^>]*>Synopsis/u);
-        expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><div id="synopsis" class="[^"]*pa-parenthetical/u);
+        // PARENTHETICAL REMOVES WHAT IS DRAWN since Sprint 97's S2: the title's element keeps its id and marks, hidden, and holds nothing.
+        expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><(?:span|div) id="synopsis" class="[^"]*pa-parenthetical[^"]*" hidden=""><\/(?:span|div)>/u);
     });
 
     // R4 — Doug: "just have the book expose its cover, table, synopsis... and other things use it from there."
@@ -163,9 +164,10 @@ describe('a bind of the test library', () => {
     // Reference"; "it's note should draw its words... put it in a span with a pa-content on there".
     it('drew a table\'s entries as the links their contents make, each name in a span wearing pa-content, in the order written', () => {
         const paper = page('A Paper');
-        // THE SPAN IS CONTENT'S OWN STYLED COMPONENT since Sprint 97, so it wears its generated names beside pa-content.
+        // THE SPAN IS CONTENT'S OWN STYLED COMPONENT since Sprint 97, so it wears its generated names beside pa-content;
+        // and the three parenthetical entries are not drawn, since Sprint 97's S2, the compiler still counting their mentions.
         expect([...paper.matchAll(/<span class="[^"]*\bpa-content\b[^"]*">([^<]*)<\/span>/gu)].map(found => found[1]))
-            .toEqual(['The Argument', 'The Evidence', 'A Paper', 'Synopsis', 'Table of Contents']);
+            .toEqual(['The Argument', 'The Evidence']);
         expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="[^"]*\bpa-content\b[^"]*">The Argument<\/span>/u);
     });
 
@@ -190,9 +192,9 @@ describe('a bind of the test library', () => {
         const projects = page('Some Projects');
         expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#the-work"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
         expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#table-of-contents"[^>]*>[\s\S]*<\/nav>/u);
-        // THE SYNOPSIS ENTRY LINKS TO THE BOOK, as its title does, beside the cover's — and since Sprint 86 the
-        // table chapter's catchword too, whose Previous is the synopsis and so means the book.
-        expect((/<nav[\s\S]*?<\/nav>/u.exec(projects)?.[0] ?? '').match(/<a href="\/some-projects\/"/gu)).toHaveLength(3);
+        // THE PARENTHETICAL ENTRIES ARE NOT DRAWN since Sprint 97's S2; what links the book inside the nav is the
+        // table chapter's catchword, whose Previous is the synopsis and so means the book, since Sprint 86.
+        expect((/<nav[\s\S]*?<\/nav>/u.exec(projects)?.[0] ?? '').match(/<a href="\/some-projects\/"/gu)).toHaveLength(1);
         expect(projects).not.toMatch(/<nav[^>]*>[\s\S]*pa-content[\s\S]*<\/nav>/u);
     });
 
@@ -229,16 +231,18 @@ describe('a bind of the test library', () => {
             expect(/font-family: ?monospace/u.test(sheetOf(page(route.name))), route.name).toBe(route.name === 'A Paper');
     });
 
-    // THE ORDINARY VIEW, which the test library's book class stands as its theme — Doug, 2026-09-25:
-    // "it is a format annotation that is also a theme that is global to a book."
-    it('drew every book inside its theme, whose sheet hides every annotation\'s own writing', () => {
+    // THE THEME IS THE LIBRARY'S, registered on its book class — Sprint 97's P5 — and an annotation's own writing is
+    // not drawn, S1, so no rule hides it and no page carries pd-annotation.
+    it('drew every book inside its theme, the library\'s values declared on its element and nothing of any annotation\'s writing in the page', () => {
         for (const route of table.routes) {
             const html = page(route.name);
             // A PRELOAD LINK MAY STAND FIRST, which React emits ahead of a page holding a picture.
-            // THE THEME'S ELEMENT DECLARES THE EIGHT INLINE since Sprint 95's U8, so it carries a style attribute.
             expect(html, route.name).toMatch(/<div id="root">(<link [^>]*\/>)*<!--\$--><div class="[^"]*pd-container"( style="[^"]*")?>/u);
-            expect(html, route.name).toMatch(/ style="--pd-font:[^"]*">/u);
-            expect(sheetOf(html), route.name).toMatch(/\.pd-annotation\s*\{\s*display:\s*none/u);
+            // SOME PROJECTS REGISTERS THE FRAMEWORK'S OWN THEME ON ITS CLASS, D19, and the bare base declares nothing.
+            if (route.name === 'Some Projects') expect(html, route.name).not.toContain('--pd-');
+            else expect(html, route.name).toMatch(/ style="--pd-font:[^"]*">/u);
+            expect(html, route.name).not.toContain('pd-annotation');
+            expect(sheetOf(html), route.name).not.toContain('pd-annotation');
         }
     });
 
@@ -265,7 +269,9 @@ describe('a bind of the test library', () => {
         expect(projects.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
         // THE CLASSES IN ANY ORDER: an annotation's class is taken back and put again at every define, so it moves.
         expect(projects).toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
-        expect(sheetOf(projects)).toMatch(/\.pa-paginated \.pa-page:not\(\.pa-open\)\s*\{\s*display:\s*none/u);
+        // THE HIDING IS PAGINATED'S OWN COMPONENT since Sprint 97's S4, no !important and no layer.
+        expect(sheetOf(projects)).toMatch(/\.pa-page:not\(\.pa-open\)\s*\{\s*display:\s*none;\s*\}/u);
+        expect(sheetOf(projects)).not.toContain('!important');
         expect(projects).toContain('id="the-work"');
         // THE MARKS, NOT THE SHEET: the default theme's rules for the three classes stand on every page since Sprint 88.
         // AND THE MANUAL IS PAGINATED TOO SINCE SPRINT 93, by the explorer's own paging class.
@@ -288,10 +294,10 @@ describe('a bind of the test library', () => {
         expect(page('Some Projects')).not.toMatch(/\bpa-branch\b|\bpd-leaf\b/u);
     });
 
-    // SPRINT 88 — every level marks itself and draws its element; the theme's sheet is on every page; the persona's
-    // poem is Lines; the paper's argument has a space, a break and the three basics; Libby is dark; frames stand in
-    // two places.
-    it('drew every level as its element wearing its mark, and the default theme\'s sheet on every page', () => {
+    // SPRINT 88 — every level marks itself and draws its element; the persona's poem is Lines; the paper's argument
+    // has a space, a break and the three basics; Libby is dark; the persona's chapters are framed. AND SINCE SPRINT 97
+    // the sheet on every page is the library's own: the base ships no sheet, no layer, no !important, no :has chain.
+    it('drew every level as its element wearing its mark, and the library\'s own sheet on every page but the bare one', () => {
         for (const route of table.routes) {
             const html = page(route.name);
             expect(html, route.name).toMatch(/<div class="[^"]*\bpd-book\b/u);
@@ -300,17 +306,19 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
             expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
             const sheet = sheetOf(html);
-            // SOME PROJECTS STANDS THE FRAMEWORK'S OWN THEME in front of the library's since Sprint 97, the base's acceptance context.
-            expect(html, route.name).toMatch(route.name === 'Some Projects' ? /style="--pd-font:serif/u : /style="--pd-font:Georgia/u);
             expect(sheet, route.name).not.toMatch(/--pd-font:(?:Georgia|serif)/u);
-            expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1(?:\.25)?rem\);\}/u);
-            // THREE LAYERS since Sprint 94: the invariants first, the theme's sheet second, a Format's rules unlayered.
-            // ONE GLOBAL SHEET since Sprint 95's U5: the Theme's sheet opens with the order statement and carries the
-            // invariants in their layer and the marks' looks in its own, and no annotation injects a style of its own.
-            const layered = sheet.search(/@layer pd\.(?:invariants|theme)/u);
-            expect(layered, route.name).toBeGreaterThanOrEqual(0);
-            expect(sheet.slice(layered, layered + 24), route.name).toMatch(/^@layer pd\.invariants/u);
-            expect(sheet, route.name).toMatch(/@layer pd\.theme\{/u);
+            // SOME PROJECTS IS THE BASE, D19: no value declared, no rule for a level, only Paginated's own and the library's kinds undressed.
+            if (route.name === 'Some Projects') {
+                expect(html, route.name).not.toContain('--pd-');
+                expect(sheet, route.name).not.toMatch(/\.pd-paragraph\{/u);
+            } else {
+                expect(html, route.name).toMatch(/style="--pd-font:Georgia/u);
+                expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space\);\}/u);
+            }
+            expect(sheet, route.name).not.toContain('@layer');
+            expect(sheet, route.name).not.toContain('!important');
+            // THE BASE'S CHAIN OF :has() IS GONE; the manual's explorer still places by one, its own and carried, Sprint 96's U9.
+            expect(sheet, route.name).not.toMatch(/:has\(> \.pa-parenthetical\)/u);
             // AND NO STYLE OF ITS OWN ON THE PAGE since Sprint 95's U8: the sheet is a file, linked.
             expect(html, route.name).not.toMatch(/<style[^>]*data-styled/u);
         }
@@ -324,10 +332,13 @@ describe('a bind of the test library', () => {
         expect(linked(page(manual.name))).toMatch(/^sheets\/[0-9a-f]{12}\.css$/u);
         expect(linked(page('Libby'))).not.toBe(linked(page('The Library')));
         expect(readdirSync(join(galley.face, 'sheets')).length).toBeLessThanOrEqual(table.routes.length);
-        const sheet = sheetOf(page('The Library'));
-        expect(sheet.slice(sheet.search(/@layer/u)).startsWith('@layer pd.invariants,pd.theme;')).toBe(true);
-        expect(sheet.indexOf('@layer pd.invariants{')).toBeLessThan(sheet.indexOf('@layer pd.theme{'));
-        expect(statSync(placeOf(galley.face, manual)).size).toBeLessThan(220 * 1024);
+        // THE SHEET IS THE LIBRARY'S RULES ALONE since Sprint 97: no order statement, since there is no base sheet to order against.
+        expect(sheetOf(page('The Library'))).not.toContain('@layer');
+        // AND THE PAGES LIGHTER AGAIN BY S1, the annotations' writing no longer in them: the paper 18,280 bytes before
+        // and 12,820 after; the manual holds near 200 KB because it prints the library's own files, which grew with it.
+        expect(statSync(placeOf(galley.face, manual)).size).toBeLessThan(200 * 1024);
+        expect(page('A Paper').length).toBeLessThan(14 * 1024);
+        expect(page('The Library').length).toBeLessThan(13 * 1024);
     });
 
     it('drew the persona\'s poem as three lines, each a div wearing the sentence\'s mark and its own', () => {
@@ -339,13 +350,14 @@ describe('a bind of the test library', () => {
     it('drew in the argument a space of three, a break, and the three basics as their elements', () => {
         const argument = chapterPage('A Paper', 'The Argument');
         expect(argument).toMatch(/<span class="(?=[^"]*\bpd-space\b)(?=[^"]*\bpa-blank\b)[^"]*">   </u);
-        // NOTHING WRITTEN IN IT: what follows the break's open tag is its annotations' own writing or its close.
-        expect(argument).toMatch(/<div class="(?=[^"]*\bpd-break\b)(?=[^"]*\bpa-blank\b)[^"]*">(?:<span class="pd-annotation">|<\/div>)/u);
+        // NOTHING WRITTEN IN IT, and nothing of its annotations' either since Sprint 97's S1: the open tag, then its close.
+        expect(argument).toMatch(/<div class="(?=[^"]*\bpd-break\b)(?=[^"]*\bpa-blank\b)[^"]*"><\/div>/u);
         // EACH TAG WEARS ITS OWN CLASS since Sprint 95, the word inside it none of it: a basic is its tag.
         expect(argument).toMatch(/<em class="[^"]*\bpa-emphasis pd-container"><span class="pd-word">names/u);
         expect(argument).toMatch(/<b class="[^"]*\bpa-bold pd-container"><span class="pd-word">never/u);
         expect(argument).toMatch(/<u class="[^"]*\bpa-underline pd-container"><span class="pd-word">place/u);
-        expect(sheetOf(argument)).toMatch(/\.pa-blank\{visibility:hidden!important;\}/u);
+        // BLANK IS A MARK since Sprint 97's S3: what wears it has no ink, and no rule is written for it.
+        expect(sheetOf(argument)).not.toContain('.pa-blank');
     });
 
     it('drew Libby dark by its own theme in front of the library\'s, and no other book dark', () => {
@@ -355,14 +367,17 @@ describe('a bind of the test library', () => {
                 expect(page(route.name), route.name).not.toContain('#1f1f24');
     });
 
-    it('drew the frame on Some Projects\' book and on each of the persona\'s chapters, its border in the theme\'s ink', () => {
-        const projects = page('Some Projects');
-        // SOME PROJECTS WEARS THE FRAMEWORK'S OWN THEME since Sprint 97, so its ink is black and its space one rem.
-        expect(sheetOf(projects)).toMatch(/border:1px solid var\(--pd-ink, black\);padding:var\(--pd-space, 1rem\);margin-block:var\(--pd-space, 1rem\)/u);
-        expect(projects).toMatch(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-book\b/u);
+    it('drew the frame on each of the persona\'s chapters, its border in the theme\'s ink, and Some Projects bare: the base, its chapters the framework\'s own words', () => {
         const persona = page('A Persona');
+        expect(sheetOf(persona)).toMatch(/border:1px solid var\(--pd-ink\);padding:var\(--pd-space\);margin-block:var\(--pd-space\)/u);
         expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
         expect(sheetOf(page('Libby'))).not.toMatch(/border:1px solid [^;]*;padding:var\(--pd-space[^;]*\);margin-block:var\(--pd-space[^;]*\)/u);
+        // SOME PROJECTS STANDS THE BASE ALONE since Sprint 97, B2: Paginated and the framework's Cover, Synopsis and
+        // TableOfContents, no frame, no card, no rule of a library's Format in its sheet but its own kinds' marks.
+        const projects = page('Some Projects');
+        expect(projects).not.toContain('pa-framed');
+        expect(sheetOf(projects)).not.toMatch(/\.pa-cover|\.pa-synopsis|\.pa-table-of-contents|border:/u);
+        expect(sheetOf(projects)).toMatch(/\.pa-page:not\(\.pa-open\)/u);
     });
 });
 
@@ -400,13 +415,10 @@ describe('the bound test library, seen in a real browser', () => {
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
     });
 
-    it('shows a table\'s entries and hides its parenthetical ones from the eye, present to a reader, where the proof still reads them', async () => {
-        // FOUR HIDDEN: the table's own title, parenthetical, and its three parenthetical entries — and one shown,
-        // the table chapter's catchword's Previous, the synopsis, which means the book, since Sprint 86.
-        // A PARENTHETICAL IS PRESENT TO A READER AND NOT TO THE EYE since Sprint 94 (D9): a one-pixel box clipped
-        // from sight, not no box at all, and a clipped ancestor hides its children without touching their geometry.
-        // So the eye's measurement is a hit test: what is painted at the entry's centre once it is scrolled into
-        // view — a clipped entry answers with whatever stands behind it, a shown entry with itself.
+    it('shows a table\'s entries and draws nothing of its parenthetical ones, which are gone from the page and not merely from the eye', async () => {
+        // PARENTHETICAL REMOVES WHAT IS DRAWN since Sprint 97's S2: the three parenthetical entries are not in the page
+        // at all; the table's own title stands as a hidden, empty element inside its self-link, so that anchor has no
+        // box; and one link to the book is shown, the table chapter's catchword's Previous, the synopsis, since Sprint 86.
         const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/#synopsis"], nav a[href="/a-paper/#table-of-contents"]',
             links => links.map(link => {
                 link.scrollIntoView({ block: 'center' });
@@ -415,11 +427,11 @@ describe('the bound test library, seen in a real browser', () => {
                 const painted = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
                 return painted === null || !(painted === link || link.contains(painted));
             }));
-        expect(hidden).toEqual([true, true, true, true, false]);
+        expect(hidden).toEqual([true, false]);
+        expect(await paper.$$eval('nav .pa-parenthetical', entries => entries.map(entry => [entry.hasAttribute('hidden'), entry.childNodes.length]))).toEqual([[true, 0], [true, 0]]);
         const shown = await paper.$eval('nav', nav => nav.innerText);
         expect(shown).toContain('The Argument');
         expect(shown).toContain('The Evidence');
-        expect(shown).toContain('Table of Contents');
         expect(shown).not.toContain('](/');
     });
 
@@ -592,7 +604,8 @@ describe('the bound test library, seen in a real browser', () => {
         const label = (selector: string): Promise<string> => libby.$eval(selector, title => getComputedStyle(title, '::before').content);
         expect(await label('.pa-cover .pd-title')).toBe('"Autobiography"');
         expect(await label('#who-i-am')).toMatch(/^"Chapter " counter\(chapter\)$/u);
-        expect(await label('#synopsis')).toBe('none');
+        // A PARENTHETICAL TITLE IS NOT DRAWN since Sprint 97's S2, so no label of it is: the element stands hidden and empty.
+        expect(await libby.$eval('#synopsis', title => [getComputedStyle(title).display, title.childNodes.length])).toEqual(['none', 0]);
         // innerText, never textContent: a word's hidden annotations — its level's "2", a reference's url — are in textContent.
         expect(await libby.$$eval('.pd-byline .pd-label', labels => labels.map(label => (label as HTMLElement).innerText))).toEqual(['AUTHOR', 'FILED UNDER']);
         expect(await libby.$eval('.pd-running-head', head => (head as HTMLElement).innerText)).toBe('THE LIBRARY / LIBBY: TABLE OF CONTENTS');

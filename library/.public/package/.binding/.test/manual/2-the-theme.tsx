@@ -7,28 +7,28 @@ export default () => (
         <Section>
             <Heading>What the theme is</Heading>
             <Paragraph>
-                The one thing every book here shares, in two classes. The first, under the framework's Theme, sets
-                the values a theme has and nothing else, so that a book may take the library's values without its
-                look, as the manual does for its explorer. The second, under the first, is the library's look: in
-                a field of its own it extends the default sheet rather than replacing it, since the default comprehends
-                every mark the framework puts on an element and this one adds the library's look on top of those
-                same marks: the cover a card whose head is the byline, a label above every
-                chapter's title saying what the chapter is, chapters of the canonical type counted and ruled, the
-                synopsis a ruled block, the table of contents boxed and its catalogue ruled, a figure set off. Every
-                rule names a mark on the writing's own element and never the box a format draws around it, since a
-                format in front may stand any number of boxes between, and a chapter a face has framed is left to
-                its frame. Every rule reads the theme's values, so a book that overrides them keeps the look in
-                another ink, which is what <Means>$[[ Libby ]]</Means> does to go dark.
+                The one thing every book here shares: a place for the library's properties, and the one styled
+                component that dresses the framework's marks with them. The framework's Theme is bare, a place and
+                nothing in it, so the properties are this library's own — the font, the size, the leading, the
+                measure, the space, the ink, the paper and the link — declared as fields, named once for the provider,
+                and typed once for styled-components in this file, so that every style in the library reads them as
+                the theme's and a book that overrides them keeps the look in another ink, which is what
+                <Means>$[[ Libby ]]</Means> does to go dark. The provider declares them on the theme's element as
+                custom properties and hands every style a variable, so a value changed on the theme moves one
+                declaration and regenerates no class beneath it.
             </Paragraph>
             <Paragraph>
-                The file opens with a small helper every style in this library uses to read a value: the property
-                named on the theme the format stands inside. A book always has a theme, so the fallback the helper
-                still carries is never reached; what it reads is the theme's variable, since the framework declares
-                its eight values as custom properties once and hands every style a reference, so a value changed on
-                the theme moves one declaration and regenerates no class beneath it. A style is compiled once per
-                class, so it must read the theme through the provider's props and never through a closure over the
-                instance; the helper is where that rule lives once. The file is printed whole in the chapter's
-                appendix, <Means>$[[ ./The theme's file ]]</Means>.
+                The component is composed of parts, each a method returning a fragment of rules, so that a subclass
+                changes one part and keeps the rest, as the manual does for its explorer: the page, which is the
+                theme's own element; the levels, the margins and the titles and the chapters counted and labelled;
+                the labels' one voice; the links, the anchors and the self-references the framework draws bare;
+                the library's own apparatus, the running head, the byline and the catchword; and the figures, the
+                code block and its line numbers from the data the framework leaves on each line, the highlighter's
+                colours, the pictures, and an equation's number. Every rule names a mark on the writing's own
+                element and never the box a format draws around it, since a format in front may stand any number
+                of boxes between, and a chapter a face has framed is left to its frame. What a cover, a synopsis, a
+                table of contents or a table looks like is not here: each is a face of its own, the next chapters.
+                The file is printed whole in the chapter's appendix, <Means>$[[ ./The theme's file ]]</Means>.
             </Paragraph>
         </Section>
         <Section>

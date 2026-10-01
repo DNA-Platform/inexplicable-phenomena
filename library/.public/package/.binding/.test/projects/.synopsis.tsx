@@ -1,5 +1,5 @@
-import { Chapter, Paragraph, Parenthetical, Title } from '@dna-platform/public';
-import { Synopsis, Catchword } from '../manual/.book';
+import { Chapter, Paragraph, Parenthetical, Synopsis, Title } from '@dna-platform/public';
+import { Catchword } from '../manual/.book';
 
 export default () => (
     <Chapter>

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book } from '@dna-platform/public';
+import { $Book, Theme } from '@dna-platform/public';
 import { LibraryTheme } from './2-the-theme.code.tsx';
 import { Byline as byline, RunningHead as runningHead } from './3-the-masthead-and-the-byline.code.tsx';
 
@@ -17,13 +17,6 @@ export class $TheLibrary extends $Book {
         );
     }
 
-    protected override $Define(): void {
-        super.$Define();
-        this.annotations.add(this,
-            <LibraryTheme />
-        );
-    }
-
     protected override turn(): void {
         if (this.bookmark !== undefined && this.bookmark === this.cover) { window.scrollTo(0, 0); return; }
         super.turn();
@@ -31,3 +24,4 @@ export class $TheLibrary extends $Book {
 }
 
 export const TheLibrary = $($TheLibrary);
+$(TheLibrary, Theme)(LibraryTheme);

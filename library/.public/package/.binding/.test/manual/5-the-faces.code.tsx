@@ -13,21 +13,21 @@ export class $LibraryCover extends $Cover {
             scroll-margin-block-start: calc(1.75 * ${({ theme }) => theme.space});
         }
         .pa-cover .pd-title { margin-block: 0 calc(${({ theme }) => theme.space} / 2); font-size: calc(2 * ${({ theme }) => theme.size}); }
-        .pa-cover .pd-title:not(.pa-parenthetical)::before { content: 'Cover'; }
-        .pa-biography .pd-title:not(.pa-parenthetical)::before { content: 'Biography'; }
-        .pa-autobiography .pd-title:not(.pa-parenthetical)::before { content: 'Autobiography'; }
+        .pa-cover .pd-title::before { content: 'Cover'; }
+        .pa-biography .pd-title::before { content: 'Biography'; }
+        .pa-autobiography .pd-title::before { content: 'Autobiography'; }
     `;
 }
 
 export class $LibrarySynopsis extends $Synopsis {
-    override style = selection.div`
+    style = selection.div`
         .pa-synopsis {
             margin-block: calc(1.5 * ${({ theme }) => theme.space});
             padding-inline-start: ${({ theme }) => theme.space};
             border-inline-start: 2px solid ${({ theme }) => theme.link};
         }
         .pa-synopsis .pd-paragraph { font-style: italic; }
-        .pa-synopsis .pd-title:not(.pa-parenthetical)::before { content: 'Synopsis'; }
+        .pa-synopsis .pd-title::before { content: 'Synopsis'; }
     `;
 }
 
@@ -42,7 +42,7 @@ export class $LibraryTableOfContents extends $TableOfContents {
         }
         .pa-table-of-contents .pd-paragraph { margin-block: calc(${({ theme }) => theme.space} / 4); }
         .pa-table-of-contents .pd-catchword { margin-block-end: 0; }
-        .pa-table-of-contents .pd-title:not(.pa-parenthetical)::before { content: 'Table of Contents'; }
+        .pa-table-of-contents .pd-title::before { content: 'Table of Contents'; }
         .pa-table-of-contents .pd-heading {
             font-size: calc(0.7 * ${({ theme }) => theme.size});
             font-weight: normal;
@@ -55,17 +55,11 @@ export class $LibraryTableOfContents extends $TableOfContents {
 
 export class $LibraryTable extends $Table {
     override style = selection(this.style)`
+        .pa-table { column-gap: ${({ theme }) => theme.space}; row-gap: calc(${({ theme }) => theme.space} / 2); }
+        .pa-table .pd-paragraph { margin-block: 0; }
         .pa-col {
             padding-block: calc(${({ theme }) => theme.space} / 3);
             border-block-end: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 7%, ${({ theme }) => theme.paper});
-        }
-        .pa-row:first-child .pa-col {
-            font-size: calc(0.7 * ${({ theme }) => theme.size});
-            font-weight: normal;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            opacity: 0.65;
-            border-block-end: 1px solid ${({ theme }) => theme.ink};
         }
     `;
 }

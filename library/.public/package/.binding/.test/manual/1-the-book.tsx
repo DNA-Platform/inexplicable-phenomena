@@ -10,9 +10,13 @@ export default () => (
                 Every book in a library extends the library's own, the way every book in a real library extends
                 the library's, so what a book is here is decided once and a change to it reaches all of them. The
                 book class is the layout: the masthead, then the byline drawn from what the book exposes of its
-                cover, then the chapters; and it stands the library's dress and its theme on itself as defaults. A
-                book that wants more adds to this in its own class, as <Means>$[[ Some Projects ]]</Means> adds its
-                pages.
+                cover, then the chapters. And its file is where the library's theme is registered for the
+                framework's, once, on the library's book class: every book of the library is a subclass of that
+                class and inherits the registration, so the Theme the framework stands on every book is this
+                library's here. A book that wants more adds to this in its own class, as
+                <Means>$[[ Some Projects ]]</Means> adds its pages — and a book that wants another theme registers
+                it on its own class in the same way, as <Means>$[[ Libby ]]</Means> registers a dark one and
+                <Means>$[[ Some Projects ]]</Means> the framework's own, bare, to show what the base is.
             </Paragraph>
             <Paragraph>
                 One thing it decides about turning. A cover's route opens at the top of the page, masthead and byline

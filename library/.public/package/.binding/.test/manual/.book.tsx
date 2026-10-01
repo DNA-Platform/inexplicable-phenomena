@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
+import { Theme } from '@dna-platform/public';
 import { $TheLibrary } from './1-the-book.code.tsx';
 import { ManualTheme } from './7-the-explorer.theme.tsx';
 import { Tabbed } from './7-the-explorer.paging.tsx';
@@ -22,14 +23,14 @@ export default class $TheManual extends $TheLibrary {
     protected override $Define(): void {
         super.$Define();
         this.annotations.add(this,
-            <ManualTheme />
-        );
-        this.annotations.add(this,
             <Explorer />,
             <Tabbed />
         );
     }
 }
+
+const TheManual = $($TheManual);
+$(TheManual, Theme)(ManualTheme);
 
 export * from './1-the-book.code.tsx';
 export * from './2-the-theme.code.tsx';
