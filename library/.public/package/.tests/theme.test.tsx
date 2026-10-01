@@ -12,6 +12,9 @@ import type { ReactNode } from 'react';
 Element.prototype.scrollIntoView = () => {};
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+// THE EIGHT ARE DECLARED INLINE ON THE THEME'S ELEMENT since Sprint 95's U8, custom properties in its style attribute,
+// so the sheet is the class's own and a book's pages share one file; a declaration is read off the element.
+const declared = (container: HTMLElement, name: string): string => (container.querySelector('[style*="--pd-"]') as HTMLElement).style.getPropertyValue(name);
 const stylesInDocument = (): string => [...document.styleSheets]
     .map(sheet => { try { return [...sheet.cssRules].map(rule => rule.cssText).join(''); } catch { return ''; } })
     .concat([...document.querySelectorAll('style')].map(style => style.textContent ?? ''))
@@ -107,18 +110,19 @@ describe('a theme is a format said of a book that provides eight live properties
     it('a book with no theme written draws under the framework\'s theme, and a styled element beneath it reads its ink', () => {
         const book = shelf(null);
         expect(book.theme).toBeInstanceOf($Theme);
-        const { css } = served(book);
-        expect(css).toContain('--pd-ink:black');
+        const { html, css } = served(book);
+        expect(html).toContain('--pd-ink:black');
         expect(css).not.toContain('unthemed');
-        expect(css).toContain('--pd-font:serif');
+        expect(html).toContain('--pd-font:serif');
     });
 
     it('stood in a book, provides to a styled element three levels down, and its default sheet is in the page', () => {
         const book = shelf(<Theme />);
         expect(book.is($Theme)).toBe(true);
-        const { css } = served(book);
-        expect(css).toContain('--pd-ink:black');
-        expect(css).toContain('--pd-font:serif');
+        const { html, css } = served(book);
+        expect(html).toContain('--pd-ink:black');
+        expect(html).toContain('--pd-font:serif');
+        expect(css).not.toContain('--pd-ink:');
         expect(css).toContain('.pd-annotation{display:none;}');
         // THREE LAYERS since Sprint 94: the sheet's first rule is the order statement, its marks' rules sit in
         // pd.theme, its own element's declarations stand unlayered above them, and a Format's output is unlayered.
@@ -150,7 +154,7 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(book.annotations.find($Theme)).toHaveLength(3);   // the class's own beneath the two written, since Sprint 94
         expect(book.annotations.expressed($Theme)).toBeInstanceOf($Dark);
         expect([...book.containers].filter(layer => typeof layer !== 'string')).toHaveLength(1);
-        expect(served(book).css).toContain('--pd-ink:white');
+        expect(served(book).html).toContain('--pd-ink:white');
         const container = await drawn(book);
         expect(container.querySelector('.pd-book')).not.toBeNull();
         await act(async () => { book.$is = Wide; });
@@ -171,12 +175,13 @@ describe('a theme is a format said of a book that provides eight live properties
         const inked = container.querySelector('.pd-word')!.parentElement!;
         expect(inked.className).toContain('pd-container');
         const before = inked.className;
-        expect(stylesInDocument()).toContain('--pd-ink:black');
+        expect(declared(container, '--pd-ink')).toBe('black');
         await act(async () => { theme.ink = 'red'; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(theme.values.ink).toBe('red');
         expect(container.querySelector('.pd-word')!.parentElement!.className).toBe(before);
-        expect(stylesInDocument()).toContain('--pd-ink:red');
+        expect(declared(container, '--pd-ink')).toBe('red');
+        expect(stylesInDocument()).not.toContain('--pd-ink:');
     });
 
     // R2 — MEASURED 2026-09-29, and pinned as the cost it is. Before the contract, one write of ink re-rendered
@@ -210,7 +215,7 @@ describe('a theme is a format said of a book that provides eight live properties
         counted.views = 0;
         await act(async () => { book.theme.ink = 'red'; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
-        expect(stylesInDocument()).toContain('--pd-ink:red');
+        expect(declared(container, '--pd-ink')).toBe('red');
         expect(book.theme.contract).toBe(contract);
         expect([...container.querySelectorAll('.pd-word')].map(word => word.parentElement!.className)).toEqual(classesBefore);
         expect(counted.views).toBe(24);
@@ -316,9 +321,9 @@ describe('a theme is a format said of a book that provides eight live properties
         const book = shelf(<Wide />);
         expect(book.is($Theme)).toBe(true);
         expect(book.annotations.expressed($Theme)).toBeInstanceOf($Wide);
-        const { html, css } = served(book);
+        const { html } = served(book);
         expect(html).toContain('<article');
-        expect(css).toContain('--pd-measure:60rem');
+        expect(html).toContain('--pd-measure:60rem');
     });
 
     it('said of a section, says so when asked', () => {

@@ -1,4 +1,4 @@
-import { ComponentType, ElementType, ReactNode } from 'react';
+import { ComponentType, CSSProperties, ElementType, ReactNode } from 'react';
 import { ThemeProvider, createTheme } from 'styled-components';
 import { $, $check, $Chemical, children, inert, selection } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
@@ -25,7 +25,7 @@ export class $Theme extends $Format {
     ink = 'black';
     paper = 'white';
     link = 'blue';
-    style: ComponentType<{ className?: string; children?: ReactNode }> = selection.div`
+    style: ComponentType<{ className?: string; style?: CSSProperties; children?: ReactNode }> = selection.div`
         @layer pd.invariants, pd.theme;
         font-family: ${({ theme }) => theme.font};
         font-size: ${({ theme }) => theme.size};
@@ -115,20 +115,19 @@ export class $Theme extends $Format {
     `;
     protected _provider!: ElementType;
     @inert() protected _contract!: ReturnType<typeof createTheme<Values>>;
-    protected _sheet!: ComponentType<{ className?: string; children?: ReactNode; $values: Values; $vars: Values }>;
     get values(): Values {
         return { font: this.font, size: this.size, leading: this.leading, measure: this.measure, space: this.space, ink: this.ink, paper: this.paper, link: this.link };
     }
     get contract(): Values { return this._contract; }
     get vars(): Values { return this._contract.vars; }
-    get sheet(): ComponentType<{ className?: string; children?: ReactNode; $values: Values; $vars: Values }> { return this._sheet; }
+    get declarations(): CSSProperties {
+        const values = this.values;
+        return Object.fromEntries((Object.keys(values) as (keyof Values)[]).map(key => [this.vars[key], values[key]])) as CSSProperties;
+    }
 
     $Theme(...chemicals: $Chemical[]) {
         this.$Format(...chemicals);
         this._contract = createTheme(this.values, { prefix: 'pd' });
-        this._sheet = selection(this.style)<{ $values: Values; $vars: Values }>`
-            ${({ $values, $vars }) => (Object.keys($values) as (keyof Values)[]).map(key => `${$vars[key]}: ${$values[key]};`).join(' ')}
-        `;
         const Provider = $(provider);
         this._provider = $(reflection.chemical<$Provider>(<Provider theme={this} />, this));
     }
@@ -148,10 +147,10 @@ export class $Provider extends $Chemical {
     $className?: string;
 
     view(): ReactNode {
-        const Sheet = this.$theme.sheet;
+        const Style = this.$theme.style;
         return (
             <ThemeProvider theme={this.$theme.contract}>
-                <Sheet className={this.$className} $values={this.$theme.values} $vars={this.$theme.vars}>{this[children]}</Sheet>
+                <Style className={this.$className} style={this.$theme.declarations}>{this[children]}</Style>
             </ThemeProvider>
         );
     }

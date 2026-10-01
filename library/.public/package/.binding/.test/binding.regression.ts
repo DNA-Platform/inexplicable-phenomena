@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
 import puppeteer, { type Browser, type Page } from 'puppeteer';
@@ -42,6 +42,9 @@ describe('a bind of the test library', () => {
     const found = walk(galley.library, chosen);
     const table = catalogue(found, chosen).table;
     const page = (name: string): string => readFileSync(placeOf(galley.face, table.routes.find(route => route.name === name)!), 'utf8');
+    // THE SHEET IS A FILE since Sprint 95's U8, named by its content and linked from the page's head.
+    const linked = (html: string): string => html.match(/<link rel="stylesheet" href="[^"]*?(sheets\/[0-9a-f]+\.css)" \/>/u)?.[1] ?? '';
+    const sheetOf = (html: string): string => readFileSync(join(galley.face, linked(html)), 'utf8');
     const chapterPage = (book: string, chapter: string): string =>
         readFileSync(placeOf(galley.face, table.routes.find(route => route.name === book)!.chapters.find(one => one.name === chapter)!), 'utf8');
 
@@ -160,8 +163,8 @@ describe('a bind of the test library', () => {
         // THE TABLE IS AN ANNOTATION since Sprint 95's U4 — Doug: "Table should not be replacing the writing's
         // element" — the section's own element wears pa-table, the Theme's sheet is its grid by that mark, its
         // columns implicit from the cells' start classes, and no rule is made per table.
-        expect(library).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
-        expect(library).not.toMatch(/grid-template-columns:\s*repeat\(/u);
+        expect(sheetOf(library)).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
+        expect(sheetOf(library)).not.toMatch(/grid-template-columns:\s*repeat\(/u);
         expect(library).not.toMatch(/pa-cols-/u);
         expect(library).toMatch(/<div class="(?=[^"]*\bpd-section\b)(?=[^"]*\bpa-table\b)[^"]*"/u);
     });
@@ -205,10 +208,9 @@ describe('a bind of the test library', () => {
     // A STYLE ONE BOOK HAS AND THE OTHERS DO NOT, on its own page and on no other — the leak the render
     // once kept one child per page to prevent. Doug, 2026-09-26: "Yes it was a style leak bug."
     it('drew the paper\'s own style on its page and on no other', () => {
-        // THE STYLE BLOCKS ALONE: since Sprint 89 the manual PRINTS the faces' file, whose text quotes the paper's rule.
-        const styles = (html: string): string => (html.match(/<style[^>]*>[\s\S]*?<\/style>/gu) ?? []).join('\n');
+        // THE SHEET ALONE: since Sprint 89 the manual PRINTS the faces' file, whose text quotes the paper's rule.
         for (const route of table.routes)
-            expect(/font-family: ?monospace/u.test(styles(page(route.name))), route.name).toBe(route.name === 'A Paper');
+            expect(/font-family: ?monospace/u.test(sheetOf(page(route.name))), route.name).toBe(route.name === 'A Paper');
     });
 
     // THE ORDINARY VIEW, which the test library's book class stands as its theme — Doug, 2026-09-25:
@@ -217,8 +219,10 @@ describe('a bind of the test library', () => {
         for (const route of table.routes) {
             const html = page(route.name);
             // A PRELOAD LINK MAY STAND FIRST, which React emits ahead of a page holding a picture.
-            expect(html, route.name).toMatch(/<div id="root">(<link [^>]*\/>)*<!--\$--><div class="[^"]*pd-container">/u);
-            expect(html, route.name).toMatch(/\.pd-annotation\s*\{\s*display:\s*none/u);
+            // THE THEME'S ELEMENT DECLARES THE EIGHT INLINE since Sprint 95's U8, so it carries a style attribute.
+            expect(html, route.name).toMatch(/<div id="root">(<link [^>]*\/>)*<!--\$--><div class="[^"]*pd-container"( style="[^"]*")?>/u);
+            expect(html, route.name).toMatch(/ style="--pd-font:[^"]*">/u);
+            expect(sheetOf(html), route.name).toMatch(/\.pd-annotation\s*\{\s*display:\s*none/u);
         }
     });
 
@@ -244,7 +248,7 @@ describe('a bind of the test library', () => {
         expect(projects.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
         // THE CLASSES IN ANY ORDER: an annotation's class is taken back and put again at every define, so it moves.
         expect(projects).toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
-        expect(projects).toMatch(/\.pa-paginated \.pa-page:not\(\.pa-open\)\s*\{\s*display:\s*none/u);
+        expect(sheetOf(projects)).toMatch(/\.pa-paginated \.pa-page:not\(\.pa-open\)\s*\{\s*display:\s*none/u);
         const work = chapterPage('Some Projects', 'The Work');
         expect(work.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
         expect(work).toMatch(/class="[^"]*\bpa-open\b[^"]*"[^>]*>(?:(?!<\/span>)[\s\S])*?id="the-work"/u);
@@ -281,16 +285,36 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/<div class="[^"]*\bpd-paragraph\b/u);
             expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
             expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
-            expect(html, route.name).toMatch(/--pd-font:Georgia/u);
-            expect(html, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1\.25rem\);\}/u);
+            const sheet = sheetOf(html);
+            expect(html, route.name).toMatch(/style="--pd-font:Georgia/u);
+            expect(sheet, route.name).not.toMatch(/--pd-font:Georgia/u);
+            expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1\.25rem\);\}/u);
             // THREE LAYERS since Sprint 94: the invariants first, the theme's sheet second, a Format's rules unlayered.
             // ONE GLOBAL SHEET since Sprint 95's U5: the Theme's sheet opens with the order statement and carries the
             // invariants in their layer and the marks' looks in its own, and no annotation injects a style of its own.
-            const layered = html.search(/@layer pd\.(?:invariants|theme)/u);
+            const layered = sheet.search(/@layer pd\.(?:invariants|theme)/u);
             expect(layered, route.name).toBeGreaterThanOrEqual(0);
-            expect(html.slice(layered, layered + 24), route.name).toMatch(/^@layer pd\.invariants/u);
-            expect(html, route.name).toMatch(/@layer pd\.theme\{/u);
+            expect(sheet.slice(layered, layered + 24), route.name).toMatch(/^@layer pd\.invariants/u);
+            expect(sheet, route.name).toMatch(/@layer pd\.theme\{/u);
+            // AND NO STYLE OF ITS OWN ON THE PAGE since Sprint 95's U8: the sheet is a file, linked.
+            expect(html, route.name).not.toMatch(/<style[^>]*data-styled/u);
         }
+    });
+
+    // THE SHEET IS A FILE — Sprint 95, U8, D8: named by its content, so the pages of one book link one file, two
+    // books with different values two, and a page carries no styles of its own; the pages lighter by the sheet.
+    it('wrote each book\'s sheet once as a file named by its content, every page of the book linking it, and the pages lighter for it', () => {
+        const manual = table.routes.find(route => route.name === 'The Library Reference Manual')!;
+        const links = new Set([manual, ...manual.chapters].map(one => linked(readFileSync(placeOf(galley.face, one), 'utf8'))));
+        expect(links.size).toBe(1);
+        expect([...links][0]).toMatch(/^sheets\/[0-9a-f]{12}\.css$/u);
+        expect(linked(page('Libby'))).not.toBe(linked(page('The Library')));
+        expect(readdirSync(join(galley.face, 'sheets')).length).toBeLessThanOrEqual(table.routes.length);
+        const sheet = sheetOf(page('The Library'));
+        expect(sheet.slice(sheet.search(/@layer/u)).startsWith('@layer pd.invariants,pd.theme;')).toBe(true);
+        expect(sheet.indexOf('@layer pd.invariants{')).toBeLessThan(sheet.indexOf('@layer pd.theme{'));
+        const bytes = statSync(placeOf(galley.face, manual.chapters.find(one => one.name === 'The Theme')!)).size;
+        expect(bytes).toBeLessThan(220 * 1024);
     });
 
     it('drew the persona\'s poem as three lines, each a div wearing the sentence\'s mark and its own', () => {
@@ -308,7 +332,7 @@ describe('a bind of the test library', () => {
         expect(argument).toMatch(/<em class="[^"]*\bpa-emphasis pd-container"><span class="pd-word">names/u);
         expect(argument).toMatch(/<b class="[^"]*\bpa-bold pd-container"><span class="pd-word">never/u);
         expect(argument).toMatch(/<u class="[^"]*\bpa-underline pd-container"><span class="pd-word">place/u);
-        expect(argument).toMatch(/\.pa-blank\{visibility:hidden!important;\}/u);
+        expect(sheetOf(argument)).toMatch(/\.pa-blank\{visibility:hidden!important;\}/u);
     });
 
     it('drew Libby dark by its own theme in front of the library\'s, and no other book dark', () => {
@@ -320,11 +344,11 @@ describe('a bind of the test library', () => {
 
     it('drew the frame on Some Projects\' book and on each of the persona\'s chapters, its border in the theme\'s ink', () => {
         const projects = page('Some Projects');
-        expect(projects).toMatch(/border:1px solid var\(--pd-ink, #23262a\);padding:var\(--pd-space, 1\.25rem\);margin-block:var\(--pd-space, 1\.25rem\)/u);
+        expect(sheetOf(projects)).toMatch(/border:1px solid var\(--pd-ink, #23262a\);padding:var\(--pd-space, 1\.25rem\);margin-block:var\(--pd-space, 1\.25rem\)/u);
         expect(projects).toMatch(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-book\b/u);
         const persona = page('A Persona');
         expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
-        expect(page('Libby')).not.toMatch(/border:1px solid [^;]*;padding:var\(--pd-space[^;]*\);margin-block:var\(--pd-space[^;]*\)/u);
+        expect(sheetOf(page('Libby'))).not.toMatch(/border:1px solid [^;]*;padding:var\(--pd-space[^;]*\);margin-block:var\(--pd-space[^;]*\)/u);
     });
 });
 

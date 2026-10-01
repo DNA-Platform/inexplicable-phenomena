@@ -10,7 +10,7 @@ export default () => (
                 The one thing every book here shares, in two classes. The first, under the framework's Theme, sets
                 the values a theme has and nothing else, so that a book may take the library's values without its
                 look, as the manual does for its explorer. The second, under the first, is the library's look: in
-                its define it extends the default sheet rather than replacing it, since the default comprehends
+                a field of its own it extends the default sheet rather than replacing it, since the default comprehends
                 every mark the framework puts on an element and this one adds the library's look on top of those
                 same marks: the cover a card whose head is the byline, a label above every
                 chapter's title saying what the chapter is, chapters of the canonical type counted and ruled, the

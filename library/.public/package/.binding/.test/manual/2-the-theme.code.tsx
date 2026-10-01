@@ -16,9 +16,7 @@ export class $LibraryValues extends $Theme {
 }
 
 export class $LibraryTheme extends $LibraryValues {
-    protected override $Define(): void {
-        super.$Define();
-        this.style = selection(this.style as ComponentType<{ className?: string }>)`
+    override style = selection(this.style as ComponentType<{ className?: string }>)`
             @media (min-width: 64rem) { max-width: 52rem; }
             .pd-book { counter-reset: chapter; }
             .pd-chapter { scroll-margin-block-start: calc(0.5 * ${at('space')}); }
@@ -96,8 +94,7 @@ export class $LibraryTheme extends $LibraryValues {
             }
             .pd-code pre { margin: 0; }
             .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; margin-block: ${at('space')}; }
-        `;
-    }
+    `;
 }
 
 export const LibraryValues = $($LibraryValues);

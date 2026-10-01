@@ -1,5 +1,6 @@
 import './dom';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ViteDevServer } from 'vite';
@@ -43,6 +44,16 @@ const causeOfTheFailure = (unguarded: ReactNode): string => {
 // THE PAGE IS DRAWN THROUGH THE INDEX THE BINDER WROTE — the same routes, and the same loader, the
 // reader's browser runs. One page per address, a book's and each of its chapters', every one the
 // book that answers it — drawn whole at each until the book reads which chapter the address opens.
+const sheetOf = (face: string, css: string): string => {
+    const named = `sheets/${createHash('sha256').update(css).digest('hex').slice(0, 12)}.css`;
+    const at = join(face, named);
+    if (!existsSync(at)) {
+        mkdirSync(dirname(at), { recursive: true });
+        writeFileSync(at, css, 'utf8');
+    }
+    return named;
+};
+
 export const draw = async (server: ViteDevServer, addresses: string[]): Promise<string[]> => {
     const { binding, face } = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
     const chosen = configure(binding);
@@ -70,7 +81,10 @@ export const draw = async (server: ViteDevServer, addresses: string[]): Promise<
             if (markup.includes(erroredBoundary)) throw new Error(`${route.name} does not draw — ${causeOfTheFailure(createElement(Drawn))}`);
             const at = placeOf(face, { address });
             mkdirSync(dirname(at), { recursive: true });
-            writeFileSync(at, page(built, markup, sheet.getStyleTags(), chosen.rendering.title), 'utf8');
+            // THE SHEET IS A FILE NAMED BY ITS CONTENT, written once and linked from every page that collected the
+            // same styles, so the pages of a book share one file the browser caches and a page carries no styles
+            // of its own. Sprint 95, U8 — the inlined tag was the server-side habit of styled-components and nothing more.
+            writeFileSync(at, page(built, markup, `<link rel="stylesheet" href="${chosen.resolution.base}${sheetOf(face, sheet.instance.toString())}" />`, chosen.rendering.title), 'utf8');
             pages.push(relative(face, at).split(sep).join('/'));
         } finally {
             sheet.seal();

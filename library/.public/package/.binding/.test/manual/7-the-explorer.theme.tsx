@@ -3,9 +3,7 @@ import { $, selection } from '@dna-platform/chemistry';
 import { $LibraryValues, at } from './2-the-theme.code.tsx';
 
 export class $ManualTheme extends $LibraryValues {
-    protected override $Define(): void {
-        super.$Define();
-        this.style = selection(this.style as ComponentType<{ className?: string }>)`
+    override style = selection(this.style as ComponentType<{ className?: string }>)`
             max-width: none;
             &, & * { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, ${at('ink')} 25%, transparent) transparent; }
             .pd-book { background: ${at('paper')}; }
@@ -34,8 +32,7 @@ export class $ManualTheme extends $LibraryValues {
             .pa-appendix .pd-code-line::before { text-indent: 0; }
             .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; }
             .pa-appendix .pd-paragraph { margin-block: 0; }
-        `;
-    }
+    `;
 }
 
 export const ManualTheme = $($ManualTheme);
