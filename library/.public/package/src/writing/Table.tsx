@@ -1,25 +1,37 @@
-import { $, $check } from '@dna-platform/chemistry';
+import { $, $check, selection } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
+import { $Writing, AnnotationSpecification } from './Writing';
 import { $Composition } from './Composition';
+import { $Format } from './Format';
 import { $Section } from './Section';
 import { $Chapter } from '@/libraries/Chapter';
 
-export class $Table extends $Annotation {
+export class $Table extends $Format {
     $start?: number;
     $rows?: number;
     $columns?: number;
     specification = new TableSpecification();
+    style = selection.div`
+        .pa-table { display: grid; grid-auto-columns: minmax(0, 1fr); column-gap: ${({ theme }) => theme.space}; row-gap: calc(${({ theme }) => theme.space} / 2); }
+        .pa-table > .pd-heading, .pa-table > .pa-self-reference { grid-column: 1 / -1; }
+        .pa-table .pd-paragraph { margin-block: 0; }
+        .pa-row, .pa-row > .pa-reference { display: contents; }
+        .pa-col { padding-block: calc(${({ theme }) => theme.space} / 4); }
+        ${Array.from({ length: 12 }, (_, index) => `.pa-col-start-${index + 1} { grid-column-start: ${index + 1}; } .pa-col-span-${index + 1} { grid-column-end: span ${index + 1}; }`).join(' ')}
+        .pa-table .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${({ theme }) => theme.ink}; }
+    `;
     get composition(): $Composition | undefined { return this.parent instanceof $Composition ? this.parent : undefined; }
     get start(): number { return this.$start ?? (this.composition instanceof $Section || this.composition instanceof $Chapter ? 1 : 0); }
     get rows(): $Composition[] { return this.composition?.parts.slice(this.start) ?? []; }
     get columns(): number { return this.$columns ?? Math.max(0, ...this.rows.map(row => row.parts.length)); }
 
     override defines(writing: $Writing): void {
+        super.defines(writing);
         writing.classes.add(this, 'pa-table');
     }
 
     override erase(writing: $Writing): void {
+        super.erase(writing);
         writing.classes.revert(this);
     }
 

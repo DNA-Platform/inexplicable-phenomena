@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
-import { $ } from '@dna-platform/chemistry';
+import { renderToString } from 'react-dom/server';
+import { ServerStyleSheet } from 'styled-components';
+import { $, selection } from '@dna-platform/chemistry';
 import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, Sentence, Word, $Table, Table, Block } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Cover, Title } from '@dna-platform/public';
 
@@ -44,9 +46,12 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(section.specify()).toEqual([]);
         expect(classes(section)).toEqual(['pa-table']);
         // THE SECTION KEEPS ITS OWN ELEMENT since Sprint 95's U4 — Doug: "Table should not be replacing the
-        // writing's element" — so its Block stands, and the grid is the Theme's rule by the mark.
+        // writing's element" — so its Block stands; and since Sprint 97 the Table is a Format lending a layer of
+        // its own around it, the styled component that carries the grid — Doug: "These are what styled
+        // components look like just with a format wrapper."
         expect(section.is(Block)).toBe(true);
-        expect([...section.containers]).toHaveLength(1);
+        expect([...section.containers]).toHaveLength(2);
+        expect([...section.containers][0]).toBe('div');
         const [heading, ...rows] = section.parts;
         expect(classes(heading).filter(name => name.startsWith('pa-row') || name.startsWith('pa-col'))).toEqual([]);
         expect(rows.map(row => classes(row))).toEqual([['pa-row', 'pa-row-start-1'], ['pa-row', 'pa-row-start-2'], ['pa-row', 'pa-row-start-3']]);
@@ -98,7 +103,7 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
     // as designed?" The section's own element wears pa-table and is the grid; its columns are implicit, each cell
     // placed by its start class on an automatic grid; the sheet places twelve columns and spans, a wider table
     // being a library's to extend.
-    it('drawn in its book, the section\'s own element wears pa-table and is the grid by the Theme\'s sheet, its six cells inside it in their rows, and no rule is made for this table', async () => {
+    it('drawn in its book, the section\'s own element wears pa-table inside the Table\'s own layer and is the grid by the Table\'s own component, its six cells inside it in their rows, and no rule is made for this table', async () => {
         const page = await drawn(built<$Book>(
             <Book>
                 <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
@@ -109,7 +114,7 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(table).not.toBeNull();
         expect(table.tagName).toBe('DIV');
         expect(table.classList.contains('pd-section')).toBe(true);
-        expect(table.parentElement?.classList.contains('pd-container')).toBe(false);
+        expect(table.parentElement?.classList.contains('pd-container')).toBe(true);
         const sheet = document.head.innerHTML;
         expect(sheet).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
         expect(sheet).not.toMatch(/grid-template-columns:\s*repeat\(/u);
@@ -136,5 +141,33 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(sheet).toMatch(/\.pa-row\s*>\s*\.pa-reference[^{]*\{\s*display:\s*contents/u);
         expect(sheet).toMatch(/\.pa-table\s*>\s*\.pd-heading[^{]*\{\s*grid-column:\s*1\s*\/\s*-1/u);
         expect(sheet).toMatch(/\.pa-table\s*>\s*\.pa-self-reference[^{]*\{\s*grid-column:\s*1\s*\/\s*-1/u);
+    });
+
+    // BY-NAME REPLACEMENT — Sprint 97, Doug: "It shouldn't be hard to subclass an annotation, export it with the same
+    // name and just draw from the one exported in the library, so it's still Table." A library's Table is a subclass
+    // with its own style, used in place; it draws as itself, the base's rules nowhere, and no registry is asked.
+    it('a subclass of Table with its own style, used in place of it, draws its own grid and the base\'s nowhere', async () => {
+        class $Ledger extends $Table {
+            override style = selection.div`
+                .pa-table { display: grid; grid-template-columns: 1fr 1fr; column-gap: ${({ theme }) => theme.space}; }
+                .pa-row { display: contents; }
+            `;
+        }
+        const Ledger = $($Ledger);
+        // SERVED WITH A SHEET OF ITS OWN, since the document's head holds every promise's rules before it.
+        const Drawn = $(built<$Book>(
+            <Book>
+                <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
+                <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{folio(<Ledger />)}</Chapter>
+            </Book>
+        ));
+        const collected = new ServerStyleSheet();
+        const html = renderToString(collected.collectStyles(<Drawn />));
+        expect(html).toMatch(/class="[^"]*\bpd-section\b[^"]*\bpa-table\b/u);
+        expect(html.match(/\bpa-col\b(?!-)/gu)).toHaveLength(6);
+        const sheet = collected.getStyleTags();
+        expect(sheet).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-template-columns:\s*1fr 1fr/u);
+        expect(sheet).not.toMatch(/grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
+        expect(sheet).not.toMatch(/\.pa-col-start-12\b/u);
     });
 });

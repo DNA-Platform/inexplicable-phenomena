@@ -6,7 +6,11 @@ import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
 
 export class $Reference extends $Annotation {
     specification = new ReferenceSpecification();
-    anchor: ElementType = selection.a.attrs({ className: 'pa-reference' })``;
+    anchor: ElementType = selection.a.attrs({ className: 'pa-reference' })`
+        color: ${({ theme }) => theme.link};
+        text-decoration-color: ${({ theme }) => theme.link};
+        text-underline-offset: 0.15em;
+    `;
     protected _anchor!: ElementType;
     get identifier(): string { return html.copy(this.text).trim(); }
 
@@ -28,7 +32,9 @@ export class $Reference extends $Annotation {
 }
 
 export class $SelfReference extends $Reference {
-    override anchor: ElementType = selection(this.anchor as ComponentType<{ className?: string }>).attrs({ className: 'pa-self-reference' })``;
+    override anchor: ElementType = selection(this.anchor as ComponentType<{ className?: string }>).attrs({ className: 'pa-self-reference' })`
+        color: inherit;
+    `;
 
     override defines(writing: $Writing): void {
         super.defines(writing);

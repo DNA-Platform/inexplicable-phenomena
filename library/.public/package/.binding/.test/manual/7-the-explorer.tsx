@@ -118,14 +118,26 @@ export default () => (
             <Appendix />
             <Heading>[[[ The manual's theme ]]]</Heading>
             <Paragraph>
-                The library's theme with one value changed, the width, so the manual may take the whole page, and
-                the look of the explorer's marks laid over it: the paper on the book, which fills the page, a
-                page's headings a step larger than its text, the front's title and its synopsis set as the page's
-                own text, the tabs, the tree's numbers and leaves, a file
-                printed plain on the paper in the spread with its lines wrapping under their own text, a picture
-                kept to its column, and the scrollbars thin and in the theme's ink.
+                The library's theme extended for the manual, in the theme's layer: the width let go so the manual
+                may take the whole page, the paper on the book, which fills the page, no chapter labels and a
+                byline set flat, the tabs, the tree's leaves, a picture kept to its column, and the scrollbars
+                thin and in the theme's ink. Every selector in it is a mark of what a writing is; what the
+                explorer says of a cover, a synopsis or a table is the next file's.
             </Paragraph>
             <Paragraph><Code identifier="theme" numbered /></Paragraph>
+        </Section>
+        <Section>
+            <Appendix />
+            <Heading>[[[ The manual's chapters ]]]</Heading>
+            <Paragraph>
+                The manual's own cover, synopsis and table of contents, each a subclass of the framework's Format
+                with the explorer's look in its own styled component: the front's title and synopsis set as the
+                page's own text, the table's numbered entries and its lit branch, and the catchwords hidden where
+                the explorer places those chapters itself. The manual's three dot-files import these in place of
+                the library's — a rewritten annotation, used by its own name — and no other book of the library
+                sees them.
+            </Paragraph>
+            <Paragraph><Code identifier="chapters" numbered /></Paragraph>
         </Section>
         <Section>
             <Heading>Across four worlds</Heading>
@@ -148,5 +160,6 @@ export default () => (
         <Append identifier="tree" type=".tsx">![[ tree.tsx ]]</Append>
         <Append identifier="tabs" type=".tsx">![[ tabs.tsx ]]</Append>
         <Append identifier="theme" type=".tsx">![[ theme.tsx ]]</Append>
+        <Append identifier="chapters" type=".tsx">![[ chapters.tsx ]]</Append>
     </Chapter>
 );

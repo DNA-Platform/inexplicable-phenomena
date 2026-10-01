@@ -1,5 +1,5 @@
-import { ElementType, ReactNode } from 'react';
-import { $, $check } from '@dna-platform/chemistry';
+import { ReactNode } from 'react';
+import { $, $check, selection } from '@dna-platform/chemistry';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
@@ -10,7 +10,10 @@ import { $Chapter } from './Chapter';
 
 export class $TableOfContents extends $Format {
     specification = new TableOfContentsSpecification();
-    style: ElementType = 'nav';
+    style = selection.nav`
+        .pa-table-of-contents { margin-block: ${({ theme }) => theme.space}; }
+        .pa-table-of-contents .pd-paragraph { margin-block: calc(${({ theme }) => theme.space} / 4); }
+    `;
     get contents(): $Reference[] {
         const mentions = (chapter: $Chapter): $Reference[] =>
             [...(chapter.mention === undefined ? [] : [chapter.mention]), ...chapter.text.find($Chapter).flatMap(mentions)];
@@ -30,10 +33,16 @@ export class $TableOfContents extends $Format {
 }
 
 export class $Content extends $Reference {
+    span = selection.span.attrs({ className: 'pa-content' })`
+        color: ${({ theme }) => theme.link};
+    `;
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     override get identifier(): string { return binder.reference(html.copy(this.text))?.identifier ?? ''; }
 
-    override note(): ReactNode { return <span className="pa-content">{this.name}</span>; }
+    override note(): ReactNode {
+        const Span = this.span;
+        return <Span>{this.name}</Span>;
+    }
 }
 
 export class TableOfContentsSpecification extends AnnotationSpecification {

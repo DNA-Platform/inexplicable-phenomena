@@ -264,7 +264,8 @@ describe('a reference makes its writing a link by adding a layer to its containe
         expect(anchor.tagName).toBe('A');
         expect(anchor.getAttribute('href')).toBe('/there/');
         expect(anchor.id).toBe('');
-        expect([...anchor.classList].filter(name => !name.startsWith('sc-')).sort()).toEqual(['pa-reference', 'pd-container']);
+        // THE ANCHOR CARRIES ITS OWN LOOK since Sprint 97, so it wears the hash of its rules beside the component's id.
+        expect([...anchor.classList].filter(name => name.startsWith('p')).sort()).toEqual(['pa-reference', 'pd-container']);
         const own = anchor.firstElementChild!;
         expect(own.tagName).toBe('SPAN');
         expect(own.id).toBe('there');

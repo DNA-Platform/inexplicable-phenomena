@@ -260,39 +260,41 @@ describe('a theme is a format said of a book that provides eight live properties
     // THE ANCHOR WEARS THE REFERENCE'S CLASS — Sprint 95, U16, on Doug's yes to "the same class, through attrs": an
     // underline is the anchor's own, so the sheet dresses a link by the class its anchor wears and reaches no layer
     // through the word it holds.
-    it('dresses a link by the reference\'s class alone, reaching no anchor through the word it holds', () => {
-        const { css } = served(shelf(<Theme />));
-        expect(css).toMatch(/\.pa-reference\s*\{[^}]*text-decoration-color/u);
+    // THE ANCHOR DRESSES ITSELF since Sprint 97 — the reference's colour, underline colour and offset are the rules of
+    // the styled anchor it declares, not the sheet's — and nothing reaches an anchor through the word it holds.
+    it('dresses a link by the anchor\'s own component, the sheet saying nothing of it, and reaches no anchor through the word it holds', () => {
+        const { html, css } = served(shelf(<Theme />));
+        const anchor = (html.match(/<a [^>]*class="([^"]*\bpa-reference\b[^"]*)"/u)?.[1] ?? '').split(' ').filter(name => !name.startsWith('pa-') && !name.startsWith('pd-')).join('|');
+        expect(anchor).not.toBe('');
+        expect(css).toMatch(new RegExp(`\\.(?:${anchor})\\{[^}]*text-decoration-color`, 'u'));
+        expect(css).not.toMatch(/[{}]\.pa-reference\s*\{/u);
         expect(css).not.toContain(':has(> .pa-reference)');
         expect(css).not.toContain(':has(> .pa-self-reference)');
     });
 
-    // THE ONE LAW — Sprint 94: no property on one element is written by two authors. The theme's sheet writes skin
-    // by mark in its layer; the Format that is an element writes that element's layout unlayered. For every mark
-    // both address, the properties they write must not meet.
-    it('writes no property for one mark from both its sheet and a Format\'s own component: one author per property', () => {
+    // THE ONE LAW — Sprint 94, as Sprint 97 settled it on Doug's design: the sheet dresses the levels and kinds, pd-, and
+    // the invariants; a pa- mark's look is its own Format's, carried in that Format's styled component; and a Format may
+    // restate a kind's property IN ITS OWN CONTEXT, under its class — "overriding can happen at either layer". So the
+    // sheet writes no pa- rule but the invariants and the two annotations with no layer, Append and Referent, and no
+    // Format writes a pd- mark out of context.
+    it('the sheet dresses pd- marks and the invariants only, and a Format dresses its own pa- marks and a kind only in its context: one author per property', () => {
         const { css } = served(shelf(<Theme />));
-        const written = new Map<string, Map<string, Set<'sheet' | 'format'>>>();
-        const layered = css.match(/@layer pd\.theme\{([\s\S]*?)\}\s*\/\*!sc\*\//u)?.[1] ?? '';
+        const invariant = new Set(['pa-parenthetical', 'pa-blank', 'pa-self-reference', 'pa-paginated', 'pa-page', 'pa-open', 'pa-append', 'pa-referent']);
+        const layered = [...css.matchAll(/@layer pd\.(?:invariants|theme)\{([\s\S]*?)\}\s*\/\*!sc\*\//gu)].map(match => match[1]).join('\n');
         const unlayered = css.replace(/@layer pd\.[a-z]+\{[\s\S]*?\}\s*\/\*!sc\*\//gu, '');
-        const record = (block: string, author: 'sheet' | 'format'): void => {
-            for (const rule of block.matchAll(/([^{}]+)\{([^{}]*)\}/gu)) {
-                const mark = rule[1].match(/\.(p[ad]-[a-z][a-z-]*[a-z])\b(?![^{]*\.p[ad]-)/u)?.[1];
-                if (mark === undefined) continue;
-                for (const property of rule[2].split(';').map(declaration => declaration.split(':')[0].trim()).filter(name => name !== '')) {
-                    const authors = written.get(mark) ?? new Map<string, Set<'sheet' | 'format'>>();
-                    const by = authors.get(property) ?? new Set<'sheet' | 'format'>();
-                    by.add(author);
-                    authors.set(property, by);
-                    written.set(mark, authors);
-                }
-            }
-        };
-        record(layered, 'sheet');
-        record(unlayered, 'format');
-        const twice = [...written].flatMap(([mark, authors]) => [...authors].filter(([, by]) => by.size > 1).map(([property]) => `${mark} ${property}`));
-        expect(written.size).toBeGreaterThan(10);
-        expect(twice).toEqual([]);
+        const marks = (selector: string): string[] => [...selector.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/gu)].map(match => match[1]);
+        const sheetWrites: string[] = [];
+        for (const rule of layered.matchAll(/([^{}]+)\{([^{}]*)\}/gu))
+            for (const mark of marks(rule[1]))
+                if (mark.startsWith('pa-') && !invariant.has(mark)) sheetWrites.push(mark);
+        const outOfContext: string[] = [];
+        for (const rule of unlayered.matchAll(/([^{}]+)\{([^{}]*)\}/gu)) {
+            const found = marks(rule[1]);
+            if (found.some(mark => mark.startsWith('pd-')) && !found.some(mark => mark.startsWith('pa-'))) outOfContext.push(rule[1].trim());
+        }
+        expect(layered.length).toBeGreaterThan(1000);
+        expect([...new Set(sheetWrites)]).toEqual([]);
+        expect(outOfContext).toEqual([]);
     });
 
     // A FORMAT'S TEMPLATE CARRIES NO THEME LITERAL — a colour or a length that is not a variable or a structural
@@ -311,7 +313,7 @@ describe('a theme is a format said of a book that provides eight live properties
         for (const { file, text } of sources) {
             if (!/extends \$Format\b/u.test(text)) continue;
             for (const template of text.matchAll(/selection(?:\.[a-z]+|\([^)]*\))(?:<[^`]*>)?`([^`]*)`/gu))
-                for (const found of template[1].matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(|\b(?:red|blue|black|white|gr[ae]y|silver|navy|ivory|teal|green)\b|\b\d+(?:\.\d+)?(?:px|rem|em|vh|vw)\b/gu))
+                for (const found of template[1].matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(|\b(?:red|blue|black|white|gr[ae]y|silver|navy|ivory|teal|green)\b|\b\d+(?:\.\d+)?(?:px|rem|em)\b/gu))
                     literals.push(`${file}: ${found[0]}`);
         }
         expect(literals).toEqual([]);

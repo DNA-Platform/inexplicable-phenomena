@@ -9,9 +9,7 @@ import { $Format } from './Format';
 export type Values = Record<'font' | 'size' | 'leading' | 'measure' | 'space' | 'ink' | 'paper' | 'link', string>;
 
 declare module 'styled-components' {
-    export interface DefaultTheme extends Partial<Values> {
-        [property: string]: unknown;
-    }
+    export interface DefaultTheme extends Values {}
 }
 
 export class $Theme extends $Format {
@@ -83,34 +81,11 @@ export class $Theme extends $Format {
             .pd-break { clear: both; }
             .pd-previous::before { content: '\\2039\\00a0'; }
             .pd-next::after { content: '\\00a0\\203a'; }
-            .pa-reference { color: ${({ theme }) => theme.link}; text-decoration-color: ${({ theme }) => theme.link}; text-underline-offset: 0.15em; }
-            .pa-self-reference { color: inherit; }
             .pa-referent { scroll-margin-block-start: ${({ theme }) => theme.space}; }
-            .pa-content { color: ${({ theme }) => theme.link}; }
-            .pa-table { display: grid; grid-auto-columns: minmax(0, 1fr); column-gap: ${({ theme }) => theme.space}; row-gap: calc(${({ theme }) => theme.space} / 2); }
-            .pa-table > .pd-heading, .pa-table > .pa-self-reference { grid-column: 1 / -1; }
-            .pa-table .pd-paragraph { margin-block: 0; }
-            .pa-row, .pa-row > .pa-reference { display: contents; }
-            .pa-col { padding-block: calc(${({ theme }) => theme.space} / 4); }
-            ${Array.from({ length: 12 }, (_, index) => `.pa-col-start-${index + 1} { grid-column-start: ${index + 1}; } .pa-col-span-${index + 1} { grid-column-end: span ${index + 1}; }`).join(' ')}
-            .pa-table .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${({ theme }) => theme.ink}; }
-            .pa-list { counter-reset: list-item; }
-            .pa-item { display: list-item; list-style: disc inside; margin-block: calc(${({ theme }) => theme.space} / 4); }
-            .pa-ordered .pa-item { list-style-type: decimal; }
             .pd-math { white-space: nowrap; }
             .pd-date { white-space: nowrap; }
             .pd-equation { position: relative; counter-increment: equation; }
             .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }
-            .pa-cover { margin-block-end: calc(2 * ${({ theme }) => theme.space}); }
-            .pa-cover .pd-title { font-size: calc(2 * ${({ theme }) => theme.size}); }
-            .pa-synopsis .pd-paragraph { font-style: italic; }
-            .pa-table-of-contents { margin-block: ${({ theme }) => theme.space}; }
-            .pa-table-of-contents .pd-paragraph { margin-block: calc(${({ theme }) => theme.space} / 4); }
-            .pa-biography .pd-title { font-variant: small-caps; }
-            .pa-autobiography .pd-title { font-style: italic; }
-            .pa-paginated { min-height: 50vh; }
-            .pa-page { margin-block: ${({ theme }) => theme.space}; }
-            .pa-open { margin-block-start: 0; }
         }
     `;
     protected _provider!: ElementType;

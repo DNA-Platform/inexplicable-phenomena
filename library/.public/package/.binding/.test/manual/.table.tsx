@@ -1,5 +1,6 @@
-import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, TableOfContents, Title, Word } from '@dna-platform/public';
+import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Title, Word } from '@dna-platform/public';
 import { Catchword } from './.book';
+import { TableOfContents } from './7-the-explorer.chapters.tsx';
 
 export default () => (
     <Chapter>

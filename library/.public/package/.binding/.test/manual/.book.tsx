@@ -25,8 +25,8 @@ export default class $TheManual extends $TheLibrary {
             <ManualTheme />
         );
         this.annotations.add(this,
-            <Tabbed />,
-            <Explorer />
+            <Explorer />,
+            <Tabbed />
         );
     }
 }

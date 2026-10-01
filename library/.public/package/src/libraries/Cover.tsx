@@ -1,5 +1,5 @@
-import { ElementType, ReactNode } from 'react';
-import { $, $check } from '@dna-platform/chemistry';
+import { ReactNode } from 'react';
+import { $, $check, selection } from '@dna-platform/chemistry';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
@@ -10,7 +10,10 @@ import { $Chapter } from './Chapter';
 
 export class $Cover extends $Format {
     specification = new CoverSpecification();
-    style: ElementType = 'header';
+    style = selection.header`
+        .pa-cover { margin-block-end: calc(2 * ${({ theme }) => theme.space}); }
+        .pa-cover .pd-title { font-size: calc(2 * ${({ theme }) => theme.size}); }
+    `;
 
     override defines(writing: $Writing): void {
         super.defines(writing);

@@ -1,15 +1,22 @@
-import { $, $check } from '@dna-platform/chemistry';
+import { $, $check, selection } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, $Annotation, AnnotationSpecification } from '@/writing/Writing';
+import { $Writing, AnnotationSpecification } from '@/writing/Writing';
+import { $Format } from '@/writing/Format';
 import { $Chapter } from './Chapter';
 import { $Book } from './Book';
 
-export class $Paginated extends $Annotation {
+export class $Paginated extends $Format {
     specification = new PaginatedSpecification();
+    style = selection.div`
+        .pa-paginated { min-height: 50vh; }
+        .pa-page { margin-block: ${({ theme }) => theme.space}; }
+        .pa-open { margin-block-start: 0; }
+    `;
     get pages(): $Chapter[] { return this.book?.text.find($Chapter) ?? []; }
     get open(): $Chapter | undefined { return this.book?.bookmark ?? this.book?.cover; }
 
     override defines(writing: $Writing): void {
+        super.defines(writing);
         writing.classes.add(this, 'pa-paginated');
         const open = this.open;
         const opened = this.pages.find(page => [...page.classes].includes('pa-open'));
@@ -19,6 +26,7 @@ export class $Paginated extends $Annotation {
     }
 
     override erase(writing: $Writing): void {
+        super.erase(writing);
         writing.classes.revert(this);
     }
 

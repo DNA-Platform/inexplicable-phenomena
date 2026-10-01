@@ -120,8 +120,10 @@ describe('a bind of the test library', () => {
 
     it('drew a cover inside its header, its title a link to its book, and a table inside its nav', () => {
         const paper = page('A Paper');
-        expect(paper).toMatch(/<header class="pd-container"><div[^>]*><a href="\/a-paper\/"[^>]*><div[^>]*>A Paper/u);
-        expect(paper).toMatch(/<nav class="pd-container">/u);
+        // A FORMAT'S LAYER WEARS ITS OWN GENERATED NAMES beside pd-container since Sprint 97, a Format being the unit of
+        // styled components; and a layer may stand inside another's, the front-most innermost, at no fixed depth.
+        expect(paper).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)*<div[^>]*><a href="\/a-paper\/"[^>]*><div[^>]*>A Paper/u);
+        expect(paper).toMatch(/<nav class="[^"]*\bpd-container\b[^"]*">/u);
     });
 
     it('drew the byline its book class draws from what its cover says, in the words the cover gave', () => {
@@ -142,17 +144,18 @@ describe('a bind of the test library', () => {
     });
 
     it('marked the autobiography and the biography on their covers', () => {
-        expect(page('Libby')).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
+        // BIOGRAPHY AND AUTOBIOGRAPHY LEND LAYERS OF THEIR OWN since Sprint 97, carrying their title's look, inside the cover's header.
+        expect(page('Libby')).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)*<div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
         // THE PERSONA'S COVER STANDS INSIDE ITS FRAME, the layer its book adds to every chapter at its bind.
-        expect(page('A Persona')).toMatch(/<header class="pd-container"><div class="[^"]*pd-container[^"]*"><div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
+        expect(page('A Persona')).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)+<div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
     });
 
     // Doug, 2026-09-26: "the annotations should frequently mark their presence with a CSS class."
     it('marked each chapter a cover, a synopsis or a table of contents said of with that annotation\'s class', () => {
         const paper = page('A Paper');
         // A CHAPTER'S OWN ELEMENT IS A DIV since Sprint 88, block by its level; the layer around it is the format's.
-        expect(paper).toMatch(/<header class="pd-container"><div class="(?=[^"]*\bpd-chapter\b)[^"]*\bpa-cover\b/u);
-        expect(paper).toMatch(/<nav class="pd-container"><div class="[^"]*\bpa-table-of-contents\b/u);
+        expect(paper).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)*<div class="(?=[^"]*\bpd-chapter\b)[^"]*\bpa-cover\b/u);
+        expect(paper).toMatch(/<nav class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpa-table-of-contents\b/u);
         expect(paper.match(/class="[^"]*\bpa-synopsis\b/gu)).toHaveLength(1);
     });
 
@@ -160,9 +163,10 @@ describe('a bind of the test library', () => {
     // Reference"; "it's note should draw its words... put it in a span with a pa-content on there".
     it('drew a table\'s entries as the links their contents make, each name in a span wearing pa-content, in the order written', () => {
         const paper = page('A Paper');
-        expect([...paper.matchAll(/<span class="pa-content">([^<]*)<\/span>/gu)].map(found => found[1]))
+        // THE SPAN IS CONTENT'S OWN STYLED COMPONENT since Sprint 97, so it wears its generated names beside pa-content.
+        expect([...paper.matchAll(/<span class="[^"]*\bpa-content\b[^"]*">([^<]*)<\/span>/gu)].map(found => found[1]))
             .toEqual(['The Argument', 'The Evidence', 'A Paper', 'Synopsis', 'Table of Contents']);
-        expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="pa-content">The Argument<\/span>/u);
+        expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="[^"]*\bpa-content\b[^"]*">The Argument<\/span>/u);
     });
 
     // THE CATALOGUE IS A TABLE — its section interpreted as a grid, its rows and cells marked by authorship.
@@ -296,9 +300,10 @@ describe('a bind of the test library', () => {
             expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
             expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
             const sheet = sheetOf(html);
-            expect(html, route.name).toMatch(/style="--pd-font:Georgia/u);
-            expect(sheet, route.name).not.toMatch(/--pd-font:Georgia/u);
-            expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1\.25rem\);\}/u);
+            // SOME PROJECTS STANDS THE FRAMEWORK'S OWN THEME in front of the library's since Sprint 97, the base's acceptance context.
+            expect(html, route.name).toMatch(route.name === 'Some Projects' ? /style="--pd-font:serif/u : /style="--pd-font:Georgia/u);
+            expect(sheet, route.name).not.toMatch(/--pd-font:(?:Georgia|serif)/u);
+            expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:var\(--pd-space, 1(?:\.25)?rem\);\}/u);
             // THREE LAYERS since Sprint 94: the invariants first, the theme's sheet second, a Format's rules unlayered.
             // ONE GLOBAL SHEET since Sprint 95's U5: the Theme's sheet opens with the order statement and carries the
             // invariants in their layer and the marks' looks in its own, and no annotation injects a style of its own.
@@ -352,7 +357,8 @@ describe('a bind of the test library', () => {
 
     it('drew the frame on Some Projects\' book and on each of the persona\'s chapters, its border in the theme\'s ink', () => {
         const projects = page('Some Projects');
-        expect(sheetOf(projects)).toMatch(/border:1px solid var\(--pd-ink, #23262a\);padding:var\(--pd-space, 1\.25rem\);margin-block:var\(--pd-space, 1\.25rem\)/u);
+        // SOME PROJECTS WEARS THE FRAMEWORK'S OWN THEME since Sprint 97, so its ink is black and its space one rem.
+        expect(sheetOf(projects)).toMatch(/border:1px solid var\(--pd-ink, black\);padding:var\(--pd-space, 1rem\);margin-block:var\(--pd-space, 1rem\)/u);
         expect(projects).toMatch(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-book\b/u);
         const persona = page('A Persona');
         expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);

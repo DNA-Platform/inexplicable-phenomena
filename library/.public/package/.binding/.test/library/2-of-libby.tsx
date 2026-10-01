@@ -1,4 +1,5 @@
-import { Chapter, Synopsis, Title } from '@dna-platform/public';
+import { Chapter, Title } from '@dna-platform/public';
+import { Synopsis } from '../manual/.book';
 import LibbySynopsis from '../libby/.synopsis';
 
 export default () => (
