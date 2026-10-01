@@ -1,31 +1,20 @@
-import { $, $check, selection } from '@dna-platform/chemistry';
+import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, AnnotationSpecification } from '@/writing/Writing';
-import { $Format } from '@/writing/Format';
+import { $Writing, $Annotation, AnnotationSpecification } from '@/writing/Writing';
 import { $Author, $About } from './Cover';
 
-export class $Biography extends $Format {
-    style = selection.div`
-        .pa-biography .pd-title { font-variant: small-caps; }
-    `;
-
+export class $Biography extends $Annotation {
     override defines(writing: $Writing): void {
-        super.defines(writing);
         writing.classes.add(this, 'pa-biography');
     }
 
     override erase(writing: $Writing): void {
-        super.erase(writing);
         writing.classes.revert(this);
     }
 }
 
 export class $Autobiography extends $Biography {
     specification = new AutobiographySpecification();
-    override style = selection.div`
-        .pa-biography .pd-title { font-variant: small-caps; }
-        .pa-autobiography .pd-title { font-style: italic; }
-    `;
 
     override defines(writing: $Writing): void {
         super.defines(writing);

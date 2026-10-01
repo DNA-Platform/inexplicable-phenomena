@@ -23,10 +23,10 @@ const shelf = (paragraph: React.ReactNode): $Book => built<$Book>(
 );
 
 describe('a figure', () => {
-    it('named by identifier, draws that append\'s contents in a letter wearing pd-figure', () => {
-        // A LETTER'S OWN ANNOTATIONS FOLLOW ITS TEXT INSIDE ITS ELEMENT, hidden; the text comes first.
+    it('named by identifier, draws that append\'s contents in a letter wearing pd-figure, and nothing of its annotations', () => {
+        // AN ANNOTATION'S WRITING IS NOT DRAWN since Sprint 97's S1: the letter's element holds the text and closes.
         const html = served(shelf(<Paragraph>The wheel: <Figure identifier="version1" /></Paragraph>));
-        expect(html).toMatch(/<span class="pd-letter pd-figure">export const wheel = 1;<span class="pd-annotation">/u);
+        expect(html).toMatch(/<span class="pd-letter pd-figure">export const wheel = 1;<\/span>/u);
     });
 
     it('named by type alone, finds the append whose identifier is empty', () => {
@@ -37,15 +37,15 @@ describe('a figure', () => {
 
     it('given contents of its own draws those, and given both draws its own first and the append\'s after', () => {
         const own = served(shelf(<Paragraph><Figure>{'const x = 1;'}</Figure></Paragraph>));
-        expect(own).toContain('pd-figure">const x = 1;<span');
+        expect(own).toContain('pd-figure">const x = 1;</span>');
         // TWO TEXT NODES SERVED SIDE BY SIDE carry React's own comment between them.
         const both = served(shelf(<Paragraph><Figure type=".ts">{'// the field: '}</Figure></Paragraph>));
-        expect(both).toMatch(/pd-figure">\/\/ the field: (<!-- -->)?export const field = 2;<span/u);
+        expect(both).toMatch(/pd-figure">\/\/ the field: (<!-- -->)?export const field = 2;<\/span>/u);
     });
 
     it('takes annotations as any letter does: a Format in front dresses it', () => {
         const html = served(shelf(<Paragraph><Figure identifier="version1"><Emphasis /></Figure></Paragraph>));
-        expect(html).toMatch(/<em class="[^"]*pa-emphasis pd-container"><span class="pd-letter pd-figure">export const wheel = 1;<span/u);
+        expect(html).toMatch(/<em class="[^"]*pa-emphasis pd-container"><span class="pd-letter pd-figure">export const wheel = 1;<\/span>/u);
     });
 
     it('names an append its chapter holds, and says so when it does not', () => {

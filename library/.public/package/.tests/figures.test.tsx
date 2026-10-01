@@ -39,11 +39,14 @@ describe('the figures', () => {
         expect(lit).toContain('<code class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">f</span>');
         const numbered = served(shelf(<Paragraph><Code type=".ts" numbered /></Paragraph>));
         // THE LINE'S OWN CLASS since Sprint 95's U7, pd-code-line, Doug's name: pd-line is the Line's, a sentence on a
-        // line of its own, and a poem's Lines are not counted by the code's rule.
-        expect(numbered.match(/<span class="pd-code-line">/gu)).toHaveLength(2);
+        // line of its own. THE NUMBER IS DATA since Sprint 97's policy — data-line on the span, drawn by nothing in the
+        // base; a library shows it with ::before { content: attr(data-line) }.
+        expect(numbered.match(/<span class="pd-code-line" data-line="\d+">/gu)).toHaveLength(2);
+        expect(numbered).toContain('data-line="1"');
+        expect(numbered).toContain('data-line="2"');
         expect(numbered).not.toContain('class="pd-line"');
         const carried = served(shelf(<Paragraph><Code language="ts" numbered>{'/* one\ntwo */ const x = 1;'}</Code></Paragraph>));
-        expect(carried).toContain('<span class="pd-code-line"><span class="hljs-comment">/* one</span></span>\n<span class="pd-code-line"><span class="hljs-comment">two */</span> ');
+        expect(carried).toContain('<span class="pd-code-line" data-line="1"><span class="hljs-comment">/* one</span></span>\n<span class="pd-code-line" data-line="2"><span class="hljs-comment">two */</span> ');
         const shouted = served(shelf(<Paragraph><Code highlighter={(text: string) => text.toUpperCase()}>{'const x = 1;'}</Code></Paragraph>));
         expect(shouted).toContain('<pre><code>CONST X = 1;</code></pre>');
         const unknown = served(shelf(<Paragraph><Code language="no-such-language">{'a < b && c > d'}</Code></Paragraph>));

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { $, $check, $Chemical, selection } from '@dna-platform/chemistry';
+import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
@@ -10,9 +10,6 @@ import { $Chapter } from './Chapter';
 
 export class $Synopsis extends $Format {
     specification = new SynopsisSpecification();
-    style = selection.div`
-        .pa-synopsis .pd-paragraph { font-style: italic; }
-    `;
     protected _synopsis?: $Chapter;
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     get means(): $Reference | undefined {

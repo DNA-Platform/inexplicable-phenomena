@@ -8,9 +8,7 @@ import { $Book } from './Book';
 export class $Paginated extends $Format {
     specification = new PaginatedSpecification();
     style = selection.div`
-        .pa-paginated { min-height: 50vh; }
-        .pa-page { margin-block: ${({ theme }) => theme.space}; }
-        .pa-open { margin-block-start: 0; }
+        .pa-page:not(.pa-open) { display: none; }
     `;
     get pages(): $Chapter[] { return this.book?.text.find($Chapter) ?? []; }
     get open(): $Chapter | undefined { return this.book?.bookmark ?? this.book?.cover; }

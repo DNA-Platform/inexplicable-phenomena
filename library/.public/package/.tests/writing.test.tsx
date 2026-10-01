@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, $check, $Chemical } from '@dna-platform/chemistry';
 import { $Writing, Writing, $Annotation, Annotation, Annotations, $Parenthetical, Parenthetical, $Narrative, Narrative, Text } from '@dna-platform/public';
-import { AnnotationSpecification, specify, Level, html, reflection } from '@dna-platform/public';
+import { AnnotationSpecification, specify, Level, Block, html, reflection } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -675,59 +675,93 @@ describe('a writing draws through its containers, a layer for itself and one for
         expect(outer.querySelector('article.pd-container > span')?.className).toBe('');
     });
 
-    // THE GENOME IS OUT OF THE REACT TREE since Sprint 95's U5 — Doug: "let's design a version where things are drawn
-    // only when they have text… We are removing the genome from the React structure, but not from the $Chemistry
-    // one" — an annotation with nothing written in it renders no body; one with words renders its own writing.
-    it('drawn, the container is the element its classes are on; an annotation with words renders inside it as its own writing with pd-annotation on it, and one with nothing written renders no body', async () => {
-        const writing = built<$Section>(<Section>a <Mark>said</Mark><Tagged /><Parenthetical /></Section>);
+    // AN ANNOTATION'S OWN WRITING IS NOT DRAWN since Sprint 97's S1 — Doug: "I thought annotations were supposed to be
+    // hidden because they aren't drawn into the library?" The object holds what was written in it; the page carries
+    // the writing's text and, after it, each annotation's NOTE at the writing's level, nothing by default — "annotations
+    // need to have their note that is rendered in the same level as the text. Make sure to preserve this without a hack."
+    it('drawn, the container is the element its classes are on, and an annotation with words renders nothing of its own: the object holds the words', async () => {
+        const writing = built<$Section>(<Section>a <Mark>said</Mark><Tagged /></Section>);
+        expect(html.copy(writing.annotations.find($Mark)[0].text)).toBe('said');
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         const section = container?.firstElementChild;
         expect(section?.tagName).toBe('SECTION');
-        expect(section?.className).toBe('pa-parenthetical pa-tagged');
-        expect(section?.querySelectorAll(':scope > span.pd-annotation').length).toBe(1);
-        expect(section?.querySelector(':scope > span.pd-annotation')?.textContent).toBe('said');
-        expect(section?.textContent).toContain('a');
+        expect(section?.className).toBe('pa-tagged');
+        expect(section?.childElementCount).toBe(0);
+        expect(section?.textContent).toBe('a ');
+        expect(container?.innerHTML).not.toContain('said');
+        expect(container?.innerHTML).not.toContain('pd-annotation');
     });
 
-    it('an annotation is a note on the page: what someone wrote inside it is rendered at its writing, with pd-annotation on it, one with nothing written renders no body, and its note renders at the level of that writing, nothing by default; the annotations render back to front, the front last', async () => {
-        const writing = built<$Writing>(<Writing>a <Mark>because it was late</Mark><Tagged /></Writing>);
+    it('an annotation is a note on the page: its note renders at the level of its writing, after the text, nothing by default; the annotations render back to front, the front last; an unexpressed one renders no note', async () => {
+        class $Noted extends $Annotation {
+            override note(): React.ReactNode { return <i className="pa-note">noted</i>; }
+        }
+        const Noted = $($Noted);
+        const writing = built<$Writing>(<Writing>a <Mark>because it was late</Mark><Noted /><Tagged /></Writing>);
         expect([...writing.annotations][0]).toBeInstanceOf($Tagged);
-        expect([...writing.annotations.find($Mark)[0].classes]).toContain('pd-annotation');
         expect(writing.annotations.find($Mark)[0].note()).toBeNull();
         const Drawn = $(writing);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
-        const notes = container?.querySelectorAll('span.pd-annotation');
-        expect(notes?.length).toBe(1);
-        expect(notes?.[0].textContent).toBe('because it was late');
-        expect(container?.firstElementChild?.childElementCount).toBe(1);
+        const own = container?.firstElementChild;
+        expect(own?.childElementCount).toBe(1);
+        expect(own?.firstElementChild?.className).toBe('pa-note');
+        expect(own?.textContent).toBe('a noted');
+        const Silenced = $(class extends $Annotation {
+            override defines(writing: $Writing): void {
+                for (const annotation of writing.annotations.after(this))
+                    if (annotation instanceof $Noted)
+                        writing.annotations.express(annotation, false);
+            }
+        });
+        const silenced = built<$Writing>(<Writing>a <Noted /><Silenced /></Writing>);
+        expect(silenced.annotations.find($Noted)[0].view()).toBeNull();
     });
 
-    // THE THEME'S SHEET IS THE ONE GLOBAL SHEET since Sprint 95's U5: a parenthetical's hiding is its invariant, read
-    // where it is written, and Parenthetical has no note of its own.
-    it('Parenthetical has no note: its hiding is the Theme\'s sheet\'s invariant; an annotation that is not expressed renders no note', async () => {
+    // PARENTHETICAL REMOVES WHAT IS DRAWN since Sprint 97's S2 — Doug: "If parenthetical removed what is drawn." Through
+    // Block's seam: the writing's own element is replaced by one carrying its id and marks, hidden, and no children;
+    // Block replaces 'span' by value, so a Parenthetical in front and a Block behind do not fight. No CSS.
+    it('Parenthetical replaces the writing\'s element with one that keeps its id and marks, is hidden, and draws no children; Block behind it leaves it alone; a Narrative in front shows it again', async () => {
         const writing = built<$Writing>(<Writing>an aside <Parenthetical /></Writing>);
         expect(writing.annotations.find($Parenthetical)[0].note()).toBeNull();
-        const source = readFileSync(join(process.cwd(), 'src/writing/Theme.tsx'), 'utf8');
-        expect(source).toMatch(/@layer pd\.invariants \{[^]*?\.pa-parenthetical,[^]*?clip-path: inset\(50%\) !important/u);
+        expect(typeof [...writing.containers][0]).toBe('function');
+        const Drawn = $(writing);
+        let container: HTMLElement | undefined;
+        await act(async () => { container = render(<Drawn />).container; });
+        const own = container?.firstElementChild as HTMLElement;
+        expect(own.tagName).toBe('SPAN');
+        expect(own.className).toBe('pa-parenthetical');
+        expect(own.hasAttribute('hidden')).toBe(true);
+        expect(own.childNodes.length).toBe(0);
+        // THE LAST WRITTEN STANDS IN FRONT: Block behind a Parenthetical finds no span and leaves the hidden span;
+        // Block in front makes the div first, and the Parenthetical hides the div.
+        for (const [element, order] of [['SPAN', <Writing>an aside <Block /><Parenthetical /></Writing>], ['DIV', <Writing>an aside <Parenthetical /><Block /></Writing>]] as const) {
+            const DrawnOrdered = $(built<$Writing>(order));
+            await act(async () => { container = render(<DrawnOrdered />).container; });
+            const ordered = container?.firstElementChild as HTMLElement;
+            expect(ordered.tagName).toBe(element);
+            expect(ordered.hasAttribute('hidden')).toBe(true);
+            expect(ordered.childNodes.length).toBe(0);
+        }
         const narrated = built<$Writing>(<Writing>an aside <Parenthetical /><Narrative /></Writing>);
-        const unexpressed = narrated.annotations.find($Parenthetical)[0];
-        const drawn = unexpressed.view() as React.ReactElement<{ children: React.ReactNode[] }>;
-        expect(drawn.props.children[1]).toBeNull();
+        expect(narrated.annotations.find($Parenthetical)[0].view()).toBeNull();
+        expect([...narrated.containers]).toEqual(['span']);
+        const source = readFileSync(join(process.cwd(), 'src/writing/Composition.tsx'), 'utf8');
+        expect(source).toContain("writing.containers.replace(this, 'span', 'div')");
     });
 });
 
 describe('drawn, a writing defines itself at every draw and settles', () => {
-    it('a parenthetical writing has pa-parenthetical on it, and one draw is one draw', async () => {
+    it('a parenthetical writing has pa-parenthetical on it and draws nothing of its text, and one draw is one draw', async () => {
         const writing = built<$Counted>(<Counted>a <Parenthetical /></Counted>);
         const Drawn = $(writing);
         draws = 0;
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
-        expect(container?.querySelector('span.pa-parenthetical')?.textContent).toContain('a');
+        expect(container?.querySelector('span.pa-parenthetical')?.textContent).toBe('');
         expect(draws).toBeLessThanOrEqual(3);
     });
 

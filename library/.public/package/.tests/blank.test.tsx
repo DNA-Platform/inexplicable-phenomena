@@ -25,7 +25,9 @@ const served = (writing: $Writing): string => {
 // can add a linebreak, and Line… possibly driven by an annotation that allows something to maintain its spatial extent
 // but as a blank element. That's a fine genetic trait, like being albino :)"
 describe('blank keeps a writing\'s extent and shows nothing; space, break and line stand it and their pairs', () => {
-    it('a blank word wears pa-blank, and the Theme\'s sheet hides the ink and keeps the box, an invariant of the one global sheet', async () => {
+    // A MARK AND NOTHING ELSE since Sprint 97's S3: what stands Blank — a Space of non-breaking spaces, an empty Break —
+    // has no ink to hide, so the base writes no rule; a library that blanks something else dresses pa-blank by mark.
+    it('a blank word wears pa-blank, its box kept, and the base writes no rule for it', async () => {
         const word = built<$Word>(<Word>unseen <Blank /></Word>);
         expect([...word.classes]).toContain('pa-blank');
         expect(word.is(Blank)).toBe(true);
@@ -33,7 +35,7 @@ describe('blank keeps a writing\'s extent and shows nothing; space, break and li
         const page = await drawn(word);
         expect(page.querySelector('.pa-blank')!.textContent).toContain('unseen');
         const book = built<$Book>(<Book><Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Paragraph><Word>unseen <Blank /></Word></Paragraph></Chapter></Book>);
-        expect(served(book)).toContain('.pa-blank{visibility:hidden!important;}');
+        expect(served(book)).not.toContain('.pa-blank');
     });
 
     it('a space is a blank inline letter whose length is a count, one by default, drawn as non-breaking spaces', async () => {
@@ -57,9 +59,8 @@ describe('blank keeps a writing\'s extent and shows nothing; space, break and li
         const page = await drawn(one);
         const own = page.querySelector('.pd-break')!;
         expect(own.tagName).toBe('DIV');
-        // NOTHING OF ITS OWN: no text, and every child an annotation's body, hidden.
-        expect(own.childNodes.length).toBe(own.children.length);
-        expect([...own.children].every(child => child.classList.contains('pd-annotation'))).toBe(true);
+        // NOTHING OF ITS OWN: no text and no child, since an annotation's writing is not drawn.
+        expect(own.childNodes.length).toBe(0);
     });
 
     it('a line is a block sentence, a part of its paragraph, drawn as a div wearing the sentence\'s mark and its own', async () => {

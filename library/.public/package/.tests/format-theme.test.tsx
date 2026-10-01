@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { ElementType, ReactNode } from 'react';
 import { $, $Chemical, selection } from '@dna-platform/chemistry';
-import { $Writing, $Format, $Theme, Theme, Paragraph, Parenthetical } from '@dna-platform/public';
+import { $Writing, $Format, $Theme, Paragraph, Parenthetical } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, $Paragraph, Cover, Title, Author, Subject } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
@@ -14,8 +14,18 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
     return container!;
 };
+
+// A LIBRARY'S THEME NAMES ITS OWN VALUES since Sprint 97's policy — the base has none; a theme is a subclass with
+// fields, named in `values`, which the provider declares inline and every rule beneath reads as a variable.
+class $Inky extends $Theme {
+    ink = 'black';
+    override get values(): Record<string, string> { return { ink: this.ink }; }
+}
+const Inky = $($Inky);
+
 const shelf = (paragraph: React.ReactNode): $Book => built<$Book>(
     <Book>
+        <Inky />
         <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
         <Chapter><Title>[A Quote](/a-paper/a-quote/)</Title>{paragraph}</Chapter>
     </Book>
@@ -44,7 +54,7 @@ class $Ruled extends $Quoted {
     ink = 'navy';
 }
 
-// A FORMAT READS THE THEME'S PROPERTIES THROUGH ITS BOOK — "this.book.theme should get it right?… get theme() { return
+// A FORMAT READS THE THEME'S VALUES THROUGH ITS BOOK — "this.book.theme should get it right?… get theme() { return
 // this.book.theme; } And that can be progressively typed on subclasses. Now every format has a theme."
 class $Inked extends $Format {
     style: ElementType = selection.span<{ $ink: string }>`
@@ -54,7 +64,7 @@ class $Inked extends $Format {
     $Inked(...chemicals: $Chemical[]) {
         this.$Format(...chemicals);
         const Span = this.style;
-        this.style = (props: { children?: ReactNode; className?: string }) => <Span $ink={this.theme.contract.ink} {...props} />;
+        this.style = (props: { children?: ReactNode; className?: string }) => <Span $ink={this.theme.values.ink} {...props} />;
     }
 }
 
@@ -68,7 +78,7 @@ class $Housed extends $Format {
     `;
 }
 
-class $Dark extends $Theme {
+class $Dark extends $Inky {
     ink = 'ivory';
 }
 const Dark = $($Dark);
@@ -86,7 +96,7 @@ class $Nightly extends $Housed {
 
 class $Themed extends $Format {
     style = selection.em`
-        color: ${({ theme }) => theme.ink};
+        color: ${({ theme }: { theme: { ink?: string } }) => theme.ink ?? 'unprovided'};
     `;
 }
 
@@ -115,13 +125,14 @@ describe('a format consumes its theme through its book, exposes its own properti
         expect(sheet()).toContain('color:navy');
     });
 
-    it('a format reads its book\'s theme, typed as the base, and hands what it reads to its component as the variable', async () => {
-        const book = shelf(<Paragraph>inked <Inked /></Paragraph>);
+    it('a format reads its book\'s theme, typed as the base, and hands a value it reads to its component; the variable form is the provider\'s', async () => {
+        const book = shelf(<Paragraph>inked <Inked /><Themed /></Paragraph>);
         const inked = book.text.find($Chapter)[1].text.find($Paragraph)[0].annotations.find($Inked)[0];
         expect(inked.theme).toBe(book.theme);
-        expect(inked.theme.ink).toBe('black');
+        expect(inked.theme.values.ink).toBe('black');
         await drawn(book);
-        expect(sheet()).toContain('color:var(--pd-ink, black)');
+        expect(sheet()).toContain('color:black');
+        expect(sheet()).toContain('color:var(--pd-ink)');
     });
 
     it('a format built in no book has no theme, and says so', () => {
@@ -130,10 +141,13 @@ describe('a format consumes its theme through its book, exposes its own properti
         expect(() => themed.theme).toThrow('a format reads its theme from its book, and this one stands in none');
     });
 
-    it('one that provides hands its theme to everything it draws: the book\'s, or another a subclass reaches', async () => {
+    // AND THAT THEME'S DECLARATIONS STAND ON THE PROVIDING FORMAT'S ELEMENT since Sprint 97's policy, so the subtree
+    // reads the other theme's values and not the fallbacks — the gap Themes and Formats had recorded as owed.
+    it('one that provides hands its theme to everything it draws, the book\'s or another a subclass reaches, and declares that theme\'s values on its element', async () => {
         await drawn(shelf(<Paragraph>a quote <Housed /><Themed /></Paragraph>));
-        expect(sheet()).toContain('color:var(--pd-ink, black)');
-        await drawn(shelf(<Paragraph>a quote <Nightly /><Themed /></Paragraph>));
-        expect(sheet()).toContain('color:var(--pd-ink, ivory)');
+        expect(sheet()).toContain('color:var(--pd-ink)');
+        const page = await drawn(shelf(<Paragraph>a quote <Nightly /><Themed /></Paragraph>));
+        expect(sheet()).toContain('color:var(--pd-ink)');
+        expect((page.querySelector('section') as HTMLElement).style.getPropertyValue('--pd-ink')).toBe('ivory');
     });
 });

@@ -106,10 +106,13 @@ describe('a format hands a styled component over, and a writing carries every fo
         expect(styleOf(other, $Sided)).not.toBe(styleOf(one, $Quoted));
     });
 
-    it('one that themes is drawn as its own wrapper, which renders the provider and then the style', () => {
+    // THE PROVIDER IS FORMAT'S since Sprint 97's policy: a Format that provides stands its provider as the layer, a
+    // chemical of Format's own that draws the ThemeProvider and then the style with the theme's declarations inline.
+    it('one that themes stands its provider as its layer, which renders the provider and then the style', () => {
         const writing = built<$Writing>(<Writing>a quote <Housed /></Writing>);
         expect(typeof layersOf(writing)[1]).toBe('function');
-        expect(layersOf(writing)[1]).toBe(styleOf(writing, $Housed));
+        expect(layersOf(writing)[1]).not.toBe(styleOf(writing, $Housed));
+        expect(typeof styleOf(writing, $Housed)).toBe('object');
     });
 
     it('every format written on a writing is expressed and stands its own layer, the one in front innermost', () => {

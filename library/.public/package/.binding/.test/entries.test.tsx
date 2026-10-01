@@ -25,10 +25,15 @@ const drawn = (book: $Book): string => {
 };
 
 describe('the test library\'s drawn table of contents', () => {
-    it('lists every chapter its book mentions as a link with its name, the first three parenthetical', () => {
+    // THE PARENTHETICAL ENTRIES ARE NOT DRAWN since Sprint 97's S2: the paragraph that lists the cover, the synopsis
+    // and the table stands hidden and empty, and the compiler still counts their mentions from the notation.
+    it('lists every chapter its book mentions as a link with its name, the first three parenthetical and so not drawn', () => {
         const page = drawn(projects());
         expect(page).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#the-work"[^>]*>[\s\S]*The Work/u);
-        expect(page).toMatch(/pa-parenthetical[^"]*"[^>]*>[\s\S]*<a href="\/some-projects\/"[^>]*>[\s\S]*<a href="\/some-projects\/#synopsis"[^>]*>[\s\S]*<a href="\/some-projects\/#table-of-contents"/u);
+        expect(page).toMatch(/<span class="pd-paragraph pa-parenthetical" hidden=""><\/span>/u);
+        const nav = page.match(/<nav[\s\S]*<\/nav>/u)?.[0] ?? '';
+        expect(nav).not.toContain('href="/some-projects/#synopsis"');
+        expect(nav).not.toContain('href="/some-projects/"');
     });
 
     it('lists a chapter added to the book at the next draw, with nothing in the table changed', () => {

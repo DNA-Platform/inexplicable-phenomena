@@ -11,7 +11,7 @@ export class $List extends $Format {
     specification = new ListSpecification();
     style = selection.div`
         .pa-list { counter-reset: list-item; }
-        .pa-item { display: list-item; list-style: disc inside; margin-block: calc(${({ theme }) => theme.space} / 4); }
+        .pa-item { display: list-item; list-style: disc inside; }
         .pa-ordered .pa-item { list-style-type: decimal; }
     `;
     get composition(): $Composition | undefined { return this.parent instanceof $Composition ? this.parent : undefined; }

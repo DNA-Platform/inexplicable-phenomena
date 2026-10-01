@@ -331,13 +331,13 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
         expect(anchor.classList.contains('pd-container')).toBe(true);
     });
 
-    // THE INVARIANT IS THE THEME'S SHEET'S since Sprint 95's U5, read where it is written.
-    it('the sheet takes the underline off by the class its anchor wears, reaching no layer through what it holds', () => {
-        const source = readFileSync(join(process.cwd(), 'src/writing/Theme.tsx'), 'utf8');
-        const invariants = source.match(/@layer pd\.invariants \{([^]*?)\n {8}\}/u)?.[1] ?? '';
-        const rule = invariants.match(/\n([^\n{}]*\.pa-self-reference[^{}]*)\{([^}]*)\}/u);
-        expect(rule?.[1].trim()).toBe('.pa-self-reference');
-        expect(rule?.[2]).toMatch(/text-decoration: none !important/u);
+    // THE ANCHOR IS THE BROWSER'S OWN LINK since Sprint 97's policy — Doug: "anchors and self reference — these things
+    // might deserve to be in the base theme that one would implement in the subclass of theme that they create." The
+    // anchor wears its two marks and carries no rule; a library's theme dresses .pa-self-reference by mark.
+    it('its anchor carries no rule of the base\'s: the underline is a library\'s to take off, by the class the anchor wears', () => {
+        const source = readFileSync(join(process.cwd(), 'src/writing/Reference.tsx'), 'utf8');
+        expect(source).not.toMatch(/text-decoration|color:/u);
+        expect(source).toMatch(/attrs\(\{ className: 'pa-self-reference' \}\)``/u);
     });
 
     it('takes back both classes and its layer when it stops applying, with the erase it inherits', () => {

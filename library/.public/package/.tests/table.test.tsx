@@ -98,11 +98,11 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         expect(classes(section.parts[1])).toEqual(['pa-row', 'pa-row-start-1']);
     });
 
-    // THE GRID IS THE THEME'S RULE BY THE MARK since Sprint 95's U4, and no rule is made per table — Doug: "Table
-    // should not be replacing the writing's element… Why wasn't Table able to operate as an annotation with classes
-    // as designed?" The section's own element wears pa-table and is the grid; its columns are implicit, each cell
-    // placed by its start class on an automatic grid; the sheet places twelve columns and spans, a wider table
-    // being a library's to extend.
+    // THE GRID IS THE TABLE'S OWN COMPONENT since Sprint 97, and it carries what the marks MEAN and no look — Doug:
+    // "Table should not be replacing the writing's element… Why wasn't Table able to operate as an annotation with
+    // classes as designed?" The section's own element wears pa-table and is the grid; its columns are implicit, each
+    // cell placed by its start class on an automatic grid; twelve columns and spans, a wider table being a library's
+    // to extend; no gap, padding, weight or border — those are a library's, by subclass.
     it('drawn in its book, the section\'s own element wears pa-table inside the Table\'s own layer and is the grid by the Table\'s own component, its six cells inside it in their rows, and no rule is made for this table', async () => {
         const page = await drawn(built<$Book>(
             <Book>
@@ -118,8 +118,7 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         const sheet = document.head.innerHTML;
         expect(sheet).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
         expect(sheet).not.toMatch(/grid-template-columns:\s*repeat\(/u);
-        expect(sheet).toMatch(/column-gap:\s*var\(--pd-space/u);
-        expect(sheet).toMatch(/\.pa-col\s*\{\s*padding-block:\s*calc\(var\(--pd-space/u);
+        expect(sheet).not.toMatch(/column-gap|padding-block|font-weight|border-block/u);
         expect(sheet).toMatch(/\.pa-col-start-12\s*\{\s*grid-column-start:\s*12/u);
         expect(sheet).toMatch(/\.pa-col-span-12\s*\{\s*grid-column-end:\s*span 12/u);
         expect(sheet).not.toMatch(/\.pa-col-start-13\b/u);
@@ -149,7 +148,7 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
     it('a subclass of Table with its own style, used in place of it, draws its own grid and the base\'s nowhere', async () => {
         class $Ledger extends $Table {
             override style = selection.div`
-                .pa-table { display: grid; grid-template-columns: 1fr 1fr; column-gap: ${({ theme }) => theme.space}; }
+                .pa-table { display: grid; grid-template-columns: 1fr 1fr; column-gap: ${({ theme }: { theme: { space?: string } }) => theme.space ?? '1em'}; }
                 .pa-row { display: contents; }
             `;
         }

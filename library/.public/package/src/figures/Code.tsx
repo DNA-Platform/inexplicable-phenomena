@@ -21,11 +21,11 @@ export class $Code extends $Figure {
         const marked = this.$highlighter(this.names ? this.contents : html.copy(this.text), this.language);
         if (!this.$numbered) return marked;
         const open: string[] = [];
-        return marked.split('\n').map(line => {
+        return marked.split('\n').map((line, index) => {
             const carried = open.join('');
             for (const tag of line.match(/<\/?span[^>]*>/gu) ?? [])
                 if (tag.startsWith('</')) open.pop(); else open.push(tag);
-            return `<span class="pd-code-line">${carried}${line}${'</span>'.repeat(open.length)}</span>`;
+            return `<span class="pd-code-line" data-line="${index + 1}">${carried}${line}${'</span>'.repeat(open.length)}</span>`;
         }).join('\n');
     }
 

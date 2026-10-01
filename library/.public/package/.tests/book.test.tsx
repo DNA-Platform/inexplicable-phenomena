@@ -281,11 +281,12 @@ describe('every writing has a book', () => {
     it('always has a theme: the class stands the framework\'s and answers it, and a written one in front is the one answered', () => {
         const plain = built<$Book>(<Book>{APaper()}{TheArgument()}</Book>);
         expect(plain.theme).toBeInstanceOf($Theme);
-        expect(plain.theme.ink).toBe('black');
+        // NO VALUES OF ITS OWN since Sprint 97's policy — Doug: "none — a library names its own."
+        expect(plain.theme.values).toEqual({});
         expect(plain.specify().filter(said => said.includes('theme'))).toEqual([]);
         const dark = built<$Book>(<Book><Dark />{APaper()}{TheArgument()}</Book>);
         expect(dark.theme).toBeInstanceOf($Dark);
-        expect(dark.theme.ink).toBe('white');
+        expect((dark.theme as $Dark).ink).toBe('white');
         expect(dark.annotations.find($Theme)).toHaveLength(2);
         expect(dark.annotations.containsOne($Theme)).toBe(true);
         expect(dark.specify().filter(said => said.includes('theme'))).toEqual([]);
@@ -302,6 +303,7 @@ describe('every writing has a book', () => {
 
 class $Dark extends $Theme {
     ink = 'white';
+    override get values(): Record<string, string> { return { ink: this.ink }; }
 }
 const Dark = $($Dark);
 

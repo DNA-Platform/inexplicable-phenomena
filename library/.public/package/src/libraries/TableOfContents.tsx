@@ -10,10 +10,7 @@ import { $Chapter } from './Chapter';
 
 export class $TableOfContents extends $Format {
     specification = new TableOfContentsSpecification();
-    style = selection.nav`
-        .pa-table-of-contents { margin-block: ${({ theme }) => theme.space}; }
-        .pa-table-of-contents .pd-paragraph { margin-block: calc(${({ theme }) => theme.space} / 4); }
-    `;
+    style = selection.nav``;
     get contents(): $Reference[] {
         const mentions = (chapter: $Chapter): $Reference[] =>
             [...(chapter.mention === undefined ? [] : [chapter.mention]), ...chapter.text.find($Chapter).flatMap(mentions)];
@@ -33,9 +30,7 @@ export class $TableOfContents extends $Format {
 }
 
 export class $Content extends $Reference {
-    span = selection.span.attrs({ className: 'pa-content' })`
-        color: ${({ theme }) => theme.link};
-    `;
+    span = selection.span.attrs({ className: 'pa-content' })``;
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
     override get identifier(): string { return binder.reference(html.copy(this.text))?.identifier ?? ''; }
 

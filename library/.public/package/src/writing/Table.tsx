@@ -12,13 +12,10 @@ export class $Table extends $Format {
     $columns?: number;
     specification = new TableSpecification();
     style = selection.div`
-        .pa-table { display: grid; grid-auto-columns: minmax(0, 1fr); column-gap: ${({ theme }) => theme.space}; row-gap: calc(${({ theme }) => theme.space} / 2); }
+        .pa-table { display: grid; grid-auto-columns: minmax(0, 1fr); }
         .pa-table > .pd-heading, .pa-table > .pa-self-reference { grid-column: 1 / -1; }
-        .pa-table .pd-paragraph { margin-block: 0; }
         .pa-row, .pa-row > .pa-reference { display: contents; }
-        .pa-col { padding-block: calc(${({ theme }) => theme.space} / 4); }
         ${Array.from({ length: 12 }, (_, index) => `.pa-col-start-${index + 1} { grid-column-start: ${index + 1}; } .pa-col-span-${index + 1} { grid-column-end: span ${index + 1}; }`).join(' ')}
-        .pa-table .pa-row:first-child .pa-col { font-weight: bold; border-block-end: 1px solid ${({ theme }) => theme.ink}; }
     `;
     get composition(): $Composition | undefined { return this.parent instanceof $Composition ? this.parent : undefined; }
     get start(): number { return this.$start ?? (this.composition instanceof $Section || this.composition instanceof $Chapter ? 1 : 0); }

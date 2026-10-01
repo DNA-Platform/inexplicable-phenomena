@@ -26,10 +26,13 @@ describe('an append', () => {
         expect(html.copy(appends[1].text)).toContain('export const wheel = 1;');
     });
 
-    it('is hidden on the page as every annotation is, wearing its own mark, and the chapter\'s prose is untouched', () => {
+    // NOT DRAWN since Sprint 97's S1 — an annotation's own writing is held by the object and drawn by nothing; the file
+    // is read by a Figure by identifier and type, and the page carries it once, where the figure prints it.
+    it('is not drawn on the page, as no annotation\'s writing is; the chapter\'s prose is untouched and the file is in the object', () => {
         const Drawn = $(chapter());
         const html = renderToString(<Drawn />);
-        expect(html).toMatch(/pa-append[^>]*>(<[^>]*>)*export const wheel = 1;/u);
+        expect(html).not.toContain('export const wheel = 1;');
+        expect(html).not.toContain('pa-append');
         expect(html).toContain('What the plate is.');
     });
 

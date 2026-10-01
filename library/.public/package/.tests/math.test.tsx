@@ -62,8 +62,10 @@ describe('an equation is a paragraph of TeX, typeset in display mode and numbere
         expect(page.querySelector('.pd-equation i')?.getAttribute('data-display')).toBe('true');
     });
 
-    it('drawn in its book, is numbered by the sheet\'s counter, reset on the book, and a formula in a sentence is not', async () => {
-        await drawn(built<$Book>(
+    // NUMBERED BY A LIBRARY'S COUNTER since Sprint 97's policy: the base marks an equation and says nothing of its look;
+    // a library's theme counts pd-equation and draws the number, as it counts chapters.
+    it('drawn in its book, is marked pd-equation and pd-math and the base numbers nothing', async () => {
+        const page = await drawn(built<$Book>(
             <Book>
                 <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
                 <Chapter><Title>[The Evidence](/a-paper/the-evidence/)</Title><Section><Heading>h</Heading>
@@ -72,11 +74,11 @@ describe('an equation is a paragraph of TeX, typeset in display mode and numbere
                 </Section></Chapter>
             </Book>
         ));
+        expect(page.querySelector('.pd-equation')).not.toBeNull();
+        expect(page.querySelector('.pd-math')).not.toBeNull();
         const sheet = document.head.innerHTML;
-        expect(sheet).toMatch(/\.pd-book\s*\{[^}]*counter-reset:[^}]*equation/u);
-        expect(sheet).toMatch(/\.pd-equation\s*\{[^}]*counter-increment:\s*equation/u);
-        expect(sheet).toMatch(/\.pd-equation::after\s*\{\s*content:\s*['"]\(['"] counter\(equation\) ['"]\)['"]/u);
-        expect(sheet).toMatch(/\.pd-math\s*\{/u);
+        expect(sheet).not.toMatch(/counter-increment:\s*equation/u);
+        expect(sheet).not.toMatch(/\.pd-equation::after/u);
     });
 });
 

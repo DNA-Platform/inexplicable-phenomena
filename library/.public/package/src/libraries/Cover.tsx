@@ -10,10 +10,7 @@ import { $Chapter } from './Chapter';
 
 export class $Cover extends $Format {
     specification = new CoverSpecification();
-    style = selection.header`
-        .pa-cover { margin-block-end: calc(2 * ${({ theme }) => theme.space}); }
-        .pa-cover .pd-title { font-size: calc(2 * ${({ theme }) => theme.size}); }
-    `;
+    style = selection.header``;
 
     override defines(writing: $Writing): void {
         super.defines(writing);

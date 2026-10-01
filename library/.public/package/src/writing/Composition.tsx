@@ -79,9 +79,7 @@ export class $Block extends $Annotation {
         for (const annotation of writing.annotations.after(this))
             if (annotation instanceof $Inline)
                 writing.annotations.express(annotation, false);
-        const element = writing.containers.at(0);
-        if (element === undefined) return;
-        writing.containers.replace(this, element, 'div');
+        writing.containers.replace(this, 'span', 'div');
     }
 
     override erase(writing: $Writing): void {

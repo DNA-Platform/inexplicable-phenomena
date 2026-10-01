@@ -1,5 +1,5 @@
 import { ElementType, ReactNode } from 'react';
-import { $, $Chemical } from '@dna-platform/chemistry';
+import { $, $Chemical, inert } from '@dna-platform/chemistry';
 import { Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
@@ -107,18 +107,11 @@ export class $Annotation extends $Writing {
 
     $Annotation(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
-        this.classes.add(this, 'pd-annotation');
     }
 
     override view(): ReactNode {
         const writing = this.parent;
-        const expressed = writing instanceof $Writing && writing.annotations.expressed(this) !== undefined;
-        return (
-            <>
-                {this.text.at(0) === undefined ? null : super.view()}
-                {expressed ? this.note() : null}
-            </>
-        );
+        return writing instanceof $Writing && writing.annotations.expressed(this) !== undefined ? this.note() : null;
     }
 
     note(): ReactNode { return null; }
@@ -235,8 +228,29 @@ export class Annotations extends Collection<$Annotation> {
 }
 
 export class $Parenthetical extends $Annotation {
-    override defines(writing: $Writing): void { writing.classes.add(this, 'pa-parenthetical'); }
-    override erase(writing: $Writing): void { writing.classes.revert(this); }
+    @inert() protected _element?: ElementType;
+    protected _unwritten!: ElementType;
+
+    $Parenthetical(...chemicals: $Chemical[]) {
+        this.$Annotation(...chemicals);
+        this._unwritten = ({ id, className }: { id?: string; className?: string }) => {
+            const Element = this._element ?? 'span';
+            return <Element id={id} className={className} hidden />;
+        };
+    }
+
+    override defines(writing: $Writing): void {
+        writing.classes.add(this, 'pa-parenthetical');
+        const element = writing.containers.at(0);
+        if (element === undefined || element === this._unwritten) return;
+        this._element = element;
+        writing.containers.replace(this, element, this._unwritten);
+    }
+
+    override erase(writing: $Writing): void {
+        writing.classes.revert(this);
+        writing.containers.revert(this);
+    }
 }
 
 export class $Narrative extends $Annotation {

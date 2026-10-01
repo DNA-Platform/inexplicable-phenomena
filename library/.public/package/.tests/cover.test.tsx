@@ -92,11 +92,14 @@ describe('a synopsis means the book it is a synopsis of', () => {
         expect(built<$Chapter>(LogSynopsis()).specify()).toEqual([]);
     });
 
-    it('drawn, is its name as a link to the book it means, and lends its chapter the layer that carries its look — Sprint 97, a Format is the unit of styled components', async () => {
+    // NO LAYER OF ITS OWN since Sprint 97's policy: a Synopsis is a Format for its power over the text, and a library
+    // dresses pa-synopsis by mark or gives a subclass a style. Its own writing, the link, is not drawn; the chapter means it.
+    it('means the book it names, and lends its chapter no layer — a Format for its power over the text', async () => {
         const chapter = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/of-the-log/)</Title></Chapter>);
+        expect(chapter.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
         const page = await drawn(chapter);
-        expect(page.querySelector('a[href="/the-log/"]')?.textContent).toContain('The Log');
-        expect([...chapter.containers].map(container => typeof container === 'string' ? container : 'a styled component')).toEqual(['div', 'a styled component']);
+        expect(page.querySelector('a[href="/the-log/"]')).toBeNull();
+        expect([...chapter.containers]).toEqual(['div']);
     });
 
     it('drawn with a synopsis chapter, shows that chapter\'s words under its own title and never that chapter\'s title', async () => {
@@ -118,11 +121,11 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
         expect([...chapter.containers]).toEqual(['div']);
     });
 
-    it('a table of contents draws its chapter inside a nav, and a synopsis inside a layer of its own since Sprint 97', async () => {
+    it('a table of contents draws its chapter inside a nav, and a synopsis inside no layer of its own', async () => {
         const table = await drawn(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>));
         expect(table.firstElementChild?.tagName).toBe('NAV');
         const synopsis = built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>);
-        expect([...synopsis.containers].map(container => typeof container === 'string' ? container : 'a styled component')).toEqual(['div', 'a styled component']);
+        expect([...synopsis.containers]).toEqual(['div']);
         expect(synopsis.specify()).toEqual([]);
     });
 

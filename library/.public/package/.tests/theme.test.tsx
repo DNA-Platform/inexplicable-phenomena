@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
@@ -7,13 +7,13 @@ import { join } from 'node:path';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Writing, $Format, $Section, Section, Heading, Paragraph, Word, $Word } from '@dna-platform/public';
 import { $Book, Book, $Chapter, Chapter, Cover, Author, Subject, Synopsis, TableOfContents, Title, $Theme, Theme, ThemeSpecification } from '@dna-platform/public';
-import type { ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
 Element.prototype.scrollIntoView = () => {};
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
-// THE EIGHT ARE DECLARED INLINE ON THE THEME'S ELEMENT since Sprint 95's U8, custom properties in its style attribute,
-// so the sheet is the class's own and a book's pages share one file; a declaration is read off the element.
+// A LIBRARY'S VALUES ARE DECLARED INLINE ON ITS THEME'S ELEMENT, custom properties in its style attribute, so the
+// sheet is the class's own and a book's pages share one file; a declaration is read off the element.
 const declared = (container: HTMLElement, name: string): string => (container.querySelector('[style*="--pd-"]') as HTMLElement).style.getPropertyValue(name);
 const stylesInDocument = (): string => [...document.styleSheets]
     .map(sheet => { try { return [...sheet.cssRules].map(rule => rule.cssText).join(''); } catch { return ''; } })
@@ -32,6 +32,18 @@ const served = (writing: $Writing): { html: string; css: string } => {
     const html = renderToString(sheet.collectStyles(<Drawn />));
     return { html, css: sheet.getStyleTags() };
 };
+const sources = (): { file: string; text: string }[] => {
+    const found: { file: string; text: string }[] = [];
+    const walk = (folder: string): void => {
+        for (const entry of readdirSync(folder, { withFileTypes: true })) {
+            const at = join(folder, entry.name);
+            if (entry.isDirectory()) walk(at);
+            else if (at.endsWith('.tsx') || at.endsWith('.ts')) found.push({ file: entry.name, text: readFileSync(at, 'utf8') });
+        }
+    };
+    walk(join(process.cwd(), 'src'));
+    return found;
+};
 const shelf = (theme: React.ReactNode): $Book => built<$Book>(
     <Book>
         {theme}
@@ -42,7 +54,6 @@ const shelf = (theme: React.ReactNode): $Book => built<$Book>(
     </Book>
 );
 
-const counted = { painted: 0 };
 class $Inked extends $Format {
     style = selection.span`
         color: ${(props: { theme: { ink?: string } }) => props.theme.ink ?? 'unthemed'};
@@ -50,108 +61,65 @@ class $Inked extends $Format {
 }
 const Inked = $($Inked);
 
-class $Dark extends $Theme {
-    ink = 'white';
-    paper = 'black';
+// A LIBRARY'S THEME since Sprint 97's policy — Doug, on whether the base holds values: "none — a library names its own."
+// Its tokens are reactive fields, named in `values`, and its style is the one component dressing the marks.
+class $Inky extends $Theme {
+    ink = 'black';
+    font = 'serif';
+    override get values(): Record<string, string> { return { ink: this.ink, font: this.font }; }
+    style: ElementType = selection.div`
+        font-family: ${({ theme }: { theme: { font?: string } }) => theme.font ?? ''};
+        color: ${({ theme }: { theme: { ink?: string } }) => theme.ink ?? ''};
+    `;
 }
-class $Wide extends $Theme {
+class $Dark extends $Inky {
+    ink = 'white';
+}
+class $Wide extends $Inky {
     measure = '60rem';
-    style = selection.article`
+    override get values(): Record<string, string> { return { ...super.values, measure: this.measure }; }
+    override style: ElementType = selection.article`
         max-width: ${(props: { theme: { measure?: string } }) => props.theme.measure ?? ''};
     `;
 }
+const Inky = $($Inky);
 const Dark = $($Dark);
 const Wide = $($Wide);
 
 // Doug, 2026-09-27: "one puts their theme in the book. It just occupies the Theme class in the writing folder and should
-// be designed to be extended and made to be dynamic"; "Maybe theme can have singular semantics, so we can use the
-// dynamic annotation system to change themes. That is cool."
-describe('a theme is a format said of a book that provides eight live properties to everything the book draws', () => {
-    beforeEach(() => { counted.painted = 0; });
-
-    // EVERYTHING IN REACH — Doug, 2026-09-27, asked whether .public should export the sheet's value helper: "The idiom
-    // is that the theme is on the book's annotations right? We have the book then the annotations and we can access the
-    // theme by type. That should be simple. If it's not, we have to ask why it's hard to get an annotation from the book,
-    // because I thought everything would be in reach and it should be." A format is a writing whose book is its parent's.
-    // And the one thing that is not: a style is compiled once per class, from a first specimen, so a closure over `this`
-    // in a style reads that specimen and never the drawn instance — a style reads the theme through the provider's
-    // props, which is what the provider is for.
-    it('a format on a book, and one on a chapter, reach the book\'s theme by type; a style reads it through the provider\'s props, never through a closure', () => {
-        class $Reaching extends $Format {
-            style = selection.div`
-                color: ${({ theme }: { theme: { ink?: string } }) => theme.ink ?? 'unprovided'};
-                outline-color: ${() => this.book?.annotations.expressed($Theme)?.ink ?? 'unreached'};
-            `;
-        }
-        const Reaching = $($Reaching);
-        const book = built<$Book>(
-            <Book>
-                <Theme />
-                <Reaching />
-                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
-                <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
-                <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
-                <Chapter><Reaching /><Title>[A](/a-paper/a/)</Title><Paragraph>the words of A</Paragraph></Chapter>
-            </Book>
-        );
-        const onBook = book.annotations.expressed($Reaching);
-        const onChapter = (book.parts[3] as $Chapter).annotations.expressed($Reaching);
-        expect(onBook?.book?.annotations.expressed($Theme)?.ink).toBe('black');
-        expect(onChapter?.book?.annotations.expressed($Theme)?.ink).toBe('black');
-        const { css } = served(book);
-        expect(css).toContain('color:var(--pd-ink, black)');
-        expect(css).not.toContain('unprovided');
-        expect(css).toContain('outline-color:unreached');
-    });
-
-    // A BOOK ALWAYS HAS A THEME since Sprint 94 — Doug, 2026-09-29: "If the framework can't assume a theme, it has
-    // no place to draw values from, right?" The class stands the framework's, so a book with none written draws
-    // under the default sheet and a styled element beneath it reads the framework's ink.
-    it('a book with no theme written draws under the framework\'s theme, and a styled element beneath it reads its ink', () => {
+// be designed to be extended and made to be dynamic"; and 2026-10-01: "I want $Theme stripped bare… It is a simple base
+// meant to have shared style state and maybe a small theme styled component that can be overridden."
+describe('a theme is a format said of a book that provides its values to everything the book draws, and the base holds none', () => {
+    // A BOOK ALWAYS HAS A THEME since Sprint 94 — "If the framework can't assume a theme, it has no place to draw
+    // values from" — and since Sprint 97 the framework's is bare: no values, no style, a div carrying nothing.
+    it('a book with no theme written draws under the framework\'s bare theme: a div, no declaration, no rule of the base\'s', () => {
         const book = shelf(null);
         expect(book.theme).toBeInstanceOf($Theme);
+        expect(book.theme.values).toEqual({});
+        expect(book.theme.style).toBeUndefined();
         const { html, css } = served(book);
-        expect(html).toContain('--pd-ink:black');
-        expect(css).not.toContain('unthemed');
-        expect(html).toContain('--pd-font:serif');
+        expect(html).toMatch(/^<div class="pd-container">/u);
+        expect(html).not.toContain('--pd-');
+        expect(css).not.toMatch(/\.pd-(?:book|paragraph|title|annotation)\b/u);
+        expect(css).toContain('unthemed');
     });
 
-    it('stood in a book, provides to a styled element three levels down, and its default sheet is in the page', () => {
-        const book = shelf(<Theme />);
+    it('a library\'s theme declares the values it names inline on its element, and a styled element beneath reads them as variables', () => {
+        const book = shelf(<Inky />);
         expect(book.is($Theme)).toBe(true);
+        expect(book.theme.values).toEqual({ ink: 'black', font: 'serif' });
         const { html, css } = served(book);
-        expect(html).toContain('--pd-ink:black');
-        expect(html).toContain('--pd-font:serif');
+        expect(html).toMatch(/^<div class="[^"]*\bpd-container\b[^"]*" style="--pd-ink:black;--pd-font:serif">/u);
+        expect(css).toContain('color:var(--pd-ink)');
+        expect(css).toContain('font-family:var(--pd-font)');
         expect(css).not.toContain('--pd-ink:');
-        expect(css).toContain('.pd-annotation{display:none;}');
-        // THREE LAYERS since Sprint 94: the sheet's first rule is the order statement, its marks' rules sit in
-        // pd.theme, its own element's declarations stand unlayered above them, and a Format's output is unlayered.
-        expect(css).toContain('@layer pd.invariants,pd.theme;');
-        expect(css).toMatch(/@layer pd\.theme\{[\s\S]*\.pd-annotation\{display:none;\}/u);
-        // THE ONE GLOBAL SHEET since Sprint 95's U5: the four invariants that were four global styles stand in the
-        // sheet's first layer, and no annotation carries a global style of its own.
-        const invariants = css.match(/@layer pd\.invariants\{([\s\S]*?)\}\s*\/\*!sc\*\//u)?.[1] ?? css.match(/@layer pd\.invariants\{([\s\S]*?)@layer pd\.theme/u)?.[1] ?? '';
-        expect(invariants).toMatch(/\.pa-parenthetical,/u);
-        expect(invariants).toMatch(/\.pa-blank\{visibility:hidden!important;\}/u);
-        expect(invariants).toMatch(/\.pa-self-reference\{text-decoration:none!important;\}/u);
-        expect(invariants).toMatch(/\.pa-paginated \.pa-page:not\(\.pa-open\)\{display:none!important;\}/u);
-        const sources: string[] = [];
-        const walk = (folder: string): void => {
-            for (const entry of readdirSync(folder, { withFileTypes: true })) {
-                const at = join(folder, entry.name);
-                if (entry.isDirectory()) walk(at);
-                else if (at.endsWith('.tsx') || at.endsWith('.ts')) sources.push(readFileSync(at, 'utf8'));
-            }
-        };
-        walk(join(process.cwd(), 'src'));
-        expect(sources.filter(source => source.includes('createGlobalStyle'))).toHaveLength(0);
-        expect(css).toMatch(/\{[^{}]*font-family:var\(--pd-font, serif\)/u);
+        expect(css).not.toContain('unthemed');
     });
 
     it('is singular: two themes on a book stand one provider, the front\'s, and $is switches it at one paint', async () => {
-        const book = shelf([<Theme key="plain" />, <Dark key="dark" />]);
+        const book = shelf([<Inky key="inky" />, <Dark key="dark" />]);
         expect(book.annotations.expressed($Dark)).toBeDefined();
-        expect(book.annotations.find($Theme)).toHaveLength(3);   // the class's own beneath the two written, since Sprint 94
+        expect(book.annotations.find($Theme)).toHaveLength(3);   // the class's own beneath the two written
         expect(book.annotations.expressed($Theme)).toBeInstanceOf($Dark);
         expect([...book.containers].filter(layer => typeof layer !== 'string')).toHaveLength(1);
         expect(served(book).html).toContain('--pd-ink:white');
@@ -161,16 +129,14 @@ describe('a theme is a format said of a book that provides eight live properties
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(book.annotations.expressed($Theme)).toBeInstanceOf($Wide);
         expect(container.querySelector('article')).not.toBeNull();
+        expect(declared(container, '--pd-measure')).toBe('60rem');
     });
 
-    // R7 — "live reactive properties that can be dynamically set": the provider is the theme's own chemical, so a
-    // property set on the theme is news to the provider alone. Since Sprint 94 the eight are CSS custom properties
-    // declared on the sheet's element and every rule beneath reads a var(), so the write moves one declaration and
-    // no consumer's class — Doug: "Does it factor in having dynamic properties on the theme that can be consumed in
-    // the app?"
-    it('a property set on a drawn theme moves the sheet\'s declaration, and the styled element beneath keeps its class and reads the new value through it', async () => {
-        const book = shelf(<Theme />);
-        const theme = book.theme;
+    // R7 — "live reactive properties that can be dynamically set": the provider is a chemical of Format's own, so a
+    // value set on the theme is news to the provider; the write moves one declaration and no consumer's class.
+    it('a value set on a drawn theme moves its declaration, and the styled element beneath keeps its class and reads the new value through it', async () => {
+        const book = shelf(<Inky />);
+        const theme = book.theme as $Inky;
         const container = await drawn(book);
         const inked = container.querySelector('.pd-word')!.parentElement!;
         expect(inked.className).toContain('pd-container');
@@ -184,16 +150,12 @@ describe('a theme is a format said of a book that provides eight live properties
         expect(stylesInDocument()).not.toContain('--pd-ink:');
     });
 
-    // R2 — MEASURED 2026-09-29, and pinned as the cost it is. Before the contract, one write of ink re-rendered
-    // twelve of twelve styled elements because the provider's value changed. With the contract the theme's context
-    // is one object across the write (probed inside the readers) and no consumer's class regenerates — and every
-    // word beneath the book still draws once more, the render and its development double, twenty-four views for
-    // twelve words: chemistry's diffusion, a write to an annotation's field walking up to the writing it annotates,
-    // the book redrawing all beneath it. That is chemistry's to change and is pitched, never bent around here.
-    it('a theme write keeps the contract one object and every class the same, and redraws each writing beneath the book once — chemistry\'s diffusion, pinned', async () => {
+    // R2 — MEASURED 2026-09-29 and pinned as the cost it is: no class regenerates on a write, since every rule reads a
+    // variable, and every writing beneath the book still draws once more — chemistry's diffusion, pitched.
+    it('a theme write regenerates no class, and redraws each writing beneath the book once — chemistry\'s diffusion, pinned', async () => {
         const counted = { views: 0 };
         class $Counted extends $Word { override view(): ReactNode { counted.views++; return super.view(); } }
-        class $Reads extends $Format { style = selection.span`color: ${({ theme }) => theme.ink};`; }
+        class $Reads extends $Format { style = selection.span`color: ${({ theme }: { theme: { ink?: string } }) => theme.ink ?? ''};`; }
         class $Bolds extends $Format { style = selection.span`font-weight: bold;`; }
         const Counted = $($Counted);
         const Reads = $($Reads);
@@ -201,6 +163,7 @@ describe('a theme is a format said of a book that provides eight live properties
         const six = [0, 1, 2, 3, 4, 5];
         const book = built<$Book>(
             <Book>
+                <Inky />
                 <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
                 <Chapter>
                     <Title>[Words](/a-paper/words/)</Title>
@@ -211,121 +174,54 @@ describe('a theme is a format said of a book that provides eight live properties
         );
         const container = await drawn(book);
         const classesBefore = [...container.querySelectorAll('.pd-word')].map(word => word.parentElement!.className);
-        const contract = book.theme.contract;
         counted.views = 0;
-        await act(async () => { book.theme.ink = 'red'; });
+        await act(async () => { (book.theme as $Inky).ink = 'red'; });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(declared(container, '--pd-ink')).toBe('red');
-        expect(book.theme.contract).toBe(contract);
         expect([...container.querySelectorAll('.pd-word')].map(word => word.parentElement!.className)).toEqual(classesBefore);
         expect(counted.views).toBe(24);
     });
 
-    // WHERE A LOOK LIVES, since Sprint 94: a mark is ruled by the theme's sheet (skin), by the styled component of
-    // the Format that is its element (layout), or by an annotation's own note (meaning) — and by nothing else, so a
-    // mark ruled nowhere is the finding this promise makes. Since Sprint 95 a Format gives its own element its class
-    // through attrs, the writer's choice, and such a class is that Format's: "a kind of writing is dressed by the
-    // sheet, a Format dresses itself."
-    it('comprehends every class the source puts on an element: the classes in src, less the numbered families, are each ruled by its sheet, a Format\'s own component, or an annotation\'s note', () => {
-        const sources: string[] = [];
-        const walk = (folder: string): void => {
-            for (const entry of readdirSync(folder, { withFileTypes: true })) {
-                const at = join(folder, entry.name);
-                if (entry.isDirectory()) walk(at);
-                else if (at.endsWith('.tsx') || at.endsWith('.ts')) sources.push(readFileSync(at, 'utf8'));
-            }
-        };
-        walk(join(process.cwd(), 'src'));
-        const marks = new Set<string>();
-        for (const source of sources)
-            for (const found of source.matchAll(/\bp[ad]-[a-z][a-z-]*[a-z]\b(?!\$\{)/g))
-                if (!found[0].endsWith('-')) marks.add(found[0]);
-        const noted = new Set<string>();
-        for (const source of sources)
-            for (const found of source.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g))
-                noted.add(found[1]);
-        for (const source of sources)
-            for (const found of source.matchAll(/attrs\(\{ className: '(p[ad]-[a-z][a-z-]*[a-z])' \}\)/g))
-                noted.add(found[1]);
-        const { css } = served(shelf(<Theme />));
-        const addressed = new Set([...css.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/g)].map(found => found[1]));
-        // pd-canonical says a chapter is of the canonical type of chapter — Doug, 2026-09-30: "a special one removes
-        // canonical"; "Canonical is a relationship" — and it is a word for a library's own sheet: the framework's sheet
-        // has nothing to say by it.
-        const missing = [...marks].filter(mark => !addressed.has(mark) && !noted.has(mark) && !/-(start|span|cols)$/.test(mark) && mark !== 'pd-canonical').sort();
-        expect(marks.size).toBeGreaterThan(20);
-        expect(missing).toEqual([]);
+    // THE PROVIDER IS FORMAT'S since Sprint 97's policy, so Theme overrides no bond and chemistry's chain rule has
+    // nothing to report — the defect Dressing a Library had pitched, "$Theme did not call $Format".
+    it('a themed book draws with nothing on the console: Theme calls Format\'s bond, and the provider is Format\'s', () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        served(shelf(<Inky />));
+        const said = [...error.mock.calls, ...warn.mock.calls].map(call => call.map(String).join(' '));
+        error.mockRestore();
+        warn.mockRestore();
+        expect(said.filter(line => /did not call/u.test(line))).toEqual([]);
+        const theme = readFileSync(join(process.cwd(), 'src/writing/Theme.tsx'), 'utf8');
+        expect(theme).not.toContain('class $Provider');
+        expect(theme).not.toMatch(/\$Theme\(/u);   // no bond of its own: Format's is the chain
+        expect(readFileSync(join(process.cwd(), 'src/writing/Format.tsx'), 'utf8')).toContain('class $Provider');
     });
 
-    // THE ANCHOR WEARS THE REFERENCE'S CLASS — Sprint 95, U16, on Doug's yes to "the same class, through attrs": an
-    // underline is the anchor's own, so the sheet dresses a link by the class its anchor wears and reaches no layer
-    // through the word it holds.
-    // THE ANCHOR DRESSES ITSELF since Sprint 97 — the reference's colour, underline colour and offset are the rules of
-    // the styled anchor it declares, not the sheet's — and nothing reaches an anchor through the word it holds.
-    it('dresses a link by the anchor\'s own component, the sheet saying nothing of it, and reaches no anchor through the word it holds', () => {
-        const { html, css } = served(shelf(<Theme />));
-        const anchor = (html.match(/<a [^>]*class="([^"]*\bpa-reference\b[^"]*)"/u)?.[1] ?? '').split(' ').filter(name => !name.startsWith('pa-') && !name.startsWith('pd-')).join('|');
-        expect(anchor).not.toBe('');
-        expect(css).toMatch(new RegExp(`\\.(?:${anchor})\\{[^}]*text-decoration-color`, 'u'));
-        expect(css).not.toMatch(/[{}]\.pa-reference\s*\{/u);
-        expect(css).not.toContain(':has(> .pa-reference)');
-        expect(css).not.toContain(':has(> .pa-self-reference)');
+    // E2 — A CLEAN $Theme: the class, themeProvider, the values hook, defines with the singular rule, the specification,
+    // the export, and nothing else. Doug: "I want $Theme stripped bare."
+    it('Theme.tsx is bare: no field, no style, no values, no augmentation, under thirty lines', () => {
+        const theme = readFileSync(join(process.cwd(), 'src/writing/Theme.tsx'), 'utf8');
+        expect(theme.split('\n').length).toBeLessThan(30);
+        expect(theme).not.toMatch(/contract|declarations|createTheme/u);
+        expect(theme).not.toMatch(/\bstyle\b/u);
+        expect(theme).not.toMatch(/^\s+(?:font|size|leading|measure|space|ink|paper|link) = /mu);
+        expect(theme).not.toContain('declare module');
+        expect(theme).toContain("get values(): Record<string, string> { return {}; }");
     });
 
-    // THE ONE LAW — Sprint 94, as Sprint 97 settled it on Doug's design: the sheet dresses the levels and kinds, pd-, and
-    // the invariants; a pa- mark's look is its own Format's, carried in that Format's styled component; and a Format may
-    // restate a kind's property IN ITS OWN CONTEXT, under its class — "overriding can happen at either layer". So the
-    // sheet writes no pa- rule but the invariants and the two annotations with no layer, Append and Referent, and no
-    // Format writes a pd- mark out of context.
-    it('the sheet dresses pd- marks and the invariants only, and a Format dresses its own pa- marks and a kind only in its context: one author per property', () => {
-        const { css } = served(shelf(<Theme />));
-        const invariant = new Set(['pa-parenthetical', 'pa-blank', 'pa-self-reference', 'pa-paginated', 'pa-page', 'pa-open', 'pa-append', 'pa-referent']);
-        const layered = [...css.matchAll(/@layer pd\.(?:invariants|theme)\{([\s\S]*?)\}\s*\/\*!sc\*\//gu)].map(match => match[1]).join('\n');
-        const unlayered = css.replace(/@layer pd\.[a-z]+\{[\s\S]*?\}\s*\/\*!sc\*\//gu, '');
-        const marks = (selector: string): string[] => [...selector.matchAll(/\.(p[ad]-[a-z][a-z-]*[a-z])\b/gu)].map(match => match[1]);
-        const sheetWrites: string[] = [];
-        for (const rule of layered.matchAll(/([^{}]+)\{([^{}]*)\}/gu))
-            for (const mark of marks(rule[1]))
-                if (mark.startsWith('pa-') && !invariant.has(mark)) sheetWrites.push(mark);
-        const outOfContext: string[] = [];
-        for (const rule of unlayered.matchAll(/([^{}]+)\{([^{}]*)\}/gu)) {
-            const found = marks(rule[1]);
-            if (found.some(mark => mark.startsWith('pd-')) && !found.some(mark => mark.startsWith('pa-'))) outOfContext.push(rule[1].trim());
+    // E1 — A CLEAN .public: no template in src declares a look, and the machinery that ordered a base sheet against
+    // components is gone with the sheet. Doug: "I expect to see a CLEAN .public."
+    it('no template in src declares a look — a size, colour, weight, margin, padding, border, background or glyph — and src carries no layer, no !important, no :has, no global style, no augmentation', () => {
+        const looks: string[] = [];
+        for (const { file, text } of sources()) {
+            for (const template of text.matchAll(/selection(?:\.[a-z]+|\([^)]*\))(?:\.attrs\([^)]*\))?(?:<[^`]*>)?`([^`]*)`/gu))
+                for (const found of template[1].matchAll(/\b(?:font(?:-[a-z]+)?|color|margin(?:-[a-z]+)?|padding(?:-[a-z]+)?|border(?:-[a-z]+)?|background(?:-[a-z]+)?|line-height|letter-spacing|text-transform|text-decoration(?:-[a-z]+)?|opacity|box-shadow|(?:column-|row-)?gap|max-width|min-height|min-width|max-height|width|height|content|white-space|overflow(?:-[a-z]+)?)\s*:/gu))
+                    looks.push(`${file}: ${found[0]}`);
+            for (const forbidden of ['@layer', '!important', ':has(', 'createGlobalStyle', 'declare module'])
+                if (text.includes(forbidden)) looks.push(`${file}: ${forbidden}`);
         }
-        expect(layered.length).toBeGreaterThan(1000);
-        expect([...new Set(sheetWrites)]).toEqual([]);
-        expect(outOfContext).toEqual([]);
-    });
-
-    // A FORMAT'S TEMPLATE CARRIES NO THEME LITERAL — a colour or a length that is not a variable or a structural
-    // constant is the theme's to give; the theme's own sheet is the one template allowed its constants.
-    it('no Format in src but the Theme writes a colour or a length literal in its styled template', () => {
-        const sources: { file: string; text: string }[] = [];
-        const walk = (folder: string): void => {
-            for (const entry of readdirSync(folder, { withFileTypes: true })) {
-                const at = join(folder, entry.name);
-                if (entry.isDirectory()) walk(at);
-                else if ((at.endsWith('.tsx') || at.endsWith('.ts')) && !at.endsWith('Theme.tsx')) sources.push({ file: entry.name, text: readFileSync(at, 'utf8') });
-            }
-        };
-        walk(join(process.cwd(), 'src'));
-        const literals: string[] = [];
-        for (const { file, text } of sources) {
-            if (!/extends \$Format\b/u.test(text)) continue;
-            for (const template of text.matchAll(/selection(?:\.[a-z]+|\([^)]*\))(?:<[^`]*>)?`([^`]*)`/gu))
-                for (const found of template[1].matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\(|\b(?:red|blue|black|white|gr[ae]y|silver|navy|ivory|teal|green)\b|\b\d+(?:\.\d+)?(?:px|rem|em)\b/gu))
-                    literals.push(`${file}: ${found[0]}`);
-        }
-        expect(literals).toEqual([]);
-    });
-
-    it('a subclass overriding its sheet and a property is still a theme where one is asked for, and draws its own sheet', () => {
-        const book = shelf(<Wide />);
-        expect(book.is($Theme)).toBe(true);
-        expect(book.annotations.expressed($Theme)).toBeInstanceOf($Wide);
-        const { html } = served(book);
-        expect(html).toContain('<article');
-        expect(html).toContain('--pd-measure:60rem');
+        expect(looks).toEqual([]);
     });
 
     it('said of a section, says so when asked', () => {
