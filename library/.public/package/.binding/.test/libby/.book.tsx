@@ -1,15 +1,11 @@
 import { $ } from '@dna-platform/chemistry';
 import { Theme } from '@dna-platform/public';
-import { $LibraryTheme, $TheLibrary } from '../manual/.book';
+import { $TheLibrary } from '../manual/.book';
+import { DarkTheme } from './3-writing-a-theme.code.tsx';
 
 export default class $Libby extends $TheLibrary { }
 
-export class $DarkTheme extends $LibraryTheme {
-    ink = 'ivory';
-    paper = '#1f1f24';
-    link = 'lightsteelblue';
-}
-
-export const DarkTheme = $($DarkTheme);
 const Libby = $($Libby);
 $(Libby, Theme)(DarkTheme);
+
+export * from './3-writing-a-theme.code.tsx';
