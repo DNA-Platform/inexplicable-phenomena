@@ -3,7 +3,7 @@ import { $Cover, $Synopsis, $TableOfContents } from '@dna-platform/public';
 
 export class $ManualCover extends $Cover {
     override style = selection.header`
-        .pa-cover { margin-block: 0; }
+        .pd-chapter.pa-cover { margin-block: 0; }
         .pa-cover .pd-title { font-size: calc(1.6 * ${({ theme }) => theme.size}); line-height: 1.3; margin-block: 0; }
         .pa-cover .pd-catchword { display: none; }
     `;

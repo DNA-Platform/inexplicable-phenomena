@@ -3,8 +3,8 @@ import { $Cover, $Format, $Synopsis, $Table, $TableOfContents, $Writing } from '
 
 export class $LibraryCover extends $Cover {
     override style = selection.header`
-        .pa-cover { margin-block: 0; }
-        .pa-cover:not(.pa-framed) {
+        .pd-chapter.pa-cover { margin-block: 0; }
+        .pd-chapter.pa-cover:not(.pa-framed) {
             margin-block-end: calc(1.5 * ${({ theme }) => theme.space});
             padding: calc(0.75 * ${({ theme }) => theme.space}) ${({ theme }) => theme.space};
             background: color-mix(in srgb, ${({ theme }) => theme.ink} 3%, ${({ theme }) => theme.paper});
@@ -21,7 +21,7 @@ export class $LibraryCover extends $Cover {
 
 export class $LibrarySynopsis extends $Synopsis {
     style = selection.div`
-        .pa-synopsis {
+        .pd-chapter.pa-synopsis {
             margin-block: calc(1.5 * ${({ theme }) => theme.space});
             padding-inline-start: ${({ theme }) => theme.space};
             border-inline-start: 2px solid ${({ theme }) => theme.link};
@@ -33,8 +33,8 @@ export class $LibrarySynopsis extends $Synopsis {
 
 export class $LibraryTableOfContents extends $TableOfContents {
     override style = selection.nav`
-        .pa-table-of-contents { margin-block: 0; }
-        .pa-table-of-contents:not(.pa-framed) {
+        .pd-chapter.pa-table-of-contents { margin-block: 0; }
+        .pd-chapter.pa-table-of-contents:not(.pa-framed) {
             margin-block: calc(1.5 * ${({ theme }) => theme.space});
             padding: calc(0.75 * ${({ theme }) => theme.space}) ${({ theme }) => theme.space};
             border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 10%, ${({ theme }) => theme.paper});

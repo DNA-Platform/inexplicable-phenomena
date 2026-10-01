@@ -39,7 +39,7 @@ export class $LibraryTheme extends $Theme {
     protected levels(): RuleSet {
         return css`
             .pd-book { margin-block: ${({ theme }) => theme.space}; counter-reset: chapter equation; }
-            .pd-canonical.pd-chapter { margin-block: calc(2 * ${({ theme }) => theme.space}); scroll-margin-block-start: calc(0.5 * ${({ theme }) => theme.space}); }
+            .pd-chapter { margin-block: calc(2 * ${({ theme }) => theme.space}); scroll-margin-block-start: calc(0.5 * ${({ theme }) => theme.space}); }
             .pd-section { margin-block: ${({ theme }) => theme.space}; }
             .pd-paragraph { margin-block: ${({ theme }) => theme.space}; }
             .pa-item { margin-block: calc(${({ theme }) => theme.space} / 4); }
