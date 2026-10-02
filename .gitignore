@@ -8,6 +8,7 @@ library/.test/
 
 # Team identity (private, lives in its own repo)
 .me/
+..me/
 .claude/
 CLAUDE.md
 
