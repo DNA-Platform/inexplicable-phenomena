@@ -615,11 +615,10 @@ describe('the bound test library, seen in a real browser', () => {
         await libby.close();
     });
 
-    // PITCHED, 2026-09-27, found in the console while driving the links: on every themed page chemistry reports "$Theme
-    // did not call $Format — every declared bond constructor on the chain must be called", logs it and carries on. Theme's
-    // bond passes over Format's on purpose, since Format's would wrap the theme in a second provider; the fix is a template
-    // method on Format that Theme overrides — Doug's to rule. The check does not fire in the package's own build, so this
-    // is the lowest place that sees it; expected to fail until then, and the day it passes is the day to flip it.
+    // PITCHED, 2026-09-27, found in the console while driving the links: on every themed page chemistry reported "$Theme
+    // did not call $Format — every declared bond constructor on the chain must be called", since Theme's bond passed over
+    // Format's to avoid a second provider. GREEN SINCE SPRINT 97, 2026-10-02: the provider is Format's, made in Format's
+    // bond for any Format that provides, and Theme declares no bond of its own, so the chain is whole and nothing is said.
     it('draws a themed page without chemistry reporting the theme\'s bond chain in the console', async () => {
         const said: string[] = [];
         const library = await browser!.newPage();
