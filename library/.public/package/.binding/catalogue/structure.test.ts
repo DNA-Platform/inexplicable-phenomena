@@ -34,11 +34,12 @@ describe('the test library, read', () => {
         expect(made.refused).toEqual([]);
     });
 
-    // A COVER'S SECOND TITLE FORM, NAMING ITS OWN BOOK, IS ITS ABOUT — and a book is a subject another
-    // may be filed under only when it is about something. Doug, 2026-09-25: "Any book can be About
-    // something, but that allows other books to then be able to use it as a subject catalogue."
-    it('reads a cover\'s second title form, naming its book, as what the book is about', () => {
-        expect(made.about).toEqual(new Set(['library', 'libby', 'persona']));
+    // A COVER'S SECOND TITLE FORM IS ITS ABOUT, THE NAME OF THE SUBJECT ITS BOOK REPRESENTS — and a
+    // book is a subject another may be filed under only when it is about something. Doug, 2026-09-25:
+    // "Any book can be About something, but that allows other books to then be able to use it as a
+    // subject catalogue." In the test library every About repeats its book's title.
+    it('reads a cover\'s second title form as the name of what the book is about', () => {
+        expect(made.about).toEqual(new Map([['library', 'The Library'], ['libby', 'Libby'], ['persona', 'A Persona']]));
         expect(made.titledTwice).toEqual([]);
     });
 

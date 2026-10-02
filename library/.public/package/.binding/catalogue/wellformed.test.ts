@@ -135,6 +135,31 @@ describe('a well-formed library', () => {
         expect(faultsOf(whole())).toEqual([]);
     });
 
+    // A COVER'S SECOND TITLE FORM NAMES THE SUBJECT ITS BOOK REPRESENTS, which need not be its title.
+    // Doug, 2026-09-27: "YES a book that represents a subject is not necessarily named a subject. The
+    // Encyclopedia of Math might represent the subject of Math!" — and 2026-10-02, initializing his own
+    // library: "Dougs Library will be <About> The Library. The autobiography, to be named, will be
+    // <About> The Librarian." So `**[[ A Library ]]` files under the book about A Library, whatever it
+    // is called, and `*[[ A Log ]]` is the book about A Log.
+    it('files books under the name a cover says its book is about, which need not be the book\'s title', () => {
+        const books = whole();
+        books[0].name = 'Dougs Library';
+        books[0].about = false;
+        books[0].retitled = '[[ A Library ]]';
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    it('grounds the library in an autobiography whose author is the name its cover says it is about', () => {
+        const books = whole();
+        books[1].name = 'The Autobiography';
+        books[1].about = false;
+        books[1].retitled = '[[ A Log ]]';
+        books[0].holds = ['[[ The Autobiography ]]**', '[[ Some Projects ]]**', '[[ A Paper ]]**'];
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
     it('lets two books catalogue each other topically, which is not a cycle to be afraid of', () => {
         const books = whole();
         books[2].topics = ['***[[ A Paper ]]'];
@@ -341,11 +366,44 @@ describe('names', () => {
         expect(faultsOf(books)).toEqual([faults.titledTwice]);
     });
 
+    // AND A SUBJECT IS REPRESENTED BY ONE BOOK. Two covers saying their books are about one name are
+    // two books where a reference can reach only one.
+    it('raises two covers saying their books are about one name', () => {
+        const books = whole();
+        books[2].retitled = '[[ A Subject ]]';
+        books[4].retitled = '[[ A Subject ]]';
+
+        expect(faultsOf(books)).toEqual([faults.titledTwice, faults.titledTwice]);
+    });
+
     it('raises a form the notation does not have', () => {
         const books = whole();
         books[4].author = '*[[ A Persona ]]**';
 
         expect(faultsOf(books)).toEqual([faults.malformed]);
+    });
+});
+
+// THE LIBRARY'S OWN CATALOGUE IS REQUIRED — Doug, 2026-10-02, initializing his library: "I want you to
+// make sure that the compiler enforces that we need to have a library catalogue." The top is filed
+// under what it is about, which is itself; a book filed under nothing is not a library, it is a book
+// nobody has filed.
+describe('the library catalogue', () => {
+    it('raises a top filed under nothing, since the library\'s own catalogue stands under itself', () => {
+        const books = whole();
+        books[0].catalogue = undefined;
+
+        const said = wellformed(structure(built(books)));
+        expect(said.map(fault => fault.fault)).toEqual([faults.noLibrary]);
+        expect(said[0].says).toContain('does not catalogue itself');
+    });
+
+    it('raises a book filed under nothing beside the library, as a second root', () => {
+        const books = whole();
+        books[2].catalogue = undefined;
+        books[0].holds = ['[[ A Log ]]**', '[[ A Paper ]]**'];
+
+        expect(faultsOf(books)).toEqual([faults.twoLibraries, faults.twoLibraries]);
     });
 });
 

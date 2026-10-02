@@ -103,6 +103,11 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         const held = found.books.find(one => one.folder === route.folder);
         if (held !== undefined) inside.push({ path: forward(held.path), name: route.name });
 
+        // AND THE NAME OF THE SUBJECT THE BOOK REPRESENTS, when its cover gives one apart from its
+        // title: `**[[ The Library ]]` and `*[[ The Librarian ]]` are answered with the book's own page.
+        const about = structure.about.get(route.folder);
+        if (about !== undefined && about !== route.name) at.set(about, book);
+
         // AND ITS CHAPTERS, EACH A FRAGMENT OF THE BOOK'S PAGE — and its anchors, which are spots of the
         // structure rather than a second reading, each a fragment of the same page, since the whole book
         // draws on it. Sprint 95, D1.

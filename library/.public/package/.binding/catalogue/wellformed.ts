@@ -174,9 +174,10 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         wrong.push({ fault: faults.noTitle, at: one.at, file: one.file, says: `${one.file.split(/[\/]/).pop()} has no title — every chapter says what it is called with a title form, [[ Its Name ]]` });
 
     // AND A FILE TITLES ONE THING. A title form names the writing its file is; a cover's second one
-    // is its About and names that same book, so one naming anything else is a second title.
+    // is its About, the name of the subject its book represents — its own title, or a name no other
+    // book is called or about — so one naming another book is a second title.
     for (const one of structure.titledTwice)
-        wrong.push({ fault: faults.titledTwice, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line} titles "${one.said}", and this file already titles "${called(structure, one.by)}" — a file titles one thing, and a cover's About names its own book` });
+        wrong.push({ fault: faults.titledTwice, at: wrote(structure, one.by).at, file: one.at.file, says: `line ${one.at.line} titles "${one.said}", and this file already titles "${called(structure, one.by)}" — a file titles one thing, and a cover's About names the subject its own book represents, which no other book is called or about` });
 
     if (wrong.length > 0) return wrong;
 
@@ -288,12 +289,23 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         }
     }
 
-    const roots = books.filter(book => structure.subjectOf.get(book.id) === undefined || structure.subjectOf.get(book.id) === book.id);
-    if (roots.length === 0 && books.length > 0)
-        wrong.push({ fault: faults.noLibrary, at: books[0].at, file: books[0].file, says: 'every book here is catalogued by another and none of them is the library — a catalogue is a tree and a tree has a root' });
+    // AND THE LIBRARY'S OWN CATALOGUE IS THE ONE BOOK THAT CATALOGUES ITSELF — filed under what it is
+    // about, which is itself. A book filed under nothing is not the library by default; it is a book
+    // nobody has filed. Doug, 2026-10-02: "make sure that the compiler enforces that we need to have
+    // a library catalogue."
+    const library = books.filter(book => structure.subjectOf.get(book.id) === book.id);
+    const unfiled = books.filter(book => structure.subjectOf.get(book.id) === undefined);
+    if (library.length === 0 && books.length > 0) {
+        const top = unfiled[0];
+        if (top === undefined)
+            wrong.push({ fault: faults.noLibrary, at: books[0].at, file: books[0].file, says: 'every book here is catalogued by another and none of them is the library — a catalogue is a tree and a tree has a root' });
+        else
+            wrong.push({ fault: faults.noLibrary, at: top.at, file: top.file, says: `"${called(structure, top.id)}" is catalogued by nothing and does not catalogue itself — the library's own catalogue is filed under what it is about, which is itself, ${owes('subject', structure.about.get(top.id) ?? called(structure, top.id), 'up')} on its cover` });
+    }
+    const roots = [...library, ...unfiled];
     if (roots.length > 1)
         for (const root of roots)
-            wrong.push({ fault: faults.twoLibraries, at: root.at, file: root.file, says: `"${called(structure, root.id)}" is catalogued by nothing, and so ${roots.length > 2 ? 'are' : 'is'} ${roots.filter(other => other !== root).map(other => `"${called(structure, other.id)}"`).join(', ')} — one of these is the library and the rest belong under it` });
+            wrong.push({ fault: faults.twoLibraries, at: root.at, file: root.file, says: `"${called(structure, root.id)}" stands at the top, ${library.includes(root) ? 'cataloguing itself' : 'catalogued by nothing'}, and so ${roots.length > 2 ? 'do' : 'does'} ${roots.filter(other => other !== root).map(other => `"${called(structure, other.id)}"`).join(', ')} — one of these is the library and the rest belong under it` });
 
     // ---- a topic is one of the OTHER catalogues a book stands in ----
     for (const [id, topics] of structure.topicsOf)

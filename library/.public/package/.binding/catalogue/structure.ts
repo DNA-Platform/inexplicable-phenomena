@@ -57,9 +57,10 @@ export type Structure = {
     mentions: Mention[];
     refused: { by: SpotId; said: string; at: Where; why?: string }[];
     untitled: { at: string; file: string }[];
-    // THE BOOKS ABOUT SOMETHING — a cover carrying a second title form, its About, which names its
-    // own book — and so the books another may be filed under. `about` is a PROXY NAME.
-    about: Set<SpotId>;
+    // THE BOOKS ABOUT SOMETHING, AND WHAT EACH IS ABOUT — a cover carrying a second title form, its
+    // About, the name of the subject its book represents — and so the books another may be filed
+    // under, by that name. `about` is a PROXY NAME.
+    about: Map<SpotId, string>;
     // AND EVERY TITLE FORM THAT NAMES SOMETHING OTHER THAN THE WRITING ITS FILE TITLES. A PROXY NAME.
     titledTwice: { by: SpotId; said: string; at: Where }[];
     // EVERY SPOT SOMETHING IN THE LIBRARY REFERS TO, so a name nobody spends can be refused.
@@ -166,7 +167,7 @@ export const structure = (found: Library): Structure => {
     const mentions: Mention[] = [];
     const refused: Structure['refused'] = [];
     const untitled: Structure['untitled'] = [];
-    const about: Structure['about'] = new Set();
+    const about: Structure['about'] = new Map();
     const titledTwice: Structure['titledTwice'] = [];
     const resourceNames: Structure['resourceNames'] = [];
 
@@ -179,8 +180,9 @@ export const structure = (found: Library): Structure => {
     // ---- the books, named by their covers ----
     //
     // FIRST, because a chapter's name is scoped by its book's and cannot be formed until the book
-    // has one. A book is named by the title form its cover holds, whatever element holds it; a
-    // second one naming the same book is its About, and one naming anything else titles it twice.
+    // has one. A book is named by the title form its cover holds, whatever element holds it; its
+    // second one is kept for the pass below, since what it may name depends on every book's title.
+    const abouts: { book: SpotId; said: string; written: string; at: Where }[] = [];
     for (const one of read) {
         if (one.file !== '.cover.tsx') continue;
         const [title, ...others] = titling(one);
@@ -189,10 +191,26 @@ export const structure = (found: Library): Structure => {
         spots.set(one.book.folder, { id: one.book.folder, at: one.book.folder, file: one.path, kind: 'book', book: one.book.folder });
         calls(said, one.book.folder, { file: one.path, line: title.line });
         for (const other of others)
-            if (titleOf(other.name, true) === said)
-                about.add(one.book.folder);
-            else
-                titledTwice.push({ by: one.book.folder, said: other.said, at: { file: one.path, line: other.line } });
+            abouts.push({ book: one.book.folder, said: titleOf(other.name, true), written: other.said, at: { file: one.path, line: other.line } });
+    }
+
+    // ---- what each book is about ----
+    //
+    // A COVER'S SECOND TITLE FORM IS ITS ABOUT: THE NAME OF THE SUBJECT ITS BOOK REPRESENTS, which
+    // is its own title or a name no book is called. Doug, 2026-09-27: "YES a book that represents a
+    // subject is not necessarily named a subject. The Encyclopedia of Math might represent the
+    // subject of Math!" So `**[[ Math ]]` files under that encyclopedia and `*[[ Math ]]` is it, by
+    // the name it is about; a second form naming another book is still a second title, and so is a
+    // name two covers say their books are about. A subject's name reaches the book and nothing in it
+    // — a chapter is keyed by its book's title alone, so one chapter has one key.
+    const subjects = new Map<string, SpotId>();
+    for (const one of abouts) {
+        const titled = names.get(one.said)?.some(naming => naming.spot !== one.book) ?? false;
+        const represented = abouts.some(other => other !== one && other.book !== one.book && other.said === one.said);
+        const already = about.get(one.book);
+        if (titled || represented || (already !== undefined && already !== one.said)) { titledTwice.push({ by: one.book, said: one.written, at: one.at }); continue; }
+        about.set(one.book, one.said);
+        if (one.said !== named.get(one.book)) subjects.set(one.said, one.book);
     }
 
     // ---- the chapters, named within their books ----
@@ -244,7 +262,7 @@ export const structure = (found: Library): Structure => {
     const of = (said: string): SpotId | undefined => {
         const held = names.get(tidy(said));
 
-        return held !== undefined && held.length === 1 ? held[0].spot : undefined;
+        return held !== undefined ? (held.length === 1 ? held[0].spot : undefined) : subjects.get(tidy(said));
     };
 
     const spells = (held: Name, book: SpotId): string => key(held, named.get(book));

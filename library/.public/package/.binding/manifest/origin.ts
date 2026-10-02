@@ -18,7 +18,11 @@ export const within = 'library/.public/package/.binding';
 // checkout points at the checkout instead, so a change is there the moment it is built rather than
 // the moment it is published. Everything else in the folder is the master's.
 export const kept = new Set(['.graph.json', 'package.json', 'application/books.ts', '.pubconfig', '.manifest.json', 'application/routes.ts', 'application/stylesheets.ts']);
-export const skipped = new Set(['node_modules', '.vite']);
+// AND WHAT NO COPY CARRIES: what a package manager installs, what vite caches, and the galleys the
+// master's own regression pulls under `.test/.galleys` — each one a whole binder and a built site,
+// 12,159 files the first copy of Doug's library carried before this name stood here, 2026-10-02.
+// They are the master's proofs, and `.binding/.gitignore` already keeps them out of the record.
+export const skipped = new Set(['node_modules', '.vite', '.galleys']);
 
 export const forward = (path: string): string => path.split(sep).join('/');
 
