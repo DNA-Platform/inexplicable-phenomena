@@ -657,21 +657,49 @@ describe('the bound test library, seen in a real browser', () => {
 });
 
 // WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
-// a fault naming the chapter, at catalogue, before anything is drawn.
-describe('a bind of the test library with a catalogue row that does not refer to the book\'s synopsis', () => {
+// a fault naming the chapter, at catalogue, before anything is drawn. THE TABLE IS THE LINK AGGREGATOR,
+// Sprint 99 — Doug, 2026-10-05: "The table needs to refer to all chapters including itself… And it
+// should refer to all books." One galley for each of the two, each with one link taken out.
+describe('a bind of the test library whose catalogue\'s table leaves out a chapter of its own book', () => {
     let broken: Galley;
     beforeAll(() => {
         broken = pulled();
         const table = join(broken.library, 'library', '.table.tsx');
-        writeFileSync(table, readFileSync(table, 'utf8').replace(" <Word><Content>$[[ the librarian's own account ]]( Libby / Synopsis )</Content></Word>", ''));
+        const written = readFileSync(table, 'utf8');
+        const without = written.replace('            <Paragraph><Content>$[[ ./Of Libby ]]</Content></Paragraph>\n', '');
+        if (without === written) throw new Error('the library\'s table no longer writes the entry this stage takes out');
+        writeFileSync(table, without);
     });
     afterAll(() => { broken.remove(); });
 
-    it('fails at catalogue, naming the row and the synopsis it owes', () => {
+    it('fails at catalogue, naming the chapter and the reference the table owes', () => {
         const said = printed(broken);
         expect(said).toMatch(/^catalogue +FAILED/mu);
-        expect(said).toContain('NO-SYNOPSIS');
-        expect(said).toContain('answers for "Libby" and the table does not refer to its synopsis');
+        expect(said).toContain('CHAPTER-NOT-LISTED');
+        expect(said).toContain('"Of Libby" is a chapter of "The Library" and its table of contents does not refer to it');
+        expect(said).toContain('$[[ ./Of Libby ]]');
+        expect(said).not.toMatch(/^bound /mu);
+    });
+});
+
+describe('a bind of the test library whose catalogue\'s table leaves out a book of its subject', () => {
+    let broken: Galley;
+    beforeAll(() => {
+        broken = pulled();
+        const table = join(broken.library, 'library', '.table.tsx');
+        const written = readFileSync(table, 'utf8');
+        const without = written.replace('<Word><Content>[[ Libby ]]**</Content></Word> ', '');
+        if (without === written) throw new Error('the library\'s table no longer writes the answer this stage takes out');
+        writeFileSync(table, without);
+    });
+    afterAll(() => { broken.remove(); });
+
+    it('fails at catalogue, naming the book and the answer the table owes', () => {
+        const said = printed(broken);
+        expect(said).toMatch(/^catalogue +FAILED/mu);
+        expect(said).toContain('NOT-LISTED');
+        expect(said).toContain('"Libby" says its catalogue is "The Library"');
+        expect(said).toContain('[[ Libby ]]**');
         expect(said).not.toMatch(/^bound /mu);
     });
 });

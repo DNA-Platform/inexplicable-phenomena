@@ -22,12 +22,12 @@ export const faults = {
     titledTwice: 'TITLED-TWICE',
     unknownReference: 'UNKNOWN-REFERENCE',
     notListed: 'NOT-LISTED',
+    chapterNotListed: 'CHAPTER-NOT-LISTED',
     notASubject: 'NOT-A-SUBJECT',
     noLibrary: 'NO-LIBRARY',
     twoLibraries: 'TWO-LIBRARIES',
     circularCatalogue: 'CIRCULAR-CATALOGUE',
     topicIsCatalogue: 'TOPIC-IS-CATALOGUE',
-    noSynopsis: 'NO-SYNOPSIS',
     notInTheTable: 'NOT-IN-THE-TABLE',
     noAuthor: 'NO-AUTHOR',
     noSelfAuthor: 'NO-SELF-AUTHOR',
@@ -74,10 +74,6 @@ const owes = (relation: 'subject' | 'topic', name: string, facing: 'up' | 'down'
 
 const speaks = (relation: 'subject' | 'topic'): string =>
     relation === 'subject' ? 'catalogue' : 'topical catalogue';
-
-// AND HOW A TABLE REFERS TO A BOOK'S SYNOPSIS, spelled with the name that synopsis titles itself.
-const synopsis = (structure: Structure, book: SpotId): string =>
-    `$[[ ${called(structure, book)}${separator}${structure.named.get(`${book}/.synopsis.tsx`) ?? 'Synopsis'} ]]`;
 
 export const wellformed = (structure: Structure): Diagnostic[] => {
     const wrong: Diagnostic[] = [];
@@ -244,24 +240,29 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // catalogue edge was corroborated by an annotation somewhere in the book's apparatus, and the
     // same line written on the cover would have passed identically. The table was doing nothing.
 
-    // A TABLE NEED NOT REFER TO EVERY CHAPTER ITS BOOK HOLDS — a rule that stood until 2026-09-26 as
-    // CHAPTER-NOT-LISTED. Every chapter's title already gives it an address, and a table may be
-    // drawn from what the chapters mention rather than written; a written one lists what its author
-    // chooses. Doug: "Even if we remove the check - because a check on the chapter titles guarantees
-    // the table of contents attribute has what it needs, let's test that the references work."
+    // A TABLE REFERS TO EVERY CHAPTER OF ITS BOOK, ITSELF AMONG THEM. Doug, 2026-10-05: "The table
+    // needs to refer to all chapters including itself. Might as well be there, though frequently it
+    // will be placed in some interesting place." The table is the link aggregator — "it can present
+    // them, but it could also expose them to be consumed by the rest of the system" — and the
+    // compiler counts a link only where it is written, in the table's file, in the notation. The rule
+    // stood until 2026-09-26, when a table became drawable from what its chapters mention, and was
+    // struck that day; a drawn table writes its links now and draws them too. The cover is not asked
+    // for: its title names the book.
+    for (const spot of structure.spots.values()) {
+        if (spot.kind !== 'chapter' || structure.lists.get(spot.book)?.has(spot.id) === true) continue;
+        const table = wrote(structure, `${spot.book}/.table.tsx`);
+        wrong.push({ fault: faults.chapterNotListed, at: table.at, file: table.file, says: `"${called(structure, spot.id)}" is a chapter of "${called(structure, spot.book)}" and its table of contents does not refer to it — a table refers to every chapter of its book, itself among them, $[[ ./${called(structure, spot.id)} ]]` });
+    }
 
     // AND THE ANSWERING HALF OF A CATALOGUE EDGE IS WRITTEN IN THE TABLE. A catalogue saying
     // elsewhere that it holds a book is a claim in the wrong place: the table of contents is what a
-    // reader reads, so it is where the claim has to stand to be worth anything.
+    // reader reads, so it is where the claim has to stand to be worth anything. Doug, 2026-09-19: "the
+    // table needs links to its chapters and the books that those chapters are synopses of." A link
+    // into each book's own synopsis was asked for besides, as NO-SYNOPSIS, until 2026-10-05: every
+    // book holds a synopsis and its own table refers to it, so the catalogue's link to the book is
+    // enough.
     for (const edge of structure.edges.values()) {
         if (edge.relation !== 'subject' || edge.from === edge.to) continue;
-        // AND A TABLE THAT CATALOGUES A BOOK REFERS TO THAT BOOK'S OWN SYNOPSIS — Doug, 2026-09-19:
-        // "the table needs links to its chapters and the books that those chapters are synopses
-        // of"; 2026-09-20: "In the book. It has a .synopsis file literally." A catalogue's table is
-        // where each synopsis is reached from.
-        const listing = structure.lists.get(edge.from)?.get(edge.to);
-        if (listing !== undefined && !listing.synopsis)
-            wrong.push({ fault: faults.noSynopsis, at: wrote(structure, edge.from).at, file: listing.at.file, says: `line ${listing.at.line} answers for "${called(structure, edge.to)}" and the table does not refer to its synopsis — a catalogue's table reaches each book's own synopsis, ${synopsis(structure, edge.to)}` });
         const answering = edge.ends.find(one => one.end === 'source');
         if (answering === undefined || answering.at.file.endsWith('.table.tsx')) continue;
         wrong.push({ fault: faults.notInTheTable, at: wrote(structure, edge.from).at, file: answering.at.file, says: `"${called(structure, edge.from)}" says it catalogues "${called(structure, edge.to)}" at line ${answering.at.line}, which is not its table of contents — a catalogue answers for what it holds where a reader can see it` });
@@ -310,14 +311,9 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
     // ---- a topic is one of the OTHER catalogues a book stands in ----
     for (const [id, topics] of structure.topicsOf)
         for (const topic of topics) {
+            if (structure.subjectOf.get(id) !== topic) continue;
             const spot = wrote(structure, id);
-            if (structure.subjectOf.get(id) === topic) {
-                wrong.push({ fault: faults.topicIsCatalogue, at: spot.at, file: spot.file, says: `"${called(structure, id)}" names "${called(structure, topic)}" as a topic and as its canonical catalogue — a topic is one of the OTHER catalogues it stands in` });
-                continue;
-            }
-            const listing = structure.lists.get(topic)?.get(id);
-            if (listing !== undefined && !listing.synopsis)
-                wrong.push({ fault: faults.noSynopsis, at: wrote(structure, topic).at, file: listing.at.file, says: `"${called(structure, topic)}" answers for "${called(structure, id)}" and its table does not refer to its synopsis — a book standing in a catalogue that is not its own says there what it is, ${synopsis(structure, id)}` });
+            wrong.push({ fault: faults.topicIsCatalogue, at: spot.at, file: spot.file, says: `"${called(structure, id)}" names "${called(structure, topic)}" as a topic and as its canonical catalogue — a topic is one of the OTHER catalogues it stands in` });
         }
 
     // ---- authorship: the autobiography, and the books it catalogues ----

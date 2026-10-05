@@ -11,8 +11,9 @@ export default () => (
                 under what it is about. Its <Means>$[[ shelves ]]( The Library / What stands here )</Means> name the books
                 that stand directly under it, and its table of contents is a <Word><Emphasis />Table</Word>: a
                 catalogue with a row for every book and a link to that book's own synopsis, so the library never
-                describes a book in words the book did not write; a row of that shape is what the compiler requires
-                of a catalogue. Its chapter <Means>$[[ Of Libby ]]( The Library / Of Libby )</Means> is my own synopsis,
+                describes a book in words the book did not write. What the compiler requires of the table is less
+                and firmer: a link to every book that stands under it, and a link to every chapter of its own, the
+                table among them. Its chapter <Means>$[[ Of Libby ]]( The Library / Of Libby )</Means> is my own synopsis,
                 imported: a catalogue's chapter is a synopsis of another book, and the catalogue may print it or import
                 it. The Synopsis keeps my chapter off that page, gives the library's chapter its parts under its own
                 title, and sends that title to this book, as a synopsis's title goes to the book it is a synopsis of.
@@ -31,11 +32,11 @@ export default () => (
                 so one chapter shows at a time and the catchword turns the page in
                 place; its <Means>$[[ one chapter ]]( Some Projects / The Work )</Means> names nothing, which is a thing a chapter is
                 allowed to do. So its route shows the cover and the work's route shows the work, one page at a time,
-                stood in the book's own class as the theme is. Its table of contents is not written but drawn, from
-                what its chapters mention: a section beside the table, in a file accompanying it, writes an entry for
-                each mention the book's table answers, the first three parenthetical, since every book's first three
-                chapters are its cover, its synopsis and its table. A chapter added to the book is listed at the next
-                draw, with no edit to the table. The other four books hand-write theirs.
+                stood in the book's own class as the theme is. Its table of contents writes its links as every table
+                must, in a paragraph that is not shown, and is drawn besides, from what its chapters mention: a
+                section beside the table, in a file accompanying it, writes an entry for each mention the book's
+                table answers after the first three, since every book's first three chapters are its cover, its
+                synopsis and its table. The other books show the links they write.
             </Paragraph>
         </Section>
         <Section>

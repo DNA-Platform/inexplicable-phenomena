@@ -1,12 +1,11 @@
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Section, $TableOfContents, $Title, Paragraph as paragraph, Parenthetical as parenthetical, Reference as reference, Word as word } from '@dna-platform/public';
+import { $Section, $TableOfContents, $Title, Paragraph as paragraph, Reference as reference, Word as word } from '@dna-platform/public';
 
 export class $Entries extends $Section {
     override write(): ReactNode {
         const contents = this.book?.table?.annotations.expressed($TableOfContents)?.contents ?? [];
         const Paragraph = $(paragraph);
-        const Parenthetical = $(parenthetical);
         const Reference = $(reference);
         const Word = $(word);
         const entry = (mention: (typeof contents)[number], index: number): ReactNode => (
@@ -16,10 +15,6 @@ export class $Entries extends $Section {
             <>
                 {super.write()}
                 {contents.slice(3).map((mention, index) => <Paragraph key={index}>{entry(mention, index)}</Paragraph>)}
-                <Paragraph>
-                    <Parenthetical />
-                    {contents.slice(0, 3).map(entry)}
-                </Paragraph>
             </>
         );
     }

@@ -82,11 +82,19 @@ describe('the test library, read', () => {
     // A TABLE IS READ OFF THE NOTATION AND OFF NO ELEMENT — Doug, 2026-09-25: "You don't need the
     // compiler to check for anything. You can't! They might subclass them. That's why they are in
     // special files." A chapter is listed by a reference to it, a book by the answer the table gives.
-    it('reads a table\'s listings: its chapters by reference, and a book it catalogues by its answer, with its synopsis', () => {
+    it('reads a table\'s listings: its chapters by reference, and a book it catalogues by its answer', () => {
         const listings = [...(made.lists.get('libby')?.values() ?? [])];
         expect(listings.filter(l => l.kind === 'chapter').map(l => l.of).sort())
             .toEqual(['libby/.synopsis.tsx', 'libby/.table.tsx', 'libby/1-who-i-am.tsx', 'libby/2-the-books-i-keep.tsx', 'libby/3-writing-a-theme.tsx']);
-        expect(listings.filter(l => l.kind === 'book')).toMatchObject([{ of: 'persona', canonical: true, synopsis: true }]);
+        expect(listings.filter(l => l.kind === 'book')).toMatchObject([{ of: 'persona', canonical: true }]);
+    });
+
+    // EVERY TABLE OF THE TEST LIBRARY IS ITS BOOK'S LINK AGGREGATOR — Sprint 99: each refers to every
+    // chapter of its book, itself among them, the one that is drawn as well as the five that are shown.
+    it('finds every chapter of every book listed in that book\'s own table', () => {
+        const chapters = [...made.spots.values()].filter(spot => spot.kind === 'chapter');
+        expect(chapters.length).toBeGreaterThan(20);
+        expect(chapters.filter(spot => made.lists.get(spot.book)?.has(spot.id) !== true).map(spot => spot.id)).toEqual([]);
     });
 });
 

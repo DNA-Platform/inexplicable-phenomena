@@ -27,7 +27,7 @@ export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapt
 export type Half = { by: SpotId; end: End; at: Where };
 export type Edge = { relation: Relation; from: SpotId; to: SpotId; ends: Half[] };
 export type Naming = { spot: SpotId; at: Where };
-export type Listing = { of: SpotId; kind: 'chapter' | 'book'; canonical: boolean; synopsis: boolean; at: Where };
+export type Listing = { of: SpotId; kind: 'chapter' | 'book'; canonical: boolean; at: Where };
 
 // EVERY PLACE THE LIBRARY NAMES SOMETHING AND MEANS IT: a reference, `$[[ X ]]`, wherever it is written,
 // or an edge whose other end the library does not hold. Since Sprint 82 nothing is read off an
@@ -338,22 +338,18 @@ export const structure = (found: Library): Structure => {
     // A TABLE LISTS WHAT IT REFERS TO AND ANSWERS FOR, read off the notation in `.table.tsx` and off
     // no element: a chapter of its own book is listed by a reference to it, `$[[ ./The Shelves ]]`, and a
     // book it catalogues by its answer, `[[ The Log ]]**`, canonical when that answer is a subject's.
-    //
-    // AND A TABLE THAT ANSWERS FOR A BOOK REFERS TO THAT BOOK'S OWN SYNOPSIS — Doug, 2026-09-19: "the
-    // table needs links to its chapters and the books that those chapters are synopses of"; and
-    // 2026-09-20: "In the book. It has a .synopsis file literally." Read per table, since the row an
-    // element once drew is a runtime's business and the compiler reads no tag.
+    // Doug, 2026-09-19: "the table needs links to its chapters and the books that those chapters are
+    // synopses of." Read per table, since the row an element once drew is a runtime's business and
+    // the compiler reads no tag.
     const lists = new Map<SpotId, Map<SpotId, Listing>>();
     for (const one of read) {
         if (one.resource || one.file !== '.table.tsx') continue;
         const listings = new Map<SpotId, Listing>();
-        const referredHere = new Set<SpotId>();
         for (const referring of one.reading.references) {
             const spot = reaches(referring.name, one.book.folder);
             if (spot === undefined || spot === one.book.folder) continue;
-            referredHere.add(spot);
             if (spots.get(spot)?.kind === 'chapter' && spots.get(spot)?.book === one.book.folder)
-                listings.set(spot, { of: spot, kind: 'chapter', canonical: false, synopsis: false, at: { file: one.path, line: referring.line } });
+                listings.set(spot, { of: spot, kind: 'chapter', canonical: false, at: { file: one.path, line: referring.line } });
         }
         for (const said of one.reading.annotations) {
             if (said.form.is !== 'edge' || said.form.end !== 'source') continue;
@@ -363,7 +359,6 @@ export const structure = (found: Library): Structure => {
                 of: spot,
                 kind: 'book',
                 canonical: said.form.relation === 'subject',
-                synopsis: referredHere.has(`${spot}/.synopsis.tsx`),
                 at: { file: one.path, line: said.line },
             });
         }

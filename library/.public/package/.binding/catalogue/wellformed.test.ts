@@ -90,9 +90,9 @@ const built = (books: Made[]): Library => {
                 resources.set(file, [{ file: beside, identifier: one.appendix.slice(0, dot), type: one.appendix.slice(dot) }]);
             }
         });
-        // A TABLE REFERS TO EVERY CHAPTER OF ITS BOOK AND ANSWERS FOR WHAT IT CATALOGUES, referring
-        // beside each answer to that book's own synopsis — Doug, 2026-09-20: "In the book. It has a
-        // .synopsis file literally."
+        // A TABLE REFERS TO EVERY CHAPTER OF ITS BOOK AND ANSWERS FOR WHAT IT CATALOGUES — the two things
+        // the compiler asks of it. Beside each answer it refers to that book's own synopsis unless a case
+        // says not, as a catalogue may and as the compiler asked until Sprint 99.
         const listed = one.lists ?? [one.name, 'Synopsis', 'Table of Contents', ...(one.chapters ?? [])];
         writeFileSync(join(path, '.table.tsx'), page([
             '<TableOfContents />',
@@ -267,14 +267,6 @@ describe('the catalogue', () => {
         expect(faultsOf(books)).toEqual([faults.duplicateTitle, faults.duplicateTitle]);
     });
 
-    // Doug, 2026-09-19: "the table needs links to its chapters and the books that those chapters
-    // are synopses of."
-    it('raises a table that answers for a book without referring to its synopsis', () => {
-        const books = whole();
-        books[0].synopsised = false;
-
-        expect(faultsOf(books)).toEqual([faults.noSynopsis, faults.noSynopsis, faults.noSynopsis]);
-    });
 
     // Doug, 2026-09-20: "it should also refuse when nothing references a mention in the whole
     // library. It is unnecessary in that case and we want a compact library."
@@ -285,20 +277,130 @@ describe('the catalogue', () => {
         expect(faultsOf(books)).toEqual([faults.unreferencedMention]);
     });
 
-    // A table need not refer to every chapter since 2026-09-26: a title gives each its address, and a
-    // table may be drawn from what the chapters mention.
-    it('raises nothing for a chapter its own book\'s table does not refer to', () => {
-        const books = whole();
-        books[2].lists = ['Some Projects', 'Table of Contents'];
-
-        expect(faultsOf(books)).toEqual([]);
-    });
-
     it('raises a table that lists what its book does not hold, as a reference to nothing', () => {
         const books = whole();
         books[2].lists = ['Some Projects', 'Synopsis', 'Table of Contents', 'Nowhere'];
 
         expect(faultsOf(books)).toEqual([faults.unknownReference]);
+    });
+});
+
+// THE TABLE OF CONTENTS IS THE LINK AGGREGATOR — Doug, 2026-10-05: "The table needs to refer to all
+// chapters including itself. Might as well be there, though frequently it will be placed in some
+// interesting place. And it should refer to all books." And of how it is checked: "We can't have the
+// binder validate TSX. It uses its templating language to validate, and the writer can use that
+// anywhere." Each case is the library whole with one link taken out of one table.
+describe('a table of contents, the link aggregator', () => {
+    it('holds when every table refers to every chapter of its book and answers for every book of its subject', () => {
+        const books = whole();
+        books[2].chapters = ['The Work'];
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    it('raises a table that leaves out a chapter of its own book, naming the chapter and the reference it owes', () => {
+        const books = whole();
+        books[2].chapters = ['The Work'];
+        books[2].lists = ['Some Projects', 'Synopsis', 'Table of Contents'];
+
+        const said = wellformed(structure(built(books)));
+        expect(said.map(fault => fault.fault)).toEqual([faults.chapterNotListed]);
+        expect(said[0].says).toContain('"The Work" is a chapter of "Some Projects" and its table of contents does not refer to it');
+        expect(said[0].says).toContain('$[[ ./The Work ]]');
+        expect(said[0].file).toMatch(/\.table\.tsx$/u);
+    });
+
+    it('raises a table that leaves out its book\'s synopsis', () => {
+        const books = whole();
+        books[2].lists = ['Some Projects', 'Table of Contents'];
+
+        expect(faultsOf(books)).toEqual([faults.chapterNotListed]);
+    });
+
+    it('raises a table that leaves out itself', () => {
+        const books = whole();
+        books[2].lists = ['Some Projects', 'Synopsis'];
+
+        expect(faultsOf(books)).toEqual([faults.chapterNotListed]);
+    });
+
+    it('does not ask a table to refer to its own book, which its cover names', () => {
+        const books = whole();
+        books[2].lists = ['Synopsis', 'Table of Contents'];
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    it('counts a link where it is written in the table, and not one written in a chapter', () => {
+        const books = whole();
+        books[2].chapters = ['The Work'];
+        books[2].inserts = ['$[[ ./Synopsis ]]'];
+        books[2].lists = ['Some Projects', 'Table of Contents', 'The Work'];
+
+        expect(faultsOf(books)).toEqual([faults.chapterNotListed]);
+    });
+
+    it('reads the chapters by their title forms, whatever element a library titles them in', () => {
+        const titled = whole();
+        titled[2].titledIn = 'MyTitle';
+        titled[2].chapters = ['The Work'];
+        expect(faultsOf(titled)).toEqual([]);
+
+        const left = whole();
+        left[2].titledIn = 'MyTitle';
+        left[2].chapters = ['The Work'];
+        left[2].lists = ['Some Projects', 'Synopsis', 'Table of Contents'];
+        expect(faultsOf(left)).toEqual([faults.chapterNotListed]);
+    });
+
+    it('does not ask for a place named in a chapter, since a place is not a chapter', () => {
+        const books = whole();
+        books[2].anchors = ['A Shelf'];
+        books[2].chapters = ['The Work'];
+        books[2].inserts = ['$[[ ./A Shelf ]]'];
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    it('raises a catalogue\'s table that leaves out a book of its subject, naming the book and the answer it owes', () => {
+        const books = whole();
+        books[0].holds = ['[[ A Log ]]**', '[[ A Paper ]]**'];
+
+        const said = wellformed(structure(built(books)));
+        expect(said.map(fault => fault.fault)).toEqual([faults.notListed]);
+        expect(said[0].says).toContain('"Some Projects" says its catalogue is "A Library"');
+        expect(said[0].says).toContain('[[ Some Projects ]]**');
+    });
+
+    it('raises an answer for a book that is written anywhere but the table', () => {
+        const books = whole();
+        books[0].holds = ['[[ A Log ]]**', '[[ A Paper ]]**'];
+        books[0].topics = ['[[ Some Projects ]]**'];
+
+        expect(faultsOf(books)).toEqual([faults.notInTheTable]);
+    });
+
+    // THE SYNOPSIS RULE WENT WITH SPRINT 99 — Doug, 2026-10-05: "The synopsis rule can go if the chapter
+    // rule is there right because the synopsis will have to be there?" It will: every book holds a
+    // synopsis, and its own table refers to it. So a catalogue's row may be a link and nothing more.
+    it('asks a catalogue\'s table for a link to each book and for nothing into it', () => {
+        const books = whole();
+        books[0].synopsised = false;
+        books[1].synopsised = false;
+
+        expect(faultsOf(books)).toEqual([]);
+        expect(Object.values(faults)).not.toContain('NO-SYNOPSIS');
+        expect(Object.values(faults)).toHaveLength(24);
+    });
+
+    it('asks a topical catalogue for the same and no more', () => {
+        const books = whole();
+        books[4].topics = ['***[[ Some Projects ]]'];
+        books[2].about = true;
+        books[2].holds = ['[[ A Paper ]]***'];
+        books[2].synopsised = false;
+
+        expect(faultsOf(books)).toEqual([]);
     });
 });
 
