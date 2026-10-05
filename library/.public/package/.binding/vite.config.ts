@@ -1,10 +1,11 @@
 import { searchForWorkspaceRoot, type ConfigEnv, type UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { existsSync, readFileSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configure } from './configuration/configuration';
 import { template } from './rendering/page';
+import { imageTypes } from './inventory/filenames';
 import { retaking, retakes } from './inventory/retaken';
 import { holding } from './catalogue/holds';
 import { references } from './reference/transform';
@@ -63,6 +64,27 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
                     response.statusCode = 301;
                     response.setHeader('Location', `${path}/`);
                     response.end();
+                });
+            },
+        },
+        // A PICTURE BESIDE A CHAPTER, ANSWERED LIVE AT THE ADDRESS THE BIND COPIES IT TO. A literal
+        // naming a picture is written as `/<folder>/<file>`, and only the batch's render puts a file
+        // there; the dev server answered that address with the page, so an Image was empty until a
+        // bind — measured 2026-10-05 on Doug's design book, fifty photographs. Doug: "Yes, apply and
+        // test it." The library is asked at each request, so a picture added while the server is open
+        // is answered for.
+        {
+            name: 'binding:pictures',
+            configureServer: server => {
+                server.middlewares.use((request, response, next) => {
+                    const asked = decodeURIComponent((request.url ?? '').split('?')[0]);
+                    for (const book of held.library().books)
+                        for (const one of [...book.resources.values()].flat())
+                            if (imageTypes.includes(one.type) && asked === `/${book.folder}/${one.file}`) {
+                                response.setHeader('Content-Type', one.type === '.png' ? 'image/png' : 'image/jpeg');
+                                return void createReadStream(join(book.path, one.file)).pipe(response);
+                            }
+                    next();
                 });
             },
         },
