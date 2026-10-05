@@ -46,7 +46,7 @@ const timed = <T,>(said: string, run: () => T): T => {
 
 describe(`the catalogue over ${6 + scale} real books`, () => {
     it('is still a library, and every reference in it still resolves', () => {
-        duplicated(galley, { of: 'paper', name: 'A Paper', subject: 'the-library' }, scale);
+        duplicated(galley, { of: 'paper', name: 'A Paper', subject: 'library' }, scale);
         const chosen = configure(galley.binding);
 
         for (const pass of ['cold', 'warm']) {

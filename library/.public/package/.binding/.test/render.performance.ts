@@ -9,21 +9,25 @@ import { bound, duplicated, pulled } from './galleys';
 // chose once on one machine. What is asserted is that the bind finishes and reports every phase.
 // Run with SCALE=<n> to size it; the default is small enough to run without thinking about it.
 const scale = Number(process.env.SCALE ?? 20);
+// THE TEST LIBRARY'S SIX BOOKS AND THE COPIES, and a page for each with one more for the root.
+const books = 6 + scale;
+const pages = books + 1;
 const galley = pulled();
 afterAll(() => { galley.remove(); });
 
-describe(`a bind of ${5 + scale} real books`, () => {
+describe(`a bind of ${books} real books`, () => {
     it('finishes, and says what each phase cost', () => {
-        duplicated(galley, { of: 'paper', name: 'A Paper', subject: 'the-library' }, scale);
+        duplicated(galley, { of: 'paper', name: 'A Paper', subject: 'library' }, scale);
         const at = performance.now();
         const said = bound(galley);
         const whole = performance.now() - at;
 
         const phases = [...said.matchAll(/^(\w+)\s+.*\((\d+\.\d)s\)$/gmu)].map(one => ({ phase: one[1], seconds: Number(one[2]) }));
-        console.log(`\n${5 + scale} books, ${whole > 1000 ? `${(whole / 1000).toFixed(1)}s` : `${whole.toFixed(0)}ms`} in all`);
+        console.log(`\n${books} books, ${whole > 1000 ? `${(whole / 1000).toFixed(1)}s` : `${whole.toFixed(0)}ms`} in all`);
         for (const one of phases) console.log(`   ${one.phase.padEnd(12)} ${one.seconds.toFixed(1).padStart(6)}s`);
         const render = phases.find(one => one.phase === 'render');
-        if (render !== undefined) console.log(`   ${'per page'.padEnd(12)} ${(render.seconds / (5 + scale + 1)).toFixed(2).padStart(6)}s   (${5 + scale + 1} pages, in parallel)`);
+        if (render !== undefined) console.log(`   ${'per page'.padEnd(12)} ${(render.seconds / pages).toFixed(2).padStart(6)}s   (${pages} pages, one server)`);
+        expect(said).toMatch(new RegExp(`^resolve .*${books} books|^inventory +${books} books`, 'mu'));
 
         expect(said).toMatch(/^bound /mu);
         expect(phases.map(one => one.phase)).toContain('render');

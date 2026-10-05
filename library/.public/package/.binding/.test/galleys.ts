@@ -122,8 +122,8 @@ export const duplicated = (galley: Galley, copies: Copies, count: number): strin
         writeFileSync(table, lines.join('\n'));
     };
 
-    // A CATALOGUE'S ROW ANSWERS FOR A BOOK AND REFERS TO ITS SYNOPSIS — the shape
-    // `catalogue/wellformed.ts` requires of every catalogued book.
+    // A CATALOGUE'S ROW ANSWERS FOR A BOOK, which `catalogue/wellformed.ts` requires of every
+    // catalogued book, AND REFERS TO ITS SYNOPSIS, as the test library's own rows do.
     const row = (name: string): string => `            <Paragraph><Word><Content>[[ ${name} ]]**</Content></Word> <Word><Content>$[[ ${name} / Synopsis ]]</Content></Word></Paragraph>`;
     const rows: string[] = [];
     for (let k = 1; k <= count; k++) {
