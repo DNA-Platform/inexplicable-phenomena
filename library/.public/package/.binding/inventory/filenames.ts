@@ -25,8 +25,13 @@ export const apparatus = ['.book.tsx', ...dotChapters];
 // unless it accompanies another — its name being another chapter's name, a character, and more —
 // which `accountOfFiles` decides with every candidate in hand; and a .tsx accompanying a chapter
 // always carries an identifier, since the name alone would be the chapter's.
+//
+// AND AN APPENDIX CHAPTER IS NUMBERED UNDER A BIG DOT. Doug, 2026-10-06: "this 90 prefix pattern
+// isn't working for me. We are going to prefix with o, like a big dot… You can do o1, o2, o3... and
+// even oo1 oo2 oo3... if needed" — so `o1-the-sheet.tsx` is a chapter bound after every numbered one,
+// and `oo1-…` after every `o`.
 export const isChapter = (file: string): boolean =>
-    /^\d/u.test(file) && file.endsWith('.tsx');
+    /^o*\d/u.test(file) && file.endsWith('.tsx');
 
 // WHETHER A FILE'S BASE ACCOMPANIES A WRITING'S NAME: the same name, or the name, one character and
 // at least what `least` asks — nothing for an ordinary file, one character for a .tsx that must not
@@ -72,8 +77,12 @@ export const withoutFinalExtension = (file: string): string => file.replace(/\.[
 
 // THE ORDER CHAPTERS ARE BOUND IN, which is their number and not their spelling. A book may number
 // its chapters 1, 2, 3 or 1.1, 1.2, 2 — so the comparison is a walk down two lists of numbers rather
-// than a string comparison that would put 10 before 2.
-const numbered = (file: string): number[] => file.split('-')[0].split('.').map(Number);
+// than a string comparison that would put 10 before 2. The big dots come first in the list, as a
+// count, so every `o` chapter follows every numbered one and every `oo` follows every `o`.
+const numbered = (file: string): number[] => {
+    const [, dots, rest] = /^(o*)([^-]*)/u.exec(file)!;
+    return [dots.length, ...rest.split('.').map(Number)];
+};
 
 export const before = (one: string, two: string): number => {
     const first = numbered(one);

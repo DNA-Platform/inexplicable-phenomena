@@ -18,6 +18,7 @@ describe('the account of a book\'s files', () => {
         '6-the-ledger.tsx', '6-the-ledger.tsx.tsx',
         '7-the-domain.tsx', '7-the-domain.id.tsx', '7-the-domain-id.tsx',
         'plate.tsx', '5-the-plate.bak', '5-the-plate.d.ts',
+        'oo1-the-notes.tsx', 'o2-the-camera.tsx', 'o1-the-sheet.tsx', 'o1-the-sheet~code.tsx', '10-the-last.tsx',
     ];
 
     beforeAll(() => {
@@ -28,8 +29,18 @@ describe('the account of a book\'s files', () => {
 
     it('tells a chapter from a numbered file that accompanies one, whatever character separates them', () => {
         const { chapters } = accountOfFiles(folder);
-        expect(chapters).toEqual(['.cover.tsx', '.synopsis.tsx', '.table.tsx', '5-the-plate.tsx', '6-the-ledger.tsx', '7-the-domain.tsx']);
+        expect(chapters).toEqual(['.cover.tsx', '.synopsis.tsx', '.table.tsx', '5-the-plate.tsx', '6-the-ledger.tsx', '7-the-domain.tsx', '10-the-last.tsx', 'o1-the-sheet.tsx', 'o2-the-camera.tsx', 'oo1-the-notes.tsx']);
         expect(isChapter('5-the-plate-figures.tsx')).toBe(true);
+    });
+
+    // AN APPENDIX CHAPTER IS NUMBERED UNDER A BIG DOT — Doug, 2026-10-06: "We are going to prefix with o,
+    // like a big dot… o1, o2, o3... and even oo1 oo2 oo3... if needed." Bound after every numbered
+    // chapter, each `oo` after every `o`, and a file beside one accompanies it as beside any chapter.
+    it('binds an o-numbered chapter after every numbered one, oo after o, and reads the file beside it', () => {
+        const { chapters, resources } = accountOfFiles(folder);
+        expect(chapters.indexOf('o1-the-sheet.tsx')).toBeGreaterThan(chapters.indexOf('10-the-last.tsx'));
+        expect(chapters.indexOf('oo1-the-notes.tsx')).toBeGreaterThan(chapters.indexOf('o2-the-camera.tsx'));
+        expect(resources.get('o1-the-sheet.tsx')?.map(one => one.identifier)).toEqual(['code']);
     });
 
     it('gives each accompanying file its identifier and its type: empty for the name alone, the rest after one character otherwise', () => {
