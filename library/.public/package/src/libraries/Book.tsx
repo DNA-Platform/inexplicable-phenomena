@@ -16,7 +16,7 @@ export class $Book extends $Composition {
     set $bookmark(value: string | undefined) {
         if (value === this._bookmark) return;
         this._bookmark = value;
-        this.turn();
+        void this[next]('mount').then(() => this[next]('layout')).then(() => this.turn());
     }
     get cover(): $Chapter | undefined { return this.canonical; }
     get table(): $Chapter | undefined { return this.text.find($Chapter).find(chapter => chapter.is($TableOfContents)); }
@@ -47,7 +47,6 @@ export class $Book extends $Composition {
     $Book(...chemicals: $Chemical[]) {
         this.$Writing(...chemicals);
         this.$Bound();
-        void this[next]('mount').then(() => this.turn());
     }
 
     protected override $Define(): void {

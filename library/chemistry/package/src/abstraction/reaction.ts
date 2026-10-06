@@ -47,7 +47,9 @@ export class $Reaction {
         if (chemical[$phase$] === 'unmount') return;
         if (chemical[$rendering$]) return;
         const update = chemical[$update$];
-        if (update) update();
+        if (!update) return;
+        if (chemical[$phase$] === 'effect') chemical[$phase$] = 'render';
+        update();
     }
 
     add(chemical: $Particle) {

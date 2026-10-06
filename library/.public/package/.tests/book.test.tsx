@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { ReactNode } from 'react';
-import { $ } from '@dna-platform/chemistry';
+import { $, next } from '@dna-platform/chemistry';
 import { $Annotation, $Section, Section, Heading, $Paragraph, Paragraph, Strict, Closed, $Theme } from '@dna-platform/public';
-import { $Book, Book, BookSpecification, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, Author, Subject } from '@dna-platform/public';
+import { $Book, Book, BookSpecification, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, Author, Subject, Paginated } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 
@@ -159,11 +159,50 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
         await act(async () => { render(<Drawn />); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(turned.mock.calls).toEqual([['the-argument']]);
-        act(() => { book.$bookmark = '/a-paper/'; });
+        // THE TURN COMES AFTER THE DRAW since Sprint 101's U9, so a move is waited on before it is counted.
+        await act(async () => { book.$bookmark = '/a-paper/'; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(turned.mock.calls).toEqual([['the-argument'], ['a-paper']]);
-        act(() => { book.$bookmark = '/a-paper/'; });
-        act(() => { book.$bookmark = '/elsewhere/'; });
+        await act(async () => { book.$bookmark = '/a-paper/'; });
+        await act(async () => { book.$bookmark = '/elsewhere/'; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
         expect(turned.mock.calls).toHaveLength(2);
+    });
+
+    // Doug, 2026-10-06: "we don't always want the router to scroll… we should be able to support many different ways
+    // of showing chapters and not all of them would scroll." So the router only says where, and the book goes there
+    // after it has drawn: a paged book turns to a chapter whose page is already open.
+    it('a paged book told a new bookmark turns only once the page it names is open', async () => {
+        const turned: [string, boolean][] = [];
+        Element.prototype.scrollIntoView = function (this: Element) { turned.push([this.querySelector('.pd-title')?.id ?? this.id, this.classList.contains('pa-open')]); };
+        const book = built<$Book>(<Book bookmark="/a-paper/the-argument/"><Paginated />{APaper()}{WhatItArgues()}{WhereThingsAre()}{TheArgument()}</Book>);
+        const Drawn = $(book);
+        await act(async () => { render(<Drawn />); });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        await act(async () => { book.$bookmark = '/a-paper/'; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(turned).toEqual([['the-argument', true], ['a-paper', true]]);
+    });
+
+    it('a chemical just written to answers next(\'layout\') after its redraw, not before', async () => {
+        class $Saying extends $Paragraph {
+            said = 'before';
+
+            override write(): ReactNode { return this.said; }
+        }
+        const Saying = $($Saying);
+        const saying = built<$Saying>(<Saying />);
+        const Drawn = $(saying);
+        let page: HTMLElement | undefined;
+        await act(async () => { page = render(<Drawn />).container; });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        let seen = '';
+        await act(async () => {
+            saying.said = 'after';
+            void saying[next]('layout').then(() => { seen = page!.textContent ?? ''; });
+        });
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
+        expect(seen).toBe('after');
     });
 
     it('a chapter that does not specify makes the book say so, coded to that chapter', () => {

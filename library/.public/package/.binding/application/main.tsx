@@ -21,8 +21,9 @@ if (!probing && !route) throw new Error(`no book stands at ${path}, and no book 
 
 // THE BOOKMARK IS THE PLACE THE PAGE IS OPEN AT — the url the compiler wrote into a chapter's title,
 // `/book/#chapter` since Sprint 95's D1, so the book finds the chapter by equality and turns to it; a
-// fragment naming a mention or a heading, which no chapter's title means, leaves the book where it is
-// and the landing is the router's. Doug, 2026-09-26: "it is the place where the user is (recently was)
+// fragment naming a mention or a heading, which no chapter's title means, leaves the book where it is;
+// the router scrolls nothing — since Sprint 101's U9 the book goes where the bookmark says after it has
+// drawn, in whatever way it shows chapters. Doug, 2026-09-26: "it is the place where the user is (recently was)
 // and it is a record of him being there."
 const bookmarkOf = (url: { pathname: string; hash: string }): string => `${url.pathname.replace(/\/+$/u, '')}/${url.hash}`;
 
@@ -73,8 +74,8 @@ if (!served) drawing.render(drawn(Opened));
 
 // THE ROUTER. Doug, 2026-09-26: "Everything needs to go through the router"; "Long distance urls to
 // that which was mentioned also must work." A link within the book is a move the app takes in place:
-// the book's bookmark is set, which paints nothing — the book turns to the chapter, and the router
-// lands on the fragment. Since Sprint 95's D1 every chapter is a fragment of the one page, so a link
+// the book's bookmark is set, which paints nothing — the book turns to the chapter once it has drawn,
+// and the router lands nowhere. Since Sprint 95's D1 every chapter is a fragment of the one page, so a link
 // to one is the browser's own move, taken up on `popstate`; a link to the book's own address is pushed
 // here. A link to another book, or anywhere else, is left to the browser, which loads that page, whose
 // own router completes the landing — the URL is the only thing that passes between pages. Back and
@@ -85,7 +86,6 @@ const within = (url: URL): boolean =>
 const visit = (): void => {
     if (book === undefined || bookmarkOf(location) === book.$bookmark) return;
     book.$bookmark = bookmarkOf(location);
-    if (location.hash !== '') document.getElementById(location.hash.slice(1))?.scrollIntoView();
 };
 mount.addEventListener('click', event => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
