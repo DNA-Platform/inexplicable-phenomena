@@ -482,6 +482,40 @@ describe('the bound test library, seen in a real browser', () => {
         await paper.close();
     });
 
+    // A TURN COSTS ONE CLASS, NEVER A DRAW. Doug: "a change costs one paint; green without render counts is not
+    // green." Sprint 101 found every switch in his library replacing the whole book — a Format put in front
+    // through $is is a container, and a new container remounts everything under it — and nobody had counted.
+    // So the nodes are held before the turn and asked for after it: the book, its nav, every chapter, all still
+    // in the document, the open mark moved from the work to the table by its catchword, and nothing else redrawn.
+    it('turns within the book keeping every node it held: the book, the nav and each chapter stay, and the open mark alone moves', async () => {
+        const projects = await browser!.newPage();
+        await projects.goto(new URL('/some-projects/#the-work', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await projects.waitForSelector('.pa-open a[href="/some-projects/#table-of-contents"]');
+        await projects.evaluate(() => {
+            const held = [document.querySelector('.pd-book'), document.querySelector('nav'), ...document.querySelectorAll('.pd-chapter')];
+            (window as unknown as { held: (Element | null)[] }).held = held;
+            (window as unknown as { openBefore: string }).openBefore = document.querySelector('.pd-chapter.pa-open .pd-title')?.id ?? '';
+        });
+        await projects.click('.pa-open a[href="/some-projects/#table-of-contents"]');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const after = await projects.evaluate(() => {
+            const held = (window as unknown as { held: (Element | null)[] }).held;
+            return {
+                count: held.length,
+                kept: held.filter(node => node !== null && document.contains(node)).length,
+                openBefore: (window as unknown as { openBefore: string }).openBefore,
+                openAfter: document.querySelector('.pd-chapter.pa-open .pd-title')?.id ?? '',
+                chapters: document.querySelectorAll('.pd-chapter').length,
+            };
+        });
+        expect(after.count).toBeGreaterThan(2);
+        expect(after.kept, 'a node held before the turn left the document').toBe(after.count);
+        expect(after.chapters).toBe(after.count - 2);
+        expect(after.openBefore).toBe('the-work');
+        expect(after.openAfter).toBe('table-of-contents');
+        await projects.close();
+    });
+
     // "Long distance urls to that which was mentioned also must work." A link to another book is the browser's
     // to follow; that page's own router lands on the heading once its book has drawn.
     it('follows a long-distance link to another book\'s heading: that page loads, turned to the heading', async () => {
