@@ -7,16 +7,17 @@ import {
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
-    $renderView$, $views$, $draw$, looks, style, inline, selector, styled, next
+    $renderView$, $views$, $draw$, looks, style, inline, selector, styled, next,
+    $dirty$, $drawn$, $skipped$, $settled$
 } from "../implementation/symbols";
 import { compile, given, styledFor, providing } from "./styled";
 import { $handed$, $recall$, $defaults$, theme } from "../implementation/symbols";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
-import { diff } from "../implementation/reconcile";
+import { diff, equivalent } from "../implementation/reconcile";
 import { augment, assigned, unassign } from "../implementation/augment";
 import { $assigned$, $facade$ } from "../implementation/symbols";
 import { dev, renderError, renderException } from "../implementation/dev";
-import { withAsker } from "../implementation/scope";
+import { withAsker, forgetReads } from "../implementation/scope";
 import { hydration } from "../implementation/hydration";
 import { $Reaction } from "./reaction";
 import { $Molecule } from "./molecule";
@@ -489,7 +490,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             }
         }
         const [, setToken] = useState(0);
-        p[$update$] = () => setToken((t: number) => t + 1);
+        p[$update$] = () => { p[$dirty$] = true; setToken((t: number) => t + 1); };
         p[$handed$] = useContext(ThemeContext);
         const react = () => p[$reaction$]?.react();
         useEffect(() => {
@@ -516,6 +517,9 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
                 }
             }
             return () => {
+                p[$drawn$] = undefined;
+                p[$settled$] = false;
+                forgetReads(p);
                 p[$resolve$]('unmount');
                 if (p[$facade$] === undefined) unassign(p.$on, p);
                 if (direct) {
@@ -535,7 +539,13 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         });
         useEffect(() => {
             p[$resolve$]('effect');
+            // ONE SETTLE PASS PER MOUNT, AND ONE PER REAL DRAW: it threads lineage and
+            // resolves types the render could not; a render answered from the last
+            // draw has nothing new to settle.
+            if (p[$skipped$] && p[$settled$]) return;
+            p[$settled$] = true;
             p[$rendering$] = true;
+            forgetReads(p);
             const current = augment(withAsker(p, () => p[$renderView$](), true), react, p, false);
             p[$rendering$] = false;
             if (diff(current, p[$viewCache$])) {
@@ -543,6 +553,18 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
                 p[$update$]!();
             }
         });
+        // A CHEMICAL DRAWS WHEN ITS OWN STATE, ITS PROPS, ITS THEME, OR A CHEMICAL IT
+        // READ WHILE DRAWING CHANGED — and otherwise answers what it drew last, so a
+        // parent's redraw is not its children's: React bails out on the same elements.
+        const drawn = p[$drawn$];
+        if (drawn && !p[$dirty$] && drawn.handed === p[$handed$] && equivalent(props ?? {}, drawn.props ?? {})) {
+            p[$skipped$] = true;
+            return p[$viewCache$];
+        }
+        p[$skipped$] = false;
+        p[$dirty$] = false;
+        forgetReads(p);
+        try {
         p[$rendering$] = true;
         p[$apply$](props);
         p[$molecule$]?.reactivate?.();
@@ -558,8 +580,15 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         }
         const output = augment(withAsker(p, () => p[$renderView$](), true), react, p);
         p[$viewCache$] = output;
+        p[$drawn$] = { props, handed: p[$handed$] };
         p[$rendering$] = false;
         return output;
+        } catch (error) {
+            // A DRAW THAT THREW IS DRAWN AGAIN, never answered from the cache: a refusal
+            // has to be raised on the retry too, or React recovers and nobody hears it.
+            p[$dirty$] = true;
+            throw error;
+        }
     };
     (Component as any).$chemical = parent;
     Object.defineProperty(Component, '$', { get: () => parent, configurable: true });

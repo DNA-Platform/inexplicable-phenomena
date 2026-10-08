@@ -1,7 +1,7 @@
 import {
     $cid$, $type$, $backing$, $rendering$, $reaction$, $phase$, $isChemicalBase$, looks
 } from "../implementation/symbols";
-import { currentScope, withScope, diffuse, withAsker } from "../implementation/scope";
+import { currentScope, withScope, diffuse, withAsker, noteRead, wakeReaders } from "../implementation/scope";
 import { hydration } from "../implementation/hydration";
 import { $reinit$, $original$, $represented$ } from "../implementation/symbols";
 import { equivalent, snapshot } from '../implementation/reconcile';
@@ -212,6 +212,7 @@ function activate(chemical: any, property: string, initial: any) {
             // A CHEMICAL IS NOT DIRTY WHILE IT DRAWS: its dirtiness starts after
             // render, so another chemical's scope does not record a read of it.
             if (scope && !this[$rendering$]) scope.recordRead(this, property, value);
+            noteRead(this);
             return value;
         },
         set(value) {
@@ -222,7 +223,9 @@ function activate(chemical: any, property: string, initial: any) {
             // holding what the old one held is not news.
             if (equivalent(store[property], value)) return;
             store[property] = value;
-            if (this[$rendering$]) return;
+            // A WRITE DURING THE CHEMICAL'S OWN DRAW IS CONSTRUCTION, and still news
+            // to whoever read it: a facade follows what it dresses.
+            if (this[$rendering$]) { wakeReaders(this); return; }
             if ((this as any)._persist) hydration.changed(this);
             const scope = currentScope();
             if (scope) {
@@ -247,6 +250,7 @@ function wrap(chemical: any, property: string, getter?: () => any, setter?: (val
         const value = getter?.call(this);
         const scope = currentScope();
         if (scope && !this[$rendering$]) scope.recordRead(this, property, value);
+        noteRead(this);
         return value;
     };
     // The wrapper carries the declared accessor, as an augmented handler carries
@@ -257,7 +261,7 @@ function wrap(chemical: any, property: string, getter?: () => any, setter?: (val
         set: setter && function (this: any, value: any) {
             const before = getter ? snapshot(getter.call(this)) : undefined;
             setter.call(this, value);
-            if (this[$rendering$]) return;
+            if (this[$rendering$]) { wakeReaders(this); return; }
             if (getter && equivalent(getter.call(this), before)) return;
             const scope = currentScope();
             if (scope) {

@@ -84,6 +84,16 @@ export const $isChemicalBase$ = Symbol("$Chemical.isChemicalBase");
 // $renderView$ — internal render entry: $lift calls this instead of view(),
 // so the drawing goes through frame() without disturbing user view() overrides.
 export const $renderView$ = Symbol("$Particle.renderView");
+
+// THE LAST DRAW, AND WHETHER IT STILL STANDS. A chemical draws when its own state,
+// its props, its theme, or a chemical it read while drawing changed; otherwise its
+// component answers what it drew last and React bails out of the subtree.
+export const $dirty$ = Symbol("$Particle.dirty");
+export const $drawn$ = Symbol("$Particle.drawn");
+export const $skipped$ = Symbol("$Particle.skipped");
+export const $settled$ = Symbol("$Particle.settled");
+export const $readers$ = Symbol("$Particle.readers");
+export const $reads$ = Symbol("$Particle.reads");
 export const $draw$ = Symbol("$Particle.draw");
 
 // $views$ — the instance's view dictionary, keyed by position AND by name.

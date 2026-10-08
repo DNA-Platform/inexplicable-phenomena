@@ -1,4 +1,4 @@
-import { $backing$, $reaction$, $rendering$, $$parent$$ } from "./symbols";
+import { $backing$, $reaction$, $rendering$, $$parent$$, $dirty$, $readers$, $reads$ } from "./symbols";
 import { equivalent, snapshot } from "./reconcile";
 
 /**
@@ -70,13 +70,63 @@ export class $Scope {
         }
         for (const chem of dirty) {
             chem[$reaction$]?.react();
+            wakeReaders(chem);
         }
+    }
+}
+
+// READERS. A chemical drawn while reading another is subscribed to it, and a write
+// to that other wakes it: marked dirty, so its next render draws, and reacted — at
+// once when nothing is drawing, on a microtask when something is, since a reader
+// beneath the drawing chemical is visited in the same pass and one elsewhere is not.
+// A reader that is itself drawing is not woken: its dirtiness starts after render,
+// and its settle pass sees what changed under it.
+// The reader is the chemical whose DRAW is in flight — not a reagent of another
+// chemical called from inside it, whose reads are that draw's.
+// A READ IS OF THE ONE READ, never of the template behind it: a derivative reads
+// its template's values through its prototype, and a template write is silent
+// to every derivative, shadowed or unshadowed — the standing promise.
+// THE SETS ARE OWN, never reached through the prototype: a derivative reached
+// its template's readers that way, and one derivative's write woke them all.
+export function noteRead(read: any): void {
+    const drawer = $drawer;
+    if (!drawer || drawer === read) return;
+    own(read, $readers$).add(drawer);
+    own(drawer, $reads$).add(read);
+}
+
+function own(chemical: any, key: symbol): Set<any> {
+    if (!Object.prototype.hasOwnProperty.call(chemical, key)) chemical[key] = new Set();
+    return chemical[key];
+}
+
+function held(chemical: any, key: symbol): Set<any> | undefined {
+    return Object.prototype.hasOwnProperty.call(chemical, key) ? chemical[key] : undefined;
+}
+
+export function forgetReads(drawer: any): void {
+    const reads = held(drawer, $reads$);
+    if (!reads) return;
+    for (const read of reads) held(read, $readers$)?.delete(drawer);
+    reads.clear();
+}
+
+export function wakeReaders(chemical: any): void {
+    const readers = held(chemical, $readers$);
+    if (!readers) return;
+    const later = $drawing || chemical[$rendering$];
+    for (const reader of readers) {
+        if (reader[$rendering$]) continue;
+        reader[$dirty$] = true;
+        if (later) queueMicrotask(() => { if (reader[$dirty$]) reader[$reaction$]?.react(); });
+        else reader[$reaction$]?.react();
     }
 }
 
 // diffuse — propagate a write upward through a chemical's composition tree.
 // Parent chemicals are re-rendered so cross-chemical reads re-evaluate.
 export function diffuse(chemical: any): void {
+    wakeReaders(chemical);
     let current = chemical;
     let parent = current[$$parent$$];
     while (parent && parent !== current) {
@@ -118,6 +168,7 @@ export function withScope<T>(fn: () => T): T {
 // argument.
 let $currentAsker: any = null;
 let $drawing = false;
+let $drawer: any = null;
 
 export function currentAsker(): any {
     return $currentAsker;
@@ -133,12 +184,14 @@ export function drawing(): boolean {
 export function withAsker<T>(asker: any, fn: () => T, draws = false): T {
     const wasAsker = $currentAsker;
     const wasDrawing = $drawing;
+    const wasDrawer = $drawer;
     $currentAsker = asker;
-    if (draws) $drawing = true;
+    if (draws) { $drawing = true; $drawer = asker; }
     try {
         return fn();
     } finally {
         $currentAsker = wasAsker;
         $drawing = wasDrawing;
+        $drawer = wasDrawer;
     }
 }

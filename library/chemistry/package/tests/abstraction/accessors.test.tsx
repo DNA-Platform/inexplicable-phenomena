@@ -38,10 +38,9 @@ describe('a declared get/set is a reactive property', () => {
     it('a prop applied through a declared setter reads back through its getter; and a set through it on a face, where the parent gives no prop, redraws — the template road', async () => {
         let face: $M | undefined;
         class $M extends $Chemical {
-            papers = new Papers();
-            get $mode(): string { return this.papers.is[0] ?? 'none'; }
-            set $mode(mode: string) { this.papers.is = [mode]; }
-            $M() { this.papers = new Papers(); }
+            mode = 'none';
+            get $mode(): string { return this.mode; }
+            set $mode(mode: string) { this.mode = mode; }
             view() { face = this; return <span className="mode">{this.$mode}</span>; }
         }
         const M = $($M);
