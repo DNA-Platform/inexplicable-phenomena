@@ -10,6 +10,8 @@ import {
     $devError$, $devException$, $watched$,
     $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, $recall$, framework, formula, resolve, persist, inline
 } from "../implementation/symbols";
+import { templating } from "../implementation/template";
+import { assign } from "./bond";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
 import { currentAsker, drawing, withAsker } from "../implementation/scope";
@@ -898,7 +900,7 @@ function templateOf(cls: any): any {
     if (Object.prototype.hasOwnProperty.call(cls, $$template$$)) return cls[$$template$$];
     if (typeof cls !== 'function' || seeding.has(cls)) return undefined;
     seeding.add(cls);
-    try { new cls(); } finally { seeding.delete(cls); }
+    try { templating(cls, () => new cls()); } finally { seeding.delete(cls); }
     return Object.prototype.hasOwnProperty.call(cls, $$template$$) ? cls[$$template$$] : undefined;
 }
 
@@ -1248,6 +1250,7 @@ export class $Chemical extends $Particle {
 export function bind<T extends $Chemical>(chemical: T, parent?: $Chemical): Component<T> {
     const template = chemical[$template$];
     const child = Object.create(template) as T;
+    assign(child);
     child[$cid$] = $Particle[$$getNextCid$$]();
     child[$symbol$] = $Particle[$$createSymbol$$](child);
     child[$molecule$] = new $Molecule(child);
@@ -1841,7 +1844,7 @@ class $Chemistry$ extends $Chemical {
                 // template — verify it's actually OF this class.
                 let template = cls[$$template$$];
                 if (!template || !(template instanceof cls)) {
-                    new cls();
+                    templating(cls, () => new cls());
                     template = cls[$$template$$];
                 }
                 return template[$resolveComponent$]();

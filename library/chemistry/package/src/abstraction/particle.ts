@@ -11,9 +11,11 @@ import {
     $dirty$, $drawn$, $skipped$, $settled$
 } from "../implementation/symbols";
 import { compile, given, styledFor, providing } from "./styled";
-import { $handed$, $recall$, $defaults$, theme } from "../implementation/symbols";
+import { $handed$, $recall$, $defaults$, theme, $direct$ } from "../implementation/symbols";
+import { templatingFor } from "../implementation/template";
+import { assign } from "./bond";
 import type { Component, $Component, $Props, $Phase } from "../implementation/types";
-import { diff, equivalent } from "../implementation/reconcile";
+import { diff, equivalent, byIdentity } from "../implementation/reconcile";
 import { augment, assigned, unassign } from "../implementation/augment";
 import { $assigned$, $facade$ } from "../implementation/symbols";
 import { dev, renderError, renderException } from "../implementation/dev";
@@ -120,11 +122,12 @@ export class $Particle {
         this[$molecule$] = new $Molecule(this);
         this[$reaction$] = new $Reaction(this);
 
-        // Template tracking — every instance is its own template by default.
-        // Derivatives via $lift inherit the parent's $template$ via prototype.
+        // THE TEMPLATE IS THE FRAMEWORK'S: only an instance constructed under its
+        // flag, for exactly this class, becomes the class's template. An author's
+        // instance never is, whichever came first. Derivatives via $lift inherit
+        // the parent's $template$ via prototype.
         const $this = this as any;
-        if (!$this[$type$][$$template$$] || !($this[$type$][$$template$$] instanceof $this[$type$]))
-            $this[$type$][$$template$$] = this;
+        if (templatingFor() === $this[$type$]) $this[$type$][$$template$$] = this;
         this[$template$] = this;
 
         if (particular === undefined) return;
@@ -256,17 +259,21 @@ export class $Particle {
         if (!props) return;
         const $this = this as any;
         if ('children' in (props as any)) $this[$children$] = props.children;
-        for (const prop in props) {
-            if (prop === 'children' || prop === 'key' || prop === 'ref') continue;
+        // A PROP'S FUNCTION IS ASSIGNED BY IDENTITY, as the memo compared it: a new
+        // wrapper from the parent's draw is news to the instance, whatever its source.
+        byIdentity(() => {
+            for (const prop in props) {
+                if (prop === 'children' || prop === 'key' || prop === 'ref') continue;
 
-            if (looks.test('$' + prop))
-                throw new Error(
-                    `${$this[$type$]?.name ?? 'a chemical'} was given a ${prop} prop, which would land on ` +
-                    `$${prop} and overwrite a view. Choose which view draws with look.`
-                );
+                if (looks.test('$' + prop))
+                    throw new Error(
+                        `${$this[$type$]?.name ?? 'a chemical'} was given a ${prop} prop, which would land on ` +
+                        `$${prop} and overwrite a view. Choose which view draws with look.`
+                    );
 
-            $this['$' + prop] = props[prop];
-        }
+                $this['$' + prop] = props[prop];
+            }
+        });
     }
 
     static [$$getNextCid$$](): number { return $Particle.#nextCid++; }
@@ -419,7 +426,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
     // pass through, and it runs before anything of that class renders — so the
     // walk only ever reads an answer, and no template is seeded mid-render.
     compile(parent);
-    const direct = !(parent as any)[$isTemplate$];
+    const direct = !(parent as any)[$isTemplate$] || !!(parent as any)[$direct$];
     // A persistent chemical asks React whether this render is a HYDRATION — the
     // server's snapshot is read then, and only then. Decided at the lift, so the
     // hook is unconditional for the component's life and nothing else pays.
@@ -428,10 +435,27 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         const [cid, setCid] = useState(-1);
         const hydrating = persistent ? useSyncExternalStore(never, () => false, () => true) : false;
         let p: any;
+        // A PERSISTENT CHEMICAL REMEMBERS AT DERIVE, derived or direct. HYDRATING,
+        // IT DRAWS THE DEFAULTS THE SERVER DREW and remembers at mount; otherwise it
+        // remembers now, as it always has.
+        const remember = (made: any) => {
+            if (!made._persist) return;
+            const was = made[$rendering$];
+            made[$rendering$] = true;
+            if (hydrating) {
+                made[$recall$] = true;
+                const defaults = made[$defaults$];
+                if (defaults) for (const [name, value] of Object.entries(defaults)) made[name] = value;
+            } else {
+                hydration.overwrite(made);
+            }
+            made[$rendering$] = was;
+        };
         const derive = () => {
             if (direct) {
                 const made = parent as any;
                 made[$molecule$]?.reactivate?.();
+                remember(made);
                 return made;
             }
             const made: any = Object.create(parent);
@@ -446,6 +470,10 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             } else {
                 (parent as any)[$molecule$]?.reactivate?.();
             }
+            // ASSIGNED AFTER THE TEMPLATE IS ACTIVATED, which for a particle is here and
+            // for a chemical was at its component's resolution: the store copied is the
+            // live one.
+            assign(made);
             if (contextParent && $parent$ in made) {
                 made[$parent$] = contextParent;
             }
@@ -457,20 +485,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             // same fact and never moves one.
             const told = (props as any)?.on?.[$assigned$]?.[0]?.receiver;
             if (told && told !== made && $parent$ in made && made[$parent$] === made) made[$parent$] = told;
-            if ((made as any)._persist) {
-                const was = made[$rendering$];
-                made[$rendering$] = true;
-                // HYDRATING, IT DRAWS THE DEFAULTS THE SERVER DREW and remembers at
-                // mount; otherwise it remembers now, as it always has.
-                if (hydrating) {
-                    made[$recall$] = true;
-                    const defaults = made[$defaults$];
-                    if (defaults) for (const [name, value] of Object.entries(defaults)) made[name] = value;
-                } else {
-                    hydration.overwrite(made);
-                }
-                made[$rendering$] = was;
-            }
+            remember(made);
             return made;
         };
         if (cid === -1) {
@@ -557,7 +572,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         // READ WHILE DRAWING CHANGED — and otherwise answers what it drew last, so a
         // parent's redraw is not its children's: React bails out on the same elements.
         const drawn = p[$drawn$];
-        if (drawn && !p[$dirty$] && drawn.handed === p[$handed$] && equivalent(props ?? {}, drawn.props ?? {})) {
+        if (drawn && !p[$dirty$] && drawn.handed === p[$handed$] && byIdentity(() => equivalent(props ?? {}, drawn.props ?? {}))) {
             p[$skipped$] = true;
             return p[$viewCache$];
         }

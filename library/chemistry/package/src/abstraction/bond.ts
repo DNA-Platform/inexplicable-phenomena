@@ -201,6 +201,28 @@ function backing(chemical: any): any {
     return chemical[$backing$];
 }
 
+// A DERIVATIVE IS ASSIGNED ITS TEMPLATE'S FIELDS. Its store is its own from the
+// start, holding what the template held at derive — a value type copied, a
+// reference shared — so no read ever answers from the template, and a template
+// written afterwards is never consulted. A field initializer is the class
+// constructor, run once on the template; a value type belongs there, and a
+// reference an instance must own is assigned in the bond constructor. The
+// mistake of a reference in an initializer is then one instance every mount
+// holds, reactive, never a property gone quiet. (`assign` is a proxy name,
+// flagged for Doug.)
+export function assign(derived: any): void {
+    if (Object.prototype.hasOwnProperty.call(derived, $backing$)) return;
+    const from = Object.getPrototypeOf(derived)?.[$backing$];
+    const store: any = Object.create(null);
+    if (from) for (const key in from) store[key] = from[key];
+    Object.defineProperty(derived, $backing$, {
+        value: store,
+        writable: false,
+        enumerable: false,
+        configurable: false,
+    });
+}
+
 function activate(chemical: any, property: string, initial: any) {
     const store = backing(chemical);
     store[property] = initial;

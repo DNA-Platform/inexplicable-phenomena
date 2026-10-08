@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import styledImport, { ThemeProvider } from 'styled-components';
 import { $type$, $$template$$, $isChemicalBase$, $handed$, $provided$, $original$, theme, framework, selector, styled } from '../implementation/symbols';
 import { names as roster } from '../implementation/css';
+import { templating } from '../implementation/template';
 
 // ===========================================================================
 // Styled particles — a class says what it is styled as, writes plain HTML, and
@@ -230,7 +231,7 @@ function template(cls: any): any {
     if (cls[$$template$$] instanceof cls) return cls[$$template$$];
     if (seeding.has(cls)) return undefined;
     seeding.add(cls);
-    try { new cls(); } catch { /* a class wanting arguments declares nothing here */ } finally { seeding.delete(cls); }
+    try { templating(cls, () => new cls()); } catch { /* a class wanting arguments declares nothing here */ } finally { seeding.delete(cls); }
     return cls[$$template$$] instanceof cls ? cls[$$template$$] : undefined;
 }
 

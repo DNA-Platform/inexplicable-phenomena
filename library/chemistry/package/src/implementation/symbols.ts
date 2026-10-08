@@ -94,6 +94,10 @@ export const $skipped$ = Symbol("$Particle.skipped");
 export const $settled$ = Symbol("$Particle.settled");
 export const $readers$ = Symbol("$Particle.readers");
 export const $reads$ = Symbol("$Particle.reads");
+
+// A TEMPLATE LIFTED DIRECTLY: an atom mounts itself, the singleton and never a
+// derivative of it.
+export const $direct$ = Symbol("$Particle.direct");
 export const $draw$ = Symbol("$Particle.draw");
 
 // $views$ — the instance's view dictionary, keyed by position AND by name.

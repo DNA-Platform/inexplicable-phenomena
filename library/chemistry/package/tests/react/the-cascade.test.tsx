@@ -53,7 +53,6 @@ function shelf(N = 20) {
             return <article data-mark={this.mark}>{this.titles.map((title, i) => <Chapter key={i} i={i} title={title} />)}</article>;
         }
     }
-    new $Book();
     const book = new $Book();
     const sum = (list: any[]) => list.reduce((total, one) => total + of(one), 0);
     return { book, chapters, paragraphs, draws, of, sum, reset: () => draws.clear() };
@@ -131,7 +130,6 @@ describe('a view that reads another chemical follows it', () => {
                 return <div><Counter /><Reader of={this.counter} /><Bystander /></div>;
             }
         }
-        new $Counter(); new $Page();
         const container = await drawn(React.createElement($(new $Page())));
         expect(container.querySelector('.read')!.textContent).toBe('0');
         const before = { ...draws };
@@ -159,7 +157,6 @@ describe('a view that reads another chemical follows it', () => {
             as = 'card';
             view() { return <div><button onClick={() => { this.as = 'tile'; }}>tile</button><Specimen as={this.as} /></div>; }
         }
-        new $Browser();
         const container = await drawn(React.createElement($(new $Browser())));
         expect(container.querySelector('.as-card')).not.toBeNull();
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -171,16 +168,15 @@ describe('a view that reads another chemical follows it', () => {
 
 // A HELD INSTANCE IS THE COMPONENT LIFTED FROM IT, and a write to it is drawn by
 // that component; a theme held and written hands on a new face, and the styled
-// beneath follow. The first instance of a class is its template, and a template
-// write is silent to every derivative — lexical-scoping.test.ts holds that
-// promise — so what is held here is never the first of its class.
+// beneath follow. A template is the framework's, never an instance an author
+// constructs — the-instance.test.tsx holds that promise — so a held instance is
+// simply an instance.
 describe('a held instance is drawn by the component lifted from it', () => {
     it('a write to a held instance is drawn by the component lifted from it', async () => {
         class $Label extends $Chemical {
             text = 'a';
             view() { return <b>{this.text}</b>; }
         }
-        new $Label();
         class $Page extends $Chemical {
             label = new $Label();
             view() {
@@ -201,7 +197,6 @@ describe('a held instance is drawn by the component lifted from it', () => {
             paper = 'rgb(248, 249, 250)';
             ink = 'rgb(32, 33, 34)';
         }
-        new $Palette();
         class $Card extends $Chemical {
             [selector] = selection.article;
             get background() { return this[theme].paper; }
@@ -301,7 +296,6 @@ describe('when a chemical draws, by the primitives', () => {
                 return <div><Counter /><ByMethod of={this.counter} /><ByAccessor of={this.counter} /><ByHandler of={this.counter} /></div>;
             }
         }
-        new $Counter(); new $Page();
         const container = await drawn(React.createElement($(new $Page())));
         await act(async () => { fireEvent.click(container.querySelector('.look')!); });
         await settled();
@@ -325,7 +319,6 @@ describe('when a chemical draws, by the primitives', () => {
             mark = 0;
             view() { return <div data-mark={this.mark}><Wrapper><b>held</b></Wrapper><button onClick={() => { this.mark++; }}>mark</button></div>; }
         }
-        new $Page();
         const container = await drawn(React.createElement($(new $Page())));
         const before = wraps;
         await act(async () => { fireEvent.click(container.querySelector('button')!); });
@@ -333,6 +326,31 @@ describe('when a chemical draws, by the primitives', () => {
         expect(container.querySelector('div')!.getAttribute('data-mark')).toBe('1');
         expect(container.querySelector('section b')!.textContent).toBe('held');
         expect(wraps).toBe(before);
+    });
+
+    it('a function prop is compared by identity: a keyed child whose handler closed over a new item draws, every other prop equal', async () => {
+        const picked: string[] = [];
+        class $Row extends $Chemical {
+            $id = 0;
+            $onPick: (() => void) | undefined = undefined;
+            view() { return <li onClick={() => this.$onPick?.()}>{this.$id}</li>; }
+        }
+        const Row = $($Row);
+        class $List extends $Chemical {
+            items = [{ id: 1, v: 'old' }];
+            view() { return <ul>{this.items.map(item => <Row key={item.id} id={item.id} onPick={() => { picked.push(item.v); }} />)}</ul>; }
+            swap() { this.items = [{ id: 1, v: 'new' }]; }
+        }
+        const list = new $List();
+        const container = await drawn(React.createElement($(list)));
+        await act(async () => { fireEvent.click(container.querySelector('li')!); });
+        await settled();
+        expect(picked).toEqual(['old']);
+        await act(async () => { list.swap(); });
+        await settled();
+        await act(async () => { fireEvent.click(container.querySelector('li')!); });
+        await settled();
+        expect(picked).toEqual(['old', 'new']);
     });
 
     it('a provider drawn again for a prop of its own hands the same face, and the chemical beneath does not draw', async () => {
@@ -352,7 +370,6 @@ describe('when a chemical draws, by the primitives', () => {
             mark = 0;
             view() { return <div><Palette label={String(this.mark)}><Card /></Palette><button onClick={() => { this.mark++; }}>mark</button></div>; }
         }
-        new $Palette(); new $Page();
         const container = await drawn(React.createElement($(new $Page())));
         const before = { cards, palettes };
         await act(async () => { fireEvent.click(container.querySelector('button')!); });

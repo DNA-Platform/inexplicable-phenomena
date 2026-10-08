@@ -83,8 +83,11 @@ describe('identity — $Particle fundamentals', () => {
         expect(symbol).toMatch(/\$Chemistry\.\$P\[\d+\]$/);
     });
 
-    it('template is the prototype singleton', () => {
+    it("the template is the framework's: $(Constructor) makes it, and an instance an author constructs is never it", () => {
+        const P = $($P);
         const template = ($P as any)[$$template$$];
+        expect((P as any).$chemical).toBe(template);
+        expect(new $P()[$isTemplate$]).toBe(false);
         expect(template).toBeDefined();
         expect(template).toBeInstanceOf($P);
         expect(template[$isTemplate$]).toBe(true);

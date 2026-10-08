@@ -143,6 +143,17 @@ export function snapshot(value: any): any {
     return shape ? shape.copy(value, snapshot) : value;
 }
 
+// A FUNCTION PROP IS COMPARED BY IDENTITY — React's own rule, so an inline
+// handler is never a reason to skip a draw and a keyed child's closure is always
+// fresh; the setter and the settle diff keep comparing by source, where a
+// re-created arrow is not news. (`byIdentity` is a proxy name, flagged for Doug.)
+let $byIdentity = false;
+export function byIdentity<T>(compare: () => T): T {
+    const was = $byIdentity;
+    $byIdentity = true;
+    try { return compare(); } finally { $byIdentity = was; }
+}
+
 // equivalent(a, b) — the one equality: at a setter, at a prop, at a snapshot.
 // === first, so a scalar costs what it always did; a function by its original
 // source; an element through reconcile; a walked shape by content; anything
@@ -153,6 +164,7 @@ export function equivalent(a: any, b: any): boolean {
     const ta = typeof a, tb = typeof b;
     if (ta !== tb) return false;
     if (ta === 'function') {
+        if ($byIdentity) return false;
         const aOrig = (a as any)[$original$] || a;
         const bOrig = (b as any)[$original$] || b;
         if (aOrig === bOrig) return true;

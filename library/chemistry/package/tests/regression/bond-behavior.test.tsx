@@ -1006,7 +1006,8 @@ describe('regression — invariants from SP-1 audit + scope-finalize fix', () =>
             view() { return <span>{this.count}</span>; }
         }
 
-        new $Bar(); // template — allowed to set $$template$$ etc.
+        $($Bar); // the framework makes the template and sets $$template$$ once; an author's new never touches the class
+        new $Bar();
         const beforeKeys = Object.getOwnPropertyNames($Bar).slice().sort();
         const beforeSyms = Object.getOwnPropertySymbols($Bar).slice();
 
