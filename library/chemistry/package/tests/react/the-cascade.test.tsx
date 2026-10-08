@@ -244,6 +244,47 @@ describe('a held instance is drawn by the component lifted from it', () => {
 // own. Reads while drawing: through a reagent the draw calls, through an accessor,
 // and never through a handler. Props: the same children drawn again are not news.
 // Theme: a provider drawn again for a prop of its own hands the same face.
+// A PLAIN FUNCTION LIFTED WITH $ IS CALLED INSIDE ITS WRAPPER'S DRAW, so what it
+// reads is the draw's and it follows what it reads; its hooks belong to the
+// wrapper's component, which is always called and never settled in an effect.
+describe('a plain function lifted with $', () => {
+    it('follows what it reads by closure beneath a wrapper that skipped, its hooks work, and it is not called when the wrapper skips', async () => {
+        class $Counter extends $Chemical {
+            n = 0;
+            view() { return <button className="bump" onClick={() => { this.n++; }}>+</button>; }
+        }
+        const counter = new $Counter();
+        let calls = 0;
+        const Lifted = $(() => {
+            calls++;
+            const [k, setK] = React.useState(0);
+            return <u className="lifted" onClick={() => setK(k + 1)}>{counter.n}:{k}</u>;
+        });
+        class $Wrapper extends $Chemical { view() { return <section>{this[children]}</section>; } }
+        const Wrapper = $($Wrapper);
+        class $Page extends $Chemical {
+            mark = 0;
+            view() {
+                const Counter = $(counter);
+                return <div data-mark={this.mark}><Counter /><Wrapper><Lifted /></Wrapper><button className="mark" onClick={() => { this.mark++; }}>m</button></div>;
+            }
+        }
+        const container = await drawn(React.createElement($(new $Page())));
+        expect(container.querySelector('.lifted')!.textContent).toBe('0:0');
+        await act(async () => { fireEvent.click(container.querySelector('.bump')!); });
+        await settled();
+        expect(container.querySelector('.lifted')!.textContent).toBe('1:0');
+        await act(async () => { fireEvent.click(container.querySelector('.lifted')!); });
+        await settled();
+        expect(container.querySelector('.lifted')!.textContent).toBe('1:1');
+        const before = calls;
+        await act(async () => { fireEvent.click(container.querySelector('.mark')!); });
+        await settled();
+        expect(container.querySelector('div')!.getAttribute('data-mark')).toBe('1');
+        expect(calls).toBe(before);
+    });
+});
+
 describe('when a chemical draws, by the primitives', () => {
     it("a derivative's write is its own: the others lifted from the same template do not draw", async () => {
         const cells: any[] = [];

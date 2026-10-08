@@ -11,6 +11,7 @@ import {
     $registry$, $reference$, $cache$, $formula$, $keyOf$, $isFormulaBase$, $facade$, $facades$, cache, children, resolved, $formed$, $recall$, framework, formula, resolve, persist, inline
 } from "../implementation/symbols";
 import { templating } from "../implementation/template";
+import { memoize, $hooks$ } from "../implementation/symbols";
 import { assign } from "./bond";
 import { $symbolize } from "../implementation/representation";
 import { $subject } from "../implementation/catalogue";
@@ -1279,8 +1280,15 @@ export class $Function$<P = any> extends $Chemical {
         this._component = component;
     }
 
+    // CALLED INSIDE THE DRAW, never rendered as an element of its own, so what
+    // the function reads is the draw's and it follows what it reads. Its hooks
+    // then belong to this component, so it is always called — the memo would
+    // skip its hooks — and never settled in an effect.
+    [memoize] = false;
+    [$hooks$] = true;
+
     view() {
-        return React.createElement(this._component as any, (this as any)[$props$]());
+        return (this._component as any)((this as any)[$props$]());
     }
 }
 

@@ -8,7 +8,7 @@ import {
     $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
     $renderView$, $views$, $draw$, looks, style, inline, selector, styled, next, memoize,
-    $dirty$, $drawn$, $skipped$, $settled$
+    $dirty$, $drawn$, $skipped$, $settled$, $hooks$
 } from "../implementation/symbols";
 import { compile, given, styledFor, providing } from "./styled";
 import { $handed$, $recall$, $defaults$, theme, $direct$ } from "../implementation/symbols";
@@ -566,6 +566,8 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
             // resolves types the render could not; a render answered from the last
             // draw has nothing new to settle.
             if (p[$skipped$] && p[$settled$]) return;
+            // A VIEW THAT RUNS HOOKS DRAWS ONLY IN A RENDER.
+            if (p[$hooks$]) return;
             p[$settled$] = true;
             p[$rendering$] = true;
             forgetReads(p);

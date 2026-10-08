@@ -103,6 +103,11 @@ export const $reads$ = Symbol("$Particle.reads");
 // A TEMPLATE LIFTED DIRECTLY: an atom mounts itself, the singleton and never a
 // derivative of it.
 export const $direct$ = Symbol("$Particle.direct");
+
+// A VIEW THAT RUNS REACT HOOKS draws only in a render: the settle pass, an
+// effect, leaves it to React alone. A plain function lifted with $ is one.
+// (`$hooks$` is a proxy name, flagged for Doug.)
+export const $hooks$ = Symbol("$Particle.hooks");
 export const $draw$ = Symbol("$Particle.draw");
 
 // $views$ — the instance's view dictionary, keyed by position AND by name.
