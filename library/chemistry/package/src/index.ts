@@ -30,7 +30,7 @@ export { inert, reactive, represented, look } from './abstraction/bond';
 
 // Members a chemical implements, carried as symbols so they cost no name
 export { cache, children, style, theme, resolved } from './implementation/symbols';
-export { formula, resolve, persist, inline, selector, styled, next } from './implementation/symbols';
+export { formula, resolve, persist, inline, selector, styled, next, memoize } from './implementation/symbols';
 
 // Styling — the resolved styled-components callable, so nothing downstream
 // writes the dual-shape import again.

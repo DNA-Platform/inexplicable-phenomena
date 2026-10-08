@@ -50,6 +50,11 @@ export const inline = Symbol("$Particle.inline");
 export const selector = Symbol("$Particle.selector");
 export const styled = Symbol("$Particle.styled");
 export const next = Symbol("$Particle.next");
+// THE OFF-SWITCH FOR THE MEMO: `[memoize] = false` and the chemical draws whenever
+// its parent does, so a plain component beneath it reading by closure is fresh;
+// its chemical children still memoize. Read off the template, so a base class
+// switches every subclass of an app off.
+export const memoize = Symbol("$Particle.memoize");
 
 export const $remove$ = Symbol("$Chemical.remove");
 export const $molecule$ = Symbol("$Chemical.molecule");

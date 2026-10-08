@@ -7,7 +7,7 @@ import {
     $component$, $resolveComponent$, $template$, $isTemplate$, $derived$, $isChemicalBase$,
     $particleMarker$, $deriveInit$, $remove$, $destroy$, $parent$, $devError$, $devException$, $$parent$$,
     $$getNextCid$$, $$createSymbol$$, $$isSymbol$$, $$parseCid$$, $$template$$,
-    $renderView$, $views$, $draw$, looks, style, inline, selector, styled, next,
+    $renderView$, $views$, $draw$, looks, style, inline, selector, styled, next, memoize,
     $dirty$, $drawn$, $skipped$, $settled$
 } from "../implementation/symbols";
 import { compile, given, styledFor, providing } from "./styled";
@@ -76,6 +76,14 @@ export class $Particle {
     // Inline vs block: a class declares itself inline (flows within a text block)
     // in its constructor; block is the default. Read from the template, frozen.
     [inline] = false;
+
+    // A CHEMICAL DRAWS WHEN ITS OWN STATE, ITS PROPS, ITS THEME, OR A CHEMICAL IT
+    // READ WHILE DRAWING CHANGED, and otherwise answers what it drew last — unless
+    // it says `[memoize] = false`, and then it draws whenever its parent does, as
+    // every chemical did before the memo: the switch for a chemical that holds
+    // plain components reading by closure, which no memo can see. Read from the
+    // template, so a base class says it for an app.
+    [memoize] = true;
 
     // What this class is styled as — `[selector] = selection.main` says it renders
     // through a <main> carrying the CSS its fields declare. A finished styled
@@ -572,7 +580,7 @@ export function $lift<T extends $Particle>(parent: T, contextParent?: any, bond?
         // READ WHILE DRAWING CHANGED — and otherwise answers what it drew last, so a
         // parent's redraw is not its children's: React bails out on the same elements.
         const drawn = p[$drawn$];
-        if (drawn && !p[$dirty$] && drawn.handed === p[$handed$] && byIdentity(() => equivalent(props ?? {}, drawn.props ?? {}))) {
+        if (drawn && p[memoize] !== false && !p[$dirty$] && drawn.handed === p[$handed$] && byIdentity(() => equivalent(props ?? {}, drawn.props ?? {}))) {
             p[$skipped$] = true;
             return p[$viewCache$];
         }

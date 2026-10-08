@@ -4,7 +4,7 @@ import React from 'react';
 import { $, $Chemical } from '@/abstraction/chemical';
 import { $Theme } from '@/abstraction/theme';
 import { selection } from '@/abstraction/styled';
-import { children, selector, theme } from '@/implementation/symbols';
+import { children, selector, theme, memoize } from '@/implementation/symbols';
 
 // A CHEMICAL DRAWS WHEN ITS OWN STATE, ITS PROPS, ITS THEME, OR A CHEMICAL IT READ
 // WHILE DRAWING CHANGED — and otherwise answers what it drew last. So a parent's
@@ -351,6 +351,73 @@ describe('when a chemical draws, by the primitives', () => {
         await act(async () => { fireEvent.click(container.querySelector('li')!); });
         await settled();
         expect(picked).toEqual(['old', 'new']);
+    });
+
+    it('[memoize] = false is the off-switch: the chemical draws whenever its parent does, and a plain component beneath it reading by closure is fresh', async () => {
+        let wraps = 0;
+        class $Counter extends $Chemical {
+            n = 0;
+            view() { return <button onClick={() => { this.n++; }}>+</button>; }
+        }
+        const counter = new $Counter();
+        const Plain = () => <i className="plain">{counter.n}</i>;
+        class $Wrapper extends $Chemical {
+            [memoize] = false;
+            view() { wraps++; return <section>{this[children]}</section>; }
+        }
+        const Wrapper = $($Wrapper);
+        class $Page extends $Chemical {
+            view() { const Counter = $(counter); return <div data-n={counter.n}><Counter /><Wrapper><Plain /></Wrapper></div>; }
+        }
+        const container = await drawn(React.createElement($(new $Page())));
+        const before = wraps;
+        await act(async () => { fireEvent.click(container.querySelector('button')!); });
+        await settled();
+        expect(container.querySelector('.plain')!.textContent).toBe('1');
+        expect(wraps).toBeGreaterThan(before);
+    });
+
+    it('beneath a chemical switched off, a chemical child still memoizes: unchanged, it does not draw', async () => {
+        let leaves = 0;
+        class $Leaf extends $Chemical {
+            view() { leaves++; return <b>leaf</b>; }
+        }
+        const Leaf = $($Leaf);
+        class $Wrapper extends $Chemical {
+            [memoize] = false;
+            view() { return <section>{this[children]}</section>; }
+        }
+        const Wrapper = $($Wrapper);
+        class $Page extends $Chemical {
+            mark = 0;
+            view() { return <div data-mark={this.mark}><Wrapper><Leaf /></Wrapper><button onClick={() => { this.mark++; }}>mark</button></div>; }
+        }
+        const container = await drawn(React.createElement($(new $Page())));
+        const before = leaves;
+        await act(async () => { fireEvent.click(container.querySelector('button')!); });
+        await settled();
+        expect(container.querySelector('div')!.getAttribute('data-mark')).toBe('1');
+        expect(leaves).toBe(before);
+    });
+
+    it('said on a base class, [memoize] = false reaches every subclass: an app switches itself off', async () => {
+        let wraps = 0;
+        class $App extends $Chemical {
+            [memoize] = false;
+        }
+        class $Wrapper extends $App {
+            view() { wraps++; return <section>{this[children]}</section>; }
+        }
+        const Wrapper = $($Wrapper);
+        class $Page extends $Chemical {
+            mark = 0;
+            view() { return <div data-mark={this.mark}><Wrapper><b>held</b></Wrapper><button onClick={() => { this.mark++; }}>mark</button></div>; }
+        }
+        const container = await drawn(React.createElement($(new $Page())));
+        const before = wraps;
+        await act(async () => { fireEvent.click(container.querySelector('button')!); });
+        await settled();
+        expect(wraps).toBeGreaterThan(before);
     });
 
     it('a provider drawn again for a prop of its own hands the same face, and the chemical beneath does not draw', async () => {
