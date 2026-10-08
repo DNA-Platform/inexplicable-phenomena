@@ -1,4 +1,4 @@
-import { ElementType, ReactNode } from 'react';
+import { AllHTMLAttributes, ElementType, ReactNode } from 'react';
 import { $, $Chemical, inert } from '@dna-platform/chemistry';
 import { Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given } from '@/utilities/Collection';
@@ -6,6 +6,8 @@ import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
 import type { $Book } from '@/libraries/Book';
 import type { $Chapter } from '@/libraries/Chapter';
+
+export type ContainerProps = AllHTMLAttributes<HTMLElement> & { [transient: `$${string}`]: unknown };
 
 export class $Writing extends $Chemical {
     protected _text?: Text;
@@ -52,14 +54,20 @@ export class $Writing extends $Chemical {
 
     view(): ReactNode {
         this.annotations.define();
-        const [Container, ...layers] = [...this.containers];
+        const [, ...layers] = [...this.containers];
         const className = [...new Set(this.classes)].join(' ') || undefined;
-        return layers.reduce<ReactNode>((drawing, Layer) => <Layer className="pd-container">{drawing}</Layer>, (
-            <Container id={this.id.value} className={className}>
+        const children = (
+            <>
                 {this.write()}
                 {this.annotate([...this.annotations].reverse())}
-            </Container>
-        ));
+            </>
+        );
+        return layers.reduce<ReactNode>((drawing, Layer) => <Layer className="pd-container">{drawing}</Layer>, this.container({ id: this.id.value, className, children }));
+    }
+
+    container(props: ContainerProps): ReactNode {
+        const [Container] = [...this.containers];
+        return <Container {...props} />;
     }
 
     specify(code = this.specification.code(this)): string[] {
