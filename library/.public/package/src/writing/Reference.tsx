@@ -13,7 +13,12 @@ export class $Reference extends $Annotation {
     $Reference(...chemicals: $Chemical[]) {
         this.$Annotation(...chemicals);
         const Anchor = this.anchor;
-        this._anchor = (props: { children?: ReactNode }) => <Anchor href={this.identifier} {...props} />;
+        this._anchor = (props: { children?: ReactNode }) => (
+            <Anchor
+                href={this.identifier}
+                {...props}
+            />
+        );
     }
 
     override defines(writing: $Writing): void {

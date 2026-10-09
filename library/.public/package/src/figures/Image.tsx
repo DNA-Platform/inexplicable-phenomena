@@ -6,7 +6,12 @@ import { $Figure } from './Figure';
 export class $Image extends $Figure {
     override write(): ReactNode {
         const source = this.contents || html.copy(this.text);
-        return <img src={source} alt={this.$identifier} />;
+        return (
+            <img
+                src={source}
+                alt={this.$identifier}
+            />
+        );
     }
 
     protected override $Define(): void {

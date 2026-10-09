@@ -32,7 +32,8 @@ describe('a literal, inserted', () => {
         const file = readFileSync(join(fixture, 'manual', '1-the-book.code.tsx'), 'utf8');
         const made = over('1-the-book.tsx');
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain(`<Append identifier="code" type=".tsx">{${JSON.stringify(file)}}</Append>`);
+        expect(made.text).toMatch(/<Append\s+identifier="code"\s+type=".tsx"\s*>\s*\{"import/u);
+        expect(made.text).toContain(`{${JSON.stringify(file)}}`);
         expect(made.text).not.toContain('![[');
     });
 
@@ -124,7 +125,7 @@ describe('a title form', () => {
         const synopsis = join(fixture, 'library', '.synopsis.tsx');
         const made = transforming(readFileSync(synopsis, 'utf8'), synopsis, card);
         expect(made.missing).toEqual([]);
-        expect(made.text).toContain('<Title><Parenthetical />[Synopsis](/the-library/)</Title>');
+        expect(made.text).toMatch(/<Title>\s*<Parenthetical \/>\s*\[Synopsis\]\(\/the-library\/\)\s*<\/Title>/u);
         expect(transforming(`<Means>$[[ ./Synopsis ]]</Means>`, synopsis, card).text).toBe('<Means>[Synopsis](/the-library/#synopsis)</Means>');
     });
 

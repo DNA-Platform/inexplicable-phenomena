@@ -243,7 +243,13 @@ export class $Parenthetical extends $Annotation {
         this.$Annotation(...chemicals);
         this._unwritten = ({ id, className }: { id?: string; className?: string }) => {
             const Element = this._element ?? 'span';
-            return <Element id={id} className={className} hidden />;
+            return (
+                <Element
+                    id={id}
+                    className={className}
+                    hidden
+                />
+            );
         };
     }
 

@@ -34,7 +34,14 @@ export class $Code extends $Figure {
     }
 
     override write(): ReactNode {
-        return <code className={this.language === '' ? undefined : `language-${this.language}`} dangerouslySetInnerHTML={{ __html: this.listing }} />;
+        const className = this.language === '' ? undefined : `language-${this.language}`;
+        const listing = { __html: this.listing };
+        return (
+            <code
+                className={className}
+                dangerouslySetInnerHTML={listing}
+            />
+        );
     }
 
     protected override $Define(): void {
