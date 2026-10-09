@@ -10,7 +10,7 @@ export default () => (
             [[ Table of Contents ]]
         </Title>
         <Section>
-            <Heading>The tools</Heading>
+            <Heading>Contents</Heading>
             <Paragraph>
                 <Content>$[[ ./The Book ]]</Content>
             </Paragraph>
@@ -30,6 +30,9 @@ export default () => (
                 <Content>$[[ ./The Mark and the Photograph ]]</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ ./The Explorer ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ The Library Reference Manual ]]</Content>
@@ -40,12 +43,6 @@ export default () => (
                 <Word>
                     <Content>$[[ ./Table of Contents ]]</Content>
                 </Word>
-            </Paragraph>
-        </Section>
-        <Section>
-            <Heading>Reading the code</Heading>
-            <Paragraph>
-                <Content>$[[ ./The Explorer ]]</Content>
             </Paragraph>
         </Section>
         <Catchword />

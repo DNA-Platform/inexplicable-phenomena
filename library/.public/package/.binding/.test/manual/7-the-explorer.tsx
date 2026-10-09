@@ -3,7 +3,7 @@ import { Appendix, Catchword } from './.book';
 
 export default () => (
     <Chapter>
-        <Part>Reading the code</Part>
+        <Part>The explorer</Part>
         <Title>[[ The Explorer ]]</Title>
         <Section>
             <Heading>What the explorer is</Heading>

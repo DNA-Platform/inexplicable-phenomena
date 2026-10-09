@@ -4,10 +4,8 @@ import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
 import { $Writing, AnnotationSpecification } from '@/writing/Writing';
-import { $Composition } from '@/writing/Composition';
 import { $Format } from '@/writing/Format';
 import { $Reference } from '@/writing/Reference';
-import { $Section } from '@/writing/Section';
 import { $Chapter } from './Chapter';
 import { $Cover } from './Cover';
 import { $Part } from './Part';
@@ -24,19 +22,16 @@ export class $TableOfContents extends $Format {
     get chapters(): $Chapter[] {
         return this.book?.text.find($Chapter).filter(chapter => !chapter.is($Cover) && !chapter.is($Synopsis) && !chapter.is($TableOfContents)) ?? [];
     }
-    get parts(): $Section[] {
-        const sections = (composition: $Composition): $Section[] =>
-            composition.text.find($Section).flatMap(section => [section, ...sections(section)]);
-        const named = new Set(this.chapters.map(chapter => chapter.annotations.expressed($Part)?.name));
-        return this.chapter === undefined ? [] : sections(this.chapter).filter(section => named.has(section.canonical?.name));
+    get parts(): string[] {
+        return [...new Set(this.chapters.map(chapter => this.partOf(chapter)).filter((part): part is string => part !== undefined))];
     }
 
-    partOf(chapter: $Chapter): $Section | undefined {
-        return chapter.annotations.expressed($Part)?.section;
+    partOf(chapter: $Chapter): string | undefined {
+        return chapter.annotations.expressed($Part)?.name;
     }
 
-    chaptersOf(section: $Section): $Chapter[] {
-        return this.chapters.filter(chapter => this.partOf(chapter) === section);
+    chaptersOf(part: string): $Chapter[] {
+        return this.chapters.filter(chapter => this.partOf(chapter) === part);
     }
 
     override defines(writing: $Writing): void {
@@ -75,18 +70,6 @@ export class TableOfContentsSpecification extends AnnotationSpecification {
         const chapter = chapters.find(chapter => !chapter.is($Part));
         $check(chapter === undefined,
             `a table of contents whose book has a part lists every chapter in one, and "${chapter?.title?.name ?? ''}" is in none`);
-    }
-
-    @specify("a chapter in a part is listed under its part's section")
-    $listsEachChapterUnderItsPart(writing: $Writing): void {
-        const contents = (writing: $Writing): $Content[] =>
-            [...writing.annotations.find($Content), ...[...writing.text].flatMap(chemical => chemical instanceof $Writing ? contents(chemical) : [])];
-        for (const chapter of writing.annotations.expressed($TableOfContents)?.chapters ?? []) {
-            const part = chapter.annotations.expressed($Part);
-            if (part?.section === undefined) continue;
-            $check(contents(part.section).some(content => content.identifier === chapter.mention?.identifier),
-                `a chapter in a part is listed under its part's section, and "${chapter.title?.name ?? ''}" is not under "${part.name}"`);
-        }
     }
 }
 
