@@ -5,21 +5,47 @@ import { TableOfContents } from './7-the-explorer.chapters.tsx';
 export default () => (
     <Chapter>
         <TableOfContents />
-        <Title><Parenthetical />[[ Table of Contents ]]</Title>
+        <Title>
+            <Parenthetical />
+            [[ Table of Contents ]]
+        </Title>
         <Section>
-            <Heading>Contents</Heading>
-            <Paragraph><Content>$[[ ./The Book ]]</Content></Paragraph>
-            <Paragraph><Content>$[[ ./The Theme ]]</Content></Paragraph>
-            <Paragraph><Content>$[[ ./The Masthead and the Byline ]]</Content></Paragraph>
-            <Paragraph><Content>$[[ ./The Catchword ]]</Content></Paragraph>
-            <Paragraph><Content>$[[ ./The Faces ]]</Content></Paragraph>
-            <Paragraph><Content>$[[ ./The Mark and the Photograph ]]</Content></Paragraph>
-            <Paragraph><Content>$[[ ./The Explorer ]]</Content></Paragraph>
+            <Heading>The tools</Heading>
+            <Paragraph>
+                <Content>$[[ ./The Book ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Theme ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Masthead and the Byline ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Catchword ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Faces ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Mark and the Photograph ]]</Content>
+            </Paragraph>
             <Paragraph>
                 <Parenthetical />
-                <Word><Content>$[[ The Library Reference Manual ]]</Content></Word>
-                <Word><Content>$[[ ./Synopsis ]]</Content></Word>
-                <Word><Content>$[[ ./Table of Contents ]]</Content></Word>
+                <Word>
+                    <Content>$[[ The Library Reference Manual ]]</Content>
+                </Word>
+                <Word>
+                    <Content>$[[ ./Synopsis ]]</Content>
+                </Word>
+                <Word>
+                    <Content>$[[ ./Table of Contents ]]</Content>
+                </Word>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>Reading the code</Heading>
+            <Paragraph>
+                <Content>$[[ ./The Explorer ]]</Content>
             </Paragraph>
         </Section>
         <Catchword />

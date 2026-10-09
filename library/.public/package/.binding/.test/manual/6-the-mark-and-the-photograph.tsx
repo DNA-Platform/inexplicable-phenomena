@@ -1,8 +1,9 @@
-import { Chapter, Code, Heading, Image, Paragraph, Section, Svg, Title } from '@dna-platform/public';
+import { Chapter, Code, Heading, Image, Paragraph, Part, Section, Svg, Title } from '@dna-platform/public';
 import { Catchword } from './.book';
 
 export default () => (
     <Chapter>
+        <Part>The tools</Part>
         <Title>[[ The Mark and the Photograph ]]</Title>
         <Section>
             <Heading>The mark</Heading>

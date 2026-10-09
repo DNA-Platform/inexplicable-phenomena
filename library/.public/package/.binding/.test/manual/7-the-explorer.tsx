@@ -1,8 +1,9 @@
-import { Append, Chapter, Code, Heading, Image, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Code, Heading, Image, Means, Paragraph, Part, Section, Title } from '@dna-platform/public';
 import { Appendix, Catchword } from './.book';
 
 export default () => (
     <Chapter>
+        <Part>Reading the code</Part>
         <Title>[[ The Explorer ]]</Title>
         <Section>
             <Heading>What the explorer is</Heading>

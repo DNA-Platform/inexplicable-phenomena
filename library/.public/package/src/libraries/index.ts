@@ -3,6 +3,7 @@ export * from './Title';
 export * from './Cover';
 export * from './Synopsis';
 export * from './TableOfContents';
+export * from './Part';
 export * from './Next';
 export * from './Previous';
 export * from './Book';
