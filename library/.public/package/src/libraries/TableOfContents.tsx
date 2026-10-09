@@ -22,16 +22,15 @@ export class $TableOfContents extends $Format {
     get chapters(): $Chapter[] {
         return this.book?.text.find($Chapter).filter(chapter => !chapter.is($Cover) && !chapter.is($Synopsis) && !chapter.is($TableOfContents)) ?? [];
     }
-    get parts(): string[] {
-        return [...new Set(this.chapters.map(chapter => this.partOf(chapter)).filter((part): part is string => part !== undefined))];
+    get parts(): $Part[] {
+        const parts: $Part[] = [];
+        for (const part of this.chapters.map(chapter => this.partOf(chapter)))
+            if (part !== undefined && !parts.some(found => found.name === part.name)) parts.push(part);
+        return parts;
     }
 
-    partOf(chapter: $Chapter): string | undefined {
-        return chapter.annotations.expressed($Part)?.name;
-    }
-
-    chaptersOf(part: string): $Chapter[] {
-        return this.chapters.filter(chapter => this.partOf(chapter) === part);
+    partOf(chapter: $Chapter): $Part | undefined {
+        return chapter.annotations.expressed($Part);
     }
 
     override defines(writing: $Writing): void {

@@ -63,14 +63,36 @@ describe('a part is a grouping of chapters a chapter says it is in, and it has n
         expect(play(book, 'The Tempest').specify()).toEqual([]);
     });
 
-    it('is answered by the table of contents as a grouping: the parts in book order, the part of a chapter, the chapters of a part — whatever the table is written as', () => {
+    it('is answered by the table of contents as a grouping of objects: the parts in book order, the first chapter\'s annotation standing for each, the part of a chapter its own, and a part answering its chapters — whatever the table is written as', () => {
         const book = folio();
         const contents = table(book);
-        expect(contents.parts).toEqual(['Comedies', 'Tragedies']);
-        expect(contents.partOf(play(book, 'Hamlet'))).toBe('Tragedies');
-        expect(contents.chaptersOf('Comedies').map(chapter => chapter.title?.name)).toEqual(['The Tempest']);
-        expect(contents.chaptersOf('Histories')).toEqual([]);
+        expect(contents.parts.map(part => part.name)).toEqual(['Comedies', 'Tragedies']);
+        expect(contents.parts[1]).toBe(play(book, 'Hamlet').annotations.expressed($Part));
+        expect(contents.partOf(play(book, 'Hamlet'))).toBe(contents.parts[1]);
+        expect(contents.parts[0].chapters.map(chapter => chapter.title?.name)).toEqual(['The Tempest']);
         expect(book.table!.specify()).toEqual([]);
+    });
+
+    it('two chapters saying one name are one part, and either chapter\'s annotation answers them both', () => {
+        const book = built<$Book>(
+            <Book>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Folio](/the-folio/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Part>Comedies</Part>
+                    <Title>[The Tempest](/the-folio/the-tempest/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Part>Comedies</Part>
+                    <Title>[Twelfth Night](/the-folio/twelfth-night/)</Title>
+                </Chapter>
+            </Book>
+        );
+        const [tempest, night] = book.text.find($Chapter).slice(1).map(chapter => chapter.annotations.expressed($Part)!);
+        expect(night.chapters).toEqual(tempest.chapters);
+        expect(night.chapters.map(chapter => chapter.title?.name)).toEqual(['The Tempest', 'Twelfth Night']);
     });
 
     it('is not required: a book with no part has none', () => {

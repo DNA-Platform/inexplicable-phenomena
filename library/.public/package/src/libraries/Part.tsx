@@ -7,6 +7,9 @@ import { $Chapter } from './Chapter';
 export class $Part extends $Annotation {
     specification = new PartSpecification();
     get name(): string { return html.copy(this.text).trim(); }
+    get chapters(): $Chapter[] {
+        return this.book?.text.find($Chapter).filter(chapter => chapter.annotations.expressed($Part)?.name === this.name) ?? [];
+    }
 
     override defines(writing: $Writing): void {
         writing.classes.add(this, 'pa-part');
