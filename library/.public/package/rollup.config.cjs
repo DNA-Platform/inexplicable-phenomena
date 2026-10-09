@@ -63,10 +63,14 @@ const at = () => ({
 // `instanceof` against the other, and only inside a method — so a type-only
 // import cannot break them, no class extends a half-built base, and every suite
 // that imports the package loads both sides. They are named here so another one
-// FAILS the build rather than joining a list of warnings nobody reads.
+// FAILS the build rather than joining a list of warnings nobody reads. The third, 2026-10-09:
+// a chapter surfaces its part inside a getter, `expressed($Part)`, and a part is said of a
+// chapter, `instanceof $Chapter` inside a rule — Doug: "A chapter itself can surface its part,
+// or return undefined" — and Part stands in its own file beside the table by his ruling.
 const knownCycles = [
     'src/writing/Section.tsx -> src/writing/Heading.tsx -> src/writing/Section.tsx',
     'src/libraries/Chapter.tsx -> src/libraries/Title.tsx -> src/libraries/Chapter.tsx',
+    'src/libraries/Chapter.tsx -> src/libraries/Part.tsx -> src/libraries/Chapter.tsx',
 ];
 
 const named = warning => (warning.ids || [])

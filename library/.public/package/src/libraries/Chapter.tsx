@@ -3,12 +3,14 @@ import { specify } from '@/utilities/Specification';
 import { $Composition, CompositionSpecification, Level as level, Permissive as permissive, Closed as closed, Block as block } from '@/writing/Composition';
 import { $Reference } from '@/writing/Reference';
 import { $Title } from './Title';
+import { $Part } from './Part';
 import type { $Book } from './Book';
 
 export class $Chapter extends $Composition {
     specification = new ChapterSpecification();
     get title(): $Title | undefined { return this.canonical; }
     get mention(): $Reference | undefined { return this.title?.means; }
+    get part(): $Part | undefined { return this.annotations.expressed($Part); }
     get next(): $Chapter {
         const chapters = this.book?.text.find($Chapter) ?? [];
         const at = chapters.indexOf(this);

@@ -63,12 +63,17 @@ describe('a part is a grouping of chapters a chapter says it is in, and it has n
         expect(play(book, 'The Tempest').specify()).toEqual([]);
     });
 
-    it('is answered by the table of contents as a grouping of objects: the parts in book order, the first chapter\'s annotation standing for each, the part of a chapter its own, and a part answering its chapters — whatever the table is written as', () => {
+    // A CHAPTER SURFACES ITS PART, OR NONE, AND THE TABLE GROUPS — Doug, 2026-10-09: "The chapters already have the
+    // parts right? So the table having the chapters makes it relatively easy to check which, if any, part a chapter
+    // is in. A chapter itself can surface its part, or return undefined. It should be easy to group chapters by part
+    // name." And of any normal set of chapters: "Don't assume there is anything normal… You will always be filtering."
+    it('is surfaced by its chapter, and the table groups the book\'s chapters by it: the parts in book order, the first chapter\'s annotation standing for each, and a part answering its chapters — whatever the table is written as', () => {
         const book = folio();
         const contents = table(book);
+        expect(play(book, 'Hamlet').part).toBe(play(book, 'Hamlet').annotations.expressed($Part));
+        expect(play(book, 'Hamlet').part?.name).toBe('Tragedies');
         expect(contents.parts.map(part => part.name)).toEqual(['Comedies', 'Tragedies']);
-        expect(contents.parts[1]).toBe(play(book, 'Hamlet').annotations.expressed($Part));
-        expect(contents.partOf(play(book, 'Hamlet'))).toBe(contents.parts[1]);
+        expect(contents.parts[1]).toBe(play(book, 'Hamlet').part);
         expect(contents.parts[0].chapters.map(chapter => chapter.title?.name)).toEqual(['The Tempest']);
         expect(book.table!.specify()).toEqual([]);
     });
@@ -95,10 +100,10 @@ describe('a part is a grouping of chapters a chapter says it is in, and it has n
         expect(night.chapters.map(chapter => chapter.title?.name)).toEqual(['The Tempest', 'Twelfth Night']);
     });
 
-    it('is not required: a book with no part has none', () => {
+    it('is not required: a book with no part has none, and a chapter in no part answers none', () => {
         const book = folio('unparted');
         expect(table(book).parts).toEqual([]);
-        expect(table(book).partOf(play(book, 'Hamlet'))).toBeUndefined();
+        expect(play(book, 'Hamlet').part).toBeUndefined();
         expect(book.table!.specify()).toEqual([]);
     });
 
@@ -107,8 +112,13 @@ describe('a part is a grouping of chapters a chapter says it is in, and it has n
         expect(play(book, 'Hamlet').specify()).toContain('Chapter: a part has a name, and this one has none');
     });
 
-    it('is refused by the table when one chapter has a part and another has none', () => {
+    // NO NORMAL SET — the package assumes nothing about which chapters are in parts; a chapter in no part beside one
+    // in a part is a fact a consumer filters by checking, never a refusal of the package's.
+    it('assumes nothing: one chapter in a part beside one in none is a fact, the table answering the one part and the chapter none', () => {
         const book = folio('one in none');
-        expect(book.table!.specify()).toContain('Chapter: a table of contents whose book has a part lists every chapter in one, and "Hamlet" is in none');
+        expect(table(book).parts.map(part => part.name)).toEqual(['Comedies']);
+        expect(play(book, 'Hamlet').part).toBeUndefined();
+        expect(book.table!.specify()).toEqual([]);
+        expect(book.specify().filter(said => said.includes('part'))).toEqual([]);
     });
 });
