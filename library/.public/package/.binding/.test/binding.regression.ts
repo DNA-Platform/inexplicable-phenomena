@@ -700,7 +700,7 @@ describe('a bind of the test library whose catalogue\'s table leaves out a chapt
         broken = pulled();
         const table = join(broken.library, 'library', '.table.tsx');
         const written = readFileSync(table, 'utf8');
-        const without = written.replace('            <Paragraph><Content>$[[ ./Of Libby ]]</Content></Paragraph>\n', '');
+        const without = written.replace(/ *<Paragraph>\r?\n *<Content>\$\[\[ \.\/Of Libby \]\]<\/Content>\r?\n *<\/Paragraph>\r?\n/u, '');
         if (without === written) throw new Error('the library\'s table no longer writes the entry this stage takes out');
         writeFileSync(table, without);
     });
@@ -722,7 +722,7 @@ describe('a bind of the test library whose catalogue\'s table leaves out a book 
         broken = pulled();
         const table = join(broken.library, 'library', '.table.tsx');
         const written = readFileSync(table, 'utf8');
-        const without = written.replace('<Word><Content>[[ Libby ]]**</Content></Word> ', '');
+        const without = written.replace(/<Word>\s*<Content>\[\[ Libby \]\]\*\*<\/Content>\s*<\/Word> /u, '');
         if (without === written) throw new Error('the library\'s table no longer writes the answer this stage takes out');
         writeFileSync(table, without);
     });

@@ -9,7 +9,10 @@ export default () => (
             <Paragraph>
                 The first thing I wrote was the library's own account of itself, <Means>$[[ The Library ]]</Means>, filed
                 under what it is about. Its <Means>$[[ shelves ]]( The Library / What stands here )</Means> name the books
-                that stand directly under it, and its table of contents is a <Word><Emphasis />Table</Word>: a
+                that stand directly under it, and its table of contents is a <Word>
+                    <Emphasis />
+                    Table
+                </Word>: a
                 catalogue with a row for every book and a link to that book's own synopsis, so the library never
                 describes a book in words the book did not write. What the compiler requires of the table is less
                 and firmer: a link to every book that stands under it, and a link to every chapter of its own, the
@@ -28,7 +31,10 @@ export default () => (
         <Section>
             <Heading>A book of pages</Heading>
             <Paragraph>
-                <Means>$[[ Some Projects ]]</Means> is the one book I keep as pages. It stands <Word><Emphasis />Paginated</Word>,
+                <Means>$[[ Some Projects ]]</Means> is the one book I keep as pages. It stands <Word>
+                    <Emphasis />
+                    Paginated
+                </Word>,
                 so one chapter shows at a time and the catchword turns the page in
                 place; its <Means>$[[ one chapter ]]( Some Projects / The Work )</Means> names nothing, which is a thing a chapter is
                 allowed to do. So its route shows the cover and the work's route shows the work, one page at a time,

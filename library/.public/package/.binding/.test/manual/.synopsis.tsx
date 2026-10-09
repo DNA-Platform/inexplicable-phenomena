@@ -5,7 +5,10 @@ import { Synopsis } from './7-the-explorer.chapters.tsx';
 export default () => (
     <Chapter>
         <Synopsis />
-        <Title><Parenthetical />[[ Synopsis ]]</Title>
+        <Title>
+            <Parenthetical />
+            [[ Synopsis ]]
+        </Title>
         <Paragraph>
             The technical information that accompanies the library's reference: every tool this library is built
             with stands beside the chapter that explains it, and the library uses that very file. Kept by the

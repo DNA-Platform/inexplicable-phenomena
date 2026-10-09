@@ -17,8 +17,14 @@ const TheArgument = () => (
 const drawn = (title: string, address: string): string => {
     const book = $(
         <Book>
-            <Chapter><Cover /><Title>{`[${title}](${address})`}</Title></Chapter>
-            <Chapter><TableOfContents /><Title>{`[Table of Contents](${address}table-of-contents/)`}</Title></Chapter>
+            <Chapter>
+                <Cover />
+                <Title>{`[${title}](${address})`}</Title>
+            </Chapter>
+            <Chapter>
+                <TableOfContents />
+                <Title>{`[Table of Contents](${address}table-of-contents/)`}</Title>
+            </Chapter>
             {TheArgument()}
         </Book>
     ) as unknown as $Book;

@@ -9,7 +9,10 @@ export class $Entries extends $Section {
         const Reference = $(reference);
         const Word = $(word);
         const entry = (mention: (typeof contents)[number], index: number): ReactNode => (
-            <Word key={index}><Reference>{mention.identifier}</Reference>{mention.parent instanceof $Title ? mention.parent.name : mention.identifier}</Word>
+            <Word key={index}>
+                <Reference>{mention.identifier}</Reference>
+                {mention.parent instanceof $Title ? mention.parent.name : mention.identifier}
+            </Word>
         );
         return (
             <>

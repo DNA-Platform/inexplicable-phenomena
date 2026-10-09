@@ -23,9 +23,19 @@ export default () => (
         <Section>
             <Appendix />
             <Heading>[[[ The masthead's file ]]]</Heading>
-            <Paragraph><Code identifier="code" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="code"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Catchword />
-        <Append identifier="code" type=".tsx">![[ code.tsx ]]</Append>
+        <Append
+            identifier="code"
+            type=".tsx"
+        >
+            ![[ code.tsx ]]
+        </Append>
     </Chapter>
 );

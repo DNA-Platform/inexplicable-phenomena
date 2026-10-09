@@ -9,7 +9,16 @@ export default () => (
         <Section>
             <Heading>[[[ What is claimed ]]]</Heading>
             <Paragraph>
-                A reference <Word><Emphasis />names</Word> a thing and <Word><Bold />never</Word> a <Word><Underline />place</Word>.
+                A reference <Word>
+                    <Emphasis />
+                    names
+                </Word> a thing and <Word>
+                    <Bold />
+                    never
+                </Word> a <Word>
+                    <Underline />
+                    place
+                </Word>.
                 The library this paper stands in is <Means>$[[ The Library ]]</Means>; what supports the claim is
                 <Means>$[[ ./The Evidence ]]</Means>; the work it grew out of is <Means>$[[ Some Projects / The Work ]]</Means>;
                 and the book that keeps the record is <Means>$[[ Libby ]]</Means>.

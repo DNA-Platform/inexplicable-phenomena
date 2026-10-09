@@ -40,8 +40,12 @@ export default () => (
         <Section>
             <Heading>The design's photographs</Heading>
             <Paragraph>A chapter at its spread, and the front.</Paragraph>
-            <Paragraph><Image>![[ .png ]]</Image></Paragraph>
-            <Paragraph><Image>![[ front.png ]]</Image></Paragraph>
+            <Paragraph>
+                <Image>![[ .png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ front.png ]]</Image>
+            </Paragraph>
         </Section>
         <Section>
             <Heading>The sketches themselves</Heading>
@@ -50,8 +54,12 @@ export default () => (
                 the design, and the book is matched to them rather than they to the book: the spread, and the
                 front. They stand beside this chapter and are printed here as they are.
             </Paragraph>
-            <Paragraph><Code>![[ sketch.html ]]</Code></Paragraph>
-            <Paragraph><Code>![[ front.html ]]</Code></Paragraph>
+            <Paragraph>
+                <Code>![[ sketch.html ]]</Code>
+            </Paragraph>
+            <Paragraph>
+                <Code>![[ front.html ]]</Code>
+            </Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -62,7 +70,12 @@ export default () => (
                 this manual wears it on the section that prints its file. Its two readings answer for a chapter's
                 appendices and for the name an appendix goes by, the file's own.
             </Paragraph>
-            <Paragraph><Code identifier="appendix" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="appendix"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -76,7 +89,12 @@ export default () => (
                 Paginated says which page is: the one the bookmark names, by the same comparison, or else the open
                 chapter's first, since a chapter that prints a file is about it.
             </Paragraph>
-            <Paragraph><Code identifier="paging" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="paging"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -93,7 +111,12 @@ export default () => (
                 Its define marks a chapter opened when the reader arrives at it, remembering the last arrival so
                 each is marked once. Once the book is whole it puts a branch on every entry of the table.
             </Paragraph>
-            <Paragraph><Code identifier="layout" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="layout"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -104,7 +127,12 @@ export default () => (
                 chapter's appendices beneath it as leaves, each a link to the appendix's place. The written table
                 catalogues chapters and nothing else; the leaves are the view's.
             </Paragraph>
-            <Paragraph><Code identifier="tree" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="tree"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -115,7 +143,12 @@ export default () => (
                 opens at its first file, its other files are put up front from their leaves in the tree, and the
                 chapter's own tab stays the one that is active.
             </Paragraph>
-            <Paragraph><Code identifier="tabs" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="tabs"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -128,7 +161,12 @@ export default () => (
                 composed of parts so that a subclass changes one and keeps the rest; every selector in it is a mark
                 of what a writing is, and what the explorer says of a cover, a synopsis or a table is the next file's.
             </Paragraph>
-            <Paragraph><Code identifier="theme" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="theme"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Section>
             <Appendix />
@@ -141,7 +179,12 @@ export default () => (
                 the library's — a rewritten annotation, used by its own name — and no other book of the library
                 sees them.
             </Paragraph>
-            <Paragraph><Code identifier="chapters" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="chapters"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Section>
             <Heading>Across four worlds</Heading>
@@ -158,12 +201,47 @@ export default () => (
             </Paragraph>
         </Section>
         <Catchword />
-        <Append identifier="appendix" type=".tsx">![[ appendix.tsx ]]</Append>
-        <Append identifier="paging" type=".tsx">![[ paging.tsx ]]</Append>
-        <Append identifier="layout" type=".tsx">![[ layout.tsx ]]</Append>
-        <Append identifier="tree" type=".tsx">![[ tree.tsx ]]</Append>
-        <Append identifier="tabs" type=".tsx">![[ tabs.tsx ]]</Append>
-        <Append identifier="theme" type=".tsx">![[ theme.tsx ]]</Append>
-        <Append identifier="chapters" type=".tsx">![[ chapters.tsx ]]</Append>
+        <Append
+            identifier="appendix"
+            type=".tsx"
+        >
+            ![[ appendix.tsx ]]
+        </Append>
+        <Append
+            identifier="paging"
+            type=".tsx"
+        >
+            ![[ paging.tsx ]]
+        </Append>
+        <Append
+            identifier="layout"
+            type=".tsx"
+        >
+            ![[ layout.tsx ]]
+        </Append>
+        <Append
+            identifier="tree"
+            type=".tsx"
+        >
+            ![[ tree.tsx ]]
+        </Append>
+        <Append
+            identifier="tabs"
+            type=".tsx"
+        >
+            ![[ tabs.tsx ]]
+        </Append>
+        <Append
+            identifier="theme"
+            type=".tsx"
+        >
+            ![[ theme.tsx ]]
+        </Append>
+        <Append
+            identifier="chapters"
+            type=".tsx"
+        >
+            ![[ chapters.tsx ]]
+        </Append>
     </Chapter>
 );

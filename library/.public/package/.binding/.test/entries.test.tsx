@@ -8,24 +8,48 @@ import { Entries } from './projects/.table.tsx.tsx';
 // in memory in the form the compiler writes, its entries read from what its chapters mention. The table
 // writes its links too, as every table does since Sprint 99, in a paragraph that is not shown.
 const chapter = (name: string, address: string): React.ReactNode => (
-    <Chapter><Title>{`[${name}](${address})`}</Title><Paragraph>{name}</Paragraph></Chapter>
+    <Chapter>
+        <Title>{`[${name}](${address})`}</Title>
+        <Paragraph>{name}</Paragraph>
+    </Chapter>
 );
 
 const written = (
     <Paragraph>
         <Parenthetical />
-        <Word><Content>[Some Projects](/some-projects/)</Content></Word>
-        <Word><Content>[Synopsis](/some-projects/#synopsis)</Content></Word>
-        <Word><Content>[Table of Contents](/some-projects/#table-of-contents)</Content></Word>
-        <Word><Content>[The Work](/some-projects/#the-work)</Content></Word>
+        <Word>
+            <Content>[Some Projects](/some-projects/)</Content>
+        </Word>
+        <Word>
+            <Content>[Synopsis](/some-projects/#synopsis)</Content>
+        </Word>
+        <Word>
+            <Content>[Table of Contents](/some-projects/#table-of-contents)</Content>
+        </Word>
+        <Word>
+            <Content>[The Work](/some-projects/#the-work)</Content>
+        </Word>
     </Paragraph>
 );
 
 const projects = (): $Book => $(
     <Book>
-        <Chapter><Cover /><Title>[Some Projects](/some-projects/)</Title></Chapter>
-        <Chapter><Synopsis /><Title>[Synopsis](/some-projects/#synopsis)</Title></Chapter>
-        <Chapter><TableOfContents /><Title>[Table of Contents](/some-projects/#table-of-contents)</Title><Entries><Heading>Contents</Heading>{written}</Entries></Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[Some Projects](/some-projects/)</Title>
+        </Chapter>
+        <Chapter>
+            <Synopsis />
+            <Title>[Synopsis](/some-projects/#synopsis)</Title>
+        </Chapter>
+        <Chapter>
+            <TableOfContents />
+            <Title>[Table of Contents](/some-projects/#table-of-contents)</Title>
+            <Entries>
+                <Heading>Contents</Heading>
+                {written}
+            </Entries>
+        </Chapter>
         {chapter('The Work', '/some-projects/#the-work')}
     </Book>
 ) as unknown as $Book;

@@ -19,7 +19,10 @@ export class $RunningHead extends $Paragraph {
         return (
             <>
                 {top ? null : <><Means>$[[ The Library ]]</Means> / </>}
-                <Word>{book.title?.name}</Word>: <Word><Reference>{table?.means?.identifier}</Reference>{table?.name}</Word>
+                <Word>{book.title?.name}</Word>: <Word>
+                    <Reference>{table?.means?.identifier}</Reference>
+                    {table?.name}
+                </Word>
             </>
         );
     }
@@ -46,8 +49,14 @@ export class $Byline extends $Paragraph {
         const Reference = $(reference);
         return (
             <>
-                <Label>Author</Label> <Word><Reference>{book.author?.means?.identifier}</Reference>{book.author?.name}</Word>
-                <Label>Filed under</Label> <Word><Reference>{book.subject?.means?.identifier}</Reference>{book.subject?.name}</Word>
+                <Label>Author</Label> <Word>
+                    <Reference>{book.author?.means?.identifier}</Reference>
+                    {book.author?.name}
+                </Word>
+                <Label>Filed under</Label> <Word>
+                    <Reference>{book.subject?.means?.identifier}</Reference>
+                    {book.subject?.name}
+                </Word>
             </>
         );
     }

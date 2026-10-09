@@ -20,7 +20,13 @@ export class $Branch extends $Format {
                 <div {...props}>
                     {props.children}
                     {leaves.map((leaf, index) => (
-                        <a key={index} className={[...leaf.classes].includes('pa-open') ? 'pd-leaf pa-open' : 'pd-leaf'} href={leaf.mention?.identifier}>{$Appendix.named(leaf)}</a>
+                        <a
+                            key={index}
+                            className={[...leaf.classes].includes('pa-open') ? 'pd-leaf pa-open' : 'pd-leaf'}
+                            href={leaf.mention?.identifier}
+                        >
+                            {$Appendix.named(leaf)}
+                        </a>
                     ))}
                 </div>
             );

@@ -18,7 +18,10 @@ export default () => (
                 property changes every rule that reads it and rewrites none.
             </Paragraph>
             <Paragraph>
-                The framework's own <Word><Emphasis />Theme</Word> is bare — no property, no style — so a library
+                The framework's own <Word>
+                    <Emphasis />
+                    Theme
+                </Word> is bare — no property, no style — so a library
                 writes its theme once, and a book that wants another writes a subclass. How the properties reach a
                 rule is not this library's doing: the theme's layer answers for the theme, and the framework hands
                 its fields, live, to every styled component beneath it, templated into each rule as the value itself.
@@ -39,9 +42,19 @@ export default () => (
         </Section>
         <Section>
             <Heading>[[[ The theme's file ]]]</Heading>
-            <Paragraph><Code identifier="code" numbered /></Paragraph>
+            <Paragraph>
+                <Code
+                    identifier="code"
+                    numbered
+                />
+            </Paragraph>
         </Section>
         <Catchword />
-        <Append identifier="code" type=".tsx">![[ code.tsx ]]</Append>
+        <Append
+            identifier="code"
+            type=".tsx"
+        >
+            ![[ code.tsx ]]
+        </Append>
     </Chapter>
 );

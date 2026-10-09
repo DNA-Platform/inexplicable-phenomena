@@ -9,9 +9,15 @@ export default () => (
             <Paragraph>Three books stand directly under this one, and this shelf is a list of Lines:</Paragraph>
             <Paragraph>
                 <List />
-                <Line><Means>$[[ Libby ]]</Means> is the book that writes the others.</Line>
-                <Line><Means>$[[ Some Projects ]]</Means> is what has been worked on.</Line>
-                <Line><Means>$[[ A Paper ]]</Means> was written by a persona Libby vouched for.</Line>
+                <Line>
+                    <Means>$[[ Libby ]]</Means> is the book that writes the others.
+                </Line>
+                <Line>
+                    <Means>$[[ Some Projects ]]</Means> is what has been worked on.
+                </Line>
+                <Line>
+                    <Means>$[[ A Paper ]]</Means> was written by a persona Libby vouched for.
+                </Line>
             </Paragraph>
             <Paragraph>
                 The persona itself, <Means>$[[ A Persona ]]</Means>, stands under Libby rather than here, which is the

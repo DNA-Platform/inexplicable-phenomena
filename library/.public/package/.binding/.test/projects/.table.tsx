@@ -5,7 +5,10 @@ import { Entries } from './.table.tsx.tsx';
 export default () => (
     <Chapter>
         <TableOfContents />
-        <Title><Parenthetical />[[ Table of Contents ]]</Title>
+        <Title>
+            <Parenthetical />
+            [[ Table of Contents ]]
+        </Title>
         <Entries>
             <Heading>Contents</Heading>
             <Paragraph>
