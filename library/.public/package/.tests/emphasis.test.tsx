@@ -15,10 +15,28 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
 // Doug, 2026-09-27: "think about what might be useful in terms of the basics - emphasis, underline, bold."
 describe('emphasis, bold and underline are formats whose element is the semantic one, each wearing its class', () => {
     it('each is a format that draws its element as a layer around the word, the element wearing its class and the word none', async () => {
+        const emphasized = built<$Word>(
+            <Word>
+                <Emphasis />
+                really
+            </Word>
+        );
+        const bold = built<$Word>(
+            <Word>
+                <Bold />
+                really
+            </Word>
+        );
+        const underlined = built<$Word>(
+            <Word>
+                <Underline />
+                really
+            </Word>
+        );
         for (const [word, kind, tag, mark] of [
-            [built<$Word>(<Word><Emphasis />really</Word>), $Emphasis, 'EM', 'pa-emphasis'],
-            [built<$Word>(<Word><Bold />really</Word>), $Bold, 'B', 'pa-bold'],
-            [built<$Word>(<Word><Underline />really</Word>), $Underline, 'U', 'pa-underline'],
+            [emphasized, $Emphasis, 'EM', 'pa-emphasis'],
+            [bold, $Bold, 'B', 'pa-bold'],
+            [underlined, $Underline, 'U', 'pa-underline'],
         ] as const) {
             expect(word.annotations.expressed(kind)).toBeInstanceOf($Format);
             expect([...word.classes]).toContain('pd-word');
@@ -33,7 +51,13 @@ describe('emphasis, bold and underline are formats whose element is the semantic
     });
 
     it('two on one word nest, the one written last innermost, each tag wearing its own class', async () => {
-        const word = built<$Word>(<Word><Emphasis /><Bold />strongly</Word>);
+        const word = built<$Word>(
+            <Word>
+                <Emphasis />
+                <Bold />
+                strongly
+            </Word>
+        );
         const own = (await drawn(word)).querySelector('.pd-word')!;
         expect(own.parentElement!.tagName).toBe('B');
         expect(own.parentElement!.classList.contains('pa-bold')).toBe(true);
@@ -42,7 +66,12 @@ describe('emphasis, bold and underline are formats whose element is the semantic
     });
 
     it('is said of any writing, a sentence as well as a word', async () => {
-        const sentence = built<$Sentence>(<Sentence><Underline />a whole sentence</Sentence>);
+        const sentence = built<$Sentence>(
+            <Sentence>
+                <Underline />
+                a whole sentence
+            </Sentence>
+        );
         expect(sentence.specify()).toEqual([]);
         const own = (await drawn(sentence)).querySelector('.pd-sentence')!;
         expect(own.parentElement!.tagName).toBe('U');

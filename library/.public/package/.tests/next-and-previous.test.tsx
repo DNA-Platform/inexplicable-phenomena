@@ -14,11 +14,28 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
 };
 const shelf = (a: React.ReactNode = null, b: React.ReactNode = null, cover: React.ReactNode = null): $Book => built<$Book>(
     <Book>
-        <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title>{cover}</Chapter>
-        <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
-        <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
-        <Chapter><Title>[A](/a-paper/a/)</Title>{a}</Chapter>
-        <Chapter><Title>[B](/a-paper/b/)</Title>{b}</Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[A Paper](/a-paper/)</Title>
+            {cover}
+        </Chapter>
+        <Chapter>
+            <Synopsis />
+            <Title>[Synopsis](/a-paper/)</Title>
+            <Paragraph>What it argues.</Paragraph>
+        </Chapter>
+        <Chapter>
+            <TableOfContents />
+            <Title>[Where Things Are](/a-paper/where-things-are/)</Title>
+        </Chapter>
+        <Chapter>
+            <Title>[A](/a-paper/a/)</Title>
+            {a}
+        </Chapter>
+        <Chapter>
+            <Title>[B](/a-paper/b/)</Title>
+            {b}
+        </Chapter>
     </Book>
 );
 
@@ -56,7 +73,14 @@ describe('a next and a previous are words in a chapter that mean the chapter aft
     });
 
     it('inside a paragraph inside a section, still stands in its chapter', () => {
-        const book = shelf(<Section><Heading>h</Heading><Paragraph>see <Next>on</Next></Paragraph></Section>);
+        const book = shelf(
+            <Section>
+                <Heading>h</Heading>
+                <Paragraph>
+                    see <Next>on</Next>
+                </Paragraph>
+            </Section>
+        );
         const a = book.text.find($Chapter)[3];
         const [next] = a.text.find($Section)[0].text.find($Paragraph)[0].text.find($Next);
         expect(next.chapter).toBe(a);
@@ -84,9 +108,17 @@ describe('a next and a previous are words in a chapter that mean the chapter aft
         expect(previous.specify()).toContain('Previous: a previous means the chapter before its own, and this one means nothing');
         const book = built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
-                <Chapter><Title>[A](/a-paper/a/)</Title><Next>on</Next></Chapter>
-                <Chapter><Paragraph>untitled</Paragraph></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[A Paper](/a-paper/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[A](/a-paper/a/)</Title>
+                    <Next>on</Next>
+                </Chapter>
+                <Chapter>
+                    <Paragraph>untitled</Paragraph>
+                </Chapter>
             </Book>
         );
         const a = book.text.find($Chapter)[1];

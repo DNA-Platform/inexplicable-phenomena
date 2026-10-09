@@ -19,14 +19,31 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
 // use of all the classes in .public. It exists to comprehend them."
 describe('every level marks itself and draws its own element, inline to the sentence and block from the paragraph', () => {
     it('each level wears its mark and its default element', async () => {
+        const section = built<$Section>(
+            <Section>
+                <Heading>h</Heading>
+            </Section>
+        );
+        const chapter = built<$Chapter>(
+            <Chapter>
+                <Title>[A](/a/a/)</Title>
+            </Chapter>
+        );
+        const book = built<$Book>(
+            <Book>
+                <Chapter>
+                    <Title>[A](/a/)</Title>
+                </Chapter>
+            </Book>
+        );
         for (const [writing, mark, tag] of [
             [built<$Letter>(<Letter>a</Letter>), 'pd-letter', 'SPAN'],
             [built<$Word>(<Word>word</Word>), 'pd-word', 'SPAN'],
             [built<$Sentence>(<Sentence>a sentence</Sentence>), 'pd-sentence', 'SPAN'],
             [built<$Paragraph>(<Paragraph>a paragraph</Paragraph>), 'pd-paragraph', 'DIV'],
-            [built<$Section>(<Section><Heading>h</Heading></Section>), 'pd-section', 'DIV'],
-            [built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>), 'pd-chapter', 'DIV'],
-            [built<$Book>(<Book><Chapter><Title>[A](/a/)</Title></Chapter></Book>), 'pd-book', 'DIV'],
+            [section, 'pd-section', 'DIV'],
+            [chapter, 'pd-chapter', 'DIV'],
+            [book, 'pd-book', 'DIV'],
         ] as const) {
             expect([...writing.classes]).toContain(mark);
             const own = (await drawn(writing)).querySelector(`.${mark}`)!;
@@ -36,9 +53,17 @@ describe('every level marks itself and draws its own element, inline to the sent
     });
 
     it('a title and a heading wear their own mark beside the sentence\'s, and a subclass inherits its level\'s', () => {
-        const chapter = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>);
+        const chapter = built<$Chapter>(
+            <Chapter>
+                <Title>[A](/a/a/)</Title>
+            </Chapter>
+        );
         expect([...chapter.title!.classes]).toEqual(expect.arrayContaining(['pd-sentence', 'pd-title']));
-        const section = built<$Section>(<Section><Heading>h</Heading></Section>);
+        const section = built<$Section>(
+            <Section>
+                <Heading>h</Heading>
+            </Section>
+        );
         expect([...section.canonical!.classes]).toEqual(expect.arrayContaining(['pd-sentence', 'pd-heading']));
         class $Aside extends $Paragraph { }
         const Aside = $($Aside);
@@ -63,7 +88,9 @@ describe('Word, Sentence and Paragraph are the intermixed levels, 2, 3 and 4, pe
     it('a paragraph holds sentences, words, letters and prose, and its parts are the compositions at or below it', () => {
         const paragraph = built<$Paragraph>(
             <Paragraph>
-                <Sentence>A <Word>word</Word> and <Letter>a letter</Letter>.</Sentence>
+                <Sentence>
+                    A <Word>word</Word> and <Letter>a letter</Letter>.
+                </Sentence>
                 prose between
                 <Word>alone</Word>
             </Paragraph>
@@ -78,19 +105,48 @@ describe('Word, Sentence and Paragraph are the intermixed levels, 2, 3 and 4, pe
     });
 
     it('a sentence in a sentence is spliced, and one deeper', () => {
-        const sentence = built<$Sentence>(<Sentence><Sentence><Word>inner</Word></Sentence><Word>outer</Word></Sentence>);
+        const sentence = built<$Sentence>(
+            <Sentence>
+                <Sentence>
+                    <Word>inner</Word>
+                </Sentence>
+                <Word>outer</Word>
+            </Sentence>
+        );
         expect(sentence.parts.length).toBe(2);
         expect(sentence.parts.every(part => part instanceof $Word)).toBe(true);
         expect(sentence.text.find($Sentence)[0].depth).toBe(1);
     });
 
     it('permissive refuses a part above the level, and a written Strict or Closed overrides what the class stands', () => {
-        expect(built<$Word>(<Word><Sentence /></Word>).specify()).toContain('Word: a permissive composition holds parts at or below its level, and this one holds one above');
-        const strict = built<$Paragraph>(<Paragraph><Word /><Strict /></Paragraph>);
+        const above = built<$Word>(
+            <Word>
+                <Sentence />
+            </Word>
+        );
+        expect(above.specify()).toContain('Word: a permissive composition holds parts at or below its level, and this one holds one above');
+        const strict = built<$Paragraph>(
+            <Paragraph>
+                <Word />
+                <Strict />
+            </Paragraph>
+        );
         expect(strict.is(Strict)).toBe(true);
         expect(strict.specify()).toContain('Paragraph: a strict composition holds parts at its level or one below, and this one holds another');
-        expect(built<$Paragraph>(<Paragraph><Sentence /><Strict /></Paragraph>).specify()).toEqual([]);
-        expect(built<$Word>(<Word>prose <Closed /></Word>).specify()).toEqual(['Word: a closed composition holds only writing, and this one holds something else']);
+        const sentenced = built<$Paragraph>(
+            <Paragraph>
+                <Sentence />
+                <Strict />
+            </Paragraph>
+        );
+        expect(sentenced.specify()).toEqual([]);
+        const closed = built<$Word>(
+            <Word>
+                prose
+                <Closed />
+            </Word>
+        );
+        expect(closed.specify()).toEqual(['Word: a closed composition holds only writing, and this one holds something else']);
     });
 
     // Doug, 2026-09-30, on four levels whose $Define stood their own annotations without calling their parent's:

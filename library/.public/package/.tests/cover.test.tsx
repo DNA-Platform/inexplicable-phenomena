@@ -22,6 +22,23 @@ const paper = (): React.ReactNode => (
         <About>[A Paper](/a-paper/)</About>
     </Chapter>
 );
+const synopsis = (): React.ReactNode => (
+    <Chapter>
+        <Synopsis />
+        <Title>[Synopsis](/a-paper/)</Title>
+    </Chapter>
+);
+const table = (): React.ReactNode => (
+    <Chapter>
+        <TableOfContents />
+        <Title>[Table of Contents](/a-paper/table-of-contents/)</Title>
+    </Chapter>
+);
+const argument = (): React.ReactNode => (
+    <Chapter>
+        <Title>[The Argument](/a-paper/the-argument/)</Title>
+    </Chapter>
+);
 
 // Doug, 2026-09-26: "synopsis.means - this can be a reference to the book that it is a synopsis of and we agreed that
 // synopsis will support the ()[] syntax handed to it from the compiler, or get its book". And, ruling that .public
@@ -32,12 +49,26 @@ const paper = (): React.ReactNode => (
 // to the book it is a synopsis of" — which the compiler writes into a synopsis chapter's title, as these fixtures do.
 describe('a synopsis means the book it is a synopsis of', () => {
     const LogSynopsis = (): React.ReactNode => (
-        <Chapter><Synopsis /><Title>[Synopsis](/the-log/)</Title><Paragraph>The one book here that is by what it is about.</Paragraph></Chapter>
+        <Chapter>
+            <Synopsis />
+            <Title>[Synopsis](/the-log/)</Title>
+            <Paragraph>The one book here that is by what it is about.</Paragraph>
+        </Chapter>
     );
-    const ofTheLog = (): React.ReactNode => <Chapter><Title>[Of the Log](/the-library/of-the-log/)</Title><Synopsis>{LogSynopsis()}</Synopsis></Chapter>;
+    const ofTheLog = (): React.ReactNode => (
+        <Chapter>
+            <Title>[Of the Log](/the-library/of-the-log/)</Title>
+            <Synopsis>{LogSynopsis()}</Synopsis>
+        </Chapter>
+    );
 
     it('means the book written inside it, read of itself as it is built', () => {
-        const written = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/of-the-log/)</Title></Chapter>);
+        const written = built<$Chapter>(
+            <Chapter>
+                <Synopsis>[The Log](/the-log/)</Synopsis>
+                <Title>[Of the Log](/the-library/of-the-log/)</Title>
+            </Chapter>
+        );
         expect(written.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
         expect(written.annotations.expressed($Synopsis)?.name).toBe('The Log');
     });
@@ -65,8 +96,16 @@ describe('a synopsis means the book it is a synopsis of', () => {
     it('bound, keeps its chapter\'s title as the chapter\'s own while meaning the book, and the book finds the synopsis of itself by what the book means', () => {
         const book = built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[The Library](/the-library/)</Title><Author>[The Log](/the-log/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
-                <Chapter><Synopsis /><Title>[Synopsis](/the-library/)</Title></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Library](/the-library/)</Title>
+                    <Author>[The Log](/the-log/)</Author>
+                    <Subject>[The Library](/the-library/)</Subject>
+                </Chapter>
+                <Chapter>
+                    <Synopsis />
+                    <Title>[Synopsis](/the-library/)</Title>
+                </Chapter>
                 {ofTheLog()}
             </Book>
         );
@@ -87,15 +126,32 @@ describe('a synopsis means the book it is a synopsis of', () => {
 
     // Doug, 2026-09-27: "A synopsis always has a chapter. Add it to the specification. How about the reference? Validate."
     it('said of a section, or meaning nothing, says so when asked', () => {
-        expect(built<$Section>(<Section><Synopsis /><Heading>h</Heading></Section>).specify()).toContain('Section: a synopsis is said of a chapter, and this is not one');
-        expect(built<$Chapter>(<Chapter><Synopsis /><Title>plain words</Title></Chapter>).specify()).toContain('Chapter: a synopsis means the book it is a synopsis of, and this one means nothing');
+        const section = built<$Section>(
+            <Section>
+                <Synopsis />
+                <Heading>h</Heading>
+            </Section>
+        );
+        expect(section.specify()).toContain('Section: a synopsis is said of a chapter, and this is not one');
+        const plain = built<$Chapter>(
+            <Chapter>
+                <Synopsis />
+                <Title>plain words</Title>
+            </Chapter>
+        );
+        expect(plain.specify()).toContain('Chapter: a synopsis means the book it is a synopsis of, and this one means nothing');
         expect(built<$Chapter>(LogSynopsis()).specify()).toEqual([]);
     });
 
     // NO LAYER OF ITS OWN since Sprint 97's policy: a Synopsis is a Format for its power over the text, and a library
     // dresses pa-synopsis by mark or gives a subclass a style. Its own writing, the link, is not drawn; the chapter means it.
     it('means the book it names, and lends its chapter no layer — a Format for its power over the text', async () => {
-        const chapter = built<$Chapter>(<Chapter><Synopsis>[The Log](/the-log/)</Synopsis><Title>[Of the Log](/the-library/of-the-log/)</Title></Chapter>);
+        const chapter = built<$Chapter>(
+            <Chapter>
+                <Synopsis>[The Log](/the-log/)</Synopsis>
+                <Title>[Of the Log](/the-library/of-the-log/)</Title>
+            </Chapter>
+        );
         expect(chapter.annotations.expressed($Synopsis)?.means?.identifier).toBe('/the-log/');
         const page = await drawn(chapter);
         expect(page.querySelector('a[href="/the-log/"]')).toBeNull();
@@ -122,11 +178,11 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
     });
 
     it('a table of contents draws its chapter inside a nav, and a synopsis inside no layer of its own', async () => {
-        const table = await drawn(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>));
-        expect(table.firstElementChild?.tagName).toBe('NAV');
-        const synopsis = built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>);
-        expect([...synopsis.containers]).toEqual(['div']);
-        expect(synopsis.specify()).toEqual([]);
+        const page = await drawn(built<$Chapter>(table()));
+        expect(page.firstElementChild?.tagName).toBe('NAV');
+        const chapter = built<$Chapter>(synopsis());
+        expect([...chapter.containers]).toEqual(['div']);
+        expect(chapter.specify()).toEqual([]);
     });
 
     // Doug, 2026-09-26: "Have cover and table wear pa-cover and pa-synopsis from their annotations", and
@@ -134,9 +190,9 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
     it('each marks its chapter with its own class and none of the others\'', () => {
         const classes = (chapter: $Chapter): string[] => [...new Set(chapter.classes)].filter(name => name.startsWith('pa-'));
         expect(classes(built<$Chapter>(paper()))).toEqual(['pa-cover']);
-        expect(classes(built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>))).toEqual(['pa-synopsis']);
-        expect(classes(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>))).toEqual(['pa-table-of-contents']);
-        expect(classes(built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>))).toEqual([]);
+        expect(classes(built<$Chapter>(synopsis()))).toEqual(['pa-synopsis']);
+        expect(classes(built<$Chapter>(table()))).toEqual(['pa-table-of-contents']);
+        expect(classes(built<$Chapter>(argument()))).toEqual([]);
     });
 
     // Doug, 2026-09-30, on the rosters a library wrote to mean a plain chapter, one that is not a cover, not a
@@ -150,14 +206,14 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
     // type of chapter.
     it('a chapter is of the canonical type until a cover, a synopsis or a table of contents makes it another type of chapter, and again when that one goes', async () => {
         const canonical = (chapter: $Chapter): boolean => [...chapter.classes].includes('pd-canonical');
-        const plain = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>);
+        const plain = built<$Chapter>(argument());
         expect(canonical(plain)).toBe(true);
         expect((await drawn(plain)).querySelector('.pd-canonical.pd-chapter')).not.toBeNull();
         const cover = built<$Chapter>(paper());
         expect(canonical(cover)).toBe(false);
         expect([...cover.classes]).toContain('pd-chapter');
-        expect(canonical(built<$Chapter>(<Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>))).toBe(false);
-        expect(canonical(built<$Chapter>(<Chapter><TableOfContents /><Title>[Table of Contents](/a-paper/table-of-contents/)</Title></Chapter>))).toBe(false);
+        expect(canonical(built<$Chapter>(synopsis()))).toBe(false);
+        expect(canonical(built<$Chapter>(table()))).toBe(false);
         cover.annotations.remove(cover, cover.annotations.find($Cover)[0]);
         cover.annotations.define();
         expect(canonical(cover)).toBe(true);
@@ -174,7 +230,14 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
     });
 
     it('each is said of a chapter, and on a section says so', () => {
-        const section = built<$Section>(<Section><Heading>h</Heading><Cover /><Synopsis /><TableOfContents /></Section>);
+        const section = built<$Section>(
+            <Section>
+                <Heading>h</Heading>
+                <Cover />
+                <Synopsis />
+                <TableOfContents />
+            </Section>
+        );
         const failures = section.specify();
         expect(failures).toContain('Section: a cover is said of a chapter, and this is not one');
         expect(failures).toContain('Section: a synopsis is said of a chapter, and this is not one');
@@ -182,7 +245,12 @@ describe('a cover is a format said of a chapter, drawing it inside a header', ()
     });
 
     it('carries its author and its subject, and says which is missing', () => {
-        const bare = built<$Chapter>(<Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>);
+        const bare = built<$Chapter>(
+            <Chapter>
+                <Cover />
+                <Title>[A Paper](/a-paper/)</Title>
+            </Chapter>
+        );
         expect(bare.specify()).toContain('Chapter: a cover carries its author, and this one carries none');
         expect(bare.specify()).toContain('Chapter: a cover carries its subject, and this one carries none');
     });

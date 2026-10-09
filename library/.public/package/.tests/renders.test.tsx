@@ -63,7 +63,12 @@ describe('a change costs one paint, and the draws around it are counted', () => 
     beforeEach(counting);
 
     it('mounting draws three times and paints once: the render, React\'s development double, and chemistry\'s diff after the commit', async () => {
-        const writing = $(<Counting>a quote <Quoted /></Counting>) as unknown as $Writing;
+        const writing = $(
+            <Counting>
+                a quote
+                <Quoted />
+            </Counting>
+        ) as unknown as $Writing;
         const Drawn = $(writing);
         await act(async () => { render(<Drawn />); });
         await settle();
@@ -73,7 +78,12 @@ describe('a change costs one paint, and the draws around it are counted', () => 
     });
 
     it('taking the format out of expression and giving it back costs one paint each way, and never more draws than a mount', async () => {
-        const writing = $(<Counting>a quote <Quoted /></Counting>) as unknown as $Writing;
+        const writing = $(
+            <Counting>
+                a quote
+                <Quoted />
+            </Counting>
+        ) as unknown as $Writing;
         const Drawn = $(writing);
         await act(async () => { render(<Drawn />).container; });
         await settle();
@@ -93,7 +103,13 @@ describe('a change costs one paint, and the draws around it are counted', () => 
     });
 
     it('a reference in front of a format draws like any writing, which is the case that looped when both wrote one container', async () => {
-        const writing = $(<Counting>a quote <Quoted /><Reference>/there/</Reference></Counting>) as unknown as $Writing;
+        const writing = $(
+            <Counting>
+                a quote
+                <Quoted />
+                <Reference>/there/</Reference>
+            </Counting>
+        ) as unknown as $Writing;
         const Drawn = $(writing);
         await act(async () => { render(<Drawn />); });
         await settle();
@@ -103,7 +119,13 @@ describe('a change costs one paint, and the draws around it are counted', () => 
     });
 
     it('a cover that marks its writing with a class draws like any format: three draws, and its counted layer painted once', async () => {
-        const writing = $(<Counting>a cover <Cover /><Quoted /></Counting>) as unknown as $Writing;
+        const writing = $(
+            <Counting>
+                a cover
+                <Cover />
+                <Quoted />
+            </Counting>
+        ) as unknown as $Writing;
         const Drawn = $(writing);
         await act(async () => { render(<Drawn />); });
         await settle();
@@ -114,7 +136,13 @@ describe('a change costs one paint, and the draws around it are counted', () => 
     });
 
     it('two formats on one writing draw like one, and each layer is painted once', async () => {
-        const writing = $(<Counting>a quote <Quoted /><Quoted /></Counting>) as unknown as $Writing;
+        const writing = $(
+            <Counting>
+                a quote
+                <Quoted />
+                <Quoted />
+            </Counting>
+        ) as unknown as $Writing;
         const Drawn = $(writing);
         await act(async () => { render(<Drawn />); });
         await settle();
@@ -125,10 +153,22 @@ describe('a change costs one paint, and the draws around it are counted', () => 
 
     it('a writing nobody touched is not drawn again when a sibling changes', async () => {
         const quiet = $(<Counting>untouched</Counting>) as unknown as $Writing;
-        const loud = $(<Counting>a quote <Quoted /></Counting>) as unknown as $Writing;
+        const loud = $(
+            <Counting>
+                a quote
+                <Quoted />
+            </Counting>
+        ) as unknown as $Writing;
         const Quiet = $(quiet);
         const Loud = $(loud);
-        await act(async () => { render(<><Quiet /><Loud /></>); });
+        await act(async () => {
+            render(
+                <>
+                    <Quiet />
+                    <Loud />
+                </>
+            );
+        });
         await settle();
 
         counting();
@@ -149,7 +189,12 @@ describe('a paragraph made inline through $is is redrawn as a span at one paint'
             }
         }
         const Prose = $($Prose);
-        const prose = $(<Prose>a paragraph <Quoted /></Prose>) as unknown as $Paragraph;
+        const prose = $(
+            <Prose>
+                a paragraph
+                <Quoted />
+            </Prose>
+        ) as unknown as $Paragraph;
         const Drawn = $(prose);
         let container: HTMLElement | undefined;
         await act(async () => { container = render(<Drawn />).container; });
@@ -253,8 +298,14 @@ describe('a table that marks a composition\'s rows and cells costs nothing more'
                     <CountedSection>
                         {table}
                         <Heading>h</Heading>
-                        <CountedParagraph><Word>a</Word><Word>b</Word></CountedParagraph>
-                        <CountedParagraph><Word>c</Word><Word>d</Word></CountedParagraph>
+                        <CountedParagraph>
+                            <Word>a</Word>
+                            <Word>b</Word>
+                        </CountedParagraph>
+                        <CountedParagraph>
+                            <Word>c</Word>
+                            <Word>d</Word>
+                        </CountedParagraph>
                     </CountedSection>
                 </Chapter>
             </Ledger>
@@ -284,7 +335,10 @@ describe('a writing that reads its book while it draws costs nothing more', () =
         const control = $(
             <Ledger>
                 <Quoted />
-                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
+                <Chapter>
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Unreading>a line</Unreading>
+                </Chapter>
             </Ledger>
         ) as unknown as $Book;
         const Control = $(control);
@@ -297,7 +351,10 @@ describe('a writing that reads its book while it draws costs nothing more', () =
         const book = $(
             <Ledger>
                 <Quoted />
-                <Chapter><Title>[A Paper](/a-paper/)</Title><Reading>a line</Reading></Chapter>
+                <Chapter>
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Reading>a line</Reading>
+                </Chapter>
             </Ledger>
         ) as unknown as $Book;
         const Drawn = $(book);
@@ -311,7 +368,10 @@ describe('a writing that reads its book while it draws costs nothing more', () =
         const control = $(
             <Ledger>
                 <Quoted />
-                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
+                <Chapter>
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Unreading>a line</Unreading>
+                </Chapter>
             </Ledger>
         ) as unknown as $Book;
         const Control = $(control);
@@ -325,7 +385,10 @@ describe('a writing that reads its book while it draws costs nothing more', () =
         const book = $(
             <Ledger>
                 <Quoted />
-                <Chapter><Title>[A Paper](/a-paper/)</Title><Binding>a line</Binding></Chapter>
+                <Chapter>
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Binding>a line</Binding>
+                </Chapter>
             </Ledger>
         ) as unknown as $Book;
         expect(read).toBe(book);
@@ -365,8 +428,13 @@ describe('a next that makes its reference at its bond costs no more than a means
         const shelf = (foot: ReactNode): $Book => $(
             <Ledger>
                 <Quoted />
-                <Chapter><Title>[A Paper](/a-paper/)</Title></Chapter>
-                <Chapter><Title>[A](/a-paper/a/)</Title>{foot}</Chapter>
+                <Chapter>
+                    <Title>[A Paper](/a-paper/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[A](/a-paper/a/)</Title>
+                    {foot}
+                </Chapter>
             </Ledger>
         ) as unknown as $Book;
         const Control = $(shelf(<Meaning>[on](/a-paper/a/)</Meaning>));
@@ -399,8 +467,14 @@ describe('a book turning to its bookmark costs the cascade, until chemistry ends
         const book = $(
             <Ledger bookmark="/a-paper/">
                 <Quoted />
-                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
-                <Chapter><Title>[The Argument](/a-paper/the-argument/)</Title><Unreading>another</Unreading></Chapter>
+                <Chapter>
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Unreading>a line</Unreading>
+                </Chapter>
+                <Chapter>
+                    <Title>[The Argument](/a-paper/the-argument/)</Title>
+                    <Unreading>another</Unreading>
+                </Chapter>
             </Ledger>
         ) as unknown as $Book;
         const Drawn = $(book);
@@ -436,8 +510,14 @@ describe('a paginated book turning its page costs the cascade and two marks, and
             <Ledger bookmark="/a-paper/">
                 <Quoted />
                 <Paginated />
-                <Chapter><Title>[A Paper](/a-paper/)</Title><Unreading>a line</Unreading></Chapter>
-                <Chapter><Title>[The Argument](/a-paper/the-argument/)</Title><Unreading>another</Unreading></Chapter>
+                <Chapter>
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Unreading>a line</Unreading>
+                </Chapter>
+                <Chapter>
+                    <Title>[The Argument](/a-paper/the-argument/)</Title>
+                    <Unreading>another</Unreading>
+                </Chapter>
             </Ledger>
         ) as unknown as $Book;
         const Drawn = $(book);

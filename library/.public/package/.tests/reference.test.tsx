@@ -37,7 +37,11 @@ describe('the copy of a writing is what was written in it', () => {
     });
 
     it('answers the prose around a nested writing and not what is inside it, since copy is one level deep', () => {
-        const writing = built<$Writing>(<Writing>shelf <Word>number</Word> 3</Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                shelf <Word>number</Word> 3
+            </Writing>
+        );
         expect(html.copy(writing.text)).toBe('shelf  3');
     });
 
@@ -47,7 +51,11 @@ describe('the copy of a writing is what was written in it', () => {
     });
 
     it('never meets an annotation, because the bond sorts them out of the text', () => {
-        const writing = built<$Writing>(<Writing>an aside <Parenthetical>because it was late</Parenthetical></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                an aside <Parenthetical>because it was late</Parenthetical>
+            </Writing>
+        );
         expect(writing.text.find($Annotation)).toEqual([]);
         expect(html.copy(writing.text)).toBe('an aside ');
     });
@@ -81,31 +89,51 @@ describe('the binder writes [text](identifier) and any component reads both halv
 
 describe('a referent is the id its writing answers to', () => {
     it('holds the identifier it was given', () => {
-        const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                a shelf <Referent>the-first-shelf</Referent>
+            </Writing>
+        );
         expect(writing.annotations.find($Referent)[0].identifier).toBe('the-first-shelf');
     });
 
     it('gives its writing the id and its class', () => {
-        const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                a shelf <Referent>the-first-shelf</Referent>
+            </Writing>
+        );
         expect(String(writing.id)).toBe('the-first-shelf');
         expect([...writing.classes]).toContain('pa-referent');
     });
 
     it('drawn, the id is on the element a reference comes to', async () => {
-        const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                a shelf <Referent>the-first-shelf</Referent>
+            </Writing>
+        );
         const page = await drawn(writing);
         expect(page.querySelector('#the-first-shelf')).not.toBeNull();
         expect(page.querySelector('#the-first-shelf')!.className).toContain('pa-referent');
     });
 
     it('takes the id and the class back when a family member says it does not apply', () => {
-        const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent><Unmentioned /></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                a shelf <Referent>the-first-shelf</Referent><Unmentioned />
+            </Writing>
+        );
         expect(String(writing.id)).toBe('');
         expect([...writing.classes]).not.toContain('pa-referent');
     });
 
     it('is expressed again the moment what repressed it is gone, since expression is computed', () => {
-        const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent><Unmentioned /></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                a shelf <Referent>the-first-shelf</Referent><Unmentioned />
+            </Writing>
+        );
         expect(String(writing.id)).toBe('');
         writing.annotations.remove(writing, writing.annotations.find($Unmentioned)[0]);
         writing.annotations.define();
@@ -113,7 +141,11 @@ describe('a referent is the id its writing answers to', () => {
     });
 
     it('answers the last id set, which is the referent standing furthest back, and the one before it when that one goes', () => {
-        const writing = built<$Writing>(<Writing>a shelf <Referent>the-first-shelf</Referent><Referent>the-second-shelf</Referent></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                a shelf <Referent>the-first-shelf</Referent><Referent>the-second-shelf</Referent>
+            </Writing>
+        );
         expect(String(writing.id)).toBe('the-first-shelf');
         const [, behind] = [...writing.annotations];
         writing.annotations.remove(writing, behind);
@@ -122,9 +154,17 @@ describe('a referent is the id its writing answers to', () => {
     });
 
     it('refuses a writing that is mentioned twice, and one that names nothing', () => {
-        const twice = built<$Writing>(<Writing>a shelf <Referent>one</Referent><Referent>two</Referent></Writing>);
+        const twice = built<$Writing>(
+            <Writing>
+                a shelf <Referent>one</Referent><Referent>two</Referent>
+            </Writing>
+        );
         expect(twice.specify()).toContain('Writing: a writing is mentioned once, and this one is mentioned more than once');
-        const empty = built<$Writing>(<Writing>a shelf <Referent /></Writing>);
+        const empty = built<$Writing>(
+            <Writing>
+                a shelf <Referent />
+            </Writing>
+        );
         expect(empty.specify()).toContain('Writing: a referent is the id its writing answers to, and this one holds none');
     });
 });
@@ -151,13 +191,21 @@ describe('a mention is the word that reads what the compiler wrote', () => {
     });
 
     it('is a part of the sentence that holds it, because a word is not a same-class child of one', () => {
-        const sentence = built<$Sentence>(<Sentence>see <Mention>[The First Shelf](the-first-shelf)</Mention></Sentence>);
+        const sentence = built<$Sentence>(
+            <Sentence>
+                see <Mention>[The First Shelf](the-first-shelf)</Mention>
+            </Sentence>
+        );
         expect(sentence.parts.filter(part => part instanceof $Mention).length).toBe(1);
     });
 
     it('behaves the same written by hand as compiled, since the compiler only writes source', () => {
         const compiled = built<$Mention>(<Mention>[The First Shelf](the-first-shelf)</Mention>);
-        const byHand = built<$Writing>(<Writing>The First Shelf<Referent>the-first-shelf</Referent></Writing>);
+        const byHand = built<$Writing>(
+            <Writing>
+                The First Shelf<Referent>the-first-shelf</Referent>
+            </Writing>
+        );
         expect(String(compiled.id)).toBe(String(byHand.id));
     });
 
@@ -208,7 +256,11 @@ describe('a means is the word that reads what the compiler resolved', () => {
     });
 
     it('is a part of the sentence that holds it, written as Doug wrote it', async () => {
-        const sentence = built<$Sentence>(<Sentence>You should check out this paper on <Means>[Alan Turing](/complicated-url)</Means></Sentence>);
+        const sentence = built<$Sentence>(
+            <Sentence>
+                You should check out this paper on <Means>[Alan Turing](/complicated-url)</Means>
+            </Sentence>
+        );
         expect(sentence.parts.filter(part => part instanceof $Means).length).toBe(1);
         const page = await drawn(sentence);
         expect(page.textContent).toContain('You should check out this paper on');
@@ -217,7 +269,11 @@ describe('a means is the word that reads what the compiler resolved', () => {
 
     it('behaves the same written by hand as compiled, since the compiler only writes source', () => {
         const compiled = built<$Means>(<Means>[Alan Turing](/complicated-url)</Means>);
-        const byHand = built<$Writing>(<Writing>Alan Turing<Reference>/complicated-url</Reference></Writing>);
+        const byHand = built<$Writing>(
+            <Writing>
+                Alan Turing<Reference>/complicated-url</Reference>
+            </Writing>
+        );
         expect(compiled.annotations.find($Reference)[0].identifier).toBe(byHand.annotations.find($Reference)[0].identifier);
     });
 
@@ -230,26 +286,46 @@ describe('a means is the word that reads what the compiler resolved', () => {
 
 describe('a reference is the address its writing means', () => {
     it('holds the identifier it was given and gives its writing the class', () => {
-        const writing = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                the library <Reference>/the-library/</Reference>
+            </Writing>
+        );
         expect(writing.annotations.find($Reference)[0].identifier).toBe('/the-library/');
         expect([...writing.classes]).toContain('pa-reference');
     });
 
     it('wears no pa-self-reference, whatever it holds', () => {
-        const writing = built<$Writing>(<Writing>this library <Reference>#</Reference></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                this library <Reference>#</Reference>
+            </Writing>
+        );
         expect([...writing.classes]).toContain('pa-reference');
         expect([...writing.classes]).not.toContain('pa-self-reference');
     });
 
     it('never gives its writing an id, and takes its class back when it does not apply', () => {
-        const standing = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference></Writing>);
+        const standing = built<$Writing>(
+            <Writing>
+                the library <Reference>/the-library/</Reference>
+            </Writing>
+        );
         expect(String(standing.id)).toBe('');
-        const repressed = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference><Unmentioned /></Writing>);
+        const repressed = built<$Writing>(
+            <Writing>
+                the library <Reference>/the-library/</Reference><Unmentioned />
+            </Writing>
+        );
         expect([...repressed.classes]).not.toContain('pa-reference');
     });
 
     it('stands beside a referent without either taking the other\'s mark', () => {
-        const writing = built<$Writing>(<Writing>here <Referent>here</Referent><Reference>/there/</Reference></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                here <Referent>here</Referent><Reference>/there/</Reference>
+            </Writing>
+        );
         expect(String(writing.id)).toBe('here');
         expect([...writing.classes]).toContain('pa-referent');
         expect([...writing.classes]).toContain('pa-reference');
@@ -258,7 +334,11 @@ describe('a reference is the address its writing means', () => {
 
 describe('a reference makes its writing a link by adding a layer to its containers', () => {
     it('alone, its anchor is the outermost layer, wearing the layer\'s class and its own, and the writing\'s own element inside it wears the classes and the id', async () => {
-        const writing = built<$Writing>(<Writing>go<Referent>there</Referent><Reference>/there/</Reference></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                go<Referent>there</Referent><Reference>/there/</Reference>
+            </Writing>
+        );
         const page = await drawn(writing);
         const anchor = page.firstElementChild!;
         expect(anchor.tagName).toBe('A');
@@ -273,22 +353,38 @@ describe('a reference makes its writing a link by adding a layer to its containe
     });
 
     it('composes with a format in either order, and whichever acts later is drawn outside', async () => {
-        const formatInFront = await drawn(built<$Writing>(<Writing>x<Reference>/r/</Reference><Quoted /></Writing>));
+        const formatInFront = await drawn(built<$Writing>(
+            <Writing>
+                x<Reference>/r/</Reference><Quoted />
+            </Writing>
+        ));
         expect(formatInFront.firstElementChild!.tagName).toBe('A');
         expect(formatInFront.querySelector('a > blockquote')).not.toBeNull();
-        const referenceInFront = await drawn(built<$Writing>(<Writing>x<Quoted /><Reference>/r/</Reference></Writing>));
+        const referenceInFront = await drawn(built<$Writing>(
+            <Writing>
+                x<Quoted /><Reference>/r/</Reference>
+            </Writing>
+        ));
         expect(referenceInFront.firstElementChild!.tagName).toBe('BLOCKQUOTE');
         expect(referenceInFront.querySelector('blockquote > a')).not.toBeNull();
     });
 
     it('the writing\'s text is inside the anchor, so clicking the writing follows it', async () => {
-        const page = await drawn(built<$Writing>(<Writing>Alan Turing<Reference>/alan-turing/</Reference><Quoted /></Writing>));
+        const page = await drawn(built<$Writing>(
+            <Writing>
+                Alan Turing<Reference>/alan-turing/</Reference><Quoted />
+            </Writing>
+        ));
         const text = [...page.querySelectorAll('span')].find(span => span.textContent?.startsWith('Alan Turing'))!;
         expect(text.closest('a')?.getAttribute('href')).toBe('/alan-turing/');
     });
 
     it('taken out of expression, its layer goes and the format\'s stays', () => {
-        const writing = built<$Writing>(<Writing>x<Reference>/r/</Reference><Quoted /><Unmentioned /></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                x<Reference>/r/</Reference><Quoted /><Unmentioned />
+            </Writing>
+        );
         const layers = [...writing.containers];
         expect(layers.length).toBe(2);
         expect(layers[0]).toBe('span');
@@ -296,7 +392,11 @@ describe('a reference makes its writing a link by adding a layer to its containe
     });
 
     it('registering is idempotent, and its anchor keeps one identity however many passes run', () => {
-        const writing = built<$Writing>(<Writing>x<Reference>/r/</Reference></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                x<Reference>/r/</Reference>
+            </Writing>
+        );
         const anchor = [...writing.containers][1];
         writing.view();
         writing.view();
@@ -306,7 +406,11 @@ describe('a reference makes its writing a link by adding a layer to its containe
 
 describe('a self-reference is a reference that also wears pa-self-reference', () => {
     it('is found where a reference is asked for, holding its url and wearing both classes', () => {
-        const writing = built<$Writing>(<Writing>this library <Self>/the-library/</Self></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                this library <Self>/the-library/</Self>
+            </Writing>
+        );
         const reference = writing.annotations.find($Reference)[0];
         expect(reference).toBeInstanceOf($SelfReference);
         expect(reference.identifier).toBe('/the-library/');
@@ -315,7 +419,11 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
     });
 
     it('drawn, is a link like any other, its own element wearing both classes', async () => {
-        const page = await drawn(built<$Writing>(<Writing>The Library<Self>/the-library/</Self></Writing>));
+        const page = await drawn(built<$Writing>(
+            <Writing>
+                The Library<Self>/the-library/</Self>
+            </Writing>
+        ));
         const anchor = page.firstElementChild!;
         expect(anchor.tagName).toBe('A');
         expect(anchor.getAttribute('href')).toBe('/the-library/');
@@ -324,7 +432,11 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
     });
 
     it('drawn, its anchor wears both classes too, the self-reference\'s added to the one its parent gives', async () => {
-        const page = await drawn(built<$Writing>(<Writing>The Library<Self>/the-library/</Self></Writing>));
+        const page = await drawn(built<$Writing>(
+            <Writing>
+                The Library<Self>/the-library/</Self>
+            </Writing>
+        ));
         const anchor = page.firstElementChild!;
         expect(anchor.classList.contains('pa-reference')).toBe(true);
         expect(anchor.classList.contains('pa-self-reference')).toBe(true);
@@ -341,7 +453,11 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
     });
 
     it('takes back both classes and its layer when it stops applying, with the erase it inherits', () => {
-        const writing = built<$Writing>(<Writing>this library <Self>/the-library/</Self></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                this library <Self>/the-library/</Self>
+            </Writing>
+        );
         expect([...writing.classes]).toContain('pa-self-reference');
         writing.annotations.add(writing, <Unmentioned />);
         writing.annotations.define();
@@ -351,14 +467,26 @@ describe('a self-reference is a reference that also wears pa-self-reference', ()
     });
 
     it('neither a self-reference nor a reference has a note: the underline is the sheet\'s invariant, and a link draws only its anchor', () => {
-        const writing = built<$Writing>(<Writing>this library <Self>/the-library/</Self></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                this library <Self>/the-library/</Self>
+            </Writing>
+        );
         expect(writing.annotations.find($SelfReference)[0].note()).toBeNull();
-        const plain = built<$Writing>(<Writing>the library <Reference>/the-library/</Reference></Writing>);
+        const plain = built<$Writing>(
+            <Writing>
+                the library <Reference>/the-library/</Reference>
+            </Writing>
+        );
         expect(plain.annotations.find($Reference)[0].note()).toBeNull();
     });
 
     it('is held to the specification a reference is held to', () => {
-        const writing = built<$Writing>(<Writing>this library <Self /></Writing>);
+        const writing = built<$Writing>(
+            <Writing>
+                this library <Self />
+            </Writing>
+        );
         expect(writing.specify()).toContain('Writing: a reference is the address its writing means, and this one holds none');
     });
 });

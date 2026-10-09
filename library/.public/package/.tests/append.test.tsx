@@ -14,7 +14,12 @@ describe('an append', () => {
         <Chapter>
             <Title>[The Plate](/a-paper/the-plate/)</Title>
             <Paragraph>What the plate is.</Paragraph>
-            <Append identifier="version1" type=".tsx">{'export const wheel = 1;'}</Append>
+            <Append
+                identifier="version1"
+                type=".tsx"
+            >
+                {'export const wheel = 1;'}
+            </Append>
             <Append type=".png">{'/assets/the-plate.png'}</Append>
         </Chapter>
     );
@@ -37,7 +42,12 @@ describe('an append', () => {
     });
 
     it('is said of a chapter, and says so on a paragraph', () => {
-        const paragraph = built<$Paragraph>(<Paragraph><Append type=".ts">{'x'}</Append>words</Paragraph>);
+        const paragraph = built<$Paragraph>(
+            <Paragraph>
+                <Append type=".ts">{'x'}</Append>
+                words
+            </Paragraph>
+        );
         expect(paragraph.specify().join('\n')).toContain('an append is said of a chapter, and this is not one');
         expect(new AppendSpecification()).toBeDefined();
     });

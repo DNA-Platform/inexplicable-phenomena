@@ -12,6 +12,11 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
     return container!;
 };
+const argument = (): React.ReactNode => (
+    <Chapter>
+        <Title>[The Argument](/a-paper/the-argument/)</Title>
+    </Chapter>
+);
 
 describe('a chapter is a composition at 6, permissive and closed, whose canonical is its title', () => {
     it('stands its level and pair, and its canonical is its title wherever it stands', () => {
@@ -31,15 +36,29 @@ describe('a chapter is a composition at 6, permissive and closed, whose canonica
     });
 
     it('a chapter with no title, or with two, says so when asked', () => {
-        const untitled = built<$Chapter>(<Chapter><Paragraph>only</Paragraph></Chapter>);
+        const untitled = built<$Chapter>(
+            <Chapter>
+                <Paragraph>only</Paragraph>
+            </Chapter>
+        );
         expect(untitled.canonical).toBeUndefined();
         expect(untitled.specify()).toContain('Chapter: a chapter has one title as its canonical, and this one does not');
-        const twice = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title><Title>[B](/a/b/)</Title></Chapter>);
+        const twice = built<$Chapter>(
+            <Chapter>
+                <Title>[A](/a/a/)</Title>
+                <Title>[B](/a/b/)</Title>
+            </Chapter>
+        );
         expect(twice.specify()).toContain('Chapter: a chapter has one title as its canonical, and this one does not');
     });
 
     it('holds only writing', () => {
-        const chapter = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title>words outside any writing</Chapter>);
+        const chapter = built<$Chapter>(
+            <Chapter>
+                <Title>[A](/a/a/)</Title>
+                words outside any writing
+            </Chapter>
+        );
         expect(chapter.specify()).toContain('Chapter: a closed composition holds only writing, and this one holds something else');
     });
 });
@@ -49,11 +68,25 @@ describe('a chapter is a composition at 6, permissive and closed, whose canonica
 describe('a chapter knows the chapter after it and before it among its book\'s, and is its own neighbour at either end', () => {
     const shelf = (): $Book => built<$Book>(
         <Book>
-            <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
-            <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
-            <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
-            <Chapter><Title>[A](/a-paper/a/)</Title></Chapter>
-            <Chapter><Title>[B](/a-paper/b/)</Title></Chapter>
+            <Chapter>
+                <Cover />
+                <Title>[A Paper](/a-paper/)</Title>
+            </Chapter>
+            <Chapter>
+                <Synopsis />
+                <Title>[Synopsis](/a-paper/)</Title>
+                <Paragraph>What it argues.</Paragraph>
+            </Chapter>
+            <Chapter>
+                <TableOfContents />
+                <Title>[Where Things Are](/a-paper/where-things-are/)</Title>
+            </Chapter>
+            <Chapter>
+                <Title>[A](/a-paper/a/)</Title>
+            </Chapter>
+            <Chapter>
+                <Title>[B](/a-paper/b/)</Title>
+            </Chapter>
         </Book>
     );
 
@@ -72,15 +105,24 @@ describe('a chapter knows the chapter after it and before it among its book\'s, 
     });
 
     it('built alone, or within a chapter rather than among the book\'s own, is its own neighbour both ways', () => {
-        const alone = built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>);
+        const alone = built<$Chapter>(
+            <Chapter>
+                <Title>[A](/a/a/)</Title>
+            </Chapter>
+        );
         expect(alone.next).toBe(alone);
         expect(alone.previous).toBe(alone);
         const book = built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[The Library](/the-library/)</Title></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Library](/the-library/)</Title>
+                </Chapter>
                 <Chapter>
                     <Title>[Of the Log](/the-library/of-the-log/)</Title>
-                    <Chapter><Title>[Entries](/the-log/entries/)</Title></Chapter>
+                    <Chapter>
+                        <Title>[Entries](/the-log/entries/)</Title>
+                    </Chapter>
                 </Chapter>
             </Book>
         );
@@ -94,7 +136,7 @@ describe('a chapter knows the chapter after it and before it among its book\'s, 
 
 describe('a title is a sentence that names its chapter, holding the link the compiler gives it', () => {
     it('is a sentence at 3 whose chapter is its parent, and is not a heading', () => {
-        const chapter = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>);
+        const chapter = built<$Chapter>(argument());
         const title = chapter.canonical!;
         expect(title.level).toBe(3);
         expect(title.chapter).toBe(chapter);
@@ -103,7 +145,7 @@ describe('a title is a sentence that names its chapter, holding the link the com
     });
 
     it('reads its words, means its url, and wears the url\'s fragment as its id', () => {
-        const title = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>).canonical!;
+        const title = built<$Chapter>(argument()).canonical!;
         expect(title.name).toBe('The Argument');
         expect(title.means?.identifier).toBe('/a-paper/the-argument/');
         expect(String(title.id)).toBe('the-argument');
@@ -111,17 +153,21 @@ describe('a title is a sentence that names its chapter, holding the link the com
 
     // Doug, 2026-09-26: "title.means = Reference to chapter; chapter.mention is a get property that returns title.means".
     it('is its chapter\'s title, and what it means is what its chapter mentions', () => {
-        const chapter = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>);
+        const chapter = built<$Chapter>(argument());
         expect(chapter.title).toBe(chapter.canonical);
         expect(chapter.mention).toBe(chapter.title?.means);
         expect(chapter.mention?.identifier).toBe('/a-paper/the-argument/');
-        const untitled = built<$Chapter>(<Chapter><Paragraph>no title</Paragraph></Chapter>);
+        const untitled = built<$Chapter>(
+            <Chapter>
+                <Paragraph>no title</Paragraph>
+            </Chapter>
+        );
         expect(untitled.title).toBeUndefined();
         expect(untitled.mention).toBeUndefined();
     });
 
     it('drawn, is its words as a link to itself, its own element wearing the id', async () => {
-        const page = await drawn(built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>));
+        const page = await drawn(built<$Chapter>(argument()));
         const own = page.querySelector('#the-argument')!;
         expect(own).not.toBeNull();
         expect(own.textContent).toContain('The Argument');
@@ -133,7 +179,7 @@ describe('a title is a sentence that names its chapter, holding the link the com
     // "a title is a self-reference." So it stands a Self, and the invariant every self-reference has, no underline
     // and the ink, is the title's too, and the Theme carries no rule just for titles.
     it('is a self-reference, standing a Self, so its element and its anchor wear both classes and the Theme needs no rule for it', async () => {
-        const title = built<$Chapter>(<Chapter><Title>[The Argument](/a-paper/the-argument/)</Title></Chapter>).title!;
+        const title = built<$Chapter>(argument()).title!;
         expect(title.means).toBeInstanceOf($SelfReference);
         expect([...title.classes]).toContain('pa-self-reference');
         const page = await drawn(title);
@@ -143,10 +189,18 @@ describe('a title is a sentence that names its chapter, holding the link the com
     // Doug, 2026-09-26: "Title should use the name to create the fragment with the Identifier utility. The url
     // should be completely arbitrary."
     it('makes its id from its name and never from its url, so a cover\'s title wears its book\'s slug', () => {
-        const arbitrary = built<$Chapter>(<Chapter><Title>[The Argument](anything)</Title></Chapter>).canonical!;
+        const arbitrary = built<$Chapter>(
+            <Chapter>
+                <Title>[The Argument](anything)</Title>
+            </Chapter>
+        ).canonical!;
         expect(arbitrary.means?.identifier).toBe('anything');
         expect(String(arbitrary.id)).toBe('the-argument');
-        const cover = built<$Chapter>(<Chapter><Title>[The Library](/the-library/)</Title></Chapter>).canonical!;
+        const cover = built<$Chapter>(
+            <Chapter>
+                <Title>[The Library](/the-library/)</Title>
+            </Chapter>
+        ).canonical!;
         expect(cover.means?.identifier).toBe('/the-library/');
         expect(String(cover.id)).toBe('the-library');
     });
@@ -156,10 +210,15 @@ describe('a title is a sentence that names its chapter, holding the link the com
     it('keeps its id wherever it is bound, since it reads nothing off its url', () => {
         const book = built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[The Library](/the-library/)</Title></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Library](/the-library/)</Title>
+                </Chapter>
                 <Chapter>
                     <Title>[Of the Log](/the-library/of-the-log/)</Title>
-                    <Chapter><Title>[Entries](/the-log/entries/)</Title></Chapter>
+                    <Chapter>
+                        <Title>[Entries](/the-log/entries/)</Title>
+                    </Chapter>
                 </Chapter>
             </Book>
         );
@@ -172,7 +231,11 @@ describe('a title is a sentence that names its chapter, holding the link the com
         const alone = built<$Title>(<Title>[A](/a/a/)</Title>);
         expect(alone.chapter).toBeUndefined();
         expect(alone.specify()).toContain('Title: a title stands in a chapter, and this one does not');
-        const plain = built<$Chapter>(<Chapter><Title>The Argument</Title></Chapter>);
+        const plain = built<$Chapter>(
+            <Chapter>
+                <Title>The Argument</Title>
+            </Chapter>
+        );
         expect(plain.specify()).toContain('Chapter / Title 0: a title holds the link the compiler gives it, and this one holds none');
     });
 });
@@ -235,7 +298,12 @@ describe('every writing answers the chapter it stands in, given or looked up, an
         expect(guest.chapter).toBe(guest);
         expect(guest.book).toBe(book);
         expect(guest.title!.book).toBe(book);
-        expect(built<$Chapter>(<Chapter><Title>[A](/a/a/)</Title></Chapter>).book).toBeUndefined();
+        const alone = built<$Chapter>(
+            <Chapter>
+                <Title>[A](/a/a/)</Title>
+            </Chapter>
+        );
+        expect(alone.book).toBeUndefined();
     });
 
     it('a book and an annotation said of it stand in no chapter and still answer the book, and a writing built alone answers none', () => {

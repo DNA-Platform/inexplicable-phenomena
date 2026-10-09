@@ -17,8 +17,14 @@ const classes = (writing: $Writing): string[] => [...writing.classes].filter(nam
 // A LIST MARKS ITS ITEMS ONCE, IN $BOUND, as a Table marks its rows and cells — Doug: "Mark at bound is great."
 const bound = <T extends $Writing,>(composition: React.ReactNode): T => built<$Book>(
     <Book>
-        <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
-        <Chapter><Title>[A List](/the-folio/a-list/)</Title>{composition}</Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[The Folio](/the-folio/)</Title>
+        </Chapter>
+        <Chapter>
+            <Title>[A List](/the-folio/a-list/)</Title>
+            {composition}
+        </Chapter>
     </Book>
 ).text.find($Chapter)[1].text.find($Section)[0] as unknown as T;
 
@@ -46,29 +52,80 @@ describe('a list is a way of interpreting a composition as items, marking each b
     });
 
     it('a paragraph\'s sentences are its items, a paragraph having no canonical', () => {
-        const paragraph = built<$Paragraph>(<Paragraph><List /><Line>one</Line><Line>two</Line></Paragraph>);
+        const paragraph = built<$Paragraph>(
+            <Paragraph>
+                <List />
+                <Line>one</Line>
+                <Line>two</Line>
+            </Paragraph>
+        );
         expect(paragraph.annotations.expressed($List)?.items).toHaveLength(2);
     });
 
     it('ordered when it says so, marking its composition pa-ordered as well; unordered by default', () => {
-        expect(classes(built<$Section>(<Section><List ordered /><Heading>h</Heading><Line>a</Line></Section>))).toEqual(['pa-list', 'pa-ordered']);
-        expect(classes(built<$Section>(<Section><List /><Heading>h</Heading><Line>a</Line></Section>))).toEqual(['pa-list']);
-        expect(built<$Section>(<Section><List ordered /><Heading>h</Heading></Section>).annotations.expressed($List)?.$ordered).toBe(true);
+        const ordered = built<$Section>(
+            <Section>
+                <List ordered />
+                <Heading>h</Heading>
+                <Line>a</Line>
+            </Section>
+        );
+        expect(classes(ordered)).toEqual(['pa-list', 'pa-ordered']);
+        const unordered = built<$Section>(
+            <Section>
+                <List />
+                <Heading>h</Heading>
+                <Line>a</Line>
+            </Section>
+        );
+        expect(classes(unordered)).toEqual(['pa-list']);
+        const said = built<$Section>(
+            <Section>
+                <List ordered />
+                <Heading>h</Heading>
+            </Section>
+        );
+        expect(said.annotations.expressed($List)?.$ordered).toBe(true);
     });
 
     it('a section built alone is never bound: it wears pa-list, and its items no marks', () => {
-        const section = built<$Section>(<Section><List /><Heading>h</Heading><Line>a</Line></Section>);
+        const section = built<$Section>(
+            <Section>
+                <List />
+                <Heading>h</Heading>
+                <Line>a</Line>
+            </Section>
+        );
         expect(classes(section)).toEqual(['pa-list']);
         expect(classes(section.parts[1])).toEqual([]);
     });
 
     it('is said of a composition and not of a letter, and says so when asked', () => {
-        expect(built<$Writing>(<Letter><List />a letter</Letter>).specify()).toContain('Letter: a list is said of a composition with parts, and a letter has none');
-        expect(built<$Section>(<Section><List /><Heading>h</Heading><Line>a</Line></Section>).specify()).toEqual([]);
+        const letter = built<$Writing>(
+            <Letter>
+                <List />
+                a letter
+            </Letter>
+        );
+        expect(letter.specify()).toContain('Letter: a list is said of a composition with parts, and a letter has none');
+        const section = built<$Section>(
+            <Section>
+                <List />
+                <Heading>h</Heading>
+                <Line>a</Line>
+            </Section>
+        );
+        expect(section.specify()).toEqual([]);
     });
 
     it('taken out, the next define takes the composition\'s classes back; the marks the bind gave its items stay', () => {
-        const section = bound<$Section>(<Section><List ordered /><Heading>h</Heading><Line>a</Line></Section>);
+        const section = bound<$Section>(
+            <Section>
+                <List ordered />
+                <Heading>h</Heading>
+                <Line>a</Line>
+            </Section>
+        );
         section.annotations.remove(section, section.annotations.find($List)[0]);
         section.annotations.define();
         expect(classes(section)).toEqual([]);
@@ -78,8 +135,19 @@ describe('a list is a way of interpreting a composition as items, marking each b
     it('drawn in its book, its items are list items by the Theme\'s sheet, numbered when ordered, and no rule is made per list', async () => {
         const page = await drawn(built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
-                <Chapter><Title>[A List](/the-folio/a-list/)</Title><Section><List ordered /><Heading>h</Heading><Line>a</Line><Line>b</Line></Section></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Folio](/the-folio/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[A List](/the-folio/a-list/)</Title>
+                    <Section>
+                        <List ordered />
+                        <Heading>h</Heading>
+                        <Line>a</Line>
+                        <Line>b</Line>
+                    </Section>
+                </Chapter>
             </Book>
         ));
         expect(page.querySelectorAll('.pa-list .pa-item').length).toBe(2);
@@ -91,7 +159,17 @@ describe('a list is a way of interpreting a composition as items, marking each b
     });
 
     it('a word may be an item too, since a sentence is a composition whose parts are its words', () => {
-        const paragraph = bound<$Section>(<Section><Heading>h</Heading><Paragraph><List /><Word>one</Word><Word>two</Word></Paragraph></Section>).parts[1];
+        const section = bound<$Section>(
+            <Section>
+                <Heading>h</Heading>
+                <Paragraph>
+                    <List />
+                    <Word>one</Word>
+                    <Word>two</Word>
+                </Paragraph>
+            </Section>
+        );
+        const paragraph = section.parts[1];
         expect(paragraph.annotations.expressed($List)?.items.map(item => classes(item))).toEqual([['pa-item'], ['pa-item']]);
     });
 });

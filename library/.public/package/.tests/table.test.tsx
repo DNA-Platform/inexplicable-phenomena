@@ -20,8 +20,14 @@ const classes = (writing: $Writing): string[] => [...writing.classes].filter(nam
 // marks cost no draw, and a section stands in a book to be bound. Doug, 2026-09-26: "Mark at bound is great."
 const bound = (section: React.ReactNode): $Section => built<$Book>(
     <Book>
-        <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
-        <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{section}</Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[The Folio](/the-folio/)</Title>
+        </Chapter>
+        <Chapter>
+            <Title>[A Catalogue](/the-folio/a-catalogue/)</Title>
+            {section}
+        </Chapter>
     </Book>
 ).text.find($Chapter)[1].text.find($Section)[0];
 
@@ -34,9 +40,18 @@ const folio = (table: React.ReactNode = <Table />): React.ReactNode => (
     <Section>
         {table}
         <Heading>Comedies, Histories, and Tragedies</Heading>
-        <Paragraph><Word>The Tempest</Word><Word>Twelfth Night</Word></Paragraph>
-        <Paragraph><Word>King John</Word><Word>Richard II</Word></Paragraph>
-        <Paragraph><Word>Hamlet</Word><Word>Macbeth</Word></Paragraph>
+        <Paragraph>
+            <Word>The Tempest</Word>
+            <Word>Twelfth Night</Word>
+        </Paragraph>
+        <Paragraph>
+            <Word>King John</Word>
+            <Word>Richard II</Word>
+        </Paragraph>
+        <Paragraph>
+            <Word>Hamlet</Word>
+            <Word>Macbeth</Word>
+        </Paragraph>
     </Section>
 );
 
@@ -60,7 +75,18 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
 
     it('a paragraph\'s sentences are its rows, every one unless $start says otherwise', () => {
         const rows = (table: React.ReactNode): number => built<$Paragraph>(
-            <Paragraph>{table}<Sentence><Word>one</Word></Sentence><Sentence><Word>two</Word></Sentence><Sentence><Word>three</Word></Sentence></Paragraph>
+            <Paragraph>
+                {table}
+                <Sentence>
+                    <Word>one</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>two</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>three</Word>
+                </Sentence>
+            </Paragraph>
         ).annotations.expressed($Table)?.rows.length ?? 0;
         expect(rows(<Table />)).toBe(3);
         expect(rows(<Table start={1} />)).toBe(2);
@@ -71,8 +97,13 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
             <Section>
                 <Table />
                 <Heading>h</Heading>
-                <Paragraph><Word>a</Word><Word>b</Word></Paragraph>
-                <Paragraph><Word>alone</Word></Paragraph>
+                <Paragraph>
+                    <Word>a</Word>
+                    <Word>b</Word>
+                </Paragraph>
+                <Paragraph>
+                    <Word>alone</Word>
+                </Paragraph>
             </Section>
         );
         expect(classes(section.parts[2].parts[0])).toEqual(['pa-col', 'pa-col-start-1', 'pa-col-span-2']);
@@ -87,7 +118,13 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
     it('says so when it has not the rows or the columns it says, and when it is said of no composition', () => {
         expect(built<$Section>(folio(<Table rows={2} />)).specify()).toContain('Section: a table has the rows it says, and this one has another number');
         expect(built<$Section>(folio(<Table columns={1} />)).specify()).toContain('Section: a table has the columns it says, and one of its rows has more');
-        expect(built<$Section>(folio(<Table rows={3} columns={2} />)).specify()).toEqual([]);
+        const whole = built<$Section>(folio(
+            <Table
+                rows={3}
+                columns={2}
+            />
+        ));
+        expect(whole.specify()).toEqual([]);
     });
 
     it('taken out, the next define takes the section\'s classes back; the marks the bind gave its rows and cells stay', () => {
@@ -106,8 +143,14 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
     it('drawn in its book, the section\'s own element wears pa-table inside the Table\'s own layer and is the grid by the Table\'s own component, its six cells inside it in their rows, and no rule is made for this table', async () => {
         const page = await drawn(built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
-                <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{folio()}</Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Folio](/the-folio/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[A Catalogue](/the-folio/a-catalogue/)</Title>
+                    {folio()}
+                </Chapter>
             </Book>
         ));
         const table = page.querySelector('.pa-table')!;
@@ -132,8 +175,14 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
     it('places a linked cell by its own marks, its anchor no box in the grid, and a heading across the width', async () => {
         await drawn(built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
-                <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{folio()}</Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Folio](/the-folio/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[A Catalogue](/the-folio/a-catalogue/)</Title>
+                    {folio()}
+                </Chapter>
             </Book>
         ));
         const sheet = document.head.innerHTML;
@@ -156,8 +205,14 @@ describe('a table is a way of interpreting a composition as a grid, marking its 
         // SERVED WITH A SHEET OF ITS OWN, since the document's head holds every promise's rules before it.
         const Drawn = $(built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[The Folio](/the-folio/)</Title></Chapter>
-                <Chapter><Title>[A Catalogue](/the-folio/a-catalogue/)</Title>{folio(<Ledger />)}</Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[The Folio](/the-folio/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[A Catalogue](/the-folio/a-catalogue/)</Title>
+                    {folio(<Ledger />)}
+                </Chapter>
             </Book>
         ));
         const collected = new ServerStyleSheet();

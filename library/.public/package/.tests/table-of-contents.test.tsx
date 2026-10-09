@@ -19,22 +19,32 @@ const table = (): React.ReactNode => (
         <Title>[Table of Contents](/a-paper/table-of-contents/)</Title>
         <Section>
             <Heading>Contents</Heading>
-            <Paragraph><Content>[The Argument](/a-paper/the-argument/)</Content></Paragraph>
             <Paragraph>
-                <Word><Content>[The Evidence](/a-paper/the-evidence/)</Content></Word>
+                <Content>[The Argument](/a-paper/the-argument/)</Content>
+            </Paragraph>
+            <Paragraph>
+                <Word>
+                    <Content>[The Evidence](/a-paper/the-evidence/)</Content>
+                </Word>
                 and a word that is no entry
             </Paragraph>
         </Section>
         <Section>
             <Heading>The Catalogue</Heading>
-            <Paragraph><Content>[The Log](/the-log/)</Content></Paragraph>
+            <Paragraph>
+                <Content>[The Log](/the-log/)</Content>
+            </Paragraph>
         </Section>
     </Chapter>
 );
 
 describe('a content is a reference an entry of a table stands, which draws its name as its note', () => {
     it('reads its name and its identifier from the pair the compiler wrote, and is a reference', () => {
-        const paragraph = built<$Writing>(<Paragraph><Content>[The Argument](/a-paper/the-argument/)</Content></Paragraph>);
+        const paragraph = built<$Writing>(
+            <Paragraph>
+                <Content>[The Argument](/a-paper/the-argument/)</Content>
+            </Paragraph>
+        );
         const content = paragraph.annotations.find($Content)[0];
         expect(content).toBeInstanceOf($Reference);
         expect(content.name).toBe('The Argument');
@@ -42,7 +52,11 @@ describe('a content is a reference an entry of a table stands, which draws its n
     });
 
     it('drawn, makes the writing it annotates the link, its name inside it in a span wearing pa-content', async () => {
-        const page = await drawn(built<$Writing>(<Paragraph><Content>[The Argument](/a-paper/the-argument/)</Content></Paragraph>));
+        const page = await drawn(built<$Writing>(
+            <Paragraph>
+                <Content>[The Argument](/a-paper/the-argument/)</Content>
+            </Paragraph>
+        ));
         const link = page.querySelector('a[href="/a-paper/the-argument/"]');
         expect(link).not.toBeNull();
         expect(link?.querySelector('span.pa-content')?.textContent).toBe('The Argument');
@@ -54,15 +68,26 @@ describe('a content is a reference an entry of a table stands, which draws its n
 const Elsewhere = (): React.ReactNode => (
     <Chapter>
         <Title>[Elsewhere](/a-paper/elsewhere/)</Title>
-        <Paragraph><Content>[The Library](/the-library/)</Content></Paragraph>
-        <Chapter><Title>[Within](/a-paper/within/)</Title><Paragraph>a chapter in a chapter</Paragraph></Chapter>
+        <Paragraph>
+            <Content>[The Library](/the-library/)</Content>
+        </Paragraph>
+        <Chapter>
+            <Title>[Within](/a-paper/within/)</Title>
+            <Paragraph>a chapter in a chapter</Paragraph>
+        </Chapter>
     </Chapter>
 );
 
 const paper = (): $Book => built<$Book>(
     <Book>
-        <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
-        <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title></Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[A Paper](/a-paper/)</Title>
+        </Chapter>
+        <Chapter>
+            <Synopsis />
+            <Title>[Synopsis](/a-paper/)</Title>
+        </Chapter>
         {table()}
         {Elsewhere()}
     </Book>
@@ -84,10 +109,18 @@ describe('a table of contents has contents: what its book\'s chapters mention, i
     // R7 — the written entries still work: every one within the book's own address is among the contents.
     // A catalogue's rows name other books too, which no chapter of this one mentions.
     it('every written entry within the book\'s address is among them', () => {
-        const chapter = (name: string, fragment: string): React.ReactNode => <Chapter><Title>[{name}](/a-paper/{fragment}/)</Title><Paragraph>{name}</Paragraph></Chapter>;
+        const chapter = (name: string, fragment: string): React.ReactNode => (
+            <Chapter>
+                <Title>[{name}](/a-paper/{fragment}/)</Title>
+                <Paragraph>{name}</Paragraph>
+            </Chapter>
+        );
         const book = built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[A Paper](/a-paper/)</Title>
+                </Chapter>
                 {table()}
                 {chapter('The Argument', 'the-argument')}
                 {chapter('The Evidence', 'the-evidence')}
@@ -104,7 +137,12 @@ describe('a table of contents has contents: what its book\'s chapters mention, i
 
     it('is read when asked, so a chapter added to the book is among them at once', () => {
         const book = paper();
-        book.text.add(book, <Chapter><Title>[Afterword](/a-paper/afterword/)</Title><Paragraph>added</Paragraph></Chapter>);
+        book.text.add(book,
+            <Chapter>
+                <Title>[Afterword](/a-paper/afterword/)</Title>
+                <Paragraph>added</Paragraph>
+            </Chapter>
+        );
         const contents = book.table?.annotations.expressed($TableOfContents)?.contents ?? [];
         expect(contents.map(reference => reference.identifier)).toContain('/a-paper/afterword/');
     });

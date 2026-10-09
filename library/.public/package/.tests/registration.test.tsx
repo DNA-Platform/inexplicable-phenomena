@@ -35,10 +35,30 @@ const Framed = $($Framed);
 const Inked = $($Inked);
 
 const chapters = (): React.ReactNode[] => [
-    <Chapter key="c"><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>,
-    <Chapter key="s"><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>,
-    <Chapter key="t"><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>,
-    <Chapter key="a"><Table /><Framed /><Title>[A](/a-paper/a/)</Title><Paragraph>row one <Inked /></Paragraph><Paragraph>row two</Paragraph></Chapter>,
+    <Chapter key="c">
+        <Cover />
+        <Title>[A Paper](/a-paper/)</Title>
+        <Author>[A Persona](/a-persona/)</Author>
+        <Subject>[The Library](/the-library/)</Subject>
+    </Chapter>,
+    <Chapter key="s">
+        <Synopsis />
+        <Title>[Synopsis](/a-paper/)</Title>
+        <Paragraph>What it argues.</Paragraph>
+    </Chapter>,
+    <Chapter key="t">
+        <TableOfContents />
+        <Title>[Where Things Are](/a-paper/where-things-are/)</Title>
+    </Chapter>,
+    <Chapter key="a">
+        <Table />
+        <Framed />
+        <Title>[A](/a-paper/a/)</Title>
+        <Paragraph>
+            row one <Inked />
+        </Paragraph>
+        <Paragraph>row two</Paragraph>
+    </Chapter>,
 ];
 
 // REPLACE BY REGISTRATION WHAT THE FRAMEWORK STANDS; REPLACE BY IMPORT WHAT A CHAPTER WRITES — Sprint 97's P5 as
@@ -74,7 +94,16 @@ describe('a registration on a book class answers what the framework stands; what
         expect(html).toContain('pa-framed');
         expect(html).toMatch(/class="[^"]*\bpa-table\b/u);
         expect(html).not.toContain('pa-ledger');
-        const imported = served(built<$Book>(<Mine>{chapters().slice(0, 3)}<Chapter key="l"><Ledger /><Title>[L](/a-paper/l/)</Title><Paragraph>row one</Paragraph></Chapter></Mine>));
+        const imported = served(built<$Book>(
+            <Mine>
+                {chapters().slice(0, 3)}
+                <Chapter key="l">
+                    <Ledger />
+                    <Title>[L](/a-paper/l/)</Title>
+                    <Paragraph>row one</Paragraph>
+                </Chapter>
+            </Mine>
+        ));
         expect(imported).toContain('pa-ledger');
     });
 

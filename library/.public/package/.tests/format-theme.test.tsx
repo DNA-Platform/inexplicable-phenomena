@@ -25,8 +25,16 @@ const Inky = $($Inky);
 const shelf = (paragraph: React.ReactNode): $Book => built<$Book>(
     <Book>
         <Inky />
-        <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
-        <Chapter><Title>[A Quote](/a-paper/a-quote/)</Title>{paragraph}</Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[A Paper](/a-paper/)</Title>
+            <Author>[A Persona](/a-persona/)</Author>
+            <Subject>[The Library](/the-library/)</Subject>
+        </Chapter>
+        <Chapter>
+            <Title>[A Quote](/a-paper/a-quote/)</Title>
+            {paragraph}
+        </Chapter>
     </Book>
 );
 
@@ -44,7 +52,13 @@ class $Quoted extends $Format {
     $Quoted(...chemicals: $Chemical[]) {
         this.$Format(...chemicals);
         const Quote = this.style;
-        this.style = (props: { children?: ReactNode; className?: string }) => <Quote $rule={this.rule} $ink={this.ink} {...props} />;
+        this.style = (props: { children?: ReactNode; className?: string }) => (
+            <Quote
+                $rule={this.rule}
+                $ink={this.ink}
+                {...props}
+            />
+        );
     }
 }
 
@@ -63,7 +77,12 @@ class $Inked extends $Format {
     $Inked(...chemicals: $Chemical[]) {
         this.$Format(...chemicals);
         const Span = this.style;
-        this.style = (props: { children?: ReactNode; className?: string }) => <Span $ink={(this.theme as $Inky).ink} {...props} />;
+        this.style = (props: { children?: ReactNode; className?: string }) => (
+            <Span
+                $ink={(this.theme as $Inky).ink}
+                {...props}
+            />
+        );
     }
 }
 
@@ -108,7 +127,13 @@ const Themed = $($Themed);
 
 describe('a format consumes its theme through its book, exposes its own properties to its component, and may provide', () => {
     it('keeps the writing an element of its own inside the provider\'s, with the classes its annotations gave it', async () => {
-        const book = shelf(<Paragraph>prose <Housed /><Parenthetical /></Paragraph>);
+        const book = shelf(
+            <Paragraph>
+                prose
+                <Housed />
+                <Parenthetical />
+            </Paragraph>
+        );
         const container = await drawn(book);
         const provided = container.querySelector('section')!;
         expect(provided.className).toContain('pd-container');
@@ -116,16 +141,32 @@ describe('a format consumes its theme through its book, exposes its own properti
     });
 
     it('a format\'s own properties reach its component, and a subclass setting them draws its own', async () => {
-        await drawn(shelf(<Paragraph>a quote <Quoted /></Paragraph>));
+        await drawn(shelf(
+            <Paragraph>
+                a quote
+                <Quoted />
+            </Paragraph>
+        ));
         expect(sheet()).toContain('border-left:3px solid silver');
         expect(sheet()).toContain('color:black');
-        await drawn(shelf(<Paragraph>a quote <Ruled /></Paragraph>));
+        await drawn(shelf(
+            <Paragraph>
+                a quote
+                <Ruled />
+            </Paragraph>
+        ));
         expect(sheet()).toContain('border-left:3px solid blue');
         expect(sheet()).toContain('color:navy');
     });
 
     it('a format reads its book\'s theme, typed as the base, and hands a value it reads to its component; the variable form is the provider\'s', async () => {
-        const book = shelf(<Paragraph>inked <Inked /><Themed /></Paragraph>);
+        const book = shelf(
+            <Paragraph>
+                inked
+                <Inked />
+                <Themed />
+            </Paragraph>
+        );
         const inked = book.text.find($Chapter)[1].text.find($Paragraph)[0].annotations.find($Inked)[0];
         expect(inked.theme).toBe(book.theme);
         expect((inked.theme as $Inky).ink).toBe('black');
@@ -134,7 +175,12 @@ describe('a format consumes its theme through its book, exposes its own properti
     });
 
     it('a format built in no book has no theme, and says so', () => {
-        const alone = built<$Writing>(<Paragraph>alone <Themed /></Paragraph>);
+        const alone = built<$Writing>(
+            <Paragraph>
+                alone
+                <Themed />
+            </Paragraph>
+        );
         const themed = alone.annotations.find($Themed)[0];
         expect(() => themed.theme).toThrow('a format reads its theme from its book, and this one stands in none');
     });
@@ -144,9 +190,21 @@ describe('a format consumes its theme through its book, exposes its own properti
     // providing() wraps it in ThemeProvider with a live face over that chemical, so a template reads the field itself;
     // a Format reaching another theme hands that one down, the gap Themes and Formats had recorded as owed.
     it('one that provides hands its theme to everything it draws, the book\'s or another a subclass reaches, as the fields themselves', async () => {
-        await drawn(shelf(<Paragraph>a quote <Housed /><Themed /></Paragraph>));
+        await drawn(shelf(
+            <Paragraph>
+                a quote
+                <Housed />
+                <Themed />
+            </Paragraph>
+        ));
         expect(sheet()).toContain('color:black');
-        await drawn(shelf(<Paragraph>a quote <Nightly /><Themed /></Paragraph>));
+        await drawn(shelf(
+            <Paragraph>
+                a quote
+                <Nightly />
+                <Themed />
+            </Paragraph>
+        ));
         expect(sheet()).toContain('color:ivory');
     });
 });

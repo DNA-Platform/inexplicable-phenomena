@@ -7,6 +7,7 @@ import { $Writing, $Sentence, Sentence, $Paragraph, Paragraph, Word, $Math, Math
 import { $Book, Book, $Chapter, Chapter, Cover, Title, Section, Heading } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
+const typesetter = (tex: string, display: boolean): string => `<i data-display="${display}">${tex}</i>`;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
     const Drawn = $(writing);
     let container: HTMLElement | undefined;
@@ -33,13 +34,17 @@ describe('math is a word whose text is TeX, typeset inline', () => {
     });
 
     it('stands in a sentence as a word does, a part of it', () => {
-        const sentence = built<$Sentence>(<Sentence>Einstein wrote <Math>{'E = mc^2'}</Math> and stopped.</Sentence>);
+        const sentence = built<$Sentence>(
+            <Sentence>
+                Einstein wrote <Math>{'E = mc^2'}</Math> and stopped.
+            </Sentence>
+        );
         expect(sentence.parts).toHaveLength(1);
         expect(sentence.parts[0]).toBeInstanceOf($Math);
     });
 
     it('typesets through its typesetter, a prop, so a stub draws the stub\'s markup', async () => {
-        const math = built<$Math>(<Math typesetter={(tex: string, display: boolean) => `<i data-display="${display}">${tex}</i>`}>{'x'}</Math>);
+        const math = built<$Math>(<Math typesetter={typesetter}>{'x'}</Math>);
         const page = await drawn(math);
         expect(page.querySelector('.pd-math i')?.getAttribute('data-display')).toBe('false');
         expect(page.querySelector('.pd-math i')?.textContent).toBe('x');
@@ -57,7 +62,7 @@ describe('an equation is a paragraph of TeX, typeset in display mode and numbere
     });
 
     it('typesets through its typesetter in display mode', async () => {
-        const equation = built<$Equation>(<Equation typesetter={(tex: string, display: boolean) => `<i data-display="${display}">${tex}</i>`}>{'y'}</Equation>);
+        const equation = built<$Equation>(<Equation typesetter={typesetter}>{'y'}</Equation>);
         const page = await drawn(equation);
         expect(page.querySelector('.pd-equation i')?.getAttribute('data-display')).toBe('true');
     });
@@ -67,11 +72,20 @@ describe('an equation is a paragraph of TeX, typeset in display mode and numbere
     it('drawn in its book, is marked pd-equation and pd-math and the base numbers nothing', async () => {
         const page = await drawn(built<$Book>(
             <Book>
-                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
-                <Chapter><Title>[The Evidence](/a-paper/the-evidence/)</Title><Section><Heading>h</Heading>
-                    <Paragraph>So <Math>{'a^2'}</Math>.</Paragraph>
-                    <Equation>{'a^2 + b^2 = c^2'}</Equation>
-                </Section></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[A Paper](/a-paper/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[The Evidence](/a-paper/the-evidence/)</Title>
+                    <Section>
+                        <Heading>h</Heading>
+                        <Paragraph>
+                            So <Math>{'a^2'}</Math>.
+                        </Paragraph>
+                        <Equation>{'a^2 + b^2 = c^2'}</Equation>
+                    </Section>
+                </Chapter>
             </Book>
         ));
         expect(page.querySelector('.pd-equation')).not.toBeNull();

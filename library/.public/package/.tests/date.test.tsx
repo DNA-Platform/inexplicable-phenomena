@@ -43,7 +43,11 @@ describe('a date is a word whose said words stand for a day the machine can read
     });
 
     it('stands in a sentence as a word does, its own element the time', async () => {
-        const sentence = built<$Sentence>(<Sentence>Begun on <Date>[a Tuesday](2026-09-29)</Date>, as it says.</Sentence>);
+        const sentence = built<$Sentence>(
+            <Sentence>
+                Begun on <Date>[a Tuesday](2026-09-29)</Date>, as it says.
+            </Sentence>
+        );
         expect(sentence.parts).toHaveLength(1);
         expect(sentence.parts[0]).toBeInstanceOf($Date);
         const page = await drawn(sentence);

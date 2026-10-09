@@ -28,13 +28,31 @@ describe('blank keeps a writing\'s extent and shows nothing; space, break and li
     // A MARK AND NOTHING ELSE since Sprint 97's S3: what stands Blank — a Space of non-breaking spaces, an empty Break —
     // has no ink to hide, so the base writes no rule; a library that blanks something else dresses pa-blank by mark.
     it('a blank word wears pa-blank, its box kept, and the base writes no rule for it', async () => {
-        const word = built<$Word>(<Word>unseen <Blank /></Word>);
+        const word = built<$Word>(
+            <Word>
+                unseen
+                <Blank />
+            </Word>
+        );
         expect([...word.classes]).toContain('pa-blank');
         expect(word.is(Blank)).toBe(true);
         expect(word.annotations.find(Blank)[0].note()).toBeNull();
         const page = await drawn(word);
         expect(page.querySelector('.pa-blank')!.textContent).toContain('unseen');
-        const book = built<$Book>(<Book><Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Paragraph><Word>unseen <Blank /></Word></Paragraph></Chapter></Book>);
+        const book = built<$Book>(
+            <Book>
+                <Chapter>
+                    <Cover />
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Paragraph>
+                        <Word>
+                            unseen
+                            <Blank />
+                        </Word>
+                    </Paragraph>
+                </Chapter>
+            </Book>
+        );
         expect(served(book)).not.toContain('.pa-blank');
     });
 

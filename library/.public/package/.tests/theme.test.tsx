@@ -44,10 +44,27 @@ const sources = (): { file: string; text: string }[] => {
 const shelf = (theme: React.ReactNode): $Book => built<$Book>(
     <Book>
         {theme}
-        <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
-        <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
-        <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
-        <Chapter><Title>[A](/a-paper/a/)</Title><Paragraph>the words of A <Word>deep <Inked /></Word></Paragraph></Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[A Paper](/a-paper/)</Title>
+            <Author>[A Persona](/a-persona/)</Author>
+            <Subject>[The Library](/the-library/)</Subject>
+        </Chapter>
+        <Chapter>
+            <Synopsis />
+            <Title>[Synopsis](/a-paper/)</Title>
+            <Paragraph>What it argues.</Paragraph>
+        </Chapter>
+        <Chapter>
+            <TableOfContents />
+            <Title>[Where Things Are](/a-paper/where-things-are/)</Title>
+        </Chapter>
+        <Chapter>
+            <Title>[A](/a-paper/a/)</Title>
+            <Paragraph>
+                the words of A <Word>deep <Inked /></Word>
+            </Paragraph>
+        </Chapter>
     </Book>
 );
 
@@ -163,11 +180,30 @@ describe('a theme is a format said of a book: a place for properties every compo
         const book = built<$Book>(
             <Book>
                 <Inky />
-                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[A Paper](/a-paper/)</Title>
+                    <Author>[A Persona](/a-persona/)</Author>
+                    <Subject>[The Library](/the-library/)</Subject>
+                </Chapter>
                 <Chapter>
                     <Title>[Words](/a-paper/words/)</Title>
-                    <Paragraph>{six.map(i => <Counted key={i}><Reads />{`inked ${i}`}</Counted>)}</Paragraph>
-                    <Paragraph>{six.map(i => <Counted key={i}><Bolds />{`bold ${i}`}</Counted>)}</Paragraph>
+                    <Paragraph>
+                        {six.map(i => (
+                            <Counted key={i}>
+                                <Reads />
+                                {`inked ${i}`}
+                            </Counted>
+                        ))}
+                    </Paragraph>
+                    <Paragraph>
+                        {six.map(i => (
+                            <Counted key={i}>
+                                <Bolds />
+                                {`bold ${i}`}
+                            </Counted>
+                        ))}
+                    </Paragraph>
                 </Chapter>
             </Book>
         );
@@ -221,7 +257,12 @@ describe('a theme is a format said of a book: a place for properties every compo
     });
 
     it('said of a section, says so when asked', () => {
-        const section = built<$Section>(<Section><Theme /><Heading>h</Heading></Section>);
+        const section = built<$Section>(
+            <Section>
+                <Theme />
+                <Heading>h</Heading>
+            </Section>
+        );
         expect(section.annotations.expressed($Theme)?.specification).toBeInstanceOf(ThemeSpecification);
         expect(section.specify()).toContain('Section: a theme is said of a book, and this is not one');
     });

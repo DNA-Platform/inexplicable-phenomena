@@ -17,11 +17,29 @@ const drawn = async (writing: $Writing): Promise<HTMLElement> => {
 const shelf = (pagination: React.ReactNode = <Paginated />, bookmark?: string): $Book => built<$Book>(
     <Book bookmark={bookmark}>
         {pagination}
-        <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title><Author>[A Persona](/a-persona/)</Author><Subject>[The Library](/the-library/)</Subject></Chapter>
-        <Chapter><Synopsis /><Title>[Synopsis](/a-paper/)</Title><Paragraph>What it argues.</Paragraph></Chapter>
-        <Chapter><TableOfContents /><Title>[Where Things Are](/a-paper/where-things-are/)</Title></Chapter>
-        <Chapter><Title>[A](/a-paper/a/)</Title><Paragraph>the words of A</Paragraph></Chapter>
-        <Chapter><Title>[B](/a-paper/b/)</Title><Paragraph>the words of B</Paragraph></Chapter>
+        <Chapter>
+            <Cover />
+            <Title>[A Paper](/a-paper/)</Title>
+            <Author>[A Persona](/a-persona/)</Author>
+            <Subject>[The Library](/the-library/)</Subject>
+        </Chapter>
+        <Chapter>
+            <Synopsis />
+            <Title>[Synopsis](/a-paper/)</Title>
+            <Paragraph>What it argues.</Paragraph>
+        </Chapter>
+        <Chapter>
+            <TableOfContents />
+            <Title>[Where Things Are](/a-paper/where-things-are/)</Title>
+        </Chapter>
+        <Chapter>
+            <Title>[A](/a-paper/a/)</Title>
+            <Paragraph>the words of A</Paragraph>
+        </Chapter>
+        <Chapter>
+            <Title>[B](/a-paper/b/)</Title>
+            <Paragraph>the words of B</Paragraph>
+        </Chapter>
     </Book>
 );
 const classes = (book: $Book): string[][] => book.text.find($Chapter).map(chapter => [...chapter.classes]);
@@ -92,10 +110,21 @@ describe('a paginated book shows one chapter at a time, the one its bookmark nam
         const book = built<$Book>(
             <Book bookmark="/a-paper/b/">
                 <Tabbed />
-                <Chapter><Cover /><Title>[A Paper](/a-paper/)</Title></Chapter>
-                <Chapter><Tab /><Title>[A](/a-paper/a/)</Title></Chapter>
-                <Chapter><Tab /><Title>[B](/a-paper/b/)</Title></Chapter>
-                <Chapter><Title>[Colophon](/a-paper/colophon/)</Title></Chapter>
+                <Chapter>
+                    <Cover />
+                    <Title>[A Paper](/a-paper/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Tab />
+                    <Title>[A](/a-paper/a/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Tab />
+                    <Title>[B](/a-paper/b/)</Title>
+                </Chapter>
+                <Chapter>
+                    <Title>[Colophon](/a-paper/colophon/)</Title>
+                </Chapter>
             </Book>
         );
         book.annotations.define();
@@ -106,7 +135,12 @@ describe('a paginated book shows one chapter at a time, the one its bookmark nam
     });
 
     it('said of a section, says so when asked', () => {
-        const section = built<$Section>(<Section><Paginated /><Heading>h</Heading></Section>);
+        const section = built<$Section>(
+            <Section>
+                <Paginated />
+                <Heading>h</Heading>
+            </Section>
+        );
         expect(section.annotations.expressed($Paginated)?.specification).toBeInstanceOf(PaginatedSpecification);
         expect(section.specify()).toContain('Section: paginated is said of a book, and this is not one');
     });

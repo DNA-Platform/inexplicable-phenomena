@@ -72,7 +72,16 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
     });
 
     it('holds chapters, and a section standing straight in it is not a part it may hold', () => {
-        const book = built<$Book>(<Book>{APaper()}{WhatItArgues()}{WhereThingsAre()}<Section><Heading>h</Heading></Section></Book>);
+        const book = built<$Book>(
+            <Book>
+                {APaper()}
+                {WhatItArgues()}
+                {WhereThingsAre()}
+                <Section>
+                    <Heading>h</Heading>
+                </Section>
+            </Book>
+        );
         expect(book.specify()).toContain('Book: a strict composition holds parts at its level or one below, and this one holds another');
     });
 
@@ -97,7 +106,11 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
     // book has one synopsis OF ITSELF and may carry others'.
     it('has one synopsis of itself, which it exposes, and may carry a chapter that is another book\'s synopsis', () => {
         const LogSynopsis = (): React.ReactNode => (
-            <Chapter><Synopsis /><Title>[Synopsis](/the-log/)</Title><Paragraph>The one book here that is by what it is about.</Paragraph></Chapter>
+            <Chapter>
+                <Synopsis />
+                <Title>[Synopsis](/the-log/)</Title>
+                <Paragraph>The one book here that is by what it is about.</Paragraph>
+            </Chapter>
         );
         const OfTheLog = (): React.ReactNode => (
             <Chapter>
@@ -140,9 +153,18 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
     // possible, but skip the title as a default and customize from there for your library."
     it('a catalogue\'s chapter holding another book\'s synopsis keeps its own title, and is the bookmark at its own route', () => {
         const LibbySynopsis = (): React.ReactNode => (
-            <Chapter><Synopsis /><Title>[Synopsis](/libby/)</Title><Paragraph>A librarian's own account.</Paragraph></Chapter>
+            <Chapter>
+                <Synopsis />
+                <Title>[Synopsis](/libby/)</Title>
+                <Paragraph>A librarian's own account.</Paragraph>
+            </Chapter>
         );
-        const OfLibby = (): React.ReactNode => <Chapter><Title>[Of Libby](/the-library/of-libby/)</Title><Synopsis>{LibbySynopsis()}</Synopsis></Chapter>;
+        const OfLibby = (): React.ReactNode => (
+            <Chapter>
+                <Title>[Of Libby](/the-library/of-libby/)</Title>
+                <Synopsis>{LibbySynopsis()}</Synopsis>
+            </Chapter>
+        );
         const book = built<$Book>(<Book bookmark="/the-library/of-libby/">{APaper()}{OfLibby()}</Book>);
         const ofLibby = book.parts[1] as $Chapter;
         expect(ofLibby.title?.means?.identifier).toBe('/the-library/of-libby/');
@@ -175,7 +197,15 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
     it('a paged book told a new bookmark turns only once the page it names is open', async () => {
         const turned: [string, boolean][] = [];
         Element.prototype.scrollIntoView = function (this: Element) { turned.push([this.querySelector('.pd-title')?.id ?? this.id, this.classList.contains('pa-open')]); };
-        const book = built<$Book>(<Book bookmark="/a-paper/the-argument/"><Paginated />{APaper()}{WhatItArgues()}{WhereThingsAre()}{TheArgument()}</Book>);
+        const book = built<$Book>(
+            <Book bookmark="/a-paper/the-argument/">
+                <Paginated />
+                {APaper()}
+                {WhatItArgues()}
+                {WhereThingsAre()}
+                {TheArgument()}
+            </Book>
+        );
         const Drawn = $(book);
         await act(async () => { render(<Drawn />); });
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });
@@ -206,7 +236,11 @@ describe('a book is a composition at 7, strict and closed, whose canonical is it
     });
 
     it('a chapter that does not specify makes the book say so, coded to that chapter', () => {
-        const Untitled = (): React.ReactNode => <Chapter><Paragraph>no title</Paragraph></Chapter>;
+        const Untitled = (): React.ReactNode => (
+            <Chapter>
+                <Paragraph>no title</Paragraph>
+            </Chapter>
+        );
         const book = built<$Book>(<Book>{APaper()}{WhatItArgues()}{WhereThingsAre()}{Untitled()}</Book>);
         expect(book.specify()).toContain('Book / Chapter 3: a chapter has one title as its canonical, and this one does not');
     });
@@ -239,7 +273,10 @@ describe('a book binds: once it is whole, every writing in it is bound, top to b
                 <Title>[The Argument](/a-paper/the-argument/)</Title>
                 <Section>
                     <Heading>What is claimed</Heading>
-                    <Binding>A reference names a thing and never a place. <Noting /></Binding>
+                    <Binding>
+                        A reference names a thing and never a place.
+                        <Noting />
+                    </Binding>
                 </Section>
             </Chapter>
         );
@@ -323,7 +360,13 @@ describe('every writing has a book', () => {
         // NO VALUES OF ITS OWN since Sprint 97's policy — Doug: "none — a library names its own."
         expect('ink' in plain.theme).toBe(false);
         expect(plain.specify().filter(said => said.includes('theme'))).toEqual([]);
-        const dark = built<$Book>(<Book><Dark />{APaper()}{TheArgument()}</Book>);
+        const dark = built<$Book>(
+            <Book>
+                <Dark />
+                {APaper()}
+                {TheArgument()}
+            </Book>
+        );
         expect(dark.theme).toBeInstanceOf($Dark);
         expect((dark.theme as $Dark).ink).toBe('white');
         expect(dark.annotations.find($Theme)).toHaveLength(2);
