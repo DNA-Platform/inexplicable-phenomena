@@ -101,13 +101,13 @@ describe('the figures', () => {
         expect(unknown).toContain('<code class="language-no-such-language">a &lt; b &amp;&amp; c &gt; d</code>');
     });
 
-    it('Image draws the picture an append holds by its address, and one whose address the author wrote', () => {
+    it('Image draws the picture an append holds by its address, fetched when it nears the screen and decoded off the main thread, and one whose address the author wrote', () => {
         const appended = served(shelf(
             <Paragraph>
                 <Image type=".png" />
             </Paragraph>
         ));
-        expect(appended).toMatch(/<span class="pd-letter pd-figure pd-image"><img src="\/assets\/the-plate\.png" alt=""\/>/u);
+        expect(appended).toMatch(/<span class="pd-letter pd-figure pd-image"><img src="\/assets\/the-plate\.png" alt="" loading="lazy" decoding="async"\/>/u);
         const given = served(shelf(
             <Paragraph>
                 <Image>{'/elsewhere.jpg'}</Image>

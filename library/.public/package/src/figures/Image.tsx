@@ -10,6 +10,8 @@ export class $Image extends $Figure {
             <img
                 src={source}
                 alt={this.$identifier}
+                loading="lazy"
+                decoding="async"
             />
         );
     }
