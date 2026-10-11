@@ -1,4 +1,5 @@
 import type { Configuration } from '../configuration/configuration';
+import { arrival } from './arrival';
 
 const escaped = (text: string): string =>
     text.replace(/[&<>"]/g, one => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[one] ?? one));
@@ -41,6 +42,7 @@ export const page = (built: string, markup: string, styles: string, title: strin
             '</head>',
             `${styles}
   ${kept}
+  ${arrival()}
   </head>`,
         ),
         '<div id="root"></div>',
