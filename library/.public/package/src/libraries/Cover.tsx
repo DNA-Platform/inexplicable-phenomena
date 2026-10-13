@@ -60,6 +60,24 @@ export class $Subject extends $Annotation {
     override write(): ReactNode { return this.name; }
 }
 
+export class $Topic extends $Annotation {
+    specification = new TopicSpecification();
+    get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
+    get means(): $Reference | undefined { return this.annotations.expressed($Reference); }
+
+    protected override $Define(): void {
+        super.$Define();
+        const link = binder.reference(html.copy(this.text));
+        if (link === undefined) return;
+        const Reference = $(reference);
+        this.annotations.add(this,
+            <Reference>{link.identifier}</Reference>
+        );
+    }
+
+    override write(): ReactNode { return this.name; }
+}
+
 export class $About extends $Annotation {
     specification = new AboutSpecification();
     get name(): string { return binder.reference(html.copy(this.text))?.name ?? ''; }
@@ -109,6 +127,13 @@ export class SubjectSpecification extends AnnotationSpecification {
     }
 }
 
+export class TopicSpecification extends AnnotationSpecification {
+    @specify('a topic is said of a cover')
+    $saidOfACover(writing: $Writing): void {
+        $check(writing instanceof $Chapter && writing.is($Cover), 'a topic is said of a cover, and this is not one');
+    }
+}
+
 export class AboutSpecification extends AnnotationSpecification {
     @specify('about is said of a cover')
     $saidOfACover(writing: $Writing): void {
@@ -127,4 +152,5 @@ export class AboutSpecification extends AnnotationSpecification {
 export const Cover = $($Cover);
 export const Author = $($Author);
 export const Subject = $($Subject);
+export const Topic = $($Topic);
 export const About = $($About);

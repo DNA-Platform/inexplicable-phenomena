@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Writing, $Section, Section, Heading, $Paragraph, Paragraph, $Reference } from '@dna-platform/public';
-import { $Book, Book, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, $Author, Author, $Subject, Subject, $About, About } from '@dna-platform/public';
+import { $Book, Book, $Chapter, Chapter, Title, $Cover, Cover, $Synopsis, Synopsis, TableOfContents, $Author, Author, $Subject, Subject, $Topic, Topic, $About, About } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -294,6 +294,27 @@ describe('author, subject and about are annotations of a cover, each standing a 
         expect(chapter.annotations.expressed($About)?.means?.identifier).toBe('/a-paper/');
     });
 
+    // Doug, 2026-10-14, on indexing his conversations: "We should have a Topic like we have a Subject in the actual
+    // framework" — the binder's third relation, the catalogue a book stands in besides its subject, which a cover may
+    // name as many times as it is catalogued, each answering as a subject does.
+    it('a topic answers as a subject does, and a cover may name several', () => {
+        const chapter = built<$Chapter>(
+            <Chapter>
+                <Cover />
+                <Title>[A Paper](/a-paper/)</Title>
+                <Author>[A Persona](/a-persona/)</Author>
+                <Subject>[The Library](/the-library/)</Subject>
+                <Topic>[A Project](/a-project/)</Topic>
+                <Topic>[A Theme](/a-theme/)</Topic>
+            </Chapter>
+        );
+        expect(chapter.specify()).toEqual([]);
+        const topics = chapter.annotations.find($Topic);
+        expect(topics.map(topic => topic.name).sort()).toEqual(['A Project', 'A Theme']);
+        expect(topics.map(topic => topic.means?.identifier).sort()).toEqual(['/a-project/', '/a-theme/']);
+        expect(topics.every(topic => topic.means instanceof $Reference)).toBe(true);
+    });
+
     it('each is said of a cover, and on the synopsis says so', () => {
         const synopsis = built<$Chapter>(
             <Chapter>
@@ -301,12 +322,14 @@ describe('author, subject and about are annotations of a cover, each standing a 
                 <Title>[Synopsis](/a-paper/)</Title>
                 <Author>[A Persona](/a-persona/)</Author>
                 <Subject>[The Library](/the-library/)</Subject>
+                <Topic>[A Project](/a-project/)</Topic>
                 <About>[A Paper](/a-paper/)</About>
             </Chapter>
         );
         const failures = synopsis.specify();
         expect(failures).toContain('Chapter: an author is said of a cover, and this is not one');
         expect(failures).toContain('Chapter: a subject is said of a cover, and this is not one');
+        expect(failures).toContain('Chapter: a topic is said of a cover, and this is not one');
         expect(failures).toContain('Chapter: about is said of a cover, and this is not one');
     });
 
