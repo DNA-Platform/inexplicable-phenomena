@@ -390,7 +390,7 @@ describe('a table of contents, the link aggregator', () => {
 
         expect(faultsOf(books)).toEqual([]);
         expect(Object.values(faults)).not.toContain('NO-SYNOPSIS');
-        expect(Object.values(faults)).toHaveLength(24);
+        expect(Object.values(faults)).toHaveLength(23);
     });
 
     it('asks a topical catalogue for the same and no more', () => {
@@ -443,11 +443,11 @@ describe('one address, one thing', () => {
         expect(faultsOf(books)).toContain(faults.reservedAddress);
     });
 
-    it('raises a resource that names anything, because it is drawn on every page that wears it', () => {
+    it('reads no resource, so one holding a title and a mention names nothing and raises nothing', () => {
         const books = whole();
         books[2].shared = ['<Title>[[ A Shared Title ]]</Title>', '<Paragraph><Mention>[[[ A Shared Spot ]]]</Mention> stands here.</Paragraph>'];
 
-        expect(faultsOf(books)).toEqual([faults.resourceNames, faults.resourceNames]);
+        expect(faultsOf(books)).toEqual([]);
     });
 });
 
@@ -547,11 +547,11 @@ describe('the files beside a chapter', () => {
         expect(faultsOf(books)).toEqual([faults.malformed, faults.malformed, faults.malformed, faults.unusedFile]);
     });
 
-    it('raises a resource that inserts anything, since a file beside a chapter is a module and not a chapter', () => {
+    it('reads no resource, so a literal in one inserts nothing and raises nothing', () => {
         const books = whole();
         books[2].shared = ['<Paragraph>![[ this ]]</Paragraph>'];
 
-        expect(faultsOf(books)).toEqual([faults.malformed]);
+        expect(faultsOf(books)).toEqual([]);
     });
 });
 

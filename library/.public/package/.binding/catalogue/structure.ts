@@ -1,7 +1,7 @@
 import { readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Book, Library } from '../inventory/library';
-import { dotChapters, imageTypes, type Accompanying } from '../inventory/filenames';
+import { dotChapters, type Accompanying } from '../inventory/filenames';
 import { annotating, type Reading, type Said } from './annotations';
 import { source, type Source } from './source';
 import { itself, key, last, separator, tidy, titled, type End, type Literal, type Name, type Relation } from './language';
@@ -65,8 +65,6 @@ export type Structure = {
     titledTwice: { by: SpotId; said: string; at: Where }[];
     // EVERY SPOT SOMETHING IN THE LIBRARY REFERS TO, so a name nobody spends can be refused.
     referred: Set<SpotId>;
-    // AND EVERY NAME A RESOURCE TRIED TO MAKE, which a resource may not.
-    resourceNames: { by: SpotId; said: string; at: Where }[];
     // AND EVERY LITERAL A CHAPTER WRITES, beside the files that stand beside that chapter, so
     // `wellformed` can hold each to the other. Sprint 92.
     inserting: { by: SpotId; file: string; path: string; accompanying: Accompanying[]; imports: string[]; literals: { name: Literal; said: string; line: number }[] }[];
@@ -95,11 +93,14 @@ const titleOf = (name: Name, cover: boolean): string => {
     return named.of === 'book' ? named.book : 'within' in named ? named.chapter : '';
 };
 
-// AND WHETHER A FILE IS A RESOURCE — code beside a chapter, shared by the pages that draw it. A
-// resource is read for what it REFERS TO and never for what it names: the masthead's reference to
-// the plate is spent from a resource, and the structure said nothing referred to the plate
-// (2026-09-20) because it read chapters alone while the transform compiled the resource fine.
-type Held = { book: Book; file: string; path: string; resource: boolean; reading: Reading; imports: string[] };
+// A FILE READ IS A CHAPTER, OR THE BOOK'S OWN FILE. A resource — a file beside a chapter, named
+// for it — is never read. Doug, 2026-10-14: "No resource file should be interpreted. Why would it
+// be? All we do is show the code." and "You read chapters for references. That's it." From
+// 2026-09-20 until then a resource was read for what it referred to, so a reference in code a book
+// imported would count (B33); and once the literal arrived every resource went through the TSX
+// parser whatever its type, so a stray quote in a knowledge file opened a string and `[[t₁]]` in a
+// logic document read as a title (Sprint 109).
+type Held = { book: Book; file: string; path: string; reading: Reading; imports: string[] };
 
 // WHAT A FILE SAID LAST TIME, KEPT UNTIL THE FILE CHANGES.
 //
@@ -147,18 +148,11 @@ export const textOf = (path: string): string => kept.get(resolve(path))?.code ??
 export const structure = (found: Library): Structure => {
     // ---- the one reading ----
     const read: Held[] = [];
-    for (const book of found.books) {
+    for (const book of found.books)
         for (const file of book.files) {
             const path = join(book.path, file);
-            read.push({ book, file, path, resource: false, ...looked(path) });
+            read.push({ book, file, path, ...looked(path) });
         }
-        // A PICTURE IS NOT READ: its bytes are not writing, and a reference found in them is noise.
-        for (const { file, type } of [...book.resources.values()].flat()) {
-            if (imageTypes.includes(type)) continue;
-            const path = join(book.path, file);
-            read.push({ book, file, path, resource: true, ...looked(path) });
-        }
-    }
 
     const spots = new Map<SpotId, Spot>();
     const names = new Map<string, Naming[]>();
@@ -169,7 +163,6 @@ export const structure = (found: Library): Structure => {
     const untitled: Structure['untitled'] = [];
     const about: Structure['about'] = new Map();
     const titledTwice: Structure['titledTwice'] = [];
-    const resourceNames: Structure['resourceNames'] = [];
 
     const titling = (one: Held): Said[] => one.reading.annotations.filter(said => said.form.is === 'title');
     const calls = (said: string, spot: SpotId, at: Where): void => {
@@ -215,7 +208,7 @@ export const structure = (found: Library): Structure => {
 
     // ---- the chapters, named within their books ----
     for (const one of read) {
-        if (one.resource || one.file === '.cover.tsx' || one.file === '.book.tsx') continue;
+        if (one.file === '.cover.tsx' || one.file === '.book.tsx') continue;
         const within = named.get(one.book.folder);
         if (within === undefined) continue;
         const [title, ...others] = titling(one);
@@ -238,16 +231,6 @@ export const structure = (found: Library): Structure => {
     // its own — a reference `$[[ ./X ]]` reaches it exactly as it reaches a chapter, and a name that
     // answers twice in one book is what `wellformed` refuses.
     for (const one of read) {
-        // A RESOURCE MAY NOT NAME ANYTHING: it is drawn on every page that wears it, and a name
-        // stands in one place. What it tries to name is kept for `wellformed` to refuse.
-        if (one.resource) {
-            for (const said of one.reading.annotations)
-                if (said.form.is === 'mention' && said.name.of === 'book' && said.name.book !== '')
-                    resourceNames.push({ by: one.book.folder, said: said.name.book, at: { file: one.path, line: said.line } });
-            for (const title of titling(one))
-                resourceNames.push({ by: one.book.folder, said: title.said, at: { file: one.path, line: title.line } });
-            continue;
-        }
         const within = named.get(one.book.folder);
         if (within === undefined) continue;
         const by = speaks(one.book, one.file);
@@ -276,17 +259,11 @@ export const structure = (found: Library): Structure => {
     // round its own id goes.
     // ---- the literals, kept beside the files that stand beside each chapter ----
     //
-    // A LITERAL INSERTS A FILE OF THE CHAPTER IT STANDS IN, and a resource — a file beside a chapter —
-    // inserts nothing, since it is a module and not a chapter; one that tries is refused with the reason.
+    // A LITERAL INSERTS A FILE OF THE CHAPTER IT STANDS IN; a resource is never read, so one it
+    // might hold inserts nothing.
     const inserting: Structure['inserting'] = [];
-    for (const one of read) {
-        if (one.resource) {
-            for (const said of one.reading.literals)
-                refused.push({ by: one.book.folder, said: said.said, at: { file: one.path, line: said.line }, why: 'a file beside a chapter inserts nothing — a literal stands in a chapter' });
-            continue;
-        }
+    for (const one of read)
         inserting.push({ by: speaks(one.book, one.file), file: one.file, path: one.path, accompanying: one.book.resources.get(one.file) ?? [], imports: one.imports, literals: one.reading.literals.map(said => ({ name: said.name, said: said.said, line: said.line })) });
-    }
 
     for (const one of read) {
         const by = speaks(one.book, one.file);
@@ -343,7 +320,7 @@ export const structure = (found: Library): Structure => {
     // the compiler reads no tag.
     const lists = new Map<SpotId, Map<SpotId, Listing>>();
     for (const one of read) {
-        if (one.resource || one.file !== '.table.tsx') continue;
+        if (one.file !== '.table.tsx') continue;
         const listings = new Map<SpotId, Listing>();
         for (const referring of one.reading.references) {
             const spot = reaches(referring.name, one.book.folder);
@@ -381,5 +358,5 @@ export const structure = (found: Library): Structure => {
                 authors.add(book);
     }
 
-    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, untitled, about, titledTwice, referred, resourceNames, inserting };
+    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, untitled, about, titledTwice, referred, inserting };
 };

@@ -37,7 +37,6 @@ export const faults = {
     sameAddress: 'SAME-ADDRESS',
     noAddress: 'NO-ADDRESS',
     reservedAddress: 'RESERVED-ADDRESS',
-    resourceNames: 'RESOURCE-NAMES',
     // A LITERAL NAMES A FILE BESIDE ITS CHAPTER, AND EVERY FILE BESIDE A CHAPTER IS NAMED. Doug,
     // 2026-09-28: "the compiler can now enforce that all resources are used… every resource file
     // (except this, which is optional) must be specified." Sprint 92.
@@ -153,11 +152,6 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
         for (const one of held)
             wrong.push({ fault: faults.sameAddress, at: wrote(structure, one.naming.spot).at, file: one.naming.at.file, says: `"${one.said}" at line ${one.naming.at.line} and ${held.filter(other => other !== one).map(other => `"${other.said}" in ${other.naming.at.file} line ${other.naming.at.line}`).join(', ')} would stand at one address — a name is a thing of its own only where its address is` });
     }
-
-    // AND A RESOURCE NAMES NOTHING. It is drawn on every page that wears it, and a name stands in one
-    // place — a title makes a chapter and a mention makes an address, and neither can be everywhere.
-    for (const one of structure.resourceNames)
-        wrong.push({ fault: faults.resourceNames, at: one.by, file: one.at.file, says: `line ${one.at.line} of a resource names "${one.said}" — a resource is drawn wherever it is used, and a name stands in one place` });
 
     for (const book of books)
         if (!structure.named.has(book.id))
