@@ -10,12 +10,12 @@ import ReactDOMServer from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
 import { $ } from '@dna-platform/chemistry';
 import { Book } from '@dna-platform/public';
-import { configure } from '../configuration/configuration';
+import { configure, type Configuration } from '../configuration/configuration';
 import { around } from '../inventory/library';
 import { pageOf } from '../resolution/addresses';
 import { page } from './page';
 import { placeOf } from './place';
-import { shellOf } from './rendering';
+import { shellOf, type Done, type Drawn, type Kept, type Order } from './rendering';
 
 const { createElement } = React;
 const { renderToString } = ReactDOMServer;
@@ -51,17 +51,36 @@ const sheetOf = (face: string, css: string): string => {
     return named;
 };
 
+// WHERE A PAGE'S MARKUP IS KEPT, beside the binding and named by the page's address, so the next bind
+// can write the page again without drawing the book. Sprint 109, D11.
+const markupOf = (binding: string, address: string): string =>
+    join(binding, '.pages', `${address.replace(/^\/|\/$/gu, '').split('/').join('__') || 'root'}.html`);
+
+const stylesLink = (chosen: Configuration, sheet: string): string => `<link rel="stylesheet" href="${chosen.resolution.base}${sheet}" />`;
+
+// A KEPT PAGE IS WRITTEN AGAIN ONTO THE NEW SHELL from the markup the last bind kept, since the shell
+// carries the bundle's names and those change with every bundle; nothing of the book is drawn. Done
+// here, in the child, so the template is the same text the drawn pages got.
+const written = (binding: string, face: string, built: string, chosen: Configuration, one: Kept): string => {
+    const markup = readFileSync(join(binding, one.kept.markup), 'utf8');
+    const at = placeOf(face, { address: one.address });
+    mkdirSync(dirname(at), { recursive: true });
+    writeFileSync(at, page(built, markup, stylesLink(chosen, one.kept.sheet), chosen.rendering.title), 'utf8');
+
+    return relative(face, at).split(sep).join('/');
+};
+
 // THE PAGE IS DRAWN THROUGH THE INDEX THE BINDER WROTE — the same routes, and the same loader, the
 // reader's browser runs. One page per book, drawn whole at the book's address with its cover open and
 // every chapter in its print, each a fragment of it that the book's own app opens — Sprint 95, D1.
-export const draw = async (server: ViteDevServer, addresses: string[]): Promise<string[]> => {
+export const draw = async (server: ViteDevServer, order: Order): Promise<Done> => {
     const { binding, face } = around(resolve(dirname(fileURLToPath(import.meta.url)), '..'));
     const chosen = configure(binding);
     const { routes } = (await server.ssrLoadModule(join(binding, 'application', 'routes.ts'))) as { routes: Route[] };
     const built = readFileSync(shellOf(binding), 'utf8');
-    const pages: string[] = [];
+    const drawn: Drawn[] = [];
 
-    for (const address of addresses) {
+    for (const address of order.draw) {
         const route = routes.find(one => one.address === address);
         if (route === undefined) throw new Error(`no book stands at ${address}, so there is no page to draw there`);
         const loaded = await route.load();
@@ -84,12 +103,22 @@ export const draw = async (server: ViteDevServer, addresses: string[]): Promise<
             // THE SHEET IS A FILE NAMED BY ITS CONTENT, written once and linked from every page that collected the
             // same styles, so the pages of a book share one file the browser caches and a page carries no styles
             // of its own. Sprint 95, U8 — the inlined tag was the server-side habit of styled-components and nothing more.
-            writeFileSync(at, page(built, markup, `<link rel="stylesheet" href="${chosen.resolution.base}${sheetOf(face, sheet.instance.toString())}" />`, chosen.rendering.title), 'utf8');
-            pages.push(relative(face, at).split(sep).join('/'));
+            const sheetName = sheetOf(face, sheet.instance.toString());
+            writeFileSync(at, page(built, markup, stylesLink(chosen, sheetName), chosen.rendering.title), 'utf8');
+            const markupAt = markupOf(binding, address);
+            mkdirSync(dirname(markupAt), { recursive: true });
+            writeFileSync(markupAt, markup, 'utf8');
+            drawn.push({
+                address,
+                page: relative(face, at).split(sep).join('/'),
+                markup: relative(binding, markupAt).split(sep).join('/'),
+                sheet: sheetName,
+            });
         } finally {
             sheet.seal();
         }
     }
+    const kept = order.keep.map(one => written(binding, face, built, chosen, one));
 
-    return pages;
+    return { drawn, kept };
 };

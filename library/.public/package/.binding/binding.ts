@@ -1,4 +1,5 @@
-import { copyFileSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { imageTypes } from './inventory/filenames';
 import { dirname, resolve } from 'node:path';
@@ -20,8 +21,8 @@ import { specifying } from './specification/specifying';
 import { running } from './specification/running';
 import { proof } from './specification/proof';
 import { graph, type Graph } from './manifest/graph';
-import { rendering } from './rendering/rendering';
-import { manifest, type Manifest } from './manifest/manifest';
+import { keepable, rendering, type Drawing, type Kept } from './rendering/rendering';
+import { manifest, type Manifest, type Page } from './manifest/manifest';
 import { removal } from './manifest/removal';
 
 // THE BINDER IS A COMPILER: a sequence of named tasks, each run in order, each saying what it
@@ -52,6 +53,7 @@ type State = {
     written: string[];
     bundled: string[];
     rendered: string[];
+    pages: Record<string, Page>;
 };
 
 type Task = { name: string; run: (state: State) => Promise<string> | string };
@@ -156,22 +158,70 @@ export const tasks: Task[] = [
         state.bundled = emitted(built);
         return `${plural(state.bundled.length, 'file')} under assets/`;
     } },
+    // ONLY THE PAGES WHOSE BOOKS CHANGED ARE DRAWN, and the rest are written again from what the last
+    // bind kept of them — Sprint 109, D11, on Doug's "If the binder doesn't work on ones most recently
+    // changed, how will it ever possibly work?" A page is stale when its book's digest, the one specify
+    // keeps, is not the one it was drawn at; when the addresses its book refers to lead elsewhere than
+    // they did, read off the catalogue, so a book renamed redraws every page that links to it; or when
+    // its kept markup is gone. A kept page costs a read and a write; a stale page costs a draw, in a
+    // child bounded by the rendering's budget.
     { name: 'render', run: async state => {
         const table = need(state.table, 'render');
         const held = need(state.held, 'render');
+        const found = need(state.found, 'render');
+        const chosen = need(state.chosen, 'render');
+        const previous = need(state.previous, 'render');
+        const digests = new Map(need(state.graph, 'render').books.map(entry => [entry.folder, entry.digest]));
+        const byFolder = new Map(found.books.map(book => [book.folder, book]));
         // THE ROOT'S ADDRESS COMES FROM THE CATALOGUE, which is the one place that knows what a name
         // stands at. The route table holds a path; the catalogue holds the URL a reader arrives at.
         const root = table.root === undefined ? undefined : { name: table.root.name, address: held.where(table.root.name) ?? table.root.address };
+        const references = (folder: string): string => {
+            const hash = createHash('sha256');
+            const leads = held.structure.mentions.filter(one => one.book === folder).map(one => {
+                const key = held.structure.spells(one.name, folder);
+                return `${key} → ${held.where(key) ?? ''}`;
+            });
+            for (const lead of [...new Set(leads)].sort()) hash.update(lead);
+            return hash.digest('hex').slice(0, 16);
+        };
+        const sourceBytes = (folder: string): number => {
+            const book = byFolder.get(folder);
+            return book === undefined ? 0 : book.files.reduce((total, file) => total + statSync(join(book.path, file)).size, 0);
+        };
+        // AND THE BINDER THAT DREW THE PAGE IS AN INPUT TO IT: a page drawn by an older draw, template or
+        // app is stale however its book stands, since the markup it kept is that binder's.
+        const binder = binderDigest(state.binding);
+        const stale: Drawing[] = [];
+        const kept: Kept[] = [];
+        const pages: Record<string, Page> = {};
+        for (const route of table.routes) {
+            const digest = digests.get(route.folder) ?? '';
+            const before = previous.pages[route.address];
+            const holds = before !== undefined && before.folder === route.folder && before.digest === digest
+                && before.references === references(route.folder) && before.binder === binder && keepable(state.binding, before);
+            if (holds) {
+                kept.push({ address: route.address, kept: before });
+                pages[route.address] = before;
+            } else stale.push({ address: route.address, bytes: sourceBytes(route.folder) });
+        }
         // ONE PAGE PER BOOK, every chapter in its print, each a fragment of it — Sprint 95, D1.
-        state.rendered = await rendering(state.binding, table.routes.map(route => route.address), root);
+        const rendered = await rendering(state.binding, chosen, stale, kept, root);
+        for (const one of rendered.drawn) {
+            const folder = table.routes.find(route => route.address === one.address)?.folder ?? '';
+            pages[one.address] = { folder, digest: digests.get(folder) ?? '', references: references(folder), binder, sheet: one.sheet, markup: one.markup };
+        }
+        state.pages = pages;
+        state.rendered = rendered.pages;
         // AND EVERY PICTURE ACCOMPANYING A CHAPTER PLACED IN THE FACE beside its book's pages, at the
         // address its Append names, `/<folder>/<file>` — copied, never bundled, so the address is a
         // page's and not a dev server's. Sprint 89.
         const face = join(state.binding, '..');
-        const pictures = need(state.found, 'render').books.flatMap(book => [...book.resources.values()].flat()
+        const pictures = found.books.flatMap(book => [...book.resources.values()].flat()
             .filter(one => imageTypes.includes(one.type))
             .map(one => { mkdirSync(join(face, book.folder), { recursive: true }); copyFileSync(join(book.path, one.file), join(face, book.folder, one.file)); return `${book.folder}/${one.file}`; }));
-        return [...state.rendered, ...pictures].join(', ');
+        const children = `${rendered.batches} ${rendered.batches === 1 ? 'child' : 'children'}`;
+        return `${plural(rendered.drawn.length, 'page')} drawn in ${children} · ${kept.length} kept · ${plural(pictures.length, 'picture')}`;
     } },
     { name: 'proof', run: state => {
         // RUNNABLE ON ITS OWN. `tsx binding.ts proof` reads the pages the last binding wrote, so a
@@ -186,15 +236,33 @@ export const tasks: Task[] = [
     } },
     { name: 'record', run: state => {
         const previous = need(state.previous, 'record');
-        const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered: state.rendered, bundled: state.bundled });
+        const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered: state.rendered, bundled: state.bundled, pages: state.pages });
         const gone = removal(state.face, previous, current);
+        // AND THE MARKUP KEPT FOR A PAGE THAT NO LONGER STANDS goes with it, so `.pages/` holds exactly
+        // what the manifest names.
+        const named = new Set(Object.values(state.pages).map(one => one.markup));
+        const orphaned = Object.values(previous.pages).map(one => one.markup).filter(markup => !named.has(markup));
+        for (const markup of orphaned) rmSync(join(state.binding, markup), { force: true });
         return `manifest written${gone.length ? ` · removed ${plural(gone.length, 'file')} the source no longer writes` : ''}`;
     } },
 ];
 
+// WHAT OF THE BINDER ITSELF A PAGE IS DRAWN WITH, as bytes: the draw, the page's template with its
+// arrival script, and the app a page hydrates with. A page kept across a change to any of these would
+// be an older binder's page.
+const binderDigest = (binding: string): string => {
+    const hash = createHash('sha256');
+    const files = ['rendering/draw.ts', 'rendering/page.ts', 'rendering/arrival.ts', 'rendering/dom.ts', 'application/main.tsx', 'application/opened.ts'];
+    for (const file of files) {
+        const at = join(binding, file);
+        hash.update(file).update(existsSync(at) ? readFileSync(at) : 'gone');
+    }
+    return hash.digest('hex').slice(0, 16);
+};
+
 export const bind = async (binding: string, only: string[] = [], scope: string[] = []): Promise<State> => {
     const { face, library } = around(binding);
-    const state: State = { binding, face, library, scope, assembled: [], written: [], bundled: [], rendered: [] };
+    const state: State = { binding, face, library, scope, assembled: [], written: [], bundled: [], rendered: [], pages: {} };
     const unknown = only.filter(name => !tasks.some(task => task.name === name));
     if (unknown.length) throw new Error(`no such task: ${unknown.join(', ')} — the tasks are ${tasks.map(task => task.name).join(', ')}`);
     const chosen = only.length ? tasks.filter(task => only.includes(task.name)) : tasks;

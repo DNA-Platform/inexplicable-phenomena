@@ -22,7 +22,7 @@ export const kept = new Set(['.graph.json', 'package.json', 'application/books.t
 // master's own regression pulls under `.test/.galleys` — each one a whole binder and a built site,
 // 12,159 files the first copy of Doug's library carried before this name stood here, 2026-10-02.
 // They are the master's proofs, and `.binding/.gitignore` already keeps them out of the record.
-export const skipped = new Set(['node_modules', '.vite', '.galleys']);
+export const skipped = new Set(['node_modules', '.vite', '.galleys', '.pages']);
 
 export const forward = (path: string): string => path.split(sep).join('/');
 

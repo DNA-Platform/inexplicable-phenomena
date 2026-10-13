@@ -1,8 +1,10 @@
 import { spawn } from 'node:child_process';
-import { copyFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import type { Configuration } from '../configuration/configuration';
+import type { Page } from '../manifest/manifest';
 
-const lastLine = (text: string): string => text.trim().split(/\r?\n/).at(-1) ?? '[]';
+const lastLine = (text: string): string => text.trim().split(/\r?\n/).at(-1) ?? '{}';
 
 // A TEMPLATE IS AN INPUT AND A PAGE IS AN OUTPUT, AND THEY WERE THE SAME FILE. The bundle writes the
 // shell to the face's index.html, and the ROOT book's page is written there too — so every page
@@ -36,15 +38,54 @@ const landing = (address: string, title: string): string => [
     '',
 ].join('\n');
 
-// EVERY PAGE IN ONE CHILD, which starts one server and transforms the module graph once. It was one
-// child per page, as many at once as the machine had cores, because a page took its styles from the
-// one document every page was drawn in, so a second book's page carried the first's — measured
-// 2026-09-26: a child per page 1.6s, six at once 7.3s, since each transformed the same graph, and one
-// child drawing all six 1.67s. Each page now collects its own styles as it is drawn. The pages come
-// back in the order the addresses were given, because the manifest and the proof read this list and
-// a list that reorders itself is a diff on every build.
-const drawn = (binding: string, entry: string, addresses: string[]): Promise<string[]> => new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [entry, ...addresses], {
+// WHAT A CHILD HANDS BACK FOR EACH PAGE IT DREW: the page's path in the face, the markup it was drawn
+// with, kept under `.pages/`, and the sheet it links — the three the manifest keeps so the page need
+// not be drawn again.
+export type Drawn = { address: string; page: string; markup: string; sheet: string };
+
+// A PAGE TO DRAW, WITH THE BYTES OF ITS BOOK'S SOURCE, which is what a child's budget is spent on.
+export type Drawing = { address: string; bytes: number };
+
+// A PAGE TO KEEP: its address and what the last bind kept of it.
+export type Kept = { address: string; kept: Page };
+
+// WHAT A CHILD IS TOLD TO DO, written to a file beside the binding since a thousand kept pages do not
+// fit an argument list: the pages to draw, and the pages to write again from their kept markup.
+export type Order = { draw: string[]; keep: Kept[] };
+export type Done = { drawn: Drawn[]; kept: string[] };
+export const orderOf = (binding: string): string => join(binding, '.render.json');
+
+// THE PAGES A CHILD DRAWS, by the budget: pages are taken in order until their books' source would pass
+// it, and a book alone larger than the budget is a batch of its own. One child drew every page until
+// 2026-10-14, when one project of twenty conversations ran it out of a 4 GB heap: a child keeps every
+// chemical it makes, as a specifying child does, so what one holds is bounded by what it is given.
+const batched = (drawings: Drawing[], budget: number): Drawing[][] => {
+    const batches: Drawing[][] = [];
+    let batch: Drawing[] = [];
+    let spent = 0;
+    for (const drawing of drawings) {
+        if (batch.length > 0 && spent + drawing.bytes > budget) {
+            batches.push(batch);
+            batch = [];
+            spent = 0;
+        }
+        batch.push(drawing);
+        spent += drawing.bytes;
+    }
+    if (batch.length > 0) batches.push(batch);
+
+    return batches;
+};
+
+// EACH ORDER IN ONE CHILD, which starts one server and transforms the module graph once. The pages
+// come back in the order the addresses were given, because the manifest and the proof read this list
+// and a list that reorders itself is a diff on every build. A KEPT PAGE IS WRITTEN BY THE CHILD TOO,
+// onto the new shell from the markup the last bind kept, because the page's template carries the
+// arrival's script as the text of a function, and a function's text is its transpiler's: written by the
+// parent under tsx it differed from the child's under vite, and a kept page was not its drawn self.
+const done = (binding: string, entry: string, order: Order): Promise<Done> => new Promise((resolve, reject) => {
+    writeFileSync(orderOf(binding), JSON.stringify(order), 'utf8');
+    const child = spawn(process.execPath, [entry, orderOf(binding)], {
         cwd: binding,
         stdio: ['ignore', 'pipe', 'inherit'],
         // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
@@ -57,17 +98,37 @@ const drawn = (binding: string, entry: string, addresses: string[]): Promise<str
     child.on('error', reject);
     child.on('close', status => {
         if (status !== 0) reject(new Error(`rendering failed (exit ${status ?? 'signal'})`));
-        else resolve(JSON.parse(lastLine(out)) as string[]);
+        else resolve(JSON.parse(lastLine(out)) as Done);
     });
 });
 
-export const rendering = async (binding: string, addresses: string[], root?: { address: string; name: string }): Promise<string[]> => {
-    const entry = join(binding, 'rendering', 'render.mjs');
-    copyFileSync(join(binding, '..', 'index.html'), shellOf(binding));
+export type Rendered = { pages: string[]; drawn: Drawn[]; batches: number };
 
-    const pages = await drawn(binding, entry, addresses);
+export const rendering = async (
+    binding: string,
+    chosen: Configuration,
+    stale: Drawing[],
+    kept: Kept[],
+    root?: { address: string; name: string },
+): Promise<Rendered> => {
+    const entry = join(binding, 'rendering', 'render.mjs');
+    const face = join(binding, '..');
+    copyFileSync(join(face, 'index.html'), shellOf(binding));
+
+    // THE KEPT PAGES RIDE WITH THE FIRST CHILD, or with a child of their own when nothing is drawn.
+    const batches = batched(stale, chosen.rendering.budget * 1048576);
+    const orders: Order[] = batches.map((batch, index) => ({ draw: batch.map(drawing => drawing.address), keep: index === 0 ? kept : [] }));
+    if (orders.length === 0 && kept.length > 0) orders.push({ draw: [], keep: kept });
+    const drawnPages: Drawn[] = [];
+    const keptPages: string[] = [];
+    for (const order of orders) {
+        const answered = await done(binding, entry, order);
+        drawnPages.push(...answered.drawn);
+        keptPages.push(...answered.kept);
+    }
+    const pages = [...drawnPages.map(one => one.page), ...keptPages];
     if (root !== undefined) {
-        const at = join(binding, '..', 'index.html');
+        const at = join(face, 'index.html');
         // THE ADDRESS IS THE CATALOGUE'S, WRITTEN FROM THE DOMAIN FORWARD. An earlier writing
         // stripped the leading slash to make it relative — and a relative address on the landing
         // page is read from whatever folder the page is served in, so `/some/where/` would send a
@@ -77,5 +138,8 @@ export const rendering = async (binding: string, addresses: string[], root?: { a
         pages.push('index.html');
     }
 
-    return pages;
+    return { pages, drawn: drawnPages, batches: batches.length };
 };
+
+// WHETHER A KEPT PAGE CAN STILL BE WRITTEN FROM WHAT WAS KEPT: its markup must still stand.
+export const keepable = (binding: string, kept: Page): boolean => existsSync(join(binding, kept.markup));

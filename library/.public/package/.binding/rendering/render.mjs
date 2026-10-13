@@ -1,4 +1,5 @@
 import { createServer } from 'vite';
+import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -15,11 +16,15 @@ const server = await createServer({
     ssr: { external: true },
 });
 
+// THE ORDER IS A FILE: the pages to draw and the pages to write again from what was kept, since a
+// thousand kept pages do not fit an argument list. Sprint 109.
+const order = JSON.parse(readFileSync(process.argv[2], 'utf8'));
+
 try {
     await server.ssrLoadModule(join(binding, 'rendering', 'dom.ts'));
     const { draw } = await server.ssrLoadModule(join(binding, 'rendering', 'draw.ts'));
-    const pages = await draw(server, process.argv.slice(2));
-    process.stdout.write(JSON.stringify(pages) + '\n');
+    const done = await draw(server, order);
+    process.stdout.write(JSON.stringify(done) + '\n');
 } finally {
     await server.close();
 }
