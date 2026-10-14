@@ -11,10 +11,14 @@ describe('the identifier slugs a name, and it is the one slug the library and th
         expect(identifier.slug('What is claimed')).toBe('what-is-claimed');
     });
 
-    it('reads punctuation as prose does: an apostrophe stands inside a word, an ampersand is a word', () => {
+    // Doug, 2026-10-14, landing the slug that keeps every alphabet: "remember to convert sensible things. & should
+    // be and. Are there other conversions like that that are obvious?" — the signs that read as a word read as it.
+    it('reads punctuation as prose does: an apostrophe stands inside a word, and a sign that reads as a word is that word', () => {
         expect(identifier.slug("Doug's Library")).toBe('dougs-library');
         expect(identifier.slug('Doug’s Library')).toBe('dougs-library');
         expect(identifier.slug('Claude & Our Projects')).toBe('claude-and-our-projects');
+        expect(identifier.slug('C++ at 100%')).toBe('c-plus-plus-at-100-percent');
+        expect(identifier.slug('me@home')).toBe('me-at-home');
     });
 
     // Doug, 2026-10-13, ruling the importer's names: "the slug keeps every alphabet" — a title in Cyrillic is a
