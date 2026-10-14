@@ -13,8 +13,11 @@ const { found, card } = read();
 const made = structure(found);
 
 describe('the test library, read', () => {
-    it('is six books, and holds together', () => {
-        expect(found.books.map(book => book.folder).sort()).toEqual(['libby', 'library', 'manual', 'paper', 'persona', 'projects']);
+    // SEVEN SINCE SPRINT 109's U13: the seventh, `notes`, is titled in Cyrillic, so the library holds a book
+    // whose every address is in a script other than Latin.
+    it('is seven books, and holds together', () => {
+        expect(found.books.map(book => book.folder).sort()).toEqual(['libby', 'library', 'manual', 'notes', 'paper', 'persona', 'projects']);
+        expect(made.named.get('notes')).toBe('Записки библиотекаря');
         expect(wellformed(made)).toEqual([]);
     });
 

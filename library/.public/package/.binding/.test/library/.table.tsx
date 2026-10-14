@@ -63,6 +63,13 @@ export default () => (
                     <Content>$[[ the tools every book here is built with ]]( The Library Reference Manual / Synopsis )</Content>
                 </Word>
             </Paragraph>
+            <Paragraph>
+                <Word>
+                    <Content>[[ Записки библиотекаря ]]**</Content>
+                </Word> <Word>
+                    <Content>$[[ her notes, in her other alphabet ]]( Записки библиотекаря / Synopsis )</Content>
+                </Word>
+            </Paragraph>
         </Section>
         <Catchword />
     </Chapter>

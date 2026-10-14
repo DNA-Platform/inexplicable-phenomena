@@ -31,8 +31,29 @@ const printed = `
 const open = (): string[] => Array.from(document.querySelectorAll('.pa-open')).map(one => `${one.tagName.toLowerCase()}.${Array.from(one.classList).filter(c => c !== 'pa-open' && c !== 'pa-reference').join('.')}`);
 const openRow = (): string | null | undefined => document.querySelector('.pa-entry.pa-open')?.closest('a')?.getAttribute('href');
 
+// A FRAGMENT IN CYRILLIC REACHES THE PAGE PERCENT-ENCODED, since that is how a browser hands `location.hash`
+// over, and the id the page wears is the slug's own letters — Sprint 109, U13.
+const printedInCyrillic = `
+<div class="pd-book">
+  <div class="pd-holds">
+    <a class="pa-reference pd-container" href="/записки/#первая"><div class="pd-paragraph pa-entry pa-reference pa-open">Первая</div></a>
+    <a class="pa-reference pd-container" href="/записки/#о-книгах"><div class="pd-paragraph pa-entry pa-reference">О книгах</div></a>
+  </div>
+  <div class="pd-pages">
+    <div class="pd-chapter pa-page pa-open"><div class="pd-sentence pd-title" id="первая">Первая</div></div>
+    <div class="pd-chapter pa-page"><div class="pd-sentence pd-title" id="о-книгах">О книгах</div></div>
+  </div>
+</div>`;
+
 describe('the arrival', () => {
     beforeEach(() => { document.body.innerHTML = printed; document.documentElement.className = ''; });
+
+    it('opens the chapter a fragment in Cyrillic names, decoding what the browser percent-encoded', () => {
+        document.body.innerHTML = printedInCyrillic;
+        expect(arrive(document, `#${encodeURIComponent('о-книгах')}`)).toBe('о-книгах');
+        expect(document.querySelector('.pa-page.pa-open .pd-title')?.id).toBe('о-книгах');
+        expect(openRow()).toBe('/записки/#о-книгах');
+    });
 
     it('opens the chapter a fragment names, every layer drawn around it and its row, and closes what the print opened', () => {
         expect(arrive(document, '#the-second')).toBe('the-second');

@@ -88,6 +88,19 @@ describe('a bind of the test library', () => {
     // ONE PAGE PER BOOK — Sprint 95, D1, Doug: "It is one page per book for sure. Chapters and mentions are more
     // like bookmarks within the book that one can link to." A page at every book's address holding the whole
     // book, every chapter's text in its print for a crawler, and no page at any chapter's.
+    // THE SLUG KEEPS EVERY ALPHABET — Doug, 2026-10-13, ruling the names of his imported conversations, two of
+    // which are titled in Cyrillic. A book titled in Cyrillic stands at a Cyrillic address, its chapter at a
+    // Cyrillic fragment, and the proof reaches both. Sprint 109, U13.
+    it('bound a book titled in Cyrillic at its own letters, its chapter a Cyrillic fragment, and the catalogue links it', () => {
+        const route = table.routes.find(one => one.name === 'Записки библиотекаря')!;
+        expect(route.address).toBe('/записки-библиотекаря');
+        expect(route.chapters.find(one => one.name === 'О книгах')?.address).toBe('/записки-библиотекаря#о-книгах');
+        const notes = page('Записки библиотекаря');
+        expect(notes).toContain('id="о-книгах"');
+        expect(notes).toContain('id="что-такое-книга"');
+        expect(page('The Library')).toContain('href="/записки-библиотекаря/"');
+    });
+
     it('wrote one page per book holding every chapter, a fragment the chapter\'s address, and no page for a chapter', () => {
         for (const route of table.routes) {
             const at = placeOf(galley.face, route);
@@ -177,8 +190,9 @@ describe('a bind of the test library', () => {
         const library = page('The Library');
         expect(library).toMatch(/class="[^"]*\bpa-table\b/u);
         // A HEADER ROW AND FOUR BOOKS since Sprint 89, the manual among them, the header bold by the theme.
-        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(5);
-        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(10);
+        // SIX ROWS AND TWELVE CELLS since Sprint 109's U13 added the Cyrillic book to the catalogue.
+        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(6);
+        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(12);
         // THE TABLE IS AN ANNOTATION since Sprint 95's U4 — Doug: "Table should not be replacing the writing's
         // element" — the section's own element wears pa-table, the Theme's sheet is its grid by that mark, its
         // columns implicit from the cells' start classes, and no rule is made per table.
@@ -464,6 +478,25 @@ describe('the bound test library, seen in a real browser', () => {
         await evidence.reload({ waitUntil: 'networkidle0' });
         await turned();
         await evidence.close();
+    });
+
+    // A CYRILLIC ADDRESS ARRIVES PERCENT-ENCODED, and the app and the arrival decode it, so the book opens
+    // turned to the chapter the fragment names and hydrates there — Sprint 109, U13.
+    it('opens a book at its Cyrillic address turned to its Cyrillic chapter, its title in view, and hydrates there', async () => {
+        const notes = await browser!.newPage();
+        const said: string[] = [];
+        notes.on('console', message => said.push(message.text()));
+        await notes.setViewport({ width: 800, height: 100 });
+        await notes.goto(new URL('/записки-библиотекаря/#о-книгах', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await notes.evaluate(() => decodeURIComponent(location.hash))).toBe('#о-книгах');
+        expect(await notes.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+        const top = await notes.$eval('#о-книгах', title => title.getBoundingClientRect().top);
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(top).toBeLessThan(100);
+        expect(await notes.$eval('#о-книгах', title => (title as HTMLElement).innerText.trim())).toBe('О книгах');
+        expect(await notes.$eval('header', header => (header as HTMLElement).innerText)).toContain('Записки библиотекаря');
+        expect(said.filter(line => line.includes('hydration'))).toEqual([]);
+        await notes.close();
     });
 
     // THE ROUTER — R9. Doug, 2026-09-26: "Everything needs to go through the router." A link within the book

@@ -1,7 +1,7 @@
 export class Identifier {
     slug(name: string): string {
         const said = name.toLowerCase().replace(/['’]/gu, '').replace(/&/gu, ' and ');
-        return said.replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '');
+        return said.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/gu, '');
     }
 }
 

@@ -10,7 +10,7 @@
 // page runs; it must stay self-contained, since its text is all the page gets.
 export const arrive = (document: Document, hash: string): string | undefined => {
     const root = document.documentElement;
-    const fragment = hash.replace(/^#/u, '');
+    const fragment = decodeURIComponent(hash.replace(/^#/u, ''));
     if (fragment === '') return undefined;
     root.classList.add('pa-arriving');
     const open = (): string | undefined => {

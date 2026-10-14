@@ -7,8 +7,10 @@ import { routes, root } from './routes';
 import { opened } from './opened';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-// WHERE A URL STANDS IN THE ROUTE TABLE: its pathname without the base and without its trailing slash.
-const addressOf = (pathname: string): string => pathname.slice(base.length).replace(/\/+$/, '') || '/';
+// WHERE A URL STANDS IN THE ROUTE TABLE: its pathname without the base and without its trailing slash,
+// decoded, since the browser hands a pathname percent-encoded and a route's address is the slug's own
+// letters, Cyrillic or any other — Sprint 109, U13.
+const addressOf = (pathname: string): string => decodeURIComponent(pathname).slice(base.length).replace(/\/+$/, '') || '/';
 const path = addressOf(location.pathname);
 
 const probes = import.meta.glob('../specification/probe/*.tsx');
@@ -25,7 +27,8 @@ if (!probing && !route) throw new Error(`no book stands at ${path}, and no book 
 // the router scrolls nothing — since Sprint 101's U9 the book goes where the bookmark says after it has
 // drawn, in whatever way it shows chapters. Doug, 2026-09-26: "it is the place where the user is (recently was)
 // and it is a record of him being there."
-const bookmarkOf = (url: { pathname: string; hash: string }): string => `${url.pathname.replace(/\/+$/u, '')}/${url.hash}`;
+const bookmarkOf = (url: { pathname: string; hash: string }): string =>
+    `${decodeURIComponent(url.pathname).replace(/\/+$/u, '')}/${decodeURIComponent(url.hash)}`;
 
 // THE BOOK IS BUILT ONCE AND HELD, its bookmark set on the instance before it is drawn and again on
 // every move — never handed as a prop, since a prop is a render, and a bookmark moved must not paint.

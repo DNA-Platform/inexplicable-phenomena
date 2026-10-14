@@ -17,6 +17,15 @@ describe('the identifier slugs a name, and it is the one slug the library and th
         expect(identifier.slug('Claude & Our Projects')).toBe('claude-and-our-projects');
     });
 
+    // Doug, 2026-10-13, ruling the importer's names: "the slug keeps every alphabet" — a title in Cyrillic is a
+    // book of his, and its address is its own letters, lowercased, as a Latin one's are. Sprint 109, U13.
+    it('keeps the letters and digits of every script, so a title in Cyrillic addresses its book in Cyrillic', () => {
+        expect(identifier.slug('Понимание основ СРТ')).toBe('понимание-основ-срт');
+        expect(identifier.slug('Перевод английских слов на русский')).toBe('перевод-английских-слов-на-русский');
+        expect(identifier.slug('Café Été, 2026')).toBe('café-été-2026');
+        expect(identifier.slug('語り手の本')).toBe('語り手の本');
+    });
+
     it('is an instance of its class, exported as the other utilities are', () => {
         expect(identifier).toBeInstanceOf(Identifier);
     });
