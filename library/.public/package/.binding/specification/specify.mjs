@@ -7,7 +7,8 @@ const binding = dirname(dirname(fileURLToPath(import.meta.url)));
 const server = await createServer({
     configFile: join(binding, 'vite.config.ts'),
     logLevel: 'error',
-    server: { middlewareMode: true },
+    // No hot reload and no watcher in a child that specifies its books once and exits; see render.mjs.
+    server: { middlewareMode: true, hmr: false, ws: false, watch: null },
     appType: 'custom',
     ssr: { external: true },
 });

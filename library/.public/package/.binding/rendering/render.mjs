@@ -11,7 +11,10 @@ const binding = dirname(dirname(fileURLToPath(import.meta.url)));
 const server = await createServer({
     configFile: join(binding, 'vite.config.ts'),
     logLevel: 'error',
-    server: { middlewareMode: true, hmr: false, ws: false },
+    // NO WATCHER EITHER: a prerender child reads the library once and exits, and the watcher cost it
+    // 0.95 s of an 8 s draw on 2026-10-16; vite answers `server.watcher` with a no-op when watching is
+    // off, so the inventory's retaking plugin, which adds the library to it, loses nothing here.
+    server: { middlewareMode: true, hmr: false, ws: false, watch: null },
     appType: 'custom',
     ssr: { external: true },
 });
