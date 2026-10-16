@@ -19,15 +19,18 @@ const server = await createServer({
     ssr: { external: true },
 });
 
-// THE ORDER IS A FILE: the pages to draw and the pages to write again from what was kept, since a
-// thousand kept pages do not fit an argument list. Sprint 109.
-const order = JSON.parse(readFileSync(process.argv[2], 'utf8'));
+// THE ORDERS ARE A FILE: the pages to draw and the pages to write again from what was kept, since a
+// thousand kept pages do not fit an argument list (Sprint 109), every order in the one file and this
+// child told which is its own, since children run at once and a file each rewrote would be read by
+// the wrong one.
+const order = JSON.parse(readFileSync(process.argv[2], 'utf8'))[Number(process.argv[3])];
 
 try {
     await server.ssrLoadModule(join(binding, 'rendering', 'dom.ts'));
     const { draw } = await server.ssrLoadModule(join(binding, 'rendering', 'draw.ts'));
     const done = await draw(server, order);
-    process.stdout.write(JSON.stringify(done) + '\n');
+    // AND WHAT IT COST, in its last line: the peak resident set, in megabytes.
+    process.stdout.write(JSON.stringify({ ...done, peak: Math.round(process.resourceUsage().maxRSS / 1024) }) + '\n');
 } finally {
     await server.close();
 }

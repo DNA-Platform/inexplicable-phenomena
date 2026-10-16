@@ -1,10 +1,8 @@
-import { spawn } from 'node:child_process';
 import { copyFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
 import type { Page } from '../manifest/manifest';
-
-const lastLine = (text: string): string => text.trim().split(/\r?\n/).at(-1) ?? '{}';
+import { atOnce, lastLine, opened } from '../children';
 
 // A TEMPLATE IS AN INPUT AND A PAGE IS AN OUTPUT, AND THEY WERE THE SAME FILE. The bundle writes the
 // shell to the face's index.html, and the ROOT book's page is written there too — so every page
@@ -50,9 +48,13 @@ export type Drawing = { address: string; bytes: number };
 export type Kept = { address: string; kept: Page };
 
 // WHAT A CHILD IS TOLD TO DO, written to a file beside the binding since a thousand kept pages do not
-// fit an argument list: the pages to draw, and the pages to write again from their kept markup.
+// fit an argument list: the pages to draw, and the pages to write again from their kept markup. Every
+// order is in the one file, written before any child opens, and a child is told which is its own,
+// since children run at once and a file each child rewrote would be read by the wrong one.
 export type Order = { draw: string[]; keep: Kept[] };
 export type Done = { drawn: Drawn[]; kept: string[] };
+// AND WHAT IT COST: the child's peak resident set in megabytes, said in its last line.
+type Answered = Done & { peak: number };
 export const orderOf = (binding: string): string => join(binding, '.render.json');
 
 // THE PAGES A CHILD DRAWS, by the budget: pages are taken in order until their books' source would pass
@@ -83,26 +85,18 @@ const batched = (drawings: Drawing[], budget: number): Drawing[][] => {
 // onto the new shell from the markup the last bind kept, because the page's template carries the
 // arrival's script as the text of a function, and a function's text is its transpiler's: written by the
 // parent under tsx it differed from the child's under vite, and a kept page was not its drawn self.
-const done = (binding: string, entry: string, order: Order): Promise<Done> => new Promise((resolve, reject) => {
-    writeFileSync(orderOf(binding), JSON.stringify(order), 'utf8');
-    const child = spawn(process.execPath, [entry, orderOf(binding)], {
-        cwd: binding,
-        stdio: ['ignore', 'pipe', 'inherit'],
-        // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
-        // nowhere here, so the child renders the way a reader's browser will.
-        env: { ...process.env, NODE_ENV: 'production' },
-    });
-    let out = '';
-    child.stdout.setEncoding('utf8');
-    child.stdout.on('data', (chunk: string) => { out += chunk; });
-    child.on('error', reject);
-    child.on('close', status => {
-        if (status !== 0) reject(new Error(`rendering failed (exit ${status ?? 'signal'})`));
-        else resolve(JSON.parse(lastLine(out)) as Done);
-    });
-});
+const done = async (binding: string, entry: string, index: number): Promise<Answered> => {
+    // THE PRERENDER IS A PRODUCTION ARTIFACT: the specification ran in the specify task and runs
+    // nowhere here, so the child renders the way a reader's browser will.
+    const { status, out } = await opened(binding, [entry, orderOf(binding), String(index)], { NODE_ENV: 'production' });
+    if (status !== 0) throw new Error(`rendering failed (exit ${status ?? 'signal'})`);
 
-export type Rendered = { pages: string[]; drawn: Drawn[]; batches: number };
+    return JSON.parse(lastLine(out)) as Answered;
+};
+
+// WHAT THE RENDER SAYS OF ITSELF: the pages, the ones drawn, how many children drew them and how many
+// ran at once, and the most a child held.
+export type Rendered = { pages: string[]; drawn: Drawn[]; batches: number; atOnce: number; peak: number };
 
 export const rendering = async (
     binding: string,
@@ -119,13 +113,10 @@ export const rendering = async (
     const batches = batched(stale, chosen.rendering.budget * 1048576);
     const orders: Order[] = batches.map((batch, index) => ({ draw: batch.map(drawing => drawing.address), keep: index === 0 ? kept : [] }));
     if (orders.length === 0 && kept.length > 0) orders.push({ draw: [], keep: kept });
-    const drawnPages: Drawn[] = [];
-    const keptPages: string[] = [];
-    for (const order of orders) {
-        const answered = await done(binding, entry, order);
-        drawnPages.push(...answered.drawn);
-        keptPages.push(...answered.kept);
-    }
+    writeFileSync(orderOf(binding), JSON.stringify(orders), 'utf8');
+    const answered = await atOnce(orders.map((_, index) => index), chosen.rendering.parallel, index => done(binding, entry, index));
+    const drawnPages = answered.flatMap(one => one.drawn);
+    const keptPages = answered.flatMap(one => one.kept);
     const pages = [...drawnPages.map(one => one.page), ...keptPages];
     if (root !== undefined) {
         const at = join(face, 'index.html');
@@ -138,7 +129,7 @@ export const rendering = async (
         pages.push('index.html');
     }
 
-    return { pages, drawn: drawnPages, batches: batches.length };
+    return { pages, drawn: drawnPages, batches: batches.length, atOnce: Math.min(chosen.rendering.parallel, orders.length), peak: Math.max(0, ...answered.map(one => one.peak)) };
 };
 
 // WHETHER A KEPT PAGE CAN STILL BE WRITTEN FROM WHAT WAS KEPT: its markup must still stand.

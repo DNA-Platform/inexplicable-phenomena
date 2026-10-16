@@ -17,7 +17,8 @@ try {
     await server.ssrLoadModule(join(binding, 'rendering', 'dom.ts'));
     const { specify } = await server.ssrLoadModule(join(binding, 'specification', 'specify.ts'));
     const answers = await specify(server, process.argv.slice(2));
-    process.stdout.write(JSON.stringify(answers) + '\n');
+    // THE ANSWERS, AND WHAT THEY COST, in the last line: the peak resident set, in megabytes.
+    process.stdout.write(JSON.stringify({ answers, peak: Math.round(process.resourceUsage().maxRSS / 1024) }) + '\n');
     process.exitCode = answers.some(one => one.failures.length > 0) ? 1 : 0;
 } finally {
     await server.close();

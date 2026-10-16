@@ -69,6 +69,10 @@ const need = <T,>(held: T | undefined, task: string): T => {
 };
 
 const plural = (n: number, one: string): string => `${n} ${one}${n === 1 ? '' : 's'}`;
+// WHAT A STAGE SAYS OF ITS CHILDREN: how many, how many at once when more than one, and the most one held.
+const children = (n: number): string => `${n} ${n === 1 ? 'child' : 'children'}`;
+const atOnce = (n: number): string => (n > 1 ? `, ${n} at once` : '');
+const peaked = (peak: number): string => (peak > 0 ? ` · peak ${peak} MB in a child` : '');
 
 export const tasks: Task[] = [
     { name: 'configure', run: state => { state.chosen = configure(state.binding); return `${plural(Object.keys(state.chosen).length, 'section')} read from .pubconfig`; } },
@@ -134,7 +138,7 @@ export const tasks: Task[] = [
     { name: 'specify', run: async state => {
         const found = need(state.found, 'specify');
         const scope = state.scope.length ? state.scope : found.books.map(book => book.folder);
-        const verdict = specifying(state.binding, found, scope, graph.read(state.binding), need(state.chosen, 'specify'));
+        const verdict = await specifying(state.binding, found, scope, graph.read(state.binding), need(state.chosen, 'specify'));
         state.graph = graph.write(state.binding, verdict.held);
         // EACH BOOK AGAINST ITS OWN SPECIFICATION, and nothing here about the library.
         //
@@ -151,7 +155,7 @@ export const tasks: Task[] = [
             throw new Error(`the library does not specify — ${plural(wrong.length, 'failure')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
         }
         const kept = state.graph.books.reduce((total, one) => total + one.walked, 0);
-        return `${plural(verdict.loaded.length, 'book')} read · ${verdict.unchanged.length} unchanged · ${plural(verdict.walked, 'writing')} specified (${kept} recorded)`;
+        return `${plural(verdict.loaded.length, 'book')} read${verdict.children ? ` in ${children(verdict.children)}${atOnce(verdict.atOnce)}` : ''} · ${verdict.unchanged.length} unchanged · ${plural(verdict.walked, 'writing')} specified (${kept} recorded)${peaked(verdict.peak)}`;
     } },
     { name: 'bundle', run: async state => {
         const built = await build({ ...configuration({ isPreview: false }), configFile: false, logLevel: 'warn' });
@@ -220,8 +224,7 @@ export const tasks: Task[] = [
         const pictures = found.books.flatMap(book => [...book.resources.values()].flat()
             .filter(one => imageTypes.includes(one.type))
             .map(one => { mkdirSync(join(face, book.folder), { recursive: true }); copyFileSync(join(book.path, one.file), join(face, book.folder, one.file)); return `${book.folder}/${one.file}`; }));
-        const children = `${rendered.batches} ${rendered.batches === 1 ? 'child' : 'children'}`;
-        return `${plural(rendered.drawn.length, 'page')} drawn in ${children} · ${kept.length} kept · ${plural(pictures.length, 'picture')}`;
+        return `${plural(rendered.drawn.length, 'page')} drawn in ${children(rendered.batches)}${atOnce(rendered.atOnce)} · ${kept.length} kept · ${plural(pictures.length, 'picture')}${peaked(rendered.peak)}`;
     } },
     { name: 'proof', run: state => {
         // RUNNABLE ON ITS OWN. `tsx binding.ts proof` reads the pages the last binding wrote, so a
