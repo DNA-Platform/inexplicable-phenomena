@@ -522,6 +522,21 @@ describe('the files beside a chapter', () => {
         expect(faultsOf(books)).toEqual([]);
     });
 
+    // Doug, 2026-10-15: "We absolutely need to support tsx as a resource type, and any other extension
+    // too." A type no library knew holds together when inserted; a stray backup is raised as unused.
+    it('holds together a file of any type the chapter inserts, and raises a stray one it does not', () => {
+        const inserted = whole();
+        inserted[2].chapters = ['A Chapter'];
+        inserted[2].appendix = 'artifact.jsx';
+        inserted[2].inserts = ['![[ artifact.jsx ]]'];
+        const stray = whole();
+        stray[2].chapters = ['A Chapter'];
+        stray[2].appendix = 'tsx.bak';
+
+        expect(faultsOf(inserted)).toEqual([]);
+        expect(faultsOf(stray)).toEqual([faults.unusedFile]);
+    });
+
     it('raises a file beside a chapter that nothing in the chapter inserts', () => {
         const books = whole();
         books[2].chapters = ['A Chapter'];

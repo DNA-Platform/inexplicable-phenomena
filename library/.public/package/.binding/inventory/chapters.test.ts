@@ -47,6 +47,7 @@ describe('the account of a book\'s files', () => {
         const { resources } = accountOfFiles(folder);
         expect(resources.get('5-the-plate.tsx')).toEqual([
             { file: '5-the-plate-figures.tsx', identifier: 'figures', type: '.tsx' },
+            { file: '5-the-plate.bak', identifier: '', type: '.bak' },
             { file: '5-the-plate.png', identifier: '', type: '.png' },
             { file: '5-the-plate.ts', identifier: '', type: '.ts' },
             { file: '5-the-plate.version1.tsx', identifier: 'version1', type: '.tsx' },
@@ -55,9 +56,12 @@ describe('the account of a book\'s files', () => {
         expect(accompanying('.cover.masthead.tsx', '.cover.tsx')).toEqual({ file: '.cover.masthead.tsx', identifier: 'masthead', type: '.tsx' });
     });
 
-    it('refuses what accompanies nothing and what carries an extension no library knows, and excuses a declaration', () => {
+    // Doug, 2026-10-15: "We absolutely need to support tsx as a resource type, and any other extension
+    // too." A file named after a writing is its resource whatever its extension; a stray one is refused
+    // later, by nothing in the chapter inserting it.
+    it('refuses what accompanies nothing, takes any extension beside a writing, and excuses a declaration', () => {
         const { unaccounted } = accountOfFiles(folder);
-        expect(unaccounted).toEqual(['5-the-plate.bak', 'plate.tsx']);
+        expect(unaccounted).toEqual(['plate.tsx']);
     });
 
     // Doug, 2026-09-28: "the compiler would error on chapter-name.id.tsx, chapter-name-id.tsx, because ids must be

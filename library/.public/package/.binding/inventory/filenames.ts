@@ -57,17 +57,14 @@ export const accompanying = (file: string, writing: string): Accompanying => {
 // A DECLARATION IS NOT AN OFFENCE: `.d.ts` is emitted rather than written, and no author put it there.
 export const isDeclaration = (file: string): boolean => file.endsWith('.d.ts');
 
-// AND A RESOURCE CARRIES ONE OF THE EXTENSIONS A LIBRARY KNOWS. Left open, a stray file passes by
-// being named after one that belongs: `2-the-source.tsx.bak` loses `.bak`, lands on a real chapter's
-// name and is waved through as its resource. What may stand beside a chapter is a closed list.
-const knownExtensions = ['ts', 'tsx', 'js', 'mjs', 'json', 'md', 'css', 'html', 'sh', 'txt', 'csv', 'svg', 'png', 'jpg', 'jpeg'];
+// AND A RESOURCE CARRIES ANY EXTENSION — Doug, 2026-10-15: "We absolutely need to support tsx as a
+// resource type, and any other extension too." A closed list once kept a stray out, `2-the-source.tsx.bak`
+// landing on a real chapter's name; the stray is refused where every resource is, by nothing in the
+// chapter inserting or importing it.
 
-// AND WHICH OF THEM ARE PICTURES: imported as the bundler emits them, an address; read by nobody for
+// WHICH RESOURCES ARE PICTURES: imported as the bundler emits them, an address; read by nobody for
 // references, since their bytes are not writing.
 export const imageTypes = ['.png', '.jpg', '.jpeg'];
-
-export const isKnown = (file: string): boolean =>
-    knownExtensions.includes(file.slice(file.lastIndexOf('.') + 1).toLowerCase());
 
 // WHAT IS LEFT WHEN A FILE'S FINAL EXTENSION COMES OFF, which is how a resource is matched to the
 // writing it accompanies: `1-the-plates.tsx.tsx` leaves `1-the-plates.tsx`, which is a chapter's whole

@@ -1,5 +1,5 @@
 import { readdirSync } from 'node:fs';
-import { Accompanying, Clashing, accompanies, accompanying, apparatus, before, isChapter, isDeclaration, isKnown, withoutFinalExtension } from './filenames';
+import { Accompanying, Clashing, accompanies, accompanying, apparatus, before, isChapter, isDeclaration, withoutFinalExtension } from './filenames';
 
 // WHAT EVERY FILE IN A BOOK IS, READ ONCE. A file is the book, a piece of its apparatus, a chapter,
 // or some chapter's resource — and anything else is named so the binder can refuse it. All three
@@ -37,7 +37,7 @@ export const accountOfFiles = (folder: string): { chapters: string[]; resources:
 
     for (const file of filesInFolder) {
         if (writings.includes(file) || isDeclaration(file)) continue;
-        const accompanies = isKnown(file) ? accompanied(file) : undefined;
+        const accompanies = accompanied(file);
         if (accompanies === undefined) { unaccounted.push(file); continue; }
         resources.set(accompanies, [...(resources.get(accompanies) ?? []), accompanying(file, accompanies)]);
     }
