@@ -1,3 +1,4 @@
+import { basename } from 'node:path';
 import type { Diagnostic } from '../inventory/library';
 import { last, separator, spelt } from './language';
 import { identifier } from '@dna-platform/public';
@@ -145,7 +146,13 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
                 if (reserved.has(slugged)) wrong.push({ fault: faults.reservedAddress, at: spot.at, file: naming.at.file, says: `"${said}" would stand at /${slugged}/, where the binder writes its own files — a book stands nowhere the binder does` });
                 claims(`/${slugged}/`, said, naming);
             }
-            claims(`/${spot.book}/#${slugged}`, said, naming);
+            // A TITLE WHOSE ADDRESS IS ITS BOOK'S — a cover's, and a synopsis's, which goes to its book — names
+            // no fragment, so the page gives it the id its words make, and every other naming wears the fragment
+            // made from its key. Claimed as worn, so a cover shown in the words a chapter of its book is called
+            // is caught here rather than by the proof at the end of a bind. Sprint 111, U17.
+            const worn = spot.kind === 'book' || basename(spot.file) === '.synopsis.tsx' ? identifier.slug(naming.words) : slugged;
+            if (worn === '') { wrong.push({ fault: faults.noAddress, at: spot.at, file: naming.at.file, says: `"${naming.words}" at line ${naming.at.line} is shown in words that leave no id once slugged — a title whose address is its book's wears the id its words make, so they carry a letter or a digit` }); continue; }
+            claims(`/${spot.book}/#${worn}`, said, naming);
         }
     for (const [key, held] of addressed) {
         if (held.length < 2 || new Set(held.map(one => one.said)).size < 2) continue;

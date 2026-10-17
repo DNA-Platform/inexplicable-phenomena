@@ -1,4 +1,4 @@
-import { form, literal, name, notation, spelling, wellSpelt, type Form, type Literal, type Name } from './language';
+import { form, literal, name, notation, shown, spelling, wellSpelt, type Form, type Literal, type Name } from './language';
 import { reads } from './reading';
 import type { Source } from './source';
 
@@ -24,8 +24,9 @@ const scanning = new RegExp(notation.source, 'gu');
 // because that is what its element will receive. The transform reads by the same rule.
 const asWritten = (said: string): string => said;
 
-// `said` IS WHAT THE LIBRARY WAS ASKED FOR AND `words` IS WHAT THE PAGE WILL SHOW. They are the same
-// string unless the writer gave a paren, and nothing in the structure ever keys on the words.
+// `said` IS WHAT THE LIBRARY WAS ASKED FOR AND `words` IS WHAT THE PAGE WILL SHOW, by the language's own
+// `shown`. They are the same name unless the writer gave a paren, and nothing in the structure ever keys on
+// the words; it reads them only for the id a title whose address is its book's wears.
 export type Said = { form: Form; name: Name; said: string; words: string; at: number; line: number };
 export type Referring = { name: Name; said: string; words: string; at: number; line: number };
 // A LITERAL, `![[ this ]]` or `![[ identifier.type ]]`, read in prose only: it inserts a file where it
@@ -64,13 +65,15 @@ export const annotating = (source: Source): Reading => {
             // library does not hold.
             if (read.refers) {
                 if (!wellSpelt(read)) { held.refused.push({ said: read.name, at, line, why: 'a reference is written $[[ X ]], with two brackets' }); continue; }
-                held.references.push({ name: name(read.name), said: read.name, words: read.words, at, line });
+                const meant = name(read.name);
+                held.references.push({ name: meant, said: read.name, words: shown(read.words, read.named, meant), at, line });
                 continue;
             }
 
             const one = wellSpelt(read) ? form(read.prefix, read.brackets, read.postfix) : undefined;
             if (one === undefined) { held.refused.push({ said: read.name, at, line }); continue; }
-            held.annotations.push({ form: one, name: name(read.name), said: read.name, words: read.words, at, line });
+            const meant = name(read.name);
+            held.annotations.push({ form: one, name: meant, said: read.name, words: shown(read.words, read.named, meant), at, line });
         }
     }
 

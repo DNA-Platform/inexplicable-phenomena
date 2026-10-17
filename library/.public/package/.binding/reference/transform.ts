@@ -4,9 +4,9 @@ import type { Catalogue } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import type { Book } from '../inventory/library';
 import { imageTypes } from '../inventory/filenames';
-import { reads } from '../catalogue/reading';
+import { reads, written } from '../catalogue/reading';
 import { sourceOf, textOf } from '../catalogue/structure';
-import { form, key, literal, name as parsed, notation, spelling, titled, wellSpelt, whole, type Name } from '../catalogue/language';
+import { form, key, literal, name as parsed, notation, shown, spelling, titled, wellSpelt, whole, type Name } from '../catalogue/language';
 
 // THE REFERENCE TRANSFORM. The notation in, ordinary markup out.
 //
@@ -131,7 +131,7 @@ export const transforming = (code: string, file: string, catalogue: Catalogue, b
             const spelled = read.refers ? undefined : form(read.prefix, read.brackets, read.postfix);
             const meant: Name = spelled?.is === 'mention' ? { of: 'chapter', within: true, chapter: whole(read.name) }
                 : spelled?.is === 'title' ? titled(said, cover) : said;
-            const shown = read.named ? read.words : meant.of === 'book' ? meant.book : meant.chapter;
+            const showing = shown(read.words, read.named, meant);
             const url = catalogue.where(key(meant, within));
             if (url === undefined) {
                 missed.push({ key: key(meant, within), file, line: held.line(at) });
@@ -148,7 +148,12 @@ export const transforming = (code: string, file: string, catalogue: Catalogue, b
             // verified as the chapter it names and given the book's url; a reference to the chapter is
             // given the chapter's own, so the synopsis is still reached where it stands.
             const address = spelled?.is === 'title' && synopsis && within !== undefined ? catalogue.where(within) ?? url : url;
-            edits.push({ from: at, to, said: `[${shown}](${address})` });
+
+            // AND THE WORDS GO BACK INTO PROSE SPELLED AS THEY WERE READ. Prose was read with its entities
+            // spelled, so `Claude &gt; Notes` shows `Claude > Notes`, and written back bare that `>` is a
+            // character JSX refuses inside an element — found 2026-10-17 in eight conversation titles of
+            // his. A string is read as written and goes back as written.
+            edits.push({ from: at, to, said: `[${prose ? written(showing) : showing}](${address})` });
         }
     };
 

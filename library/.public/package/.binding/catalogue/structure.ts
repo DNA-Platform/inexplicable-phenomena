@@ -26,7 +26,9 @@ export type { Relation };
 export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter' | 'anchor'; book: SpotId };
 export type Half = { by: SpotId; end: End; at: Where };
 export type Edge = { relation: Relation; from: SpotId; to: SpotId; ends: Half[] };
-export type Naming = { spot: SpotId; at: Where };
+// AND THE WORDS IT IS SHOWN IN, for the one id a writing makes from them: a title whose address is its
+// book's — a cover's, a synopsis's — names no fragment, so it wears the slug of what it shows.
+export type Naming = { spot: SpotId; at: Where; words: string };
 export type Listing = { of: SpotId; kind: 'chapter' | 'book'; canonical: boolean; at: Where };
 
 // EVERY PLACE THE LIBRARY NAMES SOMETHING AND MEANS IT: a reference, `$[[ X ]]`, wherever it is written,
@@ -165,8 +167,8 @@ export const structure = (found: Library): Structure => {
     const titledTwice: Structure['titledTwice'] = [];
 
     const titling = (one: Held): Said[] => one.reading.annotations.filter(said => said.form.is === 'title');
-    const calls = (said: string, spot: SpotId, at: Where): void => {
-        names.set(said, [...(names.get(said) ?? []), { spot, at }]);
+    const calls = (said: string, spot: SpotId, at: Where, words: string): void => {
+        names.set(said, [...(names.get(said) ?? []), { spot, at, words }]);
         named.set(spot, last(said));
     };
 
@@ -182,7 +184,7 @@ export const structure = (found: Library): Structure => {
         const said = title === undefined ? '' : titleOf(title.name, true);
         if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
         spots.set(one.book.folder, { id: one.book.folder, at: one.book.folder, file: one.path, kind: 'book', book: one.book.folder });
-        calls(said, one.book.folder, { file: one.path, line: title.line });
+        calls(said, one.book.folder, { file: one.path, line: title.line }, title.words);
         for (const other of others)
             abouts.push({ book: one.book.folder, said: titleOf(other.name, true), written: other.said, at: { file: one.path, line: other.line } });
     }
@@ -219,7 +221,7 @@ export const structure = (found: Library): Structure => {
         // a chapter nobody lists, nobody reaches and nobody checks.
         const id = titles(one.book, one.file);
         spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder });
-        calls(`${within}${separator}${said}`, id, { file: one.path, line: title.line });
+        calls(`${within}${separator}${said}`, id, { file: one.path, line: title.line }, title.words);
         for (const other of others)
             if (titleOf(other.name, false) !== said)
                 titledTwice.push({ by: id, said: other.said, at: { file: one.path, line: other.line } });
@@ -238,7 +240,7 @@ export const structure = (found: Library): Structure => {
             if (said.form.is !== 'mention' || said.name.of !== 'book' || said.name.book === '') continue;
             const id = `${by}#${said.name.book}`;
             spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'anchor', book: one.book.folder });
-            calls(`${within}${separator}${said.name.book}`, id, { file: one.path, line: said.line });
+            calls(`${within}${separator}${said.name.book}`, id, { file: one.path, line: said.line }, said.words);
         }
     }
 

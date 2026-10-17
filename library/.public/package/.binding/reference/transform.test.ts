@@ -107,6 +107,20 @@ describe('a reference in prose', () => {
         const written = readFileSync(chapter, 'utf8');
         expect(made.text.match(/<\/?[A-Z]\w*/gu)).toEqual(written.match(/<\/?[A-Z]\w*/gu));
     });
+
+    // FOUND 2026-10-17 in eight conversation titles of his, "Claude > Miscellaneous": prose is read with its
+    // entities spelled, and words written back bare put a `>` where JSX refuses one. Sprint 111, U18.
+    it('writes the words back into prose spelled as they were read, so a sign JSX refuses stays an entity', () => {
+        const code = 'export default () => (<Paragraph><Means>$[[ Claude &gt; Notes &amp; &#123;more&#125; ]]( The Library )</Means></Paragraph>);';
+        const spelled = transforming(code, chapter, card);
+        expect(spelled.missing).toEqual([]);
+        expect(spelled.text).toContain('<Means>[Claude &gt; Notes &amp; &#123;more&#125;](/the-library/)</Means>');
+    });
+
+    it('shows the words before a paren exactly as written, since they are never read as a name', () => {
+        const code = 'export default () => (<Paragraph><Means>$[[ A Continuation... ]]( The Library )</Means></Paragraph>);';
+        expect(transforming(code, chapter, card).text).toContain('<Means>[A Continuation...](/the-library/)</Means>');
+    });
 });
 
 // A TITLE FORM NAMES THE WRITING ITS FILE IS — Doug, 2026-09-25: "It uses the compiler syntax!!

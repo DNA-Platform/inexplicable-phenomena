@@ -28,11 +28,12 @@ export class $Heading extends $Sentence {
         const name = this.name;
         if (name === '') return;
         const link = binder.reference(html.copy(this.text));
+        const id = link === undefined ? identifier.slug(name) : binder.referent(link);
         const Referent = $(referent);
         const Self = $(self);
         this.annotations.add(this,
-            <Referent>{identifier.slug(name)}</Referent>,
-            <Self>{link?.identifier ?? `#${identifier.slug(name)}`}</Self>
+            <Referent>{id}</Referent>,
+            <Self>{link?.identifier ?? `#${id}`}</Self>
         );
     }
 }

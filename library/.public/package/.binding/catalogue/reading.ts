@@ -56,3 +56,13 @@ const spelled = (text: string): string =>
 // correctly did not resolve. One home, both callers.
 export const reads = (text: string): string => spelled(said(text));
 
+// AND THE OTHER WAY: TEXT WRITTEN AS JsxText THAT READS BACK AS ITSELF. Every character JSX would read as
+// something else is spelled as an entity — the ampersand, the angle brackets, the braces — and so are the
+// brackets a form is written in, so text that holds them is never read as one. The inverse of `reads` for
+// text on one line: a writer of chapters writes prose with it, and the reference transform writes a form's
+// words back into prose with it, since what it shows was read with its entities spelled. `written` is a
+// PROXY NAME.
+const spellings: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '{': '&#123;', '}': '&#125;', '[': '&#91;', ']': '&#93;' };
+
+export const written = (text: string): string => text.replace(/[&<>{}[\]]/gu, one => spellings[one]);
+

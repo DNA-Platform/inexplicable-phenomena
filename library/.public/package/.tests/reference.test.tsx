@@ -87,6 +87,22 @@ describe('the binder writes [text](identifier) and any component reads both halv
     });
 });
 
+// Doug, 2026-10-17: "It is very important that we normalize text for ids exactly teh same. There should be
+// dedicated code… Never duplicated. And used broadly." A title, a mention and a heading ask this one rule.
+describe('the binder says the id a link names, the one rule a title, a mention and a heading wear', () => {
+    it('is the fragment of its address, which the catalogue made from the key', () => {
+        const entry = { name: 'Ontic Structural Realism', identifier: '/our-conversations/#claude-ontic-structural-realism-3b54b751' };
+        expect(binder.referent(entry)).toBe('claude-ontic-structural-realism-3b54b751');
+        expect(binder.referent({ name: 'DNA', identifier: '/dougs-claude/#dna' })).toBe('dna');
+    });
+
+    it('is its words slugged where the address is a book\'s and names no fragment', () => {
+        expect(binder.referent({ name: 'The Library', identifier: '/the-library/' })).toBe('the-library');
+        expect(binder.referent({ name: 'Synopsis', identifier: '/the-library/#' })).toBe('synopsis');
+        expect(binder.referent({ name: 'The First Shelf', identifier: 'the-first-shelf' })).toBe('the-first-shelf');
+    });
+});
+
 describe('a referent is the id its writing answers to', () => {
     it('holds the identifier it was given', () => {
         const writing = built<$Writing>(
@@ -170,6 +186,12 @@ describe('a referent is the id its writing answers to', () => {
 });
 
 describe('a mention is the word that reads what the compiler wrote', () => {
+    it('named apart from its words, wears the fragment the catalogue made from its key', () => {
+        const mention = built<$Mention>(<Mention>[DNA Legacy](/dougs-claude/#the-first-account)</Mention>);
+        expect(mention.name).toBe('DNA Legacy');
+        expect(String(mention.id)).toBe('the-first-account');
+    });
+
     it('is a word, and stands a referent holding the identifier', () => {
         const mention = built<$Mention>(<Mention>[The First Shelf](the-first-shelf)</Mention>);
         expect(mention.level).toBe(2);

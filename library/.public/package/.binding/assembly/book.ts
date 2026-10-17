@@ -8,7 +8,15 @@ const local = (file: string): string => named(file).replace(/^\.+/u, '').replace
 // slug — measured 2026-09-20: `3-semantic-reference-theory.tsx` and `5-semantic-reference-theory.tsx`
 // both became `SemanticReferenceTheory`, and esbuild refused the module. Nobody reads these names.
 // An appendix chapter's number carries its big dots, `o1`, so `o1-the-sheet` and `1-the-sheet` differ.
-const classed = (file: string): string => `${local(file).replace(/^\w/u, letter => letter.toUpperCase())}${/^(o*\d+)-/u.exec(file)?.[1] ?? ''}`;
+// AND A SYMBOL BEGINS WITH A LETTER, whatever the file is called after its number. Doug, 2026-10-17: "Why
+// can't we have 027-2? We might want to use sequential numbering to order chapters, and the chapter writer is
+// free to use whatever display name they want." The file name is the author's; only this symbol, which nobody
+// reads, may not open with a digit, so `o27-2-semantic-reference-frames` imports as `Chapter2Semantic…o27`.
+const classed = (file: string): string => {
+    const symbol = `${local(file).replace(/^\w/u, letter => letter.toUpperCase())}${/^(o*\d+)-/u.exec(file)?.[1] ?? ''}`;
+
+    return /^\d/u.test(symbol) ? `Chapter${symbol}` : symbol;
+};
 
 // A BOOK, ASSEMBLED FROM THE ONE LIST THE INVENTORY MADE: its apparatus, then its chapters in order.
 // The order is the inventory's, so nothing here counts files a second time.

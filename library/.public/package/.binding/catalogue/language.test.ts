@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { form, forms, key, last, literal, name, notation, separator, spelling, spelt, tidy, titled, wellSpelt, whole } from './language';
+import { binder, identifier } from '@dna-platform/public';
+import { escaped, form, forms, key, last, literal, name, notation, sanitized, separator, shown, spelling, spelt, tidy, titled, wellSpelt, whole } from './language';
+import { reads, written } from './reading';
 
 // WHAT THE LANGUAGE PROMISES A WRITER, and every one of these is a promise rather than a check on a
 // mechanism. The difference matters here more than anywhere else in the compiler: a parser that is
@@ -232,5 +234,133 @@ describe('the families and the literal', () => {
         expect(read('**[[ Math ]]')).toMatchObject({ family: 'annotates', refers: false, inserts: false, prefix: '**', brackets: 2 });
         expect(wellSpelt(read('[[[ A Place ]]]')!)).toBe(true);
         expect(wellSpelt(read('[[ X ]]*')!)).toBe(false);
+    });
+});
+
+// A NAME NOBODY CHOSE — Doug, 2026-10-17: "It is very important that we normalize text for ids exactly teh same…
+// It should be well tested with promises… We need to sanitize… Make sure the sanitizer is very smart… and ponder
+// corner cases that are unseen thus far too!" The hazards below are names of his two accounts that a scan of
+// 3,815 found holding something the language or JSX reads, and the ones predicted beside them; every promise is
+// made over all of them. Sprint 111, U18.
+const hazards = [
+    'Isoflurane / Epothilone B eNeuro Study',
+    'TON./Cocoon',
+    'Doug: The (Dichotomy) Dichotomy ',
+    '[Excerpt]: The Doug & Eirian Theory of Consciousness: First Draft',
+    'Dr. Who/Watson [draft] (2)',
+    'Claude > Miscellaneous',
+    'P = NP: arguments, barriers, and cryptographic implications',
+    'Arguments for and against P ≠ NP',
+    'Pointers in C++: *x vs **x',
+    'Doug & Seren $ $Chemical SRT',
+    '# **Doug\'s DNA Brand Style Guide**',
+    'TON and TONX 17% decline: beta vs idiosyncratic drivers',
+    '💬 История Биткоина.\nКто такой Са…',
+    'Dr. Helga d’Oustafost',
+    'A Continuation...',
+    'Opus 4.1: Plans, Reflections & Consequences',
+    'Catalogue → Book → Chapter Test',
+    'Техническое описание стиля иллюстрации "Тропический курорт"',
+    'C:\\Users\\doug\\notes',
+    'x < y {and} y > z',
+    '..leading dots and trailing dots..',
+    './relative-looking',
+    'Cafe\u0301 au lait',
+    'Invest\u200Bing\u00AD',
+    'The \u202ELedger\u202C',
+    'Tab\there\u00A0and\u3000there',
+    'می\u200Cخواهم',
+    '$[[ a form ]] inside',
+    '![[ this ]] too',
+    '[[[ three ]]]( and a paren )',
+    'stars **[[ X ]]** around',
+];
+
+describe('a name nobody chose is made one the language reads back as itself', () => {
+    it('holds none of the language\'s own characters, and shows a lookalike where each stood', () => {
+        expect(sanitized('Dr. Who/Watson [draft] (2)')).toBe('Dr. Who∕Watson ⁅draft⁆ ❨2❩');
+        expect(sanitized('C:\\Users')).toBe('C:∖Users');
+        for (const one of hazards)
+            expect(sanitized(one), one).not.toMatch(/[/\\()[\]]/u);
+    });
+
+    it('keeps every other sign as written, since a name is shown as it was given', () => {
+        expect(sanitized('Doug & Seren $ $Chemical SRT')).toBe('Doug & Seren $ $Chemical SRT');
+        expect(sanitized('Pointers in C++: *x vs **x')).toBe('Pointers in C++: *x vs **x');
+        expect(sanitized('Claude > Miscellaneous')).toBe('Claude > Miscellaneous');
+        expect(sanitized('A Continuation...')).toBe('A Continuation...');
+    });
+
+    it('is what is seen: one space for every space, nothing invisible, a letter one letter however it was composed', () => {
+        expect(sanitized('💬 История Биткоина.\nКто такой Са…')).toBe('💬 История Биткоина. Кто такой Са…');
+        expect(sanitized('Cafe\u0301 au lait')).toBe('Café au lait');
+        expect(sanitized('Invest\u200Bing\u00AD')).toBe('Investing');
+        expect(sanitized('The \u202ELedger\u202C')).toBe('The Ledger');
+        expect(sanitized('Tab\there\u00A0and\u3000there')).toBe('Tab here and there');
+        expect(sanitized('  ')).toBe('');
+    });
+
+    it('is a sanitized name of its own, so sanitizing twice changes nothing', () => {
+        for (const one of hazards)
+            expect(sanitized(sanitized(one)), one).toBe(sanitized(one));
+    });
+
+    it('stands at the address its raw name would, so sanitizing never moves a link', () => {
+        for (const one of hazards)
+            expect(identifier.slug(sanitized(one)), one).toBe(identifier.slug(one));
+    });
+
+    it('is read back whole as a book, escaped, wherever its dots and separators stood', () => {
+        expect(escaped('Dr. Who')).toBe('Dr.. Who');
+        expect(escaped('TCP/IP')).toBe('TCP./IP');
+        expect(name(escaped('./relative-looking'))).toEqual({ of: 'book', book: './relative-looking' });
+        for (const one of hazards.map(sanitized))
+            expect(name(escaped(one)), one).toEqual({ of: 'book', book: one });
+    });
+
+    it('in a title form written into prose, is read as the name it is and shown as itself', () => {
+        const scanning = new RegExp(notation.source, 'u');
+        for (const one of hazards.map(sanitized)) {
+            const held = scanning.exec(`<Title>[[ ${written(escaped(one))} ]]</Title>`)!;
+            const read = spelling(held, reads);
+            expect(held[0], one).toBe(`[[ ${written(escaped(one))} ]]`);
+            expect(name(read.name), one).toEqual({ of: 'book', book: one });
+            expect(shown(read.words, read.named, name(read.name)), one).toBe(one);
+        }
+    });
+
+    it('as the words of a form a paren names, is shown exactly as written, dots and all', () => {
+        const scanning = new RegExp(notation.source, 'u');
+        for (const one of hazards.map(sanitized)) {
+            const key = `claude--${one}--3b54b751`;
+            const held = scanning.exec(`<Title>[[ ${written(one)} ]]( ${written(escaped(key))} )</Title>`)!;
+            const read = spelling(held, reads);
+            expect(read.named, one).toBe(true);
+            expect(shown(read.words, read.named, name(read.name)), one).toBe(one);
+            expect(name(read.name), one).toEqual({ of: 'book', book: key });
+        }
+    });
+
+    it('as the words the compiler writes, is read back by the page\'s binder as the name it is', () => {
+        for (const one of hazards.map(sanitized))
+            expect(binder.reference(`[${one}](/our-conversations/#claude-x)`)?.name, one).toBe(one);
+    });
+});
+
+describe('text written as JSX prose reads back as itself, and is never read as a form', () => {
+    it('spells what JSX would read otherwise, and the brackets a form is written in', () => {
+        expect(written('x < y {and} y > z & [[ X ]]')).toBe('x &lt; y &#123;and&#125; y &gt; z &amp; &#91;&#91; X &#93;&#93;');
+    });
+
+    it('reads back as itself, every hazard of them', () => {
+        for (const one of hazards.map(sanitized))
+            expect(reads(written(one)), one).toBe(one);
+        expect(reads(written('$[[ a form ]] and ![[ this ]]'))).toBe('$[[ a form ]] and ![[ this ]]');
+    });
+
+    it('holds no form for the scanner to find, whatever the text said', () => {
+        const scanning = new RegExp(notation.source, 'u');
+        for (const one of hazards)
+            expect(scanning.exec(written(one)), one).toBeNull();
     });
 });

@@ -25,6 +25,8 @@ import { faults, wellformed } from './wellformed';
 type Made = {
     folder: string;
     name: string;
+    // THE WORDS A COVER SHOWS, when its title names the book apart from them, `[[ shown ]]( name )`.
+    shown?: string;
     author: string;
     catalogue?: string;
     about?: boolean;
@@ -58,7 +60,7 @@ const built = (books: Made[]): Library => {
         writeFileSync(join(path, '.book.tsx'), 'export default class B {}\n');
         writeFileSync(join(path, '.cover.tsx'), page([
             '<Cover />',
-            `<Title>[[ ${one.name} ]]</Title>`,
+            `<Title>${one.shown === undefined ? `[[ ${one.name} ]]` : `[[ ${one.shown} ]]( ${one.name} )`}</Title>`,
             `<Author>${one.author}</Author>`,
             ...(one.catalogue === undefined ? [] : [`<Subject>${one.catalogue}</Subject>`]),
             ...(one.topics ?? []).map(topic => `<Paragraph>${topic}</Paragraph>`),
@@ -427,6 +429,32 @@ describe('one address, one thing', () => {
         books[2].chapters = ['Some Projects'];
 
         expect(faultsOf(books)).toEqual([faults.sameAddress, faults.sameAddress]);
+    });
+
+    // A COVER'S ADDRESS IS ITS BOOK'S AND NAMES NO FRAGMENT, so the page gives its title the id its words
+    // make — Sprint 111, U17. A conversation is keyed `claude--<title>--<id>` and shown in its title, and a
+    // chapter of it called by that title would wear the same id on the same page.
+    it('raises a cover shown in the words a chapter of its book is called, since both wear one id on its page', () => {
+        const books = whole();
+        books[2].shown = 'The Projects';
+        books[2].chapters = ['The Projects'];
+
+        expect(faultsOf(books)).toEqual([faults.sameAddress, faults.sameAddress]);
+    });
+
+    it('lets a cover be shown in words apart from its name, when no chapter of its book is called them', () => {
+        const books = whole();
+        books[2].shown = 'The Projects';
+        books[2].chapters = ['A Plan'];
+
+        expect(faultsOf(books)).toEqual([]);
+    });
+
+    it('raises a cover shown in words that leave no id', () => {
+        const books = whole();
+        books[2].shown = '🎉';
+
+        expect(faultsOf(books)).toEqual([faults.noAddress]);
     });
 
     it('raises a name that leaves no address', () => {

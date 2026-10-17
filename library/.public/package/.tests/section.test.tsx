@@ -79,6 +79,19 @@ describe('a heading does as a title does: it wears the id its name slugs to, mea
         expect(section.mention).toBe(heading.means);
     });
 
+    it('written as a mention named apart from its words, it wears the fragment its key made', () => {
+        const section = built<$Section>(
+            <Section>
+                <Heading>[DNA Legacy](/dougs-claude/#the-first-account)</Heading>
+                <Paragraph>a claim</Paragraph>
+            </Section>
+        );
+        const heading = section.canonical!;
+        expect(heading.name).toBe('DNA Legacy');
+        expect(String(heading.id)).toBe('the-first-account');
+        expect(heading.means?.identifier).toBe('/dougs-claude/#the-first-account');
+    });
+
     it('written plain, its copy slugged is its id and what it means, so it still links to itself', () => {
         const section = built<$Section>(
             <Section>

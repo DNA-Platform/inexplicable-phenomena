@@ -186,9 +186,22 @@ describe('a title is a sentence that names its chapter, holding the link the com
         expect(page.querySelector('a.pa-self-reference > #the-argument')).not.toBeNull();
     });
 
+    // Doug, 2026-10-17, approving one id for every name: the catalogue makes a chapter's fragment from its KEY, the
+    // paren, and a title shown in other words wears that fragment, so a link to it lands. Sprint 111, U17.
+    it('wears the fragment its address names, made from its key, whatever words it shows', () => {
+        const entry = built<$Chapter>(
+            <Chapter>
+                <Title>[Ontic Structural Realism](/our-conversations/#claude-ontic-structural-realism-3b54b751)</Title>
+            </Chapter>
+        ).canonical!;
+        expect(entry.name).toBe('Ontic Structural Realism');
+        expect(String(entry.id)).toBe('claude-ontic-structural-realism-3b54b751');
+    });
+
     // Doug, 2026-09-26: "Title should use the name to create the fragment with the Identifier utility. The url
-    // should be completely arbitrary."
-    it('makes its id from its name and never from its url, so a cover\'s title wears its book\'s slug', () => {
+    // should be completely arbitrary." A title whose address is its book's, a cover's or a synopsis's, names no
+    // fragment, and makes its id from its words.
+    it('makes its id from its name where its address names no fragment, so a cover\'s title wears its book\'s slug', () => {
         const arbitrary = built<$Chapter>(
             <Chapter>
                 <Title>[The Argument](anything)</Title>

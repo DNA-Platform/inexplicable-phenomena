@@ -1,3 +1,5 @@
+import { identifier } from '@dna-platform/public';
+
 // THE LANGUAGE, WRITTEN DOWN ONCE, AS SOMETHING THAT CAN BE READ.
 //
 // `catalogue/language.ts` is a PROXY NAME, flagged for Doug.
@@ -244,3 +246,37 @@ export const itself = (held: Name, within: string | undefined): boolean =>
 // its chapter is in is left as written, and is a chapter of that book. `titled` is a PROXY NAME.
 export const titled = (held: Name, cover: boolean): Name =>
     (cover || held.of !== 'book' ? held : { of: 'chapter', within: true, chapter: held.book });
+
+// AND WHAT A FORM SHOWS: the bracket as written when a paren names it, and otherwise the name it means, as
+// where it stands calls it — `[[ Dr.. Who ]]` shows `Dr. Who`, and `[[ Dr. Who ]]( A Key )` shows `Dr. Who`
+// too, since a bracket before a paren is never read as a name. Asked by the scanner and the transform alike,
+// so what the catalogue says a page shows is what the page shows.
+export const shown = (words: string, named: boolean, meant: Name): string =>
+    (named ? words : meant.of === 'book' ? meant.book : meant.chapter);
+
+// ---- what a name may hold ----
+//
+// A NAME NOBODY CHOSE IS MADE ONE THE LANGUAGE READS BACK AS ITSELF, HERE AND NOWHERE ELSE — a conversation's
+// title, a file's, anything a library imports. Doug, 2026-10-17: "It is very important that we normalize text
+// for ids exactly teh same. There should be dedicated code… It should be part of the binder. Never
+// duplicated… We need to sanitize." And of the slash, the same day: "use the one that looks lile the slash.
+// Predict more problems like this and fix similarly."
+//
+// SO EVERY CHARACTER THAT IS THE LANGUAGE'S OWN BECOMES ITS LOOKALIKE, and the page shows what was written
+// while no layer reads it as anything: the separator, the brackets a form is written in, the parentheses
+// that name, and the backslash a string reads as an escape. The lookalikes were photographed in the
+// library's three faces beside their letters and chosen for reading as them. What cannot be seen goes,
+// every space is one space and a letter is one letter however it was composed — the Identifier's own
+// normalization, the one its slug begins from, so a sanitized name stands at the address its raw name
+// would. A name that is nothing once sanitized is empty, and what to call it instead is the caller's.
+// `sanitized` is a PROXY NAME.
+const lookalikes: Record<string, string> = { '/': '∕', '\\': '∖', '(': '❨', ')': '❩', '[': '⁅', ']': '⁆' };
+
+export const sanitized = (text: string): string =>
+    identifier.normalized(text).replace(/[/\\()[\]]/gu, one => lookalikes[one]);
+
+// AND A NAME SPELLED SO THE LANGUAGE READS IT BACK WHOLE, the inverse of `name`: every escape and every
+// separator escaped, so `Dr. Who` is written `Dr.. Who` and read `Dr. Who`, and `TCP/IP` is one book. Only
+// ever a name — the paren, or a form with none — and never the bracket before a paren, which is shown as
+// written. `escaped` is a PROXY NAME.
+export const escaped = (said: string): string => said.replace(/[./]/gu, one => `.${one}`);

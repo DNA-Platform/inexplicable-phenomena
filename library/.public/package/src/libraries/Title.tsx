@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { $, $check } from '@dna-platform/chemistry';
 import { binder } from '@/utilities/Binder';
 import { html } from '@/utilities/Html';
-import { identifier } from '@/utilities/Identifier';
 import { specify } from '@/utilities/Specification';
 import { CompositionSpecification, Block as block } from '@/writing/Composition';
 import { $Sentence } from '@/writing/Sentence';
@@ -28,7 +27,7 @@ export class $Title extends $Sentence {
         const Referent = $(referent);
         this.annotations.add(this,
             <Self>{link.identifier}</Self>,
-            <Referent>{identifier.slug(link.name)}</Referent>
+            <Referent>{binder.referent(link)}</Referent>
         );
     }
 

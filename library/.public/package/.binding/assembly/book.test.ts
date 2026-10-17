@@ -31,6 +31,17 @@ describe('the module the compiler writes for a book', () => {
         expect(text).not.toContain('Append');
     });
 
+    // Doug, 2026-10-17: "Why can't we have 027-2? We might want to use sequential numbering to order chapters."
+    // The file keeps its name; the symbol the module imports it by begins with a letter.
+    it('imports a chapter whose name after its number opens with a digit by a symbol that opens with a letter', () => {
+        const numbered = paper === undefined ? undefined : { ...paper, files: [...paper.files, 'o27-2-semantic-frames.tsx'] };
+        const written = numbered === undefined ? '' : assembled(numbered, '../paper');
+        expect(written).toContain("import Chapter2SemanticFrameso27 from '../paper/o27-2-semantic-frames';");
+        expect(written).toContain('        {Chapter2SemanticFrameso27()}');
+        const symbols = [...written.matchAll(/^import (\w+) from/gmu)].map(declared => declared[1]);
+        expect(symbols.every(symbol => /^[A-Za-z_$]/u.test(symbol))).toBe(true);
+    });
+
     // THE BINDER APPENDS NOTHING — Sprint 92, Doug, 2026-09-28: "append is the authors. You remove the
     // flexibility if you have the binder do it." A file beside a chapter reaches the page through the literal
     // the transform inserts, or an Append the author writes; the module knows only the chapters.
