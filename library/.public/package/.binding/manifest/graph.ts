@@ -47,6 +47,8 @@ export const bases = (found: Library): string => {
 
 export const graph = {
     at: (binding: string): string => join(binding, '.graph.json'),
+    // NOTHING KEPT, which is what a bind told `fresh` starts from. Sprint 110.
+    empty,
 
     read(binding: string): Graph {
         const at = graph.at(binding);

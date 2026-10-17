@@ -9,6 +9,8 @@ const server = await createServer({
     logLevel: 'error',
     // No hot reload and no watcher in a child that specifies its books once and exits; see render.mjs.
     server: { middlewareMode: true, hmr: false, ws: false, watch: null },
+    // And no dependency optimizer, for the reason render.mjs gives.
+    optimizeDeps: { noDiscovery: true, include: [] },
     appType: 'custom',
     ssr: { external: true },
 });

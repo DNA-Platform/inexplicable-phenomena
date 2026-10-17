@@ -27,6 +27,8 @@ const empty = (): Manifest => ({ assembled: [], written: [], rendered: [], bundl
 
 export const manifest = {
     at: (binding: string): string => join(binding, '.manifest.json'),
+    // NOTHING KEPT, which is what a bind told `fresh` starts from. Sprint 110.
+    empty,
 
     read(binding: string): Manifest {
         const at = manifest.at(binding);

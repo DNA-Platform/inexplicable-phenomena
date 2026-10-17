@@ -92,14 +92,15 @@ export const pulled = (): Galley => {
     return { root, library, face, binding, remove: (): void => rmSync(root, { recursive: true, force: true }) };
 };
 
-// A STAGED LIBRARY, BOUND — the whole binder run over it, and what it printed handed back.
+// A STAGED LIBRARY, BOUND — the whole binder run over it, with any words the binder takes, `fresh` among
+// them, and what it printed handed back.
 //
 // WITHOUT THE TEST RUNNER'S `NODE_ENV`. Vitest sets it to `test`; a bind decides for itself what
 // each phase runs as, and the prerender's children insist on `production`.
-export const bound = (galley: Galley): string => {
+export const bound = (galley: Galley, words: string[] = []): string => {
     const { NODE_ENV: _, ...environment } = process.env;
 
-    return execFileSync('npx', ['tsx', 'binding.ts'], { cwd: galley.binding, encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'pipe'], env: environment });
+    return execFileSync('npx', ['tsx', 'binding.ts', ...words], { cwd: galley.binding, encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'pipe'], env: environment });
 };
 
 // THE SAME LIBRARY, LARGER: one of its books copied N times under N names, each listed where the

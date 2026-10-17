@@ -15,6 +15,11 @@ const server = await createServer({
     // 0.95 s of an 8 s draw on 2026-10-16; vite answers `server.watcher` with a no-op when watching is
     // off, so the inventory's retaking plugin, which adds the library to it, loses nothing here.
     server: { middlewareMode: true, hmr: false, ws: false, watch: null },
+    // AND NO DEPENDENCY OPTIMIZER: a child serves no browser and loads its books as the server, which
+    // reads node_modules as Node does, so the pre-bundled dependencies under node_modules/.vite are
+    // nothing it needs; and two children opening at once wrote and cleared that one cache together,
+    // EPERM removing .vite/deps on the first bind of 136 books two at once, 2026-10-17.
+    optimizeDeps: { noDiscovery: true, include: [] },
     appType: 'custom',
     ssr: { external: true },
 });

@@ -28,6 +28,9 @@ import { removal } from './manifest/removal';
 // THE BINDER IS A COMPILER: a sequence of named tasks, each run in order, each saying what it
 // did, the sequence stopping at the first that fails. `tsx binding.ts` runs them all;
 // `tsx binding.ts assemble specify` runs a subset, in this order, for a person debugging one.
+// `tsx binding.ts fresh` keeps nothing from the last bind: every book is read and every page drawn and
+// the records written anew, which was two files deleted by hand before every measurement until
+// 2026-10-17. From a copy, `npm run build -- fresh`, so the sync runs first.
 //
 // RESOLVE NO LONGER FOLLOWS SPECIFY. It used to: a book was named by its own title, and a title was
 // a thing a RUNNING book answered, so every book had to be assembled and loaded before any of them
@@ -43,6 +46,7 @@ type State = {
     face: string;
     library: string;
     scope: string[];
+    fresh: boolean;
     chosen?: Configuration;
     found?: Library;
     held?: Catalogue;
@@ -114,7 +118,7 @@ export const tasks: Task[] = [
     } },
     { name: 'assemble', run: state => {
         const found = need(state.found, 'assemble');
-        state.previous = manifest.read(state.binding);
+        state.previous = state.fresh ? manifest.empty() : manifest.read(state.binding);
         state.assembled = found.books.map(book => assemble(state.face, book));
         state.written = [books(state.binding, found), stylesheets(state.binding, need(state.chosen, 'assemble'))];
         return `${plural(state.assembled.length, 'book module')}, the index, the stylesheets`;
@@ -138,7 +142,7 @@ export const tasks: Task[] = [
     { name: 'specify', run: async state => {
         const found = need(state.found, 'specify');
         const scope = state.scope.length ? state.scope : found.books.map(book => book.folder);
-        const verdict = await specifying(state.binding, found, scope, graph.read(state.binding), need(state.chosen, 'specify'));
+        const verdict = await specifying(state.binding, found, scope, state.fresh ? graph.empty() : graph.read(state.binding), need(state.chosen, 'specify'));
         state.graph = graph.write(state.binding, verdict.held);
         // EACH BOOK AGAINST ITS OWN SPECIFICATION, and nothing here about the library.
         //
@@ -263,9 +267,9 @@ const binderDigest = (binding: string): string => {
     return hash.digest('hex').slice(0, 16);
 };
 
-export const bind = async (binding: string, only: string[] = [], scope: string[] = []): Promise<State> => {
+export const bind = async (binding: string, only: string[] = [], scope: string[] = [], fresh = false): Promise<State> => {
     const { face, library } = around(binding);
-    const state: State = { binding, face, library, scope, assembled: [], written: [], bundled: [], rendered: [], pages: {} };
+    const state: State = { binding, face, library, scope, fresh, assembled: [], written: [], bundled: [], rendered: [], pages: {} };
     const unknown = only.filter(name => !tasks.some(task => task.name === name));
     if (unknown.length) throw new Error(`no such task: ${unknown.join(', ')} — the tasks are ${tasks.map(task => task.name).join(', ')}`);
     const chosen = only.length ? tasks.filter(task => only.includes(task.name)) : tasks;
@@ -290,5 +294,7 @@ export const bind = async (binding: string, only: string[] = [], scope: string[]
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
     const said = process.argv.slice(2);
     const names = tasks.map(task => task.name);
-    await bind(dirname(fileURLToPath(import.meta.url)), said.filter(one => names.includes(one)), said.filter(one => !names.includes(one)));
+    // A WORD IS A TASK, A BOOK'S FOLDER, OR `fresh`.
+    const words = ['fresh'];
+    await bind(dirname(fileURLToPath(import.meta.url)), said.filter(one => names.includes(one)), said.filter(one => !names.includes(one) && !words.includes(one)), said.includes('fresh'));
 }
