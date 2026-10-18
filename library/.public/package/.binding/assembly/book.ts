@@ -3,7 +3,12 @@ import { dirname, relative, sep } from 'node:path';
 import type { Book } from '../inventory/library';
 
 const named = (file: string): string => file.replace(/\.tsx$/u, '');
-const local = (file: string): string => named(file).replace(/^\.+/u, '').replace(/^o*[\d.]+-/u, '').replace(/-(\w)/gu, (_, letter: string) => letter.toUpperCase());
+// IN ANY ALPHABET: `\w` is ASCII even under the u flag, so a chapter named in Cyrillic kept its dashes and
+// was no identifier — `o1-объединенная-карта` refused by esbuild on 2026-10-18, an artifact titled in Russian
+// in a conversation that was not. A dash before anything an identifier holds is a capital, and anything an
+// identifier may not hold, a superscript digit, is dropped from this name nobody reads.
+const local = (file: string): string => named(file).replace(/^\.+/u, '').replace(/^o*[\d.]+-/u, '')
+    .replace(/-(\p{ID_Continue})/gu, (_, letter: string) => letter.toUpperCase()).replace(/[^\p{ID_Continue}$]/gu, '');
 // A CHAPTER'S SYMBOL CARRIES ITS NUMBER, because two chapters of one book may be filed under one
 // slug — measured 2026-09-20: `3-semantic-reference-theory.tsx` and `5-semantic-reference-theory.tsx`
 // both became `SemanticReferenceTheory`, and esbuild refused the module. Nobody reads these names.
@@ -13,9 +18,9 @@ const local = (file: string): string => named(file).replace(/^\.+/u, '').replace
 // free to use whatever display name they want." The file name is the author's; only this symbol, which nobody
 // reads, may not open with a digit, so `o27-2-semantic-reference-frames` imports as `Chapter2Semantic…o27`.
 const classed = (file: string): string => {
-    const symbol = `${local(file).replace(/^\w/u, letter => letter.toUpperCase())}${/^(o*\d+)-/u.exec(file)?.[1] ?? ''}`;
+    const symbol = `${local(file).replace(/^\p{L}/u, letter => letter.toUpperCase())}${/^(o*\d+)-/u.exec(file)?.[1] ?? ''}`;
 
-    return /^\d/u.test(symbol) ? `Chapter${symbol}` : symbol;
+    return /^[\p{ID_Start}$]/u.test(symbol) ? symbol : `Chapter${symbol}`;
 };
 
 // A BOOK, ASSEMBLED FROM THE ONE LIST THE INVENTORY MADE: its apparatus, then its chapters in order.

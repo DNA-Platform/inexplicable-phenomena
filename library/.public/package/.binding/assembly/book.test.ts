@@ -42,6 +42,19 @@ describe('the module the compiler writes for a book', () => {
         expect(symbols.every(symbol => /^[A-Za-z_$]/u.test(symbol))).toBe(true);
     });
 
+    // Found 2026-10-18 binding every conversation of his: an artifact titled in Russian made a version chapter
+    // `o1-объединенная-карта-северной-онтарио-v1.tsx`, and `\w` being ASCII left its dashes in the symbol.
+    it('imports a chapter named in any alphabet by a symbol that is an identifier', () => {
+        const files = ['o1-объединенная-карта-северной-онтарио-v1.tsx', '2-mc²-and-energy.tsx', '3-²-alone.tsx', '4-हिन्दी-भाषा.tsx'];
+        const named = paper === undefined ? undefined : { ...paper, files: [...paper.files, ...files] };
+        const written = named === undefined ? '' : assembled(named, '../paper');
+        expect(written).toContain("import ОбъединеннаяКартаСевернойОнтариоV1o1 from '../paper/o1-объединенная-карта-северной-онтарио-v1';");
+        expect(written).toContain("import McAndEnergy2 from '../paper/2-mc²-and-energy';");
+        expect(written).toContain("import Alone3 from '../paper/3-²-alone';");
+        for (const declared of written.matchAll(/^import (\S+) from/gmu))
+            expect(() => new Function(`let ${declared[1]};`), declared[1]).not.toThrow();
+    });
+
     // THE BINDER APPENDS NOTHING — Sprint 92, Doug, 2026-09-28: "append is the authors. You remove the
     // flexibility if you have the binder do it." A file beside a chapter reaches the page through the literal
     // the transform inserts, or an Append the author writes; the module knows only the chapters.

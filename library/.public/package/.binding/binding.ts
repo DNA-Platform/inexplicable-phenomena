@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { imageTypes } from './inventory/filenames';
 import { dirname, resolve } from 'node:path';
@@ -18,6 +18,7 @@ import { books } from './assembly/books';
 import { routes } from './assembly/routes';
 import { stylesheets } from './assembly/stylesheets';
 import { specifying } from './specification/specifying';
+import { placesOf } from './children';
 import { running } from './specification/running';
 import { proof } from './specification/proof';
 import { graph, type Graph } from './manifest/graph';
@@ -113,6 +114,9 @@ export const tasks: Task[] = [
             for (const one of wrong) console.error(problem(one));
             throw new Error(`the library does not hold together — ${plural(wrong.length, 'fault')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
         }
+        // AND WHERE EVERYTHING STANDS, WRITTEN FOR THE CHILDREN, once the library holds and before any
+        // child opens — Sprint 112, D1.
+        writeFileSync(placesOf(state.binding), JSON.stringify(state.held.places), 'utf8');
 
         return `${plural(state.held.keys().length, 'key')} · every reference resolves · every book reaches the library and the author`;
     } },

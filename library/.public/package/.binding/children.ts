@@ -1,4 +1,13 @@
 import { spawn } from 'node:child_process';
+import { join } from 'node:path';
+
+// WHERE EVERYTHING STANDS, HANDED TO EVERY CHILD — Sprint 112, D1. The parent writes the catalogue's
+// places to this file in its catalogue phase, and every child it opens is told the file in its
+// environment, so the configuration knows the server is a child of a bind: no watcher, no catalogue
+// built, no library held again. The workbench and the bundle are opened by nobody's parent and are
+// never told. `.places.json` and `BINDING_PLACES` are PROXY names.
+export const placesOf = (binding: string): string => join(binding, '.places.json');
+export const handedPlaces = 'BINDING_PLACES';
 
 // THE BINDER'S CHILDREN, and how many run at once. Two stages open a process per batch — the
 // specification reads a batch of books in one, the render draws a batch of pages in one — and each ran
@@ -37,7 +46,7 @@ export const atOnce = async <Order, Answer>(orders: Order[], parallel: number, r
 export type Closed = { status: number | null; out: string };
 
 export const opened = (binding: string, args: string[], env: NodeJS.ProcessEnv): Promise<Closed> => new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, args, { cwd: binding, stdio: ['ignore', 'pipe', 'inherit'], env: { ...process.env, ...env } });
+    const child = spawn(process.execPath, args, { cwd: binding, stdio: ['ignore', 'pipe', 'inherit'], env: { ...process.env, ...env, [handedPlaces]: placesOf(binding) } });
     let out = '';
     child.stdout.setEncoding('utf8');
     child.stdout.on('data', (chunk: string) => { out += chunk; });

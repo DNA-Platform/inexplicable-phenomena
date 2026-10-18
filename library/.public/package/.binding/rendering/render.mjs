@@ -11,15 +11,14 @@ const binding = dirname(dirname(fileURLToPath(import.meta.url)));
 const server = await createServer({
     configFile: join(binding, 'vite.config.ts'),
     logLevel: 'error',
-    // NO WATCHER EITHER: a prerender child reads the library once and exits, and the watcher cost it
-    // 0.95 s of an 8 s draw on 2026-10-16; vite answers `server.watcher` with a no-op when watching is
-    // off, so the inventory's retaking plugin, which adds the library to it, loses nothing here.
-    server: { middlewareMode: true, hmr: false, ws: false, watch: null },
-    // AND NO DEPENDENCY OPTIMIZER: a child serves no browser and loads its books as the server, which
-    // reads node_modules as Node does, so the pre-bundled dependencies under node_modules/.vite are
-    // nothing it needs; and two children opening at once wrote and cleared that one cache together,
-    // EPERM removing .vite/deps on the first bind of 136 books two at once, 2026-10-17.
-    optimizeDeps: { noDiscovery: true, include: [] },
+    // AND NO WATCHER, though it is not said here: Vite merges this call over the configuration file and
+    // skips a null, so `watch: null` written here was never heard, and every child watched the whole
+    // library until 2026-10-17. The configuration says it, for every server whose parent handed it
+    // where everything stands — Sprint 112, U1.
+    server: { middlewareMode: true, hmr: false, ws: false },
+    // AND NO DEPENDENCY OPTIMIZER, said in the configuration too: a child serves no browser, and two
+    // children opening at once wrote and cleared one cache together, EPERM, 2026-10-17 and 2026-10-18.
+    // What was said here was not enough, since the React plugin adds to the list it empties.
     appType: 'custom',
     ssr: { external: true },
 });

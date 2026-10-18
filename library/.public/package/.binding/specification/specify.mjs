@@ -7,10 +7,10 @@ const binding = dirname(dirname(fileURLToPath(import.meta.url)));
 const server = await createServer({
     configFile: join(binding, 'vite.config.ts'),
     logLevel: 'error',
-    // No hot reload and no watcher in a child that specifies its books once and exits; see render.mjs.
-    server: { middlewareMode: true, hmr: false, ws: false, watch: null },
-    // And no dependency optimizer, for the reason render.mjs gives.
-    optimizeDeps: { noDiscovery: true, include: [] },
+    // No hot reload in a child that specifies its books once and exits, and no watcher, which the
+    // configuration says, since a null written here is never heard; see render.mjs.
+    server: { middlewareMode: true, hmr: false, ws: false },
+    // And no dependency optimizer, which the configuration says, for the reason render.mjs gives.
     appType: 'custom',
     ssr: { external: true },
 });

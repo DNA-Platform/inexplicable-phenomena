@@ -29,11 +29,42 @@ export type Catalogue = {
     // THE ONE READING OF THE LIBRARY, held so nothing reads it a second time — the validator and
     // the catalogue answer off the same structure, or they disagree.
     readonly structure: Structure;
+    // AND WHERE EVERYTHING STANDS, as data a child of a bind is handed — below.
+    readonly places: Places;
     where(key: string): string | undefined;
     // WHICH BOOK'S NAME SCOPES A REFERENCE WRITTEN IN IT. `$[[ ./The Sheet ]]` means the chapter
     // of the book it stands in, and the scope is the one thing a reference cannot carry.
     scope(file: string): string | undefined;
     keys(): string[];
+};
+
+// WHERE EVERYTHING STANDS, AS DATA: the table of routes, each key's url and each book's place. It is
+// all a reference needs to be written and all a route needs to be drawn, and none of it needs the
+// library read again. Sprint 112, D1: the parent of a bind writes it once and every child it opens
+// reads it, where each child had walked and parsed the whole library for itself, about 2.5 s a child
+// at 195 books and more with every book. `Places` and `Directory` are PROXY names.
+export type Places = { table: Table; at: [string, string][]; inside: { path: string; name: string }[] };
+
+// AND WHAT A DIRECTORY ANSWERS, the catalogue's own questions but the reading behind them.
+export type Directory = Pick<Catalogue, 'table' | 'where' | 'scope' | 'keys'>;
+
+export const directory = (places: Places): Directory => {
+    const at = new Map(places.at);
+    // THE DEEPEST BOOK THAT HOLDS A FILE, because a library nests: `semantics-of-types` stands
+    // inside `semantic-reference-theory`, which stands inside `claude-and-our-projects`. The
+    // shallowest match would answer every chapter with the outermost book it happens to sit under.
+    const deepest = (file: string): { path: string; name: string } | undefined => {
+        const held = forward(file);
+
+        return places.inside.filter(one => held.startsWith(`${one.path}/`)).sort((one, two) => two.path.length - one.path.length)[0];
+    };
+
+    return {
+        table: places.table,
+        where: (key: string): string | undefined => at.get(tidy(key)),
+        scope: (file: string): string | undefined => deepest(file)?.name,
+        keys: (): string[] => [...at.keys()].sort(),
+    };
 };
 
 export const catalogue = (found: Library, chosen: Configuration, given?: Structure): Catalogue => {
@@ -120,20 +151,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         }
     }
 
-    // THE DEEPEST BOOK THAT HOLDS A FILE, because a library nests: `semantics-of-types` stands
-    // inside `semantic-reference-theory`, which stands inside `claude-and-our-projects`. The
-    // shallowest match would answer every chapter with the outermost book it happens to sit under.
-    const deepest = (file: string): { path: string; name: string } | undefined => {
-        const held = forward(file);
+    const places: Places = { table, at: [...at], inside };
 
-        return inside.filter(one => held.startsWith(`${one.path}/`)).sort((one, two) => two.path.length - one.path.length)[0];
-    };
-
-    return {
-        table,
-        structure,
-        where: (key: string): string | undefined => at.get(tidy(key)),
-        scope: (file: string): string | undefined => deepest(file)?.name,
-        keys: (): string[] => [...at.keys()].sort(),
-    };
+    return { structure, places, ...directory(places) };
 };

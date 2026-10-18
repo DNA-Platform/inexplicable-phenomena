@@ -35,7 +35,7 @@ export const serving = (binding: string, chosen: Configuration, held: Inventory)
     // it is markup.
     const artifacts: Record<string, () => string> = {
         [`${application}/books.ts`]: () => assembledBooks(binding, held.library()),
-        [`${application}/routes.ts`]: () => assembledRoutes(held.catalogue().table),
+        [`${application}/routes.ts`]: () => assembledRoutes(held.directory().table),
         [`${application}/stylesheets.ts`]: () => assembledSheets(chosen),
     };
 

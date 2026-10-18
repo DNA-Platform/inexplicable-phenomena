@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { configure } from './configuration/configuration';
 import { template } from './rendering/page';
 import { imageTypes } from './inventory/filenames';
-import { retaking, retakes } from './inventory/retaken';
+import { handed, retaking, retakes } from './inventory/retaken';
+import { handedPlaces } from './children';
 import { holding } from './catalogue/holds';
 import { references } from './reference/transform';
 import { serving } from './assembly/serving';
@@ -21,7 +22,11 @@ const chosen = configure(binding);
 // AND IT IS RETAKEN WHEN THE SHELF MOVES. These two were built HERE, at config load, and handed to
 // every plugin as objects; a dev server left open then answered all afternoon for the library as it
 // had been at boot. One inventory, invalidated by the watcher, is what every plugin below asks.
-const held = retaking(binding, chosen);
+//
+// AND A CHILD OF A BIND IS HANDED IT — Sprint 112, D1. Its parent wrote where everything stands and
+// named the file in the child's environment, so the child reads that rather than the library again.
+const places = process.env[handedPlaces];
+const held = places === undefined ? retaking(binding, chosen) : handed(binding, chosen, places);
 const dependencies = (JSON.parse(readFileSync(join(binding, 'package.json'), 'utf8')) as { dependencies?: Record<string, string> }).dependencies ?? {};
 const installed = Object.keys(dependencies);
 const packagesPointedAtByPath = Object.entries(dependencies).filter(([, where]) => where.startsWith('file:')).map(([name]) => name);
@@ -44,8 +49,9 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
         // THE LIBRARY HELD TO ITS OWN SPECIFICATION, AS A COMPILE ERROR. Every book has its three
         // dot chapters, exactly one book is its own subject and one its own author, every book
         // reaches both, every table names what it holds, and every reference resolves. A library
-        // that fails any of it does not compile — here or in the batch.
-        holding(held),
+        // that fails any of it does not compile — here or in the batch. Not in a child of a bind, whose
+        // parent held the library in its catalogue phase before the child opened.
+        ...(places === undefined ? [holding(held)] : []),
         // THE NOTATION RESOLVED BEFORE ANYTHING COMPILES IT. What comes out is the ordinary
         // [copy](url) the runtime has always read, so nothing downstream knows a sigil existed.
         references(held),
@@ -103,7 +109,20 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
     },
     server: {
         fs: { allow: [searchForWorkspaceRoot(binding), resolve(binding, '..', '..')] },
+        // NO WATCHER IN A CHILD OF A BIND, said HERE because here is where Vite keeps it. A child that
+        // passed `watch: null` to `createServer` was never heard: Vite merges the call over this file
+        // and its merge skips a null, so chokidar opened in every child and the inventory's plugin
+        // added the whole library to it, 12 of a one-book child's 24 s at 195 books and more with every
+        // file. Measured 2026-10-17, Sprint 112, U1; the workbench, told nothing, still watches.
+        ...(places === undefined ? {} : { watch: null }),
     },
+    // AND NO DEPENDENCY OPTIMIZER IN A CHILD, which serves no browser. `noDiscovery` with an empty `include`
+    // is how Vite says it, and was passed by both children — but the React plugin adds React to `include`,
+    // and Vite's merge joins lists, so the optimizer ran in every child. It did no harm while its cache was
+    // current; the first bind after this file changed made it stale, two children rebuilt it at once, and
+    // Windows refused the second rename, EPERM, 2026-10-18. `disabled` is Vite's own way to clear the list
+    // after the plugins have spoken: deprecated, and still honoured by 7.3.1, and a promise says so.
+    ...(places === undefined ? {} : { optimizeDeps: { noDiscovery: true, include: [], disabled: true } }),
     // ONE COPY OF EACH, THE BINDING'S. A book outside .binding resolves a package by walking up its own
     // folders, which in a repository holding the workspace reaches a checkout before the binding's
     // node_modules; dedupe pins these to the binding, so a library runs off what it installed.

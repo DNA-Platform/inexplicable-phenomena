@@ -1,6 +1,6 @@
 import { basename, dirname, join, resolve } from 'node:path';
 import type { Plugin } from 'vite';
-import type { Catalogue } from '../catalogue/catalogue';
+import type { Directory } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import type { Book } from '../inventory/library';
 import { imageTypes } from '../inventory/filenames';
@@ -68,7 +68,7 @@ export type Found = { text: string; missing: Missing[] };
 // and they want different answers. The PLUGIN stops the file it is compiling, which is the feedback
 // an author wants while typing; the BATCH reads every file and names every failure at once. A gate
 // that reports the first fault sends someone back six times for six faults.
-export const transforming = (code: string, file: string, catalogue: Catalogue, book?: Book): Found => {
+export const transforming = (code: string, file: string, catalogue: Directory, book?: Book): Found => {
     // WHAT A LITERAL INSERTS: the text of the file beside this chapter it names, held by the
     // structure, or a picture's address beside the book's pages, where the render copies it.
     const inserted = (named: { identifier: string; type: string }): string | undefined => {
@@ -188,7 +188,7 @@ export const references = (inventory: Inventory): Plugin => ({
         const [file, query] = id.split('?');
         if (!file.endsWith('.tsx') || rawModule(query)) return null;
 
-        const catalogue = inventory.catalogue();
+        const catalogue = inventory.directory();
         // THE CHAPTER'S BOOK, for the files beside it a literal may insert: a chapter stands in its
         // book's folder and nowhere else.
         const book = inventory.library().books.find(one => resolve(dirname(file)) === resolve(one.path));

@@ -73,7 +73,7 @@ describe('what the transform never touches', () => {
     });
 
     it('a raw module, whose text is an Append\'s and is the file exactly as written', () => {
-        const plugin = references({ library: () => found, catalogue: () => card, again: () => {} });
+        const plugin = references({ library: () => found, catalogue: () => card, directory: () => card, again: () => {} });
         const hook = plugin.transform as (this: unknown, code: string, id: string) => string | null;
         const raw = `export default ${JSON.stringify(readFileSync(chapter, 'utf8'))}`;
         expect(hook.call(undefined, raw, `${chapter}?raw`)).toBeNull();
