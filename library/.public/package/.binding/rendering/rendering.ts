@@ -1,15 +1,16 @@
-import { copyFileSync, existsSync, writeFileSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
 import type { Page } from '../manifest/manifest';
 import { atOnce, lastLine, opened } from '../children';
 
-// A TEMPLATE IS AN INPUT AND A PAGE IS AN OUTPUT, AND THEY WERE THE SAME FILE. The bundle writes the
+// A TEMPLATE IS AN INPUT AND A PAGE IS AN OUTPUT, AND THEY WERE THE SAME FILE. The bundle wrote the
 // shell to the face's index.html, and the ROOT book's page is written there too — so every page
 // drawn after the root was built from the root's own page, and the injection kept it silently,
 // because it matches an EMPTY `<div id="root"></div>` and there was none left to match. Measured
-// 2026-09-15: five books, four identical pages, none holding its own book. The shell is taken aside
-// once, before any page is drawn, and every child reads that instead.
+// 2026-09-15: five books, four identical pages, none holding its own book. The shell stands aside,
+// beside the binding, and every child reads that: since 2026-10-19 the bundle writes it there itself,
+// with the import map before the app's script, and keeps it when nothing of the app changed.
 export const shellOf = (binding: string): string => join(binding, '.shell.html');
 
 // WHAT STANDS AT `/`, WHICH IS NOT A BOOK. Every book is addressed by what it is — the root book
@@ -107,7 +108,6 @@ export const rendering = async (
 ): Promise<Rendered> => {
     const entry = join(binding, 'rendering', 'render.mjs');
     const face = join(binding, '..');
-    copyFileSync(join(face, 'index.html'), shellOf(binding));
 
     // THE KEPT PAGES RIDE WITH THE FIRST CHILD, or with a child of their own when nothing is drawn.
     const batches = batched(stale, chosen.rendering.budget * 1048576);

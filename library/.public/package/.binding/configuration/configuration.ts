@@ -5,6 +5,7 @@ import { resolution, type Resolution } from '../resolution/configuration';
 import { rendering, type Rendering } from '../rendering/configuration';
 import { specification, type Specification } from '../specification/configuration';
 import { manifest, type Manifest } from '../manifest/configuration';
+import { bundling, type Bundling } from '../bundling/configuration';
 
 export type Slice<T> = {
     fields: (keyof T & string)[];
@@ -18,9 +19,10 @@ export type Configuration = {
     rendering: Rendering;
     specification: Specification;
     manifest: Manifest;
+    bundling: Bundling;
 };
 
-const slices: { [K in keyof Configuration]: Slice<Configuration[K]> } = { inventory, resolution, rendering, specification, manifest };
+const slices: { [K in keyof Configuration]: Slice<Configuration[K]> } = { inventory, resolution, rendering, specification, manifest, bundling };
 
 export const configure = (binding: string): Configuration => {
     const at = join(binding, '.pubconfig');

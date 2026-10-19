@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import { imageTypes } from './inventory/filenames';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { build, type Rollup } from 'vite';
 import { configuration } from './vite.config';
 import { configure, type Configuration } from './configuration/configuration';
 import { walk } from './inventory/walk';
@@ -25,6 +24,8 @@ import { graph, type Graph } from './manifest/graph';
 import { keepable, rendering, type Drawing, type Kept } from './rendering/rendering';
 import { manifest, type Manifest, type Page } from './manifest/manifest';
 import { removal } from './manifest/removal';
+import { bundling } from './bundling/bundling';
+import type { App, Chunk, Shared } from './manifest/manifest';
 
 // THE BINDER IS A COMPILER: a sequence of named tasks, each run in order, each saying what it
 // did, the sequence stopping at the first that fails. `tsx binding.ts` runs them all;
@@ -59,14 +60,12 @@ type State = {
     bundled: string[];
     rendered: string[];
     pages: Record<string, Page>;
+    chunks: Record<string, Chunk>;
+    shared?: Shared;
+    app?: App;
 };
 
 type Task = { name: string; run: (state: State) => Promise<string> | string };
-
-const emitted = (built: Awaited<ReturnType<typeof build>>): string[] => {
-    const outputs = Array.isArray(built) ? built : 'output' in built ? [built] : [];
-    return outputs.flatMap(one => (one as Rollup.RollupOutput).output.map(file => file.fileName)).filter(name => name !== 'index.html').sort();
-};
 
 const need = <T,>(held: T | undefined, task: string): T => {
     if (held === undefined) throw new Error(`${task} needs an earlier task to have run first`);
@@ -165,10 +164,17 @@ export const tasks: Task[] = [
         const kept = state.graph.books.reduce((total, one) => total + one.walked, 0);
         return `${plural(verdict.loaded.length, 'book')} read${verdict.children ? ` in ${children(verdict.children)}${atOnce(verdict.atOnce)}` : ''} · ${verdict.unchanged.length} unchanged · ${plural(verdict.walked, 'writing')} specified (${kept} recorded)${peaked(verdict.peak)}`;
     } },
+    // THE BUNDLE KEPT BY BOOK — Sprint 112, on Doug's "We can't have an every build cost of 19 min": the stale
+    // books' chunks built together, the kept ones kept, the shared entries and the app built only when theirs
+    // changed, the shell written here with its import map. A bind where nothing changed builds nothing.
     { name: 'bundle', run: async state => {
-        const built = await build({ ...configuration({ isPreview: false }), configFile: false, logLevel: 'warn' });
-        state.bundled = emitted(built);
-        return `${plural(state.bundled.length, 'file')} under assets/`;
+        const found = need(state.found, 'bundle');
+        const bundled = await bundling(state.binding, state.face, need(state.chosen, 'bundle'), found, need(state.graph, 'bundle'), need(state.previous, 'bundle'), () => configuration({ isPreview: false }));
+        state.bundled = bundled.bundled;
+        state.chunks = bundled.chunks;
+        state.shared = bundled.shared;
+        state.app = bundled.app;
+        return `${plural(bundled.built.length, 'book')} built${bundled.builds > 1 ? ` in ${bundled.builds} builds` : ''} · ${bundled.keptChunks} kept · the shared ${bundled.sharedBuilt ? 'built' : 'kept'} · the app ${bundled.appBuilt ? 'built' : 'kept'} · ${plural(state.bundled.length, 'file')} under assets/`;
     } },
     // ONLY THE PAGES WHOSE BOOKS CHANGED ARE DRAWN, and the rest are written again from what the last
     // bind kept of them — Sprint 109, D11, on Doug's "If the binder doesn't work on ones most recently
@@ -247,7 +253,7 @@ export const tasks: Task[] = [
     } },
     { name: 'record', run: state => {
         const previous = need(state.previous, 'record');
-        const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered: state.rendered, bundled: state.bundled, pages: state.pages });
+        const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered: state.rendered, bundled: state.bundled, pages: state.pages, chunks: state.chunks, shared: state.shared, app: state.app });
         const gone = removal(state.face, previous, current);
         // AND THE MARKUP KEPT FOR A PAGE THAT NO LONGER STANDS goes with it, so `.pages/` holds exactly
         // what the manifest names.
@@ -273,7 +279,7 @@ const binderDigest = (binding: string): string => {
 
 export const bind = async (binding: string, only: string[] = [], scope: string[] = [], fresh = false): Promise<State> => {
     const { face, library } = around(binding);
-    const state: State = { binding, face, library, scope, fresh, assembled: [], written: [], bundled: [], rendered: [], pages: {} };
+    const state: State = { binding, face, library, scope, fresh, assembled: [], written: [], bundled: [], rendered: [], pages: {}, chunks: {} };
     const unknown = only.filter(name => !tasks.some(task => task.name === name));
     if (unknown.length) throw new Error(`no such task: ${unknown.join(', ')} — the tasks are ${tasks.map(task => task.name).join(', ')}`);
     const chosen = only.length ? tasks.filter(task => only.includes(task.name)) : tasks;
