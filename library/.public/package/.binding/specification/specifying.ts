@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import type { Configuration } from '../configuration/configuration';
 import type { Book, Diagnostic, Library } from '../inventory/library';
-import { bases, graph, type Entry, type Graph } from '../manifest/graph';
+import { graph, type Entry, type Graph } from '../manifest/graph';
 import type { Answer } from './specify';
 import { atOnce, lastLine, opened } from '../children';
 
@@ -53,7 +53,8 @@ export const specifying = async (binding: string, found: Library, folders: strin
     // comparisons, and a base read inside a loop is a million file reads.
     const entry = join(binding, 'specification', 'specify.mjs');
     const known = new Map(previous.books.map(one => [one.folder, one]));
-    const inputs = [...fixed(binding), bases(found)];
+    // Since Sprint 117 a book's digest reaches its own imports, so nothing of the library's code is a fixed input.
+    const inputs = fixed(binding);
     const asked = new Set(folders);
     const wanted = found.books.filter(book => asked.has(book.folder));
     const digests = new Map(wanted.map(book => [book.folder, graph.digest(book, inputs)]));
