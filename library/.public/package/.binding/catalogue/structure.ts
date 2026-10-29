@@ -108,6 +108,24 @@ type Held = { book: Book; file: string; path: string; reading: Reading; imports:
 // A HEADING'S WORDS, as the draw will slug them for its id: the prose runs of one Heading element joined, a heading
 // that holds a form left to the passes that read forms, since a place is a spot already. Sprint 118, D5.
 export type Heading = { words: string; line: number };
+
+// AND ONLY WHERE THE DRAW IS THE PACKAGE'S OWN: the heading, the section it stands in, every element above them
+// and every element beside it in its section a name imported from the package, whose Section holds its headings
+// and whose Heading wears its id. A library's word draws as it likes — the address book's Opaque strips the id
+// from every heading of its section but the first, and the conversation says it of each message, so those
+// headings never wear one — and a heading in or beside a library's word is left to the proof, which reads the
+// page as drawn. The first full bind of Sprint 118 refused 32 conversations that had bound green. Sprint 118, U4.
+const thePackage = '@dna-platform/public';
+const drawnByThePackage = (read: Source, heading: number): boolean => {
+    const owned = (name: string): boolean => read.imported.get(name) === thePackage;
+    const held = read.elements.get(heading);
+    const section = held?.parent === undefined ? undefined : read.elements.get(held.parent);
+    if (held === undefined || section === undefined || section.name !== 'Section') return false;
+    if (!owned(held.name) || !section.children.every(owned)) return false;
+    for (let at: number | undefined = held.parent; at !== undefined; at = read.elements.get(at)?.parent)
+        if (!owned(read.elements.get(at)?.name ?? '')) return false;
+    return true;
+};
 const headingsOf = (read: Source): Heading[] => {
     const grouped = new Map<number, { words: string[]; at: number }>();
     for (const run of read.runs) {
@@ -116,8 +134,9 @@ const headingsOf = (read: Source): Heading[] => {
         held.words.push(run.text);
         grouped.set(run.within, held);
     }
-    return [...grouped.values()]
-        .map(one => ({ words: one.words.join(' ').replace(/\s+/gu, ' ').trim(), line: read.line(one.at) }))
+    return [...grouped.entries()]
+        .filter(([at]) => drawnByThePackage(read, at))
+        .map(([, one]) => ({ words: one.words.join(' ').replace(/\s+/gu, ' ').trim(), line: read.line(one.at) }))
         .filter(one => one.words !== '' && !one.words.includes('[['));
 };
 

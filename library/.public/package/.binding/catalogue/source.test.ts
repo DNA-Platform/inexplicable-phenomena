@@ -103,10 +103,13 @@ describe('the scanner over literals', () => {
 });
 describe('the element a prose run stands in', () => {
     const read = source(file, [
+        `import { Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';`,
+        `import { Opaque } from './32-the-address~code.tsx';`,
         `export default () => (`,
         `    <Chapter>`,
         `        <Title>[[ A Chapter ]]</Title>`,
         `        <Section>`,
+        `            <Opaque />`,
         `            <Heading>What was <Means>found</Means> here</Heading>`,
         `            <Paragraph>A sentence.</Paragraph>`,
         `        </Section>`,
@@ -120,5 +123,14 @@ describe('the element a prose run stands in', () => {
         expect(new Set(heading.map(run => run.within)).size).toBe(1);
         expect(read.runs.find(run => run.text.includes('found'))?.element).toBe('Means');
         expect(read.runs.find(run => run.text.includes('A sentence'))?.element).toBe('Paragraph');
+    });
+
+    // SO THE STRUCTURE CAN ASK WHAT STANDS AROUND A HEADING, and whose word each thing is. Sprint 118, U4.
+    it('keeps every element by its start with what it stands in and what it holds, a self-closing one among them, and each imported name with its module', () => {
+        const section = [...read.elements.values()].find(one => one.name === 'Section');
+        expect(section?.children).toEqual(['Opaque', 'Heading', 'Paragraph']);
+        expect(read.elements.get(section?.parent ?? -1)?.name).toBe('Chapter');
+        expect(read.imported.get('Heading')).toBe('@dna-platform/public');
+        expect(read.imported.get('Opaque')).toBe('./32-the-address~code.tsx');
     });
 });

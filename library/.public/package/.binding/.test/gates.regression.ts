@@ -38,6 +38,16 @@ describe('a heading whose id a title already wears', () => {
         const green = bound(galley);
         expect(green).toMatch(/^proof +\d+ pages read back/mu);
     });
+
+    // A WORD OF THE LIBRARY'S DRAWS AS IT LIKES, so a heading beside one is the proof's: the first full bind of
+    // Sprint 118 refused 32 conversations whose message headings never wear an id. Sprint 118, U4.
+    it('is left to the proof where the heading stands beside a word of the library\'s: the catalogue passes it, the page is drawn, and the proof refuses the id worn twice', () => {
+        edited(galley, '<Heading>The evidence, weighed</Heading>', '<Catchword />\n            <Heading>The Evidence</Heading>');
+        const output = refused(galley);
+        expect(output).not.toMatch(/SAME-ADDRESS/u);
+        expect(output).toMatch(/^render /mu);
+        expect(output).toMatch(/#the-evidence is worn by 2 elements/u);
+    });
 });
 
 describe('a page the proof refuses', () => {
