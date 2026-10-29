@@ -21,7 +21,7 @@ import { placesOf } from './children';
 import { running } from './specification/running';
 import { proof } from './specification/proof';
 import { graph, type Graph } from './manifest/graph';
-import { keepable, rendering, type Drawing, type Kept } from './rendering/rendering';
+import { keepable, rendering, type Drawing, type Drawn, type Kept } from './rendering/rendering';
 import { manifest, type Manifest, type Page } from './manifest/manifest';
 import { removal } from './manifest/removal';
 import { bundling } from './bundling/bundling';
@@ -59,6 +59,7 @@ type State = {
     written: string[];
     bundled: string[];
     rendered: string[];
+    drawn: Drawn[];
     pages: Record<string, Page>;
     chunks: Record<string, Chunk>;
     shared?: Shared;
@@ -231,6 +232,7 @@ export const tasks: Task[] = [
         }
         state.pages = pages;
         state.rendered = rendered.pages;
+        state.drawn = rendered.drawn;
         // AND EVERY PICTURE ACCOMPANYING A CHAPTER PLACED IN THE FACE beside its book's pages, at the
         // address its Append names, `/<folder>/<file>` — copied, never bundled, so the address is a
         // page's and not a dev server's. Sprint 89.
@@ -246,23 +248,36 @@ export const tasks: Task[] = [
         const pages = state.rendered.length ? state.rendered : manifest.read(state.binding).rendered;
         const wrong = proof(state.face, pages, need(state.chosen, 'proof').resolution.base);
         if (wrong.length) {
+            // THE RECORD KEEPS WHAT PROVED. Sprint 118, D5, on the night Sprint 117 lost a render of 3,204 s to
+            // three headings: every page the proof passed is recorded as drawn, and a page it refused is left
+            // unrecorded, so the next bind draws that page alone; the bind is refused all the same. Only after a
+            // render of this bind, since a proof run on its own has nothing new to record.
+            if (state.rendered.length > 0 && state.previous !== undefined) {
+                const refused = new Set(wrong.map(one => one.at));
+                const dropped = new Set(state.drawn.filter(one => refused.has(one.page)).map(one => one.address));
+                const passed = Object.fromEntries(Object.entries(state.pages).filter(([address]) => !dropped.has(address)));
+                console.error(`${recorded(state, passed, state.rendered.filter(page => !refused.has(page)))} · ${plural(dropped.size, 'refused page')} left unrecorded`);
+            }
             for (const one of wrong) console.error(problem(one));
             throw new Error(`the pages are not readable — ${plural(wrong.length, 'fault')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
         }
         return `${plural(pages.length, 'page')} read back as the browser will build them`;
     } },
-    { name: 'record', run: state => {
-        const previous = need(state.previous, 'record');
-        const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered: state.rendered, bundled: state.bundled, pages: state.pages, chunks: state.chunks, shared: state.shared, app: state.app });
-        const gone = removal(state.face, previous, current);
-        // AND THE MARKUP KEPT FOR A PAGE THAT NO LONGER STANDS goes with it, so `.pages/` holds exactly
-        // what the manifest names.
-        const named = new Set(Object.values(state.pages).map(one => one.markup));
-        const orphaned = Object.values(previous.pages).map(one => one.markup).filter(markup => !named.has(markup));
-        for (const markup of orphaned) rmSync(join(state.binding, markup), { force: true });
-        return `manifest written${gone.length ? ` · removed ${plural(gone.length, 'file')} the source no longer writes` : ''}`;
-    } },
+    { name: 'record', run: state => recorded(state, state.pages, state.rendered) },
 ];
+
+// WHAT A BIND LEAVES BEHIND, for the pages it is given: the manifest from the bind's state, the files the source
+// no longer writes removed, and the markup of no page the manifest names gone with them, so `.pages/` holds
+// exactly what the manifest names. The record's own, and the proof's for the pages that passed when one did not.
+const recorded = (state: State, pages: Record<string, Page>, rendered: string[]): string => {
+    const previous = need(state.previous, 'record');
+    const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered, bundled: state.bundled, pages, chunks: state.chunks, shared: state.shared, app: state.app });
+    const gone = removal(state.face, previous, current);
+    const named = new Set(Object.values(pages).map(one => one.markup));
+    const orphaned = Object.values(previous.pages).map(one => one.markup).filter(markup => !named.has(markup));
+    for (const markup of orphaned) rmSync(join(state.binding, markup), { force: true });
+    return `manifest written${gone.length ? ` · removed ${plural(gone.length, 'file')} the source no longer writes` : ''}`;
+};
 
 // WHAT OF THE BINDER ITSELF A PAGE IS DRAWN WITH, as bytes: the draw, the page's template with its
 // arrival script, and the app a page hydrates with. A page kept across a change to any of these would
@@ -279,7 +294,7 @@ const binderDigest = (binding: string): string => {
 
 export const bind = async (binding: string, only: string[] = [], scope: string[] = [], fresh = false): Promise<State> => {
     const { face, library } = around(binding);
-    const state: State = { binding, face, library, scope, fresh, assembled: [], written: [], bundled: [], rendered: [], pages: {}, chunks: {} };
+    const state: State = { binding, face, library, scope, fresh, assembled: [], written: [], bundled: [], rendered: [], drawn: [], pages: {}, chunks: {} };
     const unknown = only.filter(name => !tasks.some(task => task.name === name));
     if (unknown.length) throw new Error(`no such task: ${unknown.join(', ')} — the tasks are ${tasks.map(task => task.name).join(', ')}`);
     const chosen = only.length ? tasks.filter(task => only.includes(task.name)) : tasks;

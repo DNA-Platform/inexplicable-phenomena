@@ -57,6 +57,7 @@ export type Structure = {
     origin?: SpotId;
     authors: Set<SpotId>;
     mentions: Mention[];
+    headings: { book: SpotId; by: SpotId; file: string; line: number; words: string }[];
     refused: { by: SpotId; said: string; at: Where; why?: string }[];
     untitled: { at: string; file: string }[];
     // THE BOOKS ABOUT SOMETHING, AND WHAT EACH IS ABOUT — a cover carrying a second title form, its
@@ -102,7 +103,23 @@ const titleOf = (name: Name, cover: boolean): string => {
 // imported would count (B33); and once the literal arrived every resource went through the TSX
 // parser whatever its type, so a stray quote in a knowledge file opened a string and `[[t₁]]` in a
 // logic document read as a title (Sprint 109).
-type Held = { book: Book; file: string; path: string; reading: Reading; imports: string[] };
+type Held = { book: Book; file: string; path: string; reading: Reading; imports: string[]; headings: Heading[] };
+
+// A HEADING'S WORDS, as the draw will slug them for its id: the prose runs of one Heading element joined, a heading
+// that holds a form left to the passes that read forms, since a place is a spot already. Sprint 118, D5.
+export type Heading = { words: string; line: number };
+const headingsOf = (read: Source): Heading[] => {
+    const grouped = new Map<number, { words: string[]; at: number }>();
+    for (const run of read.runs) {
+        if (run.kind !== 'prose' || run.element !== 'Heading' || run.within === undefined) continue;
+        const held = grouped.get(run.within) ?? { words: [], at: run.from };
+        held.words.push(run.text);
+        grouped.set(run.within, held);
+    }
+    return [...grouped.values()]
+        .map(one => ({ words: one.words.join(' ').replace(/\s+/gu, ' ').trim(), line: read.line(one.at) }))
+        .filter(one => one.words !== '' && !one.words.includes('[['));
+};
 
 // WHAT A FILE SAID LAST TIME, KEPT UNTIL THE FILE CHANGES.
 //
@@ -118,19 +135,19 @@ type Held = { book: Book; file: string; path: string; reading: Reading; imports:
 // KEYED ON WHAT THE FILE IS RATHER THAN WHEN WE LOOKED. Modified time and size together: a rewrite
 // that lands in the same millisecond almost always changes the length, and a `stat` of eleven
 // thousand files is milliseconds against seconds of parsing.
-const kept = new Map<string, { at: number; size: number; code: string; source: Source; reading: Reading }>();
+const kept = new Map<string, { at: number; size: number; code: string; source: Source; reading: Reading; headings: Heading[] }>();
 
-const looked = (path: string): { reading: Reading; imports: string[] } => {
+const looked = (path: string): { reading: Reading; imports: string[]; headings: Heading[] } => {
     const said = statSync(path);
     const before = kept.get(resolve(path));
-    if (before !== undefined && before.at === said.mtimeMs && before.size === said.size) return { reading: before.reading, imports: before.source.imports };
+    if (before !== undefined && before.at === said.mtimeMs && before.size === said.size) return { reading: before.reading, imports: before.source.imports, headings: before.headings };
 
     const code = readFileSync(path, 'utf8');
     const read = source(path, code);
-    const held = { at: said.mtimeMs, size: said.size, code, source: read, reading: annotating(read) };
+    const held = { at: said.mtimeMs, size: said.size, code, source: read, reading: annotating(read), headings: headingsOf(read) };
     kept.set(resolve(path), held);
 
-    return { reading: held.reading, imports: read.imports };
+    return { reading: held.reading, imports: read.imports, headings: held.headings };
 };
 
 // THE SOURCE OF A FILE THE TRANSFORM IS HANDED: the structure's own reading when it read this very
@@ -360,5 +377,8 @@ export const structure = (found: Library): Structure => {
                 authors.add(book);
     }
 
-    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, refused, untitled, about, titledTwice, referred, inserting };
+    // ---- the headings, each with the id the draw will make of its words ----
+    const headings: Structure['headings'] = read.flatMap(one => one.headings.map(heading => ({ book: one.book.folder, by: speaks(one.book, one.file), file: one.path, line: heading.line, words: heading.words })));
+
+    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, headings, refused, untitled, about, titledTwice, referred, inserting };
 };

@@ -154,6 +154,15 @@ export const wellformed = (structure: Structure): Diagnostic[] => {
             if (worn === '') { wrong.push({ fault: faults.noAddress, at: spot.at, file: naming.at.file, says: `"${naming.words}" at line ${naming.at.line} is shown in words that leave no id once slugged — a title whose address is its book's wears the id its words make, so they carry a letter or a digit` }); continue; }
             claims(`/${spot.book}/#${worn}`, said, naming);
         }
+    // AND A HEADING'S WORDS WEAR THE ID THE DRAW MAKES OF THEM, on the one page its book draws down, so a heading
+    // that repeats its chapter's title, another heading of the book or a mention's id is refused here, in the
+    // catalogue's first second, and not by the proof after the render. Sprint 118, D5, on Solutions 107's third
+    // time; the slug is the one the addresses use.
+    for (const heading of structure.headings) {
+        const worn = identifier.slug(heading.words);
+        if (worn === '') continue;
+        claims(`/${heading.book}/#${worn}`, heading.words, { spot: heading.by, at: { file: heading.file, line: heading.line }, words: heading.words });
+    }
     for (const [key, held] of addressed) {
         if (held.length < 2 || new Set(held.map(one => one.said)).size < 2) continue;
         for (const one of held)

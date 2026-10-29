@@ -101,3 +101,24 @@ describe('the scanner over literals', () => {
         expect(read.references).toEqual([]);
     });
 });
+describe('the element a prose run stands in', () => {
+    const read = source(file, [
+        `export default () => (`,
+        `    <Chapter>`,
+        `        <Title>[[ A Chapter ]]</Title>`,
+        `        <Section>`,
+        `            <Heading>What was <Means>found</Means> here</Heading>`,
+        `            <Paragraph>A sentence.</Paragraph>`,
+        `        </Section>`,
+        `    </Chapter>`,
+        `);`,
+    ].join('\n'));
+
+    it('names the element each prose run stands in, and one heading\'s runs share where it starts', () => {
+        const heading = read.runs.filter(run => run.element === 'Heading');
+        expect(heading.map(run => run.text.trim())).toEqual(['What was', 'here']);
+        expect(new Set(heading.map(run => run.within)).size).toBe(1);
+        expect(read.runs.find(run => run.text.includes('found'))?.element).toBe('Means');
+        expect(read.runs.find(run => run.text.includes('A sentence'))?.element).toBe('Paragraph');
+    });
+});

@@ -11,7 +11,9 @@ import ts from 'typescript';
 
 // A RUN IS THE RAW SLICE, so every offset within it is an offset into the file; whether it is read by
 // JSX's rule or as written is the reader's business, decided by its kind.
-export type Run = { kind: 'prose' | 'string'; from: number; to: number; text: string };
+// AND, FOR PROSE, THE ELEMENT IT STANDS IN, by its tag's name and the element's start, so a pass may ask which runs
+// are one heading's words; the structure claims a heading's id as it claims a title's. Sprint 118, D5.
+export type Run = { kind: 'prose' | 'string'; from: number; to: number; text: string; element?: string; within?: number };
 
 // AND WHAT A FILE IMPORTS, by the specifiers as written — never read for the notation, but read for
 // use: a file beside a chapter that the chapter imports is a tool the chapter runs, and is used.
@@ -21,7 +23,14 @@ export const source = (file: string, code: string): Source => {
     const parsed = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
     const runs: Run[] = [];
     const imports: string[] = [];
+    const elements: { name: string; at: number }[] = [];
     const visit = (node: ts.Node): void => {
+        if (ts.isJsxElement(node)) {
+            elements.push({ name: node.openingElement.tagName.getText(parsed), at: node.getStart(parsed) });
+            ts.forEachChild(node, visit);
+            elements.pop();
+            return;
+        }
         // AN IMPORT OR AN EXPORT IS MACHINERY: its path is a string, and it is never writing.
         if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
             if (node.moduleSpecifier !== undefined && ts.isStringLiteral(node.moduleSpecifier)) imports.push(node.moduleSpecifier.text);
@@ -32,7 +41,8 @@ export const source = (file: string, code: string): Source => {
         if (ts.isJsxText(node)) {
             if (node.containsOnlyTriviaWhiteSpaces) return;
             const from = node.getStart(parsed);
-            runs.push({ kind: 'prose', from, to: node.end, text: code.slice(from, node.end) });
+            const within = elements[elements.length - 1];
+            runs.push({ kind: 'prose', from, to: node.end, text: code.slice(from, node.end), ...(within === undefined ? {} : { element: within.name, within: within.at }) });
 
             return;
         }
