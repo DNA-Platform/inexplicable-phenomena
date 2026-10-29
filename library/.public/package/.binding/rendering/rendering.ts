@@ -53,7 +53,10 @@ export type Kept = { address: string; kept: Page };
 // order is in the one file, written before any child opens, and a child is told which is its own,
 // since children run at once and a file each child rewrote would be read by the wrong one.
 export type Order = { draw: string[]; keep: Kept[] };
-export type Done = { drawn: Drawn[]; kept: string[] };
+// AND THE PAGE AFTER WHICH THE CHILD HELD THE MOST, its resident set then in megabytes, so the render can name the
+// whale and the budget be set from the measure by hand. Sprint 118, U5, on Doug's "Heuristics are bad".
+export type Heaviest = { address: string; rss: number };
+export type Done = { drawn: Drawn[]; kept: string[]; heaviest?: Heaviest };
 // AND WHAT IT COST: the child's peak resident set in megabytes, said in its last line.
 type Answered = Done & { peak: number };
 export const orderOf = (binding: string): string => join(binding, '.render.json');
@@ -97,7 +100,7 @@ const done = async (binding: string, entry: string, index: number): Promise<Answ
 
 // WHAT THE RENDER SAYS OF ITSELF: the pages, the ones drawn, how many children drew them and how many
 // ran at once, and the most a child held.
-export type Rendered = { pages: string[]; drawn: Drawn[]; batches: number; atOnce: number; peak: number };
+export type Rendered = { pages: string[]; drawn: Drawn[]; batches: number; atOnce: number; peak: number; heaviest?: Heaviest };
 
 export const rendering = async (
     binding: string,
@@ -129,7 +132,9 @@ export const rendering = async (
         pages.push('index.html');
     }
 
-    return { pages, drawn: drawnPages, batches: batches.length, atOnce: Math.min(chosen.rendering.parallel, orders.length), peak: Math.max(0, ...answered.map(one => one.peak)) };
+    const heaviest = answered.map(one => one.heaviest).filter((one): one is Heaviest => one !== undefined).sort((one, two) => two.rss - one.rss)[0];
+
+    return { pages, drawn: drawnPages, batches: batches.length, atOnce: Math.min(chosen.rendering.parallel, orders.length), peak: Math.max(0, ...answered.map(one => one.peak)), heaviest };
 };
 
 // WHETHER A KEPT PAGE CAN STILL BE WRITTEN FROM WHAT WAS KEPT: its markup must still stand.

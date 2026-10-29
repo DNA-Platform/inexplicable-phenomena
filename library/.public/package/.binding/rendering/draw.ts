@@ -79,6 +79,7 @@ export const draw = async (server: ViteDevServer, order: Order): Promise<Done> =
     const { routes } = (await server.ssrLoadModule(join(binding, 'application', 'routes.ts'))) as { routes: Route[] };
     const built = readFileSync(shellOf(binding), 'utf8');
     const drawn: Drawn[] = [];
+    let heaviest: Done['heaviest'];
 
     for (const address of order.draw) {
         const route = routes.find(one => one.address === address);
@@ -114,11 +115,14 @@ export const draw = async (server: ViteDevServer, order: Order): Promise<Done> =
                 markup: relative(binding, markupAt).split(sep).join('/'),
                 sheet: sheetName,
             });
+            // WHAT THIS CHILD HOLDS AFTER THE PAGE, so the render can name the page it held the most after.
+            const rss = Math.round(process.memoryUsage().rss / 1048576);
+            if (heaviest === undefined || rss > heaviest.rss) heaviest = { address, rss };
         } finally {
             sheet.seal();
         }
     }
     const kept = order.keep.map(one => written(binding, face, built, chosen, one));
 
-    return { drawn, kept };
+    return { drawn, kept, heaviest };
 };

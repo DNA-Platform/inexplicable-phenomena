@@ -77,7 +77,8 @@ const plural = (n: number, one: string): string => `${n} ${one}${n === 1 ? '' : 
 // WHAT A STAGE SAYS OF ITS CHILDREN: how many, how many at once when more than one, and the most one held.
 const children = (n: number): string => `${n} ${n === 1 ? 'child' : 'children'}`;
 const atOnce = (n: number): string => (n > 1 ? `, ${n} at once` : '');
-const peaked = (peak: number): string => (peak > 0 ? ` · peak ${peak} MB in a child` : '');
+const peaked = (peak: number, heaviest?: { address: string; rss: number }): string =>
+    (peak > 0 ? ` · peak ${peak} MB in a child${heaviest === undefined ? '' : `, ${heaviest.rss} MB after ${heaviest.address}`}` : '');
 
 export const tasks: Task[] = [
     { name: 'configure', run: state => { state.chosen = configure(state.binding); return `${plural(Object.keys(state.chosen).length, 'section')} read from .pubconfig`; } },
@@ -240,7 +241,7 @@ export const tasks: Task[] = [
         const pictures = found.books.flatMap(book => [...book.resources.values()].flat()
             .filter(one => imageTypes.includes(one.type))
             .map(one => { mkdirSync(join(face, book.folder), { recursive: true }); copyFileSync(join(book.path, one.file), join(face, book.folder, one.file)); return `${book.folder}/${one.file}`; }));
-        return `${plural(rendered.drawn.length, 'page')} drawn in ${children(rendered.batches)}${atOnce(rendered.atOnce)} · ${kept.length} kept · ${plural(pictures.length, 'picture')}${peaked(rendered.peak)}`;
+        return `${plural(rendered.drawn.length, 'page')} drawn in ${children(rendered.batches)}${atOnce(rendered.atOnce)} · ${kept.length} kept · ${plural(pictures.length, 'picture')}${peaked(rendered.peak, rendered.heaviest)}`;
     } },
     { name: 'proof', run: state => {
         // RUNNABLE ON ITS OWN. `tsx binding.ts proof` reads the pages the last binding wrote, so a
