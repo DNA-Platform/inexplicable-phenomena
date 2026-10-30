@@ -1,0 +1,403 @@
+import { readFileSync, statSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import type { Book, Library } from '../inventory/library';
+import { dotChapters, type Accompanying } from '../inventory/filenames';
+import { annotating, type Reading, type Said } from './annotations';
+import { source, type Source } from './source';
+import { itself, key, last, separator, tidy, titled, type End, type Literal, type Name, type Relation } from './language';
+
+// THE LIBRARY COMPILED INTO SOMETHING THAT CAN BE CHECKED.
+//
+// `catalogue/structure.ts` is a PROXY NAME, flagged for Doug.
+//
+// EVERY ANNOTATION IS HALF OF AN EDGE, AND BOTH SPELLINGS NORMALISE TO THE SAME EDGE — two ends is
+// whole, one end is a claim nothing corroborates, two out of a tree relation is a contradiction. A
+// SPOT IS KEYED BY WHERE IT STANDS AND NEVER BY ITS NAME, so every check compares ids and strings
+// stop at the boundary of the parse. NAMES ARE A MULTIMAP ON PURPOSE, so a collision is reported
+// rather than absorbed. And every file is read once, cached, then six passes that cannot collapse.
+
+export type SpotId = string;
+export type Where = { file: string; line: number };
+export type { Relation };
+
+// AN ANCHOR IS A SPOT TOO: `[[[ X ]]]` — "this is named X, here" — names the writing it stands in,
+// within its book, and a reference reaches it as it reaches a chapter. `anchor` is a PROXY NAME,
+// flagged for Doug; the language calls the form a mention.
+export type Spot = { id: SpotId; at: string; file: string; kind: 'book' | 'chapter' | 'anchor'; book: SpotId };
+export type Half = { by: SpotId; end: End; at: Where };
+export type Edge = { relation: Relation; from: SpotId; to: SpotId; ends: Half[] };
+// AND THE WORDS IT IS SHOWN IN, for the one id a writing makes from them: a title whose address is its
+// book's — a cover's, a synopsis's — names no fragment, so it wears the slug of what it shows.
+export type Naming = { spot: SpotId; at: Where; words: string };
+export type Listing = { of: SpotId; kind: 'chapter' | 'book'; canonical: boolean; at: Where };
+
+// EVERY PLACE THE LIBRARY NAMES SOMETHING AND MEANS IT: a reference, `$[[ X ]]`, wherever it is written,
+// or an edge whose other end the library does not hold. Since Sprint 82 nothing is read off an
+// element — Doug: "You don't need the compiler to check for anything. You can't! They might
+// subclass them. That's why they are in special files."
+export type Mention = { by: SpotId; book: SpotId; name: Name; said: string; at: Where };
+
+export type Structure = {
+    spots: Map<SpotId, Spot>;
+    names: Map<string, Naming[]>;
+    named: Map<SpotId, string>;
+    of(said: string): SpotId | undefined;
+    // WHAT A NAME REACHES FROM WHERE IT STANDS, and the only resolver anything should use. It
+    // carries the scoping rule and the one exception a library has — a cover is a chapter too,
+    // titled with the book's name, so a table naming its own cover reaches the BOOK.
+    reaches(held: Name, book: SpotId): SpotId | undefined;
+    spells(held: Name, book: SpotId): string;
+    edges: Map<string, Edge>;
+    authorOf: Map<SpotId, SpotId>;
+    subjectOf: Map<SpotId, SpotId>;
+    topicsOf: Map<SpotId, Set<SpotId>>;
+    lists: Map<SpotId, Map<SpotId, Listing>>;
+    // THE COLOURING. Doug: "it referentially colors the tree in an interesting way, including the
+    // tree that contains the authors."
+    origin?: SpotId;
+    authors: Set<SpotId>;
+    mentions: Mention[];
+    headings: { book: SpotId; by: SpotId; file: string; line: number; words: string }[];
+    refused: { by: SpotId; said: string; at: Where; why?: string }[];
+    untitled: { at: string; file: string }[];
+    // THE BOOKS ABOUT SOMETHING, AND WHAT EACH IS ABOUT — a cover carrying a second title form, its
+    // About, the name of the subject its book represents — and so the books another may be filed
+    // under, by that name. `about` is a PROXY NAME.
+    about: Map<SpotId, string>;
+    // AND EVERY TITLE FORM THAT NAMES SOMETHING OTHER THAN THE WRITING ITS FILE TITLES. A PROXY NAME.
+    titledTwice: { by: SpotId; said: string; at: Where }[];
+    // EVERY SPOT SOMETHING IN THE LIBRARY REFERS TO, so a name nobody spends can be refused.
+    referred: Set<SpotId>;
+    // AND EVERY LITERAL A CHAPTER WRITES, beside the files that stand beside that chapter, so
+    // `wellformed` can hold each to the other. Sprint 92.
+    inserting: { by: SpotId; file: string; path: string; accompanying: Accompanying[]; imports: string[]; literals: { name: Literal; said: string; line: number }[] }[];
+};
+
+const edgeKey = (relation: Relation, from: SpotId, to: SpotId): string => `${relation}:${from}:${to}`;
+
+// WHICH SPOT A FILE'S `<Title>` NAMES. A cover's title is the BOOK's; every other file titles
+// itself. That is the convention the library already runs on, and it is why a table of contents can
+// be a chapter with a name of its own while still being where its book answers from.
+const titles = (book: Book, file: string): SpotId => (file === '.cover.tsx' ? book.folder : `${book.folder}/${file}`);
+
+// AND WHICH SPOT ITS ANNOTATIONS ARE ABOUT, which is a different question. The apparatus is the
+// book's own voice; a numbered chapter speaks for itself. Found by building the fixture: with only
+// the cover speaking for the book, a catalogue's answering half written in its table was attributed
+// to the table-as-a-writing and every edge in the library came out a claim nothing corroborated.
+const speaks = (book: Book, file: string): SpotId =>
+    dotChapters.includes(file) || file === '.book.tsx' ? book.folder : `${book.folder}/${file}`;
+
+// WHAT A TITLE FORM NAMES, as the name it gives: its book in a cover, and a chapter of its book
+// anywhere else, by [the language](./language.ts)'s one rule. A name that says another book gives
+// nothing, since a file titles what it is.
+const titleOf = (name: Name, cover: boolean): string => {
+    const named = titled(name, cover);
+
+    return named.of === 'book' ? named.book : 'within' in named ? named.chapter : '';
+};
+
+// A FILE READ IS A CHAPTER, OR THE BOOK'S OWN FILE. A resource — a file beside a chapter, named
+// for it — is never read. Doug, 2026-10-14: "No resource file should be interpreted. Why would it
+// be? All we do is show the code." and "You read chapters for references. That's it." From
+// 2026-09-20 until then a resource was read for what it referred to, so a reference in code a book
+// imported would count (B33); and once the literal arrived every resource went through the TSX
+// parser whatever its type, so a stray quote in a knowledge file opened a string and `[[t₁]]` in a
+// logic document read as a title (Sprint 109).
+type Held = { book: Book; file: string; path: string; reading: Reading; imports: string[]; headings: Heading[] };
+
+// A HEADING'S WORDS, as the draw will slug them for its id: the prose runs of one Heading element joined, a heading
+// that holds a form left to the passes that read forms, since a place is a spot already. Sprint 118, D5.
+export type Heading = { words: string; line: number };
+
+// AND ONLY WHERE THE DRAW IS THE PACKAGE'S OWN: the heading, the section it stands in, every element above them
+// and every element beside it in its section a name imported from the package, whose Section holds its headings
+// and whose Heading wears its id. A library's word draws as it likes — the address book's Opaque strips the id
+// from every heading of its section but the first, and the conversation says it of each message, so those
+// headings never wear one — and a heading in or beside a library's word is left to the proof, which reads the
+// page as drawn. The first full bind of Sprint 118 refused 32 conversations that had bound green. Sprint 118, U4.
+const thePackage = '@dna-platform/public';
+const drawnByThePackage = (read: Source, heading: number): boolean => {
+    const owned = (name: string): boolean => read.imported.get(name) === thePackage;
+    const held = read.elements.get(heading);
+    const section = held?.parent === undefined ? undefined : read.elements.get(held.parent);
+    if (held === undefined || section === undefined || section.name !== 'Section') return false;
+    if (!owned(held.name) || !section.children.every(owned)) return false;
+    for (let at: number | undefined = held.parent; at !== undefined; at = read.elements.get(at)?.parent)
+        if (!owned(read.elements.get(at)?.name ?? '')) return false;
+    return true;
+};
+const headingsOf = (read: Source): Heading[] => {
+    const grouped = new Map<number, { words: string[]; at: number }>();
+    for (const run of read.runs) {
+        if (run.kind !== 'prose' || run.element !== 'Heading' || run.within === undefined) continue;
+        const held = grouped.get(run.within) ?? { words: [], at: run.from };
+        held.words.push(run.text);
+        grouped.set(run.within, held);
+    }
+    return [...grouped.entries()]
+        .filter(([at]) => drawnByThePackage(read, at))
+        .map(([, one]) => ({ words: one.words.join(' ').replace(/\s+/gu, ' ').trim(), line: read.line(one.at) }))
+        .filter(one => one.words !== '' && !one.words.includes('[['));
+};
+
+// WHAT A FILE SAID LAST TIME, KEPT UNTIL THE FILE CHANGES.
+//
+// THE TYPESCRIPT PARSE IS THE WHOLE COST. Measured on Doug's library 2026-09-19: 51 files, 270 KB —
+// 10ms to read them off the disk, 2ms to scan for sigils, and 73ms to parse. At a thousand books it
+// is three and a half seconds, and the dev server asks for it again every time a cover is saved.
+//
+// SO THE READING IS CACHED AND THE REST IS NOT. An edit re-parses ONE file and the other ten
+// thousand are handed back; the passes that put the library together still run in full, because a
+// name written in the last file walked can change what the first one meant, and that is the part
+// that must not be cached.
+//
+// KEYED ON WHAT THE FILE IS RATHER THAN WHEN WE LOOKED. Modified time and size together: a rewrite
+// that lands in the same millisecond almost always changes the length, and a `stat` of eleven
+// thousand files is milliseconds against seconds of parsing.
+const kept = new Map<string, { at: number; size: number; code: string; source: Source; reading: Reading; headings: Heading[] }>();
+
+const looked = (path: string): { reading: Reading; imports: string[]; headings: Heading[] } => {
+    const said = statSync(path);
+    const before = kept.get(resolve(path));
+    if (before !== undefined && before.at === said.mtimeMs && before.size === said.size) return { reading: before.reading, imports: before.source.imports, headings: before.headings };
+
+    const code = readFileSync(path, 'utf8');
+    const read = source(path, code);
+    const held = { at: said.mtimeMs, size: said.size, code, source: read, reading: annotating(read), headings: headingsOf(read) };
+    kept.set(resolve(path), held);
+
+    return { reading: held.reading, imports: read.imports, headings: held.headings };
+};
+
+// THE SOURCE OF A FILE THE TRANSFORM IS HANDED: the structure's own reading when it read this very
+// text, a fresh one otherwise — so a file is parsed once per version of itself across both passes,
+// and a reading of yesterday's text never edits today's. Sprint 90.
+export const sourceOf = (path: string, code: string): Source => {
+    const before = kept.get(resolve(path));
+
+    return before !== undefined && before.code === code ? before.source : source(path, code);
+};
+
+// AND THE TEXT OF A FILE BESIDE A CHAPTER, as the structure holds it, for a literal to insert — read
+// from disk only when the structure has not read it, which is never on a bind and rarely on a dev
+// server. Sprint 92.
+export const textOf = (path: string): string => kept.get(resolve(path))?.code ?? readFileSync(path, 'utf8');
+
+export const structure = (found: Library): Structure => {
+    // ---- the one reading ----
+    const read: Held[] = [];
+    for (const book of found.books)
+        for (const file of book.files) {
+            const path = join(book.path, file);
+            read.push({ book, file, path, ...looked(path) });
+        }
+
+    const spots = new Map<SpotId, Spot>();
+    const names = new Map<string, Naming[]>();
+    const named = new Map<SpotId, string>();
+    const edges = new Map<string, Edge>();
+    const mentions: Mention[] = [];
+    const refused: Structure['refused'] = [];
+    const untitled: Structure['untitled'] = [];
+    const about: Structure['about'] = new Map();
+    const titledTwice: Structure['titledTwice'] = [];
+
+    const titling = (one: Held): Said[] => one.reading.annotations.filter(said => said.form.is === 'title');
+    const calls = (said: string, spot: SpotId, at: Where, words: string): void => {
+        names.set(said, [...(names.get(said) ?? []), { spot, at, words }]);
+        named.set(spot, last(said));
+    };
+
+    // ---- the books, named by their covers ----
+    //
+    // FIRST, because a chapter's name is scoped by its book's and cannot be formed until the book
+    // has one. A book is named by the title form its cover holds, whatever element holds it; its
+    // second one is kept for the pass below, since what it may name depends on every book's title.
+    const abouts: { book: SpotId; said: string; written: string; at: Where }[] = [];
+    for (const one of read) {
+        if (one.file !== '.cover.tsx') continue;
+        const [title, ...others] = titling(one);
+        const said = title === undefined ? '' : titleOf(title.name, true);
+        if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
+        spots.set(one.book.folder, { id: one.book.folder, at: one.book.folder, file: one.path, kind: 'book', book: one.book.folder });
+        calls(said, one.book.folder, { file: one.path, line: title.line }, title.words);
+        for (const other of others)
+            abouts.push({ book: one.book.folder, said: titleOf(other.name, true), written: other.said, at: { file: one.path, line: other.line } });
+    }
+
+    // ---- what each book is about ----
+    //
+    // A COVER'S SECOND TITLE FORM IS ITS ABOUT: THE NAME OF THE SUBJECT ITS BOOK REPRESENTS, which
+    // is its own title or a name no book is called. Doug, 2026-09-27: "YES a book that represents a
+    // subject is not necessarily named a subject. The Encyclopedia of Math might represent the
+    // subject of Math!" So `**[[ Math ]]` files under that encyclopedia and `*[[ Math ]]` is it, by
+    // the name it is about; a second form naming another book is still a second title, and so is a
+    // name two covers say their books are about. A subject's name reaches the book and nothing in it
+    // — a chapter is keyed by its book's title alone, so one chapter has one key.
+    const subjects = new Map<string, SpotId>();
+    for (const one of abouts) {
+        const titled = names.get(one.said)?.some(naming => naming.spot !== one.book) ?? false;
+        const represented = abouts.some(other => other !== one && other.book !== one.book && other.said === one.said);
+        const already = about.get(one.book);
+        if (titled || represented || (already !== undefined && already !== one.said)) { titledTwice.push({ by: one.book, said: one.written, at: one.at }); continue; }
+        about.set(one.book, one.said);
+        if (one.said !== named.get(one.book)) subjects.set(one.said, one.book);
+    }
+
+    // ---- the chapters, named within their books ----
+    for (const one of read) {
+        if (one.file === '.cover.tsx' || one.file === '.book.tsx') continue;
+        const within = named.get(one.book.folder);
+        if (within === undefined) continue;
+        const [title, ...others] = titling(one);
+        const said = title === undefined ? '' : titleOf(title.name, false);
+        if (said === '') { untitled.push({ at: one.book.folder, file: one.path }); continue; }
+        // A CHAPTER TITLED WITH ITS BOOK'S NAME IS A CHAPTER LIKE ANY OTHER, and its address is the
+        // cover's, which `wellformed` raises. It was skipped here in silence, and a silent skip is
+        // a chapter nobody lists, nobody reaches and nobody checks.
+        const id = titles(one.book, one.file);
+        spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'chapter', book: one.book.folder });
+        calls(`${within}${separator}${said}`, id, { file: one.path, line: title.line }, title.words);
+        for (const other of others)
+            if (titleOf(other.name, false) !== said)
+                titledTwice.push({ by: id, said: other.said, at: { file: one.path, line: other.line } });
+    }
+
+    // ---- the anchors, named within their books ----
+    //
+    // `[[[ X ]]]` allocates an address where it stands, so it is a spot of its book with a name of
+    // its own — a reference `$[[ ./X ]]` reaches it exactly as it reaches a chapter, and a name that
+    // answers twice in one book is what `wellformed` refuses.
+    for (const one of read) {
+        const within = named.get(one.book.folder);
+        if (within === undefined) continue;
+        const by = speaks(one.book, one.file);
+        for (const said of one.reading.annotations) {
+            if (said.form.is !== 'mention' || said.name.of !== 'book' || said.name.book === '') continue;
+            const id = `${by}#${said.name.book}`;
+            spots.set(id, { id, at: one.book.folder, file: one.path, kind: 'anchor', book: one.book.folder });
+            calls(`${within}${separator}${said.name.book}`, id, { file: one.path, line: said.line }, said.words);
+        }
+    }
+
+    const of = (said: string): SpotId | undefined => {
+        const held = names.get(tidy(said));
+
+        return held !== undefined ? (held.length === 1 ? held[0].spot : undefined) : subjects.get(tidy(said));
+    };
+
+    const spells = (held: Name, book: SpotId): string => key(held, named.get(book));
+    const reaches = (held: Name, book: SpotId): SpotId | undefined =>
+        (itself(held, named.get(book)) ? book : of(spells(held, book)));
+
+    // ---- the edges, each normalised from whichever end said it ----
+    //
+    // An edge runs from the one who does the thing to the one it is done to — an author to what they
+    // wrote, a catalogue to what it catalogues — so the end a writing occupies decides which way
+    // round its own id goes.
+    // ---- the literals, kept beside the files that stand beside each chapter ----
+    //
+    // A LITERAL INSERTS A FILE OF THE CHAPTER IT STANDS IN; a resource is never read, so one it
+    // might hold inserts nothing.
+    const inserting: Structure['inserting'] = [];
+    for (const one of read)
+        inserting.push({ by: speaks(one.book, one.file), file: one.file, path: one.path, accompanying: one.book.resources.get(one.file) ?? [], imports: one.imports, literals: one.reading.literals.map(said => ({ name: said.name, said: said.said, line: said.line })) });
+
+    for (const one of read) {
+        const by = speaks(one.book, one.file);
+        for (const said of one.reading.refused) refused.push({ by, said: said.said, at: { file: one.path, line: said.line }, why: said.why });
+        for (const said of one.reading.references) mentions.push({ by, book: one.book.folder, name: said.name, said: said.said, at: { file: one.path, line: said.line } });
+        for (const said of one.reading.annotations) {
+            if (said.form.is !== 'edge') continue;
+            const other = reaches(said.name, one.book.folder);
+            if (other === undefined) {
+                mentions.push({ by, book: one.book.folder, name: said.name, said: said.said, at: { file: one.path, line: said.line } });
+                continue;
+            }
+            const from = said.form.end === 'source' ? by : other;
+            const to = said.form.end === 'source' ? other : by;
+            const at = edgeKey(said.form.relation, from, to);
+            const held = edges.get(at) ?? { relation: said.form.relation, from, to, ends: [] };
+            held.ends.push({ by, end: said.form.end, at: { file: one.path, line: said.line } });
+            edges.set(at, held);
+        }
+    }
+
+    // ---- what is referred to, from anywhere in the library ----
+    //
+    // Doug, 2026-09-20: "it should also refuse when nothing references a mention in the whole
+    // library. It is unnecessary in that case and we want a compact library." So the structure says
+    // which spots a reference reaches, and `wellformed` raises a name nobody spends.
+    const referred = new Set<SpotId>();
+    for (const one of mentions) {
+        const spot = reaches(one.name, one.book);
+        if (spot !== undefined) referred.add(spot);
+    }
+
+    // ---- the relations, each shaped by the check it answers ----
+    //
+    // An author and a canonical catalogue are functions — one each — and a topic is a relation that
+    // may hold many ways and may loop. Giving them different TYPES is what stops a cycle check being
+    // run on the one where cycles are fine.
+    const authorOf = new Map<SpotId, SpotId>();
+    const subjectOf = new Map<SpotId, SpotId>();
+    const topicsOf = new Map<SpotId, Set<SpotId>>();
+    for (const edge of edges.values()) {
+        if (edge.relation === 'author') authorOf.set(edge.to, edge.from);
+        if (edge.relation === 'subject') subjectOf.set(edge.to, edge.from);
+        if (edge.relation === 'topic') topicsOf.set(edge.to, (topicsOf.get(edge.to) ?? new Set()).add(edge.from));
+    }
+
+    // ---- the table of contents, which is where a book answers ----
+    //
+    // A TABLE LISTS WHAT IT REFERS TO AND ANSWERS FOR, read off the notation in `.table.tsx` and off
+    // no element: a chapter of its own book is listed by a reference to it, `$[[ ./The Shelves ]]`, and a
+    // book it catalogues by its answer, `[[ The Log ]]**`, canonical when that answer is a subject's.
+    // Doug, 2026-09-19: "the table needs links to its chapters and the books that those chapters are
+    // synopses of." Read per table, since the row an element once drew is a runtime's business and
+    // the compiler reads no tag.
+    const lists = new Map<SpotId, Map<SpotId, Listing>>();
+    for (const one of read) {
+        if (one.file !== '.table.tsx') continue;
+        const listings = new Map<SpotId, Listing>();
+        for (const referring of one.reading.references) {
+            const spot = reaches(referring.name, one.book.folder);
+            if (spot === undefined || spot === one.book.folder) continue;
+            if (spots.get(spot)?.kind === 'chapter' && spots.get(spot)?.book === one.book.folder)
+                listings.set(spot, { of: spot, kind: 'chapter', canonical: false, at: { file: one.path, line: referring.line } });
+        }
+        for (const said of one.reading.annotations) {
+            if (said.form.is !== 'edge' || said.form.end !== 'source') continue;
+            const spot = reaches(said.name, one.book.folder);
+            if (spot === undefined || spot === one.book.folder) continue;
+            listings.set(spot, {
+                of: spot,
+                kind: 'book',
+                canonical: said.form.relation === 'subject',
+                at: { file: one.path, line: said.line },
+            });
+        }
+        lists.set(one.book.folder, listings);
+    }
+
+    // ---- who may author ----
+    //
+    // Doug, 2026-09-25, and it is the whole rule: "1. A book that is by its subject — There can be
+    // only one of those. 2. Any book catalogued by one that is a subject." So the origin is the one
+    // book by its own subject, the autobiography, and the others are the books whose subject —
+    // their singular catalogue, never a topic — is the origin. One step, not a walk down the tree.
+    const alone = [...spots.keys()].filter(id => authorOf.get(id) === id);
+    const origin = alone.length === 1 ? alone[0] : undefined;
+    const authors = new Set<SpotId>();
+    if (origin !== undefined) {
+        authors.add(origin);
+        for (const [book, subject] of subjectOf)
+            if (subject === origin)
+                authors.add(book);
+    }
+
+    // ---- the headings, each with the id the draw will make of its words ----
+    const headings: Structure['headings'] = read.flatMap(one => one.headings.map(heading => ({ book: one.book.folder, by: speaks(one.book, one.file), file: one.path, line: heading.line, words: heading.words })));
+
+    return { spots, names, named, of, reaches, spells, edges, authorOf, subjectOf, topicsOf, lists, origin, authors, mentions, headings, refused, untitled, about, titledTwice, referred, inserting };
+};

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Library Reference Manual — the seventh sketch: the front, the cover with its synopsis</title>
+<style>
+  :root { --paper: #faf8f4; --ink: #23262a; --link: #5b2f2a; --space: 1.25rem; --size: 17px; }
+  * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--ink) 25%, transparent) transparent; }
+  html, body { height: 100%; margin: 0; }
+  body { font: var(--size)/1.7 Georgia, 'Times New Roman', serif; color: var(--ink); background: var(--paper); }
+  .app { position: fixed; inset: 0; padding: calc(var(--space) / 2) var(--space) 0; display: grid; grid-template-columns: 18rem minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: 'head head' 'table tabs' 'table page'; column-gap: var(--space); }
+  .head { grid-area: head; display: flex; align-items: baseline; justify-content: space-between; padding-bottom: calc(var(--space) / 2); border-bottom: 1px solid var(--ink); }
+  .running-head { font-size: calc(0.75 * var(--size)); letter-spacing: .12em; text-transform: uppercase; }
+  .running-head a { color: var(--link); }
+  .byline { display: flex; column-gap: calc(var(--space) / 2); align-items: baseline; }
+  .byline .label { font-size: calc(0.7 * var(--size)); letter-spacing: .15em; text-transform: uppercase; opacity: .65; }
+  .byline a { color: var(--link); }
+  .table { grid-area: table; overflow: auto; padding-top: var(--space); font-size: calc(0.9 * var(--size)); }
+  .table .label { font-size: calc(0.7 * var(--size)); letter-spacing: .15em; text-transform: uppercase; opacity: .65; margin-bottom: calc(var(--space) / 2); }
+  .table .entry { margin: calc(var(--space) / 3) 0; }
+  .table .entry::before { content: counter(entry); counter-increment: entry; display: inline-block; width: 1.5em; font-size: calc(0.7 * var(--size)); opacity: .65; }
+  .table .entry a { color: var(--link); }
+  .table .leaf { display: block; padding-left: 1.5em; font: calc(0.8 * var(--size))/1.6 ui-monospace, monospace; color: inherit; opacity: .75; text-decoration: none; }
+  .table .leaf::before { content: '·'; margin-right: .5em; opacity: .5; }
+  .tabs { grid-area: tabs; display: flex; flex-wrap: wrap; align-items: baseline; border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, var(--paper)); }
+  .tab { display: inline-block; padding: calc(var(--space) / 4) calc(var(--space) / 2); color: var(--link); text-decoration: none; opacity: .65; border-left: 1px solid color-mix(in srgb, var(--ink) 15%, var(--paper)); }
+  .tab:first-child { padding-left: 0; border-left: 0; }
+  .tab.active { opacity: 1; color: var(--ink); box-shadow: inset 0 -2px 0 var(--link); }
+  .page { grid-area: page; overflow: auto; min-height: 0; padding-top: var(--space); }
+  .front { max-width: 42rem; }
+  .front h1 { font-size: calc(1.6 * var(--size)); line-height: 1.3; margin: 0 0 var(--space); }
+  .front p { margin: 0 0 var(--space); }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="head">
+    <div class="running-head"><a href="#">The Library</a> / The Library Reference Manual: <a href="#">Table of Contents</a></div>
+    <div class="byline"><span class="label">Author</span><a href="#">Libby</a><span class="label">Filed under</span><a href="#">Libraries</a></div>
+  </header>
+
+  <nav class="table" style="counter-reset: entry">
+    <div class="label">Contents</div>
+    <div class="entry"><a href="#">The Book</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Theme</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Masthead and the Byline</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Catchword</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Faces</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Mark and the Photograph</a></div>
+    <div class="entry"><a href="#">The Explorer</a><a class="leaf" href="#">appendix.tsx</a><a class="leaf" href="#">paging.tsx</a><a class="leaf" href="#">layout.tsx</a><a class="leaf" href="#">tree.tsx</a><a class="leaf" href="#">tabs.tsx</a><a class="leaf" href="#">theme.tsx</a></div>
+  </nav>
+
+  <div class="tabs">
+    <a class="tab active" href="#">The Library Reference Manual</a>
+  </div>
+
+  <div class="page">
+    <article class="front">
+      <h1>The Library Reference Manual</h1>
+      <p>The technical information that accompanies the library's reference: every tool this library is built with stands beside the chapter that explains it, and the library uses that very file. Kept by the librarian; each chapter says what the tool is, how the library uses it, and prints it whole as the chapter's appendix.</p>
+      <p>The catalogue is the reference, and this is the manual beside it. Its book file is the door: the book class, the theme, the masthead and the byline, the catchword and the faces are exported from there, every other book imports its tools from it, and each chapter prints the file it documents exactly as it stands on disk. The cover is by the librarian and filed under the library the manual accompanies.</p>
+    </article>
+  </div>
+</div>
+</body>
+</html>

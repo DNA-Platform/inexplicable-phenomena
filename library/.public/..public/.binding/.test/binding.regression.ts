@@ -1,0 +1,797 @@
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { join, resolve } from 'node:path';
+import puppeteer, { type Browser, type Page } from 'puppeteer';
+import { preview, type PreviewServer } from 'vite';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { configure } from '../configuration/configuration';
+import { imageTypes } from '../inventory/filenames';
+import { walk } from '../inventory/walk';
+import { catalogue } from '../catalogue/catalogue';
+import { placeOf } from '../rendering/place';
+import { proof } from '../specification/proof';
+import { bound, home, pulled, type Galley } from './galleys';
+
+// THE WHOLE BINDER, END TO END, OVER A LIBRARY THAT IS KNOWN TO BE RIGHT.
+//
+// This is the regression suite: every phase of a bind runs over the test library, and what comes
+// out the far end is read back. It replaced `specification/rendering.test.ts`, which asked the same
+// questions of whatever library the binder happened to be standing in — and in the binder's own
+// home that is no library at all, so the suite could not run where the binder lives.
+//
+// IT IS SLOW BY THE STANDARD OF A UNIT TEST, because a bind is, and that is why it is its own
+// project and its own script rather than something `npm test` pays for on every run.
+//
+// AND IT READS WHAT THIS CODE WRITES. A Means draws its words in its own element inside the anchor
+// its Reference lends it, and its annotations' own writing stands inside that element too, so an
+// anchor is matched by its address and the words it opens with, never by bare words.
+const galley = pulled();
+afterAll(() => { galley.remove(); });
+
+// WHAT A BIND PRINTED, WHETHER IT FINISHED OR NOT — the phases on one stream and the faults on the other.
+const printed = (galley: Galley): string => {
+    try {
+        return bound(galley);
+    } catch (error) {
+        const failed = error as { stdout?: string; stderr?: string };
+        return `${failed.stdout ?? ''}${failed.stderr ?? ''}`;
+    }
+};
+
+describe('a bind of the test library', () => {
+    const chosen = configure(galley.binding);
+    const found = walk(galley.library, chosen);
+    const table = catalogue(found, chosen).table;
+    const page = (name: string): string => readFileSync(placeOf(galley.face, table.routes.find(route => route.name === name)!), 'utf8');
+    // THE SHEET IS A FILE since Sprint 95's U8, named by its content and linked from the page's head.
+    const linked = (html: string): string => html.match(/<link rel="stylesheet" href="[^"]*?(sheets\/[0-9a-f]+\.css)" \/>/u)?.[1] ?? '';
+    const sheetOf = (html: string): string => readFileSync(join(galley.face, linked(html)), 'utf8');
+    // A CHAPTER'S PAGE IS ITS BOOK'S since Sprint 95's U9: one page per book, every chapter in its print.
+    const chapterPage = (book: string, chapter: string): string => {
+        expect(table.routes.find(route => route.name === book)!.chapters.find(one => one.name === chapter)).toBeDefined();
+        return page(book);
+    };
+
+    // Doug, 2026-09-25: "in ..public, we drop the v1 dependency in our test library this sprint."
+    it('binds with this code, the package the repository links, and no other', () => {
+        const at = createRequire(join(galley.binding, 'package.json')).resolve('@dna-platform/public');
+        expect(realpathSync(at).startsWith(realpathSync(resolve(home, '..')))).toBe(true);
+    });
+
+    it('runs every phase, specify among them, and finishes', () => {
+        const said = bound(galley);
+        expect(said).toMatch(/^specify +\d+ books? read/mu);
+        expect(said).toMatch(/^bound /mu);
+    });
+
+    // A LITERAL IS AS WRITTEN — Doug, 2026-09-28: "it is the version written that is used not the
+    // version modified." Every file the manual prints through a Code figure is on its chapter's page
+    // exactly as it stands on disk, so the transform never touched the raw module the Append was made
+    // from; and nothing is planted in a manual file to prove it — the files themselves are the proof.
+    it('printed every file the manual holds exactly as written on disk', () => {
+        const manual = found.books.find(book => book.folder === 'manual')!;
+        const route = table.routes.find(one => one.name === 'The Library Reference Manual')!;
+        const decoded = (html: string): string => html.replace(/<[^>]*>/gu, '').replace(/&(lt|gt|amp|quot|#x27|#39);/gu, (_, held: string) => ({ lt: '<', gt: '>', amp: '&', quot: '"', '#x27': "'", '#39': "'" })[held]!);
+        // EVERY CHAPTER ON THE BOOK'S ONE PAGE since Sprint 95's U9, so every printed file is read off it.
+        const blocks = [...readFileSync(placeOf(galley.face, route), 'utf8').matchAll(/<code[^>]*>([\s\S]*?)<\/code>/gu)].map(match => decoded(match[1]));
+        let printed = 0;
+        for (const [chapter, files] of manual.resources)
+            for (const one of files.filter(file => file.type === '.tsx')) {
+                const title = readFileSync(join(manual.path, chapter), 'utf8').match(/(?<!!)\[\[ (.+?) \]\]/u)![1];
+                expect(route.chapters.find(each => each.name === title), `${chapter} is a chapter of the manual`).toBeDefined();
+                expect(blocks, `${chapter} prints ${one.file}`).toContain(readFileSync(join(manual.path, one.file), 'utf8'));
+                printed++;
+            }
+        expect(printed).toBeGreaterThanOrEqual(5);
+    });
+
+    // ONE PAGE PER BOOK — Sprint 95, D1, Doug: "It is one page per book for sure. Chapters and mentions are more
+    // like bookmarks within the book that one can link to." A page at every book's address holding the whole
+    // book, every chapter's text in its print for a crawler, and no page at any chapter's.
+    // THE SLUG KEEPS EVERY ALPHABET — Doug, 2026-10-13, ruling the names of his imported conversations, two of
+    // which are titled in Cyrillic. A book titled in Cyrillic stands at a Cyrillic address, its chapter at a
+    // Cyrillic fragment, and the proof reaches both. Sprint 109, U13.
+    it('bound a book titled in Cyrillic at its own letters, its chapter a Cyrillic fragment, and the catalogue links it', () => {
+        const route = table.routes.find(one => one.name === 'Записки библиотекаря')!;
+        expect(route.address).toBe('/записки-библиотекаря');
+        expect(route.chapters.find(one => one.name === 'О книгах')?.address).toBe('/записки-библиотекаря#о-книгах');
+        const notes = page('Записки библиотекаря');
+        expect(notes).toContain('id="о-книгах"');
+        expect(notes).toContain('id="что-такое-книга"');
+        expect(page('The Library')).toContain('href="/записки-библиотекаря/"');
+    });
+
+    it('wrote one page per book holding every chapter, a fragment the chapter\'s address, and no page for a chapter', () => {
+        for (const route of table.routes) {
+            const at = placeOf(galley.face, route);
+            expect(existsSync(at), `${route.name} was not rendered at ${at}`).toBe(true);
+            const html = readFileSync(at, 'utf8');
+            expect(html, `${route.name} left #root empty`).not.toContain('<div id="root"></div>');
+            expect(html, `${route.name}'s head does not carry the arrival`).toContain('(document,location.hash);</script>');
+            for (const chapter of route.chapters) {
+                expect(chapter.address).toBe(`${route.address}#${chapter.address.split('#')[1]}`);
+                expect(html, `${chapter.name} is not in ${route.name}'s print`).toContain(`id="${chapter.address.split('#')[1]}"`);
+                expect(existsSync(join(galley.face, chapter.address.split('#')[1], 'index.html')), `${chapter.name} was rendered as a page of its own`).toBe(false);
+            }
+        }
+        // THE FACE'S FOLDERS: a page per book, the assets, the sheets, and the pictures of any book carrying one since Sprint 89.
+        const pictured = found.books.filter(book => [...book.resources.values()].flat().some(one => imageTypes.includes(one.type))).map(book => book.folder);
+        expect(readdirSync(galley.face).filter(name => !name.includes('.')).sort()).toEqual([...table.routes.map(route => route.address.slice(1)), 'assets', 'sheets', ...pictured].sort());
+    });
+
+    it('wrote pages the browser will build as sent, whose every link leads to an id worn once', () => {
+        const pages = table.routes.map(one => placeOf(galley.face, one).slice(galley.face.length + 1).split('\\').join('/'));
+        expect(proof(galley.face, [...pages, 'index.html'], chosen.resolution.base)).toEqual([]);
+    });
+
+    it('resolved every reference to the address the page carries', () => {
+        const paper = page('A Paper');
+        expect(paper).toContain('href="/the-library/"');
+        expect(paper).toContain('href="/a-paper/#the-evidence"');
+        expect(paper).toContain('href="/some-projects/#the-work"');
+        expect(paper).toMatch(/<a href="\/libby\/"[^>]*><span[^>]*>Libby/u);
+    });
+
+    it('drew a cover inside its header, its title a link to its book, and a table inside its nav', () => {
+        const paper = page('A Paper');
+        // A FORMAT'S LAYER WEARS ITS OWN GENERATED NAMES beside pd-container since Sprint 97, a Format being the unit of
+        // styled components; and a layer may stand inside another's, the front-most innermost, at no fixed depth.
+        expect(paper).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)*<div[^>]*><a href="\/a-paper\/"[^>]*><div[^>]*>A Paper/u);
+        expect(paper).toMatch(/<nav class="[^"]*\bpd-container\b[^"]*">/u);
+    });
+
+    it('drew the byline its book class draws from what its cover says, in the words the cover gave', () => {
+        expect(page('The Library')).toMatch(/pd-label">Author<[\s\S]{0,200}?<a href="\/libby\/"[^>]*><span[^>]*>Libby[\s\S]*pd-label">Filed under<[\s\S]{0,200}?<a href="\/the-library\/"/u);
+        expect(page('Some Projects')).toMatch(/pd-label">Filed under<[\s\S]{0,200}?<a href="\/the-library\/"[^>]*><span[^>]*>Libraries/u);
+    });
+
+    // A SYNOPSIS'S TITLE GOES TO ITS BOOK — Doug, 2026-09-26: "we want the title of a synopsis chapter to go
+    // to the book it is a synopsis of! Most titles are self-links."
+    it('sent a reference to a chapter whose title is parenthetical to its page, where its title wears its id unseen and links to its book', () => {
+        expect(page('Libby')).toMatch(/<a href="\/the-library\/#synopsis"[^>]*><span[^>]*>Synopsis/u);
+        // PARENTHETICAL REMOVES WHAT IS DRAWN since Sprint 97's S2: the title's element keeps its id and marks, hidden, and holds nothing.
+        expect(page('The Library')).toMatch(/<a href="\/the-library\/"[^>]*><(?:span|div) id="synopsis" class="[^"]*pa-parenthetical[^"]*" hidden=""><\/(?:span|div)>/u);
+    });
+
+    // R4 — Doug: "just have the book expose its cover, table, synopsis... and other things use it from there."
+    it('drew in the argument its book\'s title and a link to its book\'s table, read from its book alone', () => {
+        expect(page('A Paper')).toMatch(/<span class="pd-word">A Paper(?:<span class="pd-annotation">[^<]*<\/span>)*<\/span>: <a href="\/a-paper\/#table-of-contents"[^>]*><span[^>]*>Table of Contents/u);
+    });
+
+    it('marked the autobiography and the biography on their covers', () => {
+        // BIOGRAPHY AND AUTOBIOGRAPHY LEND LAYERS OF THEIR OWN since Sprint 97, carrying their title's look, inside the cover's header.
+        expect(page('Libby')).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)*<div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?=[^"]*\bpa-autobiography\b)[^"]*">/u);
+        // THE PERSONA'S COVER STANDS INSIDE ITS FRAME, the layer its book adds to every chapter at its bind.
+        expect(page('A Persona')).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)+<div class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-biography\b)(?![^"]*\bpa-autobiography\b)[^"]*">/u);
+    });
+
+    // Doug, 2026-09-26: "the annotations should frequently mark their presence with a CSS class."
+    it('marked each chapter a cover, a synopsis or a table of contents said of with that annotation\'s class', () => {
+        const paper = page('A Paper');
+        // A CHAPTER'S OWN ELEMENT IS A DIV since Sprint 88, block by its level; the layer around it is the format's.
+        expect(paper).toMatch(/<header class="[^"]*\bpd-container\b[^"]*">(?:<div class="[^"]*\bpd-container\b[^"]*">)*<div class="(?=[^"]*\bpd-chapter\b)[^"]*\bpa-cover\b/u);
+        expect(paper).toMatch(/<nav class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpa-table-of-contents\b/u);
+        expect(paper.match(/class="[^"]*\bpa-synopsis\b/gu)).toHaveLength(1);
+    });
+
+    // A TABLE'S ENTRIES ARE CONTENTS — Doug: "Let's make a Content annotation, which is a type of
+    // Reference"; "it's note should draw its words... put it in a span with a pa-content on there".
+    it('drew a table\'s entries as the links their contents make, each name in a span wearing pa-content, in the order written', () => {
+        const paper = page('A Paper');
+        // THE SPAN IS CONTENT'S OWN STYLED COMPONENT since Sprint 97, so it wears its generated names beside pa-content;
+        // and the three parenthetical entries are not drawn, since Sprint 97's S2, the compiler still counting their mentions.
+        expect([...paper.matchAll(/<span class="[^"]*\bpa-content\b[^"]*">([^<]*)<\/span>/gu)].map(found => found[1]))
+            .toEqual(['The Argument', 'The Evidence']);
+        expect(paper).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*>(?:(?!<\/a>)[\s\S])*<span class="[^"]*\bpa-content\b[^"]*">The Argument<\/span>/u);
+    });
+
+    // THE CATALOGUE IS A TABLE — its section interpreted as a grid, its rows and cells marked by authorship.
+    it('drew the library\'s catalogue as a grid: the section wearing pa-table, its rows pa-row, its cells pa-col', () => {
+        const library = page('The Library');
+        expect(library).toMatch(/class="[^"]*\bpa-table\b/u);
+        // A HEADER ROW AND FOUR BOOKS since Sprint 89, the manual among them, the header bold by the theme.
+        // SIX ROWS AND TWELVE CELLS since Sprint 109's U13 added the Cyrillic book to the catalogue.
+        expect(library.match(/class="[^"]*\bpa-row\b/gu)).toHaveLength(6);
+        expect(library.match(/class="[^"]*\bpa-col\b/gu)).toHaveLength(12);
+        // THE TABLE IS AN ANNOTATION since Sprint 95's U4 — Doug: "Table should not be replacing the writing's
+        // element" — the section's own element wears pa-table, the Theme's sheet is its grid by that mark, its
+        // columns implicit from the cells' start classes, and no rule is made per table.
+        expect(sheetOf(library)).toMatch(/\.pa-table\s*\{\s*display:\s*grid;\s*grid-auto-columns:\s*minmax\(0,\s*1fr\)/u);
+        expect(sheetOf(library)).not.toMatch(/grid-template-columns:\s*repeat\(/u);
+        expect(library).not.toMatch(/pa-cols-/u);
+        expect(library).toMatch(/<div class="(?=[^"]*\bpd-section\b)(?=[^"]*\bpa-table\b)[^"]*"/u);
+    });
+
+    // ONE TABLE IS DRAWN, NOT WRITTEN — Some Projects', its entries what its chapters mention.
+    it('drew Some Projects\' table from its contents, every chapter a link inside its nav', () => {
+        const projects = page('Some Projects');
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#the-work"[^>]*>[\s\S]*The Work[\s\S]*<\/nav>/u);
+        expect(projects).toMatch(/<nav[^>]*>[\s\S]*<a href="\/some-projects\/#table-of-contents"[^>]*>[\s\S]*<\/nav>/u);
+        // THE PARENTHETICAL ENTRIES ARE NOT DRAWN since Sprint 97's S2; what links the book inside the nav is the
+        // table chapter's catchword, whose Previous is the synopsis and so means the book, since Sprint 86.
+        expect((/<nav[\s\S]*?<\/nav>/u.exec(projects)?.[0] ?? '').match(/<a href="\/some-projects\/"/gu)).toHaveLength(1);
+        expect(projects).not.toMatch(/<nav[^>]*>[\s\S]*pa-content[\s\S]*<\/nav>/u);
+    });
+
+    // A CATALOGUE'S CHAPTER IS ANOTHER BOOK'S SYNOPSIS — Libby's, handed to the chapter's Synopsis, which
+    // keeps the imported chapter off the page, gives the catalogue's chapter its parts, and sends the
+    // chapter's title to Libby. Doug, 2026-09-26: "the chapter is kept out of the Synopsis annotation's
+    // text, so that even in theory, it is not on the page."
+    it('drew in the library a chapter that is Libby\'s synopsis: Libby\'s words under its own title, which links to Libby, and no second id', () => {
+        const library = page('The Library');
+        expect(library).toContain('authorship in this library begins with her');
+        expect(library.match(/ id="synopsis"/gu)).toHaveLength(1);
+        // THE TITLE STAYS THE CHAPTER'S OWN since 2026-09-27 — Doug: "the Synopsis can't use the title of the chapter."
+        expect(library).toMatch(/<a href="\/the-library\/#of-libby"[^>]*><div id="of-libby"/u);
+        expect(library).not.toMatch(/<a href="\/libby\/"[^>]*><div id="of-libby"/u);
+        expect(library).not.toMatch(/<a href="\/libby\/"[^>]*><div id="synopsis"/u);
+    });
+
+    // A HEADING WRITTEN AS A MENTION IS A FRAGMENT OF ITS BOOK'S PAGE — Doug, 2026-09-26: "Long distance
+    // urls to that which was mentioned also must work." Libby refers to what the argument claims; the
+    // paper's page wears the id, and the heading links to itself with the same url.
+    it('addressed the argument\'s marked heading on the paper\'s page, where Libby\'s link lands and the heading links to itself', () => {
+        expect(page('Libby')).toMatch(/<a href="\/a-paper\/#what-is-claimed"[^>]*><span[^>]*>What is claimed/u);
+        const argument = chapterPage('A Paper', 'The Argument');
+        expect(argument).toMatch(/<a href="\/a-paper\/#what-is-claimed"[^>]*>(?:(?!<\/a>)[\s\S])*id="what-is-claimed"/u);
+        expect(argument.match(/ id="what-is-claimed"/gu)).toHaveLength(1);
+        expect(argument).not.toContain('[[[');
+    });
+
+    // A STYLE ONE BOOK HAS AND THE OTHERS DO NOT, on its own page and on no other — the leak the render
+    // once kept one child per page to prevent. Doug, 2026-09-26: "Yes it was a style leak bug."
+    it('drew the paper\'s own style on its page and on no other', () => {
+        // THE SHEET ALONE: since Sprint 89 the manual PRINTS the faces' file, whose text quotes the paper's rule.
+        for (const route of table.routes)
+            expect(/font-family: ?monospace/u.test(sheetOf(page(route.name))), route.name).toBe(route.name === 'A Paper');
+    });
+
+    // THE THEME IS THE LIBRARY'S, registered on its book class — Sprint 97's P5 — and an annotation's own writing is
+    // not drawn, S1, so no rule hides it and no page carries pd-annotation.
+    it('drew every book inside its theme, the library\'s values declared on its element and nothing of any annotation\'s writing in the page', () => {
+        for (const route of table.routes) {
+            const html = page(route.name);
+            // A PRELOAD LINK MAY STAND FIRST, which React emits ahead of a page holding a picture.
+            expect(html, route.name).toMatch(/<div id="root">(<link [^>]*\/>)*<!--\$--><div class="[^"]*pd-container"( style="[^"]*")?>/u);
+            // SOME PROJECTS REGISTERS THE FRAMEWORK'S OWN THEME ON ITS CLASS, D19, the bare base; every other book's sheet carries the library's font.
+            if (route.name === 'Some Projects') expect(sheetOf(html), route.name).not.toContain('font-family');
+            else expect(sheetOf(html), route.name).toContain('font-family:Georgia');
+            expect(html, route.name).not.toContain('pd-annotation');
+            expect(sheetOf(html), route.name).not.toContain('pd-annotation');
+        }
+    });
+
+    // THE CATCHWORD — Sprint 86: a Previous and a Next at the foot of every chapter, each the neighbour's title
+    // linking to its fragment, and at the ends a self-reference. Doug: "I like previous of the cover is the cover
+    // and next of the last chapter is the last chapter - I prefer self-reference to undefined."
+    it('drew at the foot of the paper\'s chapters a catchword whose Next links the next chapter and whose Previous the one before, the ends self-references', () => {
+        const argument = chapterPage('A Paper', 'The Argument');
+        expect(argument).toMatch(/<a href="\/a-paper\/#the-evidence"[^>]*><span class="pd-word pd-next pa-reference">The Evidence/u);
+        expect(argument).toMatch(/<a href="\/a-paper\/#table-of-contents"[^>]*><span class="pd-word pd-previous pa-reference">Table of Contents/u);
+        const evidence = chapterPage('A Paper', 'The Evidence');
+        expect(evidence).toMatch(/<a href="\/a-paper\/#the-evidence"[^>]*><span class="pd-word pd-next pa-reference pa-self-reference">The Evidence/u);
+        expect(evidence).toMatch(/<a href="\/a-paper\/#the-argument"[^>]*><span class="pd-word pd-previous pa-reference">The Argument/u);
+        expect(page('A Paper')).toMatch(/<a href="\/a-paper\/"[^>]*><span class="pd-word pd-previous pa-reference pa-self-reference">A Paper/u);
+    });
+
+    // PAGINATED — Sprint 86: Some Projects' chapters are pages, marked once, and the cover is the open one in the
+    // print, since the one page per book is printed at the book's address — Sprint 95's U9; the work open at its
+    // fragment is the browser's, below. Every other book is untouched.
+    it('marked Some Projects paginated, every chapter a page and the cover alone open in the print, and no other book', () => {
+        const projects = page('Some Projects');
+        expect(projects).toMatch(/class="[^"]*\bpa-paginated\b/u);
+        expect(projects.match(/class="[^"]*\bpa-page\b/gu)).toHaveLength(4);
+        expect(projects.match(/class="[^"]*\bpa-open\b/gu)).toHaveLength(1);
+        // THE CLASSES IN ANY ORDER: an annotation's class is taken back and put again at every define, so it moves.
+        expect(projects).toMatch(/class="(?=[^"]*\bpa-cover\b)(?=[^"]*\bpa-open\b)/u);
+        // THE HIDING IS PAGINATED'S OWN COMPONENT since Sprint 97's S4, no !important and no layer.
+        expect(sheetOf(projects)).toMatch(/\.pa-page:not\(\.pa-open\)\s*\{\s*display:\s*none;\s*\}/u);
+        expect(sheetOf(projects)).not.toContain('!important');
+        expect(projects).toContain('id="the-work"');
+        // THE MARKS, NOT THE SHEET: the default theme's rules for the three classes stand on every page since Sprint 88.
+        // AND THE MANUAL IS PAGINATED TOO SINCE SPRINT 93, by the explorer's own paging class.
+        for (const route of table.routes)
+            if (route.name !== 'Some Projects' && route.name !== 'The Library Reference Manual')
+                expect(page(route.name), route.name).not.toMatch(/class="[^"]*\b(?:pa-paginated|pa-page|pa-open)\b/u);
+    });
+
+    // THE EXPLORER — Sprint 93: the manual's book wears the explorer's mark, every entry of its table carries a
+    // branch, and the files the chapters append stand as leaves beneath the entries, one per file, drawn from the
+    // graph and never written into the table, which catalogues chapters and nothing else.
+    it('marked the manual explored, a branch on every entry of its table and a leaf per appended file', () => {
+        const manual = page('The Library Reference Manual');
+        expect(manual).toMatch(/class="[^"]*\bpa-explorer\b/u);
+        expect(manual.match(/class="[^"]*\bpa-branch\b/gu)).toHaveLength(8);
+        const files = found.books.find(book => book.folder === 'manual')!.resources;
+        const appended = [...files.values()].flat().filter(file => file.type === '.tsx').length;
+        expect(manual.match(/class="pd-leaf[^"]*"/gu)).toHaveLength(appended);
+        expect(manual).toMatch(/class="pd-leaf[^"]*" href="\/the-library-reference-manual\/#the-themes-file"/u);
+        expect(page('Some Projects')).not.toMatch(/\bpa-branch\b|\bpd-leaf\b/u);
+    });
+
+    // SPRINT 88 — every level marks itself and draws its element; the persona's poem is Lines; the paper's argument
+    // has a space, a break and the three basics; Libby is dark; the persona's chapters are framed. AND SINCE SPRINT 97
+    // the sheet on every page is the library's own: the base ships no sheet, no layer, no !important, no :has chain.
+    it('drew every level as its element wearing its mark, and the library\'s own sheet on every page but the bare one', () => {
+        for (const route of table.routes) {
+            const html = page(route.name);
+            expect(html, route.name).toMatch(/<div class="[^"]*\bpd-book\b/u);
+            expect(html, route.name).toMatch(/<div class="[^"]*\bpd-chapter\b/u);
+            expect(html, route.name).toMatch(/<div class="[^"]*\bpd-paragraph\b/u);
+            expect(html, route.name).toMatch(/<div[^>]*class="[^"]*\bpd-sentence\b[^"]*\bpd-title\b/u);
+            expect(html, route.name).toMatch(/<span class="[^"]*\bpd-word\b/u);
+            const sheet = sheetOf(html);
+            // THE THEME'S FIELDS ARE TEMPLATED INTO THE SHEET since Sprint 97, chemistry's own provision — Doug: "reactive
+            // properties and they are templated into the string" — and the theme's element declares nothing.
+            expect(html, route.name).not.toContain('--pd-');
+            // SOME PROJECTS IS THE BASE, D19: no rule for a level, only Paginated's own and the library's kinds undressed.
+            if (route.name === 'Some Projects') {
+                expect(sheet, route.name).not.toMatch(/\.pd-paragraph\{/u);
+            } else {
+                expect(sheet, route.name).toMatch(/\.pd-paragraph\{margin-block:1\.25rem;\}/u);
+            }
+            expect(sheet, route.name).not.toContain('@layer');
+            expect(sheet, route.name).not.toContain('!important');
+            // THE BASE'S CHAIN OF :has() IS GONE; the manual's explorer still places by one, its own and carried, Sprint 96's U9.
+            expect(sheet, route.name).not.toMatch(/:has\(> \.pa-parenthetical\)/u);
+            // AND NO STYLE OF ITS OWN ON THE PAGE since Sprint 95's U8: the sheet is a file, linked.
+            expect(html, route.name).not.toMatch(/<style[^>]*data-styled/u);
+        }
+    });
+
+    // THE SHEET IS A FILE — Sprint 95, U8, D8: named by its content, so a book's page links one file, two books with
+    // different values two, and a page carries no styles of its own; the page lighter by the sheet. One page per
+    // book since U9, so the manual's one page is what links it.
+    it('wrote each book\'s sheet once as a file named by its content, linked from the book\'s page, and the page lighter for it', () => {
+        const manual = table.routes.find(route => route.name === 'The Library Reference Manual')!;
+        expect(linked(page(manual.name))).toMatch(/^sheets\/[0-9a-f]{12}\.css$/u);
+        expect(linked(page('Libby'))).not.toBe(linked(page('The Library')));
+        expect(readdirSync(join(galley.face, 'sheets')).length).toBeLessThanOrEqual(table.routes.length);
+        // THE SHEET IS THE LIBRARY'S RULES ALONE since Sprint 97: no order statement, since there is no base sheet to order against.
+        expect(sheetOf(page('The Library'))).not.toContain('@layer');
+        // AND THE PAGES LIGHTER AGAIN BY S1, the annotations' writing no longer in them: the paper 18,280 bytes before
+        // and 12,820 after; the manual holds near 200 KB because it prints the library's own files, which grew with it.
+        expect(statSync(placeOf(galley.face, manual)).size).toBeLessThan(200 * 1024);
+        // AND HEAVIER BY THE ARRIVAL since 2026-10-11, 1,817 bytes in every page's head so a link to a chapter
+        // shows that chapter at the first paint — Doug: "Hard to feel like the links work."
+        const arrival = 1817;
+        expect(page('A Paper').length).toBeLessThan(14 * 1024 + arrival);
+        expect(page('The Library').length).toBeLessThan(13 * 1024 + arrival);
+    });
+
+    it('drew the persona\'s poem as three lines, each a div wearing the sentence\'s mark and its own', () => {
+        const persona = chapterPage('A Persona', 'Who Writes Here');
+        expect(persona.match(/<div class="[^"]*\bpd-sentence\b[^"]*\bpd-line\b[^"]*">/gu)).toHaveLength(3);
+        expect(persona).toContain('A voice Libby lent out,');
+    });
+
+    it('drew in the argument a space of three, a break, and the three basics as their elements', () => {
+        const argument = chapterPage('A Paper', 'The Argument');
+        expect(argument).toMatch(/<span class="(?=[^"]*\bpd-space\b)(?=[^"]*\bpa-blank\b)[^"]*">   </u);
+        // NOTHING WRITTEN IN IT, and nothing of its annotations' either since Sprint 97's S1: the open tag, then its close.
+        expect(argument).toMatch(/<div class="(?=[^"]*\bpd-break\b)(?=[^"]*\bpa-blank\b)[^"]*"><\/div>/u);
+        // EACH TAG WEARS ITS OWN CLASS since Sprint 95, the word inside it none of it: a basic is its tag.
+        expect(argument).toMatch(/<em class="[^"]*\bpa-emphasis pd-container"><span class="pd-word">names/u);
+        expect(argument).toMatch(/<b class="[^"]*\bpa-bold pd-container"><span class="pd-word">never/u);
+        expect(argument).toMatch(/<u class="[^"]*\bpa-underline pd-container"><span class="pd-word">place/u);
+        // BLANK IS A MARK since Sprint 97's S3: what wears it has no ink, and no rule is written for it.
+        expect(sheetOf(argument)).not.toContain('.pa-blank');
+    });
+
+    it('drew Libby dark by its own theme in front of the library\'s, and no other book dark', () => {
+        expect(sheetOf(page('Libby'))).toMatch(/color:ivory/u);
+        expect(sheetOf(page('Libby'))).toMatch(/background:#1f1f24/u);
+        for (const route of table.routes)
+            if (route.name !== 'Libby')
+                expect(sheetOf(page(route.name)), route.name).not.toContain('#1f1f24');
+    });
+
+    it('drew the frame on each of the persona\'s chapters, its border in the theme\'s ink, and Some Projects bare: the base, its chapters the framework\'s own words', () => {
+        const persona = page('A Persona');
+        expect(sheetOf(persona)).toMatch(/border:1px solid #23262a;padding:1\.25rem;margin-block:1\.25rem/u);
+        expect(persona.match(/<div class="[^"]*\bpd-container\b[^"]*"><div class="[^"]*\bpd-chapter\b/gu)).toHaveLength(4);
+        expect(sheetOf(page('Libby'))).not.toMatch(/border:1px solid [^;]*;padding:1\.25rem;margin-block:1\.25rem/u);
+        // SOME PROJECTS STANDS THE BASE ALONE since Sprint 97, B2: Paginated and the framework's Cover, Synopsis and
+        // TableOfContents, no frame, no card, no rule of a library's Format in its sheet but its own kinds' marks.
+        const projects = page('Some Projects');
+        expect(projects).not.toContain('pa-framed');
+        expect(sheetOf(projects)).not.toMatch(/\.pa-cover|\.pa-synopsis|\.pa-table-of-contents|border:/u);
+        expect(sheetOf(projects)).toMatch(/\.pa-page:not\(\.pa-open\)/u);
+    });
+});
+
+// WHAT A READER SEES — R25: the pages the bind wrote, served as the preview serves them and driven in
+// a real browser, asserting visible text and never markup. Doug: "You don't release chemistry features
+// without checking that they work."
+describe('the bound test library, seen in a real browser', () => {
+    // ONE PAGE, OPENED ONCE, AND ONLY WHAT A BROWSER ALONE CAN SAY: what shows once the theme's sheet
+    // applies, and that the page hydrates without drawing again. Doug, 2026-09-26: "You are supposed to
+    // use headless chrome to see the thing. What can't be checked a faster way?" What the markup says
+    // is read from the pages above, and a link landing on its id is the proof's.
+    let server: PreviewServer | undefined;
+    let browser: Browser | undefined;
+    let paper: Page;
+    const heard: string[] = [];
+    beforeAll(async () => {
+        server = await preview({ configFile: join(galley.binding, 'vite.config.ts'), preview: { port: 0 }, logLevel: 'silent' });
+        browser = await puppeteer.launch({ headless: true });
+        paper = await browser.newPage();
+        paper.on('console', message => heard.push(message.text()));
+        await paper.goto(new URL('/a-paper/', server.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+    });
+    afterAll(async () => {
+        await browser?.close();
+        await server?.close();
+    });
+
+    it('shows the paper\'s cover in its header, and the byline its book draws, with no annotation\'s writing showing', async () => {
+        // THE COVER'S TITLE, THEN ITS CATCHWORD — itself and the synopsis — since Sprint 86; on its own line since
+        // Sprint 88, the catchword being a paragraph and a paragraph a block.
+        expect(await paper.$eval('header', header => header.innerText.trim())).toBe('A Paper\nA Paper · Synopsis');
+        // THE BYLINE IS A PARAGRAPH, and a paragraph is a div since Sprint 88.
+        const byline = await paper.$eval('.pd-byline', paragraph => (paragraph as HTMLElement).innerText.replace(/\s+/gu, ' ').trim());
+        expect(byline).toBe('AUTHOR A Persona FILED UNDER Libraries');
+        expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
+    });
+
+    it('shows a table\'s entries and draws nothing of its parenthetical ones, which are gone from the page and not merely from the eye', async () => {
+        // PARENTHETICAL REMOVES WHAT IS DRAWN since Sprint 97's S2: the three parenthetical entries are not in the page
+        // at all; the table's own title stands as a hidden, empty element inside its self-link, so that anchor has no
+        // box; and one link to the book is shown, the table chapter's catchword's Previous, the synopsis, since Sprint 86.
+        const hidden = await paper.$$eval('nav a[href="/a-paper/"], nav a[href="/a-paper/#synopsis"], nav a[href="/a-paper/#table-of-contents"]',
+            links => links.map(link => {
+                link.scrollIntoView({ block: 'center' });
+                const box = link.getBoundingClientRect();
+                if (box.width === 0 || box.height === 0) return true;
+                const painted = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+                return painted === null || !(painted === link || link.contains(painted));
+            }));
+        expect(hidden).toEqual([true, false]);
+        expect(await paper.$$eval('nav .pa-parenthetical', entries => entries.map(entry => [entry.hasAttribute('hidden'), entry.childNodes.length]))).toEqual([[true, 0], [true, 0]]);
+        const shown = await paper.$eval('nav', nav => nav.innerText);
+        expect(shown).toContain('The Argument');
+        expect(shown).toContain('The Evidence');
+        expect(shown).not.toContain('](/');
+    });
+
+    it('hydrated the page without drawing it again', () => {
+        expect(heard.filter(said => said.includes('hydration'))).toEqual([]);
+    });
+
+    // A CHAPTER'S PAGE OPENS TURNED TO THAT CHAPTER: the book is handed the address as its bookmark and,
+    // mounted, turns to the chapter whose title means it. Doug, 2026-09-26: "it is the place where the
+    // user is (recently was) and it is a record of him being there."
+    // A WINDOW A THIRD OF THE PAPER'S HEIGHT — measured 2026-09-27: the whole paper stands in 300 pixels, the
+    // evidence's title at 113, so a window of 300 had nothing to scroll.
+    // AND A REFRESH AT THE FRAGMENT OPENS IT AGAIN — Sprint 95, A3: a direct load, a refresh and a back.
+    it('opens a chapter\'s page turned to that chapter, its title in view, and again on a refresh', async () => {
+        const evidence = await browser!.newPage();
+        await evidence.setViewport({ width: 800, height: 100 });
+        await evidence.goto(new URL('/a-paper/#the-evidence', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const turned = async (): Promise<void> => {
+            expect(await evidence.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+            const top = await evidence.$eval('#the-evidence', title => title.getBoundingClientRect().top);
+            expect(top).toBeGreaterThanOrEqual(0);
+            expect(top).toBeLessThan(100);
+        };
+        await turned();
+        await evidence.reload({ waitUntil: 'networkidle0' });
+        await turned();
+        await evidence.close();
+    });
+
+    // A CYRILLIC ADDRESS ARRIVES PERCENT-ENCODED, and the app and the arrival decode it, so the book opens
+    // turned to the chapter the fragment names and hydrates there — Sprint 109, U13.
+    it('opens a book at its Cyrillic address turned to its Cyrillic chapter, its title in view, and hydrates there', async () => {
+        const notes = await browser!.newPage();
+        const said: string[] = [];
+        notes.on('console', message => said.push(message.text()));
+        await notes.setViewport({ width: 800, height: 100 });
+        await notes.goto(new URL('/записки-библиотекаря/#о-книгах', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await notes.evaluate(() => decodeURIComponent(location.hash))).toBe('#о-книгах');
+        expect(await notes.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+        const top = await notes.$eval('#о-книгах', title => title.getBoundingClientRect().top);
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(top).toBeLessThan(100);
+        expect(await notes.$eval('#о-книгах', title => (title as HTMLElement).innerText.trim())).toBe('О книгах');
+        expect(await notes.$eval('header', header => (header as HTMLElement).innerText)).toContain('Записки библиотекаря');
+        expect(said.filter(line => line.includes('hydration'))).toEqual([]);
+        await notes.close();
+    });
+
+    // THE ROUTER — R9. Doug, 2026-09-26: "Everything needs to go through the router." A link within the book
+    // is taken in place: the address moves, the page is the same page, the book turns; back is the same
+    // route the other way.
+    it('takes a link within the book in place: the address moves, the page is not reloaded, the book turns, and back returns', async () => {
+        const paper = await browser!.newPage();
+        await paper.setViewport({ width: 800, height: 100 });
+        await paper.goto(new URL('/a-paper/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await paper.evaluate(() => { (window as unknown as { samePage: boolean }).samePage = true; });
+        await paper.click('nav a[href="/a-paper/#the-evidence"]');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await paper.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/#the-evidence');
+        expect(await paper.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
+        expect(await paper.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+        await paper.goBack();
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await paper.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/');
+        expect(await paper.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
+        await paper.close();
+    });
+
+    // A TURN COSTS ONE CLASS, NEVER A DRAW. Doug: "a change costs one paint; green without render counts is not
+    // green." Sprint 101 found every switch in his library replacing the whole book — a Format put in front
+    // through $is is a container, and a new container remounts everything under it — and nobody had counted.
+    // So the nodes are held before the turn and asked for after it: the book, its nav, every chapter, all still
+    // in the document, the open mark moved from the work to the table by its catchword, and nothing else redrawn.
+    it('turns within the book keeping every node it held: the book, the nav and each chapter stay, and the open mark alone moves', async () => {
+        const projects = await browser!.newPage();
+        await projects.goto(new URL('/some-projects/#the-work', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await projects.waitForSelector('.pa-open a[href="/some-projects/#table-of-contents"]');
+        await projects.evaluate(() => {
+            const held = [document.querySelector('.pd-book'), document.querySelector('nav'), ...document.querySelectorAll('.pd-chapter')];
+            (window as unknown as { held: (Element | null)[] }).held = held;
+            (window as unknown as { openBefore: string }).openBefore = document.querySelector('.pd-chapter.pa-open .pd-title')?.id ?? '';
+        });
+        await projects.click('.pa-open a[href="/some-projects/#table-of-contents"]');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const after = await projects.evaluate(() => {
+            const held = (window as unknown as { held: (Element | null)[] }).held;
+            return {
+                count: held.length,
+                kept: held.filter(node => node !== null && document.contains(node)).length,
+                openBefore: (window as unknown as { openBefore: string }).openBefore,
+                openAfter: document.querySelector('.pd-chapter.pa-open .pd-title')?.id ?? '',
+                chapters: document.querySelectorAll('.pd-chapter').length,
+            };
+        });
+        expect(after.count).toBeGreaterThan(2);
+        expect(after.kept, 'a node held before the turn left the document').toBe(after.count);
+        expect(after.chapters).toBe(after.count - 2);
+        expect(after.openBefore).toBe('the-work');
+        expect(after.openAfter).toBe('table-of-contents');
+        await projects.close();
+    });
+
+    // "Long distance urls to that which was mentioned also must work." A link to another book is the browser's
+    // to follow; that page's own router lands on the heading once its book has drawn.
+    it('follows a long-distance link to another book\'s heading: that page loads, turned to the heading', async () => {
+        const libby = await browser!.newPage();
+        await libby.setViewport({ width: 800, height: 100 });
+        await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await Promise.all([libby.waitForNavigation({ waitUntil: 'networkidle0' }), libby.click('a[href="/a-paper/#what-is-claimed"]')]);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await libby.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/a-paper/#what-is-claimed');
+        const top = await libby.$eval('#what-is-claimed', heading => heading.getBoundingClientRect().top);
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(top).toBeLessThan(100);
+        await libby.close();
+    });
+
+    // PAGINATED, SEEN — Doug: "I am happy to see scrolling and next/previous simple paginated chapters as an
+    // example of what can be done in the test library." One chapter shows at a time, and the catchword's
+    // Previous turns the page in place.
+    it('shows on the work\'s page the work alone, the synopsis not displayed, and its Previous turns to the table in place', async () => {
+        const projects = await browser!.newPage();
+        await projects.goto(new URL('/some-projects/#the-work', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const shown = await projects.$eval('#root', root => root.innerText);
+        expect(shown).toContain('Some chapters name nothing');
+        expect(shown).not.toContain('An ordinary book');
+        expect(await projects.$$eval('.pa-page', pages => pages.map(page => page.getClientRects().length > 0))).toEqual([false, false, false, true]);
+        await projects.evaluate(() => { (window as unknown as { samePage: boolean }).samePage = true; });
+        await projects.click('.pa-open a[href="/some-projects/#table-of-contents"]');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        expect(await projects.evaluate(() => `${location.pathname}${location.hash}`)).toBe('/some-projects/#table-of-contents');
+        expect(await projects.evaluate(() => (window as unknown as { samePage?: boolean }).samePage)).toBe(true);
+        const turned = await projects.$eval('#root', root => root.innerText);
+        expect(turned).not.toContain('Some chapters name nothing');
+        expect(turned).toContain('The Work');
+        expect(await projects.$$eval('.pa-page', pages => pages.map(page => page.getClientRects().length > 0))).toEqual([false, false, true, false]);
+        await projects.close();
+    });
+
+    // A DATE — Sprint 95, U13: Libby's Who I Am dates the day she began, a Date reading the compiler's form and
+    // drawing its said words in a time element carrying the machine date.
+    it('shows the day Libby began as a time element carrying the machine date and saying the words', async () => {
+        const libby = await browser!.newPage();
+        await libby.goto(new URL('/libby/#who-i-am', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await libby.$eval('time.pd-date', time => [time.getAttribute('datetime'), time.innerText])).toEqual(['2026-09-30', 'the last day of September']);
+        await libby.close();
+    });
+
+    // MATH AND AN EQUATION — Sprint 95, U12: the evidence holds a formula in a sentence and an equation on a line of
+    // its own, both typeset by KaTeX, the equation numbered by the sheet's counter, and KaTeX's own stylesheet, which
+    // the package names on the binder, linked in the page's head by the assembly.
+    it('shows the evidence\'s formula inline and its equation displayed and numbered, with KaTeX\'s sheet linked', async () => {
+        const evidence = await browser!.newPage();
+        await evidence.goto(new URL('/a-paper/#the-evidence', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await evidence.$eval('.pd-math .katex', formula => getComputedStyle(formula).fontFamily)).toMatch(/KaTeX/u);
+        expect(await evidence.$eval('.pd-equation .katex-display', equation => getComputedStyle(equation).display)).toBe('block');
+        expect(await evidence.$eval('.pd-equation', equation => getComputedStyle(equation, '::after').content)).toMatch(/^"\(" counter\(equation\) "\)"$/u);
+        expect(await evidence.evaluate(() => [...document.styleSheets].some(sheet => [...sheet.cssRules].some(rule => (rule as CSSStyleRule).selectorText?.includes('.katex'))))).toBe(true);
+        expect(await evidence.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"]')].map(link => link.getAttribute('href') ?? ''))).toEqual(expect.arrayContaining([expect.stringMatching(/^\/assets\/.+\.css$/u)]));
+        await evidence.close();
+    });
+
+    // A SELF-REFERENCE DRAWS WITHOUT AN UNDERLINE — the catchword's Next at the end of the paper.
+    it('shows the evidence\'s catchword: its Next a self-reference without an underline, its Previous a link with one', async () => {
+        const evidence = await browser!.newPage();
+        await evidence.goto(new URL('/a-paper/#the-evidence', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        // THE ANCHOR WEARS THE REFERENCE'S CLASS since Sprint 95's U16, so a link is found by name.
+        expect(await evidence.$eval('a.pa-self-reference', link => getComputedStyle(link).textDecorationLine)).toBe('none');
+        expect(await evidence.$eval('a.pa-reference:not(.pa-self-reference)[href="/a-paper/#the-argument"]', link => getComputedStyle(link).textDecorationLine)).toBe('underline');
+        await evidence.close();
+    });
+
+    // SPRINT 88, SEEN — Doug: "please use this primarily as a sprint to make the test library minimally readable."
+    it('shows the poem one line under another, the space three wide, the break starting a new line, and the basics styled', async () => {
+        const persona = await browser!.newPage();
+        await persona.goto(new URL('/a-persona/#who-writes-here', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const tops = await persona.$$eval('.pd-line', lines => lines.map(line => line.getBoundingClientRect().top));
+        expect(tops).toHaveLength(3);
+        // UNNUMBERED since Sprint 95's U7: the code's counter counts pd-code-line, and a poem's Lines wear pd-line alone.
+        expect(await persona.$$eval('.pd-line', lines => lines.map(line => getComputedStyle(line, '::before').content))).toEqual(['none', 'none', 'none']);
+        expect(tops[1]).toBeGreaterThan(tops[0]);
+        expect(tops[2]).toBeGreaterThan(tops[1]);
+        await persona.close();
+        const argument = await browser!.newPage();
+        await argument.goto(new URL('/a-paper/#the-argument', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await argument.$eval('.pd-space', space => space.getBoundingClientRect().width)).toBeGreaterThan(6);
+        expect(await argument.$eval('.pd-break', line => getComputedStyle(line).display)).toBe('block');
+        expect(await argument.$eval('.pa-emphasis', word => getComputedStyle(word).fontStyle)).toBe('italic');
+        expect(await argument.$eval('.pa-bold', word => getComputedStyle(word).fontWeight)).toBe('700');
+        expect(await argument.$eval('.pa-underline', word => getComputedStyle(word).textDecorationLine)).toBe('underline');
+        await argument.close();
+    });
+
+    // A LIST — Sprint 95, U11: the shelf in The Shelves is a paragraph of three Lines wearing a List, drawn as list
+    // items by the Theme's sheet, unordered, each a mark on the line's own element.
+    it('shows the shelf as a list of three items, each a line, marked and drawn as list items', async () => {
+        const shelves = await browser!.newPage();
+        await shelves.goto(new URL('/the-library/#the-shelves', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await shelves.$$eval('.pa-list .pa-item', items => items.map(item => [item.classList.contains('pd-line'), getComputedStyle(item).display]))).toEqual([[true, 'list-item'], [true, 'list-item'], [true, 'list-item']]);
+        expect(await shelves.$eval('.pa-list', list => list.classList.contains('pa-ordered'))).toBe(false);
+        expect(await shelves.$eval('.pa-list', list => list.innerText)).toContain('Libby is the book that writes the others.');
+        await shelves.close();
+    });
+
+    it('shows Libby on dark paper in ivory ink, and the paper in the library\'s ink', async () => {
+        const libby = await browser!.newPage();
+        await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await libby.$eval('.pd-book', book => getComputedStyle(book.parentElement!).backgroundColor)).toBe('rgb(31, 31, 36)');
+        expect(await libby.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(255, 255, 240)');
+        await libby.close();
+        expect(await paper.$eval('.pd-book', book => getComputedStyle(book).color)).toBe('rgb(35, 38, 42)');
+    });
+
+    // THE VISUAL LANGUAGE — Sprint 88 U9: a label above every chapter's title saying what the chapter is, drawn by
+    // the library's theme from the marks the kinds wear and suppressed where the title is already parenthetical; the
+    // byline's labels saying who wrote the book and where it stands; the running head naming the library then the
+    // book, and the library alone on its own page. Doug, 2026-09-27: "I am not sure what a cover is, or a table of
+    // contents, or a regular chapter, and it's not clear what will take me to the subject, or who is the author.
+    // Help me know where I am."
+    it('labels every chapter with what it is, the cover with who wrote it and where it stands, and the head with where the reader is', async () => {
+        const libby = await browser!.newPage();
+        await libby.goto(new URL('/libby/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const label = (selector: string): Promise<string> => libby.$eval(selector, title => getComputedStyle(title, '::before').content);
+        expect(await label('.pa-cover .pd-title')).toBe('"Autobiography"');
+        expect(await label('#who-i-am')).toMatch(/^"Chapter " counter\(chapter\)$/u);
+        // A PARENTHETICAL TITLE IS NOT DRAWN since Sprint 97's S2, so no label of it is: the element stands hidden and empty.
+        expect(await libby.$eval('#synopsis', title => [getComputedStyle(title).display, title.childNodes.length])).toEqual(['none', 0]);
+        // innerText, never textContent: a word's hidden annotations — its level's "2", a reference's url — are in textContent.
+        expect(await libby.$$eval('.pd-byline .pd-label', labels => labels.map(label => (label as HTMLElement).innerText))).toEqual(['AUTHOR', 'FILED UNDER']);
+        expect(await libby.$eval('.pd-running-head', head => (head as HTMLElement).innerText)).toBe('THE LIBRARY / LIBBY: TABLE OF CONTENTS');
+        await libby.goto(new URL('/the-library/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        expect(await libby.$eval('.pd-running-head', head => (head as HTMLElement).innerText)).toBe('THE LIBRARY: TABLE OF CONTENTS');
+        await libby.close();
+    });
+
+    // PITCHED, 2026-09-27, found in the console while driving the links: on every themed page chemistry reported "$Theme
+    // did not call $Format — every declared bond constructor on the chain must be called", since Theme's bond passed over
+    // Format's to avoid a second provider. GREEN SINCE SPRINT 97, 2026-10-02: the provider is Format's, made in Format's
+    // bond for any Format that provides, and Theme declares no bond of its own, so the chain is whole and nothing is said.
+    it('draws a themed page without chemistry reporting the theme\'s bond chain in the console', async () => {
+        const said: string[] = [];
+        const library = await browser!.newPage();
+        library.on('console', (message: { text(): string }) => { said.push(message.text()); });
+        await library.goto(new URL('/the-library/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        await library.close();
+        expect(said.filter(line => line.includes('did not call'))).toEqual([]);
+    });
+
+    // PITCHED, 2026-09-27, found by driving every link — Doug: "I clicked table of contents and of libby and I don't
+    // think either went to the right place." A chapter route within the book changes the address and the book turns
+    // by scrolling its chapter's TITLE into view; the table's title is parenthetical, which the framework hides, and
+    // a hidden element scrolls nothing. Of Libby's title was sent to Libby's book by its Synopsis, so the book finds
+    // no chapter at Of Libby's own route and turns nowhere. Both are the Book's, in .public; the promise stands as an
+    // expected failure until Doug rules the fix, and goes red the day it passes, which is the day to flip it.
+    it('turns to the table of contents and to Of Libby when their routes are taken within the library', async () => {
+        const library = await browser!.newPage();
+        await library.setViewport({ width: 900, height: 700 });
+        await library.goto(new URL('/the-library/', server!.resolvedUrls?.local[0] ?? '').href, { waitUntil: 'networkidle0' });
+        const turned = async (href: string, landmark: string): Promise<number> => {
+            await library.evaluate((at: string) => (document.querySelector(`a[href="${at}"]`) as HTMLElement).click(), href);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            return library.$eval(landmark, element => Math.round(element.getBoundingClientRect().top));
+        };
+        const table = await turned('/the-library/#table-of-contents', 'nav.pd-container');
+        expect(table).toBeGreaterThanOrEqual(0);
+        expect(table).toBeLessThan(120);
+        // OF LIBBY IS THE LAST CHAPTER, so the page ends before its top can reach the viewport's: the landing is the
+        // page's end with the title in view.
+        const ofLibby = await turned('/the-library/#of-libby', '#of-libby');
+        expect(ofLibby).toBeGreaterThanOrEqual(0);
+        expect(ofLibby).toBeLessThan(await library.evaluate(() => innerHeight));
+        expect(await library.evaluate(() => Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 1)).toBe(true);
+        await library.close();
+    });
+});
+
+// WHAT A HAND-WRITTEN PAGE CANNOT FAKE — R26: take one entry out of a table and the compiler raises
+// a fault naming the chapter, at catalogue, before anything is drawn. THE TABLE IS THE LINK AGGREGATOR,
+// Sprint 99 — Doug, 2026-10-05: "The table needs to refer to all chapters including itself… And it
+// should refer to all books." One galley for each of the two, each with one link taken out.
+describe('a bind of the test library whose catalogue\'s table leaves out a chapter of its own book', () => {
+    let broken: Galley;
+    beforeAll(() => {
+        broken = pulled();
+        const table = join(broken.library, 'library', '.table.tsx');
+        const written = readFileSync(table, 'utf8');
+        const without = written.replace(/ *<Paragraph>\r?\n *<Content>\$\[\[ \.\/Of Libby \]\]<\/Content>\r?\n *<\/Paragraph>\r?\n/u, '');
+        if (without === written) throw new Error('the library\'s table no longer writes the entry this stage takes out');
+        writeFileSync(table, without);
+    });
+    afterAll(() => { broken.remove(); });
+
+    it('fails at catalogue, naming the chapter and the reference the table owes', () => {
+        const said = printed(broken);
+        expect(said).toMatch(/^catalogue +FAILED/mu);
+        expect(said).toContain('CHAPTER-NOT-LISTED');
+        expect(said).toContain('"Of Libby" is a chapter of "The Library" and its table of contents does not refer to it');
+        expect(said).toContain('$[[ ./Of Libby ]]');
+        expect(said).not.toMatch(/^bound /mu);
+    });
+});
+
+describe('a bind of the test library whose catalogue\'s table leaves out a book of its subject', () => {
+    let broken: Galley;
+    beforeAll(() => {
+        broken = pulled();
+        const table = join(broken.library, 'library', '.table.tsx');
+        const written = readFileSync(table, 'utf8');
+        const without = written.replace(/<Word>\s*<Content>\[\[ Libby \]\]\*\*<\/Content>\s*<\/Word> /u, '');
+        if (without === written) throw new Error('the library\'s table no longer writes the answer this stage takes out');
+        writeFileSync(table, without);
+    });
+    afterAll(() => { broken.remove(); });
+
+    it('fails at catalogue, naming the book and the answer the table owes', () => {
+        const said = printed(broken);
+        expect(said).toMatch(/^catalogue +FAILED/mu);
+        expect(said).toContain('NOT-LISTED');
+        expect(said).toContain('"Libby" says its catalogue is "The Library"');
+        expect(said).toContain('[[ Libby ]]**');
+        expect(said).not.toMatch(/^bound /mu);
+    });
+});
+
+// AND WHAT ONLY THE RUNTIME CAN SAY, placed on the file that said it. The compiler reads no tag, so a
+// Synopsis written on a section is a writing that does not specify, and specify says so on the
+// chapter file its failure's code numbers — a book's contents are its chapters in file order.
+describe('a bind of the test library with a synopsis said of a section', () => {
+    let broken: Galley;
+    beforeAll(() => {
+        broken = pulled();
+        const chapter = join(broken.library, 'paper', '1-the-argument.tsx');
+        writeFileSync(chapter, readFileSync(chapter, 'utf8')
+            .replace('import { ', 'import { Synopsis, ')
+            .replace('            <Heading>[[[ What is claimed ]]]</Heading>', '            <Synopsis />\n            <Heading>[[[ What is claimed ]]]</Heading>'));
+    });
+    afterAll(() => { broken.remove(); });
+
+    it('fails at specify, on the chapter\'s own file, saying what does not specify', () => {
+        const said = printed(broken);
+        expect(said).toMatch(/^specify +FAILED/mu);
+        expect(said).toMatch(/1-the-argument\.tsx\(1,1\): error SPEC: paper — APaper \/ Chapter 3 \/ Section 1: a synopsis is said of a chapter, and this is not one/u);
+    });
+});

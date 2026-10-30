@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Library Reference Manual — the sixth sketch: a tab is a chapter</title>
+<style>
+  :root { --paper: #faf8f4; --ink: #23262a; --link: #5b2f2a; --space: 1.25rem; --size: 17px; }
+  * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--ink) 25%, transparent) transparent; }
+  html, body { height: 100%; margin: 0; }
+  body { font: var(--size)/1.7 Georgia, 'Times New Roman', serif; color: var(--ink); background: var(--paper); }
+  .app { position: fixed; inset: 0; padding: calc(var(--space) / 2) var(--space) 0; display: grid; grid-template-columns: 18rem minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: 'head head' 'table tabs' 'table page'; column-gap: var(--space); }
+  .head { grid-area: head; display: flex; align-items: baseline; justify-content: space-between; padding-bottom: calc(var(--space) / 2); border-bottom: 1px solid var(--ink); }
+  .running-head { font-size: calc(0.75 * var(--size)); letter-spacing: .12em; text-transform: uppercase; }
+  .running-head a { color: var(--link); }
+  .byline { display: flex; column-gap: calc(var(--space) / 2); align-items: baseline; }
+  .byline .label { font-size: calc(0.7 * var(--size)); letter-spacing: .15em; text-transform: uppercase; opacity: .65; }
+  .byline a { color: var(--link); }
+  .table { grid-area: table; overflow: auto; padding-top: var(--space); font-size: calc(0.9 * var(--size)); }
+  .table .label { font-size: calc(0.7 * var(--size)); letter-spacing: .15em; text-transform: uppercase; opacity: .65; margin-bottom: calc(var(--space) / 2); }
+  .table .entry { margin: calc(var(--space) / 3) 0; }
+  .table .entry::before { content: counter(entry); counter-increment: entry; display: inline-block; width: 1.5em; font-size: calc(0.7 * var(--size)); opacity: .65; }
+  .table .entry a { color: var(--link); }
+  .table .entry.open a { font-weight: bold; }
+  .table .leaf { display: block; padding-left: 1.5em; font: calc(0.8 * var(--size))/1.6 ui-monospace, monospace; color: inherit; opacity: .75; text-decoration: none; }
+  .table .leaf.open { opacity: 1; font-weight: bold; }
+  .table .leaf::before { content: '·'; margin-right: .5em; opacity: .5; }
+  .tabs { grid-area: tabs; display: flex; flex-wrap: wrap; align-items: baseline; border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, var(--paper)); }
+  .tab { display: inline-block; padding: calc(var(--space) / 4) calc(var(--space) / 2); color: var(--link); text-decoration: none; opacity: .65; border-left: 1px solid color-mix(in srgb, var(--ink) 15%, var(--paper)); }
+  .tab:first-child { padding-left: 0; border-left: 0; }
+  .tab.active { opacity: 1; color: var(--ink); box-shadow: inset 0 -2px 0 var(--link); }
+  .page { grid-area: page; overflow: auto; min-height: 0; padding-top: var(--space); }
+  .spread { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); column-gap: calc(2 * var(--space)); align-items: start; }
+  .file pre { margin: 0; font: calc(0.8 * var(--size))/1.6 ui-monospace, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .file .line { display: block; }
+  .file .line::before { content: counter(line); counter-increment: line; display: inline-block; width: 3ch; margin-right: 1.5ch; text-align: right; opacity: .4; }
+  .kw { color: var(--link); } .str { color: color-mix(in srgb, var(--ink) 70%, var(--paper)); } .fn { font-weight: bold; }
+  .prose { font-size: calc(0.9 * var(--size)); }
+  .prose h2 { font-weight: bold; font-size: calc(1.1 * var(--size)); margin: 0 0 calc(var(--space) / 2); }
+  .prose p { margin: 0 0 var(--space); }
+  a.means { color: var(--link); }
+  .catchword { grid-column: 1 / -1; font-size: calc(0.85 * var(--size)); text-align: right; border-top: 1px solid var(--ink); padding-top: calc(var(--space) / 2); margin-top: var(--space); }
+  .catchword a { color: var(--link); }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="head">
+    <div class="running-head"><a href="#">The Library</a> / The Library Reference Manual: <a href="#">Table of Contents</a></div>
+    <div class="byline"><span class="label">Author</span><a href="#">Libby</a><span class="label">Filed under</span><a href="#">Libraries</a></div>
+  </header>
+
+  <nav class="table" style="counter-reset: entry">
+    <div class="label">Contents</div>
+    <div class="entry"><a href="#">The Book</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Theme</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Masthead and the Byline</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry open"><a href="#">The Catchword</a><a class="leaf open" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Faces</a><a class="leaf" href="#">code.tsx</a></div>
+    <div class="entry"><a href="#">The Mark and the Photograph</a></div>
+    <div class="entry"><a href="#">The Explorer</a><a class="leaf" href="#">appendix.tsx</a><a class="leaf" href="#">paging.tsx</a><a class="leaf" href="#">layout.tsx</a><a class="leaf" href="#">tree.tsx</a><a class="leaf" href="#">tabs.tsx</a><a class="leaf" href="#">theme.tsx</a></div>
+  </nav>
+
+  <div class="tabs">
+    <a class="tab" href="#">The Library Reference Manual</a>
+    <a class="tab" href="#">The Theme</a>
+    <a class="tab active" href="#">The Catchword</a>
+  </div>
+
+  <div class="page">
+    <article class="spread" style="counter-reset: line">
+      <div class="file">
+<pre><span class="line"><span class="kw">import</span> { ReactNode } <span class="kw">from</span> <span class="str">'react'</span>;</span
+><span class="line"><span class="kw">import</span> { $, $Chemical } <span class="kw">from</span> <span class="str">'@dna-platform/chemistry'</span>;</span
+><span class="line"><span class="kw">import</span> { $Paragraph, $Next, $Previous } <span class="kw">from</span> <span class="str">'@dna-platform/public'</span>;</span
+><span class="line"></span
+><span class="line"><span class="kw">export class</span> <span class="fn">$PreviousTitle</span> <span class="kw">extends</span> $Previous {</span
+><span class="line">    <span class="kw">override</span> <span class="fn">write</span>(): ReactNode { <span class="kw">return this</span>.chapter?.previous.title?.name; }</span
+><span class="line">}</span
+><span class="line"></span
+><span class="line"><span class="kw">export class</span> <span class="fn">$NextTitle</span> <span class="kw">extends</span> $Next {</span
+><span class="line">    <span class="kw">override</span> <span class="fn">write</span>(): ReactNode { <span class="kw">return this</span>.chapter?.next.title?.name; }</span
+><span class="line">}</span
+><span class="line"></span
+><span class="line"><span class="kw">export class</span> <span class="fn">$Catchword</span> <span class="kw">extends</span> $Paragraph {</span
+><span class="line">    <span class="fn">$Catchword</span>(...chemicals: $Chemical[]) {</span
+><span class="line">        <span class="kw">this</span>.$Writing(...chemicals);</span
+><span class="line">        <span class="kw">this</span>.text.add(<span class="kw">this</span>, &lt;PreviousTitle /&gt;, &lt;NextTitle /&gt;);</span
+><span class="line">    }</span
+><span class="line"></span
+><span class="line">    <span class="kw">override</span> <span class="fn">write</span>(): ReactNode {</span
+><span class="line">        <span class="kw">const</span> [Previous, Next] = [...<span class="kw">this</span>.text].map(chemical =&gt; $(chemical));</span
+><span class="line">        <span class="kw">return</span> (</span
+><span class="line">            &lt;&gt;</span
+><span class="line">                &lt;Previous /&gt; · &lt;Next /&gt;</span
+><span class="line">            &lt;/&gt;</span
+><span class="line">        );</span
+><span class="line">    }</span
+><span class="line">}</span
+><span class="line"></span
+><span class="line"><span class="kw">export const</span> PreviousTitle = $($PreviousTitle);</span
+><span class="line"><span class="kw">export const</span> NextTitle = $($NextTitle);</span
+><span class="line"><span class="kw">export const</span> Catchword = $($Catchword);</span
+></pre>
+      </div>
+      <div class="prose">
+        <h2>What a catchword is</h2>
+        <p>The word at the foot of a page that anticipates the next, from the book arts. Here it is a Previous that shows the previous chapter's title and a Next that shows the next's, each linking to that chapter's route, and at the ends a self-reference to its own chapter, drawn in ink. Every chapter of every book here ends with one, and this chapter does.</p>
+        <p>The words are this file's business and not the component's. A Next draws what is written in it; the two here draw the neighbour's title instead, which is what a catchword does and a Next need not. The file is printed whole in the chapter's appendix, <a class="means" href="#">The catchword's file</a>.</p>
+      </div>
+      <div class="catchword">‹ <a href="#">The Masthead and the Byline</a> · <a href="#">The Faces</a> ›</div>
+    </article>
+  </div>
+</div>
+</body>
+</html>

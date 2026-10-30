@@ -1,0 +1,147 @@
+import { execFileSync } from 'node:child_process';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { configure, type Configuration } from '../configuration/configuration';
+import { walk } from '../inventory/walk';
+import type { Library } from '../inventory/library';
+import { catalogue, type Catalogue } from '../catalogue/catalogue';
+
+// THE TEST LIBRARY, AND HOW A TEST GETS ONE IT CAN BIND.
+//
+// Doug, 2026-09-19: "we need it to be a part of .binder, well groomed, and use for test purposes at
+// all levels." The books beside this file ARE the library — five of them, one filed under its own
+// subject, one its own author, a persona Libby vouches for, and a paper with every kind of
+// reference in it. A test that only needs to READ a library reads them where they stand, through
+// `walk(fixture, configured())`. A test that needs to BIND one needs the geometry a real library
+// has — books, a face, and the binder inside the face — and that is what `pulled` puts together: a
+// GALLEY, as a printer pulls a proof to correct before the book is bound — these books, this binder's
+// own source beside them, in a folder of their own under `.test/.galleys/`.
+//
+// UNDER THE BINDER AND NOT IN THE MACHINE'S TEMP FOLDER, because of where the packages are. This
+// binder installs nothing of its own; `vite`, `tsx` and the framework all resolve by walking UP to
+// the repository's `node_modules`, and a copy standing in the temp folder walks up to nothing.
+// Measured 2026-09-19: "Cannot find package 'vite'", from a binder that was byte-identical to this
+// one. A galley under `.test` walks up through the same folders this file does.
+//
+// NOTHING HERE IS SYNTHETIC. The books are real files a reader could open, and a galley is bound by
+// the same binder, from the same source, that binds every other library.
+export const fixture = resolve(dirname(fileURLToPath(import.meta.url)));
+export const home = resolve(fixture, '..');
+export const galleys = join(fixture, '.galleys');
+
+// THE TEST LIBRARY'S OWN CONFIGURATION, WHEREVER IT IS READ. It names its own root and its own
+// title, and never the host binder's: the first time the suite ran inside a library's copy of the
+// binder, `configure(home)` read that library's `.pubconfig`, which named a root the test library
+// does not have, and every unit suite failed at import. One setting, written once, used by the
+// unit suites here and by a galley's `.pubconfig` below.
+const settings = { root: 'The Library', title: 'The Test Library' };
+
+// AND ONE EXCLUSION: a galley is not a book of the test library, and a walk of `.test` that found
+// one would find its five books twice.
+export const configured = (): Configuration => {
+    const chosen = configure(fixture);
+
+    return {
+        ...chosen,
+        inventory: { ...chosen.inventory, root: settings.root, exclude: [...chosen.inventory.exclude, '.galleys'] },
+        rendering: { ...chosen.rendering, title: settings.title },
+    };
+};
+
+// THE TEST LIBRARY READ WHERE IT STANDS — what a unit suite starts from.
+export const read = (): { chosen: Configuration; found: Library; card: Catalogue } => {
+    const chosen = configured();
+    const found = walk(fixture, chosen);
+
+    return { chosen, found, card: catalogue(found, chosen) };
+};
+
+export type Galley = { root: string; library: string; face: string; binding: string; remove(): void };
+
+// WHAT THE BINDER'S SOURCE IS, as opposed to what a bind leaves behind or a package manager installs
+// — and never `.test` itself, so a galley does not carry a galley.
+const source = (from: string): boolean =>
+    !/[\\/](node_modules|\.test|application[\\/]books)([\\/]|$)|[\\/]\.(graph|manifest)\.json$|[\\/]\.shell\.html$|[\\/]application[\\/](books|routes|stylesheets)\.ts$/u.test(from);
+
+// COPIED FILE BY FILE, because the galley stands inside the binder it is a copy of, and `cpSync`
+// refuses a folder whose destination is under its source before it ever asks the filter. A walk
+// that never enters `.test` has no self to copy into.
+const copied = (from: string, into: string): void => {
+    mkdirSync(into, { recursive: true });
+    for (const entry of readdirSync(from, { withFileTypes: true })) {
+        const at = join(from, entry.name);
+        if (!source(at)) continue;
+        if (entry.isDirectory()) copied(at, join(into, entry.name));
+        else cpSync(at, join(into, entry.name));
+    }
+};
+
+export const pulled = (): Galley => {
+    mkdirSync(galleys, { recursive: true });
+    const root = mkdtempSync(join(galleys, 'library-'));
+    const library = join(root, 'library');
+    const face = join(library, '.public');
+    const binding = join(face, '.binding');
+
+    for (const entry of readdirSync(fixture, { withFileTypes: true }))
+        if (entry.isDirectory() && entry.name !== '.galleys') cpSync(join(fixture, entry.name), join(library, entry.name), { recursive: true });
+    copied(home, binding);
+    writeFileSync(join(binding, '.pubconfig'), `${JSON.stringify({ inventory: { root: settings.root }, rendering: { title: settings.title } }, null, 2)}\n`);
+
+    return { root, library, face, binding, remove: (): void => rmSync(root, { recursive: true, force: true }) };
+};
+
+// A STAGED LIBRARY, BOUND — the whole binder run over it, with any words the binder takes, `fresh` among
+// them, and what it printed handed back.
+//
+// WITHOUT THE TEST RUNNER'S `NODE_ENV`. Vitest sets it to `test`; a bind decides for itself what
+// each phase runs as, and the prerender's children insist on `production`.
+export const bound = (galley: Galley, words: string[] = []): string => {
+    const { NODE_ENV: _, ...environment } = process.env;
+
+    return execFileSync('npx', ['tsx', 'binding.ts', ...words], { cwd: galley.binding, encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'pipe'], env: environment });
+};
+
+// THE SAME LIBRARY, LARGER: one of its books copied N times under N names, each listed where the
+// specification requires. Doug: "we need scale." A duplicated book keeps its chapters, its
+// references and its shape, so what is measured over a thousand of them is the compiler over a
+// thousand real books rather than over a thousand stubs.
+export type Copies = { of: string; name: string; subject: string };
+
+export const duplicated = (galley: Galley, copies: Copies, count: number): string[] => {
+    const named: string[] = [];
+    const at = (folder: string): string => join(galley.library, folder);
+    // THE ROW IS FOUND BY THE HALF THAT NAMES THE BOOK, `[[ name ]]**`, since Sprint 88 gave every
+    // row words apart from the name in its other half — measured 2026-09-28: an exact match of the
+    // whole row had not matched since, and the performance project had been red unrun.
+    const listing = (table: string, name: string, rows: string[]): void => {
+        const lines = readFileSync(table, 'utf8').split('\n');
+        const at = lines.findIndex(line => line.includes(`[[ ${name} ]]**`));
+        if (at === -1) throw new Error(`${table} does not list ${name}, so there is nowhere to list its copies after`);
+        lines.splice(at + 1, 0, ...rows);
+        writeFileSync(table, lines.join('\n'));
+    };
+
+    // A CATALOGUE'S ROW ANSWERS FOR A BOOK, which `catalogue/wellformed.ts` requires of every
+    // catalogued book, AND REFERS TO ITS SYNOPSIS, as the test library's own rows do.
+    const row = (name: string): string => `            <Paragraph><Word><Content>[[ ${name} ]]**</Content></Word> <Word><Content>$[[ ${name} / Synopsis ]]</Content></Word></Paragraph>`;
+    const rows: string[] = [];
+    for (let k = 1; k <= count; k++) {
+        const name = `${copies.name} ${k}`;
+        const folder = `${copies.of}-${k}`;
+        cpSync(at(copies.of), at(folder), { recursive: true });
+        for (const file of ['.cover.tsx', '.synopsis.tsx', '.table.tsx'])
+            writeFileSync(join(at(folder), file), readFileSync(join(at(folder), file), 'utf8').split(copies.name).join(name));
+        // A COPY NAMES NO PLACES. The original's headings are mentions because another book hops to
+        // them; nobody hops to a copy's, and a mention nobody spends is refused — so a copy's chapters
+        // keep the headings as plain words. Measured 2026-09-28: 400 UNREFERENCED-MENTION over 200 copies.
+        for (const file of readdirSync(at(folder)).filter(one => /^\d/u.test(one) && one.endsWith('.tsx')))
+            writeFileSync(join(at(folder), file), readFileSync(join(at(folder), file), 'utf8').replace(/\[\[\[\s*([^\]\n]*?)\s*\]\]\]/gu, '$1'));
+        rows.push(row(name));
+        named.push(name);
+    }
+    listing(join(at(copies.subject), '.table.tsx'), copies.name, rows);
+
+    return named;
+};

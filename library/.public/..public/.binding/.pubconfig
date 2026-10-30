@@ -1,0 +1,20 @@
+{
+  "inventory": {
+    "root": "Inexplicable Phenomena"
+  },
+  "rendering": {
+    "title": "Inexplicable Phenomena",
+    "budget": 2,
+    "parallel": 1
+  },
+  "resolution": {
+    "base": "/inexplicable-phenomena/"
+  },
+  "manifest": {
+    "origin": "../../package/.binding"
+  },
+  "specification": {
+    "batch": 4,
+    "parallel": 2
+  }
+}

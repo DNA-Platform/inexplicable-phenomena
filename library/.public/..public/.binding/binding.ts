@@ -1,0 +1,326 @@
+import { createHash } from 'node:crypto';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { imageTypes } from './inventory/filenames';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { configuration } from './vite.config';
+import { configure, type Configuration } from './configuration/configuration';
+import { walk } from './inventory/walk';
+import { misaccounted } from './inventory/accounting';
+import { around, problem, type Library } from './inventory/library';
+import { catalogue, type Catalogue } from './catalogue/catalogue';
+import { holds } from './catalogue/holds';
+import type { Table } from './resolution/addresses';
+import { assemble } from './assembly/book';
+import { books } from './assembly/books';
+import { routes } from './assembly/routes';
+import { stylesheets } from './assembly/stylesheets';
+import { specifying } from './specification/specifying';
+import { placesOf } from './children';
+import { running } from './specification/running';
+import { proof } from './specification/proof';
+import { graph, type Graph } from './manifest/graph';
+import { keepable, rendering, type Drawing, type Drawn, type Kept } from './rendering/rendering';
+import { manifest, type Manifest, type Page } from './manifest/manifest';
+import { removal } from './manifest/removal';
+import { bundling } from './bundling/bundling';
+import type { App, Chunk, Shared } from './manifest/manifest';
+
+// THE BINDER IS A COMPILER: a sequence of named tasks, each run in order, each saying what it
+// did, the sequence stopping at the first that fails. `tsx binding.ts` runs them all;
+// `tsx binding.ts assemble specify` runs a subset, in this order, for a person debugging one.
+// `tsx binding.ts fresh` keeps nothing from the last bind: every book is read and every page drawn and
+// the records written anew, which was two files deleted by hand before every measurement until
+// 2026-10-17. From a copy, `npm run build -- fresh`, so the sync runs first.
+//
+// RESOLVE NO LONGER FOLLOWS SPECIFY. It used to: a book was named by its own title, and a title was
+// a thing a RUNNING book answered, so every book had to be assembled and loaded before any of them
+// could be named. `catalogue/reading.ts` answers the same question off the source in a tenth of a
+// second, so the catalogue phase names and addresses every book before a line is assembled, and
+// `resolve` takes the table rather than rebuilding it — and now runs BEFORE it, which is what the
+// change was for: `specify` loads books through vite, and vite cannot scan an entry whose
+// `application/routes.ts` has not been written yet. The old order made that file a thing a previous
+// bind had left lying there.
+
+type State = {
+    binding: string;
+    face: string;
+    library: string;
+    scope: string[];
+    fresh: boolean;
+    chosen?: Configuration;
+    found?: Library;
+    held?: Catalogue;
+    graph?: Graph;
+    table?: Table;
+    previous?: Manifest;
+    assembled: string[];
+    written: string[];
+    bundled: string[];
+    rendered: string[];
+    drawn: Drawn[];
+    pages: Record<string, Page>;
+    chunks: Record<string, Chunk>;
+    shared?: Shared;
+    app?: App;
+};
+
+type Task = { name: string; run: (state: State) => Promise<string> | string };
+
+const need = <T,>(held: T | undefined, task: string): T => {
+    if (held === undefined) throw new Error(`${task} needs an earlier task to have run first`);
+    return held;
+};
+
+const plural = (n: number, one: string): string => `${n} ${one}${n === 1 ? '' : 's'}`;
+// WHAT A STAGE SAYS OF ITS CHILDREN: how many, how many at once when more than one, and the most one held.
+const children = (n: number): string => `${n} ${n === 1 ? 'child' : 'children'}`;
+const atOnce = (n: number): string => (n > 1 ? `, ${n} at once` : '');
+const peaked = (peak: number, heaviest?: { address: string; rss: number }): string =>
+    (peak > 0 ? ` · peak ${peak} MB in a child${heaviest === undefined ? '' : `, ${heaviest.rss} MB after ${heaviest.address}`}` : '');
+
+export const tasks: Task[] = [
+    { name: 'configure', run: state => { state.chosen = configure(state.binding); return `${plural(Object.keys(state.chosen).length, 'section')} read from .pubconfig`; } },
+    { name: 'inventory', run: state => {
+        const chosen = need(state.chosen, 'inventory');
+        state.found = walk(state.library, chosen);
+        if (state.found.books.length === 0) throw new Error(`${state.library} holds no book — a folder carrying a .book.tsx`);
+        const wrong = misaccounted(state.found, chosen);
+        if (wrong.length) {
+            for (const one of wrong) console.error(problem(one));
+            throw new Error(`${plural(wrong.length, 'file')} not accounted for`);
+        }
+
+        return `${plural(state.found.books.length, 'book')}: ${state.found.books.map(book => book.folder).join(', ')}`;
+    } },
+    // THE LIBRARY HELD TO ITS OWN SPECIFICATION, BEFORE A LINE OF IT IS BUILT. Doug, 2026-09-18:
+    // "I want compiled validation on library integrity." So it is a phase and not a probe, and it
+    // stands HERE — after the inventory and before anything is assembled — because a library that
+    // does not hold together should not cost a bundle to find that out.
+    //
+    // THE SAME MACHINERY THE DEV SERVER RUNS. `holds` is what the `binding:holds` plugin asks on
+    // every dot-chapter transform, and the `references` plugin resolves every file's prose the same
+    // way in the bundle as in the dev server. Doug: "We should get errors in the non-incremental
+    // part of the compiler which should use machinery for the incremental one, in production."
+    //
+    // AND IT IS ONE QUESTION WITH ONE ANSWER. `holds` carries both the rules and the order they are
+    // asked in, so this task and the `binding:holds` plugin cannot come to differ about what a
+    // library is — which is the fault this whole sprint is about.
+    { name: 'catalogue', run: state => {
+        const found = need(state.found, 'catalogue');
+        state.held = catalogue(found, need(state.chosen, 'catalogue'));
+        const wrong = holds(found, state.held);
+        if (wrong.length) {
+            for (const one of wrong) console.error(problem(one));
+            throw new Error(`the library does not hold together — ${plural(wrong.length, 'fault')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
+        }
+        // AND WHERE EVERYTHING STANDS, WRITTEN FOR THE CHILDREN, once the library holds and before any
+        // child opens — Sprint 112, D1.
+        writeFileSync(placesOf(state.binding), JSON.stringify(state.held.places), 'utf8');
+
+        return `${plural(state.held.keys().length, 'key')} · every reference resolves · every book reaches the library and the author`;
+    } },
+    { name: 'assemble', run: state => {
+        const found = need(state.found, 'assemble');
+        state.previous = state.fresh ? manifest.empty() : manifest.read(state.binding);
+        state.assembled = found.books.map(book => assemble(state.face, book));
+        state.written = [books(state.binding, found), stylesheets(state.binding, need(state.chosen, 'assemble'))];
+        return `${plural(state.assembled.length, 'book module')}, the index, the stylesheets`;
+    } },
+    // THE TABLE THE CATALOGUE ALREADY BUILT, rather than one resolved a second time from the graph.
+    //
+    // THIS IS THE INVERSION AT THE BOTTOM OF SPRINT 77'S FAILURES: the compiler was asking the
+    // RUNTIME what the books are called. A book was named by its own title, a title was a thing a
+    // running book answered, so `resolve` had to wait for `specify` — and when the reference
+    // transform started lowering titles into links, every name the compiler got back was
+    // `[Dougs Library](/dougs-library/)` and `.pubconfig` could not find the book it names as root.
+    //
+    // A NAME IS A THING THE SOURCE SAYS. `catalogue/reading.ts` answers it in a tenth of a second
+    // with nothing loaded, and the catalogue phase has already resolved the whole table from it. So
+    // this task stopped resolving and started taking, and `resolve` no longer depends on `specify`.
+    { name: 'resolve', run: state => {
+        state.table = need(state.held, 'resolve').table;
+        state.written.push(routes(state.binding, state.table));
+        return state.table.routes.map(route => `${route.name} → ${route.address} and ${plural(route.chapters.length, 'chapter')}`).join(' · ');
+    } },
+    { name: 'specify', run: async state => {
+        const found = need(state.found, 'specify');
+        const scope = state.scope.length ? state.scope : found.books.map(book => book.folder);
+        const verdict = await specifying(state.binding, found, scope, state.fresh ? graph.empty() : graph.read(state.binding), need(state.chosen, 'specify'));
+        state.graph = graph.write(state.binding, verdict.held);
+        // EACH BOOK AGAINST ITS OWN SPECIFICATION, and nothing here about the library.
+        //
+        // `specification/library.test.ts` USED TO RUN HERE and has been retired. It asked what makes
+        // a library a library — over the GRAPH the last build wrote, after loading every book — and
+        // it asked it in terms of TYPES: catalogued by a book carrying `Catalogue`, authored by one
+        // carrying `Autobiography`. Doug replaced that model on 2026-09-18: "we don't have types like
+        // autobiography at this level." The `catalogue` phase now asks the same question off the
+        // SOURCE, in a hundredth of a second, with nothing loaded — and a library with two answers to
+        // what makes it a library is the rule-with-two-homes fault at the top of the whole design.
+        const wrong = verdict.failures;
+        if (wrong.length) {
+            for (const one of wrong) console.error(problem(one));
+            throw new Error(`the library does not specify — ${plural(wrong.length, 'failure')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
+        }
+        const kept = state.graph.books.reduce((total, one) => total + one.walked, 0);
+        return `${plural(verdict.loaded.length, 'book')} read${verdict.children ? ` in ${children(verdict.children)}${atOnce(verdict.atOnce)}` : ''} · ${verdict.unchanged.length} unchanged · ${plural(verdict.walked, 'writing')} specified (${kept} recorded)${peaked(verdict.peak)}`;
+    } },
+    // THE BUNDLE KEPT BY BOOK — Sprint 112, on Doug's "We can't have an every build cost of 19 min": the stale
+    // books' chunks built together, the kept ones kept, the shared entries and the app built only when theirs
+    // changed, the shell written here with its import map. A bind where nothing changed builds nothing.
+    { name: 'bundle', run: async state => {
+        const found = need(state.found, 'bundle');
+        const bundled = await bundling(state.binding, state.face, need(state.chosen, 'bundle'), found, need(state.graph, 'bundle'), need(state.previous, 'bundle'), () => configuration({ isPreview: false }));
+        state.bundled = bundled.bundled;
+        state.chunks = bundled.chunks;
+        state.shared = bundled.shared;
+        state.app = bundled.app;
+        return `${plural(bundled.built.length, 'book')} built${bundled.builds > 1 ? ` in ${bundled.builds} builds` : ''} · ${bundled.keptChunks} kept · the shared ${bundled.sharedBuilt ? 'built' : 'kept'} · the app ${bundled.appBuilt ? 'built' : 'kept'} · ${plural(state.bundled.length, 'file')} under assets/`;
+    } },
+    // ONLY THE PAGES WHOSE BOOKS CHANGED ARE DRAWN, and the rest are written again from what the last
+    // bind kept of them — Sprint 109, D11, on Doug's "If the binder doesn't work on ones most recently
+    // changed, how will it ever possibly work?" A page is stale when its book's digest, the one specify
+    // keeps, is not the one it was drawn at; when the addresses its book refers to lead elsewhere than
+    // they did, read off the catalogue, so a book renamed redraws every page that links to it; or when
+    // its kept markup is gone. A kept page costs a read and a write; a stale page costs a draw, in a
+    // child bounded by the rendering's budget.
+    { name: 'render', run: async state => {
+        const table = need(state.table, 'render');
+        const held = need(state.held, 'render');
+        const found = need(state.found, 'render');
+        const chosen = need(state.chosen, 'render');
+        const previous = need(state.previous, 'render');
+        const digests = new Map(need(state.graph, 'render').books.map(entry => [entry.folder, entry.digest]));
+        const byFolder = new Map(found.books.map(book => [book.folder, book]));
+        // THE ROOT'S ADDRESS COMES FROM THE CATALOGUE, which is the one place that knows what a name
+        // stands at. The route table holds a path; the catalogue holds the URL a reader arrives at.
+        const root = table.root === undefined ? undefined : { name: table.root.name, address: held.where(table.root.name) ?? table.root.address };
+        const references = (folder: string): string => {
+            const hash = createHash('sha256');
+            const leads = held.structure.mentions.filter(one => one.book === folder).map(one => {
+                const key = held.structure.spells(one.name, folder);
+                return `${key} → ${held.where(key) ?? ''}`;
+            });
+            for (const lead of [...new Set(leads)].sort()) hash.update(lead);
+            return hash.digest('hex').slice(0, 16);
+        };
+        const sourceBytes = (folder: string): number => {
+            const book = byFolder.get(folder);
+            return book === undefined ? 0 : book.files.reduce((total, file) => total + statSync(join(book.path, file)).size, 0);
+        };
+        // AND THE BINDER THAT DREW THE PAGE IS AN INPUT TO IT: a page drawn by an older draw, template or
+        // app is stale however its book stands, since the markup it kept is that binder's.
+        const binder = binderDigest(state.binding);
+        const stale: Drawing[] = [];
+        const kept: Kept[] = [];
+        const pages: Record<string, Page> = {};
+        for (const route of table.routes) {
+            const digest = digests.get(route.folder) ?? '';
+            const before = previous.pages[route.address];
+            const holds = before !== undefined && before.folder === route.folder && before.digest === digest
+                && before.references === references(route.folder) && before.binder === binder && keepable(state.binding, before);
+            if (holds) {
+                kept.push({ address: route.address, kept: before });
+                pages[route.address] = before;
+            } else stale.push({ address: route.address, bytes: sourceBytes(route.folder) });
+        }
+        // ONE PAGE PER BOOK, every chapter in its print, each a fragment of it — Sprint 95, D1.
+        const rendered = await rendering(state.binding, chosen, stale, kept, root);
+        for (const one of rendered.drawn) {
+            const folder = table.routes.find(route => route.address === one.address)?.folder ?? '';
+            pages[one.address] = { folder, digest: digests.get(folder) ?? '', references: references(folder), binder, sheet: one.sheet, markup: one.markup };
+        }
+        state.pages = pages;
+        state.rendered = rendered.pages;
+        state.drawn = rendered.drawn;
+        // AND EVERY PICTURE ACCOMPANYING A CHAPTER PLACED IN THE FACE beside its book's pages, at the
+        // address its Append names, `/<folder>/<file>` — copied, never bundled, so the address is a
+        // page's and not a dev server's. Sprint 89.
+        const face = join(state.binding, '..');
+        const pictures = found.books.flatMap(book => [...book.resources.values()].flat()
+            .filter(one => imageTypes.includes(one.type))
+            .map(one => { mkdirSync(join(face, book.folder), { recursive: true }); copyFileSync(join(book.path, one.file), join(face, book.folder, one.file)); return `${book.folder}/${one.file}`; }));
+        return `${plural(rendered.drawn.length, 'page')} drawn in ${children(rendered.batches)}${atOnce(rendered.atOnce)} · ${kept.length} kept · ${plural(pictures.length, 'picture')}${peaked(rendered.peak, rendered.heaviest)}`;
+    } },
+    { name: 'proof', run: state => {
+        // RUNNABLE ON ITS OWN. `tsx binding.ts proof` reads the pages the last binding wrote, so a
+        // person checking one page does not pay for a bundle to find out.
+        const pages = state.rendered.length ? state.rendered : manifest.read(state.binding).rendered;
+        const wrong = proof(state.face, pages, need(state.chosen, 'proof').resolution.base);
+        if (wrong.length) {
+            // THE RECORD KEEPS WHAT PROVED. Sprint 118, D5, on the night Sprint 117 lost a render of 3,204 s to
+            // three headings: every page the proof passed is recorded as drawn, and a page it refused is left
+            // unrecorded, so the next bind draws that page alone; the bind is refused all the same. Only after a
+            // render of this bind, since a proof run on its own has nothing new to record.
+            if (state.rendered.length > 0 && state.previous !== undefined) {
+                const refused = new Set(wrong.map(one => one.at));
+                const dropped = new Set(state.drawn.filter(one => refused.has(one.page)).map(one => one.address));
+                const passed = Object.fromEntries(Object.entries(state.pages).filter(([address]) => !dropped.has(address)));
+                console.error(`${recorded(state, passed, state.rendered.filter(page => !refused.has(page)))} · ${plural(dropped.size, 'refused page')} left unrecorded`);
+            }
+            for (const one of wrong) console.error(problem(one));
+            throw new Error(`the pages are not readable — ${plural(wrong.length, 'fault')} in ${[...new Set(wrong.map(one => one.at))].join(', ')}`);
+        }
+        return `${plural(pages.length, 'page')} read back as the browser will build them`;
+    } },
+    { name: 'record', run: state => recorded(state, state.pages, state.rendered) },
+];
+
+// WHAT A BIND LEAVES BEHIND, for the pages it is given: the manifest from the bind's state, the files the source
+// no longer writes removed, and the markup of no page the manifest names gone with them, so `.pages/` holds
+// exactly what the manifest names. The record's own, and the proof's for the pages that passed when one did not.
+const recorded = (state: State, pages: Record<string, Page>, rendered: string[]): string => {
+    const previous = need(state.previous, 'record');
+    const current = manifest.write(state.binding, { assembled: state.assembled, written: state.written, rendered, bundled: state.bundled, pages, chunks: state.chunks, shared: state.shared, app: state.app });
+    const gone = removal(state.face, previous, current);
+    const named = new Set(Object.values(pages).map(one => one.markup));
+    const orphaned = Object.values(previous.pages).map(one => one.markup).filter(markup => !named.has(markup));
+    for (const markup of orphaned) rmSync(join(state.binding, markup), { force: true });
+    return `manifest written${gone.length ? ` · removed ${plural(gone.length, 'file')} the source no longer writes` : ''}`;
+};
+
+// WHAT OF THE BINDER ITSELF A PAGE IS DRAWN WITH, as bytes: the draw, the page's template with its
+// arrival script, and the app a page hydrates with. A page kept across a change to any of these would
+// be an older binder's page.
+const binderDigest = (binding: string): string => {
+    const hash = createHash('sha256');
+    const files = ['rendering/draw.ts', 'rendering/page.ts', 'rendering/arrival.ts', 'rendering/dom.ts', 'application/main.tsx', 'application/opened.ts'];
+    for (const file of files) {
+        const at = join(binding, file);
+        hash.update(file).update(existsSync(at) ? readFileSync(at) : 'gone');
+    }
+    return hash.digest('hex').slice(0, 16);
+};
+
+export const bind = async (binding: string, only: string[] = [], scope: string[] = [], fresh = false): Promise<State> => {
+    const { face, library } = around(binding);
+    const state: State = { binding, face, library, scope, fresh, assembled: [], written: [], bundled: [], rendered: [], drawn: [], pages: {}, chunks: {} };
+    const unknown = only.filter(name => !tasks.some(task => task.name === name));
+    if (unknown.length) throw new Error(`no such task: ${unknown.join(', ')} — the tasks are ${tasks.map(task => task.name).join(', ')}`);
+    const chosen = only.length ? tasks.filter(task => only.includes(task.name)) : tasks;
+    const started = Date.now();
+    for (const task of chosen) {
+        const at = Date.now();
+        process.stdout.write(`${task.name.padEnd(10)} `);
+        try {
+            const said = await task.run(state);
+            console.log(`${said} (${((Date.now() - at) / 1000).toFixed(1)}s)`);
+        } catch (error) {
+            console.log(`FAILED (${((Date.now() - at) / 1000).toFixed(1)}s)`);
+            console.error(String((error as Error).message ?? error));
+            process.exitCode = 1;
+            return state;
+        }
+    }
+    console.log(`bound ${state.library} in ${((Date.now() - started) / 1000).toFixed(1)}s`);
+    return state;
+};
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    const said = process.argv.slice(2);
+    const names = tasks.map(task => task.name);
+    // A WORD IS A TASK, A BOOK'S FOLDER, OR `fresh`.
+    const words = ['fresh'];
+    await bind(dirname(fileURLToPath(import.meta.url)), said.filter(one => names.includes(one)), said.filter(one => !names.includes(one) && !words.includes(one)), said.includes('fresh'));
+}
