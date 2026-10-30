@@ -2,8 +2,13 @@
   "books": [
     {
       "folder": "..inexplicable-phenomena",
-      "digest": "a905ed519edd21f5",
-      "walked": 40
+      "digest": "dd6fdb1cfeab98bc",
+      "walked": 43
+    },
+    {
+      "folder": ".design",
+      "digest": "07edf87c1cb8f77d",
+      "walked": 31
     },
     {
       "folder": ".manual",

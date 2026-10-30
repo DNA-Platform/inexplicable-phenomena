@@ -53,6 +53,13 @@ export default () => (
                     <Content>$[[ the least the library needs to bind ]]( The Manual / Synopsis )</Content>
                 </Word>
             </Paragraph>
+            <Paragraph>
+                <Word>
+                    <Content>[[ The Design ]]**</Content>
+                </Word> <Word>
+                    <Content>$[[ sketches of how the library might look, committed to nothing ]]( The Design / Synopsis )</Content>
+                </Word>
+            </Paragraph>
         </Section>
     </Chapter>
 );
