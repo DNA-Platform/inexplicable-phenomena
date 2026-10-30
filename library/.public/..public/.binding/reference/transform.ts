@@ -75,7 +75,7 @@ export const transforming = (code: string, file: string, catalogue: Directory, b
         const one = book?.resources.get(basename(file))?.find(each => each.identifier === named.identifier && each.type === named.type);
         if (book === undefined || one === undefined) return undefined;
 
-        return imageTypes.includes(one.type) ? `/${book.folder}/${one.file}` : textOf(join(book.path, one.file));
+        return imageTypes.includes(one.type) ? `${catalogue.base}${book.folder}/${one.file}` : textOf(join(book.path, one.file));
     };
     // WHERE THIS FILE STANDS, because `$[[ ./The Sheet ]]` means the chapter of the book it is written
     // in. The scope is the one thing a reference cannot carry and the place it stands always knows.

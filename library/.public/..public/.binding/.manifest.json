@@ -80,13 +80,13 @@
     "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
     "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
     "assets/books/4-the-faces~code-DSxOPP-Q.js",
-    "assets/books/design-CH8ydGj_.js",
+    "assets/books/design-DmqAvnjm.js",
     "assets/books/inexplicable-phenomena-BQMI0gSv.js",
-    "assets/books/manual-GeVz4nov.js",
+    "assets/books/manual-yTaUkOrW.js",
     "assets/books/mathematics-DjtKGX2v.js",
     "assets/books/team-Isfuq3P1.js",
     "assets/index-CP4cPyka.css",
-    "assets/index-DVQpx2DX.js",
+    "assets/index-Y5WMumIX.js",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
     "assets/shared/at-dna-platform-chemistry-Dnqvott5.js",
@@ -134,7 +134,7 @@
     },
     "/the-design": {
       "folder": ".design",
-      "digest": "07edf87c1cb8f77d",
+      "digest": "23607db2b6d39596",
       "references": "e4e830da8171ac4a",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/89d385d8c937.css",
@@ -143,7 +143,7 @@
   },
   "chunks": {
     "..inexplicable-phenomena": {
-      "digest": "1a87cbf7782f0f14",
+      "digest": "71c3d5490f798e63",
       "entry": "assets/books/inexplicable-phenomena-BQMI0gSv.js",
       "files": [
         "assets/books/4-the-faces~code-DSxOPP-Q.js",
@@ -188,11 +188,59 @@
         ]
       }
     },
-    ".manual": {
-      "digest": "2dd55aec30a540be",
-      "entry": "assets/books/manual-GeVz4nov.js",
+    ".design": {
+      "digest": "383baa8b3b27dc87",
+      "entry": "assets/books/design-DmqAvnjm.js",
       "files": [
-        "assets/books/manual-GeVz4nov.js"
+        "assets/books/4-the-faces~code-DSxOPP-Q.js",
+        "assets/books/design-DmqAvnjm.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Book",
+          "$Cover",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "Append",
+          "Author",
+          "Chapter",
+          "Content",
+          "Heading",
+          "Image",
+          "Means",
+          "Paragraph",
+          "Parenthetical",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
+    },
+    ".manual": {
+      "digest": "907e8a6d1c1ec59b",
+      "entry": "assets/books/manual-yTaUkOrW.js",
+      "files": [
+        "assets/books/4-the-faces~code-DSxOPP-Q.js",
+        "assets/books/manual-yTaUkOrW.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -236,7 +284,7 @@
       }
     },
     ".mathematics": {
-      "digest": "be0b66064ca7c5e7",
+      "digest": "f74398992468626f",
       "entry": "assets/books/mathematics-DjtKGX2v.js",
       "files": [
         "assets/books/4-the-faces~code-DSxOPP-Q.js",
@@ -282,7 +330,7 @@
       }
     },
     ".team": {
-      "digest": "b8ff28d32a078c8f",
+      "digest": "fba6a22416ce90ba",
       "entry": "assets/books/team-Isfuq3P1.js",
       "files": [
         "assets/books/4-the-faces~code-DSxOPP-Q.js",
@@ -327,56 +375,10 @@
           "css"
         ]
       }
-    },
-    ".design": {
-      "digest": "8355aeb74285a804",
-      "entry": "assets/books/design-CH8ydGj_.js",
-      "files": [
-        "assets/books/design-CH8ydGj_.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Book",
-          "$Cover",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "Append",
-          "Author",
-          "Chapter",
-          "Content",
-          "Heading",
-          "Image",
-          "Means",
-          "Paragraph",
-          "Parenthetical",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
     }
   },
   "shared": {
-    "digest": "374ed802a75b5f57",
+    "digest": "f3c058a526cba267",
     "map": {
       "@dna-platform/chemistry": "assets/shared/at-dna-platform-chemistry-Dnqvott5.js",
       "@dna-platform/public": "assets/shared/at-dna-platform-public-BfkziUKt.js",
@@ -400,7 +402,7 @@
     ]
   },
   "app": {
-    "digest": "7f920d0e06d17530",
+    "digest": "481ec749ba87cbbf",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -462,7 +464,7 @@
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
       "assets/index-CP4cPyka.css",
-      "assets/index-DVQpx2DX.js"
+      "assets/index-Y5WMumIX.js"
     ],
     "bindings": {
       "@dna-platform/chemistry": [
@@ -482,6 +484,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-DVQpx2DX.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-Y5WMumIX.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }

@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { fixture, read } from '../.test/galleys';
+import { catalogue } from '../catalogue/catalogue';
 import { missing, rawModule, references, transforming } from './transform';
 
 // WHAT THE TRANSFORM WRITES INTO A READER'S PROSE, which is the one thing in the compiler that edits
@@ -9,7 +10,22 @@ import { missing, rawModule, references, transforming } from './transform';
 // is given, the words it keeps, the url a mention is given for the place it makes, and what it raises
 // when a name is not the library's. And what never comes out: a component, since the compiler knows none — Doug,
 // 2026-09-24: "The compiler ALWAYS should give: `[text](identifier)`."
-const { found, card } = read();
+const { chosen, found, card } = read();
+
+// UNDER A BASE, A PICTURE'S ADDRESS IS WRITTEN FROM IT AS A PAGE'S IS. Sprint 119, B51: the public library bound
+// under /inexplicable-phenomena/ had every link under the base and every picture at the root, a 404 on each.
+describe('a library under a base', () => {
+    const under = catalogue(found, { ...chosen, resolution: { ...chosen.resolution, base: '/under/' } });
+    const manual = found.books.find(book => book.folder === 'manual')!;
+    const chapter = join(fixture, 'manual', '6-the-mark-and-the-photograph.tsx');
+
+    it('writes a picture\'s address and a page\'s from the same base', () => {
+        expect(under.base).toBe('/under/');
+        expect(transforming('export default () => (<Image>![[ .png ]]</Image>);', chapter, under, manual).text).toContain('/under/manual/6-the-mark-and-the-photograph.png');
+        expect(transforming('<Means>$[[ The Library ]]</Means>', chapter, under).text).toContain('(/under/the-library/)');
+        expect(card.base).toBe('/');
+    });
+});
 const chapter = join(fixture, 'paper', '1-the-argument.tsx');
 const cover = join(fixture, 'library', '.cover.tsx');
 

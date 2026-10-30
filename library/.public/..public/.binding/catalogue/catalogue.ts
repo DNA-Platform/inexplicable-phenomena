@@ -36,6 +36,10 @@ export type Catalogue = {
     // of the book it stands in, and the scope is the one thing a reference cannot carry.
     scope(file: string): string | undefined;
     keys(): string[];
+    // THE BASE EVERY ADDRESS HERE IS WRITTEN FROM, the library's from the domain forward, so a picture's address is
+    // written from the same base as a page's and not from the root. Sprint 119, B51: the public library bound under
+    // /inexplicable-phenomena/ wrote every picture at the root and every page under the base.
+    readonly base: string;
 };
 
 // WHERE EVERYTHING STANDS, AS DATA: the table of routes, each key's url and each book's place. It is
@@ -43,10 +47,10 @@ export type Catalogue = {
 // library read again. Sprint 112, D1: the parent of a bind writes it once and every child it opens
 // reads it, where each child had walked and parsed the whole library for itself, about 2.5 s a child
 // at 195 books and more with every book. `Places` and `Directory` are PROXY names.
-export type Places = { table: Table; at: [string, string][]; inside: { path: string; name: string }[] };
+export type Places = { table: Table; at: [string, string][]; inside: { path: string; name: string }[]; base: string };
 
 // AND WHAT A DIRECTORY ANSWERS, the catalogue's own questions but the reading behind them.
-export type Directory = Pick<Catalogue, 'table' | 'where' | 'scope' | 'keys'>;
+export type Directory = Pick<Catalogue, 'table' | 'where' | 'scope' | 'keys' | 'base'>;
 
 export const directory = (places: Places): Directory => {
     const at = new Map(places.at);
@@ -64,6 +68,7 @@ export const directory = (places: Places): Directory => {
         where: (key: string): string | undefined => at.get(tidy(key)),
         scope: (file: string): string | undefined => deepest(file)?.name,
         keys: (): string[] => [...at.keys()].sort(),
+        base: places.base,
     };
 };
 
@@ -151,7 +156,7 @@ export const catalogue = (found: Library, chosen: Configuration, given?: Structu
         }
     }
 
-    const places: Places = { table, at: [...at], inside };
+    const places: Places = { table, at: [...at], inside, base: chosen.resolution.base };
 
     return { structure, places, ...directory(places) };
 };

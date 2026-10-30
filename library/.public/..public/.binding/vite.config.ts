@@ -86,7 +86,7 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
                     const asked = decodeURIComponent((request.url ?? '').split('?')[0]);
                     for (const book of held.library().books)
                         for (const one of [...book.resources.values()].flat())
-                            if (imageTypes.includes(one.type) && asked === `/${book.folder}/${one.file}`) {
+                            if (imageTypes.includes(one.type) && asked === `${chosen.resolution.base}${book.folder}/${one.file}`) {
                                 response.setHeader('Content-Type', one.type === '.png' ? 'image/png' : 'image/jpeg');
                                 return void createReadStream(join(book.path, one.file)).pipe(response);
                             }
