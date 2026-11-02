@@ -1,0 +1,49 @@
+{
+  "books": [
+    {
+      "folder": ".design",
+      "digest": "df8342bdb9473171",
+      "walked": 31
+    },
+    {
+      "folder": ".manual",
+      "digest": "accb34fe34e4804d",
+      "walked": 58
+    },
+    {
+      "folder": ".reference",
+      "digest": "27c0acc0aaef20d5",
+      "walked": 60
+    },
+    {
+      "folder": "chemistry/.reference",
+      "digest": "97dc9ba5c5f5a2fe",
+      "walked": 14
+    },
+    {
+      "folder": "mathematics/.reference",
+      "digest": "3a310eb08c0d8a9b",
+      "walked": 14
+    },
+    {
+      "folder": "pharmacology/.reference",
+      "digest": "971484c848a40b79",
+      "walked": 15
+    },
+    {
+      "folder": "philosophy/.reference",
+      "digest": "f4b72f913765b273",
+      "walked": 15
+    },
+    {
+      "folder": "physics/.reference",
+      "digest": "e3c9928ae876852d",
+      "walked": 15
+    },
+    {
+      "folder": "team/.reference",
+      "digest": "afc49329d860985d",
+      "walked": 26
+    }
+  ]
+}
