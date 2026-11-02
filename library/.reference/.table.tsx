@@ -41,6 +41,13 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 <Word>
+                    <Content>[[ Dictionary ]]**</Content>
+                </Word> <Word>
+                    <Content>$[[ a catalogue of definitions, one chapter a word ]]( Dictionary / Synopsis )</Content>
+                </Word>
+            </Paragraph>
+            <Paragraph>
+                <Word>
                     <Content>[[ Chemistry ]]**</Content>
                 </Word> <Word>
                     <Content>$[[ Objects that React!, the framework the library is documented with ]]( Chemistry / Synopsis )</Content>

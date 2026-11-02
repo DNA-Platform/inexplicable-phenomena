@@ -12,8 +12,13 @@
     },
     {
       "folder": ".reference",
-      "digest": "27c0acc0aaef20d5",
-      "walked": 60
+      "digest": "0668efd153a34ece",
+      "walked": 64
+    },
+    {
+      "folder": ".reference/dictionary",
+      "digest": "cd1cb3d29224980d",
+      "walked": 160
     },
     {
       "folder": "chemistry/.reference",

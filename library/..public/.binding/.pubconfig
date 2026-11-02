@@ -1,7 +1,7 @@
 {
   "inventory": {
     "root": "Reference",
-    "exclude": ["package", ".lib", "dictionary"]
+    "exclude": ["package", ".lib"]
   },
   "rendering": {
     "title": "Inexplicable Phenomena",

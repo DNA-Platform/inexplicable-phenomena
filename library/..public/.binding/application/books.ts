@@ -3,6 +3,7 @@ export const books = {
     ".design": () => import("./books/design"),
     ".manual": () => import("./books/manual"),
     ".reference": () => import("./books/reference"),
+    ".reference/dictionary": () => import("./books/reference/dictionary"),
     "chemistry/.reference": () => import("./books/chemistry/reference"),
     "mathematics/.reference": () => import("./books/mathematics/reference"),
     "pharmacology/.reference": () => import("./books/pharmacology/reference"),

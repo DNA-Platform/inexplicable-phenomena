@@ -3,6 +3,7 @@
     ".binding/application/books/design.tsx",
     ".binding/application/books/manual.tsx",
     ".binding/application/books/reference.tsx",
+    ".binding/application/books/reference/dictionary.tsx",
     ".binding/application/books/chemistry/reference.tsx",
     ".binding/application/books/mathematics/reference.tsx",
     ".binding/application/books/pharmacology/reference.tsx",
@@ -19,6 +20,7 @@
     "the-design/index.html",
     "the-manual/index.html",
     "reference/index.html",
+    "dictionary/index.html",
     "chemistry/index.html",
     "mathematics/index.html",
     "pharmacology/index.html",
@@ -95,14 +97,15 @@
     "assets/books/pharmacology-reference-BZ3E3XTe.js",
     "assets/books/philosophy-reference-Dr_Itinf.js",
     "assets/books/physics-reference-CVar0Pny.js",
-    "assets/books/reference-D2T-Xsp9.js",
+    "assets/books/reference-dictionary-Czz9MGT-.js",
+    "assets/books/reference-rXkO86dF.js",
     "assets/books/team-reference-DgXS9P4E.js",
-    "assets/index-56CTIqa4.js",
     "assets/index-CP4cPyka.css",
+    "assets/index-eRtnTGfD.js",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
     "assets/shared/at-dna-platform-chemistry-Dnqvott5.js",
-    "assets/shared/at-dna-platform-public-BfkziUKt.js",
+    "assets/shared/at-dna-platform-public-DcFGRA3D.js",
     "assets/shared/chemistry-Cg0NX0d6.js",
     "assets/shared/index-DxuSlcUF.js",
     "assets/shared/jsx-runtime-BHIWlbBZ.js",
@@ -130,11 +133,19 @@
     },
     "/reference": {
       "folder": ".reference",
-      "digest": "27c0acc0aaef20d5",
-      "references": "bdad70b0b3f3061c",
+      "digest": "0668efd153a34ece",
+      "references": "cc083647ab40a430",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/e352cbb26e3d.css",
       "markup": ".pages/reference.html"
+    },
+    "/dictionary": {
+      "folder": ".reference/dictionary",
+      "digest": "cd1cb3d29224980d",
+      "references": "77125633e70b8224",
+      "binder": "6a9cabae88b71ed1",
+      "sheet": "sheets/89d385d8c937.css",
+      "markup": ".pages/dictionary.html"
     },
     "/chemistry": {
       "folder": "chemistry/.reference",
@@ -282,11 +293,11 @@
       }
     },
     ".reference": {
-      "digest": "fd5db78e85694af5",
-      "entry": "assets/books/reference-D2T-Xsp9.js",
+      "digest": "6e368ec198d70b23",
+      "entry": "assets/books/reference-rXkO86dF.js",
       "files": [
         "assets/books/4-the-faces~code-Dib9cH4X.js",
-        "assets/books/reference-D2T-Xsp9.js"
+        "assets/books/reference-rXkO86dF.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -306,6 +317,51 @@
           "Author",
           "Chapter",
           "Content",
+          "Heading",
+          "Means",
+          "Paragraph",
+          "Parenthetical",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
+    },
+    ".reference/dictionary": {
+      "digest": "002cea5510c8af4c",
+      "entry": "assets/books/reference-dictionary-Czz9MGT-.js",
+      "files": [
+        "assets/books/reference-dictionary-Czz9MGT-.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Book",
+          "$Cover",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "Author",
+          "Chapter",
+          "Content",
+          "Emphasis",
           "Heading",
           "Means",
           "Paragraph",
@@ -606,10 +662,10 @@
     }
   },
   "shared": {
-    "digest": "f3c058a526cba267",
+    "digest": "d18d05c0136518c2",
     "map": {
       "@dna-platform/chemistry": "assets/shared/at-dna-platform-chemistry-Dnqvott5.js",
-      "@dna-platform/public": "assets/shared/at-dna-platform-public-BfkziUKt.js",
+      "@dna-platform/public": "assets/shared/at-dna-platform-public-DcFGRA3D.js",
       "react": "assets/shared/react-DCSQQElp.js",
       "react-dom/client": "assets/shared/react-dom-client-DNbMwQ3v.js",
       "react/jsx-runtime": "assets/shared/react-jsx-runtime-GMpOKiQA.js",
@@ -619,7 +675,7 @@
       "assets/shared/_shared_react-6pQpRABW.js",
       "assets/shared/_shared_styled-components-DGpG2R0g.js",
       "assets/shared/at-dna-platform-chemistry-Dnqvott5.js",
-      "assets/shared/at-dna-platform-public-BfkziUKt.js",
+      "assets/shared/at-dna-platform-public-DcFGRA3D.js",
       "assets/shared/chemistry-Cg0NX0d6.js",
       "assets/shared/index-DxuSlcUF.js",
       "assets/shared/jsx-runtime-BHIWlbBZ.js",
@@ -630,7 +686,7 @@
     ]
   },
   "app": {
-    "digest": "6303ba6ed4d3d91c",
+    "digest": "e33bd3b7577d141b",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -691,8 +747,8 @@
       "assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff",
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
-      "assets/index-56CTIqa4.js",
-      "assets/index-CP4cPyka.css"
+      "assets/index-CP4cPyka.css",
+      "assets/index-eRtnTGfD.js"
     ],
     "bindings": {
       "@dna-platform/chemistry": [
@@ -712,6 +768,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-56CTIqa4.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-eRtnTGfD.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }
