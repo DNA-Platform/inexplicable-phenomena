@@ -1,5 +1,5 @@
 import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Title, Word } from '@dna-platform/public';
-import { Table, TableOfContents } from '../.manual/4-the-faces~code.tsx';
+import { Table, TableOfContents } from './.manual/4-the-faces~code.tsx';
 
 export default () => (
     <Chapter>

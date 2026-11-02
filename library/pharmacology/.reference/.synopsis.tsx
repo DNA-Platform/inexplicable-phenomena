@@ -1,5 +1,5 @@
 import { Chapter, Means, Paragraph, Parenthetical, Title } from '@dna-platform/public';
-import { Synopsis } from '../../.manual/4-the-faces~code.tsx';
+import { Synopsis } from '../../.reference/.manual/4-the-faces~code.tsx';
 
 export default () => (
     <Chapter>

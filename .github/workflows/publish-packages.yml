@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'library/chemistry/package/src/**'
-      - 'library/chemistry/package/package.json'
+      - 'library/chemistry/.public/package/src/**'
+      - 'library/chemistry/.public/package/package.json'
       - 'library/.public/package/src/**'
       - 'library/.public/package/package.json'
 
@@ -34,11 +34,11 @@ jobs:
       - run: npm install
 
       - name: Build chemistry
-        working-directory: library/chemistry/package
+        working-directory: library/chemistry/.public/package
         run: npm run build
 
       - name: Publish chemistry
-        working-directory: library/chemistry/package
+        working-directory: library/chemistry/.public/package
         run: npm publish || echo "Version already published, skipping"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

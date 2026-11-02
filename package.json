@@ -5,7 +5,7 @@
     ".claude",
     ".me/*",
     "library/.public/package",
-    "library/chemistry/package",
+    "library/chemistry/.public/package",
     "library/pharmacology",
     "library/philosophy",
     "library/physics"

@@ -1,10 +1,10 @@
 name: Deploy the public library to Pages
 
 # THE SITE IS COMMITTED AS IT IS BOUND, and this publishes what was committed: nothing is built here.
-# The library at library/ is bound locally by the binder copy at library/..public/.binding, which
+# The library at library/ is bound locally by the binder copy at library/.public/.binding, which
 # leaves the site beside itself under the base /inexplicable-phenomena/ that its .pubconfig names,
 # so the committed site and the published one are byte for byte the same. Sprint 119, D2, D3 and D7;
-# the library's root moved up from library/.public to library/ in Sprint 120.
+# the library's root moved up from library/.public to library/ in Sprint 120, and its face from ..public to .public, where the public package and its .lib also stand, so the gather leaves those two out.
 #
 # THE PUSH TRIGGER STAYS OFF until Doug says otherwise; a deploy is run by hand from the Actions tab.
 on:
@@ -32,7 +32,7 @@ jobs:
       - name: Gather the site
         run: |
           mkdir -p site
-          rsync -a --exclude '.binding' 'library/..public/' site/
+          rsync -a --exclude '.binding' --exclude 'package' --exclude '.lib' 'library/.public/' site/
 
       - uses: actions/configure-pages@v5
 
