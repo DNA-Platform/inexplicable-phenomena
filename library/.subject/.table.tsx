@@ -32,7 +32,7 @@ export default () => (
                 <Content>[[ Physics ]]**</Content>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Subjective Reference ]]( our-reference )**</Content>
+                <Content>[[ Subjective Reference ]]( Our Reference )**</Content>
             </Paragraph>
             <Paragraph>
                 <Content>[[ The Design ]]**</Content>
@@ -40,7 +40,7 @@ export default () => (
             <Paragraph>
                 <Parenthetical />
                 <Word>
-                    <Content>$[[ our-library ]]</Content>
+                    <Content>$[[ Our Library ]]</Content>
                 </Word>
                 <Word>
                     <Content>$[[ ./Synopsis ]]</Content>

@@ -9,7 +9,8 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The life of mathematics in this library, told from the subject's own perspective.
+            A subject's account of its own formalization: a biography of Subjective Mathematics that the team
+            writes, under the pseudonym of the subject, in the first person.
         </Paragraph>
     </Chapter>
 );

@@ -4,7 +4,7 @@ import { Cover } from './4-the-faces~code.tsx';
 export default () => (
     <Chapter>
         <Cover />
-        <Title>[[ Subjective Reference ]]( our-reference )</Title>
+        <Title>[[ Subjective Reference ]]( Our Reference )</Title>
         <Author>*[[ Our Team ]]</Author>
         <Subject>**[[ Inexplicable Phenomena ]]</Subject>
     </Chapter>
