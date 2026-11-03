@@ -5,10 +5,7 @@
     ".claude",
     ".me/*",
     "library/.public/package",
-    "library/chemistry/.public/package",
-    "library/pharmacology",
-    "library/philosophy",
-    "library/physics"
+    "library/chemistry/.public/package"
   ],
   "dependencies": {
     "commonmark": "^0.31.2"
