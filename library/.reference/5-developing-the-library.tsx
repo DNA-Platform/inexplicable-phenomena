@@ -14,8 +14,8 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 <List />
-                <Line>node library/.subject/.manual/5-developing-the-library~workbench.mjs, once, left open</Line>
-                <Line>node library/.subject/.manual/5-developing-the-library~workbench.mjs look the-team</Line>
+                <Line>node library/.reference/5-developing-the-library~workbench.mjs, once, left open</Line>
+                <Line>node library/.reference/5-developing-the-library~workbench.mjs look the-team</Line>
                 <Line>the same with built for the site the last bind made, phone for a phone's width, close at the end</Line>
             </Paragraph>
         </Section>

@@ -1,12 +1,12 @@
 // The workbench: the library served live from its sources, a browser kept open on it, and a way to ask that
 // browser what a page looks like. Open it once and leave it open:
 //
-//     node library/.subject/.manual/5-developing-the-library~workbench.mjs
+//     node library/.reference/5-developing-the-library~workbench.mjs
 //
 // Then look at a book from another terminal, as often as needed:
 //
-//     node library/.subject/.manual/5-developing-the-library~workbench.mjs look the-team
-//     node library/.subject/.manual/5-developing-the-library~workbench.mjs look the-team/#closure phone at=.pd-title
+//     node library/.reference/5-developing-the-library~workbench.mjs look the-team
+//     node library/.reference/5-developing-the-library~workbench.mjs look the-team/#closure phone at=.pd-title
 //
 // A look waits for the last save to reach the page, prints what it found and says where it put the photograph.
 // After the book's address it takes, in any order:
@@ -27,7 +27,7 @@
 //
 // And when the work is done:
 //
-//     node library/.subject/.manual/5-developing-the-library~workbench.mjs close
+//     node library/.reference/5-developing-the-library~workbench.mjs close
 import { execSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, watch, writeFileSync } from 'node:fs';
@@ -37,7 +37,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const library = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
+const library = dirname(dirname(fileURLToPath(import.meta.url)));
 const binding = readdirSync(library).map(name => join(library, name, '.binding')).find(one => existsSync(join(one, 'serving.ts')));
 const kept = join(tmpdir(), `workbench-${createHash('sha1').update(library).digest('hex').slice(0, 8)}`);
 const note = join(kept, 'open.json');

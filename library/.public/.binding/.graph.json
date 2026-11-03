@@ -2,52 +2,52 @@
   "books": [
     {
       "folder": ".identity/.subject",
-      "digest": "7a1a4cfef63e684a",
+      "digest": "9d8a8d4cd1e01898",
       "walked": 14
     },
     {
+      "folder": ".reference",
+      "digest": "3b2b20791152325d",
+      "walked": 58
+    },
+    {
       "folder": ".subject",
-      "digest": "ec556f5148adb003",
+      "digest": "f86202a5eeb872a6",
       "walked": 23
     },
     {
       "folder": ".subject/.design",
-      "digest": "0797b8bc273e39b4",
+      "digest": "094c5197ef32d200",
       "walked": 31
     },
     {
-      "folder": ".subject/.manual",
-      "digest": "84f11af1e133d160",
-      "walked": 58
-    },
-    {
       "folder": ".subject/dictionary",
-      "digest": "461a9c02a9b3af8a",
+      "digest": "d20d835a0a3481f7",
       "walked": 160
     },
     {
       "folder": "chemistry/.subject",
-      "digest": "9fd1211ce70834b2",
+      "digest": "b4f7d835ec99eb10",
       "walked": 14
     },
     {
       "folder": "mathematics/.subject",
-      "digest": "8e3e6d8c698b2155",
+      "digest": "feb18cdb76c1715a",
       "walked": 14
     },
     {
       "folder": "pharmacology/.subject",
-      "digest": "945e5893de941d29",
+      "digest": "3e656f88f7ba9ed7",
       "walked": 14
     },
     {
       "folder": "philosophy/.subject",
-      "digest": "b490c44e1000c3b3",
+      "digest": "8a876d06d8cfe89b",
       "walked": 14
     },
     {
       "folder": "physics/.subject",
-      "digest": "c657ade62453d7ad",
+      "digest": "37a7e33e8a95e2d0",
       "walked": 14
     }
   ]

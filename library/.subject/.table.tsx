@@ -1,5 +1,5 @@
 import { Chapter, Content, Heading, Paragraph, Parenthetical, Section, Title, Word } from '@dna-platform/public';
-import { TableOfContents } from './.manual/4-the-faces~code.tsx';
+import { TableOfContents } from '../.reference/4-the-faces~code.tsx';
 
 export default () => (
     <Chapter>
@@ -32,7 +32,7 @@ export default () => (
                 <Content>[[ Physics ]]**</Content>
             </Paragraph>
             <Paragraph>
-                <Content>[[ The Manual ]]**</Content>
+                <Content>[[ Subjective Reference ]]( our-reference )**</Content>
             </Paragraph>
             <Paragraph>
                 <Content>[[ The Design ]]**</Content>
@@ -40,7 +40,7 @@ export default () => (
             <Paragraph>
                 <Parenthetical />
                 <Word>
-                    <Content>$[[ Reference ]]</Content>
+                    <Content>$[[ our-library ]]</Content>
                 </Word>
                 <Word>
                     <Content>$[[ ./Synopsis ]]</Content>

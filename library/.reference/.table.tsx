@@ -28,7 +28,7 @@ export default () => (
             <Paragraph>
                 <Parenthetical />
                 <Word>
-                    <Content>$[[ The Manual ]]</Content>
+                    <Content>$[[ our-reference ]]</Content>
                 </Word>
                 <Word>
                     <Content>$[[ ./Synopsis ]]</Content>
