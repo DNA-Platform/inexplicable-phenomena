@@ -4,6 +4,10 @@ import $Book from '../../../../../mathematics/.subject/.book';
 import Cover from '../../../../../mathematics/.subject/.cover';
 import Synopsis from '../../../../../mathematics/.subject/.synopsis';
 import Table from '../../../../../mathematics/.subject/.table';
+import MathematicalReference1 from '../../../../../mathematics/.subject/1-mathematical-reference';
+import MathematicalDesign2 from '../../../../../mathematics/.subject/2-mathematical-design';
+import MathematicalPrinciples3 from '../../../../../mathematics/.subject/3-mathematical-principles';
+import MathematicalIdentity4 from '../../../../../mathematics/.subject/4-mathematical-identity';
 
 const Book = $($Book);
 
@@ -12,6 +16,10 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
+        {MathematicalReference1()}
+        {MathematicalDesign2()}
+        {MathematicalPrinciples3()}
+        {MathematicalIdentity4()}
     </Book>
 );
 

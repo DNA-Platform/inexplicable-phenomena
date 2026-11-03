@@ -1,159 +1,156 @@
-var y=Object.defineProperty;var r=(g,w)=>y(g,"name",{value:w,configurable:!0});import{jsxs as n,jsx as e}from"react/jsx-runtime";import{$ as k}from"@dna-platform/chemistry";import{$,C as v,S as x,T}from"./4-the-faces~code-DqeMwwvz.js";import{Chapter as a,Title as i,Author as S,Subject as R,Parenthetical as p,Paragraph as t,Section as s,Heading as l,Content as o,Word as d,Means as u,Append as c,List as f,Line as h}from"@dna-platform/public";import"styled-components";const b=class b extends ${};r(b,"$TheManual");let m=b;const L=r(()=>n(a,{children:[e(v,{}),e(i,{children:"[Subjective Reference](/inexplicable-phenomena/our-reference/)"}),e(S,{children:"[Our Team](/inexplicable-phenomena/our-team/)"}),e(R,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"})]}),"Cover"),C=r(()=>n(a,{children:[e(x,{}),n(i,{children:[e(p,{}),"[Synopsis](/inexplicable-phenomena/our-reference/)"]}),e(t,{children:"The least a library needs to bind: the book every other book here extends, the theme it registers, the masthead and the byline it draws from a cover, and the faces a cover, a synopsis and a table wear. Each chapter says what the tool is and the file beside it is the tool. Borrowed, to begin, from the binder's own test library, and rebuilt from here by sketches."})]}),"Synopsis"),j=r(()=>n(a,{children:[e(T,{}),n(i,{children:[e(p,{}),"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"]}),n(s,{children:[e(l,{children:"Contents"}),e(t,{children:e(o,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"})}),e(t,{children:e(o,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"})}),e(t,{children:e(o,{children:"[The Masthead and the Byline](/inexplicable-phenomena/our-reference/#the-masthead-and-the-byline)"})}),e(t,{children:e(o,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"})}),e(t,{children:e(o,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"})}),n(t,{children:[e(p,{}),e(d,{children:e(o,{children:"[Our Reference](/inexplicable-phenomena/our-reference/)"})}),e(d,{children:e(o,{children:"[Synopsis](/inexplicable-phenomena/our-reference/#synopsis)"})}),e(d,{children:e(o,{children:"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"})})]})]})]}),"Table"),A=r(()=>n(a,{children:[e(i,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"}),n(s,{children:[e(l,{children:"What a book is here"}),e(t,{children:"Every book in this library extends the library's own, so what a book is here is decided once and a change to it reaches all of them. The book class is the layout: the masthead, the byline drawn from what the book's cover says, then the chapters. Its file is where the library's theme is registered, once, on the class every book extends. A cover's route opens at the top of the page; every other bookmark turns as the framework does."}),n(t,{children:["The class stands beside this chapter as its code, borrowed on 2026-10-30 from the binder's own test library, whose manual the team wrote, and to be rebuilt from here by sketches rather than kept. The theme it registers is ",e(u,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),"; the masthead and the byline it draws are ",e(u,{children:"[The Masthead and the Byline](/inexplicable-phenomena/our-reference/#the-masthead-and-the-byline)"}),"."]})]}),e(c,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';\r
-import { $ } from '@dna-platform/chemistry';\r
-import { $Book, Theme } from '@dna-platform/public';\r
-import { LibraryTheme } from './2-the-theme~code.tsx';\r
-import { Byline as byline, RunningHead as runningHead } from './3-the-masthead-and-the-byline~code.tsx';\r
-\r
-export class $TheLibrary extends $Book {\r
-    override write(): ReactNode {\r
-        const RunningHead = $(runningHead);\r
-        const Byline = $(byline);\r
-        return (\r
-            <>\r
-                <RunningHead chapter={this.cover} />\r
-                <Byline chapter={this.cover} />\r
-                {super.write()}\r
-            </>\r
-        );\r
-    }\r
-\r
-    protected override turn(): void {\r
-        if (this.bookmark !== undefined && this.bookmark === this.cover) { window.scrollTo(0, 0); return; }\r
-        super.turn();\r
-    }\r
-}\r
-\r
-export const TheLibrary = $($TheLibrary);\r
-$(TheLibrary, Theme)(LibraryTheme);\r
-`})]}),"TheBook1"),B=r(()=>n(a,{children:[e(i,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),n(s,{children:[e(l,{children:"The values and the parts"}),e(t,{children:"A theme is a set of values, the font, the measure, the ink, the paper, the link, and the parts that use them: the page, the levels of a book, the labels, the links, the apparatus and the figures. The file beside this chapter is the one the book registers. It is the test library's theme as borrowed, a serif on warm paper, and it stands only until the sketches say what this library's own looks like."})]}),e(c,{identifier:"code",type:".tsx",children:`import { ElementType } from 'react';\r
-import { css, RuleSet } from 'styled-components';\r
-import { $, selection } from '@dna-platform/chemistry';\r
-import { $Theme } from '@dna-platform/public';\r
-\r
-declare module 'styled-components' {\r
-    export interface DefaultTheme extends $LibraryTheme {}\r
-}\r
-\r
-export class $LibraryTheme extends $Theme {\r
-    font = "Georgia, 'Times New Roman', serif";\r
-    size = '1rem';\r
-    leading = '1.7';\r
-    measure = '42rem';\r
-    space = '1.25rem';\r
-    ink = '#23262a';\r
-    paper = '#faf8f4';\r
-    link = '#5b2f2a';\r
-    style: ElementType = selection.div\`\${this.parts()}\`;\r
-\r
-    protected parts(): RuleSet[] {\r
-        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures()];\r
-    }\r
-\r
-    protected page(): RuleSet {\r
-        return css\`\r
-            font-family: \${({ theme }) => theme.font};\r
-            font-size: \${({ theme }) => theme.size};\r
-            line-height: \${({ theme }) => theme.leading};\r
-            color: \${({ theme }) => theme.ink};\r
-            background: \${({ theme }) => theme.paper};\r
-            max-width: \${({ theme }) => theme.measure};\r
-            margin-inline: auto;\r
-            padding: \${({ theme }) => theme.space};\r
-            @media (min-width: 64rem) { max-width: 52rem; }\r
-        \`;\r
-    }\r
-\r
-    protected levels(): RuleSet {\r
-        return css\`\r
-            .pd-book { margin-block: \${({ theme }) => theme.space}; counter-reset: chapter equation; }\r
-            .pd-chapter { margin-block: calc(2 * \${({ theme }) => theme.space}); scroll-margin-block-start: calc(0.5 * \${({ theme }) => theme.space}); }\r
-            .pd-section { margin-block: \${({ theme }) => theme.space}; }\r
-            .pd-paragraph { margin-block: \${({ theme }) => theme.space}; }\r
-            .pa-item { margin-block: calc(\${({ theme }) => theme.space} / 4); }\r
-            .pd-title { font-size: calc(1.5 * \${({ theme }) => theme.size}); font-weight: bold; margin-block-end: \${({ theme }) => theme.space}; }\r
-            .pd-heading { font-weight: bold; margin-block: \${({ theme }) => theme.space} 0; }\r
-            .pd-line { white-space: pre-wrap; }\r
-            .pd-word { overflow-wrap: break-word; }\r
-            .pd-canonical.pd-chapter { counter-increment: chapter; }\r
-            .pd-canonical.pd-chapter:not(.pa-framed) {\r
-                border-block-start: 1px solid color-mix(in srgb, \${({ theme }) => theme.ink} 10%, \${({ theme }) => theme.paper});\r
-                padding-block-start: \${({ theme }) => theme.space};\r
-            }\r
-            .pd-chapter .pd-title::before { display: block; margin-block-end: calc(\${({ theme }) => theme.space} / 4); }\r
-            .pd-canonical.pd-chapter .pd-title::before { content: 'Chapter ' counter(chapter); }\r
-        \`;\r
-    }\r
-\r
-    protected labels(): RuleSet {\r
-        return css\`\r
-            .pd-label, .pd-chapter .pd-title::before {\r
-                font-size: calc(0.7 * \${({ theme }) => theme.size});\r
-                font-weight: normal;\r
-                letter-spacing: 0.15em;\r
-                text-transform: uppercase;\r
-                opacity: 0.65;\r
-            }\r
-        \`;\r
-    }\r
-\r
-    protected links(): RuleSet {\r
-        return css\`\r
-            .pa-reference { color: \${({ theme }) => theme.link}; text-decoration-color: \${({ theme }) => theme.link}; text-underline-offset: 0.15em; }\r
-            .pa-self-reference { color: inherit; text-decoration: none; }\r
-            .pa-referent { scroll-margin-block-start: \${({ theme }) => theme.space}; }\r
-            .pa-content { color: \${({ theme }) => theme.link}; }\r
-        \`;\r
-    }\r
-\r
-    protected apparatus(): RuleSet {\r
-        return css\`\r
-            .pd-running-head {\r
-                font-size: calc(0.75 * \${({ theme }) => theme.size});\r
-                letter-spacing: 0.12em;\r
-                text-transform: uppercase;\r
-                padding-block-end: calc(\${({ theme }) => theme.space} / 2);\r
-                border-block-end: 1px solid \${({ theme }) => theme.ink};\r
-            }\r
-            .pd-byline {\r
-                display: grid;\r
-                grid-template-columns: max-content 1fr;\r
-                column-gap: \${({ theme }) => theme.space};\r
-                row-gap: calc(\${({ theme }) => theme.space} / 4);\r
-                align-items: baseline;\r
-                margin-block: \${({ theme }) => theme.space} 0;\r
-                padding: calc(\${({ theme }) => theme.space} / 2) \${({ theme }) => theme.space};\r
-                background: color-mix(in srgb, \${({ theme }) => theme.ink} 3%, \${({ theme }) => theme.paper});\r
-                border: 1px solid color-mix(in srgb, \${({ theme }) => theme.ink} 10%, \${({ theme }) => theme.paper});\r
-                border-block-start: 3px solid \${({ theme }) => theme.link};\r
-            }\r
-        \`;\r
-    }\r
-\r
-    protected figures(): RuleSet {\r
-        return css\`\r
-            .pd-figure { max-width: 100%; }\r
-            .pd-code {\r
-                font-family: ui-monospace, monospace;\r
-                font-size: calc(0.9 * \${({ theme }) => theme.size});\r
-                line-height: 1.5;\r
-                white-space: pre;\r
-                overflow-x: auto;\r
-                margin-block: \${({ theme }) => theme.space};\r
-                padding: calc(0.75 * \${({ theme }) => theme.space}) \${({ theme }) => theme.space};\r
-                background: color-mix(in srgb, \${({ theme }) => theme.ink} 4%, \${({ theme }) => theme.paper});\r
-                border-inline-start: 2px solid color-mix(in srgb, \${({ theme }) => theme.ink} 25%, \${({ theme }) => theme.paper});\r
-            }\r
-            .pd-code-line::before { content: attr(data-line); display: inline-block; width: 3ch; margin-inline-end: 1.5ch; text-align: end; opacity: 0.4; user-select: none; }\r
-            .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; margin-block: \${({ theme }) => theme.space}; }\r
-            .pd-math, .pd-date { white-space: nowrap; }\r
-            .pd-equation { position: relative; counter-increment: equation; }\r
-            .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }\r
-        \`;\r
-    }\r
-}\r
-\r
-export const LibraryTheme = $($LibraryTheme);\r
-`})]}),"TheTheme2"),P=r(()=>n(a,{children:[e(i,{children:"[The Masthead and the Byline](/inexplicable-phenomena/our-reference/#the-masthead-and-the-byline)"}),n(s,{children:[e(l,{children:"What a cover exposes"}),e(t,{children:"The running head names the library, the book and its table of contents, and the byline says who wrote the book and what it is filed under, both read from the cover and nowhere else. Neither is written in a chapter; the book draws them above its chapters from what the cover says. The file beside this chapter is both, borrowed from the test library and pointed at this library's name."})]}),e(c,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';\r
+var y=Object.defineProperty;var r=(g,w)=>y(g,"name",{value:w,configurable:!0});import{jsxs as n,jsx as e}from"react/jsx-runtime";import{$ as k}from"@dna-platform/chemistry";import{$,C as v,T as x}from"./4-the-faces~code-BnVgr4ZJ.js";import{Chapter as s,Title as l,Author as T,Subject as S,Parenthetical as u,Section as a,Heading as i,Paragraph as t,Content as o,Word as d,Means as b,Append as c,List as f,Line as h}from"@dna-platform/public";import{O as R}from"./.synopsis-CUQ4IBJD.js";import"styled-components";const m=class m extends ${};r(m,"$TheManual");let p=m;const L=r(()=>n(s,{children:[e(v,{}),e(l,{children:"[Subjective Reference](/inexplicable-phenomena/our-reference/)"}),e(T,{children:"[Our Team](/inexplicable-phenomena/our-team/)"}),e(S,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"})]}),"Cover"),C=r(()=>n(s,{children:[e(x,{}),n(l,{children:[e(u,{}),"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"]}),n(a,{children:[e(i,{children:"Contents"}),e(t,{children:e(o,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"})}),e(t,{children:e(o,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"})}),e(t,{children:e(o,{children:"[The Masthead and the Byline](/inexplicable-phenomena/our-reference/#the-masthead-and-the-byline)"})}),e(t,{children:e(o,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"})}),e(t,{children:e(o,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"})}),n(t,{children:[e(u,{}),e(d,{children:e(o,{children:"[Our Reference](/inexplicable-phenomena/our-reference/)"})}),e(d,{children:e(o,{children:"[Synopsis](/inexplicable-phenomena/our-reference/#synopsis)"})}),e(d,{children:e(o,{children:"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"})})]})]})]}),"Table"),j=r(()=>n(s,{children:[e(l,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"}),n(a,{children:[e(i,{children:"What a book is here"}),e(t,{children:"Every book in this library extends the library's own, so what a book is here is decided once and a change to it reaches all of them. The book class is the layout: the masthead, the byline drawn from what the book's cover says, then the chapters. Its file is where the library's theme is registered, once, on the class every book extends. A cover's route opens at the top of the page; every other bookmark turns as the framework does."}),n(t,{children:["The class stands beside this chapter as its code, borrowed on 2026-10-30 from the binder's own test library, whose manual the team wrote, and to be rebuilt from here by sketches rather than kept. The theme it registers is ",e(b,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),"; the masthead and the byline it draws are ",e(b,{children:"[The Masthead and the Byline](/inexplicable-phenomena/our-reference/#the-masthead-and-the-byline)"}),"."]})]}),e(c,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';
+import { $ } from '@dna-platform/chemistry';
+import { $Book, Paginated, Theme } from '@dna-platform/public';
+import { LibraryTheme } from './2-the-theme~code.tsx';
+import { Byline as byline, RunningHead as runningHead } from './3-the-masthead-and-the-byline~code.tsx';
+
+export class $TheLibrary extends $Book {
+    override write(): ReactNode {
+        const RunningHead = $(runningHead);
+        const Byline = $(byline);
+        return (
+            <>
+                <RunningHead chapter={this.cover} />
+                <Byline chapter={this.cover} />
+                {super.write()}
+            </>
+        );
+    }
+
+    protected override turn(): void {
+        if (this.bookmark !== undefined && this.bookmark === this.cover) { window.scrollTo(0, 0); return; }
+        super.turn();
+    }
+
+    protected override $Define(): void {
+        super.$Define();
+        this.annotations.add(this,
+            <Paginated />
+        );
+    }
+}
+
+export const TheLibrary = $($TheLibrary);
+$(TheLibrary, Theme)(LibraryTheme);
+`})]}),"TheBook1"),A=r(()=>n(s,{children:[e(l,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),n(a,{children:[e(i,{children:"The values and the parts"}),e(t,{children:"A theme is a set of values, the font, the measure, the ink, the paper, the link, and the parts that use them: the page, the levels of a book, the labels, the links, the apparatus and the figures. The file beside this chapter is the one the book registers. It is the test library's theme as borrowed, a serif on warm paper, and it stands only until the sketches say what this library's own looks like."})]}),e(c,{identifier:"code",type:".tsx",children:`import { ElementType } from 'react';
+import { css, RuleSet } from 'styled-components';
+import { $, selection } from '@dna-platform/chemistry';
+import { $Theme } from '@dna-platform/public';
+
+declare module 'styled-components' {
+    export interface DefaultTheme extends $LibraryTheme {}
+}
+
+export class $LibraryTheme extends $Theme {
+    font = "Georgia, 'Times New Roman', serif";
+    size = '1.0625rem';
+    leading = '1.6';
+    measure = '40rem';
+    space = '1.25rem';
+    ink = '#1b1b1b';
+    paper = '#ffffff';
+    link = '#1f4e79';
+    style: ElementType = selection.div\`\${this.parts()}\`;
+
+    protected parts(): RuleSet[] {
+        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures()];
+    }
+
+    protected page(): RuleSet {
+        return css\`
+            font-family: \${({ theme }) => theme.font};
+            font-size: \${({ theme }) => theme.size};
+            line-height: \${({ theme }) => theme.leading};
+            color: \${({ theme }) => theme.ink};
+            background: \${({ theme }) => theme.paper};
+            max-width: \${({ theme }) => theme.measure};
+            margin-inline: auto;
+            padding: \${({ theme }) => theme.space};
+        \`;
+    }
+
+    protected levels(): RuleSet {
+        return css\`
+            .pd-book { margin-block: \${({ theme }) => theme.space}; counter-reset: chapter equation; }
+            .pd-chapter { margin-block: calc(2 * \${({ theme }) => theme.space}); scroll-margin-block-start: \${({ theme }) => theme.space}; }
+            .pd-section { margin-block: \${({ theme }) => theme.space}; }
+            .pd-paragraph { margin-block: \${({ theme }) => theme.space}; }
+            .pa-item { margin-block: calc(\${({ theme }) => theme.space} / 4); }
+            .pd-title { font-size: calc(1.5 * \${({ theme }) => theme.size}); font-weight: bold; margin-block-end: \${({ theme }) => theme.space}; }
+            .pd-heading { font-weight: bold; margin-block: \${({ theme }) => theme.space} 0; }
+            .pd-line { white-space: pre-wrap; }
+            .pd-word { overflow-wrap: break-word; }
+            .pd-canonical.pd-chapter { counter-increment: chapter; }
+            .pd-chapter .pd-title::before { display: block; margin-block-end: calc(\${({ theme }) => theme.space} / 4); }
+            .pd-canonical.pd-chapter .pd-title::before { content: 'Chapter ' counter(chapter); }
+        \`;
+    }
+
+    protected labels(): RuleSet {
+        return css\`
+            .pd-label, .pd-chapter .pd-title::before {
+                font-size: calc(0.7 * \${({ theme }) => theme.size});
+                font-weight: normal;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                opacity: 0.6;
+            }
+        \`;
+    }
+
+    protected links(): RuleSet {
+        return css\`
+            .pa-reference { color: \${({ theme }) => theme.link}; text-decoration-color: \${({ theme }) => theme.link}; text-underline-offset: 0.15em; }
+            .pa-self-reference { color: inherit; text-decoration: none; }
+            .pa-referent { scroll-margin-block-start: \${({ theme }) => theme.space}; }
+            .pa-content { color: \${({ theme }) => theme.link}; }
+        \`;
+    }
+
+    protected apparatus(): RuleSet {
+        return css\`
+            .pd-running-head {
+                font-size: calc(0.75 * \${({ theme }) => theme.size});
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                padding-block-end: calc(\${({ theme }) => theme.space} / 2);
+                border-block-end: 1px solid \${({ theme }) => theme.ink};
+            }
+            .pd-byline {
+                display: grid;
+                grid-template-columns: max-content 1fr;
+                column-gap: \${({ theme }) => theme.space};
+                row-gap: calc(\${({ theme }) => theme.space} / 4);
+                align-items: baseline;
+                margin-block: \${({ theme }) => theme.space} 0;
+            }
+        \`;
+    }
+
+    protected figures(): RuleSet {
+        return css\`
+            .pd-figure { max-width: 100%; }
+            .pd-code {
+                font-family: ui-monospace, monospace;
+                font-size: calc(0.85 * \${({ theme }) => theme.size});
+                line-height: 1.5;
+                white-space: pre;
+                overflow-x: auto;
+                margin-block: \${({ theme }) => theme.space};
+                padding: calc(0.75 * \${({ theme }) => theme.space}) \${({ theme }) => theme.space};
+                border-inline-start: 2px solid color-mix(in srgb, \${({ theme }) => theme.ink} 25%, \${({ theme }) => theme.paper});
+            }
+            .pd-code-line::before { content: attr(data-line); display: inline-block; width: 3ch; margin-inline-end: 1.5ch; text-align: end; opacity: 0.4; user-select: none; }
+            .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; margin-block: \${({ theme }) => theme.space}; }
+            .pd-math, .pd-date { white-space: nowrap; }
+            .pd-equation { position: relative; counter-increment: equation; }
+            .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }
+        \`;
+    }
+}
+
+export const LibraryTheme = $($LibraryTheme);
+`})]}),"TheTheme2"),B=r(()=>n(s,{children:[e(l,{children:"[The Masthead and the Byline](/inexplicable-phenomena/our-reference/#the-masthead-and-the-byline)"}),n(a,{children:[e(i,{children:"What a cover exposes"}),e(t,{children:"The running head names the library, the book and its table of contents, and the byline says who wrote the book and what it is filed under, both read from the cover and nowhere else. Neither is written in a chapter; the book draws them above its chapters from what the cover says. The file beside this chapter is both, borrowed from the test library and pointed at this library's name."})]}),e(c,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';\r
 import { $ } from '@dna-platform/chemistry';\r
 import { $Paragraph, $Word, Means as means, Reference as reference, Word as word } from '@dna-platform/public';\r
 \r
@@ -221,76 +218,51 @@ export const RunningHead = $($RunningHead);\r
 export const Label = $($Label);\r
 const label = Label;\r
 export const Byline = $($Byline);\r
-`})]}),"TheMastheadAndTheByline3"),W=r(()=>n(a,{children:[e(i,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"}),n(s,{children:[e(l,{children:"A cover, a synopsis, a table"}),e(t,{children:"A face is how a book's apparatus looks: the cover a book opens on, the synopsis beside it, the table of contents that answers for its chapters and, when the book is a subject, for what is filed under it. Each is a word of the package dressed here, and every book of this library wears these four from the file beside this chapter, borrowed from the test library until a sketch replaces them."})]}),e(c,{identifier:"code",type:".tsx",children:`import { $, selection } from '@dna-platform/chemistry';\r
-import { $Cover, $Synopsis, $Table, $TableOfContents } from '@dna-platform/public';\r
-\r
-export class $LibraryCover extends $Cover {\r
-    override style = selection.header\`\r
-        .pd-chapter.pa-cover { margin-block: 0; }\r
-        .pd-chapter.pa-cover:not(.pa-framed) {\r
-            margin-block-end: calc(1.5 * \${({ theme }) => theme.space});\r
-            padding: calc(0.75 * \${({ theme }) => theme.space}) \${({ theme }) => theme.space};\r
-            background: color-mix(in srgb, \${({ theme }) => theme.ink} 3%, \${({ theme }) => theme.paper});\r
-            border: 1px solid color-mix(in srgb, \${({ theme }) => theme.ink} 10%, \${({ theme }) => theme.paper});\r
-            border-block-start: 0;\r
-            scroll-margin-block-start: calc(1.75 * \${({ theme }) => theme.space});\r
-        }\r
-        .pa-cover .pd-title { margin-block: 0 calc(\${({ theme }) => theme.space} / 2); font-size: calc(2 * \${({ theme }) => theme.size}); }\r
-        .pa-cover .pd-title::before { content: 'Cover'; }\r
-        .pa-biography .pd-title::before { content: 'Biography'; }\r
-        .pa-autobiography .pd-title::before { content: 'Autobiography'; }\r
-    \`;\r
-}\r
-\r
-export class $LibrarySynopsis extends $Synopsis {\r
-    style = selection.div\`\r
-        .pd-chapter.pa-synopsis {\r
-            margin-block: calc(1.5 * \${({ theme }) => theme.space});\r
-            padding-inline-start: \${({ theme }) => theme.space};\r
-            border-inline-start: 2px solid \${({ theme }) => theme.link};\r
-        }\r
-        .pa-synopsis .pd-paragraph { font-style: italic; }\r
-        .pa-synopsis .pd-title::before { content: 'Synopsis'; }\r
-    \`;\r
-}\r
-\r
-export class $LibraryTableOfContents extends $TableOfContents {\r
-    override style = selection.nav\`\r
-        .pd-chapter.pa-table-of-contents { margin-block: 0; }\r
-        .pd-chapter.pa-table-of-contents:not(.pa-framed) {\r
-            margin-block: calc(1.5 * \${({ theme }) => theme.space});\r
-            padding: calc(0.75 * \${({ theme }) => theme.space}) \${({ theme }) => theme.space};\r
-            border: 1px solid color-mix(in srgb, \${({ theme }) => theme.ink} 10%, \${({ theme }) => theme.paper});\r
-            scroll-margin-block-start: calc(1.75 * \${({ theme }) => theme.space});\r
-        }\r
-        .pa-table-of-contents .pd-paragraph { margin-block: calc(\${({ theme }) => theme.space} / 4); }\r
-        .pa-table-of-contents .pd-title::before { content: 'Table of Contents'; }\r
-        .pa-table-of-contents .pd-heading {\r
-            font-size: calc(0.7 * \${({ theme }) => theme.size});\r
-            font-weight: normal;\r
-            letter-spacing: 0.15em;\r
-            text-transform: uppercase;\r
-            opacity: 0.65;\r
-        }\r
-    \`;\r
-}\r
-\r
-export class $LibraryTable extends $Table {\r
-    override style = selection(this.style)\`\r
-        .pa-table { column-gap: \${({ theme }) => theme.space}; row-gap: calc(\${({ theme }) => theme.space} / 2); }\r
-        .pa-table .pd-paragraph { margin-block: 0; }\r
-        .pa-col {\r
-            padding-block: calc(\${({ theme }) => theme.space} / 3);\r
-            border-block-end: 1px solid color-mix(in srgb, \${({ theme }) => theme.ink} 7%, \${({ theme }) => theme.paper});\r
-        }\r
-    \`;\r
-}\r
-\r
-export const Cover = $($LibraryCover);\r
-export const Synopsis = $($LibrarySynopsis);\r
-export const TableOfContents = $($LibraryTableOfContents);\r
-export const Table = $($LibraryTable);\r
-`})]}),"TheFaces4"),M=r(()=>n(a,{children:[e(i,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"}),n(s,{children:[e(l,{children:"The loop"}),e(t,{children:"A save shows on an open page in under a second; a bind is the gate at the end of a piece of work and never the way to look during one. The workbench beside this chapter is the loop: it serves the library live from its sources, keeps one browser open on it, and answers a look with what it found and a photograph. Borrowed from the librarian's own library on 2026-10-30, its built address this library's."}),n(t,{children:[e(f,{}),e(h,{children:"node library/.reference/5-developing-the-library~workbench.mjs, once, left open"}),e(h,{children:"node library/.reference/5-developing-the-library~workbench.mjs look the-team"}),e(h,{children:"the same with built for the site the last bind made, phone for a phone's width, close at the end"})]})]}),n(s,{children:[e(l,{children:"The bind and the site"}),e(t,{children:"In the binding beside the site, npm run bind binds every book and leaves the site under the base the configuration names, and npm run preview with its port serves what the bind left. The site is committed as it is bound, and what is published is what was committed."}),n(t,{children:[e(f,{}),e(h,{children:"cd library/.public/.binding"}),e(h,{children:"npm run bind"}),e(h,{children:"npm run preview -- --port 4343 --strictPort"})]})]}),e(c,{identifier:"workbench",type:".mjs",children:`// The workbench: the library served live from its sources, a browser kept open on it, and a way to ask that
+`})]}),"TheMastheadAndTheByline3"),P=r(()=>n(s,{children:[e(l,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"}),n(a,{children:[e(i,{children:"A cover, a synopsis, a table"}),e(t,{children:"A face is how a book's apparatus looks: the cover a book opens on, the synopsis beside it, the table of contents that answers for its chapters and, when the book is a subject, for what is filed under it. Each is a word of the package dressed here, and every book of this library wears these four from the file beside this chapter, borrowed from the test library until a sketch replaces them."})]}),e(c,{identifier:"code",type:".tsx",children:`import { $, selection } from '@dna-platform/chemistry';
+import { $Cover, $Synopsis, $Table, $TableOfContents } from '@dna-platform/public';
+
+export class $LibraryCover extends $Cover {
+    override style = selection.header\`
+        .pd-chapter.pa-cover { margin-block: \${({ theme }) => theme.space} calc(2 * \${({ theme }) => theme.space}); }
+        .pa-cover .pd-title { margin-block: 0; font-size: calc(2.25 * \${({ theme }) => theme.size}); line-height: 1.2; }
+        .pa-cover .pd-title::before { content: 'Cover'; }
+        .pa-biography .pd-title::before { content: 'Biography'; }
+        .pa-autobiography .pd-title::before { content: 'Autobiography'; }
+    \`;
+}
+
+export class $LibrarySynopsis extends $Synopsis {
+    style = selection.div\`
+        .pa-synopsis .pd-title::before { content: 'Synopsis'; }
+    \`;
+}
+
+export class $LibraryTableOfContents extends $TableOfContents {
+    override style = selection.nav\`
+        .pa-table-of-contents .pd-paragraph { margin-block: calc(\${({ theme }) => theme.space} / 4); }
+        .pa-table-of-contents .pd-title::before { content: 'Table of Contents'; }
+        .pa-table-of-contents .pd-heading {
+            font-size: calc(0.7 * \${({ theme }) => theme.size});
+            font-weight: normal;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+    \`;
+}
+
+export class $LibraryTable extends $Table {
+    override style = selection(this.style)\`
+        .pa-table { column-gap: \${({ theme }) => theme.space}; row-gap: calc(\${({ theme }) => theme.space} / 2); }
+        .pa-table .pd-paragraph { margin-block: 0; }
+    \`;
+}
+
+export const Cover = $($LibraryCover);
+export const Synopsis = $($LibrarySynopsis);
+export const TableOfContents = $($LibraryTableOfContents);
+export const Table = $($LibraryTable);
+`})]}),"TheFaces4"),W=r(()=>n(s,{children:[e(l,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"}),n(a,{children:[e(i,{children:"The loop"}),e(t,{children:"A save shows on an open page in under a second; a bind is the gate at the end of a piece of work and never the way to look during one. The workbench beside this chapter is the loop: it serves the library live from its sources, keeps one browser open on it, and answers a look with what it found and a photograph. Borrowed from the librarian's own library on 2026-10-30, its built address this library's."}),n(t,{children:[e(f,{}),e(h,{children:"node library/.reference/5-developing-the-library~workbench.mjs, once, left open"}),e(h,{children:"node library/.reference/5-developing-the-library~workbench.mjs look the-team"}),e(h,{children:"the same with built for the site the last bind made, phone for a phone's width, close at the end"})]})]}),n(a,{children:[e(i,{children:"The bind and the site"}),e(t,{children:"In the binding beside the site, npm run bind binds every book and leaves the site under the base the configuration names, and npm run preview with its port serves what the bind left. The site is committed as it is bound, and what is published is what was committed."}),n(t,{children:[e(f,{}),e(h,{children:"cd library/.public/.binding"}),e(h,{children:"npm run bind"}),e(h,{children:"npm run preview -- --port 4343 --strictPort"})]})]}),e(c,{identifier:"workbench",type:".mjs",children:`// The workbench: the library served live from its sources, a browser kept open on it, and a way to ask that
 // browser what a page looks like. Open it once and leave it open:
 //
 //     node library/.reference/5-developing-the-library~workbench.mjs
@@ -632,4 +604,4 @@ else if (verb === 'look' || verb === 'close') {
     }
     console.log(await asked(verb === 'look' ? \`look?\${wanted}\` : 'close') ?? 'no workbench is open; open one by running this file with nothing after it');
 } else console.log('open the workbench with nothing after the file; then look <a book\\'s address>, or close');
-`})]}),"DevelopingTheLibrary5"),q=k(m),N=r(()=>n(q,{children:[L(),C(),j(),A(),B(),P(),W(),M()]}),"book");export{N as book};
+`})]}),"DevelopingTheLibrary5"),M=k(p),N=r(()=>n(M,{children:[L(),R(),C(),j(),A(),B(),P(),W()]}),"book");export{N as book};

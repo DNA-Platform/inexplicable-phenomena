@@ -65,7 +65,7 @@ const open = async () => {
         let said = '';
         const read = chunk => {
             said += chunk;
-            const found = /http:\/\/localhost:\d+\//u.exec(said.replace(/\u001b\[[0-9;]*m/gu, ''));
+            const found = /http:\/\/localhost:\d+\/\S*/u.exec(said.replace(/\u001b\[[0-9;]*m/gu, ''));
             if (found === null) return;
             live.stdout.off('data', read);
             live.stderr.off('data', read);

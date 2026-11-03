@@ -9,13 +9,13 @@ declare module 'styled-components' {
 
 export class $LibraryTheme extends $Theme {
     font = "Georgia, 'Times New Roman', serif";
-    size = '1rem';
-    leading = '1.7';
-    measure = '42rem';
+    size = '1.0625rem';
+    leading = '1.6';
+    measure = '40rem';
     space = '1.25rem';
-    ink = '#23262a';
-    paper = '#faf8f4';
-    link = '#5b2f2a';
+    ink = '#1b1b1b';
+    paper = '#ffffff';
+    link = '#1f4e79';
     style: ElementType = selection.div`${this.parts()}`;
 
     protected parts(): RuleSet[] {
@@ -32,14 +32,13 @@ export class $LibraryTheme extends $Theme {
             max-width: ${({ theme }) => theme.measure};
             margin-inline: auto;
             padding: ${({ theme }) => theme.space};
-            @media (min-width: 64rem) { max-width: 52rem; }
         `;
     }
 
     protected levels(): RuleSet {
         return css`
             .pd-book { margin-block: ${({ theme }) => theme.space}; counter-reset: chapter equation; }
-            .pd-chapter { margin-block: calc(2 * ${({ theme }) => theme.space}); scroll-margin-block-start: calc(0.5 * ${({ theme }) => theme.space}); }
+            .pd-chapter { margin-block: calc(2 * ${({ theme }) => theme.space}); scroll-margin-block-start: ${({ theme }) => theme.space}; }
             .pd-section { margin-block: ${({ theme }) => theme.space}; }
             .pd-paragraph { margin-block: ${({ theme }) => theme.space}; }
             .pa-item { margin-block: calc(${({ theme }) => theme.space} / 4); }
@@ -48,10 +47,6 @@ export class $LibraryTheme extends $Theme {
             .pd-line { white-space: pre-wrap; }
             .pd-word { overflow-wrap: break-word; }
             .pd-canonical.pd-chapter { counter-increment: chapter; }
-            .pd-canonical.pd-chapter:not(.pa-framed) {
-                border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 10%, ${({ theme }) => theme.paper});
-                padding-block-start: ${({ theme }) => theme.space};
-            }
             .pd-chapter .pd-title::before { display: block; margin-block-end: calc(${({ theme }) => theme.space} / 4); }
             .pd-canonical.pd-chapter .pd-title::before { content: 'Chapter ' counter(chapter); }
         `;
@@ -64,7 +59,7 @@ export class $LibraryTheme extends $Theme {
                 font-weight: normal;
                 letter-spacing: 0.15em;
                 text-transform: uppercase;
-                opacity: 0.65;
+                opacity: 0.6;
             }
         `;
     }
@@ -94,10 +89,6 @@ export class $LibraryTheme extends $Theme {
                 row-gap: calc(${({ theme }) => theme.space} / 4);
                 align-items: baseline;
                 margin-block: ${({ theme }) => theme.space} 0;
-                padding: calc(${({ theme }) => theme.space} / 2) ${({ theme }) => theme.space};
-                background: color-mix(in srgb, ${({ theme }) => theme.ink} 3%, ${({ theme }) => theme.paper});
-                border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 10%, ${({ theme }) => theme.paper});
-                border-block-start: 3px solid ${({ theme }) => theme.link};
             }
         `;
     }
@@ -107,13 +98,12 @@ export class $LibraryTheme extends $Theme {
             .pd-figure { max-width: 100%; }
             .pd-code {
                 font-family: ui-monospace, monospace;
-                font-size: calc(0.9 * ${({ theme }) => theme.size});
+                font-size: calc(0.85 * ${({ theme }) => theme.size});
                 line-height: 1.5;
                 white-space: pre;
                 overflow-x: auto;
                 margin-block: ${({ theme }) => theme.space};
                 padding: calc(0.75 * ${({ theme }) => theme.space}) ${({ theme }) => theme.space};
-                background: color-mix(in srgb, ${({ theme }) => theme.ink} 4%, ${({ theme }) => theme.paper});
                 border-inline-start: 2px solid color-mix(in srgb, ${({ theme }) => theme.ink} 25%, ${({ theme }) => theme.paper});
             }
             .pd-code-line::before { content: attr(data-line); display: inline-block; width: 3ch; margin-inline-end: 1.5ch; text-align: end; opacity: 0.4; user-select: none; }

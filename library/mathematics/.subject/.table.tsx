@@ -11,16 +11,32 @@ export default () => (
         <Section>
             <Heading>Contents</Heading>
             <Paragraph>
-                <Content>[[ Referential Objectivity ]]( Mathematical Reference )**</Content>
+                <Word>
+                    <Content>$[[ Referential Objectivity ]]( ./Mathematical Reference )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Mathematical Reference )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Subjective Design ]]( Mathematical Design )**</Content>
+                <Word>
+                    <Content>$[[ Subjective Design ]]( ./Mathematical Design )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Mathematical Design )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Principia Veritatem Identificandi ]]( Mathematical Principles )**</Content>
+                <Word>
+                    <Content>$[[ Principia Veritatem Identificandi ]]( ./Mathematical Principles )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Mathematical Principles )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ The Biography of Subjective Identity ]]( Mathematical Identity )**</Content>
+                <Word>
+                    <Content>$[[ The Biography of Subjective Identity ]]( ./Mathematical Identity )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Mathematical Identity )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
                 <Parenthetical />

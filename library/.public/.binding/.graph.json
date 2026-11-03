@@ -2,72 +2,72 @@
   "books": [
     {
       "folder": ".identity/.subject",
-      "digest": "9d8a8d4cd1e01898",
+      "digest": "0ae3c4c4423a04bb",
       "walked": 14
     },
     {
       "folder": ".reference",
-      "digest": "2ecf6495168c9050",
+      "digest": "a04bffff5303a6d1",
       "walked": 58
     },
     {
       "folder": ".subject",
-      "digest": "24a9e7ff55945240",
-      "walked": 23
+      "digest": "92eb87d2d03ac1f5",
+      "walked": 86
     },
     {
       "folder": ".subject/.design",
-      "digest": "094c5197ef32d200",
+      "digest": "0d6edd8a85880558",
       "walked": 31
     },
     {
       "folder": ".subject/dictionary",
-      "digest": "d20d835a0a3481f7",
+      "digest": "2f13c9cad1f4c049",
       "walked": 160
     },
     {
       "folder": "chemistry/.subject",
-      "digest": "b4f7d835ec99eb10",
+      "digest": "1f9770189290dbed",
       "walked": 14
     },
     {
       "folder": "mathematics/.design",
-      "digest": "86df3132282272f1",
+      "digest": "2f126f411fed1d0b",
       "walked": 14
     },
     {
       "folder": "mathematics/.identity",
-      "digest": "160e6d9d7bfc42d2",
+      "digest": "d99c4bac3138a5f1",
       "walked": 14
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "a5e6e532bc890362",
+      "digest": "c069b943e0ea28db",
       "walked": 14
     },
     {
       "folder": "mathematics/.subject",
-      "digest": "4137aa7ba547650c",
-      "walked": 18
+      "digest": "b5e4829f917d3717",
+      "walked": 46
     },
     {
       "folder": "mathematics/.textbook",
-      "digest": "bfb9b57f7097966c",
+      "digest": "cb1567f7c2370f0a",
       "walked": 14
     },
     {
       "folder": "pharmacology/.subject",
-      "digest": "3e656f88f7ba9ed7",
+      "digest": "699ec70b45d52736",
       "walked": 14
     },
     {
       "folder": "philosophy/.subject",
-      "digest": "8a876d06d8cfe89b",
+      "digest": "1e9f69d208258d64",
       "walked": 14
     },
     {
       "folder": "physics/.subject",
-      "digest": "37a7e33e8a95e2d0",
+      "digest": "273e29f65d8102d8",
       "walked": 14
     }
   ]

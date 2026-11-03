@@ -11,31 +11,67 @@ export default () => (
         <Section>
             <Heading>Contents</Heading>
             <Paragraph>
-                <Content>[[ Our Team ]]**</Content>
+                <Word>
+                    <Content>$[[ ./Our Team ]]</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Our Team )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Dictionary ]]**</Content>
+                <Word>
+                    <Content>$[[ ./Dictionary ]]</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Dictionary )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Chemistry ]]**</Content>
+                <Word>
+                    <Content>$[[ ./Chemistry ]]</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Chemistry )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Subjective Mathematics ]]( Our Math )**</Content>
+                <Word>
+                    <Content>$[[ Subjective Mathematics ]]( ./Our Math )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Our Math )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Pharmacology ]]**</Content>
+                <Word>
+                    <Content>$[[ ./Pharmacology ]]</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Pharmacology )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Philosophy ]]**</Content>
+                <Word>
+                    <Content>$[[ ./Philosophy ]]</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Philosophy )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Physics ]]**</Content>
+                <Word>
+                    <Content>$[[ ./Physics ]]</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Physics )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Subjective Reference ]]( Our Reference )**</Content>
+                <Word>
+                    <Content>$[[ Subjective Reference ]]( ./Our Reference )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Our Reference )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
-                <Content>[[ The Design ]]**</Content>
+                <Word>
+                    <Content>$[[ ./The Design ]]</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( The Design )**</Content>
+                </Word>
             </Paragraph>
             <Paragraph>
                 <Parenthetical />

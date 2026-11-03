@@ -4,6 +4,7 @@ import { Synopsis } from '../../.reference/4-the-faces~code.tsx';
 export default () => (
     <Chapter>
         <Synopsis />
+        <Parenthetical />
         <Title>
             <Parenthetical />
             [[ Synopsis ]]
