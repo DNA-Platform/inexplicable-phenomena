@@ -20,7 +20,7 @@ export default () => (
                 <Content>[[ Chemistry ]]**</Content>
             </Paragraph>
             <Paragraph>
-                <Content>[[ Mathematics ]]**</Content>
+                <Content>[[ Subjective Mathematics ]]( Our Math )**</Content>
             </Paragraph>
             <Paragraph>
                 <Content>[[ Pharmacology ]]**</Content>

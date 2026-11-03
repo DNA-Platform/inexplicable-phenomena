@@ -12,7 +12,7 @@
     },
     {
       "folder": ".subject",
-      "digest": "f86202a5eeb872a6",
+      "digest": "f16fb3f855c0a8d6",
       "walked": 23
     },
     {
@@ -31,8 +31,28 @@
       "walked": 14
     },
     {
+      "folder": "mathematics/.design",
+      "digest": "86df3132282272f1",
+      "walked": 14
+    },
+    {
+      "folder": "mathematics/.identity",
+      "digest": "8fbb85dfe7d8349e",
+      "walked": 14
+    },
+    {
+      "folder": "mathematics/.reference",
+      "digest": "a5e6e532bc890362",
+      "walked": 14
+    },
+    {
       "folder": "mathematics/.subject",
-      "digest": "feb18cdb76c1715a",
+      "digest": "4137aa7ba547650c",
+      "walked": 18
+    },
+    {
+      "folder": "mathematics/.textbook",
+      "digest": "bfb9b57f7097966c",
       "walked": 14
     },
     {
