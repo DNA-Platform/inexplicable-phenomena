@@ -1,54 +1,54 @@
 {
   "books": [
     {
-      "folder": ".identity/.reference",
-      "digest": "01f1a137eff1b10b",
-      "walked": 26
+      "folder": ".identity/.subject",
+      "digest": "7a1a4cfef63e684a",
+      "walked": 14
     },
     {
-      "folder": ".reference",
-      "digest": "484dc531198f1af3",
-      "walked": 64
+      "folder": ".subject",
+      "digest": "ec556f5148adb003",
+      "walked": 23
     },
     {
-      "folder": ".reference/.design",
-      "digest": "cb473afad8e1dbe5",
+      "folder": ".subject/.design",
+      "digest": "0797b8bc273e39b4",
       "walked": 31
     },
     {
-      "folder": ".reference/.manual",
-      "digest": "0b9d812f3932ece1",
+      "folder": ".subject/.manual",
+      "digest": "84f11af1e133d160",
       "walked": 58
     },
     {
-      "folder": ".reference/dictionary",
-      "digest": "9df68ca7f223c044",
+      "folder": ".subject/dictionary",
+      "digest": "461a9c02a9b3af8a",
       "walked": 160
     },
     {
-      "folder": "chemistry/.reference",
-      "digest": "d34a116f7f901fd5",
+      "folder": "chemistry/.subject",
+      "digest": "9fd1211ce70834b2",
       "walked": 14
     },
     {
-      "folder": "mathematics/.reference",
-      "digest": "97d9212fbc164985",
+      "folder": "mathematics/.subject",
+      "digest": "8e3e6d8c698b2155",
       "walked": 14
     },
     {
-      "folder": "pharmacology/.reference",
-      "digest": "4db3a2a2da7968f9",
-      "walked": 15
+      "folder": "pharmacology/.subject",
+      "digest": "945e5893de941d29",
+      "walked": 14
     },
     {
-      "folder": "philosophy/.reference",
-      "digest": "287aa022c02f0cf1",
-      "walked": 15
+      "folder": "philosophy/.subject",
+      "digest": "b490c44e1000c3b3",
+      "walked": 14
     },
     {
-      "folder": "physics/.reference",
-      "digest": "ea8564e2d5963fdf",
-      "walked": 15
+      "folder": "physics/.subject",
+      "digest": "c657ade62453d7ad",
+      "walked": 14
     }
   ]
 }
