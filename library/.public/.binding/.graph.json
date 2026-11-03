@@ -1,6 +1,11 @@
 {
   "books": [
     {
+      "folder": ".identity/.reference",
+      "digest": "01f1a137eff1b10b",
+      "walked": 26
+    },
+    {
       "folder": ".reference",
       "digest": "484dc531198f1af3",
       "walked": 64
@@ -44,11 +49,6 @@
       "folder": "physics/.reference",
       "digest": "ea8564e2d5963fdf",
       "walked": 15
-    },
-    {
-      "folder": "team/.reference",
-      "digest": "5890ae269a498701",
-      "walked": 26
     }
   ]
 }

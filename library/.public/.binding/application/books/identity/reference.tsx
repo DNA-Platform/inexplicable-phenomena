@@ -1,10 +1,10 @@
 import { $ } from '@dna-platform/chemistry';
 import { opened } from '../../opened';
-import $Book from '../../../../../team/.reference/.book';
-import Cover from '../../../../../team/.reference/.cover';
-import Synopsis from '../../../../../team/.reference/.synopsis';
-import Table from '../../../../../team/.reference/.table';
-import WhoQualifies1 from '../../../../../team/.reference/1-who-qualifies';
+import $Book from '../../../../../.identity/.reference/.book';
+import Cover from '../../../../../.identity/.reference/.cover';
+import Synopsis from '../../../../../.identity/.reference/.synopsis';
+import Table from '../../../../../.identity/.reference/.table';
+import WhoQualifies1 from '../../../../../.identity/.reference/1-who-qualifies';
 
 const Book = $($Book);
 

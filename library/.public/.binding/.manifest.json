@@ -1,5 +1,6 @@
 {
   "assembled": [
+    ".binding/application/books/identity/reference.tsx",
     ".binding/application/books/reference.tsx",
     ".binding/application/books/reference/design.tsx",
     ".binding/application/books/reference/manual.tsx",
@@ -8,8 +9,7 @@
     ".binding/application/books/mathematics/reference.tsx",
     ".binding/application/books/pharmacology/reference.tsx",
     ".binding/application/books/philosophy/reference.tsx",
-    ".binding/application/books/physics/reference.tsx",
-    ".binding/application/books/team/reference.tsx"
+    ".binding/application/books/physics/reference.tsx"
   ],
   "written": [
     ".binding/application/books.ts",
@@ -17,6 +17,7 @@
     ".binding/application/routes.ts"
   ],
   "rendered": [
+    "the-team/index.html",
     "reference/index.html",
     "the-design/index.html",
     "the-manual/index.html",
@@ -26,7 +27,6 @@
     "pharmacology/index.html",
     "philosophy/index.html",
     "physics/index.html",
-    "the-team/index.html",
     "index.html"
   ],
   "bundled": [
@@ -91,6 +91,7 @@
     "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
     "assets/books/4-the-faces~code-Dib9cH4X.js",
     "assets/books/chemistry-reference-D0X4UJx7.js",
+    "assets/books/identity-reference-DJB9QU80.js",
     "assets/books/mathematics-reference-CH0WgXgB.js",
     "assets/books/pharmacology-reference-BZ3E3XTe.js",
     "assets/books/philosophy-reference-Dr_Itinf.js",
@@ -99,8 +100,7 @@
     "assets/books/reference-dictionary-Cj6XUeSW.js",
     "assets/books/reference-manual-FVpwOnom.js",
     "assets/books/reference-rXkO86dF.js",
-    "assets/books/team-reference-DgXS9P4E.js",
-    "assets/index-CNknsFuV.js",
+    "assets/index-BMx3Uo8z.js",
     "assets/index-CP4cPyka.css",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
@@ -188,8 +188,8 @@
       "markup": ".pages/physics.html"
     },
     "/the-team": {
-      "folder": "team/.reference",
-      "digest": "5890ae269a498701",
+      "folder": ".identity/.reference",
+      "digest": "01f1a137eff1b10b",
       "references": "02cf989090a32330",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/89d385d8c937.css",
@@ -614,12 +614,11 @@
         ]
       }
     },
-    "team/.reference": {
-      "digest": "f41e7154e03d28a7",
-      "entry": "assets/books/team-reference-DgXS9P4E.js",
+    ".identity/.reference": {
+      "digest": "0ed7ed96f43840d2",
+      "entry": "assets/books/identity-reference-DJB9QU80.js",
       "files": [
-        "assets/books/4-the-faces~code-Dib9cH4X.js",
-        "assets/books/team-reference-DgXS9P4E.js"
+        "assets/books/identity-reference-DJB9QU80.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -687,7 +686,7 @@
     ]
   },
   "app": {
-    "digest": "65e08f737df25537",
+    "digest": "6d4f5618152e7963",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -748,7 +747,7 @@
       "assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff",
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
-      "assets/index-CNknsFuV.js",
+      "assets/index-BMx3Uo8z.js",
       "assets/index-CP4cPyka.css"
     ],
     "bindings": {
@@ -769,6 +768,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-CNknsFuV.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-BMx3Uo8z.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }

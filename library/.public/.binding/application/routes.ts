@@ -2,6 +2,7 @@
 import { books } from './books';
 
 export const routes = [
+    { name: "The Team", folder: ".identity/.reference", address: "/the-team", chapters: [{"name":"Synopsis","address":"/the-team#synopsis"},{"name":"Table of Contents","address":"/the-team#table-of-contents"},{"name":"Who Qualifies","address":"/the-team#who-qualifies"}], load: books[".identity/.reference"] },
     { name: "Reference", folder: ".reference", address: "/reference", chapters: [{"name":"Synopsis","address":"/reference#synopsis"},{"name":"Table of Contents","address":"/reference#table-of-contents"},{"name":"What This Library Is","address":"/reference#what-this-library-is"}], load: books[".reference"] },
     { name: "The Design", folder: ".reference/.design", address: "/the-design", chapters: [{"name":"Synopsis","address":"/the-design#synopsis"},{"name":"Table of Contents","address":"/the-design#table-of-contents"},{"name":"The Top Page","address":"/the-design#the-top-page"}], load: books[".reference/.design"] },
     { name: "The Manual", folder: ".reference/.manual", address: "/the-manual", chapters: [{"name":"Synopsis","address":"/the-manual#synopsis"},{"name":"Table of Contents","address":"/the-manual#table-of-contents"},{"name":"The Book","address":"/the-manual#the-book"},{"name":"The Theme","address":"/the-manual#the-theme"},{"name":"The Masthead and the Byline","address":"/the-manual#the-masthead-and-the-byline"},{"name":"The Faces","address":"/the-manual#the-faces"},{"name":"Developing the Library","address":"/the-manual#developing-the-library"}], load: books[".reference/.manual"] },
@@ -11,7 +12,6 @@ export const routes = [
     { name: "Pharmacology", folder: "pharmacology/.reference", address: "/pharmacology", chapters: [{"name":"Synopsis","address":"/pharmacology#synopsis"},{"name":"Table of Contents","address":"/pharmacology#table-of-contents"}], load: books["pharmacology/.reference"] },
     { name: "Philosophy", folder: "philosophy/.reference", address: "/philosophy", chapters: [{"name":"Synopsis","address":"/philosophy#synopsis"},{"name":"Table of Contents","address":"/philosophy#table-of-contents"}], load: books["philosophy/.reference"] },
     { name: "Physics", folder: "physics/.reference", address: "/physics", chapters: [{"name":"Synopsis","address":"/physics#synopsis"},{"name":"Table of Contents","address":"/physics#table-of-contents"}], load: books["physics/.reference"] },
-    { name: "The Team", folder: "team/.reference", address: "/the-team", chapters: [{"name":"Synopsis","address":"/the-team#synopsis"},{"name":"Table of Contents","address":"/the-team#table-of-contents"},{"name":"Who Qualifies","address":"/the-team#who-qualifies"}], load: books["team/.reference"] },
 ];
 
-export const root = routes[0];
+export const root = routes[1];
