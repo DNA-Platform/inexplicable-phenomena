@@ -11,7 +11,7 @@ export const books = {
     "mathematics/.reference": () => import("./books/mathematics/reference"),
     "mathematics/.subject": () => import("./books/mathematics/subject"),
     "mathematics/.textbook": () => import("./books/mathematics/textbook"),
-    "pharmacology/.subject": () => import("./books/pharmacology/subject"),
+    "neuroscience/.subject": () => import("./books/neuroscience/subject"),
     "philosophy/.subject": () => import("./books/philosophy/subject"),
     "physics/.subject": () => import("./books/physics/subject"),
 };

@@ -13,7 +13,7 @@ export default () => (
             <Paragraph>
                 <Parenthetical />
                 <Word>
-                    <Content>$[[ Pharmacology ]]</Content>
+                    <Content>$[[ Neuroscience ]]</Content>
                 </Word>
                 <Word>
                     <Content>$[[ ./Synopsis ]]</Content>

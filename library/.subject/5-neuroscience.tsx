@@ -1,13 +1,13 @@
 import { Chapter, Means, Paragraph, Title } from '@dna-platform/public';
 import { Synopsis } from '../.reference/4-the-faces~code.tsx';
-import PharmacologySynopsis from '../pharmacology/.subject/.synopsis.tsx';
+import NeuroscienceSynopsis from '../neuroscience/.subject/.synopsis.tsx';
 
 export default () => (
     <Chapter>
-        <Title>[[ Pharmacology ]]</Title>
-        <Synopsis>{PharmacologySynopsis()}</Synopsis>
+        <Title>[[ Neuroscience ]]</Title>
+        <Synopsis>{NeuroscienceSynopsis()}</Synopsis>
         <Paragraph>
-            <Means>$[[ Pharmacology ]]</Means>
+            <Means>$[[ Neuroscience ]]</Means>
         </Paragraph>
     </Chapter>
 );

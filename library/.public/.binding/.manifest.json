@@ -11,7 +11,7 @@
     ".binding/application/books/mathematics/reference.tsx",
     ".binding/application/books/mathematics/subject.tsx",
     ".binding/application/books/mathematics/textbook.tsx",
-    ".binding/application/books/pharmacology/subject.tsx",
+    ".binding/application/books/neuroscience/subject.tsx",
     ".binding/application/books/philosophy/subject.tsx",
     ".binding/application/books/physics/subject.tsx"
   ],
@@ -21,9 +21,10 @@
     ".binding/application/routes.ts"
   ],
   "rendered": [
+    "our-library/index.html",
+    "neuroscience/index.html",
     "our-team/index.html",
     "our-reference/index.html",
-    "our-library/index.html",
     "the-design/index.html",
     "dictionary/index.html",
     "chemistry/index.html",
@@ -32,7 +33,6 @@
     "mathematical-reference/index.html",
     "our-math/index.html",
     "mathematical-principles/index.html",
-    "pharmacology/index.html",
     "philosophy/index.html",
     "physics/index.html",
     "index.html"
@@ -106,9 +106,9 @@
     "assets/books/.synopsis-CjqsAR3J.js",
     "assets/books/.synopsis-ClKCIJCd.js",
     "assets/books/.synopsis-CsSDU8Kf.js",
+    "assets/books/.synopsis-Da5g2ZOi.js",
     "assets/books/.synopsis-SaM5obgg.js",
     "assets/books/.synopsis-TA618BL1.js",
-    "assets/books/.synopsis-Y5I_A3ID.js",
     "assets/books/.synopsis-oKo9lKb8.js",
     "assets/books/4-the-faces~code-Dwcej_XW.js",
     "assets/books/chemistry-subject-aHTzFKVx.js",
@@ -118,15 +118,15 @@
     "assets/books/mathematics-reference-TSQFq_hg.js",
     "assets/books/mathematics-subject-kTLt3Vmu.js",
     "assets/books/mathematics-textbook-Bm8ZJ_qu.js",
-    "assets/books/pharmacology-subject-qT6A53gP.js",
+    "assets/books/neuroscience-subject-Cvosaxyl.js",
     "assets/books/philosophy-subject-Cih0_d07.js",
     "assets/books/physics-subject-CrerfcjM.js",
     "assets/books/reference-r33sHUiG.js",
-    "assets/books/subject-DFATpjnN.js",
     "assets/books/subject-design-DmzFB3t-.js",
     "assets/books/subject-dictionary-BZUWYSmW.js",
+    "assets/books/subject-pUHW2AY0.js",
+    "assets/index-C4PnL4kZ.js",
     "assets/index-CP4cPyka.css",
-    "assets/index-CUHH1KYq.js",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
     "assets/shared/at-dna-platform-chemistry-Dnqvott5.js",
@@ -155,14 +155,6 @@
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/c7cbc22db8b1.css",
       "markup": ".pages/our-reference.html"
-    },
-    "/our-library": {
-      "folder": ".subject",
-      "digest": "9a46f0ac26058489",
-      "references": "a5323c83c2004d89",
-      "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/fc0af3271c5c.css",
-      "markup": ".pages/our-library.html"
     },
     "/the-design": {
       "folder": ".subject/.design",
@@ -228,14 +220,6 @@
       "sheet": "sheets/fc0af3271c5c.css",
       "markup": ".pages/mathematical-principles.html"
     },
-    "/pharmacology": {
-      "folder": "pharmacology/.subject",
-      "digest": "45ac3f2fda0342a7",
-      "references": "c9d04034f2566c87",
-      "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/fc0af3271c5c.css",
-      "markup": ".pages/pharmacology.html"
-    },
     "/philosophy": {
       "folder": "philosophy/.subject",
       "digest": "7820a98ee9d1e18b",
@@ -251,6 +235,22 @@
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/fc0af3271c5c.css",
       "markup": ".pages/physics.html"
+    },
+    "/our-library": {
+      "folder": ".subject",
+      "digest": "c6bf5f96e56a004a",
+      "references": "9bbb8ec48bf95b60",
+      "binder": "6a9cabae88b71ed1",
+      "sheet": "sheets/fc0af3271c5c.css",
+      "markup": ".pages/our-library.html"
+    },
+    "/neuroscience": {
+      "folder": "neuroscience/.subject",
+      "digest": "817a342e26549824",
+      "references": "4252e31f701f6b21",
+      "binder": "6a9cabae88b71ed1",
+      "sheet": "sheets/fc0af3271c5c.css",
+      "markup": ".pages/neuroscience.html"
     }
   },
   "chunks": {
@@ -332,62 +332,6 @@
           "Heading",
           "Line",
           "List",
-          "Means",
-          "Paginated",
-          "Paragraph",
-          "Parenthetical",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
-    },
-    ".subject": {
-      "digest": "9a05bf36a4fd9d2d",
-      "entry": "assets/books/subject-DFATpjnN.js",
-      "files": [
-        "assets/books/.synopsis-B2BcBd-Z.js",
-        "assets/books/.synopsis-CVx92Ynz.js",
-        "assets/books/.synopsis-C_zFhvB5.js",
-        "assets/books/.synopsis-ChFOEB97.js",
-        "assets/books/.synopsis-CjqsAR3J.js",
-        "assets/books/.synopsis-ClKCIJCd.js",
-        "assets/books/.synopsis-TA618BL1.js",
-        "assets/books/.synopsis-Y5I_A3ID.js",
-        "assets/books/.synopsis-oKo9lKb8.js",
-        "assets/books/4-the-faces~code-Dwcej_XW.js",
-        "assets/books/subject-DFATpjnN.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Book",
-          "$Cover",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "About",
-          "Author",
-          "Chapter",
-          "Content",
-          "Heading",
           "Means",
           "Paginated",
           "Paragraph",
@@ -796,54 +740,6 @@
         ]
       }
     },
-    "pharmacology/.subject": {
-      "digest": "021271e033a62fea",
-      "entry": "assets/books/pharmacology-subject-qT6A53gP.js",
-      "files": [
-        "assets/books/.synopsis-Y5I_A3ID.js",
-        "assets/books/4-the-faces~code-Dwcej_XW.js",
-        "assets/books/pharmacology-subject-qT6A53gP.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Book",
-          "$Cover",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "About",
-          "Author",
-          "Chapter",
-          "Content",
-          "Heading",
-          "Means",
-          "Paginated",
-          "Paragraph",
-          "Parenthetical",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
-    },
     "philosophy/.subject": {
       "digest": "19444df63df69bc0",
       "entry": "assets/books/philosophy-subject-Cih0_d07.js",
@@ -939,6 +835,100 @@
           "css"
         ]
       }
+    },
+    ".subject": {
+      "digest": "7a9b7abc7aa5b8ac",
+      "entry": "assets/books/subject-pUHW2AY0.js",
+      "files": [
+        "assets/books/.synopsis-Da5g2ZOi.js",
+        "assets/books/subject-pUHW2AY0.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Book",
+          "$Cover",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "About",
+          "Author",
+          "Chapter",
+          "Content",
+          "Heading",
+          "Means",
+          "Paginated",
+          "Paragraph",
+          "Parenthetical",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
+    },
+    "neuroscience/.subject": {
+      "digest": "41f17d8cde336acc",
+      "entry": "assets/books/neuroscience-subject-Cvosaxyl.js",
+      "files": [
+        "assets/books/.synopsis-Da5g2ZOi.js",
+        "assets/books/neuroscience-subject-Cvosaxyl.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Book",
+          "$Cover",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "About",
+          "Author",
+          "Chapter",
+          "Content",
+          "Heading",
+          "Means",
+          "Paginated",
+          "Paragraph",
+          "Parenthetical",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
     }
   },
   "shared": {
@@ -966,7 +956,7 @@
     ]
   },
   "app": {
-    "digest": "ef49e51d6325c42e",
+    "digest": "97db18d389ccbb6b",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -1027,8 +1017,8 @@
       "assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff",
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
-      "assets/index-CP4cPyka.css",
-      "assets/index-CUHH1KYq.js"
+      "assets/index-C4PnL4kZ.js",
+      "assets/index-CP4cPyka.css"
     ],
     "bindings": {
       "@dna-platform/chemistry": [
@@ -1048,6 +1038,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-CUHH1KYq.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-C4PnL4kZ.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }

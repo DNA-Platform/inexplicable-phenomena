@@ -40,9 +40,9 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 <Word>
-                    <Content>$[[ ./Pharmacology ]]</Content>
+                    <Content>$[[ ./Neuroscience ]]</Content>
                 </Word> <Word>
-                    <Content>[[ ▷ ]]( Pharmacology )**</Content>
+                    <Content>[[ ▷ ]]( Neuroscience )**</Content>
                 </Word>
             </Paragraph>
             <Paragraph>

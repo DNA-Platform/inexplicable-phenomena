@@ -4,9 +4,9 @@ import { Cover } from '../../.reference/4-the-faces~code.tsx';
 export default () => (
     <Chapter>
         <Cover />
-        <Title>[[ Pharmacology ]]</Title>
+        <Title>[[ Neuroscience ]]</Title>
         <Author>*[[ Our Team ]]</Author>
         <Subject>**[[ Inexplicable Phenomena ]]</Subject>
-        <About>[[ Pharmacology ]]</About>
+        <About>[[ Neuroscience ]]</About>
     </Chapter>
 );

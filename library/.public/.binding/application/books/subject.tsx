@@ -8,7 +8,7 @@ import OurTeam1 from '../../../../.subject/1-our-team';
 import Dictionary2 from '../../../../.subject/2-dictionary';
 import Chemistry3 from '../../../../.subject/3-chemistry';
 import OurMath4 from '../../../../.subject/4-our-math';
-import Pharmacology5 from '../../../../.subject/5-pharmacology';
+import Neuroscience5 from '../../../../.subject/5-neuroscience';
 import Philosophy6 from '../../../../.subject/6-philosophy';
 import Physics7 from '../../../../.subject/7-physics';
 import OurReference8 from '../../../../.subject/8-our-reference';
@@ -25,7 +25,7 @@ export const book = () => (
         {Dictionary2()}
         {Chemistry3()}
         {OurMath4()}
-        {Pharmacology5()}
+        {Neuroscience5()}
         {Philosophy6()}
         {Physics7()}
         {OurReference8()}
