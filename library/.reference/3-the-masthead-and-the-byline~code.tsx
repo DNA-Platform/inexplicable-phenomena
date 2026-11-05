@@ -53,6 +53,12 @@ export class $Byline extends $Paragraph {
                     <Reference>{book.author?.means?.identifier}</Reference>
                     {book.author?.name}
                 </Word>
+                {book.about === undefined ? null : <>
+                    <Label>About</Label> <Word>
+                        <Reference>{book.about.means?.identifier}</Reference>
+                        {book.about.name}
+                    </Word>
+                </>}
                 <Label>Filed under</Label> <Word>
                     <Reference>{book.subject?.means?.identifier}</Reference>
                     {book.subject?.name}
