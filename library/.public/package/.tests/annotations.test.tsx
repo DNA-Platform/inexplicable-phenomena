@@ -5,6 +5,8 @@ import { ServerStyleSheet } from 'styled-components';
 import { $ } from '@dna-platform/chemistry';
 import { $Writing, $Annotation, $Paragraph, Paragraph, Word, $Word, Section, Heading, $Section, Chapter, $Chapter, Title, Book, $Book, Cover, html } from '@dna-platform/public';
 import { Note, $Note, Comment, $Comment, Thought, $Thought, Reaction, $Reaction, Description, $Description } from '@dna-platform/public';
+import { Matter, $Matter, Turn, $Turn, Result, $Result, Formalism, $Formalism, Correction, $Correction, Importance, $Importance } from '@dna-platform/public';
+import { Question, $Question, Remark, $Remark, Idea, $Idea, Reminder, $Reminder, Summary, $Summary } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -28,6 +30,17 @@ const sorts = [
     { Sort: Thought, $Sort: $Thought, mark: 'pa-thought', holds: 'a thought holds what its writing prompted' },
     { Sort: Reaction, $Sort: $Reaction, mark: 'pa-reaction', holds: 'a reaction holds how its writing struck its reader' },
     { Sort: Description, $Sort: $Description, mark: 'pa-description', holds: 'a description holds what its writing is' },
+    { Sort: Matter, $Sort: $Matter, mark: 'pa-matter', holds: 'a matter holds what its writing is about' },
+    { Sort: Turn, $Sort: $Turn, mark: 'pa-turn', holds: 'a turn holds what the subject turns to at its writing' },
+    { Sort: Result, $Sort: $Result, mark: 'pa-result', holds: 'a result holds what its writing states, reaches or circles' },
+    { Sort: Formalism, $Sort: $Formalism, mark: 'pa-formalism', holds: 'a formalism holds the definition, notation or construction its writing introduces' },
+    { Sort: Correction, $Sort: $Correction, mark: 'pa-correction', holds: 'a correction holds what was wrong before its writing and what is right' },
+    { Sort: Importance, $Sort: $Importance, mark: 'pa-importance', holds: 'an importance holds why its writing matters to its author' },
+    { Sort: Question, $Sort: $Question, mark: 'pa-question', holds: 'a question holds what its writing leaves open' },
+    { Sort: Remark, $Sort: $Remark, mark: 'pa-remark', holds: 'a remark holds what is asserted of its writing' },
+    { Sort: Idea, $Sort: $Idea, mark: 'pa-idea', holds: 'an idea holds what might be made of its writing' },
+    { Sort: Reminder, $Sort: $Reminder, mark: 'pa-reminder', holds: 'a reminder holds what to carry forward from its writing' },
+    { Sort: Summary, $Sort: $Summary, mark: 'pa-summary', holds: 'a summary holds what its writing comes to' },
 ];
 
 // Doug, 2026-11-06: "Annotations are parentheticals within a chapter that don't affect the page. Perhaps they should
