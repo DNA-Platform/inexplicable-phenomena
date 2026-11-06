@@ -1,6 +1,7 @@
 import { $, $check, selection } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, AnnotationSpecification } from './Writing';
+import { $Writing } from './Writing';
+import { AnnotationSpecification } from '@/annotations/Annotation';
 import { $Composition } from './Composition';
 import { $Format } from './Format';
 import { $Section } from './Section';

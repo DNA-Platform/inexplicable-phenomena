@@ -1,7 +1,8 @@
 import { ElementType, ReactNode } from 'react';
 import { $, $Chemical, children, theme } from '@dna-platform/chemistry';
 import { reflection } from '@/utilities/Reflection';
-import { $Writing, $Annotation } from './Writing';
+import { $Writing } from './Writing';
+import { $Annotation } from '@/annotations/Annotation';
 import type { $Theme } from './Theme';
 
 export class $Format extends $Annotation {

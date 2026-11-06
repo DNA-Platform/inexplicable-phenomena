@@ -1,9 +1,10 @@
 import { AllHTMLAttributes, ElementType, ReactNode } from 'react';
-import { $, $Chemical, inert } from '@dna-platform/chemistry';
+import { $, $Chemical } from '@dna-platform/chemistry';
 import { Collection, Compilation } from '@/utilities/Collection';
 import type { Author, Given } from '@/utilities/Collection';
 import { Specification } from '@/utilities/Specification';
 import { reflection } from '@/utilities/Reflection';
+import { $Annotation } from '@/annotations/Annotation';
 import type { $Book } from '@/libraries/Book';
 import type { $Chapter } from '@/libraries/Chapter';
 
@@ -108,24 +109,6 @@ export class $Writing extends $Chemical {
         for (const annotation of this.annotations)
             annotation.$Bound();
     }
-}
-
-export class $Annotation extends $Writing {
-    specification = new AnnotationSpecification();
-
-    $Annotation(...chemicals: $Chemical[]) {
-        this.$Writing(...chemicals);
-    }
-
-    override view(): ReactNode {
-        const writing = this.parent;
-        return writing instanceof $Writing && writing.annotations.expressed(this) !== undefined ? this.note() : null;
-    }
-
-    note(): ReactNode { return null; }
-    defines(writing: $Writing): void { }
-    erase(writing: $Writing): void { }
-    specifies(writing: $Writing, code?: string): string[] { return this.specification.check(writing, code); }
 }
 
 export class Text extends Collection<$Chemical> {
@@ -235,56 +218,6 @@ export class Annotations extends Collection<$Annotation> {
     }
 }
 
-export class $Parenthetical extends $Annotation {
-    @inert() protected _element?: ElementType;
-    protected _unwritten!: ElementType;
-
-    $Parenthetical(...chemicals: $Chemical[]) {
-        this.$Annotation(...chemicals);
-        this._unwritten = ({ id, className }: { id?: string; className?: string }) => {
-            const Element = this._element ?? 'span';
-            return (
-                <Element
-                    id={id}
-                    className={className}
-                    hidden
-                />
-            );
-        };
-    }
-
-    override defines(writing: $Writing): void {
-        writing.classes.add(this, 'pa-parenthetical');
-        const element = writing.containers.at(0);
-        if (element === undefined || element === this._unwritten) return;
-        this._element = element;
-        writing.containers.replace(this, element, this._unwritten);
-    }
-
-    override erase(writing: $Writing): void {
-        writing.classes.revert(this);
-        writing.containers.revert(this);
-    }
-}
-
-export class $Narrative extends $Annotation {
-    override defines(writing: $Writing): void {
-        for (const annotation of writing.annotations.after(this))
-            if (annotation instanceof $Parenthetical)
-                writing.annotations.express(annotation, false);
-    }
-}
-
-export class $Blank extends $Annotation {
-    override defines(writing: $Writing): void { writing.classes.add(this, 'pa-blank'); }
-    override erase(writing: $Writing): void { writing.classes.revert(this); }
-}
-
 export class WritingSpecification extends Specification<$Writing> { }
-export class AnnotationSpecification extends WritingSpecification { }
 
 export const Writing = $($Writing);
-export const Annotation = $($Annotation);
-export const Parenthetical = $($Parenthetical);
-export const Narrative = $($Narrative);
-export const Blank = $($Blank);

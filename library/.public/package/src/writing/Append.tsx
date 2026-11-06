@@ -1,6 +1,7 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
+import { $Writing } from './Writing';
+import { $Annotation, AnnotationSpecification } from '@/annotations/Annotation';
 import { $Chapter } from '@/libraries/Chapter';
 
 export class $Append extends $Annotation {

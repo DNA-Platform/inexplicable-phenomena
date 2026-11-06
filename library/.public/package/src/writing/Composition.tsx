@@ -1,6 +1,7 @@
 import { $, $check, $Block as $Written } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, $Annotation, WritingSpecification, AnnotationSpecification } from './Writing';
+import { $Writing, WritingSpecification } from './Writing';
+import { $Annotation, AnnotationSpecification } from '@/annotations/Annotation';
 
 export class $Composition extends $Writing {
     specification = new CompositionSpecification();

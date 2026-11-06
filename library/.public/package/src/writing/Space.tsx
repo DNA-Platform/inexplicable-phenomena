@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { Blank as blank } from './Writing';
+import { Blank as blank } from '@/annotations/Blank';
 import { $Letter } from './Letter';
 
 export class $Space extends $Letter {

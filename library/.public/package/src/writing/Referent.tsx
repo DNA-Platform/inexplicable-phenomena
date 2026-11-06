@@ -1,7 +1,8 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { html } from '@/utilities/Html';
 import { specify } from '@/utilities/Specification';
-import { $Writing, $Annotation, AnnotationSpecification } from './Writing';
+import { $Writing } from './Writing';
+import { $Annotation, AnnotationSpecification } from '@/annotations/Annotation';
 
 export class $Referent extends $Annotation {
     specification = new ReferentSpecification();

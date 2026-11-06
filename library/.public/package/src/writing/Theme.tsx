@@ -1,6 +1,7 @@
 import { $, $check } from '@dna-platform/chemistry';
 import { specify } from '@/utilities/Specification';
-import { $Writing, AnnotationSpecification } from './Writing';
+import { $Writing } from './Writing';
+import { AnnotationSpecification } from '@/annotations/Annotation';
 import { $Format } from './Format';
 
 export class $Theme extends $Format {

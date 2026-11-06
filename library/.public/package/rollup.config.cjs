@@ -67,10 +67,17 @@ const at = () => ({
 // a chapter surfaces its part inside a getter, `expressed($Part)`, and a part is said of a
 // chapter, `instanceof $Chapter` inside a rule — Doug: "A chapter itself can surface its part,
 // or return undefined" — and Part stands in its own file beside the table by his ruling.
+// The fourth, 2026-11-06, is the one where a class DOES extend across the cycle: an annotation is a
+// writing, `$Annotation extends $Writing`, and a writing sorts its children by annotation,
+// `instanceof $Annotation` inside its constructor and its collection. Doug: "Let's make sure to get
+// Annotation in the annotations folder in .public." So the base's folder is entered before the
+// writing's, `src/index.ts` says so, and a promise that builds every annotation from the dist fails
+// loudly if that order is ever lost.
 const knownCycles = [
     'src/writing/Section.tsx -> src/writing/Heading.tsx -> src/writing/Section.tsx',
     'src/libraries/Chapter.tsx -> src/libraries/Title.tsx -> src/libraries/Chapter.tsx',
     'src/libraries/Chapter.tsx -> src/libraries/Part.tsx -> src/libraries/Chapter.tsx',
+    'src/annotations/Annotation.tsx -> src/writing/Writing.tsx -> src/annotations/Annotation.tsx',
 ];
 
 const named = warning => (warning.ids || [])
