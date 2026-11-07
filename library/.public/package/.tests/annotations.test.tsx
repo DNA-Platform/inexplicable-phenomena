@@ -7,6 +7,7 @@ import { $Writing, $Annotation, $Paragraph, Paragraph, Word, $Word, Section, Hea
 import { Note, $Note, Comment, $Comment, Thought, $Thought, Reaction, $Reaction, Description, $Description } from '@dna-platform/public';
 import { Matter, $Matter, Turn, $Turn, Result, $Result, Formalism, $Formalism, Correction, $Correction, Importance, $Importance } from '@dna-platform/public';
 import { Question, $Question, Remark, $Remark, Idea, $Idea, Reminder, $Reminder, Summary, $Summary } from '@dna-platform/public';
+import { Revision, $Revision, Archive, $Archive } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const drawn = async (writing: $Writing): Promise<HTMLElement> => {
@@ -41,6 +42,8 @@ const sorts = [
     { Sort: Idea, $Sort: $Idea, mark: 'pa-idea', holds: 'an idea holds what might be made of its writing' },
     { Sort: Reminder, $Sort: $Reminder, mark: 'pa-reminder', holds: 'a reminder holds what to carry forward from its writing' },
     { Sort: Summary, $Sort: $Summary, mark: 'pa-summary', holds: 'a summary holds what its writing comes to' },
+    { Sort: Revision, $Sort: $Revision, mark: 'pa-revision', holds: 'a revision holds what its writing replaces or changes, and where the earlier form stands' },
+    { Sort: Archive, $Sort: $Archive, mark: 'pa-archive', holds: 'an archive holds a direction its writing took that the work left behind' },
 ];
 
 // Doug, 2026-11-06: "Annotations are parentheticals within a chapter that don't affect the page. Perhaps they should

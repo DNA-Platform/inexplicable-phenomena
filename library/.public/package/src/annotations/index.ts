@@ -18,3 +18,5 @@ export * from './Remark';
 export * from './Idea';
 export * from './Reminder';
 export * from './Summary';
+export * from './Revision';
+export * from './Archive';
