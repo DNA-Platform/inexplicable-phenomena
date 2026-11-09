@@ -11,7 +11,7 @@ export default () => (
         <Section>
             <Heading>Contents</Heading>
             <Paragraph>
-                <Content>$[[ The First Sprint ]]( ./Sprint 124 )</Content>
+                <Content>$[[ The Notes ]]( ./Sprint 124 )</Content>
             </Paragraph>
             <Paragraph>
                 <Parenthetical />

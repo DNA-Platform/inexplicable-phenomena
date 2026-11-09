@@ -8,8 +8,8 @@ export default () => (
             Notes on the formalisms the notes hold, on Doug's request after reading the running notebook: "How about
             some notes on possible formalism related to the notes. You might list some options" (in the room, 9
             November 2026). Each option says where it stands at the close of the long conversation, what it is cited
-            from, and how the newest statement bears on it: the algebraic model of the subject of logic he stated the
-            same evening, in <Means>$[[ ./The Subject of Logic ]]</Means>. The options are not rivals; most are one
+            from, and how the newest statement bears on it: the algebraic model of the subject of logic he restated
+            and sharpened the same evening, in <Means>$[[ ./The Subject of Logic ]]</Means>. The options are not rivals; most are one
             structure seen at a different level, and the question the newest statement puts is which level the
             paper's Gödel half is written at.
         </Paragraph>
@@ -95,8 +95,13 @@ export default () => (
         <Section>
             <Heading>The hypothetical semantics</Heading>
             <Paragraph>
-                His program of 2 November for the formalism of the identities, the statement nearest the newest: "Perhaps
-                in the language, we can express empty semantics for the language, which are rules for how to comprehend
+                His program of 2 November for the formalism of the identities, with its name: "I think we need to build
+                a really beautiful algebraic description of FOL that can express PA that has the inferential identity as
+                the consistency of the theory as described in FOL. I think we would provide a separate algebraic
+                formalism to express the theory, because that is not in FOL, and perhaps we might call it first order
+                semantics"; "The inferential identity is a type of theorem"; "If a theorem S is provable, not S is the
+                inferential identity" (The Formal Core, 2 November 2026). Then its semantics: "Perhaps in the language,
+                we can express empty semantics for the language, which are rules for how to comprehend
                 expressions involving the inferential identity, which perhaps should be a separate kind of sentence that
                 might only make sense as the empty proof"; "we need another algebraic structure that can express
                 formalisms"; "this formulation needs to be clean algebraic structures so that it is natural to interpret
@@ -112,10 +117,12 @@ export default () => (
         <Section>
             <Heading>The algebraic model, newest</Heading>
             <Paragraph>
-                The algebraic model of the subject of logic, 9 November: the inferential identity as the empty proof,
-                the rational identity as the empty string, the logical identity as its truth value; the excluded middle
-                kept; rules of inference under which consistency motivates the axioms on the page; soundness as the
-                subject being formalizable. Stated in his words and gathered with the pieces above
+                The algebraic model of the subject of logic, first said to Gemini on 3 November, named on 5 November
+                and restated and sharpened on 9 November: the inferential identity as the empty proof, the rational
+                identity as the empty string, the logical identity as its truth value; the excluded middle kept; rules
+                of inference under which consistency motivates the axioms on the page; soundness as the subject being
+                formalizable; the semantics expressed through the identities and nothing else. Stated in his words and
+                gathered with the pieces above
                 in <Means>$[[ ./The Subject of Logic ]]</Means>. It is the option the paper's Gödel half is to be
                 written in if the compact expression is found; the dynamical formalism D is not among the options,
                 being a sketch for Semantic Reference Theory by his tag, in <Means>$[[ ./The Sketches ]]</Means>.

@@ -1,4 +1,4 @@
-import { Chapter, Heading, Means, Paragraph, Part, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Heading, Means, Paragraph, Part, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -9,8 +9,11 @@ export default () => (
             one with Gemini pasted into the last of them. The annotations on those books cannot be referenced from
             this library, so every note cites its conversation by title, its chapter by title and its date, in the
             form (Goldbach through Gödel, The Resolution, 1 November 2026). A quotation is Doug's words with the
-            spelling and grammar cleaned and nothing else changed, on his word of 9 November; every quoted span was
-            checked against the message it cites before the notebook was bound.
+            spelling and grammar cleaned and nothing else changed, on his word of 9 November; every quoted span is
+            checked against the messages before the notebook is bound, by the checker beside this chapter,
+            13-the-sources~check.mjs, which takes the notebook's folder, the conversations' folders and the sprint
+            chapter that records the room's words, and finds each span of four words or more in some message, four
+            fifths of its words in order, or names the miss.
         </Paragraph>
         <Section>
             <Heading>Goldbach through Gödel</Heading>
@@ -79,5 +82,11 @@ export default () => (
                 start from the parts of a publication, have a sense of causality, newer thoughts deprecate older ones.
             </Paragraph>
         </Section>
+        <Append
+            identifier="check"
+            type=".mjs"
+        >
+            ![[ check.mjs ]]
+        </Append>
     </Chapter>
 );

@@ -26,7 +26,7 @@
     ".binding/application/routes.ts"
   ],
   "rendered": [
-    "arithmetic-notebook/index.html",
+    "arithmetic-project/index.html",
     "our-team/index.html",
     "our-reference/index.html",
     "our-library/index.html",
@@ -39,7 +39,7 @@
     "mathematical-reference/index.html",
     "our-math/index.html",
     "mathematical-principles/index.html",
-    "arithmetic-project/index.html",
+    "arithmetic-notebook/index.html",
     "arithmetic/index.html",
     "arithmetic-textbook/index.html",
     "neuroscience/index.html",
@@ -128,8 +128,8 @@
     "assets/books/4-the-faces~code-Dwcej_XW.js",
     "assets/books/chemistry-subject-D_cxBwlm.js",
     "assets/books/identity-subject-BGMoi6Sv.js",
-    "assets/books/mathematics-arithmetic-notebook-DPv7muvw.js",
-    "assets/books/mathematics-arithmetic-project-Bl-0HBys.js",
+    "assets/books/mathematics-arithmetic-notebook-D9Ak_pkp.js",
+    "assets/books/mathematics-arithmetic-project-FoH2V3G2.js",
     "assets/books/mathematics-arithmetic-subject-b6KEg55j.js",
     "assets/books/mathematics-arithmetic-textbook-D2s6VrRL.js",
     "assets/books/mathematics-design-BPEJJ-vB.js",
@@ -145,7 +145,7 @@
     "assets/books/subject-BpUadVsM.js",
     "assets/books/subject-design-D3YXuXHG.js",
     "assets/books/subject-dictionary-C64G5ZnY.js",
-    "assets/index-CImGlkEP.js",
+    "assets/index-BvwW-_oC.js",
     "assets/index-CP4cPyka.css",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
@@ -256,13 +256,13 @@
       "sheet": "sheets/fc0af3271c5c.css",
       "markup": ".pages/mathematical-principles.html"
     },
-    "/arithmetic-project": {
-      "folder": "mathematics/arithmetic/.project",
-      "digest": "7cfe96b8194f709d",
-      "references": "d7d3c0cfa076f7df",
+    "/arithmetic-notebook": {
+      "folder": "mathematics/arithmetic/.notebook",
+      "digest": "1822b37545ace010",
+      "references": "7fbd0a34cfe17666",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/fc0af3271c5c.css",
-      "markup": ".pages/arithmetic-project.html"
+      "markup": ".pages/arithmetic-notebook.html"
     },
     "/arithmetic": {
       "folder": "mathematics/arithmetic/.subject",
@@ -304,13 +304,13 @@
       "sheet": "sheets/fc0af3271c5c.css",
       "markup": ".pages/physics.html"
     },
-    "/arithmetic-notebook": {
-      "folder": "mathematics/arithmetic/.notebook",
-      "digest": "3238a03dba69513b",
-      "references": "7fbd0a34cfe17666",
+    "/arithmetic-project": {
+      "folder": "mathematics/arithmetic/.project",
+      "digest": "70cd8a8a8adc0226",
+      "references": "d7d3c0cfa076f7df",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/fc0af3271c5c.css",
-      "markup": ".pages/arithmetic-notebook.html"
+      "markup": ".pages/arithmetic-project.html"
     }
   },
   "chunks": {
@@ -905,13 +905,12 @@
         ]
       }
     },
-    "mathematics/arithmetic/.project": {
-      "digest": "0adceff7366eaacd",
-      "entry": "assets/books/mathematics-arithmetic-project-Bl-0HBys.js",
+    "mathematics/arithmetic/.notebook": {
+      "digest": "5a8a20444b198456",
+      "entry": "assets/books/mathematics-arithmetic-notebook-D9Ak_pkp.js",
       "files": [
-        "assets/books/.synopsis-DNPQEy5S.js",
         "assets/books/4-the-faces~code-Dwcej_XW.js",
-        "assets/books/mathematics-arithmetic-project-Bl-0HBys.js"
+        "assets/books/mathematics-arithmetic-notebook-D9Ak_pkp.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -927,6 +926,7 @@
           "$TableOfContents",
           "$Theme",
           "$Word",
+          "Append",
           "Author",
           "Chapter",
           "Content",
@@ -935,6 +935,7 @@
           "Paginated",
           "Paragraph",
           "Parenthetical",
+          "Part",
           "Reference",
           "Section",
           "Subject",
@@ -1192,11 +1193,11 @@
         ]
       }
     },
-    "mathematics/arithmetic/.notebook": {
-      "digest": "15eff9e27b94fdb0",
-      "entry": "assets/books/mathematics-arithmetic-notebook-DPv7muvw.js",
+    "mathematics/arithmetic/.project": {
+      "digest": "5423e869f497c546",
+      "entry": "assets/books/mathematics-arithmetic-project-FoH2V3G2.js",
       "files": [
-        "assets/books/mathematics-arithmetic-notebook-DPv7muvw.js"
+        "assets/books/mathematics-arithmetic-project-FoH2V3G2.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1220,7 +1221,6 @@
           "Paginated",
           "Paragraph",
           "Parenthetical",
-          "Part",
           "Reference",
           "Section",
           "Subject",
@@ -1264,7 +1264,7 @@
     ]
   },
   "app": {
-    "digest": "a4106b6f2044f985",
+    "digest": "6c2cc0a20371f778",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -1325,7 +1325,7 @@
       "assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff",
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
-      "assets/index-CImGlkEP.js",
+      "assets/index-BvwW-_oC.js",
       "assets/index-CP4cPyka.css"
     ],
     "bindings": {
@@ -1346,6 +1346,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-CImGlkEP.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-BvwW-_oC.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }
