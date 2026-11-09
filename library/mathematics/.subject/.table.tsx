@@ -39,6 +39,20 @@ export default () => (
                 </Word>
             </Paragraph>
             <Paragraph>
+                <Word>
+                    <Content>$[[ The Library of Mathematics ]]( ./Mathematical Library )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Mathematical Library )**</Content>
+                </Word>
+            </Paragraph>
+            <Paragraph>
+                <Word>
+                    <Content>$[[ The Subject of Arithmetic ]]( ./Arithmetic )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Arithmetic )**</Content>
+                </Word>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Our Math ]]</Content>

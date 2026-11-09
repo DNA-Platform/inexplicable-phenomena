@@ -2,72 +2,92 @@
   "books": [
     {
       "folder": ".identity/.subject",
-      "digest": "ccf17f46d7ca573d",
+      "digest": "e7f25adf5ffd7fb8",
       "walked": 14
     },
     {
       "folder": ".reference",
-      "digest": "7016e5f6dbc71304",
+      "digest": "814204857c3c6a87",
       "walked": 58
     },
     {
       "folder": ".subject",
-      "digest": "c6bf5f96e56a004a",
+      "digest": "4d425e351ec493d2",
       "walked": 86
     },
     {
       "folder": ".subject/.design",
-      "digest": "0a21a9f4969b737c",
+      "digest": "4846f62e46257659",
       "walked": 31
     },
     {
       "folder": ".subject/dictionary",
-      "digest": "ab07945e7c4d3841",
+      "digest": "65c6b49c949c9a91",
       "walked": 160
     },
     {
       "folder": "chemistry/.subject",
-      "digest": "e29d17b524ac1aa4",
+      "digest": "3c0ea1330f7579db",
       "walked": 14
     },
     {
       "folder": "mathematics/.design",
-      "digest": "a1b791b0b209847d",
+      "digest": "5abd23ec4c39bae7",
       "walked": 14
     },
     {
       "folder": "mathematics/.identity",
-      "digest": "867fd329a3a33297",
+      "digest": "042e1dff5c424314",
+      "walked": 14
+    },
+    {
+      "folder": "mathematics/.library",
+      "digest": "597d7b698d4574ee",
       "walked": 14
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "c6b437321d52fddd",
+      "digest": "3d5cab290446af32",
       "walked": 14
     },
     {
       "folder": "mathematics/.subject",
-      "digest": "c0f7365f324b8993",
-      "walked": 46
+      "digest": "3a7b7f3f96be4134",
+      "walked": 62
     },
     {
       "folder": "mathematics/.textbook",
-      "digest": "2604777c6e4403a3",
+      "digest": "04afa76ef1de3862",
+      "walked": 14
+    },
+    {
+      "folder": "mathematics/arithmetic/.project",
+      "digest": "3c0e914a9dc3ad5c",
+      "walked": 14
+    },
+    {
+      "folder": "mathematics/arithmetic/.subject",
+      "digest": "360e58b7c261f124",
+      "walked": 30
+    },
+    {
+      "folder": "mathematics/arithmetic/.textbook",
+      "digest": "c776af4eb0bcb990",
       "walked": 14
     },
     {
       "folder": "neuroscience/.subject",
-      "digest": "817a342e26549824",
+      "digest": "4832036d625040dc",
       "walked": 14
     },
     {
       "folder": "philosophy/.subject",
-      "digest": "7820a98ee9d1e18b",
+      "digest": "4c7bbd98b7044c08",
       "walked": 14
     },
     {
       "folder": "physics/.subject",
-      "digest": "1c897c2cbe4d1390",
+      "digest": "e9874164aaeee2c0",
       "walked": 14
     }
   ]

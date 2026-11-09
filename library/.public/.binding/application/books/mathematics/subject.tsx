@@ -8,6 +8,8 @@ import MathematicalReference1 from '../../../../../mathematics/.subject/1-mathem
 import MathematicalDesign2 from '../../../../../mathematics/.subject/2-mathematical-design';
 import MathematicalPrinciples3 from '../../../../../mathematics/.subject/3-mathematical-principles';
 import MathematicalIdentity4 from '../../../../../mathematics/.subject/4-mathematical-identity';
+import MathematicalLibrary5 from '../../../../../mathematics/.subject/5-mathematical-library';
+import Arithmetic6 from '../../../../../mathematics/.subject/6-arithmetic';
 
 const Book = $($Book);
 
@@ -20,6 +22,8 @@ export const book = () => (
         {MathematicalDesign2()}
         {MathematicalPrinciples3()}
         {MathematicalIdentity4()}
+        {MathematicalLibrary5()}
+        {Arithmetic6()}
     </Book>
 );
 
