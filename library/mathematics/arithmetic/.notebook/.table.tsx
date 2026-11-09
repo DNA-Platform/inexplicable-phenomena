@@ -9,51 +9,48 @@ export default () => (
             [[ Table of Contents ]]
         </Title>
         <Section>
-            <Heading>The Paper</Heading>
+            <Heading>The Publication</Heading>
             <Paragraph>
-                <Content>$[[ ./The Subject of Arithmetic ]]</Content>
+                <Content>$[[ ./The Preface ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./The Type of Result ]]</Content>
-            </Paragraph>
-        </Section>
-        <Section>
-            <Heading>The Abstractions</Heading>
-            <Paragraph>
-                <Content>$[[ ./Semantic Reflection ]]</Content>
+                <Content>$[[ ./The Object ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./Finite Proof ]]</Content>
+                <Content>$[[ ./The Mechanism ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./The Circle ]]</Content>
+                <Content>$[[ ./Zero for Proof ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./Zero ]]</Content>
+                <Content>$[[ ./Zero as the Horizon ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./The Subject ]]</Content>
-            </Paragraph>
-        </Section>
-        <Section>
-            <Heading>The Results</Heading>
-            <Paragraph>
-                <Content>$[[ ./The Theorems ]]</Content>
+                <Content>$[[ ./Zero as the Counterexample ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./The Axiom ]]</Content>
+                <Content>$[[ ./Two-Sided Arithmetic ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./The Conjectures and Intuitions ]]</Content>
+                <Content>$[[ ./The Surviving Sentence ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./Goldbach ]]</Content>
             </Paragraph>
         </Section>
         <Section>
-            <Heading>The Edge</Heading>
+            <Heading>The Standing</Heading>
             <Paragraph>
-                <Content>$[[ ./The Archive ]]</Content>
+                <Content>$[[ ./The Rulings ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./The Questions ]]</Content>
+                <Content>$[[ ./The Documents ]]</Content>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>Beside the Paper</Heading>
+            <Paragraph>
+                <Content>$[[ ./The Sketches ]]</Content>
             </Paragraph>
             <Paragraph>
                 <Content>$[[ ./The Sources ]]</Content>

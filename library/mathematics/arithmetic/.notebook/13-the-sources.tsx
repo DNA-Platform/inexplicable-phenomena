@@ -2,69 +2,70 @@ import { Chapter, Heading, Means, Paragraph, Part, Section, Title } from '@dna-p
 
 export default () => (
     <Chapter>
-        <Part>The Edge</Part>
+        <Part>Beside the Paper</Part>
         <Title>[[ The Sources ]]</Title>
         <Paragraph>
-            The notes of this notebook come from six conversations between Doug and Claude in Doug's own library,
-            where they stand organized into chapters and annotated by the team. The annotations cannot be referenced
-            from this library, so every note cites its conversation by title, its chapter by title, and its date, in
-            the form (Goldbach through Gödel, The Two Semantics of Zero, 1 November 2026). A quotation in a note is
-            Doug's words to the letter, his spelling kept, from the message the citation names.
+            The notes of this notebook come from six conversations between Doug and Claude in Doug's own library and
+            one with Gemini pasted into the last of them. The annotations on those books cannot be referenced from
+            this library, so every note cites its conversation by title, its chapter by title and its date, in the
+            form (Goldbach through Gödel, The Resolution, 1 November 2026). A quotation is Doug's words with the
+            spelling and grammar cleaned and nothing else changed, on his word of 9 November; every quoted span was
+            checked against the message it cites before the notebook was bound.
         </Paragraph>
         <Section>
             <Heading>Goldbach through Gödel</Heading>
             <Paragraph>
-                Filed under Semantic Reference Theory. 19 October to 5 November 2026, 701 messages on its path of 805,
-                organized in 52 chapters under nine parts: The Finite Proof, The Permission through Derive and Adopt;
-                The Phantom, The Settled Sentence through The Shape of the Phantom Proof; The Circle, The Axiom
-                Argument through The De Polignac Identity; The Thesis, The Standing of the Result through The Zero
-                Semantics of FOL; The Axiom, The Center Axiom through Something to Picture; The Identity, The Identity
-                Element through The Geometric Precedent; The Horizon, The Quantity Contradiction through The Two
-                Semantics of Zero; First Order Semantics, The Formal Core through The Subject of Physics; The
-                Fictions, The Point of the Fictions through The Paper's Flow. Most of this notebook comes from it: the
-                method, the circle, zero, the subject, the theorems and the axiom.
+                Filed under Semantic Reference Theory, 19 October to 5 November 2026, 701 messages on its path of 805,
+                organized in 52 chapters under nine parts, The Finite Proof, The Phantom, The Circle, The Thesis, The
+                Axiom, The Identity, The Horizon, First Order Semantics and The Fictions. The publication's parts are
+                read from its last fifteen days: The Surviving Sentence of 29 October, where the Gödel-first printing
+                was made; The Six Movements of 31 October, where the two notions were reimagined and the flow laid
+                out; The Resolution of 1 November, where the sets were ruled never equal and the work ruled to be about
+                numbers; The Two Semantics of Zero of 1 and 2 November; The Formal Core of 2 and 3 November;
+                Mathematical Relativity and The Objective Bias of 3 November, where Subjective Mathematics was named;
+                and The Paper's Flow of 5 November, the read-back every chapter of the first part cites. Its earlier
+                thirty-eight chapters are the history the current forms deprecate, cited where a note says what was
+                retired.
             </Paragraph>
         </Section>
         <Section>
-            <Heading>The three of October 2025 and March 2026</Heading>
+            <Heading>The Gemini session and its catalogue</Heading>
             <Paragraph>
-                Filed under Number Theory. Gödel through Goldbach: The Paper, 12 October 2025, 154 messages in twelve
-                chapters, Three Readers through Memory Exhaustion, the Sonnet sitting that planned the first paper;
-                it gives this notebook the title's history, the archive of the 2025 framework and several open
-                questions. Gödel through Goldbach: Semantics and Induction, the same day, 74 messages in ten
-                chapters, The Division of Labour through The Title as a Code, the Opus sitting beside it; it gives the
-                origin of the entropy measures, the programme to drop induction and what it became, and the ZFC
-                question. Gödel through Goldbach: Coprime Symmetry, 30 March 2026, six messages in one chapter; it
-                gives the symmetric form its seed and one open question about shared pairs.
+                Subjectivity library catalogue, filed under Semantic Reference Theory, 4 and 5 November 2026, 30
+                messages with two pasted files: the transcript of Doug's session with Gemini on 3 November, and his
+                unsent message meant as its last. The transcript's Part I states the Gödel result to an outsider and
+                the coda tells the result's genesis; both are cited in the first part of this notebook. The rest of the
+                session is the program around the paper, in <Means>$[[ ./The Sketches ]]</Means>. In the conversation
+                Claude catalogued the session into a time-ordered narrative, parts by topic with Doug's quotes, the
+                relationships he and Gemini stated, and nineteen idea documents in his voice, with his quotes'
+                spelling corrected at his request; those documents stand in his Claude Docs and could not be read
+                from here. His ruling in that conversation governs this notebook's quotes.
             </Paragraph>
         </Section>
         <Section>
-            <Heading>Two not yet organized</Heading>
+            <Heading>The earlier books of the family</Heading>
             <Paragraph>
-                Filed under Semantic Reference Theory and standing as imported, one chapter each. Logic axioms and
-                Gödel's incompleteness, 20 and 21 October 2026, 94 messages: excluded middle read as exclusive or,
-                the hallucination of reflection, the sieve of proofs, and the line between science and mathematics
-                on extrapolation from the finite; quoted in <Means>$[[ ./Semantic Reflection ]]</Means>
-                and <Means>$[[ ./Finite Proof ]]</Means>. Subjectivity library catalogue, 4 and 5 November 2026, 30
-                messages with two pasted files: the cataloguing of a conversation into nineteen idea documents, and
-                Doug's passage on what mathematics looks like as new subjects appear, reaching the top as a library;
-                not yet quoted here. Both are to be read and annotated with the same tools before their notes are
-                moved.
+                Filed under Number Theory, organized. Gödel through Goldbach: The Paper, 12 October 2025, 154 messages
+                in twelve chapters, the Sonnet sitting that planned the first paper, cited for the title's history
+                and the 2025 framework. Gödel through Goldbach: Semantics and Induction, the same day, 74 messages in
+                ten chapters, the Opus sitting beside it, the origin of the entropy measures and of the programme to
+                drop induction. Gödel through Goldbach: Coprime Symmetry, 30 March 2026, six messages in one chapter,
+                the seed of the symmetric form. And under Semantic Reference Theory, as imported: Logic axioms and
+                Gödel's incompleteness, 20 and 21 October 2026, 94 messages, the conversation beside the long one on
+                excluded middle, the hallucination of reflection and the line between science and mathematics on
+                extrapolation from the finite; not yet organized and not quoted here.
             </Paragraph>
         </Section>
         <Section>
-            <Heading>How the notes were moved</Heading>
+            <Heading>How the notes were made</Heading>
             <Paragraph>
-                The team read the conversations by their marks rather than again whole: each organized book's
-                Matters, Summaries, Results with their states, Formalisms, Corrections, Importances, Revisions,
-                Archives, Ideas and Questions, listed by sort with the survey tool of Doug's library, and the exact
-                text of the messages behind them. The notes moved by sort: Summaries and Revisions
-                into <Means>$[[ ./The Subject of Arithmetic ]]</Means> and <Means>$[[ ./The Type of Result ]]</Means>;
-                Formalisms and the names the marks declare into the five chapters of the abstractions; Results by
-                state into <Means>$[[ ./The Theorems ]]</Means>, <Means>$[[ ./The Axiom ]]</Means>
-                and <Means>$[[ ./The Conjectures and Intuitions ]]</Means>; Archives, Ideas and Questions
-                into <Means>$[[ ./The Archive ]]</Means> and <Means>$[[ ./The Questions ]]</Means>. Every quoted span
-                was checked against the messages before the notebook was bound.
+                Read from the most recent statement of the work backwards: the read-back of 5 November first, then the
+                Gemini session and the coda, then the stretch from 29 October to 3 November whole, then the organized
+                conversation's marks by sort, its Revisions saying what replaced what, its Archives what was left, and
+                the full text of every message quoted. Each note states the current form, cites what it deprecated by
+                date, and separates what Doug tagged for the paper from what he tagged as a sketch. The notes were
+                first written otherwise, flat across the conversation, and rewritten on 9 November on his correction:
+                start from the parts of a publication, have a sense of causality, newer thoughts deprecate older ones.
             </Paragraph>
         </Section>
     </Chapter>

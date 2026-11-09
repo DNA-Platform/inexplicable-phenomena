@@ -4,18 +4,18 @@ import $Book from '../../../../../../mathematics/arithmetic/.notebook/.book';
 import Cover from '../../../../../../mathematics/arithmetic/.notebook/.cover';
 import Synopsis from '../../../../../../mathematics/arithmetic/.notebook/.synopsis';
 import Table from '../../../../../../mathematics/arithmetic/.notebook/.table';
-import TheSubjectOfArithmetic1 from '../../../../../../mathematics/arithmetic/.notebook/1-the-subject-of-arithmetic';
-import TheTypeOfResult2 from '../../../../../../mathematics/arithmetic/.notebook/2-the-type-of-result';
-import SemanticReflection3 from '../../../../../../mathematics/arithmetic/.notebook/3-semantic-reflection';
-import FiniteProof4 from '../../../../../../mathematics/arithmetic/.notebook/4-finite-proof';
-import TheCircle5 from '../../../../../../mathematics/arithmetic/.notebook/5-the-circle';
-import Zero6 from '../../../../../../mathematics/arithmetic/.notebook/6-zero';
-import TheSubject7 from '../../../../../../mathematics/arithmetic/.notebook/7-the-subject';
-import TheTheorems8 from '../../../../../../mathematics/arithmetic/.notebook/8-the-theorems';
-import TheAxiom9 from '../../../../../../mathematics/arithmetic/.notebook/9-the-axiom';
-import TheConjecturesAndIntuitions10 from '../../../../../../mathematics/arithmetic/.notebook/10-the-conjectures-and-intuitions';
-import TheArchive11 from '../../../../../../mathematics/arithmetic/.notebook/11-the-archive';
-import TheQuestions12 from '../../../../../../mathematics/arithmetic/.notebook/12-the-questions';
+import ThePreface1 from '../../../../../../mathematics/arithmetic/.notebook/1-the-preface';
+import TheObject2 from '../../../../../../mathematics/arithmetic/.notebook/2-the-object';
+import TheMechanism3 from '../../../../../../mathematics/arithmetic/.notebook/3-the-mechanism';
+import ZeroForProof4 from '../../../../../../mathematics/arithmetic/.notebook/4-zero-for-proof';
+import ZeroAsTheHorizon5 from '../../../../../../mathematics/arithmetic/.notebook/5-zero-as-the-horizon';
+import ZeroAsTheCounterexample6 from '../../../../../../mathematics/arithmetic/.notebook/6-zero-as-the-counterexample';
+import TwoSidedArithmetic7 from '../../../../../../mathematics/arithmetic/.notebook/7-two-sided-arithmetic';
+import TheSurvivingSentence8 from '../../../../../../mathematics/arithmetic/.notebook/8-the-surviving-sentence';
+import Goldbach9 from '../../../../../../mathematics/arithmetic/.notebook/9-goldbach';
+import TheRulings10 from '../../../../../../mathematics/arithmetic/.notebook/10-the-rulings';
+import TheDocuments11 from '../../../../../../mathematics/arithmetic/.notebook/11-the-documents';
+import TheSketches12 from '../../../../../../mathematics/arithmetic/.notebook/12-the-sketches';
 import TheSources13 from '../../../../../../mathematics/arithmetic/.notebook/13-the-sources';
 
 const Book = $($Book);
@@ -25,18 +25,18 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
-        {TheSubjectOfArithmetic1()}
-        {TheTypeOfResult2()}
-        {SemanticReflection3()}
-        {FiniteProof4()}
-        {TheCircle5()}
-        {Zero6()}
-        {TheSubject7()}
-        {TheTheorems8()}
-        {TheAxiom9()}
-        {TheConjecturesAndIntuitions10()}
-        {TheArchive11()}
-        {TheQuestions12()}
+        {ThePreface1()}
+        {TheObject2()}
+        {TheMechanism3()}
+        {ZeroForProof4()}
+        {ZeroAsTheHorizon5()}
+        {ZeroAsTheCounterexample6()}
+        {TwoSidedArithmetic7()}
+        {TheSurvivingSentence8()}
+        {Goldbach9()}
+        {TheRulings10()}
+        {TheDocuments11()}
+        {TheSketches12()}
         {TheSources13()}
     </Book>
 );
