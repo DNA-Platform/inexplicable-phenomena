@@ -98,10 +98,40 @@ export default () => (
             </Paragraph>
         </Section>
         <Section>
+            <Heading>The semantics are the identities</Heading>
+            <Paragraph>
+                "The interesting thing about those semantics is that the semantics are expressed through the identities,
+                which all more or less mean no change in the interpretation of the formalism other than expressing
+                consistency with the empty proof. So that we see a more-or-less equivalent expression of logic except
+                that consistency is not formalizable in the semantics" (in the room, 9 November 2026). The model adds no
+                semantics beside its identity laws, and each law, at the proof, the expression and the value, says the
+                same thing: the interpretation is unchanged. The one thing the laws express that logic did not is
+                consistency, as the empty proof and what it concludes. So the subject of logic proves what logic proves
+                and says one thing logic does not, that its consistency has an expression and no formalization. This
+                is the form every earlier statement was reaching for. On 27 October the zero was something "you can add
+                to any proof and leave the number of lines intact", and the whole was "my positive way of saying - you
+                can't prove consistency even though you do, in fact, have to assume it" (The Zero Semantics of FOL, 27
+                October 2026), with the defense "I am just adding PA's zero semantics to FOL so it can host PA" and its
+                gloss, nothing else changes, every theorem still a theorem (Claude, The Zero Semantics of FOL). On 28
+                October, "The real trick is that you did nothing" (The Identity Element, 28 October 2026). On 31 October
+                the equivalence got its name in the Neutrality Lemma, T + C conservative over T if and only if T proves
+                C, so the one sentence that can be added and change nothing is the one no theory proves, and "Consistency
+                becomes one conservative expression of the underlying identity" (Claude, The Six Movements, 31 October
+                2026). On 2 November the end of the program was stated as PA itself, "like PA with the addition of an
+                empty theorem to express the absence of provability, that does not add an extra theorem to the language"
+                (The Formal Core, 2 November 2026). The statement of 9 November says it of logic rather than of PA, and
+                in one sentence: equivalent, except that consistency is not formalizable in the semantics.
+            </Paragraph>
+        </Section>
+        <Section>
             <Heading>A candidate compact expression</Heading>
             <Paragraph>
-                The team's candidate, written from his words to be corrected, not his statement. The subject of logic
-                is three carriers, proofs, expressions and values, each a monoid under its own composition, the
+                The team's candidate, written from his words to be corrected, not his statement. In one sentence, after
+                his sharpening: the subject of logic is logic with its identities written in, each identity law saying
+                that the interpretation is unchanged and the laws together being the whole of the semantics, the one
+                expression they add being consistency as the empty proof, so that the subject proves what logic proves
+                and says what logic cannot, that its consistency is expressed and not formalizable. Unfolded, the
+                subject of logic is three carriers, proofs, expressions and values, each a monoid under its own composition, the
                 concatenation of proofs, the connectives on expressions, the operations on values, each with its identity:
                 the empty proof ε, the empty string, and the logical identity. Two maps join them, conclusion from proofs
                 to expressions and valuation from expressions to values, and each carries the identity to the identity,
