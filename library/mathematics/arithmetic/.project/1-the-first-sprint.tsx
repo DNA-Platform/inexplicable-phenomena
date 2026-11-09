@@ -15,8 +15,10 @@ export default () => (
             Then <Means>$[[ a notebook ]]( Arithmetic Notebook )</Means>, and the notes on Goldbach versus Gödel
             moved into it from Doug's own library, where the team has read and annotated four conversations with
             Claude: the planning of the paper, the semantics beside it, the symmetry of the coprimes, and the long
-            conversation from the finite proof to the paper's flow. How the notebook is organized is decided as
-            the notes arrive and not before. And the team's book gains its
+            conversation from the finite proof to the paper's flow. How the notebook is organized was decided as
+            the notes arrived: thirteen chapters in four parts, the paper, the abstractions, the results and the
+            edge, each note Doug's exact words connected by the team's interpretation and cited to the conversation
+            and chapter it came from. And the team's book gains its
             chapter <Means>$[[ Doug ]]( Our Team / Doug )</Means>, so that every book of this library is signed
             by him as the team's representative.
         </Paragraph>
