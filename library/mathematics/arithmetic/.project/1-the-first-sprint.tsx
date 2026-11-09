@@ -17,8 +17,9 @@ export default () => (
             Claude: the planning of the paper, the semantics beside it, the symmetry of the coprimes, and the long
             conversation from the finite proof to the paper's flow. How the notebook is organized was decided as
             the notes arrived, and once more on Doug's correction: the notebook is the specification of the
-            publication, thirteen chapters in three parts, the publication's own parts from the preface to Goldbach,
-            the standing rulings and documents, and the sketches set aside beside the paper, each note his words
+            publication, fifteen chapters in four parts, the publication's own parts from the preface to Goldbach,
+            the standing rulings and documents, the sketches set aside beside the paper, and the formalism, the
+            options the notes hold and the algebraic model of the subject of logic on its way to PA, each note his words
             in the form that stands, citing what it deprecated and the conversation and chapter it came from, so
             the notes keep their track until he is happy with them and their organizing begins. And the team's book gains its
             chapter <Means>$[[ Doug ]]( Our Team / Doug )</Means>, so that every book of this library is signed

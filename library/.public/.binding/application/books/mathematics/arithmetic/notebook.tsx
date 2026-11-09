@@ -17,6 +17,8 @@ import TheRulings10 from '../../../../../../mathematics/arithmetic/.notebook/10-
 import TheDocuments11 from '../../../../../../mathematics/arithmetic/.notebook/11-the-documents';
 import TheSketches12 from '../../../../../../mathematics/arithmetic/.notebook/12-the-sketches';
 import TheSources13 from '../../../../../../mathematics/arithmetic/.notebook/13-the-sources';
+import TheOptions14 from '../../../../../../mathematics/arithmetic/.notebook/14-the-options';
+import TheSubjectOfLogic15 from '../../../../../../mathematics/arithmetic/.notebook/15-the-subject-of-logic';
 
 const Book = $($Book);
 
@@ -38,6 +40,8 @@ export const book = () => (
         {TheDocuments11()}
         {TheSketches12()}
         {TheSources13()}
+        {TheOptions14()}
+        {TheSubjectOfLogic15()}
     </Book>
 );
 

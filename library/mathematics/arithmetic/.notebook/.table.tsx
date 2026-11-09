@@ -55,6 +55,15 @@ export default () => (
             <Paragraph>
                 <Content>$[[ ./The Sources ]]</Content>
             </Paragraph>
+        </Section>
+        <Section>
+            <Heading>The Formalism</Heading>
+            <Paragraph>
+                <Content>$[[ ./The Options ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Subject of Logic ]]</Content>
+            </Paragraph>
             <Paragraph>
                 <Parenthetical />
                 <Word>

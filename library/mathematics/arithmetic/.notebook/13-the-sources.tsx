@@ -57,6 +57,17 @@ export default () => (
             </Paragraph>
         </Section>
         <Section>
+            <Heading>The room</Heading>
+            <Paragraph>
+                The formalism's chapters, <Means>$[[ ./The Options ]]</Means> and <Means>$[[ ./The Subject of Logic ]]</Means>,
+                quote words Doug said to the team in the sprint's room on 9 November 2026, after reading the running
+                notebook, and not in a conversation of his library. Those words are recorded verbatim in the sprint's
+                chapter of the branch library, Sprint 124, The Subject of Arithmetic, and are cited here as (in the
+                room, 9 November 2026); the checker takes that chapter's verbatim passages as a source beside the
+                conversations.
+            </Paragraph>
+        </Section>
+        <Section>
             <Heading>How the notes were made</Heading>
             <Paragraph>
                 Read from the most recent statement of the work backwards: the read-back of 5 November first, then the
