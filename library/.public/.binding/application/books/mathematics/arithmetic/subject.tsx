@@ -6,6 +6,7 @@ import Synopsis from '../../../../../../mathematics/arithmetic/.subject/.synopsi
 import Table from '../../../../../../mathematics/arithmetic/.subject/.table';
 import ArithmeticProject1 from '../../../../../../mathematics/arithmetic/.subject/1-arithmetic-project';
 import ArithmeticTextbook2 from '../../../../../../mathematics/arithmetic/.subject/2-arithmetic-textbook';
+import ArithmeticNotebook3 from '../../../../../../mathematics/arithmetic/.subject/3-arithmetic-notebook';
 
 const Book = $($Book);
 
@@ -16,6 +17,7 @@ export const book = () => (
         {Table()}
         {ArithmeticProject1()}
         {ArithmeticTextbook2()}
+        {ArithmeticNotebook3()}
     </Book>
 );
 

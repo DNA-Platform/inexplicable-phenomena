@@ -5,7 +5,7 @@ export default () => (
     <Chapter>
         <Cover />
         <Title>[[ Neuroscience ]]</Title>
-        <Author>*[[ Our Team ]]</Author>
+        <Author>*[[ Doug ]]( Our Team )</Author>
         <Subject>**[[ Inexplicable Phenomena ]]</Subject>
         <About>[[ Neuroscience ]]</About>
     </Chapter>

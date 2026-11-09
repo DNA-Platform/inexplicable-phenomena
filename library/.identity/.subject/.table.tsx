@@ -11,6 +11,9 @@ export default () => (
         <Section>
             <Heading>Contents</Heading>
             <Paragraph>
+                <Content>$[[ ./Doug ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Our Team ]]</Content>

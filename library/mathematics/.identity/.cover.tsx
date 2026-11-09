@@ -6,7 +6,7 @@ export default () => (
         <Cover />
         <Biography />
         <Title>[[ The Biography of Subjective Identity ]]( Mathematical Identity )</Title>
-        <Author>*[[ Our Team ]]</Author>
+        <Author>*[[ Doug ]]( Our Team )</Author>
         <Subject>**[[ Mathematics ]]</Subject>
         <About>[[ Mathematical Identity ]]</About>
     </Chapter>

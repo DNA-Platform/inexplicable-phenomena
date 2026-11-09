@@ -25,6 +25,13 @@ export default () => (
                 </Word>
             </Paragraph>
             <Paragraph>
+                <Word>
+                    <Content>$[[ The Notebook of Arithmetic ]]( ./Arithmetic Notebook )</Content>
+                </Word> <Word>
+                    <Content>[[ ▷ ]]( Arithmetic Notebook )**</Content>
+                </Word>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Arithmetic ]]</Content>

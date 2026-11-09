@@ -6,7 +6,7 @@ export default () => (
         <Cover />
         <Autobiography />
         <Title>[[ Our Team ]]</Title>
-        <Author>*[[ Our Team ]]</Author>
+        <Author>*[[ Doug ]]( Our Team )</Author>
         <Subject>**[[ Inexplicable Phenomena ]]</Subject>
         <About>[[ Our Team ]]</About>
     </Chapter>

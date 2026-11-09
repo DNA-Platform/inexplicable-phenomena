@@ -4,6 +4,7 @@ import $Book from '../../../../../.identity/.subject/.book';
 import Cover from '../../../../../.identity/.subject/.cover';
 import Synopsis from '../../../../../.identity/.subject/.synopsis';
 import Table from '../../../../../.identity/.subject/.table';
+import Doug1 from '../../../../../.identity/.subject/1-doug';
 
 const Book = $($Book);
 
@@ -12,6 +13,7 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
+        {Doug1()}
     </Book>
 );
 

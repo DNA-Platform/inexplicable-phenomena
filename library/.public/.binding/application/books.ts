@@ -12,6 +12,7 @@ export const books = {
     "mathematics/.reference": () => import("./books/mathematics/reference"),
     "mathematics/.subject": () => import("./books/mathematics/subject"),
     "mathematics/.textbook": () => import("./books/mathematics/textbook"),
+    "mathematics/arithmetic/.notebook": () => import("./books/mathematics/arithmetic/notebook"),
     "mathematics/arithmetic/.project": () => import("./books/mathematics/arithmetic/project"),
     "mathematics/arithmetic/.subject": () => import("./books/mathematics/arithmetic/subject"),
     "mathematics/arithmetic/.textbook": () => import("./books/mathematics/arithmetic/textbook"),
