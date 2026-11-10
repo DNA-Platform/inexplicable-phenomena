@@ -174,7 +174,8 @@ export default () => (
                         Beltrami 1868, Saggio di interpretazione della geometria non-euclidea
                     </Word>, Giornale di Matematiche 6, 284–312. Public domain; digitized at Göttingen, listed at the
                     Deutsche Digitale Bibliothek, whose viewer refuses a script. In the library
-                    at <Means>$[[ Beltrami 1868 ]]( Mathematical Library / Beltrami 1868 )</Means>, by address.
+                    at <Means>$[[ Beltrami 1868 ]]( Mathematical Library / Beltrami 1868 )</Means>, the paper beside it
+                    as reprinted in his Opere, cut from the Archive's scan.
                 </Line>
                 <Line>
                     <Word>
@@ -203,7 +204,8 @@ export default () => (
                     </Word>, Transactions of the American Mathematical Society 2, 87–99, that no complete surface of
                     constant negative curvature stands in Euclidean space. Public domain; the AMS refused the fetch
                     from here; reprinted as Appendix V of the Grundlagen's second edition, in the scan above. In the
-                    library at <Means>$[[ Hilbert 1901 ]]( Mathematical Library / Hilbert 1901 )</Means>, by address.
+                    library at <Means>$[[ Hilbert 1901 ]]( Mathematical Library / Hilbert 1901 )</Means>, the paper beside
+                    it from JSTOR's early journal copy at the Archive.
                 </Line>
                 <Line>
                     <Word>

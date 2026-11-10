@@ -22,12 +22,13 @@ export default () => (
                 Lobachevsky 1840, the other postulate adopted; Rosser 1936, ω-consistency removed; Turing 1936,
                 computability; Turing 1939, the adding of Gödel sentences by ordinals. Each chapter carries one
                 citation, of the edition the paper will cite, and the notes on what the publication is to the paper
-                in the conversations' words with his quoted. Six hold their text beside the chapter with a picture of
-                its first page that opens it in another tab, their terms free: Dedekind in Beman's English, Feferman,
-                Gödel in Meltzer's, Hardy and Littlewood, Hilbert's Grundlagen in Townsend's, Lobachevsky in
-                Halsted's. Eight are cited by their address, under copyright or behind a viewer that refuses a fetch:
-                Beltrami, Gauss, Hilbert 1901, Kripke, Löb, Rosser and Turing's two. Chen is cited with no address,
-                none found. Gödel's chapter came down to one file, Meltzer's, with the Collected Works named as the
+                in the conversations' words with his quoted. Nine hold their text beside the chapter with a picture
+                of its first page that opens it in another tab, their terms free: Beltrami as reprinted in his
+                Opere, the pages cut from the Archive's scan; Dedekind in Beman's English; Feferman; Gauss in the
+                first edition from e-rara; Gödel in Meltzer's; Hardy and Littlewood; Hilbert's Grundlagen in
+                Townsend's and his paper of 1901 from JSTOR's early copy at the Archive; Lobachevsky in Halsted's.
+                Five are cited by their address, under copyright: Kripke, Löb, Rosser and Turing's two. Chen is
+                cited with no address, none found. Gödel's chapter came down to one file, Meltzer's, with the Collected Works named as the
                 standard English, on Doug's word that we need the one we are going to cite and not versions.
             </Paragraph>
             <Paragraph>
@@ -45,9 +46,8 @@ export default () => (
         <Section>
             <Heading>What the third sprint leaves</Heading>
             <Paragraph>
-                His review of the fifteen, which is why the list was cut to essentials. Three free texts held by
-                address only because their keepers refused a fetch, Beltrami's at Göttingen, Gauss's at e-rara and
-                Hilbert 1901 at the AMS, to be held beside their chapters when one answers; Chen's address. The rest
+                His review of the fifteen, which is why the list was cut to essentials. The five under copyright,
+                read at their publishers; Chen's address. The rest
                 of the references in <Means>$[[ The Papers ]]( ./Sprint 125 )</Means> stay references, each restored
                 to a chapter on his word. The library's publishing, which waits on the repository's settings.
             </Paragraph>

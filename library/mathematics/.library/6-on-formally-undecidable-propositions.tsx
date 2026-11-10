@@ -1,4 +1,4 @@
-import { Chapter, Emphasis, Image, Paragraph, Reference, Title, Word } from '@dna-platform/public';
+import { Chapter, Emphasis, Image, Means, Paragraph, Reference, Title, Word } from '@dna-platform/public';
 import { Opening, Plate } from '../../.reference/6-the-paper~code.tsx';
 
 export default () => (
@@ -25,7 +25,16 @@ export default () => (
             </Word>.
         </Paragraph>
         <Paragraph>
-            The notes on the paper are Doug's, to be written here; the team writes none of them.
+            What the paper takes from it: the whole of its first half. Gödel's theorems leave arithmetic a choice,
+            add G, add ¬G, add consistency and its successors, or change nothing, and mathematics changed nothing and
+            never said why; the paper says why, in <Means>$[[ The Preface ]]( Arithmetic Notebook / The Preface )</Means>.
+            In the subject the paper builds, G and ¬G both have the consequence ε and neither is represented, so
+            incompleteness is not meaningful there and no G is added, the reading
+            of <Means>$[[ Zero for Proof ]]( Arithmetic Notebook / Zero for Proof )</Means>; and the question the
+            newest statement puts is which level the paper's Gödel half is written at,
+            in <Means>$[[ The Options ]]( Arithmetic Notebook / The Options )</Means>. Turing and Feferman are the
+            names his reading of Gödel changes most, on Doug's word of 10 November 2026; the notes on the paper
+            itself are his to extend here.
         </Paragraph>
         <Paragraph>
             <Word>
