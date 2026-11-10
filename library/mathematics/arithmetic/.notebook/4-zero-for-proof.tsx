@@ -51,7 +51,8 @@ export default () => (
                 the consistency of the first order theory you are in is the zero length proof, and the thing that
                 implies all of the axioms. We chose them in an attempt to describe a consistent vision of something"
                 (The Standard Reading, 27 October 2026). By Same-Consequence, G and ¬G both have consequence ε and
-                are not represented; incompleteness is not meaningful here. No G is added: imagining G true is
+                are not represented; <Means>$[[ incompleteness ]]( Mathematical Library / Gödel 1931 )</Means> is not
+                meaningful here. No G is added: imagining G true is
                 imagining Pf(G, 0), already a theorem, and adding is leaving the subject. The example the paper
                 carries: PA + ¬Con resolves to PA, since its witness is 0 and Pf(⊥, 0) is Con.
             </Paragraph>

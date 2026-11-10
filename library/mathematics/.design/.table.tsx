@@ -11,6 +11,9 @@ export default () => (
         <Section>
             <Heading>Contents</Heading>
             <Paragraph>
+                <Content>$[[ ./The Paper's Page ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Mathematical Design ]]</Content>

@@ -4,6 +4,7 @@ import $Book from '../../../../../mathematics/.design/.book';
 import Cover from '../../../../../mathematics/.design/.cover';
 import Synopsis from '../../../../../mathematics/.design/.synopsis';
 import Table from '../../../../../mathematics/.design/.table';
+import ThePapersPage1 from '../../../../../mathematics/.design/1-the-papers-page';
 
 const Book = $($Book);
 
@@ -12,6 +13,7 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
+        {ThePapersPage1()}
     </Book>
 );
 

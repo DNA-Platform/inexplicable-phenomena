@@ -5,6 +5,7 @@ import Cover from '../../../../../../mathematics/arithmetic/.project/.cover';
 import Synopsis from '../../../../../../mathematics/arithmetic/.project/.synopsis';
 import Table from '../../../../../../mathematics/arithmetic/.project/.table';
 import TheNotes1 from '../../../../../../mathematics/arithmetic/.project/1-the-notes';
+import ThePapers2 from '../../../../../../mathematics/arithmetic/.project/2-the-papers';
 
 const Book = $($Book);
 
@@ -14,6 +15,7 @@ export const book = () => (
         {Synopsis()}
         {Table()}
         {TheNotes1()}
+        {ThePapers2()}
     </Book>
 );
 

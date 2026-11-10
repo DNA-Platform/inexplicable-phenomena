@@ -108,6 +108,7 @@ export class $LibraryTheme extends $Theme {
             }
             .pd-code-line::before { content: attr(data-line); display: inline-block; width: 3ch; margin-inline-end: 1.5ch; text-align: end; opacity: 0.4; user-select: none; }
             .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; margin-block: ${({ theme }) => theme.space}; }
+            .pd-document object { display: block; width: 100%; aspect-ratio: 1 / 1.4142; margin-block: ${({ theme }) => theme.space}; }
             .pd-math, .pd-date { white-space: nowrap; }
             .pd-equation { position: relative; counter-increment: equation; }
             .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }

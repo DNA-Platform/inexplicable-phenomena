@@ -62,9 +62,18 @@ export const isDeclaration = (file: string): boolean => file.endsWith('.d.ts');
 // landing on a real chapter's name; the stray is refused where every resource is, by nothing in the
 // chapter inserting or importing it.
 
-// WHICH RESOURCES ARE PICTURES: imported as the bundler emits them, an address; read by nobody for
-// references, since their bytes are not writing.
-export const imageTypes = ['.png', '.jpg', '.jpeg'];
+// WHICH RESOURCES ARE SERVED AS THEMSELVES, AT AN ADDRESS, AND WHAT A SERVER SENDS WITH EACH: a
+// picture since Sprint 89, and a document since Sprint 125 — Doug, 2026-11-10: "Yes we need the
+// paper in the library. We need to be able to read it." Imported as the bundler emits them, an
+// address, copied into the face beside the book's pages, and read by nobody for references, since
+// their bytes are not writing. Every other resource is text and is inserted where a literal names it.
+export const contentTypes: Record<string, string> = {
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.pdf': 'application/pdf',
+};
+export const byAddress = (type: string): boolean => type in contentTypes;
 
 // WHAT IS LEFT WHEN A FILE'S FINAL EXTENSION COMES OFF, which is how a resource is matched to the
 // writing it accompanies: `1-the-plates.tsx.tsx` leaves `1-the-plates.tsx`, which is a chapter's whole

@@ -3,7 +3,7 @@ import type { Plugin } from 'vite';
 import type { Directory } from '../catalogue/catalogue';
 import type { Inventory } from '../inventory/retaken';
 import type { Book } from '../inventory/library';
-import { imageTypes } from '../inventory/filenames';
+import { byAddress } from '../inventory/filenames';
 import { reads, written } from '../catalogue/reading';
 import { sourceOf, textOf } from '../catalogue/structure';
 import { form, key, literal, name as parsed, notation, shown, spelling, titled, wellSpelt, whole, type Name } from '../catalogue/language';
@@ -70,12 +70,13 @@ export type Found = { text: string; missing: Missing[] };
 // that reports the first fault sends someone back six times for six faults.
 export const transforming = (code: string, file: string, catalogue: Directory, book?: Book): Found => {
     // WHAT A LITERAL INSERTS: the text of the file beside this chapter it names, held by the
-    // structure, or a picture's address beside the book's pages, where the render copies it.
+    // structure, or the address of a picture or a document beside the book's pages, where the
+    // render copies it.
     const inserted = (named: { identifier: string; type: string }): string | undefined => {
         const one = book?.resources.get(basename(file))?.find(each => each.identifier === named.identifier && each.type === named.type);
         if (book === undefined || one === undefined) return undefined;
 
-        return imageTypes.includes(one.type) ? `${catalogue.base}${book.folder}/${one.file}` : textOf(join(book.path, one.file));
+        return byAddress(one.type) ? `${catalogue.base}${book.folder}/${one.file}` : textOf(join(book.path, one.file));
     };
     // WHERE THIS FILE STANDS, because `$[[ ./The Sheet ]]` means the chapter of the book it is written
     // in. The scope is the one thing a reference cannot carry and the place it stands always knows.

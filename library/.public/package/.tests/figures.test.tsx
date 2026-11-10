@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToString } from 'react-dom/server';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, Book, Chapter, Cover, Title, Author, Subject, Paragraph, Append, Code, Image, Svg } from '@dna-platform/public';
+import { $Book, Book, Chapter, Cover, Title, Author, Subject, Paragraph, Append, Code, Document, Image, Svg } from '@dna-platform/public';
 
 const built = <T,>(element: React.ReactNode): T => $(element as never) as T;
 const served = (book: $Book): string => { const Drawn = $(book); return renderToString(<Drawn />); };
@@ -23,6 +23,7 @@ const shelf = (paragraph: React.ReactNode): $Book => built<$Book>(
             {paragraph}
             <Append type=".ts">{'export const field = 2;\nexport const wheel = 1;'}</Append>
             <Append type=".png">{'/assets/the-plate.png'}</Append>
+            <Append type=".pdf">{'/assets/the-plate.pdf'}</Append>
             <Append
                 identifier="mark"
                 type=".svg"
@@ -114,6 +115,24 @@ describe('the figures', () => {
             </Paragraph>
         ));
         expect(given).toContain('<img src="/elsewhere.jpg"');
+    });
+
+    // THE FOURTH FIGURE, Sprint 125 — Doug, 2026-11-10: "Yes we need the paper in the library. We need to be able to
+    // read it." A document is drawn as an object at its address, the browser's own viewer showing it, and where no
+    // viewer runs the object falls back to a link to the address, so the document is reached either way.
+    it('Document draws the document an append holds by its address as an object the browser shows, falling back to a link to it, and one whose address the author wrote', () => {
+        const appended = served(shelf(
+            <Paragraph>
+                <Document type=".pdf" />
+            </Paragraph>
+        ));
+        expect(appended).toMatch(/<span class="pd-letter pd-figure pd-document"><object data="\/assets\/the-plate\.pdf" aria-label=""><a href="\/assets\/the-plate\.pdf">\/assets\/the-plate\.pdf<\/a><\/object>/u);
+        const given = served(shelf(
+            <Paragraph>
+                <Document>{'/elsewhere.pdf'}</Document>
+            </Paragraph>
+        ));
+        expect(given).toContain('<object data="/elsewhere.pdf"');
     });
 
     it('Svg draws an appended file\'s markup inline, and the author\'s own elements as written', () => {

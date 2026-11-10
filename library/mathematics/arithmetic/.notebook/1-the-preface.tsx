@@ -6,8 +6,8 @@ export default () => (
         <Title>[[ The Preface ]]</Title>
         <Paragraph>
             The paper as it stood when its flow was last read back, on 5 November 2026: titled Gödel Through Goldbach
-            then, The Subject of Arithmetic now, Gödel first and ending on Goldbach's conjecture. Gödel's theorems
-            leave arithmetic a choice, add G, add ¬G, add consistency and its successors, or change nothing.
+            then, The Subject of Arithmetic now, Gödel first and ending on Goldbach's conjecture. <Means>$[[ Gödel's theorems ]]( Mathematical Library / Gödel 1931 )</Means> leave
+            arithmetic a choice, add G, add ¬G, add consistency and its successors, or change nothing.
             Mathematics changed nothing and never said why. The paper says why, shows that the justification
             carries a model of arithmetic, and shows that in that model one sentence of number theory is derived
             that PA cannot prove, so it enters PA as an axiom. Doug's ruling that set this order, on 29 October:

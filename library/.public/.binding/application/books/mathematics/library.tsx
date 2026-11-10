@@ -4,6 +4,7 @@ import $Book from '../../../../../mathematics/.library/.book';
 import Cover from '../../../../../mathematics/.library/.cover';
 import Synopsis from '../../../../../mathematics/.library/.synopsis';
 import Table from '../../../../../mathematics/.library/.table';
+import OnFormallyUndecidablePropositions1 from '../../../../../mathematics/.library/1-on-formally-undecidable-propositions';
 
 const Book = $($Book);
 
@@ -12,6 +13,7 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
+        {OnFormallyUndecidablePropositions1()}
     </Book>
 );
 

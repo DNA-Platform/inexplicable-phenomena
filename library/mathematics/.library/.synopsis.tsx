@@ -10,7 +10,9 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The papers referenced across mathematics in this library, catalogued in one place.
+            The papers referenced across mathematics in this library, catalogued in one place: each a chapter of
+            Doug's carrying the paper's citation, with the paper itself beside it and read on the page. Gödel's of
+            1931 first, in English.
         </Paragraph>
     </Chapter>
 );

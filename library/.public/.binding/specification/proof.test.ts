@@ -31,6 +31,18 @@ describe('where a link leads', () => {
         })).toEqual([]);
     });
 
+    // A LINK TO A FILE THE BIND PLACED, Sprint 125: a document beside a chapter is served at its address, and
+    // the figure that shows it falls back to a link there, which the file answers; a file nothing placed is no
+    // page and nothing answers.
+    it('passes a link to a file standing in the face at its address, and refuses one to a file that is not there', () => {
+        const face = built({ 'index.html': '<a href="/manual/paper.pdf">the paper</a><a href="/manual/missing.pdf">missing</a>' });
+        mkdirSync(join(face, 'manual'), { recursive: true });
+        writeFileSync(join(face, 'manual', 'paper.pdf'), '%PDF-1.4');
+        expect(proof(face, ['index.html']).map(one => one.says)).toEqual([
+            'a link addresses /manual/missing.pdf, and no page was built at manual/missing.pdf/index.html',
+        ]);
+    });
+
     it('refuses a link to an id that nothing answers to', () => {
         expect(saidOf({
             'index.html': '<a href="#gone">gone</a><a href="/other/#missing">missing</a>',

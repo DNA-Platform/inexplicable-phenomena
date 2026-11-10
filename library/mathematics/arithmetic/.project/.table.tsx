@@ -14,6 +14,9 @@ export default () => (
                 <Content>$[[ The Notes ]]( ./Sprint 124 )</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ The Papers ]]( ./Sprint 125 )</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Arithmetic Project ]]</Content>

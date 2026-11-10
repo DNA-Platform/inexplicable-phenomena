@@ -33,7 +33,7 @@ describe('a bind whose children run at once', () => {
     it('reads and draws in children at once, says so, and the pages are the same as in turn', () => {
         const inTurn = bound(galley);
         expect(inTurn).toMatch(/^specify +\d+ books read in 1 child · 0 unchanged · .* · peak \d+ MB in a child/mu);
-        expect(inTurn).toMatch(/^render +\d+ pages drawn in 1 child · 0 kept · \d+ pictures? · peak \d+ MB in a child/mu);
+        expect(inTurn).toMatch(/^render +\d+ pages drawn in 1 child · 0 kept · \d+ resources? placed · peak \d+ MB in a child/mu);
         const pages = table.routes.map(route => [route.name, pageOf(route.name)] as const);
 
         const settings = JSON.parse(readFileSync(join(galley.binding, '.pubconfig'), 'utf8')) as Record<string, Record<string, unknown>>;

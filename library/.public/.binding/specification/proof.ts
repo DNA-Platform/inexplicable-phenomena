@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Diagnostic } from '../inventory/library';
 
@@ -139,7 +139,18 @@ export const proof = (face: string, pages: string[], base = '/'): Diagnostic[] =
     // AND EVERY ADDRESS INTO THE LIBRARY LEADS TO A PAGE THE BINDER BUILT, at a place on it that
     // exists — read off the pages rather than the catalogue, so it cannot agree with the catalogue
     // by construction.
+    //
+    // A LINK TO A FILE THE BIND PLACED IS ANSWERED BY THE FILE, Sprint 125: a document beside a
+    // chapter is served at its address, and the figure that shows it falls back to a link there
+    // where no viewer runs. A file is no page and wears no id, so the link is answered by the file
+    // standing in the face where the address says.
+    const placed = (href: string): boolean => {
+        if (!href.startsWith(base)) return false;
+        const path = decodeURIComponent(href.slice(base.length).split('#')[0]);
+        return /\.[a-z0-9]+$/iu.test(path) && existsSync(join(face, path)) && statSync(join(face, path)).isFile();
+    };
     for (const { page, href } of leaving) {
+        if (placed(href)) continue;
         const led = leads(href, base);
         if (led === undefined) continue;
         const ids = answers.get(led.page);

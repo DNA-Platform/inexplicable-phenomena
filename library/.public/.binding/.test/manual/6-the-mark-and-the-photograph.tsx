@@ -1,4 +1,4 @@
-import { Chapter, Code, Heading, Image, Paragraph, Part, Section, Svg, Title } from '@dna-platform/public';
+import { Append, Chapter, Code, Heading, Image, Paragraph, Part, Section, Svg, Title } from '@dna-platform/public';
 import { Catchword } from './.book';
 
 export default () => (
@@ -8,10 +8,10 @@ export default () => (
         <Section>
             <Heading>The mark</Heading>
             <Paragraph>
-                Two files stand beside this chapter and neither is code: the library's mark as an SVG and a
-                photograph of the library as a PNG. Each is named by its type alone, since neither carries an
-                identifier, and each figure below is drawn once from its file and once from what is written in it,
-                so the same tool shows a file and a literal.
+                Three files stand beside this chapter and none is code: the library's mark as an SVG, a
+                photograph of the library as a PNG and a document as a PDF. Each is named by its type alone, since
+                none carries an identifier, and each figure below is drawn once from its file and once from what is
+                written in it, so the same tool shows a file and a literal.
             </Paragraph>
             <Paragraph>
                 Three books on a shelf, the library's mark, kept beside this chapter as a file and drawn here from
@@ -63,6 +63,14 @@ export default () => (
                 <Code>![[ this ]]</Code>
             </Paragraph>
         </Section>
+        <Section>
+            <Heading>The document</Heading>
+            <Paragraph>
+                A document beside this chapter, a PDF of one page, named by the Append at the chapter's end and served
+                at its address beside the book's pages as the photograph is, never inlined as text.
+            </Paragraph>
+        </Section>
+        <Append type=".pdf">![[ .pdf ]]</Append>
         <Catchword />
     </Chapter>
 );

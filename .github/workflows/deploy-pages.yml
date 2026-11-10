@@ -6,8 +6,19 @@ name: Deploy the public library to Pages
 # so the committed site and the published one are byte for byte the same. Sprint 119, D2, D3 and D7;
 # the library's root moved up from library/.public to library/ in Sprint 120, and its face from ..public to .public, where the public package and its .lib also stand, so the gather leaves those two out.
 #
-# THE PUSH TRIGGER STAYS OFF until Doug says otherwise; a deploy is run by hand from the Actions tab.
+# THE PUSH TRIGGER IS ON since 2026-11-10, Sprint 125, on Doug's "are we releasing this as the github
+# pages yet? We should be. We want to be." — it stayed off from his "No deploy. Leave the teaser" of
+# 2026-08-14 until then. A push to main that changes the committed site publishes it; the binding, the
+# package and the branch library are not the site and do not trigger a deploy. A deploy can still be
+# run by hand from the Actions tab.
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'library/.public/**'
+      - '!library/.public/.binding/**'
+      - '!library/.public/package/**'
+      - '!library/.public/.lib/**'
   workflow_dispatch:
 
 permissions:

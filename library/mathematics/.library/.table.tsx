@@ -9,6 +9,12 @@ export default () => (
             [[ Table of Contents ]]
         </Title>
         <Section>
+            <Heading>The Papers</Heading>
+            <Paragraph>
+                <Content>$[[ On Formally Undecidable Propositions ]]( ./Gödel 1931 )</Content>
+            </Paragraph>
+        </Section>
+        <Section>
             <Heading>Contents</Heading>
             <Paragraph>
                 <Parenthetical />

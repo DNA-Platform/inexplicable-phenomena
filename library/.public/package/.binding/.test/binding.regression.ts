@@ -5,7 +5,7 @@ import puppeteer, { type Browser, type Page } from 'puppeteer';
 import { preview, type PreviewServer } from 'vite';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { configure } from '../configuration/configuration';
-import { imageTypes } from '../inventory/filenames';
+import { byAddress } from '../inventory/filenames';
 import { walk } from '../inventory/walk';
 import { catalogue } from '../catalogue/catalogue';
 import { placeOf } from '../rendering/place';
@@ -114,9 +114,19 @@ describe('a bind of the test library', () => {
                 expect(existsSync(join(galley.face, chapter.address.split('#')[1], 'index.html')), `${chapter.name} was rendered as a page of its own`).toBe(false);
             }
         }
-        // THE FACE'S FOLDERS: a page per book, the assets, the sheets, and the pictures of any book carrying one since Sprint 89.
-        const pictured = found.books.filter(book => [...book.resources.values()].flat().some(one => imageTypes.includes(one.type))).map(book => book.folder);
-        expect(readdirSync(galley.face).filter(name => !name.includes('.')).sort()).toEqual([...table.routes.map(route => route.address.slice(1)), 'assets', 'sheets', ...pictured].sort());
+        // THE FACE'S FOLDERS: a page per book, the assets, the sheets, and the pictures of any book carrying one since Sprint 89, its documents since Sprint 125.
+        const placed = found.books.filter(book => [...book.resources.values()].flat().some(one => byAddress(one.type))).map(book => book.folder);
+        expect(readdirSync(galley.face).filter(name => !name.includes('.')).sort()).toEqual([...table.routes.map(route => route.address.slice(1)), 'assets', 'sheets', ...placed].sort());
+    });
+
+    // A DOCUMENT IS SERVED AS ITSELF, Sprint 125: the PDF beside the manual's chapter is copied beside the manual's
+    // pages as a picture is, and its bytes are in no page and in no module of the bundle, which is what "never inlined"
+    // means on disk.
+    it('placed the document beside the manual\'s pages at its address and put none of its bytes in the pages or the bundle', () => {
+        expect(existsSync(join(galley.face, 'manual', '6-the-mark-and-the-photograph.pdf'))).toBe(true);
+        const beneath = (folder: string): string[] => readdirSync(folder, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? beneath(join(folder, entry.name)) : [join(folder, entry.name)]);
+        const written = [...table.routes.map(route => placeOf(galley.face, route)), ...beneath(join(galley.face, 'assets'))];
+        for (const file of written) expect(readFileSync(file, 'latin1'), `${file} carries the document's bytes`).not.toContain('%PDF-');
     });
 
     it('wrote pages the browser will build as sent, whose every link leads to an id worn once', () => {
@@ -432,6 +442,17 @@ describe('the bound test library, seen in a real browser', () => {
         const byline = await paper.$eval('.pd-byline', paragraph => (paragraph as HTMLElement).innerText.replace(/\s+/gu, ' ').trim());
         expect(byline).toBe('AUTHOR A Persona FILED UNDER Libraries');
         expect(await paper.$eval('#root', root => root.innerText)).not.toContain('/a-persona/');
+    });
+
+    // A DOCUMENT ANSWERS AT ITS ADDRESS AS A PDF, Sprint 125, asked from the page as a viewer would ask it.
+    it('serves the document beside the manual\'s chapter at its address as a PDF', async () => {
+        const address = new URL('/manual/6-the-mark-and-the-photograph.pdf', server?.resolvedUrls?.local[0] ?? '').href;
+        const answer = await paper.evaluate(async (asked: string) => {
+            const response = await fetch(asked);
+            const text = await response.text();
+            return { status: response.status, type: response.headers.get('content-type'), head: text.slice(0, 5) };
+        }, address);
+        expect(answer).toEqual({ status: 200, type: 'application/pdf', head: '%PDF-' });
     });
 
     it('shows a table\'s entries and draws nothing of its parenthetical ones, which are gone from the page and not merely from the eye', async () => {

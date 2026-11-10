@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { afterAll, describe, expect, it, vi } from 'vitest';
 import { configure } from '../configuration/configuration';
 import { walk } from '../inventory/walk';
-import { imageTypes } from '../inventory/filenames';
+import { byAddress } from '../inventory/filenames';
 import { notation } from '../catalogue/language';
 import { source } from '../catalogue/source';
 import { structure } from '../catalogue/structure';
@@ -58,7 +58,7 @@ describe(`the catalogue over ${6 + scale} real books`, () => {
             // EVERY FILE THE STRUCTURE READS: the chapters, and the text files accompanying them.
             const files = found.books.flatMap(book => [
                 ...book.files,
-                ...[...book.resources.values()].flat().filter(one => !imageTypes.includes(one.type)).map(one => one.file),
+                ...[...book.resources.values()].flat().filter(one => !byAddress(one.type)).map(one => one.file),
             ].map(file => join(book.path, file)));
             const codes = files.map(path => readFileSync(path, 'utf8'));
             timed(`parse (${files.length} files)`, () => codes.forEach((code, i) => source(files[i], code)));

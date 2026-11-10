@@ -131,6 +131,7 @@ export class $LibraryTheme extends $Theme {
             .hljs-comment, .hljs-meta, .hljs-doctag { color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); font-style: italic; }
             .hljs-title, .hljs-title.class_, .hljs-title.function_ { font-weight: bold; }
             .pd-image img, .pd-svg svg { display: block; max-width: 100%; height: auto; margin-block: ${({ theme }) => theme.space}; }
+            .pd-document object { display: block; width: 100%; aspect-ratio: 1 / 1.4142; margin-block: ${({ theme }) => theme.space}; }
             .pd-math, .pd-date { white-space: nowrap; }
             .pd-equation { position: relative; counter-increment: equation; }
             .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }

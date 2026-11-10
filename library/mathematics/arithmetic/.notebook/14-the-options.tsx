@@ -11,7 +11,7 @@ export default () => (
             from, and how the newest statement bears on it: the algebraic model of the subject of logic he restated
             and sharpened the same evening, in <Means>$[[ ./The Subject of Logic ]]</Means>. The options are not rivals; most are one
             structure seen at a different level, and the question the newest statement puts is which level the
-            paper's Gödel half is written at.
+            paper's <Means>$[[ Gödel ]]( Mathematical Library / Gödel 1931 )</Means> half is written at.
         </Paragraph>
         <Section>
             <Heading>The lifted predicate in PA</Heading>

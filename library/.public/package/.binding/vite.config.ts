@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configure } from './configuration/configuration';
 import { template } from './rendering/page';
-import { imageTypes } from './inventory/filenames';
+import { byAddress, contentTypes } from './inventory/filenames';
 import { handed, retaking, retakes } from './inventory/retaken';
 import { handedPlaces } from './children';
 import { holding } from './catalogue/holds';
@@ -73,21 +73,21 @@ export const configuration = (env: Pick<ConfigEnv, 'isPreview'>): UserConfig => 
                 });
             },
         },
-        // A PICTURE BESIDE A CHAPTER, ANSWERED LIVE AT THE ADDRESS THE BIND COPIES IT TO. A literal
-        // naming a picture is written as `/<folder>/<file>`, and only the batch's render puts a file
-        // there; the dev server answered that address with the page, so an Image was empty until a
-        // bind — measured 2026-10-05 on Doug's design book, fifty photographs. Doug: "Yes, apply and
-        // test it." The library is asked at each request, so a picture added while the server is open
-        // is answered for.
+        // A PICTURE OR A DOCUMENT BESIDE A CHAPTER, ANSWERED LIVE AT THE ADDRESS THE BIND COPIES IT TO.
+        // A literal naming one is written as `/<folder>/<file>`, and only the batch's render puts a
+        // file there; the dev server answered that address with the page, so an Image was empty until
+        // a bind — measured 2026-10-05 on Doug's design book, fifty photographs. Doug: "Yes, apply and
+        // test it." The library is asked at each request, so a file added while the server is open is
+        // answered for, with the content type its extension says. Documents since Sprint 125.
         {
-            name: 'binding:pictures',
+            name: 'binding:resources',
             configureServer: server => {
                 server.middlewares.use((request, response, next) => {
                     const asked = decodeURIComponent((request.url ?? '').split('?')[0]);
                     for (const book of held.library().books)
                         for (const one of [...book.resources.values()].flat())
-                            if (imageTypes.includes(one.type) && asked === `${chosen.resolution.base}${book.folder}/${one.file}`) {
-                                response.setHeader('Content-Type', one.type === '.png' ? 'image/png' : 'image/jpeg');
+                            if (byAddress(one.type) && asked === `${chosen.resolution.base}${book.folder}/${one.file}`) {
+                                response.setHeader('Content-Type', contentTypes[one.type]);
                                 return void createReadStream(join(book.path, one.file)).pipe(response);
                             }
                     next();

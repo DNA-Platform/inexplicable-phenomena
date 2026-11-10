@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { imageTypes } from './inventory/filenames';
+import { byAddress } from './inventory/filenames';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configuration } from './vite.config';
@@ -234,14 +234,14 @@ export const tasks: Task[] = [
         state.pages = pages;
         state.rendered = rendered.pages;
         state.drawn = rendered.drawn;
-        // AND EVERY PICTURE ACCOMPANYING A CHAPTER PLACED IN THE FACE beside its book's pages, at the
-        // address its Append names, `/<folder>/<file>` — copied, never bundled, so the address is a
-        // page's and not a dev server's. Sprint 89.
+        // AND EVERY PICTURE OR DOCUMENT ACCOMPANYING A CHAPTER PLACED IN THE FACE beside its book's
+        // pages, at the address its Append names, `/<folder>/<file>` — copied, never bundled, so the
+        // address is a page's and not a dev server's. Sprint 89; documents since Sprint 125.
         const face = join(state.binding, '..');
-        const pictures = found.books.flatMap(book => [...book.resources.values()].flat()
-            .filter(one => imageTypes.includes(one.type))
+        const placed = found.books.flatMap(book => [...book.resources.values()].flat()
+            .filter(one => byAddress(one.type))
             .map(one => { mkdirSync(join(face, book.folder), { recursive: true }); copyFileSync(join(book.path, one.file), join(face, book.folder, one.file)); return `${book.folder}/${one.file}`; }));
-        return `${plural(rendered.drawn.length, 'page')} drawn in ${children(rendered.batches)}${atOnce(rendered.atOnce)} · ${kept.length} kept · ${plural(pictures.length, 'picture')}${peaked(rendered.peak, rendered.heaviest)}`;
+        return `${plural(rendered.drawn.length, 'page')} drawn in ${children(rendered.batches)}${atOnce(rendered.atOnce)} · ${kept.length} kept · ${plural(placed.length, 'resource')} placed${peaked(rendered.peak, rendered.heaviest)}`;
     } },
     { name: 'proof', run: state => {
         // RUNNABLE ON ITS OWN. `tsx binding.ts proof` reads the pages the last binding wrote, so a
