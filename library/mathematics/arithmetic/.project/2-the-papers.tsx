@@ -4,22 +4,38 @@ export default () => (
     <Chapter>
         <Title>[[ The Papers ]]( Sprint 125 )</Title>
         <Paragraph>
-            The second sprint of arithmetic, opened on 10 November 2026 on Doug's word that the next step is a way to add
-            papers to <Means>$[[ the library ]]( Mathematical Library )</Means> and to see whether the papers and
-            resources themselves can stand in it, the first resource Gödel's paper on formally undecidable propositions;
-            then that references good for the project are collected, the book for the library designed, and the library
-            released as the site it was always meant to be.
+            The second sprint of arithmetic, opened and closed on 10 November 2026, on Doug's word that the next step
+            is a way to add papers to <Means>$[[ the library ]]( Mathematical Library )</Means> and to see whether the
+            papers and resources themselves can stand in it, the first resource Gödel's paper on formally undecidable
+            propositions; then that references good for the project are collected, the book for the library
+            designed, and the library released as the site it was always meant to be.
         </Paragraph>
         <Section>
-            <Heading>What the sprint does</Heading>
+            <Heading>What the second sprint accomplished</Heading>
             <Paragraph>
-                A paper is a citable publication held in the library as a resource: the file itself beside a chapter of
-                The Library of Mathematics that describes it and carries its citation, which Doug writes, the paper
-                signed by its author in itself and read on the page. The sprint sketches the paper's page and the
-                library's table for his number, gives the binder a document type so a file beside a chapter is served
-                by its address and never inlined, gives the package a Document figure that shows it, puts Gödel 1931 in
-                English beside its chapter with both translations, has the notebook cite the chapter, and turns the
-                site's publishing on, so that every push to the repository publishes the library.
+                A paper is a citable publication held in the library as a resource: the file itself beside a chapter
+                of The Library of Mathematics that carries its citation and the notes Doug writes on it, the paper
+                signed by its own author. The binder serves a document beside a chapter at its address as it serves
+                a picture, never inlined, and the package gained a Document figure for the viewer, though the page
+                built to his number does without it: the paper's page is minimal, a small picture of the paper's
+                first page at the top left that opens the paper in another tab, the citation, the notes, and an
+                opening for each translation. Gödel 1931 stands there in English, Meltzer's whole paper and Hirzel's
+                two sections, and <Means>$[[ the notebook ]]( Arithmetic Notebook )</Means> cites it in three
+                places. The library's book was designed in four sketches of <Means>$[[ the design book ]]( Mathematical Design )</Means>,
+                the paper's page and the cover decided by his numbers and built in the manual: the cover drawn as a
+                book, its words its links, the title opening the contents, the author and the subject their books.
+                The site's publishing was turned on, every push to publish the library, though GitHub had run none
+                by the sprint's close. And the references below were collected, each with its address and its terms.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>What the second sprint leaves</Heading>
+            <Paragraph>
+                The citations for the paper itself, collected from these references and beyond them into the library
+                as the next sprint, each a chapter of Doug's when he picks it; the German original beside Gödel's
+                chapter from 1 January 2027, when it is public domain in the United States; the table's form as the
+                library grows, alphabetical and tagged by subject in time; his notes on each paper; and the deploy,
+                which runs once the repository's Actions settings allow it.
             </Paragraph>
         </Section>
         <Section>
@@ -37,7 +53,8 @@ export default () => (
                         Gödel 1931, Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I
                     </Word>, Monatshefte für Mathematik und Physik 38, 173–198; a scan of the pages at Essler's site.
                     Public domain in the United States from 1 January 2027, in Austria from 2049; the English of
-                    Hirzel, 2000, free with his notice, and of Meltzer, 1962, under copyright. The first resource.
+                    Hirzel, 2000, free with his notice, and of Meltzer, 1962, under copyright. The first resource,
+                    at <Means>$[[ Gödel 1931 ]]( Mathematical Library / Gödel 1931 )</Means>.
                 </Line>
                 <Line>
                     <Word>
