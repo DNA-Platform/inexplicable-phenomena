@@ -27,12 +27,14 @@ export class $LibraryTheme extends $Theme {
     // that opens comes in with a short fade, the library's one transition. Sketch 004, form a.
     protected front(): RuleSet {
         return css`
-            a:has(> .pd-front) { display: none; }
-            .pd-book:has(.pa-cover.pa-open) a:has(> .pd-front) { display: block; width: 22rem; max-width: 100%; margin: 2.5rem auto 3rem; color: inherit; text-decoration: none; }
+            .pd-front { display: none; }
+            .pd-book:has(.pa-cover.pa-open) .pd-front { display: flex; }
             .pd-book:has(.pa-cover.pa-open) .pd-running-head, .pd-book:has(.pa-cover.pa-open) .pd-byline, .pd-book:has(.pa-cover.pa-open) .pa-cover.pa-open { display: none; }
-            .pd-front { position: relative; box-sizing: border-box; width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; aspect-ratio: 2 / 3; margin-block: 0; padding: 3rem 2rem 1.75rem; cursor: pointer; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); box-shadow: inset 0 0 0 6px ${({ theme }) => theme.paper}, inset 0 0 0 7px color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}), 2px 12px 28px -12px rgba(0, 0, 0, .45); background: ${({ theme }) => theme.paper}; }
+            .pd-front { position: relative; box-sizing: border-box; width: 22rem; max-width: 100%; flex-direction: column; align-items: center; text-align: center; aspect-ratio: 2 / 3; margin: 2.5rem auto 3rem; padding: 3rem 2rem 1.75rem; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); box-shadow: inset 0 0 0 6px ${({ theme }) => theme.paper}, inset 0 0 0 7px color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}), 2px 12px 28px -12px rgba(0, 0, 0, .45); background: ${({ theme }) => theme.paper}; }
             .pd-front::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 1.25rem; background: linear-gradient(to right, color-mix(in srgb, ${({ theme }) => theme.ink} 22%, transparent), color-mix(in srgb, ${({ theme }) => theme.ink} 5%, transparent) 55%, transparent); z-index: 1; pointer-events: none; }
-            .pd-front .pd-word { display: block; }
+            .pd-front > a, .pd-front .pd-word { display: block; }
+            .pd-front .pa-reference { color: inherit; text-decoration: none; }
+            .pd-front a:hover .pd-word { text-decoration: underline; text-underline-offset: 0.15em; }
             .pd-front-name { font-size: 2.4rem; line-height: 1.1; font-weight: bold; margin-block: .35rem .8rem; }
             .pd-front-name::after { content: ''; display: block; width: 3.5rem; border-top: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); margin: .9rem auto 0; }
             .pd-front-author { font-size: 1.15rem; letter-spacing: .04em; }
@@ -41,8 +43,7 @@ export class $LibraryTheme extends $Theme {
             .pa-page.pa-open { animation: come .5s ease; }
             @keyframes come { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: none; } }
             @media (max-width: 640px) {
-                .pd-book:has(.pa-cover.pa-open) a:has(> .pd-front) { width: min(20rem, 86vw); margin-block: 1.5rem 2rem; }
-                .pd-front { padding: 2.25rem 1.25rem 1.25rem; }
+                .pd-front { width: min(20rem, 86vw); margin-block: 1.5rem 2rem; padding: 2.25rem 1.25rem 1.25rem; }
                 .pd-front-name { font-size: 2rem; }
             }
         `;

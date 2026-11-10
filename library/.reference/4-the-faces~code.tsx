@@ -1,13 +1,15 @@
 import { ReactNode } from 'react';
 import { $, selection } from '@dna-platform/chemistry';
-import { $Cover, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, html } from '@dna-platform/public';
+import { $Cover, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, Means as means, Reference as reference, html } from '@dna-platform/public';
 
 // THE FRONT IS THE BOOK'S COVER DRAWN AS A BOOK: the title, the author, the synopsis and the imprint on a board of a
-// book's shape, standing alone on the page while the cover is open, and the whole of it one reference to the table,
-// so a click anywhere opens the book. Drawn from what the cover already says, as the byline is. Sprint 125, Doug,
-// 2026-11-10: "Give the cover the feel of a book... it should have the author and subject on the cover and not have
-// the header... clicking on the book anywhere takes you to the table". Sketch 004 of the design book, form a.
-// PROXY names: Front and its four words.
+// book's shape, standing alone on the page while the cover is open; its words are its links, the title to the table
+// of contents, the author and the subject to their books, the library's name to the library. Drawn from what the
+// cover already says, as the byline is. Sprint 125, Doug, 2026-11-10: "Give the cover the feel of a book... it
+// should have the author and subject on the cover and not have the header", and on the first build, "various things
+// should be clickable on the cover - author, subject and getting to the table", and "I don't like this 'Filed under'
+// because that isn't about a subject", so the imprint names the subject plainly. Sketch 004 of the design book,
+// form a. PROXY names: Front and its four words.
 export class $FrontName extends $Word {
     protected override $Define(): void { super.$Define(); this.classes.add(this, 'pd-front-name'); }
 }
@@ -25,16 +27,7 @@ export class $Front extends $Paragraph {
     protected override $Define(): void {
         super.$Define();
         this.classes.add(this, 'pd-front');
-        this.containers.add(this, this._board);
     }
-
-    private _board = (props: { children?: ReactNode }) => (
-        <a
-            href={this.book?.table?.means?.identifier}
-            className="pa-reference pd-container"
-            {...props}
-        />
-    );
 
     override write(): ReactNode {
         const book = this.book;
@@ -43,14 +36,30 @@ export class $Front extends $Paragraph {
         const Author = $(frontAuthor);
         const Synopsis = $(frontSynopsis);
         const Imprint = $(frontImprint);
+        const Means = $(means);
+        const Reference = $(reference);
         const synopsis = book.synopsis?.text.find($Paragraph)[0];
+        // THE TABLE'S ADDRESS IS ITS TITLE'S, as the running head reads it: a chapter's means is the means its title
+        // carries, and the table chapter itself carries none.
+        const table = book.table?.canonical;
         return (
             <>
-                <Name>{book.title?.name}</Name>
-                <Author>{book.author?.name}</Author>
+                <Name>
+                    <Reference>{table?.means?.identifier}</Reference>
+                    {book.title?.name}
+                </Name>
+                <Author>
+                    <Reference>{book.author?.means?.identifier}</Reference>
+                    {book.author?.name}
+                </Author>
                 <Synopsis>{synopsis === undefined ? '' : html.copy(synopsis.text)}</Synopsis>
-                <Imprint>Filed under {book.subject?.name}</Imprint>
-                <Imprint>Inexplicable Phenomena</Imprint>
+                <Imprint>
+                    <Reference>{book.subject?.means?.identifier}</Reference>
+                    {book.subject?.name}
+                </Imprint>
+                <Imprint>
+                    <Means>$[[ Inexplicable Phenomena ]]</Means>
+                </Imprint>
             </>
         );
     }
