@@ -1,7 +1,15 @@
-import { Chapter, Document, Emphasis, Heading, Paragraph, Reference, Section, Title, Word } from '@dna-platform/public';
+import { Chapter, Emphasis, Image, Paragraph, Reference, Title, Word } from '@dna-platform/public';
+import { Opening, Plate } from '../../.reference/6-the-paper~code.tsx';
 
 export default () => (
     <Chapter>
+        <Paragraph>
+            <Plate>
+                <Opening>![[ meltzer.pdf ]]</Opening>
+                <Image>![[ meltzer.png ]]</Image>
+                <Word>Read the paper ↗</Word>
+            </Plate>
+        </Paragraph>
         <Title>[[ On Formally Undecidable Propositions ]]( Gödel 1931 )</Title>
         <Paragraph>
             Kurt Gödel, <Word>
@@ -17,19 +25,16 @@ export default () => (
             </Word>.
         </Paragraph>
         <Paragraph>
-            The description of the paper is Doug's, to be written here; the team writes none of it.
+            The notes on the paper are Doug's, to be written here; the team writes none of them.
         </Paragraph>
-        <Section>
-            <Heading>The paper, in Meltzer's English</Heading>
-            <Paragraph>
-                <Document>![[ meltzer.pdf ]]</Document>
-            </Paragraph>
-        </Section>
-        <Section>
-            <Heading>Sections 1 and 2, in Hirzel's English</Heading>
-            <Paragraph>
-                <Document>![[ hirzel.pdf ]]</Document>
-            </Paragraph>
-        </Section>
+        <Paragraph>
+            <Word>
+                <Opening>![[ meltzer.pdf ]]</Opening>
+                Read the paper ↗
+            </Word>, Meltzer's English, 75 pages; <Word>
+                <Opening>![[ hirzel.pdf ]]</Opening>
+                sections 1 and 2 in Hirzel's ↗
+            </Word>, with his notice.
+        </Paragraph>
     </Chapter>
 );

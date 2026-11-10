@@ -1,4 +1,4 @@
-import { Append, Chapter, Heading, Image, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Heading, Image, Means, Paragraph, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -51,11 +51,136 @@ export default () => (
                 <Image>![[ 001-b-phone.png ]]</Image>
             </Paragraph>
         </Section>
+        <Section>
+            <Heading>Sketch 002, the minimal page</Heading>
+            <Paragraph>
+                The second sketch follows his answer to the first, the same day: not a frame or a look to commit to,
+                a library built as utility minimally and grown as needed; the table listing the publications in
+                alphabetical order and reached easily, a nexus of catalogues eventually; a chapter a minimal place
+                to write notes about the publication with a link that opens it, possibly in another tab; and the
+                preview he liked kept as a small picture of the publication at the top left of the page, clicked to
+                open it. The viewer at the measure comes out. The picture is the paper's first page, made once by
+                Chrome's own viewer with its toolbar and panes asked off and cropped to the page, a tool of the
+                sprint's scratch until a form is chosen. The forms: a, the picture floated at the top left with the
+                title and the citation beside it and the notes flowing under it once past; b, the picture in a
+                column of its own with nothing flowing under; t, the cover and the table on one page, the papers
+                in alphabetical order, two rows the references entry names marked to come so the order shows.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>The photographs of 002</Heading>
+            <Paragraph>
+                <Image>![[ 002-a-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 002-b-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 002-t-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 002-a-phone.png ]]</Image>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>Sketch 003, the cover</Heading>
+            <Paragraph>
+                His number on 002 was a, the picture at the top left with the text flowing under it; and on its table
+                he asked instead for the cover: a transition when the book is first opened, the feel of a book, not
+                unlike the paper's picture but bigger, in ideas that match the current theme's feel. The third sketch
+                puts three ideas of the cover on a switch, each a board built from the page's own words in the theme's
+                Georgia on white with its small spaced capitals and hairline rules, and each opening to the contents
+                with a transition when clicked, the board giving way upward and the table coming in beneath; the
+                switch's last press closes the book again. The forms: a, the front board, a panel tall as a book framed
+                by a double rule with a spine's shadow at its left, the title large on it, the synopsis in italic, the
+                author and the subject at its foot; b, the shelf, the same board carrying the publications as their
+                pictures along a shelf at its foot, each a way into its chapter; c, the half-title, the title alone on
+                a blank leaf with no frame, which turns rather than lifts when opened.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>The photographs of 003</Heading>
+            <Paragraph>
+                <Image>![[ 003-a-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 003-b-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 003-c-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 003-aopen-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 003-a-phone.png ]]</Image>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>What was built</Heading>
+            <Paragraph>
+                Of the four, two moved into the manual by his number on 10 November 2026: the paper's page is 002's
+                form a, the plate and the opening of <Means>$[[ Our Reference / The Paper ]]</Means>, and the cover
+                is 004's form a, the front of <Means>$[[ Our Reference / The Faces ]]</Means>; 001 and 003 stand here
+                as the questions they were. Two departures from the decided HTML, kept on purpose: the title stands
+                whole on the front, in two lines, where the sketch set THE LIBRARY OF small above the name, since a
+                title is one writing of the library's and not two; and the picture is cut to the paper's own page
+                shape, read from the PDF, where the sketch's was cut to A4's.
+            </Paragraph>
+        </Section>
         <Append
             identifier="001"
             type=".html"
         >
             ![[ 001.html ]]
+        </Append>
+        <Append
+            identifier="002"
+            type=".html"
+        >
+            ![[ 002.html ]]
+        </Append>
+        <Section>
+            <Heading>Sketch 004, the book's cover</Heading>
+            <Paragraph>
+                His word on 003, "It's good", and three corrections: the author and the subject on the cover itself,
+                no header above it, the shape of a book cover, and a click anywhere on the book opening the contents.
+                So the fourth sketch shows the cover alone on its page, the running head and the byline gone while the
+                book is closed and back when it opens; the book two by three, narrower than the measure, standing in
+                the middle of the page with a spine's shadow and a double rule, the title large on it, the author
+                under the title as a reference to Our Team, the synopsis in italic, and at the foot the subject as a
+                reference to Our Math and the library's name; a click anywhere on the book, save on a link, lifting it
+                away as the contents come in beneath. Two forms kept, a the front board and b the shelf, which carries
+                the publications as their pictures along a shelf above the foot; the half-title dropped, since it
+                carried no author.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>The photographs of 004</Heading>
+            <Paragraph>
+                <Image>![[ 004-a-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 004-b-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 004-aopen-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ 004-a-phone.png ]]</Image>
+            </Paragraph>
+        </Section>
+        <Append
+            identifier="003"
+            type=".html"
+        >
+            ![[ 003.html ]]
+        </Append>
+        <Append
+            identifier="004"
+            type=".html"
+        >
+            ![[ 004.html ]]
         </Append>
     </Chapter>
 );

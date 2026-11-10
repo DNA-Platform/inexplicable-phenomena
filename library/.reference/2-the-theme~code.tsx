@@ -19,7 +19,46 @@ export class $LibraryTheme extends $Theme {
     style: ElementType = selection.div`${this.parts()}`;
 
     protected parts(): RuleSet[] {
-        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures()];
+        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate()];
+    }
+
+    // THE FRONT, the cover drawn as a book, Sprint 125: shown alone while the cover is the open page, the running
+    // head, the byline and the cover chapter itself unseen then and back the moment another page opens; a page
+    // that opens comes in with a short fade, the library's one transition. Sketch 004, form a.
+    protected front(): RuleSet {
+        return css`
+            a:has(> .pd-front) { display: none; }
+            .pd-book:has(.pa-cover.pa-open) a:has(> .pd-front) { display: block; width: 22rem; max-width: 100%; margin: 2.5rem auto 3rem; color: inherit; text-decoration: none; }
+            .pd-book:has(.pa-cover.pa-open) .pd-running-head, .pd-book:has(.pa-cover.pa-open) .pd-byline, .pd-book:has(.pa-cover.pa-open) .pa-cover.pa-open { display: none; }
+            .pd-front { position: relative; box-sizing: border-box; width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; aspect-ratio: 2 / 3; margin-block: 0; padding: 3rem 2rem 1.75rem; cursor: pointer; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); box-shadow: inset 0 0 0 6px ${({ theme }) => theme.paper}, inset 0 0 0 7px color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}), 2px 12px 28px -12px rgba(0, 0, 0, .45); background: ${({ theme }) => theme.paper}; }
+            .pd-front::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 1.25rem; background: linear-gradient(to right, color-mix(in srgb, ${({ theme }) => theme.ink} 22%, transparent), color-mix(in srgb, ${({ theme }) => theme.ink} 5%, transparent) 55%, transparent); z-index: 1; pointer-events: none; }
+            .pd-front .pd-word { display: block; }
+            .pd-front-name { font-size: 2.4rem; line-height: 1.1; font-weight: bold; margin-block: .35rem .8rem; }
+            .pd-front-name::after { content: ''; display: block; width: 3.5rem; border-top: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); margin: .9rem auto 0; }
+            .pd-front-author { font-size: 1.15rem; letter-spacing: .04em; }
+            .pd-front-synopsis { font-style: italic; opacity: .75; margin-block: 1.1rem auto; font-size: .95rem; }
+            .pd-front-imprint { font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .15em; text-transform: uppercase; opacity: .65; margin-top: .35rem; }
+            .pa-page.pa-open { animation: come .5s ease; }
+            @keyframes come { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: none; } }
+            @media (max-width: 640px) {
+                .pd-book:has(.pa-cover.pa-open) a:has(> .pd-front) { width: min(20rem, 86vw); margin-block: 1.5rem 2rem; }
+                .pd-front { padding: 2.25rem 1.25rem 1.25rem; }
+                .pd-front-name { font-size: 2rem; }
+            }
+        `;
+    }
+
+    // THE PLATE, a publication's small picture at the top left of its page with the text flowing under it, Sprint
+    // 125; its opening carries no underline, the picture being the link. Sketch 002, form a.
+    protected plate(): RuleSet {
+        return css`
+            .pd-plate { float: inline-start; width: 11rem; margin: .25rem 1.5rem 1rem 0; }
+            .pd-plate .pd-image img { margin-block: 0; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 20%, ${({ theme }) => theme.paper}); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+            .pd-plate .pa-opening { text-decoration: none; color: inherit; }
+            .pd-plate .pa-opening .pd-word { display: block; font-size: .8rem; margin-top: .4rem; opacity: .75; text-decoration: underline; }
+            .pd-chapter:has(> .pd-paragraph > .pd-plate) > .pd-paragraph:first-child { margin-block: 0; }
+            @media (max-width: 640px) { .pd-plate { width: 7rem; margin-right: 1rem; } }
+        `;
     }
 
     protected page(): RuleSet {

@@ -9,6 +9,7 @@ import TheTheme2 from '../../../../.reference/2-the-theme';
 import TheMastheadAndTheByline3 from '../../../../.reference/3-the-masthead-and-the-byline';
 import TheFaces4 from '../../../../.reference/4-the-faces';
 import DevelopingTheLibrary5 from '../../../../.reference/5-developing-the-library';
+import ThePaper6 from '../../../../.reference/6-the-paper';
 
 const Book = $($Book);
 
@@ -22,6 +23,7 @@ export const book = () => (
         {TheMastheadAndTheByline3()}
         {TheFaces4()}
         {DevelopingTheLibrary5()}
+        {ThePaper6()}
     </Book>
 );
 
