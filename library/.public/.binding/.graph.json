@@ -7,7 +7,7 @@
     },
     {
       "folder": ".reference",
-      "digest": "2ed730f1477a30ae",
+      "digest": "e0a8d0ef500d80a0",
       "walked": 75
     },
     {
@@ -42,8 +42,8 @@
     },
     {
       "folder": "mathematics/.library",
-      "digest": "2472d90bfd7acc6d",
-      "walked": 30
+      "digest": "d5fec5dae55846b7",
+      "walked": 158
     },
     {
       "folder": "mathematics/.reference",
@@ -52,7 +52,7 @@
     },
     {
       "folder": "mathematics/.subject",
-      "digest": "48f11a02ecbd8617",
+      "digest": "155bed31f280acdd",
       "walked": 62
     },
     {
@@ -62,13 +62,13 @@
     },
     {
       "folder": "mathematics/arithmetic/.notebook",
-      "digest": "486a2a7c84592ff6",
-      "walked": 331
+      "digest": "eb7f4ee1c85c18dc",
+      "walked": 346
     },
     {
       "folder": "mathematics/arithmetic/.project",
-      "digest": "1e0b8bea7cae1e38",
-      "walked": 122
+      "digest": "041037424e2ef5f4",
+      "walked": 134
     },
     {
       "folder": "mathematics/arithmetic/.subject",

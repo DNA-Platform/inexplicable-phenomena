@@ -16,10 +16,10 @@ export default () => (
                 <Emphasis />
                 Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I
             </Word>, Monatshefte für Mathematik und Physik 38 (1931), 173–198. In English as On Formally Undecidable
-            Propositions of Principia Mathematica and Related Systems I: the whole paper by B. Meltzer with an
-            introduction by R. B. Braithwaite, Oliver &amp; Boyd and Basic Books, 1962, Dover 1992; and sections 1
-            and 2 of its four by M. Hirzel, Boulder, 27 November 2000, reproduced with his notice as it asks. The
-            German original stands scanned at <Word>
+            Propositions of Principia Mathematica and Related Systems I, the standard translation being van
+            Heijenoort's as revised in Kurt Gödel, Collected Works, volume I, Oxford, 1986, pages 144–195, with the
+            German facing; read here in B. Meltzer's of 1962, with an introduction by R. B. Braithwaite, Oliver &amp;
+            Boyd and Basic Books, Dover 1992. The German original stands scanned at <Word>
                 <Reference>https://www.w-k-essler.de/pdfs/goedel.pdf</Reference>
                 Essler's site
             </Word>.
@@ -31,10 +31,7 @@ export default () => (
             <Word>
                 <Opening>![[ meltzer.pdf ]]</Opening>
                 Read the paper ↗
-            </Word>, Meltzer's English, 75 pages; <Word>
-                <Opening>![[ hirzel.pdf ]]</Opening>
-                sections 1 and 2 in Hirzel's ↗
-            </Word>, with his notice.
+            </Word>, Meltzer's English, 75 pages.
         </Paragraph>
     </Chapter>
 );

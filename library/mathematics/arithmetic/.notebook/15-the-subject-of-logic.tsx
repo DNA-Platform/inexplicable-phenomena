@@ -52,7 +52,8 @@ export default () => (
                 of logic" (Subjectivity library catalogue, the Gemini transcript, 3 November 2026), and closes a question
                 open since the first day. On 19 October the law was doubted: "Consistency is what logic is about"; "you
                 get to truth through proof, as formalized by logic, so there is an undecidable middle" (The Permission,
-                19 October 2026), and the price of dropping it was named that afternoon, Kripke's, some sentences get no
+                19 October 2026), and the price of dropping it was named that
+                afternoon, <Means>$[[ Kripke's ]]( Mathematical Library / Kripke 1975 )</Means>, some sentences get no
                 value (Claude, Certainty, 19 October 2026). On 28 October the identity absorbed it: "G and not G have the
                 empty proof, so G and not G are Con(PA) and Con(PA) which is just Con(PA) which we already know anyways"
                 (The Identity Element, 28 October 2026), "Excluded middle holds; it just evaluates to the identity"

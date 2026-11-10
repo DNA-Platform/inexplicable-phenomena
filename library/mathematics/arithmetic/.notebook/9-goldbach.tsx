@@ -60,8 +60,9 @@ export default () => (
                 Granting Gödel's argument grants the model; the model is the standard ℕ, the one in ℝ; the stance of
                 staying in PA, taken by everyone, is the flatness belief, and the flatness belief has one sentence in
                 number theory. Everyone who stays in PA already holds Goldbach's conjecture as an axiom; the paper
-                reads it off. As a deduction this is invalid and is meant to be: a thesis in the sense of Church and
-                Turing, confirmed by every independent formalization through chart invariance and by every instance.
+                reads it off. As a deduction this is invalid and is meant to be: a thesis in the sense
+                of <Means>$[[ Church and Turing ]]( Mathematical Library / Turing 1936 )</Means>, confirmed by every
+                independent formalization through chart invariance and by every instance.
                 Its criteria: every instance checkable; conservative over PA for all it does not decide; it explains
                 the sieve theorems rather than being explained by them; its justification extrinsic in Gödel's own
                 sense (The Surviving Sentence, 29 October 2026). Doug's own form of it: "Yet... we suspect that it

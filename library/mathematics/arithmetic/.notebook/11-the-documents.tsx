@@ -53,12 +53,14 @@ export default () => (
                 when S is a theorem, so attribution of the identity is the identity when true. C: a sentence provably
                 equivalent to its own Pf(·, 0) is provably equivalent to Con, so the identity has one self-name,
                 written twice as G and Con. D: for unprovable S, the reflection sentence Prov(S) → S is in the
-                frontier, Löb's theorem as a closure property. E: the progression Con, Con(PA + Con), and on, lies in
-                the frontier, pairwise inequivalent and one point under the identity, so Turing and Feferman were
+                frontier, <Means>$[[ Löb's theorem ]]( Mathematical Library / Löb 1955 )</Means> as a closure property. E: the
+                progression Con, Con(PA + Con), and on, lies in the frontier, pairwise inequivalent and one point
+                under the identity, so <Means>$[[ Turing ]]( Mathematical Library / Turing 1939 )</Means> and <Means>$[[ Feferman ]]( Mathematical Library / Feferman 1960 )</Means> were
                 enumerating names of ε. F: an ω-incomplete universal is proved only by the limiting proof, which is
                 the identity, the paper's two halves meeting. G: the frontier's Π₁ members are true. H: S is in the
                 frontier exactly when T + S and T + ¬S are both consistent, so undecidable means two subjects of one
-                empty representation, and by Rosser every consistent subject has a name for its identity. Gödel I
+                empty representation, and by <Means>$[[ Rosser ]]( Mathematical Library / Rosser 1936 )</Means> every
+                consistent subject has a name for its identity. Gödel I
                 read: every subject names its identity; Gödel II read: the identity's self-name is consistency.
             </Paragraph>
         </Section>

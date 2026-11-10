@@ -9,8 +9,9 @@ export default () => (
             the survivors of sieving by the first k primes form a group U_k with U = −U; the Chinese remainder theorem
             counts the pairs summing to any residue, ∏(p − c_p), positive for every even residue; for every center and
             every depth there is a k with n − k in P and n + k in P′, where P is the primes from below and P′ the same
-            residues read from above, different numbers, 23 and 187; normalized, the count is the Hardy–Littlewood
-            singular series (Goldbach through Gödel, The Paper's Flow, 5 November 2026).
+            residues read from above, different numbers, 23 and 187; normalized, the count is
+            the <Means>$[[ Hardy–Littlewood singular series ]]( Mathematical Library / Hardy and Littlewood 1923 )</Means> (Goldbach
+            through Gödel, The Paper's Flow, 5 November 2026).
         </Paragraph>
         <Section>
             <Heading>The two sieves</Heading>
@@ -48,8 +49,8 @@ export default () => (
             <Paragraph>
                 Passing from a congruence to an equation in ℤ introduces boundary terms no sieve depth controls well
                 enough to land a pair in the window where a survivor is prime: the sieving limit of dimension two,
-                Jurkat and Richert's lower bound vanishing exactly at full depth, the parity phenomenon under both,
-                Chen's theorem the best unconditional output. The residue theorems do not pass to quantities by
+                Jurkat and Richert's lower bound vanishing exactly at full depth, the parity phenomenon under
+                both, <Means>$[[ Chen's theorem ]]( Mathematical Library / Chen 1973 )</Means> the best unconditional output. The residue theorems do not pass to quantities by
                 proof. What every finite stage has and the limit sheds is the group structure, inverses, mirror,
                 predecessor of 0, one feature (The Surviving Sentence, 29 October 2026). This is why the identification
                 is consistent only at the unreachable limit, and why the paper's axiom is sited at the barrier

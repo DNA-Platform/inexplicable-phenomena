@@ -60,13 +60,15 @@ export default () => (
                     <Word>
                         <Reference>https://doi.org/10.2307/2269028</Reference>
                         Rosser 1936, Extensions of some theorems of Gödel and Church
-                    </Word>, Journal of Symbolic Logic 1, 87–91. Under copyright, at Cambridge.
+                    </Word>, Journal of Symbolic Logic 1, 87–91. Under copyright, at Cambridge. In the library
+                    at <Means>$[[ Rosser 1936 ]]( Mathematical Library / Rosser 1936 )</Means>.
                 </Line>
                 <Line>
                     <Word>
                         <Reference>https://doi.org/10.2307/2266895</Reference>
                         Löb 1955, Solution of a problem of Leon Henkin
-                    </Word>, Journal of Symbolic Logic 20, 115–118. Under copyright, at Cambridge.
+                    </Word>, Journal of Symbolic Logic 20, 115–118. Under copyright, at Cambridge. In the library
+                    at <Means>$[[ Löb 1955 ]]( Mathematical Library / Löb 1955 )</Means>.
                 </Line>
                 <Line>
                     <Word>
@@ -79,7 +81,8 @@ export default () => (
                         <Reference>http://matwbn.icm.edu.pl/ksiazki/fm/fm49/fm4914.pdf</Reference>
                         Feferman 1960, Arithmetization of metamathematics in a general setting
                     </Word>, Fundamenta Mathematicae 49, 35–92. Free, the PDF at the Polish digital mathematics
-                    library; the intensionality the notes lean on.
+                    library; the intensionality the notes lean on. In the library
+                    at <Means>$[[ Feferman 1960 ]]( Mathematical Library / Feferman 1960 )</Means>, the paper beside it.
                 </Line>
                 <Line>
                     <Word>
@@ -100,7 +103,8 @@ export default () => (
                         <Reference>https://doi.org/10.2307/2024634</Reference>
                         Kripke 1975, Outline of a Theory of Truth
                     </Word>, Journal of Philosophy 72, 690–716. Under copyright, at JSTOR; a course copy stands at
-                    IMPAN's truth seminar.
+                    IMPAN's truth seminar. In the library
+                    at <Means>$[[ Kripke 1975 ]]( Mathematical Library / Kripke 1975 )</Means>.
                 </Line>
                 <Line>
                     <Word>
@@ -169,7 +173,8 @@ export default () => (
                         <Reference>https://www.deutsche-digitale-bibliothek.de/item/MQZMVOIGGGV6PZFABHMGW7ZFAUQR6QGF</Reference>
                         Beltrami 1868, Saggio di interpretazione della geometria non-euclidea
                     </Word>, Giornale di Matematiche 6, 284–312. Public domain; digitized at Göttingen, listed at the
-                    Deutsche Digitale Bibliothek.
+                    Deutsche Digitale Bibliothek, whose viewer refuses a script. In the library
+                    at <Means>$[[ Beltrami 1868 ]]( Mathematical Library / Beltrami 1868 )</Means>, by address.
                 </Line>
                 <Line>
                     <Word>
@@ -177,7 +182,8 @@ export default () => (
                         Dedekind 1872 and 1888, Stetigkeit und irrationale Zahlen, and Was sind und was sollen die
                         Zahlen?
                     </Word>, in Beman's English of 1901, Essays on the Theory of Numbers. Public domain; Project
-                    Gutenberg.
+                    Gutenberg. In the library at <Means>$[[ Dedekind 1872 ]]( Mathematical Library / Dedekind 1872 )</Means>,
+                    the essays beside it.
                 </Line>
                 <Line>
                     <Word>
@@ -187,7 +193,8 @@ export default () => (
                     Gutenberg; the second edition of 1903, with its appendices, <Word>
                         <Reference>https://arche.univ-lorraine.fr/pluginfile.php/4069329/mod_folder/content/0/Grundlagen%20der%20Geometrie.pdf</Reference>
                         scanned at Lorraine
-                    </Word>.
+                    </Word>. In the library at <Means>$[[ Hilbert 1899 ]]( Mathematical Library / Hilbert 1899 )</Means>,
+                    Townsend's English beside it.
                 </Line>
                 <Line>
                     <Word>
@@ -195,7 +202,8 @@ export default () => (
                         Hilbert 1901, Ueber Flächen von constanter Gaussscher Krümmung
                     </Word>, Transactions of the American Mathematical Society 2, 87–99, that no complete surface of
                     constant negative curvature stands in Euclidean space. Public domain; the AMS refused the fetch
-                    from here; reprinted as Appendix V of the Grundlagen's second edition, in the scan above.
+                    from here; reprinted as Appendix V of the Grundlagen's second edition, in the scan above. In the
+                    library at <Means>$[[ Hilbert 1901 ]]( Mathematical Library / Hilbert 1901 )</Means>, by address.
                 </Line>
                 <Line>
                     <Word>

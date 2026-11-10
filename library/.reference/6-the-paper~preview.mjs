@@ -3,7 +3,10 @@
 // it and not one opened from the disk as a file, so the tool serves the PDF itself for the moment of the
 // photograph. Run once for a paper, and the picture stands beside the paper's chapter as any picture does.
 //
-//     node library/.reference/6-the-paper~preview.mjs <paper.pdf> <picture.png>
+//     node library/.reference/6-the-paper~preview.mjs <paper.pdf> <picture.png> [page]
+//
+// The page is the first unless said otherwise: a scan of a bound book opens on its boards, and its title page is
+// the one to show.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -13,8 +16,8 @@ import { fileURLToPath } from 'node:url';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const puppeteer = createRequire(resolve(repository, 'package.json'))('puppeteer');
-const [paper, picture] = process.argv.slice(2);
-if (paper === undefined || picture === undefined) { console.log('node 6-the-paper~preview.mjs <paper.pdf> <picture.png>'); process.exit(1); }
+const [paper, picture, pageNumber = '1'] = process.argv.slice(2);
+if (paper === undefined || picture === undefined) { console.log('node 6-the-paper~preview.mjs <paper.pdf> <picture.png> [page]'); process.exit(1); }
 
 // THE PAGE'S OWN SHAPE, read off the first page box the PDF declares, so a letter-size paper and an A4 one are each
 // cut to their page; A4's shape where a PDF declares none. The viewer draws the page across the width and leaves a
@@ -39,7 +42,7 @@ const { port } = server.address();
 const browser = await puppeteer.launch({ headless: true });
 const page = await browser.newPage();
 await page.setViewport({ width, height });
-await page.goto(`http://127.0.0.1:${port}/paper.pdf#toolbar=0&navpanes=0&scrollbar=0`, { waitUntil: 'load', timeout: 60000 });
+await page.goto(`http://127.0.0.1:${port}/paper.pdf#toolbar=0&navpanes=0&scrollbar=0&page=${pageNumber}`, { waitUntil: 'load', timeout: 60000 });
 // THE VIEWER DRAWS WHEN IT DRAWS, and nothing in the page says when: a photograph of a page not yet drawn weighs a
 // few kilobytes and one drawn weighs many, so the tool photographs until the weight says drawn, for twenty seconds
 // at most, and says so when it gave up.

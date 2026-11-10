@@ -30,9 +30,10 @@ export default () => (
             <Paragraph>
                 The picture is the paper's first page, made once by the tool beside this chapter: Chrome's own viewer
                 draws the PDF with its toolbar and panes asked off, served to it by the tool since the viewer draws
-                nothing opened from the disk as a file, photographed at a page's shape and cut to the page. It stands
-                beside the paper's chapter as a picture, named by the plate's literal, and is made again only when
-                the paper changes.
+                nothing opened from the disk as a file, photographed at a page's shape and cut to the page. The tool
+                takes a page number for a scan of a bound book, which opens on its boards: Lobachevsky's title page
+                is its fifth leaf. It stands beside the paper's chapter as a picture, named by the plate's literal,
+                and is made again only when the paper changes.
             </Paragraph>
         </Section>
         <Append

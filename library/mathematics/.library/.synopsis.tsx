@@ -10,9 +10,10 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The papers referenced across mathematics in this library, catalogued in one place: each a chapter of
-            Doug's carrying the paper's citation, with the paper itself beside it and read on the page. Gödel's of
-            1931 first, in English.
+            The publications the paper's notes lean on, catalogued in one place and listed alphabetically: each a
+            chapter carrying one citation, the notes on what the publication is to the paper, and the text beside it
+            with a picture of its first page where its terms allow, or its address where they do not. Fifteen, from
+            Beltrami to Turing, Gödel's of 1931 among them in English.
         </Paragraph>
     </Chapter>
 );

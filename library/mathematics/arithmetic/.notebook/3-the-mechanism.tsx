@@ -50,12 +50,18 @@ export default () => (
                 postulate as the limit of Girard: on every sphere the angle sum minus π is the area over the radius
                 squared, proved by three lunes and the sphere's total area; the plane sheds the closure, no total
                 area, the proof gone, the statement kept, and excess equal to zero is Euclid V. Lambert read the
-                acute case off a sphere of imaginary radius; Beltrami showed V unprovable; Hilbert showed the
-                imaginary sphere no object in Euclidean space. The Riemann sphere and the fundamental theorem of
-                algebra are kept as the field's version, where the limit is an object and the sentence is also a
-                theorem of analysis: "your example is good too. It is. We might give both" (The Geometric Precedent).
-                Dedekind on continuity and Cauchy on Poncelet's principle stand as the precedents for how such
-                adoptions are received (The Surviving Sentence, 29 October 2026).
+                acute case off a sphere of imaginary radius; <Means>$[[ Lobachevsky ]]( Mathematical Library / Lobachevsky 1840 )</Means> adopted
+                the other postulate outright and built the geometry on it, which is the precedent for reasoning about
+                what an axiom is, added on 10 November 2026 on Doug's word; <Means>$[[ Beltrami ]]( Mathematical Library / Beltrami 1868 )</Means> showed
+                V unprovable; <Means>$[[ Hilbert ]]( Mathematical Library / Hilbert 1901 )</Means> showed the imaginary
+                sphere no object in Euclidean space, having proved the axioms of geometry independent of one another
+                in his <Means>$[[ Grundlagen ]]( Mathematical Library / Hilbert 1899 )</Means>. The Riemann sphere
+                and <Means>$[[ the fundamental theorem of algebra ]]( Mathematical Library / Gauss 1799 )</Means> are
+                kept as the field's version, where the limit is an object and the sentence is also a theorem of
+                analysis: "your example is good too. It is. We might give both" (The Geometric
+                Precedent). <Means>$[[ Dedekind ]]( Mathematical Library / Dedekind 1872 )</Means> on continuity and Cauchy
+                on Poncelet's principle stand as the precedents for how such adoptions are received (The Surviving
+                Sentence, 29 October 2026).
             </Paragraph>
         </Section>
         <Section>
@@ -68,8 +74,8 @@ export default () => (
                 subjective as it is invalid. Yet... we suspect that it stands up to science!" (The Circular Reasoning
                 Thesis, 27 October 2026). Its model: "Any universals that can be proven should literally be machine
                 checkable. The Doug's Circular Reasoning Thesis should be like the Church Turing Thesis" (The
-                Circular Reasoning Thesis). The paper states it in Church and Turing's form, with criteria and a
-                refutation clause, as the ninth step of the flow of 31 October and the close of
+                Circular Reasoning Thesis). The paper states it in <Means>$[[ Church and Turing's form ]]( Mathematical Library / Turing 1936 )</Means>,
+                with criteria and a refutation clause, as the ninth step of the flow of 31 October and the close of
                 movement <Means>$[[ ./Goldbach ]]</Means>.
             </Paragraph>
         </Section>
