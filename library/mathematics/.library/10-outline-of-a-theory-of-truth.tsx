@@ -1,4 +1,5 @@
 import { Chapter, Means, Paragraph, Reference, Title, Word } from '@dna-platform/public';
+import { Opening } from '../../.reference/6-the-paper~code.tsx';
 
 export default () => (
     <Chapter>
@@ -16,6 +17,12 @@ export default () => (
             G are Con(PA) and Con(PA) which is just Con(PA) which we already know anyways" (Goldbach through Gödel,
             The Identity Element, 28 October 2026), as <Means>$[[ The Subject of Logic ]]( Arithmetic Notebook / The Subject of Logic )</Means> gathers
             it, with Kripke's price named beside it (Claude, Certainty, 19 October 2026).
+        </Paragraph>
+        <Paragraph>
+            <Word>
+                <Opening>https://www.impan.pl/~kz/truthseminar/Kripke_Outline.pdf</Opening>
+                Read the paper ↗
+            </Word>, a scan of the Journal's pages at IMPAN's truth seminar.
         </Paragraph>
     </Chapter>
 );

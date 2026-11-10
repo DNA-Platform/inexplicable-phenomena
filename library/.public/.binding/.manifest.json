@@ -129,12 +129,12 @@
     "assets/books/chemistry-subject-CgYYfisU.js",
     "assets/books/identity-subject-C8QIpK3b.js",
     "assets/books/mathematics-arithmetic-notebook-DwdgZDU6.js",
-    "assets/books/mathematics-arithmetic-project-B_8A1JYZ.js",
+    "assets/books/mathematics-arithmetic-project-PdHgskJJ.js",
     "assets/books/mathematics-arithmetic-subject-BqEp_ypf.js",
     "assets/books/mathematics-arithmetic-textbook-DHKeGDsS.js",
     "assets/books/mathematics-design-DRI1k_xe.js",
     "assets/books/mathematics-identity-B53xfJRu.js",
-    "assets/books/mathematics-library-DCo__o39.js",
+    "assets/books/mathematics-library-DDmQbEOQ.js",
     "assets/books/mathematics-reference-DylT-aWi.js",
     "assets/books/mathematics-subject-CxTDSWwz.js",
     "assets/books/mathematics-textbook-CAROdak4.js",
@@ -146,7 +146,7 @@
     "assets/books/subject-design-DdwiYAYV.js",
     "assets/books/subject-dictionary-sSHIgjCK.js",
     "assets/index-CP4cPyka.css",
-    "assets/index-Q4fhi0uG.js",
+    "assets/index-CaYHMQi_.js",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
     "assets/shared/at-dna-platform-chemistry-Dnqvott5.js",
@@ -298,7 +298,7 @@
     },
     "/mathematical-library": {
       "folder": "mathematics/.library",
-      "digest": "4845ac746fd671e5",
+      "digest": "5a814d40384938c6",
       "references": "0b108a9aef2ed979",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/77aac43603ff.css",
@@ -306,7 +306,7 @@
     },
     "/arithmetic-project": {
       "folder": "mathematics/arithmetic/.project",
-      "digest": "878d14a97e8cec70",
+      "digest": "6c0328dc7fab9231",
       "references": "5f7257c24a21768a",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/4cbcf88ef136.css",
@@ -1160,11 +1160,11 @@
       }
     },
     "mathematics/.library": {
-      "digest": "6b2b2fc74d99508c",
-      "entry": "assets/books/mathematics-library-DCo__o39.js",
+      "digest": "e6632f25bac19610",
+      "entry": "assets/books/mathematics-library-DDmQbEOQ.js",
       "files": [
         "assets/books/1-the-book~code-C3nxlXsL.js",
-        "assets/books/mathematics-library-DCo__o39.js"
+        "assets/books/mathematics-library-DDmQbEOQ.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1210,11 +1210,11 @@
       }
     },
     "mathematics/arithmetic/.project": {
-      "digest": "4076352f89c2cc72",
-      "entry": "assets/books/mathematics-arithmetic-project-B_8A1JYZ.js",
+      "digest": "698b577a543c427d",
+      "entry": "assets/books/mathematics-arithmetic-project-PdHgskJJ.js",
       "files": [
         "assets/books/1-the-book~code-C3nxlXsL.js",
-        "assets/books/mathematics-arithmetic-project-B_8A1JYZ.js"
+        "assets/books/mathematics-arithmetic-project-PdHgskJJ.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1284,7 +1284,7 @@
     ]
   },
   "app": {
-    "digest": "00646ac9c3139c38",
+    "digest": "69c150826d2da95c",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -1346,7 +1346,7 @@
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
       "assets/index-CP4cPyka.css",
-      "assets/index-Q4fhi0uG.js"
+      "assets/index-CaYHMQi_.js"
     ],
     "bindings": {
       "@dna-platform/chemistry": [
@@ -1366,6 +1366,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-Q4fhi0uG.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-CaYHMQi_.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CP4cPyka.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }

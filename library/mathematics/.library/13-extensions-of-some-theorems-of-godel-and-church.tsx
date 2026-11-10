@@ -8,7 +8,8 @@ export default () => (
             (1936), 87–91, at <Word>
                 <Reference>https://doi.org/10.2307/2269028</Reference>
                 Cambridge
-            </Word>, under copyright and read there.
+            </Word>, under copyright and read there; reprinted in Martin Davis, The Undecidable, Raven 1965, Dover
+            2004. No open copy of the pages was found on 10 November 2026.
         </Paragraph>
         <Paragraph>
             What the paper takes from it: the first theorem freed of ω-consistency by Rosser's sentence, which the

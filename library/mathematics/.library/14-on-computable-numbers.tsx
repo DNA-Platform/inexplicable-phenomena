@@ -1,4 +1,5 @@
 import { Chapter, Means, Paragraph, Reference, Title, Word } from '@dna-platform/public';
+import { Opening } from '../../.reference/6-the-paper~code.tsx';
 
 export default () => (
     <Chapter>
@@ -21,6 +22,12 @@ export default () => (
             chart invariance and by every instance", as <Means>$[[ Goldbach ]]( Arithmetic Notebook / Goldbach )</Means> says.
             On Doug's word of 10 November 2026, Turing and Feferman are "the biggest names that my alternate
             interpretation of Godel chnages" (in the room, 10 November 2026).
+        </Paragraph>
+        <Paragraph>
+            <Word>
+                <Opening>https://www.cs.virginia.edu/~robins/Turing_Paper_1936.pdf</Opening>
+                Read the paper ↗
+            </Word>, a copy of the Proceedings' pages at the University of Virginia.
         </Paragraph>
     </Chapter>
 );

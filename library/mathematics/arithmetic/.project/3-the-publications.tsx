@@ -27,8 +27,11 @@ export default () => (
                 Opere, the pages cut from the Archive's scan; Dedekind in Beman's English; Feferman; Gauss in the
                 first edition from e-rara; Gödel in Meltzer's; Hardy and Littlewood; Hilbert's Grundlagen in
                 Townsend's and his paper of 1901 from JSTOR's early copy at the Archive; Lobachevsky in Halsted's.
-                Five are cited by their address, under copyright: Kripke, Löb, Rosser and Turing's two. Chen is
-                cited with no address, none found. Gödel's chapter came down to one file, Meltzer's, with the Collected Works named as the
+                Five are cited by their address, under copyright: Kripke, Löb, Rosser and Turing's two; four of them
+                open a copy a reader can read, Kripke's at IMPAN's truth seminar, Löb's at a Maryland course page,
+                Turing 1936 at Virginia and Turing 1939 at Rutgers, on Doug's word that he is not selling this and
+                wants versions he can read; Rosser's has none open beyond the publisher's and the Davis reprint.
+                Chen is cited with no address, none found. Gödel's chapter came down to one file, Meltzer's, with the Collected Works named as the
                 standard English, on Doug's word that we need the one we are going to cite and not versions.
             </Paragraph>
             <Paragraph>

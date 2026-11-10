@@ -1,4 +1,5 @@
 import { Chapter, Means, Paragraph, Reference, Title, Word } from '@dna-platform/public';
+import { Opening } from '../../.reference/6-the-paper~code.tsx';
 
 export default () => (
     <Chapter>
@@ -19,6 +20,12 @@ export default () => (
             one point under the identity, so Turing and Feferman were enumerating names of ε". On Doug's word of 10
             November 2026, Turing and Feferman are "the biggest names that my alternate interpretation of Godel
             chnages" (in the room, 10 November 2026).
+        </Paragraph>
+        <Paragraph>
+            <Word>
+                <Opening>https://sites.math.rutgers.edu/~zeilberg/akherim/TuringPhd.pdf</Opening>
+                Read the paper ↗
+            </Word>, a scan of the Proceedings' pages at Rutgers.
         </Paragraph>
     </Chapter>
 );
