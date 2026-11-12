@@ -65,6 +65,9 @@ export default () => (
                 <Content>$[[ ./The Subject of Logic ]]</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ ./Zero and Infinity ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Arithmetic Notebook ]]</Content>
