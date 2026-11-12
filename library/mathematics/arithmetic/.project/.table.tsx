@@ -20,6 +20,9 @@ export default () => (
                 <Content>$[[ The Publications ]]( ./Sprint 126 )</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ The Argument ]]( ./Sprint 127 )</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Arithmetic Project ]]</Content>
