@@ -11,7 +11,7 @@ export default () => (
         </Title>
         <Paragraph>
             The catalogue of arithmetic, the paper once called Goldbach versus Gödel: every book of arithmetic in
-            this library is filed under it.
+            this library has it as its subject.
         </Paragraph>
     </Chapter>
 );

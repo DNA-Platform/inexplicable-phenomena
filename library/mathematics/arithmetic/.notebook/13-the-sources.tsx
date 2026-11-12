@@ -18,7 +18,7 @@ export default () => (
         <Section>
             <Heading>Goldbach through Gödel</Heading>
             <Paragraph>
-                Filed under Semantic Reference Theory, 19 October to 5 November 2026, 701 messages on its path of 805,
+                Its subject Semantic Reference Theory, 19 October to 5 November 2026, 701 messages on its path of 805,
                 organized in 52 chapters under nine parts, The Finite Proof, The Phantom, The Circle, The Thesis, The
                 Axiom, The Identity, The Horizon, First Order Semantics and The Fictions. The publication's parts are
                 read from its last fifteen days: The Surviving Sentence of 29 October, where the Gödel-first printing
@@ -34,7 +34,7 @@ export default () => (
         <Section>
             <Heading>The Gemini session and its catalogue</Heading>
             <Paragraph>
-                Subjectivity library catalogue, filed under Semantic Reference Theory, 4 and 5 November 2026, 30
+                Subjectivity library catalogue, its subject Semantic Reference Theory, 4 and 5 November 2026, 30
                 messages with two pasted files: the transcript of Doug's session with Gemini on 3 November, and his
                 unsent message meant as its last. The transcript's Part I states the Gödel result to an outsider and
                 the coda tells the result's genesis; both are cited in the first part of this notebook. The rest of the
@@ -48,7 +48,7 @@ export default () => (
         <Section>
             <Heading>The earlier books of the family</Heading>
             <Paragraph>
-                Filed under Number Theory, organized. Gödel through Goldbach: The Paper, 12 October 2025, 154 messages
+                Its subject Number Theory, organized. Gödel through Goldbach: The Paper, 12 October 2025, 154 messages
                 in twelve chapters, the Sonnet sitting that planned the first paper, cited for the title's history
                 and the 2025 framework. Gödel through Goldbach: Semantics and Induction, the same day, 74 messages in
                 ten chapters, the Opus sitting beside it, the origin of the entropy measures and of the programme to

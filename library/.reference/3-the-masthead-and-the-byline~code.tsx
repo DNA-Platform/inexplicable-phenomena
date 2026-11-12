@@ -59,7 +59,7 @@ export class $Byline extends $Paragraph {
                         {book.about.name}
                     </Word>
                 </>}
-                <Label>Filed under</Label> <Word>
+                <Label>Subject</Label> <Word>
                     <Reference>{book.subject?.means?.identifier}</Reference>
                     {book.subject?.name}
                 </Word>

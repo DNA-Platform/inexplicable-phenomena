@@ -10,7 +10,7 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The catalogue of mathematics: every book of mathematics in this library is filed under it.
+            The catalogue of mathematics: every book of mathematics in this library has it as its subject.
         </Paragraph>
     </Chapter>
 );

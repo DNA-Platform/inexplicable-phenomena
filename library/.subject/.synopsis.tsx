@@ -10,8 +10,8 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The catalogue of the library, filed under what it is about, which is itself: everything here is filed
-            under it, directly or through another book.
+            The catalogue of the library, whose subject is what it is about, which is itself: everything here has
+            it as its subject, directly or through another book.
         </Paragraph>
     </Chapter>
 );
