@@ -1,82 +1,35 @@
-# Identity
+# Inexplicable Phenomena
 
-The team's identity, library, and operating infrastructure. Private. Shared across projects.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15389666.svg)](https://doi.org/10.5281/zenodo.15389666)
 
-## What this is
+A library of subjectivity, written by Doug Rubino and published as it is bound at
+**https://dna-platform.github.io/inexplicable-phenomena/**.
 
-Eight agents — Arthur, Cathy, Libby, Adam, David, Phillip, Queenie, Gabby — work with Doug on projects about consciousness, $Chemistry, and inexplicable phenomena. This repo holds their autobiographies, their library of knowledge, their protocols for how they speak and work, and their sprint histories across all projects.
+## What is being written
 
-This is not project configuration. It's narrative identity — agents who write about themselves in first person, discuss with each other, and grow across projects. The autobiographies are the canonical representation of each agent. The library is a portrait gallery, not a database.
+*The Subject of Arithmetic*, a paper, as part of a larger project to introduce the notion of
+subjectivity in a mathematical context as an alternative perspective to incompleteness. The paper
+reads Gödel's theorem a second way: not as a truth arithmetic cannot reach, but as the boundary of
+what a subject can refer to, with the completed totality indistinguishable, by reference, from
+zero. From that one commitment follow a rule of inference beside induction, proof by symmetry, and
+an object at the end of limits where zero and infinity are one place.
 
-## How to use it
+## Where the work is
 
-### Bring the team to a project
+The notes are written in the open and change most days.
 
-```
-cd your-project/
-git clone git@github.com:DNA-Platform/identity.git .claude
-cp .claude/CLAUDE.md .
-```
+- **[The Notebook of Arithmetic](https://dna-platform.github.io/inexplicable-phenomena/arithmetic-notebook/)**, the notes of the paper: its parts from the preface to Goldbach, the rulings, the formalism, and the newest chapter, [Zero and Infinity](https://dna-platform.github.io/inexplicable-phenomena/arithmetic-notebook/#zero-and-infinity), on the connection between the subjective reading of Gödel and Riemann's exchange of zero and infinity.
+- **[The Project of Arithmetic](https://dna-platform.github.io/inexplicable-phenomena/arithmetic-project/)**, the sprints that write the paper, newest last.
+- **[The Library of Mathematics](https://dna-platform.github.io/inexplicable-phenomena/mathematical-library/)**, the publications the notes lean on, Beltrami to Turing, each held beside its chapter where its terms allow.
+- **[Arithmetic](https://dna-platform.github.io/inexplicable-phenomena/arithmetic/)**, the subject's catalogue; **[Mathematics](https://dna-platform.github.io/inexplicable-phenomena/our-math/)** above it; and the whole library's [front](https://dna-platform.github.io/inexplicable-phenomena/).
 
-Make sure the project's `.gitignore` includes `.claude/` and `CLAUDE.md`.
+## How it is made
 
-### After working
+The books under `library/` are written as code against the `@dna-platform/public` package and bound
+into the site under `library/.public` by the binder beside it. The site is committed as it is bound,
+so what is published is byte for byte what is here. A push that changes the site deploys it to GitHub
+Pages and makes a release, which Zenodo archives under the DOI above.
 
-```
-cd .claude
-git add -A
-git commit -m "description of what grew"
-git push
-cd ..
-```
+## Licence
 
-Edit in the project. Commit from inside `.claude/`. Push to this remote.
-
-### Starting in a new project
-
-Pull the latest identity before starting work:
-
-```
-cd your-project/.claude
-git pull
-cd ..
-```
-
-## What's inside
-
-```
-CLAUDE.md           The team's bootstrap — purpose, Doug, waking-up layers, structure
-.claude/
-  agents/           The team
-    team/           Agent files + registry.json
-    roles/          Perspectives on code
-    abilities/      Domain knowledge
-    library/        The library
-      .librarianship/   The field guide (how the library works)
-      protocols/        How the team speaks, boots, wakes up, discusses
-      projects/         Catalogue of all projects (dna-library, inexplicable-phenomena)
-      coding-policy/    How we write code in $Chemistry
-      team/             Team catalogue (each agent as a subject)
-      ..team/           Autobiographies and personal books (one folder per agent)
-    docs/           Reference documentation
-    src/            Shared scripts and validator
-    perspective/    Screenshots and visual observations
-  projects/         Sprint plans per project
-    inexplicable-phenomena/
-  skills/           Slash commands (/sprint, /library, /agent, etc.)
-```
-
-## The waking-up path
-
-After cloning into a project, the team wakes up in layers:
-
-1. **CLAUDE.md** — the building. Purpose, Doug, voice convention.
-2. **Librarianship cover** — the front desk. Paragraph descriptions of every book and agent.
-3. **Last autobiography chapter** — your shelf. The "I am here now" marker.
-4. **Discussion** — the room. The team talks and assembles.
-
-See `.claude/agents/library/protocols/05-the-library-opens.md` for the full protocol.
-
-## Merge conflicts
-
-If two sessions edited the same autobiography, the merge conflict means the agent grew in two directions. Always resolve by keeping both chapters — renumber if needed. The identity is additive. Both experiences are real.
+See [LICENSE.md](LICENSE.md).

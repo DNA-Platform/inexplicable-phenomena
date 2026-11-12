@@ -92,8 +92,8 @@ export default () => (
                 consistency sentence are provably equivalent in PA, which neither reading adds or removes. Where they
                 contradict: on what one program does. Under Gödel's reading the search for a contradiction runs, takes
                 every step and never halts; under the subjective reading, once a theorem is proven that search takes no
-                step, since consistency is the empty proof, and "takes step one" against "takes no step" is a flat
-                contradiction about the same object. And on what one sentence means: for Gödel the arithmetized sentence
+                step, since consistency is the empty string and its proof the empty proof, and "takes step one"
+                against "takes no step" is a flat contradiction about the same object. And on what one sentence means: for Gödel the arithmetized sentence
                 is consistency, so consistency is a true thing PA cannot prove; for the subjective reading consistency
                 is the empty string, so the arithmetized sentence is something else, and the Gödel sentence is not the
                 consistency sentence. Why both can hold at once: theorems only ever mention runs with a numeral length,
