@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Inexplicable Phenomena"
+authors:
+  - family-names: Rubino
+    given-names: Doug
+    orcid: "https://orcid.org/0009-0005-4012-853X"
+doi: 10.5281/zenodo.15389666
+url: "https://dna-platform.github.io/inexplicable-phenomena/"
+repository-code: "https://github.com/DNA-Platform/inexplicable-phenomena"
+abstract: "A library of subjectivity: the notes of The Subject of Arithmetic, which reads Gödel's theorem a second way, as the boundary of what a subject can refer to, and the books of mathematics, arithmetic, neuroscience, philosophy and physics beside them, published as they are bound."
+keywords:
+  - subjectivity
+  - arithmetic
+  - Gödel
+  - consciousness
+  - semantic reference
