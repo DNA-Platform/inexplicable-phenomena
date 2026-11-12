@@ -10,7 +10,9 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The results of arithmetic, stated and proved.
+            The results of arithmetic, stated and proved. It opens with the formalism: System A, the Peano
+            Arithmetic of this work, defined first-order in the standard notation with Gödel's numbering
+            preserved, mapped into his system P, and entitled to the name PA.
         </Paragraph>
     </Chapter>
 );

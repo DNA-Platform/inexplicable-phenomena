@@ -9,6 +9,12 @@ export default () => (
             [[ Table of Contents ]]
         </Title>
         <Section>
+            <Heading>The Formalism</Heading>
+            <Paragraph>
+                <Content>$[[ ./System A ]]</Content>
+            </Paragraph>
+        </Section>
+        <Section>
             <Heading>Contents</Heading>
             <Paragraph>
                 <Parenthetical />

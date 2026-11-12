@@ -10,7 +10,10 @@ name: Release the public library
 # the site a reader sees and nothing else; the binding, the package and the branch library do not
 # release. The tag is the commit's day and its hash, v2026.11.12-23be18e, unique and traceable; the
 # title is the tag; the notes are the commit's whole message, which is the sprint's own record of
-# the change. A tag that already exists is left alone, so a run by hand on a released commit is idle.
+# the change. On a push, a tag that already exists is left alone. A run by hand on a released commit makes
+# a second release of it with the run's number on the tag, v2026.11.12-23be18e-r12, so that an archive that
+# failed on Zenodo's side can be retried without a commit made for nothing; added 2026-11-12 after four
+# releases failed there with "401 Bad credentials" while its linked account's token was dead.
 on:
   push:
     branches: [main]
@@ -47,7 +50,12 @@ jobs:
           TAG: ${{ steps.name.outputs.tag }}
         run: |
           if gh release view "$TAG" > /dev/null 2>&1; then
-            echo "$TAG is already released"
+            if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+              TAG="$TAG-r$GITHUB_RUN_NUMBER"
+              gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file notes.md
+            else
+              echo "$TAG is already released"
+            fi
           else
             gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file notes.md
           fi
