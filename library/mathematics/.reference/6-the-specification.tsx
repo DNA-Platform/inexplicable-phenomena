@@ -38,6 +38,12 @@ export default () => (
             <Line>4.2 An item with no implementation to move to is the placeholder.</Line>
         </Paragraph>
         <Paragraph>
+            <List />
+            <Line>5. The permanence</Line>
+            <Line>5.1 Specifications are not thrown away; they stay, to be read and improved.</Line>
+            <Line>5.2 A change is made by changing the specification, so changes are made in the context of all the other parts.</Line>
+        </Paragraph>
+        <Paragraph>
             The components of the library that show a thing in specification against implementation form, carry
             the movement between the two, and bear the justifications begin from this chapter, and they will
             stand beside it as its code. Until they do, the form is held by hand — the numbers written in the

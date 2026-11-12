@@ -15,7 +15,8 @@ export default () => (
             chapters follow, with the enforcing code standing with the chapter that states the idiom and the rest
             marked held by hand; and a part for the forms, opening with the specification of a specification —
             a title with a numbered list of lists, items cited by number, the specification and the thing it
-            specifies moving back and forth — written in its own form on Doug's ruling of 12 November 2026.
+            specifies moving back and forth, and never thrown away, a change made by changing the specification —
+            written in its own form on Doug's rulings of 12 November 2026.
         </Paragraph>
     </Chapter>
 );
