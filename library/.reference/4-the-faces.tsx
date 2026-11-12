@@ -17,8 +17,11 @@ export default () => (
             <Paragraph>
                 Since 10 November 2026 the cover is drawn as a book: the front, in the file beside this chapter, a
                 board of a book's shape standing alone on the page while the cover is the open page, with the title,
-                the author, the synopsis and the imprint on it, read from what the cover and the synopsis already say,
-                as the byline is; its words are its links, the title opening the table of contents, the author and the
+                the author, the tagline and the imprint on it, read from what the cover already says, as the byline
+                is; the tagline is one line of what the book is, said of the cover as its author is, and the
+                synopsis's first paragraph stood in its place until 12 November 2026, when Doug struck it, "an
+                extensive block is a synopsis", the synopsis being its own page, reached from the table; its words
+                are its links, the title opening the table of contents, the author and the
                 subject their books, the library's name the library, and the running head, the byline and the
                 cover's own title stand unseen behind it until another page opens. The theme draws it and gives a page that opens its one transition, a short fade.
                 Sketch 004 of <Means>$[[ Mathematical Design / The Paper's Page ]]</Means>, form a, by Doug's number.

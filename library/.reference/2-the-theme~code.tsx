@@ -38,7 +38,8 @@ export class $LibraryTheme extends $Theme {
             .pd-front-name { font-size: 2.4rem; line-height: 1.1; font-weight: bold; margin-block: .35rem .8rem; }
             .pd-front-name::after { content: ''; display: block; width: 3.5rem; border-top: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); margin: .9rem auto 0; }
             .pd-front-author { font-size: 1.15rem; letter-spacing: .04em; }
-            .pd-front-synopsis { font-style: italic; opacity: .75; margin-block: 1.1rem auto; font-size: .95rem; }
+            .pd-front-tagline { font-style: italic; opacity: .75; margin-top: 1.1rem; font-size: .95rem; }
+            .pd-front > :nth-last-child(2) { margin-top: auto; }
             .pd-front-imprint { font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .15em; text-transform: uppercase; opacity: .65; margin-top: .35rem; }
             .pa-page.pa-open { animation: come .5s ease; }
             @keyframes come { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: none; } }

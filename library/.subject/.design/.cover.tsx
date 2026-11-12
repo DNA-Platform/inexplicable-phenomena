@@ -1,5 +1,5 @@
 import { Author, Chapter, Subject, Title } from '@dna-platform/public';
-import { Cover } from '../../.reference/4-the-faces~code.tsx';
+import { Cover, Tagline } from '../../.reference/4-the-faces~code.tsx';
 
 export default () => (
     <Chapter>
@@ -7,5 +7,6 @@ export default () => (
         <Title>[[ The Design ]]</Title>
         <Author>*[[ Doug ]]( Our Team )</Author>
         <Subject>**[[ Inexplicable Phenomena ]]</Subject>
+        <Tagline>Sketches of how this library might look.</Tagline>
     </Chapter>
 );
