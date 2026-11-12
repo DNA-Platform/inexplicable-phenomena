@@ -1,0 +1,53 @@
+name: Release the public library
+
+# A RELEASE FOR EVERY PUBLISHED CHANGE, so that Zenodo archives it. Zenodo's GitHub integration
+# listens for the release event on a repository enabled at zenodo.org/account/settings/github and
+# mints a DOI version for each published release under one concept DOI; a webhook fires for a release
+# made by the workflow's own token as it does for one made by hand. Added 2026-11-12, Sprint 127, on
+# Doug's "We also need releases to happen on commit so that Zenodo is triggered".
+#
+# THE TRIGGER IS THE PAGES WORKFLOW'S: a push to main that changes the committed site, so a release is
+# the site a reader sees and nothing else; the binding, the package and the branch library do not
+# release. The tag is the commit's day and its hash, v2026.11.12-23be18e, unique and traceable; the
+# title is the tag; the notes are the commit's whole message, which is the sprint's own record of
+# the change. A tag that already exists is left alone, so a run by hand on a released commit is idle.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'library/.public/**'
+      - '!library/.public/.binding/**'
+      - '!library/.public/package/**'
+      - '!library/.public/.lib/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Name the release after the commit
+        id: name
+        run: |
+          day="$(git log -1 --format=%cd --date=format:%Y.%m.%d "$GITHUB_SHA")"
+          echo "tag=v${day}-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          git log -1 --format=%B "$GITHUB_SHA" > notes.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.name.outputs.tag }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "$TAG is already released"
+          else
+            gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --notes-file notes.md
+          fi

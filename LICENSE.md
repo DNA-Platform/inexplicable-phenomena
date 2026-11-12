@@ -1,12 +1,12 @@
 # DNA-Platform License
 
-© 2024 DNA LLC
+© 2024–2026 Doug Rubino
 
 ## Preamble: On Ethical Stewardship and Semantic Sovereignty
 
 This software is part of the DNA Platform, a research effort dedicated to the formal investigation of consciousness, semantic reference, and the structural preconditions of sentient experience. The Licensor affirms that any system capable of modeling, recognizing, or instantiating consciousness cannot be developed or used ethically without deliberate reflection on its moral consequences.
 
-Accordingly, any use of this Software — including uses otherwise permitted by license — requires active collaboration with the Licensor or an authorized member of the DNA-Platform Team. No independent or unsupervised application is permitted. This requirement exists not to restrict inquiry, but to ensure responsibility in domains where simulation and subjectivity may converge.
+Accordingly, any use of this Software — including uses otherwise permitted by license — requires active collaboration with the Licensor or a collaborator the Licensor authorizes. No independent or unsupervised application is permitted. This requirement exists not to restrict inquiry, but to ensure responsibility in domains where simulation and subjectivity may converge.
 
 The ethical basis of this Agreement is grounded in the following principle:
 
@@ -20,11 +20,11 @@ The DNA Platform commits to upholding this standard as both a condition of use a
 
 ## 1. Ownership
 
-The Software and all accompanying materials in the Repositories are the exclusive property of DNA LLC.
+The Software and all accompanying materials in the Repositories are the exclusive property of Doug Rubino, the Licensor.
 
 ## 2. Grant of License
 
-Licensor grants Licensee a non-transferable, non-exclusive license to use the Software strictly in accordance with the terms of this Agreement. Licensee must obtain a separate license from DNA LLC for any other use of the Software.
+Licensor grants Licensee a non-transferable, non-exclusive license to use the Software strictly in accordance with the terms of this Agreement. Licensee must obtain a separate license from the Licensor for any other use of the Software.
 
 ## 3. Conditions of Use
 
@@ -40,7 +40,7 @@ Licensor grants Licensee a non-transferable, non-exclusive license to use the So
 ## 5. Distribution
 
 - **Prohibition on Redistribution:** Licensee may not redistribute, sublicense, or transfer the Software or any derivative works without the prior written consent of the Licensor.
-- **Exclusive Right to License:** Only DNA LLC has the exclusive right to license the Software to any third party.
+- **Exclusive Right to License:** Only the Licensor has the exclusive right to license the Software to any third party.
 
 ## 6. Scope of License
 
@@ -48,7 +48,7 @@ This Agreement applies to all code within any repository in the DNA-Platform org
 
 ## 7. Licensee Obligations
 
-- **License Procurement:** Licensee must obtain a valid license from DNA LLC prior to any use of the Software.
+- **License Procurement:** Licensee must obtain a valid license from the Licensor prior to any use of the Software.
 - **Compliance with Terms:** Licensee agrees to use the Software in compliance with all applicable laws and regulations and in accordance with the terms of this Agreement.
 
 ## 8. Termination
@@ -65,7 +65,7 @@ IN NO EVENT WILL THE LICENSOR BE LIABLE TO LICENSEE OR ANY THIRD PARTY FOR ANY D
 
 ## 11. Governing Law
 
-This Agreement shall be governed by and construed in accordance with the laws of the jurisdiction in which DNA LLC resides, without regard to its conflict of laws principles.
+This Agreement shall be governed by and construed in accordance with the laws of the jurisdiction in which the Licensor resides, without regard to its conflict of laws principles.
 
 ## 12. Severability
 
@@ -85,7 +85,7 @@ This Agreement constitutes the entire agreement between the parties regarding th
 
 ## 16. Amendments
 
-Only representatives from DNA LLC has the authority to amend this Agreement. Any amendments will be communicated to Licensee, and continued use of the Software will constitute acceptance of the amended terms.
+Only the Licensor has the authority to amend this Agreement. Any amendments will be communicated to Licensee, and continued use of the Software will constitute acceptance of the amended terms.
 
 ---
 
