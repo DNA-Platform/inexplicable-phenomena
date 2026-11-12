@@ -68,6 +68,12 @@ export default () => (
                 <Content>$[[ ./Zero and Infinity ]]</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ ./The System P ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Parts ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Arithmetic Notebook ]]</Content>

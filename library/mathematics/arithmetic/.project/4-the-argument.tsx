@@ -32,18 +32,20 @@ export default () => (
                 Pages found never to have deployed because every push went out as an account GitHub had flagged,
                 the push moved to his own and the deploy and a release then firing on every change to the site,
                 Zenodo archiving each release under the concept DOI 10.5281/zenodo.15389666 with the record naming
-                him by ORCID; the repository's README the project's own. And the library's covers on his word: the
+                him by ORCID; the repository's README the project's own. The library's covers on his word: the
                 byline saying Subject where it said Filed under, and every front a tagline where the synopsis's
-                block had been.
+                block had been. And last, on his word that it was the sprint's deliverable, the note itself,
+                <Means>$[[ The Parts ]]( Arithmetic Notebook / The Parts )</Means>: the three parts in his words,
+                each with a sketch of what formalizing it might look like and the references beside the sketch,
+                what the textbook will work, and the four points still open.
             </Paragraph>
         </Section>
         <Section>
             <Heading>What the fourth sprint leaves</Heading>
             <Paragraph>
-                The note itself, the parts with a sketch of what formalizing each might look like and the
-                references beside the sketches, now the notebook's seventeenth chapter, with Cantor 1891 and
-                Hilbert 1926 for <Means>$[[ the library ]]( Mathematical Library )</Means>; the textbook's beginning
-                after it. The rule, proof by symmetry, worked out as a schema beside induction, and the object of
+                Cantor 1891 and Hilbert 1926 for <Means>$[[ the library ]]( Mathematical Library )</Means>; the
+                formalism's form, which the notebook's System P opens from Gödel's held paper; the textbook's
+                beginning after them. The rule, proof by symmetry, worked out as a schema beside induction, and the object of
                 Part Three expressed in the subject's terms, where the chapter leaves one step open, whether a zero
                 of zeta is a property of the completed totality the rule reads at zero or is reached only through
                 the computer check's arithmetization. The claims the sixteenth chapter holds from memory, to be
