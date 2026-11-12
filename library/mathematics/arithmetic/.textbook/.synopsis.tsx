@@ -10,9 +10,11 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The results of arithmetic, stated and proved. It opens with the formalism: System A, the Peano
-            Arithmetic of this work, defined first-order in the standard notation with Gödel's numbering
-            preserved, mapped into his system P, and entitled to the name PA.
+            The results of arithmetic, stated and proved. Four chapters stand specified, 12 November 2026, and
+            not yet built: Formal Logic and Formal Arithmetic, the formalizations the Subject of Arithmetic will
+            use, and The Logical Form and The Arithmetic Form, their algebraic and categorical counterparts in
+            terms of identities and identification. Each opens with its specification and holds the rest as a
+            placeholder, the interpolation the textbook's entries allow.
         </Paragraph>
     </Chapter>
 );

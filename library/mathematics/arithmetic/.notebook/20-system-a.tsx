@@ -5,6 +5,11 @@ export default () => (
         <Part>The Formalism</Part>
         <Title>[[ System A ]]</Title>
         <Paragraph>
+            Drafted for the textbook in the sprint of the formalization and moved to the notes on Doug's ruling
+            of 12 November 2026: the textbook's chapters follow the entry he is specifying, and this exposition
+            is a note.
+        </Paragraph>
+        <Paragraph>
             System A, A for Arithmetic, is the formal system this work means by Peano Arithmetic: first-order
             Peano arithmetic, defined so that its logic is the standard one and its arithmetization is Gödel's
             own. This chapter defines the system, maps it into the system P
@@ -38,7 +43,7 @@ export default () => (
                 <Math>{'x < y \\;:\\Leftrightarrow\\; \\exists z\\,(x + Sz = y)'}</Math>, and exponentiation is
                 recovered through Gödel's β-function, so neither is a sign. The numbering is Gödel's with three
                 signs adjoined: 0, S, ¬, ∨, ∀ and the two brackets take his odd numbers 1, 3, 5, 7, 9, 11, 13
-                under the dictionary of <Means>$[[ The System P ]]( Arithmetic Notebook / The System P )</Means>;
+                under the dictionary of <Means>$[[ ./The System P ]]</Means>;
                 the variables v₁, v₂, and on are his variables of the first type, the primes above 13 at the
                 first power; the numbers <Math>{'p^n'}</Math> for n above 1, his higher types, go unused; and =,
                 + and · take the odd numbers 15, 21 and 25, which no sign or variable of P occupies. A series of

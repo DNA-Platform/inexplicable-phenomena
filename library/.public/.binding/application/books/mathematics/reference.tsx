@@ -4,6 +4,11 @@ import $Book from '../../../../../mathematics/.reference/.book';
 import Cover from '../../../../../mathematics/.reference/.cover';
 import Synopsis from '../../../../../mathematics/.reference/.synopsis';
 import Table from '../../../../../mathematics/.reference/.table';
+import TheNotebook1 from '../../../../../mathematics/.reference/1-the-notebook';
+import TheTextbook2 from '../../../../../mathematics/.reference/2-the-textbook';
+import TheProject3 from '../../../../../mathematics/.reference/3-the-project';
+import TheLibrary4 from '../../../../../mathematics/.reference/4-the-library';
+import TheDesign5 from '../../../../../mathematics/.reference/5-the-design';
 
 const Book = $($Book);
 
@@ -12,6 +17,11 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
+        {TheNotebook1()}
+        {TheTextbook2()}
+        {TheProject3()}
+        {TheLibrary4()}
+        {TheDesign5()}
     </Book>
 );
 

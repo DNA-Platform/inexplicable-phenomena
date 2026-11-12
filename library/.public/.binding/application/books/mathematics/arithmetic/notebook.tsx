@@ -22,6 +22,8 @@ import TheSubjectOfLogic15 from '../../../../../../mathematics/arithmetic/.noteb
 import ZeroAndInfinity16 from '../../../../../../mathematics/arithmetic/.notebook/16-zero-and-infinity';
 import TheSystemP17 from '../../../../../../mathematics/arithmetic/.notebook/17-the-system-p';
 import TheParts18 from '../../../../../../mathematics/arithmetic/.notebook/18-the-parts';
+import AlwaysABridesmaid19 from '../../../../../../mathematics/arithmetic/.notebook/19-always-a-bridesmaid';
+import SystemA20 from '../../../../../../mathematics/arithmetic/.notebook/20-system-a';
 
 const Book = $($Book);
 
@@ -48,6 +50,8 @@ export const book = () => (
         {ZeroAndInfinity16()}
         {TheSystemP17()}
         {TheParts18()}
+        {AlwaysABridesmaid19()}
+        {SystemA20()}
     </Book>
 );
 

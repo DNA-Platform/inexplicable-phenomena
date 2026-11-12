@@ -7,12 +7,12 @@
     },
     {
       "folder": ".reference",
-      "digest": "4722f9792288fa90",
-      "walked": 75
+      "digest": "be0f7474215ff08b",
+      "walked": 88
     },
     {
       "folder": ".subject",
-      "digest": "1b58b27cf60c4429",
+      "digest": "b556cb6886c74787",
       "walked": 86
     },
     {
@@ -47,12 +47,12 @@
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "2b17d59fe2905b8b",
-      "walked": 14
+      "digest": "f39e99ebe9f870e3",
+      "walked": 68
     },
     {
       "folder": "mathematics/.subject",
-      "digest": "760aa29ac9758281",
+      "digest": "0b0b857134d34b5b",
       "walked": 62
     },
     {
@@ -62,8 +62,8 @@
     },
     {
       "folder": "mathematics/arithmetic/.notebook",
-      "digest": "d6ebbb36d98258ac",
-      "walked": 1004
+      "digest": "e0ef28b2a10c07b1",
+      "walked": 1105
     },
     {
       "folder": "mathematics/arithmetic/.project",
@@ -72,13 +72,13 @@
     },
     {
       "folder": "mathematics/arithmetic/.subject",
-      "digest": "2066f1a78da79f6d",
+      "digest": "6013df007a081942",
       "walked": 38
     },
     {
       "folder": "mathematics/arithmetic/.textbook",
-      "digest": "e57854eae202b8de",
-      "walked": 52
+      "digest": "c12a456686958e14",
+      "walked": 43
     },
     {
       "folder": "neuroscience/.subject",

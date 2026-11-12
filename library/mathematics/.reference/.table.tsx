@@ -9,7 +9,22 @@ export default () => (
             [[ Table of Contents ]]
         </Title>
         <Section>
-            <Heading>Contents</Heading>
+            <Heading>The Books</Heading>
+            <Paragraph>
+                <Content>$[[ ./The Notebook ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Textbook ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Project ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Library ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./The Design ]]</Content>
+            </Paragraph>
             <Paragraph>
                 <Parenthetical />
                 <Word>

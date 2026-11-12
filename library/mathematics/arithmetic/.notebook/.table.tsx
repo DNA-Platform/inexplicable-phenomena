@@ -74,6 +74,12 @@ export default () => (
                 <Content>$[[ ./The Parts ]]</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ ./Always a Bridesmaid ]]</Content>
+            </Paragraph>
+            <Paragraph>
+                <Content>$[[ ./System A ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Arithmetic Notebook ]]</Content>
