@@ -13,7 +13,9 @@ export default () => (
             The specification of mathematics in this library: a part for the books of the subject — the notebook,
             the textbook, the project, the library and the design — one chapter per book, tracking the idioms its
             chapters follow, with the enforcing code standing with the chapter that states the idiom and the rest
-            marked held by hand.
+            marked held by hand; and a part for the forms, opening with the specification of a specification —
+            a title with a numbered list of lists, items cited by number, the specification and the thing it
+            specifies moving back and forth — written in its own form on Doug's ruling of 12 November 2026.
         </Paragraph>
     </Chapter>
 );

@@ -25,6 +25,12 @@ export default () => (
             <Paragraph>
                 <Content>$[[ ./The Design ]]</Content>
             </Paragraph>
+        </Section>
+        <Section>
+            <Heading>The Forms</Heading>
+            <Paragraph>
+                <Content>$[[ ./The Specification ]]</Content>
+            </Paragraph>
             <Paragraph>
                 <Parenthetical />
                 <Word>
