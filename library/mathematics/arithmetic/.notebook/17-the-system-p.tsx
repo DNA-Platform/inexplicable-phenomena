@@ -1,132 +1,884 @@
-import { Chapter, Equation, Heading, Math, Means, Paragraph, Part, Section, Title } from '@dna-platform/public';
+import { Bold, Chapter, Emphasis, Heading, Line, List, Math, Means, Paragraph, Part, Section, Sentence, Title, Word } from '@dna-platform/public';
+import { Table } from '../../../.reference/4-the-faces~code.tsx';
 
 export default () => (
     <Chapter>
         <Part>The Formalism</Part>
         <Title>[[ The System P ]]</Title>
         <Paragraph>
-            "The first thing we need to do is decide on what our PA will be. Gödel used his own version of a formal
-            system in his work right? What is the definition of that thing?" (in the room, 12 November 2026). This
-            note answers from the held paper, since "we have Gödel's work here and we can look it up" (in the room,
-            12 November 2026): the exact description of the formal system P stands in section 2
-            of <Means>$[[ Gödel 1931 ]]( Mathematical Library / Gödel 1931 )</Means>, pages 42 to 45 of the English
-            held beside its chapter. P is essentially the logic of Principia Mathematica superposed on the Peano
-            axioms, the numbers as individuals and the successor relation as the undefined basic concept; his
-            footnote 16 adds that the Peano axioms serve only to simplify the proof, so P is PM made definite
-            enough to count. The note is written in the notation of Leary and Kristiansen's A Friendly Introduction
-            to Mathematical Logic, on his word that he knows it (in the room, 12 November 2026), with Gödel's own
-            signs kept where the system P itself is displayed and a dictionary between the two; the official
-            first-order system the decision arrived at is defined in the
-            textbook, <Means>$[[ System A ]]( Arithmetic Textbook / System A )</Means>.
+            Set here verbatim from the final version of his Claude Desktop session, 12 November 2026, on his word
+            that these are our notes; the walk that produced it, his questions and the rulings, stands in
+            Sprint 128's record.
         </Paragraph>
         <Section>
-            <Heading>What Gödel uses</Heading>
+            <Heading>Formal Logic and Formal Arithmetic: System L and System A</Heading>
             <Paragraph>
-                Seven constant signs and the variables. The constants are ~ for not, ∨ for or, Π for all, 0 for
-                nought, f for the successor of, and the two brackets. The variables come in types, one type for
-                every natural number: x₁, y₁, z₁ range over the individuals, the natural numbers with 0 among them;
-                x₂, y₂, z₂ over classes of individuals; x₃ over classes of classes, and so on; relations are
-                spared as signs because a pair is a class of classes. A numeral is 0 with f struck before it some
-                number of times; an elementary formula is a(b), a sign of type n + 1 said of a sign of type n; the
-                formulas are the smallest class holding the elementary ones and closed under negation, disjunction
-                and generalization. Everything else is abbreviation — the dot for and, ⊃ for implies, (Eu) for
-                existence, and identity itself is defined through the second type, Leibniz's way, as in
-                Principia's *13:
+                <Word><Bold />System L</Word> is our Formal Logic. <Word><Bold />System A</Word> is our Formal
+                Arithmetic, an extension of System L. Both are first-order in language. They differ from standard
+                first-order logic in one respect: a system is extended not only by signs and axioms but also by
+                rules of inference. System A proves exactly the theorems of Peano Arithmetic.
             </Paragraph>
-            <Equation>{'x_1 = y_1 \\;:\\Leftrightarrow\\; x_2\\,\\Pi\\,\\bigl(x_2(x_1) \\supset x_2(y_1)\\bigr)'}</Equation>
             <Paragraph>
-                The axioms come in five groups: the three Peano axioms; the four propositional schemata of
-                Principia; two quantifier schemata, with substitution carried out inside the schema, von Neumann's
-                economy, so no substitution rule is needed; comprehension, which the paper names the axiom of
-                reducibility; and extensionality with its type-lifts. The Peano axioms and comprehension, as the
-                paper prints them:
-            </Paragraph>
-            <Equation>{'\\begin{gathered} \\sim\\!(f x_1 = 0) \\qquad\\quad f x_1 = f y_1 \\;\\supset\\; x_1 = y_1 \\\\[4pt] x_2(0) \\;.\\; x_1\\,\\Pi\\,\\bigl(x_2(x_1) \\supset x_2(f x_1)\\bigr) \\;\\supset\\; x_1\\,\\Pi\\,\\bigl(x_2(x_1)\\bigr) \\\\[4pt] (\\mathrm{E}u)\\,\\bigl(v\\,\\Pi\\,(u(v) \\equiv a)\\bigr) \\end{gathered}'}</Equation>
-            <Paragraph>
-                Two rules of inference, called immediate consequence: modus ponens and generalization. The provable
-                formulas are the smallest class containing the axioms and closed under them; the proof as an
-                object, the finite series of formulas each an axiom or an immediate consequence of earlier ones,
-                enters when the paper arithmetizes, definitions 44 and 45, the proof-figure and x B y. The
-                numbering gives the seven constants the odd numbers 1, 3, 5, 7, 9, 11, 13 in the order 0, f, ~, ∨,
-                Π, brackets; a variable of type n a number <Math>{'p^n'}</Math> for a prime p above 13; and a
-                series of signs numbered <Math>{'n_1, \\ldots, n_k'}</Math> the
-                product <Math>{'2^{n_1} \\cdot 3^{n_2} \\cdots p_k^{n_k}'}</Math>. Under that map the empty series
-                is the empty product, 1, the address for the empty proof that <Means>$[[ ./The Rulings ]]</Means> retired
-                when the length, not the code, was ruled to carry the semantics.
+                Contents: 1. Formal Logic. 2. Formal Arithmetic. 3. Comparison with Gödel's System P.
+                4. Comparison with PA. 5. Notes toward publication.
             </Paragraph>
         </Section>
         <Section>
-            <Heading>The dictionary</Heading>
+            <Heading>1. Formal Logic: System L</Heading>
+        </Section>
+        <Section>
+            <Heading>1.1 Signature</Heading>
             <Paragraph>
-                How P's signs read in the standard notation, the one Leary and Kristiansen write and Enderton
-                writes with them:
+                A <Word><Bold />signature</Word> Σ is three finite sets:
             </Paragraph>
-            <Equation>{'\\begin{array}{llcll} \\sim \\;\\mapsto\\; \\neg & \\qquad & & \\lor \\;\\mapsto\\; \\lor & \\\\[2pt] x\\,\\Pi\\,(a) \\;\\mapsto\\; \\forall x\\, a & \\qquad & & f \\;\\mapsto\\; S & \\\\[2pt] a \\supset b \\;\\mapsto\\; a \\rightarrow b & \\qquad & & a \\,.\\, b \\;\\mapsto\\; a \\land b & \\\\[2pt] (\\mathrm{E}u)\\,a \\;\\mapsto\\; \\exists u\\, a & \\qquad & & x_1, y_1, z_1 \\;\\mapsto\\; v_1, v_2, v_3 & \\end{array}'}</Equation>
             <Paragraph>
-                The left column is sign for sign; the right ones carry a change of status. In P the implication,
-                the conjunction and the existential are abbreviations over ~ and ∨, and in Leary they are
-                abbreviations over ¬ and ∨ too, so ⊃, the dot and (Eu) map to →, ∧ and ∃ exactly. Three of P's
-                things have no counterpart at all: the variables of type two and higher, x₂, x₃ and the rest,
-                which a first-order language refuses; the elementary formula a(b), predication of a class, which
-                goes with them; and the defined identity, which the standard notation replaces with = as a logical
-                symbol of every language, governed by the equality axioms. The direction that costs is the other
-                one: a first-order system must adopt as primitive what P defined through the types, the equality
-                sign and the signs + and · with their recursion axioms.
+                <List />
+                <Line><Word><Bold />constants</Word> c;</Line>
+                <Line><Word><Bold />functions</Word> f, each with a number of places n ≥ 1;</Line>
+                <Line><Word><Bold />relations</Word> R, each with a number of places n ≥ 1.</Line>
             </Paragraph>
         </Section>
         <Section>
-            <Heading>Not a first-order logic, and why</Heading>
+            <Heading>1.2 Language over Σ</Heading>
             <Paragraph>
-                Is P a proper first-order logic? No. A first-order logic quantifies over individuals only; P's Π
-                binds variables of every type, and its mathematics lives in that freedom. Four things make it hard
-                to even interpret as one. Induction is a single axiom because x₂ is a variable of the language —
-                the system says every class in one sentence, where a first-order system can only say one formula
-                at a time. Identity is not a sign but a definition through the classes, so losing the types loses
-                =. Addition and multiplication are not signs either — Principia defines them from the class
-                apparatus, so losing the types loses + and · with nothing left to define them from. And
-                comprehension summons a class for every formula, an axiom with no first-order sentence to
-                correspond to it. A first-order reading does exist — Henkin's, 1950, P as a many-sorted theory
-                whose classes are only what the axioms force — but it changes what the quantifiers mean, and the
-                standard reading of P is higher-order. Marked as the team's reading, for his word: the one axiom
-                of induction quantifies over the completed totality of the subject's properties, which is the
-                belief this paper's subject refuses; the move to a first-order foundation is the paper's own
-                stance taken in syntax, and it pays for the refusal with a schema.
+                <List />
+                <Line>
+                    <Word><Bold />Logical signs</Word>: ¬  ∨  ∀  =  (  )
+                </Line>
+                <Line>
+                    <Word><Bold />Variables</Word>: v₁, v₂, v₃, … (written x, y, z)
+                </Line>
+                <Line>
+                    <Word><Bold />Terms</Word>: a variable; a constant; f(t₁, …, tₙ)
+                </Line>
+                <Line>
+                    <Word><Bold />Formulas</Word>: s = t; R(t₁, …, tₙ); ¬φ; (φ ∨ ψ); ∀x φ
+                </Line>
+                <Line>
+                    <Word><Bold />Abbreviations</Word>: φ → ψ; φ ∧ ψ; φ ↔ ψ; ∃x φ; s ≠ t
+                </Line>
+            </Paragraph>
+            <Paragraph>
+                A <Word><Bold />sentence</Word> is a formula with no free variable. Variables range over the
+                individuals of the domain and over nothing else.
             </Paragraph>
         </Section>
         <Section>
-            <Heading>The closest first-order match</Heading>
+            <Heading>1.3 Identifications, proofs, theorems</Heading>
             <Paragraph>
-                The closest first-order formalism that preserves the numbering almost identically is first-order
-                Peano arithmetic over the language 0, S, +, ·, with the logic exactly as Leary and Kristiansen
-                specify it: the connectives ¬ and ∨ and the quantifier ∀ primitive, the variables v₁, v₂ and so
-                on, equality a logical symbol with the axioms E1 to E3, the quantifier axioms Q1 and Q2, the rules
-                PC and QR, and a deduction a finite sequence of formulas. Their own number-theory language 𝓛NT
-                adds E for exponentiation and the order <Math>{'<'}</Math>, and their theory N is eleven axioms
-                over it; the first six of those eleven are exactly the successor and recursion axioms below, and
-                the other five concern E and <Math>{'<'}</Math>, both of which are definable — the order
-                by <Math>{'\\exists z\\,(x + Sz = y)'}</Math>, exponentiation through Gödel's β-function — so
-                leaving them out keeps Gödel's economy of signs and changes no strength. The axioms, in the
-                standard dress:
+                <List />
+                <Line>
+                    An <Word><Bold />identification</Word> Γ ⊢ φ is a finite set Γ of formulas (the open
+                    assumptions) and a formula φ.
+                </Line>
+                <Line>
+                    A <Word><Bold />rule of inference</Word> is a finite figure: premises (identifications), a
+                    side condition, and a conclusion (an identification), written with metavariables for formulas
+                    and terms.
+                    In a system with signature Σ the metavariables range over the language over Σ.
+                </Line>
+                <Line>
+                    A <Word><Bold />proof</Word> is a finite sequence of identifications, each the conclusion of
+                    a rule whose premises occur earlier.
+                </Line>
+                <Line>
+                    φ is a <Word><Bold />theorem</Word> when a proof ends in ∅ ⊢ φ.
+                </Line>
             </Paragraph>
-            <Equation>{'\\begin{gathered} \\forall x\\, \\neg\\,(Sx = 0) \\qquad\\quad \\forall x\\,\\forall y\\,(Sx = Sy \\rightarrow x = y) \\\\[4pt] \\forall x\\,(x + 0 = x) \\qquad \\forall x\\,\\forall y\\,(x + Sy = S(x + y)) \\qquad \\forall x\\,(x \\cdot 0 = 0) \\qquad \\forall x\\,\\forall y\\,(x \\cdot Sy = x \\cdot y + x) \\\\[4pt] \\bigl[\\varphi(0) \\land \\forall x\\,(\\varphi(x) \\rightarrow \\varphi(Sx))\\bigr] \\rightarrow \\forall x\\,\\varphi(x) \\end{gathered}'}</Equation>
+        </Section>
+        <Section>
+            <Heading>1.4 Systems and extension</Heading>
             <Paragraph>
-                The last line is one axiom for every formula <Math>{'\\varphi'}</Math>, a schema where P had one
-                axiom, and <Math>{'\\varphi'}</Math> is a metavariable, not a sign, so the schema costs the
-                alphabet nothing. The numbering is Gödel's with three signs adjoined: his odd numbers 1 to 13
-                keep their signs under the dictionary, 0, S, ¬, ∨, ∀ and the brackets; the variables v₁, v₂ and
-                on are his type-1 variables, the primes above 13 at the first power; the numbers <Math>{'p^n'}</Math> for
-                higher types go unused; and =, + and · take three further odd numbers free of the variables'
-                form, the team's 15, 21 and 25 for his word. The series map, the product of primes, is unchanged,
-                and with it the proof-figure, so the forty-five numbered definitions re-run with two local edits:
-                the terms widen from S-strings to sums and products, and the elementary formula a(b) becomes the
-                equation s = t. Sequences, which P's classes carried, are recovered by Gödel's own β-function,
-                the Chinese-remainder device of his 1934 Princeton lectures, printed in Davis's The Undecidable,
-                1965. On his word of 12 November the system so defined is named System A, A for Arithmetic, and
-                its official definition, the map into P and the justification for calling it PA stand in the
-                textbook, <Means>$[[ System A ]]( Arithmetic Textbook / System A )</Means>; the lineage that
-                makes it the official choice is named there, Hilbert and Bernays 1934, Tarski, Mostowski and
-                Robinson 1953, Kaye 1991, Hájek and Pudlák 1993, with Leary and Kristiansen the logic's
-                specification, each a chapter of the library on his cut.
+                A <Word><Bold />system</Word> is a triple (Σ, Ax, R):
+            </Paragraph>
+            <Paragraph>
+                <List />
+                <Line>Σ a signature;</Line>
+                <Line>
+                    Ax a finite set of sentences over Σ, the <Word><Bold />axioms</Word>, each with a name;
+                </Line>
+                <Line>
+                    R a finite set of admissible rules of inference, each with a name, containing the nine rules
+                    of §1.5.
+                </Line>
+            </Paragraph>
+            <Paragraph>
+                <Word><Bold />System L</Word> is (∅, ∅, the nine rules). It has no signs of its own and no axioms.
+            </Paragraph>
+            <Paragraph>
+                A system <Word><Bold />extends</Word> another when it has all of its constants, functions,
+                relations, axioms and rules, and possibly more. So an extension may add five kinds of thing:
+            </Paragraph>
+            <Paragraph>
+                <Line>1. constants</Line>
+                <Line>2. functions</Line>
+                <Line>3. relations</Line>
+                <Line>4. axioms</Line>
+                <Line>5. rules of inference</Line>
+            </Paragraph>
+            <Paragraph>
+                Standard first-order logic provides 1 to 4. The fifth is what separates System L from it. There
+                are no axiom schemas: what a schema would say is said by a rule.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>1.5 The rules of System L</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>Family</Word>
+                    <Word>Name</Word>
+                    <Word>From</Word>
+                    <Word>Infer</Word>
+                    <Word>Condition</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Structural</Word>
+                    <Word>Assumption</Word>
+                    <Word>—</Word>
+                    <Word>Γ ⊢ φ</Word>
+                    <Word>φ ∈ Γ</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Structural</Word>
+                    <Word>Axiom</Word>
+                    <Word>—</Word>
+                    <Word>Γ ⊢ α</Word>
+                    <Word>α ∈ Ax</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Structural</Word>
+                    <Word>Consequence</Word>
+                    <Word>Γ ⊢ γ₁, …, Γ ⊢ γₙ</Word>
+                    <Word>Γ ⊢ φ</Word>
+                    <Word>(γ₁ ∧ … ∧ γₙ) → φ is a tautology</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Instantiation</Word>
+                    <Word>Instantiation</Word>
+                    <Word>Γ ⊢ ∀x φ(x)</Word>
+                    <Word>Γ ⊢ φ(t)</Word>
+                    <Word>t substitutable for x</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Equality</Word>
+                    <Word>Self-Equality</Word>
+                    <Word>—</Word>
+                    <Word>Γ ⊢ t = t</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Equality</Word>
+                    <Word>Proof by Equality</Word>
+                    <Word>Γ ⊢ s = t; Γ ⊢ φ(s)</Word>
+                    <Word>Γ ⊢ φ(t)</Word>
+                    <Word>s, t substitutable in φ</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Hypothetical</Word>
+                    <Word>Conditional Proof</Word>
+                    <Word>Γ, φ ⊢ ψ</Word>
+                    <Word>Γ ⊢ φ → ψ</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Hypothetical</Word>
+                    <Word>Proof by Contradiction</Word>
+                    <Word>Γ, ¬φ ⊢ ψ ∧ ¬ψ</Word>
+                    <Word>Γ ⊢ φ</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Universal</Word>
+                    <Word>Generalization</Word>
+                    <Word>Γ ⊢ φ(x)</Word>
+                    <Word>Γ ⊢ ∀x φ(x)</Word>
+                    <Word>x not free in Γ</Word>
+                </Sentence>
+            </Paragraph>
+            <Paragraph>
+                A <Word><Bold />tautology</Word> is a formula true under every assignment of truth values to its
+                equations, relation formulas and quantified parts.
+            </Paragraph>
+            <Paragraph>
+                <Word><Bold />The families</Word>
+            </Paragraph>
+            <Paragraph>
+                <List />
+                <Line>
+                    <Word><Bold />Equality Inference</Word> states or uses the equality of individuals. Equality
+                    is of individuals, not of representations: s = t says two terms have one individual, not that
+                    they are one term. Proof by Equality carries over what φ says of the individual. An occurrence
+                    of s inside a code of an expression is not an occurrence of s.
+                </Line>
+                <Line>
+                    <Word><Bold />Hypothetical Inference</Word> has a premise with one more open assumption than
+                    its conclusion. The conclusion states the connection between what was assumed and what was
+                    reached.
+                </Line>
+                <Line>
+                    <Word><Bold />Universal Inference</Word> concludes Γ ⊢ ∀x φ(x) from premises that speak of φ
+                    only at named terms and at a variable x not free in Γ.
+                </Line>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>1.6 Admissible rules</Heading>
+            <Paragraph>
+                A rule is <Word><Bold />admissible</Word> when it is:
+            </Paragraph>
+            <Paragraph>
+                <List />
+                <Line>
+                    <Word><Bold />finite</Word>: one figure with finitely many premises;
+                </Line>
+                <Line>
+                    <Word><Bold />decidable</Word>: whether given identifications stand in the rule can be
+                    checked mechanically.
+                </Line>
+            </Paragraph>
+            <Paragraph>
+                Why rules may be added: logic lets a system specify a domain. Signs and axioms say what the domain
+                is. A Universal Inference says how something is concluded of all of it. A system that specifies a
+                domain must be able to say how generalizations over that domain are made.
+            </Paragraph>
+            <Paragraph>
+                System L specifies nothing about its domain. It has one Universal Inference,
+                Generalization: <Word><Emphasis />x was arbitrary</Word>.
+            </Paragraph>
+            <Paragraph>
+                A rule need not be conservative. It may prove sentences the system did not.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>1.7 Facts about System L</Heading>
+            <Paragraph>
+                <List />
+                <Line>
+                    <Word><Bold />Equality.</Word> Symmetry and transitivity of = are provable from the two
+                    Equality rules, and so is s = t → f(…s…) = f(…t…) for every function, and the like for every
+                    relation. No extension owes an equality axiom for a new sign.
+                </Line>
+                <Line>
+                    <Word><Bold />Agreement with first-order logic.</Word> A system that extends L by signs and
+                    axioms only proves exactly the first-order consequences of its axioms.
+                </Line>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>2. Formal Arithmetic: System A</Heading>
+            <Paragraph>
+                System A is the extension of System L by four signs, six axioms and one rule.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>2.1 Signs</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>Sign</Word>
+                    <Word>Kind</Word>
+                    <Word>Name</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>0</Word>
+                    <Word>constant</Word>
+                    <Word>zero</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>S</Word>
+                    <Word>function, one place</Word>
+                    <Word>successor</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>+</Word>
+                    <Word>function, two places</Word>
+                    <Word>addition</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>·</Word>
+                    <Word>function, two places</Word>
+                    <Word>multiplication</Word>
+                </Sentence>
+            </Paragraph>
+            <Paragraph>
+                Written Sx, x + y, x · y. Multiplication binds tighter than
+                addition. <Word><Bold />Numerals:</Word> 0, S0, SS0, …
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>2.2 Axioms</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>Label</Word>
+                    <Word>Name</Word>
+                    <Word>Axiom</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>S1</Word>
+                    <Word>Zero Is Not a Successor</Word>
+                    <Word>∀x Sx ≠ 0</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>S2</Word>
+                    <Word>Successor Is One-to-One</Word>
+                    <Word>∀x∀y (Sx = Sy → x = y)</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>A1</Word>
+                    <Word>Addition of Zero</Word>
+                    <Word>∀x x + 0 = x</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>A2</Word>
+                    <Word>Addition of a Successor</Word>
+                    <Word>∀x∀y x + Sy = S(x + y)</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>M1</Word>
+                    <Word>Multiplication by Zero</Word>
+                    <Word>∀x x · 0 = 0</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>M2</Word>
+                    <Word>Multiplication by a Successor</Word>
+                    <Word>∀x∀y x · Sy = x · y + x</Word>
+                </Sentence>
+            </Paragraph>
+            <Paragraph>
+                S1 and S2 specify succession. A1 and A2 specify addition by succession. M1 and M2 specify
+                multiplication by addition. The labels are Enderton's.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>2.3 Rule</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>Family</Word>
+                    <Word>Name</Word>
+                    <Word>From</Word>
+                    <Word>Infer</Word>
+                    <Word>Condition</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Universal</Word>
+                    <Word>Proof by Induction</Word>
+                    <Word>Γ ⊢ φ(0); Γ ⊢ φ(x) → φ(Sx)</Word>
+                    <Word>Γ ⊢ ∀x φ(x)</Word>
+                    <Word>x not free in Γ</Word>
+                </Sentence>
+            </Paragraph>
+            <Paragraph>
+                Every individual is 0 or is reached from 0 by S.
+            </Paragraph>
+            <Paragraph>
+                The second premise is ordinarily reached by Conditional Proof: assume φ(x), the induction
+                hypothesis; reach φ(Sx); discharge.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>2.4 The Universal Inferences so far</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>Rule</Word>
+                    <Word>Belongs to</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Generalization</Word>
+                    <Word>System L</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Proof by Induction</Word>
+                    <Word>System A</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Proof by Symmetry</Word>
+                    <Word>an extension of System A</Word>
+                </Sentence>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>3. Comparison with Gödel's System P</Heading>
+            <Paragraph>
+                System P (<Means>$[[ Gödel 1931 ]]( Mathematical Library / Gödel 1931 )</Means>, §2) is the logic
+                of Principia Mathematica over the Peano axioms. It has variables of every type: type 1 for
+                individuals, type 2 for classes of individuals, type 3 for classes of classes, and so on.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>3.1 Translation of symbols</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>Gödel</Word>
+                    <Word>Ours</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>~</Word>
+                    <Word>¬</Word>
+                    <Word>same</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>∨</Word>
+                    <Word>∨</Word>
+                    <Word>same</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>xΠ(a)</Word>
+                    <Word>∀x a</Word>
+                    <Word>same</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>0</Word>
+                    <Word>0</Word>
+                    <Word>same</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>f</Word>
+                    <Word>S</Word>
+                    <Word>same</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>ff0</Word>
+                    <Word>SS0</Word>
+                    <Word>same</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>a . b</Word>
+                    <Word>a ∧ b</Word>
+                    <Word>abbreviation in both</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>a ⊃ b</Word>
+                    <Word>a → b</Word>
+                    <Word>abbreviation in both</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>a ≡ b</Word>
+                    <Word>a ↔ b</Word>
+                    <Word>abbreviation in both</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>(Ex) a</Word>
+                    <Word>∃x a</Word>
+                    <Word>abbreviation in both</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>x₁, y₁, z₁</Word>
+                    <Word>x, y, z</Word>
+                    <Word>variables for individuals</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Subst a (v/c)</Word>
+                    <Word>φ(t)</Word>
+                    <Word>notation for substitution</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>x₁ = y₁, defined</Word>
+                    <Word>x = y, a logical sign</Word>
+                    <Word>changed</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>x₂, y₂, … and a(b)</Word>
+                    <Word>none (X, Y, X(x) below, to translate only)</Word>
+                    <Word>absent</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>none</Word>
+                    <Word>+ and ·</Word>
+                    <Word>added</Word>
+                </Sentence>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>3.2 Axioms and rules of P against ours</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>P</Word>
+                    <Word>Name</Word>
+                    <Word>Gödel's form</Word>
+                    <Word>In our notation</Word>
+                    <Word>In System L / A</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>I.1</Word>
+                    <Word>Peano 1</Word>
+                    <Word>~(fx₁ = 0)</Word>
+                    <Word>Sx ≠ 0</Word>
+                    <Word>axiom S1</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>I.2</Word>
+                    <Word>Peano 2</Word>
+                    <Word>fx₁ = fy₁ ⊃ x₁ = y₁</Word>
+                    <Word>Sx = Sy → x = y</Word>
+                    <Word>axiom S2</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>I.3</Word>
+                    <Word>Peano 3, induction</Word>
+                    <Word>x₂(0) . x₁Π(x₂(x₁) ⊃ x₂(fx₁)) ⊃ x₁Π(x₂(x₁))</Word>
+                    <Word>(X(0) ∧ ∀x (X(x) → X(Sx))) → ∀x X(x)</Word>
+                    <Word>rule Proof by Induction</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>II.1–4</Word>
+                    <Word>Propositional schemata</Word>
+                    <Word>p ∨ p ⊃ p; p ⊃ p ∨ q; p ∨ q ⊃ q ∨ p; (p ⊃ q) ⊃ (r ∨ p ⊃ r ∨ q)</Word>
+                    <Word>the same with →</Word>
+                    <Word>rule Consequence</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>III.1</Word>
+                    <Word>Instantiation schema</Word>
+                    <Word>vΠ(a) ⊃ Subst a (v/c)</Word>
+                    <Word>∀x φ(x) → φ(t)</Word>
+                    <Word>rule Instantiation</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>III.2</Word>
+                    <Word>Quantifier shift</Word>
+                    <Word>vΠ(b ∨ a) ⊃ b ∨ vΠ(a)</Word>
+                    <Word>∀x (ψ ∨ φ) → ψ ∨ ∀x φ</Word>
+                    <Word>provable by Generalization</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>IV</Word>
+                    <Word>Reducibility (comprehension)</Word>
+                    <Word>(Eu)(vΠ(u(v) ≡ a))</Word>
+                    <Word>∃X ∀x (X(x) ↔ φ)</Word>
+                    <Word>none</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>V</Word>
+                    <Word>Extensionality</Word>
+                    <Word>x₁Π(x₂(x₁) ≡ y₂(x₁)) ⊃ x₂ = y₂</Word>
+                    <Word>∀x (X(x) ↔ Y(x)) → X = Y</Word>
+                    <Word>none</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Def.</Word>
+                    <Word>Identity</Word>
+                    <Word>x₂Π(x₂(x₁) ⊃ x₂(y₁))</Word>
+                    <Word>∀X (X(x) → X(y))</Word>
+                    <Word>rules Self-Equality, Proof by Equality</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Rule 1</Word>
+                    <Word>Modus ponens</Word>
+                    <Word>c from (~(b)) ∨ (c) and b</Word>
+                    <Word>ψ from ¬φ ∨ ψ and φ</Word>
+                    <Word>rule Consequence</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Rule 2</Word>
+                    <Word>Generalization</Word>
+                    <Word>vΠ(a) from a</Word>
+                    <Word>∀x φ from φ</Word>
+                    <Word>rule Generalization</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>—</Word>
+                    <Word>—</Word>
+                    <Word>addition and multiplication defined through classes</Word>
+                    <Word>—</Word>
+                    <Word>axioms A1, A2, M1, M2</Word>
+                </Sentence>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>3.3 The differences in kind</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>—</Word>
+                    <Word>System P</Word>
+                    <Word>System L / A</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Variables</Word>
+                    <Word>every type</Word>
+                    <Word>individuals only</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Induction</Word>
+                    <Word>one axiom over all classes</Word>
+                    <Word>one rule over all formulas</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Identity</Word>
+                    <Word>defined over all classes</Word>
+                    <Word>two rules over all formulas</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>+ and ·</Word>
+                    <Word>defined</Word>
+                    <Word>signs with four axioms</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Schemas</Word>
+                    <Word>groups II, III, IV</Word>
+                    <Word>none</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Proofs</Word>
+                    <Word>sequences of formulas</Word>
+                    <Word>sequences of identifications</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Hypothetical Inference</Word>
+                    <Word>not present; derived</Word>
+                    <Word>two rules</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Extension</Word>
+                    <Word>by axioms</Word>
+                    <Word>by signs, axioms and rules</Word>
+                </Sentence>
+            </Paragraph>
+            <Paragraph>
+                What P says once of every class, System A says by a rule for one formula at a time. That is the
+                whole of the change from P to a system that speaks of individuals only.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>3.4 Numbering, and why Gödel's theorems apply</Heading>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>—</Word>
+                    <Word>In P</Word>
+                    <Word>In System A</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>0, f, ~, ∨, Π, (, )</Word>
+                    <Word>1, 3, 5, 7, 9, 11, 13</Word>
+                    <Word>the same for 0, S, ¬, ∨, ∀, (, )</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Variable of type n</Word>
+                    <Word>pⁿ, p a prime above 13</Word>
+                    <Word>the primes above 13</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>=, +, ·</Word>
+                    <Word>not signs</Word>
+                    <Word>three further numbers, to be fixed</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Series n₁, …, n_k</Word>
+                    <Math>{'2^{n_1} \\cdot 3^{n_2} \\cdots p_k^{n_k}'}</Math>
+                    <Word>the same</Word>
+                </Sentence>
+            </Paragraph>
+            <Paragraph>
+                After Proposition VI Gödel states that the proof used two properties of P only: the axioms and
+                rules are recursively definable once signs are numbers, and every recursive relation is definable
+                in the system. System A has both. The first is what admissibility (§1.6) secures, for System A and
+                for every extension of it by admissible rules. The second holds by Gödel's β-function. In the
+                other direction, every theorem of System A translates by §3.1 into a theorem of P.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>4. Comparison with Peano Arithmetic</Heading>
+            <Paragraph>
+                By PA we mean first-order Peano Arithmetic as in Enderton, Kaye, Hájek and Pudlák, or Smith.
+            </Paragraph>
+            <Paragraph>
+                <Table />
+                <Sentence>
+                    <Word>—</Word>
+                    <Word>PA</Word>
+                    <Word>System A</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Signs</Word>
+                    <Word>0, S, +, · (some authors add &lt;, 1 or exponentiation)</Word>
+                    <Word>0, S, +, ·</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Successor axioms</Word>
+                    <Word>S1, S2</Word>
+                    <Word>S1, S2</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Addition axioms</Word>
+                    <Word>A1, A2</Word>
+                    <Word>A1, A2</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Multiplication axioms</Word>
+                    <Word>M1, M2</Word>
+                    <Word>M1, M2</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>"Every number is 0 or a successor"</Word>
+                    <Word>an axiom of Robinson's Q; provable in PA</Word>
+                    <Word>not an axiom; provable</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Induction</Word>
+                    <Word>a schema: one axiom for each formula</Word>
+                    <Word>one rule</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Equality</Word>
+                    <Word>axioms or schemas of the logic</Word>
+                    <Word>two rules</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Logic</Word>
+                    <Word>first-order logic, usually axioms with modus ponens</Word>
+                    <Word>System L</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Number of axioms</Word>
+                    <Word>infinitely many</Word>
+                    <Word>six</Word>
+                </Sentence>
+                <Sentence>
+                    <Word>Extension</Word>
+                    <Word>by axioms</Word>
+                    <Word>by axioms and by rules</Word>
+                </Sentence>
+            </Paragraph>
+            <Paragraph>
+                <Word><Bold />Theorem.</Word> System A and PA have the same theorems.
+            </Paragraph>
+            <Paragraph>
+                <Word><Emphasis />Sketch.</Word> From the rule to the schema: assume φ(0) ∧ ∀x (φ(x) → φ(Sx)); by
+                Consequence and Instantiation obtain φ(0) and φ(x) → φ(Sx); x is not free in the assumption, so
+                Proof by Induction gives ∀x φ(x); discharge by Conditional Proof. From the schema to the rule:
+                given the two premises, Generalization gives ∀x (φ(x) → φ(Sx)), and the schema instance with
+                Consequence gives ∀x φ(x). The remaining rules of L are sound and complete for first-order logic
+                with equality.
+            </Paragraph>
+            <Paragraph>
+                So System A is PA, presented finitely. The difference between them appears only when a further
+                rule is added.
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>5. Notes toward a publishable write-up</Heading>
+        </Section>
+        <Section>
+            <Heading>What to state as definitions and theorems</Heading>
+            <Paragraph>
+                <Line>
+                    1. Definitions: signature, language, identification, rule, system, extension, admissible
+                    rule, Universal Inference. Number them.
+                </Line>
+                <Line>
+                    2. Theorem: a system extending L by signs and axioms alone proves exactly the first-order
+                    consequences of its axioms. Cite the completeness of natural deduction (Gentzen 1934; Prawitz
+                    1965) rather than reproving it.
+                </Line>
+                <Line>
+                    3. Theorem: the equality properties of §1.7, with the two short derivations.
+                </Line>
+                <Line>
+                    4. Theorem: System A and PA have the same theorems, with the sketch of §4 written out in full.
+                </Line>
+                <Line>
+                    5. Theorem: every theorem of System A translates into a theorem of P. This needs the
+                    definability of + and · in P, which should be cited or shown.
+                </Line>
+                <Line>
+                    6. Theorem: the proof relation of any system with admissible rules is recursive, so Gödel's
+                    two properties hold.
+                </Line>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>What must be made exact</Heading>
+            <Paragraph>
+                <List />
+                <Line>
+                    "Finite figure with metavariables" needs a precise form. The cleanest is to define a rule as a
+                    primitive recursive relation on codes of identifications and to present each rule by its
+                    figure.
+                </Line>
+                <Line>
+                    Substitution and "substitutable" need their standard definitions, and the tautology test needs
+                    its definition of truth assignment.
+                </Line>
+                <Line>
+                    The numbers for =, + and · must be fixed.
+                </Line>
+                <Line>
+                    Proof by Contradiction is derivable from Conditional Proof and Consequence. Say so, and say
+                    the named proof forms are kept because the families are the point.
+                </Line>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>What a referee will raise, and should be answered in the text</Heading>
+            <Paragraph>
+                <List />
+                <Line>
+                    <Word><Emphasis />Induction as a rule is known.</Word> It is Gentzen's 1936 formulation. Cite
+                    it. Note that the rule must carry open assumptions Γ: for full induction the rule and the
+                    schema coincide, though in fragments of arithmetic they are known to differ (Parsons).
+                </Line>
+                <Line>
+                    <Word><Emphasis />PA is not finitely axiomatizable</Word> (Ryll-Nardzewski 1952). This is the
+                    reason a finite presentation must put induction among the rules. Cite it as motivation.
+                </Line>
+                <Line>
+                    <Word><Emphasis />Adding a recursive rule gives a recursively enumerable theory, and by
+                    Craig's theorem every such theory has a recursive first-order axiomatization.</Word> So what
+                    System L adds is not a larger class of theorem sets. It is a finite presentation. The paper
+                    should say this plainly before a referee does.
+                </Line>
+                <Line>
+                    <Word><Emphasis />Gödel's theorems apply to every consistent extension of System A by
+                    admissible rules,</Word> including the extension by Proof by Symmetry. The paper should say
+                    how its reading treats the undecidable sentence of that extended system.
+                </Line>
+                <Line>
+                    <Word><Emphasis />Soundness is an assumption along with consistency, if finite proof is the
+                    identification of truth.</Word> It is not argued, inside the system or beside it.
+                    Admissibility asks only what is formal: finite and decidable.
+                </Line>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>Sources and conventions</Heading>
+            <Paragraph>
+                <List />
+                <Line>
+                    For Gödel 1931, cite the <Word><Emphasis />Collected Works</Word>, volume I (1986), or van
+                    Heijenoort's translation in <Word><Emphasis />From Frege to Gödel</Word> (1967), which Gödel
+                    approved. Meltzer's translation is convenient but is not the scholarly standard. Check §3
+                    against it, in particular the printed form of axiom IV.
+                </Line>
+                <Line>
+                    Give a short table mapping our names to the standard ones: identification = sequent; Conditional
+                    Proof = implication introduction; Generalization = universal introduction; Instantiation =
+                    universal elimination; Consequence = tautological consequence; Proof by Equality =
+                    substitution of equals (Leibniz's law).
+                </Line>
+                <Line>
+                    Typeset rules as inference figures (premises over a line, conclusion under), not as table
+                    rows.
+                </Line>
+                <Line>
+                    The Hilbert ω-rule (from φ(0), φ(S0), … infer ∀x φ(x)) is the natural contrast: a Universal
+                    Inference that is not finite and not decidable. Place Proof by Symmetry against it.
+                </Line>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>A possible order of sections</Heading>
+            <Paragraph>
+                <Line>1. Introduction: a formal logic in which rules of generalization can be added.</Line>
+                <Line>2. System L.</Line>
+                <Line>3. Extension and admissibility.</Line>
+                <Line>4. System A, and its equivalence with PA.</Line>
+                <Line>5. Relation to Gödel's System P.</Line>
+                <Line>6. Arithmetization and the applicability of Gödel's theorems.</Line>
+                <Line>7. The place left for a further Universal Inference.</Line>
             </Paragraph>
         </Section>
     </Chapter>

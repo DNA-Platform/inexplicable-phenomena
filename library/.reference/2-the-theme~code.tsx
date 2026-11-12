@@ -80,11 +80,13 @@ export class $LibraryTheme extends $Theme {
         return css`
             .pd-book { margin-block: ${({ theme }) => theme.space}; counter-reset: chapter equation; }
             .pd-chapter { margin-block: calc(2 * ${({ theme }) => theme.space}); scroll-margin-block-start: ${({ theme }) => theme.space}; }
-            .pd-section { margin-block: ${({ theme }) => theme.space}; }
+            .pd-section { margin-block: calc(1.5 * ${({ theme }) => theme.space}); border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 12%, ${({ theme }) => theme.paper}); padding-block-start: ${({ theme }) => theme.space}; }
             .pd-paragraph { margin-block: ${({ theme }) => theme.space}; }
             .pa-item { margin-block: calc(${({ theme }) => theme.space} / 4); }
+            .pa-list .pa-item { list-style-position: outside; margin-inline-start: 1.2em; }
             .pd-title { font-size: calc(1.5 * ${({ theme }) => theme.size}); font-weight: bold; margin-block-end: ${({ theme }) => theme.space}; }
-            .pd-heading { font-weight: bold; margin-block: ${({ theme }) => theme.space} 0; }
+            .pd-heading { font-weight: bold; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; }
+            .pd-section > .pd-heading { margin-block-start: 0; }
             .pd-line { white-space: pre-wrap; }
             .pd-word { overflow-wrap: break-word; }
             .pd-canonical.pd-chapter { counter-increment: chapter; }

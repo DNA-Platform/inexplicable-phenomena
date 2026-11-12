@@ -4,6 +4,7 @@ import $Book from '../../../../../../mathematics/arithmetic/.textbook/.book';
 import Cover from '../../../../../../mathematics/arithmetic/.textbook/.cover';
 import Synopsis from '../../../../../../mathematics/arithmetic/.textbook/.synopsis';
 import Table from '../../../../../../mathematics/arithmetic/.textbook/.table';
+import SystemA1 from '../../../../../../mathematics/arithmetic/.textbook/1-system-a';
 
 const Book = $($Book);
 
@@ -12,6 +13,7 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
+        {SystemA1()}
     </Book>
 );
 

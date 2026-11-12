@@ -116,8 +116,11 @@ export class $LibraryTableOfContents extends $TableOfContents {
 
 export class $LibraryTable extends $Table {
     override style = selection(this.style)`
-        .pa-table { column-gap: ${({ theme }) => theme.space}; row-gap: calc(${({ theme }) => theme.space} / 2); }
+        .pa-table { column-gap: 0; row-gap: 0; grid-auto-columns: minmax(min-content, auto); font-size: calc(0.85 * ${({ theme }) => theme.size}); line-height: 1.5; }
         .pa-table .pd-paragraph { margin-block: 0; }
+        .pa-table .pa-col { padding: calc(${({ theme }) => theme.space} / 3) calc(0.75 * ${({ theme }) => theme.space}) calc(${({ theme }) => theme.space} / 3) 0; border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 15%, ${({ theme }) => theme.paper}); }
+        .pa-table .pa-row-start-1 .pa-col { border-block-start: none; font-weight: bold; border-block-end: 2px solid color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}); }
+        .pa-table .pd-sentence:last-of-type .pa-col { border-block-end: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 15%, ${({ theme }) => theme.paper}); }
     `;
 }
 
