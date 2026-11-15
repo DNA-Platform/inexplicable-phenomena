@@ -29,14 +29,13 @@ export class $LibraryTheme extends $Theme {
     // Doug, the same day: "We need to be able to move easily."
     protected navigation(): RuleSet {
         return css`
-            .pd-navigation { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-block: calc(${({ theme }) => theme.space} / 2); }
-            .pd-navigation > :nth-child(2) { margin-inline: auto; }
+            .pd-navigation { display: flex; justify-content: center; align-items: center; gap: .7em; margin-block: calc(${({ theme }) => theme.space} / 2); }
+            *:has(> .pd-navigation:first-child) { position: relative; }
+            .pd-navigation:first-child { position: absolute; inset-block-start: 0; inset-inline-end: 0; margin-block: 0; }
             .pd-navigation :is(.pa-self-reference, a:has(> .pa-self-reference)) { visibility: hidden; }
-            .pd-navigation a { display: inline-flex; align-items: center; justify-content: center; inline-size: 2.4rem; block-size: 2.4rem; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}); border-radius: 50%; text-decoration: none; background: ${({ theme }) => theme.paper}; transition: border-color .15s ease, background .15s ease; }
-            .pd-navigation a:hover { border-color: ${({ theme }) => theme.ink}; background: color-mix(in srgb, ${({ theme }) => theme.ink} 7%, ${({ theme }) => theme.paper}); }
-            .pd-navigation .pd-word { font-size: calc(1.2 * ${({ theme }) => theme.size}); line-height: 1; color: ${({ theme }) => theme.ink}; opacity: .8; transition: opacity .15s ease; }
-            .pd-navigation > :nth-child(2) .pd-word { font-size: ${({ theme }) => theme.size}; }
-            .pd-navigation a:hover .pd-word { opacity: 1; }
+            .pd-navigation a { text-decoration: none; }
+            .pd-navigation .pd-word { font-size: ${({ theme }) => theme.size}; line-height: 1; color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); transition: color .15s ease; }
+            .pd-navigation a:hover .pd-word { color: ${({ theme }) => theme.ink}; }
         `;
     }
 

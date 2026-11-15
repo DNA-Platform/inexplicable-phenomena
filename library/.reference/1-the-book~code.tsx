@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, $Chapter, $Cover, Paginated, Theme } from '@dna-platform/public';
+import { $Book, $Chapter, $Cover, $TableOfContents, Paginated, Theme } from '@dna-platform/public';
 import { LibraryTheme } from './2-the-theme~code.tsx';
 import { $Navigation, Front as front, Navigated as navigated } from './4-the-faces~code.tsx';
 
@@ -37,7 +37,9 @@ export class $TheLibrary extends $Book {
     protected override $Bound(): void {
         const Navigated = $(navigated);
         for (const chapter of this.text.find($Chapter)) {
-            if (chapter.is($Cover) || chapter.text.find($Navigation).length > 0) continue;
+            // THE TABLE WEARS NO NAVIGATION, Doug, 2026-11-16, pressing the square and landing on the table's own
+            // page: "WHAT IS THIS!!!" — the table of contents is the book's navigation and carries none of its own.
+            if (chapter.is($Cover) || chapter.is($TableOfContents) || chapter.text.find($Navigation).length > 0) continue;
             chapter.annotations.add(this, <Navigated />);
             chapter.annotations.define();
         }

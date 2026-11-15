@@ -32,7 +32,7 @@ export class $Content extends $Format {
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
-        .pc-content { position: absolute; inset-block-start: 0; inset-inline-end: 0; z-index: 2; cursor: pointer; padding: .25rem; }
+        .pc-content { position: absolute; inset-block-start: 4.8rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
         .pc-flip { display: inline-block; inline-size: .9em; block-size: .9em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); border-radius: 2px; background: ${({ theme }) => theme.paper}; transition: background .15s ease; }
         .pc-content:hover .pc-flip { border-color: ${({ theme }) => theme.ink}; }

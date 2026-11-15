@@ -110,18 +110,19 @@ export class $Navigation extends $Paragraph {
             const Word = $(word);
             const Reference = $(reference);
             const table = book.table?.canonical;
-            // THE THREE PLACES ARE GLYPHS AND MUST READ AS NAVIGATION, Doug, 2026-11-16: "left arrow, square,
-            // right arrow for the next previous and table. Visually engaging" — and, on seeing the first faint
-            // dress, "I don't see my arrows and square in middle as my navigation to chapters and to the table".
-            // The theme dresses the three as buttons; the arrow looks back, the square is the table of contents,
-            // the arrow looks on.
+            // THREE CHARACTERS IN A ROW, Doug, 2026-11-16, after the buttons were refused: "Not a button!! I
+            // wanted in three characters a left triangle (not arrow) and then a square in the middle that goes
+            // to table, then the right arrow as a triangle. Three characters in a row like the arrow we use in
+            // catalogues to go straight to a book", and on sight: "ALL WHITE OUTLINE characters!! Just three
+            // characters. left triangle square (not filled in!!!) right arrow. Grey it but don't hide it. Don't
+            // make it take up the whole line" — ◁ □ ▷, outline glyphs, solid grey, a cluster of their own width.
             this.text.add(this,
-                <Previous>←</Previous>,
+                <Previous>◁</Previous>,
                 <Word>
                     <Reference>{table?.means?.identifier}</Reference>
-                    ■
+                    □
                 </Word>,
-                <Next>→</Next>
+                <Next>▷</Next>
             );
         }
         super.$Bound();
