@@ -10,6 +10,7 @@ import TheProject3 from '../../../../../mathematics/.reference/3-the-project';
 import TheLibrary4 from '../../../../../mathematics/.reference/4-the-library';
 import TheDesign5 from '../../../../../mathematics/.reference/5-the-design';
 import TheSpecification6 from '../../../../../mathematics/.reference/6-the-specification';
+import TheContent7 from '../../../../../mathematics/.reference/7-the-content';
 
 const Book = $($Book);
 
@@ -24,6 +25,7 @@ export const book = () => (
         {TheLibrary4()}
         {TheDesign5()}
         {TheSpecification6()}
+        {TheContent7()}
     </Book>
 );
 

@@ -33,8 +33,9 @@ export default () => (
             placeholder for the interpolation; a context specification for each presentation; and the theme's
             rule that shows one aspect alone, on the front's precedent. The classes will stand with this chapter
             as its code once they are ruled; until then every idiom here is held by hand. The potential four
-            chapters of 12 November stand retired in the subject's notes, and the textbook's first objects
-            stand to be named.
+            chapters of 12 November stand retired in the subject's notes, and the textbook's first object is
+            named: X, the symmetry of arithmetic, specified by his statement of work of 15 November 2026, its
+            chapter the textbook's first — all back and no front, the identification its own placeholder.
         </Paragraph>
     </Chapter>
 );

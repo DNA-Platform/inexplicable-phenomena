@@ -47,12 +47,12 @@
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "6d179ceff3657167",
-      "walked": 99
+      "digest": "8b8d57962eba602f",
+      "walked": 130
     },
     {
       "folder": "mathematics/.subject",
-      "digest": "ce469f4e701b2d8e",
+      "digest": "4788031f62afb079",
       "walked": 62
     },
     {
@@ -72,13 +72,13 @@
     },
     {
       "folder": "mathematics/arithmetic/.subject",
-      "digest": "763e70ab7a8540db",
+      "digest": "d267e2c96a6eef75",
       "walked": 57
     },
     {
       "folder": "mathematics/arithmetic/.textbook",
-      "digest": "1db7bcd35fd06bc8",
-      "walked": 33
+      "digest": "d53b1a7c815b19a8",
+      "walked": 65
     },
     {
       "folder": "neuroscience/.subject",

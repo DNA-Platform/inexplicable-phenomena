@@ -34,7 +34,7 @@ export default () => (
             <List />
             <Line>3. The chapters</Line>
             <Line>3.1 A chapter is an attempt to specify one mathematical object, and bears its title.</Line>
-            <Line>3.2 The first objects stand to be named; this item is their placeholder, by 2.7.</Line>
+            <Line>3.2 The first object is named, 15 November: X, the symmetry of arithmetic, its chapter the textbook's first; further objects stand to be named, this item their placeholder, by 2.7.</Line>
             <Line>3.3 The potential four chapters of 12 November are retired to the subject's notes.</Line>
         </Paragraph>
     </Chapter>
