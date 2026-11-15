@@ -29,11 +29,11 @@ export class $LibraryTheme extends $Theme {
     // Doug, the same day: "We need to be able to move easily."
     protected navigation(): RuleSet {
         return css`
-            .pd-navigation { display: flex; justify-content: center; align-items: center; gap: .7em; margin-block: calc(${({ theme }) => theme.space} / 2); }
+            .pd-navigation { display: flex; justify-content: center; align-items: baseline; gap: .15em; margin-block: calc(${({ theme }) => theme.space} / 2); }
             *:has(> .pd-navigation:first-child) { position: relative; }
             .pd-navigation:first-child { position: absolute; inset-block-start: 0; inset-inline-end: 0; margin-block: 0; }
             .pd-navigation a { text-decoration: none; }
-            .pd-navigation .pd-word { font-size: calc(1.2 * ${({ theme }) => theme.size}); line-height: 1; color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); transition: color .15s ease; }
+            .pd-navigation .pd-word { font-size: ${({ theme }) => theme.size}; line-height: 1; color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); transition: color .15s ease; }
             .pd-navigation a:hover .pd-word { color: ${({ theme }) => theme.ink}; }
         `;
     }

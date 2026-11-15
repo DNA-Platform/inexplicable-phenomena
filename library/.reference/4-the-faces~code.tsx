@@ -116,16 +116,20 @@ export class $Navigation extends $Paragraph {
             // catalogues to go straight to a book", and on sight: "ALL WHITE OUTLINE characters!! Just three
             // characters. left triangle square (not filled in!!!) right arrow. Grey it but don't hide it. Don't
             // make it take up the whole line" — ◁ □ ▷, outline glyphs, solid grey, a cluster of their own width.
-            // THE SMALL FAMILY ALIGNS, Doug, 2026-11-16: "Why can't you find three characters that align and I
-            // have asked for all arrows to be there always" — ◃ ▫ ▹, the white small triangles and square cut as
-            // one family, and no edge is ever hidden.
+            // LSR, Doug, 2026-11-16: "Three characters. Up against each other. Spaced like in text. Same height.
+            // White with outline. Two triangles and a square. The ones we use in cataloguing pages and we used to
+            // use in my library for a canonical reference." — and, on the plain square inking 8px against the
+            // triangles' 13, "Not the same size!!", and on the rounded ▢, "It has rounded edges. Pretty sure
+            // there is a character. But all three have to match": measured in Chrome, ☐ inks 12×13 at ascent 12
+            // with sharp corners — the triangles' own metrics — so the trio is ◁ ☐ ▷, typed tight at text size;
+            // no edge is ever hidden.
             this.text.add(this,
-                <Previous>◃</Previous>,
+                <Previous>◁</Previous>,
                 <Word>
                     <Reference>{table?.means?.identifier}</Reference>
-                    ▫
+                    ☐
                 </Word>,
-                <Next>▹</Next>
+                <Next>▷</Next>
             );
         }
         super.$Bound();
