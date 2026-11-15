@@ -16,9 +16,10 @@ export default () => (
             <Line>Results are stated and proved, and their references resolve into the subject's library of publications.</Line>
         </Paragraph>
         <Paragraph>
-            What a textbook entry is, as Doug has specified it so far, 12 November 2026: a chapter is about one
-            formalism. It carries the specification of the formalism — the sovereign part, since we formalize
-            specifications — an informal explanation, the formalism itself with a justification of how it
+            What a textbook entry is, as Doug has specified it so far, 12 and 15 November 2026: a chapter is an
+            attempt to specify one mathematical object, and bears the object's title. It carries the
+            specification of the object — the sovereign part, since we formalize specifications — an informal
+            explanation, the formalism itself with a justification of how it
             satisfies the specification, and presentations in different contexts, each context itself specified.
             Citations run into the subject's library and into the subject's own notes. One aspect is viewable at
             a time. What is specified and not yet built stands as a placeholder for itself — the interpolation
@@ -31,9 +32,9 @@ export default () => (
             the justification as an annotation sort whose note answers with writing, toggled by the theme; a
             placeholder for the interpolation; a context specification for each presentation; and the theme's
             rule that shows one aspect alone, on the front's precedent. The classes will stand with this chapter
-            as its code once they are ruled; until then every idiom here is held by hand, and the four chapters
-            of the Textbook of Arithmetic stand specified in this shape, each its specification and a
-            placeholder.
+            as its code once they are ruled; until then every idiom here is held by hand. The potential four
+            chapters of 12 November stand retired in the subject's notes, and the textbook's first objects
+            stand to be named.
         </Paragraph>
     </Chapter>
 );

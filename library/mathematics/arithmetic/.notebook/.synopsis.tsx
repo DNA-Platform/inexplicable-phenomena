@@ -19,8 +19,10 @@ export default () => (
             definition of Gödel's system P looked up from the held paper toward deciding the paper's PA, the
             parts of the paper's argument, each with a sketch of its formalization and the references beside it,
             the bridesmaid analogy stored from his desktop session of 12 November, the unformalizable as
-            always a composite and never the identity of the sentence, and the first-order System A mapped into
-            Gödel's P, drafted for the textbook and moved here on his ruling that it is a note.
+            always a composite and never the identity of the sentence, the first-order System A mapped into
+            Gödel's P, drafted for the textbook and moved here on his ruling that it is a note, and the
+            potential four chapters of 15 November, retired from the textbook in favor of specifications of
+            mathematical objects as the starting point.
         </Paragraph>
     </Chapter>
 );

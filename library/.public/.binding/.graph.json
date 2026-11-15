@@ -47,7 +47,7 @@
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "0de11a13b33b9312",
+      "digest": "6d179ceff3657167",
       "walked": 99
     },
     {
@@ -62,8 +62,8 @@
     },
     {
       "folder": "mathematics/arithmetic/.notebook",
-      "digest": "e0ef28b2a10c07b1",
-      "walked": 1105
+      "digest": "198b5a308e2873f2",
+      "walked": 1117
     },
     {
       "folder": "mathematics/arithmetic/.project",
@@ -72,13 +72,13 @@
     },
     {
       "folder": "mathematics/arithmetic/.subject",
-      "digest": "a6340d10184f21fa",
-      "walked": 58
+      "digest": "763e70ab7a8540db",
+      "walked": 57
     },
     {
       "folder": "mathematics/arithmetic/.textbook",
-      "digest": "6a5a97ffcd79117d",
-      "walked": 63
+      "digest": "1db7bcd35fd06bc8",
+      "walked": 33
     },
     {
       "folder": "neuroscience/.subject",
