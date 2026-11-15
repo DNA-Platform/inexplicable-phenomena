@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
+import { marked } from 'marked';
 import { $, selection } from '@dna-platform/chemistry';
-import { $Format, $Paragraph, $Section, $Word } from '@dna-platform/public';
+import { $Append, $Format, $Paragraph, $Section, $Word, html } from '@dna-platform/public';
 
 // THE CONTENT IS A THING WITH A FRONT AND A BACK, Doug, 2026-11-15 and respecified from his answers of
 // 2026-11-16: the content of a chapter, starting below the title, like a section. On the front the DELIVERABLE —
@@ -39,9 +40,20 @@ export class $Content extends $Format {
         .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
         .pc-project { display: none; }
         &:has(#pc-flip:checked) .pc-project { display: block; }
-        &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
-        .pc-project { font-size: calc(.93 * ${({ theme }) => theme.size}); border-inline-start: 3px double color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}); padding-inline-start: 1.25rem; }
-        .pc-project .pd-heading + .pd-paragraph { font-size: calc(0.75 * ${({ theme }) => theme.size}); letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+        &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation):not(.pc-introduction) { display: none; }
+        .pc-introduction { display: none; font-style: italic; color: color-mix(in srgb, ${({ theme }) => theme.ink} 75%, ${({ theme }) => theme.paper}); }
+        &:has(#pc-flip:checked) .pc-introduction { display: block; }
+        .pc-project > details > summary { cursor: pointer; font-weight: bold; font-size: calc(1.15 * ${({ theme }) => theme.size}); }
+        .pc-project > details > summary:hover { text-decoration: underline; text-underline-offset: .2em; }
+        .pc-project .pd-heading { display: none; }
+        .pc-markdown h1 { font-size: calc(1.4 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1em .4em; line-height: 1.3; }
+        .pc-markdown h2 { font-size: calc(1.25 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.2em .4em; }
+        .pc-markdown p { margin-block: .8em; }
+        .pc-markdown table { border-collapse: collapse; margin-block: 1em; font-size: calc(.95 * ${({ theme }) => theme.size}); }
+        .pc-markdown th, .pc-markdown td { border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 20%, ${({ theme }) => theme.paper}); padding: .35em .7em; text-align: start; vertical-align: top; }
+        .pc-markdown th { background: color-mix(in srgb, ${({ theme }) => theme.ink} 5%, ${({ theme }) => theme.paper}); }
+        .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.4em; }
+        .pc-markdown li { margin-block: .3em; }
         .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }
         .pc-theorem { counter-increment: theorem; }
         .pc-theorem::before { content: 'Theorem ' counter(theorem) '.'; font-weight: bold; margin-inline-end: .5em; }
@@ -58,6 +70,52 @@ export class $Project extends $Section {
     protected override $Define(): void {
         super.$Define();
         this.classes.add(this, 'pc-project');
+    }
+
+    // A PART OF THE PROJECT FOLDS, Doug, 2026-11-16: "think about making a way to show and hide or select so we
+    // don't need to read everything at once" — the browser's own details, closed until chosen, its summary the
+    // section's heading.
+    override write(): ReactNode {
+        return (
+            <details>
+                <summary>{this.canonical === undefined ? null : html.copy(this.canonical.text)}</summary>
+                {super.write()}
+            </details>
+        );
+    }
+}
+
+// THE DOCUMENT RENDERS VERBATIM, Doug, 2026-11-16: "This is what it looks like. Read the markdown. Render it
+// like that. I said verbatim" — the chapter's appended markdown parsed by marked, the package's own dependency,
+// and drawn as the document renders: the bold lead-ins, the tables, the lists, the document's own title.
+export class $Markdown extends $Paragraph {
+    $identifier = '';
+
+    get append(): $Append | undefined {
+        return this.chapter?.annotations.find($Append).find(append => append.$identifier === this.$identifier);
+    }
+
+    override write(): ReactNode {
+        const append = this.append;
+        if (append === undefined) return null;
+        const rendered = marked.parse(html.copy(append.text), { async: false });
+        return <div dangerouslySetInnerHTML={{ __html: rendered }} />;
+    }
+
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pc-markdown');
+    }
+}
+
+// THE INTRODUCTION IS THE PROJECT SIDE'S ONE CUE, Doug, 2026-11-16: "The dark line is losing the minimal...
+// Perhaps it might have a short introduction, so subtle UX cue that is better than the one you have, and after
+// the intro, then it might have specification. That is the key word!!" — a short paragraph shown only when the
+// content is flipped, quiet and italic; the dark rule is struck.
+export class $Introduction extends $Paragraph {
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pc-introduction');
     }
 }
 
@@ -90,6 +148,8 @@ export class $Proof extends $Paragraph {
 
 export const Content = $($Content);
 export const Project = $($Project);
+export const Introduction = $($Introduction);
+export const Markdown = $($Markdown);
 export const Interpolated = $($Interpolated);
 export const Theorem = $($Theorem);
 export const Proof = $($Proof);
