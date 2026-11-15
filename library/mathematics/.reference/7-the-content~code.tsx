@@ -30,13 +30,13 @@ export class $Content extends $Format {
     // the title and it has no label. One can just explore" — a glyph of two stacked sheets; the back sheet
     // fills while the project side shows.
     override style = selection.div`
-        position: relative;
         counter-reset: theorem;
-        .pc-content { position: absolute; inset-block-start: .4rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
+        .pd-chapter { position: relative; }
+        .pc-content { position: absolute; inset-block-start: 0; inset-inline-end: 0; z-index: 2; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
-        .pc-flip { display: inline-block; inline-size: .7em; block-size: .85em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 60%, ${({ theme }) => theme.paper}); background: ${({ theme }) => theme.paper}; box-shadow: .3em .3em 0 -1.5px ${({ theme }) => theme.paper}, .3em .3em 0 0 color-mix(in srgb, ${({ theme }) => theme.ink} 60%, ${({ theme }) => theme.paper}); transition: background .15s ease, box-shadow .15s ease; }
+        .pc-flip { display: inline-block; inline-size: .9em; block-size: .9em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); border-radius: 2px; background: ${({ theme }) => theme.paper}; transition: background .15s ease; }
         .pc-content:hover .pc-flip { border-color: ${({ theme }) => theme.ink}; }
-        .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); box-shadow: .3em .3em 0 -1.5px ${({ theme }) => theme.paper}, .3em .3em 0 0 color-mix(in srgb, ${({ theme }) => theme.ink} 30%, ${({ theme }) => theme.paper}); }
+        .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
         .pc-project { display: none; }
         &:has(#pc-flip:checked) .pc-project { display: block; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }

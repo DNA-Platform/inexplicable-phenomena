@@ -2,18 +2,16 @@ import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Book, $Chapter, $Cover, Paginated, Theme } from '@dna-platform/public';
 import { LibraryTheme } from './2-the-theme~code.tsx';
-import { Byline as byline, RunningHead as runningHead } from './3-the-masthead-and-the-byline~code.tsx';
 import { $Navigation, Front as front, Navigated as navigated } from './4-the-faces~code.tsx';
 
+// THE RUNNING HEAD AND THE BYLINE ARE NOT DRAWN, Doug, 2026-11-16: "Why does every chapter need a title and
+// author?!? Like why are you not making it a chapter? Isn't this what the TOC is for?" — the book's title and
+// author live on the front and in the table of contents; a chapter's page is the chapter and its navigation.
 export class $TheLibrary extends $Book {
     override write(): ReactNode {
-        const RunningHead = $(runningHead);
-        const Byline = $(byline);
         const Front = $(front);
         return (
             <>
-                <RunningHead chapter={this.cover} />
-                <Byline chapter={this.cover} />
                 <Front chapter={this.cover} />
                 {super.write()}
             </>
