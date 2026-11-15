@@ -6,47 +6,40 @@ import { $Format, $Paragraph, $Section, $Word } from '@dna-platform/public';
 // 2026-11-16: the content of a chapter, starting below the title, like a section. On the front the DELIVERABLE —
 // the object, the result of the effort of the team, looking like what it is, a familiar math textbook chapter.
 // On the back the PROJECT — the formal representation of the work: the statement of work, the progress, a plan,
-// a discussion — the talk page behind a wikipedia article. The toggle's feel is the team's to find; the project
-// side carries the formal visual language, attribution and references across sides. The names Content and the
-// side labels are PROXIES until he keeps them. The content is a format said of its chapter: its note draws the
-// two tabs in place, and its style wraps the chapter, so the checked side rules what shows — everything after
-// the tabs that is not the project is the deliverable.
+// a discussion — the talk page behind a wikipedia article, and nothing is mandatory. The project side carries
+// the formal visual language. The name Content is a PROXY until he keeps it. The content is a format said of
+// its chapter: its note draws the one unlabelled toggle in place, and its style wraps the chapter, so the
+// checked control rules what shows — everything that is not the project is the deliverable.
 export class $Content extends $Format {
     $canonical = 'deliverable';
 
     override note(): ReactNode {
         return (
-            <div className="pc-content">
-                <span className="pc-mode">
-                    <input
-                        type="radio"
-                        name="pc-side"
-                        id="pc-side-deliverable"
-                        defaultChecked={this.$canonical === 'deliverable'}
-                    />
-                    <label htmlFor="pc-side-deliverable">deliverable</label>
-                </span>
-                <span className="pc-mode">
-                    <input
-                        type="radio"
-                        name="pc-side"
-                        id="pc-side-project"
-                        defaultChecked={this.$canonical === 'project'}
-                    />
-                    <label htmlFor="pc-side-project">project</label>
-                </span>
-            </div>
+            <label className="pc-content">
+                <input
+                    type="checkbox"
+                    id="pc-flip"
+                    defaultChecked={this.$canonical === 'project'}
+                />
+                <span className="pc-flip" />
+            </label>
         );
     }
 
+    // ONE UNLABELLED CONTROL TO THE RIGHT OF THE TITLE, Doug, 2026-11-16: "how about a toggle to the right of
+    // the title and it has no label. One can just explore" — a glyph of two stacked sheets; the back sheet
+    // fills while the project side shows.
     override style = selection.div`
+        position: relative;
         counter-reset: theorem;
-        .pc-content { display: flex; gap: .25em; margin-block: ${({ theme }) => theme.space} 0; border-block-end: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 25%, ${({ theme }) => theme.paper}); }
-        .pc-mode input { position: absolute; opacity: 0; pointer-events: none; }
-        .pc-mode label { display: inline-block; cursor: pointer; padding: .15em .9em; font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .15em; text-transform: uppercase; opacity: .55; border: 1px solid transparent; }
-        .pc-mode input:checked + label { opacity: 1; font-weight: bold; border-color: color-mix(in srgb, ${({ theme }) => theme.ink} 25%, ${({ theme }) => theme.paper}); border-block-end-color: ${({ theme }) => theme.paper}; margin-block-end: -1px; background: ${({ theme }) => theme.paper}; }
-        &:has(#pc-side-deliverable:checked) .pc-project { display: none; }
-        &:has(#pc-side-project:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
+        .pc-content { position: absolute; inset-block-start: .4rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
+        .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
+        .pc-flip { display: inline-block; inline-size: .7em; block-size: .85em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 60%, ${({ theme }) => theme.paper}); background: ${({ theme }) => theme.paper}; box-shadow: .3em .3em 0 -1.5px ${({ theme }) => theme.paper}, .3em .3em 0 0 color-mix(in srgb, ${({ theme }) => theme.ink} 60%, ${({ theme }) => theme.paper}); transition: background .15s ease, box-shadow .15s ease; }
+        .pc-content:hover .pc-flip { border-color: ${({ theme }) => theme.ink}; }
+        .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); box-shadow: .3em .3em 0 -1.5px ${({ theme }) => theme.paper}, .3em .3em 0 0 color-mix(in srgb, ${({ theme }) => theme.ink} 30%, ${({ theme }) => theme.paper}); }
+        .pc-project { display: none; }
+        &:has(#pc-flip:checked) .pc-project { display: block; }
+        &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         .pc-project { font-size: calc(.93 * ${({ theme }) => theme.size}); border-inline-start: 3px double color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}); padding-inline-start: 1.25rem; }
         .pc-project .pd-heading + .pd-paragraph { font-size: calc(0.75 * ${({ theme }) => theme.size}); letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
         .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }

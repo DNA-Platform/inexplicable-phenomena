@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { ElementType, ReactNode } from 'react';
 import { $, $check, selection } from '@dna-platform/chemistry';
-import { $Annotation, $Chapter, $Cover, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Word as word, html, specify } from '@dna-platform/public';
+import { $Annotation, $Chapter, $Cover, $Format, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Word as word, html, specify } from '@dna-platform/public';
 
 // A TAGLINE IS ONE LINE OF WHAT THE BOOK IS, said of a cover as its author and its subject are, written in the cover
 // file and drawn on the front; the synopsis is the block, and has its own page. Doug, 2026-11-12, Sprint 127: "You
@@ -96,27 +96,89 @@ export class $Navigation extends $Paragraph {
         this.classes.add(this, 'pd-navigation');
     }
 
-    override write(): ReactNode {
+    // THE WORDS ARE MADE AT THE BOND, not in write(): Previous and Next take their references in their own bond,
+    // and the bond reaches only the authored tree, so a word made at render stood on the page as plain text, seen
+    // on the bound textbook page on 2026-11-16, Contents the only link of the three. At an edge the package
+    // answers the chapter itself, never nothing, and Next means it as a Self; the theme keeps that edge's place
+    // and hides it.
+    protected override $Bound(): void {
         const chapter = this.chapter;
         const book = this.book;
-        if (chapter === undefined || book === undefined) return null;
-        const Previous = $(previousWord);
-        const Next = $(nextWord);
-        const Word = $(word);
-        const Reference = $(reference);
-        const table = book.table?.canonical;
-        const previous = chapter.previous;
-        const next = chapter.next;
-        return (
-            <>
-                {previous === undefined ? <span className="pd-previous" /> : <Previous>{previous.canonical?.name}</Previous>}
+        if (chapter !== undefined && book !== undefined && [...this.text].length === 0) {
+            const Previous = $(previousWord);
+            const Next = $(nextWord);
+            const Word = $(word);
+            const Reference = $(reference);
+            const table = book.table?.canonical;
+            // THE THREE PLACES ARE GLYPHS, Doug, 2026-11-16: "left arrow, square, right arrow for the next previous
+            // and table. Visually engaging." — no titles in the places; the arrow looks back, the square is the
+            // table of contents, the arrow looks on.
+            this.text.add(this,
+                <Previous>←</Previous>,
                 <Word>
                     <Reference>{table?.means?.identifier}</Reference>
-                    Contents
-                </Word>
-                {next === undefined ? <span className="pd-next" /> : <Next>{next.canonical?.name}</Next>}
-            </>
+                    ■
+                </Word>,
+                <Next>→</Next>
+            );
+        }
+        super.$Bound();
+    }
+}
+
+// NAVIGATED, said of a chapter by its book, the seam of 2026-11-16: a format whose layer wraps the chapter's
+// element with the navigation above it and below it. The two lines are the format's own text, so the chapter's
+// bond reaches them and their words take their links; the layer draws those two instances and makes nothing at
+// render. A format's layer stands outside the chapter's element, which Paginated hides by a class on the element
+// itself, so the layer hides itself whenever its page is not the open one. The book says it of every chapter but
+// the cover, whose page is the front, and leaves alone a chapter that already says Navigation in its own text.
+// PROXY name; reads "this chapter is Navigated".
+export class $Navigated extends $Format {
+    specification = new NavigatedSpecification();
+    protected _layer?: ElementType;
+    override style = selection.div`
+        &:not(:has(.pa-page.pa-open)) { display: none; }
+    `;
+
+    protected override $Define(): void {
+        super.$Define();
+        const Navigation = $(navigation);
+        this.text.add(this,
+            <Navigation />,
+            <Navigation />
         );
+    }
+
+    override defines(writing: $Writing): void {
+        writing.classes.add(this, 'pa-navigated');
+        writing.containers.add(this, this.layer);
+    }
+
+    override erase(writing: $Writing): void {
+        writing.containers.revert(this);
+        writing.classes.revert(this);
+    }
+
+    protected get layer(): ElementType {
+        if (this._layer !== undefined) return this._layer;
+        const Style = this.style as ElementType;
+        const [above, below] = [...this.text];
+        const Above = $(above);
+        const Below = $(below);
+        return this._layer = ({ className, children }: { className?: string; children?: ReactNode }) => (
+            <Style className={className}>
+                <Above />
+                {children}
+                <Below />
+            </Style>
+        );
+    }
+}
+
+export class NavigatedSpecification extends AnnotationSpecification {
+    @specify('navigated is said of a chapter')
+    $saidOfAChapter(writing: $Writing): void {
+        $check(writing instanceof $Chapter, 'navigated is said of a chapter, and this is not one');
     }
 }
 
@@ -175,3 +237,5 @@ const frontTagline = FrontTagline;
 const frontImprint = FrontImprint;
 export const Front = $($Front);
 export const Navigation = $($Navigation);
+const navigation = Navigation;
+export const Navigated = $($Navigated);

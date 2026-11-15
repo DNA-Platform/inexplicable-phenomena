@@ -1,12 +1,10 @@
 import { Append, Chapter, Heading, Line, List, Means, Paragraph, Part, Sentence, Table, Title, Word } from '@dna-platform/public';
 import { Content, Interpolated, Project, Proof, Theorem } from '../../.reference/7-the-content~code.tsx';
-import { Navigation } from '../../../.reference/4-the-faces~code.tsx';
 
 export default () => (
     <Chapter>
         <Part>The Objects</Part>
         <Title>[[ The Symmetry of Arithmetic ]]</Title>
-        <Navigation />
         <Content />
         <Paragraph>
             The first object of the textbook: X, a single object added to first-order Peano arithmetic,
@@ -75,14 +73,6 @@ export default () => (
             stated so that it can fail: if Peano arithmetic refutes Goldbach, the theory is inconsistent
             and is withdrawn.
         </Paragraph>
-        <Project>
-            <Heading>The Project</Heading>
-            <Paragraph>
-                Doug — opened 15 November 2026. The deliverable is the chapter on the other side. The plan
-                stands with the author until teammates are assigned; the discussion stands open. The two
-                documents of the project follow verbatim: the statement of work, and the progress.
-            </Paragraph>
-        </Project>
         <Project>
             <Heading>The Symmetry of Arithmetic: Statement of Work</Heading>
             <Paragraph>
@@ -893,7 +883,6 @@ export default () => (
                 infinity in <Means>$[[ Zero and Infinity ]]( Arithmetic Notebook / Zero and Infinity )</Means>.
             </Paragraph>
         </Project>
-        <Navigation />
         <Append
             identifier="statement-of-work"
             type=".md"

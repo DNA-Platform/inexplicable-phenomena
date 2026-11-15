@@ -22,20 +22,24 @@ export class $LibraryTheme extends $Theme {
         return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate(), this.navigation()];
     }
 
-    // THE NAVIGATION, one line of apparatus at the top and bottom of a chapter: previous on the left looking
-    // back, Contents in the middle on the table's address, next on the right looking on; an empty edge keeps
-    // its place so the line holds. Doug, 2026-11-16: "We need to be able to move easily."
+    // THE NAVIGATION, one line of apparatus at the top and bottom of a chapter, drawn around the chapter by the book's
+    // Navigated format: three glyphs, the arrow looking back on the left, the square for the table of contents in the
+    // middle, the arrow looking on at the right, on Doug's "left arrow, square, right arrow for the next previous and
+    // table. Visually engaging" (2026-11-16); a self edge, the first or the last chapter's, keeps its place unseen.
+    // Doug, the same day: "We need to be able to move easily."
     protected navigation(): RuleSet {
         return css`
             .pd-navigation { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .12em; text-transform: uppercase; opacity: .8; margin-block: ${({ theme }) => theme.space}; }
-            .pd-navigation > * { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-            .pd-navigation .pd-previous { text-align: start; }
-            .pd-navigation > .pd-word { text-align: center; flex: 0 0 auto; }
-            .pd-navigation .pd-next { text-align: end; }
+            .pd-navigation > * { flex: 1; min-width: 0; white-space: nowrap; }
+            .pd-navigation > :nth-child(1) { text-align: start; }
+            .pd-navigation > :nth-child(2) { text-align: center; flex: 0 0 auto; }
+            .pd-navigation > :nth-child(3) { text-align: end; }
+            .pd-navigation :is(.pa-self-reference, a:has(> .pa-self-reference)) { visibility: hidden; }
             .pd-navigation a { text-decoration: none; color: inherit; }
-            .pd-navigation a:hover .pd-word, .pd-navigation a:hover { text-decoration: underline; text-underline-offset: .2em; }
-            .pd-navigation .pd-previous .pd-word::before { content: '← '; }
-            .pd-navigation .pd-next .pd-word::after { content: ' →'; }
+            .pd-navigation .pd-word { font-size: calc(1.3 * ${({ theme }) => theme.size}); line-height: 1; letter-spacing: 0; opacity: .6; transition: opacity .15s ease; }
+            .pd-navigation > :nth-child(2) .pd-word { font-size: ${({ theme }) => theme.size}; }
+            .pd-navigation a:hover .pd-word { opacity: 1; }
+            .pd-navigation { margin-block: calc(${({ theme }) => theme.space} / 2); }
         `;
     }
 
@@ -95,8 +99,9 @@ export class $LibraryTheme extends $Theme {
 
     protected levels(): RuleSet {
         return css`
-            .pd-book { margin-block: ${({ theme }) => theme.space}; counter-reset: chapter equation; }
-            .pd-chapter { margin-block: calc(2 * ${({ theme }) => theme.space}); scroll-margin-block-start: ${({ theme }) => theme.space}; }
+            .pd-book { margin-block: calc(${({ theme }) => theme.space} / 2) ${({ theme }) => theme.space}; counter-reset: chapter equation; }
+            .pd-chapter { margin-block: ${({ theme }) => theme.space}; scroll-margin-block-start: ${({ theme }) => theme.space}; }
+            .pa-page.pa-open { margin-block-start: calc(${({ theme }) => theme.space} / 2); }
             .pd-section { margin-block: calc(1.5 * ${({ theme }) => theme.space}); border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 12%, ${({ theme }) => theme.paper}); padding-block-start: ${({ theme }) => theme.space}; }
             .pd-paragraph { margin-block: ${({ theme }) => theme.space}; }
             .pa-item { margin-block: calc(${({ theme }) => theme.space} / 4); }
@@ -135,21 +140,28 @@ export class $LibraryTheme extends $Theme {
 
     protected apparatus(): RuleSet {
         return css`
+            /* THE HEADER IS ONE COMPACT BAND, Doug, 2026-11-16: "You need to organize the header in the theme. It
+               takes up too much space and isn't used. Look how far down the title of the chapter is. Wait are you
+               making every chapter like a cover?!?" — the running head a bordered line with no paragraph margin, the
+               byline one small line beneath it, author and subject side by side, not a title block of rows. */
             .pd-running-head {
-                font-size: calc(0.75 * ${({ theme }) => theme.size});
-                letter-spacing: 0.12em;
+                font-size: calc(0.7 * ${({ theme }) => theme.size});
+                letter-spacing: 0.08em;
                 text-transform: uppercase;
-                padding-block-end: calc(${({ theme }) => theme.space} / 2);
+                margin-block: 0;
+                padding-block-end: calc(${({ theme }) => theme.space} / 4);
                 border-block-end: 1px solid ${({ theme }) => theme.ink};
             }
             .pd-byline {
-                display: grid;
-                grid-template-columns: max-content 1fr;
-                column-gap: ${({ theme }) => theme.space};
-                row-gap: calc(${({ theme }) => theme.space} / 4);
+                display: flex;
+                flex-wrap: wrap;
                 align-items: baseline;
-                margin-block: ${({ theme }) => theme.space} 0;
+                column-gap: .5em;
+                row-gap: 0;
+                margin-block: calc(${({ theme }) => theme.space} / 4) 0;
+                font-size: calc(0.75 * ${({ theme }) => theme.size});
             }
+            .pd-byline .pd-label + .pd-word { margin-inline-end: calc(${({ theme }) => theme.space} / 2); }
         `;
     }
 
