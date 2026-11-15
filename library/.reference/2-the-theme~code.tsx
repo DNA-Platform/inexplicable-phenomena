@@ -29,17 +29,14 @@ export class $LibraryTheme extends $Theme {
     // Doug, the same day: "We need to be able to move easily."
     protected navigation(): RuleSet {
         return css`
-            .pd-navigation { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .12em; text-transform: uppercase; opacity: .8; margin-block: ${({ theme }) => theme.space}; }
-            .pd-navigation > * { flex: 1; min-width: 0; white-space: nowrap; }
-            .pd-navigation > :nth-child(1) { text-align: start; }
-            .pd-navigation > :nth-child(2) { text-align: center; flex: 0 0 auto; }
-            .pd-navigation > :nth-child(3) { text-align: end; }
+            .pd-navigation { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-block: calc(${({ theme }) => theme.space} / 2); }
+            .pd-navigation > :nth-child(2) { margin-inline: auto; }
             .pd-navigation :is(.pa-self-reference, a:has(> .pa-self-reference)) { visibility: hidden; }
-            .pd-navigation a { text-decoration: none; color: inherit; }
-            .pd-navigation .pd-word { font-size: calc(1.3 * ${({ theme }) => theme.size}); line-height: 1; letter-spacing: 0; opacity: .6; transition: opacity .15s ease; }
+            .pd-navigation a { display: inline-flex; align-items: center; justify-content: center; inline-size: 2.4rem; block-size: 2.4rem; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}); border-radius: 50%; text-decoration: none; background: ${({ theme }) => theme.paper}; transition: border-color .15s ease, background .15s ease; }
+            .pd-navigation a:hover { border-color: ${({ theme }) => theme.ink}; background: color-mix(in srgb, ${({ theme }) => theme.ink} 7%, ${({ theme }) => theme.paper}); }
+            .pd-navigation .pd-word { font-size: calc(1.2 * ${({ theme }) => theme.size}); line-height: 1; color: ${({ theme }) => theme.ink}; opacity: .8; transition: opacity .15s ease; }
             .pd-navigation > :nth-child(2) .pd-word { font-size: ${({ theme }) => theme.size}; }
             .pd-navigation a:hover .pd-word { opacity: 1; }
-            .pd-navigation { margin-block: calc(${({ theme }) => theme.space} / 2); }
         `;
     }
 
@@ -109,6 +106,7 @@ export class $LibraryTheme extends $Theme {
             .pd-title { font-size: calc(1.5 * ${({ theme }) => theme.size}); font-weight: bold; margin-block-end: ${({ theme }) => theme.space}; }
             .pd-heading { font-weight: bold; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; }
             .pd-section > .pd-heading { margin-block-start: 0; }
+            .pd-section:not(:has(.pd-paragraph:not(.pa-parenthetical))):not(:has(.pd-figure)) { display: none; }
             .pd-line { white-space: pre-wrap; }
             .pd-word { overflow-wrap: break-word; }
             .pd-canonical.pd-chapter { counter-increment: chapter; }

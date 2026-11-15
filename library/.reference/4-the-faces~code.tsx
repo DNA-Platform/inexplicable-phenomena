@@ -110,9 +110,11 @@ export class $Navigation extends $Paragraph {
             const Word = $(word);
             const Reference = $(reference);
             const table = book.table?.canonical;
-            // THE THREE PLACES ARE GLYPHS, Doug, 2026-11-16: "left arrow, square, right arrow for the next previous
-            // and table. Visually engaging." — no titles in the places; the arrow looks back, the square is the
-            // table of contents, the arrow looks on.
+            // THE THREE PLACES ARE GLYPHS AND MUST READ AS NAVIGATION, Doug, 2026-11-16: "left arrow, square,
+            // right arrow for the next previous and table. Visually engaging" — and, on seeing the first faint
+            // dress, "I don't see my arrows and square in middle as my navigation to chapters and to the table".
+            // The theme dresses the three as buttons; the arrow looks back, the square is the table of contents,
+            // the arrow looks on.
             this.text.add(this,
                 <Previous>←</Previous>,
                 <Word>

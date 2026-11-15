@@ -74,12 +74,6 @@ export default () => (
             and is withdrawn.
         </Paragraph>
         <Project>
-            <Heading>The Symmetry of Arithmetic: Statement of Work</Heading>
-            <Paragraph>
-                Nov 15, 2026 · Doug
-            </Paragraph>
-        </Project>
-        <Project>
             <Heading>Purpose</Heading>
             <Paragraph>
                 This document specifies an addition to the formalism of first-order Peano arithmetic. The
@@ -785,10 +779,7 @@ export default () => (
             </Paragraph>
         </Project>
         <Project>
-            <Heading>The Symmetry of Arithmetic: Progress</Heading>
-            <Paragraph>
-                Nov 15, 2026 · Doug
-            </Paragraph>
+            <Heading>Progress</Heading>
             <Paragraph>
                 This records progress on the project stated in The Symmetry of Arithmetic: Statement of Work:
                 what is left to be done, what has been computed, what is still to be located, and the
