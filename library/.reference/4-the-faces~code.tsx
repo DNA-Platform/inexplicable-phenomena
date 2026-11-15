@@ -116,13 +116,16 @@ export class $Navigation extends $Paragraph {
             // catalogues to go straight to a book", and on sight: "ALL WHITE OUTLINE characters!! Just three
             // characters. left triangle square (not filled in!!!) right arrow. Grey it but don't hide it. Don't
             // make it take up the whole line" — ◁ □ ▷, outline glyphs, solid grey, a cluster of their own width.
+            // THE SMALL FAMILY ALIGNS, Doug, 2026-11-16: "Why can't you find three characters that align and I
+            // have asked for all arrows to be there always" — ◃ ▫ ▹, the white small triangles and square cut as
+            // one family, and no edge is ever hidden.
             this.text.add(this,
-                <Previous>◁</Previous>,
+                <Previous>◃</Previous>,
                 <Word>
                     <Reference>{table?.means?.identifier}</Reference>
-                    □
+                    ▫
                 </Word>,
-                <Next>▷</Next>
+                <Next>▹</Next>
             );
         }
         super.$Bound();
