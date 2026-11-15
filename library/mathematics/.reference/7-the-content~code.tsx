@@ -2,16 +2,17 @@ import { ReactNode } from 'react';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Format, $Paragraph, $Section, $Word } from '@dna-platform/public';
 
-// THE CONTENT IS A THING WITH A FRONT AND A BACK, Doug, 2026-11-15: "on the back is a specification, and on the
-// front is the identification. It's like the two sides of a wikipedia page." Not a type of chapter; the design of
-// the abstraction applies to anything written in any book, tested here on the math textbook, 2026-11-16. The names
-// Content and Specification collide with the base library's own words and every name here is a PROXY until the
-// thing moves up. The content is a format said of its chapter: its note draws the bar of modes in place, and its
-// style wraps the chapter, so the checked mode rules the sides. It opens in the object mode — the front — with the
-// canonical side overridable; the toggle is played as a flip in place, labels over hidden radio inputs and no
-// script — whether the real movement is this flip or a turn of the book is still his to rule.
+// THE CONTENT IS A THING WITH A FRONT AND A BACK, Doug, 2026-11-15 and respecified from his answers of
+// 2026-11-16: the content of a chapter, starting below the title, like a section. On the front the DELIVERABLE —
+// the object, the result of the effort of the team, looking like what it is, a familiar math textbook chapter.
+// On the back the PROJECT — the formal representation of the work: the statement of work, the progress, a plan,
+// a discussion — the talk page behind a wikipedia article. The toggle's feel is the team's to find; the project
+// side carries the formal visual language, attribution and references across sides. The names Content and the
+// side labels are PROXIES until he keeps them. The content is a format said of its chapter: its note draws the
+// two tabs in place, and its style wraps the chapter, so the checked side rules what shows — everything after
+// the tabs that is not the project is the deliverable.
 export class $Content extends $Format {
-    $canonical = 'identification';
+    $canonical = 'deliverable';
 
     override note(): ReactNode {
         return (
@@ -19,38 +20,20 @@ export class $Content extends $Format {
                 <span className="pc-mode">
                     <input
                         type="radio"
-                        name="pc-mode"
-                        id="pc-mode-identification"
-                        defaultChecked={this.$canonical === 'identification'}
+                        name="pc-side"
+                        id="pc-side-deliverable"
+                        defaultChecked={this.$canonical === 'deliverable'}
                     />
-                    <label htmlFor="pc-mode-identification">identification</label>
+                    <label htmlFor="pc-side-deliverable">deliverable</label>
                 </span>
                 <span className="pc-mode">
                     <input
                         type="radio"
-                        name="pc-mode"
-                        id="pc-mode-specification"
-                        defaultChecked={this.$canonical === 'specification'}
+                        name="pc-side"
+                        id="pc-side-project"
+                        defaultChecked={this.$canonical === 'project'}
                     />
-                    <label htmlFor="pc-mode-specification">specification</label>
-                </span>
-                <span className="pc-mode">
-                    <input
-                        type="radio"
-                        name="pc-mode"
-                        id="pc-mode-progress"
-                        defaultChecked={this.$canonical === 'progress'}
-                    />
-                    <label htmlFor="pc-mode-progress">progress</label>
-                </span>
-                <span className="pc-mode">
-                    <input
-                        type="radio"
-                        name="pc-mode"
-                        id="pc-mode-together"
-                        defaultChecked={this.$canonical === 'together'}
-                    />
-                    <label htmlFor="pc-mode-together">together</label>
+                    <label htmlFor="pc-side-project">project</label>
                 </span>
             </div>
         );
@@ -58,17 +41,14 @@ export class $Content extends $Format {
 
     override style = selection.div`
         counter-reset: theorem;
-        .pc-content { display: flex; gap: 1.75em; margin-block: ${({ theme }) => theme.space}; }
+        .pc-content { display: flex; gap: .25em; margin-block: ${({ theme }) => theme.space} 0; border-block-end: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 25%, ${({ theme }) => theme.paper}); }
         .pc-mode input { position: absolute; opacity: 0; pointer-events: none; }
-        .pc-mode label { cursor: pointer; font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .15em; text-transform: uppercase; opacity: .55; }
-        .pc-mode input:checked + label { opacity: 1; font-weight: bold; border-block-end: 2px solid currentColor; }
-        &:has(#pc-mode-identification:checked) .pc-specification { display: none; }
-        &:has(#pc-mode-identification:checked) .pc-progress { display: none; }
-        &:has(#pc-mode-specification:checked) .pc-identification { display: none; }
-        &:has(#pc-mode-specification:checked) .pc-progress { display: none; }
-        &:has(#pc-mode-progress:checked) .pc-identification { display: none; }
-        &:has(#pc-mode-progress:checked) .pc-specification { display: none; }
-        &:has(#pc-mode-together:checked) .pc-identification { display: none; }
+        .pc-mode label { display: inline-block; cursor: pointer; padding: .15em .9em; font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .15em; text-transform: uppercase; opacity: .55; border: 1px solid transparent; }
+        .pc-mode input:checked + label { opacity: 1; font-weight: bold; border-color: color-mix(in srgb, ${({ theme }) => theme.ink} 25%, ${({ theme }) => theme.paper}); border-block-end-color: ${({ theme }) => theme.paper}; margin-block-end: -1px; background: ${({ theme }) => theme.paper}; }
+        &:has(#pc-side-deliverable:checked) .pc-project { display: none; }
+        &:has(#pc-side-project:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
+        .pc-project { font-size: calc(.93 * ${({ theme }) => theme.size}); border-inline-start: 3px double color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}); padding-inline-start: 1.25rem; }
+        .pc-project .pd-heading + .pd-paragraph { font-size: calc(0.75 * ${({ theme }) => theme.size}); letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
         .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }
         .pc-theorem { counter-increment: theorem; }
         .pc-theorem::before { content: 'Theorem ' counter(theorem) '.'; font-weight: bold; margin-inline-end: .5em; }
@@ -76,28 +56,15 @@ export class $Content extends $Format {
     `;
 }
 
-// THE SIDES, the parts of the object model said back in the chapter: the identification on the front, the
-// specification on the back, and the progress of the content's project — Doug, 2026-11-15: "progress can be more
-// of a narrative of independent things, which perhaps refer to each other", shown alone or on top of the
-// specification. Each side is a section of the chapter, its heading its name.
-export class $Identification extends $Section {
+// THE PROJECT IS THE BACK, Doug's answers, 2026-11-16: the specification is part of the project, an expression
+// of a statement of work identifying the deliverable; the progress is a narrative of how the project has been
+// going, its entries associated with an author; a plan may be expressed with teammates assigned, all to the
+// author by default as read from the cover; a discussion may stand there. The parts beyond the specification
+// are optional. One section of the chapter, the formal register.
+export class $Project extends $Section {
     protected override $Define(): void {
         super.$Define();
-        this.classes.add(this, 'pc-identification');
-    }
-}
-
-export class $Specification extends $Section {
-    protected override $Define(): void {
-        super.$Define();
-        this.classes.add(this, 'pc-specification');
-    }
-}
-
-export class $Progress extends $Section {
-    protected override $Define(): void {
-        super.$Define();
-        this.classes.add(this, 'pc-progress');
+        this.classes.add(this, 'pc-project');
     }
 }
 
@@ -111,9 +78,9 @@ export class $Interpolated extends $Word {
     }
 }
 
-// THE MATH TEXTBOOK'S SPECIALIZATIONS, Doug, 2026-11-16: "You can specialize them in components for math textbooks
-// specifically if you need a bit more structure" — a theorem counted within the chapter and a proof labelled, the
-// general content above knowing nothing of either.
+// THE MATH TEXTBOOK'S DELIVERABLE COMPONENTS, Doug, 2026-11-16: components divide in two families — those that
+// express the subject of the project and those that present the deliverable. These present: a theorem counted
+// within the chapter and a proof labelled, the familiar dress of a math textbook.
 export class $Theorem extends $Paragraph {
     protected override $Define(): void {
         super.$Define();
@@ -129,9 +96,7 @@ export class $Proof extends $Paragraph {
 }
 
 export const Content = $($Content);
-export const Identification = $($Identification);
-export const Specification = $($Specification);
-export const Progress = $($Progress);
+export const Project = $($Project);
 export const Interpolated = $($Interpolated);
 export const Theorem = $($Theorem);
 export const Proof = $($Proof);

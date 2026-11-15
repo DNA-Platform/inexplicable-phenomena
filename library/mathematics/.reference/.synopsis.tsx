@@ -17,9 +17,10 @@ export default () => (
             a title with a numbered list of lists, items cited by number, the specification and the thing it
             specifies moving back and forth, and never thrown away, a change made by changing the specification —
             written in its own form on my rulings of 12 November 2026; and then the content of 15 November,
-            the thing that holds a specification on its back and an identification on its front, toggled, with
-            a purpose, a project, the project's progress and an author on every part, its object model said
-            back in its chapter, awaiting my corrections.
+            the thing whose front is the deliverable — the result of the effort of the team, the familiar
+            chapter — and whose back is the project: the statement of work, the progress, a plan, a
+            discussion, an author on every part, its object model respecified in its chapter from my answers
+            of 16 November.
         </Paragraph>
     </Chapter>
 );

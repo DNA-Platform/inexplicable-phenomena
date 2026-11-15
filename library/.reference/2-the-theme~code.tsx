@@ -19,7 +19,24 @@ export class $LibraryTheme extends $Theme {
     style: ElementType = selection.div`${this.parts()}`;
 
     protected parts(): RuleSet[] {
-        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate()];
+        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate(), this.navigation()];
+    }
+
+    // THE NAVIGATION, one line of apparatus at the top and bottom of a chapter: previous on the left looking
+    // back, Contents in the middle on the table's address, next on the right looking on; an empty edge keeps
+    // its place so the line holds. Doug, 2026-11-16: "We need to be able to move easily."
+    protected navigation(): RuleSet {
+        return css`
+            .pd-navigation { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .12em; text-transform: uppercase; opacity: .8; margin-block: ${({ theme }) => theme.space}; }
+            .pd-navigation > * { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .pd-navigation .pd-previous { text-align: start; }
+            .pd-navigation > .pd-word { text-align: center; flex: 0 0 auto; }
+            .pd-navigation .pd-next { text-align: end; }
+            .pd-navigation a { text-decoration: none; color: inherit; }
+            .pd-navigation a:hover .pd-word, .pd-navigation a:hover { text-decoration: underline; text-underline-offset: .2em; }
+            .pd-navigation .pd-previous .pd-word::before { content: '← '; }
+            .pd-navigation .pd-next .pd-word::after { content: ' →'; }
+        `;
     }
 
     // THE FRONT, the cover drawn as a book, Sprint 125: shown alone while the cover is the open page, the running

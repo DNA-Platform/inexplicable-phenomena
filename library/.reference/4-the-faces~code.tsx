@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $, $check, selection } from '@dna-platform/chemistry';
-import { $Annotation, $Chapter, $Cover, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Reference as reference, html, specify } from '@dna-platform/public';
+import { $Annotation, $Chapter, $Cover, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Word as word, html, specify } from '@dna-platform/public';
 
 // A TAGLINE IS ONE LINE OF WHAT THE BOOK IS, said of a cover as its author and its subject are, written in the cover
 // file and drawn on the front; the synopsis is the block, and has its own page. Doug, 2026-11-12, Sprint 127: "You
@@ -84,6 +84,42 @@ export class $Front extends $Paragraph {
     }
 }
 
+// THE NAVIGATION, Doug, 2026-11-16: "You need next and table of contents and previous on the top and bottom of
+// every chapter in the library. We need to be able to move easily." One line of apparatus in the running head's
+// register: the previous chapter's title on the left, Contents in the middle on the table's address, the next
+// chapter's title on the right; an edge with no neighbour keeps its place empty so the line holds. Written into
+// a chapter for now; the seam that puts it on every chapter of the library awaits his word on the layer.
+// PROXY name. Styled by the theme as pd-navigation.
+export class $Navigation extends $Paragraph {
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pd-navigation');
+    }
+
+    override write(): ReactNode {
+        const chapter = this.chapter;
+        const book = this.book;
+        if (chapter === undefined || book === undefined) return null;
+        const Previous = $(previousWord);
+        const Next = $(nextWord);
+        const Word = $(word);
+        const Reference = $(reference);
+        const table = book.table?.canonical;
+        const previous = chapter.previous;
+        const next = chapter.next;
+        return (
+            <>
+                {previous === undefined ? <span className="pd-previous" /> : <Previous>{previous.canonical?.name}</Previous>}
+                <Word>
+                    <Reference>{table?.means?.identifier}</Reference>
+                    Contents
+                </Word>
+                {next === undefined ? <span className="pd-next" /> : <Next>{next.canonical?.name}</Next>}
+            </>
+        );
+    }
+}
+
 export class $LibraryCover extends $Cover {
     override style = selection.header`
         .pd-chapter.pa-cover { margin-block: ${({ theme }) => theme.space} calc(2 * ${({ theme }) => theme.space}); }
@@ -138,3 +174,4 @@ const frontAuthor = FrontAuthor;
 const frontTagline = FrontTagline;
 const frontImprint = FrontImprint;
 export const Front = $($Front);
+export const Navigation = $($Navigation);
