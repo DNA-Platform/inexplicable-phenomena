@@ -15,7 +15,7 @@ export default () => (
         <Paragraph>
             <List />
             <Line>1. The textbook</Line>
-            <Line>1.1 It holds the official results of arithmetic, stated and proved, and a result enters only as Doug has ruled it.</Line>
+            <Line>1.1 It holds the official results of arithmetic, stated and proved, and a result enters only as I have ruled it.</Line>
             <Line>1.2 Its official form is the algebraic one.</Line>
             <Line>1.3 Every chapter is titled by the thing it attempts to specify — a mathematical object as the starting point — and follows the entry (2).</Line>
         </Paragraph>

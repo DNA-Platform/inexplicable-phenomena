@@ -9,13 +9,13 @@ export default () => (
             task is left: the rewrite of the stale one into the six movements, the Gödel half carrying Neutrality,
             same consequence, the two-subject theorem, formal equality and the port from the Subjective Mathematics
             document, the geometry precedent, and references (Goldbach through Gödel, The Paper's Flow, 5 November
-            2026). The documents live in Doug's Claude project Semantic Reference Theory; this chapter says what each
+            2026). The documents live in my Claude project Semantic Reference Theory; this chapter says what each
             holds and where it stands.
         </Paragraph>
         <Section>
             <Heading>The Type of Result</Heading>
             <Paragraph>
-                The mechanism, saved on 29 October on his "Note this in the memory of this or in a document"
+                The mechanism, saved on 29 October on my "Note this in the memory of this or in a document"
                 (Goldbach through Gödel, The Surviving Sentence, 29 October 2026): a theorem at every finite stage
                 whose proof uses a property the limit lacks, the sentence surviving as an axiom; the identification
                 schema behind it; Lambert and the Riemann sphere as precedents. Current; its content
@@ -25,9 +25,9 @@ export default () => (
         <Section>
             <Heading>Subjective Mathematics</Heading>
             <Paragraph>
-                First written on 3 November as Mathematical Relativity: The Semantic Commitments Formalized, from his
+                First written on 3 November as Mathematical Relativity: The Semantic Commitments Formalized, from my
                 "Imagine translating everything in predicates in PA like Gödel" (Mathematical Relativity, 3 November
-                2026), then rewritten whole the same evening at his naming, "First off, call this Subjective
+                2026), then rewritten whole the same evening at my naming, "First off, call this Subjective
                 Mathematics cause why not" (The Objective Bias, 3 November 2026), every statement according to the
                 principles of SM, PA a code among codes and the parameter left off meaning PA canonically. It is the
                 formal core: subjects and their commitments as host axioms in arithmetized predicates; the negative
@@ -46,7 +46,7 @@ export default () => (
         <Section>
             <Heading>The frontier's results</Heading>
             <Paragraph>
-                Proven on 3 November after his "You don't even understand that empty would be the axiomatic identity
+                Proven on 3 November after my "You don't even understand that empty would be the axiomatic identity
                 too?" and "Can you show me interesting results from the negative image of logic" (The Formal Core, 3
                 November 2026), under Σ₁-soundness. A: Pf(S, 0) is never provable, the identity used in every proof
                 and concluded in none. B: Pf(S, 0) is in the frontier exactly when S is unprovable and refuted exactly
@@ -68,7 +68,7 @@ export default () => (
             <Heading>The Essential Argument, stale</Heading>
             <Paragraph>
                 Goldbach Through Gödel: The Essential Argument, written to the project on 26 October and rewritten on
-                28 October, still carries the bounded "Axiom (Goldbach)" he rejected, "first of all, that is not
+                28 October, still carries the bounded "Axiom (Goldbach)" I rejected, "first of all, that is not
                 Goldbach. That is not the P, P' version" (The Two Drafts, 28 October 2026), and the question-led
                 essence of 26 October. It is to be rewritten into the flow of 5 November, which is the one concrete
                 task left at the close. The printing of 29 October, Gödel-first in nine sections with references, is

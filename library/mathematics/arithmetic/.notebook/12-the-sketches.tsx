@@ -5,8 +5,8 @@ export default () => (
         <Part>Beside the Paper</Part>
         <Title>[[ The Sketches ]]</Title>
         <Paragraph>
-            What Doug set aside from the paper with his own tag, kept here so that it is not mistaken for the
-            result. Each sketch names where it stands and what he said of it; several are promised to Semantic
+            What I set aside from the paper with my own tag, kept here so that it is not mistaken for the
+            result. Each sketch names where it stands and what I said of it; several are promised to Semantic
             Reference Theory and the Inexplicable Phenomena program, where they belong.
         </Paragraph>
         <Section>
@@ -39,7 +39,7 @@ export default () => (
                 The subjectron was a joke: the absence of objectivity imagined as a particle that does nothing in
                 objectivity and is meaningful in the subject of subjectivity, with Chalmers and Dennett as its
                 audience, in the message of 1 November that also carried the two semantics of zero (The Two
-                Semantics of Zero, 1 November 2026). Space as a mass of subjectrons he flagged himself as "a fun
+                Semantics of Zero, 1 November 2026). Space as a mass of subjectrons I flagged myself as "a fun
                 sketch of something undeveloped and not a serious idea like others" (The Two Semantics of Zero). The
                 hard problem thread is the program's and not the paper's.
             </Paragraph>
@@ -52,7 +52,7 @@ export default () => (
                 but you can see the beauty right?" (Mathematical Relativity, 3 November 2026). The reading of ZFC axiom
                 by axiom as a semantics of representation, with Skolem's paradox as the oldest subjective
                 contradiction, is a reflection beside it. Language contraction, the proposal that after a theorem is
-                proved its negation leaves the language, he offered as "Just a thought" and "Okay fun ideas. I know
+                proved its negation leaves the language, I offered as "Just a thought" and "Okay fun ideas. I know
                 they wander" (The Objective Bias, 3 November 2026); Subjective Mathematics formalized it as its
                 eleventh part, and the paper does not carry it.
             </Paragraph>
@@ -70,7 +70,7 @@ export default () => (
                 library catalogue, 4 November 2026, and its Gemini transcript, 3 November 2026). Only its Part I, the
                 Gödel result stated to an outsider, and its unsent coda belong to the paper, and they are cited
                 in <Means>$[[ ./The Preface ]]</Means> and <Means>$[[ ./Zero as the Counterexample ]]</Means>. Claude's
-                catalogue of the session and its nineteen idea documents live in Doug's Claude Docs and were not
+                catalogue of the session and its nineteen idea documents live in my Claude Docs and were not
                 readable from this library's room.
             </Paragraph>
         </Section>

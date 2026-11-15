@@ -4,7 +4,7 @@ export default () => (
     <Chapter>
         <Title>[[ The Papers ]]( Sprint 125 )</Title>
         <Paragraph>
-            The second sprint of arithmetic, opened and closed on 10 November 2026, on Doug's word that the next step
+            The second sprint of arithmetic, opened and closed on 10 November 2026, on my word that the next step
             is a way to add papers to <Means>$[[ the library ]]( Mathematical Library )</Means> and to see whether the
             papers and resources themselves can stand in it, the first resource Gödel's paper on formally undecidable
             propositions; then that references good for the project are collected, the book for the library
@@ -14,15 +14,15 @@ export default () => (
             <Heading>What the second sprint accomplished</Heading>
             <Paragraph>
                 A paper is a citable publication held in the library as a resource: the file itself beside a chapter
-                of The Library of Mathematics that carries its citation and the notes Doug writes on it, the paper
+                of The Library of Mathematics that carries its citation and the notes I write on it, the paper
                 signed by its own author. The binder serves a document beside a chapter at its address as it serves
                 a picture, never inlined, and the package gained a Document figure for the viewer, though the page
-                built to his number does without it: the paper's page is minimal, a small picture of the paper's
+                built to my number does without it: the paper's page is minimal, a small picture of the paper's
                 first page at the top left that opens the paper in another tab, the citation, the notes, and an
                 opening for each translation. Gödel 1931 stands there in English, Meltzer's whole paper and Hirzel's
                 two sections, and <Means>$[[ the notebook ]]( Arithmetic Notebook )</Means> cites it in three
                 places. The library's book was designed in four sketches of <Means>$[[ the design book ]]( Mathematical Design )</Means>,
-                the paper's page and the cover decided by his numbers and built in the manual: the cover drawn as a
+                the paper's page and the cover decided by my numbers and built in the manual: the cover drawn as a
                 book, its words its links, the title opening the contents, the author and the subject their books.
                 The site's publishing was turned on, every push to publish the library, though GitHub had run none
                 by the sprint's close. And the references below were collected, each with its address and its terms.
@@ -32,9 +32,9 @@ export default () => (
             <Heading>What the second sprint leaves</Heading>
             <Paragraph>
                 The citations for the paper itself, collected from these references and beyond them into the library
-                as the next sprint, each a chapter of Doug's when he picks it; the German original beside Gödel's
+                as the next sprint, each a chapter of mine when I pick it; the German original beside Gödel's
                 chapter from 1 January 2027, when it is public domain in the United States; the table's form as the
-                library grows, alphabetical and tagged by subject in time; his notes on each paper; and the deploy,
+                library grows, alphabetical and tagged by subject in time; my notes on each paper; and the deploy,
                 which runs once the repository's Actions settings allow it.
             </Paragraph>
         </Section>
@@ -230,7 +230,7 @@ export default () => (
                 each bears on: the derivability conditions behind Löb, the provability logic that studies them, the
                 algebraic descriptions of first-order logic that the semantics of logic in algebraic form would be
                 measured against, and the metamathematics the paper's core is written in. None is downloaded this
-                sprint; each is a chapter of Doug's when he picks it.
+                sprint; each is a chapter of mine when I pick it.
             </Paragraph>
             <Paragraph>
                 <List />

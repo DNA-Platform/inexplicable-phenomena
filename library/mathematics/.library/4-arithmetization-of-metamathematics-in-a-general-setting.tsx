@@ -21,7 +21,7 @@ export default () => (
         <Paragraph>
             What the paper takes from it: the intensionality of the consistency statement, that which sentence Con
             is depends on how provability is arithmetized, and the predicate under which a theory proves its own
-            consistency. On Doug's word of 10 November 2026, Feferman and Turing are "the biggest names that my
+            consistency. On my word of 10 November 2026, Feferman and Turing are "the biggest names that my
             alternate interpretation of Godel chnages" (in the room, 10 November 2026). In the formal core
             of <Means>$[[ The Documents ]]( Arithmetic Notebook / The Documents )</Means>, formal equality is "the third
             criterion after neutrality and the fixed point, which Gödel's Con fails by Feferman's result and ε

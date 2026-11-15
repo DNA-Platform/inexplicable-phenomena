@@ -6,16 +6,16 @@ export default () => (
         <Title>[[ Zero and Infinity ]]</Title>
         <Paragraph>
             Riemann entered the paper on 12 November as an application to note and no more, in the sketch of Part Three;
-            the same day Doug worked it further on the desktop app and pasted the conversation into the room with one
+            the same day I worked it further on the desktop app and pasted the conversation into the room with one
             instruction, "try to summarize these, so that we understand this connection which is important" (in the
-            room, 12 November 2026). This chapter is that summary. It opened on his doubt about the team's picture of
+            room, 12 November 2026). This chapter is that summary. It opened on my doubt about the team's picture of
             the object, every direction out of zero a circle coming back to it: "If we imagine the line going out to
             infinity hits the x-axis somehow... I'm not sure. My thought was the whole complex plane would be like a
             torus where every direction comes back to zero, but no I'm not considering going one direction at a time"
             (on the desktop app, 12 November 2026). The answer separates the two directions by looking at one prime's
             term in its own terms, and there the picture becomes exact: a torus for each prime, not one for the plane,
             and the mirror of Riemann's functional equation the exchange of zero and infinity. At each step what is a
-            plain computation and what is his thesis applied is marked, as the conversation marked it.
+            plain computation and what is my thesis applied is marked, as the conversation marked it.
         </Paragraph>
         <Section>
             <Heading>One prime's term</Heading>
@@ -25,7 +25,7 @@ export default () => (
                 rolls up into a cylinder. Moving left or right, the real part, only changes its size: far to the right
                 it shrinks toward zero, far to the left it grows without bound. So for one prime the plane is a cylinder
                 running from zero at one end to infinity at the other, and the critical line is one circle around it,
-                the circle where the size is one over the square root of p. The mirror is what answers his doubt.
+                the circle where the size is one over the square root of p. The mirror is what answers my doubt.
                 Riemann's reflection sends a point at distance d to the right of the line to distance d on the left; in
                 this prime's variable that turns small into large and large into small, exchanging the zero end with the
                 infinity end and leaving exactly one circle fixed, the critical line. Seen through any single prime,
@@ -42,7 +42,7 @@ export default () => (
                 His identification finishes the shape. If the far end is zero, the two ends of the cylinder are one
                 place; join them and the cylinder is a torus, around in one direction because the prime turns, around in
                 the other because the far end is the origin: the torus he was picturing, every direction returning, the
-                one he had named in the room as "a sort of torus with no hole because the hole would be zero" (in the
+                one I had named in the room as "a sort of torus with no hole because the hole would be zero" (in the
                 room, 12 November 2026). It is not one torus for the whole plane, because the primes turn at rates that
                 never agree, the turning of p repeating every 2π over the logarithm of p and no two primes' logarithms
                 standing in a rational ratio; it is one torus for each prime, all sharing the same mirror, since the
@@ -100,7 +100,7 @@ export default () => (
                 the two readings differ only about the run that has none, so no theorem can separate them and the
                 contradiction sits entirely in the undecidable; the two interpretations of PA stand to each other as
                 PA with the Gödel sentence stands to PA with its negation, the same theorems below and inconsistent
-                above. That is his earlier line doing its work one level up: if truth is subjective and two things might
+                above. That is my earlier line doing its work one level up: if truth is subjective and two things might
                 be true, it had better be undecidable in the subject. Where the proof lives: in the logic with the
                 identities, the model of The Subject of Logic, where the empty string and the empty proof are terms and
                 can be compared with Gödel's sentence; PA cannot host the proof, and that is the point, not a weakness.
@@ -114,17 +114,17 @@ export default () => (
             <Heading>What breaks the tie</Heading>
             <Paragraph>
                 The conversation first judged by fruits, what each reading goes on to give: Gödel's a true sentence
-                nobody can use, his the far end at zero, the mirror, and a rule that reaches the primes. He corrected
+                nobody can use, mine the far end at zero, the mirror, and a rule that reaches the primes. I corrected
                 the standard: "What breaks the tie is whether PA might be a complete subject or if truth is truly bigger
                 than what its subject can identify: The Subject of Arithmetic" (on the desktop app, 12 November 2026).
                 Judging by fruits is the extrinsic standard, the one Gödel himself proposed for new axioms in 1947, from
-                memory and to be checked; his is intrinsic, asking what the subject is. The two readings are then the
+                memory and to be checked; mine is intrinsic, asking what the subject is. The two readings are then the
                 two answers to one question. Truth bigger than the subject: there are facts of arithmetic PA's subject
                 cannot identify, the standard model holds them, and incompleteness is a real shortfall; that is Gödel.
                 PA a complete subject: what it cannot decide is not a fact it is missing but the boundary, with the
-                identities sitting on it, the empty proof, the empty string, zero as the far end; that is his. No
+                identities sitting on it, the empty proof, the empty string, zero as the far end; that is mine. No
                 theorem chooses between them, for the reason of the previous section, and a choice with no theorem
-                behind it is a subjective decision in his sense, one that changes the subject to preserve its meaning.
+                behind it is a subjective decision in my sense, one that changes the subject to preserve its meaning.
                 So the title is the argument: The Subject of Arithmetic asserts that arithmetic has one, and that the
                 subject is where truth about it lives, where Gödel's reading needs the opposite, a truth with no subject
                 able to identify it. One consequence for the paper, the conversation's and kept: the fruits still

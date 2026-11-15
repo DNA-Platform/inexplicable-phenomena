@@ -6,7 +6,7 @@ export default () => (
         <Title>[[ The Textbook ]]</Title>
         <Paragraph>
             The textbook is the first place where official results go. A definition or a theorem enters it only as
-            Doug has ruled it in the room; what he has not ruled stays a notebook note. The textbook of the first
+            I have ruled it in the room; what I have not ruled stays a notebook note. The textbook of the first
             subject is <Means>$[[ The Textbook of Arithmetic ]]( Arithmetic Textbook )</Means>.
         </Paragraph>
         <Paragraph>
@@ -16,7 +16,7 @@ export default () => (
             <Line>Results are stated and proved, and their references resolve into the subject's library of publications.</Line>
         </Paragraph>
         <Paragraph>
-            What a textbook entry is, as Doug has specified it so far, 12 and 15 November 2026: a chapter is an
+            What a textbook entry is, as I have specified it so far, 12 and 15 November 2026: a chapter is an
             attempt to specify one mathematical object, and bears the object's title. It carries the
             specification of the object — the sovereign part, since we formalize specifications — an informal
             explanation, the formalism itself with a justification of how it
@@ -34,8 +34,8 @@ export default () => (
             rule that shows one aspect alone, on the front's precedent. The classes will stand with this chapter
             as its code once they are ruled; until then every idiom here is held by hand. The potential four
             chapters of 12 November stand retired in the subject's notes, and the textbook's first object is
-            named: X, the symmetry of arithmetic, specified by his statement of work of 15 November 2026, its
-            chapter the textbook's first — all back and no front, the identification its own placeholder.
+            named: X, the symmetry of arithmetic, specified by my statement of work of 15 November 2026, its
+            chapter the textbook's first — the identification standing as its own placeholder.
         </Paragraph>
     </Chapter>
 );

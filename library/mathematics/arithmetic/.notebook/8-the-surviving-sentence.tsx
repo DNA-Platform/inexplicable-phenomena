@@ -16,7 +16,7 @@ export default () => (
         <Section>
             <Heading>The resolution, in four steps</Heading>
             <Paragraph>
-                Doug's ruling of 1 November reorganized the method and stands at the close: "P and P' are always
+                My ruling of 1 November reorganized the method and stands at the close: "P and P' are always
                 assumed to be different sets. We are looking for properties that we will use to build our idea of the
                 limiting structure, but P and P' the same is not a given. It is a result of a resolution to a
                 particular non-standard model that carries semantic consequence" (Goldbach through Gödel, The
@@ -40,10 +40,10 @@ export default () => (
                 a difference statement is the trace. τ of the symmetric pairing theorem is Goldbach's conjecture in
                 symmetric form, and P′ = P is a description collapsing onto its only referent by flatness and L1. It
                 is not a theorem, the proof used the inverses and the barrier is its shadow. Then the adoption rule R:
-                a sentence that survives the loss of its proof is an axiom (The Six Movements, 31 October 2026). Doug
-                on what the act is and is not, 28 October: "The beauty of my technique is the DIFFERENCE between the
+                a sentence that survives the loss of its proof is an axiom (The Six Movements, 31 October 2026). My
+                word on what the act is and is not, 28 October: "The beauty of my technique is the DIFFERENCE between the
                 sets. We see that they are the same in the model of arithmetic that we settle on" (The Two Sieves, 28
-                October 2026); and his weighing of the circle proof the same day, "Now that almost sounds like a proof
+                October 2026); and my weighing of the circle proof the same day, "Now that almost sounds like a proof
                 of Goldbach, but would you agree that most people wouldn't say the limiting thing you spoke of is N
                 right?" (The Circle Proof, 28 October 2026).
             </Paragraph>

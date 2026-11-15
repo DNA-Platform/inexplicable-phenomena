@@ -6,7 +6,7 @@ export default () => (
         <Title>[[ The Potential Chapters ]]</Title>
         <Paragraph>
             Four chapters stood specified in the Textbook of Arithmetic on 12 November 2026 and retired to this
-            note on Doug's change of plans of 15 November: the textbook's chapters are titled by the things we
+            note on my change of plans of 15 November: the textbook's chapters are titled by the things we
             attempt to specify, specifications of mathematical objects as the starting point. The four stand
             here as a potential four chapters for the textbook.
         </Paragraph>

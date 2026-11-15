@@ -11,7 +11,7 @@ export default () => (
                 chapter per book, and that chapter tracks the book's idioms — the conventions its chapters follow.
                 Where an idiom is enforced by code, the code stands with the chapter that states it, the way this
                 book's theme and faces stand beside theirs; an idiom followed by hand is stated in the same place
-                and marked so. Ruled by Doug on 12 November 2026, at the opening of the textbook's sprint.
+                and marked so. I ruled this on 12 November 2026, at the opening of the textbook's sprint.
             </Paragraph>
         </Section>
         <Section>

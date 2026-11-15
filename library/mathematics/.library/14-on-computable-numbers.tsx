@@ -20,7 +20,7 @@ export default () => (
             and the paper's reading of Goldbach's conjecture as an axiom is, as a deduction, "invalid and is meant to
             be: a thesis in the sense of Church and Turing, confirmed by every independent formalization through
             chart invariance and by every instance", as <Means>$[[ Goldbach ]]( Arithmetic Notebook / Goldbach )</Means> says.
-            On Doug's word of 10 November 2026, Turing and Feferman are "the biggest names that my alternate
+            On my word of 10 November 2026, Turing and Feferman are "the biggest names that my alternate
             interpretation of Godel chnages" (in the room, 10 November 2026).
         </Paragraph>
         <Paragraph>

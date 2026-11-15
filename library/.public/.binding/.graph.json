@@ -2,12 +2,12 @@
   "books": [
     {
       "folder": ".identity/.subject",
-      "digest": "c1df9f262f592b84",
+      "digest": "2a1f685c116c2053",
       "walked": 18
     },
     {
       "folder": ".reference",
-      "digest": "be0f7474215ff08b",
+      "digest": "3d5602e0e9c4c379",
       "walked": 88
     },
     {
@@ -32,7 +32,7 @@
     },
     {
       "folder": "mathematics/.design",
-      "digest": "bc884863bf5e557f",
+      "digest": "5cb31addc367d8f5",
       "walked": 81
     },
     {
@@ -42,17 +42,17 @@
     },
     {
       "folder": "mathematics/.library",
-      "digest": "3cfba7981e999a19",
+      "digest": "ea2c64f10a3cd6a7",
       "walked": 190
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "0b0e300db0ff6913",
-      "walked": 133
+      "digest": "89564c11095faa7e",
+      "walked": 134
     },
     {
       "folder": "mathematics/.subject",
-      "digest": "4788031f62afb079",
+      "digest": "8a313ced35b1efbd",
       "walked": 62
     },
     {
@@ -62,22 +62,22 @@
     },
     {
       "folder": "mathematics/arithmetic/.notebook",
-      "digest": "198b5a308e2873f2",
+      "digest": "d9977d83e81b48fb",
       "walked": 1117
     },
     {
       "folder": "mathematics/arithmetic/.project",
-      "digest": "3f4476852be3179f",
+      "digest": "0d36cbf5d345f692",
       "walked": 148
     },
     {
       "folder": "mathematics/arithmetic/.subject",
-      "digest": "d267e2c96a6eef75",
+      "digest": "7d63e3a6f8d43f27",
       "walked": 57
     },
     {
       "folder": "mathematics/arithmetic/.textbook",
-      "digest": "214f0366d9e69e20",
+      "digest": "1475eca02ecb8d13",
       "walked": 95
     },
     {

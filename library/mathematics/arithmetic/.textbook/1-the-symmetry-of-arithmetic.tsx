@@ -6,7 +6,7 @@ export default () => (
         <Part>The Objects</Part>
         <Title>[[ The Symmetry of Arithmetic ]]</Title>
         <Paragraph>
-            The first object of the textbook, named by Doug on 15 November 2026: X, a single object added to
+            The first object of the textbook, which I named on 15 November 2026: X, a single object added to
             first-order Peano arithmetic, expressing that arithmetic has a symmetry the formalism does not at
             present state. This chapter is the attempt to specify it, and shows its content one side at a
             time: the identification — the front, the best guess of what X is, standing as a sketch — the
@@ -94,7 +94,7 @@ export default () => (
                 <Line>1.3 Peano arithmetic as it stands neither asserts nor denies that the two readings express the same set of numbers; X asserts it, and gives no way to resolve which reading is the case.</Line>
                 <Line>1.4 With X adjoined, Goldbach, twin primes and the arithmetic form of the Riemann hypothesis are immediate — each a theorem already proven on the circles of factorial size, with the definitions from the bottom and from the top kept distinct, followed by one use of X — the foundational examples of three types of theorem: pairing, recurrence and balance.</Line>
                 <Line>1.5 X is not derivable from existing mathematics, or the three conjectures, whose arguments are elementary, would already be proven; so X is identified only by what it must satisfy, and is specified before it is stated.</Line>
-                <Line>1.6 Its author holds X to be a foundational commitment of arithmetic and not a technical device, of the same standing as quantification, universal generalization, proof by contradiction and induction, each once added to reasoning.</Line>
+                <Line>1.6 I hold X to be a foundational commitment of arithmetic and not a technical device, of the same standing as quantification, universal generalization, proof by contradiction and induction, each once added to reasoning.</Line>
             </Paragraph>
             <Paragraph>
                 <List />
@@ -160,7 +160,7 @@ export default () => (
                 principle of duality in lattice theory, for the duality kind of the solution space.
             </Paragraph>
             <Paragraph>
-                The specification was drawn from Doug's statements, kept as he gave them in the progress
+                The specification was drawn from my statements, kept as I gave them in the progress
                 record beside this chapter; the earlier statements stand in the first specification.
             </Paragraph>
         </Progress>

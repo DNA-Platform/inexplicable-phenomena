@@ -28,7 +28,7 @@ export default () => (
             What the paper takes from it: the first proof of the fundamental theorem of algebra, the field's version
             of the geometric precedent, "where the limit is an object and the sentence is also a theorem of
             analysis", as the precedents of <Means>$[[ The Mechanism ]]( Arithmetic Notebook / The Mechanism )</Means> keep
-            it; on his word, "We want Hilbert's sphere and the fundamental theorem of algebra" (in the room, 10
+            it; on my word, "We want Hilbert's sphere and the fundamental theorem of algebra" (in the room, 10
             November 2026).
         </Paragraph>
         <Paragraph>

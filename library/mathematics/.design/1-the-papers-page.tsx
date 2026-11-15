@@ -7,7 +7,7 @@ export default () => (
             <Heading>Sketch 001, four forms of a paper's page</Heading>
             <Paragraph>
                 The first sketch of The Library of Mathematics asks what a paper's page should look like, a paper being
-                a citable publication held in the library as a resource beside a chapter that Doug writes, the chapter
+                a citable publication held in the library as a resource beside a chapter that I write, the chapter
                 carrying the citation and the paper read on the page. The page is snapshotted off the bound library's
                 stub, its sheets inlined and its scripts stripped, the paper's row put in the table and the paper's
                 chapter after it, and appended to this chapter with its forms on a switch; a form is a question, not a
@@ -54,11 +54,11 @@ export default () => (
         <Section>
             <Heading>Sketch 002, the minimal page</Heading>
             <Paragraph>
-                The second sketch follows his answer to the first, the same day: not a frame or a look to commit to,
+                The second sketch follows my answer to the first, the same day: not a frame or a look to commit to,
                 a library built as utility minimally and grown as needed; the table listing the publications in
                 alphabetical order and reached easily, a nexus of catalogues eventually; a chapter a minimal place
                 to write notes about the publication with a link that opens it, possibly in another tab; and the
-                preview he liked kept as a small picture of the publication at the top left of the page, clicked to
+                preview I liked kept as a small picture of the publication at the top left of the page, clicked to
                 open it. The viewer at the measure comes out. The picture is the paper's first page, made once by
                 Chrome's own viewer with its toolbar and panes asked off and cropped to the page, a tool of the
                 sprint's scratch until a form is chosen. The forms: a, the picture floated at the top left with the
@@ -86,7 +86,7 @@ export default () => (
             <Heading>Sketch 003, the cover</Heading>
             <Paragraph>
                 His number on 002 was a, the picture at the top left with the text flowing under it; and on its table
-                he asked instead for the cover: a transition when the book is first opened, the feel of a book, not
+                I asked instead for the cover: a transition when the book is first opened, the feel of a book, not
                 unlike the paper's picture but bigger, in ideas that match the current theme's feel. The third sketch
                 puts three ideas of the cover on a switch, each a board built from the page's own words in the theme's
                 Georgia on white with its small spaced capitals and hairline rules, and each opening to the contents
@@ -119,7 +119,7 @@ export default () => (
         <Section>
             <Heading>What was built</Heading>
             <Paragraph>
-                Of the four, two moved into the manual by his number on 10 November 2026: the paper's page is 002's
+                Of the four, two moved into the manual by my number on 10 November 2026: the paper's page is 002's
                 form a, the plate and the opening of <Means>$[[ Our Reference / The Paper ]]</Means>, and the cover
                 is 004's form a, the front of <Means>$[[ Our Reference / The Faces ]]</Means>; 001 and 003 stand here
                 as the questions they were. Two departures from the decided HTML, kept on purpose: the title stands

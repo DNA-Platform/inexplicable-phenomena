@@ -6,13 +6,13 @@ export default () => (
         <Title>[[ The Parts ]]</Title>
         <Paragraph>
             The parts of the paper's argument, each with a sketch of what it might look like to formalize it and
-            the references that inspire the formalization, written as Doug asked at the close of the publications'
+            the references that inspire the formalization, written as I asked at the close of the publications'
             sprint: "a note to represent the different parts of the argument, the parts as a chapter in notes, then
             the exact form of the formalism we will use and references as inspiration for the specific
             formalizations we choose" (in the room, 11 November 2026), and narrowed the next day to this, "for this
             sprint, we are writing down the parts and what it might look like to formalize them" (in the room, 12
-            November 2026). The paper is The Subject of Arithmetic, in three parts he named on 12 November: The
-            Subject of Logic, The Subject of Specification and The Object of Study. The parts are given in his words
+            November 2026). The paper is The Subject of Arithmetic, in three parts I named on 12 November: The
+            Subject of Logic, The Subject of Specification and The Object of Study. The parts are given in my words
             with their dates, the sketches are the team's and marked so, and each sketch says what of its part is a
             theorem, what is the rule, and what the rule proves, which is what the textbook will work as results.
             The formalization itself is not here; it is the work, and "You can't just make up the formalization and
@@ -31,7 +31,7 @@ export default () => (
                 resolution: the 0 of the coding, the non-positive proof length and the number every prime power
                 divides are one zero, the length of the inferential identity's proof. Objective and subjective
                 inconsistency: to formalize a subject is to believe it consistent, undecidability the formal way of
-                saying something is not formalizable in the subject, the subject complete as a subject. The close, his:
+                saying something is not formalizable in the subject, the subject complete as a subject. The close, mine:
                 "different semantics, which loosely correspond to the difference between PA with and without zero,
                 demonstrate that Gödel can be interpreted in two different ways. Its interpretation is subjective, and
                 it is special as an interpretation which expresses subjectivity or objectivity in math. Let's call that
@@ -84,7 +84,7 @@ export default () => (
                 holds the totality as an object, "the subject Gödel helped to formalize which expresses the idea of
                 studying the completed totality... The subject of math includes the study of a form of truth that proof
                 cannot represent. That is the subject of set theory"; Gödel's arithmetic "an object that represents
-                language", his own a subject that believes itself expressive enough to specify itself. Sympathy for
+                language", my own a subject that believes itself expressive enough to specify itself. Sympathy for
                 Hilbert, who wanted Cantor's paradise complete and required proof finite. The rational number: every
                 base-10 digit ever written, in order, modulo simultaneity, is a rational number, and mathematics
                 imagines things far beyond it. Referential inconsistency defined: "the idea that you can reason
@@ -92,7 +92,7 @@ export default () => (
                 could I prove this. Contradiction! Therefore I can't prove this. That is referential inconsistency. You
                 referred to it in that syllogism"; and "The second you referred to a completed totality of things without
                 a finite account, you referred to something that cannot be described by language" (in the room, 11
-                November 2026). The diagonal argument as the example, his of 12 November: "the diagonal argument is a
+                November 2026). The diagonal argument as the example, mine of 12 November: "the diagonal argument is a
                 hypothetical about writing a list. What if one of those hypothetical lists is an infinite length proof
                 that this technique yields inconsistency? A joke, but not quite. There is an idea that if I can write
                 down a finite hypothetical situation to help understand an infinite number of things, then that
@@ -138,7 +138,7 @@ export default () => (
             <Paragraph>
                 The sketch. The fact stated as the subject's one belief: to refer to the totality is to express only
                 what can be reflected in zero, with the reading of the universal quantifier that it generalizes over all
-                and is never replaced by 'for none', left open for his word; its derivation from the successor axiom and
+                and is never replaced by 'for none', left open for my word; its derivation from the successor axiom and
                 zero's place, totality expressed in the absence of a last number and the absence of quantity named by
                 one undifferentiated identity; and aleph-null named as the one assertion the subject refuses, by Part
                 One's definition, since 'the totality is distinct from zero' and 'the totality is indistinct from zero'
@@ -207,7 +207,7 @@ export default () => (
                 example, we commit to the idea that our specification is inconsistent"; safety through the frontier
                 results, each conclusion consistent with PA and true under Σ₁-soundness; the parity problem as the
                 precise statement that no premise proves the conclusion in PA, so the rule is a licence across exactly
-                that barrier. Important to the work, his, that the rule cannot be adopted in the standard model: there
+                that barrier. Important to the work, mine, that the rule cannot be adopted in the standard model: there
                 the top is an object distinct from zero, the hypothesis has another referent, and the reading at zero is
                 false; the rule is sound only where the subject refuses aleph-null. The factorial returns from the
                 refused axiom forms of <Means>$[[ ./Two-Sided Arithmetic ]]</Means> in a new role, the interpretation the
@@ -240,10 +240,10 @@ export default () => (
                 hole would be zero", is the sphere with its two poles glued, so positive and negative infinity meet at
                 zero itself; and the subject asserts less than the drawing, "all you know is the symmetry. You don't
                 know where it loops because it might not. It's just that the object out there can't be distinguished
-                from zero in any direction". Made exact in <Means>$[[ ./Zero and Infinity ]]</Means>, on his doubt
+                from zero in any direction". Made exact in <Means>$[[ ./Zero and Infinity ]]</Means>, on my doubt
                 that a whole-plane torus takes no account of going one direction at a time: one prime at a time, the
                 plane a cylinder from zero to infinity in that prime's variable, Riemann's reflection exchanging its ends
-                and fixing the critical circle, his identification joining the ends into a torus, one for each prime,
+                and fixing the critical circle, my identification joining the ends into a torus, one for each prime,
                 all sharing one mirror. Then the proofs by the rule, Goldbach the ending as the preface says, twin primes
                 with the shift by two as its reflection, and Riemann's beginning: the hypothesis checkable at each
                 number and refuted by a counterexample, the computer check Turing's method counting the zeros on the
@@ -294,13 +294,13 @@ export default () => (
         <Section>
             <Heading>The open points</Heading>
             <Paragraph>
-                Four, each his to rule, none decided here. Whether the universal quantifier's reading, generalization
+                Four, each mine to rule, none decided here. Whether the universal quantifier's reading, generalization
                 over all and never 'for none', is a premise of the subject or a consequence of the essential fact.
                 Whether referential integrity is a belief of the foundation or a property proved of arithmetic. Whether
                 the essential fact is the subject's one subjective identification, the conjectures being its objective
                 ones. Whether the logical identity's law is absorbing or neutral, the question
                 <Means>$[[ ./The Subject of Logic ]]</Means> leaves. And beside them the step Part Three leaves,
-                said above, and the names, every one a proxy until he keeps it.
+                said above, and the names, every one a proxy until I keep it.
             </Paragraph>
         </Section>
     </Chapter>

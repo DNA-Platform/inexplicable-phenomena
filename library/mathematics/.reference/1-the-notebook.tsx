@@ -12,7 +12,7 @@ export default () => (
         <Paragraph>
             <List />
             <Line>A chapter names its part with the Part annotation and opens with one provenance paragraph: where the note came from and on whose word it stands.</Line>
-            <Line>Only Doug is quoted. Everyone else — a paper, a session, a teammate — is paraphrased, with the source named.</Line>
+            <Line>Only I am quoted. Everyone else — a paper, a session, a teammate — is paraphrased, with the source named.</Line>
             <Line>Titles are short names, and no heading on the page repeats a title or another heading.</Line>
             <Line>Every chapter gets its row on the table of contents and its clause in the synopsis, written in the same act.</Line>
             <Line>A resource stands beside its chapter, named for it with a tilde.</Line>

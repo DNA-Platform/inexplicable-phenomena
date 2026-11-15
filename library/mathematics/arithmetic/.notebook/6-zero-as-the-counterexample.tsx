@@ -18,16 +18,16 @@ export default () => (
                 Euclid's theorem read in modular dress, since for every nonzero x there is a prime not dividing x.
                 L3, pairlessness: PA proves that if every prime divides x then x is not a sum of two primes, since
                 x = p + q gives p dividing q, so x = 2p, which some prime fails to divide (The Surviving Sentence, 29
-                October 2026). Doug's statement of L3 on 1 November: "For an even, if p divides it, N-p can't be prime,
+                October 2026). My statement of L3 on 1 November: "For an even, if p divides it, N-p can't be prime,
                 so no two standard primes could add to the limiting primorial" (The Resolution, 1 November 2026); and
                 of its place in the paper on 29 October: "It is noteworthy that a large value that is divisible by all
                 primes is a GC counterexample" (The Surviving Sentence, 29 October 2026).
             </Paragraph>
         </Section>
         <Section>
-            <Heading>The number he feared</Heading>
+            <Heading>The number I feared</Heading>
             <Paragraph>
-                The identification was his from the fourth day, held against refutation: "Why can't that number,
+                The identification was mine from the fourth day, held against refutation: "Why can't that number,
                 ignoring the fact that we think it causes inconsistency, be an even number where every prime can't
                 have a prime pair to sum because it divides it?" (The Shape of the Phantom Proof, 25 October 2026);
                 and the reason it recurs, "each time we recurse and arithmetize, we believe in that number again,
@@ -44,8 +44,8 @@ export default () => (
         <Section>
             <Heading>Deprecated by the third movement</Heading>
             <Paragraph>
-                His first use of the circle, on 25 October, had the top of the circle break Goldbach where it is in
-                fact easiest; the claim survives only under his rigid reading of prime, which prices the axiom as
+                My first use of the circle, on 25 October, had the top of the circle break Goldbach where it is in
+                fact easiest; the claim survives only under my rigid reading of prime, which prices the axiom as
                 Goldbach plus every number being standard (The Finding of an Axiom, 25 October 2026). The hinge, whether
                 PA proves GC → Con(PA), raised on 19 October and found to be nobody's theorem on 23 October, is not a
                 premise of the paper; what it reached for is L1 and L3, where the witness of ¬G and the counterexample

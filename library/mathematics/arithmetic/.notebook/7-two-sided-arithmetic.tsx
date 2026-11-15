@@ -16,7 +16,7 @@ export default () => (
         <Section>
             <Heading>The two sieves</Heading>
             <Paragraph>
-                Doug's construction, demanded on 31 October: "an upper and lower sieve argument establishing P and P'
+                My construction, demanded on 31 October: "an upper and lower sieve argument establishing P and P'
                 - the primes from below and a different but symmetric set from above, have the Goldbach conjecture
                 for finite primorial modular arithmetics - for all n big enough, n-k in P and n+k in P' - uses
                 Chinese remainder theorem I believe" (Goldbach through Gödel, The Six Movements, 31 October 2026).
@@ -35,7 +35,7 @@ export default () => (
             <Paragraph>
                 "The whole point is that the upper sieve DOESN'T produce the same set" (The Two Sieves, 28 October
                 2026). At full depth the two differ at every finite N, 23 surviving at 210 while its mirror 187 = 11·17
-                does not. The symmetry is the primitive and the circle only its picture, his correction of 27
+                does not. The symmetry is the primitive and the circle only its picture, my correction of 27
                 October: "It's not actually the circle. It's that the primes have a symmetry - two sets that shouldn't
                 be the same but are. But otherwise it's not the circle. So you pick and choose the facts. I'm worried
                 that you don't see the pattern. It's kind of like axiomatizing different geometries" (The Enlightened
@@ -54,7 +54,7 @@ export default () => (
                 proof. What every finite stage has and the limit sheds is the group structure, inverses, mirror,
                 predecessor of 0, one feature (The Surviving Sentence, 29 October 2026). This is why the identification
                 is consistent only at the unreachable limit, and why the paper's axiom is sited at the barrier
-                rather than beyond it. Doug's demand that the whole be said in PA's own language, "You are
+                rather than beyond it. My demand that the whole be said in PA's own language, "You are
                 axiomatizing the limit of circular arithmetics based on a primorial horizon" (The One Axiom, 27
                 October 2026), is what the passage of the next movement answers.
             </Paragraph>

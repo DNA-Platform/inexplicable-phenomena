@@ -10,7 +10,7 @@ export default () => (
             arithmetic a choice, add G, add ¬G, add consistency and its successors, or change nothing.
             Mathematics changed nothing and never said why. The paper says why, shows that the justification
             carries a model of arithmetic, and shows that in that model one sentence of number theory is derived
-            that PA cannot prove, so it enters PA as an axiom. Doug's ruling that set this order, on 29 October:
+            that PA cannot prove, so it enters PA as an axiom. My ruling that set this order, on 29 October:
             "You miss the idea that it is the Gödel result, and how we justify not changing PA that is the result
             that follows you around to every single formalism. Granting that argument is granting the model of
             arithmetic involved" (Goldbach through Gödel, The Surviving Sentence, 29 October 2026).
@@ -37,7 +37,7 @@ export default () => (
             <Paragraph>
                 "Let's call it Gödel through Goldbach. Where do we start? I think we end on GC" (The Six Movements, 31
                 October 2026). The inferential identity is the Gödel half; Goldbach is the last line and not an
-                aside, his correction of the first draft that had it the other way round: "Haha you think
+                aside, my correction of the first draft that had it the other way round: "Haha you think
                 establishing an inferential identity is the thing, with a justification for the oldest unsolved
                 math conjecture as an aside?" (The Two Drafts, 28 October 2026). What the result is and is not: "You
                 understand that GC as axiom is revolutionary. De Polignac is great but if you are doing a condensed
@@ -50,7 +50,7 @@ export default () => (
         <Section>
             <Heading>The genesis, for the motivation</Heading>
             <Paragraph>
-                How the result was found is told once, in a message Doug wrote for Gemini and never sent, on 4
+                How the result was found is told once, in a message I wrote for Gemini and never sent, on 4
                 November: a nightmare about the number every prime divides, the way out through zero, and the
                 discovery that the way out had been modular arithmetic all along. "I always felt mathematicians were
                 tricky. They play little games with your mind, making you hallucinate things on the edge of

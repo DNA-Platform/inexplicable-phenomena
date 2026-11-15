@@ -17,7 +17,7 @@ export default () => (
             consistency of the last as an axiom, along the ordinals, which Feferman carried on. The paper reads the
             whole progression as one point: in the frontier's results of <Means>$[[ The Documents ]]( Arithmetic Notebook / The Documents )</Means>,
             result E, "the progression Con, Con(PA + Con), and on, lies in the frontier, pairwise inequivalent and
-            one point under the identity, so Turing and Feferman were enumerating names of ε". On Doug's word of 10
+            one point under the identity, so Turing and Feferman were enumerating names of ε". On my word of 10
             November 2026, Turing and Feferman are "the biggest names that my alternate interpretation of Godel
             chnages" (in the room, 10 November 2026).
         </Paragraph>

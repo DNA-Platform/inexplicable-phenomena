@@ -6,9 +6,9 @@ export default () => (
         <Part>The Formalism</Part>
         <Title>[[ Always a Bridesmaid ]]</Title>
         <Paragraph>
-            Never a bride. Set down from his Claude Desktop session of 12 November 2026, on his word: "Let's
+            Never a bride. Set down from my Claude Desktop session of 12 November 2026, on my word: "Let's
             store it. It is a perfect analogy" — the analogy for how undecidable propositions work in logic,
-            his words quoted and the session's side carried in paraphrase; the walk stands in Sprint 129's
+            my words quoted and the session's side carried in paraphrase; the walk stands in Sprint 129's
             record.
         </Paragraph>
         <Section>
@@ -50,7 +50,7 @@ export default () => (
         <Section>
             <Heading>The side of proof</Heading>
             <Paragraph>
-                Two sets of rules run through this note, and his ruling is that they need not agree: "we don't
+                Two sets of rules run through this note, and my ruling is that they need not agree: "we don't
                 need the rules of proof to be the same as the rules of meaninglessness." On the side of proof:
             </Paragraph>
             <Paragraph>

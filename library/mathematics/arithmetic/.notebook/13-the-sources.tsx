@@ -5,11 +5,11 @@ export default () => (
         <Part>Beside the Paper</Part>
         <Title>[[ The Sources ]]</Title>
         <Paragraph>
-            The notes of this notebook come from six conversations between Doug and Claude in Doug's own library and
+            The notes of this notebook come from six conversations between me and Claude in my own library and
             one with Gemini pasted into the last of them. The annotations on those books cannot be referenced from
             this library, so every note cites its conversation by title, its chapter by title and its date, in the
-            form (Goldbach through Gödel, The Resolution, 1 November 2026). A quotation is Doug's words with the
-            spelling and grammar cleaned and nothing else changed, on his word of 9 November; every quoted span is
+            form (Goldbach through Gödel, The Resolution, 1 November 2026). A quotation is my words with the
+            spelling and grammar cleaned and nothing else changed, on my word of 9 November; every quoted span is
             checked against the messages before the notebook is bound, by the checker beside this chapter,
             13-the-sources~check.mjs, which takes the notebook's folder, the conversations' folders and the sprint
             chapter that records the room's words, and finds each span of four words or more in some message, four
@@ -35,13 +35,13 @@ export default () => (
             <Heading>The Gemini session and its catalogue</Heading>
             <Paragraph>
                 Subjectivity library catalogue, its subject Semantic Reference Theory, 4 and 5 November 2026, 30
-                messages with two pasted files: the transcript of Doug's session with Gemini on 3 November, and his
+                messages with two pasted files: the transcript of my session with Gemini on 3 November, and my
                 unsent message meant as its last. The transcript's Part I states the Gödel result to an outsider and
                 the coda tells the result's genesis; both are cited in the first part of this notebook. The rest of the
                 session is the program around the paper, in <Means>$[[ ./The Sketches ]]</Means>. In the conversation
-                Claude catalogued the session into a time-ordered narrative, parts by topic with Doug's quotes, the
-                relationships he and Gemini stated, and nineteen idea documents in his voice, with his quotes'
-                spelling corrected at his request; those documents stand in his Claude Docs and could not be read
+                Claude catalogued the session into a time-ordered narrative, parts by topic with my quotes, the
+                relationships Gemini and I stated, and nineteen idea documents in my voice, with my quotes'
+                spelling corrected at my request; those documents stand in my Claude Docs and could not be read
                 from here. His ruling in that conversation governs this notebook's quotes.
             </Paragraph>
         </Section>
@@ -63,8 +63,8 @@ export default () => (
             <Heading>The room</Heading>
             <Paragraph>
                 The formalism's chapters, <Means>$[[ ./The Options ]]</Means> and <Means>$[[ ./The Subject of Logic ]]</Means>,
-                quote words Doug said to the team in the sprint's room on 9 November 2026, after reading the running
-                notebook, and not in a conversation of his library. Those words are recorded verbatim in the sprint's
+                quote words I said to the team in the sprint's room on 9 November 2026, after reading the running
+                notebook, and not in a conversation of my library. Those words are recorded verbatim in the sprint's
                 chapter of the branch library, Sprint 124, The Subject of Arithmetic, and are cited here as (in the
                 room, 9 November 2026); the checker takes that chapter's verbatim passages as a source beside the
                 conversations.
@@ -77,8 +77,8 @@ export default () => (
                 Gemini session and the coda, then the stretch from 29 October to 3 November whole, then the organized
                 conversation's marks by sort, its Revisions saying what replaced what, its Archives what was left, and
                 the full text of every message quoted. Each note states the current form, cites what it deprecated by
-                date, and separates what Doug tagged for the paper from what he tagged as a sketch. The notes were
-                first written otherwise, flat across the conversation, and rewritten on 9 November on his correction:
+                date, and separates what I tagged for the paper from what I tagged as a sketch. The notes were
+                first written otherwise, flat across the conversation, and rewritten on 9 November on my correction:
                 start from the parts of a publication, have a sense of causality, newer thoughts deprecate older ones.
             </Paragraph>
         </Section>

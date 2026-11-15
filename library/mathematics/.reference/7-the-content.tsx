@@ -5,19 +5,20 @@ export default () => (
         <Part>The Forms</Part>
         <Title>[[ The Content ]]</Title>
         <Paragraph>
-            Doug's idea, 15 November 2026: a sort of thing that holds content, with a front and a back — on
+            My idea, 15 November 2026: a sort of thing that holds content, with a front and a back — on
             the back the specification, on the front the identification — like the two sides of a wikipedia
-            page, toggled back and forth. It is not a type of chapter. The name is his maybe, Content, and
-            stands until he names it: the base library already exports a word Content, a Word's content, so
+            page, toggled back and forth. It is not a type of chapter. The name, Content, is my maybe and
+            stands until I settle it: the base library already exports a word Content, a Word's content, so
             the name is to be decided when the thing moves up — and it likely moves all the way up to the
-            base library, played with here first. His frame of 16 November: the design is of the abstraction
+            base library, played with here first. My frame of 16 November: the design is of the abstraction
             that applies to anything written in any book — a way of specifying anything a book holds — tested
             on the math textbook, with components for math textbooks specializing it where more structure is
             needed, and appendix chapters open to the textbook itself. The specification it shows on its back
             takes the form of <Means>$[[ ./The Specification ]]</Means>.
         </Paragraph>
         <Paragraph>
-            The object model he described, said back from his words of 15 November 2026, amendable in place.
+            The object model, said back to me from my words of 15 November 2026, amendable in place as I
+            correct it.
         </Paragraph>
         <Paragraph>
             <List />
@@ -48,9 +49,10 @@ export default () => (
             <List />
             <Line>4. The open determinations</Line>
             <Line>4.1 The name: Content collides with the base library's word for a Word's content.</Line>
-            <Line>4.2 The toggle's mechanics: a turn of the book to the other side, or a flip in place; played for now as a flip in place — labels over hidden inputs, the chapter ruled by what is checked, no script — the ruling still his.</Line>
+            <Line>4.2 The toggle's mechanics: a turn of the book to the other side, or a flip in place; played for now as a flip in place — labels over hidden inputs, the chapter ruled by what is checked, no script — the ruling still mine.</Line>
             <Line>4.3 Whether the purpose, the project and the progress are sides of their own or parts standing with a side.</Line>
             <Line>4.4 Where it lives: played with at the library layer here, likely moved all the way up to the base library.</Line>
+            <Line>4.5 What a piece of content is and what its project is: the first play made them states of a four-mode bar, and they are not states — a project and a content are things, seen in the two sides of the chapter the content is in; the model stands to be respecified as I answer the team's questions, 16 November.</Line>
         </Paragraph>
         <Paragraph>
             The first case already stands: <Means>$[[ The Symmetry of Arithmetic ]]( Arithmetic Textbook / The Symmetry of Arithmetic )</Means>,

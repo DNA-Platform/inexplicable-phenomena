@@ -6,8 +6,8 @@ export default () => (
         <Part>The Formalism</Part>
         <Title>[[ The System P ]]</Title>
         <Paragraph>
-            Set here verbatim from the final version of his Claude Desktop session, 12 November 2026, on his word
-            that these are our notes; the walk that produced it, his questions and the rulings, stands in
+            Set here verbatim from the final version of my Claude Desktop session, 12 November 2026, on my word
+            that these are our notes; the walk that produced it, my questions and the rulings, stands in
             Sprint 128's record.
         </Paragraph>
         <Section>

@@ -29,7 +29,7 @@ export default () => (
                 "Therefore if GC proves false by check in PA, we deem PA + GC inconsistent (it would be false there
                 too) because we added GC as an axiom to express our belief that PA did not express the criterion
                 necessary to express its proof" (The Six Movements, 31 October 2026). A counterexample is a mistake
-                about numbers and never only a picture, his ruling of 1 November on the sentence that had made it
+                about numbers and never only a picture, my ruling of 1 November on the sentence that had made it
                 one: "That is a sentence iff this work is not about numbers. Yet the point I am making is that if you
                 believe that those conjectures are true statements about numbers (you think prime numbers are numbers
                 right) and you believe that those conjectures are true (for various reasons involving checking and
@@ -65,7 +65,7 @@ export default () => (
                 independent formalization through chart invariance and by every instance.
                 Its criteria: every instance checkable; conservative over PA for all it does not decide; it explains
                 the sieve theorems rather than being explained by them; its justification extrinsic in Gödel's own
-                sense (The Surviving Sentence, 29 October 2026). Doug's own form of it: "Yet... we suspect that it
+                sense (The Surviving Sentence, 29 October 2026). My own form of it: "Yet... we suspect that it
                 stands up to science!" (The Circular Reasoning Thesis, 27 October 2026). The mechanism it rests on
                 is <Means>$[[ ./The Mechanism ]]</Means>.
             </Paragraph>

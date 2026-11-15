@@ -15,7 +15,7 @@ export default () => (
             <Heading>The flatness axiom</Heading>
             <Paragraph>
                 PA proves that no successor is 0, and that axiom is what forces the domain infinite; remove it and
-                every finite ring is a model of what remains. Doug's argument of 1 November: "Do you believe that
+                every finite ring is a model of what remains. My argument of 1 November: "Do you believe that
                 numbers are the completion of a set that was always closed under addition and multiplication? Until
                 you said 0 has no successor, your expression of closure of + and * meant you believed in that. Well
                 then forcing the fact about 0 means extending the right to have an infinite domain" (Goldbach through
@@ -45,7 +45,7 @@ export default () => (
                 ω-rule; it is not first-order, by compactness; it holds in exactly the standard model, the only model
                 of PA with computable addition and multiplication by Tennenbaum; nonstandard models fail it and are
                 not rival interpretations (The Surviving Sentence, 29 October 2026). It is a semantic assertion and
-                not an axiom, and Doug's ruling of 1 November made it a naming and not an exclusion: "We did that
+                not an axiom, and my ruling of 1 November made it a naming and not an exclusion: "We did that
                 because we don't want to name any number that can't be expressed with successors of 0. And we are
                 back to PA. But we came back to a PA that has a modularity that the last one didn't, even though it
                 is identical, which means we must need additional axioms to explain the semantic change we just made"
@@ -56,7 +56,7 @@ export default () => (
         <Section>
             <Heading>Not a contradiction</Heading>
             <Paragraph>
-                When Claude framed the thesis as a contradiction selecting an axiom, Doug refused it: "I don't think
+                When Claude framed the thesis as a contradiction selecting an axiom, I refused it: "I don't think
                 ours is a contradiction" (The Flatness Belief, 29 October 2026); the picture is a limit of modular
                 arithmetics in which we must believe we are flat, and the thing all primes divide being zero was
                 already in the theory. And against a lecture on ω-inconsistency: "I am insulted. I am reinterpreting

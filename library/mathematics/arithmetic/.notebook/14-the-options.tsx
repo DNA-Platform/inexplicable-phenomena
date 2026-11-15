@@ -5,10 +5,10 @@ export default () => (
         <Part>The Formalism</Part>
         <Title>[[ The Options ]]</Title>
         <Paragraph>
-            Notes on the formalisms the notes hold, on Doug's request after reading the running notebook: "How about
+            Notes on the formalisms the notes hold, on my request after reading the running notebook: "How about
             some notes on possible formalism related to the notes. You might list some options" (in the room, 9
             November 2026). Each option says where it stands at the close of the long conversation, what it is cited
-            from, and how the newest statement bears on it: the algebraic model of the subject of logic he restated
+            from, and how the newest statement bears on it: the algebraic model of the subject of logic I restated
             and sharpened the same evening, in <Means>$[[ ./The Subject of Logic ]]</Means>. The options are not rivals; most are one
             structure seen at a different level, and the question the newest statement puts is which level the
             paper's <Means>$[[ Gödel ]]( Mathematical Library / Gödel 1931 )</Means> half is written at.
@@ -21,10 +21,10 @@ export default () => (
                 length. This is the paper's exposition form by the ruling of 31 October that the exposition carries
                 no nonstandard language (Goldbach through Gödel, The Six Movements, 31 October 2026), stated
                 in <Means>$[[ ./Zero for Proof ]]</Means>, and the frontier's eight results were proven in it under
-                Σ₁-soundness (The Formal Core, 3 November 2026). Its defense in one sentence is his: "I am just adding
+                Σ₁-soundness (The Formal Core, 3 November 2026). Its defense in one sentence is mine: "I am just adding
                 PA's zero semantics to FOL so it can host PA" (The Zero Semantics of FOL, 27 October 2026). As a
                 formalism it adds no symbol; the identity is a definable predicate of PA. The newest statement bears
-                on it this way: the inferential identity already has its face here, Pf(·, 0), and his sketch of 2
+                on it this way: the inferential identity already has its face here, Pf(·, 0), and my sketch of 2
                 November says where the rest would go, "Adding 0 as the Gödel code for the inferential identity and its
                 conclusion, both represented by zero at each level" (The Formal Core, 2 November 2026); the rational
                 identity and the logical identity have no face in PA yet, and giving them one is what the compact
@@ -36,7 +36,7 @@ export default () => (
             <Paragraph>
                 The host logic given the zeros of what it hosts, each a primitive with its identity law. His
                 naming of the kind, 28 October: "My empty proof and Con(PA) as represented by the empty string making
-                it the null proposition... These are constitutive zeros" (The Medium, 28 October 2026), and his rebuke
+                it the null proposition... These are constitutive zeros" (The Medium, 28 October 2026), and my rebuke
                 when the zeros were borrowed from a universe just declined, "Shame on you for not having the empty
                 proof and empty string in the formalism you imagine to host the truth of these things!" (The Medium).
                 The signature written in answer: strings a monoid with ε primitive and x·ε = ε·x = x; proofs a
@@ -44,7 +44,7 @@ export default () => (
                 Con(Th) this identity by name; propositions with 0-ary connectives primitive (Claude, The Medium, 28
                 October 2026). It stands as the host's signature, three carriers each with an identity posited. The
                 newest statement has the same three carriers, and corrects the third: that signature gave the
-                propositions ⊤ and ⊥ as their identities, and the same day he ruled that the one identity of the
+                propositions ⊤ and ⊥ as their identities, and the same day I ruled that the one identity of the
                 propositions is the empty string, below.
             </Paragraph>
         </Section>
@@ -74,7 +74,7 @@ export default () => (
             <Paragraph>
                 Subjects and their commitments as host axioms in arithmetized predicates, the negative space N and the
                 frontier F with ε the origin, the two-subject theorem, formal equality and the port, written on 3
-                November and named by him that evening (The Objective Bias, 3 November 2026); it is the document the
+                November and named by me that evening (The Objective Bias, 3 November 2026); it is the document the
                 paper's Gödel half draws from, said in <Means>$[[ ./The Documents ]]</Means>. It stands as the formal
                 core of the program. The newest statement is one level beneath it: Subjective Mathematics formalizes a
                 subject, PA among codes, and the algebraic model asks for the subject of logic itself, the formalization
@@ -85,7 +85,7 @@ export default () => (
             <Heading>The modular arithmetics of the family</Heading>
             <Paragraph>
                 The arithmetics modulo the primorials, each a finite circle with 0 at its top, and the method's
-                assessments made on the family and never on the limit, his ruling of 1 November (The Resolution, 1
+                assessments made on the family and never on the limit, my ruling of 1 November (The Resolution, 1
                 November 2026), in <Means>$[[ ./The Rulings ]]</Means>. It stands as the Goldbach half's formalism and
                 is number theory, not logic. The algebraic model touches it at one point only, the object: the horizon
                 0 of <Means>$[[ ./Zero as the Horizon ]]</Means> and the empty proof of the Gödel half are the one
@@ -110,7 +110,7 @@ export default () => (
                 not add an extra theorem to the language" (The Formal Core, 2 November 2026). It stands as the program;
                 Claude's verdict the same evening was that the painting holds and the theorems are short. The newest
                 statement is this program with its structure named, three identities at three levels and the semantics
-                of logic in algebraic form, and his order of work is the program's: "After we find a compact expression
+                of logic in algebraic form, and my order of work is the program's: "After we find a compact expression
                 of that, hopefully we can show how it might be formalized in PA" (in the room, 9 November 2026).
             </Paragraph>
         </Section>
@@ -121,11 +121,11 @@ export default () => (
                 and restated and sharpened on 9 November: the inferential identity as the empty proof, the rational
                 identity as the empty string, the logical identity as its truth value; the excluded middle kept; rules
                 of inference under which consistency motivates the axioms on the page; soundness as the subject being
-                formalizable; the semantics expressed through the identities and nothing else. Stated in his words and
+                formalizable; the semantics expressed through the identities and nothing else. Stated in my words and
                 gathered with the pieces above
                 in <Means>$[[ ./The Subject of Logic ]]</Means>. It is the option the paper's Gödel half is to be
                 written in if the compact expression is found; the dynamical formalism D is not among the options,
-                being a sketch for Semantic Reference Theory by his tag, in <Means>$[[ ./The Sketches ]]</Means>.
+                being a sketch for Semantic Reference Theory by my tag, in <Means>$[[ ./The Sketches ]]</Means>.
             </Paragraph>
         </Section>
     </Chapter>

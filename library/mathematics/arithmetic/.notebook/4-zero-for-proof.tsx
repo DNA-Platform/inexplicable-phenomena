@@ -16,7 +16,7 @@ export default () => (
             <Paragraph>
                 Derivations as finite sequences with concatenation and the empty sequence ε; length a homomorphism
                 onto the naturals with the length of ε equal to 0; and the axiom rule as line 1, so length 0 is
-                unassigned until the semantics assigns it. Doug's seed, 26 October: "Imagine Proof predicate with a
+                unassigned until the semantics assigns it. My seed, 26 October: "Imagine Proof predicate with a
                 witness that is proof length"; "Internalize provability. What happens if you reflect on provability
                 with this predicate?" (Goldbach through Gödel, Proof of Length Zero, 26 October 2026). His ruling that
                 the length and not the code carries the semantics: "you need numbers to be quantities for 0 to make
@@ -29,7 +29,7 @@ export default () => (
             <Heading>The identity and its lemmas</Heading>
             <Paragraph>
                 ε adjoined to the sentences as the empty proposition, with X ∧ ε = X, X ∨ ε = X, ¬ε = ε and π ⊕ ε = π,
-                not a lattice element, distributivity not asserted at it. Doug named it on 28 October, "SO then it's
+                not a lattice element, distributivity not asserted at it. I named it on 28 October, "SO then it's
                 the inferential identity!" (The Identity Element, 28 October 2026), and on 3 November corrected its
                 level: "You don't even understand that empty would be the axiomatic identity too?" (The Formal Core,
                 3 November 2026), so ε is the identity at every level, string, sentence, deduction, axiom and theory,
@@ -45,7 +45,7 @@ export default () => (
             <Paragraph>
                 PA ⊢ G ↔ Pf(G, 0); PA ⊢ Con ↔ Pf(⊥, 0); PA ⊢ Pf(Con, 0) ↔ Con; and PA does not prove Con → Con(PA + Con),
                 so Gödel's Con does not carry consistency across the addition of a true sentence and is not a
-                formalization of consistency. Doug's test, 27 October: "his Con can't be my Con. Mine captures the
+                formalization of consistency. My test, 27 October: "his Con can't be my Con. Mine captures the
                 essence of Con(PA) and his fails the transitivity of Con(PA). He never formalized it" (The Lifted
                 Arithmetization, 27 October 2026). His semantics of consistency, said back as definition: "Con(Th) is
                 the consistency of the first order theory you are in is the zero length proof, and the thing that
@@ -62,7 +62,7 @@ export default () => (
             <Paragraph>
                 The theorem at the center of the movement: PA ⊢ Pf(φ, 0) ↔ ¬Prov(φ), one sentence of the theory and
                 two meanings of it, absence as an element and absence as a negation, and PA cannot tell which it is in
-                (The Two Semantics of Zero, 1 November 2026). Doug: "this is it!! That sentence depends on what you
+                (The Two Semantics of Zero, 1 November 2026). My word: "this is it!! That sentence depends on what you
                 believe is the right proof predicate, and the same encoding can express both based on proof length"
                 (The Two Semantics of Zero). Earlier, on 26 October, the same fact in its first form, "It is
                 expressible. Prov(X,0) and Prov(not X,0) is incompleteness" (Proof of Length Zero, 26 October 2026),

@@ -5,8 +5,8 @@ export default () => (
         <Part>The Formalism</Part>
         <Title>[[ System A ]]</Title>
         <Paragraph>
-            Drafted for the textbook in the sprint of the formalization and moved to the notes on Doug's ruling
-            of 12 November 2026: the textbook's chapters follow the entry he is specifying, and this exposition
+            Drafted for the textbook in the sprint of the formalization and moved to the notes on my ruling
+            of 12 November 2026: the textbook's chapters follow the entry I am specifying, and this exposition
             is a note.
         </Paragraph>
         <Paragraph>

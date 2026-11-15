@@ -21,7 +21,7 @@ export default () => (
         </Paragraph>
         <Paragraph>
             What the paper takes from it: the other postulate adopted outright and a geometry built on it, the
-            precedent for reasoning about what an axiom is. On his word: "I would add work on geometry where
+            precedent for reasoning about what an axiom is. On my word: "I would add work on geometry where
             different postulates were adopted to justify a different geometry because we need to talk about reasoning
             about what is an axiom" (in the room, 10 November 2026); in the precedents
             of <Means>$[[ The Mechanism ]]( Arithmetic Notebook / The Mechanism )</Means>, it stands beside Lambert's

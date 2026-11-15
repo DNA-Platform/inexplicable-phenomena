@@ -33,8 +33,8 @@ export default () => (
             of <Means>$[[ Zero for Proof ]]( Arithmetic Notebook / Zero for Proof )</Means>; and the question the
             newest statement puts is which level the paper's Gödel half is written at,
             in <Means>$[[ The Options ]]( Arithmetic Notebook / The Options )</Means>. Turing and Feferman are the
-            names his reading of Gödel changes most, on Doug's word of 10 November 2026; the notes on the paper
-            itself are his to extend here.
+            names my reading of Gödel changes most, on my word of 10 November 2026; the notes on the paper
+            itself are mine to extend here.
         </Paragraph>
         <Paragraph>
             <Word>

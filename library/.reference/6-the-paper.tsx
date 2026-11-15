@@ -9,7 +9,7 @@ export default () => (
                 A paper is a citable publication held in the library as a resource: the file itself beside a chapter
                 of <Means>$[[ The Library of Mathematics ]]( Mathematical Library )</Means>, which carries the
                 paper's citation and the notes its author writes on it, the paper signed by its own author. The page
-                is minimal, on Doug's word of 10 November 2026: a small picture of the publication at the top left
+                is minimal, on my word of 10 November 2026: a small picture of the publication at the top left
                 with the text flowing under it, the citation, the notes, and a link that opens the publication in
                 another tab; the picture itself opens it. The page's form is sketch 002 of the design book, form a.
             </Paragraph>

@@ -8,10 +8,10 @@ export default () => (
             "Did you capture the idea of an algebraic model of the subject of logic?" (in the room, 9 November 2026).
             In pieces, and not as such: the notebook had the inferential identity and the empty proof, the empty string
             in the lexicon's identity column, and the lemmas, and nowhere the model with its three identities, its rules
-            of inference, its excluded middle and its soundness. This chapter states the model in his words of 9
+            of inference, its excluded middle and its soundness. This chapter states the model in my words of 9
             November, the newest statement of the formalism, gathers the earlier forms it restates, sharpens or
             renames, with the day each was first said, and ends with the team's candidate for the compact expression
-            he asked for, marked as the team's and not his, and with what is already in PA for the step after it.
+            I asked for, marked as the team's and not mine, and with what is already in PA for the step after it.
         </Paragraph>
         <Section>
             <Heading>Three identities</Heading>
@@ -61,7 +61,7 @@ export default () => (
                 interpretations: "X and not X being the same expression means the law of the excluded middle must be
                 interpreted only for sentences that are formalizable in the subject, and should therefore be removed
                 unconditionally" (The Two Semantics of Zero, 1 November 2026), and the answer that day was to keep it and
-                note that it has no content at ε. On 3 November he said what a derived identity would be: "Since
+                note that it has no content at ε. On 3 November I said what a derived identity would be: "Since
                 consistency is the inferential identity, it is a deduction that represents the absence of deducibility,
                 and the semantics of empty deductions is that were they to ever be derived, it would be a sentence on
                 the empty line of a proof that has no characters, which means the deduction couldn't be empty, which
@@ -96,7 +96,7 @@ export default () => (
                 use circular reasoning so it can't be provable" (The Formal Core, 2 November 2026). What 9 November adds
                 is the two readings of one rule, constructive and compelled, and the objectives. The team reads the last
                 sentence so: the axioms identify what the subject is about, its objectives; the logical objectives, what
-                logic itself aims at, identify what follows, its conclusions. That reading is ours and waits on his word.
+                logic itself aims at, identify what follows, its conclusions. That reading is the team's and waits on my word.
             </Paragraph>
         </Section>
         <Section>
@@ -106,7 +106,7 @@ export default () => (
                 that the subject is formalizable" (in the room, 9 November 2026). Soundness here is not a sentence of the
                 subject about itself, Prov(φ) → φ, which on 19 October was listed among the beliefs a subject cannot
                 internalize, beside finite proof length and the law of the excluded middle (Gödel's Corner, 19 October
-                2026), and whose point he had asked after that morning, "isn't that the whole point of proof and soundness
+                2026), and whose point I had asked after that morning, "isn't that the whole point of proof and soundness
                 and thus logic?" (Certainty, 19 October 2026). It is the statement that the subject has a formalization
                 at all. Formalizable was given its meaning on 2 November: "For it to be formalizable is to have certain
                 relationships to extended theories - we will prove consistency unprovable iff unformalizable because it
@@ -160,8 +160,8 @@ export default () => (
         <Section>
             <Heading>A candidate compact expression</Heading>
             <Paragraph>
-                The team's candidate, written from his words to be corrected, not his statement. In one sentence, after
-                his sharpening: the subject of logic is logic with its identities written in, each identity law saying
+                The team's candidate, written from my words to be corrected, not my statement. In one sentence, after
+                my sharpening: the subject of logic is logic with its identities written in, each identity law saying
                 that the interpretation is unchanged and the laws together being the whole of the semantics, the one
                 expression they add being consistency as the empty proof, so that the subject proves what logic proves
                 and says what logic cannot, that its consistency is expressed and not formalizable. Unfolded, the
@@ -176,8 +176,8 @@ export default () => (
                 third; φ ∨ ¬φ is valued ⊤ on every expression the subject represents and at the identity on an
                 expression it does not, which is how the identity says that the expression is illogical. A subject is
                 formalizable when the maps carry its identities to one another, and that is its soundness. What the
-                candidate leaves for him to decide: whether the values are the two-element algebra with the identity
-                outside it, his words of 9 November, or the Boolean algebra with one non-distributing element adjoined,
+                candidate leaves for me to decide: whether the values are the two-element algebra with the identity
+                outside it, my words of 9 November, or the Boolean algebra with one non-distributing element adjoined,
                 the draft of 28 October; and whether the objectives of the subject are its axioms, as read above.
             </Paragraph>
         </Section>
@@ -193,10 +193,10 @@ export default () => (
                 empty string has length 0, "both represented by zero at each level" (The Formal Core, 2 November 2026);
                 the logical identity as what the Same-Consequence Lemma detects, a sentence and its negation with equal
                 consequence, which PA states of a pair without valuing either; and the axiom rule as the proof of length
-                1 whose premise is the identity. The end his program names is the same as on 2 November, that the
+                1 whose premise is the identity. The end my program names is the same as on 2 November, that the
                 description is identical to PA, "like PA with the addition of an empty theorem to express the absence of
                 provability, that does not add an extra theorem to the language" (The Formal Core). The step waits on the
-                compact expression he accepts.
+                compact expression I accept.
             </Paragraph>
         </Section>
     </Chapter>

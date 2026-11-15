@@ -22,7 +22,7 @@ export default () => (
         <Section>
             <Heading>The work is about numbers</Heading>
             <Paragraph>
-                1 November 2026: a counterexample is a mistake about numbers, never only a picture, on his "That is a
+                1 November 2026: a counterexample is a mistake about numbers, never only a picture, on my "That is a
                 sentence iff this work is not about numbers" (The Resolution, 1 November 2026). Retires the sentence
                 that a counterexample would refute the picture and not PA + GC; the picture is a claim about the
                 numbers and the numbers can refute it.
@@ -40,7 +40,7 @@ export default () => (
         <Section>
             <Heading>No nonstandard language in the exposition</Heading>
             <Paragraph>
-                31 October 2026, on his correction of item 4 of the frame: the witness that might be larger than all
+                31 October 2026, on my correction of item 4 of the frame: the witness that might be larger than all
                 numbers and divisible by all primes is to be thought of through Proof(n, l), and "by axiom stating
                 that zero is this unique number, we imagine that we have a certain type of modular arithmetic. And we
                 note that proof of length zero is unprovable in our semantics" (The Six Movements, 31 October 2026).
