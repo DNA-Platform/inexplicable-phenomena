@@ -19,7 +19,7 @@ export default () => (
             <Heading>Two notions reimagined</Heading>
             <Paragraph>
                 Consistency is not a proposition but the inferential identity, the empty proof ε, which no sentence
-                can be; and incompleteness is not meaningful in these semantics. His words of 31 October, which turned
+                can be; and incompleteness is not meaningful in these semantics. My words of 31 October, which turned
                 the preface: "A proposition and its negation are both undecidable in the semantics when they are
                 expressed by the same (empty) proof, and are therefore not representable by the subject" (Goldbach
                 through Gödel, The Six Movements, 31 October 2026); and the same evening, "Something and its negation

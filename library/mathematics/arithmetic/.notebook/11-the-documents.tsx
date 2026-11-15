@@ -38,7 +38,7 @@ export default () => (
                 identifies it, so what survives is the objective part and the loss measures subjectivity; language
                 contraction; twelve translations of other formalisms both ways; and the assessment that the program
                 has a primitive commitment, re-derives the standard theorems as instances and has a consequence in
-                number theory. His instruction for its register: "present that all of this was distilled into
+                number theory. My instruction for its register: "present that all of this was distilled into
                 rigorous semantic reflection" (The Objective Bias). The paper's Gödel half draws Neutrality, same
                 consequence, the two-subject theorem, formal equality and the port from it.
             </Paragraph>

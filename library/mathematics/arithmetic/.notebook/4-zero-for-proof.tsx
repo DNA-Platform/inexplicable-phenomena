@@ -18,7 +18,7 @@ export default () => (
                 onto the naturals with the length of ε equal to 0; and the axiom rule as line 1, so length 0 is
                 unassigned until the semantics assigns it. My seed, 26 October: "Imagine Proof predicate with a
                 witness that is proof length"; "Internalize provability. What happens if you reflect on provability
-                with this predicate?" (Goldbach through Gödel, Proof of Length Zero, 26 October 2026). His ruling that
+                with this predicate?" (Goldbach through Gödel, Proof of Length Zero, 26 October 2026). My ruling that
                 the length and not the code carries the semantics: "you need numbers to be quantities for 0 to make
                 sense" (The Lifted Arithmetization, 27 October 2026). The lifted predicate of 31 October defines the
                 proof of length 0 as having no other length, Pf(φ, 0) := ∀ℓ ≥ 1 ¬Pf(φ, ℓ), so that in these
@@ -47,7 +47,7 @@ export default () => (
                 so Gödel's Con does not carry consistency across the addition of a true sentence and is not a
                 formalization of consistency. My test, 27 October: "his Con can't be my Con. Mine captures the
                 essence of Con(PA) and his fails the transitivity of Con(PA). He never formalized it" (The Lifted
-                Arithmetization, 27 October 2026). His semantics of consistency, said back as definition: "Con(Th) is
+                Arithmetization, 27 October 2026). My semantics of consistency, said back as definition: "Con(Th) is
                 the consistency of the first order theory you are in is the zero length proof, and the thing that
                 implies all of the axioms. We chose them in an attempt to describe a consistent vision of something"
                 (The Standard Reading, 27 October 2026). By Same-Consequence, G and ¬G both have consequence ε and

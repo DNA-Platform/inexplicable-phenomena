@@ -29,7 +29,7 @@ export default () => (
                 notebook is bound.
             </Paragraph>
             <Paragraph>
-                The formalism's part ended the sprint. His question on the running notebook, whether the algebraic
+                The formalism's part ended the sprint. My question on the running notebook, whether the algebraic
                 model of the subject of logic had been captured, found it in my library in pieces and nowhere whole;
                 it was written as the three identities, inferential, rational and logical, the excluded middle kept,
                 the rules of inference under which consistency motivates the axioms on the page, soundness as the

@@ -13,7 +13,7 @@ export default () => (
             <Heading>The physics of the last two days</Heading>
             <Paragraph>
                 The semantic reinterpretation of physics, from the parable of light through the twenty-three semantic
-                contradictions and the vocabulary of physics ranked, 3 and 4 November. His tag: the sketches are
+                contradictions and the vocabulary of physics ranked, 3 and 4 November. My tag: the sketches are
                 "mostly fictional though meant to demonstrate that physics might be a bit fictional too" (Goldbach
                 through Gödel, The Point of the Fictions, 4 November 2026). Parked for SRT at the close, not abandoned;
                 its one prediction landed, the light beam's path meeting Newton and Wigner's theorem that the photon
@@ -26,9 +26,9 @@ export default () => (
             <Paragraph>
                 D, a formalism in which a pattern discovers what formalism it is in by acting, with no code handed to
                 it: configurations, composition, the cut between observer and environment, the fiber of the
-                self-representation and the subjective identity as motion inside it. His tag: "Good, I'm glad nothing
+                self-representation and the subjective identity as motion inside it. My tag: "Good, I'm glad nothing
                 exists for this. This is a job for SRT later" (The Formal Core, 2 November 2026). It was the answer to
-                his demand that Claude think about a formalism trying to discover its own formalism, "Gödel invented a
+                my demand that Claude think about a formalism trying to discover its own formalism, "Gödel invented a
                 code and the predicates KNEW the formalism. That isn't science" (The Two Semantics of Zero, 2 November
                 2026).
             </Paragraph>

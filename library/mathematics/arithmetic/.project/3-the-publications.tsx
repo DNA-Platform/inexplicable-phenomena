@@ -6,8 +6,8 @@ export default () => (
         <Paragraph>
             The third sprint of arithmetic, opened on 10 November 2026 at the second's close, on my word that the
             next sprint looks at our notes and identifies publications to put in <Means>$[[ the library ]]( Mathematical Library )</Means>:
-            the essentials, since he reviews each, one for each thing the notes lean on, and Turing besides, he and
-            Feferman being the biggest names his reading of Gödel changes. Closed the same day.
+            the essentials, since I review each, one for each thing the notes lean on, and Turing besides, he and
+            Feferman being the biggest names my reading of Gödel changes. Closed the same day.
         </Paragraph>
         <Section>
             <Heading>What the third sprint accomplished</Heading>
@@ -40,7 +40,7 @@ export default () => (
                 Feferman and Rosser; The Mechanism to Lobachevsky, Beltrami, Hilbert 1901, the Grundlagen, Gauss,
                 Dedekind and Turing 1936; Goldbach to Turing 1936; The Subject of Logic to Kripke; Two-Sided
                 Arithmetic to Hardy and Littlewood and Chen. Two sentences were added to The Mechanism's geometric
-                precedent for the works he added, Lobachevsky's postulate adopted outright and Hilbert's
+                precedent for the works I added, Lobachevsky's postulate adopted outright and Hilbert's
                 independence proofs, on my word that we need to talk about reasoning about what an axiom is. The
                 library's table lists the fifteen under The Papers, its synopsis says what the book holds, and the
                 prover walks every row, asking each held file and picture.
@@ -49,7 +49,7 @@ export default () => (
         <Section>
             <Heading>What the third sprint leaves</Heading>
             <Paragraph>
-                His review of the fifteen, which is why the list was cut to essentials. The five under copyright,
+                My review of the fifteen, which is why the list was cut to essentials. The five under copyright,
                 read at their publishers; Chen's address. The rest
                 of the references in <Means>$[[ The Papers ]]( ./Sprint 125 )</Means> stay references, each restored
                 to a chapter on my word. The library's publishing, which waits on the repository's settings.

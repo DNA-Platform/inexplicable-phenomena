@@ -24,7 +24,7 @@ export default () => (
                 proof length of zero and ours uses it to encode the absence of a proof - that is something and its
                 negation are the same because each interpretation represents the same semantic concept but
                 represented in different subjects" (The Two Semantics of Zero, 1 November 2026). The same reading
-                given to Gemini, in the words he marked as a huge change: "Zero turns an absence of ontological
+                given to Gemini, in the words I marked as a huge change: "Zero turns an absence of ontological
                 object into the presence of absent object to serve as the identity ontological consistency"
                 (Subjectivity library catalogue, the Gemini transcript, 3 November 2026).
             </Paragraph>

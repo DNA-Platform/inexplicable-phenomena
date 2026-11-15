@@ -34,7 +34,7 @@ export default () => (
         <Section>
             <Heading>The host with its zeros</Heading>
             <Paragraph>
-                The host logic given the zeros of what it hosts, each a primitive with its identity law. His
+                The host logic given the zeros of what it hosts, each a primitive with its identity law. My
                 naming of the kind, 28 October: "My empty proof and Con(PA) as represented by the empty string making
                 it the null proposition... These are constitutive zeros" (The Medium, 28 October 2026), and my rebuke
                 when the zeros were borrowed from a universe just declined, "Shame on you for not having the empty
@@ -95,7 +95,7 @@ export default () => (
         <Section>
             <Heading>The hypothetical semantics</Heading>
             <Paragraph>
-                His program of 2 November for the formalism of the identities, with its name: "I think we need to build
+                My program of 2 November for the formalism of the identities, with its name: "I think we need to build
                 a really beautiful algebraic description of FOL that can express PA that has the inferential identity as
                 the consistency of the theory as described in FOL. I think we would provide a separate algebraic
                 formalism to express the theory, because that is not in FOL, and perhaps we might call it first order

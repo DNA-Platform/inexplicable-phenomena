@@ -15,7 +15,7 @@ export default () => (
             <Heading>The wedding and the subject</Heading>
             <Paragraph>
                 An unformalizable sentence is always a composite, never the identity of the sentence. A
-                bridesmaid is in every wedding she attends and is never the one the wedding is about. His
+                bridesmaid is in every wedding she attends and is never the one the wedding is about. My
                 version names the occasion too: "A bridesmaid can be a component of a wedding, but in a
                 gendered thing that creates an identity out of two opposites, there can be parts of that that
                 are necessary, but have no identity in terms of marriage."
@@ -90,7 +90,7 @@ export default () => (
         <Section>
             <Heading>The identification of truth</Heading>
             <Paragraph>
-                His ruling, the moment the analogy arrived: "It can't be an identity! Yes, this is it. The
+                My ruling, the moment the analogy arrived: "It can't be an identity! Yes, this is it. The
                 theorems that have it always have it as a composite. It is never the identity of the
                 sentence. Right here, this is the identification of truth." Stated plainly: a sentence is
                 identified when it is the whole of what some proof arrives at. Truth is being that whole.

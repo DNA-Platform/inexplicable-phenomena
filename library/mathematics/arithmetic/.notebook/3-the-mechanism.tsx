@@ -9,7 +9,7 @@ export default () => (
             at every finite stage whose proof uses a property every stage has and the limit lacks. The proof doesn't
             survive the limit, because it used the property. The sentence survives, because it never mentioned it.
             A sentence that survives the loss of its proof is an axiom" (Goldbach through Gödel, The Surviving
-            Sentence, 29 October 2026). His word on it: "this is very good. Note this in the memory of this or in a
+            Sentence, 29 October 2026). My word on it:"this is very good. Note this in the memory of this or in a
             document", being "a good description of how we arrive at an axiom that has the computationally
             checkable property that we expect but isn't generalizable" (The Surviving Sentence). It is the one
             document of the three that the paper rests on, The Type of Result, saved that day.

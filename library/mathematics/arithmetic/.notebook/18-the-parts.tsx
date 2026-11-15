@@ -121,7 +121,7 @@ export default () => (
         <Section>
             <Heading>The essential fact</Heading>
             <Paragraph>
-                The second movement states the fact and derives it. His: "what can be referred to sensibly is
+                The second movement states the fact and derives it. Mine:"what can be referred to sensibly is
                 subjective, so that we draw our inspiration from the idea that infinity is not something that can be
                 referred to sensibly in regard to what can be represented in language, yet the universal quantifier
                 expresses generalization over all, but not that it can be removed and replaced with for none instead. To
@@ -130,7 +130,7 @@ export default () => (
                 terms, "every number having a successor, so that it expresses totality in the absence. Yet we refer to
                 the existence of the absence of quantity as an undifferentiated identity. So to refer to that object
                 directly is to refer to something indistinct from zero". The object that makes the numbers unsymmetric,
-                his of 12 November: "Gödel's diagonalization is inspired by Cantor. And Cantor expresses a completed
+                mine of 12 November:"Gödel's diagonalization is inspired by Cantor. And Cantor expresses a completed
                 totality that can be distinguished from zero. Aleph not is not zero right? To express that is to be
                 subjectively inconsistent with the subject we are referring to as arithmetic. That object is the thing
                 that makes N unsymmetric"; the ω-complete witness is the same object under another name.
@@ -178,7 +178,7 @@ export default () => (
             <Paragraph>
                 The fourth movement, ending on symmetry. The number divided by everything up to N is the factorial-like
                 thing, the product of the primes below N; the one divided by everything is zero, and PA proves it is the
-                only one. His Euclid form of 12 November: "Imagine the form of Euclid's proof is: Assume all primes are
+                only one. My Euclid form of 12 November: "Imagine the form of Euclid's proof is: Assume all primes are
                 the primes less than N - One interpretation: Oh well the product of all of them is a GC counterexample.
                 Have I disproved GC yet? Answer: No, because that number plus one is another prime. Repeat. Second
                 Answer: No because that number is 0 which doesn't apply. You can repeat this same argument to twin primes

@@ -42,7 +42,7 @@ export default () => (
                 Claude catalogued the session into a time-ordered narrative, parts by topic with my quotes, the
                 relationships Gemini and I stated, and nineteen idea documents in my voice, with my quotes'
                 spelling corrected at my request; those documents stand in my Claude Docs and could not be read
-                from here. His ruling in that conversation governs this notebook's quotes.
+                from here. My ruling in that conversation governs this notebook's quotes.
             </Paragraph>
         </Section>
         <Section>

@@ -39,9 +39,9 @@ export default () => (
         <Section>
             <Heading>A torus for each prime</Heading>
             <Paragraph>
-                His identification finishes the shape. If the far end is zero, the two ends of the cylinder are one
+                My identification finishes the shape. If the far end is zero, the two ends of the cylinder are one
                 place; join them and the cylinder is a torus, around in one direction because the prime turns, around in
-                the other because the far end is the origin: the torus he was picturing, every direction returning, the
+                the other because the far end is the origin: the torus I was picturing, every direction returning, the
                 one I had named in the room as "a sort of torus with no hole because the hole would be zero" (in the
                 room, 12 November 2026). It is not one torus for the whole plane, because the primes turn at rates that
                 never agree, the turning of p repeating every 2π over the logarithm of p and no two primes' logarithms
@@ -74,10 +74,10 @@ export default () => (
                 the least number by size is the greatest by what divides it; in the primes, a mirror that pairs them
                 about every center; in zeta, a symmetry that trades zero for infinity, with everything in question lying
                 on the line where they balance. The first was built from thinking about what a subject can refer to; the
-                last has stood in Riemann's paper of 1859, which he had not read. The conversation's judgment, Claude's
+                last has stood in Riemann's paper of 1859, which I had not read. The conversation's judgment, Claude's
                 on the desktop app: the claim the title depends on is still unproved, and the fit is no longer an
                 appealing picture, since three independent parts of mathematics showing the same exchange at exactly
-                their hardest open questions is the kind of thing that means something is there. His reply places the
+                their hardest open questions is the kind of thing that means something is there. My reply places the
                 work: "Good analysis. I can't believe it but this work is about a problem that I never cared about at
                 all while actually meant as preliminary work to define consciousness" (on the desktop app, 12 November
                 2026).

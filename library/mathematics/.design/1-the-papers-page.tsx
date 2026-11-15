@@ -85,7 +85,7 @@ export default () => (
         <Section>
             <Heading>Sketch 003, the cover</Heading>
             <Paragraph>
-                His number on 002 was a, the picture at the top left with the text flowing under it; and on its table
+                My number on 002 was a, the picture at the top left with the text flowing under it; and on its table
                 I asked instead for the cover: a transition when the book is first opened, the feel of a book, not
                 unlike the paper's picture but bigger, in ideas that match the current theme's feel. The third sketch
                 puts three ideas of the cover on a switch, each a board built from the page's own words in the theme's
@@ -143,7 +143,7 @@ export default () => (
         <Section>
             <Heading>Sketch 004, the book's cover</Heading>
             <Paragraph>
-                His word on 003, "It's good", and three corrections: the author and the subject on the cover itself,
+                My word on 003,"It's good", and three corrections: the author and the subject on the cover itself,
                 no header above it, the shape of a book cover, and a click anywhere on the book opening the contents.
                 So the fourth sketch shows the cover alone on its page, the running head and the byline gone while the
                 book is closed and back when it opens; the book two by three, narrower than the measure, standing in

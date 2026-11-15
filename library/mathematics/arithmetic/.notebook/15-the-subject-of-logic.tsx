@@ -28,8 +28,8 @@ export default () => (
                 positively alongside Gödel's as a subjective alternative"; "It is not just unprovable, it is also
                 unformalizable. It exists as the empty string"; and of the value, "the truth value of the sentence that
                 expresses consistency. It is... the logical identity. It represents the idea of being unformalizable in
-                logic" (Subjectivity library catalogue, the Gemini transcript, 3 November 2026). He named the three on
-                5 November when he quoted that passage back to Claude, "inferential identity, propositional identity,
+                logic" (Subjectivity library catalogue, the Gemini transcript, 3 November 2026). I named the three on
+                5 November when I quoted that passage back to Claude, "inferential identity, propositional identity,
                 logical identity" (Subjectivity library catalogue, 5 November 2026). The lexicon written later on 3
                 November had its own column, inferential ε, referential 0, representational the empty string,
                 epistemological Pf(y, 0), "and they are one object in Gödel's chart, which is the chart's whole point"
@@ -57,7 +57,7 @@ export default () => (
                 value (Claude, Certainty, 19 October 2026). On 28 October the identity absorbed it: "G and not G have the
                 empty proof, so G and not G are Con(PA) and Con(PA) which is just Con(PA) which we already know anyways"
                 (The Identity Element, 28 October 2026), "Excluded middle holds; it just evaluates to the identity"
-                (Claude, The Identity Element). On 1 November he weighed removal, under the heading of dangerous
+                (Claude, The Identity Element). On 1 November I weighed removal, under the heading of dangerous
                 interpretations: "X and not X being the same expression means the law of the excluded middle must be
                 interpreted only for sentences that are formalizable in the subject, and should therefore be removed
                 unconditionally" (The Two Semantics of Zero, 1 November 2026), and the answer that day was to keep it and
@@ -184,7 +184,7 @@ export default () => (
         <Section>
             <Heading>Toward PA</Heading>
             <Paragraph>
-                His order: "After we find a compact expression of that, hopefully we can show how it might be formalized
+                My order:"After we find a compact expression of that, hopefully we can show how it might be formalized
                 in PA" (in the room, 9 November 2026). What PA already carries, from <Means>$[[ ./Zero for Proof ]]</Means>:
                 the inferential identity as Pf(·, 0), with PA ⊢ Pf(φ, 0) ↔ ¬Prov(φ) and PA ⊢ Con ↔ Pf(⊥, 0); the
                 Neutrality Lemma and the Same-Consequence Lemma; and the frontier's results A to H, Pf(S, 0) never
