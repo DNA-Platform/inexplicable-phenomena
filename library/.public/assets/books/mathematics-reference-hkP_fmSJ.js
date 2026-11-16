@@ -39,9 +39,13 @@ export class $Content extends $Format {
     // a 1.55 line. SAMENESS IN LAYOUT: the Chapter label's ::before is untouched and pinned to the book's
     // face and ink, so the title's box is identical on both sides; the # sits as an ::after hung 2ch into
     // the left gutter, the editor's margin decoration, so the title's text never moves at all; the
-    // section headings keep the serif heading's box — 1.15 of the size, the section's margin. The mild
-    // highlight is eyedroppered from the screenshot of his own editor, "We are talking about something like
-    // that": headings and their marks #0c4c84, the quoted italic #840484, bold leads #000080, body the ink.
+    // section headings keep the serif heading's box — 1.15 of the size, the section's margin. The palette
+    // came from an eight-variant matrix photographed beside the serif reference, on his "Play around. Be
+    // creative. Get it to match... Don't have the markdown be LOUD!!": the quiet winner keeps title, headings,
+    // leads and body in the book's own ink at regular weight, and colors only the # and ## marks in the
+    // theme's link — the color the citations already wear on both sides. His harmony rule finished it: the
+    // italics too stay in the ink, italic their only voice; the one foreign magenta went with the blues.
+    // One palette across the two faces; the markdown-ness is the face and the marks.
     override style = selection.div\`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -56,15 +60,12 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * \${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, \${({ theme }) => theme.ink} 52%, \${({ theme }) => theme.paper}); margin-block: 0 .5em; }
         .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.85 * \${({ theme }) => theme.size}); line-height: 1.55; }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * \${({ theme }) => theme.size}); margin-block: \${({ theme }) => theme.space} 0; color: #0c4c84; }
-        .pc-specification .pc-markdown h2::before { content: '## '; color: inherit; }
-        .pc-specification .pc-markdown strong { color: #000080; }
-        .pc-specification .pc-markdown em { color: #840484; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * \${({ theme }) => theme.size}); margin-block: \${({ theme }) => theme.space} 0; font-weight: normal; color: \${({ theme }) => theme.ink}; }
+        .pc-specification .pc-markdown h2::before { content: '## '; color: \${({ theme }) => theme.link}; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
-        .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: #0c4c84; }
+        &:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-weight: normal; color: \${({ theme }) => theme.ink}; }
         &:has(#pc-flip:checked) .pd-title::before { font-family: \${({ theme }) => theme.font}; color: \${({ theme }) => theme.ink}; }
-        &:has(#pc-flip:checked) .pd-title::after { content: '# '; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; }
+        &:has(#pc-flip:checked) .pd-title::after { content: '# '; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: \${({ theme }) => theme.link}; }
         .pd-section.pc-project { margin-block: calc(\${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
@@ -262,4 +263,4 @@ export const Cite = $($Cite);
 export const Interpolated = $($Interpolated);
 export const Theorem = $($Theorem);
 export const Proof = $($Proof);
-`})]}),"TheContent7"),M=w(x),U=a(()=>i(M,{children:[A(),I(),N(),S(),O(),D(),P(),L(),R(),H()]}),"book");export{U as book};
+`})]}),"TheContent7"),M=w(x),K=a(()=>i(M,{children:[A(),I(),N(),S(),O(),D(),P(),L(),R(),H()]}),"book");export{K as book};

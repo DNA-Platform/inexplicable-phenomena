@@ -39,9 +39,13 @@
     <span class="hljs-comment">// a 1.55 line. SAMENESS IN LAYOUT: the Chapter label&#x27;s ::before is untouched and pinned to the book&#x27;s</span>
     <span class="hljs-comment">// face and ink, so the title&#x27;s box is identical on both sides; the # sits as an ::after hung 2ch into</span>
     <span class="hljs-comment">// the left gutter, the editor&#x27;s margin decoration, so the title&#x27;s text never moves at all; the</span>
-    <span class="hljs-comment">// section headings keep the serif heading&#x27;s box — 1.15 of the size, the section&#x27;s margin. The mild</span>
-    <span class="hljs-comment">// highlight is eyedroppered from the screenshot of his own editor, &quot;We are talking about something like</span>
-    <span class="hljs-comment">// that&quot;: headings and their marks #0c4c84, the quoted italic #840484, bold leads #000080, body the ink.</span>
+    <span class="hljs-comment">// section headings keep the serif heading&#x27;s box — 1.15 of the size, the section&#x27;s margin. The palette</span>
+    <span class="hljs-comment">// came from an eight-variant matrix photographed beside the serif reference, on his &quot;Play around. Be</span>
+    <span class="hljs-comment">// creative. Get it to match... Don&#x27;t have the markdown be LOUD!!&quot;: the quiet winner keeps title, headings,</span>
+    <span class="hljs-comment">// leads and body in the book&#x27;s own ink at regular weight, and colors only the # and ## marks in the</span>
+    <span class="hljs-comment">// theme&#x27;s link — the color the citations already wear on both sides. His harmony rule finished it: the</span>
+    <span class="hljs-comment">// italics too stay in the ink, italic their only voice; the one foreign magenta went with the blues.</span>
+    <span class="hljs-comment">// One palette across the two faces; the markdown-ness is the face and the marks.</span>
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -56,15 +60,12 @@
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 52%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
         .pc-specification .pc-markdown { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-size: calc(.85 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.55; }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> 0; color: #0c4c84; }
-        .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: inherit; }
-        .pc-specification .pc-markdown strong { color: #000080; }
-        .pc-specification .pc-markdown em { color: #840484; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> 0; font-weight: normal; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
+        .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
-        .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &amp;:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: #0c4c84; }
+        &amp;:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-weight: normal; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         &amp;:has(#pc-flip:checked) .pd-title::before { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
-        &amp;:has(#pc-flip:checked) .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; }
+        &amp;:has(#pc-flip:checked) .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
         .pd-section.pc-project { margin-block: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
