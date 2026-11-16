@@ -45,6 +45,13 @@ export class $Content extends $Format {
     // leads and body in the book's own ink at regular weight, and colors only the # and ## marks in the
     // theme's link — the color the citations already wear on both sides. His harmony rule finished it: the
     // italics too stay in the ink, italic their only voice; the one foreign magenta went with the blues.
+    // THE PERMUTATION TEST, his anchor of 2026-11-16: "the same theme flipped over some axis of code to
+    // writing, but occupying the same space and having the same feel... the feel of the permutation while
+    // preserving identity." Measured type by type: weight is identity, so the title and the section headings
+    // stay bold through the flip; and the tables shed the rendered-markdown cards for the front's own dress —
+    // the browser read the book's table as an open grid, no borders, no backgrounds, header row regular —
+    // which also obeys his oldest law of the night, no lines anywhere. Columns separate by air, rows by their
+    // leading; the cards' ruling of the earlier evening is superseded by the test.
     // One palette across the two faces; the markdown-ness is the face and the marks. THE TRANSITION'S
     // STRETCH, measured on his "Still a stretchiness to the transition": the title's width was innocent
     // (Georgia bold 372px, Consolas regular 364px); the elastic was vertical — the spec's paragraph gaps ran
@@ -64,12 +71,12 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 52%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
         .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.85 * ${({ theme }) => theme.size}); line-height: 1.55; margin-block-start: calc(${({ theme }) => theme.space} / 4); }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: normal; color: ${({ theme }) => theme.ink}; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: bold; color: ${({ theme }) => theme.ink}; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: ${({ theme }) => theme.link}; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
-        &:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-weight: normal; color: ${({ theme }) => theme.ink}; }
+        &:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.ink}; }
         &:has(#pc-flip:checked) .pd-title::before { font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
         &:has(#pc-flip:checked) .pd-title::after { content: '# '; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: ${({ theme }) => theme.link}; }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
@@ -82,11 +89,10 @@ export class $Content extends $Format {
         .pc-markdown a:hover { text-decoration: underline; }
         .pc-cite a { color: ${({ theme }) => theme.link}; text-decoration: none; cursor: pointer; }
         .pc-cite a:hover { text-decoration: underline; }
-        .pc-markdown table { width: 100%; border-collapse: separate; border-spacing: 0; margin-block: 1.2em; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 14%, ${({ theme }) => theme.paper}); border-radius: 8px; overflow: hidden; }
-        .pc-markdown th, .pc-markdown td { padding: .55em .85em; text-align: start; vertical-align: top; }
-        .pc-markdown thead th { background: color-mix(in srgb, ${({ theme }) => theme.ink} 4%, ${({ theme }) => theme.paper}); color: color-mix(in srgb, ${({ theme }) => theme.ink} 72%, ${({ theme }) => theme.paper}); font-weight: 600; }
-        .pc-markdown tbody td, .pc-markdown tbody th { border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 11%, ${({ theme }) => theme.paper}); }
-        .pc-markdown th + th, .pc-markdown td + td { border-inline-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 11%, ${({ theme }) => theme.paper}); }
+        .pc-markdown table { width: 100%; border-collapse: collapse; margin-block: ${({ theme }) => theme.space}; }
+        .pc-markdown th, .pc-markdown td { padding: .3em 1.2em .3em 0; text-align: start; vertical-align: top; }
+        .pc-markdown th:last-child, .pc-markdown td:last-child { padding-inline-end: 0; }
+        .pc-markdown thead th { font-weight: 400; }
         .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.5em; margin-block: .9em; }
         .pc-markdown li { margin-block: .35em; }
         .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }
