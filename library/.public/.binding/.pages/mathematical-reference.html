@@ -31,6 +31,11 @@
     <span class="hljs-comment">// ONE UNLABELLED CONTROL TO THE RIGHT OF THE TITLE, Doug, 2026-11-16: &quot;how about a toggle to the right of</span>
     <span class="hljs-comment">// the title and it has no label. One can just explore&quot; — and the back announces itself in the literal:</span>
     <span class="hljs-comment">// the title turns into # Title while the project side shows; the [Project] tag of the same day is struck.</span>
+    <span class="hljs-comment">// THE FLIP SETTLES, Doug, 2026-11-16: &quot;that has being aligned will cause a jump and it is the jump of</span>
+    <span class="hljs-comment">// coming out of the matrix. Is there a slight transition... It would have to be very subtle because this</span>
+    <span class="hljs-comment">// is a text-oriented site&quot; — the frame holds still and the chapter&#x27;s content alone eases from dimmed ink</span>
+    <span class="hljs-comment">// to full over 220ms, a print developing; nothing moves, since movement would break the sameness. Two</span>
+    <span class="hljs-comment">// identical keyframes under two names so each direction restarts the settle; reduced motion is honored.</span>
     <span class="hljs-comment">// THE SOURCE PANE IS A WHITE VSCODE, his rulings of 2026-11-16: &quot;a white vscode theme that feels natural.</span>
     <span class="hljs-comment">// Takes up the same space as the other side&quot;, then &quot;sameness in layout — the same title in same place,</span>
     <span class="hljs-comment">// gets a # and changes font&quot;, then &quot;choose a monospace that doesn&#x27;t feel too hard&quot;. The elegance answer:</span>
@@ -61,6 +66,11 @@
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
+        @keyframes pc-settle { from { opacity: 0.35; } to { opacity: 1; } }
+        @keyframes pc-settle-back { from { opacity: 0.35; } to { opacity: 1; } }
+        &amp;:has(#pc-flip:checked) .pd-chapter { animation: pc-settle 0.22s ease-out; }
+        &amp;:not(:has(#pc-flip:checked)) .pd-chapter { animation: pc-settle-back 0.22s ease-out; }
+        @media (prefers-reduced-motion: reduce) { .pd-chapter { animation: none !important; } }
         .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
         .pc-flip { display: inline-block; box-sizing: border-box; inline-size: 0.9em; block-size: 0.9em; border: 1.5px solid color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 65%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); background: <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>; transition: border-width .15s ease, border-color .15s ease; }

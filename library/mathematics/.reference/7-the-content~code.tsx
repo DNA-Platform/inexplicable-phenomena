@@ -31,6 +31,11 @@ export class $Content extends $Format {
     // ONE UNLABELLED CONTROL TO THE RIGHT OF THE TITLE, Doug, 2026-11-16: "how about a toggle to the right of
     // the title and it has no label. One can just explore" — and the back announces itself in the literal:
     // the title turns into # Title while the project side shows; the [Project] tag of the same day is struck.
+    // THE FLIP SETTLES, Doug, 2026-11-16: "that has being aligned will cause a jump and it is the jump of
+    // coming out of the matrix. Is there a slight transition... It would have to be very subtle because this
+    // is a text-oriented site" — the frame holds still and the chapter's content alone eases from dimmed ink
+    // to full over 220ms, a print developing; nothing moves, since movement would break the sameness. Two
+    // identical keyframes under two names so each direction restarts the settle; reduced motion is honored.
     // THE SOURCE PANE IS A WHITE VSCODE, his rulings of 2026-11-16: "a white vscode theme that feels natural.
     // Takes up the same space as the other side", then "sameness in layout — the same title in same place,
     // gets a # and changes font", then "choose a monospace that doesn't feel too hard". The elegance answer:
@@ -61,6 +66,11 @@ export class $Content extends $Format {
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
+        @keyframes pc-settle { from { opacity: 0.35; } to { opacity: 1; } }
+        @keyframes pc-settle-back { from { opacity: 0.35; } to { opacity: 1; } }
+        &:has(#pc-flip:checked) .pd-chapter { animation: pc-settle 0.22s ease-out; }
+        &:not(:has(#pc-flip:checked)) .pd-chapter { animation: pc-settle-back 0.22s ease-out; }
+        @media (prefers-reduced-motion: reduce) { .pd-chapter { animation: none !important; } }
         .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
         .pc-flip { display: inline-block; box-sizing: border-box; inline-size: 0.9em; block-size: 0.9em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); background: ${({ theme }) => theme.paper}; transition: border-width .15s ease, border-color .15s ease; }
