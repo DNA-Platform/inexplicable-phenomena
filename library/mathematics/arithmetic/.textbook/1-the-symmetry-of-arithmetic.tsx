@@ -287,7 +287,10 @@ export default () => (
         </Paragraph>
         <Specification>
             <Heading>Specification</Heading>
-            <Markdown identifier="statement-of-work" />
+            <Markdown
+                identifier="statement-of-work"
+                tree
+            />
         </Specification>
         <Progress>
             <Heading>Progress</Heading>

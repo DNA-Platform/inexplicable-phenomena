@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode } from 'react';
+import { DragEvent, MouseEvent, ReactNode } from 'react';
 import katex from 'katex';
 import { marked } from 'marked';
 import { $, selection } from '@dna-platform/chemistry';
@@ -35,6 +35,7 @@ export class $Content extends $Format {
     // the document root, beyond a scoped sheet's reach; reduced motion collapses the dissolve to the swap.
     flip = (press: MouseEvent<HTMLLabelElement>): void => {
         press.preventDefault();
+        cover();
         const box = document.getElementById('pc-flip');
         if (!(box instanceof HTMLInputElement)) return;
         const turn = (): void => { box.checked = !box.checked; };
@@ -130,9 +131,11 @@ export class $Content extends $Format {
         .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.9 * ${({ theme }) => theme.size}); line-height: calc(1.412 * ${({ theme }) => theme.size}); margin-block-start: calc(${({ theme }) => theme.space} / 4); }
         .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(.9 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: 600; color: ${({ theme }) => theme.ink}; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: ${({ theme }) => theme.link}; }
-        .pc-specification .pc-markdown h2:first-of-type { display: none; }
+        .pc-specification .pc-markdown > h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
-        .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
+        .pc-specification .pc-markdown > h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
+        .pc-specification .pc-markdown .pc-spart:first-of-type > h2 { display: none; }
+        .pc-specification .pc-markdown .pc-spart:first-of-type > .pc-kids { margin-inline-start: 0; }
         .pd-title { position: relative; }
         .pd-title::before { color: ${({ theme }) => theme.ink}; }
         .pd-title::after { content: '# '; position: absolute; inset-inline-start: 0; inset-block-end: 0; opacity: 0; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.link}; }
@@ -161,6 +164,36 @@ export class $Content extends $Format {
         .pc-theorem { counter-increment: theorem; }
         .pc-theorem::before { content: 'Theorem ' counter(theorem) '.'; font-weight: bold; margin-inline-end: .5em; }
         .pc-proof::before { content: 'Proof.'; font-style: italic; margin-inline-end: .5em; }
+        .pc-tree-bar { display: flex; align-items: center; gap: 1.6em; font-size: calc(.7 * ${({ theme }) => theme.size}); letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); margin-block-end: calc(${({ theme }) => theme.space} / 2); user-select: none; }
+        .pc-layerbox { display: inline-flex; align-items: center; gap: .6em; cursor: pointer; }
+        .pc-anno-master, .pc-sec-anno { appearance: none; inline-size: .85em; block-size: .85em; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); background: ${({ theme }) => theme.paper}; margin: 0; cursor: pointer; flex: none; }
+        .pc-anno-master:checked, .pc-sec-anno:checked { border-width: 3px; }
+        .pc-sec-anno { margin-inline-start: .9em; vertical-align: -1px; }
+        .pc-showall { display: none; cursor: pointer; color: ${({ theme }) => theme.link}; }
+        .pc-tree:has(.pc-hidden) .pc-showall { display: inline; }
+        .pc-spart { position: relative; }
+        .pc-spart > h2 { cursor: pointer; user-select: none; }
+        .pc-kids { margin-inline-start: 2ch; }
+        .pc-folded > .pc-kids { display: none; }
+        .pc-count { display: none; font-weight: 400; opacity: .5; margin-inline-start: .75em; }
+        .pc-folded > h2 .pc-count { display: inline; }
+        .pc-part { position: relative; }
+        .pc-hidden { display: none; }
+        .pc-x { position: absolute; inset-inline-start: -2.6ch; inset-block-start: 0; inline-size: 2ch; text-align: center; opacity: 0; cursor: pointer; }
+        .pc-sec-x { inset-block-start: calc(${({ theme }) => theme.space} + .2em); }
+        .pc-part:hover > .pc-x, .pc-spart:hover > .pc-sec-x { opacity: .35; }
+        .pc-x:hover { opacity: .7; }
+        .pc-before { box-shadow: 0 -2px 0 0 color-mix(in srgb, ${({ theme }) => theme.link} 55%, transparent); }
+        .pc-after { box-shadow: 0 2px 0 0 color-mix(in srgb, ${({ theme }) => theme.link} 55%, transparent); }
+        .pc-claused { position: relative; }
+        .pc-anno { position: absolute; inset-inline-start: calc(100% + 32px); inset-block-start: 2px; inline-size: 196px; font-family: ${({ theme }) => theme.font}; font-size: calc(.73 * ${({ theme }) => theme.size}); line-height: 1.45; letter-spacing: normal; text-transform: none; font-weight: 400; display: none; }
+        .pc-spart:has(> h2 .pc-sec-anno:checked) .pc-anno { display: block; }
+        .pc-anno-tag { font-size: .85em; letter-spacing: .14em; text-transform: uppercase; }
+        .pc-open { opacity: .5; }
+        .pc-anno-why { opacity: .7; }
+        .pc-anno[data-claim] { cursor: pointer; }
+        td > .pc-anno { position: static; display: none; inline-size: auto; margin-inline-start: .9em; white-space: nowrap; opacity: .6; }
+        .pc-spart:has(> h2 .pc-sec-anno:checked) td > .pc-anno { display: inline; }
     `;
 }
 
@@ -170,7 +203,11 @@ export class $Content extends $Format {
 // author by default as read from the cover; a discussion may stand there. The parts beyond the specification
 // are optional. One section of the chapter, the formal register.
 // NOTHING COLLAPSES, Doug, 2026-11-16: "STOP MAKING THINGS COLLAPSE!!! VERBATIM!" — the project's parts stand
-// open and whole, plain sections.
+// open and whole, plain sections. SUPERSEDED FOR THE SPECIFICATION'S TREE, Doug, 2026-11-17, Sprint 130's
+// twelfth round: "We should be able to collapse a part with sub parts... hide (entirely) and show-all parts
+// again... move them around to compare... toggle the annotations on what is visible." The parts still stand
+// open BY DEFAULT: the earlier ruling was against the page deciding for the reader, and the tree's fold is
+// the reader deciding — Our Reference / The Specification, section 9, holds the tree's specification.
 export class $Project extends $Section {
     protected override $Define(): void {
         super.$Define();
@@ -276,19 +313,184 @@ const connect = (rendered: string): string => {
     return mention(identified.slice(0, boundary), true) + mention(references, false);
 };
 
+// THE TREE, Doug, 2026-11-17, Sprint 130's twelfth round: "Specifications should always have numbers or
+// codes, always have nesting, and their numbers should nest... collapse a part with sub parts... hide
+// (entirely) and show-all parts again... move them around to compare... toggle the annotations on what is
+// visible" — and the fourteenth: "We have to implement this and it needs to be interactive and have great
+// examples." The specification of the tree is Our Reference / The Specification, section 9. This second
+// pass nests what connect identified — each heading gathers its section, each block of a section is a
+// part — and the controls ride in the markup: the fold on the heading with its quiet count, the hide in
+// the gutter, show-all and the page's annotation square in a quiet bar, a square per section in its
+// heading. Every press lands in the one dispatcher on the document below.
+const treeify = (rendered: string): string => {
+    const sections = rendered.split(/(?=<h2)/);
+    const lead = sections.shift() ?? '';
+    const bar = '<span class="pc-tree-bar"><label class="pc-layerbox"><input type="checkbox" class="pc-anno-master" checked />annotations</label><span class="pc-showall">show all</span></span>';
+    return bar + lead + sections.map(section => {
+        const heading = section.indexOf('</h2>');
+        const parts = section.slice(heading + 5).split(/(?=<(?:p|ul|ol|table|div|h3|blockquote|pre)[ >])/).filter(part => part.trim() !== '');
+        const head = `${section.slice(0, heading)}<span class="pc-count">${parts.length} parts</span><input type="checkbox" class="pc-sec-anno" checked /></h2>`;
+        const kids = parts.map(part => `<div class="pc-part" draggable="true"><span class="pc-x" title="hide">×</span>${part}</div>`).join('');
+        return `<section class="pc-spart" draggable="true"><span class="pc-x pc-sec-x" title="hide">×</span>${head}<div class="pc-kids">${kids}</div></section>`;
+    }).join('');
+};
+
+// COVERAGE FROM THE CITATIONS, clause 4.2 of Sprint 130's record made mechanism: "justifications frequently
+// map to the citations on the project side." The deliverable already cites the specification through Cite,
+// so the marks are computed from the page's own citations, never authored twice: a claimed clause wears
+// Cited and the mark leads back to the claim; an unclaimed clause reads Open; a table-row clause takes the
+// quiet inline form. Computed once, lazily, at the first flip — the client's own pass, nothing walked at
+// the server's draw.
+const cover = (): void => {
+    const tree = document.querySelector('.pc-tree');
+    if (tree === null || tree.classList.contains('pc-covered')) return;
+    tree.classList.add('pc-covered');
+    const claims = new Map<string, { at: string; count: number }>();
+    document.querySelectorAll('.pc-cite a').forEach(cite => {
+        const id = place(cite.textContent ?? '');
+        const claim = claims.get(id);
+        if (claim === undefined) {
+            cite.id = `claim-${id}`;
+            claims.set(id, { at: `claim-${id}`, count: 1 });
+        } else claim.count += 1;
+    });
+    tree.querySelectorAll('strong[id^="cite-"], td[id^="cite-"], h2[id^="cite-sec-"]').forEach(clause => {
+        const claim = claims.get(clause.id);
+        const mark = document.createElement('span');
+        if (clause.tagName === 'TD') {
+            mark.className = claim === undefined ? 'pc-anno pc-open' : 'pc-anno';
+            mark.textContent = claim === undefined ? '· open' : claim.count > 1 ? `· cited ×${claim.count}` : '· cited';
+            if (claim !== undefined) mark.setAttribute('data-claim', claim.at);
+            clause.appendChild(mark);
+            return;
+        }
+        const block = clause.tagName === 'H2' ? clause : clause.closest('p, li') ?? clause;
+        block.classList.add('pc-claused');
+        mark.className = 'pc-anno';
+        if (claim === undefined) {
+            mark.innerHTML = '<span class="pc-anno-tag pc-open">Open</span><br><span class="pc-anno-why">No part of the chapter cites this clause.</span>';
+        } else {
+            mark.setAttribute('data-claim', claim.at);
+            mark.innerHTML = `<span class="pc-anno-tag">Cited${claim.count > 1 ? ` · ${claim.count} places` : ''}</span><br><span class="pc-anno-why">The chapter claims this part; the mark leads to the claim.</span>`;
+        }
+        block.appendChild(mark);
+    });
+};
+
+let dragged: HTMLElement | null = null;
+
+const aim = (over: Element | null): HTMLElement | null => {
+    if (dragged === null || over === null) return null;
+    const group = dragged.classList.contains('pc-spart');
+    const target = group ? over.closest<HTMLElement>('.pc-spart') : over.closest<HTMLElement>('.pc-part') ?? over.closest<HTMLElement>('.pc-spart');
+    if (target === null || target === dragged || dragged.contains(target)) return null;
+    return target;
+};
+
+const unseat = (): void => {
+    document.querySelectorAll('.pc-before, .pc-after').forEach(seat => seat.classList.remove('pc-before', 'pc-after'));
+};
+
 // THE DOCUMENT RENDERS VERBATIM, Doug, 2026-11-16: "This is what it looks like. Read the markdown. Render it
 // like that. I said verbatim" — the chapter's appended markdown parsed by marked, the package's own dependency,
 // and drawn as the document renders: the bold lead-ins, the tables, the lists, the document's own title.
 // A citation click turns the page itself — the hash never moves, so the place in the address stays the chapter's.
+// With tree on — the specification's document — the one click handler is the tree's dispatcher too: the
+// gutter hides, show-all restores, the squares rule the annotation layer with the bar's square as every
+// section's at once, a heading press folds, a mark with a claim turns the page back to the citation that
+// claims it, and a citation press lands as it always has.
 export class $Markdown extends $Paragraph {
     $identifier = '';
+    $tree = false;
 
     follow = (press: MouseEvent<HTMLDivElement>): void => {
-        const citation = (press.target as Element).closest('a[href^="#cite-"]');
+        const pressed = press.target as Element;
+        const x = pressed.closest('.pc-x');
+        if (x !== null) {
+            x.closest(x.classList.contains('pc-sec-x') ? '.pc-spart' : '.pc-part')?.classList.add('pc-hidden');
+            return;
+        }
+        if (pressed.closest('.pc-showall') !== null) {
+            press.currentTarget.querySelectorAll('.pc-hidden').forEach(part => part.classList.remove('pc-hidden'));
+            return;
+        }
+        const master = pressed.closest('.pc-anno-master');
+        if (master instanceof HTMLInputElement) {
+            press.currentTarget.querySelectorAll<HTMLInputElement>('.pc-sec-anno').forEach(box => { box.checked = master.checked; });
+            return;
+        }
+        if (pressed.closest('.pc-sec-anno') !== null) {
+            const boxes = [...press.currentTarget.querySelectorAll<HTMLInputElement>('.pc-sec-anno')];
+            const all = press.currentTarget.querySelector<HTMLInputElement>('.pc-anno-master');
+            if (all !== null) all.checked = boxes.every(box => box.checked);
+            return;
+        }
+        const mark = pressed.closest('.pc-anno');
+        if (mark !== null) {
+            const claim = mark.getAttribute('data-claim');
+            if (claim !== null) {
+                const turn = (): void => {
+                    const flip = document.getElementById('pc-flip');
+                    if (flip instanceof HTMLInputElement) flip.checked = false;
+                    document.getElementById(claim)?.scrollIntoView({ block: 'center' });
+                };
+                const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
+                if (doc.startViewTransition === undefined) turn();
+                else doc.startViewTransition(turn);
+            }
+            return;
+        }
+        const heading = pressed.closest('.pc-spart > h2');
+        if (heading !== null) {
+            heading.parentElement?.classList.toggle('pc-folded');
+            return;
+        }
+        const citation = pressed.closest('a[href^="#cite-"]');
         if (citation === null) return;
         press.preventDefault();
         const landing = document.getElementById(citation.getAttribute('href')?.slice(1) ?? '');
         landing?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    grab = (grip: DragEvent<HTMLDivElement>): void => {
+        const part = (grip.target as Element).closest<HTMLElement>('.pc-part, .pc-spart');
+        if (part === null) return;
+        dragged = part;
+        grip.dataTransfer.setData('text/plain', 'part');
+        grip.dataTransfer.effectAllowed = 'move';
+    };
+
+    over = (drag: DragEvent<HTMLDivElement>): void => {
+        const target = aim(drag.target as Element);
+        unseat();
+        if (target === null) return;
+        drag.preventDefault();
+        const box = target.getBoundingClientRect();
+        target.classList.add(drag.clientY < box.top + box.height / 2 ? 'pc-before' : 'pc-after');
+    };
+
+    drop = (fall: DragEvent<HTMLDivElement>): void => {
+        const target = aim(fall.target as Element);
+        unseat();
+        if (target === null || dragged === null) return;
+        fall.preventDefault();
+        const box = target.getBoundingClientRect();
+        const before = fall.clientY < box.top + box.height / 2;
+        if (!dragged.classList.contains('pc-spart') && target.classList.contains('pc-spart')) {
+            const kids = target.querySelector('.pc-kids');
+            if (kids !== null) {
+                if (before) kids.prepend(dragged);
+                else kids.append(dragged);
+            }
+        } else {
+            target.parentElement?.insertBefore(dragged, before ? target : target.nextSibling);
+        }
+        dragged = null;
+    };
+
+    settle = (): void => {
+        unseat();
+        dragged = null;
     };
 
     get append(): $Append | undefined {
@@ -298,8 +500,19 @@ export class $Markdown extends $Paragraph {
     override write(): ReactNode {
         const append = this.append;
         if (append === undefined) return null;
-        const rendered = connect(marked.parse(html.copy(append.text), { async: false }));
-        return <div className={`pc-doc-${this.$identifier}`} onClick={this.follow} dangerouslySetInnerHTML={{ __html: rendered }} />;
+        const connected = connect(marked.parse(html.copy(append.text), { async: false }));
+        const rendered = this.$tree ? treeify(connected) : connected;
+        return (
+            <div
+                className={this.$tree ? `pc-doc-${this.$identifier} pc-tree` : `pc-doc-${this.$identifier}`}
+                onClick={this.follow}
+                onDragStart={this.grab}
+                onDragOver={this.over}
+                onDrop={this.drop}
+                onDragEnd={this.settle}
+                dangerouslySetInnerHTML={{ __html: rendered }}
+            />
+        );
     }
 
     protected override $Define(): void {
