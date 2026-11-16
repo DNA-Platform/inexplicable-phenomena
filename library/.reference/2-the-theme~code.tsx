@@ -161,7 +161,7 @@ export class $LibraryTheme extends $Theme {
                can be an attribute to capture polymorphism." — the same running head stands on every page, the square
                to the cover everywhere, the table's page included; only the title's destination flips, keyed here
                alone on the open table and the title's own data-to attribute. */
-            .pd-running-head .pd-square { margin-inline-start: .6em; }
+            .pd-running-head .pd-square { margin-inline-start: 0.6em; }
             .pd-running-head .pd-book-title[data-to="cover"] { display: none; }
             .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-book-title[data-to="table"] { display: none; }
             .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-book-title[data-to="cover"] { display: inline; }

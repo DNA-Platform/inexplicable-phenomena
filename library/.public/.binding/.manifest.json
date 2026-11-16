@@ -26,8 +26,6 @@
     ".binding/application/routes.ts"
   ],
   "rendered": [
-    "mathematical-reference/index.html",
-    "arithmetic-textbook/index.html",
     "our-team/index.html",
     "our-reference/index.html",
     "our-library/index.html",
@@ -37,11 +35,13 @@
     "mathematical-design/index.html",
     "mathematical-identity/index.html",
     "mathematical-library/index.html",
+    "mathematical-reference/index.html",
     "our-math/index.html",
     "mathematical-principles/index.html",
     "arithmetic-notebook/index.html",
     "arithmetic-project/index.html",
     "arithmetic/index.html",
+    "arithmetic-textbook/index.html",
     "neuroscience/index.html",
     "philosophy/index.html",
     "physics/index.html",
@@ -107,47 +107,46 @@
     "assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff",
     "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
     "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
-    "assets/books/.synopsis-6QjJKU83.js",
-    "assets/books/.synopsis-Bx5g6Ap3.js",
-    "assets/books/.synopsis-Byjmw91D.js",
-    "assets/books/.synopsis-D3MnHxia.js",
-    "assets/books/.synopsis-DFL4HtBP.js",
-    "assets/books/.synopsis-Dc6kiuJc.js",
-    "assets/books/.synopsis-DfsTZk3S.js",
-    "assets/books/.synopsis-Dq7DfgSJ.js",
-    "assets/books/.synopsis-DrL7o7Zn.js",
-    "assets/books/.synopsis-DsCg-y7F.js",
-    "assets/books/.synopsis-Dz9havdJ.js",
-    "assets/books/.synopsis-T0XbtRLJ.js",
-    "assets/books/.synopsis-YV9dSHv3.js",
-    "assets/books/.synopsis-c-8w0X1t.js",
-    "assets/books/.synopsis-s5yPjrz0.js",
-    "assets/books/.synopsis-tpggQI_3.js",
-    "assets/books/.synopsis-tt9EvHmS.js",
-    "assets/books/.synopsis-y75C-j0m.js",
-    "assets/books/1-the-book~code-DCqbb0j6.js",
-    "assets/books/1-the-book~code-Dtsx84cO.js",
-    "assets/books/chemistry-subject-DT2gz6yV.js",
-    "assets/books/identity-subject-G2jAp2Uo.js",
-    "assets/books/mathematics-arithmetic-notebook-DO--PqBT.js",
-    "assets/books/mathematics-arithmetic-project-DfQ0_6CO.js",
-    "assets/books/mathematics-arithmetic-subject-P3B8DVLo.js",
-    "assets/books/mathematics-arithmetic-textbook-zy0A8IzS.js",
-    "assets/books/mathematics-design-D1mpZmjZ.js",
-    "assets/books/mathematics-identity-3oe7EYhQ.js",
-    "assets/books/mathematics-library-DglMdaon.js",
-    "assets/books/mathematics-reference-D_lnC-FN.js",
-    "assets/books/mathematics-subject-L8KD895G.js",
-    "assets/books/mathematics-textbook-BcZXoaT7.js",
-    "assets/books/neuroscience-subject-zlVyPXTR.js",
-    "assets/books/philosophy-subject-R0qjgV2x.js",
-    "assets/books/physics-subject-C0cVRe8j.js",
-    "assets/books/reference-DpDkjGlE.js",
-    "assets/books/subject-Gdx9iC_j.js",
-    "assets/books/subject-design-XxkiAD9M.js",
-    "assets/books/subject-dictionary-BzHitxrC.js",
+    "assets/books/.synopsis--UcaDGdz.js",
+    "assets/books/.synopsis--ZvpS8Bk.js",
+    "assets/books/.synopsis-BDBB5koX.js",
+    "assets/books/.synopsis-Bkjy76No.js",
+    "assets/books/.synopsis-BnRGoCQ4.js",
+    "assets/books/.synopsis-BnSYguMm.js",
+    "assets/books/.synopsis-C4RUyeV4.js",
+    "assets/books/.synopsis-C7SFD9HM.js",
+    "assets/books/.synopsis-CX_4I5q2.js",
+    "assets/books/.synopsis-ChUdfiCK.js",
+    "assets/books/.synopsis-CqYYA8H_.js",
+    "assets/books/.synopsis-CsVkCp4V.js",
+    "assets/books/.synopsis-CzQBVMzz.js",
+    "assets/books/.synopsis-D39Cfv6s.js",
+    "assets/books/.synopsis-D3R7ZPoR.js",
+    "assets/books/.synopsis-DDUe2Hst.js",
+    "assets/books/.synopsis-DhF-31hX.js",
+    "assets/books/.synopsis-dyj3cphO.js",
+    "assets/books/1-the-book~code-C4ZJcmhO.js",
+    "assets/books/chemistry-subject-gEL9GeBN.js",
+    "assets/books/identity-subject-C7WK2vIt.js",
+    "assets/books/mathematics-arithmetic-notebook-BOaB6XYE.js",
+    "assets/books/mathematics-arithmetic-project-DTUxtkCs.js",
+    "assets/books/mathematics-arithmetic-subject-DHDVhso5.js",
+    "assets/books/mathematics-arithmetic-textbook-DFPAXa5D.js",
+    "assets/books/mathematics-design-B9V57gcp.js",
+    "assets/books/mathematics-identity-DcT0wsFd.js",
+    "assets/books/mathematics-library-CuQDJafg.js",
+    "assets/books/mathematics-reference-bXfcSSGx.js",
+    "assets/books/mathematics-subject-D5ZYyPVX.js",
+    "assets/books/mathematics-textbook-DuYL0pe5.js",
+    "assets/books/neuroscience-subject-C6C9UsFH.js",
+    "assets/books/philosophy-subject-BkYyzHUc.js",
+    "assets/books/physics-subject-CvgOnV33.js",
+    "assets/books/reference-B3kh_Jth.js",
+    "assets/books/subject-D_v35o3S.js",
+    "assets/books/subject-design-OeEUjMIW.js",
+    "assets/books/subject-dictionary-C4ENegYX.js",
     "assets/index-CaH6IAI_.css",
-    "assets/index-Sikx-WHg.js",
+    "assets/index-DxOZeBh5.js",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
     "assets/shared/at-dna-platform-chemistry-DA5qn-Y5.js",
@@ -165,165 +164,165 @@
   "pages": {
     "/our-team": {
       "folder": ".identity/.subject",
-      "digest": "55c410331b12d3a0",
+      "digest": "cf81d862eeadc61d",
       "references": "9534557fa93b73f2",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/our-team.html"
     },
     "/our-reference": {
       "folder": ".reference",
-      "digest": "67c31d494b1dd9e3",
+      "digest": "bf378da0102ad643",
       "references": "c693ee69a5fb3d4a",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/24e41e6aba55.css",
+      "sheet": "sheets/417fee1824ea.css",
       "markup": ".pages/our-reference.html"
     },
     "/our-library": {
       "folder": ".subject",
-      "digest": "198a6259c937e518",
+      "digest": "567cab2483c5170c",
       "references": "9bbb8ec48bf95b60",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/our-library.html"
     },
     "/the-design": {
       "folder": ".subject/.design",
-      "digest": "24f88e0ca999707e",
+      "digest": "4a5b244018840744",
       "references": "e4e830da8171ac4a",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/the-design.html"
     },
     "/dictionary": {
       "folder": ".subject/dictionary",
-      "digest": "f26f76e5c5bd4308",
+      "digest": "0ad8c19634687276",
       "references": "77125633e70b8224",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/dictionary.html"
     },
     "/chemistry": {
       "folder": "chemistry/.subject",
-      "digest": "bae7d31e1e7507e2",
+      "digest": "21e8e54d2c3b1521",
       "references": "ceb970cca938edac",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/chemistry.html"
     },
     "/mathematical-design": {
       "folder": "mathematics/.design",
-      "digest": "4e56559b4fd79ba2",
+      "digest": "6d50e5cc2bfb9e81",
       "references": "5e2d1583ed4246d7",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/mathematical-design.html"
     },
     "/mathematical-identity": {
       "folder": "mathematics/.identity",
-      "digest": "e38cc9d86c3c08cf",
+      "digest": "c969820053d08f74",
       "references": "8e2df0f3ea355b5e",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/mathematical-identity.html"
     },
     "/mathematical-library": {
       "folder": "mathematics/.library",
-      "digest": "6f3f6b0924c0c047",
+      "digest": "0aefb2fe38f098fd",
       "references": "0b108a9aef2ed979",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/mathematical-library.html"
+    },
+    "/mathematical-reference": {
+      "folder": "mathematics/.reference",
+      "digest": "bf121a1ae020dd38",
+      "references": "987064fe84991d9e",
+      "binder": "6a9cabae88b71ed1",
+      "sheet": "sheets/417fee1824ea.css",
+      "markup": ".pages/mathematical-reference.html"
     },
     "/our-math": {
       "folder": "mathematics/.subject",
-      "digest": "6293f140b728a39b",
+      "digest": "29159aed7af22e32",
       "references": "4bf601444b26b718",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/our-math.html"
     },
     "/mathematical-principles": {
       "folder": "mathematics/.textbook",
-      "digest": "de4c65c061f524e7",
+      "digest": "c8d8414157f3c933",
       "references": "1933cf3b4969d5b2",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/mathematical-principles.html"
     },
     "/arithmetic-notebook": {
       "folder": "mathematics/arithmetic/.notebook",
-      "digest": "668d51f8cfdf6712",
+      "digest": "a00a857c26332ddc",
       "references": "b9e8a4970aa197a8",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/909f3158aace.css",
+      "sheet": "sheets/6ad38d8a3d6c.css",
       "markup": ".pages/arithmetic-notebook.html"
     },
     "/arithmetic-project": {
       "folder": "mathematics/arithmetic/.project",
-      "digest": "7f09a84c55b07159",
+      "digest": "38ec134b6859105e",
       "references": "a07212032f2960ed",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/24e41e6aba55.css",
+      "sheet": "sheets/417fee1824ea.css",
       "markup": ".pages/arithmetic-project.html"
     },
     "/arithmetic": {
       "folder": "mathematics/arithmetic/.subject",
-      "digest": "74bcb825df45e550",
+      "digest": "ffc82ffd98098a4d",
       "references": "825ecab900ff05bf",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/24e41e6aba55.css",
+      "sheet": "sheets/417fee1824ea.css",
       "markup": ".pages/arithmetic.html"
+    },
+    "/arithmetic-textbook": {
+      "folder": "mathematics/arithmetic/.textbook",
+      "digest": "ce67243082b0033d",
+      "references": "4deb525a6366a4f6",
+      "binder": "6a9cabae88b71ed1",
+      "sheet": "sheets/2ba3d6a9671e.css",
+      "markup": ".pages/arithmetic-textbook.html"
     },
     "/neuroscience": {
       "folder": "neuroscience/.subject",
-      "digest": "b0dc25eae62a86c0",
+      "digest": "ab27af36388347f0",
       "references": "4252e31f701f6b21",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/neuroscience.html"
     },
     "/philosophy": {
       "folder": "philosophy/.subject",
-      "digest": "8c6f902616b5fd7c",
+      "digest": "47fafb5746a0a452",
       "references": "a11e3fd39f0ce666",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/philosophy.html"
     },
     "/physics": {
       "folder": "physics/.subject",
-      "digest": "8dd884d085c86e47",
+      "digest": "d576147096af7819",
       "references": "c5e349a87b2fe0f8",
       "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/34441d07c417.css",
+      "sheet": "sheets/f625405d1fc8.css",
       "markup": ".pages/physics.html"
-    },
-    "/mathematical-reference": {
-      "folder": "mathematics/.reference",
-      "digest": "afcf8820e4c7f8df",
-      "references": "987064fe84991d9e",
-      "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/24e41e6aba55.css",
-      "markup": ".pages/mathematical-reference.html"
-    },
-    "/arithmetic-textbook": {
-      "folder": "mathematics/arithmetic/.textbook",
-      "digest": "3c29eff24d7a16a4",
-      "references": "4deb525a6366a4f6",
-      "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/5823721ab1c3.css",
-      "markup": ".pages/arithmetic-textbook.html"
     }
   },
   "chunks": {
     ".identity/.subject": {
-      "digest": "2e45852f49d312b7",
-      "entry": "assets/books/identity-subject-G2jAp2Uo.js",
+      "digest": "418487ba7da105be",
+      "entry": "assets/books/identity-subject-C7WK2vIt.js",
       "files": [
-        "assets/books/.synopsis-Byjmw91D.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/identity-subject-G2jAp2Uo.js"
+        "assets/books/.synopsis-ChUdfiCK.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/identity-subject-C7WK2vIt.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -376,12 +375,12 @@
       }
     },
     ".reference": {
-      "digest": "fbdeb3c91da3d5b4",
-      "entry": "assets/books/reference-DpDkjGlE.js",
+      "digest": "24a3815b71eda9eb",
+      "entry": "assets/books/reference-B3kh_Jth.js",
       "files": [
-        "assets/books/.synopsis-D3MnHxia.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/reference-DpDkjGlE.js"
+        "assets/books/.synopsis-C7SFD9HM.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/reference-B3kh_Jth.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -436,20 +435,20 @@
       }
     },
     ".subject": {
-      "digest": "d01db10df2fe8b3b",
-      "entry": "assets/books/subject-Gdx9iC_j.js",
+      "digest": "7bcca91432a8a039",
+      "entry": "assets/books/subject-D_v35o3S.js",
       "files": [
-        "assets/books/.synopsis-Bx5g6Ap3.js",
-        "assets/books/.synopsis-Byjmw91D.js",
-        "assets/books/.synopsis-D3MnHxia.js",
-        "assets/books/.synopsis-DFL4HtBP.js",
-        "assets/books/.synopsis-DfsTZk3S.js",
-        "assets/books/.synopsis-DrL7o7Zn.js",
-        "assets/books/.synopsis-YV9dSHv3.js",
-        "assets/books/.synopsis-c-8w0X1t.js",
-        "assets/books/.synopsis-s5yPjrz0.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/subject-Gdx9iC_j.js"
+        "assets/books/.synopsis--ZvpS8Bk.js",
+        "assets/books/.synopsis-BDBB5koX.js",
+        "assets/books/.synopsis-BnRGoCQ4.js",
+        "assets/books/.synopsis-BnSYguMm.js",
+        "assets/books/.synopsis-C4RUyeV4.js",
+        "assets/books/.synopsis-C7SFD9HM.js",
+        "assets/books/.synopsis-CX_4I5q2.js",
+        "assets/books/.synopsis-ChUdfiCK.js",
+        "assets/books/.synopsis-CsVkCp4V.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/subject-D_v35o3S.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -501,12 +500,12 @@
       }
     },
     ".subject/.design": {
-      "digest": "91f250cf6bd8b073",
-      "entry": "assets/books/subject-design-XxkiAD9M.js",
+      "digest": "7a245e4e376f65d5",
+      "entry": "assets/books/subject-design-OeEUjMIW.js",
       "files": [
-        "assets/books/.synopsis-DfsTZk3S.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/subject-design-XxkiAD9M.js"
+        "assets/books/.synopsis-CX_4I5q2.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/subject-design-OeEUjMIW.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -559,12 +558,12 @@
       }
     },
     ".subject/dictionary": {
-      "digest": "68800b383b85e6f6",
-      "entry": "assets/books/subject-dictionary-BzHitxrC.js",
+      "digest": "33a33ecb83e4aa76",
+      "entry": "assets/books/subject-dictionary-C4ENegYX.js",
       "files": [
-        "assets/books/.synopsis-Bx5g6Ap3.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/subject-dictionary-BzHitxrC.js"
+        "assets/books/.synopsis--ZvpS8Bk.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/subject-dictionary-C4ENegYX.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -616,12 +615,12 @@
       }
     },
     "chemistry/.subject": {
-      "digest": "0a3aa8728e853f4b",
-      "entry": "assets/books/chemistry-subject-DT2gz6yV.js",
+      "digest": "b38fc26f12244279",
+      "entry": "assets/books/chemistry-subject-gEL9GeBN.js",
       "files": [
-        "assets/books/.synopsis-YV9dSHv3.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/chemistry-subject-DT2gz6yV.js"
+        "assets/books/.synopsis-BnRGoCQ4.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/chemistry-subject-gEL9GeBN.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -673,12 +672,12 @@
       }
     },
     "mathematics/.design": {
-      "digest": "20cbf1deee2b60c9",
-      "entry": "assets/books/mathematics-design-D1mpZmjZ.js",
+      "digest": "65982a6b7ef5d0fd",
+      "entry": "assets/books/mathematics-design-B9V57gcp.js",
       "files": [
-        "assets/books/.synopsis-Dz9havdJ.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-design-D1mpZmjZ.js"
+        "assets/books/.synopsis-CqYYA8H_.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-design-B9V57gcp.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -731,12 +730,12 @@
       }
     },
     "mathematics/.identity": {
-      "digest": "bb2d31a09fbea6b4",
-      "entry": "assets/books/mathematics-identity-3oe7EYhQ.js",
+      "digest": "f6a06c9e1cec3b20",
+      "entry": "assets/books/mathematics-identity-DcT0wsFd.js",
       "files": [
-        "assets/books/.synopsis-Dc6kiuJc.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-identity-3oe7EYhQ.js"
+        "assets/books/.synopsis-DhF-31hX.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-identity-DcT0wsFd.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -789,12 +788,12 @@
       }
     },
     "mathematics/.library": {
-      "digest": "929fc02b244f6351",
-      "entry": "assets/books/mathematics-library-DglMdaon.js",
+      "digest": "1b6d4fc6a9b2d599",
+      "entry": "assets/books/mathematics-library-CuQDJafg.js",
       "files": [
-        "assets/books/.synopsis-Dq7DfgSJ.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-library-DglMdaon.js"
+        "assets/books/.synopsis-D3R7ZPoR.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-library-CuQDJafg.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -847,19 +846,80 @@
         ]
       }
     },
-    "mathematics/.subject": {
-      "digest": "49500d4ed4fd8db6",
-      "entry": "assets/books/mathematics-subject-L8KD895G.js",
+    "mathematics/.reference": {
+      "digest": "726eef714680df6d",
+      "entry": "assets/books/mathematics-reference-bXfcSSGx.js",
       "files": [
-        "assets/books/.synopsis-6QjJKU83.js",
-        "assets/books/.synopsis-Dc6kiuJc.js",
-        "assets/books/.synopsis-Dq7DfgSJ.js",
-        "assets/books/.synopsis-Dz9havdJ.js",
-        "assets/books/.synopsis-c-8w0X1t.js",
-        "assets/books/.synopsis-tt9EvHmS.js",
-        "assets/books/.synopsis-y75C-j0m.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-subject-L8KD895G.js"
+        "assets/books/.synopsis-dyj3cphO.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-reference-bXfcSSGx.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "$check",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Annotation",
+          "$Book",
+          "$Chapter",
+          "$Cover",
+          "$Format",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "AnnotationSpecification",
+          "Append",
+          "Author",
+          "Chapter",
+          "Code",
+          "Content",
+          "Heading",
+          "Line",
+          "List",
+          "Means",
+          "Next",
+          "Paginated",
+          "Paragraph",
+          "Parenthetical",
+          "Part",
+          "Previous",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word",
+          "html",
+          "specify"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
+    },
+    "mathematics/.subject": {
+      "digest": "c7ca606d1440dcff",
+      "entry": "assets/books/mathematics-subject-D5ZYyPVX.js",
+      "files": [
+        "assets/books/.synopsis--UcaDGdz.js",
+        "assets/books/.synopsis-BDBB5koX.js",
+        "assets/books/.synopsis-CqYYA8H_.js",
+        "assets/books/.synopsis-CzQBVMzz.js",
+        "assets/books/.synopsis-D3R7ZPoR.js",
+        "assets/books/.synopsis-DhF-31hX.js",
+        "assets/books/.synopsis-dyj3cphO.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-subject-D5ZYyPVX.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -911,12 +971,12 @@
       }
     },
     "mathematics/.textbook": {
-      "digest": "8fe8df10a0170879",
-      "entry": "assets/books/mathematics-textbook-BcZXoaT7.js",
+      "digest": "8f03e6f135335de1",
+      "entry": "assets/books/mathematics-textbook-DuYL0pe5.js",
       "files": [
-        "assets/books/.synopsis-tt9EvHmS.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-textbook-BcZXoaT7.js"
+        "assets/books/.synopsis-CzQBVMzz.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-textbook-DuYL0pe5.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -967,12 +1027,12 @@
       }
     },
     "mathematics/arithmetic/.notebook": {
-      "digest": "87506e31c95b29f7",
-      "entry": "assets/books/mathematics-arithmetic-notebook-DO--PqBT.js",
+      "digest": "a94074d357084e1e",
+      "entry": "assets/books/mathematics-arithmetic-notebook-BOaB6XYE.js",
       "files": [
-        "assets/books/.synopsis-T0XbtRLJ.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-arithmetic-notebook-DO--PqBT.js"
+        "assets/books/.synopsis-Bkjy76No.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-arithmetic-notebook-BOaB6XYE.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1032,12 +1092,12 @@
       }
     },
     "mathematics/arithmetic/.project": {
-      "digest": "d8d8cc7667ac454d",
-      "entry": "assets/books/mathematics-arithmetic-project-DfQ0_6CO.js",
+      "digest": "a9188d34704dab3d",
+      "entry": "assets/books/mathematics-arithmetic-project-DTUxtkCs.js",
       "files": [
-        "assets/books/.synopsis-tpggQI_3.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-arithmetic-project-DfQ0_6CO.js"
+        "assets/books/.synopsis-DDUe2Hst.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-arithmetic-project-DTUxtkCs.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1090,15 +1150,15 @@
       }
     },
     "mathematics/arithmetic/.subject": {
-      "digest": "a1bd71841fd170e8",
-      "entry": "assets/books/mathematics-arithmetic-subject-P3B8DVLo.js",
+      "digest": "1a215290b443b218",
+      "entry": "assets/books/mathematics-arithmetic-subject-DHDVhso5.js",
       "files": [
-        "assets/books/.synopsis-DsCg-y7F.js",
-        "assets/books/.synopsis-T0XbtRLJ.js",
-        "assets/books/.synopsis-tpggQI_3.js",
-        "assets/books/.synopsis-y75C-j0m.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/mathematics-arithmetic-subject-P3B8DVLo.js"
+        "assets/books/.synopsis--UcaDGdz.js",
+        "assets/books/.synopsis-Bkjy76No.js",
+        "assets/books/.synopsis-D39Cfv6s.js",
+        "assets/books/.synopsis-DDUe2Hst.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-arithmetic-subject-DHDVhso5.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1131,237 +1191,6 @@
           "Paginated",
           "Paragraph",
           "Parenthetical",
-          "Previous",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word",
-          "html",
-          "specify"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
-    },
-    "neuroscience/.subject": {
-      "digest": "ec81ce10ca4cd2bf",
-      "entry": "assets/books/neuroscience-subject-zlVyPXTR.js",
-      "files": [
-        "assets/books/.synopsis-s5yPjrz0.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/neuroscience-subject-zlVyPXTR.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "$check",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Annotation",
-          "$Book",
-          "$Chapter",
-          "$Cover",
-          "$Format",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "About",
-          "AnnotationSpecification",
-          "Author",
-          "Chapter",
-          "Content",
-          "Heading",
-          "Means",
-          "Next",
-          "Paginated",
-          "Paragraph",
-          "Parenthetical",
-          "Previous",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word",
-          "html",
-          "specify"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
-    },
-    "philosophy/.subject": {
-      "digest": "ad1aa67fb6b132e5",
-      "entry": "assets/books/philosophy-subject-R0qjgV2x.js",
-      "files": [
-        "assets/books/.synopsis-DFL4HtBP.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/philosophy-subject-R0qjgV2x.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "$check",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Annotation",
-          "$Book",
-          "$Chapter",
-          "$Cover",
-          "$Format",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "About",
-          "AnnotationSpecification",
-          "Author",
-          "Chapter",
-          "Content",
-          "Heading",
-          "Means",
-          "Next",
-          "Paginated",
-          "Paragraph",
-          "Parenthetical",
-          "Previous",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word",
-          "html",
-          "specify"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
-    },
-    "physics/.subject": {
-      "digest": "f951311775fb26e8",
-      "entry": "assets/books/physics-subject-C0cVRe8j.js",
-      "files": [
-        "assets/books/.synopsis-DrL7o7Zn.js",
-        "assets/books/1-the-book~code-DCqbb0j6.js",
-        "assets/books/physics-subject-C0cVRe8j.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "$check",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Annotation",
-          "$Book",
-          "$Chapter",
-          "$Cover",
-          "$Format",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "About",
-          "AnnotationSpecification",
-          "Author",
-          "Chapter",
-          "Content",
-          "Heading",
-          "Means",
-          "Next",
-          "Paginated",
-          "Paragraph",
-          "Parenthetical",
-          "Previous",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word",
-          "html",
-          "specify"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
-    },
-    "mathematics/.reference": {
-      "digest": "8000ceed0c342a16",
-      "entry": "assets/books/mathematics-reference-D_lnC-FN.js",
-      "files": [
-        "assets/books/1-the-book~code-Dtsx84cO.js",
-        "assets/books/mathematics-reference-D_lnC-FN.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "$check",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Annotation",
-          "$Book",
-          "$Chapter",
-          "$Cover",
-          "$Format",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "AnnotationSpecification",
-          "Append",
-          "Author",
-          "Chapter",
-          "Code",
-          "Content",
-          "Heading",
-          "Line",
-          "List",
-          "Means",
-          "Next",
-          "Paginated",
-          "Paragraph",
-          "Parenthetical",
-          "Part",
           "Previous",
           "Reference",
           "Section",
@@ -1383,11 +1212,12 @@
       }
     },
     "mathematics/arithmetic/.textbook": {
-      "digest": "5328a89e35acbb2b",
-      "entry": "assets/books/mathematics-arithmetic-textbook-zy0A8IzS.js",
+      "digest": "b26dedad4b116e40",
+      "entry": "assets/books/mathematics-arithmetic-textbook-DFPAXa5D.js",
       "files": [
-        "assets/books/1-the-book~code-Dtsx84cO.js",
-        "assets/books/mathematics-arithmetic-textbook-zy0A8IzS.js"
+        "assets/books/.synopsis-D39Cfv6s.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/mathematics-arithmetic-textbook-DFPAXa5D.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1450,6 +1280,177 @@
           "css"
         ]
       }
+    },
+    "neuroscience/.subject": {
+      "digest": "94f0d05243a56167",
+      "entry": "assets/books/neuroscience-subject-C6C9UsFH.js",
+      "files": [
+        "assets/books/.synopsis-CsVkCp4V.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/neuroscience-subject-C6C9UsFH.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "$check",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Annotation",
+          "$Book",
+          "$Chapter",
+          "$Cover",
+          "$Format",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "About",
+          "AnnotationSpecification",
+          "Author",
+          "Chapter",
+          "Content",
+          "Heading",
+          "Means",
+          "Next",
+          "Paginated",
+          "Paragraph",
+          "Parenthetical",
+          "Previous",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word",
+          "html",
+          "specify"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
+    },
+    "philosophy/.subject": {
+      "digest": "314a93c591ef2133",
+      "entry": "assets/books/philosophy-subject-BkYyzHUc.js",
+      "files": [
+        "assets/books/.synopsis-C4RUyeV4.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/philosophy-subject-BkYyzHUc.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "$check",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Annotation",
+          "$Book",
+          "$Chapter",
+          "$Cover",
+          "$Format",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "About",
+          "AnnotationSpecification",
+          "Author",
+          "Chapter",
+          "Content",
+          "Heading",
+          "Means",
+          "Next",
+          "Paginated",
+          "Paragraph",
+          "Parenthetical",
+          "Previous",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word",
+          "html",
+          "specify"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
+    },
+    "physics/.subject": {
+      "digest": "81aebefb3ae32059",
+      "entry": "assets/books/physics-subject-CvgOnV33.js",
+      "files": [
+        "assets/books/.synopsis-BnSYguMm.js",
+        "assets/books/1-the-book~code-C4ZJcmhO.js",
+        "assets/books/physics-subject-CvgOnV33.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "$check",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Annotation",
+          "$Book",
+          "$Chapter",
+          "$Cover",
+          "$Format",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "About",
+          "AnnotationSpecification",
+          "Author",
+          "Chapter",
+          "Content",
+          "Heading",
+          "Means",
+          "Next",
+          "Paginated",
+          "Paragraph",
+          "Parenthetical",
+          "Previous",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word",
+          "html",
+          "specify"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
     }
   },
   "shared": {
@@ -1481,7 +1482,7 @@
     ]
   },
   "app": {
-    "digest": "c622cf6fe55ddf40",
+    "digest": "7271a39fbe422b1e",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -1543,7 +1544,7 @@
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
       "assets/index-CaH6IAI_.css",
-      "assets/index-Sikx-WHg.js"
+      "assets/index-DxOZeBh5.js"
     ],
     "bindings": {
       "@dna-platform/chemistry": [
@@ -1563,6 +1564,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-Sikx-WHg.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CaH6IAI_.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-DxOZeBh5.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CaH6IAI_.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }
