@@ -33,7 +33,7 @@ export default () => (
             <Line>1.4 It shows one side at a time and toggles back and forth — one unlabelled control to the right of the title, explored rather than read; a reference works across sides where possible.</Line>
             <Line>1.5 It opens on the deliverable; which side is canonical is overridable; and a book says in one word that it defaults to showing one.</Line>
             <Line>1.6 It is a way of specifying anything written in any book; the math textbook is its test, and math-textbook components specialize it where more structure is needed.</Line>
-            <Line>1.7 The back names itself: [Project] stands beside the title while the project side shows.</Line>
+            <Line>1.7 The back names itself in the literal: the chapter's title turns into # Title while the project side shows — no further tag beside it.</Line>
         </Paragraph>
         <Paragraph>
             <List />
@@ -45,6 +45,7 @@ export default () => (
             <Line>2.5 A discussion may stand there — the talk behind the page.</Line>
             <Line>2.6 The parts beyond the specification are optional — nothing is mandatory; the project makes sense with what it has, and today it holds exactly its two documents.</Line>
             <Line>2.7 The project's documents are highly connected: the renderer speaks the specification's own citation language — numbered sections, dotted clauses, the labels, bracketed references — and every mention is a link to its definition, across the documents.</Line>
+            <Line>2.8 The specification wears its source's own register — literal markdown: the monospace face, the heading marks shown, and the chapter's title turning into # Title while the back shows. The dress lives in this chapter's code and gives the specification a different feel from the writing around it.</Line>
         </Paragraph>
         <Paragraph>
             <List />

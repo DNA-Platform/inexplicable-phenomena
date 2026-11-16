@@ -28,8 +28,8 @@ export class $Content extends $Format {
     }
 
     // ONE UNLABELLED CONTROL TO THE RIGHT OF THE TITLE, Doug, 2026-11-16: "how about a toggle to the right of
-    // the title and it has no label. One can just explore" — and, same day, "Maybe put [Project] next to the
-    // title when showing the other side": the title wears the tag only while the back shows.
+    // the title and it has no label. One can just explore" — and the back announces itself in the literal:
+    // the title turns into # Title while the project side shows; the [Project] tag of the same day is struck.
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -38,14 +38,18 @@ export class $Content extends $Format {
         .pc-flip { display: inline-block; inline-size: .9em; block-size: .9em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); border-radius: 2px; background: ${({ theme }) => theme.paper}; transition: background .15s ease; }
         .pc-content:hover .pc-flip { border-color: ${({ theme }) => theme.ink}; }
         .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
-        &:has(#pc-flip:checked) .pd-title::after { content: '[Project]'; margin-inline-start: .6em; font-size: .55em; font-weight: normal; letter-spacing: .02em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); }
         .pc-project { display: none; }
         &:has(#pc-flip:checked) .pc-project { display: block; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 52%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
+        .pc-specification .pc-markdown { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.9 * ${({ theme }) => theme.size}); }
+        .pc-specification .pc-markdown h2 { font-family: inherit; }
+        .pc-specification .pc-markdown h2::before { content: '## '; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
+        &:has(#pc-flip:checked) .pd-title { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace; }
+        &:has(#pc-flip:checked) .pd-title::before { content: '# '; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
