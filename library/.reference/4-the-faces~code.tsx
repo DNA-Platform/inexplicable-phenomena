@@ -208,7 +208,26 @@ export class $LibrarySynopsis extends $Synopsis {
     `;
 }
 
+// THE TABLE WEARS THE BOOK'S TITLE, Doug, 2026-11-16: "the 'Table of Contents' as the title can be the part of
+// the table that links to the table. The title of the book can go there... it disappears on the table one
+// because that one goes to cover" — on the table's page the book's title stands as the page's title and opens
+// the cover; the running head hides there.
 export class $LibraryTableOfContents extends $TableOfContents {
+    override note(): ReactNode {
+        const book = this.book;
+        if (book === undefined) return null;
+        const Word = $(word);
+        const Reference = $(reference);
+        return (
+            <div className="pd-table-title">
+                <Word>
+                    <Reference>{book.means?.identifier}</Reference>
+                    {book.title?.name}
+                </Word>
+            </div>
+        );
+    }
+
     override style = selection.nav`
         .pa-table-of-contents .pd-paragraph { margin-block: calc(${({ theme }) => theme.space} / 4); }
         .pa-table-of-contents .pd-title::before { content: 'Table of Contents'; }

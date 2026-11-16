@@ -1,4 +1,4 @@
-import { Append, Chapter, Heading, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Code, Chapter, Heading, Paragraph, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -12,6 +12,10 @@ export default () => (
                 a serif on warm paper, and it stands only until the sketches say what this library's own looks like.
             </Paragraph>
         </Section>
+        <Code
+            identifier="code"
+            type=".tsx"
+        />
         <Append
             identifier="code"
             type=".tsx"

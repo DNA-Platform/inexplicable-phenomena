@@ -22,9 +22,10 @@ export class $TheLibrary extends $Book {
         );
     }
 
+    // A PAGE OPENS AT ITS TOP, Doug, 2026-11-16: "We need pages to open at the top... not scrolled down" — a
+    // turn lands on the page's top with the running head in view, never past it.
     protected override turn(): void {
-        if (this.bookmark !== undefined && this.bookmark === this.cover) { window.scrollTo(0, 0); return; }
-        super.turn();
+        window.scrollTo(0, 0);
     }
 
     protected override $Define(): void {

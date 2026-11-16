@@ -99,7 +99,9 @@ export class $LibraryTheme extends $Theme {
             .pd-book { margin-block: calc(${({ theme }) => theme.space} / 2) ${({ theme }) => theme.space}; counter-reset: chapter equation; }
             .pd-chapter { margin-block: ${({ theme }) => theme.space}; scroll-margin-block-start: ${({ theme }) => theme.space}; }
             .pa-page.pa-open { margin-block-start: calc(${({ theme }) => theme.space} / 2); }
-            .pd-section { margin-block: calc(1.5 * ${({ theme }) => theme.space}); border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 12%, ${({ theme }) => theme.paper}); padding-block-start: ${({ theme }) => theme.space}; }
+            /* NO LINE BREAKS, Doug, 2026-11-16: "No line break", then "Still breaks EVERYWHERE!!!" — a section
+               carries no rule and no extra padding anywhere in the library; margins alone separate. */
+            .pd-section { margin-block: ${({ theme }) => theme.space}; }
             .pd-paragraph { margin-block: ${({ theme }) => theme.space}; }
             .pa-item { margin-block: calc(${({ theme }) => theme.space} / 4); }
             .pa-list .pa-item { list-style-position: outside; margin-inline-start: 1.2em; }
@@ -152,9 +154,12 @@ export class $LibraryTheme extends $Theme {
             }
             .pd-running-head a { text-decoration: none; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
             .pd-running-head a:hover { color: ${({ theme }) => theme.ink}; }
-            .pd-running-head .pd-to-cover { display: none; }
-            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-table { display: none; }
-            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover { display: inline; }
+            .pd-running-head .pd-to-cover { margin-inline-start: .6em; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head { display: none; }
+            .pd-table-title { font-size: calc(1.5 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 0 ${({ theme }) => theme.space}; }
+            .pd-table-title a { text-decoration: none; color: inherit; }
+            .pd-table-title a:hover { text-decoration: underline; text-underline-offset: .15em; }
+            .pa-table-of-contents .pd-section { border-block-start: none; padding-block-start: 0; margin-block: ${({ theme }) => theme.space}; }
             .pd-byline {
                 display: flex;
                 flex-wrap: wrap;

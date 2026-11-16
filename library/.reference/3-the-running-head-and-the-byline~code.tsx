@@ -28,7 +28,7 @@ export class $RunningHead extends $Paragraph {
                 <span className="pd-to-cover">
                     <Word>
                         <Reference>{book.means?.identifier}</Reference>
-                        {book.title?.name}
+                        ☐
                     </Word>
                 </span>
             </>

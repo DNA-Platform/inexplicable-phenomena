@@ -1,4 +1,4 @@
-import { Append, Chapter, Line, List, Means, Paragraph, Part, Title } from '@dna-platform/public';
+import { Append, Code, Chapter, Line, List, Means, Paragraph, Part, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -84,6 +84,10 @@ export default () => (
             the word that stands for a thing until the thing is found. The sides of the first play —
             Identification, Specification, Progress — are withdrawn with the four-mode bar.
         </Paragraph>
+        <Code
+            identifier="code"
+            type=".tsx"
+        />
         <Append
             identifier="code"
             type=".tsx"

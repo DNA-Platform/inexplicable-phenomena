@@ -1,4 +1,4 @@
-import { Append, Chapter, Heading, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Code, Chapter, Heading, Paragraph, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -16,6 +16,10 @@ export default () => (
                 borrowed from the test library.
             </Paragraph>
         </Section>
+        <Code
+            identifier="code"
+            type=".tsx"
+        />
         <Append
             identifier="code"
             type=".tsx"

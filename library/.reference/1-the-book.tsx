@@ -1,4 +1,4 @@
-import { Append, Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Code, Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -19,6 +19,10 @@ export default () => (
                 are <Means>$[[ ./The Running Head and the Byline ]]</Means>.
             </Paragraph>
         </Section>
+        <Code
+            identifier="code"
+            type=".tsx"
+        />
         <Append
             identifier="code"
             type=".tsx"

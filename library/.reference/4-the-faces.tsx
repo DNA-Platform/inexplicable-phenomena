@@ -1,4 +1,4 @@
-import { Append, Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Code, Chapter, Heading, Means, Paragraph, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -27,6 +27,10 @@ export default () => (
                 Sketch 004 of <Means>$[[ Mathematical Design / The Paper's Page ]]</Means>, form a, by my number.
             </Paragraph>
         </Section>
+        <Code
+            identifier="code"
+            type=".tsx"
+        />
         <Append
             identifier="code"
             type=".tsx"
