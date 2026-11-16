@@ -22,16 +22,40 @@ import { $Append, $Format, $Paragraph, $Section, $Word, html } from '@dna-platfo
 export class $Content extends $Format {
     $canonical = 'deliverable';
 
+    // THE DISSOLVE, Doug, 2026-11-17: "I still don't like the transition... It feels too slow. The flicker is
+    // bad", "You must know what a good and a bad transition is", "It should be faster, less perceptible and
+    // if there is a white flash, it is perceptible." The flipbook frames convicted the dip: an omitted
+    // keyframe property interpolates to its base rather than stepping, so the out direction glided 28px over
+    // six frames with the font swapping mid-slide and the label lurching when margin and padding fell out of
+    // step — and the trough itself was the white flash, a title-shaped gap of paper. The good transition is
+    // the platform's own cross-dissolve: the flip runs inside startViewTransition, the old frame never
+    // leaving before the new covers it — no absence, no motion, one dissolve of the whole page at 140ms.
+    // Every hand-rolled keyframe is retired; the states swap instantly inside the update and the browser
+    // carries the blend. The duration rules ride a plain style tag because view-transition pseudos live at
+    // the document root, beyond a scoped sheet's reach; reduced motion collapses the dissolve to the swap.
+    flip = (press: MouseEvent<HTMLLabelElement>): void => {
+        press.preventDefault();
+        const box = document.getElementById('pc-flip');
+        if (!(box instanceof HTMLInputElement)) return;
+        const turn = (): void => { box.checked = !box.checked; };
+        const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
+        if (doc.startViewTransition === undefined) turn();
+        else doc.startViewTransition(turn);
+    };
+
     override note(): ReactNode {
         return (
-            <label className="pc-content">
-                <input
-                    type="checkbox"
-                    id="pc-flip"
-                    defaultChecked={this.$canonical === 'project'}
-                />
-                <span className="pc-flip" />
-            </label>
+            <>
+                <style>{'::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.14s; animation-timing-function: ease; } @media (prefers-reduced-motion: reduce) { ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; } }'}</style>
+                <label className="pc-content" onClick={this.flip}>
+                    <input
+                        type="checkbox"
+                        id="pc-flip"
+                        defaultChecked={this.$canonical === 'project'}
+                    />
+                    <span className="pc-flip" />
+                </label>
+            </>
         );
     }
 
@@ -93,11 +117,6 @@ export class $Content extends $Format {
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
-        @keyframes pc-settle { from { opacity: 0.6; } to { opacity: 1; } }
-        @keyframes pc-settle-back { from { opacity: 0.6; } to { opacity: 1; } }
-        &:has(#pc-flip:checked) .pd-chapter { animation: pc-settle 0.16s ease-out; }
-        &:not(:has(#pc-flip:checked)) .pd-chapter { animation: pc-settle-back 0.16s ease-out; }
-        @media (prefers-reduced-motion: reduce) { .pd-chapter, .pd-title, .pd-title::before, .pd-title::after { animation: none !important; } }
         .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
         .pc-flip { display: inline-block; box-sizing: border-box; inline-size: 0.9em; block-size: 0.9em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); background: ${({ theme }) => theme.paper}; transition: border-width .15s ease, border-color .15s ease; }
@@ -117,18 +136,9 @@ export class $Content extends $Format {
         .pd-title { position: relative; }
         .pd-title::before { color: ${({ theme }) => theme.ink}; }
         .pd-title::after { content: '# '; position: absolute; inset-inline-start: 0; inset-block-end: 0; opacity: 0; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.link}; }
-        @keyframes pc-recode { 0% { font-family: ${({ theme }) => theme.font}; padding-inline-start: 0; } 49.9% { color: transparent; font-family: ${({ theme }) => theme.font}; padding-inline-start: 0; } 50.1% { color: transparent; } }
-        @keyframes pc-recode-back { 0% { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); } 49.9% { color: transparent; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); } 50.1% { color: transparent; } }
-        @keyframes pc-relabel { 0%, 49.9% { margin-inline-start: 0; } 50.1%, 100% { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); } }
-        @keyframes pc-relabel-back { 0%, 49.9% { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); } 50.1%, 100% { margin-inline-start: 0; } }
-        @keyframes pc-remark { 0%, 50% { opacity: 0; } 100% { opacity: 1; } }
-        @keyframes pc-remark-back { 0% { opacity: 1; } 50%, 100% { opacity: 0; } }
-        &:has(#pc-flip:checked) .pd-title { animation: pc-recode 0.24s ease-in-out; padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.ink}; }
-        &:not(:has(#pc-flip:checked)) .pd-title { animation: pc-recode-back 0.24s ease-in-out; }
-        &:has(#pc-flip:checked) .pd-title::before { animation: pc-relabel 0.24s ease-in-out; margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
-        &:not(:has(#pc-flip:checked)) .pd-title::before { animation: pc-relabel-back 0.24s ease-in-out; }
-        &:has(#pc-flip:checked) .pd-title::after { animation: pc-remark 0.24s ease-in-out; opacity: 1; }
-        &:not(:has(#pc-flip:checked)) .pd-title::after { animation: pc-remark-back 0.24s ease-in-out; }
+        &:has(#pc-flip:checked) .pd-title { padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.ink}; }
+        &:has(#pc-flip:checked) .pd-title::before { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
+        &:has(#pc-flip:checked) .pd-title::after { opacity: 1; }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
@@ -306,12 +316,18 @@ export class $Cite extends $Word {
 
     // The part is read back from the clicked anchor's own text: the handler's instance predates the pass
     // that applies props to the held one, so the rendered citation is the one source the click can trust.
+    // The flip and the landing scroll both run inside the view transition's update, so the dissolve lands
+    // directly on the cited clause.
     follow = (press: MouseEvent<HTMLAnchorElement>): void => {
         const part = press.currentTarget.textContent ?? '';
-        const flip = document.getElementById('pc-flip');
-        if (flip instanceof HTMLInputElement) flip.checked = true;
-        requestAnimationFrame(() =>
-            document.getElementById(place(part))?.scrollIntoView({ block: 'center' }));
+        const turn = (): void => {
+            const flip = document.getElementById('pc-flip');
+            if (flip instanceof HTMLInputElement) flip.checked = true;
+            document.getElementById(place(part))?.scrollIntoView({ block: 'center' });
+        };
+        const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
+        if (doc.startViewTransition === undefined) turn();
+        else doc.startViewTransition(turn);
     };
 
     override write(): ReactNode {

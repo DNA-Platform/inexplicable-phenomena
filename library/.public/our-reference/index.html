@@ -6,7 +6,7 @@
     <title>Inexplicable Phenomena</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E" />
     <script type="importmap">{"imports":{"@dna-platform/chemistry":"/inexplicable-phenomena/assets/shared/at-dna-platform-chemistry-DA5qn-Y5.js","@dna-platform/public":"/inexplicable-phenomena/assets/shared/at-dna-platform-public-DED5V3j3.js","katex":"/inexplicable-phenomena/assets/shared/katex-BVtwOS10.js","marked":"/inexplicable-phenomena/assets/shared/marked-BsF3At43.js","react":"/inexplicable-phenomena/assets/shared/react-DCSQQElp.js","react-dom/client":"/inexplicable-phenomena/assets/shared/react-dom-client-DNbMwQ3v.js","react/jsx-runtime":"/inexplicable-phenomena/assets/shared/react-jsx-runtime-GMpOKiQA.js","styled-components":"/inexplicable-phenomena/assets/shared/styled-components-DFsnoGyb.js"}}</script>
-    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-XOboNv_i.js"></script>
+    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-CcaFdCaL.js"></script>
     <link rel="stylesheet" crossorigin href="/inexplicable-phenomena/assets/index-CaH6IAI_.css">
   <link rel="stylesheet" href="/inexplicable-phenomena/sheets/f22699cbda8a.css" />
   <script>(function(){var k=[];function on(e){var r=document.getElementById('root');if(!r||!r.contains(e.target)||e.__replayed)return;k.push({t:e.target,type:e.type});}document.addEventListener('click',on,true);window.__replayKept=function(){document.removeEventListener('click',on,true);var q=k;k=[];q.forEach(function(one){if(!document.contains(one.t))return;var ev=new MouseEvent(one.type,{bubbles:true,cancelable:true});ev.__replayed=true;one.t.dispatchEvent(ev);});};})();</script>
@@ -699,16 +699,40 @@ $(<span class="hljs-title class_">TheLibrary</span>, <span class="hljs-title cla
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">$Content</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">$Format</span> {
     $canonical = <span class="hljs-string">&#x27;deliverable&#x27;</span>;
 
+    <span class="hljs-comment">// THE DISSOLVE, Doug, 2026-11-17: &quot;I still don&#x27;t like the transition... It feels too slow. The flicker is</span>
+    <span class="hljs-comment">// bad&quot;, &quot;You must know what a good and a bad transition is&quot;, &quot;It should be faster, less perceptible and</span>
+    <span class="hljs-comment">// if there is a white flash, it is perceptible.&quot; The flipbook frames convicted the dip: an omitted</span>
+    <span class="hljs-comment">// keyframe property interpolates to its base rather than stepping, so the out direction glided 28px over</span>
+    <span class="hljs-comment">// six frames with the font swapping mid-slide and the label lurching when margin and padding fell out of</span>
+    <span class="hljs-comment">// step — and the trough itself was the white flash, a title-shaped gap of paper. The good transition is</span>
+    <span class="hljs-comment">// the platform&#x27;s own cross-dissolve: the flip runs inside startViewTransition, the old frame never</span>
+    <span class="hljs-comment">// leaving before the new covers it — no absence, no motion, one dissolve of the whole page at 140ms.</span>
+    <span class="hljs-comment">// Every hand-rolled keyframe is retired; the states swap instantly inside the update and the browser</span>
+    <span class="hljs-comment">// carries the blend. The duration rules ride a plain style tag because view-transition pseudos live at</span>
+    <span class="hljs-comment">// the document root, beyond a scoped sheet&#x27;s reach; reduced motion collapses the dissolve to the swap.</span>
+    flip = (<span class="hljs-attr">press</span>: <span class="hljs-title class_">MouseEvent</span>&lt;<span class="hljs-title class_">HTMLLabelElement</span>&gt;): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> {
+        press.<span class="hljs-title function_">preventDefault</span>();
+        <span class="hljs-keyword">const</span> box = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;pc-flip&#x27;</span>);
+        <span class="hljs-keyword">if</span> (!(box <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">HTMLInputElement</span>)) <span class="hljs-keyword">return</span>;
+        <span class="hljs-keyword">const</span> turn = (): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> { box.<span class="hljs-property">checked</span> = !box.<span class="hljs-property">checked</span>; };
+        <span class="hljs-keyword">const</span> doc = <span class="hljs-variable language_">document</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Document</span> &amp; { <span class="hljs-attr">startViewTransition</span>?: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">update</span>: () =&gt; <span class="hljs-built_in">void</span></span>) =&gt;</span> <span class="hljs-built_in">unknown</span> };
+        <span class="hljs-keyword">if</span> (doc.<span class="hljs-property">startViewTransition</span> === <span class="hljs-literal">undefined</span>) <span class="hljs-title function_">turn</span>();
+        <span class="hljs-keyword">else</span> doc.<span class="hljs-title function_">startViewTransition</span>(turn);
+    };
+
     <span class="hljs-keyword">override</span> <span class="hljs-title function_">note</span>(): <span class="hljs-title class_">ReactNode</span> {
         <span class="hljs-keyword">return</span> (
-            <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;pc-content&quot;</span>&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
-                    <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;checkbox&quot;</span>
-                    <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;pc-flip&quot;</span>
-                    <span class="hljs-attr">defaultChecked</span>=<span class="hljs-string">{this.$canonical</span> === <span class="hljs-string">&#x27;project&#x27;</span>}
-                /&gt;</span>
-                <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;pc-flip&quot;</span> /&gt;</span>
-            <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span></span>
+            <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css">{&#x27;::<span class="hljs-built_in">view-transition-old</span>(root), ::<span class="hljs-built_in">view-transition-new</span>(root) { <span class="hljs-attribute">animation-duration</span>: <span class="hljs-number">0.14s</span>; <span class="hljs-attribute">animation-timing-function</span>: ease; } <span class="hljs-keyword">@media</span> (<span class="hljs-attribute">prefers-reduced-motion</span>: reduce) { ::<span class="hljs-built_in">view-transition-old</span>(root), ::<span class="hljs-built_in">view-transition-new</span>(root) { <span class="hljs-attribute">animation</span>: none <span class="hljs-meta">!important</span>; } }&#x27;}</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;pc-content&quot;</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.flip}</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
+                        <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;checkbox&quot;</span>
+                        <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;pc-flip&quot;</span>
+                        <span class="hljs-attr">defaultChecked</span>=<span class="hljs-string">{this.$canonical</span> === <span class="hljs-string">&#x27;project&#x27;</span>}
+                    /&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;pc-flip&quot;</span> /&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;/&gt;</span></span>
         );
     }
 
@@ -770,11 +794,6 @@ $(<span class="hljs-title class_">TheLibrary</span>, <span class="hljs-title cla
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
-        @keyframes pc-settle { from { opacity: 0.6; } to { opacity: 1; } }
-        @keyframes pc-settle-back { from { opacity: 0.6; } to { opacity: 1; } }
-        &amp;:has(#pc-flip:checked) .pd-chapter { animation: pc-settle 0.16s ease-out; }
-        &amp;:not(:has(#pc-flip:checked)) .pd-chapter { animation: pc-settle-back 0.16s ease-out; }
-        @media (prefers-reduced-motion: reduce) { .pd-chapter, .pd-title, .pd-title::before, .pd-title::after { animation: none !important; } }
         .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
         .pc-flip { display: inline-block; box-sizing: border-box; inline-size: 0.9em; block-size: 0.9em; border: 1.5px solid color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 65%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); background: <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>; transition: border-width .15s ease, border-color .15s ease; }
@@ -794,18 +813,9 @@ $(<span class="hljs-title class_">TheLibrary</span>, <span class="hljs-title cla
         .pd-title { position: relative; }
         .pd-title::before { color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: 0; inset-block-end: 0; opacity: 0; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
-        @keyframes pc-recode { 0% { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; padding-inline-start: 0; } 49.9% { color: transparent; font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; padding-inline-start: 0; } 50.1% { color: transparent; } }
-        @keyframes pc-recode-back { 0% { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; padding-inline-start: calc(1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); } 49.9% { color: transparent; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; padding-inline-start: calc(1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); } 50.1% { color: transparent; } }
-        @keyframes pc-relabel { 0%, 49.9% { margin-inline-start: 0; } 50.1%, 100% { margin-inline-start: calc(-1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); } }
-        @keyframes pc-relabel-back { 0%, 49.9% { margin-inline-start: calc(-1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); } 50.1%, 100% { margin-inline-start: 0; } }
-        @keyframes pc-remark { 0%, 50% { opacity: 0; } 100% { opacity: 1; } }
-        @keyframes pc-remark-back { 0% { opacity: 1; } 50%, 100% { opacity: 0; } }
-        &amp;:has(#pc-flip:checked) .pd-title { animation: pc-recode 0.24s ease-in-out; padding-inline-start: calc(1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
-        &amp;:not(:has(#pc-flip:checked)) .pd-title { animation: pc-recode-back 0.24s ease-in-out; }
-        &amp;:has(#pc-flip:checked) .pd-title::before { animation: pc-relabel 0.24s ease-in-out; margin-inline-start: calc(-1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
-        &amp;:not(:has(#pc-flip:checked)) .pd-title::before { animation: pc-relabel-back 0.24s ease-in-out; }
-        &amp;:has(#pc-flip:checked) .pd-title::after { animation: pc-remark 0.24s ease-in-out; opacity: 1; }
-        &amp;:not(:has(#pc-flip:checked)) .pd-title::after { animation: pc-remark-back 0.24s ease-in-out; }
+        &amp;:has(#pc-flip:checked) .pd-title { padding-inline-start: calc(1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
+        &amp;:has(#pc-flip:checked) .pd-title::before { margin-inline-start: calc(-1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
+        &amp;:has(#pc-flip:checked) .pd-title::after { opacity: 1; }
         .pd-section.pc-project { margin-block: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
@@ -983,12 +993,18 @@ marked.<span class="hljs-title function_">use</span>({
 
     <span class="hljs-comment">// The part is read back from the clicked anchor&#x27;s own text: the handler&#x27;s instance predates the pass</span>
     <span class="hljs-comment">// that applies props to the held one, so the rendered citation is the one source the click can trust.</span>
+    <span class="hljs-comment">// The flip and the landing scroll both run inside the view transition&#x27;s update, so the dissolve lands</span>
+    <span class="hljs-comment">// directly on the cited clause.</span>
     follow = (<span class="hljs-attr">press</span>: <span class="hljs-title class_">MouseEvent</span>&lt;<span class="hljs-title class_">HTMLAnchorElement</span>&gt;): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> {
         <span class="hljs-keyword">const</span> part = press.<span class="hljs-property">currentTarget</span>.<span class="hljs-property">textContent</span> ?? <span class="hljs-string">&#x27;&#x27;</span>;
-        <span class="hljs-keyword">const</span> flip = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;pc-flip&#x27;</span>);
-        <span class="hljs-keyword">if</span> (flip <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">HTMLInputElement</span>) flip.<span class="hljs-property">checked</span> = <span class="hljs-literal">true</span>;
-        <span class="hljs-title function_">requestAnimationFrame</span>(<span class="hljs-function">() =&gt;</span>
-            <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-title function_">place</span>(part))?.<span class="hljs-title function_">scrollIntoView</span>({ <span class="hljs-attr">block</span>: <span class="hljs-string">&#x27;center&#x27;</span> }));
+        <span class="hljs-keyword">const</span> turn = (): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> {
+            <span class="hljs-keyword">const</span> flip = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;pc-flip&#x27;</span>);
+            <span class="hljs-keyword">if</span> (flip <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">HTMLInputElement</span>) flip.<span class="hljs-property">checked</span> = <span class="hljs-literal">true</span>;
+            <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-title function_">place</span>(part))?.<span class="hljs-title function_">scrollIntoView</span>({ <span class="hljs-attr">block</span>: <span class="hljs-string">&#x27;center&#x27;</span> });
+        };
+        <span class="hljs-keyword">const</span> doc = <span class="hljs-variable language_">document</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Document</span> &amp; { <span class="hljs-attr">startViewTransition</span>?: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">update</span>: () =&gt; <span class="hljs-built_in">void</span></span>) =&gt;</span> <span class="hljs-built_in">unknown</span> };
+        <span class="hljs-keyword">if</span> (doc.<span class="hljs-property">startViewTransition</span> === <span class="hljs-literal">undefined</span>) <span class="hljs-title function_">turn</span>();
+        <span class="hljs-keyword">else</span> doc.<span class="hljs-title function_">startViewTransition</span>(turn);
     };
 
     <span class="hljs-keyword">override</span> <span class="hljs-title function_">write</span>(): <span class="hljs-title class_">ReactNode</span> {
