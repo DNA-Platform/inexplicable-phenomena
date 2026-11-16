@@ -70,7 +70,7 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 52%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.85 * ${({ theme }) => theme.size}); line-height: 1.55; margin-block-start: calc(${({ theme }) => theme.space} / 4); }
+        .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.9 * ${({ theme }) => theme.size}); line-height: calc(1.412 * ${({ theme }) => theme.size}); margin-block-start: calc(${({ theme }) => theme.space} / 4); }
         .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: bold; color: ${({ theme }) => theme.ink}; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: ${({ theme }) => theme.link}; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
@@ -93,6 +93,8 @@ export class $Content extends $Format {
         .pc-markdown th, .pc-markdown td { padding: .3em 1.2em .3em 0; text-align: start; vertical-align: top; }
         .pc-markdown th:last-child, .pc-markdown td:last-child { padding-inline-end: 0; }
         .pc-markdown thead th { font-weight: 400; }
+        .pc-markdown .pc-math, .pc-markdown .pc-math-block { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; }
+        .pc-markdown .pc-math-block { margin-block: calc(${({ theme }) => theme.space} / 2); }
         .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.5em; margin-block: .9em; }
         .pc-markdown li { margin-block: .35em; }
         .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }
@@ -138,6 +140,40 @@ export class $Progress extends $Project {
 // citation language — numbered sections, dotted parts, the labels K, C and O, bracketed references — so the
 // renderer learns that language rather than the document changing. Definitions receive ids; every mention
 // becomes a link to its definition, across the project's documents, since both render on one page.
+// LATEX IN EQUATION FORM, Doug, 2026-11-16: "we need latex in the specification either rendered or in latex
+// equation form" — the specification is the source pane, so math stands as typed, $...$ and $$...$$ verbatim;
+// the extension tokenizes math before markdown's emphasis can eat the underscores inside it. Rendered
+// typesetting is the writing side's form and waits on KaTeX, a package dependency that needs his yes.
+const literal = (passage: string): string =>
+    passage.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+marked.use({
+    extensions: [
+        {
+            name: 'mathBlock',
+            level: 'block',
+            start(src: string) { const at = src.indexOf('$$'); return at < 0 ? undefined : at; },
+            tokenizer(src: string) {
+                const match = /^\$\$([\s\S]+?)\$\$/.exec(src);
+                if (match !== null) return { type: 'mathBlock', raw: match[0], text: match[1] };
+                return undefined;
+            },
+            renderer(token: { text: string }) { return `<div class="pc-math-block">$$${literal(token.text)}$$</div>`; },
+        },
+        {
+            name: 'mathInline',
+            level: 'inline',
+            start(src: string) { const at = src.indexOf('$'); return at < 0 ? undefined : at; },
+            tokenizer(src: string) {
+                const match = /^\$(?=\S)([^$\n]*?\S)\$/.exec(src);
+                if (match !== null) return { type: 'mathInline', raw: match[0], text: match[1] };
+                return undefined;
+            },
+            renderer(token: { text: string }) { return `<span class="pc-math">$${literal(token.text)}$</span>`; },
+        },
+    ],
+});
+
 const cited = /\[(\d+(?:,\s*\d+)*)\]|\b[Ss]ections? \d+(?: to \d+)?\b|\b[KCO]\d+\b|\b\d\.\d\b/g;
 
 const place = (citation: string): string => {
