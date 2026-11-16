@@ -33,7 +33,7 @@ export class $Content extends $Format {
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
-        .pc-content { position: absolute; inset-block-start: 4.8rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
+        .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
         .pc-flip { display: inline-block; inline-size: .9em; block-size: .9em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); border-radius: 2px; background: ${({ theme }) => theme.paper}; transition: background .15s ease; }
         .pc-content:hover .pc-flip { border-color: ${({ theme }) => theme.ink}; }
@@ -43,7 +43,7 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation):not(.pc-introduction) { display: none; }
         .pc-project .pd-heading { display: none; }
         .pc-project:first-of-type .pc-markdown h2:first-of-type { display: none; }
-        .pc-project { border-block-start: none; padding-block-start: 0; }
+        .pd-section.pc-project { border-block-start: none; padding-block-start: 0; margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
         .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1.15 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.5em .45em; }
