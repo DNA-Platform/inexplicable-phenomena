@@ -6,7 +6,7 @@
     <title>Inexplicable Phenomena</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E" />
     <script type="importmap">{"imports":{"@dna-platform/chemistry":"/inexplicable-phenomena/assets/shared/at-dna-platform-chemistry-DA5qn-Y5.js","@dna-platform/public":"/inexplicable-phenomena/assets/shared/at-dna-platform-public-Bk490Zag.js","marked":"/inexplicable-phenomena/assets/shared/marked-BsF3At43.js","react":"/inexplicable-phenomena/assets/shared/react-DCSQQElp.js","react-dom/client":"/inexplicable-phenomena/assets/shared/react-dom-client-DNbMwQ3v.js","react/jsx-runtime":"/inexplicable-phenomena/assets/shared/react-jsx-runtime-GMpOKiQA.js","styled-components":"/inexplicable-phenomena/assets/shared/styled-components-DFsnoGyb.js"}}</script>
-    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-Ccu5z-CA.js"></script>
+    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-BHCwhrS_.js"></script>
     <link rel="stylesheet" crossorigin href="/inexplicable-phenomena/assets/index-CP4cPyka.css">
   <link rel="stylesheet" href="/inexplicable-phenomena/sheets/4d4548eaa9ff.css" />
   <script>(function(){var k=[];function on(e){var r=document.getElementById('root');if(!r||!r.contains(e.target)||e.__replayed)return;k.push({t:e.target,type:e.type});}document.addEventListener('click',on,true);window.__replayKept=function(){document.removeEventListener('click',on,true);var q=k;k=[];q.forEach(function(one){if(!document.contains(one.t))return;var ev=new MouseEvent(one.type,{bubbles:true,cancelable:true});ev.__replayed=true;one.t.dispatchEvent(ev);});};})();</script>
@@ -87,6 +87,11 @@
     <span class="hljs-comment">// ONE UNLABELLED CONTROL TO THE RIGHT OF THE TITLE, Doug, 2026-11-16: &quot;how about a toggle to the right of</span>
     <span class="hljs-comment">// the title and it has no label. One can just explore&quot; — and the back announces itself in the literal:</span>
     <span class="hljs-comment">// the title turns into # Title while the project side shows; the [Project] tag of the same day is struck.</span>
+    <span class="hljs-comment">// THE MONO MATCHES THE SERIF BY MEASUREMENT, his &quot;Closest match given difference&quot;, measured in Chrome:</span>
+    <span class="hljs-comment">// Georgia at the book&#x27;s 17px inks x-height 8px at stroke density .218; this mono stack inks 8px and .221</span>
+    <span class="hljs-comment">// at 15px, weight 400 — so every mono size is .88 of its serif counterpart, and the body line stays pinned</span>
+    <span class="hljs-comment">// to the serif&#x27;s own 1.6 * size so the rhythm never changes. The marks # and ## wear the 40% ink tint,</span>
+    <span class="hljs-comment">// the editor&#x27;s syntax highlight; the words keep full ink.</span>
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -100,13 +105,13 @@
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-paragraph:not(.pd-navigation) { display: none; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 52%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: ui-monospace, &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.9 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); }
-        .pc-specification .pc-markdown h2 { font-family: inherit; }
-        .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; }
+        .pc-specification .pc-markdown { font-family: ui-monospace, &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.88 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: calc(1.6 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(.88 * 1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); }
+        .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 40%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &amp;:has(#pc-flip:checked) .pd-title { font-family: ui-monospace, &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; }
-        &amp;:has(#pc-flip:checked) .pd-title::before { content: &#x27;# &#x27;; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
+        &amp;:has(#pc-flip:checked) .pd-title { font-family: ui-monospace, &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.88 * 1.5 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); }
+        &amp;:has(#pc-flip:checked) .pd-title::before { content: &#x27;# &#x27;; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 40%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); }
         .pd-section.pc-project { margin-block: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }

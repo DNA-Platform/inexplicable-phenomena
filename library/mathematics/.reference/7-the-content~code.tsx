@@ -30,6 +30,11 @@ export class $Content extends $Format {
     // ONE UNLABELLED CONTROL TO THE RIGHT OF THE TITLE, Doug, 2026-11-16: "how about a toggle to the right of
     // the title and it has no label. One can just explore" — and the back announces itself in the literal:
     // the title turns into # Title while the project side shows; the [Project] tag of the same day is struck.
+    // THE MONO MATCHES THE SERIF BY MEASUREMENT, his "Closest match given difference", measured in Chrome:
+    // Georgia at the book's 17px inks x-height 8px at stroke density .218; this mono stack inks 8px and .221
+    // at 15px, weight 400 — so every mono size is .88 of its serif counterpart, and the body line stays pinned
+    // to the serif's own 1.6 * size so the rhythm never changes. The marks # and ## wear the 40% ink tint,
+    // the editor's syntax highlight; the words keep full ink.
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -43,13 +48,13 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 52%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.9 * ${({ theme }) => theme.size}); }
-        .pc-specification .pc-markdown h2 { font-family: inherit; }
-        .pc-specification .pc-markdown h2::before { content: '## '; }
+        .pc-specification .pc-markdown { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.88 * ${({ theme }) => theme.size}); line-height: calc(1.6 * ${({ theme }) => theme.size}); }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(.88 * 1.15 * ${({ theme }) => theme.size}); }
+        .pc-specification .pc-markdown h2::before { content: '## '; color: color-mix(in srgb, ${({ theme }) => theme.ink} 40%, ${({ theme }) => theme.paper}); }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &:has(#pc-flip:checked) .pd-title { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace; }
-        &:has(#pc-flip:checked) .pd-title::before { content: '# '; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
+        &:has(#pc-flip:checked) .pd-title { font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.88 * 1.5 * ${({ theme }) => theme.size}); }
+        &:has(#pc-flip:checked) .pd-title::before { content: '# '; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: color-mix(in srgb, ${({ theme }) => theme.ink} 40%, ${({ theme }) => theme.paper}); }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
