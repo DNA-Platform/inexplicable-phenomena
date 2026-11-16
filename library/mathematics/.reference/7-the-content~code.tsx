@@ -31,13 +31,17 @@ export class $Content extends $Format {
     // the title and it has no label. One can just explore" — and the back announces itself in the literal:
     // the title turns into # Title while the project side shows; the [Project] tag of the same day is struck.
     // THE SOURCE PANE IS A WHITE VSCODE, his rulings of 2026-11-16: "a white vscode theme that feels natural.
-    // Takes up the same space as the other side" — the settings found by driving Chrome, never by eye. The
-    // same passage laid at the column's 640px: Georgia 17px on 27.2px stands 272px tall, and Cascadia Mono —
-    // the face Windows draws for its own terminal — at 15.5px on a 1.35 line, the editor's own default ratio,
-    // stands 272px exactly; so the body is .91 of the book's size on line-height 1.35. A one-size pane as an
-    // editor shows source: the title line # Title sets at body size. The mild highlight is eyedroppered from
-    // the screenshot of his own editor, "We are talking about something like that": headings and their marks
-    // #0c4c84, the quoted italic #840484, bold leads #000080, body the book's ink.
+    // Takes up the same space as the other side", then "sameness in layout — the same title in same place,
+    // gets a # and changes font", then "choose a monospace that doesn't feel too hard". The elegance answer:
+    // VS Code's own Windows default is Consolas, not the terminal's rounder, heavier Cascadia — so Consolas
+    // leads the stack, at the same-space setting the sweep measured (the same passage at the column's 640px:
+    // Georgia 17px on 27.2px stands 272px; Consolas 14.5px on 22.5px stands 270px), .85 of the book's size on
+    // a 1.55 line. SAMENESS IN LAYOUT: the Chapter label's ::before is untouched and pinned to the book's
+    // face and ink, so the title's box is identical on both sides; the # sits as an ::after hung 2ch into
+    // the left gutter, the editor's margin decoration, so the title's text never moves at all; the
+    // section headings keep the serif heading's box — 1.15 of the size, the section's margin. The mild
+    // highlight is eyedroppered from the screenshot of his own editor, "We are talking about something like
+    // that": headings and their marks #0c4c84, the quoted italic #840484, bold leads #000080, body the ink.
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -51,15 +55,16 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 52%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.91 * ${({ theme }) => theme.size}); line-height: 1.35; }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: inherit; color: #0c4c84; }
+        .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.85 * ${({ theme }) => theme.size}); line-height: 1.55; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; color: #0c4c84; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: inherit; }
         .pc-specification .pc-markdown strong { color: #000080; }
         .pc-specification .pc-markdown em { color: #840484; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &:has(#pc-flip:checked) .pd-title, &:has(#pc-flip:checked) .pd-title * { font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.91 * ${({ theme }) => theme.size}); line-height: 1.35; color: #0c4c84; }
-        &:has(#pc-flip:checked) .pd-title::before { content: '# '; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
+        &:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: #0c4c84; }
+        &:has(#pc-flip:checked) .pd-title::before { font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
+        &:has(#pc-flip:checked) .pd-title::after { content: '# '; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }

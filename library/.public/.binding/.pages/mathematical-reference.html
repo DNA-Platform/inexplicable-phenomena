@@ -31,13 +31,17 @@
     <span class="hljs-comment">// the title and it has no label. One can just explore&quot; — and the back announces itself in the literal:</span>
     <span class="hljs-comment">// the title turns into # Title while the project side shows; the [Project] tag of the same day is struck.</span>
     <span class="hljs-comment">// THE SOURCE PANE IS A WHITE VSCODE, his rulings of 2026-11-16: &quot;a white vscode theme that feels natural.</span>
-    <span class="hljs-comment">// Takes up the same space as the other side&quot; — the settings found by driving Chrome, never by eye. The</span>
-    <span class="hljs-comment">// same passage laid at the column&#x27;s 640px: Georgia 17px on 27.2px stands 272px tall, and Cascadia Mono —</span>
-    <span class="hljs-comment">// the face Windows draws for its own terminal — at 15.5px on a 1.35 line, the editor&#x27;s own default ratio,</span>
-    <span class="hljs-comment">// stands 272px exactly; so the body is .91 of the book&#x27;s size on line-height 1.35. A one-size pane as an</span>
-    <span class="hljs-comment">// editor shows source: the title line # Title sets at body size. The mild highlight is eyedroppered from</span>
-    <span class="hljs-comment">// the screenshot of his own editor, &quot;We are talking about something like that&quot;: headings and their marks</span>
-    <span class="hljs-comment">// #0c4c84, the quoted italic #840484, bold leads #000080, body the book&#x27;s ink.</span>
+    <span class="hljs-comment">// Takes up the same space as the other side&quot;, then &quot;sameness in layout — the same title in same place,</span>
+    <span class="hljs-comment">// gets a # and changes font&quot;, then &quot;choose a monospace that doesn&#x27;t feel too hard&quot;. The elegance answer:</span>
+    <span class="hljs-comment">// VS Code&#x27;s own Windows default is Consolas, not the terminal&#x27;s rounder, heavier Cascadia — so Consolas</span>
+    <span class="hljs-comment">// leads the stack, at the same-space setting the sweep measured (the same passage at the column&#x27;s 640px:</span>
+    <span class="hljs-comment">// Georgia 17px on 27.2px stands 272px; Consolas 14.5px on 22.5px stands 270px), .85 of the book&#x27;s size on</span>
+    <span class="hljs-comment">// a 1.55 line. SAMENESS IN LAYOUT: the Chapter label&#x27;s ::before is untouched and pinned to the book&#x27;s</span>
+    <span class="hljs-comment">// face and ink, so the title&#x27;s box is identical on both sides; the # sits as an ::after hung 2ch into</span>
+    <span class="hljs-comment">// the left gutter, the editor&#x27;s margin decoration, so the title&#x27;s text never moves at all; the</span>
+    <span class="hljs-comment">// section headings keep the serif heading&#x27;s box — 1.15 of the size, the section&#x27;s margin. The mild</span>
+    <span class="hljs-comment">// highlight is eyedroppered from the screenshot of his own editor, &quot;We are talking about something like</span>
+    <span class="hljs-comment">// that&quot;: headings and their marks #0c4c84, the quoted italic #840484, bold leads #000080, body the ink.</span>
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -51,15 +55,16 @@
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-paragraph:not(.pd-navigation) { display: none; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 52%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.91 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.35; }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: inherit; color: #0c4c84; }
+        .pc-specification .pc-markdown { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-size: calc(.85 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.55; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> 0; color: #0c4c84; }
         .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: inherit; }
         .pc-specification .pc-markdown strong { color: #000080; }
         .pc-specification .pc-markdown em { color: #840484; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &amp;:has(#pc-flip:checked) .pd-title, &amp;:has(#pc-flip:checked) .pd-title * { font-family: &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.91 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.35; color: #0c4c84; }
-        &amp;:has(#pc-flip:checked) .pd-title::before { content: &#x27;# &#x27;; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
+        &amp;:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: #0c4c84; }
+        &amp;:has(#pc-flip:checked) .pd-title::before { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
+        &amp;:has(#pc-flip:checked) .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; }
         .pd-section.pc-project { margin-block: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
