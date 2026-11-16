@@ -43,8 +43,14 @@ export class $Content extends $Format {
     // leads the stack, at the same-space setting the sweep measured (the same passage at the column's 640px:
     // Georgia 17px on 27.2px stands 272px; Consolas 14.5px on 22.5px stands 270px), .85 of the book's size on
     // a 1.55 line. SAMENESS IN LAYOUT: the Chapter label's ::before is untouched and pinned to the book's
-    // face and ink, so the title's box is identical on both sides; the # sits as an ::after hung 2ch into
-    // the left gutter, the editor's margin decoration, so the title's text never moves at all; the
+    // face and ink, so the title's box is identical on both sides; the # sits flush at the column's left
+    // edge — his correction of the gutter: "the # has to be left aligned with everything else and the
+    // transition was: Title to # Title" — the text easing right by the mark's exact width (Consolas advance
+    // .55em, two characters of the title's 1.5 size = 1.65 * size), the Chapter label held still by an equal
+    // negative margin animated on the same curve. The staging is his "canonical experience of moving from
+    // literal to symbol. From object to its representation": the title eases aside over 300ms making room,
+    // and the # arrives a breath later — its fade delayed 120ms on the way to code, undelayed on the way
+    // back, so the symbol is last to arrive and first to go; the
     // section headings keep the serif heading's box — 1.15 of the size, the section's margin. The palette
     // came from an eight-variant matrix photographed beside the serif reference, on his "Play around. Be
     // creative. Get it to match... Don't have the markdown be LOUD!!": the quiet winner keeps title, headings,
@@ -87,9 +93,12 @@ export class $Content extends $Format {
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
-        &:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.ink}; }
-        &:has(#pc-flip:checked) .pd-title::before { font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
-        &:has(#pc-flip:checked) .pd-title::after { content: '# '; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: ${({ theme }) => theme.link}; }
+        .pd-title { position: relative; transition: padding-inline-start 0.3s ease; }
+        .pd-title::before { transition: margin-inline-start 0.3s ease; }
+        .pd-title::after { content: '# '; position: absolute; inset-inline-start: 0; inset-block-end: 0; opacity: 0; transition: opacity 0.18s ease-out; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.link}; }
+        &:has(#pc-flip:checked) .pd-title { padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.ink}; }
+        &:has(#pc-flip:checked) .pd-title::before { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
+        &:has(#pc-flip:checked) .pd-title::after { opacity: 1; transition: opacity 0.18s ease-out 0.12s; }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }

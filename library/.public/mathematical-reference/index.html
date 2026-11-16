@@ -6,7 +6,7 @@
     <title>Inexplicable Phenomena</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E" />
     <script type="importmap">{"imports":{"@dna-platform/chemistry":"/inexplicable-phenomena/assets/shared/at-dna-platform-chemistry-DA5qn-Y5.js","@dna-platform/public":"/inexplicable-phenomena/assets/shared/at-dna-platform-public-DED5V3j3.js","katex":"/inexplicable-phenomena/assets/shared/katex-BVtwOS10.js","marked":"/inexplicable-phenomena/assets/shared/marked-BsF3At43.js","react":"/inexplicable-phenomena/assets/shared/react-DCSQQElp.js","react-dom/client":"/inexplicable-phenomena/assets/shared/react-dom-client-DNbMwQ3v.js","react/jsx-runtime":"/inexplicable-phenomena/assets/shared/react-jsx-runtime-GMpOKiQA.js","styled-components":"/inexplicable-phenomena/assets/shared/styled-components-DFsnoGyb.js"}}</script>
-    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-BMQeS61R.js"></script>
+    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-C9R12afM.js"></script>
     <link rel="stylesheet" crossorigin href="/inexplicable-phenomena/assets/index-CaH6IAI_.css">
   <link rel="stylesheet" href="/inexplicable-phenomena/sheets/417fee1824ea.css" />
   <script>(function(){var k=[];function on(e){var r=document.getElementById('root');if(!r||!r.contains(e.target)||e.__replayed)return;k.push({t:e.target,type:e.type});}document.addEventListener('click',on,true);window.__replayKept=function(){document.removeEventListener('click',on,true);var q=k;k=[];q.forEach(function(one){if(!document.contains(one.t))return;var ev=new MouseEvent(one.type,{bubbles:true,cancelable:true});ev.__replayed=true;one.t.dispatchEvent(ev);});};})();</script>
@@ -100,8 +100,14 @@
     <span class="hljs-comment">// leads the stack, at the same-space setting the sweep measured (the same passage at the column&#x27;s 640px:</span>
     <span class="hljs-comment">// Georgia 17px on 27.2px stands 272px; Consolas 14.5px on 22.5px stands 270px), .85 of the book&#x27;s size on</span>
     <span class="hljs-comment">// a 1.55 line. SAMENESS IN LAYOUT: the Chapter label&#x27;s ::before is untouched and pinned to the book&#x27;s</span>
-    <span class="hljs-comment">// face and ink, so the title&#x27;s box is identical on both sides; the # sits as an ::after hung 2ch into</span>
-    <span class="hljs-comment">// the left gutter, the editor&#x27;s margin decoration, so the title&#x27;s text never moves at all; the</span>
+    <span class="hljs-comment">// face and ink, so the title&#x27;s box is identical on both sides; the # sits flush at the column&#x27;s left</span>
+    <span class="hljs-comment">// edge — his correction of the gutter: &quot;the # has to be left aligned with everything else and the</span>
+    <span class="hljs-comment">// transition was: Title to # Title&quot; — the text easing right by the mark&#x27;s exact width (Consolas advance</span>
+    <span class="hljs-comment">// .55em, two characters of the title&#x27;s 1.5 size = 1.65 * size), the Chapter label held still by an equal</span>
+    <span class="hljs-comment">// negative margin animated on the same curve. The staging is his &quot;canonical experience of moving from</span>
+    <span class="hljs-comment">// literal to symbol. From object to its representation&quot;: the title eases aside over 300ms making room,</span>
+    <span class="hljs-comment">// and the # arrives a breath later — its fade delayed 120ms on the way to code, undelayed on the way</span>
+    <span class="hljs-comment">// back, so the symbol is last to arrive and first to go; the</span>
     <span class="hljs-comment">// section headings keep the serif heading&#x27;s box — 1.15 of the size, the section&#x27;s margin. The palette</span>
     <span class="hljs-comment">// came from an eight-variant matrix photographed beside the serif reference, on his &quot;Play around. Be</span>
     <span class="hljs-comment">// creative. Get it to match... Don&#x27;t have the markdown be LOUD!!&quot;: the quiet winner keeps title, headings,</span>
@@ -144,9 +150,12 @@
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span>; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 4); }
-        &amp;:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
-        &amp;:has(#pc-flip:checked) .pd-title::before { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
-        &amp;:has(#pc-flip:checked) .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
+        .pd-title { position: relative; transition: padding-inline-start 0.3s ease; }
+        .pd-title::before { transition: margin-inline-start 0.3s ease; }
+        .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: 0; inset-block-end: 0; opacity: 0; transition: opacity 0.18s ease-out; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
+        &amp;:has(#pc-flip:checked) .pd-title { padding-inline-start: calc(1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
+        &amp;:has(#pc-flip:checked) .pd-title::before { margin-inline-start: calc(-1.65 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
+        &amp;:has(#pc-flip:checked) .pd-title::after { opacity: 1; transition: opacity 0.18s ease-out 0.12s; }
         .pd-section.pc-project { margin-block: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
