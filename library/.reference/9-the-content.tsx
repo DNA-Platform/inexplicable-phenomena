@@ -25,7 +25,7 @@ export default () => (
             <Heading>2. The project</Heading>
             <Paragraph>
                 <List />
-                <Line>2.1 The specification and the progress are the project's named parts, sections naming themselves; nothing is mandatory, and the parts stand open and whole — nothing collapses.</Line>
+                <Line>2.1 The project's named parts are the specification, the identification, the justification, the intuition and the progress — the order of the work itself. Sections name themselves, nothing is mandatory, and every part is independently viewable; the specification stands as an operable tree, The Specification's section 9.</Line>
                 <Line>2.2 The project's documents render verbatim through the markdown of the package, the specification in the source pane's register — the editor's face at the measured same-space settings, equations typeset into native MathML at bind time.</Line>
                 <Line>2.3 The documents are highly connected: the renderer speaks the specification's own citation language, every mention a link to its definition across the documents, and a citation click turns the page itself, never the address.</Line>
                 <Line>2.4 The implementation cites the specification by number or label, and the citation flips the content to the part it names — the relationship between the two forms.</Line>
@@ -50,7 +50,19 @@ export default () => (
             </Paragraph>
         </Section>
         <Section>
-            <Heading>5. The open ends</Heading>
+            <Heading>5. The annotations</Heading>
+            <Paragraph>
+                <List />
+                <Line>5.1 Anything on a page can be annotated: whatever can be mentioned can carry an annotation, which finds its subject by mention, never by position or a runtime id.</Line>
+                <Line>5.2 An annotation is writing said of a thing with a sort — Idea, Question, Revision, Archive, and the project's own, Justification among them. It is the infrastructure's annotation; there is no second species.</Line>
+                <Line>5.3 A relation is a type of annotation between two things, finding both ends by mention: a justification relates an identification entry to a clause; a connecting principle relates two principles.</Line>
+                <Line>5.4 An annotation is itself a thing — mentionable, so annotatable and relatable in turn. This closure lets a justification claim several clauses, lets a relationship between intuitions be an intuition, and lets the graph tangle.</Line>
+                <Line>5.5 A section toggles its own annotations by a small square in its heading; the page's layer is every section's toggle at once.</Line>
+                <Line>5.6 An annotation draws beside its subject in the small voice, and the writing never moves to make room; a relation draws at both of its ends, each citing the other, and opened by a press it stands between its two things. Nothing draws while the toggle is off, and nothing draws where its subject does not stand.</Line>
+            </Paragraph>
+        </Section>
+        <Section>
+            <Heading>6. The open ends</Heading>
             <Paragraph>
                 <List />
                 <Line>5.1 The names: Content collides with the package's word for a Word's content, and Specification with a package utility; both flagged, his to settle, likeliest when the family moves all the way into the package.</Line>

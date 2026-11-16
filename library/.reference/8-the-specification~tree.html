@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Specification</title>
+<style>
+:root {
+    --ink: rgb(27, 27, 27);
+    --teal: rgb(31, 78, 121);
+    --side: #fbfcfd;
+    --serif: Georgia, "Times New Roman", serif;
+    --mono: Consolas, "Courier New", monospace;
+    --space: 20px;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--side);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 27.2px;
+}
+.sheet { max-width: 1100px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 56px 0 120px; }
+.col { width: 640px; margin: 0 auto; }
+.label { font-size: 11.9px; letter-spacing: 1.785px; text-transform: uppercase; opacity: .6; }
+h1 { font-family: var(--mono); font-size: 25.5px; font-weight: 700; line-height: 1.3; margin: 2px 0 var(--space); }
+h1 .hash { color: var(--teal); }
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    font-size: 11.9px;
+    letter-spacing: 1.785px;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+}
+.layer { display: flex; align-items: center; gap: 7px; opacity: .8; }
+.layer input {
+    appearance: none;
+    width: 15.3px;
+    height: 15.3px;
+    border: 1px solid rgb(107, 107, 107);
+    background: #fff;
+    margin: 0;
+    cursor: pointer;
+}
+.layer input:checked { border-width: 3px; }
+.layer label { cursor: pointer; }
+.showall { display: none; cursor: pointer; color: var(--teal); opacity: .75; }
+body:has(.spart.hidden) .showall { display: inline; }
+
+.tree { font-family: var(--mono); font-size: 15.3px; line-height: 24px; }
+.mdh {
+    font-size: 15.3px;
+    font-weight: 600;
+    line-height: 24px;
+    margin: var(--space) 0 calc(var(--space) / 4);
+    cursor: pointer;
+    user-select: none;
+}
+.mdh::before { content: "## "; color: var(--teal); }
+.spart { position: relative; }
+.skids { margin-left: 2ch; }
+.spart.folded > .skids { display: none; }
+.spart.folded > .mdh::after { content: " · " attr(data-count); font-weight: 400; opacity: .45; }
+.spart.hidden { display: none; }
+.hide {
+    position: absolute;
+    left: -3ch;
+    top: 0;
+    width: 2ch;
+    text-align: center;
+    text-indent: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.sgroup > .hide { top: calc(var(--space) + 2px); }
+.spart:hover > .hide { opacity: .35; }
+.spart > .hide:hover { opacity: .7; }
+.dragging { opacity: .35; }
+.drop-before { box-shadow: 0 -2px 0 0 rgba(31, 78, 121, .55); }
+.drop-after { box-shadow: 0 2px 0 0 rgba(31, 78, 121, .55); }
+.clause { position: relative; margin: 0; padding-left: 2ch; text-indent: -2ch; }
+.clause + .clause { margin-top: 6px; }
+a.cite { color: var(--teal); text-decoration: none; }
+
+.anno {
+    position: absolute;
+    left: calc(100% + 32px);
+    top: 2px;
+    width: 196px;
+    font-family: var(--serif);
+    font-size: 12.5px;
+    line-height: 18px;
+    text-indent: 0;
+    display: none;
+}
+body:has(#l-anno:checked) .anno { display: block; }
+.anno .tag { font-size: 10.5px; letter-spacing: 1.4px; text-transform: uppercase; }
+.anno .why { opacity: .72; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+<div class="col">
+
+<header>
+    <div class="label">Our Reference</div>
+    <h1><span class="hash"># </span>The Specification</h1>
+</header>
+
+<nav class="bar">
+    <span class="layer"><input type="checkbox" id="l-anno" checked><label for="l-anno">Annotations</label></span>
+    <span class="showall" id="showall">Show all</span>
+</nav>
+
+<div class="tree" id="tree"></div>
+
+</div>
+</div>
+
+<script>
+const specification = {
+    sections: [
+        { code: '1', name: 'Purpose', clauses: [
+            { code: '1.1', text: `A specification is the formal identification of a deliverable — the thing agreed between buyer and seller in a service contract. It fixes what the deliverable must be, uniquely, so that candidates can be judged against it and the right one recognized when it is found. The specification is the legal document; the deliverable is not.` },
+            { code: '1.2', text: `The specification is the anchor for the work. The work meets the specification part by part, and the deliverable cites each part as it is met.` },
+            { code: '1.3', text: `A demand that cannot be checked has specified nothing, and a demand is stated so that it can fail.` },
+        ] },
+        { code: '2', name: 'The parts', clauses: [
+            { code: '2.1', text: `The preamble — the contract's recitals. What the document is and the choice it records, standing before the numbered sections and carrying no number.` },
+            { code: '2.2', text: `The sections — the contract's articles. Each bears a number and a name, and the sections run in one sequence.` },
+            { code: '2.3', text: `The clauses. A section nests numbered parts: clause 2.3 is the third clause of section 2. A clause nests further where its matter requires it.` },
+            { code: '2.4', text: `The labels — the contract's defined terms. A recurring kind of clause carries a letter and a number, defined where the clause is stated; in the first instance, the known results K, the constraints C, and the open determinations O.` },
+            { code: '2.5', text: `The provisos. Where a demand is motivated, the motivation stands beside it and says so.` },
+            { code: '2.6', text: `The tables. A table states what a table states best — axioms, results, tests — and its rows are clauses carrying their labels.` },
+        ] },
+        { code: '3', name: 'Citation', clauses: [
+            { code: '3.1', text: `The specification references itself. Any clause cites any other by its number or its label, in free-form citation language, and every citation is a link to the clause it names.` },
+            { code: '3.2', text: `A specification is highly connected: where a clause depends on another, motivates it, or constrains it, it says so by citation.` },
+            { code: '3.3', text: `Citation reaches across the project's documents: the specification cites the progress by its labels, and the progress cites the specification by its numbers.` },
+        ] },
+        { code: '4', name: 'Boundary', clauses: [
+            { code: '4.1', text: `The specification states where it ends. Nothing outside the boundary binds the work.` },
+            { code: '4.2', text: `What stands after the end is the schedules — the contract's annexes: reference bearing on the work and binding none of it.` },
+        ] },
+        { code: '5', name: 'Interpolation', clauses: [
+            { code: '5.1', text: `What is specified and not yet found stands as a placeholder for itself, in a brace naming the open determination it waits on.` },
+            { code: '5.2', text: `The work closes when the last placeholder is replaced by the thing it stands for.` },
+        ] },
+        { code: '6', name: 'Permanence', clauses: [
+            { code: '6.1', text: `A specification is not thrown away. It is updated when its parts are found inconsistent, since an inconsistent specification has specified nothing.` },
+            { code: '6.2', text: `A change is made by changing the specification, in the context of all its other parts.` },
+        ] },
+        { code: '7', name: 'The implementation', clauses: [
+            { code: '7.1', text: `The implementation meets the specification part by part, and cites each part as it is met, by its number or its label.` },
+            { code: '7.2', text: `A citation from the implementation leads to the part it names, and the specification stands beside what implements it: the two forms are each reachable from the other.` },
+            { code: '7.3', text: `A justification is the annotation form of this relationship: it says how the implementation satisfies a part, citing the part by number.` },
+        ] },
+        { code: '8', name: 'Format', clauses: [
+            { code: '8.1', text: `The format chosen here is the legal document, as this chapter is written: a preamble, then numbered, named sections of numbered clauses.` },
+            { code: '8.2', text: `A subject may change the format to fit its style. The form of sections 1 to 7 — purpose, parts, citation, boundary, interpolation, permanence, implementation — is kept, and the tree of section 9 with it; the dress is the subject's.` },
+        ] },
+        { code: '9', name: 'The tree', clauses: [
+            { code: '9.1', text: `A specification always has numbers or codes, always has nesting, and the numbers nest — the anatomy of 2.3. It need not be only a list of lists, but it can be imagined as one.` },
+            { code: '9.2', text: `A part with sub-parts collapses: a press on its heading folds its children, the parent standing with a count of what folded; a second press unfolds.` },
+            { code: '9.3', text: `A part can be hidden entirely, and show-all brings every hidden part back.` },
+            { code: '9.4', text: `Parts can be moved around to compare. A moved part keeps its code and its annotations, because the code carries identity: the move is an act on the view, never a renumbering — permanence (6) is untouched.` },
+            { code: '9.5', text: `The annotations toggle on what is visible: an annotation draws only where its subject stands, a folded or hidden part draws nothing, and a relation's visible end still draws, citing across.` },
+            { code: '9.6', text: `The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.` },
+        ] },
+    ],
+};
+
+const annotations = [
+    { id: 'R1', sort: 'revision', subject: '9', writing: 'Put in at the twelfth round of Sprint 130, 17 November 2026.' },
+    { id: 'N1', sort: 'relation', subject: '2.3', objects: ['9.1'], writing: 'The nesting 2.3 states is the tree 9.1 operates.' },
+];
+
+const seat = (code) => `c-${code.replace(/\./g, '-')}`;
+const tree = document.getElementById('tree');
+
+specification.sections.forEach((section) => {
+    const group = document.createElement('div');
+    group.className = 'spart sgroup';
+    group.id = seat(section.code);
+    group.draggable = true;
+    const kids = section.clauses.map((clause) =>
+        `<p class="clause spart" id="${seat(clause.code)}" draggable="true"><span class="hide" title="hide this part">&times;</span>${clause.code} ${clause.text}</p>`).join('');
+    group.innerHTML = `<span class="hide" title="hide this part">&times;</span><div class="mdh" data-count="${section.clauses.length} clauses">${section.code}. ${section.name}</div><div class="skids">${kids}</div>`;
+    tree.appendChild(group);
+});
+
+const mark = (host, tag, writing) => {
+    const span = document.createElement('span');
+    span.className = 'anno';
+    span.innerHTML = `<span class="tag">${tag}</span><br><span class="why">${writing}</span>`;
+    host.appendChild(span);
+};
+const cite = (code) => `<a class="cite" href="#${seat(code)}">${code}</a>`;
+
+annotations.forEach((a) => {
+    const subject = document.getElementById(seat(a.subject));
+    const host = subject.classList.contains('sgroup') ? subject.querySelector('.skids') : subject;
+    if (a.sort === 'relation') {
+        mark(host, `${a.id} · relates ${cite(a.objects[0])}`, a.writing);
+        a.objects.forEach((o) => mark(document.getElementById(seat(o)), `${a.id} · relates ${cite(a.subject)}`, a.writing));
+        return;
+    }
+    mark(host, `${a.id} · ${a.sort}`, a.writing);
+});
+
+document.querySelectorAll('.sgroup .mdh').forEach((mdh) => {
+    mdh.addEventListener('click', () => mdh.parentElement.classList.toggle('folded'));
+});
+document.querySelectorAll('.spart > .hide').forEach((x) => x.addEventListener('click', (press) => {
+    press.stopPropagation();
+    x.parentElement.classList.add('hidden');
+}));
+document.getElementById('showall').addEventListener('click', () => {
+    document.querySelectorAll('.spart.hidden').forEach((s) => s.classList.remove('hidden'));
+});
+
+let dragged = null;
+const clearDrops = () => document.querySelectorAll('.drop-before, .drop-after').forEach((el) => el.classList.remove('drop-before', 'drop-after'));
+const place = (target, e) => {
+    if (!dragged || !target || dragged === target || dragged.contains(target)) return null;
+    const box = target.getBoundingClientRect();
+    return { target, before: e.clientY < box.top + box.height / 2 };
+};
+document.querySelectorAll('.spart').forEach((part) => {
+    part.addEventListener('dragstart', (e) => {
+        e.stopPropagation();
+        dragged = part;
+        part.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', part.id);
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    part.addEventListener('dragend', () => {
+        part.classList.remove('dragging');
+        clearDrops();
+        dragged = null;
+    });
+});
+tree.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const isGroup = dragged && dragged.classList.contains('sgroup');
+    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
+    const s = place(target, e);
+    clearDrops();
+    if (s) s.target.classList.add(s.before ? 'drop-before' : 'drop-after');
+});
+tree.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const isGroup = dragged && dragged.classList.contains('sgroup');
+    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
+    const s = place(target, e);
+    clearDrops();
+    if (!s) return;
+    if (!isGroup && s.target.classList.contains('sgroup')) {
+        const kids = s.target.querySelector('.skids');
+        if (s.before) kids.prepend(dragged); else kids.append(dragged);
+    } else {
+        s.target.parentElement.insertBefore(dragged, s.before ? s.target : s.target.nextSibling);
+    }
+});
+</script>
+
+</body>
+</html>

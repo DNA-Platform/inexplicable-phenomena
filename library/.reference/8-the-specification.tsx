@@ -1,4 +1,4 @@
-import { Chapter, Heading, Line, List, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Heading, Line, List, Means, Paragraph, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -80,8 +80,26 @@ export default () => (
             <Paragraph>
                 <List />
                 <Line>8.1 The format chosen here is the legal document, as this chapter is written: a preamble, then numbered, named sections of numbered clauses.</Line>
-                <Line>8.2 A subject may change the format to fit its style. The form of sections 1 to 7 — purpose, parts, citation, boundary, interpolation, permanence, implementation — is kept; the dress is the subject's.</Line>
+                <Line>8.2 A subject may change the format to fit its style. The form of sections 1 to 7 — purpose, parts, citation, boundary, interpolation, permanence, implementation — is kept, and the tree of section 9 with it; the dress is the subject's.</Line>
             </Paragraph>
         </Section>
+        <Section>
+            <Heading>9. The tree</Heading>
+            <Paragraph>
+                <List />
+                <Line>9.1 A specification always has numbers or codes, always has nesting, and the numbers nest — the anatomy of 2.3. It need not be only a list of lists, but it can be imagined as one.</Line>
+                <Line>9.2 A part with sub-parts collapses: a press on its heading folds its children, the parent standing with a count of what folded; a second press unfolds.</Line>
+                <Line>9.3 A part can be hidden entirely, and show-all brings every hidden part back.</Line>
+                <Line>9.4 Parts can be moved around to compare. A moved part keeps its code and its annotations, because the code carries identity: the move is an act on the view, never a renumbering — permanence (6) is untouched.</Line>
+                <Line>9.5 The annotations toggle on what is visible: an annotation draws only where its subject stands, a folded or hidden part draws nothing, and a relation's visible end still draws, citing across.</Line>
+                <Line>9.6 The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.</Line>
+            </Paragraph>
+        </Section>
+        <Append
+            identifier="tree"
+            type=".html"
+        >
+            ![[ tree.html ]]
+        </Append>
     </Chapter>
 );

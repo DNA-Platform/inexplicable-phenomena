@@ -26,9 +26,9 @@
     ".binding/application/routes.ts"
   ],
   "rendered": [
+    "our-reference/index.html",
     "the-design/index.html",
     "our-team/index.html",
-    "our-reference/index.html",
     "our-library/index.html",
     "dictionary/index.html",
     "chemistry/index.html",
@@ -141,12 +141,12 @@
     "assets/books/neuroscience-subject-BkGQz4To.js",
     "assets/books/philosophy-subject-CavlXkTu.js",
     "assets/books/physics-subject-CgNgmugc.js",
-    "assets/books/reference-BbEKHLSO.js",
+    "assets/books/reference-tZc56QpW.js",
     "assets/books/subject-CznZi-7V.js",
-    "assets/books/subject-design-BCYWzyzc.js",
+    "assets/books/subject-design-BB9K_7Tz.js",
     "assets/books/subject-dictionary-S6TSGbKF.js",
     "assets/index-CaH6IAI_.css",
-    "assets/index-CclBanw3.js",
+    "assets/index-h7wa7ku5.js",
     "assets/shared/_shared_react-6pQpRABW.js",
     "assets/shared/_shared_styled-components-DGpG2R0g.js",
     "assets/shared/at-dna-platform-chemistry-DA5qn-Y5.js",
@@ -169,14 +169,6 @@
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/1771c462935f.css",
       "markup": ".pages/our-team.html"
-    },
-    "/our-reference": {
-      "folder": ".reference",
-      "digest": "925cb4c789be9834",
-      "references": "5779dd0547e938c1",
-      "binder": "6a9cabae88b71ed1",
-      "sheet": "sheets/f22699cbda8a.css",
-      "markup": ".pages/our-reference.html"
     },
     "/our-library": {
       "folder": ".subject",
@@ -306,9 +298,17 @@
       "sheet": "sheets/1771c462935f.css",
       "markup": ".pages/physics.html"
     },
+    "/our-reference": {
+      "folder": ".reference",
+      "digest": "528e0a7266e8a3fb",
+      "references": "5779dd0547e938c1",
+      "binder": "6a9cabae88b71ed1",
+      "sheet": "sheets/f22699cbda8a.css",
+      "markup": ".pages/our-reference.html"
+    },
     "/the-design": {
       "folder": ".subject/.design",
-      "digest": "becb1e00667afb5c",
+      "digest": "dca79aa5112e9793",
       "references": "5b8e28dfc3c312ce",
       "binder": "6a9cabae88b71ed1",
       "sheet": "sheets/1771c462935f.css",
@@ -349,65 +349,6 @@
           "Chapter",
           "Content",
           "Heading",
-          "Means",
-          "Next",
-          "Paginated",
-          "Paragraph",
-          "Parenthetical",
-          "Previous",
-          "Reference",
-          "Section",
-          "Subject",
-          "Theme",
-          "Title",
-          "Word",
-          "html",
-          "specify"
-        ],
-        "react/jsx-runtime": [
-          "Fragment",
-          "jsx",
-          "jsxs"
-        ],
-        "styled-components": [
-          "css"
-        ]
-      }
-    },
-    ".reference": {
-      "digest": "ea0ff4ebda66179f",
-      "entry": "assets/books/reference-BbEKHLSO.js",
-      "files": [
-        "assets/books/1-the-book~code-Bwrxa6Z9.js",
-        "assets/books/reference-BbEKHLSO.js"
-      ],
-      "bindings": {
-        "@dna-platform/chemistry": [
-          "$",
-          "$check",
-          "selection"
-        ],
-        "@dna-platform/public": [
-          "$Annotation",
-          "$Book",
-          "$Chapter",
-          "$Cover",
-          "$Format",
-          "$Paragraph",
-          "$Synopsis",
-          "$Table",
-          "$TableOfContents",
-          "$Theme",
-          "$Word",
-          "AnnotationSpecification",
-          "Append",
-          "Author",
-          "Chapter",
-          "Code",
-          "Content",
-          "Heading",
-          "Line",
-          "List",
           "Means",
           "Next",
           "Paginated",
@@ -1383,11 +1324,71 @@
         ]
       }
     },
-    ".subject/.design": {
-      "digest": "a4e58ba5ecff389a",
-      "entry": "assets/books/subject-design-BCYWzyzc.js",
+    ".reference": {
+      "digest": "e6bc4dc5415a306a",
+      "entry": "assets/books/reference-tZc56QpW.js",
       "files": [
-        "assets/books/subject-design-BCYWzyzc.js"
+        "assets/books/1-the-book~code-Bwrxa6Z9.js",
+        "assets/books/reference-tZc56QpW.js"
+      ],
+      "bindings": {
+        "@dna-platform/chemistry": [
+          "$",
+          "$check",
+          "selection"
+        ],
+        "@dna-platform/public": [
+          "$Annotation",
+          "$Book",
+          "$Chapter",
+          "$Cover",
+          "$Format",
+          "$Paragraph",
+          "$Synopsis",
+          "$Table",
+          "$TableOfContents",
+          "$Theme",
+          "$Word",
+          "AnnotationSpecification",
+          "Append",
+          "Author",
+          "Chapter",
+          "Code",
+          "Content",
+          "Heading",
+          "Line",
+          "List",
+          "Means",
+          "Next",
+          "Paginated",
+          "Paragraph",
+          "Parenthetical",
+          "Previous",
+          "Reference",
+          "Section",
+          "Subject",
+          "Theme",
+          "Title",
+          "Word",
+          "html",
+          "specify"
+        ],
+        "react/jsx-runtime": [
+          "Fragment",
+          "jsx",
+          "jsxs"
+        ],
+        "styled-components": [
+          "css"
+        ]
+      }
+    },
+    ".subject/.design": {
+      "digest": "725ae38a6fc00780",
+      "entry": "assets/books/subject-design-BB9K_7Tz.js",
+      "files": [
+        "assets/books/1-the-book~code-Bwrxa6Z9.js",
+        "assets/books/subject-design-BB9K_7Tz.js"
       ],
       "bindings": {
         "@dna-platform/chemistry": [
@@ -1469,7 +1470,7 @@
     ]
   },
   "app": {
-    "digest": "7bd58e05c6382436",
+    "digest": "692db38cdc387072",
     "files": [
       "assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
       "assets/KaTeX_AMS-Regular-DMm9YOAa.woff",
@@ -1531,7 +1532,7 @@
       "assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
       "assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf",
       "assets/index-CaH6IAI_.css",
-      "assets/index-CclBanw3.js"
+      "assets/index-h7wa7ku5.js"
     ],
     "bindings": {
       "@dna-platform/chemistry": [
@@ -1551,6 +1552,6 @@
         "hydrateRoot"
       ]
     },
-    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-CclBanw3.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CaH6IAI_.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+    "shell": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Inexplicable Phenomena</title>\n    <link rel=\"icon\" href=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E\" />\n    <script type=\"module\" crossorigin src=\"/inexplicable-phenomena/assets/index-h7wa7ku5.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/inexplicable-phenomena/assets/index-CaH6IAI_.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
   }
 }

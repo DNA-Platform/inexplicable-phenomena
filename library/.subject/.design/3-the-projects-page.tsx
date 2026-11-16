@@ -32,6 +32,23 @@ export default () => (
                 press moves to another.
             </Paragraph>
             <Paragraph>
+                The twelfth round specified the specification's own tree, and the sketch took it the same
+                hour: a specification always has numbers or codes, always has nesting, and the numbers nest —
+                4.2 standing under 4 — not only a list of lists, though it can be imagined as one. The
+                operations came with it: a section folds on its heading's press and stands with a quiet count
+                of what folded; any part hides entirely from a small mark in its gutter, Show all standing in
+                the section's heading until everything is back; a part drags to stand beside another for
+                comparing, its code and its marks travelling with it because the code carries identity; and
+                the annotations toggle on what is visible — a folded or hidden clause draws nothing, its
+                marks returning with it, while an opened connection overrides the tree, a hidden clause
+                standing again while its justification is open. The same hour the tree went into the manual:
+                the thirteenth round ruled that <Means>$[[ Our Reference / The Specification ]]</Means> should
+                have this code, so it gained its ninth section and an appendix holding the tree as an object
+                and the page as its rendering, run on that specification itself,
+                while <Means>$[[ Our Reference / The Content ]]</Means> took the five parts and the
+                annotation foundation as its own sections.
+            </Paragraph>
+            <Paragraph>
                 What the sketch found: a dotted underline across a justified statement read loud and became the
                 pale rule at its left; with references off the teal drains to ink and every part still reads
                 whole, which is the test that references are connection and not content; a citation pressed in
@@ -44,8 +61,11 @@ export default () => (
                 hierarchy as the sketch was photographed: the title of a section needs to be more important, and
                 markdown's own headings should hardly exceed the body — a little bold, not much, partially
                 rendered — said for this page and for the arithmetic specification alike, so the correction
-                went into <Means>$[[ Our Reference / The Content ]]</Means> in the same stroke. Nothing else
-                here moved into the manual or the record's specification.
+                went into <Means>$[[ Our Reference / The Content ]]</Means> in the same stroke. The
+                move-to-compare answered a question by construction: 4.2 dragged beside 7.3 — the two clauses
+                one justification claims — seats a relation's two objects together with the same J3 mark on
+                each, which is what comparing is for; though the margin crowds where two long marks meet, the
+                collision joining the phone among the margin's opens.
             </Paragraph>
         </Section>
         <Section>
@@ -58,6 +78,12 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 <Image>![[ the-parts-specification-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ the-parts-tree-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ the-parts-compare-desk.png ]]</Image>
             </Paragraph>
             <Paragraph>
                 <Image>![[ the-parts-identification-desk.png ]]</Image>

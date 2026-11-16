@@ -1,4 +1,4 @@
-var k=Object.defineProperty;var s=(w,y)=>k(w,"name",{value:y,configurable:!0});import{jsxs as t,jsx as e}from"react/jsx-runtime";import{$ as v}from"@dna-platform/chemistry";import{$,C as x,T,S as E,a as S}from"./1-the-book~code-Bwrxa6Z9.js";import{Chapter as c,Title as l,Author as A,Subject as N,Parenthetical as f,Paragraph as a,Section as o,Heading as i,Content as h,Word as u,Means as d,Code as m,Append as p,List as r,Line as n}from"@dna-platform/public";import"styled-components";const g=class g extends ${};s(g,"$TheManual");let b=g;const R=s(()=>t(c,{children:[e(x,{}),e(l,{children:"[Subjective Reference](/inexplicable-phenomena/our-reference/)"}),e(A,{children:"[Doug](/inexplicable-phenomena/our-team/)"}),e(N,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"}),e(T,{children:"The least a library needs to bind."})]}),"Cover"),I=s(()=>t(c,{children:[e(E,{}),e(f,{}),t(l,{children:[e(f,{}),"[Synopsis](/inexplicable-phenomena/our-reference/)"]}),e(a,{children:"The least a library needs to bind: the book every other book here extends, the theme it registers, the running head and the byline it draws from a cover, and the faces a cover, a synopsis and a table wear. Each chapter says what the tool is and the file beside it is the tool. Borrowed, to begin, from the binder's own test library, and rebuilt from here by sketches. And the rule for the manuals themselves: every subject carries one, with a part for the books of its subject tracking their idioms, the enforcing code standing with the chapter that states the idiom. And the form of a specification, chosen as the legal document, each subject free to redress it in its own style; and the content, a front and a back for anything with a project, lifted here because that will be a lot of places."})]}),"Synopsis"),C=s(()=>t(c,{children:[e(S,{}),t(l,{children:[e(f,{}),"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"]}),t(o,{children:[e(i,{children:"Contents"}),e(a,{children:e(h,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"})}),e(a,{children:e(h,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"})}),e(a,{children:e(h,{children:"[The Running Head and the Byline](/inexplicable-phenomena/our-reference/#the-running-head-and-the-byline)"})}),e(a,{children:e(h,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"})}),e(a,{children:e(h,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"})}),e(a,{children:e(h,{children:"[The Paper](/inexplicable-phenomena/our-reference/#the-paper)"})}),e(a,{children:e(h,{children:"[The Reference Manual](/inexplicable-phenomena/our-reference/#the-reference-manual)"})}),e(a,{children:e(h,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"})}),e(a,{children:e(h,{children:"[The Content](/inexplicable-phenomena/our-reference/#the-content)"})}),t(a,{children:[e(f,{}),e(u,{children:e(h,{children:"[Our Reference](/inexplicable-phenomena/our-reference/)"})}),e(u,{children:e(h,{children:"[Synopsis](/inexplicable-phenomena/our-reference/#synopsis)"})}),e(u,{children:e(h,{children:"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"})})]})]})]}),"Table"),D=s(()=>t(c,{children:[e(l,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"}),t(o,{children:[e(i,{children:"What a book is here"}),e(a,{children:"Every book in this library extends the library's own, so what a book is here is decided once and a change to it reaches all of them. The book class is the layout: the running head, the byline drawn from what the book's cover says, then the chapters. Its file is where the library's theme is registered, once, on the class every book extends. A cover's route opens at the top of the page; every other bookmark turns as the framework does."}),t(a,{children:["The class stands beside this chapter as its code, borrowed on 2026-10-30 from the binder's own test library, whose manual the team wrote, and to be rebuilt from here by sketches rather than kept. The theme it registers is ",e(d,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),"; the running head and the byline it draws are ",e(d,{children:"[The Running Head and the Byline](/inexplicable-phenomena/our-reference/#the-running-head-and-the-byline)"}),"."]})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';
+var k=Object.defineProperty;var s=(w,y)=>k(w,"name",{value:y,configurable:!0});import{jsxs as t,jsx as e}from"react/jsx-runtime";import{$ as v}from"@dna-platform/chemistry";import{$ as x,C as $,T,S as E,a as A}from"./1-the-book~code-Bwrxa6Z9.js";import{Chapter as c,Title as d,Author as S,Subject as N,Parenthetical as f,Paragraph as a,Section as o,Heading as i,Content as h,Word as u,Means as l,Code as m,Append as p,List as r,Line as n}from"@dna-platform/public";import"styled-components";const b=class b extends x{};s(b,"$TheManual");let g=b;const R=s(()=>t(c,{children:[e($,{}),e(d,{children:"[Subjective Reference](/inexplicable-phenomena/our-reference/)"}),e(S,{children:"[Doug](/inexplicable-phenomena/our-team/)"}),e(N,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"}),e(T,{children:"The least a library needs to bind."})]}),"Cover"),I=s(()=>t(c,{children:[e(E,{}),e(f,{}),t(d,{children:[e(f,{}),"[Synopsis](/inexplicable-phenomena/our-reference/)"]}),e(a,{children:"The least a library needs to bind: the book every other book here extends, the theme it registers, the running head and the byline it draws from a cover, and the faces a cover, a synopsis and a table wear. Each chapter says what the tool is and the file beside it is the tool. Borrowed, to begin, from the binder's own test library, and rebuilt from here by sketches. And the rule for the manuals themselves: every subject carries one, with a part for the books of its subject tracking their idioms, the enforcing code standing with the chapter that states the idiom. And the form of a specification, chosen as the legal document, each subject free to redress it in its own style; and the content, a front and a back for anything with a project, lifted here because that will be a lot of places."})]}),"Synopsis"),C=s(()=>t(c,{children:[e(A,{}),t(d,{children:[e(f,{}),"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"]}),t(o,{children:[e(i,{children:"Contents"}),e(a,{children:e(h,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"})}),e(a,{children:e(h,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"})}),e(a,{children:e(h,{children:"[The Running Head and the Byline](/inexplicable-phenomena/our-reference/#the-running-head-and-the-byline)"})}),e(a,{children:e(h,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"})}),e(a,{children:e(h,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"})}),e(a,{children:e(h,{children:"[The Paper](/inexplicable-phenomena/our-reference/#the-paper)"})}),e(a,{children:e(h,{children:"[The Reference Manual](/inexplicable-phenomena/our-reference/#the-reference-manual)"})}),e(a,{children:e(h,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"})}),e(a,{children:e(h,{children:"[The Content](/inexplicable-phenomena/our-reference/#the-content)"})}),t(a,{children:[e(f,{}),e(u,{children:e(h,{children:"[Our Reference](/inexplicable-phenomena/our-reference/)"})}),e(u,{children:e(h,{children:"[Synopsis](/inexplicable-phenomena/our-reference/#synopsis)"})}),e(u,{children:e(h,{children:"[Table of Contents](/inexplicable-phenomena/our-reference/#table-of-contents)"})})]})]})]}),"Table"),j=s(()=>t(c,{children:[e(d,{children:"[The Book](/inexplicable-phenomena/our-reference/#the-book)"}),t(o,{children:[e(i,{children:"What a book is here"}),e(a,{children:"Every book in this library extends the library's own, so what a book is here is decided once and a change to it reaches all of them. The book class is the layout: the running head, the byline drawn from what the book's cover says, then the chapters. Its file is where the library's theme is registered, once, on the class every book extends. A cover's route opens at the top of the page; every other bookmark turns as the framework does."}),t(a,{children:["The class stands beside this chapter as its code, borrowed on 2026-10-30 from the binder's own test library, whose manual the team wrote, and to be rebuilt from here by sketches rather than kept. The theme it registers is ",e(l,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),"; the running head and the byline it draws are ",e(l,{children:"[The Running Head and the Byline](/inexplicable-phenomena/our-reference/#the-running-head-and-the-byline)"}),"."]})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Book, $Chapter, $Cover, $TableOfContents, Paginated, Theme } from '@dna-platform/public';
 import { LibraryTheme } from './2-the-theme~code.tsx';
@@ -54,7 +54,7 @@ export class $TheLibrary extends $Book {
 
 export const TheLibrary = $($TheLibrary);
 $(TheLibrary, Theme)(LibraryTheme);
-`})]}),"TheBook1"),O=s(()=>t(c,{children:[e(l,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),t(o,{children:[e(i,{children:"The values and the parts"}),e(a,{children:"A theme is a set of values, the font, the measure, the ink, the paper, the link, and the parts that use them: the page, the levels of a book, the labels, the links, the apparatus and the figures. The file beside this chapter is the one the book registers. It is the test library's theme as borrowed, a serif on warm paper, and it stands only until the sketches say what this library's own looks like."})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ElementType } from 'react';
+`})]}),"TheBook1"),D=s(()=>t(c,{children:[e(d,{children:"[The Theme](/inexplicable-phenomena/our-reference/#the-theme)"}),t(o,{children:[e(i,{children:"The values and the parts"}),e(a,{children:"A theme is a set of values, the font, the measure, the ink, the paper, the link, and the parts that use them: the page, the levels of a book, the labels, the links, the apparatus and the figures. The file beside this chapter is the one the book registers. It is the test library's theme as borrowed, a serif on warm paper, and it stands only until the sketches say what this library's own looks like."})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ElementType } from 'react';
 import { css, RuleSet } from 'styled-components';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Theme } from '@dna-platform/public';
@@ -251,7 +251,7 @@ export class $LibraryTheme extends $Theme {
 }
 
 export const LibraryTheme = $($LibraryTheme);
-`})]}),"TheTheme2"),P=s(()=>t(c,{children:[e(l,{children:"[The Running Head and the Byline](/inexplicable-phenomena/our-reference/#the-running-head-and-the-byline)"}),t(o,{children:[e(i,{children:"What a cover exposes"}),e(a,{children:"The running head is the book's title alone, the minimal heading in the page's top margin, ruled 16 November 2026: pressed, it opens the table of contents — except on the table itself, where it opens the cover. The byline — who wrote the book, what it is about when the book is a subject's own, and its subject — is no longer drawn above the chapters; it lives on the front and in the table of contents. Both are read from the cover and nowhere else; neither is written in a chapter. A subject is a book made one by its About, so the four books whose subject is Mathematics resolve to the book that is about it. The file beside this chapter is both faces, borrowed from the test library."})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';\r
+`})]}),"TheTheme2"),O=s(()=>t(c,{children:[e(d,{children:"[The Running Head and the Byline](/inexplicable-phenomena/our-reference/#the-running-head-and-the-byline)"}),t(o,{children:[e(i,{children:"What a cover exposes"}),e(a,{children:"The running head is the book's title alone, the minimal heading in the page's top margin, ruled 16 November 2026: pressed, it opens the table of contents — except on the table itself, where it opens the cover. The byline — who wrote the book, what it is about when the book is a subject's own, and its subject — is no longer drawn above the chapters; it lives on the front and in the table of contents. Both are read from the cover and nowhere else; neither is written in a chapter. A subject is a book made one by its About, so the four books whose subject is Mathematics resolve to the book that is about it. The file beside this chapter is both faces, borrowed from the test library."})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ReactNode } from 'react';\r
 import { $ } from '@dna-platform/chemistry';\r
 import { $Paragraph, $Word, Reference as reference, Word as word } from '@dna-platform/public';\r
 \r
@@ -344,7 +344,7 @@ export const RunningHead = $($RunningHead);\r
 export const Label = $($Label);\r
 const label = Label;\r
 export const Byline = $($Byline);\r
-`})]}),"TheRunningHeadAndTheByline3"),j=s(()=>t(c,{children:[e(l,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"}),t(o,{children:[e(i,{children:"A cover, a synopsis, a table"}),e(a,{children:"A face is how a book's apparatus looks: the cover a book opens on, the synopsis beside it, the table of contents that answers for its chapters and, when the book is a subject, for the books whose subject it is. Each is a word of the package dressed here, and every book of this library wears these four from the file beside this chapter, borrowed from the test library until a sketch replaces them."})]}),t(o,{children:[e(i,{children:"The front"}),t(a,{children:[`Since 10 November 2026 the cover is drawn as a book: the front, in the file beside this chapter, a board of a book's shape standing alone on the page while the cover is the open page, as tall as the screen allows since 17 November 2026, its type growing with it, with the title, the author, the tagline and the imprint on it, read from what the cover already says, as the byline is; the tagline is one line of what the book is, said of the cover as its author is, and the synopsis's first paragraph stood in its place until 12 November 2026, when I struck it, "an extensive block is a synopsis", the synopsis being its own page, reached from the table; its words are its links, the title opening the table of contents, the author and the subject their books, the library's name the library, and the running head, the byline and the cover's own title stand unseen behind it until another page opens. The theme draws it and gives a page that opens its one transition, a short fade. Sketch 004 of `,e(d,{children:"[The Paper's Page](/inexplicable-phenomena/mathematical-design/#the-papers-page)"}),", form a, by my number."]})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ElementType, ReactNode } from 'react';
+`})]}),"TheRunningHeadAndTheByline3"),L=s(()=>t(c,{children:[e(d,{children:"[The Faces](/inexplicable-phenomena/our-reference/#the-faces)"}),t(o,{children:[e(i,{children:"A cover, a synopsis, a table"}),e(a,{children:"A face is how a book's apparatus looks: the cover a book opens on, the synopsis beside it, the table of contents that answers for its chapters and, when the book is a subject, for the books whose subject it is. Each is a word of the package dressed here, and every book of this library wears these four from the file beside this chapter, borrowed from the test library until a sketch replaces them."})]}),t(o,{children:[e(i,{children:"The front"}),t(a,{children:[`Since 10 November 2026 the cover is drawn as a book: the front, in the file beside this chapter, a board of a book's shape standing alone on the page while the cover is the open page, as tall as the screen allows since 17 November 2026, its type growing with it, with the title, the author, the tagline and the imprint on it, read from what the cover already says, as the byline is; the tagline is one line of what the book is, said of the cover as its author is, and the synopsis's first paragraph stood in its place until 12 November 2026, when I struck it, "an extensive block is a synopsis", the synopsis being its own page, reached from the table; its words are its links, the title opening the table of contents, the author and the subject their books, the library's name the library, and the running head, the byline and the cover's own title stand unseen behind it until another page opens. The theme draws it and gives a page that opens its one transition, a short fade. Sketch 004 of `,e(l,{children:"[The Paper's Page](/inexplicable-phenomena/mathematical-design/#the-papers-page)"}),", form a, by my number."]})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ElementType, ReactNode } from 'react';
 import { $, $check, selection } from '@dna-platform/chemistry';
 import { $Annotation, $Chapter, $Cover, $Format, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Word as word, html, specify } from '@dna-platform/public';
 
@@ -596,7 +596,7 @@ export const Front = $($Front);
 export const Navigation = $($Navigation);
 const navigation = Navigation;
 export const Navigated = $($Navigated);
-`})]}),"TheFaces4"),L=s(()=>t(c,{children:[e(l,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"}),t(o,{children:[e(i,{children:"The loop"}),e(a,{children:"A save shows on an open page in under a second; a bind is the gate at the end of a piece of work and never the way to look during one. The workbench beside this chapter is the loop: it serves the library live from its sources, keeps one browser open on it, and answers a look with what it found and a photograph. Borrowed from the librarian's own library on 2026-10-30, its built address this library's."}),t(a,{children:[e(r,{}),e(n,{children:"node library/.reference/5-developing-the-library~workbench.mjs, once, left open"}),e(n,{children:"node library/.reference/5-developing-the-library~workbench.mjs look the-team"}),e(n,{children:"the same with built for the site the last bind made, phone for a phone's width, close at the end"})]})]}),t(o,{children:[e(i,{children:"The bind and the site"}),e(a,{children:"In the binding beside the site, npm run bind binds every book and leaves the site under the base the configuration names, and npm run preview with its port serves what the bind left. The site is committed as it is bound, and what is published is what was committed."}),t(a,{children:[e(r,{}),e(n,{children:"cd library/.public/.binding"}),e(n,{children:"npm run bind"}),e(n,{children:"npm run preview -- --port 4343 --strictPort"})]})]}),e(p,{identifier:"workbench",type:".mjs",children:`// The workbench: the library served live from its sources, a browser kept open on it, and a way to ask that
+`})]}),"TheFaces4"),P=s(()=>t(c,{children:[e(d,{children:"[Developing the Library](/inexplicable-phenomena/our-reference/#developing-the-library)"}),t(o,{children:[e(i,{children:"The loop"}),e(a,{children:"A save shows on an open page in under a second; a bind is the gate at the end of a piece of work and never the way to look during one. The workbench beside this chapter is the loop: it serves the library live from its sources, keeps one browser open on it, and answers a look with what it found and a photograph. Borrowed from the librarian's own library on 2026-10-30, its built address this library's."}),t(a,{children:[e(r,{}),e(n,{children:"node library/.reference/5-developing-the-library~workbench.mjs, once, left open"}),e(n,{children:"node library/.reference/5-developing-the-library~workbench.mjs look the-team"}),e(n,{children:"the same with built for the site the last bind made, phone for a phone's width, close at the end"})]})]}),t(o,{children:[e(i,{children:"The bind and the site"}),e(a,{children:"In the binding beside the site, npm run bind binds every book and leaves the site under the base the configuration names, and npm run preview with its port serves what the bind left. The site is committed as it is bound, and what is published is what was committed."}),t(a,{children:[e(r,{}),e(n,{children:"cd library/.public/.binding"}),e(n,{children:"npm run bind"}),e(n,{children:"npm run preview -- --port 4343 --strictPort"})]})]}),e(p,{identifier:"workbench",type:".mjs",children:`// The workbench: the library served live from its sources, a browser kept open on it, and a way to ask that
 // browser what a page looks like. Open it once and leave it open:
 //
 //     node library/.reference/5-developing-the-library~workbench.mjs
@@ -938,7 +938,7 @@ else if (verb === 'look' || verb === 'close') {
     }
     console.log(await asked(verb === 'look' ? \`look?\${wanted}\` : 'close') ?? 'no workbench is open; open one by running this file with nothing after it');
 } else console.log('open the workbench with nothing after the file; then look <a book\\'s address>, or close');
-`})]}),"DevelopingTheLibrary5"),H=s(()=>t(c,{children:[e(l,{children:"[The Paper](/inexplicable-phenomena/our-reference/#the-paper)"}),t(o,{children:[e(i,{children:"A paper's page"}),t(a,{children:["A paper is a citable publication held in the library as a resource: the file itself beside a chapter of ",e(d,{children:"[The Library of Mathematics](/inexplicable-phenomena/mathematical-library/)"}),", which carries the paper's citation and the notes its author writes on it, the paper signed by its own author. The page is minimal, on my word of 10 November 2026: a small picture of the publication at the top left with the text flowing under it, the citation, the notes, and a link that opens the publication in another tab; the picture itself opens it. The page's form is sketch 002 of the design book, form a."]})]}),t(o,{children:[e(i,{children:"The plate and the opening"}),e(a,{children:"Two words in the file beside this chapter. A plate is the word that carries the picture, floated at the top left of the chapter by the theme; an opening is a reference that opens its address in another tab, a twin of the package's own reference with its anchor given a target. A chapter writes the plate first, before its title, as a word holding an opening whose text is the paper's literal and an image whose text is the picture's: the literals become the two files' addresses at the bind, so the picture is served beside the pages and the paper with it."})]}),t(o,{children:[e(i,{children:"The picture"}),e(a,{children:"The picture is the paper's first page, made once by the tool beside this chapter: Chrome's own viewer draws the PDF with its toolbar and panes asked off, served to it by the tool since the viewer draws nothing opened from the disk as a file, photographed at a page's shape and cut to the page. The tool takes a page number for a scan of a bound book, which opens on its boards: Lobachevsky's title page is its fifth leaf. It stands beside the paper's chapter as a picture, named by the plate's literal, and is made again only when the paper changes."})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ElementType } from 'react';
+`})]}),"DevelopingTheLibrary5"),H=s(()=>t(c,{children:[e(d,{children:"[The Paper](/inexplicable-phenomena/our-reference/#the-paper)"}),t(o,{children:[e(i,{children:"A paper's page"}),t(a,{children:["A paper is a citable publication held in the library as a resource: the file itself beside a chapter of ",e(l,{children:"[The Library of Mathematics](/inexplicable-phenomena/mathematical-library/)"}),", which carries the paper's citation and the notes its author writes on it, the paper signed by its own author. The page is minimal, on my word of 10 November 2026: a small picture of the publication at the top left with the text flowing under it, the citation, the notes, and a link that opens the publication in another tab; the picture itself opens it. The page's form is sketch 002 of the design book, form a."]})]}),t(o,{children:[e(i,{children:"The plate and the opening"}),e(a,{children:"Two words in the file beside this chapter. A plate is the word that carries the picture, floated at the top left of the chapter by the theme; an opening is a reference that opens its address in another tab, a twin of the package's own reference with its anchor given a target. A chapter writes the plate first, before its title, as a word holding an opening whose text is the paper's literal and an image whose text is the picture's: the literals become the two files' addresses at the bind, so the picture is served beside the pages and the paper with it."})]}),t(o,{children:[e(i,{children:"The picture"}),e(a,{children:"The picture is the paper's first page, made once by the tool beside this chapter: Chrome's own viewer draws the PDF with its toolbar and panes asked off, served to it by the tool since the viewer draws nothing opened from the disk as a file, photographed at a page's shape and cut to the page. The tool takes a page number for a scan of a bound book, which opens on its boards: Lobachevsky's title page is its fifth leaf. It stands beside the paper's chapter as a picture, named by the plate's literal, and is made again only when the paper changes."})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { ElementType } from 'react';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Reference, $Word } from '@dna-platform/public';
 
@@ -1022,7 +1022,280 @@ writeFileSync(picture, photograph);
 console.log(\`\${paper} -> \${picture}, \${width - 2 * gutter} by \${height - 2 * gutter}, the page's shape \${shape.toFixed(3)}\${box === null ? ' assumed' : ''}, drawn after \${waited} s\${photograph.length > 8000 ? '' : ' — NOT DRAWN, the picture is blank'}\`);
 await browser.close();
 server.close();
-`})]}),"ThePaper6"),W=s(()=>t(c,{children:[e(l,{children:"[The Reference Manual](/inexplicable-phenomena/our-reference/#the-reference-manual)"}),t(o,{children:[e(i,{children:"1. What a reference manual is"}),t(a,{children:[e(r,{}),e(n,{children:"1.1 Every subject carries a reference manual: the specification of that subject in this library. This book is the library's own. I ruled this on 12 November 2026, at the opening of the textbook's sprint."}),e(n,{children:"1.2 A subject's manual keeps a part for the books of its subject, one chapter per book, and that chapter tracks the book's idioms — the conventions its chapters follow."}),e(n,{children:"1.3 Where an idiom is enforced by code, the code stands with the chapter that states it, the way this book's theme and faces stand beside theirs; an idiom followed by hand is stated in the same place and marked so."}),t(n,{children:["1.4 A manual is written the way a specification is — numbered parts, referenced code — in the form of ",e(d,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),"; I asked for this on 16 November 2026, and this chapter is the first so written."]})]})]}),t(o,{children:[e(i,{children:"2. The three shelves"}),t(a,{children:[e(r,{}),e(n,{children:"2.1 What is true of every book in the library lives here, in Our Reference."}),t(n,{children:["2.2 What is true of a subject's books lives in that subject's manual. The first is ",e(d,{children:"[Referential Objectivity](/inexplicable-phenomena/mathematical-reference/)"}),", whose part The Books tracks the notebook, the textbook, the project, the library and the design."]}),e(n,{children:"2.3 What is true of one book alone stays beside that book, never in a manual."})]})]})]}),"TheReferenceManual7"),F=s(()=>t(c,{children:[e(l,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),t(a,{children:["The specification of a specification, written in its own form. I chose the form of a legal document on 16 November 2026, its anatomy the contract's — recitals, articles, clauses, defined terms, provisos, schedules — evolved for a library that specifies deliverables. The form is the library's; a subject may redress it to fit its style, as a theme redresses a page. Mathematics writes its own in ",e(d,{children:"[The Specification](/inexplicable-phenomena/mathematical-reference/#the-specification)"}),", and the first full instance is the statement of work of ",e(d,{children:"[The Symmetry of Arithmetic](/inexplicable-phenomena/arithmetic-textbook/#the-symmetry-of-arithmetic)"}),"."]}),t(o,{children:[e(i,{children:"1. Purpose"}),t(a,{children:[e(r,{}),e(n,{children:"1.1 A specification is the formal identification of a deliverable — the thing agreed between buyer and seller in a service contract. It fixes what the deliverable must be, uniquely, so that candidates can be judged against it and the right one recognized when it is found. The specification is the legal document; the deliverable is not."}),e(n,{children:"1.2 The specification is the anchor for the work. The work meets the specification part by part, and the deliverable cites each part as it is met."}),e(n,{children:"1.3 A demand that cannot be checked has specified nothing, and a demand is stated so that it can fail."})]})]}),t(o,{children:[e(i,{children:"2. The parts"}),t(a,{children:[e(r,{}),e(n,{children:"2.1 The preamble — the contract's recitals. What the document is and the choice it records, standing before the numbered sections and carrying no number."}),e(n,{children:"2.2 The sections — the contract's articles. Each bears a number and a name, and the sections run in one sequence."}),e(n,{children:"2.3 The clauses. A section nests numbered parts: clause 2.3 is the third clause of section 2. A clause nests further where its matter requires it."}),e(n,{children:"2.4 The labels — the contract's defined terms. A recurring kind of clause carries a letter and a number, defined where the clause is stated; in the first instance, the known results K, the constraints C, and the open determinations O."}),e(n,{children:"2.5 The provisos. Where a demand is motivated, the motivation stands beside it and says so."}),e(n,{children:"2.6 The tables. A table states what a table states best — axioms, results, tests — and its rows are clauses carrying their labels."})]})]}),t(o,{children:[e(i,{children:"3. Citation"}),t(a,{children:[e(r,{}),e(n,{children:"3.1 The specification references itself. Any clause cites any other by its number or its label, in free-form citation language, and every citation is a link to the clause it names."}),e(n,{children:"3.2 A specification is highly connected: where a clause depends on another, motivates it, or constrains it, it says so by citation."}),e(n,{children:"3.3 Citation reaches across the project's documents: the specification cites the progress by its labels, and the progress cites the specification by its numbers."})]})]}),t(o,{children:[e(i,{children:"4. Boundary"}),t(a,{children:[e(r,{}),e(n,{children:"4.1 The specification states where it ends. Nothing outside the boundary binds the work."}),e(n,{children:"4.2 What stands after the end is the schedules — the contract's annexes: reference bearing on the work and binding none of it."})]})]}),t(o,{children:[e(i,{children:"5. Interpolation"}),t(a,{children:[e(r,{}),e(n,{children:"5.1 What is specified and not yet found stands as a placeholder for itself, in a brace naming the open determination it waits on."}),e(n,{children:"5.2 The work closes when the last placeholder is replaced by the thing it stands for."})]})]}),t(o,{children:[e(i,{children:"6. Permanence"}),t(a,{children:[e(r,{}),e(n,{children:"6.1 A specification is not thrown away. It is updated when its parts are found inconsistent, since an inconsistent specification has specified nothing."}),e(n,{children:"6.2 A change is made by changing the specification, in the context of all its other parts."})]})]}),t(o,{children:[e(i,{children:"7. The implementation"}),t(a,{children:[e(r,{}),e(n,{children:"7.1 The implementation meets the specification part by part, and cites each part as it is met, by its number or its label."}),e(n,{children:"7.2 A citation from the implementation leads to the part it names, and the specification stands beside what implements it: the two forms are each reachable from the other."}),e(n,{children:"7.3 A justification is the annotation form of this relationship: it says how the implementation satisfies a part, citing the part by number."})]})]}),t(o,{children:[e(i,{children:"8. Format"}),t(a,{children:[e(r,{}),e(n,{children:"8.1 The format chosen here is the legal document, as this chapter is written: a preamble, then numbered, named sections of numbered clauses."}),e(n,{children:"8.2 A subject may change the format to fit its style. The form of sections 1 to 7 — purpose, parts, citation, boundary, interpolation, permanence, implementation — is kept; the dress is the subject's."})]})]})]}),"TheSpecification8"),M=s(()=>t(c,{children:[e(l,{children:"[The Content](/inexplicable-phenomena/our-reference/#the-content)"}),t(a,{children:["A thing with a front and a back, lifted to the library level on 17 November 2026 because content with a project will stand in a lot of places. On the front the deliverable — the result of the effort, looking like what it is. On the back the project — the formal representation of the work, whose specification takes the form of ",e(d,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),". The first case and the mathematics specialization stand in ",e(d,{children:"[The Content](/inexplicable-phenomena/mathematical-reference/#the-content)"}),"."]}),t(o,{children:[e(i,{children:"1. The content"}),t(a,{children:[e(r,{}),e(n,{children:"1.1 A piece of content is the content of its chapter, starting below the title, like a section; it has a front and a back, and shows one side at a time."}),e(n,{children:"1.2 The front is the deliverable; the back is the project. One unlabelled control at the title's right flips them, explored rather than read."}),e(n,{children:"1.3 It opens on the deliverable; the canonical side is overridable."}),e(n,{children:"1.4 On the back the title turns into the literal — # Title in the source face, flush with the column — and that is the back's whole signal."})]})]}),t(o,{children:[e(i,{children:"2. The project"}),t(a,{children:[e(r,{}),e(n,{children:"2.1 The specification and the progress are the project's named parts, sections naming themselves; nothing is mandatory, and the parts stand open and whole — nothing collapses."}),e(n,{children:"2.2 The project's documents render verbatim through the markdown of the package, the specification in the source pane's register — the editor's face at the measured same-space settings, equations typeset into native MathML at bind time."}),e(n,{children:"2.3 The documents are highly connected: the renderer speaks the specification's own citation language, every mention a link to its definition across the documents, and a citation click turns the page itself, never the address."}),e(n,{children:"2.4 The implementation cites the specification by number or label, and the citation flips the content to the part it names — the relationship between the two forms."}),e(n,{children:"2.5 What is specified and not yet found stands interpolated, a word for the thing until the thing is found."})]})]}),t(o,{children:[e(i,{children:"3. The motion"}),t(a,{children:[e(r,{}),e(n,{children:"3.1 The flip is a permutation that preserves identity: one axis turns, writing to code; boxes, weights, gaps, palette and structure ride through unchanged, measured by rectangle."}),e(n,{children:"3.2 The transition is the plain text version of one: the chapter settles from dimmed ink, and the title's discrete changes — font, place, mark — happen together at the dip's hidden trough, dimmed by color so the chapter's label changes with nothing."})]})]}),t(o,{children:[e(i,{children:"4. The components"}),t(a,{children:[e(r,{}),e(n,{children:"4.1 Content, the format whose note is the toggle and whose style rules the sides. Project, the back's section; Specification and Progress, its named parts."}),e(n,{children:"4.2 Markdown, the document rendered verbatim and connected. Cite, the implementation's citation. Interpolated, the placeholder."}),e(n,{children:"4.3 A subject specializes the deliverable's dress — mathematics adds Theorem and Proof beside its own manual chapter — and re-exports the family so its books keep one door."})]})]}),t(o,{children:[e(i,{children:"5. The open ends"}),t(a,{children:[e(r,{}),e(n,{children:"5.1 The names: Content collides with the package's word for a Word's content, and Specification with a package utility; both flagged, his to settle, likeliest when the family moves all the way into the package."}),e(n,{children:"5.2 A subclass cannot yet extend a format's style, so a subject's dress rides inert in the lifted style until the framework grows the composition seam; named, not hacked around."}),e(n,{children:"5.3 The justifications associate with the progress; the exact tie stands open."})]})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { MouseEvent, ReactNode } from 'react';
+`})]}),"ThePaper6"),W=s(()=>t(c,{children:[e(d,{children:"[The Reference Manual](/inexplicable-phenomena/our-reference/#the-reference-manual)"}),t(o,{children:[e(i,{children:"1. What a reference manual is"}),t(a,{children:[e(r,{}),e(n,{children:"1.1 Every subject carries a reference manual: the specification of that subject in this library. This book is the library's own. I ruled this on 12 November 2026, at the opening of the textbook's sprint."}),e(n,{children:"1.2 A subject's manual keeps a part for the books of its subject, one chapter per book, and that chapter tracks the book's idioms — the conventions its chapters follow."}),e(n,{children:"1.3 Where an idiom is enforced by code, the code stands with the chapter that states it, the way this book's theme and faces stand beside theirs; an idiom followed by hand is stated in the same place and marked so."}),t(n,{children:["1.4 A manual is written the way a specification is — numbered parts, referenced code — in the form of ",e(l,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),"; I asked for this on 16 November 2026, and this chapter is the first so written."]})]})]}),t(o,{children:[e(i,{children:"2. The three shelves"}),t(a,{children:[e(r,{}),e(n,{children:"2.1 What is true of every book in the library lives here, in Our Reference."}),t(n,{children:["2.2 What is true of a subject's books lives in that subject's manual. The first is ",e(l,{children:"[Referential Objectivity](/inexplicable-phenomena/mathematical-reference/)"}),", whose part The Books tracks the notebook, the textbook, the project, the library and the design."]}),e(n,{children:"2.3 What is true of one book alone stays beside that book, never in a manual."})]})]})]}),"TheReferenceManual7"),B=s(()=>t(c,{children:[e(d,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),t(a,{children:["The specification of a specification, written in its own form. I chose the form of a legal document on 16 November 2026, its anatomy the contract's — recitals, articles, clauses, defined terms, provisos, schedules — evolved for a library that specifies deliverables. The form is the library's; a subject may redress it to fit its style, as a theme redresses a page. Mathematics writes its own in ",e(l,{children:"[The Specification](/inexplicable-phenomena/mathematical-reference/#the-specification)"}),", and the first full instance is the statement of work of ",e(l,{children:"[The Symmetry of Arithmetic](/inexplicable-phenomena/arithmetic-textbook/#the-symmetry-of-arithmetic)"}),"."]}),t(o,{children:[e(i,{children:"1. Purpose"}),t(a,{children:[e(r,{}),e(n,{children:"1.1 A specification is the formal identification of a deliverable — the thing agreed between buyer and seller in a service contract. It fixes what the deliverable must be, uniquely, so that candidates can be judged against it and the right one recognized when it is found. The specification is the legal document; the deliverable is not."}),e(n,{children:"1.2 The specification is the anchor for the work. The work meets the specification part by part, and the deliverable cites each part as it is met."}),e(n,{children:"1.3 A demand that cannot be checked has specified nothing, and a demand is stated so that it can fail."})]})]}),t(o,{children:[e(i,{children:"2. The parts"}),t(a,{children:[e(r,{}),e(n,{children:"2.1 The preamble — the contract's recitals. What the document is and the choice it records, standing before the numbered sections and carrying no number."}),e(n,{children:"2.2 The sections — the contract's articles. Each bears a number and a name, and the sections run in one sequence."}),e(n,{children:"2.3 The clauses. A section nests numbered parts: clause 2.3 is the third clause of section 2. A clause nests further where its matter requires it."}),e(n,{children:"2.4 The labels — the contract's defined terms. A recurring kind of clause carries a letter and a number, defined where the clause is stated; in the first instance, the known results K, the constraints C, and the open determinations O."}),e(n,{children:"2.5 The provisos. Where a demand is motivated, the motivation stands beside it and says so."}),e(n,{children:"2.6 The tables. A table states what a table states best — axioms, results, tests — and its rows are clauses carrying their labels."})]})]}),t(o,{children:[e(i,{children:"3. Citation"}),t(a,{children:[e(r,{}),e(n,{children:"3.1 The specification references itself. Any clause cites any other by its number or its label, in free-form citation language, and every citation is a link to the clause it names."}),e(n,{children:"3.2 A specification is highly connected: where a clause depends on another, motivates it, or constrains it, it says so by citation."}),e(n,{children:"3.3 Citation reaches across the project's documents: the specification cites the progress by its labels, and the progress cites the specification by its numbers."})]})]}),t(o,{children:[e(i,{children:"4. Boundary"}),t(a,{children:[e(r,{}),e(n,{children:"4.1 The specification states where it ends. Nothing outside the boundary binds the work."}),e(n,{children:"4.2 What stands after the end is the schedules — the contract's annexes: reference bearing on the work and binding none of it."})]})]}),t(o,{children:[e(i,{children:"5. Interpolation"}),t(a,{children:[e(r,{}),e(n,{children:"5.1 What is specified and not yet found stands as a placeholder for itself, in a brace naming the open determination it waits on."}),e(n,{children:"5.2 The work closes when the last placeholder is replaced by the thing it stands for."})]})]}),t(o,{children:[e(i,{children:"6. Permanence"}),t(a,{children:[e(r,{}),e(n,{children:"6.1 A specification is not thrown away. It is updated when its parts are found inconsistent, since an inconsistent specification has specified nothing."}),e(n,{children:"6.2 A change is made by changing the specification, in the context of all its other parts."})]})]}),t(o,{children:[e(i,{children:"7. The implementation"}),t(a,{children:[e(r,{}),e(n,{children:"7.1 The implementation meets the specification part by part, and cites each part as it is met, by its number or its label."}),e(n,{children:"7.2 A citation from the implementation leads to the part it names, and the specification stands beside what implements it: the two forms are each reachable from the other."}),e(n,{children:"7.3 A justification is the annotation form of this relationship: it says how the implementation satisfies a part, citing the part by number."})]})]}),t(o,{children:[e(i,{children:"8. Format"}),t(a,{children:[e(r,{}),e(n,{children:"8.1 The format chosen here is the legal document, as this chapter is written: a preamble, then numbered, named sections of numbered clauses."}),e(n,{children:"8.2 A subject may change the format to fit its style. The form of sections 1 to 7 — purpose, parts, citation, boundary, interpolation, permanence, implementation — is kept, and the tree of section 9 with it; the dress is the subject's."})]})]}),t(o,{children:[e(i,{children:"9. The tree"}),t(a,{children:[e(r,{}),e(n,{children:"9.1 A specification always has numbers or codes, always has nesting, and the numbers nest — the anatomy of 2.3. It need not be only a list of lists, but it can be imagined as one."}),e(n,{children:"9.2 A part with sub-parts collapses: a press on its heading folds its children, the parent standing with a count of what folded; a second press unfolds."}),e(n,{children:"9.3 A part can be hidden entirely, and show-all brings every hidden part back."}),e(n,{children:"9.4 Parts can be moved around to compare. A moved part keeps its code and its annotations, because the code carries identity: the move is an act on the view, never a renumbering — permanence (6) is untouched."}),e(n,{children:"9.5 The annotations toggle on what is visible: an annotation draws only where its subject stands, a folded or hidden part draws nothing, and a relation's visible end still draws, citing across."}),e(n,{children:"9.6 The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself."})]})]}),e(p,{identifier:"tree",type:".html",children:`<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Specification</title>
+<style>
+:root {
+    --ink: rgb(27, 27, 27);
+    --teal: rgb(31, 78, 121);
+    --side: #fbfcfd;
+    --serif: Georgia, "Times New Roman", serif;
+    --mono: Consolas, "Courier New", monospace;
+    --space: 20px;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--side);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 27.2px;
+}
+.sheet { max-width: 1100px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 56px 0 120px; }
+.col { width: 640px; margin: 0 auto; }
+.label { font-size: 11.9px; letter-spacing: 1.785px; text-transform: uppercase; opacity: .6; }
+h1 { font-family: var(--mono); font-size: 25.5px; font-weight: 700; line-height: 1.3; margin: 2px 0 var(--space); }
+h1 .hash { color: var(--teal); }
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    font-size: 11.9px;
+    letter-spacing: 1.785px;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+}
+.layer { display: flex; align-items: center; gap: 7px; opacity: .8; }
+.layer input {
+    appearance: none;
+    width: 15.3px;
+    height: 15.3px;
+    border: 1px solid rgb(107, 107, 107);
+    background: #fff;
+    margin: 0;
+    cursor: pointer;
+}
+.layer input:checked { border-width: 3px; }
+.layer label { cursor: pointer; }
+.showall { display: none; cursor: pointer; color: var(--teal); opacity: .75; }
+body:has(.spart.hidden) .showall { display: inline; }
+
+.tree { font-family: var(--mono); font-size: 15.3px; line-height: 24px; }
+.mdh {
+    font-size: 15.3px;
+    font-weight: 600;
+    line-height: 24px;
+    margin: var(--space) 0 calc(var(--space) / 4);
+    cursor: pointer;
+    user-select: none;
+}
+.mdh::before { content: "## "; color: var(--teal); }
+.spart { position: relative; }
+.skids { margin-left: 2ch; }
+.spart.folded > .skids { display: none; }
+.spart.folded > .mdh::after { content: " · " attr(data-count); font-weight: 400; opacity: .45; }
+.spart.hidden { display: none; }
+.hide {
+    position: absolute;
+    left: -3ch;
+    top: 0;
+    width: 2ch;
+    text-align: center;
+    text-indent: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.sgroup > .hide { top: calc(var(--space) + 2px); }
+.spart:hover > .hide { opacity: .35; }
+.spart > .hide:hover { opacity: .7; }
+.dragging { opacity: .35; }
+.drop-before { box-shadow: 0 -2px 0 0 rgba(31, 78, 121, .55); }
+.drop-after { box-shadow: 0 2px 0 0 rgba(31, 78, 121, .55); }
+.clause { position: relative; margin: 0; padding-left: 2ch; text-indent: -2ch; }
+.clause + .clause { margin-top: 6px; }
+a.cite { color: var(--teal); text-decoration: none; }
+
+.anno {
+    position: absolute;
+    left: calc(100% + 32px);
+    top: 2px;
+    width: 196px;
+    font-family: var(--serif);
+    font-size: 12.5px;
+    line-height: 18px;
+    text-indent: 0;
+    display: none;
+}
+body:has(#l-anno:checked) .anno { display: block; }
+.anno .tag { font-size: 10.5px; letter-spacing: 1.4px; text-transform: uppercase; }
+.anno .why { opacity: .72; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+<div class="col">
+
+<header>
+    <div class="label">Our Reference</div>
+    <h1><span class="hash"># </span>The Specification</h1>
+</header>
+
+<nav class="bar">
+    <span class="layer"><input type="checkbox" id="l-anno" checked><label for="l-anno">Annotations</label></span>
+    <span class="showall" id="showall">Show all</span>
+</nav>
+
+<div class="tree" id="tree"></div>
+
+</div>
+</div>
+
+<script>
+const specification = {
+    sections: [
+        { code: '1', name: 'Purpose', clauses: [
+            { code: '1.1', text: \`A specification is the formal identification of a deliverable — the thing agreed between buyer and seller in a service contract. It fixes what the deliverable must be, uniquely, so that candidates can be judged against it and the right one recognized when it is found. The specification is the legal document; the deliverable is not.\` },
+            { code: '1.2', text: \`The specification is the anchor for the work. The work meets the specification part by part, and the deliverable cites each part as it is met.\` },
+            { code: '1.3', text: \`A demand that cannot be checked has specified nothing, and a demand is stated so that it can fail.\` },
+        ] },
+        { code: '2', name: 'The parts', clauses: [
+            { code: '2.1', text: \`The preamble — the contract's recitals. What the document is and the choice it records, standing before the numbered sections and carrying no number.\` },
+            { code: '2.2', text: \`The sections — the contract's articles. Each bears a number and a name, and the sections run in one sequence.\` },
+            { code: '2.3', text: \`The clauses. A section nests numbered parts: clause 2.3 is the third clause of section 2. A clause nests further where its matter requires it.\` },
+            { code: '2.4', text: \`The labels — the contract's defined terms. A recurring kind of clause carries a letter and a number, defined where the clause is stated; in the first instance, the known results K, the constraints C, and the open determinations O.\` },
+            { code: '2.5', text: \`The provisos. Where a demand is motivated, the motivation stands beside it and says so.\` },
+            { code: '2.6', text: \`The tables. A table states what a table states best — axioms, results, tests — and its rows are clauses carrying their labels.\` },
+        ] },
+        { code: '3', name: 'Citation', clauses: [
+            { code: '3.1', text: \`The specification references itself. Any clause cites any other by its number or its label, in free-form citation language, and every citation is a link to the clause it names.\` },
+            { code: '3.2', text: \`A specification is highly connected: where a clause depends on another, motivates it, or constrains it, it says so by citation.\` },
+            { code: '3.3', text: \`Citation reaches across the project's documents: the specification cites the progress by its labels, and the progress cites the specification by its numbers.\` },
+        ] },
+        { code: '4', name: 'Boundary', clauses: [
+            { code: '4.1', text: \`The specification states where it ends. Nothing outside the boundary binds the work.\` },
+            { code: '4.2', text: \`What stands after the end is the schedules — the contract's annexes: reference bearing on the work and binding none of it.\` },
+        ] },
+        { code: '5', name: 'Interpolation', clauses: [
+            { code: '5.1', text: \`What is specified and not yet found stands as a placeholder for itself, in a brace naming the open determination it waits on.\` },
+            { code: '5.2', text: \`The work closes when the last placeholder is replaced by the thing it stands for.\` },
+        ] },
+        { code: '6', name: 'Permanence', clauses: [
+            { code: '6.1', text: \`A specification is not thrown away. It is updated when its parts are found inconsistent, since an inconsistent specification has specified nothing.\` },
+            { code: '6.2', text: \`A change is made by changing the specification, in the context of all its other parts.\` },
+        ] },
+        { code: '7', name: 'The implementation', clauses: [
+            { code: '7.1', text: \`The implementation meets the specification part by part, and cites each part as it is met, by its number or its label.\` },
+            { code: '7.2', text: \`A citation from the implementation leads to the part it names, and the specification stands beside what implements it: the two forms are each reachable from the other.\` },
+            { code: '7.3', text: \`A justification is the annotation form of this relationship: it says how the implementation satisfies a part, citing the part by number.\` },
+        ] },
+        { code: '8', name: 'Format', clauses: [
+            { code: '8.1', text: \`The format chosen here is the legal document, as this chapter is written: a preamble, then numbered, named sections of numbered clauses.\` },
+            { code: '8.2', text: \`A subject may change the format to fit its style. The form of sections 1 to 7 — purpose, parts, citation, boundary, interpolation, permanence, implementation — is kept, and the tree of section 9 with it; the dress is the subject's.\` },
+        ] },
+        { code: '9', name: 'The tree', clauses: [
+            { code: '9.1', text: \`A specification always has numbers or codes, always has nesting, and the numbers nest — the anatomy of 2.3. It need not be only a list of lists, but it can be imagined as one.\` },
+            { code: '9.2', text: \`A part with sub-parts collapses: a press on its heading folds its children, the parent standing with a count of what folded; a second press unfolds.\` },
+            { code: '9.3', text: \`A part can be hidden entirely, and show-all brings every hidden part back.\` },
+            { code: '9.4', text: \`Parts can be moved around to compare. A moved part keeps its code and its annotations, because the code carries identity: the move is an act on the view, never a renumbering — permanence (6) is untouched.\` },
+            { code: '9.5', text: \`The annotations toggle on what is visible: an annotation draws only where its subject stands, a folded or hidden part draws nothing, and a relation's visible end still draws, citing across.\` },
+            { code: '9.6', text: \`The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.\` },
+        ] },
+    ],
+};
+
+const annotations = [
+    { id: 'R1', sort: 'revision', subject: '9', writing: 'Put in at the twelfth round of Sprint 130, 17 November 2026.' },
+    { id: 'N1', sort: 'relation', subject: '2.3', objects: ['9.1'], writing: 'The nesting 2.3 states is the tree 9.1 operates.' },
+];
+
+const seat = (code) => \`c-\${code.replace(/\\./g, '-')}\`;
+const tree = document.getElementById('tree');
+
+specification.sections.forEach((section) => {
+    const group = document.createElement('div');
+    group.className = 'spart sgroup';
+    group.id = seat(section.code);
+    group.draggable = true;
+    const kids = section.clauses.map((clause) =>
+        \`<p class="clause spart" id="\${seat(clause.code)}" draggable="true"><span class="hide" title="hide this part">&times;</span>\${clause.code} \${clause.text}</p>\`).join('');
+    group.innerHTML = \`<span class="hide" title="hide this part">&times;</span><div class="mdh" data-count="\${section.clauses.length} clauses">\${section.code}. \${section.name}</div><div class="skids">\${kids}</div>\`;
+    tree.appendChild(group);
+});
+
+const mark = (host, tag, writing) => {
+    const span = document.createElement('span');
+    span.className = 'anno';
+    span.innerHTML = \`<span class="tag">\${tag}</span><br><span class="why">\${writing}</span>\`;
+    host.appendChild(span);
+};
+const cite = (code) => \`<a class="cite" href="#\${seat(code)}">\${code}</a>\`;
+
+annotations.forEach((a) => {
+    const subject = document.getElementById(seat(a.subject));
+    const host = subject.classList.contains('sgroup') ? subject.querySelector('.skids') : subject;
+    if (a.sort === 'relation') {
+        mark(host, \`\${a.id} · relates \${cite(a.objects[0])}\`, a.writing);
+        a.objects.forEach((o) => mark(document.getElementById(seat(o)), \`\${a.id} · relates \${cite(a.subject)}\`, a.writing));
+        return;
+    }
+    mark(host, \`\${a.id} · \${a.sort}\`, a.writing);
+});
+
+document.querySelectorAll('.sgroup .mdh').forEach((mdh) => {
+    mdh.addEventListener('click', () => mdh.parentElement.classList.toggle('folded'));
+});
+document.querySelectorAll('.spart > .hide').forEach((x) => x.addEventListener('click', (press) => {
+    press.stopPropagation();
+    x.parentElement.classList.add('hidden');
+}));
+document.getElementById('showall').addEventListener('click', () => {
+    document.querySelectorAll('.spart.hidden').forEach((s) => s.classList.remove('hidden'));
+});
+
+let dragged = null;
+const clearDrops = () => document.querySelectorAll('.drop-before, .drop-after').forEach((el) => el.classList.remove('drop-before', 'drop-after'));
+const place = (target, e) => {
+    if (!dragged || !target || dragged === target || dragged.contains(target)) return null;
+    const box = target.getBoundingClientRect();
+    return { target, before: e.clientY < box.top + box.height / 2 };
+};
+document.querySelectorAll('.spart').forEach((part) => {
+    part.addEventListener('dragstart', (e) => {
+        e.stopPropagation();
+        dragged = part;
+        part.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', part.id);
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    part.addEventListener('dragend', () => {
+        part.classList.remove('dragging');
+        clearDrops();
+        dragged = null;
+    });
+});
+tree.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const isGroup = dragged && dragged.classList.contains('sgroup');
+    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
+    const s = place(target, e);
+    clearDrops();
+    if (s) s.target.classList.add(s.before ? 'drop-before' : 'drop-after');
+});
+tree.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const isGroup = dragged && dragged.classList.contains('sgroup');
+    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
+    const s = place(target, e);
+    clearDrops();
+    if (!s) return;
+    if (!isGroup && s.target.classList.contains('sgroup')) {
+        const kids = s.target.querySelector('.skids');
+        if (s.before) kids.prepend(dragged); else kids.append(dragged);
+    } else {
+        s.target.parentElement.insertBefore(dragged, s.before ? s.target : s.target.nextSibling);
+    }
+});
+<\/script>
+
+</body>
+</html>
+`})]}),"TheSpecification8"),F=s(()=>t(c,{children:[e(d,{children:"[The Content](/inexplicable-phenomena/our-reference/#the-content)"}),t(a,{children:["A thing with a front and a back, lifted to the library level on 17 November 2026 because content with a project will stand in a lot of places. On the front the deliverable — the result of the effort, looking like what it is. On the back the project — the formal representation of the work, whose specification takes the form of ",e(l,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),". The first case and the mathematics specialization stand in ",e(l,{children:"[The Content](/inexplicable-phenomena/mathematical-reference/#the-content)"}),"."]}),t(o,{children:[e(i,{children:"1. The content"}),t(a,{children:[e(r,{}),e(n,{children:"1.1 A piece of content is the content of its chapter, starting below the title, like a section; it has a front and a back, and shows one side at a time."}),e(n,{children:"1.2 The front is the deliverable; the back is the project. One unlabelled control at the title's right flips them, explored rather than read."}),e(n,{children:"1.3 It opens on the deliverable; the canonical side is overridable."}),e(n,{children:"1.4 On the back the title turns into the literal — # Title in the source face, flush with the column — and that is the back's whole signal."})]})]}),t(o,{children:[e(i,{children:"2. The project"}),t(a,{children:[e(r,{}),e(n,{children:"2.1 The project's named parts are the specification, the identification, the justification, the intuition and the progress — the order of the work itself. Sections name themselves, nothing is mandatory, and every part is independently viewable; the specification stands as an operable tree, The Specification's section 9."}),e(n,{children:"2.2 The project's documents render verbatim through the markdown of the package, the specification in the source pane's register — the editor's face at the measured same-space settings, equations typeset into native MathML at bind time."}),e(n,{children:"2.3 The documents are highly connected: the renderer speaks the specification's own citation language, every mention a link to its definition across the documents, and a citation click turns the page itself, never the address."}),e(n,{children:"2.4 The implementation cites the specification by number or label, and the citation flips the content to the part it names — the relationship between the two forms."}),e(n,{children:"2.5 What is specified and not yet found stands interpolated, a word for the thing until the thing is found."})]})]}),t(o,{children:[e(i,{children:"3. The motion"}),t(a,{children:[e(r,{}),e(n,{children:"3.1 The flip is a permutation that preserves identity: one axis turns, writing to code; boxes, weights, gaps, palette and structure ride through unchanged, measured by rectangle."}),e(n,{children:"3.2 The transition is the plain text version of one: the chapter settles from dimmed ink, and the title's discrete changes — font, place, mark — happen together at the dip's hidden trough, dimmed by color so the chapter's label changes with nothing."})]})]}),t(o,{children:[e(i,{children:"4. The components"}),t(a,{children:[e(r,{}),e(n,{children:"4.1 Content, the format whose note is the toggle and whose style rules the sides. Project, the back's section; Specification and Progress, its named parts."}),e(n,{children:"4.2 Markdown, the document rendered verbatim and connected. Cite, the implementation's citation. Interpolated, the placeholder."}),e(n,{children:"4.3 A subject specializes the deliverable's dress — mathematics adds Theorem and Proof beside its own manual chapter — and re-exports the family so its books keep one door."})]})]}),t(o,{children:[e(i,{children:"5. The annotations"}),t(a,{children:[e(r,{}),e(n,{children:"5.1 Anything on a page can be annotated: whatever can be mentioned can carry an annotation, which finds its subject by mention, never by position or a runtime id."}),e(n,{children:"5.2 An annotation is writing said of a thing with a sort — Idea, Question, Revision, Archive, and the project's own, Justification among them. It is the infrastructure's annotation; there is no second species."}),e(n,{children:"5.3 A relation is a type of annotation between two things, finding both ends by mention: a justification relates an identification entry to a clause; a connecting principle relates two principles."}),e(n,{children:"5.4 An annotation is itself a thing — mentionable, so annotatable and relatable in turn. This closure lets a justification claim several clauses, lets a relationship between intuitions be an intuition, and lets the graph tangle."}),e(n,{children:"5.5 A section toggles its own annotations by a small square in its heading; the page's layer is every section's toggle at once."}),e(n,{children:"5.6 An annotation draws beside its subject in the small voice, and the writing never moves to make room; a relation draws at both of its ends, each citing the other, and opened by a press it stands between its two things. Nothing draws while the toggle is off, and nothing draws where its subject does not stand."})]})]}),t(o,{children:[e(i,{children:"6. The open ends"}),t(a,{children:[e(r,{}),e(n,{children:"5.1 The names: Content collides with the package's word for a Word's content, and Specification with a package utility; both flagged, his to settle, likeliest when the family moves all the way into the package."}),e(n,{children:"5.2 A subclass cannot yet extend a format's style, so a subject's dress rides inert in the lifted style until the framework grows the composition seam; named, not hacked around."}),e(n,{children:"5.3 The justifications associate with the progress; the exact tie stands open."})]})]}),e(m,{identifier:"code",type:".tsx"}),e(p,{identifier:"code",type:".tsx",children:`import { MouseEvent, ReactNode } from 'react';
 import katex from 'katex';
 import { marked } from 'marked';
 import { $, selection } from '@dna-platform/chemistry';
@@ -1381,4 +1654,4 @@ export const Progress = $($Progress);
 export const Markdown = $($Markdown);
 export const Cite = $($Cite);
 export const Interpolated = $($Interpolated);
-`})]}),"TheContent9"),B=v(b),K=s(()=>t(B,{children:[R(),I(),C(),D(),O(),P(),j(),L(),H(),W(),F(),M()]}),"book");export{K as book};
+`})]}),"TheContent9"),M=v(g),K=s(()=>t(M,{children:[R(),I(),C(),j(),D(),O(),L(),P(),H(),W(),B(),F()]}),"book");export{K as book};

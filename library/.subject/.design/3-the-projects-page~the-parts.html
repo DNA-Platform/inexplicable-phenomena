@@ -107,6 +107,15 @@ h1 .hash { color: var(--teal); }
     vertical-align: -1px;
 }
 .part-head .sec-toggle:checked { border-width: 3px; }
+.showall {
+    display: none;
+    margin-left: 14px;
+    cursor: pointer;
+    color: var(--teal);
+    opacity: .75;
+    font-weight: 400;
+}
+#specification:has(.spart.hidden) .showall { display: inline; }
 
 a.cite { color: var(--teal); text-decoration: none; }
 body:not(:has(#l-refs:checked)) a.cite { color: inherit; pointer-events: none; }
@@ -117,8 +126,32 @@ body:not(:has(#l-refs:checked)) a.cite { color: inherit; pointer-events: none; }
     font-weight: 600;
     line-height: 24px;
     margin: var(--space) 0 calc(var(--space) / 4);
+    cursor: pointer;
+    user-select: none;
 }
 .md .mdh::before { content: "## "; color: var(--teal); }
+.spart { position: relative; }
+.skids { margin-left: 2ch; }
+.spart.folded > .skids { display: none; }
+.spart.folded > .mdh::after { content: " · " attr(data-count); font-weight: 400; opacity: .45; }
+.spart.hidden { display: none; }
+.hide {
+    position: absolute;
+    left: -3ch;
+    top: 0;
+    width: 2ch;
+    text-align: center;
+    text-indent: 0;
+    font-family: var(--mono);
+    opacity: 0;
+    cursor: pointer;
+}
+.sgroup > .hide { top: calc(var(--space) + 2px); }
+.spart:hover > .hide { opacity: .35; }
+.spart > .hide:hover { opacity: .7; }
+.dragging { opacity: .35; }
+.drop-before { box-shadow: 0 -2px 0 0 rgba(31, 78, 121, .55); }
+.drop-after { box-shadow: 0 2px 0 0 rgba(31, 78, 121, .55); }
 .clause {
     position: relative;
     margin: 0;
@@ -191,8 +224,12 @@ body.focused .part { display: none; }
 body.focused .part.fshow { display: block; margin-top: 0; }
 body.focused .part.fshow > * { display: none; }
 body.focused .part.fshow .fkeep { display: block; }
-body.focused .md.fkeep > * { display: none; }
-body.focused .md.fkeep .clause.fkeep { display: block; padding-left: 0; text-indent: 0; }
+body.focused .md.fkeep > .spart { display: none; }
+body.focused .md.fkeep > .spart:has(.clause.fkeep) { display: block !important; }
+body.focused .spart:has(.clause.fkeep) > .mdh { display: none; }
+body.focused .md.fkeep .skids { display: block !important; margin-left: 0; }
+body.focused .md.fkeep .clause { display: none; }
+body.focused .md.fkeep .clause.fkeep { display: block !important; padding-left: 0; text-indent: 0; }
 body.focused .clause .anno { display: none !important; }
 body.focused .clause.fkeep + .clause.fkeep { margin-top: 16px; }
 body.focused .statement.fkeep { border-left: none; padding-left: 0; margin-left: 0; }
@@ -246,17 +283,27 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </header>
 
 <section class="part" id="specification" data-view="v-spec">
-    <h2 class="part-head">Specification<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
-    <div class="md">
-        <div class="mdh" id="s-4">4. The parts</div>
-        <p class="clause" id="s-4-1"><span class="dash">- </span>4.1 The parts, in the order of the work itself: you specify what you are looking for first; you try your best to identify the thing you are talking about justifiably; you build an intuition of what it might look like to find this blurry thing; and you express in narrative what it has meant to make progress.</p>
-        <p class="clause" id="s-4-2"><span class="dash">- </span>4.2 A justification is an annotation on the identified formalism that proves the specification is satisfied — relatively, not completely formally — and justifications frequently map to the citations on the project side.</p>
-        <div class="mdh" id="s-7">7. The structure of the parts</div>
-        <p class="clause" id="s-7-1"><span class="dash">- </span>7.1 The specification is the agreement, so its unit is the clause — the atomic promise, uniquely numbered, citable; its form is the legal document. Satisfaction is judged clause by clause, which is why the clause is the unit.</p>
-        <p class="clause" id="s-7-2"><span class="dash">- </span>7.2 The identification states the thing, so its unit is the statement — a definition or a named object in the formal register, each carrying an anchor. It states and never narrates, because a justification must sit on a span that holds still.</p>
-        <p class="clause" id="s-7-3"><span class="dash">- </span>7.3 The justification is the justifiably, so its unit is the annotation with two mandatory references: the anchor it sits on in the identification, and the clause it claims satisfied — its writing arguing the claim in words. An annotation without a clause cite is an Idea, not a justification.</p>
-        <p class="clause" id="s-7-4"><span class="dash">- </span>7.4 The intuition pictures the blurry thing, so its unit is the essay paragraph in the deliverable's serif register, its references running outward to existing things and across to clauses and statements.</p>
-        <p class="clause" id="s-7-5"><span class="dash">- </span>7.5 The progress narrates, so its unit is the entry — byline and date as frontmatter, narrative prose as body, its references to the statements and clauses it narrates being its substance. Ruling out the past is an Archive mark that strikes an entry and never deletes it.</p>
+    <h2 class="part-head">Specification<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"><span class="showall" id="showall">Show all</span></h2>
+    <div class="md" id="spec-tree">
+        <div class="spart sgroup" id="s-4" draggable="true">
+            <span class="hide" title="hide this part">&times;</span>
+            <div class="mdh">4. The parts</div>
+            <div class="skids">
+                <p class="clause spart" id="s-4-1" draggable="true"><span class="hide" title="hide this part">&times;</span><span class="dash">- </span>4.1 The parts, in the order of the work itself: you specify what you are looking for first; you try your best to identify the thing you are talking about justifiably; you build an intuition of what it might look like to find this blurry thing; and you express in narrative what it has meant to make progress.</p>
+                <p class="clause spart" id="s-4-2" draggable="true"><span class="hide" title="hide this part">&times;</span><span class="dash">- </span>4.2 A justification is an annotation on the identified formalism that proves the specification is satisfied — relatively, not completely formally — and justifications frequently map to the citations on the project side.</p>
+            </div>
+        </div>
+        <div class="spart sgroup" id="s-7" draggable="true">
+            <span class="hide" title="hide this part">&times;</span>
+            <div class="mdh">7. The structure of the parts</div>
+            <div class="skids">
+                <p class="clause spart" id="s-7-1" draggable="true"><span class="hide" title="hide this part">&times;</span><span class="dash">- </span>7.1 The specification is the agreement, so its unit is the clause — the atomic promise, uniquely numbered, citable; its form is the legal document. Satisfaction is judged clause by clause, which is why the clause is the unit.</p>
+                <p class="clause spart" id="s-7-2" draggable="true"><span class="hide" title="hide this part">&times;</span><span class="dash">- </span>7.2 The identification states the thing, so its unit is the statement — a definition or a named object in the formal register, each carrying an anchor. It states and never narrates, because a justification must sit on a span that holds still.</p>
+                <p class="clause spart" id="s-7-3" draggable="true"><span class="hide" title="hide this part">&times;</span><span class="dash">- </span>7.3 The justification is the justifiably, so its unit is the annotation with two mandatory references: the anchor it sits on in the identification, and the clause it claims satisfied — its writing arguing the claim in words. An annotation without a clause cite is an Idea, not a justification.</p>
+                <p class="clause spart" id="s-7-4" draggable="true"><span class="hide" title="hide this part">&times;</span><span class="dash">- </span>7.4 The intuition pictures the blurry thing, so its unit is the essay paragraph in the deliverable's serif register, its references running outward to existing things and across to clauses and statements.</p>
+                <p class="clause spart" id="s-7-5" draggable="true"><span class="hide" title="hide this part">&times;</span><span class="dash">- </span>7.5 The progress narrates, so its unit is the entry — byline and date as frontmatter, narrative prose as body, its references to the statements and clauses it narrates being its substance. Ruling out the past is an Archive mark that strikes an entry and never deletes it.</p>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -373,6 +420,64 @@ const master = document.getElementById('l-just');
 const toggles = [...document.querySelectorAll('.sec-toggle')];
 master.addEventListener('change', () => toggles.forEach((t) => { t.checked = master.checked; }));
 toggles.forEach((t) => t.addEventListener('change', () => { master.checked = toggles.every((s) => s.checked); }));
+
+const tree = document.getElementById('spec-tree');
+document.querySelectorAll('.sgroup').forEach((group) => {
+    const mdh = group.querySelector('.mdh');
+    mdh.dataset.count = `${group.querySelectorAll('.clause').length} clauses`;
+    mdh.addEventListener('click', () => group.classList.toggle('folded'));
+});
+document.querySelectorAll('.spart > .hide').forEach((x) => x.addEventListener('click', (press) => {
+    press.stopPropagation();
+    x.parentElement.classList.add('hidden');
+}));
+document.getElementById('showall').addEventListener('click', () => {
+    document.querySelectorAll('.spart.hidden').forEach((s) => s.classList.remove('hidden'));
+});
+
+let dragged = null;
+const clearDrops = () => document.querySelectorAll('.drop-before, .drop-after').forEach((el) => el.classList.remove('drop-before', 'drop-after'));
+const seat = (target, e) => {
+    if (!dragged || !target || dragged === target || dragged.contains(target)) return null;
+    const box = target.getBoundingClientRect();
+    return { target, before: e.clientY < box.top + box.height / 2 };
+};
+document.querySelectorAll('.spart').forEach((part) => {
+    part.addEventListener('dragstart', (e) => {
+        e.stopPropagation();
+        dragged = part;
+        part.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', part.id);
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    part.addEventListener('dragend', () => {
+        part.classList.remove('dragging');
+        clearDrops();
+        dragged = null;
+    });
+});
+tree.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const isGroup = dragged && dragged.classList.contains('sgroup');
+    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
+    const s = seat(target, e);
+    clearDrops();
+    if (s) s.target.classList.add(s.before ? 'drop-before' : 'drop-after');
+});
+tree.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const isGroup = dragged && dragged.classList.contains('sgroup');
+    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
+    const s = seat(target, e);
+    clearDrops();
+    if (!s) return;
+    if (!isGroup && s.target.classList.contains('sgroup')) {
+        const kids = s.target.querySelector('.skids');
+        if (s.before) kids.prepend(dragged); else kids.append(dragged);
+    } else {
+        s.target.parentElement.insertBefore(dragged, s.before ? s.target : s.target.nextSibling);
+    }
+});
 
 const vt = (fn) => (document.startViewTransition ? document.startViewTransition(fn) : fn());
 
