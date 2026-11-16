@@ -1,15 +1,11 @@
 import { Append, Chapter, Heading, Line, Means, Paragraph, Part, Title } from '@dna-platform/public';
-import { Content, Interpolated, Introduction, Markdown, Project, Proof, Theorem } from '../../.reference/7-the-content~code.tsx';
+import { Content, Interpolated, Markdown, Project, Proof, Theorem } from '../../.reference/7-the-content~code.tsx';
 
 export default () => (
     <Chapter>
         <Part>The Objects</Part>
         <Title>[[ The Symmetry of Arithmetic ]]</Title>
         <Content />
-        <Introduction>
-            The project behind this chapter: the statement of work that specifies X, and the progress of the
-            search. Open a part to read it.
-        </Introduction>
         <Paragraph>
             The first object of the textbook: X, a single object added to first-order Peano arithmetic,
             expressing that arithmetic has a symmetry the formalism does not at present state. X is not yet

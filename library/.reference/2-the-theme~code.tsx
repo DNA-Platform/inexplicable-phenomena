@@ -31,10 +31,12 @@ export class $LibraryTheme extends $Theme {
         return css`
             .pd-navigation { display: flex; justify-content: center; align-items: baseline; gap: .15em; margin-block: calc(${({ theme }) => theme.space} / 2); }
             *:has(> .pd-navigation:first-child) { position: relative; }
-            .pd-navigation:first-child { position: absolute; inset-block-start: 0; inset-inline-end: 0; margin-block: 0; }
+            .pd-navigation:first-child { position: absolute; inset-block-start: .1rem; inset-inline-end: 0; margin-block: 0; z-index: 2; }
             .pd-navigation a { text-decoration: none; }
             .pd-navigation .pd-word { font-size: ${({ theme }) => theme.size}; line-height: 1; color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); transition: color .15s ease; }
             .pd-navigation a:hover .pd-word { color: ${({ theme }) => theme.ink}; }
+            .pd-navigation :is(a.pa-self-reference, a:has(.pa-self-reference)) { pointer-events: none; }
+            .pd-navigation :is(a.pa-self-reference, a:has(.pa-self-reference)) .pd-word { color: color-mix(in srgb, ${({ theme }) => theme.ink} 22%, ${({ theme }) => theme.paper}); }
         `;
     }
 

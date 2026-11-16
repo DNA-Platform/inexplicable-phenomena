@@ -1,0 +1,342 @@
+var R=Object.defineProperty;var o=(X,t)=>R(X,"name",{value:t,configurable:!0});import{jsxs as i,jsx as e}from"react/jsx-runtime";import{$ as n,selection as F}from"@dna-platform/chemistry";import{C as W,T as E,a as D,$ as L}from"./1-the-book~code-CJSx816p.js";import{Chapter as x,Title as T,Author as _,Subject as $,Parenthetical as M,Section as j,Heading as h,Paragraph as a,Content as s,Word as d,$Format as H,$Section as B,$Paragraph as c,$Append as U,html as J,$Word as Y,Part as Z,Line as l,Means as z,Append as K}from"@dna-platform/public";import{S as V}from"./.synopsis-DqFIsP_f.js";import{marked as Q}from"marked";import"styled-components";const ee=o(()=>i(x,{children:[e(W,{}),e(T,{children:"[The Textbook of Arithmetic](/inexplicable-phenomena/arithmetic-textbook/)"}),e(_,{children:"[Doug](/inexplicable-phenomena/our-team/)"}),e($,{children:"[Arithmetic](/inexplicable-phenomena/arithmetic/)"}),e(E,{children:"The results of arithmetic, stated and proved."})]}),"Cover"),te=o(()=>i(x,{children:[e(D,{}),i(T,{children:[e(M,{}),"[Table of Contents](/inexplicable-phenomena/arithmetic-textbook/#table-of-contents)"]}),i(j,{children:[e(h,{children:"The Objects"}),e(a,{children:e(s,{children:"[The Symmetry of Arithmetic](/inexplicable-phenomena/arithmetic-textbook/#the-symmetry-of-arithmetic)"})})]}),i(j,{children:[e(h,{children:"Contents"}),i(a,{children:[e(M,{}),e(d,{children:e(s,{children:"[Arithmetic Textbook](/inexplicable-phenomena/arithmetic-textbook/)"})}),e(d,{children:e(s,{children:"[Synopsis](/inexplicable-phenomena/arithmetic-textbook/#synopsis)"})}),e(d,{children:e(s,{children:"[Table of Contents](/inexplicable-phenomena/arithmetic-textbook/#table-of-contents)"})})]})]})]}),"Table"),k=class k extends H{constructor(){super(...arguments),this.$canonical="deliverable",this.style=F.div`
+        counter-reset: theorem;
+        .pd-chapter { position: relative; }
+        .pc-content { position: absolute; inset-block-start: 4.8rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
+        .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
+        .pc-flip { display: inline-block; inline-size: .9em; block-size: .9em; border: 1.5px solid color-mix(in srgb, ${({theme:t})=>t.ink} 65%, ${({theme:t})=>t.paper}); border-radius: 2px; background: ${({theme:t})=>t.paper}; transition: background .15s ease; }
+        .pc-content:hover .pc-flip { border-color: ${({theme:t})=>t.ink}; }
+        .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, ${({theme:t})=>t.ink} 70%, ${({theme:t})=>t.paper}); }
+        .pc-project { display: none; }
+        &:has(#pc-flip:checked) .pc-project { display: block; }
+        &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation):not(.pc-introduction) { display: none; }
+        .pc-project .pd-heading { display: none; }
+        .pc-project:first-of-type .pc-markdown h2:first-of-type { display: none; }
+        .pc-project { border-block-start: none; padding-block-start: 0; }
+        .pc-markdown h1 { display: none; }
+        .pc-markdown h1 + p { display: none; }
+        .pc-markdown h2 { font-family: ${({theme:t})=>t.font}; font-size: calc(1.15 * ${({theme:t})=>t.size}); font-weight: bold; margin-block: 1.5em .45em; }
+        .pc-markdown p { margin-block: .9em; }
+        .pc-markdown strong { font-weight: bold; }
+        .pc-markdown table { width: 100%; border-collapse: separate; border-spacing: 0; margin-block: 1.2em; border: 1px solid color-mix(in srgb, ${({theme:t})=>t.ink} 14%, ${({theme:t})=>t.paper}); border-radius: 8px; overflow: hidden; }
+        .pc-markdown th, .pc-markdown td { padding: .55em .85em; text-align: start; vertical-align: top; }
+        .pc-markdown thead th { background: color-mix(in srgb, ${({theme:t})=>t.ink} 4%, ${({theme:t})=>t.paper}); color: color-mix(in srgb, ${({theme:t})=>t.ink} 72%, ${({theme:t})=>t.paper}); font-weight: 600; }
+        .pc-markdown tbody td, .pc-markdown tbody th { border-block-start: 1px solid color-mix(in srgb, ${({theme:t})=>t.ink} 11%, ${({theme:t})=>t.paper}); }
+        .pc-markdown th + th, .pc-markdown td + td { border-inline-start: 1px solid color-mix(in srgb, ${({theme:t})=>t.ink} 11%, ${({theme:t})=>t.paper}); }
+        .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.5em; margin-block: .9em; }
+        .pc-markdown li { margin-block: .35em; }
+        .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }
+        .pc-theorem { counter-increment: theorem; }
+        .pc-theorem::before { content: 'Theorem ' counter(theorem) '.'; font-weight: bold; margin-inline-end: .5em; }
+        .pc-proof::before { content: 'Proof.'; font-style: italic; margin-inline-end: .5em; }
+    `}note(){return i("label",{className:"pc-content",children:[e("input",{type:"checkbox",id:"pc-flip",defaultChecked:this.$canonical==="project"}),e("span",{className:"pc-flip"})]})}};o(k,"$Content");let p=k;const A=class A extends B{$Define(){super.$Define(),this.classes.add(this,"pc-project")}};o(A,"$Project");let u=A;const P=class P extends c{constructor(){super(...arguments),this.$identifier=""}get append(){return this.chapter?.annotations.find(U).find(t=>t.$identifier===this.$identifier)}write(){const t=this.append;if(t===void 0)return null;const O=Q.parse(J.copy(t.text),{async:!1});return e("div",{dangerouslySetInnerHTML:{__html:O}})}$Define(){super.$Define(),this.classes.add(this,"pc-markdown")}};o(P,"$Markdown");let b=P;const S=class S extends c{$Define(){super.$Define(),this.classes.add(this,"pc-introduction")}};o(S,"$Introduction");let y=S;const N=class N extends Y{$Define(){super.$Define(),this.classes.add(this,"pc-interpolated")}};o(N,"$Interpolated");let w=N;const C=class C extends c{$Define(){super.$Define(),this.classes.add(this,"pc-theorem")}};o(C,"$Theorem");let g=C;const I=class I extends c{$Define(){super.$Define(),this.classes.add(this,"pc-proof")}};o(I,"$Proof");let v=I;const ie=n(p),q=n(u);n(y);const G=n(b),r=n(w),m=n(g),f=n(v),oe=o(()=>i(x,{children:[e(Z,{children:"The Objects"}),e(T,{children:"[The Symmetry of Arithmetic](/inexplicable-phenomena/arithmetic-textbook/#the-symmetry-of-arithmetic)"}),e(ie,{}),e(a,{children:"The first object of the textbook: X, a single object added to first-order Peano arithmetic, expressing that arithmetic has a symmetry the formalism does not at present state. X is not yet found. By the statement of work's own guidance it is a rule of inference — singular, stated finitely, operating on formulas as induction does, a new way to make universal conclusions — and this chapter teaches the formalism with X in its place, every part not yet found standing as an interpolated part, a placeholder describing where the thing will go. The project behind this chapter — its statement of work and its progress — stands on the other side."}),e(a,{children:"The reading first. Peano arithmetic reasons from the bottom about a totality it does not refer to: its axioms name zero and have no term for the totality. The same formalism, with every sign renamed, reasons from the top: it names the totality and has no term for zero, and the two are identical — the axiom that zero has no predecessor and the axiom that the totality has no successor are one statement under the renaming. Peano arithmetic as it stands neither asserts nor denies that the two readings express the same set of numbers. X asserts it, and gives no way to resolve which reading is the case."}),e(a,{children:"The machinery. Two defined signs: A, the sum from zero up to a number, and M, the product from one up to it, each defined by succession of the previous value in the form of the axioms for addition and multiplication. The circles of factorial size are the modular arithmetics whose size is M of a number; on a circle the mirror sends each element to its negation, and a set defined by a formula has a definition from the bottom and, through the mirror, a definition from the top, kept distinct until X relates them."}),i(a,{children:["The rule itself: ",e(r,{children:"the figure of X — its premises, its one conclusion, its free formula and its side condition decidable on the written proof — stands to be found; its kind is the sixth open determination of the project's progress"}),". What it must do is fixed: take what is proven on the circles of factorial size, generalizing over every pair of definitions from the bottom and from the top that can be made equal in the limit, and conclude the universal form among the numbers — wearing the same clothing as the other parts of the formalism, so that it can be seen as self-evident and fundamental."]}),e(m,{children:e(l,{children:"Pairing. For every number at or above two there is a smaller number whose subtraction and addition both land on primes: every even number from four up is a sum of two primes."})}),i(f,{children:["On a circle of factorial size, every even element is a sum of two elements coprime to the size, in a count the Chinese remainder theorem gives — the circle theorem of pairing, proven with the definitions from the bottom and from the top kept distinct. ",e(r,{children:"One use of X closes the argument; the step is the search's to supply"}),". No analysis is used."]}),e(m,{children:e(l,{children:"Recurrence. For every number at or above three there is a larger one, below the limiting factorial, whose neighbours on both sides are prime: there are infinitely many twin primes."})}),i(f,{children:["On a circle of factorial size, the count of elements whose two neighbours are both coprime to the size grows without bound as primes are added — the circle theorem of recurrence. ",e(r,{children:"One use of X closes the argument; the derivation of the canonical form through the circle count is the seventh open determination"}),". The basic case of this form, with one prime in place of the pair, is Euclid's theorem, which Peano arithmetic proves outright."]}),e(m,{children:e(l,{children:"Balance. The count of primes from the bottom and the count from the top differ by no more than the stated bound: the arithmetic form of the Riemann hypothesis."})}),i(f,{children:["The balance identity holds on the circles: the floor of the square root is the whole sum, split into a term of the bottom and a term of the top — the circle theorem of balance. ",e(r,{children:"One use of X closes the argument; the general form of the balance type is the eleventh open determination"}),"."]}),i(a,{children:["Each proof is its circle theorem followed by one use of X — the immediacy the specification demands — and that is the sense in which Goldbach, the twin primes and the arithmetic Riemann hypothesis are the foundational examples of pairing, recurrence and balance. The claim is stated so that it can fail: if Peano arithmetic refutes Goldbach, the theory is inconsistent and is withdrawn. Citations run into the subject's notes, where the surrounding work already sits: Gödel's system in ",e(z,{children:"[The System P](/inexplicable-phenomena/arithmetic-notebook/#the-system-p)"}),", and the exchange of zero and infinity in ",e(z,{children:"[Zero and Infinity](/inexplicable-phenomena/arithmetic-notebook/#zero-and-infinity)"}),"."]}),i(q,{children:[e(h,{children:"Specification"}),e(G,{identifier:"statement-of-work"})]}),i(q,{children:[e(h,{children:"Progress"}),e(G,{identifier:"progress"})]}),e(K,{identifier:"statement-of-work",type:".md",children:`# The Symmetry of Arithmetic: Statement of Work
+
+Nov 15, 2026 · @Doug
+
+## Purpose
+
+This document specifies an addition to the formalism of first-order Peano arithmetic. The addition is a single object X, which expresses that arithmetic has a symmetry the formalism does not at present state. A rule of inference seems fitting. Like induction, which can be expressed finitely as a rule of inference, it operates on formulas and corresponds to a new form of proof. It is a new way to make universal conclusions.
+
+**The meaning of the formalism.** Peano arithmetic is read here as a way of reasoning from the bottom about a totality it does not refer to. Its axioms name zero and have no term for the totality. The same formalism, with every sign renamed, reasons from the top: it names the totality and has no term for zero. The two are identical. That zero has no predecessor and that the totality has no successor are one statement. Peano arithmetic as it stands neither asserts nor denies that the two readings express the same set of numbers. X asserts it, and gives no way to resolve which reading is the case.
+
+**What X does.** With X adjoined, Goldbach, twin primes and the arithmetic form of the Riemann hypothesis are immediate. Each is a theorem already proven on the circles of factorial size, with the definitions from the bottom and from the top kept distinct, followed by one use of X. They are the foundational examples of three types of theorem: pairing, recurrence and balance.
+
+**Why X is specified before it is stated.** X is not derivable from existing mathematics. If it were, the three conjectures, whose arguments are elementary, would already be proven. So X can be identified only by what it must satisfy. The specification fixes the formalism X modifies, the results it must agree with, the constraints on it and their motivation, the tests a candidate must pass, and the form it should take, so that candidates can be judged against them and the most natural form recognized when it is found.
+
+**The importance its author attributes to it.** The author of this specification holds that X is a foundational commitment of arithmetic and not a technical device: an addition of the same standing as quantification, universal generalization, proof by contradiction and induction, each of which was once added to reasoning. On this view the conjectures have stood open because the formalism has not decided whether it is symmetric, and what Gödel's theorem finds incomplete is the asymmetric reading. The claim is stated so that it can fail. If Peano arithmetic refutes Goldbach, the theory specified here is inconsistent and is withdrawn. If Peano arithmetic proves Goldbach, X is not needed for it.
+
+**What is to be identified.** A mathematical object X that modifies a formalism, first-order Peano arithmetic, by adding a new way of identifying truths. With X, Goldbach, twin primes and the arithmetic form of the Riemann hypothesis are immediate, as the foundational examples of three types of theorem. X is not yet known. This document gives a search what it needs to identify X uniquely: the formalism, the known results, the three types, the space of possible objects, the constraints and what motivates each, tests, and prior work.
+
+The specification is the anchor for the work. It is updated when its parts are found inconsistent, since an inconsistent specification has specified nothing. Sections 1 to 7 are the specification. What follows them is reference. The labels O1 to O11 refer to the open determinations recorded in The Symmetry of Arithmetic: Progress.
+
+## 1. The formalism
+
+**1.1 The base.** PA here means: classical first-order logic with identity; the signature {0, S, +, ·}; the Peano axioms in the form below [1]; and induction as a rule of inference, not as an axiom schema. It has exactly the theorems of first-order Peano arithmetic.
+
+| Name | Axiom or rule |
+| --- | --- |
+| S1 | ∀x ¬(Sx = 0) |
+| S2 | ∀x ∀y (Sx = Sy → x = y) |
+| A1 | ∀x (x + 0 = x) |
+| A2 | ∀x ∀y (x + Sy = S(x + y)) |
+| M1 | ∀x (x · 0 = 0) |
+| M2 | ∀x ∀y (x · Sy = x · y + x) |
+| Induction | From φ(0) and φ(x) → φ(Sx), with x not free in any open assumption, infer ∀x φ(x) |
+
+Defined in the usual way: x ≤ y, x divides y, x is prime.
+
+**1.2 The defined signs A and M.** Two one-place signs, each defined by succession of the previous value, in the form of the axioms for + and ·.
+
+| Sign | Meaning | At zero | At a successor |
+| --- | --- | --- | --- |
+| A | 0 + … + n | A(0) = 0 | A(Sx) = A(x) + Sx |
+| M | 1 · … · n | M(0) = S0 | M(Sx) = M(x) · Sx |
+
+This is an extension by definition. PA proves that each function exists and is unique, so no new theorem appears in the original signature. Induction ranges over formulas that use the new signs.
+
+**1.3 The dual signature.** {∞, P, ⊕, ⊗, ≫}. σ is the renaming 0 ↦ ∞, S ↦ P, + ↦ ⊕, · ↦ ⊗, ≤ ↦ ≫. σ(PA) is PA written in the dual signature.
+
+**1.4 The circles.** For N ≥ 1, C_N is ℤ/Nℤ with 0, x ↦ x + 1, + and ·, read as a structure for the signature of PA. The mirror is μ_N(a) := N − a, which is −a in C_N. It satisfies μ_N(Sa) = P μ_N(a), with P the inverse of S, and μ_N(a + b) = μ_N(a) + μ_N(b). The circles of factorial size are the C_N with N = M(n).
+
+**1.5 Limit objects.** Candidates for "the limit of the circles of factorial size":
+
+- The profinite integers, the inverse limit of the circles of factorial size.
+- An ultraproduct of the circles of factorial size.
+- The Steinitz (supernatural) number Ω = ∏ p^∞ over all primes p, the greatest element of Steinitz's lattice [8, 9].
+- The intersection of the modular arithmetics over a three-valued base, RMω in [3].
+
+**1.6 Definitions from the bottom and from the top.** For a set D of numbers below N defined by a formula, D is its definition from the bottom and μ_N[D] its definition from the top. In particular U_N := {a ∈ C_N : gcd(a, N) = 1}, P_N := {p : p prime, p < N}, and P′_N := μ_N[P_N].
+
+**1.7 The canonical sentences.** All are expected to be true. The forms below are canonical, and the shorter customary forms are their corollaries.
+
+| Name | Canonical sentence | Corollary |
+| --- | --- | --- |
+| GC | ∀n ≥ 2 ∃k < n (n − k and n + k are prime) | Every even number from 4 up is a sum of two primes |
+| TP | ∀n ≥ 3 ∃m (n < m < M(n) and m − 1 and m + 1 are prime) | ∀N ∃n > N (n − 1 and n + 1 are prime) |
+| RH | For every ε > 0 there is C such that U(x) − L(x) is at most C · x^(1/2+ε) in absolute value for all x ≥ 1, with U and L as in K8 | The Riemann hypothesis; equivalent to a Π1 sentence [6, 7] |
+| Euclid | ∀n ∃p (n < p ≤ S(M(n)) and p is prime) | There are infinitely many primes. PA proves this one |
+
+G and Con denote the Gödel sentence and the consistency statement of PA [2]. Σ1, Π1, Π2 are the classes of the arithmetical hierarchy [17].
+
+## 2. Known results
+
+Each is a theorem of PA or of ordinary mathematics. The constraints refer to them by label.
+
+| Label | Statement | Status |
+| --- | --- | --- |
+| K1 Renaming | PA ⊢ φ iff σ(PA) ⊢ σφ | σ is a bijective renaming |
+| K2 Zero of the sieve | Every d with 1 ≤ d ≤ n divides M(n) | Provable in PA, by induction |
+| K3 Fold | 2 · A(n) = n · Sn. So 2 · A(M(n)) = M(n) · S(M(n)), and in C_N with N = M(n), n ≥ 2: 2 · A(N) is N and A(N) is N/2, the fixed point of the mirror | Provable in PA, by induction |
+| K4 Mirror | If p divides N then, for every a, p divides a iff p divides N − a. Hence U_N = μ_N[U_N] | Provable in PA |
+| K5 Circle | C_N satisfies S2, A1, A2, M1, M2 and every instance of induction. C_N does not satisfy S1 | Direct check; noted in [3] |
+| K6 Pairing on circles | N even. For every even c there are a, b ∈ U_N with a + b ≡ c (mod N). The number of such a is (N / rad N) · ∏ (p − 2) over odd p dividing N and not c, times ∏ (p − 1) over odd p dividing both | Chinese remainder theorem |
+| K7 Recurrence on circles | N even. The number of k ∈ C_N with k − 1 and k + 1 in U_N is (N / rad N) · ∏ (p − 2) over odd p dividing N. It grows without bound as primes are added | Chinese remainder theorem |
+| K8 Balance identity | For x ≥ 1, ⌊√x⌋ = x · ℓ(x) + U(x) − L(x), where ℓ(x) = Σ λ(d)/d over d ≤ x, U(x) = Σ (x mod d)/d over d ≤ x with Ω(d) odd, L(x) the same with Ω(d) even. RH holds iff ℓ(x) = O(x^(−1/2+ε)) for every ε > 0 | Identity: Σ λ(d) over the divisors d of n is 1 on squares and 0 otherwise. Equivalence: standard, reference to be located |
+| K9 Distinctness | P_N ≠ P′_N on circles of named size. For N = 210: 23 ∈ P_N and μ(23) = 187 = 11 · 17 | Direct check |
+| K10 Division order | The numbers ordered by divisibility form a lattice with least element 1 and greatest element 0. The least common multiple of all M(n) is 0. The embedding into Steinitz's lattice sends 0 to Ω | [8, 9] |
+| K11 Uniqueness of zero | PA proves: if every y divides x, then x = 0. PA proves: there are infinitely many primes iff 0 is the only number every prime divides | Provable in PA |
+| K12 Euclid | PA proves the canonical sentence Euclid of 1.7. The bound S(M(n)) is one step past a number that every prime up to n divides (K2) | Provable in PA |
+| K13 The exception at the top | If p divides N and N − p > p, then N − p is a proper multiple of p and is not prime. So a thing every prime divides, other than 0, is not a sum of two primes | Provable in PA. By K11 there is no such number |
+| K14 Π1 soundness | If T extends PA and is consistent, every Π1 theorem of T holds of every numeral | Since PA proves every true Σ1 sentence |
+| K15 Classes | GC is Π1. RH is equivalent to a Π1 sentence. TP in canonical form is Π1; its corollary is Π2 | [6, 7] |
+| K16 Independent Π1 sentences | Let φ be ∀c θ(c) with θ decidable. If PA proves neither φ nor ¬φ, then φ holds of every numeral, PA + ¬φ is consistent, and PA + ¬φ is ω-inconsistent: it proves ∃c ¬θ(c) and proves θ(n) for each numeral n. The exception it asserts is no numeral. This is the situation of ¬G in [2] | A false φ has a numeral exception, which PA verifies |
+| K17 Gödel | PA ⊢ G ↔ Con | [2]; formalized second theorem |
+| K18 Local-global failure | (x² − 2)(x² − 17)(x² − 34) = 0 has a solution in every C_N and none among the numbers | Standard, reference to be located |
+| K19 Modular arithmetic over a three-valued base | With base RM3, arithmetic modulo i is negation-inconsistent, absolutely consistent, and contains the theorems of PA | [3] |
+| K20 Collapse | In LP, identifying elements of a model by a congruence preserves every truth. The collapsed models of the numbers are a tail followed by a cycle | [4, 5, 12] |
+
+## 3. The three types of theorem
+
+GC, TP and RH are the foundational examples of three types of theorem about a property φ of numbers. Each type has a general form, a basic case that PA proves, a theorem on the circles with the definitions from the bottom and from the top kept distinct, and its foundational example.
+
+|  | Type I: pairing | Type II: recurrence | Type III: balance |
+| --- | --- | --- | --- |
+| What it says | Every number has two φ-numbers at equal distance on either side | Above every number, and below a bound the top supplies, there is a φ-pair | The count of φ-numbers up to x stays near its estimate |
+| General form | ∀n ≥ 2 ∃k < n (φ(n − k) and φ(n + k)) | ∀n ≥ 3 ∃m (n < m < M(n) and φ(m − 1) and φ(m + 1)) | The count from the bottom and the count from the top differ by no more than a stated bound |
+| Basic case, provable in PA | φ is "coprime to n": n − k is coprime to n iff n + k is (K4) | Euclid (K12): the same form with one φ-number in place of a pair | φ is "multiple of 5": the count up to x is within 1 of x/5 |
+| Theorem on the circles | K6 | K7 | K8 |
+| Foundational example | GC | TP | RH |
+
+The requirement on X is that each foundational example is immediate in T: it is its circle theorem followed by one use of X (C6). This is the sense in which X makes them trivial. A proof of this kind is the type of proof X adds.
+
+## 4. The object and its solution space
+
+X is one finitely stated object that modifies the formalism of 1.1 by adding a new way of identifying truths. T denotes PA with X adjoined. The kind of X is not fixed. The space is:
+
+| Kind | What X would be | What must then be supplied |
+| --- | --- | --- |
+| (a) Axiom or schema | A single sentence in the signature of PA. Not an axiom for each conjecture, and not an infinite schema (4.1) | The sentence |
+| (b) Rule of inference | A figure with finitely many premises, one conclusion, a free formula, and a side condition decidable on the written proof, as induction is in 1.1. It gives a type of proof | The figure, and a proof that it is not derivable in PA |
+| (c) Duality | A transfer between PA and σ(PA): a rule taking a theorem φ of a stated class to σφ read in the signature of PA, or a theory in both signatures with bridge axioms | The class of φ, or the bridge axioms. The interpretation of ∞, P, ⊕, ⊗, ≫ in the signature of PA, or the reason none is needed |
+| (d) Something else as fundamental | An addition to the formalism of a kind not listed | What kind of thing it is, and how proofs use it |
+
+A solution states which kind it is and discharges the third column.
+
+**4.1 The form X should take.** Guidance on its best form.
+
+- **Singular.** X is one thing. It is not a set of axioms for the conjectures.
+- **Not an infinite schema.**
+- **A rule of inference seems fitting.** Like induction, which can be expressed finitely as a rule of inference, it is able to operate on formulas and corresponds to a new form of proof. It is a new way to make universal conclusions, and it is to operate across formulas too. It may be trans-semantic: two identical formalisms, united by not being able to refer to the objects of the other except by equivalence under isomorphism. Perhaps. The shape of this formalism is complex to specify, and the specification leaves it open (O6).
+- **Agnostic to interpretation.** It is the most elegant way to express the existence of a symmetry while providing absolutely no way to resolve which one.
+- **The reason it can be so.** Arithmetic is structured as a from-the-bottom way of reasoning about a form of transcendence. That transcendence means there is a view from the top that is literally the same formalism, isomorphically, with shared ways of expressing the same set of numbers.
+- **It should look like a natural modification of universal inference.**
+- **It has precedent.** Someone introduced quantification. Someone introduced universal generalization, proof by contradiction, induction. Adding a thought here is of that kind.
+- **It has to fit in extraordinarily well,** wearing the same clothing as the other parts of the formalism, so that it can be seen as self-evident and fundamental.
+
+## 5. Constraints
+
+Each is followed by what motivates it. They fall in three groups.
+
+**What X is**
+
+1. **C1 Finite and checkable.** X is stated finitely. If X is a rule, its side condition is decidable on the written proof. *Motivation:* X is used as induction is used, by a reader who can check each step.
+2. **C2 Internal and general.** X is integrated in the formalism of PA. It does not mention primes, sieves or a modulus, and is not stated through limits of other formalisms. *Motivation:* otherwise C5 is met by adjoining GC, TP and RH themselves, and nothing has been identified.
+3. **C3 From meaning.** Each clause of X traces to a row of the table in section 6. *Motivation:* X represents what the subject commits to about the meaning of arithmetic. It is not a fact added from outside.
+4. **C4 Unique.** Any two objects meeting C1 to C14 give theories with the same theorems. This is the sense in which the specification identifies one object. It is a claim to be proven of a solution.
+
+**What X does**
+
+5. **C5 Strength.** T proves the canonical GC, TP and RH of 1.7. *Consequence:* all three are Π1 or equivalent to Π1 (K15), so by K14, if T is consistent, each holds of every numeral. *Motivation:* what is added justifies statements a computer could refute.
+6. **C6 Immediacy.** For each type of section 3, the derivation of its foundational example in T is its circle theorem (K6, K7, K8), which PA proves with the definitions from the bottom and from the top kept distinct, followed by one use of X. No analysis is used. *Motivation:* the three arguments lack one and the same step, and X is that step.
+7. **C7 The circle paradigm.** The theorems of T are exactly what can be proven in the paradigm of the circles of factorial size, generalizing over every pair of definitions, from the bottom and from the top, that can be made equal in the limit with the limiting factorial as the top. *Motivation:* the circle is the one-theory form of what the two readings say. Stating that paradigm exactly is part of the task (O2, O3).
+8. **C8 Gödel.** T relates G, Con and the empty derivation: what is unprovable in PA is what is proven by the derivation with zero steps. *Motivation:* K17, and section 6. The exact statement is open (O5).
+9. **C9 Calibration.** T proves every statement marked "required" in section 7 and none marked "excluded". The basic cases of section 3 come out as their ordinary proofs. *Motivation:* the basic cases are where X can be checked against ordinary proof.
+
+**How X stands to PA**
+
+10. **C10 Consistency.** T does not prove 0 = 1. It is to be shown relative to the consistency of PA, preferably by an interpretation in the circles or a limit object of 1.5. *Motivation:* the circle is consistent with PA.
+11. **C11 PA has not decided.** PA proves neither X nor its opposite, and decides none of GC, TP and RH. *Motivation:* PA has not made a decision about symmetry. That the conjectures have stood unproved for so long is taken as expressing this.
+12. **C12 Refutation and relevance.** If PA ⊢ ¬GC, then T is inconsistent, by C5, and the theory specified here is withdrawn. If PA ⊢ GC, then X is not needed for GC and the new machinery is irrelevant to it. The same holds for TP and for RH. *Motivation:* the commitment is stated so that it can fail.
+13. **C13 Invariance under σ.** X is fixed by σ up to provable equivalence in T. No theorem of T distinguishes the two-reading presentation, PA with σ(PA), from the circle presentation. S1 is kept and is never false: zero has no predecessor in PA, and by σ the totality has no successor in σ(PA); these are one statement under σ. The circle presentation has to be consistent with every theorem of PA (O1). *Motivation:* no opinion about where the journey starts.
+14. **C14 Negatives (expected, not required).** Over the integers with 0, S, + and ·, the analogue of X is derivable or void, since a ↦ −a is a definable involution that preserves divisibility.
+
+## 6. The meaning that motivates X
+
+**6.1 Commitments and their formal correlates.**
+
+| Commitment | Formal correlate |
+| --- | --- |
+| Zero is what the subject uses to speak of the existence of non-quantities without distinction | A1: x + 0 = x. M1: x · 0 = 0 |
+| Every number divides zero. How many that is, is not none, and is not a quantity that can be referred to | From M1, every x divides 0. The divisors of 0 are the whole domain. No term of the signature denotes how many. Every n ≥ 1 has at least one divisor, so no number has none |
+| That quantity is the limiting factorial | K2, K10 |
+| It is one to one with "for all", and "for all" is "there does not exist" seen from the opposite side | ∀x φ ↔ ¬∃x ¬φ. The φ-things number zero iff the ¬φ-things are all |
+| Arithmetic has a reading from the top, and the top is not a number | σ and σ(PA) of 1.3. ∞ is a constant of the dual signature and not a term of the signature of PA |
+| The top has no successor, so it is nothing's predecessor | σ(S1): ∀x ¬(Px = ∞) |
+| The top is no steps from the top; in multiples of steps from the top, the top is none | σ(A1): x ⊕ ∞ = x. σ(M1): x ⊗ ∞ = ∞ |
+| Induction is the expression that properties transcend: what holds at one end and is kept by each step reaches the other | Induction and its image under σ |
+| No opinion about where the journey starts | C13 |
+| Multiplicity is symmetric under interpretation | K1, K4: x steps from 0 is a multiple of m in PA iff x steps from ∞ is a multiple of m in σ(PA) |
+| Two readings, and one circle with two directions, are two ways of seeing the same thing | PA with σ(PA) on one side; C_N with μ_N on the other; K5 |
+| If 5 divides the top there is a number with remainder 4 whose successor is the top. It need not be part of the subject | In C_N, the predecessor of 0 is N − 1, congruent to m − 1 modulo every m dividing N |
+| The view from the top is the view from outside the quantity that universal quantification quantifies. It is above the notion of unboundedness | From the top, "there is m above n" ranges between n and ∞. Inside PA the model is the bound M(n) in the canonical TP and in Euclid (K12) |
+
+**6.2 The symmetry of zero and the totality.** PA refers to zero and has no term for the totality. σ(PA) refers to the totality and has no term for zero. The two theories are identical under σ. Zero has no predecessor for the reason the totality has no successor: S1 and σ(S1) are one statement. That, and not the existence of an object standing for the totality, is what is specified as the subject of arithmetic.
+
+**6.3 The two halves.** Zero and the limiting factorial are the only two of their kind, referentially separated. Both are even. On the scale whose unit is half the top they are 0 and 2, two successive evens, and the mirror is the one odd between them. It divides what lies between into a referred half and an unreferred half. Formal correlate: K3. For numbers, 2 · A(M(n)) = M(n) · S(M(n)). At the limit the top absorbs multiplication, as zero does by M1, so the top times its successor is the top and 2 · A(top) = top. A of the top is the mirror.
+
+**6.4 The other reading.** The opposite reading holds that the top and the bottom are two different things. In Gödel's argument it appears as G and ¬G referring to two different things: G is unprovable but true, and ¬G is provable by a proof of infinite length. On the symmetric reading these refer to one thing: the proof of infinite length is the proof with zero steps. The machinery of X is built on PA because PA is not specific enough to express the asymmetry either. In the view of the subject specified here, what is incomplete is the asymmetric ℕ, taken to be what Gödel's System P [2] formalizes, which this subject believes is the standard model, together with anything consistent with its asymmetric extension. In it GC and the related statements are false. The exception is the same thing that a proof of G looks like there: big, even, and divisible by every prime, a top taken as distinct from zero (K13). Among the numerals GC has more pairs as numbers grow and so becomes easier, and yet it is not proved, as G and ¬G are not decided. On the symmetric reading that top is zero, about which GC says nothing. This is one subject's opinion of another. It places no requirement on that subject.
+
+**6.5 Outside the subject.** Addition and multiplication get to infinity at different rates, as A and M do. That difference is not the subject of this specification, which is about equivalent formalisms. It is one thing to imagine in relation to this symmetry. A version of the subject with calculus can take it up. No constraint here depends on it.
+
+**6.6 Which idea is the subject.** Several existing ideas use the same objects. The specification picks out one and is not any of the others.
+
+| Idea | What it holds | How the specification differs |
+| --- | --- | --- |
+| Standard arithmetic | PA describes the numbers. There is no top | Agrees that PA does not refer to the totality. Adds that an identical theory does, and cannot refer to zero |
+| Nonstandard models [13] | One model of PA contains elements above every numeral, and the quantifiers of PA range over them | The totality is not a number and is not in the range of the quantifiers of PA |
+| Modular arithmetic over a three-valued base [3, 11] | One theory in which S1 holds and also fails | S1 never fails. The circle is consistent with PA and supplies a symmetry PA does not specify |
+| Collapsed models in LP [4, 5, 12, 15] | Numbers are identified; every truth is kept and some sentences become false as well | Nothing true becomes false |
+| Supernatural numbers [8, 9] | The totality is an object Ω, and 0 is sent to it. There is multiplication and divisibility and no addition or successor | The claim is about successor: zero has no predecessor as the totality has no successor. Steinitz's lattice cannot state that |
+| The profinite integers | Zero is the limit of M(n), and it has a predecessor, the limit of M(n) − 1 | A candidate setting for the circle presentation. Whether it is the one, with the quantifiers of PA ranging over the numbers inside it, is open (O1, O2) |
+
+## 7. Tests
+
+| Statement | Of the numbers | Of T |
+| --- | --- | --- |
+| For all n and k < n: n − k is coprime to n iff n + k is | True | Required. Type I basic case, as its ordinary proof |
+| N has multiples of m at equal distance on both sides iff m divides N + N | True | Required |
+| For every distance that is a multiple of 5 there are infinitely many N with multiples of 5 at that distance on both sides | True | Required |
+| The count of multiples of 5 up to x is within 1 of x/5 | True | Required. Type III basic case |
+| Euclid, in the canonical form of 1.7 | True | Required. Type II basic case. With the top taken as M(n), X gives Euclid's proof |
+| Every N has two multiples of 5 at equal positive distance on both sides | False | Excluded |
+| (x² − 2)(x² − 17)(x² − 34) = 0 has a solution | False | Excluded |
+| P_N = P′_N for the numeral N = 210 | False | Excluded |
+| For every N there is a larger even prime | False | Excluded |
+| 0 = 1 | False | Excluded |
+| GC, TP, RH in the canonical forms of 1.7 | Open | Required, each immediate (C6) |
+
+Every excluded statement is refuted by PA, so C10 excludes it already. The excluded rows are checks to run on a candidate, not further demands.
+
+## End of the specification
+
+Sections 1 to 7 are the specification. What follows is reference and is not required.
+
+## Related work
+
+What each bears on. Items marked † were located and checked against a bibliographic record or the paper's abstract for this document. The others are cited from recall and are to be verified.
+
+Level of relevance. *Setting*, the formalism the specification is stated in: 1, 2, 16, 17. *Adjacent*, the same objects with a different claim, as set out in 6.6: 3, 4, 5, 8, 9, 10, 11, 12, 14, 15. *Background*, facts used by a constraint: 6, 7, 13. None of the adjacent items states or implies X.
+
+1. H. B. Enderton, *A Mathematical Introduction to Logic*, 2nd ed., Academic Press, 2001. The axioms of 1.1 in this form.
+2. K. Gödel, "Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I", *Monatshefte für Mathematik und Physik* 38 (1931), 173–198; tr. B. Meltzer, 1962. System P. K16, K17, 6.4.
+3. † R. K. Meyer and C. Mortensen, "Inconsistent models for relevant arithmetics", *Journal of Symbolic Logic* 49 (1984), 917–929. Modular arithmetics over the base RM3 as inconsistent, absolutely consistent extensions of Peano arithmetic; notes that S1 fails in modular arithmetic; the intersection RMω. K5, K19, 1.5.
+4. † G. Priest, "Inconsistent models of arithmetic, Part I: finite models", *Journal of Philosophical Logic* 26 (1997), 223–235. LP models containing all sentences of first-order arithmetic. K20.
+5. † G. Priest, "Inconsistent models of arithmetic, Part II: the general case", *Journal of Symbolic Logic* 65 (2000), 1519–1529. General structure: linear and cyclical parts. K20.
+6. † M. Davis, Yu. Matijasevič and J. Robinson, "Hilbert's tenth problem. Diophantine equations: positive aspects of a negative solution", in *Mathematical Developments Arising from Hilbert Problems*, AMS, 1976, 323–378. RH as a Π1 statement. K15.
+7. † J. C. Lagarias, "An elementary problem equivalent to the Riemann hypothesis", arXiv:math/0008177; *American Mathematical Monthly* 109 (2002), 534–543, journal details from recall. K15.
+8. † E. Steinitz, "Algebraische Theorie der Körper", *Journal für die reine und angewandte Mathematik* 137 (1910), 167–309. Supernatural numbers. K10.
+9. † "Coset topologies on ℤ and arithmetic applications", arXiv:2202.13478, section 4. The embedding of the numbers into the supernatural numbers with 0 ↦ ∏ p^∞. K10.
+10. † H. Friedman and R. K. Meyer, "Whither relevant arithmetic?", *Journal of Symbolic Logic* 57 (1992), 824–831. A limit on relevant Peano arithmetic.
+11. † R. K. Meyer, "Relevant arithmetic", *Bulletin of the Section of Logic* 5 (1976), 133–137. Finite modular models used for a finitary consistency argument. C10.
+12. † G. Priest, "Minimally inconsistent LP", *Studia Logica* 50 (1991), 321–331; and *In Contradiction*, 2nd ed., Oxford, 2006. The logic LP; where the collapsing lemma is stated is to be verified. K20.
+13. R. Kaye, *Models of Peano Arithmetic*, Oxford, 1991. Nonstandard models. 6.6.
+14. † A. Tedder, "Axioms for finite collapse models of arithmetic", *Review of Symbolic Logic* 8 (2015), 529–539. A three-valued base with a cyclic axiom.
+15. † J. B. Paris and A. Sirokofskich, "On LP-models of arithmetic", *Journal of Symbolic Logic* 73 (2008), 212–226. K20.
+16. Project document, "Goldbach Through Gödel: The Essential Argument". The circle theorems K6 and K7 and the statement of K9.
+17. † S. C. Kleene, *Introduction to Metamathematics*, Van Nostrand, 1952. Formal number theory and the arithmetical hierarchy.
+18. [Proof by Symmetry: Specification](https://claude.ai/artifact/U63dJtCBAa39DU3gXyqDf8). The earlier specification. It fixed the form of X as a rule of inference with a given figure. Candidate figures, ideas and earlier statements are kept there.
+`}),e(K,{identifier:"progress",type:".md",children:`# The Symmetry of Arithmetic: Progress
+
+Nov 15, 2026 · @Doug
+
+This records progress on the project stated in [The Symmetry of Arithmetic: Statement of Work](https://claude.ai/artifact/6gFutUADkoS1aLCwC2A3kt): what is left to be done, what has been computed, what is still to be located, and the statements the specification was drawn from. Section numbers and the labels K and C refer to that document. Nothing here is part of the specification.
+
+## Open determinations
+
+A solution settles each of these. Until then they are the places where the specification is not yet specific enough.
+
+1. **O1 The circle presentation.** It must be consistent with every theorem of PA, S1 included, and supply a symmetry that PA does not specify. C\\_N read as a structure for the signature of PA does not do this, since S1 fails in it (K5). K19 does it only by letting S1 fail as well as hold. What presentation does it with S1 holding outright.
+2. **O2 The limit.** What "made equal in the limit" means: equality of extensions in the profinite integers, in an ultraproduct, at Ω, or in RMω.
+3. **O3 Which definitions.** Which pairs of definitions, from the bottom and from the top, can be made equal. K18 shows it cannot be every statement true on every circle.
+4. **O4 Symmetric property.** A formula is symmetric on C\\_N when its extension equals its μ\\_N-image. "p divides x" is, for p dividing N (K4). "x is coprime to N" is. Prime is not (K9). What X yields about primes, and from what.
+5. **O5 The statement about Gödel in C8.**
+6. **O6 The kind of X.** Which row of section 4.
+7. **O7 The derivation of TP.** The canonical TP is stronger than its corollary. Its derivation through K7 is to be given.
+8. **O8 The unit step from the top.** Whether P, read in the signature of PA, is the inverse of S wherever both apply, or is left uninterpreted.
+9. **O9 The asymmetric extension of 6.4.** Its exact statement. K16 is a candidate.
+10. **O10 The two halves of 6.3.** The formal statement that the half from zero to the mirror is the referred half and the half from the mirror to the top the unreferred one.
+11. **O11 The general form of type III.** Section 3 gives pairing and recurrence for an arbitrary φ. The bound in the balance form is stated only for the primes (1.7) and for the multiples of 5.
+
+## Computed
+
+| Label | Statement | Status |
+| --- | --- | --- |
+| K21 TP computed | The canonical TP holds for every n from 3 to 10,000,000; a pair is always found below 2n. Also: for every n from 2 to 40 there is k ≤ M(n) with k · M(n) − 1 and k · M(n) + 1 both prime, the least k being at most 1,162 | Computed. Primality above 64 bits by a probable-prime test |
+
+## References still to be located
+
+Still to be located: a reference for the equivalence in K8 between RH and the bound on ℓ(x); a reference for K18; a reference for the principle of duality in lattice theory, for kind (c).
+
+## Sources
+
+Doug's statements, as he gave them. Earlier statements are in the first specification.
+
+- "we need a new specification. This one was too opinionated about the form of the solution. The new version is similar but it specifies an interpretation of from the top semantics, and quantity of zeros divisors as related to for all but as a thing that is the same on the opposite of not exists (zero from top), induction as expression that properties transcend, equivalent to the modular arithmetics of factorial size setting bottom and top definitions equal in the limit, etc.. Seems like a rule of inference but I am not sure. It needs to be the thing that represents what the subject commits to about the meaning of arithmetic. And view from one side about a number of steps that transcends what is walkable, without any opinion about where one started their journey from. Two options and one circle with two directions are understood to be two ways of seeing the same thing. This is deep and what we are specifying has changed a bit"
+- "How about we do semantics of: the top is not a number: Say: it doesn't have a successor, so nothing is its predecessor. S2 is just predecessor is like successor. A1 the top represents no steps away from the top. A2 same for predecessor. M1 is in multiples of steps from the top, the top represents none. M2: same. Ind: if true for the too, and successive implication, means you get to the bottom (important for symmetry!!). <: flip it around as >> and express this in terms of the top. This is like the view from heaven. And we see this horizon because every number divides zero and the factorial gets more and more as it goes to the horizon. And induction is the statement that the view from heaven can reach all the way to earth"
+- "the point is that arithmetic was always talking about something that could be from the top or from the bottom, and it is about transcending totality. It is the subject that can see that these are isomorphic. If we imagine we had: 5S and 5P for SSSSS0 and PPPPP♾️, we can say things like if xS is a multiple of 5, xP is because the top and bottom absorb all multiples. Multiplicity is symmetric under interpretation. The circle is the one-theory was to resolve this, but you can view it as two related theories that transcend the totality with induction, so properties of numbers can apply to both"
+- "What makes this compelling is that maybe this isn't right and stepping down from heaven onto the numbers is not a unitary thing. But if you interpret zero as that which we use to talk about the existence of nonquantities without distinction, it forces us into a view where the non-quantity of numbers that divide zero should be zero (it actually has NO divisors? No we just can't refer to it but it isn't none otherwise PA is inconsistent)"
+- "we really just can't refer to the too with distinction. If it is like zero, you can step down like you can step up. See how zero forces semantics? For all: an end if you can transcend metaphors for time and distance in the sense of unitary steps. Otherwise, there would be no concept of all. You are making a container and it already has quantity that does not exist as one, so by quantifier logic, you have quantity that is the opposite kind for all. It's in a complementary logic. Or just see the circle where the thing on the left can't be referred to"
+- "Godel's theorem witnesses as numbers of proofs are another. On can also imagine this from the top as something false and provable with a countrrexample understood by analogy to something from the bottom. A whole symmetric set of proofs. And the top still represents what is unprovable, or rather can be proven with the proof that has zero steps which represents the unformalizable but essential nature of consistency in logic"
+- "We need a way to say: multiple of 5 are symmetric, their negation is, reasoning that the primes are, that n-k is an S index and n+k is a P index, but those are both prime. Or maybe there is a way to just see symmetry more generally. ... we need to significantly evolve the spec to include a a subjective specification that equates bottom and top reasoning, and show it is consistent with the circle which differs from the standard model in exactly one way. The semantics might be: the number of divisors zero has as our unreferable quantity which is one to one with our for-all. And since that number is the limiting factorial… there you go. But if 5 divides it than there is a number who has remainder 4 when divided by 5 whose successor is it. Call that the predecessor. This doesn't need to be part of the subject we do see the part of the subject is capturing the essence of everything also referring to the unquantifiable without distinction as an identity. And we see that it justifies things that seem to be checkable by computer!"
+- "The specification is to justify this as part of the spec of arithmetic, show equivalence to the circle interpretation which is consistent with PA, and codifies this with the thing we are adding to the formalism - new rule of inference that leads to proof type? Or something else fundamental"
+- "mine is circle consistent PA with missing symmetry, under the belief that PA doesn't specify symmetry. Think carefully about what you think is a related theorem, but do include them at the appropriate level of relevance"
+- "is the reason symmetry of zero and the totality and zero not having a predecessor is the limiting factorial not having a successor? These are useful things for the specification in the sense that we are specifying which of these ideas is the subject of arithmetic. In our case, arithmetic doesn't refer to totality but the symmetric theory that does can't refer to zero and is identical"
+- "in my specification of arithmetic, I believe that PA should adopt some way of expressing the opposite of symmetry. GC is false, TP too, the arithmetic versions of Riemann too, or maybe a way of expressing asymmetry. That is the sense in which we believe a new tool for inference, whether axioms for each, or rule of inference or otherwise needs to be added. And we commit by saying that if PA proved GC false, we would take our theory to be inconsistent. If it proves GC true, it would make our new rule irrelevant. Our view of PA as the theory that Godel used, thinks G and not G refer to two different things, and that is the essence of the asymmetry."
+- "There should be no system a. ... You can refer to aspects of the formalization we use - first order logic, induction added as a rule of inference, uses PA axioms, commits to these semantics etc... but don't name it and make it abstract rather than concrete. Refer to the formalism specifically"
+- "We added machinery to prove GC. If it was specific enough to express the asymmetry, we wouldn't build off it. So if PA proves GC false, we will be inconsistent. And that expresses our belief that PA hasn't made a decision about symmetry yet. Hence the conjectrues are unproved for many many years"
+- "well it's not but we can say that we think this is consistent with the subject where G and not G are different (unprovable but true versus provable with an infinite proof length, so in our view, the thing that is incomplete is the asymmetric N, and that is the standard model. So in our view, the standard model has GC false and related. In our subjects opinion of another. That doesn't force them to do anything"
+- On what the exception to GC is in the asymmetric ℕ: "The same thing that a proof of G looks like. It is big, even, and all primes divide it. Numbers have more GC pairs as they get big, so GC becomes easier and easier to prove yet... we can't. Just like we can't decide G and not G"
+- On the sense of equivalence with the circles: "All things that can be proven in that paradigm, generalizing across definitions that can be made equal in the limit of the limiting factorial being the top, are the set of things you can prove in our augmented PA. But we want it integrated in the formalism not through the limits of other ones"
+- On twin primes: "For every number there is a larger pair from top, as equal to from every number there is a smaller one as equivalent"
+- On the asymmetric ℕ: "we take it to be the canonical Godel's System P which we believe formalizes the standard model and anything consistent with its asymmetric extension"
+- "GC says in our form for all n, there exist k such that n-k and n+k are both prime. TP says: For all N, there exists n > N such that n-1 and n+1 are prime."
+- "But... we certainly prove Euclid. This is why I tried to say view from heaven, view from place that describes the outside of the quantity of divisors zero has, the quantity that universal quantification quantifies. It is above that notion of unboundedness"
+- "while we expect all to be true, we take the factorial forms to be canonical? And the shortest possible form of the sentence as as corollary. Is it easy to express the factorial form? We can do: For all n, there exists an N > n and an m such that n < m < N! and m-1 is prime and m+1 is prime"
+- "Do we want to add big epsilon sum and big factorial product to the language? M(n) = 1 \\* ... \\* N, A(n) = 0 + ... + n, and define them in terms of succession of the previous one??"
+- "Then that is the theorem. You might notice that A(n) seems a lot like the mirror... Zero is even. The two zeros, even in heaven and earth, are even. The mirror symmetry is a lot like the limiting factorial over 2 so that it is odd. Between two successive evens there is an odd in between in which they are symmetric right? So leave it to make that pattern clear"
+- "You are missing the analogy in the limit and clarify this in the spec. If we imagine that 0 and the limiting factorial are the only two of their kind, though referentially seprated, there is like referred and unreferred halves. This is related to multiplication and addition going to inf at different rates. So note 2\\*A(M(n)) = M(n)"
+- "YET ANOTHER thing we are saying is that there is a difference between how fast addition and multiplication get to infinity and that isn't our subject at all, but you can see it as one thing to imagine related to this symmetry, which is about equivalent formalisms. The calculusy version of this subject can think about things like that. Put this in the spec and give me a spec that is formal, has these ideas appropriately structured for formal identification of a mathematical object that modifies a formalism to add new ways of identifying truths that make GC, TP and arithmetic Riemann trivial in the sense that they are foundational examples of three types of theorems"
+- "for it to be earned is for the project to be over, and the specification not longer needed."
+- "deciding that it did on a named circle is deciding that these theorems could have proofs. ... Yes, there is a whole. To have reduced it to something else is for this specification to not be necessary. ... if you were, then these conjectures would all be true and you can see from the elementary nature of their proof sketches that were something like this a valid proof under some interpretation of existing math, they would be proven already. Yes, identifying a hole and finding the most beautiful form that is might be used to fill in something in a formalism is the project!!"
+- "not axioms for the conjectures, so its singular. Not an infinite schema. Rule of inference seems like the best option because they provide quantification over formula. Needs to be agnostic to interpretation. The most elegant way to express the existence of a symmetry while providing absolutely no way to resolve which one, because the real reason is simply that arithmetic is simply structured as a from the bottom way of reasoning about a form of transcendence. And that transcendence means there is a view from the top that is literally the same formalism isomorphically with shared ways of expressing the same set of numbers. It should look like a natural modification to universal inference. This happened right? Someone invented quantification. Someone invented universal generalization, proof by contradiction, induction... it is not insane to add a thought here. But it better look like it fits in extraordinarily well, wearing the same clothing as other parts of the formalism so that it can be seen as self-evident and fundamental."
+- "Not most likely. A rule of inference seems fitting. Like induction, which can be expressed finitely as a rule of inference, it is able to operate on formula and corresponds to a new form of proof. That seems like the form that we want here. It is a new way to make universal conclusions, and we want it to operate across formula too. Might it be trans-semantic with two identical formalisms that are united by not being able to refer to the objects of the other except by equivalence under isomorphism? Perhaps. It is complex to specify the shape of this formalism."
+`})]}),"TheSymmetryOfArithmetic1"),ne=n(L),fe=o(()=>i(ne,{children:[ee(),V(),te(),oe()]}),"book");export{fe as book};

@@ -41,13 +41,14 @@ export class $Content extends $Format {
         .pc-project { display: none; }
         &:has(#pc-flip:checked) .pc-project { display: block; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation):not(.pc-introduction) { display: none; }
-        .pc-introduction { display: none; font-style: italic; color: color-mix(in srgb, ${({ theme }) => theme.ink} 75%, ${({ theme }) => theme.paper}); }
-        &:has(#pc-flip:checked) .pc-introduction { display: block; }
-        .pc-markdown { font-family: 'Segoe UI', -apple-system, system-ui, sans-serif; font-size: calc(.92 * ${({ theme }) => theme.size}); line-height: 1.65; }
-        .pc-markdown h1 { font-family: ${({ theme }) => theme.font}; font-size: 1.55em; font-weight: 600; margin-block: 1.1em .45em; line-height: 1.3; }
-        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: 1.35em; font-weight: 600; margin-block: 1.5em .45em; }
+        .pc-project .pd-heading { display: none; }
+        .pc-project:first-of-type .pc-markdown h2:first-of-type { display: none; }
+        .pc-project { border-block-start: none; padding-block-start: 0; }
+        .pc-markdown h1 { display: none; }
+        .pc-markdown h1 + p { display: none; }
+        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1.15 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.5em .45em; }
         .pc-markdown p { margin-block: .9em; }
-        .pc-markdown strong { font-weight: 600; }
+        .pc-markdown strong { font-weight: bold; }
         .pc-markdown table { width: 100%; border-collapse: separate; border-spacing: 0; margin-block: 1.2em; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 14%, ${({ theme }) => theme.paper}); border-radius: 8px; overflow: hidden; }
         .pc-markdown th, .pc-markdown td { padding: .55em .85em; text-align: start; vertical-align: top; }
         .pc-markdown thead th { background: color-mix(in srgb, ${({ theme }) => theme.ink} 4%, ${({ theme }) => theme.paper}); color: color-mix(in srgb, ${({ theme }) => theme.ink} 72%, ${({ theme }) => theme.paper}); font-weight: 600; }
