@@ -11,6 +11,11 @@ export class $RunningHead extends $Paragraph {
     // THE MINIMAL HEADING, Doug, 2026-11-16: "a minimal heading, at least with the book title and if you click it
     // it should go to the table of contents except the version on the table and that one takes you to the cover" —
     // just the book's title, both destinations bound, the theme showing the one the open page calls for.
+    // THE TABLE-NESS IS AN ATTRIBUTE, Doug, 2026-11-16: "I notice that your table of contents doesn't have the
+    // little square. Why isn't it the same thing as the others? Table of contents can be an attribute to capture
+    // polymorphism." — one running head on every page: the title written twice, its destination carried by its
+    // own data-to attribute and chosen by the theme in one place; the square to the cover always, the table's
+    // page like any other.
     override write(): ReactNode {
         const book = this.book;
         if (book === undefined) return null;
@@ -19,19 +24,19 @@ export class $RunningHead extends $Paragraph {
         const Reference = $(reference);
         return (
             <>
-                <span className="pd-to-table">
+                <span className="pd-book-title" data-to="table">
                     <Word>
                         <Reference>{table?.means?.identifier}</Reference>
                         {book.title?.name}
                     </Word>
                 </span>
-                <span className="pd-to-cover-title">
+                <span className="pd-book-title" data-to="cover">
                     <Word>
                         <Reference>{book.means?.identifier}</Reference>
                         {book.title?.name}
                     </Word>
                 </span>
-                <span className="pd-to-cover">
+                <span className="pd-square">
                     <Word>
                         <Reference>{book.means?.identifier}</Reference>
                         ☐

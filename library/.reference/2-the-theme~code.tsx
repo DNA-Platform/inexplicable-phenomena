@@ -156,14 +156,15 @@ export class $LibraryTheme extends $Theme {
             }
             .pd-running-head a { text-decoration: none; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
             .pd-running-head a:hover { color: ${({ theme }) => theme.ink}; }
-            /* ONE HEADER, EVERY PAGE, Doug, 2026-11-17: "Can it not have the same code as the others??" — the same
-               running head stands on the table's page; only its destination flips there, the title to the cover and
-               the square away, since the table is where the title otherwise leads. */
-            .pd-running-head .pd-to-cover { margin-inline-start: .6em; }
-            .pd-running-head .pd-to-cover-title { display: none; }
-            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-table { display: none; }
-            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover { display: none; }
-            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover-title { display: inline; }
+            /* ONE HEADER, EVERY PAGE, ITS TABLE-NESS AN ATTRIBUTE, Doug, 2026-11-16: "I notice that your table of
+               contents doesn't have the little square. Why isn't it the same thing as the others? Table of contents
+               can be an attribute to capture polymorphism." — the same running head stands on every page, the square
+               to the cover everywhere, the table's page included; only the title's destination flips, keyed here
+               alone on the open table and the title's own data-to attribute. */
+            .pd-running-head .pd-square { margin-inline-start: .6em; }
+            .pd-running-head .pd-book-title[data-to="cover"] { display: none; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-book-title[data-to="table"] { display: none; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-book-title[data-to="cover"] { display: inline; }
         `;
     }
 

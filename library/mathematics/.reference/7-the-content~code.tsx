@@ -1,4 +1,5 @@
 import { MouseEvent, ReactNode } from 'react';
+import katex from 'katex';
 import { marked } from 'marked';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Append, $Format, $Paragraph, $Section, $Word, html } from '@dna-platform/public';
@@ -93,7 +94,7 @@ export class $Content extends $Format {
         .pc-markdown th, .pc-markdown td { padding: .3em 1.2em .3em 0; text-align: start; vertical-align: top; }
         .pc-markdown th:last-child, .pc-markdown td:last-child { padding-inline-end: 0; }
         .pc-markdown thead th { font-weight: 400; }
-        .pc-markdown .pc-math, .pc-markdown .pc-math-block { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; }
+        .pc-markdown math { font-family: 'Cambria Math', 'STIX Two Math', math; font-size: 1.08em; }
         .pc-markdown .pc-math-block { margin-block: calc(${({ theme }) => theme.space} / 2); }
         .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.5em; margin-block: .9em; }
         .pc-markdown li { margin-block: .35em; }
@@ -140,12 +141,13 @@ export class $Progress extends $Project {
 // citation language — numbered sections, dotted parts, the labels K, C and O, bracketed references — so the
 // renderer learns that language rather than the document changing. Definitions receive ids; every mention
 // becomes a link to its definition, across the project's documents, since both render on one page.
-// LATEX IN EQUATION FORM, Doug, 2026-11-16: "we need latex in the specification either rendered or in latex
-// equation form" — the specification is the source pane, so math stands as typed, $...$ and $$...$$ verbatim;
-// the extension tokenizes math before markdown's emphasis can eat the underscores inside it. Rendered
-// typesetting is the writing side's form and waits on KaTeX, a package dependency that needs his yes.
-const literal = (passage: string): string =>
-    passage.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// EQUATIONS IN SPECIFICATIONS, Doug, 2026-11-16: "we need latex in the specification either rendered or in
+// latex equation form", then "We need to see equations in specifications" — rendered, in a comparable font.
+// The extension tokenizes $...$ and $$...$$ before markdown's emphasis can eat the underscores inside them,
+// and KaTeX typesets at bind time into MathML, which the browser renders natively in its math face — no
+// stylesheet, no font files shipped. The katex dependency entered the package on his word, beside marked.
+const typeset = (passage: string, display: boolean): string =>
+    katex.renderToString(passage, { output: 'mathml', throwOnError: false, displayMode: display });
 
 marked.use({
     extensions: [
@@ -158,7 +160,7 @@ marked.use({
                 if (match !== null) return { type: 'mathBlock', raw: match[0], text: match[1] };
                 return undefined;
             },
-            renderer(token: { text: string }) { return `<div class="pc-math-block">$$${literal(token.text)}$$</div>`; },
+            renderer(token: { text: string }) { return `<div class="pc-math-block">${typeset(token.text, true)}</div>`; },
         },
         {
             name: 'mathInline',
@@ -169,7 +171,7 @@ marked.use({
                 if (match !== null) return { type: 'mathInline', raw: match[0], text: match[1] };
                 return undefined;
             },
-            renderer(token: { text: string }) { return `<span class="pc-math">$${literal(token.text)}$</span>`; },
+            renderer(token: { text: string }) { return `<span class="pc-math">${typeset(token.text, false)}</span>`; },
         },
     ],
 });
