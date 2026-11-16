@@ -96,7 +96,9 @@ export class $LibraryTheme extends $Theme {
 
     protected levels(): RuleSet {
         return css`
-            .pd-book { margin-block: calc(${({ theme }) => theme.space} / 2) ${({ theme }) => theme.space}; counter-reset: chapter equation; }
+            /* THE UPPER MARGIN STANDS EVERYWHERE, Doug, 2026-11-17: "No upper margin. That should be put back
+               everywhere" — every page breathes above its first line. */
+            .pd-book { margin-block: calc(2 * ${({ theme }) => theme.space}) ${({ theme }) => theme.space}; counter-reset: chapter equation; }
             .pd-chapter { margin-block: ${({ theme }) => theme.space}; scroll-margin-block-start: ${({ theme }) => theme.space}; }
             .pa-page.pa-open { margin-block-start: calc(${({ theme }) => theme.space} / 2); }
             /* NO LINE BREAKS, Doug, 2026-11-16: "No line break", then "Still breaks EVERYWHERE!!!" — a section
@@ -160,6 +162,8 @@ export class $LibraryTheme extends $Theme {
             .pd-table-title a { text-decoration: none; color: inherit; }
             .pd-table-title a:hover { text-decoration: underline; text-underline-offset: .15em; }
             .pa-table-of-contents .pd-section { border-block-start: none; padding-block-start: 0; margin-block: ${({ theme }) => theme.space}; }
+            .pa-table-of-contents { display: flex; flex-direction: column; }
+            .pa-table-of-contents .pd-table-title { order: -1; }
             .pd-byline {
                 display: flex;
                 flex-wrap: wrap;
