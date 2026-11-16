@@ -80,7 +80,11 @@ export default () => (
             read off that statement.
         </Paragraph>
         <Paragraph>
-            The components stand beside this chapter as its code, rebuilt 16 November from my answers. The
+            The general family was lifted to the library level on 17 November — "we will need this everywhere
+            there is content with a project, which will be in a lot of places" — and stands in Our Reference
+            as <Means>$[[ The Content ]]( Our Reference / The Content )</Means>, this chapter's code
+            re-exporting it beside the mathematics dress, Theorem and Proof, so this manual and the textbook
+            keep their one door. The components stand beside this chapter as its code, rebuilt 16 November from my answers. The
             general ones: Content, the one unlabelled toggle at the title's right — a format said of its
             chapter, its note drawing the control in place and its style wrapping the chapter, so what is
             checked rules what shows, everything that is not the project being the deliverable — its

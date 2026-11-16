@@ -16,7 +16,8 @@ export default () => (
             test library, and rebuilt from here by sketches. And the rule for the manuals themselves: every subject
             carries one, with a part for the books of its subject tracking their idioms, the enforcing code standing
             with the chapter that states the idiom. And the form of a specification, chosen as the legal document,
-            each subject free to redress it in its own style.
+            each subject free to redress it in its own style; and the content, a front and a back for anything
+            with a project, lifted here because that will be a lot of places.
         </Paragraph>
     </Chapter>
 );

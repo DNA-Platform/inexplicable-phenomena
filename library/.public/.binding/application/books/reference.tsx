@@ -12,6 +12,7 @@ import DevelopingTheLibrary5 from '../../../../.reference/5-developing-the-libra
 import ThePaper6 from '../../../../.reference/6-the-paper';
 import TheReferenceManual7 from '../../../../.reference/7-the-reference-manual';
 import TheSpecification8 from '../../../../.reference/8-the-specification';
+import TheContent9 from '../../../../.reference/9-the-content';
 
 const Book = $($Book);
 
@@ -28,6 +29,7 @@ export const book = () => (
         {ThePaper6()}
         {TheReferenceManual7()}
         {TheSpecification8()}
+        {TheContent9()}
     </Book>
 );
 
