@@ -225,6 +225,26 @@ export class $Specification extends $Project {
     }
 }
 
+// ALL THE PARTS AT THE TOP, Doug, 2026-11-17, Sprint 130's fifteenth round: "We should have this definitely
+// in the library at the top - content with project and specification and all the other parts." The project's
+// named parts stand complete in the general family — Specification, Identification, Intuition, Progress, the
+// order of the work itself — each a section naming itself. The justification is deliberately NOT a section:
+// by the record's 4.2 and 7.3 it is the manner of the identifying, carried as annotations between the
+// identification and the specification, the computed coverage above its first sort.
+export class $Identification extends $Project {
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pc-identification');
+    }
+}
+
+export class $Intuition extends $Project {
+    protected override $Define(): void {
+        super.$Define();
+        this.classes.add(this, 'pc-intuition');
+    }
+}
+
 export class $Progress extends $Project {
     protected override $Define(): void {
         super.$Define();
@@ -566,6 +586,8 @@ export class $Interpolated extends $Word {
 export const Content = $($Content);
 export const Project = $($Project);
 export const Specification = $($Specification);
+export const Identification = $($Identification);
+export const Intuition = $($Intuition);
 export const Progress = $($Progress);
 export const Markdown = $($Markdown);
 export const Cite = $($Cite);

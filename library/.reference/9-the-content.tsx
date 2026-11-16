@@ -44,7 +44,7 @@ export default () => (
             <Heading>4. The components</Heading>
             <Paragraph>
                 <List />
-                <Line>4.1 Content, the format whose note is the toggle and whose style rules the sides. Project, the back's section; Specification and Progress, its named parts.</Line>
+                <Line>4.1 Content, the format whose note is the toggle and whose style rules the sides. Project, the back's section; Specification, Identification, Intuition and Progress, its named parts in the order of the work — the justification is not a section, riding as annotations between the identification and the specification.</Line>
                 <Line>4.2 Markdown, the document rendered verbatim and connected. Cite, the implementation's citation. Interpolated, the placeholder.</Line>
                 <Line>4.3 A subject specializes the deliverable's dress — mathematics adds Theorem and Proof beside its own manual chapter — and re-exports the family so its books keep one door.</Line>
             </Paragraph>
