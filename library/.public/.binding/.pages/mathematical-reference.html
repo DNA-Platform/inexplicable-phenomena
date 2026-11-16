@@ -35,8 +35,9 @@
     <span class="hljs-comment">// same passage laid at the column&#x27;s 640px: Georgia 17px on 27.2px stands 272px tall, and Cascadia Mono —</span>
     <span class="hljs-comment">// the face Windows draws for its own terminal — at 15.5px on a 1.35 line, the editor&#x27;s own default ratio,</span>
     <span class="hljs-comment">// stands 272px exactly; so the body is .91 of the book&#x27;s size on line-height 1.35. A one-size pane as an</span>
-    <span class="hljs-comment">// editor shows source: the title line # Title sets at body size. The mild highlight is the Light+ theme&#x27;s</span>
-    <span class="hljs-comment">// own markdown tokens: headings and their marks #800000, bold leads #000080, body the book&#x27;s ink.</span>
+    <span class="hljs-comment">// editor shows source: the title line # Title sets at body size. The mild highlight is eyedroppered from</span>
+    <span class="hljs-comment">// the screenshot of his own editor, &quot;We are talking about something like that&quot;: headings and their marks</span>
+    <span class="hljs-comment">// #0c4c84, the quoted italic #840484, bold leads #000080, body the book&#x27;s ink.</span>
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -51,12 +52,13 @@
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 52%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
         .pc-specification .pc-markdown { font-family: &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.91 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.35; }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: inherit; color: #800000; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: inherit; color: #0c4c84; }
         .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: inherit; }
         .pc-specification .pc-markdown strong { color: #000080; }
+        .pc-specification .pc-markdown em { color: #840484; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &amp;:has(#pc-flip:checked) .pd-title, &amp;:has(#pc-flip:checked) .pd-title * { font-family: &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.91 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.35; color: #800000; }
+        &amp;:has(#pc-flip:checked) .pd-title, &amp;:has(#pc-flip:checked) .pd-title * { font-family: &#x27;Cascadia Mono&#x27;, Consolas, &#x27;Courier New&#x27;, monospace; font-size: calc(.91 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.35; color: #0c4c84; }
         &amp;:has(#pc-flip:checked) .pd-title::before { content: &#x27;# &#x27;; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
         .pd-section.pc-project { margin-block: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 2) 0; }
         .pc-markdown h1 { display: none; }

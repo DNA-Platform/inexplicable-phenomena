@@ -12,12 +12,13 @@ var ee=Object.defineProperty;var h=(c,t)=>ee(c,"name",{value:t,configurable:!0})
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({theme:t})=>t.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({theme:t})=>t.ink} 52%, ${({theme:t})=>t.paper}); margin-block: 0 .5em; }
         .pc-specification .pc-markdown { font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.91 * ${({theme:t})=>t.size}); line-height: 1.35; }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: inherit; color: #800000; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: inherit; color: #0c4c84; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: inherit; }
         .pc-specification .pc-markdown strong { color: #000080; }
+        .pc-specification .pc-markdown em { color: #840484; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-inline: 1.6em; }
-        &:has(#pc-flip:checked) .pd-title, &:has(#pc-flip:checked) .pd-title * { font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.91 * ${({theme:t})=>t.size}); line-height: 1.35; color: #800000; }
+        &:has(#pc-flip:checked) .pd-title, &:has(#pc-flip:checked) .pd-title * { font-family: 'Cascadia Mono', Consolas, 'Courier New', monospace; font-size: calc(.91 * ${({theme:t})=>t.size}); line-height: 1.35; color: #0c4c84; }
         &:has(#pc-flip:checked) .pd-title::before { content: '# '; display: inline; margin: 0; font: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
         .pd-section.pc-project { margin-block: calc(${({theme:t})=>t.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
