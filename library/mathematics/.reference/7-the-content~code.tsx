@@ -46,7 +46,8 @@ export class $Content extends $Format {
         .pd-section.pc-project { border-block-start: none; padding-block-start: 0; margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
-        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1.15 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.5em .45em; }
+        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1.15 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.1em .35em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
+        .pc-doc-statement-of-work > h2:first-of-type { display: none; }
         .pc-markdown p { margin-block: .9em; }
         .pc-markdown strong { font-weight: bold; }
         .pc-markdown table { width: 100%; border-collapse: separate; border-spacing: 0; margin-block: 1.2em; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 14%, ${({ theme }) => theme.paper}); border-radius: 8px; overflow: hidden; }
@@ -91,7 +92,7 @@ export class $Markdown extends $Paragraph {
         const append = this.append;
         if (append === undefined) return null;
         const rendered = marked.parse(html.copy(append.text), { async: false });
-        return <div dangerouslySetInnerHTML={{ __html: rendered }} />;
+        return <div className={`pc-doc-${this.$identifier}`} dangerouslySetInnerHTML={{ __html: rendered }} />;
     }
 
     protected override $Define(): void {

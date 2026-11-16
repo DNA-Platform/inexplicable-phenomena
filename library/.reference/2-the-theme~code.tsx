@@ -146,10 +146,15 @@ export class $LibraryTheme extends $Theme {
                 font-size: calc(0.7 * ${({ theme }) => theme.size});
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
-                margin-block: 0;
+                margin-block: 0 calc(${({ theme }) => theme.space} / 2);
                 padding-block-end: calc(${({ theme }) => theme.space} / 4);
-                border-block-end: 1px solid ${({ theme }) => theme.ink};
+                border-block-end: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 30%, ${({ theme }) => theme.paper});
             }
+            .pd-running-head a { text-decoration: none; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
+            .pd-running-head a:hover { color: ${({ theme }) => theme.ink}; }
+            .pd-running-head .pd-to-cover { display: none; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-table { display: none; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover { display: inline; }
             .pd-byline {
                 display: flex;
                 flex-wrap: wrap;

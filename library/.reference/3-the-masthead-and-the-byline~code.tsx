@@ -8,21 +8,29 @@ export class $RunningHead extends $Paragraph {
         this.classes.add(this, 'pd-running-head');
     }
 
+    // THE MINIMAL HEADING, Doug, 2026-11-16: "a minimal heading, at least with the book title and if you click it
+    // it should go to the table of contents except the version on the table and that one takes you to the cover" —
+    // just the book's title, both destinations bound, the theme showing the one the open page calls for.
     override write(): ReactNode {
         const book = this.book;
         if (book === undefined) return null;
         const table = book.table?.canonical;
-        const top = book.subject?.means?.identifier === book.title?.means?.identifier;
-        const Means = $(means);
         const Word = $(word);
         const Reference = $(reference);
         return (
             <>
-                {top ? null : <><Means>$[[ Inexplicable Phenomena ]]</Means> / </>}
-                <Word>{book.title?.name}</Word>: <Word>
-                    <Reference>{table?.means?.identifier}</Reference>
-                    {table?.name}
-                </Word>
+                <span className="pd-to-table">
+                    <Word>
+                        <Reference>{table?.means?.identifier}</Reference>
+                        {book.title?.name}
+                    </Word>
+                </span>
+                <span className="pd-to-cover">
+                    <Word>
+                        <Reference>{book.means?.identifier}</Reference>
+                        {book.title?.name}
+                    </Word>
+                </span>
             </>
         );
     }
