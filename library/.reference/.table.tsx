@@ -17,7 +17,7 @@ export default () => (
                 <Content>$[[ ./The Theme ]]</Content>
             </Paragraph>
             <Paragraph>
-                <Content>$[[ ./The Masthead and the Byline ]]</Content>
+                <Content>$[[ ./The Running Head and the Byline ]]</Content>
             </Paragraph>
             <Paragraph>
                 <Content>$[[ ./The Faces ]]</Content>

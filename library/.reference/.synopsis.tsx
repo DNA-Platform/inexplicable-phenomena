@@ -11,7 +11,7 @@ export default () => (
         </Title>
         <Paragraph>
             The least a library needs to bind: the book every other book here extends, the theme it registers, the
-            masthead and the byline it draws from a cover, and the faces a cover, a synopsis and a table wear. Each
+            running head and the byline it draws from a cover, and the faces a cover, a synopsis and a table wear. Each
             chapter says what the tool is and the file beside it is the tool. Borrowed, to begin, from the binder's own
             test library, and rebuilt from here by sketches. And the rule for the manuals themselves: every subject
             carries one, with a part for the books of its subject tracking their idioms, the enforcing code standing

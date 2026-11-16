@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
 import { $Book, $Chapter, $Cover, $TableOfContents, Paginated, Theme } from '@dna-platform/public';
 import { LibraryTheme } from './2-the-theme~code.tsx';
-import { RunningHead as runningHead } from './3-the-masthead-and-the-byline~code.tsx';
+import { RunningHead as runningHead } from './3-the-running-head-and-the-byline~code.tsx';
 import { $Navigation, Front as front, Navigated as navigated } from './4-the-faces~code.tsx';
 
 // THE HEADING IS MINIMAL AND THE BYLINE IS NOT DRAWN, Doug, 2026-11-16: first "Why does every chapter need a
