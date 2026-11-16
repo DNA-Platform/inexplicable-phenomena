@@ -43,7 +43,7 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation):not(.pc-introduction) { display: none; }
         .pc-project .pd-heading { display: none; }
         .pc-project:first-of-type .pc-markdown h2:first-of-type { display: none; }
-        .pd-section.pc-project { border-block-start: none; padding-block-start: 0; margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
+        .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
         .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1.15 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.1em .35em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
@@ -101,17 +101,6 @@ export class $Markdown extends $Paragraph {
     }
 }
 
-// THE INTRODUCTION IS THE PROJECT SIDE'S ONE CUE, Doug, 2026-11-16: "The dark line is losing the minimal...
-// Perhaps it might have a short introduction, so subtle UX cue that is better than the one you have, and after
-// the intro, then it might have specification. That is the key word!!" — a short paragraph shown only when the
-// content is flipped, quiet and italic; the dark rule is struck.
-export class $Introduction extends $Paragraph {
-    protected override $Define(): void {
-        super.$Define();
-        this.classes.add(this, 'pc-introduction');
-    }
-}
-
 // THE INTERPOLATED PART, Doug, 2026-11-16: "interpolated string-like parts that might describe where something
 // will go when we find it" — a word standing for the thing itself until the thing is found, by the interpolation
 // rule of the textbook's specification, 2.7.
@@ -141,7 +130,6 @@ export class $Proof extends $Paragraph {
 
 export const Content = $($Content);
 export const Project = $($Project);
-export const Introduction = $($Introduction);
 export const Markdown = $($Markdown);
 export const Interpolated = $($Interpolated);
 export const Theorem = $($Theorem);

@@ -164,16 +164,6 @@ export class $LibraryTheme extends $Theme {
             .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-table { display: none; }
             .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover { display: none; }
             .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover-title { display: inline; }
-            .pd-byline {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: baseline;
-                column-gap: .5em;
-                row-gap: 0;
-                margin-block: calc(${({ theme }) => theme.space} / 4) 0;
-                font-size: calc(0.75 * ${({ theme }) => theme.size});
-            }
-            .pd-byline .pd-label + .pd-word { margin-inline-end: calc(${({ theme }) => theme.space} / 2); }
         `;
     }
 

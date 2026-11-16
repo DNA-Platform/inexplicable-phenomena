@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Paragraph, $Word, Means as means, Reference as reference, Word as word } from '@dna-platform/public';
+import { $Paragraph, $Word, Reference as reference, Word as word } from '@dna-platform/public';
 
 export class $RunningHead extends $Paragraph {
     protected override $Define(): void {
