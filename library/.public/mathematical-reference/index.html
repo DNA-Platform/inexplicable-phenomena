@@ -6,7 +6,7 @@
     <title>Inexplicable Phenomena</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E" />
     <script type="importmap">{"imports":{"@dna-platform/chemistry":"/inexplicable-phenomena/assets/shared/at-dna-platform-chemistry-DA5qn-Y5.js","@dna-platform/public":"/inexplicable-phenomena/assets/shared/at-dna-platform-public-Bk490Zag.js","marked":"/inexplicable-phenomena/assets/shared/marked-BsF3At43.js","react":"/inexplicable-phenomena/assets/shared/react-DCSQQElp.js","react-dom/client":"/inexplicable-phenomena/assets/shared/react-dom-client-DNbMwQ3v.js","react/jsx-runtime":"/inexplicable-phenomena/assets/shared/react-jsx-runtime-GMpOKiQA.js","styled-components":"/inexplicable-phenomena/assets/shared/styled-components-DFsnoGyb.js"}}</script>
-    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-jZmmDPYz.js"></script>
+    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-qPVMPvIF.js"></script>
     <link rel="stylesheet" crossorigin href="/inexplicable-phenomena/assets/index-CP4cPyka.css">
   <link rel="stylesheet" href="/inexplicable-phenomena/sheets/4d4548eaa9ff.css" />
   <script>(function(){var k=[];function on(e){var r=document.getElementById('root');if(!r||!r.contains(e.target)||e.__replayed)return;k.push({t:e.target,type:e.type});}document.addEventListener('click',on,true);window.__replayKept=function(){document.removeEventListener('click',on,true);var q=k;k=[];q.forEach(function(one){if(!document.contains(one.t))return;var ev=new MouseEvent(one.type,{bubbles:true,cancelable:true});ev.__replayed=true;one.t.dispatchEvent(ev);});};})();</script>
@@ -102,7 +102,11 @@
     <span class="hljs-comment">// leads and body in the book&#x27;s own ink at regular weight, and colors only the # and ## marks in the</span>
     <span class="hljs-comment">// theme&#x27;s link — the color the citations already wear on both sides. His harmony rule finished it: the</span>
     <span class="hljs-comment">// italics too stay in the ink, italic their only voice; the one foreign magenta went with the blues.</span>
-    <span class="hljs-comment">// One palette across the two faces; the markdown-ness is the face and the marks.</span>
+    <span class="hljs-comment">// One palette across the two faces; the markdown-ness is the face and the marks. THE TRANSITION&#x27;S</span>
+    <span class="hljs-comment">// STRETCH, measured on his &quot;Still a stretchiness to the transition&quot;: the title&#x27;s width was innocent</span>
+    <span class="hljs-comment">// (Georgia bold 372px, Consolas regular 364px); the elastic was vertical — the spec&#x27;s paragraph gaps ran</span>
+    <span class="hljs-comment">// 13px against the serif&#x27;s 20px and the opening text dropped 41px below the label — so the spec&#x27;s</span>
+    <span class="hljs-comment">// paragraphs take the theme&#x27;s own space and the first tucks to a quarter-space under SPECIFICATION.</span>
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -116,10 +120,12 @@
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-paragraph:not(.pd-navigation) { display: none; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 52%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-size: calc(.85 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.55; }
+        .pc-specification .pc-markdown { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-size: calc(.85 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.55; margin-block-start: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 4); }
         .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> 0; font-weight: normal; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
+        .pc-specification .pc-markdown p { margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span>; }
+        .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 4); }
         &amp;:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-weight: normal; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         &amp;:has(#pc-flip:checked) .pd-title::before { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         &amp;:has(#pc-flip:checked) .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }

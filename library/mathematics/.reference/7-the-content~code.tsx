@@ -45,7 +45,11 @@ export class $Content extends $Format {
     // leads and body in the book's own ink at regular weight, and colors only the # and ## marks in the
     // theme's link — the color the citations already wear on both sides. His harmony rule finished it: the
     // italics too stay in the ink, italic their only voice; the one foreign magenta went with the blues.
-    // One palette across the two faces; the markdown-ness is the face and the marks.
+    // One palette across the two faces; the markdown-ness is the face and the marks. THE TRANSITION'S
+    // STRETCH, measured on his "Still a stretchiness to the transition": the title's width was innocent
+    // (Georgia bold 372px, Consolas regular 364px); the elastic was vertical — the spec's paragraph gaps ran
+    // 13px against the serif's 20px and the opening text dropped 41px below the label — so the spec's
+    // paragraphs take the theme's own space and the first tucks to a quarter-space under SPECIFICATION.
     override style = selection.div`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -59,10 +63,12 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 52%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.85 * ${({ theme }) => theme.size}); line-height: 1.55; }
+        .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.85 * ${({ theme }) => theme.size}); line-height: 1.55; margin-block-start: calc(${({ theme }) => theme.space} / 4); }
         .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: normal; color: ${({ theme }) => theme.ink}; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: ${({ theme }) => theme.link}; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
+        .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
+        .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
         &:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-weight: normal; color: ${({ theme }) => theme.ink}; }
         &:has(#pc-flip:checked) .pd-title::before { font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
         &:has(#pc-flip:checked) .pd-title::after { content: '# '; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: ${({ theme }) => theme.link}; }

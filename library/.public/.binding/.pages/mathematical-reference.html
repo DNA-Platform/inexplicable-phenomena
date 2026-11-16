@@ -45,7 +45,11 @@
     <span class="hljs-comment">// leads and body in the book&#x27;s own ink at regular weight, and colors only the # and ## marks in the</span>
     <span class="hljs-comment">// theme&#x27;s link — the color the citations already wear on both sides. His harmony rule finished it: the</span>
     <span class="hljs-comment">// italics too stay in the ink, italic their only voice; the one foreign magenta went with the blues.</span>
-    <span class="hljs-comment">// One palette across the two faces; the markdown-ness is the face and the marks.</span>
+    <span class="hljs-comment">// One palette across the two faces; the markdown-ness is the face and the marks. THE TRANSITION&#x27;S</span>
+    <span class="hljs-comment">// STRETCH, measured on his &quot;Still a stretchiness to the transition&quot;: the title&#x27;s width was innocent</span>
+    <span class="hljs-comment">// (Georgia bold 372px, Consolas regular 364px); the elastic was vertical — the spec&#x27;s paragraph gaps ran</span>
+    <span class="hljs-comment">// 13px against the serif&#x27;s 20px and the opening text dropped 41px below the label — so the spec&#x27;s</span>
+    <span class="hljs-comment">// paragraphs take the theme&#x27;s own space and the first tucks to a quarter-space under SPECIFICATION.</span>
     <span class="hljs-keyword">override</span> style = selection.<span class="hljs-property">div</span><span class="hljs-string">`
         counter-reset: theorem;
         .pd-chapter { position: relative; }
@@ -59,10 +63,12 @@
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-paragraph:not(.pd-navigation) { display: none; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.78 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 52%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-size: calc(.85 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.55; }
+        .pc-specification .pc-markdown { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-size: calc(.85 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: 1.55; margin-block-start: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 4); }
         .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> 0; font-weight: normal; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
+        .pc-specification .pc-markdown p { margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span>; }
+        .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 4); }
         &amp;:has(#pc-flip:checked) .pd-title { position: relative; font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-weight: normal; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         &amp;:has(#pc-flip:checked) .pd-title::before { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         &amp;:has(#pc-flip:checked) .pd-title::after { content: &#x27;# &#x27;; position: absolute; inset-inline-start: -2ch; inset-block-end: 0; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
