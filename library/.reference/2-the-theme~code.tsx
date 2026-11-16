@@ -156,14 +156,14 @@ export class $LibraryTheme extends $Theme {
             }
             .pd-running-head a { text-decoration: none; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
             .pd-running-head a:hover { color: ${({ theme }) => theme.ink}; }
+            /* ONE HEADER, EVERY PAGE, Doug, 2026-11-17: "Can it not have the same code as the others??" — the same
+               running head stands on the table's page; only its destination flips there, the title to the cover and
+               the square away, since the table is where the title otherwise leads. */
             .pd-running-head .pd-to-cover { margin-inline-start: .6em; }
-            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head { display: none; }
-            .pd-table-title { font-size: calc(1.5 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 0 ${({ theme }) => theme.space}; }
-            .pd-table-title a { text-decoration: none; color: inherit; }
-            .pd-table-title a:hover { text-decoration: underline; text-underline-offset: .15em; }
-            .pa-table-of-contents .pd-section { border-block-start: none; padding-block-start: 0; margin-block: ${({ theme }) => theme.space}; }
-            .pa-table-of-contents { display: flex; flex-direction: column; }
-            .pa-table-of-contents .pd-table-title { order: -1; }
+            .pd-running-head .pd-to-cover-title { display: none; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-table { display: none; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover { display: none; }
+            .pd-book:has(.pa-table-of-contents.pa-open) .pd-running-head .pd-to-cover-title { display: inline; }
             .pd-byline {
                 display: flex;
                 flex-wrap: wrap;
