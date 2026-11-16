@@ -7,7 +7,7 @@
     },
     {
       "folder": ".reference",
-      "digest": "0922fca0c1ece9ad",
+      "digest": "925cb4c789be9834",
       "walked": 190
     },
     {
@@ -17,8 +17,8 @@
     },
     {
       "folder": ".subject/.design",
-      "digest": "806964b980e0568e",
-      "walked": 63
+      "digest": "311c55467b4dd27e",
+      "walked": 110
     },
     {
       "folder": ".subject/dictionary",
@@ -47,7 +47,7 @@
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "82b2e7205b3c3988",
+      "digest": "f784c1b923a82efd",
       "walked": 150
     },
     {
@@ -77,7 +77,7 @@
     },
     {
       "folder": "mathematics/arithmetic/.textbook",
-      "digest": "81d91d83f5ee53e0",
+      "digest": "071bc4eb019c9131",
       "walked": 211
     },
     {

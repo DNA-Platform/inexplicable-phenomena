@@ -2,7 +2,7 @@
 <html lang="en" class=""><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Reference, sketch 001</title>
+    <title>Our Reference, the listing</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E">
     
     
@@ -1158,52 +1158,52 @@ body.sk-full .sk-editor.sk-front .sk-pane { max-height: none; }
 .sk-flip { position: absolute; right: 0; width: .9em; height: .9em; box-sizing: border-box; border: 1.5px solid color-mix(in srgb, #1b1b1b 65%, #fff); background: none; padding: 0; cursor: pointer; }
 .sk-flip:hover { border-color: #1b1b1b; }
 .pd-chapter.sk-back .sk-flip { border-width: 3px; }
-body:not([data-form="b"]) .sk-flip { display: none; }
+body:not([data-form="back"]) .sk-flip { display: none; }
 
-/* b, the back: the words are the front, the file the back, the title turning into its literal */
-body[data-form="b"] .sk-editor { display: none; }
-body[data-form="b"] .pd-chapter.sk-back .sk-editor { display: grid; }
-body[data-form="b"] .pd-chapter.sk-back > .pd-section { display: none; }
-body[data-form="b"] .pd-chapter.sk-back .pd-title { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; }
-body[data-form="b"] .pd-chapter.sk-back .sk-pane { max-height: calc(100vh - 13rem); }
+/* the back: the words are the front, the file the back, the title turning into its literal */
+body[data-form="back"] .sk-editor { display: none; }
+body[data-form="back"] .pd-chapter.sk-back .sk-editor { display: grid; }
+body[data-form="back"] .pd-chapter.sk-back > .pd-section { display: none; }
+body[data-form="back"] .pd-chapter.sk-back .pd-title { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; }
+body[data-form="back"] .pd-chapter.sk-back .sk-pane { max-height: calc(100vh - 13rem); }
 
-/* c, the spread: his container on this paper, the words at the left and the editor beside them to the window's edge */
-body[data-form="c"] .sk-sheet { max-width: none; display: grid; grid-template-columns: minmax(0, 40rem) minmax(0, 1fr); column-gap: 1.5rem; margin-inline: 0; padding-inline-end: 0; padding-block: 0; }
-body[data-form="c"] .sk-sheet > .pd-book { padding-block: 1.25rem; }
-body[data-form="c"] .sk-aside { position: sticky; top: 0; align-self: start; height: 100vh; display: grid; }
-body[data-form="c"] .sk-aside .sk-editor { margin: 0; height: 100vh; box-shadow: -10px 0 18px -16px rgba(43, 54, 60, .5); }
-body[data-form="c"] .sk-aside .sk-pane { max-height: none; }
+/* the spread: his container on this paper, the words at the left and the editor beside them to the window's edge */
+body[data-form="spread"] .sk-sheet { max-width: none; display: grid; grid-template-columns: minmax(0, 40rem) minmax(0, 1fr); column-gap: 1.5rem; margin-inline: 0; padding-inline-end: 0; padding-block: 0; }
+body[data-form="spread"] .sk-sheet > .pd-book { padding-block: 1.25rem; }
+body[data-form="spread"] .sk-aside { position: sticky; top: 0; align-self: start; height: 100vh; display: grid; }
+body[data-form="spread"] .sk-aside .sk-editor { margin: 0; height: 100vh; box-shadow: -10px 0 18px -16px rgba(43, 54, 60, .5); }
+body[data-form="spread"] .sk-aside .sk-pane { max-height: none; }
 
-/* t, the appendix at the foot of the table in a smaller voice; u, each file under its chapter's row */
+/* the foot, the appendix at the foot of the table in a smaller voice; under, each file under its chapter's row */
 .sk-appendix { display: none; }
-body[data-form="t"] .sk-appendix { display: block; margin-block-start: 2.5rem; padding-block-start: 1rem; border-block-start: 1px solid rgba(27, 27, 27, .15); font-size: .86em; opacity: .82; }
+body[data-form="foot"] .sk-appendix { display: block; margin-block-start: 2.5rem; padding-block-start: 1rem; border-block-start: 1px solid rgba(27, 27, 27, .15); font-size: .86em; opacity: .82; }
 .sk-appendix .pd-heading { font-weight: bold; margin-block: 0 .6rem; }
 .sk-appendix .pd-paragraph { display: flex; justify-content: space-between; gap: 1rem; margin-block: .3rem; }
 .sk-appendix a { text-decoration: none; color: inherit; }
 .sk-file { font: 400 12px 'JetBrains Mono', ui-monospace, monospace; color: rgba(27, 27, 27, .6); }
 .sk-press { display: none; }
-body[data-form="u"] .sk-press { display: flex; align-items: center; gap: .4rem; margin: -.7rem 0 .7rem 1.4rem; font: 400 12px 'JetBrains Mono', ui-monospace, monospace; color: rgba(27, 27, 27, .6); text-decoration: none; }
+body[data-form="under"] .sk-press { display: flex; align-items: center; gap: .4rem; margin: -.7rem 0 .7rem 1.4rem; font: 400 12px 'JetBrains Mono', ui-monospace, monospace; color: rgba(27, 27, 27, .6); text-decoration: none; }
 .sk-press .sk-mark { color: #9aa4b3; }
 
 @media (max-width: 640px) {
-    body[data-form="c"] .sk-sheet { display: block; padding-inline: 1.25rem; }
-    body[data-form="c"] .sk-aside { position: static; height: auto; }
-    body[data-form="c"] .sk-aside .sk-editor { height: auto; }
+    body[data-form="spread"] .sk-sheet { display: block; padding-inline: 1.25rem; }
+    body[data-form="spread"] .sk-aside { position: static; height: auto; }
+    body[data-form="spread"] .sk-aside .sk-editor { height: auto; }
     .sk-pane { max-height: 60vh; }
     .sk-bar { flex-wrap: wrap; }
 }
 </style>
 <script>
-// The switch between the forms of sketch 001, remembered in the address's hash so a photograph can ask for one:
-// a, b and c open the chapter The Faces, t and u the table; "afull" asks for a's editor across the window, and
-// "bback" for b's chapter already flipped to its file, as a reader would see it a press later.
+// The switch between the forms of The Listing, remembered in the address's hash so a photograph can ask for one:
+// plate, back and spread open the chapter The Faces, foot and under the table; a state follows a dash — plate-light,
+// plate-full, back-front — as a reader would see it a press later.
 (() => {
     const files = {
         'the-book': [1, 'code.tsx'], 'the-theme': [2, 'code.tsx'], 'the-running-head-and-the-byline': [3, 'code.tsx'],
         'the-faces': [4, 'code.tsx'], 'developing-the-library': [5, 'workbench.mjs'], 'the-paper': [6, 'code.tsx'],
         'the-reference-manual': [7], 'the-specification': [8], 'the-content': [9, 'code.tsx'],
     };
-    const forms = { a: 'the plate', b: 'the back', c: 'the spread', t: 'the appendix', u: 'the files under their chapters' };
+    const forms = { plate: 'the plate', back: 'the back', spread: 'the spread', foot: 'the foot', under: 'under the chapters' };
     // The sheet is the theme's own container, the outermost under the root, which holds the measure.
     const sheet = document.getElementById('root').firstElementChild;
     sheet.classList.add('sk-sheet');
@@ -1281,14 +1281,13 @@ body[data-form="u"] .sk-press { display: flex; align-items: center; gap: .4rem; 
         chapter.classList.add('pa-open');
         window.scrollTo(0, 0);
     };
-    const toFile = chapter => { choose('b', 'back', chapter); };
+    const toFile = chapter => { choose('back', undefined, chapter); };
 
-    // t: the appendix at the foot of the table, every file of the book under the chapter it stands beside.
+    // foot: the appendix at the foot of the table, every file of the book under the chapter it stands beside.
     const appendix = document.createElement('div');
     appendix.className = 'pd-section sk-appendix';
     appendix.innerHTML = '<div class="pd-sentence pd-heading">Appendix</div>';
-    for (const [chapter, editor] of editors) {
-        void editor;
+    for (const chapter of editors.keys()) {
         const row = document.createElement('a');
         row.href = '#';
         row.className = 'pa-reference pd-container sk-row';
@@ -1298,7 +1297,7 @@ body[data-form="u"] .sk-press { display: flex; align-items: center; gap: .4rem; 
     }
     table.appendChild(appendix);
 
-    // u: each file as a press under its chapter's row in the contents, with the file's mark.
+    // under: each file as a press under its chapter's row in the contents, with the file's mark.
     for (const link of table.querySelectorAll('.pd-section a.pa-reference[href*="#"]')) {
         const id = link.getAttribute('href').split('#')[1];
         const chapter = chapters.find(one => one.querySelector('.pd-title')?.id === id);
@@ -1315,13 +1314,13 @@ body[data-form="u"] .sk-press { display: flex; align-items: center; gap: .4rem; 
     const bar = document.createElement('div');
     bar.className = 'sk-switches';
     const label = document.createElement('b');
-    label.textContent = 'manual';
+    label.textContent = 'the listing';
     bar.appendChild(label);
     const buttons = {};
     for (const [key, name] of Object.entries(forms)) {
         const button = document.createElement('button');
         button.type = 'button';
-        button.textContent = `${key} ${name}`;
+        button.textContent = name;
         button.addEventListener('click', () => choose(key));
         buttons[key] = button;
         bar.appendChild(button);
@@ -1334,33 +1333,32 @@ body[data-form="u"] .sk-press { display: flex; align-items: center; gap: .4rem; 
         document.body.classList.remove('sk-full');
         for (const [one, editor] of editors) {
             toggleBack(one, false);
-            editor.classList.remove('sk-front');
+            editor.classList.remove('sk-front', 'sk-light');
+            editor.querySelector('[data-option="light"]').setAttribute('aria-pressed', 'false');
             editor.querySelector('.sk-dock').textContent = 'full screen';
             if (aside !== undefined && editor.parentElement === aside) one.appendChild(editor);
         }
-        if (form === 'c') {
+        if (form === 'spread') {
             aside ??= document.createElement('div');
             aside.className = 'sk-aside';
             aside.appendChild(editors.get(chapter));
             sheet.appendChild(aside);
         } else aside?.remove();
         for (const [key, button] of Object.entries(buttons)) button.setAttribute('aria-pressed', String(key === form));
-        openPage(form === 't' || form === 'u' ? table : chapter);
+        openPage(form === 'foot' || form === 'under' ? table : chapter);
+        if (form === 'back' && state !== 'front') toggleBack(chapter, true);
         if (state === 'full') editors.get(chapter).querySelector('.sk-dock').click();
-        if (state === 'back') toggleBack(chapter, true);
         if (state === 'light') editors.get(chapter).querySelector('[data-option="light"]').click();
-        if (state === 'plate' || state === 'light') {
+        if (form === 'plate' && state !== 'top' && state !== 'full') {
             const top = editors.get(chapter).getBoundingClientRect().top + window.scrollY - 24;
             window.scrollTo(0, top);
         }
-        const hash = `#${form}${state ?? ''}`;
+        const hash = `#${form}${state === undefined ? '' : `-${state}`}`;
         if (location.hash !== hash) history.replaceState(null, '', hash);
     };
     const asked = () => {
-        const said = location.hash.slice(1);
-        const form = said.charAt(0);
-        const state = said.slice(1) || undefined;
-        choose(forms[form] ? form : 'a', state);
+        const [form, state] = location.hash.slice(1).split('-');
+        choose(forms[form] ? form : 'plate', state || undefined);
     };
     asked();
     window.addEventListener('hashchange', asked);

@@ -126,9 +126,9 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pc-project { display: block; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
-        .pc-project .pd-heading { display: block; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 52%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
+        .pc-project .pd-heading { display: block; font-size: calc(.8 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
         .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.9 * ${({ theme }) => theme.size}); line-height: calc(1.412 * ${({ theme }) => theme.size}); margin-block-start: calc(${({ theme }) => theme.space} / 4); }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: bold; color: ${({ theme }) => theme.ink}; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(.9 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: 600; color: ${({ theme }) => theme.ink}; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: ${({ theme }) => theme.link}; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
@@ -142,7 +142,7 @@ export class $Content extends $Format {
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
-        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1.15 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.1em .35em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
+        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1 * ${({ theme }) => theme.size}); font-weight: 600; margin-block: 1.1em .35em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
         .pc-markdown p { margin-block: .9em; }
         .pc-markdown strong { font-weight: bold; }
         .pc-markdown a { color: ${({ theme }) => theme.link}; text-decoration: none; }

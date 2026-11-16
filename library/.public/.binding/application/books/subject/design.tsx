@@ -6,6 +6,7 @@ import Synopsis from '../../../../../.subject/.design/.synopsis';
 import Table from '../../../../../.subject/.design/.table';
 import TheTopPage1 from '../../../../../.subject/.design/1-the-top-page';
 import TheManualsPage2 from '../../../../../.subject/.design/2-the-manuals-page';
+import TheProjectsPage3 from '../../../../../.subject/.design/3-the-projects-page';
 
 const Book = $($Book);
 
@@ -16,6 +17,7 @@ export const book = () => (
         {Table()}
         {TheTopPage1()}
         {TheManualsPage2()}
+        {TheProjectsPage3()}
     </Book>
 );
 

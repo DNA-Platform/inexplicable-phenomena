@@ -746,9 +746,9 @@ $(<span class="hljs-title class_">TheLibrary</span>, <span class="hljs-title cla
         &amp;:has(#pc-flip:checked) .pc-project { display: block; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-paragraph:not(.pd-navigation) { display: none; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-section:not(.pc-project) { display: none; }
-        .pc-project .pd-heading { display: block; font-size: calc(.78 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 52%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
+        .pc-project .pd-heading { display: block; font-size: calc(.8 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 70%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); margin-block: 0 .5em; }
         .pc-specification .pc-markdown { font-family: Consolas, &#x27;Cascadia Mono&#x27;, &#x27;Courier New&#x27;, monospace; font-size: calc(.9 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); line-height: calc(1.412 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block-start: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 4); }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> 0; font-weight: bold; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
+        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(.9 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> 0; font-weight: 600; color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
         .pc-specification .pc-markdown h2::before { content: &#x27;## &#x27;; color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; }
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: <span class="hljs-subst">${({ theme }) =&gt; theme.space}</span>; }
@@ -762,7 +762,7 @@ $(<span class="hljs-title class_">TheLibrary</span>, <span class="hljs-title cla
         .pd-section.pc-project { margin-block: calc(<span class="hljs-subst">${({ theme }) =&gt; theme.space}</span> / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
-        .pc-markdown h2 { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; font-size: calc(1.15 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: bold; margin-block: 1.1em .35em; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 76%, <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span> 24%); }
+        .pc-markdown h2 { font-family: <span class="hljs-subst">${({ theme }) =&gt; theme.font}</span>; font-size: calc(1 * <span class="hljs-subst">${({ theme }) =&gt; theme.size}</span>); font-weight: 600; margin-block: 1.1em .35em; color: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 76%, <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span> 24%); }
         .pc-markdown p { margin-block: .9em; }
         .pc-markdown strong { font-weight: bold; }
         .pc-markdown a { color: <span class="hljs-subst">${({ theme }) =&gt; theme.link}</span>; text-decoration: none; }
