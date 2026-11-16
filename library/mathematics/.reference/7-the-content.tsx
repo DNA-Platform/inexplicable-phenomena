@@ -17,7 +17,8 @@ export default () => (
             of specifying anything a book holds — tested on the math textbook, with components for math
             textbooks specializing it where more structure is needed, and appendix chapters open to the
             textbook itself. The statement of work it shows on its back takes the form
-            of <Means>$[[ ./The Specification ]]</Means>.
+            of <Means>$[[ ./The Specification ]]</Means>; the library's chosen form — the legal document —
+            stands in <Means>$[[ Subjective Reference ]]( Our Reference )</Means>.
         </Paragraph>
         <Paragraph>
             The object model, said back to me from my words of 15 and 16 November 2026, amendable in place as
@@ -32,6 +33,7 @@ export default () => (
             <Line>1.4 It shows one side at a time and toggles back and forth — one unlabelled control to the right of the title, explored rather than read; a reference works across sides where possible.</Line>
             <Line>1.5 It opens on the deliverable; which side is canonical is overridable; and a book says in one word that it defaults to showing one.</Line>
             <Line>1.6 It is a way of specifying anything written in any book; the math textbook is its test, and math-textbook components specialize it where more structure is needed.</Line>
+            <Line>1.7 The back names itself: [Project] stands beside the title while the project side shows.</Line>
         </Paragraph>
         <Paragraph>
             <List />
@@ -42,6 +44,7 @@ export default () => (
             <Line>2.4 A plan may be expressed there, teammates assigned — all to the author by default, read from the cover if unspecified.</Line>
             <Line>2.5 A discussion may stand there — the talk behind the page.</Line>
             <Line>2.6 The parts beyond the specification are optional — nothing is mandatory; the project makes sense with what it has, and today it holds exactly its two documents.</Line>
+            <Line>2.7 The project's documents are highly connected: the renderer speaks the specification's own citation language — numbered sections, dotted clauses, the labels, bracketed references — and every mention is a link to its definition, across the documents.</Line>
         </Paragraph>
         <Paragraph>
             <List />
@@ -65,6 +68,8 @@ export default () => (
             <Line>5. The components</Line>
             <Line>5.1 Components divide in two families: those that express things about the project — the subject of the project — and those that present the deliverable of the project, the object.</Line>
             <Line>5.2 In the math textbook the deliverable's components are the familiar ones, the theorem and the proof with the interpolated part among them; the project's are the formal ones, the statement of work's form first.</Line>
+            <Line>5.3 The project's named parts are components: the specification and the progress, each a section naming itself, the specification dissolving its first heading into the paragraph that introduces it.</Line>
+            <Line>5.4 The specification is the legal document — the thing agreed between buyer and seller, identifying the deliverable uniquely — and its first paragraph is its preamble, set off by its margins; the deliverable is no contract, just the familiar chapter. Its citations are live — a citation in the implementation flips the content to the project side and lands on the part it names, the relationship between the specification and the implementation.</Line>
         </Paragraph>
         <Paragraph>
             The first case already stands: <Means>$[[ The Symmetry of Arithmetic ]]( Arithmetic Textbook / The Symmetry of Arithmetic )</Means>,
@@ -80,9 +85,12 @@ export default () => (
             checked rules what shows, everything that is not the project being the deliverable — its
             canonical side a field a use overrides; and Project, the back's section, carrying the formal
             dress.
-            The deliverable's family: Theorem, counted within the chapter; Proof, labelled; and Interpolated,
-            the word that stands for a thing until the thing is found. The sides of the first play —
-            Identification, Specification, Progress — are withdrawn with the four-mode bar.
+            The project's named parts: Specification and Progress, returned from the first play as sections
+            rather than sides; Markdown, the document rendered verbatim and connected, its citation language
+            made live. The deliverable's family: Theorem, counted within the chapter; Proof, labelled;
+            Interpolated, the word that stands for a thing until the thing is found; and Cite, the
+            implementation's citation, which flips to the project side and lands on the part named. The name
+            Specification shares its word with a package utility, noted beside Content's collision.
         </Paragraph>
         <Code
             identifier="code"

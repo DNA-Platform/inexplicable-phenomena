@@ -8,7 +8,10 @@ export default () => (
             The specification of a specification, which I ruled on 12 November 2026, written in its own form.
             For right now a synopsis is a title for the specification with a numbered list of lists, and in a
             book's synopsis we write the specification of what the book is supposed to be; the first
-            is <Means>$[[ The Textbook of Arithmetic ]]( Arithmetic Textbook )</Means>'s.
+            is <Means>$[[ The Textbook of Arithmetic ]]( Arithmetic Textbook )</Means>'s. The library's chosen
+            format — the legal document, its parts and its relationship to the implementation — stands
+            in <Means>$[[ Subjective Reference ]]( Our Reference )</Means>, and this chapter is mathematics'
+            redress of it.
         </Paragraph>
         <Paragraph>
             <List />
