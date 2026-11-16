@@ -96,6 +96,17 @@ h1 .hash { color: var(--teal); }
     opacity: .8;
     margin: 0 0 var(--space);
 }
+.part-head .sec-toggle {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgb(107, 107, 107);
+    background: #fff;
+    margin: 0 0 0 14px;
+    cursor: pointer;
+    vertical-align: -1px;
+}
+.part-head .sec-toggle:checked { border-width: 3px; }
 
 a.cite { color: var(--teal); text-decoration: none; }
 body:not(:has(#l-refs:checked)) a.cite { color: inherit; pointer-events: none; }
@@ -127,7 +138,7 @@ body:not(:has(#l-refs:checked)) a.cite { color: inherit; pointer-events: none; }
     text-indent: 0;
     display: none;
 }
-body:has(#l-just:checked) .anno { display: block; }
+.part:has(.sec-toggle:checked) .anno { display: block; }
 .anno .tag {
     font-size: 10.5px;
     letter-spacing: 1.4px;
@@ -139,7 +150,7 @@ body:has(#l-just:checked) .anno { display: block; }
 
 .statement { position: relative; margin-block: var(--space); }
 .statement strong { font-style: normal; }
-body:has(#l-just:checked) .statement.justified {
+#identification:has(.sec-toggle:checked) .statement.justified {
     border-left: 2px solid rgba(31, 78, 121, .28);
     padding-left: 16px;
     margin-left: -18px;
@@ -186,12 +197,14 @@ body.focused .clause .anno { display: none !important; }
 body.focused .clause.fkeep + .clause.fkeep { margin-top: 16px; }
 body.focused .statement.fkeep { border-left: none; padding-left: 0; margin-left: 0; }
 body.focused .statement.fkeep:has(.anno) { display: flex !important; flex-direction: column; }
-body.focused .statement.fkeep .anno { display: block; position: static; width: auto; order: -1; font-size: 14.5px; line-height: 22px; margin: 32px 0; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); }
+body.focused .statement.fkeep .anno { display: block !important; position: static; width: auto; order: -1; font-size: 14.5px; line-height: 22px; margin: 32px 0; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); }
+body.focused .statement.fkeep .anno ~ .anno { display: none !important; }
 body.focused .statement.fkeep .anno .why { opacity: .85; }
 body.focused.focus-edge #intuition { display: flex !important; flex-direction: column; }
 body.focused.focus-edge #p-1 { order: 1; }
 body.focused.focus-edge #p-4 { order: 2; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); margin-block: 32px; }
 body.focused.focus-edge #p-2 { order: 3; }
+body.focused.focus-edge .statement .anno { display: none !important; }
 body:has(#f-b:checked) .clause { padding-left: 0; text-indent: 0; }
 body:has(#f-b:checked) .clause + .clause { margin-top: 10px; }
 body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
@@ -222,7 +235,7 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
     <span class="cluster">
         <label for="f-a">Registers</label>
         <label for="f-b">Integrated</label>
-        <span class="layer"><input type="checkbox" id="l-just" checked><label for="l-just" style="opacity:1;border:none;cursor:pointer">Justifications</label></span>
+        <span class="layer"><input type="checkbox" id="l-just" checked><label for="l-just" style="opacity:1;border:none;cursor:pointer">Annotations</label></span>
         <span class="layer"><input type="checkbox" id="l-refs" checked><label for="l-refs" style="opacity:1;border:none;cursor:pointer">References</label></span>
     </span>
 </nav>
@@ -233,46 +246,41 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </header>
 
 <section class="part" id="specification" data-view="v-spec">
-    <h2 class="part-head">Specification</h2>
+    <h2 class="part-head">Specification<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
     <div class="md">
         <div class="mdh" id="s-4">4. The parts</div>
-        <p class="clause" id="s-4-1"><span class="dash">- </span>4.1 The parts, in the order of the work itself: you specify what you are looking for first; you try your best to identify the thing you are talking about justifiably; you build an intuition of what it might look like to find this blurry thing; and you express in narrative what it has meant to make progress.<span class="anno"><span class="tag"><span class="open">Open</span></span><span class="why"> — awaiting a justification on the rendered order.</span></span></p>
-        <p class="clause" id="s-4-2"><span class="dash">- </span>4.2 A justification is an annotation on the identified formalism that proves the specification is satisfied — relatively, not completely formally — and justifications frequently map to the citations on the project side.<span class="anno"><span class="tag"><span class="open">Open</span></span><span class="why"> — satisfied when <a class="cite" href="#i-3">I3</a> carries its marks.</span></span></p>
+        <p class="clause" id="s-4-1"><span class="dash">- </span>4.1 The parts, in the order of the work itself: you specify what you are looking for first; you try your best to identify the thing you are talking about justifiably; you build an intuition of what it might look like to find this blurry thing; and you express in narrative what it has meant to make progress.</p>
+        <p class="clause" id="s-4-2"><span class="dash">- </span>4.2 A justification is an annotation on the identified formalism that proves the specification is satisfied — relatively, not completely formally — and justifications frequently map to the citations on the project side.</p>
         <div class="mdh" id="s-7">7. The structure of the parts</div>
-        <p class="clause" id="s-7-1"><span class="dash">- </span>7.1 The specification is the agreement, so its unit is the clause — the atomic promise, uniquely numbered, citable; its form is the legal document. Satisfaction is judged clause by clause, which is why the clause is the unit.<span class="anno"><span class="tag"><a class="cite" href="#i-1">J1 · I1</a></span><span class="why"> — the clause form stands identified.</span></span></p>
-        <p class="clause" id="s-7-2"><span class="dash">- </span>7.2 The identification states the thing, so its unit is the statement — a definition or a named object in the formal register, each carrying an anchor. It states and never narrates, because a justification must sit on a span that holds still.<span class="anno"><span class="tag"><a class="cite" href="#i-2">J2 · I2</a></span><span class="why"> — the statement form stands identified.</span></span></p>
-        <p class="clause" id="s-7-3"><span class="dash">- </span>7.3 The justification is the justifiably, so its unit is the annotation with two mandatory references: the anchor it sits on in the identification, and the clause it claims satisfied — its writing arguing the claim in words. An annotation without a clause cite is an Idea, not a justification.<span class="anno"><span class="tag"><a class="cite" href="#i-3">J3 · I3</a></span><span class="why"> — the mark form stands identified.</span></span></p>
-        <p class="clause" id="s-7-4"><span class="dash">- </span>7.4 The intuition pictures the blurry thing, so its unit is the essay paragraph in the deliverable's serif register, its references running outward to existing things and across to clauses and statements.<span class="anno"><span class="tag"><a class="cite" href="#i-4">J4 · I4</a></span><span class="why"> — the paragraph form stands identified.</span></span></p>
-        <p class="clause" id="s-7-5"><span class="dash">- </span>7.5 The progress narrates, so its unit is the entry — byline and date as frontmatter, narrative prose as body, its references to the statements and clauses it narrates being its substance. Ruling out the past is an Archive mark that strikes an entry and never deletes it.<span class="anno"><span class="tag"><a class="cite" href="#i-5">J5 · I5</a></span><span class="why"> — the entry form stands identified.</span></span></p>
+        <p class="clause" id="s-7-1"><span class="dash">- </span>7.1 The specification is the agreement, so its unit is the clause — the atomic promise, uniquely numbered, citable; its form is the legal document. Satisfaction is judged clause by clause, which is why the clause is the unit.</p>
+        <p class="clause" id="s-7-2"><span class="dash">- </span>7.2 The identification states the thing, so its unit is the statement — a definition or a named object in the formal register, each carrying an anchor. It states and never narrates, because a justification must sit on a span that holds still.</p>
+        <p class="clause" id="s-7-3"><span class="dash">- </span>7.3 The justification is the justifiably, so its unit is the annotation with two mandatory references: the anchor it sits on in the identification, and the clause it claims satisfied — its writing arguing the claim in words. An annotation without a clause cite is an Idea, not a justification.</p>
+        <p class="clause" id="s-7-4"><span class="dash">- </span>7.4 The intuition pictures the blurry thing, so its unit is the essay paragraph in the deliverable's serif register, its references running outward to existing things and across to clauses and statements.</p>
+        <p class="clause" id="s-7-5"><span class="dash">- </span>7.5 The progress narrates, so its unit is the entry — byline and date as frontmatter, narrative prose as body, its references to the statements and clauses it narrates being its substance. Ruling out the past is an Archive mark that strikes an entry and never deletes it.</p>
     </div>
 </section>
 
 <section class="part" id="identification" data-view="v-ident">
-    <h2 class="part-head">Identification</h2>
-    <div class="statement justified" id="i-1">
+    <h2 class="part-head">Identification<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
+    <div class="statement" id="i-1">
         <strong>I1 (The clause).</strong> <span class="jspan">A specification is a sequence of numbered, named sections holding dotted clauses; a clause is one promise, bearing one number, citable by it.</span> It renders in the legal register: literal markdown, the source face.
-        <span class="anno"><span class="tag">J1 · satisfies <a class="cite" href="#s-7-1">7.1</a></span><br><span class="why">One number, one promise, citable — the clause as 7.1 asks it.</span></span>
     </div>
-    <div class="statement justified" id="i-2">
+    <div class="statement" id="i-2">
         <strong>I2 (The statement).</strong> <span class="jspan">An identification is a sequence of anchored statements; a statement defines a term or names an object, and holds still under annotation.</span> It renders in the formal register: stated, never narrated.
-        <span class="anno"><span class="tag">J2 · satisfies <a class="cite" href="#s-7-2">7.2</a></span><br><span class="why">Anchored and still — a span a mark can sit on, as 7.2 asks.</span></span>
     </div>
-    <div class="statement justified" id="i-3">
+    <div class="statement" id="i-3">
         <strong>I3 (The justification mark).</strong> <span class="jspan">A justification is an annotation carrying two references — the anchor it sits on, the clause it claims — and a writing that argues the claim in words.</span> Missing its clause, it is an Idea; the marks on this page are the form shown on itself.
-        <span class="anno"><span class="tag">J3 · satisfies <a class="cite" href="#s-7-3">7.3</a> · <a class="cite" href="#s-4-2">4.2</a></span><br><span class="why">Two references and an argument — relative proof, words plus citation; one mark may claim many clauses, and is a thing to view in its own right.</span></span>
     </div>
-    <div class="statement justified" id="i-4">
+    <div class="statement" id="i-4">
         <strong>I4 (The essay paragraph).</strong> <span class="jspan">An intuition is serif prose in paragraphs, referencing outward to existing things and across to clauses and statements.</span> The loosest form, held only to its references resolving.
-        <span class="anno"><span class="tag">J4 · satisfies <a class="cite" href="#s-7-4">7.4</a></span><br><span class="why">Paragraphs that cite — blurry words on firm anchors.</span></span>
     </div>
-    <div class="statement justified" id="i-5">
+    <div class="statement" id="i-5">
         <strong>I5 (The entry).</strong> <span class="jspan">A progress is a time-ordered sequence of entries; an entry carries author and date as frontmatter, narrative as body, references as substance. A struck entry remains.</span>
-        <span class="anno"><span class="tag">J5 · satisfies <a class="cite" href="#s-7-5">7.5</a></span><br><span class="why">Byline, date, narrative, references — and the past kept struck.</span></span>
     </div>
 </section>
 
 <section class="part" id="intuition" data-view="v-int">
-    <h2 class="part-head">Intuition</h2>
+    <h2 class="part-head">Intuition<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
     <div class="statement" id="p-1">
         <strong>P1 (The contract's ancestry).</strong> The specification descends from the service contract — agreed between buyer and seller, identifying the deliverable uniquely. A contract is honored or breached clause by clause, so the clause is the atom (<a class="cite" href="#s-7-1">7.1</a>).
     </div>
@@ -290,25 +298,24 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </section>
 
 <section class="part" id="progress" data-view="v-prog">
-    <h2 class="part-head">Progress</h2>
-    <div class="entry">
+    <h2 class="part-head">Progress<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
+    <div class="entry" id="e-1">
         <div class="byline">Doug · 17 November</div>
         <p class="ebody">The sprint opened on the seed: refine the textbook chapter, say what progress means, make annotations toggleable, find the parts, and find views so we aren't scrolling constantly (<a class="cite" href="#s-4-1">4.1</a>).</p>
     </div>
-    <div class="entry">
+    <div class="entry" id="e-2">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">The first round landed: progress is the narrative glue; a justification proves the specification satisfied relatively, not completely formally (<a class="cite" href="#s-4-2">4.2</a>); intuition sits below identification, above progress.</p>
     </div>
-    <div class="entry struck">
+    <div class="entry" id="e-3">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">Open: whether identification stands among the project side's parts, or the ordering reads against the front.</p>
-        <span class="anno"><span class="tag">Archived · ruled out by <a class="cite" href="#s-4-1">4.1</a></span><br><span class="why">The second round ruled the order of the work; the question closed.</span></span>
     </div>
-    <div class="entry">
+    <div class="entry" id="e-4">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">The second round ruled the order of the work itself: specify first, identify justifiably, picture the blurry thing, narrate what it has meant (<a class="cite" href="#s-4-1">4.1</a>).</p>
     </div>
-    <div class="entry">
+    <div class="entry" id="e-5">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">The third and fourth rounds handed the team the structural specifying and the ground: the units drafted from the semantics (<a class="cite" href="#s-7-1">7.1</a>–<a class="cite" href="#s-7-5">7.5</a>), the forms identified (<a class="cite" href="#i-1">I1</a>–<a class="cite" href="#i-5">I5</a>), and the sprint rendered as its own exploration — this page.</p>
     </div>
@@ -318,6 +325,55 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </div>
 
 <script>
+const thing = (id) => document.getElementById(id);
+
+const annotations = [
+    { id: 'J1', sort: 'justification', subject: 'i-1', objects: ['s-7-1'], writing: 'One number, one promise, citable — the clause as 7.1 asks it.' },
+    { id: 'J2', sort: 'justification', subject: 'i-2', objects: ['s-7-2'], writing: 'Anchored and still — a span a mark can sit on, as 7.2 asks.' },
+    { id: 'J3', sort: 'justification', subject: 'i-3', objects: ['s-7-3', 's-4-2'], writing: 'Two references and an argument — relative proof, words plus citation; one mark may claim many clauses, and is a thing to view in its own right.' },
+    { id: 'J4', sort: 'justification', subject: 'i-4', objects: ['s-7-4'], writing: 'Paragraphs that cite — blurry words on firm anchors.' },
+    { id: 'J5', sort: 'justification', subject: 'i-5', objects: ['s-7-5'], writing: 'Byline, date, narrative, references — and the past kept struck.' },
+    { id: 'P4', sort: 'intuition', subject: 'p-1', objects: ['p-2'], node: 'p-4', writing: 'The borrowed form — a relation that is itself a principle.' },
+    { id: 'A1', sort: 'archive', subject: 'e-3', objects: ['s-4-1'], writing: 'The second round ruled the order of the work; the question closed.' },
+];
+
+const names = { 's-4-1': '4.1', 's-4-2': '4.2', 's-7-1': '7.1', 's-7-2': '7.2', 's-7-3': '7.3', 's-7-4': '7.4', 's-7-5': '7.5', 'i-1': 'I1', 'i-2': 'I2', 'i-3': 'I3', 'i-4': 'I4', 'i-5': 'I5', 'p-1': 'P1', 'p-2': 'P2', 'p-4': 'P4' };
+const cite = (id) => `<a class="cite" href="#${id}">${names[id] || id}</a>`;
+
+const mark = (host, tag, writing, annotation) => {
+    const span = document.createElement('span');
+    span.className = 'anno';
+    if (annotation) span.dataset.annotation = annotation;
+    span.innerHTML = `<span class="tag">${tag}</span><br><span class="why">${writing}</span>`;
+    host.appendChild(span);
+};
+
+annotations.forEach((a) => {
+    if (a.sort === 'archive') {
+        thing(a.subject).classList.add('struck');
+        mark(thing(a.subject), `Archived · ruled out by ${a.objects.map(cite).join(' · ')}`, a.writing, a.id);
+        return;
+    }
+    if (a.sort === 'intuition') {
+        mark(thing(a.subject), `${a.id} · connects to ${cite(a.objects[0])}`, `Through ${cite(a.node)} — the relation is itself a principle.`, a.id);
+        mark(thing(a.objects[0]), `${a.id} · connects to ${cite(a.subject)}`, `Through ${cite(a.node)} — the relation is itself a principle.`, a.id);
+        return;
+    }
+    thing(a.subject).classList.add('justified');
+    mark(thing(a.subject), `${a.id} · satisfies ${a.objects.map(cite).join(' · ')}`, a.writing, a.id);
+    a.objects.forEach((o) => mark(thing(o), `${a.id} · ${cite(a.subject)}`, a.writing, a.id));
+});
+
+document.querySelectorAll('#specification .clause').forEach((clause) => {
+    const claimed = annotations.some((a) => a.sort === 'justification' && a.objects.includes(clause.id));
+    if (!claimed) mark(clause, '<span class="open">Open</span>', 'No justification yet claims this clause.');
+});
+
+const master = document.getElementById('l-just');
+const toggles = [...document.querySelectorAll('.sec-toggle')];
+master.addEventListener('change', () => toggles.forEach((t) => { t.checked = master.checked; }));
+toggles.forEach((t) => t.addEventListener('change', () => { master.checked = toggles.every((s) => s.checked); }));
+
 const vt = (fn) => (document.startViewTransition ? document.startViewTransition(fn) : fn());
 
 const unfocus = () => {
@@ -326,51 +382,55 @@ const unfocus = () => {
     document.body.classList.remove('focused', 'focus-edge');
 };
 
-const openJustification = (statement) => {
-    const tag = statement.querySelector('.anno .tag');
-    const clauses = [...tag.querySelectorAll('a.cite')]
-        .map((a) => document.getElementById(a.getAttribute('href').slice(1)))
-        .filter((el) => el && el.classList.contains('clause'));
+const open = (a) => {
+    if (a.sort === 'intuition') {
+        vt(() => {
+            unfocus();
+            document.body.classList.add('focused', 'focus-edge');
+            [a.subject, a.node, a.objects[0]].forEach((id, i) => {
+                const node = thing(id);
+                node.classList.add('fkeep');
+                node.style.viewTransitionName = `focus-node-${i}`;
+            });
+            thing(a.node).closest('.part').classList.add('fshow');
+            window.scrollTo(0, 0);
+        });
+        return;
+    }
     vt(() => {
         unfocus();
         document.body.classList.add('focused');
-        clauses.forEach((clause, i) => {
-            clause.classList.add('fkeep');
-            clause.style.viewTransitionName = `focus-clause-${i}`;
-            clause.closest('.md').classList.add('fkeep');
-            clause.closest('.part').classList.add('fshow');
+        a.objects.forEach((id, i) => {
+            const object = thing(id);
+            object.classList.add('fkeep');
+            object.style.viewTransitionName = `focus-object-${i}`;
+            const md = object.closest('.md');
+            if (md) md.classList.add('fkeep');
+            object.closest('.part').classList.add('fshow');
         });
-        statement.classList.add('fkeep');
-        statement.style.viewTransitionName = 'focus-entry';
-        statement.closest('.part').classList.add('fshow');
+        const subject = thing(a.subject);
+        subject.classList.add('fkeep');
+        subject.style.viewTransitionName = 'focus-subject';
+        subject.closest('.part').classList.add('fshow');
         window.scrollTo(0, 0);
     });
 };
 
-document.querySelectorAll('.statement .anno .tag').forEach((tag) => {
-    if (!tag.querySelector('a.cite')) return;
+document.querySelectorAll('.anno[data-annotation] .tag').forEach((tag) => {
+    const a = annotations.find((x) => x.id === tag.parentElement.dataset.annotation);
+    if (!a || a.sort === 'archive') return;
     tag.classList.add('press');
     tag.addEventListener('click', (press) => {
         if (press.target.closest('a')) return;
-        openJustification(tag.closest('.statement'));
+        open(a);
     });
 });
 
-const edge = document.querySelector('#p-4 strong');
-edge.classList.add('press');
-edge.addEventListener('click', (press) => {
+const p4 = document.querySelector('#p-4 strong');
+p4.classList.add('press');
+p4.addEventListener('click', (press) => {
     if (press.target.closest('a')) return;
-    vt(() => {
-        unfocus();
-        document.body.classList.add('focused', 'focus-edge');
-        ['p-1', 'p-4', 'p-2'].forEach((id, i) => {
-            const node = document.getElementById(id);
-            node.classList.add('fkeep');
-            node.style.viewTransitionName = `focus-node-${i}`;
-        });
-        document.getElementById('intuition').classList.add('fshow');
-        window.scrollTo(0, 0);
-    });
+    open(annotations.find((x) => x.id === 'P4'));
 });
 
 document.getElementById('focus-back').addEventListener('click', () => vt(unfocus));

@@ -10,9 +10,12 @@ export default () => (
                 identification, justification, intuition, progress — stand on one page in their own forms, with
                 views chosen instead of scrolled. It is built from Sprint 130's own record, the sprint rendered
                 as its own exploration. The views bar shows all of the parts or one; two squares in the toggle's
-                dress switch the layers — justifications, each mark carrying the anchor it sits on and the
-                clauses it claims, possibly several, with its line of argument, itself a thing to view in its
-                own right, and references, the citations that join the parts and drain to ink when hidden. The specification renders its clauses in the literal markdown
+                dress switch the layers — annotations, the page's object model drawn: every justification, the
+                connecting principle and the Archive strike are data, a relation drawing at both of its ends
+                with its one writing, the coverage computed from what no relation claims; and references, the
+                citations that join the parts and drain to ink when hidden. Each section's heading carries a
+                small square that toggles its own annotations, and the bar's square is every section's at
+                once. The specification renders its clauses in the literal markdown
                 of <Means>$[[ Our Reference / The Specification ]]</Means>, coverage in the margin reading
                 satisfied or open; the identification is five anchored statements, each the form a part takes, a
                 justified statement ruled at its left; the intuition is a small graph of principles, stated so they
@@ -35,7 +38,9 @@ export default () => (
                 one view turns the page to all of them and lands on its target, the two-way navigation a
                 coverage view will need; the margin marks have no phone answer yet, since at the phone's width
                 there is no margin to stand in; and the struck entry keeps its strike when the annotation layer
-                is off, the strike being the entry's state and the note only its explanation. A ruling fell on
+                is off, the strike being the entry's state and the note only its explanation. When the marks moved into
+                the object model, the computed coverage corrected the hand: clause 4.2, written open, is
+                claimed by J3 and the model says so. A ruling fell on
                 hierarchy as the sketch was photographed: the title of a section needs to be more important, and
                 markdown's own headings should hardly exceed the body — a little bold, not much, partially
                 rendered — said for this page and for the arithmetic specification alike, so the correction

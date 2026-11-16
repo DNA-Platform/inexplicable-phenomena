@@ -123,7 +123,7 @@ var ws=Object.defineProperty;var p=(T,s)=>ws(T,"name",{value:s,configurable:!0})
             .pd-math, .pd-date { white-space: nowrap; }
             .pd-equation { position: relative; counter-increment: equation; }
             .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }
-        `}};p(U,"$LibraryTheme");let N=U;const Rs=t(N),Z=class Z extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-running-head")}write(){const s=this.book;if(s===void 0)return null;const i=s.table?.canonical,o=t(u),r=t(C);return n(v,{children:[e("span",{className:"pd-book-title","data-to":"table",children:n(o,{children:[e(r,{children:i?.means?.identifier}),s.title?.name]})}),e("span",{className:"pd-book-title","data-to":"cover",children:n(o,{children:[e(r,{children:s.means?.identifier}),s.title?.name]})}),e("span",{className:"pd-square",children:n(o,{children:[e(r,{children:s.means?.identifier}),"☐"]})})]})}};p(Z,"$RunningHead");let I=Z;const J=class J extends z{$Define(){super.$Define(),this.classes.add(this,"pd-label")}};p(J,"$Label");let R=J;const Q=class Q extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-byline")}write(){const s=this.book;if(s===void 0)return null;const i=t(Fs),o=t(u),r=t(C);return n(v,{children:[e(i,{children:"Author"})," ",n(o,{children:[e(r,{children:s.author?.means?.identifier}),s.author?.name]}),s.about===void 0?null:n(v,{children:[e(i,{children:"About"})," ",n(o,{children:[e(r,{children:s.about.means?.identifier}),s.about.name]})]}),e(i,{children:"Subject"})," ",n(o,{children:[e(r,{children:s.subject?.means?.identifier}),s.subject?.name]})]})}};p(Q,"$Byline");let K=Q;const Ks=t(I),Ds=t(R),Fs=Ds;t(K);var Bs=Object.defineProperty,Xs=Object.getOwnPropertyDescriptor,xs=p((T,s,i,o)=>{for(var r=Xs(s,i),d=T.length-1,m;d>=0;d--)(m=T[d])&&(r=m(s,i,r)||r);return r&&Bs(s,i,r),r},"__decorateClass");const ss=class ss extends _s{constructor(){super(...arguments),this.specification=new A}get line(){return Ss.copy(this.text)}write(){return this.line}};p(ss,"$Tagline");let S=ss;const es=class es extends ks{$saidOfACover(s){bs(s instanceof V&&s.is(G),"a tagline is said of a cover, and this is not one")}};p(es,"TaglineSpecification");let A=es;xs([us("a tagline is said of a cover")],A.prototype,"$saidOfACover");const as=class as extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-name")}};p(as,"$FrontName");let D=as;const ns=class ns extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-author")}};p(ns,"$FrontAuthor");let F=ns;const ts=class ts extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-tagline")}};p(ts,"$FrontTagline");let B=ts;const ls=class ls extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-imprint")}};p(ls,"$FrontImprint");let X=ls;const ps=class ps extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-front")}write(){const s=this.book;if(s===void 0)return null;const i=t(Us),o=t(Zs),r=t(Js),d=t(Qs),m=t(j),g=t(C),gs=s.cover?.annotations.expressed(S),ys=s.table?.canonical;return n(v,{children:[n(i,{children:[e(g,{children:ys?.means?.identifier}),s.title?.name]}),n(o,{children:[e(g,{children:s.author?.means?.identifier}),s.author?.name]}),gs===void 0?null:e(r,{children:gs.line}),n(d,{children:[e(g,{children:s.subject?.means?.identifier}),s.subject?.name]}),e(d,{children:e(m,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"})})]})}};p(ps,"$Front");let M=ps;const is=class is extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-navigation")}$Bound(){const s=this.chapter,i=this.book;if(s!==void 0&&i!==void 0&&[...this.text].length===0){const o=t(As),r=t(Ws),d=t(u),m=t(C),g=i.table?.canonical;this.text.add(this,e(o,{children:"◁"}),n(d,{children:[e(m,{children:g?.means?.identifier}),"☐"]}),e(r,{children:"▷"}))}super.$Bound()}};p(is,"$Navigation");let W=is;const rs=class rs extends $s{constructor(){super(...arguments),this.specification=new $,this.style=k.div`
+        `}};p(U,"$LibraryTheme");let N=U;const Rs=t(N),Z=class Z extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-running-head")}write(){const s=this.book;if(s===void 0)return null;const i=s.table?.canonical,o=t(u),r=t(C);return n(v,{children:[e("span",{className:"pd-book-title","data-to":"table",children:n(o,{children:[e(r,{children:i?.means?.identifier}),s.title?.name]})}),e("span",{className:"pd-book-title","data-to":"cover",children:n(o,{children:[e(r,{children:s.means?.identifier}),s.title?.name]})}),e("span",{className:"pd-square",children:n(o,{children:[e(r,{children:s.means?.identifier}),"☐"]})})]})}};p(Z,"$RunningHead");let I=Z;const Q=class Q extends z{$Define(){super.$Define(),this.classes.add(this,"pd-label")}};p(Q,"$Label");let R=Q;const J=class J extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-byline")}write(){const s=this.book;if(s===void 0)return null;const i=t(Fs),o=t(u),r=t(C);return n(v,{children:[e(i,{children:"Author"})," ",n(o,{children:[e(r,{children:s.author?.means?.identifier}),s.author?.name]}),s.about===void 0?null:n(v,{children:[e(i,{children:"About"})," ",n(o,{children:[e(r,{children:s.about.means?.identifier}),s.about.name]})]}),e(i,{children:"Subject"})," ",n(o,{children:[e(r,{children:s.subject?.means?.identifier}),s.subject?.name]})]})}};p(J,"$Byline");let K=J;const Ks=t(I),Ds=t(R),Fs=Ds;t(K);var Bs=Object.defineProperty,Xs=Object.getOwnPropertyDescriptor,xs=p((T,s,i,o)=>{for(var r=Xs(s,i),d=T.length-1,m;d>=0;d--)(m=T[d])&&(r=m(s,i,r)||r);return r&&Bs(s,i,r),r},"__decorateClass");const ss=class ss extends _s{constructor(){super(...arguments),this.specification=new A}get line(){return Ss.copy(this.text)}write(){return this.line}};p(ss,"$Tagline");let S=ss;const es=class es extends ks{$saidOfACover(s){bs(s instanceof V&&s.is(G),"a tagline is said of a cover, and this is not one")}};p(es,"TaglineSpecification");let A=es;xs([us("a tagline is said of a cover")],A.prototype,"$saidOfACover");const as=class as extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-name")}};p(as,"$FrontName");let D=as;const ns=class ns extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-author")}};p(ns,"$FrontAuthor");let F=ns;const ts=class ts extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-tagline")}};p(ts,"$FrontTagline");let B=ts;const ls=class ls extends z{$Define(){super.$Define(),this.classes.add(this,"pd-front-imprint")}};p(ls,"$FrontImprint");let X=ls;const ps=class ps extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-front")}write(){const s=this.book;if(s===void 0)return null;const i=t(Us),o=t(Zs),r=t(Qs),d=t(Js),m=t(j),g=t(C),gs=s.cover?.annotations.expressed(S),ys=s.table?.canonical;return n(v,{children:[n(i,{children:[e(g,{children:ys?.means?.identifier}),s.title?.name]}),n(o,{children:[e(g,{children:s.author?.means?.identifier}),s.author?.name]}),gs===void 0?null:e(r,{children:gs.line}),n(d,{children:[e(g,{children:s.subject?.means?.identifier}),s.subject?.name]}),e(d,{children:e(m,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"})})]})}};p(ps,"$Front");let M=ps;const is=class is extends Y{$Define(){super.$Define(),this.classes.add(this,"pd-navigation")}$Bound(){const s=this.chapter,i=this.book;if(s!==void 0&&i!==void 0&&[...this.text].length===0){const o=t(As),r=t(Ws),d=t(u),m=t(C),g=i.table?.canonical;this.text.add(this,e(o,{children:"◁"}),n(d,{children:[e(m,{children:g?.means?.identifier}),"☐"]}),e(r,{children:"▷"}))}super.$Bound()}};p(is,"$Navigation");let W=is;const rs=class rs extends $s{constructor(){super(...arguments),this.specification=new $,this.style=k.div`
         &:not(:has(.pa-page.pa-open)) { display: none; }
     `}$Define(){super.$Define();const s=t(ae);this.text.add(this,e(s,{}),e(s,{}))}defines(s){s.classes.add(this,"pa-navigated"),s.containers.add(this,this.layer)}erase(s){s.containers.revert(this),s.classes.revert(this)}get layer(){if(this._layer!==void 0)return this._layer;const s=this.style,[i,o]=[...this.text],r=t(i),d=t(o);return this._layer=({className:m,children:g})=>n(s,{className:m,children:[e(r,{}),g,e(d,{})]})}};p(rs,"$Navigated");let O=rs;const os=class os extends ks{$saidOfAChapter(s){bs(s instanceof V,"navigated is said of a chapter, and this is not one")}};p(os,"NavigatedSpecification");let $=os;xs([us("navigated is said of a chapter")],$.prototype,"$saidOfAChapter");const cs=class cs extends G{constructor(){super(...arguments),this.style=k.header`
         .pd-chapter.pa-cover { margin-block: ${({theme:s})=>s.space} calc(2 * ${({theme:s})=>s.space}); }
@@ -149,7 +149,7 @@ var ws=Object.defineProperty;var p=(T,s)=>ws(T,"name",{value:s,configurable:!0})
         .pa-table .pa-col { padding: calc(${({theme:s})=>s.space} / 3) calc(0.75 * ${({theme:s})=>s.space}) calc(${({theme:s})=>s.space} / 3) 0; border-block-start: 1px solid color-mix(in srgb, ${({theme:s})=>s.ink} 15%, ${({theme:s})=>s.paper}); }
         .pa-table .pa-row-start-1 .pa-col { border-block-start: none; font-weight: bold; border-block-end: 2px solid color-mix(in srgb, ${({theme:s})=>s.ink} 35%, ${({theme:s})=>s.paper}); }
         .pa-table .pd-sentence:last-of-type .pa-col { border-block-end: 1px solid color-mix(in srgb, ${({theme:s})=>s.ink} 15%, ${({theme:s})=>s.paper}); }
-    `}};p(fs,"$LibraryTable");let P=fs;const Ms=t(q),Os=t(L),qs=t(H);t(P);const Ls=t(D),Hs=t(F),Ps=t(B),Gs=t(X),Vs=t(S),Us=Ls,Zs=Hs,Js=Ps,Qs=Gs,se=t(M),ee=t(W),ae=ee,ne=t(O),ms=class ms extends Ys{write(){const s=t(Ks),i=t(se);return n(v,{children:[e(s,{chapter:this.cover}),e(i,{chapter:this.cover}),super.write()]})}turn(){window.scrollTo(0,0)}$Define(){super.$Define(),this.annotations.add(this,e(Cs,{}))}$Bound(){const s=t(ne);for(const i of this.text.find(V))i.is(G)||i.is(js)||i.text.find(W).length>0||(i.annotations.add(this,e(s,{})),i.annotations.define());super.$Bound()}};p(ms,"$TheLibrary");let E=ms;const te=t(E);t(te,Es)(Rs);const le=p(()=>n(x,{children:[e(Ms,{}),e(y,{children:"[The Design](/inexplicable-phenomena/the-design/)"}),e(Ns,{children:"[Doug](/inexplicable-phenomena/our-team/)"}),e(Is,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"}),e(Vs,{children:"Sketches of how this library might look."})]}),"Cover"),pe=p(()=>n(x,{children:[e(Os,{}),e(_,{}),n(y,{children:[e(_,{}),"[Synopsis](/inexplicable-phenomena/the-design/)"]}),e(a,{children:"Sketches of how this library might look, each a page of HTML made from the bound print with its forms on a switch, photographed, and committed to nothing. A sketch asks a question of a page; the manual changes only when the librarian says a form is the one."})]}),"Synopsis"),ie=p(()=>n(x,{children:[e(qs,{}),n(y,{children:[e(_,{}),"[Table of Contents](/inexplicable-phenomena/the-design/#table-of-contents)"]}),n(c,{children:[e(h,{children:"Contents"}),e(a,{children:e(b,{children:"[The Top Page](/inexplicable-phenomena/the-design/#the-top-page)"})}),e(a,{children:e(b,{children:"[The Manual's Page](/inexplicable-phenomena/the-design/#the-manuals-page)"})}),e(a,{children:e(b,{children:"[The Project's Page](/inexplicable-phenomena/the-design/#the-projects-page)"})}),n(a,{children:[e(_,{}),e(u,{children:e(b,{children:"[The Design](/inexplicable-phenomena/the-design/)"})}),e(u,{children:e(b,{children:"[Synopsis](/inexplicable-phenomena/the-design/#synopsis)"})}),e(u,{children:e(b,{children:"[Table of Contents](/inexplicable-phenomena/the-design/#table-of-contents)"})})]})]})]}),"Table"),re=p(()=>n(x,{children:[e(y,{children:"[The Top Page](/inexplicable-phenomena/the-design/#the-top-page)"}),n(c,{children:[e(h,{children:"Sketch 001, three forms of the top page"}),e(a,{children:"The first sketch asks what the top of the library should look like, from the bound print of the top book as the borrowed manual draws it. The page is appended to this chapter with its forms on a switch, and a form is a question, not a design. The forms: a, the page as bound, the cover in its box, the byline above it, the synopsis beside, the catalogue as a two-column table; b, a front, the masthead and the byline on one line, the name large, the synopsis as a standfirst, the catalogue as three shelves side by side and the chapter below; c, the subjects first, the catalogue standing above the synopsis in two columns under a small cover."}),e(a,{children:"What the sketch found on its first runs: the header row of the catalogue, Book and What it is, is a row like the others and became a shelf of its own in form b until the sheet hid it by a rule more specific than the one that made the shelves, since a later rule of equal weight had won. And form c misfired: the masthead, the byline and the chapters are not siblings on the page, each standing in a container of its own, so an order given to them put the masthead last and left the catalogue under the synopsis; a form that moves the parts needs another mechanism than order. Nothing here moved into the manual."})]}),n(c,{children:[e(h,{children:"The photographs"}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-a-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-b-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-b-phone.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-c-desk.png"})})]}),e(w,{identifier:"001",type:".html",children:`<!doctype html>
+    `}};p(fs,"$LibraryTable");let P=fs;const Ms=t(q),Os=t(L),qs=t(H);t(P);const Ls=t(D),Hs=t(F),Ps=t(B),Gs=t(X),Vs=t(S),Us=Ls,Zs=Hs,Qs=Ps,Js=Gs,se=t(M),ee=t(W),ae=ee,ne=t(O),ms=class ms extends Ys{write(){const s=t(Ks),i=t(se);return n(v,{children:[e(s,{chapter:this.cover}),e(i,{chapter:this.cover}),super.write()]})}turn(){window.scrollTo(0,0)}$Define(){super.$Define(),this.annotations.add(this,e(Cs,{}))}$Bound(){const s=t(ne);for(const i of this.text.find(V))i.is(G)||i.is(js)||i.text.find(W).length>0||(i.annotations.add(this,e(s,{})),i.annotations.define());super.$Bound()}};p(ms,"$TheLibrary");let E=ms;const te=t(E);t(te,Es)(Rs);const le=p(()=>n(x,{children:[e(Ms,{}),e(y,{children:"[The Design](/inexplicable-phenomena/the-design/)"}),e(Ns,{children:"[Doug](/inexplicable-phenomena/our-team/)"}),e(Is,{children:"[Inexplicable Phenomena](/inexplicable-phenomena/our-library/)"}),e(Vs,{children:"Sketches of how this library might look."})]}),"Cover"),pe=p(()=>n(x,{children:[e(Os,{}),e(_,{}),n(y,{children:[e(_,{}),"[Synopsis](/inexplicable-phenomena/the-design/)"]}),e(a,{children:"Sketches of how this library might look, each a page of HTML made from the bound print with its forms on a switch, photographed, and committed to nothing. A sketch asks a question of a page; the manual changes only when the librarian says a form is the one."})]}),"Synopsis"),ie=p(()=>n(x,{children:[e(qs,{}),n(y,{children:[e(_,{}),"[Table of Contents](/inexplicable-phenomena/the-design/#table-of-contents)"]}),n(c,{children:[e(h,{children:"Contents"}),e(a,{children:e(b,{children:"[The Top Page](/inexplicable-phenomena/the-design/#the-top-page)"})}),e(a,{children:e(b,{children:"[The Manual's Page](/inexplicable-phenomena/the-design/#the-manuals-page)"})}),e(a,{children:e(b,{children:"[The Project's Page](/inexplicable-phenomena/the-design/#the-projects-page)"})}),n(a,{children:[e(_,{}),e(u,{children:e(b,{children:"[The Design](/inexplicable-phenomena/the-design/)"})}),e(u,{children:e(b,{children:"[Synopsis](/inexplicable-phenomena/the-design/#synopsis)"})}),e(u,{children:e(b,{children:"[Table of Contents](/inexplicable-phenomena/the-design/#table-of-contents)"})})]})]})]}),"Table"),re=p(()=>n(x,{children:[e(y,{children:"[The Top Page](/inexplicable-phenomena/the-design/#the-top-page)"}),n(c,{children:[e(h,{children:"Sketch 001, three forms of the top page"}),e(a,{children:"The first sketch asks what the top of the library should look like, from the bound print of the top book as the borrowed manual draws it. The page is appended to this chapter with its forms on a switch, and a form is a question, not a design. The forms: a, the page as bound, the cover in its box, the byline above it, the synopsis beside, the catalogue as a two-column table; b, a front, the masthead and the byline on one line, the name large, the synopsis as a standfirst, the catalogue as three shelves side by side and the chapter below; c, the subjects first, the catalogue standing above the synopsis in two columns under a small cover."}),e(a,{children:"What the sketch found on its first runs: the header row of the catalogue, Book and What it is, is a row like the others and became a shelf of its own in form b until the sheet hid it by a rule more specific than the one that made the shelves, since a later rule of equal weight had won. And form c misfired: the masthead, the byline and the chapters are not siblings on the page, each standing in a container of its own, so an order given to them put the masthead last and left the catalogue under the synopsis; a form that moves the parts needs another mechanism than order. Nothing here moved into the manual."})]}),n(c,{children:[e(h,{children:"The photographs"}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-a-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-b-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-b-phone.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/1-the-top-page~001-c-desk.png"})})]}),e(w,{identifier:"001",type:".html",children:`<!doctype html>
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -4753,7 +4753,7 @@ body[data-form="foot"] .sk-appendix { display: block; margin-block-start: 2.5rem
     window.addEventListener('hashchange', asked);
 })();
 <\/script>
-</body></html>`})]}),"TheManualsPage2"),ce=p(()=>n(x,{children:[e(y,{children:"[The Project's Page](/inexplicable-phenomena/the-design/#the-projects-page)"}),n(c,{children:[e(h,{children:"The sketch of the parts"}),n(a,{children:["The first sketch of the project's page asks how the five parts of a project — specification, identification, justification, intuition, progress — stand on one page in their own forms, with views chosen instead of scrolled. It is built from Sprint 130's own record, the sprint rendered as its own exploration. The views bar shows all of the parts or one; two squares in the toggle's dress switch the layers — justifications, each mark carrying the anchor it sits on and the clauses it claims, possibly several, with its line of argument, itself a thing to view in its own right, and references, the citations that join the parts and drain to ink when hidden. The specification renders its clauses in the literal markdown of ",e(j,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),", coverage in the margin reading satisfied or open; the identification is five anchored statements, each the form a part takes, a justified statement ruled at its left; the intuition is a small graph of principles, stated so they can be compared, where a relationship between two principles is itself a principle; the progress is a journal of bylined, dated entries, one really struck by the Archive mark that closed it. The forms: registers, each part in the voice its meaning first suggested — legal, formal, essay, journal; and integrated, on my word mid-sketch that everything in the project part should at least share a font, though not necessarily in markdown form — the parts in one source face, the markdown's dashes gone, its marks softened, the whole smoother and subtler. And the structure underneath is interactive: a press on a justification's mark turns the page into that justification in its own right — its clauses, possibly several, and its entry travelling to stand face to face with the argument between them — and a press on the connecting principle stands the edge between its ends; the page is one projection of the project's graph, and a press moves to another."]}),n(a,{children:["What the sketch found: a dotted underline across a justified statement read loud and became the pale rule at its left; with references off the teal drains to ink and every part still reads whole, which is the test that references are connection and not content; a citation pressed in one view turns the page to all of them and lands on its target, the two-way navigation a coverage view will need; the margin marks have no phone answer yet, since at the phone's width there is no margin to stand in; and the struck entry keeps its strike when the annotation layer is off, the strike being the entry's state and the note only its explanation. A ruling fell on hierarchy as the sketch was photographed: the title of a section needs to be more important, and markdown's own headings should hardly exceed the body — a little bold, not much, partially rendered — said for this page and for the arithmetic specification alike, so the correction went into ",e(j,{children:"[The Content](/inexplicable-phenomena/our-reference/#the-content)"})," in the same stroke. Nothing else here moved into the manual or the record's specification."]})]}),n(c,{children:[e(h,{children:"The photographs of the parts"}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-registers-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-integrated-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-specification-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-identification-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-intuition-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-progress-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-bare-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-justification-opened-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-edge-opened-desk.png"})})]}),e(w,{identifier:"the-parts",type:".html",children:`<!doctype html>
+</body></html>`})]}),"TheManualsPage2"),ce=p(()=>n(x,{children:[e(y,{children:"[The Project's Page](/inexplicable-phenomena/the-design/#the-projects-page)"}),n(c,{children:[e(h,{children:"The sketch of the parts"}),n(a,{children:["The first sketch of the project's page asks how the five parts of a project — specification, identification, justification, intuition, progress — stand on one page in their own forms, with views chosen instead of scrolled. It is built from Sprint 130's own record, the sprint rendered as its own exploration. The views bar shows all of the parts or one; two squares in the toggle's dress switch the layers — annotations, the page's object model drawn: every justification, the connecting principle and the Archive strike are data, a relation drawing at both of its ends with its one writing, the coverage computed from what no relation claims; and references, the citations that join the parts and drain to ink when hidden. Each section's heading carries a small square that toggles its own annotations, and the bar's square is every section's at once. The specification renders its clauses in the literal markdown of ",e(j,{children:"[The Specification](/inexplicable-phenomena/our-reference/#the-specification)"}),", coverage in the margin reading satisfied or open; the identification is five anchored statements, each the form a part takes, a justified statement ruled at its left; the intuition is a small graph of principles, stated so they can be compared, where a relationship between two principles is itself a principle; the progress is a journal of bylined, dated entries, one really struck by the Archive mark that closed it. The forms: registers, each part in the voice its meaning first suggested — legal, formal, essay, journal; and integrated, on my word mid-sketch that everything in the project part should at least share a font, though not necessarily in markdown form — the parts in one source face, the markdown's dashes gone, its marks softened, the whole smoother and subtler. And the structure underneath is interactive: a press on a justification's mark turns the page into that justification in its own right — its clauses, possibly several, and its entry travelling to stand face to face with the argument between them — and a press on the connecting principle stands the edge between its ends; the page is one projection of the project's graph, and a press moves to another."]}),n(a,{children:["What the sketch found: a dotted underline across a justified statement read loud and became the pale rule at its left; with references off the teal drains to ink and every part still reads whole, which is the test that references are connection and not content; a citation pressed in one view turns the page to all of them and lands on its target, the two-way navigation a coverage view will need; the margin marks have no phone answer yet, since at the phone's width there is no margin to stand in; and the struck entry keeps its strike when the annotation layer is off, the strike being the entry's state and the note only its explanation. When the marks moved into the object model, the computed coverage corrected the hand: clause 4.2, written open, is claimed by J3 and the model says so. A ruling fell on hierarchy as the sketch was photographed: the title of a section needs to be more important, and markdown's own headings should hardly exceed the body — a little bold, not much, partially rendered — said for this page and for the arithmetic specification alike, so the correction went into ",e(j,{children:"[The Content](/inexplicable-phenomena/our-reference/#the-content)"})," in the same stroke. Nothing else here moved into the manual or the record's specification."]})]}),n(c,{children:[e(h,{children:"The photographs of the parts"}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-registers-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-integrated-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-specification-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-identification-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-intuition-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-progress-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-bare-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-justification-opened-desk.png"})}),e(a,{children:e(l,{children:"/inexplicable-phenomena/.subject/.design/3-the-projects-page~the-parts-edge-opened-desk.png"})})]}),e(w,{identifier:"the-parts",type:".html",children:`<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -4851,6 +4851,17 @@ h1 .hash { color: var(--teal); }
     opacity: .8;
     margin: 0 0 var(--space);
 }
+.part-head .sec-toggle {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgb(107, 107, 107);
+    background: #fff;
+    margin: 0 0 0 14px;
+    cursor: pointer;
+    vertical-align: -1px;
+}
+.part-head .sec-toggle:checked { border-width: 3px; }
 
 a.cite { color: var(--teal); text-decoration: none; }
 body:not(:has(#l-refs:checked)) a.cite { color: inherit; pointer-events: none; }
@@ -4882,7 +4893,7 @@ body:not(:has(#l-refs:checked)) a.cite { color: inherit; pointer-events: none; }
     text-indent: 0;
     display: none;
 }
-body:has(#l-just:checked) .anno { display: block; }
+.part:has(.sec-toggle:checked) .anno { display: block; }
 .anno .tag {
     font-size: 10.5px;
     letter-spacing: 1.4px;
@@ -4894,7 +4905,7 @@ body:has(#l-just:checked) .anno { display: block; }
 
 .statement { position: relative; margin-block: var(--space); }
 .statement strong { font-style: normal; }
-body:has(#l-just:checked) .statement.justified {
+#identification:has(.sec-toggle:checked) .statement.justified {
     border-left: 2px solid rgba(31, 78, 121, .28);
     padding-left: 16px;
     margin-left: -18px;
@@ -4941,12 +4952,14 @@ body.focused .clause .anno { display: none !important; }
 body.focused .clause.fkeep + .clause.fkeep { margin-top: 16px; }
 body.focused .statement.fkeep { border-left: none; padding-left: 0; margin-left: 0; }
 body.focused .statement.fkeep:has(.anno) { display: flex !important; flex-direction: column; }
-body.focused .statement.fkeep .anno { display: block; position: static; width: auto; order: -1; font-size: 14.5px; line-height: 22px; margin: 32px 0; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); }
+body.focused .statement.fkeep .anno { display: block !important; position: static; width: auto; order: -1; font-size: 14.5px; line-height: 22px; margin: 32px 0; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); }
+body.focused .statement.fkeep .anno ~ .anno { display: none !important; }
 body.focused .statement.fkeep .anno .why { opacity: .85; }
 body.focused.focus-edge #intuition { display: flex !important; flex-direction: column; }
 body.focused.focus-edge #p-1 { order: 1; }
 body.focused.focus-edge #p-4 { order: 2; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); margin-block: 32px; }
 body.focused.focus-edge #p-2 { order: 3; }
+body.focused.focus-edge .statement .anno { display: none !important; }
 body:has(#f-b:checked) .clause { padding-left: 0; text-indent: 0; }
 body:has(#f-b:checked) .clause + .clause { margin-top: 10px; }
 body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
@@ -4977,7 +4990,7 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
     <span class="cluster">
         <label for="f-a">Registers</label>
         <label for="f-b">Integrated</label>
-        <span class="layer"><input type="checkbox" id="l-just" checked><label for="l-just" style="opacity:1;border:none;cursor:pointer">Justifications</label></span>
+        <span class="layer"><input type="checkbox" id="l-just" checked><label for="l-just" style="opacity:1;border:none;cursor:pointer">Annotations</label></span>
         <span class="layer"><input type="checkbox" id="l-refs" checked><label for="l-refs" style="opacity:1;border:none;cursor:pointer">References</label></span>
     </span>
 </nav>
@@ -4988,46 +5001,41 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </header>
 
 <section class="part" id="specification" data-view="v-spec">
-    <h2 class="part-head">Specification</h2>
+    <h2 class="part-head">Specification<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
     <div class="md">
         <div class="mdh" id="s-4">4. The parts</div>
-        <p class="clause" id="s-4-1"><span class="dash">- </span>4.1 The parts, in the order of the work itself: you specify what you are looking for first; you try your best to identify the thing you are talking about justifiably; you build an intuition of what it might look like to find this blurry thing; and you express in narrative what it has meant to make progress.<span class="anno"><span class="tag"><span class="open">Open</span></span><span class="why"> — awaiting a justification on the rendered order.</span></span></p>
-        <p class="clause" id="s-4-2"><span class="dash">- </span>4.2 A justification is an annotation on the identified formalism that proves the specification is satisfied — relatively, not completely formally — and justifications frequently map to the citations on the project side.<span class="anno"><span class="tag"><span class="open">Open</span></span><span class="why"> — satisfied when <a class="cite" href="#i-3">I3</a> carries its marks.</span></span></p>
+        <p class="clause" id="s-4-1"><span class="dash">- </span>4.1 The parts, in the order of the work itself: you specify what you are looking for first; you try your best to identify the thing you are talking about justifiably; you build an intuition of what it might look like to find this blurry thing; and you express in narrative what it has meant to make progress.</p>
+        <p class="clause" id="s-4-2"><span class="dash">- </span>4.2 A justification is an annotation on the identified formalism that proves the specification is satisfied — relatively, not completely formally — and justifications frequently map to the citations on the project side.</p>
         <div class="mdh" id="s-7">7. The structure of the parts</div>
-        <p class="clause" id="s-7-1"><span class="dash">- </span>7.1 The specification is the agreement, so its unit is the clause — the atomic promise, uniquely numbered, citable; its form is the legal document. Satisfaction is judged clause by clause, which is why the clause is the unit.<span class="anno"><span class="tag"><a class="cite" href="#i-1">J1 · I1</a></span><span class="why"> — the clause form stands identified.</span></span></p>
-        <p class="clause" id="s-7-2"><span class="dash">- </span>7.2 The identification states the thing, so its unit is the statement — a definition or a named object in the formal register, each carrying an anchor. It states and never narrates, because a justification must sit on a span that holds still.<span class="anno"><span class="tag"><a class="cite" href="#i-2">J2 · I2</a></span><span class="why"> — the statement form stands identified.</span></span></p>
-        <p class="clause" id="s-7-3"><span class="dash">- </span>7.3 The justification is the justifiably, so its unit is the annotation with two mandatory references: the anchor it sits on in the identification, and the clause it claims satisfied — its writing arguing the claim in words. An annotation without a clause cite is an Idea, not a justification.<span class="anno"><span class="tag"><a class="cite" href="#i-3">J3 · I3</a></span><span class="why"> — the mark form stands identified.</span></span></p>
-        <p class="clause" id="s-7-4"><span class="dash">- </span>7.4 The intuition pictures the blurry thing, so its unit is the essay paragraph in the deliverable's serif register, its references running outward to existing things and across to clauses and statements.<span class="anno"><span class="tag"><a class="cite" href="#i-4">J4 · I4</a></span><span class="why"> — the paragraph form stands identified.</span></span></p>
-        <p class="clause" id="s-7-5"><span class="dash">- </span>7.5 The progress narrates, so its unit is the entry — byline and date as frontmatter, narrative prose as body, its references to the statements and clauses it narrates being its substance. Ruling out the past is an Archive mark that strikes an entry and never deletes it.<span class="anno"><span class="tag"><a class="cite" href="#i-5">J5 · I5</a></span><span class="why"> — the entry form stands identified.</span></span></p>
+        <p class="clause" id="s-7-1"><span class="dash">- </span>7.1 The specification is the agreement, so its unit is the clause — the atomic promise, uniquely numbered, citable; its form is the legal document. Satisfaction is judged clause by clause, which is why the clause is the unit.</p>
+        <p class="clause" id="s-7-2"><span class="dash">- </span>7.2 The identification states the thing, so its unit is the statement — a definition or a named object in the formal register, each carrying an anchor. It states and never narrates, because a justification must sit on a span that holds still.</p>
+        <p class="clause" id="s-7-3"><span class="dash">- </span>7.3 The justification is the justifiably, so its unit is the annotation with two mandatory references: the anchor it sits on in the identification, and the clause it claims satisfied — its writing arguing the claim in words. An annotation without a clause cite is an Idea, not a justification.</p>
+        <p class="clause" id="s-7-4"><span class="dash">- </span>7.4 The intuition pictures the blurry thing, so its unit is the essay paragraph in the deliverable's serif register, its references running outward to existing things and across to clauses and statements.</p>
+        <p class="clause" id="s-7-5"><span class="dash">- </span>7.5 The progress narrates, so its unit is the entry — byline and date as frontmatter, narrative prose as body, its references to the statements and clauses it narrates being its substance. Ruling out the past is an Archive mark that strikes an entry and never deletes it.</p>
     </div>
 </section>
 
 <section class="part" id="identification" data-view="v-ident">
-    <h2 class="part-head">Identification</h2>
-    <div class="statement justified" id="i-1">
+    <h2 class="part-head">Identification<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
+    <div class="statement" id="i-1">
         <strong>I1 (The clause).</strong> <span class="jspan">A specification is a sequence of numbered, named sections holding dotted clauses; a clause is one promise, bearing one number, citable by it.</span> It renders in the legal register: literal markdown, the source face.
-        <span class="anno"><span class="tag">J1 · satisfies <a class="cite" href="#s-7-1">7.1</a></span><br><span class="why">One number, one promise, citable — the clause as 7.1 asks it.</span></span>
     </div>
-    <div class="statement justified" id="i-2">
+    <div class="statement" id="i-2">
         <strong>I2 (The statement).</strong> <span class="jspan">An identification is a sequence of anchored statements; a statement defines a term or names an object, and holds still under annotation.</span> It renders in the formal register: stated, never narrated.
-        <span class="anno"><span class="tag">J2 · satisfies <a class="cite" href="#s-7-2">7.2</a></span><br><span class="why">Anchored and still — a span a mark can sit on, as 7.2 asks.</span></span>
     </div>
-    <div class="statement justified" id="i-3">
+    <div class="statement" id="i-3">
         <strong>I3 (The justification mark).</strong> <span class="jspan">A justification is an annotation carrying two references — the anchor it sits on, the clause it claims — and a writing that argues the claim in words.</span> Missing its clause, it is an Idea; the marks on this page are the form shown on itself.
-        <span class="anno"><span class="tag">J3 · satisfies <a class="cite" href="#s-7-3">7.3</a> · <a class="cite" href="#s-4-2">4.2</a></span><br><span class="why">Two references and an argument — relative proof, words plus citation; one mark may claim many clauses, and is a thing to view in its own right.</span></span>
     </div>
-    <div class="statement justified" id="i-4">
+    <div class="statement" id="i-4">
         <strong>I4 (The essay paragraph).</strong> <span class="jspan">An intuition is serif prose in paragraphs, referencing outward to existing things and across to clauses and statements.</span> The loosest form, held only to its references resolving.
-        <span class="anno"><span class="tag">J4 · satisfies <a class="cite" href="#s-7-4">7.4</a></span><br><span class="why">Paragraphs that cite — blurry words on firm anchors.</span></span>
     </div>
-    <div class="statement justified" id="i-5">
+    <div class="statement" id="i-5">
         <strong>I5 (The entry).</strong> <span class="jspan">A progress is a time-ordered sequence of entries; an entry carries author and date as frontmatter, narrative as body, references as substance. A struck entry remains.</span>
-        <span class="anno"><span class="tag">J5 · satisfies <a class="cite" href="#s-7-5">7.5</a></span><br><span class="why">Byline, date, narrative, references — and the past kept struck.</span></span>
     </div>
 </section>
 
 <section class="part" id="intuition" data-view="v-int">
-    <h2 class="part-head">Intuition</h2>
+    <h2 class="part-head">Intuition<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
     <div class="statement" id="p-1">
         <strong>P1 (The contract's ancestry).</strong> The specification descends from the service contract — agreed between buyer and seller, identifying the deliverable uniquely. A contract is honored or breached clause by clause, so the clause is the atom (<a class="cite" href="#s-7-1">7.1</a>).
     </div>
@@ -5045,25 +5053,24 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </section>
 
 <section class="part" id="progress" data-view="v-prog">
-    <h2 class="part-head">Progress</h2>
-    <div class="entry">
+    <h2 class="part-head">Progress<input type="checkbox" class="sec-toggle" checked aria-label="annotations of this section"></h2>
+    <div class="entry" id="e-1">
         <div class="byline">Doug · 17 November</div>
         <p class="ebody">The sprint opened on the seed: refine the textbook chapter, say what progress means, make annotations toggleable, find the parts, and find views so we aren't scrolling constantly (<a class="cite" href="#s-4-1">4.1</a>).</p>
     </div>
-    <div class="entry">
+    <div class="entry" id="e-2">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">The first round landed: progress is the narrative glue; a justification proves the specification satisfied relatively, not completely formally (<a class="cite" href="#s-4-2">4.2</a>); intuition sits below identification, above progress.</p>
     </div>
-    <div class="entry struck">
+    <div class="entry" id="e-3">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">Open: whether identification stands among the project side's parts, or the ordering reads against the front.</p>
-        <span class="anno"><span class="tag">Archived · ruled out by <a class="cite" href="#s-4-1">4.1</a></span><br><span class="why">The second round ruled the order of the work; the question closed.</span></span>
     </div>
-    <div class="entry">
+    <div class="entry" id="e-4">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">The second round ruled the order of the work itself: specify first, identify justifiably, picture the blurry thing, narrate what it has meant (<a class="cite" href="#s-4-1">4.1</a>).</p>
     </div>
-    <div class="entry">
+    <div class="entry" id="e-5">
         <div class="byline">Arthur · 17 November</div>
         <p class="ebody">The third and fourth rounds handed the team the structural specifying and the ground: the units drafted from the semantics (<a class="cite" href="#s-7-1">7.1</a>–<a class="cite" href="#s-7-5">7.5</a>), the forms identified (<a class="cite" href="#i-1">I1</a>–<a class="cite" href="#i-5">I5</a>), and the sprint rendered as its own exploration — this page.</p>
     </div>
@@ -5073,6 +5080,55 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </div>
 
 <script>
+const thing = (id) => document.getElementById(id);
+
+const annotations = [
+    { id: 'J1', sort: 'justification', subject: 'i-1', objects: ['s-7-1'], writing: 'One number, one promise, citable — the clause as 7.1 asks it.' },
+    { id: 'J2', sort: 'justification', subject: 'i-2', objects: ['s-7-2'], writing: 'Anchored and still — a span a mark can sit on, as 7.2 asks.' },
+    { id: 'J3', sort: 'justification', subject: 'i-3', objects: ['s-7-3', 's-4-2'], writing: 'Two references and an argument — relative proof, words plus citation; one mark may claim many clauses, and is a thing to view in its own right.' },
+    { id: 'J4', sort: 'justification', subject: 'i-4', objects: ['s-7-4'], writing: 'Paragraphs that cite — blurry words on firm anchors.' },
+    { id: 'J5', sort: 'justification', subject: 'i-5', objects: ['s-7-5'], writing: 'Byline, date, narrative, references — and the past kept struck.' },
+    { id: 'P4', sort: 'intuition', subject: 'p-1', objects: ['p-2'], node: 'p-4', writing: 'The borrowed form — a relation that is itself a principle.' },
+    { id: 'A1', sort: 'archive', subject: 'e-3', objects: ['s-4-1'], writing: 'The second round ruled the order of the work; the question closed.' },
+];
+
+const names = { 's-4-1': '4.1', 's-4-2': '4.2', 's-7-1': '7.1', 's-7-2': '7.2', 's-7-3': '7.3', 's-7-4': '7.4', 's-7-5': '7.5', 'i-1': 'I1', 'i-2': 'I2', 'i-3': 'I3', 'i-4': 'I4', 'i-5': 'I5', 'p-1': 'P1', 'p-2': 'P2', 'p-4': 'P4' };
+const cite = (id) => \`<a class="cite" href="#\${id}">\${names[id] || id}</a>\`;
+
+const mark = (host, tag, writing, annotation) => {
+    const span = document.createElement('span');
+    span.className = 'anno';
+    if (annotation) span.dataset.annotation = annotation;
+    span.innerHTML = \`<span class="tag">\${tag}</span><br><span class="why">\${writing}</span>\`;
+    host.appendChild(span);
+};
+
+annotations.forEach((a) => {
+    if (a.sort === 'archive') {
+        thing(a.subject).classList.add('struck');
+        mark(thing(a.subject), \`Archived · ruled out by \${a.objects.map(cite).join(' · ')}\`, a.writing, a.id);
+        return;
+    }
+    if (a.sort === 'intuition') {
+        mark(thing(a.subject), \`\${a.id} · connects to \${cite(a.objects[0])}\`, \`Through \${cite(a.node)} — the relation is itself a principle.\`, a.id);
+        mark(thing(a.objects[0]), \`\${a.id} · connects to \${cite(a.subject)}\`, \`Through \${cite(a.node)} — the relation is itself a principle.\`, a.id);
+        return;
+    }
+    thing(a.subject).classList.add('justified');
+    mark(thing(a.subject), \`\${a.id} · satisfies \${a.objects.map(cite).join(' · ')}\`, a.writing, a.id);
+    a.objects.forEach((o) => mark(thing(o), \`\${a.id} · \${cite(a.subject)}\`, a.writing, a.id));
+});
+
+document.querySelectorAll('#specification .clause').forEach((clause) => {
+    const claimed = annotations.some((a) => a.sort === 'justification' && a.objects.includes(clause.id));
+    if (!claimed) mark(clause, '<span class="open">Open</span>', 'No justification yet claims this clause.');
+});
+
+const master = document.getElementById('l-just');
+const toggles = [...document.querySelectorAll('.sec-toggle')];
+master.addEventListener('change', () => toggles.forEach((t) => { t.checked = master.checked; }));
+toggles.forEach((t) => t.addEventListener('change', () => { master.checked = toggles.every((s) => s.checked); }));
+
 const vt = (fn) => (document.startViewTransition ? document.startViewTransition(fn) : fn());
 
 const unfocus = () => {
@@ -5081,51 +5137,55 @@ const unfocus = () => {
     document.body.classList.remove('focused', 'focus-edge');
 };
 
-const openJustification = (statement) => {
-    const tag = statement.querySelector('.anno .tag');
-    const clauses = [...tag.querySelectorAll('a.cite')]
-        .map((a) => document.getElementById(a.getAttribute('href').slice(1)))
-        .filter((el) => el && el.classList.contains('clause'));
+const open = (a) => {
+    if (a.sort === 'intuition') {
+        vt(() => {
+            unfocus();
+            document.body.classList.add('focused', 'focus-edge');
+            [a.subject, a.node, a.objects[0]].forEach((id, i) => {
+                const node = thing(id);
+                node.classList.add('fkeep');
+                node.style.viewTransitionName = \`focus-node-\${i}\`;
+            });
+            thing(a.node).closest('.part').classList.add('fshow');
+            window.scrollTo(0, 0);
+        });
+        return;
+    }
     vt(() => {
         unfocus();
         document.body.classList.add('focused');
-        clauses.forEach((clause, i) => {
-            clause.classList.add('fkeep');
-            clause.style.viewTransitionName = \`focus-clause-\${i}\`;
-            clause.closest('.md').classList.add('fkeep');
-            clause.closest('.part').classList.add('fshow');
+        a.objects.forEach((id, i) => {
+            const object = thing(id);
+            object.classList.add('fkeep');
+            object.style.viewTransitionName = \`focus-object-\${i}\`;
+            const md = object.closest('.md');
+            if (md) md.classList.add('fkeep');
+            object.closest('.part').classList.add('fshow');
         });
-        statement.classList.add('fkeep');
-        statement.style.viewTransitionName = 'focus-entry';
-        statement.closest('.part').classList.add('fshow');
+        const subject = thing(a.subject);
+        subject.classList.add('fkeep');
+        subject.style.viewTransitionName = 'focus-subject';
+        subject.closest('.part').classList.add('fshow');
         window.scrollTo(0, 0);
     });
 };
 
-document.querySelectorAll('.statement .anno .tag').forEach((tag) => {
-    if (!tag.querySelector('a.cite')) return;
+document.querySelectorAll('.anno[data-annotation] .tag').forEach((tag) => {
+    const a = annotations.find((x) => x.id === tag.parentElement.dataset.annotation);
+    if (!a || a.sort === 'archive') return;
     tag.classList.add('press');
     tag.addEventListener('click', (press) => {
         if (press.target.closest('a')) return;
-        openJustification(tag.closest('.statement'));
+        open(a);
     });
 });
 
-const edge = document.querySelector('#p-4 strong');
-edge.classList.add('press');
-edge.addEventListener('click', (press) => {
+const p4 = document.querySelector('#p-4 strong');
+p4.classList.add('press');
+p4.addEventListener('click', (press) => {
     if (press.target.closest('a')) return;
-    vt(() => {
-        unfocus();
-        document.body.classList.add('focused', 'focus-edge');
-        ['p-1', 'p-4', 'p-2'].forEach((id, i) => {
-            const node = document.getElementById(id);
-            node.classList.add('fkeep');
-            node.style.viewTransitionName = \`focus-node-\${i}\`;
-        });
-        document.getElementById('intuition').classList.add('fshow');
-        window.scrollTo(0, 0);
-    });
+    open(annotations.find((x) => x.id === 'P4'));
 });
 
 document.getElementById('focus-back').addEventListener('click', () => vt(unfocus));
