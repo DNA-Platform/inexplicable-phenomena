@@ -167,6 +167,31 @@ body:has(#f-b:checked) .ebody {
     line-height: 24px;
 }
 body:has(#f-b:checked) .dash { display: none; }
+
+::view-transition-group(*) { animation-duration: .18s; }
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none; }
+}
+.press { cursor: pointer; }
+#focus-back { display: none; }
+body.focused #focus-back { display: block; margin-bottom: 36px; cursor: pointer; opacity: .6; }
+body.focused .views, body.focused header { display: none; }
+body.focused .part { display: none; }
+body.focused .part.fshow { display: block; margin-top: 0; }
+body.focused .part.fshow > * { display: none; }
+body.focused .part.fshow .fkeep { display: block; }
+body.focused .md.fkeep > * { display: none; }
+body.focused .md.fkeep .clause.fkeep { display: block; padding-left: 0; text-indent: 0; }
+body.focused .clause .anno { display: none !important; }
+body.focused .clause.fkeep + .clause.fkeep { margin-top: 16px; }
+body.focused .statement.fkeep { border-left: none; padding-left: 0; margin-left: 0; }
+body.focused .statement.fkeep:has(.anno) { display: flex !important; flex-direction: column; }
+body.focused .statement.fkeep .anno { display: block; position: static; width: auto; order: -1; font-size: 14.5px; line-height: 22px; margin: 32px 0; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); }
+body.focused .statement.fkeep .anno .why { opacity: .85; }
+body.focused.focus-edge #intuition { display: flex !important; flex-direction: column; }
+body.focused.focus-edge #p-1 { order: 1; }
+body.focused.focus-edge #p-4 { order: 2; padding-left: 18px; border-left: 2px solid rgba(31, 78, 121, .35); margin-block: 32px; }
+body.focused.focus-edge #p-2 { order: 3; }
 body:has(#f-b:checked) .clause { padding-left: 0; text-indent: 0; }
 body:has(#f-b:checked) .clause + .clause { margin-top: 10px; }
 body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
@@ -184,6 +209,8 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 
 <div class="sheet">
 <div class="col">
+
+<div id="focus-back" class="label">&larr; the page</div>
 
 <nav class="views">
     <label for="v-all">All</label>
@@ -291,6 +318,63 @@ body:has(#f-b:checked) .md .mdh::before { opacity: .75; }
 </div>
 
 <script>
+const vt = (fn) => (document.startViewTransition ? document.startViewTransition(fn) : fn());
+
+const unfocus = () => {
+    document.querySelectorAll('.fkeep').forEach((el) => { el.classList.remove('fkeep'); el.style.viewTransitionName = ''; });
+    document.querySelectorAll('.fshow').forEach((el) => el.classList.remove('fshow'));
+    document.body.classList.remove('focused', 'focus-edge');
+};
+
+const openJustification = (statement) => {
+    const tag = statement.querySelector('.anno .tag');
+    const clauses = [...tag.querySelectorAll('a.cite')]
+        .map((a) => document.getElementById(a.getAttribute('href').slice(1)))
+        .filter((el) => el && el.classList.contains('clause'));
+    vt(() => {
+        unfocus();
+        document.body.classList.add('focused');
+        clauses.forEach((clause, i) => {
+            clause.classList.add('fkeep');
+            clause.style.viewTransitionName = `focus-clause-${i}`;
+            clause.closest('.md').classList.add('fkeep');
+            clause.closest('.part').classList.add('fshow');
+        });
+        statement.classList.add('fkeep');
+        statement.style.viewTransitionName = 'focus-entry';
+        statement.closest('.part').classList.add('fshow');
+        window.scrollTo(0, 0);
+    });
+};
+
+document.querySelectorAll('.statement .anno .tag').forEach((tag) => {
+    if (!tag.querySelector('a.cite')) return;
+    tag.classList.add('press');
+    tag.addEventListener('click', (press) => {
+        if (press.target.closest('a')) return;
+        openJustification(tag.closest('.statement'));
+    });
+});
+
+const edge = document.querySelector('#p-4 strong');
+edge.classList.add('press');
+edge.addEventListener('click', (press) => {
+    if (press.target.closest('a')) return;
+    vt(() => {
+        unfocus();
+        document.body.classList.add('focused', 'focus-edge');
+        ['p-1', 'p-4', 'p-2'].forEach((id, i) => {
+            const node = document.getElementById(id);
+            node.classList.add('fkeep');
+            node.style.viewTransitionName = `focus-node-${i}`;
+        });
+        document.getElementById('intuition').classList.add('fshow');
+        window.scrollTo(0, 0);
+    });
+});
+
+document.getElementById('focus-back').addEventListener('click', () => vt(unfocus));
+
 document.querySelectorAll('a.cite').forEach((a) => {
     a.addEventListener('click', (e) => {
         const target = document.getElementById(a.getAttribute('href').slice(1));

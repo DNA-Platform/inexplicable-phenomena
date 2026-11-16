@@ -21,7 +21,12 @@ export default () => (
                 forms: registers, each part in the voice its meaning first suggested — legal, formal, essay,
                 journal; and integrated, on my word mid-sketch that everything in the project part should at
                 least share a font, though not necessarily in markdown form — the parts in one source face, the
-                markdown's dashes gone, its marks softened, the whole smoother and subtler.
+                markdown's dashes gone, its marks softened, the whole smoother and subtler. And the structure
+                underneath is interactive: a press on a justification's mark turns the page into that
+                justification in its own right — its clauses, possibly several, and its entry travelling to
+                stand face to face with the argument between them — and a press on the connecting principle
+                stands the edge between its ends; the page is one projection of the project's graph, and a
+                press moves to another.
             </Paragraph>
             <Paragraph>
                 What the sketch found: a dotted underline across a justified statement read loud and became the
@@ -60,6 +65,12 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 <Image>![[ the-parts-bare-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ the-parts-justification-opened-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ the-parts-edge-opened-desk.png ]]</Image>
             </Paragraph>
         </Section>
         <Append
