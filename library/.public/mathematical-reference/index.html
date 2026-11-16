@@ -6,7 +6,7 @@
     <title>Inexplicable Phenomena</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' fill='%23faf8f4'/%3E%3Ccircle cx='14' cy='14' r='8' fill='none' stroke='%2323262a' stroke-width='2'/%3E%3C/svg%3E" />
     <script type="importmap">{"imports":{"@dna-platform/chemistry":"/inexplicable-phenomena/assets/shared/at-dna-platform-chemistry-DA5qn-Y5.js","@dna-platform/public":"/inexplicable-phenomena/assets/shared/at-dna-platform-public-DED5V3j3.js","katex":"/inexplicable-phenomena/assets/shared/katex-BVtwOS10.js","marked":"/inexplicable-phenomena/assets/shared/marked-BsF3At43.js","react":"/inexplicable-phenomena/assets/shared/react-DCSQQElp.js","react-dom/client":"/inexplicable-phenomena/assets/shared/react-dom-client-DNbMwQ3v.js","react/jsx-runtime":"/inexplicable-phenomena/assets/shared/react-jsx-runtime-GMpOKiQA.js","styled-components":"/inexplicable-phenomena/assets/shared/styled-components-DFsnoGyb.js"}}</script>
-    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-DxOZeBh5.js"></script>
+    <script type="module" crossorigin src="/inexplicable-phenomena/assets/index-wNieenDS.js"></script>
     <link rel="stylesheet" crossorigin href="/inexplicable-phenomena/assets/index-CaH6IAI_.css">
   <link rel="stylesheet" href="/inexplicable-phenomena/sheets/417fee1824ea.css" />
   <script>(function(){var k=[];function on(e){var r=document.getElementById('root');if(!r||!r.contains(e.target)||e.__replayed)return;k.push({t:e.target,type:e.type});}document.addEventListener('click',on,true);window.__replayKept=function(){document.removeEventListener('click',on,true);var q=k;k=[];q.forEach(function(one){if(!document.contains(one.t))return;var ev=new MouseEvent(one.type,{bubbles:true,cancelable:true});ev.__replayed=true;one.t.dispatchEvent(ev);});};})();</script>
@@ -120,9 +120,9 @@
         .pd-chapter { position: relative; }
         .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
-        .pc-flip { display: inline-block; inline-size: .9em; block-size: .9em; border: 1.5px solid color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 65%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); border-radius: 2px; background: <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>; transition: background .15s ease; }
+        .pc-flip { display: inline-block; box-sizing: border-box; inline-size: 0.9em; block-size: 0.9em; border: 1.5px solid color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 65%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); background: <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>; transition: border-width .15s ease, border-color .15s ease; }
         .pc-content:hover .pc-flip { border-color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
-        .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 70%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); }
+        .pc-content:has(input:checked) .pc-flip { border-width: 3px; }
         .pc-project { display: none; }
         &amp;:has(#pc-flip:checked) .pc-project { display: block; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-paragraph:not(.pd-navigation) { display: none; }

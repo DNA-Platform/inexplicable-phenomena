@@ -63,9 +63,9 @@
         .pd-chapter { position: relative; }
         .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
-        .pc-flip { display: inline-block; inline-size: .9em; block-size: .9em; border: 1.5px solid color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 65%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); border-radius: 2px; background: <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>; transition: background .15s ease; }
+        .pc-flip { display: inline-block; box-sizing: border-box; inline-size: 0.9em; block-size: 0.9em; border: 1.5px solid color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 65%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); background: <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>; transition: border-width .15s ease, border-color .15s ease; }
         .pc-content:hover .pc-flip { border-color: <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span>; }
-        .pc-content:has(input:checked) .pc-flip { background: color-mix(in srgb, <span class="hljs-subst">${({ theme }) =&gt; theme.ink}</span> 70%, <span class="hljs-subst">${({ theme }) =&gt; theme.paper}</span>); }
+        .pc-content:has(input:checked) .pc-flip { border-width: 3px; }
         .pc-project { display: none; }
         &amp;:has(#pc-flip:checked) .pc-project { display: block; }
         &amp;:has(#pc-flip:checked) .pd-chapter &gt; .pd-paragraph:not(.pd-navigation) { display: none; }
