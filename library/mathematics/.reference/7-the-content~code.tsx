@@ -43,17 +43,18 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation):not(.pc-introduction) { display: none; }
         .pc-introduction { display: none; font-style: italic; color: color-mix(in srgb, ${({ theme }) => theme.ink} 75%, ${({ theme }) => theme.paper}); }
         &:has(#pc-flip:checked) .pc-introduction { display: block; }
-        .pc-project > details > summary { cursor: pointer; font-weight: bold; font-size: calc(1.15 * ${({ theme }) => theme.size}); }
-        .pc-project > details > summary:hover { text-decoration: underline; text-underline-offset: .2em; }
-        .pc-project .pd-heading { display: none; }
-        .pc-markdown h1 { font-size: calc(1.4 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1em .4em; line-height: 1.3; }
-        .pc-markdown h2 { font-size: calc(1.25 * ${({ theme }) => theme.size}); font-weight: bold; margin-block: 1.2em .4em; }
-        .pc-markdown p { margin-block: .8em; }
-        .pc-markdown table { border-collapse: collapse; margin-block: 1em; font-size: calc(.95 * ${({ theme }) => theme.size}); }
-        .pc-markdown th, .pc-markdown td { border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 20%, ${({ theme }) => theme.paper}); padding: .35em .7em; text-align: start; vertical-align: top; }
-        .pc-markdown th { background: color-mix(in srgb, ${({ theme }) => theme.ink} 5%, ${({ theme }) => theme.paper}); }
-        .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.4em; }
-        .pc-markdown li { margin-block: .3em; }
+        .pc-markdown { font-family: 'Segoe UI', -apple-system, system-ui, sans-serif; font-size: calc(.92 * ${({ theme }) => theme.size}); line-height: 1.65; }
+        .pc-markdown h1 { font-family: ${({ theme }) => theme.font}; font-size: 1.55em; font-weight: 600; margin-block: 1.1em .45em; line-height: 1.3; }
+        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: 1.35em; font-weight: 600; margin-block: 1.5em .45em; }
+        .pc-markdown p { margin-block: .9em; }
+        .pc-markdown strong { font-weight: 600; }
+        .pc-markdown table { width: 100%; border-collapse: separate; border-spacing: 0; margin-block: 1.2em; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 14%, ${({ theme }) => theme.paper}); border-radius: 8px; overflow: hidden; }
+        .pc-markdown th, .pc-markdown td { padding: .55em .85em; text-align: start; vertical-align: top; }
+        .pc-markdown thead th { background: color-mix(in srgb, ${({ theme }) => theme.ink} 4%, ${({ theme }) => theme.paper}); color: color-mix(in srgb, ${({ theme }) => theme.ink} 72%, ${({ theme }) => theme.paper}); font-weight: 600; }
+        .pc-markdown tbody td, .pc-markdown tbody th { border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 11%, ${({ theme }) => theme.paper}); }
+        .pc-markdown th + th, .pc-markdown td + td { border-inline-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 11%, ${({ theme }) => theme.paper}); }
+        .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.5em; margin-block: .9em; }
+        .pc-markdown li { margin-block: .35em; }
         .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }
         .pc-theorem { counter-increment: theorem; }
         .pc-theorem::before { content: 'Theorem ' counter(theorem) '.'; font-weight: bold; margin-inline-end: .5em; }
@@ -66,22 +67,12 @@ export class $Content extends $Format {
 // going, its entries associated with an author; a plan may be expressed with teammates assigned, all to the
 // author by default as read from the cover; a discussion may stand there. The parts beyond the specification
 // are optional. One section of the chapter, the formal register.
+// NOTHING COLLAPSES, Doug, 2026-11-16: "STOP MAKING THINGS COLLAPSE!!! VERBATIM!" — the project's parts stand
+// open and whole, plain sections.
 export class $Project extends $Section {
     protected override $Define(): void {
         super.$Define();
         this.classes.add(this, 'pc-project');
-    }
-
-    // A PART OF THE PROJECT FOLDS, Doug, 2026-11-16: "think about making a way to show and hide or select so we
-    // don't need to read everything at once" — the browser's own details, closed until chosen, its summary the
-    // section's heading.
-    override write(): ReactNode {
-        return (
-            <details>
-                <summary>{this.canonical === undefined ? null : html.copy(this.canonical.text)}</summary>
-                {super.write()}
-            </details>
-        );
     }
 }
 
