@@ -49,9 +49,19 @@ export class $Content extends $Format {
     // .55em, two characters of the title's 1.5 size = 1.65 * size), the Chapter label held still by an equal
     // negative margin animated on the same curve. The motion is his "canonical experience of moving from
     // literal to symbol. From object to its representation", pulled back on his "this is plain text. It
-    // needs to be the plain text version of a transition": one clock, one curve — glide, mark and settle
-    // all resolving together in 160ms ease-out, the staged delay of the first cut retired as theater; the
-    // section headings keep the serif heading's box — 1.15 of the size, the section's margin. The palette
+    // needs to be the plain text version of a transition": one clock, one curve, the staged delay of the
+    // first cut retired as theater. THE GLIDE RETIRED, Doug, 2026-11-17: "There's a sort of jank when going
+    // to specification mode" — photographed frame by frame, the title had already turned to Consolas and the
+    // body to the specification at the first frame, and the title then slid right for 160ms after the fact;
+    // a swap that lands at once and then moves is two events, and the second reads as the first stuttering.
+    // Plain text has no tween: the title takes its code form and its place in the same frame, the mark with
+    // it, and the settle alone is the transition — the whole chapter, title included, developing from dimmed
+    // ink to full. THE DIP, Doug, the same night: "The appearance of the symbol and change in font is weird.
+    // It feels off... Font and position can happen concurrently unless it's janky" — the one-frame swap was
+    // still watchable, so it moves to where it cannot be watched: the title dims to 0.08 over 120ms, and at
+    // the trough the font, the place, the label's hold and the mark all change together in one hidden
+    // instant — concurrent, as he allows — then it rises as code over 120ms. The discrete steps live inside
+    // the keyframes at 49.9/50.1 so nothing ever changes while visible; the glide stays retired. The section headings keep the serif heading's box — 1.15 of the size, the section's margin. The palette
     // came from an eight-variant matrix photographed beside the serif reference, on his "Play around. Be
     // creative. Get it to match... Don't have the markdown be LOUD!!": the quiet winner keeps title, headings,
     // leads and body in the book's own ink at regular weight, and colors only the # and ## marks in the
@@ -76,7 +86,7 @@ export class $Content extends $Format {
         @keyframes pc-settle-back { from { opacity: 0.6; } to { opacity: 1; } }
         &:has(#pc-flip:checked) .pd-chapter { animation: pc-settle 0.16s ease-out; }
         &:not(:has(#pc-flip:checked)) .pd-chapter { animation: pc-settle-back 0.16s ease-out; }
-        @media (prefers-reduced-motion: reduce) { .pd-chapter { animation: none !important; } }
+        @media (prefers-reduced-motion: reduce) { .pd-chapter, .pd-title, .pd-title::before, .pd-title::after { animation: none !important; } }
         .pc-content { position: absolute; inset-block-start: 2.1rem; inset-inline-end: 0; cursor: pointer; padding: .25rem; }
         .pc-content input { position: absolute; opacity: 0; pointer-events: none; }
         .pc-flip { display: inline-block; box-sizing: border-box; inline-size: 0.9em; block-size: 0.9em; border: 1.5px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); background: ${({ theme }) => theme.paper}; transition: border-width .15s ease, border-color .15s ease; }
@@ -93,12 +103,20 @@ export class $Content extends $Format {
         .pc-specification .pc-markdown h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
         .pc-specification .pc-markdown h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
-        .pd-title { position: relative; transition: padding-inline-start 0.16s ease-out; }
-        .pd-title::before { transition: margin-inline-start 0.16s ease-out; }
-        .pd-title::after { content: '# '; position: absolute; inset-inline-start: 0; inset-block-end: 0; opacity: 0; transition: opacity 0.16s ease-out; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.link}; }
-        &:has(#pc-flip:checked) .pd-title { padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.ink}; }
-        &:has(#pc-flip:checked) .pd-title::before { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
-        &:has(#pc-flip:checked) .pd-title::after { opacity: 1; }
+        .pd-title { position: relative; }
+        .pd-title::after { content: '# '; position: absolute; inset-inline-start: 0; inset-block-end: 0; opacity: 0; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.link}; }
+        @keyframes pc-recode { 0% { opacity: 1; font-family: ${({ theme }) => theme.font}; padding-inline-start: 0; } 49.9% { opacity: 0.08; font-family: ${({ theme }) => theme.font}; padding-inline-start: 0; } 50.1% { opacity: 0.08; } 100% { opacity: 1; } }
+        @keyframes pc-recode-back { 0% { opacity: 1; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); } 49.9% { opacity: 0.08; font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); } 50.1% { opacity: 0.08; } 100% { opacity: 1; } }
+        @keyframes pc-relabel { 0%, 49.9% { margin-inline-start: 0; } 50.1%, 100% { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); } }
+        @keyframes pc-relabel-back { 0%, 49.9% { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); } 50.1%, 100% { margin-inline-start: 0; } }
+        @keyframes pc-remark { 0%, 50% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes pc-remark-back { 0% { opacity: 1; } 50%, 100% { opacity: 0; } }
+        &:has(#pc-flip:checked) .pd-title { animation: pc-recode 0.24s ease-in-out; padding-inline-start: calc(1.65 * ${({ theme }) => theme.size}); font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; color: ${({ theme }) => theme.ink}; }
+        &:not(:has(#pc-flip:checked)) .pd-title { animation: pc-recode-back 0.24s ease-in-out; }
+        &:has(#pc-flip:checked) .pd-title::before { animation: pc-relabel 0.24s ease-in-out; margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
+        &:not(:has(#pc-flip:checked)) .pd-title::before { animation: pc-relabel-back 0.24s ease-in-out; }
+        &:has(#pc-flip:checked) .pd-title::after { animation: pc-remark 0.24s ease-in-out; opacity: 1; }
+        &:not(:has(#pc-flip:checked)) .pd-title::after { animation: pc-remark-back 0.24s ease-in-out; }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }

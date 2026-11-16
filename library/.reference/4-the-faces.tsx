@@ -16,7 +16,8 @@ export default () => (
             <Heading>The front</Heading>
             <Paragraph>
                 Since 10 November 2026 the cover is drawn as a book: the front, in the file beside this chapter, a
-                board of a book's shape standing alone on the page while the cover is the open page, with the title,
+                board of a book's shape standing alone on the page while the cover is the open page, as tall as
+                the screen allows since 17 November 2026, its type growing with it, with the title,
                 the author, the tagline and the imprint on it, read from what the cover already says, as the byline
                 is; the tagline is one line of what the book is, said of the cover as its author is, and the
                 synopsis's first paragraph stood in its place until 12 November 2026, when I struck it, "an

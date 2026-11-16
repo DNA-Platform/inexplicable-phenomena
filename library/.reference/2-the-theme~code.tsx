@@ -48,23 +48,26 @@ export class $LibraryTheme extends $Theme {
             .pd-front { display: none; }
             .pd-book:has(.pa-cover.pa-open) .pd-front { display: flex; }
             .pd-book:has(.pa-cover.pa-open) .pd-running-head, .pd-book:has(.pa-cover.pa-open) .pd-byline, .pd-book:has(.pa-cover.pa-open) .pa-cover.pa-open { display: none; }
-            .pd-front { position: relative; box-sizing: border-box; width: 22rem; max-width: 100%; flex-direction: column; align-items: center; text-align: center; aspect-ratio: 2 / 3; margin: 2.5rem auto 3rem; padding: 3rem 2rem 1.75rem; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); box-shadow: inset 0 0 0 6px ${({ theme }) => theme.paper}, inset 0 0 0 7px color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}), 2px 12px 28px -12px rgba(0, 0, 0, .45); background: ${({ theme }) => theme.paper}; }
-            .pd-front::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 1.25rem; background: linear-gradient(to right, color-mix(in srgb, ${({ theme }) => theme.ink} 22%, transparent), color-mix(in srgb, ${({ theme }) => theme.ink} 5%, transparent) 55%, transparent); z-index: 1; pointer-events: none; }
+            /* THE BOARD FILLS THE SCREEN, Doug, 2026-11-17: "make the book bigger... as large as possible given
+               that my screen looks like this" — the board stands as tall as the screen allows, the book's upper
+               margin above it and the same air below, its width following at a book's proportion and capped at
+               the column on a narrow screen; every length on the board is an em of the board's own size, one
+               twenty-second of its width, the size the 22rem board of Sprint 125 was drawn at, so the type and the
+               frame grow with it as a print enlarges. The seven spaces taken from the screen's height are the
+               three above and the three below, and one for the page to breathe at the bottom without a scrollbar. */
+            .pd-front { --front-width: min(calc((100vh - 7 * ${({ theme }) => theme.space}) * 2 / 3), calc(min(${({ theme }) => theme.measure}, 100vw) - 2 * ${({ theme }) => theme.space})); position: relative; box-sizing: border-box; width: var(--front-width); font-size: calc(var(--front-width) / 22); flex-direction: column; align-items: center; text-align: center; aspect-ratio: 2 / 3; margin: 0 auto calc(2 * ${({ theme }) => theme.space}); padding: 3em 2em 1.75em; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); box-shadow: inset 0 0 0 .375em ${({ theme }) => theme.paper}, inset 0 0 0 calc(.375em + 1px) color-mix(in srgb, ${({ theme }) => theme.ink} 35%, ${({ theme }) => theme.paper}), 2px 12px 28px -12px rgba(0, 0, 0, .45); background: ${({ theme }) => theme.paper}; }
+            .pd-front::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 1.25em; background: linear-gradient(to right, color-mix(in srgb, ${({ theme }) => theme.ink} 22%, transparent), color-mix(in srgb, ${({ theme }) => theme.ink} 5%, transparent) 55%, transparent); z-index: 1; pointer-events: none; }
             .pd-front > a, .pd-front .pd-word { display: block; }
             .pd-front .pa-reference { color: inherit; text-decoration: none; }
             .pd-front a:hover .pd-word { text-decoration: underline; text-underline-offset: 0.15em; }
-            .pd-front-name { font-size: 2.4rem; line-height: 1.1; font-weight: bold; margin-block: .35rem .8rem; }
-            .pd-front-name::after { content: ''; display: block; width: 3.5rem; border-top: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); margin: .9rem auto 0; }
-            .pd-front-author { font-size: 1.15rem; letter-spacing: .04em; }
-            .pd-front-tagline { font-style: italic; opacity: .75; margin-top: 1.1rem; font-size: .95rem; }
+            .pd-front-name { font-size: 2.4em; line-height: 1.1; font-weight: bold; margin-block: .15em .33em; }
+            .pd-front-name::after { content: ''; display: block; width: 1.45em; border-top: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); margin: .375em auto 0; }
+            .pd-front-author { font-size: 1.15em; letter-spacing: .04em; }
+            .pd-front-tagline { font-style: italic; opacity: .75; margin-top: 1.15em; font-size: .95em; }
             .pd-front > :nth-last-child(2) { margin-top: auto; }
-            .pd-front-imprint { font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: .15em; text-transform: uppercase; opacity: .65; margin-top: .35rem; }
+            .pd-front-imprint { font-size: .74em; letter-spacing: .15em; text-transform: uppercase; opacity: .65; margin-top: .47em; }
             .pa-page.pa-open { animation: come .5s ease; }
             @keyframes come { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: none; } }
-            @media (max-width: 640px) {
-                .pd-front { width: min(20rem, 86vw); margin-block: 1.5rem 2rem; padding: 2.25rem 1.25rem 1.25rem; }
-                .pd-front-name { font-size: 2rem; }
-            }
         `;
     }
 
