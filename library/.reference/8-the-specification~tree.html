@@ -37,7 +37,7 @@ h1 .hash { color: var(--teal); }
     margin-bottom: 36px;
 }
 .layer { display: flex; align-items: center; gap: 7px; opacity: .8; }
-.layer input {
+.layer input, .sq {
     appearance: none;
     width: 15.3px;
     height: 15.3px;
@@ -46,12 +46,16 @@ h1 .hash { color: var(--teal); }
     margin: 0;
     cursor: pointer;
 }
-.layer input:checked { border-width: 3px; }
+.layer input:checked, .sq:checked { border-width: 3px; }
 .layer label { cursor: pointer; }
-.showall { display: none; cursor: pointer; color: var(--teal); opacity: .75; }
+.sq { width: 12px; height: 12px; margin-left: 12px; vertical-align: -1px; }
+.verb { cursor: pointer; color: var(--teal); opacity: .75; }
+.verb:hover { opacity: 1; }
+.showall, .everything { display: none; }
 body:has(.spart.hidden) .showall { display: inline; }
+body:has(.the-one) .everything { display: inline; }
 
-.tree { font-family: var(--mono); font-size: 15.3px; line-height: 24px; }
+.tree { position: relative; font-family: var(--mono); font-size: 15.3px; line-height: 24px; }
 .mdh {
     font-size: 15.3px;
     font-weight: 600;
@@ -64,11 +68,10 @@ body:has(.spart.hidden) .showall { display: inline; }
 .spart { position: relative; }
 .skids { margin-left: 2ch; }
 .spart.folded > .skids { display: none; }
-.spart.folded > .mdh::after { content: " · " attr(data-count); font-weight: 400; opacity: .45; }
-.spart.hidden { display: none; }
-.hide {
+.spart.folded > .mdh::after, .spart.folded > .chead::after { content: " · " attr(data-count); font-weight: 400; opacity: .45; }
+.spart.hidden, .spart.dim { display: none; }
+.hide, .only {
     position: absolute;
-    left: -3ch;
     top: 0;
     width: 2ch;
     text-align: center;
@@ -76,30 +79,32 @@ body:has(.spart.hidden) .showall { display: inline; }
     opacity: 0;
     cursor: pointer;
 }
-.sgroup > .hide { top: calc(var(--space) + 2px); }
-.spart:hover > .hide { opacity: .35; }
-.spart > .hide:hover { opacity: .7; }
+.hide { left: -3ch; }
+.only { left: -5ch; }
+.sgroup > .hide, .sgroup > .only { top: calc(var(--space) + 2px); }
+.spart:hover > .hide, .spart:hover > .only { opacity: .35; }
+.spart > .hide:hover, .spart > .only:hover { opacity: .7; }
 .dragging { opacity: .35; }
 .drop-before { box-shadow: 0 -2px 0 0 rgba(31, 78, 121, .55); }
 .drop-after { box-shadow: 0 2px 0 0 rgba(31, 78, 121, .55); }
 .clause { position: relative; margin: 0; padding-left: 2ch; text-indent: -2ch; }
-.clause + .clause { margin-top: 6px; }
+.clause + .clause, .clause + .cgroup, .cgroup + .clause { margin-top: 6px; }
+.chead { cursor: pointer; user-select: none; }
 a.cite { color: var(--teal); text-decoration: none; }
 
 .anno {
     position: absolute;
     left: calc(100% + 32px);
-    top: 2px;
-    width: 196px;
-    font-family: var(--serif);
-    font-size: 12.5px;
-    line-height: 18px;
-    text-indent: 0;
     display: none;
+    white-space: nowrap;
+    font-family: var(--serif);
+    font-size: 11.5px;
+    line-height: 17px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-indent: 0;
+    opacity: .85;
 }
-body:has(#l-anno:checked) .anno { display: block; }
-.anno .tag { font-size: 10.5px; letter-spacing: 1.4px; text-transform: uppercase; }
-.anno .why { opacity: .72; }
 </style>
 </head>
 <body>
@@ -114,7 +119,11 @@ body:has(#l-anno:checked) .anno { display: block; }
 
 <nav class="bar">
     <span class="layer"><input type="checkbox" id="l-anno" checked><label for="l-anno">Annotations</label></span>
-    <span class="showall" id="showall">Show all</span>
+    <span class="verb" id="v-sections">Sections</span>
+    <span class="verb" id="v-expand">Expand</span>
+    <span class="verb showall" id="v-showall">Show all</span>
+    <span class="verb everything" id="v-everything">Everything</span>
+    <span class="verb" id="v-reset">Reset</span>
 </nav>
 
 <div class="tree" id="tree"></div>
@@ -166,63 +175,167 @@ const specification = {
         ] },
         { code: '9', name: 'The tree', clauses: [
             { code: '9.1', text: `A specification always has numbers or codes, always has nesting, and the numbers nest — the anatomy of 2.3. It need not be only a list of lists, but it can be imagined as one.` },
-            { code: '9.2', text: `A part with sub-parts collapses: a press on its heading folds its children, the parent standing with a count of what folded; a second press unfolds.` },
-            { code: '9.3', text: `A part can be hidden entirely, and show-all brings every hidden part back.` },
-            { code: '9.4', text: `Parts can be moved around to compare. A moved part keeps its code and its annotations, because the code carries identity: the move is an act on the view, never a renumbering — permanence (6) is untouched.` },
-            { code: '9.5', text: `The annotations toggle on what is visible: an annotation draws only where its subject stands, a folded or hidden part draws nothing, and a relation's visible end still draws, citing across.` },
-            { code: '9.6', text: `The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.` },
+            { code: '9.2', text: `The tree is a projection of the document. Every operation below is an act on the projection, never on the document: a moved part keeps its code and its annotations, because the code carries identity, and permanence (6) is untouched.` },
+            { code: '9.3', text: `Unique showability: at any moment every part is on the page for exactly one reason or off it for exactly one reason — shown; folded away by an ancestor; hidden by the reader; or standing aside while one part shows alone. Each reason has exactly one control and one inverse, so any view can be read back, and any view can be left.` },
+            { code: '9.4', text: `The operations, each with its inverse, at every level of the tree:`, clauses: [
+                { code: '9.4.1', text: `Fold — a press on any part's heading folds its children beneath a quiet count; a second press unfolds.` },
+                { code: '9.4.2', text: `Hide — a part hides entirely from its gutter; show-all returns every hidden part.` },
+                { code: '9.4.3', text: `Only — a part stands alone, the one thing on the screen, its ancestors' headings standing as its path; at most one part stands alone at a time; pressing it again, or everything, returns the rest.` },
+                { code: '9.4.4', text: `Move — parts move beside one another to compare, across sections and at any level; sections reorder among themselves.` },
+                { code: '9.4.5', text: `Reset — the strongest inverse: every part reseated in the document's own order, every fold, hide and alone-state cleared at once. Each part carries its home and its seat from the rendering, so the return is exact.` },
+            ] },
+            { code: '9.5', text: `The bar: the whole tree's verbs stand up top — the annotation layer's square, sections folding the tree to its headings where they can be cleared and reordered, expand unfolding every level, show all while something hides, everything while one part stands alone, and reset always.` },
+            { code: '9.6', text: `The annotations are consistent: one form for every subject — a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide, and the writing never moves to make room. The why stands on the mark's hover and the claim on its press; a relation's visible end still draws, citing across; a mark draws only while its subject stands and its section's square is on.` },
+            { code: '9.7', text: `The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.` },
         ] },
     ],
 };
 
 const annotations = [
-    { id: 'R1', sort: 'revision', subject: '9', writing: 'Put in at the twelfth round of Sprint 130, 17 November 2026.' },
+    { id: 'R1', sort: 'revision', subject: '9', writing: 'Put in at the twelfth round of Sprint 130 and made a formal contract at the sixteenth, 17 November 2026.' },
     { id: 'N1', sort: 'relation', subject: '2.3', objects: ['9.1'], writing: 'The nesting 2.3 states is the tree 9.1 operates.' },
 ];
 
 const seat = (code) => `c-${code.replace(/\./g, '-')}`;
 const tree = document.getElementById('tree');
+let boxes = 0;
 
-specification.sections.forEach((section) => {
+const leaves = (clause) => clause.clauses === undefined ? 1 : clause.clauses.reduce((sum, kid) => sum + leaves(kid), 0);
+const gutter = `<span class="hide" title="hide this part">&times;</span><span class="only" title="only this">&#9675;</span>`;
+const render = (clause, home, at) => {
+    if (clause.clauses !== undefined) {
+        const box = ++boxes;
+        const kids = clause.clauses.map((kid, i) => render(kid, box, i)).join('');
+        return `<div class="spart cgroup" id="${seat(clause.code)}" draggable="true" data-box="${box}" data-home="${home}" data-seat="${at}">${gutter}<p class="clause chead" data-count="${leaves(clause)} parts">${clause.code} ${clause.text}</p><div class="skids">${kids}</div></div>`;
+    }
+    return `<p class="clause spart" id="${seat(clause.code)}" draggable="true" data-home="${home}" data-seat="${at}">${gutter}${clause.code} ${clause.text}</p>`;
+};
+
+specification.sections.forEach((section, at) => {
+    const box = ++boxes;
     const group = document.createElement('div');
     group.className = 'spart sgroup';
     group.id = seat(section.code);
     group.draggable = true;
-    const kids = section.clauses.map((clause) =>
-        `<p class="clause spart" id="${seat(clause.code)}" draggable="true"><span class="hide" title="hide this part">&times;</span>${clause.code} ${clause.text}</p>`).join('');
-    group.innerHTML = `<span class="hide" title="hide this part">&times;</span><div class="mdh" data-count="${section.clauses.length} clauses">${section.code}. ${section.name}</div><div class="skids">${kids}</div>`;
+    group.setAttribute('data-box', box);
+    group.setAttribute('data-home', 'root');
+    group.setAttribute('data-seat', at);
+    const kids = section.clauses.map((clause, i) => render(clause, box, i)).join('');
+    const count = section.clauses.reduce((sum, clause) => sum + leaves(clause), 0);
+    group.innerHTML = `${gutter}<div class="mdh" data-count="${count} parts">${section.code}. ${section.name}<input type="checkbox" class="sq" checked></div><div class="skids">${kids}</div>`;
     tree.appendChild(group);
 });
 
-const mark = (host, tag, writing) => {
-    const span = document.createElement('span');
-    span.className = 'anno';
-    span.innerHTML = `<span class="tag">${tag}</span><br><span class="why">${writing}</span>`;
-    host.appendChild(span);
-};
 const cite = (code) => `<a class="cite" href="#${seat(code)}">${code}</a>`;
+const chip = (subjectCode, label, writing) => {
+    const mark = document.createElement('span');
+    mark.className = 'anno';
+    mark.setAttribute('data-for', seat(subjectCode));
+    mark.innerHTML = label;
+    mark.title = writing;
+    tree.appendChild(mark);
+};
 
 annotations.forEach((a) => {
-    const subject = document.getElementById(seat(a.subject));
-    const host = subject.classList.contains('sgroup') ? subject.querySelector('.skids') : subject;
     if (a.sort === 'relation') {
-        mark(host, `${a.id} · relates ${cite(a.objects[0])}`, a.writing);
-        a.objects.forEach((o) => mark(document.getElementById(seat(o)), `${a.id} · relates ${cite(a.subject)}`, a.writing));
+        chip(a.subject, `${a.id} &#8646; ${cite(a.objects[0])}`, a.writing);
+        a.objects.forEach((o) => chip(o, `${a.id} &#8646; ${cite(a.subject)}`, a.writing));
         return;
     }
-    mark(host, `${a.id} · ${a.sort}`, a.writing);
+    chip(a.subject, `${a.id} &middot; ${a.sort}`, a.writing);
 });
 
-document.querySelectorAll('.sgroup .mdh').forEach((mdh) => {
-    mdh.addEventListener('click', () => mdh.parentElement.classList.toggle('folded'));
+const rail = () => {
+    const frame = tree.getBoundingClientRect();
+    const master = document.getElementById('l-anno');
+    const standing = [];
+    document.querySelectorAll('#tree > .anno').forEach((mark) => {
+        const subject = document.getElementById(mark.getAttribute('data-for'));
+        const sq = subject === null ? null : subject.closest('.sgroup')?.querySelector(':scope > .mdh > .sq');
+        const seen = subject !== null && master.checked && (sq === null || sq === undefined || sq.checked) && subject.getClientRects().length > 0;
+        mark.style.display = seen ? 'block' : 'none';
+        if (seen) standing.push({ mark, at: subject.getBoundingClientRect().top - frame.top });
+    });
+    let floor = -Infinity;
+    standing.sort((a, b) => a.at - b.at).forEach(({ mark, at }) => {
+        const top = Math.max(at, floor);
+        mark.style.top = top + 'px';
+        floor = top + mark.offsetHeight + 2;
+    });
+};
+
+document.querySelectorAll('.sgroup > .mdh, .cgroup > .chead').forEach((head) => {
+    head.addEventListener('click', (press) => {
+        if (press.target.classList.contains('sq')) return;
+        head.parentElement.classList.toggle('folded');
+        rail();
+    });
 });
 document.querySelectorAll('.spart > .hide').forEach((x) => x.addEventListener('click', (press) => {
     press.stopPropagation();
     x.parentElement.classList.add('hidden');
+    rail();
 }));
-document.getElementById('showall').addEventListener('click', () => {
+document.querySelectorAll('.spart > .only').forEach((o) => o.addEventListener('click', (press) => {
+    press.stopPropagation();
+    const one = o.parentElement;
+    const was = one.classList.contains('the-one');
+    document.querySelectorAll('.dim, .the-one').forEach((el) => el.classList.remove('dim', 'the-one'));
+    if (!was) {
+        one.classList.add('the-one');
+        const dim = (boxEl) => {
+            [...boxEl.children].forEach((child) => {
+                if (child === one) return;
+                if (child.contains(one)) {
+                    const kids = child.querySelector(':scope > .skids');
+                    if (kids !== null) dim(kids);
+                    return;
+                }
+                if (child.classList.contains('spart')) child.classList.add('dim');
+            });
+        };
+        dim(tree);
+    }
+    rail();
+}));
+document.getElementById('v-showall').addEventListener('click', () => {
     document.querySelectorAll('.spart.hidden').forEach((s) => s.classList.remove('hidden'));
+    rail();
 });
+document.getElementById('v-everything').addEventListener('click', () => {
+    document.querySelectorAll('.dim, .the-one').forEach((el) => el.classList.remove('dim', 'the-one'));
+    rail();
+});
+document.getElementById('v-sections').addEventListener('click', () => {
+    document.querySelectorAll('.sgroup, .cgroup').forEach((s) => s.classList.add('folded'));
+    rail();
+});
+document.getElementById('v-expand').addEventListener('click', () => {
+    document.querySelectorAll('.folded').forEach((s) => s.classList.remove('folded'));
+    rail();
+});
+document.getElementById('v-reset').addEventListener('click', () => {
+    document.querySelectorAll('.hidden, .folded, .dim, .the-one').forEach((el) => el.classList.remove('hidden', 'folded', 'dim', 'the-one'));
+    const homes = new Map([['root', tree]]);
+    document.querySelectorAll('#tree [data-box]').forEach((boxEl) => {
+        const kids = boxEl.querySelector(':scope > .skids');
+        if (kids !== null) homes.set(boxEl.getAttribute('data-box'), kids);
+    });
+    [...document.querySelectorAll('#tree [data-home]')]
+        .sort((a, b) => Number(a.getAttribute('data-seat')) - Number(b.getAttribute('data-seat')))
+        .forEach((node) => homes.get(node.getAttribute('data-home'))?.append(node));
+    rail();
+});
+document.getElementById('l-anno').addEventListener('change', () => {
+    const master = document.getElementById('l-anno');
+    document.querySelectorAll('.sq').forEach((sq) => { sq.checked = master.checked; });
+    rail();
+});
+document.querySelectorAll('.sq').forEach((sq) => sq.addEventListener('change', () => {
+    const all = [...document.querySelectorAll('.sq')].every((each) => each.checked);
+    document.getElementById('l-anno').checked = all;
+    rail();
+}));
 
 let dragged = null;
 const clearDrops = () => document.querySelectorAll('.drop-before, .drop-after').forEach((el) => el.classList.remove('drop-before', 'drop-after'));
@@ -230,6 +343,12 @@ const place = (target, e) => {
     if (!dragged || !target || dragged === target || dragged.contains(target)) return null;
     const box = target.getBoundingClientRect();
     return { target, before: e.clientY < box.top + box.height / 2 };
+};
+const aim = (e) => {
+    const section = dragged && dragged.classList.contains('sgroup');
+    return section
+        ? e.target.closest('.sgroup')
+        : (e.target.closest('.clause')?.closest('.spart') || e.target.closest('.spart'));
 };
 document.querySelectorAll('.spart').forEach((part) => {
     part.addEventListener('dragstart', (e) => {
@@ -247,26 +366,26 @@ document.querySelectorAll('.spart').forEach((part) => {
 });
 tree.addEventListener('dragover', (e) => {
     e.preventDefault();
-    const isGroup = dragged && dragged.classList.contains('sgroup');
-    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
-    const s = place(target, e);
+    const s = place(aim(e), e);
     clearDrops();
     if (s) s.target.classList.add(s.before ? 'drop-before' : 'drop-after');
 });
 tree.addEventListener('drop', (e) => {
     e.preventDefault();
-    const isGroup = dragged && dragged.classList.contains('sgroup');
-    const target = isGroup ? e.target.closest('.sgroup') : (e.target.closest('.clause') || e.target.closest('.sgroup'));
-    const s = place(target, e);
+    const s = place(aim(e), e);
     clearDrops();
     if (!s) return;
-    if (!isGroup && s.target.classList.contains('sgroup')) {
-        const kids = s.target.querySelector('.skids');
+    const section = dragged.classList.contains('sgroup');
+    if (!section && s.target.classList.contains('sgroup')) {
+        const kids = s.target.querySelector(':scope > .skids');
         if (s.before) kids.prepend(dragged); else kids.append(dragged);
     } else {
         s.target.parentElement.insertBefore(dragged, s.before ? s.target : s.target.nextSibling);
     }
+    rail();
 });
+
+rail();
 </script>
 
 </body>

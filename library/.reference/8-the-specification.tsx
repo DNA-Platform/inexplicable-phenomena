@@ -88,11 +88,17 @@ export default () => (
             <Paragraph>
                 <List />
                 <Line>9.1 A specification always has numbers or codes, always has nesting, and the numbers nest — the anatomy of 2.3. It need not be only a list of lists, but it can be imagined as one.</Line>
-                <Line>9.2 A part with sub-parts collapses: a press on its heading folds its children, the parent standing with a count of what folded; a second press unfolds.</Line>
-                <Line>9.3 A part can be hidden entirely, and show-all brings every hidden part back.</Line>
-                <Line>9.4 Parts can be moved around to compare. A moved part keeps its code and its annotations, because the code carries identity: the move is an act on the view, never a renumbering — permanence (6) is untouched.</Line>
-                <Line>9.5 The annotations toggle on what is visible: an annotation draws only where its subject stands, a folded or hidden part draws nothing, and a relation's visible end still draws, citing across.</Line>
-                <Line>9.6 The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.</Line>
+                <Line>9.2 The tree is a projection of the document. Every operation below is an act on the projection, never on the document: a moved part keeps its code and its annotations, because the code carries identity, and permanence (6) is untouched.</Line>
+                <Line>9.3 Unique showability: at any moment every part is on the page for exactly one reason or off it for exactly one reason — shown; folded away by an ancestor; hidden by the reader; or standing aside while one part shows alone. Each reason has exactly one control and one inverse, so any view can be read back, and any view can be left.</Line>
+                <Line>9.4 The operations, each with its inverse, at every level of the tree:</Line>
+                <Line>9.4.1 Fold — a press on any part's heading folds its children beneath a quiet count; a second press unfolds.</Line>
+                <Line>9.4.2 Hide — a part hides entirely from its gutter; show-all returns every hidden part.</Line>
+                <Line>9.4.3 Only — a part stands alone, the one thing on the screen, its ancestors' headings standing as its path; at most one part stands alone at a time; pressing it again, or everything, returns the rest.</Line>
+                <Line>9.4.4 Move — parts move beside one another to compare, across sections and at any level; sections reorder among themselves.</Line>
+                <Line>9.4.5 Reset — the strongest inverse: every part reseated in the document's own order, every fold, hide and alone-state cleared at once. Each part carries its home and its seat from the rendering, so the return is exact.</Line>
+                <Line>9.5 The bar: the whole tree's verbs stand up top — the annotation layer's square, sections folding the tree to its headings where they can be cleared and reordered, expand unfolding every level, show all while something hides, everything while one part stands alone, and reset always.</Line>
+                <Line>9.6 The annotations are consistent: one form for every subject — a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide, and the writing never moves to make room. The why stands on the mark's hover and the claim on its press; a relation's visible end still draws, citing across; a mark draws only while its subject stands and its section's square is on.</Line>
+                <Line>9.7 The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.</Line>
             </Paragraph>
         </Section>
         <Append

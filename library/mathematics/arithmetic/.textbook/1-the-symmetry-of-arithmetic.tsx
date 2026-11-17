@@ -1,5 +1,5 @@
 import { Append, Chapter, Heading, Line, List, Means, Paragraph, Part, Section, Sentence, Table, Title, Word } from '@dna-platform/public';
-import { Cite, Content, Interpolated, Markdown, Progress, Proof, Specification, Theorem } from '../../.reference/7-the-content~code.tsx';
+import { Cite, Content, Identification, Interpolated, Markdown, Progress, Proof, Specification, Theorem } from '../../.reference/7-the-content~code.tsx';
 
 export default () => (
     <Chapter>
@@ -212,7 +212,7 @@ export default () => (
                 X is one finitely stated object that modifies the formalism by adding a new way of
                 identifying truths; T denotes PA with X adjoined (<Cite part="section 4" />). Its kind is not fixed — an
                 axiom, a rule of inference, a duality, or something else as fundamental — but its best form
-                is guided (<Cite part="4.1" />): singular, not an infinite schema, agnostic to interpretation, looking like a
+                is guided (<Cite part="4.2" />): singular, not an infinite schema, agnostic to interpretation, looking like a
                 natural modification of universal inference, wearing the same clothing as the other parts of
                 the formalism. A rule of inference seems fitting: like induction, expressible finitely,
                 operating on formulas, corresponding to a new form of proof — a new way to make universal
@@ -240,7 +240,9 @@ export default () => (
         <Section>
             <Heading>The meaning</Heading>
             <Paragraph>
-                Each clause of X must trace to a commitment about what arithmetic means (<Cite part="C3" />, <Cite part="section 6" />).
+                Each clause of X must trace to a commitment about what arithmetic means (<Cite part="C3" />) —
+                the twenty entries of the identification on the other side of this page carry those
+                commitments, <Cite part="I1" /> to <Cite part="I20" />.
                 Zero is what the subject uses to speak of the existence of non-quantities without
                 distinction: every number divides zero, and how many that is, is not none and is not a
                 quantity the signature can refer to — it is one to one with "for all", and "for all" is
@@ -256,7 +258,7 @@ export default () => (
                 The opposite reading holds that the top and the bottom are two different things. In Gödel's
                 argument it appears as G and ¬G referring to two different things — G unprovable but true,
                 ¬G provable by a proof of infinite length. On the symmetric reading these refer to one thing:
-                the proof of infinite length is the proof with zero steps (<Cite part="6.4" />). What is incomplete, on this
+                the proof of infinite length is the proof with zero steps (<Cite part="I17" />). What is incomplete, on this
                 subject's view, is the asymmetric reading — and the exception it would assert is the same
                 thing a proof of G looks like there: big, even, divisible by every prime, a top taken as
                 distinct from zero, which among the numbers does not exist (<Cite part="K13" />, <Cite part="K11" />). This is one subject's
@@ -268,7 +270,7 @@ export default () => (
         <Section>
             <Heading>The tests</Heading>
             <Paragraph>
-                A candidate for X is judged on the statement's <Cite part="section 7" /> before anything else: T must prove
+                A candidate for X is judged on the statement's <Cite part="section 6" /> before anything else: T must prove
                 the basic cases as their ordinary proofs — the coprime pairing, Euclid with the top taken as
                 M(n), the count of multiples of five — and the canonical GC, TP and RH, each immediate; and
                 it must not prove what PA refutes: that every N has two multiples of 5 at equal positive
@@ -281,8 +283,9 @@ export default () => (
         <Paragraph>
             The specification is the anchor for the work: it is updated when its parts are found
             inconsistent, since an inconsistent specification has specified nothing, and it is not thrown
-            away — a change is made by changing it. The open determinations <Cite part="O1" /> to <Cite part="O11" /> stand in the progress
-            on the other side of this page, and the chapter closes when the brace in The object is
+            away — a change is made by changing it. The identification comprehends the object in twenty
+            entries, <Cite part="I1" /> to <Cite part="I20" />, the open determinations <Cite part="O1" /> to <Cite part="O11" /> stand in the progress, both on
+            the other side of this page, and the chapter closes when the brace in The object is
             replaced by the figure it stands for.
         </Paragraph>
         <Specification>
@@ -292,6 +295,10 @@ export default () => (
                 tree
             />
         </Specification>
+        <Identification>
+            <Heading>Identification</Heading>
+            <Markdown identifier="identification" />
+        </Identification>
         <Progress>
             <Heading>Progress</Heading>
             <Markdown identifier="progress" />
@@ -307,6 +314,12 @@ export default () => (
             type=".md"
         >
             ![[ progress.md ]]
+        </Append>
+        <Append
+            identifier="identification"
+            type=".md"
+        >
+            ![[ identification.md ]]
         </Append>
     </Chapter>
 );

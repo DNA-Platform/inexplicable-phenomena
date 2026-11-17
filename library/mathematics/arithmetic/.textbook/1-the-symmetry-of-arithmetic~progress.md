@@ -16,8 +16,8 @@ A solution settles each of these. Until then they are the places where the speci
 6. **O6 The kind of X.** Which row of section 4.
 7. **O7 The derivation of TP.** The canonical TP is stronger than its corollary. Its derivation through K7 is to be given.
 8. **O8 The unit step from the top.** Whether P, read in the signature of PA, is the inverse of S wherever both apply, or is left uninterpreted.
-9. **O9 The asymmetric extension of 6.4.** Its exact statement. K16 is a candidate.
-10. **O10 The two halves of 6.3.** The formal statement that the half from zero to the mirror is the referred half and the half from the mirror to the top the unreferred one.
+9. **O9 The asymmetric extension of I17.** Its exact statement. K16 is a candidate.
+10. **O10 The two halves of I11.** The formal statement that the half from zero to the mirror is the referred half and the half from the mirror to the top the unreferred one.
 11. **O11 The general form of type III.** Section 3 gives pairing and recurrence for an arbitrary φ. The bound in the balance form is stated only for the primes (1.7) and for the multiples of 5.
 
 ## Computed

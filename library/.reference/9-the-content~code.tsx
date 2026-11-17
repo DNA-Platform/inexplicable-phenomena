@@ -38,7 +38,7 @@ export class $Content extends $Format {
         cover();
         const box = document.getElementById('pc-flip');
         if (!(box instanceof HTMLInputElement)) return;
-        const turn = (): void => { box.checked = !box.checked; };
+        const turn = (): void => { box.checked = !box.checked; rail(); };
         const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
         if (doc.startViewTransition === undefined) turn();
         else doc.startViewTransition(turn);
@@ -131,6 +131,8 @@ export class $Content extends $Format {
         .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.9 * ${({ theme }) => theme.size}); line-height: calc(1.412 * ${({ theme }) => theme.size}); margin-block-start: calc(${({ theme }) => theme.space} / 4); }
         .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(.9 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: 600; color: ${({ theme }) => theme.ink}; }
         .pc-specification .pc-markdown h2::before { content: '## '; color: ${({ theme }) => theme.link}; }
+        .pc-specification .pc-markdown h3 { font-family: inherit; font-size: calc(.9 * ${({ theme }) => theme.size}); margin-block: calc(${({ theme }) => theme.space} / 2) 0; font-weight: 600; color: ${({ theme }) => theme.ink}; }
+        .pc-specification .pc-markdown h3::before { content: '### '; color: ${({ theme }) => theme.link}; }
         .pc-specification .pc-markdown > h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
         .pc-specification .pc-markdown > h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
@@ -146,6 +148,7 @@ export class $Content extends $Format {
         .pc-markdown h1 { display: none; }
         .pc-markdown h1 + p { display: none; }
         .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1 * ${({ theme }) => theme.size}); font-weight: 600; margin-block: 1.1em .35em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
+        .pc-markdown h3 { font-family: ${({ theme }) => theme.font}; font-size: calc(1 * ${({ theme }) => theme.size}); font-weight: 600; margin-block: .9em .3em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
         .pc-markdown p { margin-block: .9em; }
         .pc-markdown strong { font-weight: bold; }
         .pc-markdown a { color: ${({ theme }) => theme.link}; text-decoration: none; }
@@ -164,36 +167,38 @@ export class $Content extends $Format {
         .pc-theorem { counter-increment: theorem; }
         .pc-theorem::before { content: 'Theorem ' counter(theorem) '.'; font-weight: bold; margin-inline-end: .5em; }
         .pc-proof::before { content: 'Proof.'; font-style: italic; margin-inline-end: .5em; }
+        .pc-tree { position: relative; }
         .pc-tree-bar { display: flex; align-items: center; gap: 1.6em; font-size: calc(.7 * ${({ theme }) => theme.size}); letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); margin-block-end: calc(${({ theme }) => theme.space} / 2); user-select: none; }
         .pc-layerbox { display: inline-flex; align-items: center; gap: .6em; cursor: pointer; }
         .pc-anno-master, .pc-sec-anno { appearance: none; inline-size: .85em; block-size: .85em; border: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 65%, ${({ theme }) => theme.paper}); background: ${({ theme }) => theme.paper}; margin: 0; cursor: pointer; flex: none; }
         .pc-anno-master:checked, .pc-sec-anno:checked { border-width: 3px; }
         .pc-sec-anno { margin-inline-start: .9em; vertical-align: -1px; }
-        .pc-showall { display: none; cursor: pointer; color: ${({ theme }) => theme.link}; }
+        .pc-verb { cursor: pointer; }
+        .pc-verb:hover { color: ${({ theme }) => theme.link}; }
+        .pc-showall { display: none; }
         .pc-tree:has(.pc-hidden) .pc-showall { display: inline; }
+        .pc-return { display: none; }
+        .pc-tree:has(.pc-the-one) .pc-return { display: inline; }
         .pc-spart { position: relative; }
-        .pc-spart > h2 { cursor: pointer; user-select: none; }
+        .pc-spart > h2, .pc-spart > h3 { cursor: pointer; user-select: none; }
         .pc-kids { margin-inline-start: 2ch; }
         .pc-folded > .pc-kids { display: none; }
         .pc-count { display: none; font-weight: 400; opacity: .5; margin-inline-start: .75em; }
-        .pc-folded > h2 .pc-count { display: inline; }
+        .pc-folded > :is(h2, h3) .pc-count { display: inline; }
         .pc-part { position: relative; }
-        .pc-hidden { display: none; }
-        .pc-x { position: absolute; inset-inline-start: -2.6ch; inset-block-start: 0; inline-size: 2ch; text-align: center; opacity: 0; cursor: pointer; }
-        .pc-sec-x { inset-block-start: calc(${({ theme }) => theme.space} + .2em); }
-        .pc-part:hover > .pc-x, .pc-spart:hover > .pc-sec-x { opacity: .35; }
-        .pc-x:hover { opacity: .7; }
+        .pc-hidden, .pc-dim { display: none; }
+        .pc-x, .pc-o { position: absolute; inset-block-start: 0; inline-size: 2ch; text-align: center; opacity: 0; cursor: pointer; }
+        .pc-x { inset-inline-start: -2.6ch; }
+        .pc-o { inset-inline-start: -4.8ch; }
+        .pc-sec-x, .pc-sec-o { inset-block-start: calc(${({ theme }) => theme.space} + .2em); }
+        .pc-part:hover > .pc-x, .pc-part:hover > .pc-o, .pc-spart:hover > .pc-sec-x, .pc-spart:hover > .pc-sec-o { opacity: .35; }
+        .pc-x:hover, .pc-o:hover { opacity: .7; }
         .pc-before { box-shadow: 0 -2px 0 0 color-mix(in srgb, ${({ theme }) => theme.link} 55%, transparent); }
         .pc-after { box-shadow: 0 2px 0 0 color-mix(in srgb, ${({ theme }) => theme.link} 55%, transparent); }
-        .pc-claused { position: relative; }
-        .pc-anno { position: absolute; inset-inline-start: calc(100% + 32px); inset-block-start: 2px; inline-size: 196px; font-family: ${({ theme }) => theme.font}; font-size: calc(.73 * ${({ theme }) => theme.size}); line-height: 1.45; letter-spacing: normal; text-transform: none; font-weight: 400; display: none; }
-        .pc-spart:has(> h2 .pc-sec-anno:checked) .pc-anno { display: block; }
-        .pc-anno-tag { font-size: .85em; letter-spacing: .14em; text-transform: uppercase; }
-        .pc-open { opacity: .5; }
-        .pc-anno-why { opacity: .7; }
+        .pc-anno { position: absolute; inset-inline-start: calc(100% + 32px); display: none; white-space: nowrap; font-family: ${({ theme }) => theme.font}; font-size: calc(.73 * ${({ theme }) => theme.size}); line-height: 1.45; letter-spacing: .12em; text-transform: uppercase; font-weight: 400; color: color-mix(in srgb, ${({ theme }) => theme.ink} 72%, ${({ theme }) => theme.paper}); }
+        .pc-open { opacity: .55; }
         .pc-anno[data-claim] { cursor: pointer; }
-        td > .pc-anno { position: static; display: none; inline-size: auto; margin-inline-start: .9em; white-space: nowrap; opacity: .6; }
-        .pc-spart:has(> h2 .pc-sec-anno:checked) td > .pc-anno { display: inline; }
+        .pc-anno[data-claim]:hover { color: ${({ theme }) => theme.link}; }
     `;
 }
 
@@ -292,14 +297,14 @@ marked.use({
     ],
 });
 
-const cited = /\[(\d+(?:,\s*\d+)*)\]|\b[Ss]ections? \d+(?: to \d+)?\b|\b[KCO]\d+\b|\b\d\.\d\b/g;
+const cited = /\[(\d+(?:,\s*\d+)*)\]|\b[Ss]ections? \d+(?: to \d+)?\b|\b[KCOI]\d+\b|\b\d\.\d(?:\.\d)?\b/g;
 
 export const place = (citation: string): string => {
     const section = citation.match(/^[Ss]ections? (\d+)/);
     if (section !== null) return `cite-sec-${section[1]}`;
-    const label = citation.match(/^([KCO])(\d+)$/);
+    const label = citation.match(/^([KCOI])(\d+)$/);
     if (label !== null) return `cite-${label[1].toLowerCase()}${label[2]}`;
-    return `cite-${citation.replace('.', '-')}`;
+    return `cite-${citation.replace(/\./g, '-')}`;
 };
 
 const link = (citation: string): string => {
@@ -315,7 +320,7 @@ const mention = (passage: string, sections: boolean): string =>
         if (piece.startsWith('<')) return piece;
         const previous = pieces[index - 1];
         const lead = previous !== undefined && previous.includes('id="cite-')
-            ? (piece.match(/^(?:[KCO]\d+|\d+\.\d+|\d+\.)/) ?? [''])[0]
+            ? (piece.match(/^(?:[KCOI]\d+|\d+\.\d+(?:\.\d+)?|\d+\.)/) ?? [''])[0]
             : '';
         return lead + piece.slice(lead.length).replace(cited, found =>
             !sections && /^[Ss]ection/.test(found) ? found : link(found));
@@ -324,8 +329,10 @@ const mention = (passage: string, sections: boolean): string =>
 const connect = (rendered: string): string => {
     const identified = rendered
         .replace(/<h2>(\d+)\. /g, (whole, section) => `<h2 id="cite-sec-${section}">${section}. `)
+        .replace(/<h3>(\d+)\.(\d+) /g, (whole, section, part) => `<h3 id="cite-${section}-${part}">${section}.${part} `)
+        .replace(/<(strong|td)>(\d+)\.(\d+)\.(\d+) /g, (whole, tag, section, part, clause) => `<${tag} id="cite-${section}-${part}-${clause}">${section}.${part}.${clause} `)
         .replace(/<(strong|td)>(\d+)\.(\d+) /g, (whole, tag, section, part) => `<${tag} id="cite-${section}-${part}">${section}.${part} `)
-        .replace(/<(strong|td)>([KCO])(\d+) /g, (whole, tag, letter, number) => `<${tag} id="cite-${letter.toLowerCase()}${number}">${letter}${number} `);
+        .replace(/<(strong|td)>([KCOI])(\d+) /g, (whole, tag, letter, number) => `<${tag} id="cite-${letter.toLowerCase()}${number}">${letter}${number} `);
     const boundary = identified.indexOf('<h2>Related work</h2>');
     if (boundary === -1) return mention(identified, true);
     let count = 0;
@@ -338,29 +345,46 @@ const connect = (rendered: string): string => {
 // (entirely) and show-all parts again... move them around to compare... toggle the annotations on what is
 // visible" — and the fourteenth: "We have to implement this and it needs to be interactive and have great
 // examples." The specification of the tree is Our Reference / The Specification, section 9. This second
-// pass nests what connect identified — each heading gathers its section, each block of a section is a
-// part — and the controls ride in the markup: the fold on the heading with its quiet count, the hide in
-// the gutter, show-all and the page's annotation square in a quiet bar, a square per section in its
-// heading. Every press lands in the one dispatcher on the document below.
+// pass nests what connect identified, and at the sixteenth round — "We need to be able to collapse and
+// expand every level... collapse everything to just the sections... We need reset not just show all up
+// top" — it nests recursively: a section gathers its sub-parts by their own headings, a sub-part gathers
+// its clauses, and every node carries its home box and its seat so reset can return the document's own
+// order exactly. The bar carries the whole tree's verbs; every press lands in the one dispatcher below.
 const treeify = (rendered: string): string => {
     const sections = rendered.split(/(?=<h2)/);
     const lead = sections.shift() ?? '';
-    const bar = '<span class="pc-tree-bar"><label class="pc-layerbox"><input type="checkbox" class="pc-anno-master" checked />annotations</label><span class="pc-showall">show all</span></span>';
-    return bar + lead + sections.map(section => {
-        const heading = section.indexOf('</h2>');
-        const parts = section.slice(heading + 5).split(/(?=<(?:p|ul|ol|table|div|h3|blockquote|pre)[ >])/).filter(part => part.trim() !== '');
-        const head = `${section.slice(0, heading)}<span class="pc-count">${parts.length} parts</span><input type="checkbox" class="pc-sec-anno" checked /></h2>`;
-        const kids = parts.map(part => `<div class="pc-part" draggable="true"><span class="pc-x" title="hide">×</span>${part}</div>`).join('');
-        return `<section class="pc-spart" draggable="true"><span class="pc-x pc-sec-x" title="hide">×</span>${head}<div class="pc-kids">${kids}</div></section>`;
-    }).join('');
+    const bar = '<span class="pc-tree-bar"><label class="pc-layerbox"><input type="checkbox" class="pc-anno-master" checked />annotations</label><span class="pc-verb pc-sections">sections</span><span class="pc-verb pc-expand">expand</span><span class="pc-verb pc-showall">show all</span><span class="pc-verb pc-return">everything</span><span class="pc-verb pc-reset">reset</span></span>';
+    let boxes = 0;
+    const blocks = (passage: string): string[] =>
+        passage.split(/(?=<(?:p|ul|ol|table|div|blockquote|pre)[ >])/).filter(block => block.trim() !== '');
+    const leaf = (block: string, home: number | 'root', seat: number): string =>
+        `<div class="pc-part" draggable="true" data-home="${home}" data-seat="${seat}"><span class="pc-x" title="hide">×</span><span class="pc-o" title="only this">○</span>${block}</div>`;
+    const group = (passage: string, level: number, home: number | 'root', seat: number): string => {
+        const close = level === 1 ? '</h2>' : '</h3>';
+        const at = passage.indexOf(close);
+        const head = passage.slice(0, at);
+        const body = passage.slice(at + close.length);
+        const box = ++boxes;
+        const kids: string[] = [];
+        (level === 1 ? body.split(/(?=<h3)/) : [body]).forEach(piece => {
+            if (piece.startsWith('<h3')) kids.push(group(piece, 2, box, kids.length));
+            else blocks(piece).forEach(block => kids.push(leaf(block, box, kids.length)));
+        });
+        const inner = kids.join('');
+        const parts = (inner.match(/class="pc-part"/g) ?? []).length;
+        const square = level === 1 ? '<input type="checkbox" class="pc-sec-anno" checked />' : '';
+        return `<section class="pc-spart" draggable="true" data-level="${level}" data-box="${box}" data-home="${home}" data-seat="${seat}"><span class="pc-x pc-sec-x" title="hide">×</span><span class="pc-o pc-sec-o" title="only this">○</span>${head}<span class="pc-count">${parts} parts</span>${square}${close}<div class="pc-kids">${inner}</div></section>`;
+    };
+    return bar + lead + sections.map((section, seat) => group(section, 1, 'root', seat)).join('');
 };
 
 // COVERAGE FROM THE CITATIONS, clause 4.2 of Sprint 130's record made mechanism: "justifications frequently
 // map to the citations on the project side." The deliverable already cites the specification through Cite,
 // so the marks are computed from the page's own citations, never authored twice: a claimed clause wears
-// Cited and the mark leads back to the claim; an unclaimed clause reads Open; a table-row clause takes the
-// quiet inline form. Computed once, lazily, at the first flip — the client's own pass, nothing walked at
-// the server's draw.
+// Cited and the mark leads back to the claim; an unclaimed clause reads Open. Computed once, lazily, at the
+// first flip — the client's own pass, nothing walked at the server's draw. The sixteenth round made the
+// marks consistent — "The annotations are messy... Annotations need to be consistent" — one chip per
+// subject, heading, clause and table row alike, laid out by the rail below.
 const cover = (): void => {
     const tree = document.querySelector('.pc-tree');
     if (tree === null || tree.classList.contains('pc-covered')) return;
@@ -374,26 +398,43 @@ const cover = (): void => {
             claims.set(id, { at: `claim-${id}`, count: 1 });
         } else claim.count += 1;
     });
-    tree.querySelectorAll('strong[id^="cite-"], td[id^="cite-"], h2[id^="cite-sec-"]').forEach(clause => {
+    tree.querySelectorAll('strong[id^="cite-"], td[id^="cite-"], h2[id^="cite-sec-"], h3[id^="cite-"]').forEach(clause => {
         const claim = claims.get(clause.id);
-        const mark = document.createElement('span');
-        if (clause.tagName === 'TD') {
-            mark.className = claim === undefined ? 'pc-anno pc-open' : 'pc-anno';
-            mark.textContent = claim === undefined ? '· open' : claim.count > 1 ? `· cited ×${claim.count}` : '· cited';
-            if (claim !== undefined) mark.setAttribute('data-claim', claim.at);
-            clause.appendChild(mark);
-            return;
-        }
-        const block = clause.tagName === 'H2' ? clause : clause.closest('p, li') ?? clause;
-        block.classList.add('pc-claused');
-        mark.className = 'pc-anno';
-        if (claim === undefined) {
-            mark.innerHTML = '<span class="pc-anno-tag pc-open">Open</span><br><span class="pc-anno-why">No part of the chapter cites this clause.</span>';
-        } else {
-            mark.setAttribute('data-claim', claim.at);
-            mark.innerHTML = `<span class="pc-anno-tag">Cited${claim.count > 1 ? ` · ${claim.count} places` : ''}</span><br><span class="pc-anno-why">The chapter claims this part; the mark leads to the claim.</span>`;
-        }
-        block.appendChild(mark);
+        const chip = document.createElement('span');
+        chip.className = claim === undefined ? 'pc-anno pc-open' : 'pc-anno';
+        chip.setAttribute('data-for', clause.id);
+        chip.textContent = claim === undefined ? 'Open' : claim.count > 1 ? `Cited ×${claim.count}` : 'Cited';
+        chip.title = claim === undefined
+            ? 'No part of the chapter cites this clause.'
+            : 'The chapter claims this part; the mark leads to the claim.';
+        if (claim !== undefined) chip.setAttribute('data-claim', claim.at);
+        tree.appendChild(chip);
+    });
+};
+
+// THE RAIL, the sixteenth round's answer to the messy margin: one form for every subject — a one-line mark
+// in a single lane at the writing's right edge, level with its subject, stacked so no mark ever collides
+// with another — and one layout pass that re-lays the lane after every act on the tree. A mark draws only
+// while its subject stands and its section's square is on; the writing never moves to make room, because
+// the rail stands outside the measure.
+const rail = (): void => {
+    const tree = document.querySelector<HTMLElement>('.pc-tree');
+    if (tree === null) return;
+    const master = tree.querySelector<HTMLInputElement>('.pc-anno-master');
+    const frame = tree.getBoundingClientRect();
+    const standing: { chip: HTMLElement; at: number }[] = [];
+    tree.querySelectorAll<HTMLElement>(':scope > .pc-anno').forEach(chip => {
+        const subject = document.getElementById(chip.getAttribute('data-for') ?? '');
+        const square = subject?.closest('.pc-spart[data-level="1"]')?.querySelector<HTMLInputElement>(':scope > h2 > .pc-sec-anno');
+        const seen = subject !== null && subject.getClientRects().length > 0 && (square?.checked ?? master?.checked ?? true);
+        chip.style.display = seen ? 'block' : 'none';
+        if (seen && subject !== null) standing.push({ chip, at: subject.getBoundingClientRect().top - frame.top });
+    });
+    let floor = -Infinity;
+    standing.sort((a, b) => a.at - b.at).forEach(({ chip, at }) => {
+        const top = Math.max(at, floor);
+        chip.style.insetBlockStart = `${top}px`;
+        floor = top + chip.offsetHeight + 2;
     });
 };
 
@@ -401,8 +442,10 @@ let dragged: HTMLElement | null = null;
 
 const aim = (over: Element | null): HTMLElement | null => {
     if (dragged === null || over === null) return null;
-    const group = dragged.classList.contains('pc-spart');
-    const target = group ? over.closest<HTMLElement>('.pc-spart') : over.closest<HTMLElement>('.pc-part') ?? over.closest<HTMLElement>('.pc-spart');
+    const top = dragged.getAttribute('data-level') === '1';
+    const target = top
+        ? over.closest<HTMLElement>('.pc-spart[data-level="1"]')
+        : over.closest<HTMLElement>('.pc-part') ?? over.closest<HTMLElement>('.pc-spart');
     if (target === null || target === dragged || dragged.contains(target)) return null;
     return target;
 };
@@ -415,34 +458,94 @@ const unseat = (): void => {
 // like that. I said verbatim" — the chapter's appended markdown parsed by marked, the package's own dependency,
 // and drawn as the document renders: the bold lead-ins, the tables, the lists, the document's own title.
 // A citation click turns the page itself — the hash never moves, so the place in the address stays the chapter's.
-// With tree on — the specification's document — the one click handler is the tree's dispatcher too: the
-// gutter hides, show-all restores, the squares rule the annotation layer with the bar's square as every
-// section's at once, a heading press folds, a mark with a claim turns the page back to the citation that
-// claims it, and a citation press lands as it always has.
+// With tree on — the specification's document — the one click handler is the tree's dispatcher too, carrying
+// the contract's operations of the sixteenth round: the gutter hides and the gutter's ring shows one part
+// alone, show-all and everything are their inverses, sections folds the whole tree to its headings and
+// expand unfolds every level, reset reseats the document's own order and clears every view state at once,
+// the squares rule the annotation layer with the bar's square as every section's at once, a heading press
+// folds at any level, a mark with a claim turns the page back to the citation that claims it, and a
+// citation press lands as it always has. Every act that changes what stands re-lays the rail.
 export class $Markdown extends $Paragraph {
     $identifier = '';
     $tree = false;
 
     follow = (press: MouseEvent<HTMLDivElement>): void => {
+        const root = press.currentTarget;
         const pressed = press.target as Element;
         const x = pressed.closest('.pc-x');
         if (x !== null) {
             x.closest(x.classList.contains('pc-sec-x') ? '.pc-spart' : '.pc-part')?.classList.add('pc-hidden');
+            rail();
+            return;
+        }
+        const ring = pressed.closest('.pc-o');
+        if (ring !== null) {
+            const one = ring.closest('.pc-part, .pc-spart');
+            const was = one?.classList.contains('pc-the-one') ?? false;
+            root.querySelectorAll('.pc-dim, .pc-the-one').forEach(part => part.classList.remove('pc-dim', 'pc-the-one'));
+            if (!was && one !== null) {
+                one.classList.add('pc-the-one');
+                const dim = (box: Element): void => {
+                    [...box.children].forEach(child => {
+                        if (child === one) return;
+                        if (child.contains(one)) {
+                            const kids = child.querySelector(':scope > .pc-kids');
+                            if (kids !== null) dim(kids);
+                            return;
+                        }
+                        if (child.classList.contains('pc-part') || child.classList.contains('pc-spart')) child.classList.add('pc-dim');
+                    });
+                };
+                dim(root);
+            }
+            rail();
             return;
         }
         if (pressed.closest('.pc-showall') !== null) {
-            press.currentTarget.querySelectorAll('.pc-hidden').forEach(part => part.classList.remove('pc-hidden'));
+            root.querySelectorAll('.pc-hidden').forEach(part => part.classList.remove('pc-hidden'));
+            rail();
+            return;
+        }
+        if (pressed.closest('.pc-return') !== null) {
+            root.querySelectorAll('.pc-dim, .pc-the-one').forEach(part => part.classList.remove('pc-dim', 'pc-the-one'));
+            rail();
+            return;
+        }
+        if (pressed.closest('.pc-sections') !== null) {
+            root.querySelectorAll('.pc-spart').forEach(part => part.classList.add('pc-folded'));
+            rail();
+            return;
+        }
+        if (pressed.closest('.pc-expand') !== null) {
+            root.querySelectorAll('.pc-folded').forEach(part => part.classList.remove('pc-folded'));
+            rail();
+            return;
+        }
+        if (pressed.closest('.pc-reset') !== null) {
+            root.querySelectorAll('.pc-hidden, .pc-folded, .pc-dim, .pc-the-one').forEach(part =>
+                part.classList.remove('pc-hidden', 'pc-folded', 'pc-dim', 'pc-the-one'));
+            const boxes = new Map<string, Element>([['root', root]]);
+            root.querySelectorAll('[data-box]').forEach(box => {
+                const kids = box.querySelector(':scope > .pc-kids');
+                if (kids !== null) boxes.set(box.getAttribute('data-box') ?? '', kids);
+            });
+            [...root.querySelectorAll<HTMLElement>('[data-home]')]
+                .sort((a, b) => Number(a.getAttribute('data-seat')) - Number(b.getAttribute('data-seat')))
+                .forEach(node => boxes.get(node.getAttribute('data-home') ?? '')?.append(node));
+            rail();
             return;
         }
         const master = pressed.closest('.pc-anno-master');
         if (master instanceof HTMLInputElement) {
-            press.currentTarget.querySelectorAll<HTMLInputElement>('.pc-sec-anno').forEach(box => { box.checked = master.checked; });
+            root.querySelectorAll<HTMLInputElement>('.pc-sec-anno').forEach(box => { box.checked = master.checked; });
+            rail();
             return;
         }
         if (pressed.closest('.pc-sec-anno') !== null) {
-            const boxes = [...press.currentTarget.querySelectorAll<HTMLInputElement>('.pc-sec-anno')];
-            const all = press.currentTarget.querySelector<HTMLInputElement>('.pc-anno-master');
+            const boxes = [...root.querySelectorAll<HTMLInputElement>('.pc-sec-anno')];
+            const all = root.querySelector<HTMLInputElement>('.pc-anno-master');
             if (all !== null) all.checked = boxes.every(box => box.checked);
+            rail();
             return;
         }
         const mark = pressed.closest('.pc-anno');
@@ -460,9 +563,10 @@ export class $Markdown extends $Paragraph {
             }
             return;
         }
-        const heading = pressed.closest('.pc-spart > h2');
+        const heading = pressed.closest('.pc-spart > h2, .pc-spart > h3');
         if (heading !== null) {
             heading.parentElement?.classList.toggle('pc-folded');
+            rail();
             return;
         }
         const citation = pressed.closest('a[href^="#cite-"]');
@@ -496,8 +600,8 @@ export class $Markdown extends $Paragraph {
         fall.preventDefault();
         const box = target.getBoundingClientRect();
         const before = fall.clientY < box.top + box.height / 2;
-        if (!dragged.classList.contains('pc-spart') && target.classList.contains('pc-spart')) {
-            const kids = target.querySelector('.pc-kids');
+        if (dragged.getAttribute('data-level') !== '1' && target.classList.contains('pc-spart')) {
+            const kids = target.querySelector(':scope > .pc-kids');
             if (kids !== null) {
                 if (before) kids.prepend(dragged);
                 else kids.append(dragged);
@@ -506,6 +610,7 @@ export class $Markdown extends $Paragraph {
             target.parentElement?.insertBefore(dragged, before ? target : target.nextSibling);
         }
         dragged = null;
+        rail();
     };
 
     settle = (): void => {
@@ -556,6 +661,8 @@ export class $Cite extends $Word {
         const turn = (): void => {
             const flip = document.getElementById('pc-flip');
             if (flip instanceof HTMLInputElement) flip.checked = true;
+            cover();
+            rail();
             document.getElementById(place(part))?.scrollIntoView({ block: 'center' });
         };
         const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };

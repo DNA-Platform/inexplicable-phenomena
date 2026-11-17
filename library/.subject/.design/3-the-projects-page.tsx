@@ -67,6 +67,22 @@ export default () => (
                 each, which is what comparing is for; though the margin crowds where two long marks meet, the
                 collision joining the phone among the margin's opens.
             </Paragraph>
+            <Paragraph>
+                The sixteenth round called those margin marks messy and asked for the formal contract, and the
+                built page answered in the real renderer rather than the sketch. The marks became the rail:
+                one one-line mark per subject — heading, clause and table row alike — in a single lane at the
+                writing's right edge, stacked so nothing ever collides, the why on the hover and the claim on
+                the press, which closed the collision this chapter's findings had named. The bar grew its
+                verbs — sections, expand, show all, everything, reset — and the gutter its second mark, the
+                ring that shows one part alone on its ancestors' path; every level folds now that the
+                sub-parts nest by their own headings, and reset reseats the document's own order exactly,
+                because every part carries its home and its seat. What the look found this time: the only
+                state collapsed the statement of work to "4.2.1 Singular. X is one thing." standing alone
+                above the identification's serif entries — the page's best argument for itself; the rail
+                reads evenly beside tables, where the old inline row marks used to break the form; and a
+                mark's seat drifts a line where the stack pushes down, the drift being the price of never
+                colliding, quiet enough to keep.
+            </Paragraph>
         </Section>
         <Section>
             <Heading>The photographs of the parts</Heading>
@@ -102,6 +118,12 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 <Image>![[ the-parts-edge-opened-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ the-rail-desk.png ]]</Image>
+            </Paragraph>
+            <Paragraph>
+                <Image>![[ the-only-desk.png ]]</Image>
             </Paragraph>
         </Section>
         <Append

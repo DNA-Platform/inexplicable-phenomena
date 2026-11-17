@@ -7,8 +7,8 @@
     },
     {
       "folder": ".reference",
-      "digest": "e5c8de45389c0b9e",
-      "walked": 208
+      "digest": "1e27051c71430403",
+      "walked": 214
     },
     {
       "folder": ".subject",
@@ -17,8 +17,8 @@
     },
     {
       "folder": ".subject/.design",
-      "digest": "dca79aa5112e9793",
-      "walked": 139
+      "digest": "c1bbb6f3916563d3",
+      "walked": 144
     },
     {
       "folder": ".subject/dictionary",
@@ -47,7 +47,7 @@
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "2b355d6fc1e900f6",
+      "digest": "9eedc5d81a1e77e1",
       "walked": 150
     },
     {
@@ -77,8 +77,8 @@
     },
     {
       "folder": "mathematics/arithmetic/.textbook",
-      "digest": "1a1450fa60579f1a",
-      "walked": 211
+      "digest": "f2efd32e8b7cca00",
+      "walked": 217
     },
     {
       "folder": "neuroscience/.subject",

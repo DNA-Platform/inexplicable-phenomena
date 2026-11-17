@@ -58,16 +58,16 @@ export default () => (
                 <Line>5.3 A relation is a type of annotation between two things, finding both ends by mention: a justification relates an identification entry to a clause; a connecting principle relates two principles.</Line>
                 <Line>5.4 An annotation is itself a thing — mentionable, so annotatable and relatable in turn. This closure lets a justification claim several clauses, lets a relationship between intuitions be an intuition, and lets the graph tangle.</Line>
                 <Line>5.5 A section toggles its own annotations by a small square in its heading; the page's layer is every section's toggle at once.</Line>
-                <Line>5.6 An annotation draws beside its subject in the small voice, and the writing never moves to make room; a relation draws at both of its ends, each citing the other, and opened by a press it stands between its two things. Nothing draws while the toggle is off, and nothing draws where its subject does not stand.</Line>
+                <Line>5.6 An annotation draws as a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide — one form whether the subject is a heading, a clause or a table row — in the small voice, the why on its hover, and the writing never moves to make room. A relation draws at both of its ends, each citing the other. Nothing draws while the toggle is off, and nothing draws where its subject does not stand.</Line>
             </Paragraph>
         </Section>
         <Section>
             <Heading>6. The open ends</Heading>
             <Paragraph>
                 <List />
-                <Line>5.1 The names: Content collides with the package's word for a Word's content, and Specification with a package utility; both flagged, his to settle, likeliest when the family moves all the way into the package.</Line>
-                <Line>5.2 A subclass cannot yet extend a format's style, so a subject's dress rides inert in the lifted style until the framework grows the composition seam; named, not hacked around.</Line>
-                <Line>5.3 The justifications associate with the progress; the exact tie stands open.</Line>
+                <Line>6.1 The names: Content collides with the package's word for a Word's content, and Specification with a package utility; both flagged, his to settle, likeliest when the family moves all the way into the package.</Line>
+                <Line>6.2 A subclass cannot yet extend a format's style, so a subject's dress rides inert in the lifted style until the framework grows the composition seam; named, not hacked around.</Line>
+                <Line>6.3 The justifications associate with the progress; the exact tie stands open.</Line>
             </Paragraph>
         </Section>
         <Code
