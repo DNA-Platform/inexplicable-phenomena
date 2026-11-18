@@ -18,7 +18,7 @@ export default () => (
             <Paragraph>
                 <List />
                 <Line>2.1 The listing part dresses the reference manual's listing in the numbers measured off my own library's manual on 17 November 2026, <Means>$[[ ./The Reference Manual ]]</Means> 3.1: JetBrains Mono at 12px on a 20.4px line, the ink pale on a night of deep teal, keywords sky, strings amber, names mint, comments dimmed, the numbers in a 44px column of brass, and the light palette when the book wears the light switch.</Line>
-                <Line>2.2 The same part lets the sheet's measure go while the book is editing, so the editor's layer may grid the window, and sets an appendix section at the table's foot in the smaller voice, <Means>$[[ ./The Reference Manual ]]</Means> 6.3.</Line>
+                <Line>2.2 The same part lets the sheet's measure go while the book is editing, so the editor's layer may grid the window. The appendix section of a table takes no rule of its own: it is a section of the table like any other, in the same voice, <Means>$[[ ./The Reference Manual ]]</Means> 6.3, on my word of 19 November 2026 against a faded smaller section behind a divider.</Line>
             </Paragraph>
         </Section>
         <Listing />

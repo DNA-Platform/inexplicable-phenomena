@@ -58,9 +58,10 @@ export class $LibraryTheme extends $Theme {
             .pd-listing .hljs-comment, .pd-listing .hljs-meta { color: var(--comment); }
             .pd-listing .pd-run { display: block; width: 100%; height: 70vh; border: 0; background: #fff; }
             /* THE EDITOR TAKES THE WINDOW: while the book is editing, the sheet lets its measure go and the editor's
-               layer grids it; the appendix, a part of the table of contents, stands at its foot in the smaller voice. */
+               layer grids it. The appendix, a part of the table of contents, is a section of the table like any
+               other and takes no rule of its own: Doug, 2026-11-19, on a faded smaller section behind a divider,
+               "what is with the small weird fade, non-matching appendix part... Do we need dividers? So much space." */
             &:has(.pd-book.pa-editing) { max-width: none; margin-inline: 0; padding: 0; }
-            .pa-table-of-contents .pd-section.pa-appendix { margin-block-start: calc(2 * ${({ theme }) => theme.space}); padding-block-start: calc(${({ theme }) => theme.space} * 0.8); border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 15%, ${({ theme }) => theme.paper}); font-size: .86em; opacity: .82; }
         `;
     }
 
