@@ -7,8 +7,8 @@ import { $Paragraph } from '@dna-platform/public';
 // chapter, The Content, and mathematics re-exports them so this manual and the textbook keep their one door.
 // Mathematics keeps only its deliverable's dress below.
 export {
-    $Content, $Project, $Specification, $Identification, $Intuition, $Progress, $Markdown, $Cite, $Interpolated,
-    Content, Project, Specification, Identification, Intuition, Progress, Markdown, Cite, Interpolated,
+    $Content, $Project, $Specification, $Identification, $Intuition, $Progress, $Markdown, $Cite, $Figure, $Interpolated,
+    Content, Project, Specification, Identification, Intuition, Progress, Markdown, Cite, Figure, Interpolated,
 } from '../../.reference/9-the-content~code.tsx';
 
 // THE DELIVERABLE'S DRESS, Doug, 2026-11-16: components divide in two families — those that express the

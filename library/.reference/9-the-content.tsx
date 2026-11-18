@@ -1,4 +1,5 @@
-import { Append, Chapter, Code, Heading, Line, List, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Heading, Line, List, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Listing } from './7-the-reference-manual~code.tsx';
 
 export default () => (
     <Chapter>
@@ -45,7 +46,7 @@ export default () => (
             <Paragraph>
                 <List />
                 <Line>4.1 Content, the format whose note is the toggle and whose style rules the sides. Project, the back's section; Specification, Identification, Intuition and Progress, its named parts in the order of the work — the justification is not a section, riding as annotations between the identification and the specification.</Line>
-                <Line>4.2 Markdown, the document rendered verbatim and connected. Cite, the implementation's citation. Interpolated, the placeholder.</Line>
+                <Line>4.2 Markdown, the document rendered verbatim and connected. Cite, the implementation's citation. Figure, the annotation that shows its object alone. Interpolated, the placeholder.</Line>
                 <Line>4.3 A subject specializes the deliverable's dress — mathematics adds Theorem and Proof beside its own manual chapter — and re-exports the family so its books keep one door.</Line>
             </Paragraph>
         </Section>
@@ -57,8 +58,9 @@ export default () => (
                 <Line>5.2 An annotation is writing said of a thing with a sort — Idea, Question, Revision, Archive, and the project's own, Justification among them. It is the infrastructure's annotation; there is no second species.</Line>
                 <Line>5.3 A relation is a type of annotation between two things, finding both ends by mention: a justification relates an identification entry to a clause; a connecting principle relates two principles.</Line>
                 <Line>5.4 An annotation is itself a thing — mentionable, so annotatable and relatable in turn. This closure lets a justification claim several clauses, lets a relationship between intuitions be an intuition, and lets the graph tangle.</Line>
-                <Line>5.5 A section toggles its own annotations by a small square in its heading; the page's layer is every section's toggle at once.</Line>
+                <Line>5.5 A section toggles its own annotations by a small square in its heading; the page's layer is every section's toggle at once. No square starts checked — the marks stand off the page until asked, and one press of the page's square shows them all.</Line>
                 <Line>5.6 An annotation draws as a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide — one form whether the subject is a heading, a clause or a table row — in the small voice, the why on its hover, and the writing never moves to make room. A relation draws at both of its ends, each citing the other. Nothing draws while the toggle is off, and nothing draws where its subject does not stand.</Line>
+                <Line>5.7 A figure is an annotation that names an object of the writing by mention, carrying a title and a caption. Its mark rides the rail; its press shows its object alone — the only-state dressed, the title above, the caption beneath, unshown until the title is pressed. A figure without a title is just the writing, alone.</Line>
             </Paragraph>
         </Section>
         <Section>
@@ -70,10 +72,7 @@ export default () => (
                 <Line>6.3 The justifications associate with the progress; the exact tie stands open.</Line>
             </Paragraph>
         </Section>
-        <Code
-            identifier="code"
-            type=".tsx"
-        />
+        <Listing />
         <Append
             identifier="code"
             type=".tsx"

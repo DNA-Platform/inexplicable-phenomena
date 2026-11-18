@@ -1,4 +1,5 @@
 import { Append, Chapter, Heading, Line, List, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Listing } from './7-the-reference-manual~code.tsx';
 
 export default () => (
     <Chapter>
@@ -93,19 +94,27 @@ export default () => (
                 <Line>9.4 The operations, each with its inverse, at every level of the tree:</Line>
                 <Line>9.4.1 Fold — a press on any part's heading folds its children beneath a quiet count; a second press unfolds.</Line>
                 <Line>9.4.2 Hide — a part hides entirely from its gutter; show-all returns every hidden part.</Line>
-                <Line>9.4.3 Only — a part stands alone, the one thing on the screen, its ancestors' headings standing as its path; at most one part stands alone at a time; pressing it again, or everything, returns the rest.</Line>
+                <Line>9.4.3 Only — a part stands alone, the one thing on the screen, its ancestors' headings standing as its path; at most one part stands alone at a time; pressing it again, or everything, returns the rest. A figure's mark (9.8) is a second door to this state, left by the same inverses.</Line>
                 <Line>9.4.4 Move — parts move beside one another to compare, across sections and at any level; sections reorder among themselves.</Line>
                 <Line>9.4.5 Reset — the strongest inverse: every part reseated in the document's own order, every fold, hide and alone-state cleared at once. Each part carries its home and its seat from the rendering, so the return is exact.</Line>
                 <Line>9.5 The bar: the whole tree's verbs stand up top — the annotation layer's square, sections folding the tree to its headings where they can be cleared and reordered, expand unfolding every level, show all while something hides, everything while one part stands alone, and reset always.</Line>
-                <Line>9.6 The annotations are consistent: one form for every subject — a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide, and the writing never moves to make room. The why stands on the mark's hover and the claim on its press; a relation's visible end still draws, citing across; a mark draws only while its subject stands and its section's square is on.</Line>
+                <Line>9.6 The annotations are consistent: one form for every subject — a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide, and the writing never moves to make room. The why stands on the mark's hover and the claim on its press; a relation's visible end still draws, citing across; a mark draws only while its subject stands and its section's square is on. No square starts checked — the layer stands dark until the bar's square lights every mark.</Line>
                 <Line>9.7 The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.</Line>
+                <Line>9.8 The figure — an annotation naming an object of the specification by its code, with a title and a caption. Its mark rides the rail; its press is 9.4.3 performed on its object, dressed: the title above, the caption beneath, unshown until the title is pressed. A figure without a title is just the writing, alone.</Line>
             </Paragraph>
         </Section>
+        <Listing />
         <Append
             identifier="tree"
             type=".html"
         >
             ![[ tree.html ]]
+        </Append>
+        <Append
+            identifier="code"
+            type=".tsx"
+        >
+            ![[ code.tsx ]]
         </Append>
     </Chapter>
 );

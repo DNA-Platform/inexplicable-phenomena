@@ -19,7 +19,49 @@ export class $LibraryTheme extends $Theme {
     style: ElementType = selection.div`${this.parts()}`;
 
     protected parts(): RuleSet[] {
-        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate(), this.navigation()];
+        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate(), this.navigation(), this.listing()];
+    }
+
+    // THE LISTING IS HIS, Sprint 131, measured off his manual on 2026-11-17 on Doug's "the code should probably look
+    // identical to what's in mine": JetBrains Mono at 12px on a 20.4px line, the ink #d6e1e3 on a night of deep teal,
+    // keywords sky, strings amber, names mint, comments dimmed, the numbers in a 44px column of brass, his light
+    // palette when the book wears the light switch; the bar his, the file tabs in the face, the words in the page's
+    // own label voice. The pane scrolls within seven tenths of the window on the page; the editor's layer lets it
+    // take the window. No shading anywhere, his "Not bookish with shading. Paperish as in unfinished"; the light
+    // palette alone keeps a hairline inside, since paper on paper needs an edge.
+    protected listing(): RuleSet {
+        return css`
+            .pd-listing { --night: oklch(0.294 0.028 222.6); --dusk-top: oklch(0.414 0.026 219.3); --dusk: oklch(0.334 0.030 219.3); --bar-line: oklch(0.472 0.042 183.1); --glow: #d6e1e3; --dim: oklch(0.508 0.053 170.2); --brass: #d8c48e; --keyword: #8ad7ff; --string: #ffd48a; --name: #9be3d6; --comment: #5f8a86; display: grid; grid-template-rows: auto minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); min-width: 0; margin-block: ${({ theme }) => theme.space}; background: var(--night); color: var(--glow); }
+            .pd-book.pa-light-code .pd-listing { --night: #f6f7f4; --dusk-top: oklch(0.952 0.007 90); --dusk: #eceee8; --bar-line: oklch(0.912 0.027 90); --glow: #2b363c; --dim: oklch(0.738 0.033 88.3); --brass: #5d4a16; --keyword: #5a4fa8; --string: #2f7f6e; --name: #23407a; --comment: #8a94a3; box-shadow: inset 0 0 0 1px color-mix(in srgb, ${({ theme }) => theme.ink} 12%, transparent); }
+            .pd-listing-bar { display: flex; flex-wrap: wrap; align-items: stretch; gap: 1px; min-width: 0; margin-block: 0; padding: 0 0 0 2px; background: linear-gradient(180deg, var(--dusk-top), var(--dusk)); border-block-end: thin solid var(--bar-line); }
+            .pd-listing-bar .pd-file-tab { display: flex; align-items: center; gap: 7px; padding: 9px 14px 8px 12px; border: 0; border-block-start: 2px solid transparent; background: none; font: 500 12px/1 'JetBrains Mono', ui-monospace, monospace; color: color-mix(in oklch, var(--glow) 62%, var(--night)); cursor: pointer; }
+            .pd-listing-bar .pd-file-tab[aria-pressed='true'] { color: var(--glow); background: var(--night); border-block-start-color: var(--brass); }
+            .pd-listing-bar .pd-mark { color: #9aa4b3; font-size: 13px; letter-spacing: -1px; }
+            .pd-listing-bar .pd-file-tab[aria-pressed='true'] .pd-mark { color: var(--brass); }
+            .pd-listing-bar .pd-faces, .pd-listing-bar .pd-options, .pd-listing-bar .pd-modes { display: flex; align-items: center; gap: 2px; padding: 0 8px 0 4px; border-inline-start: thin solid color-mix(in oklch, var(--glow) 12%, transparent); }
+            .pd-listing-bar .pd-options { margin-inline-start: auto; }
+            .pd-listing-bar .pd-switch, .pd-listing-bar .pd-run-switch { border: 0; background: none; padding: 5px 7px; font-family: ${({ theme }) => theme.font}; font-size: 11.9px; letter-spacing: .15em; text-transform: uppercase; color: color-mix(in oklch, var(--glow) 55%, var(--night)); cursor: pointer; white-space: nowrap; }
+            .pd-listing-bar .pd-switch[aria-pressed='true'], .pd-listing-bar .pd-run-switch[aria-pressed='true'] { color: var(--glow); background: color-mix(in oklch, var(--glow) 10%, transparent); }
+            .pd-listing-bar .pd-modes .pd-switch, .pd-listing-bar .pd-faces .pd-run-switch { color: var(--brass); }
+            .pd-listing-bar .pd-modes .pd-switch[aria-pressed='true'], .pd-listing-bar .pd-faces .pd-run-switch[aria-pressed='true'] { color: var(--glow); background: color-mix(in oklch, var(--glow) 10%, transparent); }
+            .pd-listing .pd-pane { max-height: 70vh; min-width: 0; overflow: auto; scrollbar-width: thin; scrollbar-color: transparent transparent; }
+            .pd-listing .pd-pane:hover { scrollbar-color: var(--dim) transparent; }
+            .pd-listing .pd-pane .pd-code { margin: 0; padding: 14px 0; border: 0; font: 400 12px/20.4px 'JetBrains Mono', ui-monospace, monospace; color: var(--glow); background: transparent; white-space: normal; overflow: visible; }
+            .pd-listing .pd-code-line { display: block; white-space: pre; padding-inline-end: 18px; }
+            .pd-listing .pd-code-line::before { content: attr(data-line); display: inline-block; width: 44px; margin: 0; padding-inline-end: 14px; text-align: end; color: var(--dim); opacity: 1; user-select: none; }
+            .pd-book.pa-unnumbered-code .pd-listing .pd-code-line::before { content: ''; width: 14px; padding: 0; }
+            .pd-book.pa-wrapped-code .pd-listing .pd-code-line { white-space: pre-wrap; padding-inline-start: 58px; text-indent: -58px; }
+            .pd-book.pa-wrapped-code .pd-listing .pd-code-line::before { text-indent: 0; }
+            .pd-listing .hljs-keyword, .pd-listing .hljs-built_in, .pd-listing .hljs-literal { color: var(--keyword); }
+            .pd-listing .hljs-string, .pd-listing .hljs-regexp, .pd-listing .hljs-number { color: var(--string); }
+            .pd-listing .hljs-title, .pd-listing .hljs-type, .pd-listing .hljs-tag, .pd-listing .hljs-name, .pd-listing .hljs-attr { color: var(--name); }
+            .pd-listing .hljs-comment, .pd-listing .hljs-meta { color: var(--comment); }
+            .pd-listing .pd-run { display: block; width: 100%; height: 70vh; border: 0; background: #fff; }
+            /* THE EDITOR TAKES THE WINDOW: while the book is editing, the sheet lets its measure go and the editor's
+               layer grids it; the appendix, a part of the table of contents, stands at its foot in the smaller voice. */
+            &:has(.pd-book.pa-editing) { max-width: none; margin-inline: 0; padding: 0; }
+            .pa-table-of-contents .pd-section.pa-appendix { margin-block-start: calc(2 * ${({ theme }) => theme.space}); padding-block-start: calc(${({ theme }) => theme.space} * 0.8); border-block-start: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 15%, ${({ theme }) => theme.paper}); font-size: .86em; opacity: .82; }
+        `;
     }
 
     // THE NAVIGATION, one line of apparatus at the top and bottom of a chapter, drawn around the chapter by the book's

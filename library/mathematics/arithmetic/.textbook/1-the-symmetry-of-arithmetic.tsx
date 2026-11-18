@@ -1,5 +1,5 @@
 import { Append, Chapter, Heading, Line, List, Means, Paragraph, Part, Section, Sentence, Table, Title, Word } from '@dna-platform/public';
-import { Cite, Content, Identification, Interpolated, Markdown, Progress, Proof, Specification, Theorem } from '../../.reference/7-the-content~code.tsx';
+import { Cite, Content, Figure, Identification, Interpolated, Markdown, Progress, Proof, Specification, Theorem } from '../../.reference/7-the-content~code.tsx';
 
 export default () => (
     <Chapter>
@@ -294,6 +294,22 @@ export default () => (
                 identifier="statement-of-work"
                 tree
             />
+            <Figure
+                part="1.1"
+                title="The formalism"
+                caption="Classical first-order logic with identity; the signature 0, S, + and ·; the Peano axioms in this form; and induction as a rule of inference, not as an axiom schema."
+            />
+            <Figure
+                part="4.1"
+                title="The kinds of X"
+                caption="The kind of X is not fixed. A solution states which kind it is and discharges the third column."
+            />
+            <Figure
+                part="section 6"
+                title="The acceptance"
+                caption="Every excluded statement is refuted by PA; the excluded rows are checks to run on a candidate, not further demands."
+            />
+            <Figure part="4.2.3" />
         </Specification>
         <Identification>
             <Heading>Identification</Heading>

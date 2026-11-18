@@ -105,6 +105,11 @@ a.cite { color: var(--teal); text-decoration: none; }
     text-indent: 0;
     opacity: .85;
 }
+.anno.fig { cursor: pointer; }
+.anno.fig:hover { opacity: 1; color: var(--teal); }
+.fig-head { font-weight: 600; cursor: pointer; user-select: none; margin: var(--space) 0 0; }
+.fig-cap { display: none; margin: 5px 0 var(--space); opacity: .7; }
+.fig-cap.cap-shown { display: block; }
 </style>
 </head>
 <body>
@@ -118,7 +123,7 @@ a.cite { color: var(--teal); text-decoration: none; }
 </header>
 
 <nav class="bar">
-    <span class="layer"><input type="checkbox" id="l-anno" checked><label for="l-anno">Annotations</label></span>
+    <span class="layer"><input type="checkbox" id="l-anno"><label for="l-anno">Annotations</label></span>
     <span class="verb" id="v-sections">Sections</span>
     <span class="verb" id="v-expand">Expand</span>
     <span class="verb showall" id="v-showall">Show all</span>
@@ -180,13 +185,14 @@ const specification = {
             { code: '9.4', text: `The operations, each with its inverse, at every level of the tree:`, clauses: [
                 { code: '9.4.1', text: `Fold — a press on any part's heading folds its children beneath a quiet count; a second press unfolds.` },
                 { code: '9.4.2', text: `Hide — a part hides entirely from its gutter; show-all returns every hidden part.` },
-                { code: '9.4.3', text: `Only — a part stands alone, the one thing on the screen, its ancestors' headings standing as its path; at most one part stands alone at a time; pressing it again, or everything, returns the rest.` },
+                { code: '9.4.3', text: `Only — a part stands alone, the one thing on the screen, its ancestors' headings standing as its path; at most one part stands alone at a time; pressing it again, or everything, returns the rest. A figure's mark (9.8) is a second door to this state, left by the same inverses.` },
                 { code: '9.4.4', text: `Move — parts move beside one another to compare, across sections and at any level; sections reorder among themselves.` },
                 { code: '9.4.5', text: `Reset — the strongest inverse: every part reseated in the document's own order, every fold, hide and alone-state cleared at once. Each part carries its home and its seat from the rendering, so the return is exact.` },
             ] },
             { code: '9.5', text: `The bar: the whole tree's verbs stand up top — the annotation layer's square, sections folding the tree to its headings where they can be cleared and reordered, expand unfolding every level, show all while something hides, everything while one part stands alone, and reset always.` },
-            { code: '9.6', text: `The annotations are consistent: one form for every subject — a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide, and the writing never moves to make room. The why stands on the mark's hover and the claim on its press; a relation's visible end still draws, citing across; a mark draws only while its subject stands and its section's square is on.` },
+            { code: '9.6', text: `The annotations are consistent: one form for every subject — a one-line mark in a single rail at the writing's right edge, level with its subject, stacked so marks never collide, and the writing never moves to make room. The why stands on the mark's hover and the claim on its press; a relation's visible end still draws, citing across; a mark draws only while its subject stands and its section's square is on. No square starts checked — the layer stands dark until the bar's square lights every mark.` },
             { code: '9.7', text: `The code of this tree stands in the appendix: the specification held as an object, its rendering operable — and the appendix page is that code run on this specification itself.` },
+            { code: '9.8', text: `The figure — an annotation naming an object of the specification by its code, with a title and a caption. Its mark rides the rail; its press is 9.4.3 performed on its object, dressed: the title above, the caption beneath, unshown until the title is pressed. A figure without a title is just the writing, alone.` },
         ] },
     ],
 };
@@ -194,6 +200,7 @@ const specification = {
 const annotations = [
     { id: 'R1', sort: 'revision', subject: '9', writing: 'Put in at the twelfth round of Sprint 130 and made a formal contract at the sixteenth, 17 November 2026.' },
     { id: 'N1', sort: 'relation', subject: '2.3', objects: ['9.1'], writing: 'The nesting 2.3 states is the tree 9.1 operates.' },
+    { id: 'F1', sort: 'figure', subject: '9.4', title: 'The operations', caption: 'The operations, each with its inverse, at every level of the tree.', writing: 'A figure of the specification; the mark shows its object alone.' },
 ];
 
 const seat = (code) => `c-${code.replace(/\./g, '-')}`;
@@ -222,7 +229,7 @@ specification.sections.forEach((section, at) => {
     group.setAttribute('data-seat', at);
     const kids = section.clauses.map((clause, i) => render(clause, box, i)).join('');
     const count = section.clauses.reduce((sum, clause) => sum + leaves(clause), 0);
-    group.innerHTML = `${gutter}<div class="mdh" data-count="${count} parts">${section.code}. ${section.name}<input type="checkbox" class="sq" checked></div><div class="skids">${kids}</div>`;
+    group.innerHTML = `${gutter}<div class="mdh" data-count="${count} parts">${section.code}. ${section.name}<input type="checkbox" class="sq"></div><div class="skids">${kids}</div>`;
     tree.appendChild(group);
 });
 
@@ -240,6 +247,17 @@ annotations.forEach((a) => {
     if (a.sort === 'relation') {
         chip(a.subject, `${a.id} &#8646; ${cite(a.objects[0])}`, a.writing);
         a.objects.forEach((o) => chip(o, `${a.id} &#8646; ${cite(a.subject)}`, a.writing));
+        return;
+    }
+    if (a.sort === 'figure') {
+        const mark = document.createElement('span');
+        mark.className = 'anno fig';
+        mark.setAttribute('data-for', seat(a.subject));
+        mark.setAttribute('data-title', a.title);
+        mark.setAttribute('data-caption', a.caption);
+        mark.textContent = `Figure · ${a.title}`;
+        mark.title = a.writing;
+        tree.appendChild(mark);
         return;
     }
     chip(a.subject, `${a.id} &middot; ${a.sort}`, a.writing);
@@ -276,25 +294,50 @@ document.querySelectorAll('.spart > .hide').forEach((x) => x.addEventListener('c
     x.parentElement.classList.add('hidden');
     rail();
 }));
+const solo = (one) => {
+    one.classList.add('the-one');
+    const dim = (boxEl) => {
+        [...boxEl.children].forEach((child) => {
+            if (child === one) return;
+            if (child.contains(one)) {
+                const kids = child.querySelector(':scope > .skids');
+                if (kids !== null) dim(kids);
+                return;
+            }
+            if (child.classList.contains('spart')) child.classList.add('dim');
+        });
+    };
+    dim(tree);
+};
+const clearSolo = () => {
+    document.querySelectorAll('.dim, .the-one').forEach((el) => el.classList.remove('dim', 'the-one'));
+    document.querySelectorAll('.fig-head, .fig-cap').forEach((el) => el.remove());
+};
 document.querySelectorAll('.spart > .only').forEach((o) => o.addEventListener('click', (press) => {
     press.stopPropagation();
     const one = o.parentElement;
     const was = one.classList.contains('the-one');
-    document.querySelectorAll('.dim, .the-one').forEach((el) => el.classList.remove('dim', 'the-one'));
+    clearSolo();
+    if (!was) solo(one);
+    rail();
+}));
+document.querySelectorAll('.anno.fig').forEach((mark) => mark.addEventListener('click', () => {
+    const one = document.getElementById(mark.getAttribute('data-for'));
+    if (one === null) return;
+    const was = one.classList.contains('the-one');
+    clearSolo();
     if (!was) {
-        one.classList.add('the-one');
-        const dim = (boxEl) => {
-            [...boxEl.children].forEach((child) => {
-                if (child === one) return;
-                if (child.contains(one)) {
-                    const kids = child.querySelector(':scope > .skids');
-                    if (kids !== null) dim(kids);
-                    return;
-                }
-                if (child.classList.contains('spart')) child.classList.add('dim');
-            });
-        };
-        dim(tree);
+        solo(one);
+        const head = document.createElement('p');
+        head.className = 'fig-head';
+        head.textContent = mark.getAttribute('data-title');
+        head.title = 'The caption stands beneath; press the title to show it.';
+        head.addEventListener('click', () => head.parentElement.querySelector('.fig-cap')?.classList.toggle('cap-shown'));
+        const cap = document.createElement('p');
+        cap.className = 'fig-cap';
+        cap.textContent = mark.getAttribute('data-caption');
+        one.before(head);
+        one.after(cap);
     }
     rail();
 }));
@@ -303,7 +346,7 @@ document.getElementById('v-showall').addEventListener('click', () => {
     rail();
 });
 document.getElementById('v-everything').addEventListener('click', () => {
-    document.querySelectorAll('.dim, .the-one').forEach((el) => el.classList.remove('dim', 'the-one'));
+    clearSolo();
     rail();
 });
 document.getElementById('v-sections').addEventListener('click', () => {
@@ -315,7 +358,8 @@ document.getElementById('v-expand').addEventListener('click', () => {
     rail();
 });
 document.getElementById('v-reset').addEventListener('click', () => {
-    document.querySelectorAll('.hidden, .folded, .dim, .the-one').forEach((el) => el.classList.remove('hidden', 'folded', 'dim', 'the-one'));
+    document.querySelectorAll('.hidden, .folded').forEach((el) => el.classList.remove('hidden', 'folded'));
+    clearSolo();
     const homes = new Map([['root', tree]]);
     document.querySelectorAll('#tree [data-box]').forEach((boxEl) => {
         const kids = boxEl.querySelector(':scope > .skids');
