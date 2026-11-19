@@ -1,6 +1,6 @@
 import { ElementType, ReactNode } from 'react';
 import { $, $check, selection } from '@dna-platform/chemistry';
-import { $Annotation, $Chapter, $Cover, $Format, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Word as word, html, specify } from '@dna-platform/public';
+import { $Annotation, $Chapter, $Cover, $Format, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Self as selfReference, Word as word, html, specify } from '@dna-platform/public';
 
 // A TAGLINE IS ONE LINE OF WHAT THE BOOK IS, said of a cover as its author and its subject are, written in the cover
 // file and drawn on the front; the synopsis is the block, and has its own page. Doug, 2026-11-12, Sprint 127: "You
@@ -109,7 +109,28 @@ export class $Navigation extends $Paragraph {
             const Next = $(nextWord);
             const Word = $(word);
             const Reference = $(reference);
+            const Self = $(selfReference);
             const table = book.table?.canonical;
+            // THE TABLE IS NAVIGATED TOO, Doug, 2026-11-19: "Why doesn't the table have a front back navigation
+            // or other controls" — superseding 2026-11-16's "WHAT IS THIS!!!", which had struck the table's
+            // navigation whole. Both words hold: the table moves — back to the cover, on to the first chapter —
+            // and its own door is a Self the theme keeps in place, grey and unpressable. The back arrow names the
+            // cover itself, never chapter.previous, because the hidden synopsis stands between them.
+            if (chapter.is($TableOfContents)) {
+                this.text.add(this,
+                    <Word>
+                        <Reference>{book.means?.identifier}</Reference>
+                        ◁
+                    </Word>,
+                    <Word>
+                        <Self>{chapter.mention?.identifier}</Self>
+                        ☐
+                    </Word>,
+                    <Next>▷</Next>
+                );
+                super.$Bound();
+                return;
+            }
             // THREE CHARACTERS IN A ROW, Doug, 2026-11-16, after the buttons were refused: "Not a button!! I
             // wanted in three characters a left triangle (not arrow) and then a square in the middle that goes
             // to table, then the right arrow as a triangle. Three characters in a row like the arrow we use in
@@ -215,12 +236,15 @@ export class $LibraryTableOfContents extends $TableOfContents {
     // accent, comfort on the eyes" — the headings in the text's own voice at its size, bold in the theme's slate,
     // and every row in ink: a list that is all links says nothing by colouring each one. Chosen from the sketch's
     // form d, "one row, headed", the same day.
+    // THE VOICE IS SAID ON THE ANCHOR, Doug, 2026-11-19: "Why do the links on the table look so bad?" — the row's
+    // anchor stands OUTSIDE its paragraph, so the paragraph-first rules inked the words while the anchor kept the
+    // links' blue underline under them. The title draws its own words now, so the ::before label is struck.
     override style = selection.nav`
         .pa-table-of-contents .pd-paragraph { margin-block: calc(${({ theme }) => theme.space} / 4); }
-        .pa-table-of-contents .pd-title::before { content: 'Table of Contents'; }
         .pa-table-of-contents .pd-heading { font-size: 1em; font-weight: bold; color: ${({ theme }) => theme.slate}; margin-block: ${({ theme }) => theme.space} calc(${({ theme }) => theme.space} / 4); }
         .pa-table-of-contents .pd-section > .pd-heading { margin-block-start: 0; }
-        .pa-table-of-contents .pd-paragraph.pa-reference, .pa-table-of-contents .pd-paragraph .pa-reference, .pa-table-of-contents .pd-paragraph .pa-content { color: ${({ theme }) => theme.ink}; }
+        .pa-table-of-contents a.pa-reference { color: ${({ theme }) => theme.ink}; text-decoration-line: none; }
+        .pa-table-of-contents .pa-content { color: ${({ theme }) => theme.ink}; }
     `;
 }
 

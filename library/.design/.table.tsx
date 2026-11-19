@@ -6,7 +6,6 @@ export default () => (
     <Chapter>
         <TableOfContents />
         <Title>
-            <Parenthetical />
             [[ Table of Contents ]]
         </Title>
         <Section>

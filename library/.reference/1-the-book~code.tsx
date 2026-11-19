@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { $ } from '@dna-platform/chemistry';
-import { $Book, $Chapter, $Cover, $Paragraph, $Section, $TableOfContents, Paginated, Theme } from '@dna-platform/public';
+import { $Book, $Chapter, $Cover, $Paragraph, $Section, Paginated, Theme } from '@dna-platform/public';
 import { LibraryTheme } from './2-the-theme~code.tsx';
 import { RunningHead as runningHead } from './3-the-running-head-and-the-byline~code.tsx';
 import { $Navigation, Front as front, Navigated as navigated } from './4-the-faces~code.tsx';
@@ -57,9 +57,11 @@ export class $TheLibrary extends $Book {
             for (const entry of section.text.find($Paragraph))
                 if (entry.annotations.expressed($Branch) === undefined) entry.annotations.append(this, <Branch />);
         for (const chapter of this.text.find($Chapter)) {
-            // THE TABLE WEARS NO NAVIGATION, Doug, 2026-11-16, pressing the square and landing on the table's own
-            // page: "WHAT IS THIS!!!" — the table of contents is the book's navigation and carries none of its own.
-            if (chapter.is($Cover) || chapter.is($TableOfContents) || chapter.text.find($Navigation).length > 0) continue;
+            // THE TABLE IS NAVIGATED LIKE ANY CHAPTER, Doug, 2026-11-19: "Why doesn't the table have a front back
+            // navigation or other controls" — superseding 2026-11-16's "WHAT IS THIS!!!", which had struck the
+            // table's navigation whole. The dead door he raged at stays dead: on the table the trio's square is a
+            // Self the theme greys and unpresses; the Navigation's own bond carries that case.
+            if (chapter.is($Cover) || chapter.text.find($Navigation).length > 0) continue;
             chapter.annotations.add(this, <Navigated />);
             chapter.annotations.define();
         }

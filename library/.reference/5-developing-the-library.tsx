@@ -21,6 +21,16 @@ export default () => (
                 <Line>2.2 The site is committed as it is bound, and what is published is what was committed.</Line>
             </Paragraph>
         </Section>
+        <Section>
+            <Heading>3. Where a component goes</Heading>
+            <Paragraph>
+                <List />
+                <Line>3.1 A component lives beside the chapter that specifies it. What the whole library wears — the book, the theme, the running head, the faces, the content family — stands in this manual, one chapter and its code each.</Line>
+                <Line>3.2 A subject's reference holds what speaks the subject's own language, as mathematics keeps Theorem and Proof, and nothing a second subject would borrow. The moment a second subject wants a component, it is lifted up to this manual and the subject re-exports it, so its books keep one door. On my word of 19 November 2026: "Yes you need to generalize... Time to bring them up."</Line>
+                <Line>3.3 A book's own one-off stands beside its appendix, the way the sketch's tools stand in The Design; it enters no reference until a second book asks for it.</Line>
+                <Line>3.4 The dress of a special chapter belongs to its format in the faces, never to a book's hand: a book says what a chapter is, and the format says what that looks like, so saying it is enough in every book at once.</Line>
+            </Paragraph>
+        </Section>
         <Listing />
         <Append
             identifier="workbench"
