@@ -371,19 +371,19 @@ export class $Editor extends $Format {
         & > .pd-book.pa-editing { display: contents; }
         & > .pd-book.pa-editing > * { grid-column: 2; box-sizing: border-box; min-width: 0; padding-inline: 1.5rem; }
         & > .pd-book.pa-editing > .pd-running-head { padding-block-start: calc(2 * ${({ theme }) => theme.space}); }
-        & > .pd-book.pa-editing.pa-words-away > :not(.pd-file-page):not(.pd-container:has(> .pa-table-of-contents)) { display: none; }
+        & > .pd-book.pa-editing.pa-words-away > :not(.pd-file-page):not(.pd-container:has(.pa-table-of-contents)) { display: none; }
         & > .pd-book.pa-editing .pa-page.pa-open > .pd-listing { display: none; }
-        & > .pd-book.pa-editing > .pd-container:has(> .pa-table-of-contents) { grid-column: 1; grid-row: 1 / span 99; position: sticky; top: 0; height: 100vh; overflow: auto; padding: calc(2 * ${({ theme }) => theme.space}) ${({ theme }) => theme.space} ${({ theme }) => theme.space} 1.5rem; font-size: .86em; scrollbar-width: thin; scrollbar-color: transparent transparent; }
-        & > .pd-book.pa-editing > .pd-container:has(> .pa-table-of-contents):hover { scrollbar-color: color-mix(in srgb, ${({ theme }) => theme.ink} 25%, transparent) transparent; }
+        & > .pd-book.pa-editing > .pd-container:has(.pa-table-of-contents) { grid-column: 1; grid-row: 1 / span 99; position: sticky; top: 0; height: 100vh; overflow: auto; padding: calc(2 * ${({ theme }) => theme.space}) ${({ theme }) => theme.space} ${({ theme }) => theme.space} 1.5rem; font-size: .86em; scrollbar-width: thin; scrollbar-color: transparent transparent; }
+        & > .pd-book.pa-editing > .pd-container:has(.pa-table-of-contents):hover { scrollbar-color: color-mix(in srgb, ${({ theme }) => theme.ink} 25%, transparent) transparent; }
         & > .pd-book.pa-editing .pa-table-of-contents.pa-page:not(.pa-open) { display: block; }
+        & > .pd-book.pa-editing .pd-container:has(> .pa-table-of-contents) { display: block; }
+        & > .pd-book.pa-editing .pd-container:has(> .pa-table-of-contents) > .pd-navigation { display: none; }
         & > .pd-book.pa-editing .pa-table-of-contents { margin-block: 0; }
-        & > .pd-book.pa-editing .pa-table-of-contents > .pd-title, & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph:has(> .pa-parenthetical), & > .pd-book.pa-editing .pa-table-of-contents .pa-parenthetical { display: none; }
+        & > .pd-book.pa-editing .pa-table-of-contents .pd-title, & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph:has(> .pa-parenthetical), & > .pd-book.pa-editing .pa-table-of-contents .pa-parenthetical { display: none; }
         & > .pd-book.pa-editing .pa-table-of-contents .pd-section { margin-block: 0 ${({ theme }) => theme.space}; }
         & > .pd-book.pa-editing .pa-table-of-contents .pd-heading { margin-block: 0 1rem; }
         & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph { margin: 0 0 .25rem -1.5rem; padding: .15rem 0 .15rem calc(1.5rem - 2px); border-inline-start: 2px solid transparent; color: color-mix(in srgb, ${({ theme }) => theme.ink} 72%, ${({ theme }) => theme.paper}); }
         & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph.pa-open { border-inline-start-color: ${({ theme }) => theme.link}; color: ${({ theme }) => theme.ink}; }
-        & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph.pa-reference, & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph .pa-reference { text-decoration: none; }
-        & > .pd-book.pa-editing .pa-table-of-contents .pd-container.pa-reference { text-decoration: none; }
         & > .pd-book.pa-editing > .pd-file-page { display: grid; grid-column: 3; grid-row: 1 / span 99; grid-template-rows: auto minmax(0, 1fr); position: sticky; top: 0; height: 100vh; padding: calc(2 * ${({ theme }) => theme.space}) 2rem ${({ theme }) => theme.space}; margin-block: 0; background: ${({ theme }) => theme.paper}; }
         & > .pd-book.pa-editing > .pd-file-page .pd-listing { margin: 0; min-height: 0; }
         & > .pd-book.pa-editing > .pd-file-page .pd-pane { max-height: none; }
@@ -405,8 +405,8 @@ export class $Editor extends $Format {
             &:has(> .pd-book.pa-editing), &:has(> .pd-book.pa-editing.pa-words-away) { display: block; }
             & > .pd-book.pa-editing { display: block; }
             & > .pd-book.pa-editing > * { padding-inline: 0; }
-            & > .pd-book.pa-editing > .pd-container:has(> .pa-table-of-contents) { display: none; }
-            & > .pd-book.pa-editing.pa-words-away > :not(.pd-file-page):not(.pd-container:has(> .pa-table-of-contents)) { display: revert; }
+            & > .pd-book.pa-editing > .pd-container:has(.pa-table-of-contents) { display: none; }
+            & > .pd-book.pa-editing.pa-words-away > :not(.pd-file-page):not(.pd-container:has(.pa-table-of-contents)) { display: revert; }
             & > .pd-book.pa-editing > .pd-file-page { position: static; height: auto; padding: 0 0 ${({ theme }) => theme.space}; }
             & > .pd-book.pa-editing > .pd-file-page .pd-pane { max-height: 70vh; }
         }
