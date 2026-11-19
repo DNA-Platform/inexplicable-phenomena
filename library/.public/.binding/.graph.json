@@ -12,8 +12,8 @@
     },
     {
       "folder": ".reference",
-      "digest": "99490c64e89c920d",
-      "walked": 307
+      "digest": "c14ca7dd887b4e54",
+      "walked": 310
     },
     {
       "folder": ".subject",
@@ -47,7 +47,7 @@
     },
     {
       "folder": "mathematics/.reference",
-      "digest": "6f227ced23a945a9",
+      "digest": "e8677697384e0ba5",
       "walked": 150
     },
     {
@@ -77,7 +77,7 @@
     },
     {
       "folder": "mathematics/arithmetic/.textbook",
-      "digest": "891b275b9173d95a",
+      "digest": "861e9b3b697f300d",
       "walked": 221
     },
     {

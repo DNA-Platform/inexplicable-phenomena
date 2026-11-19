@@ -1,3 +1,5 @@
+import { identifier } from '@dna-platform/public';
+
 // THE SPECIFICATION'S OWN CODE, Doug, 2026-11-18: "Make sure code lives in the right place. The
 // specifcation code is pretty general right?" — the passes that implement The Specification's contract
 // stand beside their chapter: the citation language of section 3, the tree of 9.1 to 9.5, the coverage
@@ -17,7 +19,37 @@ export const place = (citation: string): string => {
     if (section !== null) return `cite-sec-${section[1]}`;
     const label = citation.match(/^([KCOI])(\d+)$/);
     if (label !== null) return `cite-${label[1].toLowerCase()}${label[2]}`;
-    return `cite-${citation.replace(/\./g, '-')}`;
+    return `cite-${identifier.slug(citation)}`;
+};
+
+// THE NAME IS A CITABLE IDENTITY BESIDE THE CODE, Doug, 2026-11-19: "Can't we use mentions for the names? We
+// have a .public reference system" — so the name is minted by the package's own rule, identifier.slug, the one
+// place a name becomes an address in this library, and not by a second rule invented here. Every part of these
+// documents is already written as code, space, name — "1.1 The base", "K2 Zero of the sieve", "4.2.1 Singular."
+// — so the name is a capture the pass used to discard, never new authoring. The code keeps the element's id, so
+// nothing that cites a number moves; the name rides an empty anchor inside the part, so a citation that holds a
+// name lands even after a renumbering, which is the whole point: a document rewritten four times in one night
+// breaks every citation by number and none by name. A heading with no number at all — Purpose, Related work —
+// takes the name as its own id, which is what gives those two sections an address for the first time.
+const anchors = (passage: string): string => {
+    const taken = new Set([...passage.matchAll(/ id="(cite-[^"]+)"/g)].map(found => found[1]));
+    const name = (lead: string): string => {
+        const said = lead.replace(/^(?:[KCOI]?\d+(?:\.\d+)*\.?)\s*/, '').trim();
+        return said === '' ? '' : `cite-${identifier.slug(said)}`;
+    };
+    return passage
+        .replace(/<(h[23]|strong|td) id="(cite-[^"]+)">([^<]*)/g, (whole, tag, id, lead) => {
+            const slug = name(lead);
+            if (slug === '' || taken.has(slug)) return whole;
+            taken.add(slug);
+            return `<${tag} id="${id}"><span class="pc-name" id="${slug}"></span>${lead}`;
+        })
+        .replace(/<(h[23])>([^<]*)/g, (whole, tag, lead) => {
+            const slug = name(lead);
+            if (slug === '' || taken.has(slug)) return whole;
+            taken.add(slug);
+            return `<${tag} id="${slug}">${lead}`;
+        });
 };
 
 const link = (citation: string): string => {
@@ -47,10 +79,10 @@ export const connect = (rendered: string): string => {
         .replace(/<(strong|td)>(\d+)\.(\d+) /g, (whole, tag, section, part) => `<${tag} id="cite-${section}-${part}">${section}.${part} `)
         .replace(/<(strong|td)>([KCOI])(\d+) /g, (whole, tag, letter, number) => `<${tag} id="cite-${letter.toLowerCase()}${number}">${letter}${number} `);
     const boundary = identified.indexOf('<h2>Related work</h2>');
-    if (boundary === -1) return mention(identified, true);
+    if (boundary === -1) return anchors(mention(identified, true));
     let count = 0;
     const references = identified.slice(boundary).replace(/<li>/g, () => `<li id="cite-ref-${++count}">`);
-    return mention(identified.slice(0, boundary), true) + mention(references, false);
+    return anchors(mention(identified.slice(0, boundary), true) + mention(references, false));
 };
 
 // THE TREE, Doug, 2026-11-17, Sprint 130's twelfth round: "Specifications should always have numbers or
@@ -68,7 +100,7 @@ export const connect = (rendered: string): string => {
 export const treeify = (rendered: string): string => {
     const sections = rendered.split(/(?=<h2)/);
     const lead = sections.shift() ?? '';
-    const bar = '<span class="pc-tree-bar"><label class="pc-layerbox"><input type="checkbox" class="pc-anno-master" />annotations</label><span class="pc-verb pc-sections">sections</span><span class="pc-verb pc-expand">expand</span><span class="pc-verb pc-showall">show all</span><span class="pc-verb pc-return">everything</span><span class="pc-verb pc-reset">reset</span></span>';
+    const bar = '<span class="pc-tree-bar"><label class="pc-layerbox"><input type="checkbox" class="pc-anno-master" />annotations</label><span class="pc-verb pc-contents">contents</span><span class="pc-verb pc-sections">sections</span><span class="pc-verb pc-expand">expand</span><span class="pc-verb pc-showall">show all</span><span class="pc-verb pc-return">everything</span><span class="pc-verb pc-reset">reset</span></span>';
     let boxes = 0;
     const blocks = (passage: string): string[] =>
         passage.split(/(?=<(?:p|ul|ol|table|div|blockquote|pre)[ >])/).filter(block => block.trim() !== '');
@@ -186,4 +218,265 @@ export const alone = (root: Element, one: Element): void => {
 export const clearAlone = (root: Element): void => {
     root.querySelectorAll('.pc-dim, .pc-the-one').forEach(part => part.classList.remove('pc-dim', 'pc-the-one'));
     root.querySelectorAll('.pc-fig-head, .pc-fig-cap').forEach(plate => plate.remove());
+};
+
+// THE CONTENTS, Doug, 2026-11-19: "There should be a toggle that turns the specification into a table of
+// contents - with nested links for each section and their numbers and names. That should help." The document
+// is a long one — nine sections and four thousand words on the arithmetic statement — and nothing showed the
+// whole of it at once. The entries are the nodes the coverage already rides, because connect stamped each with
+// its code and the document wrote its name beside it: a section's heading, a sub-part's heading, a clause's
+// lead, a table row's label, each reading "1.1 The base" or "K2 Zero of the sieve" with no second authoring.
+// A mode of the whole and not a state of any part, so unique showability (9.3) gains no reason: nothing is on
+// or off the page for a cause of its own, the document stands behind the list and comes back whole. The rail
+// needs no case — every subject is off the page while the list stands, so the one layout pass hides every mark
+// by the rule it already has.
+const depth = (node: Element): number => {
+    let count = 0;
+    let at: Element | null = node.closest('.pc-spart');
+    while (at !== null) {
+        count += 1;
+        at = at.parentElement?.closest('.pc-spart') ?? null;
+    }
+    return /^H[23]$/.test(node.tagName) ? count - 1 : count;
+};
+
+export const contents = (root: Element): void => {
+    const list = document.createElement('nav');
+    list.className = 'pc-contents-list';
+    root.querySelectorAll('h2[id^="cite-"], h3[id^="cite-"], strong[id^="cite-"], td[id^="cite-"]').forEach(node => {
+        const entry = document.createElement('a');
+        entry.className = 'pc-entry';
+        entry.setAttribute('data-depth', `${Math.min(depth(node), 3)}`);
+        entry.setAttribute('data-for', node.id);
+        entry.textContent = [...node.childNodes]
+            .filter(piece => piece.nodeType === Node.TEXT_NODE)
+            .map(piece => piece.textContent)
+            .join('')
+            .replace(/\s+/g, ' ')
+            .trim();
+        list.append(entry);
+    });
+    root.querySelector('.pc-tree-bar')?.after(list);
+    root.classList.add('pc-listing');
+};
+
+export const clearContents = (root: Element): void => {
+    root.classList.remove('pc-listing');
+    root.querySelector('.pc-contents-list')?.remove();
+};
+
+// A PRESS ON AN ENTRY TURNS THE DOCUMENT BACK AT THAT PART: the list goes, and the book turns to the place.
+// A turn has to land, so a part folded away by an ancestor or hidden by the reader is brought back first —
+// the reader asked for this part by name, and answering with the place it would have stood is not answering.
+export const turnTo = (root: Element, id: string): void => {
+    clearContents(root);
+    const landing = document.getElementById(id);
+    if (landing === null) return;
+    landing.closest('.pc-hidden')?.classList.remove('pc-hidden');
+    let at: Element | null = landing.closest('.pc-spart');
+    while (at !== null) {
+        at.classList.remove('pc-folded');
+        at = at.parentElement?.closest('.pc-spart') ?? null;
+    }
+    const seat = landing.getClientRects().length > 0 ? landing : landing.closest('.pc-spart, .pc-part') ?? landing;
+    seat.scrollIntoView({ block: 'center' });
+};
+
+// THE OPERATIONS, Doug, 2026-11-20: "I want us to get everything implemented and all code abstracted and
+// organized so we can work on the specification in the textbook." Section 9 of this chapter specifies every
+// act below — the gutter's hide and ring, the bar's six words, the squares, the figure's mark, a heading's
+// fold — and until now they were event handlers inside The Content's renderer, which is to say the two files
+// were divided by their medium (strings and the DOM here, React components there) rather than by the rule the
+// manual states: a component lives beside the chapter that specifies it. They answer here now, to one
+// question each, so a reader of section 9 finds its mechanism in one file; what stays in The Content is what
+// The Content specifies, the citation that turns the page. Every act that changes what stands re-lays the rail.
+// The figure comes home with them: its mark is drawn in cover, its press dressed here, its plates torn down in
+// clearAlone, where before those three stood in two files.
+export const operate = (root: Element, pressed: Element): boolean => {
+    const x = pressed.closest('.pc-x');
+    if (x !== null) {
+        x.closest(x.classList.contains('pc-sec-x') ? '.pc-spart' : '.pc-part')?.classList.add('pc-hidden');
+        rail();
+        return true;
+    }
+    const ring = pressed.closest('.pc-o');
+    if (ring !== null) {
+        const one = ring.closest('.pc-part, .pc-spart');
+        const was = one?.classList.contains('pc-the-one') ?? false;
+        clearAlone(root);
+        if (!was && one !== null) alone(root, one);
+        rail();
+        return true;
+    }
+    const entry = pressed.closest('.pc-entry');
+    if (entry !== null) {
+        turnTo(root, entry.getAttribute('data-for') ?? '');
+        rail();
+        return true;
+    }
+    if (pressed.closest('.pc-contents') !== null) {
+        if (root.classList.contains('pc-listing')) clearContents(root);
+        else contents(root);
+        rail();
+        return true;
+    }
+    if (pressed.closest('.pc-showall') !== null) {
+        root.querySelectorAll('.pc-hidden').forEach(part => part.classList.remove('pc-hidden'));
+        rail();
+        return true;
+    }
+    if (pressed.closest('.pc-return') !== null) {
+        clearAlone(root);
+        rail();
+        return true;
+    }
+    if (pressed.closest('.pc-sections') !== null) {
+        root.querySelectorAll('.pc-spart').forEach(part => part.classList.add('pc-folded'));
+        rail();
+        return true;
+    }
+    if (pressed.closest('.pc-expand') !== null) {
+        root.querySelectorAll('.pc-folded').forEach(part => part.classList.remove('pc-folded'));
+        rail();
+        return true;
+    }
+    if (pressed.closest('.pc-reset') !== null) {
+        root.querySelectorAll('.pc-hidden, .pc-folded').forEach(part => part.classList.remove('pc-hidden', 'pc-folded'));
+        clearAlone(root);
+        clearContents(root);
+        const boxes = new Map<string, Element>([['root', root]]);
+        root.querySelectorAll('[data-box]').forEach(box => {
+            const kids = box.querySelector(':scope > .pc-kids');
+            if (kids !== null) boxes.set(box.getAttribute('data-box') ?? '', kids);
+        });
+        [...root.querySelectorAll<HTMLElement>('[data-home]')]
+            .sort((a, b) => Number(a.getAttribute('data-seat')) - Number(b.getAttribute('data-seat')))
+            .forEach(node => boxes.get(node.getAttribute('data-home') ?? '')?.append(node));
+        rail();
+        return true;
+    }
+    const master = pressed.closest('.pc-anno-master');
+    if (master instanceof HTMLInputElement) {
+        root.querySelectorAll<HTMLInputElement>('.pc-sec-anno').forEach(box => { box.checked = master.checked; });
+        rail();
+        return true;
+    }
+    if (pressed.closest('.pc-sec-anno') !== null) {
+        const boxes = [...root.querySelectorAll<HTMLInputElement>('.pc-sec-anno')];
+        const all = root.querySelector<HTMLInputElement>('.pc-anno-master');
+        if (all !== null) all.checked = boxes.every(box => box.checked);
+        rail();
+        return true;
+    }
+    const mark = pressed.closest('.pc-anno');
+    if (mark !== null) {
+        if (mark.classList.contains('pc-fig')) {
+            const subject = document.getElementById(mark.getAttribute('data-for') ?? '');
+            const one = subject?.closest('.pc-part, .pc-spart') ?? null;
+            const was = one?.classList.contains('pc-the-one') ?? false;
+            clearAlone(root);
+            if (!was && one !== null) {
+                alone(root, one);
+                const title = mark.getAttribute('data-fig-title') ?? '';
+                if (title !== '') {
+                    const head = document.createElement('p');
+                    head.className = 'pc-fig-head';
+                    head.textContent = title;
+                    head.title = 'The caption stands beneath; press the title to show it.';
+                    const caption = document.createElement('p');
+                    caption.className = 'pc-fig-cap';
+                    caption.textContent = mark.getAttribute('data-fig-caption') ?? '';
+                    one.before(head);
+                    one.after(caption);
+                }
+            }
+            rail();
+            return true;
+        }
+        const claim = mark.getAttribute('data-claim');
+        if (claim !== null) {
+            const turn = (): void => {
+                const flip = document.getElementById('pc-flip');
+                if (flip instanceof HTMLInputElement) flip.checked = false;
+                document.getElementById(claim)?.scrollIntoView({ block: 'center' });
+            };
+            const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
+            if (doc.startViewTransition === undefined) turn();
+            else doc.startViewTransition(turn);
+        }
+        return true;
+    }
+    const head = pressed.closest('.pc-fig-head');
+    if (head !== null) {
+        head.parentElement?.querySelector('.pc-fig-cap')?.classList.toggle('pc-cap-shown');
+        return true;
+    }
+    const heading = pressed.closest('.pc-spart > h2, .pc-spart > h3');
+    if (heading !== null) {
+        heading.parentElement?.classList.toggle('pc-folded');
+        rail();
+        return true;
+    }
+    return false;
+};
+
+// MOVE, 9.4.4: the part under the hand, the seat it would take, and the drop that reseats it. The three
+// questions the pointer asks are the specification's, so they answer here; The Content's renderer passes the
+// pointer's target and its height and does nothing else with them.
+let dragged: HTMLElement | null = null;
+
+const aim = (over: Element | null): HTMLElement | null => {
+    if (dragged === null || over === null) return null;
+    const top = dragged.getAttribute('data-level') === '1';
+    const target = top
+        ? over.closest<HTMLElement>('.pc-spart[data-level="1"]')
+        : over.closest<HTMLElement>('.pc-part') ?? over.closest<HTMLElement>('.pc-spart');
+    if (target === null || target === dragged || dragged.contains(target)) return null;
+    return target;
+};
+
+const unseat = (): void => {
+    document.querySelectorAll('.pc-before, .pc-after').forEach(seat => seat.classList.remove('pc-before', 'pc-after'));
+};
+
+export const take = (target: Element, transfer: DataTransfer): void => {
+    const part = target.closest<HTMLElement>('.pc-part, .pc-spart');
+    if (part === null) return;
+    dragged = part;
+    transfer.setData('text/plain', 'part');
+    transfer.effectAllowed = 'move';
+};
+
+export const seat = (target: Element, y: number): boolean => {
+    const over = aim(target);
+    unseat();
+    if (over === null) return false;
+    const box = over.getBoundingClientRect();
+    over.classList.add(y < box.top + box.height / 2 ? 'pc-before' : 'pc-after');
+    return true;
+};
+
+export const reseat = (target: Element, y: number): boolean => {
+    const over = aim(target);
+    unseat();
+    if (over === null || dragged === null) return false;
+    const box = over.getBoundingClientRect();
+    const before = y < box.top + box.height / 2;
+    if (dragged.getAttribute('data-level') !== '1' && over.classList.contains('pc-spart')) {
+        const kids = over.querySelector(':scope > .pc-kids');
+        if (kids !== null) {
+            if (before) kids.prepend(dragged);
+            else kids.append(dragged);
+        }
+    } else {
+        over.parentElement?.insertBefore(dragged, before ? over : over.nextSibling);
+    }
+    dragged = null;
+    rail();
+    return true;
+};
+
+export const release = (): void => {
+    unseat();
+    dragged = null;
 };

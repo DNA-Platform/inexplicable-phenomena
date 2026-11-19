@@ -3,7 +3,7 @@ import katex from 'katex';
 import { marked } from 'marked';
 import { $, selection } from '@dna-platform/chemistry';
 import { $Append, $Format, $Paragraph, $Section, $Word, html } from '@dna-platform/public';
-import { alone, clearAlone, connect, cover, place, rail, treeify } from './8-the-specification~code.tsx';
+import { connect, cover, operate, place, rail, release, reseat, seat, take, treeify } from './8-the-specification~code.tsx';
 
 // THE CONTENT IS A THING WITH A FRONT AND A BACK, Doug, 2026-11-15 and respecified from his answers of
 // 2026-11-16: the content of a chapter, starting below the title, like a section. On the front the DELIVERABLE —
@@ -129,11 +129,20 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-chapter > .pd-paragraph:not(.pd-navigation) { display: none; }
         &:has(#pc-flip:checked) .pd-chapter > .pd-section:not(.pc-project) { display: none; }
         .pc-project .pd-heading { display: block; font-size: calc(.8 * ${({ theme }) => theme.size}); font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); margin-block: 0 .5em; }
-        .pc-specification .pc-markdown { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.9 * ${({ theme }) => theme.size}); line-height: calc(1.412 * ${({ theme }) => theme.size}); margin-block-start: calc(${({ theme }) => theme.space} / 4); }
-        .pc-specification .pc-markdown h2 { font-family: inherit; font-size: calc(.9 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; font-weight: 600; color: ${({ theme }) => theme.ink}; }
-        .pc-specification .pc-markdown h2::before { content: '## '; color: ${({ theme }) => theme.link}; }
-        .pc-specification .pc-markdown h3 { font-family: inherit; font-size: calc(.9 * ${({ theme }) => theme.size}); margin-block: calc(${({ theme }) => theme.space} / 2) 0; font-weight: 600; color: ${({ theme }) => theme.ink}; }
-        .pc-specification .pc-markdown h3::before { content: '### '; color: ${({ theme }) => theme.link}; }
+        /* THE SPECIFICATION SHARES THE FACE, Doug, 2026-11-20: "Our goal is to make something readable there"
+           — and his fifth round of Sprint 130, "I recommend everything in the project part at least having the
+           same font, though not necessarily in markdown form? I would consider something more integrated."
+           The specification stood alone in Consolas at .9 of the size while the identification and the progress
+           beside it read in the book's own font at full size: 4,164 words of source where the page is a book.
+           It takes the book's font, size and leading now. The literal marks it alone wears stay and step back —
+           smaller, lighter, in the margin's lane rather than the sentence's — so a heading reads as a heading
+           first and a mark second: "partially rendered... a little bold, not much." */
+        .pc-specification .pc-markdown { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
+        .pc-specification .pc-markdown h2::before, .pc-specification .pc-markdown h3::before { font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace; font-size: calc(.78 * ${({ theme }) => theme.size}); font-weight: 400; color: color-mix(in srgb, ${({ theme }) => theme.link} 55%, ${({ theme }) => theme.paper}); }
+        .pc-specification .pc-markdown h2 { margin-block: ${({ theme }) => theme.space} 0; }
+        .pc-specification .pc-markdown h2::before { content: '## '; }
+        .pc-specification .pc-markdown h3 { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
+        .pc-specification .pc-markdown h3::before { content: '### '; }
         .pc-specification .pc-markdown > h2:first-of-type { display: none; }
         .pc-specification .pc-markdown p { margin-block: ${({ theme }) => theme.space}; }
         .pc-specification .pc-markdown > h2:first-of-type + p { margin-block-start: calc(${({ theme }) => theme.space} / 4); }
@@ -206,6 +215,22 @@ export class $Content extends $Format {
         .pc-fig-head { font-weight: 600; cursor: pointer; user-select: none; margin-block: ${({ theme }) => theme.space} 0; }
         .pc-fig-cap { display: none; margin-block: calc(${({ theme }) => theme.space} / 4) ${({ theme }) => theme.space}; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
         .pc-cap-shown { display: block; }
+        /* THE CONTENTS, his word of 19 November: the whole document as nested entries of code and name, each a
+           link. While the list stands the document is behind it, so every other child of the tree steps off the
+           page and comes back untouched when the list goes. */
+        .pc-listing > *:not(.pc-tree-bar):not(.pc-contents-list) { display: none; }
+        .pc-contents-list { display: block; margin-block-start: ${({ theme }) => theme.space}; }
+        /* A LIST THAT IS ALL LINKS SAYS NOTHING BY COLOURING EACH ONE — the ruling the library's own table of
+           contents took on 19 November, and the same rule here: every entry in ink, the hover the affordance.
+           Said on the anchor itself, since .pc-markdown a would otherwise out-specify the entry and tint the
+           whole list teal. */
+        .pc-markdown a.pc-entry { display: block; cursor: pointer; padding-block: .18em; color: ${({ theme }) => theme.ink}; text-decoration: none; }
+        .pc-markdown a.pc-entry:hover { color: ${({ theme }) => theme.link}; }
+        .pc-markdown a.pc-entry[data-depth="1"] { margin-inline-start: 1.6em; }
+        .pc-markdown a.pc-entry[data-depth="2"] { margin-inline-start: 3.2em; }
+        .pc-markdown a.pc-entry[data-depth="3"] { margin-inline-start: 4.8em; }
+        .pc-markdown a.pc-entry[data-depth="0"] { font-weight: 600; margin-block-start: .9em; }
+        .pc-markdown a.pc-entry[data-depth="2"], .pc-markdown a.pc-entry[data-depth="3"] { color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.paper}); }
     `;
 }
 
@@ -302,151 +327,19 @@ marked.use({
     ],
 });
 
-let dragged: HTMLElement | null = null;
-
-const aim = (over: Element | null): HTMLElement | null => {
-    if (dragged === null || over === null) return null;
-    const top = dragged.getAttribute('data-level') === '1';
-    const target = top
-        ? over.closest<HTMLElement>('.pc-spart[data-level="1"]')
-        : over.closest<HTMLElement>('.pc-part') ?? over.closest<HTMLElement>('.pc-spart');
-    if (target === null || target === dragged || dragged.contains(target)) return null;
-    return target;
-};
-
-const unseat = (): void => {
-    document.querySelectorAll('.pc-before, .pc-after').forEach(seat => seat.classList.remove('pc-before', 'pc-after'));
-};
-
 // THE DOCUMENT RENDERS VERBATIM, Doug, 2026-11-16: "This is what it looks like. Read the markdown. Render it
 // like that. I said verbatim" — the chapter's appended markdown parsed by marked, the package's own dependency,
 // and drawn as the document renders: the bold lead-ins, the tables, the lists, the document's own title.
-// A citation click turns the page itself — the hash never moves, so the place in the address stays the chapter's.
-// With tree on — the specification's document — the one click handler is the tree's dispatcher too, carrying
-// the contract's operations of the sixteenth round: the gutter hides and the gutter's ring shows one part
-// alone, show-all and everything are their inverses, sections folds the whole tree to its headings and
-// expand unfolds every level, reset reseats the document's own order and clears every view state at once,
-// the squares rule the annotation layer with the bar's square as every section's at once, a heading press
-// folds at any level, a mark with a claim turns the page back to the citation that claims it, and a
-// citation press lands as it always has. Every act that changes what stands re-lays the rail.
+// A citation click turns the page itself — the hash never moves, so the place in the address stays the chapter's,
+// and that one act is all this renderer answers: every other press on a specification's tree is an operation of
+// The Specification's section 9 and is answered by its own code, which operate() offers the press first.
 export class $Markdown extends $Paragraph {
     $identifier = '';
     $tree = false;
 
     follow = (press: MouseEvent<HTMLDivElement>): void => {
-        const root = press.currentTarget;
         const pressed = press.target as Element;
-        const x = pressed.closest('.pc-x');
-        if (x !== null) {
-            x.closest(x.classList.contains('pc-sec-x') ? '.pc-spart' : '.pc-part')?.classList.add('pc-hidden');
-            rail();
-            return;
-        }
-        const ring = pressed.closest('.pc-o');
-        if (ring !== null) {
-            const one = ring.closest('.pc-part, .pc-spart');
-            const was = one?.classList.contains('pc-the-one') ?? false;
-            clearAlone(root);
-            if (!was && one !== null) alone(root, one);
-            rail();
-            return;
-        }
-        if (pressed.closest('.pc-showall') !== null) {
-            root.querySelectorAll('.pc-hidden').forEach(part => part.classList.remove('pc-hidden'));
-            rail();
-            return;
-        }
-        if (pressed.closest('.pc-return') !== null) {
-            clearAlone(root);
-            rail();
-            return;
-        }
-        if (pressed.closest('.pc-sections') !== null) {
-            root.querySelectorAll('.pc-spart').forEach(part => part.classList.add('pc-folded'));
-            rail();
-            return;
-        }
-        if (pressed.closest('.pc-expand') !== null) {
-            root.querySelectorAll('.pc-folded').forEach(part => part.classList.remove('pc-folded'));
-            rail();
-            return;
-        }
-        if (pressed.closest('.pc-reset') !== null) {
-            root.querySelectorAll('.pc-hidden, .pc-folded').forEach(part => part.classList.remove('pc-hidden', 'pc-folded'));
-            clearAlone(root);
-            const boxes = new Map<string, Element>([['root', root]]);
-            root.querySelectorAll('[data-box]').forEach(box => {
-                const kids = box.querySelector(':scope > .pc-kids');
-                if (kids !== null) boxes.set(box.getAttribute('data-box') ?? '', kids);
-            });
-            [...root.querySelectorAll<HTMLElement>('[data-home]')]
-                .sort((a, b) => Number(a.getAttribute('data-seat')) - Number(b.getAttribute('data-seat')))
-                .forEach(node => boxes.get(node.getAttribute('data-home') ?? '')?.append(node));
-            rail();
-            return;
-        }
-        const master = pressed.closest('.pc-anno-master');
-        if (master instanceof HTMLInputElement) {
-            root.querySelectorAll<HTMLInputElement>('.pc-sec-anno').forEach(box => { box.checked = master.checked; });
-            rail();
-            return;
-        }
-        if (pressed.closest('.pc-sec-anno') !== null) {
-            const boxes = [...root.querySelectorAll<HTMLInputElement>('.pc-sec-anno')];
-            const all = root.querySelector<HTMLInputElement>('.pc-anno-master');
-            if (all !== null) all.checked = boxes.every(box => box.checked);
-            rail();
-            return;
-        }
-        const mark = pressed.closest('.pc-anno');
-        if (mark !== null) {
-            if (mark.classList.contains('pc-fig')) {
-                const subject = document.getElementById(mark.getAttribute('data-for') ?? '');
-                const one = subject?.closest('.pc-part, .pc-spart') ?? null;
-                const was = one?.classList.contains('pc-the-one') ?? false;
-                clearAlone(root);
-                if (!was && one !== null) {
-                    alone(root, one);
-                    const title = mark.getAttribute('data-fig-title') ?? '';
-                    if (title !== '') {
-                        const head = document.createElement('p');
-                        head.className = 'pc-fig-head';
-                        head.textContent = title;
-                        head.title = 'The caption stands beneath; press the title to show it.';
-                        const caption = document.createElement('p');
-                        caption.className = 'pc-fig-cap';
-                        caption.textContent = mark.getAttribute('data-fig-caption') ?? '';
-                        one.before(head);
-                        one.after(caption);
-                    }
-                }
-                rail();
-                return;
-            }
-            const claim = mark.getAttribute('data-claim');
-            if (claim !== null) {
-                const turn = (): void => {
-                    const flip = document.getElementById('pc-flip');
-                    if (flip instanceof HTMLInputElement) flip.checked = false;
-                    document.getElementById(claim)?.scrollIntoView({ block: 'center' });
-                };
-                const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
-                if (doc.startViewTransition === undefined) turn();
-                else doc.startViewTransition(turn);
-            }
-            return;
-        }
-        const head = pressed.closest('.pc-fig-head');
-        if (head !== null) {
-            head.parentElement?.querySelector('.pc-fig-cap')?.classList.toggle('pc-cap-shown');
-            return;
-        }
-        const heading = pressed.closest('.pc-spart > h2, .pc-spart > h3');
-        if (heading !== null) {
-            heading.parentElement?.classList.toggle('pc-folded');
-            rail();
-            return;
-        }
+        if (operate(press.currentTarget, pressed)) return;
         const citation = pressed.closest('a[href^="#cite-"]');
         if (citation === null) return;
         press.preventDefault();
@@ -455,45 +348,19 @@ export class $Markdown extends $Paragraph {
     };
 
     grab = (grip: DragEvent<HTMLDivElement>): void => {
-        const part = (grip.target as Element).closest<HTMLElement>('.pc-part, .pc-spart');
-        if (part === null) return;
-        dragged = part;
-        grip.dataTransfer.setData('text/plain', 'part');
-        grip.dataTransfer.effectAllowed = 'move';
+        take(grip.target as Element, grip.dataTransfer);
     };
 
     over = (drag: DragEvent<HTMLDivElement>): void => {
-        const target = aim(drag.target as Element);
-        unseat();
-        if (target === null) return;
-        drag.preventDefault();
-        const box = target.getBoundingClientRect();
-        target.classList.add(drag.clientY < box.top + box.height / 2 ? 'pc-before' : 'pc-after');
+        if (seat(drag.target as Element, drag.clientY)) drag.preventDefault();
     };
 
     drop = (fall: DragEvent<HTMLDivElement>): void => {
-        const target = aim(fall.target as Element);
-        unseat();
-        if (target === null || dragged === null) return;
-        fall.preventDefault();
-        const box = target.getBoundingClientRect();
-        const before = fall.clientY < box.top + box.height / 2;
-        if (dragged.getAttribute('data-level') !== '1' && target.classList.contains('pc-spart')) {
-            const kids = target.querySelector(':scope > .pc-kids');
-            if (kids !== null) {
-                if (before) kids.prepend(dragged);
-                else kids.append(dragged);
-            }
-        } else {
-            target.parentElement?.insertBefore(dragged, before ? target : target.nextSibling);
-        }
-        dragged = null;
-        rail();
+        if (reseat(fall.target as Element, fall.clientY)) fall.preventDefault();
     };
 
     settle = (): void => {
-        unseat();
-        dragged = null;
+        release();
     };
 
     get append(): $Append | undefined {
