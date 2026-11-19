@@ -210,16 +210,17 @@ export class $LibrarySynopsis extends $Synopsis {
 
 export class $LibraryTableOfContents extends $TableOfContents {
 
+    // ONE VOICE FOR THE TABLE, Doug, 2026-11-19: "Your headings are smaller and different font than the links and the
+    // links are blue which maybe isn't right?... I like subtlety in design and thoughtful choices about saliency,
+    // accent, comfort on the eyes" — the headings in the text's own voice at its size, bold in the theme's slate,
+    // and every row in ink: a list that is all links says nothing by colouring each one. Chosen from the sketch's
+    // form d, "one row, headed", the same day.
     override style = selection.nav`
         .pa-table-of-contents .pd-paragraph { margin-block: calc(${({ theme }) => theme.space} / 4); }
         .pa-table-of-contents .pd-title::before { content: 'Table of Contents'; }
-        .pa-table-of-contents .pd-heading {
-            font-size: calc(0.7 * ${({ theme }) => theme.size});
-            font-weight: normal;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            opacity: 0.6;
-        }
+        .pa-table-of-contents .pd-heading { font-size: 1em; font-weight: bold; color: ${({ theme }) => theme.slate}; margin-block: ${({ theme }) => theme.space} calc(${({ theme }) => theme.space} / 4); }
+        .pa-table-of-contents .pd-section > .pd-heading { margin-block-start: 0; }
+        .pa-table-of-contents .pd-paragraph.pa-reference, .pa-table-of-contents .pd-paragraph .pa-reference, .pa-table-of-contents .pd-paragraph .pa-content { color: ${({ theme }) => theme.ink}; }
     `;
 }
 

@@ -8,7 +8,7 @@ export default () => (
             <Heading>1. The values and the parts of a theme</Heading>
             <Paragraph>
                 <List />
-                <Line>1.1 A theme is a set of values, the font, the size, the leading, the measure, the space, the ink, the paper, the link, and the parts that use them: the page, the levels of a book, the labels, the links, the apparatus, the figures, the front, the plate, the navigation and the listing.</Line>
+                <Line>1.1 A theme is a set of values, the font, the size, the leading, the measure, the space, the ink, the slate the headings wear since 19 November 2026 on my word for subtlety, the paper, the link, and the parts that use them: the page, the levels of a book, the labels, the links, the apparatus, the figures, the front, the plate, the navigation and the listing.</Line>
                 <Line>1.2 The file beside this chapter is the one the book registers, <Means>$[[ ./The Book ]]</Means> 1.2. It began as the test library's theme as borrowed, a serif on warm paper, and has been rewritten part by part as the sketches said what this library's own looks like: white paper, Georgia at seventeen, one hairline under the running head, the link's teal on the running head and the links alone.</Line>
                 <Line>1.3 A theme is composed of parts so that a subclass changes one and keeps the rest; every selector in it is a mark of what a writing is.</Line>
             </Paragraph>

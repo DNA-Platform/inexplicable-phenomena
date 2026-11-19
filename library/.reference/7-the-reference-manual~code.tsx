@@ -185,10 +185,6 @@ export class $Listing extends $Paragraph {
         const language = languages[file.$type.replace(/^\./u, '')] ?? '';
         return (
             <>
-                <link
-                    rel="stylesheet"
-                    href={face}
-                />
                 <Bar listing={this} />
                 <div className="pd-pane">
                     {this.$running && this.runs ? (
@@ -386,8 +382,8 @@ export class $Editor extends $Format {
         & > .pd-book.pa-editing .pa-table-of-contents .pd-heading { margin-block: 0 1rem; }
         & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph { margin: 0 0 .25rem -1.5rem; padding: .15rem 0 .15rem calc(1.5rem - 2px); border-inline-start: 2px solid transparent; color: color-mix(in srgb, ${({ theme }) => theme.ink} 72%, ${({ theme }) => theme.paper}); }
         & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph.pa-open { border-inline-start-color: ${({ theme }) => theme.link}; color: ${({ theme }) => theme.ink}; }
-        & > .pd-book.pa-editing .pa-table-of-contents .pa-reference { color: inherit; text-decoration: none; }
-        & > .pd-book.pa-editing .pa-table-of-contents .pd-leaf { display: flex; }
+        & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph.pa-reference, & > .pd-book.pa-editing .pa-table-of-contents .pd-paragraph .pa-reference { text-decoration: none; }
+        & > .pd-book.pa-editing .pa-table-of-contents .pd-container.pa-reference { text-decoration: none; }
         & > .pd-book.pa-editing > .pd-file-page { display: grid; grid-column: 3; grid-row: 1 / span 99; grid-template-rows: auto minmax(0, 1fr); position: sticky; top: 0; height: 100vh; padding: calc(2 * ${({ theme }) => theme.space}) 2rem ${({ theme }) => theme.space}; margin-block: 0; background: ${({ theme }) => theme.paper}; }
         & > .pd-book.pa-editing > .pd-file-page .pd-listing { margin: 0; min-height: 0; }
         & > .pd-book.pa-editing > .pd-file-page .pd-pane { max-height: none; }
@@ -396,11 +392,15 @@ export class $Editor extends $Format {
         .pd-file-head { display: flex; justify-content: flex-end; align-items: center; gap: .6em; margin: 0 0 ${({ theme }) => theme.space}; padding-block-end: calc(${({ theme }) => theme.space} / 4); border-block-end: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 30%, ${({ theme }) => theme.paper}); font-size: calc(0.7 * ${({ theme }) => theme.size}); letter-spacing: 0.08em; text-transform: uppercase; }
         .pd-file-head .pd-file-label { color: color-mix(in srgb, ${({ theme }) => theme.ink} 60%, ${({ theme }) => theme.paper}); }
         .pd-file-head .pd-file-name { font: 500 12px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0; text-transform: none; color: ${({ theme }) => theme.ink}; }
-        .pd-leaf { display: none; align-items: center; gap: .4rem; margin: 0 0 .45rem 1rem; font: 400 12px 'JetBrains Mono', ui-monospace, monospace; color: color-mix(in srgb, ${({ theme }) => theme.ink} 55%, ${({ theme }) => theme.paper}); text-decoration: none; }
-        .pd-leaf .pd-mark { color: #9aa4b3; }
-        .pd-leaf.pa-open { color: ${({ theme }) => theme.link}; }
-        .pd-leaf.pa-open .pd-mark { color: ${({ theme }) => theme.link}; }
-        .pa-appendix .pd-leaf { display: flex; }
+        /* the files, a parenthesis on the chapter's row in the code's face at the label's size: the square before
+           each opens the page at the file, the name the editor; the open file in ink and underlined */
+        .pa-table-of-contents .pd-container:has(> .pd-files) { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .55em; }
+        .pd-files { font: 400 12px 'JetBrains Mono', ui-monospace, monospace; color: color-mix(in srgb, ${({ theme }) => theme.ink} 50%, ${({ theme }) => theme.paper}); white-space: nowrap; }
+        .pd-files .pd-square { font-family: ${({ theme }) => theme.font}; font-size: 13px; margin-inline-end: .3em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 45%, ${({ theme }) => theme.paper}); text-decoration: none; }
+        .pd-files .pd-square:hover { color: ${({ theme }) => theme.ink}; }
+        .pd-files .pd-leaf { color: inherit; text-decoration: none; }
+        .pd-files .pd-leaf:hover, .pd-files .pd-leaf.pa-open { color: ${({ theme }) => theme.ink}; text-decoration: underline; text-underline-offset: .15em; }
+        & > .pd-book.pa-editing .pa-table-of-contents .pd-files { white-space: normal; }
         @media (max-width: 640px) {
             &:has(> .pd-book.pa-editing), &:has(> .pd-book.pa-editing.pa-words-away) { display: block; }
             & > .pd-book.pa-editing { display: block; }
@@ -411,6 +411,17 @@ export class $Editor extends $Format {
             & > .pd-book.pa-editing > .pd-file-page .pd-pane { max-height: 70vh; }
         }
     `;
+
+    // THE FACE COMES ONCE WITH THE EDITOR: one link to Google Fonts per book, in the editor's note, where a link per
+    // listing had stood a dozen stylesheet links on a page and held its turn to the bookmark past a second.
+    override note(): ReactNode {
+        return (
+            <link
+                rel="stylesheet"
+                href={face}
+            />
+        );
+    }
 
     override defines(writing: $Writing): void {
         super.defines(writing);
@@ -489,34 +500,54 @@ export class $Branch extends $Format {
             const wanted = editorOf(this)?.$openFile;
             const current = wanted !== undefined && files.includes(wanted) ? wanted : files[0];
             const open = this.book?.bookmark === chapter;
+            // THE FILES ARE A PARENTHESIS ON THE CHAPTER'S ROW, Doug, 2026-11-19: "Make resources parenthetical and
+            // include them in the regular table with our little white square in the font perhaps or back (try
+            // front) and have the square take them to the book view and the main link to the fullscreen view."
             return (
                 <div className={className}>
                     {children}
-                    {files.map(file => (
-                        <a
-                            key={fileNameOf(file)}
-                            className={open && current === file ? 'pd-leaf pa-open' : 'pd-leaf'}
-                            href={chapter?.mention?.identifier}
-                            onClick={() => this.press(file)}
-                        >
-                            <span className="pd-mark">
-                                ‹›
-                            </span>
-                            {fileNameOf(file)}
-                        </a>
-                    ))}
+                    {files.length === 0 ? null : (
+                        <span className="pd-files">
+                            (
+                            {files.map((file, index) => (
+                                <span
+                                    key={fileNameOf(file)}
+                                    className="pd-file"
+                                >
+                                    {index === 0 ? '' : ', '}
+                                    <a
+                                        className="pd-square"
+                                        href={chapter?.mention?.identifier}
+                                        title="the page"
+                                        onClick={() => this.press(file, pageMode)}
+                                    >
+                                        ☐
+                                    </a>
+                                    <a
+                                        className={open && current === file ? 'pd-leaf pa-open' : 'pd-leaf'}
+                                        href={chapter?.mention?.identifier}
+                                        title="the editor"
+                                        onClick={() => this.press(file, editorMode)}
+                                    >
+                                        {fileNameOf(file)}
+                                    </a>
+                                </span>
+                            ))}
+                            )
+                        </span>
+                    )}
                 </div>
             );
         };
     }
 
-    press(file: $Append): void {
+    press(file: $Append, mode: Given<$Annotation>): void {
         const book = this.book;
         if (book === undefined) return;
         const editor = editorOf(this);
         if (editor !== undefined) editor.$openFile = file;
         const annotations = [book.$is].flat().filter(annotation => !modes.includes(annotation));
-        book.$is = [editorMode, ...annotations];
+        book.$is = [mode, ...annotations];
     }
 
     override defines(writing: $Writing): void {

@@ -14,6 +14,10 @@ export class $LibraryTheme extends $Theme {
     measure = '40rem';
     space = '1.25rem';
     ink = '#1b1b1b';
+    // SLATE, Doug, 2026-11-19: "make headings a bit less drastic, bold less drastic, maybe font color to be a bit
+    // slate? I like subtlety in design and thoughtful choices about saliency, accent, comfort on the eyes" — the
+    // headings' colour, a slate short of the ink; Georgia has no half-bold, so the colour does the quieting.
+    slate = '#3b4a55';
     paper = '#ffffff';
     link = '#1f4e79';
     style: ElementType = selection.div`${this.parts()}`;
@@ -154,7 +158,7 @@ export class $LibraryTheme extends $Theme {
             .pa-item { margin-block: calc(${({ theme }) => theme.space} / 4); }
             .pa-list .pa-item { list-style-position: outside; margin-inline-start: 1.2em; }
             .pd-title { font-size: calc(1.5 * ${({ theme }) => theme.size}); font-weight: bold; margin-block-end: ${({ theme }) => theme.space}; }
-            .pd-heading { font-weight: bold; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; }
+            .pd-heading { font-weight: bold; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; color: ${({ theme }) => theme.slate}; }
             .pd-section > .pd-heading { margin-block-start: 0; }
             .pd-section:not(:has(.pd-paragraph:not(.pa-parenthetical))):not(:has(.pd-figure)) { display: none; }
             .pd-line { white-space: pre-wrap; }
@@ -181,6 +185,8 @@ export class $LibraryTheme extends $Theme {
         return css`
             .pa-reference { color: ${({ theme }) => theme.link}; text-decoration-color: ${({ theme }) => theme.link}; text-underline-offset: 0.15em; }
             .pa-self-reference { color: inherit; text-decoration: none; }
+            /* a heading references itself, and the inheriting above would take the headings' slate from it */
+            .pd-heading.pa-self-reference { color: ${({ theme }) => theme.slate}; }
             .pa-referent { scroll-margin-block-start: ${({ theme }) => theme.space}; }
             .pa-content { color: ${({ theme }) => theme.link}; }
         `;
@@ -200,8 +206,11 @@ export class $LibraryTheme extends $Theme {
                 padding-block-end: calc(${({ theme }) => theme.space} / 4);
                 border-block-end: 1px solid color-mix(in srgb, ${({ theme }) => theme.ink} 30%, ${({ theme }) => theme.paper});
             }
-            .pd-running-head a { text-decoration: none; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
-            .pd-running-head a:hover { color: ${({ theme }) => theme.ink}; }
+            /* THE RUNNING HEAD IS GREY, not the links' teal: the word inside the anchor wears the reference class, and
+               the links' colour beat this rule on it from 16 to 19 November; Doug, 2026-11-19: "Why color on the
+               title at the top?... Yeah you can fix that." */
+            .pd-running-head a, .pd-running-head .pa-reference { text-decoration: none; color: color-mix(in srgb, ${({ theme }) => theme.ink} 70%, ${({ theme }) => theme.paper}); }
+            .pd-running-head a:hover, .pd-running-head a:hover .pa-reference { color: ${({ theme }) => theme.ink}; }
             /* ONE HEADER, EVERY PAGE, ITS TABLE-NESS AN ATTRIBUTE, Doug, 2026-11-16: "I notice that your table of
                contents doesn't have the little square. Why isn't it the same thing as the others? Table of contents
                can be an attribute to capture polymorphism." — the same running head stands on every page, the square
