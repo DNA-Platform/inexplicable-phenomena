@@ -22,7 +22,8 @@ export default () => (
             always a composite and never the identity of the sentence, the first-order System A mapped into
             Gödel's P, drafted for the textbook and moved here on my ruling that it is a note, and the
             potential four chapters of 15 November, retired from the textbook in favor of specifications of
-            mathematical objects as the starting point.
+            mathematical objects as the starting point, and my second specification of the symmetry of
+            arithmetic, retired from the textbook on 20 November so that its chapter starts fresh.
         </Paragraph>
     </Chapter>
 );

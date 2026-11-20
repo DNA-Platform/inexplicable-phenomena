@@ -42,6 +42,7 @@ export default () => (
                 <Line>3.2 A specification is highly connected: where a clause depends on another, motivates it, or constrains it, it says so by citation.</Line>
                 <Line>3.3 Citation reaches across the project's documents: the specification cites the progress by its labels, and the progress cites the specification by its numbers.</Line>
                 <Line>3.4 A part is cited by its number or by its name. The number is the part's address and orders the document; the name is an address beside it, minted by the library's own rule for making an address out of a name, so a citation that holds a name survives a renumbering — which is what a document rewritten overnight asks for. A part that carries no number is addressed by its name alone.</Line>
+                <Line>3.5 A document may stand apart from the documents it cites, as a record of a specification does once what stood beside it is cleared. A document standing with its companions cites across them by 3.3, and a label nothing defines is a fault the bind refuses; a document standing apart links what its own text answers to and leaves every other citation as it was written, since a citation whose clause is nowhere on the page names nothing. The cost is named: apart, a mistyped label reads as text rather than refusing the bind.</Line>
             </Paragraph>
         </Section>
         <Section>

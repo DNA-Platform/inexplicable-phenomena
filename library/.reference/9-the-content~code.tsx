@@ -155,24 +155,13 @@ export class $Content extends $Format {
         &:has(#pc-flip:checked) .pd-title::before { margin-inline-start: calc(-1.65 * ${({ theme }) => theme.size}); font-family: ${({ theme }) => theme.font}; color: ${({ theme }) => theme.ink}; }
         &:has(#pc-flip:checked) .pd-title::after { opacity: 1; }
         .pd-section.pc-project { margin-block: calc(${({ theme }) => theme.space} / 2) 0; }
-        .pc-markdown h1 { display: none; }
-        .pc-markdown h1 + p { display: none; }
-        .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1 * ${({ theme }) => theme.size}); font-weight: 600; margin-block: 1.1em .35em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
-        .pc-markdown h3 { font-family: ${({ theme }) => theme.font}; font-size: calc(1 * ${({ theme }) => theme.size}); font-weight: 600; margin-block: .9em .3em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
-        .pc-markdown p { margin-block: .9em; }
-        .pc-markdown strong { font-weight: bold; }
-        .pc-markdown a { color: ${({ theme }) => theme.link}; text-decoration: none; }
-        .pc-markdown a:hover { text-decoration: underline; }
+        /* THE DOCUMENT'S FACE IS THE BOOK'S, Doug, 2026-11-20: "Let's take this specification and put it in the
+           notes chapter" — a verbatim document is a thing any book may carry, and the notebook now carries one,
+           so the document's face stands as the theme's document part rather than here, where only a chapter
+           wearing the content could have worn it. What is the content's own stays: the citation below, and the
+           specification's step-back marks above. */
         .pc-cite a { color: ${({ theme }) => theme.link}; text-decoration: none; cursor: pointer; }
         .pc-cite a:hover { text-decoration: underline; }
-        .pc-markdown table { width: 100%; border-collapse: collapse; margin-block: ${({ theme }) => theme.space}; }
-        .pc-markdown th, .pc-markdown td { padding: .3em 1.2em .3em 0; text-align: start; vertical-align: top; }
-        .pc-markdown th:last-child, .pc-markdown td:last-child { padding-inline-end: 0; }
-        .pc-markdown thead th { font-weight: 400; }
-        .pc-markdown math { font-family: 'Cambria Math', 'STIX Two Math', math; font-size: 1.08em; }
-        .pc-markdown .pc-math-block { margin-block: calc(${({ theme }) => theme.space} / 2); }
-        .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.5em; margin-block: .9em; }
-        .pc-markdown li { margin-block: .35em; }
         .pc-interpolated { font-style: italic; opacity: .75; border-block-end: 1px dashed color-mix(in srgb, currentColor 60%, transparent); }
         .pc-theorem { counter-increment: theorem; }
         .pc-theorem::before { content: 'Theorem ' counter(theorem) '.'; font-weight: bold; margin-inline-end: .5em; }
@@ -334,6 +323,7 @@ marked.use({
 // and that one act is all this renderer answers: every other press on a specification's tree is an operation of
 // The Specification's section 9 and is answered by its own code, which operate() offers the press first.
 export class $Markdown extends $Paragraph {
+    $apart = false;
     $identifier = '';
     $tree = false;
 
@@ -370,7 +360,7 @@ export class $Markdown extends $Paragraph {
     override write(): ReactNode {
         const append = this.append;
         if (append === undefined) return null;
-        const connected = connect(marked.parse(html.copy(append.text), { async: false }));
+        const connected = connect(marked.parse(html.copy(append.text), { async: false }), this.$apart);
         const rendered = this.$tree ? treeify(connected) : connected;
         return (
             <div

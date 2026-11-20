@@ -52,15 +52,30 @@ const anchors = (passage: string): string => {
         });
 };
 
-const link = (citation: string): string => {
+// A DOCUMENT APART CITES ONLY WHAT ITS PAGE ANSWERS TO, Doug, 2026-11-20: "Only the spec needs to be saved.
+// Everything else can be deleted" — the statement of work cites the identification by I1 to I20 and the progress
+// by O1 to O11, and both were cleared with the chapter it stood in, so twelve of its citations named clauses no
+// page holds and the binder refused the page, rightly. A document standing with its companions keeps 3.3 and
+// links across them, the binder still catching a label nothing defines; a document standing apart links what its
+// own passage answers to and leaves the rest as the document wrote it, which is what a record is.
+const answers = (passage: string): Set<string> =>
+    new Set([...passage.matchAll(/ id="(cite-[^"]+)"/g)].map(found => found[1]));
+
+const link = (citation: string, answered: Set<string> | undefined): string => {
     if (citation.startsWith('[')) {
-        return '[' + citation.slice(1, -1).split(',').map(number =>
-            `<a href="#cite-ref-${number.trim()}">${number.trim()}</a>`).join(', ') + ']';
+        return '[' + citation.slice(1, -1).split(',').map(number => {
+            const reference = `cite-ref-${number.trim()}`;
+            return answered === undefined || answered.has(reference)
+                ? `<a href="#${reference}">${number.trim()}</a>`
+                : number.trim();
+        }).join(', ') + ']';
     }
-    return `<a href="#${place(citation)}">${citation}</a>`;
+    const target = place(citation);
+    if (answered !== undefined && !answered.has(target)) return citation;
+    return `<a href="#${target}">${citation}</a>`;
 };
 
-const mention = (passage: string, sections: boolean): string =>
+const mention = (passage: string, sections: boolean, answered: Set<string> | undefined): string =>
     passage.split(/(<[^>]*>)/).map((piece, index, pieces) => {
         if (piece.startsWith('<')) return piece;
         const previous = pieces[index - 1];
@@ -68,10 +83,10 @@ const mention = (passage: string, sections: boolean): string =>
             ? (piece.match(/^(?:[KCOI]\d+|\d+\.\d+(?:\.\d+)?|\d+\.)/) ?? [''])[0]
             : '';
         return lead + piece.slice(lead.length).replace(cited, found =>
-            !sections && /^[Ss]ection/.test(found) ? found : link(found));
+            !sections && /^[Ss]ection/.test(found) ? found : link(found, answered));
     }).join('');
 
-export const connect = (rendered: string): string => {
+export const connect = (rendered: string, apart = false): string => {
     const identified = rendered
         .replace(/<h2>(\d+)\. /g, (whole, section) => `<h2 id="cite-sec-${section}">${section}. `)
         .replace(/<h3>(\d+)\.(\d+) /g, (whole, section, part) => `<h3 id="cite-${section}-${part}">${section}.${part} `)
@@ -79,10 +94,11 @@ export const connect = (rendered: string): string => {
         .replace(/<(strong|td)>(\d+)\.(\d+) /g, (whole, tag, section, part) => `<${tag} id="cite-${section}-${part}">${section}.${part} `)
         .replace(/<(strong|td)>([KCOI])(\d+) /g, (whole, tag, letter, number) => `<${tag} id="cite-${letter.toLowerCase()}${number}">${letter}${number} `);
     const boundary = identified.indexOf('<h2>Related work</h2>');
-    if (boundary === -1) return anchors(mention(identified, true));
+    if (boundary === -1) return anchors(mention(identified, true, apart ? answers(identified) : undefined));
     let count = 0;
     const references = identified.slice(boundary).replace(/<li>/g, () => `<li id="cite-ref-${++count}">`);
-    return anchors(mention(identified.slice(0, boundary), true) + mention(references, false));
+    const answered = apart ? answers(identified.slice(0, boundary) + references) : undefined;
+    return anchors(mention(identified.slice(0, boundary), true, answered) + mention(references, false, answered));
 };
 
 // THE TREE, Doug, 2026-11-17, Sprint 130's twelfth round: "Specifications should always have numbers or

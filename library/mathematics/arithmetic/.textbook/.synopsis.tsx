@@ -10,7 +10,7 @@ export default () => (
             [[ Synopsis ]]
         </Title>
         <Paragraph>
-            The specification of the Textbook of Arithmetic, 12 November 2026, amended 15 November.
+            The specification of the Textbook of Arithmetic, 12 November 2026, amended 15 and 20 November.
         </Paragraph>
         <Paragraph>
             <List />
@@ -36,6 +36,7 @@ export default () => (
             <Line>3.1 A chapter is an attempt to specify one mathematical object, and bears its title.</Line>
             <Line>3.2 The first object is named, 15 November: X, the symmetry of arithmetic, its chapter the textbook's first; further objects stand to be named, this item their placeholder, by 2.7.</Line>
             <Line>3.3 The potential four chapters of 12 November are retired to the subject's notes.</Line>
+            <Line>3.4 The first chapter's specification of 15 November is retired to the subject's notes on 20 November, with the identification and the progress that stood beside it cleared, and the chapter starts fresh.</Line>
         </Paragraph>
     </Chapter>
 );

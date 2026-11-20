@@ -82,6 +82,9 @@ export default () => (
                 <Content>$[[ ./The Potential Chapters ]]</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ ./The Second Specification ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Arithmetic Notebook ]]</Content>

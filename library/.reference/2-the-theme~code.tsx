@@ -23,7 +23,7 @@ export class $LibraryTheme extends $Theme {
     style: ElementType = selection.div`${this.parts()}`;
 
     protected parts(): RuleSet[] {
-        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate(), this.navigation(), this.listing()];
+        return [this.page(), this.levels(), this.labels(), this.links(), this.apparatus(), this.figures(), this.front(), this.plate(), this.navigation(), this.listing(), this.document()];
     }
 
     // THE LISTING IS HIS, Sprint 131, measured off his manual on 2026-11-17 on Doug's "the code should probably look
@@ -242,6 +242,31 @@ export class $LibraryTheme extends $Theme {
             .pd-math, .pd-date { white-space: nowrap; }
             .pd-equation { position: relative; counter-increment: equation; }
             .pd-equation::after { content: '(' counter(equation) ')'; position: absolute; inset-inline-end: 0; top: 50%; transform: translateY(-50%); }
+        `;
+    }
+
+    // THE DOCUMENT'S FACE, Doug, 2026-11-20: "Let's take this specification and put it in the notes chapter" — a
+    // document carried verbatim as a chapter's appended markdown reads in the book's own font at the book's own
+    // size, its headings a shade of the link in the ink, its tables open and ruled by air. This was the content
+    // format's dress until the notebook carried a document of its own, and a document is no one book's thing.
+    protected document(): RuleSet {
+        return css`
+            .pc-markdown h1 { display: none; }
+            .pc-markdown h1 + p { display: none; }
+            .pc-markdown h2 { font-family: ${({ theme }) => theme.font}; font-size: calc(1 * ${({ theme }) => theme.size}); font-weight: 600; margin-block: 1.1em .35em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
+            .pc-markdown h3 { font-family: ${({ theme }) => theme.font}; font-size: calc(1 * ${({ theme }) => theme.size}); font-weight: 600; margin-block: .9em .3em; color: color-mix(in srgb, ${({ theme }) => theme.ink} 76%, ${({ theme }) => theme.link} 24%); }
+            .pc-markdown p { margin-block: .9em; }
+            .pc-markdown strong { font-weight: bold; }
+            .pc-markdown a { color: ${({ theme }) => theme.link}; text-decoration: none; }
+            .pc-markdown a:hover { text-decoration: underline; }
+            .pc-markdown table { width: 100%; border-collapse: collapse; margin-block: ${({ theme }) => theme.space}; }
+            .pc-markdown th, .pc-markdown td { padding: .3em 1.2em .3em 0; text-align: start; vertical-align: top; }
+            .pc-markdown th:last-child, .pc-markdown td:last-child { padding-inline-end: 0; }
+            .pc-markdown thead th { font-weight: 400; }
+            .pc-markdown math { font-family: 'Cambria Math', 'STIX Two Math', math; font-size: 1.08em; }
+            .pc-markdown .pc-math-block { margin-block: calc(${({ theme }) => theme.space} / 2); }
+            .pc-markdown ol, .pc-markdown ul { padding-inline-start: 1.5em; margin-block: .9em; }
+            .pc-markdown li { margin-block: .35em; }
         `;
     }
 }
