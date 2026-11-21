@@ -4,7 +4,6 @@ import $Book from '../../../../../../mathematics/arithmetic/.textbook/.book';
 import Cover from '../../../../../../mathematics/arithmetic/.textbook/.cover';
 import Synopsis from '../../../../../../mathematics/arithmetic/.textbook/.synopsis';
 import Table from '../../../../../../mathematics/arithmetic/.textbook/.table';
-import TheSymmetryOfArithmetic1 from '../../../../../../mathematics/arithmetic/.textbook/1-the-symmetry-of-arithmetic';
 
 const Book = $($Book);
 
@@ -13,7 +12,6 @@ export const book = () => (
         {Cover()}
         {Synopsis()}
         {Table()}
-        {TheSymmetryOfArithmetic1()}
     </Book>
 );
 

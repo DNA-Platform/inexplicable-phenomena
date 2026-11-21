@@ -13,14 +13,11 @@ export default () => (
             The specification of mathematics in this library: a part for the books of the subject — the notebook,
             the textbook, the project, the library and the design — one chapter per book, tracking the idioms its
             chapters follow, with the enforcing code standing with the chapter that states the idiom and the rest
-            marked held by hand; and a part for the forms, opening with the specification of a specification —
-            a title with a numbered list of lists, items cited by number, the specification and the thing it
-            specifies moving back and forth, and never thrown away, a change made by changing the specification —
-            written in its own form on my rulings of 12 November 2026; and then the content of 15 November,
-            the thing whose front is the deliverable — the result of the effort of the team, the familiar
-            chapter — and whose back is the project: the statement of work, the progress, a plan, a
-            discussion, an author on every part, its object model respecified in its chapter from my answers
-            of 16 November.
+            marked held by hand. A part for the forms stood beside it from my rulings of 12 November 2026 — the
+            specification of a specification, and the content whose front is the deliverable and whose back is the
+            project — and was struck whole on my word of 21 November, to be specified again from nothing; the
+            subject's deliverable wore a theorem and a proof of its own there, and they are struck with it, never
+            having been said in a chapter.
         </Paragraph>
     </Chapter>
 );

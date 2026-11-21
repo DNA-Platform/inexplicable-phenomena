@@ -22,8 +22,8 @@ export default () => (
                 tenths of the window and scrolling within, with light, wrap and lines on its bar and a full screen
                 that takes the window; the back, the chapter's words alone on its front and the file on its back,
                 flipped by the square at the title's right
-                that <Means>$[[ Our Reference / The Content ]]</Means> flips with, the title turning into the file's
-                own name in the editor's face as the content's title turns into its literal; the spread, my
+                that the manual's content chapter flipped with, the title turning into the file's
+                own name in the editor's face as the content's title turned into its literal; the spread, my
                 library's container on this paper, the words at the window's left and the editor beside them to its
                 edge, the height of the window; and on the table's page, the foot, a section at the bottom of the
                 contents in the smaller voice, one row a file under the chapter it stands beside, and under the

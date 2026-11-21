@@ -26,6 +26,7 @@ import AlwaysABridesmaid19 from '../../../../../../mathematics/arithmetic/.noteb
 import SystemA20 from '../../../../../../mathematics/arithmetic/.notebook/20-system-a';
 import ThePotentialChapters21 from '../../../../../../mathematics/arithmetic/.notebook/21-the-potential-chapters';
 import TheSecondSpecification22 from '../../../../../../mathematics/arithmetic/.notebook/22-the-second-specification';
+import TheTextbooksFirstSpecification23 from '../../../../../../mathematics/arithmetic/.notebook/23-the-textbooks-first-specification';
 
 const Book = $($Book);
 
@@ -56,6 +57,7 @@ export const book = () => (
         {SystemA20()}
         {ThePotentialChapters21()}
         {TheSecondSpecification22()}
+        {TheTextbooksFirstSpecification23()}
     </Book>
 );
 

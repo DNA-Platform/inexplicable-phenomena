@@ -11,7 +11,7 @@ export default () => (
                 <Line>1.1 Every subject carries a reference manual: the specification of that subject in this library. This book is the library's own. I ruled this on 12 November 2026, at the opening of the textbook's sprint.</Line>
                 <Line>1.2 A subject's manual keeps a part for the books of its subject, one chapter per book, and that chapter tracks the book's idioms — the conventions its chapters follow.</Line>
                 <Line>1.3 Where an idiom is enforced by code, the code stands with the chapter that states it, the way this book's theme and faces stand beside theirs; an idiom followed by hand is stated in the same place and marked so.</Line>
-                <Line>1.4 A manual is written the way a specification is — numbered parts, referenced code — in the form of <Means>$[[ ./The Specification ]]</Means>; I asked for this on 16 November 2026, this chapter was the first so written, and since 19 November 2026 every chapter of this book is.</Line>
+                <Line>1.4 A manual is written the way a specification is — numbered sections of numbered clauses, each clause citing the code it governs. I asked for this on 16 November 2026, this chapter was the first so written, and since 19 November 2026 every chapter of this book is. The form had a chapter of its own here until my word of 21 November 2026 struck it, to be specified again from nothing; what the manuals keep is the numbering, which is this chapter's own.</Line>
             </Paragraph>
         </Section>
         <Section>
@@ -29,9 +29,9 @@ export default () => (
                 <List />
                 <Line>3.1 A listing looks identical to a listing in my own library's manual, on my word of 17 November 2026, "the code should probably look identical to what's in mine, but the container for the specification might not": JetBrains Mono at 12px on a 20.4px line, the ink pale on a night of deep teal, keywords sky, strings amber, names mint, comments dimmed, the numbers in a column of brass, the light palette behind the bar's light, wrap under its wrap, the numbers away under its lines. The numbers stand in <Means>$[[ ./The Theme ]]</Means>, section 2.</Line>
                 <Line>3.2 The listing is the package's Code figure dressed: the highlighter's spans coloured, the lines numbered by the figure, nothing drawn that the figure does not already draw. It stands in a paragraph of its own, written in the chapter where the code figure stood, which shows the chapter's files as tabs on its bar, or the one file it names.</Line>
-                <Line>3.3 The face is JetBrains Mono, taken from Google Fonts as my page takes it; the Content's source pane stays Consolas, so two monospaces live in the library, the listing's and the specification's.</Line>
+                <Line>3.3 The face is JetBrains Mono, taken from Google Fonts as my page takes it. It is the library's one monospace: a second had stood in the content's source pane until my word of 21 November 2026 struck that format.</Line>
                 <Line>3.4 Code can be written anywhere it is needed, on my word of the same day: a listing stands in any chapter of any book, a manual's or not, and the dress and the modes follow the file beside the chapter, never the book's kind.</Line>
-                <Line>3.5 An appended HTML has two faces: the listing of its source, as every file has, and the page itself run in a frame under the bar's run, which in the editor mode is the full screen. <Means>$[[ ./The Specification ]]</Means>'s tree is the manual's own case, section 9 there; the sketches of The Design are the others.</Line>
+                <Line>3.5 An appended HTML has two faces: the listing of its source, as every file has, and the page itself run in a frame under the bar's run, which in the editor mode is the full screen. The sketches of The Design are the standing case; this manual's own had been a specification's tree, struck with it on my word of 21 November 2026.</Line>
             </Paragraph>
         </Section>
         <Section>

@@ -22,8 +22,11 @@ export default () => (
             always a composite and never the identity of the sentence, the first-order System A mapped into
             Gödel's P, drafted for the textbook and moved here on my ruling that it is a note, and the
             potential four chapters of 15 November, retired from the textbook in favor of specifications of
-            mathematical objects as the starting point, and my second specification of the symmetry of
-            arithmetic, retired from the textbook on 20 November so that its chapter starts fresh.
+            mathematical objects as the starting point, my second specification of the symmetry of
+            arithmetic, retired from the textbook on 20 November so that its chapter starts fresh and standing
+            here as the file it is since the format that drew it was struck, and what I had specified the textbook
+            itself to be, retired on 21 November with the textbook emptied and the whole form of a specification
+            struck from the library's manuals, to be specified again from nothing.
         </Paragraph>
     </Chapter>
 );

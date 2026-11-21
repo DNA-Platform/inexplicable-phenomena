@@ -1,4 +1,4 @@
-import { Append, Chapter, Heading, Image, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Heading, Image, Paragraph, Section, Title } from '@dna-platform/public';
 
 export default () => (
     <Chapter>
@@ -15,8 +15,8 @@ export default () => (
                 with its one writing, the coverage computed from what no relation claims; and references, the
                 citations that join the parts and drain to ink when hidden. Each section's heading carries a
                 small square that toggles its own annotations, and the bar's square is every section's at
-                once. The specification renders its clauses in the literal markdown
-                of <Means>$[[ Our Reference / The Specification ]]</Means>, coverage in the margin reading
+                once. The specification renders its clauses in the literal markdown of the form the library's
+                manual carried then, coverage in the margin reading
                 satisfied or open; the identification is five anchored statements, each the form a part takes, a
                 justified statement ruled at its left; the intuition is a small graph of principles, stated so they
                 can be compared, where a relationship between two principles is itself a principle; the progress is a
@@ -42,11 +42,12 @@ export default () => (
                 the annotations toggle on what is visible — a folded or hidden clause draws nothing, its
                 marks returning with it, while an opened connection overrides the tree, a hidden clause
                 standing again while its justification is open. The same hour the tree went into the manual:
-                the thirteenth round ruled that <Means>$[[ Our Reference / The Specification ]]</Means> should
-                have this code, so it gained its ninth section and an appendix holding the tree as an object
-                and the page as its rendering, run on that specification itself,
-                while <Means>$[[ Our Reference / The Content ]]</Means> took the five parts and the
-                annotation foundation as its own sections.
+                the thirteenth round ruled that the manual's specification chapter should have this code, so it
+                gained its ninth section and an appendix holding the tree as an object and the page as its
+                rendering, run on that specification itself, while the manual's content chapter took the five
+                parts and the annotation foundation as its own sections. Both chapters were struck from the
+                manual on my word of 21 November 2026, to be specified again from nothing; this paragraph is the
+                round's record and not an account of the manual as it stands.
             </Paragraph>
             <Paragraph>
                 What the sketch found: a dotted underline across a justified statement read loud and became the
@@ -61,7 +62,7 @@ export default () => (
                 hierarchy as the sketch was photographed: the title of a section needs to be more important, and
                 markdown's own headings should hardly exceed the body — a little bold, not much, partially
                 rendered — said for this page and for the arithmetic specification alike, so the correction
-                went into <Means>$[[ Our Reference / The Content ]]</Means> in the same stroke. The
+                went into the manual's content chapter in the same stroke. The
                 move-to-compare answered a question by construction: 4.2 dragged beside 7.3 — the two clauses
                 one justification claims — seats a relation's two objects together with the same J3 mark on
                 each, which is what comparing is for; though the margin crowds where two long marks meet, the

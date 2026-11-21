@@ -8,12 +8,6 @@ export default () => (
             [[ Table of Contents ]]
         </Title>
         <Section>
-            <Heading>The Objects</Heading>
-            <Paragraph>
-                <Content>$[[ ./The Symmetry of Arithmetic ]]</Content>
-            </Paragraph>
-        </Section>
-        <Section>
             <Heading>Contents</Heading>
             <Paragraph>
                 <Parenthetical />

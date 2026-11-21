@@ -11,8 +11,6 @@ import TheFaces4 from '../../../../.reference/4-the-faces';
 import DevelopingTheLibrary5 from '../../../../.reference/5-developing-the-library';
 import ThePaper6 from '../../../../.reference/6-the-paper';
 import TheReferenceManual7 from '../../../../.reference/7-the-reference-manual';
-import TheSpecification8 from '../../../../.reference/8-the-specification';
-import TheContent9 from '../../../../.reference/9-the-content';
 
 const Book = $($Book);
 
@@ -28,8 +26,6 @@ export const book = () => (
         {DevelopingTheLibrary5()}
         {ThePaper6()}
         {TheReferenceManual7()}
-        {TheSpecification8()}
-        {TheContent9()}
     </Book>
 );
 
