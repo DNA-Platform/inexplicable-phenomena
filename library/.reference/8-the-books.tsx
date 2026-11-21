@@ -1,4 +1,5 @@
-import { Chapter, Heading, Line, List, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Append, Chapter, Heading, Line, List, Means, Paragraph, Section, Title } from '@dna-platform/public';
+import { Listing } from './7-the-reference-manual~code.tsx';
 
 export default () => (
     <Chapter>
@@ -86,12 +87,22 @@ export default () => (
             </Paragraph>
             <Paragraph>
                 <List />
-                <Line>6.1 A post is a chapter titled by what it is about, carrying a subtitle that says what the post is a reflection on, <Means>$[[ ./The Faces ]]</Means> 1.4.</Line>
-                <Line>6.2 A post is drafted in a markdown document appended beside its chapter, which is where the writing is done; the document is the draft and the chapter is the post. The document draws nothing of itself, 1.4 above, and is kept because a draft is a record.</Line>
-                <Line>6.3 The draft is integrated into the chapter's own writing by hand — paragraphs, sections, mentions and annotations in the library's own words — and never rendered in place. A document rendered verbatim was the library's practice until my word of 21 November 2026 struck the whole apparatus that did it; what replaces it is a person reading a draft and writing the page.</Line>
-                <Line>6.4 A draft that is rewritten keeps its versions beside the chapter, each appended under its own name, as the conversations of my own library keep theirs.</Line>
-                <Line>6.5 The voice is the subject's, in the first person, and the posts carry the insights of whoever writes them. The switch of perspective between the subject's voice and the author's is not built, and stands open on my word of 21 November 2026: "It was always meant to be a blog, but one that mathematics itself writes in its voice. We can add that switch of perspective in later."</Line>
+                <Line>6.1 A post is a blog post, and is built as one. On my word of 21 November 2026, when it was put to me as a question of styling: "But literally it will be on the web, with a link, writing my thoughts about a topic. It is MORE real as a blog post than anything else." A book here is a metaphor and a conversation is a transcript; a post is the thing itself, published at an address and read by whoever follows the link.</Line>
+                <Line>6.2 It is said of its chapter, as every special chapter is said of one, <Means>$[[ ./The Book ]]</Means> 1.4, and the code beside this chapter says it. Two things follow from being a post. It is not counted, because a book numbers its chapters so a reader knows where they are in it and a reader arriving from a link is not anywhere in anything. And it carries the day it was published, drawn under the title in a time the machine can read, which is what a post has and a chapter does not.</Line>
+                <Line>6.3 A post is titled by what it is about and carries a subtitle saying what it is a reflection on, <Means>$[[ ./The Faces ]]</Means> 1.4.</Line>
+                <Line>6.4 A post is drafted in a markdown document appended beside its chapter, which is where the writing is done; the document is the draft and the chapter is the post. The document draws nothing of itself, 1.4 above, and is kept because a draft is a record.</Line>
+                <Line>6.5 The draft is integrated into the chapter's own writing by hand — paragraphs, sections, mentions and annotations in the library's own words — and never rendered in place. A document rendered verbatim was the library's practice until my word of 21 November 2026 struck the whole apparatus that did it; what replaces it is a person reading a draft and writing the page. What the draft marks as an annotation becomes one of the package's own sorts, chosen by what the note does: a thought holds what its writing prompted, a question holds what its writing leaves open.</Line>
+                <Line>6.6 A sentence I have braced in a draft is mine to write, and stands on the page as a question naming what it waits on, never as words put in my mouth.</Line>
+                <Line>6.7 A draft that is rewritten keeps its versions beside the chapter, each appended under its own name, as the conversations of my own library keep theirs.</Line>
+                <Line>6.8 The voice is the subject's, in the first person, and the posts carry the insights of whoever writes them. The switch of perspective between the subject's voice and the author's is not built, and stands open on my word of 21 November 2026: "It was always meant to be a blog, but one that mathematics itself writes in its voice. We can add that switch of perspective in later."</Line>
             </Paragraph>
         </Section>
+        <Listing />
+        <Append
+            identifier="code"
+            type=".tsx"
+        >
+            ![[ code.tsx ]]
+        </Append>
     </Chapter>
 );

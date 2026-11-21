@@ -172,12 +172,26 @@ export class $LibraryTheme extends $Theme {
             .pd-canonical.pd-chapter { counter-increment: chapter; }
             .pd-chapter .pd-title::before { display: block; margin-block-end: calc(${({ theme }) => theme.space} / 4); }
             .pd-canonical.pd-chapter .pd-title::before { content: 'Chapter ' counter(chapter); }
+            /* A POST IS NOT COUNTED, Doug, 2026-11-21: a book numbers its chapters because a reader wants to know
+               where they are in it, and a reader arriving at a post from a link is not anywhere in anything. */
+            .pa-post.pd-chapter .pd-title::before { content: none; }
+            /* THE DATELINE STANDS IN THE HEADER, under the title and the subtitle, where a blog post's date stands.
+               An annotation's note is drawn after the chapter's writings wherever it is written, so the post is
+               laid out as a column and the three pieces of its header are ordered — the theme placing a thing the
+               chapter has marked, which is what being a post is interpreted to mean. */
+            .pa-post.pd-chapter { display: flex; flex-direction: column; }
+            .pa-post.pd-chapter > * { order: 3; }
+            .pa-post.pd-chapter > :has(> .pd-title) { order: 1; }
+            .pa-post.pd-chapter > .pa-dateline { order: 2; margin-block-end: calc(${({ theme }) => theme.space} / 2); }
+            .pa-post .pd-title { margin-block-end: calc(${({ theme }) => theme.space} / 3); }
+            /* A column does not collapse its margins, so a post's blocks carry half each and meet at one space. */
+            .pa-post.pd-chapter > .pd-paragraph, .pa-post.pd-chapter > .pd-section { margin-block: calc(${({ theme }) => theme.space} / 2); }
         `;
     }
 
     protected labels(): RuleSet {
         return css`
-            .pd-label, .pd-chapter .pd-title::before {
+            .pd-label, .pd-chapter .pd-title::before, .pa-post .pa-dateline {
                 font-size: calc(0.7 * ${({ theme }) => theme.size});
                 font-weight: normal;
                 letter-spacing: 0.15em;
