@@ -8,6 +8,12 @@ export default () => (
             [[ Table of Contents ]]
         </Title>
         <Section>
+            <Heading>The Posts</Heading>
+            <Paragraph>
+                <Content>$[[ ./Hacking Lean ]]</Content>
+            </Paragraph>
+        </Section>
+        <Section>
             <Heading>Contents</Heading>
             <Paragraph>
                 <Parenthetical />

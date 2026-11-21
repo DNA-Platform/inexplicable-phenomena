@@ -1,0 +1,14 @@
+var m=Object.defineProperty;var t=(l,d)=>m(l,"name",{value:d,configurable:!0});import{jsxs as n,jsx as e}from"react/jsx-runtime";import{$ as p}from"@dna-platform/chemistry";import{C as b,T as y,a as g,b as f,$ as w}from"./1-the-book~code-dTGrzpzn.js";import{Chapter as o,Biography as u,Title as r,Author as k,Subject as x,About as T,Section as c,Heading as s,Paragraph as h,Content as i,Parenthetical as v,Word as a,Part as C,Append as I}from"@dna-platform/public";import{M}from"./.synopsis-DYJOVRwP.js";import"styled-components";const A=t(()=>n(o,{children:[e(b,{}),e(u,{}),e(r,{children:"[Mathematical Identity](/inexplicable-phenomena/mathematical-identity/)"}),e(k,{children:"[Doug](/inexplicable-phenomena/our-team/)"}),e(x,{children:"[Mathematics](/inexplicable-phenomena/our-math/)"}),e(T,{children:"[Mathematical Identity](/inexplicable-phenomena/mathematical-identity/)"}),e(y,{children:"Mathematics writes about itself, and about how much closer it has come."})]}),"Cover"),H=t(()=>n(o,{children:[e(g,{}),e(r,{children:"[Table of Contents](/inexplicable-phenomena/mathematical-identity/#table-of-contents)"}),n(c,{children:[e(s,{children:"The Posts"}),e(h,{children:e(i,{children:"[Hacking Lean](/inexplicable-phenomena/mathematical-identity/#hacking-lean)"})})]}),n(c,{children:[e(s,{children:"Contents"}),n(h,{children:[e(v,{}),e(a,{children:e(i,{children:"[Mathematical Identity](/inexplicable-phenomena/mathematical-identity/)"})}),e(a,{children:e(i,{children:"[Synopsis](/inexplicable-phenomena/mathematical-identity/#synopsis)"})}),e(a,{children:e(i,{children:"[Table of Contents](/inexplicable-phenomena/mathematical-identity/#table-of-contents)"})})]})]})]}),"Table"),L=t(()=>n(o,{children:[e(C,{children:"The Posts"}),n(r,{children:["[Hacking Lean](/inexplicable-phenomena/mathematical-identity/#hacking-lean)",e(f,{children:"A reflection on recent developments with Riemann"})]}),e(h,{children:"The post is drafted beside this chapter, in the markdown document appended to it, and I write there. The draft is integrated into this chapter's own writing by hand once it says what I want it to say, and it is kept afterwards because a draft is a record."}),e(I,{identifier:"post",type:".md",children:`# Hacking Lean
+
+A reflection on recent developments with Riemann
+
+<!--
+This is the draft. Write here in plain markdown — headings, paragraphs, lists, math,
+whatever the thought needs. Nothing here is rendered on the page; the chapter beside
+this file is the post, and I transcribe what you write into the library's own writing
+by hand once you say it is ready.
+
+Rewriting it? Keep the versions: a second pass goes in 1-hacking-lean~post.v2.md and
+is appended beside this one, the way your conversation books keep their versions.
+-->
+`})]}),"HackingLean1"),P=p(w),K=t(()=>n(P,{children:[A(),M(),H(),L()]}),"book");export{K as book};

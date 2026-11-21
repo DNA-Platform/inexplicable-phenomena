@@ -9,7 +9,7 @@ export default () => (
             <Paragraph>
                 <List />
                 <Line>1.1 Every subject carries a reference manual: the specification of that subject in this library. This book is the library's own. I ruled this on 12 November 2026, at the opening of the textbook's sprint.</Line>
-                <Line>1.2 A subject's manual keeps a part for the books of its subject, one chapter per book, and that chapter tracks the book's idioms — the conventions its chapters follow.</Line>
+                <Line>1.2 A subject's manual keeps only what its own subject makes different. The kinds of book a subject keeps, and the idioms each follows, are this manual's, <Means>$[[ ./The Books ]]</Means> — a subject's manual had held a chapter per book until my word of 21 November 2026 found that the first subject's four such chapters named it only as their first instance and nothing in them was its own, leaving it the one chapter that was.</Line>
                 <Line>1.3 Where an idiom is enforced by code, the code stands with the chapter that states it, the way this book's theme and faces stand beside theirs; an idiom followed by hand is stated in the same place and marked so.</Line>
                 <Line>1.4 A manual is written the way a specification is — numbered sections of numbered clauses, each clause citing the code it governs. I asked for this on 16 November 2026, this chapter was the first so written, and since 19 November 2026 every chapter of this book is. The form had a chapter of its own here until my word of 21 November 2026 struck it, to be specified again from nothing; what the manuals keep is the numbering, which is this chapter's own.</Line>
             </Paragraph>
@@ -19,7 +19,7 @@ export default () => (
             <Paragraph>
                 <List />
                 <Line>2.1 What is true of every book in the library lives here, in Our Reference.</Line>
-                <Line>2.2 What is true of a subject's books lives in that subject's manual. The first is <Means>$[[ Referential Objectivity ]]( Mathematical Reference )</Means>, whose part The Books tracks the notebook, the textbook, the project, the library and the design.</Line>
+                <Line>2.2 What is true of a subject's books lives in that subject's manual, and the test is whether a second subject would borrow it. The first is <Means>$[[ Referential Objectivity ]]( Mathematical Reference )</Means>, which keeps one chapter, The Textbook, because a textbook of results stated and proved in an algebraic form is that subject's and the other four kinds it had held were everyone's.</Line>
                 <Line>2.3 What is true of one book alone stays beside that book, never in a manual.</Line>
             </Paragraph>
         </Section>

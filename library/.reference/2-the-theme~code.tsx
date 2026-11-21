@@ -158,6 +158,12 @@ export class $LibraryTheme extends $Theme {
             .pa-item { margin-block: calc(${({ theme }) => theme.space} / 4); }
             .pa-list .pa-item { list-style-position: outside; margin-inline-start: 1.2em; }
             .pd-title { font-size: calc(1.5 * ${({ theme }) => theme.size}); font-weight: bold; margin-block-end: ${({ theme }) => theme.space}; }
+            /* A SUBTITLE READS AS A SECOND LINE OF THE TITLE, Doug, 2026-11-21: "Figure out how to write a subtitle
+               that looks good" — the book's own size, not the title's, so the title stays the loudest thing on the
+               page; the weight dropped to normal and the ink mixed toward the slate the headings wear, so it reads
+               as a line of writing rather than a smaller heading; italic, which is how a second line of a title has
+               been set since the title page. */
+            .pd-title .pa-subtitle { display: block; font-size: ${({ theme }) => theme.size}; font-weight: 400; font-style: italic; line-height: 1.4; margin-block-start: calc(${({ theme }) => theme.space} / 3); color: color-mix(in srgb, ${({ theme }) => theme.slate} 82%, ${({ theme }) => theme.paper}); }
             .pd-heading { font-weight: bold; font-size: calc(1.15 * ${({ theme }) => theme.size}); margin-block: ${({ theme }) => theme.space} 0; color: ${({ theme }) => theme.slate}; }
             .pd-section > .pd-heading { margin-block-start: 0; }
             .pd-section:not(:has(.pd-paragraph:not(.pa-parenthetical))):not(:has(.pd-figure)) { display: none; }

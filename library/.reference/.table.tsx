@@ -31,6 +31,9 @@ export default () => (
                 <Content>$[[ ./The Reference Manual ]]</Content>
             </Paragraph>
             <Paragraph>
+                <Content>$[[ ./The Books ]]</Content>
+            </Paragraph>
+            <Paragraph>
                 <Parenthetical />
                 <Word>
                     <Content>$[[ Our Reference ]]</Content>

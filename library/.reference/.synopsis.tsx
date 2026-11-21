@@ -15,9 +15,13 @@ export default () => (
             chapter says what the tool is and the file beside it is the tool. Borrowed, to begin, from the binder's own
             test library, and rebuilt from here by sketches. And the rule for the manuals themselves: every subject
             carries one, with a part for the books of its subject tracking their idioms, the enforcing code standing
-            with the chapter that states the idiom. The form of a specification and the content that carried it
-            stood here from 16 November 2026 and were struck on my word of 21 November, to be specified again from
-            nothing; nothing of either is kept in this manual.
+            with the chapter that states the idiom — and, since 21 November 2026, the kinds of book a subject keeps,
+            with the idioms each follows, moved up from the first subject's manual because not one of them was that
+            subject's: the notebook, the project, the library of publications, the design and the identity, the last
+            being the blog a subject writes in its own voice. A chapter's subtitle is here too, the tagline's shape
+            one level down, since a title draws its name alone. The form of a specification and the content that
+            carried it stood here from 16 November 2026 and were struck on the same word, to be specified again
+            from nothing; nothing of either is kept.
         </Paragraph>
     </Chapter>
 );

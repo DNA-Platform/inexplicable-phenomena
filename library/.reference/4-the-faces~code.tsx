@@ -1,6 +1,6 @@
 import { ElementType, ReactNode } from 'react';
 import { $, $check, selection } from '@dna-platform/chemistry';
-import { $Annotation, $Chapter, $Cover, $Format, $Paragraph, $Synopsis, $Table, $TableOfContents, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Self as selfReference, Word as word, html, specify } from '@dna-platform/public';
+import { $Annotation, $Chapter, $Cover, $Format, $Paragraph, $Synopsis, $Table, $TableOfContents, $Title, $Word, $Writing, AnnotationSpecification, Means as means, Next as nextWord, Previous as previousWord, Reference as reference, Self as selfReference, Word as word, html, specify } from '@dna-platform/public';
 
 // A TAGLINE IS ONE LINE OF WHAT THE BOOK IS, said of a cover as its author and its subject are, written in the cover
 // file and drawn on the front; the synopsis is the block, and has its own page. Doug, 2026-11-12, Sprint 127: "You
@@ -15,6 +15,41 @@ export class TaglineSpecification extends AnnotationSpecification {
     @specify('a tagline is said of a cover')
     $saidOfACover(writing: $Writing): void {
         $check(writing instanceof $Chapter && writing.is($Cover), 'a tagline is said of a cover, and this is not one');
+    }
+}
+
+// A SUBTITLE IS THE SECOND LINE OF A TITLE, said of the title as a tagline is said of a cover, and drawn where it is
+// written. Doug, 2026-11-21, opening the mathematics blog: "Figure out how to write a subtitle that looks good."
+// Nothing in the library could say one — $Title.write() returns its name alone and discards everything else inside
+// it, a Parenthetical inside a title HIDES the title, and $Tagline's specification refuses anything but a cover. So
+// this is the tagline's shape one level down: an annotation carrying its own line, as a cover's Author, Subject and
+// About carry theirs in the package's own Cover.tsx. It draws through note(), which is the annotation's drawing
+// path — write() is not, which is why $Tagline's own write() is never called and $Front reads its line by hand.
+// PROXY name, and the FLAG: a subtitle is as universal as a title, so this likely belongs in the package beside
+// $Title rather than here; it stands in this manual because a change to the package is Doug's to approve.
+export class $Subtitle extends $Annotation {
+    specification = new SubtitleSpecification();
+    span = selection.span.attrs({ className: 'pa-subtitle' })``;
+    get line(): string { return html.copy(this.text).trim(); }
+
+    override note(): ReactNode {
+        const Span = this.span;
+        return <Span>{this.line}</Span>;
+    }
+
+    override defines(writing: $Writing): void { writing.classes.add(this, 'pa-subtitled'); }
+    override erase(writing: $Writing): void { writing.classes.revert(this); }
+}
+export class SubtitleSpecification extends AnnotationSpecification {
+    @specify('a subtitle is said of a title')
+    $saidOfATitle(writing: $Writing): void {
+        $check(writing instanceof $Title, 'a subtitle is said of a title, and this is not one');
+    }
+
+    @specify('a subtitle holds its line')
+    $holdsItsLine(writing: $Writing): void {
+        $check(writing.annotations.find($Subtitle).every(subtitle => subtitle.line !== ''),
+            'a subtitle holds its line, and this one holds nothing');
     }
 }
 
@@ -267,6 +302,7 @@ export const FrontAuthor = $($FrontAuthor);
 export const FrontTagline = $($FrontTagline);
 export const FrontImprint = $($FrontImprint);
 export const Tagline = $($Tagline);
+export const Subtitle = $($Subtitle);
 const frontName = FrontName;
 const frontAuthor = FrontAuthor;
 const frontTagline = FrontTagline;

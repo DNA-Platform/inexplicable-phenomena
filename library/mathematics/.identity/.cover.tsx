@@ -9,6 +9,6 @@ export default () => (
         <Author>*[[ Doug ]]( Our Team )</Author>
         <Subject>**[[ Mathematics ]]</Subject>
         <About>[[ Mathematical Identity ]]</About>
-        <Tagline>A subject's account of its own formalization.</Tagline>
+        <Tagline>Mathematics writes about itself, and about how much closer it has come.</Tagline>
     </Chapter>
 );
